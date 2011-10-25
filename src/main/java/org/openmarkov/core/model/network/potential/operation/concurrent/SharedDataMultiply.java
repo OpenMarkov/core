@@ -1,0 +1,115 @@
+package org.openmarkov.core.model.network.potential.operation.concurrent;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+import openmarkov.networks.potentials.Potential;
+import openmarkov.networks.potentials.PotentialRole;
+import openmarkov.networks.potentials.TablePotential;
+import openmarkov.networks.potentials.operations.AuxiliaryOperations;
+import openmarkov.networks.potentials.operations.DiscretePotentialOperations;
+
+
+/** Contains shared data used concurrently by a set of threads computing an 
+ * operation. This class is not synchronized because the set of threads 
+ * accomplish the three conditions of Bernstein 
+ * All data have package access because they will be used outside this class,
+ * only in this package and the access must be efficient (there is not getX or 
+ * setX) */
+public class SharedDataMultiply {
+
+	// Attributes related to the arguments
+	volatile ArrayList<TablePotential> potentials;
+	
+	volatile int numPotentials;
+	
+	volatile int[][] offAccPotentials;
+	
+	/** Problability tables of potentials */
+	volatile double[][] tables;
+	
+	// Attributes related to result
+	volatile TablePotential result;
+	
+	volatile int numResultVariables;
+	
+	volatile int[] resultDimensions;
+	
+	volatile int[] offsetsResult;
+	
+	// Product of constant potentials (1 if none)
+	volatile double constantFactor;
+
+	// Attributes related to splitted potentials. 
+	// First coordinate = numLogicalProcessors
+	volatile int[] resultPositionIntervals;
+	
+	volatile int[][] resultIntervals;
+	
+	volatile int[] lengthResultIntervals;
+	
+	volatile int[][] potentialsPositions;
+	
+	// Constructor
+	@SuppressWarnings("unchecked")
+	public SharedDataMultiply(ArrayList<? extends Potential> potentials) {
+		this.potentials = (ArrayList<TablePotential>)potentials.clone();
+	}
+	
+	// Methods
+	/** Initialize the attributes using the potentials and the number of logical
+	 * processors 
+	 * @throws Exception */
+	@SuppressWarnings("unchecked")
+	public void initialize() throws Exception {
+		// Sort the potentials according to the table size
+		Collections.sort(potentials);
+
+		// Gets constant factor: The product of constant potentials
+		constantFactor = openmarkov.networks.potentials.operations.DiscretePotentialOperations
+			.getConstantFactor(potentials);
+		
+		potentials = 
+			AuxiliaryOperations.getProperPotentials(potentials);
+
+		numPotentials = potentials.size();
+
+		// Gets the union
+		result = new TablePotential(
+				AuxiliaryOperations.getUnionVariables(potentials), 
+				PotentialRole.JOIN_PROBABILITY);
+
+		numResultVariables = result.getVariables().size();
+
+		// Gets the tables of each TablePotential
+		tables = new double[numPotentials][];
+		for (int i = 0; i < numPotentials; i++) {
+			tables[i] = potentials.get(i).values;
+		}
+
+		// Gets offset accumulate
+		offAccPotentials = DiscretePotentialOperations
+			.getAccumulatedOffsets(potentials, result);
+
+		// Position in each table potential
+		potentialsPositions = 
+			new int[org.openmarkov.core.model.network.potential.operation.concurrent.DiscretePotentialOperations
+			    .numLogicalProcessors][numPotentials];
+
+		// splits potentials
+		offsetsResult = result.getOffsets();
+		int numIntervals = org.openmarkov.core.model.network.potential.operation.concurrent.DiscretePotentialOperations.numLogicalProcessors;
+		int numResultVariables = offsetsResult.length;
+		resultIntervals = new int[numIntervals][numResultVariables];
+		lengthResultIntervals = new int[numIntervals];
+		resultPositionIntervals = new int[numIntervals];
+
+		org.openmarkov.core.model.network.potential.operation.concurrent.DiscretePotentialOperations
+			.splitResultPotential(result, resultIntervals, 
+			lengthResultIntervals, resultPositionIntervals);
+		org.openmarkov.core.model.network.potential.operation.concurrent.DiscretePotentialOperations
+			.splitOperatorsPotentials(
+			potentials, result, resultIntervals, potentialsPositions);
+	}
+	
+}

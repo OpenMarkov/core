@@ -1,0 +1,345 @@
+package org.openmarkov.core.model.network.potential.operation;
+
+import java.util.ArrayList;
+
+import org.openmarkov.core.exception.IllegalArgumentTypeException;
+import org.openmarkov.core.exception.PotentialOperationException;
+import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UniformPotential;
+
+
+/** The class <code>PotentialOperations</code> contains method for performing
+  * basic operations in bayesian networks such as matrix multiplication,
+  * marginalization, etc.
+  * @author manuel
+  * @author fjdiez
+  * @version 1.0
+  * @see openmarkov.networks.potentials.TablePotential
+  * @since OpenMarkov 1.0 */
+public class PotentialOperations {
+
+//	public static long lines; // Only for test
+
+	// Constructor
+	/**  Don't let anyone instantiate this class. */
+	private PotentialOperations() {
+	}
+
+	/** @param potential
+	 * @param variablesOfInterest
+	 * @throws PotentialOperationException */
+	public static Potential marginalize(Potential potential,
+			ArrayList<Variable> variablesOfInterest) 
+			throws PotentialOperationException {
+	
+		// Obtain parameters to invoke multiplyAndMarginalize
+		// Union of the variables of the potential list
+		ArrayList<Variable> variables = potential.getVariables();
+		
+		// parameters correct type verification before calling right method
+		if (!(potential instanceof TablePotential)) {
+			throw new IllegalArgumentTypeException("Unsupported operation: " + 
+			   "marginalize can only manage potentials of type TablePotential");    						
+		}
+		if (!AuxiliaryOperations.checkVariablesCollectionType(variables, 
+				VariableType.FINITE_STATES)) {
+			throw new IllegalArgumentTypeException("Unsupported operation: " + 
+				"marginalize can only manage variables of type FSVariable");    						
+		}
+	
+		ArrayList<Variable> variablesToKeep =
+			new ArrayList<Variable>();
+		ArrayList<Variable> variablesToEliminate =
+			new ArrayList<Variable>();
+	
+		for (Variable variable : variables) {
+			if (variablesOfInterest.contains(variable)) {
+				variablesToKeep.add(variable);
+			} else {
+				variablesToEliminate.add(variable);
+			}
+		}
+	
+		ArrayList<Potential> potentials = new ArrayList<Potential>();
+		potentials.add(potential);
+	
+		return DiscretePotentialOperations.multiplyAndMarginalize(
+			potentials, variablesToKeep, variablesToEliminate);
+	}
+
+	/** @precondition variablesToKeep + variablesToEliminate =
+	 * potential.getVariables()
+	 * @precondition variablesToKeep
+	 * @param potential that will be marginalized
+	 * @param variablesToKeep
+	 * @param variablesToEliminate
+	 * @throws PotentialOperationException */
+	public static Potential marginalize(
+			Potential potential,
+			ArrayList<Variable> variablesToKeep,
+			ArrayList<Variable> variablesToEliminate) 
+			throws PotentialOperationException {
+	
+		// params correct type verification before calling right method
+		if (!(potential instanceof TablePotential)) {
+			throw new IllegalArgumentTypeException("Unsupported operation: " + 
+			   "marginalize can only manage potentials of type TablePotential");    						
+		}
+		if (!AuxiliaryOperations.checkVariablesCollectionType(variablesToKeep,
+				VariableType.FINITE_STATES)) {
+			throw new IllegalArgumentTypeException("Unsupported operation: " + 
+				"marginalize can only manage variables of type FSVariable");    						
+		}
+		if (!AuxiliaryOperations.checkVariablesCollectionType(
+				variablesToEliminate, VariableType.FINITE_STATES)) {
+			throw new IllegalArgumentTypeException("Unsupported operation: " + 
+				"marginalize can only manage variables of type FSVariable");    						
+		}
+		
+		ArrayList<Potential> potentials = new ArrayList<Potential>();
+		potentials.add(potential);
+	
+		return DiscretePotentialOperations.multiplyAndMarginalize(
+			potentials, variablesToKeep, variablesToEliminate);
+	}
+
+	/** @param potentials
+	 * @param variablesToEliminate
+	 * @throws PotentialOperationException */
+	public static Potential multiplyAndEliminate(
+			ArrayList<Potential> potentials,
+			ArrayList<Variable> variablesToEliminate) 
+			throws PotentialOperationException {
+	
+		// parameters correct type verification before calling right method
+		if (!AuxiliaryOperations.checkObjectsCollectionType(
+				potentials, TablePotential.class)) {
+			throw new IllegalArgumentTypeException("Unsupported operation: " + 
+				"multiplyAndEliminate can only manage potential of type " + 
+				"TablePotential");    						
+		}		
+		if (!AuxiliaryOperations.checkVariablesCollectionType(
+				variablesToEliminate, VariableType.FINITE_STATES)) {
+			throw new IllegalArgumentTypeException("Unsupported operation: " + 
+				"multiplyAndEliminate can only manage variables of type " + 
+				"FSVariable");    						
+		}		
+		
+		// Obtain parameters to invoke multiplyAndMarginalize
+		// Union of the variables of the potential list
+		ArrayList<Variable> variablesToKeep = 
+			AuxiliaryOperations.getUnionVariables(potentials);
+		variablesToKeep.removeAll(variablesToEliminate);
+	
+		return DiscretePotentialOperations.multiplyAndMarginalize(
+			potentials, variablesToKeep, variablesToEliminate);
+	}
+
+	/** @param potentials
+	 * @param variableToEliminate
+	 * @throws PotentialOperationException */
+	public static Potential multiplyAndEliminate(
+			ArrayList<Potential> potentials,
+			Variable variableToEliminate) throws PotentialOperationException 
+	{
+		ArrayList<Variable> variablesToEliminate =
+			new ArrayList<Variable>();
+		variablesToEliminate.add(variableToEliminate);
+	
+		return multiplyAndEliminate(potentials, variablesToEliminate);
+	}
+
+	/** @param potentials potentials array to multiply
+	 * @return The multiplied potentials
+	 * @throws PotentialOperationException */
+	public static Potential multiply(ArrayList<? extends Potential> potentials) 
+	        throws PotentialOperationException
+	{	
+    	// correct type verification of parameters before calling method.
+		if (!AuxiliaryOperations.checkObjectsCollectionType(potentials, 
+				TablePotential.class)) {
+			throw new IllegalArgumentTypeException("Unsupported operation: " + 
+			   "newMultiply can only manage potentials of type TablePotential");
+		}
+		
+		return DiscretePotentialOperations.multiply(potentials);
+	}
+
+	/** @param potentials potentials array to multiply
+	 * @param variablesOfInterest Set of variables that must be kept (although 
+	 * this set may contain some variables that are not in any potential)
+	 * <code>potentials</code>
+	 * @return The multiplied potentials
+	 * @throws PotentialOperationException */
+	public static Potential multiplyAndMarginalize(
+			ArrayList<Potential> potentials, 
+			ArrayList<Variable> variablesOfInterest) 
+			throws PotentialOperationException {
+	
+		// Obtain parameters to invoke multiplyAndMarginalize
+		// Union of the variables of the potential list
+		ArrayList<Variable> unionVariables = 
+			AuxiliaryOperations.getUnionVariables(potentials);
+	
+		// params correct type verification before calling right method
+		if (!AuxiliaryOperations.checkObjectsCollectionType(
+				potentials,	TablePotential.class)) {
+			throw new IllegalArgumentTypeException("Unsupported operation: " +
+				"multiplyAndMarginalize can only manage potentials of type " +
+				"TablePotential");    			
+		}
+		
+		if (!AuxiliaryOperations.checkVariablesCollectionType(
+				unionVariables, VariableType.FINITE_STATES)) {
+			throw new IllegalArgumentTypeException("Unsupported operation: " + 
+				"multiplyAndMarginalize can only manage variables of type " +
+				"FSVariable");    						
+		}
+	
+		// Classify unionVariables in two possibles arrays
+		ArrayList<Variable> variablesToKeep =
+			new ArrayList<Variable>();
+		ArrayList<Variable> variablesToEliminate =
+			new ArrayList<Variable>();
+		for (Variable variable : unionVariables) {
+			if (variablesOfInterest.contains(variable)) {
+				variablesToKeep.add(variable);
+			} else {
+				variablesToEliminate.add(variable);
+			}
+		}
+		
+		return DiscretePotentialOperations.multiplyAndMarginalize(
+			potentials, variablesToKeep, variablesToEliminate);
+	}
+
+    /** Multiplies several potentials and maximizes the result removing
+     *  variables that does not belong to <code>variablesOfInterest</code> 
+     * @param potentials potentials array to multiply
+     * @param variablesOfInterest Set of variables that must be kept (although 
+     *  this set may contain some variables that are not in any potential)
+     * <code>potentials</code>
+     * @return The multiplied potentials
+     * @throws PotentialOperationException */
+    public static Object[] multiplyAndMaximize(
+            ArrayList<Potential> potentials, 
+            ArrayList<Variable> variablesOfInterest) 
+            throws PotentialOperationException {
+    
+        // Obtain parameters to invoke multiplyAndMarginalize
+        // Union of the variables of the potential list
+        ArrayList<Variable> unionVariables = 
+        	AuxiliaryOperations.getUnionVariables(potentials);
+    
+        // params correct type verification before calling right method
+        if (!AuxiliaryOperations
+        		.checkObjectsCollectionType(potentials, TablePotential.class)) {
+            throw new IllegalArgumentTypeException("Unsupported operation: " + 
+                "multiplyAndMarginalize can only manage potentials of type " + 
+                "TablePotential");              
+        }
+        
+        if (!AuxiliaryOperations.checkVariablesCollectionType(
+        		unionVariables, VariableType.FINITE_STATES)) {
+            throw new IllegalArgumentTypeException("Unsupported operation: " + 
+                "multiplyAndMarginalize can only manage variables of type " +
+                "FSVariable");                          
+        }
+    
+        // Classify unionVariables in two possibles arrays
+        ArrayList<Variable> variablesToKeep =
+            new ArrayList<Variable>();
+        ArrayList<Variable> variablesToEliminate =
+            new ArrayList<Variable>();
+        for (Variable variable : unionVariables) {
+            if (variablesOfInterest.contains(variable)) {
+                variablesToKeep.add(variable);
+            } else {
+                variablesToEliminate.add(variable);
+            }
+        }
+        
+        return DiscretePotentialOperations.multiplyAndMaximize(
+            potentials, variablesToKeep, variablesToEliminate.get(0));
+    }
+
+	/** @param potentials array to multiply
+	 * @param variablesToKeep The set of variables that will appear in the 
+	 * resulting potential
+	 * @param variablesToEliminate The set of variables eliminated by 
+	 * marginalization (in general, by summing out or maximizing)
+	 * @argCondition variablesToKeep and variablesToEliminate are a partition of
+	 * the union of the variables of the potentials
+	 * @return result the multiplied potentials
+	 * @throws PotentialOperationException */
+    public static Potential multiplyAndMarginalize(
+			ArrayList<Potential> potentials,
+			ArrayList<Variable> variablesToKeep,
+			ArrayList<Variable> variablesToEliminate)
+    		throws PotentialOperationException {
+
+		// For test purposes only:
+        /* Pruebas.numPotentialOperations++; */
+    	
+    	// params correct type verification before calling right method
+    	if (!AuxiliaryOperations
+    			.checkObjectsCollectionType(potentials, TablePotential.class)) {
+			throw new IllegalArgumentTypeException("Unsupported operation: " + 
+			   "newMultiply can only manage potentials of type TablePotential");
+    	}
+    	if (!AuxiliaryOperations.checkVariablesCollectionType(
+    			variablesToKeep, VariableType.FINITE_STATES)){
+			throw new IllegalArgumentTypeException("Unsupported operation: " + 
+				"newMultiply can only manage variables of type FSVariable");
+    	}
+    	if (!AuxiliaryOperations.checkVariablesCollectionType(
+    			variablesToEliminate, VariableType.FINITE_STATES))
+    	{
+			throw new IllegalArgumentTypeException("Unsupported operation: " + 
+				"newMultiply can only manage variables of type FSVariable");    			
+    	}
+    	
+        return DiscretePotentialOperations.multiplyAndMarginalize(potentials, 
+        	variablesToKeep, variablesToEliminate);
+	}
+    
+    /**
+     * Gets a uniform <code>Potential</code> object for the variable specified.
+     *
+     * @param probNet the <code>probNet</code> object that contains the variable
+     * @param variable  the <code>Variable</code> object.
+     * @param auxNodeType the nodeType of the probNode that match the variable.
+     * 
+     * @return a new UniformPotential. 
+     */
+	public static Potential getUniformPotential(ProbNet probNet, 
+			Variable variable, NodeType auxNodeType) {
+
+		ArrayList<Variable> variables = new ArrayList<Variable>();
+		variables.add(variable);
+		for (Node node:probNet.getProbNode(variable).getNode().getParents()){
+			variables.add(((ProbNode)node.getObject()).getVariable());
+		}
+		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
+		if (auxNodeType == NodeType.UTILITY) {
+			variables.remove(0);
+			role = PotentialRole.UTILITY;
+		}else if (auxNodeType == NodeType.DECISION) {
+			role = PotentialRole.DECISION;
+		}
+		UniformPotential uniformPotential = new UniformPotential(variables, role);
+		if ( auxNodeType == NodeType.UTILITY ){
+			uniformPotential.setUtilityVariable(variable);
+		}
+		return uniformPotential;
+	}
+
+}

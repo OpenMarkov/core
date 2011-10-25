@@ -1,0 +1,147 @@
+package org.openmarkov.core.model.network.constraint;
+
+import java.util.ArrayList;
+
+import javax.swing.event.UndoableEditEvent;
+
+import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.ChangeVariableNameEdit;
+
+import openmarkov.exceptions.CanNotDoEditException;
+import openmarkov.exceptions.ConstraintViolationException;
+import openmarkov.exceptions.NonProjectablePotentialException;
+import openmarkov.exceptions.NotEnoughMemoryException;
+import openmarkov.exceptions.WrongCriterionException;
+import openmarkov.networks.ProbNet;
+import openmarkov.networks.Variable;
+import openmarkov.undo.PNUndoableEditEvent;
+import openmarkov.undo.edit.PNEdit;
+
+public class DistinctVariableNames implements PNConstraint {
+
+	// Attributes.
+	private static DistinctVariableNames constraint = null;
+
+	// Constructor
+	/** This constructor is private to not allow anyone to invoke it. */
+	private DistinctVariableNames() {
+	}
+
+	// Methods
+	/**
+	 * Singleton pattern.
+	 * 
+	 * @return The unique instance. <code>DistinctVariableNames</code>
+	 */
+	public static PNConstraint getUniqueInstance() {
+		if (constraint == null) {
+			constraint = new DistinctVariableNames();
+		}
+		return constraint;
+	}
+
+	@Override
+	public boolean checkEvent(UndoableEditEvent event)
+			throws NotEnoughMemoryException, NonProjectablePotentialException,
+			WrongCriterionException {
+		ArrayList<PNEdit> edits = UtilConstraints.getEditsType(event,
+				AddVariableEdit.class);
+		ProbNet probNet = ((PNUndoableEditEvent) event).getProbNet();
+		ArrayList<Variable> variablesProbNet = probNet.getVariables();
+		ArrayList<String> variablesProbNetNames = new ArrayList<String>();
+		for (Variable variable : variablesProbNet) {
+			variablesProbNetNames.add(variable.getName());
+		}
+
+		// get new variables names
+		ArrayList<String> newVariablesNames = new ArrayList<String>();
+		for (PNEdit edit : edits) {
+			newVariablesNames.add(((AddVariableEdit) edit).getVariable()
+					.getName());
+		}
+
+		// check that new variables have distinct names
+		int numNewVariables = newVariablesNames.size();
+		for (int i = 0; i < numNewVariables - 1; i++) {
+			for (int j = i + 1; j < numNewVariables; j++) {
+				if (newVariablesNames.get(i)
+						.compareTo(newVariablesNames.get(j)) == 0) {
+					return false;
+				}
+			}
+		}
+
+		// check that new variables names are distinct than probNet variables
+		// names
+		for (String newVariableName : newVariablesNames) {
+			for (String variableProbNetName : variablesProbNetNames) {
+				if (variableProbNetName.compareTo(newVariableName) == 0) {
+					return false;
+				}
+			}
+		}
+
+		// ChangeVariableName Edit
+		edits = UtilConstraints.getEditsType(event,
+				ChangeVariableNameEdit.class);
+		for (PNEdit edit : edits) {
+			String newName = ((ChangeVariableNameEdit) edit).getNewName();
+			for (String variableProbNetName : variablesProbNetNames) {
+				if ((newName.contentEquals(variableProbNetName))) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean checkProbNet(ProbNet probNet) {
+		ArrayList<Variable> variablesProbNet = probNet.getVariables();
+		ArrayList<String> variablesProbNetNames = new ArrayList<String>();
+		for (Variable variable : variablesProbNet) {
+			variablesProbNetNames.add(variable.getName());
+		}
+
+		// check that new variables have distinct names
+		int numVariables = variablesProbNetNames.size();
+		for (int i = 0; i < numVariables - 1; i++) {
+			for (int j = i + 1; j < numVariables; j++) {
+				if (variablesProbNetNames.get(i).compareTo(
+						variablesProbNetNames.get(j)) == 0) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	@Override
+	public void undoableEditWillHappen(PNUndoableEditEvent event)
+			throws ConstraintViolationException, CanNotDoEditException,
+			NotEnoughMemoryException, NonProjectablePotentialException,
+			WrongCriterionException {
+		if (!checkEvent(event)) {
+			throw new ConstraintViolationException(
+					"ConstraintViolationException adding variable with a name that"
+							+ "already exists in probNet.");
+		}
+	}
+
+	@Override
+	public void undoableEditHappened(UndoableEditEvent e) {
+	}
+
+	public String toString() {
+		return this.getClass().getName();
+	}
+
+	@Override
+	public void undoEditHappened(PNUndoableEditEvent event) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

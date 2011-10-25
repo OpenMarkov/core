@@ -1,0 +1,136 @@
+package org.openmarkov.core.model.network;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.swing.JOptionPane;
+
+import org.openmarkov.core.exception.NormalizeNullVectorException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.inference.Evaluation;
+import org.openmarkov.core.model.network.constraint.PNConstraint;
+import org.openmarkov.core.model.network.constraint.compound.BNConstraint;
+import org.openmarkov.core.model.network.constraint.compound.IDConstraint;
+import org.openmarkov.core.model.network.potential.Potential;
+
+
+
+/**
+ * This class holds the information about and evidence case and
+ * the resulting individual probabilities.
+ * 
+ * @author asaez 
+ * @version 1.0
+ */
+public class Propagation {
+	
+	/**
+	 * The network that this propagation is about.
+	 */
+	private ProbNet probNet;
+	
+	/**
+	 * The evidence case that triggers this propagation.
+	 */
+	private EvidenceCase evidenceCase;
+	
+	/**
+	 * The individual probabilities resulting of this propagation.
+	 */
+	private HashMap<Variable, Potential> individualProbabilities = null;
+	
+	/**
+	 * String resource.
+	 */
+	private StringResource stringResource = null;
+	
+	/**
+	 * Creates a new Propagation.
+	 * 
+	 * @param probNet
+	 * 			  network to which this propagation is associated 
+	 * @param evidenceCase
+	 *            evidence case that triggers the propagation.
+	 */
+	public Propagation(ProbNet probNet, EvidenceCase evidenceCase) {
+		this.probNet = probNet;
+		this.evidenceCase = evidenceCase;
+		stringResource = StringResourceLoader.getUniqueInstance().getBundleMessages();
+		doPropagation();
+	}
+
+	/**
+	 * Returns the individual probabilities resulting of propagation.
+	 * 
+	 * @return individual probabilities resulting of propagation.
+	 */	
+	public HashMap<Variable, Potential> getIndividualProbabilities() {
+		return individualProbabilities;
+	}
+	
+	/**
+	 * This method does the propagation, obtaining the individual 
+	 * probabilities corresponding to the evidence case provided.
+	 */	
+	private void doPropagation() {
+			//Currently it's fixed to use VarEliminationBN algorithm in case of a Bayesian Network.
+			//In a future it should be dependent on the user election.
+			//In case of an Influence Diagram it should use an appropriate algorithm (maybe VarEliminationID)
+		try {
+			boolean hasBNConstraint = false;
+			boolean hasIDConstraint = false;
+			ArrayList<PNConstraint> constraints = probNet.getConstraints();
+			for (int i=0; i<constraints.size(); i++) {
+				PNConstraint pnc = constraints.get(i);
+				if (pnc instanceof BNConstraint) {
+					hasBNConstraint = true;
+				} else if (pnc instanceof IDConstraint) {
+					hasIDConstraint = true;
+				}
+			}
+			if (hasBNConstraint) {
+				Evaluation algorithm = new VarEliminationBN(probNet, probNet.getPNESupport());
+				individualProbabilities = algorithm.individualProbabilities(evidenceCase);
+			} else if (hasIDConstraint) {
+				//TODO
+				JOptionPane.showMessageDialog(null, "ERROR\nThis Network is an ID\n\n" +
+						"Propagation cannot be done in Influence Diagrams by the moment", 
+						"Error - IDConstraint in this Network", JOptionPane.ERROR_MESSAGE);
+			} else {
+				//TODO
+				JOptionPane.showMessageDialog(null, "ERROR\n" +
+						stringResource.getString("NoPropagationCanBeDoneMessage1.Text.Label") +
+						"\n" + stringResource.getString("NoPropagationCanBeDoneMessage2.Text.Label") +
+						"\n\n" + constraints, 
+						stringResource.getString("NoPropagationCanBeDoneMessage.Title.Label"),
+						JOptionPane.ERROR_MESSAGE);
+			}
+		} catch (NotEnoughMemoryException exc) {
+			JOptionPane.showMessageDialog(null, "ERROR\n" +
+					stringResource.getString("ExceptionNotEnoughMemory.Text.Label") +
+					"\n\n" + exc.getMessage(), 
+					stringResource.getString("ExceptionNotEnoughMemory.Title.Label"),
+					JOptionPane.ERROR_MESSAGE);
+		} catch (NormalizeNullVectorException exc) {
+			JOptionPane.showMessageDialog(null, "ERROR\n" +
+					stringResource.getString("ExceptionNormalizeNullVector.Text.Label") +
+					"\n\n" + exc.getMessage(), 
+					stringResource.getString("ExceptionNormalizeNullVector.Title.Label"),
+					JOptionPane.ERROR_MESSAGE);
+		} catch (NotEvaluableNetworkException exc) {
+			JOptionPane.showMessageDialog(null, "ERROR\n" +
+					stringResource.getString("ExceptionNotEvaluableNetwork.Text.Label") +
+					"\n\n" + exc.getMessage(), 
+					stringResource.getString("ExceptionNotEvaluableNetwork.Title.Label"),
+					JOptionPane.ERROR_MESSAGE);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			JOptionPane.showMessageDialog(null, "ERROR" +
+					"\n\n" + exc.getMessage(), 
+					stringResource.getString("ExceptionGeneric.Title.Label"),
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+}

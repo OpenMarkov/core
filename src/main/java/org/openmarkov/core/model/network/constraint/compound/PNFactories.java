@@ -1,8 +1,8 @@
 package org.openmarkov.core.model.network.constraint.compound;
 
-import openmarkov.exceptions.ConstraintViolationException;
-import openmarkov.exceptions.ExceptionsHandler;
-import openmarkov.networks.ProbNet;
+import org.apache.log4j.Logger;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.model.network.ProbNet;
 
 /** This class has a collection of static methods. Each method is a factory that
  * 	creates an empty <code>ProbNet</code> with one compound constraint 
@@ -33,7 +33,7 @@ public class PNFactories {
 			probNet.addConstraint(
 					IDConstraint.getUniqueInstance(), false);
 		} catch (ConstraintViolationException e) {
-			ExceptionsHandler.handleException(e, null, true);
+			Logger.getLogger(PNFactories.class).fatal(e);
 		}
 		return probNet;
 	}

@@ -3,6 +3,7 @@ package org.openmarkov.core.model.network;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;

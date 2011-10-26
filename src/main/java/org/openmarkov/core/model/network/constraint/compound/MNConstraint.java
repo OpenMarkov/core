@@ -1,13 +1,11 @@
 package org.openmarkov.core.model.network.constraint.compound;
 
-import openmarkov.gui.constraints.ValidName;
-import openmarkov.gui.constraints.ValidState;
-import openmarkov.networks.constraints.DistinctVariableNames;
-import openmarkov.networks.constraints.NoEmptyName;
-import openmarkov.networks.constraints.NoSelfLoops;
-import openmarkov.networks.constraints.OnlyChanceNodes;
-import openmarkov.networks.constraints.OnlyUndirectedLinks;
-import openmarkov.networks.constraints.ValidLimitValue;
+import org.openmarkov.core.model.network.constraint.DistinctVariableNames;
+import org.openmarkov.core.model.network.constraint.NoEmptyName;
+import org.openmarkov.core.model.network.constraint.NoSelfLoops;
+import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
+import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
+import org.openmarkov.core.model.network.constraint.ValidLimitValue;
 
 public class MNConstraint extends NetworkTypeConstraint {
 

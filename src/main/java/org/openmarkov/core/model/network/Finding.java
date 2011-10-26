@@ -1,5 +1,7 @@
 package org.openmarkov.core.model.network;
 
+import org.openmarkov.core.exception.InvalidStateException;
+
 
 /** A finding is a variable and the value associated to it. The variable can be
  * discrete, continuous or hybrid 

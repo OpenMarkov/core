@@ -2,6 +2,7 @@ package org.openmarkov.core.action;
 
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
@@ -17,6 +18,8 @@ public class CompoundRemoveLinkEdit extends CompoundPNEdit {
 	protected Variable variable2;
 	
 	protected boolean isDirected;
+	
+	private Logger logger;
 
 	// Constructor
 	/** @param probNet <code>ProbNet</code>
@@ -29,6 +32,7 @@ public class CompoundRemoveLinkEdit extends CompoundPNEdit {
 		this.variable1 = variable1;
 		this.variable2 = variable2;
 		this.isDirected = isDirected;
+		this.logger = Logger.getLogger(CompoundPNEdit.class);
 	}
 
 	// Methods
@@ -62,7 +66,7 @@ public class CompoundRemoveLinkEdit extends CompoundPNEdit {
 					addEdit(new ChangePotentialEdit(probNet, 
 						marginalizedPotential, potential));
 				} catch (Exception e) {
-					ExceptionsHandler.handleException(e, null, true);
+					logger.fatal (e);
 				}
 			}
 		}

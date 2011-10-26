@@ -1,11 +1,8 @@
 package org.openmarkov.core.model.network.constraint;
 
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import openmarkov.exceptions.ConstraintException;
+import org.openmarkov.core.exception.ConstraintException;
 
 /****
  * Gets the unique instance of a PNConstraint by class name

@@ -1,8 +1,7 @@
 package org.openmarkov.core.model.network.constraint;
 
+import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.constraint.compound.NetworkTypeConstraint;
-
-import openmarkov.exceptions.ConstraintViolationException;
 
 public class CEConstraint extends NetworkTypeConstraint {
 

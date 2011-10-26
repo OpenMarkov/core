@@ -1,6 +1,6 @@
 package org.openmarkov.core.model.network.potential.operation.concurrent;
 
-import openmarkov.networks.potentials.TablePotential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 
 public class DiscreteDivide implements Runnable {
 

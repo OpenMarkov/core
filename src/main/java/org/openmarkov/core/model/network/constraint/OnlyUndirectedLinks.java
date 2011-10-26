@@ -5,16 +5,15 @@ import java.util.ArrayList;
 import javax.swing.event.UndoableEditEvent;
 
 import org.openmarkov.core.action.AddLinkEdit;
-
-import openmarkov.exceptions.CanNotDoEditException;
-import openmarkov.exceptions.ConstraintViolationException;
-import openmarkov.exceptions.NonProjectablePotentialException;
-import openmarkov.exceptions.NotEnoughMemoryException;
-import openmarkov.exceptions.WrongCriterionException;
-import openmarkov.graphs.Node;
-import openmarkov.networks.ProbNet;
-import openmarkov.undo.PNUndoableEditEvent;
-import openmarkov.undo.edit.PNEdit;
+import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.PNUndoableEditEvent;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.ProbNet;
 
 
 public class OnlyUndirectedLinks implements PNConstraint {

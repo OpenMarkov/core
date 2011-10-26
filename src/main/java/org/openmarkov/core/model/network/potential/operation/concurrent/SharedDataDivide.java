@@ -2,11 +2,10 @@ package org.openmarkov.core.model.network.potential.operation.concurrent;
 
 import java.util.ArrayList;
 
-import openmarkov.networks.Variable;
-import openmarkov.networks.potentials.Potential;
-import openmarkov.networks.potentials.PotentialRole;
-import openmarkov.networks.potentials.TablePotential;
-import openmarkov.networks.potentials.operations.DiscretePotentialOperations;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.TablePotential;
 
 
 /** Contains shared data used concurrently by a set of threads computing an 

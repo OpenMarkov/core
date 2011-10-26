@@ -1,16 +1,17 @@
 package org.openmarkov.core.model.network.potential.operation;
 
-import java.awt.Choice;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 
+import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.IllegalArgumentTypeException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.PotentialOperationException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.Choice;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -28,7 +29,7 @@ public final class DiscretePotentialOperations {
 	/** Round error used to compare two numbers. If they differ in less than 
 	 * <code>maxRoundErrorAllowed</code> they will be considered equals. */
 	public static double maxRoundErrorAllowed = 1E-5; 
-
+	
     /** @param tablePotentials <code>ArrayList</code> of extends
      * <code>Potential</code>.
      * @return A <code>TablePotential</code> as result. 
@@ -681,7 +682,7 @@ public final class DiscretePotentialOperations {
 			quotient = new TablePotential(
 					quotientVariables, PotentialRole.JOIN_PROBABILITY);
 		} catch (NotEnoughMemoryException e) {
-			ExceptionsHandler.handleException(e, null, false);
+			Logger.getLogger(DiscretePotentialOperations.class).fatal(e);
 		}
 		if ((numNumeratorVariables == 0) ||	(numDenominatorVariables == 0)) {
 			return divide(tNumerator, tDenominator, quotient, 

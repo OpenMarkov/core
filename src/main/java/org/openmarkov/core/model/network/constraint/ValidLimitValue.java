@@ -4,21 +4,15 @@ import java.util.ArrayList;
 
 import javax.swing.event.UndoableEditEvent;
 
-import org.openmarkov.core.action.AddVariableEdit;
-import org.openmarkov.core.action.ChangeVariableNameEdit;
-
-import openmarkov.exceptions.CanNotDoEditException;
-import openmarkov.exceptions.ConstraintViolationException;
-import openmarkov.exceptions.NonProjectablePotentialException;
-import openmarkov.exceptions.NotEnoughMemoryException;
-import openmarkov.exceptions.WrongCriterionException;
-import openmarkov.gui.edit.NodePartitionedIntervalEdit;
-import openmarkov.gui.edit.StateAction;
-import openmarkov.networks.ProbNet;
-import openmarkov.networks.ProbNode;
-import openmarkov.networks.Variable;
-import openmarkov.undo.PNUndoableEditEvent;
-import openmarkov.undo.edit.PNEdit;
+import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.PNUndoableEditEvent;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 
 public class ValidLimitValue implements PNConstraint {
 		// Attributes.

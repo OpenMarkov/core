@@ -5,6 +5,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.LabelledLink;
 import org.openmarkov.core.model.graph.Link;

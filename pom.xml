@@ -31,7 +31,7 @@
 	    <groupId>umontreal.iro</groupId>
 	    <artifactId>umontreal.iro.ssj</artifactId>
 	    <version>1.0.0</version>
-	  </dependency>
+	  </dependency>	  
    </dependencies>
 	
 </project>

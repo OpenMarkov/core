@@ -5,12 +5,12 @@ import java.util.Iterator;
 
 import javax.swing.event.UndoableEditEvent;
 
-import openmarkov.exceptions.CanNotDoEditException;
-import openmarkov.exceptions.ConstraintViolationException;
-import openmarkov.networks.NodeType;
-import openmarkov.networks.ProbNet;
-import openmarkov.networks.ProbNode;
-import openmarkov.undo.PNUndoableEditEvent;
+import org.openmarkov.core.action.PNUndoableEditEvent;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 
 
 public class AtLeastOneEffectivenessPotential implements PNConstraint {

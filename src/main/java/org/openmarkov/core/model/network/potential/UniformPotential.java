@@ -3,6 +3,10 @@ package org.openmarkov.core.model.network.potential;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;

@@ -2,9 +2,9 @@ package org.openmarkov.core.model.network.potential.operation.concurrent;
 
 import java.util.ArrayList;
 
-import openmarkov.networks.Variable;
-import openmarkov.networks.potentials.Potential;
-import openmarkov.networks.potentials.TablePotential;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 
 
 public class DiscretePotentialOperations {

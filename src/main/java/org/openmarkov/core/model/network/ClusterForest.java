@@ -3,6 +3,7 @@ package org.openmarkov.core.model.network;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.network.potential.Potential;
 

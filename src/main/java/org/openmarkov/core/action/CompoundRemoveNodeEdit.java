@@ -2,6 +2,7 @@ package org.openmarkov.core.action;
 
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -36,6 +37,8 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 	protected ArrayList<Potential> marginalizedPotentials;
 
 	protected ArrayList<Potential> allPotentials;
+
+	private Logger logger;
 	
 	// Constructor
 	/** @param probNet </code>ProbNet</code>
@@ -44,6 +47,7 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 		super(probNet);
 		this.variable = variable;
 		this.nodeType = probNet.getProbNode(variable).getNodeType();
+		this.logger = Logger.getLogger(CompoundPNEdit.class);
 	}
 
 	public void generateEdits() {
@@ -64,7 +68,7 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 			newPotential = PotentialOperations.multiplyAndEliminate(
 				potentialsVariable, variable);
 		} catch (Exception e) {
-			ExceptionsHandler.handleException(e, null, true);
+			logger.fatal (e);
 		}
 		
 		ArrayList<Variable> variablesNewPotential = newPotential.getVariables();

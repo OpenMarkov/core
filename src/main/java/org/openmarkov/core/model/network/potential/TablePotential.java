@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.Util;
+import org.openmarkov.core.model.network.sensitivityAnalysis.SamplePotentialTable;
 
 /** A <code>TablePotential</code> is a type of relation with a list of
   *   probabilistic nodes. All variables will be discrete in this class.<p> 

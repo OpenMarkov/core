@@ -2,6 +2,7 @@ package org.openmarkov.core.action;
 
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -29,12 +30,14 @@ public class CRemoveChanceNodeIDEdit extends CompoundPNEdit
 
 	private double maxExpectedUtility;
 	
+	private Logger logger;
+	
 	public CRemoveChanceNodeIDEdit(ProbNet probNet, 
 			Variable variableToDelete, VarEliminationID varEliminationID) {
 		super(probNet);
 		this.variableToDelete = variableToDelete;
 		this.varEliminationID = varEliminationID;
-
+		this.logger = Logger.getLogger(CRemoveChanceNodeIDEdit.class);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -114,7 +117,7 @@ public class CRemoveChanceNodeIDEdit extends CompoundPNEdit
 			}
 
 		} catch (NotEnoughMemoryException e) {
-			ExceptionsHandler.handleException(e, null, true);
+			logger.fatal(e);
 		}
 	}
 

@@ -2,10 +2,10 @@ package org.openmarkov.core.model.network.constraint;
 
 import javax.swing.event.UndoableEditEvent;
 
-import openmarkov.exceptions.CanNotDoEditException;
-import openmarkov.exceptions.ConstraintViolationException;
-import openmarkov.networks.ProbNet;
-import openmarkov.undo.PNUndoableEditEvent;
+import org.openmarkov.core.action.PNUndoableEditEvent;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.model.network.ProbNet;
 
 
 public class OnlyOneUtilityNode implements PNConstraint {

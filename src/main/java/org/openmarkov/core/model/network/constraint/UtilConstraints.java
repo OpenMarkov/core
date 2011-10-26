@@ -6,11 +6,11 @@ import java.util.Vector;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoableEdit;
 
-import openmarkov.exceptions.NonProjectablePotentialException;
-import openmarkov.exceptions.NotEnoughMemoryException;
-import openmarkov.exceptions.WrongCriterionException;
-import openmarkov.undo.edit.CompoundPNEdit;
-import openmarkov.undo.edit.PNEdit;
+import org.openmarkov.core.action.CompoundPNEdit;
+import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
 
 /** Utility methods for constraint package. */
 public class UtilConstraints {

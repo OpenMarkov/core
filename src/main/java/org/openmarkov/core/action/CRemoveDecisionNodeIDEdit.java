@@ -4,6 +4,7 @@ import java.awt.Choice;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -34,6 +35,8 @@ public class CRemoveDecisionNodeIDEdit extends CompoundPNEdit
 
 	private HashMap<Variable, GTablePotential<Choice>> optimalStrategy;
 	
+	private Logger logger;
+	
 	public CRemoveDecisionNodeIDEdit(ProbNet probNet, 
 			Variable variableToDelete, ArrayList<Potential> utilitiesHistory,
 			VarEliminationID varEliminationID,
@@ -43,6 +46,7 @@ public class CRemoveDecisionNodeIDEdit extends CompoundPNEdit
 		this.utilitiesHistory = utilitiesHistory;
 		this.varEliminationID = varEliminationID;
 		this.optimalStrategy = optimalStrategy;
+		this.logger= Logger.getLogger(CRemoveDecisionNodeIDEdit.class);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -95,7 +99,7 @@ public class CRemoveDecisionNodeIDEdit extends CompoundPNEdit
 			}
 			
 		} catch (NotEnoughMemoryException e) {
-			ExceptionsHandler.handleException(e, null, true);
+			logger.fatal(e);
 		}
 	}
 
@@ -117,7 +121,7 @@ public class CRemoveDecisionNodeIDEdit extends CompoundPNEdit
 				utilityPotential = 
 					DiscretePotentialOperations.sum(utilityPotentials);
 			} catch (NotEnoughMemoryException e) {
-				ExceptionsHandler.handleException(e, null, true);
+				logger.fatal(e);
 			}
 		}
 		return utilityPotential;

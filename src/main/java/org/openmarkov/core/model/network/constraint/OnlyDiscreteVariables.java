@@ -7,6 +7,7 @@ import javax.swing.event.UndoableEditEvent;
 import org.openmarkov.core.action.AddVariableEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditEvent;
+import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;

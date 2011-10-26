@@ -5,7 +5,6 @@ import org.openmarkov.core.model.network.constraint.NoCycles;
 import org.openmarkov.core.model.network.constraint.NoSelfLoops;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.UtilityNodes;
-import org.openmarkov.core.model.network.constraint.ValidLimitValue;
 
 public class MDPConstraint extends NetworkTypeConstraint {
 	// Attributes
@@ -19,9 +18,6 @@ private MDPConstraint() {
 	constraints.add(NoSelfLoops.getUniqueInstance());
 	constraints.add(OnlyDirectedLinks.getUniqueInstance());
 	constraints.add(UtilityNodes.getUniqueInstance());
-	constraints.add(ValidName.getUniqueInstance());
-	constraints.add(ValidState.getUniqueInstance());
-	constraints.add(ValidLimitValue.getUniqueInstance());
 }
 
 // Methods

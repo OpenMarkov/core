@@ -5,7 +5,6 @@ import org.openmarkov.core.model.network.constraint.NoEmptyName;
 import org.openmarkov.core.model.network.constraint.NoSelfLoops;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
-import org.openmarkov.core.model.network.constraint.ValidLimitValue;
 
 public class MNConstraint extends NetworkTypeConstraint {
 
@@ -21,10 +20,6 @@ public class MNConstraint extends NetworkTypeConstraint {
 		// TODO Create OnlyAtemporalVariables constraint
 //		constraints.add(OnlyAtemporalVariables.getUniqueInstance());
 		constraints.add(NoSelfLoops.getUniqueInstance());
-
-		constraints.add(ValidName.getUniqueInstance());
-		constraints.add(ValidState.getUniqueInstance());
-		constraints.add(ValidLimitValue.getUniqueInstance());
 	}
 
 	// Methods

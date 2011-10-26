@@ -7,6 +7,8 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
+
 
 
 /** Contains shared data used concurrently by a set of threads computing an 

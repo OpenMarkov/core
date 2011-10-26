@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.swing.event.UndoableEditEvent;
 
 import org.openmarkov.core.action.AddLinkEdit;
+import org.openmarkov.core.action.LinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.exception.CanNotDoEditException;

@@ -26,7 +26,6 @@ public class DiscretePotentialOperations {
 	 *   <code>? extends Potential</code>
 	  * @return The multiplied potentials <code>TablePotential</code>
 	 * @throws <code>Exception</code> */
-	@SuppressWarnings("unchecked")
 	public static TablePotential multiply(
 			ArrayList<? extends Potential> potentials) throws Exception {
 		// Sequential part
@@ -34,7 +33,7 @@ public class DiscretePotentialOperations {
 		sdm.initialize();
 
 		// Concurrent part
-		// Starts concorrency
+		// Starts concurrency
 		Thread[] multipliers = new Thread[numLogicalProcessors];
 		DiscreteMultiply[] cdm = 
 			new DiscreteMultiply[numLogicalProcessors];
@@ -58,7 +57,6 @@ public class DiscretePotentialOperations {
 		return sdm.result;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static TablePotential multiplyAndMarginalize(
 			ArrayList<Potential> tablePotentials, 
 			ArrayList<Variable> fSVariablesToKeep,
@@ -72,7 +70,7 @@ public class DiscretePotentialOperations {
 		sdm.initializeMultiplyAndMarginalize();
 
 		// Concurrent part
-		// Starts concorrency
+		// Starts concurrency
 		Thread[] multipliers = new Thread[numLogicalProcessors];
 		DiscreteMultiplyAndMarginalize[] cdm = 
 			new DiscreteMultiplyAndMarginalize[numLogicalProcessors];
@@ -100,7 +98,6 @@ public class DiscretePotentialOperations {
 	  * @return numeratorPotential / denominatorPotential 
 	  *   <code>TablePotential</code> 
 	 * @throws <code>Exception</code> */
-	@SuppressWarnings("unchecked")
 	public static TablePotential divide(Potential numeratorPotential, 
 			Potential denominatorPotential) throws Exception {
 		// Sequential part

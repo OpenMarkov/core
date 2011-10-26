@@ -18,7 +18,7 @@ public class Util {
 
 	// Attributes
 	public static Configuration openMarkovConfiguration = null;
-	private static Logger logger = Logger.getLogger(BufferedReader.class);
+	private static Logger logger = Logger.getLogger(Util.class);
 	
     /** @return <code>true</code> if the <code>object</code> is a instance
       * of a class with the name <code>className</code>

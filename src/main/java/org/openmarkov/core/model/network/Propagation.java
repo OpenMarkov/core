@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import javax.swing.JOptionPane;
 
+import org.openmarkov.core.exception.NoPropagationCanBeDoneException;
+import org.openmarkov.core.exception.NoPropagationOnInfluenceDiagramsException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
@@ -40,10 +42,6 @@ public class Propagation {
 	 */
 	private HashMap<Variable, Potential> individualProbabilities = null;
 	
-	/**
-	 * String resource.
-	 */
-	private StringResource stringResource = null;
 	
 	/**
 	 * Creates a new Propagation.
@@ -52,11 +50,12 @@ public class Propagation {
 	 * 			  network to which this propagation is associated 
 	 * @param evidenceCase
 	 *            evidence case that triggers the propagation.
+	 * @throws NoPropagationOnInfluenceDiagramsException 
+	 * @throws NoPropagationCanBeDoneException 
 	 */
-	public Propagation(ProbNet probNet, EvidenceCase evidenceCase) {
+	public Propagation(ProbNet probNet, EvidenceCase evidenceCase) throws NoPropagationCanBeDoneException, NoPropagationOnInfluenceDiagramsException {
 		this.probNet = probNet;
 		this.evidenceCase = evidenceCase;
-		stringResource = StringResourceLoader.getUniqueInstance().getBundleMessages();
 		doPropagation();
 	}
 
@@ -72,64 +71,38 @@ public class Propagation {
 	/**
 	 * This method does the propagation, obtaining the individual 
 	 * probabilities corresponding to the evidence case provided.
+	 * @throws NoPropagationCanBeDoneException 
+	 * @throws NoPropagationOnInfluenceDiagramsException 
 	 */	
-	private void doPropagation() {
-			//Currently it's fixed to use VarEliminationBN algorithm in case of a Bayesian Network.
-			//In a future it should be dependent on the user election.
-			//In case of an Influence Diagram it should use an appropriate algorithm (maybe VarEliminationID)
-		try {
-			boolean hasBNConstraint = false;
-			boolean hasIDConstraint = false;
-			ArrayList<PNConstraint> constraints = probNet.getConstraints();
-			for (int i=0; i<constraints.size(); i++) {
-				PNConstraint pnc = constraints.get(i);
-				if (pnc instanceof BNConstraint) {
-					hasBNConstraint = true;
-				} else if (pnc instanceof IDConstraint) {
-					hasIDConstraint = true;
-				}
+	private void doPropagation() throws NoPropagationCanBeDoneException, NoPropagationOnInfluenceDiagramsException {
+		//Currently it's fixed to use VarEliminationBN algorithm in case of a Bayesian Network.
+		//In a future it should be dependent on the user election.
+		//In case of an Influence Diagram it should use an appropriate algorithm (maybe VarEliminationID)
+		boolean hasBNConstraint = false;
+		boolean hasIDConstraint = false;
+		ArrayList<PNConstraint> constraints = probNet.getConstraints();
+		for (int i=0; i<constraints.size(); i++) {
+			PNConstraint pnc = constraints.get(i);
+			if (pnc instanceof BNConstraint) {
+				hasBNConstraint = true;
+			} else if (pnc instanceof IDConstraint) {
+				hasIDConstraint = true;
 			}
-			if (hasBNConstraint) {
-				Evaluation algorithm = new VarEliminationBN(probNet, probNet.getPNESupport());
-				individualProbabilities = algorithm.individualProbabilities(evidenceCase);
-			} else if (hasIDConstraint) {
-				//TODO
-				JOptionPane.showMessageDialog(null, "ERROR\nThis Network is an ID\n\n" +
-						"Propagation cannot be done in Influence Diagrams by the moment", 
-						"Error - IDConstraint in this Network", JOptionPane.ERROR_MESSAGE);
-			} else {
-				//TODO
-				JOptionPane.showMessageDialog(null, "ERROR\n" +
-						stringResource.getString("NoPropagationCanBeDoneMessage1.Text.Label") +
-						"\n" + stringResource.getString("NoPropagationCanBeDoneMessage2.Text.Label") +
-						"\n\n" + constraints, 
-						stringResource.getString("NoPropagationCanBeDoneMessage.Title.Label"),
-						JOptionPane.ERROR_MESSAGE);
-			}
-		} catch (NotEnoughMemoryException exc) {
-			JOptionPane.showMessageDialog(null, "ERROR\n" +
-					stringResource.getString("ExceptionNotEnoughMemory.Text.Label") +
-					"\n\n" + exc.getMessage(), 
-					stringResource.getString("ExceptionNotEnoughMemory.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
-		} catch (NormalizeNullVectorException exc) {
-			JOptionPane.showMessageDialog(null, "ERROR\n" +
-					stringResource.getString("ExceptionNormalizeNullVector.Text.Label") +
-					"\n\n" + exc.getMessage(), 
-					stringResource.getString("ExceptionNormalizeNullVector.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
-		} catch (NotEvaluableNetworkException exc) {
-			JOptionPane.showMessageDialog(null, "ERROR\n" +
-					stringResource.getString("ExceptionNotEvaluableNetwork.Text.Label") +
-					"\n\n" + exc.getMessage(), 
-					stringResource.getString("ExceptionNotEvaluableNetwork.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
-		} catch (Exception exc) {
-			exc.printStackTrace();
-			JOptionPane.showMessageDialog(null, "ERROR" +
-					"\n\n" + exc.getMessage(), 
-					stringResource.getString("ExceptionGeneric.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
+		}
+		if (hasBNConstraint) {
+//			Evaluation algorithm = new VarEliminationBN(probNet, probNet.getPNESupport());
+//			individualProbabilities = algorithm.individualProbabilities(evidenceCase);
+		} else if (hasIDConstraint) {
+			//TODO
+			throw new NoPropagationOnInfluenceDiagramsException();
+			//TODO: Show this message higher up
+			/*JOptionPane.showMessageDialog(null, "ERROR\nThis Network is an ID\n\n" +
+					"Propagation cannot be done in Influence Diagrams by the moment", 
+					"Error - IDConstraint in this Network", JOptionPane.ERROR_MESSAGE);*/
+			
+		} else {
+			//TODO
+			throw new NoPropagationCanBeDoneException();
 		}
 	}
 

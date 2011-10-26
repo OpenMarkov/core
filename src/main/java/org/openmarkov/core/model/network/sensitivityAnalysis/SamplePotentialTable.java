@@ -3,8 +3,6 @@ package org.openmarkov.core.model.network.sensitivityAnalysis;
 import java.util.ArrayList;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.UncertainValue;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -88,14 +86,11 @@ public class SamplePotentialTable {
 					ArrayList<UncertainValue> arrayFamily = family.family;
 					// calculates the indexes of the uncertain values for each
 					// group: Other, Dirichlet and Complement
-					indexesComplement = UncertainValuesDialog
-							.getIndexesUncertainValuesOfType(arrayFamily,
+					indexesComplement = getIndexesUncertainValuesOfType(arrayFamily,
 									TypeProbDensityFunction.COMPLEMENT);
-					indexesDirichlet = UncertainValuesDialog
-							.getIndexesUncertainValuesOfType(arrayFamily,
+					indexesDirichlet = getIndexesUncertainValuesOfType(arrayFamily,
 									TypeProbDensityFunction.DIRICHLET);
-					indexesOther = UncertainValuesDialog
-							.getIndexesUncertainValuesNotInTypes(arrayFamily,
+					indexesOther = getIndexesUncertainValuesNotInTypes(arrayFamily,
 									auxTypes);
 
 					// Create the families of distributions
@@ -221,9 +216,75 @@ public class SamplePotentialTable {
 		
 	}
 	
+	/**
+	 * @param arrayUncertain
+	 * @param types
+	 * @return
+	 */
+	private static int[] getIndexesUncertainValuesOfTypes(ArrayList<UncertainValue> arrayUncertain, 
+			ArrayList<TypeProbDensityFunction> types) {
+		
+		ArrayList<Integer> indexes = new ArrayList<Integer>();
+		
+		for (int i=0;i<arrayUncertain.size();i++){
+			UncertainValue aux = arrayUncertain.get(i);
+			TypeProbDensityFunction auxType = aux.getProbDensityFunction().getType();
+			boolean isInTypes=false;
+			for(int j=0;(j<types.size())&&!isInTypes;j++){
+				isInTypes = (auxType == types.get(j));
+			}
+			if (isInTypes){
+				indexes.add(i);
+			}
+		}
+		int numIndexesOfTypes = indexes.size();
+		int []intIndexes = new int[numIndexesOfTypes];
+		
+		for (int i=0;i<numIndexesOfTypes;i++){
+			intIndexes[i] = indexes.get(i);
+		}
+		return intIndexes;
+	}
+	
+	public static int[] getIndexesUncertainValuesNotInTypes(ArrayList<UncertainValue> arrayUncertain, 
+			ArrayList<TypeProbDensityFunction> types) {
+		
+		ArrayList<Integer> indexes = new ArrayList<Integer>();
+		
+		for (int i=0;i<arrayUncertain.size();i++){
+			UncertainValue aux = arrayUncertain.get(i);
+			TypeProbDensityFunction auxType = aux.getProbDensityFunction().getType();
+			boolean notInTypes = true;
+			for(int j=0;(j<types.size())&&notInTypes;j++){
+				notInTypes = !(auxType == types.get(j));
+			}
+			if (notInTypes){
+				indexes.add(i);
+			}
+		}
+		int numIndexesOfTypes = indexes.size();
+		int []intIndexes = new int[numIndexesOfTypes];
+		
+		for (int i=0;i<numIndexesOfTypes;i++){
+			intIndexes[i] = indexes.get(i);
+		}
+		return intIndexes;
+	}
+	
+	
+	public static int[] getIndexesUncertainValuesOfType(ArrayList<UncertainValue> arrayUncertain, 
+			TypeProbDensityFunction type){
+		ArrayList<TypeProbDensityFunction> aux = new ArrayList<TypeProbDensityFunction>();
+		aux.add(type);
+		return getIndexesUncertainValuesOfTypes(arrayUncertain,aux);
+	}
+	
 	public static void main(String[] args) throws Exception {
 		
-		int numIter = 10;
+		/*
+		 * 
+		 * 
+			int numIter = 10;
 		
 		PGMXReader reader;
 		Variable simulationIndexVariable = new Variable("###SimulationIndexVariable###",numIter);
@@ -251,7 +312,7 @@ public class SamplePotentialTable {
 		System.out.println(newPot.toString());
 		
 		
-		/*for (int i=0;i<10;i++){
+		for (int i=0;i<10;i++){
 			System.out.println("Probando a generar con la beta")
 		}
 		*/

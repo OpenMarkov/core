@@ -1,6 +1,7 @@
 package org.openmarkov.core.model.network.potential.operation;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.Stack;
 
@@ -100,42 +101,20 @@ public class Util {
 		return cadena;
 	}
 	
-	/** Traslates a <code>String</code> from windows style to UNIX (change \\ 
+	/** Translates a <code>String</code> from windows style to UNIX (change \\ 
 	 * for /)
 	 * @param windowsString <code>String</code>
 	 * @return String */
-	public static String windows2unixPath(String windowsString) {
-		int longStr = windowsString.length();
-		String unixString = new String();
-		String barra ="\\";
-		char barraChar = barra.charAt(0);
-		for (int i = 0; i < longStr; i++) {
-			char c = windowsString.charAt(i);
-			if (c == barraChar) {
-				unixString = unixString + "/";
-			} else {
-				unixString = unixString + c; 
-			}
-		}
-		return unixString;
+	public static String platformDependentPath(String windowsString) {
+		return windowsString.replace("\\", File.separator);
 	}
 	
 	/** Replaces <code>path</code> for a new path with bars type / in unix 
 	 * case */
 	public static String getOSPath(String path) {
-		if ((Boolean)getKernelProperty("unix") == true) {
-			return windows2unixPath(path);
-		}
-		return path;
+		return platformDependentPath(path);
 	}
 
-    public static Object getKernelProperty(String propertyName) {
-    	if (openMarkovConfiguration == null) {
-    		openMarkovConfiguration = OpenMarkovConfiguration.getUniqueInstance()
-    			.getComponentConfiguration("kernel");
-    	}
-    	return openMarkovConfiguration.getProperty(propertyName);
-    }
     
     /**
 	 * Returns the the value rounded to the precision

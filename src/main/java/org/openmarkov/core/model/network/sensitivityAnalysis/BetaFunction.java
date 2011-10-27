@@ -2,7 +2,7 @@ package org.openmarkov.core.model.network.sensitivityAnalysis;
 
 import umontreal.iro.lecuyer.probdist.BetaDist;
 import umontreal.iro.lecuyer.randvar.BetaGen;
-import umontreal.iro.lecuyer.rng.MRG32k3a;
+
 
 public class BetaFunction extends ProbDensFunction {
 

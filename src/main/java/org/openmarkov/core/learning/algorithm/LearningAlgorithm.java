@@ -8,6 +8,7 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.learning.ModelNetUse;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
@@ -52,7 +53,7 @@ public abstract class LearningAlgorithm {
     		boolean doParametricLearning) throws NotEnoughMemoryException, 
 		NormalizeNullVectorException;
     
-    public abstract void init(boolean[] modelNetUse, ProbNet modelNet) 
+    public abstract void init(ModelNetUse modelNetUse, ProbNet modelNet) 
     		throws ProbNodeNotFoundException, NodeNotFoundException;
     		
     /**

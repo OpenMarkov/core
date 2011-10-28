@@ -3,28 +3,15 @@ package org.openmarkov.core.learning;
 
 import java.util.HashMap;
 
-import javax.swing.JOptionPane;
-
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.learning.algorithm.HillClimberAlgorithm;
 import org.openmarkov.core.learning.algorithm.LearningAlgorithm;
-import org.openmarkov.core.learning.algorithm.PCAlgorithm;
 import org.openmarkov.core.learning.editionsgenerator.EditionsGenerator;
-import org.openmarkov.core.learning.editionsgenerator.HillClimberEditionsGenerator;
-import org.openmarkov.core.learning.editionsgenerator.PCEditionsGenerator;
-import org.openmarkov.core.learning.independencetester.CrossEntropyIndependenceTester;
-import org.openmarkov.core.learning.independencetester.IndependenceTester;
-import org.openmarkov.core.learning.metrics.AICMetric;
-import org.openmarkov.core.learning.metrics.BDMetric;
-import org.openmarkov.core.learning.metrics.BayesianMetric;
-import org.openmarkov.core.learning.metrics.EntropyMetric;
-import org.openmarkov.core.learning.metrics.K2Metric;
-import org.openmarkov.core.learning.metrics.MDLMetric;
+import org.openmarkov.core.learning.exception.EmptyModelNetException;
 import org.openmarkov.core.learning.metrics.Metric;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
@@ -50,11 +37,6 @@ public class LearningManager {
 
     /** Implemented algorithms */
     public static final String[] algorithms = {"Gradiente", "PC"};
-
-    /* Model net posible uses */
-    static final int NODES_ONLY = 0;
-    static final int INITIAL_LINKS = 1;
-    static final int FIXED_LINKS = 2;
     
     /** ProbNet to learn */
     ProbNet learnedNet = null;
@@ -62,7 +44,7 @@ public class LearningManager {
     /** Database cases */
     int[][] cases = null;
 
-    LearningAlgorithm learn = null;
+    LearningAlgorithm learningAlgorithm = null;
     EditionsGenerator editionsGenerator = null;
     Metric metric = null;
     
@@ -70,147 +52,45 @@ public class LearningManager {
      * Constructor
      * @param preprocessedNet <code>ProbNet</code> Net with the variables of
      * interest after preprocessing.
-     * @param structureNet <code>ProbNet</code> Net from which take the
-     * information of the nodes and links
-     * @param modelNetUse <code>int</code> use the positions of the nodes, use
-     * also the initial links or use them fixed
      * @param databaseCases <code>int[][]</code> examples in the database 
-     * @throws openmarkov.exceptions.NotEnoughMemoryException
-     * @throws NodeNotFoundException 
-     * @throws NormalizeNullVectorException 
-     * @throws ProbNodeNotFoundException 
      */
-    public LearningManager(ProbNet preprocessedNet, ProbNet structureNet, 
-    		boolean[] modelNetUse, int[][] databaseCases) 
-            throws NotEnoughMemoryException, NodeNotFoundException, 
-            NormalizeNullVectorException, ProbNodeNotFoundException {
-        
+    public LearningManager(ProbNet preprocessedNet, int[][] databaseCases) {
         cases = databaseCases;
         learnedNet = preprocessedNet;
-        
-        /* Maybe there's no modelNet to work with */
-        if ((modelNetUse[0]) && (structureNet == null)){
-        	JOptionPane.showMessageDialog(
-					null, "No se ha podido abrir la red modelo.",
-					stringResource.getString("ErrorWindow.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
-        }
     }
     
+
     /**
-     * Initializes the Hill climber algorithm.
-     * @param algorithm <code>String</code> indicating the algorithm selected
-     * by the user.
-     * @param metricString <code>String</code> indicating the metric selected
+     * Initializes the learning algorithm.
+     * @param algorithm <code>LearningAlgorithm</code> indicating the algorithm selected
      * by the user.
      * @param structureNet <code>ProbNet</code> Net from which take the
      * information of the nodes and links
-     * @param modelNetUse <code>int</code> use the positions of the nodes, use
+     * @param modelNetUse <code>boolean[]</code> use the positions of the nodes, use
      * also the initial links or use them fixed
-     * @param alphaParameter parameter alpha for the Laplace's
-     * correction
-     * @throws NodeNotFoundException
-     * @throws ProbNodeNotFoundException
-     * @throws NotEnoughMemoryException
+     * @throws NormalizeNullVectorException 
+     * @throws EmptyModelNetException 
+     * @throws ProbNodeNotFoundException 
+     * @throws NodeNotFoundException 
+     * @throws NotEnoughMemoryException 
      */
-    public void initHillClimberAlgorithm(String algorithm, String metricString,
-			ProbNet structureNet, boolean[] modelNetUse, String alphaParameter) 
-			throws NodeNotFoundException, ProbNodeNotFoundException, 
-			NotEnoughMemoryException {
+    public void init(LearningAlgorithm algorithm, 
+			ProbNet structureNet, ModelNetUse modelNetUse) 
+			throws NormalizeNullVectorException, EmptyModelNetException, NodeNotFoundException, ProbNodeNotFoundException, NotEnoughMemoryException {
     	
-    	double alpha = Double.parseDouble(alphaParameter);
-    	
-        metric = null;
-        /* Take the metric selected by the user */
-        if (metricString.equals(metrics[0]))
-            metric = new BayesianMetric(learnedNet, cases, alpha);
-        else if (metricString.equals(metrics[1]))
-            metric = new K2Metric(learnedNet, cases);
-        else if (metricString.equals(metrics[2]))
-            metric = new BDMetric(learnedNet, cases, alpha);
-        else if (metricString.equals(metrics[3]))
-            metric = new EntropyMetric(learnedNet, cases);
-        else if (metricString.equals(metrics[4]))
-            metric = new MDLMetric(learnedNet, cases);
-        else if (metricString.equals(metrics[5]))
-            metric = new AICMetric(learnedNet, cases);
+        /* Maybe there's no modelNet to work with */
+        if ((modelNetUse.isUseModelNet()) && (structureNet == null))
+        	throw new EmptyModelNetException();
 
-        if (structureNet != null)
-        	addModelNetconstraints(modelNetUse, structureNet);
+        this.learningAlgorithm = algorithm;
+    	this.learningAlgorithm.init(modelNetUse, structureNet); 
+    	this.learningAlgorithm.setListeners();
         
-    	editionsGenerator = new HillClimberEditionsGenerator(learnedNet, 
-    			structureNet, metric);
-    
-        learn = new HillClimberAlgorithm(learnedNet, structureNet, alpha, 
-        		editionsGenerator, cases);
-    	learn.init(modelNetUse, structureNet);
-	    learn.setListeners();
-        
-        try
-        {
-        	learn.parametricLearning();
-        }catch(Exception e)
-        {
-        	e.printStackTrace();
-        }
+    	this.learningAlgorithm.parametricLearning();
         
         learnedNet = addElviraProperties(learnedNet);
-	}
+	}    
     
-    /**
-     * Initializes the PC algorithm.
-     * @param algorithm <code>String</code> indicating the algorithm selected
-     * by the user.
-     * @param independenceTesterString <code>String</code> indicating the 
-     * independence test selected by the user.
-     * @param degreeOfAccuracyString <code>String</code> indicating the 
-     * degree of accuracy selected by the user.
-     * @param structureNet <code>ProbNet</code> Net from which take the
-     * information of the nodes and links
-     * @param modelNetUse <code>int</code> use the positions of the nodes, use
-     * also the initial links or use them fixed
-     * @param alphaParameter parameter alpha for the Laplace's correction
-     * @throws NodeNotFoundException
-     * @throws ProbNodeNotFoundException
-     * @throws NotEnoughMemoryException
-     */
-    public void initPCAlgorithm(String algorithm, 
-    		String independenceTesterString, String degreeOfAccuracyString,
-			ProbNet structureNet, boolean[] modelNetUse, String alphaString) 
-			throws NodeNotFoundException, ProbNodeNotFoundException, 
-			NotEnoughMemoryException {
-    	IndependenceTester independenceTester = null;
-    	
-    	double alpha = Double.parseDouble(alphaString);
-    	double degreeOfAccuracy = Double.parseDouble(degreeOfAccuracyString);
-	         
-        /* Take the independence tester selected by the user */
-        if (independenceTesterString.equals(independenceTesters[0]))
-            independenceTester = new CrossEntropyIndependenceTester(learnedNet,
-	        		cases);
-        
-        editionsGenerator = new PCEditionsGenerator(learnedNet, 
-    			structureNet, independenceTester, degreeOfAccuracy);
-        
-        if (structureNet != null)
-        	addModelNetconstraints(modelNetUse, structureNet);
-
-        learn = new PCAlgorithm(learnedNet, structureNet, 
-        		editionsGenerator, alpha, cases);
-        learn.init(modelNetUse, structureNet); 
-	    learn.setListeners();
-        
-        try
-        {
-        	learn.parametricLearning();
-        }catch(Exception e)
-        {
-        	e.printStackTrace();
-        }
-        
-        learnedNet = addElviraProperties(learnedNet);
-	}
-
 	/**
      * Main method to launch the learning process.
      * @return <code>ProbNet</code> learned net.
@@ -226,7 +106,7 @@ public class LearningManager {
         /* Get current time */
         long start = System.currentTimeMillis();
 
-        learnedNet = learn.run();
+        learnedNet = learningAlgorithm.run();
         
         /* Get elapsed time in milliseconds */
         long elapsedTimeMillis = System.currentTimeMillis()-start;
@@ -247,7 +127,7 @@ public class LearningManager {
     public ProbNet step(PNEdit edition) 
             throws NotEnoughMemoryException, NodeNotFoundException, 
             NormalizeNullVectorException {
-        return learn.step(learnedNet, edition, true);
+        return learningAlgorithm.step(learnedNet, edition, true);
                 
     }
     
@@ -261,9 +141,7 @@ public class LearningManager {
     {
                                 
         HashMap<String, String> newIO = learnedNet.additionalProperties;
-        //newIO.put("ProbNet", learnedNet);
-        State[] defaultNodeStates = {new State("Presente"), 
-        		new State("Ausente")};
+        State[] defaultNodeStates = {new State("present"), new State("absent")};
         learnedNet.setDefaultStates(defaultNodeStates);
         newIO.put("hasElviraProperties", new String("yes"));
         learnedNet.additionalProperties = newIO;
@@ -279,7 +157,7 @@ public class LearningManager {
      * @throws ProbNodeNotFoundException
      * @throws NodeNotFoundException
      */
-    private void addModelNetconstraints(boolean[] modelNetUse,
+    private void addModelNetconstraints(ModelNetUse modelNetUse,
     		ProbNet modelNet) throws ProbNodeNotFoundException, 
     		NodeNotFoundException{
     	
@@ -287,7 +165,7 @@ public class LearningManager {
     	 * the links of the model net to the learnedNet we are going to 
     	 * learn.
     	 */
-    	if(!modelNetUse[1] && (modelNet != null)){
+    	if(!modelNetUse.isAddLinksAllowed() && (modelNet != null)){
     		for (Link link : modelNet.getGraph().getLinks()){
                 learnedNet.addLink(learnedNet.getVariable(((ProbNode)link.getNode1().
                 		getObject()).getVariable().getName()), 
@@ -306,7 +184,7 @@ public class LearningManager {
     }
     
     /**This function returns a <code>String</code> that represents the given 
-     * elapsed time in the format: minutes' seconds'' miliseconds ms.
+     * elapsed time in the format: minutes' seconds'' milliseconds ms.
      * 
      * @param elapsedTimeMillis long with the elapsed time.
      * @return <code>String</code> that represents the given time.

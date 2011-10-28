@@ -14,6 +14,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.learning.ModelNetUse;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
 
@@ -23,18 +24,13 @@ import org.openmarkov.core.model.network.ProbNet;
 public class ModelNetworkConstraint implements PNConstraint {
 
 	// Attributes.
-	boolean addLinksAllowed;
-	boolean removeLinksAllowed;
-	boolean invertLinksAllowed;
-	
+	ModelNetUse modelNetUse;
 	ProbNet modelNet;
 	
 	// Constructor
-	public ModelNetworkConstraint(boolean[] modelNetUses, ProbNet modelNet) {
-		addLinksAllowed = modelNetUses[2];
-		removeLinksAllowed = modelNetUses[3];
-		invertLinksAllowed = modelNetUses[4];
+	public ModelNetworkConstraint(ModelNetUse modelNetUse, ProbNet modelNet) {
 		this.modelNet = modelNet.copy();
+		this.modelNetUse = modelNetUse;
 	}
 	
 	// Methods	
@@ -74,7 +70,7 @@ public class ModelNetworkConstraint implements PNConstraint {
 			/* Check for prohibited additions. If the link we want to add was
 			 * not present in the model net, it is not allowed.
 			 */ 
-			if (!addLinksAllowed){
+			if (!modelNetUse.isAddLinksAllowed()){
 				edits = UtilConstraints.getEditsType(event, AddLinkEdit.class);
 				for (PNEdit edit : edits) {
 						source = modelNet.getProbNode(((AddLinkEdit)edit).
@@ -92,7 +88,7 @@ public class ModelNetworkConstraint implements PNConstraint {
 			/* Check for prohibited deletions. If the link we want to remove was
 			 * in the model net, the elimination is not allowed.
 			 */ 
-			if (!removeLinksAllowed){
+			if (!modelNetUse.isDeleteLinksAllowed()){
 				edits = UtilConstraints.getEditsType(event, RemoveLinkEdit.class);
 				for (PNEdit edit : edits) {
 						source = modelNet.getProbNode(((RemoveLinkEdit)edit).
@@ -110,7 +106,7 @@ public class ModelNetworkConstraint implements PNConstraint {
 			/* Check for prohibited inversions. If the link we want to invert was
 			 * in the model net, it is not allowed.
 			 */ 
-			if (!invertLinksAllowed){
+			if (!modelNetUse.isInvertLinksAllowed()){
 				edits = UtilConstraints.getEditsType(event, InvertLinkEdit.class);
 				for (PNEdit edit : edits) {
 						source = modelNet.getProbNode(((InvertLinkEdit)edit).

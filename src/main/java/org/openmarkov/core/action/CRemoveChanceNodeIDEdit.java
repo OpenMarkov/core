@@ -26,17 +26,17 @@ public class CRemoveChanceNodeIDEdit extends CompoundPNEdit
 
 	private Variable variableToDelete;
 	
-	private VarEliminationID varEliminationID;
+//TODO:	private VarEliminationID varEliminationID;
 
 	private double maxExpectedUtility;
 	
 	private Logger logger;
 	
 	public CRemoveChanceNodeIDEdit(ProbNet probNet, 
-			Variable variableToDelete, VarEliminationID varEliminationID) {
+			Variable variableToDelete/*TODO:, VarEliminationID varEliminationID*/) {
 		super(probNet);
 		this.variableToDelete = variableToDelete;
-		this.varEliminationID = varEliminationID;
+//TODO:		this.varEliminationID = varEliminationID;
 		this.logger = Logger.getLogger(CRemoveChanceNodeIDEdit.class);
 	}
 
@@ -106,13 +106,13 @@ public class CRemoveChanceNodeIDEdit extends CompoundPNEdit
 				} else { // the end
 					maxExpectedUtility = 
 						newUtility.values[newUtility.getInitialPosition()];
-					varEliminationID.setMaxExpectedUtility(maxExpectedUtility);
+//TODO:					varEliminationID.setMaxExpectedUtility(maxExpectedUtility);
 				}
 			} else {
 				edits.add(new AddPotentialEdit(probNet, marginalizedPotential));
 				if (marginalizedPotential.getTableSize() == 1) {
 					maxExpectedUtility = marginalizedPotential.values[0];
-					varEliminationID.setMaxExpectedUtility(maxExpectedUtility);
+//TODO:					varEliminationID.setMaxExpectedUtility(maxExpectedUtility);
 				}
 			}
 

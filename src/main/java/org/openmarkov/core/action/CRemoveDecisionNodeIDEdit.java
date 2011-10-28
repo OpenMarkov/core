@@ -31,7 +31,7 @@ public class CRemoveDecisionNodeIDEdit extends CompoundPNEdit
 	
 	private ArrayList<Potential> utilitiesHistory;
 	
-	private VarEliminationID varEliminationID;
+//TODO	private VarEliminationID varEliminationID;
 
 	private HashMap<Variable, GTablePotential<Choice>> optimalStrategy;
 	
@@ -39,12 +39,12 @@ public class CRemoveDecisionNodeIDEdit extends CompoundPNEdit
 	
 	public CRemoveDecisionNodeIDEdit(ProbNet probNet, 
 			Variable variableToDelete, ArrayList<Potential> utilitiesHistory,
-			VarEliminationID varEliminationID,
+//TODO:			VarEliminationID varEliminationID,
 			HashMap<Variable, GTablePotential<Choice>> optimalStrategy) {
 		super(probNet);
 		this.variableToDelete = variableToDelete;
 		this.utilitiesHistory = utilitiesHistory;
-		this.varEliminationID = varEliminationID;
+//TODO:		this.varEliminationID = varEliminationID;
 		this.optimalStrategy = optimalStrategy;
 		this.logger= Logger.getLogger(CRemoveDecisionNodeIDEdit.class);
 	}
@@ -89,8 +89,8 @@ public class CRemoveDecisionNodeIDEdit extends CompoundPNEdit
 						probNet.addPotential(newChancePotential);
 					}
 				} else { // the end
-					varEliminationID.setMaxExpectedUtility(
-						newUtility.values[newUtility.getInitialPosition()]);
+//TODO:					varEliminationID.setMaxExpectedUtility(
+//						newUtility.values[newUtility.getInitialPosition()]);
 				}
 			} else {
 				if (newChancePotential.getNumVariables() > 0) {

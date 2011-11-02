@@ -13,10 +13,10 @@ public class RandomMDPGenerator {
 
 	public static ProbNet getRandomMDP (int numberOfActions, int numberOfStates, int numberOfStateTransitions,
 			double minUtility, double maxUtility, int numberOfUtilities) throws Exception {
-		MatrizAleatoria []matArray= new MatrizAleatoria[numberOfActions];
+		RandomMatrix []matArray= new RandomMatrix[numberOfActions];
 
 		for (int i=0; i< matArray.length; i++) {
-			matArray[i]= new MatrizAleatoria(numberOfStates, numberOfStateTransitions);
+			matArray[i]= new RandomMatrix(numberOfStates, numberOfStateTransitions);
 		}
 
 		ProbNet probNet= new ProbNet();
@@ -53,7 +53,7 @@ public class RandomMDPGenerator {
 
 				for (int x1=0; x1<numberOfStates; x1++) {
 					coords[0]= x1;
-					table [potX1.getPosition(coords)]= matArray[d].matriz[x0][x1];
+					table [potX1.getPosition(coords)]= matArray[d].matrix[x0][x1];
 				}				
 			}
 		}

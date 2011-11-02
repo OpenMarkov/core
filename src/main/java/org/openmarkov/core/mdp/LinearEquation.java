@@ -19,7 +19,7 @@ package org.openmarkov.core.mdp;
 //An example of solving a linear equation set via the
 //partial-pivoting Gaussian elimination.
 
-public class LinearEq{
+public class LinearEquation{
 
 	// Method to solve the equation a[][] x[] = b[] with
 	// the partial-pivoting Gaussian elimination.

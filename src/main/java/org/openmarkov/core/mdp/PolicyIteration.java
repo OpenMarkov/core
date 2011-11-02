@@ -100,7 +100,7 @@ public class PolicyIteration extends MDPEvaluation {
 			}
 
 			int[] index = new int [mdpVariablePriori.potEstado.getTableSize()];
-			double[] x= LinearEq.solve (mat_a, vec_b, index);
+			double[] x= LinearEquation.solve (mat_a, vec_b, index);
 			
 			i= 0;
 			configPriori.reset();

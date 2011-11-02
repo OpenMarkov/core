@@ -1,26 +1,25 @@
-package org.openmarkov.core.model.network.sensitivityAnalysis;
+package org.openmarkov.core.model.network.modelUncertainty;
 
-import umontreal.iro.lecuyer.probdist.NormalDist;
-import umontreal.iro.lecuyer.randvar.NormalGen;
+import umontreal.iro.lecuyer.probdist.LognormalDist;
+import umontreal.iro.lecuyer.randvar.LognormalGen;
 import umontreal.iro.lecuyer.rng.MRG32k3a;
 
-public class NormalFunction  extends ProbDensFunction {
-	
+public class LogNormalFunction extends ProbDensFunction {
+
 	double mu;
 	
 	double sigma;
 	
-
-	public NormalFunction() {
-		super(TypeProbDensityFunction.NORMAL);
+	public LogNormalFunction() {
+		super(TypeProbDensityFunction.LOGNORMAL);
 	}
 
+	
 
 	@Override
 	public int getNumberOfRequiredArguments() {
 		return 2;
 	}
-
 
 	@Override
 	public void placeParameters(Double[] args,boolean createSSJPDF) {
@@ -29,15 +28,12 @@ public class NormalFunction  extends ProbDensFunction {
 		if (createSSJPDF){
 			createSSJPDF();
 		}
-		
 	}
-
 
 	@Override
 	public boolean isPossibleDistribution(boolean isChance) {
 		return !isChance;
 	}
-
 
 	@Override
 	public boolean doParametersVerifyDomainConstraint(boolean isChanceVariable) {
@@ -51,17 +47,19 @@ public class NormalFunction  extends ProbDensFunction {
 		a[1]=sigma;
 		return a;
 	}
-	
+
+
+
 	@Override
 	public double getMaximum() {
-		
 		return Double.POSITIVE_INFINITY;
 	}
-	
+
+
 
 	@Override
 	public void createSSJPDF() {
-		ssjPDF = new NormalDist(mu,sigma);
+		ssjPDF = new LognormalDist(mu,sigma);
 		
 	}
 
@@ -70,9 +68,9 @@ public class NormalFunction  extends ProbDensFunction {
 
 	@Override
 	public void initializeGenerator() {
-		generator = new NormalGen(stream,(NormalDist) ssjPDF);
+		generator = new LognormalGen(stream,(LognormalDist) ssjPDF);
+		
 	}
 
 
-	
 }

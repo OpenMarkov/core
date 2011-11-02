@@ -1,4 +1,4 @@
-package org.openmarkov.core.model.network.sensitivityAnalysis;
+package org.openmarkov.core.model.network.modelUncertainty;
 
 import umontreal.iro.lecuyer.randvar.BetaGen;
 import umontreal.iro.lecuyer.rng.MRG32k3a;

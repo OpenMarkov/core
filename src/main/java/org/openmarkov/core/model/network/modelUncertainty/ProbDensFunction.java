@@ -1,4 +1,4 @@
-package org.openmarkov.core.model.network.sensitivityAnalysis;
+package org.openmarkov.core.model.network.modelUncertainty;
 
 import umontreal.iro.lecuyer.probdist.Distribution;
 import umontreal.iro.lecuyer.randvar.RandomVariateGen;

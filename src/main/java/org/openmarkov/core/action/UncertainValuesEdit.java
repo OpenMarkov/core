@@ -3,8 +3,8 @@ package org.openmarkov.core.action;
 import java.util.ArrayList;
 
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.UncertainValue;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**

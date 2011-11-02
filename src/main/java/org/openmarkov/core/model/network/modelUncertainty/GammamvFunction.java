@@ -1,4 +1,4 @@
-package org.openmarkov.core.model.network.sensitivityAnalysis;
+package org.openmarkov.core.model.network.modelUncertainty;
 
 
 public class GammamvFunction extends GammaAbstract {

@@ -1,9 +1,8 @@
-package org.openmarkov.core.model.network.sensitivityAnalysis;
+package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.ArrayList;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.model.network.UncertainValue;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 

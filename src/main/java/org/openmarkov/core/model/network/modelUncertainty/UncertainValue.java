@@ -1,10 +1,7 @@
-package org.openmarkov.core.model.network;
+package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.regex.Pattern;
 
-import org.openmarkov.core.model.network.sensitivityAnalysis.ExactFunction;
-import org.openmarkov.core.model.network.sensitivityAnalysis.ProbDensFunction;
-import org.openmarkov.core.model.network.sensitivityAnalysis.TypeProbDensityFunction;
 /*import openmarkov.networks.sensitivityanalysis.GammaFunction;
 import openmarkov.networks.sensitivityanalysis.GammamvFunction;
 import openmarkov.networks.sensitivityanalysis.LogNormalFunction;

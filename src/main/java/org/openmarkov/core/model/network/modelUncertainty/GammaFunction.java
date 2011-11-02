@@ -1,6 +1,6 @@
-package org.openmarkov.core.model.network.sensitivityAnalysis;
+package org.openmarkov.core.model.network.modelUncertainty;
 
-import org.openmarkov.core.model.network.sensitivityAnalysis.TypeProbDensityFunction;
+import org.openmarkov.core.model.network.modelUncertainty.TypeProbDensityFunction;
 
 import umontreal.iro.lecuyer.randvar.GammaGen;
 import umontreal.iro.lecuyer.rng.MRG32k3a;

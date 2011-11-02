@@ -1,8 +1,7 @@
-package org.openmarkov.core.model.network.sensitivityAnalysis;
+package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.ArrayList;
 
-import org.openmarkov.core.model.network.UncertainValue;
 
 import umontreal.iro.lecuyer.probdistmulti.ContinuousDistributionMulti;
 

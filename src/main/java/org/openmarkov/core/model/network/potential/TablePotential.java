@@ -13,12 +13,12 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.UncertainValue;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.modelUncertainty.SamplePotentialTable;
+import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.Util;
-import org.openmarkov.core.model.network.sensitivityAnalysis.SamplePotentialTable;
 
 /** A <code>TablePotential</code> is a type of relation with a list of
   *   probabilistic nodes. All variables will be discrete in this class.<p> 

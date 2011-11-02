@@ -16,6 +16,7 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
+
 public abstract class LearningAlgorithm {
 	
     /** A copy of the received <code>ProbNet</code>. */

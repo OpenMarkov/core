@@ -31,7 +31,7 @@ public class AsynchronousValueIteration extends ValueIteration {
 		
 		// Se establece cual va a ser el valor m�nima a utilizar como criterio de parada de las iteraciones
 		double dSigma= Double.MAX_VALUE;
-		double dMinSigma= params.getEpsilon()*(1-params.getDiscountRate())/params.getDiscountRate();
+		double dMinSigma= params.getEpsilon()*(1 - params.getDiscountRate())/params.getDiscountRate();
 
 		// Se realizan iteraciones mientras no se cumpla el criterio de parada establecido
 		for(;;) {

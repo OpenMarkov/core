@@ -88,8 +88,8 @@ public class AICMetric extends EntropyMetric {
                     new Double(newNodeDimension));
         }
         
-        return (newNodeEntropy - newNodeDimension) - 
-                (lastNodeEntropy - lastNodeDimension);
+        return (newNodeEntropy - newNodeDimension)
+        		- (lastNodeEntropy - lastNodeDimension);
     }
     
     /**
@@ -113,10 +113,10 @@ public class AICMetric extends EntropyMetric {
         ProbNode originNode = probNet.getProbNode(edition.getVariable1());
         /* dimension of the node without adding the link */
         double lastNodeDimension;
-        double newNodeDimension; 
+        double newNodeDimension;
         double lastNodeEntropy;
         double newNodeEntropy;
-        
+
         /* To calculate the new entropy, we subtract the last entropy of
          * the destination node and sum the new entropy of this node*/
         lastNodeEntropy = nodesEntropies.get(destinationNode.getName());
@@ -130,15 +130,14 @@ public class AICMetric extends EntropyMetric {
                 getVariable1()).getNumStates());
         
         /*If change is true it's because we have to update the probNet values*/
-        if (change == true){
+        if (change){
             nodesEntropies.put(destinationNode.getName(), 
                     new Double(newNodeEntropy));
             nodesDimensions.put(destinationNode.getName(), 
                     new Double(newNodeDimension));
         }
         
-        return (newNodeEntropy - newNodeDimension) - 
-                (lastNodeEntropy - lastNodeDimension);
+        return (newNodeEntropy - newNodeDimension) - (lastNodeEntropy - lastNodeDimension);
     }
     
     /**
@@ -162,25 +161,25 @@ public class AICMetric extends EntropyMetric {
         ProbNode initialOriginNode =probNet.getProbNode(edition.getVariable1());
         /* dimension of the node without adding the link */
         double lastNodeDimension;
-        double newNodeDimension; 
+        double newNodeDimension;
         double lastNodeEntropy;
         double newNodeEntropy;
         double result;
-        
+
         /* We do the calculations for the original destination node*/
         lastNodeEntropy = nodesEntropies.get(
                 ((ProbNode) initialDestinationNode).getName());
-        newNodeEntropy = nodeEntropyRemovedLink(initialDestinationNode, 
+        newNodeEntropy = nodeEntropyRemovedLink(initialDestinationNode,
         		initialOriginNode, false);
-        
+
         lastNodeDimension = nodesDimensions.get(
                 ((ProbNode) initialDestinationNode).getName());
         newNodeDimension = lastNodeDimension / ((edition.
                 getVariable1()).getNumStates());
-        
+
         /*If change is true it's because we have to update the probNet values*/
-        if (change == true){
-            nodesEntropies.put(initialDestinationNode.getName(), 
+        if (change) {
+            nodesEntropies.put(initialDestinationNode.getName(),
                     new Double(newNodeEntropy));
             nodesDimensions.put(initialDestinationNode.getName(), 
                     new Double(newNodeDimension));

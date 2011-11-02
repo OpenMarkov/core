@@ -68,7 +68,7 @@ public class LearningManager {
      * information of the nodes and links
      * @param modelNetUse <code>boolean[]</code> use the positions of the nodes, use
      * also the initial links or use them fixed
-     * @throws NormalizeNullVectorException 
+     * @throws NormalizeNullVectorException
      * @throws EmptyModelNetException 
      * @throws ProbNodeNotFoundException 
      * @throws NodeNotFoundException 
@@ -166,7 +166,7 @@ public class LearningManager {
     	 * learn.
     	 */
     	if(!modelNetUse.isAddLinksAllowed() && (modelNet != null)){
-    		for (Link link : modelNet.getGraph().getLinks()){
+    		for (Link link : modelNet.getGraph().getLinks()) {
                 learnedNet.addLink(learnedNet.getVariable(((ProbNode)link.getNode1().
                 		getObject()).getVariable().getName()), 
                 		learnedNet.getVariable(((ProbNode)link.getNode2().
@@ -179,8 +179,7 @@ public class LearningManager {
     	try {
 			learnedNet.addConstraint(new ModelNetworkConstraint(modelNetUse, 
 					modelNet), false);
-		} catch (ConstraintViolationException e) {
-		}
+		} catch (ConstraintViolationException e) { }
     }
     
     /**This function returns a <code>String</code> that represents the given 
@@ -232,7 +231,7 @@ public class LearningManager {
     
     /**
      * Scores the associated network with the given edition.
-     * @param edition <code>PNEdit</code> 
+     * @param edit <code>PNEdit</code> 
      * @return <code>double</code> score of the net with the given edition
      */
     public double getScore(PNEdit edit)  {

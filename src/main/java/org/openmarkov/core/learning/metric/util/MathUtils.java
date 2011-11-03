@@ -1,4 +1,4 @@
-package org.openmarkov.core.learning.metrics.util;
+package org.openmarkov.core.learning.metric.util;
 
 /** This class implements some approximations of the logarithm of the factorial.
  * @author joliva

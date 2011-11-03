@@ -11,8 +11,9 @@ import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.learning.metric.K2Metric;
+import org.openmarkov.core.learning.metric.Metric;
 import org.openmarkov.core.learning.preprocess.exception.WrongDiscretizationLimitException;
+import org.openmarkov.core.learning.util.FrequencyCalculator;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
@@ -476,9 +477,7 @@ public class Discretization {
                 }
             }
         }
-        K2Metric metric = new K2Metric(oldProbNet, cases);
-        TablePotential statesFrequencies = metric.absoluteFrequenciesExtraParent
-                (oldProbNet.getProbNode(oldVariable), null);
+        TablePotential statesFrequencies = FrequencyCalculator.absoluteExtraParent (oldProbNet, cases, oldProbNet.getProbNode(oldVariable), null);
 
         try{
             blankState = oldVariable.getStateIndex("?");

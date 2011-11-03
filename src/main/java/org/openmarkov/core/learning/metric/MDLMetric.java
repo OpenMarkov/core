@@ -1,5 +1,5 @@
 
-package org.openmarkov.core.learning.metrics;
+package org.openmarkov.core.learning.metric;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;

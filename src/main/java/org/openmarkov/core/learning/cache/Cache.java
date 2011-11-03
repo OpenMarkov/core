@@ -10,7 +10,7 @@ import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.learning.metrics.Metric;
+import org.openmarkov.core.learning.metric.Metric;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 

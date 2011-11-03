@@ -12,7 +12,8 @@ import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.learning.algorithm.LearningAlgorithm;
 import org.openmarkov.core.learning.editionsgenerator.EditionsGenerator;
 import org.openmarkov.core.learning.exception.EmptyModelNetException;
-import org.openmarkov.core.learning.metrics.Metric;
+import org.openmarkov.core.learning.metric.Metric;
+import org.openmarkov.core.learning.util.ModelNetUse;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -28,21 +29,21 @@ import org.openmarkov.core.model.network.constraint.ModelNetworkConstraint;
  * @since OpenMarkov 1.0 */
 public class LearningManager {
     
-    /** Implemented metrics */
+    /** Implemented metrics. */
     public static final String[] metrics = {"Bayesiana", "K2", "BD", "Entropía",
             "MDL", "AIC"};
     
-    /** Implemented independence tester */
+    /** Implemented independence tester. */
     public static final String[] independenceTesters = {"Entropía cruzada"};
 
-    /** Implemented algorithms */
+    /** Implemented algorithms. */
     public static final String[] algorithms = {"Gradiente", "PC"};
     
-    /** ProbNet to learn */
-    ProbNet learnedNet = null;
+    /** ProbNet to learn. */
+    private ProbNet learnedNet = null;
 
-    /** Database cases */
-    int[][] cases = null;
+    /** Database cases. */
+    private int[][] cases = null;
 
     LearningAlgorithm learningAlgorithm = null;
     EditionsGenerator editionsGenerator = null;
@@ -62,39 +63,40 @@ public class LearningManager {
 
     /**
      * Initializes the learning algorithm.
-     * @param algorithm <code>LearningAlgorithm</code> indicating the algorithm selected
-     * by the user.
+     * @param algorithm <code>LearningAlgorithm</code> indicating the algorithm
+     *            selected by the user.
      * @param structureNet <code>ProbNet</code> Net from which take the
-     * information of the nodes and links
-     * @param modelNetUse <code>boolean[]</code> use the positions of the nodes, use
-     * also the initial links or use them fixed
+     *            information of the nodes and links
+     * @param modelNetUse <code>boolean[]</code> use the positions of the nodes,
+     *            use also the initial links or use them fixed
      * @throws NormalizeNullVectorException
-     * @throws EmptyModelNetException 
-     * @throws ProbNodeNotFoundException 
-     * @throws NodeNotFoundException 
-     * @throws NotEnoughMemoryException 
+     * @throws EmptyModelNetException
+     * @throws ProbNodeNotFoundException
+     * @throws NodeNotFoundException
+     * @throws NotEnoughMemoryException
      */
-    public void init(LearningAlgorithm algorithm, 
-			ProbNet structureNet, ModelNetUse modelNetUse) 
-			throws NormalizeNullVectorException, EmptyModelNetException, NodeNotFoundException, ProbNodeNotFoundException, NotEnoughMemoryException {
-    	
+    public void init (LearningAlgorithm algorithm,
+                      ProbNet structureNet,
+                      ModelNetUse modelNetUse)
+        throws NormalizeNullVectorException,
+        EmptyModelNetException,
+        NodeNotFoundException,
+        ProbNodeNotFoundException,
+        NotEnoughMemoryException
+    {
         /* Maybe there's no modelNet to work with */
-        if ((modelNetUse.isUseModelNet()) && (structureNet == null))
-        	throw new EmptyModelNetException();
-
+        if ((modelNetUse.isUseModelNet ()) && (structureNet == null)) throw new EmptyModelNetException ();
         this.learningAlgorithm = algorithm;
-    	this.learningAlgorithm.init(modelNetUse, structureNet); 
-    	this.learningAlgorithm.setListeners();
-        
-    	this.learningAlgorithm.parametricLearning();
-        
-        learnedNet = addElviraProperties(learnedNet);
-	}    
+        this.learningAlgorithm.init (modelNetUse, structureNet);
+        this.learningAlgorithm.setListeners ();
+        this.learningAlgorithm.parametricLearning ();
+        learnedNet = addElviraProperties (learnedNet);
+    }  
     
 	/**
      * Main method to launch the learning process.
      * @return <code>ProbNet</code> learned net.
-     * @throws openmarkov.exceptions.NotEnoughMemoryException
+     * @throws NotEnoughMemoryException
      * @throws NodeNotFoundException 
      * @throws NormalizeNullVectorException 
      * @throws ProbNodeNotFoundException 
@@ -109,7 +111,7 @@ public class LearningManager {
         learnedNet = learningAlgorithm.run();
         
         /* Get elapsed time in milliseconds */
-        long elapsedTimeMillis = System.currentTimeMillis()-start;
+        long elapsedTimeMillis = System.currentTimeMillis() - start;
                 
         System.out.print("\n * Aprendizaje terminado.\n\t Tiempo transcurrido: " 
                + calculateTime(elapsedTimeMillis) + "\n");
@@ -150,30 +152,31 @@ public class LearningManager {
     }
     
     /**
-     * Adds the constraints depending on the structure of the model net and 
-     * the option selected by the user.
+     * Adds the constraints depending on the structure of the model net and the
+     * option selected by the user.
      * @param modelNetUse use of the model net selected by the user.
      * @param modelNet structure of the net to add the constraints
      * @throws ProbNodeNotFoundException
      * @throws NodeNotFoundException
      */
-    private void addModelNetconstraints(ModelNetUse modelNetUse,
-    		ProbNet modelNet) throws ProbNodeNotFoundException, 
-    		NodeNotFoundException{
-    	
-    	/* If the option "Use only nodes" is not selected, we add
-    	 * the links of the model net to the learnedNet we are going to 
-    	 * learn.
-    	 */
-    	if(!modelNetUse.isAddLinksAllowed() && (modelNet != null)){
-    		for (Link link : modelNet.getGraph().getLinks()) {
-                learnedNet.addLink(learnedNet.getVariable(((ProbNode)link.getNode1().
-                		getObject()).getVariable().getName()), 
-                		learnedNet.getVariable(((ProbNode)link.getNode2().
-                				getObject()).getVariable().getName()), 
-                				link.isDirected()); 
+    private void addModelNetconstraints (ModelNetUse modelNetUse,
+                                         ProbNet modelNet)
+        throws ProbNodeNotFoundException,
+        NodeNotFoundException
+    {
+        /*
+         * If the option "Use only nodes" is not selected, we add the links of
+         * the model net to the learnedNet we are going to learn.
+         */
+        if (!modelNetUse.isAddLinksAllowed () && (modelNet != null))
+        {
+            for (Link link : modelNet.getGraph ().getLinks ())
+            {
+                learnedNet.addLink (learnedNet.getVariable (((ProbNode) link.getNode1 ().getObject ()).getVariable ().getName ()),
+                                    learnedNet.getVariable (((ProbNode) link.getNode2 ().getObject ()).getVariable ().getName ()),
+                                    link.isDirected ());
             }
-    	}
+        }
     	
     	//ModelNetworkConstraint
     	try {

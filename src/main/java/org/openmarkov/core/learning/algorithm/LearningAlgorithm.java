@@ -8,7 +8,7 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.learning.ModelNetUse;
+import org.openmarkov.core.learning.util.ModelNetUse;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
@@ -16,7 +16,9 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
-
+/**
+ * Abstract learning algorithm.
+ */
 public abstract class LearningAlgorithm {
 	
     /** A copy of the received <code>ProbNet</code>. */
@@ -33,19 +35,19 @@ public abstract class LearningAlgorithm {
     /** For undo/redo operations. */
     protected PNESupport pNESupport;
     
-    /** Parameter for the parametric learning */
+    /** Parameter for the parametric learning. */
     protected double alpha;
   
-    /** Method invoked to run the algorithm
+    /** Method invoked to run the algorithm.
      * 
      * @return <code>ProbNet</code> learned.
-     * @throws openmarkov.exceptions.NotEnoughMemoryException
-     * @throws java.lang.Exception
+     * @throws NotEnoughMemoryException
+     * @throws NormalizeNullVectorException
      */
     public abstract ProbNet run() throws NotEnoughMemoryException, 
 		NormalizeNullVectorException;
     
-    /** Takes a step in the algorithm
+    /** Takes a step in the algorithm.
      * 
      * @throws openmarkov.exceptions.NotEnoughMemoryException
      * @throws java.lang.Exception
@@ -73,12 +75,11 @@ public abstract class LearningAlgorithm {
     		throws NotEnoughMemoryException, NormalizeNullVectorException{
         TablePotential absoluteFrequencies;
         
-        for (ProbNode node : learnedNet.getProbNodes()){ 
-            absoluteFrequencies = absoluteFrequencies(node);
+        for (ProbNode node : learnedNet.getProbNodes()) { 
+            absoluteFrequencies = calculateAbsoluteFrequencies(node);
             for (int j = 0; j < absoluteFrequencies.getTableSize(); j++)
                 absoluteFrequencies.values[j] += alpha;
-            node.addPotential(DiscretePotentialOperations.
-                    normalize(absoluteFrequencies));
+            node.addPotential(DiscretePotentialOperations.normalize(absoluteFrequencies));
         }
     }
     
@@ -87,14 +88,13 @@ public abstract class LearningAlgorithm {
      * configurations of the given node and its parents and a given extra
      * parent.
      * @param node <code>ProbNode</code> whose frequencies we want to calculate.
-     * @param extraParent <code>ProbNode</code>
      * @return <code>TablePotential</code> with the absolute frequencies in
      * the database of each of the configurations of the given node and its
      * parents and a given extra parent.
-     * @throws openmarkov.exceptions.NotEnoughMemoryException
+     * @throws NotEnoughMemoryException
      */
-    public TablePotential absoluteFrequencies(ProbNode node) 
-    	throws NotEnoughMemoryException{
+    public TablePotential calculateAbsoluteFrequencies(ProbNode node) 
+    	throws NotEnoughMemoryException {
         int parentsConfigurations = 1;
         int indexOfParent = 0;
         int numParents = node.getNode().getNumParents();
@@ -104,12 +104,11 @@ public abstract class LearningAlgorithm {
         ArrayList<Variable> variables = new ArrayList<Variable>(); 
         variables.add((Variable) node.getVariable());
         
-        if (numParents == 0){
-            parentsConfigurations = 1;
-        }
-        else{   
+        if (numParents == 0) {
+            parentsConfigurations = 1; 
+        } else {   
             for (ProbNode parent : ProbNet.getProbNodesOfNodes(node.
-            		getNode().getParents())){ 
+            		getNode().getParents())) { 
                 variables.add((Variable) parent.getVariable());  
                 indexesOfParents[indexOfParent] = learnedNet.getProbNodes().
                 	indexOf(learnedNet.getProbNode(parent.getVariable()));
@@ -119,7 +118,7 @@ public abstract class LearningAlgorithm {
             }
         }
         
-        return absoluteFreqPotential(node, parentsConfigurations, 
+        return calculateAbsoluteFreqPotential(node, parentsConfigurations, 
                 variables, indexesOfParents, node.getVariable().getNumStates());
     }
     
@@ -140,7 +139,7 @@ public abstract class LearningAlgorithm {
      * parents.
      * @throws openmarkov.exceptions.NotEnoughMemoryException
      */
-    public TablePotential absoluteFreqPotential(ProbNode probNode, 
+    public TablePotential calculateAbsoluteFreqPotential(ProbNode probNode, 
             int parentsConfigurations, ArrayList<Variable> variables,
             int[] indexesOfParents, int numValues) 
     		throws NotEnoughMemoryException {
@@ -148,23 +147,21 @@ public abstract class LearningAlgorithm {
         		variables, PotentialRole.CONDITIONAL_PROBABILITY);
         double[] absoluteFreqs = absoluteFreqPotential.getValues();
         double iCPT;
-        int iParent, iNode = learnedNet.getProbNodes().indexOf(
+        int iNode = learnedNet.getProbNodes().indexOf(
                 learnedNet.getProbNode(probNode.getVariable())); 
 
         // Initialize the table
-        for (int i = 0; i < parentsConfigurations * numValues; i++){
+        for (int i = 0; i < parentsConfigurations * numValues; i++) {
             absoluteFreqs[i] = 0;
         }
         
         variables.remove(0);
         // Compute the absolute frequencies
-        for (int i = 0; i < cases.length; i++){
+        for (int i = 0; i < cases.length; i++) {
             iCPT = 0;
             int j = 0;
-            for (ProbNode parent : learnedNet.getProbNodes(variables)){
-                iParent = indexesOfParents[j];
-                iCPT = iCPT * parent.getVariable().getNumStates() + 
-                        cases[i][iParent];
+            for (ProbNode parent : learnedNet.getProbNodes(variables)) {
+                iCPT = iCPT * parent.getVariable().getNumStates() + cases[i][indexesOfParents[j]];
                 j++;
             }
             absoluteFreqs[numValues * ((int) iCPT) + (int) cases[i][iNode]]++;

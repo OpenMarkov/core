@@ -14,7 +14,13 @@
     	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
-	<dependencies>
+    <dependencies>
+      <dependency>
+        <groupId>org.openmarkov</groupId>
+        <artifactId>org.openmarkov.plugin</artifactId>
+        <version>0.0.1</version>
+      </dependency>
+          
 	  <dependency>
 	    <groupId>log4j</groupId>
 	    <artifactId>log4j</artifactId>

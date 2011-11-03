@@ -1,4 +1,4 @@
-package org.openmarkov.core.learning;
+package org.openmarkov.core.learning.util;
 
 public class ModelNetUse {
 	

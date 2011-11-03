@@ -1,4 +1,4 @@
-package org.openmarkov.core.learning.metrics;
+package org.openmarkov.core.learning.metric;
 
 import java.util.HashMap;
 
@@ -12,6 +12,7 @@ import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.learning.metrics.util.MathUtils;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;

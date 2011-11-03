@@ -1,4 +1,4 @@
-package org.openmarkov.core.learning.metrics;
+package org.openmarkov.core.learning.metric;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
@@ -46,7 +46,7 @@ public class AICMetric extends EntropyMetric {
      * parameter change is true) we update the entropy and dimension of the
      * destination node and the net.
      * @param edition <code>AddLinkEdit</code> 
-     * @param change <code>boolean</code> indicates wheter the edition is 
+     * @param change <code>boolean</code> indicates whether the edition is 
      * definitive (UndoableEditHappend called this method) or not.
      * @return <code>double</code> score of the net with the given edition
      * @throws openmarkov.exceptions.NotEnoughMemoryException
@@ -99,7 +99,7 @@ public class AICMetric extends EntropyMetric {
      * parameter change is true) we update the entropy and dimension of the
      * destination node and the net.
      * @param edition <code>AddLinkEdit</code> 
-     * @param change <code>boolean</code> indicates wheter the edition is 
+     * @param change <code>boolean</code> indicates whether the edition is 
      * definitive (UndoableEditHappend called this method) or not.
      * @return <code>double</code> score of the net with the given edition
      * @throws openmarkov.exceptions.NotEnoughMemoryException
@@ -147,10 +147,10 @@ public class AICMetric extends EntropyMetric {
      * edit happened (that is, if parameter change is true) we update the 
      * entropies and dimensions of the destinations node and the net.
      * @param edition <code>InvertLinkEdit</code> 
-     * @param change <code>boolean</code> indicates wheter the edition is 
+     * @param change <code>boolean</code> indicates whether the edition is 
      * definitive (UndoableEditHappend called this method) or not.
      * @return <code>double</code> score of the net with the given edition
-     * @throws openmarkov.exceptions.NotEnoughMemoryException
+     * @throws NotEnoughMemoryException
      */
     @Override
     protected double score(InvertLinkEdit edition, boolean change) 
@@ -158,7 +158,7 @@ public class AICMetric extends EntropyMetric {
         
         ProbNode initialDestinationNode = probNet.getProbNode(
                 edition.getVariable2());
-        ProbNode initialOriginNode =probNet.getProbNode(edition.getVariable1());
+        ProbNode initialOriginNode = probNet.getProbNode(edition.getVariable1());
         /* dimension of the node without adding the link */
         double lastNodeDimension;
         double newNodeDimension;
@@ -185,12 +185,10 @@ public class AICMetric extends EntropyMetric {
                     new Double(newNodeDimension));
         }
         
-        result = (newNodeEntropy - newNodeDimension) - 
-                (lastNodeEntropy - lastNodeDimension);
+        result = (newNodeEntropy - newNodeDimension) - (lastNodeEntropy - lastNodeDimension);
         
         /* We do the calculations for the final destination node*/
-        lastNodeEntropy= nodesEntropies.get(
-                ((ProbNode) initialOriginNode).getName());
+        lastNodeEntropy = nodesEntropies.get(((ProbNode) initialOriginNode).getName());
         newNodeEntropy = nodeEntropy(initialOriginNode, initialDestinationNode,
         		false); 
         
@@ -203,15 +201,14 @@ public class AICMetric extends EntropyMetric {
         /*If change is true it's because we have to update the probNet values
          * and store the node dimension and entropy to avoid repeating the
          * calculations */
-        if (change == true){
+        if (change) {
             nodesEntropies.put(initialOriginNode.getName(), 
                     new Double(newNodeEntropy));
             nodesDimensions.put(initialOriginNode.getName(), 
                     new Double(newNodeDimension));
         }
         
-        result += (newNodeEntropy - newNodeDimension) - 
-                (lastNodeEntropy - lastNodeDimension);
+        result += (newNodeEntropy - newNodeDimension) - (lastNodeEntropy - lastNodeDimension);
         return result;
     }
 
@@ -221,10 +218,10 @@ public class AICMetric extends EntropyMetric {
      * all the calculations.
      * @return double dimension of the net
      */
-    protected double calculateDimension(){
+    protected double calculateDimension() {
         double newDimension = 0;
         
-        for (ProbNode node : probNet.getProbNodes()){
+        for (ProbNode node : probNet.getProbNodes()) {
             newDimension += nodeDimension(node, true);
         }         
         return newDimension;
@@ -239,26 +236,26 @@ public class AICMetric extends EntropyMetric {
      * definitive (UndoableEditHappend called this method) or not.
      * @return double dimension of this node
      */
-    protected double nodeDimension(ProbNode node, boolean change){
+    protected double nodeDimension(ProbNode node, boolean change) {
         int numStates = node.getVariable().getNumStates(); 
         int parentsConfigurations = 1;  
         double nodeDimension = 0;
 
-        if (node.getNode().getNumParents() == 0){
+        if (node.getNode().getNumParents() == 0) {
             parentsConfigurations = 1;
-        }
-        else{
-            for( Node parent : node.getNode().getParents()){
+        } else {
+            for (Node parent : node.getNode().getParents()) {
                     parentsConfigurations *= ((Variable) 
                             parent.getObject()).getNumStates();
             }
         }
 
-        nodeDimension = (numStates-1) * parentsConfigurations;
+        nodeDimension = (numStates - 1) * parentsConfigurations;
         
         /* Store the dimension of the node to avoid repeating the calculations*/
-        if(change == true)
+        if (change) {
             nodesDimensions.put(node.getName(), new Double(nodeDimension));
+        }
         
         return nodeDimension;
     }

@@ -1,4 +1,4 @@
-package org.openmarkov.core.learning.metrics;
+package org.openmarkov.core.learning.metric;
 
 import java.util.ArrayList;
 

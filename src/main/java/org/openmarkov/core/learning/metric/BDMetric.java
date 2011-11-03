@@ -1,8 +1,9 @@
-package org.openmarkov.core.learning.metrics;
+package org.openmarkov.core.learning.metric;
 
 import java.util.ArrayList;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.learning.metrics.util.MathUtils;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
@@ -20,7 +21,7 @@ public class BDMetric extends BayesianMetric {
      * After constructing the metric, we evaluate the given net.
      * @param probNet <code>ProbNet</code> to evaluate.
      * @param cases <code>double[][]</code> database cases.
-     * @param double alpha. alpha parameter
+     * @param alpha <code>double</code> alpha parameter
      * @throws openmarkov.exceptions.NotEnoughMemoryException
      */
     public BDMetric(ProbNet probNet, int[][] cases, double alpha) 
@@ -33,7 +34,7 @@ public class BDMetric extends BayesianMetric {
      * Scores the given node with the new parent given. 
      * @param node <code>ProbNode</code> 
      * @param extraParent <code>ProbNode</code>
-     * @param change <code>boolean</code> indicates wheter the edition is 
+     * @param change <code>boolean</code> indicates whether the edition is 
      * definitive (UndoableEditHappend called this method) or not.
      * @return <code>double</code> score of the node with the given parent
      * @throws openmarkov.exceptions.NotEnoughMemoryException
@@ -58,11 +59,10 @@ public class BDMetric extends BayesianMetric {
         ArrayList<Variable> variables = new ArrayList<Variable>(); 
         variables.add((Variable) node.getVariable());
         
-        if ((numParents == 0) && (extraParent == null)){
+        if ((numParents == 0) && (extraParent == null)) {
             parentsConfigurations = 1;
-        }
-        else{   
-            if (extraParent != null){
+        } else {
+            if (extraParent != null) {
                 indexParents[0] = probNet.getProbNodes().indexOf(extraParent);
                 variables.add((Variable) extraParent.getVariable());
                 parentsConfigurations *= ((Variable) 
@@ -71,7 +71,7 @@ public class BDMetric extends BayesianMetric {
             }
  
             for (ProbNode parent : ProbNet.getProbNodesOfNodes(node.getNode().
-                    getParents())){
+                    getParents())) {
                 variables.add((Variable) parent.getVariable());  
                 indexParents[indexParent] = probNet.getProbNodes().indexOf(
                         parent);
@@ -85,25 +85,23 @@ public class BDMetric extends BayesianMetric {
                 variables, indexParents, node.getVariable().getNumStates()).
                 getValues();
         //j-th configuration of the parents
-        for (int j = 0; j < parentsConfigurations; j++){
+        for (int j = 0; j < parentsConfigurations; j++) {
             n_ij = 0;
             sumStates = 0;
             //k-th state of the node
-            for (int k = 0; k < numStates; k++){
+            for (int k = 0; k < numStates; k++) {
                 n_ijk = freq[position];
                 n_ij += n_ijk;
-                sumStates += (MathUtils.lnGamma((1.0/(numStates *
-                        parentsConfigurations)) + n_ijk));
+                sumStates += (MathUtils.lnGamma((1.0 / (numStates * parentsConfigurations)) + n_ijk));
                 position++;
             }
-            nodeScore += (MathUtils.lnGamma(1.0/parentsConfigurations)) -
-                MathUtils.lnGamma(n_ij + (1.0/parentsConfigurations)) -
-                numStates * MathUtils.lnGamma(1.0/(numStates * 
-                		parentsConfigurations)) + sumStates; 
+            nodeScore += (MathUtils.lnGamma(1.0 / parentsConfigurations)) 
+            		- MathUtils.lnGamma(n_ij + (1.0 / parentsConfigurations))
+            		- numStates * MathUtils.lnGamma(1.0 / (numStates * parentsConfigurations)) + sumStates; 
         }
         
         /* Store the entropy of the node to avoid repeating the calcularions */
-        if (change == true)
+        if (change)
             nodesScores.put(node.getName(), new Double(nodeScore));
         
         return nodeScore;
@@ -135,14 +133,13 @@ public class BDMetric extends BayesianMetric {
         ArrayList<Variable> variables = new ArrayList<Variable>(); 
         variables.add(node.getVariable());
             
-        if (numParents == 1){
+        if (numParents == 1) {
             parentsConfigurations = 1;
-        }
-        else{
+        } else {
             int i = 0;
             for (ProbNode parent : ProbNet.getProbNodesOfNodes(node.getNode().
-                    getParents())){
-                if (!removedParent.getName().equals(parent.getName())){
+                    getParents())) {
+                if (!removedParent.getName().equals(parent.getName())) {
                     indexParents[i] = probNet.getProbNodes().indexOf(parent);
                     variables.add((Variable) parent.getVariable());
                     parentsConfigurations *= ((Variable) 
@@ -157,25 +154,23 @@ public class BDMetric extends BayesianMetric {
                 getValues();
         
         //j-th configuration of the parents
-        for (int j = 0; j < parentsConfigurations; j++){
+        for (int j = 0; j < parentsConfigurations; j++) {
             n_ij = 0;
             sumStates = 0;
             //k-th state of the node
-            for (int k = 0; k < numStates; k++){
+            for (int k = 0; k < numStates; k++) {
                 n_ijk = freq[position];
                 n_ij += n_ijk;
-                sumStates += (MathUtils.lnGamma((1.0/(numStates *
-                        parentsConfigurations)) + n_ijk));
+                sumStates += (MathUtils.lnGamma((1.0 / (numStates * parentsConfigurations)) + n_ijk));
                 position++;
             }
-            nodeScore += (MathUtils.lnGamma(1.0/parentsConfigurations)) -
-                MathUtils.lnGamma(n_ij + (1.0/parentsConfigurations)) -
-                numStates * MathUtils.lnGamma(1.0/(numStates * 
-                		parentsConfigurations)) + sumStates;
+            nodeScore += (MathUtils.lnGamma(1.0 / parentsConfigurations))
+            		- MathUtils.lnGamma(n_ij + (1.0 / parentsConfigurations))
+            		- numStates * MathUtils.lnGamma(1.0 / (numStates * parentsConfigurations)) + sumStates;
         }
         
         /* Store the entropy of the node to avoid repeating the calcularions */
-        if (change == true)
+        if (change)
             nodesScores.put(node.getName(), new Double(nodeScore));
         
         return nodeScore;

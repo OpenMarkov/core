@@ -45,8 +45,13 @@ public class LearningManager {
     /** Database cases. */
     private int[][] cases = null;
 
-    LearningAlgorithm learningAlgorithm = null;
-    EditionsGenerator editionsGenerator = null;
+    /**  Learning algorithm */
+    private LearningAlgorithm learningAlgorithm = null;
+    
+    /** Editions generator */
+    private EditionsGenerator editionsGenerator = null;
+    
+    /**  Metric */
     Metric metric = null;
     
     /**

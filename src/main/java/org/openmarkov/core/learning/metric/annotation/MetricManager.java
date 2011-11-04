@@ -1,4 +1,4 @@
-package org.openmarkov.core.learning.algorithm.annotation;
+package org.openmarkov.core.learning.metric.annotation;
 
 import java.util.List;
 
@@ -6,15 +6,14 @@ import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 import org.openmarkov.plugin.service.PluginLoaderIF;
 
-
-public class LearningAlgorithmManager
-{  
+public class MetricManager
+{
     private PluginLoaderIF pluginsLoader; 
     
     /**
-     * Constructor for LearningAlgoritmManager.
+     * Constructor for MetricManager.
      */
-    public LearningAlgorithmManager ()
+    public MetricManager ()
     {
         super ();
         this.pluginsLoader = new PluginLoader ();
@@ -25,13 +24,13 @@ public class LearningAlgorithmManager
      * @param name the algorithm name.
      * @return a learning algorithm.
      */
-    public final Class<?> findLearningAlgorithmByName (String name)
+    public final Class<?> findMetricByName (String name)
     {
         try
         {
-            List<Class<?>> plugins = findAllLearningAlgorimths ();
+            List<Class<?>> plugins = findAllMetrics ();
             for (Class<?> plugin : plugins) {
-                LearningAlgorithmType lAnnotation = plugin.getAnnotation (LearningAlgorithmType.class);
+                MetricType lAnnotation = plugin.getAnnotation (MetricType.class);
                 if (lAnnotation.name ().equals (name))
                     return plugin;
             }
@@ -42,14 +41,14 @@ public class LearningAlgorithmManager
     
   
     /**
-     * Finds all learning algorithms. 
-     * @return a list of learning algorithms.
+     * Finds all metrics. 
+     * @return a list of metrics.
      */
-    public final  List<Class<?>> findAllLearningAlgorimths ()
+    public final  List<Class<?>> findAllMetrics ()
     {
         try
         {
-            FilterIF filter = org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy (LearningAlgorithmType.class);
+            FilterIF filter = org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy (MetricType.class);
             return pluginsLoader.loadAllPlugins (filter);          
         }
         catch (Exception e) {}

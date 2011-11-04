@@ -1,0 +1,32 @@
+package org.openmarkov.core.model.network.constraint.compound;
+
+import org.openmarkov.core.model.network.constraint.AllChanceVariablesHaveChancePotentials;
+import org.openmarkov.core.model.network.constraint.NoCycles;
+import org.openmarkov.core.model.network.constraint.NoSelfLoops;
+import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
+import org.openmarkov.core.model.network.constraint.UtilityNodes;
+
+public class POMDPConstraint extends NetworkTypeConstraint {
+	// Attributes
+private static POMDPConstraint constraint = null;
+
+// Constructor
+private POMDPConstraint() {
+	//TODO To update constraint to POMDP network type
+	constraints.add(NoCycles.getUniqueInstance());
+	constraints.add(
+			AllChanceVariablesHaveChancePotentials.getUniqueInstance());
+	constraints.add(NoSelfLoops.getUniqueInstance());
+	constraints.add(OnlyDirectedLinks.getUniqueInstance());
+	constraints.add(UtilityNodes.getUniqueInstance());
+}
+
+// Methods
+public static POMDPConstraint getUniqueInstance() {
+	if (constraint == null) {
+		constraint = new POMDPConstraint();
+	}
+	return constraint;
+}
+
+}

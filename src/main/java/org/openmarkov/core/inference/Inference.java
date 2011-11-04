@@ -25,6 +25,18 @@ public abstract class Inference {
 	protected ArrayList<Potential> imposedPolicies;
 
 	private ProbNet probNet;
+		
+	protected boolean hasInferenceBeenPerformed;
+	
+	/**
+	 * Indicates if the Cooper Policy Network has been compiled. If it is true, then the posteriori probabilities
+	 * and expected utilities associated to each utility node have been computed.
+	 */
+	protected boolean hasCooperPolicyNetworkBeenCompiled;
+	
+	private utilityTables;
+	
+	private globalExpectedUtility;
 	
 	// Constructor
 		public Inference(ProbNet probNet) 
@@ -109,7 +121,9 @@ public abstract class Inference {
 			};
 			
 	/** This method must be overriden in the child classes */
-	protected abstract Collection<PNConstraint> getRequiredConstraints();
+	public abstract Collection<PNConstraint> getRequiredConstraints();
+	
+	public abstract getUtilityTables();
 	
 	
 }

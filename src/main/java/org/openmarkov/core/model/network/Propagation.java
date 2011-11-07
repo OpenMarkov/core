@@ -3,14 +3,8 @@ package org.openmarkov.core.model.network;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.JOptionPane;
-
 import org.openmarkov.core.exception.NoPropagationCanBeDoneException;
 import org.openmarkov.core.exception.NoPropagationOnInfluenceDiagramsException;
-import org.openmarkov.core.exception.NormalizeNullVectorException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.inference.Evaluation;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.constraint.compound.BNConstraint;
 import org.openmarkov.core.model.network.constraint.compound.IDConstraint;

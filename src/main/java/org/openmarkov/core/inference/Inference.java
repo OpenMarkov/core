@@ -3,7 +3,9 @@ package org.openmarkov.core.inference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Hashtable;
 
+import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
@@ -24,19 +26,33 @@ public abstract class Inference {
 	
 	protected ArrayList<Potential> imposedPolicies;
 
-	private ProbNet probNet;
+	/** This is a copy of the <code>ProbNet</code> received. */
+	protected ProbNet probNet;
+	
+	/** For undo/redo operations. */
+	protected PNESupport pNESupport;
+	
+	/** Set of constraints that the ProbNet must satisfy so that it can
+	 * be evaluated by this algorithm. Its initial value must be null, instead 
+	 * of an empty ArrayList<PNCconstraint>, so that
+	 * the method getRequiredConstraints of its child classes detect when this
+	 * property has not been initialized */
+	protected ArrayList<PNConstraint> requiredConstraints;
 		
-	protected boolean hasInferenceBeenPerformed;
+	/** <code>true</code> if the network is prepared for obtaining the marginal probabilities. */
+	protected boolean compiled;
 	
 	/**
-	 * Indicates if the Cooper Policy Network has been compiled. If it is true, then the posteriori probabilities
+	 * Indicates if the Bayesian network or the Cooper Policy Network has been compiled. If it is true, then the posteriori probabilities
 	 * and expected utilities associated to each utility node have been computed.
 	 */
-	protected boolean hasCooperPolicyNetworkBeenCompiled;
+	protected boolean hasBeenCompiled;
 	
-	private utilityTables;
+	protected StrategyUtilities utilityTables;
 	
-	private globalExpectedUtility;
+	private Hashtable<Variable,Double> expectedUtilities;
+	
+	private Double globalExpectedUtility;
 	
 	// Constructor
 		public Inference(ProbNet probNet) 
@@ -121,9 +137,9 @@ public abstract class Inference {
 			};
 			
 	/** This method must be overriden in the child classes */
-	public abstract Collection<PNConstraint> getRequiredConstraints();
+	protected abstract Collection<PNConstraint> getRequiredConstraints();
 	
-	public abstract getUtilityTables();
+	public abstract StrategyUtilities getUtilityTables();
 	
 	
 }

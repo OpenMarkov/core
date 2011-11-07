@@ -5,6 +5,8 @@ import junit.framework.Test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openmarkov.core.learning.algorithm.LearningAlgorithmsTest;
+import org.openmarkov.core.learning.metric.MetricsTest;
 
 
 @RunWith(Suite.class)

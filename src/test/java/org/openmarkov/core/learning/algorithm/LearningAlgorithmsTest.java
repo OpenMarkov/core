@@ -24,8 +24,8 @@ public class LearningAlgorithmsTest {
 	
 	private double alpha = 0.5;
 	
-	private HillClimbingAlgorithm learn;	
-	private ProbNet probNet;	
+	private HillClimbingAlgorithm learn;
+	private ProbNet probNet;
 	private Metric metric;
 	private EditionsGenerator editionsGenerator;
 	

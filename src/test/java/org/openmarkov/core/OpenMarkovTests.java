@@ -2,18 +2,20 @@ package org.openmarkov.core;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openmarkov.core.inference.InferenceTests;
+import org.openmarkov.core.learning.LearningTests;
+import org.openmarkov.core.model.graph.GraphsTests;
+import org.openmarkov.core.model.network.NetworksTests;
+import org.openmarkov.core.model.network.potential.operation.OperationsTests;
 
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	CostEffectivenessTests.class,
 	GraphsTests.class,
     NetworksTests.class,
     OperationsTests.class,
-    IOTests.class,
     InferenceTests.class,
     LearningTests.class,
-    GuiTests.class
 })
 
 /** @author manuel

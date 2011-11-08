@@ -11,7 +11,6 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.OpenMarkovTests;
-import org.openmarkov.core.UtilTestMethods;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -26,6 +25,7 @@ import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.util.UtilTestMethods;
 
 
 public class DiscretePotentialOperationsTest {

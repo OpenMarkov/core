@@ -1,4 +1,4 @@
-package org.openmarkov.core;
+package org.openmarkov.core.util;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

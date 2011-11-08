@@ -1,4 +1,4 @@
-package org.openmarkov.core;
+package org.openmarkov.core.exception;
 
 @SuppressWarnings("serial")
 public class TestFailedException extends Exception {

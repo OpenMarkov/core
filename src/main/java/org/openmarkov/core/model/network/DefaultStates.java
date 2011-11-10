@@ -20,7 +20,7 @@ public class DefaultStates {
 	 * ArrayList contains another ArrayList that has of the posibles states that
 	 * a node may take.
 	 */
-	private static ArrayList<ArrayList<String>> list = null;
+	protected static ArrayList<ArrayList<String>> list = null;
 
 	/**
 	 * This method adds all the default states.

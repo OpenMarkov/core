@@ -1,4 +1,3 @@
-
 package org.openmarkov.core.model.network.type;
 
 import org.openmarkov.core.model.network.constraint.AllChanceVariablesHaveChancePotentials;
@@ -8,12 +7,12 @@ import org.openmarkov.core.model.network.constraint.NoSelfLoops;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.UtilityNodes;
 
-public class InfluenceDiagramType extends NetworkType
+public class POMDPType extends NetworkType
 {
-    private static InfluenceDiagramType instance = null;
+    private static POMDPType instance = null;
 
     // Constructor
-    private InfluenceDiagramType ()
+    private POMDPType ()
     {
         constraints.put (NoCycles.getUniqueInstance (), ConstraintBehavior.YES);
         constraints.put (AllChanceVariablesHaveChancePotentials.getUniqueInstance (),
@@ -27,12 +26,13 @@ public class InfluenceDiagramType extends NetworkType
     }
 
     // Methods
-    public static InfluenceDiagramType getUniqueInstance ()
+    public static POMDPType getUniqueInstance ()
     {
         if (instance == null)
         {
-            instance = new InfluenceDiagramType ();
+            instance = new POMDPType ();
         }
         return instance;
     }
 }
+

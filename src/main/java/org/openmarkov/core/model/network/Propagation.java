@@ -85,7 +85,7 @@ public class Propagation {
 			
 		} else {
 			//TODO
-			throw new NoPropagationCanBeDoneException();
+			throw new NoPropagationCanBeDoneException(probNet.getConstraints());
 		}
 	}
 

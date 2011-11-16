@@ -49,7 +49,7 @@
             <id>snapshots</id>
             <name>OpenMarkov Snapshots</name>
             <url>http://openmarkov.org:8081/nexus/content/repositories/snapshots/</url>
-            <layout>legacy</layout>
+            <layout>default</layout>
         </repository>
     </repositories>
     <distributionManagement>

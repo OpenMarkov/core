@@ -14,6 +14,8 @@ public class POMDPType extends NetworkType
     // Constructor
     private POMDPType ()
     {
+        super();
+        
         constraints.put (NoCycles.getUniqueInstance (), ConstraintBehavior.YES);
         constraints.put (AllChanceVariablesHaveChancePotentials.getUniqueInstance (),
                          ConstraintBehavior.YES);

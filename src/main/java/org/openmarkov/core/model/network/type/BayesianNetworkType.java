@@ -15,6 +15,7 @@ public class BayesianNetworkType extends NetworkType
     // Constructor
     private BayesianNetworkType ()
     {
+        super();
         constraints.put (NoCycles.getUniqueInstance (), ConstraintBehavior.YES);
         constraints.put (AllChanceVariablesHaveChancePotentials.getUniqueInstance (),
                          ConstraintBehavior.YES);

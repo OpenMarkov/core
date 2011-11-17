@@ -14,6 +14,8 @@ public class MDPType extends NetworkType
     // Constructor
     private MDPType ()
     {
+        super();
+        
         constraints.put (NoCycles.getUniqueInstance (), ConstraintBehavior.YES);
         constraints.put (AllChanceVariablesHaveChancePotentials.getUniqueInstance (),
                          ConstraintBehavior.YES);

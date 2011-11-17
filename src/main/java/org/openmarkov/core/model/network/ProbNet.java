@@ -95,7 +95,6 @@ public class ProbNet implements Cloneable {
      */
     public ProbNet() {
         this.graph = new Graph ();
-        this.pNESupport = new PNESupport (this, false);
         this.constraints = new ArrayList<PNConstraint> ();
         this.networkType = BayesianNetworkType.getUniqueInstance ();
         int numNodeTypes = NodeType.values ().length;
@@ -105,6 +104,7 @@ public class ProbNet implements Cloneable {
         {
             nodesHashMaps.add (new LinkedHashMap<Variable, ProbNode> ());
         }
+        this.pNESupport = new PNESupport (this, false);
     }
     
     public ProbNet (NetworkType networkType) 

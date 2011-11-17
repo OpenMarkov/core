@@ -15,6 +15,8 @@ public class InfluenceDiagramType extends NetworkType
     // Constructor
     private InfluenceDiagramType ()
     {
+        super();
+
         constraints.put (NoCycles.getUniqueInstance (), ConstraintBehavior.YES);
         constraints.put (AllChanceVariablesHaveChancePotentials.getUniqueInstance (),
                          ConstraintBehavior.YES);

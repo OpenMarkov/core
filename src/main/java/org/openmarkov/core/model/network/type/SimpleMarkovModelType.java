@@ -16,6 +16,8 @@ public class SimpleMarkovModelType extends NetworkType
     // Constructor
     private SimpleMarkovModelType ()
     {
+        super();
+        
         constraints.put (NoCycles.getUniqueInstance (), ConstraintBehavior.YES);
         constraints.put (AllChanceVariablesHaveChancePotentials.getUniqueInstance (),
                          ConstraintBehavior.YES);

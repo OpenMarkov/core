@@ -47,15 +47,15 @@ public class OnlyFiniteStateVariablesTest {
 	public void testCheckProbNet() {
 		boolean exceptionLaunched = false;
 		try {
-			influenceDiagram.addConstraint(
-					OnlyFiniteStatesVariables.getUniqueInstance(), true);
+			influenceDiagram.addConstraint(new 
+					OnlyFiniteStatesVariables(), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
 		assertTrue(!exceptionLaunched);
 		try {
-			mixedVariableInfluenceDiagram.addConstraint(
-					OnlyFiniteStatesVariables.getUniqueInstance(), true);
+			mixedVariableInfluenceDiagram.addConstraint(new 
+					OnlyFiniteStatesVariables(), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
@@ -69,7 +69,7 @@ public class OnlyFiniteStateVariablesTest {
 		
 		
 		PNESupport pNESupport = new PNESupport(influenceDiagram, false);
-		PNConstraint constraint= OnlyFiniteStatesVariables.getUniqueInstance();
+		PNConstraint constraint= new OnlyFiniteStatesVariables();
 		influenceDiagram.addConstraint(constraint, true);
 		
 			pNESupport.addUndoableEditListener(constraint);

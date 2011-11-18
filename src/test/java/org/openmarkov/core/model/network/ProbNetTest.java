@@ -20,7 +20,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
-import org.openmarkov.core.model.network.constraint.NoCycles;
+import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -95,9 +95,8 @@ public class ProbNetTest {
 		pU.values[0] = 1; pU.values[1] = 2;
 		pU.values[2] = 3; pU.values[3] = 4;
 		simpleProbNet = new ProbNet();
-		simpleProbNet.addConstraint(NoCycles.getUniqueInstance(), true);
-		simpleProbNet.addConstraint(
-				OnlyDirectedLinks.getUniqueInstance(), true);
+		simpleProbNet.addConstraint(new NoCycle(), true);
+		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);
 		// add potentials and variables
 		simpleProbNet.addPotential(pA); // add variable and potential
 		simpleProbNet.addVariable(D, NodeType.DECISION);
@@ -122,7 +121,7 @@ public class ProbNetTest {
 	@Test
 	public void testAddConstraint() {
 		try {
-			emptyProbNet.addConstraint(NoCycles.getUniqueInstance(), true);
+			emptyProbNet.addConstraint(new NoCycle(), true);
 		} catch (ConstraintViolationException e) {
 			fail("Fail in testAddConstraint()");
 		}
@@ -132,12 +131,13 @@ public class ProbNetTest {
 
 	@Test
 	public void testRemoveConstraint() {
+	    PNConstraint constraint = new NoCycle();
 		try {
-			emptyProbNet.addConstraint(NoCycles.getUniqueInstance(), true);
+			emptyProbNet.addConstraint(constraint, true);
 		} catch (ConstraintViolationException e) {
 			fail("Fail in testRemoveConstraint()");
 		}
-		emptyProbNet.removeConstraint(NoCycles.class);
+		emptyProbNet.removeConstraint(constraint);
 		ArrayList<PNConstraint> constraints = emptyProbNet.getConstraints();
 		assertEquals(1, constraints.size());		
 	}

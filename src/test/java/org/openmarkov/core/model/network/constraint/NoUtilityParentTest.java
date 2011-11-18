@@ -33,31 +33,28 @@ public class NoUtilityParentTest {
 	@Test
 	public void testOnlyUtilityChilren() {
 		boolean exceptionLaunched = false;
+		PNConstraint constraint = new NoUtilityParent();
 		try {
-			probNetImproperUtilityChildren.addConstraint(
-					NoUtilityParent.getUniqueInstance(), true);
+            probNetImproperUtilityChildren.addConstraint (constraint,
+                                                          true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
 		assertTrue(exceptionLaunched);
 
-		probNetImproperUtilityChildren.removeConstraint(
-				NoUtilityParent.getUniqueInstance().getClass());
+		probNetImproperUtilityChildren.removeConstraint(constraint);
 		exceptionLaunched = false;	
-		assertFalse(NoUtilityParent.getUniqueInstance()
-				.checkProbNet(probNetImproperUtilityChildren));
+		assertFalse(constraint.checkProbNet(probNetImproperUtilityChildren));
 		
 		 //test only utility children
-		assertTrue(NoUtilityParent.getUniqueInstance()
-				.checkProbNet(probNetProperUtilityChildren));
+        assertTrue (constraint.checkProbNet (probNetProperUtilityChildren));
 	}
 
 	@Test
 	public void testUndoableEditWillHappen() throws Exception {
 		// Add constraints as listeners.
 		PNESupport pNESupport = new PNESupport(influenceDiagram, false);
-		influenceDiagram.addConstraint(
-				NoUtilityParent.getUniqueInstance(), true);
+		influenceDiagram.addConstraint(new NoUtilityParent(), true);
 		ArrayList<PNConstraint> constraints = influenceDiagram.getConstraints();
 		for (PNConstraint constraint : constraints) { // sets listeners
 			pNESupport.addUndoableEditListener(constraint);

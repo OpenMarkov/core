@@ -6,53 +6,18 @@ import javax.swing.event.UndoableEditEvent;
 
 import org.openmarkov.core.action.AddVariableEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditEvent;
-import org.openmarkov.core.exception.CanNotDoEditException;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 
-public class NoSuperValueNodes implements PNConstraint {
-
-	// Attributes.
-	private static NoSuperValueNodes constraint = null;
+@Constraint (name = "NoSuperValueNodes", defaultBehavior = ConstraintBehavior.OPTIONAL)
+public class NoSuperValueNode extends PNConstraint {
 	
-	// Constructor
-	/** This constructor is private to not allow anyone to invoke it. */
-	public NoSuperValueNodes() {
-	}
-	
-	// Methods
-	/** Singleton pattern.
-	 * @return The unique instance. 
-	 *  <code>DistinctVariableNames</code> */
-	public static PNConstraint getUniqueInstance() {
-		if (constraint == null) {
-			constraint = new NoSuperValueNodes();
-		}
-		return constraint;
-	}
-	
-	@Override
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
-	throws ConstraintViolationException, CanNotDoEditException, 
-	NotEnoughMemoryException, NonProjectablePotentialException, 
-	WrongCriterionException {
-		if (!checkEvent(event)) {
-			throw new ConstraintViolationException(
-				"ConstraintViolationException adding a super-value node.");
-		}
-	}
-
-	@Override
-	public void undoableEditHappened(UndoableEditEvent arg0) {
-	}
-
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
 		ArrayList<ProbNode> probNodes = probNet.getProbNodes();
@@ -83,10 +48,10 @@ public class NoSuperValueNodes implements PNConstraint {
 		return true;
 	}
 
-	@Override
-	public void undoEditHappened(PNUndoableEditEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
+    @Override
+    protected String getMessage ()
+    {
+        return "adding a super value node is not allowed";
+    }
+    
 }

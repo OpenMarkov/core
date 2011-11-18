@@ -45,8 +45,7 @@ public class UtilMarkovNet {
 			throws NotEnoughMemoryException {
 		ProbNet markovNet = getMarkovNet();
 		try {
-			markovNet.addConstraint(OnlyDiscreteVariables.getUniqueInstance(), 
-					false);
+            markovNet.addConstraint (new OnlyDiscreteVariables (), false);
 		} catch (ConstraintViolationException e) {
 			// Unreachable code
 			e.printStackTrace();
@@ -110,8 +109,7 @@ public class UtilMarkovNet {
 	public static ProbNet getMarkovNet() {
 		ProbNet probNet = new ProbNet();
 		try {
-			probNet.addConstraint(
-					OnlyUndirectedLinks.getUniqueInstance(), true);
+            probNet.addConstraint (new OnlyUndirectedLinks (), true);
 		} catch (ConstraintViolationException e) {
 			System.err.println(e.getStackTrace()); // Unreachable code
 		}
@@ -123,8 +121,7 @@ public class UtilMarkovNet {
 	 *   the restrictions applied to a Markov network.
 	 * @param probNet <code>ProbNet</code> */
 	public static boolean isMarkovNet(ProbNet probNet) {
-		return probNet.getConstraints().contains(
-			OnlyUndirectedLinks.getUniqueInstance());
+        return probNet.getConstraints ().contains (new OnlyUndirectedLinks ());
 	}
 	
 }

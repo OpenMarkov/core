@@ -33,24 +33,21 @@ public class OnlyDirectedLinksTest {
 	 * <code>OnlyDirectedLinks</code> constructor. */
 	public void testCheckProbNet() {
 		// test only directed links insertions without checking.
+	    PNConstraint constraint = new OnlyDirectedLinks(); 
 		boolean exceptionLaunched = false;
 		try {
-			probNetMixed.addConstraint(
-					OnlyDirectedLinks.getUniqueInstance(), true);
+			probNetMixed.addConstraint(constraint, true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
 		assertTrue(exceptionLaunched);
 
-		probNetMixed.removeConstraint(
-				OnlyDirectedLinks.getUniqueInstance().getClass());
+		probNetMixed.removeConstraint(constraint);
 		exceptionLaunched = false;	
-		assertFalse(OnlyDirectedLinks.getUniqueInstance()
-				.checkProbNet(probNetUndirected));
+		assertFalse(constraint.checkProbNet(probNetUndirected));
 		
 		// test only directed links insertions with checking.
-		assertFalse(OnlyDirectedLinks.getUniqueInstance()
-				.checkProbNet(probNetMixed));
+		assertFalse(constraint.checkProbNet(probNetMixed));
 	}
 
 	/** Checks veto */
@@ -60,8 +57,7 @@ public class OnlyDirectedLinksTest {
 		
 		// Add constraints as listeners.
 		PNESupport pNESupport = new PNESupport(probNetDirected, false);
-		probNetDirected.addConstraint(
-				OnlyDirectedLinks.getUniqueInstance(), true);
+		probNetDirected.addConstraint(new OnlyDirectedLinks(), true);
 		ArrayList<PNConstraint> constraints = probNetDirected.getConstraints();
 		for (PNConstraint constraint : constraints) { // sets listeners
 			pNESupport.addUndoableEditListener(constraint);

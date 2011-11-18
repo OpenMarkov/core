@@ -8,8 +8,6 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.LinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditEvent;
-import org.openmarkov.core.exception.CanNotDoEditException;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -20,27 +18,8 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 @Constraint (name = "NoCycles", defaultBehavior = ConstraintBehavior.YES)
-public class NoCycles implements PNConstraint {
+public class NoCycle extends PNConstraint {
 
-	// Attributes.
-	private static NoCycles constraint = null;
-	
-	// Constructor
-	/** This constructor is private to not allow anyone to invoke it. */
-	private NoCycles() {
-	}
-	
-	// Methods
-	/** Singleton pattern.
-	 * @return The unique instance. 
-	 *  <code>DistinctVariableNames</code> */
-	public static NoCycles getUniqueInstance() {
-		if (constraint == null) {
-			constraint = new NoCycles();
-		}
-		return constraint;
-	}
-	
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
 		Graph graph = probNet.getGraph();
@@ -95,38 +74,14 @@ public class NoCycles implements PNConstraint {
 		return true;
 	}
 
-	/** Given a <code>probNet</code> that complies with this constraint, this
-	 * method checks that after the application of the <code>edit</code> 
-	 * contained in the <code>event</code> received, the 
-	 * <code>probNet</code> continues complying with this constraint. 
-	 * @param event <code>UndoableEditEvent</code>
-	 * @throws CanNotDoEditException 
-	 * @throws ConstraintViolationException 
-	 * @throws NotEnoughMemoryException 
-	 * @throws WrongCriterionException 
-	 * @throws NonProjectablePotentialException */
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
-	throws ConstraintViolationException, CanNotDoEditException, 
-	NotEnoughMemoryException, NonProjectablePotentialException, 
-	WrongCriterionException {
-		if (!checkEvent(event)) {
-			throw new ConstraintViolationException(
-				"ConstraintViolationException adding link in probNet: "+
-				"no cycles allowed");
-		}
-	}
-
-	public void undoableEditHappened(UndoableEditEvent e) {
-	}
-
-	public String toString() {
-		return this.getClass().getName();
-	}
-
-	@Override
-	public void undoEditHappened(PNUndoableEditEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    protected String getMessage ()
+    {
+        return "no cycles allowed";
+    }
+	
+	
+	
+	
 
 }

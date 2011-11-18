@@ -10,29 +10,12 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import org.openmarkov.core.model.network.potential.Potential;
 
 
-public class UtilityNodes implements PNConstraint {
-
-	// Attributes.
-	private static UtilityNodes un = null;
-	
-	// Constructor
-	/** This constructor is private to not allow anyone to invoke it. */
-	private UtilityNodes() {
-	}
-	
-	// Methods
-	/** Singleton pattern.
-	 * @return The unique instance. 
-	 *  <code>UtilityNodes</code> */
-	public static UtilityNodes getUniqueInstance() {
-		if (un == null) {
-			un = new UtilityNodes();
-		}
-		return un;
-	}
+@Constraint (name = "UtilityNodes", defaultBehavior = ConstraintBehavior.NO)
+public class UtilityNodes extends PNConstraint {
 	
 	@Override
 	public boolean checkEvent(UndoableEditEvent event) {
@@ -58,23 +41,11 @@ public class UtilityNodes implements PNConstraint {
 		}
 	}
 
-	@Override
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException {
-	}
-
-	@Override
-	public void undoableEditHappened(UndoableEditEvent e) {
-	}
-
-	public String toString() {
-		return this.getClass().getName();
-	}
-
-	@Override
-	public void undoEditHappened(PNUndoableEditEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    protected String getMessage ()
+    {
+        // TODO Auto-generated method stub
+        return "";
+    }
 
 }

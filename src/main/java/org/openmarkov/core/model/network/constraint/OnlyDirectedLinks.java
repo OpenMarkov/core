@@ -6,70 +6,17 @@ import javax.swing.event.UndoableEditEvent;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditEvent;
-import org.openmarkov.core.exception.CanNotDoEditException;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
-public class OnlyDirectedLinks implements PNConstraint {
+@Constraint (name = "OnlyDirectedLinks", defaultBehavior = ConstraintBehavior.YES)
+public class OnlyDirectedLinks extends PNConstraint {
 
-	// Attributes.
-	private static OnlyDirectedLinks constraint = null;
-	
 	private String explanation;
-
-	// Constructor
-	/** This constructor is private to not allow anyone to invoke it. */
-	private OnlyDirectedLinks() {
-	}
-
-	// Methods
-	/**
-	 * Singleton pattern.
-	 * 
-	 * @return The unique instance. <code>OnlyDirectedLinks</code>
-	 */
-	public static OnlyDirectedLinks getUniqueInstance() {
-		if (constraint == null) {
-			constraint = new OnlyDirectedLinks();
-		}
-		return constraint;
-	}
-
-	/**
-	 * Given a <code>probNet</code> that complies with this constraint, this
-	 * method checks that after the application of the <code>edit</code>
-	 * contained in the <code>event</code> received, the <code>probNet</code>
-	 * continues complying with this constraint.
-	 * 
-	 * @param event
-	 *            <code>UndoableEditEvent</code>
-	 * @throws CanNotDoEditException
-	 * @throws ConstraintViolationException
-	 * @throws NotEnoughMemoryException
-	 * @throws WrongCriterionException 
-	 * @throws NonProjectablePotentialException 
-	 */
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
-	throws ConstraintViolationException, NotEnoughMemoryException, 
-	NonProjectablePotentialException, WrongCriterionException {
-		if (!checkEvent(event)) {
-			throw new ConstraintViolationException(
-					"ConstraintViolationException adding link in graph: " + 
-							explanation + ". Only directed links allowed");
-		}
-	}
-
-	/**
-	 * This method is void in all <code>PNConstraint</code>s because constraints
-	 * are only interested in editions before its invocation.
-	 */
-	public void undoableEditHappened(UndoableEditEvent event) {
-	}
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
@@ -99,14 +46,10 @@ public class OnlyDirectedLinks implements PNConstraint {
 		return true;
 	}
 
-	public String toString() {
-		return this.getClass().getName();
-	}
-
-	@Override
-	public void undoEditHappened(PNUndoableEditEvent event) {
-		// TODO Auto-generated method stub
-
-	}
+    @Override
+    protected String getMessage ()
+    {
+        return explanation + ". Only directed links allowed";
+    }
 
 }

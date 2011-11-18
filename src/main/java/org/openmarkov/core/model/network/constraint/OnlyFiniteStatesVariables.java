@@ -6,10 +6,7 @@ import javax.swing.event.UndoableEditEvent;
 
 import org.openmarkov.core.action.AddVariableEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.VariableTypeEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -21,25 +18,7 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 @Constraint (name = "OnlyFiniteStatesVariables", defaultBehavior = ConstraintBehavior.OPTIONAL)
-public class OnlyFiniteStatesVariables implements PNConstraint {
-
-	// Attributes.
-	private static OnlyFiniteStatesVariables constraint = null;
-
-	// Constructor
-	/** This constructor is private to not allow anyone to invoke it. */
-	private OnlyFiniteStatesVariables() {
-	}
-
-	// Methods
-	/** Singleton pattern.
-	 * @return The unique instance. <code>OnlyFiniteStatesVariables</code> */
-	public static OnlyFiniteStatesVariables getUniqueInstance() {
-		if (constraint == null) {
-			constraint = new OnlyFiniteStatesVariables();
-		}
-		return constraint;
-	}
+public class OnlyFiniteStatesVariables extends PNConstraint {
 
 	@Override
 	public boolean checkEvent(UndoableEditEvent event) 
@@ -102,30 +81,11 @@ public class OnlyFiniteStatesVariables implements PNConstraint {
 		return true;
 	}
 
-	@Override
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
-	throws ConstraintViolationException, CanNotDoEditException, 
-	NotEnoughMemoryException, NonProjectablePotentialException, 
-	WrongCriterionException {
-		if (!checkEvent(event)) {
-			throw new ConstraintViolationException(
-					"ConstraintViolationException adding variable in probNet: "+
-			"all chance and decision variables must be finite state or discrete");
-		}
-	}
-
-	@Override
-	public void undoableEditHappened(UndoableEditEvent e) {
-	}
-
-	public String toString() {
-		return this.getClass().getName();
-	}
-
-	@Override
-	public void undoEditHappened(PNUndoableEditEvent event) {
-		// TODO Auto-generated method stub
-
-	}
+    @Override
+    protected String getMessage ()
+    {
+        // TODO Auto-generated method stub
+        return "all chance and decision variables must be finite state or discrete";
+    }
 
 }

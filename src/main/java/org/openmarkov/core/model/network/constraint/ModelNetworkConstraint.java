@@ -7,9 +7,7 @@ import javax.swing.event.UndoableEditEvent;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.RemoveLinkEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
@@ -17,11 +15,13 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.learning.util.ModelNetUse;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 /** This constraint ensures that the editions done during the learning of a
  * network respect the structure of the model net and the constraints
  * selected by the user. */
-public class ModelNetworkConstraint implements PNConstraint {
+@Constraint (name = "ModelNetworkConstraint", defaultBehavior = ConstraintBehavior.NO)
+public class ModelNetworkConstraint extends PNConstraint {
 
 	// Attributes.
 	ModelNetUse modelNetUse;
@@ -31,27 +31,6 @@ public class ModelNetworkConstraint implements PNConstraint {
 	public ModelNetworkConstraint(ModelNetUse modelNetUse, ProbNet modelNet) {
 		this.modelNet = modelNet.copy();
 		this.modelNetUse = modelNetUse;
-	}
-	
-	// Methods	
-	@Override
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
-	throws ConstraintViolationException, NotEnoughMemoryException, 
-	NonProjectablePotentialException, WrongCriterionException {
-		if (!checkEvent(event)) {
-			throw new ConstraintViolationException(
-				"ConstraintViolationException adding doing edition: " +
-				event.getEdit().getPresentationName());
-		}	
-	}
-
-	@Override
-	public void undoEditHappened(PNUndoableEditEvent event) {
-	}
-
-	@Override
-	public void undoableEditHappened(UndoableEditEvent arg0) {
-		// TODO Auto-generated method stub 
 	}
 
 	@Override
@@ -124,5 +103,11 @@ public class ModelNetworkConstraint implements PNConstraint {
 		}
 		return true;
 	}
+
+    @Override
+    protected String getMessage ()
+    {
+        return "tried to add, remove or invert the wrong link";
+    }
 
 }

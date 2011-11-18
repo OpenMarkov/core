@@ -8,10 +8,8 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
-@Constraint (name = "NoRevelationArc", defaultBehavior = ConstraintBehavior.YES)
-public class NoRevelationArc extends PNConstraint {
-
-private static NoRevelationArc constraint=null;
+@Constraint (name = "DistinctLinks", defaultBehavior = ConstraintBehavior.YES)
+public class DistinctLinks extends PNConstraint{
 
     @Override
     public boolean checkProbNet(ProbNet probNet) {
@@ -26,12 +24,11 @@ private static NoRevelationArc constraint=null;
         // TODO Auto-generated method stub
         return false;
     }
-    
+
     @Override
     protected String getMessage ()
     {
         // TODO Auto-generated method stub
         return "";
     }
-
 }

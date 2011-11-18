@@ -2,8 +2,8 @@ package org.openmarkov.core.model.network.type;
 
 import org.openmarkov.core.model.network.constraint.AllChanceVariablesHaveChancePotentials;
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
-import org.openmarkov.core.model.network.constraint.NoCycles;
-import org.openmarkov.core.model.network.constraint.NoSelfLoops;
+import org.openmarkov.core.model.network.constraint.NoCycle;
+import org.openmarkov.core.model.network.constraint.NoSelfLoop;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.UtilityNodes;
 
@@ -14,17 +14,13 @@ public class MDPType extends NetworkType
     // Constructor
     private MDPType ()
     {
-        super();
-        
-        constraints.put (NoCycles.getUniqueInstance (), ConstraintBehavior.YES);
-        constraints.put (AllChanceVariablesHaveChancePotentials.getUniqueInstance (),
+        super ();
+        constraints.put (new NoCycle (), ConstraintBehavior.YES);
+        constraints.put (new AllChanceVariablesHaveChancePotentials (),
                          ConstraintBehavior.YES);
-        constraints.put (NoSelfLoops.getUniqueInstance (),
-                         ConstraintBehavior.YES);
-        constraints.put (OnlyDirectedLinks.getUniqueInstance (),
-                         ConstraintBehavior.YES);
-        constraints.put (UtilityNodes.getUniqueInstance (),
-                         ConstraintBehavior.YES);
+        constraints.put (new NoSelfLoop (), ConstraintBehavior.YES);
+        constraints.put (new OnlyDirectedLinks (), ConstraintBehavior.YES);
+        constraints.put (new UtilityNodes (), ConstraintBehavior.YES);
     }
 
     // Methods

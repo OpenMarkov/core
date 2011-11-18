@@ -5,36 +5,17 @@ import java.util.Iterator;
 
 import javax.swing.event.UndoableEditEvent;
 
-import org.openmarkov.core.action.PNUndoableEditEvent;
-import org.openmarkov.core.exception.CanNotDoEditException;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 
 /** This constraint ensures that exists at least one cost potential and all of 
  *  them are children of a chance or a decision node. */
-public class AtLeastOneCostPotential implements PNConstraint {
+@Constraint (name = "AtLeastOneCostPotential", defaultBehavior = ConstraintBehavior.NO)
+public class AtLeastOneCostPotential extends PNConstraint {
 
-	// Attributes.
-	private static AtLeastOneCostPotential constraint = null;
-	
-	// Constructor
-	/** This constructor is private to not allow anyone to invoke it. */
-	private AtLeastOneCostPotential() {
-	}
-	
-	// Methods
-	/** Singleton pattern.
-	 * @return The unique instance. <code>AtLeastOneCostPotential</code> */
-	public static PNConstraint getUniqueInstance() {
-		if (constraint == null) {
-			constraint = new AtLeastOneCostPotential();
-		}
-		return constraint;
-	}
-	
 	@Override
 	/** This method has no sense because this constraint is only used to check
 	 * the whole <code>ProbNet</code> before execute the algorithm. */
@@ -67,23 +48,11 @@ public class AtLeastOneCostPotential implements PNConstraint {
 		return true;
 	}
 
-	@Override
-	/** This method has no sense because this constraint is only used to check
-	 * the whole <code>ProbNet</code> before execute the algorithm. */
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException {
-	}
-
-	@Override
-	/** This method has no sense because this constraint is only used to check
-	 * the whole <code>ProbNet</code> before execute the algorithm. */
-	public void undoableEditHappened(UndoableEditEvent arg0) {
-	}
-
-	@Override
-	public void undoEditHappened(PNUndoableEditEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    protected String getMessage ()
+    {
+     // TODO Auto-generated method stub
+        return "";
+    }	
 
 }

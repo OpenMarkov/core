@@ -28,13 +28,10 @@ public class NoCyclesTest {
 	@Test
 	public void testCheckProbNet() throws ProbNodeNotFoundException {
 		try {
-			probNetDirected.addConstraint(
-					NoCycles.getUniqueInstance(), true);
+            probNetDirected.addConstraint (new NoCycle (), true);
 		} catch (ConstraintViolationException e1) {
 		}
-		probNetDirected.removeConstraint(
-			NoCycles.getUniqueInstance().getClass());
-
+        probNetDirected.removeConstraint (new NoCycle ());
 		Variable va = 
 			probNetDirected.getProbNode("A", NodeType.CHANCE).getVariable();
 		Variable vc = 
@@ -44,8 +41,7 @@ public class NoCyclesTest {
 		try {
 			// creates a cycle
 			new AddLinkEdit(probNetDirected, vc, va, true).doEdit(); 
-			probNetDirected.addConstraint(
-					NoCycles.getUniqueInstance(), true);
+            probNetDirected.addConstraint (new NoCycle (), true);
 		} catch (ConstraintViolationException e) {
 			constraintExcepctionLaunched = true;
 		} catch (Exception e) {

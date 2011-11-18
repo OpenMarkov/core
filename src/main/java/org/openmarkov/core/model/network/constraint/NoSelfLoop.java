@@ -6,9 +6,6 @@ import javax.swing.event.UndoableEditEvent;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditEvent;
-import org.openmarkov.core.exception.CanNotDoEditException;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -16,28 +13,11 @@ import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 
-public class NoSelfLoops implements PNConstraint {
-
-	// Attributes.
-	private static NoSelfLoops constraint = null;
-	
-	// Constructor
-	/** This constructor is private to not allow anyone to invoke it. */
-	private NoSelfLoops() {
-	}
-	
-	// Methods
-	/** Singleton pattern.
-	 * @return The unique instance. 
-	 *  <code>DistinctVariableNames</code> */
-	public static NoSelfLoops getUniqueInstance() {
-		if (constraint == null) {
-			constraint = new NoSelfLoops();
-		}
-		return constraint;
-	}
+@Constraint (name = "NoSelfLoops", defaultBehavior = ConstraintBehavior.YES)
+public class NoSelfLoop extends PNConstraint {
 	
 	@Override
 	public boolean checkEvent(UndoableEditEvent event) 
@@ -67,30 +47,9 @@ public class NoSelfLoops implements PNConstraint {
 		return true;
 	}
 
-	@Override
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
-	throws ConstraintViolationException, CanNotDoEditException, 
-	NotEnoughMemoryException, NonProjectablePotentialException, 
-	WrongCriterionException {
-		if (!checkEvent(event)) {
-			throw new ConstraintViolationException(
-				"ConstraintViolationException adding link in probNet: "+
-				"no self loops allowed.");
-		}
-	}
-
-	@Override
-	public void undoableEditHappened(UndoableEditEvent e) {
-	}
-
-	public String toString() {
-		return this.getClass().getName();
-	}
-
-	@Override
-	public void undoEditHappened(PNUndoableEditEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
+    @Override
+    protected String getMessage ()
+    {
+        return "no self loops allowed";
+    }
 }

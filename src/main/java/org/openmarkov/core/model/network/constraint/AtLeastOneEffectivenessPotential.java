@@ -5,34 +5,13 @@ import java.util.Iterator;
 
 import javax.swing.event.UndoableEditEvent;
 
-import org.openmarkov.core.action.PNUndoableEditEvent;
-import org.openmarkov.core.exception.CanNotDoEditException;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
-
-public class AtLeastOneEffectivenessPotential implements PNConstraint {
-
-	// Attributes.
-	private static AtLeastOneEffectivenessPotential constraint = null;
-	
-	// Constructor
-	/** This constructor is private to not allow anyone to invoke it. */
-	private AtLeastOneEffectivenessPotential() {
-	}
-	
-	// Methods
-	/** Singleton pattern.
-	 * @return The unique instance. 
-	 *  <code>AtLeastOneEffectivenessPotential</code> */
-	public static PNConstraint getUniqueInstance() {
-		if (constraint == null) {
-			constraint = new AtLeastOneEffectivenessPotential();
-		}
-		return constraint;
-	}
+@Constraint (name = "AtLeastOneEffectivenessPotential", defaultBehavior = ConstraintBehavior.NO)
+public class AtLeastOneEffectivenessPotential extends PNConstraint {
 	
 	@Override
 	/** This method has no sense because this constraint is only used to check
@@ -67,23 +46,10 @@ public class AtLeastOneEffectivenessPotential implements PNConstraint {
 		return true;
 	}
 
-	@Override
-	/** This method has no sense because this constraint is only used to check
-	 * the whole <code>ProbNet</code> before execute the algorithm. */
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException {
-	}
-
-	@Override
-	/** This method has no sense because this constraint is only used to check
-	 * the whole <code>ProbNet</code> before execute the algorithm. */
-	public void undoableEditHappened(UndoableEditEvent e) {
-	}
-
-	@Override
-	public void undoEditHappened(PNUndoableEditEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    protected String getMessage ()
+    {
+        return "there must be at least one effectiveness potential";
+    }
 
 }

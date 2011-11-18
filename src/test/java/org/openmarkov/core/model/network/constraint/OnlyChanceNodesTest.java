@@ -35,8 +35,7 @@ public class OnlyChanceNodesTest {
 	@Test 
 	public void testCheckProbNet() throws ConstraintViolationException {
 		// test only directed links insertions without checking.
-		assertFalse(OnlyChanceNodes.getUniqueInstance()
-			.checkProbNet(influenceDiagram));
+		assertFalse(new OnlyChanceNodes().checkProbNet(influenceDiagram));
 	}
 
 	/** Checks veto */
@@ -46,8 +45,7 @@ public class OnlyChanceNodesTest {
 		
 		// Add constraints as listeners.
 		PNESupport pNESupport = new PNESupport(probNetDirected, false);
-		probNetDirected.addConstraint(
-				OnlyChanceNodes.getUniqueInstance(), true);
+        probNetDirected.addConstraint (new OnlyChanceNodes (), true);
 		ArrayList<PNConstraint> constraints = probNetDirected.getConstraints();
 		for (PNConstraint constraint : constraints) { // sets listeners
 			pNESupport.addUndoableEditListener(constraint);

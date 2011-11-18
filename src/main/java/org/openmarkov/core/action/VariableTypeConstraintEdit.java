@@ -14,6 +14,7 @@ import org.openmarkov.core.model.network.constraint.PNConstraint;
  * @version 1.0 
  *  */
 
+@SuppressWarnings("serial")
 public class VariableTypeConstraintEdit extends SimplePNEdit {
 	// Attributes
 	/**
@@ -55,7 +56,7 @@ public class VariableTypeConstraintEdit extends SimplePNEdit {
 	public void doEdit() {
 		
 		if ( lastConstraint != null ){
-			probNet.removeConstraint(lastConstraint.getClass());
+			probNet.removeConstraint(lastConstraint);
 		}
 			
 		if ( newVariableTypeConstraint != null ){
@@ -73,7 +74,7 @@ public class VariableTypeConstraintEdit extends SimplePNEdit {
 		super.undo();
 		
 		if ( newVariableTypeConstraint != null ){
-			probNet.removeConstraint(newVariableTypeConstraint.getClass());
+			probNet.removeConstraint(newVariableTypeConstraint);
 		}
 		
 		if ( lastConstraint != null ){

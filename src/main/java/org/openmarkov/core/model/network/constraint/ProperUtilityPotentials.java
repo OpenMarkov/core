@@ -16,28 +16,11 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import org.openmarkov.core.model.network.potential.Potential;
 
-
-public class ProperUtilityPotentials implements PNConstraint {
-
-	// Attributes.
-	private static ProperUtilityPotentials constraint = null;
-	
-	// Constructor
-	/** This constructor is private to not allow anyone to invoke it. */
-	private ProperUtilityPotentials() {
-	}
-	
-	// Methods
-	/** Singleton pattern.
-	 * @return The unique instance. <code>ProperUtilityPotentials</code> */
-	public static ProperUtilityPotentials getUniqueInstance() {
-		if (constraint == null) {
-			constraint = new ProperUtilityPotentials();
-		}
-		return constraint;
-	}
+@Constraint (name = "ProperUtilityPotentials", defaultBehavior = ConstraintBehavior.NO)
+public class ProperUtilityPotentials extends PNConstraint {
 	
 	public boolean checkProbNet(ProbNet probNet) {
 		ArrayList<ProbNode> utilityNodes = 
@@ -76,29 +59,16 @@ public class ProperUtilityPotentials implements PNConstraint {
 		return (numUtilities > 0);
 	}
 
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
-	throws ConstraintViolationException, CanNotDoEditException, 
-	NotEnoughMemoryException, NonProjectablePotentialException, 
-	WrongCriterionException {
-		if (!checkEvent(event)) {
-			throw new ConstraintViolationException(
-				"ConstraintViolationException there is at least one utility " +
-				"variable without utility potential or there are no utility " +
-				"potentials");
-		}
-	}
-
-	public void undoableEditHappened(UndoableEditEvent event) {
-	}
-
 	public String toString() {
 		return this.getClass().getName();
 	}
 
-	@Override
-	public void undoEditHappened(PNUndoableEditEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    protected String getMessage ()
+    {
+        // TODO Auto-generated method stub
+        return "there is at least one utility variable without " +
+                "utility potential or there are no utility potentials";
+    }
 
 }

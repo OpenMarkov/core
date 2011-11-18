@@ -13,30 +13,15 @@ public class PNConstraintCreatorTest {
 		boolean expceptionLaunched=false;
 		String pnClassName= "NoUtilityParent";
 		try {
-			PNConstraint constraint=PNConstraintCreator.createPNConstraint(pnClassName);
+		    ConstraintPool constraintFactory = new ConstraintPool();
+			PNConstraint constraint=constraintFactory.getInstance(NoUtilityParent.class);
 			Assert.assertNotNull(constraint);
 			Assert.assertTrue(constraint.getClass().getName().endsWith(pnClassName));
 		
 		} catch (ConstraintException e) {
 			expceptionLaunched=true;
 		}
-		
-		
 		Assert.assertFalse(expceptionLaunched);
-		 pnClassName= "NoExistentConstraint";
-			try {
-				PNConstraint constraint=PNConstraintCreator.createPNConstraint(pnClassName);
-				
-			
-			} catch (ConstraintException e) {
-				expceptionLaunched=true;
-			}
-		 
-			Assert.assertTrue(expceptionLaunched);
-		 
-		 
-		 
-		 
 	}
 	
 	

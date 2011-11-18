@@ -46,7 +46,7 @@ public class ConstraintManager
      * @param type of the network the list is being generated for.
      * @return a minimal list of constraint.
      */
-    public final ArrayList<PNConstraint> buildConstraintList (NetworkType type)
+    public final ArrayList<PNConstraint> buildConstraintList (NetworkType type, boolean includeOptionals)
     {
         // Init the list with those constraints that have the default value set to YES 
         ArrayList<PNConstraint> constraints = new  ArrayList<PNConstraint> ();
@@ -56,10 +56,10 @@ public class ConstraintManager
             for (Class<?> plugin : plugins)
             {
                 Constraint lAnnotation = plugin.getAnnotation (Constraint.class);
-                if (lAnnotation.defaultBehavior ().equals (ConstraintBehavior.YES))
+                if (lAnnotation.defaultBehavior ().equals (ConstraintBehavior.YES)
+                    || (includeOptionals && lAnnotation.defaultBehavior ().equals (ConstraintBehavior.OPTIONAL)))
                 {
-                    Method method = plugin.getDeclaredMethod ("getUniqueInstance", (Class[]) null);
-                    constraints.add ((PNConstraint) method.invoke (null, (Object[]) null));
+                    constraints.add ((PNConstraint) plugin.newInstance ());
                 }
             }
         }
@@ -82,6 +82,11 @@ public class ConstraintManager
         }
         return constraints;
        
+    }
+    
+    public final ArrayList<PNConstraint> buildConstraintList (NetworkType type)
+    {
+        return buildConstraintList (type, false);
     }
     
     public final List<Class<?>> findAllConstraints ()

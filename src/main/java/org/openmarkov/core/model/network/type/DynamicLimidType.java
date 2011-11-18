@@ -1,30 +1,31 @@
-
 package org.openmarkov.core.model.network.type;
 
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 
-public class SimpleMarkovModelType extends NetworkType
+public class DynamicLimidType extends NetworkType
 {
-    // Attributes
-    private static SimpleMarkovModelType instance = null;
+    private static DynamicLimidType instance = null;
 
     // Constructor
-    private SimpleMarkovModelType ()
+    private DynamicLimidType ()
     {
-        super ();
+        super();
+        
         constraints.put (new OnlyAtemporalVariables (), ConstraintBehavior.NO);
         constraints.put (new OnlyTemporalVariables (), ConstraintBehavior.YES);
     }
 
     // Methods
-    public static SimpleMarkovModelType getUniqueInstance ()
+    public static DynamicLimidType getUniqueInstance ()
     {
         if (instance == null)
         {
-            instance = new SimpleMarkovModelType ();
+            instance = new DynamicLimidType ();
         }
         return instance;
     }
 }
+
+

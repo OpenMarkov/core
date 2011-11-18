@@ -88,43 +88,34 @@ public class ProbNet implements Cloneable {
 	private State[] defaultStates = { new State("absent"), new State("present")};
 
 	// Constructors
+    public ProbNet (NetworkType networkType)
+    {
+        this.constraints = new ArrayList<PNConstraint> ();
+        try
+        {
+            this.setNetworkType(BayesianNetworkType.getUniqueInstance ());
+        }
+        catch (ConstraintViolationException e)
+        {
+            // Impossible to reach here as the net is empty
+        }
+        this.nodesHashMaps = new ArrayList<LinkedHashMap<Variable, ProbNode>> (NodeType.values ().length);
+        // create a linkedHashMap for each type of nodes
+        for (int i = 0; i < NodeType.values ().length; i++)
+        {
+            nodesHashMaps.add (new LinkedHashMap<Variable, ProbNode> ());
+        }
+        this.pNESupport = new PNESupport (this, false);        
+    }
+
     /**
      * Creates a probabilistic network. NetworkTypeConstraint defines the
      * network type. If NetworkTypeConstraint is null the network type will be 
      * Bayesian Network
      */
     public ProbNet() {
-        this.graph = new Graph ();
-        this.constraints = new ArrayList<PNConstraint> ();
-        this.networkType = BayesianNetworkType.getUniqueInstance ();
-        int numNodeTypes = NodeType.values ().length;
-        this.nodesHashMaps = new ArrayList<LinkedHashMap<Variable, ProbNode>> (numNodeTypes);
-        // create a linkedHashMap for each type of nodes
-        for (int i = 0; i < numNodeTypes; i++)
-        {
-            nodesHashMaps.add (new LinkedHashMap<Variable, ProbNode> ());
-        }
-        this.pNESupport = new PNESupport (this, false);
-    }
-    
-    public ProbNet (NetworkType networkType) 
-    {
-        this ();
-        this.networkType = networkType;
-        this.constraints = ConstraintManager.getUniqueInstance ().buildConstraintList (networkType);
-    }   
-    
-    public ProbNet (NetworkType networkType, ArrayList<PNConstraint> constraints) throws ConstraintViolationException
-    {
-        this();
-        this.constraints = constraints;
-        this.networkType = networkType;
-        // Check if the constraints provided abide with the constraints specified by the network type
-        for(PNConstraint constraint : constraints)
-        {
-            addConstraint (constraint, true);
-        }
-    }
+        this(BayesianNetworkType.getUniqueInstance ());
+    }    
 	
     
 
@@ -141,41 +132,58 @@ public class ProbNet implements Cloneable {
     public void addConstraint (PNConstraint constraint, boolean check)
         throws ConstraintViolationException
     {
-        if(!this.networkType.isAbidingConstraint (constraint))
+        if (!this.networkType.isApplicableConstraint (constraint))
         {
             throw new ConstraintViolationException (
                                                     "Can not apply "
                                                             + constraint.toString ()
                                                             + " to a probNet of type "
-                                                            + this.networkType.getClass ());        
-        }
-        if (check && !constraint.checkProbNet (this))
-        {
-            throw new ConstraintViolationException ("Can not apply "
-                                                    + constraint.toString ()
-                                                    + " to this probNet.");
+                                                            + this.networkType.getClass ());
         }
         else if (!constraints.contains (constraint))
         {
+            if (check && !constraint.checkProbNet (this))
+            {
+                throw new ConstraintViolationException (
+                                                        "Can not apply "
+                                                                + constraint.toString ()
+                                                                + " to this probNet.");
+            }
             constraints.add (constraint);
             pNESupport.addUndoableEditListener (constraint);
         }
     }
+    
+    /**
+     * @param constraints <code>ArrayList<PNConstraint></code>
+     * @param check . when <code>false</code>, constraint is added to the
+     *            constraints list without testing. Otherwise,
+     *            <code>constraint</code> is added only when it is full-filled.
+     *            <code>boolean</code>
+     * @throws ConstraintViolationException
+     */
+    public void addConstraints (ArrayList<PNConstraint> constraints, boolean check)
+        throws ConstraintViolationException
+    {
+        for(PNConstraint constraint : constraints)
+        {
+            addConstraint(constraint, check);
+        }
+    }
+    
 
 	/**
 	 * @param constraintClass
 	 *            <code>Class</code>
 	 */
-	@SuppressWarnings("rawtypes")
-	public void removeConstraint(Class constraintClass) {
-		for (PNConstraint constraint : constraints) {
-			if (constraint.getClass() == constraintClass) {
-				constraints.remove(constraint);
-				pNESupport.removeUndoableEditListener(constraint);
-				break;
-			}
-		}
-	}
+    public void removeConstraint (PNConstraint constraint)
+    {
+        if (constraints.contains (constraint))
+        {
+            constraints.remove (constraint);
+            pNESupport.removeUndoableEditListener (constraint);
+        }
+    }
 
 	/** @return <code>ArrayList</code> of <code>PNConstraint</code>s */
 	@SuppressWarnings("unchecked")
@@ -190,14 +198,21 @@ public class ProbNet implements Cloneable {
      */
     public void setNetworkType (NetworkType networkType) throws ConstraintViolationException
     {
-        this.networkType = networkType;
-        if (!networkType.isAbidingConstraints (constraints))
+        ArrayList<PNConstraint> constraints = ConstraintManager.getUniqueInstance ().buildConstraintList (networkType);
+
+        // Add new constraints implied by the network type 
+        addConstraints(constraints, true);
+        
+        // Remove those constraints that are no longer applicable to the new network type
+        for(PNConstraint constraint : this.constraints)
         {
-            throw new ConstraintViolationException (
-                                                    "New Network Type "
-                                                            + this.networkType.getClass ()
-                                                            + "is incompatible with the current set of constraints");
+            if(!networkType.isApplicableConstraint (constraint))
+            {
+                removeConstraint (constraint);
+            }
         }
+        this.networkType = networkType;
+        
     }
 
     /**

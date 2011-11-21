@@ -173,8 +173,8 @@ public class ProbNet implements Cloneable {
     
 
 	/**
-	 * @param constraintClass
-	 *            <code>Class</code>
+	 * @param constraint
+	 *            <code>PNConstraint</code>
 	 */
     public void removeConstraint (PNConstraint constraint)
     {
@@ -184,6 +184,25 @@ public class ProbNet implements Cloneable {
             pNESupport.removeUndoableEditListener (constraint);
         }
     }
+    
+    /**
+     * @param constraintClass
+     *            <code>Class</code>
+     */
+    public void removeAllConstraints (Class<PNConstraint> constraintClass)
+    {
+        ArrayList<PNConstraint> constraintsToRemove = new ArrayList<PNConstraint>();
+        
+        for(PNConstraint constraint : constraints)
+        {
+            if(constraint.getClass ().equals (constraintClass))
+            {
+                constraintsToRemove.add (constraint);
+            }
+        }
+        
+        constraints.removeAll (constraintsToRemove);
+    }    
 
 	/** @return <code>ArrayList</code> of <code>PNConstraint</code>s */
 	@SuppressWarnings("unchecked")
@@ -199,19 +218,28 @@ public class ProbNet implements Cloneable {
     public void setNetworkType (NetworkType networkType) throws ConstraintViolationException
     {
         ArrayList<PNConstraint> constraints = ConstraintManager.getUniqueInstance ().buildConstraintList (networkType);
+        NetworkType oldNetworkType = this.networkType;
+        this.networkType = networkType;        
 
-        // Add new constraints implied by the network type 
-        addConstraints(constraints, true);
-        
-        // Remove those constraints that are no longer applicable to the new network type
-        for(PNConstraint constraint : this.constraints)
+        try
         {
-            if(!networkType.isApplicableConstraint (constraint))
+            // Add new constraints implied by the network type 
+            addConstraints(constraints, true);
+            
+            // Remove those constraints that are no longer applicable to the new network type
+            for(PNConstraint constraint : this.constraints)
             {
-                removeConstraint (constraint);
+                if(!networkType.isApplicableConstraint (constraint))
+                {
+                    removeConstraint (constraint);
+                }
             }
+        }catch(ConstraintViolationException e)
+        {
+            // Revert
+            this.networkType = oldNetworkType;
+            throw e;
         }
-        this.networkType = networkType;
         
     }
 

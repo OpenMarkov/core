@@ -1,0 +1,54 @@
+package org.openmarkov.core.model.network.potential;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Variable;
+
+public class EvidencePotentials {
+
+	/** For each <code>variableOfInterest</code> contained in 
+	 *  <code>evidence</code>, this method generates an evidence potential. This
+	 *  potential contains only one variable and all the values of the potential 
+	 *  are 0.0 except the value corresponding to the finding.<p>
+	 *  Finally the method inserts the new potential in 
+	 *   <code>individualProbabilities</code>. 
+	 *  @param individualProbabilities. <code>HashMap</code> of key = String
+	 *   with variable name and value = Potential. 
+	 *  @param variablesOfInterest. <code>ArrayList</code> of 
+	 *   <code>Variable</code>
+	 *  @param evidence. <code>EvidenceCase</code> 
+	 * @throws NotEnoughMemoryException */
+	public static HashMap<Variable, Potential> addEvidencePotentials(
+			HashMap<Variable, Potential> individualProbabilities,
+			ArrayList<Variable> variablesOfInterest, EvidenceCase evidence) 
+			throws NotEnoughMemoryException {
+		
+		// Creates a fast structure for consultation with evidence variables
+		if ((evidence != null) && (!evidence.isEmpty())) {
+			HashSet<Variable> evidenceVariables = 
+				new HashSet<Variable>(evidence.getVariables());
+
+			for (Variable variable : variablesOfInterest) {
+				if (evidenceVariables.contains(variable)) {
+					// Creates a potential with the evidence variable
+					ArrayList<Variable> potentialVariables = 
+						new ArrayList<Variable>(1);
+					potentialVariables.add(variable);
+					TablePotential potential = null;
+					potential = new TablePotential(potentialVariables, 
+							PotentialRole.CONDITIONAL_PROBABILITY);
+					// Sets potential table configurations
+					potential.values[evidence.getState(variable)] = 1.0;
+					// Inserts potential in individualProbabilities
+					individualProbabilities.put(variable, potential);
+				}
+			}
+		}
+		return individualProbabilities;
+	}
+	
+}

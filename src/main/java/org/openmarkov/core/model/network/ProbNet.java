@@ -90,6 +90,7 @@ public class ProbNet implements Cloneable {
 	// Constructors
     public ProbNet (NetworkType networkType)
     {
+        this.graph = new Graph();
         this.constraints = new ArrayList<PNConstraint> ();
         try
         {

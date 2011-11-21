@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 
 /** This class implements the minimal set of methods for creating
  * a graph and inserting nodes and links.
- * <p>áñ
+ * <p>
  * Links are represented implicitly by the lists of parents, children and 
  * siblings of each node. Links can be explicitly represented as objects of 
  * class <code>LabelledLink</code>.

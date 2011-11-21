@@ -7,7 +7,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 
-public interface Checkable{
+public interface Checkable {
 
    /** @param probNet. <code>ProbNet</code>
     * @return <code>true</code> if the <code>probNet</code> fulfills the 

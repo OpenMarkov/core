@@ -29,9 +29,6 @@ import org.openmarkov.core.model.network.constraint.PNConstraint;
  */
 public class PNESupport extends UndoableEditSupport {
 
-	// Attributes
-	private ProbNet probNet;
-
 	ArrayList<PNConstraint> constraints;
 
 	/**
@@ -72,16 +69,8 @@ public class PNESupport extends UndoableEditSupport {
 	 */
 	public PNESupport(ProbNet probNet, boolean withUndo) {
 		super(probNet);
-		this.probNet = probNet;
 		this.withUndo = withUndo;
 		undoManagerSupport = new UndoManagerSupport();
-
-		// set probNet constraints as listeners
-		constraints = probNet.getConstraints();
-
-		for (PNConstraint constraint : constraints) {
-			listeners.add(constraint);
-		}
 		
 		this.logger = Logger.getLogger(PNESupport.class);
 	}
@@ -93,35 +82,6 @@ public class PNESupport extends UndoableEditSupport {
 
 	public Vector<UndoableEditListener> getListeners() {
 		return listeners;
-	}
-
-	/**
-	 * In some cases, the operations are done on a network other than the
-	 * original, which has different restrictions. This method swaps the
-	 * restrictions of both networks in <code>PNESupport</code>
-	 * 
-	 * @param newProbNet
-	 *            . <code>ProbNet</code>
-	 * @return oldProbNet. <code>ProbNet</code>
-	 */
-	public ProbNet swapNetwork(ProbNet newProbNet) {
-		// Remove constraints of old network...
-		for (PNConstraint constraint : constraints) {
-			listeners.remove(constraint);
-		}
-
-		// ...and add constraints of new network
-		ArrayList<PNConstraint> newConstraints = newProbNet.getConstraints();
-		for (PNConstraint constraint : newConstraints) {
-			listeners.add(constraint);
-		}
-
-		// Swaps old and new ProbNets
-		ProbNet oldProbNet = probNet;
-		probNet = newProbNet;
-		constraints = newConstraints;
-
-		return oldProbNet;
 	}
 
 	/**

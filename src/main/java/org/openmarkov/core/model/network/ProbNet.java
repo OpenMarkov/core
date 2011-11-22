@@ -91,7 +91,14 @@ public class ProbNet implements Cloneable {
     public ProbNet (NetworkType networkType)
     {
         this.graph = new Graph();
+        this.pNESupport = new PNESupport (this, false);        
         this.constraints = new ArrayList<PNConstraint> ();
+        this.nodesHashMaps = new ArrayList<LinkedHashMap<Variable, ProbNode>> (NodeType.values ().length);
+        // create a linkedHashMap for each type of nodes
+        for (int i = 0; i < NodeType.values ().length; i++)
+        {
+            nodesHashMaps.add (new LinkedHashMap<Variable, ProbNode> ());
+        }
         try
         {
             this.setNetworkType(BayesianNetworkType.getUniqueInstance ());
@@ -99,14 +106,7 @@ public class ProbNet implements Cloneable {
         catch (ConstraintViolationException e)
         {
             // Impossible to reach here as the net is empty
-        }
-        this.nodesHashMaps = new ArrayList<LinkedHashMap<Variable, ProbNode>> (NodeType.values ().length);
-        // create a linkedHashMap for each type of nodes
-        for (int i = 0; i < NodeType.values ().length; i++)
-        {
-            nodesHashMaps.add (new LinkedHashMap<Variable, ProbNode> ());
-        }
-        this.pNESupport = new PNESupport (this, false);        
+        }        
     }
 
     /**
@@ -154,6 +154,11 @@ public class ProbNet implements Cloneable {
             pNESupport.addUndoableEditListener (constraint);
         }
     }
+    
+    public void addConstraint (PNConstraint constraint) throws ConstraintViolationException
+    {
+        addConstraint(constraint, true);
+    }    
     
     /**
      * @param constraints <code>ArrayList<PNConstraint></code>
@@ -1460,6 +1465,7 @@ public class ProbNet implements Cloneable {
 		}
 		decisionCriteria = new Variable("### Decision Criteria ###", states);
 	}
+
 	
 
 }

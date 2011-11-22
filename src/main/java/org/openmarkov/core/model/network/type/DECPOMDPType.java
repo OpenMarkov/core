@@ -12,7 +12,7 @@ public class DECPOMDPType extends POMDPType
     {
         super();
         
-        constraints.put (new OnlyOneAgent(), ConstraintBehavior.NO);
+        overwriteConstraintBehavior (OnlyOneAgent.class, ConstraintBehavior.NO);
     }
 
     // Methods

@@ -705,4 +705,5 @@ public class ProbNetTest {
 		assertTrue(potential1B.contains(I));
 		
 	}*/
+	
 }

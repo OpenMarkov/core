@@ -13,9 +13,9 @@ public class DynamicBayesianNetwork extends NetworkType
     private DynamicBayesianNetwork ()
     {
         super();
-        constraints.put (new OnlyChanceNodes (), ConstraintBehavior.YES);
-        constraints.put (new OnlyAtemporalVariables (), ConstraintBehavior.NO);
-        constraints.put (new OnlyTemporalVariables (), ConstraintBehavior.YES);
+        overwriteConstraintBehavior (OnlyChanceNodes.class, ConstraintBehavior.YES);
+        overwriteConstraintBehavior (OnlyAtemporalVariables.class, ConstraintBehavior.NO);
+        overwriteConstraintBehavior (OnlyTemporalVariables.class, ConstraintBehavior.YES);
     }
 
     // Methods

@@ -14,8 +14,8 @@ public class SimpleMarkovModelType extends NetworkType
     private SimpleMarkovModelType ()
     {
         super ();
-        constraints.put (new OnlyAtemporalVariables (), ConstraintBehavior.NO);
-        constraints.put (new OnlyTemporalVariables (), ConstraintBehavior.YES);
+        overwriteConstraintBehavior (OnlyAtemporalVariables.class, ConstraintBehavior.NO);
+        overwriteConstraintBehavior (OnlyTemporalVariables.class, ConstraintBehavior.YES);
     }
 
     // Methods

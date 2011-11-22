@@ -15,12 +15,12 @@ public class MDPType extends NetworkType
     private MDPType ()
     {
         super ();
-        constraints.put (new NoCycle (), ConstraintBehavior.YES);
-        constraints.put (new AllChanceVariablesHaveChancePotentials (),
+        overwriteConstraintBehavior (NoCycle.class, ConstraintBehavior.YES);
+        overwriteConstraintBehavior (AllChanceVariablesHaveChancePotentials.class,
                          ConstraintBehavior.YES);
-        constraints.put (new NoSelfLoop (), ConstraintBehavior.YES);
-        constraints.put (new OnlyDirectedLinks (), ConstraintBehavior.YES);
-        constraints.put (new UtilityNodes (), ConstraintBehavior.YES);
+        overwriteConstraintBehavior (NoSelfLoop.class, ConstraintBehavior.YES);
+        overwriteConstraintBehavior (OnlyDirectedLinks.class, ConstraintBehavior.YES);
+        overwriteConstraintBehavior (UtilityNodes.class, ConstraintBehavior.YES);
     }
 
     // Methods

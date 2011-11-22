@@ -12,35 +12,50 @@ import org.openmarkov.core.exception.ConstraintException;
  */
 public class ConstraintPool {
 
-    private static HashMap<Class<? extends PNConstraint>, PNConstraint> instances = new HashMap<Class<? extends PNConstraint>, PNConstraint>();
+    private static ConstraintPool instance = null;
+    private HashMap<Class<? extends PNConstraint>, PNConstraint> constraintInstances;
+    
+    private ConstraintPool(){
+        constraintInstances = new HashMap<Class<? extends PNConstraint>, PNConstraint>();
+    }
+    
+    public static ConstraintPool getUniqueInstance()
+    {
+        if(instance == null)
+        {
+            instance = new ConstraintPool();
+        }
+        
+        return instance;
+    }
+    
 	/*****
 	 * Method that returns the unique instance of PNConstraint with the given class name using reflection
 	 * @param className name of the PNConstraint class
 	 * @return <code>PNConstraint</code> instance of PNconstraint  
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 * @throws <code>ConstraintException</code>
 	 */
-	public PNConstraint getInstance(Class<? extends PNConstraint> constraintClass)
-			throws ConstraintException {
+	public PNConstraint getConstraint(Class<? extends PNConstraint> constraintClass) {
 	    
-	    PNConstraint instance = instances.get (constraintClass);
+	    PNConstraint instance = constraintInstances.get (constraintClass);
 	    
 	    if(instance == null)
 	    {
-    		try
+		    try
             {
-    		    instance = constraintClass.newInstance ();
-    		    instances.put (constraintClass, instance);
+                instance = constraintClass.newInstance ();
             }
             catch (InstantiationException e)
             {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                e.printStackTrace ();
             }
             catch (IllegalAccessException e)
             {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+		    constraintInstances.put (constraintClass, instance);
 	    }
 		
 		return instance;

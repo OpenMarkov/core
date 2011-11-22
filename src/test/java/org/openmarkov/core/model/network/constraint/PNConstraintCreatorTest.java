@@ -14,7 +14,7 @@ public class PNConstraintCreatorTest {
 		String pnClassName= "NoUtilityParent";
 		try {
 		    ConstraintPool constraintFactory = new ConstraintPool();
-			PNConstraint constraint=constraintFactory.getInstance(NoUtilityParent.class);
+			PNConstraint constraint=constraintFactory.getConstraint(NoUtilityParent.class);
 			Assert.assertNotNull(constraint);
 			Assert.assertTrue(constraint.getClass().getName().endsWith(pnClassName));
 		

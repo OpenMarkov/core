@@ -1,0 +1,58 @@
+package org.openmarkov.core.model.network.constraint;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import javax.swing.event.UndoableEditEvent;
+
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.constraint.annotation.Constraint;
+
+
+/** This constraint ensures that exists at least one cost potential and all of 
+ *  them are children of a chance or a decision node. */
+@Constraint (name = "AtLeastOneCostPotential", defaultBehavior = ConstraintBehavior.NO)
+public class AtLeastOneCostPotential extends PNConstraint {
+
+	@Override
+	/** This method has no sense because this constraint is only used to check
+	 * the whole <code>ProbNet</code> before execute the algorithm. */
+	public boolean checkEvent(UndoableEditEvent event) {
+		return false;
+	}
+
+	@Override
+	public boolean checkProbNet(ProbNet probNet) {
+		ArrayList<ProbNode> costNodes = probNet.getProbNodes(NodeType.COST);
+		if (costNodes.size() == 0) {
+			return false;
+		}
+		for (ProbNode costNode : costNodes) {
+			ArrayList<ProbNode> parents = 
+				ProbNet.getProbNodesOfNodes(costNode.getNode().getParents());
+			Iterator<ProbNode> i = parents.iterator();
+			boolean chanceOrDecision = false;
+			ProbNode parent;
+			do {
+				parent = i.next();
+				NodeType nodeType = parent.getNodeType();
+				chanceOrDecision = nodeType == NodeType.CHANCE || 
+					nodeType == NodeType.DECISION;
+			} while (!chanceOrDecision && i.hasNext());
+			if (!chanceOrDecision) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+    @Override
+    protected String getMessage ()
+    {
+     // TODO Auto-generated method stub
+        return "";
+    }	
+
+}

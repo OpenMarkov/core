@@ -18,9 +18,9 @@ public class MDPType extends NetworkType
         overwriteConstraintBehavior (NoCycle.class, ConstraintBehavior.YES);
         overwriteConstraintBehavior (AllChanceVariablesHaveChancePotentials.class,
                          ConstraintBehavior.YES);
-        overwriteConstraintBehavior (NoSelfLoop.class, ConstraintBehavior.YES);
-        overwriteConstraintBehavior (OnlyDirectedLinks.class, ConstraintBehavior.YES);
-        overwriteConstraintBehavior (UtilityNodes.class, ConstraintBehavior.YES);
+        constraints.put (new NoSelfLoop (), ConstraintBehavior.YES);
+        constraints.put (new OnlyDirectedLinks (), ConstraintBehavior.YES);
+        constraints.put (new UtilityNodes (), ConstraintBehavior.YES);
     }
 
     // Methods
@@ -32,5 +32,11 @@ public class MDPType extends NetworkType
         }
         return instance;
     }
+    
+    /** @return String "MDP" */
+    public String toString() {
+    	return "MDP";
+    }
+    
 }
 

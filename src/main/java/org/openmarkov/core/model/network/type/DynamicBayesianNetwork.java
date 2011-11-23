@@ -27,5 +27,11 @@ public class DynamicBayesianNetwork extends NetworkType
         }
         return instance;
     }
+    
+    /** @return String "DynamicBayesianNetwork" */
+    public String toString() {
+    	return "DynamicBayesianNetwork";
+    }
+
 }
 

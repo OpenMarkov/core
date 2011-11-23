@@ -24,4 +24,10 @@ public class DecisionAnalysisNetworkType extends NetworkType
         }
         return instance;
     }
+    
+    /** @return String "DecisionAnalysisNetwork". */
+    public String toString() {
+    	return "DecisionAnalysisNetwork";
+    }
+    
 }

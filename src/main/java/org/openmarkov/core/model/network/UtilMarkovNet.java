@@ -8,7 +8,6 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.type.MarkovNetworkType;
 
 
 /** Util class of Markov networks.
@@ -44,7 +43,7 @@ public class UtilMarkovNet {
 	public static ProbNet buildMarkovNet(
 			ArrayList<? extends Potential> projectedTablePotentials) 
 			throws NotEnoughMemoryException {
-		ProbNet markovNet = new ProbNet(MarkovNetworkType.getUniqueInstance ());
+		ProbNet markovNet = getMarkovNet();
 		try {
             markovNet.addConstraint (new OnlyDiscreteVariables (), false);
 		} catch (ConstraintViolationException e) {

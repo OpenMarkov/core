@@ -21,4 +21,10 @@ public class InfluenceDiagramType extends NetworkType
         }
         return instance;
     }
+
+    /** @return String "InfluenceDiagram" */
+    public String toString() {
+    	return "InfluenceDiagram";
+    }
+    
 }

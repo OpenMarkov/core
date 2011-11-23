@@ -8,11 +8,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    PotentialTests.class,
+    //PotentialTests.class,
 	ProbNetTest.class,
     VariableTest.class,
-    CanonicalTests.class,
-    ConstraintsTests.class,
+    //CanonicalTests.class,
+    //ConstraintsTests.class,
     EvidenceCaseTest.class
         })
         

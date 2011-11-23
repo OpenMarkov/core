@@ -7,10 +7,11 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 
 
-import openmarkov.exceptions.NotEnoughMemoryException;
-import openmarkov.networks.Variable;
-import openmarkov.networks.potentials.PotentialRole;
-import openmarkov.networks.potentials.TablePotential;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.TablePotential;
+
 
 import org.junit.Test;
 

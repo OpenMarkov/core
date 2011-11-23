@@ -10,6 +10,7 @@ import org.openmarkov.core.model.network.ProbNode;
  * @version 1.0 21/12/10
  * @author Miguel Palacios
  */
+@SuppressWarnings("serial")
 public class RelevanceEdit extends SimplePNEdit {
 	/**
 	 * The last relevance before the edition

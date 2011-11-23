@@ -12,6 +12,7 @@ import org.openmarkov.core.model.network.potential.Potential;
  * @version 1.0 21/12/10
  * @author Miguel Palacios
  */
+@SuppressWarnings("serial")
 public class NodeCommentEdit extends SimplePNEdit{
 	/**
 	 * Current node comment

@@ -21,6 +21,7 @@ import org.openmarkov.core.model.network.potential.operation.PotentialOperations
  * 
  */
 
+@SuppressWarnings("serial")
 public class AddProbNodeEdit extends SimplePNEdit {
 	
 	//Atribbutes

@@ -10,6 +10,7 @@ import org.openmarkov.core.model.network.State;
  *  @version 1.0 21/12/2010
  *  @author Miguel Palacios
  */
+@SuppressWarnings("serial")
 public class NetworkDefaultStatesEdit extends SimplePNEdit {
 	
 	/**

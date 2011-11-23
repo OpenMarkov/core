@@ -9,6 +9,7 @@ import org.openmarkov.core.model.network.ProbNet;
  * @version 1.0 21/12/10
  * @author Miguel Palacios
  */
+@SuppressWarnings("serial")
 public class NetworkCommentEdit extends SimplePNEdit {
 	/**
 	 * The current network comment

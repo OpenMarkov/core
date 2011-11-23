@@ -41,8 +41,9 @@ public class VariableTypeConstraintEdit extends SimplePNEdit {
 		this.newVariableTypeConstraint = newVariableTypeConstraint;
 		ArrayList<PNConstraint> constraints = probNet.getConstraints();
 		for (PNConstraint constraint:constraints){
-			if (constraint.getClass() == OnlyDiscreteVariables.class ||
-					constraint.getClass() == OnlyContinuousVariables.class	) {
+            if (constraint instanceof OnlyDiscreteVariables
+                || constraint instanceof OnlyContinuousVariables)
+            {
 				lastConstraint = constraint;
 				break;
 			}

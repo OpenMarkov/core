@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.potential.operation.PotentialOperations
  * @version 1.0 21/12/10
  *
  */
+@SuppressWarnings("serial")
 public class NodeStateEdit extends SimplePNEdit {
 	//Default increment between in discretized intervals
 	private final int increment = 2;

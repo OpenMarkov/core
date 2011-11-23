@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
  *  @author Miguel Palacios
  */
 
+@SuppressWarnings("serial")
 public class NodeReplaceStatesEdit extends SimplePNEdit {
 	
 	//Default increment between discretized intervals

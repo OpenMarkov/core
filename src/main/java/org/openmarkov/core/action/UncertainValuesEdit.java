@@ -16,6 +16,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * 
  */
 
+@SuppressWarnings("serial")
 public class UncertainValuesEdit extends SimplePNEdit {
 	
 	private ArrayList<Double> newValuesColumn;

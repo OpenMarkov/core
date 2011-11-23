@@ -10,6 +10,7 @@ import org.openmarkov.core.model.network.Variable;
 
 	
 
+@SuppressWarnings("serial")
 public class RemoveProbNodeEdit extends SimplePNEdit implements UsesVariable {
 
 		// Attributes

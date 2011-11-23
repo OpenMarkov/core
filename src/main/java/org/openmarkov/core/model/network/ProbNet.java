@@ -192,6 +192,18 @@ public class ProbNet implements Cloneable {
     }
     
     /**
+     * @param constraints
+     *            <code>ArrayList<PNConstraint></code>
+     */
+    public void removeConstraints (ArrayList<PNConstraint> constraints)
+    {
+        for(PNConstraint constraint : constraints)
+        {
+            removeConstraint(constraint);
+        }
+    }    
+    
+    /**
      * @param constraintClass
      *            <code>Class</code>
      */
@@ -233,13 +245,16 @@ public class ProbNet implements Cloneable {
             addConstraints(constraints, true);
             
             // Remove those constraints that are no longer applicable to the new network type
+            ArrayList<PNConstraint> constraintsToRemove = new ArrayList<PNConstraint> ();
             for(PNConstraint constraint : this.constraints)
             {
                 if(!networkType.isApplicableConstraint (constraint))
                 {
-                    removeConstraint (constraint);
+                    constraintsToRemove.add (constraint);
                 }
             }
+            removeConstraints (constraintsToRemove);
+            
         }catch(ConstraintViolationException e)
         {
             // Revert
@@ -922,6 +937,7 @@ public class ProbNet implements Cloneable {
 	 * @param variable
 	 *            <code>Variable</code>
 	 * @return The <code>ProbNode</code> that matches the <code>Variable</code>
+	 * @throws ProbNodeNotFoundException 
 	 * @consultation
 	 */
 	public ProbNode getProbNode(Variable variable) {

@@ -21,6 +21,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
+@SuppressWarnings("serial")
 public class SetPotentialEdit extends SimplePNEdit {
 	private PotentialType lastPotentialType;
 	private Potential lastPotential;

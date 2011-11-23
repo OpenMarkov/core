@@ -27,4 +27,10 @@ public class SimpleMarkovModelType extends NetworkType
         }
         return instance;
     }
+
+    /** @return String "SimpleMarkovModel" */
+    public String toString() {
+    	return "SimpleMarkovModel";
+    }
+    
 }

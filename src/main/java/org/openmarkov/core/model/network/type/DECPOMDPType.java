@@ -24,5 +24,11 @@ public class DECPOMDPType extends POMDPType
         }
         return instance;
     }
+
+    /** @return String "DECPOMDP" */
+    public String toString() {
+    	return "DECPOMDP";
+    }
+    
 }
 

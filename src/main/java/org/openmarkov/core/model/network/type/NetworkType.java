@@ -25,5 +25,8 @@ public abstract class NetworkType
         return constraints;
     }
     
+    /** @return An identifier that can be used in exception messages or text 
+     * files. <code>String</code>*/
+    public abstract String toString();
     
 }

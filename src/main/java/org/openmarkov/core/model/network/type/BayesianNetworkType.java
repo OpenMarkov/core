@@ -25,4 +25,10 @@ public class BayesianNetworkType extends NetworkType
         }
         return instance;
     }
+    
+    /** @return String "BayesianNetwork". */
+    public String toString() {
+    	return "BayesianNetwork";
+    }
+    
 }

@@ -32,5 +32,12 @@ public class MDPType extends NetworkType
         }
         return instance;
     }
+    
+    /** @return String "MDP" */
+    public String toString() {
+    	return "MDP";
+    }
+    
+
 }
 

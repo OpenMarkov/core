@@ -20,4 +20,10 @@ public class LIMIDType extends NetworkType
         }
         return instance;
     }
+
+    /** @return String "LIMID" */
+    public String toString() {
+    	return "LIMID";
+    }
+    
 }

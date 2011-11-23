@@ -27,5 +27,11 @@ public class MarkovNetworkType extends NetworkType
         }
         return instance;
     }
+
+    /** @return String "MarkovNetwork" */
+    public String toString() {
+    	return "MarkovNetwork";
+    }
+    
 }
 

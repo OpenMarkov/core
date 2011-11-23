@@ -25,5 +25,11 @@ public class POMDPType extends NetworkType
         }
         return instance;
     }
+
+    /** @return String "POMDP" */
+    public String toString() {
+    	return "POMDP";
+    }
+    
 }
 

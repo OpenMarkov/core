@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 
 /** This class implements the minimal set of methods for creating
  * a graph and inserting nodes and links.
- * <p>
+ * <p>áñ
  * Links are represented implicitly by the lists of parents, children and 
  * siblings of each node. Links can be explicitly represented as objects of 
  * class <code>LabelledLink</code>.
@@ -118,9 +118,9 @@ public class Graph {
 		return null;
 	}
 
-	/** Creates the explicit links (based on the implicit links).<p>When
+	/** Creates the explicit links (based on the implicit links).<p> When
 	 *  <code>createLabelledLinks = true</code> create explicit links with label
-	 *  = <code>null</code>. 
+	 *  = <code>null</code>. Otherwise, create unlabeled explicit links.
 	 * @param createLabelledLinks. <code>boolean</code> */
 	public void makeLinksExplicit(boolean createLabelledLinks) {
 		if (!explicitLinks) {

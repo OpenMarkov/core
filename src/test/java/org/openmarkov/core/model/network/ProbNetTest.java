@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NoFindingException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
@@ -32,9 +33,13 @@ public class ProbNetTest {
 
 	private ProbNet emptyProbNet;
 	
+	private ProbNet peque;
+	
 	/** ProbNet for test: Two chance nodes A --> B, one decision D, B --> D;
 	 * one utility U, A --> U, D --> U. */
 	private ProbNet simpleProbNet;
+	
+	private ProbNet pruebaInferencia;
 	
 	private Variable A;
 	
@@ -42,13 +47,88 @@ public class ProbNetTest {
 	
 	private Variable D;
 	
+	private Variable variableA;
+	
+	private Variable variableB; 
+	
+	private Variable variableC;
+	
+	private Variable variableD;
+	
+	private Variable variableE; 
+	
+	private Variable variableF;
+	
+	private Variable variableG;
+	
+	private Variable variableH; 
+	
+	private Variable variableI;
+	
 	private Variable U;
+	
 	
 	private ArrayList<Variable> aVariables;
 	
 	private ArrayList<Variable> abVariables;
 	
 	private ArrayList<Variable> adVariables;
+	
+	private ArrayList<Variable> variablesA;
+	
+	private ArrayList<Variable> variablesBA;
+	
+	private ArrayList<Variable> variablesCAB;
+	
+	private ArrayList<Variable> variablesCA;
+	
+	private ArrayList<Variable> variablesEBC;
+	
+	private ArrayList<Variable> variablesFE;
+	
+	private ArrayList<Variable> variablesGD;
+	
+	private ArrayList<Variable> variablesI;	
+	
+	private ArrayList<Variable> variablesDBI;
+	
+	private ArrayList<Variable> variablesba;
+	
+	private ArrayList<Variable> variablesAH;
+	
+	private ArrayList<Variable> variablesH;
+	
+	
+	
+	private TablePotential potentialvaluesA;
+	
+	private TablePotential potentialvaluesBA;
+	
+	private TablePotential potentialvaluesCAB;
+	
+	private TablePotential potentialvaluesCA;
+	
+	private TablePotential potentialvaluesEBC;
+	
+	private TablePotential potentialvaluesFE;
+	
+	private TablePotential potentialvaluesGD;
+	
+	private TablePotential potentialvaluesI;
+	
+	private TablePotential potentialvaluesDBI;
+	
+	private TablePotential potentialvaluesba;
+	
+	private TablePotential potentialvaluesAH;
+	
+	private TablePotential potentialvaluesH;
+	
+	
+	
+	private State absent;
+	
+	private State present;
 
 	private TablePotential pA;
 	
@@ -57,6 +137,8 @@ public class ProbNetTest {
 	private TablePotential pU;
 	
 	private EvidenceCase simpleEvidence;
+	
+	private PotentialRole role;
 	
 	// private Finding eB;
 	
@@ -107,6 +189,285 @@ public class ProbNetTest {
 		// eB = new Finding(B, 1);
 		simpleEvidence = new EvidenceCase();
 		simpleEvidence.addFinding(eA);
+	
+		
+		//probNet peque					
+		//Variables
+		String a = new String("A");
+		String b = new String("B");
+		String c = new String("C");
+		
+		//finite States variables
+		variableA = new Variable(a,2);
+		variableB = new Variable(b,2);
+		variableC = new Variable(c,2);
+			
+				
+		//additional properties
+		String relevance = new String("Relevance");
+		String value = new String("7.0");
+			
+		variableA.setAdditionalProperty(relevance,value);
+		variableB.setAdditionalProperty(relevance,value);
+		variableC.setAdditionalProperty(relevance,value);
+		
+		//Setting variable states
+		absent = new State("ausente");
+		present = new State("presente");
+		State [] states= {absent, present};
+		
+		variableA.setStates(states);
+		variableB.setStates(states);
+		variableC.setStates(states); 
+		
+		//Setting Precision
+		/*double precision = 0.00000000;
+		variableA.setPrecision(precision);
+		variableB.setPrecision(precision);
+		variableC.setPrecision(precision);
+		*/
+		//Potentials
+		//PotentialType type = PotentialType.TABLE;
+		role = PotentialRole.CONDITIONAL_PROBABILITY;
+		
+		//Potential A
+		double [] tableA ={0.2, 0.8};
+		
+		variablesA = new ArrayList<Variable>();
+		variablesA.add(variableA);
+		
+		potentialvaluesA= new TablePotential(variablesA,role, tableA);
+		
+		
+		//Potential BA
+		double [] tableBA ={0.7, 0.3, 0.9, 0.1};
+		
+		variablesBA = new ArrayList<Variable>();;
+		variablesBA.add(variableB);
+		variablesBA.add(variableA);
+		
+		
+		potentialvaluesBA= new TablePotential(variablesBA,role,tableBA);
+		
+		//potencial CAB
+		double [] tableCAB ={0.15, 0.29, 0.84, 0.98, 0.85, 0.71, 0.16, 0.02};
+		
+		variablesCAB = new ArrayList<Variable>();
+		variablesCAB.add(variableC);
+		variablesCAB.add(variableA);
+		variablesCAB.add(variableB);
+		
+		
+		//notEnoughMemoryException 
+		potentialvaluesCAB= new TablePotential(variablesCAB,role,tableCAB);
+		
+		peque = new ProbNet();
+		
+		NodeType nodeType = NodeType.CHANCE;
+		
+		peque.addVariable(variableA, nodeType);
+		peque.addVariable(variableB, nodeType);
+		peque.addVariable(variableC, nodeType);
+		
+		//Links throws NodeNotFoundException
+		try {
+			peque.addLink(variableA, variableB, true);
+		} catch (NodeNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			peque.addLink(variableA, variableC, true);
+		} catch (NodeNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			peque.addLink(variableB, variableC, true);
+		} catch (NodeNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		peque.addPotential((Potential)potentialvaluesA);
+		peque.addPotential((Potential)potentialvaluesBA);
+		peque.addPotential((Potential)potentialvaluesCAB);
+		
+		
+		//ProbNet pruebaInferencia
+				
+				//Variables
+								
+				//finite States variables
+				variableA = new Variable(a,2);
+				variableB = new Variable(b,2);
+				variableC = new Variable(c,2);
+				variableD = new Variable("D",2);
+				variableE = new Variable("E",2);
+				variableF = new Variable("F",2);
+				variableG = new Variable("G",2);
+				variableH = new Variable("H",2);
+				variableI = new Variable("I",2);	
+								
+				variableA.setAdditionalProperty(relevance,value);
+				variableB.setAdditionalProperty(relevance,value);
+				variableC.setAdditionalProperty(relevance,value);
+				variableD.setAdditionalProperty(relevance,value);
+				variableE.setAdditionalProperty(relevance,value);
+				variableF.setAdditionalProperty(relevance,value);
+				variableG.setAdditionalProperty(relevance,value);
+				variableH.setAdditionalProperty(relevance,value);
+				variableI.setAdditionalProperty(relevance,value);
+				
+				variableA.setStates(states);
+				variableB.setStates(states);
+				variableC.setStates(states); 
+				variableD.setStates(states);
+				variableE.setStates(states);
+				variableF.setStates(states); 
+				variableG.setStates(states);
+				variableH.setStates(states);
+				variableI.setStates(states); 
+				
+				//Potentials
+				//PotentialType type = PotentialType.TABLE;
+				role = PotentialRole.CONDITIONAL_PROBABILITY;
+				
+				//Potential CA
+				double [] tableCA ={0.81, 0.19, 0.98, 0.02};
+				variablesCA = new ArrayList<Variable>();
+				variablesCA.add(variableC);
+				variablesCA.add(variableA);
+				
+				potentialvaluesCA= new TablePotential(variablesCA,role, tableCA);
+				
+				
+				//Potential EBC
+				double [] tableEBC ={0.02, 0.98, 0.68, 0.32, 0.24, 0.76, 0.79, 0.21};
+				variablesEBC = new ArrayList<Variable>();
+				variablesEBC.add(variableE);
+				variablesEBC.add(variableB);
+				variablesEBC.add(variableC);
+				
+				potentialvaluesEBC= new TablePotential(variablesEBC,role,tableEBC);
+				
+				//potentialFE
+				double [] tableFE ={0.12, 0.88, 0.77, 0.23};
+				variablesFE = new ArrayList<Variable>();
+				variablesFE.add(variableF);
+				variablesFE.add(variableE);
+							
+				
+				//notEnoughMemoryException 
+				potentialvaluesFE= new TablePotential(variablesFE,role,tableFE);
+				
+				//potentialGD
+				double [] tableGD ={0.49, 0.51, 0.75, 0.25};				
+				variablesGD = new ArrayList<Variable>();
+				variablesGD.add(variableG);
+				variablesGD.add(variableD);
+							
+				
+				//notEnoughMemoryException 
+				potentialvaluesGD= new TablePotential(variablesGD,role,tableGD);
+				
+				//Potential I
+				double [] tableI ={0.85, 0.15};
+				
+				variablesI= new ArrayList<Variable>();
+				variablesI.add(variableI);
+				
+				potentialvaluesI= new TablePotential(variablesI,role, tableI);
+				
+				//Potential DBI
+				double [] tableDBI ={0.22, 0.78, 0.86, 0.14, 0.57, 0.43, 0.9, 0.1};
+				variablesDBI = new ArrayList<Variable>();
+				variablesDBI.add(variableD);
+				variablesDBI.add(variableB);
+				variablesDBI.add(variableI);
+				
+				potentialvaluesDBI= new TablePotential(variablesDBI,role,tableDBI);
+				
+				//potentialBA
+				double [] tableba ={0.77, 0.23, 0.26, 0.74};
+				variablesba = new ArrayList<Variable>();
+				variablesba.add(variableB);
+				variablesba.add(variableA);
+							
+				
+				//notEnoughMemoryException 
+				potentialvaluesba= new TablePotential(variablesba,role,tableba);
+				
+				//potentialAH
+				double [] tableAH ={0.09, 0.91, 0.83, 0.17};
+				variablesAH = new ArrayList<Variable>();
+				variablesAH.add(variableA);
+				variablesAH.add(variableH);
+							
+				
+				//notEnoughMemoryException 
+				potentialvaluesAH= new TablePotential(variablesAH,role,tableAH);
+				
+				//Potential H
+				double [] tableH ={0.68, 0.32};
+				variablesH= new ArrayList<Variable>();
+				variablesH.add(variableH);
+				
+				potentialvaluesH= new TablePotential(variablesH,role, tableH);
+				
+				pruebaInferencia = new ProbNet();
+				
+							
+				pruebaInferencia.addVariable(variableA, nodeType);
+				pruebaInferencia.addVariable(variableB, nodeType);
+				pruebaInferencia.addVariable(variableC, nodeType);
+				pruebaInferencia.addVariable(variableD, nodeType);
+				pruebaInferencia.addVariable(variableE, nodeType);
+				pruebaInferencia.addVariable(variableF, nodeType);
+				pruebaInferencia.addVariable(variableG, nodeType);
+				pruebaInferencia.addVariable(variableH, nodeType);
+				pruebaInferencia.addVariable(variableI, nodeType);
+				
+				//Links throws NodeNotFoundException
+				try {
+					pruebaInferencia.addLink(variableA, variableB, true);
+				} catch (NodeNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					pruebaInferencia.addLink(variableA, variableC, true);
+				} catch (NodeNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					pruebaInferencia.addLink(variableB, variableD, true);
+				} catch (NodeNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				pruebaInferencia.addLink(variableB, variableE, true);
+				pruebaInferencia.addLink(variableC, variableE, true);
+				pruebaInferencia.addLink(variableD, variableG, true);
+				pruebaInferencia.addLink(variableE, variableF, true);
+				pruebaInferencia.addLink(variableH, variableA, true);
+				pruebaInferencia.addLink(variableI, variableD, true);
+				
+				
+				pruebaInferencia.addPotential((Potential)potentialvaluesCA);
+				pruebaInferencia.addPotential((Potential)potentialvaluesEBC);
+				pruebaInferencia.addPotential((Potential)potentialvaluesFE);
+				pruebaInferencia.addPotential((Potential)potentialvaluesGD);
+				pruebaInferencia.addPotential((Potential)potentialvaluesI);
+				pruebaInferencia.addPotential((Potential)potentialvaluesDBI);
+				pruebaInferencia.addPotential((Potential)potentialvaluesba);
+				pruebaInferencia.addPotential((Potential)potentialvaluesH);
+				pruebaInferencia.addPotential((Potential)potentialvaluesAH);
+				
+	
 	}
 
 	@Test
@@ -131,7 +492,7 @@ public class ProbNetTest {
 
 	@Test
 	public void testRemoveConstraint() {
-	    PNConstraint constraint = new NoCycle();
+		PNConstraint constraint = new NoCycle();
 		try {
 			emptyProbNet.addConstraint(constraint, true);
 		} catch (ConstraintViolationException e) {
@@ -498,10 +859,8 @@ public class ProbNetTest {
 
 	@Test
 	public void testPrune1() throws Exception {
-		// Set up
-		ProbNet peque = ElviraParser.getUniqueInstance()
-			.loadProbNet(IOTests.testsPath + "peque.elv");
-		assertNotNull(peque);
+				
+		assertNotNull(this.peque);
 		ProbNode probNodeA = peque.getProbNode("A");
 		ProbNode probNodeB = peque.getProbNode("B");
 		Variable A = probNodeA.getVariable();
@@ -543,7 +902,8 @@ public class ProbNetTest {
 		assertEquals(1, offsets.length);
 		int initialPosition = bPotential.getInitialPosition();
 		assertEquals(0, initialPosition);
-		assertEquals(bPotential.values[initialPosition], 0.9);
+		double a = bPotential.values[initialPosition];
+			assertEquals(a, 0.9);
 		assertEquals(bPotential.values[initialPosition + offsets[0]], 0.1);
 	}
 
@@ -551,9 +911,7 @@ public class ProbNetTest {
 	/** Test: prune barren nodes and prune parts of the network isolated due to 
 	 *  evidence. */
 	public void testPrune2() throws Exception {
-		// Set up
-		ProbNet pruebaInferencia = ElviraParser.getUniqueInstance()
-			.loadProbNet(IOTests.testsPath + "PruebaInferencia.elv");
+				
 		assertNotNull(pruebaInferencia);
 		ProbNode probNodeA = pruebaInferencia.getProbNode("A");
 		ProbNode probNodeB = pruebaInferencia.getProbNode("B");
@@ -705,5 +1063,4 @@ public class ProbNetTest {
 		assertTrue(potential1B.contains(I));
 		
 	}*/
-	
 }

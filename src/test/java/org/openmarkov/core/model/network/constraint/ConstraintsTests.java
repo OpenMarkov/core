@@ -7,9 +7,9 @@ import org.junit.runners.Suite;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.constraint.compound.PNFactories;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
 
 @RunWith(Suite.class)
@@ -86,7 +86,7 @@ public class ConstraintsTests {
 	 * purposes: A->D, U(A,D).
 	 * @return <code>ProbNet</code> */
 	public static ProbNet getInfuenceDiagram() {
-		ProbNet influenceDiagram = PNFactories.getEmptyID();;
+		ProbNet influenceDiagram = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		Variable vA = new Variable("A", 2);
 		Variable vD = new Variable("D", 2);
 		Variable vU = new Variable("U");

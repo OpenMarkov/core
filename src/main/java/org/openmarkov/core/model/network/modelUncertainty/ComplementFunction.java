@@ -69,12 +69,5 @@ public class ComplementFunction extends ProbDensFunction {
 		return 0;
 	}
 
-
-
-	@Override
-	public void initializeGenerator() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }

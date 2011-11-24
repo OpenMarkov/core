@@ -51,12 +51,4 @@ public class DirichletFunction extends ProbDensFunction {
 			return alpha;
 		}
 
-		@Override
-		public void initializeGenerator() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		
-
 }

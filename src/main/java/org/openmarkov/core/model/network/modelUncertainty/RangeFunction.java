@@ -1,6 +1,6 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
-public class RangeFunction extends ProbDensFunction {
+public class RangeFunction extends ProbDensFunctionWithKnownInverseCDF {
 
 	double a;
 	
@@ -13,7 +13,7 @@ public class RangeFunction extends ProbDensFunction {
 	}
 
 	@Override
-	public void placeParameters(Double[] params,boolean createSSJPDF) {
+	public void placeParameters(Double[] params) {
 		a = params[0];
 		b = params[1];
 	}
@@ -46,9 +46,16 @@ public class RangeFunction extends ProbDensFunction {
 		return b;
 	}
 
+	
 	@Override
 	public double getMean() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (a+b)/2;
 	}
+	
+	@Override
+	public double getInverseCumulativeDistributionFunction(double y) {
+		return a+(b-a)*y;
+	}
+
+
 }

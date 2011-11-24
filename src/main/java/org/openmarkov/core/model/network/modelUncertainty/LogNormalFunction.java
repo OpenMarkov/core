@@ -18,7 +18,7 @@ public class LogNormalFunction extends ProbDensFunction {
 	}
 
 	@Override
-	public void placeParameters(Double[] args,boolean createSSJPDF) {
+	public void placeParameters(Double[] args) {
 		mu = args[0];
 		sigma = args[1];
 

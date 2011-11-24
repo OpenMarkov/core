@@ -20,7 +20,7 @@ public abstract class GammaAbstract extends ProbDensFunction {
 	protected abstract void auxPlaceParameters(Double[] args);	
 	
 	@Override
-	public void placeParameters(Double[] params,boolean createSSJPDF) {
+	public void placeParameters(Double[] params) {
 		auxPlaceParameters(params);
 		
 	}
@@ -33,8 +33,19 @@ public abstract class GammaAbstract extends ProbDensFunction {
 	
 
 	@Override
-	public double getMaximum() {
+	public final double getMaximum() {
 		return Double.POSITIVE_INFINITY;
+	}
+	
+	@Override
+	public final double getMean() {
+		return (kabstract*thetaabstract);
+	}
+
+	@Override
+	public final double getSample() {
+		//TODO
+		return 0;
 	}
 
 

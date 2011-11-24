@@ -22,6 +22,17 @@ public class DirichletFamily extends FamilyDistribution {
 	
 	}
 	
+	
+	public DirichletFamily(double[] alphas) {
+					
+		int size = alphas.length;
+		this.alphas = new double[size];
+		for (int i=0;i<size;i++){
+			this.alphas[i]= alphas[i];
+		}
+			
+	}
+	
 	public double[] getMean(){
 		return Tools.normalize(alphas);
 	}

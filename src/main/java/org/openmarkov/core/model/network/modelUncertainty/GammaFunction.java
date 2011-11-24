@@ -53,12 +53,7 @@ public class GammaFunction extends GammaAbstract {
 		a[1]=theta;
 		return a;
 	}
-
-
-	@Override
-	public double getMean() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	
+	
 
 }

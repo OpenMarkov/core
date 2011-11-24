@@ -18,7 +18,7 @@ public class ComplementFunction extends ProbDensFunction {
 	
 	
 	@Override
-	public void placeParameters(Double[] params,boolean createSSJPDF) {
+	public void placeParameters(Double[] params) {
 		nu = params[0];
 		
 		
@@ -54,19 +54,22 @@ public class ComplementFunction extends ProbDensFunction {
 		return a;
 	}
 
-
-
 	@Override
 	public double getMaximum() {
 		return 1;
 	}
 
 
-
 	@Override
 	public double getMean() {
-		// TODO Auto-generated method stub
-		return 0;
+		return nu;
+	}
+
+
+
+	@Override
+	public double getSample() {
+		return nu;
 	}
 
 	

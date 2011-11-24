@@ -12,7 +12,8 @@ public enum TypeProbDensityFunction {
 	GAMMAMV("Gamma-mv"),
 	BETA("Beta"),	
 	DIRICHLET("Dirichlet"),
-	COMPLEMENT("Complement");
+	COMPLEMENT("Complement"),
+	EXPONENTIAL("Exponential");
 
 	
 	private String name;

@@ -11,7 +11,7 @@ public class ExactFunction extends ProbDensFunction {
 	}
 
 	@Override
-	public void placeParameters(Double[] params,boolean createSSJPDF) {
+	public void placeParameters(Double[] params) {
 		nu = params[0];
 		
 	}

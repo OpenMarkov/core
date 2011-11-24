@@ -1,7 +1,7 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
-
-	public class TriangularFunction extends ProbDensFunction {
+	
+	public class TriangularFunction extends ProbDensFunctionWithKnownInverseCDF {
 		
 		/**
 		 * Minimum
@@ -24,11 +24,12 @@ package org.openmarkov.core.model.network.modelUncertainty;
 		}
 
 		@Override
-		public void placeParameters(Double[] params,boolean createSSJPDF) {
+		public void placeParameters(Double[] params) {
 
 			a = params[0];
 			b = params[1];
 			c = params[2];
+	
 		}
 
 		@Override
@@ -61,14 +62,31 @@ package org.openmarkov.core.model.network.modelUncertainty;
 			
 			return b;
 		}
-
+		
 		@Override
 		public double getMean() {
-			// TODO Auto-generated method stub
-			return 0;
+			return (a+b)/2;
 		}
 		
+		@Override
+		public double getInverseCumulativeDistributionFunction(double y) {
+			double x;
+			double sample;
+			double diffBA;
+						
+			diffBA = b-a;
+						
+			x = a+ Math.sqrt(y*diffBA*(c-a));
+			
+			if (x<c){
+				sample = x;
+			}
+			else{
+				sample = b-Math.sqrt((1-y)*diffBA*(c-a)); 
+			}
+			return sample;
+		}
 
-
+	
 	}
 

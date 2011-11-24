@@ -10,26 +10,22 @@ public class DirichletFunction extends ProbDensFunction {
 		}
 
 		@Override
-		public void placeParameters(Double[] params,boolean createSSJPDF) {
-			// TODO Auto-generated method stub
+		public void placeParameters(Double[] params) {
 			alpha = params[0];
 		}
 
 		@Override
 		public boolean doParametersVerifyDomainConstraint(boolean isChanceVariable) {
-			// TODO Auto-generated method stub
 			return (alpha>0);
 		}
 
 		@Override
 		public boolean isPossibleDistribution(boolean isChance) {
-			// TODO Auto-generated method stub
 			return isChance;
 		}
 
 		@Override
 		public int getNumberOfRequiredArguments() {
-			// TODO Auto-generated method stub
 			return 1;
 		}
 
@@ -49,6 +45,11 @@ public class DirichletFunction extends ProbDensFunction {
 		@Override
 		public double getMean() {
 			return alpha;
+		}
+
+		@Override
+		public double getSample() {
+			return 0;
 		}
 
 }

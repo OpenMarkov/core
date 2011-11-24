@@ -36,11 +36,7 @@ public abstract class ProbDensFunction {
 		placeParameters(values);
 	}
 	
-	public final void placeParameters(Double[] args){
-		placeParameters(args,false);
-	}
-	
-	public abstract void placeParameters(Double[] args,boolean createSSJPDF);
+	public abstract void placeParameters(Double[] args);
 	
 	public static ProbDensFunction constructNewProbDensFunction(TypeProbDensityFunction type){
 		
@@ -107,8 +103,6 @@ public abstract class ProbDensFunction {
 
 	public abstract double getMaximum();
 
-	public double getSample(){
-		return getMean();
-	}
+	public abstract double getSample();
 	
 }

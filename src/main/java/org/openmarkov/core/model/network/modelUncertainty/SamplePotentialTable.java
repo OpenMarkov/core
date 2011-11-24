@@ -105,8 +105,8 @@ public class SamplePotentialTable {
 
 					// Initialize the random seed and the random number
 					// generator in the Dirichlet family
-					setAndInitializeRandomStreamGenerator(dirFamily,
-							arrayFamily);
+					/*setAndInitializeRandomStreamGenerator(dirFamily,
+							arrayFamily);*/
 				} else {
 					hasUncertainty = false;
 					// takes the values from the original potential and places
@@ -140,7 +140,7 @@ public class SamplePotentialTable {
 		return sampledTablePotential;
 	}
 
-	private void setAndInitializeRandomStreamGenerator(
+	/*private void setAndInitializeRandomStreamGenerator(
 			DirichletFamily dirFamily,
 			ArrayList<UncertainValue> arrayFamily) {
 		for (UncertainValue aux:arrayFamily){
@@ -149,7 +149,7 @@ public class SamplePotentialTable {
 		}
 //		dirFamily.createRandomGenerator();
 //		dirFamily.initializeGenerator();
-	}
+	}*/
 	
 	
 	private double[] generateSample(FamilyDistribution otherFamily, DirichletFamily dirFamily, ComplementFamily complementFamily, int[] indexesOther, int[] indexesDirichlet, int[] indexesComplement,int numStates){

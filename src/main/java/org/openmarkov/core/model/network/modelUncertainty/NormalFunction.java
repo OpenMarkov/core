@@ -20,7 +20,7 @@ public class NormalFunction  extends ProbDensFunction {
 
 
 	@Override
-	public void placeParameters(Double[] args,boolean createSSJPDF) {
+	public void placeParameters(Double[] args) {
 		mu = args[0];
 		sigma = args[1];
 		
@@ -55,6 +55,13 @@ public class NormalFunction  extends ProbDensFunction {
 
 	@Override
 	public double getMean() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public double getSample() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

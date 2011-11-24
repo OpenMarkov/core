@@ -10,12 +10,10 @@ public class BetaFunction extends ProbDensFunction {
 	
 	public BetaFunction(){
 		super(TypeProbDensityFunction.BETA);
-	
-		
 	}
 
 	@Override
-	public void placeParameters(Double[] params,boolean createSSJPDF) {
+	public void placeParameters(Double[] params) {
 		alpha = params[0];
 		beta = params[1];
 	}
@@ -50,14 +48,22 @@ public class BetaFunction extends ProbDensFunction {
 
 	@Override
 	public double getMean() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public double getSample() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+		double[] alphas;
+		DirichletFamily family;
+		double sample;
+		//We use a Dirichlet family for obtaining the sample
+		alphas = new double[2];
+		alphas[0] = alpha;
+		alphas[1] = beta;
+		family = new DirichletFamily(alphas);
+		
+		sample = family.getSample()[0];
+		
+		return sample;	}
 
 		}

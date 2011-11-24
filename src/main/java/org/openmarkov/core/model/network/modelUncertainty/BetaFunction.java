@@ -7,9 +7,6 @@ public class BetaFunction extends ProbDensFunction {
 	
 	double beta;
 
-
-	
-	
 	
 	public BetaFunction(){
 		super(TypeProbDensityFunction.BETA);
@@ -63,10 +60,4 @@ public class BetaFunction extends ProbDensFunction {
 		return 0;
 	}
 
-	@Override
-	public void initializeGenerator() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	}
+		}

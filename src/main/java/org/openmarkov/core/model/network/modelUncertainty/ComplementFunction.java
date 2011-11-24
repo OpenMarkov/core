@@ -64,23 +64,17 @@ public class ComplementFunction extends ProbDensFunction {
 
 
 	@Override
-	public void createSSJPDF() {
-		ssjPDF = null;
+	public double getMean() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
-	
+
+
+
 	@Override
 	public void initializeGenerator() {
-		generator = null;
+		// TODO Auto-generated method stub
 		
 	}
-
-
-
-	
-
-	
-
-
-
 	
 }

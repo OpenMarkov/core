@@ -147,8 +147,8 @@ public class SamplePotentialTable {
 			aux.createRandomGenerator();
 			aux.initializeGenerator();
 		}
-		dirFamily.createRandomGenerator();
-		dirFamily.initializeGenerator();
+//		dirFamily.createRandomGenerator();
+//		dirFamily.initializeGenerator();
 	}
 	
 	

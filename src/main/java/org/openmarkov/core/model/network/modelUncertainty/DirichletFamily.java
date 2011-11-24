@@ -2,18 +2,11 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.ArrayList;
 
-
-import umontreal.iro.lecuyer.probdistmulti.DirichletDist;
-import umontreal.iro.lecuyer.randvarmulti.DirichletGen;
-import umontreal.iro.lecuyer.rng.MRG32k3a;
-
 public class DirichletFamily extends FamilyDistribution {
 	
 	double[] alphas;
 
-	protected MRG32k3a stream;
 	
-	protected DirichletGen generator;
 	
 	public DirichletFamily(ArrayList<UncertainValue> siblings) {
 		super(siblings);
@@ -24,30 +17,35 @@ public class DirichletFamily extends FamilyDistribution {
 		for (int i=0;i<size;i++){
 			alpha[i]= ((DirichletFunction)(family.get(i).getProbDensityFunction())).alpha;
 		}
-		ssjPDFM = new DirichletDist(alpha);
+		
 		alphas = alpha;
 	
 	}
 	
 	public double[] getMean(){
-		return ssjPDFM.getMean();
+		return Tools.normalize(alphas);
 	}
 
 	
-	public void initializeGenerator() {
-		generator = new DirichletGen(stream,alphas);
-		
-	}
-
-	public void createRandomGenerator() {
-		stream = new MRG32k3a();
-	}
 	
 	public double[] getSample() {
-		double[] sample=new double[alphas.length];
-		generator.nextPoint(sample);
+		int length = alphas.length;
+		double sumAuxSamples;
+		double auxSample;
+		double[] sample=new double[length];
+		double[] auxSamples = new double[length];
+		sumAuxSamples = 0.0;
+		for (int i=0;i<length;i++){
+			auxSample=(new GammaFunction(alphas[i],1.0)).getSample();
+			auxSamples[i] = auxSample;
+			sumAuxSamples = sumAuxSamples+auxSample;
+		}
+		for (int i=0;i<length;i++){
+			sample[i] = auxSamples[i]/sumAuxSamples;
+		}
 		return sample;
 	}
+	
 	
 
 }

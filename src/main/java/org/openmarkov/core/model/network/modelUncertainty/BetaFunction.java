@@ -1,8 +1,5 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import umontreal.iro.lecuyer.probdist.BetaDist;
-import umontreal.iro.lecuyer.randvar.BetaGen;
-
 
 public class BetaFunction extends ProbDensFunction {
 
@@ -24,7 +21,6 @@ public class BetaFunction extends ProbDensFunction {
 	public void placeParameters(Double[] params,boolean createSSJPDF) {
 		alpha = params[0];
 		beta = params[1];
-		if (createSSJPDF) createSSJPDF();
 	}
 
 	@Override
@@ -56,37 +52,21 @@ public class BetaFunction extends ProbDensFunction {
 	}
 
 	@Override
-	public void createSSJPDF() {
-		ssjPDF = new BetaDist(alpha,beta);
+	public double getMean() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
-	
+	@Override
+	public double getSample() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 	@Override
 	public void initializeGenerator() {
-		generator = new BetaGen(stream,(BetaDist) ssjPDF);
+		// TODO Auto-generated method stub
 		
 	}
 
-
-
-	
-
-
-
-	
-	
-		
-	/*@Override
-	public double getMean() {
-		// TODO Auto-generated method stub
-		return alpha / (alpha+beta);
 	}
-
-	@Override
-	public double getStdDeviation() {
-		// TODO Auto-generated method stub
-		return Math.sqrt((alpha*beta)/(Math.pow(alpha+beta,2)*(alpha+beta+1)));
-	}*/
-
-}

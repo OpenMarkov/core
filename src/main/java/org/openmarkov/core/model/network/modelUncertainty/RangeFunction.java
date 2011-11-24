@@ -1,11 +1,5 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import umontreal.iro.lecuyer.probdist.UniformDist;
-import umontreal.iro.lecuyer.randvar.UniformGen;
-import umontreal.iro.lecuyer.rng.MRG32k3a;
-
-
-
 public class RangeFunction extends ProbDensFunction {
 
 	double a;
@@ -22,9 +16,6 @@ public class RangeFunction extends ProbDensFunction {
 	public void placeParameters(Double[] params,boolean createSSJPDF) {
 		a = params[0];
 		b = params[1];
-		if (createSSJPDF){
-			createSSJPDF();
-		}
 	}
 
 	@Override
@@ -56,18 +47,8 @@ public class RangeFunction extends ProbDensFunction {
 	}
 
 	@Override
-	public void createSSJPDF() {
-		ssjPDF = new UniformDist(a,b);
+	public double getMean() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
-
-	
-
-	@Override
-	public void initializeGenerator() {
-		generator = new UniformGen(stream,(UniformDist) ssjPDF);
-	}
-
-
-
-
 }

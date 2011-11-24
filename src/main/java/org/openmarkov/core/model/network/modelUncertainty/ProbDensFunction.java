@@ -1,25 +1,13 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import umontreal.iro.lecuyer.probdist.Distribution;
-import umontreal.iro.lecuyer.randvar.RandomVariateGen;
-import umontreal.iro.lecuyer.rng.MRG32k3a;
-
-
+import java.util.Random;
 
 public abstract class ProbDensFunction {
 	
 	TypeProbDensityFunction type;
 	
-	/**
-	 * Connector to the SSJ library
-	 */
-	protected Distribution ssjPDF;
-
-	protected MRG32k3a stream;
-	
-	protected RandomVariateGen generator;
-	
-	
+	protected Random stream;
+		
 		
 	public TypeProbDensityFunction getType() {
 		return type;
@@ -31,6 +19,7 @@ public abstract class ProbDensFunction {
 
 	public ProbDensFunction(TypeProbDensityFunction type) {
 		this.type = type;
+		stream = new Random();
 		
 	}
 	
@@ -53,8 +42,6 @@ public abstract class ProbDensFunction {
 	
 	public abstract void placeParameters(Double[] args,boolean createSSJPDF);
 	
-	public abstract void createSSJPDF();
-
 	public static ProbDensFunction constructNewProbDensFunction(TypeProbDensityFunction type){
 		
 		ProbDensFunction auxProb = null;
@@ -116,24 +103,12 @@ public abstract class ProbDensFunction {
 	 * Some subclasses can override this method.
 	 * @return
 	 */
-	public double getMean(){
-		return ssjPDF.getMean();
-	}
+	public abstract double getMean();
 
 	public abstract double getMaximum();
 
 	public double getSample(){
-		return generator.nextDouble();
+		return getMean();
 	}
-
 	
-	public abstract void initializeGenerator();
-
-	 
-	public void createRandomGenerator() {
-		
-		stream = new MRG32k3a();
-			
-		
-	}	
 }

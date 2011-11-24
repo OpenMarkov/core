@@ -1,8 +1,5 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import umontreal.iro.lecuyer.rng.MRG32k3a;
-
-
 
 
 public class ExactFunction extends ProbDensFunction {
@@ -55,30 +52,8 @@ public class ExactFunction extends ProbDensFunction {
 	}
 
 	@Override
-	public void createSSJPDF() {
-
-		ssjPDF = null;
-	}
-
-	
-
-	@Override
-	public void initializeGenerator() {
-		// TODO Auto-generated method stub
-		generator = null;
-	}
-
-	@Override
 	public double getSample() {
 		return nu;
 	}
-	
-	
-	 
-	
-	
-
-
-
 	
 }

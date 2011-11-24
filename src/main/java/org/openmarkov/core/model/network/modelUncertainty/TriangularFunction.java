@@ -1,9 +1,6 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import umontreal.iro.lecuyer.probdist.TriangularDist;
-import umontreal.iro.lecuyer.randvar.TriangularGen;
 
-	
 	public class TriangularFunction extends ProbDensFunction {
 		
 		/**
@@ -32,9 +29,6 @@ import umontreal.iro.lecuyer.randvar.TriangularGen;
 			a = params[0];
 			b = params[1];
 			c = params[2];
-			if (createSSJPDF){
-				createSSJPDF();
-			}
 		}
 
 		@Override
@@ -69,15 +63,9 @@ import umontreal.iro.lecuyer.randvar.TriangularGen;
 		}
 
 		@Override
-		public void createSSJPDF() {
-			ssjPDF = new TriangularDist(a,b,c);
-			
-		}
-
-
-		@Override
-		public void initializeGenerator() {
-			generator = new TriangularGen(stream,(TriangularDist)ssjPDF);
+		public double getMean() {
+			// TODO Auto-generated method stub
+			return 0;
 		}
 		
 

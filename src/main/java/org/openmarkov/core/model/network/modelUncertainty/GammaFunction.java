@@ -2,11 +2,20 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.openmarkov.core.model.network.modelUncertainty.TypeProbDensityFunction;
 
-import umontreal.iro.lecuyer.randvar.GammaGen;
-import umontreal.iro.lecuyer.rng.MRG32k3a;
-
 public class GammaFunction extends GammaAbstract {
 	
+	/**
+	 * @param type
+	 * @param k
+	 * @param theta
+	 */
+	public GammaFunction(double k, double theta) {
+		this();
+		this.k = k;
+		this.theta = theta;
+	}
+
+
 	double k;
 	
 	double theta;
@@ -46,11 +55,13 @@ public class GammaFunction extends GammaAbstract {
 	}
 
 
+	@Override
+	public double getMean() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 
-	
-
-	
 	
 
 }

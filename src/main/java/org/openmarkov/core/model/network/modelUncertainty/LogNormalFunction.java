@@ -1,9 +1,5 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import umontreal.iro.lecuyer.probdist.LognormalDist;
-import umontreal.iro.lecuyer.randvar.LognormalGen;
-import umontreal.iro.lecuyer.rng.MRG32k3a;
-
 public class LogNormalFunction extends ProbDensFunction {
 
 	double mu;
@@ -25,9 +21,7 @@ public class LogNormalFunction extends ProbDensFunction {
 	public void placeParameters(Double[] args,boolean createSSJPDF) {
 		mu = args[0];
 		sigma = args[1];
-		if (createSSJPDF){
-			createSSJPDF();
-		}
+
 	}
 
 	@Override
@@ -58,19 +52,11 @@ public class LogNormalFunction extends ProbDensFunction {
 
 
 	@Override
-	public void createSSJPDF() {
-		ssjPDF = new LognormalDist(mu,sigma);
-		
+	public double getMean() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
-
-
-
-	@Override
-	public void initializeGenerator() {
-		generator = new LognormalGen(stream,(LognormalDist) ssjPDF);
-		
-	}
 
 
 }

@@ -1,13 +1,8 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import umontreal.iro.lecuyer.randvar.BetaGen;
-import umontreal.iro.lecuyer.rng.MRG32k3a;
-
 public class DirichletFunction extends ProbDensFunction {
 
 		double alpha;
-		
-	
 		
 		public DirichletFunction(){
 			super(TypeProbDensityFunction.DIRICHLET);
@@ -52,18 +47,16 @@ public class DirichletFunction extends ProbDensFunction {
 		}
 
 		@Override
-		public void createSSJPDF() {
-			// TODO Auto-generated method stub
-			ssjPDF = null;
+		public double getMean() {
+			return alpha;
 		}
 
-		
 		@Override
 		public void initializeGenerator() {
-			generator = null;
+			// TODO Auto-generated method stub
 			
 		}
 
-
+		
 
 }

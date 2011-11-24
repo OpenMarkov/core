@@ -32,27 +32,7 @@
     <artifactId>junit</artifactId>
     <version>4.0</version>
 	</dependency>
-	  
-	  <dependency>
-	    <groupId>umontreal.iro</groupId>
-	    <artifactId>umontreal.iro.ssj</artifactId>
-	    <version>1.0.0</version>
-	  </dependency>	  
+
    </dependencies>
-   
-	<repositories>
-		<repository>
-			<id>release</id>
-			<name>OpenMarkov</name>
-			<url>http://openmarkov.org:8081/nexus/content/repositories/releases</url>
-			<layout>default</layout>
-		</repository>
-		<repository>
-			<id>snapshots</id>
-			<name>OpenMarkov Snapshots</name>
-			<url>http://openmarkov.org:8081/nexus/content/repositories/snapshots/</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>   
 	
 </project>

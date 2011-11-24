@@ -39,7 +39,13 @@ public class GammamvFunction extends GammaAbstract {
 		return a;
 	}
 
-	
+
+	@Override
+	public double getMean() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 
 	
 }

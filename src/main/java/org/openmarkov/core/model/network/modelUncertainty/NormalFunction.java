@@ -1,8 +1,5 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import umontreal.iro.lecuyer.probdist.NormalDist;
-import umontreal.iro.lecuyer.randvar.NormalGen;
-import umontreal.iro.lecuyer.rng.MRG32k3a;
 
 public class NormalFunction  extends ProbDensFunction {
 	
@@ -26,9 +23,6 @@ public class NormalFunction  extends ProbDensFunction {
 	public void placeParameters(Double[] args,boolean createSSJPDF) {
 		mu = args[0];
 		sigma = args[1];
-		if (createSSJPDF){
-			createSSJPDF();
-		}
 		
 	}
 
@@ -57,22 +51,13 @@ public class NormalFunction  extends ProbDensFunction {
 		
 		return Double.POSITIVE_INFINITY;
 	}
-	
-
-	@Override
-	public void createSSJPDF() {
-		ssjPDF = new NormalDist(mu,sigma);
-		
-	}
-
-
 
 
 	@Override
-	public void initializeGenerator() {
-		generator = new NormalGen(stream,(NormalDist) ssjPDF);
+	public double getMean() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
-
 
 	
 }

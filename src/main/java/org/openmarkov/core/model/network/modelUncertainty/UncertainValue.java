@@ -101,12 +101,12 @@ public class UncertainValue {
 		else{
 			correctArgumentsInProbDensFunction = true;
 			auxProb.placeParameters(args);
-			if (createSSJPDF){
+			/*if (createSSJPDF){
 				auxProb.createSSJPDF();
 			}
 			if (createRandomGenerator){
 				auxProb.createRandomGenerator();
-			}
+			}*/
 				
 		}
 		this.probDensFunction = auxProb;
@@ -174,19 +174,7 @@ public class UncertainValue {
 	}
 
 
-	
-	public void initializeGenerator() {
-		// TODO Auto-generated method stub
-		probDensFunction.initializeGenerator();
-	}
-
-
-	public void createRandomGenerator() {
-		// TODO Auto-generated method stub
-		probDensFunction.createRandomGenerator();
-		
-	}
-        
+	        
 	/*public boolean isComplementOfOtherValues() {
 		return isComplementOfOtherValues;
 	}

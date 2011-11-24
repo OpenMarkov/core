@@ -3,16 +3,9 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import java.util.ArrayList;
 
 
-import umontreal.iro.lecuyer.probdistmulti.ContinuousDistributionMulti;
-
 public class FamilyDistribution {
 	
-	//TypeProbDensityFunction type;
-	
 	ArrayList<UncertainValue> family;
-	
-	ContinuousDistributionMulti ssjPDFM;
-	
 
 	
 	public ArrayList<UncertainValue> getFamily() {
@@ -25,7 +18,6 @@ public class FamilyDistribution {
 
 	public FamilyDistribution(){
 		family = null;
-		ssjPDFM = null;
 	}
 		
 	public FamilyDistribution(ArrayList<UncertainValue> arrayUncertain) {
@@ -85,11 +77,6 @@ public class FamilyDistribution {
 		return mean;
 	}
 	
-	
 
-
-	
-	
-	
 
 }

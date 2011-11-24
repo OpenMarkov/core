@@ -220,12 +220,6 @@ public class ProbNetTest {
 		variableB.setStates(states);
 		variableC.setStates(states); 
 		
-		//Setting Precision
-		/*double precision = 0.00000000;
-		variableA.setPrecision(precision);
-		variableB.setPrecision(precision);
-		variableC.setPrecision(precision);
-		*/
 		//Potentials
 		//PotentialType type = PotentialType.TABLE;
 		role = PotentialRole.CONDITIONAL_PROBABILITY;
@@ -473,7 +467,7 @@ public class ProbNetTest {
 	@Test
 	public void testProbNet() {
 		// Test empty probabilistic network.
-		assertEquals(1, emptyProbNet.getConstraints().size()); // No constraints
+		assertEquals(13, emptyProbNet.getConstraints().size()); // No constraints
 		for (NodeType nodeType : NodeType.values()) { // No nodes of every type
 			assertEquals(0, emptyProbNet.getNumNodes(nodeType));
 		}
@@ -487,7 +481,7 @@ public class ProbNetTest {
 			fail("Fail in testAddConstraint()");
 		}
 		ArrayList<PNConstraint> constraints = emptyProbNet.getConstraints();
-		assertEquals(2, constraints.size());
+		assertEquals(13, constraints.size());
 	}
 
 	@Test
@@ -500,7 +494,7 @@ public class ProbNetTest {
 		}
 		emptyProbNet.removeConstraint(constraint);
 		ArrayList<PNConstraint> constraints = emptyProbNet.getConstraints();
-		assertEquals(1, constraints.size());		
+		assertEquals(12, constraints.size());		
 	}
 
 	@Test

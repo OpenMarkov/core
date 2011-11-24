@@ -118,9 +118,9 @@ public class Graph {
 		return null;
 	}
 
-	/** Creates the explicit links (based on the implicit links).<p>When
+	/** Creates the explicit links (based on the implicit links).<p> When
 	 *  <code>createLabelledLinks = true</code> create explicit links with label
-	 *  = <code>null</code>. 
+	 *  = <code>null</code>. Otherwise, create unlabeled explicit links.
 	 * @param createLabelledLinks. <code>boolean</code> */
 	public void makeLinksExplicit(boolean createLabelledLinks) {
 		if (!explicitLinks) {

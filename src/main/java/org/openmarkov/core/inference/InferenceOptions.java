@@ -63,7 +63,7 @@ public class InferenceOptions {
 		}
 	}
 
-	/** Sets the attribute simulationIndexVariable and returns the variable 
+	/** Sets the attribute simulationIndexVariable and returns the variable. 
 	 * If numSimulations = 0, it returns null. */
 	public static Variable setNumSimulations(int numSimulations) {
 		if (numSimulations == 0) {

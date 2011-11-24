@@ -401,14 +401,11 @@ public class TreeADDPotential extends Potential implements PotentialsContainer {
 			new ArrayList<TablePotential>();
 		for (Link link : links) {
 		    if (link.getNode1() == node) {
+		    	// node is the parent (it might be the child)
 		        projectedPotentials.add(singleTableProject(
 		        		link, variable, evidence, inferenceOptions));
 		    }
 		}
-		/*for (Link link : links) {
-			projectedPotentials.add(singleTableProject(link, variable, evidence,
-					inferenceOptions));
-		}*/
 		TablePotential sum = 
 			DiscretePotentialOperations.sum(projectedPotentials);
 		if (sum.isUtility() && sum.getUtilityVariable() == null) {

@@ -59,4 +59,13 @@ public class LogNormalFunction extends ProbDensFunction {
 
 
 
+    @Override
+    public double getSample ()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+
+
 }

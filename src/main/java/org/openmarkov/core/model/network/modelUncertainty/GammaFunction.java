@@ -37,8 +37,6 @@ public class GammaFunction extends GammaAbstract {
 	}
 
 
-
-
 	@Override
 	public boolean doParametersVerifyDomainConstraint(boolean isChanceVariable) {
 

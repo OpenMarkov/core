@@ -64,6 +64,8 @@ public class BetaFunction extends ProbDensFunction {
 		
 		sample = family.getSample()[0];
 		
-		return sample;	}
+		return sample;
+	}
 
-		}
+	
+}

@@ -13,7 +13,8 @@ public enum TypeProbDensityFunction {
 	BETA("Beta"),	
 	DIRICHLET("Dirichlet"),
 	COMPLEMENT("Complement"),
-	EXPONENTIAL("Exponential");
+	EXPONENTIAL("Exponential"),
+	ERLANG("Erlang");
 
 	
 	private String name;

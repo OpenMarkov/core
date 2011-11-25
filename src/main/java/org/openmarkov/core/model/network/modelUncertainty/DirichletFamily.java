@@ -46,11 +46,13 @@ public class DirichletFamily extends FamilyDistribution {
 		double[] sample=new double[length];
 		double[] auxSamples = new double[length];
 		sumAuxSamples = 0.0;
+		//Generate samples using Gamma distributions
 		for (int i=0;i<length;i++){
 			auxSample=(new GammaFunction(alphas[i],1.0)).getSample();
 			auxSamples[i] = auxSample;
 			sumAuxSamples = sumAuxSamples+auxSample;
 		}
+		//Normalize the samples
 		for (int i=0;i<length;i++){
 			sample[i] = auxSamples[i]/sumAuxSamples;
 		}

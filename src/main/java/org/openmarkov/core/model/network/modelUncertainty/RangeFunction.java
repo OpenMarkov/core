@@ -12,6 +12,15 @@ public class RangeFunction extends ProbDensFunctionWithKnownInverseCDF {
 		
 	}
 
+	/**
+	 * @param type
+	 * @param a
+	 * @param b
+	 */
+	public RangeFunction(double a, double b) {
+		this();
+	}
+
 	@Override
 	public void placeParameters(Double[] params) {
 		a = params[0];

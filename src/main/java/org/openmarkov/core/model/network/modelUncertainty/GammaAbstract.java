@@ -1,5 +1,7 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import java.util.Random;
+
 public abstract class GammaAbstract extends ProbDensFunction {
 
 	public GammaAbstract(TypeProbDensityFunction type) {
@@ -44,9 +46,40 @@ public abstract class GammaAbstract extends ProbDensFunction {
 
 	@Override
 	public final double getSample() {
-		//TODO
-		return 0;
+		double sample;
+		int k;
+		double r;
+		double lambdaErlang;
+		double u;
+		int kForSampling;
+		
+		lambdaErlang = 1.0/thetaabstract;
+		
+		//Integer part of kabstract
+		k = (int)(Math.ceil(kabstract));
+		
+		if (!isAnErlangFunction()){
+			r = kabstract - k;
+			u = (new RangeFunction(0,1)).getSample();
+			kForSampling = (u<r)?k:(k+1);
+		}
+		else{
+			kForSampling = k;
+		}
+		
+		sample = (new ErlangFunction(kForSampling,lambdaErlang)).getSample();
+			
+		return sample;
 	}
+	
+	public boolean isAnErlangFunction(){
+		//TODO We have to use an epsilon instead of 0 in the next comparison because comparison with 0 in
+		//float arithmetic is always dangerous
+		return kabstract-Math.ceil(kabstract)==0;
+	}
+	
+
+	
 
 
 }

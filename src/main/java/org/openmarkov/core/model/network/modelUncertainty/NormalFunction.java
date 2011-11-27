@@ -1,15 +1,25 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 
-public class NormalFunction  extends ProbDensFunction {
+public class NormalFunction extends ProbDensFunction {
 	
 	double mu;
 	
 	double sigma;
 	
+	private StandardNormalFunction standard;
+	
 
 	public NormalFunction() {
 		super(TypeProbDensityFunction.NORMAL);
+		standard = new StandardNormalFunction();
+	}
+
+
+	public NormalFunction(double mu2, double sigma2) {
+		this();
+		mu = mu2;
+		sigma = sigma2;
 	}
 
 
@@ -56,14 +66,20 @@ public class NormalFunction  extends ProbDensFunction {
 	@Override
 	public double getMean() {
 		// TODO Auto-generated method stub
-		return 0;
+		return mu;
 	}
 
 
 	@Override
 	public double getSample() {
-		// TODO Auto-generated method stub
-		return 0;
+		return sigma*standard.getSample()+mu;
+	}
+
+
+	@Override
+	public double getVariance() {
+	
+		return Math.pow(sigma, 2.0);
 	}
 
 	

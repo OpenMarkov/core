@@ -87,6 +87,12 @@ package org.openmarkov.core.model.network.modelUncertainty;
 			return sample;
 		}
 
+		@Override
+		public double getVariance() {
+			
+			return (Tools.square(a)+Tools.square(b)+Tools.square(c)-a*b-a*c-b*c)/18;
+		}
+
 	
 	}
 

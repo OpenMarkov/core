@@ -66,5 +66,10 @@ public class RangeFunction extends ProbDensFunctionWithKnownInverseCDF {
 		return a+(b-a)*y;
 	}
 
+	@Override
+	public double getVariance() {
+		return Math.pow(b-a,2.0)/12;
+	}
+
 
 }

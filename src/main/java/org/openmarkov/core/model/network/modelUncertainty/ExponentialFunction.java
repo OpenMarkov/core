@@ -62,7 +62,6 @@ public class ExponentialFunction extends ProbDensFunctionWithKnownInverseCDF {
 
 	@Override
 	public double getMean() {
-		// TODO Auto-generated method stub
 		return 1/lambda;
 	}
 
@@ -75,6 +74,12 @@ public class ExponentialFunction extends ProbDensFunctionWithKnownInverseCDF {
 	@Override
 	public double getInverseCumulativeDistributionFunction(double y) {
 		return (-1.0/lambda)*Math.log(1.0-y);
+	}
+
+	@Override
+	public double getVariance() {
+		
+		return Math.pow(lambda,-2.0);
 	}
 
 }

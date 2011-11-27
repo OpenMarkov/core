@@ -48,9 +48,11 @@ public class BetaFunction extends ProbDensFunction {
 
 	@Override
 	public double getMean() {
-		return 0;
+		return alpha/(alpha+beta);
 	}
-
+	
+	
+	
 	@Override
 	public double getSample() {
 		double[] alphas;
@@ -66,6 +68,15 @@ public class BetaFunction extends ProbDensFunction {
 		
 		return sample;
 	}
+
+	@Override
+	public double getVariance() {
+		double sumAlphaBeta;
+		
+		sumAlphaBeta = alpha + beta;
+		return (alpha*beta)/(Math.pow(sumAlphaBeta,2.0)*(sumAlphaBeta+1));
+	}
+
 
 	
 }

@@ -6,11 +6,15 @@ public class LogNormalFunction extends ProbDensFunction {
 	
 	double sigma;
 	
+	/**
+	 * Auxiliary normal distribution used for sampling
+	 */
+	NormalFunction normal;
+	
 	public LogNormalFunction() {
 		super(TypeProbDensityFunction.LOGNORMAL);
+		
 	}
-
-	
 
 	@Override
 	public int getNumberOfRequiredArguments() {
@@ -21,6 +25,7 @@ public class LogNormalFunction extends ProbDensFunction {
 	public void placeParameters(Double[] args) {
 		mu = args[0];
 		sigma = args[1];
+		normal = new NormalFunction(mu,sigma);
 
 	}
 
@@ -41,9 +46,6 @@ public class LogNormalFunction extends ProbDensFunction {
 		a[1]=sigma;
 		return a;
 	}
-
-
-
 	@Override
 	public double getMaximum() {
 		return Double.POSITIVE_INFINITY;
@@ -53,8 +55,7 @@ public class LogNormalFunction extends ProbDensFunction {
 
 	@Override
 	public double getMean() {
-		// TODO Auto-generated method stub
-		return 0;
+		return Math.exp(mu+Math.pow(sigma,2.0));
 	}
 
 
@@ -62,9 +63,16 @@ public class LogNormalFunction extends ProbDensFunction {
     @Override
     public double getSample ()
     {
-        // TODO Auto-generated method stub
-        return 0;
+        return Math.exp(normal.getSample());
     }
+
+	@Override
+	public double getVariance() {
+		double squareSigma;
+	
+		squareSigma = Math.pow(sigma, 2.0);
+		return (Math.exp(squareSigma)-1)*Math.exp(2*mu+squareSigma);
+	}
 
 
 

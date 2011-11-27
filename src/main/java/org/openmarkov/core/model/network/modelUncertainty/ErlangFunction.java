@@ -74,6 +74,12 @@ public class ErlangFunction extends ProbDensFunction {
 		}
 		return sumSamples;
 	}
+
+	@Override
+	public double getVariance() {
+		
+		return k/Math.pow(lambda, 2.0);
+	}
 	
 	
 

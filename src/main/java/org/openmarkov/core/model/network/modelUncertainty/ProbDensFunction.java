@@ -100,6 +100,12 @@ public abstract class ProbDensFunction {
 	 * @return
 	 */
 	public abstract double getMean();
+	
+	public final double getStandardDeviation(){
+		return Math.sqrt(getVariance());
+	}
+
+	public abstract double getVariance();
 
 	public abstract double getMaximum();
 

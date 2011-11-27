@@ -55,5 +55,11 @@ public class ExactFunction extends ProbDensFunction {
 	public double getSample() {
 		return nu;
 	}
+
+	@Override
+	public double getVariance() {
+		
+		return 0;
+	}
 	
 }

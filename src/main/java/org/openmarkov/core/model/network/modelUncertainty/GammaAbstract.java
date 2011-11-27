@@ -78,6 +78,11 @@ public abstract class GammaAbstract extends ProbDensFunction {
 		return kabstract-Math.ceil(kabstract)==0;
 	}
 	
+	@Override
+	public final double getVariance() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 	
 

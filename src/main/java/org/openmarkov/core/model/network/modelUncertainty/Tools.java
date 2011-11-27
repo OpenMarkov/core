@@ -31,4 +31,8 @@ public class Tools {
 		   
 		   return normalize(x,1.0);
 	   }
+	   
+	   public static double square(double x){
+		   return Math.pow(x, 2.0);
+	   }
 }

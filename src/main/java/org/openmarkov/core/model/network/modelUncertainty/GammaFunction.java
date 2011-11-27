@@ -52,6 +52,5 @@ public class GammaFunction extends GammaAbstract {
 		return a;
 	}
 	
-	
 
 }

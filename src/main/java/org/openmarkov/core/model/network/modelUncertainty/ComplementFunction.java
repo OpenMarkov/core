@@ -72,5 +72,13 @@ public class ComplementFunction extends ProbDensFunction {
 		return nu;
 	}
 
+
+
+	@Override
+	public double getVariance() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 	
 }

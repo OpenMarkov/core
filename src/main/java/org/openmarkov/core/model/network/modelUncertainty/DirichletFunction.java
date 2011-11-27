@@ -52,4 +52,10 @@ public class DirichletFunction extends ProbDensFunction {
 			return 0;
 		}
 
+		@Override
+		public double getVariance() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
 }

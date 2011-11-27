@@ -14,7 +14,8 @@ public enum TypeProbDensityFunction {
 	DIRICHLET("Dirichlet"),
 	COMPLEMENT("Complement"),
 	EXPONENTIAL("Exponential"),
-	ERLANG("Erlang");
+	ERLANG("Erlang"),
+	STANDARDNORMAL("StandardNormal");
 
 	
 	private String name;

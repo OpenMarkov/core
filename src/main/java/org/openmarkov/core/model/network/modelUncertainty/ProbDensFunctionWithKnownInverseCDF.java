@@ -9,23 +9,23 @@ public abstract class ProbDensFunctionWithKnownInverseCDF extends ProbDensFuncti
 	 */
 
 	public ProbDensFunctionWithKnownInverseCDF(TypeProbDensityFunction type) {
+	
 		super(type);
-		// TODO Auto-generated constructor stub
 	}
 
 	public abstract double getInverseCumulativeDistributionFunction(double y);
 	
 	public final double getSample(){
 		double sample;
-		double randomNumber = stream.nextDouble();
+		double randomNumber;
+		
+		randomNumber = stream.nextDouble();
 		sample = getInverseCumulativeDistributionFunction(randomNumber); 
+		
 		return sample;
 	}
 
 	@Override
-	public double getMaximum() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	public abstract double getMaximum();
 	
 }

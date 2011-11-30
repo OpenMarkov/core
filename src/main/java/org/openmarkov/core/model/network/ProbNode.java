@@ -405,5 +405,14 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 					originalPotential.sample(simulationIndexVariable));
 		}
 	}
+	
+	/**
+	 * @param node
+	 * @return True if <code>node</code> is parent of <code>this</code> node
+	 */
+	public boolean isParent(ProbNode node)
+	{
+        return this.getNode ().isParent (node.getNode ());
+	}
 
 }

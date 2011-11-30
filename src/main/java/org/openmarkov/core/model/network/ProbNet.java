@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.openmarkov.core.action.PNESupport;
+import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -121,6 +124,27 @@ public class ProbNet implements Cloneable {
     
 
 	// Methods
+    /**
+     * Applies edit to the probNet
+     * @param edit
+     * @throws NotEnoughMemoryException
+     * @throws ConstraintViolationException
+     * @throws CanNotDoEditException
+     * @throws NonProjectablePotentialException
+     * @throws WrongCriterionException
+     * @throws DoEditException
+     */
+    public void doEdit (PNEdit edit)
+        throws NotEnoughMemoryException,
+        ConstraintViolationException,
+        CanNotDoEditException,
+        NonProjectablePotentialException,
+        WrongCriterionException,
+        DoEditException
+    {
+        pNESupport.announceEdit (edit);
+        pNESupport.doEdit (edit);
+    }
 
     /**
      * @param constraint <code>PNConstraint</code>
@@ -319,8 +343,8 @@ public class ProbNet implements Cloneable {
 			// Add variables and create corresponding nodes
 			Variable variable = probNode.getVariable();
 			ProbNode newProbNode = null;
-			newProbNode = probNetCopy.addVariable(variable,
-					probNode.getNodeType());
+            newProbNode = probNetCopy.addVariable (variable,
+                                                   probNode.getNodeType ());
 			Node newNode = newProbNode.getNode();
 			Node node = probNode.getNode();
 			newNode.setCoordinateX(node.getCoordinateX());
@@ -1481,7 +1505,19 @@ public class ProbNet implements Cloneable {
 		}
 		decisionCriteria = new Variable("### Decision Criteria ###", states);
 	}
-
+	
+	/**
+	 * Returns true if and only if there is a path between nodes a and b
+	 * @param a
+	 * @param b
+	 * @param directed
+	 * @return
+	 */
+	public boolean existsPath(ProbNode a, ProbNode b, boolean directed)
+	{
+	    return graph.existsPath (a.getNode (),b.getNode (), directed);
+	}
+	
 	
 
 }

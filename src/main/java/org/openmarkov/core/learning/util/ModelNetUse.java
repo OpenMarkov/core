@@ -17,6 +17,11 @@ public class ModelNetUse {
 		this.deleteLinksModelNet = deleteLinksModelNet;
 		this.invertLinksModelNet = invertLinksModelNet;
 	}
+	
+    public ModelNetUse()
+   {
+       this(false, false, false, false, false);
+   }	
 
 	/**
 	 * @return the useModelNet

@@ -14,6 +14,7 @@ import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -139,7 +140,7 @@ public abstract class Inference {
 	/** This method must be overriden in the child classes */
 	protected abstract Collection<PNConstraint> getRequiredConstraints();
 	
-	public abstract StrategyUtilities getUtilityTables();
+	public abstract StrategyUtilities getUtilityTables() throws NotEnoughMemoryException, WrongGraphStructureException, ConstraintViolationException, CanNotDoEditException, DoEditException, NonProjectablePotentialException, WrongCriterionException;
 	
 	
 }

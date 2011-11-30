@@ -1,7 +1,9 @@
 
 package org.openmarkov.core.learning;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -10,9 +12,9 @@ import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.learning.algorithm.LearningAlgorithm;
-import org.openmarkov.core.learning.editionsgenerator.EditionsGenerator;
+import org.openmarkov.core.learning.algorithm.annotation.LearningAlgorithmManager;
+import org.openmarkov.core.learning.editionsgenerator.EditAndScorePair;
 import org.openmarkov.core.learning.exception.EmptyModelNetException;
-import org.openmarkov.core.learning.metric.Metric;
 import org.openmarkov.core.learning.util.ModelNetUse;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
@@ -29,6 +31,9 @@ import org.openmarkov.core.model.network.constraint.ModelNetworkConstraint;
  * @since OpenMarkov 1.0 */
 public class LearningManager {
     
+    /**  Learning algorithm */
+    private LearningAlgorithm learningAlgorithm = null;    
+    
     /** Implemented metrics. */
     public static final String[] metrics = {"Bayesiana", "K2", "BD", "Entropía",
             "MDL", "AIC"};
@@ -41,36 +46,24 @@ public class LearningManager {
     
     /** ProbNet to learn. */
     private ProbNet learnedNet = null;
-
-    /** Database cases. */
+    
+    /** Model net. */
+    private ProbNet modelNet = null;   
+    
+    /** How the model net will be used. */
+    private ModelNetUse modelNetUse = null;     
+    
+    /** Case database */
     private int[][] cases = null;
 
-    /**  Learning algorithm */
-    private LearningAlgorithm learningAlgorithm = null;
-    
-    /** Editions generator */
-    private EditionsGenerator editionsGenerator = null;
-    
-    /**  Metric */
-    Metric metric = null;
     
     /**
      * Constructor
      * @param preprocessedNet <code>ProbNet</code> Net with the variables of
      * interest after preprocessing.
-     * @param databaseCases <code>int[][]</code> examples in the database 
-     */
-    public LearningManager(ProbNet preprocessedNet, int[][] databaseCases) {
-        cases = databaseCases;
-        learnedNet = preprocessedNet;
-    }
-    
-
-    /**
-     * Initializes the learning algorithm.
      * @param algorithm <code>LearningAlgorithm</code> indicating the algorithm
      *            selected by the user.
-     * @param structureNet <code>ProbNet</code> Net from which take the
+     * @param modelNet <code>ProbNet</code> Net from which take the
      *            information of the nodes and links
      * @param modelNetUse <code>boolean[]</code> use the positions of the nodes,
      *            use also the initial links or use them fixed
@@ -80,22 +73,34 @@ public class LearningManager {
      * @throws NodeNotFoundException
      * @throws NotEnoughMemoryException
      */
-    public void init (LearningAlgorithm algorithm,
-                      ProbNet structureNet,
-                      ModelNetUse modelNetUse)
+    public LearningManager (ProbNet preprocessedNet,
+                            int[][] cases,
+                            String algorithmName,
+                            ProbNet modelNet,
+                            ModelNetUse modelNetUse
+                            )
         throws NormalizeNullVectorException,
         EmptyModelNetException,
         NodeNotFoundException,
         ProbNodeNotFoundException,
         NotEnoughMemoryException
     {
+        LearningAlgorithmManager learningAlgorithmManager = new LearningAlgorithmManager ();
+        this.learnedNet = preprocessedNet;
+        this.modelNet = modelNet;
+        this.modelNetUse = modelNetUse;
+        this.cases = cases;
         /* Maybe there's no modelNet to work with */
-        if ((modelNetUse.isUseModelNet ()) && (structureNet == null)) throw new EmptyModelNetException ();
-        this.learningAlgorithm = algorithm;
-        this.learningAlgorithm.init (modelNetUse, structureNet);
-        this.learningAlgorithm.setListeners ();
-        this.learningAlgorithm.parametricLearning ();
-        learnedNet = addElviraProperties (learnedNet);
+        if ((modelNetUse.isUseModelNet ()) && (modelNet == null))
+        {
+            throw new EmptyModelNetException ();
+        }
+        
+        // TODO: Fill this up
+        HashMap<Class<?>, Object> parameters = null;        
+        this.learningAlgorithm = learningAlgorithmManager.getByName (algorithmName, parameters);
+        this.addElviraProperties (learnedNet);
+        this.addModelNetconstraints (modelNetUse, modelNet);
     }  
     
 	/**
@@ -113,7 +118,7 @@ public class LearningManager {
         /* Get current time */
         long start = System.currentTimeMillis();
 
-        learnedNet = learningAlgorithm.run();
+        learningAlgorithm.run(cases, learnedNet, modelNet, modelNetUse);
         
         /* Get elapsed time in milliseconds */
         long elapsedTimeMillis = System.currentTimeMillis() - start;
@@ -123,28 +128,53 @@ public class LearningManager {
         return learnedNet;
     }
     
+	public ProbNet getLearnedNet() {
+		return this.learnedNet;
+	}
+	
     /**
-     * Take a step in the learning process.
-     * @param edition <code>PNEdit</code> to do.
-     * @return <code>ProbNet</code> learned net.
-     * @throws openmarkov.exceptions.NotEnoughMemoryException
-     * @throws NodeNotFoundException 
-     * @throws NormalizeNullVectorException 
+     * Score of the associated network. 
+     * @return <code>double</code> score of the net 
      */
-    public ProbNet step(PNEdit edition) 
-            throws NotEnoughMemoryException, NodeNotFoundException, 
-            NormalizeNullVectorException {
-        return learningAlgorithm.step(learnedNet, edition, true);
-                
+    public double getScore()  {
+			return learningAlgorithm.getScore();
+    }
+    
+    /**
+     * Scores the associated network with the given edition.
+     * @param edit <code>PNEdit</code> 
+     * @return <code>double</code> score of the net with the given edition
+     */
+    public double getScore(PNEdit edit)  {
+        return learningAlgorithm.getScore (edit);
+    }
+
+    /**
+     * Retrieves the best editions suggested by the learning algorithm
+     * @param numEdits
+     * @param onlyAllowedEdits
+     * @param onlyPositiveEdits
+     * @param reset
+     */
+    public ArrayList<EditAndScorePair> getBestEditions (int numEdits,
+                                 boolean onlyAllowedEdits,
+                                 boolean onlyPositiveEdits,
+                                 boolean reset)
+    {
+        
+        return this.learningAlgorithm.getBestEditions (this.learnedNet,
+                                                       cases,
+                                                       numEdits,
+                                                       onlyAllowedEdits,
+                                                       onlyPositiveEdits, reset);        
     }
     
     /**
      * Adds elvira properties to the learned net.
      * @param learnedNet <code>ProbNet</code> which receives the elvira
      * properties.
-     * @return <code>ProbNet</code> learned net.
      */
-    public ProbNet addElviraProperties(ProbNet learnedNet) 
+    private void addElviraProperties(ProbNet learnedNet) 
     {
                                 
         HashMap<String, String> newIO = learnedNet.additionalProperties;
@@ -152,8 +182,6 @@ public class LearningManager {
         learnedNet.setDefaultStates(defaultNodeStates);
         newIO.put("hasElviraProperties", new String("yes"));
         learnedNet.additionalProperties = newIO;
-        
-        return learnedNet;
     }
     
     /**
@@ -182,12 +210,17 @@ public class LearningManager {
                                     link.isDirected ());
             }
         }
-    	
-    	//ModelNetworkConstraint
-    	try {
-			learnedNet.addConstraint(new ModelNetworkConstraint(modelNetUse, 
-					modelNet), false);
-		} catch (ConstraintViolationException e) { }
+        
+        //ModelNetworkConstraint
+        try
+        {
+            learnedNet.addConstraint (new ModelNetworkConstraint (modelNetUse,
+                                                                  modelNet),
+                                      false);
+        }
+        catch (ConstraintViolationException e)
+        {
+        }
     }
     
     /**This function returns a <code>String</code> that represents the given 
@@ -211,45 +244,12 @@ public class LearningManager {
         
         return timeString.toString();
     }
-    
-    
-    public EditionsGenerator getEditionsGenerator()
+
+    public static Set<String> getAlgorithmNames ()
     {
-    	return editionsGenerator;
-    }
-    
-	public ProbNet getLearnedNet() {
-		return this.learnedNet;
-	}
-	
-    /**
-     * Score of the associated network. 
-     * @return <code>double</code> score of the net 
-     */
-    public double getScore()  {
-    	
-        try {
-			return metric.score();
-		} catch (NotEnoughMemoryException e) {
-			return Double.NaN;
-		} catch (NullPointerException e) {
-			return Double.NaN;
-		}
-    }
-    
-    /**
-     * Scores the associated network with the given edition.
-     * @param edit <code>PNEdit</code> 
-     * @return <code>double</code> score of the net with the given edition
-     */
-    public double getScore(PNEdit edit)  {
-    	
-        try {
-			return metric.score(edit);
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			return Double.NaN;
-		}
-    }
+        LearningAlgorithmManager learningAlgorithmManager = new LearningAlgorithmManager ();
+        
+        return learningAlgorithmManager.getLearningAlgorithmNames ();
+    }    
 	
 }

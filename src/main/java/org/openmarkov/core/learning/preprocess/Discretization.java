@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.learning.metric.Metric;
 import org.openmarkov.core.learning.preprocess.exception.WrongDiscretizationLimitException;
 import org.openmarkov.core.learning.util.FrequencyCalculator;
 import org.openmarkov.core.model.network.NodeType;

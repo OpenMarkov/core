@@ -21,16 +21,17 @@ public class MinPotential extends MinMaxPotential {
 	/** @param model. <code>ICIModel</code>.
 	 * @param variables. <code>ArrayList</code> of <code>Variable</code>. */
 	public MinPotential(
-			ICIModel model, ArrayList<Variable> variables, PotentialRole role) {
-		super(model, variables, role);
+			ICIModelType modelType, ArrayList<Variable> variables, PotentialRole role) {
+		super(modelType, variables, role);
 		type = PotentialType.MIN;
 	}
 
 	@Override
 	/** @returns A <code>TablePotential</code> with two variables: 
 	 *  <code>conditionedVariable</code> and <code>pseudoVariable</code>. */
-	protected TablePotential getDeltaPotential()
+	public TablePotential getDeltaPotential()
 			throws NotEnoughMemoryException {
+		Variable conditionedVariable = variables.get(0);
 		ArrayList<Variable> deltaVariables = new ArrayList<Variable>();
 		deltaVariables.add(pseudoVariable);
 		deltaVariables.add(conditionedVariable);
@@ -81,13 +82,14 @@ public class MinPotential extends MinMaxPotential {
 			new TablePotential(accruedPotentialVariables, 
 					PotentialRole.CONDITIONAL_PROBABILITY);
 		
-		int numYStates = conditionedVariable.getNumStates();
+		// number of states in the pseudovariable
+		int numStates = variables.get(0).getNumStates();
 		
 		double accumulator = 0;
 		for (int i = subPotential.values.length - 1; i >= 0; i--) {
 			accumulator += subPotential.values[i];
 			accruedPotential.values[i] = accumulator;
-			if (i % numYStates == 0) {
+			if (i % numStates == 0) {
 				accumulator = 0;
 			}
 		}
@@ -95,26 +97,4 @@ public class MinPotential extends MinMaxPotential {
 		return accruedPotential;
 	}
 	
-	@Override
-	protected TablePotential getLeakyPotential(
-			ArrayList<TablePotential> iciPotentials)
-			throws NotEnoughMemoryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
-			throws IncompatibleEvidenceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Potential shift(ProbNet probNet, int timeSlice)
-			throws ProbNodeNotFoundException, NotEnoughMemoryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

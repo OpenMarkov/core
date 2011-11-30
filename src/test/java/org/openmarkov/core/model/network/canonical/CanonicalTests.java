@@ -8,8 +8,6 @@ import junit.framework.Test;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	ICIPotentialTest.class,
-	MinMaxPotentialTest.class,
 	MaxPotentialTest.class
 })
 

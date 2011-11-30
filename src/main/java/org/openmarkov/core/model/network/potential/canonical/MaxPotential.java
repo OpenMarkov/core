@@ -20,7 +20,7 @@ public class MaxPotential extends MinMaxPotential {
 	/** @param model. <code>ICIModel</code>.
 	 * @param variables. <code>ArrayList</code> of <code>Variable</code>. */
 	public MaxPotential(
-			ICIModel model, ArrayList<Variable> variables, PotentialRole role) {
+			ICIModelType model, ArrayList<Variable> variables, PotentialRole role) {
 		super(model, variables, role);
 		type = PotentialType.MAX;
 	}
@@ -30,6 +30,7 @@ public class MaxPotential extends MinMaxPotential {
 	 *  <code>conditionedVariable</code> and <code>pseudoVariable</code>. */
 	public TablePotential getDeltaPotential()
 			throws NotEnoughMemoryException {
+		Variable conditionedVariable = variables.get(0);
 		ArrayList<Variable> deltaVariables = new ArrayList<Variable>();
 		deltaVariables.add(pseudoVariable);
 		deltaVariables.add(conditionedVariable);
@@ -77,40 +78,18 @@ public class MaxPotential extends MinMaxPotential {
 		TablePotential accruedPotential = new TablePotential(
 				accruedPotentialVariables, PotentialRole.JOIN_PROBABILITY);
 		
-		int numYStates = conditionedVariable.getNumStates();
+		// number of states in the pseudovariable
+		int numStates = variables.get(0).getNumStates();
 		
 		double accumulator = 0;
 		for (int i = 0; i < subPotential.values.length; i++) {
 			accumulator += subPotential.values[i];
 			accruedPotential.values[i] = accumulator;
-			if ((i + 1) % numYStates == 0) {
+			if ((i + 1) % numStates == 0) {
 				accumulator = 0;
 			}
 		}
-
 		return accruedPotential;
 	}
 	
-	@Override
-	protected TablePotential getLeakyPotential(
-			ArrayList<TablePotential> iciPotentials)
-			throws NotEnoughMemoryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
-			throws IncompatibleEvidenceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Potential shift(ProbNet probNet, int timeSlice)
-			throws ProbNodeNotFoundException, NotEnoughMemoryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

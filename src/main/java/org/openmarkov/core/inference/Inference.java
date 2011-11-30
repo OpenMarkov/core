@@ -13,6 +13,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -51,11 +52,19 @@ public abstract class Inference {
 	
 	protected StrategyUtilities utilityTables;
 	
-	private Hashtable<Variable,Double> expectedUtilities;
+	protected Hashtable<Variable,Double> expectedUtilities;
 	
-	private Double globalExpectedUtility;
+	protected Double globalExpectedUtility;
 	
-	// Constructor
+	/**
+	 * @param globalExpectedUtility the globalExpectedUtility to set
+	 */
+	public void setGlobalExpectedUtility(Double globalExpectedUtility) {
+		this.globalExpectedUtility = globalExpectedUtility;
+	}
+
+
+		// Constructor
 		public Inference(ProbNet probNet) 
 		throws NotEvaluableNetworkException {
 			this.probNet = probNet;
@@ -107,13 +116,15 @@ public abstract class Inference {
 	 * @throws ConstraintViolationException 
 	 * @throws DoEditException 
 	 * @throws NotEvaluableNetworkException 
-	 * @throws WrongCriterionException */
+	 * @throws WrongCriterionException 
+	 * @throws ProbNodeNotFoundException 
+	 * @throws WrongGraphStructureException */
 	public abstract HashMap<Variable, Potential> getIndividualProbabilities(
 			ArrayList<Variable> variablesOfInterest) 
 			throws NotEnoughMemoryException, NormalizeNullVectorException,
 			DoEditException, ConstraintViolationException,
 			CanNotDoEditException, NotEvaluableNetworkException, 
-			NonProjectablePotentialException, WrongCriterionException;;
+			NonProjectablePotentialException, WrongCriterionException, WrongGraphStructureException, ProbNodeNotFoundException;;
 	
 	/** This method calculates the probabilities for all the variables in
 	 *   this form: P(a|evidence), P(b|evidence) ...
@@ -125,12 +136,14 @@ public abstract class Inference {
 	 * @throws DoEditException 
 	 * @throws NotEvaluableNetworkException 
 	 * @throws NonProjectablePotentialException 
-	 * @throws WrongCriterionException */
+	 * @throws WrongCriterionException 
+	 * @throws ProbNodeNotFoundException 
+	 * @throws WrongGraphStructureException */
 	public HashMap<Variable, Potential> getIndividualProbabilities() 
 			throws NotEnoughMemoryException, NormalizeNullVectorException,
 			DoEditException, ConstraintViolationException, 
 			CanNotDoEditException, NotEvaluableNetworkException, 
-			NonProjectablePotentialException, WrongCriterionException
+			NonProjectablePotentialException, WrongCriterionException, WrongGraphStructureException, ProbNodeNotFoundException
 			 {
 				ArrayList<Variable> variablesOfInterest =
 					probNet.getChanceAndDecisionVariables();
@@ -140,7 +153,27 @@ public abstract class Inference {
 	/** This method must be overriden in the child classes */
 	protected abstract Collection<PNConstraint> getRequiredConstraints();
 	
-	public abstract StrategyUtilities getUtilityTables() throws NotEnoughMemoryException, WrongGraphStructureException, ConstraintViolationException, CanNotDoEditException, DoEditException, NonProjectablePotentialException, WrongCriterionException;
+	public abstract StrategyUtilities getUtilityTables() throws NotEnoughMemoryException, WrongGraphStructureException, ConstraintViolationException, CanNotDoEditException, DoEditException, NonProjectablePotentialException, WrongCriterionException, ProbNodeNotFoundException;
+
+
+	public Hashtable<Variable, Double> getExpectedUtilities()
+			throws NotEnoughMemoryException, WrongGraphStructureException,
+			ConstraintViolationException, CanNotDoEditException,
+			DoEditException, NonProjectablePotentialException,
+			WrongCriterionException, NotEvaluableNetworkException,
+			ProbNodeNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public Double getGlobalExpectedUtility() throws NotEnoughMemoryException,
+			WrongGraphStructureException, ConstraintViolationException,
+			CanNotDoEditException, DoEditException,
+			NonProjectablePotentialException, WrongCriterionException, ProbNodeNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 }

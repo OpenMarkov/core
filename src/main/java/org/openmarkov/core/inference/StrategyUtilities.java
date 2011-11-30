@@ -3,6 +3,7 @@ package org.openmarkov.core.inference;
 import java.util.Hashtable;
 
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 public class StrategyUtilities {
@@ -29,8 +30,11 @@ public class StrategyUtilities {
 	public TablePotential getUtilities(Variable decision) {
 		return utilities.get(decision);
 	}
-	
-	
-	
+
+	public void assignUtilityTable(Variable decision,
+			TablePotential globalUtilityTable) {
+		utilities.put(decision, globalUtilityTable);
+		
+	}
 	
 }

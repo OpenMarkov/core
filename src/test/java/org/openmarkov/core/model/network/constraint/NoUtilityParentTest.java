@@ -53,12 +53,8 @@ public class NoUtilityParentTest {
 	@Test
 	public void testUndoableEditWillHappen() throws Exception {
 		// Add constraints as listeners.
-		PNESupport pNESupport = new PNESupport(influenceDiagram, false);
+		PNESupport pNESupport = influenceDiagram.getPNESupport ();
 		influenceDiagram.addConstraint(new NoUtilityParent(), true);
-		ArrayList<PNConstraint> constraints = influenceDiagram.getConstraints();
-		for (PNConstraint constraint : constraints) { // sets listeners
-			pNESupport.addUndoableEditListener(constraint);
-		}
 		// Create edits
 		Variable vu=influenceDiagram.getVariable("U");
 		Variable vc1 = new Variable("C1", 0);
@@ -71,8 +67,7 @@ public class NoUtilityParentTest {
 		
 		//add the node C1
 		try{
-			pNESupport.announceEdit(legalAdd);
-			legalAdd.doEdit();
+			influenceDiagram.doEdit(legalAdd);
 		} catch(Exception cve){
 			fail(cve.getMessage());
 		}

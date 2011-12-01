@@ -104,7 +104,7 @@ public class ProbNet implements Cloneable {
         }
         try
         {
-            this.setNetworkType(BayesianNetworkType.getUniqueInstance ());
+            this.setNetworkType(networkType);
         }
         catch (ConstraintViolationException e)
         {
@@ -1517,6 +1517,13 @@ public class ProbNet implements Cloneable {
 	{
 	    return graph.existsPath (a.getNode (),b.getNode (), directed);
 	}
+
+    public boolean existsLink (ProbNode headNode, ProbNode tailNode)
+    {
+        return (graph.getLink (headNode.getNode (), tailNode.getNode (), true) != null)
+               || (graph.getLink (headNode.getNode (), tailNode.getNode (),
+                                  false) != null);
+    }
 	
 	
 

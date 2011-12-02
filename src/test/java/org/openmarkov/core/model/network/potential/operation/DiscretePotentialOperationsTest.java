@@ -47,6 +47,8 @@ public class DiscretePotentialOperationsTest {
 	private ArrayList<TablePotential> allPotentials;
 	
 	private TablePotential aPotential;
+	
+	private double epsilonTest = 0.00001;
 
 	/** This method creates the variables used in the tests */
 	@Before
@@ -192,7 +194,7 @@ public class DiscretePotentialOperationsTest {
 			fail("testNewMultiply: one constant potential");
 		}
 		assertEquals(1, aPotential.values.length);
-		assertEquals(2.0, aPotential.values[0]);
+		assertEquals(2.0, aPotential.values[0],epsilonTest);
 		
 		// Two constant potentials
 		potentials.add(constantPotentials.get(1));
@@ -204,7 +206,7 @@ public class DiscretePotentialOperationsTest {
 			e.printStackTrace();
 			fail("testNewMultiply: two constant potentials");
 		}
-		assertEquals(4.0, aPotential.values[0]);
+		assertEquals(4.0, aPotential.values[0],epsilonTest);
 		
 		// Several constant potentials
 		for (int i = 2; i < numConstantPotentials; i++) {
@@ -218,7 +220,7 @@ public class DiscretePotentialOperationsTest {
 			e.printStackTrace();
 			fail("testNewMultiply: several constant potentials");
 		}
-		assertEquals(7257600.0, aPotential.values[0]);
+		assertEquals(7257600.0, aPotential.values[0],epsilonTest);
 		
 		// Test constant and binary potential multiplication
 		// Only 1 potential so in this case the method does not do anything
@@ -246,7 +248,7 @@ public class DiscretePotentialOperationsTest {
 		// size:
 		assertEquals(81, aPotential.values.length);
 		// travels around all the table
-		assertEquals(1.0, aPotential.values[0]);
+		assertEquals(1.0, aPotential.values[0],epsilonTest);
 		
 		// Two normal potentials
 		potentials.add(normalPotentials.get(1));
@@ -261,17 +263,17 @@ public class DiscretePotentialOperationsTest {
 		// check table size
 		assertEquals(81 * 81, aPotential.values.length);
 		// check table content
-		assertEquals(82.0, aPotential.values[0]);
+		assertEquals(82.0, aPotential.values[0],epsilonTest);
 		ArrayList<Variable> variablesPotentials = (ArrayList<Variable>)
 			((Object)getUnionVariablesOrdered(potentials));
 		int[] coordinate1 = {1,0,0,0,0,0,0,0};
 		double configuration = UtilTestMethods.getConfiguration(
 			variablesPotentials, coordinate1, aPotential);
-		assertEquals(164.0, configuration);
+		assertEquals(164.0, configuration,epsilonTest);
 		coordinate1[2] = 1; coordinate1[4] = 1; coordinate1[6] = 1;
 		configuration = UtilTestMethods.getConfiguration(
 			variablesPotentials, coordinate1, aPotential);
-		assertEquals(1012.0, configuration);
+		assertEquals(1012.0, configuration,epsilonTest);
 		
 		// Two potentials constant and normal: c * n
 		potentials.clear();
@@ -286,13 +288,13 @@ public class DiscretePotentialOperationsTest {
 			fail("testNewMultiply: two potentials constant and normal: c * n");
 		}
 		assertEquals(81, aPotential.values.length);
-		assertEquals(2.0, aPotential.values[0]);
+		assertEquals(2.0, aPotential.values[0],epsilonTest);
 		int[] coordinate2 = {1,0,0,0};
 		variablesPotentials = (ArrayList<Variable>)
             ((Object)getUnionVariablesOrdered(potentials));
 		configuration = UtilTestMethods.getConfiguration(
 			variablesPotentials, coordinate2, aPotential);
-		assertEquals(4.0, configuration);
+		assertEquals(4.0, configuration,epsilonTest);
 
 		// Two potentials constant and normal: n * c
 		potentials.clear();
@@ -307,12 +309,12 @@ public class DiscretePotentialOperationsTest {
 			fail("testNewMultiply: two potentials constant and normal: n * c");
 		}
 		assertEquals(81, aPotential.values.length);
-		assertEquals(2.0, aPotential.values[0]);
+		assertEquals(2.0, aPotential.values[0],epsilonTest);
 		variablesPotentials = (ArrayList<Variable>)
             ((Object)getUnionVariablesOrdered(potentials));
         configuration = UtilTestMethods.getConfiguration(
     		variablesPotentials, coordinate2, aPotential);
-		assertEquals(4.0, configuration);
+		assertEquals(4.0, configuration,epsilonTest);
 
 		// Three potentials constant and normal: c1 * c2 * n
 		potentials.clear();
@@ -329,13 +331,13 @@ public class DiscretePotentialOperationsTest {
 				"c1 * c2 * n");
 		}
 		assertEquals(81, aPotential.values.length);
-		assertEquals(6.0, aPotential.values[0]);
+		assertEquals(6.0, aPotential.values[0],epsilonTest);
 		variablesPotentials = (ArrayList<Variable>)
             ((Object)getUnionVariablesOrdered(potentials));
 		int[] coordinate3 = {1,0,0,0,0,0,0,0};
         configuration = UtilTestMethods.getConfiguration(
 		    variablesPotentials, coordinate3, aPotential);
-		assertEquals(12.0, configuration);
+		assertEquals(12.0, configuration,epsilonTest);
 
 		// Three potentials constant and normal: c1 * n * c2
 		potentials.clear();
@@ -352,12 +354,12 @@ public class DiscretePotentialOperationsTest {
 				"c1 * n * c2");
 		}
 		assertEquals(81, aPotential.values.length);
-		assertEquals(6.0, aPotential.values[0]);
+		assertEquals(6.0, aPotential.values[0],epsilonTest);
 		variablesPotentials = (ArrayList<Variable>)
             ((Object)getUnionVariablesOrdered(potentials));
         configuration = UtilTestMethods.getConfiguration(
 	        variablesPotentials, coordinate3, aPotential);
-		assertEquals(12.0, configuration);
+		assertEquals(12.0, configuration,epsilonTest);
 
 		// Three potentials constant and normal: n * c1 * c2
 		potentials.clear();
@@ -374,12 +376,12 @@ public class DiscretePotentialOperationsTest {
 				"n * c1 * c2");
 		}
 		assertEquals(81, aPotential.values.length);
-		assertEquals(6.0, aPotential.values[0]);
+		assertEquals(6.0, aPotential.values[0],epsilonTest);
 		variablesPotentials = (ArrayList<Variable>)
             ((Object)getUnionVariablesOrdered(potentials));
         configuration = UtilTestMethods.getConfiguration(
             variablesPotentials, coordinate3, aPotential);
-	    assertEquals(12.0, configuration);
+	    assertEquals(12.0, configuration,epsilonTest);
     }
 
 	@Test
@@ -521,7 +523,7 @@ public class DiscretePotentialOperationsTest {
 			assertFalse(maximizedVariables.contains(commonVariables.a));
 			// Test maximization
 			assertEquals(12, maximized.values.length);
-			assertEquals(0.21, maximized.values[0]);
+			assertEquals(0.21, maximized.values[0],epsilonTest);
 		} catch (NotEnoughMemoryException neme) {
 			System.err.println(neme.getMessage());
 		}
@@ -543,7 +545,7 @@ public class DiscretePotentialOperationsTest {
 		// Call method under test
 		double constantFactor = DiscretePotentialOperations
 		    .getConstantFactor(commonVariables.potentials);
-		assertEquals(0.35, constantFactor);
+		assertEquals(0.35, constantFactor,epsilonTest);
 	}
 
 	@Test
@@ -634,9 +636,9 @@ public class DiscretePotentialOperationsTest {
 			// Check table
 			double[] table = maximizedPotential.values;
 			assertEquals(3, table.length); // size table reduced
-			assertEquals(0.7, table[0]);
-			assertEquals(0.5, table[1]);
-			assertEquals(0.6, table[2]);
+			assertEquals(0.7, table[0],epsilonTest);
+			assertEquals(0.5, table[1],epsilonTest);
+			assertEquals(0.6, table[2],epsilonTest);
 			// Test choices potential
 			// Check variables. It must contain same variables as
 			// maximized potential
@@ -690,10 +692,10 @@ public class DiscretePotentialOperationsTest {
 		assertEquals(variablesReordered.get(0), variablesAB.get(1));
 		assertEquals(variablesReordered.get(1), variablesAB.get(0));
 		// 2. Test table
-		assertEquals(0.2, reorderedBA.values[0]);
-		assertEquals(0.4, reorderedBA.values[1]);
-		assertEquals(0.8, reorderedBA.values[2]);
-		assertEquals(0.6, reorderedBA.values[3]);
+		assertEquals(0.2, reorderedBA.values[0],epsilonTest);
+		assertEquals(0.4, reorderedBA.values[1],epsilonTest);
+		assertEquals(0.8, reorderedBA.values[2],epsilonTest);
+		assertEquals(0.6, reorderedBA.values[3],epsilonTest);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -731,7 +733,7 @@ public class DiscretePotentialOperationsTest {
 				{0.2, 0.4, 0.1, 0.9, 0.3, 0.8, 0.8, 0.6, 0.9, 0.1, 0.7, 0.2};
 			for (int i = 0; i < reorderedTable.length; i++) {
 				assertEquals(
-						reorderedTable[i], tablePotentialAfterReorder.values[i]);
+						reorderedTable[i], tablePotentialAfterReorder.values[i],epsilonTest);
 			}
 		} catch (NotEnoughMemoryException ex) {
 			ex.printStackTrace();
@@ -770,10 +772,10 @@ public class DiscretePotentialOperationsTest {
 			assertEquals(commonVariables.t4.values.length, 
 					tablePotentialAfterReorder.values.length);
 			double[] reorderedTable =
-				{0.2, 0.8, 0.4, 0.6, 0.1, 0.9, 0.9, 0.1, 0.3, 0.1, 0.8, 0.2};
+				{0.2, 0.8, 0.4, 0.6, 0.1, 0.9, 0.9, 0.1, 0.3, 0.7, 0.8, 0.2};
 			for (int i = 0; i < reorderedTable.length; i++) {
 				assertEquals(
-						reorderedTable[i], tablePotentialAfterReorder.values[i]);
+						reorderedTable[i], tablePotentialAfterReorder.values[i],epsilonTest);
 			}
 		} catch (NotEnoughMemoryException ex) {
 			ex.printStackTrace();

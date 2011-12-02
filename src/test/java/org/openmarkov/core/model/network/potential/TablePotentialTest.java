@@ -81,6 +81,8 @@ public class TablePotentialTest {
 
 	/** Two binary variables: fsVariable2 = 1, fsVariable4 = 0. */
 	private EvidenceCase evidenceCase;
+	
+	private double epsilonTest = 0.00001;
 
 	@Before
     public void setUp() throws Exception {
@@ -324,10 +326,10 @@ public class TablePotentialTest {
     	int[] offsets = projected.getOffsets();
     	
     	// Test table content
-    	assertEquals(1, offsets.length);
-    	assertEquals(1, offsets[0]);
-    	assertEquals(2.0, tableProjected[initialPosition]);
-    	assertEquals(3.0, tableProjected[initialPosition + offsets[0]]);
+    	assertEquals(1, offsets.length,epsilonTest);
+    	assertEquals(1, offsets[0],epsilonTest);
+    	assertEquals(2.0, tableProjected[initialPosition],epsilonTest);
+    	assertEquals(3.0, tableProjected[initialPosition + offsets[0]],epsilonTest);
     }
     
     @Test
@@ -384,8 +386,8 @@ public class TablePotentialTest {
 		
 		// Test table
 		assertEquals(multiplication.values.length, 6);
-		assertEquals(multiplication.values[0], 0.01);
-		assertEquals(multiplication.values[5], 0.2);
+		assertEquals(multiplication.values[0], 0.01,epsilonTest);
+		assertEquals(multiplication.values[5], 0.2,epsilonTest);
     }
     
     @Test

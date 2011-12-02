@@ -27,30 +27,31 @@ public class UtilTest {
 	@Test
 	public void testRound() {
 		double value = 1452.309;
+		double epsilon = 0.001;
 		
 		String precisionString = "100";
-		assertEquals(1500.0, Util.round(value, precisionString));
+		assertEquals(1500.0, Util.round(value, precisionString),epsilon);
 		precisionString = "10";
-		assertEquals(1450.0, Util.round(value, precisionString));
+		assertEquals(1450.0, Util.round(value, precisionString),epsilon);
 		precisionString = "1";
-		assertEquals(1452.0, Util.round(value, precisionString));
+		assertEquals(1452.0, Util.round(value, precisionString),epsilon);
 		precisionString = "0.1";
-		assertEquals(1452.3, Util.round(value, precisionString));
+		assertEquals(1452.3, Util.round(value, precisionString),epsilon);
 		precisionString = "0.01";
-		assertEquals(1452.31, Util.round(value, precisionString));
+		assertEquals(1452.31, Util.round(value, precisionString),epsilon);
 		precisionString = "0.001";
-		assertEquals(1452.301, Util.round(value, precisionString));
+		assertEquals(1452.309, Util.round(value, precisionString),epsilon);
 		
 		precisionString = ".01";
-		assertEquals(1452.31, Util.round(value, precisionString));
+		assertEquals(1452.31, Util.round(value, precisionString),epsilon);
 		
 		value = -0.99;
 		precisionString = "1";
-		assertEquals(-1, Util.round(value, precisionString));
+		assertEquals(-1, Util.round(value, precisionString),epsilon);
 		precisionString = "0.1";
-		assertEquals(-1, Util.round(value, precisionString));
+		assertEquals(-1, Util.round(value, precisionString),epsilon);
 		precisionString = "0.01";
-		assertEquals(-0.99, Util.round(value, precisionString));
+		assertEquals(-0.99, Util.round(value, precisionString),epsilon);
 	
 	}
 

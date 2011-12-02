@@ -143,6 +143,8 @@ public class ProbNetTest {
 	// private Finding eB;
 	
 	private Finding eA;
+	
+	private double epsilonTest = 0.00001;
 
 	@Before
 	public void setUp() throws Exception {
@@ -897,8 +899,8 @@ public class ProbNetTest {
 		int initialPosition = bPotential.getInitialPosition();
 		assertEquals(0, initialPosition);
 		double a = bPotential.values[initialPosition];
-			assertEquals(a, 0.9);
-		assertEquals(bPotential.values[initialPosition + offsets[0]], 0.1);
+			assertEquals(a, 0.9,epsilonTest);
+		assertEquals(bPotential.values[initialPosition + offsets[0]], 0.1,epsilonTest);
 	}
 
 	@Test
@@ -968,9 +970,9 @@ public class ProbNetTest {
 		assertEquals(1, offsets0B[0]);
 		int initialPosition = potential0B.getInitialPosition();
 		assertEquals(0, initialPosition);
-		assertEquals(0.26, potential0B.values[potential0B.getInitialPosition()]);
+		assertEquals(0.26, potential0B.values[potential0B.getInitialPosition()],epsilonTest);
 		assertEquals(0.74, potential0B.values[
-		        potential0B.getInitialPosition() + offsets0B[0]]);
+		        potential0B.getInitialPosition() + offsets0B[0]],epsilonTest);
 		// Test projected potential p(D|B,I), D = 1 = psi(B,I)
 		TablePotential potential1B = (TablePotential)potentialsB.get(1);
 		if (potential1B.getNumVariables() == 1) {

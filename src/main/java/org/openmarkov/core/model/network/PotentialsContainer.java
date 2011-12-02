@@ -1,0 +1,27 @@
+/**
+ * 
+ */
+package org.openmarkov.core.model.network;
+
+import java.util.ArrayList;
+
+import org.openmarkov.core.model.network.potential.Potential;
+
+
+/**
+ * @author Miguel Palacios
+ *
+ */
+public interface PotentialsContainer {
+	
+	public ArrayList<Potential> getPotentials(Variable variable);
+	/** @param potential. <code>Potential</code> */
+    public void addPotential(Potential potential);
+    /** @param potential. <code>Potential</code> */
+    public void setPotentials(ArrayList <Potential> potential);
+    /** @param potential. <code>Potential</code>
+     * @return <code>true</code> if <code>potentialList</code> contained the
+     *   specified element; otherwise <code>false</code>. */
+    public boolean removePotential(Potential potential);
+
+}

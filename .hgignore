@@ -1,0 +1,5 @@
+
+syntax: regexp
+\.checkstyle
+syntax: regexp
+target

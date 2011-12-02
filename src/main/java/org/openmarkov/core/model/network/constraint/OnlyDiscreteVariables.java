@@ -16,7 +16,7 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 
-@Constraint (name = "OnlyDiscreteVariables", defaultBehavior = ConstraintBehavior.NO)
+@Constraint (name = "OnlyDiscreteVariables", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class OnlyDiscreteVariables extends PNConstraint {
 	
 	@Override

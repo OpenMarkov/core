@@ -13,7 +13,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 /** This constraint ensures that exists at least one cost potential and all of 
  *  them are children of a chance or a decision node. */
-@Constraint (name = "AtLeastOneCostPotential", defaultBehavior = ConstraintBehavior.NO)
+@Constraint (name = "AtLeastOneCostPotential", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class AtLeastOneCostPotential extends PNConstraint {
 
 	@Override

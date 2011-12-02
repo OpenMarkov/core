@@ -11,7 +11,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
-@Constraint (name = "UnlabeledLinks", defaultBehavior = ConstraintBehavior.YES)
+@Constraint (name = "UnlabeledLinks", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class OnlyUnlabeledLinks extends PNConstraint {
 
     @Override

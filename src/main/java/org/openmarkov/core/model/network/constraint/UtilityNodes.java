@@ -14,7 +14,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import org.openmarkov.core.model.network.potential.Potential;
 
 
-@Constraint (name = "UtilityNodes", defaultBehavior = ConstraintBehavior.NO)
+@Constraint (name = "UtilityNodes", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class UtilityNodes extends PNConstraint {
 	
 	@Override

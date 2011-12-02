@@ -20,7 +20,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 /** This constraint ensures that the editions done during the learning of a
  * network respect the structure of the model net and the constraints
  * selected by the user. */
-@Constraint (name = "ModelNetworkConstraint", defaultBehavior = ConstraintBehavior.NO)
+@Constraint (name = "ModelNetworkConstraint", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class ModelNetworkConstraint extends PNConstraint {
 
 	// Attributes.

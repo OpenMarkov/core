@@ -22,7 +22,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
  * @version 1.0 
  *  */
 
-@Constraint (name = "OnlyContinuousVariables", defaultBehavior = ConstraintBehavior.NO)
+@Constraint (name = "OnlyContinuousVariables", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class OnlyContinuousVariables extends PNConstraint {
 	
 	@Override

@@ -10,7 +10,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
-@Constraint (name = "AtLeastOneEffectivenessPotential", defaultBehavior = ConstraintBehavior.NO)
+@Constraint (name = "AtLeastOneEffectivenessPotential", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class AtLeastOneEffectivenessPotential extends PNConstraint {
 	
 	@Override

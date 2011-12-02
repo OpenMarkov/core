@@ -12,7 +12,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import org.openmarkov.core.model.network.potential.Potential;
 
 
-@Constraint (name = "AllChanceVariablesHaveChancePotentials", defaultBehavior = ConstraintBehavior.NO)
+@Constraint (name = "AllChanceVariablesHaveChancePotentials", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class AllChanceVariablesHaveChancePotentials extends PNConstraint {
 	
 	@Override

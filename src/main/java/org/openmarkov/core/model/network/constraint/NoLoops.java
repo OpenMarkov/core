@@ -16,7 +16,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
-@Constraint (name = "NoLoops", defaultBehavior = ConstraintBehavior.NO)
+@Constraint (name = "NoLoops", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class NoLoops extends PNConstraint {
 
 	@Override

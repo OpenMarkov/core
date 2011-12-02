@@ -19,7 +19,7 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import org.openmarkov.core.model.network.potential.Potential;
 
-@Constraint (name = "ProperUtilityPotentials", defaultBehavior = ConstraintBehavior.NO)
+@Constraint (name = "ProperUtilityPotentials", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class ProperUtilityPotentials extends PNConstraint {
 	
 	public boolean checkProbNet(ProbNet probNet) {

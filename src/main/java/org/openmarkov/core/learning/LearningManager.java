@@ -137,7 +137,7 @@ public class LearningManager {
      * @return <code>double</code> score of the net 
      */
     public double getScore()  {
-			return learningAlgorithm.getScore();
+			return learningAlgorithm.getScore(this.learnedNet, this.cases);
     }
     
     /**
@@ -146,7 +146,7 @@ public class LearningManager {
      * @return <code>double</code> score of the net with the given edition
      */
     public double getScore(PNEdit edit)  {
-        return learningAlgorithm.getScore (edit);
+        return learningAlgorithm.getScore (this.learnedNet, this.cases, edit);
     }
 
     /**

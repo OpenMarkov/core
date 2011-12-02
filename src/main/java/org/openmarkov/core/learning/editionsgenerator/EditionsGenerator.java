@@ -13,7 +13,7 @@ import org.openmarkov.core.model.network.ProbNet;
  * @author fjdiez
  * @version 1.0
  */
-public interface EditionsGenerator extends PNUndoableEditListener{
+public interface EditionsGenerator extends PNUndoableEditListener {
 
 	/**
 	 * This method returns the best n editions (and their associated scores)

@@ -4,10 +4,8 @@ import java.util.ArrayList;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.learning.editionsgenerator.EditAndScorePair;
 import org.openmarkov.core.learning.editionsgenerator.EditionsGenerator;
 import org.openmarkov.core.learning.util.ModelNetUse;
@@ -50,7 +48,6 @@ public abstract class LearningAlgorithm {
         throws NotEnoughMemoryException,
         NormalizeNullVectorException
     {
-        probNet.getPNESupport ().addUndoableEditListener (editionsGenerator);
         init(cases, probNet, modelNet, modelNetUse);
         /* Main loop */
        ArrayList<EditAndScorePair> bestEditions = editionsGenerator.getBestEditions(probNet, cases, 1,true,true,false);
@@ -65,15 +62,12 @@ public abstract class LearningAlgorithm {
     }
     
     /**
-     * 
+     * Init algorithm with given net
      * @param cases
      * @param probNet
      * @param modelNet
      */
-    protected void init (int[][] cases, ProbNet probNet, ProbNet modelNet, ModelNetUse modelNetUse)
-    {
-        
-    }
+    protected abstract void init (int[][] cases, ProbNet probNet, ProbNet modelNet, ModelNetUse modelNetUse);
     
     /** Takes a step in the algorithm
      * 
@@ -217,17 +211,21 @@ public abstract class LearningAlgorithm {
     }
 
     /**
-     * Score of the associated network. 
+     * Score the network. 
+     * @param probNet
+     * @param cases
      * @return <code>double</code> score of the net 
      */    
-    public abstract double getScore ();
+    public abstract double getScore (ProbNet probNet, int[][] cases);
 
     /**
      * Scores the associated network with the given edition.
+     * @param probNet
+     * @param cases
      * @param edit <code>PNEdit</code> 
      * @return <code>double</code> score of the net with the given edition
      */    
-    public abstract double getScore (PNEdit edit);
+    public abstract double getScore (ProbNet probNet, int[][] cases, PNEdit edit);
 
     /**
      * Returns best editions

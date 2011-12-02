@@ -1,6 +1,7 @@
 package org.openmarkov.core.learning.editionsgenerator;
 
 import org.openmarkov.core.action.BaseLinkEdit;
+import org.openmarkov.core.exception.ConstraintViolationException;
 
 /** An <code>EditAndScorePair</code> stores a <code>PNEdit</code> and the
  * increment of score associated to this edition. Also it stores a pointer
@@ -35,7 +36,7 @@ public class EditAndScorePair {
     	return violatedConstraint;
     }
     
-    public void setViolatedConstraint(Exception violatedConstraint){
+    public void setViolatedConstraint(ConstraintViolationException violatedConstraint){
     	this.violatedConstraint = violatedConstraint;
     }
     
@@ -50,5 +51,10 @@ public class EditAndScorePair {
         if((obj == null) || (obj.getClass() != this.getClass()))
             return false;
         return (this.edition.equals(((EditAndScorePair)obj).edition));
+    }
+    
+    public String toString()
+    {
+        return new StringBuilder().append (edition.toString () + " " + score).toString (); 
     }
 }

@@ -65,8 +65,8 @@ public class InvertLinkEdit extends BaseLinkEdit {
 	/** This method assumes that the link is directed, otherwise has no sense.
 	 * @return <code>String</code> */
 	public String toString() {
-		return new String("InvertLinkEdit: " + variable2 + "-->" + variable1 + 
-				" ==> " + variable1 + "-->"	+ variable2);
+		return new String("InvertLinkEdit: " + variable1 + "-->" + variable2 + 
+				" ==> " + variable2 + "-->"	+ variable1);
 	}
 
 }

@@ -73,6 +73,7 @@ public abstract class Inference {
 					throw new NotEvaluableNetworkException(constraint.toString());
 				}
 			}
+			evidence = new EvidenceCase();
 		}
 
 

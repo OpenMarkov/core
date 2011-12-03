@@ -2,9 +2,6 @@ package org.openmarkov.core.learning.editionsgenerator;
 
 import java.util.ArrayList;
 
-import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.model.network.ProbNet;
-
 /**
  * This interface defines the basic elements of a generator of possible
  * editions for the interactive learning.
@@ -13,7 +10,7 @@ import org.openmarkov.core.model.network.ProbNet;
  * @author fjdiez
  * @version 1.0
  */
-public interface EditionsGenerator extends PNUndoableEditListener {
+public interface EditionsGenerator {
 
 	/**
 	 * This method returns the best n editions (and their associated scores)
@@ -31,9 +28,7 @@ public interface EditionsGenerator extends PNUndoableEditListener {
 	 * @return <code>ArrayList</code> of <code>EditAndScorePair</code> with the
 	 * editions and scores requested. 
 	 */
-    public ArrayList<EditAndScorePair> getBestEditions (ProbNet probNet,
-                                                        int[][] cases,
-                                                        int numEdits,
+    public ArrayList<EditAndScorePair> getBestEditions (int numEdits,
                                                         boolean onlyAllowedEdits,
                                                         boolean onlyPositiveEdits,
                                                         boolean reset);	

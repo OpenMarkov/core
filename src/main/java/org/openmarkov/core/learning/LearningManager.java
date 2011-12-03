@@ -86,7 +86,7 @@ public class LearningManager {
         NotEnoughMemoryException
     {
         LearningAlgorithmManager learningAlgorithmManager = new LearningAlgorithmManager ();
-        this.learnedNet = preprocessedNet;
+        this.learnedNet = applyModelNet(preprocessedNet, modelNet, modelNetUse);
         this.modelNet = modelNet;
         this.modelNetUse = modelNetUse;
         this.cases = cases;
@@ -100,10 +100,9 @@ public class LearningManager {
         HashMap<Class<?>, Object> parameters = null;        
         this.learningAlgorithm = learningAlgorithmManager.getByName (algorithmName, parameters);
         this.addElviraProperties (learnedNet);
-        this.addModelNetconstraints (modelNetUse, modelNet);
     }  
     
-	/**
+    /**
      * Main method to launch the learning process.
      * @return <code>ProbNet</code> learned net.
      * @throws NotEnoughMemoryException
@@ -118,7 +117,7 @@ public class LearningManager {
         /* Get current time */
         long start = System.currentTimeMillis();
 
-        learningAlgorithm.run(cases, learnedNet, modelNet, modelNetUse);
+        learningAlgorithm.run();
         
         /* Get elapsed time in milliseconds */
         long elapsedTimeMillis = System.currentTimeMillis() - start;
@@ -162,9 +161,7 @@ public class LearningManager {
                                  boolean reset)
     {
         
-        return this.learningAlgorithm.getBestEditions (this.learnedNet,
-                                                       cases,
-                                                       numEdits,
+        return this.learningAlgorithm.getBestEditions (numEdits,
                                                        onlyAllowedEdits,
                                                        onlyPositiveEdits, reset);        
     }
@@ -185,15 +182,16 @@ public class LearningManager {
     }
     
     /**
-     * Adds the constraints depending on the structure of the model net and the
-     * option selected by the user.
+     * Adds links and constraints depending on the structure of the model net
+     * and the option selected by the user.
      * @param modelNetUse use of the model net selected by the user.
      * @param modelNet structure of the net to add the constraints
      * @throws ProbNodeNotFoundException
      * @throws NodeNotFoundException
      */
-    private void addModelNetconstraints (ModelNetUse modelNetUse,
-                                         ProbNet modelNet)
+    private ProbNet applyModelNet (ProbNet learnedNet,
+                                   ProbNet modelNet,
+                                   ModelNetUse modelNetUse)
         throws ProbNodeNotFoundException,
         NodeNotFoundException
     {
@@ -210,8 +208,7 @@ public class LearningManager {
                                     link.isDirected ());
             }
         }
-        
-        //ModelNetworkConstraint
+        // ModelNetworkConstraint
         try
         {
             learnedNet.addConstraint (new ModelNetworkConstraint (modelNetUse,
@@ -221,6 +218,7 @@ public class LearningManager {
         catch (ConstraintViolationException e)
         {
         }
+        return learnedNet;
     }
     
     /**This function returns a <code>String</code> that represents the given 

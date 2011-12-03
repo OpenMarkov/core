@@ -12,7 +12,7 @@ import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.learning.preprocess.exception.WrongDiscretizationLimitException;
-import org.openmarkov.core.learning.util.FrequencyCalculator;
+import org.openmarkov.core.learning.util.Util;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
@@ -476,7 +476,7 @@ public class Discretization {
                 }
             }
         }
-        TablePotential statesFrequencies = FrequencyCalculator.absoluteExtraParent (oldProbNet, cases, oldProbNet.getProbNode(oldVariable), null);
+        TablePotential statesFrequencies = Util.getAbsoluteFreq (oldProbNet, cases, oldProbNet.getProbNode(oldVariable));
 
         try{
             blankState = oldVariable.getStateIndex("?");

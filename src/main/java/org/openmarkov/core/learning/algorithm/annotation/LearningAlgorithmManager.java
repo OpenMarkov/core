@@ -1,6 +1,7 @@
 package org.openmarkov.core.learning.algorithm.annotation;
 
 import java.lang.annotation.AnnotationFormatError;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -44,13 +45,23 @@ public class LearningAlgorithmManager
      * @param name the algorithm name.
      * @return a learning algorithm.
      */
-    public final LearningAlgorithm getByName (String name, HashMap<Class<?>, Object> parameters)
+    public final LearningAlgorithm getByName (String name, List<Object> parameters)
     {
         LearningAlgorithm instance = null;
         try
         {
             // TODO Make this dynamic
-            instance = learningAlgorithms.get (name).getConstructor ().newInstance ();
+            Constructor<?>[] constructors = learningAlgorithms.get (name).getConstructors ();
+            for(Constructor<?> constructor : constructors)
+            {
+                Class<?>[]  parameterTypes = constructor.getParameterTypes ();
+                int i= 0;
+                while (i < parameterTypes.length
+                       && parameterTypes[i].isAssignableFrom (parameters.get (i).getClass ()))
+                    ++i;
+                if(i == parameterTypes.length)
+                    instance = (LearningAlgorithm) constructor.newInstance (parameters.toArray ());
+            }
         }
         catch (Exception e)
         {

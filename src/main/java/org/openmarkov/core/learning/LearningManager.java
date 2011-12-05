@@ -3,6 +3,7 @@ package org.openmarkov.core.learning;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.openmarkov.core.action.PNEdit;
@@ -47,12 +48,6 @@ public class LearningManager {
     /** ProbNet to learn. */
     private ProbNet learnedNet = null;
     
-    /** Model net. */
-    private ProbNet modelNet = null;   
-    
-    /** How the model net will be used. */
-    private ModelNetUse modelNetUse = null;     
-    
     /** Case database */
     private int[][] cases = null;
 
@@ -76,6 +71,7 @@ public class LearningManager {
     public LearningManager (ProbNet preprocessedNet,
                             int[][] cases,
                             String algorithmName,
+                            List<Object> parameters, 
                             ProbNet modelNet,
                             ModelNetUse modelNetUse
                             )
@@ -86,18 +82,26 @@ public class LearningManager {
         NotEnoughMemoryException
     {
         LearningAlgorithmManager learningAlgorithmManager = new LearningAlgorithmManager ();
-        this.learnedNet = applyModelNet(preprocessedNet, modelNet, modelNetUse);
-        this.modelNet = modelNet;
-        this.modelNetUse = modelNetUse;
         this.cases = cases;
         /* Maybe there's no modelNet to work with */
-        if ((modelNetUse.isUseModelNet ()) && (modelNet == null))
+        if ((modelNetUse.isUseModelNet ()))
         {
-            throw new EmptyModelNetException ();
+            if (modelNet != null)
+            {
+                this.learnedNet = applyModelNet (preprocessedNet, modelNet,
+                                                 modelNetUse);
+            }
+            else
+            {
+                throw new EmptyModelNetException ();
+            }
         }
-        
-        // TODO: Fill this up
-        HashMap<Class<?>, Object> parameters = null;        
+        else
+        {
+            this.learnedNet = preprocessedNet;
+        }     
+        parameters.add (0, learnedNet);
+        parameters.add (1, cases);
         this.learningAlgorithm = learningAlgorithmManager.getByName (algorithmName, parameters);
         this.addElviraProperties (learnedNet);
     }  

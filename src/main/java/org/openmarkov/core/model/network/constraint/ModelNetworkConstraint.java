@@ -27,7 +27,12 @@ public class ModelNetworkConstraint extends PNConstraint {
 	ModelNetUse modelNetUse;
 	ProbNet modelNet;
 	
-	// Constructor
+	// Constructors
+    public ModelNetworkConstraint(ModelNetUse modelNetUse, ProbNet modelNet) {
+        this.modelNet = modelNet.copy();
+        this.modelNetUse = modelNetUse;
+    }    
+    
     public ModelNetworkConstraint() {
         this.modelNet = null;
         this.modelNetUse = null;
@@ -126,9 +131,5 @@ public class ModelNetworkConstraint extends PNConstraint {
     {
         this.modelNet = modelNet;
     }
-    public ModelNetworkConstraint(ModelNetUse modelNetUse, ProbNet modelNet) {
-        this.modelNet = modelNet.copy();
-        this.modelNetUse = modelNetUse;
-    }    
 
 }

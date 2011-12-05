@@ -87,12 +87,9 @@ public class Variable implements Cloneable {
 	 * It takes advantage of the feature of variable-length argument lists of Java 5
 	 * in order to accept the names of the states.
 	 * <p>
-	 * Creates a <code>FSVariable</code> with <code>numStates</code> states.
-	 * The i-th state is named as "i".
-	 * 
+	 * Creates a <code>FSVariable</code> whose states are given by the names <code>namesStates</code> states.
 	 * @param name a <code>String</code>
-	 * @param numStates
-	 *            <code>int</code>
+	 * @param numStates a sequence of <code>String</code> by using the facilities of Java 5.
 	 */
 	public Variable(String nameVariable, String... namesStates) {
 

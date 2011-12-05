@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmarkov.core.OpenMarkovTests;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -87,8 +88,7 @@ public class TreeADDPotentialTest {
 	
 	private LabelledLink labelledlink1;
 	
-	private double epsilonTest = 0.00001;
-	
+		
 	@Before
     public void setUp() throws Exception {
 		
@@ -193,10 +193,10 @@ public class TreeADDPotentialTest {
 				treeADD.tableProject(null, null).get(0);
 		ArrayList<Variable> variables = tablePotential.getVariables();
 		assertEquals(2, variables.size());
-		assertEquals(1.0, tablePotential.values[0],epsilonTest);
-		assertEquals(0.0, tablePotential.values[1],epsilonTest);
-		assertEquals(0.9, tablePotential.values[2],epsilonTest);
-		assertEquals(0.1, tablePotential.values[3],epsilonTest);
+		assertEquals(1.0, tablePotential.values[0],OpenMarkovTests.maxError);
+		assertEquals(0.0, tablePotential.values[1],OpenMarkovTests.maxError);
+		assertEquals(0.9, tablePotential.values[2],OpenMarkovTests.maxError);
+		assertEquals(0.1, tablePotential.values[3],OpenMarkovTests.maxError);
 		
 		Finding bFinding = new Finding(variableB, 0);
 		EvidenceCase evidence = new EvidenceCase();
@@ -205,8 +205,8 @@ public class TreeADDPotentialTest {
 			treeADD.tableProject(evidence, null).get(0);
 		variables = tablePotential.getVariables();
 		assertEquals(1, variables.size());
-		assertEquals(1.0, tablePotential.values[0],epsilonTest);
-		assertEquals(0.9, tablePotential.values[1],epsilonTest);
+		assertEquals(1.0, tablePotential.values[0],OpenMarkovTests.maxError);
+		assertEquals(0.9, tablePotential.values[1],OpenMarkovTests.maxError);
 
 		Finding aFinding = new Finding(variableA, 1);
 		evidence = new EvidenceCase();
@@ -215,8 +215,8 @@ public class TreeADDPotentialTest {
 			treeADD.tableProject(evidence, null).get(0);
 		variables = tablePotential.getVariables();
 		assertEquals(1, variables.size());
-		assertEquals(0.9, tablePotential.values[0],epsilonTest);
-		assertEquals(0.1, tablePotential.values[1],epsilonTest);
+		assertEquals(0.9, tablePotential.values[0],OpenMarkovTests.maxError);
+		assertEquals(0.1, tablePotential.values[1],OpenMarkovTests.maxError);
 	}
 
 	@Test

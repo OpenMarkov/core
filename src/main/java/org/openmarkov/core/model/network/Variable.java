@@ -84,6 +84,31 @@ public class Variable implements Cloneable {
 
 	/**
 	 * Constructor for discrete variables.
+	 * It takes advantage of the feature of variable-length argument lists of Java 5
+	 * in order to accept the names of the states.
+	 * <p>
+	 * Creates a <code>FSVariable</code> with <code>numStates</code> states.
+	 * The i-th state is named as "i".
+	 * 
+	 * @param name a <code>String</code>
+	 * @param numStates
+	 *            <code>int</code>
+	 */
+	public Variable(String nameVariable, String... namesStates) {
+
+		int numStates = namesStates.length;
+		states = new State[numStates];
+		for (int i = 0; i < numStates; i++) {
+			states[i] = new State(namesStates[i]);
+		}
+		this.variableType = VariableType.FINITE_STATES;
+		this.partitionedInterval = null;
+		setTimeSlice(getTimeSlice(name));
+		
+	}
+	
+	/**
+	 * Constructor for discrete variables.
 	 * <p>
 	 * Creates a <code>FSVariable</code> with <code>numStates</code> states.
 	 * The i-th state is named as "i".

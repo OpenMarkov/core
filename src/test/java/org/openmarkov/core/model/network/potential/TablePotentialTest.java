@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmarkov.core.OpenMarkovTests;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -82,8 +83,6 @@ public class TablePotentialTest {
 	/** Two binary variables: fsVariable2 = 1, fsVariable4 = 0. */
 	private EvidenceCase evidenceCase;
 	
-	private double epsilonTest = 0.00001;
-
 	@Before
     public void setUp() throws Exception {
         states1 = new State[]{new State("S1V1"), new State("S2V1")};
@@ -326,10 +325,10 @@ public class TablePotentialTest {
     	int[] offsets = projected.getOffsets();
     	
     	// Test table content
-    	assertEquals(1, offsets.length,epsilonTest);
-    	assertEquals(1, offsets[0],epsilonTest);
-    	assertEquals(2.0, tableProjected[initialPosition],epsilonTest);
-    	assertEquals(3.0, tableProjected[initialPosition + offsets[0]],epsilonTest);
+    	assertEquals(1, offsets.length,OpenMarkovTests.maxError);
+    	assertEquals(1, offsets[0],OpenMarkovTests.maxError);
+    	assertEquals(2.0, tableProjected[initialPosition],OpenMarkovTests.maxError);
+    	assertEquals(3.0, tableProjected[initialPosition + offsets[0]],OpenMarkovTests.maxError);
     }
     
     @Test
@@ -386,8 +385,8 @@ public class TablePotentialTest {
 		
 		// Test table
 		assertEquals(multiplication.values.length, 6);
-		assertEquals(multiplication.values[0], 0.01,epsilonTest);
-		assertEquals(multiplication.values[5], 0.2,epsilonTest);
+		assertEquals(multiplication.values[0], 0.01,OpenMarkovTests.maxError);
+		assertEquals(multiplication.values[5], 0.2,OpenMarkovTests.maxError);
     }
     
     @Test

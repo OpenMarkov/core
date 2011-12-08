@@ -1,11 +1,8 @@
-package org.openmarkov.core;
+package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;

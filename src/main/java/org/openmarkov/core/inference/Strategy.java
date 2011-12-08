@@ -45,9 +45,6 @@ public class Strategy {
 		}
 		
 	
-		
-		
-		
 	}
 
 	public ArrayList<Variable> getDomainOfPolicy(Variable varDecision) {

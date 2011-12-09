@@ -94,6 +94,7 @@ public class Variable implements Cloneable {
 	public Variable(String nameVariable, String... namesStates) {
 
 		int numStates = namesStates.length;
+		this.name = nameVariable;
 		states = new State[numStates];
 		for (int i = 0; i < numStates; i++) {
 			states[i] = new State(namesStates[i]);

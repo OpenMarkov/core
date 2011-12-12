@@ -380,13 +380,17 @@ public class TablePotentialTest {
 		// Test variables
 		ArrayList<Variable> variables = multiplication.getVariables();
 		assertEquals(2, variables.size());
-		assertTrue(variables.contains(B));
-		assertTrue(variables.contains(C));
+		assertEquals(B, variables.get(0));
+		assertEquals(C, variables.get(1));
 		
 		// Test table
 		assertEquals(multiplication.values.length, 6);
-		assertEquals(multiplication.values[0], 0.01,OpenMarkovTests.maxError);
-		assertEquals(multiplication.values[5], 0.2,OpenMarkovTests.maxError);
+		assertEquals(0.06, multiplication.values[0], OpenMarkovTests.maxError);
+		assertEquals(0.06, multiplication.values[1], OpenMarkovTests.maxError);
+		assertEquals(0.02, multiplication.values[2], OpenMarkovTests.maxError);
+		assertEquals(0.14, multiplication.values[3], OpenMarkovTests.maxError);
+		assertEquals(0.02, multiplication.values[4], OpenMarkovTests.maxError);
+		assertEquals(0.2, multiplication.values[5], OpenMarkovTests.maxError);
     }
     
     @Test

@@ -23,6 +23,7 @@ import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.constraint.ConstraintManager;
+import org.openmarkov.core.model.network.constraint.MaxNumParents;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
@@ -487,7 +488,7 @@ public class ProbNetTest {
 				buildConstraintList (BayesianNetworkType.getUniqueInstance()).
 				size();
 		try {
-			emptyProbNet.addConstraint(new NoCycle(), true);
+			emptyProbNet.addConstraint(new MaxNumParents(), true);
 		} catch (ConstraintViolationException e) {
 			fail("Fail in testAddConstraint()");
 		}
@@ -497,7 +498,11 @@ public class ProbNetTest {
 
 	@Test
 	public void testRemoveConstraint() {
-		PNConstraint constraint = new NoCycle();
+		PNConstraint constraint = new MaxNumParents();
+		// By default a ProbNet is a Bayesian Network
+		int numBNConstraints = ConstraintManager.getUniqueInstance ().
+				buildConstraintList (BayesianNetworkType.getUniqueInstance()).
+				size();
 		try {
 			emptyProbNet.addConstraint(constraint, true);
 		} catch (ConstraintViolationException e) {
@@ -505,7 +510,7 @@ public class ProbNetTest {
 		}
 		emptyProbNet.removeConstraint(constraint);
 		ArrayList<PNConstraint> constraints = emptyProbNet.getConstraints();
-		assertEquals(12, constraints.size());		
+		assertEquals(numBNConstraints, constraints.size());		
 	}
 
 	@Test

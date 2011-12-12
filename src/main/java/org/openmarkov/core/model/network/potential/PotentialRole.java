@@ -1,0 +1,45 @@
+/**
+ * 
+ */
+package org.openmarkov.core.model.network.potential;
+
+/** @author marias
+ * @version 1.0 */
+public enum PotentialRole {
+
+	CONDITIONAL_PROBABILITY(0, "conditionalProbability"),
+	DECISION(1, "decision"),
+	JOIN_PROBABILITY(2, "joinProbability"),
+	POLICY(3, "policy"),
+	UTILITY(4, "utility");
+	
+	private int type;
+	
+	private String label;
+	
+	PotentialRole(int type, String label) {
+		this.type = type;
+		this.label = label;
+	}
+	
+	public String toString() {
+		return label;
+	}
+	
+	public int getType() {
+		return type;
+	}
+	
+	public static PotentialRole getEnumMember(String auxLabel){
+		for (PotentialRole role:values()){
+			String u = role.toString();
+			if (u.equals(auxLabel)){
+				return role;
+			} 
+		}
+		return null;
+		
+	}
+
+
+}

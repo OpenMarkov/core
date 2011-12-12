@@ -92,8 +92,8 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 				probNode.getVariable(), true));
 		}
 		for (Node child : children) {
-			addEdit(new RemoveLinkEdit(probNet,	probNode.getVariable(),
-				(Variable)child.getObject(), true));
+			Variable variable = ((ProbNode)child.getObject()).getVariable();
+			addEdit(new RemoveLinkEdit(probNet,	probNode.getVariable(), variable, true));
 		}
 		for (Node sibling : siblings) {
 			addEdit(new RemoveLinkEdit(probNet, 

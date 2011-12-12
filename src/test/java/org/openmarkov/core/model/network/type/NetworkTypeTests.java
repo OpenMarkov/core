@@ -29,7 +29,6 @@ import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.OnlyOneAgent;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
-import org.openmarkov.core.model.network.constraint.OnlyUnlabeledLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 
 public class NetworkTypeTests
@@ -46,7 +45,6 @@ public class NetworkTypeTests
         Assert.assertTrue (constraints.contains (new OnlyAtemporalVariables ()));
         Assert.assertFalse (constraints.contains (new OnlyTemporalVariables ()));
         Assert.assertTrue (constraints.contains (new OnlyOneAgent ()));
-        Assert.assertTrue (constraints.contains (new OnlyUnlabeledLinks ()));
         Assert.assertTrue (constraints.contains (new DistinctLinks ()));
         Assert.assertTrue (constraints.contains (new NoMultipleLinks ()));
         Assert.assertTrue (constraints.contains (new OnlyDirectedLinks ()));

@@ -22,12 +22,14 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.constraint.ConstraintManager;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
 
 public class ProbNetTest {
@@ -468,7 +470,11 @@ public class ProbNetTest {
 	@Test
 	public void testProbNet() {
 		// Test empty probabilistic network.
-		assertEquals(13, emptyProbNet.getConstraints().size()); // No constraints
+		// By default a ProbNet is a Bayesian Network
+		int numBNConstraints = ConstraintManager.getUniqueInstance ().
+				buildConstraintList (BayesianNetworkType.getUniqueInstance()).
+				size();
+		assertEquals(numBNConstraints, emptyProbNet.getConstraints().size()); // No constraints
 		for (NodeType nodeType : NodeType.values()) { // No nodes of every type
 			assertEquals(0, emptyProbNet.getNumNodes(nodeType));
 		}
@@ -476,13 +482,17 @@ public class ProbNetTest {
 
 	@Test
 	public void testAddConstraint() {
+		// By default a ProbNet is a Bayesian Network
+		int numBNConstraints = ConstraintManager.getUniqueInstance ().
+				buildConstraintList (BayesianNetworkType.getUniqueInstance()).
+				size();
 		try {
 			emptyProbNet.addConstraint(new NoCycle(), true);
 		} catch (ConstraintViolationException e) {
 			fail("Fail in testAddConstraint()");
 		}
 		ArrayList<PNConstraint> constraints = emptyProbNet.getConstraints();
-		assertEquals(13, constraints.size());
+		assertEquals(numBNConstraints + 1, constraints.size());
 	}
 
 	@Test

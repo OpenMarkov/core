@@ -1082,4 +1082,19 @@ public class ProbNetTest {
 		assertTrue(potential1B.contains(I));
 		
 	}*/
+	
+	@Test
+	public void testGetAdditionalConstraints() {
+		ProbNet bnProbNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
+		PNConstraint maxNumParents = new MaxNumParents();
+		try {
+			bnProbNet.addConstraint(maxNumParents);
+		} catch (ConstraintViolationException e) {
+			fail("Unreachable code.");
+		}
+		ArrayList<PNConstraint> additionalConstraints = bnProbNet.getAdditionalConstraints();
+		assertEquals(1, additionalConstraints.size());
+		assertTrue(additionalConstraints.contains(maxNumParents));
+	}
+	
 }

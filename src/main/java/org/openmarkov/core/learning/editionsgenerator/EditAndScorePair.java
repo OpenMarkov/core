@@ -26,12 +26,18 @@ public class EditAndScorePair {
     
     protected double score;
     
-    protected Exception violatedConstraint = null;
+    protected ConstraintViolationException violatedConstraint;
     
     public EditAndScorePair(BaseLinkEdit edition, double score){
         this.edition = edition; 
         this.score = score;
+        this.violatedConstraint = null;
     }
+    
+    public EditAndScorePair(BaseLinkEdit edition, double score, ConstraintViolationException  e){
+        this(edition, score);
+        this.violatedConstraint = e;
+    }    
     
     public BaseLinkEdit getEdition(){
         return edition;

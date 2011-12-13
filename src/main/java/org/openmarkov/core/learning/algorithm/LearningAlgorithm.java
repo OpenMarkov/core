@@ -65,12 +65,11 @@ public abstract class LearningAlgorithm {
     {
         init();
         /* Main loop */
-       ArrayList<EditAndScorePair> bestEditions = editionsGenerator.getBestEditions(1,true,true,false);
-        while (!bestEditions.isEmpty ())
+       EditAndScorePair bestEdition = editionsGenerator.getBest(true,true);
+        while (bestEdition != null)
         {
-            step (bestEditions.get (0).getEdition ());
-            bestEditions = editionsGenerator.getBestEditions (1, true, true,
-                                                              false);
+            step (bestEdition.getEdition ());
+            bestEdition = editionsGenerator.getNext (true, true);
         }
        /* Parametric Learning */
        parametricLearning(probNet, cases);
@@ -233,12 +232,16 @@ public abstract class LearningAlgorithm {
      */
     public ArrayList<EditAndScorePair> getBestEditions (int numEdits,
                                                         boolean onlyAllowedEdits,
-                                                        boolean onlyPositiveEdits,
-                                                        boolean reset)
+                                                        boolean onlyPositiveEdits)
     {
-        return this.editionsGenerator.getBestEditions (numEdits,
-                                                       onlyAllowedEdits,
-                                                       onlyPositiveEdits, reset);        
+        ArrayList<EditAndScorePair> bestEditions = new ArrayList<EditAndScorePair> ();
+        EditAndScorePair bestEdition = editionsGenerator.getBest(onlyAllowedEdits, onlyPositiveEdits);
+        while (bestEditions.size () < numEdits && bestEdition != null)
+        {
+            bestEditions.add (bestEdition);
+            bestEdition = editionsGenerator.getNext (onlyAllowedEdits, onlyPositiveEdits);
+        }        
+        return bestEditions;        
     }
     
     /**

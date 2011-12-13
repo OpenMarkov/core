@@ -44,16 +44,9 @@ public class LearningManager {
     /**  Learning algorithm */
     private LearningAlgorithm learningAlgorithm = null;    
     
-    /** Implemented metrics. */
-    public static final String[] metrics = {"Bayesiana", "K2", "BD", "Entropía",
-            "MDL", "AIC"};
-    
     /** Implemented independence tester. */
     public static final String[] independenceTesters = {"Entropía cruzada"};
 
-    /** Implemented algorithms. */
-    public static final String[] algorithms = {"Gradiente", "PC"};
-    
     /** ProbNet to learn. */
     private ProbNet learnedNet = null;
     
@@ -170,13 +163,12 @@ public class LearningManager {
      */
     public ArrayList<EditAndScorePair> getBestEditions (int numEdits,
                                  boolean onlyAllowedEdits,
-                                 boolean onlyPositiveEdits,
-                                 boolean reset)
+                                 boolean onlyPositiveEdits)
     {
         
         return this.learningAlgorithm.getBestEditions (numEdits,
                                                        onlyAllowedEdits,
-                                                       onlyPositiveEdits, reset);        
+                                                       onlyPositiveEdits);        
     }
     
     /**

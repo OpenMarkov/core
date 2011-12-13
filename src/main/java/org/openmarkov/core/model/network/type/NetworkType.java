@@ -43,7 +43,7 @@ public abstract class NetworkType
     }    
     
     public HashMap<Class<? extends PNConstraint>, ConstraintBehavior> 
-    	getOverwrittenConstraints () {
+    		getOverwrittenConstraints () {
         return constraints;
     }
     

@@ -11,6 +11,7 @@ package org.openmarkov.core.learning.algorithm.annotation;
 
 import java.lang.annotation.AnnotationFormatError;
 import java.lang.reflect.Constructor;
+import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +60,6 @@ public class LearningAlgorithmManager
         LearningAlgorithm instance = null;
         try
         {
-            // TODO Make this dynamic
             Constructor<?>[] constructors = learningAlgorithms.get (name).getConstructors ();
             for(Constructor<?> constructor : constructors)
             {
@@ -76,6 +76,8 @@ public class LearningAlgorithmManager
         {
             e.printStackTrace();
         }
+        if(instance == null)
+            throw new InvalidParameterException();
         return instance;
     }
     

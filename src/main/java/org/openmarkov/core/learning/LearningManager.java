@@ -88,15 +88,11 @@ public class LearningManager {
         /* Maybe there's no modelNet to work with */
         if ((modelNetUse.isUseModelNet ()))
         {
-            if (modelNet != null)
-            {
-                this.learnedNet = applyModelNet (preprocessedNet, modelNet,
-                                                 modelNetUse);
-            }
-            else
+            if (modelNet == null)
             {
                 throw new EmptyModelNetException ();
             }
+            this.learnedNet = applyModelNet (preprocessedNet, modelNet, modelNetUse);
         }
         else
         {

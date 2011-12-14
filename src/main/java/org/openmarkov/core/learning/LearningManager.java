@@ -116,21 +116,11 @@ public class LearningManager {
      * @throws NormalizeNullVectorException 
      * @throws ProbNodeNotFoundException 
      */
-    public ProbNet learn() 
+    public void learn () 
             throws NotEnoughMemoryException, NodeNotFoundException, 
             NormalizeNullVectorException, ProbNodeNotFoundException {
                 
-        /* Get current time */
-        long start = System.currentTimeMillis();
-
         learningAlgorithm.run();
-        
-        /* Get elapsed time in milliseconds */
-        long elapsedTimeMillis = System.currentTimeMillis() - start;
-                
-        System.out.print("\n * Aprendizaje terminado.\n\t Tiempo transcurrido: " 
-               + calculateTime(elapsedTimeMillis) + "\n");
-        return learnedNet;
     }
     
 	public ProbNet getLearnedNet() {
@@ -226,28 +216,6 @@ public class LearningManager {
         return learnedNet;
     }
     
-    /**This function returns a <code>String</code> that represents the given 
-     * elapsed time in the format: minutes' seconds'' milliseconds ms.
-     * 
-     * @param elapsedTimeMillis long with the elapsed time.
-     * @return <code>String</code> that represents the given time.
-     */
-    private static String calculateTime(long elapsedTimeMillis){
-        
-        StringBuffer timeString = new StringBuffer();
-        int minutes, seconds;
-        
-        minutes = (int) (elapsedTimeMillis / 60000);
-        elapsedTimeMillis -= minutes * 60000;
-        seconds = (int) (elapsedTimeMillis / 1000);
-        elapsedTimeMillis -= seconds * 1000;
-        
-        timeString.append(minutes + "' " + seconds + "\" " + elapsedTimeMillis 
-                + " ms.");
-        
-        return timeString.toString();
-    }
-
     public static Set<String> getAlgorithmNames ()
     {
         LearningAlgorithmManager learningAlgorithmManager = new LearningAlgorithmManager ();

@@ -7,6 +7,7 @@ import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 
 // TODO  mantener la consistencia entre name y baseName cuando se cambian
 
@@ -57,6 +58,14 @@ public class Variable implements Cloneable {
 	 * discretized variable type.
 	 */
 	protected PartitionedInterval partitionedInterval;
+	
+	/**
+	 * 
+	 * Threshold are set for continuous variables. If this variable has subintervals this
+	 * Array must have more than two values 
+	 * 
+	 **/
+	protected ArrayList<Threshold> thresholds;
 
 	/** Max error. */
 	private double precision = 0.01;
@@ -130,7 +139,77 @@ public class Variable implements Cloneable {
 			Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false), 0.0);
 		this.variableType = VariableType.NUMERIC;
 	}
+	
+		
+	/**
+	 * Constructor for continuous variables.
+	 * <p>
+	 * A continuous variable is defined in an interval.
+	 * 
+	 * @param name.
+	 *            <code>String</code>
+	 * @param belongsToLeftMin.
+	 *            <code>boolean</code>
+	 * @param min.
+	 *            <code>float</code>
+	 * @param max.
+	 *            <code>float</code>
+	 * @param belongsToLeftMax.
+	 *            <code>boolean</code>
+	 * @param precision.
+	 *            <code>double</code>
+	
+	public Variable (String name, float min, boolean belongsToLeftMin, float max, boolean belongsToLeftMax, double precision) {
+		Threshold thresholdMin = new Threshold(min, belongsToLeftMin);// )[ or ](
+		Threshold thresholdMax = new Threshold(max, belongsToLeftMax);// )[ or ](
+		this.thresholds.add(thresholdMin);
+		this.thresholds.add(thresholdMax);
+		this.precision = precision;
+		this.variableType = VariableType.NUMERIC;
+	} */
+	
+	/**
+	 * Default constructor for continuous variables.
+	 * <p>
+	 * A continuous variable is defined in an interval. In this case the
+	 * interval is (-infinity, +infinity) by default
+	 * 
+	 * @param name
+	 *            <code>String</code>
+	 
+	public Variable(String name) {
 
+		this(name, Float.NEGATIVE_INFINITY, true, Float.POSITIVE_INFINITY, false, 0.0);
+		this.variableType = VariableType.NUMERIC;
+	}
+	
+	//Antes una variable continua tenia un PartitionedInterval asociado y este podia tener 
+	//uno o más intervalos con lo que la variable podia tener un intervalo o más asignados
+	//ahora se le podran asignar subintervalos a la variable dentro del intervalo principal
+	//en el que es definida cuando se construye
+	/* this method sets a new threshold to a numerical variable in the correct order 
+	public void setSubintervals(Threshold threshold) {
+		ArrayList<Threshold> aux = new ArrayList<Threshold>();
+		int numThresholds = thresholds.size();
+		//if ((min.getLimit() < value && value < max.getLimit()) || (value == min.getLimit() && min.isAbove(value) ) 
+		//|| (value == max.getLimit() && max.isBelow(value))){
+		int i;
+		for(i = 0; thresholds.get(i).isBelow(threshold.getLimit()); i++) {
+			 	aux.set(i, thresholds.get(i));
+		}
+		if(thresholds.get(i).isAbove(threshold.getLimit())){
+			aux.set(i, threshold);
+			aux.set(i+1, thresholds.get(i));
+		}
+		for (int j = i+1; j < numThresholds && thresholds.get(i).isAbove(threshold.getLimit()); j++){
+			aux.set(j+1, thresholds.get(j));
+		}
+		
+		this.thresholds = aux;
+		
+	}*/
+	
+	
 	/**
 	 * Constructor for continuous variables.
 	 * <p>
@@ -299,7 +378,29 @@ public class Variable implements Cloneable {
 			}
 		}
 	}
-
+	
+	/** @consultation
+	 * @return The ArrayList of <code>Threshold</code>
+	 */
+	public ArrayList<Threshold> getThresholds() {
+		return thresholds;
+	}
+	
+	/** @consultation
+	 * @return minimum threshold of the continuous variable interval
+	 * 		<code>Threshold</code>
+	 */
+	public Threshold getThresholdMin() {
+		return thresholds.get(0);
+	}
+	
+	/** @consultation
+	 * @return maximum threshold of the continuous variable intervar
+	 * 		 <code>Threshold</code>
+	 */
+	public Threshold getThresholdMax() {
+		return thresholds.get(1);
+	}
 	/** @consultation
 	 * @param state.
 	 *            <code>String</code>

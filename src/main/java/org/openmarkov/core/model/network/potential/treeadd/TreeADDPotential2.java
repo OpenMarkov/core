@@ -122,6 +122,14 @@ public class TreeADDPotential2 extends Potential {
 			}
 		}
 	}
+	
+	public Variable getTopVariable(){
+		return topVariable;
+	}
+	
+	public void setTopVariable(Variable variable){
+		this.topVariable = variable;
+	}
 
 	@Override
 	public ArrayList<TablePotential> tableProject(EvidenceCase evidenceCase,

@@ -30,6 +30,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.type.NetworkType;
 
 public abstract class Inference {
 	
@@ -43,12 +44,16 @@ public abstract class Inference {
 	/** For undo/redo operations. */
 	protected PNESupport pNESupport;
 	
-	/** Set of constraints that the ProbNet must satisfy so that it can
-	 * be evaluated by this algorithm. Its initial value must be null, instead 
+	
+	/** Set of network types where the algorithm can be applied. */
+	private ArrayList<NetworkType> networkTypesApplicable;
+	
+	/** Set of additional constraints that the ProbNet must satisfy in conjunction with the constraints
+	 * typical of the network types. Its initial value must be null, instead 
 	 * of an empty ArrayList<PNCconstraint>, so that
 	 * the method getRequiredConstraints of its child classes detect when this
 	 * property has not been initialized */
-	protected ArrayList<PNConstraint> requiredConstraints;
+	private ArrayList<PNConstraint> additionalConstraints;
 		
 	/** <code>true</code> if the network is prepared for obtaining the marginal probabilities. */
 	protected boolean compiled;
@@ -73,17 +78,53 @@ public abstract class Inference {
 	}
 
 
+		protected abstract ArrayList<NetworkType> initializeNetworkTypesApplicable();
+
+
+		protected abstract ArrayList<PNConstraint> initializeAdditionalConstraints();
+
+
 		// Constructor
 		public Inference(ProbNet probNet) 
 		throws NotEvaluableNetworkException {
+			
+			boolean isNetworkTypeApplicable;
+			NetworkType probNetNetworkType;
+			
 			this.probNet = probNet;
-			for (PNConstraint constraint : getRequiredConstraints()) {
+				
+			probNetNetworkType = probNet.getNetworkType();
+			
+			//Check the type of network
+			isNetworkTypeApplicable = false;
+			ArrayList<NetworkType> networkTypesApplicable2 = getNetworkTypesApplicable();
+			for (int iType=0;iType<networkTypesApplicable2.size()&&!isNetworkTypeApplicable;iType++){
+				NetworkType auxNetworkType = networkTypesApplicable2.get(iType);
+				isNetworkTypeApplicable = (probNetNetworkType == auxNetworkType);
+			}
+			
+			if (!isNetworkTypeApplicable){
+				throw new NotEvaluableNetworkException(probNetNetworkType.toString());
+			}
+			
+			//Check the additional constraints
+			for (PNConstraint constraint : getAdditionalConstraints()) {
 				if (!constraint.checkProbNet(probNet)) {
 					throw new NotEvaluableNetworkException(constraint.toString());
 				}
 			}
 			evidence = new EvidenceCase();
 		}
+
+
+	protected final ArrayList<NetworkType> getNetworkTypesApplicable() {
+		
+		if (networkTypesApplicable==null){
+			networkTypesApplicable = initializeNetworkTypesApplicable();
+		}
+		
+		return networkTypesApplicable;
+	}
 
 
 	/**
@@ -161,7 +202,14 @@ public abstract class Inference {
 			};
 			
 	/** This method must be overriden in the child classes */
-	protected abstract Collection<PNConstraint> getRequiredConstraints();
+	protected final Collection<PNConstraint> getAdditionalConstraints(){
+			
+			if (additionalConstraints==null){
+				additionalConstraints = initializeAdditionalConstraints();
+			}
+			
+			return additionalConstraints;
+		}
 	
 	public abstract StrategyUtilities getUtilityTables() throws NotEnoughMemoryException, WrongGraphStructureException, ConstraintViolationException, CanNotDoEditException, DoEditException, NonProjectablePotentialException, WrongCriterionException, ProbNodeNotFoundException;
 

@@ -16,8 +16,16 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 public class StrategyUtilities {
-
+	
 	Hashtable<Variable,TablePotential> utilities;
+
+	/**
+	 * 
+	 */
+	public StrategyUtilities() {
+		super();
+		utilities = new Hashtable<Variable,TablePotential>();
+	}
 
 	/**
 	 * @return the utilities

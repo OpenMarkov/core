@@ -11,12 +11,9 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import javax.swing.event.UndoableEditEvent;
-
 import org.openmarkov.core.action.AddVariableEdit;
 import org.openmarkov.core.action.ChangeVariableNameEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -28,12 +25,11 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 public class DistinctVariableNames extends PNConstraint {
 
 	@Override
-	public boolean checkEvent(UndoableEditEvent event)
+	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 			throws NotEnoughMemoryException, NonProjectablePotentialException,
 			WrongCriterionException {
-		ArrayList<PNEdit> edits = UtilConstraints.getEditsType(event,
+		ArrayList<PNEdit> edits = UtilConstraints.getEditsType(edit,
 				AddVariableEdit.class);
-		ProbNet probNet = ((PNUndoableEditEvent) event).getProbNet();
 		ArrayList<Variable> variablesProbNet = probNet.getVariables();
 		ArrayList<String> variablesProbNetNames = new ArrayList<String>();
 		for (Variable variable : variablesProbNet) {
@@ -42,8 +38,8 @@ public class DistinctVariableNames extends PNConstraint {
 
 		// get new variables names
 		ArrayList<String> newVariablesNames = new ArrayList<String>();
-		for (PNEdit edit : edits) {
-			newVariablesNames.add(((AddVariableEdit) edit).getVariable()
+		for (PNEdit simpleEdit : edits) {
+			newVariablesNames.add(((AddVariableEdit) simpleEdit).getVariable()
 					.getName());
 		}
 
@@ -69,10 +65,9 @@ public class DistinctVariableNames extends PNConstraint {
 		}
 
 		// ChangeVariableName Edit
-		edits = UtilConstraints.getEditsType(event,
-				ChangeVariableNameEdit.class);
-		for (PNEdit edit : edits) {
-			String newName = ((ChangeVariableNameEdit) edit).getNewName();
+        edits = UtilConstraints.getEditsType (edit, ChangeVariableNameEdit.class);
+		for (PNEdit simpleEdit : edits) {
+			String newName = ((ChangeVariableNameEdit) simpleEdit).getNewName();
 			for (String variableProbNetName : variablesProbNetNames) {
 				if ((newName.contentEquals(variableProbNetName))) {
 					return false;

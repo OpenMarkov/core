@@ -11,6 +11,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import javax.swing.event.UndoableEditEvent;
 
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -53,7 +54,9 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
         NonProjectablePotentialException,
         WrongCriterionException
     {
-        if (!checkEvent(event)) {
+        PNEdit edit = (PNEdit) event.getEdit ();
+        ProbNet probNet =  event.getProbNet ();
+        if (!checkEdit(probNet, edit)) {
             throw new ConstraintViolationException (
                                                     "ConstraintViolationException doing edition "
                                                             + event.getEdit ().getPresentationName ()
@@ -79,14 +82,14 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
 	
 	/** Make sure all editions of the event do not violate restrictions.
 	 * @param probNet. <code>ProbNet</code>
-	 * @param event <code>UndoableEditEvent</code>
+	 * @param edit <code>PNEdit</code>
      * @return <code>true</code> if the <code>ProbNet</code> will fulfill the
 	 *  constraint after applying the <code>event</code> in a 
 	 *  <code>ProbNet</code> that previously fulfilled the constraint. 
 	 * @throws NotEnoughMemoryException 
 	 * @throws WrongCriterionException 
 	 * @throws NonProjectablePotentialException */
-	public abstract boolean checkEvent(UndoableEditEvent event) 
+	public abstract boolean checkEdit(ProbNet probNet, PNEdit edit) 
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException;
 	
@@ -95,9 +98,6 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
         return this.getClass().getName();
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals (Object paramObject)
     {

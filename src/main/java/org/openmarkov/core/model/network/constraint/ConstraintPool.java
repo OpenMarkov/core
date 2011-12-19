@@ -11,8 +11,6 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.HashMap;
 
-import org.openmarkov.core.exception.ConstraintException;
-
 /****
  * Gets the unique instance of a PNConstraint by class name
  * 

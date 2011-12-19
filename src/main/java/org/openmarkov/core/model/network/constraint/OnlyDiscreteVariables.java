@@ -11,8 +11,6 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import javax.swing.event.UndoableEditEvent;
-
 import org.openmarkov.core.action.AddVariableEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
@@ -29,21 +27,21 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 public class OnlyDiscreteVariables extends PNConstraint {
 	
 	@Override
-	public boolean checkEvent(UndoableEditEvent event) 
+	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
 		ArrayList<PNEdit> edits = 
-			UtilConstraints.getEditsType(event, AddVariableEdit.class);
-		for (PNEdit edit : edits) {
-			Variable variable = ((AddVariableEdit)edit).getVariable(); 
+			UtilConstraints.getEditsType(edit, AddVariableEdit.class);
+		for (PNEdit simpleEdit : edits) {
+			Variable variable = ((AddVariableEdit)simpleEdit).getVariable(); 
 			if (variable.getVariableType() != VariableType.FINITE_STATES) {
 				return false;
 			}
 		}
 		edits = 
-			UtilConstraints.getEditsType(event, VariableTypeEdit.class);
-		for (PNEdit edit : edits) {
-			VariableType newType = ((VariableTypeEdit)edit).getNewVariableType(); 
+			UtilConstraints.getEditsType(edit, VariableTypeEdit.class);
+		for (PNEdit simpleEdit : edits) {
+			VariableType newType = ((VariableTypeEdit)simpleEdit).getNewVariableType(); 
 			if (newType != VariableType.FINITE_STATES && newType !=
 				VariableType.DISCRETIZED) {
 				return false;

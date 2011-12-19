@@ -11,11 +11,8 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import javax.swing.event.UndoableEditEvent;
-
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -29,17 +26,16 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 public class NoLoops extends PNConstraint {
 
 	@Override
-	public boolean checkEvent(UndoableEditEvent event)
+	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 	throws NotEnoughMemoryException, NonProjectablePotentialException,
 	WrongCriterionException {
-		ArrayList<PNEdit> edits = UtilConstraints.getEditsType(event,
+		ArrayList<PNEdit> edits = UtilConstraints.getEditsType(edit,
 				AddLinkEdit.class);
-		ProbNet probNet = ((PNUndoableEditEvent) event).getProbNet();
 		Graph graph = probNet.getGraph();
-		for (PNEdit edit : edits) {
-			Variable variable1 = ((AddLinkEdit) edit).getVariable1();
+		for (PNEdit simpleEdit : edits) {
+			Variable variable1 = ((AddLinkEdit) simpleEdit).getVariable1();
 			Node node1 = probNet.getProbNode(variable1).getNode();
-			Variable variable2 = ((AddLinkEdit) edit).getVariable2();
+			Variable variable2 = ((AddLinkEdit) simpleEdit).getVariable2();
 			Node node2 = probNet.getProbNode(variable2).getNode();
 			if (graph.existsPath(node2, node1, false)) {
 				return false;

@@ -11,12 +11,9 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import javax.swing.event.UndoableEditEvent;
-
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.LinkEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -48,19 +45,18 @@ public class NoCycle extends PNConstraint {
 	/** @param event <code>UndoableEditEvent</code>
 	 * @return <code>true</code> if <code>event</code> comply with this 
 	 *   constraint */
-	public boolean checkEvent(UndoableEditEvent event) 
+	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
 		ArrayList<PNEdit> edits = 
-			UtilConstraints.getEditsType(event, AddLinkEdit.class);
-		ProbNet probNet = ((PNUndoableEditEvent)event).getProbNet();
+			UtilConstraints.getEditsType(edit, AddLinkEdit.class);
 		//int u=0;
 		Graph graph = probNet.getGraph();
-		for (PNEdit edit : edits) {
-			if (((AddLinkEdit)edit).isDirected()) { // checks constraint
-				Variable variable1 = ((AddLinkEdit)edit).getVariable1(); 
+		for (PNEdit simpleEdit : edits) {
+			if (((AddLinkEdit)simpleEdit).isDirected()) { // checks constraint
+				Variable variable1 = ((AddLinkEdit)simpleEdit).getVariable1(); 
 				Node node1 = probNet.getProbNode(variable1).getNode();
-				Variable variable2 = ((AddLinkEdit)edit).getVariable2(); 
+				Variable variable2 = ((AddLinkEdit)simpleEdit).getVariable2(); 
 				Node node2 = probNet.getProbNode(variable2).getNode();
 				if (graph.existsPath(node2, node1, true)) {
 					return false;
@@ -68,13 +64,11 @@ public class NoCycle extends PNConstraint {
 			}
 		}
 		ArrayList<PNEdit> edits2 = 
-			UtilConstraints.getEditsType(event, LinkEdit.class);
-		for (PNEdit edit : edits2) {
-			if (((LinkEdit)edit).isDirected()) { // checks constraint
-				Variable variable1 = ((LinkEdit)edit).getProbNode1().
-					getVariable(); 
-				Node node1 = ((LinkEdit)edit).getProbNode1().getNode();
-				Node node2 = ((LinkEdit)edit).getProbNode2().getNode();
+			UtilConstraints.getEditsType(edit, LinkEdit.class);
+		for (PNEdit simpleEdit : edits2) {
+			if (((LinkEdit)simpleEdit).isDirected()) { // checks constraint
+				Node node1 = ((LinkEdit)simpleEdit).getProbNode1().getNode();
+				Node node2 = ((LinkEdit)simpleEdit).getProbNode2().getNode();
 				if (graph.existsPath(node2, node1, true)) {
 					return false;
 				}

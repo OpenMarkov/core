@@ -11,8 +11,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import javax.swing.event.UndoableEditEvent;
-
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -25,7 +24,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 public class AllChanceVariablesHaveChancePotentials extends PNConstraint {
 	
 	@Override
-	public boolean checkEvent(UndoableEditEvent event) {
+	public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		return true;
 	}
 

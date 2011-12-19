@@ -11,8 +11,6 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import javax.swing.event.UndoableEditEvent;
-
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNEdit;
@@ -53,7 +51,7 @@ public class ModelNetworkConstraint extends PNConstraint {
 	}
 
 	@Override
-	public boolean checkEvent(UndoableEditEvent event) 
+	public boolean checkEdit(ProbNet probNet, PNEdit edit)  
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
         ArrayList<PNEdit> edits = new ArrayList<PNEdit> ();
@@ -68,11 +66,11 @@ public class ModelNetworkConstraint extends PNConstraint {
                  */
                 if (!modelNetUse.isAddLinksAllowed ())
                 {
-                    edits = UtilConstraints.getEditsType (event, AddLinkEdit.class);
-                    for (PNEdit edit : edits)
+                    edits = UtilConstraints.getEditsType (edit, AddLinkEdit.class);
+                    for (PNEdit simpleEdit : edits)
                     {
-                        source = modelNet.getProbNode (((AddLinkEdit) edit).getVariable1 ().getName ()).getNode ();
-                        destination = modelNet.getProbNode (((AddLinkEdit) edit).getVariable2 ().getName ()).getNode ();
+                        source = modelNet.getProbNode (((AddLinkEdit) simpleEdit).getVariable1 ().getName ()).getNode ();
+                        destination = modelNet.getProbNode (((AddLinkEdit) simpleEdit).getVariable2 ().getName ()).getNode ();
                         if ((modelNet.getGraph ().getLink (source, destination, true) == null)
                             && (modelNet.getGraph ().getLink (source, destination, true) == null))
                         {
@@ -86,11 +84,11 @@ public class ModelNetworkConstraint extends PNConstraint {
                  */
                 if (!modelNetUse.isDeleteLinksAllowed ())
                 {
-                    edits = UtilConstraints.getEditsType (event, RemoveLinkEdit.class);
-                    for (PNEdit edit : edits)
+                    edits = UtilConstraints.getEditsType (edit, RemoveLinkEdit.class);
+                    for (PNEdit simpleEdit : edits)
                     {
-                        source = modelNet.getProbNode (((RemoveLinkEdit) edit).getVariable1 ().getName ()).getNode ();
-                        destination = modelNet.getProbNode (((RemoveLinkEdit) edit).getVariable2 ().getName ()).getNode ();
+                        source = modelNet.getProbNode (((RemoveLinkEdit) simpleEdit).getVariable1 ().getName ()).getNode ();
+                        destination = modelNet.getProbNode (((RemoveLinkEdit) simpleEdit).getVariable2 ().getName ()).getNode ();
                         if ((modelNet.getGraph ().getLink (source, destination, true) != null)
                             || (modelNet.getGraph ().getLink (destination, source, true) != null))
                         {
@@ -104,11 +102,11 @@ public class ModelNetworkConstraint extends PNConstraint {
                  */
                 if (!modelNetUse.isInvertLinksAllowed ())
                 {
-                    edits = UtilConstraints.getEditsType (event, InvertLinkEdit.class);
-                    for (PNEdit edit : edits)
+                    edits = UtilConstraints.getEditsType (edit, InvertLinkEdit.class);
+                    for (PNEdit simpleEdit : edits)
                     {
-                        source = modelNet.getProbNode (((InvertLinkEdit) edit).getVariable1 ().getName ()).getNode ();
-                        destination = modelNet.getProbNode (((InvertLinkEdit) edit).getVariable2 ().getName ()).getNode ();
+                        source = modelNet.getProbNode (((InvertLinkEdit) simpleEdit).getVariable1 ().getName ()).getNode ();
+                        destination = modelNet.getProbNode (((InvertLinkEdit) simpleEdit).getVariable2 ().getName ()).getNode ();
                         if ((modelNet.getGraph ().getLink (source, destination, true) != null))
                         {
                             return false;

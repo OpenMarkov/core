@@ -11,8 +11,6 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import javax.swing.event.UndoableEditEvent;
-
 import org.openmarkov.core.action.AddVariableEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -35,13 +33,13 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 public class OnlyContinuousVariables extends PNConstraint {
 	
 	@Override
-	public boolean checkEvent(UndoableEditEvent event) 
+	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
 		ArrayList<PNEdit> edits = 
-			UtilConstraints.getEditsType(event, AddVariableEdit.class);
-		for (PNEdit edit : edits) {
-			Variable variable = ((AddVariableEdit)edit).getVariable(); 
+			UtilConstraints.getEditsType(edit, AddVariableEdit.class);
+		for (PNEdit simpleEdit : edits) {
+			Variable variable = ((AddVariableEdit)simpleEdit).getVariable(); 
 			if (variable.getVariableType() != VariableType.NUMERIC) {
 				return false;
 			}

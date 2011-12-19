@@ -11,8 +11,6 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import javax.swing.event.UndoableEditEvent;
-
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -42,14 +40,14 @@ public class OnlyUndirectedLinks extends PNConstraint {
 	}
 
 	@Override
-	public boolean checkEvent(UndoableEditEvent event) 
+	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
 		ArrayList<PNEdit> edits = 
-			UtilConstraints.getEditsType(event, AddLinkEdit.class);
-		for (PNEdit edit : edits) {
-			if (((AddLinkEdit)edit).isDirected()) {
-				AddLinkEdit addLink = (AddLinkEdit)edit;
+			UtilConstraints.getEditsType(edit, AddLinkEdit.class);
+		for (PNEdit simpleEdit : edits) {
+			if (((AddLinkEdit)simpleEdit).isDirected()) {
+				AddLinkEdit addLink = (AddLinkEdit)simpleEdit;
 				explanation = new String(
 					addLink.getVariable1() + " --> " + addLink.getVariable2());
 				return false;

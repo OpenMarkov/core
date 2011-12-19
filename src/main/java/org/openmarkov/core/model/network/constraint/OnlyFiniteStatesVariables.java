@@ -11,8 +11,6 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import javax.swing.event.UndoableEditEvent;
-
 import org.openmarkov.core.action.AddVariableEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
@@ -30,15 +28,15 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 public class OnlyFiniteStatesVariables extends PNConstraint {
 
 	@Override
-	public boolean checkEvent(UndoableEditEvent event) 
+	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
 		ArrayList<PNEdit> edits = 
-			UtilConstraints.getEditsType(event, AddVariableEdit.class);
+			UtilConstraints.getEditsType(edit, AddVariableEdit.class);
 		
-		for (PNEdit edit : edits) {
-			Variable variable = ((AddVariableEdit)edit).getVariable(); 
-			NodeType nodetype=((AddVariableEdit)edit).getNodeType();
+		for (PNEdit simpleEdit : edits) {
+			Variable variable = ((AddVariableEdit)simpleEdit).getVariable(); 
+			NodeType nodetype=((AddVariableEdit)simpleEdit).getNodeType();
 			
 
 			if(nodetype == NodeType.CHANCE || nodetype == NodeType.DECISION )
@@ -52,14 +50,14 @@ public class OnlyFiniteStatesVariables extends PNConstraint {
 			}
 		}
 		edits = 
-			UtilConstraints.getEditsType(event, VariableTypeEdit.class);
-		for (PNEdit edit : edits) {
+			UtilConstraints.getEditsType(edit, VariableTypeEdit.class);
+		for (PNEdit simpleEdit : edits) {
 
-			NodeType nodetype=((VariableTypeEdit)edit).getProbNode().getNodeType();
+			NodeType nodetype=((VariableTypeEdit)simpleEdit).getProbNode().getNodeType();
 
 			if(nodetype == NodeType.CHANCE || nodetype == NodeType.DECISION )
 			{
-				VariableType newType = ((VariableTypeEdit)edit).getNewVariableType(); 
+				VariableType newType = ((VariableTypeEdit)simpleEdit).getNewVariableType(); 
 
 				if(!(newType ==VariableType.FINITE_STATES || newType == VariableType.DISCRETIZED))
 				{

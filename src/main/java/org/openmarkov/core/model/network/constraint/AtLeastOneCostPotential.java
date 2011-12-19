@@ -12,8 +12,7 @@ package org.openmarkov.core.model.network.constraint;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.event.UndoableEditEvent;
-
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -28,7 +27,7 @@ public class AtLeastOneCostPotential extends PNConstraint {
 	@Override
 	/** This method has no sense because this constraint is only used to check
 	 * the whole <code>ProbNet</code> before execute the algorithm. */
-	public boolean checkEvent(UndoableEditEvent event) {
+	public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		return false;
 	}
 

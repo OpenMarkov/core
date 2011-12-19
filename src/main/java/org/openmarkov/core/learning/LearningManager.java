@@ -190,7 +190,7 @@ public class LearningManager {
          * If the option "Use only nodes" is not selected, we add the links of
          * the model net to the learnedNet we are going to learn.
          */
-        if (!modelNetUse.isAddLinksAllowed () && (modelNet != null))
+        if (modelNet != null && !modelNetUse.isOnlyUseNodes ())
         {
             for (Link link : modelNet.getGraph ().getLinks ())
             {

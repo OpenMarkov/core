@@ -32,7 +32,7 @@ import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.type.NetworkType;
 
-public abstract class Inference {
+public abstract class InferenceAlgorithm {
 	
 	protected EvidenceCase evidence;
 	
@@ -85,7 +85,7 @@ public abstract class Inference {
 
 
 		// Constructor
-		public Inference(ProbNet probNet) 
+		public InferenceAlgorithm(ProbNet probNet) 
 		throws NotEvaluableNetworkException {
 			
 			boolean isNetworkTypeApplicable;
@@ -94,27 +94,16 @@ public abstract class Inference {
 			this.probNet = probNet;
 				
 			probNetNetworkType = probNet.getNetworkType();
-			
-			//Check the type of network
-			isNetworkTypeApplicable = false;
-			ArrayList<NetworkType> networkTypesApplicable2 = getNetworkTypesApplicable();
-			for (int iType=0;iType<networkTypesApplicable2.size()&&!isNetworkTypeApplicable;iType++){
-				NetworkType auxNetworkType = networkTypesApplicable2.get(iType);
-				isNetworkTypeApplicable = (probNetNetworkType == auxNetworkType);
+				
+			if (!isEvaluable(probNet)){
+				throw new NotEvaluableNetworkException(probNet.toString());
 			}
-			
-			if (!isNetworkTypeApplicable){
-				throw new NotEvaluableNetworkException(probNetNetworkType.toString());
-			}
-			
-			//Check the additional constraints
-			for (PNConstraint constraint : getAdditionalConstraints()) {
-				if (!constraint.checkProbNet(probNet)) {
-					throw new NotEvaluableNetworkException(constraint.toString());
-				}
-			}
-			evidence = new EvidenceCase();
 		}
+			
+			
+
+
+	public abstract boolean isEvaluable(ProbNet probNet);
 
 
 	protected final ArrayList<NetworkType> getNetworkTypesApplicable() {

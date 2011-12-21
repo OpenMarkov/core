@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.learning.editionsgenerator;
 
-import org.openmarkov.core.action.BaseLinkEdit;
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 
 /** An <code>EditAndScorePair</code> stores a <code>PNEdit</code> and the
@@ -22,24 +22,24 @@ import org.openmarkov.core.exception.ConstraintViolationException;
  * @since Carmen 1.0 */
 public class EditAndScorePair {
 
-    protected BaseLinkEdit edition;
+    protected PNEdit edition;
     
     protected double score;
     
     protected ConstraintViolationException violatedConstraint;
     
-    public EditAndScorePair(BaseLinkEdit edition, double score){
+    public EditAndScorePair(PNEdit edition, double score){
         this.edition = edition; 
         this.score = score;
         this.violatedConstraint = null;
     }
     
-    public EditAndScorePair(BaseLinkEdit edition, double score, ConstraintViolationException  e){
+    public EditAndScorePair(PNEdit edition, double score, ConstraintViolationException  e){
         this(edition, score);
         this.violatedConstraint = e;
     }    
     
-    public BaseLinkEdit getEdition(){
+    public PNEdit getEdition(){
         return edition;
     }
     

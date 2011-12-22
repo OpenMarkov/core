@@ -9,6 +9,10 @@
 
 package org.openmarkov.core.io.format.annotation;
 
+/**
+ * This class sets the labels for the annotations format
+ * @author mpalacios
+ */
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -17,8 +21,19 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target (ElementType.TYPE)
 public @interface FormatType {
-    
+    /**
+     * Gets the name of the class
+     * @return The name of the format
+     */
     String name ();
+    /**
+     * Gets the file extension that write/read the class
+     * @return The format extension
+     */
     String extension ();
+    /**
+     * Gets the role of the class.
+     * @return the role of the class. "Writer" if implements the ProbNetWriter interface, "Reader" if implements the ProbNetReader interface.
+     */
     String role ();
 }

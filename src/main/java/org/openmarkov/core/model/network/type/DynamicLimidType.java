@@ -22,8 +22,8 @@ public class DynamicLimidType extends NetworkType
     {
         super();
         
-        overwriteConstraintBehavior (OnlyAtemporalVariables.class, ConstraintBehavior.NO);
-        overwriteConstraintBehavior (OnlyTemporalVariables.class, ConstraintBehavior.YES);
+        overrideConstraintBehavior (OnlyAtemporalVariables.class, ConstraintBehavior.NO);
+        overrideConstraintBehavior (OnlyTemporalVariables.class, ConstraintBehavior.YES);
     }
 
     // Methods

@@ -21,7 +21,7 @@ public class BayesianNetworkType extends NetworkType
     private BayesianNetworkType ()
     {
         super();
-        overwriteConstraintBehavior (OnlyChanceNodes.class,
+        overrideConstraintBehavior (OnlyChanceNodes.class,
                                      ConstraintBehavior.YES);
     }
 

@@ -20,7 +20,7 @@ public class DecisionAnalysisNetworkType extends NetworkType
     private DecisionAnalysisNetworkType ()
     {
         super ();
-        overwriteConstraintBehavior (NoRevelationArc.class,
+        overrideConstraintBehavior (NoRevelationArc.class,
                                      ConstraintBehavior.NO);
     }
 

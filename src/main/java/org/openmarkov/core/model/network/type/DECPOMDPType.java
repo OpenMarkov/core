@@ -21,7 +21,7 @@ public class DECPOMDPType extends POMDPType
     {
         super();
         
-        overwriteConstraintBehavior (OnlyOneAgent.class, ConstraintBehavior.NO);
+        overrideConstraintBehavior (OnlyOneAgent.class, ConstraintBehavior.NO);
     }
 
     // Methods

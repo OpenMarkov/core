@@ -36,7 +36,7 @@ public abstract class NetworkType
         return (behavior != ConstraintBehavior.NO);
     }
     
-    public void overwriteConstraintBehavior(
+    protected void overrideConstraintBehavior(
     		Class<? extends PNConstraint> constraintClass, 
     		ConstraintBehavior behavior) {
         constraints.put (constraintClass, behavior);

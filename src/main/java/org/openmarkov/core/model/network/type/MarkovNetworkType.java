@@ -22,9 +22,9 @@ public class MarkovNetworkType extends NetworkType
     private MarkovNetworkType ()
     {
         super();
-        overwriteConstraintBehavior (OnlyChanceNodes.class, ConstraintBehavior.YES);
-        overwriteConstraintBehavior (OnlyDirectedLinks.class, ConstraintBehavior.NO);
-        overwriteConstraintBehavior (OnlyUndirectedLinks.class, ConstraintBehavior.YES);        
+        overrideConstraintBehavior (OnlyChanceNodes.class, ConstraintBehavior.YES);
+        overrideConstraintBehavior (OnlyDirectedLinks.class, ConstraintBehavior.NO);
+        overrideConstraintBehavior (OnlyUndirectedLinks.class, ConstraintBehavior.YES);        
     }
 
     // Methods

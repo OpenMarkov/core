@@ -7,7 +7,10 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.potential.Potential;
 
 public class TreeADDBranch {
-
+	/**
+	 * Each branch belongs to a treeADD
+	 */
+	private TreeADDPotential2 treeADD;
 	/**
 	 * Each treeADDBranch has a potential associated
 	 */
@@ -31,20 +34,19 @@ public class TreeADDBranch {
 	 */
 	private String reference;
 	
-	/*label is incompatible with reference and reference is incompatible with potential*/
 	
-	//private HashMap<String, Potential> potentialsLabeled; 
-	
-	public TreeADDBranch(ArrayList<State> branchStates, Potential potential) {
+	public TreeADDBranch(ArrayList<State> branchStates, Potential potential, TreeADDPotential2 treeADD) {
 		this.states = branchStates;
 		this.potential = potential;
+		this.treeADD = treeADD;
 		
 	}
 	
-	public TreeADDBranch(ArrayList<State> branchStates, Potential potential, String label) {
+	public TreeADDBranch(ArrayList<State> branchStates, Potential potential, String label, TreeADDPotential2 treeADD) {
 		this.states = branchStates;
 		this.potential = potential;
 		this.label = label;
+		this.treeADD = treeADD;
 	}
 	
 	/* 
@@ -60,11 +62,18 @@ public class TreeADDBranch {
 		this.label = label;
 	}
 	
-	public TreeADDBranch(ArrayList<State> branchStates, String reference) {
+	public TreeADDBranch(ArrayList<State> branchStates, String reference, TreeADDPotential2 treeADD) {
 		this.states = branchStates;
 		this.reference = reference;
+		this.treeADD = treeADD;
 	}
 	
+	public TreeADDBranch(Threshold thresholdMin, Threshold thresholdMax, Potential potential, TreeADDPotential2 treeADD) {
+		this.thresholdMin = thresholdMin;
+		this.thresholdMax = thresholdMax;
+		this.potential = potential;
+		this.treeADD = treeADD;
+	}
 	
 	/*public TreeADDBranch(ArrayList<State> branchStates, Potential potential, String label) {
 		this.states = branchStates;
@@ -76,10 +85,16 @@ public class TreeADDBranch {
 	
 	public TreeADDBranch(ArrayList<State> branchStates, String reference) {
 		this.states = branchStates;
-		
-		
-		
+	
 	}*/
+	
+	public ArrayList<State> getBranchStates() {
+		return this.states;
+	}
+	
+	public TreeADDPotential2 getTreeADDParent () {
+		return this.treeADD;
+	}
 	
 	public String getLabel(){
 		return this.label;
@@ -97,9 +112,5 @@ public class TreeADDBranch {
 		this.potential = potential;
 	}
 	
-	public TreeADDBranch(Threshold thresholdMin, Threshold thresholdMax, Potential potential) {
-		this.thresholdMin = thresholdMin;
-		this.thresholdMax = thresholdMax;
-		this.potential = potential;
-	}
+
 }

@@ -29,7 +29,7 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
  * @author Mar Yebra
  *
  */
-public class TreeADDPotential2 extends Potential {
+public class TreeADDPotential2 extends Potential  implements Cloneable {
 
 	//topVariable represents the variable on the top of the tree, in other words the root variable
 	private Variable topVariable;
@@ -44,7 +44,7 @@ public class TreeADDPotential2 extends Potential {
 	private HashMap<String, Potential> potentialsLabeled; 
 	
 	/**TreeADD constructor for the GUI**/
-	public TreeADDPotential2(ArrayList<Variable> variables, Variable topVariable, PotentialRole role) {
+	public TreeADDPotential2(ArrayList<Variable> variables, Variable topVariable, PotentialRole role){
 		super(variables, role);
 		this.topVariable = topVariable;
 		
@@ -64,7 +64,7 @@ public class TreeADDPotential2 extends Potential {
 					UniformPotential potential = new UniformPotential(potentialVariables, role);
 					ArrayList<State> branchStates = new ArrayList<State>();
 					branchStates.add(states[i]);
-					branches.add(new TreeADDBranch(branchStates, potential));
+					branches.add(new TreeADDBranch(branchStates, potential, this));
 				}
 				// if the role of the treeADD is utility, it assigns a uniform potential
 				if (role == PotentialRole.UTILITY) {
@@ -72,7 +72,7 @@ public class TreeADDPotential2 extends Potential {
 					UniformPotential potential = new UniformPotential(potentialVariables, role);
 					ArrayList<State> branchStates = new ArrayList<State>();
 					branchStates.add(states[i]);
-					branches.add(new TreeADDBranch(branchStates, potential));
+					branches.add(new TreeADDBranch(branchStates, potential, this));
 				}
 			}
 		}
@@ -87,7 +87,7 @@ public class TreeADDPotential2 extends Potential {
 			//Threshold maximum = topVariable.getThresholdMax();
 			potentialVariables = new ArrayList<Variable>();
 			UniformPotential potential = new UniformPotential(potentialVariables, role);
-			branches.add(new TreeADDBranch(minimum, maximum, potential));
+			branches.add(new TreeADDBranch(minimum, maximum, potential, this));
 		}
 	}
 	
@@ -105,7 +105,30 @@ public class TreeADDPotential2 extends Potential {
 		}
 	}
 	
-	public void setReferences(){
+	public ArrayList<TreeADDBranch> getBranches() {
+		return branches;
+	}
+	
+	/**
+	 * this method return a branch potential also when it is referenced 
+	 * @param branch
+	 * @return Potential or null if the reference it has not been labelled in this tree
+	 */
+	public Potential getAssignedPotential(TreeADDBranch branch){
+		setLabeledPotentials();
+		String reference;
+		if ((reference = branch.getReference()) != null) {
+			if(potentialsLabeled.get(reference) != null) {
+				return potentialsLabeled.get(reference);
+			}
+		}else{
+			//If reference is null that means that this branch has a potential associated
+			return branch.getPotential();
+		}
+		return null;
+	}
+	
+	/*public void setReferences(){
 		for (int i = 0; i < branches.size(); i++){
 			TreeADDBranch branch = branches.get(i);
 			String reference;
@@ -121,7 +144,7 @@ public class TreeADDPotential2 extends Potential {
 				
 			}
 		}
-	}
+	}*/
 	
 	public Variable getTopVariable(){
 		return topVariable;
@@ -147,6 +170,9 @@ public class TreeADDPotential2 extends Potential {
 		return null;
 	}
 	
-
+	public Object clone() throws CloneNotSupportedException {
+		return this.clone();
+		// TODO seguir clonando hacia abajo; hay que clonar tambien las ramas y los potenciales
+	}
 
 }

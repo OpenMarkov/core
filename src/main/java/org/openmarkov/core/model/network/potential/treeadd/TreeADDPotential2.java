@@ -150,6 +150,14 @@ public class TreeADDPotential2 extends Potential  implements Cloneable {
 		return topVariable;
 	}
 	
+	public Variable getConditionedVariable() {
+		if (role == PotentialRole.CONDITIONAL_PROBABILITY) {
+			return variables.get(0);
+		} else {
+			return null;
+			}
+	}
+	
 	public void setTopVariable(Variable variable){
 		this.topVariable = variable;
 	}

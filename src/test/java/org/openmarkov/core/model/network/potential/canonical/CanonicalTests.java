@@ -7,7 +7,7 @@
 * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
 */
 
-package org.openmarkov.core.model.network.canonical;
+package org.openmarkov.core.model.network.potential.canonical;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

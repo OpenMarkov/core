@@ -14,7 +14,7 @@ import junit.framework.Test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openmarkov.core.model.network.canonical.CanonicalTests;
+import org.openmarkov.core.model.network.potential.canonical.CanonicalTests;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

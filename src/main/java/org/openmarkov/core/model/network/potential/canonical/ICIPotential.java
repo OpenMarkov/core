@@ -15,12 +15,11 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.FSPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-public abstract class ICIPotential extends FSPotential {
+public abstract class ICIPotential extends Potential {
 
 	/* Model type may be OR, causal MAX, AND, etc. */
 	protected ICIModelType modelType;

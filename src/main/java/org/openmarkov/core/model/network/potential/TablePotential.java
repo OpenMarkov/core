@@ -39,7 +39,7 @@ import org.openmarkov.core.model.network.potential.operation.Util;
   * @version 1.0
   * @since OpenMarkov 1.0 */
 @SuppressWarnings({ "unchecked" })
-public class TablePotential extends FSPotential implements Comparable {
+public class TablePotential extends Potential implements Comparable {
 
     // Attributes
     /** Dimensions (number of states) of the variables. */
@@ -631,6 +631,25 @@ public class TablePotential extends FSPotential implements Comparable {
         return dimensions;
     }
 
+    /** This method is <code>static</code> because sometimes it can be used
+     *    without creating the <code>TablePotential</code>; for instance, to 
+     *    estimate the amount of memory that would be necessary to actually
+     *    create the PotentialTable.
+     * @param fsVariables <code>ArrayList</code> of <code>Variable</code>s.
+     * @return array of <code>int[]</code> with the dimension of each variable.
+     */
+    public static int[] calculateDimensions(ArrayList<Variable> fsVariables) {
+        int numVariables = 0;
+        if (fsVariables != null) {
+            numVariables = fsVariables.size();
+        }
+        int[] dimensions = new int[numVariables];
+        for (int i = 0; i < numVariables; i++) {
+            dimensions[i] = fsVariables.get(i).getNumStates();
+        }
+        return dimensions;
+    }
+    
 	/** This method is <code>static</code> because sometimes can be used
 	 *    outside of a <code>TablePotential</code>.
 	 * @param dimensions of variables. Array of <code>int[]</code>.

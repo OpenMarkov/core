@@ -16,7 +16,6 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.FSPotential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -34,7 +33,7 @@ public abstract class MinMaxPotential extends ICIPotential {
 	// Attributes
 	/** The pseudoVariable is used in the factorization
 	 * of the noisy MAX/MIN proposed by D&iacute;ez and 
-	 * Gal&aacuate;n (2003).
+	 * Gal&aacute;n (2003).
 	 * @frozen */
 	protected Variable pseudoVariable;
 	
@@ -81,7 +80,7 @@ public abstract class MinMaxPotential extends ICIPotential {
 			new ArrayList<TablePotential>();
 		iCIPotentials.add(getDeltaPotential());
 		// subPotentials must be of sub-type TablePotential
-		for (FSPotential potential : subPotentials) {
+		for (TablePotential potential : subPotentials) {
 			iCIPotentials.add(accruedPotential(
 				(TablePotential)potential));
 		}

@@ -58,7 +58,7 @@ public class UniformPotential extends Potential {
 		TablePotential projectedPotential;
 		switch(role) {
 		case CONDITIONAL_PROBABILITY: 
-		case JOIN_PROBABILITY: 
+		case JOINT_PROBABILITY: 
 		case POLICY:
 			Variable conditionedVariable = variables.get(0);
 			if (evidenceCase.contains(conditionedVariable)) {

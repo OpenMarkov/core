@@ -87,7 +87,7 @@ public class SharedDataMultiply {
 		// Gets the union
 		result = new TablePotential(
 				AuxiliaryOperations.getUnionVariables(potentials), 
-				PotentialRole.JOIN_PROBABILITY);
+				PotentialRole.JOINT_PROBABILITY);
 
 		numResultVariables = result.getVariables().size();
 

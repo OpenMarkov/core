@@ -57,7 +57,7 @@ public class SharedDataDivide {
 		TablePotential quotient = null;
 		try {
 			quotient = new TablePotential(
-					quotientVariables, PotentialRole.JOIN_PROBABILITY);
+					quotientVariables, PotentialRole.JOINT_PROBABILITY);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

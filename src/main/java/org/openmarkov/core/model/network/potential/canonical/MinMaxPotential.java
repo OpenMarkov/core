@@ -38,15 +38,14 @@ public abstract class MinMaxPotential extends ICIPotential {
 	protected Variable pseudoVariable;
 	
 	// Constructor
-	public MinMaxPotential(ICIModelType model, ArrayList<Variable> variables, 
-			PotentialRole role) {
-		// In principle, role will be "conditional probability"
-		super(model, variables, role);
-		Variable conditionedVariable = variables.get(0);
-		String psedoVariableName = "pseudo-" + conditionedVariable.getName();
-		// TODO Comprobar que no existe otra variable que tenga el mismo nombre
-		pseudoVariable = new Variable(psedoVariableName,
-				conditionedVariable.getNumStates());
+    public MinMaxPotential (ICIModelType model, ArrayList<Variable> variables, PotentialRole role)
+    {
+        // In principle, role will be "conditional probability"
+        super (model, variables, role);
+        Variable conditionedVariable = variables.get (0);
+        String pseudoVariableName = "pseudo-" + conditionedVariable.getName ();
+        // TODO Comprobar que no existe otra variable que tenga el mismo nombre
+        pseudoVariable = new Variable (pseudoVariableName, conditionedVariable.getNumStates ());
 	}
 
 	// Methods
@@ -56,15 +55,15 @@ public abstract class MinMaxPotential extends ICIPotential {
 	
 	/** @return C<sub>y</sub><sup>x<sub>i</sub></sup> potential. 
 	 *  <code>TablePotential</code> */
-	protected abstract TablePotential accruedPotential(
-			TablePotential potential) throws NotEnoughMemoryException;
+    protected abstract TablePotential getAccruedPotential (TablePotential potential)
+        throws NotEnoughMemoryException;
 
 	public ArrayList<TablePotential> getAccruedPotentials()
 			throws NotEnoughMemoryException {
 		ArrayList<TablePotential> accruedPotentials = 
 			new ArrayList<TablePotential>(subPotentials.size());
 		for (TablePotential subPotential : subPotentials) {
-			accruedPotentials.add(accruedPotential(subPotential));
+			accruedPotentials.add(getAccruedPotential(subPotential));
 		}
 		return accruedPotentials;
 	}
@@ -74,17 +73,17 @@ public abstract class MinMaxPotential extends ICIPotential {
 	 *  C<sub>D'</sub><sup>B</sup>, C<sub>D</sub><sup>*</sup>.
 	 *  <code>ArrayList</code> of <code>TablePotential</code> 
 	 * @throws NotEnoughMemoryException */
-	public ArrayList<TablePotential> getTablePotentials() 
-			throws NotEnoughMemoryException {
-		ArrayList<TablePotential> iCIPotentials = 
-			new ArrayList<TablePotential>();
-		iCIPotentials.add(getDeltaPotential());
-		// subPotentials must be of sub-type TablePotential
-		for (TablePotential potential : subPotentials) {
-			iCIPotentials.add(accruedPotential(
-				(TablePotential)potential));
-		}
-		return iCIPotentials;
+    public ArrayList<TablePotential> getTablePotentials ()
+        throws NotEnoughMemoryException
+    {
+        ArrayList<TablePotential> iCIPotentials = new ArrayList<TablePotential> ();
+        iCIPotentials.add (getDeltaPotential ());
+        // subPotentials must be of sub-type TablePotential
+        for (TablePotential potential : subPotentials)
+        {
+            iCIPotentials.add (getAccruedPotential (potential));
+        }
+        return iCIPotentials;
 	}
 	
 	/** @return The accrued potentials plus the Delta potential, 
@@ -99,8 +98,7 @@ public abstract class MinMaxPotential extends ICIPotential {
 			new ArrayList<TablePotential>(subPotentials.size() + 1);
 		potentials.add(getDeltaPotential().tableProject(evidence, null).get(0));
 		for (TablePotential subPotential : subPotentials) {
-			TablePotential accruedPotential = 
-				accruedPotential(subPotential);
+            TablePotential accruedPotential = getAccruedPotential (subPotential);
 			potentials.add(accruedPotential.tableProject(evidence, null).get(0));
 		}
 		return potentials;
@@ -116,9 +114,8 @@ public abstract class MinMaxPotential extends ICIPotential {
 		ArrayList<TablePotential> potentials = getAccruedPotentials();
 		potentials.add(getDeltaPotential());
 
-		return (TablePotential)DiscretePotentialOperations
-			.multiplyAndMarginalize(
-				potentials, variables, variablesToEliminate);
+        return DiscretePotentialOperations.multiplyAndMarginalize (potentials, variables,
+                                                                   variablesToEliminate);
 	}
 
 	public Variable getPseudoVariable() {

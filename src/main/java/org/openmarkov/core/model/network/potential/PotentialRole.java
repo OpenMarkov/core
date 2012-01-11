@@ -18,7 +18,7 @@ public enum PotentialRole {
 
 	CONDITIONAL_PROBABILITY(0, "conditionalProbability"),
 	DECISION(1, "decision"),
-	JOIN_PROBABILITY(2, "joinProbability"),
+	JOINT_PROBABILITY(2, "joinProbability"),
 	POLICY(3, "policy"),
 	UTILITY(4, "utility");
 	

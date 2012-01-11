@@ -37,7 +37,7 @@ public class MaxPotential extends MinMaxPotential {
 		deltaVariables.add(pseudoVariable);
 		deltaVariables.add(conditionedVariable);
 		TablePotential deltaPotential = new TablePotential(
-				deltaVariables, PotentialRole.JOIN_PROBABILITY);
+				deltaVariables, PotentialRole.JOINT_PROBABILITY);
 		int numStatesConditioned = conditionedVariable.getNumStates();
 		int numStatesPseudo = pseudoVariable.getNumStates(); // same number
 		int actualConfiguration = 0;
@@ -67,18 +67,16 @@ public class MaxPotential extends MinMaxPotential {
 	 * @reference Efficient computation for the Noisy MAX
 	 * @argCondition subPotential is a probability table of one variable
 	 *  or a probability table of one variable given another variable. */
-	public TablePotential accruedPotential(TablePotential subPotential) 
+	public TablePotential getAccruedPotential(TablePotential subPotential) 
 			throws NotEnoughMemoryException {
 		// TODO Revisar este metodo para el caso de un potential proyectado
 		ArrayList<Variable> subPotentialVariables = subPotential.getVariables();
 		ArrayList<Variable> accruedPotentialVariables =
-			new ArrayList<Variable>();
-		accruedPotentialVariables.add(pseudoVariable);
-		for (int i = 1; i < subPotentialVariables.size(); i++) {
-			accruedPotentialVariables.add(subPotentialVariables.get(i));
-		}
+			new ArrayList<Variable>(subPotentialVariables);
+		accruedPotentialVariables.set(0, pseudoVariable);
+
 		TablePotential accruedPotential = new TablePotential(
-				accruedPotentialVariables, PotentialRole.JOIN_PROBABILITY);
+				accruedPotentialVariables, PotentialRole.JOINT_PROBABILITY);
 		
 		// number of states in the pseudovariable
 		int numStates = variables.get(0).getNumStates();

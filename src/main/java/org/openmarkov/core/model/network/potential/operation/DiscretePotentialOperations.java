@@ -271,18 +271,18 @@ public final class DiscretePotentialOperations {
 		boolean atLeastOneJoinProbability = false;
 		for (Potential potential : potentials) {
 			atLeastOneJoinProbability  = atLeastOneJoinProbability  || 
-				potential.getPotentialRole() == PotentialRole.JOIN_PROBABILITY;
+				potential.getPotentialRole() == PotentialRole.JOINT_PROBABILITY;
 		}
 		if (atLeastOneJoinProbability) {
-			return PotentialRole.JOIN_PROBABILITY;
+			return PotentialRole.JOINT_PROBABILITY;
 		}
 		return PotentialRole.CONDITIONAL_PROBABILITY;
 	}
 
 	/** @param tablePotentials array to multiply
-	 * @param fsVariablesToKeep The set of variables that will appear in the 
+	 * @param variablesToKeep The set of variables that will appear in the 
 	 * resulting potential
-	 * @param fsVariablesToEliminate The set of variables eliminated by 
+	 * @param variablesToEliminate The set of variables eliminated by 
 	 * marginalization (in general, by summing out or maximizing)
 	 * @argCondition variablesToKeep and variablesToEliminate are a partition of
 	 * the union of the variables of the potential
@@ -295,8 +295,7 @@ public final class DiscretePotentialOperations {
 			ArrayList<Variable> variablesToEliminate) 
     		throws NotEnoughMemoryException {
 
-    	ArrayList<TablePotential> potentials = 
-    		(ArrayList<TablePotential>)((Object)tablePotentials);
+        ArrayList<TablePotential> potentials = (ArrayList<TablePotential>) ((Object) tablePotentials);
     	
 		TablePotential resultingPotential = new TablePotential(
 				variablesToKeep, getRole(tablePotentials));
@@ -305,8 +304,7 @@ public final class DiscretePotentialOperations {
 		// The product of all the constant potentials is the constant factor.
 		double constantFactor = 1.0;
 		// Non constant potentials are proper potentials.
-		ArrayList<TablePotential> properPotentials =
-			new ArrayList<TablePotential>();
+        ArrayList<TablePotential> properPotentials = new ArrayList<TablePotential> ();
 		for (Potential potential : potentials) {
 			if (potential.getNumVariables() != 0) {
 				properPotentials.add((TablePotential) potential);
@@ -689,7 +687,7 @@ public final class DiscretePotentialOperations {
 		TablePotential quotient = null;
 		try {
 			quotient = new TablePotential(
-					quotientVariables, PotentialRole.JOIN_PROBABILITY);
+					quotientVariables, PotentialRole.JOINT_PROBABILITY);
 		} catch (NotEnoughMemoryException e) {
 			Logger.getLogger(DiscretePotentialOperations.class).fatal(e);
 		}

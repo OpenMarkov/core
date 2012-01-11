@@ -780,7 +780,7 @@ public class TablePotential extends Potential implements Comparable {
 				allVariablesBelongsToType(VariableType.FINITE_STATES) && 
 				( (role == PotentialRole.CONDITIONAL_PROBABILITY) ||
 				  (role == PotentialRole.POLICY) ||
-				  (role == PotentialRole.JOIN_PROBABILITY) ||
+				  (role == PotentialRole.JOINT_PROBABILITY) ||
 				  (role == PotentialRole.UTILITY)) ) {
 			Double value = 0.0;
 			switch(role) {
@@ -788,7 +788,7 @@ public class TablePotential extends Potential implements Comparable {
 				value = 1.0 / new Double(variables.get(0).getNumStates());
 				break;
 			case POLICY:
-			case JOIN_PROBABILITY:
+			case JOINT_PROBABILITY:
 				value = 1.0;
 				for (Variable variable : variables) {
 					value *= variable.getNumStates();

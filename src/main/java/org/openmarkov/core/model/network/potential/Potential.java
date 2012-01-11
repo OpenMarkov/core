@@ -261,7 +261,7 @@ public abstract class Potential {
 				break;
 			case CONDITIONAL_PROBABILITY:
 				break;
-			case JOIN_PROBABILITY:
+			case JOINT_PROBABILITY:
 				break;
 			}
 		} else {
@@ -282,7 +282,7 @@ public abstract class Potential {
 				printVariables(buffer, 0);
 				buffer.append(")");
 				break;
-			case JOIN_PROBABILITY:
+			case JOINT_PROBABILITY:
 				buffer.append("P(");
 				printVariables(buffer, 0);
 				buffer.append(")");

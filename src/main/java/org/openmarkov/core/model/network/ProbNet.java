@@ -35,6 +35,7 @@ import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
@@ -754,6 +755,27 @@ public class ProbNet implements Cloneable {
 		}
 		return potentials;
 	}
+	
+	
+	/**
+	 * @param role
+	 * @return All the potentials of a role.
+	 */
+	public ArrayList<Potential> getPotentialsRole(PotentialRole role) {
+		
+		ArrayList<Potential> potentials = new ArrayList<Potential>();
+		for (NodesHashMapType nodesHashMap:nodesHashMaps.values()){
+			for (ProbNode auxProbNode:nodesHashMap.values()){
+				for (Potential auxPot:auxProbNode.getPotentials()){
+					if (auxPot.getPotentialRole()==role){
+						potentials.add(auxPot);
+					}
+				}
+			}
+		}
+		
+		return potentials;
+	}
 
 	/**
 	 * Gets all the probability potentials that contain the
@@ -788,7 +810,7 @@ public class ProbNet implements Cloneable {
 	 * Gets all the utility potentials that contains the <code>variable</code>
 	 * received.
 	 * <p>
-	 * The potentials that can contains that variable are in the node asociated
+	 * The potentials that can contains that variable are in the node associated
 	 * to the variable and its neighbors.
 	 * 
 	 * @param variable

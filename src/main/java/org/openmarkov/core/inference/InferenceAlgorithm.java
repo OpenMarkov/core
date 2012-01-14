@@ -45,18 +45,10 @@ public abstract class InferenceAlgorithm {
 	protected PNESupport pNESupport;
 	
 	
-	/** Set of network types where the algorithm can be applied. */
-	private ArrayList<NetworkType> networkTypesApplicable;
 	
-	/** Set of additional constraints that the ProbNet must satisfy in conjunction with the constraints
-	 * typical of the network types. Its initial value must be null, instead 
-	 * of an empty ArrayList<PNCconstraint>, so that
-	 * the method getRequiredConstraints of its child classes detect when this
-	 * property has not been initialized */
-	private ArrayList<PNConstraint> additionalConstraints;
 		
 	/** <code>true</code> if the network is prepared for obtaining the marginal probabilities. */
-	protected boolean compiled;
+	//protected boolean compiled;
 	
 	/**
 	 * Indicates if the Bayesian network or the Cooper Policy Network has been compiled. If it is true, then the posteriori probabilities
@@ -78,23 +70,16 @@ public abstract class InferenceAlgorithm {
 	}
 
 
-		protected abstract ArrayList<NetworkType> initializeNetworkTypesApplicable();
-
-
-		protected abstract ArrayList<PNConstraint> initializeAdditionalConstraints();
+	
 
 
 		// Constructor
 		public InferenceAlgorithm(ProbNet probNet) 
 		throws NotEvaluableNetworkException {
-			
-			boolean isNetworkTypeApplicable;
-			NetworkType probNetNetworkType;
-			
+								
 			this.probNet = probNet;
-				
-			probNetNetworkType = probNet.getNetworkType();
-				
+			evidence = new EvidenceCase();
+							
 			if (!isEvaluable(probNet)){
 				throw new NotEvaluableNetworkException(probNet.toString());
 			}
@@ -106,15 +91,7 @@ public abstract class InferenceAlgorithm {
 	public abstract boolean isEvaluable(ProbNet probNet);
 
 
-	protected final ArrayList<NetworkType> getNetworkTypesApplicable() {
-		
-		if (networkTypesApplicable==null){
-			networkTypesApplicable = initializeNetworkTypesApplicable();
-		}
-		
-		return networkTypesApplicable;
-	}
-
+	
 
 	/**
 	 * @return the evidence
@@ -190,15 +167,7 @@ public abstract class InferenceAlgorithm {
 				return getIndividualProbabilities(variablesOfInterest);
 			};
 			
-	/** This method must be overriden in the child classes */
-	protected final Collection<PNConstraint> getAdditionalConstraints(){
-			
-			if (additionalConstraints==null){
-				additionalConstraints = initializeAdditionalConstraints();
-			}
-			
-			return additionalConstraints;
-		}
+	
 	
 	public abstract StrategyUtilities getUtilityTables() throws NotEnoughMemoryException, WrongGraphStructureException, ConstraintViolationException, CanNotDoEditException, DoEditException, NonProjectablePotentialException, WrongCriterionException, ProbNodeNotFoundException;
 

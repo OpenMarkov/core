@@ -23,7 +23,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
-@Constraint (name = "NoCycles", defaultBehavior = ConstraintBehavior.YES)
+@Constraint (name = "NoCycle", defaultBehavior = ConstraintBehavior.YES)
 public class NoCycle extends PNConstraint {
 
 	@Override

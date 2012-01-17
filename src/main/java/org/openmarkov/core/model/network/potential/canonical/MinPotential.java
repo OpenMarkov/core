@@ -72,13 +72,11 @@ public class MinPotential extends MinMaxPotential {
 			throws NotEnoughMemoryException {
 		// TODO Revisar este metodo para el caso de un potential proyectado
 		ArrayList<Variable> subPotentialVariables = subPotential.getVariables();
-        ArrayList<Variable> accruedPotentialVariables = new ArrayList<Variable> ();
 		// Create a new TablePotential with the same variables,
 		// except the first one, which is replaced by the pseudovariable
-		accruedPotentialVariables.add(pseudoVariable);
-		for (int i = 1; i < subPotentialVariables.size(); i++) {
-			accruedPotentialVariables.add(subPotentialVariables.get(i));
-		}
+        ArrayList<Variable> accruedPotentialVariables =
+                new ArrayList<Variable>(subPotentialVariables);
+        accruedPotentialVariables.set(0, pseudoVariable);
         TablePotential accruedPotential = new TablePotential (accruedPotentialVariables,
                                                               PotentialRole.CONDITIONAL_PROBABILITY);
 		

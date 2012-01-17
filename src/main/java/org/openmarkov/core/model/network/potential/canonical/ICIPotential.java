@@ -11,8 +11,12 @@ package org.openmarkov.core.model.network.potential.canonical;
 
 import java.util.ArrayList;
 
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.InferenceOptions;
+import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -46,21 +50,23 @@ public abstract class ICIPotential extends Potential {
 	// Methods
 	public abstract TablePotential getCPT() throws NotEnoughMemoryException;
 
-//TODO Ver si hemos hecho bien en quitarlo
-	/*	@Override
-	/** @param evidenceCase. <code>EvidenceCase</code>
-	 * @return <code>ArrayList</code> of <code>Potential</code>
-	public ArrayList<TablePotential> tableProject(EvidenceCase evidenceCase,
-			InferenceOptions inferenceOptions) 
-			throws NotEnoughMemoryException, WrongCriterionException {
-		ArrayList<TablePotential> projectedPotentials = 
-			new	ArrayList<TablePotential>() ;
-		for (TablePotential tablePotential : tableProject(evidenceCase, inferenceOptions)){
-			projectedPotentials.add(tablePotential);
-		}
-		return projectedPotentials;
-	}
-	*/
+	@Override
+    /** @param evidenceCase. <code>EvidenceCase</code>
+     * @return <code>ArrayList</code> of <code>Potential</code>*/
+    public ArrayList<TablePotential> tableProject (EvidenceCase evidenceCase,
+                                                   InferenceOptions inferenceOptions)
+        throws NonProjectablePotentialException,
+        NotEnoughMemoryException,
+        WrongCriterionException
+    {
+        ArrayList<TablePotential> projectedPotentials = new ArrayList<TablePotential> ();
+        for (TablePotential subPotential : subPotentials)
+        {
+            projectedPotentials.add (subPotential.tableProject (evidenceCase, inferenceOptions).get (0));
+        }
+        return projectedPotentials;
+    }
+	
 	
 	/** @param potential. <code>Potential</code> */
 	public void addSubPotential(TablePotential subPotential) {

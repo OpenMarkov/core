@@ -103,22 +103,35 @@ public class LearningManager {
         this.learningAlgorithm = learningAlgorithmManager.getByName (algorithmName, parameters);
         this.addElviraProperties (learnedNet);
     }  
-    
+
+    /**
+     * Initialize the learning algorithm.
+     */
+    public void init ()
+    {
+        learningAlgorithm.init ();
+    }
+
     /**
      * Main method to launch the learning process.
-     * @return <code>ProbNet</code> learned net.
      * @throws NotEnoughMemoryException
-     * @throws NodeNotFoundException 
-     * @throws NormalizeNullVectorException 
-     * @throws ProbNodeNotFoundException 
+     * @throws NodeNotFoundException
+     * @throws NormalizeNullVectorException
+     * @throws ProbNodeNotFoundException
      */
-    public void learn () 
-            throws NotEnoughMemoryException, NodeNotFoundException, 
-            NormalizeNullVectorException, ProbNodeNotFoundException {
-                
-        learningAlgorithm.run();
+    public void learn ()
+        throws NotEnoughMemoryException,
+        NodeNotFoundException,
+        NormalizeNullVectorException,
+        ProbNodeNotFoundException
+    {
+        learningAlgorithm.run ();
     }
-    
+
+    /**
+     * Returns learned net
+     * @return <code>ProbNet</code> containing learned net
+     */
 	public ProbNet getLearnedNet() {
 		return this.learnedNet;
 	}

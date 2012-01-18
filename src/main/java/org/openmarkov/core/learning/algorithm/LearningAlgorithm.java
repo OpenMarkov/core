@@ -79,7 +79,7 @@ public abstract class LearningAlgorithm {
      * Init algorithm
      * @param modelNetUse
      */
-    protected abstract void init ();
+    public abstract void init ();
     
     /** Takes a step in the algorithm
      * 

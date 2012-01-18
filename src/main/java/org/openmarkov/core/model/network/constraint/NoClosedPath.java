@@ -18,24 +18,32 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 @Constraint (name = "NoClosedPath", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class NoClosedPath extends PNConstraint {
+
+
+private  NoLoops noLoopsConstraint= new NoLoops();
+private  NoCycle noCycleConstraint= new NoCycle();
+
     @Override
-    public boolean checkProbNet(ProbNet probNet) {
-        // TODO Auto-generated method stub
-        return true;
+    public boolean checkProbNet (ProbNet probNet)
+    {
+        return noLoopsConstraint.checkProbNet (probNet)
+               && !noCycleConstraint.checkProbNet (probNet);
     }
 
     @Override
-    public boolean checkEdit(ProbNet probNet, PNEdit edit)
-            throws NotEnoughMemoryException, NonProjectablePotentialException,
-            WrongCriterionException {
-        // TODO Auto-generated method stub
-        return true;
+    public boolean checkEdit (ProbNet probNet, PNEdit edit)
+        throws NotEnoughMemoryException,
+        NonProjectablePotentialException,
+        WrongCriterionException
+    {
+        return noLoopsConstraint.checkEdit (probNet, edit)
+               && noCycleConstraint.checkEdit (probNet, edit);
     }
 
     @Override
     protected String getMessage ()
     {
-        // TODO Auto-generated method stub
-        return "";
+       
+        return "no closed path allowed.";
     }
 }

@@ -28,6 +28,10 @@ import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.canonical.ICIModelType;
+import org.openmarkov.core.model.network.potential.canonical.MaxPotential;
+import org.openmarkov.core.model.network.potential.canonical.MinPotential;
+import org.openmarkov.core.model.network.potential.canonical.TuningModelPotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 @SuppressWarnings("serial")
@@ -35,6 +39,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 	private PotentialType lastPotentialType;
 	private Potential lastPotential;
 	private PotentialType newPotentialType;
+	//private ICIModelType newICIModelType;
 	private Variable variable;
 	private Potential newPotential = null;
 	
@@ -76,17 +81,18 @@ public class SetPotentialEdit extends SimplePNEdit {
 		newPotential = potential;
 	}
 	
-
+	//TODO al asignar un potencial tener en cuenta a los padres y a los predecesores informativos que me los vaa dat manolo invocando a una funcion
 	@Override
 	public void doEdit() throws DoEditException {
 		ArrayList<Variable> variables = new ArrayList<Variable>();
 		ProbNode probNode =probNet.getProbNode(variable);
 		PotentialRole role;
+		//si es un nodo de decision y la politica es optima se asumeun cambio de politica optima a probabilista (de momento no se tiene en cuenta la politica determinista) 
 		if ( (probNode.getNodeType()== NodeType.DECISION && 
-				probNode.getPolicyType() == PolicyType.OPTIMAL)){
+				probNode.getPolicyType() == PolicyType.OPTIMAL)){//no tiene potencial hay que crear uno uniforme en funcion de los predecesores informativos
 			role = PotentialRole.POLICY;
 			variables.add(variable);
-			for (Node node:probNode.getNode().getParents()){
+			for (Node node:probNode.getNode().getParents()){//cambiando el getparentes por predecesores informativos, quitar el for y llamar al metodo de manolo que me devuelve las variables 
 				variables.add(((ProbNode)node.getObject()).getVariable());
 			}
 			
@@ -135,6 +141,20 @@ public class SetPotentialEdit extends SimplePNEdit {
 				newPotential = new ProductPotential(
 						variables, probNet.getProbNodes(variables), role);
 				break;
+			case MIN:
+				newPotential = new MinPotential(ICIModelType.GENERAL_MIN,
+						variables, role);
+				break;
+			case MAX:
+				newPotential = new MaxPotential(ICIModelType.GENERAL_MAX,
+						variables, role);
+				break;
+			case TUNING:
+				newPotential = new TuningModelPotential(variables);
+				break;
+			
+			
+			
 			}
 		}
 		

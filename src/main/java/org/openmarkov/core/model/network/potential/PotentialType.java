@@ -27,7 +27,8 @@ public enum PotentialType {
 	ICIMODEL (11, "ICIModel"),
 	LINEAR_COMBINATION(12, "LinearCombination"),
 	PROBABILITY_DENSITY(13, "ProbabilityDensity"),
-	STAT_FUNCTION(14, "StatFunction");
+	STAT_FUNCTION(14, "StatFunction"),
+	TUNING(15,"tuning");
 	// Add here more potential types (when available)
 	
 private int type;

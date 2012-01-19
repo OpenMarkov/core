@@ -39,15 +39,21 @@ public class TuningModelPotential extends ICIPotential
      * @param variables
      * @param role
      */
+    public TuningModelPotential (ArrayList<Variable> variables)
+    {
+        super (ICIModelType.TUNING, variables, PotentialRole.CONDITIONAL_PROBABILITY);
+        zVariables = new ArrayList<Variable> ();
+    }
+    
     @SuppressWarnings("serial")
     public TuningModelPotential (final Variable child)
     {
-        super (ICIModelType.TUNING, new ArrayList<Variable> ()
+        this (new ArrayList<Variable> ()
             {
                 {
                     add (child);
                 }
-            }, PotentialRole.CONDITIONAL_PROBABILITY);
+            });
         zVariables = new ArrayList<Variable> ();
     }
 

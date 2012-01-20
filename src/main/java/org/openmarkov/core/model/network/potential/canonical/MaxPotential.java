@@ -38,7 +38,6 @@ public class MaxPotential extends MinMaxPotential {
 	public MaxPotential (ArrayList<Variable> variables, PotentialRole role)
     {
         this (ICIModelType.GENERAL_MAX, variables, role);
-        type = PotentialType.MAX;
     }
 
 	@Override

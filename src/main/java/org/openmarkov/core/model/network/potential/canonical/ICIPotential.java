@@ -45,6 +45,32 @@ public abstract class ICIPotential extends Potential {
 		this.modelType = modelType;
 		this.family = modelType.getFamily();
 		subPotentials = new ArrayList<TablePotential>();
+		
+		for(int i = 1; i < variables.size (); ++i)
+		{
+            double [] probabilities = new double[variables.get(0).getNumStates () * variables.get(i).getNumStates ()];
+            for(int j = 0; j < variables.get(i).getNumStates (); ++j)
+            {
+                for(int k = 0; k < variables.get(0).getNumStates (); ++k)
+                {
+                    probabilities[j* variables.get(0).getNumStates() + k] = (k == j)? 1.0: 0.0; 
+                }
+            }
+            
+            ArrayList<Variable> linkVariables = new ArrayList<Variable>();
+            linkVariables.add(variables.get(0));
+            linkVariables.add(variables.get(i));
+            try
+            {
+                addSubPotential (new TablePotential(linkVariables, role));
+            }
+            catch (NotEnoughMemoryException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+		}
+		
 	}
 
 	// Methods

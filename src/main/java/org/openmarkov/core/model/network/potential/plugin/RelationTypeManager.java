@@ -11,11 +11,14 @@ package org.openmarkov.core.model.network.potential.plugin;
 import java.lang.annotation.AnnotationFormatError;
 import java.lang.reflect.Constructor;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 import org.openmarkov.plugin.service.PluginLoaderIF;
@@ -54,21 +57,23 @@ public class RelationTypeManager
      * @param name the potential's name.
      * @return a new Potential instance given the parameters.
      */
-    public final Potential getByName (String name, List<Object> parameters)
+    public final Potential getByName (String name, ArrayList<Variable> variables, PotentialRole role)
     {
         Potential instance = null;
         try
         {
-            Constructor<?>[] constructors = potentials.get (name).getConstructors ();
-            for(Constructor<?> constructor : constructors)
+            Constructor<? extends Potential> constructor = potentials.get (name).getConstructor (ArrayList.class, PotentialRole.class);
+            if(constructor != null)
             {
-                Class<?>[]  parameterTypes = constructor.getParameterTypes ();
-                int i= 0;
-                while (i < parameterTypes.length
-                       && parameterTypes[i].isAssignableFrom (parameters.get (i).getClass ()))
-                    ++i;
-                if(i == parameterTypes.length)
-                    instance = (Potential) constructor.newInstance (parameters.toArray ());
+                instance = (Potential) constructor.newInstance (variables, role);
+            }else{
+                constructor = potentials.get (name).getConstructor (ArrayList.class);
+                if(constructor == null){
+                    throw new InvalidParameterException ("A Potential subclass must have a constructor "
+                                                                 + "either that receives a list of variables or"
+                                                                 + " a list of variables and a potential role.");
+                }
+                instance = constructor.newInstance (variables);
             }
         }
         catch (Exception e)
@@ -82,7 +87,7 @@ public class RelationTypeManager
     
     /**
      * Returns all potentials' names. 
-     * @return a list of potentials' namess.
+     * @return a list of potentials' names.
      */
     public final  Set<String> getAllPotentialsNames ()
     {

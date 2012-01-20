@@ -12,33 +12,21 @@ package org.openmarkov.core.action;
 import java.util.ArrayList;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.PotentialType;
-import org.openmarkov.core.model.network.potential.ProductPotential;
-import org.openmarkov.core.model.network.potential.SameAsPrevious;
-import org.openmarkov.core.model.network.potential.SumPotential;
-import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
-import org.openmarkov.core.model.network.potential.canonical.ICIModelType;
-import org.openmarkov.core.model.network.potential.canonical.MaxPotential;
-import org.openmarkov.core.model.network.potential.canonical.MinPotential;
-import org.openmarkov.core.model.network.potential.canonical.TuningModelPotential;
+import org.openmarkov.core.model.network.potential.plugin.RelationTypeManager;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 @SuppressWarnings("serial")
 public class SetPotentialEdit extends SimplePNEdit {
 	// unused - private PotentialType lastPotentialType;
 	private Potential lastPotential;
-	private PotentialType newPotentialType;
+	private String newPotentialType;
     //private ICIModelType newICIModelType;
 	private Variable variable;
 	private Potential newPotential = null;
@@ -52,7 +40,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 	 * @param newPotentialType
 	 * 		The potential type of the new potential to be created 
 	 */
-	public SetPotentialEdit(ProbNode probNode, PotentialType newPotentialType ){
+	public SetPotentialEdit(ProbNode probNode, String newPotentialType ){
 		super ( probNode.getProbNet() );
 		
 		this.variable = probNode.getVariable();
@@ -77,84 +65,45 @@ public class SetPotentialEdit extends SimplePNEdit {
 		super ( probNode.getProbNet() );
 		this.variable = probNode.getVariable();
 		lastPotential = probNode.getPotentials().get( 0 );
-		this.newPotentialType = potential.getPotentialType();
 		newPotential = potential;
 	}
 	
-	//TODO al asignar un potencial tener en cuenta a los padres y a los predecesores informativos que me los vaa dat manolo invocando a una funcion
+    // TODO al asignar un potencial tener en cuenta a los padres y a los
+    // predecesores informativos que me los va a dar Manolo invocando a una
+    // funcion
 	@Override
 	public void doEdit() throws DoEditException {
-		ArrayList<Variable> variables = new ArrayList<Variable>();
-		ProbNode probNode =probNet.getProbNode(variable);
-		PotentialRole role;
-		//si es un nodo de decision y la politica es optima se asumeun cambio de politica optima a probabilista (de momento no se tiene en cuenta la politica determinista) 
-		if ( (probNode.getNodeType()== NodeType.DECISION && 
-				probNode.getPolicyType() == PolicyType.OPTIMAL)){//no tiene potencial hay que crear uno uniforme en funcion de los predecesores informativos
-			role = PotentialRole.POLICY;
-			variables.add(variable);
-			for (Node node:probNode.getNode().getParents()){//cambiando el getparentes por predecesores informativos, quitar el for y llamar al metodo de manolo que me devuelve las variables 
-				variables.add(((ProbNode)node.getObject()).getVariable());
-			}
-			
-		}else{
-			variables = lastPotential.getVariables();
-			role = lastPotential.getPotentialRole();
-		}
+        ArrayList<Variable> variables = new ArrayList<Variable> ();
+        ProbNode probNode = probNet.getProbNode (variable);
+        PotentialRole role;
+        // si es un nodo de decision y la politica es optima se asume un cambio
+        // de politica optima a probabilista (de momento no se tiene en cuenta
+        // la politica determinista)
+        if ((probNode.getNodeType () == NodeType.DECISION && probNode.getPolicyType () == PolicyType.OPTIMAL))
+        {// no tiene potencial hay que crear uno uniforme en funcion de los
+         // predecesores informativos
+            role = PotentialRole.POLICY;
+            variables.add (variable);
+            for (Node node : probNode.getNode ().getParents ())
+            {// cambiando el getParents por predecesores informativos, quitar
+             // el for y llamar al metodo de Manolo que me devuelve las
+             // variables
+                variables.add (((ProbNode) node.getObject ()).getVariable ());
+            }
+        }
+        else
+        {
+            variables = lastPotential.getVariables ();
+            role = lastPotential.getPotentialRole ();
+        }
 		ArrayList<Potential> potentials = new ArrayList <Potential>();
         if (newPotential == null)
         {
-            switch (newPotentialType)
-            {
-                case UNIFORM :
-                    newPotential = new UniformPotential (variables, role);
-                    break;
-                case TABLE :
-                    try
-                    {
-                        newPotential = new TablePotential (variables, role);
-                    }
-                    catch (NotEnoughMemoryException e)
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace ();
-                    }
-                    break;
-                case TREE_ADD :
-                    // Creates a potential over the defined variables
-                    newPotential = new TreeADDPotential (variables, role);
-                    break;
-                case CYCLE_LENGTH_SHIFT :
-                    newPotential = new CycleLengthShift (variables);
-                    break;
-                case SAME_AS_PREVIOUS :
-                    try
-                    {
-                        newPotential = new SameAsPrevious (probNet, variable);
-                    }
-                    catch (NodeNotFoundException e)
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace ();
-                    }
-                    break;
-                case SUM :
-                    newPotential = new SumPotential (variables, role);
-                    break;
-                case PRODUCT :
-                    newPotential = new ProductPotential (variables, role);
-                    break;
-                case MIN:
-                    newPotential = new MinPotential(ICIModelType.GENERAL_MIN,
-                            variables, role);
-                    break;
-                case MAX:
-                    newPotential = new MaxPotential(ICIModelType.GENERAL_MAX,
-                            variables, role);
-                    break;
-                case TUNING:
-                    newPotential = new TuningModelPotential(variables);
-                    break;                    
-            }
+            RelationTypeManager relationTypeManager = new RelationTypeManager();
+            newPotential = relationTypeManager.getByName (newPotentialType, variables, role);
+
+                    //TODO Potential: SameAsPrevious without ProbNet 
+            //newPotential = new SameAsPrevious (probNet, variable);
         }
 		
 		if ( !(probNode.getNodeType()== NodeType.DECISION && 
@@ -185,10 +134,6 @@ public class SetPotentialEdit extends SimplePNEdit {
 		probNode.setPotentials(potentials);
 	}
 
-	public PotentialType getNewPotentialType() {
-		// TODO Auto-generated method stub
-		return newPotentialType;
-	}
 	public Potential getNewPotential(){
 		return newPotential;
 	}

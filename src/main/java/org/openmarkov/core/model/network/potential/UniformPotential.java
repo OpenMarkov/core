@@ -20,10 +20,12 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
 /** Potential with discrete and/or continuous variables.
  * @author marias
  * @version 1.0 */
+@RelationType(name="Uniform")
 public class UniformPotential extends Potential {
 
 	// Attributes
@@ -39,6 +41,10 @@ public class UniformPotential extends Potential {
 		}
 		type = PotentialType.UNIFORM;
 	}
+	
+    public UniformPotential(Potential potential) {
+        this(potential.getVariables (), potential.getPotentialRole ());
+    }	
 
 	// Methods
 	@Override

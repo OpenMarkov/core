@@ -16,7 +16,9 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
+@RelationType(name="Max")
 public class MaxPotential extends MinMaxPotential {
 
 	/** @param model. <code>ICIModel</code>.
@@ -26,6 +28,18 @@ public class MaxPotential extends MinMaxPotential {
 		super(model, variables, role);
 		type = PotentialType.MAX;
 	}
+	
+	/**
+	 * 
+	 * Constructor for MaxPotential that assumes the ICIModelType is GENERAL_MAX
+	 * @param variables
+	 * @param role
+	 */
+	public MaxPotential (ArrayList<Variable> variables, PotentialRole role)
+    {
+        this (ICIModelType.GENERAL_MAX, variables, role);
+        type = PotentialType.MAX;
+    }
 
 	@Override
 	/** @returns A <code>TablePotential</code> with two variables: 

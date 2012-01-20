@@ -36,6 +36,7 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
+import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
 /** A <code>TreeADDPotential</code> is a ...
  * 
@@ -43,6 +44,7 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
  * @author fjdiez
  * @author marias
  * @version 1.0 */
+@RelationType(name="TreeADD")
 public class TreeADDPotential extends Potential implements PotentialsContainer {
 	
 	// Attributes
@@ -66,8 +68,8 @@ public class TreeADDPotential extends Potential implements PotentialsContainer {
 	/** @param variables. <code>ArrayList</code> of <code>Variable</code>
 	 * @param graph. <code>Graph</code>
 	 * @param role. <code>PotentialRole</code> */
-	public TreeADDPotential(ArrayList<Variable> variables, 
-			Graph graph, PotentialRole role) {
+    public TreeADDPotential (ArrayList<Variable> variables, Graph graph, PotentialRole role)
+    {
 		//super (findVariables (graph), role);
 		super (variables, role);
 		this.graph= graph;

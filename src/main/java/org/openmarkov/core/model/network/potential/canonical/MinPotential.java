@@ -16,8 +16,9 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
-
+@RelationType(name="Min")
 public class MinPotential extends MinMaxPotential {
 
 	/** @param model. <code>ICIModel</code>.
@@ -27,6 +28,16 @@ public class MinPotential extends MinMaxPotential {
 		super(modelType, variables, role);
 		type = PotentialType.MIN;
 	}
+	
+	/**
+	 * 
+	 * Constructor for MinPotential that assumes the ICIModelType is GENERAL_MIN
+	 * @param variables
+	 * @param role
+	 */
+    public MinPotential(ArrayList<Variable> variables, PotentialRole role) {
+                this(ICIModelType.GENERAL_MIN, variables, role);
+    }
 
 	@Override
 	/** @returns A <code>TablePotential</code> with two variables: 

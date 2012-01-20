@@ -28,6 +28,7 @@ import org.openmarkov.core.model.network.modelUncertainty.SamplePotentialTable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.Util;
+import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
 /** A <code>TablePotential</code> is a type of relation with a list of
   *   probabilistic nodes. All variables will be discrete in this class.<p> 
@@ -39,6 +40,7 @@ import org.openmarkov.core.model.network.potential.operation.Util;
   * @version 1.0
   * @since OpenMarkov 1.0 */
 @SuppressWarnings({ "unchecked" })
+@RelationType(name="Table potential")
 public class TablePotential extends Potential implements Comparable {
 
     // Attributes
@@ -59,11 +61,6 @@ public class TablePotential extends Potential implements Comparable {
      * concurrent operations. */
     public volatile UncertainValue[] uncertainValues;
     
-    public UncertainValue[] getUncertainTable() {
-		return uncertainValues;
-	}
-
-
 	/** Indicates the first configuration. In a new potential it is 0. 
      * In a projected potential it may be different from 0. */
 	private int initialPosition = 0;
@@ -114,6 +111,11 @@ public class TablePotential extends Potential implements Comparable {
 		}
 		type = PotentialType.TABLE;
     }
+    
+    public TablePotential(Potential potential) 
+            throws NotEnoughMemoryException {
+        this(potential.getVariables (), potential.getPotentialRole ());
+    }    
     
     /** @param variables. <code>ArrayList</code> of <code>Variable</code>
 	 * @param role. <code>PotentialRole</code>
@@ -624,6 +626,14 @@ public class TablePotential extends Potential implements Comparable {
 	public void setValues(double [] table) {
 		this.values = table;
 	}
+	
+	/**
+	 * Uncertain Table
+	 * @return
+	 */
+    public UncertainValue[] getUncertainTable() {
+        return uncertainValues;
+    }	
 
     /** @consultation
 	 * @return dimensions of the variables in an array of <code>int[]</code>. */

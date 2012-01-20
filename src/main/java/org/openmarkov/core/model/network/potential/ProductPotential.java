@@ -21,32 +21,31 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
+import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
 /** Potential associated to supervalue node to indicate that the utility is a
  * product of the utilities of its parents.
  * @author marias
  * @author mkpalacio
  * @version 1.0 */
+@RelationType(name="Product")
 public class ProductPotential extends Potential {
 
-	// Attributes
-	private ArrayList<ProbNode> parentProbNodes;
-	
 	// Constructor
 	/**
 	 * @param variables
 	 * @param parentsProbNodes
 	 * @param role
 	 */
-	public ProductPotential(ArrayList<Variable> variables, 
-			ArrayList<ProbNode> parentsProbNodes, PotentialRole role) {
+	public ProductPotential(ArrayList<Variable> variables, PotentialRole role) {
 		super(variables, role);
-		this.parentProbNodes = parentsProbNodes;
 		type = PotentialType.PRODUCT;
 	}
+	
+    public ProductPotential(Potential potential) {
+        this(potential.getVariables (), potential.getPotentialRole ());
+    }	
 
 	// Methods
 	@Override
@@ -59,6 +58,7 @@ public class ProductPotential extends Potential {
 			InferenceOptions inferenceOptions)
 	throws NonProjectablePotentialException, NotEnoughMemoryException, 
 	WrongCriterionException {
+	    /*
 		// TODO se puede simplificar proyectando cada potencial padre
 		// dentro del bucle for. Asi se elimina el metodo getTableProjectedParentPotentials
 		// Get potentials to be multiplied
@@ -77,6 +77,9 @@ public class ProductPotential extends Potential {
 			multiplication.setUtilityVariable(utilityVariable);
 		}
 		return multiplication.tableProject(evidenceCase, inferenceOptions);
+		*/
+
+	    throw new NonProjectablePotentialException("Cannot project into tables a ProductPotential");
 	}
 
 	/**

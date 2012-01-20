@@ -23,29 +23,30 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
+import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
 /** Potential associated to supervalue node to indicate that the utility is a
  * sum of the utilities of its parents.
  * @author mkpalacio
  * @version 1.0 */
+@RelationType(name="Sum")
 public class SumPotential extends Potential {
 
-	// Attributes
-	private ArrayList<ProbNode> parentProbNodes;
-	
 	// Constructor
 	/**
 	 * @param variables
 	 * @param parentsProbNodes
 	 * @param role
 	 */
-	public SumPotential(ArrayList<Variable> variables, 
-			ArrayList<ProbNode> parentsProbNodes, PotentialRole role) {
+	public SumPotential(ArrayList<Variable> variables, PotentialRole role) {
 		super(variables, role);
-		this.parentProbNodes = parentsProbNodes;
 		type = PotentialType.SUM;
 	}
+	
+    public SumPotential(Potential potential) {
+        super(potential.getVariables (), potential.getPotentialRole ());
+        type = PotentialType.SUM;
+    }	
 
 	// Methods
 	@Override
@@ -58,7 +59,7 @@ public class SumPotential extends Potential {
 			InferenceOptions inferenceOptions)
 	throws NonProjectablePotentialException, NotEnoughMemoryException, 
 	WrongCriterionException {
-		// TODO se puede simplificar proyectando cada potencial padre
+/*		// TODO se puede simplificar proyectando cada potencial padre
 		// dentro del bucle for. Asi se elimina el metodo getTableProjectedParentPotentials
 		// Get potentials to be multiplied
 		ArrayList<Potential> factorPotentials = 
@@ -76,6 +77,8 @@ public class SumPotential extends Potential {
 			multiplication.setUtilityVariable(utilityVariable);
 		}
 		return multiplication.tableProject(evidenceCase, inferenceOptions);
+		*/
+	       throw new NonProjectablePotentialException("Cannot project into tables a SumPotential");
 	}
 
 	/**

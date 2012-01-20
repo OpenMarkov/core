@@ -27,9 +27,9 @@ public class GTablePotential<Element> extends TablePotential {
     public ArrayList<Element> elementTable; 
 
     // Constructor
-    public GTablePotential(ArrayList<Variable> fsVariables, PotentialRole role) 
+    public GTablePotential(ArrayList<Variable> variables, PotentialRole role) 
             throws NotEnoughMemoryException {
-        super(fsVariables, null); // <- Don't create a table of doubles
+        super(variables, null); // <- Don't create a table of doubles
         if (numVariables != 0) {
             int sizeTable = dimensions[numVariables - 1] * 
                 offsets[numVariables - 1];
@@ -41,12 +41,18 @@ public class GTablePotential<Element> extends TablePotential {
                 		+ Util.printInteger(freeMemory) + " bytes free. "
     					+ "Not enough memory to allocate a table with "
     					+ sizeTable +" elements in GTablePotential constructor." 
-    					+ " Number of variables: " + fsVariables.size());
+    					+ " Number of variables: " + variables.size());
             }
         } else {// In this case the potential is a constant
             elementTable =  new ArrayList<Element>(1);
         }
     }
+    
+    public GTablePotential (Potential potential) throws NotEnoughMemoryException
+    {
+        this (potential.getVariables (), potential.getPotentialRole ());
+    }
+    
     
 	@Override
 	public PotentialType getPotentialType() {

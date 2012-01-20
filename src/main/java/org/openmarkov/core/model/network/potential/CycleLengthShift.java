@@ -32,6 +32,11 @@ public class CycleLengthShift extends Potential {
 		super(variables, PotentialRole.CONDITIONAL_PROBABILITY);
 		type = PotentialType.CYCLE_LENGTH_SHIFT;
 	}
+	
+    public CycleLengthShift(Potential potential) {
+        this(potential.getVariables ());
+    }
+	
 
 	// Methods
 	@Override
@@ -72,8 +77,7 @@ public class CycleLengthShift extends Potential {
 
 	@Override
 	public Potential shift(ProbNet probNet, int timeDifference) {
-		return new CycleLengthShift(
-				getShiftedVariables(probNet, timeDifference));
+		return new CycleLengthShift(getShiftedVariables(probNet, timeDifference));
 	}
 
 }

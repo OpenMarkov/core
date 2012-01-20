@@ -36,10 +36,10 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 @SuppressWarnings("serial")
 public class SetPotentialEdit extends SimplePNEdit {
-	private PotentialType lastPotentialType;
+	// unused - private PotentialType lastPotentialType;
 	private Potential lastPotential;
 	private PotentialType newPotentialType;
-	//private ICIModelType newICIModelType;
+    //private ICIModelType newICIModelType;
 	private Variable variable;
 	private Potential newPotential = null;
 	
@@ -101,62 +101,61 @@ public class SetPotentialEdit extends SimplePNEdit {
 			role = lastPotential.getPotentialRole();
 		}
 		ArrayList<Potential> potentials = new ArrayList <Potential>();
-		if ( newPotential == null ){
-			switch (newPotentialType){
-			case UNIFORM:
-				newPotential = new UniformPotential(variables, role);
-				break;
-			case TABLE:
-				try {
-					newPotential = new TablePotential( variables, role);
-				} catch (NotEnoughMemoryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				break;
-			case TREE_ADD:
-				// Creates a potential over the defined variables
-				newPotential= new TreeADDPotential(variables,role);	
-				break;
-			case CYCLE_LENGTH_SHIFT:
-				newPotential = 
-					new CycleLengthShift( variables);
-				break;
-			case SAME_AS_PREVIOUS:
-				try {
-					//TODO revisar el paso del parámetro timeSlice
-					newPotential = new SameAsPrevious(
-						SameAsPrevious.getPotential(probNet, variable), 
-						1, probNet);
-				} catch (NodeNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				break;
-			case SUM:
-				newPotential = new SumPotential(
-						variables, probNet.getProbNodes(variables), role);
-				break;
-			case PRODUCT:
-				newPotential = new ProductPotential(
-						variables, probNet.getProbNodes(variables), role);
-				break;
-			case MIN:
-				newPotential = new MinPotential(ICIModelType.GENERAL_MIN,
-						variables, role);
-				break;
-			case MAX:
-				newPotential = new MaxPotential(ICIModelType.GENERAL_MAX,
-						variables, role);
-				break;
-			case TUNING:
-				newPotential = new TuningModelPotential(variables);
-				break;
-			
-			
-			
-			}
-		}
+        if (newPotential == null)
+        {
+            switch (newPotentialType)
+            {
+                case UNIFORM :
+                    newPotential = new UniformPotential (variables, role);
+                    break;
+                case TABLE :
+                    try
+                    {
+                        newPotential = new TablePotential (variables, role);
+                    }
+                    catch (NotEnoughMemoryException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace ();
+                    }
+                    break;
+                case TREE_ADD :
+                    // Creates a potential over the defined variables
+                    newPotential = new TreeADDPotential (variables, role);
+                    break;
+                case CYCLE_LENGTH_SHIFT :
+                    newPotential = new CycleLengthShift (variables);
+                    break;
+                case SAME_AS_PREVIOUS :
+                    try
+                    {
+                        newPotential = new SameAsPrevious (probNet, variable);
+                    }
+                    catch (NodeNotFoundException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace ();
+                    }
+                    break;
+                case SUM :
+                    newPotential = new SumPotential (variables, role);
+                    break;
+                case PRODUCT :
+                    newPotential = new ProductPotential (variables, role);
+                    break;
+                case MIN:
+                    newPotential = new MinPotential(ICIModelType.GENERAL_MIN,
+                            variables, role);
+                    break;
+                case MAX:
+                    newPotential = new MaxPotential(ICIModelType.GENERAL_MAX,
+                            variables, role);
+                    break;
+                case TUNING:
+                    newPotential = new TuningModelPotential(variables);
+                    break;                    
+            }
+        }
 		
 		if ( !(probNode.getNodeType()== NodeType.DECISION && 
 				probNode.getPolicyType() == PolicyType.OPTIMAL)){

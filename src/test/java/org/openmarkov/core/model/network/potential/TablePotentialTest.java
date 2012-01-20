@@ -16,6 +16,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.OpenMarkovTests;
@@ -26,6 +27,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -88,6 +90,8 @@ public class TablePotentialTest {
 	private State[] fiveStates;
 
 	private Finding finding1;
+	
+	private int end;
 
 	/** Two binary variables: fsVariable2 = 1, fsVariable4 = 0. */
 	private EvidenceCase evidenceCase;
@@ -406,6 +410,48 @@ public class TablePotentialTest {
     public void testGetInitialPosition() {
     	assertEquals(0, tablePotential1.getInitialPosition());
     }
+    
+   /* @Test
+    public void testReorder() {
+    	TablePotential tablePotential;
+    	Variable A = new Variable("A", 2);
+		Variable B = new Variable("B", 2);
+		Variable C = new Variable("C", 2);
+		ArrayList<Variable> baPotentialVariables = new ArrayList<Variable>();
+		baPotentialVariables.add(B);
+		baPotentialVariables.add(A);
+		ArrayList<Variable> cabPotentialVariables = new ArrayList<Variable>();
+		cabPotentialVariables.add(C);
+		cabPotentialVariables.add(A);
+		cabPotentialVariables.add(B);
+		double[] baTable = {0.7, 0.3, 0.9, 0.1};
+		
+		double[] cabTable = {0.15, 0.85, 0.84, 0.16, 0.29, 0.71, 0.98, 0.02};
+		TablePotential cabPotential = new TablePotential(cabPotentialVariables,PotentialRole.CONDITIONAL_PROBABILITY, cabTable);
+		TablePotential bcPotential = new TablePotential(baPotentialVariables,PotentialRole.CONDITIONAL_PROBABILITY, baTable);
+		ArrayList<Variable> newOrderVariables = new ArrayList<Variable>();
+		
+    	end=-1;
+		
+		if ( cabPotentialVariables.size() > 0 ){
+			
+			for (int i = cabPotentialVariables.size()-1; i>end; i--){
+				newOrderVariables.add(cabPotentialVariables.get(i)); //newOrderVariables B A C 
+				
+			}
+			
+		}
+		try {
+			tablePotential =
+				DiscretePotentialOperations.reorder(
+						cabPotential, newOrderVariables );
+		} catch (NotEnoughMemoryException exception) {
+			//ExceptionsHandler.handleException(
+				//exception, "not enougth memory", true );
+			
+		}
+    }
+    
 
 /*    @Test
     /** Test accumulated offsets in projected potentials. */

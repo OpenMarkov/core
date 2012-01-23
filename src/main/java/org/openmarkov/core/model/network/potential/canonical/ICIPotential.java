@@ -96,7 +96,52 @@ public abstract class ICIPotential extends Potential {
 	
 	/** @param potential. <code>Potential</code> */
 	public void addSubPotential(TablePotential subPotential) {
-		subPotentials.add(subPotential);
+	    boolean found = false;
+	    for(int i= 0; i < subPotentials.size (); ++i)
+	    {
+	        if(subPotential.getVariables ().equals (subPotentials.get (i).getVariables ()))
+	        {
+	            subPotentials.set (i, subPotential);
+	            found = true;
+	        }
+	    }
+        if (!found)
+        {
+            subPotentials.add (subPotential);
+        }
+	}
+	
+	/**
+	 * Sets the noisy parameters, i.e. <i>P(z<sub>i</sub>|x<sub>i</sub>)</i>
+	 * @param parent parent variable (<i>X<sub>i</sub></i>) whose noisy parameters we want to set 
+	 * @param parameters the noisy parameters. The length of the array must be the multiplication of the parent's and child's state number
+	 */
+	public void setNoisyParameters(Variable parent, double[] parameters)
+	{
+	    if(parameters.length != variables.get (0).getNumStates () * parent.getNumStates ())
+	    {
+            throw new IllegalArgumentException (
+                                                "The length of the array must be the multiplication"
+                                                        + " of the parent's and child's state number "
+                                                        + variables.get (0).getNumStates ()
+                                                        * parent.getNumStates () + " and is "
+                                                        + parameters.length);
+	    }
+        if (!getVariables ().contains (parent))
+        {
+            throw new IllegalArgumentException("There is no variable " + parent + " in this ICI family.");
+        }        
+	        
+        ArrayList<Variable> linkVariables = new ArrayList<Variable>();
+        linkVariables.add(variables.get (0)); // child variable
+        linkVariables.add(parent);	    
+        for(int i= 0; i < subPotentials.size (); ++i)
+        {
+            if(linkVariables.equals (subPotentials.get (i).getVariables ()))
+            {
+                subPotentials.get (i).values = parameters;
+            }
+        }	
 	}
 	
 	/** @return <code>ArrayList</code> of <code>TablePotential</code>. */

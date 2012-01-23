@@ -1161,35 +1161,6 @@ public class ProbNet implements Cloneable {
 	}
 
 	/**
-	 * Looks for the <code>ICIPotential</code> that corresponds to this
-	 * <code>potential</code> and adds it as subpotential.
-	 * 
-	 * @param potential
-	 *            . <code>Potential</code>
-	 */
-	@SuppressWarnings("unchecked")
-	public void addSubPotential(TablePotential subPotential, String name) {
-		Variable firstVariable = subPotential.getVariable(0);
-		ProbNode probNode = getProbNode(firstVariable);
-		ArrayList<Potential> potentials = probNode.getPotentials();
-		for (Potential potential : potentials) {
-			if (potential instanceof ICIPotential) {
-				ArrayList<String> names = (ArrayList<String>) potential.properties
-						.get("names");
-				for (String nameSubPotential : names) {
-					if (nameSubPotential.contentEquals(name)) {
-						((ICIPotential) potential)
-								.addSubPotential(subPotential);
-						names.remove(nameSubPotential);
-						break;
-					}
-				}
-			}
-		}
-
-	}
-
-	/**
 	 * If there are missing variables (variables that exists in the
 	 * <code>potential</code> but not in the <code>probNet</code>), the method
 	 * adds all those variables to the <code>probNet</code>.

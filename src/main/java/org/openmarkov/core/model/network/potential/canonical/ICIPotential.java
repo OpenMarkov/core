@@ -10,6 +10,8 @@
 package org.openmarkov.core.model.network.potential.canonical;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -22,6 +24,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 public abstract class ICIPotential extends Potential {
 
@@ -31,47 +34,62 @@ public abstract class ICIPotential extends Potential {
 	/* ICI family will be MAX (which includes OR, causal MAX...), MIN, etc. */
 	protected ICIFamily family;
 	
-	/* There will be a potential for each link, plus the leak potential */
-	protected ArrayList<TablePotential> subPotentials;
+    /**
+     * List of Z variables we are going to use in the canonical model
+     */
+    private HashMap<Variable, Variable> zVariables;
+    
+	/**
+	 * Noisy parameters for the canonical model
+	 */
+	private HashMap<Variable, double[]> noisyParameters;
+	
+    /**
+     * Leak parameters for the canonical model
+     */
+    private double[] leakyParameters;	
 
 	// Constructor
 	/** @param variables. <code>ArrayList</code> of <code>Variable</code>
 	 * @param model. <code>ICIModel</code> */
-	public ICIPotential(ICIModelType modelType, ArrayList<Variable> variables, 
-			PotentialRole role) {
+	public ICIPotential(ICIModelType modelType, ArrayList<Variable> variables) {
 		// In principle, role will be "conditional probability"
 		// and the first variable will be the conditioned variable
-		super(variables, role);
+		super(variables, PotentialRole.CONDITIONAL_PROBABILITY);
 		this.modelType = modelType;
 		this.family = modelType.getFamily();
-		subPotentials = new ArrayList<TablePotential>();
+		this.noisyParameters = getDefaultNoisyParameters();
+		this.leakyParameters = null;
 		
-		try {
-			for (int i = 1; i < variables.size(); ++i) {
-                ArrayList<Variable> linkVariables = new ArrayList<Variable>();
-                linkVariables.add(variables.get(0));
-                linkVariables.add(variables.get(i));
-                TablePotential tablePotential = new TablePotential(linkVariables, role);
-
-                double[] probabilities = tablePotential.getValues ();
-				for (int j = 0; j < variables.get(i).getNumStates(); ++j) {
-					for (int k = 0; k < variables.get(0).getNumStates(); ++k) {
-						probabilities[j * variables.get(0).getNumStates() + k] = (k == j) ? 1.0
-								: 0.0;
-					}
-				}
-				addSubPotential(tablePotential);
-			}
-
-			addSubPotential(getDefaultLeakyPotential());
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        zVariables = new HashMap<Variable, Variable> ();
+        for(int i=1; i<variables.size (); ++i)
+        {
+            zVariables.put (variables.get (i), new Variable ("z" + variables.get (i).getName (),
+                                                             variables.get (0).getStates ()));
+        }
 		
 	}
 
-	public abstract TablePotential getDefaultLeakyPotential() throws NotEnoughMemoryException;
+    public HashMap<Variable, double[]> getDefaultNoisyParameters()
+    {
+        HashMap<Variable, double[]> noisyParameters = new HashMap<Variable, double[]> ();
+        Variable conditionedVariable = variables.get (0); 
+        
+        for (int i = 1; i < variables.size (); ++i)
+        {
+            Variable parent = variables.get (i); 
+            double[] probabilities = new double[conditionedVariable.getNumStates () * parent.getNumStates ()];
+            for (int j = 0; j < variables.get (i).getNumStates (); ++j)
+            {
+                for (int k = 0; k < parent.getNumStates (); ++k)
+                {
+                    probabilities[j * parent.getNumStates () + k] = (k == j) ? 1.0 : 0.0;
+                }
+            }
+            noisyParameters.put (parent, probabilities);
+        }
+        return noisyParameters;
+    }
 	
 //	public TablePotential getDefaultLeakyPotential() throws NotEnoughMemoryException
 //	{
@@ -89,9 +107,19 @@ public abstract class ICIPotential extends Potential {
 //	}
 	
 	// Methods
-	public abstract TablePotential getCPT() throws NotEnoughMemoryException;
+    /**
+     * @return The conditional probability table given by this potential
+     */
+    public TablePotential getCPT () throws NotEnoughMemoryException
+    {
+        // Eliminate zVariables through marginalization
+        return DiscretePotentialOperations.multiplyAndMarginalize (buildSubpotentialList(), variables,
+                                                                   new ArrayList<Variable>(zVariables.values ()));
+    }
+    
+	protected abstract TablePotential getFFunctionPotential ()  throws NotEnoughMemoryException;
 
-	@Override
+    @Override
     /** @param evidenceCase. <code>EvidenceCase</code>
      * @return <code>ArrayList</code> of <code>Potential</code>*/
     public ArrayList<TablePotential> tableProject (EvidenceCase evidenceCase,
@@ -101,31 +129,17 @@ public abstract class ICIPotential extends Potential {
         WrongCriterionException
     {
         ArrayList<TablePotential> projectedPotentials = new ArrayList<TablePotential> ();
-        for (TablePotential subPotential : subPotentials)
+        for (TablePotential subPotential : buildSubpotentialList())
         {
-            projectedPotentials.add (subPotential.tableProject (evidenceCase, inferenceOptions).get (0));
+            projectedPotentials.add (subPotential.tableProject (evidenceCase, null).get (0));
         }
         return projectedPotentials;
     }
 	
-	
-	/** @param potential. <code>Potential</code> */
-	public void addSubPotential(TablePotential subPotential) {
-	    boolean found = false;
-	    for(int i= 0; i < subPotentials.size (); ++i)
-	    {
-	        if(subPotential.getVariables ().equals (subPotentials.get (i).getVariables ()))
-	        {
-	            subPotentials.set (i, subPotential);
-	            found = true;
-	        }
-	    }
-        if (!found)
-        {
-            subPotentials.add (subPotential);
-        }
-	}
-	
+    public double[] getNoisyParameters(Variable variable)
+    {
+        return noisyParameters.get(variable);
+    }	
 	/**
 	 * Sets the noisy parameters, i.e. <i>P(z<sub>i</sub>|x<sub>i</sub>)</i>
 	 * @param parent parent variable (<i>X<sub>i</sub></i>) whose noisy parameters we want to set 
@@ -145,46 +159,64 @@ public abstract class ICIPotential extends Potential {
         if (!getVariables ().contains (parent))
         {
             throw new IllegalArgumentException("There is no variable " + parent + " in this ICI family.");
-        }        
+        }
+        
+        noisyParameters.put (parent, parameters);
+	}
+	
+	/**
+	 * There will be a potential for each link, plus the leak potential 
+	 * @return <code>ArrayList</code> of <code>TablePotential</code>. 
+	 * @throws NotEnoughMemoryException 
+	 * */
+	protected ArrayList<TablePotential> buildSubpotentialList() throws NotEnoughMemoryException {
+	    ArrayList<TablePotential> subpotentials = new ArrayList<TablePotential> ();
+
+	    // F function
+	    subpotentials.add (getFFunctionPotential ());
+
+	    //Noisy parents
+	    for(Variable parent: zVariables.keySet ())
+	    {
+	        ArrayList<Variable> linkVariables = new ArrayList<Variable> ();
+	        linkVariables.add(zVariables.get (parent)); // Z variable
+	        linkVariables.add(parent);
 	        
-        ArrayList<Variable> linkVariables = new ArrayList<Variable>();
-        linkVariables.add(variables.get (0)); // child variable
-        linkVariables.add(parent);	    
-        for(int i= 0; i < subPotentials.size (); ++i)
-        {
-            if(linkVariables.equals (subPotentials.get (i).getVariables ()))
-            {
-                subPotentials.get (i).values = parameters;
-            }
-        }	
-	}
-	
-	/** @return <code>ArrayList</code> of <code>TablePotential</code>. */
-	public ArrayList<TablePotential> getSubPotentials() {
-		return subPotentials;
-	}
-	
-	/** @param variable. <code>Variable</code>
-	 * @return The first subPotential that contains <code>variable</code>.
-	 *  <code>TablePotential</code> or <code>null</code> */
-	public TablePotential getSubPotential(Variable variable) {
-		for (TablePotential potential : subPotentials) {
-			if (potential.getVariables().contains(variable)) {
-				return potential;
-			}
-		}
-		return null;
+	        subpotentials.add (new TablePotential(linkVariables, PotentialRole.CONDITIONAL_PROBABILITY, noisyParameters.get(parent)));
+	    }
+
+	    // Leak parent
+	    if(this.leakyParameters != null)
+	    {
+            ArrayList<Variable> leakVariables = new ArrayList<Variable> ();
+            leakVariables.add(variables.get(0)); // conditioned variable
+            subpotentials.add (new TablePotential(leakVariables, PotentialRole.CONDITIONAL_PROBABILITY, leakyParameters));
+	    }
+	        
+	     return subpotentials;
 	}
 	
 	/** @return Leak potential. <code>TablePotential</code> */
-	public TablePotential getLeakPotential() {
-		// The leak potential depends on only one variable
-		int i = 0;
-		while (i < subPotentials.size()
-				&& subPotentials.get(i).getNumVariables() > 1)
-			++i;
-		return subPotentials.get(i);
+	public double[] getLeakyParameters() {
+		return this.leakyParameters;
 	}
+	
+	/**
+	 * Sets Leak parameters
+	 * @param leakyParameters
+	 */
+    public void setLeakyParameters(double[] leakyParameters) {
+        if(leakyParameters.length != variables.get (0).getNumStates () )
+        {
+            throw new IllegalArgumentException (
+                                                "The length of the array must be the conditioned variable's state number "
+                                                        + variables.get (0).getNumStates ()
+                                                        + " and is " + leakyParameters.length);
+        }
+        
+        this.leakyParameters = leakyParameters;
+    }
+	
 
 	/** @return model. <code>ICIModel</code> */
 	public ICIModelType getModelType() {
@@ -199,17 +231,14 @@ public abstract class ICIPotential extends Potential {
 	public String toString() {
 		StringBuffer buffer = new StringBuffer(super.toString());
 		buffer.append("\nFamily: " + family + ". Model: " + modelType);
-		buffer.append("\nNumber of subPotentials: " +  subPotentials.size());
-		buffer.append("\nSubpotentials: ");
-		for (Potential potential : subPotentials) {
-			ArrayList<Variable> potentialVariables = potential.getVariables();
-			buffer.append("[");
-			int i;
-			for (i = 0; i < potentialVariables.size() - 1; i++) {
-				buffer.append(potentialVariables.get(i) + ", ");
-			}
-			buffer.append(potentialVariables.get(i) + "] ");
-		}
+		buffer.append("\nNumber of variables: " +  variables.size());
+		buffer.append("\nVariables: ");
+        buffer.append ("[");
+        for (int i = 0; i < variables.size () - 1; i++)
+        {
+            buffer.append (variables.get (i) + ", ");
+        }
+        buffer.append (variables.get (variables.size () - 1) + "] ");
 		buffer.append("\n");
 		return buffer.toString();
 	}
@@ -219,6 +248,15 @@ public abstract class ICIPotential extends Potential {
 			throws ProbNodeNotFoundException, NotEnoughMemoryException {
 		// TODO implement this function
 		throw new Error("function shift is not implemented in ICIPotential");
+	}
+	
+	/**
+	 * 
+	 * @return collection of Z variables
+	 */
+	protected Collection<Variable> getAuxiliaryVariables()
+	{
+	    return zVariables.values ();
 	}
 
 }

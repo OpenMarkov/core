@@ -17,17 +17,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TablePotential;
 
 public class MaxPotentialTest {
 
 	// Attributes
-	private PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-	private ICIModelType modelType = ICIModelType.CAUSAL_MAX;
-	
-	private TablePotential subPotentialLeakyC;
 	private MaxPotential maxPotential;
+    private final double admissibleError = 0.000000001;
+	
 
 	// Initialization
 	@Before
@@ -44,33 +40,21 @@ public class MaxPotentialTest {
 		variablesABC.add(variableA);
 		variablesABC.add(variableB);
 
-		double[] valuesCA = {1.0, 0.0, 0.0, 0.0, 0.3, 0.7, 0.0, 0.1, 0.9};
-		ArrayList<Variable> variablesCA = new ArrayList<Variable>();
-		variablesCA.add(variableC);
-		variablesCA.add(variableA);
-		TablePotential subPotentialCA= new TablePotential(variablesCA, role, valuesCA);
-		
-		double [] valuesCB ={1.0, 0.0, 0.0, 0.0, 0.2, 0.8};
-		
-		double [] valuesLeakyC ={0.989, 0.01, 0.001};
-		ArrayList<Variable> variablesC = new ArrayList<Variable>();
-		variablesC.add(variableC);
-		subPotentialLeakyC = new TablePotential(variablesC, role, valuesLeakyC);
-
-		maxPotential = new MaxPotential(modelType, variablesABC, role);
-		maxPotential.addSubPotential(subPotentialCA);
-		maxPotential.setNoisyParameters (variableB, valuesCB);
-		maxPotential.addSubPotential(subPotentialLeakyC);
+		maxPotential = new MaxPotential(variablesABC);
+		maxPotential.setNoisyParameters (variableA, new double[] {1.0, 0.0, 0.0, 0.0, 0.3, 0.7, 0.0, 0.1, 0.9});
+		maxPotential.setNoisyParameters (variableB, new double[] {1.0, 0.0, 0.0, 0.0, 0.2, 0.8});
+		maxPotential.setLeakyParameters (new double[] {0.989, 0.01, 0.001});
 	}
 
 	@Test
 	public void testGetLeakPotential() throws NotEnoughMemoryException {
-		assertEquals(subPotentialLeakyC, maxPotential.getLeakPotential());
+		assertEquals(0.989, maxPotential.getLeakyParameters()[0], admissibleError);
+        assertEquals(0.01, maxPotential.getLeakyParameters()[1], admissibleError);
+        assertEquals(0.001, maxPotential.getLeakyParameters()[2], admissibleError);
 	}
 
 	@Test
 	public void testGetCPT() throws NotEnoughMemoryException {
-		double admissibleError = 0.000000001;
 		double[] cPTValues = maxPotential.getCPT().values;
 		assertEquals(0.989, cPTValues[0], admissibleError);
 		assertEquals(0.01, cPTValues[1], admissibleError);

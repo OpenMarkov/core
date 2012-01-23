@@ -24,8 +24,8 @@ public class MinPotential extends MinMaxPotential {
 	/** @param model. <code>ICIModel</code>.
 	 * @param variables. <code>ArrayList</code> of <code>Variable</code>. */
 	public MinPotential(
-			ICIModelType modelType, ArrayList<Variable> variables, PotentialRole role) {
-		super(modelType, variables, role);
+			ICIModelType modelType, ArrayList<Variable> variables) {
+		super(modelType, variables);
 		type = PotentialType.MIN;
 	}
 	
@@ -35,8 +35,8 @@ public class MinPotential extends MinMaxPotential {
 	 * @param variables
 	 * @param role
 	 */
-    public MinPotential(ArrayList<Variable> variables, PotentialRole role) {
-                this(ICIModelType.GENERAL_MIN, variables, role);
+    public MinPotential(ArrayList<Variable> variables) {
+                this(ICIModelType.GENERAL_MIN, variables);
     }
     
     public TablePotential getDefaultLeakyPotential ()

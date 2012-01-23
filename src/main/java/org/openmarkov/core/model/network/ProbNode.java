@@ -263,13 +263,6 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 				if (potential.isUtility()) {
 					out = out + " - Utility Potential";
 				}
-				if (potential instanceof ICIPotential) {
-					ArrayList<TablePotential> subPotentials = 
-						((ICIPotential)potential).getSubPotentials();
-					int numSubPotentials = subPotentials.size();
-					out = out + ". Number of subPotentials: "
-						+ numSubPotentials;
-				}
 				out = out + " ";
 			}
 			out = out + "\n";

@@ -38,10 +38,10 @@ public abstract class MinMaxPotential extends ICIPotential {
 	protected Variable pseudoVariable;
 	
 	// Constructor
-    public MinMaxPotential (ICIModelType model, ArrayList<Variable> variables, PotentialRole role)
+    public MinMaxPotential (ICIModelType model, ArrayList<Variable> variables)
     {
         // In principle, role will be "conditional probability"
-        super (model, variables, role);
+        super (model, variables);
         Variable conditionedVariable = variables.get (0);
         String pseudoVariableName = "pseudo-" + conditionedVariable.getName ();
         // TODO Comprobar que no existe otra variable que tenga el mismo nombre
@@ -58,12 +58,12 @@ public abstract class MinMaxPotential extends ICIPotential {
     protected abstract TablePotential getAccruedPotential (TablePotential potential)
         throws NotEnoughMemoryException;
 
-	public ArrayList<TablePotential> getAccruedPotentials()
+	public ArrayList<TablePotential> getAccruedPotentials(ArrayList<TablePotential> subpotentials)
 			throws NotEnoughMemoryException {
 		ArrayList<TablePotential> accruedPotentials = 
-			new ArrayList<TablePotential>(subPotentials.size());
-		for (TablePotential subPotential : subPotentials) {
-			accruedPotentials.add(getAccruedPotential(subPotential));
+			new ArrayList<TablePotential>(subpotentials.size());
+		for (TablePotential subpotential : subpotentials) {
+			accruedPotentials.add(getAccruedPotential(subpotential));
 		}
 		return accruedPotentials;
 	}
@@ -79,7 +79,7 @@ public abstract class MinMaxPotential extends ICIPotential {
         ArrayList<TablePotential> iCIPotentials = new ArrayList<TablePotential> ();
         iCIPotentials.add (getDeltaPotential ());
         // subPotentials must be of sub-type TablePotential
-        for (TablePotential potential : subPotentials)
+        for (TablePotential potential : buildSubpotentialList())
         {
             iCIPotentials.add (getAccruedPotential (potential));
         }
@@ -94,12 +94,9 @@ public abstract class MinMaxPotential extends ICIPotential {
 	public ArrayList<TablePotential> tableProject(EvidenceCase evidence, 
 			InferenceOptions inferenceOptions) 
 			throws NotEnoughMemoryException, WrongCriterionException {
-		ArrayList<TablePotential> potentials = 
-			new ArrayList<TablePotential>(subPotentials.size() + 1);
-		potentials.add(getDeltaPotential().tableProject(evidence, null).get(0));
-		for (TablePotential subPotential : subPotentials) {
-            TablePotential accruedPotential = getAccruedPotential (subPotential);
-			potentials.add(accruedPotential.tableProject(evidence, null).get(0));
+        ArrayList<TablePotential> potentials = new ArrayList<TablePotential> ();
+		for (TablePotential subPotential : buildSubpotentialList()) {
+			potentials.add(subPotential.tableProject(evidence, null).get(0));
 		}
 		return potentials;
 	}
@@ -111,10 +108,7 @@ public abstract class MinMaxPotential extends ICIPotential {
 		ArrayList<Variable> variablesToEliminate = new ArrayList<Variable>(1);
 		variablesToEliminate.add(pseudoVariable);
 		
-		ArrayList<TablePotential> potentials = getAccruedPotentials();
-		potentials.add(getDeltaPotential());
-
-        return DiscretePotentialOperations.multiplyAndMarginalize (potentials, variables,
+        return DiscretePotentialOperations.multiplyAndMarginalize (buildSubpotentialList(), variables,
                                                                    variablesToEliminate);
 	}
 
@@ -122,4 +116,44 @@ public abstract class MinMaxPotential extends ICIPotential {
 		return pseudoVariable;
 	}
 	
+    /**
+     * There will be a potential for each link, plus the leak potential 
+     * @return <code>ArrayList</code> of <code>TablePotential</code>. 
+     * @throws NotEnoughMemoryException 
+     * */
+    protected ArrayList<TablePotential> buildSubpotentialList() throws NotEnoughMemoryException {
+        ArrayList<TablePotential> subpotentials = new ArrayList<TablePotential> ();
+
+        //Noisy parents
+        for(int i=1; i<variables.size(); ++i)
+        {
+            ArrayList<Variable> linkVariables = new ArrayList<Variable> ();
+            linkVariables.add(variables.get (0)); // conditioned variable
+            linkVariables.add(variables.get (i)); // parent i
+            
+            subpotentials.add (new TablePotential(linkVariables, PotentialRole.CONDITIONAL_PROBABILITY, getNoisyParameters(variables.get (i))));
+        }
+
+        // Leak parent
+        if(getLeakyParameters() != null)
+        {
+            ArrayList<Variable> leakVariables = new ArrayList<Variable> ();
+            leakVariables.add(variables.get(0)); // conditioned variable
+            subpotentials.add (new TablePotential(leakVariables, PotentialRole.CONDITIONAL_PROBABILITY, getLeakyParameters()));
+        }
+        
+        ArrayList<TablePotential> accruedPotentials = getAccruedPotentials(subpotentials);
+        accruedPotentials.add(getDeltaPotential());
+            
+         return accruedPotentials;
+    }	
+	
+	
+    @Override
+    protected TablePotential getFFunctionPotential ()
+        throws NotEnoughMemoryException
+    {
+        // We won't be using it
+        return null;
+    }	
 }

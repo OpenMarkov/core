@@ -16,21 +16,13 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.canonical.ICIModelType;
-import org.openmarkov.core.model.network.potential.canonical.MinPotential;
 
 public class MinPotentialTest {
 
 	// Attributes
-	private PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-	private ICIModelType modelType = ICIModelType.GENERAL_MIN;;
-	
-	private TablePotential subPotentialLeakyC;
 	private MinPotential minPotential;
+    private final double admissibleError = 0.000000001;
 
 	// Initialization
 	@Before
@@ -47,37 +39,21 @@ public class MinPotentialTest {
 		variablesABC.add(variableA);
 		variablesABC.add(variableB);
 
-		double[] valuesCA = {0.0, 0.0, 1.0, 0.0, 0.2, 0.8, 0.7, 0.3, 0.0};
-		ArrayList<Variable> variablesCA = new ArrayList<Variable>();
-		variablesCA.add(variableC);
-		variablesCA.add(variableA);
-		TablePotential subPotentialCA= new TablePotential(variablesCA, role, valuesCA);
-		
-		double [] valuesCB ={0.0, 0.0, 1.0, 0.6, 0.3, 0.1};
-		ArrayList<Variable> variablesCB = new ArrayList<Variable>();
-		variablesCB.add(variableC);
-		variablesCB.add(variableB);
-		TablePotential subPotentialCB = new TablePotential(variablesCB, role, valuesCB);
-		
-		double [] valuesLeakyC ={0.01, 0.1, 0.89};
-		ArrayList<Variable> variablesC = new ArrayList<Variable>();
-		variablesC.add(variableC);
-		subPotentialLeakyC = new TablePotential(variablesC, role, valuesLeakyC);
-
-		minPotential = new MinPotential(modelType, variablesABC, role);
-		minPotential.addSubPotential(subPotentialCA);
-		minPotential.addSubPotential(subPotentialCB);
-		minPotential.addSubPotential(subPotentialLeakyC);
+		minPotential = new MinPotential(variablesABC);
+		minPotential.setNoisyParameters(variableA, new double[]{0.0, 0.0, 1.0, 0.0, 0.2, 0.8, 0.7, 0.3, 0.0});
+		minPotential.setNoisyParameters(variableB, new double[]{0.0, 0.0, 1.0, 0.6, 0.3, 0.1});
+		minPotential.setLeakyParameters (new double[]{0.01, 0.1, 0.89});
 	}
 
 	@Test
 	public void testGetLeakPotential() throws NotEnoughMemoryException {
-		assertEquals(subPotentialLeakyC, minPotential.getLeakPotential());
+        assertEquals(0.01, minPotential.getLeakyParameters()[0], admissibleError);
+        assertEquals(0.1, minPotential.getLeakyParameters()[1], admissibleError);
+        assertEquals(0.89, minPotential.getLeakyParameters()[2], admissibleError);		
 	}
 
 	@Test
 	public void testGetCPT() throws NotEnoughMemoryException {
-		double admissibleError = 0.000000001;
 		double[] cPTValues = minPotential.getCPT().values;
 		assertEquals(0.01, cPTValues[0], admissibleError);
 		assertEquals(0.1, cPTValues[1], admissibleError);

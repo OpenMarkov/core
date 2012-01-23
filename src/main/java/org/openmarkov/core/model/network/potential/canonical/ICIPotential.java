@@ -48,19 +48,19 @@ public abstract class ICIPotential extends Potential {
 		
 		try {
 			for (int i = 1; i < variables.size(); ++i) {
-				double[] probabilities = new double[variables.get(0)
-						.getNumStates() * variables.get(i).getNumStates()];
+                ArrayList<Variable> linkVariables = new ArrayList<Variable>();
+                linkVariables.add(variables.get(0));
+                linkVariables.add(variables.get(i));
+                TablePotential tablePotential = new TablePotential(linkVariables, role);
+
+                double[] probabilities = tablePotential.getValues ();
 				for (int j = 0; j < variables.get(i).getNumStates(); ++j) {
 					for (int k = 0; k < variables.get(0).getNumStates(); ++k) {
 						probabilities[j * variables.get(0).getNumStates() + k] = (k == j) ? 1.0
 								: 0.0;
 					}
 				}
-
-				ArrayList<Variable> linkVariables = new ArrayList<Variable>();
-				linkVariables.add(variables.get(0));
-				linkVariables.add(variables.get(i));
-				addSubPotential(new TablePotential(linkVariables, role));
+				addSubPotential(tablePotential);
 			}
 
 			addSubPotential(getDefaultLeakyPotential());
@@ -71,20 +71,22 @@ public abstract class ICIPotential extends Potential {
 		
 	}
 
-	public TablePotential getDefaultLeakyPotential() throws NotEnoughMemoryException
-	{
-		ArrayList<Variable> leakyVariables = new ArrayList<Variable>();
-		leakyVariables.add(variables.get(0));
-		TablePotential tablePotential = new TablePotential(leakyVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-		double[] leakyParameters = new double[variables.get(0).getNumStates()];
-		leakyParameters[0] = 1.0;
-		for(int i=1; i<leakyParameters.length; ++i)
-		{
-			leakyParameters[0] = 0.0;
-		}
-		tablePotential.values = leakyParameters;
-		return tablePotential;
-	}
+	public abstract TablePotential getDefaultLeakyPotential() throws NotEnoughMemoryException;
+	
+//	public TablePotential getDefaultLeakyPotential() throws NotEnoughMemoryException
+//	{
+//		ArrayList<Variable> leakyVariables = new ArrayList<Variable>();
+//		leakyVariables.add(variables.get(0));
+//		TablePotential tablePotential = new TablePotential(leakyVariables, PotentialRole.CONDITIONAL_PROBABILITY);
+//		double[] leakyParameters = new double[variables.get(0).getNumStates()];
+//		leakyParameters[0] = 1.0;
+//		for(int i=1; i<leakyParameters.length; ++i)
+//		{
+//			leakyParameters[0] = 0.0;
+//		}
+//		tablePotential.values = leakyParameters;
+//		return tablePotential;
+//	}
 	
 	// Methods
 	public abstract TablePotential getCPT() throws NotEnoughMemoryException;

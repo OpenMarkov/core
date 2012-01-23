@@ -37,17 +37,9 @@ public class MinPotentialTest {
 	public void setUp() throws Exception {
 		
 		// Define the variables
-		Variable variableA = new Variable("A",3);
-		State[] statesOfA = {new State("A0"), new State("A1"), new State("A2")};
-		variableA.setStates(statesOfA);
-		
-		Variable variableB = new Variable("B",2);
-		State[] statesOfB = {new State("B0"), new State("B1")};
-		variableB.setStates(statesOfB);
-
-		Variable variableC = new Variable("C",3);
-		State[] statesOfC = {new State("C0"), new State("C1"), new State("C2")};
-		variableC.setStates(statesOfC);
+        Variable variableA = new Variable("A", "A0", "A1", "A2");
+        Variable variableB = new Variable("B", "B0", "B1");
+        Variable variableC = new Variable("C", "C0", "C1", "C2");
 
 		// Conditional probability table for C: causal MIN
 		ArrayList<Variable> variablesABC = new ArrayList<Variable>();

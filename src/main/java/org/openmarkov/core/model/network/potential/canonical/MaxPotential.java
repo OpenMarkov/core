@@ -39,6 +39,23 @@ public class MaxPotential extends MinMaxPotential {
     {
         this (ICIModelType.GENERAL_MAX, variables, role);
     }
+	
+    public TablePotential getDefaultLeakyPotential ()
+        throws NotEnoughMemoryException
+    {
+        ArrayList<Variable> leakyVariables = new ArrayList<Variable> ();
+        leakyVariables.add (variables.get (0));
+        TablePotential tablePotential = new TablePotential (leakyVariables,
+                                                            PotentialRole.CONDITIONAL_PROBABILITY);
+        double[] leakyParameters = new double[variables.get (0).getNumStates ()];
+        leakyParameters[0] = 1.0;
+        for (int i = 1; i < leakyParameters.length; ++i)
+        {
+            leakyParameters[0] = 0.0;
+        }
+        tablePotential.values = leakyParameters;
+        return tablePotential;
+    }	
 
 	@Override
 	/** @returns A <code>TablePotential</code> with two variables: 

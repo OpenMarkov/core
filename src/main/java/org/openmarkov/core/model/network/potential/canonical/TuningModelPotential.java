@@ -56,6 +56,21 @@ public class TuningModelPotential extends ICIPotential
             });
         zVariables = new ArrayList<Variable> ();
     }
+    
+    public TablePotential getDefaultLeakyPotential ()
+            throws NotEnoughMemoryException
+        {
+            ArrayList<Variable> leakyVariables = new ArrayList<Variable> ();
+            leakyVariables.add (variables.get (0));
+            TablePotential tablePotential = new TablePotential (leakyVariables,
+                                                                PotentialRole.CONDITIONAL_PROBABILITY);
+            double[] leakyParameters = new double[variables.get (0).getNumStates ()];
+            leakyParameters[0] = 0.0;
+            leakyParameters[1] = 1.0;
+            leakyParameters[2] = 0.0;
+            tablePotential.values = leakyParameters;
+            return tablePotential;
+        }       
 
     /**
      * Adds a parent to the family with its corresponding parameters

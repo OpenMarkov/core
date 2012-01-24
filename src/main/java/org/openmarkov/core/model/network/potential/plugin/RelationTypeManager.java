@@ -62,19 +62,20 @@ public class RelationTypeManager
         Potential instance = null;
         try
         {
-            Constructor<? extends Potential> constructor = potentials.get (name).getConstructor (ArrayList.class, PotentialRole.class);
-            if(constructor != null)
+            Constructor<? extends Potential> constructor;
+            
+            try
             {
+                constructor = potentials.get (name).getConstructor (ArrayList.class, PotentialRole.class);
                 instance = (Potential) constructor.newInstance (variables, role);
-            }else{
+            }catch (NoSuchMethodException e) {
                 constructor = potentials.get (name).getConstructor (ArrayList.class);
-                if(constructor == null){
-                    throw new InvalidParameterException ("A Potential subclass must have a constructor "
-                                                                 + "either that receives a list of variables or"
-                                                                 + " a list of variables and a potential role.");
-                }
                 instance = constructor.newInstance (variables);
             }
+        }catch (NoSuchMethodException e) {
+            throw new InvalidParameterException ("A Potential subclass must have a constructor "
+                    + "either that receives a list of variables or"
+                    + " a list of variables and a potential role.");
         }
         catch (Exception e)
         {

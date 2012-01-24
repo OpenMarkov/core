@@ -120,5 +120,18 @@ public class MaxPotential extends MinMaxPotential {
 		}
 		return accruedPotential;
 	}
+
+    @Override
+    public double[] getDefaultLeakyParameters (int numStates)
+    {
+        double[] leakyParameters = new double[numStates];
+        
+        leakyParameters[0] = 1.0;
+        for(int i=1; i<numStates; ++i)
+        {
+            leakyParameters[i] = 0.0;
+        }
+        return leakyParameters;
+    }
 	
 }

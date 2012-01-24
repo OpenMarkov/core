@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
@@ -95,4 +94,19 @@ public class TuningModelPotential extends ICIPotential
         }
         return tablePotential;
     }
+    
+
+    @Override
+    public double[] getDefaultLeakyParameters (int numStates)
+    {
+        double[] leakyParameters = new double[numStates];
+        
+        for(int i=0; i<numStates; ++i)
+        {
+            leakyParameters[i] = 0.0;
+        }
+        leakyParameters[numStates/2] = 1.0;
+        
+        return leakyParameters;
+    }       
 }

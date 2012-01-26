@@ -124,6 +124,20 @@ public class InferenceManager
         }
         return instance;
     }
+    
+    /**
+     * Returns an instance of the default algorithm given the ProbNet
+     * @param probNet
+     * @return
+     * @throws SecurityException
+     * @throws NoSuchMethodException
+     */
+    public InferenceAlgorithm getDefaultInferenceAlgorithm (ProbNet probNet)
+        throws SecurityException,
+        NoSuchMethodException
+    {
+        return getInferenceAlgorithmByName ("VariableElimination", probNet);
+    }    
 
     /**
      * This method gets all the plugins with InferenceType annotations

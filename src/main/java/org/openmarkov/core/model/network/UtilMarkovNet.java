@@ -17,6 +17,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.type.MarkovNetworkType;
 
 
 /** Util class of Markov networks.
@@ -116,7 +117,7 @@ public class UtilMarkovNet {
 
 	/** @return An empty Markov Network. <code>ProbNet</code> */
 	public static ProbNet getMarkovNet() {
-		ProbNet probNet = new ProbNet();
+		ProbNet probNet = new ProbNet(MarkovNetworkType.getUniqueInstance ());
 		try {
             probNet.addConstraint (new OnlyUndirectedLinks (), true);
 		} catch (ConstraintViolationException e) {

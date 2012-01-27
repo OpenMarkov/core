@@ -921,5 +921,4 @@ public class TablePotential extends Potential implements Comparable {
     	}
     	return this;
 	}
-	
 }

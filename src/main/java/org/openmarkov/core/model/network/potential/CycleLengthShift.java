@@ -17,8 +17,11 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 
 /** Potential identical to another but moved to another temporal slice.
  * @author marias
@@ -37,6 +40,17 @@ public class CycleLengthShift extends Potential {
         this(potential.getVariables ());
     }
 	
+    /**
+     * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
+     * @param variables
+     * @param role
+     */
+    public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
+    {
+        return probNode.getVariable ().isTemporal ()
+               && probNode.getVariable ().getTimeSlice () != 0
+               && !(probNode.getVariable ().getVariableType () == VariableType.NUMERIC && probNode.getNodeType () == NodeType.CHANCE);
+    }       
 
 	// Methods
 	@Override

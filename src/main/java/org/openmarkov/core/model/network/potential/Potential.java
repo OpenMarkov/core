@@ -24,6 +24,7 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 
@@ -65,7 +66,7 @@ public abstract class Potential {
     // Constructor
     /** @param variables <code>ArrayList</code> of <code>extends 
      * Variable</code>.
-     * @param role. <code>PotentialRole</code> */
+     * @param role. <code>PotentialRole</code>*/
     public Potential(ArrayList<Variable> variables, PotentialRole role) {
         if (variables != null) {
             numVariables = variables.size();        	
@@ -79,7 +80,18 @@ public abstract class Potential {
     	this.role = role;
     }
 
-	// Methods
+    /**
+     * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
+     * @param variables
+     * @param role
+     */
+	public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
+    {
+        // Default implementation: always return true
+        return true;
+    }
+	
+    // Methods
     /** Modifies the frozen variable role. This method exists to avoid some
      * problems with legacy code in DiscretePotentialOperations class and it
      * does not be used except in very special cases.

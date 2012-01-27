@@ -17,7 +17,9 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.RelationType;
@@ -45,6 +47,16 @@ public class UniformPotential extends Potential {
     public UniformPotential(Potential potential) {
         this(potential.getVariables (), potential.getPotentialRole ());
     }	
+    
+    /**
+     * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
+     * @param variables
+     * @param role
+     */
+    public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
+    {
+        return !(probNode.getVariable ().getVariableType () == VariableType.NUMERIC && probNode.getNodeType () == NodeType.CHANCE);
+    }       
 
 	// Methods
 	@Override

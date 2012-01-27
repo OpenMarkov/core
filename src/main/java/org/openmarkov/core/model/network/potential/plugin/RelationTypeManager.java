@@ -10,12 +10,14 @@ package org.openmarkov.core.model.network.potential.plugin;
 
 import java.lang.annotation.AnnotationFormatError;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -93,7 +95,34 @@ public class RelationTypeManager
     public final  Set<String> getAllPotentialsNames ()
     {
         return potentials.keySet ();
-    }    
+    }
+    
+    /**
+     * Returns all potentials' names applicable to the given variable list and potential role. 
+     * @return a list of potentials' names.
+     */
+    public final  List<String> getFilteredPotentials (ProbNode probNode)
+    {
+        List<String> filteredPotentials = new ArrayList<String> ();
+        
+        for(String potentialName : potentials.keySet ())
+        {
+            Method validateMethod = null;
+            try
+            {
+                validateMethod = potentials.get (potentialName).getMethod ("validate", ProbNode.class, ArrayList.class, PotentialRole.class);
+                if((Boolean)validateMethod.invoke (null, probNode, probNode.getPotentials ().get (0).getVariables (), probNode.getPotentials ().get (0).getPotentialRole ()))
+                {
+                    filteredPotentials.add (potentialName);
+                }                
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return filteredPotentials;
+    }        
     
   
     /**

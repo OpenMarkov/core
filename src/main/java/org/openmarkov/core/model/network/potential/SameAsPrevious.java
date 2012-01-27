@@ -18,9 +18,11 @@ import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
 /** @author marias
@@ -71,6 +73,19 @@ public class SameAsPrevious extends Potential {
     public SameAsPrevious(ProbNet probNet, Variable variable, int timeDifference) throws NodeNotFoundException {
         this(getPotential(probNet, variable), probNet, timeDifference);
     }
+    
+    
+    /**
+     * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
+     * @param variables
+     * @param role
+     */
+    public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
+    {
+        return probNode.getVariable ().isTemporal ()
+               && probNode.getVariable ().getTimeSlice () != 0
+               && !(probNode.getVariable ().getVariableType () == VariableType.NUMERIC && probNode.getNodeType () == NodeType.CHANCE);
+    }        
 
 	// Methods
 	@Override

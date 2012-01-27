@@ -21,7 +21,6 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
@@ -46,7 +45,7 @@ public class SumPotential extends Potential {
     public SumPotential(Potential potential) {
         super(potential.getVariables (), potential.getPotentialRole ());
         type = PotentialType.SUM;
-    }	
+    }
 
 	// Methods
 	@Override

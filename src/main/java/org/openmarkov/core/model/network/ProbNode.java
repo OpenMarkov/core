@@ -18,7 +18,6 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.potential.operation.Util;
 
 

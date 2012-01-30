@@ -12,6 +12,7 @@ package org.openmarkov.core.model.network.potential;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -27,6 +28,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 /** @author marias
   * @author fjdiez 
@@ -90,6 +92,34 @@ public abstract class Potential {
         // Default implementation: always return true
         return true;
     }
+	
+	/**
+	 * Returns the CPT (equivalent TablePotential) of the potential
+	 * @return
+	 * @throws NotEnoughMemoryException
+	 * @throws WrongCriterionException 
+	 * @throws NonProjectablePotentialException 
+	 */
+    public TablePotential getCPT ()
+        throws NotEnoughMemoryException,
+        NonProjectablePotentialException,
+        WrongCriterionException
+    {
+	    ArrayList<TablePotential> potentials = tableProject (new EvidenceCase (), null);
+	    HashSet<Variable> variablesToEliminate = new HashSet<Variable>();
+	    
+	    //Fill it with variables appearing in all potentials except this
+	    for(TablePotential tablePotential: potentials)
+	    {
+	        variablesToEliminate.addAll (tablePotential.getVariables ());
+	    }
+	    variablesToEliminate.removeAll (variables);
+	    
+	    return DiscretePotentialOperations.multiplyAndMarginalize (potentials, variables,
+	                                                               new ArrayList<Variable>(variablesToEliminate));
+	}
+	
+	
 	
     // Methods
     /** Modifies the frozen variable role. This method exists to avoid some

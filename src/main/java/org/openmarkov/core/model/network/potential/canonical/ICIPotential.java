@@ -126,6 +126,7 @@ public abstract class ICIPotential extends Potential {
     /**
      * @return The conditional probability table given by this potential
      */
+	@Override
     public TablePotential getCPT () throws NotEnoughMemoryException
     {
         ArrayList<Variable> variablesToEliminate = new ArrayList<Variable> (zVariables.values ());

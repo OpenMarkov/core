@@ -27,7 +27,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
 /** @author marias
  * @version 1.0 */
-@RelationType(name="Same as previous")
+@RelationType(name="Same as previous", family="Temporal")
 public class SameAsPrevious extends Potential {
 
 	// Attributes

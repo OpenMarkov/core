@@ -9,14 +9,18 @@ package org.openmarkov.core.model.network.potential.canonical;
 import java.util.ArrayList;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
 /**
  * Implements the tuning canonical model, first designed for its use in the
  * Optifox project It is limited to variables with only 3 possible values
  * @author Iñigo
  */
+@RelationType(name="Tuning", family="ICI")
 public class TuningModelPotential extends ICIPotential
 {
     /**
@@ -35,6 +39,20 @@ public class TuningModelPotential extends ICIPotential
         super (ICIModelType.TUNING, variables);
     }
     
+    /**
+     * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
+     * @param variables
+     * @param role
+     */
+    public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
+    {
+        boolean valid = ICIPotential.validate (probNode, variables, role);
+        for(Variable variable : variables)
+        {
+            valid &= variable.getNumStates () == 3; 
+        }
+        return valid;
+    }         
 
     /**
      * Adds a parent to the family with its corresponding parameters

@@ -30,6 +30,7 @@ public class RelationTypeManager
 
     private PluginLoaderIF pluginsLoader;
     private HashMap<String, Class<? extends Potential>> potentials;
+    private HashMap<String, String> potentialFamilies;
     
     /**
      * Constructor for PotentialClassManager.
@@ -40,6 +41,7 @@ public class RelationTypeManager
         super ();
         this.pluginsLoader = new PluginLoader ();
         potentials = new HashMap<String, Class<? extends Potential>> ();
+        potentialFamilies = new HashMap<String, String> ();
         
         for (Class<?> plugin : findAllPotentials ())
         {
@@ -47,6 +49,7 @@ public class RelationTypeManager
             if (Potential.class.isAssignableFrom (plugin))
             {
                 potentials.put (lAnnotation.name (), (Class<? extends Potential>)plugin);
+                potentialFamilies.put(lAnnotation.name (), lAnnotation.family ());
             }
             else
             {
@@ -122,8 +125,17 @@ public class RelationTypeManager
             }
         }
         return filteredPotentials;
-    }        
+    }      
     
+    /**
+     * Returns the family of the given potential type
+     * @param name
+     * @return the family of the given potential type
+     */
+    public String getPotentialsFamily(String name)
+    {
+        return potentialFamilies.get (name);
+    }
   
     /**
      * Finds all learning algorithms. 

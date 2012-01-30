@@ -44,7 +44,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationType;
  * @author fjdiez
  * @author marias
  * @version 1.0 */
-@RelationType(name="TreeADD")
+@RelationType(name="TreeADD", family="Tree")
 public class TreeADDPotential extends Potential implements PotentialsContainer {
 	
 	// Attributes

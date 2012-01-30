@@ -27,7 +27,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationType;
 /** Potential with discrete and/or continuous variables.
  * @author marias
  * @version 1.0 */
-@RelationType(name="Uniform")
+@RelationType(name="Uniform", family="")
 public class UniformPotential extends Potential {
 
 	// Attributes

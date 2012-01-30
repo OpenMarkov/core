@@ -25,7 +25,6 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
 /** Potential associated to supervalue node to indicate that the utility is a
@@ -33,7 +32,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationType;
  * @author marias
  * @author mkpalacio
  * @version 1.0 */
-@RelationType(name="Product")
+@RelationType(name="Product", family="Utility")
 public class ProductPotential extends Potential {
 
 	// Constructor

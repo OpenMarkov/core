@@ -28,7 +28,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationType;
  * sum of the utilities of its parents.
  * @author mkpalacio
  * @version 1.0 */
-@RelationType(name="Sum")
+@RelationType(name="Sum", family="Utility")
 public class SumPotential extends Potential {
 
 	// Constructor

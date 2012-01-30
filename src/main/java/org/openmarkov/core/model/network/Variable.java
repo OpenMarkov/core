@@ -591,7 +591,15 @@ public class Variable implements Cloneable {
 		return (this.name.equals(((Variable) obj).name));
 	}
 	
-	private int getTimeSlice(String variableName){
+    @Override
+    public int hashCode ()
+    {
+        int hashCode = 17;
+        hashCode = 37 * hashCode + name.hashCode ();
+        return hashCode;
+    }
+
+    private int getTimeSlice(String variableName){
 		int timeSlice = Integer.MIN_VALUE;
 		if (variableName.contains(" [")) {
 			// Set base name

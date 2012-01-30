@@ -276,5 +276,46 @@ public abstract class ICIPotential extends Potential {
 	{
 	    return zVariables.values ();
 	}
+	
+    @Override
+    public boolean equals (Object arg0)
+    {
+        boolean isEqual = super.equals (arg0);
+        ICIPotential otherPotential = (ICIPotential)arg0;
+        if(isEqual)
+        {
+            for(int j=1; j < variables.size (); ++j)
+            {
+                double[] values = getNoisyParameters (variables.get(j));
+                double[] otherValues = otherPotential.getNoisyParameters (variables.get(j));
+                if (values.length == otherValues.length)
+                {
+                    for (int i = 0; i < values.length; i++)
+                    {
+                        isEqual &= values[i] == otherValues[i];
+                    }
+                }
+                else
+                {
+                    isEqual = false;
+                }
+            }
+            
+            double[] values = getLeakyParameters ();
+            double[] otherValues = otherPotential.getLeakyParameters();
+            if (values.length == otherValues.length)
+            {
+                for (int i = 0; i < values.length; i++)
+                {
+                    isEqual &= values[i] == otherValues[i];
+                }
+            }
+            else
+            {
+                isEqual = false;
+            }
+        }
+        return isEqual;
+    }	
 
 }

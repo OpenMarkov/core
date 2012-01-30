@@ -338,5 +338,23 @@ public abstract class Potential {
 	throws NotEnoughMemoryException {
 		return this; // By default
 	}
+
+
+    @Override
+    public boolean equals (Object arg0)
+    {
+        if(arg0.getClass ().equals (this.getClass ()))
+        {
+            Potential potential = (Potential) arg0;
+            return variables.equals (potential.getVariables ())
+                   && type == potential.getPotentialType ()
+                   && role == potential.getPotentialRole ();
+        }else
+        {
+            return false;
+        }
+    }
+	
+
 	
 }

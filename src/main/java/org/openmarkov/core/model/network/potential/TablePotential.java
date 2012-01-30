@@ -921,4 +921,23 @@ public class TablePotential extends Potential implements Comparable {
     	}
     	return this;
 	}
+	
+    @Override
+    public boolean equals (Object arg0)
+    {
+        boolean isEqual = super.equals (arg0);
+        double[] otherValues = ((TablePotential) arg0).getValues ();
+        if (values.length == otherValues.length)
+        {
+            for (int i = 0; i < values.length; i++)
+            {
+                isEqual &= values[i] == otherValues[i];
+            }
+        }
+        else
+        {
+            isEqual = false;
+        }
+        return isEqual;
+    }
 }

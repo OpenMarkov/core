@@ -93,9 +93,8 @@ public abstract class Potential {
         return true;
     }
 	
-	/**
-	 * Returns the CPT (equivalent TablePotential) of the potential
-	 * @return
+    /**
+     * @return The conditional probability table given by this potential
 	 * @throws NotEnoughMemoryException
 	 * @throws WrongCriterionException 
 	 * @throws NonProjectablePotentialException 

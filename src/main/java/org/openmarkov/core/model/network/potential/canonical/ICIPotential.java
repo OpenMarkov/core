@@ -123,19 +123,6 @@ public abstract class ICIPotential extends Potential {
 //	}
 	
 	// Methods
-    /**
-     * @return The conditional probability table given by this potential
-     */
-	@Override
-    public TablePotential getCPT () throws NotEnoughMemoryException
-    {
-        ArrayList<Variable> variablesToEliminate = new ArrayList<Variable> (zVariables.values ());
-        variablesToEliminate.add (leakyVariable);
-        // Eliminate zVariables through marginalization
-        return DiscretePotentialOperations.multiplyAndMarginalize (buildSubpotentialList(), variables,
-                                                                   new ArrayList<Variable>(variablesToEliminate));
-    }
-    
 	protected abstract TablePotential getFFunctionPotential ()  throws NotEnoughMemoryException;
 
     @Override

@@ -14,7 +14,9 @@ import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Variable;
 
 public class TuningModelPotentialTest
@@ -49,7 +51,7 @@ public class TuningModelPotentialTest
     }    
     
     @Test
-    public void testGetCPT() throws NotEnoughMemoryException {
+    public void testGetCPT() throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
         double[] cPTValues = tuningModelPotential.getCPT().values;
         assertEquals(1.0, cPTValues[0], admissibleError);
         assertEquals(0.0, cPTValues[1], admissibleError);

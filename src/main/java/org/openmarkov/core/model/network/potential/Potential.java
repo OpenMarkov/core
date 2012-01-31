@@ -94,17 +94,17 @@ public abstract class Potential {
     }
 	
     /**
-     * @return The conditional probability table given by this potential
+     * @return The conditional probability table of this potential given the evidence
 	 * @throws NotEnoughMemoryException
 	 * @throws WrongCriterionException 
 	 * @throws NonProjectablePotentialException 
 	 */
-    public TablePotential getCPT ()
+    public TablePotential getCPT (EvidenceCase evidenceCase)
         throws NotEnoughMemoryException,
         NonProjectablePotentialException,
         WrongCriterionException
     {
-	    ArrayList<TablePotential> potentials = tableProject (new EvidenceCase (), null);
+	    ArrayList<TablePotential> potentials = tableProject (evidenceCase, null);
 	    HashSet<Variable> variablesToEliminate = new HashSet<Variable>();
 	    
 	    //Fill it with variables appearing in all potentials except this
@@ -117,6 +117,21 @@ public abstract class Potential {
 	    return DiscretePotentialOperations.multiplyAndMarginalize (potentials, variables,
 	                                                               new ArrayList<Variable>(variablesToEliminate));
 	}
+    
+    /**
+     * The conditional probability table given by this potential
+     * @return
+     * @throws NotEnoughMemoryException
+     * @throws NonProjectablePotentialException
+     * @throws WrongCriterionException
+     */
+    public TablePotential getCPT ()
+        throws NotEnoughMemoryException,
+        NonProjectablePotentialException,
+        WrongCriterionException
+    {
+        return getCPT (new EvidenceCase ());
+    }
 	
 	
 	

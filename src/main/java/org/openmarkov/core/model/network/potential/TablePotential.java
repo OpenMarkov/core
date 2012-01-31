@@ -40,7 +40,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationType;
   * @version 1.0
   * @since OpenMarkov 1.0 */
 @SuppressWarnings({ "unchecked" })
-@RelationType(name="Table potential", family="Table")
+@RelationType(name="Table", family="")
 public class TablePotential extends Potential implements Comparable {
 
     // Attributes

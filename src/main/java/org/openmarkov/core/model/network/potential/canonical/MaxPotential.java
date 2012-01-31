@@ -18,7 +18,7 @@ import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
-@RelationType(name="Max", family="ICI")
+@RelationType(name="GeneralizedMax", family="ICI")
 public class MaxPotential extends MinMaxPotential {
 
 	/** @param model. <code>ICIModel</code>.

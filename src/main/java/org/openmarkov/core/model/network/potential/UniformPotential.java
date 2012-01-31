@@ -64,7 +64,7 @@ public class UniformPotential extends Potential {
 	 * which all the utilities are zero; therefore, it suffices to return
 	 * an empty list. If this is a conditional probability P(Y|X1,...,Xn), it 
 	 * returns a <code>TablePotential<code> that is uniform potential P(y). 
-	 * If this is a join probability, P(X1,...,Xn), it returns a 
+	 * If this is a joint probability, P(X1,...,Xn), it returns a 
 	 * <code>TablePotential<code> that is equal to this potential.
 	 * In all cases, the argument <code>evidenceCase</code> is irrelevant.
 	 * @param evidenceCase. <code>evidenceCase</code>
@@ -73,11 +73,12 @@ public class UniformPotential extends Potential {
 	public ArrayList<TablePotential> tableProject(EvidenceCase evidenceCase, 
 			InferenceOptions inferenceOptions)
 			throws NotEnoughMemoryException, NonProjectablePotentialException {
-		TablePotential projectedPotential;
+        ArrayList<TablePotential> projectedPotentials = new ArrayList<TablePotential> ();
 		switch(role) {
 		case CONDITIONAL_PROBABILITY: 
 		case JOINT_PROBABILITY: 
 		case POLICY:
+	        TablePotential projectedPotential = null;
 			Variable conditionedVariable = variables.get(0);
 			if (evidenceCase.contains(conditionedVariable)) {
 				if (conditionedVariable.getVariableType() == 
@@ -109,11 +110,10 @@ public class UniformPotential extends Potential {
 							PotentialRole.CONDITIONAL_PROBABILITY);
 				}
 			}
+	        projectedPotentials.add (projectedPotential);
 		//TODO write the code for other types of potentials but remember that
 		// in the case of utility potentials it suffices to return the empty list. 
 		}  // end of switch/case statement
-		ArrayList<TablePotential> projectedPotentials = 
-			new ArrayList<TablePotential>();
 		return projectedPotentials;
 	}
 

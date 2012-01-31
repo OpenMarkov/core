@@ -65,17 +65,24 @@ public class TuningModelPotential extends ICIPotential
      */
     public void setNoisyParameters (Variable parent, double[] parameters)
     {
-        // Construct table given the parameters
-        double[] values = new double[9];
-        values[0] = parameters[3]; // c--
-        values[1] = 1 - parameters[2] - parameters[3]; // 1 - c-+ - c--
-        values[2] = parameters[2]; // c-+
-        values[3] = 0.0;
-        values[4] = 1.0;
-        values[5] = 0.0;
-        values[6] = parameters[1]; // c+-
-        values[7] = 1 - parameters[2] - parameters[3]; // 1 - c++ - c+-
-        values[8] = parameters[0]; // c++
+        double[] values = null;
+        if(parameters.length == 4)
+        {
+            // Construct table given the parameters
+            values = new double[9];
+            values[0] = parameters[3]; // c--
+            values[1] = 1 - parameters[2] - parameters[3]; // 1 - c-+ - c--
+            values[2] = parameters[2]; // c-+
+            values[3] = 0.0;
+            values[4] = 1.0;
+            values[5] = 0.0;
+            values[6] = parameters[1]; // c+-
+            values[7] = 1 - parameters[2] - parameters[3]; // 1 - c++ - c+-
+            values[8] = parameters[0]; // c++
+        }else if(parameters.length == 9)
+        {
+            values = parameters;
+        }
 
         super.setNoisyParameters (parent, values);
     }

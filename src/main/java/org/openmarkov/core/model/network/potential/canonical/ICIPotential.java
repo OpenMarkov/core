@@ -12,6 +12,7 @@ package org.openmarkov.core.model.network.potential.canonical;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -107,28 +108,20 @@ public abstract class ICIPotential extends Potential {
     
 	public abstract double[] getDefaultLeakyParameters(int numStates);
 	
-	
-//	{
-//		ArrayList<Variable> leakyVariables = new ArrayList<Variable>();
-//		leakyVariables.add(variables.get(0));
-//		TablePotential tablePotential = new TablePotential(leakyVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-//		double[] leakyParameters = new double[variables.get(0).getNumStates()];
-//		leakyParameters[0] = 1.0;
-//		for(int i=1; i<leakyParameters.length; ++i)
-//		{
-//			leakyParameters[0] = 0.0;
-//		}
-//		tablePotential.values = leakyParameters;
-//		return tablePotential;
-//	}
-	
 	// Methods
+	/**
+	 * Returns the f function potential
+	 * @return TablePotential containing the f function
+	 * @throws NotEnoughMemoryException
+	 */
 	protected abstract TablePotential getFFunctionPotential ()  throws NotEnoughMemoryException;
 
-    @Override
     /** @param evidenceCase. <code>EvidenceCase</code>
      * @return <code>ArrayList</code> of <code>Potential</code>*/
-    public ArrayList<TablePotential> tableProject (EvidenceCase evidenceCase,
+    // TODO This is the actual valid tableProject that should be used once the
+    // bug in projectEvidence (assuming tableProject always returns a
+    // one-element list of potentials) is solved
+    public ArrayList<TablePotential> internalTableProject (EvidenceCase evidenceCase,
                                                    InferenceOptions inferenceOptions)
         throws NonProjectablePotentialException,
         NotEnoughMemoryException,
@@ -141,7 +134,32 @@ public abstract class ICIPotential extends Potential {
         }
         return projectedPotentials;
     }
-	
+    
+    @Override
+    /** @param evidenceCase. <code>EvidenceCase</code>
+     * @return <code>ArrayList</code> of <code>Potential</code>*/
+    public ArrayList<TablePotential> tableProject (EvidenceCase evidenceCase,
+                                                   InferenceOptions inferenceOptions)
+        throws NonProjectablePotentialException,
+        NotEnoughMemoryException,
+        WrongCriterionException
+    {
+        ArrayList<TablePotential> potentials = internalTableProject (evidenceCase, inferenceOptions);
+        HashSet<Variable> variablesToEliminate = new HashSet<Variable> ();
+        // Fill it with variables appearing in all potentials except this
+        for (TablePotential tablePotential : potentials)
+        {
+            variablesToEliminate.addAll (tablePotential.getVariables ());
+        }
+        variablesToEliminate.removeAll (variables);
+        ArrayList<TablePotential> singleElementPotentialList = new ArrayList<TablePotential> ();
+        singleElementPotentialList.add (DiscretePotentialOperations.multiplyAndMarginalize (potentials,
+                                                                                            variables,
+                                                                                            new ArrayList<Variable> (
+                                                                                                                     variablesToEliminate)));
+        return singleElementPotentialList;
+    }
+
     public double[] getNoisyParameters(Variable variable)
     {
         return noisyParameters.get(variable);

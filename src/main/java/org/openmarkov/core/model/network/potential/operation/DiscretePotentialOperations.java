@@ -338,18 +338,18 @@ public final class DiscretePotentialOperations {
 		int[] currentPositions = new int[numProperPotentials];
 		int[][] accumulatedOffsets = new int[numProperPotentials][];
 		// ... and initializes them
-		TablePotential unionPotential = new TablePotential(unionVariables,null);
+		//TablePotential unionPotential = new TablePotential(unionVariables,null);
 		for (int i = 0; i < numProperPotentials; i++) {
 			TablePotential potential = (TablePotential)properPotentials.get(i);
 			tables[i] = potential.values;
 			initialPositions[i] = potential.getInitialPosition();
 			currentPositions[i] = initialPositions[i];
-			accumulatedOffsets[i] = unionPotential
-				.getAccumulatedOffsets(potential.getOriginalVariables());
+			accumulatedOffsets[i] = TablePotential
+				.getAccumulatedOffsets(unionVariables, potential.getOriginalVariables());
 		}
 		
 		// The result size is the product of the dimensions of the
-		// variables to keeep
+		// variables to keep
 		int resultSize = resultingPotential.values.length;
 		// The elimination size is the product of the dimensions of the
 		// variables to eliminate
@@ -382,8 +382,7 @@ public final class DiscretePotentialOperations {
 					innerIteration++) {
 		
 				// find the next configuration and the index of the
-				// increased
-				// variable
+				// increased variable
 				for (int j = 0; j < unionCoordinate.length; j++) {
 					unionCoordinate[j]++;
 					if (unionCoordinate[j] < unionDimensions[j]) {
@@ -392,7 +391,14 @@ public final class DiscretePotentialOperations {
 					}
 					unionCoordinate[j] = 0;
 				}
-		
+				
+//				if(unionCoordinate[increasedVariable] + 1 >= unionDimensions[increasedVariable])
+//				{
+//					unionCoordinate[increasedVariable] = 0;
+//					increasedVariable++;
+//				}
+//				unionCoordinate[increasedVariable]++;
+				
 				// update the positions of the potentials we are multiplying
 				for (int i = 0; i < numProperPotentials; i++) {
 					currentPositions[i] +=
@@ -402,14 +408,13 @@ public final class DiscretePotentialOperations {
 				// multiply the table values of the potentials
 				multiplicationResult = constantFactor;
 				for (int i = 0; i < numProperPotentials; i++) {
-					multiplicationResult = multiplicationResult
-							* tables[i][currentPositions[i]];
+					multiplicationResult *= tables[i][currentPositions[i]];
 				}
 		
 				// update the accumulator (for this inner iteration)
 				accumulator += multiplicationResult;
 				// accumulator =
-				// operator.combine(accumlator,multiplicationResult);
+				// operator.combine(accumulator,multiplicationResult);
 		
 			} // end of inner iteration
 		
@@ -417,8 +422,7 @@ public final class DiscretePotentialOperations {
 			// marginalization but we must find the next configuration
 			if (outerIteration < resultSize - 1) {
 				// find the next configuration and the index of the
-				// increased
-				// variable
+				// increased variable
 				for (int j = 0; j < unionCoordinate.length; j++) {
 					unionCoordinate[j]++;
 					if (unionCoordinate[j] < unionDimensions[j]) {
@@ -427,6 +431,12 @@ public final class DiscretePotentialOperations {
 					}
 					unionCoordinate[j] = 0;
 				}
+//				if(unionCoordinate[increasedVariable] + 1 >= unionDimensions[increasedVariable])
+//				{
+//					unionCoordinate[increasedVariable] = 0;
+//					increasedVariable++;
+//				}
+//				unionCoordinate[increasedVariable]++;
 		
 				// update the positions of the potentials we are multiplying
 				for (int i = 0; i < numProperPotentials; i++) {

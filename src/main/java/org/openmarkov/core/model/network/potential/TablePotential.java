@@ -497,7 +497,119 @@ public class TablePotential extends Potential implements Comparable {
         return position;
     }
     
-    
+	/** The accumulated offset represents the increment (positive or negative)
+	 * in the corresponding position of the table when a variable is incremented
+	 * given an ordering of the variables of other potential.<p>
+	 * <big><b>
+	 * Accumulated Offsets example<p>
+	 * </b></big>
+	 * We have two potentials:
+	 * Potential <b>Y</b> (b, d, a, c)  and  Potential <b>X</b> (a, b, c). 
+	 * All variables are binary for simplicity.<p>
+	 * <p>
+	 * <table border="2">
+	 * <caption ALIGN="top">
+	 * </caption>
+	 * <tr><td><b><center>Y</center></b></td> 
+	 * <td><b>pos<sub>y</sub>(Y)</b>
+	 * </td> <td><b><center>Y<sup>X</sup></center></b></td>  
+	 * <td><b>pos<sub>X</sub>(Y<sup>X</sup>)</b></td> 
+	 * <td><b>varToIncr(Y)</b></td> <td><b>accOffset</b></td></tr>
+	 * <tr></tr><td>[b<sub>0</sub>,d<sub>0</sub>,a<sub>0</sub>,c<sub>0</sub>]
+	 *     </td><td><center>0</center></td>
+	 * <td>[a<sub>0</sub>,b<sub>0</sub>,c<sub>0</sub>]
+	 *     </td><td><center>0</center></td>
+	 * <td><center>0(B)</center></td><td><center>+2</center></td>
+	 * <tr></tr><td>[b<sub>1</sub>,d<sub>0</sub>,a<sub>0</sub>,c<sub>0</sub>]
+	 *     </td><td><center>1</center></td>
+	 * <td>[a<sub>0</sub>,b<sub>1</sub>,c<sub>0</sub>]
+	 *     </td><td><center>2</center></td>
+	 * <td><center>1(D)</center></td><td><center>-2</center></td>
+	 * <tr></tr><td>[b<sub>0</sub>,d<sub>1</sub>,a<sub>0</sub>,c<sub>0</sub>]
+	 *     </td><td><center>2</center></td>
+	 * <td>[a<sub>0</sub>,b<sub>0</sub>,c<sub>0</sub>]
+	 *     </td><td><center>0</center></td>
+	 * <td><center>0(B)</center></td><td><center>+2</center></td>
+	 * <tr></tr><td>[b<sub>1</sub>,d<sub>1</sub>,a<sub>0</sub>,c<sub>0</sub>]
+	 *     </td><td><center>3</center></td>
+	 * <td>[a<sub>0</sub>,b<sub>1</sub>,c<sub>0</sub>]
+	 *     </td><td><center>2</center></td>
+	 * <td><center>2(A)</center></td><td><center>-1</center></td>
+	 * <tr></tr><td>[b<sub>0</sub>,d<sub>0</sub>,a<sub>1</sub>,c<sub>0</sub>]
+	 *     </td><td><center>4</center></td>
+	 * <td>[a<sub>1</sub>,b<sub>0</sub>,c<sub>0</sub>]
+	 *     </td><td><center>1</center></td>
+	 * <td><center>0(B)</center></td><td><center>+2</center></td>
+	 * <tr></tr><td>[b<sub>1</sub>,d<sub>0</sub>,a<sub>1</sub>,c<sub>0</sub>]
+	 *     </td><td><center>5</center></td>
+	 * <td>[a<sub>1</sub>,b<sub>1</sub>,c<sub>0</sub>]
+	 *     </td><td><center>3</center></td>
+	 * <td><center>1(D)</center></td><td><center>-2</center></td>
+	 * <tr></tr><td>[b<sub>0</sub>,d<sub>1</sub>,a<sub>1</sub>,c<sub>0</sub>]
+	 *     </td><td><center>6</center></td>
+	 * <td>[a<sub>1</sub>,b<sub>0</sub>,c<sub>0</sub>]
+	 *     </td><td><center>1</center></td>
+	 * <td><center>0(B)</center></td><td><center>+2</center></td>
+	 * <tr></tr><td>[b<sub>1</sub>,d<sub>1</sub>,a<sub>1</sub>,c<sub>0</sub>]
+	 *     </td><td><center>7</center></td>
+	 * <td>[a<sub>1</sub>,b<sub>1</sub>,c<sub>0</sub>]
+	 *     </td><td><center>3</center></td>
+	 * <td><center>3(C)</center></td><td><center>+1</center></td>
+	 * <tr></tr><td><center>...</center></td><td><center>...</center></td>
+	 * <td><center>...</center></td><td><center>...</center></td>
+	 * <td><center>...</center></td><td><center>...</center></td>
+	 * </table>
+	 * <p>
+	 * The order is imposed by the variables of <b>this</b> potential 
+	 * (<b>Y</b>)<p>
+	 * @param otherVariables <code>ArrayList</code> of <code>Variable</code>s
+	 *  of another potential (in this example: <b>Y<sup>X</sup></b> = [a, b, c])
+	 * @return The accumulated offsets in an array of integers. In this example 
+	 *   Accumulated offsets returns: [+2,-2,-1,+1]. Size = this 
+	 *   <code>TablePotential</code> number of variables. */
+	public static int[] getAccumulatedOffsets(ArrayList<Variable> variables, ArrayList<Variable> otherVariables) {
+		int otherSize = otherVariables.size();
+		int thisSize = variables.size();
+		int[] accOffsetXY = new int[thisSize];
+		if (otherSize == 0) {
+			return accOffsetXY; // Initialized to 0
+		}
+		int[] ordering = new int[thisSize];
+		for (int i = 0; i < ordering.length; i++) {
+			ordering[i] = otherVariables.indexOf(variables.get(i));
+		}
+		
+		// offsets of otherVariables
+		int[] offsetX = new int[otherSize];
+		offsetX[0] = 1;
+		for (int i = 1; i < offsetX.length; i++) {
+			offsetX[i] = offsetX[i-1] * otherVariables.get(i-1).getNumStates(); 
+		}
+		int[] offsetXY = new int[thisSize]; 
+		int ordering_0 = ordering[0];
+		if (ordering_0 == -1) {
+			offsetXY[0] = 0;
+		} else {
+			offsetXY[0] = offsetX[ordering_0];
+		}
+		accOffsetXY[0] = offsetXY[0];
+		
+		int ordering_j;
+		for (int j = 1; j < accOffsetXY.length; j++) {
+			ordering_j = ordering[j];
+			if (ordering_j == -1) {
+				offsetXY[j] = 0;
+			} else {
+				offsetXY[j] = offsetX[ordering_j];
+			}
+			int numStatesYj_1 = ((Variable)variables.get(j-1)).getNumStates();
+			accOffsetXY[j] = accOffsetXY[j-1] + offsetXY[j] - 
+			    ( numStatesYj_1 * offsetXY[j - 1] );
+		}
+		
+		return accOffsetXY;
+	}
+	
     /**
      * This method is similar to getPosition(int []), but the input argument is a configuration of
      * variables which are not necessarily in the same order that the variables in

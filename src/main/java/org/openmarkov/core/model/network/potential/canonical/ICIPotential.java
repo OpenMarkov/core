@@ -153,10 +153,34 @@ public abstract class ICIPotential extends Potential {
         }
         variablesToEliminate.removeAll (variables);
         ArrayList<TablePotential> singleElementPotentialList = new ArrayList<TablePotential> ();
+        
+        ArrayList<Variable> allVariables = new ArrayList<Variable>(variables);
+        allVariables.addAll (variablesToEliminate);
+        while (allVariables.size () > variables.size ())
+        {
+            Variable variableToEliminate = allVariables.get (allVariables.size () - 1);
+            allVariables.remove (allVariables.size () - 1);
+            ArrayList<TablePotential> relatedPotentials = new ArrayList<TablePotential> ();
+            int i = 0;
+            while (i < potentials.size ())
+            {
+                if (potentials.get (i).getVariables ().contains (variableToEliminate))
+                {
+                    // remove potentials related to the deleted variable
+                    relatedPotentials.add (potentials.get (i));
+                    potentials.remove (i);
+                }
+                else
+                {
+                    ++i;
+                }
+            }
+            //add resulting potential
+            potentials.add (DiscretePotentialOperations.multiplyAndMarginalize (relatedPotentials,
+                                                                                allVariables));
+        }
         singleElementPotentialList.add (DiscretePotentialOperations.multiplyAndMarginalize (potentials,
-                                                                                            variables,
-                                                                                            new ArrayList<Variable> (
-                                                                                                                     variablesToEliminate)));
+                                                                                            variables));
         return singleElementPotentialList;
     }
 

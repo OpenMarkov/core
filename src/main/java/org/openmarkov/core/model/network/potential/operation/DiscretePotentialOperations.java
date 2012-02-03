@@ -458,8 +458,8 @@ public final class DiscretePotentialOperations {
 	 * <code>potentials</code>
 	 * @return The multiplied potentials
 	 * @throws NotEnoughMemoryException */
-	public static Potential multiplyAndMarginalize(
-			ArrayList<Potential> potentials, 
+	public static TablePotential multiplyAndMarginalize(
+			ArrayList<? extends Potential> potentials, 
 			ArrayList<Variable> variablesOfInterest) 
 			throws NotEnoughMemoryException {
 	

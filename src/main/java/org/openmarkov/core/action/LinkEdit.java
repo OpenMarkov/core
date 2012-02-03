@@ -12,7 +12,6 @@ package org.openmarkov.core.action;
 import java.util.ArrayList;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -67,10 +66,6 @@ public class LinkEdit extends SimplePNEdit {
 	 * The new <code>Potential</code> of the second node
 	 */
 	protected ArrayList<Potential> newPotentials = new ArrayList<Potential>() ;
-	/**
-	 * The variables in the potential
-	 */
-	private ArrayList<Variable> variables = new ArrayList <Variable>();
 	
 	/**
      * Creates a new <code>LinkEdit</code> with two <code>ProbNode</code> 
@@ -103,79 +98,57 @@ public class LinkEdit extends SimplePNEdit {
 	@Override
 	/** @throws exception <code>Exception</code> */
 	public void doEdit() throws DoEditException {
-		if (add)
-			try {
-				probNet.addLink(probNet.getVariable(nodeName1), probNet.
-						getVariable(nodeName2), isDirected);
-				variables = lastPotential.get(0).getVariables();
-				variables.add(probNet.getVariable(nodeName1));
-			} catch (NodeNotFoundException e) {
-				throw new DoEditException(e.getMessage() + e.getStackTrace());
-			} catch (ProbNodeNotFoundException e) {
-				throw new DoEditException(e.getMessage() + e.getStackTrace());
-			}
-		else{
-			try {
-				probNet.removeLink(probNet.getVariable(nodeName1), probNet.
-						getVariable(nodeName2),	isDirected);
-				
-				variables = lastPotential.get(0).getVariables();
-				variables.remove(probNet.getVariable(nodeName1));
-			} catch (ProbNodeNotFoundException e) {
-				throw new DoEditException(e.getMessage() + e.getStackTrace());
-			}
-			
-		}
-		//TODO revisar si la actualización de potencial debe de hacerse con otro
-		//edit
-		try {
-			if (!(probNet.getProbNode(nodeName2).getNodeType() == NodeType.DECISION &&
-					!probNet.getProbNode(nodeName2).hasPolicy())){
-
-				UniformPotential newPotential = new UniformPotential(variables, 
-						lastPotential.get(0).getPotentialRole());
-				newPotential.setUtilityVariable(
-						lastPotential.get(0).getUtilityVariable());
-
-				newPotentials.add(newPotential);
-				probNet.getProbNode(nodeName2).setPotentials(newPotentials);
-
-
-			}
-		} catch (ProbNodeNotFoundException e) {
-			throw new DoEditException(e.getMessage() + e.getStackTrace());
-		}
-
+        try
+        {
+            ProbNode node1 = probNet.getProbNode (nodeName1);
+            ProbNode node2 = probNet.getProbNode (nodeName2);
+            ArrayList<Variable> variables = lastPotential.get (0).getVariables ();
+            if (add)
+            {
+                probNet.addLink (node1, node2, isDirected);
+                variables.add (probNet.getVariable (nodeName1));
+            }
+            else
+            {
+                probNet.removeLink (node1, node2, isDirected);
+                variables.remove (probNet.getVariable (nodeName1));
+            }
+            
+            // TODO revisar si la actualización de potencial debe de hacerse con
+            // otro edit
+            if (!(node2.getNodeType () == NodeType.DECISION && !node1.hasPolicy ()))
+            {
+                UniformPotential newPotential = new UniformPotential (
+                                                                      variables,
+                                                                      lastPotential.get (0).getPotentialRole ());
+                newPotential.setUtilityVariable (lastPotential.get (0).getUtilityVariable ());
+                newPotentials.add (newPotential);
+                node2.setPotentials (newPotentials);
+            }            
+        }
+        catch (ProbNodeNotFoundException e)
+        {
+            throw new DoEditException (e.getMessage () + e.getStackTrace ());
+        }
 	}
 
 	public void undo() {
 		super.undo();
-		if (add)
-			try {
-				probNet.removeLink(probNet.getVariable(nodeName1), probNet.
-						getVariable(nodeName2), 
-					isDirected);
-			} catch (ProbNodeNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		else
-			try {
-				try {
-					probNet.addLink(probNet.getVariable(nodeName1), probNet.
-							getVariable(nodeName2), isDirected);
-				} catch (ProbNodeNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} catch (NodeNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		//TODO revisar si la actualización de potencial debe de hacerse con otro
-		//edit
-		try {
-			probNet.getProbNode(nodeName2).setPotentials(lastPotential);
+        try {
+            ProbNode node1 = probNet.getProbNode (nodeName1);
+            ProbNode node2 = probNet.getProbNode (nodeName2);
+		
+            if (add)
+            {
+                probNet.removeLink (node1, node2, isDirected);
+            }
+            else
+            {
+                probNet.addLink (node1, node2, isDirected);
+            }
+            // TODO revisar si la actualización de potencial debe de hacerse con
+            // otro edit
+			node2.setPotentials(lastPotential);
 		} catch (ProbNodeNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

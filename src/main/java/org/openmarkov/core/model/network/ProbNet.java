@@ -30,6 +30,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.ProbNet.ProbNetNodesHashMapsType.NodesHashMapType;
 import org.openmarkov.core.model.network.constraint.ConstraintManager;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
@@ -37,10 +38,8 @@ import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
-import org.openmarkov.core.model.network.ProbNet.ProbNetNodesHashMapsType.NodesHashMapType;
 
 /** A <code>ProbNet</code> stores <code>ProbNode</code>s in a efficient manner.
  * It has the operations to manage <code>Variables, ProbNodes</code> and <code>
@@ -479,6 +478,22 @@ public class ProbNet implements Cloneable {
 		return probNetCopy;
 	}
 
+	
+    /**
+     * Inserts a link (<code>directed = true</code> or <code>false</code>)
+     * between the nodes <code>node1</code> and <code>node2</code> in
+     * <code>this</code> graph.
+     * @param node1 <code>ProbNode</code>
+     * @param node2 <code>ProbNode</code>
+     * @param directed <code>boolean</code>
+     * @throws NodeNotFoundException
+     */
+    public void addLink (ProbNode node1, ProbNode node2, boolean directed)
+    {
+        // Add link between nodes. This can throw an exception
+        graph.addLink (node1.getNode (), node2.getNode (), directed);
+    }   
+    
 	/**
 	 * Inserts a link (<code>directed = true</code> or <code>false</code>)
 	 * between the nodes associated to <code>variable1</code> and
@@ -501,24 +516,23 @@ public class ProbNet implements Cloneable {
 		// Get nodes
 		ProbNode node1 = getProbNode(variable1);
 		ProbNode node2 = getProbNode(variable2);
+		
+        // Throw NotExistsNodeException if one or both nodes does not exists
+        if ((node1 == null) || (node2 == null)) {
+            String msg = "ProbNet.addLink(" + variable1.getName() + ", "
+                    + variable2.getName() + "). It does not exist: ";
+            if (node1 == null) {
+                msg = msg + variable2.getName();
+                if (node2 == null) {
+                    msg = msg + " and " + variable2.getName();
+                }
+            } else {
+                msg = msg + node2.getName();
+            }
+            throw new NodeNotFoundException(msg);
+        }		
 
-		// Throw NotExistsNodeException if one or both nodes does not exists
-		if ((node1 == null) || (node2 == null)) {
-			String msg = "ProbNet.addLink(" + variable1.getName() + ", "
-					+ variable2.getName() + "). It does not exist: ";
-			if (node1 == null) {
-				msg = msg + variable1.getName();
-				if (node2 == null) {
-					msg = msg + " and " + variable2.getName();
-				}
-			} else {
-				msg = msg + variable2.getName();
-			}
-			throw new NodeNotFoundException(msg);
-		}
-
-		// Add link between nodes. This can throw an exception
-		graph.addLink(node1.getNode(), node2.getNode(), directed);
+		addLink(node1, node2, directed);
 	}
 
 	/**
@@ -1344,19 +1358,32 @@ public class ProbNet implements Cloneable {
 	}
 
 	/**
-	 * @param variable1
-	 *            <code>Variable</code>
-	 * @param variable2
-	 *            <code>Variable</code>
+	 * @param node1
+	 *            <code>ProbNode</code>
+	 * @param node2
+	 *            <code>ProbNode</code>
 	 * @param directed
 	 *            <code>boolean</code>
 	 */
-	public void removeLink(Variable variable1, Variable variable2,
-			boolean directed) {
-		ProbNode node1 = getProbNode(variable1);
-		ProbNode node2 = getProbNode(variable2);
+    public void removeLink (ProbNode node1, ProbNode node2, boolean directed)
+    {
 		graph.removeLink(node1.getNode(), node2.getNode(), directed);
 	}
+	
+    /**
+     * @param variable1
+     *            <code>Variable</code>
+     * @param variable2
+     *            <code>Variable</code>
+     * @param directed
+     *            <code>boolean</code>
+     */
+    public void removeLink (Variable variable1, Variable variable2, boolean directed)
+    {
+        ProbNode node1 = getProbNode(variable1);
+        ProbNode node2 = getProbNode(variable2);
+        removeLink(node1, node2, directed);
+    }	
 
 	/** @return <code>graph</code> associated to this <code>probNet</code>. */
 	public Graph getGraph() {

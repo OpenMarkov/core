@@ -53,7 +53,7 @@ public class NoLoops extends PNConstraint {
 		for (Node node1 : nodesGraph) {
 			ArrayList<Node> neighbors = node1.getNeighbors();
 			for (Node node2 : neighbors) {
-				if (node2.isChild(node1)) {
+				if (node1.isChild(node2)) {
 					graph.removeLink(node1, node2, true);
 					directed = true;
 				} else if (node1.isSibling(node2)) {

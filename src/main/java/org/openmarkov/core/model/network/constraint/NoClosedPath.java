@@ -27,7 +27,7 @@ private  NoCycle noCycleConstraint= new NoCycle();
     public boolean checkProbNet (ProbNet probNet)
     {
         return noLoopsConstraint.checkProbNet (probNet)
-               && !noCycleConstraint.checkProbNet (probNet);
+               && noCycleConstraint.checkProbNet (probNet);
     }
 
     @Override

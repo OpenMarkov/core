@@ -121,7 +121,7 @@ public abstract class ICIPotential extends Potential {
     // TODO This is the actual valid tableProject that should be used once the
     // bug in projectEvidence (assuming tableProject always returns a
     // one-element list of potentials) is solved
-    public ArrayList<TablePotential> internalTableProject (EvidenceCase evidenceCase,
+    public ArrayList<TablePotential> tableProject (EvidenceCase evidenceCase,
                                                    InferenceOptions inferenceOptions)
         throws NonProjectablePotentialException,
         NotEnoughMemoryException,
@@ -135,9 +135,9 @@ public abstract class ICIPotential extends Potential {
         return projectedPotentials;
     }
     
-    @Override
+//    @Override
     /** @param evidenceCase. <code>EvidenceCase</code>
-     * @return <code>ArrayList</code> of <code>Potential</code>*/
+     * @return <code>ArrayList</code> of <code>Potential</code>
     public ArrayList<TablePotential> tableProject (EvidenceCase evidenceCase,
                                                    InferenceOptions inferenceOptions)
         throws NonProjectablePotentialException,
@@ -182,7 +182,7 @@ public abstract class ICIPotential extends Potential {
         singleElementPotentialList.add (DiscretePotentialOperations.multiplyAndMarginalize (potentials,
                                                                                             variables));
         return singleElementPotentialList;
-    }
+    }*/
 
     public double[] getNoisyParameters(Variable variable)
     {

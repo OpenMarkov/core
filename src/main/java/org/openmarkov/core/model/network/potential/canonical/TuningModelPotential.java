@@ -46,8 +46,12 @@ public class TuningModelPotential extends ICIPotential
      */
     public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
     {
-        return ICIPotential.validate (probNode, variables, role)
-               && variables.get (0).getNumStates () == 3;
+        boolean valid = ICIPotential.validate (probNode, variables, role);
+        for(Variable variable : variables)
+        {
+            valid &= variable.getNumStates () == 3; 
+        }
+        return valid;
     }         
 
     /**
@@ -78,6 +82,9 @@ public class TuningModelPotential extends ICIPotential
         }else if(parameters.length == 9)
         {
             values = parameters;
+        }else
+        {
+            throw new IllegalArgumentException ("Parameters' size must be either 4 or 9");
         }
 
         super.setNoisyParameters (parent, values);

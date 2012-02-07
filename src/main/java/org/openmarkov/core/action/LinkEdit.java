@@ -208,7 +208,9 @@ public class LinkEdit extends SimplePNEdit {
 	 *  <code>variable1</code> and <code>variable2</code>. */
 	public String toString() {
 		StringBuffer buffer = 
-			new StringBuffer("AddLinkEdit: " + nodeName1);
+			new StringBuffer("LinkEdit" );
+        buffer.append("(" + ((isAdd())? "add" : "remove") + "): " );
+        buffer.append(nodeName1);
 		if (isDirected) {
 			buffer.append(" --> ");
 		} else {			

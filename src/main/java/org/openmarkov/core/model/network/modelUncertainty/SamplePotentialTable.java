@@ -287,44 +287,4 @@ public class SamplePotentialTable {
 		return getIndexesUncertainValuesOfTypes(arrayUncertain,aux);
 	}
 	
-	public static void main(String[] args) throws Exception {
-		
-		/*
-		 * 
-		 * 
-			int numIter = 10;
-		
-		PGMXReader reader;
-		Variable simulationIndexVariable = new Variable("###SimulationIndexVariable###",numIter);
-		
-		reader = (PGMXReader) PGMXReader.getUniqueInstance();
-		//String netName = "D:\\doc\\Redes_OpenMarkov\\simple-as-3-states.pgmx";
-		//String netName = "D:\\doc\\Redes_OpenMarkov\\simple-id.pgmx";
-		//String netName = "D:\\doc\\Redes_OpenMarkov\\id-normal-0-1.pgmx";
-		String netName = "D:\\doc\\Redes_OpenMarkov\\simple-as.pgmx";
-		ProbNet net = reader.loadProbNet(netName);
-		Variable varB=null;
-		//String nameVariable = "U";
-		String nameVariable = "B";
-		try {
-			varB = net.getVariable(nameVariable);
-		} catch (ProbNodeNotFoundException e) {
-			e.printStackTrace();
-		}
-		TablePotential pot = (TablePotential) net.getPotentials(varB).get(0);
-
-		SamplePotentialTable sampler = new SamplePotentialTable(pot,simulationIndexVariable);
-		
-		TablePotential newPot = sampler.getSampledTable();
-		
-		System.out.println(newPot.toString());
-		
-		
-		for (int i=0;i<10;i++){
-			System.out.println("Probando a generar con la beta")
-		}
-		*/
-	}
-	
-
 }

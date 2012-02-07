@@ -82,6 +82,24 @@ public class ProbNode implements Cloneable, PotentialsContainer {
         additionalProperties = new HashMap<String, String>();
         
 	}
+	/**
+	 * Copy Constructor for the GUI
+	 * @param probNode
+	 */
+	public ProbNode(ProbNode probNode) {
+    	this.probNet = probNode.getProbNet();
+    	this.variable = (Variable)probNode.getVariable();
+    			//.clone();
+        this.nodeType = probNode.getNodeType();
+       // node = new Node(probNet.getGraph(), this);
+        node = probNode.getNode();
+        potentialsList = new ArrayList<Potential>();
+        
+       // node = new Node(probNet.getGraph(), this);
+        potentialsList = new ArrayList<Potential>(probNode.getPotentials());
+        additionalProperties = new HashMap<String, String>();
+        
+	}	
 
 
    //Methods

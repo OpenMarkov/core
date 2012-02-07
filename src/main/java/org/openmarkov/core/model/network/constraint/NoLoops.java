@@ -11,8 +11,11 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
+import javax.swing.event.UndoableEditEvent;
+
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -26,11 +29,13 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 public class NoLoops extends PNConstraint {
 
 	@Override
-	public boolean checkEdit(ProbNet probNet, PNEdit edit)
-	throws NotEnoughMemoryException, NonProjectablePotentialException,
-	WrongCriterionException {
+    public boolean checkEdit (ProbNet probNet, PNEdit edit)
+        throws NotEnoughMemoryException,
+        NonProjectablePotentialException,
+        WrongCriterionException{
 		ArrayList<PNEdit> edits = UtilConstraints.getEditsType(edit,
 				AddLinkEdit.class);
+	
 		Graph graph = probNet.getGraph();
 		for (PNEdit simpleEdit : edits) {
 			Variable variable1 = ((AddLinkEdit) simpleEdit).getVariable1();
@@ -53,8 +58,8 @@ public class NoLoops extends PNConstraint {
 		for (Node node1 : nodesGraph) {
 			ArrayList<Node> neighbors = node1.getNeighbors();
 			for (Node node2 : neighbors) {
-				if (node1.isChild(node2)) {
-					graph.removeLink(node1, node2, true);
+				if (node2.isChild(node1)) {
+					graph.removeLink(node2, node1, true);
 					directed = true;
 				} else if (node1.isSibling(node2)) {
 					graph.removeLink(node1, node2, false);
@@ -62,7 +67,7 @@ public class NoLoops extends PNConstraint {
 				} else {
 					continue;
 				}
-				if (graph.existsPath(node2, node1, false)) {
+				if (graph.existsPath(node1, node2, false)) {
 					probNetOK = false;
 				}
 				if (directed) {

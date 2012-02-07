@@ -11,9 +11,12 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
+import javax.swing.event.UndoableEditEvent;
+
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.LinkEdit;
 import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -50,13 +53,15 @@ public class MaxNumParents extends PNConstraint {
 		return true;
 	}
 
-	@Override
-    public boolean checkEdit (ProbNet probNet, PNEdit edit)
-        throws NotEnoughMemoryException,
-        NonProjectablePotentialException,
-        WrongCriterionException
-    {
-        ArrayList<PNEdit> edits = UtilConstraints.getEditsType (edit, AddLinkEdit.class);
+	 @Override
+	    public boolean checkEdit (ProbNet probNet, PNEdit edit)
+	        throws NotEnoughMemoryException,
+	        NonProjectablePotentialException,
+	        WrongCriterionException{
+
+		ArrayList<PNEdit> edits = 
+				UtilConstraints.getEditsType(edit, AddLinkEdit.class);
+		
 		for (PNEdit simpleEdit : edits) {
 			if (((AddLinkEdit)simpleEdit).isDirected()) { 
 				Variable variable2 = ((AddLinkEdit)simpleEdit).getVariable2(); 
@@ -67,9 +72,9 @@ public class MaxNumParents extends PNConstraint {
 				}
 			}
 		}
-		ArrayList<PNEdit> edits2 = 
-				UtilConstraints.getEditsType(edit, LinkEdit.class);
-		for (PNEdit simpleEdit : edits2) {
+		
+		edits = UtilConstraints.getEditsType(edit, LinkEdit.class);
+		for (PNEdit simpleEdit : edits) {
 			if (((LinkEdit)simpleEdit).isDirected()) { 
 				Node node2 = ((LinkEdit)simpleEdit).getProbNode2().getNode();
 				int numParents=node2.getParents().size();

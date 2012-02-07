@@ -34,7 +34,10 @@ import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 	NoMultipleLinksTest.class,
 	OnlyAtemporalVariablesTest.class,
 	OnlyNumericVariablesTest.class,
-	OnlyTemporalVariablesTest.class
+	OnlyTemporalVariablesTest.class,
+	NoClosedPathTest.class,
+	NoLoopsTest.class,
+	MaxNumParentsTest.class
 })
 
 /** Test constraints applied to networks. 
@@ -73,6 +76,7 @@ public class ConstraintsTests {
 			probNet.addVariable(vc, NodeType.CHANCE);
 			probNet.addLink(va, vb, false);
 			probNet.addLink(vb, vc, false);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -92,6 +96,7 @@ public class ConstraintsTests {
 			probNet.addVariable(vc, NodeType.CHANCE);
 			probNet.addLink(va, vb, true);
 			probNet.addLink(vb, vc, true);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

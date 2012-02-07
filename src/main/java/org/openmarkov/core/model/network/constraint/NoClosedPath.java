@@ -9,10 +9,16 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import java.util.ArrayList;
+
+import javax.swing.event.UndoableEditEvent;
+
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.graph.Graph;
+import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
@@ -24,20 +30,19 @@ private  NoLoops noLoopsConstraint= new NoLoops();
 private  NoCycle noCycleConstraint= new NoCycle();
 
     @Override
-    public boolean checkProbNet (ProbNet probNet)
-    {
-        return noLoopsConstraint.checkProbNet (probNet)
-               && noCycleConstraint.checkProbNet (probNet);
+    public boolean checkProbNet(ProbNet probNet) {
+    	
+    	return (noLoopsConstraint.checkProbNet(probNet)&& noCycleConstraint.checkProbNet(probNet));
+    	
     }
 
     @Override
     public boolean checkEdit (ProbNet probNet, PNEdit edit)
         throws NotEnoughMemoryException,
         NonProjectablePotentialException,
-        WrongCriterionException
-    {
-        return noLoopsConstraint.checkEdit (probNet, edit)
-               && noCycleConstraint.checkEdit (probNet, edit);
+        WrongCriterionException{
+    	return (noLoopsConstraint.checkEdit(probNet,edit)&& noCycleConstraint.checkEdit(probNet,edit));
+    	
     }
 
     @Override

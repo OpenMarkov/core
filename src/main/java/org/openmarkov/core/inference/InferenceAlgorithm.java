@@ -118,6 +118,7 @@ public abstract class InferenceAlgorithm
      * @throws WrongCriterionException
      * @throws ProbNodeNotFoundException
      * @throws WrongGraphStructureException
+     * @throws IncompatibleEvidenceException 
      */
     public abstract HashMap<Variable, Potential> getIndividualProbabilities (ArrayList<Variable> variablesOfInterest)
         throws NotEnoughMemoryException,
@@ -129,7 +130,7 @@ public abstract class InferenceAlgorithm
         NonProjectablePotentialException,
         WrongCriterionException,
         WrongGraphStructureException,
-        ProbNodeNotFoundException;;
+        ProbNodeNotFoundException, IncompatibleEvidenceException;;
 
     /**
      * This method calculates the probabilities for all the variables in this
@@ -145,6 +146,7 @@ public abstract class InferenceAlgorithm
      * @throws WrongCriterionException
      * @throws ProbNodeNotFoundException
      * @throws WrongGraphStructureException
+     * @throws IncompatibleEvidenceException 
      */
     public HashMap<Variable, Potential> getIndividualProbabilities ()
         throws NotEnoughMemoryException,
@@ -156,7 +158,8 @@ public abstract class InferenceAlgorithm
         NonProjectablePotentialException,
         WrongCriterionException,
         WrongGraphStructureException,
-        ProbNodeNotFoundException
+        ProbNodeNotFoundException,
+        IncompatibleEvidenceException
     {
         ArrayList<Variable> variablesOfInterest = probNet.getChanceAndDecisionVariables ();
         return getIndividualProbabilities (variablesOfInterest);
@@ -181,7 +184,8 @@ public abstract class InferenceAlgorithm
         NonProjectablePotentialException,
         WrongCriterionException,
         NotEvaluableNetworkException,
-        ProbNodeNotFoundException
+        ProbNodeNotFoundException,
+        IncompatibleEvidenceException
     {
         // TODO Auto-generated method stub
         return null;

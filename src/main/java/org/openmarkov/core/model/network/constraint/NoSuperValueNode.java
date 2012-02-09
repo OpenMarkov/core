@@ -25,6 +25,9 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "NoSuperValueNodes", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class NoSuperValueNode extends PNConstraint {
 	
+	public NoSuperValueNode(ProbNet probNet) {
+		super(probNet);
+	}
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
 		ArrayList<ProbNode> probNodes = probNet.getProbNodes();

@@ -26,6 +26,9 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "NoCycle", defaultBehavior = ConstraintBehavior.YES)
 public class NoCycle extends PNConstraint {
 
+	public NoCycle(ProbNet probNet) {
+		super(probNet);
+	}
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
 		Graph graph = probNet.getGraph();

@@ -28,18 +28,18 @@ public class OnlyAtemporalVariablesTest {
 		boolean exceptionLaunched = false;
 		try {
 
-			influenceDiagram.removeConstraint(new OnlyAtemporalVariables());
-			influenceDiagram.addConstraint(new OnlyAtemporalVariables(), true);
+			influenceDiagram.removeConstraint(new OnlyAtemporalVariables(influenceDiagram));
+			influenceDiagram.addConstraint(new OnlyAtemporalVariables(influenceDiagram), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
 		assertFalse(exceptionLaunched);
 
 		try {
-			influenceDiagram.removeConstraint(new OnlyAtemporalVariables());
+			influenceDiagram.removeConstraint(new OnlyAtemporalVariables(influenceDiagram));
 			Variable var = new Variable(" [10]", "YES", "NO");
 			influenceDiagram.addVariable(var, NodeType.CHANCE);
-			influenceDiagram.addConstraint(new OnlyAtemporalVariables(), true);
+			influenceDiagram.addConstraint(new OnlyAtemporalVariables(influenceDiagram), true);
 		} catch (ConstraintViolationException e1) {
 			exceptionLaunched = true;
 		}
@@ -51,7 +51,7 @@ public class OnlyAtemporalVariablesTest {
 	public void testUndoableEditWillHappen() 
 	        throws Exception {
 		PNESupport pNESupport = new PNESupport(influenceDiagram, false);
-		PNConstraint constraint = new OnlyAtemporalVariables();
+		PNConstraint constraint = new OnlyAtemporalVariables(influenceDiagram);
 
 		influenceDiagram.addConstraint(constraint, true);
 		pNESupport.addUndoableEditListener(constraint);

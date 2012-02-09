@@ -27,6 +27,9 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "NoUtilityParent", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class NoUtilityParent extends PNConstraint  {
 
+	public NoUtilityParent(ProbNet probNet) {
+		super(probNet);
+	}
     @Override
     public boolean checkProbNet (ProbNet probNet)
     {

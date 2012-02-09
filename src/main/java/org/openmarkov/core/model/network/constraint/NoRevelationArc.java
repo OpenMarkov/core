@@ -19,6 +19,9 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "NoRevelationArc", defaultBehavior = ConstraintBehavior.YES)
 public class NoRevelationArc extends PNConstraint {
 
+	public NoRevelationArc(ProbNet probNet) {
+		super(probNet);
+	}
     @Override
     public boolean checkProbNet(ProbNet probNet) {
         // TODO Auto-generated method stub

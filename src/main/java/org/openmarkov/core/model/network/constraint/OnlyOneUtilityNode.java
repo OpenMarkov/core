@@ -17,6 +17,9 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "OnlyOneUtilityNode", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class OnlyOneUtilityNode extends PNConstraint {
 	
+	public OnlyOneUtilityNode(ProbNet probNet) {
+		super(probNet);
+	}
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
 		// TODO Auto-generated method stub

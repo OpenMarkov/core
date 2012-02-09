@@ -9,6 +9,7 @@
 
 package org.openmarkov.core.action;
 
+import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -24,11 +25,11 @@ public interface PNUndoableEditListener extends UndoableEditListener {
 	 * @throws NotEnoughMemoryException 
 	 * @throws WrongCriterionException 
 	 * @throws NonProjectablePotentialException */
-    public void undoableEditWillHappen(PNUndoableEditEvent event) 
+    public void undoableEditWillHappen(UndoableEditEvent event) 
     throws ConstraintViolationException, CanNotDoEditException, 
     NotEnoughMemoryException, NonProjectablePotentialException, 
     WrongCriterionException;
     
-    public void undoEditHappened(PNUndoableEditEvent event);
+    public void undoEditHappened(UndoableEditEvent event);
     
 }

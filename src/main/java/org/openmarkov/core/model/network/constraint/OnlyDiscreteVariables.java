@@ -26,6 +26,9 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "OnlyDiscreteVariables", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class OnlyDiscreteVariables extends PNConstraint {
 	
+	public OnlyDiscreteVariables(ProbNet probNet) {
+		super(probNet);
+	}
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 

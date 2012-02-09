@@ -33,19 +33,19 @@ public class NoClosedPathTest {
 
 		boolean exceptionLaunched = false;
 		try {
-			directedNet.removeConstraint(new NoClosedPath());
-			directedNet.addConstraint(new NoClosedPath(), true);
+			directedNet.removeConstraint(new NoClosedPath(directedNet));
+			directedNet.addConstraint(new NoClosedPath(directedNet), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
 		assertFalse(exceptionLaunched);
 
 		try {
-			directedNet.removeConstraint(new NoClosedPath());
+			directedNet.removeConstraint(new NoClosedPath(directedNet));
 			Variable varA = directedNet.getVariable("A");
 			Variable varC = directedNet.getVariable("C");
 			directedNet.addLink(varA, varC, true);
-			directedNet.addConstraint(new NoClosedPath(), true);
+			directedNet.addConstraint(new NoClosedPath(directedNet), true);
 		} catch (ConstraintViolationException e1) {
 			exceptionLaunched = true;
 		} catch (Exception e) {
@@ -56,19 +56,19 @@ public class NoClosedPathTest {
 
 		exceptionLaunched = false;
 		try {
-			undirectedNet.removeConstraint(new NoClosedPath());
-			undirectedNet.addConstraint(new NoClosedPath(), true);
+			undirectedNet.removeConstraint(new NoClosedPath(undirectedNet));
+			undirectedNet.addConstraint(new NoClosedPath(undirectedNet), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
 		assertFalse(exceptionLaunched);
 
 		try {
-			undirectedNet.removeConstraint(new NoClosedPath());
+			undirectedNet.removeConstraint(new NoClosedPath(undirectedNet));
 			Variable varA = undirectedNet.getVariable("A");
 			Variable varC = undirectedNet.getVariable("C");
 			undirectedNet.addLink(varA, varC, false);
-			undirectedNet.addConstraint(new NoClosedPath(), true);
+			undirectedNet.addConstraint(new NoClosedPath(undirectedNet), true);
 		} catch (ConstraintViolationException e1) {
 			exceptionLaunched = true;
 		} catch (Exception e) {
@@ -82,7 +82,7 @@ public class NoClosedPathTest {
 	public void testUndoableEditWillHappen() throws Exception {
 
 		PNESupport pNESupport = new PNESupport(undirectedNet, false);
-		PNConstraint constraint = new NoClosedPath();
+		PNConstraint constraint = new NoClosedPath(undirectedNet);
 
 		undirectedNet.addConstraint(constraint, true);
 		pNESupport.addUndoableEditListener(constraint);

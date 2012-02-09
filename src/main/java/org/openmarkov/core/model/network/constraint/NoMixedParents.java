@@ -33,6 +33,9 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
  */
 public class NoMixedParents extends PNConstraint
 {
+	public NoMixedParents(ProbNet probNet) {
+		super(probNet);
+	}
     @Override
     public boolean checkProbNet (ProbNet probNet)
     {

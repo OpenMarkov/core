@@ -22,6 +22,9 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint(name = "OnlyNumericVariables", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class OnlyNumericVariables extends PNConstraint
 {
+	public OnlyNumericVariables(ProbNet probNet) {
+		super(probNet);
+	}
     @Override
     public boolean checkProbNet (ProbNet probNet)
     {

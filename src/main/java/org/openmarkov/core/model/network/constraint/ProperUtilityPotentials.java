@@ -26,6 +26,9 @@ import org.openmarkov.core.model.network.potential.Potential;
 @Constraint (name = "ProperUtilityPotentials", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class ProperUtilityPotentials extends PNConstraint {
 	
+	public ProperUtilityPotentials(ProbNet probNet) {
+		super(probNet);
+	}
 	public boolean checkProbNet(ProbNet probNet) {
 		ArrayList<ProbNode> utilityNodes = 
 			probNet.getProbNodes(NodeType.UTILITY);

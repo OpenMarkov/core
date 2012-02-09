@@ -25,6 +25,9 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "OnlyChanceNodes", defaultBehavior = ConstraintBehavior.NO)
 public class OnlyChanceNodes extends PNConstraint {
 
+	public OnlyChanceNodes(ProbNet probNet) {
+		super(probNet);
+	}
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
 		ArrayList<ProbNode> probNodes = probNet.getProbNodes();

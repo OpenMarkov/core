@@ -33,17 +33,22 @@ public class ModelNetworkConstraint extends PNConstraint {
 	// Attributes.
 	ModelNetUse modelNetUse;
 	ProbNet modelNet;
+
 	
 	// Constructors
     public ModelNetworkConstraint(ModelNetUse modelNetUse, ProbNet modelNet) {
-        this.modelNet = modelNet.copy();
+    	
+    	super(modelNet);
+    
+    	this.modelNet = modelNet.copy();
         this.modelNetUse = modelNetUse;
     }    
     
-    public ModelNetworkConstraint() {
-        this.modelNet = null;
+    public ModelNetworkConstraint(ProbNet modelNet) {
+    	super(modelNet);
+    	this.modelNet = null;
         this.modelNetUse = null;
-    }	
+    }
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {

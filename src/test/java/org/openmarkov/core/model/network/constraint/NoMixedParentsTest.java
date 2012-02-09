@@ -33,20 +33,20 @@ private ProbNet influenceDiagram;
 		
 		boolean exceptionLaunched = false;
 		try {
-			influenceDiagram.removeConstraint(new NoMixedParents());
-			influenceDiagram.addConstraint(new NoMixedParents(), true);
+			influenceDiagram.removeConstraint(new NoMixedParents(influenceDiagram));
+			influenceDiagram.addConstraint(new NoMixedParents(influenceDiagram), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
 		assertFalse(exceptionLaunched);
 		
 		try {
-			influenceDiagram.removeConstraint(new NoMixedParents());
+			influenceDiagram.removeConstraint(new NoMixedParents(influenceDiagram));
 			Variable vc=influenceDiagram.getVariable("C");
 			Variable ve=new Variable("E", 2);
 			influenceDiagram.addVariable(ve, NodeType.DECISION);
 			influenceDiagram.addLink(ve, vc, true);
-			influenceDiagram.addConstraint(new NoMixedParents(), true);
+			influenceDiagram.addConstraint(new NoMixedParents(influenceDiagram), true);
 		}  catch (ConstraintViolationException e) {
 			exceptionLaunched = true;
 		} catch (Exception e) {
@@ -62,8 +62,8 @@ private ProbNet influenceDiagram;
 	        throws Exception {
 		// Add constraints as listeners.
 				PNESupport pNESupport = new PNESupport(influenceDiagram, false);
-				PNConstraint constraint= new NoMixedParents ();
-		        influenceDiagram.addConstraint (new NoMixedParents (), true);
+				PNConstraint constraint= new NoMixedParents (influenceDiagram);
+		        influenceDiagram.addConstraint (new NoMixedParents (influenceDiagram), true);
 				pNESupport.addUndoableEditListener(constraint);
 		        
 				

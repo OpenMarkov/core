@@ -19,6 +19,9 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "UnlabeledLinks", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class OnlyUnlabeledLinks extends PNConstraint {
 
+	public OnlyUnlabeledLinks(ProbNet probNet) {
+		super(probNet);
+	}
     @Override
     public boolean checkProbNet (ProbNet probNet)
     {

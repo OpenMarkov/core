@@ -19,6 +19,10 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "NoBackwardLinks", defaultBehavior = ConstraintBehavior.YES)
 public class NoBackwardLink extends PNConstraint {
 
+
+	public NoBackwardLink(ProbNet probNet) {
+		super(probNet);
+	}
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
 		// TODO Auto-generated method stub

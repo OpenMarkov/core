@@ -22,7 +22,12 @@ import org.openmarkov.core.model.network.potential.Potential;
 
 @Constraint (name = "AllChanceVariablesHaveChancePotentials", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class AllChanceVariablesHaveChancePotentials extends PNConstraint {
+
 	
+	public AllChanceVariablesHaveChancePotentials(ProbNet probNet) {
+		super(probNet);
+	}
+
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		return true;

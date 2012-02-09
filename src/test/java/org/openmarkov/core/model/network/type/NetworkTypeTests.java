@@ -49,19 +49,19 @@ public class NetworkTypeTests
     {
         ProbNet probNet = new ProbNet ();
         ArrayList<PNConstraint> constraints = probNet.getConstraints ();
-        Assert.assertTrue (constraints.contains (new NoEmptyName ()));
-        Assert.assertTrue (constraints.contains (new DistinctVariableNames ()));
-        Assert.assertTrue (constraints.contains (new OnlyChanceNodes ()));
-        Assert.assertTrue (constraints.contains (new OnlyAtemporalVariables ()));
-        Assert.assertFalse (constraints.contains (new OnlyTemporalVariables ()));
-        Assert.assertTrue (constraints.contains (new OnlyOneAgent ()));
-        Assert.assertTrue (constraints.contains (new DistinctLinks ()));
-        Assert.assertTrue (constraints.contains (new NoMultipleLinks ()));
-        Assert.assertTrue (constraints.contains (new OnlyDirectedLinks ()));
-        Assert.assertFalse (constraints.contains (new OnlyUndirectedLinks ()));
-        Assert.assertTrue (constraints.contains (new NoRevelationArc ()));
-        Assert.assertTrue (constraints.contains (new NoSelfLoop ()));
-        Assert.assertTrue (constraints.contains (new NoCycle ()));
+        Assert.assertTrue (constraints.contains (new NoEmptyName (probNet)));
+        Assert.assertTrue (constraints.contains (new DistinctVariableNames (probNet)));
+        Assert.assertTrue (constraints.contains (new OnlyChanceNodes (probNet)));
+        Assert.assertTrue (constraints.contains (new OnlyAtemporalVariables (probNet)));
+        Assert.assertFalse (constraints.contains (new OnlyTemporalVariables (probNet)));
+        Assert.assertTrue (constraints.contains (new OnlyOneAgent (probNet)));
+        Assert.assertTrue (constraints.contains (new DistinctLinks (probNet)));
+        Assert.assertTrue (constraints.contains (new NoMultipleLinks (probNet)));
+        Assert.assertTrue (constraints.contains (new OnlyDirectedLinks (probNet)));
+        Assert.assertFalse (constraints.contains (new OnlyUndirectedLinks (probNet)));
+        Assert.assertTrue (constraints.contains (new NoRevelationArc (probNet)));
+        Assert.assertTrue (constraints.contains (new NoSelfLoop (probNet)));
+        Assert.assertTrue (constraints.contains (new NoCycle (probNet)));
     }
     
     @Test
@@ -70,8 +70,8 @@ public class NetworkTypeTests
         ProbNet probNet = new ProbNet ();
         probNet.setNetworkType (MarkovNetworkType.getUniqueInstance ());
         ArrayList<PNConstraint> constraints = probNet.getConstraints ();
-        Assert.assertFalse (constraints.contains (new OnlyDirectedLinks ()));
-        Assert.assertTrue (constraints.contains (new OnlyUndirectedLinks ()));
+        Assert.assertFalse (constraints.contains (new OnlyDirectedLinks (probNet)));
+        Assert.assertTrue (constraints.contains (new OnlyUndirectedLinks (probNet)));
     }  
     
     @Test
@@ -80,7 +80,7 @@ public class NetworkTypeTests
         ProbNet probNet = new ProbNet ();
         probNet.setNetworkType (InfluenceDiagramType.getUniqueInstance ());
         ArrayList<PNConstraint> constraints = probNet.getConstraints ();
-        Assert.assertFalse (constraints.contains (new OnlyChanceNodes ()));
+        Assert.assertFalse (constraints.contains (new OnlyChanceNodes (probNet)));
     }      
     
     @Test (expected=ConstraintViolationException.class) 
@@ -100,7 +100,7 @@ public class NetworkTypeTests
     public void testAddingNotApplicableConstraints () throws ConstraintViolationException
     {
         ProbNet probNet = new ProbNet ();
-        probNet.addConstraint (new OnlyUndirectedLinks());
+        probNet.addConstraint (new OnlyUndirectedLinks(probNet));
 
     }
 }

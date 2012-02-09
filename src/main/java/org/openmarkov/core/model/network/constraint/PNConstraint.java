@@ -12,7 +12,6 @@ package org.openmarkov.core.model.network.constraint;
 import javax.swing.event.UndoableEditEvent;
 
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -29,6 +28,13 @@ import org.openmarkov.core.model.network.ProbNet;
   * able to be referenced with same identifier. */
 public abstract class PNConstraint implements PNUndoableEditListener, Checkable {
 
+	private ProbNet probNet;
+	
+	public PNConstraint(ProbNet probNet)
+	{
+		this.probNet = probNet;
+	}
+	
     @Override
     public void undoableEditHappened (UndoableEditEvent e)
     {
@@ -47,7 +53,7 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
      * @throws WrongCriterionException 
      * @throws NonProjectablePotentialException */
     @Override
-    public void undoableEditWillHappen (PNUndoableEditEvent event)
+    public void undoableEditWillHappen (UndoableEditEvent event)
         throws ConstraintViolationException,
         CanNotDoEditException,
         NotEnoughMemoryException,
@@ -55,7 +61,6 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
         WrongCriterionException
     {
         PNEdit edit = (PNEdit) event.getEdit ();
-        ProbNet probNet =  event.getProbNet ();
         if (!checkEdit(probNet, edit)) {
             throw new ConstraintViolationException (
                                                     "ConstraintViolationException doing edition "
@@ -69,7 +74,7 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
     protected abstract String getMessage ();
 
     @Override
-    public void undoEditHappened (PNUndoableEditEvent event)
+    public void undoEditHappened (UndoableEditEvent event)
     {
         // TODO Auto-generated method stub
         

@@ -25,6 +25,9 @@ public class OnlyDirectedLinks extends PNConstraint {
 
 	private String explanation;
 
+	public OnlyDirectedLinks(ProbNet probNet) {
+		super(probNet);
+	}
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
 		ArrayList<Node> nodes = probNet.getGraph().getNodes();

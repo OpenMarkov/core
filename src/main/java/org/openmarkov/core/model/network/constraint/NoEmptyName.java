@@ -24,6 +24,9 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "NoEmptyName", defaultBehavior = ConstraintBehavior.YES)
 public class NoEmptyName extends PNConstraint {
 
+	public NoEmptyName(ProbNet probNet) {
+		super(probNet);
+	}
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 	throws NotEnoughMemoryException, NonProjectablePotentialException,

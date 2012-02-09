@@ -32,7 +32,7 @@ public class MaxNumParentsTest {
 	public void testCheckProbNet() {
 
 		boolean exceptionLaunched = false;
-		MaxNumParents constraint = new MaxNumParents();
+		MaxNumParents constraint = new MaxNumParents(net);
 		constraint.setMaxNumParents(1);
 		try {
 			net.removeConstraint(constraint);
@@ -61,7 +61,7 @@ public class MaxNumParentsTest {
 	public void testUndoableEditWillHappen() throws Exception {
 
 		PNESupport pNESupport = new PNESupport(net, false);
-		MaxNumParents constraint = new MaxNumParents();
+		MaxNumParents constraint = new MaxNumParents(net);
 		constraint.setMaxNumParents(2);
 		net.addConstraint(constraint, true);
 		pNESupport.addUndoableEditListener(constraint);

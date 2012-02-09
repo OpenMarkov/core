@@ -190,8 +190,8 @@ public class ProbNetTest {
 		pU.values[0] = 1; pU.values[1] = 2;
 		pU.values[2] = 3; pU.values[3] = 4;
 		simpleProbNet = new ProbNet();
-		simpleProbNet.addConstraint(new NoCycle(), true);
-		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);
+		simpleProbNet.addConstraint(new NoCycle(simpleProbNet), true);
+		simpleProbNet.addConstraint(new OnlyDirectedLinks(simpleProbNet), true);
 		// add potentials and variables
 		simpleProbNet.addPotential(pA); // add variable and potential
 		simpleProbNet.addVariable(D, NodeType.DECISION);
@@ -497,7 +497,7 @@ public class ProbNetTest {
 				buildConstraintList (BayesianNetworkType.getUniqueInstance()).
 				size();
 		try {
-			emptyProbNet.addConstraint(new MaxNumParents(), true);
+			emptyProbNet.addConstraint(new MaxNumParents(emptyProbNet), true);
 		} catch (ConstraintViolationException e) {
 			fail("Fail in testAddConstraint()");
 		}
@@ -507,7 +507,7 @@ public class ProbNetTest {
 
 	@Test
 	public void testRemoveConstraint() {
-		PNConstraint constraint = new MaxNumParents();
+		PNConstraint constraint = new MaxNumParents(emptyProbNet);
 		// By default a ProbNet is a Bayesian Network
 		int numBNConstraints = ConstraintManager.getUniqueInstance ().
 				buildConstraintList (BayesianNetworkType.getUniqueInstance()).
@@ -1086,7 +1086,7 @@ public class ProbNetTest {
 	@Test
 	public void testGetAdditionalConstraints() {
 		ProbNet bnProbNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-		PNConstraint maxNumParents = new MaxNumParents();
+		PNConstraint maxNumParents = new MaxNumParents(bnProbNet);
 		try {
 			bnProbNet.addConstraint(maxNumParents);
 		} catch (ConstraintViolationException e) {

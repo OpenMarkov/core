@@ -24,6 +24,9 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "DistinctVariableNames", defaultBehavior = ConstraintBehavior.YES)
 public class DistinctVariableNames extends PNConstraint {
 
+	public DistinctVariableNames(ProbNet probNet) {
+		super(probNet);
+	}
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 			throws NotEnoughMemoryException, NonProjectablePotentialException,

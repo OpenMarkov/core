@@ -148,7 +148,7 @@ public abstract class InferenceAlgorithm
      * @throws WrongGraphStructureException
      * @throws IncompatibleEvidenceException 
      */
-    public HashMap<Variable, Potential> getIndividualProbabilities ()
+    public abstract HashMap<Variable, Potential> getIndividualProbabilities ()
         throws NotEnoughMemoryException,
         NormalizeNullVectorException,
         DoEditException,
@@ -159,11 +159,7 @@ public abstract class InferenceAlgorithm
         WrongCriterionException,
         WrongGraphStructureException,
         ProbNodeNotFoundException,
-        IncompatibleEvidenceException
-    {
-        ArrayList<Variable> variablesOfInterest = probNet.getChanceAndDecisionVariables ();
-        return getIndividualProbabilities (variablesOfInterest);
-    };
+        IncompatibleEvidenceException;;;
 
     public abstract StrategyUtilities getUtilityTables ()
         throws NotEnoughMemoryException,

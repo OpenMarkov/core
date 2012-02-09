@@ -102,22 +102,31 @@ public class LinkEdit extends SimplePNEdit {
         {
             ProbNode node1 = probNet.getProbNode (nodeName1);
             ProbNode node2 = probNet.getProbNode (nodeName2);
-            ArrayList<Variable> variables = lastPotential.get (0).getVariables ();
+
             if (add)
             {
                 probNet.addLink (node1, node2, isDirected);
-                variables.add (probNet.getVariable (nodeName1));
             }
             else
             {
                 probNet.removeLink (node1, node2, isDirected);
-                variables.remove (probNet.getVariable (nodeName1));
             }
             
             // TODO revisar si la actualización de potencial debe de hacerse con
             // otro edit
+            
+            // Update potential
             if (!(node2.getNodeType () == NodeType.DECISION && !node1.hasPolicy ()))
             {
+                ArrayList<Variable> variables = lastPotential.get (0).getVariables ();
+                if (add)
+                {
+                    variables.add (probNet.getVariable (nodeName1));
+                }
+                else
+                {
+                    variables.remove (probNet.getVariable (nodeName1));
+                }
                 UniformPotential newPotential = new UniformPotential (
                                                                       variables,
                                                                       lastPotential.get (0).getPotentialRole ());

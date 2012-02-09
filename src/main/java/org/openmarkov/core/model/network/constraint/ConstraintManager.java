@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.openmarkov.core.exception.ConstraintException;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.plugin.PluginLoader;
@@ -78,8 +79,9 @@ public class ConstraintManager
      * @throws IllegalAccessException 
      * @throws InstantiationException 
      */
-    public ArrayList<PNConstraint> buildConstraintList (NetworkType type, boolean includeOptionals)
+    public ArrayList<PNConstraint> buildConstraintList (ProbNet probNet, boolean includeOptionals)
     {
+        NetworkType type = probNet.getNetworkType ();
         // Init the list with those constraints that have the default value set to YES 
         ArrayList<PNConstraint> constraints = new  ArrayList<PNConstraint> ();
         for (Class<? extends PNConstraint> constraintClass : defaultConstraintBehaviors.keySet ())
@@ -87,7 +89,7 @@ public class ConstraintManager
             if (getDefaultBehavior (constraintClass).equals (ConstraintBehavior.YES)
                 || (includeOptionals && getDefaultBehavior (constraintClass).equals (ConstraintBehavior.OPTIONAL)))
             {
-                constraints.add (ConstraintPool.getUniqueInstance ().getConstraint (constraintClass));
+                constraints.add (ConstraintPool.getUniqueInstance ().getConstraint (constraintClass, probNet));
             }
         }
 
@@ -97,19 +99,19 @@ public class ConstraintManager
         {
             if(overwrittenConstraints.get (constraintClass) == ConstraintBehavior.YES)
             {
-                constraints.add (ConstraintPool.getUniqueInstance ().getConstraint (constraintClass));
+                constraints.add (ConstraintPool.getUniqueInstance ().getConstraint (constraintClass, probNet));
             }else if (overwrittenConstraints.get (constraintClass) == ConstraintBehavior.NO)
             {
-                constraints.remove (ConstraintPool.getUniqueInstance ().getConstraint (constraintClass));
+                constraints.remove (ConstraintPool.getUniqueInstance ().getConstraint (constraintClass, probNet));
             }
         }
         return constraints;
        
     }
     
-    public final ArrayList<PNConstraint> buildConstraintList (NetworkType type) 
+    public final ArrayList<PNConstraint> buildConstraintList (ProbNet probNet) 
     {
-        return buildConstraintList (type, false);
+        return buildConstraintList (probNet, false);
     }
     
     public ConstraintBehavior getDefaultBehavior(Class<?> constraintClass)

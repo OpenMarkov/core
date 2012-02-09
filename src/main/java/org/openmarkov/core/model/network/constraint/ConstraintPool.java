@@ -9,7 +9,10 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+
+import org.openmarkov.core.model.network.ProbNet;
 
 /****
  * Gets the unique instance of a PNConstraint by class name
@@ -44,23 +47,19 @@ public class ConstraintPool {
 	 * @throws InstantiationException 
 	 * @throws <code>ConstraintException</code>
 	 */
-	public PNConstraint getConstraint(Class<? extends PNConstraint> constraintClass) {
+	public PNConstraint getConstraint(Class<? extends PNConstraint> constraintClass, ProbNet probNet) {
 	    
 	    PNConstraint instance = constraintInstances.get (constraintClass);
 	    
 	    if(instance == null)
 	    {
-		    try
+            try
             {
-                instance = constraintClass.newInstance ();
+                instance = constraintClass.getConstructor (ProbNet.class).newInstance (probNet);
             }
-            catch (InstantiationException e)
+            catch (Exception e)
             {
                 e.printStackTrace ();
-            }
-            catch (IllegalAccessException e)
-            {
-                e.printStackTrace();
             }
 		    constraintInstances.put (constraintClass, instance);
 	    }

@@ -60,7 +60,7 @@ public class MaxNumParentsTest {
 	@Test
 	public void testUndoableEditWillHappen() throws Exception {
 
-		PNESupport pNESupport = new PNESupport(net, false);
+		PNESupport pNESupport = new PNESupport(false);
 		MaxNumParents constraint = new MaxNumParents(net);
 		constraint.setMaxNumParents(2);
 		net.addConstraint(constraint, true);

@@ -51,7 +51,7 @@ public class OnlyNumericVariablesTest {
 	@Test
 	public void testUndoableEditWillHappen() throws Exception {
 
-		PNESupport pNESupport = new PNESupport(influenceDiagram, false);
+		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new OnlyNumericVariables(influenceDiagram);
 		influenceDiagram.addConstraint(constraint, true);
 		pNESupport.addUndoableEditListener(constraint);

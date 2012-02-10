@@ -53,7 +53,7 @@ public class OnlyChanceNodesTest {
 	        throws Exception {
 		
 		// Add constraints as listeners.
-		PNESupport pNESupport = new PNESupport(probNetDirected, false);
+		PNESupport pNESupport = new PNESupport(false);
         probNetDirected.addConstraint (new OnlyChanceNodes (probNetDirected), true);
 		ArrayList<PNConstraint> constraints = probNetDirected.getConstraints();
 		for (PNConstraint constraint : constraints) { // sets listeners

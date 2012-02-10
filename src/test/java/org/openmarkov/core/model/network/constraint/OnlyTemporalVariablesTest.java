@@ -49,7 +49,7 @@ public class OnlyTemporalVariablesTest {
 	@Test
 	public void testUndoableEditWillHappen() 
 	        throws Exception {
-		PNESupport pNESupport = new PNESupport(network, false);
+		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new OnlyTemporalVariables(network);
 		network.addConstraint(constraint, true);
 		pNESupport.addUndoableEditListener(constraint);

@@ -12,6 +12,7 @@ package org.openmarkov.core.action;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.undo.UndoableEditSupport;
 
@@ -22,7 +23,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.network.ProbNet;
+
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 
 /**
@@ -76,8 +77,8 @@ public class PNESupport extends UndoableEditSupport {
 	 * @param withUndo
 	 *            <code>boolean</code>
 	 */
-	public PNESupport(ProbNet probNet, boolean withUndo) {
-		super(probNet);
+	public PNESupport(boolean withUndo) {
+		super();
 		this.withUndo = withUndo;
 		undoManagerSupport = new UndoManagerSupport();
 		
@@ -109,8 +110,7 @@ public class PNESupport extends UndoableEditSupport {
 	public void announceEdit(PNEdit edit) throws ConstraintViolationException,
 			CanNotDoEditException, NotEnoughMemoryException, 
 			NonProjectablePotentialException, WrongCriterionException {
-		PNUndoableEditEvent event = new PNUndoableEditEvent(this, edit,
-				(ProbNet) realSource);
+		UndoableEditEvent event = new UndoableEditEvent(this, edit);
 		for (UndoableEditListener listener : listeners) {
 			((PNUndoableEditListener) listener).undoableEditWillHappen(event);
 		}
@@ -181,8 +181,7 @@ public class PNESupport extends UndoableEditSupport {
 			 * }else {
 			 */
 			undoManagerSupport.undo();
-			PNUndoableEditEvent event = new PNUndoableEditEvent(this, null,
-					(ProbNet) realSource);
+			UndoableEditEvent event = new UndoableEditEvent(this, null);
 			for (UndoableEditListener listener : listeners) {
 				((PNUndoableEditListener) listener).undoEditHappened(event);
 			}
@@ -219,8 +218,7 @@ public class PNESupport extends UndoableEditSupport {
 			 * }else {
 			 */
 			undoManagerSupport.redo();
-			PNUndoableEditEvent event = new PNUndoableEditEvent(this, null,
-					(ProbNet) realSource);
+			UndoableEditEvent event = new UndoableEditEvent(this, null);
 			for (UndoableEditListener listener : listeners) {
 				((PNUndoableEditListener) listener).undoEditHappened(event);
 			}
@@ -290,7 +288,7 @@ public class PNESupport extends UndoableEditSupport {
 		if (realSource == null) {
 			out = out + "not defined.";
 		} else {
-			try {
+			/*try {
 				String name = (String) ((ProbNet) realSource).getName();
 				if (name != null) {
 					out = out + name + '.';
@@ -299,7 +297,7 @@ public class PNESupport extends UndoableEditSupport {
 				}
 			} catch (Exception e) {
 				logger.fatal (e);
-			}
+			}*/
 		}
 		if (listeners != null) {
 			out = out + " Number of listeners: " + listeners.size() + '.';
@@ -318,8 +316,7 @@ public class PNESupport extends UndoableEditSupport {
 		if (editsExecuted) {
 			this.undo();
 			undoManagerSupport.deleteEdits(editCount);
-			PNUndoableEditEvent event = new PNUndoableEditEvent(this, null,
-					(ProbNet) realSource);
+			UndoableEditEvent event = new UndoableEditEvent(this, null);
 			for (UndoableEditListener listener : listeners) {
 				((PNUndoableEditListener) listener).undoEditHappened(event);
 			}

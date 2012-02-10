@@ -61,7 +61,7 @@ private ProbNet influenceDiagram;
 	public void testUndoableEditWillHappen() 
 	        throws Exception {
 		// Add constraints as listeners.
-				PNESupport pNESupport = new PNESupport(influenceDiagram, false);
+				PNESupport pNESupport = new PNESupport(false);
 				PNConstraint constraint= new NoMixedParents (influenceDiagram);
 		        influenceDiagram.addConstraint (new NoMixedParents (influenceDiagram), true);
 				pNESupport.addUndoableEditListener(constraint);

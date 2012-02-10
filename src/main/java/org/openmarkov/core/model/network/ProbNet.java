@@ -171,7 +171,7 @@ public class ProbNet implements Cloneable {
     public ProbNet (NetworkType networkType)
     {
         this.graph = new Graph();
-        this.pNESupport = new PNESupport (this, false);        
+        this.pNESupport = new PNESupport (false);        
         this.constraints = new ArrayList<PNConstraint> ();
         this.nodesHashMaps = new ProbNetNodesHashMapsType();
         

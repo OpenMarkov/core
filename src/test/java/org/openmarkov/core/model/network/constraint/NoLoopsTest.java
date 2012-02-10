@@ -111,7 +111,7 @@ public class NoLoopsTest {
 	@Test
 	public void testUndoableEditWillHappen() throws Exception {
 
-		PNESupport pNESupport = new PNESupport(undirectedNet, false);
+		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new NoClosedPath(undirectedNet);
 
 		undirectedNet.addConstraint(constraint, true);

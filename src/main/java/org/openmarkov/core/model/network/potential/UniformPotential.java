@@ -164,5 +164,11 @@ public class UniformPotential extends Potential {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+    @Override
+    public Potential copy ()
+    {
+        return new UniformPotential(new ArrayList<Variable> (variables), role);
+    }	
 
 }

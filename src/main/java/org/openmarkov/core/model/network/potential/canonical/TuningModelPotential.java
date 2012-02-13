@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.plugin.RelationType;
@@ -136,5 +137,17 @@ public class TuningModelPotential extends ICIPotential
         leakyParameters[numStates/2] = 1.0;
         
         return leakyParameters;
+    }
+    
+    @Override
+    public Potential copy () throws NotEnoughMemoryException
+    {
+        TuningModelPotential newPotential = new TuningModelPotential (new ArrayList<Variable> (variables));
+        for(int i=1; i<variables.size (); ++i)
+        {
+            newPotential.setNoisyParameters(variables.get (i), getNoisyParameters(variables.get (i)).clone ());
+        }
+        newPotential.setLeakyParameters(getLeakyParameters().clone ());
+        return newPotential;
     }       
 }

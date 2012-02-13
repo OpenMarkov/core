@@ -115,6 +115,12 @@ public class SumPotential extends Potential {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+    @Override
+    public Potential copy ()
+    {
+        return new SumPotential(new ArrayList<Variable> (variables), role);
+    }	
 
 }
 

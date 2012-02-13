@@ -93,5 +93,11 @@ public class CycleLengthShift extends Potential {
 	public Potential shift(ProbNet probNet, int timeDifference) {
 		return new CycleLengthShift(getShiftedVariables(probNet, timeDifference));
 	}
+	
+    @Override
+    public Potential copy ()
+    {
+        return new CycleLengthShift(new ArrayList<Variable> (variables));
+    }	
 
 }

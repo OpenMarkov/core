@@ -12,7 +12,6 @@ package org.openmarkov.core.model.network.potential.canonical;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -26,7 +25,6 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 public abstract class ICIPotential extends Potential {
 
@@ -134,55 +132,6 @@ public abstract class ICIPotential extends Potential {
         }
         return projectedPotentials;
     }
-    
-//    @Override
-    /** @param evidenceCase. <code>EvidenceCase</code>
-     * @return <code>ArrayList</code> of <code>Potential</code>
-    public ArrayList<TablePotential> tableProject (EvidenceCase evidenceCase,
-                                                   InferenceOptions inferenceOptions)
-        throws NonProjectablePotentialException,
-        NotEnoughMemoryException,
-        WrongCriterionException
-    {
-        ArrayList<TablePotential> potentials = internalTableProject (evidenceCase, inferenceOptions);
-        HashSet<Variable> variablesToEliminate = new HashSet<Variable> ();
-        // Fill it with variables appearing in all potentials except this
-        for (TablePotential tablePotential : potentials)
-        {
-            variablesToEliminate.addAll (tablePotential.getVariables ());
-        }
-        variablesToEliminate.removeAll (variables);
-        ArrayList<TablePotential> singleElementPotentialList = new ArrayList<TablePotential> ();
-        
-        ArrayList<Variable> allVariables = new ArrayList<Variable>(variables);
-        allVariables.addAll (variablesToEliminate);
-        while (allVariables.size () > variables.size ())
-        {
-            Variable variableToEliminate = allVariables.get (allVariables.size () - 1);
-            allVariables.remove (allVariables.size () - 1);
-            ArrayList<TablePotential> relatedPotentials = new ArrayList<TablePotential> ();
-            int i = 0;
-            while (i < potentials.size ())
-            {
-                if (potentials.get (i).getVariables ().contains (variableToEliminate))
-                {
-                    // remove potentials related to the deleted variable
-                    relatedPotentials.add (potentials.get (i));
-                    potentials.remove (i);
-                }
-                else
-                {
-                    ++i;
-                }
-            }
-            //add resulting potential
-            potentials.add (DiscretePotentialOperations.multiplyAndMarginalize (relatedPotentials,
-                                                                                allVariables));
-        }
-        singleElementPotentialList.add (DiscretePotentialOperations.multiplyAndMarginalize (potentials,
-                                                                                            variables));
-        return singleElementPotentialList;
-    }*/
 
     public double[] getNoisyParameters(Variable variable)
     {
@@ -346,6 +295,26 @@ public abstract class ICIPotential extends Potential {
             }
         }
         return isEqual;
-    }	
+    }
+
+    @Override
+    public void replaceVariable (int position, Variable variable)
+    {
+        Variable oldVariable = variables.get (position);
+        variables.remove(position);
+        variables.add (position, variable);
+        
+        double[] noisyParameter = noisyParameters.get (oldVariable);
+        noisyParameters.remove (oldVariable);
+        noisyParameters.put (variable, noisyParameter);
+        
+        zVariables.remove (oldVariable);
+        zVariables.put (variable, new Variable ("z" + variable.getName (),
+                                               variables.get (0).getStates ()));
+        
+    }
+
+    
+    
 
 }

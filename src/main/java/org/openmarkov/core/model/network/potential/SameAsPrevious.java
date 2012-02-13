@@ -212,5 +212,17 @@ public class SameAsPrevious extends Potential {
         }
         return previousPotential;
     }	
+    
+    @Override
+    public Potential copy ()
+    {
+        Potential newPotential = null;
+        try
+        {
+            newPotential = new SameAsPrevious(originalPotential, probNet, timeDifference);
+        }
+        catch (NodeNotFoundException e){ /* Can never happen*/}
+        return newPotential;
+    }    
 	
 }

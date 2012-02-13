@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -133,5 +134,17 @@ public class MaxPotential extends MinMaxPotential {
         }
         return leakyParameters;
     }
+    
+    @Override
+    public Potential copy () throws NotEnoughMemoryException
+    {
+        TuningModelPotential newPotential = new TuningModelPotential (new ArrayList<Variable> (variables));
+        for(int i=1; i<variables.size (); ++i)
+        {
+            newPotential.setNoisyParameters(variables.get (i), getNoisyParameters(variables.get (i)));
+        }
+        newPotential.setLeakyParameters(getLeakyParameters());
+        return newPotential;
+    }       
 	
 }

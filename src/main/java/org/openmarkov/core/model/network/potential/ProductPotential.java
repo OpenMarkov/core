@@ -151,6 +151,12 @@ public class ProductPotential extends Potential {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Potential copy ()
+    {
+        return new ProductPotential(new ArrayList<Variable> (variables), role);
     }	
 
 }

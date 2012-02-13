@@ -34,7 +34,7 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
   * @author fjdiez 
   * @version 1.0
   * @since OpenMarkov 1.0 */
-public abstract class Potential {
+public abstract class Potential{
 
 	// Constants
 	/** Maximum size of a String used in toString() */
@@ -148,7 +148,7 @@ public abstract class Potential {
 	 * The utility variable is not considered.
 	 * @param type. <code>VariableType</code> 
 	 * @return <code>boolean</code> */
-	protected boolean allVariablesBelongsToType(VariableType type) {
+	protected boolean allVariablesBelongToType(VariableType type) {
 		if (variables != null) {
 			for (Variable variable : variables) {
 				if (variable.getVariableType() != type) {
@@ -171,6 +171,11 @@ public abstract class Potential {
 	public Variable getVariable(int position) {
 		return variables.get(position);
 	}
+	
+    public void replaceVariable(int position, Variable variable) {
+        variables.remove(position);
+        variables.add (position, variable);
+    }	
 
 	/** @return <code>true</code> if contains the received 
 	 * <code>Variable</code>.
@@ -398,7 +403,11 @@ public abstract class Potential {
             return false;
         }
     }
-	
-
+    
+    /**
+     * Return a copy instance of the potential
+     * @return potential copy
+     */
+    public abstract Potential copy()  throws NotEnoughMemoryException;	
 	
 }

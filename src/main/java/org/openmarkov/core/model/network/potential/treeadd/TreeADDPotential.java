@@ -662,4 +662,16 @@ public class TreeADDPotential extends Potential implements PotentialsContainer {
 //		}
 //	}
 	
+    @SuppressWarnings("unchecked")
+    @Override
+    public Potential copy ()
+    {
+        TreeADDPotential newPotential = new TreeADDPotential(new ArrayList<Variable> (variables), graph, role);
+        
+        newPotential.root = this.root;
+        newPotential.innerPotentials = new ArrayList<Potential>(this.innerPotentials);
+        newPotential.hashReferences = (HashMap<String, Node>)this.hashReferences.clone ();
+        
+        return newPotential;
+    }	
 }

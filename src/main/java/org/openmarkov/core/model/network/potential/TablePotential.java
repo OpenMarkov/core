@@ -899,7 +899,7 @@ public class TablePotential extends Potential implements Comparable {
 	/** Initialize the table as a uniform potential. */
 	public void setUniform() {
 		if ((variables != null) && (variables.size() > 0) && 
-				allVariablesBelongsToType(VariableType.FINITE_STATES) && 
+				allVariablesBelongToType(VariableType.FINITE_STATES) && 
 				( (role == PotentialRole.CONDITIONAL_PROBABILITY) ||
 				  (role == PotentialRole.POLICY) ||
 				  (role == PotentialRole.JOINT_PROBABILITY) ||
@@ -1052,4 +1052,12 @@ public class TablePotential extends Potential implements Comparable {
         }
         return isEqual;
     }
+    
+    @Override
+    public Potential copy () throws NotEnoughMemoryException
+    {
+        TablePotential newPotential = new TablePotential (new ArrayList<Variable> (variables), role);
+        newPotential.values = this.values.clone ();
+        return newPotential;
+    }    
 }

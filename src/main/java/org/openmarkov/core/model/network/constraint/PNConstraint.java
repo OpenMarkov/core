@@ -38,8 +38,7 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
     @Override
     public void undoableEditHappened (UndoableEditEvent e)
     {
-        // TODO Auto-generated method stub
-        
+        // Do nothing
     }
 
     /** Given a <code>probNet</code> that complies with this constraint, this
@@ -76,8 +75,7 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
     @Override
     public void undoEditHappened (UndoableEditEvent event)
     {
-        // TODO Auto-generated method stub
-        
+        // Do nothing
     }
 
     /** @param probNet. <code>ProbNet</code>
@@ -106,8 +104,18 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
     @Override
     public boolean equals (Object paramObject)
     {
-        return paramObject.getClass () == this.getClass ();
-    }	
+        return (paramObject.getClass () == this.getClass ())
+               && (this.probNet.equals (((PNConstraint) paramObject).probNet));
+    }
+
+    @Override
+    public int hashCode ()
+    {
+        int hashCode = 17 + this.getClass ().hashCode ();
+        hashCode = 37 * hashCode + this.probNet.hashCode ();
+        return hashCode;
+    }    
+    
 	
 	
 }

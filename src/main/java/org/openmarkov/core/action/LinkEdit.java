@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -68,6 +69,11 @@ public class LinkEdit extends SimplePNEdit {
 	protected ArrayList<Potential> newPotentials = new ArrayList<Potential>() ;
 	
 	/**
+	 * Resulting link of addition or removal.
+	 */
+	protected Link link;
+	
+    /**
      * Creates a new <code>LinkEdit</code> with two <code>ProbNode</code> 
      * objects,the type of the network graph and the action specified. 
      * The probNode must to has a valid potential
@@ -85,6 +91,7 @@ public class LinkEdit extends SimplePNEdit {
 		this.nodeName2 = nodeName2;
 		this.isDirected = isDirected;
 		this.add = add;
+		this.link = null;
 		
 		try {
 			this.lastPotential = probNet.getProbNode(nodeName2).getPotentials();
@@ -102,7 +109,7 @@ public class LinkEdit extends SimplePNEdit {
         {
             ProbNode node1 = probNet.getProbNode (nodeName1);
             ProbNode node2 = probNet.getProbNode (nodeName2);
-
+            
             if (add)
             {
                 probNet.addLink (node1, node2, isDirected);
@@ -111,13 +118,14 @@ public class LinkEdit extends SimplePNEdit {
             {
                 probNet.removeLink (node1, node2, isDirected);
             }
+            this.link = probNet.getGraph ().getLink (node1.getNode (), node2.getNode (), isDirected);
             
             // TODO revisar si la actualización de potencial debe de hacerse con
             // otro edit
             
-            // Update potential
-            if (!(node2.getNodeType () == NodeType.DECISION && !node1.hasPolicy ()))
+            if (node2.getNodeType () != NodeType.DECISION)
             {
+                // Update potential
                 ArrayList<Variable> variables = lastPotential.get (0).getVariables ();
                 if (add)
                 {
@@ -133,7 +141,14 @@ public class LinkEdit extends SimplePNEdit {
                 newPotential.setUtilityVariable (lastPotential.get (0).getUtilityVariable ());
                 newPotentials.add (newPotential);
                 node2.setPotentials (newPotentials);
-            }            
+            }
+            else
+            {
+                // In case of decision nodes, remove the only potential it can
+                // have
+                node2.getPotentials ().clear ();
+            }
+            
         }
         catch (ProbNodeNotFoundException e)
         {
@@ -212,6 +227,15 @@ public class LinkEdit extends SimplePNEdit {
 		}
 		return null;
 	}
+	
+    /**
+     * Returns the link.
+     * @return the link.
+     */
+    public Link getLink ()
+    {
+        return link;
+    }	
 	
 	/** @return A <code>String</code> with the type of link and the names of
 	 *  <code>variable1</code> and <code>variable2</code>. */

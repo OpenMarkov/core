@@ -629,7 +629,7 @@ public final class DiscretePotentialOperations {
 
 	/** @param potential a <code>TablePotential</code>
 	 * @return The <code>potential</code> normalized */
-	public static TablePotential normalize(Potential potential) 
+	public static TablePotential normalize(TablePotential potential) 
 			throws NormalizeNullVectorException {
 		TablePotential tablePotential = (TablePotential)potential;
 		// Check for null vectors

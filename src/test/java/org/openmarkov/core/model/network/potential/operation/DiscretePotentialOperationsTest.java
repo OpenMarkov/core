@@ -563,7 +563,7 @@ public class DiscretePotentialOperationsTest {
 	@Test
 	public void testNormalize() {
 		try {
-			Potential multiplication = DiscretePotentialOperations
+			TablePotential multiplication = DiscretePotentialOperations
 				.multiply(commonVariables.potentials);
 			TablePotential normalized;
 			try {

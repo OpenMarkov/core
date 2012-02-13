@@ -89,7 +89,14 @@ public class ConstraintManager
             if (getDefaultBehavior (constraintClass).equals (ConstraintBehavior.YES)
                 || (includeOptionals && getDefaultBehavior (constraintClass).equals (ConstraintBehavior.OPTIONAL)))
             {
-                constraints.add (ConstraintPool.getUniqueInstance ().getConstraint (constraintClass, probNet));
+                try
+                {
+                    constraints.add (constraintClass.getConstructor (ProbNet.class).newInstance (probNet));
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -99,10 +106,23 @@ public class ConstraintManager
         {
             if(overwrittenConstraints.get (constraintClass) == ConstraintBehavior.YES)
             {
-                constraints.add (ConstraintPool.getUniqueInstance ().getConstraint (constraintClass, probNet));
-            }else if (overwrittenConstraints.get (constraintClass) == ConstraintBehavior.NO)
+                try
+                {
+                    constraints.add (constraintClass.getConstructor (ProbNet.class).newInstance (probNet));
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+             }else if (overwrittenConstraints.get (constraintClass) == ConstraintBehavior.NO)
             {
-                constraints.remove (ConstraintPool.getUniqueInstance ().getConstraint (constraintClass, probNet));
+                 for(int i= 0; i< constraints.size (); ++i)
+                 {
+                     if(constraints.get (i).getClass ().equals (constraintClass))
+                     {
+                         constraints.remove (i);
+                     }
+                 }
             }
         }
         return constraints;

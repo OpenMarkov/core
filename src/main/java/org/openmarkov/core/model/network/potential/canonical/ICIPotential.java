@@ -266,7 +266,15 @@ public abstract class ICIPotential extends Potential {
             for(int j=1; j < variables.size (); ++j)
             {
                 double[] values = getNoisyParameters (variables.get(j));
-                double[] otherValues = otherPotential.getNoisyParameters (variables.get(j));
+                Variable otherVariable = null;
+                int k = 0;
+                while(otherVariable==null && k < otherPotential.variables.size ())
+                {
+                    otherVariable = (otherPotential.variables.get (k).getName ().equals ((variables.get (j).getName ()))) ? otherPotential.variables.get (k)
+                                                                                                                         : null;
+                    ++k;
+                }
+                double[] otherValues = otherPotential.getNoisyParameters (otherVariable);
                 if (values.length == otherValues.length)
                 {
                     for (int i = 0; i < values.length; i++)

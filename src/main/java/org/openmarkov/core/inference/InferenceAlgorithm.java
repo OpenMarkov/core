@@ -181,7 +181,8 @@ public abstract class InferenceAlgorithm
         WrongCriterionException,
         NotEvaluableNetworkException,
         ProbNodeNotFoundException,
-        IncompatibleEvidenceException
+        IncompatibleEvidenceException,
+        NormalizeNullVectorException
     {
         // TODO Auto-generated method stub
         return null;

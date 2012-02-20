@@ -135,6 +135,20 @@ public class Variable implements Cloneable {
 		this.partitionedInterval = null;
 		setTimeSlice(getTimeSlice(name));
 	}
+	
+	/**
+	 * Copy constructor for Variable.
+	 * @param variable
+	 */
+    public Variable(Variable variable) {
+
+        this.name = variable.getName ();
+        this.states = variable.states.clone ();
+        this.variableType = variable.getVariableType ();
+        this.partitionedInterval = (PartitionedInterval)variable.getPartitionedInterval ().clone ();
+        this.precision = variable.getPrecision ();
+        setTimeSlice(getTimeSlice(variable.getName ()));
+    }	
 
     public Object clone(){
         Object object = null;

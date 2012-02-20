@@ -54,11 +54,11 @@ public class PNESupport extends UndoableEditSupport {
 	 */
 	protected UndoManagerSupport undoManagerSupport;
 
-	/**
-	 * When open a parenthesis, we increase this variable and when we close a
-	 * parenthesis we decrease this variable.
-	 */
-	protected int parenthesisDeph = 0;
+    /**
+     * When we open a parenthesis, we increase this variable and when we close
+     * one we decrease it.
+     */
+	private int parenthesisDepth = 0;
 
 	private boolean significantEdits = true;
 
@@ -68,8 +68,6 @@ public class PNESupport extends UndoableEditSupport {
 
 	private int editCount;
 	
-	private Logger logger;
-
 	// Constructor
 	/**
 	 * @param probNet
@@ -81,8 +79,6 @@ public class PNESupport extends UndoableEditSupport {
 		super();
 		this.withUndo = withUndo;
 		undoManagerSupport = new UndoManagerSupport();
-		
-		this.logger = Logger.getLogger(PNESupport.class);
 	}
 
 	// Methods
@@ -246,7 +242,7 @@ public class PNESupport extends UndoableEditSupport {
 	 */
 	public void openParenthesis() {
 		if (withUndo) {
-			parenthesisDeph++; // TODO Eliminar
+			parenthesisDepth++; // TODO Eliminar
 			openParenthesis = true;
 			editCount = 0;
 			editsExecuted = false;
@@ -259,7 +255,7 @@ public class PNESupport extends UndoableEditSupport {
 	 */
 	public void closeParenthesis() {
 		if (withUndo) {
-			parenthesisDeph--;// TODO Eliminar
+			parenthesisDepth--;// TODO Eliminar
 			openParenthesis = false;
 			significantEdits = true;
 		}

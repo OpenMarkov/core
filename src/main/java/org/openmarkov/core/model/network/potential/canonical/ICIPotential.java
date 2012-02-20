@@ -66,8 +66,7 @@ public abstract class ICIPotential extends Potential {
         zVariables = new HashMap<Variable, Variable> ();
         for(int i=1; i<variables.size (); ++i)
         {
-            zVariables.put (variables.get (i), new Variable ("z" + variables.get (i).getName (),
-                                                             variables.get (0).getStates ()));
+            zVariables.put (variables.get (i), createZVariable (variables.get (i), variables.get (0)));
         }
         
         leakyVariable = new Variable (variables.get (0).getName () + "-leaky", variables.get (0).getStates ());
@@ -317,9 +316,20 @@ public abstract class ICIPotential extends Potential {
         noisyParameters.put (variable, noisyParameter);
         
         zVariables.remove (oldVariable);
-        zVariables.put (variable, new Variable ("z" + variable.getName (),
-                                               variables.get (0).getStates ()));
+        zVariables.put (variable, variables.get (0));
         
+    }
+    
+    /**
+     * Creates analogous Z variable for the parent variable
+     * @param parent
+     * @param child
+     * @return
+     */
+    private Variable createZVariable(Variable parent, Variable child)
+    {
+        return new Variable ("z_" + parent.getName () + "_" + child.getName(),
+                             child.getStates ());
     }
 
     

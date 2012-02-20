@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import org.openmarkov.core.action.AddVariableEdit;
 import org.openmarkov.core.action.ChangeVariableNameEdit;
+import org.openmarkov.core.action.NodeNameEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -77,6 +78,17 @@ public class DistinctVariableNames extends PNConstraint {
 				}
 			}
 		}
+		
+        // NodeNameEdit
+        edits = UtilConstraints.getEditsType (edit, NodeNameEdit.class);
+        for (PNEdit simpleEdit : edits) {
+            String newName = ((NodeNameEdit) simpleEdit).getNewName();
+            for (String variableProbNetName : variablesProbNetNames) {
+                if ((newName.contentEquals(variableProbNetName))) {
+                    return false;
+                }
+            }
+        }		
 
 		return true;
 	}
@@ -106,7 +118,7 @@ public class DistinctVariableNames extends PNConstraint {
     @Override
     protected String getMessage ()
     {
-        return "adding variable with a name that already exists in probNet.";
+        return "There is already a variable with that name in the net.";
     }
 
 }

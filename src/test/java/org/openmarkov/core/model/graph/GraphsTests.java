@@ -16,7 +16,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 	NodeTest.class,
-	GraphTest.class
+	GraphTest.class,
+	LinkTest.class
 })
 
 /** Auxiliary class that create a graph for test. */

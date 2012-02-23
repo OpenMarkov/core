@@ -97,8 +97,9 @@ public abstract class Potential{
      * returns <code>null</code>, but when a potential type implement this method it must return the
      * new potential.  
      * @param variable. <code>Variables</code>
-     * @return <code>Potential</code> */
-    public Potential removeVariable(Variable variable) {
+     * @return <code>Potential</code> 
+     * @throws NotEnoughMemoryException */
+    public Potential removeVariable(Variable variable) throws NotEnoughMemoryException {
     	return null;
     }
     

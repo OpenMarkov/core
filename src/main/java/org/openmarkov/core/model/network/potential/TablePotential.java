@@ -201,6 +201,33 @@ public class TablePotential extends Potential
 
     // Methods
     /**
+     * @throws WrongCriterionException 
+     * @throws NotEnoughMemoryException  */
+    public Potential removeVariable(Variable variable) throws NotEnoughMemoryException {
+    	Potential newPotential = this;
+    	if (variables.contains(variable)) {
+    		Finding finding = new Finding(variable, 0);
+    		EvidenceCase evidenceCase = new EvidenceCase();
+    		try {
+				evidenceCase.addFinding(finding);
+	    		newPotential = tableProject(evidenceCase, null).get(0);
+			} catch (InvalidStateException e) {
+				// If variable exists in the TablePotential it must have valid states
+				e.printStackTrace();
+			} catch (IncompatibleEvidenceException e) {
+				// Unreachable code
+				e.printStackTrace();
+			} catch (WrongCriterionException e) {
+				// Unreachable code
+				e.printStackTrace();
+			}
+    	} else {
+    		newPotential = this;
+    	}
+    	return newPotential;
+    }
+    
+    /**
      * @param evidenceCase <code>EvidenceCase</code>
      * @return An <code>ArrayList</code> of <code>FSPotential</code>s containing
      *         only one element, which is a <code>ProjectedPotential</code>
@@ -334,15 +361,9 @@ public class TablePotential extends Potential
                 {
                     throw new WrongCriterionException (utilityVariable, criterion, decisionCriteria);
                 }
-                // System.out.println("vamos a multiplicar");
                 projectedPotential = DiscretePotentialOperations.multiply (potentials);
             }
         }
-        /*
-         * for (int i = 0; i < projectedPotential.values.length; i++) {
-         * System.out.print(projectedPotential.values[i] + ", "); }
-         * System.out.println("hemos multiplicado");
-         */
         if (role == PotentialRole.UTILITY)
         {
             projectedPotential.setUtilityVariable (utilityVariable);

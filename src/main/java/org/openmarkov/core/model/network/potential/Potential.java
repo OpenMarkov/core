@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -408,6 +409,28 @@ public abstract class Potential{
      * Return a copy instance of the potential
      * @return potential copy
      */
-    public abstract Potential copy()  throws NotEnoughMemoryException;	
+    public abstract Potential copy()  throws NotEnoughMemoryException;
+
+    public Integer sample (Random randomGenerator, HashMap<Variable, Integer> sampledStateIndexes)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }	
+    
+    protected static ArrayList<Variable> toArrayList (Variable[] variables)
+    {
+        ArrayList<Variable> variablesArrayList = new ArrayList<Variable> ();
+        for(Variable variable: variables)
+        {
+            variablesArrayList.add (variable);
+        }
+        return variablesArrayList;
+    }    
 	
 }

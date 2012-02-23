@@ -10,7 +10,9 @@
 package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -43,6 +45,10 @@ public class UniformPotential extends Potential {
 		}
 		type = PotentialType.UNIFORM;
 	}
+	
+    public UniformPotential(PotentialRole role, Variable... variables) {
+        this(toArrayList(variables), role);
+    }	
 	
     public UniformPotential(Potential potential) {
         this(potential.getVariables (), potential.getPotentialRole ());
@@ -170,5 +176,16 @@ public class UniformPotential extends Potential {
     {
         return new UniformPotential(new ArrayList<Variable> (variables), role);
     }	
+    
+    @Override
+    public Integer sample (Random randomGenerator, HashMap<Variable, Integer> parentStateIndexes)
+    {
+        return randomGenerator.nextInt (variables.get (0).getNumStates ());
+    }       
+    
+    public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)
+    {
+        return 1.0/variables.get (0).getNumStates ();
+    }       
 
 }

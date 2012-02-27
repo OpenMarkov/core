@@ -235,7 +235,7 @@ public abstract class LearningAlgorithm {
                                                         boolean onlyPositiveEdits)
     {
         ArrayList<EditAndScorePair> bestEditions = new ArrayList<EditAndScorePair> ();
-        EditAndScorePair bestEdition = new EditAndScorePair (null, Double.NEGATIVE_INFINITY);
+        EditAndScorePair bestEdition = editionsGenerator.getBest (onlyAllowedEdits, onlyPositiveEdits);
         while (bestEdition != null && bestEditions.size () < numEdits)
         {
             bestEdition = editionsGenerator.getNext (onlyAllowedEdits, onlyPositiveEdits);

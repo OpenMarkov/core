@@ -19,6 +19,7 @@ public class CloseParenthesisEdit extends SimplePNEdit {
 	
 	// Constructor
 	public CloseParenthesisEdit() {
+        super(null);
 	}
 
 	// Methods

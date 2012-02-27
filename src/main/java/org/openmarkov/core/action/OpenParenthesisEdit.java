@@ -22,6 +22,7 @@ public class OpenParenthesisEdit extends SimplePNEdit {
 	// Constructor
 	/** Singleton pattern */
 	public OpenParenthesisEdit() {
+	    super(null);
 	}
 
 	// Methods

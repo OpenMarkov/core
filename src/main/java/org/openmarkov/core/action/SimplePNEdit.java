@@ -33,14 +33,11 @@ public abstract class SimplePNEdit extends AbstractUndoableEdit
 	
 	private Logger logger;
 	
-	// Constructors
-	public SimplePNEdit() {
-		this.logger = Logger.getLogger(SimplePNEdit.class);
-	}
-	
+	// Constructor
 	/** @param probNet <code>ProbNet</code> */
 	public SimplePNEdit(ProbNet probNet) {
 		this.probNet = probNet;
+        this.logger = Logger.getLogger(SimplePNEdit.class);
 	}
 	
 	// Methods

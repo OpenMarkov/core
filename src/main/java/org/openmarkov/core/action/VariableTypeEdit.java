@@ -29,7 +29,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 	
 	public VariableTypeEdit(ProbNode probNode, 
 			VariableType newType){
-		//this.probNet = probNet;
+		super(probNode.getProbNet ());
 		this.probNode = probNode;
 		this.newType = newType;
 		this.currentType = probNode.getVariable().getVariableType();

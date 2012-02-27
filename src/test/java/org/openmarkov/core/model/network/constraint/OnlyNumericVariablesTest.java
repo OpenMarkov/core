@@ -29,18 +29,18 @@ public class OnlyNumericVariablesTest {
 	public void testCheckProbNet() {
 		boolean exceptionLaunched = false;
 		try {
-			influenceDiagram.removeConstraint(new OnlyNumericVariables(influenceDiagram));
-			influenceDiagram.addConstraint(new OnlyNumericVariables(influenceDiagram), true);
+			influenceDiagram.removeConstraint(new OnlyNumericVariables());
+			influenceDiagram.addConstraint(new OnlyNumericVariables(), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
 		assertFalse(exceptionLaunched);
 
 		try {
-			influenceDiagram.removeConstraint(new OnlyNumericVariables(influenceDiagram));
+			influenceDiagram.removeConstraint(new OnlyNumericVariables());
 			Variable varE = new Variable("E", 2);
 			influenceDiagram.addVariable(varE, NodeType.CHANCE);
-			influenceDiagram.addConstraint(new OnlyNumericVariables(influenceDiagram), true);
+			influenceDiagram.addConstraint(new OnlyNumericVariables(), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
@@ -52,7 +52,7 @@ public class OnlyNumericVariablesTest {
 	public void testUndoableEditWillHappen() throws Exception {
 
 		PNESupport pNESupport = new PNESupport(false);
-		PNConstraint constraint = new OnlyNumericVariables(influenceDiagram);
+		PNConstraint constraint = new OnlyNumericVariables();
 		influenceDiagram.addConstraint(constraint, true);
 		pNESupport.addUndoableEditListener(constraint);
 

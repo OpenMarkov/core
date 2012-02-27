@@ -15,18 +15,27 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.network.ProbNet;
 
 
 /** An edition is one action defined over a Probabilistic Network. */
 public interface PNEdit extends UndoableEdit {
 
-	/** Puts into effect the edition. 
-	 * @throws NotEnoughMemoryException 
-	 * @throws WrongCriterionException 
-	 * @throws NonProjectablePotentialException */
-	public void doEdit() throws DoEditException, NotEnoughMemoryException, 
-		NonProjectablePotentialException, WrongCriterionException;
-	public void setSignificant(boolean significant);
+    /**
+     * Puts into effect the edition.
+     * @throws NotEnoughMemoryException
+     * @throws WrongCriterionException
+     * @throws NonProjectablePotentialException
+     */
+    public void doEdit ()
+        throws DoEditException,
+        NotEnoughMemoryException,
+        NonProjectablePotentialException,
+        WrongCriterionException;
+
+    public void setSignificant (boolean significant);
+    
+    public ProbNet getProbNet();
 	
 	
 }

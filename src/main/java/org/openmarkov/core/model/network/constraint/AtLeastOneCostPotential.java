@@ -24,10 +24,6 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "AtLeastOneCostPotential", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class AtLeastOneCostPotential extends PNConstraint {
 
-	public AtLeastOneCostPotential(ProbNet probNet) {
-		super(probNet);
-	}
-
 	@Override
 	/** This method has no sense because this constraint is only used to check
 	 * the whole <code>ProbNet</code> before execute the algorithm. */

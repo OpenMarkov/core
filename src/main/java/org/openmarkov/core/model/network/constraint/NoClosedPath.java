@@ -20,16 +20,15 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "NoClosedPath", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class NoClosedPath extends PNConstraint {
 
-	private ProbNet probNet;
-	
-	public NoClosedPath(ProbNet probNet) {
-		super(probNet);
-		this.probNet = probNet;
+    private  NoLoops noLoopsConstraint;
+    private  NoCycle noCycleConstraint;
+    
+	public NoClosedPath() {
+	    noLoopsConstraint= new NoLoops();
+	    noCycleConstraint= new NoCycle();
 	}
 	
 
-	private  NoLoops noLoopsConstraint= new NoLoops(probNet);
-	private  NoCycle noCycleConstraint= new NoCycle(probNet);
     @Override
     public boolean checkProbNet(ProbNet probNet) {
     	

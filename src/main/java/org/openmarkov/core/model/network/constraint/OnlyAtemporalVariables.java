@@ -20,9 +20,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint(name = "OnlyAtemporalVariables", defaultBehavior = ConstraintBehavior.YES)
 public class OnlyAtemporalVariables extends PNConstraint
 {
-	public OnlyAtemporalVariables(ProbNet probNet) {
-		super(probNet);
-	}
+
     @Override
     public boolean checkProbNet (ProbNet probNet)
     {

@@ -28,8 +28,8 @@ public class NoMultipleLinksTest {
 
 		boolean exceptionLaunched = false;
 		try {
-			influenceDiagram.removeConstraint(new NoMultipleLinks(influenceDiagram));
-			influenceDiagram.addConstraint(new NoMultipleLinks(influenceDiagram), true);
+			influenceDiagram.removeConstraint(new NoMultipleLinks());
+			influenceDiagram.addConstraint(new NoMultipleLinks(), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
@@ -38,11 +38,11 @@ public class NoMultipleLinksTest {
 		// add directed link between U and A
 		exceptionLaunched = false;
 		try {
-			influenceDiagram.removeConstraint(new NoMultipleLinks(influenceDiagram));
+			influenceDiagram.removeConstraint(new NoMultipleLinks());
 			Variable vu = influenceDiagram.getVariable("U");
 			Variable va = influenceDiagram.getVariable("A");
 			influenceDiagram.addLink(vu, va, true);
-			influenceDiagram.addConstraint(new NoMultipleLinks(influenceDiagram), true);
+			influenceDiagram.addConstraint(new NoMultipleLinks(), true);
 		} catch (ConstraintViolationException e) {
 			exceptionLaunched = true;
 		} catch (Exception e) {
@@ -52,11 +52,11 @@ public class NoMultipleLinksTest {
 
 		// add undirected link between A and D
 		try {
-			influenceDiagram.removeConstraint(new NoMultipleLinks(influenceDiagram));
+			influenceDiagram.removeConstraint(new NoMultipleLinks());
 			Variable vd = influenceDiagram.getVariable("D");
 			Variable va = influenceDiagram.getVariable("A");
 			influenceDiagram.addLink(vd, va, false);
-			influenceDiagram.addConstraint(new NoMultipleLinks(influenceDiagram), true);
+			influenceDiagram.addConstraint(new NoMultipleLinks(), true);
 		} catch (ConstraintViolationException e) {
 			exceptionLaunched = true;
 		} catch (Exception e) {
@@ -69,7 +69,7 @@ public class NoMultipleLinksTest {
 	@Test
 	public void testUndoableEditWillHappen() throws Exception {
 		PNESupport pNESupport = new PNESupport(false);
-		PNConstraint constraint = new NoMultipleLinks(influenceDiagram);
+		PNConstraint constraint = new NoMultipleLinks();
 
 		influenceDiagram.addConstraint(constraint, true);
 		pNESupport.addUndoableEditListener(constraint);

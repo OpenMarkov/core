@@ -11,11 +11,8 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import javax.swing.event.UndoableEditEvent;
-
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -28,10 +25,6 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "NoLoops", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class NoLoops extends PNConstraint {
 
-
-	public NoLoops(ProbNet probNet) {
-		super(probNet);
-	}
 	@Override
     public boolean checkEdit (ProbNet probNet, PNEdit edit)
         throws NotEnoughMemoryException,

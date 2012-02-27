@@ -25,10 +25,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 @Constraint (name = "NoSelfLoops", defaultBehavior = ConstraintBehavior.YES)
 public class NoSelfLoop extends PNConstraint {
-	
-	public NoSelfLoop(ProbNet probNet) {
-		super(probNet);
-	}
+
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 

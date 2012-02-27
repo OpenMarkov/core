@@ -38,14 +38,11 @@ public class ModelNetworkConstraint extends PNConstraint {
 	// Constructors
     public ModelNetworkConstraint(ModelNetUse modelNetUse, ProbNet modelNet) {
     	
-    	super(modelNet);
-    
     	this.modelNet = modelNet.copy();
         this.modelNetUse = modelNetUse;
     }    
     
     public ModelNetworkConstraint(ProbNet modelNet) {
-    	super(modelNet);
     	this.modelNet = null;
         this.modelNetUse = null;
     }

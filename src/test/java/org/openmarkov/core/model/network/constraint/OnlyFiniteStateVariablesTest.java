@@ -57,14 +57,14 @@ public class OnlyFiniteStateVariablesTest {
 		boolean exceptionLaunched = false;
 		try {
 			influenceDiagram.addConstraint(new 
-					OnlyFiniteStatesVariables(influenceDiagram), true);
+					OnlyFiniteStatesVariables(), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
 		assertTrue(!exceptionLaunched);
 		try {
 			mixedVariableInfluenceDiagram.addConstraint(new 
-					OnlyFiniteStatesVariables(mixedVariableInfluenceDiagram), true);
+					OnlyFiniteStatesVariables(), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
@@ -78,7 +78,7 @@ public class OnlyFiniteStateVariablesTest {
 		
 		
 		PNESupport pNESupport = new PNESupport(false);
-		PNConstraint constraint= new OnlyFiniteStatesVariables(influenceDiagram);
+		PNConstraint constraint= new OnlyFiniteStatesVariables();
 		influenceDiagram.addConstraint(constraint, true);
 		
 			pNESupport.addUndoableEditListener(constraint);

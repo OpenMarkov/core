@@ -31,9 +31,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
  */
 public class NoMultipleLinks extends PNConstraint
 {
-	public NoMultipleLinks(ProbNet probNet) {
-		super(probNet);
-	}
+
     @Override
     public boolean checkProbNet (ProbNet probNet)
     {

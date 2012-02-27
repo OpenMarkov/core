@@ -31,8 +31,8 @@ public class DistinctLinksTest {
 		try {
 			vu = influenceDiagram.getVariable("U");
 			va = influenceDiagram.getVariable("A");
-			influenceDiagram.removeConstraint(new DistinctLinks(influenceDiagram));
-			influenceDiagram.addConstraint(new DistinctLinks(influenceDiagram), true);
+			influenceDiagram.removeConstraint(new DistinctLinks());
+			influenceDiagram.addConstraint(new DistinctLinks(), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
@@ -41,9 +41,9 @@ public class DistinctLinksTest {
 		// add undirected link between A and U
 		exceptionLaunched = false;
 		try {
-			influenceDiagram.removeConstraint(new DistinctLinks(influenceDiagram));
+			influenceDiagram.removeConstraint(new DistinctLinks());
 			influenceDiagram.addLink(va, vu, false);
-			influenceDiagram.addConstraint(new DistinctLinks(influenceDiagram), true);
+			influenceDiagram.addConstraint(new DistinctLinks(), true);
 		} catch (ConstraintViolationException e) {
 			exceptionLaunched = true;
 		} catch (Exception e) {
@@ -59,9 +59,9 @@ public class DistinctLinksTest {
 		exceptionLaunched = false;
 		try {
 			Variable vd = influenceDiagram.getVariable("D");
-			influenceDiagram.removeConstraint(new DistinctLinks(influenceDiagram));
+			influenceDiagram.removeConstraint(new DistinctLinks());
 			influenceDiagram.addLink(vu, vd, true);
-			influenceDiagram.addConstraint(new DistinctLinks(influenceDiagram), true);
+			influenceDiagram.addConstraint(new DistinctLinks(), true);
 		} catch (ConstraintViolationException e) {
 			exceptionLaunched = true;
 		} catch (Exception e) {
@@ -72,10 +72,10 @@ public class DistinctLinksTest {
 			// add directed link between A and U
 		exceptionLaunched = false;
 		try {
-			influenceDiagram.removeConstraint(new DistinctLinks(influenceDiagram));
+			influenceDiagram.removeConstraint(new DistinctLinks());
 
 			influenceDiagram.addLink(va, vu, true);
-			influenceDiagram.addConstraint(new DistinctLinks(influenceDiagram), true);
+			influenceDiagram.addConstraint(new DistinctLinks(), true);
 		} catch (ConstraintViolationException e) {
 			exceptionLaunched = true;
 			influenceDiagram.removeLink(va, vu, true);
@@ -88,9 +88,9 @@ public class DistinctLinksTest {
 		// add undirected link between A and U
 		exceptionLaunched = false;
 		try {
-			influenceDiagram.removeConstraint(new DistinctLinks(influenceDiagram));
+			influenceDiagram.removeConstraint(new DistinctLinks());
 			influenceDiagram.addLink(va, vu, false);
-			influenceDiagram.addConstraint(new DistinctLinks(influenceDiagram), true);
+			influenceDiagram.addConstraint(new DistinctLinks(), true);
 		} catch (ConstraintViolationException e) {
 			exceptionLaunched = true;
 		} catch (Exception e) {
@@ -103,7 +103,7 @@ public class DistinctLinksTest {
 	@Test
 	public void testUndoableEditWillHappen() throws Exception {
 		PNESupport pNESupport = new PNESupport(false);
-		PNConstraint constraint = new DistinctLinks(influenceDiagram);
+		PNConstraint constraint = new DistinctLinks();
 
 		influenceDiagram.addConstraint(constraint, true);
 		pNESupport.addUndoableEditListener(constraint);

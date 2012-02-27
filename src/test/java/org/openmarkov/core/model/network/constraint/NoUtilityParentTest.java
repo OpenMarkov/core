@@ -40,7 +40,7 @@ public class NoUtilityParentTest {
 	@Test
 	public void testOnlyUtilityChilren() {
 		boolean exceptionLaunched = false;
-		PNConstraint constraint = new NoUtilityParent(probNetImproperUtilityChildren);
+		PNConstraint constraint = new NoUtilityParent();
 		try {
             probNetImproperUtilityChildren.addConstraint (constraint,
                                                           true);
@@ -61,7 +61,7 @@ public class NoUtilityParentTest {
 	public void testUndoableEditWillHappen() throws Exception {
 		// Add constraints as listeners.
 		PNESupport pNESupport = influenceDiagram.getPNESupport ();
-		influenceDiagram.addConstraint(new NoUtilityParent(influenceDiagram), true);
+		influenceDiagram.addConstraint(new NoUtilityParent(), true);
 		// Create edits
 		Variable vu=influenceDiagram.getVariable("U");
 		Variable vc1 = new Variable("C1", 0);

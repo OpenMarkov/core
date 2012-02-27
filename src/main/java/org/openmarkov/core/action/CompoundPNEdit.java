@@ -108,5 +108,10 @@ public abstract class CompoundPNEdit extends CompoundEdit implements PNEdit {
 	public boolean isSignificant(){
 		return significant;
 	}
+	
+	@Override
+    public ProbNet getProbNet() {
+        return probNet;
+    }	
 
 }

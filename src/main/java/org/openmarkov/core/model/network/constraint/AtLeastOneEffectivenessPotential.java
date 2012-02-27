@@ -20,10 +20,6 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 @Constraint (name = "AtLeastOneEffectivenessPotential", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class AtLeastOneEffectivenessPotential extends PNConstraint {
-	
-	public AtLeastOneEffectivenessPotential(ProbNet probNet) {
-		super(probNet);
-	}
 
 	@Override
 	/** This method has no sense because this constraint is only used to check

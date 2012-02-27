@@ -330,7 +330,7 @@ public class ProbNet implements Cloneable {
 		@SuppressWarnings("unchecked")
 		ArrayList<PNConstraint> additionalConstraints = (ArrayList<PNConstraint>)constraints.clone();
 		ArrayList<PNConstraint> networkTypeConstraints = ConstraintManager.getUniqueInstance().
-				buildConstraintList(this);
+				buildConstraintList(networkType);
 		additionalConstraints.removeAll(networkTypeConstraints);
 		return additionalConstraints;
 	}
@@ -344,7 +344,7 @@ public class ProbNet implements Cloneable {
     {
         NetworkType oldNetworkType = this.networkType;
         this.networkType = networkType;        
-        ArrayList<PNConstraint> constraints = ConstraintManager.getUniqueInstance ().buildConstraintList (this);
+        ArrayList<PNConstraint> constraints = ConstraintManager.getUniqueInstance ().buildConstraintList (networkType);
 
         try
         {

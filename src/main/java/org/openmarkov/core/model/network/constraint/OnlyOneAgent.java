@@ -16,9 +16,6 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "OnlyOneAgent", defaultBehavior = ConstraintBehavior.YES)
 public class OnlyOneAgent extends PNConstraint {
 
-	public OnlyOneAgent(ProbNet probNet) {
-		super(probNet);
-	}
     @Override
     public boolean checkProbNet(ProbNet probNet) {
         // TODO Auto-generated method stub

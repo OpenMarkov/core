@@ -10,10 +10,6 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name="NoLinkRestriction",defaultBehavior = ConstraintBehavior.YES)
 public class NoLinkRestriction extends PNConstraint{
 
-	public NoLinkRestriction(ProbNet probNet) {
-		super(probNet);
-	}
-
 	@Override
 	protected String getMessage() {
 		return "";

@@ -48,6 +48,7 @@ public abstract class SimplePNEdit extends AbstractUndoableEdit
 	public abstract void doEdit() throws DoEditException;
 	
 	/** @return probNet. <code>ProbNet</code> */
+	@Override
 	public ProbNet getProbNet() {
 		return probNet;
 	}

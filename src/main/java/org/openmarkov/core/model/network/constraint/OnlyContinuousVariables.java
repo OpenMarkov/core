@@ -32,9 +32,6 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "OnlyContinuousVariables", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class OnlyContinuousVariables extends PNConstraint {
 	
-	public OnlyContinuousVariables(ProbNet probNet) {
-		super(probNet);
-	}
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 

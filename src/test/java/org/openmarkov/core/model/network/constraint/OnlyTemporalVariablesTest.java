@@ -27,18 +27,18 @@ public class OnlyTemporalVariablesTest {
 
 		boolean exceptionLaunched = false;
 		try {
-			network.removeConstraint(new OnlyTemporalVariables(network));
-			network.addConstraint(new OnlyTemporalVariables(network), true);
+			network.removeConstraint(new OnlyTemporalVariables());
+			network.addConstraint(new OnlyTemporalVariables(), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
 		assertFalse(exceptionLaunched);
 
 		try {
-			network.removeConstraint(new OnlyTemporalVariables(network));
+			network.removeConstraint(new OnlyTemporalVariables());
 			Variable var = new Variable("A");
 			network.addVariable(var, NodeType.CHANCE);
-			network.addConstraint(new OnlyTemporalVariables(network), true);
+			network.addConstraint(new OnlyTemporalVariables(), true);
 		} catch (ConstraintViolationException e1) {
 			exceptionLaunched = true;
 		}
@@ -50,7 +50,7 @@ public class OnlyTemporalVariablesTest {
 	public void testUndoableEditWillHappen() 
 	        throws Exception {
 		PNESupport pNESupport = new PNESupport(false);
-		PNConstraint constraint = new OnlyTemporalVariables(network);
+		PNConstraint constraint = new OnlyTemporalVariables();
 		network.addConstraint(constraint, true);
 		pNESupport.addUndoableEditListener(constraint);
 		

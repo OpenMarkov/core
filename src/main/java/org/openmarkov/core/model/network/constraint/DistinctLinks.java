@@ -29,9 +29,6 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
  */
 public class DistinctLinks extends PNConstraint
 {
-	public DistinctLinks(ProbNet probNet) {
-		super(probNet);
-	}
     @Override
     public boolean checkProbNet (ProbNet probNet)
     {

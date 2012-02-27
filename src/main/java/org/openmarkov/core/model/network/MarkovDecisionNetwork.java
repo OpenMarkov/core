@@ -171,7 +171,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 		
 		// Add restriction applied in Markov networks: only undirected links.
 		try {
-            addConstraint (new OnlyUndirectedLinks (originalID), true);
+            addConstraint (new OnlyUndirectedLinks (), true);
 		} catch (ConstraintViolationException e) {
 			logger.fatal (e);
 		}

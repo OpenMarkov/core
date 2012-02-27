@@ -27,9 +27,6 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "OnlyFiniteStatesVariables", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class OnlyFiniteStatesVariables extends PNConstraint {
 
-	public OnlyFiniteStatesVariables(ProbNet probNet) {
-		super(probNet);
-	}
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 

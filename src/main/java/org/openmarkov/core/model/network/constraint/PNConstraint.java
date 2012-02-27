@@ -27,13 +27,6 @@ import org.openmarkov.core.model.network.ProbNet;
   * the same messages than <code>UndoableEditListener</code> and they will be 
   * able to be referenced with same identifier. */
 public abstract class PNConstraint implements PNUndoableEditListener, Checkable {
-
-	private ProbNet probNet;
-	
-	public PNConstraint(ProbNet probNet)
-	{
-		this.probNet = probNet;
-	}
 	
     @Override
     public void undoableEditHappened (UndoableEditEvent e)
@@ -60,7 +53,7 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
         WrongCriterionException
     {
         PNEdit edit = (PNEdit) event.getEdit ();
-        if (!checkEdit(probNet, edit)) {
+        if (!checkEdit(edit.getProbNet (), edit)) {
             throw new ConstraintViolationException (getMessage ());
         }
         
@@ -100,15 +93,13 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
     @Override
     public boolean equals (Object paramObject)
     {
-        return (paramObject.getClass () == this.getClass ())
-               && (this.probNet.equals (((PNConstraint) paramObject).probNet));
+        return (paramObject.getClass () == this.getClass ());
     }
 
     @Override
     public int hashCode ()
     {
         int hashCode = 17 + this.getClass ().hashCode ();
-        hashCode = 37 * hashCode + this.probNet.hashCode ();
         return hashCode;
     }    
     

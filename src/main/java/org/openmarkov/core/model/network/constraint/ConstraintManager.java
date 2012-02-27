@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.openmarkov.core.exception.ConstraintException;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.plugin.PluginLoader;
@@ -79,9 +78,8 @@ public class ConstraintManager
      * @throws IllegalAccessException 
      * @throws InstantiationException 
      */
-    public ArrayList<PNConstraint> buildConstraintList (ProbNet probNet, boolean includeOptionals)
+    public ArrayList<PNConstraint> buildConstraintList (NetworkType type, boolean includeOptionals)
     {
-        NetworkType type = probNet.getNetworkType ();
         // Init the list with those constraints that have the default value set to YES 
         ArrayList<PNConstraint> constraints = new  ArrayList<PNConstraint> ();
         for (Class<? extends PNConstraint> constraintClass : defaultConstraintBehaviors.keySet ())
@@ -91,7 +89,7 @@ public class ConstraintManager
             {
                 try
                 {
-                    constraints.add (constraintClass.getConstructor (ProbNet.class).newInstance (probNet));
+                    constraints.add (constraintClass.newInstance ());
                 }
                 catch (Exception e)
                 {
@@ -108,7 +106,7 @@ public class ConstraintManager
             {
                 try
                 {
-                    constraints.add (constraintClass.getConstructor (ProbNet.class).newInstance (probNet));
+                    constraints.add (constraintClass.newInstance ());
                 }
                 catch (Exception e)
                 {
@@ -129,9 +127,9 @@ public class ConstraintManager
        
     }
     
-    public final ArrayList<PNConstraint> buildConstraintList (ProbNet probNet) 
+    public final ArrayList<PNConstraint> buildConstraintList (NetworkType type) 
     {
-        return buildConstraintList (probNet, false);
+        return buildConstraintList (type, false);
     }
     
     public ConstraintBehavior getDefaultBehavior(Class<?> constraintClass)

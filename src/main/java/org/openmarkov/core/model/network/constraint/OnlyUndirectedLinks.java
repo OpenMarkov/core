@@ -23,9 +23,6 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint (name = "OnlyUndirectedLinks", defaultBehavior = ConstraintBehavior.NO)
 public class OnlyUndirectedLinks extends PNConstraint {
 
-	public OnlyUndirectedLinks(ProbNet probNet) {
-		super(probNet);
-	}
 	// Attributes.
     private String explanation;
 

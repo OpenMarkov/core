@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
-import org.openmarkov.core.action.LinkEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.ProbNet;
@@ -103,8 +102,8 @@ public class NoMultipleLinksTest {
 		
 		exceptionLaunched = false;
 		// do ilegal LinkEdit. Add an undirected link between U and A
-		LinkEdit ilegalLinkEdit = new LinkEdit(influenceDiagram, "U", "A",
-				false, true);
+		AddLinkEdit ilegalLinkEdit = new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("U"), influenceDiagram.getVariable("A"),
+				false);
 		try {
 			pNESupport.announceEdit(ilegalLinkEdit);
 			ilegalLinkEdit.doEdit();

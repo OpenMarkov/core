@@ -10,13 +10,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddProbNodeEdit;
-import org.openmarkov.core.action.LinkEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 public class MaxNumParentsTest {
 
@@ -111,7 +109,7 @@ public class MaxNumParentsTest {
 			fail(e.getMessage());
 		}
 		try {// modifies the link from E - B to E->B
-			LinkEdit ilegalLinkEdit = new LinkEdit(net, "E", "B", true, true);
+			AddLinkEdit ilegalLinkEdit = new AddLinkEdit(net, net.getVariable("E"), net.getVariable("B"), true);
 			pNESupport.announceEdit(ilegalLinkEdit);
 			ilegalLinkEdit.doEdit();
 		} catch (ConstraintViolationException e) {

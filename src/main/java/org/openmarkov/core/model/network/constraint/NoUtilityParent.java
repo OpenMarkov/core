@@ -12,7 +12,6 @@ package org.openmarkov.core.model.network.constraint;
 import java.util.ArrayList;
 
 import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.LinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -69,7 +68,7 @@ public class NoUtilityParent extends PNConstraint  {
 			}
 		}
 		
-        ArrayList<PNEdit> linkEdits = UtilConstraints.getEditsType (edit, LinkEdit.class);
+        /*ArrayList<PNEdit> linkEdits = UtilConstraints.getEditsType (edit, LinkEdit.class);
 		for (PNEdit simpleEdit : linkEdits) {
 			if (((LinkEdit)simpleEdit).isDirected()) { 
 				Variable variable1 = ((AddLinkEdit)simpleEdit).getVariable1(); 
@@ -84,7 +83,7 @@ public class NoUtilityParent extends PNConstraint  {
 					}
 				}
 			}
-		}
+		}*/
 		return true;
 	}
 

@@ -83,26 +83,6 @@ public abstract class Potential{
     	this.role = role;
     }
 
-    // Methods
-    /** Adding a variable will be different in each potential type. By default, the operation
-     * returns <code>null</code>, but when a potential type implement this method it must return the
-     * new potential.  
-     * @param variable. <code>Variables</code>
-     * @return <code>Potential</code> */
-    public Potential addVariable(Variable variable) {
-    	return null;
-    }
-    
-    /** Removing a variable will be different in each potential type. By default, the operation
-     * returns <code>null</code>, but when a potential type implement this method it must return the
-     * new potential.  
-     * @param variable. <code>Variables</code>
-     * @return <code>Potential</code> 
-     * @throws NotEnoughMemoryException */
-    public Potential removeVariable(Variable variable) throws NotEnoughMemoryException {
-    	return null;
-    }
-    
     /**
      * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
      * @param variables
@@ -424,17 +404,32 @@ public abstract class Potential{
             return false;
         }
     }
-    
-    /**
-     * Return a copy instance of the potential
-     * @return potential copy
-     */
-    public abstract Potential copy()  throws NotEnoughMemoryException;
-
     public Integer sample (Random randomGenerator, HashMap<Variable, Integer> sampledStateIndexes)
     {
         // TODO Auto-generated method stub
         return null;
+    }
+    /**
+     * Return a copy instance of the potential
+     * @return potential copy
+     */
+    public abstract Potential copy()  throws NotEnoughMemoryException;	
+    
+    /**
+     * Adds variable to a potential implemented in each child class
+     * @throws NotEnoughMemoryException 
+     * 
+     */
+    public  Potential addVariable(Variable variable) throws NotEnoughMemoryException {
+    	return null;
+    }
+    /**
+     * Removes variable to a potential implemented in each child class
+     * @throws NotEnoughMemoryException 
+     * 
+     */
+    public  Potential removeVariable(Variable variable) throws NotEnoughMemoryException {
+    	return null;
     }
 
     public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)

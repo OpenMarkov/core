@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
-import org.openmarkov.core.action.LinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -29,6 +28,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
  */
 public class DistinctLinks extends PNConstraint
 {
+
     @Override
     public boolean checkProbNet (ProbNet probNet)
     {
@@ -64,7 +64,7 @@ public class DistinctLinks extends PNConstraint
                 return false;
             }
         }
-        List<PNEdit> edits2 = UtilConstraints.getEditsType (edit, LinkEdit.class);
+        /**List<PNEdit> edits2 = UtilConstraints.getEditsType (edit, LinkEdit.class);
         for (PNEdit simpleEdit : edits2)
         {
             LinkEdit linkEdit = (LinkEdit) simpleEdit;
@@ -75,7 +75,7 @@ public class DistinctLinks extends PNConstraint
             {
                 return false;
             }
-        }
+        }**/
         List<PNEdit> edits3 = UtilConstraints.getEditsType (edit, InvertLinkEdit.class);
         for (PNEdit simpleEdit : edits3)
         {

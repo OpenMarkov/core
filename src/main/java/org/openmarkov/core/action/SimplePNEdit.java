@@ -13,6 +13,7 @@ import javax.swing.undo.AbstractUndoableEdit;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNet;
 
 
@@ -41,8 +42,9 @@ public abstract class SimplePNEdit extends AbstractUndoableEdit
 	}
 	
 	// Methods
-	/** Abstract method to be defined in derived classes */
-	public abstract void doEdit() throws DoEditException;
+	/** Abstract method to be defined in derived classes 
+	 * @throws  */
+	public abstract void doEdit() throws DoEditException, NotEnoughMemoryException;
 	
 	/** @return probNet. <code>ProbNet</code> */
 	@Override

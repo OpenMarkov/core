@@ -11,6 +11,7 @@ package org.openmarkov.core.action;
 
 import java.util.ArrayList;
 
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -45,11 +46,14 @@ public class CRemoveProbNodeEdit extends CompoundPNEdit{ //implements UsesVariab
 
 	protected ArrayList<Potential> allPotentials;
 	
+	protected ProbNet probNet;
+	
 	// Constructor
 	/** @param probNet </code>ProbNet</code>
 	 * @param variable <code>Variable</code> */
 	public CRemoveProbNodeEdit(ProbNet probNet, ProbNode probNode) {
 		super(probNet);
+		this.probNet = probNet;
 		this.probNode = probNode;
 		this.nodeType = probNode.getNodeType();
 	}
@@ -60,13 +64,22 @@ public class CRemoveProbNodeEdit extends CompoundPNEdit{ //implements UsesVariab
 		children = probNode.getNode().getChildren();
 		
 		for (Node parent : parents) {
-			
-			addEdit(new LinkEdit(probNode.getProbNet(),((ProbNode)parent.
-					getObject()).getName(), probNode.getName(), true, false));
+			String name = (String) ((ProbNode)(parent.getObject())).getName();
+			try {
+				addEdit(new RemoveLinkEdit(probNode.getProbNet(),probNet.getVariable(name), probNet.getVariable(probNode.getName()), true));
+			} catch (ProbNodeNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		for (Node child : children) {
-			addEdit(new LinkEdit(probNode.getProbNet(), probNode.getName(), ((ProbNode)child.
-					getObject()).getName(), true, false));
+			try {
+				addEdit(new RemoveLinkEdit(probNode.getProbNet(), probNet.getVariable(probNode.getName()), probNet.getVariable(((ProbNode)child.
+						getObject()).getName()), true));
+			} catch (ProbNodeNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		// add edit to remove the variable

@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.potential.canonical;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.Variable;
@@ -146,5 +147,41 @@ public class MaxPotential extends MinMaxPotential {
         newPotential.setLeakyParameters(getLeakyParameters());
         return newPotential;
     }       
-	
+    
+    @Override
+    public Potential addVariable(Variable newVariable){
+    	ArrayList<Variable> newVariables = (ArrayList<Variable>) variables.clone();
+    	newVariables.add(newVariable);
+    	MaxPotential newICIPotential = new MaxPotential(this.modelType, newVariables);
+    	
+		for (int i = 1; i < variables.size(); i++) {
+			double []noisyParameters = this.getNoisyParameters(variables.get(i));
+			newICIPotential.setNoisyParameters(variables.get(i), noisyParameters);
+		}
+		newICIPotential.setNoisyParameters(newVariable, newICIPotential.initializeNoisyParameters(newVariable));
+		
+		newICIPotential.setLeakyParameters(getLeakyParameters());
+		return newICIPotential;
+    }
+    
+    @Override
+	public Potential removeVariable(Variable variable) {
+    	ArrayList<Variable> newVariables = new ArrayList<Variable>();
+    	for (int i = 0; i < variables.size(); i++){
+    		if (variable == variables.get(i)) {
+    			continue;
+    		}else{
+    			newVariables.add(variables.get(i));
+    		}
+    	}
+    	
+    	MaxPotential newICIPotential = new MaxPotential(this.modelType, newVariables);
+    	
+    	for (int i = 1; i < newVariables.size(); i++) {
+			double []noisyParameters = this.getNoisyParameters(newVariables.get(i));
+			newICIPotential.setNoisyParameters(newVariables.get(i), noisyParameters);
+		}
+    	newICIPotential.setLeakyParameters(getLeakyParameters());
+    	return newICIPotential;
+    }
 }

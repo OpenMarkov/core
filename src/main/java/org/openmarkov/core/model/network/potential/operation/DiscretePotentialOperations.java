@@ -573,7 +573,7 @@ public final class DiscretePotentialOperations {
 	}
 
 	/** @param potentials An array of ordered <code>TablePotential</code>s
-	 * @return constantFactor: The productory of the constant potentials (the
+	 * @return constantFactor: The product of the constant potentials (the
 	 * first <i>k</i> because the array is ordered by size)
 	 * @see org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations#getProperPotentials(ArrayList)
 	 */

@@ -68,6 +68,8 @@ public class PNESupport extends UndoableEditSupport {
 
 	private int editCount;
 	
+
+
 	// Constructor
 	/**
 	 * @param probNet
@@ -79,7 +81,7 @@ public class PNESupport extends UndoableEditSupport {
 		super();
 		this.withUndo = withUndo;
 		undoManagerSupport = new UndoManagerSupport();
-	}
+}
 
 	// Methods
 	public void setListeners(Vector<UndoableEditListener> listeners) {
@@ -216,7 +218,7 @@ public class PNESupport extends UndoableEditSupport {
 			undoManagerSupport.redo();
 			UndoableEditEvent event = new UndoableEditEvent(this, undoManagerSupport.editToBeRedone ());
 			for (UndoableEditListener listener : listeners) {
-				((PNUndoableEditListener) listener).undoableEditHappened(event);
+				((PNUndoableEditListener) listener).undoEditHappened(event);
 			}
 
 			// }

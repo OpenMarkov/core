@@ -12,7 +12,7 @@ package org.openmarkov.core.model.network.constraint;
 import java.util.ArrayList;
 
 import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.LinkEdit;
+
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -25,6 +25,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 @Constraint (name = "NoCycle", defaultBehavior = ConstraintBehavior.YES)
 public class NoCycle extends PNConstraint {
+
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
@@ -63,7 +64,7 @@ public class NoCycle extends PNConstraint {
 				}
 			}
 		}
-		ArrayList<PNEdit> edits2 = 
+		/**ArrayList<PNEdit> edits2 = 
 			UtilConstraints.getEditsType(edit, LinkEdit.class);
 		for (PNEdit simpleEdit : edits2) {
 			if (((LinkEdit)simpleEdit).isDirected()) { // checks constraint
@@ -73,7 +74,7 @@ public class NoCycle extends PNConstraint {
 					return false;
 				}
 			}
-		}
+		}*/
 		return true;
 	}
 

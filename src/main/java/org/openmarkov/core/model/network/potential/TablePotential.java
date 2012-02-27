@@ -948,36 +948,29 @@ public class TablePotential extends Potential
     public UncertainValue[] getUncertainTable ()
     {
         return uncertainValues;
-    }
+    }	
 
-    /**
-     * @consultation
-     * @return dimensions of the variables in an array of <code>int[]</code>.
-     */
-    public int[] getDimensions ()
-    {
+    /** @consultation
+	 * @return dimensions of the variables in an array of <code>int[]</code>. */
+    public int[] getDimensions() {
         return dimensions;
     }
 
-    /**
-     * This method is <code>static</code> because sometimes it can be used
-     * without creating the <code>TablePotential</code>; for instance, to
-     * estimate the amount of memory that would be necessary to actually create
-     * the PotentialTable.
+    /** This method is <code>static</code> because sometimes it can be used
+     *    without creating the <code>TablePotential</code>; for instance, to 
+     *    estimate the amount of memory that would be necessary to actually
+     *    create the PotentialTable.
      * @param fsVariables <code>ArrayList</code> of <code>Variable</code>s.
      * @return array of <code>int[]</code> with the dimension of each variable.
      */
-    public static int[] calculateDimensions (ArrayList<Variable> fsVariables)
-    {
+    public static int[] calculateDimensions(ArrayList<Variable> fsVariables) {
         int numVariables = 0;
-        if (fsVariables != null)
-        {
-            numVariables = fsVariables.size ();
+        if (fsVariables != null) {
+            numVariables = fsVariables.size();
         }
         int[] dimensions = new int[numVariables];
-        for (int i = 0; i < numVariables; i++)
-        {
-            dimensions[i] = fsVariables.get (i).getNumStates ();
+        for (int i = 0; i < numVariables; i++) {
+            dimensions[i] = fsVariables.get(i).getNumStates();
         }
         return dimensions;
     }
@@ -1321,16 +1314,15 @@ public class TablePotential extends Potential
         }
         return isEqual;
     }
-
+    
     @Override
-    public Potential copy ()
-        throws NotEnoughMemoryException
+    public Potential copy () throws NotEnoughMemoryException
     {
         TablePotential newPotential = new TablePotential (new ArrayList<Variable> (variables), role);
         newPotential.values = this.values.clone ();
         return newPotential;
-    }
-
+    }    
+    
     @Override
     public Integer sample (Random randomGenerator, HashMap<Variable, Integer> parentStateIndexes)
     {
@@ -1362,4 +1354,23 @@ public class TablePotential extends Potential
         }
         return values[index];
     }
+    @Override
+    public Potential addVariable(Variable newVariable) throws NotEnoughMemoryException{
+    	// creates the new potential
+    	ArrayList<Variable> newVariables = (ArrayList<Variable>) variables.clone();
+    	newVariables.add(newVariable);
+    	TablePotential newPotential = new TablePotential(newVariables, role);
+    	newPotential.setUtilityVariable(utilityVariable);
+    	// assigns the values of the new potential
+    	int newVariableNumStates = newVariable.getNumStates();
+    	for (int i = 0; i < newVariableNumStates; i++) {
+    		for (int j = 0; j < values.length; j++) {
+    			newPotential.values[j + i * values.length] = values[j];
+    			//newPotential.uncertainValues[j + i * values.length] = uncertainValues[j];
+    		}
+    	}
+    	return newPotential;	 
+    }	
+    
+
 }

@@ -12,8 +12,8 @@ package org.openmarkov.core.model.network.constraint;
 import java.util.ArrayList;
 
 import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.LinkEdit;
 import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -25,6 +25,9 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 @Constraint(name = "MaxNumParents", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class MaxNumParents extends PNConstraint {
+
+	
+
 	
 	private int maxNumParents;
 	
@@ -66,16 +69,16 @@ public class MaxNumParents extends PNConstraint {
 			}
 		}
 		
-		edits = UtilConstraints.getEditsType(edit, LinkEdit.class);
+		/**edits = UtilConstraints.getEditsType(edit, RemoveLinkEdit.class);
 		for (PNEdit simpleEdit : edits) {
-			if (((LinkEdit)simpleEdit).isDirected()) { 
-				Node node2 = ((LinkEdit)simpleEdit).getProbNode2().getNode();
+			if (((RemoveLinkEdit)simpleEdit).isDirected()) { 
+				Node node2 = ((RemoveLinkEdit)simpleEdit).getProbNode2().getNode();
 				int numParents=node2.getParents().size();
 				if (numParents >=maxNumParents) {
 					return false;
 				}
 			}
-		}
+		}**/
 		return true;
 
 

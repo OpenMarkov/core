@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
-import org.openmarkov.core.action.LinkEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
@@ -86,7 +85,7 @@ private ProbNet influenceDiagram;
 					new AddProbNodeEdit(influenceDiagram,"F",NodeType.CHANCE,new Point2D.Double()).doEdit();
 					
 					
-					LinkEdit legalLinkEdit=	new LinkEdit(influenceDiagram, "F", "U", true,true); 
+					AddLinkEdit legalLinkEdit=	new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("F"), influenceDiagram.getVariable("U"), true); 
 					try {
 						pNESupport.announceEdit(legalLinkEdit);
 						legalLinkEdit.doEdit();
@@ -138,7 +137,7 @@ private ProbNet influenceDiagram;
 				
 				
 		        // do ilegal LinkEdit: add link from utility node G to utility node U
-				LinkEdit ilegalLinkEdit=	new LinkEdit(influenceDiagram, "G", "U", true,true); 
+				AddLinkEdit ilegalLinkEdit=	new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("G"), influenceDiagram.getVariable("U"), true); 
 				 exceptionLaunched = false;	
 					try {
 						pNESupport.announceEdit(ilegalLinkEdit);

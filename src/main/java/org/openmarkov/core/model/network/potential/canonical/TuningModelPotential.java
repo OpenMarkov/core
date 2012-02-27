@@ -152,7 +152,6 @@ public class TuningModelPotential extends ICIPotential
         newPotential.setLeakyParameters(getLeakyParameters().clone ());
         return newPotential;
     }       
-    
     @Override
     public Integer sample (Random randomGenerator, HashMap<Variable, Integer> parentStateIndexes)
     {
@@ -188,5 +187,41 @@ public class TuningModelPotential extends ICIPotential
             probability = 1.0;
         }
         return probability;
-    }          
+    }         
+    @Override
+    public Potential addVariable(Variable newVariable){
+    	ArrayList<Variable> newVariables = (ArrayList<Variable>) variables.clone();
+    	newVariables.add(newVariable);
+    	TuningModelPotential newICIPotential = new TuningModelPotential(newVariables) ;
+    	
+		
+		for (int i = 1; i < variables.size(); i++) {
+			double []noisyParameters = this.getNoisyParameters(variables.get(i));
+			newICIPotential.setNoisyParameters(variables.get(i), noisyParameters);
+		}
+		newICIPotential.setNoisyParameters(newVariable, newICIPotential.initializeNoisyParameters(newVariable));
+		
+		newICIPotential.setLeakyParameters(getLeakyParameters());
+		return newICIPotential;
+    }
+    @Override
+	public Potential removeVariable(Variable variable) {
+    	ArrayList<Variable> newVariables = new ArrayList<Variable>();
+    	for (int i = 0; i < variables.size(); i++){
+    		if (variable == variables.get(i)) {
+    			continue;
+    		}else{
+    			newVariables.add(variables.get(i));
+    		}
+    	}
+    	
+    	MaxPotential newICIPotential = new MaxPotential(this.modelType, newVariables);
+    	
+    	for (int i = 1; i < newVariables.size(); i++) {
+			double []noisyParameters = this.getNoisyParameters(newVariables.get(i));
+			newICIPotential.setNoisyParameters(newVariables.get(i), noisyParameters);
+		}
+    	newICIPotential.setLeakyParameters(getLeakyParameters());
+    	return newICIPotential;
+    }
 }

@@ -77,19 +77,11 @@ public abstract class ICIPotential extends Potential {
     public HashMap<Variable, double[]> getDefaultNoisyParameters()
     {
         HashMap<Variable, double[]> noisyParameters = new HashMap<Variable, double[]> ();
-        Variable conditionedVariable = variables.get (0); 
-        
+       
         for (int i = 1; i < variables.size (); ++i)
         {
             Variable parent = variables.get (i); 
-            double[] probabilities = new double[conditionedVariable.getNumStates () * parent.getNumStates ()];
-            for (int j = 0; j < parent.getNumStates (); ++j)
-            {
-                for (int k = 0; k < conditionedVariable.getNumStates (); ++k)
-                {
-                    probabilities[j * conditionedVariable.getNumStates () + k] = (k == j) ? 1.0 : 0.0;
-                }
-            }
+            double[] probabilities = initializeNoisyParameters(parent);
             noisyParameters.put (parent, probabilities);
         }
         return noisyParameters;
@@ -104,6 +96,23 @@ public abstract class ICIPotential extends Potential {
     {
         return variables.size () > 1;
     }   
+    /**
+     * Initializes noisy parameters values
+     * @param parent
+     * @return
+     */
+    public double [] initializeNoisyParameters(Variable parent) {
+    	Variable conditionedVariable =  variables.get (0);
+    	double[] probabilities = new double[conditionedVariable.getNumStates () * parent.getNumStates ()];
+    	for (int j = 0; j < parent.getNumStates (); ++j)
+        {
+            for (int k = 0; k < conditionedVariable.getNumStates (); ++k)
+            {
+                probabilities[j * conditionedVariable.getNumStates () + k] = (k == j) ? 1.0 : 0.0;
+            }
+        }
+    	return probabilities;
+    }
     
 	public abstract double[] getDefaultLeakyParameters(int numStates);
 	
@@ -383,7 +392,6 @@ public abstract class ICIPotential extends Potential {
                              child.getStates ());
     }
 
-    
-    
+  
 
 }

@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
-import org.openmarkov.core.action.LinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -85,7 +84,7 @@ public class NoMixedParents extends PNConstraint
                 }
             }
         }
-        List<PNEdit> edits2 = UtilConstraints.getEditsType (edit, LinkEdit.class);
+        /**List<PNEdit> edits2 = UtilConstraints.getEditsType (edit, LinkEdit.class);
         for (PNEdit simpleEdit : edits2)
         {
             if (((LinkEdit) simpleEdit).isDirected ())
@@ -97,7 +96,7 @@ public class NoMixedParents extends PNConstraint
                     return !hasMixedParents (node1, node2);
                 }
             }
-        }
+        }**/
         List<PNEdit> edits3 = UtilConstraints.getEditsType (edit, InvertLinkEdit.class);
         for (PNEdit simpleEdit : edits3)
         {

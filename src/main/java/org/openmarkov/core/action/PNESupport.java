@@ -214,9 +214,9 @@ public class PNESupport extends UndoableEditSupport {
 			 * }else {
 			 */
 			undoManagerSupport.redo();
-			UndoableEditEvent event = new UndoableEditEvent(this, null);
+			UndoableEditEvent event = new UndoableEditEvent(this, undoManagerSupport.editToBeRedone ());
 			for (UndoableEditListener listener : listeners) {
-				((PNUndoableEditListener) listener).undoEditHappened(event);
+				((PNUndoableEditListener) listener).undoableEditHappened(event);
 			}
 
 			// }

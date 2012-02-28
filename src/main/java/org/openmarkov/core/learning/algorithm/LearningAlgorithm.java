@@ -238,11 +238,11 @@ public abstract class LearningAlgorithm {
         EditAndScorePair bestEdition = editionsGenerator.getBest (onlyAllowedEdits, onlyPositiveEdits);
         while (bestEdition != null && bestEditions.size () < numEdits)
         {
-            bestEdition = editionsGenerator.getNext (onlyAllowedEdits, onlyPositiveEdits);
             if (bestEdition != null)
             {
                 bestEditions.add (bestEdition);
             }
+            bestEdition = editionsGenerator.getNext (onlyAllowedEdits, onlyPositiveEdits);
         }        
         return bestEditions;        
     }

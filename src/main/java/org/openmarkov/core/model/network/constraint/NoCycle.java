@@ -12,7 +12,7 @@ package org.openmarkov.core.model.network.constraint;
 import java.util.ArrayList;
 
 import org.openmarkov.core.action.AddLinkEdit;
-
+import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -25,7 +25,6 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 @Constraint (name = "NoCycle", defaultBehavior = ConstraintBehavior.YES)
 public class NoCycle extends PNConstraint {
-
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
@@ -64,9 +63,23 @@ public class NoCycle extends PNConstraint {
 				}
 			}
 		}
-		/**ArrayList<PNEdit> edits2 = 
+        ArrayList<PNEdit> edits2 = 
+                UtilConstraints.getEditsType(edit, InvertLinkEdit.class);
+        for (PNEdit simpleEdit : edits2) {
+            if (((InvertLinkEdit)simpleEdit).isDirected()) { // checks constraint
+                Variable variable1 = ((InvertLinkEdit)simpleEdit).getVariable1(); 
+                Node node1 = probNet.getProbNode(variable1).getNode();
+                Variable variable2 = ((InvertLinkEdit)simpleEdit).getVariable2(); 
+                Node node2 = probNet.getProbNode(variable2).getNode();
+                if (graph.existsPath(node1, node2, true)) {
+                    return false;
+                }
+            }
+        }		
+		
+		/**ArrayList<PNEdit> edits3 = 
 			UtilConstraints.getEditsType(edit, LinkEdit.class);
-		for (PNEdit simpleEdit : edits2) {
+		for (PNEdit simpleEdit : edits3) {
 			if (((LinkEdit)simpleEdit).isDirected()) { // checks constraint
 				Node node1 = ((LinkEdit)simpleEdit).getProbNode1().getNode();
 				Node node2 = ((LinkEdit)simpleEdit).getProbNode2().getNode();

@@ -11,7 +11,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.ChangeVariableNameEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -29,9 +29,9 @@ public class NoEmptyName extends PNConstraint {
 	throws NotEnoughMemoryException, NonProjectablePotentialException,
 	WrongCriterionException {
 		// AddVariableEdit
-        ArrayList<PNEdit> edits = UtilConstraints.getEditsType (edit, AddVariableEdit.class);
+        ArrayList<PNEdit> edits = UtilConstraints.getEditsType (edit, AddProbNodeEdit.class);
 		for (PNEdit simpleEdit : edits) {
-			String name = ((AddVariableEdit) simpleEdit).getVariable().getName();
+			String name = ((AddProbNodeEdit) simpleEdit).getVariable().getName();
 			if ((name == null) || (name.contentEquals(""))) {
 				return false;
 			}

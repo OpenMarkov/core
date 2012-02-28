@@ -121,7 +121,7 @@ public class NoLoopsTest {
 		Variable vC = undirectedNet.getVariable("C");
 		try {
 
-			new AddProbNodeEdit(undirectedNet, "D", NodeType.UTILITY,
+			new AddProbNodeEdit(undirectedNet, new Variable("D"), NodeType.UTILITY,
 					new Point2D.Double()).doEdit();
 			Variable vD = undirectedNet.getVariable("D");
 

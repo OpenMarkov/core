@@ -68,7 +68,7 @@ public class MaxNumParentsTest {
 		Variable vB = net.getVariable("B");
 		try {
 
-			new AddProbNodeEdit(net, "D", NodeType.CHANCE, new Point2D.Double())
+			new AddProbNodeEdit(net, new Variable("D"), NodeType.CHANCE, new Point2D.Double())
 					.doEdit();
 			Variable vD = net.getVariable("D");
 
@@ -84,7 +84,7 @@ public class MaxNumParentsTest {
 		boolean exceptionLaunched = false;
 		try {
 
-			new AddProbNodeEdit(net, "E", NodeType.CHANCE, new Point2D.Double())
+			new AddProbNodeEdit(net, new Variable("E"), NodeType.CHANCE, new Point2D.Double())
 					.doEdit();
 			Variable vE = net.getVariable("E");
 

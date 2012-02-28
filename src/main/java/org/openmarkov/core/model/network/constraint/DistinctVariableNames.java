@@ -11,7 +11,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.ChangeVariableNameEdit;
 import org.openmarkov.core.action.NodeNameEdit;
 import org.openmarkov.core.action.PNEdit;
@@ -30,7 +30,7 @@ public class DistinctVariableNames extends PNConstraint {
 			throws NotEnoughMemoryException, NonProjectablePotentialException,
 			WrongCriterionException {
 		ArrayList<PNEdit> edits = UtilConstraints.getEditsType(edit,
-				AddVariableEdit.class);
+				AddProbNodeEdit.class);
 		ArrayList<Variable> variablesProbNet = probNet.getVariables();
 		ArrayList<String> variablesProbNetNames = new ArrayList<String>();
 		for (Variable variable : variablesProbNet) {
@@ -40,8 +40,7 @@ public class DistinctVariableNames extends PNConstraint {
 		// get new variables names
 		ArrayList<String> newVariablesNames = new ArrayList<String>();
 		for (PNEdit simpleEdit : edits) {
-			newVariablesNames.add(((AddVariableEdit) simpleEdit).getVariable()
-					.getName());
+			newVariablesNames.add(((AddProbNodeEdit) simpleEdit).getVariable ().getName());
 		}
 
 		// check that new variables have distinct names

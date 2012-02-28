@@ -11,7 +11,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -31,9 +31,9 @@ public class OnlyDiscreteVariables extends PNConstraint {
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
 		ArrayList<PNEdit> edits = 
-			UtilConstraints.getEditsType(edit, AddVariableEdit.class);
+			UtilConstraints.getEditsType(edit, AddProbNodeEdit.class);
 		for (PNEdit simpleEdit : edits) {
-			Variable variable = ((AddVariableEdit)simpleEdit).getVariable(); 
+			Variable variable = ((AddProbNodeEdit)simpleEdit).getVariable(); 
 			if (variable.getVariableType() != VariableType.FINITE_STATES) {
 				return false;
 			}

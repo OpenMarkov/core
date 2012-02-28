@@ -6,7 +6,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
@@ -58,7 +58,7 @@ public class OnlyAtemporalVariablesTest {
 		
 		boolean exceptionLaunched = false;
 		Variable var= new Variable("F");
-		AddVariableEdit legalEdit= new AddVariableEdit(influenceDiagram,var,NodeType.CHANCE); 
+		AddProbNodeEdit legalEdit= new AddProbNodeEdit(influenceDiagram,var,NodeType.CHANCE); 
 		// add the variable
 				try {
 					pNESupport.announceEdit(legalEdit);
@@ -68,7 +68,7 @@ public class OnlyAtemporalVariablesTest {
 				}
 
 		Variable var1= new Variable(" [11]","Y","N");
-		AddVariableEdit ilegalEdit= new AddVariableEdit(influenceDiagram,var1,NodeType.CHANCE); 
+		AddProbNodeEdit ilegalEdit= new AddProbNodeEdit(influenceDiagram,var1,NodeType.CHANCE); 
 		// add the variable
 				try {
 					pNESupport.announceEdit(ilegalEdit);

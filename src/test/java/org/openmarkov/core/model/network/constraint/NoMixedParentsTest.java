@@ -68,7 +68,7 @@ private ProbNet influenceDiagram;
 				
 				
 				//do legal AddLink: add link from utility node E to utility node C
-				new AddProbNodeEdit(influenceDiagram,"E",NodeType.UTILITY,new Point2D.Double()).doEdit();
+				new AddProbNodeEdit(influenceDiagram, new Variable("E"),NodeType.UTILITY).doEdit();
 				Variable vE = 
 						influenceDiagram.getProbNode("E", NodeType.UTILITY).getVariable();
 				Variable vC=influenceDiagram.getVariable("C");
@@ -82,7 +82,7 @@ private ProbNet influenceDiagram;
 					}
 				
 				//do legal LinkEdit:  add directed link from chance node F to utility node U
-					new AddProbNodeEdit(influenceDiagram,"F",NodeType.CHANCE,new Point2D.Double()).doEdit();
+					new AddProbNodeEdit(influenceDiagram, new Variable("F"),NodeType.CHANCE,new Point2D.Double()).doEdit();
 					
 					
 					AddLinkEdit legalLinkEdit=	new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("F"), influenceDiagram.getVariable("U"), true); 
@@ -120,7 +120,7 @@ private ProbNet influenceDiagram;
 				
 				//do ilegal AddLink: add link from utility node G to utility node U
 		
-				new AddProbNodeEdit(influenceDiagram,"G",NodeType.UTILITY,new Point2D.Double()).doEdit();
+				new AddProbNodeEdit(influenceDiagram, new Variable("G"),NodeType.UTILITY,new Point2D.Double()).doEdit();
 				Variable vG = 
 						influenceDiagram.getProbNode("G", NodeType.UTILITY).getVariable();
 				

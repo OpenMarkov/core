@@ -11,7 +11,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.RemoveNodeEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -45,10 +45,10 @@ public class ProperUtilityPotentials extends PNConstraint {
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
 		ArrayList<PNEdit> edits = 
-			UtilConstraints.getEditsType(edit, AddVariableEdit.class);
+			UtilConstraints.getEditsType(edit, AddProbNodeEdit.class);
 		int numUtilities = probNet.getNumNodes(NodeType.UTILITY);
 		for (PNEdit simpleEdit : edits) {
-			if (((AddVariableEdit)simpleEdit).getNodeType() == NodeType.UTILITY) {
+			if (((AddProbNodeEdit)simpleEdit).getNodeType() == NodeType.UTILITY) {
 				numUtilities = numUtilities + 1;
 			}
 		}		

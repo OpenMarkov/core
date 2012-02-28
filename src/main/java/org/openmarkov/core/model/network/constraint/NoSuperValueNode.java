@@ -11,7 +11,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -44,9 +44,9 @@ public class NoSuperValueNode extends PNConstraint {
 	WrongCriterionException {
 		// AddVariableEdit
 		ArrayList<PNEdit> edits = 
-			UtilConstraints.getEditsType(edit, AddVariableEdit.class);
+			UtilConstraints.getEditsType(edit, AddProbNodeEdit.class);
 		for (PNEdit simpleEdit : edits) {
-			NodeType nodeType = ((AddVariableEdit)simpleEdit).getNodeType();
+			NodeType nodeType = ((AddProbNodeEdit)simpleEdit).getNodeType ();
 			if ((nodeType == NodeType.SV_PRODUCT) || 
 					(nodeType == NodeType.SV_SUM)) {
 				return false;

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
@@ -38,7 +38,6 @@ import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.OnlyOneAgent;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
-import org.openmarkov.core.model.network.constraint.OnlyUnlabeledLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 
 public class NetworkTypeTests
@@ -87,7 +86,7 @@ public class NetworkTypeTests
     public void testImpossibleNetworkTypeConversion () throws ConstraintViolationException, NotEnoughMemoryException, CanNotDoEditException, NonProjectablePotentialException, WrongCriterionException, DoEditException
     {
         ProbNet probNet = new ProbNet ();
-        AddVariableEdit addVariableEdit = new AddVariableEdit (probNet, new Variable("a"), NodeType.DECISION); 
+        AddProbNodeEdit addVariableEdit = new AddProbNodeEdit (probNet, new Variable("a"), NodeType.DECISION); 
         probNet.setNetworkType (InfluenceDiagramType.getUniqueInstance ());
 
         probNet.getPNESupport ().announceEdit(addVariableEdit);

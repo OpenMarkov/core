@@ -8,12 +8,10 @@ package org.openmarkov.core.action;
 
 import java.awt.geom.Point2D;
 
-import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 
@@ -67,23 +65,21 @@ public class AddProbNodeEdit extends SimplePNEdit
         this.nodeType = nodeType;
         this.variable = variable;
     }
-
+    
     /**
      * Creates a new <code>AddProbNodeEdit</code> with the network where the new
      * new node will be added and basic information about it.
      * @param probNet the <code>ProbNet</code> where the new node will be added.
-     * @param newNodeName the name of the new node
+     * @param variable the variable contained in the new node
      * @param nodeType The new node type.
-     * @param cursorposition the position (coordinates X,Y) of the node.
      */
     public AddProbNodeEdit (ProbNet probNet,
-                            String newNodeName,
-                            NodeType nodeType,
-                            Point2D.Double cursorPosition)
+                            Variable variable,
+                            NodeType nodeType)
     {
-        this (probNet, createDefaultVariable (probNet, newNodeName, nodeType), nodeType,
-              cursorPosition);
-    }
+        this (probNet, variable, nodeType, new Point2D.Double());
+    }    
+    
 
     @Override
     public void doEdit ()
@@ -95,7 +91,7 @@ public class AddProbNodeEdit extends SimplePNEdit
         // Decision node has no potential when is created
         if (nodeType != NodeType.DECISION)
         {
-            probNet.addPotential (PotentialOperations.getUniformPotential (probNet, variable,
+           newNode = probNet.addPotential (PotentialOperations.getUniformPotential (probNet, variable,
                                                                            nodeType));
         }
         else
@@ -118,6 +114,16 @@ public class AddProbNodeEdit extends SimplePNEdit
     {
         return newNode;
     }
+    
+    public Variable getVariable ()
+    {
+        return variable;
+    }
+    
+    public NodeType getNodeType ()
+    {
+        return nodeType;
+    }        
 
     public String getPresentationName ()
     {
@@ -139,26 +145,5 @@ public class AddProbNodeEdit extends SimplePNEdit
         setTypicalRedo (false);
         super.redo ();
         probNet.addProbNode (newNode);
-    }
-
-    private static Variable createDefaultVariable (ProbNet probNet, String name, NodeType nodeType)
-    {
-        Variable defaultVariable = null;
-        // Gets the default states for a new node
-        State[] states = DefaultStates.getStatesNodeType (nodeType, probNet.getDefaultStates ());
-        if (states.length == 0)
-        {
-            states = new State[] {new State ("absent"), new State ("present")};
-        }
-        // Creates a new variable
-        if (nodeType == NodeType.UTILITY)
-        {
-            defaultVariable = new Variable (name);
-        }
-        else
-        {
-            defaultVariable = new Variable (name, states);
-        }
-        return defaultVariable;
     }
 }

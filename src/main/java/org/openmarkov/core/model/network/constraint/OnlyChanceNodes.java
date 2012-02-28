@@ -11,7 +11,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -41,9 +41,9 @@ public class OnlyChanceNodes extends PNConstraint {
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
 		ArrayList<PNEdit> edits = 
-			UtilConstraints.getEditsType(edit, AddVariableEdit.class);
+			UtilConstraints.getEditsType(edit, AddProbNodeEdit.class);
 		for (PNEdit simpleEdit : edits) {
-			if (((AddVariableEdit)simpleEdit).getNodeType() != NodeType.CHANCE) {
+			if (((AddProbNodeEdit)simpleEdit).getNodeType () != NodeType.CHANCE) {
 				return false;
 			}
 		}

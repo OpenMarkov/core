@@ -8,7 +8,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.List;
 
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -44,10 +44,10 @@ public class OnlyNumericVariables extends PNConstraint
         NonProjectablePotentialException,
         WrongCriterionException
     {
-        List<PNEdit> edits = UtilConstraints.getEditsType (edit, AddVariableEdit.class);
+        List<PNEdit> edits = UtilConstraints.getEditsType (edit, AddProbNodeEdit.class);
         for (PNEdit simpleEdit : edits)
         {
-            Variable variable = ((AddVariableEdit) simpleEdit).getVariable ();
+            Variable variable = ((AddProbNodeEdit) simpleEdit).getVariable ();
             VariableType varType = variable.getVariableType ();
             if (varType != VariableType.NUMERIC)
             {

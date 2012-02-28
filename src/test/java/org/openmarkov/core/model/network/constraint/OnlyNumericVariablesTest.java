@@ -6,7 +6,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -59,7 +59,7 @@ public class OnlyNumericVariablesTest {
 		boolean exceptionLaunched = false;
 		Variable vc1 = new Variable("E");
 		// test no exception in legal edit
-		AddVariableEdit legalAdd = new AddVariableEdit(influenceDiagram, vc1,
+		AddProbNodeEdit legalAdd = new AddProbNodeEdit(influenceDiagram, vc1,
 				NodeType.DECISION);
 		// add the node E (decision + numeric)
 		try {
@@ -71,7 +71,7 @@ public class OnlyNumericVariablesTest {
 
 		Variable vc2 = new Variable("F", 3);
 		// test exception in ilegal edit
-		AddVariableEdit ilegalAdd = new AddVariableEdit(influenceDiagram, vc2,
+		AddProbNodeEdit ilegalAdd = new AddProbNodeEdit(influenceDiagram, vc2,
 				NodeType.DECISION);
 		// add the node F (decision + finite state)
 		try {

@@ -6,7 +6,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
@@ -56,7 +56,7 @@ public class OnlyTemporalVariablesTest {
 		
 		boolean exceptionLaunched = false;
 		Variable var= new Variable(" [11]","Y","N");
-		AddVariableEdit legalEdit= new AddVariableEdit(network,var,NodeType.CHANCE); 
+		AddProbNodeEdit legalEdit= new AddProbNodeEdit(network,var,NodeType.CHANCE); 
 		// add the variable
 				try {
 					pNESupport.announceEdit(legalEdit);
@@ -66,7 +66,7 @@ public class OnlyTemporalVariablesTest {
 				}
 
 		Variable var1= new Variable("F");
-		AddVariableEdit ilegalEdit= new AddVariableEdit(network,var1,NodeType.CHANCE); 
+		AddProbNodeEdit ilegalEdit= new AddProbNodeEdit(network,var1,NodeType.CHANCE); 
 		// add the variable
 				try {
 					pNESupport.announceEdit(ilegalEdit);

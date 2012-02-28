@@ -28,7 +28,7 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
  * Abstract learning algorithm.
  */
 public abstract class LearningAlgorithm {
-	
+    
     /** Edition generator */
     protected EditionsGenerator editionsGenerator;
     /** Parameter for the parametric learning. */
@@ -69,7 +69,7 @@ public abstract class LearningAlgorithm {
         while (bestEdition != null)
         {
             step (bestEdition.getEdition ());
-            bestEdition = editionsGenerator.getNext (true, true);
+            bestEdition = editionsGenerator.getBest (true, true);
         }
        /* Parametric Learning */
        parametricLearning(probNet, cases);
@@ -86,7 +86,7 @@ public abstract class LearningAlgorithm {
      * @throws openmarkov.exceptions.NotEnoughMemoryException
      * @throws java.lang.Exception
      */
-    public ProbNet step(PNEdit bestEdition) throws NotEnoughMemoryException, 
+    private ProbNet step(PNEdit bestEdition) throws NotEnoughMemoryException, 
             NormalizeNullVectorException {
 
     /* If there have been any improvements on the score, we update
@@ -104,8 +104,8 @@ public abstract class LearningAlgorithm {
         }
         return probNet;
     }
-    		
-	/**
+            
+    /**
      * This function creates the Potentials associated to each node,
      * normalizing the absolute frequencies of the configurations of 
      * the parents.
@@ -113,14 +113,14 @@ public abstract class LearningAlgorithm {
      * @throws NormalizeNullVectorException 
      */
     public ProbNet parametricLearning(ProbNet learnedNet, int[][] cases) 
-    		throws NotEnoughMemoryException, NormalizeNullVectorException{
+            throws NotEnoughMemoryException, NormalizeNullVectorException{
         TablePotential absoluteFrequencies;
         
         for (ProbNode node : learnedNet.getProbNodes()) { 
             absoluteFrequencies = calculateAbsoluteFrequencies(learnedNet, cases, node);
             for (int j = 0; j < absoluteFrequencies.getTableSize(); j++)
                 absoluteFrequencies.values[j] += alpha;
-            node.addPotential(DiscretePotentialOperations.normalize(absoluteFrequencies));
+            learnedNet.addPotential (DiscretePotentialOperations.normalize(absoluteFrequencies));
         }
         
         return learnedNet;
@@ -195,9 +195,9 @@ public abstract class LearningAlgorithm {
                                                           int[] indexesOfParents,
                                                           int numValues
                                                           )
-    		throws NotEnoughMemoryException {
+            throws NotEnoughMemoryException {
         TablePotential absoluteFreqPotential = new TablePotential(
-        		variables, PotentialRole.CONDITIONAL_PROBABILITY);
+                variables, PotentialRole.CONDITIONAL_PROBABILITY);
         double[] absoluteFreqs = absoluteFreqPotential.getValues();
         double iCPT;
         int iNode = probNet.getProbNodes().indexOf(

@@ -44,15 +44,11 @@ public class AddLinkEdit extends BaseLinkEdit {
     /**
      * The last <code>Potential</code> of the second node before the edition
      */
-    protected ArrayList<Potential> oldPotential;
+    protected ArrayList<Potential> oldPotentials;
     /**
      * The new <code>Potential</code> of the second node
      */
     protected ArrayList<Potential> newPotentials = new ArrayList<Potential>() ;
-    /**
-     * Last potential of the second node before edition
-     */
-    protected Potential previousPotential;
     /**
      * parent node
      */
@@ -74,13 +70,6 @@ public class AddLinkEdit extends BaseLinkEdit {
         this.nodeName2 = variable2.getName();
         
         this.link = null;
-        
-        try {
-            this.oldPotential = probNet.getProbNode(nodeName2).getPotentials();
-        } catch (ProbNodeNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     // Methods
@@ -93,20 +82,22 @@ public class AddLinkEdit extends BaseLinkEdit {
             node2 = probNet.getProbNode (nodeName2);
             probNet.addLink (node1, node2, isDirected);
             this.link = probNet.getGraph ().getLink (node1.getNode (), node2.getNode (), isDirected);
-            if (node2.getNodeType () != NodeType.DECISION && !oldPotential.isEmpty ())
+            if (node2.getNodeType () != NodeType.DECISION)
             {
-                // Update potential
-                ArrayList<Variable> variables = oldPotential.get (0).getVariables ();
-                variables.add (probNet.getVariable (nodeName1));
-                previousPotential = node2.getPotentials ().get (0);
-                Potential newPotential = previousPotential.addVariable (probNet.getVariable (nodeName1));
-                if (newPotential == null)
-                {// It has not been implemented yet for this type of potential
-                    newPotential = new UniformPotential (variables,
-                                                         oldPotential.get (0).getPotentialRole ());
+                this.oldPotentials = probNet.getProbNode(nodeName2).getPotentials();
+                for(Potential oldPotential : oldPotentials)
+                {
+                    // Update potential
+                    Potential newPotential = oldPotential.addVariable (probNet.getVariable (nodeName1));
+                    if (newPotential == null)
+                    {// It has not been implemented yet for this type of potential
+                        ArrayList<Variable> variables = oldPotential.getVariables ();
+                        variables.add (probNet.getVariable (nodeName1));
+                        newPotential = new UniformPotential (variables, oldPotential.getPotentialRole ());
+                    }
+                    newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
+                    newPotentials.add (newPotential);
                 }
-                newPotential.setUtilityVariable (oldPotential.get (0).getUtilityVariable ());
-                newPotentials.add (newPotential);
                 node2.setPotentials (newPotentials);
             }
         }
@@ -126,7 +117,7 @@ public class AddLinkEdit extends BaseLinkEdit {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        node2.setPotentials (oldPotential);
+        node2.setPotentials (oldPotentials);
         probNet.removeLink(variable1, variable2, isDirected);
     }
    

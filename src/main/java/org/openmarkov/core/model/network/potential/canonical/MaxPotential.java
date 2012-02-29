@@ -10,7 +10,6 @@
 package org.openmarkov.core.model.network.potential.canonical;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.Variable;
@@ -184,4 +183,18 @@ public class MaxPotential extends MinMaxPotential {
     	newICIPotential.setLeakyParameters(getLeakyParameters());
     	return newICIPotential;
     }
+    
+    @Override
+    protected int computeFFunction (ArrayList<Integer> parentStates)
+    {
+        int resultingState = 0;
+        for(Integer parentState: parentStates)
+        {
+            if(parentState > resultingState)
+            {
+                resultingState = parentState;
+            }
+        }
+        return resultingState;
+    }     
 }

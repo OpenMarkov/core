@@ -7,8 +7,6 @@
 package org.openmarkov.core.model.network.potential.canonical;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
@@ -153,42 +151,6 @@ public class TuningModelPotential extends ICIPotential
         return newPotential;
     }       
     @Override
-    public Integer sample (Random randomGenerator, HashMap<Variable, Integer> parentStateIndexes)
-    {
-        int netNumIncr = 0;
-        for(int i = 1 ; i < variables.size (); ++i)
-        {
-            netNumIncr += parentStateIndexes.get (variables.get(i)) - 1;
-        }
-        int sampleIndex = 0;
-        if(netNumIncr == 0)
-        {
-            sampleIndex = 1;
-        }else if(netNumIncr > 0)
-        {
-            sampleIndex = 2;
-        }
-        return sampleIndex;
-    }         
-    
-    @Override    
-    public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)
-    {
-        int netNumIncr = 0;
-        // find index of first position for the given configuration
-        for(int i = 1 ; i < variables.size (); ++i)
-        {
-            netNumIncr += sampledStateIndexes.get (variables.get(i)) - 1;
-        }
-        
-        double probability = 0.0;
-        if((sampledStateIndexes.get (variables.get (0)) -1 ) * netNumIncr > 0 )
-        {
-            probability = 1.0;
-        }
-        return probability;
-    }         
-    @Override
     public Potential addVariable(Variable newVariable){
     	ArrayList<Variable> newVariables = (ArrayList<Variable>) variables.clone();
     	newVariables.add(newVariable);
@@ -223,5 +185,24 @@ public class TuningModelPotential extends ICIPotential
 		}
     	newICIPotential.setLeakyParameters(getLeakyParameters());
     	return newICIPotential;
+    }
+
+    @Override
+    protected int computeFFunction (ArrayList<Integer> parentStates)
+    {
+        int netNumIncr = 0;
+        for(Integer parentState: parentStates)
+        {
+            netNumIncr += parentState-1;
+        }
+        int resultingState = 1;
+        if(netNumIncr > 0)
+        {
+            resultingState = 2;
+        }else if(netNumIncr < 0)
+        {
+            resultingState = 0;
+        }
+        return resultingState;
     }
 }

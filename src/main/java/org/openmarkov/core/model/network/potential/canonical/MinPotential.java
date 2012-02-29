@@ -169,5 +169,19 @@ public class MinPotential extends MinMaxPotential {
     	newICIPotential.setLeakyParameters(getLeakyParameters());
     	return newICIPotential;
     }
+    
+    @Override
+    protected int computeFFunction (ArrayList<Integer> parentStates)
+    {
+        int resultingState = variables.get (0).getNumStates () - 1;
+        for(Integer parentState: parentStates)
+        {
+            if(parentState < resultingState)
+            {
+                resultingState = parentState;
+            }
+        }
+        return resultingState;
+    }    
 	
 }

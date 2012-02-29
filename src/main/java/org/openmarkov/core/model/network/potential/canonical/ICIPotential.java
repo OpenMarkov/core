@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -391,6 +392,62 @@ public abstract class ICIPotential extends Potential {
         return new Variable ("z_" + parent.getName () + "_" + child.getName(),
                              child.getStates ());
     }
+    
+    @Override
+    public Integer sample (Random randomGenerator, HashMap<Variable, Integer> parentStateIndexes)
+    {
+        ArrayList<Integer> iciSampledStates = new ArrayList<Integer> ();
+        int childNumStates = variables.get (0).getNumStates ();
+        // Sample noisy 
+        for(Variable variable: noisyParameters.keySet ())
+        {
+            double[] probabilities = noisyParameters.get (variable);
+            int index = childNumStates * parentStateIndexes.get (variable);
+            int sampleIndex = 0;
+            double randomPick = randomGenerator.nextDouble ();
+            double accumulatedProbability = probabilities[index + sampleIndex];
+            while(accumulatedProbability < randomPick)
+            {
+                ++sampleIndex;
+                accumulatedProbability +=probabilities[index + sampleIndex];
+            }
+            iciSampledStates.add (sampleIndex);
+        }
+            
+        // Sample leaky
+        int sampleIndex = 0;
+        double randomPick = randomGenerator.nextDouble ();
+        double accumulatedProbability = leakyParameters[sampleIndex];
+        while(accumulatedProbability < randomPick)
+        {
+            ++sampleIndex;
+            accumulatedProbability += leakyParameters[sampleIndex];
+        }
+        iciSampledStates.add (sampleIndex);
+        
+        // Sample child
+        return computeFFunction(iciSampledStates);
+    }         
+    
+    protected abstract int computeFFunction (ArrayList<Integer> iciSampledStates);
+
+    @Override    
+    public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)
+    {
+        int netNumIncr = 0;
+        // find index of first position for the given configuration
+        for(int i = 1 ; i < variables.size (); ++i)
+        {
+            netNumIncr += sampledStateIndexes.get (variables.get(i)) - 1;
+        }
+        
+        double probability = 0.0;
+        if((sampledStateIndexes.get (variables.get (0)) -1 ) * netNumIncr > 0 )
+        {
+            probability = 1.0;
+        }
+        return probability;
+    }     
 
   
 

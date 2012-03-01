@@ -150,17 +150,6 @@ public class Variable implements Cloneable {
         setTimeSlice(getTimeSlice(variable.getName ()));
     }	
 
-    public Object clone(){
-        Object object = null;
-        try {
-            object = super.clone();
-        } catch (CloneNotSupportedException e){
-        	// Unreachable code
-            System.err.println("Can not clone object " + object);
-        }
-        return object;
-    }
-	
 	/**
 	 * Default constructor for continuous variables.
 	 * <p>
@@ -228,6 +217,17 @@ public class Variable implements Cloneable {
 		this.precision = precision;
 		this.variableType = VariableType.DISCRETIZED;
 	}
+	
+    public Object clone(){
+        Object object = null;
+        try {
+            object = super.clone();
+        } catch (CloneNotSupportedException e){
+            // Unreachable code
+            System.err.println("Can not clone object " + object);
+        }
+        return object;
+    }	
 
 	// Methods
 	/** @param additionalProperties. <code>HashMap</code> with key = 

@@ -40,6 +40,11 @@ public class TuningModelPotential extends ICIPotential
         super (ICIModelType.TUNING, variables);
     }
     
+    public TuningModelPotential (Variable... variables)
+    {
+        this (toArrayList (variables));
+    }
+    
     /**
      * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
      * @param variables
@@ -103,13 +108,14 @@ public class TuningModelPotential extends ICIPotential
         // Build the list of variables: child node first, z variables
         ArrayList<Variable> tuningFunctionVariables = new ArrayList<Variable> (getAuxiliaryVariables());
         tuningFunctionVariables.add (0, variables.get (0));
+        tuningFunctionVariables.add (getLeakyVariable());
         TablePotential tablePotential = new TablePotential (tuningFunctionVariables, role);
         // Set the values for the deterministic tuning function
         for (int i = 0; i < tablePotential.values.length; i += NUM_STATES)
         {
             int index = i / NUM_STATES;
             int netNumIncr = 0;
-            for (int j = 0; j < getAuxiliaryVariables().size (); ++j)
+            for (int j = 0; j < getAuxiliaryVariables().size () + 1; ++j)
             {
                 // netNumIncr = -1 if v-, netNumIncr = 0 if v0, netNumIncr = 1
                 // if v+

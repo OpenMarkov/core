@@ -273,7 +273,24 @@ public abstract class ICIPotential extends Potential {
         
         this.leakyParameters = leakyParameters;
     }
-	
+    
+    /**
+     * Returns leaky variable
+     * @return
+     */
+    protected Variable getLeakyVariable()
+    {
+        return this.leakyVariable;
+    }
+    
+    /**
+     * 
+     * @return collection of Z variables
+     */
+    protected Collection<Variable> getAuxiliaryVariables()
+    {
+        return zVariables.values ();
+    }    
 
 	/** @return model. <code>ICIModel</code> */
 	public ICIModelType getModelType() {
@@ -305,15 +322,6 @@ public abstract class ICIPotential extends Potential {
 			throws ProbNodeNotFoundException, NotEnoughMemoryException {
 		// TODO implement this function
 		throw new Error("function shift is not implemented in ICIPotential");
-	}
-	
-	/**
-	 * 
-	 * @return collection of Z variables
-	 */
-	protected Collection<Variable> getAuxiliaryVariables()
-	{
-	    return zVariables.values ();
 	}
 	
     @Override
@@ -434,19 +442,9 @@ public abstract class ICIPotential extends Potential {
     @Override    
     public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)
     {
-        int netNumIncr = 0;
-        // find index of first position for the given configuration
-        for(int i = 1 ; i < variables.size (); ++i)
-        {
-            netNumIncr += sampledStateIndexes.get (variables.get(i)) - 1;
-        }
+        int sampledState = sample(new Random (), sampledStateIndexes);
         
-        double probability = 0.0;
-        if((sampledStateIndexes.get (variables.get (0)) -1 ) * netNumIncr > 0 )
-        {
-            probability = 1.0;
-        }
-        return probability;
+        return (sampledStateIndexes.get (variables.get (0)) == sampledState)? 1.0 : 0.0;
     }     
 
   

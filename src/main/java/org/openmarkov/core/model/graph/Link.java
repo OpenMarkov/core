@@ -74,7 +74,7 @@ public class Link {
 		graph.uf_addImplicitLink(this);
 		node1.uf_addLink(this);
 		node2.uf_addLink(this);
-		// initializesRestrictionsPotential();
+		linkRestriction = false;
 	}
 
 	// Methods
@@ -140,6 +140,21 @@ public class Link {
 		restrictionsPotential = new TablePotential(variables,
 				PotentialRole.LINK_RESTRICTION);
 		linkRestriction = true;
+	}
+
+	/*****
+	 * Resets the TablePotential for the variables associated to node1 and node2
+	 * to its initial state.
+	 * 
+	 * @throws NotEnoughMemoryException
+	 */
+	public void resetRestrictionsPotential() throws NotEnoughMemoryException {
+		ArrayList<Variable> variables = new ArrayList<Variable>();
+		variables.add(((ProbNode) node1.getObject()).getVariable());
+		variables.add(((ProbNode) node2.getObject()).getVariable());
+		restrictionsPotential = new TablePotential(variables,
+				PotentialRole.LINK_RESTRICTION);
+		linkRestriction = false;
 	}
 
 	/*****

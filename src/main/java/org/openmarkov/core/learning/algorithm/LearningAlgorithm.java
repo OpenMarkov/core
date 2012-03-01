@@ -116,7 +116,11 @@ public abstract class LearningAlgorithm {
             throws NotEnoughMemoryException, NormalizeNullVectorException{
         TablePotential absoluteFrequencies;
         
-        for (ProbNode node : learnedNet.getProbNodes()) { 
+        for (ProbNode node : learnedNet.getProbNodes()) {
+            if(!node.getPotentials ().isEmpty ())
+            {
+                learnedNet.removePotential (node.getPotentials ().get (0));
+            }
             absoluteFrequencies = calculateAbsoluteFrequencies(learnedNet, cases, node);
             for (int j = 0; j < absoluteFrequencies.getTableSize(); j++)
                 absoluteFrequencies.values[j] += alpha;

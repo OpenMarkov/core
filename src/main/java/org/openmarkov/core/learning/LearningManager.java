@@ -16,11 +16,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.learning.algorithm.LearningAlgorithm;
 import org.openmarkov.core.learning.algorithm.annotation.LearningAlgorithmManager;
 import org.openmarkov.core.learning.editionsgenerator.EditAndScorePair;
@@ -168,6 +172,29 @@ public class LearningManager {
         return this.learningAlgorithm.getBestEditions (numEdits,
                                                        onlyAllowedEdits,
                                                        onlyPositiveEdits);        
+    }
+    
+    /**
+     *  Applies the edit passed to the learnedNet and updates parameters
+     * @param edit
+     * @throws DoEditException 
+     * @throws WrongCriterionException 
+     * @throws NonProjectablePotentialException 
+     * @throws CanNotDoEditException 
+     * @throws ConstraintViolationException 
+     * @throws NotEnoughMemoryException 
+     * @throws NormalizeNullVectorException 
+     */
+    public void applyEdit (PNEdit edit)
+        throws NotEnoughMemoryException,
+        ConstraintViolationException,
+        CanNotDoEditException,
+        NonProjectablePotentialException,
+        WrongCriterionException,
+        DoEditException, NormalizeNullVectorException
+    {
+        this.learnedNet.doEdit (edit);
+        learningAlgorithm.parametricLearning (learnedNet, cases);
     }
     
     /**

@@ -71,7 +71,11 @@ public class NoCycle extends PNConstraint {
                 Node node1 = probNet.getProbNode(variable1).getNode();
                 Variable variable2 = ((InvertLinkEdit)simpleEdit).getVariable2(); 
                 Node node2 = probNet.getProbNode(variable2).getNode();
-                if (graph.existsPath(node1, node2, true)) {
+                probNet.getGraph ().removeLink (node1, node2, true);
+                boolean existsPath = graph.existsPath(node1, node2, true);
+                probNet.getGraph ().addLink (node1, node2, true);
+                if (existsPath)
+                {
                     return false;
                 }
             }

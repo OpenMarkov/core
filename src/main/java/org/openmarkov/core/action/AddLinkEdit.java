@@ -27,17 +27,6 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 @SuppressWarnings("serial")
 public class AddLinkEdit extends BaseLinkEdit {
     /**
-     * The first node in the link, if the network is directed, probNode1 is the 
-     * parent
-     */
-    protected String nodeName1;
-
-    /**
-     * The second node in the link, if the network is directed, probNode2 is the 
-     * child
-     */
-    protected String nodeName2;
-    /**
      * Resulting link of addition or removal.
      */
     protected Link link;
@@ -66,9 +55,17 @@ public class AddLinkEdit extends BaseLinkEdit {
     public AddLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, 
             boolean isDirected) {
         super(probNet, variable1, variable2, isDirected);
-        this.nodeName1 = variable1.getName();
-        this.nodeName2 = variable2.getName();
         
+        try
+        {
+            node1 = probNet.getProbNode (variable1.getName());
+            node2 = probNet.getProbNode (variable2.getName());
+        }
+        catch (ProbNodeNotFoundException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         this.link = null;
     }
 
@@ -76,35 +73,26 @@ public class AddLinkEdit extends BaseLinkEdit {
     @Override
     /** @throws exception <code>Exception</code> */
     public void doEdit() throws DoEditException, NotEnoughMemoryException {
-        try
+        probNet.addLink (node1, node2, isDirected);
+        this.link = probNet.getGraph ().getLink (node1.getNode (), node2.getNode (), isDirected);
+        if (node2.getNodeType () != NodeType.DECISION)
         {
-            node1 = probNet.getProbNode (nodeName1);
-            node2 = probNet.getProbNode (nodeName2);
-            probNet.addLink (node1, node2, isDirected);
-            this.link = probNet.getGraph ().getLink (node1.getNode (), node2.getNode (), isDirected);
-            if (node2.getNodeType () != NodeType.DECISION)
+            this.oldPotentials = node2.getPotentials ();
+            for (Potential oldPotential : oldPotentials)
             {
-                this.oldPotentials = probNet.getProbNode(nodeName2).getPotentials();
-                for(Potential oldPotential : oldPotentials)
-                {
-                    // Update potential
-                    Potential newPotential = oldPotential.addVariable (probNet.getVariable (nodeName1));
-                    if (newPotential == null)
-                    {// It has not been implemented yet for this type of potential
-                        ArrayList<Variable> variables = oldPotential.getVariables ();
-                        variables.add (probNet.getVariable (nodeName1));
-                        newPotential = new UniformPotential (variables, oldPotential.getPotentialRole ());
-                    }
-                    newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
-                    newPotentials.add (newPotential);
+                // Update potential
+                Potential newPotential = oldPotential.addVariable (node1.getVariable ());
+                if (newPotential == null)
+                {// It has not been implemented yet for this type of potential
+                    ArrayList<Variable> variables = oldPotential.getVariables ();
+                    variables.add (node1.getVariable ());
+                    newPotential = new UniformPotential (variables,
+                                                         oldPotential.getPotentialRole ());
                 }
-                node2.setPotentials (newPotentials);
+                newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
+                newPotentials.add (newPotential);
             }
-        }
-        catch (ProbNodeNotFoundException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace ();
+            node2.setPotentials (newPotentials);
         }
     }
 
@@ -112,7 +100,7 @@ public class AddLinkEdit extends BaseLinkEdit {
         super.undo();
         
         try {
-            node2 = probNet.getProbNode (nodeName2);
+            node2 = probNet.getProbNode (variable2.getName ());
         } catch (ProbNodeNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -150,14 +138,9 @@ public class AddLinkEdit extends BaseLinkEdit {
     * 
     * @return the first <code>ProbNode</code> object in the link. 
     */
-    public ProbNode getProbNode1() {
-        try {
-            return probNet.getProbNode(nodeName1);
-        } catch (ProbNodeNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
+    public ProbNode getProbNode1 ()
+    {
+        return node1;
     }
 
     /**
@@ -165,14 +148,9 @@ public class AddLinkEdit extends BaseLinkEdit {
     * 
     * @return the second <code>ProbNode</code> object in the link. 
     */
-    public ProbNode getProbNode2() {
-        try {
-            return probNet.getProbNode(nodeName2);
-        } catch (ProbNodeNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
+    public ProbNode getProbNode2 ()
+    {
+        return node2;
     }
     
    /**

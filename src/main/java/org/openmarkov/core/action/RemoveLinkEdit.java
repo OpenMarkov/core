@@ -28,17 +28,6 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 	private Logger logger;
 
 	/**
-	 * The first node in the link, if the network is directed, probNode1 is the 
-	 * parent
-	 */
-	protected String nodeName1;
-
-	/**
-	 * The second node in the link, if the network is directed, probNode2 is the 
-	 * child
-	 */
-	protected String nodeName2;
-	/**
 	 * Resulting link of addition or removal.
 	 */
 	protected Link link;
@@ -68,8 +57,16 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 			Variable variable2,	boolean isDirected) {
 		super(probNet, variable1, variable2, isDirected);
 		
-		this.nodeName1 = variable1.getName();
-		this.nodeName2 = variable2.getName();
+        try
+        {
+            node1 = probNet.getProbNode (variable1.getName ());
+            node2 = probNet.getProbNode (variable2.getName ());
+        }
+        catch (ProbNodeNotFoundException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 		
 		this.link = null;
 		this.logger = Logger.getLogger(RemoveLinkEdit.class);
@@ -79,51 +76,35 @@ public class RemoveLinkEdit extends BaseLinkEdit {
     public void doEdit ()
         throws NotEnoughMemoryException
     {
-        try
+        probNet.removeLink (node1, node2, isDirected);
+        this.link = probNet.getGraph ().getLink (node1.getNode (), node2.getNode (), isDirected);
+        if (node2.getNodeType () != NodeType.DECISION)
         {
-            node1 = probNet.getProbNode (nodeName1);
-            node2 = probNet.getProbNode (nodeName2);
-            probNet.removeLink (node1, node2, isDirected);
-            this.link = probNet.getGraph ().getLink (node1.getNode (), node2.getNode (), isDirected);
-            if (node2.getNodeType () != NodeType.DECISION)
+            // Update potentials
+            this.oldPotentials = node2.getPotentials ();
+            for (Potential oldPotential : oldPotentials)
             {
-                // Update potentials
-                this.oldPotentials = probNet.getProbNode(nodeName2).getPotentials();
-                for (Potential oldPotential : oldPotentials)
-                {
-                    Potential newPotential = oldPotential.removeVariable (probNet.getVariable (nodeName1));
-                    if (newPotential == null)
-                    {// It has not been implemented yet for this type of
-                     // potential
-                        ArrayList<Variable> variables = oldPotential.getVariables ();
-                        variables.add (probNet.getVariable (nodeName1));
-                        newPotential = new UniformPotential (variables,
-                                                             oldPotential.getPotentialRole ());
-                    }
-                    newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
-                    newPotentials.add (newPotential);
+                Potential newPotential = oldPotential.removeVariable (node1.getVariable ());
+                if (newPotential == null)
+                {// It has not been implemented yet for this type of
+                 // potential
+                    ArrayList<Variable> variables = oldPotential.getVariables ();
+                    variables.add (node1.getVariable ());
+                    newPotential = new UniformPotential (variables,
+                                                         oldPotential.getPotentialRole ());
                 }
-                node2.setPotentials (newPotentials);
+                newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
+                newPotentials.add (newPotential);
             }
+            node2.setPotentials (newPotentials);
         }
-        catch (ProbNodeNotFoundException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace ();
-        }
-        probNet.removeLink (variable1, variable2, isDirected);
     }
 
 	
 	@Override
 	public void undo() {
 		super.undo();
-		try {
-			node2 = probNet.getProbNode (nodeName2);
-		} catch (ProbNodeNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		node2.setPotentials (oldPotentials);
 		try {
 			probNet.addLink(variable1, variable2, isDirected);

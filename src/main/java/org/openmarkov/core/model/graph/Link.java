@@ -16,6 +16,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -129,8 +130,6 @@ public class Link {
 	 * node2, whose values are all 1.
 	 * 
 	 * @throws NotEnoughMemoryException
-	 * 
-	 * 
 	 */
 	public void initializesRestrictionsPotential()
 			throws NotEnoughMemoryException {
@@ -195,6 +194,14 @@ public class Link {
 
 		return (int) restrictionsPotential.getValue(variables, indexes);
 
+	}
+
+	/****
+	 * 
+	 * @return the potential of the the link restriction.
+	 */
+	public Potential getRestrictionsPotential() {
+		return restrictionsPotential;
 	}
 
 	/** @return String */

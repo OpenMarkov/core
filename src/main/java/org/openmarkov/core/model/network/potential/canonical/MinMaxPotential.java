@@ -96,9 +96,11 @@ public abstract class MinMaxPotential extends ICIPotential {
 			throws NotEnoughMemoryException, WrongCriterionException {
         ArrayList<TablePotential> potentials = new ArrayList<TablePotential> ();
 		for (TablePotential subPotential : buildSubpotentialList()) {
-			potentials.add(subPotential.tableProject(evidence, null).get(0));
+			potentials.addAll(subPotential.tableProject(evidence, null));
 		}
-		return potentials;
+		ArrayList<TablePotential> singleElementPotentialList = new ArrayList<TablePotential> ();
+		singleElementPotentialList.add (DiscretePotentialOperations.multiplyAndMarginalize (potentials, variables));
+		return singleElementPotentialList;
 	}
 	
 	/**	@return The conditional probability table given by this potential

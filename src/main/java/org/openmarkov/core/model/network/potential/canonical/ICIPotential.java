@@ -185,7 +185,7 @@ public abstract class ICIPotential extends Potential {
                 }
             }
             //add resulting potential
-            potentials.add (DiscretePotentialOperations.multiplyAndMarginalize (relatedPotentials,
+            potentials.add (0, DiscretePotentialOperations.multiplyAndMarginalize (relatedPotentials,
                                                                                 allVariables));
         }
         singleElementPotentialList.add (DiscretePotentialOperations.multiplyAndMarginalize (potentials,

@@ -26,6 +26,8 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
  * variables in a <code>ProbNet</code> */
 @SuppressWarnings("serial")
 public class AddLinkEdit extends BaseLinkEdit {
+    
+    private boolean updatePotentials;
     /**
      * Resulting link of addition or removal.
      */
@@ -53,7 +55,7 @@ public class AddLinkEdit extends BaseLinkEdit {
      * @param variable2 <code>Variable</code>
      * @param isDirected <code>boolean</code> */
     public AddLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, 
-            boolean isDirected) {
+            boolean isDirected, boolean updatePotentials) {
         super(probNet, variable1, variable2, isDirected);
         
         try
@@ -66,7 +68,14 @@ public class AddLinkEdit extends BaseLinkEdit {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        this.updatePotentials = updatePotentials;
         this.link = null;
+    }
+    
+    public AddLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, 
+                       boolean isDirected)
+    {
+        this(probNet, variable1, variable2, isDirected, true);
     }
 
     // Methods
@@ -75,7 +84,7 @@ public class AddLinkEdit extends BaseLinkEdit {
     public void doEdit() throws DoEditException, NotEnoughMemoryException {
         probNet.addLink (node1, node2, isDirected);
         this.link = probNet.getGraph ().getLink (node1.getNode (), node2.getNode (), isDirected);
-        if (node2.getNodeType () != NodeType.DECISION)
+        if (updatePotentials && node2.getNodeType () != NodeType.DECISION)
         {
             this.oldPotentials = node2.getPotentials ();
             for (Potential oldPotential : oldPotentials)
@@ -105,7 +114,10 @@ public class AddLinkEdit extends BaseLinkEdit {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        node2.setPotentials (oldPotentials);
+        if(updatePotentials)
+        {
+            node2.setPotentials (oldPotentials);
+        }
         probNet.removeLink(variable1, variable2, isDirected);
     }
    

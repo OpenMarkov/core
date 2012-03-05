@@ -26,7 +26,8 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 public class RemoveLinkEdit extends BaseLinkEdit {
 	
 	private Logger logger;
-
+	
+    private boolean                updatePotentials;
 	/**
 	 * Resulting link of addition or removal.
 	 */
@@ -54,7 +55,7 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 	 * @param variable2 <code>Variable</code>
 	 * @param isDirected <code>boolean</code> */
 	public RemoveLinkEdit(ProbNet probNet, Variable variable1, 
-			Variable variable2,	boolean isDirected) {
+			Variable variable2,	boolean isDirected, boolean updatePotentials) {
 		super(probNet, variable1, variable2, isDirected);
 		
         try
@@ -68,9 +69,18 @@ public class RemoveLinkEdit extends BaseLinkEdit {
             e.printStackTrace();
         }
 		
+        this.updatePotentials = updatePotentials;
 		this.link = null;
 		this.logger = Logger.getLogger(RemoveLinkEdit.class);
 	}
+	
+    public RemoveLinkEdit (ProbNet probNet,
+                           Variable variable1,
+                           Variable variable2,
+                           boolean isDirected)
+    {
+        this (probNet, variable1, variable2, isDirected, true);
+    }
 
 	@Override
     public void doEdit ()
@@ -78,7 +88,7 @@ public class RemoveLinkEdit extends BaseLinkEdit {
     {
         probNet.removeLink (node1, node2, isDirected);
         this.link = probNet.getGraph ().getLink (node1.getNode (), node2.getNode (), isDirected);
-        if (node2.getNodeType () != NodeType.DECISION)
+        if (updatePotentials && node2.getNodeType () != NodeType.DECISION)
         {
             // Update potentials
             this.oldPotentials = node2.getPotentials ();
@@ -105,7 +115,10 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 	public void undo() {
 		super.undo();
 
-		node2.setPotentials (oldPotentials);
+		if(updatePotentials)
+		{
+		    node2.setPotentials (oldPotentials);
+		}
 		try {
 			probNet.addLink(variable1, variable2, isDirected);
 		} catch (Exception e) {

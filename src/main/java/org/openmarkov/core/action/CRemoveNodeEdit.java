@@ -89,7 +89,7 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 				if ((node1 != node2) && (!node1.isSibling(node2))) {
 					addEdit(new AddLinkEdit(probNet, 
 						((ProbNode)node1.getObject()).getVariable(), 
-						((ProbNode)node2.getObject()).getVariable(), false));
+						((ProbNode)node2.getObject()).getVariable(), false, false));
 				}
 			}
 		}
@@ -98,16 +98,16 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 		for (Node parent : parents) {
 			addEdit(new RemoveLinkEdit(probNet, 
 				((ProbNode)parent.getObject()).getVariable(), 
-				probNode.getVariable(), true));
+				probNode.getVariable(), true, false));
 		}
 		for (Node child : children) {
 			Variable variable = ((ProbNode)child.getObject()).getVariable();
-			addEdit(new RemoveLinkEdit(probNet,	probNode.getVariable(), variable, true));
+			addEdit(new RemoveLinkEdit(probNet,	probNode.getVariable(), variable, true, false));
 		}
 		for (Node sibling : siblings) {
 			addEdit(new RemoveLinkEdit(probNet, 
 				((ProbNode)sibling.getObject()).getVariable(), 
-				probNode.getVariable(), false));
+				probNode.getVariable(), false, false));
 		}
 
 		// add edit to remove the variable

@@ -1247,7 +1247,7 @@ public class ProbNet implements Cloneable {
 				for (int i = 1; i < potentialVariables.size(); i++) {
 					Node conditioningNode = getProbNode(
 							potentialVariables.get(i)).getNode();
-					if (!conditioningNode.isParent(conditionedNode)) {
+					if (!conditionedNode.isParent(conditioningNode)) {
 						graph.addLink(conditioningNode, conditionedNode, true);
 					}
 				}

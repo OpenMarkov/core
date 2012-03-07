@@ -10,6 +10,8 @@
 package org.openmarkov.core.action;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -20,6 +22,7 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 
 /**
@@ -64,6 +67,8 @@ public class NodeStateEdit extends SimplePNEdit {
 	private PartitionedInterval currentPartitionedInterval;
 	private State[] lastStates;
 
+	private Map<Link, double[]> linkRestrictionMap;
+
 	/**
 	 * Creates a new <code>NodeStateEdit</code> to carry out the specified
 	 * action on the specified state.
@@ -89,6 +94,7 @@ public class NodeStateEdit extends SimplePNEdit {
 		this.currentPartitionedInterval = probNode.getVariable()
 				.getPartitionedInterval();
 		this.lastStates = probNode.getVariable().getStates().clone();
+		this.linkRestrictionMap = new HashMap<Link, double[]>();
 	}
 
 	@Override
@@ -224,6 +230,17 @@ public class NodeStateEdit extends SimplePNEdit {
 			probNode.getVariable().setPartitionedInterval(
 					currentPartitionedInterval);
 		}
+		for (Link link : linkRestrictionMap.keySet()) {
+			try {
+				link.initializesRestrictionsPotential();
+			TablePotential restrictionPotential = (TablePotential) link
+					.getRestrictionsPotential();
+			restrictionPotential.setValues(linkRestrictionMap.get(link));
+			} catch (NotEnoughMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 	}
 
@@ -285,6 +302,9 @@ public class NodeStateEdit extends SimplePNEdit {
 		for (Link link : node.getLinks()) {
 			if (link.hasRestrictions()) {
 				try {
+					double[] lastPotential = ((TablePotential) link
+							.getRestrictionsPotential()).values.clone();
+					linkRestrictionMap.put(link, lastPotential);
 					link.resetRestrictionsPotential();
 				} catch (NotEnoughMemoryException e) {
 					e.printStackTrace();

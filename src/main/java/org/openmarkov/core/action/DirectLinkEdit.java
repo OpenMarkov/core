@@ -72,4 +72,10 @@ public class DirectLinkEdit extends BaseLinkEdit{
 	public String getOperationName() {
 		return "Direct";
 	}
+
+    @Override
+    public BaseLinkEdit getUndoEdit ()
+    {
+        return this;
+    }
 }

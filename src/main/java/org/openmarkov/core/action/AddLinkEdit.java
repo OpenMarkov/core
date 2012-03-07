@@ -172,6 +172,11 @@ public class AddLinkEdit extends BaseLinkEdit {
    public Link getLink ()
    {
        return link;
-   }    
-    
+   }
+
+    @Override
+    public BaseLinkEdit getUndoEdit ()
+    {
+        return new RemoveLinkEdit (getProbNet (), getVariable1 (), getVariable2 (), isDirected ());
+    }    
 }

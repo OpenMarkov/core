@@ -168,4 +168,10 @@ public class InvertLinkEdit extends BaseLinkEdit {
 				" ==> " + variable2 + "-->"	+ variable1);
 	}
 
+    @Override
+    public BaseLinkEdit getUndoEdit ()
+    {
+        return new InvertLinkEdit (getProbNet (), getVariable2 (), getVariable1 (), isDirected ());
+    }
+
 }

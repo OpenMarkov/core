@@ -157,6 +157,12 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 			return new String(
 					"RemoveLinkEdit: " + variable1 + " --- " + variable2);
 		}
-	}	
+	}
+
+    @Override
+    public BaseLinkEdit getUndoEdit ()
+    {
+        return new AddLinkEdit (getProbNet (), getVariable1 (), getVariable2 (), isDirected ());
+    }	
 
 }

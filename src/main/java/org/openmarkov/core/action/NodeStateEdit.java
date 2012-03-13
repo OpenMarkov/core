@@ -180,7 +180,7 @@ public class NodeStateEdit extends SimplePNEdit {
 				probNode.getVariable().getStates()[stateSelected - 1] = probNode
 						.getVariable().getStates()[stateSelected];
 				probNode.getVariable().getStates()[stateSelected] = state;
-
+				resetLink(probNode.getNode());
 			}
 			break;
 		case UP:
@@ -189,7 +189,7 @@ public class NodeStateEdit extends SimplePNEdit {
 				probNode.getVariable().getStates()[stateSelected + 1] = probNode
 						.getVariable().getStates()[stateSelected];
 				probNode.getVariable().getStates()[stateSelected] = state;
-
+				resetLink(probNode.getNode());
 			}
 
 			break;

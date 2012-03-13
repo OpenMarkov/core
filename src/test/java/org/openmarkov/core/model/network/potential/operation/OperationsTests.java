@@ -19,7 +19,8 @@ import junit.framework.Test;
 @Suite.SuiteClasses({
 	UtilTest.class,
 	AuxiliaryOperationsTest.class,
-    DiscretePotentialOperationsTest.class
+    DiscretePotentialOperationsTest.class,
+    LinkRestrictionPotentialOperationsTest.class
 })
         
 /** @author manuel */

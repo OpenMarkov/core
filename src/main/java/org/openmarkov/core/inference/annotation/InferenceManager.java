@@ -129,15 +129,28 @@ public class InferenceManager
      * Returns an instance of the default algorithm given the ProbNet
      * @param probNet
      * @return
-     * @throws SecurityException
-     * @throws NoSuchMethodException
      */
     public InferenceAlgorithm getDefaultInferenceAlgorithm (ProbNet probNet)
-        throws SecurityException,
-        NoSuchMethodException
     {
-        return getInferenceAlgorithmByName ("VariableElimination", probNet);
-    }    
+        InferenceAlgorithm defaultAlgorithm = null;
+        try
+        {
+            defaultAlgorithm = getInferenceAlgorithmByName ("VariableElimination", probNet);
+        }
+        catch (SecurityException e)
+        {
+            // This should not be the case as we are hard coding to an algorithm
+            // that should have a public constructor
+            e.printStackTrace ();
+        }
+        catch (NoSuchMethodException e)
+        {
+            // This should not be the case as we are hard coding to an algorithm
+            // that should have a public constructor
+            e.printStackTrace ();
+        }
+        return defaultAlgorithm;
+    }
 
     /**
      * This method gets all the plugins with InferenceType annotations

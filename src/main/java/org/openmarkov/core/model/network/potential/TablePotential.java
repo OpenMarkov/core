@@ -1327,15 +1327,17 @@ public class TablePotential extends Potential
     public Integer sample (Random randomGenerator, HashMap<Variable, Integer> parentStateIndexes)
     {
         int index = 0;
-        int sampleIndex = -1;
+        int sampleIndex = 0;
         // find index of first position for the given configuration
         for (int i = 1; i < variables.size (); ++i)
         {
             index += parentStateIndexes.get (variables.get (i)) * offsets[i];
         }
         double random = randomGenerator.nextDouble ();
-        double accumulatedProbability = 0.0;
-        while (random > accumulatedProbability)
+        double accumulatedProbability = values[index + sampleIndex];
+        while (random > accumulatedProbability
+                // Make sure we don't go out of bounds even if the sum of probabilities is smaller than one.
+               && sampleIndex < variables.get (0).getNumStates () - 1)
         {
             ++sampleIndex;
             accumulatedProbability += values[index + sampleIndex];

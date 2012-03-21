@@ -11,6 +11,7 @@ package org.openmarkov.core.action;
 
 import java.util.ArrayList;
 
+import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.PotentialOperationException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -56,7 +57,7 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 		this.nodeType = probNet.getProbNode(variable).getNodeType();
 	}
 
-	public void generateEdits() {
+	public void generateEdits() throws NotEnoughMemoryException {
 		ProbNode probNode = probNet.getProbNode(variable);
 		Node node = probNode.getNode();
 
@@ -74,8 +75,9 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 		try {
 			newPotential = PotentialOperations.multiplyAndEliminate(
 				potentialsContainingVariable, variable);
-		} catch (PotentialOperationException e) {
-			// TODO Auto-generated catch block
+        } catch (NotEnoughMemoryException e) {
+            throw e;
+        } catch (PotentialOperationException e) {
 			e.printStackTrace();
 		}
 		

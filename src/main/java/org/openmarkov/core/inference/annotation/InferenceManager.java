@@ -151,6 +151,33 @@ public class InferenceManager
         }
         return defaultAlgorithm;
     }
+    
+    /**
+     * Returns an instance of the default approximate algorithm given the ProbNet
+     * @param probNet
+     * @return
+     */    
+    public InferenceAlgorithm getDefaultApproximateAlgorithm (ProbNet probNet)
+    {
+        InferenceAlgorithm defaultAlgorithm = null;
+        try
+        {
+            defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
+        }
+        catch (SecurityException e)
+        {
+            // This should not be the case as we are hard coding to an algorithm
+            // that should have a public constructor
+            e.printStackTrace ();
+        }
+        catch (NoSuchMethodException e)
+        {
+            // This should not be the case as we are hard coding to an algorithm
+            // that should have a public constructor
+            e.printStackTrace ();
+        }
+        return defaultAlgorithm;
+    }    
 
     /**
      * This method gets all the plugins with InferenceType annotations

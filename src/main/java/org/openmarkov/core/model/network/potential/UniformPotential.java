@@ -137,5 +137,5 @@ public class UniformPotential extends Potential {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 }

@@ -101,7 +101,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 				break;
 			case TREE_ADD:
 				// Creates a potential over the defined variables
-				newPotential= new TreeADDPotential(variables,role);	
+				newPotential= new TreeADDPotential(variables,variables.get(1),role);
 				break;
 			case CYCLE_LENGTH_SHIFT:
 				newPotential = 

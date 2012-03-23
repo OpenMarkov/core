@@ -104,7 +104,9 @@ public class TablePotential extends Potential
             offsets = TablePotential.calculateOffsets (dimensions);
             tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
             long freeMemory = runtime.freeMemory ();
-            if (freeMemory < (tableSize * (Double.SIZE / 8)))
+            // if tableSize is negative it means there has been an overflow and
+            // therefore the table it too big
+            if (freeMemory < (tableSize * (Double.SIZE / 8)) || tableSize < 0)
             {
                 throw new NotEnoughMemoryException (
                                                     "There are only "

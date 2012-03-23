@@ -94,7 +94,10 @@ public class AddLinkEdit extends BaseLinkEdit {
                 if (newPotential == null)
                 {// It has not been implemented yet for this type of potential
                     ArrayList<Variable> variables = oldPotential.getVariables ();
-                    variables.add (node1.getVariable ());
+                    if(!variables.contains (node1.getVariable ()))
+                    {
+                        variables.add (node1.getVariable ());
+                    }
                     newPotential = new UniformPotential (variables,
                                                          oldPotential.getPotentialRole ());
                 }

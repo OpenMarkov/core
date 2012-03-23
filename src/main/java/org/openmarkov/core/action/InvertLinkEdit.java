@@ -110,7 +110,10 @@ public class InvertLinkEdit extends BaseLinkEdit {
                     if (newPotential == null)
                     {// It has not been implemented yet for this type of potential
                         ArrayList<Variable> variables = oldPotential.getVariables ();
-                        variables.add (node2.getVariable ());
+                        if(!variables.contains (node2.getVariable ()))
+                        {
+                            variables.add (node2.getVariable ());
+                        }
                         newPotential = new UniformPotential (variables, oldPotential.getPotentialRole ());
                     }
                     newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());

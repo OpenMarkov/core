@@ -10,7 +10,6 @@
 package org.openmarkov.core.model.graph;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
@@ -202,6 +201,15 @@ public class Link {
 	 */
 	public Potential getRestrictionsPotential() {
 		return restrictionsPotential;
+	}
+
+	/****
+	 * Assigns the potential to the restrictionPotential of the link
+	 * @param potential
+	 */
+
+	public void setRestrictionsPotential(Potential potential) {
+		this.restrictionsPotential = (TablePotential) potential;
 	}
 
 	/** @return String */

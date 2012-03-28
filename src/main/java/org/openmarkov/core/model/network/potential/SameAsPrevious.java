@@ -82,9 +82,7 @@ public class SameAsPrevious extends Potential {
      */
     public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
     {
-        return probNode.getVariable ().isTemporal ()
-               && probNode.getVariable ().getTimeSlice () != 0
-               && !(probNode.getVariable ().getVariableType () == VariableType.NUMERIC && probNode.getNodeType () == NodeType.CHANCE);
+        return probNode.getVariable ().isTemporal () && probNode.getVariable ().getTimeSlice () > 0;
     }        
 
 	// Methods

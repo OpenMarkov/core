@@ -61,7 +61,7 @@ public class UniformPotential extends Potential {
      */
     public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
     {
-        return !(probNode.getVariable ().getVariableType () == VariableType.NUMERIC && probNode.getNodeType () == NodeType.CHANCE);
+        return true;
     }       
 
 	// Methods

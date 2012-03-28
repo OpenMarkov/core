@@ -47,9 +47,12 @@ public class CycleLengthShift extends Potential {
      */
     public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
     {
-        return probNode.getVariable ().isTemporal ()
-               && probNode.getVariable ().getTimeSlice () != 0
-               && !(probNode.getVariable ().getVariableType () == VariableType.NUMERIC && probNode.getNodeType () == NodeType.CHANCE);
+        return role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size () == 2
+                // child = variables.get (0)
+                // parent = variables.get (1)
+               && variables.get (0).isTemporal () && variables.get (1).isTemporal ()
+               && variables.get (0).getBaseName ().equals (variables.get (1).getBaseName ())
+               && variables.get (0).getTimeSlice () == variables.get (0).getTimeSlice () + 1;
     }       
 
 	// Methods

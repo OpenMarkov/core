@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.constraint;
 
 import java.lang.annotation.AnnotationFormatError;
@@ -78,7 +87,14 @@ public class ConstraintManager
             if (getDefaultBehavior (constraintClass).equals (ConstraintBehavior.YES)
                 || (includeOptionals && getDefaultBehavior (constraintClass).equals (ConstraintBehavior.OPTIONAL)))
             {
-                constraints.add (ConstraintPool.getUniqueInstance ().getConstraint (constraintClass));
+                try
+                {
+                    constraints.add (constraintClass.newInstance ());
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -88,10 +104,23 @@ public class ConstraintManager
         {
             if(overwrittenConstraints.get (constraintClass) == ConstraintBehavior.YES)
             {
-                constraints.add (ConstraintPool.getUniqueInstance ().getConstraint (constraintClass));
-            }else if (overwrittenConstraints.get (constraintClass) == ConstraintBehavior.NO)
+                try
+                {
+                    constraints.add (constraintClass.newInstance ());
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+             }else if (overwrittenConstraints.get (constraintClass) == ConstraintBehavior.NO)
             {
-                constraints.remove (ConstraintPool.getUniqueInstance ().getConstraint (constraintClass));
+                 for(int i= 0; i< constraints.size (); ++i)
+                 {
+                     if(constraints.get (i).getClass ().equals (constraintClass))
+                     {
+                         constraints.remove (i);
+                     }
+                 }
             }
         }
         return constraints;

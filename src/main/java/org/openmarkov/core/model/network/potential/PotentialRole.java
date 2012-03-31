@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 /**
  * 
  */
@@ -9,9 +18,10 @@ public enum PotentialRole {
 
 	CONDITIONAL_PROBABILITY(0, "conditionalProbability"),
 	DECISION(1, "decision"),
-	JOIN_PROBABILITY(2, "joinProbability"),
+	JOINT_PROBABILITY(2, "joinProbability"),
 	POLICY(3, "policy"),
-	UTILITY(4, "utility");
+	UTILITY(4, "utility"),
+	LINK_RESTRICTION(5,"linkRestriction");
 	
 	private int type;
 	

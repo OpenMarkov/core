@@ -1,10 +1,18 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.event.UndoableEditEvent;
-
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -13,13 +21,13 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 /** This constraint ensures that exists at least one cost potential and all of 
  *  them are children of a chance or a decision node. */
-@Constraint (name = "AtLeastOneCostPotential", defaultBehavior = ConstraintBehavior.NO)
+@Constraint (name = "AtLeastOneCostPotential", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class AtLeastOneCostPotential extends PNConstraint {
 
 	@Override
 	/** This method has no sense because this constraint is only used to check
 	 * the whole <code>ProbNet</code> before execute the algorithm. */
-	public boolean checkEvent(UndoableEditEvent event) {
+	public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		return false;
 	}
 

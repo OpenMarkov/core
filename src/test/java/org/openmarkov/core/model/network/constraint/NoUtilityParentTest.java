@@ -1,15 +1,22 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.constraint;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -61,18 +68,17 @@ public class NoUtilityParentTest {
 		Variable vc2 = new Variable("C2", 0);
 
 		// test no exception in legal edit
-		AddVariableEdit legalAdd = new AddVariableEdit(influenceDiagram, vc1, 
-			NodeType.UTILITY);
-		AddLinkEdit legalLink = new AddLinkEdit(influenceDiagram,vu,vc1,true);
+		AddProbNodeEdit legalAddC1 = new AddProbNodeEdit (influenceDiagram, vc1, NodeType.UTILITY);
 		
 		//add the node C1
 		try{
-			influenceDiagram.doEdit(legalAdd);
+			influenceDiagram.doEdit(legalAddC1);
 		} catch(Exception cve){
 			fail(cve.getMessage());
 		}
 		
 		//link U->C1
+        AddLinkEdit legalLink = new AddLinkEdit(influenceDiagram,vu,vc1,true);
 		try {
 			pNESupport.announceEdit(legalLink);
 			legalLink.doEdit();
@@ -81,20 +87,19 @@ public class NoUtilityParentTest {
 		}
 
 		// test exception in no legal edit
-		legalAdd = new AddVariableEdit(influenceDiagram, vc2, 
-				NodeType.DECISION);
-		AddLinkEdit ilegalLink = new AddLinkEdit(influenceDiagram,vu,vc2,true);
+		AddProbNodeEdit legalAddC2 = new AddProbNodeEdit (influenceDiagram, vc2, NodeType.DECISION);
 		
 		//add the node C2
 		try{
-			pNESupport.announceEdit(legalAdd);
-			legalAdd.doEdit();
+			pNESupport.announceEdit(legalAddC2);
+			legalAddC2.doEdit();
 		} catch(Exception cve){
 			fail(cve.getMessage());
 		}
 		
 		
 		boolean exceptionLaunched = false;
+        AddLinkEdit ilegalLink = new AddLinkEdit(influenceDiagram,vu,vc2,true);
 		try {
 			pNESupport.announceEdit(ilegalLink);
 		} catch (Exception cve) {

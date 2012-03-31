@@ -2,4 +2,6 @@
 syntax: regexp
 \.checkstyle
 syntax: regexp
-target
+target/
+syntax: regexp
+\.settings

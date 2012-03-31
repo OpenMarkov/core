@@ -1,14 +1,28 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.action;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 
 @SuppressWarnings("serial")
@@ -18,9 +32,10 @@ public class VariableTypeEdit extends SimplePNEdit {
 	private VariableType newType;
 	private VariableType currentType;
 	
+	
 	public VariableTypeEdit(ProbNode probNode, 
 			VariableType newType){
-		//this.probNet = probNet;
+		super(probNode.getProbNet ());
 		this.probNode = probNode;
 		this.newType = newType;
 		this.currentType = probNode.getVariable().getVariableType();
@@ -57,6 +72,7 @@ public class VariableTypeEdit extends SimplePNEdit {
                 child.setUniformPotential ();
             }
         }
+        resetLink(probNode.getNode());
         probNode.getVariable ().setVariableType (newType);
     }
 	@Override
@@ -73,6 +89,24 @@ public class VariableTypeEdit extends SimplePNEdit {
 	{
 		
 		return this.probNode;
+	}
+	
+	
+	/****
+	 * This method resets the link restriction of the links of the node
+	 * 
+	 * @param node
+	 */
+	private void resetLink(Node node) {
+		for (Link link : node.getLinks()) {
+			if (link.hasRestrictions()) {
+				try {	
+					link.resetRestrictionsPotential();
+				} catch (NotEnoughMemoryException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 }

@@ -1,9 +1,17 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
-import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoableEdit;
 
 import org.openmarkov.core.action.CompoundPNEdit;
@@ -25,28 +33,27 @@ public class UtilConstraints {
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
      */
-    public static ArrayList<PNEdit> getEditsType (UndoableEditEvent event,
+    public static ArrayList<PNEdit> getEditsType (PNEdit edit,
                                                   Class<?> typeEdit)
         throws NotEnoughMemoryException,
         NonProjectablePotentialException,
         WrongCriterionException
     {
         ArrayList<PNEdit> edits = new ArrayList<PNEdit> ();
-        PNEdit eventEdit = (PNEdit) event.getEdit ();
-        if (eventEdit.getClass () == typeEdit)
+        if (edit.getClass () == typeEdit)
         {
-            edits.add ((PNEdit) eventEdit);
+            edits.add ((PNEdit) edit);
         }
         else
         { // Check compound edits
-            if (CompoundPNEdit.class.isInstance (eventEdit))
+            if (CompoundPNEdit.class.isInstance (edit))
             {
-                Vector<UndoableEdit> simpleEdits = ((CompoundPNEdit) eventEdit).getEdits ();
-                for (UndoableEdit edit : simpleEdits)
+                Vector<UndoableEdit> simpleEdits = ((CompoundPNEdit) edit).getEdits ();
+                for (UndoableEdit simpleEdit : simpleEdits)
                 {
-                    if (typeEdit.isInstance (edit))
+                    if (typeEdit.isInstance (simpleEdit))
                     {
-                        edits.add ((PNEdit) edit);
+                        edits.add ((PNEdit) simpleEdit);
                     }
                 }
             }

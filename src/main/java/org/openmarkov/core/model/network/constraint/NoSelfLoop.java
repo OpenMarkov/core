@@ -1,8 +1,15 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
-
-import javax.swing.event.UndoableEditEvent;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
@@ -18,16 +25,16 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 @Constraint (name = "NoSelfLoops", defaultBehavior = ConstraintBehavior.YES)
 public class NoSelfLoop extends PNConstraint {
-	
+
 	@Override
-	public boolean checkEvent(UndoableEditEvent event) 
+	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
 		ArrayList<PNEdit> edits = 
-			UtilConstraints.getEditsType(event, AddLinkEdit.class);
-		for (PNEdit edit : edits) {
-			Variable variable1 = ((AddLinkEdit)edit).getVariable1(); 
-			Variable variable2 = ((AddLinkEdit)edit).getVariable2(); 
+			UtilConstraints.getEditsType(edit, AddLinkEdit.class);
+		for (PNEdit simpleEdit : edits) {
+			Variable variable1 = ((AddLinkEdit)simpleEdit).getVariable1(); 
+			Variable variable2 = ((AddLinkEdit)simpleEdit).getVariable2(); 
 			if (variable1 == variable2) {
 				return false;
 			}

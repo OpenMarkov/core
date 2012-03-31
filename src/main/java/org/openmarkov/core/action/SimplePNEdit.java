@@ -1,9 +1,19 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.action;
 
 import javax.swing.undo.AbstractUndoableEdit;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNet;
 
 
@@ -24,21 +34,20 @@ public abstract class SimplePNEdit extends AbstractUndoableEdit
 	
 	private Logger logger;
 	
-	// Constructors
-	public SimplePNEdit() {
-		this.logger = Logger.getLogger(SimplePNEdit.class);
-	}
-	
+	// Constructor
 	/** @param probNet <code>ProbNet</code> */
 	public SimplePNEdit(ProbNet probNet) {
 		this.probNet = probNet;
+        this.logger = Logger.getLogger(SimplePNEdit.class);
 	}
 	
 	// Methods
-	/** Abstract method to be defined in derived classes */
-	public abstract void doEdit() throws DoEditException;
+	/** Abstract method to be defined in derived classes 
+	 * @throws  */
+	public abstract void doEdit() throws DoEditException, NotEnoughMemoryException;
 	
 	/** @return probNet. <code>ProbNet</code> */
+	@Override
 	public ProbNet getProbNet() {
 		return probNet;
 	}

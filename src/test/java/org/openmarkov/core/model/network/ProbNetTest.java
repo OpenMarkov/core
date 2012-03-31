@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network;
 
 /** @author marias */
@@ -13,6 +22,7 @@ import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmarkov.core.OpenMarkovTests;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -21,12 +31,15 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.constraint.ConstraintManager;
+import org.openmarkov.core.model.network.constraint.MaxNumParents;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
 
 public class ProbNetTest {
@@ -467,7 +480,11 @@ public class ProbNetTest {
 	@Test
 	public void testProbNet() {
 		// Test empty probabilistic network.
-		assertEquals(13, emptyProbNet.getConstraints().size()); // No constraints
+		// By default a ProbNet is a Bayesian Network
+		int numBNConstraints = ConstraintManager.getUniqueInstance ().
+				buildConstraintList (BayesianNetworkType.getUniqueInstance ()).
+				size();
+		assertEquals(numBNConstraints, emptyProbNet.getConstraints().size()); // No constraints
 		for (NodeType nodeType : NodeType.values()) { // No nodes of every type
 			assertEquals(0, emptyProbNet.getNumNodes(nodeType));
 		}
@@ -475,18 +492,26 @@ public class ProbNetTest {
 
 	@Test
 	public void testAddConstraint() {
+		// By default a ProbNet is a Bayesian Network
+		int numBNConstraints = ConstraintManager.getUniqueInstance ().
+				buildConstraintList (BayesianNetworkType.getUniqueInstance ()).
+				size();
 		try {
-			emptyProbNet.addConstraint(new NoCycle(), true);
+			emptyProbNet.addConstraint(new MaxNumParents(), true);
 		} catch (ConstraintViolationException e) {
 			fail("Fail in testAddConstraint()");
 		}
 		ArrayList<PNConstraint> constraints = emptyProbNet.getConstraints();
-		assertEquals(13, constraints.size());
+		assertEquals(numBNConstraints + 1, constraints.size());
 	}
 
 	@Test
 	public void testRemoveConstraint() {
-		PNConstraint constraint = new NoCycle();
+		PNConstraint constraint = new MaxNumParents();
+		// By default a ProbNet is a Bayesian Network
+		int numBNConstraints = ConstraintManager.getUniqueInstance ().
+				buildConstraintList (BayesianNetworkType.getUniqueInstance ()).
+				size();
 		try {
 			emptyProbNet.addConstraint(constraint, true);
 		} catch (ConstraintViolationException e) {
@@ -494,7 +519,7 @@ public class ProbNetTest {
 		}
 		emptyProbNet.removeConstraint(constraint);
 		ArrayList<PNConstraint> constraints = emptyProbNet.getConstraints();
-		assertEquals(12, constraints.size());		
+		assertEquals(numBNConstraints, constraints.size());		
 	}
 
 	@Test
@@ -897,8 +922,8 @@ public class ProbNetTest {
 		int initialPosition = bPotential.getInitialPosition();
 		assertEquals(0, initialPosition);
 		double a = bPotential.values[initialPosition];
-			assertEquals(a, 0.9);
-		assertEquals(bPotential.values[initialPosition + offsets[0]], 0.1);
+			assertEquals(a, 0.9,OpenMarkovTests.maxError);
+		assertEquals(bPotential.values[initialPosition + offsets[0]], 0.1,OpenMarkovTests.maxError);
 	}
 
 	@Test
@@ -968,9 +993,9 @@ public class ProbNetTest {
 		assertEquals(1, offsets0B[0]);
 		int initialPosition = potential0B.getInitialPosition();
 		assertEquals(0, initialPosition);
-		assertEquals(0.26, potential0B.values[potential0B.getInitialPosition()]);
+		assertEquals(0.26, potential0B.values[potential0B.getInitialPosition()],OpenMarkovTests.maxError);
 		assertEquals(0.74, potential0B.values[
-		        potential0B.getInitialPosition() + offsets0B[0]]);
+		        potential0B.getInitialPosition() + offsets0B[0]],OpenMarkovTests.maxError);
 		// Test projected potential p(D|B,I), D = 1 = psi(B,I)
 		TablePotential potential1B = (TablePotential)potentialsB.get(1);
 		if (potential1B.getNumVariables() == 1) {
@@ -1057,4 +1082,19 @@ public class ProbNetTest {
 		assertTrue(potential1B.contains(I));
 		
 	}*/
+	
+	@Test
+	public void testGetAdditionalConstraints() {
+		ProbNet bnProbNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
+		PNConstraint maxNumParents = new MaxNumParents();
+		try {
+			bnProbNet.addConstraint(maxNumParents);
+		} catch (ConstraintViolationException e) {
+			fail("Unreachable code.");
+		}
+		ArrayList<PNConstraint> additionalConstraints = bnProbNet.getAdditionalConstraints();
+		assertEquals(1, additionalConstraints.size());
+		assertTrue(additionalConstraints.contains(maxNumParents));
+	}
+	
 }

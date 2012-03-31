@@ -1,16 +1,30 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 
 package org.openmarkov.core.learning;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.learning.algorithm.LearningAlgorithm;
 import org.openmarkov.core.learning.algorithm.annotation.LearningAlgorithmManager;
 import org.openmarkov.core.learning.editionsgenerator.EditAndScorePair;
@@ -34,24 +48,11 @@ public class LearningManager {
     /**  Learning algorithm */
     private LearningAlgorithm learningAlgorithm = null;    
     
-    /** Implemented metrics. */
-    public static final String[] metrics = {"Bayesiana", "K2", "BD", "Entropía",
-            "MDL", "AIC"};
-    
     /** Implemented independence tester. */
     public static final String[] independenceTesters = {"Entropía cruzada"};
 
-    /** Implemented algorithms. */
-    public static final String[] algorithms = {"Gradiente", "PC"};
-    
     /** ProbNet to learn. */
     private ProbNet learnedNet = null;
-    
-    /** Model net. */
-    private ProbNet modelNet = null;   
-    
-    /** How the model net will be used. */
-    private ModelNetUse modelNetUse = null;     
     
     /** Case database */
     private int[][] cases = null;
@@ -76,6 +77,7 @@ public class LearningManager {
     public LearningManager (ProbNet preprocessedNet,
                             int[][] cases,
                             String algorithmName,
+                            List<Object> parameters, 
                             ProbNet modelNet,
                             ModelNetUse modelNetUse
                             )
@@ -86,48 +88,54 @@ public class LearningManager {
         NotEnoughMemoryException
     {
         LearningAlgorithmManager learningAlgorithmManager = new LearningAlgorithmManager ();
-        this.learnedNet = preprocessedNet;
-        this.modelNet = modelNet;
-        this.modelNetUse = modelNetUse;
         this.cases = cases;
         /* Maybe there's no modelNet to work with */
-        if ((modelNetUse.isUseModelNet ()) && (modelNet == null))
+        if ((modelNetUse.isUseModelNet ()))
         {
-            throw new EmptyModelNetException ();
+            if (modelNet == null)
+            {
+                throw new EmptyModelNetException ();
+            }
+            this.learnedNet = applyModelNet (preprocessedNet, modelNet, modelNetUse);
         }
-        
-        // TODO: Fill this up
-        HashMap<Class<?>, Object> parameters = null;        
+        else
+        {
+            this.learnedNet = preprocessedNet;
+        }     
+        parameters.add (0, learnedNet);
+        parameters.add (1, cases);
         this.learningAlgorithm = learningAlgorithmManager.getByName (algorithmName, parameters);
         this.addElviraProperties (learnedNet);
-        this.addModelNetconstraints (modelNetUse, modelNet);
     }  
-    
-	/**
-     * Main method to launch the learning process.
-     * @return <code>ProbNet</code> learned net.
-     * @throws NotEnoughMemoryException
-     * @throws NodeNotFoundException 
-     * @throws NormalizeNullVectorException 
-     * @throws ProbNodeNotFoundException 
-     */
-    public ProbNet learn() 
-            throws NotEnoughMemoryException, NodeNotFoundException, 
-            NormalizeNullVectorException, ProbNodeNotFoundException {
-                
-        /* Get current time */
-        long start = System.currentTimeMillis();
 
-        learningAlgorithm.run(cases, learnedNet, modelNet, modelNetUse);
-        
-        /* Get elapsed time in milliseconds */
-        long elapsedTimeMillis = System.currentTimeMillis() - start;
-                
-        System.out.print("\n * Aprendizaje terminado.\n\t Tiempo transcurrido: " 
-               + calculateTime(elapsedTimeMillis) + "\n");
-        return learnedNet;
+    /**
+     * Initialize the learning algorithm.
+     */
+    public void init ()
+    {
+        learningAlgorithm.init ();
     }
-    
+
+    /**
+     * Main method to launch the learning process.
+     * @throws NotEnoughMemoryException
+     * @throws NodeNotFoundException
+     * @throws NormalizeNullVectorException
+     * @throws ProbNodeNotFoundException
+     */
+    public void learn ()
+        throws NotEnoughMemoryException,
+        NodeNotFoundException,
+        NormalizeNullVectorException,
+        ProbNodeNotFoundException
+    {
+        learningAlgorithm.run ();
+    }
+
+    /**
+     * Returns learned net
+     * @return <code>ProbNet</code> containing learned net
+     */
 	public ProbNet getLearnedNet() {
 		return this.learnedNet;
 	}
@@ -137,7 +145,7 @@ public class LearningManager {
      * @return <code>double</code> score of the net 
      */
     public double getScore()  {
-			return learningAlgorithm.getScore();
+			return learningAlgorithm.getScore(this.learnedNet, this.cases);
     }
     
     /**
@@ -146,7 +154,7 @@ public class LearningManager {
      * @return <code>double</code> score of the net with the given edition
      */
     public double getScore(PNEdit edit)  {
-        return learningAlgorithm.getScore (edit);
+        return learningAlgorithm.getScore (this.learnedNet, this.cases, edit);
     }
 
     /**
@@ -158,15 +166,35 @@ public class LearningManager {
      */
     public ArrayList<EditAndScorePair> getBestEditions (int numEdits,
                                  boolean onlyAllowedEdits,
-                                 boolean onlyPositiveEdits,
-                                 boolean reset)
+                                 boolean onlyPositiveEdits)
     {
         
-        return this.learningAlgorithm.getBestEditions (this.learnedNet,
-                                                       cases,
-                                                       numEdits,
+        return this.learningAlgorithm.getBestEditions (numEdits,
                                                        onlyAllowedEdits,
-                                                       onlyPositiveEdits, reset);        
+                                                       onlyPositiveEdits);        
+    }
+    
+    /**
+     *  Applies the edit passed to the learnedNet and updates parameters
+     * @param edit
+     * @throws DoEditException 
+     * @throws WrongCriterionException 
+     * @throws NonProjectablePotentialException 
+     * @throws CanNotDoEditException 
+     * @throws ConstraintViolationException 
+     * @throws NotEnoughMemoryException 
+     * @throws NormalizeNullVectorException 
+     */
+    public void applyEdit (PNEdit edit)
+        throws NotEnoughMemoryException,
+        ConstraintViolationException,
+        CanNotDoEditException,
+        NonProjectablePotentialException,
+        WrongCriterionException,
+        DoEditException, NormalizeNullVectorException
+    {
+        this.learnedNet.doEdit (edit);
+        learningAlgorithm.parametricLearning (learnedNet, cases);
     }
     
     /**
@@ -185,15 +213,16 @@ public class LearningManager {
     }
     
     /**
-     * Adds the constraints depending on the structure of the model net and the
-     * option selected by the user.
+     * Adds links and constraints depending on the structure of the model net
+     * and the option selected by the user.
      * @param modelNetUse use of the model net selected by the user.
      * @param modelNet structure of the net to add the constraints
      * @throws ProbNodeNotFoundException
      * @throws NodeNotFoundException
      */
-    private void addModelNetconstraints (ModelNetUse modelNetUse,
-                                         ProbNet modelNet)
+    private ProbNet applyModelNet (ProbNet learnedNet,
+                                   ProbNet modelNet,
+                                   ModelNetUse modelNetUse)
         throws ProbNodeNotFoundException,
         NodeNotFoundException
     {
@@ -201,7 +230,7 @@ public class LearningManager {
          * If the option "Use only nodes" is not selected, we add the links of
          * the model net to the learnedNet we are going to learn.
          */
-        if (!modelNetUse.isAddLinksAllowed () && (modelNet != null))
+        if (modelNet != null && !modelNetUse.isOnlyUseNodes ())
         {
             for (Link link : modelNet.getGraph ().getLinks ())
             {
@@ -210,8 +239,7 @@ public class LearningManager {
                                     link.isDirected ());
             }
         }
-        
-        //ModelNetworkConstraint
+        // ModelNetworkConstraint
         try
         {
             learnedNet.addConstraint (new ModelNetworkConstraint (modelNetUse,
@@ -221,30 +249,9 @@ public class LearningManager {
         catch (ConstraintViolationException e)
         {
         }
+        return learnedNet;
     }
     
-    /**This function returns a <code>String</code> that represents the given 
-     * elapsed time in the format: minutes' seconds'' milliseconds ms.
-     * 
-     * @param elapsedTimeMillis long with the elapsed time.
-     * @return <code>String</code> that represents the given time.
-     */
-    private static String calculateTime(long elapsedTimeMillis){
-        
-        StringBuffer timeString = new StringBuffer();
-        int minutes, seconds;
-        
-        minutes = (int) (elapsedTimeMillis / 60000);
-        elapsedTimeMillis -= minutes * 60000;
-        seconds = (int) (elapsedTimeMillis / 1000);
-        elapsedTimeMillis -= seconds * 1000;
-        
-        timeString.append(minutes + "' " + seconds + "\" " + elapsedTimeMillis 
-                + " ms.");
-        
-        return timeString.toString();
-    }
-
     public static Set<String> getAlgorithmNames ()
     {
         LearningAlgorithmManager learningAlgorithmManager = new LearningAlgorithmManager ();

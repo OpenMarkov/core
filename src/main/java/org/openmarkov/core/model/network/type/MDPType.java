@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.type;
 
 import org.openmarkov.core.model.network.constraint.AllChanceVariablesHaveChancePotentials;
@@ -15,12 +24,12 @@ public class MDPType extends NetworkType
     private MDPType ()
     {
         super ();
-        overwriteConstraintBehavior (NoCycle.class, ConstraintBehavior.YES);
-        overwriteConstraintBehavior (AllChanceVariablesHaveChancePotentials.class,
+        overrideConstraintBehavior (NoCycle.class, ConstraintBehavior.YES);
+        overrideConstraintBehavior (AllChanceVariablesHaveChancePotentials.class,
                          ConstraintBehavior.YES);
-        overwriteConstraintBehavior (NoSelfLoop.class, ConstraintBehavior.YES);
-        overwriteConstraintBehavior (OnlyDirectedLinks.class, ConstraintBehavior.YES);
-        overwriteConstraintBehavior (UtilityNodes.class, ConstraintBehavior.YES);
+        overrideConstraintBehavior (NoSelfLoop.class, ConstraintBehavior.YES);
+        overrideConstraintBehavior (OnlyDirectedLinks.class, ConstraintBehavior.YES);
+        overrideConstraintBehavior (UtilityNodes.class, ConstraintBehavior.YES);
     }
 
     // Methods

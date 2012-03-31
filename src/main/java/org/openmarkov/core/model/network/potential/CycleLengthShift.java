@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
@@ -8,8 +17,11 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 
 /** Potential identical to another but moved to another temporal slice.
  * @author marias
@@ -23,6 +35,22 @@ public class CycleLengthShift extends Potential {
 		super(variables, PotentialRole.CONDITIONAL_PROBABILITY);
 		type = PotentialType.CYCLE_LENGTH_SHIFT;
 	}
+	
+    public CycleLengthShift(Potential potential) {
+        this(potential.getVariables ());
+    }
+	
+    /**
+     * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
+     * @param variables
+     * @param role
+     */
+    public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
+    {
+        return probNode.getVariable ().isTemporal ()
+               && probNode.getVariable ().getTimeSlice () != 0
+               && !(probNode.getVariable ().getVariableType () == VariableType.NUMERIC && probNode.getNodeType () == NodeType.CHANCE);
+    }       
 
 	// Methods
 	@Override
@@ -63,8 +91,13 @@ public class CycleLengthShift extends Potential {
 
 	@Override
 	public Potential shift(ProbNet probNet, int timeDifference) {
-		return new CycleLengthShift(
-				getShiftedVariables(probNet, timeDifference));
+		return new CycleLengthShift(getShiftedVariables(probNet, timeDifference));
 	}
+	
+    @Override
+    public Potential copy ()
+    {
+        return new CycleLengthShift(new ArrayList<Variable> (variables));
+    }	
 
 }

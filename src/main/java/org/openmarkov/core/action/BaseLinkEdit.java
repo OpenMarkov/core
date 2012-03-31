@@ -1,4 +1,13 @@
 /*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -90,4 +99,11 @@ public abstract class BaseLinkEdit extends SimplePNEdit{
         return result;
     }	
     public abstract String getOperationName();
+    
+    /**
+     * Returns the opposite edit. E.g. an AddLinkEdit would return a
+     * RemoveLinkEdit instance
+     * @return
+     */
+    public abstract BaseLinkEdit getUndoEdit();
 }

@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.potential.operation;
 
 import java.util.ArrayList;
@@ -49,8 +58,7 @@ public class PotentialOperations {
 			throw new IllegalArgumentTypeException("Unsupported operation: " + 
 			   "marginalize can only manage potentials of type TablePotential");    						
 		}
-		if (!AuxiliaryOperations.checkVariablesCollectionType(variables, 
-				VariableType.FINITE_STATES)) {
+		if (!hasFiniteStates(variables)){
 			throw new IllegalArgumentTypeException("Unsupported operation: " + 
 				"marginalize can only manage variables of type FSVariable");    						
 		}
@@ -93,13 +101,7 @@ public class PotentialOperations {
 			throw new IllegalArgumentTypeException("Unsupported operation: " + 
 			   "marginalize can only manage potentials of type TablePotential");    						
 		}
-		if (!AuxiliaryOperations.checkVariablesCollectionType(variablesToKeep,
-				VariableType.FINITE_STATES)) {
-			throw new IllegalArgumentTypeException("Unsupported operation: " + 
-				"marginalize can only manage variables of type FSVariable");    						
-		}
-		if (!AuxiliaryOperations.checkVariablesCollectionType(
-				variablesToEliminate, VariableType.FINITE_STATES)) {
+		if (!hasFiniteStates(variablesToKeep) || !hasFiniteStates(variablesToEliminate)){
 			throw new IllegalArgumentTypeException("Unsupported operation: " + 
 				"marginalize can only manage variables of type FSVariable");    						
 		}
@@ -126,8 +128,7 @@ public class PotentialOperations {
 				"multiplyAndEliminate can only manage potential of type " + 
 				"TablePotential");    						
 		}		
-		if (!AuxiliaryOperations.checkVariablesCollectionType(
-				variablesToEliminate, VariableType.FINITE_STATES)) {
+        if (!hasFiniteStates (variablesToEliminate)) {
 			throw new IllegalArgumentTypeException("Unsupported operation: " + 
 				"multiplyAndEliminate can only manage variables of type " + 
 				"FSVariable");    						
@@ -197,8 +198,7 @@ public class PotentialOperations {
 				"TablePotential");    			
 		}
 		
-		if (!AuxiliaryOperations.checkVariablesCollectionType(
-				unionVariables, VariableType.FINITE_STATES)) {
+		if (!hasFiniteStates (unionVariables)) {
 			throw new IllegalArgumentTypeException("Unsupported operation: " + 
 				"multiplyAndMarginalize can only manage variables of type " +
 				"FSVariable");    						
@@ -295,16 +295,9 @@ public class PotentialOperations {
 			throw new IllegalArgumentTypeException("Unsupported operation: " + 
 			   "newMultiply can only manage potentials of type TablePotential");
     	}
-    	if (!AuxiliaryOperations.checkVariablesCollectionType(
-    			variablesToKeep, VariableType.FINITE_STATES)){
+    	if (!hasFiniteStates(variablesToKeep) || !hasFiniteStates(variablesToEliminate)){
 			throw new IllegalArgumentTypeException("Unsupported operation: " + 
 				"newMultiply can only manage variables of type FSVariable");
-    	}
-    	if (!AuxiliaryOperations.checkVariablesCollectionType(
-    			variablesToEliminate, VariableType.FINITE_STATES))
-    	{
-			throw new IllegalArgumentTypeException("Unsupported operation: " + 
-				"newMultiply can only manage variables of type FSVariable");    			
     	}
     	
         return DiscretePotentialOperations.multiplyAndMarginalize(potentials, 
@@ -340,6 +333,19 @@ public class PotentialOperations {
 			uniformPotential.setUtilityVariable(variable);
 		}
 		return uniformPotential;
+	}
+	
+	private static boolean hasFiniteStates(ArrayList<Variable> variables)
+	{
+        boolean result = true;
+        int i = 0;
+        while (result && i < variables.size ())
+        {
+            result = variables.get (i).getVariableType () == VariableType.DISCRETIZED
+                     || variables.get (i).getVariableType () == VariableType.FINITE_STATES;
+            ++i;
+        }
+        return result;	        
 	}
 
 }

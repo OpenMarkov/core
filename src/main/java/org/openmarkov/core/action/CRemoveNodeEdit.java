@@ -1,7 +1,17 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.action;
 
 import java.util.ArrayList;
 
+import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.PotentialOperationException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -47,7 +57,7 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 		this.nodeType = probNet.getProbNode(variable).getNodeType();
 	}
 
-	public void generateEdits() {
+	public void generateEdits() throws NotEnoughMemoryException {
 		ProbNode probNode = probNet.getProbNode(variable);
 		Node node = probNode.getNode();
 
@@ -65,8 +75,9 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 		try {
 			newPotential = PotentialOperations.multiplyAndEliminate(
 				potentialsContainingVariable, variable);
-		} catch (PotentialOperationException e) {
-			// TODO Auto-generated catch block
+        } catch (NotEnoughMemoryException e) {
+            throw e;
+        } catch (PotentialOperationException e) {
 			e.printStackTrace();
 		}
 		
@@ -80,7 +91,7 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 				if ((node1 != node2) && (!node1.isSibling(node2))) {
 					addEdit(new AddLinkEdit(probNet, 
 						((ProbNode)node1.getObject()).getVariable(), 
-						((ProbNode)node2.getObject()).getVariable(), false));
+						((ProbNode)node2.getObject()).getVariable(), false, false));
 				}
 			}
 		}
@@ -89,16 +100,16 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 		for (Node parent : parents) {
 			addEdit(new RemoveLinkEdit(probNet, 
 				((ProbNode)parent.getObject()).getVariable(), 
-				probNode.getVariable(), true));
+				probNode.getVariable(), true, false));
 		}
 		for (Node child : children) {
-			addEdit(new RemoveLinkEdit(probNet,	probNode.getVariable(),
-				(Variable)child.getObject(), true));
+			Variable variable = ((ProbNode)child.getObject()).getVariable();
+			addEdit(new RemoveLinkEdit(probNet,	probNode.getVariable(), variable, true, false));
 		}
 		for (Node sibling : siblings) {
 			addEdit(new RemoveLinkEdit(probNet, 
 				((ProbNode)sibling.getObject()).getVariable(), 
-				probNode.getVariable(), false));
+				probNode.getVariable(), false, false));
 		}
 
 		// add edit to remove the variable

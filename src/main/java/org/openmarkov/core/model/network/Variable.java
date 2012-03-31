@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
@@ -7,7 +16,6 @@ import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 
 // TODO  mantener la consistencia entre name y baseName cuando se cambian
 
@@ -58,14 +66,6 @@ public class Variable implements Cloneable {
 	 * discretized variable type.
 	 */
 	protected PartitionedInterval partitionedInterval;
-	
-	/**
-	 * 
-	 * Threshold are set for continuous variables. If this variable has subintervals this
-	 * Array must have more than two values 
-	 * 
-	 **/
-	protected ArrayList<Threshold> thresholds;
 
 	/** Max error. */
 	private double precision = 0.01;
@@ -93,6 +93,29 @@ public class Variable implements Cloneable {
 
 	/**
 	 * Constructor for discrete variables.
+	 * It takes advantage of the feature of variable-length argument lists of Java 5
+	 * in order to accept the names of the states.
+	 * <p>
+	 * Creates a <code>FSVariable</code> whose states are given by the names <code>namesStates</code> states.
+	 * @param name a <code>String</code>
+	 * @param numStates a sequence of <code>String</code> by using the facilities of Java 5.
+	 */
+	public Variable(String nameVariable, String... namesStates) {
+
+		int numStates = namesStates.length;
+		this.name = nameVariable;
+		states = new State[numStates];
+		for (int i = 0; i < numStates; i++) {
+			states[i] = new State(namesStates[i]);
+		}
+		this.variableType = VariableType.FINITE_STATES;
+		this.partitionedInterval = null;
+		setTimeSlice(getTimeSlice(name));
+		
+	}
+	
+	/**
+	 * Constructor for discrete variables.
 	 * <p>
 	 * Creates a <code>FSVariable</code> with <code>numStates</code> states.
 	 * The i-th state is named as "i".
@@ -112,18 +135,21 @@ public class Variable implements Cloneable {
 		this.partitionedInterval = null;
 		setTimeSlice(getTimeSlice(name));
 	}
-
-    public Object clone(){
-        Object object = null;
-        try {
-            object = super.clone();
-        } catch (CloneNotSupportedException e){
-        	// Unreachable code
-            System.err.println("Can not clone object " + object);
-        }
-        return object;
-    }
 	
+	/**
+	 * Copy constructor for Variable.
+	 * @param variable
+	 */
+    public Variable(Variable variable) {
+
+        this.name = variable.getName ();
+        this.states = variable.states.clone ();
+        this.variableType = variable.getVariableType ();
+        this.partitionedInterval = (variable.getPartitionedInterval ()!=null)? (PartitionedInterval)variable.getPartitionedInterval ().clone (): null;
+        this.precision = variable.getPrecision ();
+        setTimeSlice(getTimeSlice(variable.getName ()));
+    }	
+
 	/**
 	 * Default constructor for continuous variables.
 	 * <p>
@@ -139,77 +165,7 @@ public class Variable implements Cloneable {
 			Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false), 0.0);
 		this.variableType = VariableType.NUMERIC;
 	}
-	
-		
-	/**
-	 * Constructor for continuous variables.
-	 * <p>
-	 * A continuous variable is defined in an interval.
-	 * 
-	 * @param name.
-	 *            <code>String</code>
-	 * @param belongsToLeftMin.
-	 *            <code>boolean</code>
-	 * @param min.
-	 *            <code>float</code>
-	 * @param max.
-	 *            <code>float</code>
-	 * @param belongsToLeftMax.
-	 *            <code>boolean</code>
-	 * @param precision.
-	 *            <code>double</code>
-	
-	public Variable (String name, float min, boolean belongsToLeftMin, float max, boolean belongsToLeftMax, double precision) {
-		Threshold thresholdMin = new Threshold(min, belongsToLeftMin);// )[ or ](
-		Threshold thresholdMax = new Threshold(max, belongsToLeftMax);// )[ or ](
-		this.thresholds.add(thresholdMin);
-		this.thresholds.add(thresholdMax);
-		this.precision = precision;
-		this.variableType = VariableType.NUMERIC;
-	} */
-	
-	/**
-	 * Default constructor for continuous variables.
-	 * <p>
-	 * A continuous variable is defined in an interval. In this case the
-	 * interval is (-infinity, +infinity) by default
-	 * 
-	 * @param name
-	 *            <code>String</code>
-	 
-	public Variable(String name) {
 
-		this(name, Float.NEGATIVE_INFINITY, true, Float.POSITIVE_INFINITY, false, 0.0);
-		this.variableType = VariableType.NUMERIC;
-	}
-	
-	//Antes una variable continua tenia un PartitionedInterval asociado y este podia tener 
-	//uno o más intervalos con lo que la variable podia tener un intervalo o más asignados
-	//ahora se le podran asignar subintervalos a la variable dentro del intervalo principal
-	//en el que es definida cuando se construye
-	/* this method sets a new threshold to a numerical variable in the correct order 
-	public void setSubintervals(Threshold threshold) {
-		ArrayList<Threshold> aux = new ArrayList<Threshold>();
-		int numThresholds = thresholds.size();
-		//if ((min.getLimit() < value && value < max.getLimit()) || (value == min.getLimit() && min.isAbove(value) ) 
-		//|| (value == max.getLimit() && max.isBelow(value))){
-		int i;
-		for(i = 0; thresholds.get(i).isBelow(threshold.getLimit()); i++) {
-			 	aux.set(i, thresholds.get(i));
-		}
-		if(thresholds.get(i).isAbove(threshold.getLimit())){
-			aux.set(i, threshold);
-			aux.set(i+1, thresholds.get(i));
-		}
-		for (int j = i+1; j < numThresholds && thresholds.get(i).isAbove(threshold.getLimit()); j++){
-			aux.set(j+1, thresholds.get(j));
-		}
-		
-		this.thresholds = aux;
-		
-	}*/
-	
-	
 	/**
 	 * Constructor for continuous variables.
 	 * <p>
@@ -261,6 +217,17 @@ public class Variable implements Cloneable {
 		this.precision = precision;
 		this.variableType = VariableType.DISCRETIZED;
 	}
+	
+    public Object clone(){
+        Object object = null;
+        try {
+            object = super.clone();
+        } catch (CloneNotSupportedException e){
+            // Unreachable code
+            System.err.println("Can not clone object " + object);
+        }
+        return object;
+    }	
 
 	// Methods
 	/** @param additionalProperties. <code>HashMap</code> with key = 
@@ -378,29 +345,7 @@ public class Variable implements Cloneable {
 			}
 		}
 	}
-	
-	/** @consultation
-	 * @return The ArrayList of <code>Threshold</code>
-	 */
-	public ArrayList<Threshold> getThresholds() {
-		return thresholds;
-	}
-	
-	/** @consultation
-	 * @return minimum threshold of the continuous variable interval
-	 * 		<code>Threshold</code>
-	 */
-	public Threshold getThresholdMin() {
-		return thresholds.get(0);
-	}
-	
-	/** @consultation
-	 * @return maximum threshold of the continuous variable intervar
-	 * 		 <code>Threshold</code>
-	 */
-	public Threshold getThresholdMax() {
-		return thresholds.get(1);
-	}
+
 	/** @consultation
 	 * @param state.
 	 *            <code>String</code>
@@ -660,7 +605,15 @@ public class Variable implements Cloneable {
 		return (this.name.equals(((Variable) obj).name));
 	}
 	
-	private int getTimeSlice(String variableName){
+//    @Override
+//    public int hashCode ()
+//    {
+//        int hashCode = 17;
+//        hashCode = 37 * hashCode + name.hashCode ();
+//        return hashCode;
+//    }
+
+    private int getTimeSlice(String variableName){
 		int timeSlice = Integer.MIN_VALUE;
 		if (variableName.contains(" [")) {
 			// Set base name

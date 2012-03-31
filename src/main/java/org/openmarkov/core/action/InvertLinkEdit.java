@@ -1,34 +1,131 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.action;
 
+import java.util.ArrayList;
+
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.UniformPotential;
 
 /** Inverts an existing link. */
 @SuppressWarnings("serial")
 public class InvertLinkEdit extends BaseLinkEdit {
 
+    /**
+     * parent node
+     */
+    protected ProbNode node1;
+    /**
+     * child node
+     */
+    protected ProbNode node2;
+    
+    /**
+     * Parent node's old potentials
+     */
+    protected ArrayList<Potential> parentsOldPotentials;    
+    /**
+     * Child node's old potentials
+     */
+    protected ArrayList<Potential> childsOldPotentials;    
+    
+    
 	// Constructor
 	/** @param probNet <code>ProbNet</code>
 	 * @param variable1 <code>Variable</code>
 	 * @param variable2 <code>Variable</code>
 	 * @param isDirected <code>boolean</code> */
-	public InvertLinkEdit(ProbNet probNet, Variable variable1, 
-			Variable variable2, boolean isDirected) {
-		super(probNet, variable1, variable2, isDirected);
-	}
+    public InvertLinkEdit (ProbNet probNet,
+                           Variable variable1,
+                           Variable variable2,
+                           boolean isDirected)
+    {
+        super (probNet, variable1, variable2, isDirected);
+        try
+        {
+            node1 = probNet.getProbNode (variable1.getName());
+            node2 = probNet.getProbNode (variable2.getName());
+        }
+        catch (ProbNodeNotFoundException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }      
+    }
 
 	// Methods
 	@Override
 	/** @throws exception <code>Exception</code> */
 	public void doEdit() throws DoEditException {
-		probNet.removeLink(variable1, variable2, isDirected);
-		try {
-			probNet.addLink(variable2, variable1, isDirected);
-		} catch (NodeNotFoundException e) {
-			throw new DoEditException(e);
-		}
+        try
+        {
+            // Remove links first
+            probNet.removeLink (node1, node2, isDirected);
+            if (node2.getNodeType () != NodeType.DECISION)
+            {
+                // Update potentials
+                ArrayList<Potential> newPotentials = new ArrayList<Potential> ();
+                this.childsOldPotentials = node2.getPotentials ();
+                for (Potential oldPotential : childsOldPotentials)
+                {
+                    Potential newPotential = oldPotential.removeVariable (node1.getVariable ());
+                    if (newPotential == null)
+                    {// It has not been implemented yet for this type of
+                     // potential
+                        ArrayList<Variable> variables = oldPotential.getVariables ();
+                        variables.add (node1.getVariable ());
+                        newPotential = new UniformPotential (variables,
+                                                             oldPotential.getPotentialRole ());
+                    }
+                    newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
+                    newPotentials.add (newPotential);
+                }
+                node2.setPotentials (newPotentials);
+            }        
+            
+            // Add inverse link
+            probNet.addLink (node2, node1, isDirected);
+            if (node2.getNodeType () != NodeType.DECISION)
+            {
+                this.parentsOldPotentials = node1.getPotentials();
+                ArrayList<Potential> newPotentials = new ArrayList<Potential> ();
+                for(Potential oldPotential : parentsOldPotentials)
+                {
+                    // Update potential
+                    Potential newPotential = oldPotential.addVariable (node2.getVariable ());
+                    if (newPotential == null)
+                    {// It has not been implemented yet for this type of potential
+                        ArrayList<Variable> variables = oldPotential.getVariables ();
+                        variables.add (node2.getVariable ());
+                        newPotential = new UniformPotential (variables, oldPotential.getPotentialRole ());
+                    }
+                    newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
+                    newPotentials.add (newPotential);
+                }
+                node1.setPotentials (newPotentials);
+            }
+    
+            
+        }
+        catch (NotEnoughMemoryException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace ();
+        }
 	}
 
 	public void undo() {
@@ -36,6 +133,8 @@ public class InvertLinkEdit extends BaseLinkEdit {
 		try {
 			probNet.removeLink(variable2, variable1, isDirected);
 			probNet.addLink(variable1, variable2, isDirected);
+            node1.setPotentials(parentsOldPotentials);
+            node2.setPotentials(childsOldPotentials);
 		} catch (Exception exc){}
 	}
 		
@@ -65,8 +164,14 @@ public class InvertLinkEdit extends BaseLinkEdit {
 	/** This method assumes that the link is directed, otherwise has no sense.
 	 * @return <code>String</code> */
 	public String toString() {
-		return new String("InvertLinkEdit: " + variable2 + "-->" + variable1 + 
-				" ==> " + variable1 + "-->"	+ variable2);
+		return new String("InvertLinkEdit: " + variable1 + "-->" + variable2 + 
+				" ==> " + variable2 + "-->"	+ variable1);
 	}
+
+    @Override
+    public BaseLinkEdit getUndoEdit ()
+    {
+        return new InvertLinkEdit (getProbNet (), getVariable2 (), getVariable1 (), isDirected ());
+    }
 
 }

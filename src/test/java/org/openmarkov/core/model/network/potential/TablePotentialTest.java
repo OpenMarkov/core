@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.potential;
 
 import static org.junit.Assert.assertEquals;
@@ -7,8 +16,10 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmarkov.core.OpenMarkovTests;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -16,6 +27,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -78,10 +90,12 @@ public class TablePotentialTest {
 	private State[] fiveStates;
 
 	private Finding finding1;
+	
+	private int end;
 
 	/** Two binary variables: fsVariable2 = 1, fsVariable4 = 0. */
 	private EvidenceCase evidenceCase;
-
+	
 	@Before
     public void setUp() throws Exception {
         states1 = new State[]{new State("S1V1"), new State("S2V1")};
@@ -324,10 +338,10 @@ public class TablePotentialTest {
     	int[] offsets = projected.getOffsets();
     	
     	// Test table content
-    	assertEquals(1, offsets.length);
-    	assertEquals(1, offsets[0]);
-    	assertEquals(2.0, tableProjected[initialPosition]);
-    	assertEquals(3.0, tableProjected[initialPosition + offsets[0]]);
+    	assertEquals(1, offsets.length,OpenMarkovTests.maxError);
+    	assertEquals(1, offsets[0],OpenMarkovTests.maxError);
+    	assertEquals(2.0, tableProjected[initialPosition],OpenMarkovTests.maxError);
+    	assertEquals(3.0, tableProjected[initialPosition + offsets[0]],OpenMarkovTests.maxError);
     }
     
     @Test
@@ -379,19 +393,65 @@ public class TablePotentialTest {
 		// Test variables
 		ArrayList<Variable> variables = multiplication.getVariables();
 		assertEquals(2, variables.size());
-		assertTrue(variables.contains(B));
-		assertTrue(variables.contains(C));
+		assertEquals(B, variables.get(0));
+		assertEquals(C, variables.get(1));
 		
 		// Test table
 		assertEquals(multiplication.values.length, 6);
-		assertEquals(multiplication.values[0], 0.01);
-		assertEquals(multiplication.values[5], 0.2);
+		assertEquals(0.06, multiplication.values[0], OpenMarkovTests.maxError);
+		assertEquals(0.06, multiplication.values[1], OpenMarkovTests.maxError);
+		assertEquals(0.02, multiplication.values[2], OpenMarkovTests.maxError);
+		assertEquals(0.14, multiplication.values[3], OpenMarkovTests.maxError);
+		assertEquals(0.02, multiplication.values[4], OpenMarkovTests.maxError);
+		assertEquals(0.2, multiplication.values[5], OpenMarkovTests.maxError);
     }
     
     @Test
     public void testGetInitialPosition() {
     	assertEquals(0, tablePotential1.getInitialPosition());
     }
+    
+   /* @Test
+    public void testReorder() {
+    	TablePotential tablePotential;
+    	Variable A = new Variable("A", 2);
+		Variable B = new Variable("B", 2);
+		Variable C = new Variable("C", 2);
+		ArrayList<Variable> baPotentialVariables = new ArrayList<Variable>();
+		baPotentialVariables.add(B);
+		baPotentialVariables.add(A);
+		ArrayList<Variable> cabPotentialVariables = new ArrayList<Variable>();
+		cabPotentialVariables.add(C);
+		cabPotentialVariables.add(A);
+		cabPotentialVariables.add(B);
+		double[] baTable = {0.7, 0.3, 0.9, 0.1};
+		
+		double[] cabTable = {0.15, 0.85, 0.84, 0.16, 0.29, 0.71, 0.98, 0.02};
+		TablePotential cabPotential = new TablePotential(cabPotentialVariables,PotentialRole.CONDITIONAL_PROBABILITY, cabTable);
+		TablePotential bcPotential = new TablePotential(baPotentialVariables,PotentialRole.CONDITIONAL_PROBABILITY, baTable);
+		ArrayList<Variable> newOrderVariables = new ArrayList<Variable>();
+		
+    	end=-1;
+		
+		if ( cabPotentialVariables.size() > 0 ){
+			
+			for (int i = cabPotentialVariables.size()-1; i>end; i--){
+				newOrderVariables.add(cabPotentialVariables.get(i)); //newOrderVariables B A C 
+				
+			}
+			
+		}
+		try {
+			tablePotential =
+				DiscretePotentialOperations.reorder(
+						cabPotential, newOrderVariables );
+		} catch (NotEnoughMemoryException exception) {
+			//ExceptionsHandler.handleException(
+				//exception, "not enougth memory", true );
+			
+		}
+    }
+    
 
 /*    @Test
     /** Test accumulated offsets in projected potentials. */

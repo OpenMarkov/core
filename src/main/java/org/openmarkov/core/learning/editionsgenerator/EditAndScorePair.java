@@ -1,6 +1,16 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.learning.editionsgenerator;
 
-import org.openmarkov.core.action.BaseLinkEdit;
+import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.exception.ConstraintViolationException;
 
 /** An <code>EditAndScorePair</code> stores a <code>PNEdit</code> and the
  * increment of score associated to this edition. Also it stores a pointer
@@ -12,18 +22,24 @@ import org.openmarkov.core.action.BaseLinkEdit;
  * @since Carmen 1.0 */
 public class EditAndScorePair {
 
-    protected BaseLinkEdit edition;
+    protected PNEdit edition;
     
     protected double score;
     
-    protected Exception violatedConstraint = null;
+    protected ConstraintViolationException violatedConstraint;
     
-    public EditAndScorePair(BaseLinkEdit edition, double score){
+    public EditAndScorePair(PNEdit edition, double score){
         this.edition = edition; 
         this.score = score;
+        this.violatedConstraint = null;
     }
     
-    public BaseLinkEdit getEdition(){
+    public EditAndScorePair(PNEdit edition, double score, ConstraintViolationException  e){
+        this(edition, score);
+        this.violatedConstraint = e;
+    }    
+    
+    public PNEdit getEdition(){
         return edition;
     }
     
@@ -35,7 +51,7 @@ public class EditAndScorePair {
     	return violatedConstraint;
     }
     
-    public void setViolatedConstraint(Exception violatedConstraint){
+    public void setViolatedConstraint(ConstraintViolationException violatedConstraint){
     	this.violatedConstraint = violatedConstraint;
     }
     
@@ -50,5 +66,10 @@ public class EditAndScorePair {
         if((obj == null) || (obj.getClass() != this.getClass()))
             return false;
         return (this.edition.equals(((EditAndScorePair)obj).edition));
+    }
+    
+    public String toString()
+    {
+        return new StringBuilder().append (edition.toString () + " " + score).toString (); 
     }
 }

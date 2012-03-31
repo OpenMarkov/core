@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.learning.util;
 
 import java.util.ArrayList;
@@ -14,7 +23,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * @author Iñigo
  *
  */
-public class FrequencyCalculator
+public class Util
 {
     /**
      * Calculate the absolute frequencies in the database of each of the
@@ -33,21 +42,34 @@ public class FrequencyCalculator
      * parents.
      * @throws openmarkov.exceptions.NotEnoughMemoryException
      */
-    public static TablePotential absolute (ProbNet probNet,
-                                                               int[][] cases,
-                                                               ProbNode probNode,
-                                                               int parentsConfigurations,
-                                                               ArrayList<Variable> variables,
-                                                               int[] indexesOfParents,
-                                                               int numValues)
-        throws NotEnoughMemoryException
+    private static TablePotential getAbsoluteFrequencies (ProbNet probNet,
+                                           int[][] cases,
+                                           ProbNode probNode,
+                                           ArrayList<Variable> variables)
     {
-        TablePotential absoluteFreqPotential = new TablePotential (
-                                                                   variables,
-                                                                   PotentialRole.CONDITIONAL_PROBABILITY);
+        
+        int parentsConfigurations = 1;
+        int numValues = probNode.getVariable ().getNumStates ();
+        // We miss the first one as it is the node itself, not one of its parents
+        int[] indexesOfParents = new int[variables.size () -1];
+        for (int i = 0; i < indexesOfParents.length; ++i)
+        {
+            indexesOfParents[i] = probNet.getProbNodes ().indexOf (probNet.getProbNode (variables.get (i + 1)));
+            parentsConfigurations *= variables.get (i + 1).getNumStates ();
+        }
+        TablePotential absoluteFreqPotential = null;
+        try
+        {
+            absoluteFreqPotential = new TablePotential (
+                                                        variables,
+                                                        PotentialRole.CONDITIONAL_PROBABILITY);
+        }
+        catch (NotEnoughMemoryException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace ();
+        }
         double[] absoluteFreqs = absoluteFreqPotential.getValues ();
-        double iCPT;
-        int iParent, iNode = probNet.getProbNodes ().indexOf (probNet.getProbNode (probNode.getVariable ()));
         // Initialize the table
         for (int i = 0; i < parentsConfigurations * numValues; i++)
         {
@@ -55,22 +77,24 @@ public class FrequencyCalculator
         }
         variables.remove (0);
         // Compute the absolute frequencies
+        int iCPT;
+        int iParent, iNode = probNet.getProbNodes ().indexOf (probNet.getProbNode (probNode.getVariable ()));
+        ArrayList<ProbNode> nodes = probNet.getProbNodes (variables);
         for (int i = 0; i < cases.length; i++)
         {
             iCPT = 0;
-            int j = 0;
-            for (ProbNode parent : probNet.getProbNodes (variables))
+            for (int j = 0; j < nodes.size (); ++j)
             {
                 iParent = indexesOfParents[j];
-                iCPT = iCPT * parent.getVariable ().getNumStates ()
+                iCPT = iCPT * nodes.get (j).getVariable ().getNumStates ()
                        + cases[i][iParent];
-                j++;
             }
-            absoluteFreqs[numValues * ((int) iCPT) + (int) cases[i][iNode]]++;
+            absoluteFreqs[numValues * iCPT + cases[i][iNode]]++;
         }
         return absoluteFreqPotential;
     }
 
+    
     /**
      * Calculate the absolute frequencies in the database of each of the
      * configurations of the given node and its parents and a given extra
@@ -82,43 +106,46 @@ public class FrequencyCalculator
      *         parents and a given extra parent.
      * @throws openmarkov.exceptions.NotEnoughMemoryException
      */
-    public static TablePotential absoluteExtraParent (ProbNet probNet,
+    public static TablePotential getAbsoluteFreq (ProbNet probNet,
+                                                  int[][] cases,
+                                                  ProbNode node)
+    {
+        ArrayList<Variable> variables = new ArrayList<Variable> ();
+        variables.add ((Variable) node.getVariable ());
+        for (ProbNode parent : ProbNet.getProbNodesOfNodes (node.getNode ().getParents ()))
+        {
+            variables.add ((Variable) parent.getVariable ());
+        }
+        return getAbsoluteFrequencies (probNet, cases, node, variables);
+    }    
+    /**
+     * Calculate the absolute frequencies in the database of each of the
+     * configurations of the given node and its parents and a given extra
+     * parent.
+     * @param node <code>ProbNode</code> whose frequencies we want to calculate.
+     * @param extraParent <code>ProbNode</code>
+     * @return <code>TablePotential</code> with the absolute frequencies in the
+     *         database of each of the configurations of the given node and its
+     *         parents and a given extra parent.
+     * @throws openmarkov.exceptions.NotEnoughMemoryException
+     */
+    public static TablePotential getAbsoluteFreqExtraParent (ProbNet probNet,
                                                                           int[][] cases,
                                                                           ProbNode node,
                                                                           ProbNode extraParent)
-        throws NotEnoughMemoryException
     {
-        int parentsConfigurations = 1;
-        int indexOfParent = 0;
-        int numParents = node.getNode ().getNumParents ();
-        if (extraParent != null) numParents++;
-        int[] indexesOfParents = new int[numParents];
         ArrayList<Variable> variables = new ArrayList<Variable> ();
         variables.add ((Variable) node.getVariable ());
-        if ((numParents == 0) && (extraParent == null))
+        if (extraParent != null)
         {
-            parentsConfigurations = 1;
+            variables.add (extraParent.getVariable ());
         }
-        else
+        for (ProbNode parent : ProbNet.getProbNodesOfNodes (node.getNode ().getParents ()))
         {
-            if (extraParent != null)
-            {
-                indexesOfParents[0] = probNet.getProbNodes ().indexOf (extraParent);
-                variables.add ((Variable) extraParent.getVariable ());
-                parentsConfigurations *= ((Variable) extraParent.getVariable ()).getNumStates ();
-                indexOfParent = 1;
-            }
-            for (ProbNode parent : ProbNet.getProbNodesOfNodes (node.getNode ().getParents ()))
-            {
-                variables.add ((Variable) parent.getVariable ());
-                indexesOfParents[indexOfParent] = probNet.getProbNodes ().indexOf (probNet.getProbNode (parent.getVariable ()));
-                parentsConfigurations *= ((Variable) parent.getVariable ()).getNumStates ();
-                indexOfParent++;
-            }
+            if(!variables.contains (parent.getVariable ()))
+                variables.add (parent.getVariable ());
         }
-        return absolute (probNet, cases, node, parentsConfigurations,
-                         variables, indexesOfParents,
-                         node.getVariable ().getNumStates ());
+        return getAbsoluteFrequencies (probNet, cases, node, variables);
     }
 
     /**
@@ -132,39 +159,23 @@ public class FrequencyCalculator
      * parents except one.
      * @throws openmarkov.exceptions.NotEnoughMemoryException
      */
-    public static TablePotential absoluteRemovedParent (ProbNet probNet,
+    public static TablePotential getAbsoluteFreqRemovingParent (ProbNet probNet,
                                                                             int[][] cases,
                                                                             ProbNode node,
                                                                             ProbNode removedParent)
-        throws NotEnoughMemoryException
     {
-        int parentsConfigurations = 1;
-        int numParents = node.getNode ().getNumParents ();
-        int[] indexesOfParents = new int[numParents - 1];
         ArrayList<Variable> variables = new ArrayList<Variable> ();
         variables.add (node.getVariable ());
-        if (numParents == 1)
+        
+        ArrayList<ProbNode> parents = ProbNet.getProbNodesOfNodes (node.getNode ().getParents ());
+        for (ProbNode parent : parents)
         {
-            parentsConfigurations = 1;
-        }
-        else
-        {
-            int indexParent = 0;
-            ArrayList<ProbNode> parents = ProbNet.getProbNodesOfNodes (node.getNode ().getParents ());
-            for (ProbNode parent : parents)
+            if (parent.getVariable () != removedParent.getVariable ())
             {
-                if (parent.getVariable () != removedParent.getVariable ())
-                {
-                    indexesOfParents[indexParent] = probNet.getProbNodes ().indexOf (probNet.getProbNode (parent.getVariable ()));
-                    variables.add (parent.getVariable ());
-                    parentsConfigurations *= parent.getVariable ().getNumStates ();
-                    indexParent++;
-                }
+                variables.add (parent.getVariable ());
             }
         }
-        return absolute (probNet, cases, node, parentsConfigurations,
-                         variables, indexesOfParents,
-                         node.getVariable ().getNumStates ());
+        return getAbsoluteFrequencies (probNet, cases, node, variables);
     }
     
     

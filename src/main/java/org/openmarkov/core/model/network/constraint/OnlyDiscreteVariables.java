@@ -1,10 +1,17 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import javax.swing.event.UndoableEditEvent;
-
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -16,25 +23,25 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 
-@Constraint (name = "OnlyDiscreteVariables", defaultBehavior = ConstraintBehavior.NO)
+@Constraint (name = "OnlyDiscreteVariables", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class OnlyDiscreteVariables extends PNConstraint {
 	
 	@Override
-	public boolean checkEvent(UndoableEditEvent event) 
+	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
 		ArrayList<PNEdit> edits = 
-			UtilConstraints.getEditsType(event, AddVariableEdit.class);
-		for (PNEdit edit : edits) {
-			Variable variable = ((AddVariableEdit)edit).getVariable(); 
+			UtilConstraints.getEditsType(edit, AddProbNodeEdit.class);
+		for (PNEdit simpleEdit : edits) {
+			Variable variable = ((AddProbNodeEdit)simpleEdit).getVariable(); 
 			if (variable.getVariableType() != VariableType.FINITE_STATES) {
 				return false;
 			}
 		}
 		edits = 
-			UtilConstraints.getEditsType(event, VariableTypeEdit.class);
-		for (PNEdit edit : edits) {
-			VariableType newType = ((VariableTypeEdit)edit).getNewVariableType(); 
+			UtilConstraints.getEditsType(edit, VariableTypeEdit.class);
+		for (PNEdit simpleEdit : edits) {
+			VariableType newType = ((VariableTypeEdit)simpleEdit).getNewVariableType(); 
 			if (newType != VariableType.FINITE_STATES && newType !=
 				VariableType.DISCRETIZED) {
 				return false;

@@ -1,13 +1,18 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
 
-import javax.swing.event.UndoableEditEvent;
-
 import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.LinkEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -41,22 +46,19 @@ public class NoUtilityParent extends PNConstraint  {
     }
 
 	@Override
-	public boolean checkEvent(UndoableEditEvent event)
+	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 			throws NotEnoughMemoryException, NonProjectablePotentialException,
 			WrongCriterionException {
 		
-		ArrayList<PNEdit> edits = 
-			UtilConstraints.getEditsType(event, AddLinkEdit.class);
-		ProbNet probNet = ((PNUndoableEditEvent)event).getProbNet();
+        ArrayList<PNEdit> edits = UtilConstraints.getEditsType (edit, AddLinkEdit.class);
 		
-		
-		for (PNEdit edit : edits) {
-			if (((AddLinkEdit)edit).isDirected()) { 
-				Variable variable1 = ((AddLinkEdit)edit).getVariable1(); 
+		for (PNEdit simpleEdit : edits) {
+			if (((AddLinkEdit)simpleEdit).isDirected()) { 
+				Variable variable1 = ((AddLinkEdit)simpleEdit).getVariable1(); 
 				ProbNode node1 = probNet.getProbNode(variable1);
 				if(node1.getNodeType()== NodeType.UTILITY)
 				{
-					Variable variable2 = ((AddLinkEdit)edit).getVariable2(); 
+					Variable variable2 = ((AddLinkEdit)simpleEdit).getVariable2(); 
 					ProbNode node2 = probNet.getProbNode(variable2);
 					if(node2.getNodeType()!= NodeType.UTILITY)
 					{
@@ -66,15 +68,14 @@ public class NoUtilityParent extends PNConstraint  {
 			}
 		}
 		
-		ArrayList<PNEdit> edits2 = 
-			UtilConstraints.getEditsType(event, LinkEdit.class);
-		for (PNEdit edit : edits2) {
-			if (((LinkEdit)edit).isDirected()) { 
-				Variable variable1 = ((AddLinkEdit)edit).getVariable1(); 
+        /*ArrayList<PNEdit> linkEdits = UtilConstraints.getEditsType (edit, LinkEdit.class);
+		for (PNEdit simpleEdit : linkEdits) {
+			if (((LinkEdit)simpleEdit).isDirected()) { 
+				Variable variable1 = ((AddLinkEdit)simpleEdit).getVariable1(); 
 				ProbNode node1 = probNet.getProbNode(variable1);
 				if(node1.getNodeType()== NodeType.UTILITY)
 				{
-					Variable variable2 = ((AddLinkEdit)edit).getVariable2(); 
+					Variable variable2 = ((AddLinkEdit)simpleEdit).getVariable2(); 
 					ProbNode node2 = probNet.getProbNode(variable2);
 					if(node2.getNodeType()!= NodeType.UTILITY)
 					{
@@ -82,7 +83,7 @@ public class NoUtilityParent extends PNConstraint  {
 					}
 				}
 			}
-		}
+		}*/
 		return true;
 	}
 

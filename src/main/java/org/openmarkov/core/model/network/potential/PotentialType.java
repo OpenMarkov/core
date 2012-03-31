@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.potential;
 
 /** @author marias
@@ -18,7 +27,8 @@ public enum PotentialType {
 	ICIMODEL (11, "ICIModel"),
 	LINEAR_COMBINATION(12, "LinearCombination"),
 	PROBABILITY_DENSITY(13, "ProbabilityDensity"),
-	STAT_FUNCTION(14, "StatFunction");
+	STAT_FUNCTION(14, "StatFunction"),
+	TUNING(15,"Tuning");
 	// Add here more potential types (when available)
 	
 private int type;

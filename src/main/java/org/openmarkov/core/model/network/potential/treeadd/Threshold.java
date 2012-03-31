@@ -52,5 +52,12 @@ public class Threshold {
 		}
 	}
 	
+	public boolean equals (Threshold threshold) {
+		if (this.limit == threshold.getLimit() && this.belongsToLeft == threshold.belongsToLeft()) {
+			 return true;
+		} else {
+			return false;
+		}
+	}
 
 }

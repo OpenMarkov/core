@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.constraint;
 
 import static org.junit.Assert.assertTrue;
@@ -5,7 +14,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.model.network.NodeType;
@@ -68,7 +77,7 @@ public class OnlyFiniteStateVariablesTest {
 	public void testUndoableEditWillHappen() throws Exception {
 		
 		
-		PNESupport pNESupport = new PNESupport(influenceDiagram, false);
+		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint= new OnlyFiniteStatesVariables();
 		influenceDiagram.addConstraint(constraint, true);
 		
@@ -78,7 +87,7 @@ public class OnlyFiniteStateVariablesTest {
 			
 
 			// test no exception in legal edit
-			AddVariableEdit legalAdd = new AddVariableEdit(influenceDiagram, vc1, 
+			AddProbNodeEdit legalAdd = new AddProbNodeEdit(influenceDiagram, vc1, 
 				NodeType.DECISION);
 			//add the node D1 (decision + finite state)
 			try{
@@ -90,7 +99,7 @@ public class OnlyFiniteStateVariablesTest {
 		
 			Variable vc2 = new Variable("C1",0);
 			// test no exception in legal edit
-			 legalAdd = new AddVariableEdit(influenceDiagram, vc2, 
+			 legalAdd = new AddProbNodeEdit(influenceDiagram, vc2, 
 				NodeType.CHANCE);
 			//add the node C1 (chance + finite state)
 			try{
@@ -102,7 +111,7 @@ public class OnlyFiniteStateVariablesTest {
 		
 			Variable vc3 = new Variable("U1");
 			// test no exception in legal edit (utility + numeric)
-			 legalAdd = new AddVariableEdit(influenceDiagram, vc3, 
+			 legalAdd = new AddProbNodeEdit(influenceDiagram, vc3, 
 				NodeType.UTILITY);
 			//add the node U1
 			try{
@@ -115,7 +124,7 @@ public class OnlyFiniteStateVariablesTest {
 		
 			Variable vc4 = new Variable("D2");
 			// test exception in illegal edit (decision + numeric)
-			AddVariableEdit illegalAdd = new AddVariableEdit(influenceDiagram, vc4, 
+			AddProbNodeEdit illegalAdd = new AddProbNodeEdit(influenceDiagram, vc4, 
 				NodeType.DECISION);
 			//add the node D2
 			boolean exceptionLaunched=false;
@@ -130,7 +139,7 @@ public class OnlyFiniteStateVariablesTest {
 		
 			Variable vc5 = new Variable("C2");
 			// test  exception in illegal edit (chance + numeric)
-			 illegalAdd = new AddVariableEdit(influenceDiagram, vc5, 
+			 illegalAdd = new AddProbNodeEdit(influenceDiagram, vc5, 
 				NodeType.CHANCE);
 			//add the node D2
 			 exceptionLaunched=false;

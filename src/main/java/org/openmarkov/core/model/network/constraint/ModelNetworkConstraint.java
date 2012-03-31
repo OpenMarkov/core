@@ -1,8 +1,15 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
-
-import javax.swing.event.UndoableEditEvent;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
@@ -20,18 +27,25 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 /** This constraint ensures that the editions done during the learning of a
  * network respect the structure of the model net and the constraints
  * selected by the user. */
-@Constraint (name = "ModelNetworkConstraint", defaultBehavior = ConstraintBehavior.NO)
+@Constraint (name = "ModelNetworkConstraint", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class ModelNetworkConstraint extends PNConstraint {
 
 	// Attributes.
 	ModelNetUse modelNetUse;
 	ProbNet modelNet;
+
 	
-	// Constructor
-    public ModelNetworkConstraint() {
-        this.modelNet = null;
+	// Constructors
+    public ModelNetworkConstraint(ModelNetUse modelNetUse, ProbNet modelNet) {
+    	
+    	this.modelNet = modelNet.copy();
+        this.modelNetUse = modelNetUse;
+    }    
+    
+    public ModelNetworkConstraint(ProbNet modelNet) {
+    	this.modelNet = null;
         this.modelNetUse = null;
-    }	
+    }
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
@@ -39,68 +53,74 @@ public class ModelNetworkConstraint extends PNConstraint {
 	}
 
 	@Override
-	public boolean checkEvent(UndoableEditEvent event) 
+	public boolean checkEdit(ProbNet probNet, PNEdit edit)  
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
-		ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
-		Node source, destination;
-		
-		try {
-			/* Check for prohibited additions. If the link we want to add was
-			 * not present in the model net, it is not allowed.
-			 */ 
-			if (!modelNetUse.isAddLinksAllowed()){
-				edits = UtilConstraints.getEditsType(event, AddLinkEdit.class);
-				for (PNEdit edit : edits) {
-						source = modelNet.getProbNode(((AddLinkEdit)edit).
-								getVariable1().getName()).getNode();
-						destination = modelNet.getProbNode(((AddLinkEdit)edit).
-								getVariable2().getName()).getNode();
-					if ((modelNet.getGraph().getLink(source, 
-							destination, true) == null) &&
-							(modelNet.getGraph().getLink(source, 
-									destination, true) == null)) { 
-						return false;
-					}
-				} 
-			}
-			/* Check for prohibited deletions. If the link we want to remove was
-			 * in the model net, the elimination is not allowed.
-			 */ 
-			if (!modelNetUse.isDeleteLinksAllowed()){
-				edits = UtilConstraints.getEditsType(event, RemoveLinkEdit.class);
-				for (PNEdit edit : edits) {
-						source = modelNet.getProbNode(((RemoveLinkEdit)edit).
-								getVariable1().getName()).getNode();
-						destination = modelNet.getProbNode(((RemoveLinkEdit)edit).
-								getVariable2().getName()).getNode();
-					if ((modelNet.getGraph().getLink(source, 
-							destination, true) != null) ||
-							(modelNet.getGraph().getLink(destination, 
-									source, true) != null)) { 
-						return false;
-					}
-				}
-			}
-			/* Check for prohibited inversions. If the link we want to invert was
-			 * in the model net, it is not allowed.
-			 */ 
-			if (!modelNetUse.isInvertLinksAllowed()){
-				edits = UtilConstraints.getEditsType(event, InvertLinkEdit.class);
-				for (PNEdit edit : edits) {
-						source = modelNet.getProbNode(((InvertLinkEdit)edit).
-								getVariable1().getName()).getNode();
-						destination = modelNet.getProbNode(((InvertLinkEdit)edit).
-								getVariable2().getName()).getNode();
-					if ((modelNet.getGraph().getLink(source, 
-							destination, true) != null)) { 
-						return false;
-					}
-				}
-			}
-		} catch (ProbNodeNotFoundException e) {
-			return(false);
-		}
+        ArrayList<PNEdit> edits = new ArrayList<PNEdit> ();
+        Node source, destination;
+        if (!modelNetUse.isOnlyUseNodes ())
+        {
+            try
+            {
+                /*
+                 * Check for prohibited additions. If the link we want to add
+                 * was not present in the model net, it is not allowed.
+                 */
+                if (!modelNetUse.isAddLinksAllowed ())
+                {
+                    edits = UtilConstraints.getEditsType (edit, AddLinkEdit.class);
+                    for (PNEdit simpleEdit : edits)
+                    {
+                        source = modelNet.getProbNode (((AddLinkEdit) simpleEdit).getVariable1 ().getName ()).getNode ();
+                        destination = modelNet.getProbNode (((AddLinkEdit) simpleEdit).getVariable2 ().getName ()).getNode ();
+                        if ((modelNet.getGraph ().getLink (source, destination, true) == null)
+                            && (modelNet.getGraph ().getLink (source, destination, true) == null))
+                        {
+                            return false;
+                        }
+                    }
+                }
+                /*
+                 * Check for prohibited deletions. If the link we want to remove
+                 * was in the model net, the elimination is not allowed.
+                 */
+                if (!modelNetUse.isDeleteLinksAllowed ())
+                {
+                    edits = UtilConstraints.getEditsType (edit, RemoveLinkEdit.class);
+                    for (PNEdit simpleEdit : edits)
+                    {
+                        source = modelNet.getProbNode (((RemoveLinkEdit) simpleEdit).getVariable1 ().getName ()).getNode ();
+                        destination = modelNet.getProbNode (((RemoveLinkEdit) simpleEdit).getVariable2 ().getName ()).getNode ();
+                        if ((modelNet.getGraph ().getLink (source, destination, true) != null)
+                            || (modelNet.getGraph ().getLink (destination, source, true) != null))
+                        {
+                            return false;
+                        }
+                    }
+                }
+                /*
+                 * Check for prohibited inversions. If the link we want to
+                 * invert was in the model net, it is not allowed.
+                 */
+                if (!modelNetUse.isInvertLinksAllowed ())
+                {
+                    edits = UtilConstraints.getEditsType (edit, InvertLinkEdit.class);
+                    for (PNEdit simpleEdit : edits)
+                    {
+                        source = modelNet.getProbNode (((InvertLinkEdit) simpleEdit).getVariable1 ().getName ()).getNode ();
+                        destination = modelNet.getProbNode (((InvertLinkEdit) simpleEdit).getVariable2 ().getName ()).getNode ();
+                        if ((modelNet.getGraph ().getLink (source, destination, true) != null))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (ProbNodeNotFoundException e)
+            {
+                return (false);
+            }
+        }
 		return true;
 	}
 
@@ -126,9 +146,5 @@ public class ModelNetworkConstraint extends PNConstraint {
     {
         this.modelNet = modelNet;
     }
-    public ModelNetworkConstraint(ModelNetUse modelNetUse, ProbNet modelNet) {
-        this.modelNet = modelNet.copy();
-        this.modelNetUse = modelNetUse;
-    }    
 
 }

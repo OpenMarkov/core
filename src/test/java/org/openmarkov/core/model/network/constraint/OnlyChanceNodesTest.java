@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.constraint;
 
 import static org.junit.Assert.assertFalse;
@@ -8,7 +17,7 @@ import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.action.AddVariableEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
@@ -44,7 +53,7 @@ public class OnlyChanceNodesTest {
 	        throws Exception {
 		
 		// Add constraints as listeners.
-		PNESupport pNESupport = new PNESupport(probNetDirected, false);
+		PNESupport pNESupport = new PNESupport(false);
         probNetDirected.addConstraint (new OnlyChanceNodes (), true);
 		ArrayList<PNConstraint> constraints = probNetDirected.getConstraints();
 		for (PNConstraint constraint : constraints) { // sets listeners
@@ -55,7 +64,7 @@ public class OnlyChanceNodesTest {
 		Variable ve = new Variable("E", 0);
 
 		// test no exception in legal edit
-		AddVariableEdit legalEdit = new AddVariableEdit(probNetDirected, ve, 
+		AddProbNodeEdit legalEdit = new AddProbNodeEdit(probNetDirected, ve, 
 			NodeType.CHANCE);
 		try {
 			pNESupport.announceEdit(legalEdit);
@@ -65,7 +74,7 @@ public class OnlyChanceNodesTest {
 		}
 		
 		// test exception in no legal edit
-		AddVariableEdit ilegalEdit = new AddVariableEdit(probNetDirected, vd, 
+		AddProbNodeEdit ilegalEdit = new AddProbNodeEdit(probNetDirected, vd, 
 				NodeType.DECISION);
 		boolean exceptionLaunched = false;
 		try {

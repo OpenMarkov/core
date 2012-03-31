@@ -14,6 +14,7 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -22,6 +23,7 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
 
 /**
@@ -33,6 +35,7 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
  * @author myebra
  *
  */
+@RelationType(name="TreeADD", family="Tree")
 public class TreeADDPotential extends Potential  implements Cloneable {
 
 	/**
@@ -52,6 +55,11 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 	 * This HashMap stores those potentials that have been labeled within the branches in a TreeADDPotential
 	 */
 	private HashMap<String, Potential> potentialsLabeled; 
+	
+	public TreeADDPotential (ArrayList<Variable> variables, PotentialRole role) {
+		super(variables, role);
+		new TreeADDPotential(variables, variables.get(1), role);
+	}
 	
 	/**TreeADD constructor for the GUI**/
 	public TreeADDPotential(ArrayList<Variable> variables, Variable topVariable, PotentialRole role){
@@ -103,6 +111,16 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 		}
 	}
 	/**
+	 * Constructor for the parser
+	 */
+	public TreeADDPotential (ArrayList<Variable> variables, Variable topVariable, PotentialRole role, ArrayList<TreeADDBranch> branches) {
+		super(variables, role);
+		this.topVariable = topVariable;
+		this.role = role;
+		this.branches = branches;
+	}
+	
+	/**
 	 * Copy constructor
 	 * @param treeADD
 	 */
@@ -120,7 +138,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 		branches.add(branch);
 	}
 	
-	public void setLabeledPotentials(){
+	/*public void setLabeledPotentials(){
 		for (int i = 0; i < branches.size(); i++) {
 			TreeADDBranch branch = branches.get(i);
 			String label;
@@ -128,7 +146,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 				potentialsLabeled.put(label, branch.getPotential());
 			}
 		}
-	}
+	}*/
 	public PotentialType getPotentialType () {
 		return this.potentialType;
 	}
@@ -141,7 +159,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 	 * @param branch
 	 * @return Potential or null if the reference it has not been labelled in this tree
 	 */
-	public Potential getAssignedPotential(TreeADDBranch branch){
+	/*public Potential getAssignedPotential(TreeADDBranch branch){
 		setLabeledPotentials();
 		String reference;
 		if ((reference = branch.getReference()) != null) {
@@ -153,7 +171,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 			return branch.getPotential();
 		}
 		return null;
-	}
+	}*/
 	
 	public void setBranchAtIndex (int index, TreeADDBranch treeBranch) {
 		this.branches.set(index, treeBranch);
@@ -200,4 +218,20 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 		// TODO seguir clonando hacia abajo; hay que clonar tambien las ramas y los potenciales
 	}
 
+	@Override
+	public Potential copy() throws NotEnoughMemoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	/**
+     * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
+     * @param variables
+     * @param role
+     */
+	public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
+    {
+        // node must have at least one parent node
+        return variables.size() >= 2;
+    }
+	
 }

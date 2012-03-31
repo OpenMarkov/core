@@ -1,5 +1,6 @@
 package org.openmarkov.core.model.network.potential.treeadd;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import org.openmarkov.core.model.network.State;
@@ -38,11 +39,11 @@ public class TreeADDBranch {
 	 */
 	private Variable topVariable;
 	 
-	private String label;
+	/*private String label;*/
 	/**
 	 * A branch can reference a potential from other branch that has been labeled
 	 */
-	private String reference;
+	/*private String reference;*/
 	
 	/**
 	 * Constructor for discretized and finite estates variables
@@ -59,6 +60,32 @@ public class TreeADDBranch {
 		//this.treeADD = treeADD;
 		
 	}
+	/**
+	 * Constructor for the parser
+	 * @param thresholds
+	 * @param potential
+	 */
+	public TreeADDBranch (ArrayList<Threshold> thresholds, Potential potential) {
+		this.thresholdMax = thresholds.get(1);
+		this.thresholdMin = thresholds.get(0);
+		this.topVariable = topVariable;
+		this.parentVariables = parentVariables;
+		this.potential = potential;
+		
+	}
+	
+	/**
+	 * 
+	 * @param branchStates
+	 * @param potential
+	 * @param topVariable
+	 */
+	
+	public TreeADDBranch(ArrayList<State> branchStates, Potential potential, Variable topVariable) {
+		this.states = branchStates;
+		this.potential = potential;
+		this.topVariable = topVariable;
+	}
 	
 	/*public TreeADDBranch(ArrayList<State> branchStates, Potential potential, String label) {
 		this.states = branchStates;
@@ -70,15 +97,15 @@ public class TreeADDBranch {
 	/* 
 	 * @argCondition reference must be one of the labels in this ADD
 	 *  and the reference must not create a cycle in the ADD. If a branch has assigned a reference cannot has assigned a potential */
-	public void setReference(String reference) {
+	/*public void setReference(String reference) {
 		this.reference = reference;
-	}
+	}*/
 	
 	/* 
 	 * @argCondition label is incompatible with reference */
-	public void setLabel(String label) {
+	/*public void setLabel(String label) {
 		this.label = label;
-	}
+	}*/
 	
 	/*public TreeADDBranch(ArrayList<State> branchStates, String reference) {
 		this.states = branchStates;
@@ -136,15 +163,13 @@ public class TreeADDBranch {
 	public Variable getTopVariable() {
 		return this.topVariable;
 	}
-	
-	
-	public String getLabel(){
+	/*public String getLabel(){
 		return this.label;
 	}
 	
 	public String getReference(){
 		return this.reference;
-	}
+	}*/
 	
 	public Potential getPotential() {
 		return this.potential;

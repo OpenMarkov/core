@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
@@ -21,13 +30,14 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.ProbNet.ProbNetNodesHashMapsType.NodesHashMapType;
 import org.openmarkov.core.model.network.constraint.ConstraintManager;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
 
@@ -38,6 +48,7 @@ import org.openmarkov.core.model.network.type.NetworkType;
  * @author marias
  * @author fjdiez
  * @author mpalacios
+ * @author mluque
  * @see openmarkov.graphs.Graph
  * @see org.openmarkov.core.model.network.ProbNode
  * @version 1.0
@@ -67,13 +78,79 @@ public class ProbNet implements Cloneable {
 
 	/** Associated graph */
     protected Graph graph;
+    
+    /**
+     * @author mluque
+     * It is the type of 'nodesHashMaps'. It contains a <code>LinkedHashMap</code>
+     * from <code>NodeType</code> to <code>NodesHashMapType</code>.
+     */
+    public class ProbNetNodesHashMapsType {
+    	
+    	  /**
+         * @author mluque
+         * Contains a <code>LinkedHashMap</code> from <code>Variable</code>
+         * to <code>ProbNode</code>.
+         */
+    	public class NodesHashMapType {
+    		LinkedHashMap<Variable, ProbNode> nodesHashMap;
+    		
+    		NodesHashMapType(){
+    			nodesHashMap = new LinkedHashMap<Variable, ProbNode>();
+    		}
+    		
+    		public ProbNode get(Variable variable){
+    			return nodesHashMap.get(variable);
+    		}
+    		
+    		public void put(Variable variable, ProbNode probNode){
+    			nodesHashMap.put(variable, probNode);
+    		}
 
+			public int size() {
+				return nodesHashMap.size();
+			}
+
+			public Collection<ProbNode> values() {
+				return nodesHashMap.values();
+			}
+
+			public void remove(Variable variable) {
+				nodesHashMap.remove(variable);
+			}
+    	}
+    	
+    	
+    	LinkedHashMap<NodeType, NodesHashMapType> nodesHashMaps;
+
+    	ProbNetNodesHashMapsType(){
+    		nodesHashMaps = new LinkedHashMap<NodeType, NodesHashMapType>();
+    		 // create a linkedHashMap for each type of nodes
+    		for (NodeType type:NodeType.values())
+            {
+                nodesHashMaps.put(type, new NodesHashMapType());
+            }
+    	}
+
+		public void put(NodeType type, NodesHashMapType nodesHashMap) {
+			nodesHashMaps.put(type, nodesHashMap);
+			
+		}
+		
+		public Collection<NodesHashMapType> values(){
+			return nodesHashMaps.values();
+		}
+
+		public NodesHashMapType get(NodeType nodeType) {
+			return nodesHashMaps.get(nodeType);
+		}
+    }
+    
 	/**
-	 * Nodes are stored in several HashMaps to accelerate the access. The kind
-	 * of node, which is an integer, determines the <code>HashMap</code> in
+	 * Nodes are stored in several HashMaps to accelerate the access. The type of node
+	 * determines the <code>HashMap</code> in
 	 * which the node is stored.
 	 */
-	protected ArrayList<LinkedHashMap<Variable, ProbNode>> nodesHashMaps;
+	protected ProbNetNodesHashMapsType nodesHashMaps;
 
 	/** Each value of the decision criteria variable represents one criterion,
 	 * used in multicriteria decision analysis */
@@ -94,14 +171,10 @@ public class ProbNet implements Cloneable {
     public ProbNet (NetworkType networkType)
     {
         this.graph = new Graph();
-        this.pNESupport = new PNESupport (this, false);        
+        this.pNESupport = new PNESupport (false);        
         this.constraints = new ArrayList<PNConstraint> ();
-        this.nodesHashMaps = new ArrayList<LinkedHashMap<Variable, ProbNode>> (NodeType.values ().length);
-        // create a linkedHashMap for each type of nodes
-        for (int i = 0; i < NodeType.values ().length; i++)
-        {
-            nodesHashMaps.add (new LinkedHashMap<Variable, ProbNode> ());
-        }
+        this.nodesHashMaps = new ProbNetNodesHashMapsType();
+        
         try
         {
             this.setNetworkType(networkType);
@@ -251,6 +324,16 @@ public class ProbNet implements Cloneable {
 	public ArrayList<PNConstraint> getConstraints() {
 		return (ArrayList<PNConstraint>) constraints.clone();
 	}
+	
+	/** @return <code>ArrayList</code> of <code>PNConstraint</code>s */
+	public ArrayList<PNConstraint> getAdditionalConstraints() {
+		@SuppressWarnings("unchecked")
+		ArrayList<PNConstraint> additionalConstraints = (ArrayList<PNConstraint>)constraints.clone();
+		ArrayList<PNConstraint> networkTypeConstraints = ConstraintManager.getUniqueInstance().
+				buildConstraintList(networkType);
+		additionalConstraints.removeAll(networkTypeConstraints);
+		return additionalConstraints;
+	}
 
     /**
      * Sets Network type
@@ -259,9 +342,9 @@ public class ProbNet implements Cloneable {
      */
     public void setNetworkType (NetworkType networkType) throws ConstraintViolationException
     {
-        ArrayList<PNConstraint> constraints = ConstraintManager.getUniqueInstance ().buildConstraintList (networkType);
         NetworkType oldNetworkType = this.networkType;
         this.networkType = networkType;        
+        ArrayList<PNConstraint> constraints = ConstraintManager.getUniqueInstance ().buildConstraintList (networkType);
 
         try
         {
@@ -395,6 +478,22 @@ public class ProbNet implements Cloneable {
 		return probNetCopy;
 	}
 
+	
+    /**
+     * Inserts a link (<code>directed = true</code> or <code>false</code>)
+     * between the nodes <code>node1</code> and <code>node2</code> in
+     * <code>this</code> graph.
+     * @param node1 <code>ProbNode</code>
+     * @param node2 <code>ProbNode</code>
+     * @param directed <code>boolean</code>
+     * @throws NodeNotFoundException
+     */
+    public void addLink (ProbNode node1, ProbNode node2, boolean directed)
+    {
+        // Add link between nodes. This can throw an exception
+        graph.addLink (node1.getNode (), node2.getNode (), directed);
+    }   
+    
 	/**
 	 * Inserts a link (<code>directed = true</code> or <code>false</code>)
 	 * between the nodes associated to <code>variable1</code> and
@@ -417,24 +516,23 @@ public class ProbNet implements Cloneable {
 		// Get nodes
 		ProbNode node1 = getProbNode(variable1);
 		ProbNode node2 = getProbNode(variable2);
+		
+        // Throw NotExistsNodeException if one or both nodes does not exists
+        if ((node1 == null) || (node2 == null)) {
+            String msg = "ProbNet.addLink(" + variable1.getName() + ", "
+                    + variable2.getName() + "). It does not exist: ";
+            if (node1 == null) {
+                msg = msg + variable2.getName();
+                if (node2 == null) {
+                    msg = msg + " and " + variable2.getName();
+                }
+            } else {
+                msg = msg + node2.getName();
+            }
+            throw new NodeNotFoundException(msg);
+        }		
 
-		// Throw NotExistsNodeException if one or both nodes does not exists
-		if ((node1 == null) || (node2 == null)) {
-			String msg = "ProbNet.addLink(" + variable1.getName() + ", "
-					+ variable2.getName() + "). It does not exist: ";
-			if (node1 == null) {
-				msg = msg + variable1.getName();
-				if (node2 == null) {
-					msg = msg + " and " + variable2.getName();
-				}
-			} else {
-				msg = msg + variable2.getName();
-			}
-			throw new NodeNotFoundException(msg);
-		}
-
-		// Add link between nodes. This can throw an exception
-		graph.addLink(node1.getNode(), node2.getNode(), directed);
+		addLink(node1, node2, directed);
 	}
 
 	/**
@@ -462,8 +560,8 @@ public class ProbNet implements Cloneable {
 	/** @return Number of nodes in <code>probNet</code>. <code>int</code> */
 	public int getNumNodes() {
 		int numNodes = 0;
-		for (LinkedHashMap<Variable, ProbNode> hashMap : nodesHashMaps) {
-			numNodes += hashMap.size();
+		for (NodesHashMapType hashMap : nodesHashMaps.values()) {
+			numNodes = numNodes + hashMap.size();
 		}
 		return numNodes;
 	}
@@ -475,7 +573,7 @@ public class ProbNet implements Cloneable {
 	 *         <code>int</code>
 	 */
 	public int getNumNodes(NodeType nodeType) {
-		return (nodesHashMaps.get(NodeType.type(nodeType)).size());
+		return (nodesHashMaps.get(nodeType).size());
 	}
 
 	/**
@@ -510,8 +608,7 @@ public class ProbNet implements Cloneable {
 	 * @throws WrongCriterionException 
 	 * @throws NoFindingException
 	 */
-	public ArrayList<TablePotential> tableProjectPotentials(
-	EvidenceCase evidenceCase)
+    public ArrayList<TablePotential> tableProjectPotentials (EvidenceCase evidenceCase)
 	throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
 		ArrayList<Potential> originalPotentials = getPotentials();
 		ArrayList<TablePotential> projectedPotentials = new ArrayList<TablePotential>();
@@ -520,8 +617,8 @@ public class ProbNet implements Cloneable {
 		ArrayList<TablePotential> auxPotentials;
 		for (Potential potential : originalPotentials) {
 			auxPotentials = potential.tableProject(evidenceCase, null);
-			for (Potential auxPotential : auxPotentials) {
-				projectedPotentials.add((TablePotential)auxPotential);
+			for (TablePotential auxPotential : auxPotentials) {
+				projectedPotentials.add(auxPotential);
 			}
 		}
 		return projectedPotentials;
@@ -566,7 +663,7 @@ public class ProbNet implements Cloneable {
 	 */
 	public ArrayList<ProbNode> getProbNodes() {
 		ArrayList<ProbNode> nodes = new ArrayList<ProbNode>(getNumNodes());
-		for (LinkedHashMap<Variable, ProbNode> hashMap : nodesHashMaps) {
+		for (NodesHashMapType hashMap : nodesHashMaps.values()) {
 			nodes.addAll(hashMap.values());
 		}
 		return nodes;
@@ -621,8 +718,7 @@ public class ProbNet implements Cloneable {
 	 * @consultation
 	 */
 	public ArrayList<ProbNode> getProbNodes(NodeType nodeType) {
-		return new ArrayList<ProbNode>(nodesHashMaps.get(nodeType.type())
-				.values());
+		return new ArrayList<ProbNode>(nodesHashMaps.get(nodeType).values());
 	}
 
 	/**
@@ -665,12 +761,32 @@ public class ProbNet implements Cloneable {
 	 * @consultation
 	 */
 	public ArrayList<Potential> getPotentialsType(NodeType nodeType) {
-		LinkedHashMap<Variable, ProbNode> nodesType = nodesHashMaps
-				.get(nodeType.ordinal());
+		NodesHashMapType nodesType = nodesHashMaps.get(nodeType);
 		ArrayList<Potential> potentials = new ArrayList<Potential>();
 		for (ProbNode node : nodesType.values()) {
 			potentials.addAll(node.getPotentials());
 		}
+		return potentials;
+	}
+	
+	
+	/**
+	 * @param role
+	 * @return All the potentials of a role.
+	 */
+	public ArrayList<Potential> getPotentialsRole(PotentialRole role) {
+		
+		ArrayList<Potential> potentials = new ArrayList<Potential>();
+		for (NodesHashMapType nodesHashMap:nodesHashMaps.values()){
+			for (ProbNode auxProbNode:nodesHashMap.values()){
+				for (Potential auxPot:auxProbNode.getPotentials()){
+					if (auxPot.getPotentialRole()==role){
+						potentials.add(auxPot);
+					}
+				}
+			}
+		}
+		
 		return potentials;
 	}
 
@@ -707,7 +823,7 @@ public class ProbNet implements Cloneable {
 	 * Gets all the utility potentials that contains the <code>variable</code>
 	 * received.
 	 * <p>
-	 * The potentials that can contains that variable are in the node asociated
+	 * The potentials that can contains that variable are in the node associated
 	 * to the variable and its neighbors.
 	 * 
 	 * @param variable
@@ -868,11 +984,11 @@ public class ProbNet implements Cloneable {
 	 * @argCondition the variable must not be in the ProbNet.
 	 */
 	public ProbNode addVariable(Variable variable, NodeType nodeType) {
-		ProbNode probNode = nodesHashMaps.get(nodeType.ordinal()).get(variable);
+		ProbNode probNode = nodesHashMaps.get(nodeType).get(variable);
 		if (probNode == null) {
 			probNode = new ProbNode(this, variable, nodeType);
 		}
-		nodesHashMaps.get(nodeType.ordinal()).put(variable, probNode);
+		nodesHashMaps.get(nodeType).put(variable, probNode);
 		return probNode;
 	}
 
@@ -886,7 +1002,7 @@ public class ProbNet implements Cloneable {
 	public void addProbNode(ProbNode probNode) {
 		Variable variable = probNode.getVariable();
 		NodeType nodeType = probNode.getNodeType();
-		nodesHashMaps.get(nodeType.ordinal()).put(variable, probNode);
+		nodesHashMaps.get(nodeType).put(variable, probNode);
 		this.getGraph().uf_addNode( probNode.getNode() );
 	}
 
@@ -900,8 +1016,7 @@ public class ProbNet implements Cloneable {
 	public ProbNode getProbNode(String nameOfVariable)
 			throws ProbNodeNotFoundException {
 		for (NodeType nodeType : NodeType.values()) {
-			Collection<ProbNode> probNodes = nodesHashMaps.get(nodeType.type())
-					.values();
+			Collection<ProbNode> probNodes = nodesHashMaps.get(nodeType).values();
 			for (ProbNode probNode : probNodes) {
 						
 				if (probNode.getVariable().getName().contentEquals(
@@ -922,8 +1037,7 @@ public class ProbNet implements Cloneable {
 	 */
 	public ProbNode getProbNode(Node node) throws ProbNodeNotFoundException {
 		for (NodeType nodeType : NodeType.values()) {
-			Collection<ProbNode> probNodes = nodesHashMaps.get(nodeType.type())
-					.values();
+			Collection<ProbNode> probNodes = nodesHashMaps.get(nodeType).values();
 			for (ProbNode probNode : probNodes) {
 				if (probNode.getNode().equals(node)) {
 					return probNode;
@@ -945,7 +1059,7 @@ public class ProbNet implements Cloneable {
 	 */
 	public ProbNode getProbNode(String nameOfVariable, NodeType nodeType)
 			throws ProbNodeNotFoundException {
-		for (ProbNode node : nodesHashMaps.get(nodeType.type()).values()) {
+		for (ProbNode node : nodesHashMaps.get(nodeType).values()) {
 			if (node.getVariable().getName().contentEquals(nameOfVariable)) {
 				return node;
 			}
@@ -966,7 +1080,7 @@ public class ProbNet implements Cloneable {
 	 */
 	public ProbNode getProbNode(Variable variable) {
 		ProbNode probNode = null;
-		for (LinkedHashMap<Variable, ProbNode> nodes : nodesHashMaps) {
+		for (NodesHashMapType nodes : nodesHashMaps.values()) {
 			if ((probNode = nodes.get(variable)) != null) {
 				break;
 			}
@@ -1060,35 +1174,6 @@ public class ProbNet implements Cloneable {
 	}
 
 	/**
-	 * Looks for the <code>ICIPotential</code> that corresponds to this
-	 * <code>potential</code> and adds it as subpotential.
-	 * 
-	 * @param potential
-	 *            . <code>Potential</code>
-	 */
-	@SuppressWarnings("unchecked")
-	public void addSubPotential(TablePotential subPotential, String name) {
-		Variable firstVariable = subPotential.getVariable(0);
-		ProbNode probNode = getProbNode(firstVariable);
-		ArrayList<Potential> potentials = probNode.getPotentials();
-		for (Potential potential : potentials) {
-			if (potential instanceof ICIPotential) {
-				ArrayList<String> names = (ArrayList<String>) potential.properties
-						.get("names");
-				for (String nameSubPotential : names) {
-					if (nameSubPotential.contentEquals(name)) {
-						((ICIPotential) potential)
-								.addSubPotential(subPotential);
-						names.remove(nameSubPotential);
-						break;
-					}
-				}
-			}
-		}
-
-	}
-
-	/**
 	 * If there are missing variables (variables that exists in the
 	 * <code>potential</code> but not in the <code>probNet</code>), the method
 	 * adds all those variables to the <code>probNet</code>.
@@ -1135,7 +1220,7 @@ public class ProbNet implements Cloneable {
 			Node utilityNode = utilityProbNode.getNode();
 			for (Variable variable : potentialVariables) {
 				Node parent = getProbNode(variable).getNode();
-				if (!parent.isParent(utilityNode)) {
+				if (!utilityNode.isParent(parent)) {
 					graph.addLink(parent, utilityNode, true);
 				}
 			}
@@ -1162,7 +1247,7 @@ public class ProbNet implements Cloneable {
 				for (int i = 1; i < potentialVariables.size(); i++) {
 					Node conditioningNode = getProbNode(
 							potentialVariables.get(i)).getNode();
-					if (!conditioningNode.isParent(conditionedNode)) {
+					if (!conditionedNode.isParent(conditioningNode)) {
 						graph.addLink(conditioningNode, conditionedNode, true);
 					}
 				}
@@ -1245,7 +1330,7 @@ public class ProbNet implements Cloneable {
 	 */
 	public ArrayList<Variable> getVariables() {
 		ArrayList<Variable> variables = new ArrayList<Variable>();
-		for (LinkedHashMap<Variable, ProbNode> probNodesMap : nodesHashMaps) {
+		for (NodesHashMapType probNodesMap : nodesHashMaps.values()) {
 			for (ProbNode probNode : probNodesMap.values()) {
 				variables.add(probNode.getVariable());
 			}
@@ -1263,29 +1348,41 @@ public class ProbNet implements Cloneable {
 	 */
 	public void removeProbNode(ProbNode probNode) {
 		if (probNode != null) {
-			int nodeKindValue = probNode.getNodeType().type();
+			NodeType nodeKindValue = probNode.getNodeType();
 			Variable variable = probNode.getVariable();
-			LinkedHashMap<Variable, ProbNode> nodesMap = nodesHashMaps
-					.get(nodeKindValue);
+			NodesHashMapType nodesMap = nodesHashMaps.get(nodeKindValue);
 			nodesMap.remove(variable);
 			graph.removeNode(probNode.getNode());
 		}
 	}
 
 	/**
-	 * @param variable1
-	 *            <code>Variable</code>
-	 * @param variable2
-	 *            <code>Variable</code>
+	 * @param node1
+	 *            <code>ProbNode</code>
+	 * @param node2
+	 *            <code>ProbNode</code>
 	 * @param directed
 	 *            <code>boolean</code>
 	 */
-	public void removeLink(Variable variable1, Variable variable2,
-			boolean directed) {
-		ProbNode node1 = getProbNode(variable1);
-		ProbNode node2 = getProbNode(variable2);
+    public void removeLink (ProbNode node1, ProbNode node2, boolean directed)
+    {
 		graph.removeLink(node1.getNode(), node2.getNode(), directed);
 	}
+	
+    /**
+     * @param variable1
+     *            <code>Variable</code>
+     * @param variable2
+     *            <code>Variable</code>
+     * @param directed
+     *            <code>boolean</code>
+     */
+    public void removeLink (Variable variable1, Variable variable2, boolean directed)
+    {
+        ProbNode node1 = getProbNode(variable1);
+        ProbNode node2 = getProbNode(variable2);
+        removeLink(node1, node2, directed);
+    }	
 
 	/** @return <code>graph</code> associated to this <code>probNet</code>. */
 	public Graph getGraph() {
@@ -1295,7 +1392,7 @@ public class ProbNet implements Cloneable {
 	/** @return Number of potentials. <code>int</code> */
 	public int getNumPotentials() {
 		int numPotentials = 0;
-		for (LinkedHashMap<Variable, ProbNode> linkedHasMap : nodesHashMaps) {
+		for (NodesHashMapType linkedHasMap : nodesHashMaps.values()) {
 			for (ProbNode probNode : linkedHasMap.values()) {
 				numPotentials += probNode.getNumPotentials();
 			}
@@ -1517,14 +1614,5 @@ public class ProbNet implements Cloneable {
 	{
 	    return graph.existsPath (a.getNode (),b.getNode (), directed);
 	}
-
-    public boolean existsLink (ProbNode headNode, ProbNode tailNode)
-    {
-        return (graph.getLink (headNode.getNode (), tailNode.getNode (), true) != null)
-               || (graph.getLink (headNode.getNode (), tailNode.getNode (),
-                                  false) != null);
-    }
-	
-	
 
 }

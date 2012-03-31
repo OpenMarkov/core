@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.action;
 
 import java.util.ArrayList;
@@ -8,7 +17,6 @@ import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialType;
 
 public class RemovePolicyEdit extends SimplePNEdit {
 	
@@ -17,7 +25,6 @@ public class RemovePolicyEdit extends SimplePNEdit {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Potential lastPotential;
-	private PotentialType newPotentialType;
 	private Variable variable;
 	private PolicyType lastPolicyType;
 	
@@ -55,10 +62,4 @@ public class RemovePolicyEdit extends SimplePNEdit {
 			probNet.getProbNode(variable).setPolicyType(lastPolicyType);
 		}
 	}
-
-	public PotentialType getNewPotentialType() {
-		// TODO Auto-generated method stub
-		return newPotentialType;
-	}
-	
 }

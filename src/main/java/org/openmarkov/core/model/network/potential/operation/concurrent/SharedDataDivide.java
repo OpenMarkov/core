@@ -1,3 +1,12 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.potential.operation.concurrent;
 
 import java.util.ArrayList;
@@ -48,7 +57,7 @@ public class SharedDataDivide {
 		TablePotential quotient = null;
 		try {
 			quotient = new TablePotential(
-					quotientVariables, PotentialRole.JOIN_PROBABILITY);
+					quotientVariables, PotentialRole.JOINT_PROBABILITY);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

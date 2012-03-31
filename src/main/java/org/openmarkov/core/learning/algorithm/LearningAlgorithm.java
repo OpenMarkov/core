@@ -1,16 +1,22 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.learning.algorithm;
 
 import java.util.ArrayList;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.learning.editionsgenerator.EditAndScorePair;
 import org.openmarkov.core.learning.editionsgenerator.EditionsGenerator;
-import org.openmarkov.core.learning.util.ModelNetUse;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
@@ -22,20 +28,27 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
  * Abstract learning algorithm.
  */
 public abstract class LearningAlgorithm {
-	
+    
     /** Edition generator */
     protected EditionsGenerator editionsGenerator;
     /** Parameter for the parametric learning. */
     private double alpha;    
     
+    /** Net to learn */
+    protected ProbNet probNet;
+    
+    /** Case database */
+    int[][] cases;
     
     // Constructor
     /**
      * @param editionsGenerator <code>EditionsGenerator</code> The object that
      * gives the best operation in each iteration of the algorithm.
      **/
-    public LearningAlgorithm (EditionsGenerator editionsGenerator, double alpha)
+    public LearningAlgorithm (ProbNet probNet, int[][] cases, EditionsGenerator editionsGenerator, double alpha)
     {
+        this.probNet = probNet;
+        this.cases = cases;
         this.editionsGenerator = editionsGenerator;
         this.alpha = alpha;
     }
@@ -46,47 +59,40 @@ public abstract class LearningAlgorithm {
      * @throws NotEnoughMemoryException
      * @throws NormalizeNullVectorException
      */
-    public void run (int[][] cases, ProbNet probNet, ProbNet modelNet, ModelNetUse modelNetUse)
+    public void run ()
         throws NotEnoughMemoryException,
         NormalizeNullVectorException
     {
-        probNet.getPNESupport ().addUndoableEditListener (editionsGenerator);
-        init(cases, probNet, modelNet, modelNetUse);
+        init();
         /* Main loop */
-       ArrayList<EditAndScorePair> bestEditions = editionsGenerator.getBestEditions(probNet, cases, 1,true,true,false);
-        while (!bestEditions.isEmpty ())
+       EditAndScorePair bestEdition = editionsGenerator.getBest(true,true);
+        while (bestEdition != null)
         {
-            step (probNet, bestEditions.get (0).getEdition ());
-            bestEditions = editionsGenerator.getBestEditions (probNet, cases, 1, true, true,
-                                                              false);
+            step (bestEdition.getEdition ());
+            bestEdition = editionsGenerator.getBest (true, true);
         }
        /* Parametric Learning */
        parametricLearning(probNet, cases);
     }
     
     /**
-     * 
-     * @param cases
-     * @param probNet
-     * @param modelNet
+     * Init algorithm
+     * @param modelNetUse
      */
-    protected void init (int[][] cases, ProbNet probNet, ProbNet modelNet, ModelNetUse modelNetUse)
-    {
-        
-    }
+    public abstract void init ();
     
     /** Takes a step in the algorithm
      * 
      * @throws openmarkov.exceptions.NotEnoughMemoryException
      * @throws java.lang.Exception
      */
-    public ProbNet step(ProbNet learnedNet, PNEdit bestEdition) throws NotEnoughMemoryException, 
+    private ProbNet step(PNEdit bestEdition) throws NotEnoughMemoryException, 
             NormalizeNullVectorException {
 
     /* If there have been any improvements on the score, we update
      * the learnedNet. */
         try{
-            learnedNet.doEdit(bestEdition);
+            probNet.doEdit(bestEdition);
         } catch (ConstraintViolationException ex){
             /* If the edition was not allowed (ModelNetworkconstraint)
              * the algorithm just goes through the next iteration of the
@@ -96,10 +102,10 @@ public abstract class LearningAlgorithm {
         catch (Exception exception){
             exception.printStackTrace();
         }
-        return learnedNet;
+        return probNet;
     }
-    		
-	/**
+            
+    /**
      * This function creates the Potentials associated to each node,
      * normalizing the absolute frequencies of the configurations of 
      * the parents.
@@ -107,14 +113,18 @@ public abstract class LearningAlgorithm {
      * @throws NormalizeNullVectorException 
      */
     public ProbNet parametricLearning(ProbNet learnedNet, int[][] cases) 
-    		throws NotEnoughMemoryException, NormalizeNullVectorException{
+            throws NotEnoughMemoryException, NormalizeNullVectorException{
         TablePotential absoluteFrequencies;
         
-        for (ProbNode node : learnedNet.getProbNodes()) { 
+        for (ProbNode node : learnedNet.getProbNodes()) {
+            if(!node.getPotentials ().isEmpty ())
+            {
+                learnedNet.removePotential (node.getPotentials ().get (0));
+            }
             absoluteFrequencies = calculateAbsoluteFrequencies(learnedNet, cases, node);
             for (int j = 0; j < absoluteFrequencies.getTableSize(); j++)
                 absoluteFrequencies.values[j] += alpha;
-            node.addPotential(DiscretePotentialOperations.normalize(absoluteFrequencies));
+            learnedNet.addPotential (DiscretePotentialOperations.normalize(absoluteFrequencies));
         }
         
         return learnedNet;
@@ -189,9 +199,9 @@ public abstract class LearningAlgorithm {
                                                           int[] indexesOfParents,
                                                           int numValues
                                                           )
-    		throws NotEnoughMemoryException {
+            throws NotEnoughMemoryException {
         TablePotential absoluteFreqPotential = new TablePotential(
-        		variables, PotentialRole.CONDITIONAL_PROBABILITY);
+                variables, PotentialRole.CONDITIONAL_PROBABILITY);
         double[] absoluteFreqs = absoluteFreqPotential.getValues();
         double iCPT;
         int iNode = probNet.getProbNodes().indexOf(
@@ -217,35 +227,44 @@ public abstract class LearningAlgorithm {
     }
 
     /**
-     * Score of the associated network. 
-     * @return <code>double</code> score of the net 
-     */    
-    public abstract double getScore ();
-
-    /**
-     * Scores the associated network with the given edition.
-     * @param edit <code>PNEdit</code> 
-     * @return <code>double</code> score of the net with the given edition
-     */    
-    public abstract double getScore (PNEdit edit);
-
-    /**
      * Returns best editions
-     * @param probNet
-     * @param cases
      * @param numEdits
      * @param onlyAllowedEdits
      * @param onlyPositiveEdits
      * @param reset
      * @return
      */
-    public ArrayList<EditAndScorePair> getBestEditions (ProbNet probNet, int [][] cases, int numEdits,
+    public ArrayList<EditAndScorePair> getBestEditions (int numEdits,
                                                         boolean onlyAllowedEdits,
-                                                        boolean onlyPositiveEdits,
-                                                        boolean reset)
+                                                        boolean onlyPositiveEdits)
     {
-        return this.editionsGenerator.getBestEditions (probNet, cases, numEdits,
-                                                       onlyAllowedEdits,
-                                                       onlyPositiveEdits, reset);        
+        ArrayList<EditAndScorePair> bestEditions = new ArrayList<EditAndScorePair> ();
+        EditAndScorePair bestEdition = editionsGenerator.getBest (onlyAllowedEdits, onlyPositiveEdits);
+        while (bestEdition != null && bestEditions.size () < numEdits)
+        {
+            if (bestEdition != null)
+            {
+                bestEditions.add (bestEdition);
+            }
+            bestEdition = editionsGenerator.getNext (onlyAllowedEdits, onlyPositiveEdits);
+        }        
+        return bestEditions;        
     }
+    
+    /**
+     * Score the network. 
+     * @param probNet
+     * @param cases
+     * @return <code>double</code> score of the net 
+     */    
+    public abstract double getScore (ProbNet probNet, int[][] cases);
+
+    /**
+     * Scores the associated network with the given edition.
+     * @param probNet
+     * @param cases
+     * @param edit <code>PNEdit</code> 
+     * @return <code>double</code> score of the net with the given edition
+     */    
+    public abstract double getScore (ProbNet probNet, int[][] cases, PNEdit edit);    
 }

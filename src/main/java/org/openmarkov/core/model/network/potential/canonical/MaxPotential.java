@@ -1,29 +1,61 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.potential.canonical;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
+@RelationType(name="GeneralizedMax", family="ICI")
 public class MaxPotential extends MinMaxPotential {
 
 	/** @param model. <code>ICIModel</code>.
 	 * @param variables. <code>ArrayList</code> of <code>Variable</code>. */
 	public MaxPotential(
-			ICIModelType model, ArrayList<Variable> variables, PotentialRole role) {
-		super(model, variables, role);
+			ICIModelType model, ArrayList<Variable> variables) {
+		super(model, variables);
 		type = PotentialType.MAX;
 	}
+	
+	/**
+	 * 
+	 * Constructor for MaxPotential that assumes the ICIModelType is GENERAL_MAX
+	 * @param variables
+	 */
+	public MaxPotential (ArrayList<Variable> variables)
+    {
+        this (ICIModelType.GENERAL_MAX, variables);
+    }
+	
+    public TablePotential getDefaultLeakyPotential ()
+        throws NotEnoughMemoryException
+    {
+        ArrayList<Variable> leakyVariables = new ArrayList<Variable> ();
+        leakyVariables.add (variables.get (0));
+        TablePotential tablePotential = new TablePotential (leakyVariables,
+                                                            PotentialRole.CONDITIONAL_PROBABILITY);
+        double[] leakyParameters = new double[variables.get (0).getNumStates ()];
+        leakyParameters[0] = 1.0;
+        for (int i = 1; i < leakyParameters.length; ++i)
+        {
+            leakyParameters[0] = 0.0;
+        }
+        tablePotential.values = leakyParameters;
+        return tablePotential;
+    }	
 
 	@Override
 	/** @returns A <code>TablePotential</code> with two variables: 
@@ -35,7 +67,7 @@ public class MaxPotential extends MinMaxPotential {
 		deltaVariables.add(pseudoVariable);
 		deltaVariables.add(conditionedVariable);
 		TablePotential deltaPotential = new TablePotential(
-				deltaVariables, PotentialRole.JOIN_PROBABILITY);
+				deltaVariables, PotentialRole.JOINT_PROBABILITY);
 		int numStatesConditioned = conditionedVariable.getNumStates();
 		int numStatesPseudo = pseudoVariable.getNumStates(); // same number
 		int actualConfiguration = 0;
@@ -65,18 +97,16 @@ public class MaxPotential extends MinMaxPotential {
 	 * @reference Efficient computation for the Noisy MAX
 	 * @argCondition subPotential is a probability table of one variable
 	 *  or a probability table of one variable given another variable. */
-	public TablePotential accruedPotential(TablePotential subPotential) 
+	public TablePotential getAccruedPotential(TablePotential subPotential) 
 			throws NotEnoughMemoryException {
 		// TODO Revisar este metodo para el caso de un potential proyectado
 		ArrayList<Variable> subPotentialVariables = subPotential.getVariables();
 		ArrayList<Variable> accruedPotentialVariables =
-			new ArrayList<Variable>();
-		accruedPotentialVariables.add(pseudoVariable);
-		for (int i = 1; i < subPotentialVariables.size(); i++) {
-			accruedPotentialVariables.add(subPotentialVariables.get(i));
-		}
+			new ArrayList<Variable>(subPotentialVariables);
+		accruedPotentialVariables.set(0, pseudoVariable);
+
 		TablePotential accruedPotential = new TablePotential(
-				accruedPotentialVariables, PotentialRole.JOIN_PROBABILITY);
+				accruedPotentialVariables, PotentialRole.JOINT_PROBABILITY);
 		
 		// number of states in the pseudovariable
 		int numStates = variables.get(0).getNumStates();
@@ -91,5 +121,80 @@ public class MaxPotential extends MinMaxPotential {
 		}
 		return accruedPotential;
 	}
-	
+
+    @Override
+    public double[] getDefaultLeakyParameters (int numStates)
+    {
+        double[] leakyParameters = new double[numStates];
+        
+        leakyParameters[0] = 1.0;
+        for(int i=1; i<numStates; ++i)
+        {
+            leakyParameters[i] = 0.0;
+        }
+        return leakyParameters;
+    }
+    
+    @Override
+    public Potential copy () throws NotEnoughMemoryException
+    {
+        TuningModelPotential newPotential = new TuningModelPotential (new ArrayList<Variable> (variables));
+        for(int i=1; i<variables.size (); ++i)
+        {
+            newPotential.setNoisyParameters(variables.get (i), getNoisyParameters(variables.get (i)));
+        }
+        newPotential.setLeakyParameters(getLeakyParameters());
+        return newPotential;
+    }       
+    
+    @Override
+    public Potential addVariable(Variable newVariable){
+    	ArrayList<Variable> newVariables = (ArrayList<Variable>) variables.clone();
+    	newVariables.add(newVariable);
+    	MaxPotential newICIPotential = new MaxPotential(this.modelType, newVariables);
+    	
+		for (int i = 1; i < variables.size(); i++) {
+			double []noisyParameters = this.getNoisyParameters(variables.get(i));
+			newICIPotential.setNoisyParameters(variables.get(i), noisyParameters);
+		}
+		newICIPotential.setNoisyParameters(newVariable, newICIPotential.initializeNoisyParameters(newVariable));
+		
+		newICIPotential.setLeakyParameters(getLeakyParameters());
+		return newICIPotential;
+    }
+    
+    @Override
+	public Potential removeVariable(Variable variable) {
+    	ArrayList<Variable> newVariables = new ArrayList<Variable>();
+    	for (int i = 0; i < variables.size(); i++){
+    		if (variable == variables.get(i)) {
+    			continue;
+    		}else{
+    			newVariables.add(variables.get(i));
+    		}
+    	}
+    	
+    	MaxPotential newICIPotential = new MaxPotential(this.modelType, newVariables);
+    	
+    	for (int i = 1; i < newVariables.size(); i++) {
+			double []noisyParameters = this.getNoisyParameters(newVariables.get(i));
+			newICIPotential.setNoisyParameters(newVariables.get(i), noisyParameters);
+		}
+    	newICIPotential.setLeakyParameters(getLeakyParameters());
+    	return newICIPotential;
+    }
+    
+    @Override
+    protected int computeFFunction (ArrayList<Integer> parentStates)
+    {
+        int resultingState = 0;
+        for(Integer parentState: parentStates)
+        {
+            if(parentState > resultingState)
+            {
+                resultingState = parentState;
+            }
+        }
+        return resultingState;
+    }     
 }

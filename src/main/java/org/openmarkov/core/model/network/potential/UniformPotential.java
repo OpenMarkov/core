@@ -1,20 +1,35 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
 /** Potential with discrete and/or continuous variables.
  * @author marias
  * @version 1.0 */
+@RelationType(name="Uniform", family="")
 public class UniformPotential extends Potential {
 
 	// Attributes
@@ -30,6 +45,24 @@ public class UniformPotential extends Potential {
 		}
 		type = PotentialType.UNIFORM;
 	}
+	
+    public UniformPotential(PotentialRole role, Variable... variables) {
+        this(toArrayList(variables), role);
+    }	
+	
+    public UniformPotential(Potential potential) {
+        this(potential.getVariables (), potential.getPotentialRole ());
+    }	
+    
+    /**
+     * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
+     * @param variables
+     * @param role
+     */
+    public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
+    {
+        return true;
+    }       
 
 	// Methods
 	@Override
@@ -37,7 +70,7 @@ public class UniformPotential extends Potential {
 	 * which all the utilities are zero; therefore, it suffices to return
 	 * an empty list. If this is a conditional probability P(Y|X1,...,Xn), it 
 	 * returns a <code>TablePotential<code> that is uniform potential P(y). 
-	 * If this is a join probability, P(X1,...,Xn), it returns a 
+	 * If this is a joint probability, P(X1,...,Xn), it returns a 
 	 * <code>TablePotential<code> that is equal to this potential.
 	 * In all cases, the argument <code>evidenceCase</code> is irrelevant.
 	 * @param evidenceCase. <code>evidenceCase</code>
@@ -46,11 +79,12 @@ public class UniformPotential extends Potential {
 	public ArrayList<TablePotential> tableProject(EvidenceCase evidenceCase, 
 			InferenceOptions inferenceOptions)
 			throws NotEnoughMemoryException, NonProjectablePotentialException {
-		TablePotential projectedPotential;
+        ArrayList<TablePotential> projectedPotentials = new ArrayList<TablePotential> ();
 		switch(role) {
 		case CONDITIONAL_PROBABILITY: 
-		case JOIN_PROBABILITY: 
+		case JOINT_PROBABILITY: 
 		case POLICY:
+	        TablePotential projectedPotential = null;
 			Variable conditionedVariable = variables.get(0);
 			if (evidenceCase.contains(conditionedVariable)) {
 				if (conditionedVariable.getVariableType() == 
@@ -82,11 +116,10 @@ public class UniformPotential extends Potential {
 							PotentialRole.CONDITIONAL_PROBABILITY);
 				}
 			}
+	        projectedPotentials.add (projectedPotential);
 		//TODO write the code for other types of potentials but remember that
 		// in the case of utility potentials it suffices to return the empty list. 
 		}  // end of switch/case statement
-		ArrayList<TablePotential> projectedPotentials = 
-			new ArrayList<TablePotential>();
 		return projectedPotentials;
 	}
 
@@ -138,4 +171,21 @@ public class UniformPotential extends Potential {
 		return null;
 	}
 	
+    @Override
+    public Potential copy ()
+    {
+        return new UniformPotential(new ArrayList<Variable> (variables), role);
+    }	
+    
+    @Override
+    public Integer sample (Random randomGenerator, HashMap<Variable, Integer> parentStateIndexes)
+    {
+        return randomGenerator.nextInt (variables.get (0).getNumStates ());
+    }       
+    
+    public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)
+    {
+        return 1.0/variables.get (0).getNumStates ();
+    }       
+
 }

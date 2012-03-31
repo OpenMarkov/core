@@ -1,8 +1,19 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Random;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -15,14 +26,16 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 /** @author marias
   * @author fjdiez 
   * @version 1.0
   * @since OpenMarkov 1.0 */
-public abstract class Potential {
+public abstract class Potential{
 
 	// Constants
 	/** Maximum size of a String used in toString() */
@@ -56,7 +69,7 @@ public abstract class Potential {
     // Constructor
     /** @param variables <code>ArrayList</code> of <code>extends 
      * Variable</code>.
-     * @param role. <code>PotentialRole</code> */
+     * @param role. <code>PotentialRole</code>*/
     public Potential(ArrayList<Variable> variables, PotentialRole role) {
         if (variables != null) {
             numVariables = variables.size();        	
@@ -70,7 +83,60 @@ public abstract class Potential {
     	this.role = role;
     }
 
-	// Methods
+    /**
+     * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
+     * @param variables
+     * @param role
+     */
+	public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
+    {
+        // Default implementation: always return true
+        return true;
+    }
+	
+    /**
+     * @return The conditional probability table of this potential given the evidence
+	 * @throws NotEnoughMemoryException
+	 * @throws WrongCriterionException 
+	 * @throws NonProjectablePotentialException 
+	 */
+    public TablePotential getCPT (EvidenceCase evidenceCase)
+        throws NotEnoughMemoryException,
+        NonProjectablePotentialException,
+        WrongCriterionException
+    {
+	    ArrayList<TablePotential> potentials = tableProject (evidenceCase, null);
+	    HashSet<Variable> variablesToEliminate = new HashSet<Variable>();
+	    
+	    //Fill it with variables appearing in all potentials except this
+	    for(TablePotential tablePotential: potentials)
+	    {
+	        variablesToEliminate.addAll (tablePotential.getVariables ());
+	    }
+	    variablesToEliminate.removeAll (variables);
+	    
+	    return DiscretePotentialOperations.multiplyAndMarginalize (potentials, variables,
+	                                                               new ArrayList<Variable>(variablesToEliminate));
+	}
+    
+    /**
+     * The conditional probability table given by this potential
+     * @return
+     * @throws NotEnoughMemoryException
+     * @throws NonProjectablePotentialException
+     * @throws WrongCriterionException
+     */
+    public TablePotential getCPT ()
+        throws NotEnoughMemoryException,
+        NonProjectablePotentialException,
+        WrongCriterionException
+    {
+        return getCPT (new EvidenceCase ());
+    }
+	
+	
+	
+    // Methods
     /** Modifies the frozen variable role. This method exists to avoid some
      * problems with legacy code in DiscretePotentialOperations class and it
      * does not be used except in very special cases.
@@ -83,7 +149,7 @@ public abstract class Potential {
 	 * The utility variable is not considered.
 	 * @param type. <code>VariableType</code> 
 	 * @return <code>boolean</code> */
-	protected boolean allVariablesBelongsToType(VariableType type) {
+	protected boolean allVariablesBelongToType(VariableType type) {
 		if (variables != null) {
 			for (Variable variable : variables) {
 				if (variable.getVariableType() != type) {
@@ -106,6 +172,11 @@ public abstract class Potential {
 	public Variable getVariable(int position) {
 		return variables.get(position);
 	}
+	
+    public void replaceVariable(int position, Variable variable) {
+        variables.remove(position);
+        variables.add (position, variable);
+    }	
 
 	/** @return <code>true</code> if contains the received 
 	 * <code>Variable</code>.
@@ -252,7 +323,7 @@ public abstract class Potential {
 				break;
 			case CONDITIONAL_PROBABILITY:
 				break;
-			case JOIN_PROBABILITY:
+			case JOINT_PROBABILITY:
 				break;
 			}
 		} else {
@@ -273,7 +344,7 @@ public abstract class Potential {
 				printVariables(buffer, 0);
 				buffer.append(")");
 				break;
-			case JOIN_PROBABILITY:
+			case JOINT_PROBABILITY:
 				buffer.append("P(");
 				printVariables(buffer, 0);
 				buffer.append(")");
@@ -317,5 +388,64 @@ public abstract class Potential {
 	throws NotEnoughMemoryException {
 		return this; // By default
 	}
+
+
+    @Override
+    public boolean equals (Object arg0)
+    {
+        if(arg0.getClass ().equals (this.getClass ()))
+        {
+            Potential potential = (Potential) arg0;
+            return variables.equals (potential.getVariables ())
+                   && type == potential.getPotentialType ()
+                   && role == potential.getPotentialRole ();
+        }else
+        {
+            return false;
+        }
+    }
+    public Integer sample (Random randomGenerator, HashMap<Variable, Integer> sampledStateIndexes)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    /**
+     * Return a copy instance of the potential
+     * @return potential copy
+     */
+    public abstract Potential copy()  throws NotEnoughMemoryException;	
+    
+    /**
+     * Adds variable to a potential implemented in each child class
+     * @throws NotEnoughMemoryException 
+     * 
+     */
+    public  Potential addVariable(Variable variable) throws NotEnoughMemoryException {
+    	return null;
+    }
+    /**
+     * Removes variable to a potential implemented in each child class
+     * @throws NotEnoughMemoryException 
+     * 
+     */
+    public  Potential removeVariable(Variable variable) throws NotEnoughMemoryException {
+    	return null;
+    }
+
+    public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }	
+    
+    protected static ArrayList<Variable> toArrayList (Variable[] variables)
+    {
+        ArrayList<Variable> variablesArrayList = new ArrayList<Variable> ();
+        for(Variable variable: variables)
+        {
+            variablesArrayList.add (variable);
+        }
+        return variablesArrayList;
+    }    
 	
 }

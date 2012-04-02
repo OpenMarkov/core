@@ -12,9 +12,11 @@ package org.openmarkov.core.model.graph;
 import java.util.ArrayList;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -52,6 +54,16 @@ public class Link {
 	 */
 	private TablePotential restrictionsPotential;
 
+	/*****
+	 * List of revealing values of type state
+	 */
+	private ArrayList<State> revealingStates;
+
+	/*****
+	 * List of revealing values of type interval
+	 */
+	private ArrayList<PartitionedInterval> revealingIntervals;
+
 	// Constructors
 	/**
 	 * Creates an unlabelled link and sets the cross references in the nodes.
@@ -74,6 +86,8 @@ public class Link {
 		graph.uf_addImplicitLink(this);
 		node1.uf_addLink(this);
 		node2.uf_addLink(this);
+		revealingStates = new ArrayList<State>();
+		revealingIntervals = new ArrayList<PartitionedInterval>();
 		linkRestriction = false;
 	}
 
@@ -205,6 +219,7 @@ public class Link {
 
 	/****
 	 * Assigns the potential to the restrictionPotential of the link
+	 * 
 	 * @param potential
 	 */
 
@@ -222,6 +237,92 @@ public class Link {
 		}
 		buffer.append(node2.toString());
 		return buffer.toString();
+	}
+
+	/*****
+	 * This method indicates whether there are revealing conditions for the
+	 * link.
+	 * 
+	 * @return <code>true</code> if there exist revealing conditions.
+	 */
+	public boolean hasRevealingConditions() {
+
+		VariableType varType = ((ProbNode) node1.getObject()).getVariable()
+				.getVariableType();
+		if (varType.equals(VariableType.NUMERIC)) {
+			return !revealingIntervals.isEmpty();
+		} else {
+			return !revealingStates.isEmpty();
+		}
+	}
+
+	/**
+	 * @return the revealingStates
+	 */
+	public ArrayList<State> getRevealingStates() {
+		return revealingStates;
+	}
+
+	/**
+	 * @param revealingStates
+	 *            the revealingStates to set
+	 */
+	public void setRevealingStates(ArrayList<State> revealingStates) {
+		this.revealingStates = revealingStates;
+	}
+
+	/**
+	 * @return the revealingIntervals
+	 */
+	public ArrayList<PartitionedInterval> getRevealingIntervals() {
+		return revealingIntervals;
+	}
+
+	/**
+	 * @param revealingIntervals
+	 *            the revealingIntervals to set
+	 */
+	public void setRevealingIntervals(
+			ArrayList<PartitionedInterval> revealingIntervals) {
+		this.revealingIntervals = revealingIntervals;
+	}
+
+	/*****
+	 * Adds the state to the revealing condition list.
+	 * 
+	 * @param state
+	 */
+	public void addRevealingState(State state) {
+
+		revealingStates.add(state);
+	}
+
+	/*****
+	 * Removes the revealing state from the revealing condition list.
+	 * 
+	 * @param state
+	 */
+	public void removeRevealingState(State state) {
+		revealingStates.remove(state);
+
+	}
+
+	/*****
+	 * Adds the interval to the revealing condition list.
+	 * 
+	 * @param interval
+	 */
+	public void addRevealingInterval(PartitionedInterval interval) {
+		this.revealingIntervals.add(interval);
+	}
+
+	/********
+	 * Removes the interval from the revealing condition list.
+	 * 
+	 * @param interval
+	 */
+	public void removeRevealingInterval(PartitionedInterval interval) {
+		this.revealingIntervals.remove(interval);
 	}
 
 }

@@ -40,13 +40,22 @@ public class LinkTest {
 				Assert.assertEquals(1, link.areCompatible(stateA[i], stateB[j]));
 			}
 		}
-		
+
 		link.setCompatibilityValue(stateA[0], stateB[0], 0);
-		Assert.assertEquals(0, link.areCompatible(stateA[0], stateB[0]) );
-		link.setCompatibilityValue(stateA[0], stateB[0],1 );
-		Assert.assertEquals(1, link.areCompatible(stateA[0], stateB[0]) );	
+		Assert.assertEquals(0, link.areCompatible(stateA[0], stateB[0]));
+		link.setCompatibilityValue(stateA[0], stateB[0], 1);
+		Assert.assertEquals(1, link.areCompatible(stateA[0], stateB[0]));
 	}
-	
-	
+
+	@Test
+	public void testRevelationArc() {
+		Assert.assertFalse(link.hasRevealingConditions());
+		link.addRevealingState(stateA[0]);
+		Assert.assertEquals(1, link.getRevealingStates().size());
+		Assert.assertTrue(link.getRevealingStates().contains(stateA[0]));
+		link.removeRevealingState(stateA[0]);
+		Assert.assertFalse(link.getRevealingStates().contains(stateA[0]));
+		Assert.assertEquals(0, link.getRevealingIntervals().size());
+	}
 
 }

@@ -54,7 +54,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 	 * label is incompatible with reference and reference is incompatible with potential
 	 * This HashMap stores those potentials that have been labeled within the branches in a TreeADDPotential
 	 */
-	private HashMap<String, Potential> potentialsLabeled; 
+	//private HashMap<String, Potential> potentialsLabeled; 
 	
 	public TreeADDPotential (ArrayList<Variable> variables, PotentialRole role) {
 		super(variables, role);

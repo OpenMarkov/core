@@ -65,9 +65,9 @@ public class TreeADDBranch {
 	 * @param thresholds
 	 * @param potential
 	 */
-	public TreeADDBranch (ArrayList<Threshold> thresholds, Potential potential) {
-		this.thresholdMax = thresholds.get(1);
-		this.thresholdMin = thresholds.get(0);
+	public TreeADDBranch (Threshold[] thresholds, Potential potential, Variable topVariable) {
+		this.thresholdMax = thresholds[1];
+		this.thresholdMin = thresholds[0];
 		this.topVariable = topVariable;
 		this.parentVariables = parentVariables;
 		this.potential = potential;

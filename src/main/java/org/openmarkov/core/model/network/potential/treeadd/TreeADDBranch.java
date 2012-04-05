@@ -65,7 +65,7 @@ public class TreeADDBranch {
 	 * @param thresholds
 	 * @param potential
 	 */
-	public TreeADDBranch (Threshold[] thresholds, Potential potential, Variable topVariable) {
+	public TreeADDBranch (Threshold[] thresholds, Potential potential, Variable topVariable, ArrayList<Variable> parentVariables) {
 		this.thresholdMax = thresholds[1];
 		this.thresholdMin = thresholds[0];
 		this.topVariable = topVariable;
@@ -73,20 +73,7 @@ public class TreeADDBranch {
 		this.potential = potential;
 		
 	}
-	
-	/**
-	 * 
-	 * @param branchStates
-	 * @param potential
-	 * @param topVariable
-	 */
-	
-	public TreeADDBranch(ArrayList<State> branchStates, Potential potential, Variable topVariable) {
-		this.states = branchStates;
-		this.potential = potential;
-		this.topVariable = topVariable;
-	}
-	
+		
 	/*public TreeADDBranch(ArrayList<State> branchStates, Potential potential, String label) {
 		this.states = branchStates;
 		this.potential = potential;
@@ -157,6 +144,9 @@ public class TreeADDBranch {
 	
 	public ArrayList<Variable> getParentVariables() {
 		return this.parentVariables;
+	}
+	public void setParentVariables(ArrayList<Variable> parentVariables) {
+		this.parentVariables = parentVariables;
 	}
 	
 	

@@ -57,6 +57,11 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	private PartitionedInterval currentPartitionedInterval;
 
 	private Map<Link, double[]> linkRestrictionMap;
+	
+	/***
+	 * Map with the revelation condition list for each link.
+	 */
+	private Map<Link, ArrayList> revelationConditionMap;
 
 	/**
 	 * Creates a <code>NodeReplaceStatesEdit</code> with the node and new states
@@ -79,6 +84,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 
 		this.newStates = newStates;
 		this.linkRestrictionMap = new HashMap<Link, double[]>();
+		this.revelationConditionMap = new HashMap<Link, ArrayList>();
 	}
 
 	// Methods
@@ -156,6 +162,16 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 				e.printStackTrace();
 			}
 		}
+		for (Link link : revelationConditionMap.keySet()) {
+			VariableType varType = ((ProbNode) link.getNode1().getObject()).getVariable()
+					.getVariableType();
+			if ((varType == VariableType.NUMERIC)) {
+				link.setRevealingIntervals(revelationConditionMap.get(link));
+			} else {
+				link.setRevealingStates(revelationConditionMap.get(link));
+			}
+
+		}
 	}
 
 	private PartitionedInterval getNewPartitionedInterval() {
@@ -175,11 +191,12 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	}
 
 	/****
-	 * This method resets the link restriction of the links of the node
+	 * This method resets the link restrictions and revelation conditions of the links of the node
 	 * 
 	 * @param node
 	 */
 	private void resetLink(Node node) {
+	
 		for (Link link : node.getLinks()) {
 			if (link.hasRestrictions()) {
 				try {
@@ -189,6 +206,19 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 					link.resetRestrictionsPotential();
 				} catch (NotEnoughMemoryException e) {
 					e.printStackTrace();
+				}
+			}
+			if (link.hasRevealingConditions()) {
+				VariableType varType = ((ProbNode) link.getNode1().getObject()).getVariable()
+						.getVariableType();
+				if (varType == VariableType.NUMERIC) {
+					this.revelationConditionMap.put(link,
+							link.getRevealingIntervals());
+					link.setRevealingIntervals(new ArrayList<PartitionedInterval>());
+				} else {
+					this.revelationConditionMap.put(link,
+							link.getRevealingStates());
+					link.setRevealingStates(new ArrayList<State>());
 				}
 			}
 		}

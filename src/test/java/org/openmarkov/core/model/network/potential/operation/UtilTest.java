@@ -1,6 +1,12 @@
-/**
- * 
- */
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
 package org.openmarkov.core.model.network.potential.operation;
 
 import static org.junit.Assert.assertEquals;
@@ -29,11 +35,11 @@ public class UtilTest {
 		double value = 1452.309;
 		
 		String precisionString = "100";
-		assertEquals(1500.0, Util.round(value, precisionString));
+		assertEquals(1500.0, Util.round(value, precisionString), 100);
 		precisionString = "10";
-		assertEquals(1450.0, Util.round(value, precisionString));
+		assertEquals(1450.0, Util.round(value, precisionString), 10);
 		precisionString = "1";
-		assertEquals(1452.0, Util.round(value, precisionString));
+		assertEquals(1452.0, Util.round(value, precisionString), 1);
 		precisionString = "0.1";
 		assertEquals(1452.3, Util.round(value, precisionString), 0.1);
 		precisionString = "0.01";

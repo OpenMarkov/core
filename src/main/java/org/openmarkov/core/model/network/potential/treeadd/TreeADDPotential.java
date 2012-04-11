@@ -230,8 +230,20 @@ public class TreeADDPotential extends Potential  implements Cloneable {
      */
 	public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
     {
+		boolean validate = false;
         // node must have at least one parent node
-        return variables.size() >= 2;
+		if (role == PotentialRole.UTILITY) {
+			//in variables there is not utility variable
+			if(variables.size() >= 1) {
+				validate = true;
+			}
+		}
+		if (role == PotentialRole.CONDITIONAL_PROBABILITY){
+			if (variables.size() >= 2) {
+				validate = true;
+			}
+		}
+		return validate;
     }
 	
 }

@@ -22,10 +22,12 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
 /** Potential identical to another but moved to another temporal slice.
  * @author marias
  * @version 1.0 */
+@RelationType(name = "CycleLengthShift", family = "")
 public class CycleLengthShift extends Potential {
 
 	// Constructor
@@ -52,7 +54,7 @@ public class CycleLengthShift extends Potential {
                 // parent = variables.get (1)
                && variables.get (0).isTemporal () && variables.get (1).isTemporal ()
                && variables.get (0).getBaseName ().equals (variables.get (1).getBaseName ())
-               && variables.get (0).getTimeSlice () == variables.get (0).getTimeSlice () + 1;
+               && variables.get (0).getTimeSlice () == variables.get (1).getTimeSlice () + 1;
     }       
 
 	// Methods

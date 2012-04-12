@@ -129,6 +129,11 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 		this.topVariable = treeADD.getTopVariable();
 		this.potentialType = treeADD.getPotentialType(); 
 		this.branches = treeADD.getBranches();
+		if (treeADD.getPotentialRole()== PotentialRole.UTILITY) {
+			if (treeADD.getUtilityVariable() != null) {
+				this.setUtilityVariable(treeADD.getUtilityVariable());
+			}
+		}
 	}
 	/**
 	 * 

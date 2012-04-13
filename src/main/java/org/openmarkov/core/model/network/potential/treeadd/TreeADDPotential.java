@@ -61,7 +61,13 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 		new TreeADDPotential(variables, variables.get(1), role);
 	}
 	
-	/**TreeADD constructor for the GUI**/
+	/**TreeADD constructors for the GUI**/
+	/**
+	 * For role conditional
+	 * @param variables
+	 * @param topVariable
+	 * @param role
+	 */
 	public TreeADDPotential(ArrayList<Variable> variables, Variable topVariable, PotentialRole role){
 		super(variables, role);
 		this.topVariable = topVariable;
@@ -85,10 +91,47 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 					branches.add(new TreeADDBranch(branchStates, potential, topVariable, variables));
 					
 				}
+				
+			}
+		}
+		
+		// if topVariable is numeric, it creates a branch whose thresholds are the 
+		// same as those defined for the variable
+		if (variableType == VariableType.NUMERIC) {
+			PartitionedInterval interval = topVariable.getPartitionedInterval();
+			Threshold minimum = new Threshold((float)interval.getMin(), !interval.isLeftClosed());
+			Threshold maximum = new Threshold((float)interval.getMax(), interval.isRightClosed());
+			potentialVariables = new ArrayList<Variable>();
+			potentialVariables.add(variables.get(0));
+			UniformPotential potential = new UniformPotential(potentialVariables, role);
+			branches.add(new TreeADDBranch(minimum, maximum, potential, topVariable, variables));
+			
+		}
+	}
+	/**
+	 * For role Utility
+	 * @param variables
+	 * @param topVariable
+	 * @param role
+	 * @param utilityVariable
+	 */
+	public TreeADDPotential(ArrayList<Variable> variables, Variable topVariable, PotentialRole role, Variable utilityVariable){
+		super(variables, role);
+		setUtilityVariable(utilityVariable);
+		this.topVariable = topVariable;
+		
+		VariableType variableType = topVariable.getVariableType();
+		ArrayList<Variable> potentialVariables;
+		//if topVariable is finite states or discretized, it creates a branch for each state
+		if (variableType == VariableType.FINITE_STATES|| variableType == VariableType.DISCRETIZED) {
+			
+			State[] states = topVariable.getStates();
+			for (int i = 0; i < states.length; i++){
 				// if the role of the treeADD is utility, it assigns a uniform potential
 				if (role == PotentialRole.UTILITY) {
 					potentialVariables = new ArrayList<Variable>();
 					UniformPotential potential = new UniformPotential(potentialVariables, role);
+					potential.setUtilityVariable(utilityVariable);
 					ArrayList<State> branchStates = new ArrayList<State>();
 					branchStates.add(states[i]);
 					branches.add(new TreeADDBranch(branchStates, potential, topVariable, variables));
@@ -106,6 +149,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 			potentialVariables = new ArrayList<Variable>();
 			potentialVariables.add(variables.get(0));
 			UniformPotential potential = new UniformPotential(potentialVariables, role);
+			potential.setUtilityVariable(utilityVariable);
 			branches.add(new TreeADDBranch(minimum, maximum, potential, topVariable, variables));
 			
 		}

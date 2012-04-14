@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.Util;
 
 
@@ -336,6 +337,52 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 		
 	}
 
+	public void setUniformPotential2Child() {
+		
+		ArrayList<Potential> newListPotentials = new ArrayList<Potential> ();
+		ArrayList<Variable> variables = new ArrayList<Variable>();
+		Variable thisVariable;
+		PotentialRole role = potentialsList.get(0).getPotentialRole();
+        // first, this variable. The potentials is not null
+		if (this.getNodeType() == NodeType.UTILITY)
+			thisVariable = potentialsList.get( 0 ).getUtilityVariable();
+		else{
+			thisVariable = potentialsList.get( 0 ).getVariable( 0 );
+			variables.add(thisVariable);
+		}
+		
+		int numOfCellsInTable = thisVariable.getNumStates();
+		double initialValue = Util.round( 1 / (new Double(numOfCellsInTable)), 
+				"0.01");
+		    // add now all the parents 
+		
+		for (Node node: getNode().getParents()) {
+			//TODO Revisar, ¿Solo se agrega/elimina un padre a la vez?
+			//mpalacios
+			//the set of variables could be changed, so , have to be updated.
+			variables.add(((ProbNode)node.getObject()).getVariable());
+			numOfCellsInTable *= ((ProbNode)node.getObject()).getVariable().
+			getNumStates();
+		}
+		// sets a new table with new columns and with all the same values
+		double[] table = new double[numOfCellsInTable] ;
+		for (int i=0; i<numOfCellsInTable; i++) {
+			table[i] = initialValue;
+		}
+		// and finally, create the potential and the list of potentials
+		
+		// TODO Comprobar que efectivamente es un CONDITIONAL_PROBABILITY
+		UniformPotential uniformPotetnial = new UniformPotential(variables, role);
+		
+		newListPotentials.add( uniformPotetnial );
+		
+		if (this.getNodeType() == NodeType.UTILITY && role == PotentialRole.UTILITY){
+			//tablePotential.getVariables().remove(0);
+			uniformPotetnial.setUtilityVariable(thisVariable);
+		}
+		potentialsList = newListPotentials;
+		
+	}
 	public void setPurpose(String purpose) {
 		this.purpose = purpose;
 	}

@@ -81,6 +81,15 @@ public abstract class ProbDensFunction {
 		case TRIANGULAR:
 			auxProb = new TriangularFunction();
 			break;
+		case EXPONENTIAL:
+			auxProb = new ExponentialFunction();
+			break;
+		case ERLANG:
+			auxProb = new ErlangFunction();
+			break;
+		case STANDARDNORMAL:
+			auxProb = new StandardNormalFunction();
+			break;
 		}
 		return auxProb;
 	

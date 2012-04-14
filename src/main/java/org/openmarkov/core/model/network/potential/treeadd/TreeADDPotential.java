@@ -245,6 +245,32 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 	public void setTopVariable(Variable variable){
 		this.topVariable = variable;
 	}
+	
+	 /**
+     * Adds variable to a treeADD potential 
+     * @throws NotEnoughMemoryException 
+     * 
+     */
+    public  Potential addVariable(Variable variable) throws NotEnoughMemoryException {
+    	//return new UniformPotential(getVariables(), getPotentialRole());
+    	ArrayList<Variable> variables = getVariables();
+    	variables.add(variable);
+    	 for (TreeADDBranch branch : getBranches()) {
+    		 branch.setParentVariables(variables);
+    		 branch.getPotential().addVariable(variable);
+    	 }
+    	 
+    	 return this;
+    }
+    /**
+     * Removes variable from a treeADD potential 
+     * @throws NotEnoughMemoryException 
+     * 
+     */
+    public  Potential removeVariable(Variable variable) throws NotEnoughMemoryException {
+    	getVariables().add(variable);
+    	return new UniformPotential(getVariables(), getPotentialRole());
+    }
 
 	@Override
 	public ArrayList<TablePotential> tableProject(EvidenceCase evidenceCase,

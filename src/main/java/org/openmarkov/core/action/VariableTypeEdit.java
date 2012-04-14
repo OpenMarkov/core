@@ -24,6 +24,7 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 @SuppressWarnings("serial")
 public class VariableTypeEdit extends SimplePNEdit {
@@ -46,7 +47,15 @@ public class VariableTypeEdit extends SimplePNEdit {
         throws DoEditException
     {
         ArrayList<Node> nodes;
-        if (currentType.compareTo (VariableType.NUMERIC) == 0)
+        if (currentType != newType) {
+        	nodes = probNode.getNode ().getChildren ();
+            for (Node node : nodes)
+            {
+            	ProbNode child = (ProbNode) node.getObject ();
+            	child.setUniformPotential2Child();
+            }
+        }
+        if (currentType.compareTo (VariableType.NUMERIC) == 0) //if  current type is numeric
         {
             probNode.getVariable ().setStates (probNode.getProbNet ().getDefaultStates ());
             ArrayList<Variable> variables = new ArrayList<Variable> ();
@@ -72,6 +81,8 @@ public class VariableTypeEdit extends SimplePNEdit {
                 child.setUniformPotential ();
             }
         }
+        
+       
         resetLink(probNode.getNode());
         probNode.getVariable ().setVariableType (newType);
     }

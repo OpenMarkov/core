@@ -54,7 +54,7 @@ public class DefaultStates {
 			list.add(defaultStates);
 			defaultStates = new ArrayList<String>();
 			defaultStates.add("absent");
-			defaultStates.add("slight");
+			defaultStates.add("mild");
 			defaultStates.add("moderate");
 			defaultStates.add("severe");
 			list.add(defaultStates);

@@ -48,11 +48,12 @@ public class VariableTypeEdit extends SimplePNEdit {
     {
         ArrayList<Node> nodes;
         if (currentType != newType) {
+        	probNode.setUniformPotential2ProbNode();
         	nodes = probNode.getNode ().getChildren ();
             for (Node node : nodes)
             {
             	ProbNode child = (ProbNode) node.getObject ();
-            	child.setUniformPotential2Child();
+            	child.setUniformPotential2ProbNode();
             }
         }
         if (currentType.compareTo (VariableType.NUMERIC) == 0) //if  current type is numeric

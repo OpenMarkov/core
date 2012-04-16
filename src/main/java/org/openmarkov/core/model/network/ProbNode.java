@@ -337,7 +337,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 		
 	}
 
-	public void setUniformPotential2Child() {
+	public void setUniformPotential2ProbNode() {
 		
 		ArrayList<Potential> newListPotentials = new ArrayList<Potential> ();
 		ArrayList<Variable> variables = new ArrayList<Variable>();

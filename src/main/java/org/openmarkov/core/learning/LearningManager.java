@@ -156,21 +156,30 @@ public class LearningManager {
     public double getScore(PNEdit edit)  {
         return learningAlgorithm.getScore (this.learnedNet, this.cases, edit);
     }
-
+    
     /**
-     * Retrieves the best editions suggested by the learning algorithm
-     * @param numEdits
+     * Retrieves the best edition suggested by the learning algorithm
      * @param onlyAllowedEdits
      * @param onlyPositiveEdits
-     * @param reset
      */
-    public ArrayList<EditAndScorePair> getBestEditions (int numEdits,
-                                 boolean onlyAllowedEdits,
+    public EditAndScorePair getBestEdition (boolean onlyAllowedEdits,
                                  boolean onlyPositiveEdits)
     {
         
-        return this.learningAlgorithm.getBestEditions (numEdits,
-                                                       onlyAllowedEdits,
+        return this.learningAlgorithm.getBestEdition (onlyAllowedEdits,
+                                                       onlyPositiveEdits);        
+    }
+    
+    /**
+     * Retrieves the next best edition suggested by the learning algorithm
+     * @param onlyAllowedEdits
+     * @param onlyPositiveEdits
+     */
+    public EditAndScorePair getNextEdition (boolean onlyAllowedEdits,
+                                 boolean onlyPositiveEdits)
+    {
+        
+        return this.learningAlgorithm.getNextEdition (onlyAllowedEdits,
                                                        onlyPositiveEdits);        
     }
     

@@ -227,30 +227,26 @@ public abstract class LearningAlgorithm {
     }
 
     /**
-     * Returns best editions
-     * @param numEdits
+     * Returns best edition
      * @param onlyAllowedEdits
      * @param onlyPositiveEdits
-     * @param reset
      * @return
-     */
-    public ArrayList<EditAndScorePair> getBestEditions (int numEdits,
-                                                        boolean onlyAllowedEdits,
-                                                        boolean onlyPositiveEdits)
+     */    
+    public EditAndScorePair getBestEdition(boolean onlyAllowedEdits, boolean onlyPositiveEdits)
     {
-        ArrayList<EditAndScorePair> bestEditions = new ArrayList<EditAndScorePair> ();
-        EditAndScorePair bestEdition = editionsGenerator.getBest (onlyAllowedEdits, onlyPositiveEdits);
-        while (bestEdition != null && bestEditions.size () < numEdits)
-        {
-            if (bestEdition != null)
-            {
-                bestEditions.add (bestEdition);
-            }
-            bestEdition = editionsGenerator.getNext (onlyAllowedEdits, onlyPositiveEdits);
-        }        
-        return bestEditions;        
+    	return editionsGenerator.getBest(onlyAllowedEdits, onlyPositiveEdits);
     }
     
+    /**
+     * Returns next best edition
+     * @param onlyAllowedEdits
+     * @param onlyPositiveEdits
+     * @return
+     */    
+    public EditAndScorePair getNextEdition(boolean onlyAllowedEdits, boolean onlyPositiveEdits)
+    {
+    	return editionsGenerator.getNext(onlyAllowedEdits, onlyPositiveEdits);
+    }   
     /**
      * Score the network. 
      * @param probNet

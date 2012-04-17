@@ -58,7 +58,11 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 	
 	public TreeADDPotential (ArrayList<Variable> variables, PotentialRole role) {
 		super(variables, role);
-		new TreeADDPotential(variables, variables.get(1), role);
+		if (role == PotentialRole.CONDITIONAL_PROBABILITY){
+			new TreeADDPotential(variables, variables.get(1), role);
+		} else if (role == PotentialRole.UTILITY) {
+			new TreeADDPotential(variables, variables.get(0), role);
+		}
 	}
 	
 	/**TreeADD constructors for the GUI**/

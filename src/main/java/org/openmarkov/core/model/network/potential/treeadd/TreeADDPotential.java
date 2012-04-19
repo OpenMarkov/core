@@ -58,11 +58,12 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 	
 	public TreeADDPotential (ArrayList<Variable> variables, PotentialRole role) {
 		super(variables, role);
-		if (role == PotentialRole.CONDITIONAL_PROBABILITY){
-			new TreeADDPotential(variables, variables.get(1), role);
-		} else if (role == PotentialRole.UTILITY) {
-			new TreeADDPotential(variables, variables.get(0), role);
-		}
+		new TreeADDPotential(variables, variables.get(1), role);
+	}
+	
+	public TreeADDPotential (ArrayList<Variable> variables, PotentialRole role, Variable utilityVariable) {
+		super (variables, role, utilityVariable);
+		new TreeADDPotential(variables, variables.get(0), role, utilityVariable);
 	}
 	
 	/**TreeADD constructors for the GUI**/
@@ -120,8 +121,8 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 	 * @param utilityVariable
 	 */
 	public TreeADDPotential(ArrayList<Variable> variables, Variable topVariable, PotentialRole role, Variable utilityVariable){
-		super(variables, role);
-		setUtilityVariable(utilityVariable);
+		super(variables, role, utilityVariable);
+		//setUtilityVariable(utilityVariable);
 		this.topVariable = topVariable;
 		
 		VariableType variableType = topVariable.getVariableType();
@@ -134,8 +135,8 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 				// if the role of the treeADD is utility, it assigns a uniform potential
 				if (role == PotentialRole.UTILITY) {
 					potentialVariables = new ArrayList<Variable>();
-					UniformPotential potential = new UniformPotential(potentialVariables, role);
-					potential.setUtilityVariable(utilityVariable);
+					UniformPotential potential = new UniformPotential(potentialVariables, role, utilityVariable);
+					//potential.setUtilityVariable(utilityVariable);
 					ArrayList<State> branchStates = new ArrayList<State>();
 					branchStates.add(states[i]);
 					branches.add(new TreeADDBranch(branchStates, potential, topVariable, variables));
@@ -152,8 +153,8 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 			Threshold maximum = new Threshold((float)interval.getMax(), interval.isRightClosed());
 			potentialVariables = new ArrayList<Variable>();
 			potentialVariables.add(variables.get(0));
-			UniformPotential potential = new UniformPotential(potentialVariables, role);
-			potential.setUtilityVariable(utilityVariable);
+			UniformPotential potential = new UniformPotential(potentialVariables, role, utilityVariable);
+			//potential.setUtilityVariable(utilityVariable);
 			branches.add(new TreeADDBranch(minimum, maximum, potential, topVariable, variables));
 			
 		}

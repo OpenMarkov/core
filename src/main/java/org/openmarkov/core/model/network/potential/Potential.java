@@ -82,6 +82,19 @@ public abstract class Potential{
         properties = new HashMap<String, Object>();
     	this.role = role;
     }
+    
+    public Potential(ArrayList<Variable> variables, PotentialRole role, Variable utility) {
+        if (variables != null) {
+            numVariables = variables.size();        	
+            this.variables = new ArrayList<Variable>(variables);
+        } else {
+        	numVariables = 0;
+        	this.variables = new ArrayList<Variable>();
+        }
+        utilityVariable = utility;
+        properties = new HashMap<String, Object>();
+    	this.role = role;
+    }
 
     /**
      * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 

@@ -129,6 +129,49 @@ public class TablePotential extends Potential
         }
         type = PotentialType.TABLE;
     }
+    /**
+     * For role utility
+     * @param variables
+     * @param role
+     * @throws NotEnoughMemoryException
+     */
+    public TablePotential (ArrayList<Variable> variables, PotentialRole role, Variable utilityVariable)
+            throws NotEnoughMemoryException
+        {
+            super (variables, role, utilityVariable);
+            this.originalVariables = this.variables;
+            if (numVariables != 0)
+            {
+                dimensions = TablePotential.calculateDimensions (variables);
+                offsets = TablePotential.calculateOffsets (dimensions);
+                tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
+                long freeMemory = runtime.freeMemory ();
+                // if tableSize is negative it means there has been an overflow and
+                // therefore the table it too big
+                if (freeMemory < (tableSize * (Double.SIZE / 8)) || tableSize < 0)
+                {
+                    throw new NotEnoughMemoryException (
+                                                        "There are only "
+                                                                + Util.printInteger (freeMemory)
+                                                                + " bytes free. "
+                                                                + "Not enough memory to allocate a table with "
+                                                                + Util.printInteger ((tableSize * (Double.SIZE / 8)))
+                                                                + " bytes in TablePotential constructor."
+                                                                + " Number of variables: "
+                                                                + variables.size ());
+                }
+                values = new double[tableSize];
+                setUniform (); // Initializes the table as an uniform potential
+            }
+            else
+            {// In this case the potential is a constant
+                tableSize = 1;
+                values = new double[tableSize];
+                offsets = new int[0];
+            }
+            type = PotentialType.TABLE;
+        }
+
 
     /**
      * @param variables. <code>ArrayList</code> of <code>Variable</code>

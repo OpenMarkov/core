@@ -114,8 +114,14 @@ public class SetPotentialEdit extends SimplePNEdit {
 		ArrayList<Potential> potentials = new ArrayList<Potential>();
 		if (newPotential == null) {
 			RelationTypeManager relationTypeManager = new RelationTypeManager();
+			if (lastPotential.isUtility()) {
+				newPotential = relationTypeManager.getByName(newPotentialType,
+						variables, role, lastPotential
+						.getUtilityVariable());
+			} else {
 			newPotential = relationTypeManager.getByName(newPotentialType,
 					variables, role);
+			}
 
 			// TODO Potential: SameAsPrevious without ProbNet
 			// newPotential = new SameAsPrevious (probNet, variable);
@@ -123,19 +129,6 @@ public class SetPotentialEdit extends SimplePNEdit {
 
 		if (!(probNode.getNodeType() == NodeType.DECISION && probNode
 				.getPolicyType() == PolicyType.OPTIMAL)) {
-			if (lastPotential.isUtility() && !(lastPotential instanceof TreeADDPotential && newPotential instanceof TreeADDPotential)) {
-				newPotential.setUtilityVariable(lastPotential
-						.getUtilityVariable());
-				//TreeADDController has no information about probNode, so if probNode is Utility it is not 
-				//enough with an arrayList of variables and a role it need to know what is utility variable because
-				//the gui is not able to obtain that information without the probNode since utility variable does not appear
-				//in variables list
-				//TODO homogenize potential constructor for utility role to prepare potential classes
-				//for the future when gui will be probNode independent
-				if (newPotential instanceof TreeADDPotential) {
-					newPotential = new TreeADDPotential(variables, variables.get(0), role, lastPotential.getUtilityVariable());
-				}
-			}
 		} else {
 			probNet.getProbNode(variable).setPolicyType(
 					PolicyType.PROBABILISTIC);

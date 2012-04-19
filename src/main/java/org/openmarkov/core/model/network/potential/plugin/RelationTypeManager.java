@@ -43,7 +43,7 @@ public class RelationTypeManager
         potentials = new HashMap<String, Class<? extends Potential>> ();
         potentialFamilies = new HashMap<String, String> ();
         
-        for (Class<?> plugin : findAllPotentials ())
+        for (Class<?> plugin : findAllPotentials ())	
         {
             RelationType lAnnotation = plugin.getAnnotation (RelationType.class);
             if (Potential.class.isAssignableFrom (plugin))
@@ -90,7 +90,42 @@ public class RelationTypeManager
             throw new InvalidParameterException();
         return instance;
     }
-    
+    /**
+     * For utility potentials
+     * @param name
+     * @param variables
+     * @param role
+     * @param utilityVariable
+     * @return
+     */
+    public final Potential getByName (String name, ArrayList<Variable> variables, PotentialRole role, Variable utilityVariable)
+    {
+        Potential instance = null;
+        try
+        {
+            Constructor<? extends Potential> constructor;
+            
+            try
+            {
+                constructor = potentials.get (name).getConstructor (ArrayList.class, PotentialRole.class, Variable.class);
+                instance = (Potential) constructor.newInstance (variables, role, utilityVariable);
+            }catch (NoSuchMethodException e) {
+                constructor = potentials.get (name).getConstructor (ArrayList.class);
+                instance = constructor.newInstance (variables);
+            }
+        }catch (NoSuchMethodException e) {
+            throw new InvalidParameterException ("A Potential subclass must have a constructor "
+                    + "either that receives a list of variables or"
+                    + " a list of variables a potential role and a utility variable.");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        if(instance == null)
+            throw new InvalidParameterException();
+        return instance;
+    }
     /**
      * Returns all potentials' names. 
      * @return a list of potentials' names.

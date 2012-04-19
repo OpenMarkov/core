@@ -45,6 +45,13 @@ public class UniformPotential extends Potential {
 		}
 		type = PotentialType.UNIFORM;
 	}
+	public UniformPotential(ArrayList<Variable> variables, PotentialRole role, Variable utilityVariable) {
+		super(variables, role, utilityVariable);
+		if (allVariablesAreDiscrete(variables)) {
+			discreteValue = calculateDiscreteValue(variables);
+		}
+		type = PotentialType.UNIFORM;
+	}
 	
     public UniformPotential(PotentialRole role, Variable... variables) {
         this(toArrayList(variables), role);

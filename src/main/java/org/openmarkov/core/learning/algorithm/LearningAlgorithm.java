@@ -39,6 +39,10 @@ public abstract class LearningAlgorithm {
     
     /** Case database */
     int[][] cases;
+
+    /** List of blocked edits */
+    private ArrayList<PNEdit> blockedEdits;
+    
     
     // Constructor
     /**
@@ -51,6 +55,7 @@ public abstract class LearningAlgorithm {
         this.cases = cases;
         this.editionsGenerator = editionsGenerator;
         this.alpha = alpha;
+        this.blockedEdits = new ArrayList<PNEdit>();
     }
     
     /** Method invoked to run the algorithm.
@@ -80,6 +85,23 @@ public abstract class LearningAlgorithm {
      * @param modelNetUse
      */
     public abstract void init ();
+    
+    /**
+     * Score the network. 
+     * @param probNet
+     * @param cases
+     * @return <code>double</code> score of the net 
+     */    
+    public abstract double getScore (ProbNet probNet, int[][] cases);
+
+    /**
+     * Scores the associated network with the given edition.
+     * @param probNet
+     * @param cases
+     * @param edit <code>PNEdit</code> 
+     * @return <code>double</code> score of the net with the given edition
+     */    
+    public abstract double getScore (ProbNet probNet, int[][] cases, PNEdit edit); 
     
     /** Takes a step in the algorithm
      * 
@@ -234,7 +256,12 @@ public abstract class LearningAlgorithm {
      */    
     public EditAndScorePair getBestEdition(boolean onlyAllowedEdits, boolean onlyPositiveEdits)
     {
-    	return editionsGenerator.getBest(onlyAllowedEdits, onlyPositiveEdits);
+    	EditAndScorePair bestEdition = editionsGenerator.getBest(onlyAllowedEdits, onlyPositiveEdits);
+    	while(bestEdition != null && isBlocked(bestEdition.getEdition()))
+    	{
+    		bestEdition = editionsGenerator.getNext(onlyAllowedEdits, onlyPositiveEdits);
+    	}
+    	return bestEdition;
     }
     
     /**
@@ -245,22 +272,45 @@ public abstract class LearningAlgorithm {
      */    
     public EditAndScorePair getNextEdition(boolean onlyAllowedEdits, boolean onlyPositiveEdits)
     {
-    	return editionsGenerator.getNext(onlyAllowedEdits, onlyPositiveEdits);
-    }   
+    	EditAndScorePair bestEdition = editionsGenerator.getNext(onlyAllowedEdits, onlyPositiveEdits);
+    	while(bestEdition != null && isBlocked(bestEdition.getEdition()))
+    	{
+    		bestEdition = editionsGenerator.getNext(onlyAllowedEdits, onlyPositiveEdits);
+    	}
+    	return bestEdition;    }      
+    
     /**
-     * Score the network. 
-     * @param probNet
-     * @param cases
-     * @return <code>double</code> score of the net 
-     */    
-    public abstract double getScore (ProbNet probNet, int[][] cases);
+     * Blocks edit
+     * @param edit to block
+     */
+    public void blockEdit(PNEdit edit)
+    {
+    	blockedEdits.add(edit);
+    }
+    
+    /**
+     * Blocks edit
+     * @param edit to block
+     */
+    public void unblockEdit(PNEdit edit)
+    {
+    	blockedEdits.remove(edit);
+    }
 
+	/**
+	 * @return the blockedEdits
+	 */
+	public ArrayList<PNEdit> getBlockedEdits() {
+		return blockedEdits;
+	}    
+	
     /**
-     * Scores the associated network with the given edition.
-     * @param probNet
-     * @param cases
-     * @param edit <code>PNEdit</code> 
-     * @return <code>double</code> score of the net with the given edition
-     */    
-    public abstract double getScore (ProbNet probNet, int[][] cases, PNEdit edit);    
+     * Blocks edit
+     * @param edit to block
+     */
+    public boolean isBlocked(PNEdit edit)
+    {
+    	return blockedEdits.contains(edit);
+    }
+    
 }

@@ -267,5 +267,30 @@ public class LearningManager {
         
         return learningAlgorithmManager.getLearningAlgorithmNames ();
     }    
+    
+    /**
+     * Blocks edit
+     * @param edit to block
+     */
+    public void blockEdit(PNEdit edit)
+    {
+    	learningAlgorithm.blockEdit(edit);
+    }
+    
+    /**
+     * Blocks edit
+     * @param edit to block
+     */
+    public void unblockEdit(PNEdit edit)
+    {
+    	learningAlgorithm.unblockEdit(edit);
+    }
+    
+	/**
+	 * @return the blocked edits
+	 */
+	public ArrayList<PNEdit> getBlockedEdits() {
+		return learningAlgorithm.getBlockedEdits();
+	}      
 	
 }

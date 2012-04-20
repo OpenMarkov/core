@@ -47,7 +47,7 @@ public class VariableTypeEdit extends SimplePNEdit {
         throws DoEditException
     {
         ArrayList<Node> nodes;
-        if (currentType != newType) {
+        if (currentType != newType && newType.compareTo (VariableType.DISCRETIZED) != 0) {
         	probNode.setUniformPotential2ProbNode();
         	nodes = probNode.getNode ().getChildren ();
             for (Node node : nodes)

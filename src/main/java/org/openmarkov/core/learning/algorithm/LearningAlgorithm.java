@@ -39,9 +39,6 @@ public abstract class LearningAlgorithm {
     
     /** Case database */
     int[][] cases;
-
-    /** List of blocked edits */
-    private ArrayList<PNEdit> blockedEdits;
     
     
     // Constructor
@@ -55,7 +52,6 @@ public abstract class LearningAlgorithm {
         this.cases = cases;
         this.editionsGenerator = editionsGenerator;
         this.alpha = alpha;
-        this.blockedEdits = new ArrayList<PNEdit>();
     }
     
     /** Method invoked to run the algorithm.
@@ -256,12 +252,7 @@ public abstract class LearningAlgorithm {
      */    
     public EditAndScorePair getBestEdition(boolean onlyAllowedEdits, boolean onlyPositiveEdits)
     {
-    	EditAndScorePair bestEdition = editionsGenerator.getBest(onlyAllowedEdits, onlyPositiveEdits);
-    	while(bestEdition != null && isBlocked(bestEdition.getEdition()))
-    	{
-    		bestEdition = editionsGenerator.getNext(onlyAllowedEdits, onlyPositiveEdits);
-    	}
-    	return bestEdition;
+    	return editionsGenerator.getBest(onlyAllowedEdits, onlyPositiveEdits);
     }
     
     /**
@@ -272,12 +263,8 @@ public abstract class LearningAlgorithm {
      */    
     public EditAndScorePair getNextEdition(boolean onlyAllowedEdits, boolean onlyPositiveEdits)
     {
-    	EditAndScorePair bestEdition = editionsGenerator.getNext(onlyAllowedEdits, onlyPositiveEdits);
-    	while(bestEdition != null && isBlocked(bestEdition.getEdition()))
-    	{
-    		bestEdition = editionsGenerator.getNext(onlyAllowedEdits, onlyPositiveEdits);
-    	}
-    	return bestEdition;    }      
+    	return editionsGenerator.getNext(onlyAllowedEdits, onlyPositiveEdits);    
+    }
     
     /**
      * Blocks edit
@@ -285,7 +272,7 @@ public abstract class LearningAlgorithm {
      */
     public void blockEdit(PNEdit edit)
     {
-    	blockedEdits.add(edit);
+    	editionsGenerator.blockEdit(edit);
     }
     
     /**
@@ -294,23 +281,13 @@ public abstract class LearningAlgorithm {
      */
     public void unblockEdit(PNEdit edit)
     {
-    	blockedEdits.remove(edit);
-    }
+    	editionsGenerator.unblockEdit(edit);
+    } 
 
 	/**
-	 * @return the blockedEdits
+	 * @return the blocked edits
 	 */
 	public ArrayList<PNEdit> getBlockedEdits() {
-		return blockedEdits;
-	}    
-	
-    /**
-     * Blocks edit
-     * @param edit to block
-     */
-    public boolean isBlocked(PNEdit edit)
-    {
-    	return blockedEdits.contains(edit);
-    }
-    
+		return editionsGenerator.getBlockedEdits();
+	}
 }

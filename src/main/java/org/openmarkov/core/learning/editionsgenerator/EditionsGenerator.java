@@ -9,6 +9,10 @@
 
 package org.openmarkov.core.learning.editionsgenerator;
 
+import java.util.ArrayList;
+
+import org.openmarkov.core.action.PNEdit;
+
 
 /**
  * This interface defines the basic elements of a generator of possible
@@ -19,7 +23,11 @@ package org.openmarkov.core.learning.editionsgenerator;
  * @author ibermejo
  * @version 1.1
  */
-public interface EditionsGenerator {
+public abstract class EditionsGenerator {
+	
+
+    /** List of blocked edits */
+    private ArrayList<PNEdit> blockedEdits = new ArrayList<PNEdit>();	
 
 	/**
 	 * This method returns the best edition (and its associated score)
@@ -31,7 +39,7 @@ public interface EditionsGenerator {
 	 * editions with a positive associated score are returned.
 	 * @return <code>EditAndScorePair</code> with the best edition and its score. 
 	 */
-    public EditAndScorePair getBest (boolean onlyAllowedEdits,
+    public abstract EditAndScorePair getBest (boolean onlyAllowedEdits,
                                      boolean onlyPositiveEdits);
     
     /**
@@ -44,6 +52,40 @@ public interface EditionsGenerator {
      * editions with a positive associated score are returned.
      * @return <code>EditAndScorePair</code> with the best edition and its score. 
      */
-    public EditAndScorePair getNext (boolean onlyAllowedEdits,
-                                     boolean onlyPositiveEdits);   
+    public abstract EditAndScorePair getNext (boolean onlyAllowedEdits,
+                                     boolean onlyPositiveEdits);
+    
+    /**
+     * Blocks edit
+     * @param edit to block
+     */
+    public void blockEdit(PNEdit edit)
+    {
+    	blockedEdits.add(edit);
+    }
+    
+    /**
+     * Blocks edit
+     * @param edit to block
+     */
+    public void unblockEdit(PNEdit edit)
+    {
+    	blockedEdits.remove(edit);
+    }
+
+	/**
+	 * @return the blockedEdits
+	 */
+	public ArrayList<PNEdit> getBlockedEdits() {
+		return blockedEdits;
+	}    
+	
+    /**
+     * Blocks edit
+     * @param edit to block
+     */
+    public boolean isBlocked(PNEdit edit)
+    {
+    	return blockedEdits.contains(edit);
+    }    
 }

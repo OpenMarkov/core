@@ -47,14 +47,21 @@ public class VariableTypeEdit extends SimplePNEdit {
         throws DoEditException
     {
         ArrayList<Node> nodes;
-        if (currentType != newType && newType.compareTo (VariableType.DISCRETIZED) != 0) {
-        	probNode.setUniformPotential2ProbNode();
-        	nodes = probNode.getNode ().getChildren ();
-            for (Node node : nodes)
-            {
-            	ProbNode child = (ProbNode) node.getObject ();
-            	child.setUniformPotential2ProbNode();
-            }
+       
+        if (currentType != newType) {
+        	if ((newType.compareTo (VariableType.DISCRETIZED) == 0 && currentType.compareTo (VariableType.FINITE_STATES) == 0)||
+        			newType.compareTo (VariableType.FINITE_STATES) != 0 && currentType.compareTo (VariableType.DISCRETIZED) == 0){
+        		//from discretized to finite states or vice versa
+        	} else {
+        		//from numeric to finite states or discretized or vice versa 
+        		probNode.setUniformPotential2ProbNode();
+	        	nodes = probNode.getNode ().getChildren ();
+	            for (Node node : nodes)
+	            {
+	            	ProbNode child = (ProbNode) node.getObject ();
+	            	child.setUniformPotential2ProbNode();
+	            }
+        	}
         }
         if (currentType.compareTo (VariableType.NUMERIC) == 0) //if  current type is numeric
         {

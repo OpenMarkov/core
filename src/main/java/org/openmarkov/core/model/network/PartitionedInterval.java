@@ -261,6 +261,7 @@ public class PartitionedInterval implements Cloneable {
 		belongsToLeftSide = getBelongsToLeftSide();
 		data = new Object[numIntervals][numColumns];
 		for (i = 0; i < numIntervals; i++) {
+			//for (i = numIntervals-1; i <=0; i--) {
 			data[i][0] = ""; // name
 			data[i][1] = (belongsToLeftSide[i] ? "(" : "["); // low interval
 																// symbol

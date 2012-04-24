@@ -67,9 +67,8 @@ public abstract class Potential{
 	private String comment =  "";
 	
     // Constructor
-    /** @param variables <code>ArrayList</code> of <code>extends 
-     * Variable</code>.
-     * @param role. <code>PotentialRole</code>*/
+    /** @param variables. <code>ArrayList</code> of <code>Variable</code>.
+     * @param role. <code>PotentialRole</code> */
     public Potential(ArrayList<Variable> variables, PotentialRole role) {
         if (variables != null) {
             numVariables = variables.size();        	
@@ -83,6 +82,9 @@ public abstract class Potential{
     	this.role = role;
     }
     
+    /** @param variables <code>ArrayList</code> of <code>Variable</code>.
+     * @param role. <code>PotentialRole</code> 
+     * @param utility. <code>Variable</code> */
     public Potential(ArrayList<Variable> variables, PotentialRole role, Variable utility) {
         if (variables != null) {
             numVariables = variables.size();        	
@@ -96,34 +98,31 @@ public abstract class Potential{
     	this.role = role;
     }
 
-    /**
-     * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
-     * @param variables
-     * @param role
-     */
-	public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
-    {
+    // Methods
+    /** Returns if an instance of a certain Potential type makes sense given 
+     * the variables and the potential role.
+     * @param probNode. <code>ProbNode</code> 
+     * @param variables. <code>ArrayList</code> of <code>Variable</code>.
+     * @param role. <code>PotentialRole</code>. */
+	public static boolean validate(ProbNode probNode, ArrayList<Variable> variables, 
+			PotentialRole role) {
         // Default implementation: always return true
         return true;
     }
 	
-    /**
+    /** @param evidenceCase. <code>EvidenceCase</code> 
      * @return The conditional probability table of this potential given the evidence
 	 * @throws NotEnoughMemoryException
 	 * @throws WrongCriterionException 
-	 * @throws NonProjectablePotentialException 
-	 */
+	 * @throws NonProjectablePotentialException */
     public TablePotential getCPT (EvidenceCase evidenceCase)
-        throws NotEnoughMemoryException,
-        NonProjectablePotentialException,
-        WrongCriterionException
-    {
+    		throws NotEnoughMemoryException, NonProjectablePotentialException, 
+    		WrongCriterionException {
 	    ArrayList<TablePotential> potentials = tableProject (evidenceCase, null);
 	    HashSet<Variable> variablesToEliminate = new HashSet<Variable>();
 	    
 	    //Fill it with variables appearing in all potentials except this
-	    for(TablePotential tablePotential: potentials)
-	    {
+	    for(TablePotential tablePotential: potentials) {
 	        variablesToEliminate.addAll (tablePotential.getVariables ());
 	    }
 	    variablesToEliminate.removeAll (variables);
@@ -132,24 +131,16 @@ public abstract class Potential{
 	                                                               new ArrayList<Variable>(variablesToEliminate));
 	}
     
-    /**
-     * The conditional probability table given by this potential
-     * @return
+    /** The conditional probability table given by this potential
+     * @return <code>TablePotential</code>
      * @throws NotEnoughMemoryException
      * @throws NonProjectablePotentialException
-     * @throws WrongCriterionException
-     */
+     * @throws WrongCriterionException */
     public TablePotential getCPT ()
-        throws NotEnoughMemoryException,
-        NonProjectablePotentialException,
-        WrongCriterionException
-    {
+    		throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
         return getCPT (new EvidenceCase ());
     }
 	
-	
-	
-    // Methods
     /** Modifies the frozen variable role. This method exists to avoid some
      * problems with legacy code in DiscretePotentialOperations class and it
      * does not be used except in very special cases.

@@ -389,7 +389,7 @@ public abstract class Potential{
 	/** @throws NotEnoughMemoryException 
 	 * @returns a sampled potential. By default, itself, i.e., not sampled. */
 	public Potential sample(Variable simulationIndexVariable) 
-	throws NotEnoughMemoryException {
+			throws NotEnoughMemoryException {
 		return this; // By default
 	}
 

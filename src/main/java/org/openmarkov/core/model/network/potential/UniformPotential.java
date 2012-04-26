@@ -37,7 +37,9 @@ public class UniformPotential extends Potential {
 	 * discrete. */
 	private double discreteValue = 0.0;
 	
-	// Constructor
+	// Constructors
+	/** @param variables. <code>ArrayList</code> of <code>Variable</code>
+	 * @param role. <code>PotentialRole</code> */
 	public UniformPotential(ArrayList<Variable> variables, PotentialRole role) {
 		super(variables, role);
 		if (allVariablesAreDiscrete(variables)) {
@@ -45,6 +47,10 @@ public class UniformPotential extends Potential {
 		}
 		type = PotentialType.UNIFORM;
 	}
+	
+	/** @param variables. <code>ArrayList</code> of <code>Variable</code>
+	 * @param role. <code>PotentialRole</code>
+	 * @param utilityVariable. <code>Variable</code> */
 	public UniformPotential(ArrayList<Variable> variables, PotentialRole role, Variable utilityVariable) {
 		super(variables, role, utilityVariable);
 		if (allVariablesAreDiscrete(variables)) {
@@ -53,21 +59,27 @@ public class UniformPotential extends Potential {
 		type = PotentialType.UNIFORM;
 	}
 	
+    /** @param role. <code>PotentialRole</code>
+     * @param variables... <code>Variable</code> 
+     */
     public UniformPotential(PotentialRole role, Variable... variables) {
         this(toArrayList(variables), role);
     }	
 	
+    /** @param potential. <code>Potential</code> */
     public UniformPotential(Potential potential) {
         this(potential.getVariables (), potential.getPotentialRole ());
     }	
     
-    /**
-     * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
-     * @param variables
-     * @param role
-     */
-    public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
-    {
+    // Methods
+    /** Returns if an instance of a certain Potential type makes sense given the variables 
+     * and the potential role
+     * @param probNode. <code>ProbNode</code> 
+     * @param variables. <code>ArrayList</code> of <code>Variable</code>
+     * @param role. <code>PotentialRole</code> */
+    public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, 
+    		PotentialRole role) {
+    	// TODO
         return true;
     }       
 
@@ -134,19 +146,11 @@ public class UniformPotential extends Potential {
 	 * @return <code>true</code> when the potential has no variables in the
 	 * <code>evidenceCase</code> */
 	private boolean noVariablesInEvidenceCase(EvidenceCase evidenceCase) {
-		HashSet<Variable> evidenceVariables = 
-			new HashSet<Variable>(evidenceCase.getVariables());
-		for (Variable variable : variables) {
-			if (evidenceVariables.contains(variable)) {
-				return false;
-			}
+		int i = 0;
+		while ((i < numVariables) && (!evidenceCase.contains(variables.get(i)))) {
+			i++;
 		}
-		return true;
-	}
-
-	/** @return discreteValue. <code>double</code> */
-	public double getDiscreteValue() {
-		return discreteValue;
+		return i == numVariables;
 	}
 
 	/** @return <code>true</code> if all the variables are FINITE_STATES.
@@ -171,6 +175,11 @@ public class UniformPotential extends Potential {
 		return 1 / new Double(statesSpace);
 	}
 
+	/** @return discreteValue. <code>double</code> */
+	public double getDiscreteValue() {
+		return discreteValue;
+	}
+
 	@Override
 	public Potential shift(ProbNet probNet, int timeSlice)
 			throws ProbNodeNotFoundException, NotEnoughMemoryException {
@@ -179,19 +188,16 @@ public class UniformPotential extends Potential {
 	}
 	
     @Override
-    public Potential copy ()
-    {
+    public Potential copy () {
         return new UniformPotential(new ArrayList<Variable> (variables), role);
     }	
     
     @Override
-    public Integer sample (Random randomGenerator, HashMap<Variable, Integer> parentStateIndexes)
-    {
+    public Integer sample (Random randomGenerator, HashMap<Variable, Integer> parentStateIndexes) {
         return randomGenerator.nextInt (variables.get (0).getNumStates ());
     }       
     
-    public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)
-    {
+    public double getProbability (HashMap<Variable, Integer> sampledStateIndexes) {
         return 1.0/variables.get (0).getNumStates ();
     }       
 

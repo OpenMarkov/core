@@ -383,88 +383,81 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 		potentialsList = newListPotentials;
 		
 	}
+	
+	/** @param purpose. <code>String</code>	 */
 	public void setPurpose(String purpose) {
 		this.purpose = purpose;
 	}
 
+	/** @return <code>String</code> */
 	public String getPurpose() {
 		return purpose;
 	}
 
+	/** @param relevance. <code>double</code> */
 	public void setRelevance(double relevance) {
 		this.relevance = relevance;
 	}
 
+	/** @return <code>double</code> */
 	public double getRelevance() {
 		return relevance;
 	}
 
-	/**
-	 * @param comment the comment to set
-	 */
+	/** @param comment the comment to set. <code>String</code> */
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
 
-	/**
-	 * @return the comment
-	 */
+	/** @return the comment. <code>String</code> */
 	public String getComment() {
 		return comment;
 	}
 
-	/**
-	 * @param canonicalParameters the canonicalParameters to set
+	/** @param <code>canonicalParameters</code>. <code>boolean</code>
 	 */
 	public void setCanonicalParameters(boolean canonicalParameters) {
 		this.canonicalParameters = canonicalParameters;
 	}
 
-	/**
-	 * @return the canonicalParameters
-	 */
+	/** @return the canonicalParameters. <code>boolean</code> */
 	public boolean isCanonicalParameters() {
 		return canonicalParameters;
 	}
 
-	/**
-	 * @param asValues the asValues to set
-	 */
+	/** @param asValues the asValues to set. <code>boolean</code> */
 	public void setAsValues(boolean asValues) {
 		this.asValues = asValues;
 	}
 
-	/**
-	 * @return the asValues
-	 */
+	/** @return the asValues. <code>boolean</code> */
 	public boolean isAsValues() {
 		return asValues;
 	}
 
-	/**
-	 * @param modelType the modelType to set
-	 */
+	/** @param modelType the modelType to set. <code>PolicyType</code> */
 	public void setPolicyType(PolicyType policyType) {
 		this.policyType = policyType;
 	}
 
-	/**
-	 * @return the modelType
-	 */
+	/** @return the modelType. <code>PolicyType</code> */
 	public PolicyType getPolicyType() {
 		return policyType;
 	}
 
+	/** @return <code>true</code> if it is a decision node with a non uniform potential.
+	 *  <code>boolean</code> */
 	public boolean hasPolicy() {
 		return nodeType == NodeType.DECISION &&  
-		potentialsList.size() != 0 && 
-		potentialsList.get(0).getPotentialType() != 
-	PotentialType.UNIFORM;
+				potentialsList.size() != 0 && 
+				potentialsList.get(0).getPotentialType() != 
+				PotentialType.UNIFORM;
 	}
 
-
+	/** @param simulationIndexVariable. <code>Variable</code>
+	 * @throws NotEnoughMemoryException */
 	public void samplePotentials(Variable simulationIndexVariable)
-	throws NotEnoughMemoryException {
+			throws NotEnoughMemoryException {
 		for (int i = 0; i < potentialsList.size(); i++) {
 			Potential originalPotential = potentialsList.get(i);
 			potentialsList.set(i, 
@@ -472,12 +465,9 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 		}
 	}
 	
-	/**
-	 * @param node
-	 * @return True if <code>node</code> is parent of <code>this</code> node
-	 */
-	public boolean isParent(ProbNode node)
-	{
+	/** @param node. <code>ProbNode</code>
+	 * @return True if <code>node</code> is parent of <code>this</code> node */
+	public boolean isParent(ProbNode node) {
         return this.getNode ().isParent (node.getNode ());
 	}
 

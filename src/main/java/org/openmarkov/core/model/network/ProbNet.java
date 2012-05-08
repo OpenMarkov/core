@@ -38,6 +38,8 @@ import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.prm.Instance;
+import org.openmarkov.core.model.network.prm.InstanceAlreadyExistsException;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
 
@@ -166,6 +168,8 @@ public class ProbNet implements Cloneable {
 
 	/** Default States of the probNet */
 	private State[] defaultStates = { new State("absent"), new State("present")};
+	
+	private HashMap<String, Instance> instances = new HashMap<String, Instance>();
 
 	// Constructors
     public ProbNet (NetworkType networkType)
@@ -1613,6 +1617,30 @@ public class ProbNet implements Cloneable {
 	public boolean existsPath(ProbNode a, ProbNode b, boolean directed)
 	{
 	    return graph.existsPath (a.getNode (),b.getNode (), directed);
+	}
+
+	/**
+	 * 
+	 * @param classNet
+	 * @param instanceName
+	 * @throws InstanceAlreadyExistsException
+	 */
+	public void addInstance(ProbNet classNet, String instanceName)
+			throws InstanceAlreadyExistsException {
+		if (instances.containsKey(instanceName)) {
+			throw new InstanceAlreadyExistsException();
+		} else {
+			instances.put(instanceName, new Instance(instanceName, classNet));
+		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public HashMap<String, Instance> getInstances()
+	{
+		return instances;
 	}
 
 }

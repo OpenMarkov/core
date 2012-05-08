@@ -1,0 +1,69 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
+package org.openmarkov.core.model.network.constraint;
+
+import java.util.ArrayList;
+
+import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.ChangeVariableNameEdit;
+import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.annotation.Constraint;
+
+@Constraint (name = "NoEmptyName", defaultBehavior = ConstraintBehavior.YES)
+public class NoEmptyName extends PNConstraint {
+
+	@Override
+	public boolean checkEdit(ProbNet probNet, PNEdit edit)
+	throws NotEnoughMemoryException, NonProjectablePotentialException,
+	WrongCriterionException {
+		// AddVariableEdit
+        ArrayList<PNEdit> edits = UtilConstraints.getEditsType (edit, AddProbNodeEdit.class);
+		for (PNEdit simpleEdit : edits) {
+			String name = ((AddProbNodeEdit) simpleEdit).getVariable().getName();
+			if ((name == null) || (name.contentEquals(""))) {
+				return false;
+			}
+		}
+		// ChangeVariableNameEdit
+        edits = UtilConstraints.getEditsType (edit, ChangeVariableNameEdit.class);
+		for (PNEdit simpleEdit : edits) {
+			String name = ((ChangeVariableNameEdit) simpleEdit).getNewName();
+			if ((name == null) || (name.contentEquals(""))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean checkProbNet(ProbNet probNet) {
+		ArrayList<Variable> variables = probNet.getVariables();
+		for (Variable variable : variables) {
+			String name = variable.getName();
+			if ((name == null) || (name.contentEquals(""))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+    @Override
+    protected String getMessage ()
+    {
+        return "there should be no empty names";
+    }
+
+}

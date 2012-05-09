@@ -561,10 +561,11 @@ public class Variable implements Cloneable {
 		double [] interval = new double[numStates+1];
 		interval[0] = Double.NEGATIVE_INFINITY;
 		interval[numStates] = Double.POSITIVE_INFINITY;
-		int count = 100;
+		double count = 0;
 		for (int i=1;i <= numStates-1; i++){
 			interval[i] = count;
-			count += 100;
+			double precision =  Double.valueOf( getPrecision() );
+			count +=  precision;
 		}
 		return interval;
 	}

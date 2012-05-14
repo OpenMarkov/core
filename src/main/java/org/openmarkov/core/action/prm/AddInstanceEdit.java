@@ -16,7 +16,6 @@ import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoableEdit;
 
 import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -28,6 +27,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.prm.Instance;
 import org.openmarkov.core.model.network.prm.InstanceAlreadyExistsException;
 
 @SuppressWarnings("serial")
@@ -51,13 +51,10 @@ public class AddInstanceEdit  extends CompoundEdit implements PNEdit
 	public void doEdit() throws DoEditException, NotEnoughMemoryException,
 			NonProjectablePotentialException, WrongCriterionException {
 		
-		try {
-			probNet.addInstance(classNet, instanceName);
-		} catch (InstanceAlreadyExistsException e) {
+		if (probNet.getInstances().containsKey(instanceName)) {
 			throw new DoEditException("An instance with name " + instanceName
-					+ "alreadyExists");
+					+ " alreadyExists");
 		}
-		
 		// Calculate top left corner of net
 		double topCorner = Double.POSITIVE_INFINITY;
 		double leftCorner = Double.POSITIVE_INFINITY;
@@ -85,11 +82,9 @@ public class AddInstanceEdit  extends CompoundEdit implements PNEdit
 	        edits.add (new AddInstanceNodeEdit (probNet, variable, probNode.getNodeType (), position, classNet, instanceName));			
 		}
 	    // Apply node generation edits
-        ArrayList<ProbNode> instanceNodes = new ArrayList<ProbNode> ();
         for (UndoableEdit edit : edits)
         {
             ((PNEdit) edit).doEdit ();
-            instanceNodes.add (((AddProbNodeEdit) edit).getProbNode ());
         }
 		
 		// Add links to the probNet class
@@ -124,6 +119,7 @@ public class AddInstanceEdit  extends CompoundEdit implements PNEdit
         }
         super.end ();
         
+        ArrayList<ProbNode> instanceNodes = new ArrayList<ProbNode>(); 
         //Replace potentials to already created nodes with copies of copied nodes
         for (ProbNode originalNode : classNet.getProbNodes())
         {
@@ -148,12 +144,21 @@ public class AddInstanceEdit  extends CompoundEdit implements PNEdit
                 newNode.setRelevance (originalNode.getRelevance ());
                 newNode.setPurpose (originalNode.getPurpose ());
                 newNode.additionalProperties = (HashMap<String, String>)originalNode.additionalProperties.clone ();
+                instanceNodes.add(newNode);
             }
             catch (Exception e)
             {
                 e.printStackTrace ();
             }
-        }		
+        }
+        
+		try {
+			Instance instance = new Instance(instanceName, classNet, instanceNodes); 
+			probNet.addInstance(instance);
+		} catch (InstanceAlreadyExistsException e) {
+			throw new DoEditException("An instance with name " + instanceName
+					+ "alreadyExists");
+		}        
 
 	}
 	@Override

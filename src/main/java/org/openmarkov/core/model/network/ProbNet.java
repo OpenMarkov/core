@@ -40,6 +40,7 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.prm.Instance;
 import org.openmarkov.core.model.network.prm.InstanceAlreadyExistsException;
+import org.openmarkov.core.model.network.prm.InstanceLink;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
 
@@ -169,7 +170,9 @@ public class ProbNet implements Cloneable {
 	/** Default States of the probNet */
 	private State[] defaultStates = { new State("absent"), new State("present")};
 	
+	/** PRM */
 	private HashMap<String, Instance> instances = new HashMap<String, Instance>();
+	private ArrayList<InstanceLink> instanceLinks = new ArrayList<InstanceLink>();
 
 	// Constructors
     public ProbNet (NetworkType networkType)
@@ -1623,24 +1626,50 @@ public class ProbNet implements Cloneable {
 	 * 
 	 * @param classNet
 	 * @param instanceName
+	 * @param instanceNodes 
 	 * @throws InstanceAlreadyExistsException
 	 */
-	public void addInstance(ProbNet classNet, String instanceName)
+	public void addInstance(Instance instance)
 			throws InstanceAlreadyExistsException {
-		if (instances.containsKey(instanceName)) {
+		if (instances.containsKey(instance.getName())) {
 			throw new InstanceAlreadyExistsException();
 		} else {
-			instances.put(instanceName, new Instance(instanceName, classNet));
+			instances.put(instance.getName(), instance);
 		}
 	}
 	
 	/**
 	 * 
-	 * @return
+	 * @return instance list
 	 */
 	public HashMap<String, Instance> getInstances()
 	{
 		return instances;
+	}
+
+	/**
+	 * Add an instance link
+	 * @param link
+	 */
+	public void addInstanceLink(InstanceLink link) {
+		instanceLinks.add(link);
+		link.getDestInstance().addInputParameter(link.getDestSubInstance(), link.getSourceInstance());
+	}
+
+	/**
+	 * @return the instanceLinks
+	 */
+	public ArrayList<InstanceLink> getInstanceLinks() {
+		return instanceLinks;
+	}
+
+	/**
+	 * Removes an instance Link
+	 * @param instanceLink
+	 */
+	public void removeInstanceLink(InstanceLink instanceLink) {
+		instanceLinks.remove(instanceLink);
+		instanceLink.getDestInstance().removeInputParameter(instanceLink.getDestSubInstance());
 	}
 
 }

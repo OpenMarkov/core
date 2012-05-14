@@ -9,7 +9,6 @@
 
 package org.openmarkov.core.action.prm;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import javax.swing.undo.CannotUndoException;
@@ -24,6 +23,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.prm.Instance;
 import org.openmarkov.core.model.network.prm.InstanceAlreadyExistsException;
 import org.openmarkov.core.model.network.prm.InstanceNode;
 
@@ -34,8 +34,7 @@ import org.openmarkov.core.model.network.prm.InstanceNode;
 @SuppressWarnings("serial")
 public class RemoveInstanceEdit extends CompoundPNEdit {
 	
-	private String instanceName;
-	private ProbNet classNet;
+	private Instance instance;
 	private HashSet<ProbNode> nodesToRemove;
 	private HashSet<Link> linksToRemove;
 
@@ -44,8 +43,7 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 	 */
 	public RemoveInstanceEdit(ProbNet probNet, String instanceName) {
 		super(probNet);
-		this.instanceName = instanceName;
-		this.classNet = probNet.getInstances().get(instanceName).getClassNet();
+		this.instance = probNet.getInstances().get(instanceName);
 		
 		nodesToRemove = new HashSet<ProbNode>();
 		linksToRemove = new HashSet<Link>();
@@ -82,7 +80,7 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 	public void doEdit() throws DoEditException, NotEnoughMemoryException,
 			NonProjectablePotentialException, WrongCriterionException {
 		super.doEdit();
-		getProbNet().getInstances().remove(instanceName);
+		getProbNet().getInstances().remove(instance.getName());
 	}
 
 	@Override
@@ -90,7 +88,7 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 		// TODO Auto-generated method stub
 		super.undo();
 		try {
-			getProbNet().addInstance(classNet, instanceName);
+			getProbNet().addInstance(instance);
 		} catch (InstanceAlreadyExistsException e) {
 			//Impossible to get here
 		}

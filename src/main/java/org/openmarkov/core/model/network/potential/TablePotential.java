@@ -938,18 +938,18 @@ public class TablePotential extends Potential
      * 
      * @param variables
      *            . <code>ArrayList</code> of <code>Variable</code>
-     * @param statesIndices
+     * @param statesIndexes
      *            . <code>int[]</code>
      * @param value
      */
-    public void setValue(ArrayList<Variable> variables, int[] statesIndices,
+    public void setValue(ArrayList<Variable> variables, int[] statesIndexes,
             double value) {
         int position = 0;
         for (int i = 0; i < variables.size(); i++) {
             Variable variable = variables.get(i);
             int indexVariable = this.variables.indexOf(variable);
             if (indexVariable != -1) {
-                position += offsets[indexVariable] * statesIndices[i];
+                position += offsets[indexVariable] * statesIndexes[i];
             }
         }
         values[position] = value;

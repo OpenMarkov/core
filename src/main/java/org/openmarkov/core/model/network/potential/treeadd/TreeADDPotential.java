@@ -4,10 +4,10 @@
 package org.openmarkov.core.model.network.potential.treeadd;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.PotentialOperationException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -23,6 +23,8 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
+import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
 
@@ -283,8 +285,151 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 			throws NonProjectablePotentialException, NotEnoughMemoryException,
 			WrongCriterionException {
 		// TODO Auto-generated method stub
-		return null;
+		ArrayList<TablePotential> potentialsToSumUp = new ArrayList<TablePotential>();
+		ArrayList<TablePotential> projectedPotential = new ArrayList<TablePotential>();
+		
+		ArrayList<TreeADDBranch> branches = getBranches();
+		for (TreeADDBranch branch : branches) {
+			Potential branchPotential = branch.getPotential();
+			 ArrayList<TablePotential> tablePotentials = branchPotential.tableProject(evidenceCase, inferenceOptions);
+			 if (branch.getTopVariable().getVariableType() == VariableType.FINITE_STATES 
+					 || branch.getTopVariable().getVariableType() == VariableType.DISCRETIZED) {
+				 //mask potential
+				ArrayList<Variable> variables = new ArrayList<Variable>();
+				variables.add(branch.getTopVariable());
+				TablePotential potential = new TablePotential(variables, role);
+				ArrayList<State> branchStates = branch.getBranchStates();
+				State []topVariableStates = branch.getTopVariable().getStates();
+				for (int i = 0; i < topVariableStates.length; i++) {
+					int []statesIndexes = new int[1];
+					statesIndexes [0] = branch.getTopVariable().getStateIndex(topVariableStates[i]);
+					if (branchStates.contains(topVariableStates[i])) {
+						potential.setValue(variables, statesIndexes, 1);
+					} else {
+						potential.setValue(variables, statesIndexes, 0);
+					}
+				}
+				
+				//multiply mask potential and the table potential of the current branch
+				ArrayList<Potential> potentialsToMultiply = new ArrayList<Potential>();
+				potentialsToMultiply.add(tablePotentials.get(0));
+				potentialsToMultiply.add(potential);
+				try {
+					TablePotential intermediateProduct = (TablePotential)(PotentialOperations.multiply(potentialsToMultiply));
+					if (!intermediateProduct.getVariables().containsAll(branch.getParentVariables())) {
+						ArrayList<Variable> diference = new ArrayList<Variable>();
+						for (int i= 0; i < branch.getParentVariables().size(); i++) {
+							if (!intermediateProduct.getVariables().contains(branch.getParentVariables().get(i))) {
+								diference.add(branch.getParentVariables().get(i));
+							}
+						}
+						TablePotential mask = new TablePotential(diference, role);
+						double [] values = new double[mask.getValues().length];
+						for (int i = 0; i < mask.getValues().length; i++) {
+							values [i] = 1.0;
+						}
+						mask.setValues(values);
+						ArrayList<Potential> auxPotentialsToMultiply = new ArrayList<Potential>();
+						auxPotentialsToMultiply.add(potentialsToMultiply.get(0));
+						auxPotentialsToMultiply.add(mask);
+						
+						//adding variables branch independent to potential
+						TablePotential aux = (TablePotential)(PotentialOperations.multiply(auxPotentialsToMultiply));
+						ArrayList<Potential> auxVariables = new ArrayList<Potential>();
+						auxVariables.add(aux);
+						auxVariables.add(potentialsToMultiply.get(1));
+						TablePotential auxPotential =  (TablePotential)(PotentialOperations.multiply(auxVariables));
+						potentialsToSumUp.add(auxPotential);
+					} else {
+						potentialsToSumUp.add(intermediateProduct);
+					}
+					
+					
+				} catch (PotentialOperationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			 } else if (branch.getTopVariable().getVariableType() == VariableType.NUMERIC ) {
+				 throw new NonProjectablePotentialException("It is not possible to project this tree, " +
+				 		"top variable is numeric");
+			 }
+		}
+			
+			 
+			
+			/*if (branch.getPotential() instanceof TreeADDPotential) {
+				 TreeADDPotential tree = (TreeADDPotential) branch.getPotential();
+				 ArrayList<TablePotential> tablePotentials = tree.tableProject(evidenceCase, inferenceOptions);
+				 if (branch.getTopVariable().getVariableType() == VariableType.FINITE_STATES 
+						 || branch.getTopVariable().getVariableType() == VariableType.DISCRETIZED) {
+					 //mask potential
+					 ArrayList<Variable> variables = new ArrayList<Variable>();
+					 variables.add(branch.getTopVariable());
+					TablePotential potential = new TablePotential(variables, role);
+					ArrayList<State> branchStates = branch.getBranchStates();
+					State []topVariableStates = branch.getTopVariable().getStates();
+					for (int i = 0; i < topVariableStates.length; i++) {
+						int []statesIndexes = new int[1];
+						statesIndexes [0] = branch.getTopVariable().getStateIndex(topVariableStates[i]);
+						if (branchStates.contains(topVariableStates[i])) {
+							potential.setValue(variables, statesIndexes, 1);
+						}
+						potential.setValue(variables, statesIndexes, 0);
+					}
+					
+					//multiply mask potential and the table potential of the current branch
+					ArrayList<Potential> potentialsToMultiply = new ArrayList<Potential>();
+					potentialsToMultiply.add(tablePotentials.get(0));
+					potentialsToMultiply.add(potential);
+					try {
+						potentialsToSumUp.add((TablePotential)(PotentialOperations.multiply(potentialsToMultiply)));
+					} catch (PotentialOperationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				 }
+			} else if (branch.getPotential() instanceof TablePotential || branch.getPotential() instanceof UniformPotential) {
+				Potential  potential = branch.getPotential();
+				 if (branch.getTopVariable().getVariableType() == VariableType.FINITE_STATES 
+						 || branch.getTopVariable().getVariableType() == VariableType.DISCRETIZED) {
+					//mask potential
+					ArrayList<Variable> variables = new ArrayList<Variable>();
+					variables.add(branch.getTopVariable());
+					TablePotential maskPotential = new TablePotential(variables, role);
+					ArrayList<State> branchStates = branch.getBranchStates();
+					State []topVariableStates = branch.getTopVariable().getStates();
+					for (int i = 0; i < topVariableStates.length; i++) {
+						int []statesIndexes = new int[1];
+						statesIndexes [0] = branch.getTopVariable().getStateIndex(topVariableStates[i]);
+						if (branchStates.contains(topVariableStates[i])) {
+							maskPotential.setValue(variables, statesIndexes, 1);
+						}
+						maskPotential.setValue(variables, statesIndexes, 0);
+					}
+					//multiply mask potential and the table potential of the current branch
+					ArrayList<Potential> potentialsToMultiply = new ArrayList<Potential>();
+					potentialsToMultiply.add(potential);
+					potentialsToMultiply.add(maskPotential);
+					try {
+						potentialsToSumUp.add((TablePotential)(PotentialOperations.multiply(potentialsToMultiply)));
+					} catch (PotentialOperationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				 }
+			
+			}
+		}*/
+				
+		projectedPotential.add(DiscretePotentialOperations.sum(potentialsToSumUp));
+		return projectedPotential;
 	}
+	
+	/*private TablePotential getPotentialMask () {
+		
+	}*/
 
 	@Override
 	public Potential shift(ProbNet probNet, int timeDifference)

@@ -176,7 +176,11 @@ public abstract class Potential{
 	public Variable getVariable(int position) {
 		return variables.get(position);
 	}
-	
+
+    public void replaceVariable(Variable variableToReplace, Variable variable) {
+    	replaceVariable(variables.indexOf(variableToReplace), variable);
+    }
+    
     public void replaceVariable(int position, Variable variable) {
         variables.remove(position);
         variables.add (position, variable);

@@ -52,32 +52,4 @@ public class AddInstanceLinkEdit extends SimplePNEdit{
 		probNet.removeInstanceLink(instanceLink);
 	}
 
-	/**
-	 * Returns the equivalent node in <code>sourceInstance</code> to the
-	 * <code>probNode</code> in <code>destinationInstance</code>
-	 * 
-	 * @param sourceInstance
-	 * @param probNode
-	 * @return
-	 */
-	private ProbNode getEquivalentNode(Instance sourceInstance, ProbNode probNode) {
-		ProbNode equivalentNode = null;
-		int i= 0;
-		String nodeName = probNode.getName();
-		nodeName = nodeName.substring(nodeName.lastIndexOf('.') + 1);
-
-		while(equivalentNode != null && i < sourceInstance.getNodes().size())
-		{
-			String equivalentNodeName = sourceInstance.getNodes().get(i).getName();
-			equivalentNodeName = equivalentNodeName.substring(equivalentNodeName.lastIndexOf('.') + 1);
-			if(equivalentNodeName.equals(nodeName))
-			{
-				equivalentNode = sourceInstance.getNodes().get(i);
-			}
-			++i;
-		}
-		
-		return equivalentNode;
-	}
-
 }

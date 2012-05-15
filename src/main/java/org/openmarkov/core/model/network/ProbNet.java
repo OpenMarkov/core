@@ -431,15 +431,24 @@ public class ProbNet implements Cloneable {
 		// Adds variables and create corresponding nodes. Also add potentials
 		for (ProbNode probNode : probNodes) {
 			// Add variables and create corresponding nodes
-			Variable variable = probNode.getVariable();
+			//Variable variable = new Variable(probNode.getVariable());
 			ProbNode newProbNode = null;
-            newProbNode = probNetCopy.addVariable (variable,
+            newProbNode = probNetCopy.addVariable (probNode.getVariable(),
                                                    probNode.getNodeType ());
 			Node newNode = newProbNode.getNode();
 			Node node = probNode.getNode();
 			newNode.setCoordinateX(node.getCoordinateX());
 			newNode.setCoordinateY(node.getCoordinateY());
-			newProbNode.setPotentials(probNode.getPotentials());
+			ArrayList<Potential> potentialsCopy = new ArrayList<Potential>();
+			for(Potential potential: probNode.getPotentials())
+			{
+				try {
+					potentialsCopy.add(potential.copy());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			newProbNode.setPotentials(potentialsCopy);
 
 			// TODO Hacer clon para probNode y quitar estas lineas
 			newProbNode.setPurpose(probNode.getPurpose());
@@ -448,17 +457,40 @@ public class ProbNet implements Cloneable {
 			newProbNode.setCanonicalParameters(probNode.isCanonicalParameters());
 			newProbNode.additionalProperties = additionalProperties;
 		}
+		
+		//Update references to variables in potentials 
+//		for(Potential potential: probNetCopy.getPotentials())
+//		{
+//			for(Variable oldVariable: potential.getVariables())
+//			{				
+//				try {
+//					potential.replaceVariable(oldVariable, probNetCopy.getVariable(oldVariable.getName()));
+//				} catch (ProbNodeNotFoundException e) {
+//					// Can not happen
+//				}
+//			}			
+//		}		
 
 		// Adds links
 		ArrayList<ProbNode> nodes = this.getProbNodes();
 		for (ProbNode probNode1 : nodes) {
 			Variable variable1 = probNode1.getVariable();
-			ProbNode newNode1 = probNetCopy.getProbNode(variable1);
+			ProbNode newNode1 = null;
+			try {
+				newNode1 = probNetCopy.getProbNode(variable1.getName());
+			} catch (ProbNodeNotFoundException e) {
+				// Can not happen
+			}
 			ArrayList<ProbNode> neighbors = getProbNodesOfNodes(probNode1
 					.getNode().getNeighbors());
 			for (ProbNode probNode2 : neighbors) {
 				Variable variable2 = probNode2.getVariable();
-				ProbNode newNode2 = probNetCopy.getProbNode(variable2);
+				ProbNode newNode2 = null;
+				try{
+					newNode2 = probNetCopy.getProbNode(variable2.getName());
+				} catch (ProbNodeNotFoundException e) {
+					// Can not happen
+				}
 				if (probNode1.getNode().isSibling(probNode2.getNode())) {
 					if (!newNode1.getNode().isSibling(newNode2.getNode())) {
 						graph.addLink(newNode1.getNode(), newNode2.getNode(),
@@ -482,6 +514,36 @@ public class ProbNet implements Cloneable {
 		}
 		probNetCopy.additionalProperties = copyProperties;
 
+		
+		// Copy instances
+		for(String instanceName: instances.keySet())
+		{
+			Instance instance = instances.get(instanceName);
+			ArrayList<ProbNode> instanceNodes = new ArrayList<ProbNode>();
+			for(ProbNode instanceNode : instance.getNodes())
+			{
+				try {
+					instanceNodes.add(probNetCopy.getProbNode(instanceNode.getName()));
+				} catch (ProbNodeNotFoundException e) {
+					// Can not happen
+				}
+			}
+			try {
+				probNetCopy.addInstance(new Instance(instanceName, instance.getClassNet(), instanceNodes));
+			} catch (InstanceAlreadyExistsException e) {
+				// Can not happen
+			}
+		}
+		
+		//Copy instance links
+		for(InstanceLink instanceLink: instanceLinks)
+		{
+			Instance sourceInstance = probNetCopy.getInstances().get(instanceLink.getSourceInstance().getName());
+			Instance destInstance = probNetCopy.getInstances().get(instanceLink.getDestInstance().getName());
+			Instance destSubInstance = destInstance.getSubInstances().get(instanceLink.getDestSubInstance().getName());
+			probNetCopy.addInstanceLink(new InstanceLink(sourceInstance, destInstance, destSubInstance));
+		}
+		
 		return probNetCopy;
 	}
 
@@ -1671,5 +1733,78 @@ public class ProbNet implements Cloneable {
 		instanceLinks.remove(instanceLink);
 		instanceLink.getDestInstance().removeInputParameter(instanceLink.getDestSubInstance());
 	}
+	
+	/**
+	 * Unrolls instances and returns a plain prob net
+	 * @return
+	 */
+	public ProbNet getPlainProbNet()
+	{
+		ProbNet probNet = copy();
+		for(InstanceLink instanceLink : probNet.getInstanceLinks())
+		{
+			for(ProbNode node: instanceLink.getDestSubInstance().getNodes())
+			{
+				ProbNode paramNode = getEquivalentNode(instanceLink.getSourceInstance(), node);
+				// Update potentials
+				for(Potential potential :  probNet.getPotentials(node.getVariable()))
+				{
+					potential.replaceVariable(node.getVariable(), paramNode.getVariable());
+				}
+				// Update Links
+				//Add links to children
+				for(Node child :node.getNode().getChildren())
+				{
+					probNet.addLink(paramNode, (ProbNode)child.getObject(), true);
+				}
+				//Add links from parents
+				for(Node parent :node.getNode().getParents())
+				{
+					probNet.addLink((ProbNode)parent.getObject(), paramNode, true);
+				}
+				//Add links between siblings
+				for(Node sibling :node.getNode().getSiblings())
+				{
+					probNet.addLink((ProbNode)sibling.getObject(), paramNode, false);
+				}
+			}
+			//Remove formal parameter nodes
+			for(ProbNode node: instanceLink.getDestSubInstance().getNodes())
+			{
+				probNet.removeProbNode(node);
+			}
+		}
+		probNet.getInstanceLinks().clear();
+		probNet.getInstances().clear();
+		return probNet;
+	}
+	
+	/**
+	 * Returns the equivalent node in <code>sourceInstance</code> to the
+	 * <code>probNode</code> in <code>destinationInstance</code>
+	 * 
+	 * @param sourceInstance
+	 * @param probNode
+	 * @return
+	 */
+	private ProbNode getEquivalentNode(Instance sourceInstance, ProbNode probNode) {
+		ProbNode equivalentNode = null;
+		int i= 0;
+		String nodeName = probNode.getName();
+		nodeName = nodeName.substring(nodeName.lastIndexOf('.') + 1);
+
+		while(equivalentNode == null && i < sourceInstance.getNodes().size())
+		{
+			String equivalentNodeName = sourceInstance.getNodes().get(i).getName();
+			equivalentNodeName = equivalentNodeName.replace(sourceInstance.getName()+ ".", "");
+			if(equivalentNodeName.equals(nodeName))
+			{
+				equivalentNode = sourceInstance.getNodes().get(i);
+			}
+			++i;
+		}
+		
+		return equivalentNode;
+	}	
 
 }

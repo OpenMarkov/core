@@ -134,7 +134,7 @@ public class Instance {
 		
 		while(!acceptAsInput && iterator.hasNext())
 		{
-			acceptAsInput = inputInstance.getClassNet().equals(iterator.next().getClassNet());
+			acceptAsInput = inputInstance.getClassNet().getName().equals(iterator.next().getClassNet().getName());
 		}
 		return acceptAsInput;
 	}

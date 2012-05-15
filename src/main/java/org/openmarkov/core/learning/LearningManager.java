@@ -54,6 +54,9 @@ public class LearningManager {
     /** ProbNet to learn. */
     private ProbNet learnedNet = null;
     
+    /** Structure that specifies use of model net */
+    private ModelNetUse modelNetUse;
+    
     /** Case database */
     private int[][] cases = null;
 
@@ -106,6 +109,7 @@ public class LearningManager {
         parameters.add (1, cases);
         this.learningAlgorithm = learningAlgorithmManager.getByName (algorithmName, parameters);
         this.addElviraProperties (learnedNet);
+        this.modelNetUse = modelNetUse;
     }  
 
     /**
@@ -113,7 +117,7 @@ public class LearningManager {
      */
     public void init ()
     {
-        learningAlgorithm.init ();
+        learningAlgorithm.init (modelNetUse);
     }
 
     /**
@@ -129,7 +133,7 @@ public class LearningManager {
         NormalizeNullVectorException,
         ProbNodeNotFoundException
     {
-        learningAlgorithm.run ();
+        learningAlgorithm.run (modelNetUse);
     }
 
     /**

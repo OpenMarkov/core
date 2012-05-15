@@ -17,6 +17,7 @@ import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.learning.editionsgenerator.EditAndScorePair;
 import org.openmarkov.core.learning.editionsgenerator.EditionsGenerator;
+import org.openmarkov.core.learning.util.ModelNetUse;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
@@ -55,16 +56,17 @@ public abstract class LearningAlgorithm {
     }
     
     /** Method invoked to run the algorithm.
+     * @param modelNetUse 
      * 
      * @return <code>ProbNet</code> learned.
      * @throws NotEnoughMemoryException
      * @throws NormalizeNullVectorException
      */
-    public void run ()
+    public void run (ModelNetUse modelNetUse)
         throws NotEnoughMemoryException,
         NormalizeNullVectorException
     {
-        init();
+        init(modelNetUse);
         /* Main loop */
        EditAndScorePair bestEdition = editionsGenerator.getBest(true,true);
         while (bestEdition != null)
@@ -78,9 +80,9 @@ public abstract class LearningAlgorithm {
     
     /**
      * Init algorithm
-     * @param modelNetUse
+     * @param modelNetUse 
      */
-    public abstract void init ();
+    public abstract void init (ModelNetUse modelNetUse);
     
     /**
      * Score the network. 

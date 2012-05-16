@@ -14,6 +14,8 @@ import java.util.List;
 
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 import org.openmarkov.plugin.service.PluginLoaderIF;
@@ -135,7 +137,13 @@ public class InferenceManager
         InferenceAlgorithm defaultAlgorithm = null;
         try
         {
-            defaultAlgorithm = getInferenceAlgorithmByName ("VariableElimination", probNet);
+        	if(probNet.getNetworkType().equals(BayesianNetworkType.getUniqueInstance()))
+        	{
+        		defaultAlgorithm = getInferenceAlgorithmByName ("VariableElimination", probNet);
+        	}else if (probNet.getNetworkType().equals(InfluenceDiagramType.getUniqueInstance()))
+        	{
+        		defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
+        	}
         }
         catch (SecurityException e)
         {

@@ -22,14 +22,16 @@ import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 
 public abstract class InferenceAlgorithm
 {
     protected EvidenceCase                evidence;
-    protected ArrayList<Potential>        imposedPolicies;
+
     /** This is a copy of the <code>ProbNet</code> received. */
     protected ProbNet                     probNet;
     /** For undo/redo operations. */
@@ -45,18 +47,64 @@ public abstract class InferenceAlgorithm
      * utilities associated to each utility node have been computed.
      */
     protected boolean                     hasBeenCompiled;
-    protected StrategyUtilities           utilityTables;
-    protected Hashtable<Variable, Double> expectedUtilities;
-    protected Double                      globalExpectedUtility;
-
+ //   protected StrategyUtilities           utilityTables;
+ //   protected Hashtable<Variable, Double> expectedUtilities;
+ //   protected Double                      globalExpectedUtility;
+    
+	/**
+	 * Evidence introduced before the network is resolved. In influence diagrams this is
+	 * Ezawa's evidence.
+	 */
+	private ArrayList<Finding> preResolutionEvidence;
+	
+	
     /**
-     * @param globalExpectedUtility the globalExpectedUtility to set
+     * Policies set by the user. The optimal policy would only be calculated for the decisions
+     * without imposed policies.
+     * Each policy is stochastic, which implies it is a probability potential whose domain
+     * contains the decision.
      */
-    public void setGlobalExpectedUtility (Double globalExpectedUtility)
-    {
-        this.globalExpectedUtility = globalExpectedUtility;
+    private ArrayList<TablePotential> imposedPolicies;
+    
+    /**
+     * Variables that will not be eliminated during the inference, and therefore all the results
+     * contain these variables in the domain.
+     */
+    private ArrayList<Variable> conditioningVariables;
+    
+  
+    private enum TypeInferenceState{
+    	INITIALIZED,RESOLVED
     }
+    
+    private TypeInferenceState inferenceState; 
+   
+    
+   
+    public ArrayList<Finding> getPreResolutionEvidence() {
+		return preResolutionEvidence;
+	}
 
+	public void setPreResolutionEvidence(ArrayList<Finding> preResolutionEvidence) {
+		this.preResolutionEvidence = preResolutionEvidence;
+	}
+
+	public ArrayList<Variable> getConditioningVariables() {
+		return conditioningVariables;
+	}
+
+	public void setConditioningVariables(ArrayList<Variable> conditioningVariables) {
+		this.conditioningVariables = conditioningVariables;
+	}
+
+	public ArrayList<TablePotential> getImposedPolicies() {
+		return imposedPolicies;
+	}
+
+
+    
+
+ 
     // Constructor
     public InferenceAlgorithm (ProbNet probNet)
         throws NotEvaluableNetworkException
@@ -87,18 +135,11 @@ public abstract class InferenceAlgorithm
         this.evidence = evidence;
     }
 
-    /**
-     * @return the imposedPolicies
-     */
-    public ArrayList<Potential> getImposedPolicies ()
-    {
-        return imposedPolicies;
-    }
-
+   
     /**
      * @param imposedPolicies the imposedPolicies to set
      */
-    public void setImposedPolicies (ArrayList<Potential> imposedPolicies)
+    public void setImposedPolicies (ArrayList<TablePotential> imposedPolicies)
     {
         this.imposedPolicies = imposedPolicies;
     }
@@ -120,7 +161,7 @@ public abstract class InferenceAlgorithm
      * @throws WrongGraphStructureException
      * @throws IncompatibleEvidenceException 
      */
-    public abstract HashMap<Variable, Potential> getIndividualProbabilities (ArrayList<Variable> variablesOfInterest)
+/*    public abstract HashMap<Variable, Potential> getIndividualProbabilities (ArrayList<Variable> variablesOfInterest)
         throws NotEnoughMemoryException,
         NormalizeNullVectorException,
         DoEditException,
@@ -130,7 +171,7 @@ public abstract class InferenceAlgorithm
         NonProjectablePotentialException,
         WrongCriterionException,
         WrongGraphStructureException,
-        ProbNodeNotFoundException, IncompatibleEvidenceException;;
+        ProbNodeNotFoundException, IncompatibleEvidenceException;;*/
 
     /**
      * This method calculates the probabilities for all the variables in this
@@ -148,7 +189,7 @@ public abstract class InferenceAlgorithm
      * @throws WrongGraphStructureException
      * @throws IncompatibleEvidenceException 
      */
-    public abstract HashMap<Variable, Potential> getIndividualProbabilities ()
+/*    public abstract HashMap<Variable, Potential> getIndividualProbabilities ()
         throws NotEnoughMemoryException,
         NormalizeNullVectorException,
         DoEditException,
@@ -159,9 +200,9 @@ public abstract class InferenceAlgorithm
         WrongCriterionException,
         WrongGraphStructureException,
         ProbNodeNotFoundException,
-        IncompatibleEvidenceException;;;
+        IncompatibleEvidenceException;;;*/
 
-    public abstract StrategyUtilities getUtilityTables ()
+ /*   public abstract StrategyUtilities getUtilityTables ()
         throws NotEnoughMemoryException,
         WrongGraphStructureException,
         ConstraintViolationException,
@@ -186,9 +227,9 @@ public abstract class InferenceAlgorithm
     {
         // TODO Auto-generated method stub
         return null;
-    }
+    }*/
 
-    public Double getGlobalExpectedUtility ()
+ /*   public Double getGlobalExpectedUtility ()
         throws NotEnoughMemoryException,
         WrongGraphStructureException,
         ConstraintViolationException,
@@ -200,5 +241,53 @@ public abstract class InferenceAlgorithm
     {
         // TODO Auto-generated method stub
         return null;
-    }
+    }*/
+    
+    /**
+     * @return The optimal policy for the decisions not having imposed policies.
+     * The domain of each policy also includes the conditioning variables.
+     */
+    public abstract HashMap<Variable,TablePotential> getStrategy () throws
+	NotEnoughMemoryException,
+	IncompatibleEvidenceException,
+    NormalizeNullVectorException;
+    
+    
+    private void resolve() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+     * @return The global expected utility of the influence diagram. It is a potential
+     * defined over the conditioning variables.
+     */
+    public abstract TablePotential getGlobalUtility() throws
+	NotEnoughMemoryException,
+	IncompatibleEvidenceException,
+    NormalizeNullVectorException;;
+    
+    
+    public abstract HashMap<Variable,TablePotential> getProbsAndUtilities() throws
+    	NotEnoughMemoryException,
+    	IncompatibleEvidenceException,
+        NormalizeNullVectorException;
+    
+    public abstract HashMap<Variable,TablePotential> getProbsAndUtilities(ArrayList<Variable> variablesOfInterest) throws
+	NotEnoughMemoryException,
+	IncompatibleEvidenceException,
+    NormalizeNullVectorException;
+    
+    public abstract TablePotential getJointProbability(ArrayList<Variable> variables)throws
+	NotEnoughMemoryException,
+	IncompatibleEvidenceException,
+    NormalizeNullVectorException;
+    
+    
+    
+    
+
+    
+    
+    
 }

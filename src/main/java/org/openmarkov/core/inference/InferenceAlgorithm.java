@@ -46,7 +46,7 @@ public abstract class InferenceAlgorithm
      * compiled. If it is true, then the posteriori probabilities and expected
      * utilities associated to each utility node have been computed.
      */
-    protected boolean                     hasBeenCompiled;
+   // protected boolean                     hasBeenCompiled;
  //   protected StrategyUtilities           utilityTables;
  //   protected Hashtable<Variable, Double> expectedUtilities;
  //   protected Double                      globalExpectedUtility;

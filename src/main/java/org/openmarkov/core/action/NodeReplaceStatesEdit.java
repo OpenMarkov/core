@@ -121,14 +121,13 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 				}
 				resetLink(probNode.getNode());
 			}
-			// TODO revisar el funcionamiento del edit con variables
-			// discretizadas
-			// if the node is dicretized add a new row in partitionedInterval
-			// field of the node
+			
 			if (probNode.getVariable().getVariableType() == VariableType.DISCRETIZED) {
-				PartitionedInterval newPartitionedInterval = getNewPartitionedInterval();
-				probNode.getVariable().setPartitionedInterval(
-						newPartitionedInterval);
+				
+						probNode.getVariable().setPartitionedInterval( new PartitionedInterval(
+								probNode.getVariable().getDefaultInterval(	probNode.getVariable().getNumStates() ),
+								probNode.getVariable().getDefaultBelongs( probNode.getVariable().getNumStates() ) ) );
+				
 			}
 		}
 	}

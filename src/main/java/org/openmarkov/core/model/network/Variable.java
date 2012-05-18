@@ -557,7 +557,7 @@ public class Variable implements Cloneable {
 		
 	}
 
-	private double[] getDefaultInterval(int numStates) {
+	public double[] getDefaultInterval(int numStates) {
 		double [] interval = new double[numStates+1];
 		interval[0] = Double.NEGATIVE_INFINITY;
 		interval[numStates] = Double.POSITIVE_INFINITY;
@@ -579,7 +579,7 @@ public class Variable implements Cloneable {
 		}
 		return interval;
 	}*/
-	private boolean[] getDefaultBelongs(int numStates) {
+	public boolean[] getDefaultBelongs(int numStates) {
 		boolean [] limits = new boolean [numStates+1];
 		limits[0] = true;
 		for (int i=1;i < numStates; i++){

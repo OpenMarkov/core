@@ -33,6 +33,16 @@ public class SumPotential extends Potential {
 
 	// Constructor
 	/**
+	 * 
+	 * @param variables
+	 * @param role
+	 * @param utilityVariable
+	 */
+	public SumPotential(ArrayList<Variable> variables, PotentialRole role, Variable utilityVariable) {
+		super(variables, role, utilityVariable);
+		type = PotentialType.SUM;
+	}	
+	/**
 	 * @param variables
 	 * @param parentsProbNodes
 	 * @param role

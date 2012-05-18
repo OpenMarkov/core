@@ -1740,42 +1740,49 @@ public class ProbNet implements Cloneable {
 	 */
 	public ProbNet getPlainProbNet()
 	{
-		ProbNet probNet = copy();
-		for(InstanceLink instanceLink : probNet.getInstanceLinks())
+		ProbNet probNet = null;
+		if(!getInstances().isEmpty())
 		{
-			for(ProbNode node: instanceLink.getDestSubInstance().getNodes())
+			probNet = copy();
+			for(InstanceLink instanceLink : probNet.getInstanceLinks())
 			{
-				ProbNode paramNode = getEquivalentNode(instanceLink.getSourceInstance(), node);
-				// Update potentials
-				for(Potential potential :  probNet.getPotentials(node.getVariable()))
+				for(ProbNode node: instanceLink.getDestSubInstance().getNodes())
 				{
-					potential.replaceVariable(node.getVariable(), paramNode.getVariable());
+					ProbNode paramNode = getEquivalentNode(instanceLink.getSourceInstance(), node);
+					// Update potentials
+					for(Potential potential :  probNet.getPotentials(node.getVariable()))
+					{
+						potential.replaceVariable(node.getVariable(), paramNode.getVariable());
+					}
+					// Update Links
+					//Add links to children
+					for(Node child :node.getNode().getChildren())
+					{
+						probNet.addLink(paramNode, (ProbNode)child.getObject(), true);
+					}
+					//Add links from parents
+					for(Node parent :node.getNode().getParents())
+					{
+						probNet.addLink((ProbNode)parent.getObject(), paramNode, true);
+					}
+					//Add links between siblings
+					for(Node sibling :node.getNode().getSiblings())
+					{
+						probNet.addLink((ProbNode)sibling.getObject(), paramNode, false);
+					}
 				}
-				// Update Links
-				//Add links to children
-				for(Node child :node.getNode().getChildren())
+				//Remove formal parameter nodes
+				for(ProbNode node: instanceLink.getDestSubInstance().getNodes())
 				{
-					probNet.addLink(paramNode, (ProbNode)child.getObject(), true);
-				}
-				//Add links from parents
-				for(Node parent :node.getNode().getParents())
-				{
-					probNet.addLink((ProbNode)parent.getObject(), paramNode, true);
-				}
-				//Add links between siblings
-				for(Node sibling :node.getNode().getSiblings())
-				{
-					probNet.addLink((ProbNode)sibling.getObject(), paramNode, false);
+					probNet.removeProbNode(node);
 				}
 			}
-			//Remove formal parameter nodes
-			for(ProbNode node: instanceLink.getDestSubInstance().getNodes())
-			{
-				probNet.removeProbNode(node);
-			}
+			probNet.getInstanceLinks().clear();
+			probNet.getInstances().clear();
+		}else
+		{
+			probNet = this;
 		}
-		probNet.getInstanceLinks().clear();
-		probNet.getInstances().clear();
 		return probNet;
 	}
 	

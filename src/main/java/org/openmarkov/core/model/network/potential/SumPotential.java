@@ -11,6 +11,7 @@ package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -132,6 +133,15 @@ public class SumPotential extends Potential {
         return new SumPotential(new ArrayList<Variable> (variables), role);
     }	
 
+    public double getUtility (HashMap<Variable, Integer> sampledStateIndexes, HashMap<Variable, Double> utilities)
+    {
+    	double sum = 0.0;
+    	for(Variable variable: getVariables())
+    	{
+    		sum+= utilities.get(variable);
+    	}
+        return sum;
+    }	    
 }
 
 

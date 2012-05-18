@@ -1401,6 +1401,12 @@ public class TablePotential extends Potential
         }
         return values[index];
     }
+    
+    public double getUtility (HashMap<Variable, Integer> sampledStateIndexes, HashMap<Variable, Double> utilities)
+    {
+        return getProbability(sampledStateIndexes);
+    }	
+    
     @Override
     public Potential addVariable(Variable newVariable) throws NotEnoughMemoryException{
     	// creates the new potential

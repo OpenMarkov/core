@@ -446,6 +446,12 @@ public abstract class Potential{
         return 0;
     }	
     
+    public double getUtility (HashMap<Variable, Integer> sampledStateIndexes, HashMap<Variable, Double> utilities)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }	    
+    
     protected static ArrayList<Variable> toArrayList (Variable[] variables)
     {
         ArrayList<Variable> variablesArrayList = new ArrayList<Variable> ();

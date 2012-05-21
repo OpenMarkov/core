@@ -44,6 +44,9 @@ public class AdditionalProperties {
 		return information.remove(key);
 	}
 	
+	public int size() {
+		return information.size();
+	}
 	
 	/** @return The object stored with <code>key</code> or <code>null</code> if
 	 * it does not exists.

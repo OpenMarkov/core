@@ -1,5 +1,6 @@
 package org.openmarkov.core.model.network;
 
+/** @author marias */
 public class StringWithProperties {
 
 	// Attributes
@@ -11,11 +12,12 @@ public class StringWithProperties {
 	/** @param string. <code>String</code> */
 	public StringWithProperties(String string) {
 		this.string = string;
+		additionalProperties = new AdditionalProperties();
 	}
 	
 	// Methods
 	/** @return The object stored with <code>key</code> or <code>null</code> if
-	 * it does not exists. */
+	 * it does not exists. <code>Object</code> */
 	public Object get(String key) {
 		return additionalProperties.get(string);
 	}
@@ -26,8 +28,9 @@ public class StringWithProperties {
 		additionalProperties.put(key, value);
 	}
 	
-	/** @return The object stored with <code>key</code> or <code>null</code> if
-	 * it does not exists. */
+	/** @param key. <code>String</code>
+     * @return The object stored with <code>key</code> or <code>null</code> if
+	 * it does not exists. <code>Object</code> */
 	public Object remove(String key) {
 		return additionalProperties.remove(key);
 	}

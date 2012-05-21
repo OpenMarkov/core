@@ -15,6 +15,8 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -48,6 +50,16 @@ public abstract class MinMaxPotential extends ICIPotential {
         pseudoVariable = new Variable (pseudoVariableName, conditionedVariable.getNumStates ());
 	}
 
+    /** Returns if an instance of a certain Potential type makes sense given 
+     * the variables and the potential role.
+     * @param probNode. <code>ProbNode</code> 
+     * @param variables. <code>ArrayList</code> of <code>Variable</code>.
+     * @param role. <code>PotentialRole</code>. */
+	public static boolean validate(ProbNode probNode, ArrayList<Variable> variables, 
+			PotentialRole role) {
+        return probNode.getNodeType() == NodeType.CHANCE;
+    }
+        
 	// Methods
 	/** @return Delta<sub>Y</sub> potential. <code>TablePotential</code> */
 	protected abstract TablePotential getDeltaPotential() 

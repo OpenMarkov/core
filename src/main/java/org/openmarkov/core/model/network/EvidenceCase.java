@@ -47,6 +47,14 @@ public class EvidenceCase {
     public EvidenceCase() {
         findings = new HashMap<Variable, Finding>();
     }
+    
+    /** 
+     * Copy constructor
+     * @param evidenceCase
+     */
+    public EvidenceCase(EvidenceCase evidenceCase) {
+        findings = new HashMap<Variable, Finding>(evidenceCase.findings);
+    }    
 
     // Methods
     /** @return The state assigned to the variable. <code>int</code>.
@@ -77,6 +85,15 @@ public class EvidenceCase {
     				"evidence: " + findings.get(finding.getVariable()));
     	}
     }
+    
+    /** @param finding. <code>Finding</code>. 
+     * @throws InvalidStateException 
+     * @throws IncompatibleEvidenceException */
+    public void changeFinding(Finding finding)
+    throws InvalidStateException, IncompatibleEvidenceException {
+    	findings.remove(finding.getVariable());
+    	addFinding(finding);
+    }    
     
     /** @param findings. <code>Collection</code> of <code>Finding</code>s. 
      * @throws InvalidStateException 

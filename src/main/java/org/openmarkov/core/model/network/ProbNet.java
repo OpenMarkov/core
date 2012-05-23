@@ -1830,4 +1830,25 @@ public class ProbNet implements Cloneable {
 		return decisionCriteria2;
 	}
 
+	/**
+	 * @return <code>StringsWithProperties</code>
+	 */
+	public StringsWithProperties getDecisionCriteria2() {
+		return decisionCriteria2;
+	}
+
+	/**
+	 * @param decisionCriteria2. <code>StringsWithProperties</code>
+	 */
+	public void setDecisionCriteria2(StringsWithProperties decisionCriteria2) {
+		this.decisionCriteria2 = decisionCriteria2;
+	}
+
+	/**
+	 * @param agents. <code>StringsWithProperties</code>
+	 */
+	public void setAgents(StringsWithProperties agents) {
+		this.agents = agents;
+	}
+
 }

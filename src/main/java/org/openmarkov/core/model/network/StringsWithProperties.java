@@ -69,6 +69,15 @@ public class StringsWithProperties {
 		properties.put(propertyName, propertyValue);
 	}
 	
+	/** @param key. <code>String</code>
+	 * @param properties. <code>AdditionalProperties</code> */
+	public void put(String key, AdditionalProperties properties) {
+		if (properties == null) {
+			properties = new AdditionalProperties();
+			stringsWithProperties.put(key, properties);
+		}
+	}
+	
 	/** @return The object stored with <code>key</code> or <code>null</code> if
 	 * it does not exists. */
 	public Object remove(String key, String propertyName) {

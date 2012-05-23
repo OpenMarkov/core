@@ -48,6 +48,15 @@ public class StringsWithProperties {
 		return stringsWithProperties.get(string);
 	}
 
+	/** @param key. <code>String</code> */
+	public void put(String key) {
+		AdditionalProperties properties = stringsWithProperties.get(key);
+		if (properties == null) {
+			properties = new AdditionalProperties();
+			stringsWithProperties.put(key, null);
+		}
+	}
+	
 	/** @param key. <code>String</code>
 	 * @param propertyName. <code>String</code>
 	 * @param propertyValue. <code>String</code> */

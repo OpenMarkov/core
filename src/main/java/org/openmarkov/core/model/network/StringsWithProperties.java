@@ -37,7 +37,7 @@ public class StringsWithProperties {
 	}
 	
 	/** @return All the strings in a <code>Set</code> of <code>String</code>. */
-	public Set<String> getStrings() {
+	public Set<String> getNames() {
 		return stringsWithProperties.keySet();
 	}
 	

@@ -75,6 +75,8 @@ public class StringsWithProperties {
 		if (properties == null) {
 			properties = new AdditionalProperties();
 			stringsWithProperties.put(key, properties);
+		} else {
+			stringsWithProperties.put(key, properties);
 		}
 	}
 	
@@ -83,10 +85,11 @@ public class StringsWithProperties {
 	 * @return The object stored with <code>key</code> or <code>null</code> if
 	 * it does not exists. */
 	public void remove(String key) {
-		AdditionalProperties properties = stringsWithProperties.get(key);
+		stringsWithProperties.remove(key);
+		/*AdditionalProperties properties = stringsWithProperties.get(key);
 		if (properties != null) {
 			stringsWithProperties.remove(key);
-		}
+		}*/
 	}
 
 	/** @param key. <code>String</code>
@@ -101,7 +104,16 @@ public class StringsWithProperties {
 		}
 		return removedObject;
 	}
-
+	/** 
+	 * Renames the key entry
+	 * @param key. <code>String</code>
+	 * @param newKey. <code>String</code>
+	  */
+	public void rename(String key, String newKey) {
+		AdditionalProperties properties = stringsWithProperties.get(key);
+		remove(key);
+		put (newKey, properties);
+	}
 	public boolean isEmpty() {
 		return stringsWithProperties.isEmpty();
 	}

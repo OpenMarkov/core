@@ -203,15 +203,8 @@ public class NodeStateEdit extends SimplePNEdit {
 		case RENAME:
 			if (stateSelected >= 0
 					&& stateSelected < probNode.getVariable().getNumStates()) {
-				newObjectState = new State[probNode.getVariable()
-						.getNumStates()];
-				int j = 0;
-				for (State states : probNode.getVariable().getStates()) {
-					newObjectState[j] = states;
-					j++;
-				}
-				newObjectState[stateSelected] = newState;
-				probNode.getVariable().setStates(newObjectState);
+				State state= probNode.getVariable().getStates()[stateSelected];
+				state.setName(newState.getName());
 
 			}
 			break;

@@ -4,6 +4,7 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -32,7 +33,7 @@ public class LinkTest {
 	}
 
 	@Test
-	public void testRestrictionsPotential() {
+	public void testRestrictionsPotential() throws NotEnoughMemoryException {
 		Assert.assertTrue(link.hasRestrictions());
 
 		for (int i = 0; i < stateA.length; i++) {

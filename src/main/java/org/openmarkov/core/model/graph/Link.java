@@ -43,11 +43,6 @@ public class Link {
 	/** If true, the link is directed. Otherwise, it is an undirected link. */
 	private boolean directed;
 
-	/***
-	 * If true, the link has a link restriction.
-	 */
-	private boolean linkRestriction;
-
 	/****
 	 * Potential that contains the value of compatibility for the combinations
 	 * of the variables of node1 and node2
@@ -88,7 +83,7 @@ public class Link {
 		node2.uf_addLink(this);
 		revealingStates = new ArrayList<State>();
 		revealingIntervals = new ArrayList<PartitionedInterval>();
-		linkRestriction = false;
+
 	}
 
 	// Methods
@@ -135,7 +130,7 @@ public class Link {
 	 * @consultation
 	 */
 	public boolean hasRestrictions() {
-		return linkRestriction;
+		return restrictionsPotential != null;
 	}
 
 	/**
@@ -151,22 +146,26 @@ public class Link {
 		variables.add(((ProbNode) node2.getObject()).getVariable());
 		restrictionsPotential = new TablePotential(variables,
 				PotentialRole.LINK_RESTRICTION);
-		linkRestriction = true;
+
 	}
 
 	/*****
-	 * Resets the TablePotential for the variables associated to node1 and node2
-	 * to its initial state.
+	 * Assigns a null value to the restrictionsPotential if the restrictions potential does not contain restrictions
 	 * 
 	 * @throws NotEnoughMemoryException
 	 */
-	public void resetRestrictionsPotential() throws NotEnoughMemoryException {
-		ArrayList<Variable> variables = new ArrayList<Variable>();
-		variables.add(((ProbNode) node1.getObject()).getVariable());
-		variables.add(((ProbNode) node2.getObject()).getVariable());
-		restrictionsPotential = new TablePotential(variables,
-				PotentialRole.LINK_RESTRICTION);
-		linkRestriction = false;
+	public void resetRestrictionsPotential() {
+		boolean hasRestriction = false;
+		double[] restrictions = this.restrictionsPotential.getValues();
+
+		for (int i = 0; i < restrictions.length && !hasRestriction; i++) {
+			if (restrictions[i] == 0) {
+				hasRestriction = true;
+			}
+		}
+		if (!hasRestriction) {
+			restrictionsPotential = null;
+		}
 	}
 
 	/*****
@@ -179,9 +178,13 @@ public class Link {
 	 *            state of the variable of node2
 	 * @param compatibility
 	 *            value of compatibility
+	 * @throws NotEnoughMemoryException
 	 */
 	public void setCompatibilityValue(State state1, State state2,
-			int compatibility) {
+			int compatibility) throws NotEnoughMemoryException {
+		if (this.restrictionsPotential == null) {
+			this.initializesRestrictionsPotential();
+		}
 		int[] indexes = new int[2];
 		indexes[0] = restrictionsPotential.getVariable(0).getStateIndex(state1);
 		indexes[1] = restrictionsPotential.getVariable(1).getStateIndex(state2);
@@ -200,6 +203,9 @@ public class Link {
 	 */
 
 	public int areCompatible(State state1, State state2) {
+		if (this.restrictionsPotential == null) {
+			return 1;
+		}
 		int[] indexes = new int[2];
 		indexes[0] = restrictionsPotential.getVariable(0).getStateIndex(state1);
 		indexes[1] = restrictionsPotential.getVariable(1).getStateIndex(state2);

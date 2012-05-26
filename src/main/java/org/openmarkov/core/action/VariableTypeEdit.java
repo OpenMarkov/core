@@ -119,11 +119,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 	private void resetLink(Node node) {
 		for (Link link : node.getLinks()) {
 			if (link.hasRestrictions()) {
-				try {	
-					link.resetRestrictionsPotential();
-				} catch (NotEnoughMemoryException e) {
-					e.printStackTrace();
-				}
+				link.resetRestrictionsPotential();
 			}
 		}
 	}

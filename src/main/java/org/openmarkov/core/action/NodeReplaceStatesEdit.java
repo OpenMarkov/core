@@ -198,14 +198,10 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	
 		for (Link link : node.getLinks()) {
 			if (link.hasRestrictions()) {
-				try {
-					double[] lastPotential = ((TablePotential) link
-							.getRestrictionsPotential()).values.clone();
-					linkRestrictionMap.put(link, lastPotential);
-					link.resetRestrictionsPotential();
-				} catch (NotEnoughMemoryException e) {
-					e.printStackTrace();
-				}
+				double[] lastPotential = ((TablePotential) link
+						.getRestrictionsPotential()).values.clone();
+				linkRestrictionMap.put(link, lastPotential);
+				link.resetRestrictionsPotential();
 			}
 			if (link.hasRevealingConditions()) {
 				VariableType varType = ((ProbNode) link.getNode1().getObject()).getVariable()

@@ -2,24 +2,24 @@ package org.openmarkov.core.model.network;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 /** @author marias */
 public class StringsWithProperties {
 
 	// Attributes
-	private HashMap<String, AdditionalProperties> stringsWithProperties;
+	private LinkedHashMap<String, AdditionalProperties> stringsWithProperties;
 	
 	// Constructors
 	public StringsWithProperties() {
-		stringsWithProperties = new HashMap<String, AdditionalProperties>();
+		stringsWithProperties = new LinkedHashMap<String, AdditionalProperties>();
 	}
 	
 	/** Constructor that receives a collection of strings (without properties) 
 	 * @param strings. <code>Collection</code> of <code>String</code>s */
 	public StringsWithProperties(Collection<String> strings) {
-		stringsWithProperties = new HashMap<String, AdditionalProperties>();
+		stringsWithProperties = new LinkedHashMap<String, AdditionalProperties>();
 		for (String string : strings) {
 			stringsWithProperties.put(string, null);
 		}
@@ -53,8 +53,12 @@ public class StringsWithProperties {
 		AdditionalProperties properties = stringsWithProperties.get(key);
 		if (properties == null) {
 			properties = new AdditionalProperties();
-			stringsWithProperties.put(key, null);
+			stringsWithProperties.put(key, null);// ¿? (key, properties)
+			//added ¿?
+		} else {
+			stringsWithProperties.put(key, properties);
 		}
+		
 	}
 	
 	/** @param key. <code>String</code>
@@ -111,8 +115,13 @@ public class StringsWithProperties {
 	  */
 	public void rename(String key, String newKey) {
 		AdditionalProperties properties = stringsWithProperties.get(key);
-		remove(key);
-		put (newKey, properties);
+		stringsWithProperties.remove(key);
+		if (properties == null) {
+			stringsWithProperties.put(newKey, null);
+		} else {
+			stringsWithProperties.put (newKey, properties);
+
+		}
 	}
 	public boolean isEmpty() {
 		return stringsWithProperties.isEmpty();

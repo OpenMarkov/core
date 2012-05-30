@@ -1046,8 +1046,227 @@ public final class DiscretePotentialOperations {
         Object[] resultPotentials = {resultingPotential, gResult};
         return resultPotentials;
     }
+    
+    /** @param tablePotentials <code>ArrayList</code> of
+     * <code>TablePotential</code>s.
+     * @param fsVariablesToKeep <code>ArrayList</code> of
+     * <code>Variable</code>s.
+     * @param fsVariableToMaximize <code>Variable</code>.
+     * @return Two potentials: 1) a <code>Potential</code> resulting of 
+     * multiplication and maximization of <code>variableToMaximize</code> and 2)
+     * a <code>TablePotential</code> with the mass probability 1.0 uniformly distributed among
+     * the maximizing states of <code>variableToMaximize</code> in
+     * each configuration; this is typically a policy of a decision.
+     * @throws <code>NotEnoughMemoryException</code> */
+    @SuppressWarnings("unchecked")
+    public static TablePotential[] multiplyAndMaximizeUniformly(
+            ArrayList<Potential> tablePotentials, 
+            ArrayList<Variable> fSVariablesToKeep,
+            Variable fSVariableToMaximize) 
+            throws NotEnoughMemoryException {
+    	
+    /*	TablePotential[] potentialsToReturn = new TablePotential[2];
 
-    /** @param potentialsVariable <code>ArrayList</code> of 
+		Object[] auxPotentials = multiplyAndMaximize(tablePotentials,fSVariablesToKeep,fSVariableToMaximize);
+		
+		potentialsToReturn[0] = auxPotentials[0];
+		potentialsToReturn[1] = constructTablePotentialUniformProbInTies(auxPotentials[1]);
+		
+		return potentialsToReturn;*/
+    	
+        ArrayList<TablePotential> potentials = 
+                (ArrayList<TablePotential>)((Object)tablePotentials);
+            
+            ArrayList<Variable> variablesToKeep = 
+                (ArrayList<Variable>)((Object)fSVariablesToKeep);
+
+            PotentialRole role = getRole(tablePotentials);
+
+            TablePotential resultingPotential = 
+                new TablePotential(variablesToKeep, role);
+            
+            TablePotential policy = new TablePotential(
+                    variablesToKeep, role);
+            int numStates = ((Variable)fSVariableToMaximize).getNumStates();
+            int[] statesChoosed;
+            ArrayList<Integer> statesTies;
+            
+            // Constant potentials are those that do not depend on any variables.
+            // The product of all the constant potentials is the constant factor.
+            double constantFactor = 1.0;
+            // Non constant potentials are proper potentials.
+            ArrayList<TablePotential> properPotentials =
+                new ArrayList<TablePotential>();
+            for (Potential potential : potentials) {
+                if (potential.getNumVariables() != 0) {
+                    properPotentials.add((TablePotential) potential);
+                } else {
+                    constantFactor *= ((TablePotential)potential)
+                        .values[((TablePotential) potential).getInitialPosition()];
+                }
+            }
+            
+            int numProperPotentials = properPotentials.size();
+            
+            if (numProperPotentials == 0) {
+                resultingPotential.values[0] = constantFactor;
+                return new TablePotential[]{resultingPotential, policy};
+            }
+            
+            // variables in the resulting potential
+            ArrayList<Variable> unionVariables = new ArrayList<Variable>();
+            unionVariables.add((Variable)fSVariableToMaximize);
+            unionVariables.addAll(variablesToKeep);
+            int numUnionVariables = unionVariables.size();
+            
+            // current coordinate in the resulting potential
+            int[] unionCoordinate = new int[numUnionVariables];
+            int[] unionDimensions = TablePotential
+                .calculateDimensions(unionVariables);
+            
+            // Defines some arrays for the proper potentials...
+            double[][] tables = new double[numProperPotentials][];
+            int[] initialPositions = new int[numProperPotentials];
+            int[] currentPositions = new int[numProperPotentials];
+            int[][] accumulatedOffsets = new int[numProperPotentials][];
+            // ... and initializes them
+            TablePotential unionPotential = new TablePotential(unionVariables,null);
+            for (int i = 0; i < numProperPotentials; i++) {
+                TablePotential potential = (TablePotential)properPotentials.get(i);
+                tables[i] = potential.values;
+                initialPositions[i] = potential.getInitialPosition();
+                currentPositions[i] = initialPositions[i];
+                accumulatedOffsets[i] = unionPotential
+                    .getAccumulatedOffsets(potential.getOriginalVariables());
+            }
+            
+            // The result size is the product of the dimensions of the
+            // variables to keeep
+            int resultSize = resultingPotential.values.length;
+            // The elimination size is the product of the dimensions of the
+            // variables to eliminate
+            int eliminationSize = 1;
+            eliminationSize *= ((Variable)fSVariableToMaximize).getNumStates();
+            
+            // Auxiliary variables for the nested loops
+            double multiplicationResult; // product of the table values
+            double accumulator; // in general, the sum or the maximum
+            int increasedVariable = 0; // when computing the next configuration
+            
+            // outer iterations correspond to the variables to keep
+            for (int outerIteration = 0; outerIteration < resultSize;
+                    outerIteration++) {
+                // Inner iterations correspond to the variables to eliminate
+                // accumulator summarizes the result of all inner iterations
+            
+                // first inner iteration
+                multiplicationResult = constantFactor;
+                for (int i = 0; i < numProperPotentials; i++) {
+                    // multiply the numbers
+                    multiplicationResult *= tables[i][currentPositions[i]];
+                }
+                statesTies = new ArrayList<Integer>();
+                statesTies.add(0);
+                accumulator = multiplicationResult;
+                            
+                // next inner iterations
+                for (int innerIteration = 1; innerIteration < eliminationSize;
+                        innerIteration++) {
+            
+                    // find the next configuration and the index of the
+                    // increased variable
+                    for (int j = 0; j < unionCoordinate.length; j++) {
+                        unionCoordinate[j]++;
+                        if (unionCoordinate[j] < unionDimensions[j]) {
+                            increasedVariable = j;
+                            break;
+                        }
+                        unionCoordinate[j] = 0;
+                    }
+            
+                    // update the positions of the potentials we are multiplying
+                    for (int i = 0; i < numProperPotentials; i++) {
+                        currentPositions[i] +=
+                            accumulatedOffsets[i][increasedVariable];
+                    }
+            
+                    // multiply the table values of the potentials
+                    multiplicationResult = constantFactor;
+                    for (int i = 0; i < numProperPotentials; i++) {
+                        multiplicationResult = multiplicationResult
+                                * tables[i][currentPositions[i]];
+                    }
+            
+                    // update the accumulator (for this inner iteration)
+                    Double diffWithAccumulator = multiplicationResult - accumulator;
+                    if (diffWithAccumulator > maxRoundErrorAllowed) 
+                    {
+                    	statesTies = new ArrayList<Integer>();
+                    	statesTies.add(innerIteration);
+                        accumulator = multiplicationResult;
+                    } else {
+                        if (Math.abs(diffWithAccumulator) > maxRoundErrorAllowed) {
+                            statesTies.add(innerIteration);
+                        }
+                    }
+                    // accumulator =
+                    // operator.combine(accumlator,multiplicationResult);
+            
+                } // end of inner iteration
+            
+                // when eliminationSize == 0 there is a multiplication without
+                // maximization but we must find the next configuration
+                if (outerIteration < resultSize - 1) {
+                    // find the next configuration and the index of the
+                    // increased variable
+                    for (int j = 0; j < unionCoordinate.length; j++) {
+                        unionCoordinate[j]++;
+                        if (unionCoordinate[j] < unionDimensions[j]) {
+                            increasedVariable = j;
+                            break;
+                        }
+                        unionCoordinate[j] = 0;
+                    }
+            
+                    // update the positions of the potentials we are multiplying
+                    for (int i = 0; i < numProperPotentials; i++) {
+                        currentPositions[i] +=
+                            accumulatedOffsets[i][increasedVariable];
+                    }
+                }
+            
+                resultingPotential.values[outerIteration] = accumulator;
+                assignProbabilityUniformlyInTies(policy,statesTies,resultingPotential.getConfiguration(outerIteration));
+                //.elementTable.add(choice);
+            
+            } // end of outer iteration
+            
+            TablePotential[] resultPotentials = {resultingPotential, policy};
+            return resultPotentials;
+    }
+
+    private static void assignProbabilityUniformlyInTies(TablePotential tp, ArrayList<Integer> statesTies, int[] policyDomainConfiguration) {
+		Double auxProb;
+    	    	
+    	int numStatesTies = statesTies.size();
+    	auxProb = 1.0/numStatesTies;
+    	
+    	int lenghtPolicyDomainConfiguration = policyDomainConfiguration.length;
+    	int[] tPConfiguration = new int[lenghtPolicyDomainConfiguration+1];
+    	for (int j=0; j < lenghtPolicyDomainConfiguration ; j++){
+			tPConfiguration[j+1] = policyDomainConfiguration[j];
+		}
+    	
+    	for (int i=0;i<numStatesTies;i++){
+    		tPConfiguration[0]=statesTies.get(i);
+    		int posTPConfiguration  = tp.getPosition(tPConfiguration);
+      		tp.values[posTPConfiguration] = auxProb;
+    		
+    	}
+    	
+	}
+
+	/** @param potentialsVariable <code>ArrayList</code> of 
      *   <code>Potential</code>s to multiply.
      * @param variableToMaximize <code>Variable</code>. 
      * @return Two potentials: 1) a <code>Potential</code> resulting of 

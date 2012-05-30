@@ -34,7 +34,7 @@ public class DecisionAnalysisNetworkType extends NetworkType {
 
 	/** @return String "DecisionAnalysisNetwork". */
 	public String toString() {
-		return "DecisionAnalysisNetwork";
+		return "DAN";
 	}
 
 }

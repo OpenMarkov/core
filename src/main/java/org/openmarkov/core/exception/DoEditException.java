@@ -11,7 +11,7 @@ package org.openmarkov.core.exception;
 
 @SuppressWarnings("serial")
 public class DoEditException extends Exception {
-
+ private String message;
 	/** @param msg. <code>String</code> */
 	public DoEditException(String msg) {
 		super(msg);

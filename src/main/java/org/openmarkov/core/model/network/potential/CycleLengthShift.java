@@ -22,12 +22,12 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.plugin.RelationType;
+import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
 /** Potential identical to another but moved to another temporal slice.
  * @author marias
  * @version 1.0 */
-@RelationType(name = "CycleLengthShift", family = "")
+@RelationPotentialType(name = "CycleLengthShift", family = "")
 public class CycleLengthShift extends Potential {
 
 	// Constructor

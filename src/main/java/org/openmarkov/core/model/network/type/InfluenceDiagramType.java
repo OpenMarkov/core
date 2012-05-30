@@ -33,7 +33,7 @@ public class InfluenceDiagramType extends NetworkType
 
     /** @return String "InfluenceDiagram" */
     public String toString() {
-    	return "InfluenceDiagram";
+    	return "INFLUENCE_DIAGRAM";
     }
     
 }

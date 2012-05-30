@@ -44,7 +44,7 @@ public class MDPType extends NetworkType
     
     /** @return String "MDP" */
     public String toString() {
-    	return "MDP";
+    	return "MARKOV_DECISION_PROCESS";
     }
     
 }

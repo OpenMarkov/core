@@ -25,7 +25,7 @@ import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 import org.openmarkov.plugin.service.PluginLoaderIF;
 
-public class RelationTypeManager
+public class RelationPotentialTypeManager
 {
 
     private PluginLoaderIF pluginsLoader;
@@ -36,7 +36,7 @@ public class RelationTypeManager
      * Constructor for PotentialClassManager.
      */
     @SuppressWarnings("unchecked")
-    public RelationTypeManager ()
+    public RelationPotentialTypeManager ()
     {
         super ();
         this.pluginsLoader = new PluginLoader ();
@@ -45,7 +45,7 @@ public class RelationTypeManager
         
         for (Class<?> plugin : findAllPotentials ())	
         {
-            RelationType lAnnotation = plugin.getAnnotation (RelationType.class);
+            RelationPotentialType lAnnotation = plugin.getAnnotation (RelationPotentialType.class);
             if (Potential.class.isAssignableFrom (plugin))
             {
                 potentials.put (lAnnotation.name (), (Class<? extends Potential>)plugin);
@@ -180,7 +180,7 @@ public class RelationTypeManager
     {
         try
         {
-            FilterIF filter = org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy (RelationType.class);
+            FilterIF filter = org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy (RelationPotentialType.class);
             return pluginsLoader.loadAllPlugins (filter);          
         }
         catch (Exception e) {}

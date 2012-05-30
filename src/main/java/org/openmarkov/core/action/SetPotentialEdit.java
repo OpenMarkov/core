@@ -22,8 +22,8 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
-import org.openmarkov.core.model.network.potential.plugin.RelationType;
-import org.openmarkov.core.model.network.potential.plugin.RelationTypeManager;
+import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
+import org.openmarkov.core.model.network.potential.plugin.RelationPotentialTypeManager;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 @SuppressWarnings("serial")
@@ -113,7 +113,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 		}
 		ArrayList<Potential> potentials = new ArrayList<Potential>();
 		if (newPotential == null) {
-			RelationTypeManager relationTypeManager = new RelationTypeManager();
+			RelationPotentialTypeManager relationTypeManager = new RelationPotentialTypeManager();
 			if (lastPotential.isUtility()) {
 				newPotential = relationTypeManager.getByName(newPotentialType,
 						variables, role, lastPotential
@@ -138,7 +138,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 		probNet.getProbNode(variable).setPotentials(potentials);
 		// update potential with link restriction
 		if (newPotentialType == TablePotential.class.getAnnotation(
-				RelationType.class).name()) {
+				RelationPotentialType.class).name()) {
 			newPotential = (TablePotential) LinkRestrictionPotentialOperations
 					.updatePotentialByLinkRestrictions(probNode.getNode());
 			potentials = new ArrayList<Potential>();

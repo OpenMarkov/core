@@ -23,11 +23,11 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.plugin.RelationType;
+import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
 /** @author marias
  * @version 1.0 */
-@RelationType(name="Same as previous", family="Temporal")
+@RelationPotentialType(name="Same as previous", family="Temporal")
 public class SameAsPrevious extends Potential {
 
 	// Attributes

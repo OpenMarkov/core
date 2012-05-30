@@ -27,7 +27,7 @@ import org.openmarkov.core.model.network.modelUncertainty.SamplePotentialTable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.Util;
-import org.openmarkov.core.model.network.potential.plugin.RelationType;
+import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
 /**
  * A <code>TablePotential</code> is a type of relation with a list of
@@ -42,7 +42,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationType;
  * @since OpenMarkov 1.0
  */
 @SuppressWarnings({"unchecked"})
-@RelationType(name = "Table", family = "")
+@RelationPotentialType(name = "Table", family = "")
 public class TablePotential extends Potential
     implements
         Comparable

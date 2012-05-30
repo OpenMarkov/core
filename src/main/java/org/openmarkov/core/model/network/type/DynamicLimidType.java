@@ -38,7 +38,7 @@ public class DynamicLimidType extends NetworkType
     
     /** @return String "DynamicLIMID" */
     public String toString() {
-    	return "DynamicLIMID";
+    	return "DYN_LIMID";
     }
     
 }

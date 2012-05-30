@@ -39,7 +39,7 @@ public class MarkovNetworkType extends NetworkType
 
     /** @return String "MarkovNetwork" */
     public String toString() {
-    	return "MarkovNetwork";
+    	return "MARKOV_NET";
     }
     
 }

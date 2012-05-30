@@ -15,14 +15,14 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.plugin.RelationType;
+import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
 /**
  * Implements the tuning canonical model, first designed for its use in the
  * Optifox project It is limited to variables with only 3 possible values
  * @author Iñigo
  */
-@RelationType(name="Tuning", family="ICI")
+@RelationPotentialType(name="Tuning", family="ICI")
 public class TuningModelPotential extends ICIPotential
 {
     /**

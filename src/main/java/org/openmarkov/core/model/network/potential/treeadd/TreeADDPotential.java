@@ -25,7 +25,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
-import org.openmarkov.core.model.network.potential.plugin.RelationType;
+import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
 
 /**
@@ -37,7 +37,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationType;
  * @author myebra
  *
  */
-@RelationType(name="TreeADD", family="Tree")
+@RelationPotentialType(name="TreeADD", family="Tree")
 public class TreeADDPotential extends Potential  implements Cloneable {
 
 	/**

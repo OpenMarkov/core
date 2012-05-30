@@ -32,6 +32,7 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet.ProbNetNodesHashMapsType.NodesHashMapType;
 import org.openmarkov.core.model.network.constraint.ConstraintManager;
+import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
@@ -403,6 +404,21 @@ public class ProbNet implements Cloneable {
 	public boolean checkProbNet() {
 		for (PNConstraint constraint : constraints) {
 			if ((constraint != null) && (!constraint.checkProbNet(this))) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Checks whether this <code>probNet</code> is temporal or not.
+	 * 
+	 * @return <code>true</code> when this network has not associated OnlyAtemporalVariables constraint,
+	 *         otherwise <code>false</code>.
+	 */
+	public boolean isTemporal() {
+		for (PNConstraint constraint : constraints) {
+			if (constraint instanceof OnlyAtemporalVariables) {
 				return false;
 			}
 		}

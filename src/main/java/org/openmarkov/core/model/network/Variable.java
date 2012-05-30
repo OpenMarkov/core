@@ -479,6 +479,14 @@ public class Variable implements Cloneable {
 		timeSlice = getTimeSlice(name);
 	}
 
+	/**
+	 * @param newName.
+	 *            <code>String</code>
+	 */
+	public void setBaseName(String newBaseName) {
+		this.baseName = newBaseName;
+	}
+
 	
 	/**
 	 * @param states the states to set

@@ -20,6 +20,7 @@ import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
+
 /** This class is a type of Markov network created from an influence 
  *  diagram that can generate and store the partial order. */
 public class MarkovDecisionNetwork extends ProbNet {

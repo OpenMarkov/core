@@ -46,7 +46,7 @@ public class NetworkTypeTests
     @Test 
     public void testDefaultNetworkTypeIsBayesian ()
     {
-        ProbNet probNet = new ProbNet ();
+        ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
         ArrayList<PNConstraint> constraints = probNet.getConstraints ();
         Assert.assertTrue (constraints.contains (new NoEmptyName ()));
         Assert.assertTrue (constraints.contains (new DistinctVariableNames ()));
@@ -66,7 +66,7 @@ public class NetworkTypeTests
     @Test
     public void testConvertingBayesianIntoMarkov () throws ConstraintViolationException
     {
-        ProbNet probNet = new ProbNet ();
+        ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
         probNet.setNetworkType (MarkovNetworkType.getUniqueInstance ());
         ArrayList<PNConstraint> constraints = probNet.getConstraints ();
         Assert.assertFalse (constraints.contains (new OnlyDirectedLinks ()));
@@ -85,7 +85,7 @@ public class NetworkTypeTests
     @Test (expected=ConstraintViolationException.class) 
     public void testImpossibleNetworkTypeConversion () throws ConstraintViolationException, NotEnoughMemoryException, CanNotDoEditException, NonProjectablePotentialException, WrongCriterionException, DoEditException
     {
-        ProbNet probNet = new ProbNet ();
+        ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
         AddProbNodeEdit addVariableEdit = new AddProbNodeEdit (probNet, new Variable("a"), NodeType.DECISION); 
         probNet.setNetworkType (InfluenceDiagramType.getUniqueInstance ());
 
@@ -98,7 +98,7 @@ public class NetworkTypeTests
     @Test (expected=ConstraintViolationException.class) 
     public void testAddingNotApplicableConstraints () throws ConstraintViolationException
     {
-        ProbNet probNet = new ProbNet ();
+        ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
         probNet.addConstraint (new OnlyUndirectedLinks());
 
     }

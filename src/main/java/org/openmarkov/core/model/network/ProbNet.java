@@ -31,6 +31,7 @@ import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet.ProbNetNodesHashMapsType.NodesHashMapType;
+import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.ConstraintManager;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
@@ -188,15 +189,17 @@ public class ProbNet implements Cloneable {
         this.pNESupport = new PNESupport (false);        
         this.constraints = new ArrayList<PNConstraint> ();
         this.nodesHashMaps = new ProbNetNodesHashMapsType();
-        
-        try
+        if (networkType != null) 
         {
-            this.setNetworkType(networkType);
+	        try
+	        {
+	            this.setNetworkType(networkType);
+	        }
+	        catch (ConstraintViolationException e)
+	        {
+	            // Impossible to reach here as the net is empty
+	        }  
         }
-        catch (ConstraintViolationException e)
-        {
-            // Impossible to reach here as the net is empty
-        }        
     }
 
     /**
@@ -208,6 +211,7 @@ public class ProbNet implements Cloneable {
         this(BayesianNetworkType.getUniqueInstance ());
     }    
 	
+    
     
 
 	// Methods
@@ -358,30 +362,51 @@ public class ProbNet implements Cloneable {
     {
         NetworkType oldNetworkType = this.networkType;
         this.networkType = networkType;        
-        ArrayList<PNConstraint> constraints = ConstraintManager.getUniqueInstance ().buildConstraintList (networkType);
+        ArrayList<PNConstraint> constraints = new ArrayList<PNConstraint>();
 
         try
         {
-            // Add new constraints implied by the network type 
-            addConstraints(constraints, true);
-            
-            // Remove those constraints that are no longer applicable to the new network type
-            ArrayList<PNConstraint> constraintsToRemove = new ArrayList<PNConstraint> ();
-            for(PNConstraint constraint : this.constraints)
-            {
-                if(!networkType.isApplicableConstraint (constraint))
-                {
-                    constraintsToRemove.add (constraint);
-                }
-            }
-            removeConstraints (constraintsToRemove);
+        	if (oldNetworkType != null) {
+        		 constraints = ConstraintManager.getUniqueInstance ().buildConstraintList (networkType);
+	            // Add new constraints implied by the network type 
+	            addConstraints(constraints, true);
+	            
+	            // Remove those constraints that are no longer applicable to the new network type
+	            ArrayList<PNConstraint> constraintsToRemove = new ArrayList<PNConstraint> ();
+	            for(PNConstraint constraint : this.constraints)
+	            {
+	                if(!networkType.isApplicableConstraint (constraint))
+	                {
+	                    constraintsToRemove.add (constraint);
+	                }
+	            }
+	            removeConstraints (constraintsToRemove);
+        	} else {
+        		//this.constraints = constraints;
+        		 HashMap<Class<? extends PNConstraint>, ConstraintBehavior> overwrittenConstraints = networkType.getOverwrittenConstraints ();
+        		 for(Class<? extends PNConstraint> constraintClass: overwrittenConstraints.keySet ())
+        	        {
+        			 if(overwrittenConstraints.get (constraintClass) == ConstraintBehavior.YES)
+        	            {
+        	                try
+        	                {
+        	                    constraints.add (constraintClass.newInstance ());
+        	                }
+        	                catch (Exception e)
+        	                {
+        	                    e.printStackTrace();
+        	                }
+        	             }
+        	        }
+        		 this.constraints = constraints;
+        	}
             
         }catch(ConstraintViolationException e)
         {
-            // Revert
-            this.networkType = oldNetworkType;
-            throw e;
-        }
+            // Revert 
+        	this.networkType = oldNetworkType;
+	        throw e;
+       }
         
     }
 

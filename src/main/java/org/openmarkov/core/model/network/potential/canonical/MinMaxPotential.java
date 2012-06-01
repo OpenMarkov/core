@@ -49,16 +49,6 @@ public abstract class MinMaxPotential extends ICIPotential {
         // TODO Comprobar que no existe otra variable que tenga el mismo nombre
         pseudoVariable = new Variable (pseudoVariableName, conditionedVariable.getNumStates ());
 	}
-
-    /** Returns if an instance of a certain Potential type makes sense given 
-     * the variables and the potential role.
-     * @param probNode. <code>ProbNode</code> 
-     * @param variables. <code>ArrayList</code> of <code>Variable</code>.
-     * @param role. <code>PotentialRole</code>. */
-	public static boolean validate(ProbNode probNode, ArrayList<Variable> variables, 
-			PotentialRole role) {
-        return probNode.getNodeType() == NodeType.CHANCE;
-    }
         
 	// Methods
 	/** @return Delta<sub>Y</sub> potential. <code>TablePotential</code> */

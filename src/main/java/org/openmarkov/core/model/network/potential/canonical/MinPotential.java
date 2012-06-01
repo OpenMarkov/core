@@ -12,7 +12,9 @@ package org.openmarkov.core.model.network.potential.canonical;
 import java.util.ArrayList;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
@@ -39,6 +41,26 @@ public class MinPotential extends MinMaxPotential {
     public MinPotential(ArrayList<Variable> variables) {
                 this(ICIModelType.GENERAL_MIN, variables);
     } 
+    
+    /** Returns if an instance of a certain Potential type makes sense given 
+     * the variables and the potential role.
+     * @param probNode. <code>ProbNode</code> 
+     * @param variables. <code>ArrayList</code> of <code>Variable</code>.
+     * @param role. <code>PotentialRole</code>. */
+	public static boolean validate(ProbNode probNode, ArrayList<Variable> variables, 
+			PotentialRole role) {
+		boolean suitable = (role == PotentialRole.CONDITIONAL_PROBABILITY)
+				|| (role == PotentialRole.POLICY);
+		int i = 0;
+		
+		while(suitable && i < variables.size())
+		{
+			suitable &= variables.get(i).getVariableType() == VariableType.FINITE_STATES 
+					|| variables.get(i).getVariableType() == VariableType.DISCRETIZED;
+			++i;
+		}
+        return suitable;
+    }       
 
 	@Override
 	/** @returns A <code>TablePotential</code> with two variables: 

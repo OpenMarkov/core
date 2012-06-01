@@ -21,6 +21,7 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.SamplePotentialTable;
@@ -243,6 +244,25 @@ public class TablePotential extends Potential
     {
         this (potential.getVariables (), potential.getPotentialRole ());
     }
+    
+    /** Returns if an instance of a certain Potential type makes sense given 
+     * the variables and the potential role.
+     * @param probNode. <code>ProbNode</code> 
+     * @param variables. <code>ArrayList</code> of <code>Variable</code>.
+     * @param role. <code>PotentialRole</code>. */
+	public static boolean validate(ProbNode probNode, ArrayList<Variable> variables, 
+			PotentialRole role) {
+		boolean suitable = true;
+		int i = 0;
+		
+		while(suitable && i < variables.size())
+		{
+			suitable &= variables.get(i).getVariableType() == VariableType.FINITE_STATES 
+					|| variables.get(i).getVariableType() == VariableType.DISCRETIZED;
+			++i;
+		}
+        return suitable;
+    }    
 
     // Methods
     /**
@@ -1365,6 +1385,7 @@ public class TablePotential extends Potential
     {
         TablePotential newPotential = new TablePotential (new ArrayList<Variable> (variables), role);
         newPotential.values = this.values.clone ();
+        newPotential.utilityVariable = this.utilityVariable;
         return newPotential;
     }    
     

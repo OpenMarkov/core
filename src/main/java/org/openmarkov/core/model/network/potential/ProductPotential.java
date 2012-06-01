@@ -18,13 +18,12 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
 /** Potential associated to supervalue node to indicate that the utility is a
@@ -50,14 +49,18 @@ public class ProductPotential extends Potential {
         this(potential.getVariables (), potential.getPotentialRole ());
     }	
     
-    /**
-     * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
-     * @param variables
-     * @param role
-     */
-    public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
-    {
-        return probNode.getNodeType () == NodeType.UTILITY && isProductNode(probNode);
+	// Methods
+    /** Returns if an instance of a certain Potential type makes sense given 
+     * the variables and the potential role.
+     * @param probNode. <code>ProbNode</code> 
+     * @param variables. <code>ArrayList</code> of <code>Variable</code>.
+     * @param role. <code>PotentialRole</code>. */
+	public static boolean validate(ProbNode probNode, ArrayList<Variable> variables, 
+			PotentialRole role) {
+		boolean suitable = (role == PotentialRole.CONDITIONAL_PROBABILITY
+				|| role == PotentialRole.POLICY) && variables.get(0).getVariableType() == VariableType.NUMERIC;
+				
+        return suitable || role == PotentialRole.UTILITY;
     }        
     
 
@@ -131,27 +134,6 @@ public class ProductPotential extends Potential {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-    private static boolean isProductNode (ProbNode probNode)
-    {
-        // if some one of the parents are not utility node
-        ArrayList<Node> parents = probNode.getNode ().getParents ();
-        if (parents.size () > 0)
-        {
-            for (Node node : parents)
-            {
-                if (((ProbNode) node.getObject ()).getNodeType () != NodeType.UTILITY)
-                {
-                    return false;
-                }
-            }
-        }
-        else
-        {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public Potential copy ()

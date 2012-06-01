@@ -11,7 +11,6 @@ package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Random;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -19,7 +18,6 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
@@ -189,7 +187,16 @@ public class UniformPotential extends Potential {
 	
     @Override
     public Potential copy () {
-        return new UniformPotential(new ArrayList<Variable> (variables), role);
+    	Potential copiedPotential = null;
+    	
+    	if(role != PotentialRole.UTILITY)
+    	{
+    		copiedPotential = new UniformPotential(new ArrayList<Variable> (variables), role);
+    	}else
+    	{
+    		copiedPotential = new UniformPotential(new ArrayList<Variable> (variables), role, utilityVariable);
+    	}
+        return copiedPotential;
     }	
     
     @Override

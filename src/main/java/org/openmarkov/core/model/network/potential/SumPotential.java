@@ -25,6 +25,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
 /** Potential associated to supervalue node to indicate that the utility is a
@@ -68,7 +69,10 @@ public class SumPotential extends Potential {
      * @param role. <code>PotentialRole</code>. */
 	public static boolean validate(ProbNode probNode, ArrayList<Variable> variables, 
 			PotentialRole role) {
-        return probNode.getNodeType() == NodeType.UTILITY;
+		boolean suitable = (role == PotentialRole.CONDITIONAL_PROBABILITY
+				|| role == PotentialRole.POLICY) && variables.get(0).getVariableType() == VariableType.NUMERIC;
+				
+        return suitable || role == PotentialRole.UTILITY;
     }
     
 	@Override
@@ -150,10 +154,29 @@ public class SumPotential extends Potential {
     	double sum = 0.0;
     	for(Variable variable: getVariables())
     	{
+    		if(utilities.get(variable) == null)
+    		{
+    			System.out.println();
+    		}
     		sum+= utilities.get(variable);
+    			
     	}
         return sum;
     }	    
+    
+    public  Potential addVariable(Variable variable) throws NotEnoughMemoryException {
+    	variables.add(variable);
+    	return this;
+    }
+    /**
+     * Removes variable to a potential implemented in each child class
+     * @throws NotEnoughMemoryException 
+     * 
+     */
+    public  Potential removeVariable(Variable variable) throws NotEnoughMemoryException {
+    	variables.remove(variable);
+    	return this;
+    }    
 }
 
 

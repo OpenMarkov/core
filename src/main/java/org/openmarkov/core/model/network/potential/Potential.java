@@ -178,7 +178,13 @@ public abstract class Potential{
 	}
 
     public void replaceVariable(Variable variableToReplace, Variable variable) {
-    	replaceVariable(variables.indexOf(variableToReplace), variable);
+    	if(!variableToReplace.equals(utilityVariable))
+    	{
+    		replaceVariable(variables.indexOf(variableToReplace), variable);
+    	}else
+    	{
+    		utilityVariable = variable;
+    	}
     }
     
     public void replaceVariable(int position, Variable variable) {

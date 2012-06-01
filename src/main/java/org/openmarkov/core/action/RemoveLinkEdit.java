@@ -99,7 +99,7 @@ public class RemoveLinkEdit extends BaseLinkEdit {
                 {// It has not been implemented yet for this type of
                  // potential
                     ArrayList<Variable> variables = oldPotential.getVariables ();
-                    variables.add (node1.getVariable ());
+                    variables.remove (node1.getVariable ());
                     newPotential = new UniformPotential (variables,
                                                          oldPotential.getPotentialRole ());
                 }

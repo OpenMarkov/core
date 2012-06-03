@@ -37,7 +37,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
  * @author myebra
  *
  */
-@RelationPotentialType(name="TreeADD", family="Tree")
+@RelationPotentialType(name="Tree/ADD", family="Tree")
 public class TreeADDPotential extends Potential  implements Cloneable {
 
 	/**

@@ -63,9 +63,9 @@ public class DefaultStates {
 			defaultStates.add("medium");
 			defaultStates.add("high");
 			list.add(defaultStates);
-			defaultStates = new ArrayList<String>();
-			defaultStates.add("nonamed");
-			list.add(defaultStates);
+			//defaultStates = new ArrayList<String>();
+			//defaultStates.add("nonamed");
+			//list.add(defaultStates);
 		}
 	}
 

@@ -20,9 +20,14 @@ public class TimeSliceEdit extends SimplePNEdit{
 	 */
 	private ProbNode probNode = null;
 	/**
-	 * 
+	 * the last base name of the temporal variable
 	 */
 	private String lastBaseName;
+	/**
+	 * The last variable name
+	 */
+	private String lastName; 
+	
 /**
  * 
  * @param probNode
@@ -33,18 +38,23 @@ public class TimeSliceEdit extends SimplePNEdit{
 		this.lastTimeSlice = probNode.getVariable().getTimeSlice();
 		this.newTimeSlice = timeSlice;
 		this.lastBaseName =  probNode.getVariable().getBaseName();
+		this.lastName =  probNode.getVariable().getName();
 		this.probNode = probNode;
+		
 	}
 
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
 		probNode.getVariable().setTimeSlice(newTimeSlice);
-		//probNode.getVariable().setBaseName(lastBaseName);		
+		probNode.getVariable().setBaseName(lastBaseName);	
+		probNode.getVariable().setName(lastName+ " " + "["+ String.valueOf(newTimeSlice)+"]");
 	}
 	@Override
 	public void undo() {
 		super.undo();
 		probNode.getVariable().setTimeSlice(lastTimeSlice);
+		probNode.getVariable().setBaseName(lastBaseName);
+		probNode.getVariable().setName(lastName);
 	}
 
 }

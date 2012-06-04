@@ -45,7 +45,7 @@ public class OnlyAtemporalVariables extends PNConstraint
         for (PNEdit simpleEdit : edits)
         {
             Variable variable = ((AddProbNodeEdit) simpleEdit).getVariable ();
-            if (variable.isTemporal ())
+            if (variable.isTemporal2 ())
             {
                 return false;
             }

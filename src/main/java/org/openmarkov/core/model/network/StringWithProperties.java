@@ -35,4 +35,11 @@ public class StringWithProperties {
 		return additionalProperties.remove(key);
 	}
 	
+	public String getString(){
+		return string;
+	}
+	
+	public AdditionalProperties getAdditionalProperties () {
+		return additionalProperties;
+	}
 }

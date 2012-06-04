@@ -36,7 +36,7 @@ public class DECPOMDPType extends POMDPType
 
     /** @return String "DECPOMDP" */
     public String toString() {
-    	return "DECPOMDP";
+    	return "DEC_POMDP";
     }
     
 }

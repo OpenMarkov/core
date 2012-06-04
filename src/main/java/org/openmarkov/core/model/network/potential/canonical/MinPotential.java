@@ -146,7 +146,7 @@ public class MinPotential extends MinMaxPotential {
     @Override
     public Potential copy () throws NotEnoughMemoryException
     {
-        TuningModelPotential newPotential = new TuningModelPotential (new ArrayList<Variable> (variables));
+        MinPotential newPotential = new MinPotential (new ArrayList<Variable> (variables));
         for(int i=1; i<variables.size (); ++i)
         {
             newPotential.setNoisyParameters(variables.get (i), getNoisyParameters(variables.get (i)));

@@ -10,6 +10,7 @@
 package org.openmarkov.core.io.format.annotation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.openmarkov.core.io.ProbNetReader;
@@ -134,15 +135,15 @@ public class FormatManager
 	 * @return the plugins founded with the role specified
 	 */
 
-	public ArrayList<String> getItemsByRole (String role)
+	public HashMap<String, String> getItemsByRole (String role)
 	{
-		ArrayList<String> items = new ArrayList<String> ();
+		HashMap<String, String> items = new HashMap<String, String> ();
 		try
 		{
 			for (Class<?> plugin : plugins) {
 				FormatType lAnnotation = plugin.getAnnotation (FormatType.class);
 				if (lAnnotation.role().equals(role)){
-					items.add (lAnnotation.extension());
+					items.put (lAnnotation.description(), lAnnotation.extension());
 				}
 			}
 		}

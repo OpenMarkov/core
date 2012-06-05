@@ -31,6 +31,15 @@ public @interface FormatType {
      * @return The format extension
      */
     String extension ();
+    
+    /**
+     * Gets the file description that writes/reads the class. 
+     * It will be used as a string id for the file description to be shown in the GUI.
+     * The string id will be built using the following pattern: <code>"FileExtension." + description + ".Description"</code>
+     * @return The format description
+     */
+    String description ();
+    
     /**
      * Gets the role of the class.
      * @return the role of the class. "Writer" if implements the ProbNetWriter interface, "Reader" if implements the ProbNetReader interface.

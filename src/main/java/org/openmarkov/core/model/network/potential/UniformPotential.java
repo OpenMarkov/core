@@ -103,7 +103,7 @@ public class UniformPotential extends Potential {
 		case POLICY:
 	        TablePotential projectedPotential = null;
 			Variable conditionedVariable = variables.get(0);
-			if (evidenceCase.contains(conditionedVariable)) {
+			if (evidenceCase != null && evidenceCase.contains(conditionedVariable)) {
 				if (conditionedVariable.getVariableType() == 
 						VariableType.NUMERIC) {
 					// returns an empty list of potentials

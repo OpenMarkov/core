@@ -67,8 +67,9 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 			ArrayList<Variable> lastList;
 			while ((lastList = variablesToEliminate.get(--i)).size() == 0 && i >= 0);
 			lastList.remove(removedVariable);
-			probNet.removePotentials(toEliminateNode);
-			probNet.removeProbNode(toEliminateNode);
+			//Two lines commented by mluque
+			//probNet.removePotentials(toEliminateNode);
+			//probNet.removeProbNode(toEliminateNode);
 		}
 	}
 	

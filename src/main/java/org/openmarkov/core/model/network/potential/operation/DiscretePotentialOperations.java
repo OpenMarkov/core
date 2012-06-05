@@ -1047,6 +1047,19 @@ public final class DiscretePotentialOperations {
         return resultPotentials;
     }
     
+    /**
+     * @param arrayListPotentials
+     * @return true if there is utility potential in a list of potentials
+     */
+    public static boolean isThereAUtilityPotential(
+			ArrayList<Potential> arrayListPotentials) {
+		boolean isThere = false;
+		for (int i=0;(i<arrayListPotentials.size())&&!isThere;i++){
+			isThere = arrayListPotentials.get(i).getPotentialRole()==PotentialRole.UTILITY;
+		}
+		return isThere;
+	}
+    
     /** @param tablePotentials <code>ArrayList</code> of
      * <code>TablePotential</code>s.
      * @param fsVariablesToKeep <code>ArrayList</code> of
@@ -1064,6 +1077,9 @@ public final class DiscretePotentialOperations {
             ArrayList<Variable> fSVariablesToKeep,
             Variable fSVariableToMaximize) 
             throws NotEnoughMemoryException {
+    	ArrayList<Variable> variablesPolicy;
+    	
+    	
     	
     /*	TablePotential[] potentialsToReturn = new TablePotential[2];
 
@@ -1079,16 +1095,20 @@ public final class DiscretePotentialOperations {
             
             ArrayList<Variable> variablesToKeep = 
                 (ArrayList<Variable>)((Object)fSVariablesToKeep);
-
-            PotentialRole role = getRole(tablePotentials);
+            
+           PotentialRole role = getRole(tablePotentials);
+           
+           PotentialRole roleResult = (isThereAUtilityPotential(tablePotentials))?PotentialRole.UTILITY:PotentialRole.CONDITIONAL_PROBABILITY;
 
             TablePotential resultingPotential = 
-                new TablePotential(variablesToKeep, role);
+                new TablePotential(variablesToKeep, roleResult);
+            
+            variablesPolicy = new ArrayList<Variable>();
+            variablesPolicy.add(fSVariableToMaximize);
+            variablesPolicy.addAll(fSVariablesToKeep);
             
             TablePotential policy = new TablePotential(
-                    variablesToKeep, role);
-            int numStates = ((Variable)fSVariableToMaximize).getNumStates();
-            int[] statesChoosed;
+            		variablesPolicy, PotentialRole.CONDITIONAL_PROBABILITY);
             ArrayList<Integer> statesTies;
             
             // Constant potentials are those that do not depend on any variables.
@@ -1205,7 +1225,7 @@ public final class DiscretePotentialOperations {
                     	statesTies.add(innerIteration);
                         accumulator = multiplicationResult;
                     } else {
-                        if (Math.abs(diffWithAccumulator) > maxRoundErrorAllowed) {
+                        if (Math.abs(diffWithAccumulator) < maxRoundErrorAllowed) {
                             statesTies.add(innerIteration);
                         }
                     }
@@ -1236,7 +1256,7 @@ public final class DiscretePotentialOperations {
                 }
             
                 resultingPotential.values[outerIteration] = accumulator;
-                assignProbabilityUniformlyInTies(policy,statesTies,resultingPotential.getConfiguration(outerIteration));
+                assignProbabilityUniformlyInTies(policy,fSVariableToMaximize.getNumStates(),statesTies,resultingPotential.getConfiguration(outerIteration));
                 //.elementTable.add(choice);
             
             } // end of outer iteration
@@ -1245,24 +1265,24 @@ public final class DiscretePotentialOperations {
             return resultPotentials;
     }
 
-    private static void assignProbabilityUniformlyInTies(TablePotential tp, ArrayList<Integer> statesTies, int[] policyDomainConfiguration) {
-		Double auxProb;
+    private static void assignProbabilityUniformlyInTies(TablePotential tp, int numStatesVariable, ArrayList<Integer> statesTies, int[] policyDomainConfiguration) {
+		Double probTies;
     	    	
     	int numStatesTies = statesTies.size();
-    	auxProb = 1.0/numStatesTies;
+    	probTies = 1.0/numStatesTies;
     	
     	int lenghtPolicyDomainConfiguration = policyDomainConfiguration.length;
     	int[] tPConfiguration = new int[lenghtPolicyDomainConfiguration+1];
     	for (int j=0; j < lenghtPolicyDomainConfiguration ; j++){
 			tPConfiguration[j+1] = policyDomainConfiguration[j];
 		}
-    	
-    	for (int i=0;i<numStatesTies;i++){
-    		tPConfiguration[0]=statesTies.get(i);
+    	//Assign probabilities to states in tie and the other ones
+    	for (int i=0;i<numStatesVariable;i++){
+    		tPConfiguration[0]=i;
     		int posTPConfiguration  = tp.getPosition(tPConfiguration);
-      		tp.values[posTPConfiguration] = auxProb;
-    		
-    	}
+    		double iProb = (statesTies.contains(i))?probTies:0.0;
+    		tp.values[posTPConfiguration] = iProb;
+       	}
     	
 	}
 
@@ -1289,6 +1309,32 @@ public final class DiscretePotentialOperations {
             new ArrayList<Variable>(addedVariables);
         variablesToKeep.remove(variableToMaximize);
         return multiplyAndMaximize(
+            potentialsVariable, variablesToKeep, variableToMaximize);
+    }
+    
+    /** @param potentialsVariable <code>ArrayList</code> of
+     * <code>Potential</code>s.
+     * @param fsVariableToMaximize <code>Variable</code>.
+     * @return Two potentials: 1) a <code>Potential</code> resulting of 
+     * multiplication and maximization of <code>variableToMaximize</code> and 2)
+     * a <code>TablePotential</code> with the mass probability 1.0 uniformly distributed among
+     * the maximizing states of <code>variableToMaximize</code> in
+     * each configuration; this is typically a policy of a decision.
+     * @throws <code>NotEnoughMemoryException</code> */
+    public static TablePotential[] multiplyAndMaximizeUniformly(
+            ArrayList<Potential> potentialsVariable, 
+            Variable variableToMaximize) 
+            throws NotEnoughMemoryException {
+        // Use a HashSet to add the variables to avoid adding one variable more
+        // than one time
+        HashSet<Variable> addedVariables = new HashSet<Variable>();
+        for (Potential potential : potentialsVariable) {
+            addedVariables.addAll(potential.getVariables());
+        }
+        ArrayList<Variable> variablesToKeep = 
+            new ArrayList<Variable>(addedVariables);
+        variablesToKeep.remove(variableToMaximize);
+        return multiplyAndMaximizeUniformly(
             potentialsVariable, variablesToKeep, variableToMaximize);
     }
     

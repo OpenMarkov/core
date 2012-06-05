@@ -233,14 +233,16 @@ public class NetsFactory {
 	 * @return An influence diagram with four nodes: X, Y, D and U. It represents a diagnosis problem.
 	 * It is the example of influence diagram described in page 11 in the book available online at URL:
 	 * http://www.cisiad.uned.es/techreports/decision-medicina.pdf
+	 * The numerical parameters of this method are
 	 */
-	public static ProbNet createInfluenceDiagramDiagnosisProblem() {
+	public static ProbNet createInfluenceDiagramDiagnosisProblem(
+			double prevalence,
+			double sensitivity,
+			double specificity,
+			double[] tableUXD) {
 			
 			ProbNet probNet;
 			PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
-			double prevalence=0.07;
-			double sensitivity=0.91;
-			double specificity=0.97;
 			double [] tableX;
 			double [] tableYX;
 			TablePotential potentialX;
@@ -266,15 +268,12 @@ public class NetsFactory {
 			setAdditionalProperties(relevance,value,variableX,variableY,variableD,variableU);		
 				
 			//Potential X
-			tableX = valuesAPrioriDisease(prevalence);
-			potentialX = createTablePotential(roleProbability, tableX, variableX);
-			
+			potentialX = createPotentialDisease(prevalence,roleProbability,variableX);
+				
 			//Potential YX
 			tableYX = valuesCPTResultTest(sensitivity,specificity);
 			potentialY = createTablePotential(roleProbability, tableYX, variableY, variableX);
 			
-			//Potential UXD
-			double [] tableUXD ={98.0, 28.0, 88.0, 78.0};
 			potentialU = createTablePotential(PotentialRole.UTILITY,tableUXD,variableX, variableD);
 			potentialU.setUtilityVariable(variableU);
 			
@@ -293,5 +292,104 @@ public class NetsFactory {
 			return probNet;
 		}
 	
+	
+	private static TablePotential createPotentialDisease(double prevalence,
+			PotentialRole roleProbability, Variable variableX) {
+		double[] tableX = valuesAPrioriDisease(prevalence);
+		TablePotential potentialX = createTablePotential(roleProbability, tableX, variableX);
+		return potentialX;
+	}
+
+	/**
+	 * @return An influence diagram with four nodes: X, Y, D and U. It represents a diagnosis problem.
+	 * It is the example of influence diagram described in page 11 in the book available online at URL:
+	 * http://www.cisiad.uned.es/techreports/decision-medicina.pdf
+	 */
+	public static ProbNet createInfluenceDiagramDiagnosisProblem() {
+		double prevalence=0.07;
+		double sensitivity=0.91;
+		double specificity=0.97;
+		double [] tableUXD ={98.0, 28.0, 88.0, 78.0};
+		return createInfluenceDiagramDiagnosisProblem(prevalence,sensitivity,specificity,tableUXD);
+	}
+	
+	/**
+	 * @return An influence diagram with four nodes: X, Y, D and U. It represents a diagnosis problem.
+	 * It is the example of influence diagram described in page 11 in the book available online at URL:
+	 * http://www.cisiad.uned.es/techreports/decision-medicina.pdf
+	 */
+	public static ProbNet createUniformInfluenceDiagramDiagnosisProblem() {
+		double sameUtility = 10;
+		double sameProb = 0.5;
+		double prevalence=sameProb;
+		double sensitivity=sameProb;
+		double specificity=sameProb;
+		double [] tableUXD ={sameUtility,sameUtility,sameUtility,sameUtility};
+		return createInfluenceDiagramDiagnosisProblem(prevalence,sensitivity,specificity,tableUXD);
+	}
+	
+	/**
+	 * @return An influence diagram with four nodes: X, Y, D and U. It represents a diagnosis problem.
+	 * It is the example of influence diagram described in page 11 in the book available online at URL:
+	 * http://www.cisiad.uned.es/techreports/decision-medicina.pdf
+	 * The numerical parameters of this method are
+	 */
+	/*public static ProbNet createInfluenceDiagramDecisionTestProblem(
+			double prevalence,
+			double sensitivity,
+			double specificity,
+			double[] tableUXD) {
+			
+			ProbNet probNet;
+			PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
+			double [] tableX;
+			double [] tableYX;
+			double[] tableU2={;
+			TablePotential potentialX;
+			TablePotential potentialY;
+			TablePotential potentialU2;
+						
+			probNet = createInfluenceDiagramDiagnosisProblem();
+			
+			// Define the variables
+			// Define the variables
+			Variable variableX = new Variable("X","present","absent");
+			Variable variableY = new Variable("Y","positive","negative","noresult");
+			Variable variableD = new Variable("D","yes","no");
+			Variable variableT = new Variable("T","yes","no");
+			Variable variableU1 = new Variable("U1");
+			Variable variableU2 = new Variable("U2");
+			
+			//Add variables to the networ
+			//Add variables to the network			
+			addVariables(probNet,NodeType.CHANCE,variableX,variableY);
+			addVariables(probNet,NodeType.DECISION,variableD,variableT);
+			addVariables(probNet,NodeType.UTILITY,variableU1,variableU2);
+			
+			//additional properties
+			String relevance = new String("Relevance");
+			String value = new String("7.0");				
+			setAdditionalProperties(relevance,value,variableX,variableY,variableD,variableU1,variableU2);	
+			
+			//Potential X
+			potentialX = createPotentialDisease(prevalence,roleProbability,variableX);
+				
+			potentialU2 = createTablePotential(PotentialRole.UTILITY,tableU2,variableX, variableD);
+			potentialU2.setUtilityVariable(variableU);
+			
+			//Links throws NodeNotFoundException
+			try {
+				probNet.addLink(variableX, variableY, true);
+				probNet.addLink(variableY, variableD, true);
+				probNet.addLink(variableX, variableU, true);
+				probNet.addLink(variableD, variableU, true);
+			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			addPotentials(probNet,potentialX,potentialY,potentialU);
+			
+			return probNet;
+		}*/
 
 }

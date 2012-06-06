@@ -24,10 +24,15 @@ public class StringsWithProperties {
 		}
 	}
 	
-	/** Constructor for cloning.
-	 * @param stringsWithProperties. <code>LinkedHashMap of String and AdditionalProperties</code> */
+	/** Constructor based in a previous LinkedHashMap
+	 * @param stringsWithProperties. <code>LinkedHashMap with key type = <code>String</code> and 
+	 *   value type = <code>AdditionalProperties</code> */
 	public StringsWithProperties(LinkedHashMap<String, AdditionalProperties> stringsWithProperties) {
-		this.stringsWithProperties = stringsWithProperties;
+		stringsWithProperties = new LinkedHashMap<String, AdditionalProperties>();
+		Set<String> keys = this.stringsWithProperties.keySet();
+		for (String key : keys) {
+			stringsWithProperties.put(key, this.stringsWithProperties.get(key));
+		}
 	}
 	
 	// Methods
@@ -129,11 +134,12 @@ public class StringsWithProperties {
 
 		}
 	}
+	
 	public boolean isEmpty() {
 		return stringsWithProperties.isEmpty();
 	}
 
-	public StringsWithProperties clone() {
+	public StringsWithProperties copy() {
 		return new StringsWithProperties(stringsWithProperties);
 	}
 	

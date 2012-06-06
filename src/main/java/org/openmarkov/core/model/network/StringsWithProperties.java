@@ -28,11 +28,12 @@ public class StringsWithProperties {
 	 * @param stringsWithProperties. <code>LinkedHashMap with key type = <code>String</code> and 
 	 *   value type = <code>AdditionalProperties</code> */
 	public StringsWithProperties(LinkedHashMap<String, AdditionalProperties> stringsWithProperties) {
-		stringsWithProperties = new LinkedHashMap<String, AdditionalProperties>();
-		Set<String> keys = this.stringsWithProperties.keySet();
+		 LinkedHashMap<String, AdditionalProperties> stringsWithPropertiesCopied = new LinkedHashMap<String, AdditionalProperties>();
+		Set<String> keys = stringsWithProperties.keySet();
 		for (String key : keys) {
-			stringsWithProperties.put(key, this.stringsWithProperties.get(key));
+			stringsWithPropertiesCopied.put(key, stringsWithProperties.get(key));
 		}
+		this.stringsWithProperties = stringsWithPropertiesCopied;
 	}
 	
 	// Methods

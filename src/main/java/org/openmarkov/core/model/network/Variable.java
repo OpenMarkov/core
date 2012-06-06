@@ -279,18 +279,15 @@ public class Variable implements Cloneable {
 		return stateAdditionalProperties;
 	}
 
-	public boolean isTemporal() {
+/*	public boolean isTemporal() {
 		if (timeSlice == Integer.MIN_VALUE) {
 			return true; 
-		} /*else
-		if (baseName != null) {
-			return true;
-		}*/
+		} 
 		return baseName != null;
 		//return timeSlice != Integer.MIN_VALUE;
-	}
+	}*/
 	
-	public boolean isTemporal2() {
+	public boolean isTemporal() {
 		
 		return timeSlice != Integer.MIN_VALUE;
 	}

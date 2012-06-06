@@ -45,16 +45,25 @@ public class TimeSliceEdit extends SimplePNEdit{
 
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
+		//onlyTemporal && not only atemporal
 		probNode.getVariable().setTimeSlice(newTimeSlice);
-		probNode.getVariable().setBaseName(lastBaseName);	
-		probNode.getVariable().setName(lastName+ " " + "["+ String.valueOf(newTimeSlice)+"]");
+		//not only temporaL && not only atemporal aso set name and base name
+		/*if (probNode.getProbNet().variablesCouldBeTemporal() && !(probNode.getProbNet().onlyTemporal())) {
+			probNode.getVariable().setBaseName(lastBaseName);	
+			probNode.getVariable().setName(lastName+ " " + "["+ String.valueOf(newTimeSlice)+"]");
+		}*/
 	}
 	@Override
 	public void undo() {
 		super.undo();
+		//onlyTemporal
 		probNode.getVariable().setTimeSlice(lastTimeSlice);
-		probNode.getVariable().setBaseName(lastBaseName);
-		probNode.getVariable().setName(lastName);
+		//not only temporaL && not only atemporal aso set name and base name
+		//if (probNode.getProbNet().variablesCouldBeTemporal() && !(probNode.getProbNet().onlyTemporal())) {
+		if (lastTimeSlice == Integer.MIN_VALUE) {
+			probNode.getVariable().setBaseName(lastBaseName);
+			probNode.getVariable().setName(lastName);
+		}
 	}
 
 }

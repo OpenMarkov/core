@@ -31,10 +31,10 @@ import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet.ProbNetNodesHashMapsType.NodesHashMapType;
-import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.ConstraintManager;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
+import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -441,13 +441,28 @@ public class ProbNet implements Cloneable {
 	 * @return <code>true</code> when this network has not associated OnlyAtemporalVariables constraint,
 	 *         otherwise <code>false</code>.
 	 */
-	public boolean isTemporal() {
+	public boolean variablesCouldBeTemporal() {
 		for (PNConstraint constraint : constraints) {
 			if (constraint instanceof OnlyAtemporalVariables) {
 				return false;
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Checks whether this <code>probNet</code> is temporal or not.
+	 * 
+	 * @return <code>true</code> when this network has not associated OnlyAtemporalVariables constraint,
+	 *         otherwise <code>false</code>.
+	 */
+	public boolean onlyTemporal() {
+		for (PNConstraint constraint : constraints) {
+			if (constraint instanceof OnlyTemporalVariables) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

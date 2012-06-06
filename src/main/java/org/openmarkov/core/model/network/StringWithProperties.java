@@ -42,4 +42,5 @@ public class StringWithProperties {
 	public AdditionalProperties getAdditionalProperties () {
 		return additionalProperties;
 	}
+	
 }

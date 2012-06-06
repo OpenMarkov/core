@@ -1,7 +1,6 @@
 package org.openmarkov.core.model.network;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
@@ -23,6 +22,12 @@ public class StringsWithProperties {
 		for (String string : strings) {
 			stringsWithProperties.put(string, null);
 		}
+	}
+	
+	/** Constructor for cloning.
+	 * @param stringsWithProperties. <code>LinkedHashMap of String and AdditionalProperties</code> */
+	public StringsWithProperties(LinkedHashMap<String, AdditionalProperties> stringsWithProperties) {
+		this.stringsWithProperties = stringsWithProperties;
 	}
 	
 	// Methods
@@ -108,6 +113,7 @@ public class StringsWithProperties {
 		}
 		return removedObject;
 	}
+	
 	/** 
 	 * Renames the key entry
 	 * @param key. <code>String</code>
@@ -126,5 +132,10 @@ public class StringsWithProperties {
 	public boolean isEmpty() {
 		return stringsWithProperties.isEmpty();
 	}
+
+	public StringsWithProperties clone() {
+		return new StringsWithProperties(stringsWithProperties);
+	}
 	
+
 }

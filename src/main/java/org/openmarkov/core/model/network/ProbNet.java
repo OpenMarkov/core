@@ -366,8 +366,7 @@ public class ProbNet implements Cloneable {
 
         try
         {
-        	/*if (oldNetworkType != null) {*/
-        		 constraints = ConstraintManager.getUniqueInstance ().buildConstraintList (networkType);
+        	 constraints = ConstraintManager.getUniqueInstance ().buildConstraintList (networkType);
 	            // Add new constraints implied by the network type 
 	            addConstraints(constraints, true);
 	            
@@ -381,25 +380,7 @@ public class ProbNet implements Cloneable {
 	                }
 	            }
 	            removeConstraints (constraintsToRemove);
-        	/*} else {
-        		//this.constraints = constraints;
-        		 HashMap<Class<? extends PNConstraint>, ConstraintBehavior> overwrittenConstraints = networkType.getOverwrittenConstraints ();
-        		 for(Class<? extends PNConstraint> constraintClass: overwrittenConstraints.keySet ())
-        	        {
-        			 if(overwrittenConstraints.get (constraintClass) == ConstraintBehavior.YES)
-        	            {
-        	                try
-        	                {
-        	                    constraints.add (constraintClass.newInstance ());
-        	                }
-        	                catch (Exception e)
-        	                {
-        	                    e.printStackTrace();
-        	                }
-        	             }
-        	        }
-        		 this.constraints = constraints;
-        	}*/
+        	
             
         }catch(ConstraintViolationException e)
         {

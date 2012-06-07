@@ -285,6 +285,30 @@ public abstract class InferenceAlgorithm
     
     
     
+    protected TablePotential getImposedPolicy(Variable decision){
+    	TablePotential policyDecision = null;
+    	TablePotential iPolicy;
+    	boolean foundPolicy;
+    	
+    	foundPolicy = false;
+    	
+    	for (int i=0;i<imposedPolicies.size()&&!foundPolicy;i++){
+    		iPolicy = imposedPolicies.get(i);
+    		if (iPolicy!=null){
+    			foundPolicy = iPolicy.getVariable(0)==decision;
+    			if (foundPolicy){
+    				policyDecision = iPolicy;
+    			}
+    		}
+    	}
+    	return policyDecision;
+    }
+    
+    public boolean hasImposedPolicy(Variable decision){
+    	return (getImposedPolicy(decision)!=null);
+    }
+    
+    
     
 
     

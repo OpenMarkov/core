@@ -12,8 +12,11 @@ package org.openmarkov.core.model.network;
 import java.util.ArrayList;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.ProductPotential;
+import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
@@ -45,19 +48,27 @@ public class NetsFactory {
 		double values[];
 		
 		values = new double[2];
-		values[0] = 1.0-prevalence;
-		values[1] = prevalence;
+		values[0] = prevalence;
+		values[1] = 1.0-prevalence;
 		
 		return values;
 	}
 	
 	private static double[] valuesCPTResultTest(double sensitivity, double specificity){
 		
-		double [] values = {specificity, 1.0-specificity, 1.0-sensitivity, sensitivity};
+		double [] values = {sensitivity, 1.0-sensitivity, 1.0-specificity, specificity};
 				
 		return values;
 	}
 	
+	
+private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, double specificity){
+		
+		double [] values = {sensitivity, 1.0-sensitivity, 0.0, 1.0-specificity, specificity, 0.0,
+				0.0, 0.0, 1.0, 0.0, 0.0, 1.0};
+				
+		return values;
+	}
 	
 	
 	
@@ -96,6 +107,20 @@ public class NetsFactory {
 		ArrayList<Variable> arrayListVariables = createArrayListVariables(variables);
 		
 		return new TablePotential(arrayListVariables, role, values);
+	}
+	
+	/**
+	 * @param role Role of the potential
+	 * @param values Values of the potential
+	 * @param variables Variables
+	 * @return A TablePotential
+	 */
+	private static SumPotential createSumPotential(Variable varSV,Variable... parents) {
+		
+		ArrayList<Variable> arrayListVariables = createArrayListVariables(parents);
+		
+		SumPotential pot = new SumPotential(arrayListVariables, PotentialRole.UTILITY, varSV);
+		return pot;
 	}
 	
 	/**
@@ -243,7 +268,6 @@ public class NetsFactory {
 			
 			ProbNet probNet;
 			PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
-			double [] tableX;
 			double [] tableYX;
 			TablePotential potentialX;
 			TablePotential potentialY;
@@ -309,7 +333,7 @@ public class NetsFactory {
 		double prevalence=0.07;
 		double sensitivity=0.91;
 		double specificity=0.97;
-		double [] tableUXD ={98.0, 28.0, 88.0, 78.0};
+		double [] tableUXD ={78.0, 88.0, 28.0, 98.0};
 		return createInfluenceDiagramDiagnosisProblem(prevalence,sensitivity,specificity,tableUXD);
 	}
 	
@@ -334,22 +358,74 @@ public class NetsFactory {
 	 * http://www.cisiad.uned.es/techreports/decision-medicina.pdf
 	 * The numerical parameters of this method are
 	 */
-	/*public static ProbNet createInfluenceDiagramDecisionTestProblem(
+	public static ProbNet createInfluenceDiagramDecisionTestProblem(
 			double prevalence,
 			double sensitivity,
-			double specificity,
-			double[] tableUXD) {
+			double specificity) {
+			
+			ProbNet probNet;
+			
+			SumPotential potentialU;
+								
+			probNet = createInfluenceDiagramDecisionTestProblemWithoutSV(prevalence,sensitivity,specificity);
+
+			// Define the variables
+			Variable variableU1 = null;
+			try {
+				variableU1 = probNet.getVariable("U1");
+			} catch (ProbNodeNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			Variable variableU2 = null;
+			try {
+				variableU2 = probNet.getVariable("U2");
+			} catch (ProbNodeNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			Variable variableU = new Variable("U");
+			
+			//Add variables to the network			
+			addVariables(probNet,NodeType.UTILITY,variableU);
+			
+			//additional properties
+			String relevance = new String("Relevance");
+			String value = new String("7.0");				
+			setAdditionalProperties(relevance,value,variableU);	
+			
+			//Potential U2
+			potentialU = createSumPotential(variableU,variableU1,variableU2);
+				
+			//Links throws NodeNotFoundException
+			try {
+				probNet.addLink(variableU1, variableU, true);
+				probNet.addLink(variableU2, variableU, true);
+				
+			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			addPotentials(probNet,potentialU);
+			
+			return probNet;
+		}
+
+	public static ProbNet createInfluenceDiagramDecisionTestProblemWithoutSV(
+			double prevalence,
+			double sensitivity,
+			double specificity) {
 			
 			ProbNet probNet;
 			PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
 			double [] tableX;
-			double [] tableYX;
-			double[] tableU2={;
+			double [] tableYXT;
 			TablePotential potentialX;
 			TablePotential potentialY;
+			TablePotential potentialU1;
 			TablePotential potentialU2;
+			double[] tableU1XD = {80.0, 90.0, 30.0, 100.0};
+			double[] tableU2T = {-2.0, 0.0};
 						
-			probNet = createInfluenceDiagramDiagnosisProblem();
+			probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 			
 			// Define the variables
 			// Define the variables
@@ -360,7 +436,6 @@ public class NetsFactory {
 			Variable variableU1 = new Variable("U1");
 			Variable variableU2 = new Variable("U2");
 			
-			//Add variables to the networ
 			//Add variables to the network			
 			addVariables(probNet,NodeType.CHANCE,variableX,variableY);
 			addVariables(probNet,NodeType.DECISION,variableD,variableT);
@@ -369,27 +444,38 @@ public class NetsFactory {
 			//additional properties
 			String relevance = new String("Relevance");
 			String value = new String("7.0");				
-			setAdditionalProperties(relevance,value,variableX,variableY,variableD,variableU1,variableU2);	
+			setAdditionalProperties(relevance,value,variableX,variableY,variableD,variableT,variableU1,variableU2);	
 			
 			//Potential X
 			potentialX = createPotentialDisease(prevalence,roleProbability,variableX);
-				
-			potentialU2 = createTablePotential(PotentialRole.UTILITY,tableU2,variableX, variableD);
-			potentialU2.setUtilityVariable(variableU);
 			
+			//Potential Y
+			tableYXT = valuesCPTResultTestDecisionTestYXT(sensitivity,specificity);
+			potentialY = createTablePotential(roleProbability, tableYXT, variableY, variableX, variableT);
+			
+			//Potential U1
+			potentialU1 = createTablePotential(PotentialRole.UTILITY,tableU1XD,variableX, variableD);
+			potentialU1.setUtilityVariable(variableU1);
+			
+			//Potential U2
+			potentialU2 = createTablePotential(PotentialRole.UTILITY,tableU2T,variableT);
+			potentialU2.setUtilityVariable(variableU2);
+				
 			//Links throws NodeNotFoundException
 			try {
 				probNet.addLink(variableX, variableY, true);
+				probNet.addLink(variableT, variableY, true);
 				probNet.addLink(variableY, variableD, true);
-				probNet.addLink(variableX, variableU, true);
-				probNet.addLink(variableD, variableU, true);
+				probNet.addLink(variableX, variableU1, true);
+				probNet.addLink(variableD, variableU1, true);
+				probNet.addLink(variableT, variableU2, true);
 			} catch (NodeNotFoundException e) {
 				e.printStackTrace();
 			}
 			
-			addPotentials(probNet,potentialX,potentialY,potentialU);
+			addPotentials(probNet,potentialX,potentialY,potentialU1,potentialU2);
 			
 			return probNet;
-		}*/
+	}
 
 }

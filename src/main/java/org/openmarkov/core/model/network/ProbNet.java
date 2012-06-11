@@ -474,24 +474,15 @@ public class ProbNet implements Cloneable {
 		// Adds variables and create corresponding nodes. Also add potentials
 		for (ProbNode probNode : probNodes) {
 			// Add variables and create corresponding nodes
-			//Variable variable = new Variable(probNode.getVariable());
+			Variable variable = probNode.getVariable();
 			ProbNode newProbNode = null;
-            newProbNode = probNetCopy.addVariable (probNode.getVariable(),
+            newProbNode = probNetCopy.addVariable (variable,
                                                    probNode.getNodeType ());
 			Node newNode = newProbNode.getNode();
 			Node node = probNode.getNode();
 			newNode.setCoordinateX(node.getCoordinateX());
 			newNode.setCoordinateY(node.getCoordinateY());
-			ArrayList<Potential> potentialsCopy = new ArrayList<Potential>();
-			for(Potential potential: probNode.getPotentials())
-			{
-				try {
-					potentialsCopy.add(potential.copy());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			newProbNode.setPotentials(potentialsCopy);
+			newProbNode.setPotentials(probNode.getPotentials());
 
 			// TODO Hacer clon para probNode y quitar estas lineas
 			newProbNode.setPurpose(probNode.getPurpose());
@@ -500,40 +491,17 @@ public class ProbNet implements Cloneable {
 			newProbNode.setCanonicalParameters(probNode.isCanonicalParameters());
 			newProbNode.additionalProperties = additionalProperties;
 		}
-		
-		//Update references to variables in potentials 
-//		for(Potential potential: probNetCopy.getPotentials())
-//		{
-//			for(Variable oldVariable: potential.getVariables())
-//			{				
-//				try {
-//					potential.replaceVariable(oldVariable, probNetCopy.getVariable(oldVariable.getName()));
-//				} catch (ProbNodeNotFoundException e) {
-//					// Can not happen
-//				}
-//			}			
-//		}		
 
 		// Adds links
 		ArrayList<ProbNode> nodes = this.getProbNodes();
 		for (ProbNode probNode1 : nodes) {
 			Variable variable1 = probNode1.getVariable();
-			ProbNode newNode1 = null;
-			try {
-				newNode1 = probNetCopy.getProbNode(variable1.getName());
-			} catch (ProbNodeNotFoundException e) {
-				// Can not happen
-			}
+			ProbNode newNode1 = probNetCopy.getProbNode(variable1);
 			ArrayList<ProbNode> neighbors = getProbNodesOfNodes(probNode1
 					.getNode().getNeighbors());
 			for (ProbNode probNode2 : neighbors) {
 				Variable variable2 = probNode2.getVariable();
-				ProbNode newNode2 = null;
-				try{
-					newNode2 = probNetCopy.getProbNode(variable2.getName());
-				} catch (ProbNodeNotFoundException e) {
-					// Can not happen
-				}
+				ProbNode newNode2 = probNetCopy.getProbNode(variable2);
 				if (probNode1.getNode().isSibling(probNode2.getNode())) {
 					if (!newNode1.getNode().isSibling(newNode2.getNode())) {
 						graph.addLink(newNode1.getNode(), newNode2.getNode(),
@@ -557,38 +525,8 @@ public class ProbNet implements Cloneable {
 		}
 		probNetCopy.additionalProperties = copyProperties;
 
-		
-		// Copy instances
-		for(String instanceName: instances.keySet())
-		{
-			Instance instance = instances.get(instanceName);
-			ArrayList<ProbNode> instanceNodes = new ArrayList<ProbNode>();
-			for(ProbNode instanceNode : instance.getNodes())
-			{
-				try {
-					instanceNodes.add(probNetCopy.getProbNode(instanceNode.getName()));
-				} catch (ProbNodeNotFoundException e) {
-					// Can not happen
-				}
-			}
-			try {
-				probNetCopy.addInstance(new Instance(instanceName, instance.getClassNet(), instanceNodes));
-			} catch (InstanceAlreadyExistsException e) {
-				// Can not happen
-			}
-		}
-		
-		//Copy instance links
-		for(InstanceLink instanceLink: instanceLinks)
-		{
-			Instance sourceInstance = probNetCopy.getInstances().get(instanceLink.getSourceInstance().getName());
-			Instance destInstance = probNetCopy.getInstances().get(instanceLink.getDestInstance().getName());
-			Instance destSubInstance = destInstance.getSubInstances().get(instanceLink.getDestSubInstance().getName());
-			probNetCopy.addInstanceLink(new InstanceLink(sourceInstance, destInstance, destSubInstance));
-		}
-		
 		return probNetCopy;
-	}
+	}	
 
 	
     /**

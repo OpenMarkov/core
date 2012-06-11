@@ -65,10 +65,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
     
     private PolicyType policyType = PolicyType.OPTIMAL;
     
-    /**
-     * Agent
-     */
-    private StringWithProperties agent;
+   
     
     /** This object contains all the information that the parser reads from 
 	 *  disk that does not have a direct connection with the attributes stored 
@@ -476,11 +473,5 @@ public class ProbNode implements Cloneable, PotentialsContainer {
         return this.getNode ().isParent (node.getNode ());
 	}
 	
-	public StringWithProperties getAgent() {
-		return agent;
-	}
-
-	public void setAgent (StringWithProperties agent) {
-		this.agent = agent;
-	}
+	
 }

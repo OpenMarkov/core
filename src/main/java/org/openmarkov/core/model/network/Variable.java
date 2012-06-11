@@ -76,7 +76,10 @@ public class Variable implements Cloneable {
 		statesAdditionalProperties;
 
 	private boolean alwaysObserved=false;
-	
+	 /**
+     * Agent
+     */
+    private StringWithProperties agent;
 	
 	/**
 	 * Constructor for discrete variables.
@@ -712,6 +715,13 @@ public class Variable implements Cloneable {
 		this.alwaysObserved = alwaysObserved;
 	}
 
+	public StringWithProperties getAgent() {
+		return agent;
+	}
+
+	public void setAgent (StringWithProperties agent) {
+		this.agent = agent;
+	}
 /*	public int hashCode() {
 
 		return this.name.hashCode();

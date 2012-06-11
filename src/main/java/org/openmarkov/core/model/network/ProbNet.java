@@ -1716,24 +1716,47 @@ public class ProbNet implements Cloneable {
 	}
 	
 	/**
-	 * Unrolls instances and returns a plain prob net
+	 * Unrolls instances and returns a plain probabilistic network
 	 * @return
 	 */
 	public ProbNet getPlainProbNet()
 	{
-		ProbNet probNet = null;
+		ProbNet probNet = this;
+		
 		if(!getInstances().isEmpty())
 		{
 			probNet = copy();
+			
 			for(InstanceLink instanceLink : probNet.getInstanceLinks())
 			{
 				for(ProbNode node: instanceLink.getDestSubInstance().getNodes())
 				{
 					ProbNode paramNode = getEquivalentNode(instanceLink.getSourceInstance(), node);
 					// Update potentials
+					
+					HashMap<Potential, Potential> potentialsToReplace = new HashMap<Potential, Potential>();
 					for(Potential potential :  probNet.getPotentials(node.getVariable()))
 					{
-						potential.replaceVariable(node.getVariable(), paramNode.getVariable());
+						Potential potentialCopy;
+						try {
+							potentialCopy = potential.copy();
+							potentialCopy.replaceVariable(node.getVariable(), paramNode.getVariable());
+							potentialsToReplace.put(potential, potentialCopy);
+						} catch (NotEnoughMemoryException e) {
+						}
+					}
+					for(ProbNode probNode :  probNet.getProbNodes())
+					{
+						for(Potential potentialToReplace :  potentialsToReplace.keySet())
+						{
+							if(probNode.getPotentials().contains(potentialToReplace))
+							{
+								ArrayList<Potential> potentials = probNode.getPotentials();
+								potentials.remove(potentialToReplace);
+								potentials.add(potentialsToReplace.get(potentialToReplace));
+								probNode.setPotentials(potentials);
+							}
+						}
 					}
 					// Update Links
 					//Add links to children

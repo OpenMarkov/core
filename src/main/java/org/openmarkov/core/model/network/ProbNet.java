@@ -45,6 +45,7 @@ import org.openmarkov.core.model.network.prm.InstanceAlreadyExistsException;
 import org.openmarkov.core.model.network.prm.InstanceLink;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
+import org.openmarkov.core.model.network.type.OOBNType;
 
 /** A <code>ProbNet</code> stores <code>ProbNode</code>s in a efficient manner.
  * It has the operations to manage <code>Variables, ProbNodes</code> and <code>
@@ -1723,7 +1724,7 @@ public class ProbNet implements Cloneable {
 	{
 		ProbNet probNet = this;
 		
-		if(!getInstances().isEmpty())
+		if(probNet.getNetworkType() instanceof OOBNType)
 		{
 			probNet = copy();
 			
@@ -1783,6 +1784,14 @@ public class ProbNet implements Cloneable {
 			}
 			probNet.getInstanceLinks().clear();
 			probNet.getInstances().clear();
+			
+			try {
+				probNet.setNetworkType(BayesianNetworkType.getUniqueInstance());
+			} catch (ConstraintViolationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}			
+			
 		}else
 		{
 			probNet = this;

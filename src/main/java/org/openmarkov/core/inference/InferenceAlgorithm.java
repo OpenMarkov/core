@@ -30,8 +30,6 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 public abstract class InferenceAlgorithm
 {
-    protected EvidenceCase                evidence;
-
     /** This is a copy of the <code>ProbNet</code> received. */
     protected ProbNet                     probNet;
     /** For undo/redo operations. */
@@ -51,14 +49,36 @@ public abstract class InferenceAlgorithm
  //   protected Hashtable<Variable, Double> expectedUtilities;
  //   protected Double                      globalExpectedUtility;
     
+    //evidence is deprecated. It is only maintained during the debugging phase
+    //of the inference
+   /* protected EvidenceCase                evidence;
+    
+	public void setEvidence(EvidenceCase evidence) {
+		this.evidence = evidence;
+	}
+*/
 	/**
 	 * Evidence introduced before the network is resolved. In influence diagrams this is
 	 * Ezawa's evidence.
 	 */
 	private ArrayList<Finding> preResolutionEvidence;
 	
+	/**
+	 * Evidence when the network has been resolved. In influence diagrams this is
+	 * Luque and Diez's evidence.
+	 */
+	private ArrayList<Finding> postResolutionEvidence;
 	
-    /**
+	
+    public ArrayList<Finding> getPostResolutionEvidence() {
+		return postResolutionEvidence;
+	}
+
+	public void setPostResolutionEvidence(ArrayList<Finding> postResolutionEvidence) {
+		this.postResolutionEvidence = postResolutionEvidence;
+	}
+
+	/**
      * Policies set by the user. The optimal policy would only be calculated for the decisions
      * without imposed policies.
      * Each policy is stochastic, which implies it is a probability potential whose domain
@@ -73,14 +93,6 @@ public abstract class InferenceAlgorithm
     private ArrayList<Variable> conditioningVariables;
     
   
-    private enum TypeInferenceState{
-    	INITIALIZED,RESOLVED
-    }
-    
-    private TypeInferenceState inferenceState; 
-   
-    
-   
     public ArrayList<Finding> getPreResolutionEvidence() {
 		return preResolutionEvidence;
 	}
@@ -110,7 +122,7 @@ public abstract class InferenceAlgorithm
         throws NotEvaluableNetworkException
     {
         this.probNet = probNet;
-        evidence = new EvidenceCase ();
+        //evidence = new EvidenceCase();
         if (!isEvaluable (probNet))
         {
             throw new NotEvaluableNetworkException (probNet.toString ());
@@ -119,23 +131,7 @@ public abstract class InferenceAlgorithm
 
     public abstract boolean isEvaluable (ProbNet probNet);
 
-    /**
-     * @return the evidence
-     */
-    public EvidenceCase getEvidence ()
-    {
-        return evidence;
-    }
-
-    /**
-     * @param evidence the evidence to set
-     */
-    public void setEvidence (EvidenceCase evidence)
-    {
-        this.evidence = evidence;
-    }
-
-   
+      
     /**
      * @param imposedPolicies the imposedPolicies to set
      */

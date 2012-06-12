@@ -44,6 +44,18 @@ public class EvidenceCase {
     	this.findings = findings;
     }
     
+    /**
+     * Constructor 
+     * @param findings
+     */
+    public EvidenceCase(ArrayList<Finding> findings) {
+    	this.findings = new HashMap<Variable, Finding>();
+    	for(Finding finding: findings)
+    	{
+    		this.findings.put(finding.getVariable(), finding);
+    	}
+    }    
+    
     public EvidenceCase() {
         findings = new HashMap<Variable, Finding>();
     }

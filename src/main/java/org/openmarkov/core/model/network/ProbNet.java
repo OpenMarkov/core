@@ -1521,43 +1521,43 @@ public class ProbNet implements Cloneable {
 
 	/** @return String */
 	public String toString() {
-		String out = new String();
+		StringBuffer out = new StringBuffer();
 		ArrayList<ProbNode> nodes = getProbNodes();
 		int numPotentials = getNumPotentials();
 		int numNodes = nodes.size();
 		if (numNodes == 0) {
-			out = out + "No nodes.\n";
+			out.append("No nodes.\n");
 		} else {
-			out = out
-					+ new String("Number of probabilistic nodes: " + numNodes
-							+ "\n");
+			out.append(new String("Number of probabilistic nodes: " + numNodes + "\n"));
 		}
 		if (numPotentials == 0) {
-			out = out + "No potentials.\n";
+			out.append("No potentials.\n");
 		} else {
-			out = out + "Number of potentials: " + numPotentials + "\n";
+			out.append("Number of potentials: " + numPotentials + "\n");
 		}
 		if (constraints.size() == 0) {
-			out = out + "No constraints\n";
+			out.append("No constraints\n");
 		} else {
-			out = out + "Constraints: ";
+			out.append("Constraints: ");
 			for (int i = 0; i < constraints.size(); i++) {
 				String strConstraint = constraints.get(i).toString();
 				strConstraint = strConstraint.substring(
 						strConstraint.lastIndexOf('.') + 1,
 						strConstraint.length());
-				out = out + strConstraint;
+				out.append(strConstraint);
 				if (i < constraints.size() - 1) {
-					out = out + ", ";
+					out.append(", ");
 				}
 			}
-			out = out + "\n";
+			out.append("\n");
 		}
-		out = out + "\n";
+		out.append("\n");
 		for (ProbNode probNode : nodes) {
-			out = out + probNode.toString() + "\n";
+			out.append(probNode.toString() + "\n");
 		}
-		return out;
+		out.append("\n");
+		out.append("Agents:\n" + agents.toString());
+		return out.toString();
 	}
 
 	/**

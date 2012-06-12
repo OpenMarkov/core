@@ -154,7 +154,7 @@ public class StringsWithProperties {
 			outString.append(stringWithProperties);
 			AdditionalProperties properties = stringsWithProperties.get(stringWithProperties);
 			if (properties != null && properties.size() > 0) {
-				outString.append(":");
+				outString.append(":\n");
 				Set<String> keysProperties = properties.getKeySet();
 				for (String keyProperty : keysProperties) {
 					outString.append("    " + properties.get(keyProperty) + "\n");

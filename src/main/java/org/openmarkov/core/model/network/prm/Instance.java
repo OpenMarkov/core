@@ -61,7 +61,7 @@ public class Instance {
 				}
 				subInstanceNodes.add(instanceNodes.get(i));
 			}
-			this.subInstances.put(subInstanceName, new Instance(subInstanceName,
+			this.subInstances.put(name + "." + subInstanceName, new Instance(name + "." + subInstanceName,
 					originalSubinstance.getClassNet(), subInstanceNodes,
 					originalSubinstance.isInput));
 		}

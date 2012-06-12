@@ -136,13 +136,33 @@ public class StringsWithProperties {
 		}
 	}
 	
+	/** @return <code>boolean</code> */
 	public boolean isEmpty() {
 		return stringsWithProperties.isEmpty();
 	}
 
+	/** @return <code>StringsWithProperties</code> */
 	public StringsWithProperties copy() {
 		return new StringsWithProperties(stringsWithProperties);
 	}
 	
+	/** @return <code>String</code> */
+	public String toString() {
+		StringBuffer outString = new StringBuffer();
+		Set<String> strings = stringsWithProperties.keySet();
+		for (String stringWithProperties : strings) {
+			outString.append(stringWithProperties);
+			AdditionalProperties properties = stringsWithProperties.get(stringWithProperties);
+			if (properties != null && properties.size() > 0) {
+				outString.append(":");
+				Set<String> keysProperties = properties.getKeySet();
+				for (String keyProperty : keysProperties) {
+					outString.append("    " + properties.get(keyProperty) + "\n");
+				}
+			}
+			outString.append("\n");
+		}
+		return outString.toString();
+	}
 
 }

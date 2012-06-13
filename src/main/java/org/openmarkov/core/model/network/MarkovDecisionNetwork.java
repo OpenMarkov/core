@@ -13,12 +13,16 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.inference.PartialOrder;
 import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.type.MarkovNetworkType;
 
 
 /** This class is a type of Markov network created from an influence 
@@ -42,10 +46,88 @@ public class MarkovDecisionNetwork extends ProbNet {
 		addVariablesAndLinks(originalID);
 		this.logger = Logger.getLogger (MarkovDecisionNetwork.class);
 	}
-
-	public MarkovDecisionNetwork() {
-		// TODO Auto-generated constructor stub
-	}
+	
+	
+		/** Adds the variables in the received <code>Potential</code> to this 
+		 *   <code>MarkovNet</code>, creates links between those variables creating
+		 *   cliques and assigns the <code>potential</code> to the conditioned
+		 *   variable (the first one).
+		 * @argCondition At least one potential depends on at least one variable
+		 * (otherwise the network would have no node, and it would be impossible
+		 * to assign constant potentials)
+		 * @param projectedTablePotentials <code>ArrayList</code> of 
+		 *   <code>Potential</code>s
+		 * @return A Markov Network in witch potentials are used to create cliques.
+		 *   (<code>ProbNet</code>). 
+		 * @throws NotEnoughMemoryException */
+		public MarkovDecisionNetwork(ProbNet originalNet,
+				ArrayList<? extends Potential> projectedTablePotentials) 
+				throws NotEnoughMemoryException {
+			super(MarkovNetworkType.getUniqueInstance ());
+			try {
+				addConstraint (new OnlyUndirectedLinks (), true);
+				//addConstraint (new OnlyDiscreteVariables (), false);
+			} catch (ConstraintViolationException e) {
+				// Unreachable code
+				e.printStackTrace();
+			}
+	    	for (Potential potential : projectedTablePotentials) {
+	    		addPotential(originalNet, potential);
+	    	}
+		}
+		
+		
+		/**
+		 * Adds the received potential to the list of potentials of the first 
+		 * variable.
+		 * @param originalNet 
+		 * 
+		 * @preCondition network contains at least one variable
+		 * @argCondition If A is the first variable in the potential and
+		 *               B<sub>0</sub> ... B<sub>n</sub> are the others, there must
+		 *               be a directed link B<sub>i</sub> -> A for every variable
+		 *               B<sub>i</sub> in the potential (other than A)
+		 * @param potential
+		 *            . <code>Potential</code>
+		 * @return The <code>ProbNode</code> in which the <code>potential</code>
+		 *         received has been added.
+		 */
+		public void addPotential(ProbNet originalNet, Potential potential) {
+			ArrayList<Variable> potentialVariables = potential.getVariables();
+			// the probNode where the potential will be stored
+			// TODO hacerlo con edits
+			if (potential.getVariables().size() == 0) {
+				// it is a constant potential;
+				// adds it to any variable of the network
+				getProbNodes().get(0).addPotential(potential);
+			} else {
+				// the potential depends on several variables
+				for (Variable variable : potentialVariables) {
+					//if (originalNet.getProbNode(variable)!=null){
+					if (getProbNode(variable) == null) {
+						ProbNode node = originalNet.getProbNode(variable);
+						NodeType nodeType = node.getNodeType();
+						addVariable(variable, nodeType);
+					}
+					//}
+				}
+				getProbNode(potentialVariables.get(0)).
+					addPotential(potential);
+				int numVariables = potentialVariables.size();
+				for (int i = 0; i < numVariables - 1; i++) {
+					Variable variable1 = potentialVariables.get(i);
+					for (int j = i + 1; j < numVariables; j++) {
+						Variable variable2 = potentialVariables.get(j);
+						try {
+							addLink(variable1, variable2, false);
+						} catch (NodeNotFoundException e) {
+							// Unreachable code because the variables are in the net
+						}
+					}
+				}
+			}
+		}
+		
 
 	/** Adds chance and decision nodes to this object from originalID
 	 * @param originalID. <code>ProbNet</code> */

@@ -177,6 +177,44 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		return probNet;
 }
 	
+	/**
+	 * @return a Bayesian network with three nodes (X, Y and Z) and two links X -> Y, and Y -> Z
+	 * @throws Exception
+	 */
+	public static ProbNet createBayesianNetworkXYZ(double prevalence,double sensitivityY,double specificityY,
+			double sensitivityZ, double specificityZ) throws Exception {
+		ProbNet probNet;
+		double[] valuesX;
+		double [] valuesYX;
+		double [] valuesZY;
+				
+		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
+					
+		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
+		
+		// Define the variables
+		Variable variableX = new Variable("X",diseaseStates);
+		Variable variableY = new Variable("Y",testResultStates);
+		Variable variableZ = new Variable("Z",testResultStates);
+			
+		addVariables(probNet,NodeType.CHANCE,variableX,variableY,variableZ);
+
+		probNet.addLink(variableX,variableY, true);		
+
+		valuesX = valuesAPrioriDisease(prevalence);
+		TablePotential potentialX = createTablePotential(role,valuesX,variableX);
+		
+		valuesYX = valuesCPTResultTest(sensitivityY,specificityY);
+		TablePotential potentialYX = createTablePotential(role, valuesYX, variableY, variableX);
+		
+		valuesZY = valuesCPTResultTest(sensitivityZ,specificityZ);
+		TablePotential potentialZY = createTablePotential(role, valuesZY, variableZ, variableY);
+		
+		addPotentials(probNet,potentialX,potentialYX,potentialZY);
+		
+		return probNet;
+}
+	
 	
 	
 

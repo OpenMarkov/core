@@ -66,33 +66,7 @@ public class UtilMarkovNet {
 		return markovNet;
 	}
 	
-	/** Adds the variables in the received <code>Potential</code> to this 
-	 *   <code>MarkovNet</code>, creates links between those variables creating
-	 *   cliques and assigns the <code>potential</code> to the conditioned
-	 *   variable (the first one).
-	 * @argCondition At least one potential depends on at least one variable
-	 * (otherwise the network would have no node, and it would be impossible
-	 * to assign constant potentials)
-	 * @param projectedTablePotentials <code>ArrayList</code> of 
-	 *   <code>Potential</code>s
-	 * @return A Markov Network in witch potentials are used to create cliques.
-	 *   (<code>ProbNet</code>). 
-	 * @throws NotEnoughMemoryException */
-	public static MarkovDecisionNetwork buildMarkovDecisionNetwork(ProbNet originalNet,
-			ArrayList<? extends Potential> projectedTablePotentials) 
-			throws NotEnoughMemoryException {
-		MarkovDecisionNetwork markovNet = new MarkovDecisionNetwork();
-		try {
-            markovNet.addConstraint (new OnlyDiscreteVariables (), false);
-		} catch (ConstraintViolationException e) {
-			// Unreachable code
-			e.printStackTrace();
-		}
-    	for (Potential potential : projectedTablePotentials) {
-    		addPotential(markovNet,originalNet, potential);
-    	}
-		return markovNet;
-	}
+	
 	
 	/** Adds the variables in the received <code>Potential</code> to this 
 	 *   <code>MarkovNet</code>, creates links between those variables creating
@@ -148,12 +122,13 @@ public class UtilMarkovNet {
 		} else {
 			// the potential depends on several variables
 			for (Variable variable : potentialVariables) {
+				//if (originalNet.getProbNode(variable)!=null){
 				if (markovNet.getProbNode(variable) == null) {
 					ProbNode node = originalNet.getProbNode(variable);
 					NodeType nodeType = node.getNodeType();
 					markovNet.addVariable(variable, nodeType);
-					
 				}
+				//}
 			}
 			markovNet.getProbNode(potentialVariables.get(0)).
 				addPotential(potential);

@@ -287,7 +287,7 @@ public abstract class InferenceAlgorithm
     	boolean foundPolicy;
     	
     	foundPolicy = false;
-    	
+    	if (imposedPolicies!=null){
     	for (int i=0;i<imposedPolicies.size()&&!foundPolicy;i++){
     		iPolicy = imposedPolicies.get(i);
     		if (iPolicy!=null){
@@ -296,6 +296,7 @@ public abstract class InferenceAlgorithm
     				policyDecision = iPolicy;
     			}
     		}
+    	}
     	}
     	return policyDecision;
     }

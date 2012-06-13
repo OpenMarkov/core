@@ -29,6 +29,9 @@ import org.openmarkov.core.model.network.type.InfluenceDiagramType;
  */
 public class NetsFactory {
 	
+	static String diseaseStates[]={"present","absent"};
+	static String testResultStates[]={"positive","negative"};
+	
 	/**
 	 * @param variables
 	 * @return An ArrayList containing the variables
@@ -57,6 +60,7 @@ public class NetsFactory {
 	private static double[] valuesCPTResultTest(double sensitivity, double specificity){
 		
 		double [] values = {sensitivity, 1.0-sensitivity, 1.0-specificity, specificity};
+		//double [] values = {specificity, 1.0-specificity, 1.0-sensitivity, sensitivity};
 				
 		return values;
 	}
@@ -155,8 +159,8 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
 		
 		// Define the variables
-		Variable variableX = new Variable("X","present","absent");
-		Variable variableY = new Variable("Y","positive","negative");
+		Variable variableX = new Variable("X",diseaseStates);
+		Variable variableY = new Variable("Y",testResultStates);
 			
 		addVariables(probNet,NodeType.CHANCE,variableX,variableY);
 
@@ -190,7 +194,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		
 		ProbNet peque = new ProbNet();
 		
-		String nameStates[]={"ausente","presente"};
+		String nameStates[]=diseaseStates;
 		//Finite States variables}
 		variableA = new Variable("A",nameStates);
 		variableB = new Variable("B",nameStates);
@@ -223,7 +227,8 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		
 		//potencial CAB
 		//double [] tableCAB ={0.15, 0.29, 0.84, 0.98, 0.85, 0.71, 0.16, 0.02};
-		double [] tableCAB ={0.15, 0.85, 0.84, 0.16, 0.29, 0.71, 0.98, 0.02};
+		//double [] tableCAB ={0.15, 0.85, 0.84, 0.16, 0.29, 0.71, 0.98, 0.02};
+		double [] tableCAB = {0.02, 0.98, 0.71, 0.29, 0.16, 0.84, 0.85, 0.15};
 		TablePotential potentialCAB = createTablePotential(role,tableCAB,variableC,variableA,variableB);
 		
 		NodeType nodeType = NodeType.CHANCE;
@@ -276,8 +281,8 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 			probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 			
 			// Define the variables
-			Variable variableX = new Variable("X","present","absent");
-			Variable variableY = new Variable("Y","positive","negative");
+			Variable variableX = new Variable("X",diseaseStates);
+			Variable variableY = new Variable("Y",testResultStates);
 			Variable variableD = new Variable("D","yes","no");
 			Variable variableU = new Variable("U");
 			
@@ -429,8 +434,8 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 			
 			// Define the variables
 			// Define the variables
-			Variable variableX = new Variable("X","present","absent");
-			Variable variableY = new Variable("Y","positive","negative","noresult");
+			Variable variableX = new Variable("X",diseaseStates);
+			Variable variableY = new Variable("Y",testResultStates[0],testResultStates[1],"noresult");
 			Variable variableD = new Variable("D","yes","no");
 			Variable variableT = new Variable("T","yes","no");
 			Variable variableU1 = new Variable("U1");

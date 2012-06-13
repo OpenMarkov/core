@@ -27,7 +27,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 
 	// Attributes
 	/** Partial partialOrder of chance and decision nodes */
-	private ArrayList<ArrayList<Variable>> partialOrder;
+	private PartialOrder partialOrder;
 	private Logger logger;
 
 	// Constructor
@@ -38,15 +38,19 @@ public class MarkovDecisionNetwork extends ProbNet {
 	public MarkovDecisionNetwork(ProbNet originalID) 
 			throws WrongGraphStructureException {
 		super();
-		partialOrder = PartialOrder.getPartialOrder(originalID);
+		partialOrder = new PartialOrder(originalID);
 		addVariablesAndLinks(originalID);
 		this.logger = Logger.getLogger (MarkovDecisionNetwork.class);
+	}
+
+	public MarkovDecisionNetwork() {
+		// TODO Auto-generated constructor stub
 	}
 
 	/** Adds chance and decision nodes to this object from originalID
 	 * @param originalID. <code>ProbNet</code> */
 	private void addVariablesAndLinks(ProbNet originalID) {
-		for (ArrayList<Variable> variables : partialOrder) {
+		for (ArrayList<Variable> variables : partialOrder.getOrder()) {
 			for (Variable variable : variables) {
 				ProbNode node = originalID.getProbNode(variable);
 				NodeType nodeType = node.getNodeType();
@@ -94,7 +98,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	/** @return The first chance node in the partial order. 
 	 * <code>ProbNode</code> */
 	private ProbNode getChanceNode() {
-		for (ArrayList<Variable> array : partialOrder) {
+		for (ArrayList<Variable> array : partialOrder.getOrder()) {
 			for (Variable variable : array) {
 				ProbNode probNode = getProbNode(variable);
 				if ((probNode != null) && 
@@ -107,13 +111,14 @@ public class MarkovDecisionNetwork extends ProbNet {
 		return null;
 	}
 
-	/** @return Partial partialOrder: An <code>ArrayList</code> of 
-	 * <code>ArrayList</code> of <code>Variable</code> */
-	public ArrayList<ArrayList<Variable>> getPartialOrder() {
+	/**
+	 * @return the partial order
+	 */
+	public PartialOrder getPartialOrder() {
 		return partialOrder;
 	}
 
-	/** @param originalID influence diagram. <code>ProbNet</code> */
+	/** @param originalID influence diagram. <code>ProbNet</code> *//*
 	private void calculatePartialOrder(ProbNet originalID) 
 			throws WrongGraphStructureException {
 		partialOrder = new ArrayList<ArrayList<Variable>>();
@@ -177,8 +182,8 @@ public class MarkovDecisionNetwork extends ProbNet {
 			logger.fatal (e);
 		}
 	}
-
-	/** If there is a chance node without parents or without children,
+*/
+/*	*//** If there is a chance node without parents or without children,
 	 *   returns that node. Otherwise, if there is just one decision node 
 	 *   without nodes, returns that node. Otherwise, i.e., if there are more
 	 *   than one decision nodes without parents, throws an exception.
@@ -188,7 +193,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 *   It first tries to get a chance node;  
 	 * @argCondition The influence diagram contains at least one chance or 
 	 *   decision node
-	 * @throws <code>WrongGraphStructureException</code> */
+	 * @throws <code>WrongGraphStructureException</code> *//*
 	private ProbNode getNextNodeToDelete(ProbNet influenceDiagram) 
 			throws WrongGraphStructureException {
 		// looks for a chance node
@@ -217,12 +222,12 @@ public class MarkovDecisionNetwork extends ProbNet {
 		}
 		return decisionNode;
 	}
-
+*/
 	/** @param chanceVariables <code>ArrayList</code> of <code>Variable</code>
 	 * @param parentsVariables <code>ArrayList</code> of <code>ArrayList</code>
 	 *   of <code>Variable</code>
 	 * @return An <code>ArrayList</code> of <code>Variable</code> that are not
-	 *   parents of any decision. */
+	 *   parents of any decision. *//*
 	private ArrayList<Variable> getUnobservableVariables(
 			ArrayList<Variable> chanceVariables, 
 			ArrayList<ArrayList<Variable>> parentsVariables) {
@@ -232,15 +237,15 @@ public class MarkovDecisionNetwork extends ProbNet {
 			unobservableVariables.removeAll(variables);
 		}
 		return unobservableVariables;
-	}
+	}*/
 
-	/** @return An <code>ArrayList</code> of <code>ArrayList</code> of 
+/*	*//** @return An <code>ArrayList</code> of <code>ArrayList</code> of 
 	 *   <code>Variable</code>. It contains the parents of each decision. The 
 	 *   <code>ArrayList</code> nested in the i-th position contains the parents
 	 * of the i-th decision node.
 	 * @param influenceDiagram <code>InfluenceDiagram</code>.
 	 * @param decisionVariables <code>ArrayList</code> of <code>Variable</code>
-	 */
+	 *//*
 	@SuppressWarnings({ "unchecked", "static-access" })
 	private ArrayList<ArrayList<Variable>> getParentsOfDecisions(
 			ProbNet influenceDiagram, ArrayList<Variable> decisionVariables) {
@@ -263,7 +268,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 			parentsVariables.add(parentVariables);
 		}
 		return parentsVariables;
-	}
+	}*/
 
 	/** Creates a clique with undirected links between the nodes of the 
 	 *   received <code>potential</code>.

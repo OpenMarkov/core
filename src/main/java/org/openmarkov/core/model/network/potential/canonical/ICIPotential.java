@@ -327,50 +327,44 @@ public abstract class ICIPotential extends Potential {
     @Override
     public boolean equals (Object arg0)
     {
-        boolean isEqual = super.equals (arg0);
-        ICIPotential otherPotential = (ICIPotential)arg0;
-        if(isEqual)
-        {
-            for(int j=1; j < variables.size (); ++j)
-            {
-                double[] values = getNoisyParameters (variables.get(j));
-                Variable otherVariable = null;
-                int k = 0;
-                while(otherVariable==null && k < otherPotential.variables.size ())
-                {
-                    otherVariable = (otherPotential.variables.get (k).getName ().equals ((variables.get (j).getName ()))) ? otherPotential.variables.get (k)
-                                                                                                                         : null;
-                    ++k;
-                }
-                double[] otherValues = otherPotential.getNoisyParameters (otherVariable);
-                if (values.length == otherValues.length)
-                {
-                    for (int i = 0; i < values.length; i++)
-                    {
-                        isEqual &= values[i] == otherValues[i];
-                    }
-                }
-                else
-                {
-                    isEqual = false;
-                }
-            }
-            
-            double[] values = getLeakyParameters ();
-            double[] otherValues = otherPotential.getLeakyParameters();
-            if (values.length == otherValues.length)
-            {
-                for (int i = 0; i < values.length; i++)
-                {
-                    isEqual &= values[i] == otherValues[i];
-                }
-            }
-            else
-            {
-                isEqual = false;
-            }
-        }
-        return isEqual;
+		boolean isEqual = super.equals(arg0) && arg0 instanceof ICIPotential;
+		if (isEqual) {
+			ICIPotential otherPotential = (ICIPotential) arg0;
+			if (isEqual) {
+				for (int j = 1; j < variables.size(); ++j) {
+					double[] values = getNoisyParameters(variables.get(j));
+					Variable otherVariable = null;
+					int k = 0;
+					while (otherVariable == null
+							&& k < otherPotential.variables.size()) {
+						otherVariable = (otherPotential.variables.get(k)
+								.getName().equals((variables.get(j).getName()))) ? otherPotential.variables
+								.get(k) : null;
+						++k;
+					}
+					double[] otherValues = otherPotential
+							.getNoisyParameters(otherVariable);
+					if (values.length == otherValues.length) {
+						for (int i = 0; i < values.length; i++) {
+							isEqual &= values[i] == otherValues[i];
+						}
+					} else {
+						isEqual = false;
+					}
+				}
+
+				double[] values = getLeakyParameters();
+				double[] otherValues = otherPotential.getLeakyParameters();
+				if (values.length == otherValues.length) {
+					for (int i = 0; i < values.length; i++) {
+						isEqual &= values[i] == otherValues[i];
+					}
+				} else {
+					isEqual = false;
+				}
+			}
+		}
+		return isEqual;
     }
 
     @Override
@@ -380,12 +374,16 @@ public abstract class ICIPotential extends Potential {
         variables.remove(position);
         variables.add (position, variable);
         
-        double[] noisyParameter = noisyParameters.get (oldVariable);
-        noisyParameters.remove (oldVariable);
-        noisyParameters.put (variable, noisyParameter);
-        
-        zVariables.remove (oldVariable);
-        zVariables.put (variable, variables.get (0));
+        // if position == 0, it is the conditioned variable, not a noisy one
+        if(position > 0)
+        {
+	        double[] noisyParameter = noisyParameters.get (oldVariable);
+	        noisyParameters.remove (oldVariable);
+	        noisyParameters.put (variable, noisyParameter);
+	        
+	        zVariables.remove (oldVariable);
+	        zVariables.put (variable, variables.get (0));
+        }
         
     }
     

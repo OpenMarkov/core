@@ -382,7 +382,7 @@ public abstract class ICIPotential extends Potential {
 	        noisyParameters.put (variable, noisyParameter);
 	        
 	        zVariables.remove (oldVariable);
-	        zVariables.put (variable, variables.get (0));
+	        zVariables.put (variable, createZVariable(variables.get (0), variable));
         }
         
     }

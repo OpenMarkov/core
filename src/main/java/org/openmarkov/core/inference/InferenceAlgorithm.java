@@ -26,7 +26,6 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 public abstract class InferenceAlgorithm
@@ -70,8 +69,7 @@ public abstract class InferenceAlgorithm
 	 */
 	private ArrayList<Finding> postResolutionEvidence;
 	
-	
-    public ArrayList<Finding> getPostResolutionEvidence() {
+	public ArrayList<Finding> getPostResolutionEvidence() {
 		return postResolutionEvidence;
 	}
 
@@ -279,6 +277,10 @@ public abstract class InferenceAlgorithm
 	NotEnoughMemoryException,
 	IncompatibleEvidenceException,
     NormalizeNullVectorException;
+    
+    
+   
+
     
     
     

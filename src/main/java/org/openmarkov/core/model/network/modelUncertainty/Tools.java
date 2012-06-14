@@ -18,6 +18,32 @@ public class Tools {
            return sum;
 	   }
 	   
+	   public static double max(double[] aa){
+           double maximum;
+           double aux;
+           maximum = Double.NEGATIVE_INFINITY;
+           for(int i = 0; i < aa.length; i++){
+        	   aux = aa[i];
+        	   if (aux>maximum){
+        		   maximum = aux;
+        	   }
+           }
+           return maximum;
+	   }
+	   
+	   public static double min(double[] aa){
+           double minimum;
+           double aux;
+           minimum = Double.POSITIVE_INFINITY;
+           for(int i = 0; i < aa.length; i++){
+        	   aux = aa[i];
+        	   if (aux<minimum){
+        		   minimum = aux;
+        	   }
+           }
+           return minimum;
+	   }
+	   
 	   public static double[] normalize(double []x,double mass){
 		   
 		   double[] y;

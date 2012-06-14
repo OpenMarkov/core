@@ -9,6 +9,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -467,5 +468,8 @@ public abstract class Potential{
         }
         return variablesArrayList;
     }    
-	
+
+    public void setVariables (ArrayList<Variable> variables) {
+    	this.variables = variables;
+    }
 }

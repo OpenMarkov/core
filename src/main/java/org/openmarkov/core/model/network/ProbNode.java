@@ -11,6 +11,7 @@ package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.graph.Node;
@@ -19,6 +20,7 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.Util;
 
 
@@ -473,5 +475,49 @@ public class ProbNode implements Cloneable, PotentialsContainer {
         return this.getNode ().isParent (node.getNode ());
 	}
 	
+	
+	public TablePotential getUtilityFunction() throws NotEnoughMemoryException{
+		ProbNode probNode;
+		TablePotential newPotential;
+		Hashtable hashtable = new Hashtable();
+		if (!isSuperValueNode(getVariable(), getProbNet())){
+			newPotential = (TablePotential) getPotentials().get(0);
+		}else{
+			for (Node node:getNode().getParents() ){
+				 probNode = (ProbNode) node.getObject();
+				 hashtable.put(probNode, probNode.getUtilityFunction());
+			}
+			ArrayList<Potential> potentials = new ArrayList<Potential>(hashtable.values());
+			
+			if ( getPotentials().get(0).getPotentialType() == PotentialType.SUM ){
+				newPotential = DiscretePotentialOperations.sum(potentials);
+			}else{
+				newPotential = DiscretePotentialOperations.multiply(potentials);
+			}
+			newPotential.setUtilityVariable(getVariable());
+		}
+		return newPotential;
+	}
+	
+	/**
+	 * @param utilityVariable the variable to test
+	 * @param probNet 
+	 * @return true if the variable is a supervalue node. False if does not
+	 */
+	private static boolean isSuperValueNode(Variable utilityVariable, ProbNet probNet) {
+		ProbNode utilityProbNode = probNet.getProbNode( utilityVariable );
+		Node utilityNode = utilityProbNode.getNode();
+		int numOfUtilityParents = 0;
+		for (Node parent:utilityNode.getParents()){
+			if (( (ProbNode)parent.getObject() ).getNodeType() == NodeType.UTILITY ){
+				//if the node has two or more utility parents then is a super value node
+				if (( numOfUtilityParents ++) >= 1 ){
+				  return true;
+				}
+			}
+			
+		}
+		return false;
+	}
 	
 }

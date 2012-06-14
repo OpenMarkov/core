@@ -139,10 +139,12 @@ public class InferenceManager
         {
         	if(probNet.getNetworkType().equals(BayesianNetworkType.getUniqueInstance()))
         	{
-        		defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
+        		//defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
+        		defaultAlgorithm = getInferenceAlgorithmByName ("VariableElimination", probNet);
         	}else if (probNet.getNetworkType().equals(InfluenceDiagramType.getUniqueInstance()))
         	{
-        		defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
+        		//defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
+        		defaultAlgorithm = getInferenceAlgorithmByName ("VariableElimination", probNet);
         	}
         }
         catch (SecurityException e)

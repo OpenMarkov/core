@@ -952,6 +952,31 @@ public class TablePotential extends Potential
         return values[position];
     }
     
+    
+    /**
+     * Given a set an EvidenceCase, gets the corresponding value in the table.
+     * @argCondition All the variables in this potentials are included into the
+     *               variables field of the evidence case (configuration).
+     * @param configuration. <code>EvidenceCase</code>
+     * @return <code>double</code>
+     */
+    public double getValue (EvidenceCase configuration){
+    	int []states;
+    	ArrayList<Variable> variables;
+    	int size;
+        	    	
+    	variables = configuration.getVariables();
+    	size = variables.size();
+		states = new int[size];
+    	ArrayList<Finding> findings = configuration.getFindings();
+    	
+    	for (int i = 0; i < size;i++){
+    		states[i] = findings.get(i).getStateIndex();
+    	}
+    	
+    	return getValue(variables,states);
+    }
+    
     /*******
      * Assigns a value at the table for the combination of a set of variables
      * and the corresponding state indices.

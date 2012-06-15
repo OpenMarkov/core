@@ -25,7 +25,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.prm.Instance;
 import org.openmarkov.core.model.network.prm.InstanceAlreadyExistsException;
-import org.openmarkov.core.model.network.prm.InstanceNode;
+import org.openmarkov.core.model.network.prm.InstanceLink;
 
 /**
  * @author ibermejo
@@ -37,6 +37,7 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 	private Instance instance;
 	private HashSet<ProbNode> nodesToRemove;
 	private HashSet<Link> linksToRemove;
+	private HashSet<InstanceLink> instanceLinksToRemove;
 
 	/**
 	 * @param probNet
@@ -47,11 +48,19 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 		
 		nodesToRemove = new HashSet<ProbNode>();
 		linksToRemove = new HashSet<Link>();
+		instanceLinksToRemove = new HashSet<InstanceLink>();
 		for(ProbNode probNode : instance.getNodes())
 		{
 			nodesToRemove.add(probNode);
 			linksToRemove.addAll(probNode.getNode().getLinks());
-		}	
+		}
+		for(InstanceLink instanceLink : probNet.getInstanceLinks())
+		{
+			if (instanceLink.getSourceInstance().equals(this.instance)
+					|| instanceLink.getDestInstance().equals(this.instance)) {
+				instanceLinksToRemove.add(instanceLink);
+			}
+		}
 	}
 
 	@Override
@@ -78,6 +87,10 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 			NonProjectablePotentialException, WrongCriterionException {
 		super.doEdit();
 		getProbNet().getInstances().remove(instance.getName());
+		for(InstanceLink instanceLink: instanceLinksToRemove)
+		{
+			getProbNet().getInstanceLinks().remove(instanceLink);
+		}
 	}
 
 	@Override
@@ -89,6 +102,10 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 		} catch (InstanceAlreadyExistsException e) {
 			//Impossible to get here
 		}
+		for(InstanceLink instanceLink: instanceLinksToRemove)
+		{
+			getProbNet().getInstanceLinks().add(instanceLink);
+		}		
 	}
 
 	

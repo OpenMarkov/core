@@ -85,8 +85,8 @@ public class ProbNet implements Cloneable {
     protected Graph graph;
     
 	/** Set of agents, defined by a name. Each one may have several properties. */
-	private StringsWithProperties agents;
-	
+	//private StringsWithProperties agents;
+	private ArrayList<StringWithProperties> agents;
 	// TODO Cambiar nombre a decisionCriteria y eliminar el otro decisionCriteria
 	/** Set of criteria for decision, defined by a name. Each one may have several properties. */
 	private StringsWithProperties decisionCriteria2;
@@ -1861,10 +1861,12 @@ public class ProbNet implements Cloneable {
 	}
 
 	/** @return <code>StringsWithProperties</code> */
-	public StringsWithProperties getAgents() {
+	/*public StringsWithProperties getAgents() {
 		return agents;
-	}	
-	
+	}*/	
+	public ArrayList<StringWithProperties> getAgents() {
+		return agents;
+	}
 	/** @return <code>StringsWithProperties</code> */
 	public StringsWithProperties getDecisionCriteria() {
 		return decisionCriteria2;
@@ -1887,7 +1889,7 @@ public class ProbNet implements Cloneable {
 	/**
 	 * @param agents. <code>StringsWithProperties</code>
 	 */
-	public void setAgents(StringsWithProperties agents) {
+	public void setAgents(ArrayList<StringWithProperties> agents) {
 		this.agents = agents;
 	}
 

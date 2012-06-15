@@ -121,25 +121,6 @@ public class Instance {
 	}
 
 	/**
-	 * Returns if this instance has an input parameter of the type of the
-	 * inputInstance parameter
-	 * 
-	 * @param inputInstance
-	 * @return
-	 */
-	public boolean acceptsAsInput(Instance inputInstance) {
-		boolean acceptAsInput = false;
-		
-		Iterator<Instance> iterator = subInstances.values().iterator();
-		
-		while(!acceptAsInput && iterator.hasNext())
-		{
-			acceptAsInput = inputInstance.getClassNet().getName().equals(iterator.next().getClassNet().getName());
-		}
-		return acceptAsInput;
-	}
-
-	/**
 	 * Adds reference to input parameter 
 	 * @param destSubInstance
 	 * @param sourceInstance

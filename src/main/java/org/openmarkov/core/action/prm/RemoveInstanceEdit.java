@@ -47,13 +47,10 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 		
 		nodesToRemove = new HashSet<ProbNode>();
 		linksToRemove = new HashSet<Link>();
-		for(ProbNode probNode : getProbNet().getProbNodes())
+		for(ProbNode probNode : instance.getNodes())
 		{
-			if((probNode instanceof InstanceNode) && (((InstanceNode)probNode).getInstanceName().equals(instanceName)))
-			{
-				nodesToRemove.add(probNode);
-				linksToRemove.addAll(probNode.getNode().getLinks());
-			}
+			nodesToRemove.add(probNode);
+			linksToRemove.addAll(probNode.getNode().getLinks());
 		}	
 	}
 

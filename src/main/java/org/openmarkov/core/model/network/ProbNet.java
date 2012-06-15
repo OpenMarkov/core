@@ -1750,57 +1750,64 @@ public class ProbNet implements Cloneable {
 				for(ProbNode node: instanceLink.getDestSubInstance().getNodes())
 				{
 					ProbNode paramNode = probNet.getProbNode(getEquivalentNode(instanceLink.getSourceInstance(), instanceLink.getDestSubInstance(), node).getVariable());
-					ProbNode formalNode = probNet.getProbNode(node.getVariable());
-					// Update potentials
-					
-					HashMap<Potential, Potential> potentialsToReplace = new HashMap<Potential, Potential>();
-					for(Potential potential :  probNet.getPotentials(node.getVariable()))
+
+					if(paramNode != null)
 					{
-						Potential potentialCopy;
-						try {
-							potentialCopy = potential.copy();
-							potentialCopy.replaceVariable(formalNode.getVariable(), paramNode.getVariable());
-							potentialsToReplace.put(potential, potentialCopy);
-						} catch (NotEnoughMemoryException e) {
-						}
-					}
-					for(ProbNode probNode :  probNet.getProbNodes())
-					{
-						for(Potential potentialToReplace :  potentialsToReplace.keySet())
+						ProbNode formalNode = probNet.getProbNode(node.getVariable());
+						// Update potentials
+						HashMap<Potential, Potential> potentialsToReplace = new HashMap<Potential, Potential>();
+						for(Potential potential :  probNet.getPotentials(node.getVariable()))
 						{
-							if(probNode.getPotentials().contains(potentialToReplace))
-							{
-								ArrayList<Potential> potentials = probNode.getPotentials();
-								potentials.remove(potentialToReplace);
-								potentials.add(potentialsToReplace.get(potentialToReplace));
-								probNode.setPotentials(potentials);
+							Potential potentialCopy;
+							try {
+								potentialCopy = potential.copy();
+								potentialCopy.replaceVariable(formalNode.getVariable(), paramNode.getVariable());
+								potentialsToReplace.put(potential, potentialCopy);
+							} catch (NotEnoughMemoryException e) {
 							}
 						}
-					}
-					// Update Links
-					//Replace links to children
-					for(Node child :formalNode.getNode().getChildren())
-					{
-						probNet.removeLink(formalNode, (ProbNode)child.getObject(), true);
-						if(!child.isParent(paramNode.getNode()))
+						for(ProbNode probNode :  probNet.getProbNodes())
 						{
-							probNet.addLink(paramNode, (ProbNode)child.getObject(), true);
+							for(Potential potentialToReplace :  potentialsToReplace.keySet())
+							{
+								if(probNode.getPotentials().contains(potentialToReplace))
+								{
+									ArrayList<Potential> potentials = probNode.getPotentials();
+									potentials.remove(potentialToReplace);
+									potentials.add(potentialsToReplace.get(potentialToReplace));
+									probNode.setPotentials(potentials);
+								}
+							}
 						}
-					}
-					//Replace links from parents
-					for(Node parent :formalNode.getNode().getParents())
-					{
-						probNet.removeLink((ProbNode)parent.getObject(), formalNode, true);
-						if(!paramNode.getNode().isParent(parent))
+						// Update Links
+						//Replace links to children
+						if(formalNode == null || formalNode.getNode() == null)
 						{
-							probNet.addLink((ProbNode)parent.getObject(), paramNode, true);
+							System.out.println();
 						}
-					}
-					//Replace links between siblings
-					for(Node sibling :formalNode.getNode().getSiblings())
-					{
-						probNet.removeLink((ProbNode)sibling.getObject(), formalNode, false);						
-						probNet.addLink((ProbNode)sibling.getObject(), paramNode, false);
+						for(Node child :formalNode.getNode().getChildren())
+						{
+							probNet.removeLink(formalNode, (ProbNode)child.getObject(), true);
+							if(!child.isParent(paramNode.getNode()))
+							{
+								probNet.addLink(paramNode, (ProbNode)child.getObject(), true);
+							}
+						}
+						//Replace links from parents
+						for(Node parent :formalNode.getNode().getParents())
+						{
+							probNet.removeLink((ProbNode)parent.getObject(), formalNode, true);
+							if(!paramNode.getNode().isParent(parent))
+							{
+								probNet.addLink((ProbNode)parent.getObject(), paramNode, true);
+							}
+						}
+						//Replace links between siblings
+						for(Node sibling :formalNode.getNode().getSiblings())
+						{
+							probNet.removeLink((ProbNode)sibling.getObject(), formalNode, false);						
+							probNet.addLink((ProbNode)sibling.getObject(), paramNode, false);
+						}
 					}
 				}
 				//Remove formal parameter nodes

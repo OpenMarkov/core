@@ -99,4 +99,8 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
         return this.getClass().getName();
     }
 
+	public int getNumVariablesToEliminate() {
+		return variablesToEliminate.size();
+	}
+
 }

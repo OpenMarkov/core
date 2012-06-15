@@ -359,4 +359,20 @@ public class PartialOrder {
         return buffer.toString();
     }
 
+	public int getNumVariables() {
+		int num = 0;
+		
+		if (order!=null){
+			for (ArrayList<Variable> auxArray:order){
+				if (auxArray!=null){
+					num = num + auxArray.size();
+				}
+			}
+		}
+		else{
+			num = 0;
+		}
+		return num;
+	}
+
 }

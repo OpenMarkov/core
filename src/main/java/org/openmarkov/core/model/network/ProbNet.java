@@ -1572,8 +1572,11 @@ public class ProbNet implements Cloneable {
 		for (ProbNode probNode : nodes) {
 			out.append(probNode.toString() + "\n");
 		}
-		out.append("\n");
-		out.append("Agents:\n" + agents.toString());
+		if(agents != null)
+		{
+			out.append("\n");
+			out.append("Agents:\n" + agents.toString());
+		}
 		return out.toString();
 	}
 

@@ -21,6 +21,7 @@ import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.MarkovNetworkType;
 
@@ -32,6 +33,10 @@ public class MarkovDecisionNetwork extends ProbNet {
 	// Attributes
 	/** Partial partialOrder of chance and decision nodes */
 	private PartialOrder partialOrder;
+	public void setPartialOrder(PartialOrder partialOrder) {
+		this.partialOrder = partialOrder;
+	}
+
 	private Logger logger;
 
 	// Constructor
@@ -150,28 +155,33 @@ public class MarkovDecisionNetwork extends ProbNet {
 	/** @param potential <code>Potential</code>
 	 * @argCondition All potential variables already exists in this network */
 	public ProbNode addPotential(Potential potential) {
-    	int numVariables = potential.getNumVariables();
-    	ProbNode probNode;
-		if (numVariables >= 1) { 
+		int numVariables = potential.getNumVariables();
+		ProbNode probNode;
+		if (numVariables >= 1) {
 			if (numVariables > 1) { // creates a clique using undirected links
 				addLinks(potential);
 			}
 			// add the potential to the corresponding node in the MarkovNet
 			probNode = getProbNode(potential.getVariable(0));
-			probNode.addPotential(potential);			
+			probNode.addPotential(potential);
 		} else { // The potential is a constant.
-			TablePotential constantPotential = (TablePotential)potential;
+			TablePotential constantPotential = (TablePotential) potential;
 			double constant = constantPotential.values[0];
 			probNode = getChanceNode();
-			if ((constant > 0.9999) && (constant < 1.0001)) { // Constant != 1.0
-				// Gets randomly a chance node with a potential ... 
-				TablePotential firstPotential = 
-					(TablePotential)probNode.getPotentials().get(0);
-				// ... and multiplies the first potential by the constant.
-				double[] table = firstPotential.values;
-				for (int i = 0; i < table.length; i++) {
-					table[i] *= constant;
+			PotentialRole potentialRole = constantPotential.getPotentialRole();
+			if (potentialRole != PotentialRole.UTILITY) {
+				if (Math.abs(constant - 1.0) > 0.00000001) { // Constant != 1.0
+					// Gets randomly a chance node with a potential ...
+					TablePotential firstPotential = (TablePotential) probNode
+							.getPotentials().get(0);
+					// ... and multiplies the first potential by the constant.
+					double[] table = firstPotential.values;
+					for (int i = 0; i < table.length; i++) {
+						table[i] *= constant;
+					}
 				}
+			} else {
+				probNode.addPotential(potential);
 			}
 		}
 		return probNode;

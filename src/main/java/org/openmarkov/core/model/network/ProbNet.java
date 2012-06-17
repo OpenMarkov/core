@@ -27,6 +27,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.PartialOrder;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
@@ -888,7 +889,7 @@ public class ProbNet implements Cloneable {
 
 	/**
 	 * Gets all the utility potentials that contains the <code>variable</code>
-	 * received.
+	 * received. Constant utility potentials are also returned by this method.
 	 * <p>
 	 * The potentials that can contains that variable are in the node associated
 	 * to the variable and its neighbors.
@@ -908,7 +909,8 @@ public class ProbNet implements Cloneable {
 		for (ProbNode node : allNodes) {
 			ArrayList<Potential> potentialsNode = node.getPotentials();
 			for (Potential potential : potentialsNode) {
-				if ((potential.getVariables().contains(variable))
+				ArrayList<Variable> variables = potential.getVariables();
+				if ((variables.size()==0||variables.contains(variable))
 						&& potential.isUtility()) {
 					potentialsVariable.add(potential);
 				}
@@ -977,11 +979,15 @@ public class ProbNet implements Cloneable {
 				}
 			}
 		} else { // utility potential.
-			ArrayList<ProbNode> utilityNodes = getProbNodes(NodeType.UTILITY);
-			candidateNodes.addAll(utilityNodes);
-
-			ProbNode firstProbNode = getProbNode(variables.get(0));
-			candidateNodes.add(firstProbNode);
+			if (variables.size()==0){//Constant potentials can be in any probNode
+				candidateNodes = this.getProbNodes();
+			}
+			else{
+				ArrayList<ProbNode> utilityNodes = getProbNodes(NodeType.UTILITY);
+				candidateNodes.addAll(utilityNodes);
+				ProbNode firstProbNode = getProbNode(variables.get(0));
+				candidateNodes.add(firstProbNode);
+			}
 		}
 
 		// find in such nodes the potential to remove

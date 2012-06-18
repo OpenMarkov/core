@@ -116,6 +116,8 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 							.getPotentials().get(0).getVariables(), child
 							.getPotentials().get(0).getPotentialRole());
 					// child.setUniformPotential();
+					childLastPotential.setUtilityVariable(child
+							.getPotentials().get(0).getUtilityVariable());
 					container.add(childLastPotential);
 					child.setPotentials(container);
 				}

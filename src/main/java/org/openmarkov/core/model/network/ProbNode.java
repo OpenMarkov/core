@@ -13,8 +13,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
@@ -476,29 +479,128 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	}
 	
 	
-	public TablePotential getUtilityFunction() throws NotEnoughMemoryException{
-		ProbNode probNode;
-		TablePotential newPotential;
-		Hashtable hashtable = new Hashtable();
-		if (!isSuperValueNode(getVariable(), getProbNet())){
-			newPotential = (TablePotential) getPotentials().get(0);
-		}else{
-			for (Node node:getNode().getParents() ){
-				 probNode = (ProbNode) node.getObject();
-				 hashtable.put(probNode, probNode.getUtilityFunction());
+	/**
+	 * @return Approximates the maximum or the minimum of the utility function of the ProbNode. It is computed recursively by using the utility function
+	 * of parent nodes. If 'computeMax' is true then it computes the maximum; otherwise it computes the minimum.
+	 * For an exact computation of the maximum or the minimum of the utility function then it is required to use
+	 * method 'getUtilityFunction' and computes the maximum or the minimum over the resulting potential.
+	 * @throws NotEnoughMemoryException
+	 * @throws NonProjectablePotentialException 
+	 */
+	private double getApproximateMaxOrMinUtilityFunction(boolean computeMax)
+			throws NotEnoughMemoryException, NonProjectablePotentialException {
+		double result;
+		ArrayList<Potential> potentials = getPotentials();
+
+		if ((potentials != null) && (potentials.size() > 0)) {
+			Potential firstPotential = potentials.get(0);
+			if (!isSuperValueNode(getVariable(), getProbNet())) {
+				double[] values = null;
+				try {
+					values = firstPotential.tableProject(null, null).get(0).values;
+				} catch (WrongCriterionException e) {
+					e.printStackTrace();
+				}
+				result = computeMax ? Tools.max(values) : Tools.min(values);
+			} else {
+				double parentValues[];
+
+				ArrayList<Node> parents = getNode().getParents();
+				parentValues = new double[parents.size()];
+				for (int i = 0; i < parents.size(); i++) {
+					parentValues[i] = ((ProbNode) (parents.get(i).getObject()))
+							.getApproximateMaxOrMinUtilityFunction(computeMax);
+				}
+				switch (firstPotential.getPotentialType()){
+				case SUM:
+					result = Tools.sum(parentValues);
+					break;
+				case PRODUCT:
+					result = Tools.multiply(parentValues);
+					break;
+				default:
+					throw new NonProjectablePotentialException("Super-value nodes must be sum or product.");
+					
+				}
 			}
-			ArrayList<Potential> potentials = new ArrayList<Potential>(hashtable.values());
-			
-			if ( getPotentials().get(0).getPotentialType() == PotentialType.SUM ){
-				newPotential = DiscretePotentialOperations.sum(potentials);
-			}else{
-				newPotential = DiscretePotentialOperations.multiply(potentials);
-			}
-			newPotential.setUtilityVariable(getVariable());
+		} else {
+			result = 0.0;
 		}
-		return newPotential;
+
+		return result;
+	}
+
+	/**
+	 * @return Approximates the maximum of the utility function of the ProbNode. It is computed recursively by using the utility function
+	 * of parent nodes. For an exact computation of the maximum of the utility function then it is required to use
+	 * method 'getUtilityFunction' and computes the maximum over the resulting potential.
+	 * @throws NotEnoughMemoryException
+	 * @throws NonProjectablePotentialException 
+	 */
+	public double getApproximateMaximumUtilityFunction() throws NotEnoughMemoryException, NonProjectablePotentialException{
+		
+		return getApproximateMaxOrMinUtilityFunction(true);
 	}
 	
+	/**
+	 * @return Approximates the maximum of the utility function of the ProbNode. It is computed recursively by using the utility function
+	 * of parent nodes. For an exact computation of the maximum of the utility function then it is required to use
+	 * method 'getUtilityFunction' and computes the maximum over the resulting potential.
+	 * @throws NotEnoughMemoryException
+	 * @throws NonProjectablePotentialException 
+	 */
+	public double getApproximateMinimumUtilityFunction() throws NotEnoughMemoryException, NonProjectablePotentialException{
+		
+		return getApproximateMaxOrMinUtilityFunction(false);
+	}
+	
+	
+	
+	/**
+	 * @return The utility function of a utility variable. If it is a super-value node
+     * then it operates their parent's utility functions recursively.
+	 * @throws NotEnoughMemoryException
+	 * @throws NonProjectablePotentialException 
+	 */
+	public TablePotential getUtilityFunction() throws NotEnoughMemoryException,
+			NonProjectablePotentialException, WrongCriterionException {
+		ProbNode probNode;
+		TablePotential result;
+		ArrayList<Potential> potentials = getPotentials();
+
+		if ((potentials != null) && (potentials.size() > 0)) {
+			Potential firstPotential = potentials.get(0);
+			if (!isSuperValueNode(getVariable(), getProbNet())) {
+				result = firstPotential.tableProject(null, null).get(0);
+			} else {
+				ArrayList<TablePotential> utilityFunctionsParents;
+				utilityFunctionsParents = new ArrayList<TablePotential>();
+				for (Node node : getNode().getParents()) {
+					probNode = (ProbNode) node.getObject();
+					utilityFunctionsParents.add(probNode.getUtilityFunction());
+				}
+				switch (firstPotential.getPotentialType()) {
+				case SUM:
+					result = DiscretePotentialOperations
+							.sum(utilityFunctionsParents);
+					break;
+				case PRODUCT:
+					result = DiscretePotentialOperations
+							.multiply(utilityFunctionsParents);
+					break;
+				default:
+					throw new NonProjectablePotentialException(
+							"Super-value nodes must be sum or product.");
+
+				}
+
+			}
+		} else {
+			result = null;
+		}
+		return result;
+	}
+
 	/**
 	 * @param utilityVariable the variable to test
 	 * @param probNet 

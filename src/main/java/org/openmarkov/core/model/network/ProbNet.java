@@ -681,8 +681,9 @@ public class ProbNet implements Cloneable {
      * @param utilityVariable
      * @return The utility function of a utility variable. If it is a super-value node
      * then it operates their parent's utility functions recursively.
+     * @throws NonProjectablePotentialException 
      */
-    public TablePotential getUtilityFunction(Variable utilityVariable){
+    public TablePotential getUtilityFunction(Variable utilityVariable) throws NonProjectablePotentialException, WrongCriterionException{
     	TablePotential v = null;
     	try {
 			v = getProbNode(utilityVariable).getUtilityFunction();

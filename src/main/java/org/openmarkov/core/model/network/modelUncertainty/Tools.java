@@ -10,12 +10,30 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 public class Tools {
-	   public static double sum(double[] aa){
+	   
+		/**
+		 * @param aa
+		 * @return The sum of an array of real numbers
+		 */
+		public static double sum(double[] aa){
            double sum=0.0D;
            for(int i = 0; i < aa.length; i++){
                    sum = sum + aa[i];
            }
            return sum;
+	   }
+	   
+	   
+	   /**
+	 * @param aa
+	 * @return The product of an array of real numbers
+	 */
+	public static double multiply(double[] aa){
+           double product=1.0;
+           for(int i = 0; i < aa.length; i++){
+                   product = product * aa[i];
+           }
+           return product;
 	   }
 	   
 	   public static double max(double[] aa){

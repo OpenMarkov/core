@@ -143,8 +143,8 @@ public class InferenceManager
         		defaultAlgorithm = getInferenceAlgorithmByName ("VariableElimination", probNet);
         	}else if (probNet.getNetworkType().equals(InfluenceDiagramType.getUniqueInstance()))
         	{
-        		//defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
-        		defaultAlgorithm = getInferenceAlgorithmByName ("VariableElimination", probNet);
+        		defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
+        		//defaultAlgorithm = getInferenceAlgorithmByName ("VariableElimination", probNet);
         	}
         }
         catch (SecurityException e)

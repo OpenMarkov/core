@@ -1228,7 +1228,7 @@ public class TablePotential extends Potential
     public void setUniform() {
         if ((variables != null)
                 && (variables.size() > 0)
-                && allVariablesBelongToType(VariableType.FINITE_STATES)
+                && noNumericVariables()
                 && ((role == PotentialRole.CONDITIONAL_PROBABILITY)
                         || (role == PotentialRole.POLICY)
                         || (role == PotentialRole.JOINT_PROBABILITY)

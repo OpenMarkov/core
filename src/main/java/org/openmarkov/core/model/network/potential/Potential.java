@@ -153,10 +153,10 @@ public abstract class Potential{
 	 * The utility variable is not considered.
 	 * @param type. <code>VariableType</code> 
 	 * @return <code>boolean</code> */
-	protected boolean allVariablesBelongToType(VariableType type) {
+	protected boolean noNumericVariables() {
 		if (variables != null) {
 			for (Variable variable : variables) {
-				if (variable.getVariableType() != type) {
+				if (variable.getVariableType() == VariableType.NUMERIC) {
 					return false;
 				}
 			}

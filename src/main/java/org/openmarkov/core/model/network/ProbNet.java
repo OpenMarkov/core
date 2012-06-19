@@ -27,7 +27,6 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.inference.PartialOrder;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;

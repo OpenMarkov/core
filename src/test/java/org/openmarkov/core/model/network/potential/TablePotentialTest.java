@@ -10,13 +10,11 @@
 package org.openmarkov.core.model.network.potential;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.OpenMarkovTests;
@@ -27,7 +25,6 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;

@@ -21,10 +21,8 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
-import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialTypeManager;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 @SuppressWarnings("serial")
 public class SetPotentialEdit extends SimplePNEdit {

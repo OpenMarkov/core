@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.ConstraintException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;

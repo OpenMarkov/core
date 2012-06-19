@@ -8,21 +8,12 @@ package org.openmarkov.core.inference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.CanNotDoEditException;
-import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.exception.WrongGraphStructureException;
-import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;

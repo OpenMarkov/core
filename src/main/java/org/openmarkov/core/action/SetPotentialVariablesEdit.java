@@ -2,7 +2,6 @@ package org.openmarkov.core.action;
 
 import java.util.ArrayList;
 
-import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;

@@ -48,7 +48,7 @@ public class Variable implements Cloneable {
 	// the baseName is "X"
 	private String baseName;
 	
-	private String unit;
+	private StringWithProperties unit = new StringWithProperties("");
 
 	/**
 	 * List of states that this variable can take on. Each state will be a
@@ -690,14 +690,14 @@ public class Variable implements Cloneable {
 	/**
 	 * @param unit the unit to set
 	 */
-	protected void setUnit(String unit) {
+	public void setUnit(StringWithProperties unit) {
 		this.unit = unit;
 	}
 
 	/**
 	 * @return the unit
 	 */
-	protected String getUnit() {
+	public StringWithProperties getUnit() {
 		return unit;
 	}
 

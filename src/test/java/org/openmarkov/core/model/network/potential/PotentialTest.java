@@ -15,14 +15,9 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
-
+import org.junit.Test;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TablePotential;
-
-
-import org.junit.Test;
 
 /** Test of <code>Potential</code> class. As this class is abstract we use the
  * class <code>TablePotential</code>.  */

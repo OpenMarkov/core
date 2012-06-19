@@ -9,7 +9,6 @@
 
 package org.openmarkov.core.io.format.annotation;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

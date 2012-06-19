@@ -14,7 +14,6 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
-
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 @Constraint (name = "NoClosedPath", defaultBehavior = ConstraintBehavior.OPTIONAL)

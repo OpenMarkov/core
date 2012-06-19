@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;

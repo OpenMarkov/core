@@ -9,7 +9,6 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import org.openmarkov.core.model.network.modelUncertainty.TypeProbDensityFunction;
 
 public class GammaFunction extends GammaAbstract {
 	

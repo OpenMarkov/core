@@ -5,13 +5,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;

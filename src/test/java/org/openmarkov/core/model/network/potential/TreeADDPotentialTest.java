@@ -1,17 +1,12 @@
 package org.openmarkov.core.model.network.potential;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.LabelledLink;
 import org.openmarkov.core.model.graph.Node;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;

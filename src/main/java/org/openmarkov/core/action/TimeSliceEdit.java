@@ -2,9 +2,12 @@ package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
-
+/**
+ * 
+ * @author myebra
+ *
+ */
 @SuppressWarnings("serial")
 public class TimeSliceEdit extends SimplePNEdit{
 	/**
@@ -56,7 +59,7 @@ public class TimeSliceEdit extends SimplePNEdit{
 			}
 			probNode.getVariable().setName(newName);
 		}
-		//not only temporaL && not only atemporal aso set name and base name
+		//not only temporaL && not only atemporal but also set name and base name
 		if (lastTimeSlice == Integer.MIN_VALUE) {
 			probNode.getVariable().setBaseName(lastBaseName);	
 			probNode.getVariable().setName(lastName+ " " + "["+ String.valueOf(newTimeSlice)+"]");
@@ -67,8 +70,7 @@ public class TimeSliceEdit extends SimplePNEdit{
 		super.undo();
 		//onlyTemporal
 		probNode.getVariable().setTimeSlice(lastTimeSlice);
-		//not only temporaL && not only atemporal aso set name and base name
-		//if (probNode.getProbNet().variablesCouldBeTemporal() && !(probNode.getProbNet().onlyTemporal())) {
+		//not only temporaL && not only atemporal but also set name and base name
 		if (lastTimeSlice == Integer.MIN_VALUE) {
 			probNode.getVariable().setBaseName(lastBaseName);
 			probNode.getVariable().setName(lastName);

@@ -18,7 +18,6 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.inference.PartialOrder;
 import org.openmarkov.core.model.graph.Node;
-import org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;

@@ -12,7 +12,6 @@ package org.openmarkov.core.model.network.potential.canonical;
 import java.util.ArrayList;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;

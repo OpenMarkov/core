@@ -9,7 +9,6 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import java.util.Random;
 
 public abstract class GammaAbstract extends ProbDensFunction {
 

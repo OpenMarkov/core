@@ -15,7 +15,6 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.ProductPotential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;

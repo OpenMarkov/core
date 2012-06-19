@@ -47,5 +47,10 @@ public class StringWithProperties {
 	public AdditionalProperties getAdditionalProperties () {
 		return additionalProperties;
 	}
-	
+
+	public StringWithProperties copy() {
+		StringWithProperties copiedStringWithProperties = new StringWithProperties(string);
+		copiedStringWithProperties.put(additionalProperties);
+		return copiedStringWithProperties;
+	}
 }

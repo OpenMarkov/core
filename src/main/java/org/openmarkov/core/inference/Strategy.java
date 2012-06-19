@@ -10,7 +10,6 @@
 package org.openmarkov.core.inference;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Set;
 

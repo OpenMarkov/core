@@ -10,11 +10,8 @@
 package org.openmarkov.core.action;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -22,9 +19,7 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 @SuppressWarnings("serial")
 public class VariableTypeEdit extends SimplePNEdit {

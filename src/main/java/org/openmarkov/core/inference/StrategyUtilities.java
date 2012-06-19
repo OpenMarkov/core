@@ -12,7 +12,6 @@ package org.openmarkov.core.inference;
 import java.util.Hashtable;
 
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 public class StrategyUtilities {

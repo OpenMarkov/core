@@ -114,7 +114,7 @@ public class UniformPotential extends Potential {
 						new TablePotential(new ArrayList<Variable>(),
 								PotentialRole.CONDITIONAL_PROBABILITY);
 					projectedPotential.values[0] = 
-						1 / conditionedVariable.getNumStates();
+						1.0 / conditionedVariable.getNumStates();
 				}
 			} else {
 				// the conditioned variable does not make part of the evidence

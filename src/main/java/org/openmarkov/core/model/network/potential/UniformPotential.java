@@ -134,12 +134,13 @@ public class UniformPotential extends Potential {
 				}
 			}
 	        projectedPotentials.add (projectedPotential);
-		//TODO write the code for other types of potentials but remember that
-		// in the case of utility potentials it suffices to return the empty list. 
+	        break;
+	    // In case of utility potentials, return an empty potential
 		case UTILITY:
 	        projectedPotential = new TablePotential(new ArrayList<Variable>(),
 					PotentialRole.UTILITY);
 	        projectedPotentials.add (projectedPotential);
+	        break;
 		}  // end of switch/case statement
 		return projectedPotentials;
 	}

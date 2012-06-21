@@ -34,6 +34,7 @@ import org.openmarkov.core.model.network.ProbNet.ProbNetNodesHashMapsType.NodesH
 import org.openmarkov.core.model.network.constraint.ConstraintManager;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
+import org.openmarkov.core.model.network.constraint.OnlyOneAgent;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
@@ -426,6 +427,21 @@ public class ProbNet implements Cloneable {
 	public boolean variablesCouldBeTemporal() {
 		for (PNConstraint constraint : constraints) {
 			if (constraint instanceof OnlyAtemporalVariables) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Checks whether this <code>probNet</code> is multiagent or not.
+	 * 
+	 * @return <code>true</code> when this network has not associated OnlyAtemporalVariables constraint,
+	 *         otherwise <code>false</code>.
+	 */
+	public boolean isMultiagent() {
+		for (PNConstraint constraint : constraints) {
+			if (constraint instanceof OnlyOneAgent) {
 				return false;
 			}
 		}

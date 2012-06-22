@@ -9,9 +9,12 @@
 
 package org.openmarkov.core.action;
 
+import java.util.ArrayList;
+
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.type.NetworkType;
 
 /**
@@ -61,6 +64,12 @@ public class ChangeNetworkTypeEdit extends SimplePNEdit {
 			try
             {
                 probNet.setNetworkType(newNetworkType);
+                if (probNet.isMultiagent()) {
+                	ArrayList<StringWithProperties> agents = new ArrayList<StringWithProperties>();
+        			agents.add(new StringWithProperties(" Agent 1"));
+        			agents.add(new StringWithProperties(" Agent 2"));
+        			probNet.setAgents(agents);
+                }
             }
             catch (ConstraintViolationException e)
             {
@@ -75,6 +84,9 @@ public class ChangeNetworkTypeEdit extends SimplePNEdit {
 			try
             {
                 probNet.setNetworkType(currentNetworkType);
+                if (!probNet.isMultiagent()) {
+                	probNet.setAgents(null);
+                }
             }
             catch (ConstraintViolationException e)
             {

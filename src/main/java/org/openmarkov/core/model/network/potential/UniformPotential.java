@@ -137,7 +137,10 @@ public class UniformPotential extends Potential {
 	    // In case of utility potentials, return an empty potential
 		case UTILITY:
 			ArrayList<Variable> potentialVariables = new ArrayList<Variable>(variables);
-			potentialVariables.removeAll(evidenceCase.getVariables());
+			if(evidenceCase != null)
+			{
+				potentialVariables.removeAll(evidenceCase.getVariables());
+			}
 	        projectedPotential = new TablePotential(potentialVariables, PotentialRole.UTILITY);
 	        projectedPotentials.add (projectedPotential);
 	        break;

@@ -127,9 +127,8 @@ public class UniformPotential extends Potential {
 
 				} else {
 					// returns a uniform potential
-					ArrayList<Variable> potentialVariables = 
-						new ArrayList<Variable>(variables);
-					potentialVariables.removeAll(evidenceCase.getFindings());
+					ArrayList<Variable> potentialVariables = new ArrayList<Variable>(variables);
+					potentialVariables.removeAll(evidenceCase.getVariables());
 					projectedPotential = new TablePotential(potentialVariables, getPotentialRole());
 				}
 			}
@@ -137,8 +136,9 @@ public class UniformPotential extends Potential {
 	        break;
 	    // In case of utility potentials, return an empty potential
 		case UTILITY:
-	        projectedPotential = new TablePotential(new ArrayList<Variable>(),
-					PotentialRole.UTILITY);
+			ArrayList<Variable> potentialVariables = new ArrayList<Variable>(variables);
+			potentialVariables.removeAll(evidenceCase.getVariables());
+	        projectedPotential = new TablePotential(potentialVariables, PotentialRole.UTILITY);
 	        projectedPotentials.add (projectedPotential);
 	        break;
 		}  // end of switch/case statement

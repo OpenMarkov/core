@@ -12,7 +12,7 @@ import org.openmarkov.core.model.network.State;
  * 
  */
 @SuppressWarnings("serial")
-public class RevelationArcValueEdit extends SimplePNEdit {
+public class RevelationStateEdit extends SimplePNEdit {
 
 	private Link link;
 
@@ -20,7 +20,7 @@ public class RevelationArcValueEdit extends SimplePNEdit {
 
 	private boolean selected;
 
-	public RevelationArcValueEdit(Link link, State state, boolean selected) {
+	public RevelationStateEdit(Link link, State state, boolean selected) {
 		super(((ProbNode) link.getNode1().getObject()).getProbNet());
 		this.link = link;
 		this.selected = selected;

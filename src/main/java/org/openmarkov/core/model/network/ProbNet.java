@@ -90,7 +90,7 @@ public class ProbNet implements Cloneable {
 	private ArrayList<StringWithProperties> agents;
 	// TODO Cambiar nombre a decisionCriteria y eliminar el otro decisionCriteria
 	/** Set of criteria for decision, defined by a name. Each one may have several properties. */
-	private StringsWithProperties decisionCriteria2;
+	private ArrayList<StringWithProperties> decisionCriteria2;
 	
     /**
      * @author mluque
@@ -1890,21 +1890,21 @@ public class ProbNet implements Cloneable {
 		return agents;
 	}
 	/** @return <code>StringsWithProperties</code> */
-	public StringsWithProperties getDecisionCriteria() {
+	public ArrayList<StringWithProperties> getDecisionCriteria() {
 		return decisionCriteria2;
 	}
 
 	/**
 	 * @return <code>StringsWithProperties</code>
 	 */
-	public StringsWithProperties getDecisionCriteria2() {
+	/*public StringsWithProperties getDecisionCriteria2() {
 		return decisionCriteria2;
-	}
+	}*/
 
 	/**
 	 * @param decisionCriteria2. <code>StringsWithProperties</code>
 	 */
-	public void setDecisionCriteria2(StringsWithProperties decisionCriteria2) {
+	public void setDecisionCriteria2(ArrayList<StringWithProperties> decisionCriteria2) {
 		this.decisionCriteria2 = decisionCriteria2;
 	}
 

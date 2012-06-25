@@ -77,10 +77,14 @@ public class Variable implements Cloneable {
 
 	private boolean alwaysObserved=false;
 	 /**
-     * Agent
+     * Agent for decision nodes
      */
     private StringWithProperties agent;
 	
+    /**
+     * Decision criteria dor utility nodes
+     */
+    private StringWithProperties decisionCriteria;
 	/**
 	 * Constructor for discrete variables.
 	 * 
@@ -721,6 +725,14 @@ public class Variable implements Cloneable {
 
 	public void setAgent (StringWithProperties agent) {
 		this.agent = agent;
+	}
+	
+	public StringWithProperties getDecisionCriteria() {
+		return decisionCriteria;
+	}
+
+	public void setDecisionriteria (StringWithProperties agent) {
+		this.decisionCriteria = decisionCriteria;
 	}
 /*	public int hashCode() {
 

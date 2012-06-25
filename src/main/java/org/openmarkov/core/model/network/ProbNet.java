@@ -33,6 +33,7 @@ import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet.ProbNetNodesHashMapsType.NodesHashMapType;
 import org.openmarkov.core.model.network.constraint.ConstraintManager;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
+import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.OnlyOneAgent;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
@@ -436,7 +437,7 @@ public class ProbNet implements Cloneable {
 	/**
 	 * Checks whether this <code>probNet</code> is multiagent or not.
 	 * 
-	 * @return <code>true</code> when this network has not associated OnlyAtemporalVariables constraint,
+	 * @return <code>true</code> when this network has not associated OnlyOneAgent constraint,
 	 *         otherwise <code>false</code>.
 	 */
 	public boolean isMultiagent() {
@@ -457,6 +458,21 @@ public class ProbNet implements Cloneable {
 	public boolean onlyTemporal() {
 		for (PNConstraint constraint : constraints) {
 			if (constraint instanceof OnlyTemporalVariables) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks whether this <code>probNet</code> has only chance node or not.
+	 * 
+	 * @return <code>true</code> when this network has not associated OnlyChanceNodes constraint,
+	 *         otherwise <code>false</code>.
+	 */
+	public boolean onlyChanceNodes() {
+		for (PNConstraint constraint : constraints) {
+			if (constraint instanceof OnlyChanceNodes) {
 				return true;
 			}
 		}

@@ -317,9 +317,13 @@ public class NodeStateEdit extends SimplePNEdit {
 				double[] lastPotential = ((TablePotential) link
 						.getRestrictionsPotential()).values.clone();
 				linkRestrictionMap.put(link, lastPotential);
-				link.setRestrictionsPotential(null);
-				
+				link.setRestrictionsPotential(null);	
 			}
+		}
+		
+		ArrayList<Node> children = node.getChildren();
+		for (Node child : children) {
+			Link link = node.getGraph().getLink(node, child, true);
 			if (link.hasRevealingConditions()) {
 				VariableType varType = ((ProbNode) link.getNode1().getObject()).getVariable()
 						.getVariableType();
@@ -334,6 +338,7 @@ public class NodeStateEdit extends SimplePNEdit {
 				}
 			}
 		}
+		
 	}
 
 }

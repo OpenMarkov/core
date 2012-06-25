@@ -57,7 +57,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	private PartitionedInterval currentPartitionedInterval;
 
 	private Map<Link, double[]> linkRestrictionMap;
-	
+
 	/***
 	 * Map with the revelation condition list for each link.
 	 */
@@ -116,20 +116,28 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 							.getPotentials().get(0).getVariables(), child
 							.getPotentials().get(0).getPotentialRole());
 					// child.setUniformPotential();
-					childLastPotential.setUtilityVariable(child
-							.getPotentials().get(0).getUtilityVariable());
+					childLastPotential.setUtilityVariable(child.getPotentials()
+							.get(0).getUtilityVariable());
 					container.add(childLastPotential);
 					child.setPotentials(container);
 				}
 				resetLink(probNode.getNode());
 			}
-			
+
 			if (probNode.getVariable().getVariableType() == VariableType.DISCRETIZED) {
-				
-						probNode.getVariable().setPartitionedInterval( new PartitionedInterval(
-								probNode.getVariable().getDefaultInterval(	probNode.getVariable().getNumStates() ),
-								probNode.getVariable().getDefaultBelongs( probNode.getVariable().getNumStates() ) ) );
-				
+
+				probNode.getVariable()
+						.setPartitionedInterval(
+								new PartitionedInterval(
+										probNode.getVariable()
+												.getDefaultInterval(
+														probNode.getVariable()
+																.getNumStates()),
+										probNode.getVariable()
+												.getDefaultBelongs(
+														probNode.getVariable()
+																.getNumStates())));
+
 			}
 		}
 	}
@@ -164,8 +172,8 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 			}
 		}
 		for (Link link : revelationConditionMap.keySet()) {
-			VariableType varType = ((ProbNode) link.getNode1().getObject()).getVariable()
-					.getVariableType();
+			VariableType varType = ((ProbNode) link.getNode1().getObject())
+					.getVariable().getVariableType();
 			if ((varType == VariableType.NUMERIC)) {
 				link.setRevealingIntervals(revelationConditionMap.get(link));
 			} else {
@@ -192,12 +200,13 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	}
 
 	/****
-	 * This method resets the link restrictions and revelation conditions of the links of the node
+	 * This method resets the link restrictions and revelation conditions of the
+	 * links of the node
 	 * 
 	 * @param node
 	 */
 	private void resetLink(Node node) {
-	
+
 		for (Link link : node.getLinks()) {
 			if (link.hasRestrictions()) {
 				double[] lastPotential = ((TablePotential) link
@@ -205,9 +214,13 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 				linkRestrictionMap.put(link, lastPotential);
 				link.setRestrictionsPotential(null);
 			}
+		}
+		ArrayList<Node> children = node.getChildren();
+		for (Node child : children) {
+			Link link = node.getGraph().getLink(node, child, true);
 			if (link.hasRevealingConditions()) {
-				VariableType varType = ((ProbNode) link.getNode1().getObject()).getVariable()
-						.getVariableType();
+				VariableType varType = ((ProbNode) link.getNode1().getObject())
+						.getVariable().getVariableType();
 				if (varType == VariableType.NUMERIC) {
 					this.revelationConditionMap.put(link,
 							link.getRevealingIntervals());
@@ -220,4 +233,5 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 			}
 		}
 	}
+
 }

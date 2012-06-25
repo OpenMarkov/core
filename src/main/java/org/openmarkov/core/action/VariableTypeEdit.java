@@ -15,7 +15,9 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -114,7 +116,12 @@ public class VariableTypeEdit extends SimplePNEdit {
 	private void resetLink(Node node) {
 		for (Link link : node.getLinks()) {
 			if (link.hasRestrictions()) {
-				link.resetRestrictionsPotential();
+				link.setRestrictionsPotential(null);
+			}
+			if(link.hasRevealingConditions())
+			{
+				link.setRevealingIntervals(new ArrayList<PartitionedInterval>());
+				link.setRevealingStates(new ArrayList<State>());
 			}
 		}
 	}

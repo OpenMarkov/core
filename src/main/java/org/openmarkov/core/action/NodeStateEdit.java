@@ -317,7 +317,7 @@ public class NodeStateEdit extends SimplePNEdit {
 				double[] lastPotential = ((TablePotential) link
 						.getRestrictionsPotential()).values.clone();
 				linkRestrictionMap.put(link, lastPotential);
-				link.resetRestrictionsPotential();
+				link.setRestrictionsPotential(null);
 				
 			}
 			if (link.hasRevealingConditions()) {

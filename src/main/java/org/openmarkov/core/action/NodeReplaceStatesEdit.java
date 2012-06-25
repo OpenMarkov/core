@@ -203,7 +203,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 				double[] lastPotential = ((TablePotential) link
 						.getRestrictionsPotential()).values.clone();
 				linkRestrictionMap.put(link, lastPotential);
-				link.resetRestrictionsPotential();
+				link.setRestrictionsPotential(null);
 			}
 			if (link.hasRevealingConditions()) {
 				VariableType varType = ((ProbNode) link.getNode1().getObject()).getVariable()

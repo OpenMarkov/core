@@ -13,6 +13,7 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -36,25 +37,25 @@ public abstract class InferenceAlgorithm
 	 * Evidence introduced before the network is resolved. In influence diagrams this is
 	 * Ezawa's evidence.
 	 */
-	private ArrayList<Finding> preResolutionEvidence;
+	private EvidenceCase preResolutionEvidence;
 	
 	/**
 	 * Evidence when the network has been resolved. In influence diagrams this is
 	 * Luque and Diez's evidence.
 	 */
-	private ArrayList<Finding> postResolutionEvidence;
+	private EvidenceCase postResolutionEvidence;
 	
 	/**
 	 * @return The post-resolution evidence.
 	 */
-	public ArrayList<Finding> getPostResolutionEvidence() {
+	public EvidenceCase getPostResolutionEvidence() {
 		return postResolutionEvidence;
 	}
 
 	/**
 	 * @param postResolutionEvidence
 	 */
-	public void setPostResolutionEvidence(ArrayList<Finding> postResolutionEvidence) {
+	public void setPostResolutionEvidence(EvidenceCase postResolutionEvidence) {
 		this.postResolutionEvidence = postResolutionEvidence;
 	}
 
@@ -76,14 +77,14 @@ public abstract class InferenceAlgorithm
     /**
      * @return The pre-resolution evidence
      */
-    public ArrayList<Finding> getPreResolutionEvidence() {
+    public EvidenceCase getPreResolutionEvidence() {
 		return preResolutionEvidence;
 	}
 
 	/**
 	 * @param preResolutionEvidence The pre-resolution evidence to set
 	 */
-	public void setPreResolutionEvidence(ArrayList<Finding> preResolutionEvidence) {
+	public void setPreResolutionEvidence(EvidenceCase preResolutionEvidence) {
 		this.preResolutionEvidence = preResolutionEvidence;
 	}
 

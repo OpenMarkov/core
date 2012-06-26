@@ -143,7 +143,7 @@ public abstract class InferenceAlgorithm
      * @return The optimal policy for the decisions that do not have any imposed policy.
      * The domain of each policy also includes the decision and the conditioning variables.
      */
-    public abstract HashMap<Variable,TablePotential> getStrategy () throws
+    public abstract HashMap<Variable,TablePotential> getOptimizedPolicies () throws
 	NotEnoughMemoryException,
 	IncompatibleEvidenceException,
     NormalizeNullVectorException;

@@ -126,6 +126,7 @@ public class TablePotential extends Potential
         {// In this case the potential is a constant
             tableSize = 1;
             values = new double[tableSize];
+			
             offsets = new int[0];
         }
         type = PotentialType.TABLE;
@@ -1225,36 +1226,55 @@ public class TablePotential extends Potential
     }
 
     /** Initialize the table as a uniform potential. */
-    public void setUniform() {
-        if ((variables != null)
-                && (variables.size() > 0)
-                && noNumericVariables()
-                && ((role == PotentialRole.CONDITIONAL_PROBABILITY)
-                        || (role == PotentialRole.POLICY)
-                        || (role == PotentialRole.JOINT_PROBABILITY)
-                        || (role == PotentialRole.UTILITY) || (role == PotentialRole.LINK_RESTRICTION))) {
-            Double value = 0.0;
-            switch (role) {
-            case CONDITIONAL_PROBABILITY:
-                value = 1.0 / new Double(variables.get(0).getNumStates());
-                break;
-            case POLICY:
-            case JOINT_PROBABILITY:
-                value = 1.0;
-                for (Variable variable : variables) {
-                    value *= variable.getNumStates();
-                }
-                value = 1 / value;
-                break;
-            case LINK_RESTRICTION:
-                value = 1.0;
-                break;
-            } // When role = UTILITY -> value = 0.0 (default)
-            for (int i = 0; i < values.length; i++) {
-                values[i] = value;
-            }
-        }
-    }
+	public void setUniform() {
+		int numVariables;
+		boolean setValue = false;
+		Double value = 0.0;
+
+		if (variables != null) {
+			numVariables = variables.size();
+			if ((numVariables > 0)
+					&& noNumericVariables()
+					&& ((role == PotentialRole.CONDITIONAL_PROBABILITY)
+							|| (role == PotentialRole.POLICY)
+							|| (role == PotentialRole.JOINT_PROBABILITY)
+							|| (role == PotentialRole.UTILITY) || (role == PotentialRole.LINK_RESTRICTION))) {
+				setValue = true;
+				value = 0.0;
+				switch (role) {
+				case CONDITIONAL_PROBABILITY:
+					value = 1.0 / new Double(variables.get(0).getNumStates());
+					break;
+				case POLICY:
+				case JOINT_PROBABILITY:
+					value = 1.0;
+					for (Variable variable : variables) {
+						value *= variable.getNumStates();
+					}
+					value = 1 / value;
+					break;
+				case LINK_RESTRICTION:
+					value = 1.0;
+					break;
+				} // When role = UTILITY -> value = 0.0 (default)
+				for (int i = 0; i < values.length; i++) {
+					values[i] = value;
+				}
+			} else if (numVariables == 0) {
+				setValue = true;
+				if (role == PotentialRole.JOINT_PROBABILITY) {
+					value = 1.0;
+				} else {
+					value = 0.0;
+				}
+			}
+			if (setValue) {
+				for (int i = 0; i < values.length; i++) {
+					values[i] = value;
+				}
+			}
+		}
+	}
 
     /** Overrides <code>toString</code> method. Mainly for test purposes */
     public String toString ()

@@ -112,7 +112,7 @@ public class UniformPotential extends Potential {
 					// returns a constant
 					projectedPotential = 
 						new TablePotential(new ArrayList<Variable>(),
-								PotentialRole.CONDITIONAL_PROBABILITY);
+								PotentialRole.UNSPECIFIED);
 					projectedPotential.values[0] = 
 						1.0 / conditionedVariable.getNumStates();
 				}

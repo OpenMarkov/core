@@ -21,7 +21,8 @@ public enum PotentialRole {
 	JOINT_PROBABILITY(2, "joinProbability"),
 	POLICY(3, "policy"),
 	UTILITY(4, "utility"),
-	LINK_RESTRICTION(5,"linkRestriction");
+	LINK_RESTRICTION(5,"linkRestriction"),
+	UNSPECIFIED(6,"unspecified");
 	
 	private int type;
 	

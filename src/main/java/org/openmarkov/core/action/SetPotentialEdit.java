@@ -67,7 +67,10 @@ public class SetPotentialEdit extends SimplePNEdit {
 	public SetPotentialEdit(ProbNode probNode, Potential potential) {
 		super(probNode.getProbNet());
 		this.variable = probNode.getVariable();
-		lastPotential = probNode.getPotentials().get(0);
+		if (probNode.getPotentials().size() != 0) {// if probNode is a decision node it could not have a potential assigned yet
+			lastPotential = probNode.getPotentials().get(0);
+		}
+		
 		newPotential = potential;
 	}
 

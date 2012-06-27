@@ -341,4 +341,25 @@ public class EvidenceCase {
 		return num;
 	}
 
+	/**
+	 * Fuse this EvidenceCase with the input parameter one 
+	 * @param evidenceCaseToFuse
+	 * @param overwrite if true the findings in the parameter will overwrite those in this EvidenceCase
+	 * @throws IncompatibleEvidenceException
+	 */
+	public void fuse(EvidenceCase evidenceCaseToFuse, boolean overwrite) throws IncompatibleEvidenceException{
+		for (Finding finding : evidenceCaseToFuse.getFindings()) {
+			try {
+				if (this.contains(finding.getVariable())) {
+					if (overwrite) {
+						changeFinding(finding);
+					}
+				} else {
+					this.addFinding(finding);
+				}
+			} catch (InvalidStateException ignore) {
+			}
+		}
+	}
+
 }

@@ -169,13 +169,32 @@ public final class DiscretePotentialOperations {
     public static TablePotential sum(
             ArrayList<? extends Potential> tablePotentials)
             throws NotEnoughMemoryException {
+    	ArrayList<TablePotential> constantPotentials;
         if (tablePotentials.size() == 1) {
             return (TablePotential)tablePotentials.get(0);
         }
         
         ArrayList<TablePotential> potentials = 
-            (ArrayList<TablePotential>)((Object)tablePotentials);
+            (ArrayList<TablePotential>) tablePotentials.clone();
         
+		// Leave out the constant potentials
+		constantPotentials = new ArrayList<TablePotential>();
+		for (int i = 0; i < tablePotentials.size(); i++) {
+			Potential auxPotential = tablePotentials.get(i);
+			if (auxPotential.getVariables().size() == 0) {
+				potentials.remove(auxPotential);
+				constantPotentials.add((TablePotential) auxPotential);
+			}
+		}
+
+		// Calculate the sum of constant potentials
+		double sumConstantPotentials = 0.0;
+		int numConstantPotentials = constantPotentials.size();
+		for (int i = 0; i < numConstantPotentials; i++) {
+			sumConstantPotentials = sumConstantPotentials
+					+ constantPotentials.get(i).values[0];
+		}
+          
         int numPotentials = potentials.size();
         PotentialRole role = getRole(tablePotentials);
         
@@ -222,40 +241,51 @@ public final class DiscretePotentialOperations {
             tamTable = dimension[numVariables - 1] * offset[numVariables - 1];
         }
 
-        double addResult;
-        for (int resultPosition=0; resultPosition<tamTable; resultPosition++) {
-           /* increment the result coordinate and
-               find out which variable is to be incremented */
-            for (int iVariable=0; iVariable < resultCoordinate.length;
-                    iVariable++) {
-                // try by incrementing the current variable (given by iVariable)
-                resultCoordinate[iVariable]++;
-                if (resultCoordinate[iVariable] != resultDimension[iVariable]) {
-                    // we have incremented the right variable
-                    incrementedVariable = iVariable;
-                    // do not increment other variables;
-                    break;
-                }
-                /* this variable could not be incremented;
-                   we set it to 0 in resultCoordinate
-                   (the next iteration of the for-loop will increment
-                   the next variable) */
-                resultCoordinate[iVariable] = 0;
-            }
-            addResult = 0;
+		if (potentials.size() > 0) {
+			double addResult;
+			for (int resultPosition = 0; resultPosition < tamTable; resultPosition++) {
+				/*
+				 * increment the result coordinate and find out which variable
+				 * is to be incremented
+				 */
+				for (int iVariable = 0; iVariable < resultCoordinate.length; iVariable++) {
+					// try by incrementing the current variable (given by
+					// iVariable)
+					resultCoordinate[iVariable]++;
+					if (resultCoordinate[iVariable] != resultDimension[iVariable]) {
+						// we have incremented the right variable
+						incrementedVariable = iVariable;
+						// do not increment other variables;
+						break;
+					}
+					/*
+					 * this variable could not be incremented; we set it to 0 in
+					 * resultCoordinate (the next iteration of the for-loop will
+					 * increment the next variable)
+					 */
+					resultCoordinate[iVariable] = 0;
+				}
+				addResult = 0;
 
-            // multiply
-            for (int iPotential=0; iPotential < numPotentials;
-                    iPotential++) {
-                // multiply the numbers
-                addResult = addResult +
-                    tables[iPotential][potentialsPositions[iPotential]];
-                // update the current position in each potential table
-                potentialsPositions[iPotential] +=
-                    offsetAccumulate[iPotential][incrementedVariable];
-            }
-            result.values[resultPosition] = addResult;
-        }
+				// multiply
+				for (int iPotential = 0; iPotential < numPotentials; iPotential++) {
+					// multiply the numbers
+					addResult = addResult
+							+ tables[iPotential][potentialsPositions[iPotential]];
+					// update the current position in each potential table
+					potentialsPositions[iPotential] += offsetAccumulate[iPotential][incrementedVariable];
+				}
+				result.values[resultPosition] = addResult;
+			}
+		}
+        //Sum constant potentials to the result
+		if ((numConstantPotentials > 0) && (sumConstantPotentials != 0.0)) {
+			double[] resultValues = result.values;
+			int length = resultValues.length;
+			for (int i = 0; i < length; i++) {
+				resultValues[i] = resultValues[i] + sumConstantPotentials;
+			}
+		}
         return result;
     }
 

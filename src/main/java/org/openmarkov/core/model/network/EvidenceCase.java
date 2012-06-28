@@ -348,16 +348,19 @@ public class EvidenceCase {
 	 * @throws IncompatibleEvidenceException
 	 */
 	public void fuse(EvidenceCase evidenceCaseToFuse, boolean overwrite) throws IncompatibleEvidenceException{
-		for (Finding finding : evidenceCaseToFuse.getFindings()) {
-			try {
-				if (this.contains(finding.getVariable())) {
-					if (overwrite) {
-						changeFinding(finding);
+		if(evidenceCaseToFuse != null)
+		{
+			for (Finding finding : evidenceCaseToFuse.getFindings()) {
+				try {
+					if (this.contains(finding.getVariable())) {
+						if (overwrite) {
+							changeFinding(finding);
+						}
+					} else {
+						this.addFinding(finding);
 					}
-				} else {
-					this.addFinding(finding);
+				} catch (InvalidStateException ignore) {
 				}
-			} catch (InvalidStateException ignore) {
 			}
 		}
 	}

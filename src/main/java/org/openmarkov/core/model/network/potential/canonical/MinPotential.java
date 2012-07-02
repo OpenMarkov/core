@@ -182,7 +182,7 @@ public class MinPotential extends MinMaxPotential {
     		}
     	}
     	
-    	MaxPotential newICIPotential = new MaxPotential(this.modelType, newVariables);
+    	MinPotential newICIPotential = new MinPotential(this.modelType, newVariables);
     	
     	for (int i = 1; i < newVariables.size(); i++) {
 			double []noisyParameters = this.getNoisyParameters(newVariables.get(i));

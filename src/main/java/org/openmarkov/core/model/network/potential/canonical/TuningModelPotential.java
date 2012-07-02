@@ -185,7 +185,7 @@ public class TuningModelPotential extends ICIPotential
     		}
     	}
     	
-    	MaxPotential newICIPotential = new MaxPotential(this.modelType, newVariables);
+    	TuningModelPotential newICIPotential = new TuningModelPotential(newVariables);
     	
     	for (int i = 1; i < newVariables.size(); i++) {
 			double []noisyParameters = this.getNoisyParameters(newVariables.get(i));

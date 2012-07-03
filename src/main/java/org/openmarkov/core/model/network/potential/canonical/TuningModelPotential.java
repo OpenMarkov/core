@@ -54,7 +54,7 @@ public class TuningModelPotential extends ICIPotential
      */
     public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
     {
-        boolean valid = ICIPotential.validate (probNode, variables, role);
+        boolean valid = ICIPotential.validate (probNode, variables, role) && role.equals (PotentialRole.CONDITIONAL_PROBABILITY);
         for(Variable variable : variables)
         {
             valid &= variable.getNumStates () == 3; 

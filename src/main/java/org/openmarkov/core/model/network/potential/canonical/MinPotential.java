@@ -49,17 +49,18 @@ public class MinPotential extends MinMaxPotential {
      * @param role. <code>PotentialRole</code>. */
 	public static boolean validate(ProbNode probNode, ArrayList<Variable> variables, 
 			PotentialRole role) {
-		boolean suitable = (role == PotentialRole.CONDITIONAL_PROBABILITY)
-				|| (role == PotentialRole.POLICY);
+		boolean valid = ICIPotential.validate(probNode, variables, role) && 
+		        ((role == PotentialRole.CONDITIONAL_PROBABILITY)
+				|| (role == PotentialRole.POLICY));
 		int i = 0;
 		
-		while(suitable && i < variables.size())
+		while(valid && i < variables.size())
 		{
-			suitable &= variables.get(i).getVariableType() == VariableType.FINITE_STATES 
+			valid &= variables.get(i).getVariableType() == VariableType.FINITE_STATES 
 					|| variables.get(i).getVariableType() == VariableType.DISCRETIZED;
 			++i;
 		}
-        return suitable;
+        return valid;
     }       
 
 	@Override

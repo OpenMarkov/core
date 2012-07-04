@@ -20,4 +20,8 @@ public class NoFindingException extends Exception {
 		super("The variable " + variable + " does not exists in EvidenceCase");
 	}
 
+	public NoFindingException(String variableName) {
+		super("The variable " + variableName + " does not exists in EvidenceCase");
+	}
+
 }

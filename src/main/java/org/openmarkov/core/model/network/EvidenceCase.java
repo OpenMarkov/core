@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -142,7 +143,7 @@ public class EvidenceCase {
     	addFinding(finding);
     }    
     
-    /** @param variableName <code>String</code>.
+    /** @param variable <code>Variable</code>.
      * @throws NoFindingException */
     public void removeFinding(Variable variable) throws NoFindingException {
         Finding finding = getFinding(variable);
@@ -150,6 +151,22 @@ public class EvidenceCase {
             throw new NoFindingException(variable);
         }
         findings.remove(finding.getVariable());
+    }
+    
+    /** @param variableName <code>String</code>.
+     * @throws NoFindingException */
+    public void removeFinding(String variableName) throws NoFindingException {
+    	Set<Variable> findingsVariables = findings.keySet();
+    	boolean existsFinding = false;
+    	for (Variable variable : findingsVariables) {
+    		if (variable.getName().contentEquals(variableName)) {
+    	        findings.remove(variable);
+    	        existsFinding = true;
+    		}
+    	}
+    	if (!existsFinding) {
+            throw new NoFindingException(variableName);
+        }
     }
     
     /** @return The set of variables associated to the set of findings in the

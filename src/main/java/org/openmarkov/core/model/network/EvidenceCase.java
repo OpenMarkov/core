@@ -156,17 +156,17 @@ public class EvidenceCase {
     /** @param variableName <code>String</code>.
      * @throws NoFindingException */
     public void removeFinding(String variableName) throws NoFindingException {
-    	Set<Variable> findingsVariables = findings.keySet();
-    	boolean existsFinding = false;
-    	for (Variable variable : findingsVariables) {
-    		if (variable.getName().contentEquals(variableName)) {
-    	        findings.remove(variable);
-    	        existsFinding = true;
-    		}
-    	}
-    	if (!existsFinding) {
+    	ArrayList<Variable> findingsVariables = new ArrayList<Variable>(findings.keySet());
+    	int i = 0, numVariables = findingsVariables.size();
+    	Variable variable = null;
+    	do {
+    		variable = findingsVariables.get(i++);
+    	} while (i < numVariables && !variable.getName().contentEquals(variableName));
+    	if (variable == null) {
             throw new NoFindingException(variableName);
-        }
+    	} else {
+	        findings.remove(variable);
+    	}
     }
     
     /** @return The set of variables associated to the set of findings in the

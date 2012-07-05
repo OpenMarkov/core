@@ -1898,24 +1898,15 @@ public class ProbNet implements Cloneable {
 		return equivalentNode;
 	}
 
-	/** @return <code>StringsWithProperties</code> */
-	/*public StringsWithProperties getAgents() {
-		return agents;
-	}*/	
+	/** @return <code>ArrayList</code> of <code>StringsWithProperties</code> */
 	public ArrayList<StringWithProperties> getAgents() {
 		return agents;
 	}
+	
 	/** @return <code>StringsWithProperties</code> */
 	public ArrayList<StringWithProperties> getDecisionCriteria() {
 		return decisionCriteria2;
 	}
-
-	/**
-	 * @return <code>StringsWithProperties</code>
-	 */
-	/*public StringsWithProperties getDecisionCriteria2() {
-		return decisionCriteria2;
-	}*/
 
 	/**
 	 * @param decisionCriteria2. <code>StringsWithProperties</code>

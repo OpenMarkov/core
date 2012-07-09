@@ -75,13 +75,23 @@ public class InferenceManager
      * @throws NoSuchMethodException
      */
     public ArrayList<String> getInferenceAlgorithms (ProbNet probNet)
-        throws SecurityException,
-        NoSuchMethodException
     {
         ArrayList<String> inferenceAlgorithmNames = new ArrayList<String> ();
         for (String algorithmName : inferenceAlgorithms.keySet ())
         {
-            Constructor<? extends InferenceAlgorithm> constructor = inferenceAlgorithms.get (algorithmName).getConstructor (ProbNet.class);
+            Constructor<? extends InferenceAlgorithm> constructor = null;
+            try
+            {
+                constructor = inferenceAlgorithms.get (algorithmName).getConstructor (ProbNet.class);
+            }
+            catch (SecurityException e1)
+            {
+                e1.printStackTrace();
+            }
+            catch (NoSuchMethodException e1)
+            {
+                e1.printStackTrace();
+            }
             if (constructor != null)
             {
                 try

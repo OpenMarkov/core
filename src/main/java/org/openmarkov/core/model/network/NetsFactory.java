@@ -30,6 +30,7 @@ public class NetsFactory {
 	
 	static String diseaseStates[]={"present","absent"};
 	static String testResultStates[]={"positive","negative"};
+	static String yesNoStates[]={"yes","no"};
 	
 	/**
 	 * @param variables
@@ -297,6 +298,97 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	
 	
 	/**
+	 * @return A Bayesian network with three nodes (A, B and C) and two links A -> B, and A -> C.
+	 * This network was stored in file "peque.elv"
+	 */
+	public static ProbNet createBayesianNetworkAsia(){
+		Variable variableA;
+		Variable variableB;
+		Variable variableC;
+		double [] tableA;
+		double [] tableBA;
+		
+		ProbNet peque = new ProbNet();
+		
+		String nameStates[]=diseaseStates;
+		//Finite States variables
+		//"Visit to Asia"
+		variableA = new Variable("A",yesNoStates);
+		//"Smoker"
+		variableB = new Variable("S",yesNoStates);
+		//"Tuberculosis"
+		variableC = new Variable("T",diseaseStates);
+		//"Lung Cancer"
+		variableC = new Variable("L",diseaseStates);
+		//"Bronchitis"
+		variableC = new Variable("B",diseaseStates);
+		//"Tuberculosis or Cancer"
+		variableC = new Variable("TOrC",yesNoStates);
+		//"Positive X-ray"
+		variableC = new Variable("X",yesNoStates);
+		//"Dyspnea"
+		variableC = new Variable("D",yesNoStates);
+			
+				
+		//additional properties
+		String relevance = new String("Relevance");
+		String value = new String("7.0");
+		
+		setAdditionalProperties(relevance,value,variableA);
+			
+		variableA.setAdditionalProperty(relevance,value);
+		variableB.setAdditionalProperty(relevance,value);
+		variableC.setAdditionalProperty(relevance,value);
+		
+		addVariables(peque,NodeType.CHANCE,variableA,variableB, variableC);
+				
+		//Potentials
+		//PotentialType type = PotentialType.TABLE;
+		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
+		
+		//Potential A
+		tableA = valuesAPrioriDisease(0.8);
+		TablePotential potentialA = createTablePotential(role,tableA,variableA);
+		
+		//Potential BA
+		tableBA = valuesCPTResultTest(0.1,0.7);
+		TablePotential potentialBA = createTablePotential(role,tableBA,variableB,variableA);
+		
+		//potencial CAB
+		//double [] tableCAB ={0.15, 0.29, 0.84, 0.98, 0.85, 0.71, 0.16, 0.02};
+		//double [] tableCAB ={0.15, 0.85, 0.84, 0.16, 0.29, 0.71, 0.98, 0.02};
+		double [] tableCAB = {0.02, 0.98, 0.71, 0.29, 0.16, 0.84, 0.85, 0.15};
+		TablePotential potentialCAB = createTablePotential(role,tableCAB,variableC,variableA,variableB);
+		
+		NodeType nodeType = NodeType.CHANCE;
+		
+		addVariables(peque,nodeType,variableA,variableB,variableC);
+		
+		//Links throws NodeNotFoundException
+		try {
+			peque.addLink(variableA, variableB, true);
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+		}
+		try {
+			peque.addLink(variableA, variableC, true);
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+		}
+		try {
+			peque.addLink(variableB, variableC, true);
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+		}
+				
+		addPotentials(peque,potentialA,potentialBA,potentialCAB);
+	
+	
+	return peque;
+}
+	
+	
+	/**
 	 * @return An influence diagram with four nodes: X, Y, D and U. It represents a diagnosis problem.
 	 * It is the example of influence diagram described in page 11 in the book available online at URL:
 	 * http://www.cisiad.uned.es/techreports/decision-medicina.pdf
@@ -458,7 +550,6 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 			
 			ProbNet probNet;
 			PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
-			double [] tableX;
 			double [] tableYXT;
 			TablePotential potentialX;
 			TablePotential potentialY;

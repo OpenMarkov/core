@@ -11,7 +11,7 @@ package org.openmarkov.core;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openmarkov.core.inference.InferenceTests;
+import org.openmarkov.core.inference.InferenceAlgorithmTests;
 import org.openmarkov.core.model.graph.GraphsTests;
 import org.openmarkov.core.model.network.NetworksTests;
 import org.openmarkov.core.model.network.potential.operation.OperationsTests;
@@ -22,7 +22,7 @@ import org.openmarkov.core.model.network.potential.operation.OperationsTests;
 	GraphsTests.class,
     NetworksTests.class,
     OperationsTests.class,
-    InferenceTests.class,
+    InferenceAlgorithmTests.class,
 })
 
 /** @author manuel

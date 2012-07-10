@@ -288,6 +288,16 @@ public final class DiscretePotentialOperations {
 		}
         return result;
     }
+    
+    public static TablePotential sum (TablePotential... tablePotentials) throws NotEnoughMemoryException
+    {
+        ArrayList<TablePotential> potentialList = new ArrayList<TablePotential> (tablePotentials.length);
+        for(TablePotential potential: tablePotentials)
+        {
+            potentialList.add (potential);
+        }
+        return sum(potentialList);
+    }    
 
     private static PotentialRole getRole(
             ArrayList<? extends Potential> potentials) {

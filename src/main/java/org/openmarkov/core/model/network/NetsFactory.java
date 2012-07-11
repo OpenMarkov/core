@@ -149,7 +149,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	 * @return a Bayesian network with two nodes (X and Y) and a link X -> Y
 	 * @throws Exception
 	 */
-	public static ProbNet createBayesianNetworkXY(double prevalence,double sensitivity,double specificity) throws Exception {
+	public static ProbNet createBN_XY(double prevalence,double sensitivity,double specificity) throws Exception {
 		ProbNet probNet;
 		double[] valuesX;
 		double [] valuesYX;
@@ -223,7 +223,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	 * @return A Bayesian network with three nodes (A, B and C) and two links A -> B, and A -> C.
 	 * This network was stored in file "peque.elv"
 	 */
-	public static ProbNet createBayesianNetworkABC(){
+	public static ProbNet createBN_ABC(){
 		Variable variableA;
 		Variable variableB;
 		Variable variableC;
@@ -264,8 +264,6 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		TablePotential potentialBA = createTablePotential(role,tableBA,variableB,variableA);
 		
 		//potencial CAB
-		//double [] tableCAB ={0.15, 0.29, 0.84, 0.98, 0.85, 0.71, 0.16, 0.02};
-		//double [] tableCAB ={0.15, 0.85, 0.84, 0.16, 0.29, 0.71, 0.98, 0.02};
 		double [] tableCAB = {0.02, 0.98, 0.71, 0.29, 0.16, 0.84, 0.85, 0.15};
 		TablePotential potentialCAB = createTablePotential(role,tableCAB,variableC,variableA,variableB);
 		

@@ -24,6 +24,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NetsFactory;
 import org.openmarkov.core.model.network.ProbNet;
@@ -46,6 +47,11 @@ public abstract class InferenceAlgorithmTests {
 	static double prevalence = 0.91;
 	static double sensitivity = 0.95;
 	static double specificity = 0.8;
+	
+	/**
+	 * Bayesian network with one node (X)
+	 */
+	ProbNet bN_X;
 	
 	
 	/**
@@ -74,6 +80,7 @@ public abstract class InferenceAlgorithmTests {
 	@Before
 	public void setUp() throws Exception {
 
+		bN_X = NetsFactory.createBN_X(1.0);
 		bN_XY = NetsFactory.createBN_XY(prevalence,
 				sensitivity, specificity);
 		bN_ABC = NetsFactory.createBN_ABC();
@@ -134,6 +141,41 @@ public abstract class InferenceAlgorithmTests {
 			System.err.println(e.getMessage());
 		}
 	}
+	
+	@Test
+	public void testAPosterioriProbabilitiesBN_XY() throws Exception {
+		ProbNet network;
+		double probPositiveX;
+		double probNegativeX;
+		
+		network = bN_XY;
+		
+		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(bN_XY);
+		
+		
+		Variable variableX = getVariableAndAssertNotNull(network,"X");
+		Variable variableY = getVariableAndAssertNotNull(network,"Y");
+		
+		// Test when Y = positive
+		EvidenceCase evidence1 = new EvidenceCase();
+		evidence1.addFinding(network, "Y", "positive");
+		HashMap<Variable, TablePotential> yPositiveProbabilities;
+		algorithm.setPostResolutionEvidence(evidence1);
+
+		probPositiveX = prevalence * sensitivity;
+		probNegativeX = (1-prevalence)*(1-specificity);
+		double alpha = probPositiveX + probNegativeX;
+		probPositiveX = probPositiveX / alpha; 
+		try {
+			yPositiveProbabilities = algorithm.getProbsAndUtilities();
+			checkProbabilityPotential(yPositiveProbabilities,variableX,0.9796034);
+			checkProbabilityPotential(yPositiveProbabilities,variableY,1.0);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+	}
+
 
 	/**
 	 * @param network
@@ -175,6 +217,38 @@ public abstract class InferenceAlgorithmTests {
 	}
 
 
+	@Test
+	public void testIncompatibleEvidenceBN_X() {
+		ProbNet network;
+		boolean isCorrectTest;
+		
+		isCorrectTest = false;
+				
+		network = bN_X;
+		
+		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
+				
+		// Test when X = absent, which is incompatible evidence
+		EvidenceCase evidence = new EvidenceCase();
+		try {
+			evidence.addFinding(network, "X", "absent");
+		} catch (ProbNodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
+			e.printStackTrace();
+		} 
+		
+		algorithm.setPostResolutionEvidence(evidence);
+		
+		try {
+			algorithm.getProbsAndUtilities();
+		} catch (NotEnoughMemoryException | UnexpectedInferenceException e) {
+			e.printStackTrace();
+		} catch (IncompatibleEvidenceException e) {
+			isCorrectTest = true;
+		}
+		
+		assertTrue(isCorrectTest);
+
+	}
 
 
 
@@ -186,6 +260,7 @@ public abstract class InferenceAlgorithmTests {
 	public void testAPrioriProbabilitiesBN_XY() throws Exception {
 		ProbNet network;
 		double probPositiveY;
+
 		
 		network = bN_XY;
 		InferenceAlgorithm elimination1 = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
@@ -215,16 +290,13 @@ public abstract class InferenceAlgorithmTests {
 		network = bN_ABC;
 	
 		InferenceAlgorithm algorithm1 = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
-			Variable variableA = network.getVariable("A");
-			assertNotNull(variableA);
-			Variable variableB = network.getVariable("B");
-			assertNotNull(variableB);
-			Variable variableC = network.getVariable("C");
-			assertNotNull(variableC);
+			Variable variableA = getVariableAndAssertNotNull(network,"A");
+			Variable variableB = getVariableAndAssertNotNull(network,"B");
+			Variable variableC = getVariableAndAssertNotNull(network,"C");
 
 			// A = absent
 			EvidenceCase evidence1 = new EvidenceCase();
-			evidence1.addFinding(bN_ABC, "A", "absent");
+			evidence1.addFinding(network, "A", "absent");
 			HashMap<Variable, TablePotential> aAbsentProbabilities;
 			algorithm1.setPostResolutionEvidence(evidence1);
 			try {
@@ -239,15 +311,15 @@ public abstract class InferenceAlgorithmTests {
 
 			// A = present
 			EvidenceCase evidence2 = new EvidenceCase();
-			evidence2.addFinding(bN_ABC, "A", "present");
+			evidence2.addFinding(network, "A", "present");
 			HashMap<Variable, TablePotential> aPresentProbabilities;
 			InferenceAlgorithm algorithm2 = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(bN_XY);
 			algorithm2.setPostResolutionEvidence(evidence2);
 			try {
 				aPresentProbabilities = algorithm2.getProbsAndUtilities();
-				checkProbabilityPotential(aPresentProbabilities,variableA,1.0,0.0);
-				checkProbabilityPotential(aPresentProbabilities,variableB,0.1,0.9);
-				checkProbabilityPotential(aPresentProbabilities,variableC,0.146,0.854);
+				checkProbabilityPotential(aPresentProbabilities,variableA,1.0);
+				checkProbabilityPotential(aPresentProbabilities,variableB,0.1);
+				checkProbabilityPotential(aPresentProbabilities,variableC,0.146);
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
@@ -267,16 +339,13 @@ public abstract class InferenceAlgorithmTests {
 		network = bN_ABC;
 		
 		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
-		Variable variableA = bN_ABC.getVariable("A");
-		assertNotNull(variableA);
-		Variable variableB = bN_ABC.getVariable("B");
-		assertNotNull(variableB);
-		Variable variableC = bN_ABC.getVariable("C");
-		assertNotNull(variableC);
+		Variable variableA = getVariableAndAssertNotNull(network,"A");
+		Variable variableB = getVariableAndAssertNotNull(network,"B");
+		Variable variableC = getVariableAndAssertNotNull(network,"C");
 
 		// Test when A = absent
 		EvidenceCase evidence1 = new EvidenceCase();
-		evidence1.addFinding(bN_ABC, "A", "absent");
+		evidence1.addFinding(network, "A", "absent");
 		HashMap<Variable, TablePotential> aAbsentProbabilities;
 		algorithm.setPreResolutionEvidence(evidence1);
 		try {
@@ -315,15 +384,13 @@ public abstract class InferenceAlgorithmTests {
 		
 		@Test
 		public void testAPosterioriProbabilitiesBN_XYZ() throws Exception {
-			
+			ProbNet network;
 			InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(bN_XYZ);
 			
-			Variable variableX = bN_XYZ.getVariable("X");
-			assertNotNull(variableX);
-			Variable variableY = bN_XYZ.getVariable("Y");
-			assertNotNull(variableY);
-			Variable variableZ = bN_XYZ.getVariable("Z");
-			assertNotNull(variableZ);
+			network = bN_XYZ;
+			Variable variableX = getVariableAndAssertNotNull(network,"X");
+			Variable variableY = getVariableAndAssertNotNull(network,"Y");
+			Variable variableZ = getVariableAndAssertNotNull(network,"Z");
 
 			// Test when Y = positive
 			EvidenceCase evidence1 = new EvidenceCase();
@@ -464,8 +531,8 @@ public abstract class InferenceAlgorithmTests {
 			assertEquals(96.006, meuEvaluation, maxError);
 
 			// Test optimal policy
-			variableT = diagram.getVariable("T");
-			variableD = diagram.getVariable("D");
+			variableT = getVariableAndAssertNotNull(diagram,"T");
+			variableD = getVariableAndAssertNotNull(diagram,"D");
 			HashMap<Variable, TablePotential> optimalStrategy = algorithm.getOptimizedPolicies();
 			TablePotential policyT = optimalStrategy.get(variableT);
 			TablePotential policyD = optimalStrategy.get(variableD);
@@ -482,14 +549,10 @@ public abstract class InferenceAlgorithmTests {
 			HashMap<Variable, TablePotential> aPrioriProbabilities = algorithm
 					.getProbsAndUtilities();
 			// Read the variables
-			variableX = diagram.getVariable("X");
-			assertNotNull(variableX);
-			variableY = diagram.getVariable("Y");
-			assertNotNull(variableY);
-			variableU1 = diagram.getVariable("U1");
-			assertNotNull(variableU1);
-			variableU2 = diagram.getVariable("U2");
-			assertNotNull(variableU2);
+			variableX = getVariableAndAssertNotNull(diagram,"X");
+			variableY = getVariableAndAssertNotNull(diagram,"Y");
+			variableU1 = getVariableAndAssertNotNull(diagram,"U1");
+			variableU2 = getVariableAndAssertNotNull(diagram,"U2");
 
 			checkProbabilityPotential(aPrioriProbabilities, variableX, 0.07);
 			checkProbabilityPotential(aPrioriProbabilities, variableY, 0.0916,
@@ -659,12 +722,16 @@ public abstract class InferenceAlgorithmTests {
 			algorithm.setPostResolutionEvidence(evi);
 			HashMap<Variable, TablePotential> aPosterioriProbabilities = null;
 			try {
-				aPosterioriProbabilities = algorithm.getProbsAndUtilities();
+				try {
+					aPosterioriProbabilities = algorithm.getProbsAndUtilities();
+				} catch (UnexpectedInferenceException e) {
+					
+					e.printStackTrace();
+				}
 			} catch (NotEnoughMemoryException e) {
 				e.printStackTrace();
-			} catch (NormalizeNullVectorException e) {
-				e.printStackTrace();
 			}
+			
 			checkProbabilityPotential(aPosterioriProbabilities, variableX, x);
 			checkProbabilityPotential(aPosterioriProbabilities, variableY, y1,
 					y2);
@@ -905,7 +972,7 @@ public abstract class InferenceAlgorithmTests {
 		sum = 0.0;
 		for (int i = 0; i < potValuesLength - 1; i++) {
 			double expected = values[i];
-			assertEquals(potValues[i], expected, maxError);
+			assertEquals(expected, potValues[i], maxError);
 			sum = sum + expected;
 		}
 		assertEquals(1.0 - sum, potValues[potValuesLength - 1], maxError);

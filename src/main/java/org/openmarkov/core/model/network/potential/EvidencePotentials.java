@@ -31,8 +31,8 @@ public class EvidencePotentials {
 	 *   <code>Variable</code>
 	 *  @param evidence. <code>EvidenceCase</code> 
 	 * @throws NotEnoughMemoryException */
-	public static HashMap<Variable, Potential> addEvidencePotentials(
-			HashMap<Variable, Potential> individualProbabilities,
+	public static HashMap<Variable, TablePotential> addEvidencePotentials(
+			HashMap<Variable, TablePotential> individualProbabilities,
 			ArrayList<Variable> variablesOfInterest, EvidenceCase evidence) 
 			throws NotEnoughMemoryException {
 		

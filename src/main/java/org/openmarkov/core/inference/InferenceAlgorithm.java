@@ -10,11 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -117,6 +116,8 @@ public abstract class InferenceAlgorithm
         throws NotEvaluableNetworkException
     {
         this.probNet = probNet;
+        preResolutionEvidence = new EvidenceCase();
+        postResolutionEvidence = new EvidenceCase();
         if (!isEvaluable (probNet))
         {
             throw new NotEvaluableNetworkException (probNet.toString ());
@@ -146,7 +147,7 @@ public abstract class InferenceAlgorithm
     public abstract HashMap<Variable,TablePotential> getOptimizedPolicies () throws
 	NotEnoughMemoryException,
 	IncompatibleEvidenceException,
-    NormalizeNullVectorException;
+	UnexpectedInferenceException;
     
     
   
@@ -157,7 +158,7 @@ public abstract class InferenceAlgorithm
     public abstract TablePotential getGlobalUtility() throws
 	NotEnoughMemoryException,
 	IncompatibleEvidenceException,
-    NormalizeNullVectorException;;
+	UnexpectedInferenceException;
     
     
     /**
@@ -169,7 +170,7 @@ public abstract class InferenceAlgorithm
     public abstract HashMap<Variable,TablePotential> getProbsAndUtilities() throws
     	NotEnoughMemoryException,
     	IncompatibleEvidenceException,
-        NormalizeNullVectorException;
+        UnexpectedInferenceException;
     
    
     /**
@@ -182,7 +183,7 @@ public abstract class InferenceAlgorithm
     public abstract HashMap<Variable,TablePotential> getProbsAndUtilities(ArrayList<Variable> variablesOfInterest) throws
 	NotEnoughMemoryException,
 	IncompatibleEvidenceException,
-    NormalizeNullVectorException;
+	UnexpectedInferenceException;
     
     /**
      * @param variables
@@ -194,7 +195,7 @@ public abstract class InferenceAlgorithm
     public abstract TablePotential getJointProbability(ArrayList<Variable> variables)throws
 	NotEnoughMemoryException,
 	IncompatibleEvidenceException,
-    NormalizeNullVectorException;
+	UnexpectedInferenceException;
     
   
 	/**

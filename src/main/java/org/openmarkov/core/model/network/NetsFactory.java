@@ -142,6 +142,30 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	}
 
 
+	/**
+	 * @return a Bayesian network with one node node (X)
+	 * @throws Exception
+	 */
+	public static ProbNet createBN_X(double prevalence) throws Exception {
+		ProbNet probNet;
+		double[] valuesX;
+				
+		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
+					
+		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
+		
+		// Define the variables
+		Variable variableX = new Variable("X",diseaseStates);
+			
+		addVariables(probNet,NodeType.CHANCE,variableX);
+
+		valuesX = valuesAPrioriDisease(prevalence);
+		TablePotential potentialX = createTablePotential(role,valuesX,variableX);
+		
+		addPotentials(probNet,potentialX);
+		
+		return probNet;
+}
 	
 	
 	

@@ -217,12 +217,14 @@ public abstract class InferenceAlgorithmTests {
 	}
 
 
-	@Test
-	public void testIncompatibleEvidenceBN_X() {
+	/**
+	 * @throws IncompatibleEvidenceException
+	 * Tests if the inference on a network with a deterministic variable throws IncompatibleEvidenceException
+	 * if there is evidence on the state whose probability is 0.
+	 */
+	@Test (expected = IncompatibleEvidenceException.class)
+	public void testIncompatibleEvidenceBN_X() throws IncompatibleEvidenceException {
 		ProbNet network;
-		boolean isCorrectTest;
-		
-		isCorrectTest = false;
 				
 		network = bN_X;
 		
@@ -233,7 +235,7 @@ public abstract class InferenceAlgorithmTests {
 		try {
 			evidence.addFinding(network, "X", "absent");
 		} catch (ProbNodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		} 
 		
 		algorithm.setPostResolutionEvidence(evidence);
@@ -242,11 +244,44 @@ public abstract class InferenceAlgorithmTests {
 			algorithm.getProbsAndUtilities();
 		} catch (NotEnoughMemoryException | UnexpectedInferenceException e) {
 			e.printStackTrace();
-		} catch (IncompatibleEvidenceException e) {
-			isCorrectTest = true;
+		}
+
+	}
+	
+	/**
+	 * @throws IncompatibleEvidenceException
+	 * Tests if the inference on the network XY with the probability of Y=absent equal to 0.0
+	 * for any state in X, throws IncompatibleEvidenceException if the evidence is Y=absent.
+	 */
+
+	@Test (expected = IncompatibleEvidenceException.class)
+	public void testIncompatibleEvidenceBN_XY() throws IncompatibleEvidenceException {
+		ProbNet network = null;
+				
+		try {
+			network = NetsFactory.createBN_XY(0.5,1.0,0.0);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
-		assertTrue(isCorrectTest);
+		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
+				
+		// Test when Y = absent, which is incompatible evidence
+		EvidenceCase evidence = new EvidenceCase();
+		try {
+			evidence.addFinding(network, "Y", "negative");
+		} catch (ProbNodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
+			//e.printStackTrace();
+		} 
+		
+		algorithm.setPostResolutionEvidence(evidence);
+		
+		try {
+			algorithm.getProbsAndUtilities();
+		} catch (NotEnoughMemoryException | UnexpectedInferenceException e) {
+			e.printStackTrace();
+		}
 
 	}
 

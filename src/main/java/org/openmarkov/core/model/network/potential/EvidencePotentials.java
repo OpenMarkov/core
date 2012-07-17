@@ -9,12 +9,14 @@
 
 package org.openmarkov.core.model.network.potential;
 
+//import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 
 public class EvidencePotentials {
@@ -50,8 +52,11 @@ public class EvidencePotentials {
 					TablePotential potential = null;
 					potential = new TablePotential(potentialVariables, 
 							PotentialRole.CONDITIONAL_PROBABILITY);
-					// Sets potential table configurations
-					potential.values[evidence.getState(variable)] = 1.0;
+					int indexStateEvidence = evidence.getState(variable);
+					for (int indexState=0;indexState<variable.getStates().length;indexState++){
+						// Sets potential table configurations
+						potential.values[indexState] = (indexState==indexStateEvidence)?1.0:0.0;
+					}
 					// Inserts potential in individualProbabilities
 					individualProbabilities.put(variable, potential);
 				}

@@ -133,6 +133,39 @@ public class Link {
 		return restrictionsPotential != null;
 	}
 
+	/****
+	 * @return<code>true</code> if a value of the first variable makes all values of the second variable impossible.
+	 * 
+	 */
+	public boolean hasAbsoluteRestriction() {
+		boolean absoluteRestriction = false;
+		if (hasRestrictions()) {
+		int numStates = restrictionsPotential.getVariables().get(0)
+				.getNumStates();
+		int valuesSize = restrictionsPotential.getValues().length;
+		
+
+			for (int index = 0; index < numStates && !absoluteRestriction; index++) {
+				boolean valueRestrictsVariable = true;
+				int i = index;
+				while (i < valuesSize && valueRestrictsVariable) {
+					if (restrictionsPotential.getValues()[i] == 1) {
+						valueRestrictsVariable = false;
+
+					}
+					i += numStates;
+				}
+
+				if (valueRestrictsVariable) {
+					absoluteRestriction = true;
+				}
+			}
+		}
+
+		return absoluteRestriction;
+
+	}
+
 	/**
 	 * Initializes a TablePotential for the variable associated to node1 and
 	 * node2, whose values are all 1.
@@ -150,7 +183,8 @@ public class Link {
 	}
 
 	/*****
-	 * Assigns a null value to the restrictionsPotential if the restrictions potential does not contain restrictions
+	 * Assigns a null value to the restrictionsPotential if the restrictions
+	 * potential does not contain restrictions
 	 * 
 	 * @throws NotEnoughMemoryException
 	 */

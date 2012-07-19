@@ -134,18 +134,18 @@ public class Link {
 	}
 
 	/****
-	 * @return<code>true</code> if a value of the first variable makes all values of the second variable impossible.
+	 * @return<code>true</code> if a value of the first variable makes all
+	 *                          values of the second variable impossible.
 	 * 
 	 */
-	public boolean hasAbsoluteRestriction() {
-		boolean absoluteRestriction = false;
+	public boolean hasTotalRestriction() {
+		boolean totalRestriction = false;
 		if (hasRestrictions()) {
-		int numStates = restrictionsPotential.getVariables().get(0)
-				.getNumStates();
-		int valuesSize = restrictionsPotential.getValues().length;
-		
+			int numStates = restrictionsPotential.getVariables().get(0)
+					.getNumStates();
+			int valuesSize = restrictionsPotential.getValues().length;
 
-			for (int index = 0; index < numStates && !absoluteRestriction; index++) {
+			for (int index = 0; index < numStates && !totalRestriction; index++) {
 				boolean valueRestrictsVariable = true;
 				int i = index;
 				while (i < valuesSize && valueRestrictsVariable) {
@@ -157,12 +157,12 @@ public class Link {
 				}
 
 				if (valueRestrictsVariable) {
-					absoluteRestriction = true;
+					totalRestriction = true;
 				}
 			}
 		}
 
-		return absoluteRestriction;
+		return totalRestriction;
 
 	}
 
@@ -179,6 +179,9 @@ public class Link {
 		variables.add(((ProbNode) node2.getObject()).getVariable());
 		restrictionsPotential = new TablePotential(variables,
 				PotentialRole.LINK_RESTRICTION);
+		for (int i = 0; i < restrictionsPotential.getValues().length; i++) {
+			restrictionsPotential.getValues()[i] = 1;
+		}
 
 	}
 

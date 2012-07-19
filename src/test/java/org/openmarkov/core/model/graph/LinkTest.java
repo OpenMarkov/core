@@ -35,7 +35,7 @@ public class LinkTest {
 	@Test
 	public void testRestrictionsPotential() throws NotEnoughMemoryException {
 		Assert.assertTrue(link.hasRestrictions());
-		Assert.assertFalse(link.hasAbsoluteRestriction());
+		Assert.assertFalse(link.hasTotalRestriction());
 
 		for (int i = 0; i < stateA.length; i++) {
 			for (int j = 0; j < stateB.length; j++) {
@@ -45,12 +45,12 @@ public class LinkTest {
 
 		link.setCompatibilityValue(stateA[0], stateB[0], 0);
 		Assert.assertEquals(0, link.areCompatible(stateA[0], stateB[0]));
-		Assert.assertFalse(link.hasAbsoluteRestriction());
+		Assert.assertFalse(link.hasTotalRestriction());
 		link.setCompatibilityValue(stateA[0], stateB[0], 1);
 		Assert.assertEquals(1, link.areCompatible(stateA[0], stateB[1]));
 		link.setCompatibilityValue(stateA[0], stateB[0], 0);
 		link.setCompatibilityValue(stateA[0], stateB[1], 0);
-		Assert.assertTrue(link.hasAbsoluteRestriction());
+		Assert.assertTrue(link.hasTotalRestriction());
 	}
 
 	@Test

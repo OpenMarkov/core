@@ -10,6 +10,7 @@ import java.util.Map;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
@@ -61,8 +62,8 @@ public class LinkRestrictionPotentialOperations {
 	public static ArrayList<int[]> getStateCombinationsWithLinkRestriction(
 			ProbNode node) {
 		TablePotential potential = (TablePotential) node.getPotentials().get(0);
-		ArrayList<Variable> nodeVariables=  potential.getVariables();
-		
+		ArrayList<Variable> nodeVariables = potential.getVariables();
+
 		ArrayList<int[]> stateList = new ArrayList<int[]>();
 		ArrayList<Link> links = getParentLinksWithRestriction(node);
 		for (Link link : links) {
@@ -90,7 +91,10 @@ public class LinkRestrictionPotentialOperations {
 			for (int i = 0; i < var1States.length; i++) {
 				for (int j = 0; j < var2States.length; j++) {
 					if (link.areCompatible(var1States[i], var2States[j]) == 0) {
-						stateList.addAll(LinkRestrictionPotentialOperations.getStateCombinations(independentVariables, nodeVariables, i, var1Index, j, var2Index));
+						stateList.addAll(LinkRestrictionPotentialOperations
+								.getStateCombinations(independentVariables,
+										nodeVariables, i, var1Index, j,
+										var2Index));
 					}
 				}
 			}
@@ -244,8 +248,10 @@ public class LinkRestrictionPotentialOperations {
 		for (int[] configuration : stateCombinations) {
 			((TablePotential) potential).setValue(nodeVariables, configuration,
 					0);
-			redistributeProbabilities(node, (TablePotential) potential,
-					configuration);
+			if (node.getNodeType() == NodeType.CHANCE) {
+				redistributeProbabilities(node, (TablePotential) potential,
+						configuration);
+			}
 
 		}
 		return potential;
@@ -323,8 +329,10 @@ public class LinkRestrictionPotentialOperations {
 					for (int[] configuration : stateCombinations) {
 						((TablePotential) potential).setValue(nodeVariables,
 								configuration, 0);
-						redistributeProbabilities(node,
-								(TablePotential) potential, configuration);
+						if (node.getNodeType() == NodeType.CHANCE) {
+							redistributeProbabilities(node,
+									(TablePotential) potential, configuration);
+						}
 					}
 				}
 			}

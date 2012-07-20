@@ -731,7 +731,7 @@ public class Variable implements Cloneable {
 		return decisionCriteria;
 	}
 
-	public void setDecisionriteria (StringWithProperties agent) {
+	public void setDecisionCriteria (StringWithProperties decisionCriteria) {
 		this.decisionCriteria = decisionCriteria;
 	}
 /*	public int hashCode() {

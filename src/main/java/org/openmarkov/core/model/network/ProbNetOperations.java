@@ -101,7 +101,7 @@ public class ProbNetOperations {
 	 * @param variablesOfInterest2 
 	 * @param prunedProbNet. <code>ProbNet</code>
 	 * @return <code>ProbNet</code> without barren nodes. */
-    private static ProbNet removeBarrenNodes (ProbNet prunedProbNet,
+    public static ProbNet removeBarrenNodes (ProbNet prunedProbNet,
                                               Collection<Variable> variablesOfInterest,
                                               HashSet<Variable> variablesOfEvidence)
     {
@@ -150,7 +150,7 @@ public class ProbNetOperations {
      * @param variablesOfEvidence
      * @return
      */
-	private static ProbNet removeUnreachableNodes(ProbNet probNet, 
+	public static ProbNet removeUnreachableNodes(ProbNet probNet, 
 			Collection<Variable> variablesOfInterest, 
 			HashSet<Variable> variablesOfEvidence) {
 		// Gets nodes of interest and adds nodes connected to them
@@ -195,15 +195,14 @@ public class ProbNetOperations {
 				for (int i = 0; i < parentsSize - 1; i++) {
 					Node parentI = parents.get(i);
 					interestI = nodesToKeep.contains(parentI);
-					for (int j = 1; j < parentsSize; j++) {
+					for (int j = i+1; j < parentsSize; j++) {
+					//for (int j = 1; j < parentsSize; j++) {
 						Node parentJ = parents.get(j);
 						interestJ = nodesToKeep.contains(parentJ);
 						if (interestI && !interestJ) {
-							nodesToExplore.push(parentJ);
-							nodesToKeep.add(parentJ);
+							pushInExploreAndAddToKeep(parentJ,nodesToExplore,nodesToKeep);
 						} else if (!interestI && interestJ) {
-							nodesToExplore.push(parentI);
-							nodesToKeep.add(parentI);
+							pushInExploreAndAddToKeep(parentI,nodesToExplore,nodesToKeep);
 							interestI = true;
 						}
 					}
@@ -223,11 +222,9 @@ public class ProbNetOperations {
 					for (Node parent : parents) {
 						boolean interestParent = nodesToKeep.contains(parent);
 						if (interestChild && !interestParent) {
-							nodesToExplore.push(parent);
-							nodesToKeep.add(parent);
+							pushInExploreAndAddToKeep(parent,nodesToExplore,nodesToKeep);							
 						} else if (interestParent && !interestChild) {
-							nodesToExplore.push(child);
-							nodesToKeep.add(child);
+							pushInExploreAndAddToKeep(child,nodesToExplore,nodesToKeep);							
 							interestChild = true;
 						}
 					}
@@ -236,18 +233,17 @@ public class ProbNetOperations {
 						Node child2 = children.get(j);
 						boolean interestChild2 = nodesToKeep.contains(child2);
 						if (interestChild2 && !interestChild) {
-							nodesToExplore.push(child);
-							nodesToKeep.add(child);
+							pushInExploreAndAddToKeep(child,nodesToExplore,nodesToKeep);
 							interestChild = true;
 						} else if (interestChild && !interestChild2) {
-							nodesToExplore.push(child2);
-							nodesToKeep.add(child2);
+							pushInExploreAndAddToKeep(child2,nodesToExplore,nodesToKeep);							
 						}
 					}
 				}
 			}
 		}
-
+		
+		
 		// remove nodes that are not in nodesToKeep in prunedProbNet
 		ArrayList<Node> prunedProbNetNodes = ProbNet
 				.getNodesOfProbNodes(probNet.getProbNodes());
@@ -258,6 +254,11 @@ public class ProbNetOperations {
 		}
 		
 		return probNet;
+	}
+	
+	private static void pushInExploreAndAddToKeep(Node node, Stack<Node> nodesToExplore, HashSet<Node> nodesToKeep){
+		nodesToExplore.push(node);
+		nodesToKeep.add(node);
 	}
 	
 	

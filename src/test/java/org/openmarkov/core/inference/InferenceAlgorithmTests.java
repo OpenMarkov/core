@@ -19,7 +19,6 @@ import org.junit.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.ParserException;
@@ -76,6 +75,8 @@ public abstract class InferenceAlgorithmTests {
 	private ProbNet iD_DecisionTestProblemWithoutSV;
 	private ProbNet iD_DecisionTestProblemWithSV;
 
+	private ProbNet bN_Asia;
+
  
 	@Before
 	public void setUp() throws Exception {
@@ -84,8 +85,9 @@ public abstract class InferenceAlgorithmTests {
 		bN_XY = NetsFactory.createBN_XY(prevalence,
 				sensitivity, specificity);
 		bN_ABC = NetsFactory.createBN_ABC();
-		bN_XYZ = NetsFactory.createBayesianNetworkXYZ(prevalence,
+		bN_XYZ = NetsFactory.createBN_XYZ(prevalence,
 				sensitivity, specificity, 0.86, 0.89);
+		bN_Asia = NetsFactory.createBN_Asia();
 		iD_DiagnosisProblem = NetsFactory
 				.createInfluenceDiagramDiagnosisProblem();
 		iD_UniformDiagnosisProblem = NetsFactory
@@ -139,9 +141,136 @@ public abstract class InferenceAlgorithmTests {
 			
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
+			fail();
 		}
 	}
 	
+	/**
+	 * @throws ProbNodeNotFoundException
+	 * Tests the a priori probabilities obtained in the network bN_ABC
+	 */
+	@Test
+	public void testAPrioriProbabilitiesBN_Asia()
+			throws ProbNodeNotFoundException {
+					
+		String namesVariables[]={"A","B","T","L","TOrC","X","D","S"};
+		double expectedProbs[] = {0.01,0.45,0.0104,0.055,0.064828,0.11029004,0.3974534,0.5};
+		
+		checkVariablesAndProbabilities(bN_Asia,namesVariables,null, null, expectedProbs);
+			
+	}
+	
+	
+	/**
+	 * @param namesVariables
+	 * @param expectedProbs
+	 * Performs a complete propagation and checks the probabilities obtained
+	 */
+	private void checkVariablesAndProbabilities(ProbNet network,String[] namesVariables,EvidenceCase preResolutionEvidence,
+			EvidenceCase postResolutionEvidence,
+			double[] expectedProbs) {
+		
+		InferenceAlgorithm elimination = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
+		
+		ArrayList<Variable> variables = new ArrayList<Variable>();
+		
+		for (int i=0;i<namesVariables.length;i++){
+			Variable auxVar = null;
+			try {
+				auxVar = getVariableAndAssertNotNull(network,namesVariables[i]);
+			} catch (ProbNodeNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			variables.add(auxVar);
+		}
+		
+		if (preResolutionEvidence!=null){
+			elimination.setPreResolutionEvidence(preResolutionEvidence);
+		}
+		if (postResolutionEvidence!=null){
+			elimination.setPostResolutionEvidence(postResolutionEvidence);
+		}
+		
+		try {
+			HashMap<Variable, TablePotential> aPosterioriProbs;
+			aPosterioriProbs = elimination.getProbsAndUtilities();
+			checkProbabilities(aPosterioriProbs,variables,expectedProbs);
+		
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+	}
+
+	/**
+	 * @throws ProbNodeNotFoundException
+	 * Tests the a priori probabilities obtained in the network bN_ABC
+	 */
+	@Test
+	public void testAPosterioriProbabilitiesBN_Asia()
+			throws ProbNodeNotFoundException {
+		ProbNet network;
+		
+		for (int i=0;i<100; i++){
+		
+		network = bN_Asia;
+				
+		String namesVariables[]={"A","B","T","L","TOrC","X","D","S"};
+		
+		EvidenceCase evidence1 = new EvidenceCase();
+		try {
+			evidence1.addFinding(network, "T", "absent");
+			evidence1.addFinding(network, "TOrC", "yes");
+		} catch (InvalidStateException | IncompatibleEvidenceException e1) {
+			e1.printStackTrace();
+		}
+		
+		//A=yes, B=present, T=present, L=present, TOrC=yes, X=yes, D=yes, S=yes
+		double expectedProbs[] = {0.00959984, 0.572727, 0.0, 1.0, 1.0, 0.98, 0.85727273, 0.90909091};
+		
+
+		checkVariablesAndProbabilities(network,namesVariables,null, evidence1, expectedProbs);
+		}
+	}
+	
+	
+	/**
+	 * @param aPosterioriProbs
+	 * @param variables
+	 * @param expectedProbs
+	 * The probabilities in expectedProbs are given as independent numbers for each variable:
+	 * It means that, if n is the number of states of a variable, then n-1 probabilities are given
+	 * for it in 'expectedProbs'. And the values are ordered according the order in 'variables'.
+	 * In the particular case when all variables are binary then 'variables' and 'expectedProbs' have
+	 * the same size.
+	 * */
+	private void checkProbabilities(
+			HashMap<Variable, TablePotential> aPosterioriProbs,
+			ArrayList<Variable> variables, double[] expectedProbs) {
+		
+			int size = variables.size();
+						
+			int indexBaseProbs = 0;
+			for (int i=0;i<size;i++){
+				double auxExpectedProbs[];
+				Variable auxVar = variables.get(i);
+				int numStates = auxVar.getNumStates();
+				int numProbsAux;
+				numProbsAux = numStates - 1;
+				auxExpectedProbs = new double[numProbsAux];
+				for (int j=0;j<numProbsAux;j++){
+					auxExpectedProbs[j] = expectedProbs[indexBaseProbs+j];
+				}
+				checkProbabilityPotential(aPosterioriProbs,variables.get(i),auxExpectedProbs);
+				indexBaseProbs = indexBaseProbs + numProbsAux;
+			}
+		
+	}
+
+
+
+
+
 	@Test
 	public void testAPosterioriProbabilitiesBN_XY() throws Exception {
 		ProbNet network;
@@ -183,7 +312,7 @@ public abstract class InferenceAlgorithmTests {
 	 * @return The variable in 'network' whose name is 'variableName'. It also checks whether the variable is not null.
 	 * @throws ProbNodeNotFoundException	 
 	 */
-	private Variable getVariableAndAssertNotNull(ProbNet network, String variableName) throws ProbNodeNotFoundException {
+	public static Variable getVariableAndAssertNotNull(ProbNet network, String variableName) throws ProbNodeNotFoundException {
 		Variable variable;
 		
 		variable = network.getVariable(variableName);
@@ -315,6 +444,7 @@ public abstract class InferenceAlgorithmTests {
 			checkProbabilityPotential(aPrioriProbabilities,variableY,probPositiveY);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
+			fail();
 		}
 	}
 	

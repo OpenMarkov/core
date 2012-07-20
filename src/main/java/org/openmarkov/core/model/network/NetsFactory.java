@@ -205,7 +205,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	 * @return a Bayesian network with three nodes (X, Y and Z) and two links X -> Y, and Y -> Z
 	 * @throws Exception
 	 */
-	public static ProbNet createBayesianNetworkXYZ(double prevalence,double sensitivityY,double specificityY,
+	public static ProbNet createBN_XYZ(double prevalence,double sensitivityY,double specificityY,
 			double sensitivityZ, double specificityZ) throws Exception {
 		ProbNet probNet;
 		double[] valuesX;
@@ -323,90 +323,86 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	 * @return A Bayesian network with three nodes (A, B and C) and two links A -> B, and A -> C.
 	 * This network was stored in file "peque.elv"
 	 */
-	public static ProbNet createBayesianNetworkAsia(){
+	public static ProbNet createBN_Asia(){
 		Variable variableA;
 		Variable variableB;
-		Variable variableC;
-		double [] tableA;
-		double [] tableBA;
+		Variable variableT;
+		Variable variableL;
+		Variable variableTOrC;
+		Variable variableX;
+		Variable variableD;
+		Variable variableS;
 		
-		ProbNet peque = new ProbNet();
+		ProbNet network = new ProbNet();
 		
-		String nameStates[]=diseaseStates;
 		//Finite States variables
 		//"Visit to Asia"
 		variableA = new Variable("A",yesNoStates);
 		//"Smoker"
-		variableB = new Variable("S",yesNoStates);
+		variableS = new Variable("S",yesNoStates);
 		//"Tuberculosis"
-		variableC = new Variable("T",diseaseStates);
+		variableT = new Variable("T",diseaseStates);
 		//"Lung Cancer"
-		variableC = new Variable("L",diseaseStates);
+		variableL = new Variable("L",diseaseStates);
 		//"Bronchitis"
-		variableC = new Variable("B",diseaseStates);
+		variableB = new Variable("B",diseaseStates);
 		//"Tuberculosis or Cancer"
-		variableC = new Variable("TOrC",yesNoStates);
+		variableTOrC = new Variable("TOrC",yesNoStates);
 		//"Positive X-ray"
-		variableC = new Variable("X",yesNoStates);
+		variableX = new Variable("X",yesNoStates);
 		//"Dyspnea"
-		variableC = new Variable("D",yesNoStates);
-			
+		variableD = new Variable("D",yesNoStates);
 				
 		//additional properties
 		String relevance = new String("Relevance");
 		String value = new String("7.0");
 		
-		setAdditionalProperties(relevance,value,variableA);
-			
-		variableA.setAdditionalProperty(relevance,value);
-		variableB.setAdditionalProperty(relevance,value);
-		variableC.setAdditionalProperty(relevance,value);
+		addVariables(network,NodeType.CHANCE,variableA,variableS,variableT,
+				variableL,variableB,variableTOrC,variableX,variableD);
 		
-		addVariables(peque,NodeType.CHANCE,variableA,variableB, variableC);
+		ArrayList<Variable> variables2 = network.getVariables();
+		setAdditionalProperties(relevance,value,(Variable[]) variables2.toArray(new Variable[variables2.size()]));
 				
 		//Potentials
 		//PotentialType type = PotentialType.TABLE;
 		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
 		
 		//Potential A
-		tableA = valuesAPrioriDisease(0.8);
+		double [] tableA = {0.01, 0.99};
 		TablePotential potentialA = createTablePotential(role,tableA,variableA);
-		
-		//Potential BA
-		tableBA = valuesCPTResultTest(0.1,0.7);
-		TablePotential potentialBA = createTablePotential(role,tableBA,variableB,variableA);
-		
-		//potencial CAB
-		//double [] tableCAB ={0.15, 0.29, 0.84, 0.98, 0.85, 0.71, 0.16, 0.02};
-		//double [] tableCAB ={0.15, 0.85, 0.84, 0.16, 0.29, 0.71, 0.98, 0.02};
-		double [] tableCAB = {0.02, 0.98, 0.71, 0.29, 0.16, 0.84, 0.85, 0.15};
-		TablePotential potentialCAB = createTablePotential(role,tableCAB,variableC,variableA,variableB);
-		
-		NodeType nodeType = NodeType.CHANCE;
-		
-		addVariables(peque,nodeType,variableA,variableB,variableC);
-		
-		//Links throws NodeNotFoundException
-		try {
-			peque.addLink(variableA, variableB, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-		try {
-			peque.addLink(variableA, variableC, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-		try {
-			peque.addLink(variableB, variableC, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
 				
-		addPotentials(peque,potentialA,potentialBA,potentialCAB);
+		//Potential S
+		double [] tableS = {0.5, 0.5};
+		TablePotential potentialS = createTablePotential(role,tableS,variableS);
+		
+		//Potential T
+		double [] tableT = {0.05, 0.95, 0.01, 0.99};
+		TablePotential potentialT = createTablePotential(role,tableT,variableT,variableA);
+		
+		//Potential L
+		double [] tableL = {0.1, 0.9, 0.01, 0.99};
+		TablePotential potentialL = createTablePotential(role,tableL,variableL,variableS);
+		
+		//Potential B
+		double [] tableB = {0.6, 0.4, 0.3, 0.7};
+		TablePotential potentialB = createTablePotential(role,tableB,variableB,variableS);
+				
+		//Potential TOrC
+		double [] tableTOrC = {1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0};
+		TablePotential potentialTOrC = createTablePotential(role,tableTOrC,variableTOrC,variableL,variableT);
+		
+		//Potential X
+		double [] tableX = {0.98, 0.02, 0.05, 0.95};
+		TablePotential potentialX = createTablePotential(role,tableX,variableX,variableTOrC);
+		
+		//Potential D
+		double [] tableD = {0.9, 0.1, 0.7, 0.3, 0.8, 0.2, 0.1, 0.9};
+		TablePotential potentialD = createTablePotential(role,tableD,variableD,variableTOrC,variableB);
+		
+		addPotentials(network,potentialA,potentialS,potentialT,potentialL,potentialB,potentialTOrC,potentialX,potentialD);
 	
 	
-	return peque;
+	return network;
 }
 	
 	

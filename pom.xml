@@ -5,7 +5,7 @@
 	<groupId>org.openmarkov</groupId>
 	<artifactId>org.openmarkov.core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>OpenMarkov Core</name>
+	<name>org.openmarkov.core</name>
 	<url>http://openmarkov.org/core</url>
 
 	<properties>

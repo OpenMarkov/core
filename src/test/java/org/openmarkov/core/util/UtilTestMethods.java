@@ -13,8 +13,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GTablePotential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 
@@ -134,4 +138,24 @@ public class UtilTestMethods {
     	return potential.getPosition(coordinate);
     }
     
+    /** Create a <code>ProbNet</code> with the variables names received. All variables are binary.
+     * @param variablesNames. <code>String[]</code> */
+    public static ProbNet createProbNet(String ... variablesNames) {
+    	int numVariables = variablesNames.length;
+    	ProbNet probNet = new ProbNet();
+    	Variable[] variables = new Variable[numVariables];
+    	for (int i = 0; i < numVariables; i++) {
+    		variables[i] = new Variable(variablesNames[i], "positive", "negative");
+    		ProbNode probNode = probNet.addVariable(variables[i], NodeType.CHANCE);
+    		ArrayList<Variable> tablePotentialVariables = new ArrayList<Variable>(1);
+    		tablePotentialVariables.add(variables[i]);
+    		double[] table = {0.5, 0.5};
+    		TablePotential potential = 
+    				new TablePotential(tablePotentialVariables, PotentialRole.CONDITIONAL_PROBABILITY, table);
+    		probNode.addPotential(potential);
+    	}
+    	return probNet;
+    }
+    
+
 }

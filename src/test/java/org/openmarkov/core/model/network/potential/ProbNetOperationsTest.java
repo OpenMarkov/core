@@ -40,7 +40,7 @@ public class ProbNetOperationsTest {
 	 * @throws ProbNodeNotFoundException
 	 * Tests the a priori probabilities obtained in the network bN_ABC
 	 */
-	@Test
+	//@Test
 	public void testGetPrunedMethodBN_Asia()
 			throws ProbNodeNotFoundException {
 		ProbNet network;

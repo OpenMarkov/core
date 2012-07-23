@@ -284,7 +284,6 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 			InferenceOptions inferenceOptions)
 			throws NonProjectablePotentialException, NotEnoughMemoryException,
 			WrongCriterionException {
-		// TODO Auto-generated method stub
 		ArrayList<TablePotential> potentialsToSumUp = new ArrayList<TablePotential>();
 		ArrayList<TablePotential> projectedPotential = new ArrayList<TablePotential>();
 		

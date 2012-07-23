@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -34,6 +35,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 /** @author mluque */
 /** @author ibermejo */
+@Ignore
 public abstract class InferenceAlgorithmTests {
 	
 	/**
@@ -198,9 +200,22 @@ public abstract class InferenceAlgorithmTests {
 			checkProbabilities(aPosterioriProbs,variables,expectedProbs);
 		
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			printExceptionAndFail(e);
+			
 		}
 	}
+
+	/**
+	 * @param e
+	 */
+	private void printExceptionAndFail(Exception e) {
+		System.err.println(e.getMessage());
+		fail();
+	}
+
+
+
+
 
 	/**
 	 * @throws ProbNodeNotFoundException
@@ -210,8 +225,9 @@ public abstract class InferenceAlgorithmTests {
 	public void testAPosterioriProbabilitiesBN_Asia()
 			throws ProbNodeNotFoundException {
 		ProbNet network;
+		int numIter=10;
 		
-		for (int i=0;i<100; i++){
+		for (int i=0;i<numIter; i++){
 		
 		network = bN_Asia;
 				
@@ -300,7 +316,7 @@ public abstract class InferenceAlgorithmTests {
 			checkProbabilityPotential(yPositiveProbabilities,variableX,0.9796034);
 			checkProbabilityPotential(yPositiveProbabilities,variableY,1.0);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			printExceptionAndFail(e);
 		}
 
 	}
@@ -372,7 +388,7 @@ public abstract class InferenceAlgorithmTests {
 		try {
 			algorithm.getProbsAndUtilities();
 		} catch (NotEnoughMemoryException | UnexpectedInferenceException e) {
-			e.printStackTrace();
+			printExceptionAndFail(e);
 		}
 
 	}
@@ -409,11 +425,49 @@ public abstract class InferenceAlgorithmTests {
 		try {
 			algorithm.getProbsAndUtilities();
 		} catch (NotEnoughMemoryException | UnexpectedInferenceException e) {
-			e.printStackTrace();
+			printExceptionAndFail(e);
 		}
 
 	}
 
+	/**
+	 * @throws IncompatibleEvidenceException
+	 * Tests if the inference on the network Asia throws IncompatibleEvidenceException
+	 * if the evidence is (T=absent,L=absent,TOrC=yes).
+	 */
+
+	@Test (expected = IncompatibleEvidenceException.class)
+	public void testIncompatibleEvidenceBN_Asia() throws IncompatibleEvidenceException {
+		ProbNet network = null;
+				
+		try {
+			network = bN_Asia;
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
+				
+		// Test when Y = absent, which is incompatible evidence
+		EvidenceCase evidence = new EvidenceCase();
+		try {
+			evidence.addFinding(network, "T", "absent");
+			evidence.addFinding(network, "L", "absent");
+			evidence.addFinding(network, "TOrC", "yes");
+		} catch (ProbNodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
+			//e.printStackTrace();
+		} 
+		
+		algorithm.setPostResolutionEvidence(evidence);
+		
+		try {
+			algorithm.getProbsAndUtilities();
+		} catch (NotEnoughMemoryException | UnexpectedInferenceException e) {
+			printExceptionAndFail(e);
+		}
+
+	}
 
 
 	/**
@@ -443,12 +497,11 @@ public abstract class InferenceAlgorithmTests {
 					* (1.0 - specificity);
 			checkProbabilityPotential(aPrioriProbabilities,variableY,probPositiveY);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			fail();
+			printExceptionAndFail(e);
 		}
 	}
 	
-	//@Test
+	@Test
 		public void testAPosterioriProbabilitiesBN_ABC() throws Exception {
 		ProbNet network;
 		
@@ -478,7 +531,7 @@ public abstract class InferenceAlgorithmTests {
 			EvidenceCase evidence2 = new EvidenceCase();
 			evidence2.addFinding(network, "A", "present");
 			HashMap<Variable, TablePotential> aPresentProbabilities;
-			InferenceAlgorithm algorithm2 = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(bN_XY);
+			InferenceAlgorithm algorithm2 = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
 			algorithm2.setPostResolutionEvidence(evidence2);
 			try {
 				aPresentProbabilities = algorithm2.getProbsAndUtilities();
@@ -486,7 +539,7 @@ public abstract class InferenceAlgorithmTests {
 				checkProbabilityPotential(aPresentProbabilities,variableB,0.1);
 				checkProbabilityPotential(aPresentProbabilities,variableC,0.146);
 			} catch (Exception e) {
-				System.out.println(e.getMessage());
+				printExceptionAndFail(e);
 			}
 		}
 		
@@ -543,7 +596,7 @@ public abstract class InferenceAlgorithmTests {
 			aAbsentProbabilities = algorithm.getProbsAndUtilities(variablesOfInterest);
 			checkProbabilityPotential(aAbsentProbabilities,variableC,0.71);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			printExceptionAndFail(e);
 		}
 	}
 		
@@ -568,7 +621,7 @@ public abstract class InferenceAlgorithmTests {
 				checkProbabilityPotential(yPositiveProbabilities,variableY,1.0);
 				checkProbabilityPotential(yPositiveProbabilities,variableZ,0.86);
 			} catch (Exception e) {
-				System.out.println(e.getMessage());
+				printExceptionAndFail(e);
 			}
 
 		}
@@ -617,9 +670,7 @@ public abstract class InferenceAlgorithmTests {
 			double[] truePolicy = { 1.0, 0.0, 0.0, 1.0 };
 			assertTrue(areEquals(policy.getValues(), truePolicy));
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-			fail("Exception in testTrivial1");
+			printExceptionAndFail(e);
 		}
 	}
 
@@ -661,8 +712,7 @@ public abstract class InferenceAlgorithmTests {
 			checkProbabilityPotential(aPrioriProbabilities,variableY,0.0916);
 			checkProbabilityPotential(aPrioriProbabilities,variableD,0.0916);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
+			printExceptionAndFail(e);
 		}
 	}
 
@@ -729,9 +779,7 @@ public abstract class InferenceAlgorithmTests {
 
 
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-			fail("Exception in testTrivial1");
+			printExceptionAndFail(e);
 		}
 
 	}
@@ -824,13 +872,10 @@ public abstract class InferenceAlgorithmTests {
 		try {
 			evi.addFinding(iD_DecisionTestProblemWithoutSV, "X", "present");
 
-		} catch (InvalidStateException e) {
-			e.printStackTrace();
-		} catch (IncompatibleEvidenceException e) {
-			e.printStackTrace();
-		}
-
-		// checkPosteriorProbsAndUtilitiesEvidenceDecisionTestProblem(variableElimination,diagram,evi,1.0,1.0,0.0,1.0,1.0,80.0,-2.0);
+		} catch (InvalidStateException | IncompatibleEvidenceException e) {
+			
+			printExceptionAndFail(e);
+		}	
 
 	}
 
@@ -878,9 +923,7 @@ public abstract class InferenceAlgorithmTests {
 
 			variableU2 = diagram.getVariable("U2");
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-			fail("Exception in testTrivial1");
+			printExceptionAndFail(e);
 		}
 
 		try {
@@ -905,8 +948,7 @@ public abstract class InferenceAlgorithmTests {
 			checkUtilityPotential(aPosterioriProbabilities, variableU1, u1);
 			checkUtilityPotential(aPosterioriProbabilities, variableU2, u2);
 		} catch (IncompatibleEvidenceException e) {
-			//
-			e.printStackTrace();
+			printExceptionAndFail(e);
 		}
 
 	}
@@ -1026,9 +1068,7 @@ public abstract class InferenceAlgorithmTests {
 
 			assertTrue(areEquals(policy.getValues(), truePolicy));
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-			fail("Exception in testTrivial1");
+			printExceptionAndFail(e);
 		}
 	}
 	
@@ -1097,9 +1137,7 @@ public abstract class InferenceAlgorithmTests {
 
 			// assertTrue(areEquals(policy.getValues(),truePolicy));
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-			fail("Exception in testTrivial1");
+			printExceptionAndFail(e);
 		}
 	}
 

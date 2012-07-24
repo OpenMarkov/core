@@ -10,7 +10,10 @@
 
 package org.openmarkov.core.model.network.type;
 
+import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
+
+@ProbNetType(name="InfluenceDiagram")
 public class InfluenceDiagramType extends NetworkType
 {
     private static InfluenceDiagramType instance = null;

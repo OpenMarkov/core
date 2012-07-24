@@ -13,7 +13,9 @@ import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
+import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
+@ProbNetType(name="MarkovNetwork")
 public class MarkovNetworkType extends NetworkType
 {
     private static MarkovNetworkType instance = null;

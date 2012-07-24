@@ -11,7 +11,9 @@ package org.openmarkov.core.model.network.type;
 
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.NoLinkRestriction;
+import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
+@ProbNetType(name="TuningNetwork")
 public class TuningNetworkType extends NetworkType
 {
     private static TuningNetworkType instance = null;

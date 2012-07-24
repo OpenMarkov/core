@@ -15,7 +15,9 @@ import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.NoSelfLoop;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.UtilityNodes;
+import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
+@ProbNetType(name="MDP")
 public class MDPType extends NetworkType
 {
     private static MDPType instance = null;

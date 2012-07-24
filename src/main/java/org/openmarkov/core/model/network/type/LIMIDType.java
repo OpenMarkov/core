@@ -9,7 +9,9 @@
 
 package org.openmarkov.core.model.network.type;
 
+import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
+@ProbNetType(name="LIMID")
 public class LIMIDType extends NetworkType
 {
     private static LIMIDType instance = null;

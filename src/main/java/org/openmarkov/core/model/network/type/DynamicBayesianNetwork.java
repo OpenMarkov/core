@@ -13,7 +13,9 @@ import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
+import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
+@ProbNetType(name="DBN")
 public class DynamicBayesianNetwork extends NetworkType
 {
     private static DynamicBayesianNetwork instance = null;

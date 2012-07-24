@@ -26,9 +26,11 @@ import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NetsFactory;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 
@@ -501,6 +503,101 @@ public abstract class InferenceAlgorithmTests {
 		}
 	}
 	
+	/**
+	 * @throws Exception
+	 * Tests the a priori joint probability in the network 'bN_XY'
+	 */
+	@Test
+	public void testAPrioriJointProbabilityBN_XY() throws Exception {
+		ProbNet network;
+		TablePotential expectedPot;
+	
+		network = bN_XY;
+		InferenceAlgorithm elimination1 = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
+
+		// A priori probabilities
+		try {
+			// Read the variables
+			Variable variableX = getVariableAndAssertNotNull(network,"X");
+			Variable variableY = getVariableAndAssertNotNull(network,"Y");
+			ArrayList<Variable> variables;
+			variables = new ArrayList<>();
+			variables.add(variableX);
+			variables.add(variableY);
+			TablePotential jointProbability = elimination1.getJointProbability(variables);
+			expectedPot = new TablePotential(variables,PotentialRole.JOINT_PROBABILITY);			
+			double []expectedValues = {0.8645,0.018,0.0455,0.072};
+			expectedPot.setValues(expectedValues);
+			checkEqualPotentials(jointProbability,expectedPot);
+		} catch (Exception e) {
+			printExceptionAndFail(e);
+		}
+	}
+	
+	/**
+	 * @throws Exception
+	 * Tests the a priori joint probability in the network 'bN_ABC'
+	 */
+	@Test
+	public void testAPrioriJointProbabilityBN_ABC() throws Exception {
+		ProbNet network;
+		TablePotential expectedPot;
+	
+		network = bN_ABC;
+		InferenceAlgorithm elimination1 = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
+
+		// A priori probabilities
+		try {
+			// Read the variables
+			Variable variableA = getVariableAndAssertNotNull(network,"A");
+			Variable variableB = getVariableAndAssertNotNull(network,"B");
+			Variable variableC = getVariableAndAssertNotNull(network,"C");
+			ArrayList<Variable> variables;
+			variables = new ArrayList<>();
+			variables.add(variableC);
+			variables.add(variableB);
+			variables.add(variableA);
+			TablePotential jointProbability = elimination1.getJointProbability(variables);
+			expectedPot = new TablePotential(variables,PotentialRole.JOINT_PROBABILITY);			
+			double []expectedValues = {0.0016,0.0784,0.1152,0.6048,0.0426,0.0174,0.119,0.021};
+			expectedPot.setValues(expectedValues);
+			checkEqualPotentials(jointProbability,expectedPot);
+		} catch (Exception e) {
+			printExceptionAndFail(e);
+		}
+	}
+	
+	/**
+	 * @param jointProbability
+	 * @param expectedValues
+	 * Checks if two potentials are equal
+	 */
+	private void checkEqualPotentials(TablePotential actual, TablePotential expected) {
+			
+			int numConfigurationsActual = actual.getTableSize();
+			assertEquals(numConfigurationsActual,expected.getTableSize());
+			
+			ArrayList<Finding> findings;
+			
+			for (int i = 0; i < numConfigurationsActual; i++) {
+				int[] auxConfiguration = actual.getConfiguration(i);
+				double actualValue = actual.values[i];
+				findings = new ArrayList<>();
+				ArrayList<Variable> variables = actual.getVariables();
+				for (int j = 0;j<variables.size();j++){
+					findings.add(new Finding(variables.get(j),auxConfiguration[j]));
+				}
+				double expectedValue = expected.getValue(new EvidenceCase(findings));
+				assertEquals(expectedValue, actualValue, maxError);
+				
+			}
+			
+		}
+
+
+
+
+
 	@Test
 		public void testAPosterioriProbabilitiesBN_ABC() throws Exception {
 		ProbNet network;

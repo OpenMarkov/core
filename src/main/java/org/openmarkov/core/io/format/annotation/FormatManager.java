@@ -11,6 +11,7 @@ package org.openmarkov.core.io.format.annotation;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
@@ -28,31 +29,61 @@ import org.openmarkov.plugin.service.PluginLoaderIF;
 public class FormatManager
 {
 	private static FormatManager instance = null;
-	/**
-	 * The plugin loader
-	 */
-	private PluginLoaderIF pluginsLoader;
-	/**
-	 *  The list of plugins detected in the project
-	 */
-	private List<Class<?>> plugins;
+
 	/**
 	 * The Reader role
 	 */
 	private String roleReader = "Reader";
+	
 	/**
 	 * The writer role
 	 */
 	private String roleWriter = "Writer";
+	
+	/**
+	 * Reader classes
+	 */
+	private Map<String, Class<?>> readerClasses; 
 
+	/**
+     * Writer classes
+     */
+    private Map<String, Class<?>> writerClasses;
+    
+    /**
+     * Reader instances
+     */
+    private Map<String, ProbNetReader> readerInstances; 
+    
+    /**
+     * Writer instances
+     */
+    private Map<String, ProbNetWriter> writerInstances; 
+
+    
 	/**
 	 * Gets a FormatManager instance
 	 */
 	private FormatManager ()
 	{
 		super ();
-		this.pluginsLoader = new PluginLoader ();
-		this.plugins = findAllFormatPlugins ();
+		this.readerClasses = new HashMap<> ();
+        this.writerClasses = new HashMap<> ();
+        this.readerInstances = new HashMap<> ();
+        this.writerInstances = new HashMap<> ();
+        
+		for(Class<?> plugin : findAllFormatPlugins ())
+		{
+		    FormatType lAnnotation = plugin.getAnnotation (FormatType.class);
+            if(lAnnotation.role().equals(roleReader))
+            {
+                readerClasses.put (lAnnotation.extension (), plugin);
+            }
+            if(lAnnotation.role().equals(roleWriter))
+            {
+                writerClasses.put (lAnnotation.extension (), plugin);
+            }
+		}
 	}    
 
 
@@ -72,10 +103,10 @@ public class FormatManager
 	 */
 	private final  List<Class<?>> findAllFormatPlugins ()
 	{
+	    PluginLoader pluginsLoader = new PluginLoader ();
 		try
 		{
-			FilterIF filter = org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy (
-					FormatType.class);
+			FilterIF filter = org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy (FormatType.class);
 			return pluginsLoader.loadAllPlugins (filter);          
 		}
 		catch (Exception e) {}
@@ -89,20 +120,22 @@ public class FormatManager
 	 */
 	public ProbNetWriter getProbNetWriter (String extension)
 	{
-
-		try
-		{
-			for (Class<?> plugin : plugins) {
-				FormatType lAnnotation = plugin.getAnnotation (FormatType.class);
-				if (lAnnotation.extension().equals(extension) && lAnnotation.role().
-						equals(roleWriter)){
-					return (ProbNetWriter) plugin.getMethod("getUniqueInstance").invoke(this);
-				}
-			}
-		}
-		catch (Exception e) {}
-
-		return null;
+	    ProbNetWriter instance = null;
+	    if(writerInstances.containsKey (extension))
+	    {
+	        instance = writerInstances.get(extension);
+	    }else
+	    {
+	        if(writerClasses.containsKey (extension))
+	        {
+        		try
+        		{
+        		    instance = (ProbNetWriter) writerClasses.get (extension).newInstance ();
+        		}
+        		catch (Exception e) {}
+	        }
+	    }
+		return instance;
 	} 
 	/**
 	 * Gets the plugin with the "Reader" role and the extension 
@@ -111,45 +144,56 @@ public class FormatManager
 	 */
 	public ProbNetReader getProbNetReader (String extension)
 	{
-
-		try
-		{
-			for (Class<?> plugin : plugins) {
-				FormatType lAnnotation = plugin.getAnnotation (FormatType.class);
-				if (lAnnotation.extension().equals(extension) && lAnnotation.role().
-						equals(roleReader)){
-					return (ProbNetReader) plugin.getMethod("getUniqueInstance").invoke(this);
-				}
-			}
-		}
-		catch (Exception e) {}
-
-		return null;
+	    ProbNetReader instance = null;
+        if(readerInstances.containsKey (extension))
+        {
+            instance = readerInstances.get(extension);
+        }else
+        {
+            if(readerClasses.containsKey (extension))
+            {
+                try
+                {
+                    instance = (ProbNetReader) readerClasses.get (extension).newInstance ();
+                }
+                catch (Exception e) {}
+            }
+        }
+        return instance;
 	} 
 
 
 	/**
-	 * Gets the all the plugins with the role specified  
-	 * @param role the role of the plugins to search
-	 * @return the plugins founded with the role specified
+	 * Gets the all the writer plugins  
+	 * @return all the writer plugins found
 	 */
 
-	public HashMap<String, String> getItemsByRole (String role)
+	public HashMap<String, String> getWriters()
 	{
-		HashMap<String, String> items = new HashMap<String, String> ();
-		try
-		{
-			for (Class<?> plugin : plugins) {
-				FormatType lAnnotation = plugin.getAnnotation (FormatType.class);
-				if (lAnnotation.role().equals(role)){
-					items.put (lAnnotation.description(), lAnnotation.extension());
-				}
-			}
+		HashMap<String, String> writers = new HashMap<String, String> ();
+		for (String extension : writerClasses.keySet ()) {
+			FormatType lAnnotation = writerClasses.get (extension).getAnnotation (FormatType.class);
+			writers.put (lAnnotation.description(), lAnnotation.extension());
 		}
-		catch (Exception e) {}
 
-		return items;
-	}  
+		return writers;
+	}
+	
+    /**
+     * Gets the all the reader plugins  
+     * @return all the reader plugins found
+     */
+
+    public HashMap<String, String> getReaders()
+    {
+        HashMap<String, String> writers = new HashMap<String, String> ();
+        for (String extension : readerClasses.keySet ()) {
+            FormatType lAnnotation = readerClasses.get (extension).getAnnotation (FormatType.class);
+            writers.put (lAnnotation.description(), lAnnotation.extension());
+        }
+
+        return writers;
+    }  	
 
 
 }

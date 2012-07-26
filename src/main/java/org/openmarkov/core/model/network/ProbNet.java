@@ -1668,32 +1668,6 @@ public class ProbNet implements Cloneable {
 		return newProbNode;
 	}
 	
-	/** Given a modelNet, applies the node positions of the modelNet to the
-	 * nodes of the current probNet
-	 * @param modelNet - the modelNet to copy the node positions from
-	 */
-    public void copyNodePositionsFromModelNet(ProbNet modelNet)
-    {
-        ProbNode positionNode = null;
-    	
-	    /* Take the positions of the nodes */
-	    if(modelNet != null){
-	        for (ProbNode node : modelNet.getProbNodes()){
-	            try {
-					positionNode = this.getProbNode(node.getVariable().
-							getName());
-					if (positionNode != null){
-						positionNode.getNode().setCoordinateX(node.getNode().
-								getCoordinateX());
-						positionNode.getNode().setCoordinateY(node.getNode().
-								getCoordinateY());
-					}
-	            } catch (ProbNodeNotFoundException e) {}
-	        }
-	    }        
-    }
-	
-
 	public void setDecisionCriteria(String[] criteriaNames) {
 		int numCriteria = criteriaNames.length;
 		State[] states = new State[numCriteria];

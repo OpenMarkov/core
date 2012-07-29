@@ -15,7 +15,9 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
@@ -64,7 +66,7 @@ public abstract class InferenceAlgorithm
      * Each policy is stochastic, which implies it is a probability potential whose domain
      * contains the decision.
      */
-    private ArrayList<TablePotential> imposedPolicies;
+   // private ArrayList<TablePotential> imposedPolicies;
     
     /**
      * Variables that will not be eliminated during the inference, and therefore all the results
@@ -103,10 +105,10 @@ public abstract class InferenceAlgorithm
 
 	/**
 	 * @return The imposed policies
-	 */
-	public ArrayList<TablePotential> getImposedPolicies() {
+	 *//*
+	protected ArrayList<TablePotential> getImposedPolicies() {
 		return imposedPolicies;
-	}
+	}*/
   
     /**
      * @param probNet The network used in the inference
@@ -131,20 +133,12 @@ public abstract class InferenceAlgorithm
     public abstract boolean isEvaluable (ProbNet probNet);
 
       
-    /**
-     * @param imposedPolicies the imposedPolicies to set
-     */
-    public void setImposedPolicies (ArrayList<TablePotential> imposedPolicies)
-    {
-        this.imposedPolicies = imposedPolicies;
-    }
-
-    
+       
     /**
      * @return The optimal policy for the decisions that do not have any imposed policy.
      * The domain of each policy also includes the decision and the conditioning variables.
      */
-    public abstract HashMap<Variable,TablePotential> getOptimizedPolicies () throws
+    public abstract HashMap<Variable,Potential> getOptimizedPolicies () throws
 	NotEnoughMemoryException,
 	IncompatibleEvidenceException,
 	UnexpectedInferenceException;
@@ -198,30 +192,30 @@ public abstract class InferenceAlgorithm
 	UnexpectedInferenceException;
     
   
+	
+	
 	/**
 	 * @param decision
 	 * @return The imposed policy of the decision
 	 */
-	protected TablePotential getImposedPolicy(Variable decision) {
-		TablePotential policyDecision = null;
-		TablePotential iPolicy;
-		boolean foundPolicy;
-
-		foundPolicy = false;
-		if (imposedPolicies != null) {
-			for (int i = 0; i < imposedPolicies.size() && !foundPolicy; i++) {
-				iPolicy = imposedPolicies.get(i);
-				if (iPolicy != null) {
-					foundPolicy = iPolicy.getVariable(0) == decision;
-					if (foundPolicy) {
-						policyDecision = iPolicy;
-					}
-				}
+	protected Potential getImposedPolicy(Variable decision) {
+		Potential policy = null;
+		
+		ProbNode decisionNode = probNet.getProbNode(decision);
+		if (decisionNode==null){
+			policy = null;
+		}
+		else{
+			ArrayList<Potential> potentials = decisionNode.getPotentials();
+			if ((potentials == null)||(potentials.size()==0)){
+				policy = null;
+			}
+			else{
+				policy = potentials.get(0);
 			}
 		}
-		return policyDecision;
+		return policy;
 	}
-    
     /**
      * @param decision
      * @return True if the decision has an imposed policy.

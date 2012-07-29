@@ -20,16 +20,19 @@ import org.junit.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NetsFactory;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -74,12 +77,12 @@ public abstract class InferenceAlgorithmTests {
 	 */	 
 	ProbNet bN_XYZ;
 
-	private ProbNet iD_DiagnosisProblem;
-	private ProbNet iD_UniformDiagnosisProblem;
-	private ProbNet iD_DecisionTestProblemWithoutSV;
-	private ProbNet iD_DecisionTestProblemWithSV;
+	//protected ProbNet iD_DiagnosisProblem;
+	protected ProbNet iD_UniformDiagnosisProblem;
+	protected ProbNet iD_DecisionTestProblemWithoutSV;
+	protected ProbNet iD_DecisionTestProblemWithSV;
 
-	private ProbNet bN_Asia;
+	protected ProbNet bN_Asia;
 
  
 	@Before
@@ -92,8 +95,8 @@ public abstract class InferenceAlgorithmTests {
 		bN_XYZ = NetsFactory.createBN_XYZ(prevalence,
 				sensitivity, specificity, 0.86, 0.89);
 		bN_Asia = NetsFactory.createBN_Asia();
-		iD_DiagnosisProblem = NetsFactory
-				.createInfluenceDiagramDiagnosisProblem();
+		/*iD_DiagnosisProblem = NetsFactory
+				.createInfluenceDiagramDiagnosisProblem();*/
 		iD_UniformDiagnosisProblem = NetsFactory
 				.createUniformInfluenceDiagramDiagnosisProblem();
 		iD_DecisionTestProblemWithoutSV = NetsFactory
@@ -183,7 +186,6 @@ public abstract class InferenceAlgorithmTests {
 			try {
 				auxVar = getVariableAndAssertNotNull(network,namesVariables[i]);
 			} catch (ProbNodeNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			variables.add(auxVar);
@@ -210,7 +212,7 @@ public abstract class InferenceAlgorithmTests {
 	/**
 	 * @param e
 	 */
-	private void printExceptionAndFail(Exception e) {
+	protected void printExceptionAndFail(Exception e) {
 		System.err.println(e.getMessage());
 		fail();
 	}
@@ -408,7 +410,6 @@ public abstract class InferenceAlgorithmTests {
 		try {
 			network = NetsFactory.createBN_XY(0.5,1.0,0.0);
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -445,7 +446,6 @@ public abstract class InferenceAlgorithmTests {
 		try {
 			network = bN_Asia;
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -743,7 +743,73 @@ public abstract class InferenceAlgorithmTests {
 			ConstraintViolationException, NotEvaluableNetworkException {
 		ProbNet network;
 		
+		network = NetsFactory.createInfluenceDiagramDiagnosisProblem();
+		
+		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
+		
+		try {
+			// test max expected utility
+			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+			assertEquals(96.006, meuEvaluation, maxError);
+
+			// Test optimal policy
+			Variable D = network.getVariable("D");
+			HashMap<Variable, Potential> optimalStrategy = algorithm.getOptimizedPolicies();
+			Potential policy = optimalStrategy.get(D);
+			assertNotNull(policy);
+
+			// Test the size of the domain of the policy
+			ArrayList<Variable> domainPolicy = policy.getVariables();
+			domainPolicy.remove(D);
+			assertEquals(1, domainPolicy.size());
+			
+			// Test the optimal choice of the policy
+			double[] truePolicy = { 1.0, 0.0, 0.0, 1.0 };
+			assertTrue(areEquals(getTablePotential(policy).getValues(), truePolicy));
+		} catch (Exception e) {
+			printExceptionAndFail(e);
+		}
+	}
+
+	
+	
+	private TablePotential getTablePotential(Potential potential){
+		TablePotential table=null;
+		 try {
+			 table = potential.tableProject(null, null).get(0);
+		} catch (NotEnoughMemoryException | NonProjectablePotentialException
+				| WrongCriterionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 return table;
+	}
+	
+	/**
+	 * Test for diagnosis problem
+	 * 
+	 * @throws ParserException
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 * @throws NotEnoughMemoryException
+	 * @throws ProbNodeNotFoundException
+	 * @throws ConstraintViolationException
+	 * @throws NotEvaluableNetworkException
+	 *//*
+	@Test
+	public void testConditioningVariablesEvaluationIDDiagnosisProblem()
+			throws NotEnoughMemoryException, FileNotFoundException,
+			IOException, ParserException, ProbNodeNotFoundException,
+			ConstraintViolationException, NotEvaluableNetworkException {
+		ProbNet network;
+		
 		network = iD_DiagnosisProblem;
+		
+		//Decision criteria variable
+		String dCStates[]= {"Health","Money"};
+		Variable variableDC = new Variable("DC",dCStates);
+
+		network.getPotentials(network.getVariable("U")).get(0).addVariable(variableDC);
 		
 		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(iD_DiagnosisProblem);
 		
@@ -770,7 +836,7 @@ public abstract class InferenceAlgorithmTests {
 			printExceptionAndFail(e);
 		}
 	}
-
+*/
 	/**
 	 * Test for diagnosis problem
 	 * 
@@ -789,9 +855,9 @@ public abstract class InferenceAlgorithmTests {
 			ConstraintViolationException, NotEvaluableNetworkException {
 		ProbNet diagram;
 		
-		diagram = iD_DiagnosisProblem;
+		diagram = NetsFactory.createInfluenceDiagramDiagnosisProblem();
 				
-		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(iD_DiagnosisProblem);
+		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(diagram);
 		
 		Variable variableX = diagram.getVariable("X");
 		assertNotNull(variableX);
@@ -845,17 +911,17 @@ public abstract class InferenceAlgorithmTests {
 			// Test optimal policy
 			variableT = getVariableAndAssertNotNull(diagram,"T");
 			variableD = getVariableAndAssertNotNull(diagram,"D");
-			HashMap<Variable, TablePotential> optimalStrategy = algorithm.getOptimizedPolicies();
-			TablePotential policyT = optimalStrategy.get(variableT);
-			TablePotential policyD = optimalStrategy.get(variableD);
+			HashMap<Variable, Potential> optimalStrategy = algorithm.getOptimizedPolicies();
+			Potential policyT = optimalStrategy.get(variableT);
+			Potential policyD = optimalStrategy.get(variableD);
 			assertNotNull(policyT);
 			assertNotNull(policyD);
 
 			// Test the size of the domain of the policy of T
-			assertTrue(checkPolicy(policyT, variableT, 0));
+			assertTrue(checkPolicy(getTablePotential(policyT), variableT, 0));
 
 			// Test the size of the domain of the policy of D
-			assertTrue(checkPolicy(policyD, variableD, 2));
+			assertTrue(checkPolicy(getTablePotential(policyD), variableD, 2));
 
 			// Test the a priori case
 			HashMap<Variable, TablePotential> aPrioriProbabilities = algorithm
@@ -1150,9 +1216,9 @@ public abstract class InferenceAlgorithmTests {
 
 			// Test optimal policy
 			Variable D = diagram.getVariable("D");
-			HashMap<Variable, TablePotential> optimalStrategy = algorithm
+			HashMap<Variable, Potential> optimalStrategy = algorithm
 					.getOptimizedPolicies();
-			TablePotential policy = optimalStrategy.get(D);
+			Potential policy = optimalStrategy.get(D);
 			assertNotNull(policy);
 
 			// Test the size of the domain of the policy
@@ -1163,7 +1229,7 @@ public abstract class InferenceAlgorithmTests {
 			// Test the optimal choice of the policy
 			double[] truePolicy = { 0.5, 0.5, 0.5, 0.5 };
 
-			assertTrue(areEquals(policy.getValues(), truePolicy));
+			assertTrue(areEquals(getTablePotential(policy).getValues(), truePolicy));
 		} catch (Exception e) {
 			printExceptionAndFail(e);
 		}

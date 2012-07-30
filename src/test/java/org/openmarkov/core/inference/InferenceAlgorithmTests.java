@@ -35,6 +35,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 
 
@@ -204,7 +205,7 @@ public abstract class InferenceAlgorithmTests {
 			checkProbabilities(aPosterioriProbs,variables,expectedProbs);
 		
 		} catch (Exception e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 			
 		}
 	}
@@ -212,9 +213,12 @@ public abstract class InferenceAlgorithmTests {
 	/**
 	 * @param e
 	 */
-	protected void printExceptionAndFail(Exception e) {
-		System.err.println(e.getMessage());
-		fail();
+	@SuppressWarnings("restriction")
+	protected void printExceptionAndFailIfImplemented(Exception e) {
+		if (e.getClass()!=NotImplementedException.class){
+			System.err.println(e.getMessage());
+			fail();
+		}
 	}
 
 
@@ -320,7 +324,7 @@ public abstract class InferenceAlgorithmTests {
 			checkProbabilityPotential(yPositiveProbabilities,variableX,0.9796034);
 			checkProbabilityPotential(yPositiveProbabilities,variableY,1.0);
 		} catch (Exception e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 
 	}
@@ -392,7 +396,7 @@ public abstract class InferenceAlgorithmTests {
 		try {
 			algorithm.getProbsAndUtilities();
 		} catch (NotEnoughMemoryException | UnexpectedInferenceException e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 
 	}
@@ -428,7 +432,7 @@ public abstract class InferenceAlgorithmTests {
 		try {
 			algorithm.getProbsAndUtilities();
 		} catch (NotEnoughMemoryException | UnexpectedInferenceException e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 
 	}
@@ -466,7 +470,7 @@ public abstract class InferenceAlgorithmTests {
 		try {
 			algorithm.getProbsAndUtilities();
 		} catch (NotEnoughMemoryException | UnexpectedInferenceException e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 
 	}
@@ -499,7 +503,7 @@ public abstract class InferenceAlgorithmTests {
 					* (1.0 - specificity);
 			checkProbabilityPotential(aPrioriProbabilities,variableY,probPositiveY);
 		} catch (Exception e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 	}
 	
@@ -530,7 +534,7 @@ public abstract class InferenceAlgorithmTests {
 			expectedPot.setValues(expectedValues);
 			checkEqualPotentials(jointProbability,expectedPot);
 		} catch (Exception e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 	}
 	
@@ -563,7 +567,7 @@ public abstract class InferenceAlgorithmTests {
 			expectedPot.setValues(expectedValues);
 			checkEqualPotentials(jointProbability,expectedPot);
 		} catch (Exception e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 	}
 	
@@ -636,7 +640,7 @@ public abstract class InferenceAlgorithmTests {
 				checkProbabilityPotential(aPresentProbabilities,variableB,0.1);
 				checkProbabilityPotential(aPresentProbabilities,variableC,0.146);
 			} catch (Exception e) {
-				printExceptionAndFail(e);
+				printExceptionAndFailIfImplemented(e);
 			}
 		}
 		
@@ -693,7 +697,7 @@ public abstract class InferenceAlgorithmTests {
 			aAbsentProbabilities = algorithm.getProbsAndUtilities(variablesOfInterest);
 			checkProbabilityPotential(aAbsentProbabilities,variableC,0.71);
 		} catch (Exception e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 	}
 		
@@ -718,7 +722,7 @@ public abstract class InferenceAlgorithmTests {
 				checkProbabilityPotential(yPositiveProbabilities,variableY,1.0);
 				checkProbabilityPotential(yPositiveProbabilities,variableZ,0.86);
 			} catch (Exception e) {
-				printExceptionAndFail(e);
+				printExceptionAndFailIfImplemented(e);
 			}
 
 		}
@@ -767,7 +771,7 @@ public abstract class InferenceAlgorithmTests {
 			double[] truePolicy = { 1.0, 0.0, 0.0, 1.0 };
 			assertTrue(areEquals(getTablePotential(policy).getValues(), truePolicy));
 		} catch (Exception e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 	}
 
@@ -875,7 +879,7 @@ public abstract class InferenceAlgorithmTests {
 			checkProbabilityPotential(aPrioriProbabilities,variableY,0.0916);
 			checkProbabilityPotential(aPrioriProbabilities,variableD,0.0916);
 		} catch (Exception e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 	}
 
@@ -942,7 +946,7 @@ public abstract class InferenceAlgorithmTests {
 
 
 		} catch (Exception e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 
 	}
@@ -1037,7 +1041,7 @@ public abstract class InferenceAlgorithmTests {
 
 		} catch (InvalidStateException | IncompatibleEvidenceException e) {
 			
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}	
 
 	}
@@ -1086,7 +1090,7 @@ public abstract class InferenceAlgorithmTests {
 
 			variableU2 = diagram.getVariable("U2");
 		} catch (Exception e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 
 		try {
@@ -1111,7 +1115,7 @@ public abstract class InferenceAlgorithmTests {
 			checkUtilityPotential(aPosterioriProbabilities, variableU1, u1);
 			checkUtilityPotential(aPosterioriProbabilities, variableU2, u2);
 		} catch (IncompatibleEvidenceException e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 
 	}
@@ -1231,7 +1235,7 @@ public abstract class InferenceAlgorithmTests {
 
 			assertTrue(areEquals(getTablePotential(policy).getValues(), truePolicy));
 		} catch (Exception e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 	}
 	
@@ -1300,7 +1304,7 @@ public abstract class InferenceAlgorithmTests {
 
 			// assertTrue(areEquals(policy.getValues(),truePolicy));
 		} catch (Exception e) {
-			printExceptionAndFail(e);
+			printExceptionAndFailIfImplemented(e);
 		}
 	}
 

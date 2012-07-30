@@ -177,7 +177,7 @@ public class ProbNet implements Cloneable {
 	/** Default States of the probNet */
 	private State[] defaultStates = { new State("absent"), new State("present")};
 	
-	// Constructors
+		// Constructors
     public ProbNet (NetworkType networkType)
     {
         this.graph = new Graph();
@@ -1668,6 +1668,8 @@ public class ProbNet implements Cloneable {
 		return newProbNode;
 	}
 	
+	
+
 	public void setDecisionCriteria(String[] criteriaNames) {
 		int numCriteria = criteriaNames.length;
 		State[] states = new State[numCriteria];
@@ -1689,6 +1691,7 @@ public class ProbNet implements Cloneable {
 	    return graph.existsPath (a.getNode (),b.getNode (), directed);
 	}
 
+	
 	/** @return <code>ArrayList</code> of <code>StringsWithProperties</code> */
 	public ArrayList<StringWithProperties> getAgents() {
 		return agents;
@@ -1698,7 +1701,9 @@ public class ProbNet implements Cloneable {
 	public ArrayList<StringWithProperties> getDecisionCriteria() {
 		return decisionCriteria2;
 	}
-
+	public Variable getDecisionCriteriaVariable() {
+		return decisionCriteria;
+	}
 	/**
 	 * @param decisionCriteria2. <code>StringsWithProperties</code>
 	 */

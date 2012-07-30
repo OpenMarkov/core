@@ -8,12 +8,14 @@ package org.openmarkov.core.oon;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
@@ -41,6 +43,91 @@ public class OOBNet extends ProbNet
     {
         super (networkType);
     }
+    
+    /**
+     * Constructor for OOBNet.
+     * @param networkType
+     */
+    public OOBNet (ProbNet probNet)
+    {
+        super();
+        try
+        {
+            setNetworkType (probNet.getNetworkType ());
+        }
+        catch (ConstraintViolationException e1)
+        {
+            e1.printStackTrace();
+        } 
+        // copy constraints
+        int numConstraints = probNet.getConstraints ().size(); 
+        for (int i = 1; i < numConstraints; i++)
+        {
+            try
+            {
+                addConstraint (probNet.getConstraints().get (i), false);
+            }
+            catch (ConstraintViolationException e)
+            {
+                // Unreachable code because constraints are not tested in copy
+            }
+        }
+        ArrayList<ProbNode> probNodes = probNet.getProbNodes();
+        // Adds variables and create corresponding nodes. Also add potentials
+        for (ProbNode probNode : probNodes) {
+            // Add variables and create corresponding nodes
+            Variable variable = probNode.getVariable();
+            ProbNode newProbNode = null;
+            newProbNode = addVariable (variable, probNode.getNodeType ());
+            Node newNode = newProbNode.getNode();
+            Node node = probNode.getNode();
+            newNode.setCoordinateX(node.getCoordinateX());
+            newNode.setCoordinateY(node.getCoordinateY());
+            newProbNode.setPotentials(probNode.getPotentials());
+
+            // TODO Hacer clon para probNode y quitar estas lineas
+            newProbNode.setPurpose(probNode.getPurpose());
+            newProbNode.setRelevance(probNode.getRelevance());
+            newProbNode.setComment(probNode.getComment());
+            newProbNode.setCanonicalParameters(probNode.isCanonicalParameters());
+            newProbNode.additionalProperties = additionalProperties;
+        }
+
+        // Add links
+        ArrayList<ProbNode> nodes = probNet.getProbNodes();
+        for (ProbNode probNode1 : nodes) {
+            Variable variable1 = probNode1.getVariable();
+            ProbNode newNode1 = this.getProbNode(variable1);
+            ArrayList<ProbNode> neighbors = getProbNodesOfNodes(probNode1
+                    .getNode().getNeighbors());
+            for (ProbNode probNode2 : neighbors) {
+                Variable variable2 = probNode2.getVariable();
+                ProbNode newNode2 = this.getProbNode(variable2);
+                if (probNode1.getNode().isSibling(probNode2.getNode())) {
+                    if (!newNode1.getNode().isSibling(newNode2.getNode())) {
+                        graph.addLink(newNode1.getNode(), newNode2.getNode(),
+                                false);
+                    }
+                }
+                if (probNode1.getNode().isChild(probNode2.getNode())) {
+                    graph.addLink(newNode1.getNode(), newNode2.getNode(), true);
+                }
+            }
+        }
+
+        // copy listeners
+        getPNESupport().setListeners(probNet.getPNESupport ().getListeners());
+        
+        // Copy additionalProperties
+        Set<String> keys = probNet.additionalProperties.keySet();
+        HashMap<String, String> copyProperties = new HashMap<String, String>();
+        for (String key : keys) {
+            copyProperties.put(key, probNet.additionalProperties.get(key));
+        }
+        additionalProperties = copyProperties;
+
+        }
+    
 
     /**
      * @param classNet

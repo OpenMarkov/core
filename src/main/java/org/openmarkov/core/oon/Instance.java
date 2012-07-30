@@ -18,7 +18,7 @@ import org.openmarkov.core.model.network.ProbNode;
 public class Instance {
 	
 	private String name;
-	private OOBNet classNet;
+	private ProbNet classNet;
 	private boolean isInput;
 	private ArrayList<ProbNode> instanceNodes;
 	private HashMap<String, Instance> subInstances;
@@ -31,7 +31,7 @@ public class Instance {
 	 * @param instanceNodes
 	 * @param isInput
 	 */
-	public Instance(String name, OOBNet classNet, ArrayList<ProbNode> instanceNodes, boolean isInput) {
+	public Instance(String name, ProbNet classNet, ArrayList<ProbNode> instanceNodes, boolean isInput) {
 		super();
 		this.name = name;
 		this.classNet = classNet;
@@ -40,29 +40,32 @@ public class Instance {
 		this.inputParameters = new HashMap<Instance, Instance>();
 		this.isInput = isInput;
 		
-		for(String subInstanceName : classNet.getInstances().keySet())
+		if(classNet instanceof OOBNet)
 		{
-			Instance originalSubinstance = classNet.getInstances().get(subInstanceName);
-
-			ArrayList<ProbNode> subInstanceNodes = new ArrayList<ProbNode>();
-			for(ProbNode originalSubinstanceNode : originalSubinstance.getNodes())
-			{
-				String subinstanceNodeName = name + "." + originalSubinstanceNode.getName();
-				int i = 0;
-				boolean found = false;
-				while(!found && i < instanceNodes.size())
-				{
-					found = instanceNodes.get(i).getName().equals(subinstanceNodeName);
-					if(!found)
-					{
-						++i;
-					}
-				}
-				subInstanceNodes.add(instanceNodes.get(i));
-			}
-			this.subInstances.put(name + "." + subInstanceName, new Instance(name + "." + subInstanceName,
-					originalSubinstance.getClassNet(), subInstanceNodes,
-					originalSubinstance.isInput));
+    		for(String subInstanceName : ((OOBNet)classNet).getInstances().keySet())
+    		{
+    			Instance originalSubinstance = ((OOBNet)classNet).getInstances().get(subInstanceName);
+    
+    			ArrayList<ProbNode> subInstanceNodes = new ArrayList<ProbNode>();
+    			for(ProbNode originalSubinstanceNode : originalSubinstance.getNodes())
+    			{
+    				String subinstanceNodeName = name + "." + originalSubinstanceNode.getName();
+    				int i = 0;
+    				boolean found = false;
+    				while(!found && i < instanceNodes.size())
+    				{
+    					found = instanceNodes.get(i).getName().equals(subinstanceNodeName);
+    					if(!found)
+    					{
+    						++i;
+    					}
+    				}
+    				subInstanceNodes.add(instanceNodes.get(i));
+    			}
+    			this.subInstances.put(name + "." + subInstanceName, new Instance(name + "." + subInstanceName,
+    					originalSubinstance.getClassNet(), subInstanceNodes,
+    					originalSubinstance.isInput));
+    		}
 		}
 	}
 	
@@ -72,7 +75,7 @@ public class Instance {
 	 * @param classNet
 	 * @param instanceNodes
 	 */
-	public Instance(String name, OOBNet classNet, ArrayList<ProbNode> instanceNodes) {
+	public Instance(String name, ProbNet classNet, ArrayList<ProbNode> instanceNodes) {
 		this(name, classNet, instanceNodes, false);
 	}	
 
@@ -100,7 +103,7 @@ public class Instance {
 	/**
 	 * @return the classNet
 	 */
-	public OOBNet getClassNet() {
+	public ProbNet getClassNet() {
 		return classNet;
 	}
 

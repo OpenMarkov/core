@@ -39,9 +39,9 @@ public class AddInstanceEdit  extends CompoundEdit implements PNEdit
 	private ProbNet classNet;
 	private java.awt.geom.Point2D.Double cursorPositon;
 
-	public AddInstanceEdit(ProbNet probNet, ProbNet classNet,
+	public AddInstanceEdit(OOBNet probNet, ProbNet classNet,
 			String instanceName, java.awt.geom.Point2D.Double cursorPosition) {
-		this.oobNet = (OOBNet)probNet;
+		this.oobNet = probNet;
 		this.classNet = classNet;
 		this.instanceName = instanceName;
 		this.cursorPositon = cursorPosition;
@@ -154,7 +154,7 @@ public class AddInstanceEdit  extends CompoundEdit implements PNEdit
         }
         
 		try {
-			Instance instance = new Instance(instanceName, (OOBNet)classNet, instanceNodes); 
+			Instance instance = new Instance(instanceName, classNet, instanceNodes); 
 			oobNet.addInstance(instance);
 		} catch (InstanceAlreadyExistsException e) {
 			throw new DoEditException("An instance with name " + instanceName

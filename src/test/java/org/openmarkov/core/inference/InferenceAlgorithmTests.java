@@ -35,6 +35,8 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.TablePotentialTest;
+
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 
@@ -532,7 +534,7 @@ public abstract class InferenceAlgorithmTests {
 			expectedPot = new TablePotential(variables,PotentialRole.JOINT_PROBABILITY);			
 			double []expectedValues = {0.8645,0.018,0.0455,0.072};
 			expectedPot.setValues(expectedValues);
-			checkEqualPotentials(jointProbability,expectedPot);
+			TablePotentialTest.checkEqualPotentials(jointProbability,expectedPot, maxError);
 		} catch (Exception e) {
 			printExceptionAndFailIfImplemented(e);
 		}
@@ -565,41 +567,13 @@ public abstract class InferenceAlgorithmTests {
 			expectedPot = new TablePotential(variables,PotentialRole.JOINT_PROBABILITY);			
 			double []expectedValues = {0.0016,0.0784,0.1152,0.6048,0.0426,0.0174,0.119,0.021};
 			expectedPot.setValues(expectedValues);
-			checkEqualPotentials(jointProbability,expectedPot);
+			TablePotentialTest.checkEqualPotentials(jointProbability,expectedPot,maxError);
 		} catch (Exception e) {
 			printExceptionAndFailIfImplemented(e);
 		}
 	}
 	
-	/**
-	 * @param jointProbability
-	 * @param expectedValues
-	 * Checks if two potentials are equal
-	 */
-	private void checkEqualPotentials(TablePotential actual, TablePotential expected) {
-			
-			int numConfigurationsActual = actual.getTableSize();
-			assertEquals(numConfigurationsActual,expected.getTableSize());
-			
-			ArrayList<Finding> findings;
-			
-			for (int i = 0; i < numConfigurationsActual; i++) {
-				int[] auxConfiguration = actual.getConfiguration(i);
-				double actualValue = actual.values[i];
-				findings = new ArrayList<>();
-				ArrayList<Variable> variables = actual.getVariables();
-				for (int j = 0;j<variables.size();j++){
-					findings.add(new Finding(variables.get(j),auxConfiguration[j]));
-				}
-				double expectedValue = expected.getValue(new EvidenceCase(findings));
-				assertEquals(expectedValue, actualValue, maxError);
-				
-			}
-			
-		}
-
-
-
+	
 
 
 	@Test

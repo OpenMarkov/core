@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 
 /**
  * @author manolo
@@ -627,6 +628,53 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 			addPotentials(probNet,potentialX,potentialY,potentialU1,potentialU2);
 			
 			return probNet;
+	}
+	
+	
+	
+	public static ProbNet createSMMWithoutStateVariable(){
+		// Define the variables
+		TablePotential potentialQoL;
+		TablePotential potentialCostOfTreatment;
+		double[] tableQoL = {1.0, 0.9};
+		double[] tableCostOfTreatment = {-2.0, 0.0};
+		
+		
+		Variable variableTreatment = new Variable("Treatment",yesNoStates);
+		Variable variableCostOfTreatment = new Variable("Cost of treatment");
+		Variable variableQoL = new Variable("QoL");
+		variableQoL.setTimeSlice(0);
+		
+		ProbNet probNet = new ProbNet(SimpleMarkovModelType.getUniqueInstance());
+		
+		//Add variables to the network			
+		addVariables(probNet,NodeType.DECISION,variableTreatment);
+		addVariables(probNet,NodeType.UTILITY,variableQoL,variableCostOfTreatment);
+		
+		//additional properties
+		String relevance = new String("Relevance");
+		String value = new String("7.0");				
+		setAdditionalProperties(relevance,value,variableTreatment,variableQoL,variableCostOfTreatment);
+		
+		//Potential QoL
+		potentialQoL = createTablePotential(PotentialRole.UTILITY,tableQoL,variableQoL);
+		potentialQoL.setUtilityVariable(variableQoL);
+		
+		//Potential U2
+		potentialCostOfTreatment = createTablePotential(PotentialRole.UTILITY,tableCostOfTreatment,variableCostOfTreatment);
+		potentialCostOfTreatment.setUtilityVariable(variableCostOfTreatment);
+		
+		//Links throws NodeNotFoundException
+		try {
+			probNet.addLink(variableTreatment, variableQoL, true);
+			probNet.addLink(variableTreatment, variableCostOfTreatment, true);
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		addPotentials(probNet,potentialQoL,potentialCostOfTreatment);
+		
+		return probNet;
 	}
 
 }

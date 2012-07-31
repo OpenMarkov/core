@@ -503,4 +503,34 @@ public class TablePotentialTest {
 		}
     }*/
     
+    /**
+	 * @param actual
+	 * @param expected
+	 * Checks if two potentials are equal
+	 */
+	public static void checkEqualPotentials(TablePotential actual, TablePotential expected,double maxError) {
+			
+			int numConfigurationsActual = actual.getTableSize();
+			assertEquals(numConfigurationsActual,expected.getTableSize());
+			
+			ArrayList<Finding> findings;
+			
+			for (int i = 0; i < numConfigurationsActual; i++) {
+				int[] auxConfiguration = actual.getConfiguration(i);
+				double actualValue = actual.values[i];
+				findings = new ArrayList<>();
+				ArrayList<Variable> variables = actual.getVariables();
+				for (int j = 0;j<variables.size();j++){
+					findings.add(new Finding(variables.get(j),auxConfiguration[j]));
+				}
+				double expectedValue = expected.getValue(new EvidenceCase(findings));
+				assertEquals(expectedValue, actualValue, maxError);
+				
+			}
+			
+	}
+
+
+
+    
 }

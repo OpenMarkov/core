@@ -69,6 +69,11 @@ public class ProbNode implements Cloneable, PotentialsContainer {
     
     private PolicyType policyType = PolicyType.OPTIMAL;
     
+    //TODO OOBN start
+    /** Indicates whether this node is an input parameter */
+    private boolean isInput = false;
+    //TODO OOBN end
+    
    
     
     /** This object contains all the information that the parser reads from 
@@ -620,5 +625,22 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 		}
 		return false;
 	}
+	
+    /**
+     * Returns the isInput.
+     * @return the isInput.
+     */
+    public boolean isInput ()
+    {
+        return isInput;
+    }
+    /**
+     * Sets the isInput.
+     * @param isInput the isInput to set.
+     */
+    public void setInput (boolean isInput)
+    {
+        this.isInput = isInput;
+    }
 	
 }

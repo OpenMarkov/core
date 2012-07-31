@@ -137,6 +137,7 @@ public class AddInstanceEdit  extends CompoundEdit implements PNEdit
                         Variable variable = oobNet.getVariable (instanceName + "."  + variableName);
                         potential.replaceVariable (i, variable);
                     }
+                    potential.setUtilityVariable (oobNet.getVariable (instanceName + "."  + potential.getUtilityVariable ().getName ()));
                     newPotentials.add (potential);
                 }
                 newNode.setPotentials (newPotentials);

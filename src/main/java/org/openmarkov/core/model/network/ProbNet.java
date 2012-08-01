@@ -441,6 +441,20 @@ public class ProbNet implements Cloneable {
 		return true;
 	}
 	
+
+	public boolean checkIfThereIsAgeNode() {
+		boolean isThereNodeAge = false;
+		ArrayList<ProbNode> probNodes = getProbNodes();
+		for (int i = 0; i < probNodes.size() ; i++) {
+			if (probNodes.get(i).getVariable().isTemporal() 
+					&& probNodes.get(i).getVariable().getBaseName().equals("Age")) {
+				isThereNodeAge = true;
+				break;
+			}
+		}
+		return isThereNodeAge;
+	}
+
 	/**
 	 * Checks whether this <code>probNet</code> is temporal or not.
 	 * 
@@ -550,6 +564,15 @@ public class ProbNet implements Cloneable {
 		}
 		probNetCopy.additionalProperties = copyProperties;
 
+		// Copy decisionCriteria variable
+		if (this.getDecisionCriteriaVariable() != null) {
+			String [] criterianames = new String[this.getDecisionCriteriaVariable().getStates().length];
+			for (int i = 0; i < this.getDecisionCriteriaVariable().getStates().length; i++) {
+				criterianames[i] = this.getDecisionCriteriaVariable().getStates()[i].getName();
+			}
+			probNetCopy.setDecisionCriteria(criterianames);
+			
+		}
 		return probNetCopy;
 	}	
 

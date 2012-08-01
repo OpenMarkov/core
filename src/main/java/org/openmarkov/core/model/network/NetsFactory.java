@@ -632,21 +632,22 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	
 	
 	
-	public static ProbNet createSMMWithoutStateVariable(){
+	public static ProbNet createSMMWithoutStateVariable(double qoLTreat,double qoLNoTreat,double costTreat,double costNoTreat){
 		// Define the variables
 		TablePotential potentialQoL;
 		TablePotential potentialCostOfTreatment;
-		double[] tableQoL = {1.0, 0.9};
-		double[] tableCostOfTreatment = {-2.0, 0.0};
-		
-		
+		double[] tableQoL = {qoLTreat, qoLNoTreat};
+		double[] tableCostOfTreatment = {costTreat, costNoTreat};
+				
 		Variable variableTreatment = new Variable("Treatment",yesNoStates);
 		Variable variableCostOfTreatment = new Variable("Cost of treatment");
+		variableCostOfTreatment.setDecisionCriteria(new StringWithProperties("cost"));
 		Variable variableQoL = new Variable("QoL");
+		variableQoL.setBaseName(variableQoL.getName());
 		variableQoL.setTimeSlice(0);
-		
+		variableQoL.setDecisionCriteria(new StringWithProperties("effectiveness"));
 		ProbNet probNet = new ProbNet(SimpleMarkovModelType.getUniqueInstance());
-		
+
 		//Add variables to the network			
 		addVariables(probNet,NodeType.DECISION,variableTreatment);
 		addVariables(probNet,NodeType.UTILITY,variableQoL,variableCostOfTreatment);
@@ -657,11 +658,11 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		setAdditionalProperties(relevance,value,variableTreatment,variableQoL,variableCostOfTreatment);
 		
 		//Potential QoL
-		potentialQoL = createTablePotential(PotentialRole.UTILITY,tableQoL,variableQoL);
+		potentialQoL = createTablePotential(PotentialRole.UTILITY,tableQoL,variableTreatment);
 		potentialQoL.setUtilityVariable(variableQoL);
 		
 		//Potential U2
-		potentialCostOfTreatment = createTablePotential(PotentialRole.UTILITY,tableCostOfTreatment,variableCostOfTreatment);
+		potentialCostOfTreatment = createTablePotential(PotentialRole.UTILITY,tableCostOfTreatment,variableTreatment);
 		potentialCostOfTreatment.setUtilityVariable(variableCostOfTreatment);
 		
 		//Links throws NodeNotFoundException

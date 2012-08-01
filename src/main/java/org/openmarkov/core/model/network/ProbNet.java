@@ -41,6 +41,7 @@ import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
@@ -714,7 +715,11 @@ public class ProbNet implements Cloneable {
 		// each original potential may yield several projected potentials;
 		ArrayList<TablePotential> auxPotentials;
 		for (Potential potential : originalPotentials) {
-			auxPotentials = potential.tableProject(evidenceCase, null);
+			if (potential instanceof SameAsPrevious) {
+				auxPotentials = ((SameAsPrevious) potential).getOriginalPotential().tableProject(evidenceCase, null);
+			} else {
+				auxPotentials = potential.tableProject(evidenceCase, null);
+			}
 			for (TablePotential auxPotential : auxPotentials) {
 				projectedPotentials.add(auxPotential);
 			}

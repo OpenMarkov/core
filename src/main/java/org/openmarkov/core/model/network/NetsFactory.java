@@ -642,9 +642,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		Variable variableTreatment = new Variable("Treatment",yesNoStates);
 		Variable variableCostOfTreatment = new Variable("Cost of treatment");
 		variableCostOfTreatment.setDecisionCriteria(new StringWithProperties("cost"));
-		Variable variableQoL = new Variable("QoL");
-		variableQoL.setBaseName(variableQoL.getName());
-		variableQoL.setTimeSlice(0);
+		Variable variableQoL = createTemporalVariable("QoL",0);
 		variableQoL.setDecisionCriteria(new StringWithProperties("effectiveness"));
 		ProbNet probNet = new ProbNet(SimpleMarkovModelType.getUniqueInstance());
 
@@ -661,7 +659,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		potentialQoL = createTablePotential(PotentialRole.UTILITY,tableQoL,variableTreatment);
 		potentialQoL.setUtilityVariable(variableQoL);
 		
-		//Potential U2
+		//Potential Treatment
 		potentialCostOfTreatment = createTablePotential(PotentialRole.UTILITY,tableCostOfTreatment,variableTreatment);
 		potentialCostOfTreatment.setUtilityVariable(variableCostOfTreatment);
 		
@@ -677,5 +675,76 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		
 		return probNet;
 	}
+	
+	public static ProbNet createSMMWithStateVariable(double qoLTreat,double qoLNoTreat,double costTreat,double costNoTreat){
+		TablePotential potentialQoL;
+		TablePotential potentialCostOfTreatment;
+		double[] tableQoL = {0.0, qoLTreat, 0.0, qoLNoTreat};
+		double[] tableCostOfTreatment = {costTreat, costNoTreat};
+		String[] statesStateVariable = {"dead", "alive"};
+		
+		Variable variableTreatment = new Variable("Treatment",yesNoStates);
+		Variable variableCostOfTreatment = new Variable("Cost of treatment");
+		variableCostOfTreatment.setDecisionCriteria(new StringWithProperties("cost"));
+		Variable variableQoL = createTemporalVariable("QoL",0);
+		variableQoL.setDecisionCriteria(new StringWithProperties("effectiveness"));
+		Variable variableState0 = createTemporalVariable("State",0,statesStateVariable);
+		Variable variableState1 = createTemporalVariable("State",1,statesStateVariable);
+		
+		ProbNet probNet = new ProbNet(SimpleMarkovModelType.getUniqueInstance());
+
+		//Add variables to the network	
+		addVariables(probNet,NodeType.CHANCE,variableState0,variableState1);
+		addVariables(probNet,NodeType.DECISION,variableTreatment);
+		addVariables(probNet,NodeType.UTILITY,variableQoL,variableCostOfTreatment);
+		
+		//additional properties
+		String relevance = new String("Relevance");
+		String value = new String("7.0");				
+		setAdditionalProperties(relevance,value,variableState0,variableState1,variableTreatment,variableQoL,variableCostOfTreatment);
+		
+		//Potential State0
+		double []probabilitiesState0 = {1.0,0.0};
+		TablePotential potentialState0 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY,probabilitiesState0,variableState0);
+		
+		//Potential State1
+		double []probabilitiesState1 = {1.0, 0.0, 0.3, 0.7, 1.0, 0.0, 0.5, 0.5};
+		TablePotential potentialState1 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY,probabilitiesState1,variableState1,variableState0,variableTreatment);
+					
+		//Potential Treatment
+		potentialCostOfTreatment = createTablePotential(PotentialRole.UTILITY,tableCostOfTreatment,variableTreatment);
+		potentialCostOfTreatment.setUtilityVariable(variableCostOfTreatment);
+		
+		//Potential QoL
+		potentialQoL = createTablePotential(PotentialRole.UTILITY,tableQoL,variableState0,variableTreatment);
+		potentialQoL.setUtilityVariable(variableQoL);
+		
+		//Links throws NodeNotFoundException
+		try {
+			probNet.addLink(variableTreatment, variableCostOfTreatment, true);
+			probNet.addLink(variableTreatment, variableQoL, true);
+			probNet.addLink(variableTreatment, variableState1, true);
+			probNet.addLink(variableState0, variableQoL, true);
+			probNet.addLink(variableState0, variableState1, true);
+			
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		addPotentials(probNet,potentialQoL,potentialCostOfTreatment,potentialState0,potentialState1);
+		
+		return probNet;
+	}
+	
+	
+	
+	private static Variable createTemporalVariable(String baseName,int timeSlice, String... statesStateVariable){
+		Variable variable = new Variable(baseName,statesStateVariable);
+		variable.setBaseName(variable.getName());
+		variable.setTimeSlice(timeSlice);
+		return variable;
+		
+	}
+
 
 }

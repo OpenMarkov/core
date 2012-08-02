@@ -414,7 +414,8 @@ public class TablePotential extends Potential
         {
             Variable decisionCriteria = inferenceOptions.decisionCriteria;
             ProbNet probNet = inferenceOptions.probNet;
-            String criterion = probNet.getProbNode (utilityVariable).getPurpose ();
+            //String criterion = probNet.getProbNode (utilityVariable).getPurpose ();
+            String criterion = utilityVariable.getDecisionCriteria().getString();
             if (role == PotentialRole.UTILITY && decisionCriteria != null)
             {
                 ArrayList<Potential> potentials = new ArrayList<Potential> (2);

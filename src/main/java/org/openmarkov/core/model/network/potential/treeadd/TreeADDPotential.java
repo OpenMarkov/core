@@ -285,7 +285,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 			throws NonProjectablePotentialException, NotEnoughMemoryException,
 			WrongCriterionException {
 		ArrayList<TablePotential> potentialsToSumUp = new ArrayList<TablePotential>();
-		ArrayList<TablePotential> projectedPotential = new ArrayList<TablePotential>();
+		ArrayList<TablePotential> projectedPotentials = new ArrayList<TablePotential>();
 		
 		ArrayList<TreeADDBranch> branches = getBranches();
 		for (TreeADDBranch branch : branches) {
@@ -325,8 +325,14 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 				 		"top variable is numeric");
 			 }
 		}
-		projectedPotential.add(DiscretePotentialOperations.sum(potentialsToSumUp));
-		return projectedPotential;
+		projectedPotentials.add(DiscretePotentialOperations.sum(potentialsToSumUp));
+		if (role == PotentialRole.UTILITY){
+			for (Potential auxPot:projectedPotentials){
+				auxPot.setUtilityVariable(utilityVariable);
+			}
+		}
+
+		return projectedPotentials;
 	}
 	
 	/*private TablePotential getPotentialMask () {

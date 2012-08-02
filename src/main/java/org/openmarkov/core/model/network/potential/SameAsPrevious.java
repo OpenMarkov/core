@@ -117,7 +117,8 @@ public class SameAsPrevious extends Potential {
 				new TablePotential(shiftedVariables, role);
 			shiftedPotential.utilityVariable = 
 				projectedPotential.utilityVariable;
-//			shiftedPotential.values = projectedPotential.values;
+			//TODO: Manolo: The next line was commented...
+			shiftedPotential.values = projectedPotential.values;
 
 			// Set discount rate
 			double accumulatedDiscount = 1.0;

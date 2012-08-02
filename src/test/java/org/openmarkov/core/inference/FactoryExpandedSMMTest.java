@@ -218,12 +218,21 @@ public class FactoryExpandedSMMTest {
 		
 		boolean has;
 		has = false;
+		Variable varToAnalyze=null;
 		if (auxPot.getPotentialRole()==role){
 			switch (role){
+			case CONDITIONAL_PROBABILITY:
+					varToAnalyze = auxPot.getVariables().get(0);
+					break;
+			case UTILITY:
+					varToAnalyze = auxPot.getUtilityVariable();
+					break;
+			default:
+				break;
 			
 			}
-			Variable utilVar = auxPot.getUtilityVariable();
-			has = utilVar.isTemporal() && utilVar.getTimeSlice()>0;
+			
+			has = (varToAnalyze!=null) && varToAnalyze.isTemporal() && varToAnalyze.getTimeSlice()>0;
 		}
 		return has;
 	}

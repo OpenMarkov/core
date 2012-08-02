@@ -630,7 +630,9 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 			return probNet;
 	}
 	
-	
+	public static ProbNet createSMMWithoutStateVariable(){
+		return createSMMWithoutStateVariable(0.9,1.0,40000,0);
+	}
 	
 	public static ProbNet createSMMWithoutStateVariable(double qoLTreat,double qoLNoTreat,double costTreat,double costNoTreat){
 		// Define the variables

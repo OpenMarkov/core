@@ -676,6 +676,16 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		return probNet;
 	}
 	
+	
+	/**
+	 * @return A simple Markov Model proposed for jdiez for testing cost-effectiveness analysis and inference
+	 */
+	public static ProbNet createSMMDeadAlive(){
+		return createSMMWithStateVariable(0.9,1.0,40000,0);
+	}
+	
+	
+	
 	public static ProbNet createSMMWithStateVariable(double qoLTreat,double qoLNoTreat,double costTreat,double costNoTreat){
 		TablePotential potentialQoL;
 		TablePotential potentialCostOfTreatment;
@@ -704,7 +714,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		setAdditionalProperties(relevance,value,variableState0,variableState1,variableTreatment,variableQoL,variableCostOfTreatment);
 		
 		//Potential State0
-		double []probabilitiesState0 = {1.0,0.0};
+		double []probabilitiesState0 = {0.0,1.0};
 		TablePotential potentialState0 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY,probabilitiesState0,variableState0);
 		
 		//Potential State1

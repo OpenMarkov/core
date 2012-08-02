@@ -27,6 +27,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
@@ -715,11 +716,12 @@ public class ProbNet implements Cloneable {
 		// each original potential may yield several projected potentials;
 		ArrayList<TablePotential> auxPotentials;
 		for (Potential potential : originalPotentials) {
-			if (potential instanceof SameAsPrevious) {
-				auxPotentials = ((SameAsPrevious) potential).getOriginalPotential().tableProject(evidenceCase, null);
-			} else {
-				auxPotentials = potential.tableProject(evidenceCase, null);
-			}
+			//if (potential instanceof SameAsPrevious) {
+				//auxPotentials = ((SameAsPrevious) potential).getOriginalPotential().tableProject(evidenceCase, null);
+			//} else {
+			InferenceOptions inferenceOptions = new InferenceOptions(this,null);
+				auxPotentials = potential.tableProject(evidenceCase, inferenceOptions);
+			//}
 			for (TablePotential auxPotential : auxPotentials) {
 				projectedPotentials.add(auxPotential);
 			}

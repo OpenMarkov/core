@@ -302,9 +302,10 @@ public class PartialOrder {
 	 * @param order
 	 * @param queryVariables
 	 * @param evidenceVariables 
+	 * @param conditioningVariables 
 	 * @return An order that has been pruned by eliminating the variables that are not in 'variables
 	 */
-	public ArrayList<ArrayList<Variable>> projectPartialOrder(ArrayList<Variable> queryVariables, ArrayList<Variable> evidenceVariables) {
+	public ArrayList<ArrayList<Variable>> projectPartialOrder(ArrayList<Variable> queryVariables, ArrayList<Variable> evidenceVariables, ArrayList<Variable> conditioningVariables) {
 		ArrayList<ArrayList<Variable>> newOrder;
 		ArrayList<ArrayList<Variable>> newOrder2;
 		//Remove variables
@@ -314,7 +315,9 @@ public class PartialOrder {
 			ArrayList<Variable> cloneAuxArray;
 			cloneAuxArray = (ArrayList<Variable>) auxArray.clone();
 			for (Variable auxVar:auxArray){
-				if ((queryVariables.contains(auxVar)||evidenceVariables.contains(auxVar))){
+				if ((queryVariables.contains(auxVar)
+						||evidenceVariables.contains(auxVar)
+						||conditioningVariables.contains(auxVar))){
 					cloneAuxArray.remove(auxVar);
 				}
 			}

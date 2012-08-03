@@ -161,14 +161,9 @@ public class FactoryExpandedSMM {
 		TreeADDPotential treeADDPotential = new TreeADDPotential(treeVariables, probNet.getDecisionCriteriaVariable(),
 				  utility.getPotentialRole(), utility.getUtilityVariable());
 		
-		  ArrayList<Potential> potentials = new ArrayList<>();
 		  ArrayList<Variable> variables = new ArrayList<>();
 		  variables.add(decisionCriteria.getVariable());
-		  double []table = {1.0, 0.0};
-		  TablePotential zeroCriteria = new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY, table);
-		 // zeroCriteria.setUtilityVariable(utilityNodes.get(i).getVariable());
-		  potentials.add(zeroCriteria);
-		  decisionCriteria.setPotentials(potentials);
+		 
 		  for (int j = 0; j < treeADDPotential.getBranches().size(); j++) {
 			  TreeADDBranch jBranch = treeADDPotential.getBranches().get(j);
 			String jBranchName = jBranch.getBranchStates().get(0).getName();

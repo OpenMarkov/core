@@ -27,6 +27,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.oon.Instance;
 import org.openmarkov.core.oon.OOBNet;
 import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
@@ -137,7 +138,10 @@ public class AddInstanceEdit  extends CompoundEdit implements PNEdit
                         Variable variable = oobNet.getVariable (instanceName + "."  + variableName);
                         potential.replaceVariable (i, variable);
                     }
-                    potential.setUtilityVariable (oobNet.getVariable (instanceName + "."  + potential.getUtilityVariable ().getName ()));
+                    if(potential.getPotentialRole() == PotentialRole.UTILITY)
+                    {
+                    	potential.setUtilityVariable (oobNet.getVariable (instanceName + "."  + potential.getUtilityVariable ().getName ()));
+                    }
                     newPotentials.add (potential);
                 }
                 newNode.setPotentials (newPotentials);

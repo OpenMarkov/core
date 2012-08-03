@@ -17,7 +17,6 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
 
@@ -298,15 +297,6 @@ public class OOBNet extends ProbNet
             {
                 probNet.removeProbNode (probNet.getProbNode (node.getVariable ()));
             }
-        }
-        try
-        {
-            probNet.setNetworkType (BayesianNetworkType.getUniqueInstance ());
-        }
-        catch (ConstraintViolationException e1)
-        {
-            // TODO Auto-generated catch block
-            e1.printStackTrace ();
         }
         return probNet;
     }

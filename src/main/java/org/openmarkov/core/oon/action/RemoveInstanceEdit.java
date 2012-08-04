@@ -24,7 +24,7 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.oon.Instance;
-import org.openmarkov.core.oon.InstanceLink;
+import org.openmarkov.core.oon.ParameterLink;
 import org.openmarkov.core.oon.OOBNet;
 import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
 
@@ -38,7 +38,7 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 	private Instance instance;
 	private HashSet<ProbNode> nodesToRemove;
 	private HashSet<Link> linksToRemove;
-	private HashSet<InstanceLink> instanceLinksToRemove;
+	private HashSet<ParameterLink> instanceLinksToRemove;
 
 	/**
 	 * @param probNet
@@ -49,13 +49,13 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 		
 		nodesToRemove = new HashSet<ProbNode>();
 		linksToRemove = new HashSet<Link>();
-		instanceLinksToRemove = new HashSet<InstanceLink>();
+		instanceLinksToRemove = new HashSet<ParameterLink>();
 		for(ProbNode probNode : instance.getNodes())
 		{
 			nodesToRemove.add(probNode);
 			linksToRemove.addAll(probNode.getNode().getLinks());
 		}
-		for(InstanceLink instanceLink : ((OOBNet)probNet).getInstanceLinks())
+		for(ParameterLink instanceLink : ((OOBNet)probNet).getInstanceLinks())
 		{
 			if (instanceLink.getSourceInstance().equals(this.instance)
 					|| instanceLink.getDestInstance().equals(this.instance)) {
@@ -88,7 +88,7 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 			NonProjectablePotentialException, WrongCriterionException {
 		super.doEdit();
 		((OOBNet)probNet).getInstances().remove(instance.getName());
-		for(InstanceLink instanceLink: instanceLinksToRemove)
+		for(ParameterLink instanceLink: instanceLinksToRemove)
 		{
 		    ((OOBNet)probNet).getInstanceLinks().remove(instanceLink);
 		}
@@ -103,7 +103,7 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 		} catch (InstanceAlreadyExistsException e) {
 			//Impossible to get here
 		}
-		for(InstanceLink instanceLink: instanceLinksToRemove)
+		for(ParameterLink instanceLink: instanceLinksToRemove)
 		{
 		    ((OOBNet)probNet).getInstanceLinks().add(instanceLink);
 		}		

@@ -23,7 +23,7 @@ import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
 public class OOBNet extends ProbNet
 {
     private HashMap<String, Instance> instances     = new HashMap<String, Instance> ();
-    private ArrayList<InstanceLink>   instanceLinks = new ArrayList<InstanceLink> ();
+    private ArrayList<ParameterLink>   instanceLinks = new ArrayList<ParameterLink> ();
 
     
     /**
@@ -159,7 +159,7 @@ public class OOBNet extends ProbNet
      * Add an instance link
      * @param link
      */
-    public void addInstanceLink (InstanceLink link)
+    public void addParameterLink (ParameterLink link)
     {
         instanceLinks.add (link);
         link.getDestInstance ().addInputParameter (link.getDestSubInstance (),
@@ -169,7 +169,7 @@ public class OOBNet extends ProbNet
     /**
      * @return the instanceLinks
      */
-    public ArrayList<InstanceLink> getInstanceLinks ()
+    public ArrayList<ParameterLink> getInstanceLinks ()
     {
         return instanceLinks;
     }
@@ -178,7 +178,7 @@ public class OOBNet extends ProbNet
      * Removes an instance Link
      * @param instanceLink
      */
-    public void removeInstanceLink (InstanceLink instanceLink)
+    public void removeInstanceLink (ParameterLink instanceLink)
     {
         instanceLinks.remove (instanceLink);
         instanceLink.getDestInstance ().removeInputParameter (instanceLink.getDestSubInstance ());
@@ -221,7 +221,7 @@ public class OOBNet extends ProbNet
     {
         ProbNet probNet = copy ();
         probNet.getGraph ().makeLinksExplicit (false);
-        for (InstanceLink instanceLink : getInstanceLinks ())
+        for (ParameterLink instanceLink : getInstanceLinks ())
         {
             for (ProbNode node : instanceLink.getDestSubInstance ().getNodes ())
             {

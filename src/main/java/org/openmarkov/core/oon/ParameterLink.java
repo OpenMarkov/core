@@ -8,7 +8,7 @@
 */
 package org.openmarkov.core.oon;
 
-public class InstanceLink {
+public class ParameterLink {
 	
 	private Instance sourceInstance;
 	private Instance destInstance;
@@ -19,7 +19,7 @@ public class InstanceLink {
 	 * @param sourceInstance
 	 * @param destInstance
 	 */
-	public InstanceLink(Instance sourceInstance, Instance destInstance, Instance destSubInstance) {
+	public ParameterLink(Instance sourceInstance, Instance destInstance, Instance destSubInstance) {
 		super();
 		this.sourceInstance = sourceInstance;
 		this.destInstance = destInstance;

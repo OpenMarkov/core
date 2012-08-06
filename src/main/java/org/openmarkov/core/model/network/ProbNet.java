@@ -567,14 +567,18 @@ public class ProbNet implements Cloneable {
 		probNetCopy.additionalProperties = copyProperties;
 
 		// Copy decisionCriteria variable
-		if (this.getDecisionCriteriaVariable() != null) {
+		/*if (this.getDecisionCriteriaVariable() != null) {
 			String [] criterianames = new String[this.getDecisionCriteriaVariable().getStates().length];
 			for (int i = 0; i < this.getDecisionCriteriaVariable().getStates().length; i++) {
 				criterianames[i] = this.getDecisionCriteriaVariable().getStates()[i].getName();
 			}
 			probNetCopy.setDecisionCriteria(criterianames);
 			
+		}*/
+		if (this.getDecisionCriteriaVariable() != null) {
+			probNetCopy.setDecisionCriteriaVariable(this.getDecisionCriteriaVariable());
 		}
+		
 		return probNetCopy;
 	}	
 
@@ -1698,6 +1702,9 @@ public class ProbNet implements Cloneable {
 		return newProbNode;
 	}
 	
+	public void setDecisionCriteriaVariable (Variable decisionCriteriaVariable) {
+		this.decisionCriteria = decisionCriteriaVariable;
+	}
 	
 
 	public void setDecisionCriteria(String[] criteriaNames) {

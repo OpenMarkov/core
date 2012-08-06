@@ -140,7 +140,7 @@ public class FactoryExpandedSMMTest {
 			
 			//Create the SMM and expand it
 			ProbNet network = NetsFactory.createSMMWithStateVariable(qoLTreat, qoLNoTreat,
-					costTreat, costNoTreat);
+					costTreat, costNoTreat,0.7,0.5);
 			double discount = 0.01;
 
 			ProbNet expandedNetwork = FactoryExpandedSMM.constructExpandedNetwork(numSlices, network, discount, true);
@@ -273,7 +273,7 @@ public class FactoryExpandedSMMTest {
 	 * @return The sum of 'numTerms' terms of a geometric progression whose first term is 'firsTerm'
 	 * and its ratio is 'ratio'
 	 */
-	private double sumTermsGeometricProgression(double firstTerm,double ratio,int numTerms){
+	public static double sumTermsGeometricProgression(double firstTerm,double ratio,int numTerms){
 		return (firstTerm-firstTerm*Math.pow(ratio, numTerms))/(1.0-ratio);
 	}
 	

@@ -683,12 +683,12 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	 * @return A simple Markov Model proposed for jdiez for testing cost-effectiveness analysis and inference
 	 */
 	public static ProbNet createSMMDeadAlive(){
-		return createSMMWithStateVariable(0.9,1.0,40000,0);
+		return createSMMWithStateVariable(0.8,1.0,40000,0,0.7,0.5);
 	}
 	
 	
 	
-	public static ProbNet createSMMWithStateVariable(double qoLTreat,double qoLNoTreat,double costTreat,double costNoTreat){
+	public static ProbNet createSMMWithStateVariable(double qoLTreat,double qoLNoTreat,double costTreat,double costNoTreat,double probAliveIfTreat, double probAliveIfNoTreat){
 		TablePotential potentialQoL;
 		TablePotential potentialCostOfTreatment;
 		double[] tableQoL = {0.0, qoLTreat, 0.0, qoLNoTreat};
@@ -720,7 +720,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		TablePotential potentialState0 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY,probabilitiesState0,variableState0);
 		
 		//Potential State1
-		double []probabilitiesState1 = {1.0, 0.0, 0.3, 0.7, 1.0, 0.0, 0.5, 0.5};
+		double []probabilitiesState1 = {1.0, 0.0, 1.0-probAliveIfTreat, probAliveIfTreat, 1.0, 0.0, 1.0-probAliveIfNoTreat, probAliveIfNoTreat};
 		TablePotential potentialState1 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY,probabilitiesState1,variableState1,variableState0,variableTreatment);
 					
 		//Potential Treatment

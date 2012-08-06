@@ -442,7 +442,10 @@ public class Graph {
 
 	/** @param node <code>Node</code> */
 	public void uf_addNode(Node node) {
-		nodes.add(node);
+		if (!nodes.contains(node)) {
+			nodes.add(node);
+		}
+		
 	}
 
 	/** @return A <code>String</code> with:

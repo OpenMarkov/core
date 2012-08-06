@@ -85,9 +85,9 @@ public class FactoryExpandedSMM {
 	 * Adapts the concise network for performing cost-effectiveness analysis.
 	 */
 	public void adaptProbNetForCE(){
-		
+		//TODO take decisions criteria from the network
 		  probNet.setDecisionCriteria(new String[]{"cost", "effectiveness"});
-			//make all utility nodes of the expanded probNet 
+			//make all utility nodes of the expanded probNet child of decision criteria
 			  ArrayList<ProbNode> utilityNodes = probNet.getProbNodes(NodeType.UTILITY);
 			  ProbNode decisionCriteria = new ProbNode(probNet, probNet.getDecisionCriteriaVariable(), NodeType.DECISION);
 			  probNet.addProbNode(decisionCriteria);

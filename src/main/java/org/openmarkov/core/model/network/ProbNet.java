@@ -1713,7 +1713,7 @@ public class ProbNet implements Cloneable {
 		for (int i = 0; i < numCriteria; i++) {
 			states[i] = new State(criteriaNames[i]);
 		}
-		decisionCriteria = new Variable("### Decision Criteria ###", states);
+		decisionCriteria = new Variable("Decision Criteria", states);
 	}
 	
 	/**

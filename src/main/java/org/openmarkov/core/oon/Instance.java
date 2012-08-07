@@ -22,7 +22,6 @@ public class Instance {
 	private boolean isInput;
 	private ArrayList<ProbNode> instanceNodes;
 	private HashMap<String, Instance> subInstances;
-	private HashMap<Instance, Instance> inputParameters;
 	
 	/**
 	 * Constructor
@@ -37,7 +36,6 @@ public class Instance {
 		this.classNet = classNet;
 		this.instanceNodes = instanceNodes;
 		this.subInstances = new HashMap<String, Instance>();
-		this.inputParameters = new HashMap<Instance, Instance>();
 		this.isInput = isInput;
 		
 		if(classNet instanceof OOBNet)
@@ -121,23 +119,5 @@ public class Instance {
 	public HashMap<String, Instance> getSubInstances() {
 		return subInstances;
 	}
-
-	/**
-	 * Adds reference to input parameter 
-	 * @param destSubInstance
-	 * @param sourceInstance
-	 */
-	public void addInputParameter(Instance destSubInstance, Instance sourceInstance) {
-		inputParameters.put(destSubInstance, sourceInstance);
-	}
-	
-	/**
-	 * Removes reference of input parameter 
-	 * @param destSubInstance
-	 */
-	public void removeInputParameter(Instance destSubInstance) {
-		inputParameters.remove(destSubInstance);
-	}	
-
 	
 }

@@ -150,6 +150,7 @@ public class AddInstanceEdit  extends CompoundEdit implements PNEdit
                 newNode.setRelevance (originalNode.getRelevance ());
                 newNode.setPurpose (originalNode.getPurpose ());
                 newNode.additionalProperties = (HashMap<String, String>)originalNode.additionalProperties.clone ();
+                newNode.setInput(originalNode.isInput());
                 instanceNodes.add(newNode);
             }
             catch (Exception e)

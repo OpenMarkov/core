@@ -14,21 +14,30 @@ import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.oon.Instance;
-import org.openmarkov.core.oon.ParameterLink;
+import org.openmarkov.core.oon.InstanceParameterLink;
+import org.openmarkov.core.oon.NodeParameterLink;
 import org.openmarkov.core.oon.OOBNet;
+import org.openmarkov.core.oon.ParameterLink;
 
 @SuppressWarnings("serial")
-public class AddInputParameterLinkEdit extends SimplePNEdit{
+public class AddParameterLinkEdit extends SimplePNEdit{
 
 	private ParameterLink parameterLink;
 	
-	public AddInputParameterLinkEdit(ProbNet probNet, Instance sourceInstance, Instance destinationInstance,
+	public AddParameterLinkEdit(ProbNet probNet, Instance sourceInstance, Instance destinationInstance,
 			Instance destinationParameter) {
 		super(probNet);
 		
-		parameterLink = new ParameterLink(sourceInstance, destinationInstance, destinationParameter);
+		parameterLink = new InstanceParameterLink(sourceInstance, destinationInstance, destinationParameter);
 	}
+	
+	public AddParameterLinkEdit(ProbNet probNet, ProbNode sourceNode, ProbNode destinationNode) {
+		super(probNet);
+		
+		parameterLink = new NodeParameterLink(sourceNode, destinationNode);
+	}	
 	
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {

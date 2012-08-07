@@ -24,6 +24,7 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.oon.Instance;
+import org.openmarkov.core.oon.InstanceParameterLink;
 import org.openmarkov.core.oon.ParameterLink;
 import org.openmarkov.core.oon.OOBNet;
 import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
@@ -55,12 +56,17 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 			nodesToRemove.add(probNode);
 			linksToRemove.addAll(probNode.getNode().getLinks());
 		}
-		for(ParameterLink instanceLink : ((OOBNet)probNet).getInstanceLinks())
+		for(ParameterLink link : ((OOBNet)probNet).getParameterLinks())
 		{
-			if (instanceLink.getSourceInstance().equals(this.instance)
-					|| instanceLink.getDestInstance().equals(this.instance)) {
-				instanceLinksToRemove.add(instanceLink);
-			}
+            if(link instanceof InstanceParameterLink)
+            {
+            	InstanceParameterLink instanceLink = (InstanceParameterLink)link;    			
+			
+				if (instanceLink.getSourceInstance().equals(this.instance)
+						|| instanceLink.getDestInstance().equals(this.instance)) {
+					instanceLinksToRemove.add(link);
+				}
+            }
 		}
 	}
 
@@ -90,7 +96,7 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 		((OOBNet)probNet).getInstances().remove(instance.getName());
 		for(ParameterLink instanceLink: instanceLinksToRemove)
 		{
-		    ((OOBNet)probNet).getInstanceLinks().remove(instanceLink);
+		    ((OOBNet)probNet).getParameterLinks().remove(instanceLink);
 		}
 	}
 
@@ -105,7 +111,7 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 		}
 		for(ParameterLink instanceLink: instanceLinksToRemove)
 		{
-		    ((OOBNet)probNet).getInstanceLinks().add(instanceLink);
+		    ((OOBNet)probNet).getParameterLinks().add(instanceLink);
 		}		
 	}
 

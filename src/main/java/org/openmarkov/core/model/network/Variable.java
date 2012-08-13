@@ -82,7 +82,7 @@ public class Variable implements Cloneable {
     private StringWithProperties agent;
 	
     /**
-     * Decision criteria dor utility nodes
+     * Decision criteria for utility nodes
      */
     private StringWithProperties decisionCriteria;
 	/**

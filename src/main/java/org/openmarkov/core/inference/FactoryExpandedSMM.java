@@ -292,22 +292,26 @@ public class FactoryExpandedSMM {
 			  ProbNode iUtilityProbNode = utilityExpandedNodes.get(i);
 			int timeSlice = iUtilityProbNode.getVariable().getTimeSlice();
 			if (iUtilityProbNode.getVariable().isTemporal() && timeSlice > 0) {
-				  double discountRate = 1.0 / (Math.pow((1.0 + discount), timeSlice));
+				  double discountRate = 1.0 / (Math.pow((1.0 + (discount/100.0)), timeSlice));
 				  //project TreeADD original potential to a table
 				 try {
 					 TablePotential projectedPotential = null;
 					 Potential potentialToBeProjected;
 					Potential potential = iUtilityProbNode.getPotentials().get(0);
 					if (potential instanceof SameAsPrevious) {
-						 potentialToBeProjected = (((SameAsPrevious)potential).getOriginalPotential());
+						ArrayList<Variable> variables = potential.getVariables();
+						Variable utilityVariable = potential.getUtilityVariable();
+						potentialToBeProjected = (((SameAsPrevious)potential).getOriginalPotential()).copy();
+						potentialToBeProjected.setVariables(variables);
+						potentialToBeProjected.setUtilityVariable(utilityVariable);
 					 } else {
-						 potentialToBeProjected = (potential);
+						potentialToBeProjected = (potential);
 					 }
 					 projectedPotential = potentialToBeProjected.tableProject(new EvidenceCase(), inferenceOptions).get(0);
 					
 					double[] valuesProjectedPotential = projectedPotential.getValues();
 					for (int j = 0; j < valuesProjectedPotential.length; j++) {
-						valuesProjectedPotential[j] = valuesProjectedPotential[j] * discountRate;
+						valuesProjectedPotential[j] = valuesProjectedPotential[j] * (discountRate);
 					}
 					ArrayList<Potential> potentials = new ArrayList<>();
 					potentials.add(projectedPotential);

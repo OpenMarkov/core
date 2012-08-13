@@ -48,7 +48,7 @@ public class AddParameterLinkEdit extends SimplePNEdit{
 	@Override
 	public void undo() throws CannotUndoException {
 		// TODO Auto-generated method stub
-	    ((OOBNet)probNet).removeInstanceLink(parameterLink);
+	    ((OOBNet)probNet).removeParameterLink(parameterLink);
 	}
 
 }

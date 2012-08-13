@@ -17,9 +17,15 @@ import org.openmarkov.core.model.network.ProbNode;
 
 public class Instance {
 	
+	public enum ParameterArity {
+		ONE,
+		MANY
+	}
+	
 	private String name;
 	private ProbNet classNet;
 	private boolean isInput;
+	private ParameterArity arity;
 	private ArrayList<ProbNode> instanceNodes;
 	private HashMap<String, Instance> subInstances;
 	
@@ -37,6 +43,7 @@ public class Instance {
 		this.instanceNodes = instanceNodes;
 		this.subInstances = new HashMap<String, Instance>();
 		this.isInput = isInput;
+		this.arity = ParameterArity.ONE;
 		
 		if(classNet instanceof OOBNet)
 		{
@@ -118,6 +125,14 @@ public class Instance {
 	 */
 	public HashMap<String, Instance> getSubInstances() {
 		return subInstances;
+	}
+
+	public ParameterArity getArity() {
+		return arity;
+	}
+
+	public void setArity(ParameterArity arity) {
+		this.arity = arity;
 	}
 	
 }

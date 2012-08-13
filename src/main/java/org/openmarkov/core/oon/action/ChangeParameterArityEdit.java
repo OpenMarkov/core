@@ -15,17 +15,16 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNet;
 
 @SuppressWarnings("serial")
-public class MarkAsInputEdit extends SimplePNEdit{
+public class ChangeParameterArityEdit extends SimplePNEdit{
 
-	public MarkAsInputEdit(ProbNet probNet) {
+	public ChangeParameterArityEdit(ProbNet probNet) {
 		super(probNet);
-		// TODO Implement	
+		// TODO implement
 	}
 
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
 		// TODO Auto-generated method stub
-		
 	}
 
 }

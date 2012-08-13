@@ -8,6 +8,7 @@ package org.openmarkov.core.oon;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -17,6 +18,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
 
@@ -176,7 +178,7 @@ public class OOBNet extends ProbNet
      * Removes an instance Link
      * @param link
      */
-    public void removeInstanceLink (ParameterLink link)
+    public void removeParameterLink (ParameterLink link)
     {
         parameterLinks.remove (link);
     }
@@ -218,46 +220,128 @@ public class OOBNet extends ProbNet
     {
         ProbNet probNet = copy ();
         probNet.getGraph ().makeLinksExplicit (false);
-        for (ParameterLink link : getParameterLinks ())
+        for (Instance instance : getInstances().values())
         {
-            if(link instanceof InstanceParameterLink)
+            for (Instance subInstance : instance.getSubInstances().values())
             {
-            	InstanceParameterLink instanceLink = (InstanceParameterLink)link;        	
-	            for (ProbNode node : instanceLink.getDestSubInstance ().getNodes ())
+	            if(subInstance.isInput())
 	            {
-	                ProbNode paramNode = probNet.getProbNode (getEquivalentNode (
-	                		instanceLink.getSourceInstance (),
-	                		instanceLink.getDestSubInstance (), node).getVariable ());
-	                if (paramNode != null)
-	                {
+		            for (ProbNode node : subInstance.getNodes ())
+	            	{
 	                    ProbNode formalNode = probNet.getProbNode (node.getVariable ());
-	                    replaceNode(probNet, paramNode, formalNode);
-	                }
+		            	List<ProbNode> paramNodes = new ArrayList<>();
+		            	for(ParameterLink link: getLinksToParameter(subInstance))
+			            {
+			            	InstanceParameterLink instanceLink = (InstanceParameterLink)link;        	
+			            	ProbNode equivalentNode = getEquivalentNode (
+			                		instanceLink.getSourceInstance (),
+			                		instanceLink.getDestSubInstance (), node);
+			                ProbNode paramNode = probNet.getProbNode (equivalentNode.getVariable ());
+			                if (paramNode != null)
+			                {
+			                    paramNodes.add(paramNode);
+			                }
+			            }
+	                    replaceNodes(probNet, formalNode, paramNodes);
+	            	}
+	            	// Remove formal parameter nodes
+			        for (ProbNode node : subInstance.getNodes ())
+			        {
+			            probNet.removeProbNode (probNet.getProbNode (node.getVariable ()));
+	            	}
 	            }
-	            // Remove formal parameter nodes
-	            for (ProbNode node : instanceLink.getDestSubInstance ().getNodes ())
-	            {
-	                probNet.removeProbNode (probNet.getProbNode (node.getVariable ()));
-	            }
-            }else if(link instanceof NodeParameterLink)
+            }
+        }
+        
+        for(ParameterLink link : getParameterLinks())
+        {
+    	    if(link instanceof NodeParameterLink)
             {
             	NodeParameterLink nodeLink = (NodeParameterLink)link;
             	ProbNode sourceNode = probNet.getProbNode(nodeLink.getSourceNode().getVariable());
             	ProbNode destinationNode = probNet.getProbNode(nodeLink.getDestinationNode().getVariable());
-				replaceNode(probNet, sourceNode, destinationNode);
+    			replaceNode(probNet, destinationNode, sourceNode);
             	probNet.removeProbNode (destinationNode);
             }
         }
+        
         return probNet;
     }
+
+	private void replaceNodes(ProbNet probNet, ProbNode formalNode,
+			List<ProbNode> paramNodes) {
+		// Update potentials
+		HashMap<Potential, Potential> potentialsToReplace = new HashMap<Potential, Potential> ();
+		for (Potential potential : probNet.getPotentials (formalNode.getVariable ()))
+		{
+	        if(potential instanceof ICIPotential)
+	        {
+			    ICIPotential potentialCopy;
+			    try
+			    {
+			        potentialCopy = (ICIPotential)potential.copy ();
+			        double[] noisyParameters = potentialCopy.getNoisyParameters(formalNode.getVariable());
+			        potentialCopy = (ICIPotential) potentialCopy.removeVariable(formalNode.getVariable());
+			        for(ProbNode paramNode : paramNodes)
+			        {
+			        	potentialCopy = (ICIPotential)potentialCopy.addVariable(paramNode.getVariable());
+			        	potentialCopy.setNoisyParameters(paramNode.getVariable(), noisyParameters);
+			        }
+			        potentialsToReplace.put (potential, potentialCopy);
+			    }
+			    catch (NotEnoughMemoryException e)
+			    {
+			    }
+	        }
+		}
+		for (ProbNode probNode : probNet.getProbNodes ())
+		{
+		    for (Potential potentialToReplace : potentialsToReplace.keySet ())
+		    {
+		        if (probNode.getPotentials ().contains (potentialToReplace))
+		        {
+		            ArrayList<Potential> potentials = probNode.getPotentials ();
+		            potentials.remove (potentialToReplace);
+		            potentials.add (potentialsToReplace.get (potentialToReplace));
+		            probNode.setPotentials (potentials);
+		        }
+		    }
+		}
+		// Update Links
+		// Replace links to children
+		for (Node child : formalNode.getNode ().getChildren ())
+		{
+		    probNet.removeLink (formalNode, (ProbNode) child.getObject (), true);
+		    for(ProbNode paramNode : paramNodes)
+		    {
+			    if (!child.isParent (paramNode.getNode ()))
+			    {
+			        probNet.addLink (paramNode, (ProbNode) child.getObject (), true);
+			    }
+		    }
+		}
+	}
+
+	private List<ParameterLink> getLinksToParameter(Instance instance) {
+		List<ParameterLink> links = new ArrayList<>();
+		for(ParameterLink link : getParameterLinks())
+		{
+			if(link instanceof InstanceParameterLink &&
+					((InstanceParameterLink)link).getDestSubInstance().equals(instance))
+			{
+				links.add(link);
+			}
+		}
+		return links;
+	}
 
 	/**
 	 * @param probNet
 	 * @param node
-	 * @param paramNode
 	 * @param formalNode
+	 * @param paramNode
 	 */
-	private void replaceNode(ProbNet probNet, ProbNode paramNode, ProbNode formalNode) {
+	private void replaceNode(ProbNet probNet, ProbNode formalNode, ProbNode paramNode) {
 		// Update potentials
 		HashMap<Potential, Potential> potentialsToReplace = new HashMap<Potential, Potential> ();
 		for (Potential potential : probNet.getPotentials (formalNode.getVariable ()))

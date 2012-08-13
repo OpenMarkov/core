@@ -1,5 +1,5 @@
 /*
-* Copyright 2011 CISIAD, UNED, Spain
+* Copyright 2012 CISIAD, UNED, Spain
 *
 * Licensed under the European Union Public Licence, version 1.1 (EUPL)
 *

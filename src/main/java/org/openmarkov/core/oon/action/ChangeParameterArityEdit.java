@@ -9,22 +9,39 @@
 
 package org.openmarkov.core.oon.action;
 
+import javax.swing.undo.CannotUndoException;
+
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.oon.Instance;
+import org.openmarkov.core.oon.Instance.ParameterArity;
 
 @SuppressWarnings("serial")
 public class ChangeParameterArityEdit extends SimplePNEdit{
 
-	public ChangeParameterArityEdit(ProbNet probNet) {
+	private Instance instance = null;
+	private ParameterArity arity = null;
+	private ParameterArity previousArity = null;
+	
+	public ChangeParameterArityEdit(ProbNet probNet, Instance instance, ParameterArity arity) {
 		super(probNet);
-		// TODO implement
+		this.instance = instance;
+		this.arity = arity;
+		this.previousArity = instance.getArity();
 	}
 
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
-		// TODO Auto-generated method stub
+		instance.setArity(arity);
 	}
 
+	@Override
+	public void undo() throws CannotUndoException {
+		super.undo();
+		instance.setArity(previousArity);
+	}
+
+	
 }

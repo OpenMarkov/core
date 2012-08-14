@@ -19,7 +19,19 @@ public class Instance {
 	
 	public enum ParameterArity {
 		ONE,
-		MANY
+		MANY;
+
+		public static ParameterArity parseArity(String name) {
+			ParameterArity arity= null;
+			if(name.equals(ONE.toString()))
+			{
+				arity = ParameterArity.ONE;
+			}else if (name.equals(MANY.toString()))
+			{
+				arity = ParameterArity.MANY;
+			}
+			return arity;
+		}
 	}
 	
 	private String name;

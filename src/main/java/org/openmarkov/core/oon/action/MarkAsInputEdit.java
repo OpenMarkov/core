@@ -9,23 +9,60 @@
 
 package org.openmarkov.core.oon.action;
 
+import javax.swing.undo.CannotUndoException;
+
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.oon.Instance;
 
 @SuppressWarnings("serial")
 public class MarkAsInputEdit extends SimplePNEdit{
 
-	public MarkAsInputEdit(ProbNet probNet) {
+	private ProbNode probNode = null;
+	private Instance instance = null;
+	private boolean isInput = false;
+	private boolean wasInput = false;
+	
+	public MarkAsInputEdit(ProbNet probNet, boolean isInput, ProbNode probNode) {
 		super(probNet);
-		// TODO Implement	
+		this.isInput = isInput;
+		this.probNode = probNode;
+	}
+
+	public MarkAsInputEdit(ProbNet probNet, boolean isInput, Instance instance) {
+		super(probNet);
+		this.isInput = isInput;
+		this.instance = instance;
 	}
 
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
-		// TODO Auto-generated method stub
-		
+		if(probNode != null)
+		{
+			probNode.setInput(isInput);
+			wasInput = probNode.isInput();
+		}
+		if(instance != null)
+		{
+			instance.setInput(isInput);
+			wasInput = instance.isInput();
+		}
 	}
 
+	@Override
+	public void undo() throws CannotUndoException {
+		super.undo();
+		if(probNode != null)
+		{
+			probNode.setInput(wasInput);
+		}
+		if(instance != null)
+		{
+			instance.setInput(wasInput);
+		}
+	}
+	
 }

@@ -11,12 +11,16 @@ package org.openmarkov.core.oon.action;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import javax.swing.undo.CompoundEdit;
-import javax.swing.undo.UndoableEdit;
+import javax.swing.undo.AbstractUndoableEdit;
+import javax.swing.undo.CannotUndoException;
 
 import org.openmarkov.core.action.AddLinkEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -33,12 +37,13 @@ import org.openmarkov.core.oon.OOBNet;
 import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
 
 @SuppressWarnings("serial")
-public class AddInstanceEdit  extends CompoundEdit implements PNEdit
-{
+public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
 	private String instanceName;
 	private OOBNet oobNet;
 	private ProbNet classNet;
 	private java.awt.geom.Point2D.Double cursorPositon;
+	private List<PNEdit> edits = null;
+	private int doneEditCounter;
 
 	public AddInstanceEdit(OOBNet probNet, ProbNet classNet,
 			String instanceName, java.awt.geom.Point2D.Double cursorPosition) {
@@ -46,12 +51,14 @@ public class AddInstanceEdit  extends CompoundEdit implements PNEdit
 		this.classNet = classNet;
 		this.instanceName = instanceName;
 		this.cursorPositon = cursorPosition;
+		edits = new ArrayList<>();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException,
-			NonProjectablePotentialException, WrongCriterionException {
+			NonProjectablePotentialException, WrongCriterionException	{
+		doneEditCounter = 0;
 		
 		if (oobNet.getInstances().containsKey(instanceName)) {
 			throw new DoEditException("An instance with name " + instanceName
@@ -70,7 +77,6 @@ public class AddInstanceEdit  extends CompoundEdit implements PNEdit
 			{
 				topCorner = probNode.getNode ().getCoordinateY ();
 			}
-			
 		}
 		
 		// Add nodes to the probNet class
@@ -81,12 +87,18 @@ public class AddInstanceEdit  extends CompoundEdit implements PNEdit
 	        Point2D.Double position = new Point2D.Double (probNode.getNode ().getCoordinateX () - leftCorner + cursorPositon.getX(),
 	                probNode.getNode ().getCoordinateY () - topCorner + cursorPositon.getY());
 	        
-	        edits.add (new AddInstanceNodeEdit (oobNet, variable, probNode.getNodeType (), position, classNet, instanceName));			
+	        edits.add (new AddProbNodeEdit (oobNet, variable, probNode.getNodeType (), position));			
 		}
 	    // Apply node generation edits
-        for (UndoableEdit edit : edits)
+        for (PNEdit edit : edits)
         {
-            ((PNEdit) edit).doEdit ();
+            try {
+				oobNet.doEdit(edit);
+				++doneEditCounter;
+			} catch (ConstraintViolationException | CanNotDoEditException e) {
+				this.undo();
+				throw new DoEditException(e);
+			}
         }
 		
 		// Add links to the probNet class
@@ -110,16 +122,21 @@ public class AddInstanceEdit  extends CompoundEdit implements PNEdit
         
         //Apply link creation edits
         ArrayList<Link> pastedLinks = new ArrayList<Link> ();
-        for (UndoableEdit edit : edits)
+        for (PNEdit edit : edits)
         {
             if (edit instanceof AddLinkEdit)
             {
                 AddLinkEdit linkEdit = ((AddLinkEdit) edit);
-                linkEdit.doEdit ();
-                pastedLinks.add (linkEdit.getLink ());
+                try {
+					oobNet.doEdit(linkEdit);
+					++doneEditCounter;
+	                pastedLinks.add (linkEdit.getLink ());
+				} catch (ConstraintViolationException | CanNotDoEditException e) {
+					this.undo();
+					throw new DoEditException(e);
+				}
             }
         }
-        super.end ();
         
         ArrayList<ProbNode> instanceNodes = new ArrayList<ProbNode>(); 
         //Replace potentials to already created nodes with copies of copied nodes
@@ -176,6 +193,13 @@ public class AddInstanceEdit  extends CompoundEdit implements PNEdit
 	public ProbNet getProbNet() {
 		return this.oobNet;
 	}
-	
-	
+
+	@Override
+	public void undo() throws CannotUndoException {
+		for(int i = 0 ; i < doneEditCounter; ++i)
+		{
+			oobNet.getPNESupport().undo();
+		}
+		doneEditCounter = 0;
+	}	
 }

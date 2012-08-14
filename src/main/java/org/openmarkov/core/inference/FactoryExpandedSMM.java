@@ -123,7 +123,8 @@ public class FactoryExpandedSMM {
 	/**
 	 * @param numSlices
 	 * @param network
-	 * @param discount
+	 * @param discount Percentage of discount. The utility function in instant time t will be:
+	 * U(t) = U(t-1)/(1+discount/100.0)  
 	 * @param adaptForCE
 	 * @return An expanded network built from a SMM. It adapts the network to Cost-Effectiveness analysis is 
 	 * adaptForCE is true.

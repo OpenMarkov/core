@@ -11,8 +11,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.event.UndoableEditEvent;
+
+import org.openmarkov.core.action.AddLinkEdit;
+import org.openmarkov.core.action.InvertLinkEdit;
+import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.PNUndoableEditListener;
+import org.openmarkov.core.action.RemoveLinkEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -22,7 +34,7 @@ import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
 
-public class OOBNet extends ProbNet
+public class OOBNet extends ProbNet implements PNUndoableEditListener
 {
     private HashMap<String, Instance> instances     = new HashMap<String, Instance> ();
     private ArrayList<ParameterLink>   parameterLinks = new ArrayList<ParameterLink> ();
@@ -145,6 +157,7 @@ public class OOBNet extends ProbNet
         }
         else
         {
+        	instance.getClassNet().getPNESupport().addUndoableEditListener(this);
             instances.put (instance.getName (), instance);
         }
     }
@@ -401,4 +414,87 @@ public class OOBNet extends ProbNet
 		    probNet.addLink ((ProbNode) sibling.getObject (), paramNode, false);
 		}
 	}
+
+	@Override
+	public void undoableEditHappened(UndoableEditEvent e) {
+		if(e.getEdit() instanceof PNEdit)
+		{
+			PNEdit edit = (PNEdit)e.getEdit();
+			ProbNet classNet = edit.getProbNet();
+			PNEdit newEdit = null;
+
+			for(Instance instance : instances.values())
+			{
+				if(instance.getClassNet().equals(classNet))
+				{
+					String instanceName = instance.getName();
+					if(edit instanceof AddLinkEdit)
+					{
+						AddLinkEdit addLinkEdit = (AddLinkEdit)edit;
+						Variable variable1;
+						try {
+							variable1 = getVariable(instanceName + "." + addLinkEdit.getVariable1().getName());
+							Variable variable2 = getVariable(instanceName + "." + addLinkEdit.getVariable2().getName());
+							newEdit = new AddLinkEdit(this, variable1, variable2, addLinkEdit.isDirected());
+						} catch (ProbNodeNotFoundException e1) {
+							e1.printStackTrace();
+						}
+					}else if(edit instanceof RemoveLinkEdit)
+					{
+						RemoveLinkEdit removeLinkEdit = (RemoveLinkEdit)edit;
+						Variable variable1;
+						try {
+							variable1 = getVariable(instanceName + "." + removeLinkEdit.getVariable1().getName());
+							Variable variable2 = getVariable(instanceName + "." + removeLinkEdit.getVariable2().getName());
+							newEdit = new RemoveLinkEdit(this, variable1, variable2, removeLinkEdit.isDirected());
+						} catch (ProbNodeNotFoundException e1) {
+							e1.printStackTrace();
+						}
+						
+					}else if(edit instanceof InvertLinkEdit)
+					{
+						InvertLinkEdit invertLinkEdit = (InvertLinkEdit)edit;
+						Variable variable1;
+						try {
+							variable1 = getVariable(instanceName + "." + invertLinkEdit.getVariable1().getName());
+							Variable variable2 = getVariable(instanceName + "." + invertLinkEdit.getVariable2().getName());
+							newEdit = new InvertLinkEdit(this, variable1, variable2, invertLinkEdit.isDirected());
+						} catch (ProbNodeNotFoundException e1) {
+							e1.printStackTrace();
+						}
+					}
+					
+					if(newEdit != null)
+					{
+						try {
+							doEdit(newEdit);
+						} catch (NotEnoughMemoryException | ConstraintViolationException
+								| CanNotDoEditException | NonProjectablePotentialException
+								| WrongCriterionException | DoEditException e1) {
+							e1.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+		
+	}
+
+	@Override
+	public void undoableEditWillHappen(UndoableEditEvent event)
+			throws ConstraintViolationException, CanNotDoEditException,
+			NotEnoughMemoryException, NonProjectablePotentialException,
+			WrongCriterionException {
+		// Do nothing
+		
+	}
+
+	@Override
+	public void undoEditHappened(UndoableEditEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	
 }

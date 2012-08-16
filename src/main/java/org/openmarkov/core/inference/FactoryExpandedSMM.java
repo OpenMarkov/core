@@ -310,7 +310,7 @@ public class FactoryExpandedSMM {
 						potentialToBeProjected = (potential);
 					 }
 					 projectedPotential = potentialToBeProjected.tableProject(new EvidenceCase(), inferenceOptions).get(0);
-					 projectedPotential.setOriginalVariables(potentialToBeProjected.getVariables());
+//					 projectedPotential.setOriginalVariables(potentialToBeProjected.getVariables());
 					double[] valuesProjectedPotential = projectedPotential.getValues();
 					for (int j = 0; j < valuesProjectedPotential.length; j++) {
 						valuesProjectedPotential[j] = valuesProjectedPotential[j] * (discountRate);

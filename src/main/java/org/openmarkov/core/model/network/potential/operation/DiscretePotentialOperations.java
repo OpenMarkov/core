@@ -645,7 +645,8 @@ public final class DiscretePotentialOperations {
         for (int i = 0; i < numPotentials; i++) {
             TablePotential potential = potentials.get(i);
             accumulatedOffsets[i] = potentialResult.getAccumulatedOffsets(
-                    potential.getOriginalVariables());
+                //    potential.getOriginalVariables());
+            		potential.getVariables());
         }
         return accumulatedOffsets;
     }   
@@ -978,7 +979,8 @@ public final class DiscretePotentialOperations {
             initialPositions[i] = potential.getInitialPosition();
             currentPositions[i] = initialPositions[i];
             accumulatedOffsets[i] = unionPotential
-                .getAccumulatedOffsets(potential.getOriginalVariables());
+               // .getAccumulatedOffsets(potential.getOriginalVariables());
+            .getAccumulatedOffsets(potential.getVariables());
         }
         
         // The result size is the product of the dimensions of the
@@ -1198,7 +1200,8 @@ public final class DiscretePotentialOperations {
                 initialPositions[i] = potential.getInitialPosition();
                 currentPositions[i] = initialPositions[i];
                 accumulatedOffsets[i] = unionPotential
-                    .getAccumulatedOffsets(potential.getOriginalVariables());
+                  //  .getAccumulatedOffsets(potential.getOriginalVariables());
+                .getAccumulatedOffsets(potential.getVariables());
             }
             
             // The result size is the product of the dimensions of the

@@ -76,7 +76,8 @@ public class SharedDataMultiplyAndMarginalize extends SharedDataMultiply {
 			initialPositions[i] = potential.getInitialPosition();
 			currentPositions[i] = initialPositions[i];
 			accumulatedOffsets[i] = unionPotential
-				.getAccumulatedOffsets(potential.getOriginalVariables());
+				//.getAccumulatedOffsets(potential.getOriginalVariables());
+					.getAccumulatedOffsets(potential.getVariables());
 		}
 		
 		// The elimination size is the product of the dimensions of the

@@ -80,7 +80,7 @@ public class TablePotential extends Potential
      * In projected potentials, collection of variables of the original
      * potential. Original variables are used to calculate accumulated offsets.
      */
-    protected ArrayList<Variable>    originalVariables;
+//    protected ArrayList<Variable>    originalVariables;
     /**
      * This object has a function that returns the available memory. Used in the
      * constructor before creating the <code>table</code>
@@ -98,7 +98,7 @@ public class TablePotential extends Potential
         throws NotEnoughMemoryException
     {
         super (variables, role);
-        this.originalVariables = this.variables;
+//        this.originalVariables = this.variables;
         if (numVariables != 0)
         {
             dimensions = TablePotential.calculateDimensions (variables);
@@ -141,7 +141,7 @@ public class TablePotential extends Potential
             throws NotEnoughMemoryException
         {
             super (variables, role, utilityVariable);
-            this.originalVariables = this.variables;
+//            this.originalVariables = this.variables;
             if (numVariables != 0)
             {
                 dimensions = TablePotential.calculateDimensions (variables);
@@ -184,7 +184,7 @@ public class TablePotential extends Potential
     public TablePotential (ArrayList<Variable> variables, PotentialRole role, double[] table)
     {
         super (variables, role);
-        this.originalVariables = this.variables;
+//        this.originalVariables = this.variables;
         this.values = table;
         if (numVariables != 0)
         {
@@ -231,7 +231,7 @@ public class TablePotential extends Potential
                             int[] dimensions)
     {
         super (variables, role);
-        this.originalVariables = this.variables;
+//        this.originalVariables = this.variables;
         this.values = table;
         this.initialPosition = initialPosition;
         this.offsets = offsets;
@@ -1160,19 +1160,19 @@ public class TablePotential extends Potential
     /**
      * @return originalVariables. <code>ArrayList</code> of <code>Variable</code>
      */
-    public ArrayList<Variable> getOriginalVariables ()
+/*    public ArrayList<Variable> getOriginalVariables ()
     {
         return originalVariables;
     }
-
+*/
     /**
      * @param originalVariables. <code>ArrayList</code> of <code>Variable</code>
      */
-    public void setOriginalVariables (ArrayList<Variable> originalVariables)
+/*    public void setOriginalVariables (ArrayList<Variable> originalVariables)
     {
         this.originalVariables = originalVariables;
     }
-
+*/
     // TODO revisar para que no use tableProject(...)
     public Collection<Finding> getInducedFindings (EvidenceCase evidenceCase)
         throws IncompatibleEvidenceException,

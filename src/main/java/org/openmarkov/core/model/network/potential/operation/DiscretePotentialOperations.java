@@ -385,7 +385,8 @@ public final class DiscretePotentialOperations {
             initialPositions[i] = potential.getInitialPosition();
             currentPositions[i] = initialPositions[i];
             accumulatedOffsets[i] = TablePotential
-                .getAccumulatedOffsets(unionVariables, potential.getOriginalVariables());
+               // .getAccumulatedOffsets(unionVariables, potential.getOriginalVariables());
+            		.getAccumulatedOffsets(unionVariables, potential.getVariables());
         }
         
         // The result size is the product of the dimensions of the

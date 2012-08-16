@@ -270,7 +270,7 @@ public abstract class InferenceAlgorithmTests {
 	 * In the particular case when all variables are binary then 'variables' and 'expectedProbs' have
 	 * the same size.
 	 * */
-	private void checkProbabilities(
+	protected void checkProbabilities(
 			HashMap<Variable, TablePotential> aPosterioriProbs,
 			ArrayList<Variable> variables, double[] expectedProbs) {
 		
@@ -292,8 +292,25 @@ public abstract class InferenceAlgorithmTests {
 			}
 		
 	}
-
-
+	
+	/**
+	 * @param aPosterioriUtils
+	 * @param variables
+	 * @param expectedUtils
+	 * Checks the posterior utilities of a list of utility nodes.
+	 * The utilities are ordered according the order in 'variables'.
+	 * */
+	protected void checkUtilities(
+			HashMap<Variable, TablePotential> aPosterioriUtils,
+			ArrayList<Variable> variables, double[] expectedUtils) {
+		
+			int size = variables.size();
+			
+			for (int i=0;i<size;i++){
+				checkUtilityPotential(aPosterioriUtils,variables.get(i),expectedUtils[i]);
+			}
+		
+	}
 
 
 

@@ -6,18 +6,29 @@
 
 package org.openmarkov.core.oon;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.event.UndoableEditEvent;
+import javax.swing.undo.UndoableEdit;
 
 import org.openmarkov.core.action.AddLinkEdit;
+import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.CRemoveProbNodeEdit;
+import org.openmarkov.core.action.ChangePotentialEdit;
+import org.openmarkov.core.action.CompoundPNEdit;
+import org.openmarkov.core.action.ICIPotentialEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
+import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.RemoveLinkEdit;
+import org.openmarkov.core.action.RemoveNodeEdit;
+import org.openmarkov.core.action.SetPotentialEdit;
+import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
@@ -420,6 +431,23 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
 		if(e.getEdit() instanceof PNEdit)
 		{
 			PNEdit edit = (PNEdit)e.getEdit();
+			List<PNEdit> simpleEdits = new ArrayList<>();
+			if(edit instanceof CompoundPNEdit)
+			{
+				try {
+					for(UndoableEdit undoableEdit : ((CompoundPNEdit)edit).getEdits())
+					{
+						simpleEdits.add((PNEdit) undoableEdit);
+					}
+				} catch (NotEnoughMemoryException
+						| NonProjectablePotentialException
+						| WrongCriterionException e1) {
+					e1.printStackTrace();
+				}
+			}else{
+				simpleEdits.add((PNEdit) edit);
+			}
+				
 			ProbNet classNet = edit.getProbNet();
 			PNEdit newEdit = null;
 
@@ -428,50 +456,168 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
 				if(instance.getClassNet().equals(classNet))
 				{
 					String instanceName = instance.getName();
-					if(edit instanceof AddLinkEdit)
+					for (PNEdit simpleEdit : simpleEdits)
 					{
-						AddLinkEdit addLinkEdit = (AddLinkEdit)edit;
-						Variable variable1;
-						try {
-							variable1 = getVariable(instanceName + "." + addLinkEdit.getVariable1().getName());
-							Variable variable2 = getVariable(instanceName + "." + addLinkEdit.getVariable2().getName());
-							newEdit = new AddLinkEdit(this, variable1, variable2, addLinkEdit.isDirected());
-						} catch (ProbNodeNotFoundException e1) {
-							e1.printStackTrace();
-						}
-					}else if(edit instanceof RemoveLinkEdit)
-					{
-						RemoveLinkEdit removeLinkEdit = (RemoveLinkEdit)edit;
-						Variable variable1;
-						try {
-							variable1 = getVariable(instanceName + "." + removeLinkEdit.getVariable1().getName());
-							Variable variable2 = getVariable(instanceName + "." + removeLinkEdit.getVariable2().getName());
-							newEdit = new RemoveLinkEdit(this, variable1, variable2, removeLinkEdit.isDirected());
-						} catch (ProbNodeNotFoundException e1) {
-							e1.printStackTrace();
+						if(simpleEdit instanceof AddLinkEdit)
+						{
+							AddLinkEdit addLinkEdit = (AddLinkEdit)simpleEdit;
+							Variable variable1;
+							try {
+								variable1 = getVariable(instanceName + "." + addLinkEdit.getVariable1().getName());
+								Variable variable2 = getVariable(instanceName + "." + addLinkEdit.getVariable2().getName());
+								newEdit = new AddLinkEdit(this, variable1, variable2, addLinkEdit.isDirected());
+							} catch (ProbNodeNotFoundException e1) {
+								e1.printStackTrace();
+							}
+						}else if(simpleEdit instanceof RemoveLinkEdit)
+						{
+							RemoveLinkEdit removeLinkEdit = (RemoveLinkEdit)simpleEdit;
+							Variable variable1;
+							try {
+								variable1 = getVariable(instanceName + "." + removeLinkEdit.getVariable1().getName());
+								Variable variable2 = getVariable(instanceName + "." + removeLinkEdit.getVariable2().getName());
+								newEdit = new RemoveLinkEdit(this, variable1, variable2, removeLinkEdit.isDirected());
+							} catch (ProbNodeNotFoundException e1) {
+								e1.printStackTrace();
+							}
+							
+						}else if(simpleEdit instanceof InvertLinkEdit)
+						{
+							InvertLinkEdit invertLinkEdit = (InvertLinkEdit)simpleEdit;
+							Variable variable1;
+							try {
+								variable1 = getVariable(instanceName + "." + invertLinkEdit.getVariable1().getName());
+								Variable variable2 = getVariable(instanceName + "." + invertLinkEdit.getVariable2().getName());
+								newEdit = new InvertLinkEdit(this, variable1, variable2, invertLinkEdit.isDirected());
+							} catch (ProbNodeNotFoundException e1) {
+								e1.printStackTrace();
+							}
+						} else if(simpleEdit instanceof AddProbNodeEdit)
+						{
+							AddProbNodeEdit addProbNodeEdit = (AddProbNodeEdit)simpleEdit;
+							
+							Variable newVariable = new Variable(addProbNodeEdit.getVariable());
+							newVariable.setName(instanceName + "." + newVariable.getName());
+							
+							//determine position of new node inside instance, using a node as reference
+							Point2D.Double position = new Point2D.Double();
+							if(!classNet.getProbNodes().isEmpty())
+							{
+								
+								ProbNode referenceNode = classNet.getProbNodes().get(0);
+								ProbNode referenceInstanceNode = null;
+								try {
+									referenceInstanceNode = getProbNode(instanceName + "." + referenceNode.getVariable().getName());
+								} catch (ProbNodeNotFoundException e1) {
+									e1.printStackTrace();
+								}
+								double x = addProbNodeEdit.getCursorPosition().getX() 
+										- referenceNode.getNode().getCoordinateX() 
+										+ referenceInstanceNode.getNode().getCoordinateX();
+								double y = addProbNodeEdit.getCursorPosition().getY() 
+										- referenceNode.getNode().getCoordinateY() 
+										+ referenceInstanceNode.getNode().getCoordinateY();
+								position = new Point2D.Double(x, y);
+							}
+							newEdit = new AddProbNodeEdit(this,
+									newVariable,
+									addProbNodeEdit.getNodeType(),
+									position);
+						} else if(simpleEdit instanceof RemoveNodeEdit)
+						{
+							RemoveNodeEdit removeNodeEdit = (RemoveNodeEdit)simpleEdit;
+							newEdit = new RemoveNodeEdit(this, removeNodeEdit.getVariable());
+						} else if(simpleEdit instanceof CRemoveProbNodeEdit)
+						{
+							CRemoveProbNodeEdit removeNodeEdit = (CRemoveProbNodeEdit)simpleEdit;
+							ProbNode nodeToRemove = null;
+							try {
+								nodeToRemove = getProbNode(instanceName + "." + removeNodeEdit.getVariable().getName());
+							} catch (ProbNodeNotFoundException e1) {
+								e1.printStackTrace();
+							}
+							newEdit = new CRemoveProbNodeEdit(this, nodeToRemove);
+						} else if(simpleEdit instanceof NodeStateEdit)
+						{
+							NodeStateEdit nodeStateEdit = (NodeStateEdit)simpleEdit;
+							ProbNode nodeInInstance = null;
+							try {
+								nodeInInstance = getProbNode(instanceName + "." + nodeStateEdit.getProbNode().getName());
+							} catch (ProbNodeNotFoundException e1) {
+								e1.printStackTrace();
+							}
+							newEdit = new NodeStateEdit(nodeInInstance,
+									nodeStateEdit.getStateAction(),
+									nodeStateEdit.getIndexState(),
+									nodeStateEdit.getNewState().getName());
+						} else if(simpleEdit instanceof SetPotentialEdit)
+						{
+							try {
+								SetPotentialEdit setPotentialEdit = (SetPotentialEdit)simpleEdit;
+								ProbNode probNode = getProbNode(instanceName + "." + setPotentialEdit.getProbNode().getName());
+								if(setPotentialEdit.getNewPotential() != null)
+								{
+									Potential newPotential = setPotentialEdit.getNewPotential().copy();
+									for(Variable variable : setPotentialEdit.getNewPotential().getVariables())
+									{
+										newPotential.replaceVariable(variable, getVariable(instanceName + "." + variable.getName()));
+									}
+									newEdit = new SetPotentialEdit(probNode, newPotential);
+								}else
+								{
+									newEdit = new SetPotentialEdit(probNode, setPotentialEdit.getNewPotentialType());
+								}
+							} catch (ProbNodeNotFoundException | NotEnoughMemoryException e1) {
+								e1.printStackTrace();
+							}
+							
+						} else if(simpleEdit instanceof ChangePotentialEdit)
+						{
+							try {
+								ChangePotentialEdit changePotentialEdit = (ChangePotentialEdit)simpleEdit;
+								
+								// Find oldPotential in instance
+								Potential oldPotential = findEquivalentPotentialInInstance(instanceName, changePotentialEdit.getOldPotential());
+								
+								// Copy newPotential with the variables in the instance
+								Potential newPotential = changePotentialEdit.getNewPotential().copy();
+								for(Variable variable : changePotentialEdit.getNewPotential().getVariables())
+								{
+									newPotential.replaceVariable(variable, getVariable(instanceName + "." + variable.getName()));
+								}
+								newEdit = new ChangePotentialEdit(this, oldPotential, newPotential);
+							} catch (NotEnoughMemoryException | ProbNodeNotFoundException e1) {
+								e1.printStackTrace();
+							}
+						}else if(simpleEdit instanceof ICIPotentialEdit)
+						{
+							ICIPotentialEdit iciPotentialEdit = (ICIPotentialEdit)simpleEdit;
+							// Find oldPotential in instance
+							ICIPotential potential = (ICIPotential)findEquivalentPotentialInInstance(instanceName, iciPotentialEdit.getPotential());
+							if(iciPotentialEdit.isNoisyParameter())
+							{
+								Variable variable = null;
+								try {
+									variable = getVariable(instanceName + "." + iciPotentialEdit.getVariable().getName());
+									newEdit = new ICIPotentialEdit(this, potential, variable, iciPotentialEdit.getNoisyParameters());
+								} catch (ProbNodeNotFoundException e1) {
+									e1.printStackTrace();
+								}
+							}else
+							{
+								newEdit = new ICIPotentialEdit(this, potential, iciPotentialEdit.getLeakyParameters());
+							}
 						}
 						
-					}else if(edit instanceof InvertLinkEdit)
-					{
-						InvertLinkEdit invertLinkEdit = (InvertLinkEdit)edit;
-						Variable variable1;
-						try {
-							variable1 = getVariable(instanceName + "." + invertLinkEdit.getVariable1().getName());
-							Variable variable2 = getVariable(instanceName + "." + invertLinkEdit.getVariable2().getName());
-							newEdit = new InvertLinkEdit(this, variable1, variable2, invertLinkEdit.isDirected());
-						} catch (ProbNodeNotFoundException e1) {
-							e1.printStackTrace();
-						}
-					}
-					
-					if(newEdit != null)
-					{
-						try {
-							doEdit(newEdit);
-						} catch (NotEnoughMemoryException | ConstraintViolationException
-								| CanNotDoEditException | NonProjectablePotentialException
-								| WrongCriterionException | DoEditException e1) {
-							e1.printStackTrace();
+						if(newEdit != null)
+						{
+							try {
+								doEdit(newEdit);
+							} catch (NotEnoughMemoryException | ConstraintViolationException
+									| CanNotDoEditException | NonProjectablePotentialException
+									| WrongCriterionException | DoEditException e1) {
+								e1.printStackTrace();
+							}
 						}
 					}
 				}
@@ -495,6 +641,44 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
 		
 	}
 	
+	private Potential findEquivalentPotentialInInstance(String instanceName, Potential potential)
+	{
+		Potential oldPotential = null;
+		List<Variable> instanceVariables = new ArrayList<>();
+		try {
+			for(Variable variable : potential.getVariables())
+			{
+				instanceVariables.add(getVariable(instanceName + "." + variable.getName()));
+			}
+			oldPotential = findPotentialByVariables(instanceVariables);
+		} catch (ProbNodeNotFoundException e) {
+			e.printStackTrace();
+		}
+		return oldPotential;
+	}
 	
+	private Potential findPotentialByVariables(List<Variable> variables)
+	{
+		int i = 0;
+		ArrayList<Potential> potentials = getPotentials();
+		Potential potential = null;
+		
+		while(i<potentials.size() && potential == null)
+		{
+			boolean match = potentials.get(i).getVariables().size() == variables.size();
+			int j = 0;
+			while(match && j< variables.size())
+			{
+				match &= potentials.get(i).getVariables().contains(variables.get(j));
+				++j;
+			}
+			if(match)
+			{
+				potential = potentials.get(i);
+			}
+			++i;
+		}
+		return potential;
+	}
 	
 }

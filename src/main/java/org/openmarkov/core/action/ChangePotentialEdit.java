@@ -62,4 +62,12 @@ public class ChangePotentialEdit extends SimplePNEdit {
 		return buffer.toString();
 	}
 
+	public Potential getNewPotential() {
+		return newPotential;
+	}
+
+	public Potential getOldPotential() {
+		return oldPotential;
+	}
+
 }

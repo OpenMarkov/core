@@ -24,7 +24,8 @@ import org.openmarkov.core.model.network.potential.operation.PotentialOperations
 @SuppressWarnings("serial")
 public class AddProbNodeEdit extends SimplePNEdit
 {
-    // Atribbutes
+
+	// Atribbutes
     /**
      * The new Variable object that match the new node.
      */
@@ -123,7 +124,11 @@ public class AddProbNodeEdit extends SimplePNEdit
     public NodeType getNodeType ()
     {
         return nodeType;
-    }        
+    }
+    
+    public Point2D.Double getCursorPosition() {
+		return cursorPosition;
+	}    
 
     public String getPresentationName ()
     {

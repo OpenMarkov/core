@@ -46,9 +46,9 @@ public class NodeStateEdit extends SimplePNEdit {
 	 */
 	private State lastState = new State("");
 	/**
-	 * index of the state selected in the view
+	 * the index (in the table) associated to the state to edit
 	 */
-	private int stateSelected;
+	private int indexState;
 	/**
 	 * The node that the stats belongs to
 	 */
@@ -93,8 +93,6 @@ public class NodeStateEdit extends SimplePNEdit {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
 		this.newState = new State(newState);
-		this.stateSelected = probNode.getVariable().getNumStates()
-				- (indexState + 1);
 		this.lastPotential = probNode.getPotentials();
 		this.stateAction = stateAction;
 		this.currentPartitionedInterval = probNode.getVariable()
@@ -110,6 +108,8 @@ public class NodeStateEdit extends SimplePNEdit {
 		ArrayList<Node> nodes;
 		Potential uniformPotential;
 		ArrayList<Potential> potentials;
+		int stateSelected = probNode.getVariable().getNumStates()
+				- (indexState + 1);
 		switch (stateAction) {
 		case ADD:
 			// assume that the new state is added in last position
@@ -281,6 +281,11 @@ public class NodeStateEdit extends SimplePNEdit {
 		return stateAction;
 	}
 
+
+	public int getIndexState() {
+		return indexState;
+	}
+	
 	/**
 	 * This method add a new default subInterval, in the current
 	 * PartitionedInterval object
@@ -340,5 +345,6 @@ public class NodeStateEdit extends SimplePNEdit {
 		}
 		
 	}
+
 
 }

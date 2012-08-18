@@ -12,9 +12,9 @@ package org.openmarkov.core.action;
 import java.util.ArrayList;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -167,6 +167,14 @@ public class SetPotentialEdit extends SimplePNEdit {
 
 	public Potential getNewPotential() {
 		return newPotential;
+	}
+
+	public String getNewPotentialType() {
+		return newPotentialType;
+	}
+
+	public ProbNode getProbNode() {
+		return probNode;
 	}
 
 }

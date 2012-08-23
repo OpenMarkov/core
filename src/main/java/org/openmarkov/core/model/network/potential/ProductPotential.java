@@ -139,7 +139,12 @@ public class ProductPotential extends Potential {
     public Potential copy ()
     {
         return new ProductPotential(new ArrayList<Variable> (variables), role);
-    }	
+    }
+
+	@Override
+	public boolean isUncertain() {
+		return false;
+	}	
 
 }
 

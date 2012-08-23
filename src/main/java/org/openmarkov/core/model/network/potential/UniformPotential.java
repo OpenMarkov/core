@@ -214,6 +214,11 @@ public class UniformPotential extends Potential {
     
     public double getProbability (HashMap<Variable, Integer> sampledStateIndexes) {
         return 1.0/variables.get (0).getNumStates ();
-    }       
+    }
+
+	@Override
+	public boolean isUncertain() {
+		return false;
+	}       
 
 }

@@ -101,6 +101,11 @@ public class CycleLengthShift extends Potential {
     public Potential copy ()
     {
         return new CycleLengthShift(new ArrayList<Variable> (variables));
-    }	
+    }
+
+	@Override
+	public boolean isUncertain() {
+		return false;
+	}	
 
 }

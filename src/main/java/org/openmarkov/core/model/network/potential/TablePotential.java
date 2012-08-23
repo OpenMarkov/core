@@ -1492,7 +1492,11 @@ public class TablePotential extends Potential
     		}
     	}
     	return newPotential;	 
-    }	
+    }
+	@Override
+	public boolean isUncertain() {
+		return (this.uncertainValues != null) ? true : false;
+	}	
     
 
 }

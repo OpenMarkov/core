@@ -175,7 +175,11 @@ public class SumPotential extends Potential {
     public  Potential removeVariable(Variable variable) throws NotEnoughMemoryException {
     	variables.remove(variable);
     	return this;
-    }    
+    }
+	@Override
+	public boolean isUncertain() {
+		return false;
+	}    
 }
 
 

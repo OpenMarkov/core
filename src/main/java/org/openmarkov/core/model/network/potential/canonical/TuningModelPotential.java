@@ -213,4 +213,10 @@ public class TuningModelPotential extends ICIPotential
         }
         return resultingState;
     }
+
+	@Override
+	public boolean isUncertain() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

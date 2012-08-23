@@ -430,6 +430,11 @@ public abstract class Potential{
     public abstract Potential copy()  throws NotEnoughMemoryException;	
     
     /**
+     * Return true if potential has uncertainty values
+     * @return whether the potential has uncertainty or not
+     */
+    public abstract boolean isUncertain();
+    /**
      * Adds variable to a potential implemented in each child class
      * @throws NotEnoughMemoryException 
      * 

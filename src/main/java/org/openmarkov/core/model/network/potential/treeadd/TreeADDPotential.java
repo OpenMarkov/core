@@ -378,5 +378,18 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 		}
 		return validate;
     }
+
+	@Override
+	public boolean isUncertain() {
+		//If at least one of the leaf potentials has uncertainty then returns true 
+		boolean hasUncertainty = false;
+		ArrayList<TreeADDBranch> branches = getBranches();
+		for (TreeADDBranch branch : branches) {
+			Potential branchPotential = branch.getPotential();
+			hasUncertainty = branchPotential.isUncertain();
+			if (hasUncertainty == true) break;
+		}
+		return hasUncertainty;
+	}
 	
 }

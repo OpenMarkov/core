@@ -22,6 +22,7 @@ import org.openmarkov.core.exception.PotentialOperationException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.Choice;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -1419,12 +1420,23 @@ public final class DiscretePotentialOperations {
         int[] potentialDimensions = potential.getDimensions();
         double[] tablePotential = potential.values;
         double[] tableCopyPotential = copyPotential.values;
+       UncertainValue[] uncertainValues = null;
+        UncertainValue[] copyUncertainValues = null;
+        if (potential.isUncertain()) {
+        	uncertainValues = potential.uncertainValues;
+        	copyUncertainValues = copyPotential.uncertainValues;
+        }
+        
         int copyTablePosition = 0;
         int numVariables = orderVariables.size();
         int incrementedVariable, i;
         for (i = 0; i < tablePotential.length - 1; i++) {
             tableCopyPotential[copyTablePosition] = tablePotential[i];
-    
+            if (potential.isUncertain()) {
+            	copyUncertainValues[copyTablePosition] = uncertainValues[i];
+            }
+            
+            
             for (incrementedVariable = 0; incrementedVariable < numVariables;
                     incrementedVariable++) {
                 potentialPositions[incrementedVariable]++;
@@ -1438,6 +1450,9 @@ public final class DiscretePotentialOperations {
             copyTablePosition += accOffsets[incrementedVariable];
         }
         tableCopyPotential[copyTablePosition] = tablePotential[i];
+        if (potential.isUncertain()) {
+        	copyUncertainValues[copyTablePosition] = uncertainValues[i];
+        }
         if (potential.isUtility()) {
             copyPotential.setUtilityVariable(potential.getUtilityVariable());
         }

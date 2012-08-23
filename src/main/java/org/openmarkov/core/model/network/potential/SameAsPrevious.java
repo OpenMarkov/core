@@ -220,6 +220,11 @@ public class SameAsPrevious extends Potential {
         }
         catch (NodeNotFoundException e){ /* Can never happen*/}
         return newPotential;
-    }    
+    }
+
+	@Override
+	public boolean isUncertain() {
+		return getOriginalPotential().isUncertain();
+	}    
 	
 }

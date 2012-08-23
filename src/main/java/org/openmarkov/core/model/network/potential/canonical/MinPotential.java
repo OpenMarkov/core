@@ -205,6 +205,12 @@ public class MinPotential extends MinMaxPotential {
             }
         }
         return resultingState;
-    }    
+    }
+
+	@Override
+	public boolean isUncertain() {
+		// TODO Auto-generated method stub
+		return false;
+	}    
 	
 }

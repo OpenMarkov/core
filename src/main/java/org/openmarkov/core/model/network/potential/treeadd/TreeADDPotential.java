@@ -85,7 +85,8 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 		if (variableType == VariableType.FINITE_STATES|| variableType == VariableType.DISCRETIZED) {
 			
 			State[] states = topVariable.getStates();
-			for (int i = 0; i < states.length; i++){
+			//for (int i = 0; i < states.length; i++){
+			for (int i = states.length-1; i >= 0 ; i--){
 				// if potential role of the treeADD is a conditional probability it is assigned an uniform potential
 				// to the conditioned variable which is always the first variable of the arrayList of variables
 				if (role == PotentialRole.CONDITIONAL_PROBABILITY) {
@@ -183,6 +184,13 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 		if (treeADD.getPotentialRole()== PotentialRole.UTILITY) {
 			if (treeADD.getUtilityVariable() != null) {
 				this.setUtilityVariable(treeADD.getUtilityVariable());
+			}
+		}
+		for (int i = 0; i < treeADD.getBranches().size(); i++) {
+			try {
+			this.branches.get(i).setPotential(treeADD.getBranches().get(i).getPotential().copy()) ;
+			} catch (NotEnoughMemoryException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -353,8 +361,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 
 	@Override
 	public Potential copy() throws NotEnoughMemoryException {
-		// TODO Auto-generated method stub
-		return null;
+		return new TreeADDPotential(this);
 	}
 	/**
      * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
@@ -383,13 +390,25 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 	public boolean isUncertain() {
 		//If at least one of the leaf potentials has uncertainty then returns true 
 		boolean hasUncertainty = false;
-		ArrayList<TreeADDBranch> branches = getBranches();
-		for (TreeADDBranch branch : branches) {
+		for (TreeADDBranch branch : getBranches()) {
 			Potential branchPotential = branch.getPotential();
 			hasUncertainty = branchPotential.isUncertain();
 			if (hasUncertainty == true) break;
 		}
 		return hasUncertainty;
 	}
+	
+	/**
+     * Generates a sampled potential
+     */
+    public Potential sample (Variable simulationIndexVariable)
+        throws NotEnoughMemoryException {
+    	TreeADDPotential sampledTree = (TreeADDPotential) this.copy();
+    	for (TreeADDBranch branch :  sampledTree.getBranches()) {
+			branch.setPotential(branch.getPotential().sample(simulationIndexVariable));
+		}
+    	return sampledTree;
+    	
+    }
 	
 }

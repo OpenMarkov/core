@@ -155,7 +155,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 			Threshold minimum = new Threshold((float)interval.getMin(), !interval.isLeftClosed());
 			Threshold maximum = new Threshold((float)interval.getMax(), interval.isRightClosed());
 			potentialVariables = new ArrayList<Variable>();
-			potentialVariables.add(variables.get(0));
+			//it is an utility potential for sure so it is not necessary to add variable 0 to potential variables
 			UniformPotential potential = new UniformPotential(potentialVariables, role, utilityVariable);
 			//potential.setUtilityVariable(utilityVariable);
 			branches.add(new TreeADDBranch(minimum, maximum, potential, topVariable, variables));

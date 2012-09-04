@@ -48,7 +48,7 @@ import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
 public class OOBNet extends ProbNet implements PNUndoableEditListener
 {
     private HashMap<String, Instance> instances     = new HashMap<String, Instance> ();
-    private ArrayList<ParameterLink>   parameterLinks = new ArrayList<ParameterLink> ();
+    private ArrayList<ReferenceLink>   referenceLinks = new ArrayList<ReferenceLink> ();
 
     
     /**
@@ -185,26 +185,26 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
      * Add an instance link
      * @param link
      */
-    public void addParameterLink (ParameterLink link)
+    public void addReferenceLink (ReferenceLink link)
     {
-        parameterLinks.add (link);
+        referenceLinks.add (link);
     }
 
     /**
      * @return the instanceLinks
      */
-    public ArrayList<ParameterLink> getParameterLinks ()
+    public ArrayList<ReferenceLink> getReferenceLinks ()
     {
-        return parameterLinks;
+        return referenceLinks;
     }
 
     /**
      * Removes an instance Link
      * @param link
      */
-    public void removeParameterLink (ParameterLink link)
+    public void removeReferenceLink (ReferenceLink link)
     {
-        parameterLinks.remove (link);
+        referenceLinks.remove (link);
     }
 
     /**
@@ -254,9 +254,9 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
 	            	{
 	                    ProbNode formalNode = probNet.getProbNode (node.getVariable ());
 		            	List<ProbNode> paramNodes = new ArrayList<>();
-		            	for(ParameterLink link: getLinksToParameter(subInstance))
+		            	for(ReferenceLink link: getLinksToParameter(subInstance))
 			            {
-			            	InstanceParameterLink instanceLink = (InstanceParameterLink)link;        	
+			            	InstanceReferenceLink instanceLink = (InstanceReferenceLink)link;        	
 			            	ProbNode equivalentNode = getEquivalentNode (
 			                		instanceLink.getSourceInstance (),
 			                		instanceLink.getDestSubInstance (), node);
@@ -277,11 +277,11 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
             }
         }
         
-        for(ParameterLink link : getParameterLinks())
+        for(ReferenceLink link : getReferenceLinks())
         {
-    	    if(link instanceof NodeParameterLink)
+    	    if(link instanceof NodeReferenceLink)
             {
-            	NodeParameterLink nodeLink = (NodeParameterLink)link;
+            	NodeReferenceLink nodeLink = (NodeReferenceLink)link;
             	ProbNode sourceNode = probNet.getProbNode(nodeLink.getSourceNode().getVariable());
             	ProbNode destinationNode = probNet.getProbNode(nodeLink.getDestinationNode().getVariable());
     			replaceNode(probNet, destinationNode, sourceNode);
@@ -346,12 +346,12 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
 		}
 	}
 
-	private List<ParameterLink> getLinksToParameter(Instance instance) {
-		List<ParameterLink> links = new ArrayList<>();
-		for(ParameterLink link : getParameterLinks())
+	private List<ReferenceLink> getLinksToParameter(Instance instance) {
+		List<ReferenceLink> links = new ArrayList<>();
+		for(ReferenceLink link : getReferenceLinks())
 		{
-			if(link instanceof InstanceParameterLink &&
-					((InstanceParameterLink)link).getDestSubInstance().equals(instance))
+			if(link instanceof InstanceReferenceLink &&
+					((InstanceReferenceLink)link).getDestSubInstance().equals(instance))
 			{
 				links.add(link);
 			}

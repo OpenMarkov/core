@@ -8,7 +8,7 @@
 */
 package org.openmarkov.core.oon;
 
-public class ParameterLink {
+public class ReferenceLink {
 
 
 }

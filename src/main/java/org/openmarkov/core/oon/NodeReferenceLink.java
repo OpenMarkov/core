@@ -2,12 +2,12 @@ package org.openmarkov.core.oon;
 
 import org.openmarkov.core.model.network.ProbNode;
 
-public class NodeParameterLink extends ParameterLink{
+public class NodeReferenceLink extends ReferenceLink{
 
 	private ProbNode sourceNode;
 	private ProbNode destinationNode;
 
-	public NodeParameterLink(ProbNode sourceNode, ProbNode destinationNode) {
+	public NodeReferenceLink(ProbNode sourceNode, ProbNode destinationNode) {
 		this.sourceNode = sourceNode;
 		this.destinationNode = destinationNode;
 	}

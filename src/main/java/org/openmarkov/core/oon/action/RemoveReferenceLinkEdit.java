@@ -16,35 +16,35 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oon.OOBNet;
-import org.openmarkov.core.oon.ParameterLink;
+import org.openmarkov.core.oon.ReferenceLink;
 
 /**
  * @author ibermejo
  *
  */
 @SuppressWarnings("serial")
-public class RemoveParameterLinkEdit extends SimplePNEdit {
+public class RemoveReferenceLinkEdit extends SimplePNEdit {
 	
-	private ParameterLink parameterLink;
+	private ReferenceLink referenceLink;
 
 	/**
 	 * Constructor
 	 * @param probNet
-	 * @param parameterLink
+	 * @param referenceLink
 	 */
-	public RemoveParameterLinkEdit(ProbNet probNet, ParameterLink parameterLink) {
+	public RemoveReferenceLinkEdit(ProbNet probNet, ReferenceLink referenceLink) {
 		super(probNet);
-		this.parameterLink = parameterLink;
+		this.referenceLink = referenceLink;
 	}
 
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
-		((OOBNet)probNet).removeParameterLink(parameterLink);
+		((OOBNet)probNet).removeReferenceLink(referenceLink);
 	}
 
 	@Override
 	public void undo() throws CannotUndoException {
 		super.undo();
-		((OOBNet)probNet).addParameterLink(parameterLink);
+		((OOBNet)probNet).addReferenceLink(referenceLink);
 	}
 }

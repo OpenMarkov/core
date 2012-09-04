@@ -16,39 +16,39 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.oon.Instance;
-import org.openmarkov.core.oon.InstanceParameterLink;
-import org.openmarkov.core.oon.NodeParameterLink;
+import org.openmarkov.core.oon.InstanceReferenceLink;
+import org.openmarkov.core.oon.NodeReferenceLink;
 import org.openmarkov.core.oon.OOBNet;
-import org.openmarkov.core.oon.ParameterLink;
+import org.openmarkov.core.oon.ReferenceLink;
 
 @SuppressWarnings("serial")
-public class AddParameterLinkEdit extends SimplePNEdit{
+public class AddReferenceLinkEdit extends SimplePNEdit{
 
-	private ParameterLink parameterLink;
+	private ReferenceLink referenceLink;
 	
-	public AddParameterLinkEdit(ProbNet probNet, Instance sourceInstance, Instance destinationInstance,
+	public AddReferenceLinkEdit(ProbNet probNet, Instance sourceInstance, Instance destinationInstance,
 			Instance destinationParameter) {
 		super(probNet);
 		
-		parameterLink = new InstanceParameterLink(sourceInstance, destinationInstance, destinationParameter);
+		referenceLink = new InstanceReferenceLink(sourceInstance, destinationInstance, destinationParameter);
 	}
 	
-	public AddParameterLinkEdit(ProbNet probNet, ProbNode sourceNode, ProbNode destinationNode) {
+	public AddReferenceLinkEdit(ProbNet probNet, ProbNode sourceNode, ProbNode destinationNode) {
 		super(probNet);
 		
-		parameterLink = new NodeParameterLink(sourceNode, destinationNode);
+		referenceLink = new NodeReferenceLink(sourceNode, destinationNode);
 	}	
 	
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
-		((OOBNet)probNet).addParameterLink(parameterLink);
+		((OOBNet)probNet).addReferenceLink(referenceLink);
 	}	
 	
 
 	@Override
 	public void undo() throws CannotUndoException {
 		// TODO Auto-generated method stub
-	    ((OOBNet)probNet).removeParameterLink(parameterLink);
+	    ((OOBNet)probNet).removeReferenceLink(referenceLink);
 	}
 
 }

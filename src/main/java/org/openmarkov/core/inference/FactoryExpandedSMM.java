@@ -123,13 +123,13 @@ public class FactoryExpandedSMM {
 	/**
 	 * @param numSlices
 	 * @param network
-	 * @param discount Percentage of discount. The utility function in instant time t will be:
+	 * @param costDiscount Percentage of discount. The utility function in instant time t will be:
 	 * U(t) = U(t-1)/(1+discount/100.0)  
 	 * @param adaptForCE
 	 * @return An expanded network built from a SMM. It adapts the network to Cost-Effectiveness analysis is 
 	 * adaptForCE is true.
 	 */
-	public static ProbNet constructExpandedNetwork(int numSlices, ProbNet network, double discount,boolean adaptForCE) {
+	public static ProbNet constructExpandedNetwork(int numSlices, ProbNet network, double costDiscount, double effectivenessDiscount, boolean adaptForCE) {
 		FactoryExpandedSMM expandedNetFactory = null;
 		InferenceOptions inferenceOptions;
 		
@@ -139,7 +139,7 @@ public class FactoryExpandedSMM {
 			if (adaptForCE){
 				expandedNetFactory.adaptProbNetForCE();
 			}
-			expandedNetFactory.applyDiscountToUtilityNodes(discount,inferenceOptions);
+			expandedNetFactory.applyDiscountToUtilityNodes(costDiscount, effectivenessDiscount, inferenceOptions);
 		} catch (NotEnoughMemoryException e) {
 			e.printStackTrace();
 		}
@@ -281,17 +281,18 @@ public class FactoryExpandedSMM {
 	
 	
 	/**
-	 * @param discount
+	 * @param costDiscount
 	 * @param inferenceOptions 
 	 * @throws NotEnoughMemoryException
 	 * It applies the discount to each utility potential
 	 */
-	public void applyDiscountToUtilityNodes(double discount, InferenceOptions inferenceOptions) throws NotEnoughMemoryException{
+	public void applyDiscountToUtilityNodes(double costDiscount, double effectivenessDiscount, InferenceOptions inferenceOptions) throws NotEnoughMemoryException{
 		// apply discount rate for all temporal utility nodes in the expanded network
 		  ArrayList<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
 		  for (int i = 0; i < utilityExpandedNodes.size(); i++) {
 			  ProbNode iUtilityProbNode = utilityExpandedNodes.get(i);
 			int timeSlice = iUtilityProbNode.getVariable().getTimeSlice();
+			double discount = iUtilityProbNode.getVariable().getDecisionCriteria().getString() == "cost" ?  costDiscount : effectivenessDiscount;
 			if (iUtilityProbNode.getVariable().isTemporal() && timeSlice > 0) {
 				  double discountRate = 1.0 / (Math.pow((1.0 + (discount/100.0)), timeSlice));
 				  //project TreeADD original potential to a table

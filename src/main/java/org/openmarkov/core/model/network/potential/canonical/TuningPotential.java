@@ -23,7 +23,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
  * @author Iñigo
  */
 @RelationPotentialType(name="Tuning", family="ICI")
-public class TuningModelPotential extends ICIPotential
+public class TuningPotential extends ICIPotential
 {
     /**
      * The canonical model is limited to a child with only tree states
@@ -36,13 +36,13 @@ public class TuningModelPotential extends ICIPotential
      * @param variables
      * @param role
      */
-    public TuningModelPotential (ArrayList<Variable> variables)
+    public TuningPotential (ArrayList<Variable> variables)
     {
         super (ICIModelType.TUNING, variables);
         type = PotentialType.TUNING;
     }
     
-    public TuningModelPotential (Variable... variables)
+    public TuningPotential (Variable... variables)
     {
         this (toArrayList (variables));
     }
@@ -150,7 +150,7 @@ public class TuningModelPotential extends ICIPotential
     @Override
     public Potential copy () throws NotEnoughMemoryException
     {
-        TuningModelPotential newPotential = new TuningModelPotential (new ArrayList<Variable> (variables));
+        TuningPotential newPotential = new TuningPotential (new ArrayList<Variable> (variables));
         for(int i=1; i<variables.size (); ++i)
         {
             newPotential.setNoisyParameters(variables.get (i), getNoisyParameters(variables.get (i)).clone ());
@@ -162,7 +162,7 @@ public class TuningModelPotential extends ICIPotential
     public Potential addVariable(Variable newVariable){
     	ArrayList<Variable> newVariables = (ArrayList<Variable>) variables.clone();
     	newVariables.add(newVariable);
-    	TuningModelPotential newICIPotential = new TuningModelPotential(newVariables) ;
+    	TuningPotential newICIPotential = new TuningPotential(newVariables) ;
     	
 		
 		for (int i = 1; i < variables.size(); i++) {
@@ -185,7 +185,7 @@ public class TuningModelPotential extends ICIPotential
     		}
     	}
     	
-    	TuningModelPotential newICIPotential = new TuningModelPotential(newVariables);
+    	TuningPotential newICIPotential = new TuningPotential(newVariables);
     	
     	for (int i = 1; i < newVariables.size(); i++) {
 			double []noisyParameters = this.getNoisyParameters(newVariables.get(i));

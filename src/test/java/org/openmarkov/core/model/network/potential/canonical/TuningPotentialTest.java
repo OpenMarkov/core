@@ -19,12 +19,12 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Variable;
 
-public class TuningModelPotentialTest
+public class TuningPotentialTest
 {
     
     private double admissibleError = 0.000000001;
 
-    private TuningModelPotential tuningModelPotential;
+    private TuningPotential tuningModelPotential;
     
     
     // Initialization
@@ -43,7 +43,7 @@ public class TuningModelPotentialTest
         variables.add (dM);
         variables.add (dG);
         
-        tuningModelPotential = new TuningModelPotential (variables);
+        tuningModelPotential = new TuningPotential (variables);
 
         tuningModelPotential.setNoisyParameters(dT, new double[] {1.0, 0.0, 0.0, 1.0});
         tuningModelPotential.setNoisyParameters(dM, new double[] {0.1, 0.2, 0.2, 0.1});

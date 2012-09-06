@@ -9,8 +9,8 @@ package org.openmarkov.core.model.network.potential.treeadd;
  */
 public class Threshold {
 	
-	protected float limit;
-	protected boolean belongsToLeft; // if false --> )[ ; if true --> ](
+	private float limit;
+	private boolean belongsToLeft; // if false --> )[ ; if true --> ](
 	
 	
 	public Threshold(float limit, boolean belongsToLeft){

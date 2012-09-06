@@ -14,6 +14,7 @@ import junit.framework.Test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openmarkov.core.model.network.potential.treeADD.TreeADDPotentialTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

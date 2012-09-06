@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -85,8 +86,21 @@ public class FactoryExpandedSMM {
 	 * Adapts the concise network for performing cost-effectiveness analysis.
 	 */
 	public void adaptProbNetForCE(){
-		//TODO take decisions criteria from the network
-		  probNet.setDecisionCriteria(new String[]{"cost", "effectiveness"});
+		String [] decisionCriteriaNames = new String[probNet.getDecisionCriteria().size()];
+		for (int i = 0; i < probNet.getDecisionCriteria().size(); i++) {
+			if (probNet.getDecisionCriteria().get(i).getString().equalsIgnoreCase("cost") || 
+					probNet.getDecisionCriteria().get(i).getString().equalsIgnoreCase("effectiveness")) {
+				decisionCriteriaNames [i] = probNet.getDecisionCriteria().get(i).getString();
+			}
+			
+		}
+		if (!(decisionCriteriaNames.length == 2 && decisionCriteriaNames[0].equalsIgnoreCase("cost") && decisionCriteriaNames[1].equalsIgnoreCase("effectiveness")) ||
+				!(decisionCriteriaNames.length == 2 && decisionCriteriaNames[1].equalsIgnoreCase("cost") && decisionCriteriaNames[0].equalsIgnoreCase("effectiveness")))  {
+			//TODO propagate exception
+			//throw new Exception("For cost effectiveness analysis performance network´s decision criteria must be cost and effectiveness");
+		}
+		 // probNet.setDecisionCriteria(new String[]{"cost", "effectiveness"});
+		 probNet.setDecisionCriteria(decisionCriteriaNames);
 			//make all utility nodes of the expanded probNet child of decision criteria
 			  ArrayList<ProbNode> utilityNodes = probNet.getProbNodes(NodeType.UTILITY);
 			  ProbNode decisionCriteria = new ProbNode(probNet, probNet.getDecisionCriteriaVariable(), NodeType.DECISION);
@@ -292,7 +306,7 @@ public class FactoryExpandedSMM {
 		  for (int i = 0; i < utilityExpandedNodes.size(); i++) {
 			  ProbNode iUtilityProbNode = utilityExpandedNodes.get(i);
 			int timeSlice = iUtilityProbNode.getVariable().getTimeSlice();
-			double discount = iUtilityProbNode.getVariable().getDecisionCriteria().getString() == "cost" ?  costDiscount : effectivenessDiscount;
+			double discount = iUtilityProbNode.getVariable().getDecisionCriteria().getString().equalsIgnoreCase("cost") ?  costDiscount : effectivenessDiscount;
 			if (iUtilityProbNode.getVariable().isTemporal() && timeSlice > 0) {
 				  double discountRate = 1.0 / (Math.pow((1.0 + (discount/100.0)), timeSlice));
 				  //project TreeADD original potential to a table

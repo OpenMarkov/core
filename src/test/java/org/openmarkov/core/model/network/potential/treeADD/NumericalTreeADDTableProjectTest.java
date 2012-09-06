@@ -1,0 +1,123 @@
+package org.openmarkov.core.model.network.potential.treeADD;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
+import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.treeadd.Threshold;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+
+public class NumericalTreeADDTableProjectTest {
+	private TreeADDPotential tree;
+	private Variable age;
+	@Before
+    public void setUp() throws Exception {
+		State dead = new State("dead");
+		State alive = new State("alive");
+		State [] states= {dead, alive};
+		Variable previousState = new Variable("state0", 2);
+		previousState.setStates(states);
+		Variable currentState = new Variable("state1", 2);
+		currentState.setStates(states);
+		age = new Variable("Age0", true, 0.0, 10.0, true, 0.01);
+		
+		ArrayList<Variable> treeVariables = new ArrayList<>();
+		treeVariables.add(currentState);
+		treeVariables.add(previousState);
+		treeVariables.add(age);
+		
+		//subtree 
+		//branch 1
+		Threshold min1 = new Threshold(0, false);
+		Threshold max1 = new Threshold(5, true);
+		
+		ArrayList<Variable> table1Variables = new ArrayList<>();
+		table1Variables.add(currentState);
+		double []tableBranch1 = {1.0, 0.0};
+		TablePotential subTablePotential1 = new TablePotential(table1Variables, 
+				PotentialRole.CONDITIONAL_PROBABILITY,tableBranch1); 
+		ArrayList<Variable> subParentVariables = new ArrayList<>();
+		subParentVariables.add(currentState);
+		subParentVariables.add(age);
+		
+		TreeADDBranch subBranch1 = new TreeADDBranch(min1,max1, subTablePotential1, age, subParentVariables);
+		
+		//branch 2
+		Threshold min2 = new Threshold(5, true);
+		Threshold max2 = new Threshold(10, false);
+		
+		ArrayList<Variable> table2Variables = new ArrayList<>();
+		table2Variables.add(currentState);
+		double []tableBranch2 = {0.5, 0.5};
+		TablePotential subTablePotential2 = new TablePotential(table2Variables, 
+				PotentialRole.CONDITIONAL_PROBABILITY,tableBranch2); 
+		TreeADDBranch subBranch2 = new TreeADDBranch(min2,max2, subTablePotential2, age, subParentVariables);
+		
+		ArrayList<TreeADDBranch> subBranches = new ArrayList<>();
+		subBranches.add(subBranch1);
+		subBranches.add(subBranch2);
+	
+		TreeADDPotential subTree = new TreeADDPotential(subParentVariables, age, PotentialRole.CONDITIONAL_PROBABILITY, subBranches);
+		
+		//tree
+		ArrayList<Variable> parentVariables = new ArrayList<>();
+		parentVariables.add(previousState);
+		parentVariables.add(currentState);
+		parentVariables.add(age);
+		
+		ArrayList<State> states1 = new ArrayList<>();
+		states1.add(dead);
+		double []table1 = {0.0, 1.0};
+		TablePotential tablePotential1 = new TablePotential(table2Variables, PotentialRole.CONDITIONAL_PROBABILITY, table1);
+		
+		TreeADDBranch branch1 = new TreeADDBranch(states1, tablePotential1, previousState, parentVariables); 
+		
+		ArrayList<State> states2 = new ArrayList<>();
+		states2.add(alive);
+		
+		TreeADDBranch branch2 = new TreeADDBranch(states2, subTree, previousState, parentVariables); 
+		
+		ArrayList<Variable> variables = new ArrayList<>();
+		variables.add(currentState);
+		variables.add(previousState);
+		variables.add(age);
+		ArrayList<TreeADDBranch> branches = new ArrayList<>();
+		branches.add(branch1);
+		branches.add(branch2);
+		tree = new TreeADDPotential(variables, previousState, PotentialRole.CONDITIONAL_PROBABILITY, branches);
+		
+	}
+	
+	@Test
+	public void testTableProject() throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
+		ArrayList<Finding> findings = new ArrayList<>();
+		Finding value = new Finding(age, 0.5);
+		findings.add(value);
+		EvidenceCase evidenceCase = new EvidenceCase(findings);
+		
+		TablePotential tablePotential = 
+				tree.tableProject(evidenceCase, null).get(0);
+		ArrayList<Variable> variables = tablePotential.getVariables();
+		assertEquals(2, variables.size());
+		assertEquals(4, tablePotential.values.length);
+		double []projectedValues = {0.0, 1.0, 1.0, 0.0};
+		
+		assertEquals(projectedValues[0], tablePotential.values[0], 0.1);
+		assertEquals(projectedValues[1], tablePotential.values[1], 0.1);
+		assertEquals(projectedValues[2], tablePotential.values[2], 0.1);
+		assertEquals(projectedValues[3], tablePotential.values[3], 0.1);
+		
+	}
+}

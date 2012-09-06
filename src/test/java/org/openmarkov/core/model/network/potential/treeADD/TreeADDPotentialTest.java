@@ -1,4 +1,4 @@
-package org.openmarkov.core.model.network.potential;
+package org.openmarkov.core.model.network.potential.treeADD;
 
 import java.util.ArrayList;
 
@@ -12,6 +12,10 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.PotentialType;
+import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;

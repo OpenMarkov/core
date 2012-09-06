@@ -5,6 +5,7 @@ package org.openmarkov.core.model.network.potential.treeadd;
 
 import java.util.ArrayList;
 
+import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.PotentialOperationException;
@@ -12,6 +13,7 @@ import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -295,13 +297,20 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 		ArrayList<TablePotential> potentialsToSumUp = new ArrayList<TablePotential>();
 		ArrayList<TablePotential> projectedPotentials = new ArrayList<TablePotential>();
 		
+		TablePotential projected = null;
+		
 		ArrayList<TreeADDBranch> branches = getBranches();
+		
+		if (topVariable.getVariableType() == VariableType.FINITE_STATES 
+				 || topVariable.getVariableType() == VariableType.DISCRETIZED) {
 		for (TreeADDBranch branch : branches) {
 			Potential branchPotential = branch.getPotential();
 			 ArrayList<TablePotential> tablePotentials = branchPotential.tableProject(evidenceCase, inferenceOptions);
-			 if (branch.getTopVariable().getVariableType() == VariableType.FINITE_STATES 
-					 || branch.getTopVariable().getVariableType() == VariableType.DISCRETIZED) {
-				 //mask potential
+			 /*if (branch.getTopVariable().getVariableType() == VariableType.FINITE_STATES 
+					 || branch.getTopVariable().getVariableType() == VariableType.DISCRETIZED) {*/
+				
+			 
+			 //mask potential
 				ArrayList<Variable> variables = new ArrayList<Variable>();
 				variables.add(branch.getTopVariable());
 				TablePotential potential = new TablePotential(variables, role);
@@ -328,12 +337,61 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			 } else if (branch.getTopVariable().getVariableType() == VariableType.NUMERIC ) {
-				 throw new NonProjectablePotentialException("It is not possible to project this tree, " +
-				 		"top variable is numeric");
-			 }
 		}
-		projectedPotentials.add(DiscretePotentialOperations.sum(potentialsToSumUp));
+				projected =  DiscretePotentialOperations.sum(potentialsToSumUp);
+				
+				
+			 } else if (topVariable.getVariableType() == VariableType.NUMERIC ) {
+				//if there is no evidence for the numerical topVariable it is not possible to project the tree
+				 if ( evidenceCase.getFinding(topVariable) == null){
+					 throw new NonProjectablePotentialException("It is not possible to project this tree, " +
+						 		"top variable is numeric and has no evidence");
+				 }
+				double topVariableValue = evidenceCase.getFinding(topVariable).getNumericalValue();
+				try {
+					evidenceCase.removeFinding(topVariable);
+				} catch (NoFindingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				ArrayList<TreeADDBranch> numericalBranches = getBranches();
+				Potential potential = null;
+				for (TreeADDBranch numericalBranch : numericalBranches) {
+					double minLimit = numericalBranch.getMinThreshold().getLimit();
+					double maxlimit = numericalBranch.getMaxThreshold().getLimit();
+					if (minLimit <= topVariableValue && topVariableValue <= maxlimit) {
+						if (minLimit == topVariableValue) {
+							if (numericalBranch.getMinThreshold().belongsToLeft()){
+								continue;
+							} else {
+								potential = numericalBranch.getPotential();
+								break;
+							}
+							
+						} else if (maxlimit == topVariableValue) {
+							if (numericalBranch.getMaxThreshold().belongsToLeft()) {
+								potential = numericalBranch.getPotential();
+								break;
+							} else {
+								continue;
+							}
+						} else { // minLimit < topVariableValue < maxLimit
+							potential = numericalBranch.getPotential();
+							break;
+						}
+					} 
+						
+				}
+				//if potential still null that means finding was not within the numerical variable domain so
+				if ( potential == null){
+					 throw new NonProjectablePotentialException("It is not possible to project this tree, " +
+						 		"top variable value was not within the topVariable domain");
+				 }
+				 projected = potential.tableProject(evidenceCase, inferenceOptions).get(0);
+			 }
+			
+		projectedPotentials.add(projected);
+
 		if (role == PotentialRole.UTILITY){
 			for (Potential auxPot:projectedPotentials){
 				auxPot.setUtilityVariable(utilityVariable);

@@ -250,11 +250,12 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
             {
 	            if(subInstance.isInput())
 	            {
+	                List<ReferenceLink> linksToParameter = getLinksToParameter(subInstance);
 		            for (ProbNode node : subInstance.getNodes ())
 	            	{
 	                    ProbNode formalNode = probNet.getProbNode (node.getVariable ());
 		            	List<ProbNode> paramNodes = new ArrayList<>();
-		            	for(ReferenceLink link: getLinksToParameter(subInstance))
+		            	for(ReferenceLink link: linksToParameter)
 			            {
 			            	InstanceReferenceLink instanceLink = (InstanceReferenceLink)link;        	
 			            	ProbNode equivalentNode = getEquivalentNode (
@@ -266,13 +267,21 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
 			                    paramNodes.add(paramNode);
 			                }
 			            }
-	                    replaceNodes(probNet, formalNode, paramNodes);
+		            	if(paramNodes.size () == 1)
+		            	{
+		                    replaceNode(probNet, formalNode, paramNodes.get (0));
+		            	}else if (paramNodes.size () > 1){
+                            replaceNodes(probNet, formalNode, paramNodes);
+		            	}
 	            	}
 	            	// Remove formal parameter nodes
-			        for (ProbNode node : subInstance.getNodes ())
-			        {
-			            probNet.removeProbNode (probNet.getProbNode (node.getVariable ()));
-	            	}
+		            if(linksToParameter.size () > 0)
+		            {
+    			        for (ProbNode node : subInstance.getNodes ())
+    			        {
+    			            probNet.removeProbNode (probNet.getProbNode (node.getVariable ()));
+    	            	}
+		            }
 	            }
             }
         }
@@ -305,13 +314,16 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
 			    {
 			        potentialCopy = (ICIPotential)potential.copy ();
 			        double[] noisyParameters = potentialCopy.getNoisyParameters(formalNode.getVariable());
-			        potentialCopy = (ICIPotential) potentialCopy.removeVariable(formalNode.getVariable());
-			        for(ProbNode paramNode : paramNodes)
+			        if(noisyParameters != null)
 			        {
-			        	potentialCopy = (ICIPotential)potentialCopy.addVariable(paramNode.getVariable());
-			        	potentialCopy.setNoisyParameters(paramNode.getVariable(), noisyParameters);
+    			        potentialCopy = (ICIPotential) potentialCopy.removeVariable(formalNode.getVariable());
+    			        for(ProbNode paramNode : paramNodes)
+    			        {
+    			        	potentialCopy = (ICIPotential)potentialCopy.addVariable(paramNode.getVariable());
+    			        	potentialCopy.setNoisyParameters(paramNode.getVariable(), noisyParameters);
+    			        }
+    			        potentialsToReplace.put (potential, potentialCopy);
 			        }
-			        potentialsToReplace.put (potential, potentialCopy);
 			    }
 			    catch (NotEnoughMemoryException e)
 			    {

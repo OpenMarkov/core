@@ -160,7 +160,7 @@ public class TuningPotential extends ICIPotential
     }       
     @Override
     public Potential addVariable(Variable newVariable){
-    	ArrayList<Variable> newVariables = (ArrayList<Variable>) variables.clone();
+    	ArrayList<Variable> newVariables = new ArrayList<Variable>(variables);
     	newVariables.add(newVariable);
     	TuningPotential newICIPotential = new TuningPotential(newVariables) ;
     	

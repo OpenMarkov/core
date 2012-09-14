@@ -1632,9 +1632,9 @@ public class ProbNet implements Cloneable {
 			}
 			out.append("\n");
 		}
-		out.append("\n");
+		out.append("\n Nodes: ");
 		for (ProbNode probNode : nodes) {
-			out.append(probNode.toString() + "\n");
+			out.append(probNode.getName () + ",");
 		}
 		if(agents != null)
 		{

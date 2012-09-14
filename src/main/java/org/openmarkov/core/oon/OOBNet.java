@@ -270,12 +270,12 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
 		            	if(paramNodes.size () == 1)
 		            	{
 		                    replaceNode(probNet, formalNode, paramNodes.get (0));
-		            	}else if (paramNodes.size () > 1){
+		            	}else {//if (paramNodes.size () > 1){
                             replaceNodes(probNet, formalNode, paramNodes);
 		            	}
 	            	}
 	            	// Remove formal parameter nodes
-		            if(linksToParameter.size () > 0)
+		            if(true)//linksToParameter.size () > 0)
 		            {
     			        for (ProbNode node : subInstance.getNodes ())
     			        {

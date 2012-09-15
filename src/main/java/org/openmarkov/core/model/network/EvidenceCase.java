@@ -251,7 +251,7 @@ public class EvidenceCase {
 	 * @throws NotEnoughMemoryException 
 	 * @throws InvalidStateException 
 	 * @throws WrongCriterionException */
-	public void extendEvidence(ProbNet probNet) 
+	public void extendEvidence(ProbNet probNet, double cycleLength) 
 		throws IncompatibleEvidenceException, NotEnoughMemoryException, 
 		InvalidStateException, WrongCriterionException{
 		Queue<Finding> pendingFindings = 
@@ -262,7 +262,7 @@ public class EvidenceCase {
 			ArrayList<Potential> potentials = probNet.getPotentials(oldVariable);
 			for (Potential potential : potentials) {
 				ArrayList<Finding> newFindings = 
-					(ArrayList<Finding>)potential.getInducedFindings(this);
+					(ArrayList<Finding>)potential.getInducedFindings(this, cycleLength);
 				for (Finding newFinding : newFindings) {
 					findings.put(newFinding.getVariable(), newFinding);
 				}

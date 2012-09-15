@@ -640,14 +640,25 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		TablePotential potentialCostOfTreatment;
 		double[] tableQoL = {qoLTreat, qoLNoTreat};
 		double[] tableCostOfTreatment = {costTreat, costNoTreat};
+		
+		//Decision criteria
+		ArrayList<StringWithProperties> decisionCriteria = new ArrayList<>();
+		StringWithProperties cost = new StringWithProperties("cost");
+		StringWithProperties effectiveness = new StringWithProperties("effectiveness");
+		decisionCriteria.add(cost);
+		decisionCriteria.add(effectiveness);
+		
 				
 		Variable variableTreatment = new Variable("Treatment",yesNoStates);
 		Variable variableCostOfTreatment = new Variable("Cost of treatment");
-		variableCostOfTreatment.setDecisionCriteria(new StringWithProperties("cost"));
+		variableCostOfTreatment.setDecisionCriteria(cost);
 		Variable variableQoL = createTemporalVariable("QoL",0);
-		variableQoL.setDecisionCriteria(new StringWithProperties("effectiveness"));
+		variableQoL.setDecisionCriteria(effectiveness);
 		ProbNet probNet = new ProbNet(SimpleMarkovModelType.getUniqueInstance());
 
+		//set decision criteria to the network
+		probNet.setDecisionCriteria2(decisionCriteria);
+		
 		//Add variables to the network			
 		addVariables(probNet,NodeType.DECISION,variableTreatment);
 		addVariables(probNet,NodeType.UTILITY,variableQoL,variableCostOfTreatment);
@@ -695,16 +706,26 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		double[] tableCostOfTreatment = {costTreat, costNoTreat};
 		String[] statesStateVariable = {"dead", "alive"};
 		
+		//Decision criteria
+		ArrayList<StringWithProperties> decisionCriteria = new ArrayList<>();
+		StringWithProperties cost = new StringWithProperties("cost");
+		StringWithProperties effectiveness = new StringWithProperties("effectiveness");
+		decisionCriteria.add(cost);
+		decisionCriteria.add(effectiveness);
+		
 		Variable variableTreatment = new Variable("Treatment",yesNoStates);
 		Variable variableCostOfTreatment = new Variable("Cost of treatment");
-		variableCostOfTreatment.setDecisionCriteria(new StringWithProperties("cost"));
+		variableCostOfTreatment.setDecisionCriteria(cost);
 		Variable variableQoL = createTemporalVariable("QoL",0);
-		variableQoL.setDecisionCriteria(new StringWithProperties("effectiveness"));
+		variableQoL.setDecisionCriteria(effectiveness);
 		Variable variableState0 = createTemporalVariable("State",0,statesStateVariable);
 		Variable variableState1 = createTemporalVariable("State",1,statesStateVariable);
 		
 		ProbNet probNet = new ProbNet(SimpleMarkovModelType.getUniqueInstance());
 
+		//set decision criteria to the network
+		probNet.setDecisionCriteria2(decisionCriteria);
+		
 		//Add variables to the network	
 		addVariables(probNet,NodeType.CHANCE,variableState0,variableState1);
 		addVariables(probNet,NodeType.DECISION,variableTreatment);

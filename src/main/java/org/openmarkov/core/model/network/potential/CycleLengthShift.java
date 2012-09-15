@@ -75,7 +75,7 @@ public class CycleLengthShift extends Potential {
 	// public void extendEvidence(EvidenceCase)
 
 	@Override
-	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
+	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength) {
 		Variable conditionedVariable = variables.get(0);
 		Variable conditioningVariable = variables.get(1);
 		ArrayList<Finding> inducedFindings = new ArrayList<Finding>();
@@ -84,7 +84,8 @@ public class CycleLengthShift extends Potential {
 			// TODO Tener en cuenta que la duración de un ciclo puede
 			// ser distinta de 1. Por ejemplo, si un ciclo dura 3 meses.
 			double numericalValue = evidenceCase.getFinding(
-						conditioningVariable).getNumericalValue() + 1;
+					//	conditioningVariable).getNumericalValue() + 1;
+					conditioningVariable).getNumericalValue() + cycleLength;
 			inducedFindings.add(new Finding(conditionedVariable, 
 						numericalValue));
 			

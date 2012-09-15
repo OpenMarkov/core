@@ -58,14 +58,9 @@ public class FactoryExpandedSMM {
 			Variable simulationIndexVariable, double coordinateXOffset) 
 	throws NotEnoughMemoryException {
 		this.coordinateXOffset = coordinateXOffset;
-		
-		
-		//probNet must be the original network and expandedNetwork the probNet espanded numSlices times
+		//probNet must be the original network and 
+		//expandedNetwork the probNet expanded numSlices times
 		probNet = conciseNet.copy();
-		  //TODO get decisionCriteria from the probNet
-		
-		//adaptProbNetForCE();
-		
 		if (simulationIndexVariable != null) {
 			sampleProbNet(simulationIndexVariable);
 		}
@@ -289,11 +284,33 @@ public class FactoryExpandedSMM {
 		return classifiedNodes;
 	}
 	
+	/**
+	 * projects the evidence for all nodes in the expanded network
+	 * calling for each potential within the network to the method tableProject
+	 * 
+	 * @param evidence
+	 */
+	public void projectEvidence(EvidenceCase evidence) {
+		for (ProbNode probNode: probNet.getProbNodes()) {
+			ArrayList<Potential> potentials = new ArrayList<>();
+			try {
+				InferenceOptions io = new InferenceOptions(probNet, null);
+				potentials.add(probNode.getPotentials().get(0).tableProject(evidence, io).get(0));
+			} catch (NotEnoughMemoryException
+					| NonProjectablePotentialException
+					| WrongCriterionException e) {
+				e.printStackTrace();
+			}
+			probNode.setPotentials(potentials);
+		}
+	}
+	
+	
 	public ProbNet getExtendedNet(){
 		return probNet;
 	}
 	
-	
+
 	/**
 	 * @param costDiscount
 	 * @param inferenceOptions 
@@ -420,5 +437,6 @@ public class FactoryExpandedSMM {
 		newNode.addPotential(newPotential);
 		newPotential.createDirectedLinks(probNet);
 	}
+	
 
 }

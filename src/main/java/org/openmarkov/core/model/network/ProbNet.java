@@ -42,6 +42,7 @@ import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
@@ -443,7 +444,12 @@ public class ProbNet implements Cloneable {
 		return true;
 	}
 	
-
+/**
+ * For CE analysis sometimes it is umportant to check if there is a node 
+ * representing age within the netwok
+ * 
+ * @return
+ */
 	public boolean checkIfThereIsAgeNode() {
 		boolean isThereNodeAge = false;
 		ArrayList<ProbNode> probNodes = getProbNodes();
@@ -456,8 +462,45 @@ public class ProbNet implements Cloneable {
 		}
 		return isThereNodeAge;
 	}
-
+	
 	/**
+	 * Within a markov process for ce purposes is important to detect whether there are or not 
+	 * numerical temporal variables with a CycleeLengthShift potential in it second slice. These special
+	 * nodes represents a temporal dependency that might be a relaxation of Markov assumption for SemiMarkov models
+	 * or just a time dependence to introduce time varying transition from a life table.
+	 * 
+	 * @return an ArrayList with these special nodes in first slice of the compact network if the exists otherwise 
+	 * this array will be empty
+	 */
+	
+	public ArrayList<ProbNode> getSpecialTimeDependantNodes(){
+		//this array includes also Age node if exists
+		ArrayList<ProbNode> numericTemporalNodes = new ArrayList<>();
+		ArrayList<ProbNode> probNodes = getProbNodes();
+		//looking for temporal numerical variables in the first slice
+		for (int i = 0; i < probNodes.size() ; i++) {
+			if (probNodes.get(i).getVariable().isTemporal() 
+					&& probNodes.get(i).getVariable().getVariableType() == VariableType.NUMERIC
+					&& probNodes.get(i).getVariable().getTimeSlice() == 0) {
+				//look for the second slice to check if it has a CycleLengthShift potential
+				for (int j = 0; j < probNodes.size() ; j++) {
+					if (probNodes.get(j).getVariable().isTemporal() 
+							&& probNodes.get(j).getVariable().getVariableType() == VariableType.NUMERIC
+							&& probNodes.get(j).getVariable().getTimeSlice() == 1
+							&& probNodes.get(j).getVariable().getBaseName().equals(probNodes.get(i).getVariable().getBaseName())) {
+						if (probNodes.get(j).getPotentials().get(0).getPotentialType() == PotentialType.CYCLE_LENGTH_SHIFT) {
+							numericTemporalNodes.add(probNodes.get(i));
+							break;
+						}
+						
+					}
+				}
+			}
+		}
+		return numericTemporalNodes;
+	}
+	
+		/**
 	 * Checks whether this <code>probNet</code> is temporal or not.
 	 * 
 	 * @return <code>true</code> when this network has not associated OnlyAtemporalVariables constraint,
@@ -575,6 +618,10 @@ public class ProbNet implements Cloneable {
 			probNetCopy.setDecisionCriteria(criterianames);
 			
 		}*/
+		//copy decision criteria
+		if (this.getDecisionCriteria() != null) {
+			probNetCopy.setDecisionCriteria2(this.getDecisionCriteria());
+		}
 		if (this.getDecisionCriteriaVariable() != null) {
 			probNetCopy.setDecisionCriteriaVariable(this.getDecisionCriteriaVariable());
 		}

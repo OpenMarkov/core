@@ -177,7 +177,7 @@ public class EvidenceCaseTest {
 		assertNotNull(A);
 		Finding aFinding = new Finding(A, 0);
 		evidence.addFinding(aFinding);
-		evidence.extendEvidence(probNet);
+		evidence.extendEvidence(probNet, 1.0);
 		assertEquals(2, evidence.getFindings().size());
 		Variable B = probNet.getVariable("B");
 		Finding bFinding = evidence.getFinding(B);

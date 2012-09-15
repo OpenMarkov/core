@@ -247,7 +247,7 @@ public abstract class Potential{
 	 * @throws IncompatibleEvidenceException 
 	 * @throws NotEnoughMemoryException 
 	 * @throws WrongCriterionException */
-	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) 
+	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength) 
 	throws IncompatibleEvidenceException, NotEnoughMemoryException, 
 	WrongCriterionException {
 		return new ArrayList<Finding>();

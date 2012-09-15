@@ -130,7 +130,7 @@ public class SumPotential extends Potential {
 	}
 
 	@Override
-	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
+	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength)
 			throws IncompatibleEvidenceException, NotEnoughMemoryException {
 		return null;
 	}

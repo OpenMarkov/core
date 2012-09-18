@@ -16,6 +16,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -148,7 +149,7 @@ public class FactoryExpandedSMM {
 			if (adaptForCE){
 				expandedNetFactory.adaptProbNetForCE();
 			}
-			expandedNetFactory.applyDiscountToUtilityNodes(costDiscount, effectivenessDiscount, inferenceOptions);
+			expandedNetFactory.applyDiscountToUtilityNodes(costDiscount, effectivenessDiscount, inferenceOptions, new EvidenceCase());
 		} catch (NotEnoughMemoryException e) {
 			e.printStackTrace();
 		}
@@ -290,18 +291,31 @@ public class FactoryExpandedSMM {
 	 * 
 	 * @param evidence
 	 */
+	@SuppressWarnings("unused")
 	public void projectEvidence(EvidenceCase evidence) {
 		for (ProbNode probNode: probNet.getProbNodes()) {
 			ArrayList<Potential> potentials = new ArrayList<>();
+
+			InferenceOptions io = new InferenceOptions(probNet, null);
 			try {
-				InferenceOptions io = new InferenceOptions(probNet, null);
-				potentials.add(probNode.getPotentials().get(0).tableProject(evidence, io).get(0));
+				if(probNode.getNodeType() != NodeType.DECISION) {
+				if (!probNode.getPotentials().get(0).tableProject(evidence, io).isEmpty()) {
+					try {	
+						potentials.add(probNode.getPotentials().get(0).tableProject(evidence, io).get(0));
+					} catch (NotEnoughMemoryException
+							| NonProjectablePotentialException
+							| WrongCriterionException e) {
+						e.printStackTrace();
+					}
+					probNode.setPotentials(potentials);
+				}
+				}
 			} catch (NotEnoughMemoryException
 					| NonProjectablePotentialException
 					| WrongCriterionException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			probNode.setPotentials(potentials);
 		}
 	}
 	
@@ -317,7 +331,7 @@ public class FactoryExpandedSMM {
 	 * @throws NotEnoughMemoryException
 	 * It applies the discount to each utility potential
 	 */
-	public void applyDiscountToUtilityNodes(double costDiscount, double effectivenessDiscount, InferenceOptions inferenceOptions) throws NotEnoughMemoryException{
+	public void applyDiscountToUtilityNodes(double costDiscount, double effectivenessDiscount, InferenceOptions inferenceOptions, EvidenceCase evidence) throws NotEnoughMemoryException{
 		// apply discount rate for all temporal utility nodes in the expanded network
 		  ArrayList<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
 		  for (int i = 0; i < utilityExpandedNodes.size(); i++) {
@@ -336,12 +350,11 @@ public class FactoryExpandedSMM {
 						Variable utilityVariable = potential.getUtilityVariable();
 						potentialToBeProjected = (((SameAsPrevious)potential).getOriginalPotential()).copy();
 						potentialToBeProjected.setVariables(variables);
-						
 						potentialToBeProjected.setUtilityVariable(utilityVariable);
 					 } else {
 						potentialToBeProjected = (potential);
 					 }
-					 projectedPotential = potentialToBeProjected.tableProject(new EvidenceCase(), inferenceOptions).get(0);
+					 projectedPotential = potentialToBeProjected.tableProject(evidence, inferenceOptions).get(0);
 //					 projectedPotential.setOriginalVariables(potentialToBeProjected.getVariables());
 					double[] valuesProjectedPotential = projectedPotential.getValues();
 					for (int j = 0; j < valuesProjectedPotential.length; j++) {
@@ -394,14 +407,9 @@ public class FactoryExpandedSMM {
 		if (oldPotential.getPotentialType() == PotentialType.CYCLE_LENGTH_SHIFT) {
 			newPotential = new CycleLengthShift(oldPotential.getShiftedVariables(probNet,
 					timeDifference));
-			/*
-			 * if (oldPotential.getPotentialRole() == PotentialRole.UTILITY) {
-			 * newPotential
-			 * .setUtilityVariable(oldPotential.getUtilityVariable()); }
-			 */
 		} else {
 			int timeDifferenceWithNew;
-			Potential referencePotentialForNewPotential;
+			Potential referencePotentialForNewPotential = null;
 			if (oldPotential.getPotentialType() == PotentialType.SAME_AS_PREVIOUS) {
 				 Potential originalPotential = ((SameAsPrevious) oldPotential)
 						.getOriginalPotential();
@@ -420,15 +428,13 @@ public class FactoryExpandedSMM {
 				timeDifferenceWithNew = newVariable.getTimeSlice() - firstOriginalVariable.getTimeSlice();
 				referencePotentialForNewPotential = originalPotential;
 			} else {
+				
 				referencePotentialForNewPotential = oldPotential;
+				}
+				
 				timeDifferenceWithNew = timeDifference;
-			}
-			 
 			try {
 				newPotential = new SameAsPrevious(referencePotentialForNewPotential, probNet, timeDifferenceWithNew);
-				/*if (referencePotentialForNewPotential.getPotentialRole() == PotentialRole.UTILITY) {
-					newPotential.setUtilityVariable(referencePotentialForNewPotential.getUtilityVariable());
-				}*/
 			} catch (NodeNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -438,5 +444,19 @@ public class FactoryExpandedSMM {
 		newPotential.createDirectedLinks(probNet);
 	}
 	
+	/**
+	 * Removes all that nodes that has evidence, this means that numerical and CycleLegthShit ones disappears
+	 * with evidence the are not necessary in the network for the inference algorithm anymore
+	 * 
+	 * @param evidence
+	 */
+	public ProbNet prepareExpandedNetworkToInference(EvidenceCase evidence) {
+		ProbNet prunedProbNet = probNet.copy();
+		ArrayList<Finding> findings = evidence.getFindings();
+		for (int i = 0; i < findings.size(); i++) {
+			prunedProbNet.removeProbNode(prunedProbNet.getProbNode(findings.get(i).getVariable())); 
+		}
+		return prunedProbNet;
+	}
 
 }

@@ -30,6 +30,7 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 /** @author marias
   * @author fjdiez 
@@ -316,6 +317,8 @@ public abstract class Potential{
 	public ArrayList<Variable> getShiftedVariables(ProbNet probNet, 
 			int timeDifference) {
 		ArrayList<Variable> shiftedVariables = new ArrayList<Variable>();
+		//also shift variables within the tree
+		
 		for (Variable variable : getVariables()) {
 			if ( variable.isTemporal() ){
 				shiftedVariables.add(

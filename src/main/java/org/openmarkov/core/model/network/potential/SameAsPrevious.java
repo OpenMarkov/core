@@ -22,6 +22,8 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 /** @author marias
  * @version 1.0 */
@@ -54,6 +56,14 @@ public class SameAsPrevious extends Potential {
 				originalPotential.getUtilityVariable();
 			utilityVariable = probNet.getShiftedVariable(
 					originalUtilityVariable, timeDifference);	
+		}
+		if (originalPotential instanceof TreeADDPotential) {//Not only shift potential variables, but also variables within the tree
+			try {
+				originalPotential = ((TreeADDPotential) originalPotential).shiftTree(timeDifference, probNet);
+			} catch (NotEnoughMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		type = PotentialType.SAME_AS_PREVIOUS;
 	}
@@ -89,7 +99,9 @@ public class SameAsPrevious extends Potential {
 			InferenceOptions inferenceOptions)
 	throws NonProjectablePotentialException, NotEnoughMemoryException,
 	WrongCriterionException {
-		
+		if (originalPotential instanceof TreeADDPotential) {
+			return originalPotential.tableProject(evidenceCase, inferenceOptions);
+		} else {
 		// takes the evidence to the past
 		EvidenceCase shiftedEvidence = 
 			evidenceCase.shiftEvidenceBackwards(timeDifference, 
@@ -136,6 +148,7 @@ public class SameAsPrevious extends Potential {
 			shiftedProjectedPotentials.add(shiftedPotential);
 		}
 		return shiftedProjectedPotentials;
+		}
 	}
 	
 	public Potential getOriginalPotential() {

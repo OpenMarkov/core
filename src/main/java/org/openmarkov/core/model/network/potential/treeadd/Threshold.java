@@ -59,5 +59,9 @@ public class Threshold {
 			return false;
 		}
 	}
+	
+	public Threshold copy() {
+		return new Threshold(this.limit, this.belongsToLeft);
+	}
 
 }

@@ -761,7 +761,7 @@ public class ProbNet implements Cloneable {
 	 */
     public ArrayList<TablePotential> tableProjectPotentials (EvidenceCase evidenceCase)
 	throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
-		ArrayList<Potential> originalPotentials = getPotentials();
+    	ArrayList<Potential> originalPotentials = getPotentials();
 		ArrayList<TablePotential> projectedPotentials = new ArrayList<TablePotential>();
 
 		// each original potential may yield several projected potentials;

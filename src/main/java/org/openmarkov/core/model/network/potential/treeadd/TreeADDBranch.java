@@ -2,8 +2,10 @@ package org.openmarkov.core.model.network.potential.treeadd;
 	
 import java.util.ArrayList;
 
+import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 /**
  * TreeADDBranch represents branch of a treeADD. If the top variable of the treeADD is numeric a branch 
@@ -180,5 +182,31 @@ public class TreeADDBranch {
 		return thresholdMax;
 	}
 	
-
+  public TreeADDBranch copy() {
+	  TreeADDBranch branch = null;
+	  if (this.topVariable.getVariableType() == VariableType.FINITE_STATES 
+			  || this.topVariable.getVariableType() == VariableType.DISCRETIZED) {
+		  try {
+			 ArrayList<State> states = new ArrayList<>();
+			 for (int i = 0; i < this.getBranchStates().size(); i++) {
+				 states.add(getBranchStates().get(i));
+			 }
+			branch = new TreeADDBranch(states, this.getPotential().copy(), this.getTopVariable(), 
+					this.getParentVariables());
+		} catch (NotEnoughMemoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	  } else if (this.topVariable.getVariableType() == VariableType.NUMERIC) {
+		  try {
+			branch = new TreeADDBranch(this.getMinThreshold().copy(), this.getMaxThreshold().copy(), this.getPotential().copy(), 
+					this.getTopVariable(), this.getParentVariables());
+		} catch (NotEnoughMemoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	  }
+	   return branch;
+	 }
+  
 }

@@ -182,19 +182,27 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 		super(treeADD.getVariables(), treeADD.getPotentialRole());
 		this.topVariable = treeADD.getTopVariable();
 		this.potentialType = treeADD.getPotentialType(); 
-		this.branches = treeADD.getBranches();
+		ArrayList<TreeADDBranch> treeBranches = new ArrayList<>();
+		for (int i = 0; i < treeADD.getBranches().size(); i++) {
+			treeBranches.add(treeADD.getBranches().get(i).copy());
+		}
+		this.branches = treeBranches;
 		if (treeADD.getPotentialRole()== PotentialRole.UTILITY) {
 			if (treeADD.getUtilityVariable() != null) {
 				this.setUtilityVariable(treeADD.getUtilityVariable());
 			}
 		}
+		/*this.branches = treeADD.getBranches();
+		
 		for (int i = 0; i < treeADD.getBranches().size(); i++) {
 			try {
+			this.branches.get(i).setParentVariables(treeADD.getBranches().get(i).getParentVariables());
+			this.branches.get(i).setTopVariable(treeADD.getBranches().get(i).getTopVariable());
 			this.branches.get(i).setPotential(treeADD.getBranches().get(i).getPotential().copy()) ;
 			} catch (NotEnoughMemoryException e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
 	}
 	/**
 	 * 
@@ -298,22 +306,30 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 		ArrayList<TablePotential> projectedPotentials = new ArrayList<TablePotential>();
 		
 		TablePotential projected = null;
+		ArrayList<Variable> correctOrder = getVariables();
 		
-		ArrayList<TreeADDBranch> branches = getBranches();
+		ArrayList<TreeADDBranch> branches = this.getBranches();
 		
 		if (topVariable.getVariableType() == VariableType.FINITE_STATES 
 				 || topVariable.getVariableType() == VariableType.DISCRETIZED) {
 		for (TreeADDBranch branch : branches) {
 			Potential branchPotential = branch.getPotential();
 			 ArrayList<TablePotential> tablePotentials = branchPotential.tableProject(evidenceCase, inferenceOptions);
-			 /*if (branch.getTopVariable().getVariableType() == VariableType.FINITE_STATES 
-					 || branch.getTopVariable().getVariableType() == VariableType.DISCRETIZED) {*/
-				
-			 
-			 //mask potential
+						 
+			 //mask potential, only the top variable
+			 TablePotential potential = null;
 				ArrayList<Variable> variables = new ArrayList<Variable>();
+				/*if (role == PotentialRole.UTILITY) {
+					potential = new TablePotential(variables, role);
+					potential.setUtilityVariable(branch.getTopVariable());
+				} else if (role == PotentialRole.CONDITIONAL_PROBABILITY) {
+					variables.add(branch.getTopVariable());
+					potential = new TablePotential(variables, role);
+				}*/
+				
 				variables.add(branch.getTopVariable());
-				TablePotential potential = new TablePotential(variables, role);
+				potential = new TablePotential(variables, role);
+				
 				ArrayList<State> branchStates = branch.getBranchStates();
 				State []topVariableStates = branch.getTopVariable().getStates();
 				for (int i = 0; i < topVariableStates.length; i++) {
@@ -340,7 +356,6 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 		}
 				projected =  DiscretePotentialOperations.sum(potentialsToSumUp);
 				
-				
 			 } else if (topVariable.getVariableType() == VariableType.NUMERIC ) {
 				//if there is no evidence for the numerical topVariable it is not possible to project the tree
 				 if ( evidenceCase.getFinding(topVariable) == null){
@@ -348,12 +363,12 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 						 		"top variable is numeric and has no evidence");
 				 }
 				double topVariableValue = evidenceCase.getFinding(topVariable).getNumericalValue();
-				try {
+				/*try {
 					evidenceCase.removeFinding(topVariable);
 				} catch (NoFindingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
+				}*/
 				ArrayList<TreeADDBranch> numericalBranches = getBranches();
 				Potential potential = null;
 				for (TreeADDBranch numericalBranch : numericalBranches) {
@@ -390,6 +405,16 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 				 projected = potential.tableProject(evidenceCase, inferenceOptions).get(0);
 			 }
 			
+		//Make sure variables are in the correct order after applying the mask
+		//there will be variables that disappear from the potential because of evidence propagation
+		if (role == PotentialRole.CONDITIONAL_PROBABILITY) {
+			for (int i = 0; i < correctOrder.size(); i++ ) {
+				if (!projected.contains(correctOrder.get(i))) {
+					correctOrder.remove(i);
+				}
+			} 
+			projected = DiscretePotentialOperations.reorder(projected, correctOrder);
+		}
 		projectedPotentials.add(projected);
 
 		if (role == PotentialRole.UTILITY){
@@ -468,5 +493,65 @@ public class TreeADDPotential extends Potential  implements Cloneable {
     	return sampledTree;
     	
     }
+    
+    //change temporal variables within the tree recursively for temporary shifted ones
+    public Potential shiftTree(int timeDifference, ProbNet probNet) throws NotEnoughMemoryException {
+		TreeADDPotential copiedTree =  new TreeADDPotential(this);
+		
+		ArrayList<Variable> copiedTreeVariables = new ArrayList<>();
+		for (Variable variable :copiedTree.getVariables()) {
+			if (variable.isTemporal()) {
+				copiedTreeVariables.add(probNet.getShiftedVariable(variable, timeDifference));
+			} else {
+				copiedTreeVariables.add(variable);
+			}
+		}
+		copiedTree.setVariables(copiedTreeVariables);
+		if (isUtility()) {
+			if (getUtilityVariable().isTemporal()) {
+				copiedTree.setUtilityVariable(probNet.getShiftedVariable(getUtilityVariable(), timeDifference));
+			}
+		}
+		
+		if (getTopVariable().isTemporal()) {
+			copiedTree.setTopVariable(probNet.getShiftedVariable(getTopVariable(), timeDifference));
+		}
+	
+		for (TreeADDBranch branch :copiedTree.getBranches()) {
+			
+			branch.setParentVariables(copiedTreeVariables);
+			branch.setTopVariable(copiedTree.getTopVariable());
+			
+			if (branch.getPotential() instanceof TreeADDPotential) {
+				branch.setPotential(((TreeADDPotential) branch.getPotential()).shiftTree(timeDifference, probNet));
+			} else {
+				ArrayList<Variable> branchPotentialVariables = new ArrayList<>();
+				for (Variable variable :branch.getPotential().getVariables()) {
+					if (variable.isTemporal()) {
+						branchPotentialVariables.add(probNet.getShiftedVariable(variable, timeDifference));
+					} else {
+						branchPotentialVariables.add(variable);
+					}
+				}
+				branch.getPotential().setVariables(branchPotentialVariables);
+				if (branch.getPotential().isUtility()) {
+					if (branch.getPotential().getUtilityVariable().isTemporal()) {
+						branch.getPotential().setUtilityVariable(probNet.getShiftedVariable(branch.getPotential().getUtilityVariable(), timeDifference));
+					}
+				}
+			}
+		}
+		
+		/*if (copiedTree.getTopVariable().isTemporal()) {
+			copiedTree.getTopVariable().setTimeSlice(copiedTree.getTopVariable().getTimeSlice() + timeDifference);
+		}*/
+		/*for (TreeADDBranch branch: copiedTree.getBranches()) {
+			if (branch.getPotential() instanceof TreeADDPotential) {
+				branch.setPotential(((TreeADDPotential) branch.getPotential()).shiftTree(timeDifference));
+			}
+		}*/
+		
+		return copiedTree;
+	}
 	
 }

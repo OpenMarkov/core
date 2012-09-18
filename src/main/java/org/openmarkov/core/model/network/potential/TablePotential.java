@@ -1174,7 +1174,7 @@ public class TablePotential extends Potential
     }
 */
     // TODO revisar para que no use tableProject(...)
-    public Collection<Finding> getInducedFindings (EvidenceCase evidenceCase)
+    public Collection<Finding> getInducedFindings (EvidenceCase evidenceCase, double cycleLength)
         throws IncompatibleEvidenceException,
         NotEnoughMemoryException,
         WrongCriterionException

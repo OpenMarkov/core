@@ -153,12 +153,7 @@ public class SumPotential extends Potential {
     	double sum = 0.0;
     	for(Variable variable: getVariables())
     	{
-    		if(utilities.get(variable) == null)
-    		{
-    			System.out.println();
-    		}
     		sum+= utilities.get(variable);
-    			
     	}
         return sum;
     }	    

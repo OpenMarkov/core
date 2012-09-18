@@ -408,10 +408,6 @@ public abstract class ICIPotential extends Potential {
         for(Variable variable: noisyParameters.keySet ())
         {
             double[] probabilities = noisyParameters.get (variable);
-            if(parentStateIndexes.get (variable) == null)
-            {
-                System.out.println();
-            }
             int index = childNumStates * parentStateIndexes.get (variable);
             int sampleIndex = 0;
             double randomPick = randomGenerator.nextDouble ();

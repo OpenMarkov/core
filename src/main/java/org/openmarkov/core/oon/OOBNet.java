@@ -28,7 +28,6 @@ import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.action.RemoveNodeEdit;
 import org.openmarkov.core.action.SetPotentialEdit;
-import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;

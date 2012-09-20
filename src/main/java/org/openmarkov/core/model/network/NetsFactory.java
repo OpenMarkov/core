@@ -11,14 +11,21 @@ package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
 
+import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.treeadd.Threshold;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 
 /**
@@ -769,6 +776,252 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		return probNet;
 	}
 	
+	public static ProbNet createSemiMarkovOnlyChanceNet() {
+		ProbNet probNet = new ProbNet(SimpleMarkovModelType.getUniqueInstance());
+		//Decision criteria
+		ArrayList<StringWithProperties> decisionCriteria = new ArrayList<>();
+		StringWithProperties cost = new StringWithProperties("cost");
+		StringWithProperties effectiveness = new StringWithProperties("effectiveness");
+		decisionCriteria.add(cost);
+		decisionCriteria.add(effectiveness);
+		
+		//set decision criteria to the network
+		probNet.setDecisionCriteria2(decisionCriteria);
+
+		//Variables
+		Variable duration0 = new Variable("Duration", true, 0.0, 20.0, true, 1);
+		duration0.setTimeSlice(0);
+		Variable duration1 = new Variable("Duration", true, 0.0, 20.0, true, 1);
+		duration1.setTimeSlice(1);
+		
+		Variable state0 = new Variable("State", "dead", "alive");
+		state0.setTimeSlice(0);
+		Variable state1 = new Variable("State", "dead", "alive");
+		state1.setTimeSlice(1);
+		
+		//Add variables to the network	
+		addVariables(probNet,NodeType.CHANCE,duration0,duration1,state0,state1);
+		//additional properties
+		String relevance = new String("Relevance");
+		String value = new String("7.0");				
+		setAdditionalProperties(relevance,value,duration0,duration1,state0,state1);
+		//Potential State0
+		double []probabilitiesState0 = {0.0,1.0};
+		TablePotential potentialState0 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY,probabilitiesState0,state0);
+		//table
+		double []branch1 = {0.5, 0.5, 0.0, 1.0};
+		TablePotential table1 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY, branch1, state1, state0);
+		double []branch2 = {0.3, 0.7, 0.0, 1.0};
+		TablePotential table2 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY, branch2, state1, state0);
+		//Potential state1
+		ArrayList<Variable> variables = new ArrayList<>();
+		variables.add(state1);
+		variables.add(state0);
+		variables.add(duration0);
+		ArrayList<TreeADDBranch> branches = new ArrayList<>();
+		branches.add(new TreeADDBranch(new Threshold(0, false), new Threshold(2, true), table1, duration0, variables));
+		branches.add(new TreeADDBranch(new Threshold(2, true), new Threshold(20, true), table2, duration0, variables));
+		TreeADDPotential potentialState1 = new TreeADDPotential(variables, duration0, PotentialRole.CONDITIONAL_PROBABILITY, branches);
+		//potential duratio0
+		ArrayList<Variable> variablesDuration0 = new ArrayList<>();
+		variablesDuration0.add(duration0);
+		UniformPotential potentialduration0 = new UniformPotential(variablesDuration0, PotentialRole.CONDITIONAL_PROBABILITY);
+		//potential duration1
+		ArrayList<Variable> variablesDuration1 = new ArrayList<>();
+		variablesDuration1.add(duration1);
+		variablesDuration1.add(duration0);
+		CycleLengthShift potetialDuration1 = new CycleLengthShift(variablesDuration1);
+		
+		//links
+		try {
+			probNet.addLink(state0, state1, true);
+			probNet.addLink(duration0, duration1, true);
+			probNet.addLink(duration0, state1, true);
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		//adding potentials to network
+		addPotentials(probNet,potentialState0,potentialState1,potentialduration0,potetialDuration1);
+		
+				
+		return probNet;
+	}
+	
+	public static ProbNet createSemiMarkovModelNet() {
+		ProbNet probNet = new ProbNet(SimpleMarkovModelType.getUniqueInstance());
+		//Decision criteria
+		ArrayList<StringWithProperties> decisionCriteria = new ArrayList<>();
+		StringWithProperties cost = new StringWithProperties("cost");
+		StringWithProperties effectiveness = new StringWithProperties("effectiveness");
+		decisionCriteria.add(cost);
+		decisionCriteria.add(effectiveness);
+		
+		//set decision criteria to the network
+		probNet.setDecisionCriteria2(decisionCriteria);
+
+		//Variables
+		Variable duration0 = new Variable("Duration", true, 0.0, 20.0, true, 1);
+		duration0.setTimeSlice(0);
+		duration0.setBaseName("Duration");
+		duration0.setName("Duration [0]");
+		Variable duration1 = new Variable("Duration", true, 0.0, 20.0, true, 1);
+		duration1.setTimeSlice(1);
+		duration1.setBaseName("Duration");
+		duration1.setName("Duration [1]");
+		
+		Variable state0 = createTemporalVariable("State",0, "dead", "alive");
+		Variable state1 = createTemporalVariable("State",1, "dead", "alive");
+		
+		
+		Variable variableTreatment = new Variable("Treatment",yesNoStates);
+		Variable variableCost = createTemporalVariable("Cost",0);
+		variableCost.setDecisionCriteria(cost);
+		Variable variableQoL = createTemporalVariable("QoL",0);
+		variableQoL.setDecisionCriteria(effectiveness);
+		
+		//Add variables to the network	
+		addVariables(probNet,NodeType.CHANCE,duration0,duration1,state0,state1,variableTreatment,variableCost,variableQoL);
+		//additional properties
+		String relevance = new String("Relevance");
+		String value = new String("7.0");				
+		setAdditionalProperties(relevance,value,duration0,duration1,state0,state1,variableTreatment,variableCost,variableQoL);
+		//Potential State0
+		double []probabilitiesState0 = {0.0,1.0};
+		TablePotential potentialState0 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY,probabilitiesState0,state0);
+		
+		//potential State1
+		ArrayList<Variable> variablesTree = new ArrayList<>();
+		variablesTree.add(state1);
+		variablesTree.add(variableTreatment);
+		variablesTree.add(state0);
+		variablesTree.add(duration0);
+		
+		double []branch1 = {0.0, 1.0};
+		TablePotential table1 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY, branch1, state1);
+		
+		ArrayList<State> statesNo = new ArrayList<>();
+		try {
+			statesNo.add(variableTreatment.getStates()[variableTreatment.getStateIndex("no")]);
+		} catch (InvalidStateException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		TreeADDBranch branchNo = new TreeADDBranch(statesNo, table1, variableTreatment, variablesTree);
+		//table
+		double []branch11 = {0.5, 0.5, 0.0, 1.0};
+		TablePotential table11 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY, branch11, state1, state0);
+		double []branch21 = {0.3, 0.7, 0.0, 1.0};
+		TablePotential table2 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY, branch21, state1, state0);
+		//subtree
+		ArrayList<Variable> variables = new ArrayList<>();
+		variables.add(state1);
+		variables.add(state0);
+		variables.add(duration0);
+		ArrayList<TreeADDBranch> branches = new ArrayList<>();
+		branches.add(new TreeADDBranch(new Threshold(0, false), new Threshold(2, true), table11, duration0, variables));
+		branches.add(new TreeADDBranch(new Threshold(2, true), new Threshold(20, true), table2, duration0, variables));
+		TreeADDPotential subPotentialState1 = new TreeADDPotential(variables, duration0, PotentialRole.CONDITIONAL_PROBABILITY, branches);
+		
+		
+		ArrayList<State> statesYes = new ArrayList<>();
+		try {
+			statesYes.add(variableTreatment.getStates()[variableTreatment.getStateIndex("yes")]);
+		} catch (InvalidStateException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		TreeADDBranch branchYes = new TreeADDBranch(statesYes, subPotentialState1, variableTreatment, variablesTree);
+		
+		ArrayList<TreeADDBranch> treeBranches = new ArrayList<>();
+		treeBranches.add(branchNo);
+		treeBranches.add(branchYes);
+		
+		TreeADDPotential potentialState1 = new TreeADDPotential(variablesTree, variableTreatment, PotentialRole.CONDITIONAL_PROBABILITY, treeBranches);
+		
+		//potential duratio0
+		ArrayList<Variable> variablesDuration0 = new ArrayList<>();
+		variablesDuration0.add(duration0);
+		UniformPotential potentialduration0 = new UniformPotential(variablesDuration0, PotentialRole.CONDITIONAL_PROBABILITY);
+		//potential duration1
+		ArrayList<Variable> variablesDuration1 = new ArrayList<>();
+		variablesDuration1.add(duration1);
+		variablesDuration1.add(duration0);
+		CycleLengthShift potetialDuration1 = new CycleLengthShift(variablesDuration1);
+		
+		//potential cost [0]
+		ArrayList<Variable> variablesCost = new ArrayList<>();
+		//variablesCost.add(variableCost);
+		variablesCost.add(variableTreatment);
+		variablesCost.add(state0);
+		
+		//cost no treatment
+		double costNoTreat []= {0.0};
+		TablePotential costNoTreatment = createTablePotential(PotentialRole.UTILITY, costNoTreat);
+		costNoTreatment.setUtilityVariable(variableCost);
+		//cost treatment
+		double costTreat []= {3000.0, 0.0};
+		TablePotential costTreatment = createTablePotential(PotentialRole.UTILITY, costTreat, state0);
+		costNoTreatment.setUtilityVariable(variableCost);
+		
+		ArrayList<TreeADDBranch> costBranches = new ArrayList<>();
+		ArrayList<Variable> variablesBranchCost = new ArrayList<>();
+		variablesBranchCost.add(variableCost);
+		variablesBranchCost.addAll(variablesCost);
+		costBranches.add(new TreeADDBranch(statesNo, costNoTreatment, variableTreatment, variablesBranchCost));
+		costBranches.add(new TreeADDBranch(statesYes, costTreatment, variableTreatment, variablesBranchCost));
+		
+		TreeADDPotential potentialCost = new TreeADDPotential(variablesCost, variableTreatment, PotentialRole.UTILITY, costBranches);
+		potentialCost.setUtilityVariable(variableCost);
+		
+		//potential Qol [0]
+		ArrayList<Variable> variablesQoL = new ArrayList<>();
+		//variablesCost.add(variableQoL);
+		variablesQoL.add(variableTreatment);
+		variablesQoL.add(state0);
+
+		//cost no treatment
+		double qolNoTreat []= {0.0};
+		TablePotential qolNoTreatment = createTablePotential(PotentialRole.UTILITY, qolNoTreat);
+		qolNoTreatment.setUtilityVariable(variableQoL);
+		//cost treatment
+		double qolTreat []= {1500.0, 0.0};
+		TablePotential qolTreatment = createTablePotential(PotentialRole.UTILITY, qolTreat, state0);
+		qolTreatment.setUtilityVariable(variableQoL);
+		
+		ArrayList<TreeADDBranch> qolBranches = new ArrayList<>();
+		ArrayList<Variable> variablesBranchQoL = new ArrayList<>();
+		variablesBranchQoL.add(variableQoL);
+		variablesBranchQoL.addAll(variablesQoL);
+		qolBranches.add(new TreeADDBranch(statesNo, qolNoTreatment, variableTreatment, variablesBranchQoL));
+		qolBranches.add(new TreeADDBranch(statesYes, qolTreatment, variableTreatment, variablesBranchQoL));
+		
+		TreeADDPotential potentialQoL = new TreeADDPotential(variablesQoL, variableTreatment, PotentialRole.UTILITY, qolBranches);
+		potentialQoL.setUtilityVariable(variableQoL);
+		
+		//links
+		try {
+			probNet.addLink(state0, state1, true);
+			probNet.addLink(duration0, duration1, true);
+			probNet.addLink(duration0, state1, true);
+			probNet.addLink(variableTreatment, state1, true);
+			probNet.addLink(variableTreatment, variableCost, true);
+			probNet.addLink(variableTreatment, variableQoL, true);
+			probNet.addLink(state0, variableQoL, true);
+			probNet.addLink(state0, variableCost, true);
+			
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		//adding potentials to network
+		addPotentials(probNet,potentialState0,potentialState1,potentialduration0,potetialDuration1, potentialCost, potentialQoL);
+		
+				
+		return probNet;
+	}
 	
 	
 	private static Variable createTemporalVariable(String baseName,int timeSlice, String... statesStateVariable){

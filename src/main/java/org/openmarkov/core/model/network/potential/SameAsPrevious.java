@@ -59,7 +59,10 @@ public class SameAsPrevious extends Potential {
 		}
 		if (originalPotential instanceof TreeADDPotential) {//Not only shift potential variables, but also variables within the tree
 			try {
-				originalPotential = ((TreeADDPotential) originalPotential).shiftTree(timeDifference, probNet);
+				originalPotential = ((TreeADDPotential) originalPotential).shift(probNet, timeDifference);
+			} catch (ProbNodeNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			} catch (NotEnoughMemoryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

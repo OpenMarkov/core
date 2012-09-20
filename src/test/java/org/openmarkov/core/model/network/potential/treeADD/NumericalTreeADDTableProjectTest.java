@@ -8,9 +8,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
+import org.openmarkov.core.model.network.NetsFactory;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -120,4 +124,84 @@ public class NumericalTreeADDTableProjectTest {
 		assertEquals(projectedValues[3], tablePotential.values[3], 0.1);
 		
 	}
+	
+	@Test
+	public void testTablePorjectNumericalTop() throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
+		//Evidence
+		ProbNet probNet = NetsFactory.createSemiMarkovOnlyChanceNet();
+		ArrayList<Finding> findings = new ArrayList<>();
+		try {
+			findings.add(new Finding(probNet.getVariable("Duration [0]"), 1));
+		} catch (ProbNodeNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		EvidenceCase evidence = new EvidenceCase(findings);
+		
+		TablePotential tablePotential1;
+		try {
+			tablePotential1 = probNet.getProbNode("State [1]").getPotentials().get(0).tableProject(evidence, null).get(0);
+			ArrayList<Variable> variables = tablePotential1.getVariables();
+			assertEquals(2, variables.size());
+			assertEquals(4, tablePotential1.values.length);
+			assertEquals(0.5, tablePotential1.values[0], 0.1);
+			assertEquals(0.5, tablePotential1.values[1], 0.1);
+			assertEquals(0.0, tablePotential1.values[2], 0.1);
+			assertEquals(1.0, tablePotential1.values[3], 0.1);
+		} catch (ProbNodeNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+		ArrayList<Finding> findings2 = new ArrayList<>();
+		try {
+			findings.add(new Finding(probNet.getVariable("Duration [0]"), 2));
+		} catch (ProbNodeNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		EvidenceCase evidence2 = new EvidenceCase(findings2);
+		
+		TablePotential tablePotential2;
+		try {
+			tablePotential2 = probNet.getProbNode("State [1]").getPotentials().get(0).tableProject(evidence2, null).get(0);
+			ArrayList<Variable> variables2 = tablePotential2.getVariables();
+			assertEquals(2, variables2.size());
+			assertEquals(4, tablePotential2.values.length);
+			assertEquals(0.5, tablePotential2.values[0], 0.1);
+			assertEquals(0.5, tablePotential2.values[1], 0.1);
+			assertEquals(0.0, tablePotential2.values[2], 0.1);
+			assertEquals(1.0, tablePotential2.values[3], 0.1);
+		} catch (ProbNodeNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+		ArrayList<Finding> findings3 = new ArrayList<>();
+		try {
+			findings.add(new Finding(probNet.getVariable("Duration [0]"), 2));
+		} catch (ProbNodeNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		EvidenceCase evidence3 = new EvidenceCase(findings3);
+		
+		TablePotential tablePotential3;
+		try {
+			tablePotential3 = probNet.getProbNode("State [1]").getPotentials().get(0).tableProject(evidence3, null).get(0);
+		ArrayList<Variable> variables3 = tablePotential3.getVariables();
+		assertEquals(2, variables3.size());
+		assertEquals(4, tablePotential3.values.length);
+		assertEquals(0.3, tablePotential3.values[0], 0.1);
+		assertEquals(0.7, tablePotential3.values[1], 0.1);
+		assertEquals(0.0, tablePotential3.values[2], 0.1);
+		assertEquals(1.0, tablePotential3.values[3], 0.1);
+		} catch (ProbNodeNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		}
 }

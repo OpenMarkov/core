@@ -508,7 +508,7 @@ public class TablePotentialTest {
 	 * @param expected
 	 * Checks if two potentials are equal
 	 */
-	public static void checkEqualPotentials(TablePotential actual, TablePotential expected,double maxError) {
+	public static void checkEqualPotentials(TablePotential actual, TablePotential expected, double maxError) {
 			
 			int numConfigurationsActual = actual.getTableSize();
 			assertEquals(numConfigurationsActual,expected.getTableSize());

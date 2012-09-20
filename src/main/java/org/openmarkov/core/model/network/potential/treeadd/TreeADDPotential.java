@@ -319,14 +319,6 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 			 //mask potential, only the top variable
 			 TablePotential potential = null;
 				ArrayList<Variable> variables = new ArrayList<Variable>();
-				/*if (role == PotentialRole.UTILITY) {
-					potential = new TablePotential(variables, role);
-					potential.setUtilityVariable(branch.getTopVariable());
-				} else if (role == PotentialRole.CONDITIONAL_PROBABILITY) {
-					variables.add(branch.getTopVariable());
-					potential = new TablePotential(variables, role);
-				}*/
-				
 				variables.add(branch.getTopVariable());
 				potential = new TablePotential(variables, role);
 				
@@ -433,8 +425,52 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 	@Override
 	public Potential shift(ProbNet probNet, int timeDifference)
 			throws ProbNodeNotFoundException, NotEnoughMemoryException {
-		// TODO Auto-generated method stub
-		return null;
+TreeADDPotential copiedTree =  new TreeADDPotential(this);
+		
+		ArrayList<Variable> copiedTreeVariables = new ArrayList<>();
+		for (Variable variable :copiedTree.getVariables()) {
+			if (variable.isTemporal()) {
+				copiedTreeVariables.add(probNet.getShiftedVariable(variable, timeDifference));
+			} else {
+				copiedTreeVariables.add(variable);
+			}
+		}
+		copiedTree.setVariables(copiedTreeVariables);
+		if (isUtility()) {
+			if (getUtilityVariable().isTemporal()) {
+				copiedTree.setUtilityVariable(probNet.getShiftedVariable(getUtilityVariable(), timeDifference));
+			}
+		}
+		
+		if (getTopVariable().isTemporal()) {
+			copiedTree.setTopVariable(probNet.getShiftedVariable(getTopVariable(), timeDifference));
+		}
+	
+		for (TreeADDBranch branch :copiedTree.getBranches()) {
+			
+			branch.setParentVariables(copiedTreeVariables);
+			branch.setTopVariable(copiedTree.getTopVariable());
+			
+			if (branch.getPotential() instanceof TreeADDPotential) {
+				branch.setPotential(((TreeADDPotential) branch.getPotential()).shift(probNet, timeDifference));
+			} else {
+				ArrayList<Variable> branchPotentialVariables = new ArrayList<>();
+				for (Variable variable :branch.getPotential().getVariables()) {
+					if (variable.isTemporal()) {
+						branchPotentialVariables.add(probNet.getShiftedVariable(variable, timeDifference));
+					} else {
+						branchPotentialVariables.add(variable);
+					}
+				}
+				branch.getPotential().setVariables(branchPotentialVariables);
+				if (branch.getPotential().isUtility()) {
+					if (branch.getPotential().getUtilityVariable().isTemporal()) {
+						branch.getPotential().setUtilityVariable(probNet.getShiftedVariable(branch.getPotential().getUtilityVariable(), timeDifference));
+					}
+				}
+			}
+		}
+		return copiedTree;
 	}
 	
 	public Object clone() throws CloneNotSupportedException {
@@ -494,7 +530,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
     	
     }
     
-    //change temporal variables within the tree recursively for temporary shifted ones
+   /* //change temporal variables within the tree recursively for temporary shifted ones
     public Potential shiftTree(int timeDifference, ProbNet probNet) throws NotEnoughMemoryException {
 		TreeADDPotential copiedTree =  new TreeADDPotential(this);
 		
@@ -541,17 +577,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 				}
 			}
 		}
-		
-		/*if (copiedTree.getTopVariable().isTemporal()) {
-			copiedTree.getTopVariable().setTimeSlice(copiedTree.getTopVariable().getTimeSlice() + timeDifference);
-		}*/
-		/*for (TreeADDBranch branch: copiedTree.getBranches()) {
-			if (branch.getPotential() instanceof TreeADDPotential) {
-				branch.setPotential(((TreeADDPotential) branch.getPotential()).shiftTree(timeDifference));
-			}
-		}*/
-		
 		return copiedTree;
-	}
-	
+	}	
+	*/
 }

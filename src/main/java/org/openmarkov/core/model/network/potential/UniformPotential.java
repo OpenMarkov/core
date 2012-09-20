@@ -219,6 +219,14 @@ public class UniformPotential extends Potential {
 	@Override
 	public boolean isUncertain() {
 		return false;
-	}       
+	}  
+	
+	/**
+	 * Used to apply discount rates in cost effectiveness analysis for utility variables
+	 * has no sense in chance nodes
+	 */
+	public void setDiscreteValue(double discreteValue) {
+		this.discreteValue =  discreteValue;
+	}
 
 }

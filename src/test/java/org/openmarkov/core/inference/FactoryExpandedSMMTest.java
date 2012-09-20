@@ -20,6 +20,7 @@ import org.openmarkov.core.inference.FactoryExpandedSMM;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.NetsFactory;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -167,9 +168,40 @@ public class FactoryExpandedSMMTest {
 	*/
 					
 		}
-
+		
+		
 	}
 
+	@Test
+	/*public public void testSemimarkovExpansion() {
+		int maximumNumSlices;
+
+		maximumNumSlices = 5;
+		int startNumSlices = 1;
+
+		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
+			
+			//Create the SMM and expand it
+			ProbNet network = NetsFactory.createSemiMarkovOnlyChanceNet();
+			double discount = 0.0;
+
+			ProbNet expandedNetwork = FactoryExpandedSMM.constructExpandedNetwork(numSlices, network, discount*100.0, discount*100.0, true);
+			
+		
+			ArrayList<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
+			//Check utility potentials starting in slice 1
+			double ratio = 1.0 / (1.0 + discount);
+			for (TablePotential auxPot:tablePotentials){
+				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot,PotentialRole.UTILITY)){
+					int slice = auxPot.getUtilityVariable().getTimeSlice();
+					checkUtilityPotentialQoLSMMWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
+				}
+			}
+			
+			
+					
+		}
+	}*/
 
 
 

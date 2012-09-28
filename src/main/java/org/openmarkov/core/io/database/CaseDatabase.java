@@ -9,6 +9,7 @@
 
 package org.openmarkov.core.io.database;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.model.network.ProbNet;
@@ -16,7 +17,6 @@ import org.openmarkov.core.model.network.Variable;
 
 public class CaseDatabase
 {
-    private ProbNet probNet;
     private List<Variable> variables;
     private int[][] cases;
 
@@ -25,22 +25,13 @@ public class CaseDatabase
      * @param probNet
      * @param cases
      */
-    public CaseDatabase (ProbNet probNet, int[][] cases)
+    public CaseDatabase (List<Variable> variables, int[][] cases)
     {
         super ();
-        this.probNet = probNet;
-        this.variables = probNet.getVariables ();
+        this.variables = new ArrayList<> (variables);
         this.cases = cases;
     }
-    
-    /**
-     * Returns the probNet.
-     * @return the probNet.
-     */
-    public ProbNet getProbNet ()
-    {
-        return probNet;
-    }
+        
     /**
      * Returns the cases.
      * @return the cases.

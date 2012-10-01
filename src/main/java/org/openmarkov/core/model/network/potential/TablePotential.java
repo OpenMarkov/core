@@ -244,6 +244,14 @@ public class TablePotential extends Potential
         throws NotEnoughMemoryException
     {
         this (potential.getVariables (), potential.getPotentialRole ());
+        
+        if(potential instanceof TablePotential)
+        {
+            for(int i = 0; i < values.length; ++i)
+            {
+                values[i] = ((TablePotential)potential).values[i];
+            }
+        }
     }
     
     /** Returns if an instance of a certain Potential type makes sense given 

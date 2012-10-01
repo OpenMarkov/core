@@ -573,6 +573,11 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
 									{
 										newPotential.replaceVariable(variable, getVariable(instanceName + "." + variable.getName()));
 									}
+				                    if(newPotential.isUtility())
+				                    {
+				                        Variable utilityVariable = newPotential.getUtilityVariable();
+			                            newPotential.replaceVariable (utilityVariable, getVariable(instanceName + "." + utilityVariable.getName()));
+				                    }									
 									newEdit = new SetPotentialEdit(probNode, newPotential);
 								}else
 								{
@@ -596,6 +601,12 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
 								{
 									newPotential.replaceVariable(variable, getVariable(instanceName + "." + variable.getName()));
 								}
+                                if(newPotential.isUtility())
+                                {
+                                    Variable utilityVariable = newPotential.getUtilityVariable();
+                                    newPotential.replaceVariable (utilityVariable, getVariable(instanceName + "." + utilityVariable.getName()));
+                                }                                   
+								
 								newEdit = new ChangePotentialEdit(this, oldPotential, newPotential);
 							} catch (NotEnoughMemoryException | ProbNodeNotFoundException e1) {
 								e1.printStackTrace();

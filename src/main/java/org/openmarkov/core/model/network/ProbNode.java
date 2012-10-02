@@ -31,6 +31,9 @@ import org.openmarkov.core.model.network.potential.operation.Util;
  * associated.  * @author marias * @author fjdiez
  * @since OpenMarkov 1.0 * @see openmarkov.graphs.Node * @see org.openmarkov.core.model.network.ProbNet * @version 1.0 */
 public class ProbNode implements Cloneable, PotentialsContainer {
+	
+	// Constants
+	public final static double defaultRelevance = 5.0;
 
 	// Attributes/
 	/** @frozen
@@ -56,7 +59,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
     private String purpose = "";
     
     /** Relevance of node */
-    private double relevance  = 5.0;
+    private double relevance = defaultRelevance;
     
     /** Comment about node definition */
     private String comment = "";

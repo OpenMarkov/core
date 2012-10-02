@@ -13,6 +13,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -156,6 +158,20 @@ public class UtilTestMethods {
     	}
     	return probNet;
     }
-    
+
+    /** Adds a link between two variables. The method assumes there are no problems.
+     * @param probNet
+     * @param variableName1
+     * @param variableName2
+     * @param directed
+     * @throws ProbNodeNotFoundException
+     * @throws NodeNotFoundException
+     */
+    public static void addLink(ProbNet probNet, String variableName1, String variableName2, boolean directed) 
+    		throws ProbNodeNotFoundException, NodeNotFoundException {
+    	Variable variable1 = probNet.getVariable(variableName1);
+    	Variable variable2 = probNet.getVariable(variableName2);
+    	probNet.addLink(variable1, variable2, directed);
+    }
 
 }

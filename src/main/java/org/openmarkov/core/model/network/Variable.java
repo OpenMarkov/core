@@ -32,12 +32,13 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  */
 public class Variable implements Cloneable {
 
+	// Constant
+	/** Time slice value when the variable is not temporal. */
+	public final static int noTemporalTimeSlice = Integer.MIN_VALUE; 
+	
 	// Attributes
-
-	/**
-	 * The time Slice of the node. Integer.MIN_VALUE if the node is no temporal.
-	 */
-	private int timeSlice = Integer.MIN_VALUE;
+	/** The time Slice of the node. The default value is no temporal. */
+	private int timeSlice = noTemporalTimeSlice;
 	
 	/**
 	 * A string (usually in English) that identifies this variable.
@@ -652,7 +653,7 @@ public class Variable implements Cloneable {
 //    }
 
     private int getTimeSlice(String variableName){
-		int timeSlice = Integer.MIN_VALUE;
+		int timeSlice = noTemporalTimeSlice;
 		if (variableName.contains(" [")) {
 			// Set base name
 			int lastOpenBracket = variableName.lastIndexOf(" [");

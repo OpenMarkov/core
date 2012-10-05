@@ -9,7 +9,9 @@ package org.openmarkov.core.oon;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.event.UndoableEditEvent;
@@ -46,8 +48,9 @@ import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
 
 public class OOBNet extends ProbNet implements PNUndoableEditListener
 {
-    private HashMap<String, Instance> instances     = new HashMap<String, Instance> ();
-    private ArrayList<ReferenceLink>   referenceLinks = new ArrayList<ReferenceLink> ();
+    private LinkedHashMap<String, ProbNet> classes = new LinkedHashMap<String, ProbNet> ();
+    private Map<String, Instance> instances        = new HashMap<String, Instance> ();
+    private List<ReferenceLink>   referenceLinks  = new ArrayList<ReferenceLink> ();
 
     
     /**
@@ -175,7 +178,7 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
     /**
      * @return instance list
      */
-    public HashMap<String, Instance> getInstances ()
+    public Map<String, Instance> getInstances ()
     {
         return instances;
     }
@@ -192,7 +195,7 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
     /**
      * @return the instanceLinks
      */
-    public ArrayList<ReferenceLink> getReferenceLinks ()
+    public List<ReferenceLink> getReferenceLinks ()
     {
         return referenceLinks;
     }
@@ -702,5 +705,47 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
 		}
 		return potential;
 	}
+
+    /**
+     * Returns the classes.
+     * @return the classes.
+     */
+    public LinkedHashMap<String, ProbNet> getClasses ()
+    {
+        return classes;
+    }
+
+    /**
+     * Sets the classes.
+     * @param classes the classes to set.
+     */
+    public void setClasses (LinkedHashMap<String, ProbNet> classes)
+    {
+        this.classes = classes;
+    }
+
+    public void fillClassList ()
+    {
+        this.classes = getClassList ();
+    }
+    
+    protected LinkedHashMap<String, ProbNet> getClassList ()
+    {
+        LinkedHashMap<String, ProbNet> classes = new LinkedHashMap<> ();
+        for(Instance instance : getInstances().values ())
+        {
+            if(instance.getClassNet () instanceof OOBNet)
+            {
+                classes.putAll (((OOBNet)instance.getClassNet ()).getClassList());
+            }
+            if(!classes.containsKey (instance.getClassNet ().getName ()))
+            {
+                classes.put (instance.getClassNet ().getName (), instance.getClassNet ());
+            }
+        }
+        
+        return classes;
+    }
+    
 	
 }

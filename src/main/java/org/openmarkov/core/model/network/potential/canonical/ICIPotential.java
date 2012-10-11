@@ -458,6 +458,14 @@ public abstract class ICIPotential extends Potential {
         int sampledState = sample(new Random (), sampledStateIndexes);
         
         return (sampledStateIndexes.get (variables.get (0)) == sampledState)? 1.0 : 0.0;
-    }  
+    }
+
+    public void setNoisyPotentials (List<TablePotential> noisyPotentials)
+    {
+        for(TablePotential noisyPotential : noisyPotentials)
+        {
+            noisyParameters.put (noisyPotential.getVariable (0), noisyPotential.values);
+        }
+    }
 
 }

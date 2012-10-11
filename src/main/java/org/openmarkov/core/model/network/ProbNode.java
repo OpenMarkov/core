@@ -11,6 +11,7 @@ package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -82,7 +83,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
     /** This object contains all the information that the parser reads from 
 	 *  disk that does not have a direct connection with the attributes stored 
 	 *  in the <code>ProbNode</code> object. */
-	public HashMap<String, String> additionalProperties;
+	public Map<String, String> additionalProperties;
 
     // Constructor
     /** @param probNet. <code>ProbNet</code>

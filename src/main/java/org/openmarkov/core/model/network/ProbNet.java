@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.openmarkov.core.action.PNESupport;
@@ -43,7 +44,6 @@ import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
-import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
@@ -1184,6 +1184,19 @@ public class ProbNet implements Cloneable {
 		this.getGraph().uf_addNode( probNode.getNode() );
 	}
 
+    /**
+     * @param variable
+     *             <code>Variable</code>
+     * @param nodeType
+     *             <code>NodeType</code>
+     * @argCondition the variable must not be in the ProbNet.
+     */
+	
+    public void addProbNode (Variable variable, NodeType nodeType)
+    {
+        addProbNode(new ProbNode(this, variable, nodeType));
+    }	
+
 	/**
 	 * @param nameOfVariable
 	 *            <code>String</code>
@@ -1582,7 +1595,7 @@ public class ProbNet implements Cloneable {
 	 * A[0], A[1],...
 	 * @param key. <code>String</code>
 	 * @param values. <code>ArrayList</code> of <code>String</code> */
-	public static void putArrayProperty(HashMap<String, String> properties, 
+	public static void putArrayProperty(Map<String, String> properties, 
 			String key, ArrayList<String> values) {
 		if (values != null) {
 			int numProperties = values.size();
@@ -1801,5 +1814,7 @@ public class ProbNet implements Cloneable {
 	public void setAgents(ArrayList<StringWithProperties> agents) {
 		this.agents = agents;
 	}
+
+
 
 }

@@ -54,7 +54,6 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
 		edits = new ArrayList<>();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException,
 			NonProjectablePotentialException, WrongCriterionException	{
@@ -166,7 +165,7 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
                 newNode.setComment (originalNode.getComment ());
                 newNode.setRelevance (originalNode.getRelevance ());
                 newNode.setPurpose (originalNode.getPurpose ());
-                newNode.additionalProperties = (HashMap<String, String>)originalNode.additionalProperties.clone ();
+                newNode.additionalProperties = new HashMap<String, String>(originalNode.additionalProperties);
                 newNode.setInput(originalNode.isInput());
                 instanceNodes.add(newNode);
             }

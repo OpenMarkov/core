@@ -84,5 +84,26 @@ public class CaseDatabase
         }
         return variable;
     }
+    
+    /**
+     * Returns the cases for a given variable.
+     * @return the cases for a given variable.
+     */
+    public int[] getCases (Variable variable)
+    {
+        int[] casesOfVariable = null;
+        int indexOfVariable = variables.indexOf (variable);
+        
+        if(indexOfVariable != -1)
+        {
+            casesOfVariable = new int[cases.length];
+            for(int i= 0; i < cases.length; ++i)
+            {
+                casesOfVariable [i] = cases[i][indexOfVariable];
+            }
+        }
+        
+        return casesOfVariable;
+    }    
 
 }

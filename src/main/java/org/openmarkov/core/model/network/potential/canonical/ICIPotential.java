@@ -124,7 +124,7 @@ public abstract class ICIPotential extends Potential {
 	 * @return TablePotential containing the f function
 	 * @throws NotEnoughMemoryException
 	 */
-	protected abstract TablePotential getFFunctionPotential ()  throws NotEnoughMemoryException;
+	public abstract TablePotential getFFunctionPotential ()  throws NotEnoughMemoryException;
 
     /** @param evidenceCase. <code>EvidenceCase</code>
      * @return <code>ArrayList</code> of <code>Potential</code>*/
@@ -235,7 +235,14 @@ public abstract class ICIPotential extends Potential {
 	    
         //Noisy potentials
 	    subpotentials.addAll (getNoisyPotentials ());
-	        
+
+        // Leak potential
+	    TablePotential leakyPotential = getLeakyPotential ();
+	    if(leakyPotential != null)
+	    {
+	        subpotentials.add (leakyPotential);
+	    }
+	    
 	     return subpotentials;
 	}
 	
@@ -257,20 +264,24 @@ public abstract class ICIPotential extends Potential {
             noisyPotentials.add (new TablePotential(linkVariables, PotentialRole.CONDITIONAL_PROBABILITY, noisyParameters.get(parent)));
         }
 
-        // Leak parent
-        if(this.leakyParameters != null)
-        {
-            ArrayList<Variable> leakVariables = new ArrayList<Variable> ();
-            leakVariables.add(leakyVariable); // conditioned variable
-            noisyPotentials.add (new TablePotential(leakVariables, PotentialRole.CONDITIONAL_PROBABILITY, leakyParameters));
-        }
-            
          return noisyPotentials;
     }	
 	
 	/** @return Leak potential. <code>TablePotential</code> */
 	public double[] getLeakyParameters() {
 		return this.leakyParameters;
+	}
+	
+	public TablePotential getLeakyPotential()
+	{
+	    TablePotential leakyPotential = null;
+        if(this.leakyParameters != null)
+        {
+            ArrayList<Variable> leakVariables = new ArrayList<Variable> ();
+            leakVariables.add(leakyVariable); // conditioned variable
+            leakyPotential = new TablePotential(leakVariables, PotentialRole.CONDITIONAL_PROBABILITY, leakyParameters);
+        }
+        return leakyPotential;
 	}
 	
 	/**

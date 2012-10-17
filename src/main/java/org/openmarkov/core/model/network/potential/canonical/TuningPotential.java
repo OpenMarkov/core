@@ -104,7 +104,7 @@ public class TuningPotential extends ICIPotential
      * @return a TablePotential containing the probabilities of the tuning function
      * @throws NotEnoughMemoryException
      */
-    protected TablePotential getFFunctionPotential ()
+    public TablePotential getFFunctionPotential ()
         throws NotEnoughMemoryException
     {
         // Build the list of variables: child node first, z variables

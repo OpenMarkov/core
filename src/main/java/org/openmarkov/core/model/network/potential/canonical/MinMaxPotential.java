@@ -152,7 +152,7 @@ public abstract class MinMaxPotential extends ICIPotential {
 	
 	
     @Override
-    protected TablePotential getFFunctionPotential ()
+    public TablePotential getFFunctionPotential ()
         throws NotEnoughMemoryException
     {
         // We won't be using it

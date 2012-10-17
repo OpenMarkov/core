@@ -155,10 +155,17 @@ public class ProbNode implements Cloneable, PotentialsContainer {
     public void addPotential(Potential potential) {
         this.potentialsList.add(potential);
     }
+    
+    /** @param potential. <code>Potential</code> */
+    public void setPotential(Potential potential) {
+        this.potentialsList.clear ();
+        addPotential(potential);
+    }    
     /** @param potential. <code>Potential</code> */
     public void setPotentials(ArrayList <Potential> potentials) {
         this.potentialsList = potentials;
     }
+  
 
     /** @param potential. <code>Potential</code>
      * @return <code>true</code> if <code>potentialList</code> contained the

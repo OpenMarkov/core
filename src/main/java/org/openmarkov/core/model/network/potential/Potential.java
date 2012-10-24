@@ -330,8 +330,12 @@ public abstract class Potential{
 		return shiftedVariables;
 	}
 
-	/** Overrides <code>toString</code> method. Mainly for test purposes */
-	public String toString() {
+    /** Overrides <code>toString</code> method. Mainly for test purposes */
+    public String toString() {
+        return toShortString();
+    }
+	
+	public String toShortString() {
 		StringBuffer buffer = new StringBuffer();
 		if (numVariables == 0) { // Constant potential
 			switch (role) {

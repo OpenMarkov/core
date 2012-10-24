@@ -51,7 +51,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	protected ProbNet probNet;
 
     /** Each <code>probNode</code> has a list of potentials */
-    protected ArrayList<Potential> potentialsList;
+    protected ArrayList<Potential> potentials;
     
     /** The variable associated */
     protected Variable variable;
@@ -94,7 +94,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
     	this.variable = variable;
         this.nodeType = nodeType;
         node = new Node(probNet.getGraph(), this);
-        potentialsList = new ArrayList<Potential>();
+        potentials = new ArrayList<Potential>();
         additionalProperties = new HashMap<String, String>();
         
 	}
@@ -109,10 +109,10 @@ public class ProbNode implements Cloneable, PotentialsContainer {
         this.nodeType = probNode.getNodeType();
        // node = new Node(probNet.getGraph(), this);
         node = probNode.getNode();
-        potentialsList = new ArrayList<Potential>();
+        potentials = new ArrayList<Potential>();
         
        // node = new Node(probNet.getGraph(), this);
-        potentialsList = new ArrayList<Potential>(probNode.getPotentials());
+        potentials = new ArrayList<Potential>(probNode.getPotentials());
         additionalProperties = new HashMap<String, String>();
         
 	}	
@@ -153,17 +153,17 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 
     /** @param potential. <code>Potential</code> */
     public void addPotential(Potential potential) {
-        this.potentialsList.add(potential);
+        this.potentials.add(potential);
     }
     
     /** @param potential. <code>Potential</code> */
     public void setPotential(Potential potential) {
-        this.potentialsList.clear ();
+        this.potentials.clear ();
         addPotential(potential);
     }    
     /** @param potential. <code>Potential</code> */
     public void setPotentials(ArrayList <Potential> potentials) {
-        this.potentialsList = potentials;
+        this.potentials = potentials;
     }
   
 
@@ -171,7 +171,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
      * @return <code>true</code> if <code>potentialList</code> contained the
      *   specified element; otherwise <code>false</code>. */
     public boolean removePotential(Potential potential) {
-        return potentialsList.remove(potential);
+        return potentials.remove(potential);
     }
 
 	/** @consultation
@@ -184,8 +184,8 @@ public class ProbNode implements Cloneable, PotentialsContainer {
      *   associated to this <code>ProbNode</code> */
 	@SuppressWarnings("unchecked")
 	public ArrayList<Potential> getPotentials() {
-		if (potentialsList != null) {
-			return (ArrayList<Potential>)potentialsList.clone();
+		if (potentials != null) {
+			return (ArrayList<Potential>)potentials.clone();
 		}
 		return null;
     }
@@ -197,7 +197,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	
 	/** @return Number of potentials. <code>int</code> */
 	public int getNumPotentials() {
-		return potentialsList.size();
+		return potentials.size();
 	}
 
 	/** @return probNet. <code>ProbNet</code> */
@@ -212,104 +212,90 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	}
 	
 	public String toString() {
-		String out = new String();
+		StringBuffer out = new StringBuffer();
+		out.append (variable.getName() + " (");
 		switch(nodeType) {
 		case CHANCE:   
-			out = out + "Chance node: " + variable.getName(); 
+			out.append("Chance"); 
 			break;
 		case DECISION:
-			out = out + "Decision node: " + variable.getName();
+            out.append("Decision"); 
 			break;
 		case UTILITY:
-			out = out + "Utility node: " + variable.getName(); 
+            out.append("Utility"); 
 			break;
 		case COST:
-			out = out + "Utility, Cost node: " + variable.getName(); 
+            out.append("Utility, Cost node"); 
 			break;
 		case EFFECTIVENESS:
-			out = out + "Utility, Effectiveness node: " + variable.getName(); 
+            out.append("Utility, Effectiveness node"); 
 			break;
 		case CE:
-			out = out + "Utility, Cost-Effectiveness node: " + 
-				variable.getName(); 
+            out.append("Utility, Cost-Effectiveness"); 
 			break;
-		default:
-			out = out + "Probabilistic node: "+ variable.getName();
-		   	break;
 		}
-		out = out + ".\n";
+		out.append("): ");
         int numParents = node.getNumParents();
         int numChildren = node.getNumChildren();
         int numSiblings = node.getNumSiblings();
         int numNeighbors = numParents + numChildren + numSiblings;
         if (numNeighbors == 0) {
-        	out = out + "No neighbors\n";
+        	out.append("No neighbors - ");
         } else {
-	        out = out + "Neighbors: " + numNeighbors + "\n";
 	        if (numParents > 0) {
-	        	if (numParents == 1) {
-	        		out = out + numParents + " parent: ";        		
-	        	} else {
-	        		out = out + numParents + " parents: ";
-	        	}
+        		out.append (((numParents == 1)? "Parent" : "Parents") + ": {");        		
 	        	ArrayList<Node> parents = node.getParents();
 	        	for (int i = 0; i < parents.size(); i++) {
 	        		ProbNode probNode =(ProbNode)parents.get(i).getObject(); 
-	        		out = out + probNode.getVariable();
+	        		out.append(probNode.getVariable());
 	        		if (i < parents.size() - 1) {
-	        			out = out + ", ";	        		
+	        			out.append(", ");	        		
 	        		}
 	        	}
-	        	out = out + "\n";
+	            out.append("} - ");          
 	    	}
 	    	if (numChildren > 0) {
-	    		if (numChildren == 1) {
-	    			out = out + numChildren + " child: ";
-	    		} else {
-	    			out = out + numChildren + " children: ";
-	    		}
+	    	    out.append (((numChildren == 1)? "Child" : "Children") + ": {");              
 	        	ArrayList<Node> children = node.getChildren();
 	        	for (int i = 0; i < children.size(); i++) {
 	        		ProbNode probNode =(ProbNode)children.get(i).getObject(); 
-	        		out = out + probNode.getVariable();
+	        		out.append(probNode.getVariable());
 	        		if (i < children.size() - 1) {
-	        			out = out + ", ";	        		
+	        			out.append(", ");	        		
 	        		}
 	        	}
-	        	out = out + "\n";
+                out.append("} - ");          
 	    	}
 	    	if (numSiblings > 0) {
-	    		if (numSiblings == 1) {
-	        		out = out + numSiblings+" sibling: "; 			
-	    		} else {
-	    			out = out + numSiblings+" siblings: ";
-	    		}
+                out.append (((numSiblings == 1)? "Sibling" : "Siblings") + ": {");              
 	        	ArrayList<Node> siblings = node.getSiblings();
 	        	for (int i = 0; i < siblings.size(); i++) {
 	        		ProbNode probNode =(ProbNode)siblings.get(i).getObject(); 
-	        		out = out + probNode.getVariable();
+                    out.append(probNode.getVariable());
 	        		if (i < siblings.size() - 1) {
-	        			out = out + ", ";	        		
+                        out.append(", ");                   
 	        		}
 	        	}
-	        	out = out + "\n";
+                out.append("} - ");                   
 	    	}
         }
-        int numPotentials = potentialsList.size();
+        int numPotentials = potentials.size();
 		if (numPotentials > 0) {
-	        out = out + "Number of potentials: " + numPotentials + "\n";
-			for (Potential potential : potentialsList) {
-				out = out + potential.getVariables();
-				if (potential.isUtility()) {
-					out = out + " - Utility Potential";
-				}
-				out = out + " ";
+	        out.append ((numPotentials == 1)? "Potential: " : "Potentials (" + numPotentials + "): {");
+			for (int i=0; i < potentials.size (); ++i) {
+				out.append(potentials.get (i).toShortString ());
+                if (i < potentials.size() - 1) {
+                    out.append(", ");                   
+                }
 			}
-			out = out + "\n";
+			if(numPotentials>1)
+			{
+			    out.append ("}");
+			}
 		} else {
-			out = out + "No potentials\n";
+			out.append ("No potentials");
 		}
-		return out;
+		return out.toString ();
 	}
 	
 	// TODO Comentar
@@ -320,9 +306,9 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 		Variable thisVariable;
         // first, this variable. The potentials is not null
 		if (this.getNodeType() == NodeType.UTILITY)
-			thisVariable = potentialsList.get( 0 ).getUtilityVariable();
+			thisVariable = potentials.get( 0 ).getUtilityVariable();
 		else{
-			thisVariable = potentialsList.get( 0 ).getVariable( 0 );
+			thisVariable = potentials.get( 0 ).getVariable( 0 );
 			variables.add(thisVariable);
 		}
 		
@@ -355,7 +341,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 			//tablePotential.getVariables().remove(0);
 			tablePotential.setUtilityVariable(thisVariable);
 		}
-		potentialsList = newListPotentials;
+		potentials = newListPotentials;
 		
 	}
 
@@ -364,12 +350,12 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 		ArrayList<Potential> newListPotentials = new ArrayList<Potential> ();
 		ArrayList<Variable> variables = new ArrayList<Variable>();
 		Variable thisVariable;
-		PotentialRole role = potentialsList.get(0).getPotentialRole();
+		PotentialRole role = potentials.get(0).getPotentialRole();
         // first, this variable. The potentials is not null
 		if (this.getNodeType() == NodeType.UTILITY)
-			thisVariable = potentialsList.get( 0 ).getUtilityVariable();
+			thisVariable = potentials.get( 0 ).getUtilityVariable();
 		else{
-			thisVariable = potentialsList.get( 0 ).getVariable( 0 );
+			thisVariable = potentials.get( 0 ).getVariable( 0 );
 			variables.add(thisVariable);
 		}
 		
@@ -402,7 +388,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 			//tablePotential.getVariables().remove(0);
 			uniformPotetnial.setUtilityVariable(thisVariable);
 		}
-		potentialsList = newListPotentials;
+		potentials = newListPotentials;
 		
 	}
 	
@@ -471,8 +457,8 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 *  <code>boolean</code> */
 	public boolean hasPolicy() {
 		return nodeType == NodeType.DECISION &&  
-				potentialsList.size() != 0 && 
-				potentialsList.get(0).getPotentialType() != 
+				potentials.size() != 0 && 
+				potentials.get(0).getPotentialType() != 
 				PotentialType.UNIFORM;
 	}
 
@@ -480,9 +466,9 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 * @throws NotEnoughMemoryException */
 	public void samplePotentials(Variable simulationIndexVariable)
 			throws NotEnoughMemoryException {
-		for (int i = 0; i < potentialsList.size(); i++) {
-			Potential originalPotential = potentialsList.get(i);
-			potentialsList.set(i, 
+		for (int i = 0; i < potentials.size(); i++) {
+			Potential originalPotential = potentials.get(i);
+			potentials.set(i, 
 					originalPotential.sample(simulationIndexVariable));
 		}
 	}

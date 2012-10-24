@@ -1663,13 +1663,20 @@ public class ProbNet implements Cloneable {
 	/** @return String */
 	public String toString() {
 		StringBuffer out = new StringBuffer();
+		
+		out.append("Type: " + networkType.toString () +"\n");
+		
 		ArrayList<ProbNode> nodes = getProbNodes();
 		int numPotentials = getNumPotentials();
 		int numNodes = nodes.size();
 		if (numNodes == 0) {
 			out.append("No nodes.\n");
 		} else {
-			out.append(new String("Number of probabilistic nodes: " + numNodes + "\n"));
+	        out.append("Nodes ("+ numNodes +"): ");
+	        for (ProbNode probNode : nodes) {
+	            out.append("\n  " + probNode.toString ());
+	        }
+            out.append("\n");
 		}
 		if (numPotentials == 0) {
 			out.append("No potentials.\n");
@@ -1691,10 +1698,6 @@ public class ProbNet implements Cloneable {
 				}
 			}
 			out.append("\n");
-		}
-		out.append("\n Nodes: ");
-		for (ProbNode probNode : nodes) {
-			out.append(probNode.getName () + ",");
 		}
 		if(agents != null)
 		{

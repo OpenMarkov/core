@@ -8,12 +8,20 @@
 */
 
 package org.openmarkov.core.inference;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -28,7 +36,6 @@ import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NetsFactory;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -556,6 +563,54 @@ public abstract class InferenceAlgorithmTests {
 			printExceptionAndFailIfImplemented(e);
 		}
 	}
+	
+    /**
+     * @throws ProbNodeNotFoundException
+     * Tests the a priori joint probabilities obtained in the network Asia
+     * @throws UnexpectedInferenceException 
+     * @throws IncompatibleEvidenceException 
+     * @throws NotEnoughMemoryException 
+     */
+    @Test
+    public void testAPosterioriJointProbabilitiesBN_Asia ()
+        throws ProbNodeNotFoundException,
+        NotEnoughMemoryException,
+        IncompatibleEvidenceException,
+        UnexpectedInferenceException
+    {
+        ProbNet network = bN_Asia;
+        int numIter = 10;
+        InferenceAlgorithm inferenceAlgorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
+        for (int i = 0; i < numIter; i++)
+        {
+            EvidenceCase evidence = new EvidenceCase ();
+            try
+            {
+                // T=absent, TOrC=yes
+                evidence.addFinding (network, "T", "absent");
+                evidence.addFinding (network, "TOrC", "yes");
+            }
+            catch (InvalidStateException | IncompatibleEvidenceException e1)
+            {
+                e1.printStackTrace ();
+            }
+            double expectedProbs[] = {0.00959984, 0.572727, 0.0, 1.0, 1.0, 0.98, 0.85727273, 0.90909091};
+            
+            inferenceAlgorithm.setPreResolutionEvidence (evidence);
+            ArrayList<Variable> variables = new ArrayList<> ();
+            variables.add (network.getVariable ("T"));
+            variables.add (network.getVariable ("TOrC"));
+            variables.add (network.getVariable ("L"));
+            
+            TablePotential jointProbability = inferenceAlgorithm.getJointProbability (variables);
+            
+            Assert.assertEquals (variables.size (), jointProbability.getVariables ().size ());
+            for(int j=0; j < expectedProbs.length; ++j)
+            {
+                Assert.assertEquals (expectedProbs[j], jointProbability.values[j], maxError);
+            }
+        }
+    }
 	
 	/**
 	 * @throws Exception

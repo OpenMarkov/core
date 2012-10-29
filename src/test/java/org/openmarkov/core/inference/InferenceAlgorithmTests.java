@@ -18,7 +18,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import junit.framework.Assert;
 
@@ -594,7 +593,7 @@ public abstract class InferenceAlgorithmTests {
             {
                 e1.printStackTrace ();
             }
-            double expectedProbs[] = {0.00959984, 0.572727, 0.0, 1.0, 1.0, 0.98, 0.85727273, 0.90909091};
+            double expectedProbs[] = {0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0};
             
             inferenceAlgorithm.setPreResolutionEvidence (evidence);
             ArrayList<Variable> variables = new ArrayList<> ();

@@ -578,36 +578,34 @@ public abstract class InferenceAlgorithmTests {
         UnexpectedInferenceException
     {
         ProbNet network = bN_Asia;
-        int numIter = 10;
+        TablePotential expectedPot;
         InferenceAlgorithm inferenceAlgorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
-        for (int i = 0; i < numIter; i++)
+
+        EvidenceCase evidence = new EvidenceCase ();
+        try
         {
-            EvidenceCase evidence = new EvidenceCase ();
-            try
-            {
-                // T=absent, TOrC=yes
-                evidence.addFinding (network, "T", "absent");
-                evidence.addFinding (network, "TOrC", "yes");
-            }
-            catch (InvalidStateException | IncompatibleEvidenceException e1)
-            {
-                e1.printStackTrace ();
-            }
-            double expectedProbs[] = {0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0};
+            // Read the variables
+            Variable variableT = getVariableAndAssertNotNull(network,"T");
+            Variable variableTOrC = getVariableAndAssertNotNull(network,"TOrC");
+            Variable variableL = getVariableAndAssertNotNull(network,"L");
             
+            // T=absent, TOrC=yes
+            evidence.addFinding (network, "T", "absent");
+            evidence.addFinding (network, "TOrC", "yes");
             inferenceAlgorithm.setPreResolutionEvidence (evidence);
             ArrayList<Variable> variables = new ArrayList<> ();
-            variables.add (network.getVariable ("T"));
-            variables.add (network.getVariable ("TOrC"));
-            variables.add (network.getVariable ("L"));
-            
+            variables.add (variableTOrC);
+            variables.add (variableL);
+            variables.add (variableT);
+            expectedPot = new TablePotential(variables,PotentialRole.JOINT_PROBABILITY);            
+            double[] expectedValues = {0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0};
+            expectedPot.setValues(expectedValues);
             TablePotential jointProbability = inferenceAlgorithm.getJointProbability (variables);
-            
-            Assert.assertEquals (variables.size (), jointProbability.getVariables ().size ());
-            for(int j=0; j < expectedProbs.length; ++j)
-            {
-                Assert.assertEquals (expectedProbs[j], jointProbability.values[j], maxError);
-            }
+            TablePotentialTest.checkEqualPotentials(jointProbability,expectedPot,maxError);
+        }
+        catch (InvalidStateException | IncompatibleEvidenceException e1)
+        {
+            e1.printStackTrace ();
         }
     }
 	

@@ -23,7 +23,7 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
-@Constraint (name = "NoUtilityParent", defaultBehavior = ConstraintBehavior.OPTIONAL)
+@Constraint (name = "NoUtilityParent", defaultBehavior = ConstraintBehavior.YES)
 public class NoUtilityParent extends PNConstraint  {
 
     @Override
@@ -62,35 +62,18 @@ public class NoUtilityParent extends PNConstraint  {
 					ProbNode node2 = probNet.getProbNode(variable2);
 					if(node2.getNodeType()!= NodeType.UTILITY)
 					{
-					return false;
+					    return false;
 					}
 				}
 			}
 		}
-		
-        /*ArrayList<PNEdit> linkEdits = UtilConstraints.getEditsType (edit, LinkEdit.class);
-		for (PNEdit simpleEdit : linkEdits) {
-			if (((LinkEdit)simpleEdit).isDirected()) { 
-				Variable variable1 = ((AddLinkEdit)simpleEdit).getVariable1(); 
-				ProbNode node1 = probNet.getProbNode(variable1);
-				if(node1.getNodeType()== NodeType.UTILITY)
-				{
-					Variable variable2 = ((AddLinkEdit)simpleEdit).getVariable2(); 
-					ProbNode node2 = probNet.getProbNode(variable2);
-					if(node2.getNodeType()!= NodeType.UTILITY)
-					{
-					return false;
-					}
-				}
-			}
-		}*/
 		return true;
 	}
 
     @Override
     protected String getMessage ()
     {
-        return "utility only have utility children";
+        return "Utility nodes only can have utility children";
     }
 
 

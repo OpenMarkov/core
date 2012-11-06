@@ -106,10 +106,12 @@ public class SameAsPrevious extends Potential {
 			return originalPotential.tableProject(evidenceCase, inferenceOptions);
 		} else {
 		// takes the evidence to the past
-		EvidenceCase shiftedEvidence = 
-			evidenceCase.shiftEvidenceBackwards(timeDifference, 
-					inferenceOptions.probNet); 
-		
+			EvidenceCase shiftedEvidence = null;
+		if (evidenceCase != null) {
+			shiftedEvidence = 
+					evidenceCase.shiftEvidenceBackwards(timeDifference, 
+							inferenceOptions.probNet); 
+		} 
 		// projects the original potential according to the shifted evidence
 		ArrayList<TablePotential> projectedPotentials = 
 			originalPotential.tableProject(shiftedEvidence, inferenceOptions);

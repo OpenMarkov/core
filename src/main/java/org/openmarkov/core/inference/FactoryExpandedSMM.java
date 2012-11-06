@@ -129,7 +129,16 @@ public class FactoryExpandedSMM {
 			
 		
 	}
-	
+	/**
+	 * @param numSlices
+	 * @param network
+	 * @param costDiscount Percentage of discount. The utility function in instant time t will be:
+	 * U(t) = U(t-1)/(1+discount/100.0)  
+	 * @param adaptForCE
+	 * @return An expanded network built from a SMM. It adapts the network to Cost-Effectiveness analysis is 
+	 * adaptForCE is true.
+	 */
+
 	public static ProbNet constructExpandedNetwork(int numSlices, ProbNet network, double costDiscount, double effectivenessDiscount, boolean adaptForCE) {
 		FactoryExpandedSMM expandedNetFactory = null;
 		InferenceOptions inferenceOptions;
@@ -140,7 +149,7 @@ public class FactoryExpandedSMM {
 			if (adaptForCE){
 				expandedNetFactory.adaptProbNetForCE();
 			}
-			expandedNetFactory.applyDiscountToUtilityNodes(costDiscount, effectivenessDiscount, inferenceOptions);
+			expandedNetFactory.applyDiscountToUtilityNodes(costDiscount, effectivenessDiscount, inferenceOptions,null/*, inferenceOptions*/);
 		} catch (NotEnoughMemoryException e) {
 			e.printStackTrace();
 		}
@@ -148,32 +157,7 @@ public class FactoryExpandedSMM {
 		return expandedNetwork;
 	}
 	
-	/**
-	 * @param numSlices
-	 * @param network
-	 * @param costDiscount Percentage of discount. The utility function in instant time t will be:
-	 * U(t) = U(t-1)/(1+discount/100.0)  
-	 * @param adaptForCE
-	 * @return An expanded network built from a SMM. It adapts the network to Cost-Effectiveness analysis is 
-	 * adaptForCE is true.
-	 */
-	public static ProbNet constructExpandedNetworkV1(int numSlices, ProbNet network, double costDiscount, double effectivenessDiscount, boolean adaptForCE) {
-		FactoryExpandedSMM expandedNetFactory = null;
-		InferenceOptions inferenceOptions;
-		
-		try {
-			expandedNetFactory = new FactoryExpandedSMM(network, numSlices, null, 200.0);
-			inferenceOptions = new InferenceOptions(network, null);
-			if (adaptForCE){
-				expandedNetFactory.adaptProbNetForCE();
-			}
-			expandedNetFactory.applyDiscountToUtilityNodes(costDiscount, effectivenessDiscount, inferenceOptions);
-		} catch (NotEnoughMemoryException e) {
-			e.printStackTrace();
-		}
-		ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
-		return expandedNetwork;
-	}
+
 	
 	
 	/**
@@ -308,7 +292,7 @@ public class FactoryExpandedSMM {
 	 * calling for each potential within the network to the method tableProject
 	 * 
 	 * @param evidence
-	 */
+	
 	@SuppressWarnings("unused")
 	public void projectEvidence(EvidenceCase evidence) {
 		for (ProbNode probNode: probNet.getProbNodes()) {
@@ -337,7 +321,7 @@ public class FactoryExpandedSMM {
 		}
 	}
 	
-	
+	 */
 	public ProbNet getExtendedNet(){
 		return probNet;
 	}
@@ -349,7 +333,7 @@ public class FactoryExpandedSMM {
 	 * @throws NotEnoughMemoryException
 	 * It applies the discount to each utility potential
 	 */
-	public void applyDiscountToUtilityNodes(double costDiscount, double effectivenessDiscount, InferenceOptions inferenceOptions) throws NotEnoughMemoryException{
+/*	public void applyDiscountToUtilityNodes(double costDiscount, double effectivenessDiscount) throws NotEnoughMemoryException{
 		// apply discount rate for all temporal utility nodes in the expanded network
 		  ArrayList<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
 		  for (int i = 0; i < utilityExpandedNodes.size(); i++) {
@@ -358,28 +342,28 @@ public class FactoryExpandedSMM {
 			double discount = iUtilityProbNode.getVariable().getDecisionCriteria().getString().equalsIgnoreCase("cost") ?  costDiscount : effectivenessDiscount;
 			if (iUtilityProbNode.getVariable().isTemporal() && timeSlice > 0) {
 				  double discountRate = 1.0 / (Math.pow((1.0 + (discount/100.0)), timeSlice));
-				  Potential originalPotetnial;
+				  Potential originalPotential;
 				  Potential potential = iUtilityProbNode.getPotentials().get(0);
 				  if (potential instanceof SameAsPrevious) {
 					ArrayList<Variable> variables = potential.getVariables();
 					Variable utilityVariable = potential.getUtilityVariable();
-					originalPotetnial = (((SameAsPrevious)potential).getOriginalPotential()).copy();
-					originalPotetnial.setVariables(variables);
-					originalPotetnial.setUtilityVariable(utilityVariable);
+					originalPotential = (((SameAsPrevious)potential).getOriginalPotential()).copy();
+					originalPotential.setVariables(variables);
+					originalPotential.setUtilityVariable(utilityVariable);
 				  } else {
-					originalPotetnial = (potential);
+					originalPotential = (potential);
 				  }
 			
-				if (originalPotetnial instanceof TablePotential) {
-					originalPotetnial = applyDiscountTable( (TablePotential)originalPotetnial, discountRate);
-				 } else if (originalPotetnial instanceof TreeADDPotential) {
-					 originalPotetnial = applyDiscountTree( (TreeADDPotential)originalPotetnial, discountRate);
-				 } else if (originalPotetnial instanceof UniformPotential) { 
-					 originalPotetnial = applyDiscountUniform( (UniformPotential)originalPotetnial, discountRate);
+				if (originalPotential instanceof TablePotential) {
+					originalPotential = applyDiscountTable( (TablePotential)originalPotential, discountRate);
+				 } else if (originalPotential instanceof TreeADDPotential) {
+					 originalPotential = applyDiscountTree( (TreeADDPotential)originalPotential, discountRate);
+				 } else if (originalPotential instanceof UniformPotential) { 
+					 originalPotential = applyDiscountUniform( (UniformPotential)originalPotential, discountRate);
 				 } // sum product??
 				 
 				 ArrayList<Potential> potentials = new ArrayList<>();
-				 potentials.add(originalPotetnial);
+				 potentials.add(originalPotential);
 				 iUtilityProbNode.setPotentials(potentials);
 			  }
 		  }
@@ -388,12 +372,16 @@ public class FactoryExpandedSMM {
 	public TreeADDPotential applyDiscountTree(TreeADDPotential tree, double discountRate) {
 		ArrayList<TreeADDBranch> branches = tree.getBranches();
 		for(int i = 0; i < branches.size(); i++) {
-			if (branches.get(i).getPotential() instanceof TreeADDPotential) {
-				branches.get(i).setPotential(applyDiscountTree((TreeADDPotential)branches.get(i).getPotential(), discountRate));
-			} else if (branches.get(i).getPotential() instanceof TablePotential) {
-				branches.get(i).setPotential(applyDiscountTable((TablePotential)branches.get(i).getPotential(), discountRate));
+			Potential potential = branches.get(i).getPotential();
+			if (potential instanceof TreeADDPotential) {
+				branches.get(i).setPotential(applyDiscountTree((TreeADDPotential)potential, discountRate));
+			} else if (potential instanceof TablePotential) {
+				branches.get(i).setPotential(applyDiscountTable((TablePotential)potential, discountRate));
 			} else if (branches.get(i).getPotential() instanceof UniformPotential) {
-				branches.get(i).setPotential(applyDiscountUniform((UniformPotential)branches.get(i).getPotential(), discountRate));
+				//branches.get(i).setPotential(applyDiscountUniform((UniformPotential)branches.get(i).getPotential(), discountRate));
+			}
+			else if (potential instanceof SameAsPrevious) {
+			//	branches.get(i).setPotential(applyDiscountTable((SameAsPrevious)(potential.getOriginalPotential()), discountRate));
 			}
 		}
 		
@@ -411,9 +399,9 @@ public class FactoryExpandedSMM {
 	public UniformPotential applyDiscountUniform(UniformPotential uniform, double discountRate) {
 		((UniformPotential) uniform).setDiscreteValue(((UniformPotential) uniform).getDiscreteValue()* (discountRate));
 		return uniform;
-	}
+	}*/
 	
-	public void applyDiscountToUtilityNodesV1(double costDiscount, double effectivenessDiscount, InferenceOptions inferenceOptions, EvidenceCase evidence) throws NotEnoughMemoryException{
+	public void applyDiscountToUtilityNodes(double costDiscount, double effectivenessDiscount, InferenceOptions inferenceOptions, EvidenceCase evidence) throws NotEnoughMemoryException{
 		// apply discount rate for all temporal utility nodes in the expanded network
 		  ArrayList<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
 		  for (int i = 0; i < utilityExpandedNodes.size(); i++) {
@@ -513,9 +501,10 @@ public class FactoryExpandedSMM {
 			} else {
 				
 				referencePotentialForNewPotential = oldPotential;
+				timeDifferenceWithNew = timeDifference;
 				}
 				
-				timeDifferenceWithNew = timeDifference;
+				
 			try {
 				newPotential = new SameAsPrevious(referencePotentialForNewPotential, probNet, timeDifferenceWithNew);
 			} catch (NodeNotFoundException e) {

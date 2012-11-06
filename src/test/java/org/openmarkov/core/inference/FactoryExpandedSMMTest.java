@@ -59,7 +59,7 @@ public class FactoryExpandedSMMTest {
 		double costNoTreat;
 		int maximumNumSlices;
 
-		maximumNumSlices = 4;
+		maximumNumSlices = 2;
 		int startNumSlices = 1;
 
 		qoLTreat = 0.9;
@@ -172,7 +172,7 @@ public class FactoryExpandedSMMTest {
 		
 	}
 
-	@Test
+//	@Test
 	/*public public void testSemimarkovExpansion() {
 		int maximumNumSlices;
 
@@ -206,8 +206,8 @@ public class FactoryExpandedSMMTest {
 
 
 
-	private void checkUtilityPotentialQoLSMMWithState(ProbNet expandedNetwork, TablePotential auxPot, double qoLTreat, double qoLNoTreat, double ratio, int slice) {
-		// TODO Auto-generated method stub
+	public void checkUtilityPotentialQoLSMMWithState(ProbNet expandedNetwork, TablePotential auxPot, double qoLTreat, double qoLNoTreat, double ratio, int slice) {
+	
 		
 		ArrayList<Variable> variablesUtil = new ArrayList<>();
 		try {

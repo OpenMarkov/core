@@ -24,6 +24,7 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 /**
  * <code>NodeStateEdit</code> is a simple edit that allow modify the states of
@@ -204,13 +205,53 @@ public class NodeStateEdit extends SimplePNEdit {
 			if (stateSelected >= 0
 					&& stateSelected < probNode.getVariable().getNumStates()) {
 				State state= probNode.getVariable().getStates()[stateSelected];
+				
+				//if there is any child with a tree potential the correspondent branch must change
+				String oldName = probNode.getVariable().getStates()[stateSelected].getName();
+				nodes = probNode.getNode().getChildren();
+				for (Node node : nodes) {
+					potentials = new ArrayList<Potential>();
+					ProbNode child = (ProbNode) node.getObject();
+					
+					if (child.getPotentials().get(0) instanceof TreeADDPotential) {
+						renameBranchesStates((TreeADDPotential)child.getPotentials().get(0), oldName, newState.getName() );
+						
+					}
+					
+				}
+				
 				state.setName(newState.getName());
+				
 
 			}
 			break;
 
 		}
 
+	}
+	public void renameBranchesStates(TreeADDPotential tree, String oldName, String newName) {
+		if (tree.getTopVariable().equals(probNode.getVariable())) {
+			for (int i = 0; i < tree.getBranches().size(); i++) {
+				for (int j = 0; j < tree.getBranches().get(i).getBranchStates().size(); j++ ) {
+					if (tree.getBranches().get(i).getBranchStates().get(j).getName().equals(oldName)) {
+						tree.getBranches().get(i).getBranchStates().get(j).setName(newName);
+					}
+				}
+				if (tree.getBranches().get(i).getPotential() instanceof TreeADDPotential) {
+					renameBranchesStates((TreeADDPotential)tree.getBranches().get(i).getPotential(), oldName, newName);
+				}
+				
+			}
+			
+		} else {//look if there are more subtrees within the tree
+			for (int i = 0; i < tree.getBranches().size(); i++) {
+				
+				if (tree.getBranches().get(i).getPotential() instanceof TreeADDPotential) {
+					renameBranchesStates((TreeADDPotential)tree.getBranches().get(i).getPotential(), oldName, newName);
+				}
+				
+			}
+		}
 	}
 
 	@Override

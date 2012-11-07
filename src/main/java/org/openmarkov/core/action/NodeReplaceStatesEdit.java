@@ -97,29 +97,34 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 			// set uniform potential for the edited node and children if the
 			// new number of states is different that the last states
 			if (newStates.length != lastStates.length) {
-				UniformPotential newPotential = new UniformPotential(
-						lastPotential.get(0).getVariables(), lastPotential.get(
-								0).getPotentialRole());
-				newPotential.setUtilityVariable(lastPotential.get(0)
-						.getUtilityVariable());
-				newPotentials.add(newPotential);
-				probNode.setPotentials(newPotentials);
+				
+				if (lastPotential.size() != 0) {//decision nodes without imposed policy has no potential
+					UniformPotential newPotential = new UniformPotential(
+							lastPotential.get(0).getVariables(), lastPotential.get(
+									0).getPotentialRole());
+					newPotential.setUtilityVariable(lastPotential.get(0)
+							.getUtilityVariable());
+					newPotentials.add(newPotential);
+					probNode.setPotentials(newPotentials);
+				}
 
 				UniformPotential childLastPotential;
 				nodes = probNode.getNode().getChildren();
 
 				for (Node node : nodes) {
-					ArrayList<Potential> container = new ArrayList<Potential>();
-					ProbNode child = (ProbNode) node.getObject();
-					childrenLastPotential.add(child.getPotentials().get(0));
-					childLastPotential = new UniformPotential(child
-							.getPotentials().get(0).getVariables(), child
-							.getPotentials().get(0).getPotentialRole());
-					// child.setUniformPotential();
-					childLastPotential.setUtilityVariable(child.getPotentials()
-							.get(0).getUtilityVariable());
-					container.add(childLastPotential);
-					child.setPotentials(container);
+					if (((ProbNode) node.getObject()).getPotentials().size() != 0) {
+						ArrayList<Potential> container = new ArrayList<Potential>();
+						ProbNode child = (ProbNode) node.getObject();
+						childrenLastPotential.add(child.getPotentials().get(0));
+						childLastPotential = new UniformPotential(child
+								.getPotentials().get(0).getVariables(), child
+								.getPotentials().get(0).getPotentialRole());
+						// child.setUniformPotential();
+						childLastPotential.setUtilityVariable(child.getPotentials()
+								.get(0).getUtilityVariable());
+						container.add(childLastPotential);
+						child.setPotentials(container);
+					}
 				}
 				resetLink(probNode.getNode());
 			}

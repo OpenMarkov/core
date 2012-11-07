@@ -90,7 +90,7 @@ public class AddLinkEdit extends BaseLinkEdit {
             for (Potential oldPotential : oldPotentials)
             {
                 // Update potential
-                Potential newPotential = oldPotential.addVariable (node1.getVariable ());
+                Potential newPotential = oldPotential.copy().addVariable (node1.getVariable ());
                 if (newPotential == null)
                 {// It has not been implemented yet for this type of potential
                     ArrayList<Variable> variables = oldPotential.getVariables ();

@@ -39,21 +39,10 @@ public class NoUtilityParentTest {
 
 	@Test
 	public void testOnlyUtilityChilren() {
-		boolean exceptionLaunched = false;
-		PNConstraint constraint = new NoUtilityParent();
-		try {
-            probNetImproperUtilityChildren.addConstraint (constraint,
-                                                          true);
-		} catch (Exception e1) {
-			exceptionLaunched = true;
-		}
-		assertTrue(exceptionLaunched);
-
-		probNetImproperUtilityChildren.removeConstraint(constraint);
-		exceptionLaunched = false;	
-		assertFalse(constraint.checkProbNet(probNetImproperUtilityChildren));
+		assertFalse(probNetImproperUtilityChildren.checkProbNet ());
 		
 		 //test only utility children
+        PNConstraint constraint = new NoUtilityParent();
         assertTrue (constraint.checkProbNet (probNetProperUtilityChildren));
 	}
 

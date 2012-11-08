@@ -76,8 +76,8 @@ public class PotentialOperations {
 			}
 		}
 	
-		ArrayList<Potential> potentials = new ArrayList<Potential>();
-		potentials.add(potential);
+		ArrayList<TablePotential> potentials = new ArrayList<TablePotential>();
+		potentials.add((TablePotential) potential);
 	
 		return DiscretePotentialOperations.multiplyAndMarginalize(
 			potentials, variablesToKeep, variablesToEliminate);
@@ -106,8 +106,8 @@ public class PotentialOperations {
 				"marginalize can only manage variables of type FSVariable");    						
 		}
 		
-		ArrayList<Potential> potentials = new ArrayList<Potential>();
-		potentials.add(potential);
+		ArrayList<TablePotential> potentials = new ArrayList<TablePotential>();
+		potentials.add((TablePotential) potential);
 	
 		return DiscretePotentialOperations.multiplyAndMarginalize(
 			potentials, variablesToKeep, variablesToEliminate);
@@ -117,7 +117,7 @@ public class PotentialOperations {
 	 * @param variablesToEliminate
 	 * @throws PotentialOperationException */
 	public static Potential multiplyAndEliminate(
-			ArrayList<Potential> potentials,
+			ArrayList<TablePotential> potentials,
 			ArrayList<Variable> variablesToEliminate) 
 			throws PotentialOperationException {
 	
@@ -148,7 +148,7 @@ public class PotentialOperations {
 	 * @param variableToEliminate
 	 * @throws PotentialOperationException */
 	public static Potential multiplyAndEliminate(
-			ArrayList<Potential> potentials,
+			ArrayList<TablePotential> potentials,
 			Variable variableToEliminate) throws PotentialOperationException 
 	{
 		ArrayList<Variable> variablesToEliminate =
@@ -161,7 +161,7 @@ public class PotentialOperations {
 	/** @param potentials potentials array to multiply
 	 * @return The multiplied potentials
 	 * @throws PotentialOperationException */
-	public static Potential multiply(ArrayList<? extends Potential> potentials) 
+	public static Potential multiply(ArrayList<? extends Potential> potentials)
 	        throws PotentialOperationException
 	{	
     	// correct type verification of parameters before calling method.
@@ -171,7 +171,7 @@ public class PotentialOperations {
 			   "newMultiply can only manage potentials of type TablePotential");
 		}
 		
-		return DiscretePotentialOperations.multiply(potentials);
+		return DiscretePotentialOperations.multiply((ArrayList<TablePotential>) potentials);
 	}
 
 	/** @param potentials potentials array to multiply
@@ -181,7 +181,7 @@ public class PotentialOperations {
 	 * @return The multiplied potentials
 	 * @throws PotentialOperationException */
 	public static Potential multiplyAndMarginalize(
-			ArrayList<Potential> potentials, 
+			ArrayList<TablePotential> potentials, 
 			ArrayList<Variable> variablesOfInterest) 
 			throws PotentialOperationException {
 	
@@ -281,7 +281,7 @@ public class PotentialOperations {
 	 * @return result the multiplied potentials
 	 * @throws PotentialOperationException */
     public static Potential multiplyAndMarginalize(
-			ArrayList<Potential> potentials,
+			ArrayList<TablePotential> potentials,
 			ArrayList<Variable> variablesToKeep,
 			ArrayList<Variable> variablesToEliminate)
     		throws PotentialOperationException {

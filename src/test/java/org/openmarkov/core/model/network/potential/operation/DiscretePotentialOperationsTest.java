@@ -97,7 +97,7 @@ public class DiscretePotentialOperationsTest {
 	@Test
 	public void testAdd() {
 		try {
-			ArrayList<Potential> potentials = new ArrayList<Potential>();
+			ArrayList<TablePotential> potentials = new ArrayList<TablePotential>();
 			potentials.add(commonVariables.t2);
 			potentials.add(commonVariables.t4);
 			// Call method under test
@@ -474,7 +474,7 @@ public class DiscretePotentialOperationsTest {
 		bPotential = bPotential.tableProject(evidenceCase, null).get(0);
 		bcPotential = bcPotential.tableProject(evidenceCase, null).get(0);
 		// collection of potentials to multiply and marginalize
-		ArrayList<Potential> potentials = new ArrayList<Potential>();
+		ArrayList<TablePotential> potentials = new ArrayList<TablePotential>();
 		potentials.add(bPotential);
 		potentials.add(bcPotential);
 		// variables to keep and marginalize

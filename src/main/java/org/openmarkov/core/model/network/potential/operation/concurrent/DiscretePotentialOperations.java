@@ -36,7 +36,7 @@ public class DiscretePotentialOperations {
 	  * @return The multiplied potentials <code>TablePotential</code>
 	 * @throws <code>Exception</code> */
 	public static TablePotential multiply(
-			ArrayList<? extends Potential> potentials) throws Exception {
+			ArrayList<TablePotential> potentials) throws Exception {
 		// Sequential part
 		SharedDataMultiply sdm = new SharedDataMultiply(potentials);
 		sdm.initialize();

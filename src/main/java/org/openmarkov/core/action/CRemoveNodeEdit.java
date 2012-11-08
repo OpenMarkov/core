@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 
 /** Removes a node performing this steps:<ol>
@@ -67,8 +68,14 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 		siblings = node.getSiblings();
 		
 		// collect potentials of this node ...
-		ArrayList<Potential> potentialsContainingVariable = 
+		ArrayList<? extends Potential> auxPotentialsContainingVariable = 
 			probNet.extractPotentials(variable);
+		
+		ArrayList<TablePotential> potentialsContainingVariable = new ArrayList<>();
+		
+		for (Potential auxPot:auxPotentialsContainingVariable){
+			potentialsContainingVariable.add((TablePotential) auxPot);
+		}
 
 		Potential newPotential = null;
 		// ... multiply and eliminate the variable

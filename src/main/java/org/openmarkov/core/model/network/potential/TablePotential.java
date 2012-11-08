@@ -433,7 +433,7 @@ public class TablePotential extends Potential
             if (role == PotentialRole.UTILITY && decisionCriteria != null)
             {
             	String criterion = utilityVariable.getDecisionCriteria().getString();
-                ArrayList<Potential> potentials = new ArrayList<Potential> (2);
+                ArrayList<TablePotential> potentials = new ArrayList<TablePotential> (2);
                 potentials.add (projectedPotential);
                 try
                 {

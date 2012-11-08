@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 
 /** Removes a node performing this steps:<ol>
@@ -68,9 +69,12 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 		siblings = probNode.getNode().getSiblings();
 		
 		// collect potentials of this node ...
-		ArrayList<Potential> potentialsVariable = 
-			probNet.extractPotentials(variable);
-
+		ArrayList<TablePotential> potentialsVariable = new ArrayList<>();
+		
+		for (Potential pot:probNet.extractPotentials(variable)){
+			potentialsVariable.add((TablePotential)pot);
+		}
+		
 		Potential newPotential = null;
 		try {
 			// ... multiply and eliminate the variable

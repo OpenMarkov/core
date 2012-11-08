@@ -11,6 +11,8 @@ package org.openmarkov.core.inference;
 
 import java.util.ArrayList;
 
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -135,7 +137,7 @@ public class FactoryExpandedSMM {
 	 * @param costDiscount Percentage of discount. The utility function in instant time t will be:
 	 * U(t) = U(t-1)/(1+discount/100.0)  
 	 * @param adaptForCE
-	 * @return An expanded network built from a SMM. It adapts the network to Cost-Effectiveness analysis is 
+	 * @return An expanded network built from a SMM. It adapts the network to Cost-Effectiveness analysis if 
 	 * adaptForCE is true.
 	 */
 
@@ -157,8 +159,71 @@ public class FactoryExpandedSMM {
 		return expandedNetwork;
 	}
 	
+	/**
+	 * 
+	 * @param initialAge
+	 * @param finalAge
+	 * @param probNet
+	 * @param costDiscount
+	 * @param effectivenessDiscount
+	 * @param cycleLength
+	 * @return An expanded network built from a SMM when the network has evidence of initial age of the patient. It adapts the network to Cost-Effectiveness analysis if 
+	 * adaptForCE is true.
+	 */
+	public static ProbNet constructExpandedNetAge(int initialAge, int finalAge, ProbNet probNet, double costDiscount, double effectivenessDiscount, double cycleLength,  boolean adaptForCE) {
+		int numSlices = finalAge - initialAge;
+		EvidenceCase evidenceCase  = new EvidenceCase();
+		ProbNet expandedNetwork = null;
+		//set up findings from the network and values introduced by the user
+		Finding ageFinding = null;
+		ArrayList<ProbNode> probNodes = probNet.getProbNodes();
+		for (int i = 0; i < probNodes.size() ; i++) {
+			if (probNodes.get(i).getVariable().isTemporal() 
+					&& probNodes.get(i).getVariable().getBaseName().equals("Age")
+					&& probNodes.get(i).getVariable().getTimeSlice() == 0) {
+				ageFinding = new  Finding(probNodes.get(i).getVariable(), initialAge);
+				break;
+			}
+		}
+		try {
+			evidenceCase.addFinding(ageFinding);
+		} catch (InvalidStateException
+				| IncompatibleEvidenceException e) {
+			e.printStackTrace();
+		}
 
-	
+		FactoryExpandedSMM expandedNetFactory;
+
+		try {
+			expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
+
+			InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
+			if (!evidenceCase.getFindings().isEmpty()) {
+				try {
+					evidenceCase.extendEvidence(expandedNetFactory.getExtendedNet(), cycleLength);
+				} catch (IncompatibleEvidenceException e2) {
+					e2.printStackTrace();
+				} catch (InvalidStateException e2) {
+					e2.printStackTrace();
+				} catch (WrongCriterionException e2) {
+					e2.printStackTrace();
+				}
+			}
+			expandedNetFactory.applyDiscountToUtilityNodes(costDiscount, effectivenessDiscount, inferenceOptions, null);
+			if (adaptForCE){
+				expandedNetFactory.adaptProbNetForCE();
+			}
+			expandedNetwork = expandedNetFactory.getExtendedNet();
+
+		} catch (NotEnoughMemoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return expandedNetwork;
+
+	}
+
 	
 	/**
 	 * @param decisionCriteria

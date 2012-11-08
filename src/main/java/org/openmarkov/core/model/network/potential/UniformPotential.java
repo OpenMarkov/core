@@ -128,7 +128,10 @@ public class UniformPotential extends Potential {
 				} else {
 					// returns a uniform potential
 					ArrayList<Variable> potentialVariables = new ArrayList<Variable>(variables);
-					potentialVariables.removeAll(evidenceCase.getVariables());
+					if(evidenceCase != null)
+					{
+					    potentialVariables.removeAll(evidenceCase.getVariables());
+					}
 					projectedPotential = new TablePotential(potentialVariables, getPotentialRole());
 				}
 			}

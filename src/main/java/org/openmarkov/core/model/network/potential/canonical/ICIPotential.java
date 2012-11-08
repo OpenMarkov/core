@@ -479,4 +479,26 @@ public abstract class ICIPotential extends Potential {
         }
     }
 
+    public TablePotential expand () throws NotEnoughMemoryException
+    {
+        TablePotential expandedPotential = getFFunctionPotential ();
+        
+        // Marginalize out noisy variables
+        for(TablePotential noisyPotential: getNoisyPotentials ())
+        {
+            ArrayList<Potential> potentials = new ArrayList<> (2);
+            potentials.add (expandedPotential);
+            potentials.add (noisyPotential);
+            expandedPotential = (TablePotential)DiscretePotentialOperations.multiplyAndMarginalize (potentials, noisyPotential.getVariable (0));
+        }
+        
+        // Marginalize out leaky variable
+        ArrayList<Potential> potentials = new ArrayList<> (2);
+        potentials.add (expandedPotential);
+        potentials.add (getLeakyPotential ());
+        expandedPotential = (TablePotential)DiscretePotentialOperations.multiplyAndMarginalize (potentials, leakyVariable);
+        
+        return expandedPotential;
+    }
+
 }

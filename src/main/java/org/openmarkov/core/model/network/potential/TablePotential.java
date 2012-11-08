@@ -26,6 +26,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.SamplePotentialTable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.Util;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
@@ -250,6 +251,13 @@ public class TablePotential extends Potential
             for(int i = 0; i < values.length; ++i)
             {
                 values[i] = ((TablePotential)potential).values[i];
+            }
+        }else if (potential instanceof ICIPotential)
+        {
+            TablePotential expandedPotential = ((ICIPotential)potential).expand();
+            for(int i = 0; i < values.length; ++i)
+            {
+                values[i] = expandedPotential.values[i];
             }
         }
     }

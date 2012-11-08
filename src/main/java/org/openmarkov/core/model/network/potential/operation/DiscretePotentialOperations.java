@@ -567,7 +567,7 @@ public final class DiscretePotentialOperations {
     /** @param potential
      * @param variablesOfInterest
      * @throws NotEnoughMemoryException */
-    public static Potential marginalize(TablePotential potential,
+    public static TablePotential marginalize(TablePotential potential,
             ArrayList<Variable> variablesOfInterest) 
             throws NotEnoughMemoryException {
     
@@ -729,7 +729,7 @@ public final class DiscretePotentialOperations {
      * @return The quotient: A <code>TablePotential</code> with the union of the
      * variables of numerator and denominator. */
     @SuppressWarnings("unchecked")
-    public static Potential divide(Potential numerator, Potential denominator) {
+    public static TablePotential divide(Potential numerator, Potential denominator) {
         // Get variables and create quotient potential.
         // Quotient potential variables = numerator potential variables union
         // denominator potential variables
@@ -845,7 +845,7 @@ public final class DiscretePotentialOperations {
      * @param numDenominatorVariables <code>int</code>
      * @return quotient The <code>TablePotential</code> received with its table.
      */
-    private static Potential divide(TablePotential numerator, 
+    private static TablePotential divide(TablePotential numerator, 
             TablePotential denominator, TablePotential quotient, 
             int numNumeratorVariables, int numDenominatorVariables) {
         if (numNumeratorVariables == 0) {

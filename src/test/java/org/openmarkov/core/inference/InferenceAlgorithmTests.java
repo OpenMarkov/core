@@ -570,7 +570,7 @@ public abstract class InferenceAlgorithmTests {
      * @throws IncompatibleEvidenceException 
      * @throws NotEnoughMemoryException 
      */
-    //@Test
+    @Test
     public void testAPosterioriJointProbabilitiesBN_Asia ()
         throws ProbNodeNotFoundException,
         NotEnoughMemoryException,

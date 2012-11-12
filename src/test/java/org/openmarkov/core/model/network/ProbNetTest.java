@@ -18,11 +18,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.OpenMarkovTests;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -280,19 +278,16 @@ public class ProbNetTest {
 		try {
 			peque.addLink(variableA, variableB, true);
 		} catch (NodeNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			peque.addLink(variableA, variableC, true);
 		} catch (NodeNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			peque.addLink(variableB, variableC, true);
 		} catch (NodeNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -440,19 +435,16 @@ public class ProbNetTest {
 				try {
 					pruebaInferencia.addLink(variableA, variableB, true);
 				} catch (NodeNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				try {
 					pruebaInferencia.addLink(variableA, variableC, true);
 				} catch (NodeNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				try {
 					pruebaInferencia.addLink(variableB, variableD, true);
 				} catch (NodeNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -876,213 +868,6 @@ public class ProbNetTest {
 		assertEquals(2, nodeU.getNeighbors().size());
 	}
 
-	@Test
-	public void testPrune1() throws Exception {
-				
-		assertNotNull(this.peque);
-		ProbNode probNodeA = peque.getProbNode("A");
-		ProbNode probNodeB = peque.getProbNode("B");
-		Variable A = probNodeA.getVariable();
-		Variable B = probNodeB.getVariable();
-		Finding findingA = new Finding(A, 1); // A:absent(0)
-		HashMap<Variable, Finding> findings = new HashMap<Variable, Finding>();
-		findings.put(A, findingA);
-		EvidenceCase evidenceCase = new EvidenceCase(findings);
-		ArrayList<Variable> variablesOfInterest = new ArrayList<Variable>();
-		variablesOfInterest.add(B);
-		// test pruned net
-		ProbNet pruned = ProbNetOperations.
-				getPruned(peque, variablesOfInterest, evidenceCase);
-		ProbNetOperations.projectEvidence(pruned, evidenceCase);
-		assertEquals(1, pruned.getNumNodes());
-		boolean throwNodeNotFound = false;
-		try {
-			pruned.getVariable("A");
-		} catch (ProbNodeNotFoundException e) {
-			throwNodeNotFound = true;
-		}
-		assertTrue(throwNodeNotFound);
-		assertNotNull(pruned.getVariable("B"));
-		throwNodeNotFound = false;
-		try {
-			pruned.getVariable("C");
-		} catch (ProbNodeNotFoundException e) {
-			throwNodeNotFound = true;
-		}
-		assertTrue(throwNodeNotFound);
-		assertEquals(1, pruned.getNumPotentials());
-		probNodeB = pruned.getProbNode("B");
-		TablePotential bPotential = 
-			(TablePotential)probNodeB.getPotentials().get(0);
-		assertEquals(1, bPotential.getNumVariables());
-		assertTrue(bPotential.contains(B));
-		assertEquals(2, ((TablePotential)bPotential).values.length);
-		int[] offsets = bPotential.getOffsets();
-		assertEquals(1, offsets.length);
-		int initialPosition = bPotential.getInitialPosition();
-		assertEquals(0, initialPosition);
-		double a = bPotential.values[initialPosition];
-			assertEquals(a, 0.9,OpenMarkovTests.maxError);
-		assertEquals(bPotential.values[initialPosition + offsets[0]], 0.1,OpenMarkovTests.maxError);
-	}
-
-	@Test
-	/** Test: prune barren nodes and prune parts of the network isolated due to 
-	 *  evidence. */
-	public void testPrune2() throws Exception {
-				
-		assertNotNull(pruebaInferencia);
-		ProbNode probNodeA = pruebaInferencia.getProbNode("A");
-		ProbNode probNodeB = pruebaInferencia.getProbNode("B");
-		ProbNode probNodeC = pruebaInferencia.getProbNode("C");
-		ProbNode probNodeD = pruebaInferencia.getProbNode("D");
-		ProbNode probNodeE = pruebaInferencia.getProbNode("E");
-		ProbNode probNodeF = pruebaInferencia.getProbNode("F");
-		ProbNode probNodeG = pruebaInferencia.getProbNode("G");
-		ProbNode probNodeH = pruebaInferencia.getProbNode("H");
-		ProbNode probNodeI = pruebaInferencia.getProbNode("I");
-		Variable A = probNodeA.getVariable();
-		Variable B = probNodeB.getVariable();
-		Variable C = probNodeC.getVariable();
-		Variable D = probNodeD.getVariable();
-		Variable E = probNodeE.getVariable();
-		Variable F = probNodeF.getVariable();
-		Variable G = probNodeG.getVariable();
-		Variable H = probNodeH.getVariable();
-		Variable I = probNodeI.getVariable();
-		// Set up evidence: A = 1 and D = 1
-		Finding findingA = new Finding(A, 1);
-		Finding findingD = new Finding(D, 1);		
-		EvidenceCase evidence = new EvidenceCase();
-		evidence.addFinding(findingA);
-		evidence.addFinding(findingD);
-		// Set up variables of interest: E	
-		ArrayList<Variable> variablesOfInterest = new ArrayList<Variable>();
-		variablesOfInterest.add(E);
-		
-		ProbNet pruned = ProbNetOperations.getPruned(
-				pruebaInferencia, variablesOfInterest, evidence);
-		ProbNetOperations.projectEvidence(pruned, evidence);
-		
-		ArrayList<Variable> variablesPruned = pruned.getVariables();
-		assertTrue(variablesPruned.contains(B));
-		assertTrue(variablesPruned.contains(C));
-		assertTrue(variablesPruned.contains(E));
-		assertTrue(variablesPruned.contains(I));
-		assertFalse(variablesPruned.contains(A));
-		assertFalse(variablesPruned.contains(D));
-		assertFalse(variablesPruned.contains(H));
-		assertFalse(variablesPruned.contains(G));
-		assertFalse(variablesPruned.contains(F));
-
-		// Test B potentials
-		probNodeB = pruned.getProbNode("B");
-		ArrayList<Potential> potentialsB = probNodeB.getPotentials();
-		assertEquals(2, potentialsB.size());
-		// Test projected potential p(B|A), A = 1 = psi(B)
-		// Get psi(B)
-		TablePotential potential0B = (TablePotential)potentialsB.get(0);
-		if (potential0B.getNumVariables() == 2) {
-			potential0B = (TablePotential)potentialsB.get(1);
-		}
-		assertEquals(1, potential0B.getNumVariables());
-		assertTrue(potential0B.contains(B));
-		assertEquals(2, potential0B.values.length);
-		int[] offsets0B = potential0B.getOffsets();
-		assertEquals(1, offsets0B.length);
-		assertEquals(1, offsets0B[0]);
-		int initialPosition = potential0B.getInitialPosition();
-		assertEquals(0, initialPosition);
-		assertEquals(0.26, potential0B.values[potential0B.getInitialPosition()],OpenMarkovTests.maxError);
-		assertEquals(0.74, potential0B.values[
-		        potential0B.getInitialPosition() + offsets0B[0]],OpenMarkovTests.maxError);
-		// Test projected potential p(D|B,I), D = 1 = psi(B,I)
-		TablePotential potential1B = (TablePotential)potentialsB.get(1);
-		if (potential1B.getNumVariables() == 1) {
-			potential1B = (TablePotential)potentialsB.get(0);
-		}
-		assertEquals(2, potential1B.getNumVariables());
-		assertTrue(potential1B.contains(B));
-		assertTrue(potential1B.contains(I));
-		
-	}
-	
-	/*@Test
-	/** Test: prune barren nodes and prune parts of the network isolated due to 
-	 *  evidence. *
-	public void testPrune3() throws Exception {
-		// Set up
-		ProbNet pruebaInferencia = ElviraParser.getUniqueInstance()
-			.loadProbNet(IOTests.testsPath + "PruebaInferencia.elv");
-		assertNotNull(pruebaInferencia);
-		ProbNode probNodeA = pruebaInferencia.getProbNode("A");
-		ProbNode probNodeB = pruebaInferencia.getProbNode("B");
-		ProbNode probNodeC = pruebaInferencia.getProbNode("C");
-		ProbNode probNodeD = pruebaInferencia.getProbNode("D");
-		ProbNode probNodeE = pruebaInferencia.getProbNode("E");
-		ProbNode probNodeF = pruebaInferencia.getProbNode("F");
-		ProbNode probNodeG = pruebaInferencia.getProbNode("G");
-//		ProbNode probNodeH = pruebaInferencia.getProbNode("H");
-		ProbNode probNodeI = pruebaInferencia.getProbNode("I");
-		Variable A = probNodeA.getVariable();
-		Variable B = probNodeB.getVariable();
-		Variable C = probNodeC.getVariable();
-		Variable D = probNodeD.getVariable();
-		Variable E = probNodeE.getVariable();
-		Variable F = probNodeF.getVariable();
-		Variable G = probNodeG.getVariable();
-//		Variable H = probNodeH.getVariable();
-		Variable I = probNodeI.getVariable();
-		// Set up evidence: A = 1 and D = 1
-		Finding findingA = new Finding(A, 1);
-		Finding findingG = new Finding(G, 1);		
-		EvidenceCase evidence = new EvidenceCase();
-		evidence.addFinding(findingA);
-		evidence.addFinding(findingG);
-		// Set up variables of interest: E	
-		ArrayList<Variable> variablesOfInterest = new ArrayList<Variable>();
-		variablesOfInterest.add(E);
-		
-		ProbNet pruned = pruebaInferencia.prune(variablesOfInterest, evidence);
-		pruned.projectEvidence(pruned, evidence);
-		
-		ArrayList<Variable> variablesPruned = pruned.getVariables();
-		assertTrue(variablesPruned.contains(B));
-		assertTrue(variablesPruned.contains(C));
-		assertTrue(variablesPruned.contains(E));
-		assertFalse(variablesPruned.contains(A));
-		assertFalse(variablesPruned.contains(D));
-//		assertFalse(variablesPruned.contains(H));
-		assertFalse(variablesPruned.contains(G));
-		assertFalse(variablesPruned.contains(F));
-		System.err.println(variablesPruned);
-		assertEquals(3, variablesPruned.size());
-
-		// Test B potentials
-		probNodeB = pruned.getProbNode("B");
-		ArrayList<Potential> potentialsB = probNodeB.getPotentials();
-		assertEquals(2, potentialsB.size());
-		// Test projected potential p(B|A), A = 1 = psi(B)
-		TablePotential potential0B = (TablePotential)potentialsB.get(0);
-		assertEquals(1, potential0B.getNumVariables());
-		assertTrue(potential0B.contains(B));
-		assertEquals(4, potential0B.values.length);
-		int[] offsets0B = potential0B.getOffsets();
-		assertEquals(1, offsets0B.length);
-		assertEquals(1, offsets0B[0]);
-		int initialPosition = potential0B.getInitialPosition();
-		assertEquals(2, initialPosition);
-		assertEquals(0.26, potential0B.values[potential0B.getInitialPosition()]);
-		assertEquals(0.74, potential0B.values[
-		        potential0B.getInitialPosition() + offsets0B[0]]);
-		// Test projected potential p(D|B,I), D = 1 = psi(B,I)
-		TablePotential potential1B = (TablePotential)potentialsB.get(1);
-		assertEquals(2, potential1B.getNumVariables());
-		assertTrue(potential1B.contains(B));
-		assertTrue(potential1B.contains(I));
-		
-	}*/
-	
 	@Test
 	public void testGetAdditionalConstraints() {
 		ProbNet bnProbNet = new ProbNet(BayesianNetworkType.getUniqueInstance());

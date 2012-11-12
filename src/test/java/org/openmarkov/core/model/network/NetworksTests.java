@@ -19,6 +19,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     //PotentialTests.class,
 	ProbNetTest.class,
+	ProbNetOperationsTest.class,
     VariableTest.class,
     //CanonicalTests.class,
     //ConstraintsTests.class,

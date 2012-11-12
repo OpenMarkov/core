@@ -92,6 +92,10 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	public ProbNode(ProbNet probNet, Variable variable, NodeType nodeType) {
     	this.probNet = probNet;
     	this.variable = variable;
+    	if(nodeType == NodeType.UTILITY)
+    	{
+    	    this.variable.setVariableType (VariableType.NUMERIC);
+    	}
         this.nodeType = nodeType;
         node = new Node(probNet.getGraph(), this);
         potentials = new ArrayList<Potential>();
@@ -104,8 +108,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 */
 	public ProbNode(ProbNode probNode) {
     	this.probNet = probNode.getProbNet();
-    	this.variable = (Variable)probNode.getVariable();
-    			//.clone();
+    	this.variable = probNode.getVariable();
         this.nodeType = probNode.getNodeType();
        // node = new Node(probNet.getGraph(), this);
         node = probNode.getNode();

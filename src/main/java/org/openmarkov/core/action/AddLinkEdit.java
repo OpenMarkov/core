@@ -84,7 +84,7 @@ public class AddLinkEdit extends BaseLinkEdit {
     public void doEdit() throws DoEditException, NotEnoughMemoryException {
         probNet.addLink (node1, node2, isDirected);
         this.link = probNet.getGraph ().getLink (node1.getNode (), node2.getNode (), isDirected);
-        if (updatePotentials && node2.getNodeType () != NodeType.DECISION)
+        if (updatePotentials)
         {
             this.oldPotentials = node2.getPotentials ();
             for (Potential oldPotential : oldPotentials)

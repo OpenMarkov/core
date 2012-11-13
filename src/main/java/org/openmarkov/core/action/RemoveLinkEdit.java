@@ -88,7 +88,7 @@ public class RemoveLinkEdit extends BaseLinkEdit {
     {
         probNet.removeLink (node1, node2, isDirected);
         this.link = probNet.getGraph ().getLink (node1.getNode (), node2.getNode (), isDirected);
-        if (updatePotentials && node2.getNodeType () != NodeType.DECISION)
+        if (updatePotentials)
         {
             // Update potentials
             this.oldPotentials = node2.getPotentials ();

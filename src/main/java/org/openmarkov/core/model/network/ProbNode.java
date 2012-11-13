@@ -460,9 +460,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 *  <code>boolean</code> */
 	public boolean hasPolicy() {
 		return nodeType == NodeType.DECISION &&  
-				potentials.size() != 0 && 
-				potentials.get(0).getPotentialType() != 
-				PotentialType.UNIFORM;
+				potentials.size() != 0;
 	}
 
 	/** @param simulationIndexVariable. <code>Variable</code>

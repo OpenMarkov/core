@@ -184,6 +184,7 @@ public class NodeStateEdit extends SimplePNEdit {
 			break;
 		case DOWN:
 			if (stateSelected > 0) {
+				
 				State state = probNode.getVariable().getStates()[stateSelected - 1];
 				probNode.getVariable().getStates()[stateSelected - 1] = probNode
 						.getVariable().getStates()[stateSelected];

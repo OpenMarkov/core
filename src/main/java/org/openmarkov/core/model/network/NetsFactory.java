@@ -790,13 +790,21 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 
 		//Variables
 		Variable duration0 = new Variable("Duration", true, 0.0, 20.0, true, 1);
+		duration0.setBaseName("Duration");
+		duration0.setName("Duration [0]");
 		duration0.setTimeSlice(0);
 		Variable duration1 = new Variable("Duration", true, 0.0, 20.0, true, 1);
+		duration1.setBaseName("Duration");
+		duration1.setName("Duration [1]");
 		duration1.setTimeSlice(1);
 		
 		Variable state0 = new Variable("State", "dead", "alive");
+		state0.setBaseName("State");
+		state0.setName("State [0]");
 		state0.setTimeSlice(0);
 		Variable state1 = new Variable("State", "dead", "alive");
+		state1.setBaseName("State");
+		state1.setName("State [1]");
 		state1.setTimeSlice(1);
 		
 		//Add variables to the network	

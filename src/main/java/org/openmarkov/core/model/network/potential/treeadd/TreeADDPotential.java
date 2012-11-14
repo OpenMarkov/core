@@ -405,7 +405,8 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 					correctOrder.remove(i);
 				}
 			} 
-			projected = DiscretePotentialOperations.reorder(projected, correctOrder);
+			projected.setVariables(correctOrder);
+			//projected = DiscretePotentialOperations.reorder(projected, correctOrder);
 		}
 		projectedPotentials.add(projected);
 

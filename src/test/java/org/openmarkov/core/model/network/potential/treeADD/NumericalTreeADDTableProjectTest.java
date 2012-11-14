@@ -131,7 +131,7 @@ public class NumericalTreeADDTableProjectTest {
 		ProbNet probNet = NetsFactory.createSemiMarkovOnlyChanceNet();
 		ArrayList<Finding> findings = new ArrayList<>();
 		try {
-			findings.add(new Finding(probNet.getVariable("Duration [0]"), 1));
+			findings.add(new Finding(probNet.getVariable("Duration [0]"), 1.0));
 		} catch (ProbNodeNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -156,7 +156,7 @@ public class NumericalTreeADDTableProjectTest {
 		
 		ArrayList<Finding> findings2 = new ArrayList<>();
 		try {
-			findings.add(new Finding(probNet.getVariable("Duration [0]"), 2));
+			findings2.add(new Finding(probNet.getVariable("Duration [0]"), 2.0));
 		} catch (ProbNodeNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -181,7 +181,7 @@ public class NumericalTreeADDTableProjectTest {
 		
 		ArrayList<Finding> findings3 = new ArrayList<>();
 		try {
-			findings.add(new Finding(probNet.getVariable("Duration [0]"), 2));
+			findings3.add(new Finding(probNet.getVariable("Duration [0]"), 2.0));
 		} catch (ProbNodeNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -194,8 +194,8 @@ public class NumericalTreeADDTableProjectTest {
 		ArrayList<Variable> variables3 = tablePotential3.getVariables();
 		assertEquals(2, variables3.size());
 		assertEquals(4, tablePotential3.values.length);
-		assertEquals(0.3, tablePotential3.values[0], 0.1);
-		assertEquals(0.7, tablePotential3.values[1], 0.1);
+		assertEquals(0.5, tablePotential3.values[0], 0.1);
+		assertEquals(0.5, tablePotential3.values[1], 0.1);
 		assertEquals(0.0, tablePotential3.values[2], 0.1);
 		assertEquals(1.0, tablePotential3.values[3], 0.1);
 		} catch (ProbNodeNotFoundException e) {

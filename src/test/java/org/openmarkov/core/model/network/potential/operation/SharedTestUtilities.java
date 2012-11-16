@@ -258,16 +258,16 @@ public class SharedTestUtilities {
 	}
 	
 	/** Create a <code>TablePotential</code> with binary variables A, B, ... X 
-	 *  (<code>numVariables</code>) and adittionalProperties = received 
-	 *  <code>adittionalProperties</code> object if it is not <code>null</code>
-	 *  or adittionalProperties = 
-	 *  <code>HashMap<String, Object> adittionalProperties</code> with one 
+	 *  (<code>numVariables</code>) and additionalProperties = received 
+	 *  <code>additionalProperties</code> object if it is not <code>null</code>
+	 *  or additionalProperties = 
+	 *  <code>HashMap<String, Object> additionalProperties</code> with one 
 	 *  entry: key = "property", value = "property" if 
-	 *  <code>adittionalProperties</code> is <code>null</code>
+	 *  <code>additionalProperties</code> is <code>null</code>
 	 *  @param numVariables. <code>int</code>
 	 *  @param table. <code>double[]</code>
-	 *  @param adittionalProperties. 
-	 *    <code>HashMap<String, Object> adittionalProperties</code>
+	 *  @param additionalProperties. 
+	 *    <code>HashMap<String, Object> additionalProperties</code>
 	 *  @return TablePotential
 	 *  @throws NotEnoughMemoryException */
 	public static TablePotential createTablePotential(int numVariables, 
@@ -289,7 +289,7 @@ public class SharedTestUtilities {
 			variables.add(variable);
 		}
 		
-		// Create adittionalProperties
+		// Create additionalProperties
 		if (properties == null) {
 			properties = new HashMap<String, Object>();
 			properties.put("property", "property");

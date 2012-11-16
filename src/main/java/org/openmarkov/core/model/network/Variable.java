@@ -354,7 +354,7 @@ public class Variable implements Cloneable {
 		}
 		states[getStateIndex(oldName)].setName(newName);
 
-		// Change key of additional adittionalProperties of this state if they exists
+		// Change key of additional additionalProperties of this state if they exists
 		if (statesAdditionalProperties != null) {
 			HashMap<String, String> additionalPropertiesOldName =
 				statesAdditionalProperties.get(oldName);

@@ -18,7 +18,7 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.oon.Instance;
 import org.openmarkov.core.oon.InstanceReferenceLink;
 import org.openmarkov.core.oon.NodeReferenceLink;
-import org.openmarkov.core.oon.OOBNet;
+import org.openmarkov.core.oon.OOPNet;
 import org.openmarkov.core.oon.ReferenceLink;
 
 @SuppressWarnings("serial")
@@ -41,14 +41,14 @@ public class AddReferenceLinkEdit extends SimplePNEdit{
 	
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
-		((OOBNet)probNet).addReferenceLink(referenceLink);
+		((OOPNet)probNet).addReferenceLink(referenceLink);
 	}	
 	
 
 	@Override
 	public void undo() throws CannotUndoException {
 		// TODO Auto-generated method stub
-	    ((OOBNet)probNet).removeReferenceLink(referenceLink);
+	    ((OOPNet)probNet).removeReferenceLink(referenceLink);
 	}
 
 }

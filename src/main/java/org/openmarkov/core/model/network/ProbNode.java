@@ -73,10 +73,10 @@ public class ProbNode implements Cloneable, PotentialsContainer {
     
     private PolicyType policyType = PolicyType.OPTIMAL;
     
-    //TODO OOBN start
+    //TODO OOPN start
     /** Indicates whether this node is an input parameter */
     private boolean isInput = false;
-    //TODO OOBN end
+    //TODO OOPN end
     
    
     

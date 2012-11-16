@@ -46,7 +46,7 @@ import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
 
-public class OOBNet extends ProbNet implements PNUndoableEditListener
+public class OOPNet extends ProbNet implements PNUndoableEditListener
 {
     private LinkedHashMap<String, ProbNet> classes = new LinkedHashMap<String, ProbNet> ();
     private Map<String, Instance> instances        = new HashMap<String, Instance> ();
@@ -54,27 +54,27 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
 
     
     /**
-     * Constructor for OOBNet.
+     * Constructor for OOPNet.
      */
-    public OOBNet ()
+    public OOPNet ()
     {
         super ();
     }
 
     /**
-     * Constructor for OOBNet.
+     * Constructor for OOPNet.
      * @param networkType
      */
-    public OOBNet (NetworkType networkType)
+    public OOPNet (NetworkType networkType)
     {
         super (networkType);
     }
     
     /**
-     * Constructor for OOBNet.
+     * Constructor for OOPNet.
      * @param networkType
      */
-    public OOBNet (ProbNet probNet)
+    public OOPNet (ProbNet probNet)
     {
         super();
         try
@@ -734,9 +734,9 @@ public class OOBNet extends ProbNet implements PNUndoableEditListener
         LinkedHashMap<String, ProbNet> classes = new LinkedHashMap<> ();
         for(Instance instance : getInstances().values ())
         {
-            if(instance.getClassNet () instanceof OOBNet)
+            if(instance.getClassNet () instanceof OOPNet)
             {
-                classes.putAll (((OOBNet)instance.getClassNet ()).getClassList());
+                classes.putAll (((OOPNet)instance.getClassNet ()).getClassList());
             }
             if(!classes.containsKey (instance.getClassNet ().getName ()))
             {

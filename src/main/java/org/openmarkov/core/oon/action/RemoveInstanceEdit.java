@@ -26,7 +26,7 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.oon.Instance;
 import org.openmarkov.core.oon.InstanceReferenceLink;
 import org.openmarkov.core.oon.ReferenceLink;
-import org.openmarkov.core.oon.OOBNet;
+import org.openmarkov.core.oon.OOPNet;
 import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
 
 /**
@@ -46,7 +46,7 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 	 */
 	public RemoveInstanceEdit(ProbNet probNet, String instanceName) {
 		super(probNet);
-		this.instance = ((OOBNet)probNet).getInstances().get(instanceName);
+		this.instance = ((OOPNet)probNet).getInstances().get(instanceName);
 		
 		nodesToRemove = new HashSet<ProbNode>();
 		linksToRemove = new HashSet<Link>();
@@ -56,7 +56,7 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 			nodesToRemove.add(probNode);
 			linksToRemove.addAll(probNode.getNode().getLinks());
 		}
-		for(ReferenceLink link : ((OOBNet)probNet).getReferenceLinks())
+		for(ReferenceLink link : ((OOPNet)probNet).getReferenceLinks())
 		{
             if(link instanceof InstanceReferenceLink)
             {
@@ -93,10 +93,10 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 	public void doEdit() throws DoEditException, NotEnoughMemoryException,
 			NonProjectablePotentialException, WrongCriterionException {
 		super.doEdit();
-		((OOBNet)probNet).getInstances().remove(instance.getName());
+		((OOPNet)probNet).getInstances().remove(instance.getName());
 		for(ReferenceLink instanceLink: instanceLinksToRemove)
 		{
-		    ((OOBNet)probNet).getReferenceLinks().remove(instanceLink);
+		    ((OOPNet)probNet).getReferenceLinks().remove(instanceLink);
 		}
 	}
 
@@ -105,13 +105,13 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 		// TODO Auto-generated method stub
 		super.undo();
 		try {
-		    ((OOBNet)probNet).addInstance(instance);
+		    ((OOPNet)probNet).addInstance(instance);
 		} catch (InstanceAlreadyExistsException e) {
 			//Impossible to get here
 		}
 		for(ReferenceLink instanceLink: instanceLinksToRemove)
 		{
-		    ((OOBNet)probNet).getReferenceLinks().add(instanceLink);
+		    ((OOPNet)probNet).getReferenceLinks().add(instanceLink);
 		}		
 	}
 

@@ -57,11 +57,11 @@ public class Instance {
 		this.isInput = isInput;
 		this.arity = ParameterArity.ONE;
 		
-		if(classNet instanceof OOBNet)
+		if(classNet instanceof OOPNet)
 		{
-    		for(String subInstanceName : ((OOBNet)classNet).getInstances().keySet())
+    		for(String subInstanceName : ((OOPNet)classNet).getInstances().keySet())
     		{
-    			Instance originalSubinstance = ((OOBNet)classNet).getInstances().get(subInstanceName);
+    			Instance originalSubinstance = ((OOPNet)classNet).getInstances().get(subInstanceName);
     
     			ArrayList<ProbNode> subInstanceNodes = new ArrayList<ProbNode>();
     			for(ProbNode originalSubinstanceNode : originalSubinstance.getNodes())

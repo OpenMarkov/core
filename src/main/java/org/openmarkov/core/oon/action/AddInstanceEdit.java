@@ -33,21 +33,21 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.oon.Instance;
-import org.openmarkov.core.oon.OOBNet;
+import org.openmarkov.core.oon.OOPNet;
 import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
 
 @SuppressWarnings("serial")
 public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
 	private String instanceName;
-	private OOBNet oobNet;
+	private OOPNet oopNet;
 	private ProbNet classNet;
 	private java.awt.geom.Point2D.Double cursorPositon;
 	private List<PNEdit> edits = null;
 	private int doneEditCounter;
 
-	public AddInstanceEdit(OOBNet probNet, ProbNet classNet,
+	public AddInstanceEdit(OOPNet probNet, ProbNet classNet,
 			String instanceName, java.awt.geom.Point2D.Double cursorPosition) {
-		this.oobNet = probNet;
+		this.oopNet = probNet;
 		this.classNet = classNet;
 		this.instanceName = instanceName;
 		this.cursorPositon = cursorPosition;
@@ -59,7 +59,7 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
 			NonProjectablePotentialException, WrongCriterionException	{
 		doneEditCounter = 0;
 		
-		if (oobNet.getInstances().containsKey(instanceName)) {
+		if (oopNet.getInstances().containsKey(instanceName)) {
 			throw new DoEditException("An instance with name " + instanceName
 					+ " alreadyExists");
 		}
@@ -86,13 +86,13 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
 	        Point2D.Double position = new Point2D.Double (probNode.getNode ().getCoordinateX () - leftCorner + cursorPositon.getX(),
 	                probNode.getNode ().getCoordinateY () - topCorner + cursorPositon.getY());
 	        
-	        edits.add (new AddProbNodeEdit (oobNet, variable, probNode.getNodeType (), position));			
+	        edits.add (new AddProbNodeEdit (oopNet, variable, probNode.getNodeType (), position));			
 		}
 	    // Apply node generation edits
         for (PNEdit edit : edits)
         {
             try {
-				oobNet.doEdit(edit);
+				oopNet.doEdit(edit);
 				++doneEditCounter;
 			} catch (ConstraintViolationException | CanNotDoEditException e) {
 				this.undo();
@@ -109,9 +109,9 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
                 String originalSourceNodeName = classNet.getProbNode (link.getNode1 ()).getName ();
                 String originalDestinationNodeName = classNet.getProbNode (link.getNode2 ()).getName ();
 
-                edits.add(new AddLinkEdit (oobNet,
-                        oobNet.getVariable(instanceName + "." + originalSourceNodeName),
-                        oobNet.getVariable(instanceName + "." + originalDestinationNodeName),
+                edits.add(new AddLinkEdit (oopNet,
+                        oopNet.getVariable(instanceName + "." + originalSourceNodeName),
+                        oopNet.getVariable(instanceName + "." + originalDestinationNodeName),
                         link.isDirected ()));
             }
             catch (ProbNodeNotFoundException e)
@@ -127,7 +127,7 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
             {
                 AddLinkEdit linkEdit = ((AddLinkEdit) edit);
                 try {
-					oobNet.doEdit(linkEdit);
+					oopNet.doEdit(linkEdit);
 					++doneEditCounter;
 	                pastedLinks.add (linkEdit.getLink ());
 				} catch (ConstraintViolationException | CanNotDoEditException e) {
@@ -144,19 +144,19 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
             ArrayList<Potential> newPotentials = new ArrayList<Potential>();
             try
             {
-                ProbNode newNode = oobNet.getProbNode (instanceName + "." + originalNode.getName ());
+                ProbNode newNode = oopNet.getProbNode (instanceName + "." + originalNode.getName ());
                 for(Potential originalPotential: originalNode.getPotentials ())
                 {
                     Potential potential = originalPotential.copy ();
                     for (int i = 0; i < potential.getNumVariables (); ++i)
                     {
                         String variableName = potential.getVariable (i).getName ();
-                        Variable variable = oobNet.getVariable (instanceName + "."  + variableName);
+                        Variable variable = oopNet.getVariable (instanceName + "."  + variableName);
                         potential.replaceVariable (i, variable);
                     }
                     if(potential.getPotentialRole() == PotentialRole.UTILITY)
                     {
-                    	potential.setUtilityVariable (oobNet.getVariable (instanceName + "."  + potential.getUtilityVariable ().getName ()));
+                    	potential.setUtilityVariable (oopNet.getVariable (instanceName + "."  + potential.getUtilityVariable ().getName ()));
                     }
                     newPotentials.add (potential);
                 }
@@ -177,7 +177,7 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
         
 		try {
 			Instance instance = new Instance(instanceName, classNet, instanceNodes); 
-			oobNet.addInstance(instance);
+			oopNet.addInstance(instance);
 		} catch (InstanceAlreadyExistsException e) {
 			throw new DoEditException("An instance with name " + instanceName
 					+ "alreadyExists");
@@ -190,14 +190,14 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
 	
 	@Override
 	public ProbNet getProbNet() {
-		return this.oobNet;
+		return this.oopNet;
 	}
 
 	@Override
 	public void undo() throws CannotUndoException {
 		for(int i = 0 ; i < doneEditCounter; ++i)
 		{
-			oobNet.getPNESupport().undo();
+			oopNet.getPNESupport().undo();
 		}
 		doneEditCounter = 0;
 	}	

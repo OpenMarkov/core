@@ -6,7 +6,7 @@
 * Unless required by applicable law, this code is distributed
 * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
 */
-package org.openmarkov.core.oon.action;
+package org.openmarkov.core.oopn.action;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -32,9 +32,9 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.oon.Instance;
-import org.openmarkov.core.oon.OOPNet;
-import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
+import org.openmarkov.core.oopn.Instance;
+import org.openmarkov.core.oopn.OOPNet;
+import org.openmarkov.core.oopn.exception.InstanceAlreadyExistsException;
 
 @SuppressWarnings("serial")
 public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {

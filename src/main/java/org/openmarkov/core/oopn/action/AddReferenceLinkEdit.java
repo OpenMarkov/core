@@ -6,7 +6,7 @@
 * Unless required by applicable law, this code is distributed
 * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
 */
-package org.openmarkov.core.oon.action;
+package org.openmarkov.core.oopn.action;
 
 import javax.swing.undo.CannotUndoException;
 
@@ -15,11 +15,11 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.oon.Instance;
-import org.openmarkov.core.oon.InstanceReferenceLink;
-import org.openmarkov.core.oon.NodeReferenceLink;
-import org.openmarkov.core.oon.OOPNet;
-import org.openmarkov.core.oon.ReferenceLink;
+import org.openmarkov.core.oopn.Instance;
+import org.openmarkov.core.oopn.InstanceReferenceLink;
+import org.openmarkov.core.oopn.NodeReferenceLink;
+import org.openmarkov.core.oopn.OOPNet;
+import org.openmarkov.core.oopn.ReferenceLink;
 
 @SuppressWarnings("serial")
 public class AddReferenceLinkEdit extends SimplePNEdit{

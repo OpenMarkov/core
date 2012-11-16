@@ -7,7 +7,7 @@
 * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
 */
 
-package org.openmarkov.core.oon;
+package org.openmarkov.core.oopn;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -7,7 +7,7 @@
 * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
 */
 
-package org.openmarkov.core.oon.action;
+package org.openmarkov.core.oopn.action;
 
 import java.util.HashSet;
 
@@ -23,11 +23,11 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.oon.Instance;
-import org.openmarkov.core.oon.InstanceReferenceLink;
-import org.openmarkov.core.oon.ReferenceLink;
-import org.openmarkov.core.oon.OOPNet;
-import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
+import org.openmarkov.core.oopn.Instance;
+import org.openmarkov.core.oopn.InstanceReferenceLink;
+import org.openmarkov.core.oopn.OOPNet;
+import org.openmarkov.core.oopn.ReferenceLink;
+import org.openmarkov.core.oopn.exception.InstanceAlreadyExistsException;
 
 /**
  * @author ibermejo

@@ -6,9 +6,9 @@
 * Unless required by applicable law, this code is distributed
 * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
 */
-package org.openmarkov.core.oon;
+package org.openmarkov.core.oopn.exception;
 
-public class ReferenceLink {
-
+@SuppressWarnings("serial")
+public class InstanceAlreadyExistsException extends Exception {
 
 }

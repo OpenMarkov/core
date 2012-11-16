@@ -4,7 +4,7 @@
  * distributed on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.core.oon;
+package org.openmarkov.core.oopn;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.type.NetworkType;
-import org.openmarkov.core.oon.exception.InstanceAlreadyExistsException;
+import org.openmarkov.core.oopn.exception.InstanceAlreadyExistsException;
 
 public class OOPNet extends ProbNet implements PNUndoableEditListener
 {

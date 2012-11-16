@@ -1,4 +1,4 @@
-package org.openmarkov.core.oon;
+package org.openmarkov.core.oopn;
 
 public class InstanceReferenceLink extends ReferenceLink {
 	

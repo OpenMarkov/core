@@ -7,7 +7,7 @@
 * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
 */
 
-package org.openmarkov.core.oon.action;
+package org.openmarkov.core.oopn.action;
 
 import javax.swing.undo.CannotUndoException;
 
@@ -16,7 +16,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.oon.Instance;
+import org.openmarkov.core.oopn.Instance;
 
 @SuppressWarnings("serial")
 public class MarkAsInputEdit extends SimplePNEdit{

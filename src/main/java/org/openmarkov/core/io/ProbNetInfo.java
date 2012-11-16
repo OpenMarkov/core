@@ -10,20 +10,21 @@
 package org.openmarkov.core.io;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 
 public class ProbNetInfo {
     private ProbNet probNet;
-    private ArrayList<EvidenceCase> evidence;
+    private List<EvidenceCase> evidence;
 
     /**
      * Constructor for ProbNetInfo.
      * @param probNet
      * @param evidence
      */
-    public ProbNetInfo (ProbNet probNet, ArrayList<EvidenceCase> evidence)
+    public ProbNetInfo (ProbNet probNet, List<EvidenceCase> evidence)
     {
         this.probNet = probNet;
         this.evidence = evidence;
@@ -69,7 +70,7 @@ public class ProbNetInfo {
      * Returns the evidence.
      * @return the evidence.
      */
-    public ArrayList<EvidenceCase> getEvidence ()
+    public List<EvidenceCase> getEvidence ()
     {
         return evidence;
     }

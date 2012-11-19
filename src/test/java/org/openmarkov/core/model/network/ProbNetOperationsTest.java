@@ -187,8 +187,6 @@ public class ProbNetOperationsTest {
 		
 		Variable B; 
 		
-		Variable C; 
-		
 		Variable D;
 		
 		Variable variableA = new Variable("A", 2);
@@ -248,7 +246,7 @@ public class ProbNetOperationsTest {
 		
 		TablePotential potentialvaluesDBI;
 		
-		TablePotential potentialvaluesba;
+		TablePotential potentialvaluesBA;
 		
 		TablePotential potentialvaluesAH;
 		
@@ -377,7 +375,7 @@ public class ProbNetOperationsTest {
 
 
 		//notEnoughMemoryException 
-		potentialvaluesba= new TablePotential(variablesba,role,tableba);
+		potentialvaluesBA= new TablePotential(variablesba,role,tableba);
 
 		//potentialAH
 		double [] tableAH ={0.09, 0.91, 0.83, 0.17};
@@ -410,23 +408,9 @@ public class ProbNetOperationsTest {
 		pruebaInferencia.addVariable(variableH, nodeType);
 		pruebaInferencia.addVariable(variableI, nodeType);
 
-		//Links throws NodeNotFoundException
-		try {
-			pruebaInferencia.addLink(variableA, variableB, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-		try {
-			pruebaInferencia.addLink(variableA, variableC, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-		try {
-			pruebaInferencia.addLink(variableB, variableD, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
+		pruebaInferencia.addLink(variableA, variableB, true);
+		pruebaInferencia.addLink(variableA, variableC, true);
+		pruebaInferencia.addLink(variableB, variableD, true);
 		pruebaInferencia.addLink(variableB, variableE, true);
 		pruebaInferencia.addLink(variableC, variableE, true);
 		pruebaInferencia.addLink(variableD, variableG, true);
@@ -434,64 +418,43 @@ public class ProbNetOperationsTest {
 		pruebaInferencia.addLink(variableH, variableA, true);
 		pruebaInferencia.addLink(variableI, variableD, true);
 
-
 		pruebaInferencia.addPotential((Potential)potentialvaluesCA);
 		pruebaInferencia.addPotential((Potential)potentialvaluesEBC);
 		pruebaInferencia.addPotential((Potential)potentialvaluesFE);
 		pruebaInferencia.addPotential((Potential)potentialvaluesGD);
 		pruebaInferencia.addPotential((Potential)potentialvaluesI);
 		pruebaInferencia.addPotential((Potential)potentialvaluesDBI);
-		pruebaInferencia.addPotential((Potential)potentialvaluesba);
+		pruebaInferencia.addPotential((Potential)potentialvaluesBA);
 		pruebaInferencia.addPotential((Potential)potentialvaluesH);
 		pruebaInferencia.addPotential((Potential)potentialvaluesAH);
 
-
-		assertNotNull(pruebaInferencia);
-		ProbNode probNodeA = pruebaInferencia.getProbNode("A");
-		ProbNode probNodeB = pruebaInferencia.getProbNode("B");
-		ProbNode probNodeC = pruebaInferencia.getProbNode("C");
-		ProbNode probNodeD = pruebaInferencia.getProbNode("D");
-		ProbNode probNodeE = pruebaInferencia.getProbNode("E");
-		ProbNode probNodeF = pruebaInferencia.getProbNode("F");
-		ProbNode probNodeG = pruebaInferencia.getProbNode("G");
-		ProbNode probNodeH = pruebaInferencia.getProbNode("H");
-		ProbNode probNodeI = pruebaInferencia.getProbNode("I");
-		A = probNodeA.getVariable();
-		B = probNodeB.getVariable();
-		C = probNodeC.getVariable();
-		D = probNodeD.getVariable();
-		Variable E = probNodeE.getVariable();
-		Variable F = probNodeF.getVariable();
-		Variable G = probNodeG.getVariable();
-		Variable H = probNodeH.getVariable();
-		Variable I = probNodeI.getVariable();
 		// Set up evidence: A = 1 and D = 1
-		Finding findingA = new Finding(A, 1);
-		Finding findingD = new Finding(D, 1);		
+		Finding findingA = new Finding(variableA, 1);
+		Finding findingD = new Finding(variableD, 1);		
 		EvidenceCase evidence = new EvidenceCase();
 		evidence.addFinding(findingA);
 		evidence.addFinding(findingD);
 		// Set up variables of interest: E	
 		ArrayList<Variable> variablesOfInterest = new ArrayList<Variable>();
-		variablesOfInterest.add(E);
+		variablesOfInterest.add(variableE);
 		
 		ProbNet pruned = ProbNetOperations.getPruned(
 				pruebaInferencia, variablesOfInterest, evidence);
 		ProbNetOperations.projectEvidence(pruned, evidence);
 		
 		ArrayList<Variable> variablesPruned = pruned.getVariables();
-		assertTrue(variablesPruned.contains(B));
-		assertTrue(variablesPruned.contains(C));
-		assertTrue(variablesPruned.contains(E));
-		assertTrue(variablesPruned.contains(I));
-		assertFalse(variablesPruned.contains(A));
-		assertFalse(variablesPruned.contains(D));
-		assertFalse(variablesPruned.contains(H));
-		assertFalse(variablesPruned.contains(G));
-		assertFalse(variablesPruned.contains(F));
+		assertFalse(variablesPruned.contains(variableA));
+		assertTrue(variablesPruned.contains(variableB));
+		assertTrue(variablesPruned.contains(variableC));
+		assertFalse(variablesPruned.contains(variableD));
+		assertTrue(variablesPruned.contains(variableE));
+		assertFalse(variablesPruned.contains(variableF));
+		assertFalse(variablesPruned.contains(variableG));
+		assertFalse(variablesPruned.contains(variableH));
+		assertTrue(variablesPruned.contains(variableI));
 
 		// Test B potentials
-		probNodeB = pruned.getProbNode("B");
+		ProbNode probNodeB = pruned.getProbNode("B");
 		ArrayList<Potential> potentialsB = probNodeB.getPotentials();
 		assertEquals(2, potentialsB.size());
 		// Test projected potential p(B|A), A = 1 = psi(B)
@@ -517,9 +480,8 @@ public class ProbNetOperationsTest {
 			potential1B = (TablePotential)potentialsB.get(0);
 		}
 		assertEquals(2, potential1B.getNumVariables());
-		assertTrue(potential1B.contains(B));
-		assertTrue(potential1B.contains(I));
-		
+		assertTrue(potential1B.contains(variableB));
+		assertTrue(potential1B.contains(variableI));
 	}
 	
 	@Test

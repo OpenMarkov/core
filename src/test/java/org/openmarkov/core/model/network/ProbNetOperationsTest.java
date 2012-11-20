@@ -11,6 +11,8 @@ import java.util.HashMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.OpenMarkovTests;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.network.constraint.NoCycle;
@@ -18,6 +20,7 @@ import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.util.UtilTestMethods;
 
 /** @author marias */
 public class ProbNetOperationsTest {
@@ -486,8 +489,61 @@ public class ProbNetOperationsTest {
 	
 	@Test
 	public final void testPrune3() throws Exception {
-		// Create network
+		// Create asia. Do not add potentials because they will not be used.
+		String strAsia = "Asia";
+		String strSmoker = "Smoker";
+		String strTuberculosis = "Tuberculosis";
+		String strCancer = "Cancer";
+		String strTuberculosisOrCancer = "TuberculosisOrCancer";
+		String strDyspnea = "Dyspnea";
+		String strBronchitis = "Bronchitis";
+		String strXRay = "XRay";
+		ProbNet probNetAsia = UtilTestMethods.createProbNet(strAsia, strSmoker, strTuberculosis, 
+				strCancer, strTuberculosisOrCancer, strDyspnea, strBronchitis, strXRay);
+		UtilTestMethods.addLink(probNetAsia, strAsia, strTuberculosis, true);
+		UtilTestMethods.addLink(probNetAsia, strSmoker, strCancer, true);
+		UtilTestMethods.addLink(probNetAsia, strSmoker, strBronchitis, true);
+		UtilTestMethods.addLink(probNetAsia, strTuberculosis, strTuberculosisOrCancer, true);
+		UtilTestMethods.addLink(probNetAsia, strCancer, strTuberculosisOrCancer, true);
+		UtilTestMethods.addLink(probNetAsia, strBronchitis, strDyspnea, true);
+		UtilTestMethods.addLink(probNetAsia, strTuberculosisOrCancer, strDyspnea, true);
+		UtilTestMethods.addLink(probNetAsia, strTuberculosisOrCancer, strXRay, true);
 		
+		EvidenceCase evidence = addEvidence(probNetAsia, null, strTuberculosis, 0);
+		addEvidence(probNetAsia, null, strTuberculosisOrCancer, 0);
+		ArrayList<Variable> variablesOfInterest = new ArrayList<Variable>(1);
+		variablesOfInterest.add(probNetAsia.getVariable(strDyspnea));
+		
+		// Call method
+		ProbNet pruned = ProbNetOperations.getPruned(probNetAsia, variablesOfInterest, evidence);
+
+		// Test
+		for(Variable variable : pruned.getVariables()) {
+			System.out.println(variable);
+		}
+		assertNotNull(pruned.getVariable(strTuberculosis));
+	}
+	
+	private EvidenceCase addEvidence(ProbNet probNet, EvidenceCase evidence, String variableName, int stateNumber) {
+		if (evidence == null) {
+			evidence = new EvidenceCase();
+		}
+		try {
+			Variable variable = probNet.getVariable(variableName);
+			Finding finding = new Finding(variable, stateNumber);
+			evidence.addFinding(finding);
+		} catch (ProbNodeNotFoundException e) {
+			e.printStackTrace();
+			fail("Variable " + variableName + " not found in probNet.");
+		} catch (InvalidStateException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		} catch (IncompatibleEvidenceException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
+		return evidence;
 	}
 	
 	/**

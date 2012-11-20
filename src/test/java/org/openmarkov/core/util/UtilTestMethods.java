@@ -149,12 +149,6 @@ public class UtilTestMethods {
     	for (int i = 0; i < numVariables; i++) {
     		variables[i] = new Variable(variablesNames[i], "positive", "negative");
     		ProbNode probNode = probNet.addVariable(variables[i], NodeType.CHANCE);
-    		ArrayList<Variable> tablePotentialVariables = new ArrayList<Variable>(1);
-    		tablePotentialVariables.add(variables[i]);
-    		double[] table = {0.5, 0.5};
-    		TablePotential potential = 
-    				new TablePotential(tablePotentialVariables, PotentialRole.CONDITIONAL_PROBABILITY, table);
-    		probNode.addPotential(potential);
     	}
     	return probNet;
     }

@@ -1,6 +1,8 @@
 package org.openmarkov.core.model.network;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Stack;
 
 /** This class stack ensures that each element is stored only once.
@@ -29,6 +31,11 @@ public class UniqueStack<T> {
 	/** @return <code>boolean</code> */
 	public boolean empty() {
 		return set.isEmpty();
+	}
+	
+	/** @return <code>List</code> of the template class T */
+	public List<T> list() {
+		return new ArrayList<T>(stack);
 	}
 }
 

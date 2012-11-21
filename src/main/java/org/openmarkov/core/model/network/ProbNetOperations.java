@@ -20,7 +20,8 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.potential.Potential;
 
-/** This class performs prune on <code>ProbNet</code>  */
+/** This class performs prune on <code>ProbNet</code>
+ * @author marias  */
 public class ProbNetOperations {
 
 	// Methods
@@ -142,14 +143,12 @@ public class ProbNetOperations {
         return prunedProbNet;
     }
 
-    /**
-     * Removes the nodes that are not connected to the variables of interest by
+    /** Removes the nodes that are not connected to the variables of interest by
      * any path
-     * @param probNet
-     * @param variablesOfInterest
-     * @param variablesOfEvidence
-     * @return
-     */
+     * @param probNet. <code>ProbNet</code>
+     * @param variablesOfInterest. <code>Collection</code> of <code>Variable</code>
+     * @param variablesOfEvidence. <code>HashSet</code> of <code>Variable</code>
+     * @return <code>ProbNet</code> */
 	public static ProbNet removeUnreachableNodes(ProbNet probNet, 
 			Collection<Variable> variablesOfInterest, 
 			HashSet<Variable> variablesOfEvidence) {
@@ -215,25 +214,28 @@ public class ProbNetOperations {
 				int numChildren = children.size();
 				for (int i = 0; i < numChildren; i++) {
 					Node child = children.get(i);
-					boolean interestChild = nodesToKeep.contains(child);
+					boolean childInNodesToKeep = nodesToKeep.contains(child);
 					// X->Y->Z and X<-Y<-Z
 					for (Node parent : parents) {
-						boolean interestParent = nodesToKeep.contains(parent);
-						if (interestChild && !interestParent) {
-							pushInExploreAndAddToKeep(parent,nodesToExplore,nodesToKeep);							
-						} else if (interestParent && !interestChild) {
+						boolean parentInNodesToKeep = nodesToKeep.contains(parent);
+						if (childInNodesToKeep && !parentInNodesToKeep) {
+							pushInExploreAndAddToKeep(parent,nodesToExplore,nodesToKeep);
+							parentInNodesToKeep = true;
+						} 
+						if (parentInNodesToKeep && !childInNodesToKeep) {
 							pushInExploreAndAddToKeep(child,nodesToExplore,nodesToKeep);							
-							interestChild = true;
+							childInNodesToKeep = true;
 						}
 					}
 					// X<-Y->Z
 					for (int j = i + 1; j < numChildren; j++) {
 						Node child2 = children.get(j);
-						boolean interestChild2 = nodesToKeep.contains(child2);
-						if (interestChild2 && !interestChild) {
+						boolean child2InNodesToKeep = nodesToKeep.contains(child2);
+						if (child2InNodesToKeep && !childInNodesToKeep) {
 							pushInExploreAndAddToKeep(child,nodesToExplore,nodesToKeep);
-							interestChild = true;
-						} else if (interestChild && !interestChild2) {
+							childInNodesToKeep = true;
+						} 
+						if (childInNodesToKeep && !child2InNodesToKeep) {
 							pushInExploreAndAddToKeep(child2,nodesToExplore,nodesToKeep);							
 						}
 					}
@@ -254,6 +256,9 @@ public class ProbNetOperations {
 		return probNet;
 	}
 	
+	/** @param node. <code>Node</code>
+	 * @param nodesToExplore. <code>UniqueStack</code> of <code>Node</code>
+	 * @param nodesToKeep. <code>HashSet</code> of <code>Node</code> */
 	private static void pushInExploreAndAddToKeep(Node node, UniqueStack<Node> nodesToExplore, 
 			HashSet<Node> nodesToKeep){
 		nodesToExplore.push(node);
@@ -261,6 +266,9 @@ public class ProbNetOperations {
 	}
 	
 	
+	/** @param probNet. <code>ProbNet</code>
+	 * @param variablesOfEvidence. <code>Collection</code> of <code>Variable</code>
+	 * @return <code>HashSet</code> of <code>Node</code> */
 	private static HashSet<Node> getEvidenceNodes(ProbNet probNet, 
 			Collection<Variable> variablesOfEvidence) {
 		HashSet<Node> hashEvidenceNodes = new HashSet<Node>();
@@ -274,12 +282,9 @@ public class ProbNetOperations {
 		return hashEvidenceNodes;
 	}
 
-	/**
-	 * @param nodes
-	 *            . <code>ArrayList</code> of <code>Node</code>.
+	/** @param nodes. <code>ArrayList</code> of <code>Node</code>.
 	 * @return <code>nodes</code> and its ancestors. <code>ArrayList</code> of
-	 *         <code>Node</code>.
-	 */
+	 *         <code>Node</code>. */
 	private static HashSet<Node> getNodesAndAncestors(Collection<Node> nodes) {
 		HashSet<Node> ancestors = new HashSet<Node>(nodes);
 
@@ -298,6 +303,4 @@ public class ProbNetOperations {
 		return ancestors;
 	}
 
-
-	
 }

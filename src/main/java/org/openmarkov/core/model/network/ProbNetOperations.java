@@ -154,19 +154,18 @@ public class ProbNetOperations {
 			Collection<Variable> variablesOfInterest, 
 			HashSet<Variable> variablesOfEvidence) {
 		// Gets nodes of interest and adds nodes connected to them
-		Stack<Node> nodesToExplore = new Stack<Node>();
+		UniqueStack<Node> nodesToExplore = new UniqueStack<Node>();
 		HashSet<Node> nodesToKeep = new HashSet<Node>();
-
+	
 		// Store nodes of variablesOfInterest in nodesToKeep
 		for (Variable variable : variablesOfInterest) {
 			Node node = probNet.getProbNode(variable).getNode();
 			nodesToKeep.add(node);
 		}		
-
+	
 		// Add neighbors of variablesOfInterest as nodesToKeep and store them in
 		// nodesToExplore
-		@SuppressWarnings("unchecked")
-		HashSet<Node> nodesToKeepClon = (HashSet<Node>)nodesToKeep.clone();
+		HashSet<Node> nodesToKeepClon = new HashSet<Node>(nodesToKeep);
 		for (Node node : nodesToKeepClon) {
 			ArrayList<Node> neighbors = node.getNeighbors();
 			for (Node neighbor : neighbors) {
@@ -180,7 +179,7 @@ public class ProbNetOperations {
 		// Store evidence nodes and probNodes in collections
 		HashSet<Node> hashEvidenceNodes = 
 				getEvidenceNodes(probNet, variablesOfEvidence);
-		HashSet<Node> evidenceAndAncestors = getAncestors(hashEvidenceNodes);
+		HashSet<Node> evidenceAndAncestors = getNodesAndAncestors(hashEvidenceNodes);
 		
 		// For each interest node, finds connected nodes via valid paths.
 		while (!nodesToExplore.empty()) {
@@ -191,19 +190,18 @@ public class ProbNetOperations {
 			if (evidenceAndAncestors.contains(node)) {
 				ArrayList<Node> parents = node.getParents();
 				int parentsSize = parents.size();
-				boolean interestI, interestJ;
+				boolean toKeepI, toKeepJ;
 				for (int i = 0; i < parentsSize - 1; i++) {
 					Node parentI = parents.get(i);
-					interestI = nodesToKeep.contains(parentI);
+					toKeepI = nodesToKeep.contains(parentI);
 					for (int j = i+1; j < parentsSize; j++) {
-					//for (int j = 1; j < parentsSize; j++) {
 						Node parentJ = parents.get(j);
-						interestJ = nodesToKeep.contains(parentJ);
-						if (interestI && !interestJ) {
+						toKeepJ = nodesToKeep.contains(parentJ);
+						if (toKeepI && !toKeepJ) {
 							pushInExploreAndAddToKeep(parentJ,nodesToExplore,nodesToKeep);
-						} else if (!interestI && interestJ) {
+						} else if (!toKeepI && toKeepJ) {
 							pushInExploreAndAddToKeep(parentI,nodesToExplore,nodesToKeep);
-							interestI = true;
+							toKeepI = true;
 						}
 					}
 				}
@@ -256,17 +254,18 @@ public class ProbNetOperations {
 		return probNet;
 	}
 	
-	private static void pushInExploreAndAddToKeep(Node node, Stack<Node> nodesToExplore, HashSet<Node> nodesToKeep){
+	private static void pushInExploreAndAddToKeep(Node node, UniqueStack<Node> nodesToExplore, 
+			HashSet<Node> nodesToKeep){
 		nodesToExplore.push(node);
 		nodesToKeep.add(node);
 	}
 	
 	
-	private static HashSet<Node> getEvidenceNodes(ProbNet prunedProbNet, 
+	private static HashSet<Node> getEvidenceNodes(ProbNet probNet, 
 			Collection<Variable> variablesOfEvidence) {
 		HashSet<Node> hashEvidenceNodes = new HashSet<Node>();
 		for (Variable variable : variablesOfEvidence) {
-			ProbNode evidenceProbNode = prunedProbNet.getProbNode(variable);
+			ProbNode evidenceProbNode = probNet.getProbNode(variable);
 			if (evidenceProbNode != null) {
 				Node evidenceNode = evidenceProbNode.getNode();
 				hashEvidenceNodes.add(evidenceNode);
@@ -281,7 +280,7 @@ public class ProbNetOperations {
 	 * @return <code>nodes</code> and its ancestors. <code>ArrayList</code> of
 	 *         <code>Node</code>.
 	 */
-	private static HashSet<Node> getAncestors(Collection<Node> nodes) {
+	private static HashSet<Node> getNodesAndAncestors(Collection<Node> nodes) {
 		HashSet<Node> ancestors = new HashSet<Node>(nodes);
 
 		Stack<Node> noExploredNodes = new Stack<Node>();

@@ -520,9 +520,9 @@ public class ProbNetOperationsTest {
 		ProbNet pruned = ProbNetOperations.getPruned(probNetAsia, variablesOfInterest, evidence);
 
 		// Test
-		for(Variable variable : pruned.getVariables()) {
-			System.out.println(variable);
-		}
+//		for(Variable variable : pruned.getVariables()) {
+//			System.out.println(variable);
+//		}
 		assertNotNull(pruned.getVariable(strTuberculosis));
 	}
 	
@@ -583,8 +583,8 @@ public class ProbNetOperationsTest {
 		ArrayList<Variable> variablesOfInterest;
 		//Repeat the test, because the behaviour of method getPruned is non-deterministic
 	for (int i=1;i<100;i++){
-		
 		network = NetsFactory.createBN_Asia();
+		System.out.println("Iteration " + i);
 		
 		Variable variableD = InferenceAlgorithmTests.getVariableAndAssertNotNull(network,"D"); 
 		Variable variableTOrC = InferenceAlgorithmTests.getVariableAndAssertNotNull(network,"TOrC");
@@ -594,8 +594,40 @@ public class ProbNetOperationsTest {
 		variablesOfEvidence = new HashSet<>();
 		variablesOfEvidence.add(variableTOrC);
 		variablesOfEvidence.add(variableT);
+		System.out.print("Variables of interest: ");
+		for (Variable variable : variablesOfInterest) {
+			System.out.print(variable);
+		}
+		System.out.println();
+		System.out.print("Evidence: ");
+		for (Variable variable : variablesOfEvidence) {
+			System.out.print(variable);
+		}
+		System.out.println();
 		intermediate = ProbNetOperations.removeBarrenNodes(network,variablesOfInterest,variablesOfEvidence);
+		//Nodes shouldn't appear
+		assertTrue(intermediate.containsVariable("A"));
+		assertFalse(intermediate.containsVariable("X"));
+		//Nodes must appear
+		assertTrue(intermediate.containsVariable("T"));
+		assertTrue(intermediate.containsVariable("TOrC"));
+		assertTrue(intermediate.containsVariable("S"));
+		assertTrue(intermediate.containsVariable("L"));
+		assertTrue(intermediate.containsVariable("B"));
+		assertTrue(intermediate.containsVariable("D"));
+
+		System.out.print("Variables of interest: ");
+		for (Variable variable : variablesOfInterest) {
+			System.out.print(variable);
+		}
+		System.out.println();
+		System.out.print("Evidence: ");
+		for (Variable variable : variablesOfEvidence) {
+			System.out.print(variable);
+		}
+		System.out.println();
 		outputNetwork = ProbNetOperations.removeUnreachableNodes(intermediate,variablesOfInterest,variablesOfEvidence);
+		
 		//Nodes shouldn't appear
 		assertFalse(outputNetwork.containsVariable("A"));
 		assertFalse(outputNetwork.containsVariable("X"));

@@ -127,10 +127,13 @@ public class ProbNetOperations {
 							&& !barrenNodes.contains(parentProbNode)) {
 						ArrayList<Node> childrenOfParent = parent.getChildren();
 						boolean allChildrenBarren = true;
-						for (int i = 0; allChildrenBarren && i < childrenOfParent.size(); i++) {
-							Node child = childrenOfParent.get(i);
-							ProbNode probNodeChild = (ProbNode)child.getObject();
-							allChildrenBarren &= barrenNodes.contains(probNodeChild);
+						int numChildren = childrenOfParent.size();
+						if (numChildren > 1) { // at least one children is barren
+							for (int i = 0; allChildrenBarren && i < numChildren; i++) {
+								Node child = childrenOfParent.get(i);
+								ProbNode probNodeChild = (ProbNode)child.getObject();
+								allChildrenBarren &= barrenNodes.contains(probNodeChild);
+							}
 						}
 						if (allChildrenBarren) {
 							newBarrenNodes.add(parentProbNode);

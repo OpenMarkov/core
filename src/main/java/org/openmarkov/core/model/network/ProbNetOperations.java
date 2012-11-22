@@ -123,10 +123,11 @@ public class ProbNetOperations {
 					ProbNode parentProbNode = (ProbNode)parent.getObject();
 					Variable parentVariable = parentProbNode.getVariable();
 					if (!variablesOfInterest.contains(parentVariable)
-							&& !variablesOfEvidence.contains(parentVariable)) {
+							&& !variablesOfEvidence.contains(parentVariable)
+							&& !barrenNodes.contains(parentProbNode)) {
 						ArrayList<Node> childrenOfParent = parent.getChildren();
 						boolean allChildrenBarren = true;
-						for (int i = 0; i < childrenOfParent.size() && allChildrenBarren; i++) {
+						for (int i = 0; allChildrenBarren && i < childrenOfParent.size(); i++) {
 							Node child = childrenOfParent.get(i);
 							ProbNode probNodeChild = (ProbNode)child.getObject();
 							allChildrenBarren &= barrenNodes.contains(probNodeChild);
@@ -138,7 +139,9 @@ public class ProbNetOperations {
 					}
 				}
 			}
-			barrenNodes.addAll(newBarrenNodes);
+			if (foundBarrenNodes) {
+				barrenNodes.addAll(newBarrenNodes);
+			}
 		}
 		// Remove barren nodes
 		for (ProbNode probNode : barrenNodes) {

@@ -12,6 +12,7 @@ package org.openmarkov.core.model.network;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Stack;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -94,46 +95,57 @@ public class ProbNetOperations {
 	 * @param variablesOfInterest2 
 	 * @param prunedProbNet. <code>ProbNet</code>
 	 * @return <code>ProbNet</code> without barren nodes. */
-    public static ProbNet removeBarrenNodes (ProbNet prunedProbNet,
-                                              Collection<Variable> variablesOfInterest,
-                                              HashSet<Variable> variablesOfEvidence)
-    {
-        ArrayList<ProbNode> barrenNodes = new ArrayList<ProbNode> ();
-        boolean foundBarrenNodes = false;
-        // TODO Instead of looping through the whole network each time, examine
-        // the parents of each barren node removed to see if they have become
-        // barren nodes
-        do
-        {
-            // Collect barren nodes
-            ArrayList<ProbNode> probNodes = prunedProbNet.getProbNodes ();
-            for (ProbNode probNode : probNodes)
-            {
-                Node node = probNode.getNode ();
-                if (node.getNumChildren () == 0)
-                {
-                    Variable variable = probNode.getVariable ();
-                    if (!variablesOfInterest.contains (variable)
-                        && !variablesOfEvidence.contains (variable))
-                    {
-                        barrenNodes.add (probNode);
-                    }
-                }
-            }
-            foundBarrenNodes = barrenNodes.size () > 0;
-            if (foundBarrenNodes)
-            {
-                // Remove barren nodes
-                for (ProbNode probNode : barrenNodes)
-                {
-                    prunedProbNet.removeProbNode (probNode);
-                }
-                barrenNodes.clear ();
-            }
-        }
-        while (foundBarrenNodes);
-        return prunedProbNet;
-    }
+	public static ProbNet removeBarrenNodes(ProbNet prunedProbNet,
+			Collection<Variable> variablesOfInterest,
+			HashSet<Variable> variablesOfEvidence) {
+		HashSet<ProbNode> barrenNodes = new HashSet<ProbNode>();
+		ArrayList<ProbNode> probNodes = prunedProbNet.getProbNodes();
+		for (ProbNode probNode : probNodes) {
+			Node node = probNode.getNode();
+			if (node.getNumChildren() == 0) {
+				Variable variable = probNode.getVariable();
+				if (!variablesOfInterest.contains(variable)
+						&& !variablesOfEvidence.contains(variable)) {
+					barrenNodes.add(probNode);
+				}
+			}
+		}
+		HashSet<ProbNode> newBarrenNodes = new HashSet<ProbNode>(barrenNodes);
+		boolean foundBarrenNodes = newBarrenNodes.size() > 0;
+		while (foundBarrenNodes) {
+			foundBarrenNodes = false;
+			ArrayList<ProbNode> listNewBarrenNodes = new ArrayList<ProbNode>(newBarrenNodes);
+			for (ProbNode probNode : listNewBarrenNodes) {
+				newBarrenNodes.remove(probNode);
+				Node node = probNode.getNode();
+				List<Node> parents = node.getParents();
+				for (Node parent : parents) {
+					ProbNode parentProbNode = (ProbNode)parent.getObject();
+					Variable parentVariable = parentProbNode.getVariable();
+					if (!variablesOfInterest.contains(parentVariable)
+							&& !variablesOfEvidence.contains(parentVariable)) {
+						ArrayList<Node> childrenOfParent = parent.getChildren();
+						boolean allChildrenBarren = true;
+						for (int i = 0; i < childrenOfParent.size() && allChildrenBarren; i++) {
+							Node child = childrenOfParent.get(i);
+							ProbNode probNodeChild = (ProbNode)child.getObject();
+							allChildrenBarren &= barrenNodes.contains(probNodeChild);
+						}
+						if (allChildrenBarren) {
+							newBarrenNodes.add(parentProbNode);
+							foundBarrenNodes = true;
+						}
+					}
+				}
+			}
+			barrenNodes.addAll(newBarrenNodes);
+		}
+		// Remove barren nodes
+		for (ProbNode probNode : barrenNodes) {
+			prunedProbNet.removeProbNode(probNode);
+		}
+		return prunedProbNet;
+	}
 
     /** Removes the nodes that are not connected to the variables of interest by
      * any path

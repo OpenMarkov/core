@@ -473,6 +473,21 @@ public class FactoryExpandedSMM {
 			  ProbNode iUtilityProbNode = utilityExpandedNodes.get(i);
 			int timeSlice = iUtilityProbNode.getVariable().getTimeSlice();
 			double discount = iUtilityProbNode.getVariable().getDecisionCriteria().getString().equalsIgnoreCase("cost") ?  costDiscount : effectivenessDiscount;
+			//slice 0 must be projected to eliminate continuous variables in trees
+			if (iUtilityProbNode.getVariable().isTemporal() && timeSlice == 0) {
+				 TablePotential projectedPotential = null;
+				 Potential potentialToBeProjected = iUtilityProbNode.getPotentials().get(0);
+				try {
+					projectedPotential = potentialToBeProjected.tableProject(evidence, inferenceOptions).get(0);
+				} catch (NonProjectablePotentialException
+						| WrongCriterionException e) {
+					e.printStackTrace();
+				}
+				ArrayList<Potential> potentials = new ArrayList<>();
+				potentials.add(projectedPotential);
+				iUtilityProbNode.setPotentials(potentials);
+			}
+			
 			if (iUtilityProbNode.getVariable().isTemporal() && timeSlice > 0) {
 				  double discountRate = 1.0 / (Math.pow((1.0 + (discount/100.0)), timeSlice));
 				  //project TreeADD original potential to a table
@@ -495,7 +510,7 @@ public class FactoryExpandedSMM {
 					 double[] valuesProjectedPotential = projectedPotential.getValues();
 						for (int j = 0; j < valuesProjectedPotential.length; j++) {
 							valuesProjectedPotential[j] = valuesProjectedPotential[j] * (discountRate);
-						}
+						}	
 					 ArrayList<Potential> potentials = new ArrayList<>();
 					potentials.add(projectedPotential);
 					iUtilityProbNode.setPotentials(potentials);

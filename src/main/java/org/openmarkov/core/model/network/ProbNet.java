@@ -465,7 +465,7 @@ public class ProbNet implements Cloneable {
 	
 	/**
 	 * Within a markov process for ce purposes is important to detect whether there are or not 
-	 * numerical temporal variables with a CycleeLengthShift potential in it second slice. These special
+	 * numerical temporal variables with a CycleLengthShift potential in it second slice. These special
 	 * nodes represents a temporal dependency that might be a relaxation of Markov assumption for SemiMarkov models
 	 * or just a time dependence to introduce time varying transition from a life table.
 	 * 

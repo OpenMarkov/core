@@ -399,14 +399,18 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 			
 		//Make sure variables are in the correct order after applying the mask
 		//there will be variables that disappear from the potential because of evidence propagation
-		if (role == PotentialRole.CONDITIONAL_PROBABILITY) {
+		if (role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.UTILITY) {
 			for (int i = 0; i < correctOrder.size(); i++ ) {
 				if (!projected.contains(correctOrder.get(i))) {
 					correctOrder.remove(i);
 				}
 			} 
-			projected.setVariables(correctOrder);
-			//projected = DiscretePotentialOperations.reorder(projected, correctOrder);
+			if (role == PotentialRole.UTILITY) {
+				projected = DiscretePotentialOperations.reorder(projected, correctOrder);
+			} else{
+				projected.setVariables(correctOrder);
+			}
+			
 		}
 		projectedPotentials.add(projected);
 

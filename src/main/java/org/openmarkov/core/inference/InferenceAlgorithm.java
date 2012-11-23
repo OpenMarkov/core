@@ -130,11 +130,23 @@ public abstract class InferenceAlgorithm
      * @param probNet
      * @return True if the network can be evaluated.
      */
-    public abstract boolean isEvaluable (ProbNet probNet);
+    public boolean isEvaluable (ProbNet probNet){
+    		boolean isEvaluable;
+    		
+    		isEvaluable = true;
+    	
+    		try {
+				checkEvaluability(probNet);
+			} catch (NotEvaluableNetworkException e) {
+				isEvaluable = false;
+			}
+    		return isEvaluable;
+    	
+    }
 
       
        
-    /**
+  	/**
      * @return The optimal policy for the decisions that do not have any imposed policy.
      * The domain of each policy also includes the decision and the conditioning variables.
      */
@@ -223,6 +235,11 @@ public abstract class InferenceAlgorithm
     public boolean hasImposedPolicy(Variable decision){
     	return (getImposedPolicy(decision)!=null);
     }
+
+	protected static void checkEvaluability(ProbNet probNet) throws NotEvaluableNetworkException {
+	}
+	
+	
         
     
 }

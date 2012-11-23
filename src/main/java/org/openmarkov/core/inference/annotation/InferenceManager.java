@@ -8,10 +8,13 @@ package org.openmarkov.core.inference.annotation;
 
 import java.lang.annotation.AnnotationFormatError;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
@@ -115,26 +118,46 @@ public class InferenceManager
      * @param algorithmName
      * @param probNet
      * @return
-     * @throws SecurityException
-     * @throws NoSuchMethodException
+     * @throws NotEvaluableNetworkException 
+     * @throws NoSuchMethodException 
      */
     public InferenceAlgorithm getInferenceAlgorithmByName (String algorithmName, ProbNet probNet)
-        throws SecurityException,
-        NoSuchMethodException
+        throws NotEvaluableNetworkException, NoSuchMethodException
     {
         InferenceAlgorithm instance = null;
-        Constructor<? extends InferenceAlgorithm> constructor = inferenceAlgorithms.get (algorithmName).getConstructor (ProbNet.class);
+        Constructor<? extends InferenceAlgorithm> constructor = null;
+        Method checkEval = null;
+		try {
+			constructor = inferenceAlgorithms.get (algorithmName).getConstructor (ProbNet.class);
+			checkEval = inferenceAlgorithms.get(algorithmName).getMethod("checkEvaluability",ProbNet.class);
+		} catch ( SecurityException e1) {
+			e1.printStackTrace();
+		}
+        
         if (constructor != null)
         {
-            try
-            {
-                instance = constructor.newInstance (probNet);
-            }
-            catch (Exception e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace ();
-            }
+        		try {
+					checkEval.invoke(inferenceAlgorithms.get (algorithmName),probNet);
+				}
+        		catch (InvocationTargetException e){
+        			Throwable targetExcep = e.getTargetException();
+        			if (targetExcep.getClass()==NotEvaluableNetworkException.class){
+        						throw (NotEvaluableNetworkException)targetExcep;
+        			}
+        		} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        		
+        		 try {
+					instance = constructor.newInstance (probNet);
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException e) {
+					e.printStackTrace();
+				}				
         }
         return instance;
     }
@@ -144,7 +167,7 @@ public class InferenceManager
      * @param probNet
      * @return
      */
-    public InferenceAlgorithm getDefaultInferenceAlgorithm (ProbNet probNet)
+    public InferenceAlgorithm getDefaultInferenceAlgorithm (ProbNet probNet) throws NotEvaluableNetworkException
     {
         InferenceAlgorithm defaultAlgorithm = null;
         try
@@ -174,6 +197,9 @@ public class InferenceManager
             // that should have a public constructor
             e.printStackTrace ();
         }
+        catch (NotEvaluableNetworkException e){
+        	throw e;
+        }
         return defaultAlgorithm;
     }
     
@@ -181,8 +207,9 @@ public class InferenceManager
      * Returns an instance of the default approximate algorithm given the ProbNet
      * @param probNet
      * @return
+     * @throws NotEvaluableNetworkException 
      */    
-    public InferenceAlgorithm getDefaultApproximateAlgorithm (ProbNet probNet)
+    public InferenceAlgorithm getDefaultApproximateAlgorithm (ProbNet probNet) throws NotEvaluableNetworkException
     {
         InferenceAlgorithm defaultAlgorithm = null;
         try

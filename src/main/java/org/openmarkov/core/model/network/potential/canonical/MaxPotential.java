@@ -21,7 +21,7 @@ import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
-@RelationPotentialType(name="Generalized Max/Noisy OR", family="ICI")
+@RelationPotentialType(name="OR / MAX", family="ICI")
 public class MaxPotential extends MinMaxPotential {
 
 	/** @param model. <code>ICIModel</code>.

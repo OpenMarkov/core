@@ -93,11 +93,6 @@ public abstract class BaseLinkEdit extends SimplePNEdit{
 		return buffer.toString();
 	}
 	
-    public int hashCode(){
-        int result = variable1.hashCode();
-        result ^= variable2.hashCode();
-        return result;
-    }	
     public abstract String getOperationName();
     
     /**

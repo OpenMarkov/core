@@ -12,6 +12,7 @@ package org.openmarkov.core.model.network.potential.operation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.IllegalArgumentTypeException;
@@ -46,10 +47,9 @@ public final class DiscretePotentialOperations {
      * @throws WrongCriterionException 
      * @throws NonProjectablePotentialException */
     @SuppressWarnings("unchecked")
-    public static TablePotential multiply(
-            ArrayList<TablePotential> tablePotentials)
-    throws NotEnoughMemoryException {
-        
+    public static TablePotential multiply (List<TablePotential> tablePotentials)
+        throws NotEnoughMemoryException
+    {        
         int numPotentials = tablePotentials.size();
         // Special cases: one or zero potentials
         if (numPotentials < 2) {
@@ -60,8 +60,7 @@ public final class DiscretePotentialOperations {
             }           
         }
         
-        ArrayList<TablePotential> potentials = 
-            (ArrayList<TablePotential>)((Object)tablePotentials);
+        List<TablePotential> potentials = new ArrayList<>(tablePotentials);
 
         // Sort the potentials according to the table size
         Collections.sort(potentials);
@@ -167,16 +166,14 @@ public final class DiscretePotentialOperations {
      * Potential</code>.
      * @throws <code>NotEnoughMemoryException</code>. */
     @SuppressWarnings("unchecked")
-    public static TablePotential sum(
-            ArrayList<TablePotential> tablePotentials)
+    public static TablePotential sum(List<TablePotential> tablePotentials)
             throws NotEnoughMemoryException {
-    	ArrayList<TablePotential> constantPotentials;
+    	List<TablePotential> constantPotentials;
         if (tablePotentials.size() == 1) {
             return (TablePotential)tablePotentials.get(0);
         }
         
-        ArrayList<TablePotential> potentials = 
-            (ArrayList<TablePotential>) tablePotentials.clone();
+        List<TablePotential> potentials = new ArrayList<> (tablePotentials);
         
 		// Leave out the constant potentials
 		constantPotentials = new ArrayList<TablePotential>();
@@ -292,7 +289,7 @@ public final class DiscretePotentialOperations {
     
     public static TablePotential sum (TablePotential... tablePotentials) throws NotEnoughMemoryException
     {
-        ArrayList<TablePotential> potentialList = new ArrayList<TablePotential> (tablePotentials.length);
+        List<TablePotential> potentialList = new ArrayList<TablePotential> (tablePotentials.length);
         for(TablePotential potential: tablePotentials)
         {
             potentialList.add (potential);
@@ -300,8 +297,7 @@ public final class DiscretePotentialOperations {
         return sum(potentialList);
     }    
 
-    private static PotentialRole getRole(
-            ArrayList<? extends Potential> potentials) {
+    private static PotentialRole getRole(List<? extends Potential> potentials) {
         boolean atLeastOneUtility = false;
         for (Potential potential : potentials) {
             atLeastOneUtility = atLeastOneUtility || potential.isUtility();
@@ -331,12 +327,12 @@ public final class DiscretePotentialOperations {
      * @trows NotEnoughMemoryException */
     @SuppressWarnings("unchecked")
     public static TablePotential multiplyAndMarginalize(
-            ArrayList<TablePotential> tablePotentials, 
-            ArrayList<Variable> variablesToKeep,
-            ArrayList<Variable> variablesToEliminate) 
+            List<TablePotential> tablePotentials, 
+            List<Variable> variablesToKeep,
+            List<Variable> variablesToEliminate) 
             throws NotEnoughMemoryException {
 
-        ArrayList<TablePotential> potentials = (ArrayList<TablePotential>) ((Object) tablePotentials);
+        List<TablePotential> potentials = (ArrayList<TablePotential>) ((Object) tablePotentials);
         
         TablePotential resultingPotential = new TablePotential(
                 variablesToKeep, getRole(tablePotentials));
@@ -345,7 +341,7 @@ public final class DiscretePotentialOperations {
         // The product of all the constant potentials is the constant factor.
         double constantFactor = 1.0;
         // Non constant potentials are proper potentials.
-        ArrayList<TablePotential> properPotentials = new ArrayList<TablePotential> ();
+        List<TablePotential> properPotentials = new ArrayList<TablePotential> ();
         for (Potential potential : potentials) {
             if (potential.getNumVariables() != 0) {
                 properPotentials.add((TablePotential) potential);
@@ -363,8 +359,7 @@ public final class DiscretePotentialOperations {
         }
         
         // variables in the resulting potential
-        ArrayList<Variable> unionVariables = (ArrayList<Variable>)
-            variablesToEliminate.clone();
+        List<Variable> unionVariables = new ArrayList<Variable>(variablesToEliminate);
         unionVariables.addAll(variablesToKeep);
         int numUnionVariables = unionVariables.size();
         
@@ -501,20 +496,18 @@ public final class DiscretePotentialOperations {
      * @return The multiplied potentials
      * @throws NotEnoughMemoryException */
     public static TablePotential multiplyAndMarginalize(
-            ArrayList<TablePotential> potentials, 
-            ArrayList<Variable> variablesOfInterest) 
+            List<TablePotential> potentials, 
+            List<Variable> variablesOfInterest) 
             throws NotEnoughMemoryException {
     
         // Obtain parameters to invoke multiplyAndMarginalize
         // Union of the variables of the potential list
-        ArrayList<Variable> unionVariables = 
+        List<Variable> unionVariables = 
             AuxiliaryOperations.getUnionVariables(potentials);
     
         // Classify unionVariables in two possibles arrays
-        ArrayList<Variable> variablesToKeep =
-            new ArrayList<Variable>();
-        ArrayList<Variable> variablesToEliminate =
-            new ArrayList<Variable>();
+        List<Variable> variablesToKeep = new ArrayList<Variable>();
+        List<Variable> variablesToEliminate = new ArrayList<Variable>();
         for (Variable variable : unionVariables) {
             if (variablesOfInterest.contains(variable)) {
                 variablesToKeep.add(variable);
@@ -533,52 +526,45 @@ public final class DiscretePotentialOperations {
      * @return result <code>Potential</code> multiplied without 
      * <code>variableToEliminate</code>
      * @throws <code>NotEnoughMemoryException</code> */
-    public static TablePotential multiplyAndMarginalize(
-            ArrayList<TablePotential> potentials, 
-            Variable variableToEliminate) 
+    public static TablePotential multiplyAndMarginalize(List<TablePotential> potentials, Variable variableToEliminate) 
             throws NotEnoughMemoryException {
-        ArrayList<Variable> variablesToEliminate = new ArrayList<Variable>();
+        List<Variable> variablesToEliminate = new ArrayList<Variable>();
         variablesToEliminate.add(variableToEliminate);
-        ArrayList<Variable> variablesToKeep = new ArrayList<Variable>();
+        List<Variable> variablesToKeep = new ArrayList<Variable>();
         variablesToKeep = AuxiliaryOperations.getUnionVariables(potentials);
         variablesToKeep.remove(variableToEliminate);
-        return multiplyAndMarginalize(
-            potentials, variablesToKeep, variablesToEliminate);
+        return multiplyAndMarginalize(potentials, variablesToKeep, variablesToEliminate);
     }
     
     /** @param potential <code>Potential</code> to marginalize
      * @param variableToEliminate <code>Variable</code>
      * @return Marginalized potential 
      * @throws NotEnoughMemoryException */
-    @SuppressWarnings("unchecked")
-    public static TablePotential marginalize(TablePotential potential, 
-            Variable variableToEliminate) throws NotEnoughMemoryException {
-        ArrayList<Variable> variablesToKeep = 
-            (ArrayList<Variable>)potential.getVariables().clone();
-        variablesToKeep.remove(variableToEliminate);
-        ArrayList<Variable> variablesToEliminate = new ArrayList<Variable>();
-        variablesToEliminate.add(variableToEliminate);
-        ArrayList<TablePotential> potentials = new ArrayList<TablePotential>();
-        potentials.add(potential);
-        return multiplyAndMarginalize(
-            potentials, variablesToKeep, variablesToEliminate);
+    public static TablePotential marginalize (TablePotential potential, Variable variableToEliminate)
+        throws NotEnoughMemoryException
+    {
+        List<Variable> variablesToKeep = new ArrayList<Variable> (potential.getVariables ());
+        variablesToKeep.remove (variableToEliminate);
+        List<Variable> variablesToEliminate = new ArrayList<Variable> ();
+        variablesToEliminate.add (variableToEliminate);
+        List<TablePotential> potentials = new ArrayList<TablePotential> ();
+        potentials.add (potential);
+        return multiplyAndMarginalize (potentials, variablesToKeep, variablesToEliminate);
     }
     
     /** @param potential
      * @param variablesOfInterest
      * @throws NotEnoughMemoryException */
-    public static TablePotential marginalize(TablePotential potential,
-            ArrayList<Variable> variablesOfInterest) 
-            throws NotEnoughMemoryException {
-    
+    public static TablePotential marginalize (TablePotential potential,
+                                              List<Variable> variablesOfInterest)
+        throws NotEnoughMemoryException
+    {    
         // Obtain parameters to invoke multiplyAndMarginalize
         // Union of the variables of the potential list
-        ArrayList<Variable> variables = potential.getVariables();
+        List<Variable> variables = potential.getVariables();
 
-        ArrayList<Variable> variablesToKeep =
-            new ArrayList<Variable>();
-        ArrayList<Variable> variablesToEliminate =
-            new ArrayList<Variable>();
+        List<Variable> variablesToKeep = new ArrayList<Variable>();
+        List<Variable> variablesToEliminate = new ArrayList<Variable>();
     
         for (Variable variable : variables) {
             if (variablesOfInterest.contains(variable)) {
@@ -588,7 +574,7 @@ public final class DiscretePotentialOperations {
             }
         }
     
-        ArrayList<TablePotential> potentials = new ArrayList<TablePotential>();
+        List<TablePotential> potentials = new ArrayList<TablePotential>();
         potentials.add(potential);
     
         return DiscretePotentialOperations.multiplyAndMarginalize(
@@ -605,13 +591,12 @@ public final class DiscretePotentialOperations {
      * @throws PotentialOperationException */
     public static Potential marginalize(
             TablePotential potential,
-            ArrayList<Variable> variablesToKeep,
-            ArrayList<Variable> variablesToEliminate)
+            List<Variable> variablesToKeep,
+            List<Variable> variablesToEliminate)
             throws NotEnoughMemoryException {
-        ArrayList<TablePotential> potentials = new ArrayList<TablePotential>();
+        List<TablePotential> potentials = new ArrayList<TablePotential>();
         potentials.add(potential);
-        return DiscretePotentialOperations.multiplyAndMarginalize(
-            potentials, variablesToKeep, variablesToEliminate);
+        return DiscretePotentialOperations.multiplyAndMarginalize(potentials, variablesToKeep, variablesToEliminate);
     }
 
     /** @param potentials An array of ordered <code>TablePotential</code>s
@@ -619,8 +604,7 @@ public final class DiscretePotentialOperations {
      * first <i>k</i> because the array is ordered by size)
      * @see org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations#getProperPotentials(ArrayList)
      */
-    public static double getConstantFactor(
-            ArrayList<TablePotential> potentials) {
+    public static double getConstantFactor(List<TablePotential> potentials) {
         double constantFactor = 1.0;
         for (TablePotential potential : potentials) {
             if (potential.values.length > 1) {
@@ -637,7 +621,7 @@ public final class DiscretePotentialOperations {
      * @param potentialResult <code>TablePotential</code>.
      * @return An array of arrays of integers (<code>int[][]</code>). */
     public static int[][] getAccumulatedOffsets(
-            ArrayList<TablePotential> potentials,
+            List<TablePotential> potentials,
             TablePotential potentialResult) {
 
         int numPotentials = potentials.size();
@@ -657,17 +641,15 @@ public final class DiscretePotentialOperations {
      * @throws NotEnoughMemoryException 
      * @throws PotentialOperationException */
     public static Potential multiplyAndEliminate(
-            ArrayList<TablePotential> potentials,
-            ArrayList<Variable> variablesToEliminate) throws NotEnoughMemoryException {
+            List<TablePotential> potentials,
+            List<Variable> variablesToEliminate) throws NotEnoughMemoryException {
 
         // Obtain parameters to invoke multiplyAndMarginalize
         // Union of the variables of the potential list
-        ArrayList<Variable> variablesToKeep = 
-            AuxiliaryOperations.getUnionVariables(potentials);
+        List<Variable> variablesToKeep = AuxiliaryOperations.getUnionVariables(potentials);
         variablesToKeep.removeAll(variablesToEliminate);
     
-        return multiplyAndMarginalize(
-            potentials, variablesToKeep, variablesToEliminate);
+        return multiplyAndMarginalize(potentials, variablesToKeep, variablesToEliminate);
     }
 
     /** @param potential a <code>TablePotential</code>
@@ -690,7 +672,7 @@ public final class DiscretePotentialOperations {
                     + tablePotential.getVariables() +
                     " table are equal to 0.0");
         }
-        ArrayList<Variable> variables = tablePotential.getVariables();
+        List<Variable> variables = tablePotential.getVariables();
         if ((variables != null) && (variables.size() > 0)) {
             if(potential.getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY)
             {
@@ -728,22 +710,19 @@ public final class DiscretePotentialOperations {
      * @param denominator <code>Potential</code>.
      * @return The quotient: A <code>TablePotential</code> with the union of the
      * variables of numerator and denominator. */
-    @SuppressWarnings("unchecked")
     public static TablePotential divide(Potential numerator, Potential denominator) {
         // Get variables and create quotient potential.
         // Quotient potential variables = numerator potential variables union
         // denominator potential variables
         TablePotential tNumerator = (TablePotential)numerator; 
         TablePotential tDenominator = (TablePotential)denominator;
-        ArrayList<Variable> numeratorVariables = 
-            (ArrayList<Variable>)tNumerator.getVariables().clone();
-        ArrayList<Variable> denominatorVariables = 
-            (ArrayList<Variable>)tDenominator.getVariables().clone();
+        List<Variable> numeratorVariables = new ArrayList<Variable>(tNumerator.getVariables());
+        List<Variable> denominatorVariables = new ArrayList<Variable>(tDenominator.getVariables());
         int numNumeratorVariables = numeratorVariables.size();
         int numDenominatorVariables = denominatorVariables.size();
         denominatorVariables.removeAll(numeratorVariables);
         numeratorVariables.addAll(denominatorVariables);
-        ArrayList<Variable> quotientVariables = numeratorVariables;
+        List<Variable> quotientVariables = numeratorVariables;
         TablePotential quotient = null;
         try {
             quotient = new TablePotential(
@@ -767,7 +746,7 @@ public final class DiscretePotentialOperations {
         int[] quotientDimension = quotient.getDimensions();
 
         // Gets offset accumulate
-        ArrayList<TablePotential> potentials = new ArrayList<TablePotential>();
+        List<TablePotential> potentials = new ArrayList<TablePotential>();
         potentials.add(tNumerator);
         potentials.add(tDenominator);
         int[][]offsetAccumulate = DiscretePotentialOperations
@@ -913,23 +892,19 @@ public final class DiscretePotentialOperations {
      * @throws <code>NotEnoughMemoryException</code> */
     @SuppressWarnings("unchecked")
     public static Object[] multiplyAndMaximize(
-            ArrayList<Potential> tablePotentials, 
-            ArrayList<Variable> fSVariablesToKeep,
+            List<Potential> tablePotentials, 
+            List<Variable> fSVariablesToKeep,
             Variable fSVariableToMaximize) 
             throws NotEnoughMemoryException {
-        ArrayList<TablePotential> potentials = 
-            (ArrayList<TablePotential>)((Object)tablePotentials);
-        
-        ArrayList<Variable> variablesToKeep = 
-            (ArrayList<Variable>)((Object)fSVariablesToKeep);
+        List<TablePotential> potentials = (ArrayList<TablePotential>)((Object)tablePotentials);
+        List<Variable> variablesToKeep = (ArrayList<Variable>)((Object)fSVariablesToKeep);
 
         PotentialRole role = getRole(tablePotentials);
 
         TablePotential resultingPotential = 
             new TablePotential(variablesToKeep, role);
         
-        GTablePotential<Choice> gResult = new GTablePotential<Choice>(
-                variablesToKeep, role);
+        GTablePotential<Choice> gResult = new GTablePotential<Choice>(variablesToKeep, role);
         int numStates = ((Variable)fSVariableToMaximize).getNumStates();
         int[] statesChoosed;
         Choice choice;
@@ -938,8 +913,7 @@ public final class DiscretePotentialOperations {
         // The product of all the constant potentials is the constant factor.
         double constantFactor = 1.0;
         // Non constant potentials are proper potentials.
-        ArrayList<TablePotential> properPotentials =
-            new ArrayList<TablePotential>();
+        List<TablePotential> properPotentials = new ArrayList<TablePotential>();
         for (Potential potential : potentials) {
             if (potential.getNumVariables() != 0) {
                 properPotentials.add((TablePotential) potential);
@@ -957,7 +931,7 @@ public final class DiscretePotentialOperations {
         }
         
         // variables in the resulting potential
-        ArrayList<Variable> unionVariables = new ArrayList<Variable>();
+        List<Variable> unionVariables = new ArrayList<Variable>();
         unionVariables.add((Variable)fSVariableToMaximize);
         unionVariables.addAll(variablesToKeep);
         int numUnionVariables = unionVariables.size();
@@ -1096,7 +1070,7 @@ public final class DiscretePotentialOperations {
      * @return true if there is utility potential in a list of potentials
      */
     public static boolean isThereAUtilityPotential(
-			ArrayList<TablePotential> arrayListPotentials) {
+			List<TablePotential> arrayListPotentials) {
 		boolean isThere = false;
 		for (int i=0;(i<arrayListPotentials.size())&&!isThere;i++){
 			isThere = arrayListPotentials.get(i).getPotentialRole()==PotentialRole.UTILITY;
@@ -1115,13 +1089,12 @@ public final class DiscretePotentialOperations {
      * the maximizing states of <code>variableToMaximize</code> in
      * each configuration; this is typically a policy of a decision.
      * @throws <code>NotEnoughMemoryException</code> */
-    @SuppressWarnings("unchecked")
     public static TablePotential[] multiplyAndMaximizeUniformly(
-            ArrayList<TablePotential> tablePotentials, 
-            ArrayList<Variable> fSVariablesToKeep,
+            List<TablePotential> tablePotentials, 
+            List<Variable> fSVariablesToKeep,
             Variable fSVariableToMaximize) 
             throws NotEnoughMemoryException {
-    	ArrayList<Variable> variablesPolicy;
+    	List<Variable> variablesPolicy;
     	
     	
     	
@@ -1134,11 +1107,9 @@ public final class DiscretePotentialOperations {
 		
 		return potentialsToReturn;*/
     	
-        ArrayList<TablePotential> potentials = 
-                (ArrayList<TablePotential>)((Object)tablePotentials);
+        List<TablePotential> potentials = tablePotentials;
             
-            ArrayList<Variable> variablesToKeep = 
-                (ArrayList<Variable>)((Object)fSVariablesToKeep);
+           List<Variable> variablesToKeep = fSVariablesToKeep;
             
            PotentialRole role = getRole(tablePotentials);
            
@@ -1153,14 +1124,13 @@ public final class DiscretePotentialOperations {
             
             TablePotential policy = new TablePotential(
             		variablesPolicy, PotentialRole.CONDITIONAL_PROBABILITY);
-            ArrayList<Integer> statesTies;
+            List<Integer> statesTies;
             
             // Constant potentials are those that do not depend on any variables.
             // The product of all the constant potentials is the constant factor.
             double constantFactor = 1.0;
             // Non constant potentials are proper potentials.
-            ArrayList<TablePotential> properPotentials =
-                new ArrayList<TablePotential>();
+            List<TablePotential> properPotentials = new ArrayList<TablePotential>();
             for (Potential potential : potentials) {
                 if (potential.getNumVariables() != 0) {
                     properPotentials.add((TablePotential) potential);
@@ -1178,7 +1148,7 @@ public final class DiscretePotentialOperations {
             }
             
             // variables in the resulting potential
-            ArrayList<Variable> unionVariables = new ArrayList<Variable>();
+            List<Variable> unionVariables = new ArrayList<Variable>();
             unionVariables.add((Variable)fSVariableToMaximize);
             unionVariables.addAll(variablesToKeep);
             int numUnionVariables = unionVariables.size();
@@ -1310,7 +1280,7 @@ public final class DiscretePotentialOperations {
             return resultPotentials;
     }
 
-    private static void assignProbabilityUniformlyInTies(TablePotential tp, int numStatesVariable, ArrayList<Integer> statesTies, int[] policyDomainConfiguration) {
+    private static void assignProbabilityUniformlyInTies(TablePotential tp, int numStatesVariable, List<Integer> statesTies, int[] policyDomainConfiguration) {
 		Double probTies;
     	    	
     	int numStatesTies = statesTies.size();
@@ -1341,7 +1311,7 @@ public final class DiscretePotentialOperations {
      *   <code>variableToMaximize</code> in each configuration.
      * @throws <code>NotEnoughMemoryException</code>. */
     public static Object[] multiplyAndMaximize(
-            ArrayList<Potential> potentialsVariable, 
+            List<Potential> potentialsVariable, 
             Variable variableToMaximize) 
             throws NotEnoughMemoryException {
         // Use a HashSet to add the variables to avoid adding one variable more
@@ -1367,7 +1337,7 @@ public final class DiscretePotentialOperations {
      * each configuration; this is typically a policy of a decision.
      * @throws <code>NotEnoughMemoryException</code> */
     public static TablePotential[] multiplyAndMaximizeUniformly(
-            ArrayList<TablePotential> potentialsVariable, 
+            List<TablePotential> potentialsVariable, 
             Variable variableToMaximize) 
             throws NotEnoughMemoryException {
         // Use a HashSet to add the variables to avoid adding one variable more
@@ -1391,13 +1361,11 @@ public final class DiscretePotentialOperations {
      *   variables as preceding) with the value choosed for 
      *   <code>variableToMaximize</code> in each configuration.
      * @throws <code>NotEnoughMemoryException</code>. */
-    @SuppressWarnings("unchecked")
     public static Object[] maximize(Potential potential, 
             Variable variableToMaximize) throws NotEnoughMemoryException {
-        ArrayList<Potential> potentialsVariable = new ArrayList<Potential>();
+        List<Potential> potentialsVariable = new ArrayList<Potential>();
         potentialsVariable.add(potential);
-        ArrayList<Variable> variablesToKeep = 
-            (ArrayList<Variable>)potential.getVariables().clone();
+        List<Variable> variablesToKeep = new ArrayList<Variable>(potential.getVariables());
         variablesToKeep.remove(variableToMaximize);
         return multiplyAndMaximize(
             potentialsVariable, variablesToKeep, variableToMaximize);
@@ -1412,7 +1380,7 @@ public final class DiscretePotentialOperations {
      *   variables of <code>potential</code>
      * @throws <code>NotEnoughMemoryException</code> */
     public static TablePotential reorder(TablePotential potential,
-            ArrayList<Variable> orderVariables) throws NotEnoughMemoryException{
+            List<Variable> orderVariables) throws NotEnoughMemoryException{
         TablePotential copyPotential = 
             new TablePotential(orderVariables, potential.getPotentialRole());
         int[] accOffsets = potential.getAccumulatedOffsets(orderVariables);

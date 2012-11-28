@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
@@ -27,7 +27,7 @@ public class NoSuperValueNode extends PNConstraint {
 	
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-		ArrayList<ProbNode> probNodes = probNet.getProbNodes();
+	    List<ProbNode> probNodes = probNet.getProbNodes();
 		for (ProbNode probNode : probNodes) {
 			NodeType nodeType = probNode.getNodeType();
 			if ((nodeType == NodeType.SV_PRODUCT) || 
@@ -43,7 +43,7 @@ public class NoSuperValueNode extends PNConstraint {
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
 		// AddVariableEdit
-		ArrayList<PNEdit> edits = 
+	    List<PNEdit> edits = 
 			UtilConstraints.getEditsType(edit, AddProbNodeEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			NodeType nodeType = ((AddProbNodeEdit)simpleEdit).getNodeType ();

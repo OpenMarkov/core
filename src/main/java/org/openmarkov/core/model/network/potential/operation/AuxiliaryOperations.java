@@ -11,6 +11,7 @@ package org.openmarkov.core.model.network.potential.operation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -34,9 +35,9 @@ public class AuxiliaryOperations {
 	 *   <code>TablePotential</code>s
 	 * @return An <code>ArrayList</code> of <code>TablePotential</code>s without
 	 *   the constant potentials. */
-	public static ArrayList<TablePotential> getProperPotentials(
-			ArrayList<TablePotential> potentials) {
-		ArrayList<TablePotential> properPotentials =
+    public static List<TablePotential> getProperPotentials (List<TablePotential> potentials)
+    {
+		List<TablePotential> properPotentials =
 			new ArrayList<TablePotential>();
 		for (TablePotential potential : potentials) {
 			if (potential.values.length > 1) {
@@ -79,10 +80,9 @@ public class AuxiliaryOperations {
 	
 	/** @param potentials <code>Collection</code> of <code>Potential</code>s
 	 * @return <code>ArrayList</code> of <code>Variable</code>s. */
-	public static ArrayList<Variable> getUnionVariables(
-	        ArrayList<? extends Potential> potentials) {
+	public static List<Variable> getUnionVariables(List<? extends Potential> potentials) {
 		
-		ArrayList<Variable> variables = new ArrayList<Variable>();
+		List<Variable> variables = new ArrayList<Variable>();
 		for (Potential potential : potentials) {
 			for (Variable variable : potential.getVariables())
 				if (!variables.contains(variable)) {
@@ -98,17 +98,19 @@ public class AuxiliaryOperations {
 	 *   variables in <code>allVariables</code> whose names are contained in 
 	 *   <code>selectedVariables</code>, in the same order they are stored in 
 	 *   <code>variablesNames</code> */
-	public static ArrayList<Variable> getVariables(
-			ArrayList<Variable> allVariables, String[] variablesNames) {
-		ArrayList<Variable> variables = new ArrayList<Variable>();
-		for (String name : variablesNames) {
-			for (Variable variable : allVariables) {
-				if (name.contentEquals(variable.getName())) {
-					variables.add(variable);
-				}
-			}
-		}
-		return variables;
-	}
-
+    public static List<Variable> getVariables (List<Variable> allVariables, String[] variablesNames)
+    {
+        List<Variable> variables = new ArrayList<Variable> ();
+        for (String name : variablesNames)
+        {
+            for (Variable variable : allVariables)
+            {
+                if (name.contentEquals (variable.getName ()))
+                {
+                    variables.add (variable);
+                }
+            }
+        }
+        return variables;
+    }
 }

@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -25,7 +26,6 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
-import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 
 /**
@@ -368,7 +368,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		addVariables(network,NodeType.CHANCE,variableA,variableS,variableT,
 				variableL,variableB,variableTOrC,variableX,variableD);
 		
-		ArrayList<Variable> variables2 = network.getVariables();
+		List<Variable> variables2 = network.getVariables();
 		setAdditionalProperties(relevance,value,(Variable[]) variables2.toArray(new Variable[variables2.size()]));
 				
 		//Potentials

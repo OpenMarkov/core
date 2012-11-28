@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
@@ -30,7 +31,7 @@ public class NoSelfLoop extends PNConstraint {
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
-		ArrayList<PNEdit> edits = 
+	    List<PNEdit> edits = 
 			UtilConstraints.getEditsType(edit, AddLinkEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			Variable variable1 = ((AddLinkEdit)simpleEdit).getVariable1(); 

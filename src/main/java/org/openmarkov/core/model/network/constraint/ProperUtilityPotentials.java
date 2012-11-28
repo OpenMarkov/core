@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
@@ -27,13 +27,12 @@ import org.openmarkov.core.model.network.potential.Potential;
 public class ProperUtilityPotentials extends PNConstraint {
 	
 	public boolean checkProbNet(ProbNet probNet) {
-		ArrayList<ProbNode> utilityNodes = 
-			probNet.getProbNodes(NodeType.UTILITY);
+	    List<ProbNode> utilityNodes = probNet.getProbNodes(NodeType.UTILITY);
 		if (utilityNodes.size() == 0) {
 			return false;
 		}
 		for (ProbNode utilityNode : utilityNodes) {
-			ArrayList<Potential> utilityPotentials =utilityNode.getPotentials();
+		    List<Potential> utilityPotentials =utilityNode.getPotentials();
 			if ((utilityPotentials == null) || (utilityPotentials.size() == 0)){
 				return false;
 			}
@@ -44,8 +43,7 @@ public class ProperUtilityPotentials extends PNConstraint {
 	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
-		ArrayList<PNEdit> edits = 
-			UtilConstraints.getEditsType(edit, AddProbNodeEdit.class);
+	    List<PNEdit> edits = UtilConstraints.getEditsType(edit, AddProbNodeEdit.class);
 		int numUtilities = probNet.getNumNodes(NodeType.UTILITY);
 		for (PNEdit simpleEdit : edits) {
 			if (((AddProbNodeEdit)simpleEdit).getNodeType() == NodeType.UTILITY) {

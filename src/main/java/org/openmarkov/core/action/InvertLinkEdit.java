@@ -10,6 +10,7 @@
 package org.openmarkov.core.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -37,11 +38,11 @@ public class InvertLinkEdit extends BaseLinkEdit {
     /**
      * Parent node's old potentials
      */
-    protected ArrayList<Potential> parentsOldPotentials;    
+    protected List<Potential> parentsOldPotentials;    
     /**
      * Child node's old potentials
      */
-    protected ArrayList<Potential> childsOldPotentials;    
+    protected List<Potential> childsOldPotentials;    
     
     
 	// Constructor
@@ -78,7 +79,7 @@ public class InvertLinkEdit extends BaseLinkEdit {
             if (node2.getNodeType () != NodeType.DECISION)
             {
                 // Update potentials
-                ArrayList<Potential> newPotentials = new ArrayList<Potential> ();
+                List<Potential> newPotentials = new ArrayList<Potential> ();
                 this.childsOldPotentials = node2.getPotentials ();
                 for (Potential oldPotential : childsOldPotentials)
                 {
@@ -86,7 +87,7 @@ public class InvertLinkEdit extends BaseLinkEdit {
                     if (newPotential == null)
                     {// It has not been implemented yet for this type of
                      // potential
-                        ArrayList<Variable> variables = oldPotential.getVariables ();
+                        List<Variable> variables = oldPotential.getVariables ();
                         variables.add (node1.getVariable ());
                         newPotential = new UniformPotential (variables,
                                                              oldPotential.getPotentialRole ());
@@ -102,14 +103,14 @@ public class InvertLinkEdit extends BaseLinkEdit {
             if (node2.getNodeType () != NodeType.DECISION)
             {
                 this.parentsOldPotentials = node1.getPotentials();
-                ArrayList<Potential> newPotentials = new ArrayList<Potential> ();
+                List<Potential> newPotentials = new ArrayList<Potential> ();
                 for(Potential oldPotential : parentsOldPotentials)
                 {
                     // Update potential
                     Potential newPotential = oldPotential.addVariable (node2.getVariable ());
                     if (newPotential == null)
                     {// It has not been implemented yet for this type of potential
-                        ArrayList<Variable> variables = oldPotential.getVariables ();
+                        List<Variable> variables = oldPotential.getVariables ();
                         if(!variables.contains (node2.getVariable ()))
                         {
                             variables.add (node2.getVariable ());

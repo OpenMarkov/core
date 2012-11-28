@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.ChangeVariableNameEdit;
@@ -29,16 +30,16 @@ public class DistinctVariableNames extends PNConstraint {
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 			throws NotEnoughMemoryException, NonProjectablePotentialException,
 			WrongCriterionException {
-		ArrayList<PNEdit> edits = UtilConstraints.getEditsType(edit,
+	    List<PNEdit> edits = UtilConstraints.getEditsType(edit,
 				AddProbNodeEdit.class);
-		ArrayList<Variable> variablesProbNet = probNet.getVariables();
-		ArrayList<String> variablesProbNetNames = new ArrayList<String>();
+		List<Variable> variablesProbNet = probNet.getVariables();
+		List<String> variablesProbNetNames = new ArrayList<String>();
 		for (Variable variable : variablesProbNet) {
 			variablesProbNetNames.add(variable.getName());
 		}
 
 		// get new variables names
-		ArrayList<String> newVariablesNames = new ArrayList<String>();
+		List<String> newVariablesNames = new ArrayList<String>();
 		for (PNEdit simpleEdit : edits) {
 			newVariablesNames.add(((AddProbNodeEdit) simpleEdit).getVariable ().getName());
 		}
@@ -91,8 +92,8 @@ public class DistinctVariableNames extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-		ArrayList<Variable> variablesProbNet = probNet.getVariables();
-		ArrayList<String> variablesProbNetNames = new ArrayList<String>();
+	    List<Variable> variablesProbNet = probNet.getVariables();
+	    List<String> variablesProbNetNames = new ArrayList<String>();
 		for (Variable variable : variablesProbNet) {
 			variablesProbNetNames.add(variable.getName());
 		}

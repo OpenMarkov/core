@@ -10,6 +10,7 @@
 package org.openmarkov.core.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.model.network.ProbNet;
@@ -58,15 +59,13 @@ public class CRemoveLinkEdit extends CompoundPNEdit {
 		addEdit(new RemoveLinkEdit(probNet, variable1, variable2, isDirected));
 	}
 
-	@SuppressWarnings("unchecked")
 	private void generateEditsDirectedLink() {
 		ProbNode probNode2 = probNet.getProbNode(variable2);
-		ArrayList<Potential> potentials = probNode2.getPotentials();
+		List<Potential> potentials = probNode2.getPotentials();
 		for (Potential potential : potentials) {
-			ArrayList<Variable> potentialVariables = potential.getVariables();
+		    List<Variable> potentialVariables = potential.getVariables();
 			if (potentialVariables.contains(variable1)) {
-				potentialVariables = 
-					(ArrayList<Variable>)potentialVariables.clone();
+				potentialVariables = new ArrayList<Variable>(potentialVariables);
 				potentialVariables.remove(variable1);
 				try {
 					Potential marginalizedPotential = 

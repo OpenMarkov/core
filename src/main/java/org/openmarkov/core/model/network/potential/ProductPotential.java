@@ -11,6 +11,7 @@ package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -40,7 +41,7 @@ public class ProductPotential extends Potential {
 	 * @param parentsProbNodes
 	 * @param role
 	 */
-	public ProductPotential(ArrayList<Variable> variables, PotentialRole role) {
+	public ProductPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role);
 		type = PotentialType.PRODUCT;
 	}
@@ -55,7 +56,7 @@ public class ProductPotential extends Potential {
      * @param probNode. <code>ProbNode</code> 
      * @param variables. <code>ArrayList</code> of <code>Variable</code>.
      * @param role. <code>PotentialRole</code>. */
-	public static boolean validate(ProbNode probNode, ArrayList<Variable> variables, 
+	public static boolean validate(ProbNode probNode, List<Variable> variables, 
 			PotentialRole role) {
 		boolean suitable = (role == PotentialRole.CONDITIONAL_PROBABILITY
 				|| role == PotentialRole.POLICY) && variables.get(0).getVariableType() == VariableType.NUMERIC;

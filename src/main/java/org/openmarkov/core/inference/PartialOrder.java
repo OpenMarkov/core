@@ -11,6 +11,7 @@ package org.openmarkov.core.inference;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Stack;
 
 import org.openmarkov.core.exception.WrongGraphStructureException;
@@ -48,13 +49,13 @@ import org.openmarkov.core.model.network.Variable;
 public class PartialOrder {
 
 	/** A partial order is a list of lists of variables. */
-	private ArrayList<ArrayList<Variable>> order;
+	private List<List<Variable>> order;
     
-    public ArrayList<ArrayList<Variable>> getOrder() {
+    public List<List<Variable>> getOrder() {
 		return order;
 	}
 
-	public void setOrder(ArrayList<ArrayList<Variable>> order) {
+	public void setOrder(List<List<Variable>> order) {
 		this.order = order;
 	}
 
@@ -69,15 +70,15 @@ public class PartialOrder {
      * @return <code>ArrayList</code> of <code>ArrayList</code> of
      *   <code>Variables</code>.
      */
-    private void calculatePartialOrder(
-    		ProbNet id) {
+    private void calculatePartialOrder (ProbNet id)
+    {
     	ProbNet idCopy = id.copy(); // Copy influence diagram
 
     	// Get decisions (only) in elimination order
     	int numDecisions = idCopy.getNumNodes(NodeType.DECISION);
     	Stack<Variable> decisions = new Stack<Variable>();
     	do {
-        	ArrayList<ProbNode> probNodes = idCopy.getProbNodes();
+    	    List<ProbNode> probNodes = idCopy.getProbNodes();
     		for (ProbNode probNode : probNodes) {
     			if (probNode.getNode().getNumChildren() == 0) {
     				if (probNode.getNodeType() == NodeType.DECISION) {
@@ -90,9 +91,8 @@ public class PartialOrder {
     	} while (numDecisions > 0);
     	
     	// Create elimination order adding chance nodes 
-    	order = 
-    		new ArrayList<ArrayList<Variable>>(numDecisions * 2 + 1);
-    	ArrayList<ProbNode> chanceProbNodes = id.getProbNodes(NodeType.CHANCE);
+    	order = new ArrayList<>(numDecisions * 2 + 1);
+    	List<ProbNode> chanceProbNodes = id.getProbNodes(NodeType.CHANCE);
     	HashSet<Variable> chanceVariables = new HashSet<Variable>();
     	for (ProbNode chanceProbNode : chanceProbNodes) {
     		chanceVariables.add(chanceProbNode.getVariable());
@@ -100,10 +100,10 @@ public class PartialOrder {
     	while (!decisions.empty()) {
     		Variable decision = decisions.pop();
     		ProbNode decisionProbNode = id.getProbNode(decision);
-    		ArrayList<Node> decisionNodeParents = 
+    		List<Node> decisionNodeParents = 
     			decisionProbNode.getNode().getParents();
     		// Get ProbNodes of the decision parents
-    		ArrayList<ProbNode> decisionProbNodeParents = 
+    		List<ProbNode> decisionProbNodeParents = 
     			new ArrayList<ProbNode>(decisionNodeParents.size());
     		for (Node node : decisionNodeParents) {
     			ProbNode probNode = (ProbNode)node.getObject();
@@ -223,7 +223,7 @@ public class PartialOrder {
 	private ProbNode getNextNodeToDelete(ProbNet influenceDiagram) 
 			throws WrongGraphStructureException {
 		// looks for a chance node
-		ArrayList<ProbNode> chanceNodes = 
+	    List<ProbNode> chanceNodes = 
 			influenceDiagram.getProbNodes(NodeType.CHANCE);
 		for (ProbNode probNode : chanceNodes) {
 			Node node = probNode.getNode();
@@ -232,7 +232,7 @@ public class PartialOrder {
 			}
 		}
 		// looks for a decision node
-		ArrayList<ProbNode> decisionNodes = 
+		List<ProbNode> decisionNodes = 
 			influenceDiagram.getProbNodes(NodeType.DECISION);
 		ProbNode decisionNode = null;
 		for (ProbNode probNode : decisionNodes) {
@@ -250,21 +250,21 @@ public class PartialOrder {
 	}
 
 	
-	/** @param chanceVariables <code>ArrayList</code> of <code>Variable</code>
-	 * @param parentsVariables <code>ArrayList</code> of <code>ArrayList</code>
+	/** @param chanceVariables <code>List</code> of <code>Variable</code>
+	 * @param parentsVariables <code>List</code> of <code>ArrayList</code>
 	 *   of <code>Variable</code>
-	 * @return An <code>ArrayList</code> of <code>Variable</code> that are not
+	 * @return An <code>List</code> of <code>Variable</code> that are not
 	 *   parents of any decision. */
-	private ArrayList<Variable> getUnobservableVariables(
-			ArrayList<Variable> chanceVariables, 
-			ArrayList<ArrayList<Variable>> parentsVariables) {
-		ArrayList<Variable> unobservableVariables = 
-			new ArrayList<Variable>(chanceVariables);
-		for (ArrayList<Variable> variables : parentsVariables) {
-			unobservableVariables.removeAll(variables);
-		}
-		return unobservableVariables;
-	}
+    private List<Variable> getUnobservableVariables (List<Variable> chanceVariables,
+                                                     List<ArrayList<Variable>> parentsVariables)
+    {
+        List<Variable> unobservableVariables = new ArrayList<Variable> (chanceVariables);
+        for (List<Variable> variables : parentsVariables)
+        {
+            unobservableVariables.removeAll (variables);
+        }
+        return unobservableVariables;
+    }
 	
 	/*	*//** @return An <code>ArrayList</code> of <code>ArrayList</code> of 
 	 *   <code>Variable</code>. It contains the parents of each decision. The 
@@ -273,29 +273,29 @@ public class PartialOrder {
 	 * @param influenceDiagram <code>InfluenceDiagram</code>.
 	 * @param decisionVariables <code>ArrayList</code> of <code>Variable</code>
 	 */
-	@SuppressWarnings({ "unchecked", "static-access" })
-	private ArrayList<ArrayList<Variable>> getParentsOfDecisions(
-			ProbNet influenceDiagram, ArrayList<Variable> decisionVariables) {
-		ArrayList<ArrayList<Variable>> parentsVariables = 
-			new ArrayList<ArrayList<Variable>>();
-		for(Variable decision : decisionVariables) {
-			// Remove decision nodes from node parents
-			ProbNode probNode =influenceDiagram.getProbNode(decision);
-			ArrayList<Node> nodeParents = probNode.getNode().getParents();
-			ArrayList<Node> nodeParentCloned = 
-				(ArrayList<Node>)nodeParents.clone();
-			for (Node node : nodeParentCloned) {
-				if (((ProbNode)node.getObject()).getNodeType() == 
-					    NodeType.DECISION) {
-					nodeParents.remove(node);
-				}
-			}
-			ArrayList<Variable> parentVariables = 
-				influenceDiagram.getVariables(nodeParents);
-			parentsVariables.add(parentVariables);
-		}
-		return parentsVariables;
-	}
+    @SuppressWarnings({"unchecked", "static-access"})
+    private List<List<Variable>> getParentsOfDecisions (ProbNet influenceDiagram,
+                                                        List<Variable> decisionVariables)
+    {
+        List<List<Variable>> parentsVariables = new ArrayList<> ();
+        for (Variable decision : decisionVariables)
+        {
+            // Remove decision nodes from node parents
+            ProbNode probNode = influenceDiagram.getProbNode (decision);
+            List<Node> nodeParents = probNode.getNode ().getParents ();
+            List<Node> nodeParentCloned = new ArrayList<Node> (nodeParents);
+            for (Node node : nodeParentCloned)
+            {
+                if (((ProbNode) node.getObject ()).getNodeType () == NodeType.DECISION)
+                {
+                    nodeParents.remove (node);
+                }
+            }
+            List<Variable> parentVariables = influenceDiagram.getVariables (nodeParents);
+            parentsVariables.add (parentVariables);
+        }
+        return parentsVariables;
+    }
 
 
 	/**
@@ -305,15 +305,18 @@ public class PartialOrder {
 	 * @param conditioningVariables 
 	 * @return An order that has been pruned by eliminating the variables that are not in 'variables
 	 */
-	public ArrayList<ArrayList<Variable>> projectPartialOrder(ArrayList<Variable> queryVariables, ArrayList<Variable> evidenceVariables, ArrayList<Variable> conditioningVariables) {
-		ArrayList<ArrayList<Variable>> newOrder;
-		ArrayList<ArrayList<Variable>> newOrder2;
+    public List<List<Variable>> projectPartialOrder (List<Variable> queryVariables,
+                                                     List<Variable> evidenceVariables,
+                                                     List<Variable> conditioningVariables)
+    {
+	    List<List<Variable>> newOrder;
+	    List<List<Variable>> newOrder2;
 		//Remove variables
-		newOrder = new ArrayList<ArrayList<Variable>>();
+		newOrder = new ArrayList<>();
 		for (int i=0;i<order.size();i++){
-			ArrayList<Variable> auxArray=order.get(i);
-			ArrayList<Variable> cloneAuxArray;
-			cloneAuxArray = (ArrayList<Variable>) auxArray.clone();
+		    List<Variable> auxArray =order.get(i);
+		    List<Variable> cloneAuxArray;
+			cloneAuxArray = new ArrayList<Variable> (auxArray);
 			for (Variable auxVar:auxArray){
 				if ((queryVariables.contains(auxVar)
 						||evidenceVariables.contains(auxVar)
@@ -325,9 +328,9 @@ public class PartialOrder {
 			
 		}
 		//Copy the non empty array lists
-		newOrder2 = new ArrayList<ArrayList<Variable>>();
+		newOrder2 = new ArrayList<>();
 		
-		for (ArrayList<Variable> auxArray:newOrder){
+		for (List<Variable> auxArray:newOrder){
 			if (auxArray.size()>0){
 				newOrder2.add(auxArray);
 			}
@@ -340,7 +343,7 @@ public class PartialOrder {
     	StringBuffer buffer = new StringBuffer();
     	int numArrays = order.size();
     	for (int i = 0; i < numArrays; i++) {
-    		ArrayList<Variable> array = order.get(i);
+    		List<Variable> array = order.get(i);
     		int arraySize = array.size();
     		if (arraySize > 1) {
     			buffer.append("{");
@@ -365,7 +368,7 @@ public class PartialOrder {
 		int num = 0;
 		
 		if (order!=null){
-			for (ArrayList<Variable> auxArray:order){
+			for (List<Variable> auxArray:order){
 				if (auxArray!=null){
 					num = num + auxArray.size();
 				}

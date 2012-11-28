@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -30,7 +31,6 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 /** @author marias
   * @author fjdiez 
@@ -45,7 +45,7 @@ public abstract class Potential{
 	// Attributes
 	/** <code>ArrayList</code> of <code>extends Variable</code>.
 	 * @frozen */
-    protected ArrayList<Variable> variables;
+    protected List<Variable> variables;
     
     /** @frozen */
     protected int numVariables;
@@ -70,7 +70,7 @@ public abstract class Potential{
     // Constructor
     /** @param variables. <code>ArrayList</code> of <code>Variable</code>.
      * @param role. <code>PotentialRole</code> */
-    public Potential(ArrayList<Variable> variables, PotentialRole role) {
+    public Potential(List<Variable> variables, PotentialRole role) {
         if (variables != null) {
             numVariables = variables.size();        	
             this.variables = new ArrayList<Variable>(variables);
@@ -86,7 +86,7 @@ public abstract class Potential{
     /** @param variables <code>ArrayList</code> of <code>Variable</code>.
      * @param role. <code>PotentialRole</code> 
      * @param utility. <code>Variable</code> */
-    public Potential(ArrayList<Variable> variables, PotentialRole role, Variable utility) {
+    public Potential(List<Variable> variables, PotentialRole role, Variable utility) {
         if (variables != null) {
             numVariables = variables.size();        	
             this.variables = new ArrayList<Variable>(variables);
@@ -105,7 +105,7 @@ public abstract class Potential{
      * @param probNode. <code>ProbNode</code> 
      * @param variables. <code>ArrayList</code> of <code>Variable</code>.
      * @param role. <code>PotentialRole</code>. */
-	public static boolean validate(ProbNode probNode, ArrayList<Variable> variables, 
+	public static boolean validate(ProbNode probNode, List<Variable> variables, 
 			PotentialRole role) {
         // Default implementation: always return true
         return true;
@@ -119,7 +119,7 @@ public abstract class Potential{
     public TablePotential getCPT (EvidenceCase evidenceCase)
     		throws NotEnoughMemoryException, NonProjectablePotentialException, 
     		WrongCriterionException {
-	    ArrayList<TablePotential> potentials = tableProject (evidenceCase, null);
+	    List<TablePotential> potentials = tableProject (evidenceCase, null);
 	    HashSet<Variable> variablesToEliminate = new HashSet<Variable>();
 	    
 	    //Fill it with variables appearing in all potentials except this
@@ -166,10 +166,8 @@ public abstract class Potential{
 	}
 
 	/** @consultation
-	 * @return An <code>ArrayList</code> of <code>Variable</code>s */
-	@SuppressWarnings("unchecked")
-	public ArrayList<Variable> getVariables() {
-		return (ArrayList<Variable>)variables.clone();
+	 * @return A <code>List</code> of <code>Variable</code>s */
+	public List<Variable> getVariables() {return new ArrayList<Variable>(variables);
 	}
 	
 	/** @consultation
@@ -207,7 +205,7 @@ public abstract class Potential{
 	 * @throws NotEnoughMemoryException 
 	 * @throws WrongCriterionException 
 	 * @throws NoFindingException */
-	public abstract ArrayList<TablePotential> tableProject(
+	public abstract List<TablePotential> tableProject(
 			EvidenceCase evidenceCase, InferenceOptions inferenceOptions) 
 		throws NonProjectablePotentialException, NotEnoughMemoryException, 
 		WrongCriterionException;
@@ -314,21 +312,23 @@ public abstract class Potential{
 	 * time as indicated by timeDifference
 	 * @argCondition The network must contain the shifted variables.
 	 */
-	public ArrayList<Variable> getShiftedVariables(ProbNet probNet, 
-			int timeDifference) {
-		ArrayList<Variable> shiftedVariables = new ArrayList<Variable>();
-		//also shift variables within the tree
-		
-		for (Variable variable : getVariables()) {
-			if ( variable.isTemporal() ){
-				shiftedVariables.add(
-					probNet.getShiftedVariable(variable, timeDifference));
-			} else {
-				shiftedVariables.add(variable);
-			} 
-		}
-		return shiftedVariables;
-	}
+    public List<Variable> getShiftedVariables (ProbNet probNet, int timeDifference)
+    {
+        List<Variable> shiftedVariables = new ArrayList<Variable> ();
+        // also shift variables within the tree
+        for (Variable variable : getVariables ())
+        {
+            if (variable.isTemporal ())
+            {
+                shiftedVariables.add (probNet.getShiftedVariable (variable, timeDifference));
+            }
+            else
+            {
+                shiftedVariables.add (variable);
+            }
+        }
+        return shiftedVariables;
+    }
 
     /** Overrides <code>toString</code> method. Mainly for test purposes */
     public String toString() {
@@ -470,9 +470,9 @@ public abstract class Potential{
         return 0;
     }	    
     
-    protected static ArrayList<Variable> toArrayList (Variable[] variables)
+    protected static List<Variable> toList (Variable[] variables)
     {
-        ArrayList<Variable> variablesArrayList = new ArrayList<Variable> ();
+        List<Variable> variablesArrayList = new ArrayList<Variable> ();
         for(Variable variable: variables)
         {
             variablesArrayList.add (variable);
@@ -480,7 +480,7 @@ public abstract class Potential{
         return variablesArrayList;
     }    
 
-    public void setVariables (ArrayList<Variable> variables) {
+    public void setVariables (List<Variable> variables) {
     	this.variables = variables;
     }
 }

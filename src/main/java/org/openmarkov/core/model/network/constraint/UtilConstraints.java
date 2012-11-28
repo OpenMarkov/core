@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.undo.UndoableEdit;
@@ -33,7 +34,7 @@ public class UtilConstraints {
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
      */
-    public static ArrayList<PNEdit> getEditsType (PNEdit edit,
+    public static List<PNEdit> getEditsType (PNEdit edit,
                                                   Class<?> typeEdit)
         throws NotEnoughMemoryException,
         NonProjectablePotentialException,

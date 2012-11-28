@@ -80,17 +80,17 @@ public class ProbNet implements Cloneable {
 	 * <code>ArrayList</code> of <code>Constraints</code> that defines this
 	 * <code>ProbNet</code>. This attribute is not frozen to allow conversions
 	 */
-    private ArrayList<PNConstraint> constraints;
+    private List<PNConstraint> constraints;
 	
 	/** Associated graph */
     protected Graph graph;
     
 	/** Set of agents, defined by a name. Each one may have several properties. */
 	//private StringsWithProperties agents;
-	private ArrayList<StringWithProperties> agents;
+	private List<StringWithProperties> agents;
 	// TODO Cambiar nombre a decisionCriteria y eliminar el otro decisionCriteria
 	/** Set of criteria for decision, defined by a name. Each one may have several properties. */
-	private ArrayList<StringWithProperties> decisionCriteria2;
+	private List<StringWithProperties> decisionCriteria2;
 	
     /**
      * @author mluque
@@ -281,7 +281,7 @@ public class ProbNet implements Cloneable {
      *            <code>boolean</code>
      * @throws ConstraintViolationException
      */
-    public void addConstraints (ArrayList<PNConstraint> constraints, boolean check)
+    public void addConstraints (List<PNConstraint> constraints, boolean check)
         throws ConstraintViolationException
     {
         for(PNConstraint constraint : constraints)
@@ -308,7 +308,7 @@ public class ProbNet implements Cloneable {
      * @param constraints
      *            <code>ArrayList<PNConstraint></code>
      */
-    public void removeConstraints (ArrayList<PNConstraint> constraints)
+    public void removeConstraints (List<PNConstraint> constraints)
     {
         for(PNConstraint constraint : constraints)
         {
@@ -322,7 +322,7 @@ public class ProbNet implements Cloneable {
      */
     public void removeAllConstraints (Class<PNConstraint> constraintClass)
     {
-        ArrayList<PNConstraint> constraintsToRemove = new ArrayList<PNConstraint>();
+        List<PNConstraint> constraintsToRemove = new ArrayList<PNConstraint>();
         
         for(PNConstraint constraint : constraints)
         {
@@ -336,16 +336,14 @@ public class ProbNet implements Cloneable {
     }    
 
 	/** @return <code>ArrayList</code> of <code>PNConstraint</code>s */
-	@SuppressWarnings("unchecked")
-	public ArrayList<PNConstraint> getConstraints() {
-		return (ArrayList<PNConstraint>) constraints.clone();
+	public List<PNConstraint> getConstraints() {
+		return new ArrayList<PNConstraint>(constraints);
 	}
 	
 	/** @return <code>ArrayList</code> of <code>PNConstraint</code>s */
-	public ArrayList<PNConstraint> getAdditionalConstraints() {
-		@SuppressWarnings("unchecked")
-		ArrayList<PNConstraint> additionalConstraints = (ArrayList<PNConstraint>)constraints.clone();
-		ArrayList<PNConstraint> networkTypeConstraints = ConstraintManager.getUniqueInstance().
+	public List<PNConstraint> getAdditionalConstraints() {
+	    List<PNConstraint> additionalConstraints = new ArrayList<PNConstraint>(constraints);
+	    List<PNConstraint> networkTypeConstraints = ConstraintManager.getUniqueInstance().
 				buildConstraintList(networkType);
 		additionalConstraints.removeAll(networkTypeConstraints);
 		return additionalConstraints;
@@ -452,7 +450,7 @@ public class ProbNet implements Cloneable {
  */
 	public boolean checkIfThereIsAgeNode() {
 		boolean isThereNodeAge = false;
-		ArrayList<ProbNode> probNodes = getProbNodes();
+		List<ProbNode> probNodes = getProbNodes();
 		for (int i = 0; i < probNodes.size() ; i++) {
 			if (probNodes.get(i).getVariable().isTemporal() 
 					&& probNodes.get(i).getVariable().getBaseName().equals("Age")) {
@@ -473,10 +471,10 @@ public class ProbNet implements Cloneable {
 	 * this array will be empty
 	 */
 	
-	public ArrayList<ProbNode> getSpecialTimeDependantNodes(){
+	public List<ProbNode> getSpecialTimeDependantNodes(){
 		//this array includes also Age node if exists
-		ArrayList<ProbNode> numericTemporalNodes = new ArrayList<>();
-		ArrayList<ProbNode> probNodes = getProbNodes();
+	    List<ProbNode> numericTemporalNodes = new ArrayList<>();
+	    List<ProbNode> probNodes = getProbNodes();
 		//looking for temporal numerical variables in the first slice
 		for (int i = 0; i < probNodes.size() ; i++) {
 			if (probNodes.get(i).getVariable().isTemporal() 
@@ -554,7 +552,7 @@ public class ProbNet implements Cloneable {
                 // Unreachable code because constraints are not tested in copy
             }
         }
-		ArrayList<ProbNode> probNodes = getProbNodes();
+        List<ProbNode> probNodes = getProbNodes();
 		// Adds variables and create corresponding nodes. Also add potentials
 		for (ProbNode probNode : probNodes) {
 			// Add variables and create corresponding nodes
@@ -577,12 +575,11 @@ public class ProbNet implements Cloneable {
 		}
 
 		// Adds links
-		ArrayList<ProbNode> nodes = this.getProbNodes();
+		List<ProbNode> nodes = this.getProbNodes();
 		for (ProbNode probNode1 : nodes) {
 			Variable variable1 = probNode1.getVariable();
 			ProbNode newNode1 = probNetCopy.getProbNode(variable1);
-			ArrayList<ProbNode> neighbors = getProbNodesOfNodes(probNode1
-					.getNode().getNeighbors());
+			List<ProbNode> neighbors = getProbNodesOfNodes(probNode1.getNode().getNeighbors());
 			for (ProbNode probNode2 : neighbors) {
 				Variable variable2 = probNode2.getVariable();
 				ProbNode newNode2 = probNetCopy.getProbNode(variable2);
@@ -735,10 +732,10 @@ public class ProbNet implements Cloneable {
 	 * @throws WrongCriterionException 
 	 * @throws NoFindingException
 	 */
-	public ArrayList<Potential> getProjectedPotentials(EvidenceCase evidenceCase)
+	public List<Potential> getProjectedPotentials(EvidenceCase evidenceCase)
 			throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
-		ArrayList<Potential> originalPotentials = getPotentials();
-		ArrayList<Potential> projectedPotentials = new ArrayList<Potential>();
+	    List<Potential> originalPotentials = getPotentials();
+	    List<Potential> projectedPotentials = new ArrayList<Potential>();
 
 		// each original potential may yield several projected potentials;
 		for (Potential potential : originalPotentials) {
@@ -759,13 +756,13 @@ public class ProbNet implements Cloneable {
 	 * @throws WrongCriterionException 
 	 * @throws NoFindingException
 	 */
-    public ArrayList<TablePotential> tableProjectPotentials (EvidenceCase evidenceCase)
+    public List<TablePotential> tableProjectPotentials (EvidenceCase evidenceCase)
 	throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
-    	ArrayList<Potential> originalPotentials = getPotentials();
-		ArrayList<TablePotential> projectedPotentials = new ArrayList<TablePotential>();
+    	List<Potential> originalPotentials = getPotentials();
+		List<TablePotential> projectedPotentials = new ArrayList<TablePotential>();
 
 		// each original potential may yield several projected potentials;
-		ArrayList<TablePotential> auxPotentials;
+		List<TablePotential> auxPotentials;
 		for (Potential potential : originalPotentials) {
 			//if (potential instanceof SameAsPrevious) {
 				//auxPotentials = ((SameAsPrevious) potential).getOriginalPotential().tableProject(evidenceCase, null);
@@ -802,9 +799,9 @@ public class ProbNet implements Cloneable {
 	 *         <code>Potential</code>
 	 * @consultation
 	 */
-	public ArrayList<Potential> getPotentials() {
-		ArrayList<ProbNode> nodes = getProbNodes();
-		ArrayList<Potential> potentials = new ArrayList<Potential>();
+	public List<Potential> getPotentials() {
+	    List<ProbNode> nodes = getProbNodes();
+	    List<Potential> potentials = new ArrayList<Potential>();
 		for (ProbNode node : nodes) {
 			potentials.addAll(node.getPotentials());
 		}
@@ -818,9 +815,9 @@ public class ProbNet implements Cloneable {
 	 * @consultation
 	 */
 	// TODO find a better name for this method
-	public ArrayList<Potential> getPotentials2() {
-		ArrayList<ProbNode> nodes = getProbNodes();
-		ArrayList<Potential> potentials = new ArrayList<Potential>();
+	public List<Potential> getPotentials2() {
+	    List<ProbNode> nodes = getProbNodes();
+	    List<Potential> potentials = new ArrayList<Potential>();
 		for (ProbNode node : nodes) {
 			if ((node.getNodeType() != NodeType.UTILITY 
 					|| node.getNode().getNumChildren() == 0)) {
@@ -834,8 +831,8 @@ public class ProbNet implements Cloneable {
 	 * @return <code>ArrayList</code> with all <code>ProbNode</code>s
 	 * @consultation
 	 */
-	public ArrayList<ProbNode> getProbNodes() {
-		ArrayList<ProbNode> nodes = new ArrayList<ProbNode>(getNumNodes());
+	public List<ProbNode> getProbNodes() {
+	    List<ProbNode> nodes = new ArrayList<ProbNode>(getNumNodes());
 		for (NodesHashMapType hashMap : nodesHashMaps.values()) {
 			nodes.addAll(hashMap.values());
 		}
@@ -849,8 +846,8 @@ public class ProbNet implements Cloneable {
 	 *            <code>ArrayList</code> of <code>Variable</code>
 	 * @consultation
 	 */
-	public ArrayList<ProbNode> getProbNodes(ArrayList<Variable> variables) {
-		ArrayList<ProbNode> probNodes = new ArrayList<ProbNode>(
+	public List<ProbNode> getProbNodes(List<Variable> variables) {
+	    List<ProbNode> probNodes = new ArrayList<ProbNode>(
 				variables.size());
 		for (Variable variable : variables) {
 			probNodes.add(getProbNode(variable));
@@ -863,34 +860,34 @@ public class ProbNet implements Cloneable {
 	 *            <code>ArrayList</code> of <code>Node</code>
 	 * @return <code>ArrayList</code> of <code>ProbNode</code>
 	 */
-	public static ArrayList<ProbNode> getProbNodesOfNodes(ArrayList<Node> nodes) {
-		ArrayList<ProbNode> probNodes = new ArrayList<ProbNode>(nodes.size());
+	public static List<ProbNode> getProbNodesOfNodes(List<Node> nodes) {
+	    List<ProbNode> probNodes = new ArrayList<ProbNode>(nodes.size());
 		for (Node node : nodes) {
 			probNodes.add((ProbNode) node.getObject());
 		}
 		return probNodes;
 	}
 
-	/**
-	 * @param probNodes
-	 *            <code>ArrayList</code> of <code>ProbNode</code>
-	 * @return <code>ArrayList</code> of <code>ProbNode</code>
-	 */
-	public static ArrayList<Node> getNodesOfProbNodes(
-			List<ProbNode> probNodes) {
-		ArrayList<Node> nodes = new ArrayList<Node>(probNodes.size());
-		for (ProbNode probNode : probNodes) {
-			nodes.add(probNode.getNode());
-		}
-		return nodes;
-	}
+    /**
+     * @param probNodes <code>List</code> of <code>ProbNode</code>
+     * @return <code>List</code> of <code>ProbNode</code>
+     */
+    public static List<Node> getNodesOfProbNodes (List<ProbNode> probNodes)
+    {
+        List<Node> nodes = new ArrayList<Node> (probNodes.size ());
+        for (ProbNode probNode : probNodes)
+        {
+            nodes.add (probNode.getNode ());
+        }
+        return nodes;
+    }
 
 	/**
 	 * @return All the nodes of certain kind
 	 * @param nodeType
 	 * @consultation
 	 */
-	public ArrayList<ProbNode> getProbNodes(NodeType nodeType) {
+	public List<ProbNode> getProbNodes(NodeType nodeType) {
 		return new ArrayList<ProbNode>(nodesHashMaps.get(nodeType).values());
 	}
 
@@ -906,17 +903,17 @@ public class ProbNet implements Cloneable {
 	 * @return <code>ArrayList</code> of all the <code>Potential</code>s in this
 	 *         network that contains <code>variable</code>
 	 */
-	public ArrayList<Potential> getPotentials(Variable variable) {
-		ArrayList<Potential> potentials = new ArrayList<Potential>();
+	public List<Potential> getPotentials(Variable variable) {
+	    List<Potential> potentials = new ArrayList<Potential>();
 		ProbNode probNode = getProbNode(variable);
 		// potentials associated to this node
 		if (probNode != null) { // Variable exists in this ProbNet
 			potentials.addAll(probNode.getPotentials());
 			// potentials in neighbors that contains variable
-			ArrayList<ProbNode> neighbors = getProbNodesOfNodes(probNode.getNode()
+			List<ProbNode> neighbors = getProbNodesOfNodes(probNode.getNode()
 					.getNeighbors());
 			for (ProbNode node : neighbors) {
-				ArrayList<Potential> nodePotentials = node.getPotentials();
+			    List<Potential> nodePotentials = node.getPotentials();
 				for (Potential potential : nodePotentials) {
 					if (potential.contains(variable)) {
 						potentials.add(potential);
@@ -933,9 +930,9 @@ public class ProbNet implements Cloneable {
 	 *         <code>true</code> otherwise returns all chance potentials.
 	 * @consultation
 	 */
-	public ArrayList<Potential> getPotentialsType(NodeType nodeType) {
+	public List<Potential> getPotentialsType(NodeType nodeType) {
 		NodesHashMapType nodesType = nodesHashMaps.get(nodeType);
-		ArrayList<Potential> potentials = new ArrayList<Potential>();
+		List<Potential> potentials = new ArrayList<Potential>();
 		for (ProbNode node : nodesType.values()) {
 			potentials.addAll(node.getPotentials());
 		}
@@ -947,9 +944,9 @@ public class ProbNet implements Cloneable {
 	 * @param role
 	 * @return All the potentials of a role.
 	 */
-	public ArrayList<Potential> getPotentialsRole(PotentialRole role) {
+	public List<Potential> getPotentialsRole(PotentialRole role) {
 		
-		ArrayList<Potential> potentials = new ArrayList<Potential>();
+	    List<Potential> potentials = new ArrayList<Potential>();
 		for (NodesHashMapType nodesHashMap:nodesHashMaps.values()){
 			for (ProbNode auxProbNode:nodesHashMap.values()){
 				for (Potential auxPot:auxProbNode.getPotentials()){
@@ -963,34 +960,34 @@ public class ProbNet implements Cloneable {
 		return potentials;
 	}
 
-	/**
-	 * Gets all the probability potentials that contain the
-	 * <code>Variable</code> received. The potentials that can contains that
-	 * variable are in the node associated to the variable and its neighbors.
-	 * 
-	 * @param variable
-	 * @return <code>ArrayList</code> of potentials containing
-	 *         <code>variable</code>.
-	 * @argCondition variable belongs to this <code>ProbNet</code>
-	 */
-	public ArrayList<Potential> getProbPotentials(Variable variable) {
-		ProbNode nodeVariable = getProbNode(variable);
-		ArrayList<ProbNode> allNodes = getProbNodesOfNodes(nodeVariable
-				.getNode().getNeighbors());
-		allNodes.add(nodeVariable);
-		ArrayList<Potential> potentialsVariable = new ArrayList<Potential>();
-		for (ProbNode node : allNodes) {
-			ArrayList<Potential> potentialsNode = ((ProbNode) node)
-					.getPotentials();
-			for (Potential potential : potentialsNode) {
-				if ((potential.getVariables().contains(variable))
-						&& !potential.isUtility()) {
-					potentialsVariable.add(potential);
-				}
-			}
-		}
-		return potentialsVariable;
-	}
+    /**
+     * Gets all the probability potentials that contain the
+     * <code>Variable</code> received. The potentials that can contains that
+     * variable are in the node associated to the variable and its neighbors.
+     * @param variable
+     * @return <code>ArrayList</code> of potentials containing
+     *         <code>variable</code>.
+     * @argCondition variable belongs to this <code>ProbNet</code>
+     */
+    public List<Potential> getProbPotentials (Variable variable)
+    {
+        ProbNode nodeVariable = getProbNode (variable);
+        List<ProbNode> allNodes = getProbNodesOfNodes (nodeVariable.getNode ().getNeighbors ());
+        allNodes.add (nodeVariable);
+        List<Potential> potentialsVariable = new ArrayList<Potential> ();
+        for (ProbNode node : allNodes)
+        {
+            List<Potential> potentialsNode = ((ProbNode) node).getPotentials ();
+            for (Potential potential : potentialsNode)
+            {
+                if ((potential.getVariables ().contains (variable)) && !potential.isUtility ())
+                {
+                    potentialsVariable.add (potential);
+                }
+            }
+        }
+        return potentialsVariable;
+    }
 
 	/**
 	 * Gets all the utility potentials that contains the <code>variable</code>
@@ -1005,16 +1002,16 @@ public class ProbNet implements Cloneable {
 	 *         <code>variable</code>.
 	 * @argCondition variable belongs to this <code>ProbNet</code>
 	 */
-	public ArrayList<Potential> getUtilityPotentials(Variable variable) {
+	public List<Potential> getUtilityPotentials(Variable variable) {
 		ProbNode nodeVariable = getProbNode(variable);
-		ArrayList<ProbNode> allNodes = getProbNodesOfNodes(nodeVariable
+		List<ProbNode> allNodes = getProbNodesOfNodes(nodeVariable
 				.getNode().getNeighbors());
 		allNodes.add(nodeVariable);
-		ArrayList<Potential> potentialsVariable = new ArrayList<Potential>();
+		List<Potential> potentialsVariable = new ArrayList<Potential>();
 		for (ProbNode node : allNodes) {
-			ArrayList<Potential> potentialsNode = node.getPotentials();
+		    List<Potential> potentialsNode = node.getPotentials();
 			for (Potential potential : potentialsNode) {
-				ArrayList<Variable> variables = potential.getVariables();
+				List<Variable> variables = potential.getVariables();
 				if ((variables.size()==0||variables.contains(variable))
 						&& potential.isUtility()) {
 					potentialsVariable.add(potential);
@@ -1024,9 +1021,9 @@ public class ProbNet implements Cloneable {
 		return potentialsVariable;
 	}
 
-	public ArrayList<Potential> getUtilityPotentials2(Variable variable) {
-		ArrayList<Potential> allPotentials = getPotentials(); 
-		ArrayList<Potential> potentialsVariable = new ArrayList<Potential>();
+	public List<Potential> getUtilityPotentials2(Variable variable) {
+	    List<Potential> allPotentials = getPotentials(); 
+	    List<Potential> potentialsVariable = new ArrayList<Potential>();
 		for (Potential potential : allPotentials) {
 			if (potential.contains(variable) && potential.isUtility()) {
 				potentialsVariable.add(potential);
@@ -1042,18 +1039,18 @@ public class ProbNet implements Cloneable {
 	 *         the variable received.
 	 * @argCondition variable belongs to this <code>ProbNet</code>
 	 */
-	public ArrayList<Potential> extractPotentials(Variable variable) {
+	public List<Potential> extractPotentials(Variable variable) {
 		// get the nodes that contains potentials associated to the variable
-		ArrayList<ProbNode> nodes = new ArrayList<ProbNode>();
+	    List<ProbNode> nodes = new ArrayList<ProbNode>();
 		// node associated to variable
 		ProbNode nodeContainer = getProbNode(variable);
 		nodes.add(nodeContainer);
 		// and its siblings
 		nodes.addAll(getProbNodesOfNodes(nodeContainer.getNode().getNeighbors()));
-		ArrayList<Potential> potentialsVariable = new ArrayList<Potential>();
+		List<Potential> potentialsVariable = new ArrayList<Potential>();
 		// for each node extract its potentials ...
 		for (ProbNode node : nodes) {
-			ArrayList<Potential> potentialsNode = node.getPotentials();
+		    List<Potential> potentialsNode = node.getPotentials();
 			for (Potential potential : potentialsNode) {
 				// ... and selects the potentials that contains the variable
 				if (potential.getVariables().contains(variable)) {
@@ -1071,8 +1068,8 @@ public class ProbNet implements Cloneable {
 	 *         it did not exists
 	 */
 	public ProbNode removePotential(Potential potential) {
-		ArrayList<Variable> variables = potential.getVariables();
-		ArrayList<ProbNode> candidateNodes = new ArrayList<ProbNode>();
+	    List<Variable> variables = potential.getVariables();
+	    List<ProbNode> candidateNodes = new ArrayList<ProbNode>();
 
 		// gets probNodes that could contain the potential
 		if (!potential.isUtility()) { // chance potential
@@ -1088,7 +1085,7 @@ public class ProbNet implements Cloneable {
 				candidateNodes = this.getProbNodes();
 			}
 			else{
-				ArrayList<ProbNode> utilityNodes = getProbNodes(NodeType.UTILITY);
+			    List<ProbNode> utilityNodes = getProbNodes(NodeType.UTILITY);
 				candidateNodes.addAll(utilityNodes);
 				ProbNode firstProbNode = getProbNode(variables.get(0));
 				candidateNodes.add(firstProbNode);
@@ -1098,7 +1095,7 @@ public class ProbNet implements Cloneable {
 		// find in such nodes the potential to remove
 		for (ProbNode probNode : candidateNodes) {
 			if (probNode != null) {
-				ArrayList<Potential> potentialsNode = probNode.getPotentials();
+			    List<Potential> potentialsNode = probNode.getPotentials();
 				for (Potential potentialNode : potentialsNode) {
 					if (potentialNode == potential) {
 						if (probNode.removePotential(potentialNode)) {
@@ -1120,14 +1117,14 @@ public class ProbNet implements Cloneable {
 	 */
 	public void removePotentials(ProbNode probNode) {
 		// get the nodes that contains potentials associated to the variable
-		ArrayList<ProbNode> nodes = new ArrayList<ProbNode>();
+	    List<ProbNode> nodes = new ArrayList<ProbNode>();
 		Variable variable = probNode.getVariable();
 		nodes.add(probNode);
 		// and its siblings
 		nodes.addAll(getProbNodesOfNodes(probNode.getNode().getSiblings()));
 		// for each node extract its potentials ...
 		for (ProbNode node : nodes) {
-			ArrayList<Potential> potentialsNode = new ArrayList<Potential>(
+		    List<Potential> potentialsNode = new ArrayList<Potential>(
 					node.getPotentials());
 			for (Potential potential : potentialsNode) {
 				// ... and removes the potentials that contains the variable
@@ -1144,7 +1141,7 @@ public class ProbNet implements Cloneable {
 	 * @param toRemovePotentials
 	 *            <code>ArrayList</code> of <code>Potential</code>
 	 */
-	public void removePotentials(ArrayList<Potential> toRemovePotentials) {
+	public void removePotentials(List<Potential> toRemovePotentials) {
 		if (toRemovePotentials != null) {
 			for (Potential potential : toRemovePotentials) {
 				removePotential(potential);
@@ -1342,7 +1339,7 @@ public class ProbNet implements Cloneable {
 	 *         received has been added.
 	 */
 	public ProbNode addPotential(Potential potential) {
-		ArrayList<Variable> potentialVariables = potential.getVariables();
+	    List<Variable> potentialVariables = potential.getVariables();
 		addPotentialVariables(potential);
 		ProbNode probNode = null; // The potential will be added here
 		if (potential.isUtility()) { // Create probNode without variable
@@ -1352,7 +1349,7 @@ public class ProbNet implements Cloneable {
 				probNode = addProbabilityPotential(potential,
 						potentialVariables);
 			} else {// potential does not depend on any variable (is a constant)
-				ArrayList<ProbNode> chanceProbNodes = getProbNodes(NodeType.CHANCE);
+			    List<ProbNode> chanceProbNodes = getProbNodes(NodeType.CHANCE);
 				if (chanceProbNodes.size() > 0) {
 					probNode = chanceProbNodes.get(0);
 					probNode.addPotential(potential);
@@ -1374,7 +1371,7 @@ public class ProbNet implements Cloneable {
 	 */
 	private void addPotentialVariables(Potential potential) {
 		// Common part
-		ArrayList<Variable> potentialVariables = potential.getVariables();
+		List<Variable> potentialVariables = potential.getVariables();
 		for (Variable variable : potentialVariables) {
 			// add the variables that were not yet in the network
 			if (getProbNode(variable) == null) {
@@ -1399,7 +1396,7 @@ public class ProbNet implements Cloneable {
 	 *         stored
 	 */
 	private ProbNode addUtilityPotential(Potential potential,
-			ArrayList<Variable> potentialVariables) {
+	                                     List<Variable> potentialVariables) {
 		Variable utilityVariable = potential.getUtilityVariable();
 		ProbNode utilityProbNode = this.getProbNode(utilityVariable);
 		if (utilityProbNode == null) { // The variable does not exists yet
@@ -1426,7 +1423,7 @@ public class ProbNet implements Cloneable {
 	 *            - <code>ArrayList</code> of <code>Variable</code>s
 	 */
 	private ProbNode addProbabilityPotential(Potential potential,
-			ArrayList<Variable> potentialVariables) {
+	                                         List<Variable> potentialVariables) {
 		Variable conditionedVariable = potentialVariables.get(0);
 		ProbNode conditionedProbNode = getProbNode(conditionedVariable);
 		conditionedProbNode.addPotential(potential);
@@ -1469,9 +1466,9 @@ public class ProbNet implements Cloneable {
 	 * @return All <code>Variable</code>s except utility nodes variables.
 	 *         <code>ArrayList</code> of <code>Variable</code>.
 	 */
-	public ArrayList<Variable> getChanceAndDecisionVariables() {
-		ArrayList<Variable> variables = new ArrayList<Variable>();
-		ArrayList<ProbNode> nodes = getProbNodes();
+	public List<Variable> getChanceAndDecisionVariables() {
+	    List<Variable> variables = new ArrayList<Variable>();
+	    List<ProbNode> nodes = getProbNodes();
 		for (ProbNode node : nodes) {
 			if (node.getNodeType() != NodeType.UTILITY) {
 				variables.add(node.getVariable());
@@ -1486,9 +1483,9 @@ public class ProbNet implements Cloneable {
 	 * @param nodeType
 	 *            <code>NodeType</code>
 	 */
-	public ArrayList<Variable> getVariables(NodeType nodeType) {
-		ArrayList<Variable> variablesType = new ArrayList<Variable>();
-		ArrayList<ProbNode> probNodesType = getProbNodes(nodeType);
+	public List<Variable> getVariables(NodeType nodeType) {
+	    List<Variable> variablesType = new ArrayList<Variable>();
+	    List<ProbNode> probNodesType = getProbNodes(nodeType);
 		for (ProbNode probNode : probNodesType) {
 			variablesType.add(probNode.getVariable());
 		}
@@ -1502,8 +1499,8 @@ public class ProbNet implements Cloneable {
 	 * @return variables corresponding to the received nodes.
 	 *         <code>ArrayList</code> of <code>Variable</code>
 	 */
-	public static ArrayList<Variable> getVariables(List<?> objects) {
-		ArrayList<Variable> variables = new ArrayList<Variable>(objects.size());
+	public static List<Variable> getVariables(List<?> objects) {
+	    List<Variable> variables = new ArrayList<Variable>(objects.size());
 		for (Object object : objects) {
 			if (object.getClass() == Node.class) {
 				ProbNode probNode = (ProbNode)((Node)object).getObject();
@@ -1519,8 +1516,8 @@ public class ProbNet implements Cloneable {
 	/**
 	 * @return All the variables. <code>ArrayList</code> of <code>Variable</code>
 	 */
-	public ArrayList<Variable> getVariables() {
-		ArrayList<Variable> variables = new ArrayList<Variable>();
+	public List<Variable> getVariables() {
+	    List<Variable> variables = new ArrayList<Variable>();
 		for (NodesHashMapType probNodesMap : nodesHashMaps.values()) {
 			for (ProbNode probNode : probNodesMap.values()) {
 				variables.add(probNode.getVariable());
@@ -1634,7 +1631,7 @@ public class ProbNet implements Cloneable {
 	 *            <code>Potential</code>.
 	 */
 	private void createClique(Potential potential) {
-		ArrayList<Variable> variablesPotential = potential.getVariables();
+		List<Variable> variablesPotential = potential.getVariables();
 		Node node1, node2;
 		int potentialSize = variablesPotential.size();
 		for (int i = 0; i < potentialSize - 1; i++) {
@@ -1666,7 +1663,7 @@ public class ProbNet implements Cloneable {
 		
 		out.append("Type: " + networkType.toString () +"\n");
 		
-		ArrayList<ProbNode> nodes = getProbNodes();
+		List<ProbNode> nodes = getProbNodes();
 		int numPotentials = getNumPotentials();
 		int numNodes = nodes.size();
 		if (numNodes == 0) {
@@ -1793,12 +1790,12 @@ public class ProbNet implements Cloneable {
 
 	
 	/** @return <code>ArrayList</code> of <code>StringsWithProperties</code> */
-	public ArrayList<StringWithProperties> getAgents() {
+	public List<StringWithProperties> getAgents() {
 		return agents;
 	}
 	
 	/** @return <code>StringsWithProperties</code> */
-	public ArrayList<StringWithProperties> getDecisionCriteria() {
+	public List<StringWithProperties> getDecisionCriteria() {
 		return decisionCriteria2;
 	}
 	public Variable getDecisionCriteriaVariable() {
@@ -1807,14 +1804,14 @@ public class ProbNet implements Cloneable {
 	/**
 	 * @param decisionCriteria2. <code>StringsWithProperties</code>
 	 */
-	public void setDecisionCriteria2(ArrayList<StringWithProperties> decisionCriteria2) {
+	public void setDecisionCriteria2(List<StringWithProperties> decisionCriteria2) {
 		this.decisionCriteria2 = decisionCriteria2;
 	}
 
 	/**
 	 * @param agents. <code>StringsWithProperties</code>
 	 */
-	public void setAgents(ArrayList<StringWithProperties> agents) {
+	public void setAgents(List<StringWithProperties> agents) {
 		this.agents = agents;
 	}
 

@@ -11,6 +11,7 @@ package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -38,7 +39,7 @@ public class UniformPotential extends Potential {
 	// Constructors
 	/** @param variables. <code>ArrayList</code> of <code>Variable</code>
 	 * @param role. <code>PotentialRole</code> */
-	public UniformPotential(ArrayList<Variable> variables, PotentialRole role) {
+	public UniformPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role);
 		if (allVariablesAreDiscrete(variables)) {
 			discreteValue = calculateDiscreteValue(variables);
@@ -49,7 +50,7 @@ public class UniformPotential extends Potential {
 	/** @param variables. <code>ArrayList</code> of <code>Variable</code>
 	 * @param role. <code>PotentialRole</code>
 	 * @param utilityVariable. <code>Variable</code> */
-	public UniformPotential(ArrayList<Variable> variables, PotentialRole role, Variable utilityVariable) {
+	public UniformPotential(List<Variable> variables, PotentialRole role, Variable utilityVariable) {
 		super(variables, role, utilityVariable);
 		if (allVariablesAreDiscrete(variables)) {
 			discreteValue = calculateDiscreteValue(variables);
@@ -61,7 +62,7 @@ public class UniformPotential extends Potential {
      * @param variables... <code>Variable</code> 
      */
     public UniformPotential(PotentialRole role, Variable... variables) {
-        this(toArrayList(variables), role);
+        this(toList(variables), role);
     }	
 	
     /** @param potential. <code>Potential</code> */
@@ -75,7 +76,7 @@ public class UniformPotential extends Potential {
      * @param probNode. <code>ProbNode</code> 
      * @param variables. <code>ArrayList</code> of <code>Variable</code>
      * @param role. <code>PotentialRole</code> */
-    public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, 
+    public static boolean validate (ProbNode probNode, List<Variable> variables, 
     		PotentialRole role) {
     	// TODO
         return true;
@@ -164,7 +165,7 @@ public class UniformPotential extends Potential {
 
 	/** @return <code>true</code> if all the variables are FINITE_STATES.
 	 * @param variables. <code>ArrayList</code> of <code>Variable</code> */
-	private boolean allVariablesAreDiscrete(ArrayList<Variable> variables) {
+	private boolean allVariablesAreDiscrete(List<Variable> variables) {
 		for (Variable variable : variables) {
 			if (variable.getVariableType() != VariableType.FINITE_STATES) {
 				return false;
@@ -176,7 +177,7 @@ public class UniformPotential extends Potential {
 	/** @param variables. <code>ArrayList</code> of <code>Variable</code>
 	 * @return 1 / multiplication of the number of states of conditioning 
 	 * variables. */
-	private double calculateDiscreteValue(ArrayList<Variable> variables) {
+	private double calculateDiscreteValue(List<Variable> variables) {
 		int statesSpace = 1;
 		for (int i = 1; i < variables.size(); i++) {
 			statesSpace *= variables.get(i).getNumStates();

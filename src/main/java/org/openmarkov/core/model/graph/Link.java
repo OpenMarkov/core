@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.graph;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.PartitionedInterval;
@@ -52,12 +53,12 @@ public class Link {
 	/*****
 	 * List of revealing values of type state
 	 */
-	private ArrayList<State> revealingStates;
+	private List<State> revealingStates;
 
 	/*****
 	 * List of revealing values of type interval
 	 */
-	private ArrayList<PartitionedInterval> revealingIntervals;
+	private List<PartitionedInterval> revealingIntervals;
 
 	// Constructors
 	/**
@@ -225,7 +226,7 @@ public class Link {
 		int[] indexes = new int[2];
 		indexes[0] = restrictionsPotential.getVariable(0).getStateIndex(state1);
 		indexes[1] = restrictionsPotential.getVariable(1).getStateIndex(state2);
-		ArrayList<Variable> variables = restrictionsPotential.getVariables();
+		List<Variable> variables = restrictionsPotential.getVariables();
 		restrictionsPotential.setValue(variables, indexes, compatibility);
 	}
 
@@ -246,7 +247,7 @@ public class Link {
 		int[] indexes = new int[2];
 		indexes[0] = restrictionsPotential.getVariable(0).getStateIndex(state1);
 		indexes[1] = restrictionsPotential.getVariable(1).getStateIndex(state2);
-		ArrayList<Variable> variables = restrictionsPotential.getVariables();
+		List<Variable> variables = restrictionsPotential.getVariables();
 
 		return (int) restrictionsPotential.getValue(variables, indexes);
 
@@ -302,7 +303,7 @@ public class Link {
 	/**
 	 * @return the revealingStates
 	 */
-	public ArrayList<State> getRevealingStates() {
+	public List<State> getRevealingStates() {
 		return revealingStates;
 	}
 
@@ -310,14 +311,14 @@ public class Link {
 	 * @param revealingStates
 	 *            the revealingStates to set
 	 */
-	public void setRevealingStates(ArrayList<State> revealingStates) {
+	public void setRevealingStates(List<State> revealingStates) {
 		this.revealingStates = revealingStates;
 	}
 
 	/**
 	 * @return the revealingIntervals
 	 */
-	public ArrayList<PartitionedInterval> getRevealingIntervals() {
+	public List<PartitionedInterval> getRevealingIntervals() {
 		return revealingIntervals;
 	}
 
@@ -326,7 +327,7 @@ public class Link {
 	 *            the revealingIntervals to set
 	 */
 	public void setRevealingIntervals(
-			ArrayList<PartitionedInterval> revealingIntervals) {
+			List<PartitionedInterval> revealingIntervals) {
 		this.revealingIntervals = revealingIntervals;
 	}
 

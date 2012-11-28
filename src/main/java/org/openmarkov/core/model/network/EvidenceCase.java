@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -49,7 +49,7 @@ public class EvidenceCase {
      * Constructor 
      * @param findings
      */
-    public EvidenceCase(ArrayList<Finding> findings) {
+    public EvidenceCase(List<Finding> findings) {
     	this.findings = new HashMap<Variable, Finding>();
     	for(Finding finding: findings)
     	{
@@ -171,8 +171,8 @@ public class EvidenceCase {
     
     /** @return The set of variables associated to the set of findings in the
      *  same order: <code>ArrayList</code> of <code>Variable</code>. */
-    public ArrayList<Variable> getVariables() {
-        ArrayList<Variable> variables = new ArrayList<Variable>();
+    public List<Variable> getVariables() {
+        List<Variable> variables = new ArrayList<Variable>();
         for (Finding finding : findings.values()) {
             variables.add(finding.getVariable());
         }
@@ -187,7 +187,7 @@ public class EvidenceCase {
     }
     
     /** @return findings: <code>ArrayList</code> of <code>Finding</code>s. */
-    public ArrayList<Finding> getFindings() {
+    public List<Finding> getFindings() {
     	return new ArrayList<Finding>(findings.values());
     }
     
@@ -201,7 +201,7 @@ public class EvidenceCase {
     /** @return <code>boolean</code>.
      * @param variables. <code>ArrayList</code> of <code>Variable</code>s. 
      * @throws NoFindingException */
-    public boolean existsEvidence(ArrayList<Variable> variables) {
+    public boolean existsEvidence(List<Variable> variables) {
     	for (Variable variable : variables) {
     		if (findings.get(variable) != null) {
     			return true;
@@ -214,9 +214,9 @@ public class EvidenceCase {
 	 *  received evidence.
 	 * @param probNet <code>ProbNet</code>.
 	 * @return An <code>ArrayList</code> of <code>ProbNode</code>s. */
-	public ArrayList<ProbNode> getRemainingNodes(ProbNet probNet) {
-		ArrayList<ProbNode> probNetNodes = probNet.getProbNodes();
-		ArrayList<ProbNode> remainingNodes = new ArrayList<ProbNode>();
+	public List<ProbNode> getRemainingNodes(ProbNet probNet) {
+	    List<ProbNode> probNetNodes = probNet.getProbNodes();
+	    List<ProbNode> remainingNodes = new ArrayList<ProbNode>();
 		for(ProbNode probNode : probNetNodes) {
 			if (!contains(probNode.getVariable())) {
 				remainingNodes.add(probNode);
@@ -259,10 +259,10 @@ public class EvidenceCase {
 		while (!pendingFindings.isEmpty()) {
 			Finding oldFinding = pendingFindings.poll();
 			Variable oldVariable = oldFinding.getVariable();
-			ArrayList<Potential> potentials = probNet.getPotentials(oldVariable);
+			List<Potential> potentials = probNet.getPotentials(oldVariable);
 			for (Potential potential : potentials) {
-				ArrayList<Finding> newFindings = 
-					(ArrayList<Finding>)potential.getInducedFindings(this, cycleLength);
+			    List<Finding> newFindings = 
+					(List<Finding>)potential.getInducedFindings(this, cycleLength);
 				for (Finding newFinding : newFindings) {
 					findings.put(newFinding.getVariable(), newFinding);
 				}

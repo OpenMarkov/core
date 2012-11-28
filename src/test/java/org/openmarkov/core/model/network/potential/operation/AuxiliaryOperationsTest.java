@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,13 +32,13 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  *  </ul */
 public class AuxiliaryOperationsTest {
 
-	private ArrayList<TablePotential> emptyPotentialsList;
+	private List<TablePotential> emptyPotentialsList;
 
-	private ArrayList<TablePotential> oneConstantPotentialsList;
+	private List<TablePotential> oneConstantPotentialsList;
 
-	private ArrayList<TablePotential> oneProperPotentialsList;
+	private List<TablePotential> oneProperPotentialsList;
 
-	private ArrayList<TablePotential> severalMixedPotentialsList;
+	private List<TablePotential> severalMixedPotentialsList;
 		
 	private final int NUM_POTENTIALS_ARRAY = 10;
 	
@@ -49,9 +50,9 @@ public class AuxiliaryOperationsTest {
 
 	private final int NUM_STATES_VARIABLES = 3;
 
-	private ArrayList<TablePotential> constantPotentials;
+	private List<TablePotential> constantPotentials;
 
-	private ArrayList<TablePotential> normalPotentials;
+	private List<TablePotential> normalPotentials;
 
 	@Before
 	public void setUp() throws Exception {
@@ -99,7 +100,7 @@ public class AuxiliaryOperationsTest {
 	@Test
 	public void testGetProperPotentials() {
 		// Test empty list
-		ArrayList<TablePotential> properPotentials = 
+		List<TablePotential> properPotentials = 
 			AuxiliaryOperations.getProperPotentials(emptyPotentialsList);
 		assertNotNull(properPotentials);
 		assertEquals(0, properPotentials.size());
@@ -118,7 +119,7 @@ public class AuxiliaryOperationsTest {
 	@Test
 	public void testGetUnionVariables() {
 		// Check union of constant potentials (no variables)
-		ArrayList<Variable> union = 
+		List<Variable> union = 
 			AuxiliaryOperations.getUnionVariables(constantPotentials);
 		assertNotNull(union);
 		assertEquals(0, union.size());
@@ -137,7 +138,7 @@ public class AuxiliaryOperationsTest {
 		assertEquals(4, union.size());
 		// Check that all the variables of the potentials are in the union
 		for(Potential potential : normalPotentials) {
-			ArrayList<Variable> variables = potential.getVariables();
+		    List<Variable> variables = potential.getVariables();
 			for (Variable variable : variables) {
 				assertTrue(union.contains(variable));
 			}

@@ -10,6 +10,7 @@
 package org.openmarkov.core.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -21,7 +22,6 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
-import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 
 @SuppressWarnings("serial")
@@ -48,9 +48,9 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 	/**
 	 * The new <code>Potential</code> of the second node
 	 */
-	protected ArrayList<Potential> newPotentials = new ArrayList<Potential>() ;
+	protected List<Potential> newPotentials = new ArrayList<Potential>() ;
 	
-	protected ArrayList<Potential> oldPotentials;
+	protected List<Potential> oldPotentials;
 	// Constructor
 	/** @param probNet <code>ProbNet</code>
 	 * @param variable1 <code>Variable</code>
@@ -121,7 +121,7 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 					if (newPotential == null)
 					{// It has not been implemented yet for this type of
 						// potential
-						ArrayList<Variable> variables = oldPotential.getVariables ();
+						List<Variable> variables = oldPotential.getVariables ();
 						variables.remove (node1.getVariable ());
 						newPotential = new UniformPotential (variables,
 								oldPotential.getPotentialRole ());

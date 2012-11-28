@@ -9,8 +9,8 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.model.network.NodeType;
@@ -30,13 +30,13 @@ public class AtLeastOneEffectivenessPotential extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-		ArrayList<ProbNode> effectivenessNodes = 
+	    List<ProbNode> effectivenessNodes = 
 			probNet.getProbNodes(NodeType.EFFECTIVENESS);
 		if (effectivenessNodes.size() == 0) {
 			return false;
 		}
 		for (ProbNode costNode : effectivenessNodes) {
-			ArrayList<ProbNode> parents = 
+		    List<ProbNode> parents = 
 				ProbNet.getProbNodesOfNodes(costNode.getNode().getParents());
 			Iterator<ProbNode> i = parents.iterator();
 			boolean chanceOrDecision = false;

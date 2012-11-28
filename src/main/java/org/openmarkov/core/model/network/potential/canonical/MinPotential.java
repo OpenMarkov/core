@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.potential.canonical;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
@@ -27,7 +28,7 @@ public class MinPotential extends MinMaxPotential {
 	/** @param model. <code>ICIModel</code>.
 	 * @param variables. <code>ArrayList</code> of <code>Variable</code>. */
 	public MinPotential(
-			ICIModelType modelType, ArrayList<Variable> variables) {
+			ICIModelType modelType, List<Variable> variables) {
 		super(modelType, variables);
 		type = PotentialType.MIN;
 	}
@@ -38,7 +39,7 @@ public class MinPotential extends MinMaxPotential {
 	 * @param variables
 	 * @param role
 	 */
-    public MinPotential(ArrayList<Variable> variables) {
+    public MinPotential(List<Variable> variables) {
                 this(ICIModelType.GENERAL_MIN, variables);
     } 
     
@@ -47,7 +48,7 @@ public class MinPotential extends MinMaxPotential {
      * @param probNode. <code>ProbNode</code> 
      * @param variables. <code>ArrayList</code> of <code>Variable</code>.
      * @param role. <code>PotentialRole</code>. */
-	public static boolean validate(ProbNode probNode, ArrayList<Variable> variables, 
+	public static boolean validate(ProbNode probNode, List<Variable> variables, 
 			PotentialRole role) {
 		boolean valid = ICIPotential.validate(probNode, variables, role) && 
 		        ((role == PotentialRole.CONDITIONAL_PROBABILITY)
@@ -106,10 +107,10 @@ public class MinPotential extends MinMaxPotential {
 	protected TablePotential getAccruedPotential(TablePotential subPotential)
 			throws NotEnoughMemoryException {
 		// TODO Revisar este metodo para el caso de un potential proyectado
-		ArrayList<Variable> subPotentialVariables = subPotential.getVariables();
+	    List<Variable> subPotentialVariables = subPotential.getVariables();
 		// Create a new TablePotential with the same variables,
 		// except the first one, which is replaced by the pseudovariable
-        ArrayList<Variable> accruedPotentialVariables =
+	    List<Variable> accruedPotentialVariables =
                 new ArrayList<Variable>(subPotentialVariables);
         accruedPotentialVariables.set(0, pseudoVariable);
         TablePotential accruedPotential = new TablePotential (accruedPotentialVariables,
@@ -158,7 +159,7 @@ public class MinPotential extends MinMaxPotential {
     
     @Override
     public Potential addVariable(Variable newVariable){
-    	ArrayList<Variable> newVariables = (ArrayList<Variable>) variables.clone();
+        List<Variable> newVariables =  new ArrayList<Variable>(variables);
     	newVariables.add(newVariable);
     	MinPotential newICIPotential = new MinPotential(this.modelType, newVariables) ;
     	
@@ -194,7 +195,7 @@ public class MinPotential extends MinMaxPotential {
     }
     
     @Override
-    protected int computeFFunction (ArrayList<Integer> parentStates)
+    protected int computeFFunction (List<Integer> parentStates)
     {
         int resultingState = variables.get (0).getNumStates () - 1;
         for(Integer parentState: parentStates)

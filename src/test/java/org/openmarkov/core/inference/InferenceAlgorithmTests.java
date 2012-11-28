@@ -18,8 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import junit.framework.Assert;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -806,7 +805,7 @@ public abstract class InferenceAlgorithmTests {
 			assertNotNull(policy);
 
 			// Test the size of the domain of the policy
-			ArrayList<Variable> domainPolicy = policy.getVariables();
+			List<Variable> domainPolicy = policy.getVariables();
 			domainPolicy.remove(D);
 			assertEquals(1, domainPolicy.size());
 			
@@ -1230,7 +1229,7 @@ public abstract class InferenceAlgorithmTests {
 */
 	
 	private boolean checkPolicy(TablePotential policy, Variable d, int numVar) {
-		ArrayList<Variable> domainPolicy = policy.getVariables();
+	    List<Variable> domainPolicy = policy.getVariables();
 		domainPolicy.remove(d);
 		return (numVar == domainPolicy.size());
 	}
@@ -1269,7 +1268,7 @@ public abstract class InferenceAlgorithmTests {
 			assertNotNull(policy);
 
 			// Test the size of the domain of the policy
-			ArrayList<Variable> domainPolicy = policy.getVariables();
+			List<Variable> domainPolicy = policy.getVariables();
 			domainPolicy.remove(D);
 			assertEquals(1, domainPolicy.size());
 

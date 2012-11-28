@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.ChangeVariableNameEdit;
@@ -29,7 +30,7 @@ public class NoEmptyName extends PNConstraint {
 	throws NotEnoughMemoryException, NonProjectablePotentialException,
 	WrongCriterionException {
 		// AddVariableEdit
-        ArrayList<PNEdit> edits = UtilConstraints.getEditsType (edit, AddProbNodeEdit.class);
+	    List<PNEdit> edits = UtilConstraints.getEditsType (edit, AddProbNodeEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			String name = ((AddProbNodeEdit) simpleEdit).getVariable().getName();
 			if ((name == null) || (name.contentEquals(""))) {
@@ -49,7 +50,7 @@ public class NoEmptyName extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-		ArrayList<Variable> variables = probNet.getVariables();
+	    List<Variable> variables = probNet.getVariables();
 		for (Variable variable : variables) {
 			String name = variable.getName();
 			if ((name == null) || (name.contentEquals(""))) {

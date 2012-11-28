@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.model.network.NodeType;
@@ -30,10 +30,10 @@ public class AllChanceVariablesHaveChancePotentials extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-		ArrayList<ProbNode> chanceNodes = probNet.getProbNodes(NodeType.CHANCE);
+	    List<ProbNode> chanceNodes = probNet.getProbNodes(NodeType.CHANCE);
 		for (ProbNode chanceNode : chanceNodes) {
 			Variable variable = chanceNode.getVariable();
-			ArrayList<Potential> potentialsNode = chanceNode.getPotentials();
+			List<Potential> potentialsNode = chanceNode.getPotentials();
 			boolean hasPotential = false;
 			for (Potential potential : potentialsNode) {
 				hasPotential = hasPotential || 

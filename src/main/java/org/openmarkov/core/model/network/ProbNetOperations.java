@@ -21,8 +21,10 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.potential.Potential;
 
-/** This class performs prune on <code>ProbNet</code>
- * @author marias  */
+/**
+ * This class performs prune on <code>ProbNet</code>
+ * @author marias
+ */
 public class ProbNetOperations {
 
 	// Methods
@@ -35,18 +37,18 @@ public class ProbNetOperations {
 	 * </ol>
 	 * @return <code>ProbNet</code>. Evidence variables are removed in serial 
 	 * connections */
-	public static ProbNet getPruned(ProbNet probNet,
-			Collection<Variable> variablesOfInterest, EvidenceCase evidence) {
-		ProbNet prunedProbNet = probNet.copy();
-		HashSet<Variable> variablesOfInterest2 = new HashSet<Variable>(
-				variablesOfInterest);
-		HashSet<Variable> variablesOfEvidence2 = new HashSet<Variable>(
-				evidence.getVariables());
-		prunedProbNet = removeBarrenNodes(prunedProbNet, variablesOfInterest2,
-				variablesOfEvidence2);
-		prunedProbNet = removeUnreachableNodes(prunedProbNet,
-				variablesOfInterest2, variablesOfEvidence2);
-		return prunedProbNet;
+    public static ProbNet getPruned (ProbNet probNet,
+                                     Collection<Variable> variablesOfInterest,
+                                     EvidenceCase evidence)
+    {
+        ProbNet prunedProbNet = probNet.copy ();
+        HashSet<Variable> variablesOfInterest2 = new HashSet<Variable> (variablesOfInterest);
+        HashSet<Variable> variablesOfEvidence2 = new HashSet<Variable> (evidence.getVariables ());
+        prunedProbNet = removeBarrenNodes (prunedProbNet, variablesOfInterest2,
+                                           variablesOfEvidence2);
+        prunedProbNet = removeUnreachableNodes (prunedProbNet, variablesOfInterest2,
+                                                variablesOfEvidence2);
+        return prunedProbNet;
 	}
 	
 	/**Projects the evidence in the <code>probNet</code> potentials and remove
@@ -54,37 +56,46 @@ public class ProbNetOperations {
 	 * @param probNet. <code>ProbNet</code>
 	 * @param evidence. <code>EvidenceCase</code>
 	 * @throws NotEnoughMemoryException */
-	public static void projectEvidence(ProbNet probNet, EvidenceCase evidence)
-			throws NotEnoughMemoryException {
-		ArrayList<Variable> variables = evidence.getVariables();
-		for (Variable variable : variables) {
-			ArrayList<Potential> potentials = probNet.getPotentials(variable);
-			for (Potential potential : potentials) {
-				probNet.removePotential(potential);
-				try {
-					for (Potential newPotential : potential.tableProject(
-							evidence, null)) {
-						if (newPotential.getNumVariables() > 0) {
-							boolean containVariables = true;
-							for (Variable potentialVariable : newPotential
-									.getVariables()) {
-								containVariables &= (probNet
-										.getProbNode(potentialVariable) != null);
-							}
-							if (containVariables) {
-								probNet.addPotential(newPotential);
-							}
-						}
-					}
-				} catch (NonProjectablePotentialException e) {
-					e.printStackTrace(); // Unreachable code
-				} catch (WrongCriterionException e) {
-					e.printStackTrace(); // Unreachable code
-				}
-			}
-			probNet.removeProbNode(probNet.getProbNode(variable));
-		}
-	}
+    public static void projectEvidence (ProbNet probNet, EvidenceCase evidence)
+        throws NotEnoughMemoryException
+    {
+        List<Variable> variables = evidence.getVariables ();
+        for (Variable variable : variables)
+        {
+            List<Potential> potentials = probNet.getPotentials (variable);
+            for (Potential potential : potentials)
+            {
+                probNet.removePotential (potential);
+                try
+                {
+                    for (Potential newPotential : potential.tableProject (evidence, null))
+                    {
+                        if (newPotential.getNumVariables () > 0)
+                        {
+                            boolean containVariables = true;
+                            for (Variable potentialVariable : newPotential.getVariables ())
+                            {
+                                containVariables &= (probNet.getProbNode (potentialVariable) != null);
+                            }
+                            if (containVariables)
+                            {
+                                probNet.addPotential (newPotential);
+                            }
+                        }
+                    }
+                }
+                catch (NonProjectablePotentialException e)
+                {
+                    e.printStackTrace (); // Unreachable code
+                }
+                catch (WrongCriterionException e)
+                {
+                    e.printStackTrace (); // Unreachable code
+                }
+            }
+            probNet.removeProbNode (probNet.getProbNode (variable));
+        }
+    }
 
 	/** Remove nodes that:<ol>
 	 * <li> Are not included in <code>variablesOfInterest</code>
@@ -99,7 +110,7 @@ public class ProbNetOperations {
 			Collection<Variable> variablesOfInterest,
 			HashSet<Variable> variablesOfEvidence) {
 		HashSet<ProbNode> barrenNodes = new HashSet<ProbNode>();
-		ArrayList<ProbNode> probNodes = prunedProbNet.getProbNodes();
+		List<ProbNode> probNodes = prunedProbNet.getProbNodes();
 		for (ProbNode probNode : probNodes) {
 			Node node = probNode.getNode();
 			if (node.getNumChildren() == 0) {
@@ -114,7 +125,7 @@ public class ProbNetOperations {
 		boolean foundBarrenNodes = newBarrenNodes.size() > 0;
 		while (foundBarrenNodes) {
 			foundBarrenNodes = false;
-			ArrayList<ProbNode> listNewBarrenNodes = new ArrayList<ProbNode>(newBarrenNodes);
+			List<ProbNode> listNewBarrenNodes = new ArrayList<ProbNode>(newBarrenNodes);
 			for (ProbNode probNode : listNewBarrenNodes) {
 				newBarrenNodes.remove(probNode);
 				Node node = probNode.getNode();
@@ -125,7 +136,7 @@ public class ProbNetOperations {
 					if (!variablesOfInterest.contains(parentVariable)
 							&& !variablesOfEvidence.contains(parentVariable)
 							&& !barrenNodes.contains(parentProbNode)) {
-						ArrayList<Node> childrenOfParent = parent.getChildren();
+					    List<Node> childrenOfParent = parent.getChildren();
 						boolean allChildrenBarren = true;
 						int numChildren = childrenOfParent.size();
 						if (numChildren > 1) { // at least one children is barren
@@ -259,7 +270,7 @@ public class ProbNetOperations {
 		
 		
 		// remove nodes that are not in nodesToKeep in prunedProbNet
-		ArrayList<Node> prunedNodes = ProbNet.getNodesOfProbNodes(probNet.getProbNodes());
+		List<Node> prunedNodes = ProbNet.getNodesOfProbNodes(probNet.getProbNodes());
 		for (Node node : prunedNodes) {
 			if (!nodesToKeep.contains(node)) {
 				probNet.removeProbNode((ProbNode) node.getObject());

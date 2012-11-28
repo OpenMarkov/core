@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.action;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -64,7 +64,7 @@ public class NodeCommentEdit extends SimplePNEdit{
 		if (typeComment.equals("DefinitionComment")){
 			 probNode.setComment(newComment);
 		}else{
-			ArrayList<Potential> potential = probNode.getPotentials();
+		    List<Potential> potential = probNode.getPotentials();
 			potential.get(0).setComment(newComment);
 			probNode.setPotentials(potential); 
 			
@@ -76,7 +76,7 @@ public class NodeCommentEdit extends SimplePNEdit{
 		if (typeComment.equals("DefinitionComment")){
 			probNode.setComment(currentComment);
 		}else{
-			ArrayList<Potential> potential = probNode.getPotentials();
+		    List<Potential> potential = probNode.getPotentials();
 			potential.get(0).setComment(currentComment);
 			probNode.setPotentials(potential); 
 		}

@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network.potential;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -95,7 +96,7 @@ public class TablePotential extends Potential
      * @param role. <code>PotentialRole</code>
      * @throws <code>NotEnoughMemoryException</code>
      */
-    public TablePotential (ArrayList<Variable> variables, PotentialRole role)
+    public TablePotential (List<Variable> variables, PotentialRole role)
         throws NotEnoughMemoryException
     {
         super (variables, role);
@@ -138,7 +139,7 @@ public class TablePotential extends Potential
      * @param role
      * @throws NotEnoughMemoryException
      */
-    public TablePotential (ArrayList<Variable> variables, PotentialRole role, Variable utilityVariable)
+    public TablePotential (List<Variable> variables, PotentialRole role, Variable utilityVariable)
             throws NotEnoughMemoryException
         {
             super (variables, role, utilityVariable);
@@ -182,7 +183,7 @@ public class TablePotential extends Potential
      * @param table. <code>double[]</code>
      * @argCondition All variables must be discrete.
      */
-    public TablePotential (ArrayList<Variable> variables, PotentialRole role, double[] table)
+    public TablePotential (List<Variable> variables, PotentialRole role, double[] table)
     {
         super (variables, role);
 //        this.originalVariables = this.variables;
@@ -211,7 +212,7 @@ public class TablePotential extends Potential
     public TablePotential (PotentialRole role, Variable... variables)
         throws NotEnoughMemoryException
     {
-        this (toArrayList (variables), role);
+        this (toList (variables), role);
     }
 
     /**
@@ -224,7 +225,7 @@ public class TablePotential extends Potential
      * @param offsets of variables. <code>int[]</code>
      * @param dimensions. Number of states of each variable. <code>int[]</code>
      */
-    private TablePotential (ArrayList<Variable> variables,
+    private TablePotential (List<Variable> variables,
                             PotentialRole role,
                             double[] table,
                             int initialPosition,
@@ -267,7 +268,7 @@ public class TablePotential extends Potential
      * @param probNode. <code>ProbNode</code> 
      * @param variables. <code>ArrayList</code> of <code>Variable</code>.
      * @param role. <code>PotentialRole</code>. */
-	public static boolean validate(ProbNode probNode, ArrayList<Variable> variables, 
+	public static boolean validate(ProbNode probNode, List<Variable> variables, 
 			PotentialRole role) {
 		boolean suitable = true;
 		int i = 0;
@@ -317,15 +318,15 @@ public class TablePotential extends Potential
      * @throws WrongCriterionException
      * @throws NoFindingException
      */
-    public ArrayList<TablePotential> tableProject (EvidenceCase evidenceCase,
+    public List<TablePotential> tableProject (EvidenceCase evidenceCase,
                                                    InferenceOptions inferenceOptions)
         throws NotEnoughMemoryException,
         WrongCriterionException
     {
         // returned value
         boolean hasUncertainTable = (uncertainValues != null);
-        ArrayList<TablePotential> projectedPotentials = new ArrayList<TablePotential> (1);
-        ArrayList<Variable> unobservedVariables = (ArrayList<Variable>) variables.clone ();
+        List<TablePotential> projectedPotentials = new ArrayList<TablePotential> (1);
+        List<Variable> unobservedVariables = new ArrayList<Variable>(variables);
         if (evidenceCase != null)
         {
             unobservedVariables.removeAll (evidenceCase.getVariables ());
@@ -575,7 +576,7 @@ public class TablePotential extends Potential
      *         Accumulated offsets returns: [+2,-2,-1,+1]. Size = this
      *         <code>TablePotential</code> number of variables.
      */
-    public int[] getAccumulatedOffsets (ArrayList<Variable> otherVariables)
+    public int[] getAccumulatedOffsets (List<Variable> otherVariables)
     {
         int otherSize = otherVariables.size ();
         int thisSize = variables.size ();
@@ -635,8 +636,8 @@ public class TablePotential extends Potential
      * @argCondigion otherVariables is contained in originalVariables.
      * @argCondigion otherVariables and originalVariables have the same order.
      */
-    public int[] getProjectedAccumulatedOffsets (ArrayList<Variable> otherVariables,
-                                                 ArrayList<Variable> originalVariables)
+    public int[] getProjectedAccumulatedOffsets (List<Variable> otherVariables,
+                                                 List<Variable> originalVariables)
     {
         if (otherVariables == originalVariables)
         { // Not projected potential
@@ -805,8 +806,8 @@ public class TablePotential extends Potential
      *         Accumulated offsets returns: [+2,-2,-1,+1]. Size = this
      *         <code>TablePotential</code> number of variables.
      */
-    public static int[] getAccumulatedOffsets (ArrayList<Variable> variables,
-                                               ArrayList<Variable> otherVariables)
+    public static int[] getAccumulatedOffsets (List<Variable> variables,
+                                               List<Variable> otherVariables)
     {
         int otherSize = otherVariables.size ();
         int thisSize = variables.size ();
@@ -873,7 +874,7 @@ public class TablePotential extends Potential
         isChanceVariable = !(this.isUtility ());
         sizeCoordinates = sizeEvi + (isChanceVariable ? 1 : 0);
         coordinates = new int[sizeCoordinates];
-        ArrayList<Variable> varsTable = this.getVariables ();
+        List<Variable> varsTable = this.getVariables ();
         int startLoop;
         if (isChanceVariable)
         {
@@ -910,7 +911,7 @@ public class TablePotential extends Potential
         int sizeEvi = configuration.getFindings ().size ();
         sizeCoordinates = sizeEvi + (isChanceVariable ? 1 : 0);
         coordinates = new int[sizeCoordinates];
-        ArrayList<Variable> varsTable = this.getVariables ();
+        List<Variable> varsTable = this.getVariables ();
         int startLoop;
         if (isChanceVariable)
         {
@@ -954,7 +955,7 @@ public class TablePotential extends Potential
      * @param stateIndices. <code>int[]</code>
      * @return <code>double</code>
      */
-    public double getValue (ArrayList<Variable> variables, int[] statesIndices)
+    public double getValue (List<Variable> variables, int[] statesIndices)
     {
         int position = 0;
         for (int i = 0; i < variables.size (); i++)
@@ -979,13 +980,13 @@ public class TablePotential extends Potential
      */
     public double getValue (EvidenceCase configuration){
     	int []states;
-    	ArrayList<Variable> variables;
+    	List<Variable> variables;
     	int size;
         	    	
     	variables = configuration.getVariables();
     	size = variables.size();
 		states = new int[size];
-    	ArrayList<Finding> findings = configuration.getFindings();
+		List<Finding> findings = configuration.getFindings();
     	
     	for (int i = 0; i < size;i++){
     		states[i] = findings.get(i).getStateIndex();
@@ -1004,7 +1005,7 @@ public class TablePotential extends Potential
      *            . <code>int[]</code>
      * @param value
      */
-    public void setValue(ArrayList<Variable> variables, int[] statesIndexes,
+    public void setValue(List<Variable> variables, int[] statesIndexes,
             double value) {
         int position = 0;
         for (int i = 0; i < variables.size(); i++) {
@@ -1070,7 +1071,7 @@ public class TablePotential extends Potential
      * @param fsVariables <code>ArrayList</code> of <code>Variable</code>s.
      * @return array of <code>int[]</code> with the dimension of each variable.
      */
-    public static int[] calculateDimensions(ArrayList<Variable> fsVariables) {
+    public static int[] calculateDimensions(List<Variable> fsVariables) {
         int numVariables = 0;
         if (fsVariables != null) {
             numVariables = fsVariables.size();
@@ -1155,11 +1156,11 @@ public class TablePotential extends Potential
      * @return <code>ArrayList</code> of <code>Variable</code>s.
      * @consultation
      */
-    public ArrayList<Variable> getVariables ()
+    public List<Variable> getVariables ()
     {
         if (variables != null)
         {
-            return (ArrayList<Variable>) variables.clone ();
+            return new ArrayList<Variable>(variables);
         }
         else
         {
@@ -1381,7 +1382,7 @@ public class TablePotential extends Potential
      * @param uncertainTable
      * @return true if the uncertain values are correct
      */
-    public static boolean checkUncertainTable (ArrayList<UncertainValue> uncertainTable)
+    public static boolean checkUncertainTable (List<UncertainValue> uncertainTable)
     {
         return true;
     }
@@ -1391,7 +1392,7 @@ public class TablePotential extends Potential
         throws ProbNodeNotFoundException,
         NotEnoughMemoryException
     {
-        ArrayList<Variable> shiftedVariables = getShiftedVariables (probNet, timeDifference);
+        List<Variable> shiftedVariables = getShiftedVariables (probNet, timeDifference);
         TablePotential shiftedPotential = new TablePotential (shiftedVariables, role);
         if (role == PotentialRole.UTILITY)
         {
@@ -1495,7 +1496,7 @@ public class TablePotential extends Potential
     @Override
     public Potential addVariable(Variable newVariable) throws NotEnoughMemoryException{
     	// creates the new potential
-    	ArrayList<Variable> newVariables = (ArrayList<Variable>) variables.clone();
+    	List<Variable> newVariables = new ArrayList<Variable> (variables);
     	newVariables.add(newVariable);
     	TablePotential newPotential = new TablePotential(newVariables, role);
     	newPotential.setUtilityVariable(utilityVariable);

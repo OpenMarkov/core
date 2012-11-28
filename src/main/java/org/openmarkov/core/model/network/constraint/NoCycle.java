@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
@@ -48,7 +49,7 @@ public class NoCycle extends PNConstraint {
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
-		ArrayList<PNEdit> edits = 
+		List<PNEdit> edits = 
 			UtilConstraints.getEditsType(edit, AddLinkEdit.class);
 		//int u=0;
 		Graph graph = probNet.getGraph();
@@ -63,7 +64,7 @@ public class NoCycle extends PNConstraint {
 				}
 			}
 		}
-        ArrayList<PNEdit> edits2 = 
+		List<PNEdit> edits2 = 
                 UtilConstraints.getEditsType(edit, InvertLinkEdit.class);
         for (PNEdit simpleEdit : edits2) {
             if (((InvertLinkEdit)simpleEdit).isDirected()) { // checks constraint

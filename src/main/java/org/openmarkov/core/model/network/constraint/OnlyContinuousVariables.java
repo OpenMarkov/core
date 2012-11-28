@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
@@ -36,7 +36,7 @@ public class OnlyContinuousVariables extends PNConstraint {
 	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
-		ArrayList<PNEdit> edits = 
+	    List<PNEdit> edits = 
 			UtilConstraints.getEditsType(edit, AddProbNodeEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			Variable variable = ((AddProbNodeEdit)simpleEdit).getVariable(); 
@@ -49,7 +49,7 @@ public class OnlyContinuousVariables extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-		ArrayList<Variable> variables = probNet.getVariables();
+	    List<Variable> variables = probNet.getVariables();
 		for (Variable variable : variables) {
 			if (variable.getVariableType() != VariableType.NUMERIC) {
 				return false;

@@ -11,8 +11,8 @@ package org.openmarkov.core.model.network.potential.operation.concurrent;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
@@ -29,13 +29,13 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 public class SharedDataMultiply {
 
 	// Attributes related to the arguments
-	volatile ArrayList<TablePotential> potentials;
+	volatile List<TablePotential> potentials;
 	
 	volatile int numPotentials;
 	
 	volatile int[][] offAccPotentials;
 	
-	/** Problability tables of potentials */
+	/** Probability tables of potentials */
 	volatile double[][] tables;
 	
 	// Attributes related to result
@@ -61,9 +61,8 @@ public class SharedDataMultiply {
 	volatile int[][] potentialsPositions;
 	
 	// Constructor
-	@SuppressWarnings("unchecked")
-	public SharedDataMultiply(ArrayList<? extends Potential> potentials) {
-		this.potentials = (ArrayList<TablePotential>)potentials.clone();
+	public SharedDataMultiply(List<TablePotential> potentials) {
+		this.potentials = new ArrayList<TablePotential>(potentials);
 	}
 	
 	// Methods

@@ -3,11 +3,16 @@
  */
 package org.openmarkov.core.model.network;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -73,7 +78,7 @@ public class ProbNetOperationsTest {
 		//Potential A
 		double [] tableA ={0.2, 0.8};
 		
-		ArrayList<Variable> variablesA = new ArrayList<Variable>();
+		List<Variable> variablesA = new ArrayList<Variable>();
 		variablesA.add(variableA);
 		
 		TablePotential potentialvaluesA= new TablePotential(variablesA,role, tableA);
@@ -82,7 +87,7 @@ public class ProbNetOperationsTest {
 		//Potential BA
 		double [] tableBA ={0.7, 0.3, 0.9, 0.1};
 		
-		ArrayList<Variable> variablesBA = new ArrayList<Variable>();
+		List<Variable> variablesBA = new ArrayList<Variable>();
 		variablesBA.add(variableB);
 		variablesBA.add(variableA);
 		
@@ -92,7 +97,7 @@ public class ProbNetOperationsTest {
 		//potencial CAB
 		double [] tableCAB ={0.15, 0.29, 0.84, 0.98, 0.85, 0.71, 0.16, 0.02};
 		
-		ArrayList<Variable> variablesCAB = new ArrayList<Variable>();
+		List<Variable> variablesCAB = new ArrayList<Variable>();
 		variablesCAB.add(variableC);
 		variablesCAB.add(variableA);
 		variablesCAB.add(variableB);
@@ -139,7 +144,7 @@ public class ProbNetOperationsTest {
 		HashMap<Variable, Finding> findings = new HashMap<Variable, Finding>();
 		findings.put(A, findingA);
 		EvidenceCase evidenceCase = new EvidenceCase(findings);
-		ArrayList<Variable> variablesOfInterest = new ArrayList<Variable>();
+		List<Variable> variablesOfInterest = new ArrayList<Variable>();
 		variablesOfInterest.add(B);
 		// test pruned net
 		ProbNet pruned = ProbNetOperations.
@@ -215,29 +220,29 @@ public class ProbNetOperationsTest {
 		Variable U;
 		
 		
-		ArrayList<Variable> aVariables;
+		List<Variable> aVariables;
 		
-		ArrayList<Variable> baVariables;
+		List<Variable> baVariables;
 		
-		ArrayList<Variable> adVariables;
+		List<Variable> adVariables;
 		
-		ArrayList<Variable> variablesCA;
+		List<Variable> variablesCA;
 		
-		ArrayList<Variable> variablesEBC;
+		List<Variable> variablesEBC;
 		
-		ArrayList<Variable> variablesFE;
+		List<Variable> variablesFE;
 		
-		ArrayList<Variable> variablesGD;
+		List<Variable> variablesGD;
 		
-		ArrayList<Variable> variablesI;	
+		List<Variable> variablesI;	
 		
-		ArrayList<Variable> variablesDBI;
+		List<Variable> variablesDBI;
 		
-		ArrayList<Variable> variablesba;
+		List<Variable> variablesba;
 		
-		ArrayList<Variable> variablesAH;
+		List<Variable> variablesAH;
 		
-		ArrayList<Variable> variablesH;
+		List<Variable> variablesH;
 		
 		TablePotential potentialvaluesCA;
 		
@@ -440,14 +445,14 @@ public class ProbNetOperationsTest {
 		evidence.addFinding(findingA);
 		evidence.addFinding(findingD);
 		// Set up variables of interest: E	
-		ArrayList<Variable> variablesOfInterest = new ArrayList<Variable>();
+		List<Variable> variablesOfInterest = new ArrayList<Variable>();
 		variablesOfInterest.add(variableE);
 		
 		ProbNet pruned = ProbNetOperations.getPruned(
 				pruebaInferencia, variablesOfInterest, evidence);
 		ProbNetOperations.projectEvidence(pruned, evidence);
 		
-		ArrayList<Variable> variablesPruned = pruned.getVariables();
+		List<Variable> variablesPruned = pruned.getVariables();
 		assertFalse(variablesPruned.contains(variableA));
 		assertTrue(variablesPruned.contains(variableB));
 		assertTrue(variablesPruned.contains(variableC));
@@ -460,7 +465,7 @@ public class ProbNetOperationsTest {
 
 		// Test B potentials
 		ProbNode probNodeB = pruned.getProbNode("B");
-		ArrayList<Potential> potentialsB = probNodeB.getPotentials();
+		List<Potential> potentialsB = probNodeB.getPotentials();
 		assertEquals(2, potentialsB.size());
 		// Test projected potential p(B|A), A = 1 = psi(B)
 		// Get psi(B)
@@ -513,7 +518,7 @@ public class ProbNetOperationsTest {
 		
 		EvidenceCase evidence = addEvidence(probNetAsia, null, strTuberculosis, 0);
 		addEvidence(probNetAsia, null, strTuberculosisOrCancer, 0);
-		ArrayList<Variable> variablesOfInterest = new ArrayList<Variable>(1);
+		List<Variable> variablesOfInterest = new ArrayList<Variable>(1);
 		variablesOfInterest.add(probNetAsia.getVariable(strDyspnea));
 		
 		// Call method
@@ -580,7 +585,7 @@ public class ProbNetOperationsTest {
 		ProbNet outputNetwork;
 		ProbNet intermediate;
 		HashSet<Variable> variablesOfEvidence;
-		ArrayList<Variable> variablesOfInterest;
+		List<Variable> variablesOfInterest;
 		//Repeat the test, because the behaviour of method getPruned is non-deterministic
 	for (int i=1;i<100;i++){
 		network = NetsFactory.createBN_Asia();

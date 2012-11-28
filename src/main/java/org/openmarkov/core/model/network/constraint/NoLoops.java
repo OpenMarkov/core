@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
@@ -30,7 +31,7 @@ public class NoLoops extends PNConstraint {
         throws NotEnoughMemoryException,
         NonProjectablePotentialException,
         WrongCriterionException{
-		ArrayList<PNEdit> edits = UtilConstraints.getEditsType(edit,
+	    List<PNEdit> edits = UtilConstraints.getEditsType(edit,
 				AddLinkEdit.class);
 	
 		Graph graph = probNet.getGraph();

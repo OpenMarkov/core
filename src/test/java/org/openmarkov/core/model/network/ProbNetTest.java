@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -493,7 +494,7 @@ public class ProbNetTest {
 		} catch (ConstraintViolationException e) {
 			fail("Fail in testAddConstraint()");
 		}
-		ArrayList<PNConstraint> constraints = emptyProbNet.getConstraints();
+		List<PNConstraint> constraints = emptyProbNet.getConstraints();
 		assertEquals(numBNConstraints + 1, constraints.size());
 	}
 
@@ -510,7 +511,7 @@ public class ProbNetTest {
 			fail("Fail in testRemoveConstraint()");
 		}
 		emptyProbNet.removeConstraint(constraint);
-		ArrayList<PNConstraint> constraints = emptyProbNet.getConstraints();
+		List<PNConstraint> constraints = emptyProbNet.getConstraints();
 		assertEquals(numBNConstraints, constraints.size());		
 	}
 
@@ -555,22 +556,22 @@ public class ProbNetTest {
 		ProbNode probNodeB = simpleProbNet.getProbNode("B");
 		Node nodeA = probNodeA.getNode();
 		Node nodeB = probNodeB.getNode();
-		ArrayList<Node> AChildren = nodeA.getChildren();
+		List<Node> AChildren = nodeA.getChildren();
 		assertTrue(AChildren.contains(nodeB)); // test addLink
-		ArrayList<Node> BParents = nodeB.getParents();
+		List<Node> BParents = nodeB.getParents();
 		assertTrue(BParents.contains(nodeA)); // test addLink
 		assertEquals(1, BParents.size());// test that addLink adds only one link
 	}
 
 	@Test
 	public void testGetProbNodes() {
-		ArrayList<ProbNode> probNodes = simpleProbNet.getProbNodes();
+	    List<ProbNode> probNodes = simpleProbNet.getProbNodes();
 		assertEquals(4, probNodes.size());
 	}
 
 	@Test
 	public void testGetVariables() {
-		ArrayList<Variable> variables = 
+	    List<Variable> variables = 
 			simpleProbNet.getChanceAndDecisionVariables();
 		assertEquals(3, variables.size());
 		assertTrue(variables.contains(A));
@@ -580,9 +581,9 @@ public class ProbNetTest {
 	
 	@Test
 	public void testGetVariablesArrayListOfNode() {
-		ArrayList<ProbNode> probNodes = simpleProbNet.getProbNodes();
-		ArrayList<Node> nodes = ProbNet.getNodesOfProbNodes(probNodes);
-		ArrayList<Variable> variables = simpleProbNet.getVariables(nodes);
+	    List<ProbNode> probNodes = simpleProbNet.getProbNodes();
+		List<Node> nodes = ProbNet.getNodesOfProbNodes(probNodes);
+		List<Variable> variables = simpleProbNet.getVariables(nodes);
 		assertTrue(variables.contains(A));
 		assertTrue(variables.contains(B));
 		assertTrue(variables.contains(D));
@@ -595,7 +596,7 @@ public class ProbNetTest {
 
 	@Test
 	public void testGetPotentials() {
-		ArrayList<Potential> potentials = simpleProbNet.getPotentials();
+	    List<Potential> potentials = simpleProbNet.getPotentials();
 		assertTrue(potentials.contains(pA));
 		assertTrue(potentials.contains(pBA));
 		assertTrue(potentials.contains(pU));
@@ -607,14 +608,14 @@ public class ProbNetTest {
 	public void testGetProjectedPotentials() 
 	throws NotEnoughMemoryException, NoFindingException, 
 	NonProjectablePotentialException, WrongCriterionException {
-		ArrayList<Potential> projectedPotentials = 
+	    List<Potential> projectedPotentials = 
 			simpleProbNet.getProjectedPotentials(simpleEvidence);
 		assertEquals(3, projectedPotentials.size());
 		boolean constantPotentialFound = false;
 		boolean bPotentialFound = false;
 		boolean utilityPotentialFound = false;
 		for (Potential potential : projectedPotentials) {
-			ArrayList<Variable> potentialVariables = potential.getVariables();
+		    List<Variable> potentialVariables = potential.getVariables();
 			constantPotentialFound =  constantPotentialFound || 
 			    potentialVariables.size() == 0;
 			bPotentialFound = bPotentialFound || 
@@ -634,11 +635,11 @@ public class ProbNetTest {
 
 	@Test
 	public void testGetProbNodesArrayListOfVariable() {
-		ArrayList<Variable> abVariables = new ArrayList<Variable>();
+	    List<Variable> abVariables = new ArrayList<Variable>();
 		for (Variable variable : this.abVariables) {
 			abVariables.add(variable);
 		}
-		ArrayList<ProbNode> chanceProbNodes = 
+		List<ProbNode> chanceProbNodes = 
 			simpleProbNet.getProbNodes(abVariables);
 		assertEquals(2, chanceProbNodes.size());
 		Variable variable0 = chanceProbNodes.get(0).getVariable();
@@ -661,7 +662,7 @@ public class ProbNetTest {
 	@Test
 	public void testGetProbNodesNodeType() {
 		// test chance nodes
-		ArrayList<ProbNode> chanceProbNodes = 
+	    List<ProbNode> chanceProbNodes = 
 			simpleProbNet.getProbNodes(NodeType.CHANCE);
 		assertEquals(2, chanceProbNodes.size());
 		Variable variable0 = chanceProbNodes.get(0).getVariable();
@@ -673,12 +674,12 @@ public class ProbNetTest {
 			assertEquals(variable1, A);
 		}
 		// test decision nodes
-		ArrayList<ProbNode> decisionProbNodes = 
+		List<ProbNode> decisionProbNodes = 
 			simpleProbNet.getProbNodes(NodeType.DECISION);
 		assertEquals(1, decisionProbNodes.size());
 		assertEquals(D, decisionProbNodes.get(0).getVariable());
 		// test utility nodes
-		ArrayList<ProbNode> utilityProbNodes = 
+		List<ProbNode> utilityProbNodes = 
 			simpleProbNet.getProbNodes(NodeType.UTILITY);
 		assertEquals(1, utilityProbNodes.size());
 		ProbNode utilityNode = utilityProbNodes.get(0);
@@ -687,7 +688,7 @@ public class ProbNetTest {
 
 	@Test
 	public void testGetPotentialsVariable() {
-		ArrayList<Potential> potentials = simpleProbNet.getPotentials(A);
+	    List<Potential> potentials = simpleProbNet.getPotentials(A);
 		assertEquals(3, potentials.size());
 		assertTrue(potentials.contains(pA));
 		assertTrue(potentials.contains(pBA));
@@ -697,14 +698,14 @@ public class ProbNetTest {
 	@Test
 	public void testGetPotentialsType() {
 		// test chance potentials
-		ArrayList<Potential> chancePotentials = 
+	    List<Potential> chancePotentials = 
 			simpleProbNet.getPotentialsType(NodeType.CHANCE);
 		assertEquals(2, chancePotentials.size());
 		assertTrue(chancePotentials.contains(pA));
 		assertTrue(chancePotentials.contains(pBA));
 		
 		// test utility potentials
-		ArrayList<Potential> utilityPotentials = 
+		List<Potential> utilityPotentials = 
 			simpleProbNet.getPotentialsType(NodeType.UTILITY);
 		assertEquals(1, utilityPotentials.size());
 		assertTrue(utilityPotentials.contains(pU));
@@ -713,12 +714,12 @@ public class ProbNetTest {
 	@Test
 	public void testGetUtilityPotentials() {
 		// test 0 potentials
-		ArrayList<Potential> BUtilityPotentials = 
+	    List<Potential> BUtilityPotentials = 
 			simpleProbNet.getUtilityPotentials(B);
 		assertEquals(0, BUtilityPotentials.size());
 
 		// test 1 potential
-		ArrayList<Potential> AUtilityPotentials = 
+		List<Potential> AUtilityPotentials = 
 			simpleProbNet.getUtilityPotentials(A);
 		assertEquals(1, AUtilityPotentials.size());
 		assertEquals(pU, AUtilityPotentials.get(0));
@@ -730,15 +731,15 @@ public class ProbNetTest {
 
 	@Test
 	public void testExtractPotentials() {
-		ArrayList<Potential> APotentials = simpleProbNet.extractPotentials(A);
+	    List<Potential> APotentials = simpleProbNet.extractPotentials(A);
 		assertEquals(3, APotentials.size());
 		assertTrue(APotentials.contains(pA));
 		assertTrue(APotentials.contains(pBA));
 		assertTrue(APotentials.contains(pU));
-		ArrayList<Potential> DPotentials = simpleProbNet.extractPotentials(D);
+		List<Potential> DPotentials = simpleProbNet.extractPotentials(D);
 		assertEquals(1, DPotentials.size());
 		assertTrue(DPotentials.contains(pU));
-		ArrayList<Potential> BPotentials = simpleProbNet.extractPotentials(B);
+		List<Potential> BPotentials = simpleProbNet.extractPotentials(B);
 		assertEquals(1, BPotentials.size());
 		assertTrue(BPotentials.contains(pBA));
 	}
@@ -783,7 +784,7 @@ public class ProbNetTest {
 	@Test
 	public void testGetVariablesNodeType() {
 		// test utility variables
-		ArrayList<Variable> utilityVariables = 
+	    List<Variable> utilityVariables = 
 			simpleProbNet.getVariables(NodeType.UTILITY);
 		assertEquals(1, utilityVariables.size());
 		ProbNode utilityNode = 
@@ -791,14 +792,14 @@ public class ProbNetTest {
 		assertTrue(utilityNode.getPotentials().get(0).isUtility());
 		
 		// test chance variables
-		ArrayList<Variable> chanceVariables = 
+		List<Variable> chanceVariables = 
 			simpleProbNet.getVariables(NodeType.CHANCE);
 		assertEquals(2, chanceVariables.size());
 		assertTrue(chanceVariables.contains(A));
 		assertTrue(chanceVariables.contains(B));
 		
 		// test decision variables
-		ArrayList<Variable> decisionVariables = 
+		List<Variable> decisionVariables = 
 			simpleProbNet.getVariables(NodeType.DECISION);
 		assertEquals(1, decisionVariables.size());
 		assertTrue(decisionVariables.contains(D));
@@ -829,14 +830,14 @@ public class ProbNetTest {
 	@Test
 	public void testCopy() {
 		ProbNet copied = simpleProbNet.copy();
-		ArrayList<Variable> copiedVariables = 
+		List<Variable> copiedVariables = 
 			copied.getChanceAndDecisionVariables();
 		// test variables
 		assertEquals(3, copiedVariables.size());
 		assertTrue(copiedVariables.contains(A));
 		assertTrue(copiedVariables.contains(B));
 		assertTrue(copiedVariables.contains(D));
-		ArrayList<Variable> utilityVariables = 
+		List<Variable> utilityVariables = 
 			copied.getVariables(NodeType.UTILITY);
 		assertEquals(1, utilityVariables.size());
 		// test potentials
@@ -877,7 +878,7 @@ public class ProbNetTest {
 		} catch (ConstraintViolationException e) {
 			fail("Unreachable code.");
 		}
-		ArrayList<PNConstraint> additionalConstraints = bnProbNet.getAdditionalConstraints();
+		List<PNConstraint> additionalConstraints = bnProbNet.getAdditionalConstraints();
 		assertEquals(1, additionalConstraints.size());
 		assertTrue(additionalConstraints.contains(maxNumParents));
 	}

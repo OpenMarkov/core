@@ -10,6 +10,7 @@
 package org.openmarkov.core.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -21,7 +22,6 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
-import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 
 /** Creates a directed or undirected link between two nodes associated to two
@@ -37,11 +37,11 @@ public class AddLinkEdit extends BaseLinkEdit {
     /**
      * The last <code>Potential</code> of the second node before the edition
      */
-    protected ArrayList<Potential> oldPotentials;
+    protected List<Potential> oldPotentials;
     /**
      * The new <code>Potential</code> of the second node
      */
-    protected ArrayList<Potential> newPotentials = new ArrayList<Potential>() ;
+    protected List<Potential> newPotentials = new ArrayList<Potential>() ;
     /**
      * parent node
      */
@@ -116,7 +116,7 @@ public class AddLinkEdit extends BaseLinkEdit {
         			Potential newPotential = oldPotential.copy().addVariable (node1.getVariable ());
         			if (newPotential == null)
         			{// It has not been implemented yet for this type of potential
-        				ArrayList<Variable> variables = oldPotential.getVariables ();
+        				List<Variable> variables = oldPotential.getVariables ();
         				if(!variables.contains (node1.getVariable ()))
         				{
         					variables.add (node1.getVariable ());

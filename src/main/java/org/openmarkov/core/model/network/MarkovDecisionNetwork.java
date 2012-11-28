@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.model.network;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -65,7 +65,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 		 *   (<code>ProbNet</code>). 
 		 * @throws NotEnoughMemoryException */
 		public MarkovDecisionNetwork(ProbNet originalNet,
-				ArrayList<? extends Potential> projectedTablePotentials) 
+				List<? extends Potential> projectedTablePotentials) 
 				throws NotEnoughMemoryException {
 			super(MarkovNetworkType.getUniqueInstance ());
 			try {
@@ -97,7 +97,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 		 *         received has been added.
 		 */
 		public void addPotential(ProbNet originalNet, Potential potential) {
-			ArrayList<Variable> potentialVariables = potential.getVariables();
+		    List<Variable> potentialVariables = potential.getVariables();
 			// the probNode where the potential will be stored
 			// TODO hacerlo con edits
 			if (potential.getVariables().size() == 0) {
@@ -136,7 +136,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	/** Adds chance and decision nodes to this object from originalID
 	 * @param originalID. <code>ProbNet</code> */
 	private void addVariablesAndLinks(ProbNet originalID) {
-		for (ArrayList<Variable> variables : partialOrder.getOrder()) {
+		for (List<Variable> variables : partialOrder.getOrder()) {
 			for (Variable variable : variables) {
 				ProbNode node = originalID.getProbNode(variable);
 				NodeType nodeType = node.getNodeType();
@@ -144,7 +144,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 			}
 		}
 		
-		ArrayList<Potential> potentials = originalID.getPotentials();
+		List<Potential> potentials = originalID.getPotentials();
 		for (Potential potential : potentials) {
 			addPotential(potential);
 		}
@@ -189,7 +189,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	/** @return The first chance node in the partial order. 
 	 * <code>ProbNode</code> */
 	private ProbNode getChanceNode() {
-		for (ArrayList<Variable> array : partialOrder.getOrder()) {
+		for (List<Variable> array : partialOrder.getOrder()) {
 			for (Variable variable : array) {
 				ProbNode probNode = getProbNode(variable);
 				if ((probNode != null) && 
@@ -366,7 +366,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 * @argCondition All the potential variables belongs to this network.
 	 * @param potential <code>Potential</code> */
     private void addLinks(Potential potential) {
-    	ArrayList<Variable> variablesPotential = potential.getVariables();
+        List<Variable> variablesPotential = potential.getVariables();
 		int potentialSize = variablesPotential.size();
 		for (int i = 0; i < potentialSize - 1; i++) {
 			Node node1 = 

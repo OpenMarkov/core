@@ -62,7 +62,7 @@ public class RelationPotentialTypeManager
      * @param name the potential's name.
      * @return a new Potential instance given the parameters.
      */
-    public final Potential getByName (String name, ArrayList<Variable> variables, PotentialRole role)
+    public final Potential getByName (String name, List<Variable> variables, PotentialRole role)
     {
         Potential instance = null;
         try
@@ -71,10 +71,10 @@ public class RelationPotentialTypeManager
             
             try
             {
-                constructor = potentials.get (name).getConstructor (ArrayList.class, PotentialRole.class);
+                constructor = potentials.get (name).getConstructor (List.class, PotentialRole.class);
                 instance = (Potential) constructor.newInstance (variables, role);
             }catch (NoSuchMethodException e) {
-                constructor = potentials.get (name).getConstructor (ArrayList.class);
+                constructor = potentials.get (name).getConstructor (List.class);
                 instance = constructor.newInstance (variables);
             }
         }catch (NoSuchMethodException e) {
@@ -98,7 +98,7 @@ public class RelationPotentialTypeManager
      * @param utilityVariable
      * @return
      */
-    public final Potential getByName (String name, ArrayList<Variable> variables, PotentialRole role, Variable utilityVariable)
+    public final Potential getByName (String name, List<Variable> variables, PotentialRole role, Variable utilityVariable)
     {
         Potential instance = null;
         try
@@ -107,10 +107,10 @@ public class RelationPotentialTypeManager
             
             try
             {
-                constructor = potentials.get (name).getConstructor (ArrayList.class, PotentialRole.class, Variable.class);
+                constructor = potentials.get (name).getConstructor (List.class, PotentialRole.class, Variable.class);
                 instance = (Potential) constructor.newInstance (variables, role, utilityVariable);
             }catch (NoSuchMethodException e) {
-                constructor = potentials.get (name).getConstructor (ArrayList.class);
+                constructor = potentials.get (name).getConstructor (List.class);
                 instance = constructor.newInstance (variables);
             }
         }catch (NoSuchMethodException e) {
@@ -148,7 +148,7 @@ public class RelationPotentialTypeManager
             Method validateMethod = null;
             try
             {
-                validateMethod = potentials.get (potentialName).getMethod ("validate", ProbNode.class, ArrayList.class, PotentialRole.class);
+                validateMethod = potentials.get (potentialName).getMethod ("validate", ProbNode.class, List.class, PotentialRole.class);
                 if((Boolean)validateMethod.invoke (null, probNode, probNode.getPotentials ().get (0).getVariables (), probNode.getPotentials ().get (0).getPotentialRole ()))
                 {
                     filteredPotentials.add (potentialName);

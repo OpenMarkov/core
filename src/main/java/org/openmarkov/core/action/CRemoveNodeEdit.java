@@ -10,6 +10,7 @@
 package org.openmarkov.core.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.PotentialOperationException;
@@ -68,7 +69,7 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 		siblings = node.getSiblings();
 		
 		// collect potentials of this node ...
-		ArrayList<? extends Potential> auxPotentialsContainingVariable = 
+		List<? extends Potential> auxPotentialsContainingVariable = 
 			probNet.extractPotentials(variable);
 		
 		ArrayList<TablePotential> potentialsContainingVariable = new ArrayList<>();

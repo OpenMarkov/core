@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.potential.operation.concurrent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -35,8 +36,9 @@ public class DiscretePotentialOperations {
 	 *   <code>? extends Potential</code>
 	  * @return The multiplied potentials <code>TablePotential</code>
 	 * @throws <code>Exception</code> */
-	public static TablePotential multiply(
-			ArrayList<TablePotential> potentials) throws Exception {
+    public static TablePotential multiply (List<TablePotential> potentials)
+        throws Exception
+    {
 		// Sequential part
 		SharedDataMultiply sdm = new SharedDataMultiply(potentials);
 		sdm.initialize();
@@ -66,10 +68,9 @@ public class DiscretePotentialOperations {
 		return sdm.result;
 	}
 	
-	public static TablePotential multiplyAndMarginalize(
-			ArrayList<Potential> tablePotentials, 
-			ArrayList<Variable> fSVariablesToKeep,
-			ArrayList<Variable> fSVariablesToEliminate) 
+    public static TablePotential multiplyAndMarginalize (List<TablePotential> tablePotentials,
+                                                         List<Variable> fSVariablesToKeep,
+                                                         List<Variable> fSVariablesToEliminate)
     		throws Exception {
 
 		// Sequential part
@@ -139,11 +140,11 @@ public class DiscretePotentialOperations {
 	}
 	
 	/** Calculates potentialPositions for each interval */
-	static void splitOperatorsPotentials(ArrayList<TablePotential> potentials,
+	static void splitOperatorsPotentials(List<TablePotential> potentials,
 			TablePotential result, int[][] resultIntervals, 
 			int[][] potentialsPositions) {
 		
-		ArrayList<Variable> resultVariables = result.getVariables();
+		List<Variable> resultVariables = result.getVariables();
 		
 		int aux;
 		int numIntervals = org.openmarkov.core.model.network.potential.operation.concurrent.DiscretePotentialOperations.numLogicalProcessors;
@@ -152,7 +153,7 @@ public class DiscretePotentialOperations {
 			for (int j = 0; j < potentials.size(); j++) {
 				TablePotential potential = potentials.get(j);
 				int[] offsetsPotential = potential.getOffsets();
-				ArrayList<Variable> potentialVariables = 
+				List<Variable> potentialVariables = 
 					potential.getVariables();
 				aux = 0;
 				

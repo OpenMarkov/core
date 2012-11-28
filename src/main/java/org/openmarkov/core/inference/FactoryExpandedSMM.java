@@ -10,6 +10,7 @@
 package org.openmarkov.core.inference;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -22,7 +23,6 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -46,10 +46,10 @@ public class FactoryExpandedSMM {
 	private ProbNet probNet;
 
 	/** Set of probNodes that will be cloned in each slice. */
-	private ArrayList<ProbNode> generatedNodes;
+	private List<ProbNode> generatedNodes;
 	
 	/** Each <ArrayList<ProbNode> contains the nodes of a time slice */
-	private ArrayList<ArrayList<ProbNode>> classifiedNodes;
+	private List<List<ProbNode>> classifiedNodes;
 	
 	// Constructor
 	/** @param conciseNet. <code>ProbNet</code>
@@ -100,13 +100,13 @@ public class FactoryExpandedSMM {
 		 // probNet.setDecisionCriteria(new String[]{"cost", "effectiveness"});
 		 probNet.setDecisionCriteria(decisionCriteriaNames);
 			//make all utility nodes of the expanded probNet child of decision criteria
-			  ArrayList<ProbNode> utilityNodes = probNet.getProbNodes(NodeType.UTILITY);
+		 List<ProbNode> utilityNodes = probNet.getProbNodes(NodeType.UTILITY);
 			  ProbNode decisionCriteria = new ProbNode(probNet, probNet.getDecisionCriteriaVariable(), NodeType.DECISION);
 			  probNet.addProbNode(decisionCriteria);
 			  for (int i = 0; i < utilityNodes.size(); i++) {
 				  Potential utility = utilityNodes.get(i).getPotentials().get(0);
 				  probNet.addLink(decisionCriteria, utilityNodes.get(i), true);
-				  ArrayList<Variable> treeVariables = utility.getVariables();
+				  List<Variable> treeVariables = utility.getVariables();
 				  treeVariables.add(decisionCriteria.getVariable());
 				  
 				  String iUtilityDecisionCriteriaName = utilityNodes.get(i).getVariable().getDecisionCriteria().getString();
@@ -124,7 +124,7 @@ public class FactoryExpandedSMM {
 				  if (hasDecisionCriteria){
 					  treeADDPotential = constructTreeADDForCE(decisionCriteria,treeVariables,utility,utilityNodes.get(i),iUtilityDecisionCriteriaName,otherDecisionCriteria);
 				  }
-				  ArrayList<Potential> potentials = new ArrayList<>();
+				  List<Potential> potentials = new ArrayList<>();
 				  potentials.add(treeADDPotential);
 				 utilityNodes.get(i).setPotentials(potentials);
 			  }
@@ -176,7 +176,7 @@ public class FactoryExpandedSMM {
 		ProbNet expandedNetwork = null;
 		//set up findings from the network and values introduced by the user
 		Finding ageFinding = null;
-		ArrayList<ProbNode> probNodes = probNet.getProbNodes();
+		List<ProbNode> probNodes = probNet.getProbNodes();
 		for (int i = 0; i < probNodes.size() ; i++) {
 			if (probNodes.get(i).getVariable().isTemporal() 
 					&& probNodes.get(i).getVariable().getBaseName().equals("Age")
@@ -234,12 +234,12 @@ public class FactoryExpandedSMM {
 	 * @param otherDecisionCriteriaName
 	 * @return A TreeADD for the utility potential where the branch of the criteria of the node is the old utility table, and the branch of the other criteria is 0.
 	 */
-	public TreeADDPotential constructTreeADDForCE(ProbNode decisionCriteria, ArrayList<Variable> treeVariables, Potential utility, ProbNode utilProbNode, String decisionCriteriaName, String otherDecisionCriteriaName){
+	public TreeADDPotential constructTreeADDForCE(ProbNode decisionCriteria, List<Variable> treeVariables, Potential utility, ProbNode utilProbNode, String decisionCriteriaName, String otherDecisionCriteriaName){
 		
 		TreeADDPotential treeADDPotential = new TreeADDPotential(treeVariables, probNet.getDecisionCriteriaVariable(),
 				  utility.getPotentialRole(), utility.getUtilityVariable());
 		
-		  ArrayList<Variable> variables = new ArrayList<>();
+		List<Variable> variables = new ArrayList<>();
 		  variables.add(decisionCriteria.getVariable());
 		 
 		  for (int j = 0; j < treeADDPotential.getBranches().size(); j++) {
@@ -272,11 +272,11 @@ public class FactoryExpandedSMM {
 		classifiedNodes = classifyNodes(probNet, probNet.getVariables());
 
 		// generate the new nodes of the compact net
-		ArrayList<ProbNode> generatingNodes = new ArrayList<ProbNode>();
+		List<ProbNode> generatingNodes = new ArrayList<ProbNode>();
 		generatedNodes = new ArrayList<ProbNode>();
 
 		for (int slice = 0; slice < classifiedNodes.size()-1; slice++) {
-			ArrayList<ProbNode> generatedNodesInThisSlice = 
+		    List<ProbNode> generatedNodesInThisSlice = 
 				new ArrayList<ProbNode>(classifiedNodes.get(slice).size());
 			for (ProbNode generatingProbNode : classifiedNodes.get(slice)) {
 				Variable generatingVariable = generatingProbNode.getVariable();
@@ -307,50 +307,53 @@ public class FactoryExpandedSMM {
 		}
 	}
 
-	/** Assigns nodes to slices in a collection of slices. Each slice is a
-	 * collection of nodes.
-	 * @return <code>ArrayList</code> of <code>ArrayList</code> of 
-	 *  <code>ProbNode</code> */
-	public static ArrayList<ArrayList<ProbNode>> classifyNodes(ProbNet probNet,
-			ArrayList<Variable> variables) {
-		ArrayList<ArrayList<ProbNode>> classifiedNodes;
-		int firstSliceIndex = Integer.MAX_VALUE;
-		int lastSliceIndex = Integer.MIN_VALUE;
-
-		// find the indexes of the first and last slice
-		int timeSlice;
-		for (Variable variable : variables) {
-			if (variable.isTemporal()) {
-				timeSlice = variable.getTimeSlice();
-				if ( timeSlice < firstSliceIndex ) {
-					firstSliceIndex = timeSlice;
-				}
-				if ( timeSlice > lastSliceIndex ) {
-					lastSliceIndex = timeSlice;
-				}
-			}
-		}
-		
-		int numSlices = lastSliceIndex - firstSliceIndex + 1;
-		
-		// initializes the variable classifiedNodes
-		classifiedNodes = new ArrayList<ArrayList<ProbNode>>(numSlices);
-		for (int slice = 0; slice < numSlices; slice++) {
-			classifiedNodes.add(new ArrayList<ProbNode>());
-		}
-
-		// assigns each node to its slice 
-		Variable variable;
-		for (ProbNode node : probNet.getProbNodes()) {
-			variable = node.getVariable();
-			if (variable.isTemporal()) {
-				classifiedNodes.get(variable.getTimeSlice()).add(node);
-			} 
-			
-		}
-		
-		return classifiedNodes;
-	}
+    /**
+     * Assigns nodes to slices in a collection of slices. Each slice is a
+     * collection of nodes.
+     * @return <code>ArrayList</code> of <code>List</code> of
+     *         <code>ProbNode</code>
+     */
+    public static List<List<ProbNode>> classifyNodes (ProbNet probNet, List<Variable> variables)
+    {
+        List<List<ProbNode>> classifiedNodes;
+        int firstSliceIndex = Integer.MAX_VALUE;
+        int lastSliceIndex = Integer.MIN_VALUE;
+        // find the indexes of the first and last slice
+        int timeSlice;
+        for (Variable variable : variables)
+        {
+            if (variable.isTemporal ())
+            {
+                timeSlice = variable.getTimeSlice ();
+                if (timeSlice < firstSliceIndex)
+                {
+                    firstSliceIndex = timeSlice;
+                }
+                if (timeSlice > lastSliceIndex)
+                {
+                    lastSliceIndex = timeSlice;
+                }
+            }
+        }
+        int numSlices = lastSliceIndex - firstSliceIndex + 1;
+        // initializes the variable classifiedNodes
+        classifiedNodes = new ArrayList<> (numSlices);
+        for (int slice = 0; slice < numSlices; slice++)
+        {
+            classifiedNodes.add (new ArrayList<ProbNode> ());
+        }
+        // assigns each node to its slice
+        Variable variable;
+        for (ProbNode node : probNet.getProbNodes ())
+        {
+            variable = node.getVariable ();
+            if (variable.isTemporal ())
+            {
+                classifiedNodes.get (variable.getTimeSlice ()).add (node);
+            }
+        }
+        return classifiedNodes;
+    }
 	
 	/**
 	 * projects the evidence for all nodes in the expanded network
@@ -468,7 +471,7 @@ public class FactoryExpandedSMM {
 	
 	public void applyDiscountToUtilityNodes(double costDiscount, double effectivenessDiscount, InferenceOptions inferenceOptions, EvidenceCase evidence) throws NotEnoughMemoryException{
 		// apply discount rate for all temporal utility nodes in the expanded network
-		  ArrayList<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
+	    List<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
 		  for (int i = 0; i < utilityExpandedNodes.size(); i++) {
 			  ProbNode iUtilityProbNode = utilityExpandedNodes.get(i);
 			int timeSlice = iUtilityProbNode.getVariable().getTimeSlice();
@@ -483,7 +486,7 @@ public class FactoryExpandedSMM {
 						| WrongCriterionException e) {
 					e.printStackTrace();
 				}
-				ArrayList<Potential> potentials = new ArrayList<>();
+				List<Potential> potentials = new ArrayList<>();
 				potentials.add(projectedPotential);
 				iUtilityProbNode.setPotentials(potentials);
 			}
@@ -496,7 +499,7 @@ public class FactoryExpandedSMM {
 					 Potential potentialToBeProjected;
 					Potential potential = iUtilityProbNode.getPotentials().get(0);
 					if (potential instanceof SameAsPrevious) {
-						ArrayList<Variable> variables = potential.getVariables();
+					    List<Variable> variables = potential.getVariables();
 						Variable utilityVariable = potential.getUtilityVariable();
 						potentialToBeProjected = (((SameAsPrevious)potential).getOriginalPotential()).copy();
 						potentialToBeProjected.setVariables(variables);
@@ -511,7 +514,7 @@ public class FactoryExpandedSMM {
 						for (int j = 0; j < valuesProjectedPotential.length; j++) {
 							valuesProjectedPotential[j] = valuesProjectedPotential[j] * (discountRate);
 						}	
-					 ArrayList<Potential> potentials = new ArrayList<>();
+						List<Potential> potentials = new ArrayList<>();
 					potentials.add(projectedPotential);
 					iUtilityProbNode.setPotentials(potentials);
 				} catch (NonProjectablePotentialException | WrongCriterionException e) {					
@@ -526,9 +529,8 @@ public class FactoryExpandedSMM {
 	 * @precondition extendedNet in this class must be a compact net */
 	private void generateNextSlice() {
 
-		ArrayList<ProbNode> lastSliceNodes = 
-			classifiedNodes.get(classifiedNodes.size()-1);
-		ArrayList<ProbNode> newSliceNodes = new ArrayList<ProbNode>();
+	    List<ProbNode> lastSliceNodes = classifiedNodes.get(classifiedNodes.size()-1);
+	    List<ProbNode> newSliceNodes = new ArrayList<ProbNode>();
 
 		// generates the new nodes
 		for (ProbNode generatingProbNode : lastSliceNodes) {
@@ -604,7 +606,7 @@ public class FactoryExpandedSMM {
 	 */
 	public ProbNet prepareExpandedNetworkToInference(EvidenceCase evidence) {
 		ProbNet prunedProbNet = probNet.copy();
-		ArrayList<Finding> findings = evidence.getFindings();
+		List<Finding> findings = evidence.getFindings();
 		for (int i = 0; i < findings.size(); i++) {
 			prunedProbNet.removeProbNode(prunedProbNet.getProbNode(findings.get(i).getVariable())); 
 		}

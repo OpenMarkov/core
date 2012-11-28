@@ -98,7 +98,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
                 // Unreachable code because constraints are not tested in copy
             }
         }
-        ArrayList<ProbNode> probNodes = probNet.getProbNodes();
+        List<ProbNode> probNodes = probNet.getProbNodes();
         // Adds variables and create corresponding nodes. Also add potentials
         for (ProbNode probNode : probNodes) {
             // Add variables and create corresponding nodes
@@ -120,12 +120,11 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
         }
 
         // Add links
-        ArrayList<ProbNode> nodes = probNet.getProbNodes();
+        List<ProbNode> nodes = probNet.getProbNodes();
         for (ProbNode probNode1 : nodes) {
             Variable variable1 = probNode1.getVariable();
             ProbNode newNode1 = this.getProbNode(variable1);
-            ArrayList<ProbNode> neighbors = getProbNodesOfNodes(probNode1
-                    .getNode().getNeighbors());
+            List<ProbNode> neighbors = getProbNodesOfNodes(probNode1.getNode().getNeighbors());
             for (ProbNode probNode2 : neighbors) {
                 Variable variable2 = probNode2.getVariable();
                 ProbNode newNode2 = this.getProbNode(variable2);
@@ -338,7 +337,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 		    {
 		        if (probNode.getPotentials ().contains (potentialToReplace))
 		        {
-		            ArrayList<Potential> potentials = probNode.getPotentials ();
+		            List<Potential> potentials = probNode.getPotentials ();
 		            potentials.remove (potentialToReplace);
 		            potentials.add (potentialsToReplace.get (potentialToReplace));
 		            probNode.setPotentials (potentials);
@@ -402,7 +401,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 		    {
 		        if (probNode.getPotentials ().contains (potentialToReplace))
 		        {
-		            ArrayList<Potential> potentials = probNode.getPotentials ();
+		            List<Potential> potentials = probNode.getPotentials ();
 		            potentials.remove (potentialToReplace);
 		            potentials.add (potentialsToReplace.get (potentialToReplace));
 		            probNode.setPotentials (potentials);
@@ -685,7 +684,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 	private Potential findPotentialByVariables(List<Variable> variables)
 	{
 		int i = 0;
-		ArrayList<Potential> potentials = getPotentials();
+		List<Potential> potentials = getPotentials();
 		Potential potential = null;
 		
 		while(i<potentials.size() && potential == null)

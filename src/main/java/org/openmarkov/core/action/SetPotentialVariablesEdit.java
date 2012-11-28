@@ -14,11 +14,10 @@ public class SetPotentialVariablesEdit extends SimplePNEdit{
 	private ArrayList<Variable> newVariables;
 	private ProbNode probNode;
 	
-	@SuppressWarnings("unchecked")
 	public SetPotentialVariablesEdit(ProbNode probNode, ArrayList<Variable> newVariables) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
-		this.oldVariables = (ArrayList<Variable>) probNode.getPotentials().get(0).getVariables().clone();
+		this.oldVariables = new ArrayList<Variable>(probNode.getPotentials().get(0).getVariables());
 		this.newVariables = newVariables;
 	}
 

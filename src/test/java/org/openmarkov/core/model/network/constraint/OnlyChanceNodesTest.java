@@ -13,7 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class OnlyChanceNodesTest {
 		// Add constraints as listeners.
 		PNESupport pNESupport = new PNESupport(false);
         probNetDirected.addConstraint (new OnlyChanceNodes (), true);
-		ArrayList<PNConstraint> constraints = probNetDirected.getConstraints();
+        List<PNConstraint> constraints = probNetDirected.getConstraints();
 		for (PNConstraint constraint : constraints) { // sets listeners
 			pNESupport.addUndoableEditListener(constraint);
 		}

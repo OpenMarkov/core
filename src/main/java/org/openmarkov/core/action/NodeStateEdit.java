@@ -11,6 +11,7 @@ package org.openmarkov.core.action;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openmarkov.core.exception.DoEditException;
@@ -57,7 +58,7 @@ public class NodeStateEdit extends SimplePNEdit {
 	/**
 	 * The last potential before the edition
 	 */
-	private ArrayList<Potential> lastPotential;
+	private List<Potential> lastPotential;
 	/**
 	 * The action to carry out
 	 */
@@ -74,7 +75,7 @@ public class NodeStateEdit extends SimplePNEdit {
 	/***
 	 * Map with the revelation condition list for each link.
 	 */
-	private Map<Link, ArrayList> revelationConditionMap;
+	private Map<Link, List> revelationConditionMap;
 
 	/**
 	 * Creates a new <code>NodeStateEdit</code> to carry out the specified
@@ -100,7 +101,7 @@ public class NodeStateEdit extends SimplePNEdit {
 				.getPartitionedInterval();
 		this.lastStates = probNode.getVariable().getStates().clone();
 		this.linkRestrictionMap = new HashMap<Link, double[]>();
-		this.revelationConditionMap = new HashMap<Link, ArrayList>();
+		this.revelationConditionMap = new HashMap<Link, List>();
 	}
 
 	@Override

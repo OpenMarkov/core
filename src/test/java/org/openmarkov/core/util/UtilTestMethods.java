@@ -12,6 +12,7 @@ package org.openmarkov.core.util;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
@@ -20,7 +21,6 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GTablePotential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 
@@ -65,7 +65,6 @@ public class UtilTestMethods {
      * @param variables <code>ArrayList</code> of <code>Variable</code>.
      * @param coordinateVariables <code>int[]</code>.
      * @param potential <code>GTablePotential</code>. */
-    @SuppressWarnings("unchecked")
 	public static Object getConfiguration(ArrayList<Variable> variables, 
     		int[] coordinateVariables, GTablePotential potential) {
     	int position = 
@@ -130,7 +129,7 @@ public class UtilTestMethods {
      * @param potential <code>TablePotential</code>. */
     private static int getConfigurationPosition(ArrayList<Variable> variables,
     		int[] coordinateVariables, TablePotential potential) {
-    	ArrayList<Variable> variablesPotential = potential.getVariables();
+    	List<Variable> variablesPotential = potential.getVariables();
     	int[] coordinate = new int[variablesPotential.size()];
     	int i = 0;
     	for (Variable variable : variables) {
@@ -148,7 +147,7 @@ public class UtilTestMethods {
     	Variable[] variables = new Variable[numVariables];
     	for (int i = 0; i < numVariables; i++) {
     		variables[i] = new Variable(variablesNames[i], "positive", "negative");
-    		ProbNode probNode = probNet.addVariable(variables[i], NodeType.CHANCE);
+    		probNet.addVariable(variables[i], NodeType.CHANCE);
     	}
     	return probNet;
     }

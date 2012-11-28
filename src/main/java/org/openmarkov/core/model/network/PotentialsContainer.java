@@ -12,7 +12,7 @@
  */
 package org.openmarkov.core.model.network;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.model.network.potential.Potential;
 
@@ -23,11 +23,11 @@ import org.openmarkov.core.model.network.potential.Potential;
  */
 public interface PotentialsContainer {
 	
-	public ArrayList<Potential> getPotentials(Variable variable);
+	public List<Potential> getPotentials(Variable variable);
 	/** @param potential. <code>Potential</code> */
     public void addPotential(Potential potential);
     /** @param potential. <code>Potential</code> */
-    public void setPotentials(ArrayList <Potential> potential);
+    public void setPotentials(List <Potential> potential);
     /** @param potential. <code>Potential</code>
      * @return <code>true</code> if <code>potentialList</code> contained the
      *   specified element; otherwise <code>false</code>. */

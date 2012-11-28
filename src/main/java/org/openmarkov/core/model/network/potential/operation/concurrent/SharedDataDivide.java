@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.potential.operation.concurrent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -53,7 +54,7 @@ public class SharedDataDivide {
 	}
 	
 	public void initialize() {
-		ArrayList<Variable> quotientVariables = numerator.getVariables();
+		List<Variable> quotientVariables = numerator.getVariables();
 		TablePotential quotient = null;
 		try {
 			quotient = new TablePotential(

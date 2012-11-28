@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.action;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.ProbNet;
@@ -48,7 +48,7 @@ public class VariableTypeConstraintEdit extends SimplePNEdit {
 			PNConstraint newVariableTypeConstraint) {
 		super(probNet);
 		this.newVariableTypeConstraint = newVariableTypeConstraint;
-		ArrayList<PNConstraint> constraints = probNet.getConstraints();
+		List<PNConstraint> constraints = probNet.getConstraints();
 		for (PNConstraint constraint:constraints){
             if (constraint instanceof OnlyDiscreteVariables
                 || constraint instanceof OnlyContinuousVariables)

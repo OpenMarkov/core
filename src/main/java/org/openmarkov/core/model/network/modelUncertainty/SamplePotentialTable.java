@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.Variable;
@@ -58,9 +59,8 @@ public class SamplePotentialTable {
 		double[] originalValues = inputTablePotential.getValues();
 
 		if (!(inputTablePotential.getUncertainTable() == null)) {
-			ArrayList<Variable> inputPotentialVariables = inputTablePotential
-					.getVariables();
-			ArrayList<Variable> sampledPotentialVariables = (ArrayList<Variable>) inputPotentialVariables;
+			List<Variable> inputPotentialVariables = inputTablePotential.getVariables();
+			List<Variable> sampledPotentialVariables = (ArrayList<Variable>) inputPotentialVariables;
 			sampledPotentialVariables.add(simulationIndexVariable);
 
 			sampledTablePotential = new TablePotential(

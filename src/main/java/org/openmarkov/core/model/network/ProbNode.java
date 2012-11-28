@@ -11,6 +11,7 @@ package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -20,7 +21,6 @@ import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -51,7 +51,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	protected ProbNet probNet;
 
     /** Each <code>probNode</code> has a list of potentials */
-    protected ArrayList<Potential> potentials;
+    protected List<Potential> potentials;
     
     /** The variable associated */
     protected Variable variable;
@@ -112,8 +112,6 @@ public class ProbNode implements Cloneable, PotentialsContainer {
         this.nodeType = probNode.getNodeType();
        // node = new Node(probNet.getGraph(), this);
         node = probNode.getNode();
-        potentials = new ArrayList<Potential>();
-        
        // node = new Node(probNet.getGraph(), this);
         potentials = new ArrayList<Potential>(probNode.getPotentials());
         additionalProperties = new HashMap<String, String>();
@@ -126,8 +124,8 @@ public class ProbNode implements Cloneable, PotentialsContainer {
      *  contains the received variable.
      *  <code>ArrayList</code> of <code>Potential</code>
      * @param variable. <code>Variable</code> */
-    public ArrayList<Potential> getPotentials(Variable variable) {
-        ArrayList<Potential> clonedPotentials = new ArrayList<Potential>();
+    public List<Potential> getPotentials(Variable variable) {
+        List<Potential> clonedPotentials = new ArrayList<Potential>();
         for (Potential potential : clonedPotentials) {
             if (potential.getVariables().contains(variable)) {
                 clonedPotentials.add(potential);
@@ -165,7 +163,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
         addPotential(potential);
     }    
     /** @param potential. <code>Potential</code> */
-    public void setPotentials(ArrayList <Potential> potentials) {
+    public void setPotentials(List<Potential> potentials) {
         this.potentials = potentials;
     }
   
@@ -185,10 +183,9 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 
     /** @return An <code>ArrayList</code> cloned with all the potentials 
      *   associated to this <code>ProbNode</code> */
-	@SuppressWarnings("unchecked")
-	public ArrayList<Potential> getPotentials() {
+	public List<Potential> getPotentials() {
 		if (potentials != null) {
-			return (ArrayList<Potential>)potentials.clone();
+			return new ArrayList<Potential> (potentials);
 		}
 		return null;
     }
@@ -236,6 +233,12 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 		case CE:
             out.append("Utility, Cost-Effectiveness"); 
 			break;
+            case SV_PRODUCT :
+                break;
+            case SV_SUM :
+                break;
+            default :
+                break;
 		}
 		out.append("): ");
         int numParents = node.getNumParents();
@@ -350,8 +353,8 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 
 	public void setUniformPotential2ProbNode() {
 		
-		ArrayList<Potential> newListPotentials = new ArrayList<Potential> ();
-		ArrayList<Variable> variables = new ArrayList<Variable>();
+	    List<Potential> newListPotentials = new ArrayList<Potential> ();
+	    List<Variable> variables = new ArrayList<Variable>();
 		Variable thisVariable;
 		PotentialRole role = potentials.get(0).getPotentialRole();
         // first, this variable. The potentials is not null
@@ -492,7 +495,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	private double getApproximateMaxOrMinUtilityFunction(boolean computeMax)
 			throws NotEnoughMemoryException, NonProjectablePotentialException {
 		double result;
-		ArrayList<Potential> potentials = getPotentials();
+		List<Potential> potentials = getPotentials();
 
 		if ((potentials != null) && (potentials.size() > 0)) {
 			Potential firstPotential = potentials.get(0);
@@ -507,7 +510,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 			} else {
 				double parentValues[];
 
-				ArrayList<Node> parents = getNode().getParents();
+				List<Node> parents = getNode().getParents();
 				parentValues = new double[parents.size()];
 				for (int i = 0; i < parents.size(); i++) {
 					parentValues[i] = ((ProbNode) (parents.get(i).getObject()))
@@ -568,14 +571,14 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 			NonProjectablePotentialException, WrongCriterionException {
 		ProbNode probNode;
 		TablePotential result;
-		ArrayList<Potential> potentials = getPotentials();
+		List<Potential> potentials = getPotentials();
 
 		if ((potentials != null) && (potentials.size() > 0)) {
 			Potential firstPotential = potentials.get(0);
 			if (!isSuperValueNode(getVariable(), getProbNet())) {
 				result = firstPotential.tableProject(null, null).get(0);
 			} else {
-				ArrayList<TablePotential> utilityFunctionsParents;
+			    List<TablePotential> utilityFunctionsParents;
 				utilityFunctionsParents = new ArrayList<TablePotential>();
 				for (Node node : getNode().getParents()) {
 					probNode = (ProbNode) node.getObject();
@@ -627,8 +630,8 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 * This method is used to 
 	 * @return a list with utility parents
 	 */
-	public ArrayList<ProbNode> getUtilityParents() {
-		ArrayList<ProbNode> utilityParents =  new ArrayList<>();
+	public List<ProbNode> getUtilityParents() {
+	    List<ProbNode> utilityParents =  new ArrayList<>();
 		for (Node parent:this.getNode().getParents()){
 			if (( (ProbNode)parent.getObject() ).getNodeType() == NodeType.UTILITY ){
 				utilityParents.add((ProbNode)parent.getObject());
@@ -649,8 +652,8 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 * @return
 	 */
 	public boolean onlyNumericalParents() {
-		ArrayList<ProbNode> numericalParents = new ArrayList<>();
-		ArrayList<ProbNode> finiteStatesOrDiscretizedParents = new ArrayList<>();
+	    List<ProbNode> numericalParents = new ArrayList<>();
+	    List<ProbNode> finiteStatesOrDiscretizedParents = new ArrayList<>();
 		
 		for (Node parent:this.getNode().getParents()){
 			if (((ProbNode)parent.getObject()).getVariable().getVariableType() == VariableType.NUMERIC ) {

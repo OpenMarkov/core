@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.constraint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
@@ -29,10 +30,10 @@ public class NoUtilityParent extends PNConstraint  {
     @Override
     public boolean checkProbNet (ProbNet probNet)
     {
-        ArrayList<ProbNode> utilityNodes = probNet.getProbNodes (NodeType.UTILITY);
+        List<ProbNode> utilityNodes = probNet.getProbNodes (NodeType.UTILITY);
         for (ProbNode utilNode : utilityNodes)
         {
-            ArrayList<Node> children = utilNode.getNode ().getChildren ();
+            List<Node> children = utilNode.getNode ().getChildren ();
             for (Node child : children)
             {
                 ProbNode probChild = (ProbNode) child.getObject ();
@@ -50,7 +51,7 @@ public class NoUtilityParent extends PNConstraint  {
 			throws NotEnoughMemoryException, NonProjectablePotentialException,
 			WrongCriterionException {
 		
-        ArrayList<PNEdit> edits = UtilConstraints.getEditsType (edit, AddLinkEdit.class);
+        List<PNEdit> edits = UtilConstraints.getEditsType (edit, AddLinkEdit.class);
 		
 		for (PNEdit simpleEdit : edits) {
 			if (((AddLinkEdit)simpleEdit).isDirected()) { 

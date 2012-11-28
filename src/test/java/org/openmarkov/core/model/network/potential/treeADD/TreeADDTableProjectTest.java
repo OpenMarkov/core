@@ -5,6 +5,7 @@ package org.openmarkov.core.model.network.potential.treeADD;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -117,12 +118,11 @@ public class TreeADDTableProjectTest {
 		projectedPotential = new TablePotential(parentVariables, PotentialRole.CONDITIONAL_PROBABILITY, projectedValues);
 		
 	}
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testTableProject() throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
 		TablePotential tablePotential = 
 				treeADD.tableProject(null, null).get(0);
-		ArrayList<Variable> variables = tablePotential.getVariables();
+		List<Variable> variables = tablePotential.getVariables();
 		assertEquals(3, variables.size());
 		assertEquals(16, tablePotential.values.length);
 		double []projectedValues = {0.7, 0.3, 0.8, 0.2, 0.7, 0.3, 0.8, 0.2, 0.7, 0.3, 0.1, 0.9, 0.6, 0.4, 0.6, 0.4};

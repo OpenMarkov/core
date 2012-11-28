@@ -1,6 +1,7 @@
 package org.openmarkov.core.model.network.potential.operation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -178,7 +179,7 @@ public class LinkRestrictionPotentialOperationsTest {
 		link.setCompatibilityValue(stateA[0], stateB[0], 0);
 		link2.initializesRestrictionsPotential();
 		link2.setCompatibilityValue(stateC[0], stateB[0], 0);
-		ArrayList<int[]> states=LinkRestrictionPotentialOperations
+		List<int[]> states=LinkRestrictionPotentialOperations
 				.getStateCombinationsWithLinkRestriction(net.getProbNode("B"));
 		Assert.assertEquals(5, states.size());
 	}

@@ -11,16 +11,15 @@ package org.openmarkov.core.inference;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.inference.FactoryExpandedSMM;
-import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.NetsFactory;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -75,7 +74,7 @@ public class FactoryExpandedSMMTest {
 			double discount = 0.01;
 			ProbNet expandedNetwork = FactoryExpandedSMM.constructExpandedNetwork(numSlices, network, discount*100.0, discount*100.0,true);
 			
-			ArrayList<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
+			List<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
 
 			TablePotential globalPotential = null;
 			try {
@@ -147,7 +146,7 @@ public class FactoryExpandedSMMTest {
 			ProbNet expandedNetwork = FactoryExpandedSMM.constructExpandedNetwork(numSlices, network, discount*100.0, discount*100.0, true);
 			
 		
-			ArrayList<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
+			List<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
 			//Check utility potentials starting in slice 1
 			double ratio = 1.0 / (1.0 + discount);
 			for (TablePotential auxPot:tablePotentials){
@@ -270,21 +269,21 @@ public class FactoryExpandedSMMTest {
 	}
 
 
-	private ArrayList<TablePotential> extractUtilityPotentialsProjecToTablesAndCheckVariables(
+	private List<TablePotential> extractUtilityPotentialsProjecToTablesAndCheckVariables(
 			ProbNet expandedNetwork) {
 		InferenceOptions inferenceOptions;
-		ArrayList<Potential> utilityPotentials = expandedNetwork
+		List<Potential> utilityPotentials = expandedNetwork
 				.getPotentialsRole(PotentialRole.UTILITY);
 		
 		
 		inferenceOptions = new InferenceOptions(expandedNetwork, null);
 
-		ArrayList<TablePotential> tablePotentials;
+		List<TablePotential> tablePotentials;
 		tablePotentials = new ArrayList<>();
 		for (Potential auxPotential : utilityPotentials) {
 			assertNotNull(auxPotential.getUtilityVariable());
 			try {
-				ArrayList<TablePotential> tableProject = auxPotential.tableProject(null, inferenceOptions);
+				List<TablePotential> tableProject = auxPotential.tableProject(null, inferenceOptions);
 				//Check utilityVariables are not null
 				for (TablePotential auxTable:tableProject){
 					assertNotNull(auxTable.getUtilityVariable());

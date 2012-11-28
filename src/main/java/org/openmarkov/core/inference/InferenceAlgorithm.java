@@ -8,8 +8,11 @@ package org.openmarkov.core.inference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
@@ -72,7 +75,7 @@ public abstract class InferenceAlgorithm
      * Variables that will not be eliminated during the inference, and therefore all the results
      * contain these variables in the domain.
      */
-    private ArrayList<Variable> conditioningVariables;
+    private List<Variable> conditioningVariables;
     
   
     /**
@@ -92,14 +95,14 @@ public abstract class InferenceAlgorithm
 	/**
 	 * @return The conditioning variables
 	 */
-	public ArrayList<Variable> getConditioningVariables() {
+	public List<Variable> getConditioningVariables() {
 		return conditioningVariables;
 	}
 
 	/**
 	 * @param conditioningVariables The conditioning variables to set
 	 */
-	public void setConditioningVariables(ArrayList<Variable> conditioningVariables) {
+	public void setConditioningVariables(List<Variable> conditioningVariables) {
 		this.conditioningVariables = conditioningVariables;
 	}
 
@@ -186,7 +189,7 @@ public abstract class InferenceAlgorithm
      * @throws IncompatibleEvidenceException
      * @throws NormalizeNullVectorException
      */
-    public abstract HashMap<Variable,TablePotential> getProbsAndUtilities(ArrayList<Variable> variablesOfInterest) throws
+    public abstract HashMap<Variable,TablePotential> getProbsAndUtilities(List<Variable> variablesOfInterest) throws
 	NotEnoughMemoryException,
 	IncompatibleEvidenceException,
 	UnexpectedInferenceException;
@@ -198,7 +201,7 @@ public abstract class InferenceAlgorithm
      * @throws IncompatibleEvidenceException
      * @throws NormalizeNullVectorException
      */
-    public abstract TablePotential getJointProbability(ArrayList<Variable> variables)throws
+    public abstract TablePotential getJointProbability(List<Variable> variables)throws
 	NotEnoughMemoryException,
 	IncompatibleEvidenceException,
 	UnexpectedInferenceException;
@@ -218,7 +221,7 @@ public abstract class InferenceAlgorithm
 			policy = null;
 		}
 		else{
-			ArrayList<Potential> potentials = decisionNode.getPotentials();
+		    List<Potential> potentials = decisionNode.getPotentials();
 			if ((potentials == null)||(potentials.size()==0)){
 				policy = null;
 			}

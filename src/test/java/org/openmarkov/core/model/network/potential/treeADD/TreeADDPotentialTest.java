@@ -1,6 +1,7 @@
 package org.openmarkov.core.model.network.potential.treeADD;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -159,7 +160,7 @@ public class TreeADDPotentialTest {
 		probNet.addPotential(treeADD);
 		
 		
-		ArrayList<Potential> potentials = probNet.getPotentials();
+		List<Potential> potentials = probNet.getPotentials();
 		for (Potential potential : potentials) {
 			if (potential.getPotentialType() == PotentialType.TREE_ADD) {
 				this.treeADD = (TreeADDPotential) potential;

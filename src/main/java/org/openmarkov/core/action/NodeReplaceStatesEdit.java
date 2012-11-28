@@ -11,6 +11,7 @@ package org.openmarkov.core.action;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -50,9 +51,9 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 
 	private ProbNode probNode;
 
-	private ArrayList<Potential> lastPotential;
+	private List<Potential> lastPotential;
 
-	private ArrayList<Potential> childrenLastPotential = new ArrayList<Potential>();
+	private List<Potential> childrenLastPotential = new ArrayList<Potential>();
 
 	private PartitionedInterval currentPartitionedInterval;
 
@@ -61,7 +62,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	/***
 	 * Map with the revelation condition list for each link.
 	 */
-	private Map<Link, ArrayList> revelationConditionMap;
+	private Map<Link, List> revelationConditionMap;
 
 	/**
 	 * Creates a <code>NodeReplaceStatesEdit</code> with the node and new states
@@ -84,7 +85,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 
 		this.newStates = newStates;
 		this.linkRestrictionMap = new HashMap<Link, double[]>();
-		this.revelationConditionMap = new HashMap<Link, ArrayList>();
+		this.revelationConditionMap = new HashMap<>();
 	}
 
 	// Methods

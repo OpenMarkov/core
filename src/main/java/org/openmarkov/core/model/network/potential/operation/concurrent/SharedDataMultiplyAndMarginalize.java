@@ -10,20 +10,20 @@
 package org.openmarkov.core.model.network.potential.operation.concurrent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 public class SharedDataMultiplyAndMarginalize extends SharedDataMultiply {
 
-	ArrayList<Variable> variablesToKeep;
+	List<Variable> variablesToKeep;
 
-	ArrayList<Variable> variablesToEliminate;
+	List<Variable> variablesToEliminate;
 	
 	// Attributes related to the product potential that will be marginalized
-	ArrayList<Variable> unionVariables;
+	List<Variable> unionVariables;
 	
 	int[] unionCoordinate;
 	
@@ -33,15 +33,14 @@ public class SharedDataMultiplyAndMarginalize extends SharedDataMultiply {
 
 	@SuppressWarnings("unchecked")
 	public SharedDataMultiplyAndMarginalize(
-			ArrayList<Potential> potentials, 
-			ArrayList<Variable> fSVariablesToKeep,
-			ArrayList<Variable> fSVariablesToEliminate) 
+			List<TablePotential> potentials, 
+			List<Variable> fSVariablesToKeep,
+			List<Variable> fSVariablesToEliminate) 
     		throws NotEnoughMemoryException {
 
-		super((ArrayList<TablePotential>)(Object)potentials);
+		super(potentials);
     	
-    	this.variablesToKeep = 
-    		(ArrayList<Variable>)((Object)fSVariablesToKeep);
+    	this.variablesToKeep = fSVariablesToKeep;
 
     	this.variablesToEliminate = 
     		(ArrayList<Variable>)((Object)fSVariablesToEliminate);
@@ -49,13 +48,11 @@ public class SharedDataMultiplyAndMarginalize extends SharedDataMultiply {
 
 	/** Does some previous not parallel operations 
 	 * @throws Exception */
-	@SuppressWarnings("unchecked")
 	public void initializeMultiplyAndMarginalize() 
 			throws Exception {
 		super.initialize();
 		// variables in the resulting potential
-		ArrayList<Variable> unionVariables = (ArrayList<Variable>)
-			variablesToEliminate.clone();
+		List<Variable> unionVariables = new ArrayList<Variable>(variablesToEliminate);
 		unionVariables.addAll(variablesToKeep);
 		int numUnionVariables = unionVariables.size();
 		

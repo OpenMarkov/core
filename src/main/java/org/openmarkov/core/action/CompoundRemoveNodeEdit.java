@@ -10,6 +10,7 @@
 package org.openmarkov.core.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.model.graph.Node;
@@ -38,15 +39,15 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 	
 	protected NodeType nodeType;
 	
-	protected ArrayList<Node> parents;
+	protected List<Node> parents;
 
-	protected ArrayList<Node> children;
+	protected List<Node> children;
 
-	protected ArrayList<Node> siblings;
+	protected List<Node> siblings;
 	
-	protected ArrayList<Potential> marginalizedPotentials;
+	protected List<Potential> marginalizedPotentials;
 
-	protected ArrayList<Potential> allPotentials;
+	protected List<Potential> allPotentials;
 
 	private Logger logger;
 	
@@ -69,7 +70,7 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 		siblings = probNode.getNode().getSiblings();
 		
 		// collect potentials of this node ...
-		ArrayList<TablePotential> potentialsVariable = new ArrayList<>();
+		List<TablePotential> potentialsVariable = new ArrayList<>();
 		
 		for (Potential pot:probNet.extractPotentials(variable)){
 			potentialsVariable.add((TablePotential)pot);
@@ -84,7 +85,7 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 			logger.fatal (e);
 		}
 		
-		ArrayList<Variable> variablesNewPotential = newPotential.getVariables();
+		List<Variable> variablesNewPotential = newPotential.getVariables();
 		if (variablesNewPotential != null && variablesNewPotential.size() > 0) {
 			edits.add(new AddPotentialEdit(probNet, newPotential));
 		}

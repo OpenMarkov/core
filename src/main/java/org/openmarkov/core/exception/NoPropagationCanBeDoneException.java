@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.exception;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 
@@ -17,9 +17,9 @@ import org.openmarkov.core.model.network.constraint.PNConstraint;
 @SuppressWarnings("serial")
 public class NoPropagationCanBeDoneException extends Exception{
 
-    private ArrayList<PNConstraint> constraints;
+    private List<PNConstraint> constraints;
     
-    public NoPropagationCanBeDoneException(ArrayList<PNConstraint> constraints)
+    public NoPropagationCanBeDoneException(List<PNConstraint> constraints)
     {
         this.constraints = constraints;
     }
@@ -28,7 +28,7 @@ public class NoPropagationCanBeDoneException extends Exception{
      * Returns the constraints.
      * @return the constraints.
      */
-    public ArrayList<PNConstraint> getConstraints ()
+    public List<PNConstraint> getConstraints ()
     {
         return constraints;
     }    

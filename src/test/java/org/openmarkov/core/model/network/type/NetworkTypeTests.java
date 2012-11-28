@@ -11,6 +11,7 @@
 package org.openmarkov.core.model.network.type;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -47,7 +48,7 @@ public class NetworkTypeTests
     public void testDefaultNetworkTypeIsBayesian ()
     {
         ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-        ArrayList<PNConstraint> constraints = probNet.getConstraints ();
+        List<PNConstraint> constraints = probNet.getConstraints ();
         Assert.assertTrue (constraints.contains (new NoEmptyName ()));
         Assert.assertTrue (constraints.contains (new DistinctVariableNames ()));
         Assert.assertTrue (constraints.contains (new OnlyChanceNodes ()));
@@ -68,7 +69,7 @@ public class NetworkTypeTests
     {
         ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
         probNet.setNetworkType (MarkovNetworkType.getUniqueInstance ());
-        ArrayList<PNConstraint> constraints = probNet.getConstraints ();
+        List<PNConstraint> constraints = probNet.getConstraints ();
         Assert.assertFalse (constraints.contains (new OnlyDirectedLinks ()));
         Assert.assertTrue (constraints.contains (new OnlyUndirectedLinks ()));
     }  
@@ -78,7 +79,7 @@ public class NetworkTypeTests
     {
         ProbNet probNet = new ProbNet ();
         probNet.setNetworkType (InfluenceDiagramType.getUniqueInstance ());
-        ArrayList<PNConstraint> constraints = probNet.getConstraints ();
+        List<PNConstraint> constraints = probNet.getConstraints ();
         Assert.assertFalse (constraints.contains (new OnlyChanceNodes ()));
     }      
     

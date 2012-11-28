@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -37,7 +37,7 @@ public class PotentialTest {
 		}
 		assertNotNull(potential);
 		// test number of variables of created potential
-		ArrayList<Variable> variables =	potential.getVariables();
+		List<Variable> variables =	potential.getVariables();
 		assertEquals(0, variables.size());
 		
 		// check that potential creation with an array of zero variables

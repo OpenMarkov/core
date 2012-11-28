@@ -13,10 +13,10 @@ package org.openmarkov.core.model.network.potential;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 
 public class EvidencePotentials {
@@ -35,7 +35,7 @@ public class EvidencePotentials {
 	 * @throws NotEnoughMemoryException */
 	public static HashMap<Variable, TablePotential> addEvidencePotentials(
 			HashMap<Variable, TablePotential> individualProbabilities,
-			ArrayList<Variable> variablesOfInterest, EvidenceCase evidence) 
+			List<Variable> variablesOfInterest, EvidenceCase evidence) 
 			throws NotEnoughMemoryException {
 		
 		// Creates a fast structure for consultation with evidence variables
@@ -46,8 +46,7 @@ public class EvidencePotentials {
 			for (Variable variable : variablesOfInterest) {
 				if (evidenceVariables.contains(variable)) {
 					// Creates a potential with the evidence variable
-					ArrayList<Variable> potentialVariables = 
-						new ArrayList<Variable>(1);
+				    List<Variable> potentialVariables = new ArrayList<Variable>(1);
 					potentialVariables.add(variable);
 					TablePotential potential = null;
 					potential = new TablePotential(potentialVariables, 

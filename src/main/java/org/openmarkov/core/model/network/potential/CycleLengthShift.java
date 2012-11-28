@@ -11,6 +11,7 @@ package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -31,7 +32,7 @@ public class CycleLengthShift extends Potential {
 	// Constructor
 	/** @param potential
 	 * @param slice */
-	public CycleLengthShift(ArrayList<Variable> variables) {
+	public CycleLengthShift(List<Variable> variables) {
 		super(variables, PotentialRole.CONDITIONAL_PROBABILITY);
 		type = PotentialType.CYCLE_LENGTH_SHIFT;
 	}
@@ -45,7 +46,7 @@ public class CycleLengthShift extends Potential {
      * @param variables
      * @param role
      */
-    public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
+    public static boolean validate (ProbNode probNode, List<Variable> variables, PotentialRole role)
     {
         return role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size () == 2
                 // child = variables.get (0)

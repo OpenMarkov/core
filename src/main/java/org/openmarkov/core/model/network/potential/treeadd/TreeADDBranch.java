@@ -1,6 +1,7 @@
 package org.openmarkov.core.model.network.potential.treeadd;
 	
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.State;
@@ -27,8 +28,8 @@ public class TreeADDBranch {
 	/**
 	 * If the topVariable of the tree is a finite states or a discretized variable each branch has an associated state.
 	 */
-	private ArrayList<State> states;
-	private ArrayList<Variable> parentVariables;
+	private List<State> states;
+	private List<Variable> parentVariables;
 	/**
 	 * If the topVariable of the tree is a continuous variable it is defined in a continuous interval which has two thresholds.
 	 */
@@ -53,7 +54,7 @@ public class TreeADDBranch {
 	 * @param topVariable
 	 * @param parentVariables
 	 */
-	public TreeADDBranch(ArrayList<State> branchStates, Potential potential, Variable topVariable, ArrayList<Variable> parentVariables) {
+	public TreeADDBranch(List<State> branchStates, Potential potential, Variable topVariable, List<Variable> parentVariables) {
 		this.states = branchStates;
 		this.potential = potential;
 		this.topVariable = topVariable;
@@ -66,7 +67,7 @@ public class TreeADDBranch {
 	 * @param thresholds
 	 * @param potential
 	 */
-	public TreeADDBranch (Threshold[] thresholds, Potential potential, Variable topVariable, ArrayList<Variable> parentVariables) {
+	public TreeADDBranch (Threshold[] thresholds, Potential potential, Variable topVariable, List<Variable> parentVariables) {
 		this.thresholdMax = thresholds[1];
 		this.thresholdMin = thresholds[0];
 		this.topVariable = topVariable;
@@ -108,7 +109,7 @@ public class TreeADDBranch {
 	 * @param topVariable
 	 * @param parentVariables
 	 */
-	public TreeADDBranch(Threshold thresholdMin, Threshold thresholdMax, Potential potential, Variable topVariable, ArrayList<Variable> parentVariables) {
+	public TreeADDBranch(Threshold thresholdMin, Threshold thresholdMax, Potential potential, Variable topVariable, List<Variable> parentVariables) {
 		this.thresholdMin = thresholdMin;
 		this.thresholdMax = thresholdMax;
 		this.potential = potential;
@@ -139,14 +140,14 @@ public class TreeADDBranch {
 		
 	}
 	
-	public ArrayList<State> getBranchStates() {
+	public List<State> getBranchStates() {
 		return this.states;
 	}
 	
-	public ArrayList<Variable> getParentVariables() {
+	public List<Variable> getParentVariables() {
 		return this.parentVariables;
 	}
-	public void setParentVariables(ArrayList<Variable> parentVariables) {
+	public void setParentVariables(List<Variable> parentVariables) {
 		this.parentVariables = parentVariables;
 	}
 	
@@ -172,7 +173,7 @@ public class TreeADDBranch {
 	public void setTopVariable(Variable topVariable){
 		this.topVariable = topVariable;
 	}
-	public void setStates (ArrayList<State> states) {
+	public void setStates (List<State> states) {
 		this.states = states;
 	}
 	public Threshold getMinThreshold () {

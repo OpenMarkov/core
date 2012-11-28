@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.model.network.NodeType;
@@ -29,13 +29,13 @@ public class UtilityNodes extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-		ArrayList<ProbNode> utilityNodes = 
+	    List<ProbNode> utilityNodes = 
 			probNet.getProbNodes(NodeType.UTILITY);
 		int numUtilityNodes = utilityNodes.size();
 		if (numUtilityNodes == 0) {
 			return false;
 		} else { // check same number of utility nodes and utility potentials
-			ArrayList<Potential> potentials = probNet.getPotentials();
+		    List<Potential> potentials = probNet.getPotentials();
 			int numUtilityPontentials = 0;
 			for (Potential potential : potentials) {
 				if (potential.isUtility()) {

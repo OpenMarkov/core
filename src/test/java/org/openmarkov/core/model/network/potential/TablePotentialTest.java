@@ -14,6 +14,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -228,7 +229,7 @@ public class TablePotentialTest {
 			// Unreachable code
 			e.printStackTrace();
 		}
-       	ArrayList<TablePotential> projected = 
+        List<TablePotential> projected = 
        		tablePotential3.tableProject(evidenceCase, null);
        	TablePotential tp3Projected = projected.get(0);
        	projected = tablePotential4.tableProject(evidenceCase, null);
@@ -276,7 +277,7 @@ public class TablePotentialTest {
     public void testProject1() 
     		throws NotEnoughMemoryException, NoFindingException, WrongCriterionException {
     	// Projection
-    	ArrayList<TablePotential> projectedPotentials = 
+        List<TablePotential> projectedPotentials = 
     		tablePotential5.tableProject(evidenceCase, null); // fsVariable2 = 1;
     	
     	// Test number of projected potentials
@@ -312,7 +313,7 @@ public class TablePotentialTest {
     public void testProject2() 
     		throws NotEnoughMemoryException, NoFindingException, WrongCriterionException {
     	// Projection
-    	ArrayList<TablePotential> projectedPotentials = 
+        List<TablePotential> projectedPotentials = 
     		tablePotential5.tableProject(evidenceCase, null); // fsVariable2 = 1;
     	
     	// Test number of projected potentials
@@ -371,7 +372,7 @@ public class TablePotentialTest {
     	findingsA1.put(A, findingA1);
     	EvidenceCase evidenceCaseA1 = new EvidenceCase(findingsA1);
     	
-    	ArrayList<TablePotential> projectedPotentials = 
+    	List<TablePotential> projectedPotentials = 
     		tpAB.tableProject(evidenceCaseA1, null);
     	TablePotential projectedPotentialB = 
     		(TablePotential)projectedPotentials.get(0);
@@ -388,7 +389,7 @@ public class TablePotentialTest {
 		}
 		
 		// Test variables
-		ArrayList<Variable> variables = multiplication.getVariables();
+		List<Variable> variables = multiplication.getVariables();
 		assertEquals(2, variables.size());
 		assertEquals(B, variables.get(0));
 		assertEquals(C, variables.get(1));
@@ -513,13 +514,13 @@ public class TablePotentialTest {
 			int numConfigurationsActual = actual.getTableSize();
 			assertEquals(numConfigurationsActual,expected.getTableSize());
 			
-			ArrayList<Finding> findings;
+			List<Finding> findings;
 			
 			for (int i = 0; i < numConfigurationsActual; i++) {
 				int[] auxConfiguration = actual.getConfiguration(i);
 				double actualValue = actual.values[i];
 				findings = new ArrayList<>();
-				ArrayList<Variable> variables = actual.getVariables();
+				List<Variable> variables = actual.getVariables();
 				for (int j = 0;j<variables.size();j++){
 					findings.add(new Finding(variables.get(j),auxConfiguration[j]));
 				}

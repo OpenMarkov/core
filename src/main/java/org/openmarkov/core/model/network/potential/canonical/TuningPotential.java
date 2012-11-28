@@ -7,6 +7,7 @@
 package org.openmarkov.core.model.network.potential.canonical;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
@@ -36,7 +37,7 @@ public class TuningPotential extends ICIPotential
      * @param variables
      * @param role
      */
-    public TuningPotential (ArrayList<Variable> variables)
+    public TuningPotential (List<Variable> variables)
     {
         super (ICIModelType.TUNING, variables);
         type = PotentialType.TUNING;
@@ -44,7 +45,7 @@ public class TuningPotential extends ICIPotential
     
     public TuningPotential (Variable... variables)
     {
-        this (toArrayList (variables));
+        this (toList (variables));
     }
     
     /**
@@ -52,7 +53,7 @@ public class TuningPotential extends ICIPotential
      * @param variables
      * @param role
      */
-    public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
+    public static boolean validate (ProbNode probNode, List<Variable> variables, PotentialRole role)
     {
         boolean valid = ICIPotential.validate (probNode, variables, role) && role.equals (PotentialRole.CONDITIONAL_PROBABILITY);
         for(Variable variable : variables)
@@ -196,7 +197,7 @@ public class TuningPotential extends ICIPotential
     }
 
     @Override
-    protected int computeFFunction (ArrayList<Integer> parentStates)
+    protected int computeFFunction (List<Integer> parentStates)
     {
         int netNumIncr = 0;
         for(Integer parentState: parentStates)

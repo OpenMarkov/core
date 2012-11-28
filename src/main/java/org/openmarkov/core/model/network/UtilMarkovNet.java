@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.model.network;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -50,8 +50,7 @@ public class UtilMarkovNet {
 	 * @return A Markov Network in witch potentials are used to create cliques.
 	 *   (<code>ProbNet</code>). 
 	 * @throws NotEnoughMemoryException */
-	public static ProbNet buildMarkovNet(ProbNet originalNet,
-			ArrayList<? extends Potential> projectedTablePotentials) 
+	public static ProbNet buildMarkovNet(ProbNet originalNet, List<Potential> projectedTablePotentials) 
 			throws NotEnoughMemoryException {
 		ProbNet markovNet = getMarkovNet();
 		try {
@@ -80,8 +79,7 @@ public class UtilMarkovNet {
 	 * @return A Markov Network in witch potentials are used to create cliques.
 	 *   (<code>ProbNet</code>). 
 	 * @throws NotEnoughMemoryException */
-	public static ProbNet buildMarkovNet(
-			ArrayList<? extends Potential> projectedTablePotentials) 
+	public static ProbNet buildMarkovNet(List<Potential> projectedTablePotentials) 
 			throws NotEnoughMemoryException {
 		ProbNet markovNet = getMarkovNet();
 		try {
@@ -112,7 +110,7 @@ public class UtilMarkovNet {
 	 *         received has been added.
 	 */
 	public static void addPotential(ProbNet markovNet, ProbNet originalNet, Potential potential) {
-		ArrayList<Variable> potentialVariables = potential.getVariables();
+		List<Variable> potentialVariables = potential.getVariables();
 		// the probNode where the potential will be stored
 		// TODO hacerlo con edits
 		if (potential.getVariables().size() == 0) {
@@ -163,7 +161,7 @@ public class UtilMarkovNet {
 	 *         received has been added.
 	 */
 	public static void addPotential(ProbNet markovNet, Potential potential) {
-		ArrayList<Variable> potentialVariables = potential.getVariables();
+		List<Variable> potentialVariables = potential.getVariables();
 		// the probNode where the potential will be stored
 		// TODO hacerlo con edits
 		if (potential.getVariables().size() == 0) {

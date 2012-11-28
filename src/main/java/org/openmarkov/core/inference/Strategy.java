@@ -9,8 +9,8 @@
 
 package org.openmarkov.core.inference;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Set;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -48,14 +48,14 @@ public class Strategy {
 			return potential;
 		}
 
-		public ArrayList<Variable> getDomain() {
+		public List<Variable> getDomain() {
 			return potential.getVariables();
 		}
 		
 	
 	}
 
-	public ArrayList<Variable> getDomainOfPolicy(Variable varDecision) {
+	public List<Variable> getDomainOfPolicy(Variable varDecision) {
 		return getPolicy(varDecision).getDomain();
 	}
 

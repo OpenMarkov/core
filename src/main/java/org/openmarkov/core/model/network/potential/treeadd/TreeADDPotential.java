@@ -4,8 +4,8 @@
 package org.openmarkov.core.model.network.potential.treeadd;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.PotentialOperationException;
@@ -13,7 +13,6 @@ import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -52,7 +51,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 	/**
 	 * This ArrayList stores the branches created in the TreeADDPotential constructor
 	 */
-	private ArrayList<TreeADDBranch> branches = new ArrayList<TreeADDBranch>();
+	private List<TreeADDBranch> branches = new ArrayList<TreeADDBranch>();
 	
 	/**
 	 * label is incompatible with reference and reference is incompatible with potential
@@ -60,24 +59,24 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 	 */
 	//private HashMap<String, Potential> potentialsLabeled; 
 	
-	public TreeADDPotential (ArrayList<Variable> variables, PotentialRole role) {
+    /**TreeADD constructors for the GUI**/
+	public TreeADDPotential (List<Variable> variables, PotentialRole role) {
 		super(variables, role);
 		new TreeADDPotential(variables, variables.get(1), role);
 	}
 	
-	public TreeADDPotential (ArrayList<Variable> variables, PotentialRole role, Variable utilityVariable) {
+	public TreeADDPotential (List<Variable> variables, PotentialRole role, Variable utilityVariable) {
 		super (variables, role, utilityVariable);
 		new TreeADDPotential(variables, variables.get(0), role, utilityVariable);
 	}
 	
-	/**TreeADD constructors for the GUI**/
 	/**
 	 * For role conditional
 	 * @param variables
 	 * @param topVariable
 	 * @param role
 	 */
-	public TreeADDPotential(ArrayList<Variable> variables, Variable topVariable, PotentialRole role){
+	public TreeADDPotential(List<Variable> variables, Variable topVariable, PotentialRole role){
 		super(variables, role);
 		this.topVariable = topVariable;
 		
@@ -125,7 +124,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 	 * @param role
 	 * @param utilityVariable
 	 */
-	public TreeADDPotential(ArrayList<Variable> variables, Variable topVariable, PotentialRole role, Variable utilityVariable){
+	public TreeADDPotential(List<Variable> variables, Variable topVariable, PotentialRole role, Variable utilityVariable){
 		super(variables, role, utilityVariable);
 		//setUtilityVariable(utilityVariable);
 		this.topVariable = topVariable;
@@ -167,7 +166,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 	/**
 	 * Constructor for the parser
 	 */
-	public TreeADDPotential (ArrayList<Variable> variables, Variable topVariable, PotentialRole role, ArrayList<TreeADDBranch> branches) {
+	public TreeADDPotential (List<Variable> variables, Variable topVariable, PotentialRole role, List<TreeADDBranch> branches) {
 		super(variables, role);
 		this.topVariable = topVariable;
 		this.role = role;
@@ -182,7 +181,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 		super(treeADD.getVariables(), treeADD.getPotentialRole());
 		this.topVariable = treeADD.getTopVariable();
 		this.potentialType = treeADD.getPotentialType(); 
-		ArrayList<TreeADDBranch> treeBranches = new ArrayList<>();
+		List<TreeADDBranch> treeBranches = new ArrayList<>();
 		for (int i = 0; i < treeADD.getBranches().size(); i++) {
 			treeBranches.add(treeADD.getBranches().get(i).copy());
 		}
@@ -224,7 +223,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 	public PotentialType getPotentialType () {
 		return this.potentialType;
 	}
-	public ArrayList<TreeADDBranch> getBranches() {
+	public List<TreeADDBranch> getBranches() {
 		return branches;
 	}
 	
@@ -251,7 +250,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 		this.branches.set(index, treeBranch);
 	}
 	
-	public void setBranches(ArrayList<TreeADDBranch> branches) {
+	public void setBranches(List<TreeADDBranch> branches) {
 		this.branches = branches;
 	}
 	
@@ -278,7 +277,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
      */
     public  Potential addVariable(Variable variable) throws NotEnoughMemoryException {
     	//return new UniformPotential(getVariables(), getPotentialRole());
-    	ArrayList<Variable> variables = getVariables();
+    	List<Variable> variables = getVariables();
     	variables.add(variable);
     	 for (TreeADDBranch branch : getBranches()) {
     		 branch.setParentVariables(variables);
@@ -298,31 +297,31 @@ public class TreeADDPotential extends Potential  implements Cloneable {
     }
 
 	@Override
-	public ArrayList<TablePotential> tableProject(EvidenceCase evidenceCase,
+	public List<TablePotential> tableProject(EvidenceCase evidenceCase,
 			InferenceOptions inferenceOptions)
 			throws NonProjectablePotentialException, NotEnoughMemoryException,
 			WrongCriterionException {
-		ArrayList<TablePotential> potentialsToSumUp = new ArrayList<TablePotential>();
-		ArrayList<TablePotential> projectedPotentials = new ArrayList<TablePotential>();
+		List<TablePotential> potentialsToSumUp = new ArrayList<TablePotential>();
+		List<TablePotential> projectedPotentials = new ArrayList<TablePotential>();
 		
 		TablePotential projected = null;
-		ArrayList<Variable> correctOrder = getVariables();
+		List<Variable> correctOrder = getVariables();
 		
-		ArrayList<TreeADDBranch> branches = this.getBranches();
+		List<TreeADDBranch> branches = this.getBranches();
 		
 		if (topVariable.getVariableType() == VariableType.FINITE_STATES 
 				 || topVariable.getVariableType() == VariableType.DISCRETIZED) {
 		for (TreeADDBranch branch : branches) {
 			Potential branchPotential = branch.getPotential();
-			 ArrayList<TablePotential> tablePotentials = branchPotential.tableProject(evidenceCase, inferenceOptions);
+			List<TablePotential> tablePotentials = branchPotential.tableProject(evidenceCase, inferenceOptions);
 						 
 			 //mask potential, only the top variable
 			 TablePotential potential = null;
-				ArrayList<Variable> variables = new ArrayList<Variable>();
+				List<Variable> variables = new ArrayList<Variable>();
 				variables.add(branch.getTopVariable());
 				potential = new TablePotential(variables, role);
 				
-				ArrayList<State> branchStates = branch.getBranchStates();
+				List<State> branchStates = branch.getBranchStates();
 				State []topVariableStates = branch.getTopVariable().getStates();
 				for (int i = 0; i < topVariableStates.length; i++) {
 					int []statesIndexes = new int[1];
@@ -335,7 +334,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 				}
 				
 				//multiply mask potential and the table potential of the current branch
-				ArrayList<Potential> potentialsToMultiply = new ArrayList<Potential>();
+				List<Potential> potentialsToMultiply = new ArrayList<Potential>();
 				potentialsToMultiply.add(tablePotentials.get(0));
 				potentialsToMultiply.add(potential);
 				try {
@@ -361,7 +360,7 @@ public class TreeADDPotential extends Potential  implements Cloneable {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}*/
-				ArrayList<TreeADDBranch> numericalBranches = getBranches();
+				List<TreeADDBranch> numericalBranches = getBranches();
 				Potential potential = null;
 				for (TreeADDBranch numericalBranch : numericalBranches) {
 					double minLimit = numericalBranch.getMinThreshold().getLimit();
@@ -492,7 +491,7 @@ TreeADDPotential copiedTree =  new TreeADDPotential(this);
      * @param variables
      * @param role
      */
-	public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
+	public static boolean validate (ProbNode probNode, List<Variable> variables, PotentialRole role)
     {
 		boolean validate = false;
         // node must have at least one parent node

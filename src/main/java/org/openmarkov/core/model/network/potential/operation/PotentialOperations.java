@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.potential.operation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.IllegalArgumentTypeException;
 import org.openmarkov.core.exception.PotentialOperationException;
@@ -46,12 +47,12 @@ public class PotentialOperations {
 	 * @param variablesOfInterest
 	 * @throws PotentialOperationException */
 	public static Potential marginalize(Potential potential,
-			ArrayList<Variable> variablesOfInterest) 
+	                                    List<Variable> variablesOfInterest) 
 			throws PotentialOperationException {
 	
 		// Obtain parameters to invoke multiplyAndMarginalize
 		// Union of the variables of the potential list
-		ArrayList<Variable> variables = potential.getVariables();
+	    List<Variable> variables = potential.getVariables();
 		
 		// parameters correct type verification before calling right method
 		if (!(potential instanceof TablePotential)) {
@@ -63,10 +64,8 @@ public class PotentialOperations {
 				"marginalize can only manage variables of type FSVariable");    						
 		}
 	
-		ArrayList<Variable> variablesToKeep =
-			new ArrayList<Variable>();
-		ArrayList<Variable> variablesToEliminate =
-			new ArrayList<Variable>();
+		List<Variable> variablesToKeep = new ArrayList<Variable>();
+		List<Variable> variablesToEliminate = new ArrayList<Variable>();
 	
 		for (Variable variable : variables) {
 			if (variablesOfInterest.contains(variable)) {
@@ -76,7 +75,7 @@ public class PotentialOperations {
 			}
 		}
 	
-		ArrayList<TablePotential> potentials = new ArrayList<TablePotential>();
+		List<TablePotential> potentials = new ArrayList<TablePotential>();
 		potentials.add((TablePotential) potential);
 	
 		return DiscretePotentialOperations.multiplyAndMarginalize(
@@ -92,8 +91,8 @@ public class PotentialOperations {
 	 * @throws PotentialOperationException */
 	public static Potential marginalize(
 			Potential potential,
-			ArrayList<Variable> variablesToKeep,
-			ArrayList<Variable> variablesToEliminate) 
+			List<Variable> variablesToKeep,
+			List<Variable> variablesToEliminate) 
 			throws PotentialOperationException {
 	
 		// params correct type verification before calling right method
@@ -106,7 +105,7 @@ public class PotentialOperations {
 				"marginalize can only manage variables of type FSVariable");    						
 		}
 		
-		ArrayList<TablePotential> potentials = new ArrayList<TablePotential>();
+		List<TablePotential> potentials = new ArrayList<TablePotential>();
 		potentials.add((TablePotential) potential);
 	
 		return DiscretePotentialOperations.multiplyAndMarginalize(
@@ -116,11 +115,10 @@ public class PotentialOperations {
 	/** @param potentials
 	 * @param variablesToEliminate
 	 * @throws PotentialOperationException */
-	public static Potential multiplyAndEliminate(
-			ArrayList<TablePotential> potentials,
-			ArrayList<Variable> variablesToEliminate) 
-			throws PotentialOperationException {
-	
+    public static Potential multiplyAndEliminate (List<TablePotential> potentials,
+                                                  List<Variable> variablesToEliminate)
+        throws PotentialOperationException
+    {	
 		// parameters correct type verification before calling right method
 		if (!AuxiliaryOperations.checkObjectsCollectionType(
 				potentials, TablePotential.class)) {
@@ -136,8 +134,7 @@ public class PotentialOperations {
 		
 		// Obtain parameters to invoke multiplyAndMarginalize
 		// Union of the variables of the potential list
-		ArrayList<Variable> variablesToKeep = 
-			AuxiliaryOperations.getUnionVariables(potentials);
+		List<Variable> variablesToKeep = AuxiliaryOperations.getUnionVariables(potentials);
 		variablesToKeep.removeAll(variablesToEliminate);
 	
 		return DiscretePotentialOperations.multiplyAndMarginalize(
@@ -147,12 +144,11 @@ public class PotentialOperations {
 	/** @param potentials
 	 * @param variableToEliminate
 	 * @throws PotentialOperationException */
-	public static Potential multiplyAndEliminate(
-			ArrayList<TablePotential> potentials,
-			Variable variableToEliminate) throws PotentialOperationException 
+    public static Potential multiplyAndEliminate (List<TablePotential> potentials,
+                                                  Variable variableToEliminate)
+        throws PotentialOperationException
 	{
-		ArrayList<Variable> variablesToEliminate =
-			new ArrayList<Variable>();
+        List<Variable> variablesToEliminate = new ArrayList<Variable>();
 		variablesToEliminate.add(variableToEliminate);
 	
 		return multiplyAndEliminate(potentials, variablesToEliminate);
@@ -161,7 +157,7 @@ public class PotentialOperations {
 	/** @param potentials potentials array to multiply
 	 * @return The multiplied potentials
 	 * @throws PotentialOperationException */
-	public static Potential multiply(ArrayList<? extends Potential> potentials)
+	public static Potential multiply(List<? extends Potential> potentials)
 	        throws PotentialOperationException
 	{	
     	// correct type verification of parameters before calling method.
@@ -171,7 +167,7 @@ public class PotentialOperations {
 			   "newMultiply can only manage potentials of type TablePotential");
 		}
 		
-		return DiscretePotentialOperations.multiply((ArrayList<TablePotential>) potentials);
+		return DiscretePotentialOperations.multiply((List<TablePotential>) potentials);
 	}
 
 	/** @param potentials potentials array to multiply
@@ -180,14 +176,13 @@ public class PotentialOperations {
 	 * <code>potentials</code>
 	 * @return The multiplied potentials
 	 * @throws PotentialOperationException */
-	public static Potential multiplyAndMarginalize(
-			ArrayList<TablePotential> potentials, 
-			ArrayList<Variable> variablesOfInterest) 
-			throws PotentialOperationException {
-	
+    public static Potential multiplyAndMarginalize (List<TablePotential> potentials,
+                                                    List<Variable> variablesOfInterest)
+        throws PotentialOperationException
+    {	
 		// Obtain parameters to invoke multiplyAndMarginalize
 		// Union of the variables of the potential list
-		ArrayList<Variable> unionVariables = 
+		List<Variable> unionVariables = 
 			AuxiliaryOperations.getUnionVariables(potentials);
 	
 		// params correct type verification before calling right method
@@ -205,10 +200,8 @@ public class PotentialOperations {
 		}
 	
 		// Classify unionVariables in two possibles arrays
-		ArrayList<Variable> variablesToKeep =
-			new ArrayList<Variable>();
-		ArrayList<Variable> variablesToEliminate =
-			new ArrayList<Variable>();
+		List<Variable> variablesToKeep = new ArrayList<Variable>();
+		List<Variable> variablesToEliminate = new ArrayList<Variable>();
 		for (Variable variable : unionVariables) {
 			if (variablesOfInterest.contains(variable)) {
 				variablesToKeep.add(variable);
@@ -229,14 +222,12 @@ public class PotentialOperations {
      * <code>potentials</code>
      * @return The multiplied potentials
      * @throws PotentialOperationException */
-    public static Object[] multiplyAndMaximize(
-            ArrayList<Potential> potentials, 
-            ArrayList<Variable> variablesOfInterest) 
+    public static Object[] multiplyAndMaximize(List<Potential> potentials, List<Variable> variablesOfInterest) 
             throws PotentialOperationException {
     
         // Obtain parameters to invoke multiplyAndMarginalize
         // Union of the variables of the potential list
-        ArrayList<Variable> unionVariables = 
+        List<Variable> unionVariables = 
         	AuxiliaryOperations.getUnionVariables(potentials);
     
         // params correct type verification before calling right method
@@ -255,10 +246,8 @@ public class PotentialOperations {
         }
     
         // Classify unionVariables in two possibles arrays
-        ArrayList<Variable> variablesToKeep =
-            new ArrayList<Variable>();
-        ArrayList<Variable> variablesToEliminate =
-            new ArrayList<Variable>();
+        List<Variable> variablesToKeep = new ArrayList<Variable>();
+        List<Variable> variablesToEliminate = new ArrayList<Variable>();
         for (Variable variable : unionVariables) {
             if (variablesOfInterest.contains(variable)) {
                 variablesToKeep.add(variable);
@@ -267,8 +256,7 @@ public class PotentialOperations {
             }
         }
         
-        return DiscretePotentialOperations.multiplyAndMaximize(
-            potentials, variablesToKeep, variablesToEliminate.get(0));
+        return DiscretePotentialOperations.multiplyAndMaximize(potentials, variablesToKeep, variablesToEliminate.get(0));
     }
 
 	/** @param potentials array to multiply
@@ -280,12 +268,11 @@ public class PotentialOperations {
 	 * the union of the variables of the potentials
 	 * @return result the multiplied potentials
 	 * @throws PotentialOperationException */
-    public static Potential multiplyAndMarginalize(
-			ArrayList<TablePotential> potentials,
-			ArrayList<Variable> variablesToKeep,
-			ArrayList<Variable> variablesToEliminate)
-    		throws PotentialOperationException {
-
+    public static Potential multiplyAndMarginalize (List<TablePotential> potentials,
+                                                    List<Variable> variablesToKeep,
+                                                    List<Variable> variablesToEliminate)
+        throws PotentialOperationException
+    {
 		// For test purposes only:
         /* Pruebas.numPotentialOperations++; */
     	
@@ -316,7 +303,7 @@ public class PotentialOperations {
 	public static Potential getUniformPotential(ProbNet probNet, 
 			Variable variable, NodeType auxNodeType) {
 
-		ArrayList<Variable> variables = new ArrayList<Variable>();
+	    List<Variable> variables = new ArrayList<Variable>();
 		variables.add(variable);
 		for (Node node:probNet.getProbNode(variable).getNode().getParents()){
 			variables.add(((ProbNode)node.getObject()).getVariable());
@@ -335,7 +322,7 @@ public class PotentialOperations {
 		return uniformPotential;
 	}
 	
-	private static boolean hasFiniteStates(ArrayList<Variable> variables)
+	private static boolean hasFiniteStates(List<Variable> variables)
 	{
         boolean result = true;
         int i = 0;

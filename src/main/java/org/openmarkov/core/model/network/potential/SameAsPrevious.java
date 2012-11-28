@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -22,7 +23,6 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 /** @author marias
@@ -91,14 +91,14 @@ public class SameAsPrevious extends Potential {
      * @param variables
      * @param role
      */
-    public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
+    public static boolean validate (ProbNode probNode, List<Variable> variables, PotentialRole role)
     {
         return probNode.getVariable ().isTemporal () && probNode.getVariable ().getTimeSlice () > 0;
     }        
 
 	// Methods
 	@Override
-	public ArrayList<TablePotential> tableProject(EvidenceCase evidenceCase,
+	public List<TablePotential> tableProject(EvidenceCase evidenceCase,
 			InferenceOptions inferenceOptions)
 	throws NonProjectablePotentialException, NotEnoughMemoryException,
 	WrongCriterionException {
@@ -113,7 +113,7 @@ public class SameAsPrevious extends Potential {
 							inferenceOptions.probNet); 
 		} 
 		// projects the original potential according to the shifted evidence
-		ArrayList<TablePotential> projectedPotentials = 
+		List<TablePotential> projectedPotentials = 
 			originalPotential.tableProject(shiftedEvidence, inferenceOptions);
 		
 		// creates a copy of the projected potentials shifted to the future
@@ -190,7 +190,7 @@ public class SameAsPrevious extends Potential {
         int indexC = simpleName.lastIndexOf(" [");
         if (indexC != -1) {
             // For each variable in probNet...
-            ArrayList<Variable> variables = probNet.getVariables();
+            List<Variable> variables = probNet.getVariables();
             simpleName = simpleName.substring(0, indexC);
             String simpleNameExtended = new String(simpleName + " [");
             // ... looks for a variable that starts with variable.getName()+" ["
@@ -198,8 +198,7 @@ public class SameAsPrevious extends Potential {
                 if (probNetVariable.getName().startsWith(simpleNameExtended)) {
                     // ...then get its potentials 
                     ProbNode probNode = probNet.getProbNode(probNetVariable);
-                    ArrayList<Potential> potentialsNode = 
-                        probNode.getPotentials();
+                    List<Potential> potentialsNode = probNode.getPotentials();
                     // Assumption: all the variables have only one 
                     // potential P(C|P1,P2,...,Pn)
                     for (Potential potential : potentialsNode) {

@@ -10,6 +10,7 @@
 package org.openmarkov.core.inference.heuristic;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoableEdit;
@@ -34,7 +35,7 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	
 	/** A set of nodes that points to variables that are nor query variables nor
 	 * observed variables. */
-	protected ArrayList<ArrayList<Variable>> variablesToEliminate;
+	protected List<List<Variable>> variablesToEliminate;
     
 	/** <code>Variable</code> that the heuristic propose to eliminate. */
 	protected Variable variableProposed;
@@ -44,7 +45,7 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	 * @param <code>probNet</code> it's a network that can contain decisions. <code>ProbNet</code>
 	 * @param variablesToEliminate. <code>ArrayList</code> of <code>ArrayList</code> of <code>Variable</code> */
 	public EliminationHeuristic(ProbNet probNet, 
-			ArrayList<ArrayList<Variable>> variablesToEliminate) {
+			List<List<Variable>> variablesToEliminate) {
 // TODO Revisar todas las heuristicas que suponian que trabajaban
 // con una copia 
 		this.probNet = probNet;
@@ -64,7 +65,7 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 			// Eliminate node from variablesToEliminate
 			ProbNode toEliminateNode = probNet.getProbNode(removedVariable);
 			int i = variablesToEliminate.size();
-			ArrayList<Variable> lastList = null;
+			List<Variable> lastList = null;
 			boolean found = false;
 			if (i>0){
 				for (int j=i-1;j>=0&&!found;j--){

@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.Variable;
@@ -27,7 +28,7 @@ public class GTablePotential<Element> extends TablePotential {
     public ArrayList<Element> elementTable; 
 
     // Constructor
-    public GTablePotential(ArrayList<Variable> variables, PotentialRole role) 
+    public GTablePotential(List<Variable> variables, PotentialRole role) 
             throws NotEnoughMemoryException {
         super(variables, null); // <- Don't create a table of doubles
         if (numVariables != 0) {

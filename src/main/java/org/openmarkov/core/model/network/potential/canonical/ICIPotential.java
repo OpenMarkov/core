@@ -58,7 +58,7 @@ public abstract class ICIPotential extends Potential {
 	// Constructor
 	/** @param variables. <code>ArrayList</code> of <code>Variable</code>
 	 * @param model. <code>ICIModel</code> */
-	public ICIPotential(ICIModelType modelType, ArrayList<Variable> variables) {
+	public ICIPotential(ICIModelType modelType, List<Variable> variables) {
 		// In principle, role will be "conditional probability"
 		// and the first variable will be the conditioned variable
 		super(variables, PotentialRole.CONDITIONAL_PROBABILITY);
@@ -94,7 +94,7 @@ public abstract class ICIPotential extends Potential {
      * @param variables
      * @param role
      */
-    public static boolean validate (ProbNode probNode, ArrayList<Variable> variables, PotentialRole role)
+    public static boolean validate (ProbNode probNode, List<Variable> variables, PotentialRole role)
     {
         return variables.size () > 1;
     }   
@@ -131,13 +131,13 @@ public abstract class ICIPotential extends Potential {
     // TODO This is the actual valid tableProject that should be used once the
     // bug in projectEvidence (assuming tableProject always returns a
     // one-element list of potentials) is solved
-    public ArrayList<TablePotential> internalTableProject (EvidenceCase evidenceCase,
+    public List<TablePotential> internalTableProject (EvidenceCase evidenceCase,
                                                    InferenceOptions inferenceOptions)
         throws NonProjectablePotentialException,
         NotEnoughMemoryException,
         WrongCriterionException
     {
-        ArrayList<TablePotential> projectedPotentials = new ArrayList<TablePotential> ();
+        List<TablePotential> projectedPotentials = new ArrayList<TablePotential> ();
         for (TablePotential subPotential : getSubpotentials ())
         {
             projectedPotentials.add (subPotential.tableProject (evidenceCase, null).get (0));
@@ -148,13 +148,13 @@ public abstract class ICIPotential extends Potential {
     @Override
     /** @param evidenceCase. <code>EvidenceCase</code>
      * @return <code>ArrayList</code> of <code>Potential</code>*/
-    public ArrayList<TablePotential> tableProject (EvidenceCase evidenceCase,
+    public List<TablePotential> tableProject (EvidenceCase evidenceCase,
                                                    InferenceOptions inferenceOptions)
         throws NonProjectablePotentialException,
         NotEnoughMemoryException,
         WrongCriterionException
     {
-        ArrayList<TablePotential> potentials = internalTableProject (evidenceCase, inferenceOptions);
+        List<TablePotential> potentials = internalTableProject (evidenceCase, inferenceOptions);
         HashSet<Variable> variablesToEliminate = new HashSet<Variable> ();
         // Fill it with variables appearing in all potentials except this
         for (TablePotential tablePotential : potentials)
@@ -162,15 +162,15 @@ public abstract class ICIPotential extends Potential {
             variablesToEliminate.addAll (tablePotential.getVariables ());
         }
         variablesToEliminate.removeAll (variables);
-        ArrayList<TablePotential> singleElementPotentialList = new ArrayList<TablePotential> ();
+        List<TablePotential> singleElementPotentialList = new ArrayList<TablePotential> ();
         
-        ArrayList<Variable> allVariables = new ArrayList<Variable>(variables);
+        List<Variable> allVariables = new ArrayList<Variable>(variables);
         allVariables.addAll (variablesToEliminate);
         while (allVariables.size () > variables.size ())
         {
             Variable variableToEliminate = allVariables.get (allVariables.size () - 1);
             allVariables.remove (allVariables.size () - 1);
-            ArrayList<TablePotential> relatedPotentials = new ArrayList<TablePotential> ();
+            List<TablePotential> relatedPotentials = new ArrayList<TablePotential> ();
             int i = 0;
             while (i < potentials.size ())
             {
@@ -461,7 +461,7 @@ public abstract class ICIPotential extends Potential {
         return computeFFunction(iciSampledStates);
     }         
     
-    protected abstract int computeFFunction (ArrayList<Integer> iciSampledStates);
+    protected abstract int computeFFunction (List<Integer> iciSampledStates);
 
     @Override    
     public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)

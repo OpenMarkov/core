@@ -10,11 +10,11 @@
 package org.openmarkov.core.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -81,7 +81,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 	// funcion
 	@Override
 	public void doEdit() throws DoEditException {
-		ArrayList<Variable> variables = new ArrayList<Variable>();
+		List<Variable> variables = new ArrayList<Variable>();
 		//ProbNode probNode = probNet.getProbNode(variable);
 		PotentialRole role;
 		// si es un nodo de decision y la politica es optima se asume un cambio
@@ -114,7 +114,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 			variables = lastPotential.getVariables();
 			role = lastPotential.getPotentialRole();
 	//	}
-		ArrayList<Potential> potentials = new ArrayList<Potential>();
+		List<Potential> potentials = new ArrayList<Potential>();
 		if (newPotential == null) {
 			RelationPotentialTypeManager relationTypeManager = new RelationPotentialTypeManager();
 			if (lastPotential.isUtility()) {
@@ -122,8 +122,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 						variables, role, lastPotential
 						.getUtilityVariable());
 			} else {
-			newPotential = relationTypeManager.getByName(newPotentialType,
-					variables, role);
+			newPotential = relationTypeManager.getByName(newPotentialType, variables, role);
 			}
 
 			// TODO Potential: SameAsPrevious without ProbNet
@@ -155,7 +154,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 	public void undo() {
 		super.undo();
 		ProbNode probNode = probNet.getProbNode(variable);
-		ArrayList<Potential> potentials = new ArrayList<Potential>();
+		List<Potential> potentials = new ArrayList<Potential>();
 		if (lastPotential != null) {
 			potentials.add(lastPotential);
 		} else if (probNode.getNodeType() == NodeType.DECISION) {

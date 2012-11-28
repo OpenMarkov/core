@@ -16,6 +16,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,11 +50,11 @@ public class DiscretePotentialOperationsTest {
 
 	private final int numVariableStates = 3;
 
-	private ArrayList<TablePotential> constantPotentials;
+	private List<TablePotential> constantPotentials;
 
-	private ArrayList<TablePotential> normalPotentials;
+	private List<TablePotential> normalPotentials;
 
-	private ArrayList<TablePotential> allPotentials;
+	private List<TablePotential> allPotentials;
 	
 	private TablePotential aPotential;
 	
@@ -97,16 +98,16 @@ public class DiscretePotentialOperationsTest {
 	@Test
 	public void testAdd() {
 		try {
-			ArrayList<TablePotential> potentials = new ArrayList<TablePotential>();
+		    List<TablePotential> potentials = new ArrayList<TablePotential>();
 			potentials.add(commonVariables.t2);
 			potentials.add(commonVariables.t4);
 			// Call method under test
 			TablePotential addition = 
 				DiscretePotentialOperations.sum(potentials);
 			// test variables
-			ArrayList<Variable> additionVariables = addition.getVariables();
+			List<Variable> additionVariables = addition.getVariables();
 			assertEquals(4, additionVariables.size());
-			ArrayList<Variable> testVariables = new ArrayList<Variable>();
+			List<Variable> testVariables = new ArrayList<Variable>();
 			testVariables.add(commonVariables.a);
 			testVariables.add(commonVariables.b);
 			testVariables.add(commonVariables.c);
@@ -149,7 +150,7 @@ public class DiscretePotentialOperationsTest {
 			// Call method under test
 			TablePotential multiplication = DiscretePotentialOperations
 				.multiply(commonVariables.potentials);
-			ArrayList<Variable> variables = multiplication.getVariables();
+			List<Variable> variables = multiplication.getVariables();
 			assertEquals(4, variables.size());
 			assertTrue(variables.contains(commonVariables.c));
 			assertTrue(variables.contains(commonVariables.b));
@@ -188,8 +189,7 @@ public class DiscretePotentialOperationsTest {
 	@Test
 	public void testNewMultiply() {
 		// Test constant multiplication
-		ArrayList<Potential> potentials = 
-			(ArrayList<Potential>)((Object)allPotentials);
+	    List<TablePotential> potentials = allPotentials;
 		
 		// Only 1 potential so in this case the method does not do anything
 		potentials.add(constantPotentials.get(1));
@@ -399,7 +399,7 @@ public class DiscretePotentialOperationsTest {
 			TablePotential mulAndMarg = (TablePotential)
 				DiscretePotentialOperations.multiplyAndMarginalize(
 						commonVariables.potentials, commonVariables.a);
-			ArrayList<Variable> variables = mulAndMarg.getVariables();
+			List<Variable> variables = mulAndMarg.getVariables();
 			assertEquals(3, variables.size());
 			assertTrue(variables.contains(commonVariables.b));
 			assertTrue(variables.contains(commonVariables.c));
@@ -495,7 +495,7 @@ public class DiscretePotentialOperationsTest {
 			assertEquals(2, result.values.length);
 			
 			// Test variables
-			ArrayList<Variable> variables = result.getVariables();
+			List<Variable> variables = result.getVariables();
 			assertEquals(1, variables.size());
 			assertTrue(variables.contains(C));
 			
@@ -523,7 +523,7 @@ public class DiscretePotentialOperationsTest {
 			assertEquals(2, potentials.length); // Produces two potentials
 			TablePotential maximized = (TablePotential)potentials[0];
 			// Test variables of first potential
-			ArrayList<Variable> maximizedVariables = maximized.getVariables();
+			List<Variable> maximizedVariables = maximized.getVariables();
 			assertEquals(3, maximizedVariables.size());
 			assertTrue(maximizedVariables.contains(commonVariables.b));
 			assertTrue(maximizedVariables.contains(commonVariables.c));
@@ -540,9 +540,7 @@ public class DiscretePotentialOperationsTest {
 	@Test
 	public void testGetProperPotentials() {
 		// Call method under test
-		ArrayList<TablePotential> properPotentials = 
-			AuxiliaryOperations.getProperPotentials(
-			commonVariables.potentials);
+		List<TablePotential> properPotentials = AuxiliaryOperations.getProperPotentials(commonVariables.potentials);
 		assertEquals(2, properPotentials.size());
 		assertTrue(properPotentials.contains(commonVariables.t2));
 		assertTrue(properPotentials.contains(commonVariables.t4));
@@ -571,8 +569,7 @@ public class DiscretePotentialOperationsTest {
 					DiscretePotentialOperations.normalize(multiplication);
 				int[] configuration = {0, 0, 0, 0};
 				int[] dimensions = normalized.getDimensions();
-				ArrayList<Variable> variablesNormalized = 
-					normalized.getVariables();
+				List<Variable> variablesNormalized = normalized.getVariables();
 			} catch (NormalizeNullVectorException e) {
 				fail("Null vector exception");
 				e.printStackTrace();
@@ -637,7 +634,7 @@ public class DiscretePotentialOperationsTest {
 				(GTablePotential<Choice>)potentials[1];
 			// Test maximized potential
 			// Check variables
-			ArrayList<Variable> variablesPotential = 
+			List<Variable> variablesPotential = 
 				maximizedPotential.getVariables();
 			assertEquals(1, variablesPotential.size());
 			assertTrue(variablesPotential.contains(commonVariables.b));
@@ -682,10 +679,10 @@ public class DiscretePotentialOperationsTest {
 		// Setup: create a table potential
 		TablePotential orderedAB = // Variables: A, B
 			SharedTestUtilities.createTablePotential(numVariables, table, null);
-		ArrayList<Variable> variablesAB = orderedAB.getVariables();
+		List<Variable> variablesAB = orderedAB.getVariables();
 		
 		// Create variables in other order: B, A
-		ArrayList<Variable> variablesBA = new ArrayList<Variable>();
+		List<Variable> variablesBA = new ArrayList<Variable>();
 		variablesBA.add(variablesAB.get(1));
 		variablesBA.add(variablesAB.get(0));
 		
@@ -695,7 +692,7 @@ public class DiscretePotentialOperationsTest {
 		
 		// Test
 		// 1. Test variables
-		ArrayList<Variable> variablesReordered = reorderedBA.getVariables();
+		List<Variable> variablesReordered = reorderedBA.getVariables();
 		assertEquals(numVariables, variablesReordered.size());
 		assertEquals(variablesReordered.get(0), variablesAB.get(1));
 		assertEquals(variablesReordered.get(1), variablesAB.get(0));
@@ -706,14 +703,11 @@ public class DiscretePotentialOperationsTest {
 		assertEquals(0.6, reorderedBA.values[3],OpenMarkovTests.maxError);
 	}
 	
-	@SuppressWarnings("unchecked")
     @Test
     public void testReorder2() {
 		// Original TablePotential: commonVariables.t4. Variables: C,A,D
-		ArrayList<Variable> variablesBeforeReorder = 
-			commonVariables.t4.getVariables();
-		ArrayList<Variable> variablesAfterReorder =
-			(ArrayList<Variable>) variablesBeforeReorder.clone( );
+	    List<Variable> variablesBeforeReorder = commonVariables.t4.getVariables();
+	    List<Variable> variablesAfterReorder = new ArrayList<Variable> (variablesBeforeReorder);
 		Collections.reverse(variablesAfterReorder); // reorder the variables
 		assertEquals(
 				variablesAfterReorder.size(),variablesBeforeReorder.size());
@@ -725,7 +719,7 @@ public class DiscretePotentialOperationsTest {
 						commonVariables.t4, variablesAfterReorder);
 			// Test variables:
 			// 1. Test numVariables
-			ArrayList<Variable> variablesReorderedPotential = 
+			List<Variable> variablesReorderedPotential = 
 				tablePotentialAfterReorder.getVariables();
 			int numVariablesReordered = variablesReorderedPotential.size();
 			assertEquals(variablesAfterReorder.size(), numVariablesReordered);
@@ -749,14 +743,12 @@ public class DiscretePotentialOperationsTest {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testReorder3() {
 		// another reorder
-		ArrayList<Variable> variablesBeforeReorder = 
+	    List<Variable> variablesBeforeReorder = 
 			commonVariables.t4.getVariables();
-		ArrayList<Variable> variablesAfterReorder =
-			(ArrayList<Variable>) variablesBeforeReorder.clone( );
+	    List<Variable> variablesAfterReorder = new ArrayList<Variable>(variablesBeforeReorder);
 		variablesAfterReorder.remove( 0 );
 		Collections.reverse(variablesAfterReorder); // reorder the variables
 		variablesAfterReorder.add( 0, variablesBeforeReorder.get(0 ));
@@ -767,7 +759,7 @@ public class DiscretePotentialOperationsTest {
 						commonVariables.t4, variablesAfterReorder);
 			// Test variables:
 			// 1. Test numVariables
-			ArrayList<Variable> variablesReorderedPotential = 
+			List<Variable> variablesReorderedPotential = 
 				tablePotentialAfterReorder.getVariables();
 			int numVariablesReordered = variablesReorderedPotential.size();
 			assertEquals(variablesAfterReorder.size(), numVariablesReordered);
@@ -799,9 +791,9 @@ public class DiscretePotentialOperationsTest {
      * @param variables <code>ArrayList</code> of <code>Variable</code>
      * @param coordinateVariables <code>int[]</code>
      * @param potential <code>TablePotential</code> */
-    private double getConfiguration(ArrayList<Variable> variables, 
+    private double getConfiguration(List<Variable> variables, 
     		int[] coordinateVariables, TablePotential potential) {
-    	ArrayList<Variable> variablesPotential = potential.getVariables();
+        List<Variable> variablesPotential = potential.getVariables();
     	int[] coordinate = new int[variablesPotential.size()];
     	int i = 0;
     	for (Variable variablePotential : variablesPotential) {
@@ -815,9 +807,9 @@ public class DiscretePotentialOperationsTest {
      * @return An <code>ArrayList</code> of <code>Variable</code> with all the
      * variables of the potentials in order: first the variables of the first
      * potential, next the remaining variables of the second potential, etc.  */
-    private ArrayList<Variable> getUnionVariablesOrdered(
-    		ArrayList<Potential> potentials) {
-    	ArrayList<Variable> variables = new ArrayList<Variable>();
+    private List<Variable> getUnionVariablesOrdered(
+    		List<? extends Potential> potentials) {
+        List<Variable> variables = new ArrayList<Variable>();
     	for(Potential potential : potentials) {
     		for (Variable variable : potential.getVariables()) {
     			if (!variables.contains(variable)) {

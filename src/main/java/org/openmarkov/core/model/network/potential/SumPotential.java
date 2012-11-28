@@ -12,6 +12,7 @@ package org.openmarkov.core.model.network.potential;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -41,7 +42,7 @@ public class SumPotential extends Potential {
 	 * @param role
 	 * @param utilityVariable
 	 */
-	public SumPotential(ArrayList<Variable> variables, PotentialRole role, Variable utilityVariable) {
+	public SumPotential(List<Variable> variables, PotentialRole role, Variable utilityVariable) {
 		super(variables, role, utilityVariable);
 		type = PotentialType.SUM;
 	}	
@@ -50,7 +51,7 @@ public class SumPotential extends Potential {
 	 * @param parentsProbNodes
 	 * @param role
 	 */
-	public SumPotential(ArrayList<Variable> variables, PotentialRole role) {
+	public SumPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role);
 		type = PotentialType.SUM;
 	}
@@ -66,8 +67,7 @@ public class SumPotential extends Potential {
      * @param probNode. <code>ProbNode</code> 
      * @param variables. <code>ArrayList</code> of <code>Variable</code>.
      * @param role. <code>PotentialRole</code>. */
-	public static boolean validate(ProbNode probNode, ArrayList<Variable> variables, 
-			PotentialRole role) {
+	public static boolean validate(ProbNode probNode, List<Variable> variables, PotentialRole role) {
 		boolean suitable = (role == PotentialRole.CONDITIONAL_PROBABILITY
 				|| role == PotentialRole.POLICY) && variables.get(0).getVariableType() == VariableType.NUMERIC;
 				
@@ -80,10 +80,12 @@ public class SumPotential extends Potential {
 	 * returns a uniform potential with the potential variables minus the 
 	 * <code>evidenceCase</code> variables.
 	 * @param evidenceCase. <code>evidenceCase</code> */
-	public ArrayList<TablePotential> tableProject(EvidenceCase evidenceCase,
-			InferenceOptions inferenceOptions)
-	throws NonProjectablePotentialException, NotEnoughMemoryException, 
-	WrongCriterionException {
+    public List<TablePotential> tableProject (EvidenceCase evidenceCase,
+                                              InferenceOptions inferenceOptions)
+        throws NonProjectablePotentialException,
+        NotEnoughMemoryException,
+        WrongCriterionException
+    {
 /*		// TODO se puede simplificar proyectando cada potencial padre
 		// dentro del bucle for. Asi se elimina el metodo getTableProjectedParentPotentials
 		// Get potentials to be multiplied
@@ -115,19 +117,22 @@ public class SumPotential extends Potential {
 	 * @throws NonProjectablePotentialException
 	 * @throws WrongCriterionException
 	 */
-	private ArrayList<TablePotential> getTableProjectedParentPotentials(
-			ArrayList<Potential> parentPotentials, EvidenceCase evidenceCase,
-			InferenceOptions inferenceOptions) 
-	throws NotEnoughMemoryException, NonProjectablePotentialException, 
-	WrongCriterionException {
-		ArrayList<TablePotential> tableProjectedParentPotentials =
-			new ArrayList<TablePotential>(parentPotentials.size());
-		for (Potential potential : parentPotentials) {
-			tableProjectedParentPotentials.addAll(
-					potential.tableProject(evidenceCase, inferenceOptions));
-		}
-		return tableProjectedParentPotentials;
-	}
+    private List<TablePotential> getTableProjectedParentPotentials (List<Potential> parentPotentials,
+                                                                    EvidenceCase evidenceCase,
+                                                                    InferenceOptions inferenceOptions)
+        throws NotEnoughMemoryException,
+        NonProjectablePotentialException,
+        WrongCriterionException
+    {
+        List<TablePotential> tableProjectedParentPotentials = new ArrayList<TablePotential> (
+                                                                                             parentPotentials.size ());
+        for (Potential potential : parentPotentials)
+        {
+            tableProjectedParentPotentials.addAll (potential.tableProject (evidenceCase,
+                                                                           inferenceOptions));
+        }
+        return tableProjectedParentPotentials;
+    }
 
 	@Override
 	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength)

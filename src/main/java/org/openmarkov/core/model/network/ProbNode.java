@@ -608,7 +608,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 * @param probNet 
 	 * @return true if the variable is a supervalue node. False if does not
 	 */
-	private static boolean isSuperValueNode(Variable utilityVariable, ProbNet probNet) {
+	public boolean isSuperValueNode(Variable utilityVariable, ProbNet probNet) {
 		ProbNode utilityProbNode = probNet.getProbNode( utilityVariable );
 		Node utilityNode = utilityProbNode.getNode();
 		int numOfUtilityParents = 0;
@@ -623,6 +623,48 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 		}
 		return false;
 	}
+	/**
+	 * This method is used to 
+	 * @return a list with utility parents
+	 */
+	public ArrayList<ProbNode> getUtilityParents() {
+		ArrayList<ProbNode> utilityParents =  new ArrayList<>();
+		for (Node parent:this.getNode().getParents()){
+			if (( (ProbNode)parent.getObject() ).getNodeType() == NodeType.UTILITY ){
+				utilityParents.add((ProbNode)parent.getObject());
+				
+			}
+		}
+		return utilityParents;
+	 }
+	/**
+	 * 
+	 * @return true if a node has only utility parents
+	 */
+	public boolean checkOnlyUtilityparents() {
+		return getUtilityParents().size() == this.getNode().getParents().size() ? true: false;
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean onlyNumericalAndUtilityParents() {
+		ArrayList<ProbNode> utilityParents =  new ArrayList<>();
+		ArrayList<ProbNode> numericalParents = new ArrayList<>();
+		ArrayList<ProbNode> finiteStatesOrDiscretizedParents = new ArrayList<>();
+		
+		for (Node parent:this.getNode().getParents()){
+			if (( (ProbNode)parent.getObject() ).getNodeType() == NodeType.UTILITY ){
+				utilityParents.add((ProbNode)parent.getObject());
+			} else if (((ProbNode)parent.getObject()).getVariable().getVariableType() == VariableType.NUMERIC ) {
+				numericalParents.add((ProbNode)parent.getObject());
+			} else if (((ProbNode)parent.getObject()).getVariable().getVariableType() == VariableType.FINITE_STATES ||
+					((ProbNode)parent.getObject()).getVariable().getVariableType() == VariableType.DISCRETIZED ) {
+				finiteStatesOrDiscretizedParents.add((ProbNode)parent.getObject());
+			}
+		}
+		return  ((!utilityParents.isEmpty()) && (!numericalParents.isEmpty()) && finiteStatesOrDiscretizedParents.isEmpty()) ? true: false ;
+	 }
 	
     /**
      * Returns the isInput.

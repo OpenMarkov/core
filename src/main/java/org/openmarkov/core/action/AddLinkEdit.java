@@ -20,6 +20,8 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.SumPotential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 
 /** Creates a directed or undirected link between two nodes associated to two
@@ -86,25 +88,54 @@ public class AddLinkEdit extends BaseLinkEdit {
         this.link = probNet.getGraph ().getLink (node1.getNode (), node2.getNode (), isDirected);
         if (updatePotentials)
         {
-            this.oldPotentials = node2.getPotentials ();
-            for (Potential oldPotential : oldPotentials)
-            {
-                // Update potential
-                Potential newPotential = oldPotential.copy().addVariable (node1.getVariable ());
-                if (newPotential == null)
-                {// It has not been implemented yet for this type of potential
-                    ArrayList<Variable> variables = oldPotential.getVariables ();
-                    if(!variables.contains (node1.getVariable ()))
-                    {
-                        variables.add (node1.getVariable ());
-                    }
-                    newPotential = new UniformPotential (variables,
-                                                         oldPotential.getPotentialRole ());
-                }
-                newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
-                newPotentials.add (newPotential);
-            }
-            node2.setPotentials (newPotentials);
+        	this.oldPotentials = node2.getPotentials ();
+        	if (node2.isSuperValueNode(node2.getVariable(), probNet)) {// supervalue nodes
+
+        		if (node2.checkOnlyUtilityparents())  {//only utility parents table
+        			for (Potential oldPotential : oldPotentials)
+            		{
+            		// Update potential
+            		TablePotential newPotential = new TablePotential(new ArrayList<Variable>(), oldPotential.getPotentialRole () );
+        			newPotentials.add (newPotential);
+            		}
+        			
+        		} else if (node2.onlyNumericalAndUtilityParents()) {// utility and numerical parents sum
+        			for (Potential oldPotential : oldPotentials)
+            		{
+            		// Update potential
+            		SumPotential newPotential = new SumPotential(oldPotential.getVariables (), oldPotential.getPotentialRole () );
+        			newPotentials.add (newPotential);
+            		}
+        		}else if (!node2.onlyNumericalAndUtilityParents()) {//mixture of finite states and numerical Uniform
+        			for (Potential oldPotential : oldPotentials)
+            		{
+            		// Update potential
+            		UniformPotential newPotential = new UniformPotential(oldPotential.getVariables (), oldPotential.getPotentialRole () );
+        			newPotentials.add (newPotential);
+            		}
+        		}
+        		node2.setPotentials (newPotentials);
+        	} else {
+
+        		for (Potential oldPotential : oldPotentials)
+        		{
+        			// Update potential
+        			Potential newPotential = oldPotential.copy().addVariable (node1.getVariable ());
+        			if (newPotential == null)
+        			{// It has not been implemented yet for this type of potential
+        				ArrayList<Variable> variables = oldPotential.getVariables ();
+        				if(!variables.contains (node1.getVariable ()))
+        				{
+        					variables.add (node1.getVariable ());
+        				}
+        				newPotential = new UniformPotential (variables,
+        						oldPotential.getPotentialRole ());
+        			}
+        			newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
+        			newPotentials.add (newPotential);
+        		}
+        		node2.setPotentials (newPotentials);
+        	}
         }
     }
 

@@ -158,6 +158,7 @@ public class Node {
 		return (ArrayList<Node>)parents.clone();
 	}
 
+	
 	/** @return <code>ArrayList</code> of <code>Node</code>s with the siblings
 	 * of this node
 	 * @consultation */

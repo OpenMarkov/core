@@ -877,7 +877,7 @@ public class ProbNet implements Cloneable {
 	 * @return <code>ArrayList</code> of <code>ProbNode</code>
 	 */
 	public static ArrayList<Node> getNodesOfProbNodes(
-			ArrayList<ProbNode> probNodes) {
+			List<ProbNode> probNodes) {
 		ArrayList<Node> nodes = new ArrayList<Node>(probNodes.size());
 		for (ProbNode probNode : probNodes) {
 			nodes.add(probNode.getNode());

@@ -89,24 +89,17 @@ public class AddLinkEdit extends BaseLinkEdit {
         if (updatePotentials)
         {
         	this.oldPotentials = node2.getPotentials ();
-        	if (node2.isSuperValueNode(node2.getVariable(), probNet)) {// supervalue nodes
-
-        		if (node2.checkOnlyUtilityparents())  {//only utility parents table
-        			for (Potential oldPotential : oldPotentials)
-            		{
-            		// Update potential
-            		TablePotential newPotential = new TablePotential(new ArrayList<Variable>(), oldPotential.getPotentialRole () );
-        			newPotentials.add (newPotential);
-            		}
-        			
-        		} else if (node2.onlyNumericalAndUtilityParents()) {// utility and numerical parents sum
+        	//if (node2.isSuperValueNode(node2.getVariable(), probNet)) {// supervalue nodes
+        	if (node2.getNodeType() == NodeType.UTILITY) {
+        		
+        		if (node2.onlyNumericalParents()) {// utility and numerical parents sum
         			for (Potential oldPotential : oldPotentials)
             		{
             		// Update potential
             		SumPotential newPotential = new SumPotential(oldPotential.getVariables (), oldPotential.getPotentialRole () );
         			newPotentials.add (newPotential);
             		}
-        		}else if (!node2.onlyNumericalAndUtilityParents()) {//mixture of finite states and numerical Uniform
+        		}else if (!node2.onlyNumericalParents()) {//mixture of finite states and numerical Uniform
         			for (Potential oldPotential : oldPotentials)
             		{
             		// Update potential

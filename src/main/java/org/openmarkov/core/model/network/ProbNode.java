@@ -648,22 +648,19 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 * 
 	 * @return
 	 */
-	public boolean onlyNumericalAndUtilityParents() {
-		ArrayList<ProbNode> utilityParents =  new ArrayList<>();
+	public boolean onlyNumericalParents() {
 		ArrayList<ProbNode> numericalParents = new ArrayList<>();
 		ArrayList<ProbNode> finiteStatesOrDiscretizedParents = new ArrayList<>();
 		
 		for (Node parent:this.getNode().getParents()){
-			if (( (ProbNode)parent.getObject() ).getNodeType() == NodeType.UTILITY ){
-				utilityParents.add((ProbNode)parent.getObject());
-			} else if (((ProbNode)parent.getObject()).getVariable().getVariableType() == VariableType.NUMERIC ) {
+			if (((ProbNode)parent.getObject()).getVariable().getVariableType() == VariableType.NUMERIC ) {
 				numericalParents.add((ProbNode)parent.getObject());
 			} else if (((ProbNode)parent.getObject()).getVariable().getVariableType() == VariableType.FINITE_STATES ||
 					((ProbNode)parent.getObject()).getVariable().getVariableType() == VariableType.DISCRETIZED ) {
 				finiteStatesOrDiscretizedParents.add((ProbNode)parent.getObject());
 			}
 		}
-		return  ((!utilityParents.isEmpty()) && (!numericalParents.isEmpty()) && finiteStatesOrDiscretizedParents.isEmpty()) ? true: false ;
+		return  ((!numericalParents.isEmpty()) && finiteStatesOrDiscretizedParents.isEmpty()) ? true: false ;
 	 }
 	
     /**

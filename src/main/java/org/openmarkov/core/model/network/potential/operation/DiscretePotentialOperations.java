@@ -551,7 +551,7 @@ public final class DiscretePotentialOperations {
      * @return Marginalized potential 
      * @throws NotEnoughMemoryException */
     @SuppressWarnings("unchecked")
-    public static Potential marginalize(TablePotential potential, 
+    public static TablePotential marginalize(TablePotential potential, 
             Variable variableToEliminate) throws NotEnoughMemoryException {
         ArrayList<Variable> variablesToKeep = 
             (ArrayList<Variable>)potential.getVariables().clone();

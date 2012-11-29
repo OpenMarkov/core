@@ -96,15 +96,29 @@ public class AddLinkEdit extends BaseLinkEdit {
         			for (Potential oldPotential : oldPotentials)
             		{
             		// Update potential
-            		SumPotential newPotential = new SumPotential(oldPotential.getVariables (), oldPotential.getPotentialRole () );
-        			newPotentials.add (newPotential);
+        				List<Variable> variables = oldPotential.getVariables ();
+        				if(!variables.contains (node1.getVariable ()))
+        				{
+        					variables.add (node1.getVariable ());
+        				}
+        				Potential newPotential = new SumPotential (variables,
+        						oldPotential.getPotentialRole ());
+        				newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
+        				newPotentials.add (newPotential);
             		}
         		}else if (!node2.onlyNumericalParents()) {//mixture of finite states and numerical Uniform
         			for (Potential oldPotential : oldPotentials)
             		{
             		// Update potential
-            		UniformPotential newPotential = new UniformPotential(oldPotential.getVariables (), oldPotential.getPotentialRole () );
-        			newPotentials.add (newPotential);
+        				List<Variable> variables = oldPotential.getVariables ();
+        				if(!variables.contains (node1.getVariable ()))
+        				{
+        					variables.add (node1.getVariable ());
+        				}
+        				Potential newPotential = new UniformPotential (variables,
+        						oldPotential.getPotentialRole ());
+        				newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
+        				newPotentials.add (newPotential);
             		}
         		}
         		node2.setPotentials (newPotentials);

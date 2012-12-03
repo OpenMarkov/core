@@ -167,7 +167,8 @@ public abstract class Potential{
 
 	/** @consultation
 	 * @return A <code>List</code> of <code>Variable</code>s */
-	public List<Variable> getVariables() {return new ArrayList<Variable>(variables);
+	public List<Variable> getVariables() {
+		return new ArrayList<Variable>(variables);
 	}
 	
 	/** @consultation

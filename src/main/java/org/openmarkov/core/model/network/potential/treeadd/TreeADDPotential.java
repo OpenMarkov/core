@@ -292,8 +292,9 @@ public class TreeADDPotential extends Potential  implements Cloneable {
      * 
      */
     public  Potential removeVariable(Variable variable) throws NotEnoughMemoryException {
-    	getVariables().remove(variable);
-    	return new UniformPotential(getVariables(), getPotentialRole());
+    	List<Variable> newVariables = getVariables();
+    	newVariables.remove(variable);
+    	return new UniformPotential(newVariables, getPotentialRole());
     }
 
 	@Override

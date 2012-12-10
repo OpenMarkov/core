@@ -60,7 +60,7 @@ public final class DiscretePotentialOperations {
         List<TablePotential> potentials = new ArrayList<>(tablePotentials);
 
         // Sort the potentials according to the table size
-        Collections.sort(potentials);
+    //    Collections.sort(potentials);
         
         // Gets constant factor: The product of constant potentials
         double constantFactor = getConstantFactor(potentials);

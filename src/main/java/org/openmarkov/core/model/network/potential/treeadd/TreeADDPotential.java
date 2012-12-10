@@ -1,7 +1,6 @@
 /**
  * 
  */
-
 package org.openmarkov.core.model.network.potential.treeadd;
 
 import java.util.ArrayList;
@@ -28,12 +27,14 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
+
 /**
  * A TreeADDPotential is a type of Potential that implies several advantages
  * instead of using tables when the potential has a substructure that repeats
  * itself several times. Each TreeADDPotential is defined by a top variable and
  * its branches
  * @author myebra
+ *
  */
 @RelationPotentialType(name = "Tree/ADD", family = "Tree")
 public class TreeADDPotential extends Potential
@@ -75,7 +76,7 @@ public class TreeADDPotential extends Potential
         if (variableType == VariableType.FINITE_STATES || variableType == VariableType.DISCRETIZED)
         {
             State[] states = topVariable.getStates ();
-            // for (int i = 0; i < states.length; i++){
+           
             for (int i = states.length - 1; i >= 0; i--)
             {
                 // if potential role of the treeADD is a conditional probability
@@ -333,13 +334,12 @@ public class TreeADDPotential extends Potential
             for (TreeADDBranch branch : branches)
             {
                 Potential branchPotential = branch.getPotential ();
-                List<TablePotential> tablePotentials = branchPotential.tableProject (evidenceCase,
-                                                                                     inferenceOptions);
+                List<TablePotential> tablePotentials = branchPotential.tableProject (evidenceCase, inferenceOptions);
                 // mask potential, only the top variable
-                TablePotential potential = null;
+                TablePotential maskPotential = null;
                 List<Variable> variables = new ArrayList<Variable> ();
                 variables.add (branch.getTopVariable ());
-                potential = new TablePotential (variables, role);
+                maskPotential = new TablePotential (variables, role);
                 List<State> branchStates = branch.getBranchStates ();
                 State[] topVariableStates = branch.getTopVariable ().getStates ();
                 for (int i = 0; i < topVariableStates.length; i++)
@@ -348,18 +348,18 @@ public class TreeADDPotential extends Potential
                     statesIndexes[0] = branch.getTopVariable ().getStateIndex (topVariableStates[i]);
                     if (branchStates.contains (topVariableStates[i]))
                     {
-                        potential.setValue (variables, statesIndexes, 1);
+                        maskPotential.setValue (variables, statesIndexes, 1);
                     }
                     else
                     {
-                        potential.setValue (variables, statesIndexes, 0);
+                        maskPotential.setValue (variables, statesIndexes, 0);
                     }
                 }
                 // multiply mask potential and the table potential of the
                 // current branch
                 List<Potential> potentialsToMultiply = new ArrayList<Potential> ();
                 potentialsToMultiply.add (tablePotentials.get (0));
-                potentialsToMultiply.add (potential);
+                potentialsToMultiply.add (maskPotential);
                 try
                 {
                     TablePotential intermediateProduct = (TablePotential) (PotentialOperations.multiply (potentialsToMultiply));
@@ -367,7 +367,6 @@ public class TreeADDPotential extends Potential
                 }
                 catch (PotentialOperationException e)
                 {
-                    // TODO Auto-generated catch block
                     e.printStackTrace ();
                 }
             }
@@ -436,7 +435,7 @@ public class TreeADDPotential extends Potential
         // Make sure variables are in the correct order after applying the mask
         // there will be variables that disappear from the potential because of
         // evidence propagation
-        if (role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.UTILITY)
+        /*if (role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.UTILITY)
         {
             for (int i = 0; i < correctOrder.size (); i++)
             {
@@ -453,7 +452,7 @@ public class TreeADDPotential extends Potential
             {
                 projected.setVariables (correctOrder);
             }
-        }
+        }*/
         projectedPotentials.add (projected);
         if (role == PotentialRole.UTILITY)
         {
@@ -606,4 +605,4 @@ public class TreeADDPotential extends Potential
         }
         return sampledTree;
     }
-}
+  }

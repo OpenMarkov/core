@@ -16,7 +16,6 @@ import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 
@@ -48,7 +47,6 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
     public void undoableEditWillHappen (UndoableEditEvent event)
         throws ConstraintViolationException,
         CanNotDoEditException,
-        NotEnoughMemoryException,
         NonProjectablePotentialException,
         WrongCriterionException
     {
@@ -82,7 +80,7 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
 	 * @throws WrongCriterionException 
 	 * @throws NonProjectablePotentialException */
 	public abstract boolean checkEdit(ProbNet probNet, PNEdit edit) 
-	throws NotEnoughMemoryException, NonProjectablePotentialException, 
+	throws NonProjectablePotentialException, 
 	WrongCriterionException;
 	
 	@Override

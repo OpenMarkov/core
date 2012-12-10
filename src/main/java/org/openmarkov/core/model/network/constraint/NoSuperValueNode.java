@@ -14,7 +14,6 @@ import java.util.List;
 import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -40,11 +39,11 @@ public class NoSuperValueNode extends PNConstraint {
 
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
-	throws NotEnoughMemoryException, NonProjectablePotentialException, 
+	throws NonProjectablePotentialException, 
 	WrongCriterionException {
 		// AddVariableEdit
 	    List<PNEdit> edits = 
-			UtilConstraints.getEditsType(edit, AddProbNodeEdit.class);
+			UtilConstraints.getSimpleEditsByType(edit, AddProbNodeEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			NodeType nodeType = ((AddProbNodeEdit)simpleEdit).getNodeType ();
 			if ((nodeType == NodeType.SV_PRODUCT) || 

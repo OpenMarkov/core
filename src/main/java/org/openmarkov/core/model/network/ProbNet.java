@@ -25,7 +25,6 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -224,8 +223,7 @@ public class ProbNet implements Cloneable {
      * @throws DoEditException
      */
     public void doEdit (PNEdit edit)
-        throws NotEnoughMemoryException,
-        ConstraintViolationException,
+        throws ConstraintViolationException,
         CanNotDoEditException,
         NonProjectablePotentialException,
         WrongCriterionException,
@@ -733,7 +731,7 @@ public class ProbNet implements Cloneable {
 	 * @throws NoFindingException
 	 */
 	public List<Potential> getProjectedPotentials(EvidenceCase evidenceCase)
-			throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
+			throws NonProjectablePotentialException, WrongCriterionException {
 	    List<Potential> originalPotentials = getPotentials();
 	    List<Potential> projectedPotentials = new ArrayList<Potential>();
 
@@ -757,7 +755,7 @@ public class ProbNet implements Cloneable {
 	 * @throws NoFindingException
 	 */
     public List<TablePotential> tableProjectPotentials (EvidenceCase evidenceCase)
-	throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
+	throws NonProjectablePotentialException, WrongCriterionException {
     	List<Potential> originalPotentials = getPotentials();
 		List<TablePotential> projectedPotentials = new ArrayList<TablePotential>();
 
@@ -784,15 +782,10 @@ public class ProbNet implements Cloneable {
      * then it operates their parent's utility functions recursively.
      * @throws NonProjectablePotentialException 
      */
-    public TablePotential getUtilityFunction(Variable utilityVariable) throws NonProjectablePotentialException, WrongCriterionException{
-    	TablePotential v = null;
-    	try {
-			v = getProbNode(utilityVariable).getUtilityFunction();
-		} catch (NotEnoughMemoryException e) {
-			e.printStackTrace();
-		}
-    	return v;
-  }
+	public TablePotential getUtilityFunction(Variable utilityVariable)
+			throws NonProjectablePotentialException, WrongCriterionException {
+		return getProbNode(utilityVariable).getUtilityFunction();
+	}
 
 	/**
 	 * @return All the potentials of this network. <code>ArrayList</code> of

@@ -10,7 +10,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
@@ -119,7 +118,7 @@ public class TreeADDTableProjectTest {
 		
 	}
 	@Test
-	public void testTableProject() throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
+	public void testTableProject() throws NonProjectablePotentialException, WrongCriterionException {
 		TablePotential tablePotential = 
 				treeADD.tableProject(null, null).get(0);
 		List<Variable> variables = tablePotential.getVariables();

@@ -20,7 +20,6 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -117,7 +116,7 @@ public abstract class Potential{
 	 * @throws WrongCriterionException 
 	 * @throws NonProjectablePotentialException */
     public TablePotential getCPT (EvidenceCase evidenceCase)
-    		throws NotEnoughMemoryException, NonProjectablePotentialException, 
+    		throws NonProjectablePotentialException, 
     		WrongCriterionException {
 	    List<TablePotential> potentials = tableProject (evidenceCase, null);
 	    HashSet<Variable> variablesToEliminate = new HashSet<Variable>();
@@ -138,7 +137,7 @@ public abstract class Potential{
      * @throws NonProjectablePotentialException
      * @throws WrongCriterionException */
     public TablePotential getCPT ()
-    		throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
+    		throws NonProjectablePotentialException, WrongCriterionException {
         return getCPT (new EvidenceCase ());
     }
 	
@@ -208,7 +207,7 @@ public abstract class Potential{
 	 * @throws NoFindingException */
 	public abstract List<TablePotential> tableProject(
 			EvidenceCase evidenceCase, InferenceOptions inferenceOptions) 
-		throws NonProjectablePotentialException, NotEnoughMemoryException, 
+		throws NonProjectablePotentialException, 
 		WrongCriterionException;
 	
     /** @return isUtility <code>boolean</code> */
@@ -248,7 +247,7 @@ public abstract class Potential{
 	 * @throws NotEnoughMemoryException 
 	 * @throws WrongCriterionException */
 	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength) 
-	throws IncompatibleEvidenceException, NotEnoughMemoryException, 
+	throws IncompatibleEvidenceException, 
 	WrongCriterionException {
 		return new ArrayList<Finding>();
 	}
@@ -278,7 +277,7 @@ public abstract class Potential{
 	 * @throws ProbNodeNotFoundException 
 	 * @throws NotEnoughMemoryException */
 	public abstract Potential shift(ProbNet probNet, int timeDifference) 
-	throws ProbNodeNotFoundException, NotEnoughMemoryException;
+	throws ProbNodeNotFoundException;
 
 	/**
 	 * Creates links between the variables of a potential
@@ -406,8 +405,7 @@ public abstract class Potential{
 
 	/** @throws NotEnoughMemoryException 
 	 * @returns a sampled potential. By default, itself, i.e., not sampled. */
-	public Potential sample(Variable simulationIndexVariable) 
-			throws NotEnoughMemoryException {
+	public Potential sample(Variable simulationIndexVariable) {
 		return this; // By default
 	}
 
@@ -435,7 +433,7 @@ public abstract class Potential{
      * Return a copy instance of the potential
      * @return potential copy
      */
-    public abstract Potential copy()  throws NotEnoughMemoryException;	
+    public abstract Potential copy();	
     
     /**
      * Return true if potential has uncertainty values
@@ -447,7 +445,7 @@ public abstract class Potential{
      * @throws NotEnoughMemoryException 
      * 
      */
-    public  Potential addVariable(Variable variable) throws NotEnoughMemoryException {
+    public  Potential addVariable(Variable variable) {
     	return null;
     }
     /**
@@ -455,13 +453,12 @@ public abstract class Potential{
      * @throws NotEnoughMemoryException 
      * 
      */
-    public  Potential removeVariable(Variable variable) throws NotEnoughMemoryException {
+    public  Potential removeVariable(Variable variable) {
     	return null;
     }
 
     public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)
     {
-        // TODO Auto-generated method stub
         return 0;
     }	
     

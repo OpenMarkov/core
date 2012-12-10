@@ -9,13 +9,11 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Node;
@@ -28,10 +26,9 @@ public class NoLoops extends PNConstraint {
 
 	@Override
     public boolean checkEdit (ProbNet probNet, PNEdit edit)
-        throws NotEnoughMemoryException,
-        NonProjectablePotentialException,
+        throws NonProjectablePotentialException,
         WrongCriterionException{
-	    List<PNEdit> edits = UtilConstraints.getEditsType(edit,
+	    List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit,
 				AddLinkEdit.class);
 	
 		Graph graph = probNet.getGraph();
@@ -50,11 +47,11 @@ public class NoLoops extends PNConstraint {
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
 		Graph graph = probNet.getGraph();
-		ArrayList<Node> nodesGraph = graph.getNodes();
+		List<Node> nodesGraph = graph.getNodes();
 		boolean probNetOK = true;
 		boolean directed;
 		for (Node node1 : nodesGraph) {
-			ArrayList<Node> neighbors = node1.getNeighbors();
+			List<Node> neighbors = node1.getNeighbors();
 			for (Node node2 : neighbors) {
 				if (node2.isChild(node1)) {
 					graph.removeLink(node2, node1, true);

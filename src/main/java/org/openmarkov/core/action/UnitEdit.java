@@ -1,7 +1,6 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.StringWithProperties;
 /**
@@ -24,7 +23,7 @@ public class UnitEdit extends SimplePNEdit {
 	}
 
 	@Override
-	public void doEdit() throws DoEditException, NotEnoughMemoryException {
+	public void doEdit() throws DoEditException {
 		probNode.getVariable().setUnit(newUnit);
 	}
 

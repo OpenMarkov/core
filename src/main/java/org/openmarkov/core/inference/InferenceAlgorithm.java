@@ -6,14 +6,12 @@
 
 package org.openmarkov.core.inference;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -154,7 +152,6 @@ public abstract class InferenceAlgorithm
      * The domain of each policy also includes the decision and the conditioning variables.
      */
     public abstract HashMap<Variable,Potential> getOptimizedPolicies () throws
-	NotEnoughMemoryException,
 	IncompatibleEvidenceException,
 	UnexpectedInferenceException;
     
@@ -165,7 +162,6 @@ public abstract class InferenceAlgorithm
      * defined over the conditioning variables.
      */
     public abstract TablePotential getGlobalUtility() throws
-	NotEnoughMemoryException,
 	IncompatibleEvidenceException,
 	UnexpectedInferenceException;
     
@@ -177,7 +173,6 @@ public abstract class InferenceAlgorithm
      * @throws NormalizeNullVectorException
      */
     public abstract HashMap<Variable,TablePotential> getProbsAndUtilities() throws
-    	NotEnoughMemoryException,
     	IncompatibleEvidenceException,
         UnexpectedInferenceException;
     
@@ -190,7 +185,6 @@ public abstract class InferenceAlgorithm
      * @throws NormalizeNullVectorException
      */
     public abstract HashMap<Variable,TablePotential> getProbsAndUtilities(List<Variable> variablesOfInterest) throws
-	NotEnoughMemoryException,
 	IncompatibleEvidenceException,
 	UnexpectedInferenceException;
     
@@ -202,7 +196,6 @@ public abstract class InferenceAlgorithm
      * @throws NormalizeNullVectorException
      */
     public abstract TablePotential getJointProbability(List<Variable> variables)throws
-	NotEnoughMemoryException,
 	IncompatibleEvidenceException,
 	UnexpectedInferenceException;
     

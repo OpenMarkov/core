@@ -12,7 +12,6 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -65,11 +64,10 @@ public class NoMixedParents extends PNConstraint
 
     @Override
     public boolean checkEdit (ProbNet probNet, PNEdit edit)
-        throws NotEnoughMemoryException,
-        NonProjectablePotentialException,
+        throws NonProjectablePotentialException,
         WrongCriterionException
     {
-        List<PNEdit> edits = UtilConstraints.getEditsType (edit, AddLinkEdit.class);
+        List<PNEdit> edits = UtilConstraints.getSimpleEditsByType (edit, AddLinkEdit.class);
         for (PNEdit simpleEdit : edits)
         {
             if (((AddLinkEdit) simpleEdit).isDirected ())
@@ -97,7 +95,7 @@ public class NoMixedParents extends PNConstraint
                 }
             }
         }**/
-        List<PNEdit> edits3 = UtilConstraints.getEditsType (edit, InvertLinkEdit.class);
+        List<PNEdit> edits3 = UtilConstraints.getSimpleEditsByType (edit, InvertLinkEdit.class);
         for (PNEdit simpleEdit : edits3)
         {
             Variable variable2 = ((InvertLinkEdit) simpleEdit).getVariable2 ();

@@ -19,7 +19,6 @@ import java.util.Queue;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -252,7 +251,7 @@ public class EvidenceCase {
 	 * @throws InvalidStateException 
 	 * @throws WrongCriterionException */
 	public void extendEvidence(ProbNet probNet, double cycleLength) 
-		throws IncompatibleEvidenceException, NotEnoughMemoryException, 
+		throws IncompatibleEvidenceException, 
 		InvalidStateException, WrongCriterionException{
 		Queue<Finding> pendingFindings = 
 			new LinkedList<Finding>(findings.values());

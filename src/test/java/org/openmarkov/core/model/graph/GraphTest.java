@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class GraphTest {
 	
 	private Node nodeA, nodeB, nodeC, nodeD;
 	
-	private ArrayList<Node> nodes;
+	private List<Node> nodes;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -44,7 +45,7 @@ public class GraphTest {
 	public void testMakeLinksExplicit() {
 		// Part 1: test that there are not explicit links before making links explicit
 		for (Node node : nodes) {
-			ArrayList<Link> linksNode = node.getLinks();
+			List<Link> linksNode = node.getLinks();
 			assertEquals(0, linksNode.size());
 		}
 		
@@ -56,7 +57,7 @@ public class GraphTest {
 
 		// Part 2: examine the explicit links and compare them with the implicit ones
 		// Check that the explicit link A->B
-		ArrayList<Link> linksOfA = graph.getLinks();
+		List<Link> linksOfA = graph.getLinks();
 		assertEquals(3, linksOfA.size());
 		linksOfA = nodeA.getLinks();
 		assertEquals(1, linksOfA.size());
@@ -66,7 +67,7 @@ public class GraphTest {
 		assertEquals(linkABinA.getNode2(), nodeB);
 		
 		// test all the links involving node B
-		ArrayList<Link> linksOfB = nodeB.getLinks();
+		List<Link> linksOfB = nodeB.getLinks();
 		assertEquals(3, linksOfB.size());
 		boolean existsLinkABinB = false;
 		boolean existsLinkBCinB = false;
@@ -101,7 +102,7 @@ public class GraphTest {
 		// checks that the explict link is in both A and C
 		linksOfA = nodeA.getLinks();
 		assertEquals(2, linksOfA.size());
-		ArrayList<Link> linksOfC = nodeC.getLinks();
+		List<Link> linksOfC = nodeC.getLinks();
 		assertEquals(2, linksOfC.size());
 		for (Link link : linksOfA) {
 			if (link.contains(nodeC)) {
@@ -140,9 +141,9 @@ public class GraphTest {
 	public void testRemoveImplicitLink() {
 		graph.removeLink(nodeB, nodeC, true);
 		// check that there is no implicit link between B and C
-		ArrayList<Node> childrenOfB = nodeB.getChildren();
+		List<Node> childrenOfB = nodeB.getChildren();
 		assertEquals(0, childrenOfB.size());
-		ArrayList<Node> parentsOfC = nodeC.getParents();
+		List<Node> parentsOfC = nodeC.getParents();
 		assertEquals(0, parentsOfC.size());
 	}
 
@@ -180,7 +181,7 @@ public class GraphTest {
 		// check that the copied graph has the same nodes and implicit links
 		// than the original one
 		assertEquals(graph.getNumNodes(), graphCopy.getNumNodes());
-		ArrayList<Node> nodesCopy = graphCopy.getNodes();
+		List<Node> nodesCopy = graphCopy.getNodes();
 		for (Node node : nodes) {
 			Object objectNode = node.getObject();
 			boolean isEqual = false;
@@ -205,7 +206,7 @@ public class GraphTest {
 	public void testGetLinks() {
 		// check all the links in the graph directed and undirected ones invoking getLinks()
 		int numLinks = countLinks(graph);
-		ArrayList<Link> links = graph.getLinks();
+		List<Link> links = graph.getLinks();
 		assertEquals(links.size(), numLinks);
 		for (Link link : links) {
 			assertTrue(link.contains(nodeB)); // all links contains nodeB
@@ -272,7 +273,7 @@ public class GraphTest {
 
 	/** @return Number of links of the graph */
 	private int countLinks(Graph graph) {
-		ArrayList<Node> nodes = graph.getNodes();
+		List<Node> nodes = graph.getNodes();
 		int numLinks = 0;
 		if (graph.useExplicitLinks()) {
 			for (Node node : nodes) {

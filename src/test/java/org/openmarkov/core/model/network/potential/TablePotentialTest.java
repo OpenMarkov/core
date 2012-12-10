@@ -10,7 +10,6 @@
 package org.openmarkov.core.model.network.potential;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +21,6 @@ import org.openmarkov.core.OpenMarkovTests;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -191,7 +189,7 @@ public class TablePotentialTest {
     }
     
     @Test
-    public void testGetAccumulateOffsets() throws NotEnoughMemoryException, NoFindingException, WrongCriterionException {
+    public void testGetAccumulateOffsets() throws NoFindingException, WrongCriterionException {
     	// tablePotential1 contains B,D,A,C. Dimensions (2,2,2,2)
     	// tablePotential2 contains A,B,C. Dimensions (2,2,2)
     	int[] accOffsets = tablePotential1.getAccumulatedOffsets(
@@ -275,7 +273,7 @@ public class TablePotentialTest {
      *  with 2 states.<p>
      *  evidenceCase: fsVariable2 = 1, fsVariable4 = 0. */
     public void testProject1() 
-    		throws NotEnoughMemoryException, NoFindingException, WrongCriterionException {
+    		throws NoFindingException, WrongCriterionException {
     	// Projection
         List<TablePotential> projectedPotentials = 
     		tablePotential5.tableProject(evidenceCase, null); // fsVariable2 = 1;
@@ -311,7 +309,7 @@ public class TablePotentialTest {
      *  with 2 states.<p>
      *  evidenceCase: fsVariable2 = 1, fsVariable4 = 0. */
     public void testProject2() 
-    		throws NotEnoughMemoryException, NoFindingException, WrongCriterionException {
+    		throws NoFindingException, WrongCriterionException {
     	// Projection
         List<TablePotential> projectedPotentials = 
     		tablePotential5.tableProject(evidenceCase, null); // fsVariable2 = 1;
@@ -345,7 +343,7 @@ public class TablePotentialTest {
     @Test
     /** Test multiplication of projected potentials. */
     public void testMultiplicationProjected() 
-    		throws NotEnoughMemoryException, NoFindingException, WrongCriterionException {
+    		throws NoFindingException, WrongCriterionException {
     	int dimA = 3;
     	int dimB = 2;
     	int dimC = 3;
@@ -380,14 +378,9 @@ public class TablePotentialTest {
     	
     	// Test multiply projected potentials
     	projectedPotentials.add(projectedPotentialB);
-    	TablePotential multiplication = null;
-    	try {
-			multiplication = 
+    	TablePotential multiplication =								
 				DiscretePotentialOperations.multiply(projectedPotentials);
-		} catch (NotEnoughMemoryException e) {
-			fail("Not enough memory for test");
-		}
-		
+				
 		// Test variables
 		List<Variable> variables = multiplication.getVariables();
 		assertEquals(2, variables.size());

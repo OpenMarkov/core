@@ -26,7 +26,6 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
@@ -606,7 +605,7 @@ public class ProbNetTest {
 	/** Just make sure that the class <code>ProbNet</code> returns the correct
 	 *  number of potentials with the correct variables. */
 	public void testGetProjectedPotentials() 
-	throws NotEnoughMemoryException, NoFindingException, 
+	throws NoFindingException, 
 	NonProjectablePotentialException, WrongCriterionException {
 	    List<Potential> projectedPotentials = 
 			simpleProbNet.getProjectedPotentials(simpleEvidence);

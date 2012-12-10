@@ -12,7 +12,6 @@ package org.openmarkov.core.model.network.potential.canonical;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -65,7 +64,6 @@ public class MaxPotential extends MinMaxPotential {
     }    	
 	
     public TablePotential getDefaultLeakyPotential ()
-        throws NotEnoughMemoryException
     {
         ArrayList<Variable> leakyVariables = new ArrayList<Variable> ();
         leakyVariables.add (variables.get (0));
@@ -84,8 +82,7 @@ public class MaxPotential extends MinMaxPotential {
 	@Override
 	/** @returns A <code>TablePotential</code> with two variables: 
 	 *  <code>conditionedVariable</code> and <code>pseudoVariable</code>. */
-	public TablePotential getDeltaPotential()
-			throws NotEnoughMemoryException {
+	public TablePotential getDeltaPotential() {
 		Variable conditionedVariable = variables.get(0);
 		ArrayList<Variable> deltaVariables = new ArrayList<Variable>();
 		deltaVariables.add(pseudoVariable);
@@ -121,8 +118,7 @@ public class MaxPotential extends MinMaxPotential {
 	 * @reference Efficient computation for the Noisy MAX
 	 * @argCondition subPotential is a probability table of one variable
 	 *  or a probability table of one variable given another variable. */
-	public TablePotential getAccruedPotential(TablePotential subPotential) 
-			throws NotEnoughMemoryException {
+	public TablePotential getAccruedPotential(TablePotential subPotential) {
 		// TODO Revisar este metodo para el caso de un potential proyectado
 	    List<Variable> subPotentialVariables = subPotential.getVariables();
 	    List<Variable> accruedPotentialVariables = new ArrayList<Variable>(subPotentialVariables);
@@ -159,7 +155,7 @@ public class MaxPotential extends MinMaxPotential {
     }
     
     @Override
-    public Potential copy () throws NotEnoughMemoryException
+    public Potential copy ()
     {
         MaxPotential newPotential = new MaxPotential (new ArrayList<Variable> (variables));
         for(int i=1; i<variables.size (); ++i)

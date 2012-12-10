@@ -1,7 +1,6 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
 /**
  * 
@@ -47,7 +46,7 @@ public class TimeSliceEdit extends SimplePNEdit{
 	}
 
 	@Override
-	public void doEdit() throws DoEditException, NotEnoughMemoryException {
+	public void doEdit() throws DoEditException {
 		//onlyTemporal && not only atemporal
 		probNode.getVariable().setTimeSlice(newTimeSlice);
 		if (newTimeSlice == Integer.MIN_VALUE && lastTimeSlice != Integer.MIN_VALUE && lastBaseName != null) {

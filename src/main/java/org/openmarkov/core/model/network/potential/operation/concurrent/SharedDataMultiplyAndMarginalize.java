@@ -12,7 +12,6 @@ package org.openmarkov.core.model.network.potential.operation.concurrent;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -36,7 +35,7 @@ public class SharedDataMultiplyAndMarginalize extends SharedDataMultiply {
 			List<TablePotential> potentials, 
 			List<Variable> fSVariablesToKeep,
 			List<Variable> fSVariablesToEliminate) 
-    		throws NotEnoughMemoryException {
+     {
 
 		super(potentials);
     	

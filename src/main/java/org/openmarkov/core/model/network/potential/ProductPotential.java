@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -74,8 +73,7 @@ public class ProductPotential extends Potential {
 	 * @param evidenceCase. <code>evidenceCase</code> */
 	public ArrayList<TablePotential> tableProject(EvidenceCase evidenceCase,
 			InferenceOptions inferenceOptions)
-	throws NonProjectablePotentialException, NotEnoughMemoryException, 
-	WrongCriterionException {
+	throws NonProjectablePotentialException, WrongCriterionException {
 	    /*
 		// TODO se puede simplificar proyectando cada potencial padre
 		// dentro del bucle for. Asi se elimina el metodo getTableProjectedParentPotentials
@@ -112,7 +110,7 @@ public class ProductPotential extends Potential {
 	private ArrayList<TablePotential> getTableProjectedParentPotentials(
 			ArrayList<Potential> parentPotentials, EvidenceCase evidenceCase,
 			InferenceOptions inferenceOptions) 
-	throws NotEnoughMemoryException, NonProjectablePotentialException, 
+	throws NonProjectablePotentialException, 
 	WrongCriterionException {
 		ArrayList<TablePotential> tableProjectedParentPotentials =
 			new ArrayList<TablePotential>(parentPotentials.size());
@@ -125,13 +123,13 @@ public class ProductPotential extends Potential {
 
 	@Override
 	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength)
-			throws IncompatibleEvidenceException, NotEnoughMemoryException {
+			throws IncompatibleEvidenceException {
 		return null;
 	}
 
 	@Override
 	public Potential shift(ProbNet probNet, int timeSlice)
-			throws ProbNodeNotFoundException, NotEnoughMemoryException {
+			throws ProbNodeNotFoundException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -15,7 +15,6 @@ import java.util.Random;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -29,7 +28,6 @@ import org.openmarkov.core.model.network.modelUncertainty.SamplePotentialTable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import org.openmarkov.core.model.network.potential.operation.Util;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
 /**
@@ -91,13 +89,12 @@ public class TablePotential extends Potential
 
     // Constructors
     /**
-     * @param variables. <code>ArrayList</code> of <code>Variable</code> used to
+     * @param variables. <code>List</code> of <code>Variable</code> used to
      *            build the <code>TablePotential</code>.
      * @param role. <code>PotentialRole</code>
      * @throws <code>NotEnoughMemoryException</code>
      */
     public TablePotential (List<Variable> variables, PotentialRole role)
-        throws NotEnoughMemoryException
     {
         super (variables, role);
 //        this.originalVariables = this.variables;
@@ -106,21 +103,6 @@ public class TablePotential extends Potential
             dimensions = TablePotential.calculateDimensions (variables);
             offsets = TablePotential.calculateOffsets (dimensions);
             tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
-            long freeMemory = runtime.freeMemory ();
-            // if tableSize is negative it means there has been an overflow and
-            // therefore the table it too big
-            if (freeMemory < (tableSize * (Double.SIZE / 8)) || tableSize < 0)
-            {
-                throw new NotEnoughMemoryException (
-                                                    "There are only "
-                                                            + Util.printInteger (freeMemory)
-                                                            + " bytes free. "
-                                                            + "Not enough memory to allocate a table with "
-                                                            + Util.printInteger ((tableSize * (Double.SIZE / 8)))
-                                                            + " bytes in TablePotential constructor."
-                                                            + " Number of variables: "
-                                                            + variables.size ());
-            }
             values = new double[tableSize];
             setUniform (); // Initializes the table as an uniform potential
         }
@@ -140,30 +122,13 @@ public class TablePotential extends Potential
      * @throws NotEnoughMemoryException
      */
     public TablePotential (List<Variable> variables, PotentialRole role, Variable utilityVariable)
-            throws NotEnoughMemoryException
         {
             super (variables, role, utilityVariable);
-//            this.originalVariables = this.variables;
             if (numVariables != 0)
             {
                 dimensions = TablePotential.calculateDimensions (variables);
                 offsets = TablePotential.calculateOffsets (dimensions);
                 tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
-                long freeMemory = runtime.freeMemory ();
-                // if tableSize is negative it means there has been an overflow and
-                // therefore the table it too big
-                if (freeMemory < (tableSize * (Double.SIZE / 8)) || tableSize < 0)
-                {
-                    throw new NotEnoughMemoryException (
-                                                        "There are only "
-                                                                + Util.printInteger (freeMemory)
-                                                                + " bytes free. "
-                                                                + "Not enough memory to allocate a table with "
-                                                                + Util.printInteger ((tableSize * (Double.SIZE / 8)))
-                                                                + " bytes in TablePotential constructor."
-                                                                + " Number of variables: "
-                                                                + variables.size ());
-                }
                 values = new double[tableSize];
                 setUniform (); // Initializes the table as an uniform potential
             }
@@ -210,7 +175,6 @@ public class TablePotential extends Potential
      * @argCondition All variables must be discrete.
      */
     public TablePotential (PotentialRole role, Variable... variables)
-        throws NotEnoughMemoryException
     {
         this (toList (variables), role);
     }
@@ -243,7 +207,6 @@ public class TablePotential extends Potential
     }
 
     public TablePotential (Potential potential)
-        throws NotEnoughMemoryException
     {
         this (potential.getVariables (), potential.getPotentialRole ());
         
@@ -286,7 +249,7 @@ public class TablePotential extends Potential
     /**
      * @throws WrongCriterionException 
      * @throws NotEnoughMemoryException  */
-    public Potential removeVariable(Variable variable) throws NotEnoughMemoryException {
+    public Potential removeVariable(Variable variable) {
     	Potential newPotential = this;
     	if (variables.contains(variable)) {
     		Finding finding = new Finding(variable, 0);
@@ -320,7 +283,7 @@ public class TablePotential extends Potential
      */
     public List<TablePotential> tableProject (EvidenceCase evidenceCase,
                                                    InferenceOptions inferenceOptions)
-        throws NotEnoughMemoryException,
+        throws
         WrongCriterionException
     {
         // returned value
@@ -1193,7 +1156,6 @@ public class TablePotential extends Potential
     // TODO revisar para que no use tableProject(...)
     public Collection<Finding> getInducedFindings (EvidenceCase evidenceCase, double cycleLength)
         throws IncompatibleEvidenceException,
-        NotEnoughMemoryException,
         WrongCriterionException
     {
         Collection<Finding> inducedFindings = new ArrayList<Finding> ();
@@ -1389,8 +1351,7 @@ public class TablePotential extends Potential
 
     @Override
     public Potential shift (ProbNet probNet, int timeDifference)
-        throws ProbNodeNotFoundException,
-        NotEnoughMemoryException
+        throws ProbNodeNotFoundException
     {
         List<Variable> shiftedVariables = getShiftedVariables (probNet, timeDifference);
         TablePotential shiftedPotential = new TablePotential (shiftedVariables, role);
@@ -1412,7 +1373,6 @@ public class TablePotential extends Potential
      * Generates a sampled potential
      */
     public Potential sample (Variable simulationIndexVariable)
-        throws NotEnoughMemoryException
     {
         if (simulationIndexVariable != null)
         {
@@ -1446,7 +1406,7 @@ public class TablePotential extends Potential
     }
     
     @Override
-    public Potential copy () throws NotEnoughMemoryException
+    public Potential copy ()
     {
         TablePotential newPotential = new TablePotential (new ArrayList<Variable> (variables), role);
         newPotential.values = this.values.clone ();
@@ -1494,7 +1454,7 @@ public class TablePotential extends Potential
     }	
     
     @Override
-    public Potential addVariable(Variable newVariable) throws NotEnoughMemoryException{
+    public Potential addVariable(Variable newVariable){
     	// creates the new potential
     	List<Variable> newVariables = new ArrayList<Variable> (variables);
     	newVariables.add(newVariable);

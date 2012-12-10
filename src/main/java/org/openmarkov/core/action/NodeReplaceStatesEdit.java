@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
@@ -92,9 +91,9 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	@Override
 	public void doEdit() {
 		if (newStates != null) {
-			ArrayList<Node> nodes;
+			List<Node> nodes;
 			probNode.getVariable().setStates(newStates);
-			ArrayList<Potential> newPotentials = new ArrayList<Potential>();
+			List<Potential> newPotentials = new ArrayList<Potential>();
 			// set uniform potential for the edited node and children if the
 			// new number of states is different that the last states
 			if (newStates.length != lastStates.length) {
@@ -149,7 +148,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	}
 
 	public void undo() {
-		ArrayList<Node> nodes;
+		List<Node> nodes;
 		super.undo();
 		if (lastStates != null) {
 			probNode.getVariable().setStates(lastStates);
@@ -167,15 +166,10 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 			}
 		}
 		for (Link link : linkRestrictionMap.keySet()) {
-			try {
-				link.initializesRestrictionsPotential();
-				TablePotential restrictionPotential = (TablePotential) link
-						.getRestrictionsPotential();
-				restrictionPotential.setValues(linkRestrictionMap.get(link));
-			} catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			link.initializesRestrictionsPotential();
+			TablePotential restrictionPotential = (TablePotential) link
+					.getRestrictionsPotential();
+			restrictionPotential.setValues(linkRestrictionMap.get(link));
 		}
 		for (Link link : revelationConditionMap.keySet()) {
 			VariableType varType = ((ProbNode) link.getNode1().getObject())
@@ -221,7 +215,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 				link.setRestrictionsPotential(null);
 			}
 		}
-		ArrayList<Node> children = node.getChildren();
+		List<Node> children = node.getChildren();
 		for (Node child : children) {
 			Link link = node.getGraph().getLink(node, child, true);
 			if (link.hasRevealingConditions()) {

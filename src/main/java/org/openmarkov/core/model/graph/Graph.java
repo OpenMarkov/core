@@ -12,6 +12,7 @@ package org.openmarkov.core.model.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 
 import org.apache.log4j.Logger;
@@ -39,7 +40,7 @@ public class Graph {
 	// Attributes
 	private boolean explicitLinks = false;
 
-	private ArrayList<Node> nodes;
+	private List<Node> nodes;
 	
 	private Logger logger;
 
@@ -112,7 +113,7 @@ public class Graph {
 	 *         returns <code>null</code>
 	 * @consultation */
 	public Link getLink(Node node1, Node node2, boolean directed) {
-		ArrayList<Link> linksNode1 = node1.getLinks();
+		List<Link> linksNode1 = node1.getLinks();
 		for (Link link : linksNode1) {
 			if (directed) {
 				if (link.isDirected() && link.getNode2() == node2) {
@@ -134,7 +135,7 @@ public class Graph {
 	public void makeLinksExplicit(boolean createLabelledLinks) {
 		if (!explicitLinks) {
 			for (Node node1 : nodes) {
-				ArrayList<Node> children = node1.getChildren();
+				List<Node> children = node1.getChildren();
 				for (Node node2 : children) {
 					try {
 						if (createLabelledLinks) {
@@ -146,7 +147,7 @@ public class Graph {
 						logger.fatal ("Unable to create an explicit link", exception);
 					}
 				}
-				ArrayList<Node> siblings = node1.getSiblings();
+				List<Node> siblings = node1.getSiblings();
 				int auxNode1Index = nodes.indexOf(node1);
 				for (Node node2 : siblings) {
 					if (auxNode1Index > nodes.indexOf(node2)) {
@@ -171,7 +172,7 @@ public class Graph {
 	 * @param node <code>Node</code> */
 	public void removeLinks(Node node) {
 
-		ArrayList<Node> neighbors = node.getNeighbors();
+		List<Node> neighbors = node.getNeighbors();
 		for (Node auxNode : neighbors) {
 			if (auxNode.isChild(node)) {
 				auxNode.uf_removeChild(node);
@@ -184,7 +185,7 @@ public class Graph {
 			}
 		}
 		if (explicitLinks) {
-			ArrayList<Link> linksNode = node.getLinks();
+			List<Link> linksNode = node.getLinks();
 			for (Link link : linksNode) {
 				removeLink(link);
 			}
@@ -211,7 +212,7 @@ public class Graph {
 
 		if (!explicitLinks) { // Copy implicit links
 			for (Node node : nodes) {
-				ArrayList<Node> children = node.getChildren(); // Directed links
+				List<Node> children = node.getChildren(); // Directed links
 				i = nodesPosition.get(node);
 				Node copied_i = nodesCopied.get(i);
 				for (Node child : children) {
@@ -219,7 +220,7 @@ public class Graph {
 					Node copied_j = nodesCopied.get(j);
 					copied.addLink(copied_i, copied_j, true);
 				}
-				ArrayList<Node> siblings = node.getSiblings();//Undirected links
+				List<Node> siblings = node.getSiblings();//Undirected links
 				for (Node sibling : siblings) {
 					int j = nodesPosition.get(sibling);
 					Node copied_j = nodesCopied.get(j);
@@ -230,7 +231,7 @@ public class Graph {
 			}
 		} else { // Copy explicit links
 			for (Node node : nodes) {
-				ArrayList<Link> links = node.getLinks();
+				List<Link> links = node.getLinks();
 				for (Link link : links) {
 					Node node1 = link.getNode1();
 					Node node2 = link.getNode2();
@@ -251,20 +252,20 @@ public class Graph {
 		return copied;
 	}
 
-	/** @return A clone of the list of nodes (<code>ArrayList</code> of 
+	/** @return A clone of the list of nodes (<code>List</code> of 
 	 * <code>Node</code>). */
 	@SuppressWarnings("unchecked")
-	public ArrayList<Node> getNodes() {
-		return (ArrayList<Node>)nodes.clone();
+	public List<Node> getNodes() {
+		return new ArrayList<Node>(nodes);
 	}
 
 	/** @return The <code>Graph</code> explicit links. */
-	public ArrayList<Link> getLinks() {
+	public List<Link> getLinks() {
 		if (!explicitLinks) {
 			makeLinksExplicit(false);
 		}
-		ArrayList<Link> links = new ArrayList<Link>();
-		ArrayList<Link> auxLinks; // the links of each node
+		List<Link> links = new ArrayList<Link>();
+		List<Link> auxLinks; // the links of each node
 		for (Node node : nodes) {
 			auxLinks = node.getLinks();
 			for (Link link : auxLinks) {
@@ -316,7 +317,7 @@ public class Graph {
 		if (node1 == node2) {
 			return true;
 		}
-		ArrayList<Node> nodeList = getNodes();
+		List<Node> nodeList = getNodes();
 		int numNodes = nodeList.size();
 		boolean[] markedNodes = new boolean[numNodes];
 		Stack<Node> nodesToExpand = new Stack<Node>();
@@ -329,8 +330,8 @@ public class Graph {
 		nodesToExpand.push(node1);
 		markedNodes[nodeList.indexOf(node1)] = true;
 
-		ArrayList<Node> nodes;
-		ArrayList<Node> neighbors = new ArrayList<Node>();
+		List<Node> nodes;
+		List<Node> neighbors = new ArrayList<Node>();
 		while (!nodesToExpand.empty()) {
 			Node expandableNode = nodesToExpand.pop(); // the top of the stack
 			nodes = expandableNode.getChildren();

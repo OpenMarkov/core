@@ -9,14 +9,12 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Node;
@@ -30,9 +28,9 @@ public class NoCycle extends PNConstraint {
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
 		Graph graph = probNet.getGraph();
-		ArrayList<Node> nodesGraph = graph.getNodes();
+		List<Node> nodesGraph = graph.getNodes();
 		for (Node parent : nodesGraph) {
-			ArrayList<Node> children = parent.getChildren();
+			List<Node> children = parent.getChildren();
 			for (Node child : children) {
 				if (graph.existsPath(child, parent, true)) {
 					return false;
@@ -47,10 +45,10 @@ public class NoCycle extends PNConstraint {
 	 * @return <code>true</code> if <code>event</code> comply with this 
 	 *   constraint */
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
-	throws NotEnoughMemoryException, NonProjectablePotentialException, 
+	throws NonProjectablePotentialException, 
 	WrongCriterionException {
 		List<PNEdit> edits = 
-			UtilConstraints.getEditsType(edit, AddLinkEdit.class);
+			UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
 		//int u=0;
 		Graph graph = probNet.getGraph();
 		for (PNEdit simpleEdit : edits) {
@@ -65,7 +63,7 @@ public class NoCycle extends PNConstraint {
 			}
 		}
 		List<PNEdit> edits2 = 
-                UtilConstraints.getEditsType(edit, InvertLinkEdit.class);
+                UtilConstraints.getSimpleEditsByType(edit, InvertLinkEdit.class);
         for (PNEdit simpleEdit : edits2) {
             if (((InvertLinkEdit)simpleEdit).isDirected()) { // checks constraint
                 Variable variable1 = ((InvertLinkEdit)simpleEdit).getVariable1(); 

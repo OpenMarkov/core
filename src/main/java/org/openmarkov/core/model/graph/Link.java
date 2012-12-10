@@ -12,7 +12,6 @@ package org.openmarkov.core.model.graph;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
@@ -173,9 +172,8 @@ public class Link {
 	 * 
 	 * @throws NotEnoughMemoryException
 	 */
-	public void initializesRestrictionsPotential()
-			throws NotEnoughMemoryException {
-		ArrayList<Variable> variables = new ArrayList<Variable>();
+	public void initializesRestrictionsPotential() {
+		List<Variable> variables = new ArrayList<Variable>();
 		variables.add(((ProbNode) node1.getObject()).getVariable());
 		variables.add(((ProbNode) node2.getObject()).getVariable());
 		restrictionsPotential = new TablePotential(variables,
@@ -219,7 +217,7 @@ public class Link {
 	 * @throws NotEnoughMemoryException
 	 */
 	public void setCompatibilityValue(State state1, State state2,
-			int compatibility) throws NotEnoughMemoryException {
+			int compatibility) {
 		if (this.restrictionsPotential == null) {
 			this.initializesRestrictionsPotential();
 		}

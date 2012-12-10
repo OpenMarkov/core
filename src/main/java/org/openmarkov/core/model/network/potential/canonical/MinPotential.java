@@ -12,7 +12,6 @@ package org.openmarkov.core.model.network.potential.canonical;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -67,8 +66,7 @@ public class MinPotential extends MinMaxPotential {
 	@Override
 	/** @returns A <code>TablePotential</code> with two variables: 
 	 *  <code>conditionedVariable</code> and <code>pseudoVariable</code>. */
-	public TablePotential getDeltaPotential()
-			throws NotEnoughMemoryException {
+	public TablePotential getDeltaPotential() {
 		Variable conditionedVariable = variables.get(0);
 		ArrayList<Variable> deltaVariables = new ArrayList<Variable>();
 		deltaVariables.add(pseudoVariable);
@@ -104,8 +102,7 @@ public class MinPotential extends MinMaxPotential {
 	 * @reference Efficient computation for the Noisy MAX
 	 * @argCondition subPotential is a probability table of one variable
 	 *  or a probability table of one variable given another variable. */
-	protected TablePotential getAccruedPotential(TablePotential subPotential)
-			throws NotEnoughMemoryException {
+	protected TablePotential getAccruedPotential(TablePotential subPotential) {
 		// TODO Revisar este metodo para el caso de un potential proyectado
 	    List<Variable> subPotentialVariables = subPotential.getVariables();
 		// Create a new TablePotential with the same variables,
@@ -146,7 +143,7 @@ public class MinPotential extends MinMaxPotential {
     }	
     
     @Override
-    public Potential copy () throws NotEnoughMemoryException
+    public Potential copy ()
     {
         MinPotential newPotential = new MinPotential (new ArrayList<Variable> (variables));
         for(int i=1; i<variables.size (); ++i)

@@ -34,7 +34,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
@@ -311,24 +310,21 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 	        if(potential instanceof ICIPotential)
 	        {
 			    ICIPotential potentialCopy;
-			    try
-			    {
-			        potentialCopy = (ICIPotential)potential.copy ();
-			        double[] noisyParameters = potentialCopy.getNoisyParameters(formalNode.getVariable());
-			        if(noisyParameters != null)
-			        {
-    			        potentialCopy = (ICIPotential) potentialCopy.removeVariable(formalNode.getVariable());
-    			        for(ProbNode paramNode : paramNodes)
-    			        {
-    			        	potentialCopy = (ICIPotential)potentialCopy.addVariable(paramNode.getVariable());
-    			        	potentialCopy.setNoisyParameters(paramNode.getVariable(), noisyParameters);
-    			        }
-    			        potentialsToReplace.put (potential, potentialCopy);
-			        }
-			    }
-			    catch (NotEnoughMemoryException e)
-			    {
-			    }
+
+				potentialCopy = (ICIPotential) potential.copy();
+				double[] noisyParameters = potentialCopy
+						.getNoisyParameters(formalNode.getVariable());
+				if (noisyParameters != null) {
+					potentialCopy = (ICIPotential) potentialCopy
+							.removeVariable(formalNode.getVariable());
+					for (ProbNode paramNode : paramNodes) {
+						potentialCopy = (ICIPotential) potentialCopy
+								.addVariable(paramNode.getVariable());
+						potentialCopy.setNoisyParameters(
+								paramNode.getVariable(), noisyParameters);
+					}
+					potentialsToReplace.put(potential, potentialCopy);
+				}
 	        }
 		}
 		for (ProbNode probNode : probNet.getProbNodes ())
@@ -383,17 +379,10 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 		HashMap<Potential, Potential> potentialsToReplace = new HashMap<Potential, Potential> ();
 		for (Potential potential : probNet.getPotentials (formalNode.getVariable ()))
 		{
-		    Potential potentialCopy;
-		    try
-		    {
-		        potentialCopy = potential.copy ();
-		        potentialCopy.replaceVariable (formalNode.getVariable (),
-		                                       paramNode.getVariable ());
-		        potentialsToReplace.put (potential, potentialCopy);
-		    }
-		    catch (NotEnoughMemoryException e)
-		    {
-		    }
+		    Potential potentialCopy = potential.copy();
+			potentialCopy.replaceVariable(formalNode.getVariable(),
+					paramNode.getVariable());
+			potentialsToReplace.put(potential, potentialCopy);
 		}
 		for (ProbNode probNode : probNet.getProbNodes ())
 		{
@@ -452,8 +441,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 					{
 						simpleEdits.add((PNEdit) undoableEdit);
 					}
-				} catch (NotEnoughMemoryException
-						| NonProjectablePotentialException
+				} catch (NonProjectablePotentialException
 						| WrongCriterionException e1) {
 					e1.printStackTrace();
 				}
@@ -585,7 +573,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 								{
 									newEdit = new SetPotentialEdit(probNode, setPotentialEdit.getNewPotentialType());
 								}
-							} catch (ProbNodeNotFoundException | NotEnoughMemoryException e1) {
+							} catch (ProbNodeNotFoundException e1) {
 								e1.printStackTrace();
 							}
 							
@@ -610,7 +598,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
                                 }                                   
 								
 								newEdit = new ChangePotentialEdit(this, oldPotential, newPotential);
-							} catch (NotEnoughMemoryException | ProbNodeNotFoundException e1) {
+							} catch (ProbNodeNotFoundException e1) {
 								e1.printStackTrace();
 							}
 						}else if(simpleEdit instanceof ICIPotentialEdit)
@@ -637,7 +625,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 						{
 							try {
 								doEdit(newEdit);
-							} catch (NotEnoughMemoryException | ConstraintViolationException
+							} catch (ConstraintViolationException
 									| CanNotDoEditException | NonProjectablePotentialException
 									| WrongCriterionException | DoEditException e1) {
 								e1.printStackTrace();
@@ -653,7 +641,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 	@Override
 	public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException,
-			NotEnoughMemoryException, NonProjectablePotentialException,
+			NonProjectablePotentialException,
 			WrongCriterionException {
 		// Do nothing
 		

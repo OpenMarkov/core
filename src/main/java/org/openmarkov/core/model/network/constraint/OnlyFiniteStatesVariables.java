@@ -15,7 +15,6 @@ import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -29,10 +28,10 @@ public class OnlyFiniteStatesVariables extends PNConstraint {
 
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit)
-	throws NotEnoughMemoryException, NonProjectablePotentialException, 
+	throws NonProjectablePotentialException, 
 	WrongCriterionException {
 	    List<PNEdit> edits = 
-			UtilConstraints.getEditsType(edit, AddProbNodeEdit.class);
+			UtilConstraints.getSimpleEditsByType(edit, AddProbNodeEdit.class);
 		
 		for (PNEdit simpleEdit : edits) {
 			Variable variable = ((AddProbNodeEdit)simpleEdit).getVariable (); 
@@ -50,7 +49,7 @@ public class OnlyFiniteStatesVariables extends PNConstraint {
 			}
 		}
 		edits = 
-			UtilConstraints.getEditsType(edit, VariableTypeEdit.class);
+			UtilConstraints.getSimpleEditsByType(edit, VariableTypeEdit.class);
 		for (PNEdit simpleEdit : edits) {
 
 			NodeType nodetype=((VariableTypeEdit)simpleEdit).getProbNode().getNodeType();

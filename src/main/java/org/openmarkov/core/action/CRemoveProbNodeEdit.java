@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.action;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.graph.Node;
@@ -36,15 +36,15 @@ public class CRemoveProbNodeEdit extends CompoundPNEdit{ //implements UsesVariab
 	
 	protected NodeType nodeType;
 	
-	protected ArrayList<Node> parents;
+	protected List<Node> parents;
 
-	protected ArrayList<Node> children;
+	protected List<Node> children;
 
-	protected ArrayList<Node> siblings;
+	protected List<Node> siblings;
 	
-	protected ArrayList<Potential> marginalizedPotentials;
+	protected List<Potential> marginalizedPotentials;
 
-	protected ArrayList<Potential> allPotentials;
+	protected List<Potential> allPotentials;
 	
 	protected ProbNet probNet;
 	

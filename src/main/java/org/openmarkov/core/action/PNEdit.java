@@ -13,7 +13,6 @@ import javax.swing.undo.UndoableEdit;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 
@@ -29,7 +28,6 @@ public interface PNEdit extends UndoableEdit {
      */
     public void doEdit ()
         throws DoEditException,
-        NotEnoughMemoryException,
         NonProjectablePotentialException,
         WrongCriterionException;
 

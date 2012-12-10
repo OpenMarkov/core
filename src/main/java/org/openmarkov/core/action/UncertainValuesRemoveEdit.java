@@ -11,7 +11,6 @@ package org.openmarkov.core.action;
 
 import java.util.ArrayList;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNode;
@@ -62,9 +61,6 @@ public class UncertainValuesRemoveEdit extends SimplePNEdit {
 		TablePotential auxProjected = null;
 		try {
 			auxProjected = potential.tableProject(configuration, null).get(0);
-		} catch (NotEnoughMemoryException e) {
-	
-			e.printStackTrace();
 		} catch (WrongCriterionException e) {
 		
 			e.printStackTrace();

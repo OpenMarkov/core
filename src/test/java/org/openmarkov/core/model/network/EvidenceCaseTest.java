@@ -21,7 +21,6 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -165,8 +164,7 @@ public class EvidenceCaseTest {
 	
 
 	@Test 
-	public void extendEvidence() throws NotEnoughMemoryException, 
-	IOException, ProbNodeNotFoundException, 
+	public void extendEvidence() throws IOException, ProbNodeNotFoundException, 
 	ConstraintViolationException, IncompatibleEvidenceException,
 	InvalidStateException, WrongCriterionException, NullPointerException {
 		

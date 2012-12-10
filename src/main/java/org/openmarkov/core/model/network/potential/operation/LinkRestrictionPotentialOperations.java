@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -232,7 +231,7 @@ public class LinkRestrictionPotentialOperations {
 	 */
 	public static Potential updatePotentialByAddLinkRestriction(ProbNode node,
 			TablePotential linkRestriction, int var1StateIndex,
-			int var2StateIndex) throws NotEnoughMemoryException {
+			int var2StateIndex) {
 
 	    List<Variable> linkVariables = linkRestriction.getVariables();
 		Variable var1 = linkVariables.get(0);

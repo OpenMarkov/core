@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.NodeType;
@@ -85,9 +84,7 @@ public class RemoveLinkEdit extends BaseLinkEdit {
     }
 
 	@Override
-	public void doEdit ()
-			throws NotEnoughMemoryException
-			{
+	public void doEdit () {
 		probNet.removeLink (node1, node2, isDirected);
 		this.link = probNet.getGraph ().getLink (node1.getNode (), node2.getNode (), isDirected);
 		if (updatePotentials)

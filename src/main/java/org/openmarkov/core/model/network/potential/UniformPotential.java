@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -96,7 +95,7 @@ public class UniformPotential extends Potential {
 	 * probability potential and the conditioned variable is numeric. */
 	public ArrayList<TablePotential> tableProject(EvidenceCase evidenceCase, 
 			InferenceOptions inferenceOptions)
-			throws NotEnoughMemoryException, NonProjectablePotentialException {
+			throws NonProjectablePotentialException {
         ArrayList<TablePotential> projectedPotentials = new ArrayList<TablePotential> ();
 		switch(role) {
 		case CONDITIONAL_PROBABILITY: 
@@ -192,7 +191,7 @@ public class UniformPotential extends Potential {
 
 	@Override
 	public Potential shift(ProbNet probNet, int timeSlice)
-			throws ProbNodeNotFoundException, NotEnoughMemoryException {
+			throws ProbNodeNotFoundException {
 		// TODO Auto-generated method stub
 		return null;
 	}

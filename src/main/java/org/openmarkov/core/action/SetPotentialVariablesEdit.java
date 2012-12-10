@@ -3,7 +3,6 @@ package org.openmarkov.core.action;
 import java.util.ArrayList;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 
@@ -22,10 +21,10 @@ public class SetPotentialVariablesEdit extends SimplePNEdit{
 	}
 
 	@Override
-	public void doEdit() throws DoEditException, NotEnoughMemoryException {
+	public void doEdit() throws DoEditException {
 		probNode.getPotentials().get(0).setVariables(newVariables);
 	}
-	public void undoEdit() throws DoEditException, NotEnoughMemoryException {
+	public void undoEdit() throws DoEditException {
 		probNode.getPotentials().get(0).setVariables(oldVariables);
 	}
 

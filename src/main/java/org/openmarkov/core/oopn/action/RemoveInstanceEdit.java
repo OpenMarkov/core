@@ -18,7 +18,6 @@ import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
@@ -71,7 +70,7 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 	}
 
 	@Override
-	public void generateEdits() throws NotEnoughMemoryException,
+	public void generateEdits() throws
 			NonProjectablePotentialException, WrongCriterionException {
 		
 		for(Link link : linksToRemove)
@@ -90,7 +89,7 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 
 
 	@Override
-	public void doEdit() throws DoEditException, NotEnoughMemoryException,
+	public void doEdit() throws DoEditException,
 			NonProjectablePotentialException, WrongCriterionException {
 		super.doEdit();
 		((OOPNet)probNet).getInstances().remove(instance.getName());

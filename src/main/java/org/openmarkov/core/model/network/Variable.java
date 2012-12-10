@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -514,7 +513,7 @@ public class Variable implements Cloneable {
 	}
 
 	public TablePotential deltaTablePotential(String stateName) 
-	throws NotEnoughMemoryException, InvalidStateException {
+	throws InvalidStateException {
 	  	ArrayList<Variable> potentialVariables = 
 	   		new ArrayList<Variable>();
 	   	potentialVariables.add(this);
@@ -528,8 +527,7 @@ public class Variable implements Cloneable {
 	   	return potential;
 	}
 	
-	public TablePotential deltaTablePotential(State state) 
-	throws NotEnoughMemoryException {
+	public TablePotential deltaTablePotential(State state) {
 	  	ArrayList<Variable> potentialVariables = 
 	   		new ArrayList<Variable>();
 	   	potentialVariables.add(this);
@@ -544,7 +542,7 @@ public class Variable implements Cloneable {
 	}
 	
 	public TablePotential createDeltaTablePotential(int stateIndex) 
-	throws NotEnoughMemoryException, InvalidStateException {
+	throws InvalidStateException {
 	  	ArrayList<Variable> potentialVariables = 
 	   		new ArrayList<Variable>();
 	   	potentialVariables.add(this);

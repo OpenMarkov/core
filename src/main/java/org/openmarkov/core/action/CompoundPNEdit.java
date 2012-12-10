@@ -17,7 +17,6 @@ import javax.swing.undo.UndoableEdit;
 import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 
@@ -56,7 +55,8 @@ public abstract class CompoundPNEdit extends CompoundEdit implements PNEdit {
 	 * @throws NotEnoughMemoryException 
 	 * @throws WrongCriterionException 
 	 * @throws NonProjectablePotentialException */
-	public void doEdit() throws DoEditException, NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
+	public void doEdit() throws DoEditException,
+			NonProjectablePotentialException, WrongCriterionException {
 		if (!generatedEdits) {
 			generateEdits();
 			generatedEdits = true;
@@ -67,8 +67,8 @@ public abstract class CompoundPNEdit extends CompoundEdit implements PNEdit {
 		super.end();
 	}
 	
-	public abstract void generateEdits() throws NotEnoughMemoryException, 
-	NonProjectablePotentialException, WrongCriterionException;
+	public abstract void generateEdits()
+			throws NonProjectablePotentialException, WrongCriterionException;
 
 	protected void setTypicalRedo(boolean redo){
 		typicalRedo = redo;
@@ -92,7 +92,7 @@ public abstract class CompoundPNEdit extends CompoundEdit implements PNEdit {
 	 * @throws WrongCriterionException 
 	 * @throws NonProjectablePotentialException */
 	public Vector<UndoableEdit> getEdits() 
-	throws NotEnoughMemoryException, NonProjectablePotentialException, 
+	throws NonProjectablePotentialException, 
 	WrongCriterionException {
 		if (!generatedEdits) {
 			generateEdits();

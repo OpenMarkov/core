@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
 
@@ -36,7 +35,7 @@ public class EvidencePotentials {
 	public static HashMap<Variable, TablePotential> addEvidencePotentials(
 			HashMap<Variable, TablePotential> individualProbabilities,
 			List<Variable> variablesOfInterest, EvidenceCase evidence) 
-			throws NotEnoughMemoryException {
+	 {
 		
 		// Creates a fast structure for consultation with evidence variables
 		if ((evidence != null) && (!evidence.isEmpty())) {

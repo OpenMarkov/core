@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
@@ -250,7 +249,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
         } else {
 	        if (numParents > 0) {
         		out.append (((numParents == 1)? "Parent" : "Parents") + ": {");        		
-	        	ArrayList<Node> parents = node.getParents();
+        		List<Node> parents = node.getParents();
 	        	for (int i = 0; i < parents.size(); i++) {
 	        		ProbNode probNode =(ProbNode)parents.get(i).getObject(); 
 	        		out.append(probNode.getVariable());
@@ -262,7 +261,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	    	}
 	    	if (numChildren > 0) {
 	    	    out.append (((numChildren == 1)? "Child" : "Children") + ": {");              
-	        	ArrayList<Node> children = node.getChildren();
+	    	    List<Node> children = node.getChildren();
 	        	for (int i = 0; i < children.size(); i++) {
 	        		ProbNode probNode =(ProbNode)children.get(i).getObject(); 
 	        		out.append(probNode.getVariable());
@@ -274,7 +273,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	    	}
 	    	if (numSiblings > 0) {
                 out.append (((numSiblings == 1)? "Sibling" : "Siblings") + ": {");              
-	        	ArrayList<Node> siblings = node.getSiblings();
+                List<Node> siblings = node.getSiblings();
 	        	for (int i = 0; i < siblings.size(); i++) {
 	        		ProbNode probNode =(ProbNode)siblings.get(i).getObject(); 
                     out.append(probNode.getVariable());
@@ -468,8 +467,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 
 	/** @param simulationIndexVariable. <code>Variable</code>
 	 * @throws NotEnoughMemoryException */
-	public void samplePotentials(Variable simulationIndexVariable)
-			throws NotEnoughMemoryException {
+	public void samplePotentials(Variable simulationIndexVariable) {
 		for (int i = 0; i < potentials.size(); i++) {
 			Potential originalPotential = potentials.get(i);
 			potentials.set(i, 
@@ -493,7 +491,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 * @throws NonProjectablePotentialException 
 	 */
 	private double getApproximateMaxOrMinUtilityFunction(boolean computeMax)
-			throws NotEnoughMemoryException, NonProjectablePotentialException {
+			throws NonProjectablePotentialException {
 		double result;
 		List<Potential> potentials = getPotentials();
 
@@ -542,7 +540,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 * @throws NotEnoughMemoryException
 	 * @throws NonProjectablePotentialException 
 	 */
-	public double getApproximateMaximumUtilityFunction() throws NotEnoughMemoryException, NonProjectablePotentialException{
+	public double getApproximateMaximumUtilityFunction() throws NonProjectablePotentialException{
 		
 		return getApproximateMaxOrMinUtilityFunction(true);
 	}
@@ -554,7 +552,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 * @throws NotEnoughMemoryException
 	 * @throws NonProjectablePotentialException 
 	 */
-	public double getApproximateMinimumUtilityFunction() throws NotEnoughMemoryException, NonProjectablePotentialException{
+	public double getApproximateMinimumUtilityFunction() throws NonProjectablePotentialException{
 		
 		return getApproximateMaxOrMinUtilityFunction(false);
 	}
@@ -567,7 +565,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 * @throws NotEnoughMemoryException
 	 * @throws NonProjectablePotentialException 
 	 */
-	public TablePotential getUtilityFunction() throws NotEnoughMemoryException,
+	public TablePotential getUtilityFunction() throws
 			NonProjectablePotentialException, WrongCriterionException {
 		ProbNode probNode;
 		TablePotential result;

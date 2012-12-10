@@ -12,7 +12,6 @@ package org.openmarkov.core.model.network.potential.canonical;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -51,16 +50,13 @@ public abstract class MinMaxPotential extends ICIPotential {
         
 	// Methods
 	/** @return Delta<sub>Y</sub> potential. <code>TablePotential</code> */
-	protected abstract TablePotential getDeltaPotential() 
-			throws NotEnoughMemoryException;
+	protected abstract TablePotential getDeltaPotential();
 	
 	/** @return C<sub>y</sub><sup>x<sub>i</sub></sup> potential. 
 	 *  <code>TablePotential</code> */
-    protected abstract TablePotential getAccruedPotential (TablePotential potential)
-        throws NotEnoughMemoryException;
+    protected abstract TablePotential getAccruedPotential (TablePotential potential);
 
-	public List<TablePotential> getAccruedPotentials(List<TablePotential> subpotentials)
-			throws NotEnoughMemoryException {
+	public List<TablePotential> getAccruedPotentials(List<TablePotential> subpotentials) {
 		List<TablePotential> accruedPotentials = 
 			new ArrayList<TablePotential>(subpotentials.size());
 		for (TablePotential subpotential : subpotentials) {
@@ -74,10 +70,9 @@ public abstract class MinMaxPotential extends ICIPotential {
 	 *  C<sub>D'</sub><sup>B</sup>, C<sub>D</sub><sup>*</sup>.
 	 *  <code>ArrayList</code> of <code>TablePotential</code> 
 	 * @throws NotEnoughMemoryException */
-    public ArrayList<TablePotential> getTablePotentials ()
-        throws NotEnoughMemoryException
+    public List<TablePotential> getTablePotentials ()
     {
-        ArrayList<TablePotential> iCIPotentials = new ArrayList<TablePotential> ();
+        List<TablePotential> iCIPotentials = new ArrayList<TablePotential> ();
         iCIPotentials.add (getDeltaPotential ());
         // subPotentials must be of sub-type TablePotential
         for (TablePotential potential : buildSubpotentialList())
@@ -94,7 +89,7 @@ public abstract class MinMaxPotential extends ICIPotential {
 	 */
 	public ArrayList<TablePotential> tableProject(EvidenceCase evidence, 
 			InferenceOptions inferenceOptions) 
-			throws NotEnoughMemoryException, WrongCriterionException {
+			throws WrongCriterionException {
         ArrayList<TablePotential> potentials = new ArrayList<TablePotential> ();
 		for (TablePotential subPotential : buildSubpotentialList()) {
 			potentials.addAll(subPotential.tableProject(evidence, null));
@@ -107,7 +102,7 @@ public abstract class MinMaxPotential extends ICIPotential {
 	/**	@return The conditional probability table given by this potential
 	 * 
 	 */
-	public TablePotential getCPT() throws NotEnoughMemoryException {
+	public TablePotential getCPT() {
 		ArrayList<Variable> variablesToEliminate = new ArrayList<Variable>(1);
 		variablesToEliminate.add(pseudoVariable);
 		
@@ -124,7 +119,7 @@ public abstract class MinMaxPotential extends ICIPotential {
      * @return <code>ArrayList</code> of <code>TablePotential</code>. 
      * @throws NotEnoughMemoryException 
      * */
-    protected List<TablePotential> buildSubpotentialList() throws NotEnoughMemoryException {
+    protected List<TablePotential> buildSubpotentialList() {
         List<TablePotential> subpotentials = new ArrayList<TablePotential> ();
 
         //Noisy parents
@@ -154,7 +149,6 @@ public abstract class MinMaxPotential extends ICIPotential {
 	
     @Override
     public TablePotential getFFunctionPotential ()
-        throws NotEnoughMemoryException
     {
         // We won't be using it
         return null;

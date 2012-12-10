@@ -18,7 +18,6 @@ import javax.swing.undo.UndoableEdit;
 import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 
 /** Utility methods for constraint package. */
@@ -34,13 +33,12 @@ public class UtilConstraints {
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
      */
-    public static List<PNEdit> getEditsType (PNEdit edit,
+    public static List<PNEdit> getSimpleEditsByType (PNEdit edit,
                                                   Class<?> typeEdit)
-        throws NotEnoughMemoryException,
-        NonProjectablePotentialException,
+        throws NonProjectablePotentialException,
         WrongCriterionException
     {
-        ArrayList<PNEdit> edits = new ArrayList<PNEdit> ();
+        List<PNEdit> edits = new ArrayList<PNEdit> ();
         if (edit.getClass () == typeEdit)
         {
             edits.add ((PNEdit) edit);

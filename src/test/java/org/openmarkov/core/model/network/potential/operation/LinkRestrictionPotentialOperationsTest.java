@@ -7,7 +7,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.NodeType;
@@ -28,7 +27,7 @@ public class LinkRestrictionPotentialOperationsTest {
 	// private Node nodeA, nodeB, nodeC;
 
 	@Before
-	public void setUp() throws NodeNotFoundException, NotEnoughMemoryException {
+	public void setUp() throws NodeNotFoundException {
 
 		stateA = new State[] { new State("A1"), new State("A2"),
 				new State("A3") };
@@ -60,7 +59,7 @@ public class LinkRestrictionPotentialOperationsTest {
 				PotentialRole.CONDITIONAL_PROBABILITY);
 		nodeB.addPotential(potential);
 		net.addPotential(potential);
-		ArrayList<Link> links = net.getGraph().getLinks();
+		List<Link> links = net.getGraph().getLinks();
 		for (Link link : links) {
 			if (((ProbNode) link.getNode1().getObject()).getVariable().equals(
 					varA)) {
@@ -72,13 +71,7 @@ public class LinkRestrictionPotentialOperationsTest {
 			}
 
 		}
-
-		try {
-			link.initializesRestrictionsPotential();
-		} catch (NotEnoughMemoryException e) {
-			e.printStackTrace();
-		}
-
+		link.initializesRestrictionsPotential();
 	}
 
 	@Test
@@ -101,7 +94,7 @@ public class LinkRestrictionPotentialOperationsTest {
 
 	@Test
 	public void testUpdatePotentialByAddLinkRestriction()
-			throws NotEnoughMemoryException, ProbNodeNotFoundException {
+			throws ProbNodeNotFoundException {
 
 		TablePotential probabilityPotential = (TablePotential) LinkRestrictionPotentialOperations
 				.updatePotentialByAddLinkRestriction(net.getProbNode("B"),
@@ -140,7 +133,7 @@ public class LinkRestrictionPotentialOperationsTest {
 
 	@Test
 	public void testUpdatePotentialByLinkRestrictions()
-			throws ProbNodeNotFoundException, NotEnoughMemoryException {
+			throws ProbNodeNotFoundException {
 		link.setCompatibilityValue(stateA[0], stateB[0], 0);
 		link2.initializesRestrictionsPotential();
 		link2.setCompatibilityValue(stateC[0], stateB[0], 0);
@@ -175,7 +168,7 @@ public class LinkRestrictionPotentialOperationsTest {
 	}
 
 	@Test
-	public void testGetStateCombinationsWithLinkRestriction() throws ProbNodeNotFoundException, NotEnoughMemoryException {
+	public void testGetStateCombinationsWithLinkRestriction() throws ProbNodeNotFoundException {
 		link.setCompatibilityValue(stateA[0], stateB[0], 0);
 		link2.initializesRestrictionsPotential();
 		link2.setCompatibilityValue(stateC[0], stateB[0], 0);

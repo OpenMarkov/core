@@ -12,7 +12,6 @@ import javax.swing.undo.CannotUndoException;
 
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.oopn.Instance;
@@ -40,7 +39,7 @@ public class AddReferenceLinkEdit extends SimplePNEdit{
 	}	
 	
 	@Override
-	public void doEdit() throws DoEditException, NotEnoughMemoryException {
+	public void doEdit() throws DoEditException {
 		((OOPNet)probNet).addReferenceLink(referenceLink);
 	}	
 	

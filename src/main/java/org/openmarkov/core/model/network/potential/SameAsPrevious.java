@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -63,9 +62,6 @@ public class SameAsPrevious extends Potential {
 			} catch (ProbNodeNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
 		type = PotentialType.SAME_AS_PREVIOUS;
@@ -100,7 +96,7 @@ public class SameAsPrevious extends Potential {
 	@Override
 	public List<TablePotential> tableProject(EvidenceCase evidenceCase,
 			InferenceOptions inferenceOptions)
-	throws NonProjectablePotentialException, NotEnoughMemoryException,
+	throws NonProjectablePotentialException,
 	WrongCriterionException {
 		if (originalPotential instanceof TreeADDPotential) {
 			return originalPotential.tableProject(evidenceCase, inferenceOptions);
@@ -171,7 +167,7 @@ public class SameAsPrevious extends Potential {
 	@Override
 	// TODO Quitar error
 	public Potential shift(ProbNet probNet, int timeSlice)
-			throws ProbNodeNotFoundException, NotEnoughMemoryException {
+			throws ProbNodeNotFoundException {
 		throw new Error("We have invoked SameAsPrevious.shift()");
 	}
 	

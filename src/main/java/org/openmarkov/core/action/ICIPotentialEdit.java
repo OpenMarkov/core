@@ -12,7 +12,6 @@ package org.openmarkov.core.action;
 import javax.swing.undo.CannotUndoException;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
@@ -46,7 +45,7 @@ public class ICIPotentialEdit extends SimplePNEdit {
 	}	
 
 	@Override
-	public void doEdit() throws DoEditException, NotEnoughMemoryException {
+	public void doEdit() throws DoEditException {
 		if(isNoisyParameter)
 		{
 			potential.setNoisyParameters(variable, noisyParameters);

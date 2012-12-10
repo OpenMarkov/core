@@ -17,7 +17,6 @@ import org.openmarkov.core.action.ChangeVariableNameEdit;
 import org.openmarkov.core.action.NodeNameEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -28,9 +27,9 @@ public class DistinctVariableNames extends PNConstraint {
 
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
-			throws NotEnoughMemoryException, NonProjectablePotentialException,
+			throws NonProjectablePotentialException,
 			WrongCriterionException {
-	    List<PNEdit> edits = UtilConstraints.getEditsType(edit,
+	    List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit,
 				AddProbNodeEdit.class);
 		List<Variable> variablesProbNet = probNet.getVariables();
 		List<String> variablesProbNetNames = new ArrayList<String>();
@@ -66,7 +65,7 @@ public class DistinctVariableNames extends PNConstraint {
 		}
 
 		// ChangeVariableName Edit
-        edits = UtilConstraints.getEditsType (edit, ChangeVariableNameEdit.class);
+        edits = UtilConstraints.getSimpleEditsByType (edit, ChangeVariableNameEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			String newName = ((ChangeVariableNameEdit) simpleEdit).getNewName();
 			for (String variableProbNetName : variablesProbNetNames) {
@@ -77,7 +76,7 @@ public class DistinctVariableNames extends PNConstraint {
 		}
 		
         // NodeNameEdit
-        edits = UtilConstraints.getEditsType (edit, NodeNameEdit.class);
+        edits = UtilConstraints.getSimpleEditsByType (edit, NodeNameEdit.class);
         for (PNEdit simpleEdit : edits) {
             String newName = ((NodeNameEdit) simpleEdit).getNewName();
             for (String variableProbNetName : variablesProbNetNames) {

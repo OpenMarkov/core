@@ -12,7 +12,6 @@ package org.openmarkov.core.model.network.potential.operation;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -164,41 +163,37 @@ public class SharedTestUtilities {
 		arrayVariablesBCD.add(d);
 		
 		// Create TablePotential's
-		try {
-			t1 = new TablePotential(
-					variablesT1, PotentialRole.CONDITIONAL_PROBABILITY);
-			t2 = new TablePotential(
-					variablesT2, PotentialRole.CONDITIONAL_PROBABILITY);
-			t3 = new TablePotential(
-					variablesT3, PotentialRole.CONDITIONAL_PROBABILITY);
-			t4 = new TablePotential(
-					variablesT4, PotentialRole.CONDITIONAL_PROBABILITY);
-			// Initialize not constant potentials tables
-			t2.values[0] = 0.1;
-			t2.values[1] = 0.2;
-			t2.values[2] = 0.7;
-			t2.values[3] = 0.2;
-			t2.values[4] = 0.5;
-			t2.values[5] = 0.3;
-			t2.values[6] = 0.6;
-			t2.values[7] = 0.3;
-			t2.values[8] = 0.1;
-			
-			t4.values[0] = 0.2;
-			t4.values[1] = 0.8;
-			t4.values[2] = 0.1;
-			t4.values[3] = 0.9;
-			t4.values[4] = 0.3;
-			t4.values[5] = 0.7;
-			t4.values[6] = 0.4;
-			t4.values[7] = 0.6;
-			t4.values[8] = 0.9;			
-			t4.values[9] = 0.1;
-			t4.values[10] = 0.8;
-			t4.values[11] = 0.2;
-		} catch (NotEnoughMemoryException e) {
-			System.err.println(e.getMessage());
-		}
+		t1 = new TablePotential(
+				variablesT1, PotentialRole.CONDITIONAL_PROBABILITY);
+		t2 = new TablePotential(
+				variablesT2, PotentialRole.CONDITIONAL_PROBABILITY);
+		t3 = new TablePotential(
+				variablesT3, PotentialRole.CONDITIONAL_PROBABILITY);
+		t4 = new TablePotential(
+				variablesT4, PotentialRole.CONDITIONAL_PROBABILITY);
+		// Initialize not constant potentials tables
+		t2.values[0] = 0.1;
+		t2.values[1] = 0.2;
+		t2.values[2] = 0.7;
+		t2.values[3] = 0.2;
+		t2.values[4] = 0.5;
+		t2.values[5] = 0.3;
+		t2.values[6] = 0.6;
+		t2.values[7] = 0.3;
+		t2.values[8] = 0.1;
+		
+		t4.values[0] = 0.2;
+		t4.values[1] = 0.8;
+		t4.values[2] = 0.1;
+		t4.values[3] = 0.9;
+		t4.values[4] = 0.3;
+		t4.values[5] = 0.7;
+		t4.values[6] = 0.4;
+		t4.values[7] = 0.6;
+		t4.values[8] = 0.9;			
+		t4.values[9] = 0.1;
+		t4.values[10] = 0.8;
+		t4.values[11] = 0.2;
 		
 		// Create array of potentials
 		potentials = new ArrayList<TablePotential>();
@@ -271,13 +266,7 @@ public class SharedTestUtilities {
 	 *  @return TablePotential
 	 *  @throws NotEnoughMemoryException */
 	public static TablePotential createTablePotential(int numVariables, 
-			double[] table, HashMap<String, Object> properties) 
-			throws NotEnoughMemoryException {
-		if (numVariables > numLetters) {
-			throw new NotEnoughMemoryException("Too much variables creating " +
-					"a TablePotential with " + numVariables + 
-					" variables. (max = " + numLetters + ")");
-		}
+			double[] table, HashMap<String, Object> properties) {
 		// Create variables
 		ArrayList<Variable> variables = new ArrayList<Variable>(numVariables);
 		Variable variable;

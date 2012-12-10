@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.PotentialOperationException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -295,7 +294,6 @@ public class TreeADDPotential extends Potential
      * @throws NotEnoughMemoryException
      */
     public Potential addVariable (Variable variable)
-        throws NotEnoughMemoryException
     {
         // return new UniformPotential(getVariables(), getPotentialRole());
         List<Variable> variables = getVariables ();
@@ -312,7 +310,7 @@ public class TreeADDPotential extends Potential
      * Removes variable from a treeADD potential
      * @throws NotEnoughMemoryException
      */
-    public  Potential removeVariable(Variable variable) throws NotEnoughMemoryException {
+    public  Potential removeVariable(Variable variable) {
         List<Variable> newVariables = getVariables();
         newVariables.remove(variable);
         return new UniformPotential(newVariables, getPotentialRole());
@@ -322,7 +320,6 @@ public class TreeADDPotential extends Potential
     public List<TablePotential> tableProject (EvidenceCase evidenceCase,
                                               InferenceOptions inferenceOptions)
         throws NonProjectablePotentialException,
-        NotEnoughMemoryException,
         WrongCriterionException
     {
         List<TablePotential> potentialsToSumUp = new ArrayList<TablePotential> ();
@@ -473,8 +470,7 @@ public class TreeADDPotential extends Potential
      */
     @Override
     public Potential shift (ProbNet probNet, int timeDifference)
-        throws ProbNodeNotFoundException,
-        NotEnoughMemoryException
+        throws ProbNodeNotFoundException
     {
         TreeADDPotential copiedTree = new TreeADDPotential (this);
         List<Variable> copiedTreeVariables = new ArrayList<> ();
@@ -551,7 +547,6 @@ public class TreeADDPotential extends Potential
 
     @Override
     public Potential copy ()
-        throws NotEnoughMemoryException
     {
         return new TreeADDPotential (this);
     }
@@ -603,7 +598,6 @@ public class TreeADDPotential extends Potential
      * Generates a sampled potential
      */
     public Potential sample (Variable simulationIndexVariable)
-        throws NotEnoughMemoryException
     {
         TreeADDPotential sampledTree = (TreeADDPotential) this.copy ();
         for (TreeADDBranch branch : sampledTree.getBranches ())

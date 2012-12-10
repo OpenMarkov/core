@@ -10,7 +10,6 @@
 
 package org.openmarkov.core.model.network.type;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -21,7 +20,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -84,14 +82,15 @@ public class NetworkTypeTests
     }      
     
     @Test (expected=ConstraintViolationException.class) 
-    public void testImpossibleNetworkTypeConversion () throws ConstraintViolationException, NotEnoughMemoryException, CanNotDoEditException, NonProjectablePotentialException, WrongCriterionException, DoEditException
-    {
+	public void testImpossibleNetworkTypeConversion()
+			throws ConstraintViolationException, CanNotDoEditException,
+			NonProjectablePotentialException, WrongCriterionException,
+			DoEditException    {
         ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
         AddProbNodeEdit addVariableEdit = new AddProbNodeEdit (probNet, new Variable("a"), NodeType.DECISION); 
         probNet.setNetworkType (InfluenceDiagramType.getUniqueInstance ());
 
-        probNet.getPNESupport ().announceEdit(addVariableEdit);
-        probNet.getPNESupport ().doEdit(addVariableEdit);
+        probNet.doEdit(addVariableEdit);
         probNet.setNetworkType (BayesianNetworkType.getUniqueInstance ());
     }      
     

@@ -20,7 +20,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 
@@ -51,12 +50,6 @@ public class PNESupport extends UndoableEditSupport {
 	 * @see javax.swing.undo#UndoManager
 	 */
 	protected UndoManagerSupport undoManagerSupport;
-
-    /**
-     * When we open a parenthesis, we increase this variable and when we close
-     * one we decrease it.
-     */
-	private int parenthesisDepth = 0;
 
 	private boolean significantEdits = true;
 
@@ -104,8 +97,7 @@ public class PNESupport extends UndoableEditSupport {
 	 *         modifications in others listeners such as heuristics, GUI, ...
 	 */
 	public void announceEdit(PNEdit edit) throws ConstraintViolationException,
-			CanNotDoEditException, NotEnoughMemoryException, 
-			NonProjectablePotentialException, WrongCriterionException {
+			CanNotDoEditException, NonProjectablePotentialException, WrongCriterionException {
 		UndoableEditEvent event = new UndoableEditEvent(this, edit);
 		for (UndoableEditListener listener : listeners) {
 			((PNUndoableEditListener) listener).undoableEditWillHappen(event);
@@ -123,8 +115,7 @@ public class PNESupport extends UndoableEditSupport {
 	 * @throws NonProjectablePotentialException
 	 */
 	public void doEdit(PNEdit edit) 
-	throws DoEditException,	NotEnoughMemoryException, 
-	NonProjectablePotentialException,
+	throws DoEditException,	NonProjectablePotentialException,
 			WrongCriterionException {
 		// Inform the listeners that an edition will happen
 		// May return an exception
@@ -242,7 +233,6 @@ public class PNESupport extends UndoableEditSupport {
 	 */
 	public void openParenthesis() {
 		if (withUndo) {
-			parenthesisDepth++; // TODO Eliminar
 			openParenthesis = true;
 			editCount = 0;
 			editsExecuted = false;
@@ -255,7 +245,6 @@ public class PNESupport extends UndoableEditSupport {
 	 */
 	public void closeParenthesis() {
 		if (withUndo) {
-			parenthesisDepth--;// TODO Eliminar
 			openParenthesis = false;
 			significantEdits = true;
 		}

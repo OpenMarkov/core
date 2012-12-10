@@ -14,7 +14,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.inference.PartialOrder;
 import org.openmarkov.core.model.graph.Node;
@@ -65,8 +64,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 		 *   (<code>ProbNet</code>). 
 		 * @throws NotEnoughMemoryException */
 		public MarkovDecisionNetwork(ProbNet originalNet,
-				List<? extends Potential> projectedTablePotentials) 
-				throws NotEnoughMemoryException {
+				List<? extends Potential> projectedTablePotentials) {
 			super(MarkovNetworkType.getUniqueInstance ());
 			try {
 				addConstraint (new OnlyUndirectedLinks (), true);

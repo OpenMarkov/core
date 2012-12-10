@@ -11,6 +11,7 @@ package org.openmarkov.core.model.graph;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
@@ -43,16 +44,16 @@ public class Node {
 	protected Object object;
 
 	/** The parents of this node (directed links)*/
-	protected ArrayList<Node> parents = new ArrayList<Node>();
+	protected List<Node> parents = new ArrayList<Node>();
 
 	/** The children of this node (directed links)*/
-	protected ArrayList<Node> children = new ArrayList<Node>();
+	protected List<Node> children = new ArrayList<Node>();
 
 	/**  The siblings of this node (undirected links)*/
-	protected ArrayList<Node> siblings = new ArrayList<Node>();
+	protected List<Node> siblings = new ArrayList<Node>();
 
 	/** Explicit links defined to/from this node */
-	protected ArrayList<Link> links = new ArrayList<Link>();
+	protected List<Link> links = new ArrayList<Link>();
 	
 	/** The X coordinate of node */
 	private double coordinateX = 100;
@@ -117,7 +118,7 @@ public class Node {
 	 *  <code>HashSet</code> and then build and <code>ArrayList</code> of 
 	 *  <code>Node</code>).
 	 * @consultation */
-	public ArrayList<Node> getNeighbors() {
+	public List<Node> getNeighbors() {
 		HashSet<Node> hashSetNodes = new HashSet<Node>(siblings);
 		hashSetNodes.addAll(children);
 		hashSetNodes.addAll(parents);
@@ -137,34 +138,30 @@ public class Node {
 	 *  <code>ArrayList</code> and the node can have implicit links not 
 	 *  reflected here
 	 * @consultation */
-	@SuppressWarnings("unchecked")
-	public ArrayList<Link> getLinks() {
-		return (ArrayList<Link>)links.clone();
+	public List<Link> getLinks() {
+		return new ArrayList<Link>(links);
 	}
 
 	/** @return <code>ArrayList</code> of <code>Node</code>s with the children
 	 * of this node
 	 * @consultation */
-	@SuppressWarnings("unchecked")
-	public ArrayList<Node> getChildren() {
-		return (ArrayList<Node>)children.clone();
+	public List<Node> getChildren() {
+		return new ArrayList<Node>(children);
 	}
 
 	/** @return <code>ArrayList</code> of <code>Node</code>s with the parents of
 	 * this node
 	 * @consultation */
-	@SuppressWarnings("unchecked")
-	public ArrayList<Node> getParents() {
-		return (ArrayList<Node>)parents.clone();
+	public List<Node> getParents() {
+		return new ArrayList<Node>(parents);
 	}
 
 	
-	/** @return <code>ArrayList</code> of <code>Node</code>s with the siblings
+	/** @return <code>List</code> of <code>Node</code>s with the siblings
 	 * of this node
 	 * @consultation */
-	@SuppressWarnings("unchecked")
-	public ArrayList<Node> getSiblings() {
-		return (ArrayList<Node>)siblings.clone();
+	public List<Node> getSiblings() {
+		return new ArrayList<Node>(siblings);
 	}
 
 	/** @consultation */
@@ -192,7 +189,7 @@ public class Node {
 	 * <code>openmarkov.Graph#removeNode</code> */
 	void uf_removeAllLinks() {
 		if (graph.useExplicitLinks()) {
-			ArrayList<Link> listLinks = getLinks();
+			List<Link> listLinks = getLinks();
 			if (listLinks.size() != 0) {
 				for (Link link : listLinks) {
 					graph.removeLink(link);
@@ -217,8 +214,8 @@ public class Node {
 	/** @prerequisite The graph has explicit links
 	 * @return A list of explicit links directed to this node
 	 * @consultation */
-	ArrayList<Link> parentLinks() {
-		ArrayList<Link> parentLinks = new ArrayList<Link>();
+	List<Link> parentLinks() {
+		List<Link> parentLinks = new ArrayList<Link>();
 
 		for (Link link : links) {
 			if (link.isDirected()) {
@@ -234,8 +231,8 @@ public class Node {
 	 * @return A vector with a list of undirected links associated with this 
 	 * node
 	 * @consultation */
-	ArrayList<Link> siblingLinks() {
-		ArrayList<Link> siblingLinks = new ArrayList<Link>();
+	List<Link> siblingLinks() {
+		List<Link> siblingLinks = new ArrayList<Link>();
 
 		for (Link link : links) {
 			if (!link.isDirected()) {
@@ -252,8 +249,8 @@ public class Node {
 	 * @return <code>ArrayList</code> of directed <code>Link</code>s with this
 	 * node as father.
 	 * @consultation */
-	ArrayList<Link> childLinks() {
-		ArrayList<Link> childLinks = new ArrayList<Link>();
+	List<Link> childLinks() {
+		List<Link> childLinks = new ArrayList<Link>();
 
 		for (Link auxLink : links) {
 			if (auxLink.isDirected()) {

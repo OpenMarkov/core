@@ -8,7 +8,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -105,7 +104,7 @@ public class NumericalTreeADDTableProjectTest {
 	}
 	
 	@Test
-	public void testTableProject() throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
+	public void testTableProject() throws NonProjectablePotentialException, WrongCriterionException {
 	    List<Finding> findings = new ArrayList<>();
 		Finding value = new Finding(age, 0.5);
 		findings.add(value);
@@ -126,7 +125,8 @@ public class NumericalTreeADDTableProjectTest {
 	}
 	
 	@Test
-	public void testTablePorjectNumericalTop() throws NotEnoughMemoryException, NonProjectablePotentialException, WrongCriterionException {
+	public void testTablePorjectNumericalTop()
+			throws NonProjectablePotentialException, WrongCriterionException {
 		//Evidence
 		ProbNet probNet = NetsFactory.createSemiMarkovOnlyChanceNet();
 		List<Finding> findings = new ArrayList<>();

@@ -9,13 +9,11 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -29,7 +27,7 @@ public class OnlyUndirectedLinks extends PNConstraint {
 
     @Override
 	public boolean checkProbNet(ProbNet probNet) {
-		ArrayList<Node> nodes = probNet.getGraph().getNodes();
+    	List<Node> nodes = probNet.getGraph().getNodes();
 		for (Node node : nodes) {
 			// Only check children because with this is enough
 			// to look for directed links
@@ -42,10 +40,10 @@ public class OnlyUndirectedLinks extends PNConstraint {
 
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
-	throws NotEnoughMemoryException, NonProjectablePotentialException, 
+	throws NonProjectablePotentialException, 
 	WrongCriterionException {
 		List<PNEdit> edits = 
-			UtilConstraints.getEditsType(edit, AddLinkEdit.class);
+			UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			if (((AddLinkEdit)simpleEdit).isDirected()) {
 				AddLinkEdit addLink = (AddLinkEdit)simpleEdit;

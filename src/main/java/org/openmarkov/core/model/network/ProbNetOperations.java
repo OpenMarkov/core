@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Stack;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -57,7 +56,6 @@ public class ProbNetOperations {
 	 * @param evidence. <code>EvidenceCase</code>
 	 * @throws NotEnoughMemoryException */
     public static void projectEvidence (ProbNet probNet, EvidenceCase evidence)
-        throws NotEnoughMemoryException
     {
         List<Variable> variables = evidence.getVariables ();
         for (Variable variable : variables)
@@ -187,7 +185,7 @@ public class ProbNetOperations {
 		// nodesToExplore
 		HashSet<Node> nodesToKeepClon = new HashSet<Node>(nodesToKeep);
 		for (Node node : nodesToKeepClon) {
-			ArrayList<Node> neighbors = node.getNeighbors();
+			List<Node> neighbors = node.getNeighbors();
 			for (Node neighbor : neighbors) {
 				if (!nodesToKeep.contains(neighbor)) {
 					nodesToKeep.add(neighbor);
@@ -208,7 +206,7 @@ public class ProbNetOperations {
 			// Find head to head connected nodes: X->Y<-Z and
 			// Y is evidence or Y has a descendent that is evidence
 			if (evidenceAndAncestors.contains(node)) {
-				ArrayList<Node> parents = node.getParents();
+				List<Node> parents = node.getParents();
 				int parentsSize = parents.size();
 				for (int i = 0; i < parentsSize - 1; i++) {
 					Node parentI = parents.get(i);
@@ -226,7 +224,7 @@ public class ProbNetOperations {
 				}
 			}
 			// X has a children Y that is part of the evidence
-			ArrayList<Node> xChildren = node.getChildren();
+			List<Node> xChildren = node.getChildren();
 			for (Node child : xChildren) {
 				if (evidenceAndAncestors.contains(child)) {
 					pushInExploreAndAddToKeep(child,nodesToExplore,nodesToKeep);					
@@ -236,8 +234,8 @@ public class ProbNetOperations {
 			// Find not head to head connected nodes:
 			// X->Y->Z, X<-Y<-Z and X<-Y->Z
 			if (!hashEvidenceNodes.contains(node)) {
-				ArrayList<Node> children = node.getChildren();
-				ArrayList<Node> parents = node.getParents();
+				List<Node> children = node.getChildren();
+				List<Node> parents = node.getParents();
 				int numChildren = children.size();
 				for (int i = 0; i < numChildren; i++) {
 					Node child = children.get(i);
@@ -317,7 +315,7 @@ public class ProbNetOperations {
 
 		while (!noExploredNodes.empty()) {
 			Node node = noExploredNodes.pop();
-			ArrayList<Node> parents = node.getParents();
+			List<Node> parents = node.getParents();
 			for (Node parent : parents) {
 				if (ancestors.add(parent)) {
 					noExploredNodes.push(parent);

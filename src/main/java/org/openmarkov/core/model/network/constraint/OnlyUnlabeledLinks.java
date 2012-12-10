@@ -11,7 +11,6 @@ package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
@@ -28,8 +27,7 @@ public class OnlyUnlabeledLinks extends PNConstraint {
 
     @Override
     public boolean checkEdit(ProbNet probNet, PNEdit edit)
-        throws NotEnoughMemoryException,
-        NonProjectablePotentialException,
+        throws NonProjectablePotentialException,
         WrongCriterionException
     {
         // TODO Auto-generated method stub

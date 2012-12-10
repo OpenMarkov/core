@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -83,7 +82,6 @@ public class SumPotential extends Potential {
     public List<TablePotential> tableProject (EvidenceCase evidenceCase,
                                               InferenceOptions inferenceOptions)
         throws NonProjectablePotentialException,
-        NotEnoughMemoryException,
         WrongCriterionException
     {
 /*		// TODO se puede simplificar proyectando cada potencial padre
@@ -120,8 +118,7 @@ public class SumPotential extends Potential {
     private List<TablePotential> getTableProjectedParentPotentials (List<Potential> parentPotentials,
                                                                     EvidenceCase evidenceCase,
                                                                     InferenceOptions inferenceOptions)
-        throws NotEnoughMemoryException,
-        NonProjectablePotentialException,
+        throws NonProjectablePotentialException,
         WrongCriterionException
     {
         List<TablePotential> tableProjectedParentPotentials = new ArrayList<TablePotential> (
@@ -136,13 +133,13 @@ public class SumPotential extends Potential {
 
 	@Override
 	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength)
-			throws IncompatibleEvidenceException, NotEnoughMemoryException {
+			throws IncompatibleEvidenceException {
 		return null;
 	}
 
 	@Override
 	public Potential shift(ProbNet probNet, int timeSlice)
-			throws ProbNodeNotFoundException, NotEnoughMemoryException {
+			throws ProbNodeNotFoundException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -163,7 +160,7 @@ public class SumPotential extends Potential {
         return sum;
     }	    
     
-    public  Potential addVariable(Variable variable) throws NotEnoughMemoryException {
+    public  Potential addVariable(Variable variable) {
     	variables.add(variable);
     	return this;
     }
@@ -172,7 +169,7 @@ public class SumPotential extends Potential {
      * @throws NotEnoughMemoryException 
      * 
      */
-    public  Potential removeVariable(Variable variable) throws NotEnoughMemoryException {
+    public  Potential removeVariable(Variable variable) {
     	variables.remove(variable);
     	return this;
     }

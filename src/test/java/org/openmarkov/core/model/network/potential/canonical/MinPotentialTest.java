@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.Variable;
 
 public class MinPotentialTest {
@@ -46,14 +45,14 @@ public class MinPotentialTest {
 	}
 
 	@Test
-	public void testGetLeakPotential() throws NotEnoughMemoryException {
+	public void testGetLeakPotential() {
         assertEquals(0.01, minPotential.getLeakyParameters()[0], admissibleError);
         assertEquals(0.1, minPotential.getLeakyParameters()[1], admissibleError);
         assertEquals(0.89, minPotential.getLeakyParameters()[2], admissibleError);		
 	}
 
 	@Test
-	public void testGetCPT() throws NotEnoughMemoryException {
+	public void testGetCPT() {
 		double[] cPTValues = minPotential.getCPT().values;
 		assertEquals(0.01, cPTValues[0], admissibleError);
 		assertEquals(0.1, cPTValues[1], admissibleError);

@@ -15,7 +15,6 @@ import javax.swing.event.UndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 
 
@@ -27,7 +26,7 @@ public interface PNUndoableEditListener extends UndoableEditListener {
 	 * @throws NonProjectablePotentialException */
     public void undoableEditWillHappen(UndoableEditEvent event) 
     throws ConstraintViolationException, CanNotDoEditException, 
-    NotEnoughMemoryException, NonProjectablePotentialException, 
+    NonProjectablePotentialException, 
     WrongCriterionException;
     
     public void undoEditHappened(UndoableEditEvent event);

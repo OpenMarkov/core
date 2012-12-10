@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -124,7 +123,7 @@ public abstract class ICIPotential extends Potential {
 	 * @return TablePotential containing the f function
 	 * @throws NotEnoughMemoryException
 	 */
-	public abstract TablePotential getFFunctionPotential ()  throws NotEnoughMemoryException;
+	public abstract TablePotential getFFunctionPotential ();
 
     /** @param evidenceCase. <code>EvidenceCase</code>
      * @return <code>ArrayList</code> of <code>Potential</code>*/
@@ -134,7 +133,6 @@ public abstract class ICIPotential extends Potential {
     public List<TablePotential> internalTableProject (EvidenceCase evidenceCase,
                                                    InferenceOptions inferenceOptions)
         throws NonProjectablePotentialException,
-        NotEnoughMemoryException,
         WrongCriterionException
     {
         List<TablePotential> projectedPotentials = new ArrayList<TablePotential> ();
@@ -151,7 +149,6 @@ public abstract class ICIPotential extends Potential {
     public List<TablePotential> tableProject (EvidenceCase evidenceCase,
                                                    InferenceOptions inferenceOptions)
         throws NonProjectablePotentialException,
-        NotEnoughMemoryException,
         WrongCriterionException
     {
         List<TablePotential> potentials = internalTableProject (evidenceCase, inferenceOptions);
@@ -227,8 +224,8 @@ public abstract class ICIPotential extends Potential {
 	 * @return <code>ArrayList</code> of <code>TablePotential</code>. 
 	 * @throws NotEnoughMemoryException 
 	 * */
-	public List<TablePotential> getSubpotentials() throws NotEnoughMemoryException {
-	    ArrayList<TablePotential> subpotentials = new ArrayList<TablePotential> ();
+	public List<TablePotential> getSubpotentials() {
+	    List<TablePotential> subpotentials = new ArrayList<TablePotential> ();
 
 	    // F function
 	    subpotentials.add (getFFunctionPotential ());
@@ -251,7 +248,7 @@ public abstract class ICIPotential extends Potential {
      * @return <code>ArrayList</code> of <code>TablePotential</code>. 
      * @throws NotEnoughMemoryException 
      * */
-    public List<TablePotential> getNoisyPotentials() throws NotEnoughMemoryException {
+    public List<TablePotential> getNoisyPotentials() {
         List<TablePotential> noisyPotentials = new ArrayList<> ();
 
         //Noisy parents
@@ -345,7 +342,7 @@ public abstract class ICIPotential extends Potential {
 	
 	@Override
 	public Potential shift(ProbNet probNet, int timeSlice)
-			throws ProbNodeNotFoundException, NotEnoughMemoryException {
+			throws ProbNodeNotFoundException {
 		// TODO implement this function
 		throw new Error("function shift is not implemented in ICIPotential");
 	}
@@ -479,7 +476,7 @@ public abstract class ICIPotential extends Potential {
         }
     }
 
-    public TablePotential expand () throws NotEnoughMemoryException
+    public TablePotential expand ()
     {
         TablePotential expandedPotential = getFFunctionPotential ();
         

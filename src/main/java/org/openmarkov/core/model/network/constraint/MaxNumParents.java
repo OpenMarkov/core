@@ -9,13 +9,11 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Node;
@@ -39,7 +37,7 @@ public class MaxNumParents extends PNConstraint {
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
 		Graph graph = probNet.getGraph();
-		ArrayList<Node> nodesGraph = graph.getNodes();
+		List<Node> nodesGraph = graph.getNodes();
 		for (Node child : nodesGraph) {
 			int numParents = child.getParents().size();
 			if (numParents > maxNumParents) {
@@ -51,11 +49,10 @@ public class MaxNumParents extends PNConstraint {
 
 	 @Override
 	    public boolean checkEdit (ProbNet probNet, PNEdit edit)
-	        throws NotEnoughMemoryException,
-	        NonProjectablePotentialException,
+	        throws NonProjectablePotentialException,
 	        WrongCriterionException{
 
-		List<PNEdit> edits =UtilConstraints.getEditsType(edit, AddLinkEdit.class);
+		List<PNEdit> edits =UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
 		
 		for (PNEdit simpleEdit : edits) {
 			if (((AddLinkEdit)simpleEdit).isDirected()) { 

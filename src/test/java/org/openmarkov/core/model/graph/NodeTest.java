@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class NodeTest {
 
 	private Graph graph;
 	
-	private ArrayList<Node> nodes;
+	private List<Node> nodes;
 	
 	private Node nodeA, nodeB, nodeC, nodeD;
 	
@@ -68,7 +69,7 @@ public class NodeTest {
 	
 	@Test
 	public void testGetNeighbors() {
-		ArrayList<Node> neighborsB = nodeB.getNeighbors();
+		List<Node> neighborsB = nodeB.getNeighbors();
 		assertEquals(3, neighborsB.size());
 		assertTrue(neighborsB.contains(nodeA));
 		assertTrue(neighborsB.contains(nodeC));
@@ -78,7 +79,7 @@ public class NodeTest {
 	@Test
 	public void testGetLinks() {
 		graph.makeLinksExplicit(false);
-		ArrayList<Link> links = nodeB.getLinks();
+		List<Link> links = nodeB.getLinks();
 		assertEquals(3, links.size());
 		int directed = 0;
 		int undirected = 0;

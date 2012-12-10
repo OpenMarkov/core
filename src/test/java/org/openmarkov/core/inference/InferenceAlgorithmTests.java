@@ -27,7 +27,6 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
@@ -419,7 +418,7 @@ public abstract class InferenceAlgorithmTests {
 		
 		try {
 			algorithm.getProbsAndUtilities();
-		} catch (NotEnoughMemoryException | UnexpectedInferenceException e) {
+		} catch (UnexpectedInferenceException e) {
 			printExceptionAndFailIfImplemented(e);
 		}
 
@@ -455,7 +454,7 @@ public abstract class InferenceAlgorithmTests {
 		
 		try {
 			algorithm.getProbsAndUtilities();
-		} catch (NotEnoughMemoryException | UnexpectedInferenceException e) {
+		} catch (UnexpectedInferenceException e) {
 			printExceptionAndFailIfImplemented(e);
 		}
 
@@ -493,7 +492,7 @@ public abstract class InferenceAlgorithmTests {
 		
 		try {
 			algorithm.getProbsAndUtilities();
-		} catch (NotEnoughMemoryException | UnexpectedInferenceException e) {
+		} catch (UnexpectedInferenceException e) {
 			printExceptionAndFailIfImplemented(e);
 		}
 
@@ -572,7 +571,6 @@ public abstract class InferenceAlgorithmTests {
     @Test
     public void testAPosterioriJointProbabilitiesBN_Asia ()
         throws ProbNodeNotFoundException,
-        NotEnoughMemoryException,
         IncompatibleEvidenceException,
         UnexpectedInferenceException
     {
@@ -784,7 +782,7 @@ public abstract class InferenceAlgorithmTests {
 	 */
 	@Test
 	public void testEvaluationIDDiagnosisProblem()
-			throws NotEnoughMemoryException, FileNotFoundException,
+			throws FileNotFoundException,
 			IOException, ParserException, ProbNodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 		ProbNet network;
@@ -823,7 +821,7 @@ public abstract class InferenceAlgorithmTests {
 		TablePotential table=null;
 		 try {
 			 table = potential.tableProject(null, null).get(0);
-		} catch (NotEnoughMemoryException | NonProjectablePotentialException
+		} catch (NonProjectablePotentialException
 				| WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -896,7 +894,7 @@ public abstract class InferenceAlgorithmTests {
 	 */
 	@Test
 	public void testAPrioriProbabilitiesID_DiagnosisProblem()
-			throws NotEnoughMemoryException, FileNotFoundException,
+			throws FileNotFoundException,
 			IOException, ParserException, ProbNodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 		ProbNet diagram;
@@ -937,7 +935,7 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws NotEvaluableNetworkException
 	 */
 	public void testEvaluationIDDecisionTestProblem(ProbNet diagram)
-			throws NotEnoughMemoryException, FileNotFoundException,
+			throws FileNotFoundException,
 			IOException, ParserException, ProbNodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 		Variable variableX = null;
@@ -1006,7 +1004,7 @@ public abstract class InferenceAlgorithmTests {
 	 */
 	@Test
 	public void testEvaluationIDDecisionTestProblemWithoutSV()
-			throws NotEnoughMemoryException, FileNotFoundException,
+			throws FileNotFoundException,
 			IOException, ParserException, ProbNodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 
@@ -1027,7 +1025,7 @@ public abstract class InferenceAlgorithmTests {
 	 */
 	@Test
 	public void testEvaluationIDDecisionTestProblemWithSV()
-			throws NotEnoughMemoryException, FileNotFoundException,
+			throws FileNotFoundException,
 			IOException, ParserException, ProbNodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 
@@ -1048,7 +1046,7 @@ public abstract class InferenceAlgorithmTests {
 	 */
 	@Test
 	public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
-			throws NotEnoughMemoryException, FileNotFoundException,
+			throws FileNotFoundException,
 			IOException, ParserException, ProbNodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 		
@@ -1139,13 +1137,9 @@ public abstract class InferenceAlgorithmTests {
 			algorithm.setPostResolutionEvidence(evi);
 			HashMap<Variable, TablePotential> aPosterioriProbabilities = null;
 			try {
-				try {
-					aPosterioriProbabilities = algorithm.getProbsAndUtilities();
-				} catch (UnexpectedInferenceException e) {
-					
-					e.printStackTrace();
-				}
-			} catch (NotEnoughMemoryException e) {
+				aPosterioriProbabilities = algorithm.getProbsAndUtilities();
+			} catch (UnexpectedInferenceException e) {
+				
 				e.printStackTrace();
 			}
 			
@@ -1247,7 +1241,7 @@ public abstract class InferenceAlgorithmTests {
 	 */
 	@Test
 	public void testEvaluationIDUniformDiagnosisProblem()
-			throws NotEnoughMemoryException, FileNotFoundException,
+			throws FileNotFoundException,
 			IOException, ParserException, ProbNodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 		ProbNet diagram;

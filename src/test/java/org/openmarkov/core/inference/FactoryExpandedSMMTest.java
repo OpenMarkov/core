@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.junit.Test;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.NetsFactory;
@@ -76,12 +75,7 @@ public class FactoryExpandedSMMTest {
 			
 			List<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
 
-			TablePotential globalPotential = null;
-			try {
-				globalPotential = DiscretePotentialOperations.sum(tablePotentials);
-			} catch (NotEnoughMemoryException e) {
-				e.printStackTrace();
-			}
+			TablePotential globalPotential = DiscretePotentialOperations.sum(tablePotentials);
 			
 			//Create a potential with the expected results
 			double ratio = 1.0 / (1.0 + discount);
@@ -96,12 +90,7 @@ public class FactoryExpandedSMMTest {
 				e.printStackTrace();
 			}
 			variablesUtil.add(expandedNetwork.decisionCriteria);
-			TablePotential expectedPotential = null;
-			try {
-				expectedPotential = new TablePotential(variablesUtil, PotentialRole.UTILITY);
-			} catch (NotEnoughMemoryException e) {
-				e.printStackTrace();
-			}
+			TablePotential expectedPotential = new TablePotential(variablesUtil, PotentialRole.UTILITY);
 			// TODO We should consider here the order of the states of
 			// DecisionCriteria variable
 			double values[] = { costTreat, costNoTreat, sumQoLTreatTerms, sumQoLNoTreatTerms };
@@ -223,12 +212,7 @@ public class FactoryExpandedSMMTest {
 		double termQoLNoTreat = termGeometricProgression(qoLNoTreat,ratio,slice);
 		
 		double expectedValues[] = {0.0,0.0,0.0,0.0,0.0,0.0,termQoLTreat,termQoLNoTreat};
-		TablePotential expectedPotential = null;
-		try {
-			expectedPotential = new TablePotential(variablesUtil, PotentialRole.UTILITY);
-		} catch (NotEnoughMemoryException e) {
-			e.printStackTrace();
-		}
+		TablePotential expectedPotential = new TablePotential(variablesUtil, PotentialRole.UTILITY);
 		expectedPotential.setValues(expectedValues);
 		//Compare the global utility potential of the expanded network with the expected results
 		TablePotentialTest.checkEqualPotentials(auxPot, expectedPotential, maxError);
@@ -289,7 +273,7 @@ public class FactoryExpandedSMMTest {
 					assertNotNull(auxTable.getUtilityVariable());
 				}
 				tablePotentials.addAll(tableProject);
-			} catch (NotEnoughMemoryException | NonProjectablePotentialException
+			} catch (NonProjectablePotentialException
 					| WrongCriterionException e) {
 				e.printStackTrace();
 			}

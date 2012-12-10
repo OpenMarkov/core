@@ -13,7 +13,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -31,12 +30,8 @@ public class Strategy {
 
 		public Policy(Variable dec, TablePotential utilities) {
 			this();
-			try {
-				potential = (GTablePotential<Choice>) DiscretePotentialOperations.maximize(utilities,dec)[1];
-			} catch (NotEnoughMemoryException e) {
-				
-				e.printStackTrace();
-			}
+			potential = (GTablePotential<Choice>) DiscretePotentialOperations
+					.maximize(utilities, dec)[1];
 		}
 
 		public Policy() {

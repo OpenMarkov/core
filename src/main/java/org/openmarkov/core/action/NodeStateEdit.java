@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
@@ -107,7 +106,7 @@ public class NodeStateEdit extends SimplePNEdit {
 	@Override
 	public void doEdit() throws DoEditException {
 		State[] newObjectState = null;
-		ArrayList<Node> nodes;
+		List<Node> nodes;
 		Potential uniformPotential;
 		ArrayList<Potential> potentials;
 		int stateSelected = probNode.getVariable().getNumStates()
@@ -259,7 +258,7 @@ public class NodeStateEdit extends SimplePNEdit {
 	@Override
 	public void undo() {
 		super.undo();
-		ArrayList<Node> nodes;
+		List<Node> nodes;
 		probNode.getVariable().setStates(lastStates);
 		probNode.setUniformPotential();
 		// Update children information
@@ -274,16 +273,10 @@ public class NodeStateEdit extends SimplePNEdit {
 					currentPartitionedInterval);
 		}
 		for (Link link : linkRestrictionMap.keySet()) {
-			try {
 				link.initializesRestrictionsPotential();
 				TablePotential restrictionPotential = (TablePotential) link
 						.getRestrictionsPotential();
 				restrictionPotential.setValues(linkRestrictionMap.get(link));
-
-			} catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 		for (Link link : revelationConditionMap.keySet()) {
 			VariableType varType = ((ProbNode) link.getNode1().getObject()).getVariable()
@@ -369,7 +362,7 @@ public class NodeStateEdit extends SimplePNEdit {
 			}
 		}
 		
-		ArrayList<Node> children = node.getChildren();
+		List<Node> children = node.getChildren();
 		for (Node child : children) {
 			Link link = node.getGraph().getLink(node, child, true);
 			if (link.hasRevealingConditions()) {

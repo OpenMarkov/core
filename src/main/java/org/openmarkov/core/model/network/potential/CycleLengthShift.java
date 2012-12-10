@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -60,7 +59,7 @@ public class CycleLengthShift extends Potential {
 	@Override
 	public ArrayList<TablePotential> tableProject(EvidenceCase evidenceCase, 
 			InferenceOptions inferenceOptions)
-			throws NonProjectablePotentialException, NotEnoughMemoryException {
+			throws NonProjectablePotentialException {
 		// TODO 
 		for (Variable variable : variables) {
 			if (!evidenceCase.contains(variable)) {

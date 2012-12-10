@@ -20,7 +20,6 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.exception.WrongGraphStructureException;
@@ -91,7 +90,7 @@ public abstract class Evaluation {
 	 * @throws WrongCriterionException 
 	 * @throws NonProjectablePotentialException */
 	public HashMap<Variable, GTablePotential<Choice>> optimalStrategy() 
-	throws NotEnoughMemoryException, WrongGraphStructureException, 
+	throws WrongGraphStructureException, 
     ConstraintViolationException, CanNotDoEditException, DoEditException, 
     NonProjectablePotentialException, WrongCriterionException {
 		return null;
@@ -105,7 +104,7 @@ public abstract class Evaluation {
      * @throws WrongCriterionException 
      * @throws NonProjectablePotentialException */
 	public TablePotential getMaxExpectedUtility() 
-	throws NotEnoughMemoryException, WrongGraphStructureException, 
+	throws WrongGraphStructureException, 
 	ConstraintViolationException, CanNotDoEditException,
 	DoEditException, NonProjectablePotentialException, WrongCriterionException {
 		return new TablePotential(
@@ -125,7 +124,7 @@ public abstract class Evaluation {
 	 * @throws WrongCriterionException */
 	public abstract HashMap<Variable, Potential> individualProbabilities(
 			EvidenceCase evidence) 
-			throws NotEnoughMemoryException, NormalizeNullVectorException,
+			throws NormalizeNullVectorException,
 			DoEditException, ConstraintViolationException, 
 			CanNotDoEditException, NotEvaluableNetworkException, 
 			NonProjectablePotentialException, WrongCriterionException;
@@ -144,7 +143,7 @@ public abstract class Evaluation {
 	 * @throws WrongCriterionException */
 	public abstract HashMap<Variable, Potential> individualProbabilities(
 			ArrayList<Variable> variablesOfInterest, EvidenceCase evidence) 
-			throws NotEnoughMemoryException, NormalizeNullVectorException,
+			throws NormalizeNullVectorException,
 			DoEditException, ConstraintViolationException,
 			CanNotDoEditException, NotEvaluableNetworkException, 
 			NonProjectablePotentialException, WrongCriterionException;;
@@ -166,7 +165,7 @@ public abstract class Evaluation {
 	public abstract Potential joinProbability(
 			ArrayList<Variable> variablesOfInterest, EvidenceCase evidence, 
 			InferenceOptions inferenceOptions) 
-	throws NotEnoughMemoryException, NormalizeNullVectorException,
+	throws NormalizeNullVectorException,
 	DoEditException, ConstraintViolationException, 
 	CanNotDoEditException, NotEvaluableNetworkException, 
 	NonProjectablePotentialException, WrongCriterionException;

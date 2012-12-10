@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -33,8 +32,7 @@ public class UtilMarkovNet {
 	 * @return A Markov Network in witch directed links are converted to 
 	 *  undirected links. 
 	 * @throws NotEnoughMemoryException */
-	public static ProbNet getMarkovNet(ProbNet probNet) 
-			throws NotEnoughMemoryException {
+	public static ProbNet getMarkovNet(ProbNet probNet) {
 		return buildMarkovNet(probNet.getPotentials());
 	}
 	
@@ -50,8 +48,7 @@ public class UtilMarkovNet {
 	 * @return A Markov Network in witch potentials are used to create cliques.
 	 *   (<code>ProbNet</code>). 
 	 * @throws NotEnoughMemoryException */
-	public static ProbNet buildMarkovNet(ProbNet originalNet, List<Potential> projectedTablePotentials) 
-			throws NotEnoughMemoryException {
+	public static ProbNet buildMarkovNet(ProbNet originalNet, List<Potential> projectedTablePotentials) {
 		ProbNet markovNet = getMarkovNet();
 		try {
             markovNet.addConstraint (new OnlyDiscreteVariables (), false);
@@ -79,8 +76,7 @@ public class UtilMarkovNet {
 	 * @return A Markov Network in witch potentials are used to create cliques.
 	 *   (<code>ProbNet</code>). 
 	 * @throws NotEnoughMemoryException */
-	public static ProbNet buildMarkovNet(List<Potential> projectedTablePotentials) 
-			throws NotEnoughMemoryException {
+	public static ProbNet buildMarkovNet(List<Potential> projectedTablePotentials) {
 		ProbNet markovNet = getMarkovNet();
 		try {
             markovNet.addConstraint (new OnlyDiscreteVariables (), false);

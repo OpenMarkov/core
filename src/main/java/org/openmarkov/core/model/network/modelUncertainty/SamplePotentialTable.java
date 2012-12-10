@@ -12,7 +12,6 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -35,7 +34,7 @@ public class SamplePotentialTable {
 	 * @return A sampled potential table
 	 * @throws NotEnoughMemoryException
 	 */
-	public TablePotential getSampledTable() throws NotEnoughMemoryException {
+	public TablePotential getSampledTable() {
 		TablePotential sampledTablePotential = null;
 		int inputTableSize;
 		int[] indexesComplement = null;

@@ -9,14 +9,12 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.ChangeVariableNameEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -27,10 +25,10 @@ public class NoEmptyName extends PNConstraint {
 
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit)
-	throws NotEnoughMemoryException, NonProjectablePotentialException,
+	throws NonProjectablePotentialException,
 	WrongCriterionException {
 		// AddVariableEdit
-	    List<PNEdit> edits = UtilConstraints.getEditsType (edit, AddProbNodeEdit.class);
+	    List<PNEdit> edits = UtilConstraints.getSimpleEditsByType (edit, AddProbNodeEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			String name = ((AddProbNodeEdit) simpleEdit).getVariable().getName();
 			if ((name == null) || (name.contentEquals(""))) {
@@ -38,7 +36,7 @@ public class NoEmptyName extends PNConstraint {
 			}
 		}
 		// ChangeVariableNameEdit
-        edits = UtilConstraints.getEditsType (edit, ChangeVariableNameEdit.class);
+        edits = UtilConstraints.getSimpleEditsByType (edit, ChangeVariableNameEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			String name = ((ChangeVariableNameEdit) simpleEdit).getNewName();
 			if ((name == null) || (name.contentEquals(""))) {

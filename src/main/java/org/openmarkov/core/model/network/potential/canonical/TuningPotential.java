@@ -9,7 +9,6 @@ package org.openmarkov.core.model.network.potential.canonical;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -106,7 +105,6 @@ public class TuningPotential extends ICIPotential
      * @throws NotEnoughMemoryException
      */
     public TablePotential getFFunctionPotential ()
-        throws NotEnoughMemoryException
     {
         // Build the list of variables: child node first, z variables
         ArrayList<Variable> tuningFunctionVariables = new ArrayList<Variable> (getAuxiliaryVariables());
@@ -149,7 +147,7 @@ public class TuningPotential extends ICIPotential
     }
     
     @Override
-    public Potential copy () throws NotEnoughMemoryException
+    public Potential copy ()
     {
         TuningPotential newPotential = new TuningPotential (new ArrayList<Variable> (variables));
         for(int i=1; i<variables.size (); ++i)

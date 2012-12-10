@@ -42,7 +42,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 
 	@Override
 	public void doEdit() throws DoEditException {
-		ArrayList<Node> nodes;
+		List<Node> nodes;
 		probNode.getVariable().setVariableType(newType);
 		if (currentType != newType) {
 			if ((newType.compareTo(VariableType.DISCRETIZED) == 0 && currentType
@@ -138,7 +138,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 	 */
 	private void resetLink(Node node) {
 
-		ArrayList<Node> children = node.getChildren();
+		List<Node> children = node.getChildren();
 		for (Node child : children) {
 			Link link = node.getGraph().getLink(node, child, true);
 			if (link.hasRevealingConditions()) {

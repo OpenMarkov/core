@@ -16,7 +16,6 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -55,11 +54,10 @@ public class FactoryExpandedSMM {
 	/** @param conciseNet. <code>ProbNet</code>
 	 * @param numSlices. <code>int</code>
 	 * @param simulationIndexVariable. <code>Variable</code>
-	 * @param coordinateXOffset. <code>int</code>
-	 * @throws NotEnoughMemoryException */
+	 * @param coordinateXOffset. <code>int</code> */
 	public FactoryExpandedSMM(ProbNet conciseNet, int numSlices, 
 			Variable simulationIndexVariable, double coordinateXOffset) 
-	throws NotEnoughMemoryException {
+	{
 		this.coordinateXOffset = coordinateXOffset;
 		//probNet must be the original network and 
 		//expandedNetwork the probNet expanded numSlices times
@@ -144,17 +142,14 @@ public class FactoryExpandedSMM {
 	public static ProbNet constructExpandedNetwork(int numSlices, ProbNet network, double costDiscount, double effectivenessDiscount, boolean adaptForCE) {
 		FactoryExpandedSMM expandedNetFactory = null;
 		InferenceOptions inferenceOptions;
-		
-		try {
-			expandedNetFactory = new FactoryExpandedSMM(network, numSlices, null, 200.0);
-			inferenceOptions = new InferenceOptions(network, null);
-			if (adaptForCE){
-				expandedNetFactory.adaptProbNetForCE();
-			}
-			expandedNetFactory.applyDiscountToUtilityNodes(costDiscount, effectivenessDiscount, inferenceOptions,null/*, inferenceOptions*/);
-		} catch (NotEnoughMemoryException e) {
-			e.printStackTrace();
+
+		expandedNetFactory = new FactoryExpandedSMM(network, numSlices, null, 200.0);
+		inferenceOptions = new InferenceOptions(network, null);
+		if (adaptForCE) {
+			expandedNetFactory.adaptProbNetForCE();
 		}
+		expandedNetFactory.applyDiscountToUtilityNodes(costDiscount,
+				effectivenessDiscount, inferenceOptions, null);
 		ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
 		return expandedNetwork;
 	}
@@ -192,33 +187,27 @@ public class FactoryExpandedSMM {
 			e.printStackTrace();
 		}
 
-		FactoryExpandedSMM expandedNetFactory;
+		FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
 
-		try {
-			expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
-
-			InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-			if (!evidenceCase.getFindings().isEmpty()) {
-				try {
-					evidenceCase.extendEvidence(expandedNetFactory.getExtendedNet(), cycleLength);
-				} catch (IncompatibleEvidenceException e2) {
-					e2.printStackTrace();
-				} catch (InvalidStateException e2) {
-					e2.printStackTrace();
-				} catch (WrongCriterionException e2) {
-					e2.printStackTrace();
-				}
+		InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
+		if (!evidenceCase.getFindings().isEmpty()) {
+			try {
+				evidenceCase.extendEvidence(
+						expandedNetFactory.getExtendedNet(), cycleLength);
+			} catch (IncompatibleEvidenceException e2) {
+				e2.printStackTrace();
+			} catch (InvalidStateException e2) {
+				e2.printStackTrace();
+			} catch (WrongCriterionException e2) {
+				e2.printStackTrace();
 			}
-			expandedNetFactory.applyDiscountToUtilityNodes(costDiscount, effectivenessDiscount, inferenceOptions, null);
-			if (adaptForCE){
-				expandedNetFactory.adaptProbNetForCE();
-			}
-			expandedNetwork = expandedNetFactory.getExtendedNet();
-
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+		expandedNetFactory.applyDiscountToUtilityNodes(costDiscount,
+				effectivenessDiscount, inferenceOptions, null);
+		if (adaptForCE) {
+			expandedNetFactory.adaptProbNetForCE();
+		}
+		expandedNetwork = expandedNetFactory.getExtendedNet();
 
 		return expandedNetwork;
 
@@ -259,8 +248,7 @@ public class FactoryExpandedSMM {
 	// Methods
 	/** @param simulationIndexVariable. <code>Variable</code>
 	 * @throws NotEnoughMemoryException */
-	private void sampleProbNet(Variable simulationIndexVariable) 
-			throws NotEnoughMemoryException {
+	private void sampleProbNet(Variable simulationIndexVariable) {
 		for (ProbNode probNode : probNet.getProbNodes()) {
 			probNode.samplePotentials(simulationIndexVariable);
 		}
@@ -469,7 +457,7 @@ public class FactoryExpandedSMM {
 		return uniform;
 	}*/
 	
-	public void applyDiscountToUtilityNodes(double costDiscount, double effectivenessDiscount, InferenceOptions inferenceOptions, EvidenceCase evidence) throws NotEnoughMemoryException{
+	public void applyDiscountToUtilityNodes(double costDiscount, double effectivenessDiscount, InferenceOptions inferenceOptions, EvidenceCase evidence){
 		// apply discount rate for all temporal utility nodes in the expanded network
 	    List<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
 		  for (int i = 0; i < utilityExpandedNodes.size(); i++) {

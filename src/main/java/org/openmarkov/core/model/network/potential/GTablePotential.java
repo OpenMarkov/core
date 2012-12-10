@@ -12,9 +12,7 @@ package org.openmarkov.core.model.network.potential;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.operation.Util;
 
 
 /** A generalized <code>TablePotential</code> that contains an 
@@ -25,31 +23,21 @@ public class GTablePotential<Element> extends TablePotential {
     /** The array buffer into which the elements of the 
      *   <code>GeneralizedTablePotential</code> are stored. This attribute is 
      *   public for the sake of efficiency. */
-    public ArrayList<Element> elementTable; 
+    public List<Element> elementTable; 
 
     // Constructor
-    public GTablePotential(List<Variable> variables, PotentialRole role) 
-            throws NotEnoughMemoryException {
+    public GTablePotential(List<Variable> variables, PotentialRole role)  {
         super(variables, null); // <- Don't create a table of doubles
         if (numVariables != 0) {
             int sizeTable = dimensions[numVariables - 1] * 
                 offsets[numVariables - 1];
-            try {
                 elementTable = new ArrayList<Element>(sizeTable);
-            } catch (Exception e) {
-    			long freeMemory = runtime.freeMemory();
-                throw new NotEnoughMemoryException("There are only "
-                		+ Util.printInteger(freeMemory) + " bytes free. "
-    					+ "Not enough memory to allocate a table with "
-    					+ sizeTable +" elements in GTablePotential constructor." 
-    					+ " Number of variables: " + variables.size());
-            }
         } else {// In this case the potential is a constant
             elementTable =  new ArrayList<Element>(1);
         }
     }
     
-    public GTablePotential (Potential potential) throws NotEnoughMemoryException
+    public GTablePotential (Potential potential)
     {
         this (potential.getVariables (), potential.getPotentialRole ());
     }

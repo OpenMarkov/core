@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -72,64 +71,54 @@ public class InvertLinkEdit extends BaseLinkEdit {
 	@Override
 	/** @throws exception <code>Exception</code> */
 	public void doEdit() throws DoEditException {
-        try
-        {
-            // Remove links first
-            probNet.removeLink (node1, node2, isDirected);
-            if (node2.getNodeType () != NodeType.DECISION)
-            {
-                // Update potentials
-                List<Potential> newPotentials = new ArrayList<Potential> ();
-                this.childsOldPotentials = node2.getPotentials ();
-                for (Potential oldPotential : childsOldPotentials)
-                {
-                    Potential newPotential = oldPotential.removeVariable (node1.getVariable ());
-                    if (newPotential == null)
-                    {// It has not been implemented yet for this type of
-                     // potential
-                        List<Variable> variables = oldPotential.getVariables ();
-                        variables.add (node1.getVariable ());
-                        newPotential = new UniformPotential (variables,
-                                                             oldPotential.getPotentialRole ());
-                    }
-                    newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
-                    newPotentials.add (newPotential);
-                }
-                node2.setPotentials (newPotentials);
-            }        
-            
-            // Add inverse link
-            probNet.addLink (node2, node1, isDirected);
-            if (node2.getNodeType () != NodeType.DECISION)
-            {
-                this.parentsOldPotentials = node1.getPotentials();
-                List<Potential> newPotentials = new ArrayList<Potential> ();
-                for(Potential oldPotential : parentsOldPotentials)
-                {
-                    // Update potential
-                    Potential newPotential = oldPotential.addVariable (node2.getVariable ());
-                    if (newPotential == null)
-                    {// It has not been implemented yet for this type of potential
-                        List<Variable> variables = oldPotential.getVariables ();
-                        if(!variables.contains (node2.getVariable ()))
-                        {
-                            variables.add (node2.getVariable ());
-                        }
-                        newPotential = new UniformPotential (variables, oldPotential.getPotentialRole ());
-                    }
-                    newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
-                    newPotentials.add (newPotential);
-                }
-                node1.setPotentials (newPotentials);
-            }
-    
-            
-        }
-        catch (NotEnoughMemoryException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace ();
-        }
+		// Remove links first
+		probNet.removeLink(node1, node2, isDirected);
+		if (node2.getNodeType() != NodeType.DECISION) {
+			// Update potentials
+			List<Potential> newPotentials = new ArrayList<Potential>();
+			this.childsOldPotentials = node2.getPotentials();
+			for (Potential oldPotential : childsOldPotentials) {
+				Potential newPotential = oldPotential.removeVariable(node1
+						.getVariable());
+				if (newPotential == null) {// It has not been implemented yet
+											// for this type of
+											// potential
+					List<Variable> variables = oldPotential.getVariables();
+					variables.add(node1.getVariable());
+					newPotential = new UniformPotential(variables,
+							oldPotential.getPotentialRole());
+				}
+				newPotential.setUtilityVariable(oldPotential
+						.getUtilityVariable());
+				newPotentials.add(newPotential);
+			}
+			node2.setPotentials(newPotentials);
+		}
+
+		// Add inverse link
+		probNet.addLink(node2, node1, isDirected);
+		if (node2.getNodeType() != NodeType.DECISION) {
+			this.parentsOldPotentials = node1.getPotentials();
+			List<Potential> newPotentials = new ArrayList<Potential>();
+			for (Potential oldPotential : parentsOldPotentials) {
+				// Update potential
+				Potential newPotential = oldPotential.addVariable(node2
+						.getVariable());
+				if (newPotential == null) {// It has not been implemented yet
+											// for this type of potential
+					List<Variable> variables = oldPotential.getVariables();
+					if (!variables.contains(node2.getVariable())) {
+						variables.add(node2.getVariable());
+					}
+					newPotential = new UniformPotential(variables,
+							oldPotential.getPotentialRole());
+				}
+				newPotential.setUtilityVariable(oldPotential
+						.getUtilityVariable());
+				newPotentials.add(newPotential);
+			}
+			node1.setPotentials(newPotentials);
+		}
 	}
 
 	public void undo() {

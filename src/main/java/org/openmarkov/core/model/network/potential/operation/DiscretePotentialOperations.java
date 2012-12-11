@@ -44,8 +44,12 @@ public final class DiscretePotentialOperations {
      * @return A <code>TablePotential</code> as result. 
      * @throws WrongCriterionException 
      * @throws NonProjectablePotentialException */
+    public static TablePotential multiply (List<TablePotential> tablePotentials){
+        return multiply (tablePotentials, true);
+    }
+
     @SuppressWarnings("unchecked")
-    public static TablePotential multiply (List<TablePotential> tablePotentials)
+    public static TablePotential multiply (List<TablePotential> tablePotentials, boolean keepOrder)
     {        
         int numPotentials = tablePotentials.size();
         // Special cases: one or zero potentials
@@ -60,7 +64,10 @@ public final class DiscretePotentialOperations {
         List<TablePotential> potentials = new ArrayList<>(tablePotentials);
 
         // Sort the potentials according to the table size
-    //    Collections.sort(potentials);
+        if(!keepOrder)
+        {
+            Collections.sort(potentials);
+        }
         
         // Gets constant factor: The product of constant potentials
         double constantFactor = getConstantFactor(potentials);

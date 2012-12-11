@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openmarkov</groupId>
 	<artifactId>org.openmarkov.core</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<name>org.openmarkov.core</name>
 	<url>http://openmarkov.org/core</url>
 
@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.plugin</artifactId>
-			<version>0.1.0</version>
+			<version>0.1.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

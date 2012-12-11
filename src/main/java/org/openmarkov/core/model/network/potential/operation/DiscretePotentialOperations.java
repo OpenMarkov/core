@@ -49,7 +49,7 @@ public final class DiscretePotentialOperations {
     }
 
     @SuppressWarnings("unchecked")
-    public static TablePotential multiply (List<TablePotential> tablePotentials, boolean keepOrder)
+    public static TablePotential multiply (List<TablePotential> tablePotentials, boolean reorder)
     {        
         int numPotentials = tablePotentials.size();
         // Special cases: one or zero potentials
@@ -64,7 +64,7 @@ public final class DiscretePotentialOperations {
         List<TablePotential> potentials = new ArrayList<>(tablePotentials);
 
         // Sort the potentials according to the table size
-        if(!keepOrder)
+        if(reorder)
         {
             Collections.sort(potentials);
         }

@@ -357,18 +357,11 @@ public class TreeADDPotential extends Potential
                 }
                 // multiply mask potential and the table potential of the
                 // current branch
-                List<Potential> potentialsToMultiply = new ArrayList<Potential> ();
+                List<TablePotential> potentialsToMultiply = new ArrayList<TablePotential> ();
                 potentialsToMultiply.add (tablePotentials.get (0));
                 potentialsToMultiply.add (maskPotential);
-                try
-                {
-                    TablePotential intermediateProduct = (TablePotential) (PotentialOperations.multiply (potentialsToMultiply));
-                    potentialsToSumUp.add (intermediateProduct);
-                }
-                catch (PotentialOperationException e)
-                {
-                    e.printStackTrace ();
-                }
+                TablePotential intermediateProduct = (TablePotential) (DiscretePotentialOperations.multiply (potentialsToMultiply, false));
+				potentialsToSumUp.add (intermediateProduct);
             }
             projected = DiscretePotentialOperations.sum (potentialsToSumUp);
         }

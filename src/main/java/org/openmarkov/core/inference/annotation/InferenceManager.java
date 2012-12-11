@@ -18,7 +18,6 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
-import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.TuningNetworkType;
 import org.openmarkov.plugin.PluginLoader;
@@ -63,8 +62,7 @@ public class InferenceManager
             }
             else
             {
-                throw new AnnotationFormatError (
-                                                 "InferenceType annotation must be in a class that extends InferenceAlgorithm");
+                throw new AnnotationFormatError ("InferenceType annotation must be in a class that extends InferenceAlgorithm");
             }
         }
     }
@@ -89,11 +87,11 @@ public class InferenceManager
             }
             catch (SecurityException e1)
             {
-                e1.printStackTrace();
+                e1.printStackTrace ();
             }
             catch (NoSuchMethodException e1)
             {
-                e1.printStackTrace();
+                e1.printStackTrace ();
             }
             if (constructor != null)
             {
@@ -104,7 +102,6 @@ public class InferenceManager
                 }
                 catch (Exception e)
                 {
-                    // TODO Auto-generated catch block
                     e.printStackTrace ();
                 }
             }
@@ -118,118 +115,117 @@ public class InferenceManager
      * @param algorithmName
      * @param probNet
      * @return
-     * @throws NotEvaluableNetworkException 
-     * @throws NoSuchMethodException 
+     * @throws NotEvaluableNetworkException
+     * @throws NoSuchMethodException
      */
     public InferenceAlgorithm getInferenceAlgorithmByName (String algorithmName, ProbNet probNet)
-        throws NotEvaluableNetworkException, NoSuchMethodException
+        throws NotEvaluableNetworkException,
+        NoSuchMethodException
     {
         InferenceAlgorithm instance = null;
         Constructor<? extends InferenceAlgorithm> constructor = null;
+        Class<? extends InferenceAlgorithm> inferenceAlgorithmClass = inferenceAlgorithms.get (algorithmName);
         Method checkEval = null;
-		try {
-			constructor = inferenceAlgorithms.get (algorithmName).getConstructor (ProbNet.class);
-			checkEval = inferenceAlgorithms.get(algorithmName).getMethod("checkEvaluability",ProbNet.class);
-		} catch ( SecurityException e1) {
-			e1.printStackTrace();
-		}
-        
+        try
+        {
+            constructor = inferenceAlgorithmClass.getConstructor (ProbNet.class);
+            checkEval = inferenceAlgorithmClass.getMethod ("checkEvaluability", ProbNet.class);
+        }
+        catch (SecurityException e1)
+        {
+            e1.printStackTrace ();
+        }
         if (constructor != null)
         {
-        		try {
-					checkEval.invoke(inferenceAlgorithms.get (algorithmName),probNet);
-				}
-        		catch (InvocationTargetException e){
-        			Throwable targetExcep = e.getTargetException();
-        			if (targetExcep.getClass()==NotEvaluableNetworkException.class){
-        						throw (NotEvaluableNetworkException)targetExcep;
-        			}
-        		} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        		
-        		 try {
-					instance = constructor.newInstance (probNet);
-				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-						| InvocationTargetException e) {
-					e.printStackTrace();
-				}				
+            try
+            {
+                checkEval.invoke (inferenceAlgorithms.get (algorithmName), probNet);
+            }
+            catch (InvocationTargetException e)
+            {
+                Throwable targetExcep = e.getTargetException ();
+                if (targetExcep.getClass () == NotEvaluableNetworkException.class)
+                {
+                    throw (NotEvaluableNetworkException) targetExcep;
+                }
+            }
+            catch (IllegalAccessException | IllegalArgumentException e)
+            {
+                e.printStackTrace ();
+            }
+            try
+            {
+                instance = constructor.newInstance (probNet);
+            }
+            catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException e)
+            {
+                e.printStackTrace ();
+            }
         }
         return instance;
     }
-    
+
     /**
      * Returns an instance of the default algorithm given the ProbNet
      * @param probNet
      * @return
      */
-    public InferenceAlgorithm getDefaultInferenceAlgorithm (ProbNet probNet) throws NotEvaluableNetworkException
+    public InferenceAlgorithm getDefaultInferenceAlgorithm (ProbNet probNet)
+        throws NotEvaluableNetworkException
     {
         InferenceAlgorithm defaultAlgorithm = null;
         try
         {
-        	if(probNet.getNetworkType().equals(BayesianNetworkType.getUniqueInstance()))
-        	{
-        		//defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
-        		defaultAlgorithm = getInferenceAlgorithmByName ("VariableElimination", probNet);
-        	}else if (probNet.getNetworkType().equals(InfluenceDiagramType.getUniqueInstance()))
-        	{
-        		//defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
-        		defaultAlgorithm = getInferenceAlgorithmByName ("VariableElimination", probNet);
-        	}else if (probNet.getNetworkType().equals(TuningNetworkType.getUniqueInstance()))
-        	{
-        		defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
-        	}
+            if (probNet.getNetworkType ().equals (BayesianNetworkType.getUniqueInstance ()))
+            {
+                defaultAlgorithm = getInferenceAlgorithmByName ("VariableElimination", probNet);
+            }
+            else if (probNet.getNetworkType ().equals (InfluenceDiagramType.getUniqueInstance ()))
+            {
+                defaultAlgorithm = getInferenceAlgorithmByName ("VariableElimination", probNet);
+            }
+            else if (probNet.getNetworkType ().equals (TuningNetworkType.getUniqueInstance ()))
+            {
+                defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
+            }
         }
-        catch (SecurityException e)
+        catch (SecurityException | NoSuchMethodException e)
         {
             // This should not be the case as we are hard coding to an algorithm
             // that should have a public constructor
             e.printStackTrace ();
         }
-        catch (NoSuchMethodException e)
+        catch (NotEvaluableNetworkException e)
         {
-            // This should not be the case as we are hard coding to an algorithm
-            // that should have a public constructor
-            e.printStackTrace ();
-        }
-        catch (NotEvaluableNetworkException e){
-        	throw e;
+            throw e;
         }
         return defaultAlgorithm;
     }
-    
+
     /**
-     * Returns an instance of the default approximate algorithm given the ProbNet
+     * Returns an instance of the default approximate algorithm given the
+     * ProbNet
      * @param probNet
      * @return
-     * @throws NotEvaluableNetworkException 
-     */    
-    public InferenceAlgorithm getDefaultApproximateAlgorithm (ProbNet probNet) throws NotEvaluableNetworkException
+     * @throws NotEvaluableNetworkException
+     */
+    public InferenceAlgorithm getDefaultApproximateAlgorithm (ProbNet probNet)
+        throws NotEvaluableNetworkException
     {
         InferenceAlgorithm defaultAlgorithm = null;
         try
         {
             defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
         }
-        catch (SecurityException e)
-        {
-            // This should not be the case as we are hard coding to an algorithm
-            // that should have a public constructor
-            e.printStackTrace ();
-        }
-        catch (NoSuchMethodException e)
+        catch (SecurityException | NoSuchMethodException e)
         {
             // This should not be the case as we are hard coding to an algorithm
             // that should have a public constructor
             e.printStackTrace ();
         }
         return defaultAlgorithm;
-    }    
+    }
 
     /**
      * This method gets all the plugins with InferenceType annotations

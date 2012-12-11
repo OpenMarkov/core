@@ -36,14 +36,14 @@ public abstract class InferenceAlgorithm
    
   
 	/**
-	 * Evidence introduced before the network is resolved. In influence diagrams this is
-	 * Ezawa's evidence.
+	 * Evidence introduced before the network is resolved. 
+	 * In influence diagrams this is Ezawa's evidence.
 	 */
 	private EvidenceCase preResolutionEvidence;
 	
 	/**
-	 * Evidence when the network has been resolved. In influence diagrams this is
-	 * Luque and Diez's evidence.
+	 * Evidence when the network has been resolved. 
+	 * In influence diagrams this is Luque and Diez's evidence.
 	 */
 	private EvidenceCase postResolutionEvidence;
 	
@@ -232,10 +232,8 @@ public abstract class InferenceAlgorithm
     	return (getImposedPolicy(decision)!=null);
     }
 
-	protected static void checkEvaluability(ProbNet probNet) throws NotEvaluableNetworkException {
-	}
-	
-	
-        
-    
+    protected static void checkEvaluability (ProbNet probNet)
+        throws NotEvaluableNetworkException
+    {
+    }
 }

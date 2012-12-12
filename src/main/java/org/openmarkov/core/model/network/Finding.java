@@ -36,6 +36,16 @@ public class Finding {
     protected double numericalValue;
     
     // Constructors
+    
+    /** Creates a <code>Finding</code> associated to a discrete variable 
+     * @param fsVariable. <code>Variable</code>
+     * @param state. <code>int</code> */
+    public Finding(Variable fsVariable, State state) {
+        variable = fsVariable;
+        this.stateIndex = variable.getStateIndex (state);
+        numericalValue = Double.MAX_VALUE; // Default value to localize mistakes
+    }
+    
     /** Creates a <code>Finding</code> associated to a discrete variable 
      * @param fsVariable. <code>Variable</code>
      * @param state. <code>int</code> */

@@ -481,4 +481,13 @@ public abstract class Potential{
     public void setVariables (List<Variable> variables) {
     	this.variables = variables;
     }
+
+	public double getProbability(EvidenceCase evidenceCase) {
+		HashMap<Variable, Integer> configuration = new HashMap<>();
+		for(Finding finding : evidenceCase.getFindings())
+		{
+			configuration.put(finding.getVariable(), finding.getStateIndex());
+		}
+		return getProbability(configuration);
+	}
 }

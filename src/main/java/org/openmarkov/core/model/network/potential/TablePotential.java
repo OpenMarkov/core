@@ -103,7 +103,13 @@ public class TablePotential extends Potential
             dimensions = TablePotential.calculateDimensions (variables);
             offsets = TablePotential.calculateOffsets (dimensions);
             tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
-            values = new double[tableSize];
+            try
+            {
+                values = new double[tableSize];
+            }catch(NegativeArraySizeException e)
+            {
+                throw new OutOfMemoryError ();
+            }
             setUniform (); // Initializes the table as an uniform potential
         }
         else
@@ -129,7 +135,13 @@ public class TablePotential extends Potential
                 dimensions = TablePotential.calculateDimensions (variables);
                 offsets = TablePotential.calculateOffsets (dimensions);
                 tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
-                values = new double[tableSize];
+                try
+                {
+                    values = new double[tableSize];
+                }catch(NegativeArraySizeException e)
+                {
+                    throw new OutOfMemoryError ();
+                }
                 setUniform (); // Initializes the table as an uniform potential
             }
             else

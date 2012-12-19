@@ -169,7 +169,6 @@ public final class DiscretePotentialOperations {
     /** @param tablePotentials <code>ArrayList</code> of <code>extends 
      * Potential</code>.
      * @throws <code>NotEnoughMemoryException</code>. */
-    @SuppressWarnings("unchecked")
     public static TablePotential sum(List<TablePotential> tablePotentials) {
     	List<TablePotential> constantPotentials;
         if (tablePotentials.size() == 1) {
@@ -200,8 +199,7 @@ public final class DiscretePotentialOperations {
         PotentialRole role = getRole(tablePotentials);
         
         // Gets the union
-        TablePotential result = new TablePotential((ArrayList<Variable>)
-            ((Object)AuxiliaryOperations.getUnionVariables(potentials)), role);
+        TablePotential result = new TablePotential(AuxiliaryOperations.getUnionVariables(potentials), role);
 
         int numVariables = result.getNumVariables();
 

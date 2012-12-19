@@ -35,4 +35,32 @@ public class CompoundDirectLinkEdit extends CompoundPNEdit {
 		}
 		return buffer.toString();
 	}
+
+    @Override
+    public boolean equals (Object arg0)
+    {
+        boolean equals = true;
+        
+        if(arg0 instanceof CompoundDirectLinkEdit)
+        {
+            CompoundDirectLinkEdit editToCompare = (CompoundDirectLinkEdit)arg0;
+            
+            for(UndoableEdit edit : editToCompare.edits)
+            {
+                equals &= edits.contains (edit);
+            }
+            
+            for(UndoableEdit edit : edits)
+            {
+                equals &= editToCompare.edits.contains (edit);
+            }            
+        }else
+        {
+            equals = false;
+        }
+
+        return equals;
+    }
+
+	
 }

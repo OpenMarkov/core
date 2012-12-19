@@ -244,6 +244,23 @@ public class FactoryExpandedSMM {
 		  }
 		  return treeADDPotential;
 	}
+	
+	/**
+	 * when checkbox zero cycle is unselected utility nodes which  decision criteria is cost or effectiveness must be removed from the network
+	 * this approach is in order to take into account changes taking place at the beginning of the cycle not at the end 
+	 * @return 
+	 */
+	public void pruneZeroCycleUtilities() {
+		List<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
+		 for (int i = 0; i < utilityExpandedNodes.size(); i++) {
+			  ProbNode iUtilityProbNode = utilityExpandedNodes.get(i);
+			int timeSlice = iUtilityProbNode.getVariable().getTimeSlice();
+			if (iUtilityProbNode.getVariable().isTemporal() && timeSlice == 0 && (iUtilityProbNode.getVariable().getDecisionCriteria().getString().equalsIgnoreCase("cost") ||
+					iUtilityProbNode.getVariable().getDecisionCriteria().getString().equalsIgnoreCase("effectiveness"))) { // decision criteria of utility nodes must be cost or effectiveness 
+				probNet.removeProbNode(iUtilityProbNode);
+				}
+			}
+	}
 
 	// Methods
 	/** @param simulationIndexVariable. <code>Variable</code>
@@ -348,6 +365,7 @@ public class FactoryExpandedSMM {
 	 * calling for each potential within the network to the method tableProject
 	 * 
 	 * @param evidence
+	 * */
 	
 	@SuppressWarnings("unused")
 	public void projectEvidence(EvidenceCase evidence) {
@@ -355,29 +373,26 @@ public class FactoryExpandedSMM {
 			ArrayList<Potential> potentials = new ArrayList<>();
 
 			InferenceOptions io = new InferenceOptions(probNet, null);
-			try {
+			
 				if(probNode.getNodeType() != NodeType.DECISION) {
-				if (!probNode.getPotentials().get(0).tableProject(evidence, io).isEmpty()) {
-					try {	
-						potentials.add(probNode.getPotentials().get(0).tableProject(evidence, io).get(0));
-					} catch (NotEnoughMemoryException
-							| NonProjectablePotentialException
-							| WrongCriterionException e) {
-						e.printStackTrace();
+				try {
+					if (!probNode.getPotentials().get(0).tableProject(evidence, io).isEmpty()) {
+						
+							potentials.add(probNode.getPotentials().get(0).tableProject(evidence, io).get(0));
+						
+						probNode.setPotentials(potentials);
 					}
-					probNode.setPotentials(potentials);
+				} catch (NonProjectablePotentialException
+						| WrongCriterionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 				}
-			} catch (NotEnoughMemoryException
-					| NonProjectablePotentialException
-					| WrongCriterionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
 		}
 	}
 	
-	 */
+	 
 	public ProbNet getExtendedNet(){
 		return probNet;
 	}
@@ -587,7 +602,7 @@ public class FactoryExpandedSMM {
 	}
 	
 	/**
-	 * Removes all that nodes that has evidence, this means that numerical and CycleLegthShit ones disappears
+	 * Removes all that nodes that has evidence, this means that numerical and CycleLegthShift ones disappears
 	 * with evidence the are not necessary in the network for the inference algorithm anymore
 	 * 
 	 * @param evidence

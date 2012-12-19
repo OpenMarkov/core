@@ -496,6 +496,17 @@ public class ProbNet implements Cloneable {
 		return numericTemporalNodes;
 	}
 	
+	public boolean thereAreTemporalNodes() {
+		boolean thereAreTemporalNodes = false;
+		for (int i = 0; i < getProbNodes().size() ; i++) {
+			if (getProbNodes().get(i).getVariable().isTemporal()) {
+				thereAreTemporalNodes = true;
+				break;
+				}
+			}
+		return thereAreTemporalNodes;
+	}
+	
 		/**
 	 * Checks whether this <code>probNet</code> is temporal or not.
 	 * 

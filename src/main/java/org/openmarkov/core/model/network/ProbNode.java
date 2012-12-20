@@ -464,6 +464,10 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 		return nodeType == NodeType.DECISION &&  
 				potentials.size() != 0;
 	}
+	
+	public void setNodeType(NodeType nodeType) {
+		this.nodeType = nodeType;
+	}
 
 	/** @param simulationIndexVariable. <code>Variable</code>
 	 * @throws NotEnoughMemoryException */

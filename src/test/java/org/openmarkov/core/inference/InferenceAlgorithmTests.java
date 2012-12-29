@@ -798,8 +798,8 @@ public abstract class InferenceAlgorithmTests {
 
 			// Test optimal policy
 			Variable D = network.getVariable("D");
-			HashMap<Variable, Potential> optimalStrategy = algorithm.getOptimizedPolicies();
-			Potential policy = optimalStrategy.get(D);
+			
+			Potential policy = algorithm.getOptimizedPolicy(D);
 			assertNotNull(policy);
 
 			// Test the size of the domain of the policy
@@ -813,6 +813,40 @@ public abstract class InferenceAlgorithmTests {
 		} catch (Exception e) {
 			printExceptionAndFailIfImplemented(e);
 		}
+	}
+	
+	
+	/**
+	 * @param potA
+	 * @param potB
+	 * @return true if potA and potB are equal (variables can be in different order)
+	 */
+	private boolean areEqualPotentials(TablePotential potA,TablePotential potB){
+		boolean areEqual;
+		
+		List<Variable> varsA = potA.getVariables();
+		List<Variable> varsB = potB.getVariables();
+		
+		areEqual = varsA.size() == varsB.size();
+		
+		if (areEqual){
+			for (int i=0;i<varsB.size()&&areEqual;i++){
+				areEqual = varsA.contains(varsB.get(i));
+			}
+			int size = potA.getTableSize();
+			
+			for (int i=0;i<size&&areEqual;i++){
+				double valueA = potA.values[i];
+				double valueB = potB.getValue(varsA,potA.getConfiguration(i));
+				areEqual = Math.abs(valueA-valueB)<maxError;
+				
+			}
+		
+		}
+		return areEqual;
+		
+		
+		
 	}
 
 	
@@ -955,9 +989,9 @@ public abstract class InferenceAlgorithmTests {
 			// Test optimal policy
 			variableT = getVariableAndAssertNotNull(diagram,"T");
 			variableD = getVariableAndAssertNotNull(diagram,"D");
-			HashMap<Variable, Potential> optimalStrategy = algorithm.getOptimizedPolicies();
-			Potential policyT = optimalStrategy.get(variableT);
-			Potential policyD = optimalStrategy.get(variableD);
+			
+			Potential policyT = algorithm.getOptimizedPolicy(variableT);
+			Potential policyD = algorithm.getOptimizedPolicy(variableD);
 			assertNotNull(policyT);
 			assertNotNull(policyD);
 
@@ -966,7 +1000,7 @@ public abstract class InferenceAlgorithmTests {
 
 			// Test the size of the domain of the policy of D
 			assertTrue(checkPolicy(getTablePotential(policyD), variableD, 2));
-
+	
 			// Test the a priori case
 			HashMap<Variable, TablePotential> aPrioriProbabilities = algorithm
 					.getProbsAndUtilities();
@@ -975,6 +1009,14 @@ public abstract class InferenceAlgorithmTests {
 			variableY = getVariableAndAssertNotNull(diagram,"Y");
 			variableU1 = getVariableAndAssertNotNull(diagram,"U1");
 			variableU2 = getVariableAndAssertNotNull(diagram,"U2");
+			
+			//euPotT 
+			TablePotential euPotT = constructExpectedUtilitiesPolicyTDecisionTestProblem(variableT);
+			assertTrue(areEqualPotentials(euPotT,(TablePotential) algorithm.getExpectedUtilities(variableT)));
+			
+			  //euPotT 
+			TablePotential euPotD = constructExpectedUtilitiesPolicyDDecisionTestProblem(variableT,variableY,variableD);
+			assertTrue(areEqualPotentials(euPotD,(TablePotential) algorithm.getExpectedUtilities(variableD)));
 
 			checkProbabilityPotential(aPrioriProbabilities, variableX, 0.07);
 			checkProbabilityPotential(aPrioriProbabilities, variableY, 0.0916,
@@ -990,6 +1032,44 @@ public abstract class InferenceAlgorithmTests {
 		}
 
 	}
+
+	private TablePotential constructExpectedUtilitiesPolicyTDecisionTestProblem(Variable variableT) {
+		
+	TablePotential pot;
+	
+	ArrayList<Variable> variables;
+	variables = new ArrayList<Variable>();
+	variables.add(variableT);
+			
+	pot = new TablePotential(variables,PotentialRole.UTILITY);
+	double values[]={96.006,95.1};
+	pot.setValues(values);
+	return pot;
+	}
+
+
+
+
+
+	private TablePotential constructExpectedUtilitiesPolicyDDecisionTestProblem(Variable variableT,
+			Variable variableY, Variable variableD) {
+		TablePotential pot;
+		
+		ArrayList<Variable> variables;
+		variables = new ArrayList<Variable>();
+		variables.add(variableT);
+		variables.add(variableY);
+		variables.add(variableD);
+				
+		pot = new TablePotential(variables,PotentialRole.UTILITY);
+		double values[]={81.04585153,0.0,87.93064729,0.0,-2.0,89.3,49.3209607,0.0,97.51453104,0.0,-2.0,95.1};
+		pot.setValues(values);
+		return pot;
+	}
+
+
+
+
 
 	/**
 	 * Test for diagnosis problem
@@ -1256,9 +1336,8 @@ public abstract class InferenceAlgorithmTests {
 
 			// Test optimal policy
 			Variable D = diagram.getVariable("D");
-			HashMap<Variable, Potential> optimalStrategy = algorithm
-					.getOptimizedPolicies();
-			Potential policy = optimalStrategy.get(D);
+			
+			Potential policy = algorithm.getOptimizedPolicy(D);
 			assertNotNull(policy);
 
 			// Test the size of the domain of the policy

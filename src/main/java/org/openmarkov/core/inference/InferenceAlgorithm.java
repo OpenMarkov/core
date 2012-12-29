@@ -148,13 +148,21 @@ public abstract class InferenceAlgorithm
       
        
   	/**
-     * @return The optimal policy for the decisions that do not have any imposed policy.
-     * The domain of each policy also includes the decision and the conditioning variables.
+     * @return The optimal policy for the decision that does not have any imposed policy.
+     * The domain of the policy also includes the decision and the conditioning variables.
      */
-    public abstract HashMap<Variable,Potential> getOptimizedPolicies () throws
+    public abstract Potential getOptimizedPolicy(Variable decisionVariable) throws
 	IncompatibleEvidenceException,
 	UnexpectedInferenceException;
     
+    
+    /**
+     * @return The expected utilities of the optimal policy for the decision that does not have any imposed policy.
+     * The domain of the policy also includes the decision and the conditioning variables.
+     */
+    public abstract Potential getExpectedUtilities(Variable decisionVariable) throws
+	IncompatibleEvidenceException,
+	UnexpectedInferenceException;
     
   
 	/**

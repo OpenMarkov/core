@@ -16,9 +16,9 @@ import javax.swing.undo.UndoableEdit;
 import org.openmarkov.core.model.network.ProbNet;
 
 @SuppressWarnings("serial")
-public class CompoundDirectLinkEdit extends CompoundPNEdit {
+public class COrientLinksEdit extends CompoundPNEdit {
 	
-	public CompoundDirectLinkEdit(ProbNet probNet, Vector<UndoableEdit> edits) {
+	public COrientLinksEdit(ProbNet probNet, Vector<UndoableEdit> edits) {
 		super(probNet);
 		this.edits = edits;
 	}
@@ -29,7 +29,7 @@ public class CompoundDirectLinkEdit extends CompoundPNEdit {
 	}	
 		
 	public String toString() {
-		StringBuffer buffer = new StringBuffer("CompoundDirectLinkEdit: ");
+		StringBuffer buffer = new StringBuffer("OrientLinksEdit: ");
 		for (UndoableEdit edit : edits){
 			buffer.append(edit.toString());
 		}
@@ -41,9 +41,9 @@ public class CompoundDirectLinkEdit extends CompoundPNEdit {
     {
         boolean equals = true;
         
-        if(arg0 instanceof CompoundDirectLinkEdit)
+        if(arg0 instanceof COrientLinksEdit)
         {
-            CompoundDirectLinkEdit editToCompare = (CompoundDirectLinkEdit)arg0;
+            COrientLinksEdit editToCompare = (COrientLinksEdit)arg0;
             
             for(UndoableEdit edit : editToCompare.edits)
             {

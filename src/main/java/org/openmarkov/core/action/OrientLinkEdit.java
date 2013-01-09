@@ -15,13 +15,13 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
 @SuppressWarnings("serial")
-public class DirectLinkEdit extends BaseLinkEdit{
+public class OrientLinkEdit extends BaseLinkEdit{
 	
 	/** @param probNet <code>ProbNet</code>
 	 * @param variable1 <code>Variable</code>
 	 * @param variable2 <code>Variable</code>
 	 * @param isDirected <code>boolean</code> */
-	public DirectLinkEdit(ProbNet probNet, Variable variable1, 
+	public OrientLinkEdit(ProbNet probNet, Variable variable1, 
 			Variable variable2, boolean isDirected) {
 		super(probNet, variable1, variable2, isDirected);
 	}
@@ -55,7 +55,7 @@ public class DirectLinkEdit extends BaseLinkEdit{
     /** Method to compare two directLinkEdits comparing the names of
      * the source and destination variables alphabetically.
      */
-    public int compareTo(DirectLinkEdit obj){
+    public int compareTo(OrientLinkEdit obj){
         int result;
 
         if (( result = variable1.getName().compareTo(obj.getVariable1().
@@ -70,7 +70,7 @@ public class DirectLinkEdit extends BaseLinkEdit{
 
 	@Override
 	public String getOperationName() {
-		return "Direct";
+		return "Orient link";
 	}
 
     @Override

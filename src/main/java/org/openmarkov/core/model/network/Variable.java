@@ -677,9 +677,9 @@ public class Variable implements Cloneable {
 	 * @param timeSlice. <code>int</code> */
 	public void setTimeSlice(int timeSlice) {
 		if (timeSlice != Integer.MIN_VALUE) {
-			int beginSlicePart = name.lastIndexOf('[') - 1;
-			if (beginSlicePart > 0) {
-				baseName = name.substring(0, beginSlicePart);
+			int beginSlicePart = name.lastIndexOf('[');
+			if (beginSlicePart != -1) {
+				baseName = name.substring(0, beginSlicePart - 1);
 			}
 			name = baseName + " [" + timeSlice + "]";
 		}

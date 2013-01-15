@@ -244,7 +244,9 @@ public class Graph {
 						Object label = ((LabelledLink) link).getLabel();
 						new LabelledLink(node1c, node2c, directed, label);
 					} else {
-						new Link(node1c, node2c, directed);
+						Link newLink = new Link(node1c, node2c, directed);
+						newLink.setRestrictionsPotential (link.getRestrictionsPotential ());
+                        newLink.setRevealingStates (link.getRevealingStates ());
 					}
 				}
 			}

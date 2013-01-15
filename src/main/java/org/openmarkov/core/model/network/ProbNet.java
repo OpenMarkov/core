@@ -547,14 +547,14 @@ public class ProbNet implements Cloneable {
 	 */
 	public ProbNet copy() {
 	    
-		ProbNet probNetCopy = new ProbNet(this.networkType);
+		ProbNet copyNet = new ProbNet(this.networkType);
         // copy constraints
         int numConstraints = constraints.size(); 
         for (int i = 1; i < numConstraints; i++)
         {
             try
             {
-                probNetCopy.addConstraint (constraints.get (i), false);
+                copyNet.addConstraint (constraints.get (i), false);
             }
             catch (ConstraintViolationException e)
             {
@@ -567,7 +567,7 @@ public class ProbNet implements Cloneable {
 			// Add variables and create corresponding nodes
 			Variable variable = probNode.getVariable();
 			ProbNode newProbNode = null;
-            newProbNode = probNetCopy.addVariable (variable,
+            newProbNode = copyNet.addVariable (variable,
                                                    probNode.getNodeType ());
 			Node newNode = newProbNode.getNode();
 			Node node = probNode.getNode();
@@ -584,28 +584,48 @@ public class ProbNet implements Cloneable {
 		}
 
 		// Adds links
-		List<ProbNode> nodes = this.getProbNodes();
-		for (ProbNode probNode1 : nodes) {
-			Variable variable1 = probNode1.getVariable();
-			ProbNode newNode1 = probNetCopy.getProbNode(variable1);
-			List<ProbNode> neighbors = getProbNodesOfNodes(probNode1.getNode().getNeighbors());
-			for (ProbNode probNode2 : neighbors) {
-				Variable variable2 = probNode2.getVariable();
-				ProbNode newNode2 = probNetCopy.getProbNode(variable2);
-				if (probNode1.getNode().isSibling(probNode2.getNode())) {
-					if (!newNode1.getNode().isSibling(newNode2.getNode())) {
-						graph.addLink(newNode1.getNode(), newNode2.getNode(),
-								false);
-					}
-				}
-				if (probNode1.getNode().isChild(probNode2.getNode())) {
-					graph.addLink(newNode1.getNode(), newNode2.getNode(), true);
-				}
-			}
-		}
+        List<ProbNode> nodes = this.getProbNodes ();
+        Graph copyGraph = copyNet.getGraph ();
+        if(graph.useExplicitLinks ())
+        {
+            copyGraph.makeLinksExplicit (false);
+        }
+        for (ProbNode probNode1 : nodes)
+        {
+            ProbNode copyNode1 = copyNet.getProbNode (probNode1.getVariable ());
+            List<ProbNode> neighbors = getProbNodesOfNodes (probNode1.getNode ().getNeighbors ());
+            for (ProbNode probNode2 : neighbors)
+            {
+                ProbNode copyNode2 = copyNet.getProbNode (probNode2.getVariable ());
+                if (probNode1.getNode ().isSibling (probNode2.getNode ())
+                    && !copyNode1.getNode ().isSibling (copyNode2.getNode ()))
+                {
+                    copyGraph.addLink (copyNode1.getNode (), copyNode2.getNode (), false);
+                }
+                if (probNode1.getNode ().isChild (probNode2.getNode ()))
+                {
+                    copyGraph.addLink (copyNode1.getNode (), copyNode2.getNode (), true);
+                }
+            }
+        }
+        
+        // Copy explicit links' properties
+        if(graph.useExplicitLinks ())
+        {
+            for(Link originalLink : graph.getLinks ())
+            {
+                Node copyNode1 = copyNet.getProbNode (((ProbNode)originalLink.getNode1 ().getObject ()).getVariable ()).getNode ();
+                Node copyNode2 = copyNet.getProbNode (((ProbNode)originalLink.getNode2 ().getObject ()).getVariable ()).getNode ();
+                Link copyLink = copyGraph.getLink (copyNode1, copyNode2, originalLink.isDirected ());
+                
+                copyLink.setRestrictionsPotential (originalLink.getRestrictionsPotential ());
+                copyLink.setRevealingIntervals (originalLink.getRevealingIntervals ()) ;
+                copyLink.setRevealingStates (originalLink.getRevealingStates ()) ;
+            }
+        }
 
 		// copy listeners
-		probNetCopy.getPNESupport().setListeners(pNESupport.getListeners());
+		copyNet.getPNESupport().setListeners(pNESupport.getListeners());
 		
 		// Copy additionalProperties
 		Set<String> keys = additionalProperties.keySet();
@@ -613,7 +633,7 @@ public class ProbNet implements Cloneable {
 		for (String key : keys) {
 			copyProperties.put(key, additionalProperties.get(key));
 		}
-		probNetCopy.additionalProperties = copyProperties;
+		copyNet.additionalProperties = copyProperties;
 
 		// Copy decisionCriteria variable
 		/*if (this.getDecisionCriteriaVariable() != null) {
@@ -626,13 +646,13 @@ public class ProbNet implements Cloneable {
 		}*/
 		//copy decision criteria
 		if (this.getDecisionCriteria() != null) {
-			probNetCopy.setDecisionCriteria2(this.getDecisionCriteria());
+			copyNet.setDecisionCriteria2(this.getDecisionCriteria());
 		}
 		if (this.getDecisionCriteriaVariable() != null) {
-			probNetCopy.setDecisionCriteriaVariable(this.getDecisionCriteriaVariable());
+			copyNet.setDecisionCriteriaVariable(this.getDecisionCriteriaVariable());
 		}
 		
-		return probNetCopy;
+		return copyNet;
 	}	
 
 	

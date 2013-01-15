@@ -272,7 +272,7 @@ public class Link {
 	/** @return String */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer(node1.getObject().toString());
-		if (directed) {
+		if (!directed) {
 			buffer.append(" --- ");
 		} else {
 			buffer.append(" --> ");

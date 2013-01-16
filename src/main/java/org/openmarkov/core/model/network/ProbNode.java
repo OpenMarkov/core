@@ -77,7 +77,9 @@ public class ProbNode implements Cloneable, PotentialsContainer {
     private boolean isInput = false;
     //TODO OOPN end
     
-   
+
+    private boolean alwaysObserved=false;    
+
     
     /** This object contains all the information that the parser reads from 
 	 *  disk that does not have a direct connection with the attributes stored 
@@ -114,7 +116,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
        // node = new Node(probNet.getGraph(), this);
         potentials = new ArrayList<Potential>(probNode.getPotentials());
         additionalProperties = new HashMap<String, String>();
-        
+        alwaysObserved = probNode.isAlwaysObserved (); 
 	}	
 
 
@@ -685,4 +687,18 @@ public class ProbNode implements Cloneable, PotentialsContainer {
         this.isInput = isInput;
     }
 	
+    /**
+     * @return the alwaysObserved
+     */
+    public boolean isAlwaysObserved() {
+        return alwaysObserved;
+    }
+
+    /**
+     * @param alwaysObserved the alwaysObserved to set
+     */
+    public void setAlwaysObserved(boolean alwaysObserved) {
+        this.alwaysObserved = alwaysObserved;
+    }
+    
 }

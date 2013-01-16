@@ -581,6 +581,7 @@ public class ProbNet implements Cloneable {
 			newProbNode.setComment(probNode.getComment());
 			newProbNode.setCanonicalParameters(probNode.isCanonicalParameters());
 			newProbNode.additionalProperties = additionalProperties;
+			newProbNode.setAlwaysObserved (probNode.isAlwaysObserved ());
 		}
 
 		// Adds links

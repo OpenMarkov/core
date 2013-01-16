@@ -75,7 +75,6 @@ public class Variable implements Cloneable {
 	protected HashMap<String, HashMap<String, String>> 
 		statesAdditionalProperties;
 
-	private boolean alwaysObserved=false;
 	 /**
      * Agent for decision nodes
      */
@@ -702,20 +701,6 @@ public class Variable implements Cloneable {
 	 */
 	public StringWithProperties getUnit() {
 		return unit;
-	}
-
-	/**
-	 * @return the alwaysObserved
-	 */
-	public boolean isAlwaysObserved() {
-		return alwaysObserved;
-	}
-
-	/**
-	 * @param alwaysObserved the alwaysObserved to set
-	 */
-	public void setAlwaysObserved(boolean alwaysObserved) {
-		this.alwaysObserved = alwaysObserved;
 	}
 
 	public StringWithProperties getAgent() {

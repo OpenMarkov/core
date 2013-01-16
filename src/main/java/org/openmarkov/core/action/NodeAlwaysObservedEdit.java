@@ -32,19 +32,19 @@ public class NodeAlwaysObservedEdit extends SimplePNEdit {
 	public NodeAlwaysObservedEdit(ProbNode node, boolean alwaysObserved) {
 		super(node.getProbNet());
 		this.probNode = node;
-		this.previousValue = node.getVariable().isAlwaysObserved();
+		this.previousValue = node.isAlwaysObserved();
 		this.newValue = alwaysObserved;
 	}
 
 	@Override
 	public void doEdit() throws DoEditException {
-		probNode.getVariable().setAlwaysObserved(newValue);
+		probNode.setAlwaysObserved(newValue);
 
 	}
 	
 	public void undo() {
 		super.undo();
-		probNode.getVariable().setAlwaysObserved(previousValue);
+		probNode.setAlwaysObserved(previousValue);
 	}
 
 }

@@ -399,10 +399,6 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 		}
 		// Update Links
 		// Replace links to children
-		if (formalNode == null || formalNode.getNode () == null)
-		{
-		    System.out.println ();
-		}
 		for (Node child : formalNode.getNode ().getChildren ())
 		{
 		    probNet.removeLink (formalNode, (ProbNode) child.getObject (), true);

@@ -701,4 +701,14 @@ public class ProbNode implements Cloneable, PotentialsContainer {
         this.alwaysObserved = alwaysObserved;
     }
     
+    /**
+     * Sets a new variable
+     * @param newVariable
+     */
+    public void setVariable (Variable newVariable)
+    {
+        this.variable = newVariable;
+        // TODO update potentials
+    }
+    
 }

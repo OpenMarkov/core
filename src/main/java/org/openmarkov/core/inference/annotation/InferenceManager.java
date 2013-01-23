@@ -75,9 +75,9 @@ public class InferenceManager
      * @throws SecurityException
      * @throws NoSuchMethodException
      */
-    public ArrayList<String> getInferenceAlgorithms (ProbNet probNet)
+    public List<String> getInferenceAlgorithmNames (ProbNet probNet)
     {
-        ArrayList<String> inferenceAlgorithmNames = new ArrayList<String> ();
+        List<String> inferenceAlgorithmNames = new ArrayList<String> ();
         for (String algorithmName : inferenceAlgorithms.keySet ())
         {
             Constructor<? extends InferenceAlgorithm> constructor = null;
@@ -108,6 +108,56 @@ public class InferenceManager
         }
         return inferenceAlgorithmNames;
     }
+    
+    /**
+     * Returns the list of the names of the algorithms that can evaluate the
+     * given instance of ProbNet
+     * @param probNet
+     * @return
+     * @throws SecurityException
+     * @throws NoSuchMethodException
+     */
+    public List<InferenceAlgorithm> getInferenceAlgorithms (ProbNet probNet)
+    {
+        List<InferenceAlgorithm> inferenceAlgorithms = new ArrayList<InferenceAlgorithm> ();
+        for (String algorithmName : this.inferenceAlgorithms.keySet ())
+        {
+            Constructor<? extends InferenceAlgorithm> constructor = null;
+            Method checkEval = null;
+            boolean isEvaluable = true;
+            try
+            {
+                Class<? extends InferenceAlgorithm> inferenceAlgorithmClass = this.inferenceAlgorithms.get (algorithmName);
+                constructor = this.inferenceAlgorithms.get (algorithmName).getConstructor (ProbNet.class);
+                checkEval = inferenceAlgorithmClass.getMethod ("checkEvaluability", ProbNet.class);
+                try
+                {
+                    checkEval.invoke (inferenceAlgorithmClass, probNet);
+                }
+                catch (InvocationTargetException e)
+                {
+                    isEvaluable = e.getTargetException ().getClass () != NotEvaluableNetworkException.class;
+                }                
+            }
+            catch (SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException e1)
+            {
+                e1.printStackTrace ();
+            }
+            if (constructor != null && isEvaluable)
+            {
+                try
+                {
+                    InferenceAlgorithm inferenceAlgorithm = constructor.newInstance (probNet);
+                    inferenceAlgorithms.add (inferenceAlgorithm);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace ();
+                }
+            }
+        }
+        return inferenceAlgorithms;
+    }    
 
     /**
      * Returns an instance of the algorithm whose names we receive as a
@@ -188,6 +238,13 @@ public class InferenceManager
             else if (probNet.getNetworkType ().equals (TuningNetworkType.getUniqueInstance ()))
             {
                 defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
+            }else 
+            {
+                List<InferenceAlgorithm> possibleAlgorithms = getInferenceAlgorithms (probNet);
+                if(!possibleAlgorithms.isEmpty ())
+                {
+                    defaultAlgorithm = possibleAlgorithms.get (0); // Get the first
+                }
             }
         }
         catch (SecurityException | NoSuchMethodException e)

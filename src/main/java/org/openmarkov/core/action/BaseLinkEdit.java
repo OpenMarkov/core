@@ -42,7 +42,7 @@ public abstract class BaseLinkEdit extends SimplePNEdit{
     	super(probNet);
 		this.variable1 = variable1;
 		this.variable2 = variable2;
-		this.isDirected = isDirected;		
+		this.isDirected = isDirected;
     }
 
 	/** @return variable1 <code>Variable</code> */

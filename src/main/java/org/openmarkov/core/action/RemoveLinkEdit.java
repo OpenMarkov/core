@@ -14,10 +14,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
@@ -86,7 +89,10 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 	@Override
 	public void doEdit () {
 		probNet.removeLink (node1, node2, isDirected);
-		this.link = probNet.getGraph ().getLink (node1.getNode (), node2.getNode (), isDirected);
+		Graph graph = probNet.getGraph();
+		if (graph.useExplicitLinks()) {
+			this.link = graph.getLink (node1.getNode (), node2.getNode (), isDirected);
+		}
 		if (updatePotentials)
 		{
 			this.oldPotentials = node2.getPotentials ();
@@ -150,6 +156,18 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 		}
 		try {
 			probNet.addLink(variable1, variable2, isDirected);
+			Graph graph = probNet.getGraph();
+			if (graph.useExplicitLinks()) {
+				Link newLink = graph.getLink (node1.getNode (), node2.getNode (), isDirected);
+				if (link != null && newLink != null) {
+					Potential restrictionsPotential = link.getRestrictionsPotential();
+					newLink.setRestrictionsPotential(restrictionsPotential);
+					List<State> revealingStates = link.getRevealingStates();
+					newLink.setRevealingStates(revealingStates);
+					List<PartitionedInterval> revealingIntervals = link.getRevealingIntervals();
+					newLink.setRevealingIntervals(revealingIntervals);
+				}
+			}
 		} catch (Exception e) {
 			logger.fatal (e);
 		}

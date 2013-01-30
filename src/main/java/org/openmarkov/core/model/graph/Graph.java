@@ -256,7 +256,6 @@ public class Graph {
 
 	/** @return A clone of the list of nodes (<code>List</code> of 
 	 * <code>Node</code>). */
-	@SuppressWarnings("unchecked")
 	public List<Node> getNodes() {
 		return new ArrayList<Node>(nodes);
 	}

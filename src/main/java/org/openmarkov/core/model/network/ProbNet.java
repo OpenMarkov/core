@@ -1314,18 +1314,6 @@ public class ProbNet implements Cloneable {
 		return probNode.getVariable();
 	}
 
-	// TODO Con este nuevo metodo podemos evitar la chapuza hecha en
-	// varios lugares de invocar getVariable para ver si lanzaba una excepcion.
-	// Revisar el uso de esa excepcion y evitarla en lo posible.
-	public boolean containsVariable(String variableName) {
-		ProbNode probNode = null;
-		try {
-			probNode = getProbNode(variableName);
-		} catch (ProbNodeNotFoundException e) {
-		}
-		return (probNode != null);
-	}
-
 	/**
 	 * @param variable
 	 *            . a <code>Variable</code>
@@ -1346,6 +1334,30 @@ public class ProbNet implements Cloneable {
 			throw new Error("Error: " + baseName+" ["+timeSlice+"]");
 		}
 	}
+	
+    // TODO Con este nuevo metodo podemos evitar la chapuza hecha en
+    // varios lugares de invocar getVariable para ver si lanzaba una excepcion.
+    // Revisar el uso de esa excepcion y evitarla en lo posible.
+    public boolean containsVariable(String variableName) {
+        ProbNode probNode = null;
+        try {
+            probNode = getProbNode(variableName);
+        } catch (ProbNodeNotFoundException e) {
+        }
+        return (probNode != null);
+    }
+    
+    /**
+     * Returns true if this probNet contains the shifted variable 
+     * @param variableName
+     * @param timeDifference
+     * @return
+     */
+    public boolean containsShiftedVariable(Variable variable, int timeDifference) {
+        int timeSlice = variable.getTimeSlice() + timeDifference;
+        String baseName = variable.getBaseName();
+        return containsVariable(baseName+" ["+timeSlice+"]");
+    }    
 
 	/**
 	 * Adds the received potential to the list of potentials of the conditioned

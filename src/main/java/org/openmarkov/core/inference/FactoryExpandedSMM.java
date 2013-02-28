@@ -1,11 +1,8 @@
 /*
-* Copyright 2011 CISIAD, UNED, Spain
-*
-* Licensed under the European Union Public Licence, version 1.1 (EUPL)
-*
-* Unless required by applicable law, this code is distributed
-* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
-*/
+ * Copyright 2011 CISIAD, UNED, Spain Licensed under the European Union Public
+ * Licence, version 1.1 (EUPL) Unless required by applicable law, this code is
+ * distributed on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 
 package org.openmarkov.core.inference;
 
@@ -33,289 +30,334 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
-public class FactoryExpandedSMM {
+public class FactoryExpandedSMM
+{
+    // Attributes
+    /** Vertical separation in pixels between slices. */
+    private final double         VERTICAL_OFFSET = 0;
+    
+    /** Horizontal separation between slices */
+    private final double         MARGIN_BETWEEN_SLICES = 150;
+    
+    private ProbNet              probNet;
+    /** Set of probNodes that will be cloned in each slice. */
+    private List<ProbNode>       generatedNodes;
+    /** Each <ArrayList<ProbNode> contains the nodes of a time slice */
+    private List<List<ProbNode>> classifiedNodes;
 
-	// Attributes
-	/** Horizontal separation in pixels between slices. */
-	private double coordinateXOffset;
+    // Constructor
+    /**
+     * @param conciseNet. <code>ProbNet</code>
+     * @param numSlices. <code>int</code>
+     * @param simulationIndexVariable. <code>Variable</code>
+     * @param coordinateXOffset. <code>int</code>
+     */
+    public FactoryExpandedSMM (ProbNet conciseNet,
+                               int numSlices,
+                               Variable simulationIndexVariable)
+    {
+        // probNet must be the original network and
+        // expandedNetwork the probNet expanded numSlices times
+        probNet = conciseNet.copy ();
+        if (simulationIndexVariable != null)
+        {
+            sampleProbNet (simulationIndexVariable);
+        }
+        // if some of the slices of the concise net miss a node present
+        // in previous slices, adds the node to that slice
+        makeNetCompact ();
+        // expands the net
+        while (classifiedNodes.size () < numSlices)
+        {
+            generateNextSlice ();
+        }
+    }
 
-	/** Vertical separation in pixels between slices. */
-	private final double coordinateYOffset = 0;
-	
-	private ProbNet probNet;
+    /**
+     * Adapts the concise network for performing cost-effectiveness analysis.
+     */
+    public void adaptProbNetForCE ()
+    {
+        String[] decisionCriteriaNames = new String[probNet.getDecisionCriteria ().size ()];
+        for (int i = 0; i < probNet.getDecisionCriteria ().size (); i++)
+        {
+            if (probNet.getDecisionCriteria ().get (i).getString ().equalsIgnoreCase ("cost")
+                || probNet.getDecisionCriteria ().get (i).getString ().equalsIgnoreCase ("effectiveness"))
+            {
+                decisionCriteriaNames[i] = probNet.getDecisionCriteria ().get (i).getString ();
+            }
+        }
+        if (!(decisionCriteriaNames.length == 2
+              && decisionCriteriaNames[0].equalsIgnoreCase ("cost") && decisionCriteriaNames[1].equalsIgnoreCase ("effectiveness"))
+            || !(decisionCriteriaNames.length == 2
+                 && decisionCriteriaNames[1].equalsIgnoreCase ("cost") && decisionCriteriaNames[0].equalsIgnoreCase ("effectiveness")))
+        {
+            // TODO propagate exception
+            // throw new
+            // Exception("For cost effectiveness analysis performance network´s decision criteria must be cost and effectiveness");
+        }
+        // probNet.setDecisionCriteria(new String[]{"cost", "effectiveness"});
+        probNet.setDecisionCriteria (decisionCriteriaNames);
+        // make all utility nodes of the expanded probNet child of decision
+        // criteria
+        List<ProbNode> utilityNodes = probNet.getProbNodes (NodeType.UTILITY);
+        ProbNode decisionCriteria = new ProbNode (probNet, probNet.getDecisionCriteriaVariable (),
+                                                  NodeType.DECISION);
+        probNet.addProbNode (decisionCriteria);
+        for (int i = 0; i < utilityNodes.size (); i++)
+        {
+            Potential utility = utilityNodes.get (i).getPotentials ().get (0);
+            probNet.addLink (decisionCriteria, utilityNodes.get (i), true);
+            List<Variable> treeVariables = utility.getVariables ();
+            treeVariables.add (decisionCriteria.getVariable ());
+            String iUtilityDecisionCriteriaName = utilityNodes.get (i).getVariable ().getDecisionCriteria ().getString ();
+            boolean hasDecisionCriteria = false;
+            String otherDecisionCriteria = null;
+            TreeADDPotential treeADDPotential = null;
+            if (iUtilityDecisionCriteriaName.equals ("cost"))
+            {
+                hasDecisionCriteria = true;
+                otherDecisionCriteria = "effectiveness";
+            }
+            else if (iUtilityDecisionCriteriaName.equals ("effectiveness"))
+            {
+                hasDecisionCriteria = true;
+                otherDecisionCriteria = "cost";
+            }
+            if (hasDecisionCriteria)
+            {
+                treeADDPotential = constructTreeADDForCE (decisionCriteria, treeVariables, utility,
+                                                          utilityNodes.get (i),
+                                                          iUtilityDecisionCriteriaName,
+                                                          otherDecisionCriteria);
+            }
+            List<Potential> potentials = new ArrayList<> ();
+            potentials.add (treeADDPotential);
+            utilityNodes.get (i).setPotentials (potentials);
+        }
+    }
 
-	/** Set of probNodes that will be cloned in each slice. */
-	private List<ProbNode> generatedNodes;
-	
-	/** Each <ArrayList<ProbNode> contains the nodes of a time slice */
-	private List<List<ProbNode>> classifiedNodes;
-	
-	// Constructor
-	/** @param conciseNet. <code>ProbNet</code>
-	 * @param numSlices. <code>int</code>
-	 * @param simulationIndexVariable. <code>Variable</code>
-	 * @param coordinateXOffset. <code>int</code> */
-	public FactoryExpandedSMM(ProbNet conciseNet, int numSlices, 
-			Variable simulationIndexVariable, double coordinateXOffset) 
-	{
-		this.coordinateXOffset = coordinateXOffset;
-		//probNet must be the original network and 
-		//expandedNetwork the probNet expanded numSlices times
-		probNet = conciseNet.copy();
-		if (simulationIndexVariable != null) {
-			sampleProbNet(simulationIndexVariable);
-		}
-		
-		// if some of the slices of the concise net misses a node present
-		// in previous slices, adds the node to that slice
-		makeNetCompact();
-		
-		// expands the net
-		while (classifiedNodes.size() < numSlices) {
-			generateNextSlice();
-		}
+    /**
+     * @param numSlices
+     * @param network
+     * @param costDiscount Percentage of discount. The utility function in
+     *            instant time t will be: U(t) = U(t-1)/(1+discount/100.0)
+     * @param adaptForCE
+     * @return An expanded network built from a SMM. It adapts the network to
+     *         Cost-Effectiveness analysis if adaptForCE is true.
+     */
+    public static ProbNet constructExpandedNetwork (int numSlices,
+                                                    ProbNet network,
+                                                    double costDiscount,
+                                                    double effectivenessDiscount,
+                                                    boolean adaptForCE)
+    {
+        FactoryExpandedSMM expandedNetFactory = null;
+        InferenceOptions inferenceOptions;
+        expandedNetFactory = new FactoryExpandedSMM (network, numSlices, null);
+        inferenceOptions = new InferenceOptions (network, null);
+        if (adaptForCE)
+        {
+            expandedNetFactory.adaptProbNetForCE ();
+        }
+        expandedNetFactory.applyDiscountToUtilityNodes (costDiscount, effectivenessDiscount,
+                                                        inferenceOptions, null);
+        ProbNet expandedNetwork = expandedNetFactory.getExtendedNet ();
+        return expandedNetwork;
+    }
 
-	}
-	
-	
-	/**
-	 * Adapts the concise network for performing cost-effectiveness analysis.
-	 */
-	public void adaptProbNetForCE(){
-		String [] decisionCriteriaNames = new String[probNet.getDecisionCriteria().size()];
-		for (int i = 0; i < probNet.getDecisionCriteria().size(); i++) {
-			if (probNet.getDecisionCriteria().get(i).getString().equalsIgnoreCase("cost") || 
-					probNet.getDecisionCriteria().get(i).getString().equalsIgnoreCase("effectiveness")) {
-				decisionCriteriaNames [i] = probNet.getDecisionCriteria().get(i).getString();
-			}
-			
-		}
-		if (!(decisionCriteriaNames.length == 2 && decisionCriteriaNames[0].equalsIgnoreCase("cost") && decisionCriteriaNames[1].equalsIgnoreCase("effectiveness")) ||
-				!(decisionCriteriaNames.length == 2 && decisionCriteriaNames[1].equalsIgnoreCase("cost") && decisionCriteriaNames[0].equalsIgnoreCase("effectiveness")))  {
-			//TODO propagate exception
-			//throw new Exception("For cost effectiveness analysis performance network´s decision criteria must be cost and effectiveness");
-		}
-		 // probNet.setDecisionCriteria(new String[]{"cost", "effectiveness"});
-		 probNet.setDecisionCriteria(decisionCriteriaNames);
-			//make all utility nodes of the expanded probNet child of decision criteria
-		 List<ProbNode> utilityNodes = probNet.getProbNodes(NodeType.UTILITY);
-			  ProbNode decisionCriteria = new ProbNode(probNet, probNet.getDecisionCriteriaVariable(), NodeType.DECISION);
-			  probNet.addProbNode(decisionCriteria);
-			  for (int i = 0; i < utilityNodes.size(); i++) {
-				  Potential utility = utilityNodes.get(i).getPotentials().get(0);
-				  probNet.addLink(decisionCriteria, utilityNodes.get(i), true);
-				  List<Variable> treeVariables = utility.getVariables();
-				  treeVariables.add(decisionCriteria.getVariable());
-				  
-				  String iUtilityDecisionCriteriaName = utilityNodes.get(i).getVariable().getDecisionCriteria().getString();
-				  boolean hasDecisionCriteria = false;
-				  String otherDecisionCriteria = null;
-				  TreeADDPotential treeADDPotential = null;
-				  if (iUtilityDecisionCriteriaName.equals("cost")){
-					  hasDecisionCriteria = true;
-					  otherDecisionCriteria = "effectiveness";
-				  }
-				  else if (iUtilityDecisionCriteriaName.equals("effectiveness")){
-					  hasDecisionCriteria = true;
-					  otherDecisionCriteria = "cost";
-				  }
-				  if (hasDecisionCriteria){
-					  treeADDPotential = constructTreeADDForCE(decisionCriteria,treeVariables,utility,utilityNodes.get(i),iUtilityDecisionCriteriaName,otherDecisionCriteria);
-				  }
-				  List<Potential> potentials = new ArrayList<>();
-				  potentials.add(treeADDPotential);
-				 utilityNodes.get(i).setPotentials(potentials);
-			  }
-			
-		
-	}
-	/**
-	 * @param numSlices
-	 * @param network
-	 * @param costDiscount Percentage of discount. The utility function in instant time t will be:
-	 * U(t) = U(t-1)/(1+discount/100.0)  
-	 * @param adaptForCE
-	 * @return An expanded network built from a SMM. It adapts the network to Cost-Effectiveness analysis if 
-	 * adaptForCE is true.
-	 */
+    /**
+     * @param initialAge
+     * @param finalAge
+     * @param probNet
+     * @param costDiscount
+     * @param effectivenessDiscount
+     * @param cycleLength
+     * @return An expanded network built from a SMM when the network has
+     *         evidence of initial age of the patient. It adapts the network to
+     *         Cost-Effectiveness analysis if adaptForCE is true.
+     */
+    public static ProbNet constructExpandedNetAge (int initialAge,
+                                                   int finalAge,
+                                                   ProbNet probNet,
+                                                   double costDiscount,
+                                                   double effectivenessDiscount,
+                                                   double cycleLength,
+                                                   boolean adaptForCE)
+    {
+        int numSlices = finalAge - initialAge;
+        EvidenceCase evidenceCase = new EvidenceCase ();
+        ProbNet expandedNetwork = null;
+        // set up findings from the network and values introduced by the user
+        Finding ageFinding = null;
+        List<ProbNode> probNodes = probNet.getProbNodes ();
+        for (int i = 0; i < probNodes.size (); i++)
+        {
+            if (probNodes.get (i).getVariable ().isTemporal ()
+                && probNodes.get (i).getVariable ().getBaseName ().equals ("Age")
+                && probNodes.get (i).getVariable ().getTimeSlice () == 0)
+            {
+                ageFinding = new Finding (probNodes.get (i).getVariable (), initialAge);
+                break;
+            }
+        }
+        try
+        {
+            evidenceCase.addFinding (ageFinding);
+        }
+        catch (InvalidStateException | IncompatibleEvidenceException e)
+        {
+            e.printStackTrace ();
+        }
+        FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM (probNet, numSlices, null);
+        InferenceOptions inferenceOptions = new InferenceOptions (probNet, null);
+        if (!evidenceCase.getFindings ().isEmpty ())
+        {
+            try
+            {
+                evidenceCase.extendEvidence (expandedNetFactory.getExtendedNet (), cycleLength);
+            }
+            catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e2)
+            {
+                e2.printStackTrace ();
+            }
+        }
+        expandedNetFactory.applyDiscountToUtilityNodes (costDiscount, effectivenessDiscount,
+                                                        inferenceOptions, null);
+        if (adaptForCE)
+        {
+            expandedNetFactory.adaptProbNetForCE ();
+        }
+        expandedNetwork = expandedNetFactory.getExtendedNet ();
+        return expandedNetwork;
+    }
 
-	public static ProbNet constructExpandedNetwork(int numSlices, ProbNet network, double costDiscount, double effectivenessDiscount, boolean adaptForCE) {
-		FactoryExpandedSMM expandedNetFactory = null;
-		InferenceOptions inferenceOptions;
+    /**
+     * @param decisionCriteria
+     * @param treeVariables
+     * @param utility
+     * @param utilProbNode
+     * @param decisionCriteriaName
+     * @param otherDecisionCriteriaName
+     * @return A TreeADD for the utility potential where the branch of the
+     *         criteria of the node is the old utility table, and the branch of
+     *         the other criteria is 0.
+     */
+    public TreeADDPotential constructTreeADDForCE (ProbNode decisionCriteria,
+                                                   List<Variable> treeVariables,
+                                                   Potential utility,
+                                                   ProbNode utilProbNode,
+                                                   String decisionCriteriaName,
+                                                   String otherDecisionCriteriaName)
+    {
+        TreeADDPotential treeADDPotential = new TreeADDPotential (
+                                                                  treeVariables,
+                                                                  probNet.getDecisionCriteriaVariable (),
+                                                                  utility.getPotentialRole (),
+                                                                  utility.getUtilityVariable ());
+        List<Variable> variables = new ArrayList<> ();
+        variables.add (decisionCriteria.getVariable ());
+        for (int j = 0; j < treeADDPotential.getBranches ().size (); j++)
+        {
+            TreeADDBranch jBranch = treeADDPotential.getBranches ().get (j);
+            String jBranchName = jBranch.getBranchStates ().get (0).getName ();
+            if (jBranchName.equalsIgnoreCase (decisionCriteriaName))
+            {
+                jBranch.setPotential (utility);
+            }
+            else if (jBranchName.equalsIgnoreCase (otherDecisionCriteriaName))
+            {
+                // zero potential
+                jBranch.setPotential (new UniformPotential (utility.getVariables (),
+                                                            PotentialRole.UTILITY,
+                                                            utilProbNode.getVariable ()));
+            }
+        }
+        return treeADDPotential;
+    }
 
-		expandedNetFactory = new FactoryExpandedSMM(network, numSlices, null, 200.0);
-		inferenceOptions = new InferenceOptions(network, null);
-		if (adaptForCE) {
-			expandedNetFactory.adaptProbNetForCE();
-		}
-		expandedNetFactory.applyDiscountToUtilityNodes(costDiscount,
-				effectivenessDiscount, inferenceOptions, null);
-		ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
-		return expandedNetwork;
-	}
-	
-	/**
-	 * 
-	 * @param initialAge
-	 * @param finalAge
-	 * @param probNet
-	 * @param costDiscount
-	 * @param effectivenessDiscount
-	 * @param cycleLength
-	 * @return An expanded network built from a SMM when the network has evidence of initial age of the patient. It adapts the network to Cost-Effectiveness analysis if 
-	 * adaptForCE is true.
-	 */
-	public static ProbNet constructExpandedNetAge(int initialAge, int finalAge, ProbNet probNet, double costDiscount, double effectivenessDiscount, double cycleLength,  boolean adaptForCE) {
-		int numSlices = finalAge - initialAge;
-		EvidenceCase evidenceCase  = new EvidenceCase();
-		ProbNet expandedNetwork = null;
-		//set up findings from the network and values introduced by the user
-		Finding ageFinding = null;
-		List<ProbNode> probNodes = probNet.getProbNodes();
-		for (int i = 0; i < probNodes.size() ; i++) {
-			if (probNodes.get(i).getVariable().isTemporal() 
-					&& probNodes.get(i).getVariable().getBaseName().equals("Age")
-					&& probNodes.get(i).getVariable().getTimeSlice() == 0) {
-				ageFinding = new  Finding(probNodes.get(i).getVariable(), initialAge);
-				break;
-			}
-		}
-		try {
-			evidenceCase.addFinding(ageFinding);
-		} catch (InvalidStateException
-				| IncompatibleEvidenceException e) {
-			e.printStackTrace();
-		}
+    /**
+     * when checkbox zero cycle is unselected utility nodes which decision
+     * criteria is cost or effectiveness must be removed from the network this
+     * approach is in order to take into account changes taking place at the
+     * beginning of the cycle not at the end
+     * @return
+     */
+    public void pruneZeroCycleUtilities ()
+    {
+        List<ProbNode> utilityExpandedNodes = probNet.getProbNodes (NodeType.UTILITY);
+        for (int i = 0; i < utilityExpandedNodes.size (); i++)
+        {
+            ProbNode iUtilityProbNode = utilityExpandedNodes.get (i);
+            int timeSlice = iUtilityProbNode.getVariable ().getTimeSlice ();
+            if (iUtilityProbNode.getVariable ().isTemporal ()
+                && timeSlice == 0
+                && (iUtilityProbNode.getVariable ().getDecisionCriteria ().getString ().equalsIgnoreCase ("cost") || iUtilityProbNode.getVariable ().getDecisionCriteria ().getString ().equalsIgnoreCase ("effectiveness")))
+            { // decision criteria of utility nodes must be cost or
+              // effectiveness
+                probNet.removeProbNode (iUtilityProbNode);
+            }
+        }
+    }
 
-		FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
+    // Methods
+    /**
+     * @param simulationIndexVariable. <code>Variable</code>
+     * @throws NotEnoughMemoryException
+     */
+    private void sampleProbNet (Variable simulationIndexVariable)
+    {
+        for (ProbNode probNode : probNet.getProbNodes ())
+        {
+            probNode.samplePotentials (simulationIndexVariable);
+        }
+    }
 
-		InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-		if (!evidenceCase.getFindings().isEmpty()) {
-			try {
-				evidenceCase.extendEvidence(
-						expandedNetFactory.getExtendedNet(), cycleLength);
-			} catch (IncompatibleEvidenceException e2) {
-				e2.printStackTrace();
-			} catch (InvalidStateException e2) {
-				e2.printStackTrace();
-			} catch (WrongCriterionException e2) {
-				e2.printStackTrace();
-			}
-		}
-		expandedNetFactory.applyDiscountToUtilityNodes(costDiscount,
-				effectivenessDiscount, inferenceOptions, null);
-		if (adaptForCE) {
-			expandedNetFactory.adaptProbNetForCE();
-		}
-		expandedNetwork = expandedNetFactory.getExtendedNet();
-
-		return expandedNetwork;
-
-	}
-
-	
-	/**
-	 * @param decisionCriteria
-	 * @param treeVariables
-	 * @param utility
-	 * @param utilProbNode
-	 * @param decisionCriteriaName
-	 * @param otherDecisionCriteriaName
-	 * @return A TreeADD for the utility potential where the branch of the criteria of the node is the old utility table, and the branch of the other criteria is 0.
-	 */
-	public TreeADDPotential constructTreeADDForCE(ProbNode decisionCriteria, List<Variable> treeVariables, Potential utility, ProbNode utilProbNode, String decisionCriteriaName, String otherDecisionCriteriaName){
-		
-		TreeADDPotential treeADDPotential = new TreeADDPotential(treeVariables, probNet.getDecisionCriteriaVariable(),
-				  utility.getPotentialRole(), utility.getUtilityVariable());
-		
-		List<Variable> variables = new ArrayList<>();
-		  variables.add(decisionCriteria.getVariable());
-		 
-		  for (int j = 0; j < treeADDPotential.getBranches().size(); j++) {
-			  TreeADDBranch jBranch = treeADDPotential.getBranches().get(j);
-			String jBranchName = jBranch.getBranchStates().get(0).getName();
-			
-			if (jBranchName.equalsIgnoreCase(decisionCriteriaName)) {
-				  jBranch.setPotential(utility);
-			  } else if (jBranchName.equalsIgnoreCase(otherDecisionCriteriaName)) {
-				  //zero potential
-				  jBranch.setPotential(new UniformPotential(utility.getVariables(), PotentialRole.UTILITY, utilProbNode.getVariable()));
-			  }
-		  }
-		  return treeADDPotential;
-	}
-	
-	/**
-	 * when checkbox zero cycle is unselected utility nodes which  decision criteria is cost or effectiveness must be removed from the network
-	 * this approach is in order to take into account changes taking place at the beginning of the cycle not at the end 
-	 * @return 
-	 */
-	public void pruneZeroCycleUtilities() {
-		List<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
-		 for (int i = 0; i < utilityExpandedNodes.size(); i++) {
-			  ProbNode iUtilityProbNode = utilityExpandedNodes.get(i);
-			int timeSlice = iUtilityProbNode.getVariable().getTimeSlice();
-			if (iUtilityProbNode.getVariable().isTemporal() && timeSlice == 0 && (iUtilityProbNode.getVariable().getDecisionCriteria().getString().equalsIgnoreCase("cost") ||
-					iUtilityProbNode.getVariable().getDecisionCriteria().getString().equalsIgnoreCase("effectiveness"))) { // decision criteria of utility nodes must be cost or effectiveness 
-				probNet.removeProbNode(iUtilityProbNode);
-				}
-			}
-	}
-
-	// Methods
-	/** @param simulationIndexVariable. <code>Variable</code>
-	 * @throws NotEnoughMemoryException */
-	private void sampleProbNet(Variable simulationIndexVariable) {
-		for (ProbNode probNode : probNet.getProbNodes()) {
-			probNode.samplePotentials(simulationIndexVariable);
-		}
-	}
-
-	/** When invoking this method, probNet is a copy of the concise net. We add
-	 * new nodes, links, and potentials to make it a compact net. */
-	private void makeNetCompact() {
-		classifiedNodes = classifyNodes(probNet, probNet.getVariables());
-
-		// generate the new nodes of the compact net
-		List<ProbNode> generatingNodes = new ArrayList<ProbNode>();
-		generatedNodes = new ArrayList<ProbNode>();
-
-		for (int slice = 0; slice < classifiedNodes.size()-1; slice++) {
-		    List<ProbNode> generatedNodesInThisSlice = 
-				new ArrayList<ProbNode>(classifiedNodes.get(slice).size());
-			for (ProbNode generatingProbNode : classifiedNodes.get(slice)) {
-				Variable generatingVariable = generatingProbNode.getVariable();
-				int newSliceIndex = generatingVariable.getTimeSlice() + 1;
-				String nameOfNewVariable = generatingVariable.getBaseName() + 
-							" [" + newSliceIndex + "]";
-				if ( !probNet.containsVariable(nameOfNewVariable) ) {
-					ProbNode newProbNode =
-						probNet.addShiftedProbNode(generatingProbNode, 1,
-							coordinateXOffset, coordinateYOffset );
-					generatingNodes.add(generatingProbNode);
-					generatedNodes.add(newProbNode);
-					generatedNodesInThisSlice.add(newProbNode);
-				}
-			}
-			for (ProbNode probNode : generatedNodesInThisSlice) {
-				classifiedNodes.get(probNode.getVariable().getTimeSlice()).
-					add(probNode);
-			}
-		}
-		
-		// assign potentials to the new nodes of the compact net
-		ProbNode generatingNode, generatedNode;
-		for (int i = 0; i < generatedNodes.size(); i++) {
-			generatingNode = generatingNodes.get(i);
-			generatedNode = generatedNodes.get(i);
-			expandPotentialAndLinks(generatingNode, generatedNode, 1);
-		}
-	}
-
+    /**
+     * When invoking this method, probNet is a copy of the concise net. We add
+     * new nodes, links, and potentials to make it a compact net.
+     */
+    private void makeNetCompact ()
+    {
+        classifiedNodes = classifyNodes (probNet, probNet.getVariables ());
+        // generate the new nodes of the compact net
+        List<ProbNode> generatingNodes = new ArrayList<ProbNode> ();
+        generatedNodes = new ArrayList<ProbNode> ();
+        for (int slice = 0; slice < classifiedNodes.size () - 1; slice++)
+        {
+            double sliceWidth = getSliceWidth (classifiedNodes.get (slice));
+            List<ProbNode> generatedNodesInThisSlice = new ArrayList<ProbNode> (classifiedNodes.get (slice).size ());
+            for (ProbNode generatingProbNode : classifiedNodes.get (slice))
+            {
+                if (!probNet.containsShiftedVariable (generatingProbNode.getVariable (), 1))
+                {
+                    ProbNode newProbNode = probNet.addShiftedProbNode (generatingProbNode, 1,
+                                                                       sliceWidth + MARGIN_BETWEEN_SLICES, 
+                                                                       VERTICAL_OFFSET);
+                    generatingNodes.add (generatingProbNode);
+                    generatedNodes.add (newProbNode);
+                    generatedNodesInThisSlice.add (newProbNode);
+                }
+            }
+            for (ProbNode probNode : generatedNodesInThisSlice)
+            {
+                classifiedNodes.get (probNode.getVariable ().getTimeSlice ()).add (probNode);
+            }
+        }
+        // assign potentials to the new nodes of the compact net
+        ProbNode generatingNode, generatedNode;
+        for (int i = 0; i < generatedNodes.size (); i++)
+        {
+            generatingNode = generatingNodes.get (i);
+            generatedNode = generatedNodes.get (i);
+            expandPotentialAndLinks (generatingNode, generatedNode, 1);
+        }
+    }
+    
     /**
      * Assigns nodes to slices in a collection of slices. Each slice is a
      * collection of nodes.
-     * @return <code>ArrayList</code> of <code>List</code> of
+     * @return <code>List</code> of <code>List</code> of
      *         <code>ProbNode</code>
      */
     public static List<List<ProbNode>> classifyNodes (ProbNet probNet, List<Variable> variables)
@@ -359,261 +401,242 @@ public class FactoryExpandedSMM {
         }
         return classifiedNodes;
     }
-	
-	/**
-	 * projects the evidence for all nodes in the expanded network
-	 * calling for each potential within the network to the method tableProject
-	 * 
-	 * @param evidence
-	 * */
-	
-	@SuppressWarnings("unused")
-	public void projectEvidence(EvidenceCase evidence) {
-		for (ProbNode probNode: probNet.getProbNodes()) {
-			ArrayList<Potential> potentials = new ArrayList<>();
 
-			InferenceOptions io = new InferenceOptions(probNet, null);
-			
-				if(probNode.getNodeType() != NodeType.DECISION) {
-				try {
-					if (!probNode.getPotentials().get(0).tableProject(evidence, io).isEmpty()) {
-						
-							potentials.add(probNode.getPotentials().get(0).tableProject(evidence, io).get(0));
-						
-						probNode.setPotentials(potentials);
-					}
-				} catch (NonProjectablePotentialException
-						| WrongCriterionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				}
-			
-		}
-	}
-	
-	 
-	public ProbNet getExtendedNet(){
-		return probNet;
-	}
-	
+    /**
+     * projects the evidence for all nodes in the expanded network calling for
+     * each potential within the network to the method tableProject
+     * @param evidence
+     */
+    public void projectEvidence (EvidenceCase evidence)
+    {
+        for (ProbNode probNode : probNet.getProbNodes ())
+        {
+            ArrayList<Potential> potentials = new ArrayList<> ();
+            InferenceOptions io = new InferenceOptions (probNet, null);
+            if (probNode.getNodeType () != NodeType.DECISION)
+            {
+                try
+                {
+                    if (!probNode.getPotentials ().get (0).tableProject (evidence, io).isEmpty ())
+                    {
+                        potentials.add (probNode.getPotentials ().get (0).tableProject (evidence,
+                                                                                        io).get (0));
+                        probNode.setPotentials (potentials);
+                    }
+                }
+                catch (NonProjectablePotentialException | WrongCriterionException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace ();
+                }
+            }
+        }
+    }
 
-	/**
-	 * @param costDiscount
-	 * @param inferenceOptions 
-	 * @throws NotEnoughMemoryException
-	 * It applies the discount to each utility potential
-	 */
-/*	public void applyDiscountToUtilityNodes(double costDiscount, double effectivenessDiscount) throws NotEnoughMemoryException{
-		// apply discount rate for all temporal utility nodes in the expanded network
-		  ArrayList<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
-		  for (int i = 0; i < utilityExpandedNodes.size(); i++) {
-			  ProbNode iUtilityProbNode = utilityExpandedNodes.get(i);
-			int timeSlice = iUtilityProbNode.getVariable().getTimeSlice();
-			double discount = iUtilityProbNode.getVariable().getDecisionCriteria().getString().equalsIgnoreCase("cost") ?  costDiscount : effectivenessDiscount;
-			if (iUtilityProbNode.getVariable().isTemporal() && timeSlice > 0) {
-				  double discountRate = 1.0 / (Math.pow((1.0 + (discount/100.0)), timeSlice));
-				  Potential originalPotential;
-				  Potential potential = iUtilityProbNode.getPotentials().get(0);
-				  if (potential instanceof SameAsPrevious) {
-					ArrayList<Variable> variables = potential.getVariables();
-					Variable utilityVariable = potential.getUtilityVariable();
-					originalPotential = (((SameAsPrevious)potential).getOriginalPotential()).copy();
-					originalPotential.setVariables(variables);
-					originalPotential.setUtilityVariable(utilityVariable);
-				  } else {
-					originalPotential = (potential);
-				  }
-			
-				if (originalPotential instanceof TablePotential) {
-					originalPotential = applyDiscountTable( (TablePotential)originalPotential, discountRate);
-				 } else if (originalPotential instanceof TreeADDPotential) {
-					 originalPotential = applyDiscountTree( (TreeADDPotential)originalPotential, discountRate);
-				 } else if (originalPotential instanceof UniformPotential) { 
-					 originalPotential = applyDiscountUniform( (UniformPotential)originalPotential, discountRate);
-				 } // sum product??
-				 
-				 ArrayList<Potential> potentials = new ArrayList<>();
-				 potentials.add(originalPotential);
-				 iUtilityProbNode.setPotentials(potentials);
-			  }
-		  }
-	}
-	
-	public TreeADDPotential applyDiscountTree(TreeADDPotential tree, double discountRate) {
-		ArrayList<TreeADDBranch> branches = tree.getBranches();
-		for(int i = 0; i < branches.size(); i++) {
-			Potential potential = branches.get(i).getPotential();
-			if (potential instanceof TreeADDPotential) {
-				branches.get(i).setPotential(applyDiscountTree((TreeADDPotential)potential, discountRate));
-			} else if (potential instanceof TablePotential) {
-				branches.get(i).setPotential(applyDiscountTable((TablePotential)potential, discountRate));
-			} else if (branches.get(i).getPotential() instanceof UniformPotential) {
-				//branches.get(i).setPotential(applyDiscountUniform((UniformPotential)branches.get(i).getPotential(), discountRate));
-			}
-			else if (potential instanceof SameAsPrevious) {
-			//	branches.get(i).setPotential(applyDiscountTable((SameAsPrevious)(potential.getOriginalPotential()), discountRate));
-			}
-		}
-		
-		return tree;
-	}
-	
-	public TablePotential applyDiscountTable(TablePotential table, double discountRate) {
-		 double[] valuesProjectedPotential = ((TablePotential)table).getValues();
-			for (int j = 0; j < valuesProjectedPotential.length; j++) {
-				valuesProjectedPotential[j] = valuesProjectedPotential[j] * (discountRate);
-			}
-		return table;
-	}
-	
-	public UniformPotential applyDiscountUniform(UniformPotential uniform, double discountRate) {
-		((UniformPotential) uniform).setDiscreteValue(((UniformPotential) uniform).getDiscreteValue()* (discountRate));
-		return uniform;
-	}*/
-	
-	public void applyDiscountToUtilityNodes(double costDiscount, double effectivenessDiscount, InferenceOptions inferenceOptions, EvidenceCase evidence){
-		// apply discount rate for all temporal utility nodes in the expanded network
-	    List<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
-		  for (int i = 0; i < utilityExpandedNodes.size(); i++) {
-			  ProbNode iUtilityProbNode = utilityExpandedNodes.get(i);
-			int timeSlice = iUtilityProbNode.getVariable().getTimeSlice();
-			double discount = iUtilityProbNode.getVariable().getDecisionCriteria().getString().equalsIgnoreCase("cost") ?  costDiscount : effectivenessDiscount;
-			//slice 0 must be projected to eliminate continuous variables in trees
-			if (iUtilityProbNode.getVariable().isTemporal() && timeSlice == 0) {
-				 TablePotential projectedPotential = null;
-				 Potential potentialToBeProjected = iUtilityProbNode.getPotentials().get(0);
-				try {
-					projectedPotential = potentialToBeProjected.tableProject(evidence, inferenceOptions).get(0);
-				} catch (NonProjectablePotentialException
-						| WrongCriterionException e) {
-					e.printStackTrace();
-				}
-				List<Potential> potentials = new ArrayList<>();
-				potentials.add(projectedPotential);
-				iUtilityProbNode.setPotentials(potentials);
-			}
-			
-			if (iUtilityProbNode.getVariable().isTemporal() && timeSlice > 0) {
-				  double discountRate = 1.0 / (Math.pow((1.0 + (discount/100.0)), timeSlice));
-				  //project TreeADD original potential to a table
-				 try {
-					 TablePotential projectedPotential = null;
-					 Potential potentialToBeProjected;
-					Potential potential = iUtilityProbNode.getPotentials().get(0);
-					if (potential instanceof SameAsPrevious) {
-					    List<Variable> variables = potential.getVariables();
-						Variable utilityVariable = potential.getUtilityVariable();
-						potentialToBeProjected = (((SameAsPrevious)potential).getOriginalPotential()).copy();
-						potentialToBeProjected.setVariables(variables);
-						potentialToBeProjected.setUtilityVariable(utilityVariable);
-					 } else {
-						potentialToBeProjected = (potential);
-					 }
-					 projectedPotential = potentialToBeProjected.tableProject(evidence, inferenceOptions).get(0);
-//					 projectedPotential.setOriginalVariables(potentialToBeProjected.getVariables());
-					
-					 double[] valuesProjectedPotential = projectedPotential.getValues();
-						for (int j = 0; j < valuesProjectedPotential.length; j++) {
-							valuesProjectedPotential[j] = valuesProjectedPotential[j] * (discountRate);
-						}	
-						List<Potential> potentials = new ArrayList<>();
-					potentials.add(projectedPotential);
-					iUtilityProbNode.setPotentials(potentials);
-				} catch (NonProjectablePotentialException | WrongCriterionException e) {					
-					e.printStackTrace();
-				} 
-				  //utilityExpandedNodes.get(i).getPotentials().get(0).get
-			  }
-		  }
-	}
-	
-	/** 
-	 * @precondition extendedNet in this class must be a compact net */
-	private void generateNextSlice() {
+    public ProbNet getExtendedNet ()
+    {
+        return probNet;
+    }
 
-	    List<ProbNode> lastSliceNodes = classifiedNodes.get(classifiedNodes.size()-1);
-	    List<ProbNode> newSliceNodes = new ArrayList<ProbNode>();
+    /**
+     * @param costDiscount
+     * @param inferenceOptions
+     * @throws NotEnoughMemoryException It applies the discount to each utility
+     *             potential
+     */
+    public void applyDiscountToUtilityNodes (double costDiscount,
+                                             double effectivenessDiscount,
+                                             InferenceOptions inferenceOptions,
+                                             EvidenceCase evidence)
+    {
+        // apply discount rate for all temporal utility nodes in the expanded
+        // network
+        List<ProbNode> utilityExpandedNodes = probNet.getProbNodes (NodeType.UTILITY);
+        for (int i = 0; i < utilityExpandedNodes.size (); i++)
+        {
+            ProbNode iUtilityProbNode = utilityExpandedNodes.get (i);
+            int timeSlice = iUtilityProbNode.getVariable ().getTimeSlice ();
+            double discount = iUtilityProbNode.getVariable ().getDecisionCriteria ().getString ().equalsIgnoreCase ("cost") ? costDiscount
+                                                                                                                           : effectivenessDiscount;
+            // slice 0 must be projected to eliminate continuous variables in
+            // trees
+            if (iUtilityProbNode.getVariable ().isTemporal () && timeSlice == 0)
+            {
+                TablePotential projectedPotential = null;
+                Potential potentialToBeProjected = iUtilityProbNode.getPotentials ().get (0);
+                try
+                {
+                    projectedPotential = potentialToBeProjected.tableProject (evidence,
+                                                                              inferenceOptions).get (0);
+                }
+                catch (NonProjectablePotentialException | WrongCriterionException e)
+                {
+                    e.printStackTrace ();
+                }
+                List<Potential> potentials = new ArrayList<> ();
+                potentials.add (projectedPotential);
+                iUtilityProbNode.setPotentials (potentials);
+            }
+            if (iUtilityProbNode.getVariable ().isTemporal () && timeSlice > 0)
+            {
+                double discountRate = 1.0 / (Math.pow ((1.0 + (discount / 100.0)), timeSlice));
+                // project TreeADD original potential to a table
+                try
+                {
+                    TablePotential projectedPotential = null;
+                    Potential potentialToBeProjected;
+                    Potential potential = iUtilityProbNode.getPotentials ().get (0);
+                    if (potential instanceof SameAsPrevious)
+                    {
+                        List<Variable> variables = potential.getVariables ();
+                        Variable utilityVariable = potential.getUtilityVariable ();
+                        potentialToBeProjected = (((SameAsPrevious) potential).getOriginalPotential ()).copy ();
+                        potentialToBeProjected.setVariables (variables);
+                        potentialToBeProjected.setUtilityVariable (utilityVariable);
+                    }
+                    else
+                    {
+                        potentialToBeProjected = (potential);
+                    }
+                    projectedPotential = potentialToBeProjected.tableProject (evidence,
+                                                                              inferenceOptions).get (0);
+                    // projectedPotential.setOriginalVariables(potentialToBeProjected.getVariables());
+                    double[] valuesProjectedPotential = projectedPotential.getValues ();
+                    for (int j = 0; j < valuesProjectedPotential.length; j++)
+                    {
+                        valuesProjectedPotential[j] = valuesProjectedPotential[j] * (discountRate);
+                    }
+                    List<Potential> potentials = new ArrayList<> ();
+                    potentials.add (projectedPotential);
+                    iUtilityProbNode.setPotentials (potentials);
+                }
+                catch (NonProjectablePotentialException | WrongCriterionException e)
+                {
+                    e.printStackTrace ();
+                }
+                // utilityExpandedNodes.get(i).getPotentials().get(0).get
+            }
+        }
+    }
 
-		// generates the new nodes
-		for (ProbNode generatingProbNode : lastSliceNodes) {
-			ProbNode newProbNode =
-				probNet.addShiftedProbNode(generatingProbNode, 1,
-					coordinateXOffset, coordinateYOffset );
-			newSliceNodes.add(newProbNode);
-		}
-		// generates new slices
-		// assign potentials to the new nodes
-		ProbNode generatingNode, generatedNode;
-		for (int i = 0; i < lastSliceNodes.size(); i++) {
-			generatingNode = lastSliceNodes.get(i);
-			generatedNode = newSliceNodes.get(i);
-			expandPotentialAndLinks(generatingNode, generatedNode, 1);
-		}
-		
-		classifiedNodes.add(newSliceNodes);
-	}		
+    /**
+     * @precondition extendedNet in this class must be a compact net
+     */
+    private void generateNextSlice ()
+    {
+        List<ProbNode> lastSliceNodes = classifiedNodes.get (classifiedNodes.size () - 1);
+        List<ProbNode> newSliceNodes = new ArrayList<ProbNode> ();
+        // generates the new nodes
+        double sliceWidth = getSliceWidth(lastSliceNodes);
+        for (ProbNode generatingProbNode : lastSliceNodes)
+        {
+            ProbNode newProbNode = probNet.addShiftedProbNode (generatingProbNode, 1,
+                                                               sliceWidth + MARGIN_BETWEEN_SLICES, 
+                                                               VERTICAL_OFFSET);
+            newSliceNodes.add (newProbNode);
+        }
+        // generates new slices
+        // assign potentials to the new nodes
+        ProbNode generatingNode, generatedNode;
+        for (int i = 0; i < lastSliceNodes.size (); i++)
+        {
+            generatingNode = lastSliceNodes.get (i);
+            generatedNode = newSliceNodes.get (i);
+            expandPotentialAndLinks (generatingNode, generatedNode, 1);
+        }
+        classifiedNodes.add (newSliceNodes);
+    }
 
-	/** TODO documentar
-	 * oldNode is a node in the last slice of the compact net
-	 * TODO We are assuming that there is only one potential per node. Revise */
-	private void expandPotentialAndLinks(ProbNode oldNode, ProbNode newNode, int timeDifference) {
-		Potential oldPotential = oldNode.getPotentials().get(0);
-		Potential newPotential = null;
-		if (oldPotential.getPotentialType() == PotentialType.CYCLE_LENGTH_SHIFT) {
-			newPotential = new CycleLengthShift(oldPotential.getShiftedVariables(probNet,
-					timeDifference));
-		} else {
-			int timeDifferenceWithNew;
-			Potential referencePotentialForNewPotential = null;
-			if (oldPotential.getPotentialType() == PotentialType.SAME_AS_PREVIOUS) {
-				 Potential originalPotential = ((SameAsPrevious) oldPotential)
-						.getOriginalPotential();
-				// Sets time difference respect to the original potential
-				Variable firstOriginalVariable = null;
-				PotentialRole potentialRole = originalPotential.getPotentialRole();
-				switch (potentialRole) {
-				case CONDITIONAL_PROBABILITY:
-					firstOriginalVariable = originalPotential.getVariables().get(0);
-					break;
-				case UTILITY:
-					firstOriginalVariable = originalPotential.getUtilityVariable();
-					break;
-				}
-				Variable newVariable = newNode.getVariable();
-				timeDifferenceWithNew = newVariable.getTimeSlice() - firstOriginalVariable.getTimeSlice();
-				referencePotentialForNewPotential = originalPotential;
-			} else {
-				
-				referencePotentialForNewPotential = oldPotential;
-				timeDifferenceWithNew = timeDifference;
-				}
-				
-				
-			try {
-				newPotential = new SameAsPrevious(referencePotentialForNewPotential, probNet, timeDifferenceWithNew);
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-			}
-			
-		}
-		newNode.addPotential(newPotential);
-		newPotential.createDirectedLinks(probNet);
-	}
-	
-	/**
-	 * Removes all that nodes that has evidence, this means that numerical and CycleLegthShift ones disappears
-	 * with evidence the are not necessary in the network for the inference algorithm anymore
-	 * 
-	 * @param evidence
-	 */
-	public ProbNet prepareExpandedNetworkToInference(EvidenceCase evidence) {
-		ProbNet prunedProbNet = probNet.copy();
-		List<Finding> findings = evidence.getFindings();
-		for (int i = 0; i < findings.size(); i++) {
-			prunedProbNet.removeProbNode(prunedProbNet.getProbNode(findings.get(i).getVariable())); 
-		}
-		return prunedProbNet;
-	}
+    /**
+     * TODO documentar oldNode is a node in the last slice of the compact net
+     * TODO We are assuming that there is only one potential per node. Revise
+     */
+    private void expandPotentialAndLinks (ProbNode oldNode, ProbNode newNode, int timeDifference)
+    {
+        Potential oldPotential = oldNode.getPotentials ().get (0);
+        Potential newPotential = null;
+        if (oldPotential.getPotentialType () == PotentialType.CYCLE_LENGTH_SHIFT)
+        {
+            newPotential = new CycleLengthShift (oldPotential.getShiftedVariables (probNet,
+                                                                                   timeDifference));
+        }
+        else
+        {
+            int timeDifferenceWithNew;
+            Potential referencePotentialForNewPotential = null;
+            if (oldPotential.getPotentialType () == PotentialType.SAME_AS_PREVIOUS)
+            {
+                Potential originalPotential = ((SameAsPrevious) oldPotential).getOriginalPotential ();
+                // Sets time difference respect to the original potential
+                Variable firstOriginalVariable = null;
+                PotentialRole potentialRole = originalPotential.getPotentialRole ();
+                switch (potentialRole)
+                {
+                    case CONDITIONAL_PROBABILITY :
+                        firstOriginalVariable = originalPotential.getVariables ().get (0);
+                        break;
+                    case UTILITY :
+                        firstOriginalVariable = originalPotential.getUtilityVariable ();
+                        break;
+                    default :
+                        break;
+                }
+                Variable newVariable = newNode.getVariable ();
+                timeDifferenceWithNew = newVariable.getTimeSlice ()
+                                        - firstOriginalVariable.getTimeSlice ();
+                referencePotentialForNewPotential = originalPotential;
+            }
+            else
+            {
+                referencePotentialForNewPotential = oldPotential;
+                timeDifferenceWithNew = timeDifference;
+            }
+            try
+            {
+                newPotential = new SameAsPrevious (referencePotentialForNewPotential, probNet,
+                                                   timeDifferenceWithNew);
+            }
+            catch (NodeNotFoundException e)
+            {
+                e.printStackTrace ();
+            }
+        }
+        newNode.addPotential (newPotential);
+        newPotential.createDirectedLinks (probNet);
+    }
 
+    /**
+     * Removes all that nodes that has evidence, this means that numerical and
+     * CycleLegthShift ones disappears with evidence the are not necessary in
+     * the network for the inference algorithm anymore
+     * @param evidence
+     */
+    public ProbNet prepareExpandedNetworkToInference (EvidenceCase evidence)
+    {
+        ProbNet prunedProbNet = probNet.copy ();
+        List<Finding> findings = evidence.getFindings ();
+        for (int i = 0; i < findings.size (); i++)
+        {
+            prunedProbNet.removeProbNode (prunedProbNet.getProbNode (findings.get (i).getVariable ()));
+        }
+        return prunedProbNet;
+    }
+    
+    private double getSliceWidth (List<ProbNode> nodes)
+    {
+        double minX = Double.POSITIVE_INFINITY;
+        double maxX = 0.0;
+        for(ProbNode probNode: nodes)
+        {
+           if(probNode.getNode ().getCoordinateX () > maxX)
+           {
+               maxX = probNode.getNode ().getCoordinateX ();
+           }
+           if(probNode.getNode ().getCoordinateX () < minX)
+           {
+               minX = probNode.getNode ().getCoordinateX ();
+           }
+        }
+        return maxX-minX;
+    }    
 }

@@ -469,7 +469,7 @@ public class ProbNet implements Cloneable {
 	 * this array will be empty
 	 */
 	
-	public List<ProbNode> getSpecialTimeDependantNodes(){
+	public List<ProbNode> getSpecialTimeDependentNodes(){
 		//this array includes also Age node if exists
 	    List<ProbNode> numericTemporalNodes = new ArrayList<>();
 	    List<ProbNode> probNodes = getProbNodes();

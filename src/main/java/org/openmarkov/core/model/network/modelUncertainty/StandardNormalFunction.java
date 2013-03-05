@@ -21,8 +21,8 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF 
 	private static double q[]=new double[]{0.0993484626060,0.588581570495,0.531103462366,0.103537752850,0.38560700634E-2};
 	
 	//Polynomials for the approximation
-	private Polynomial numerator= new Polynomial(p,5);
-	private Polynomial denominator= new Polynomial(q,5);
+	private Polynomial numerator= new Polynomial(p,4);
+	private Polynomial denominator= new Polynomial(q,4);
 	
 	public class Polynomial{
 		
@@ -88,7 +88,8 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF 
 
 	
 	/**
-	 * We use the method proposed by Odeh and Evan (1974). It is an approximation for the inverse of the cummulative 
+	 * We use the method proposed by Odeh and Evan (1974).
+	 * It is an approximation for the inverse of the cummulative 
 	 * distribution function of the standard normal.
 	 * @param y
 	 * @return
@@ -109,7 +110,7 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF 
 		double y;
 		double evalFunction;
 
-		y = Math.sqrt(1.0/Math.pow(beta,2.0));
+		y = Math.sqrt(-2.0*Math.log(1.0-beta));
 		evalFunction = -y-numerator.evaluate(y)/denominator.evaluate(y);
 		
 		return evalFunction;

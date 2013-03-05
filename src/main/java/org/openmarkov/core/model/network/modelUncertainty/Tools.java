@@ -93,7 +93,7 @@ public class Tools {
 	 * @param x
 	 * @return An estimation of the mean of an array of real numbers sampled
 	 */
-	public double meanSample(double []x){
+	public static double meanSample(double []x){
 		  double mu;
 	   	  int length = x.length;
 		  mu = (length>0)?(sum(x)/length):0.0;
@@ -105,7 +105,7 @@ public class Tools {
 	 * @return An estimation of the variance of an array of real numbers sampled. It
 	 *         uses the equation of the quasi-variance
 	 */
-	public double varianceSample(double[] x) {
+	public static double varianceSample(double[] x) {
 		double mu;
 		double sumSquares;
 		double variance;

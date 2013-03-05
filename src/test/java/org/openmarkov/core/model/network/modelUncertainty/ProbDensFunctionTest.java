@@ -11,16 +11,74 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.inference.InferenceAlgorithm;
+import org.openmarkov.core.model.network.ProbNet;
 
 /**
  * @author manolo
  *
  */
-public class ProbDensFunctionTest {
+public abstract class ProbDensFunctionTest {
+	
+	ProbDensFunction pdf;
+	
+	double maxErrorMean = 0.0001;
+	double maxErrorStDeviation = 0.005;
 
+	public abstract TypeProbDensityFunction getTypeProbDensFunction();
+	
 	@Test
-	public void test() {
-		fail("Not yet implemented");
+	public void testMeanAndVariance(){
+		int numSamples = 10000000;		
+		
+		pdf = ProbDensFunction.constructNewProbDensFunction(getTypeProbDensFunction());
+		initializeParamsProbDensFunctionTest(pdf);
+		double[]samples = new double[numSamples];
+		for (int i=0;i<numSamples;i++){
+			samples[i]=pdf.getSample();
+		}
+		testMean(samples);
+		testStandardDeviation(samples);
+		
+	}
+	
+	
+	/**
+	 * @param samples
+	 */
+	private void testStandardDeviation(double[] samples) {
+		double variance = Tools.varianceSample(samples);
+		assertMeanTest(Math.sqrt(variance),pdf.getStandardDeviation(),maxErrorStDeviation);
+		
 	}
 
+
+
+	public void testMean(double[] samples){
+		
+		double mean = Tools.meanSample(samples);
+		assertMeanTest(mean,pdf.getMean(),maxErrorMean);
+		
+	}
+	
+	
+	/**
+	 * @param samplesMean
+	 * true if the difference between two means is lower than maxError
+	 * @param pdfMean 
+	 * @param maxError 
+	 */
+	public void assertMeanTest(double samplesMean, double pdfMean, double maxError){
+		assertEquals(samplesMean,pdfMean,maxError);
+	}
+
+
+
+	/**
+	 * @param prob
+	 */
+	public abstract void initializeParamsProbDensFunctionTest(ProbDensFunction prob);
+	
+	
 }

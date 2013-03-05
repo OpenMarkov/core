@@ -74,7 +74,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 		
 		@Override
 		public double getMean() {
-			return (a+b)/2;
+			return (a+b+c)/3;
 		}
 		
 		@Override
@@ -82,16 +82,22 @@ package org.openmarkov.core.model.network.modelUncertainty;
 			double x;
 			double sample;
 			double diffBA;
+			double ratioCABA;
 						
 			diffBA = b-a;
-						
-			x = a+ Math.sqrt(y*diffBA*(c-a));
+			double diffBC = b-c;
+			double diffCA = c-a;
 			
-			if (x<c){
-				sample = x;
+			ratioCABA = diffCA/diffBA;
+						
+				
+			//if (x<ratioCABA){
+			if (y<ratioCABA){
+			//if (x<c){
+				sample = a+ Math.sqrt(y*diffBA*diffCA);
 			}
 			else{
-				sample = b-Math.sqrt((1-y)*diffBA*(c-a)); 
+				sample = b-Math.sqrt((1-y)*diffBA*diffBC); 
 			}
 			return sample;
 		}

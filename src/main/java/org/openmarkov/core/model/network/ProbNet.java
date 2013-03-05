@@ -548,6 +548,7 @@ public class ProbNet implements Cloneable {
 	public ProbNet copy() {
 	    
 		ProbNet copyNet = new ProbNet(this.networkType);
+		copyNet.setName (name);
         // copy constraints
         int numConstraints = constraints.size(); 
         for (int i = 1; i < numConstraints; i++)

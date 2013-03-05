@@ -162,7 +162,7 @@ public class FactoryExpandedMPAD
         }
         expandedNetFactory.applyDiscountToUtilityNodes (costDiscount, effectivenessDiscount,
                                                         inferenceOptions, null);
-        ProbNet expandedNetwork = expandedNetFactory.getExtendedNet ();
+        ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork ();
         return expandedNetwork;
     }
 
@@ -215,7 +215,7 @@ public class FactoryExpandedMPAD
         {
             try
             {
-                evidenceCase.extendEvidence (expandedNetFactory.getExtendedNet (), cycleLength);
+                evidenceCase.extendEvidence (expandedNetFactory.getExtendedNetwork (), cycleLength);
             }
             catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e2)
             {
@@ -228,7 +228,7 @@ public class FactoryExpandedMPAD
         {
             expandedNetFactory.adaptProbNetForCE ();
         }
-        expandedNetwork = expandedNetFactory.getExtendedNet ();
+        expandedNetwork = expandedNetFactory.getExtendedNetwork ();
         return expandedNetwork;
     }
 
@@ -433,7 +433,7 @@ public class FactoryExpandedMPAD
         }
     }
 
-    public ProbNet getExtendedNet ()
+    public ProbNet getExtendedNetwork ()
     {
         return probNet;
     }

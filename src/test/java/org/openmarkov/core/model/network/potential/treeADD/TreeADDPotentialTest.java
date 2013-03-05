@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.core.model.network.type.MPADType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 
 public class TreeADDPotentialTest {
@@ -148,8 +149,8 @@ public class TreeADDPotentialTest {
 		// create treeADD
 		treeADD = new TreeADDPotential(listBA, startVariable, PotentialRole.CONDITIONAL_PROBABILITY) ;
 	
-		//SMMContraint Simple Markov Model
-		probNet = new ProbNet(SimpleMarkovModelType.getUniqueInstance());
+		//MPADConstraint Markov Process with Atemporal Decisions
+		probNet = new ProbNet(MPADType.getUniqueInstance());
 		
 		nodeType = NodeType.CHANCE;
 		

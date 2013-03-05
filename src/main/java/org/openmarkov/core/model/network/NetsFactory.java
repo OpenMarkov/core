@@ -637,11 +637,11 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 			return probNet;
 	}
 	
-	public static ProbNet createSMMWithoutStateVariable(){
-		return createSMMWithoutStateVariable(0.9,1.0,40000,0);
+	public static ProbNet createMPADWithoutStateVariable(){
+		return createMPADWithoutStateVariable(0.9,1.0,40000,0);
 	}
 	
-	public static ProbNet createSMMWithoutStateVariable(double qoLTreat,double qoLNoTreat,double costTreat,double costNoTreat){
+	public static ProbNet createMPADWithoutStateVariable(double qoLTreat,double qoLNoTreat,double costTreat,double costNoTreat){
 		// Define the variables
 		TablePotential potentialQoL;
 		TablePotential potentialCostOfTreatment;
@@ -700,13 +700,13 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	/**
 	 * @return A simple Markov Model proposed for jdiez for testing cost-effectiveness analysis and inference
 	 */
-	public static ProbNet createSMMDeadAlive(){
-		return createSMMWithStateVariable(0.8,1.0,40000,0,0.7,0.5);
+	public static ProbNet createMPADDeadAlive(){
+		return createMPADWithStateVariable(0.8,1.0,40000,0,0.7,0.5);
 	}
 	
 	
 	
-	public static ProbNet createSMMWithStateVariable(double qoLTreat,double qoLNoTreat,double costTreat,double costNoTreat,double probAliveIfTreat, double probAliveIfNoTreat){
+	public static ProbNet createMPADWithStateVariable(double qoLTreat,double qoLNoTreat,double costTreat,double costNoTreat,double probAliveIfTreat, double probAliveIfNoTreat){
 		TablePotential potentialQoL;
 		TablePotential potentialCostOfTreatment;
 		double[] tableQoL = {0.0, qoLTreat, 0.0, qoLNoTreat};

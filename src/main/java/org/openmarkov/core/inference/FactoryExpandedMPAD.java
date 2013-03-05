@@ -30,7 +30,7 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
-public class FactoryExpandedSMM
+public class FactoryExpandedMPAD
 {
     // Attributes
     /** Vertical separation in pixels between slices. */
@@ -52,7 +52,7 @@ public class FactoryExpandedSMM
      * @param simulationIndexVariable. <code>Variable</code>
      * @param coordinateXOffset. <code>int</code>
      */
-    public FactoryExpandedSMM (ProbNet conciseNet,
+    public FactoryExpandedMPAD (ProbNet conciseNet,
                                int numSlices,
                                Variable simulationIndexVariable)
     {
@@ -152,9 +152,9 @@ public class FactoryExpandedSMM
                                                     double effectivenessDiscount,
                                                     boolean adaptForCE)
     {
-        FactoryExpandedSMM expandedNetFactory = null;
+        FactoryExpandedMPAD expandedNetFactory = null;
         InferenceOptions inferenceOptions;
-        expandedNetFactory = new FactoryExpandedSMM (network, numSlices, null);
+        expandedNetFactory = new FactoryExpandedMPAD (network, numSlices, null);
         inferenceOptions = new InferenceOptions (network, null);
         if (adaptForCE)
         {
@@ -209,7 +209,7 @@ public class FactoryExpandedSMM
         {
             e.printStackTrace ();
         }
-        FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM (probNet, numSlices, null);
+        FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices, null);
         InferenceOptions inferenceOptions = new InferenceOptions (probNet, null);
         if (!evidenceCase.getFindings ().isEmpty ())
         {

@@ -30,7 +30,7 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
  * @author mluque
  *
  */
-public class FactoryExpandedSMMTest {
+public class FactoryExpandedMPADTest {
 	/**
 	 * Maximum error allowed in tests. It could be modified by subclasses
 	 * if it is necessary (for example, approximate inference methods).
@@ -46,11 +46,11 @@ public class FactoryExpandedSMMTest {
 	
 	
 	/**
-	 * Test a SMM with three variables: Treatment, CostOfTreatment and QoL (temporal variable)
+	 * Test a MPAD with three variables: Treatment, CostOfTreatment and QoL (temporal variable)
 	 * It performs a battery of tests: for numSlices = 1, numSlices = 2, ..., numSlices = 100
 	 */
 	@Test
-	public void testExpansionSMMWithoutStateVariable() {
+	public void testExpansionMPADWithoutStateVariable() {
 		double qoLTreat;
 		double qoLNoTreat;
 		double costTreat;
@@ -67,11 +67,11 @@ public class FactoryExpandedSMMTest {
 
 		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
 			
-			//Create the SMM and expand it
-			ProbNet network = NetsFactory.createSMMWithoutStateVariable(qoLTreat, qoLNoTreat,
+			//Create the MPAD and expand it
+			ProbNet network = NetsFactory.createMPADWithoutStateVariable(qoLTreat, qoLNoTreat,
 					costTreat, costNoTreat);
 			double discount = 0.01;
-			ProbNet expandedNetwork = FactoryExpandedSMM.constructExpandedNetwork(numSlices, network, discount*100.0, discount*100.0,true);
+			ProbNet expandedNetwork = FactoryExpandedMPAD.constructExpandedNetwork(numSlices, network, discount*100.0, discount*100.0,true);
 			
 			List<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
 
@@ -106,11 +106,11 @@ public class FactoryExpandedSMMTest {
 
 		
 	/**
-	 * Test a SMM with three variables: Treatment, CostOfTreatment and QoL (temporal variable)
+	 * Test a MPAD with three variables: Treatment, CostOfTreatment and QoL (temporal variable)
 	 * It performs a battery of tests: for numSlices = 1, numSlices = 2, ..., numSlices = 100
 	 */
 	@Test
-	public void testExpansionSMMWithStateVariable() {
+	public void testExpansionMPADWithStateVariable() {
 		double qoLTreat;
 		double qoLNoTreat;
 		double costTreat;
@@ -127,12 +127,12 @@ public class FactoryExpandedSMMTest {
 
 		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
 			
-			//Create the SMM and expand it
-			ProbNet network = NetsFactory.createSMMWithStateVariable(qoLTreat, qoLNoTreat,
+			//Create the MPAD and expand it
+			ProbNet network = NetsFactory.createMPADWithStateVariable(qoLTreat, qoLNoTreat,
 					costTreat, costNoTreat,0.7,0.5);
 			double discount = 0.01;
 
-			ProbNet expandedNetwork = FactoryExpandedSMM.constructExpandedNetwork(numSlices, network, discount*100.0, discount*100.0, true);
+			ProbNet expandedNetwork = FactoryExpandedMPAD.constructExpandedNetwork(numSlices, network, discount*100.0, discount*100.0, true);
 			
 		
 			List<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
@@ -141,7 +141,7 @@ public class FactoryExpandedSMMTest {
 			for (TablePotential auxPot:tablePotentials){
 				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot,PotentialRole.UTILITY)){
 					int slice = auxPot.getUtilityVariable().getTimeSlice();
-					checkUtilityPotentialQoLSMMWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
+					checkUtilityPotentialQoLMPADWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
 				}
 			}
 			
@@ -150,7 +150,7 @@ public class FactoryExpandedSMMTest {
 				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot)){
 					int slice = auxPot.getUtilityVariable().getTimeSlice();
 				
-					checkUtilityPotentialQoLSMMWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
+					checkUtilityPotentialQoLMPADWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
 				}
 			}
 	*/
@@ -169,11 +169,11 @@ public class FactoryExpandedSMMTest {
 
 		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
 			
-			//Create the SMM and expand it
+			//Create the MPAD and expand it
 			ProbNet network = NetsFactory.createSemiMarkovOnlyChanceNet();
 			double discount = 0.0;
 
-			ProbNet expandedNetwork = FactoryExpandedSMM.constructExpandedNetwork(numSlices, network, discount*100.0, discount*100.0, true);
+			ProbNet expandedNetwork = FactoryExpandedMPAD.constructExpandedNetwork(numSlices, network, discount*100.0, discount*100.0, true);
 			
 		
 			ArrayList<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
@@ -194,7 +194,7 @@ public class FactoryExpandedSMMTest {
 
 
 
-	public void checkUtilityPotentialQoLSMMWithState(ProbNet expandedNetwork, TablePotential auxPot, double qoLTreat, double qoLNoTreat, double ratio, int slice) {
+	public void checkUtilityPotentialQoLMPADWithState(ProbNet expandedNetwork, TablePotential auxPot, double qoLTreat, double qoLNoTreat, double ratio, int slice) {
 	
 		
 		ArrayList<Variable> variablesUtil = new ArrayList<>();

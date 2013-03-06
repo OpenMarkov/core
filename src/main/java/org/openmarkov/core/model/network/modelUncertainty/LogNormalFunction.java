@@ -64,7 +64,7 @@ public class LogNormalFunction extends ProbDensFunction {
 
 	@Override
 	public double getMean() {
-		return Math.exp(mu+Math.pow(sigma,2.0));
+		return Math.exp(mu+Math.pow(sigma,2.0)/2.0);
 	}
 
 

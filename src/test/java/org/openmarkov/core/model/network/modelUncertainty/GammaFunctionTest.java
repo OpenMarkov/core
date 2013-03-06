@@ -8,29 +8,27 @@
 */
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import static org.junit.Assert.assertEquals;
-
 /**
  * @author manolo
  *
  */
-public class StandardNormalFunctionTest extends ProbDensFunctionTest {
+public class GammaFunctionTest extends ProbDensFunctionTest {
 
 	/* (non-Javadoc)
 	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#getTypeProbDensFunction()
 	 */
 	@Override
 	public TypeProbDensityFunction getTypeProbDensFunction() {
-		return TypeProbDensityFunction.STANDARDNORMAL;
+		return TypeProbDensityFunction.GAMMA;
 	}
 
-		
 	/* (non-Javadoc)
 	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#initializeParamsProbDensFunctionTest()
 	 */
 	@Override
 	public Double[] initializeParamsProbDensFunctionTest() {
-		return new Double[0];
+		Double[] params={1.5,4.0};
+		return params;
 	}
-	
+
 }

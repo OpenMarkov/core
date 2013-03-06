@@ -28,14 +28,22 @@ public class ExactFunctionTest extends ProbDensFunctionTest {
 		return TypeProbDensityFunction.EXACT;
 	}
 
+	
 	/* (non-Javadoc)
-	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#initializeParamsProbDensFunctionTest(org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction)
+	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#initializeParamsProbDensFunctionTest()
 	 */
 	@Override
-	public void initializeParamsProbDensFunctionTest(ProbDensFunction prob) {
+	public Double[] initializeParamsProbDensFunctionTest() {
 		Double[] params={5.3};
-		prob.placeParameters(params);
-		
+		return params;
 	}
+
+	/**
+	 * @return
+	 */
+	protected double getFactorError(){
+		return 1.0;
+	}
+
 
 }

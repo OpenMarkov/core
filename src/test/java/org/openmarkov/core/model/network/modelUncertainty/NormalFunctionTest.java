@@ -25,26 +25,15 @@ public class NormalFunctionTest extends ProbDensFunctionTest {
 		return TypeProbDensityFunction.NORMAL;
 	}
 
+
+
 	/* (non-Javadoc)
-	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#initializeParamsProbDensFunctionTest(org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction)
+	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#initializeParamsProbDensFunctionTest()
 	 */
 	@Override
-	public void initializeParamsProbDensFunctionTest(ProbDensFunction prob) {
+	public Double[] initializeParamsProbDensFunctionTest() {
 		Double[] params={73.0,10.0};
-		prob.placeParameters(params);
-		
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#assertMeanTest(double)
-	 */
-	@Override
-	public void assertMeanTest(double samplesMean,double pdfMean, double maxError) {
-				
-		NormalFunction normPDF = (NormalFunction)pdf;
-		
-		//It  checks if the relative error (considering the lenght of the interval [a,b] is lower than maxError
-		assertEquals(pdfMean, samplesMean,maxError*(6*pdf.getStandardDeviation()));
+		return params;
 	}
 
 }

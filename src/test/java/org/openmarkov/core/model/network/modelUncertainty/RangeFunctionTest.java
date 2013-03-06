@@ -20,27 +20,16 @@ public class RangeFunctionTest  extends ProbDensFunctionTest {
 		return TypeProbDensityFunction.RANGE;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#initializeParamsProbDensFunctionTest(org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction)
-	 */
-	@Override
-	public void initializeParamsProbDensFunctionTest(ProbDensFunction prob) {
-		Double[] params={3.0,106.0};
-		prob.placeParameters(params);
-		
-	}
 
 	/* (non-Javadoc)
-	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#assertMeanTest(double)
+	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#initializeParamsProbDensFunctionTest()
 	 */
 	@Override
-	public void assertMeanTest(double samplesMean,double pdfMean, double maxError) {
-				
-		RangeFunction rangePDF = (RangeFunction)pdf;
-		
-		//It  checks if the relative error (considering the lenght of the interval [a,b] is lower than maxError
-		assertEquals(pdfMean, samplesMean,maxError*(rangePDF.b-rangePDF.a));
+	public Double[] initializeParamsProbDensFunctionTest() {
+		Double[] params={3.0,106.0};
+		return params;
 	}
+
 
 
 }

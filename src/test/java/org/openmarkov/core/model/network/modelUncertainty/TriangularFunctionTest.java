@@ -26,24 +26,12 @@ public class TriangularFunctionTest extends ProbDensFunctionTest {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#initializeParamsProbDensFunctionTest(org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction)
+	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#initializeParamsProbDensFunctionTest()
 	 */
 	@Override
-	public void initializeParamsProbDensFunctionTest(ProbDensFunction prob) {
+	public Double[] initializeParamsProbDensFunctionTest() {
 		Double[] params={3.0,11.0,5.0};
-		prob.placeParameters(params);
-		
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#assertMeanTest(double)
-	 */
-	@Override
-	public void assertMeanTest(double samplesMean,double pdfMean, double maxError) {
-				
-		TriangularFunction triangularPDF = (TriangularFunction)pdf;
-		//It  checks if the relative error (considering the lenght of the interval [a,b] is lower than maxError
-		assertEquals(pdfMean, samplesMean,maxError*(triangularPDF.b-triangularPDF.a));
+		return params;
 	}
 
 }

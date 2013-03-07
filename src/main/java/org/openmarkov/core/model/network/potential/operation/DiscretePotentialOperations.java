@@ -1374,6 +1374,7 @@ public final class DiscretePotentialOperations {
         UncertainValue[] copyUncertainValues = null;
         if (potential.isUncertain()) {
         	uncertainValues = potential.uncertainValues;
+        	copyPotential.uncertainValues = new UncertainValue[potential.uncertainValues.length];
         	copyUncertainValues = copyPotential.uncertainValues;
         }
         

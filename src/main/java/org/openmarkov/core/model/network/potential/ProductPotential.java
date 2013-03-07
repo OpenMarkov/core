@@ -98,28 +98,28 @@ public class ProductPotential extends Potential {
 	    throw new NonProjectablePotentialException("Cannot project into tables a ProductPotential");
 	}
 
-	/**
-	 * @param parentPotentials
-	 * @param evidenceCase
-	 * @param inferenceOptions
-	 * @return
-	 * @throws NotEnoughMemoryException
-	 * @throws NonProjectablePotentialException
-	 * @throws WrongCriterionException
-	 */
-	private ArrayList<TablePotential> getTableProjectedParentPotentials(
-			ArrayList<Potential> parentPotentials, EvidenceCase evidenceCase,
-			InferenceOptions inferenceOptions) 
-	throws NonProjectablePotentialException, 
-	WrongCriterionException {
-		ArrayList<TablePotential> tableProjectedParentPotentials =
-			new ArrayList<TablePotential>(parentPotentials.size());
-		for (Potential potential : parentPotentials) {
-			tableProjectedParentPotentials.addAll(
-					potential.tableProject(evidenceCase, inferenceOptions));
-		}
-		return tableProjectedParentPotentials;
-	}
+//	/**
+//	 * @param parentPotentials
+//	 * @param evidenceCase
+//	 * @param inferenceOptions
+//	 * @return
+//	 * @throws NotEnoughMemoryException
+//	 * @throws NonProjectablePotentialException
+//	 * @throws WrongCriterionException
+//	 */
+//	private ArrayList<TablePotential> getTableProjectedParentPotentials(
+//			ArrayList<Potential> parentPotentials, EvidenceCase evidenceCase,
+//			InferenceOptions inferenceOptions) 
+//	throws NonProjectablePotentialException, 
+//	WrongCriterionException {
+//		ArrayList<TablePotential> tableProjectedParentPotentials =
+//			new ArrayList<TablePotential>(parentPotentials.size());
+//		for (Potential potential : parentPotentials) {
+//			tableProjectedParentPotentials.addAll(
+//					potential.tableProject(evidenceCase, inferenceOptions));
+//		}
+//		return tableProjectedParentPotentials;
+//	}
 
 	@Override
 	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength)

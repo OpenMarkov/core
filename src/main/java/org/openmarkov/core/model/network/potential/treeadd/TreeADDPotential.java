@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.PotentialOperationException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -24,7 +23,6 @@ import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
 
@@ -326,10 +324,8 @@ public class TreeADDPotential extends Potential
         List<TablePotential> potentialsToSumUp = new ArrayList<TablePotential> ();
         List<TablePotential> projectedPotentials = new ArrayList<TablePotential> ();
         TablePotential projected = null;
-        List<Variable> correctOrder = getVariables ();
         List<TreeADDBranch> branches = this.getBranches ();
-        if (topVariable.getVariableType () == VariableType.FINITE_STATES
-            || topVariable.getVariableType () == VariableType.DISCRETIZED)
+        if (topVariable.getVariableType () != VariableType.NUMERIC)
         {
             for (TreeADDBranch branch : branches)
             {
@@ -346,14 +342,7 @@ public class TreeADDPotential extends Potential
                 {
                     int[] statesIndexes = new int[1];
                     statesIndexes[0] = branch.getTopVariable ().getStateIndex (topVariableStates[i]);
-                    if (branchStates.contains (topVariableStates[i]))
-                    {
-                        maskPotential.setValue (variables, statesIndexes, 1);
-                    }
-                    else
-                    {
-                        maskPotential.setValue (variables, statesIndexes, 0);
-                    }
+                    maskPotential.setValue (variables, statesIndexes, branchStates.contains (topVariableStates[i])? 1 : 0);
                 }
                 // multiply mask potential and the table potential of the
                 // current branch
@@ -365,14 +354,13 @@ public class TreeADDPotential extends Potential
             }
             projected = DiscretePotentialOperations.sum (potentialsToSumUp);
         }
-        else if (topVariable.getVariableType () == VariableType.NUMERIC)
+        else
         {
             // if there is no evidence for the numerical topVariable it is not
             // possible to project the tree
-            if (evidenceCase.getFinding (topVariable) == null)
+            if (evidenceCase == null || evidenceCase.getFinding (topVariable) == null)
             {
-                throw new NonProjectablePotentialException (
-                                                            "It is not possible to project this tree, "
+                throw new NonProjectablePotentialException ("It is not possible to project this tree, "
                                                                     + "top variable is numeric and has no evidence");
             }
             double topVariableValue = evidenceCase.getFinding (topVariable).getNumericalValue ();

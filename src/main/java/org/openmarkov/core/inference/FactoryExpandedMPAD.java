@@ -13,6 +13,7 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -65,7 +66,7 @@ public class FactoryExpandedMPAD
         }
         // if some of the slices of the concise net miss a node present
         // in previous slices, adds the node to that slice
-        makeNetCompact ();
+        compactNetwork ();
         // expands the net
         while (classifiedNodes.size () < numSlices)
         {
@@ -75,65 +76,57 @@ public class FactoryExpandedMPAD
 
     /**
      * Adapts the concise network for performing cost-effectiveness analysis.
+     * Adds decisionCriteria node to the network and makes all utility nodes children of it
      */
     public void adaptProbNetForCE ()
     {
-        String[] decisionCriteriaNames = new String[probNet.getDecisionCriteria ().size ()];
+        List<String> decisionCriteriaNames = new ArrayList<>();
         for (int i = 0; i < probNet.getDecisionCriteria ().size (); i++)
         {
-            if (probNet.getDecisionCriteria ().get (i).getString ().equalsIgnoreCase ("cost")
-                || probNet.getDecisionCriteria ().get (i).getString ().equalsIgnoreCase ("effectiveness"))
+            String decisionCriterion = probNet.getDecisionCriteria ().get (i).getString ();
+            if (decisionCriterion.equalsIgnoreCase ("cost") || decisionCriterion.equalsIgnoreCase ("effectiveness"))
             {
-                decisionCriteriaNames[i] = probNet.getDecisionCriteria ().get (i).getString ();
+                decisionCriteriaNames.add (decisionCriterion);
             }
         }
-        if (!(decisionCriteriaNames.length == 2
-              && decisionCriteriaNames[0].equalsIgnoreCase ("cost") && decisionCriteriaNames[1].equalsIgnoreCase ("effectiveness"))
-            || !(decisionCriteriaNames.length == 2
-                 && decisionCriteriaNames[1].equalsIgnoreCase ("cost") && decisionCriteriaNames[0].equalsIgnoreCase ("effectiveness")))
+        if (decisionCriteriaNames.size ()!=2)
         {
             // TODO propagate exception
             // throw new
-            // Exception("For cost effectiveness analysis performance network´s decision criteria must be cost and effectiveness");
+            // Exception("For cost effectiveness analysis performance network's decision criteria must be cost and effectiveness");
         }
-        // probNet.setDecisionCriteria(new String[]{"cost", "effectiveness"});
         probNet.setDecisionCriteria (decisionCriteriaNames);
-        // make all utility nodes of the expanded probNet child of decision
-        // criteria
-        List<ProbNode> utilityNodes = probNet.getProbNodes (NodeType.UTILITY);
-        ProbNode decisionCriteria = new ProbNode (probNet, probNet.getDecisionCriteriaVariable (),
-                                                  NodeType.DECISION);
-        probNet.addProbNode (decisionCriteria);
-        for (int i = 0; i < utilityNodes.size (); i++)
+        // make all utility nodes of the expanded probNet children of the decision criteria node
+        ProbNode decisionCriteriaNode = new ProbNode (probNet, probNet.getDecisionCriteriaVariable (), NodeType.DECISION);
+        probNet.addProbNode (decisionCriteriaNode);
+        for (ProbNode utilityNode : probNet.getProbNodes (NodeType.UTILITY))
         {
-            Potential utility = utilityNodes.get (i).getPotentials ().get (0);
-            probNet.addLink (decisionCriteria, utilityNodes.get (i), true);
-            List<Variable> treeVariables = utility.getVariables ();
-            treeVariables.add (decisionCriteria.getVariable ());
-            String iUtilityDecisionCriteriaName = utilityNodes.get (i).getVariable ().getDecisionCriteria ().getString ();
-            boolean hasDecisionCriteria = false;
-            String otherDecisionCriteria = null;
+            Potential utilityPotential = utilityNode.getPotentials ().get (0);
+            probNet.addLink (decisionCriteriaNode, utilityNode, true);
+            List<Variable> treeVariables = utilityPotential.getVariables ();
+            treeVariables.add (decisionCriteriaNode.getVariable ());
+            String iUtilityDecisionCriteriaName = utilityNode.getVariable ().getDecisionCriteria ().getString ();
+            boolean hasDecisionCriterion = false;
+            String otherDecisionCriterion = null;
             TreeADDPotential treeADDPotential = null;
             if (iUtilityDecisionCriteriaName.equals ("cost"))
             {
-                hasDecisionCriteria = true;
-                otherDecisionCriteria = "effectiveness";
+                hasDecisionCriterion = true;
+                otherDecisionCriterion = "effectiveness";
             }
             else if (iUtilityDecisionCriteriaName.equals ("effectiveness"))
             {
-                hasDecisionCriteria = true;
-                otherDecisionCriteria = "cost";
+                hasDecisionCriterion = true;
+                otherDecisionCriterion = "cost";
             }
-            if (hasDecisionCriteria)
+            if (hasDecisionCriterion)
             {
-                treeADDPotential = constructTreeADDForCE (decisionCriteria, treeVariables, utility,
-                                                          utilityNodes.get (i),
+                treeADDPotential = constructTreeADDForCE (decisionCriteriaNode, treeVariables,
+                                                          utilityPotential, utilityNode,
                                                           iUtilityDecisionCriteriaName,
-                                                          otherDecisionCriteria);
+                                                          otherDecisionCriterion);
+                utilityNode.setPotential (treeADDPotential);
             }
-            List<Potential> potentials = new ArrayList<> ();
-            potentials.add (treeADDPotential);
-            utilityNodes.get (i).setPotentials (potentials);
         }
     }
 
@@ -143,7 +136,7 @@ public class FactoryExpandedMPAD
      * @param costDiscount Percentage of discount. The utility function in
      *            instant time t will be: U(t) = U(t-1)/(1+discount/100.0)
      * @param adaptForCE
-     * @return An expanded network built from a SMM. It adapts the network to
+     * @return An expanded network built from a MPAD. It adapts the network to
      *         Cost-Effectiveness analysis if adaptForCE is true.
      */
     public static ProbNet constructExpandedNetwork (int numSlices,
@@ -173,7 +166,7 @@ public class FactoryExpandedMPAD
      * @param costDiscount
      * @param effectivenessDiscount
      * @param cycleLength
-     * @return An expanded network built from a SMM when the network has
+     * @return An expanded network built from a MPAD when the network has
      *         evidence of initial age of the patient. It adapts the network to
      *         Cost-Effectiveness analysis if adaptForCE is true.
      */
@@ -191,13 +184,14 @@ public class FactoryExpandedMPAD
         // set up findings from the network and values introduced by the user
         Finding ageFinding = null;
         List<ProbNode> probNodes = probNet.getProbNodes ();
-        for (int i = 0; i < probNodes.size (); i++)
+        for (ProbNode probNode : probNodes)
         {
-            if (probNodes.get (i).getVariable ().isTemporal ()
-                && probNodes.get (i).getVariable ().getBaseName ().equals ("Age")
-                && probNodes.get (i).getVariable ().getTimeSlice () == 0)
+            Variable variable = probNode.getVariable ();
+            if (variable.isTemporal ()
+                && variable.getName ().equalsIgnoreCase ("Age")
+                && variable.getTimeSlice () == 0)
             {
-                ageFinding = new Finding (probNodes.get (i).getVariable (), initialAge);
+                ageFinding = new Finding (variable, initialAge);
                 break;
             }
         }
@@ -217,9 +211,9 @@ public class FactoryExpandedMPAD
             {
                 evidenceCase.extendEvidence (expandedNetFactory.getExtendedNetwork (), cycleLength);
             }
-            catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e2)
+            catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e)
             {
-                e2.printStackTrace ();
+                e.printStackTrace ();
             }
         }
         expandedNetFactory.applyDiscountToUtilityNodes (costDiscount, effectivenessDiscount,
@@ -317,7 +311,7 @@ public class FactoryExpandedMPAD
      * When invoking this method, probNet is a copy of the concise net. We add
      * new nodes, links, and potentials to make it a compact net.
      */
-    private void makeNetCompact ()
+    private void compactNetwork ()
     {
         classifiedNodes = classifyNodes (probNet, probNet.getVariables ());
         // generate the new nodes of the compact net
@@ -449,6 +443,14 @@ public class FactoryExpandedMPAD
                                              InferenceOptions inferenceOptions,
                                              EvidenceCase evidence)
     {
+        try
+        {
+            probNet = BasicOperations.removeSuperValueNodes (probNet, evidence, false, true, null);
+        }
+        catch (NodeNotFoundException | ProbNodeNotFoundException e1)
+        {
+            e1.printStackTrace();
+        }
         // apply discount rate for all temporal utility nodes in the expanded
         // network
         List<ProbNode> utilityExpandedNodes = probNet.getProbNodes (NodeType.UTILITY);
@@ -457,64 +459,65 @@ public class FactoryExpandedMPAD
             ProbNode iUtilityProbNode = utilityExpandedNodes.get (i);
             int timeSlice = iUtilityProbNode.getVariable ().getTimeSlice ();
             double discount = iUtilityProbNode.getVariable ().getDecisionCriteria ().getString ().equalsIgnoreCase ("cost") ? costDiscount
-                                                                                                                           : effectivenessDiscount;
-            // slice 0 must be projected to eliminate continuous variables in
-            // trees
-            if (iUtilityProbNode.getVariable ().isTemporal () && timeSlice == 0)
+                                                                                                                      : effectivenessDiscount;
+            if(iUtilityProbNode.getVariable ().isTemporal ())
             {
-                TablePotential projectedPotential = null;
-                Potential potentialToBeProjected = iUtilityProbNode.getPotentials ().get (0);
-                try
+                // slice 0 must be projected to eliminate continuous variables in trees
+                if (timeSlice == 0)
                 {
-                    projectedPotential = potentialToBeProjected.tableProject (evidence,
-                                                                              inferenceOptions).get (0);
-                }
-                catch (NonProjectablePotentialException | WrongCriterionException e)
-                {
-                    e.printStackTrace ();
-                }
-                List<Potential> potentials = new ArrayList<> ();
-                potentials.add (projectedPotential);
-                iUtilityProbNode.setPotentials (potentials);
-            }
-            if (iUtilityProbNode.getVariable ().isTemporal () && timeSlice > 0)
-            {
-                double discountRate = 1.0 / (Math.pow ((1.0 + (discount / 100.0)), timeSlice));
-                // project TreeADD original potential to a table
-                try
-                {
-                    TablePotential projectedPotential = null;
-                    Potential potentialToBeProjected;
-                    Potential potential = iUtilityProbNode.getPotentials ().get (0);
-                    if (potential instanceof SameAsPrevious)
+                    Potential potentialToBeProjected = iUtilityProbNode.getPotentials ().get (0);
+                    if(potentialToBeProjected instanceof TreeADDPotential)
                     {
-                        List<Variable> variables = potential.getVariables ();
-                        Variable utilityVariable = potential.getUtilityVariable ();
-                        potentialToBeProjected = (((SameAsPrevious) potential).getOriginalPotential ()).copy ();
-                        potentialToBeProjected.setVariables (variables);
-                        potentialToBeProjected.setUtilityVariable (utilityVariable);
+                        TablePotential projectedPotential = null;
+                        try
+                        {
+                            projectedPotential = potentialToBeProjected.tableProject (evidence,
+                                                                                      inferenceOptions).get (0);
+                        }
+                        catch (NonProjectablePotentialException | WrongCriterionException e)
+                        {
+                            e.printStackTrace ();
+                        }
+                        iUtilityProbNode.setPotential (projectedPotential);
                     }
-                    else
-                    {
-                        potentialToBeProjected = (potential);
-                    }
-                    projectedPotential = potentialToBeProjected.tableProject (evidence,
-                                                                              inferenceOptions).get (0);
-                    // projectedPotential.setOriginalVariables(potentialToBeProjected.getVariables());
-                    double[] valuesProjectedPotential = projectedPotential.getValues ();
-                    for (int j = 0; j < valuesProjectedPotential.length; j++)
-                    {
-                        valuesProjectedPotential[j] = valuesProjectedPotential[j] * (discountRate);
-                    }
-                    List<Potential> potentials = new ArrayList<> ();
-                    potentials.add (projectedPotential);
-                    iUtilityProbNode.setPotentials (potentials);
                 }
-                catch (NonProjectablePotentialException | WrongCriterionException e)
+                else //timeSlice > 0
                 {
-                    e.printStackTrace ();
+                    double discountRate = 1.0 / (Math.pow ((1.0 + (discount / 100.0)), timeSlice));
+                    // project TreeADD original potential to a table
+                    try
+                    {
+                        TablePotential projectedPotential = null;
+                        Potential potentialToBeProjected;
+                        Potential potential = iUtilityProbNode.getPotentials ().get (0);
+                        if (potential instanceof SameAsPrevious)
+                        {
+                            List<Variable> variables = potential.getVariables ();
+                            Variable utilityVariable = potential.getUtilityVariable ();
+                            potentialToBeProjected = (((SameAsPrevious) potential).getOriginalPotential ()).copy ();
+                            potentialToBeProjected.setVariables (variables);
+                            potentialToBeProjected.setUtilityVariable (utilityVariable);
+                        }
+                        else
+                        {
+                            potentialToBeProjected = (potential);
+                        }
+                        projectedPotential = potentialToBeProjected.tableProject (evidence,
+                                                                                  inferenceOptions).get (0);
+                        // projectedPotential.setOriginalVariables(potentialToBeProjected.getVariables());
+                        double[] valuesProjectedPotential = projectedPotential.getValues ();
+                        for (int j = 0; j < valuesProjectedPotential.length; j++)
+                        {
+                            valuesProjectedPotential[j] = valuesProjectedPotential[j] * (discountRate);
+                        }
+                        iUtilityProbNode.setPotential (projectedPotential);
+                    }
+                    catch (NonProjectablePotentialException | WrongCriterionException e)
+                    {
+                        e.printStackTrace ();
+                    }
+                    // utilityExpandedNodes.get(i).getPotentials().get(0).get
                 }
-                // utilityExpandedNodes.get(i).getPotentials().get(0).get
             }
         }
     }

@@ -1805,11 +1805,10 @@ public class ProbNet implements Cloneable {
 	}
 	
 
-	public void setDecisionCriteria(String[] criteriaNames) {
-		int numCriteria = criteriaNames.length;
-		State[] states = new State[numCriteria];
-		for (int i = 0; i < numCriteria; i++) {
-			states[i] = new State(criteriaNames[i]);
+	public void setDecisionCriteria(List<String> criteriaNames) {
+		State[] states = new State[criteriaNames.size ()];
+		for (int i = 0; i < criteriaNames.size (); i++) {
+			states[i] = new State(criteriaNames.get(i));
 		}
 		decisionCriteria = new Variable("Decision Criteria", states);
 	}

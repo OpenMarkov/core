@@ -182,7 +182,7 @@ public class FactoryExpandedMPADTest {
 			for (TablePotential auxPot:tablePotentials){
 				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot,PotentialRole.UTILITY)){
 					int slice = auxPot.getUtilityVariable().getTimeSlice();
-					checkUtilityPotentialQoLSMMWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
+					checkUtilityPotentialQoLMPADWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
 				}
 			}
 			

@@ -413,8 +413,7 @@ public class FactoryExpandedMPAD
                 {
                     if (!probNode.getPotentials ().get (0).tableProject (evidence, io).isEmpty ())
                     {
-                        potentials.add (probNode.getPotentials ().get (0).tableProject (evidence,
-                                                                                        io).get (0));
+                        potentials.add (probNode.getPotentials ().get (0).tableProject (evidence, io).get (0));
                         probNode.setPotentials (potentials);
                     }
                 }

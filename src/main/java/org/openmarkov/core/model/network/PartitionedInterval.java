@@ -287,11 +287,11 @@ public class PartitionedInterval implements Cloneable {
 		buffer.append("\n");
 		for (int i=0; i< getNumSubintervals(); i++){
 			buffer.append("   > interval[" + i + "]=");
-			buffer.append(belongsToLeftSide[i]?"[":"(");
+			buffer.append(!belongsToLeftSide[i]?"[":"(");
 			buffer.append(limits[i]);
 			buffer.append(",");
 			buffer.append(limits[i+1]);
-			buffer.append(belongsToLeftSide[i+1]?")":"]");
+			buffer.append(!belongsToLeftSide[i+1]?")":"]");
 			buffer.append("\n");
 		}
 		return buffer.toString();

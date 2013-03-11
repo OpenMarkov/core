@@ -460,13 +460,12 @@ public class ProbNet implements Cloneable {
 	}
 	
 	/**
-	 * Within a markov process for ce purposes is important to detect whether there are or not 
-	 * numerical temporal variables with a CycleLengthShift potential in it second slice. These special
-	 * nodes represents a temporal dependency that might be a relaxation of Markov assumption for SemiMarkov models
+	 * Within a Markov process for CE purposes it is important to detect whether there are or not 
+	 * numerical temporal variables with a CycleLengthShift potential in their second slice. These special
+	 * nodes represent a temporal dependency that might be a relaxation of Markov assumption for SemiMarkov models
 	 * or just a time dependence to introduce time varying transition from a life table.
 	 * 
-	 * @return an ArrayList with these special nodes in first slice of the compact network if the exists otherwise 
-	 * this array will be empty
+	 * @return a List with these special nodes in first slice of the compact network
 	 */
 	
 	public List<ProbNode> getSpecialTimeDependentNodes(){
@@ -474,18 +473,20 @@ public class ProbNet implements Cloneable {
 	    List<ProbNode> numericTemporalNodes = new ArrayList<>();
 	    List<ProbNode> probNodes = getProbNodes();
 		//looking for temporal numerical variables in the first slice
-		for (int i = 0; i < probNodes.size() ; i++) {
-			if (probNodes.get(i).getVariable().isTemporal() 
-					&& probNodes.get(i).getVariable().getVariableType() == VariableType.NUMERIC
-					&& probNodes.get(i).getVariable().getTimeSlice() == 0) {
+		for (ProbNode firstSliceNode : probNodes) {
+		    Variable firstSliceVariable = firstSliceNode.getVariable ();
+			if (firstSliceVariable.isTemporal() 
+					&& firstSliceVariable.getVariableType() == VariableType.NUMERIC
+					&& firstSliceVariable.getTimeSlice() == 0) {
 				//look for the second slice to check if it has a CycleLengthShift potential
-				for (int j = 0; j < probNodes.size() ; j++) {
-					if (probNodes.get(j).getVariable().isTemporal() 
-							&& probNodes.get(j).getVariable().getVariableType() == VariableType.NUMERIC
-							&& probNodes.get(j).getVariable().getTimeSlice() == 1
-							&& probNodes.get(j).getVariable().getBaseName().equals(probNodes.get(i).getVariable().getBaseName())) {
-						if (probNodes.get(j).getPotentials().get(0).getPotentialType() == PotentialType.CYCLE_LENGTH_SHIFT) {
-							numericTemporalNodes.add(probNodes.get(i));
+				for (ProbNode secondSliceNode : probNodes) {
+				    Variable secondSliceVariable = secondSliceNode.getVariable ();
+					if (secondSliceVariable.isTemporal() 
+							&& secondSliceVariable.getVariableType() == VariableType.NUMERIC
+							&& secondSliceVariable.getTimeSlice() == 1
+							&& secondSliceVariable.getBaseName().equals(firstSliceVariable.getBaseName())) {
+						if (secondSliceNode.getPotentials().get(0).getPotentialType() == PotentialType.CYCLE_LENGTH_SHIFT) {
+							numericTemporalNodes.add(firstSliceNode);
 							break;
 						}
 						

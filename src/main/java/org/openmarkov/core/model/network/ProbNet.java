@@ -439,26 +439,7 @@ public class ProbNet implements Cloneable {
 		}
 		return true;
 	}
-	
-/**
- * For CE analysis sometimes it is umportant to check if there is a node 
- * representing age within the netwok
- * 
- * @return
- */
-	public boolean checkIfThereIsAgeNode() {
-		boolean isThereNodeAge = false;
-		List<ProbNode> probNodes = getProbNodes();
-		for (int i = 0; i < probNodes.size() ; i++) {
-			if (probNodes.get(i).getVariable().isTemporal() 
-					&& probNodes.get(i).getVariable().getBaseName().equals("Age")) {
-				isThereNodeAge = true;
-				break;
-			}
-		}
-		return isThereNodeAge;
-	}
-	
+
 	/**
 	 * Within a Markov process for CE purposes it is important to detect whether there are or not 
 	 * numerical temporal variables with a CycleLengthShift potential in their second slice. These special

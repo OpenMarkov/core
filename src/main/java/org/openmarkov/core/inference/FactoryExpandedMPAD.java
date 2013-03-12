@@ -170,39 +170,15 @@ public class FactoryExpandedMPAD
      *         evidence of initial age of the patient. It adapts the network to
      *         Cost-Effectiveness analysis if adaptForCE is true.
      */
-    public static ProbNet constructExpandedNetAge (int initialAge,
-                                                   int finalAge,
+    public static ProbNet constructExpandedNetAge (int numSlices,
                                                    ProbNet probNet,
                                                    double costDiscount,
                                                    double effectivenessDiscount,
                                                    double cycleLength,
                                                    boolean adaptForCE)
     {
-        int numSlices = finalAge - initialAge;
         EvidenceCase evidenceCase = new EvidenceCase ();
         ProbNet expandedNetwork = null;
-        // set up findings from the network and values introduced by the user
-        Finding ageFinding = null;
-        List<ProbNode> probNodes = probNet.getProbNodes ();
-        for (ProbNode probNode : probNodes)
-        {
-            Variable variable = probNode.getVariable ();
-            if (variable.isTemporal ()
-                && variable.getName ().equalsIgnoreCase ("Age")
-                && variable.getTimeSlice () == 0)
-            {
-                ageFinding = new Finding (variable, initialAge);
-                break;
-            }
-        }
-        try
-        {
-            evidenceCase.addFinding (ageFinding);
-        }
-        catch (InvalidStateException | IncompatibleEvidenceException e)
-        {
-            e.printStackTrace ();
-        }
         FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices, null);
         InferenceOptions inferenceOptions = new InferenceOptions (probNet, null);
         if (!evidenceCase.getFindings ().isEmpty ())

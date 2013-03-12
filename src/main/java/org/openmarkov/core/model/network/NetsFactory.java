@@ -26,6 +26,7 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.model.network.type.MPADType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 
 /**
@@ -661,7 +662,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		variableCostOfTreatment.setDecisionCriteria(cost);
 		Variable variableQoL = createTemporalVariable("QoL",0);
 		variableQoL.setDecisionCriteria(effectiveness);
-		ProbNet probNet = new ProbNet(SimpleMarkovModelType.getUniqueInstance());
+		ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
 
 		//set decision criteria to the network
 		probNet.setDecisionCriteria2(decisionCriteria);
@@ -728,7 +729,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		Variable variableState0 = createTemporalVariable("State",0,statesStateVariable);
 		Variable variableState1 = createTemporalVariable("State",1,statesStateVariable);
 		
-		ProbNet probNet = new ProbNet(SimpleMarkovModelType.getUniqueInstance());
+		ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
 
 		//set decision criteria to the network
 		probNet.setDecisionCriteria2(decisionCriteria);
@@ -777,7 +778,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	}
 	
 	public static ProbNet createSemiMarkovOnlyChanceNet() {
-		ProbNet probNet = new ProbNet(SimpleMarkovModelType.getUniqueInstance());
+		ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
 		//Decision criteria
 		ArrayList<StringWithProperties> decisionCriteria = new ArrayList<>();
 		StringWithProperties cost = new StringWithProperties("cost");
@@ -857,7 +858,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	}
 	
 	public static ProbNet createSemiMarkovModelNet() {
-		ProbNet probNet = new ProbNet(SimpleMarkovModelType.getUniqueInstance());
+		ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
 		//Decision criteria
 		ArrayList<StringWithProperties> decisionCriteria = new ArrayList<>();
 		StringWithProperties cost = new StringWithProperties("cost");

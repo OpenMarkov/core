@@ -45,6 +45,8 @@ public class FactoryExpandedMPAD
     private List<ProbNode>       generatedNodes;
     /** Each <ArrayList<ProbNode> contains the nodes of a time slice */
     private List<List<ProbNode>> classifiedNodes;
+    
+    private int numSlices;
 
     // Constructor
     /**
@@ -68,7 +70,8 @@ public class FactoryExpandedMPAD
         // in previous slices, adds the node to that slice
         compactNetwork ();
         // expands the net
-        while (classifiedNodes.size () < numSlices)
+        this.numSlices = numSlices;
+        while (classifiedNodes.size () <= numSlices)
         {
             generateNextSlice ();
         }
@@ -616,5 +619,23 @@ public class FactoryExpandedMPAD
            }
         }
         return maxX-minX;
+    }
+
+    public void pruneLastCycleUtilities ()
+    {
+        List<ProbNode> utilityExpandedNodes = probNet.getProbNodes (NodeType.UTILITY);
+        for (int i = 0; i < utilityExpandedNodes.size (); i++)
+        {
+            ProbNode iUtilityProbNode = utilityExpandedNodes.get (i);
+            int timeSlice = iUtilityProbNode.getVariable ().getTimeSlice ();
+            if (iUtilityProbNode.getVariable ().isTemporal ()
+                && timeSlice == numSlices
+                && (iUtilityProbNode.getVariable ().getDecisionCriteria ().getString ().equalsIgnoreCase ("cost") || 
+                        iUtilityProbNode.getVariable ().getDecisionCriteria ().getString ().equalsIgnoreCase ("effectiveness")))
+            { // decision criteria of utility nodes must be cost or
+              // effectiveness
+                probNet.removeProbNode (iUtilityProbNode);
+            }
+        }
     }    
 }

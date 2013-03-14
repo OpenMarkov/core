@@ -360,8 +360,8 @@ public class TreeADDPotential extends Potential
             // possible to project the tree
             if (evidenceCase == null || evidenceCase.getFinding (topVariable) == null)
             {
-                throw new NonProjectablePotentialException ("It is not possible to project this tree, "
-                                                                    + "top variable is numeric and has no evidence");
+                throw new NonProjectablePotentialException ("It is not possible to project this tree " + this.toShortString () + 
+                                                                    " because top variable is numeric and has no evidence");
             }
             double topVariableValue = evidenceCase.getFinding (topVariable).getNumericalValue ();
             List<TreeADDBranch> numericalBranches = getBranches ();

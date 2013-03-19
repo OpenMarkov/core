@@ -27,7 +27,6 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MPADType;
-import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 
 /**
  * @author manolo

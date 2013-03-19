@@ -1,88 +1,83 @@
 /*
-* Copyright 2011 CISIAD, UNED, Spain
-*
-* Licensed under the European Union Public Licence, version 1.1 (EUPL)
-*
-* Unless required by applicable law, this code is distributed
-* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
-*/
+ * Copyright 2011 CISIAD, UNED, Spain Licensed under the European Union Public
+ * Licence, version 1.1 (EUPL) Unless required by applicable law, this code is
+ * distributed on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
-public class LogNormalFunction extends ProbDensFunction {
+public class LogNormalFunction extends ProbDensFunction
+{
+    private double         mu;
+    private double         sigma;
+    /**
+     * Auxiliary normal distribution used for sampling
+     */
+    private NormalFunction normal;
 
-	double mu;
-	
-	double sigma;
-	
-	/**
-	 * Auxiliary normal distribution used for sampling
-	 */
-	NormalFunction normal;
-	
-	public LogNormalFunction() {
-		super(TypeProbDensityFunction.LOGNORMAL);
-		
-	}
+    public LogNormalFunction ()
+    {
+        super (TypeProbDensityFunction.LOGNORMAL);
+    }
 
-	@Override
-	public int getNumberOfRequiredArguments() {
-		return 2;
-	}
+    @Override
+    public int getNumberOfRequiredArguments ()
+    {
+        return 2;
+    }
 
-	@Override
-	public void placeParameters(Double[] args) {
-		mu = args[0];
-		sigma = args[1];
-		normal = new NormalFunction(mu,sigma);
+    @Override
+    public void placeParameters (Double[] args)
+    {
+        mu = args[0];
+        sigma = args[1];
+        normal = new NormalFunction (mu, sigma);
+    }
 
-	}
+    @Override
+    public boolean isPossibleDistribution (boolean isChance)
+    {
+        return !isChance;
+    }
 
-	@Override
-	public boolean isPossibleDistribution(boolean isChance) {
-		return !isChance;
-	}
+    @Override
+    public boolean doParametersVerifyDomainConstraint (boolean isChanceVariable)
+    {
+        return (sigma > 0);
+    }
 
-	@Override
-	public boolean doParametersVerifyDomainConstraint(boolean isChanceVariable) {
-		return (sigma>0);
-	}
-	
-	@Override
-	public double[] getParameters() {
-		double[] a=new double[2];
-		a[0]=mu;
-		a[1]=sigma;
-		return a;
-	}
-	@Override
-	public double getMaximum() {
-		return Double.POSITIVE_INFINITY;
-	}
+    @Override
+    public double[] getParameters ()
+    {
+        double[] a = new double[2];
+        a[0] = mu;
+        a[1] = sigma;
+        return a;
+    }
 
+    @Override
+    public double getMaximum ()
+    {
+        return Double.POSITIVE_INFINITY;
+    }
 
-
-	@Override
-	public double getMean() {
-		return Math.exp(mu+Math.pow(sigma,2.0)/2.0);
-	}
-
-
+    @Override
+    public double getMean ()
+    {
+        return Math.exp (mu + Math.pow (sigma, 2.0) / 2.0);
+    }
 
     @Override
     public double getSample ()
     {
-        return Math.exp(normal.getSample());
+        return Math.exp (normal.getSample ());
     }
 
-	@Override
-	public double getVariance() {
-		double squareSigma;
-	
-		squareSigma = Math.pow(sigma, 2.0);
-		return (Math.exp(squareSigma)-1)*Math.exp(2*mu+squareSigma);
-	}
-
-
-
+    @Override
+    public double getVariance ()
+    {
+        double squareSigma;
+        squareSigma = Math.pow (sigma, 2.0);
+        return (Math.exp (squareSigma) - 1) * Math.exp (2 * mu + squareSigma);
+    }
 }

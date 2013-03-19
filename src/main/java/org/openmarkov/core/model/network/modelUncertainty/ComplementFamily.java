@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 public class ComplementFamily extends FamilyDistribution {
@@ -17,7 +17,7 @@ public class ComplementFamily extends FamilyDistribution {
 	/**
 	 * Probability mass for this family
 	 */
-	double probMass;
+	private double probMass;
 	
 
 	public double getProbMass() {
@@ -28,7 +28,7 @@ public class ComplementFamily extends FamilyDistribution {
 		this.probMass = probMass;
 	}
 
-	public ComplementFamily(ArrayList<UncertainValue> arrayUncertain) {
+	public ComplementFamily(List<UncertainValue> arrayUncertain) {
 		super(arrayUncertain);
 	}
 	

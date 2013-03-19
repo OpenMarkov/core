@@ -6,10 +6,13 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -46,7 +49,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 @RelationPotentialType(name = "Table", family = "")
 public class TablePotential extends Potential
     implements
-        Comparable
+        Comparable<TablePotential>
 {
     // Attributes
     /** Dimensions (number of states) of the variables. */
@@ -80,7 +83,7 @@ public class TablePotential extends Potential
      * In projected potentials, collection of variables of the original
      * potential. Original variables are used to calculate accumulated offsets.
      */
-//    protected ArrayList<Variable>    originalVariables;
+    // protected ArrayList<Variable> originalVariables;
     /**
      * This object has a function that returns the available memory. Used in the
      * constructor before creating the <code>table</code>
@@ -97,7 +100,7 @@ public class TablePotential extends Potential
     public TablePotential (List<Variable> variables, PotentialRole role)
     {
         super (variables, role);
-//        this.originalVariables = this.variables;
+        // this.originalVariables = this.variables;
         if (numVariables != 0)
         {
             dimensions = TablePotential.calculateDimensions (variables);
@@ -106,7 +109,8 @@ public class TablePotential extends Potential
             try
             {
                 values = new double[tableSize];
-            }catch(NegativeArraySizeException e)
+            }
+            catch (NegativeArraySizeException e)
             {
                 throw new OutOfMemoryError ();
             }
@@ -116,11 +120,11 @@ public class TablePotential extends Potential
         {// In this case the potential is a constant
             tableSize = 1;
             values = new double[tableSize];
-			
             offsets = new int[0];
         }
         type = PotentialType.TABLE;
     }
+
     /**
      * For role utility
      * @param variables
@@ -128,31 +132,31 @@ public class TablePotential extends Potential
      * @throws NotEnoughMemoryException
      */
     public TablePotential (List<Variable> variables, PotentialRole role, Variable utilityVariable)
+    {
+        super (variables, role, utilityVariable);
+        if (numVariables != 0)
         {
-            super (variables, role, utilityVariable);
-            if (numVariables != 0)
+            dimensions = TablePotential.calculateDimensions (variables);
+            offsets = TablePotential.calculateOffsets (dimensions);
+            tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
+            try
             {
-                dimensions = TablePotential.calculateDimensions (variables);
-                offsets = TablePotential.calculateOffsets (dimensions);
-                tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
-                try
-                {
-                    values = new double[tableSize];
-                }catch(NegativeArraySizeException e)
-                {
-                    throw new OutOfMemoryError ();
-                }
-                setUniform (); // Initializes the table as an uniform potential
-            }
-            else
-            {// In this case the potential is a constant
-                tableSize = 1;
                 values = new double[tableSize];
-                offsets = new int[0];
             }
-            type = PotentialType.TABLE;
+            catch (NegativeArraySizeException e)
+            {
+                throw new OutOfMemoryError ();
+            }
+            setUniform (); // Initializes the table as an uniform potential
         }
-
+        else
+        {// In this case the potential is a constant
+            tableSize = 1;
+            values = new double[tableSize];
+            offsets = new int[0];
+        }
+        type = PotentialType.TABLE;
+    }
 
     /**
      * @param variables. <code>ArrayList</code> of <code>Variable</code>
@@ -163,7 +167,7 @@ public class TablePotential extends Potential
     public TablePotential (List<Variable> variables, PotentialRole role, double[] table)
     {
         super (variables, role);
-//        this.originalVariables = this.variables;
+        // this.originalVariables = this.variables;
         this.values = table;
         if (numVariables != 0)
         {
@@ -209,7 +213,7 @@ public class TablePotential extends Potential
                             int[] dimensions)
     {
         super (variables, role);
-//        this.originalVariables = this.variables;
+        // this.originalVariables = this.variables;
         this.values = table;
         this.initialPosition = initialPosition;
         this.offsets = offsets;
@@ -221,70 +225,73 @@ public class TablePotential extends Potential
     public TablePotential (Potential potential)
     {
         this (potential.getVariables (), potential.getPotentialRole ());
-        
-        if(potential instanceof TablePotential)
+        if (potential instanceof TablePotential)
         {
-            for(int i = 0; i < values.length; ++i)
+            for (int i = 0; i < values.length; ++i)
             {
-                values[i] = ((TablePotential)potential).values[i];
+                values[i] = ((TablePotential) potential).values[i];
             }
-        }else if (potential instanceof ICIPotential)
+        }
+        else if (potential instanceof ICIPotential)
         {
-            TablePotential expandedPotential = ((ICIPotential)potential).expand();
-            for(int i = 0; i < values.length; ++i)
+            TablePotential expandedPotential = ((ICIPotential) potential).expand ();
+            for (int i = 0; i < values.length; ++i)
             {
                 values[i] = expandedPotential.values[i];
             }
         }
     }
-    
-    /** Returns if an instance of a certain Potential type makes sense given 
-     * the variables and the potential role.
-     * @param probNode. <code>ProbNode</code> 
+
+    /**
+     * Returns if an instance of a certain Potential type makes sense given the
+     * variables and the potential role.
+     * @param probNode. <code>ProbNode</code>
      * @param variables. <code>ArrayList</code> of <code>Variable</code>.
-     * @param role. <code>PotentialRole</code>. */
-	public static boolean validate(ProbNode probNode, List<Variable> variables, 
-			PotentialRole role) {
-		boolean suitable = true;
-		int i = 0;
-		
-		while(suitable && i < variables.size())
-		{
-			suitable &= variables.get(i).getVariableType() == VariableType.FINITE_STATES 
-					|| variables.get(i).getVariableType() == VariableType.DISCRETIZED;
-			++i;
-		}
+     * @param role. <code>PotentialRole</code>.
+     */
+    public static boolean validate (ProbNode probNode, List<Variable> variables, PotentialRole role)
+    {
+        boolean suitable = true;
+        int i = 0;
+        while (suitable && i < variables.size ())
+        {
+            suitable &= variables.get (i).getVariableType () == VariableType.FINITE_STATES
+                        || variables.get (i).getVariableType () == VariableType.DISCRETIZED;
+            ++i;
+        }
         return suitable;
-    }    
+    }
 
     // Methods
     /**
-     * @throws WrongCriterionException 
-     * @throws NotEnoughMemoryException  */
-    public Potential removeVariable(Variable variable) {
-    	Potential newPotential = this;
-    	if (variables.contains(variable)) {
-    		Finding finding = new Finding(variable, 0);
-    		EvidenceCase evidenceCase = new EvidenceCase();
-    		try {
-				evidenceCase.addFinding(finding);
-	    		newPotential = tableProject(evidenceCase, null).get(0);
-			} catch (InvalidStateException e) {
-				// If variable exists in the TablePotential it must have valid states
-				e.printStackTrace();
-			} catch (IncompatibleEvidenceException e) {
-				// Unreachable code
-				e.printStackTrace();
-			} catch (WrongCriterionException e) {
-				// Unreachable code
-				e.printStackTrace();
-			}
-    	} else {
-    		newPotential = this;
-    	}
-    	return newPotential;
+     * @throws WrongCriterionException
+     * @throws NotEnoughMemoryException
+     */
+    public Potential removeVariable (Variable variable)
+    {
+        Potential newPotential = this;
+        if (variables.contains (variable))
+        {
+            Finding finding = new Finding (variable, 0);
+            EvidenceCase evidenceCase = new EvidenceCase ();
+            try
+            {
+                evidenceCase.addFinding (finding);
+                newPotential = tableProject (evidenceCase, null).get (0);
+            }
+            catch (InvalidStateException | WrongCriterionException | IncompatibleEvidenceException e)
+            {
+                // Unreachable code
+                e.printStackTrace ();
+            }
+        }
+        else
+        {
+            newPotential = this;
+        }
+        return newPotential;
     }
-    
+
     /**
      * @param evidenceCase <code>EvidenceCase</code>
      * @return An <code>ArrayList</code> of <code>FSPotential</code>s containing
@@ -294,14 +301,13 @@ public class TablePotential extends Potential
      * @throws NoFindingException
      */
     public List<TablePotential> tableProject (EvidenceCase evidenceCase,
-                                                   InferenceOptions inferenceOptions)
-        throws
-        WrongCriterionException
+                                              InferenceOptions inferenceOptions)
+        throws WrongCriterionException
     {
         // returned value
         boolean hasUncertainTable = (uncertainValues != null);
         List<TablePotential> projectedPotentials = new ArrayList<TablePotential> (1);
-        List<Variable> unobservedVariables = new ArrayList<Variable>(variables);
+        List<Variable> unobservedVariables = new ArrayList<Variable> (variables);
         if (evidenceCase != null)
         {
             unobservedVariables.removeAll (evidenceCase.getVariables ());
@@ -345,7 +351,7 @@ public class TablePotential extends Potential
             }
             else
             { // Create projected potential
-                // Go trough this potential using accumulatedOffests
+              // Go trough this potential using accumulatedOffests
                 int[] accumulatedOffsets = projectedPotential.getAccumulatedOffsets (variables);
                 int numVariablesProjected = projectedPotential.getNumVariables ();
                 int[] projectedCoordinate = new int[numVariablesProjected];
@@ -405,10 +411,9 @@ public class TablePotential extends Potential
         if (role == PotentialRole.UTILITY && inferenceOptions != null)
         {
             Variable decisionCriteria = inferenceOptions.decisionCriteria;
-           
             if (role == PotentialRole.UTILITY && decisionCriteria != null)
             {
-            	String criterion = utilityVariable.getDecisionCriteria().getString();
+                String criterion = utilityVariable.getDecisionCriteria ().getString ();
                 ArrayList<TablePotential> potentials = new ArrayList<TablePotential> (2);
                 potentials.add (projectedPotential);
                 try
@@ -944,8 +949,7 @@ public class TablePotential extends Potential
         }
         return values[position];
     }
-    
-    
+
     /**
      * Given a set an EvidenceCase, gets the corresponding value in the table.
      * @argCondition All the variables in this potentials are included into the
@@ -953,45 +957,43 @@ public class TablePotential extends Potential
      * @param configuration. <code>EvidenceCase</code>
      * @return <code>double</code>
      */
-    public double getValue (EvidenceCase configuration){
-    	int []states;
-    	List<Variable> variables;
-    	int size;
-        	    	
-    	variables = configuration.getVariables();
-    	size = variables.size();
-		states = new int[size];
-		List<Finding> findings = configuration.getFindings();
-    	
-    	for (int i = 0; i < size;i++){
-    		states[i] = findings.get(i).getStateIndex();
-    	}
-    	
-    	return getValue(variables,states);
+    public double getValue (EvidenceCase configuration)
+    {
+        int[] states;
+        List<Variable> variables;
+        int size;
+        variables = configuration.getVariables ();
+        size = variables.size ();
+        states = new int[size];
+        List<Finding> findings = configuration.getFindings ();
+        for (int i = 0; i < size; i++)
+        {
+            states[i] = findings.get (i).getStateIndex ();
+        }
+        return getValue (variables, states);
     }
-    
+
     /*******
      * Assigns a value at the table for the combination of a set of variables
      * and the corresponding state indices.
-     * 
-     * @param variables
-     *            . <code>ArrayList</code> of <code>Variable</code>
-     * @param statesIndexes
-     *            . <code>int[]</code>
+     * @param variables . <code>ArrayList</code> of <code>Variable</code>
+     * @param statesIndexes . <code>int[]</code>
      * @param value
      */
-    public void setValue(List<Variable> variables, int[] statesIndexes,
-            double value) {
+    public void setValue (List<Variable> variables, int[] statesIndexes, double value)
+    {
         int position = 0;
-        for (int i = 0; i < variables.size(); i++) {
-            Variable variable = variables.get(i);
-            int indexVariable = this.variables.indexOf(variable);
-            if (indexVariable != -1) {
+        for (int i = 0; i < variables.size (); i++)
+        {
+            Variable variable = variables.get (i);
+            int indexVariable = this.variables.indexOf (variable);
+            if (indexVariable != -1)
+            {
                 position += offsets[indexVariable] * statesIndexes[i];
             }
         }
         values[position] = value;
-    }    
+    }
 
     /**
      * @return <code>int[]</code>: The offsets of the variables in the table of
@@ -1031,29 +1033,36 @@ public class TablePotential extends Potential
     public UncertainValue[] getUncertainTable ()
     {
         return uncertainValues;
-    }	
+    }
 
-    /** @consultation
-	 * @return dimensions of the variables in an array of <code>int[]</code>. */
-    public int[] getDimensions() {
+    /**
+     * @consultation
+     * @return dimensions of the variables in an array of <code>int[]</code>.
+     */
+    public int[] getDimensions ()
+    {
         return dimensions;
     }
 
-    /** This method is <code>static</code> because sometimes it can be used
-     *    without creating the <code>TablePotential</code>; for instance, to 
-     *    estimate the amount of memory that would be necessary to actually
-     *    create the PotentialTable.
+    /**
+     * This method is <code>static</code> because sometimes it can be used
+     * without creating the <code>TablePotential</code>; for instance, to
+     * estimate the amount of memory that would be necessary to actually create
+     * the PotentialTable.
      * @param fsVariables <code>ArrayList</code> of <code>Variable</code>s.
      * @return array of <code>int[]</code> with the dimension of each variable.
      */
-    public static int[] calculateDimensions(List<Variable> fsVariables) {
+    public static int[] calculateDimensions (List<Variable> fsVariables)
+    {
         int numVariables = 0;
-        if (fsVariables != null) {
-            numVariables = fsVariables.size();
+        if (fsVariables != null)
+        {
+            numVariables = fsVariables.size ();
         }
         int[] dimensions = new int[numVariables];
-        for (int i = 0; i < numVariables; i++) {
-            dimensions[i] = fsVariables.get(i).getNumStates();
+        for (int i = 0; i < numVariables; i++)
+        {
+            dimensions[i] = fsVariables.get (i).getNumStates ();
         }
         return dimensions;
     }
@@ -1100,9 +1109,8 @@ public class TablePotential extends Potential
      *         0 if <code>this</code> table size is greater than the table size
      *         of received potential.
      */
-    public int compareTo (Object tablePotential)
+    public int compareTo (TablePotential other)
     {
-        TablePotential other = (TablePotential) tablePotential;
         return this.tableSize - other.tableSize;
     }
 
@@ -1135,7 +1143,7 @@ public class TablePotential extends Potential
     {
         if (variables != null)
         {
-            return new ArrayList<Variable>(variables);
+            return new ArrayList<Variable> (variables);
         }
         else
         {
@@ -1149,22 +1157,6 @@ public class TablePotential extends Potential
         return tableSize;
     }
 
-    /**
-     * @return originalVariables. <code>ArrayList</code> of <code>Variable</code>
-     */
-/*    public ArrayList<Variable> getOriginalVariables ()
-    {
-        return originalVariables;
-    }
-*/
-    /**
-     * @param originalVariables. <code>ArrayList</code> of <code>Variable</code>
-     */
-/*    public void setOriginalVariables (ArrayList<Variable> originalVariables)
-    {
-        this.originalVariables = originalVariables;
-    }
-*/
     // TODO revisar para que no use tableProject(...)
     public Collection<Finding> getInducedFindings (EvidenceCase evidenceCase, double cycleLength)
         throws IncompatibleEvidenceException,
@@ -1217,59 +1209,74 @@ public class TablePotential extends Potential
     }
 
     /** Initialize the table as a uniform potential. */
-	public void setUniform() {
-		int numVariables;
-		boolean setValue = false;
-		Double value = 0.0;
-
-		if (variables != null) {
-			numVariables = variables.size();
-			if ((numVariables > 0)
-					&& noNumericVariables()
-					&& ((role == PotentialRole.CONDITIONAL_PROBABILITY)
-							|| (role == PotentialRole.POLICY)
-							|| (role == PotentialRole.JOINT_PROBABILITY)
-							|| (role == PotentialRole.UTILITY) || (role == PotentialRole.LINK_RESTRICTION))) {
-				setValue = true;
-				value = 0.0;
-				switch (role) {
-				case CONDITIONAL_PROBABILITY:
-					value = 1.0 / new Double(variables.get(0).getNumStates());
-					break;
-				case POLICY:
-				case JOINT_PROBABILITY:
-					value = 1.0;
-					for (Variable variable : variables) {
-						value *= variable.getNumStates();
-					}
-					value = 1 / value;
-					break;
-				case LINK_RESTRICTION:
-					value = 1.0;
-					break;
-				} // When role = UTILITY -> value = 0.0 (default)
-				for (int i = 0; i < values.length; i++) {
-					values[i] = value;
-				}
-			} else if (numVariables == 0) {
-				setValue = true;
-				if (role == PotentialRole.JOINT_PROBABILITY) {
-					value = 1.0;
-				} else {
-					value = 0.0;
-				}
-			}
-			if (setValue) {
-				for (int i = 0; i < values.length; i++) {
-					values[i] = value;
-				}
-			}
-		}
-	}
+    public void setUniform ()
+    {
+        int numVariables;
+        boolean setValue = false;
+        Double value = 0.0;
+        if (variables != null)
+        {
+            numVariables = variables.size ();
+            if ((numVariables > 0)
+                && noNumericVariables ()
+                && ((role == PotentialRole.CONDITIONAL_PROBABILITY)
+                    || (role == PotentialRole.POLICY) || (role == PotentialRole.JOINT_PROBABILITY)
+                    || (role == PotentialRole.UTILITY) || (role == PotentialRole.LINK_RESTRICTION)))
+            {
+                setValue = true;
+                value = 0.0;
+                switch (role)
+                {
+                    case CONDITIONAL_PROBABILITY :
+                        value = 1.0 / new Double (variables.get (0).getNumStates ());
+                        break;
+                    case POLICY :
+                    case JOINT_PROBABILITY :
+                        value = 1.0;
+                        for (Variable variable : variables)
+                        {
+                            value *= variable.getNumStates ();
+                        }
+                        value = 1 / value;
+                        break;
+                    case LINK_RESTRICTION :
+                        value = 1.0;
+                        break;
+                    default :
+                        // Do nothing
+                        break;
+                } // When role = UTILITY -> value = 0.0 (default)
+                for (int i = 0; i < values.length; i++)
+                {
+                    values[i] = value;
+                }
+            }
+            else if (numVariables == 0)
+            {
+                setValue = true;
+                if (role == PotentialRole.JOINT_PROBABILITY)
+                {
+                    value = 1.0;
+                }
+                else
+                {
+                    value = 0.0;
+                }
+            }
+            if (setValue)
+            {
+                for (int i = 0; i < values.length; i++)
+                {
+                    values[i] = value;
+                }
+            }
+        }
+    }
 
     /** Overrides <code>toString</code> method. Mainly for test purposes */
     public String toString ()
     {
+        DecimalFormat formatter = new DecimalFormat ("0.###", new DecimalFormatSymbols (Locale.US));
         // writes variables names
         StringBuffer buffer = new StringBuffer (super.toString ());
         // Print configurations
@@ -1282,19 +1289,12 @@ public class TablePotential extends Potential
             }
             else
             {
-                if (role == PotentialRole.UTILITY)
-                {
-                    buffer.append (" = ");
-                }
-                else
-                {
-                    buffer.append (" ");
-                }
+                buffer.append ((role == PotentialRole.UTILITY) ? " = " : " ");
             }
         }
         while ((buffer.length () < maxLengthString) && (valuesPosition < values.length))
         {
-            buffer.append (values[valuesPosition++]);
+            buffer.append (formatter.format (values[valuesPosition++]));
             if ((valuesPosition < values.length) && (buffer.length () < (maxLengthString - 2)))
             {
                 buffer.append (", ");
@@ -1302,14 +1302,11 @@ public class TablePotential extends Potential
         }
         if (values.length != 1)
         {
-            if (valuesPosition == values.length && variables.size () > 0)
+            if (valuesPosition != values.length || variables.size () == 0)
             {
-                buffer.append ("}");
+                buffer.append ("...");
             }
-            else
-            {
-                buffer.append ("...}");
-            }
+            buffer.append ("}");
         }
         return buffer.toString ();
     }
@@ -1399,24 +1396,24 @@ public class TablePotential extends Potential
     public boolean equals (Object arg0)
     {
         boolean isEqual = super.equals (arg0) && arg0 instanceof TablePotential;
-        if(isEqual)
+        if (isEqual)
         {
-	        double[] otherValues = ((TablePotential) arg0).getValues ();
-	        if (values.length == otherValues.length)
-	        {
-	            for (int i = 0; i < values.length; i++)
-	            {
-	                isEqual &= values[i] == otherValues[i];
-	            }
-	        }
-	        else
-	        {
-	            isEqual = false;
-	        }
+            double[] otherValues = ((TablePotential) arg0).getValues ();
+            if (values.length == otherValues.length)
+            {
+                for (int i = 0; i < values.length; i++)
+                {
+                    isEqual &= values[i] == otherValues[i];
+                }
+            }
+            else
+            {
+                isEqual = false;
+            }
         }
         return isEqual;
     }
-    
+
     @Override
     public Potential copy ()
     {
@@ -1424,8 +1421,8 @@ public class TablePotential extends Potential
         newPotential.values = this.values.clone ();
         newPotential.utilityVariable = this.utilityVariable;
         return newPotential;
-    }    
-    
+    }
+
     @Override
     public Integer sample (Random randomGenerator, HashMap<Variable, Integer> parentStateIndexes)
     {
@@ -1439,7 +1436,8 @@ public class TablePotential extends Potential
         double random = randomGenerator.nextDouble ();
         double accumulatedProbability = values[index + sampleIndex];
         while (random > accumulatedProbability
-                // Make sure we don't go out of bounds even if the sum of probabilities is smaller than one.
+        // Make sure we don't go out of bounds even if the sum of probabilities
+        // is smaller than one.
                && sampleIndex < variables.get (0).getNumStates () - 1)
         {
             ++sampleIndex;
@@ -1459,33 +1457,38 @@ public class TablePotential extends Potential
         }
         return values[index];
     }
-    
-    public double getUtility (HashMap<Variable, Integer> sampledStateIndexes, HashMap<Variable, Double> utilities)
-    {
-        return getProbability(sampledStateIndexes);
-    }	
-    
-    @Override
-    public Potential addVariable(Variable newVariable){
-    	// creates the new potential
-    	List<Variable> newVariables = new ArrayList<Variable> (variables);
-    	newVariables.add(newVariable);
-    	TablePotential newPotential = new TablePotential(newVariables, role);
-    	newPotential.setUtilityVariable(utilityVariable);
-    	// assigns the values of the new potential
-    	int newVariableNumStates = newVariable.getNumStates();
-    	for (int i = 0; i < newVariableNumStates; i++) {
-    		for (int j = 0; j < values.length; j++) {
-    			newPotential.values[j + i * values.length] = values[j];
-    			//newPotential.uncertainValues[j + i * values.length] = uncertainValues[j];
-    		}
-    	}
-    	return newPotential;	 
-    }
-	@Override
-	public boolean isUncertain() {
-		return (this.uncertainValues != null) ? true : false;
-	}	
-    
 
+    public double getUtility (HashMap<Variable, Integer> sampledStateIndexes,
+                              HashMap<Variable, Double> utilities)
+    {
+        return getProbability (sampledStateIndexes);
+    }
+
+    @Override
+    public Potential addVariable (Variable newVariable)
+    {
+        // creates the new potential
+        List<Variable> newVariables = new ArrayList<Variable> (variables);
+        newVariables.add (newVariable);
+        TablePotential newPotential = new TablePotential (newVariables, role);
+        newPotential.setUtilityVariable (utilityVariable);
+        // assigns the values of the new potential
+        int newVariableNumStates = newVariable.getNumStates ();
+        for (int i = 0; i < newVariableNumStates; i++)
+        {
+            for (int j = 0; j < values.length; j++)
+            {
+                newPotential.values[j + i * values.length] = values[j];
+                // newPotential.uncertainValues[j + i * values.length] =
+                // uncertainValues[j];
+            }
+        }
+        return newPotential;
+    }
+
+    @Override
+    public boolean isUncertain ()
+    {
+        return (this.uncertainValues != null) ? true : false;
+    }
 }

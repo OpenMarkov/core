@@ -361,7 +361,7 @@ public class TreeADDPotential extends Potential
             if (evidenceCase == null || evidenceCase.getFinding (topVariable) == null)
             {
                 throw new NonProjectablePotentialException ("It is not possible to project this tree " + this.toShortString () + 
-                                                                    " because top variable is numeric and has no evidence");
+                                                                    " because top variable " + topVariable.getName () + "is numeric and has no evidence");
             }
             double topVariableValue = evidenceCase.getFinding (topVariable).getNumericalValue ();
             List<TreeADDBranch> numericalBranches = getBranches ();

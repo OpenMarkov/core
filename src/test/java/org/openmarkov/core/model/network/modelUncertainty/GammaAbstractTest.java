@@ -12,32 +12,24 @@ package org.openmarkov.core.model.network.modelUncertainty;
  * @author manolo
  *
  */
-public class LogNormalFunctionTest extends ProbDensFunctionTest {
+public class GammaAbstractTest extends ProbDensFunctionTest {
 
 	/* (non-Javadoc)
 	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#getTypeProbDensFunction()
 	 */
 	@Override
 	public TypeProbDensityFunction getTypeProbDensFunction() {
-		
-		return TypeProbDensityFunction.LOGNORMAL;
+		// TODO Auto-generated method stub
+		return null;
 	}
-
 
 	/* (non-Javadoc)
 	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#initializeParamsProbDensFunctionTest()
 	 */
 	@Override
 	public Double[] initializeParamsProbDensFunctionTest() {
-		Double[] params={1.5,1.0};
-		return params;
-	}
-	
-	/**
-	 * @return
-	 */
-	protected double getFactorError(){
-		return Math.max(1.0, pdf.getStandardDeviation());
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

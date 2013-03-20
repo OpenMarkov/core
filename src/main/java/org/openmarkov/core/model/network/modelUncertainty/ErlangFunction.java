@@ -45,7 +45,8 @@ public class ErlangFunction extends ProbDensFunction
     @Override
     public void placeParameters (Double[] args)
     {
-        // TODO Auto-generated method stub
+    	  k = (int) Math.round(args[0]);
+          lambda = args[1];
     }
 
     @Override
@@ -79,7 +80,7 @@ public class ErlangFunction extends ProbDensFunction
         sumSamples = 0.0;
         for (int i = 0; i < k; i++)
         {
-            sumSamples = (new ExponentialFunction (lambda)).getSample ();
+            sumSamples = sumSamples + (new ExponentialFunction (lambda)).getSample ();
         }
         return sumSamples;
     }

@@ -56,15 +56,16 @@ public abstract class GammaAbstract extends ProbDensFunction
         double r;
         double lambdaErlang;
         double u;
+        double epsilon = 0.00001;
         int kForSampling;
         lambdaErlang = 1.0 / thetaAbstract;
         // Integer part of kAbstract
         k = (int) (Math.ceil (kAbstract));
-        if (!isAnErlangFunction ())
+        if (!isAnErlangFunction (epsilon))
         {
-            r = kAbstract - k;
+            r = k - kAbstract;
             u = (new RangeFunction (0, 1)).getSample ();
-            kForSampling = (u < r) ? k : (k + 1);
+            kForSampling = k + ((u < r) ? -1 : 0);
         }
         else
         {
@@ -74,18 +75,17 @@ public abstract class GammaAbstract extends ProbDensFunction
         return sample;
     }
 
-    public boolean isAnErlangFunction ()
+    public boolean isAnErlangFunction (double epsilon)
     {
         // TODO We have to use an epsilon instead of 0 in the next comparison
         // because comparison with 0 in
         // float arithmetic is always dangerous
-        return kAbstract - Math.ceil (kAbstract) == 0;
+        return (Math.abs(kAbstract - Math.ceil (kAbstract)))<epsilon;
     }
 
     @Override
     public final double getVariance ()
     {
-        // TODO Auto-generated method stub
-        return 0;
+        return kAbstract*Math.pow(thetaAbstract,2.0);
     }
 }

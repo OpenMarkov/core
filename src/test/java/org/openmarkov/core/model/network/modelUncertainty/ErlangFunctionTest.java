@@ -12,7 +12,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
  * @author manolo
  *
  */
-public class LogNormalFunctionTest extends ProbDensFunctionTest {
+public class ErlangFunctionTest extends ProbDensFunctionTest {
 
 	/* (non-Javadoc)
 	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#getTypeProbDensFunction()
@@ -20,24 +20,16 @@ public class LogNormalFunctionTest extends ProbDensFunctionTest {
 	@Override
 	public TypeProbDensityFunction getTypeProbDensFunction() {
 		
-		return TypeProbDensityFunction.LOGNORMAL;
+		return TypeProbDensityFunction.ERLANG;
 	}
-
 
 	/* (non-Javadoc)
 	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#initializeParamsProbDensFunctionTest()
 	 */
 	@Override
 	public Double[] initializeParamsProbDensFunctionTest() {
-		Double[] params={1.5,1.0};
+		Double[] params={2.0,1.5};
 		return params;
-	}
-	
-	/**
-	 * @return
-	 */
-	protected double getFactorError(){
-		return Math.max(1.0, pdf.getStandardDeviation());
 	}
 
 }

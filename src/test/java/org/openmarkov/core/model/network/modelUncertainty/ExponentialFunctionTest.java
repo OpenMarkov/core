@@ -12,14 +12,15 @@ package org.openmarkov.core.model.network.modelUncertainty;
  * @author manolo
  *
  */
-public class GammaFunctionTest extends ProbDensFunctionTest {
+public class ExponentialFunctionTest extends ProbDensFunctionTest {
 
 	/* (non-Javadoc)
 	 * @see org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionTest#getTypeProbDensFunction()
 	 */
 	@Override
 	public TypeProbDensityFunction getTypeProbDensFunction() {
-		return TypeProbDensityFunction.GAMMA;
+		// TODO Auto-generated method stub
+		return TypeProbDensityFunction.EXPONENTIAL;
 	}
 
 	/* (non-Javadoc)
@@ -27,7 +28,7 @@ public class GammaFunctionTest extends ProbDensFunctionTest {
 	 */
 	@Override
 	public Double[] initializeParamsProbDensFunctionTest() {
-		Double[] params={1.5,4.0};
+		Double[] params={1.3};
 		return params;
 	}
 

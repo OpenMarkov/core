@@ -21,7 +21,7 @@ public class GammaFunctionTest extends GammaAbstractTest {
 
 	@Override
 	public Double[] initializeParamsProbDensFunctionTest() {
-		Double[] params={1.3,2.0};
+		Double[] params={4.2,3.0};
 		return params;
 	}
 

@@ -24,13 +24,13 @@ public abstract class ProbDensFunctionTest {
 	ProbDensFunction pdf;
 	
 	double maxErrorMean = 0.001;
-	double maxErrorStDeviation = 0.005;
+	double maxErrorStDeviation = 0.01;
 
 	public abstract TypeProbDensityFunction getTypeProbDensFunction();
 	
 	@Test
 	public void testMeanAndVariance(){
-		int numSamples = 10000000;		
+		int numSamples = 1000000;		
 		
 		pdf = ProbDensFunction.constructNewProbDensFunction(getTypeProbDensFunction());
 		initializeAndPlaceParamsProbDensFunctionTest();

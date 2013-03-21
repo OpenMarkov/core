@@ -23,7 +23,9 @@ public class RangeFunction extends ProbDensFunctionWithKnownInverseCDF
      */
     public RangeFunction (double a, double b)
     {
-        this ();
+    	this();
+        this.a = a;
+        this.b = b;
     }
 
     @Override

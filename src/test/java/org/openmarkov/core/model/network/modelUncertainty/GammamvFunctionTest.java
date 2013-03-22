@@ -7,10 +7,11 @@ public class GammamvFunctionTest extends GammaAbstractTest {
 		return TypeProbDensityFunction.GAMMAMV;
 	}
 
+
 	@Override
 	public Double[] initializeParamsProbDensFunctionTest() {
-		// TODO Auto-generated method stub
-		return super.initializeParamsProbDensFunctionTest();
+		Double[] params={4.2,3.0};
+		return params;
 	}
 
 }

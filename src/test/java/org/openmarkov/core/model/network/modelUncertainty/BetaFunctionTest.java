@@ -29,8 +29,8 @@ public class BetaFunctionTest  extends ProbDensFunctionTest {
 	 */
 	@Override
 	public Double[] initializeParamsProbDensFunctionTest() {
-		double alpha = 0.3;
-		Double[] params={alpha,1.0-alpha};
+		
+		Double[] params={3.0,17.0};
 		return params;
 	}
 	

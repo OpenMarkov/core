@@ -9,11 +9,8 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.inference.InferenceAlgorithm;
-import org.openmarkov.core.model.network.ProbNet;
+
 
 /**
  * @author manolo

@@ -20,6 +20,8 @@ public class GammaFunction extends GammaAbstract
         this ();
         this.k = k;
         this.theta = theta;
+        this.kAbstract = k;
+        this.thetaAbstract = theta;
     }
 
     public GammaFunction ()

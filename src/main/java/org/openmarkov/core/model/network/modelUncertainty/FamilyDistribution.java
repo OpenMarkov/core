@@ -73,6 +73,23 @@ public class FamilyDistribution
         }
         return max;
     }
+    
+    
+    public double[] getVariance(){
+    	return new double[family.size()];
+    }
+    
+    
+    public double[] getStandardDeviation(){
+    	double[] stDeviation;
+    	
+    	stDeviation = new double[family.size()];
+    	double[] variance = getVariance();
+    	for (int i=0;i<family.size();i++){
+    		stDeviation[i] = Math.sqrt(variance[i]);
+    	}
+    	return stDeviation;
+    }
 
     public void remove (UncertainValue child)
     {

@@ -107,7 +107,7 @@ public class Finding {
     /** @return numericalValue. <code>double</code>
 	 * @precondition This finding stores a hybrid or continuous variable */
     public double getNumericalValue() {
-        return numericalValue;
+        return (numericalValue == Double.MAX_VALUE)? stateIndex : numericalValue;
     }
     
     /** @param numericalValue. <code>double</code> 

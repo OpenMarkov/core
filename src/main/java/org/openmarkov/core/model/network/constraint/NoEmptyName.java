@@ -12,7 +12,7 @@ package org.openmarkov.core.model.network.constraint;
 import java.util.List;
 
 import org.openmarkov.core.action.AddProbNodeEdit;
-import org.openmarkov.core.action.ChangeVariableNameEdit;
+import org.openmarkov.core.action.NodeNameEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -35,10 +35,10 @@ public class NoEmptyName extends PNConstraint {
 				return false;
 			}
 		}
-		// ChangeVariableNameEdit
-        edits = UtilConstraints.getSimpleEditsByType (edit, ChangeVariableNameEdit.class);
+		// NodeNameEdit
+        edits = UtilConstraints.getSimpleEditsByType (edit, NodeNameEdit.class);
 		for (PNEdit simpleEdit : edits) {
-			String name = ((ChangeVariableNameEdit) simpleEdit).getNewName();
+			String name = ((NodeNameEdit) simpleEdit).getNewName();
 			if ((name == null) || (name.contentEquals(""))) {
 				return false;
 			}

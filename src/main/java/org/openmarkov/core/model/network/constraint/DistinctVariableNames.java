@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.action.AddProbNodeEdit;
-import org.openmarkov.core.action.ChangeVariableNameEdit;
 import org.openmarkov.core.action.NodeNameEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -59,17 +58,6 @@ public class DistinctVariableNames extends PNConstraint {
 		for (String newVariableName : newVariablesNames) {
 			for (String variableProbNetName : variablesProbNetNames) {
 				if (variableProbNetName.compareTo(newVariableName) == 0) {
-					return false;
-				}
-			}
-		}
-
-		// ChangeVariableName Edit
-        edits = UtilConstraints.getSimpleEditsByType (edit, ChangeVariableNameEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			String newName = ((ChangeVariableNameEdit) simpleEdit).getNewName();
-			for (String variableProbNetName : variablesProbNetNames) {
-				if ((newName.contentEquals(variableProbNetName))) {
 					return false;
 				}
 			}

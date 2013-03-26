@@ -546,7 +546,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 							newEdit = new NodeStateEdit(nodeInInstance,
 									nodeStateEdit.getStateAction(),
 									nodeStateEdit.getIndexState(),
-									nodeStateEdit.getNewState().getName());
+									nodeStateEdit.getNewStateName());
 						} else if(simpleEdit instanceof SetPotentialEdit)
 						{
 							try {

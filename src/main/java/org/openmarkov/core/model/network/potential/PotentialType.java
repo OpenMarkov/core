@@ -28,7 +28,8 @@ public enum PotentialType {
 	LINEAR_COMBINATION(12, "LinearCombination"),
 	PROBABILITY_DENSITY(13, "ProbabilityDensity"),
 	STAT_FUNCTION(14, "StatFunction"),
-	TUNING(15,"Tuning");
+	TUNING(15,"Tuning"),
+	WEIBULL(16, "Weibull");
 	// Add here more potential types (when available)
 	
 private int type;

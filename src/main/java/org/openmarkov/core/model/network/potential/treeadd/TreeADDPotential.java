@@ -172,12 +172,12 @@ public class TreeADDPotential extends Potential
 
     public TreeADDPotential (List<Variable> variables, PotentialRole role)
     {
-        this (variables, variables.get (0), role);
+        this (variables, (role == PotentialRole.UTILITY) ? variables.get (0) : variables.get (1), role);
     }
 
     public TreeADDPotential (List<Variable> variables, PotentialRole role, Variable utilityVariable)
     {
-        this (variables, variables.get (0), role, utilityVariable);
+        this (variables, (role == PotentialRole.UTILITY) ? variables.get (0) : variables.get (1), role, utilityVariable);
     }
 
     /**

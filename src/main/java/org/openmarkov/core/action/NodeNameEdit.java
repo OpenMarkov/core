@@ -9,8 +9,12 @@
 
 package org.openmarkov.core.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Variable;
 
 /**
  * <code>NodeNameEdit</code> is a simple edit that allow modify the node
@@ -32,7 +36,7 @@ public class NodeNameEdit extends SimplePNEdit {
 	/**
 	 * The node edited
 	 */
-	private ProbNode probNode = null;
+	private List<Variable> variables = null;
 	/**
 	 * Creates a new <code>NodeNameEdit</code> with the node and new name 
 	 * specified.
@@ -41,19 +45,32 @@ public class NodeNameEdit extends SimplePNEdit {
 	 */
 	public NodeNameEdit (ProbNode probNode, String newName){
 		super(probNode.getProbNet());
-		this.probNode = probNode;
+		variables = new ArrayList<Variable>();
+		for(Variable variable : probNode.getProbNet().getVariables())
+		{
+			if(variable.getBaseName().equals(probNode.getVariable().getBaseName()))
+			{
+				variables.add(variable);
+			}
+		}
 		this.previousName = probNode.getName();
 		this.newName = newName;
 	}	
 	
 	@Override
 	public void doEdit() throws DoEditException {
-		probNode.getVariable().setName(newName);
+		for(Variable variable : variables)
+		{
+			variable.setBaseName(newName);
+		}
 	}
 	@Override
 	public void undo() {
 		super.undo();
-		probNode.getVariable().setName(previousName);
+		for(Variable variable : variables)
+		{
+			variable.setBaseName(previousName);
+		}
 	}
 	/**
 	 * Gets the new name of the node

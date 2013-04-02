@@ -7,6 +7,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -45,7 +46,7 @@ public class WeibullPotential extends Potential {
 	}
 
 	public WeibullPotential(List<Variable> variables, PotentialRole role) {
-		this(variables, role, new ArrayList<Double>(), 1.45, -5.49);
+		this(variables, role, Arrays.asList (-0.04, 0.77), 1.45, -5.49);
 	}
 
 	/**

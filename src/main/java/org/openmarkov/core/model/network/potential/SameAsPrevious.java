@@ -55,19 +55,10 @@ public class SameAsPrevious extends Potential
             Variable originalUtilityVariable = originalPotential.getUtilityVariable ();
             utilityVariable = probNet.getShiftedVariable (originalUtilityVariable, timeDifference);
         }
-        if (originalPotential instanceof TreeADDPotential)
-        {// Not only shift potential variables, but also variables within the
-         // tree
-            try
-            {
-                originalPotential = ((TreeADDPotential) originalPotential).shift (probNet,
-                                                                                  timeDifference);
-            }
-            catch (ProbNodeNotFoundException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace ();
-            }
+        try {
+            originalPotential = originalPotential.shift (probNet, timeDifference);
+        } catch (ProbNodeNotFoundException e) {
+            e.printStackTrace();
         }
         type = PotentialType.SAME_AS_PREVIOUS;
     }
@@ -108,62 +99,7 @@ public class SameAsPrevious extends Potential
         throws NonProjectablePotentialException,
         WrongCriterionException
     {
-        if (originalPotential instanceof TreeADDPotential)
-        {
-            return originalPotential.tableProject (evidenceCase, inferenceOptions);
-        }
-        else
-        {
-            // takes the evidence to the past
-            EvidenceCase shiftedEvidence = null;
-            if (evidenceCase != null)
-            {
-                shiftedEvidence = evidenceCase.shiftEvidenceBackwards (timeDifference, probNet);
-            }
-            // projects the original potential according to the shifted evidence
-            List<TablePotential> projectedPotentials = originalPotential.tableProject (shiftedEvidence,
-                                                                                       inferenceOptions);
-            // creates a copy of the projected potentials shifted to the future
-            List<TablePotential> shiftedProjectedPotentials = new ArrayList<TablePotential> ();
-            for (TablePotential projectedPotential : projectedPotentials)
-            {
-                List<Variable> shiftedVariables = new ArrayList<Variable> ();
-                // creates a list of shifted variables
-                for (Variable variable : projectedPotential.variables)
-                {
-                    if (variable.isTemporal ())
-                    {
-                        shiftedVariables.add (probNet.getShiftedVariable (variable, timeDifference));
-                    }
-                    else
-                    {
-                        shiftedVariables.add (variable);
-                    }
-                }
-                TablePotential shiftedPotential = new TablePotential (shiftedVariables, role);
-                shiftedPotential.utilityVariable = projectedPotential.utilityVariable;
-                // TODO: Manolo: The next line was commented...
-                shiftedPotential.values = projectedPotential.values;
-                // Set discount rate
-                if (inferenceOptions != null)
-                {
-                    double accumulatedDiscount = 1.0;
-                    for (int i = 0; i < timeDifference; i++)
-                    {
-                        accumulatedDiscount *= inferenceOptions.discountRate;
-                    }
-                    int numValues = projectedPotential.values.length;
-                    double[] shiftedValues = new double[numValues];
-                    for (int i = 0; i < numValues; i++)
-                    {
-                        shiftedValues[i] = shiftedPotential.values[i] * accumulatedDiscount;
-                    }
-                    shiftedPotential.values = shiftedValues;
-                }
-                shiftedProjectedPotentials.add (shiftedPotential);
-            }
-            return shiftedProjectedPotentials;
-        }
+        return originalPotential.tableProject (evidenceCase, inferenceOptions);
     }
 
     public Potential getOriginalPotential ()
@@ -171,11 +107,6 @@ public class SameAsPrevious extends Potential
         return originalPotential;
     }
 
-    // TODO implementar
-    /*
-     * @Override public Collection<Finding> getInducedFindings(EvidenceCase
-     * evidenceCase) throws IncompatibleEvidenceException { return null; }
-     */
     @Override
     // TODO Quitar error
     public Potential shift (ProbNet probNet, int timeSlice)

@@ -13,19 +13,22 @@ public class WeibullPotentialEdit extends SimplePNEdit {
 
     private double newConstant; 
     private double newGamma; 
+    private double newRelativeRisk; 
     private List<Double> newCoefficients;
     private double oldConstant; 
     private double oldGamma; 
+    private double oldRelativeRisk; 
     private List<Double> oldCoefficients;
 
     private WeibullPotential potential;
     
     public WeibullPotentialEdit(ProbNet probNet, WeibullPotential potential, double constant,
-            double gamma, List<Double> coefficients) {
+            double gamma, List<Double> coefficients, double relativeRisk) {
         super(probNet);
         this.newConstant = constant;
         this.newGamma = gamma;
         this.newCoefficients = coefficients;
+        this.newRelativeRisk = relativeRisk;
         this.potential = potential;
     }
 
@@ -34,9 +37,11 @@ public class WeibullPotentialEdit extends SimplePNEdit {
         this.oldConstant = potential.getConstant();
         this.oldGamma = potential.getGamma();
         this.oldCoefficients = potential.getCoefficients();
+        this.oldRelativeRisk = potential.getRelativeRisk();
         potential.setConstant(newConstant);
         potential.setGamma(newGamma);
         potential.setCoefficients(newCoefficients);
+        potential.setRelativeRisk(newRelativeRisk);
     }
 
     @Override
@@ -44,6 +49,7 @@ public class WeibullPotentialEdit extends SimplePNEdit {
         potential.setConstant(oldConstant);
         potential.setGamma(oldGamma);
         potential.setCoefficients(oldCoefficients);
+        potential.setRelativeRisk(oldRelativeRisk);
     }
 
 }

@@ -36,17 +36,23 @@ public class WeibullPotential extends Potential {
      * Constant in survival analysis for baseline hazard.
      */
     private double constant;
+    /**
+     * Relative risk 
+     */
+    private double relativeRisk;    
+    
 
     public WeibullPotential(List<Variable> variables, PotentialRole role,
-            List<Double> coefficients, double gamma, double constant) {
+            List<Double> coefficients, double gamma, double constant, double relativeRisk) {
         super(variables, role);
         this.coefficients = coefficients;
         this.gamma = gamma;
         this.constant = constant;
+        this.relativeRisk = relativeRisk;
     }
 
     public WeibullPotential(List<Variable> variables, PotentialRole role) {
-        this(variables, role, Arrays.asList(-0.04, 0.77), 1.45, -5.49);
+        this(variables, role, new ArrayList<Double>(variables.size()), 0.0, 0.0, 1.0);
     }
 
     /**
@@ -112,17 +118,18 @@ public class WeibullPotential extends Potential {
                 lambda += numericValues.get(j) * coefficients.get(j);
             }
             lambda = Math.exp(lambda);
+            lambda *= relativeRisk;
             if (timeSlice == 0) {
                 // p
-                projectedPotential.values[i + 1] = 0;
-                // Complement (1-p)
                 projectedPotential.values[i] = 1;
+                // Complement (1-p)
+                projectedPotential.values[i+1] = 0;
             } else {
                 // p
-                projectedPotential.values[i + 1] = Math.exp(lambda
+                projectedPotential.values[i] = Math.exp(lambda
                         * (Math.pow(timeSlice - 1, gamma) - Math.pow(timeSlice, gamma)));
                 // Complement (1-p)
-                projectedPotential.values[i] = 1 - projectedPotential.values[i + 1];
+                projectedPotential.values[i+1] = 1 - projectedPotential.values[i];
             }
         }
 
@@ -134,12 +141,12 @@ public class WeibullPotential extends Potential {
     @Override
     public Potential shift(ProbNet probNet, int timeDifference) throws ProbNodeNotFoundException {
         return new WeibullPotential(getShiftedVariables(probNet, timeDifference), role,
-                coefficients, gamma, constant);
+                new ArrayList<>(coefficients), gamma, constant, relativeRisk);
     }
 
     @Override
     public Potential copy() {
-        return new WeibullPotential(variables, role, coefficients, gamma, constant);
+        return new WeibullPotential(variables, role, new ArrayList<>(coefficients), gamma, constant, relativeRisk);
     }
 
     @Override
@@ -169,6 +176,14 @@ public class WeibullPotential extends Potential {
 
     public void setConstant(double constant) {
         this.constant = constant;
+    }
+
+    public double getRelativeRisk() {
+        return relativeRisk;
+    }
+
+    public void setRelativeRisk(double relativeRisk) {
+        this.relativeRisk = relativeRisk;
     }
 
 }

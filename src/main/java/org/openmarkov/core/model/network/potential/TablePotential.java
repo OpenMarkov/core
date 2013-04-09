@@ -1420,6 +1420,7 @@ public class TablePotential extends Potential
         TablePotential newPotential = new TablePotential (new ArrayList<Variable> (variables), role);
         newPotential.values = this.values.clone ();
         newPotential.utilityVariable = this.utilityVariable;
+        newPotential.uncertainValues = this.uncertainValues;
         return newPotential;
     }
 

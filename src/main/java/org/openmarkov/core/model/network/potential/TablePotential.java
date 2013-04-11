@@ -294,7 +294,7 @@ public class TablePotential extends Potential
 
     /**
      * @param evidenceCase <code>EvidenceCase</code>
-     * @return An <code>ArrayList</code> of <code>FSPotential</code>s containing
+     * @return A <code>List</code> of <code>TablePotential</code>s containing
      *         only one element, which is a <code>ProjectedPotential</code>
      * @throws NotEnoughMemoryException
      * @throws WrongCriterionException

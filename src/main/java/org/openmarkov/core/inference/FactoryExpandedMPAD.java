@@ -56,16 +56,11 @@ public class FactoryExpandedMPAD
      * @param coordinateXOffset. <code>int</code>
      */
     public FactoryExpandedMPAD (ProbNet conciseNet,
-                               int numSlices,
-                               Variable simulationIndexVariable)
+                               int numSlices)
     {
         // probNet must be the original network and
         // expandedNetwork the probNet expanded numSlices times
         probNet = conciseNet.copy ();
-        if (simulationIndexVariable != null)
-        {
-            sampleProbNet (simulationIndexVariable);
-        }
         // if some of the slices of the concise net miss a node present
         // in previous slices, adds the node to that slice
         compactNetwork ();
@@ -150,7 +145,7 @@ public class FactoryExpandedMPAD
     {
         FactoryExpandedMPAD expandedNetFactory = null;
         InferenceOptions inferenceOptions;
-        expandedNetFactory = new FactoryExpandedMPAD (network, numSlices, null);
+        expandedNetFactory = new FactoryExpandedMPAD (network, numSlices);
         inferenceOptions = new InferenceOptions (network, null);
         if (adaptForCE)
         {
@@ -182,7 +177,7 @@ public class FactoryExpandedMPAD
     {
         EvidenceCase evidenceCase = new EvidenceCase ();
         ProbNet expandedNetwork = null;
-        FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices, null);
+        FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices);
         InferenceOptions inferenceOptions = new InferenceOptions (probNet, null);
         if (!evidenceCase.getFindings ().isEmpty ())
         {
@@ -274,18 +269,6 @@ public class FactoryExpandedMPAD
     }
 
     // Methods
-    /**
-     * @param simulationIndexVariable. <code>Variable</code>
-     * @throws NotEnoughMemoryException
-     */
-    private void sampleProbNet (Variable simulationIndexVariable)
-    {
-        for (ProbNode probNode : probNet.getProbNodes ())
-        {
-            probNode.samplePotentials (simulationIndexVariable);
-        }
-    }
-
     /**
      * When invoking this method, probNet is a copy of the concise net. We add
      * new nodes, links, and potentials to make it a compact net.

@@ -361,7 +361,7 @@ public class TreeADDPotential extends Potential
             if (evidenceCase == null || evidenceCase.getFinding (topVariable) == null)
             {
                 throw new NonProjectablePotentialException ("It is not possible to project this tree " + this.toShortString () + 
-                                                                    " because top variable " + topVariable.getName () + "is numeric and has no evidence");
+                                                                    " because top variable " + topVariable.getName () + " is numeric and has no evidence");
             }
             double topVariableValue = evidenceCase.getFinding (topVariable).getNumericalValue ();
             List<TreeADDBranch> numericalBranches = getBranches ();
@@ -577,12 +577,13 @@ public class TreeADDPotential extends Potential
     /**
      * Generates a sampled potential
      */
-    public Potential sample (Variable simulationIndexVariable)
+    @Override
+    public Potential sample ()
     {
         TreeADDPotential sampledTree = (TreeADDPotential) this.copy ();
         for (TreeADDBranch branch : sampledTree.getBranches ())
         {
-            branch.setPotential (branch.getPotential ().sample (simulationIndexVariable));
+            branch.setPotential (branch.getPotential ().sample ());
         }
         return sampledTree;
     }

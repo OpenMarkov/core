@@ -1381,12 +1381,11 @@ public class TablePotential extends Potential
     /**
      * Generates a sampled potential
      */
-    public Potential sample (Variable simulationIndexVariable)
+    public Potential sample ()
     {
-        if (simulationIndexVariable != null)
+        if (uncertainValues != null)
         {
-            SamplePotentialTable samplePotentialTable = new SamplePotentialTable (this,
-                                                                                  simulationIndexVariable);
+            SamplePotentialTable samplePotentialTable = new SamplePotentialTable (this);
             return samplePotentialTable.getSampledTable ();
         }
         return this;

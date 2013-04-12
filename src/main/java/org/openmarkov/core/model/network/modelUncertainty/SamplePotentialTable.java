@@ -14,13 +14,11 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 public class SamplePotentialTable
 {
-    Variable               simulationIndexVariable;
     private TablePotential inputTablePotential;
 
-    public SamplePotentialTable (TablePotential potential, Variable simulationIndexVariable)
+    public SamplePotentialTable (TablePotential potential)
     {
         this.inputTablePotential = potential;
-        this.simulationIndexVariable = simulationIndexVariable;
     }
 
     /**
@@ -40,22 +38,19 @@ public class SamplePotentialTable
         ComplementFamily complementFamily = null;
         DirichletFamily dirFamily = null;
         FamilyDistribution otherFamily = null;
-        List<TypeProbDensityFunction> auxTypes;
-        auxTypes = new ArrayList<TypeProbDensityFunction> ();
-        auxTypes.add (TypeProbDensityFunction.COMPLEMENT);
-        auxTypes.add (TypeProbDensityFunction.DIRICHLET);
+        List<TypeProbDensityFunction> functionTypes;
+        functionTypes = new ArrayList<TypeProbDensityFunction> ();
+        functionTypes.add (TypeProbDensityFunction.COMPLEMENT);
+        functionTypes.add (TypeProbDensityFunction.DIRICHLET);
         List<UncertainValue> uncertainValues = null;
         double[] sampledConfigurationValues;
         int numStates;
-        int numSimulations;
-        numSimulations = simulationIndexVariable.getNumStates ();
         UncertainValue[] uTable = inputTablePotential.getUncertainTable ();
         double[] originalValues = inputTablePotential.getValues ();
         if (!(inputTablePotential.getUncertainTable () == null))
         {
             List<Variable> inputPotentialVariables = inputTablePotential.getVariables ();
-            List<Variable> sampledPotentialVariables = (ArrayList<Variable>) inputPotentialVariables;
-            sampledPotentialVariables.add (simulationIndexVariable);
+            List<Variable> sampledPotentialVariables = new ArrayList<Variable> (inputPotentialVariables);
             sampledTablePotential = new TablePotential (sampledPotentialVariables,
                                                         inputTablePotential.getPotentialRole ());
             double[] sampledValues = sampledTablePotential.values;
@@ -90,7 +85,7 @@ public class SamplePotentialTable
                                                                          TypeProbDensityFunction.COMPLEMENT);
                     indexesDirichlet = getIndexesUncertainValuesOfType (familyList,
                                                                         TypeProbDensityFunction.DIRICHLET);
-                    indexesOther = getIndexesUncertainValuesNotInTypes (familyList, auxTypes);
+                    indexesOther = getIndexesUncertainValuesNotInTypes (familyList, functionTypes);
                     // Create the families of distributions
                     List<UncertainValue> complements = constructListFromIndexes (familyList,
                                                                                  indexesComplement);
@@ -107,36 +102,27 @@ public class SamplePotentialTable
                      * setAndInitializeRandomStreamGenerator(dirFamily,
                      * arrayFamily);
                      */
-                }
-                else
-                {
-                    hasUncertainty = false;
-                    // takes the values from the original potential and places
-                    // them in the auxiliary vector 'sampledConfigurationValues'
-                    for (int stateIndex = 0; stateIndex < numStates; stateIndex++)
-                    {
-                        sampledConfigurationValues[stateIndex] = originalValues[configurationBasePosition
-                                                                                + stateIndex];
-                    }
-                }
-                for (int simulationIndex = 0; simulationIndex < numSimulations; simulationIndex++)
-                {
-                    if (hasUncertainty)
-                    {
-                        // samples and places the results in the auxiliary
-                        // vector 'sampledConfigurationValues'
-                        sampledConfigurationValues = generateSample (otherFamily, dirFamily,
-                                                                     complementFamily,
-                                                                     indexesOther,
-                                                                     indexesDirichlet,
-                                                                     indexesComplement, numStates);
-                    }
+                    // samples and places the results in the auxiliary
+                    // vector 'sampledConfigurationValues'
+                    sampledConfigurationValues = generateSample (otherFamily, dirFamily,
+                                                                 complementFamily,
+                                                                 indexesOther,
+                                                                 indexesDirichlet,
+                                                                 indexesComplement, numStates);
                     // copies the auxiliary them in the auxiliary vector
                     // 'sampledConfigurationValues'
                     for (int stateIndex = 0; stateIndex < numStates; stateIndex++)
                     {
-                        sampledValues[inputTableSize * simulationIndex + configurationBasePosition
-                                      + stateIndex] = sampledConfigurationValues[stateIndex];
+                        sampledValues[configurationBasePosition + stateIndex] = sampledConfigurationValues[stateIndex];
+                    }
+                }
+                else
+                {
+                    // takes the values from the original potential and places
+                    // them in the auxiliary vector 'sampledConfigurationValues'
+                    for (int stateIndex = 0; stateIndex < numStates; stateIndex++)
+                    {
+                        sampledConfigurationValues[stateIndex] = originalValues[configurationBasePosition + stateIndex];
                     }
                 }
             }

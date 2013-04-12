@@ -332,8 +332,9 @@ public abstract class Potential
      * @throws ProbNodeNotFoundException
      * @throws NotEnoughMemoryException
      */
-    public abstract Potential shift (ProbNet probNet, int timeDifference)
-        throws ProbNodeNotFoundException;
+    public Potential shift(ProbNet probNet, int timeDifference) throws ProbNodeNotFoundException {
+        return this;
+    }
 
     /**
      * Creates links between the variables of a potential
@@ -485,7 +486,7 @@ public abstract class Potential
      * @throws NotEnoughMemoryException
      * @returns a sampled potential. By default, itself, i.e., not sampled.
      */
-    public Potential sample (Variable simulationIndexVariable)
+    public Potential sample ()
     {
         return this; // By default
     }

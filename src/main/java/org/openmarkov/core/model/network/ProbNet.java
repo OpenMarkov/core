@@ -1358,7 +1358,7 @@ public class ProbNet
         catch (ProbNodeNotFoundException e)
         {
             // TODO Unreachable code
-            throw new Error ("Error: " + baseName + " [" + timeSlice + "]");
+            throw new Error (" Variable " + baseName + " [" + timeSlice + "] not found");
         }
     }
 

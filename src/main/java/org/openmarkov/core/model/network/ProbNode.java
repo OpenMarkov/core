@@ -473,11 +473,11 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 
 	/** @param simulationIndexVariable. <code>Variable</code>
 	 * @throws NotEnoughMemoryException */
-	public void samplePotentials(Variable simulationIndexVariable) {
+	public void samplePotentials() {
 		for (int i = 0; i < potentials.size(); i++) {
 			Potential originalPotential = potentials.get(i);
 			potentials.set(i, 
-					originalPotential.sample(simulationIndexVariable));
+					originalPotential.sample());
 		}
 	}
 	

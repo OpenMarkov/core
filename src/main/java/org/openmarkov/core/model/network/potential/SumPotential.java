@@ -138,10 +138,11 @@ public class SumPotential extends Potential {
 	}
 
 	@Override
-	public Potential shift(ProbNet probNet, int timeSlice)
+	public Potential shift(ProbNet probNet, int timeDifference)
 			throws ProbNodeNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+	    Potential shiftedPotential = new SumPotential(getShiftedVariables(probNet, timeDifference), role);
+	    shiftedPotential.setUtilityVariable(utilityVariable);
+		return shiftedPotential;
 	}
 	
     @Override

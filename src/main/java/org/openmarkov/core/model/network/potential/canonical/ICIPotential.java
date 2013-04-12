@@ -340,13 +340,6 @@ public abstract class ICIPotential extends Potential {
 		return buffer.toString();
 	}
 	
-	@Override
-	public Potential shift(ProbNet probNet, int timeSlice)
-			throws ProbNodeNotFoundException {
-		// TODO implement this function
-		throw new Error("function shift is not implemented in ICIPotential");
-	}
-	
     @Override
     public boolean equals (Object arg0)
     {

@@ -533,6 +533,7 @@ public class FactoryExpandedMPAD
                 Potential originalPotential = ((SameAsPrevious) oldPotential).getOriginalPotential ();
                 // Sets time difference respect to the original potential
                 Variable firstOriginalVariable = null;
+
                 PotentialRole potentialRole = originalPotential.getPotentialRole ();
                 switch (potentialRole)
                 {
@@ -545,6 +546,10 @@ public class FactoryExpandedMPAD
                     default :
                         break;
                 }
+                if(firstOriginalVariable == null)
+                {
+                    System.out.println("");
+                }                
                 Variable newVariable = newNode.getVariable ();
                 timeDifferenceWithNew = newVariable.getTimeSlice ()
                                         - firstOriginalVariable.getTimeSlice ();

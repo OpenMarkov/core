@@ -6,7 +6,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -19,7 +18,6 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 /**
  * @author marias
@@ -57,6 +55,10 @@ public class SameAsPrevious extends Potential
         }
         try {
             originalPotential = originalPotential.shift (probNet, timeDifference);
+            if(originalPotential == null)
+            {
+                System.out.println();
+            }
         } catch (ProbNodeNotFoundException e) {
             e.printStackTrace();
         }

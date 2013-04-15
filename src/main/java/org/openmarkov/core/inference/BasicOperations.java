@@ -22,6 +22,7 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialType;
+import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
@@ -55,9 +56,11 @@ public class BasicOperations
                 probNode = (ProbNode) node.getObject ();
                 hashtable.put (probNode, getUtilityFunction (probNode, evidence));
             }
-            ArrayList<TablePotential> potentials = new ArrayList<TablePotential> (
-                                                                                  hashtable.values ());
-            if (utilityProbNode.getPotentials ().get (0).getPotentialType () == PotentialType.SUM)
+            List<TablePotential> potentials = new ArrayList<TablePotential> (hashtable.values ());
+            Potential utilityPotential = utilityProbNode.getPotentials ().get (0);
+            if (utilityPotential.getPotentialType () == PotentialType.SUM
+                || (utilityPotential.getPotentialType () == PotentialType.SAME_AS_PREVIOUS &&
+                        ((SameAsPrevious)utilityPotential).getOriginalPotential().getPotentialType() == PotentialType.SUM))
             {
                 newPotential = DiscretePotentialOperations.sum (potentials);
             }
@@ -72,8 +75,8 @@ public class BasicOperations
 
     private static boolean isSumSuperValueNode (ProbNet network, Variable utilityVariable)
     {
-        ProbNode probNode = network.getProbNode (utilityVariable);
-        return (probNode.getPotentials ().get (0).getPotentialType () == PotentialType.SUM);
+        List<Potential> potentials = network.getProbNode (utilityVariable).getPotentials ();
+        return (!potentials.isEmpty() && potentials.get (0).getPotentialType () == PotentialType.SUM);
     }
 
     /**
@@ -126,7 +129,7 @@ public class BasicOperations
      *         sum like those processed by Jensen's variable elimination
      *         algorithm; otherwise the structure of super-value nodes is
      *         reduced into an only utility node. If 'utilityVariableToKeep' is
-     *         different from null then it is the only potential to kept.
+     *         different from null then it is the only potential to keep.
      *         Otherwise all the variables are considered.
      * @throws NodeNotFoundException
      * @throws ProbNodeNotFoundException
@@ -142,10 +145,10 @@ public class BasicOperations
         ProbNet network = sourceProbNet.copy ();
         List<Variable> utilityVariables = network.getVariables (NodeType.UTILITY);
         List<TablePotential> potentials = new ArrayList<TablePotential> (0);
-        int index = 0;
         for (Variable utilityVariable : utilityVariables)
         {
-            potentials.add (getUtilityFunction (network.getProbNode (utilityVariable), evidence));
+            TablePotential potential = getUtilityFunction (network.getProbNode (utilityVariable), evidence);
+            potentials.add (potential);
             if (((isSuperValueNode (utilityVariable, network) && utilityVariableToKeep == null))
                 || (utilityVariable == utilityVariableToKeep))
             {
@@ -161,7 +164,6 @@ public class BasicOperations
                     }
                 }
                 // add links between of new potential of supervalue nodes
-                Potential potential = potentials.get (index);
                 for (Variable variable : potential.getVariables ())
                 {
                     network.addLink (variable, utilityVariable, true);
@@ -171,7 +173,6 @@ public class BasicOperations
                 newPotentials.add (potential);
                 network.getProbNode (utilityVariable).setPotentials (newPotentials);
             }
-            index++;
         }
         if (!keepComponents)
         {
@@ -218,7 +219,7 @@ public class BasicOperations
         List<Variable> nodesToKeep = getTerminalUtilityNodes (sourceProbNet);
         while (thereAreSumNodesInTheList (sourceProbNet, nodesToKeep))
         {
-            auxRemoveASumNode (sourceProbNet, nodesToKeep);
+            removeASumNode (sourceProbNet, nodesToKeep);
         }
         return nodesToKeep;
     }
@@ -226,7 +227,7 @@ public class BasicOperations
     /**
      * @param sourceProbNet
      * @param nodesToKeep
-     * @return truee iff there are some sum node in the list 'nodesToKeep'
+     * @return true if there are some sum node in the list 'nodesToKeep'
      */
     private static boolean thereAreSumNodesInTheList (ProbNet sourceProbNet,
                                                       List<Variable> nodesToKeep)
@@ -245,25 +246,28 @@ public class BasicOperations
      * @param nodesToKeep Removes a sum node of the list and add its parents to
      *            the list
      */
-    private static void auxRemoveASumNode (ProbNet sourceProbNet, List<Variable> nodesToKeep)
+    private static void removeASumNode (ProbNet sourceProbNet, List<Variable> nodesToKeep)
     {
         boolean removed = false;
         for (int i = 0; (i < nodesToKeep.size ()) && !removed; i++)
         {
             Variable auxVar = nodesToKeep.get (i);
             removed = (isSumSuperValueNode (sourceProbNet, auxVar));
-            nodesToKeep.remove (auxVar);
-            List<Node> auxParentNodes = null;
-            try
+            if(removed)
             {
-                auxParentNodes = sourceProbNet.getProbNode (sourceProbNet.getVariable (auxVar.getName ())).getNode ().getParents ();
+                nodesToKeep.remove (auxVar);
+                List<Node> parentNodes = null;
+                try
+                {
+                    parentNodes = sourceProbNet.getProbNode (sourceProbNet.getVariable (auxVar.getName ())).getNode ().getParents ();
+                }
+                catch (ProbNodeNotFoundException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace ();
+                }
+                nodesToKeep.addAll (ProbNet.getVariables (parentNodes));
             }
-            catch (ProbNodeNotFoundException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace ();
-            }
-            nodesToKeep.addAll (ProbNet.getVariables (auxParentNodes));
         }
     }
 

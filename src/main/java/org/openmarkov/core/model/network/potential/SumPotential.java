@@ -141,8 +141,12 @@ public class SumPotential extends Potential {
 	public Potential shift(ProbNet probNet, int timeDifference)
 			throws ProbNodeNotFoundException {
 	    Potential shiftedPotential = new SumPotential(getShiftedVariables(probNet, timeDifference), role);
-	    shiftedPotential.setUtilityVariable(utilityVariable);
-		return shiftedPotential;
+        if (role == PotentialRole.UTILITY)
+        {
+            shiftedPotential.setUtilityVariable (probNet.getShiftedVariable (utilityVariable,
+                                                                             timeDifference));
+        }
+        return shiftedPotential;
 	}
 	
     @Override

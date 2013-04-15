@@ -66,7 +66,7 @@ public class UncertainValuesRemoveEdit extends SimplePNEdit {
 			e.printStackTrace();
 		}
 		
-		UncertainValue[] auxUncertainTable = auxProjected.getUncertainTable();
+		UncertainValue[] auxUncertainTable = auxProjected.getUncertaintyTable();
 		
 		wasNullOldUncertainColumn = !hasUncertainValues(auxUncertainTable);
 				
@@ -102,8 +102,8 @@ public class UncertainValuesRemoveEdit extends SimplePNEdit {
 			UncertainValuesEdit.placeUncertainColumn(potential,null,getVariable(),basePosition);
 		}
 		//If all the elements are null then the uncertain value object is set to null
-		if (!hasUncertainValues(potential.getUncertainTable())){
-			potential.setUncertainTable(null);
+		if (!hasUncertainValues(potential.getUncertaintyTable())){
+			potential.setUncertaintyTable(null);
 		}
 		        
 	}
@@ -115,7 +115,7 @@ public class UncertainValuesRemoveEdit extends SimplePNEdit {
 		
 		TablePotential potential = getPotential();
 		
-		UncertainValue[] table = potential.getUncertainTable();
+		UncertainValue[] table = potential.getUncertaintyTable();
 		//Create uncertain values table if it is null
 		if (table==null){
 			table = new UncertainValue[potential.getTableSize()];

@@ -324,7 +324,7 @@ public class TablePotential extends Potential
             int length = projectedPotential.values.length;
             if (hasUncertainTable)
             {
-                projectedPotential.setUncertainTable (new UncertainValue[length]);
+                projectedPotential.setUncertaintyTable (new UncertainValue[length]);
             }
             // position (in this potential) of the first value
             // of the projected potential
@@ -1030,7 +1030,7 @@ public class TablePotential extends Potential
      * Uncertain Table
      * @return
      */
-    public UncertainValue[] getUncertainTable ()
+    public UncertainValue[] getUncertaintyTable ()
     {
         return uncertainValues;
     }
@@ -1344,7 +1344,7 @@ public class TablePotential extends Potential
     /**
      * @param uncertainTable
      */
-    public void setUncertainTable (UncertainValue[] uncertainTable)
+    public void setUncertaintyTable (UncertainValue[] uncertainTable)
     {
         this.uncertainValues = uncertainTable;
     }
@@ -1383,12 +1383,13 @@ public class TablePotential extends Potential
      */
     public Potential sample ()
     {
+        Potential sampledPotential = this;
         if (uncertainValues != null)
         {
             SamplePotentialTable samplePotentialTable = new SamplePotentialTable (this);
-            return samplePotentialTable.getSampledTable ();
+            sampledPotential = samplePotentialTable.getSampledTable ();
         }
-        return this;
+        return sampledPotential;
     }
 
     @Override

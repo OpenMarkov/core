@@ -55,10 +55,6 @@ public class SameAsPrevious extends Potential
         }
         try {
             originalPotential = originalPotential.shift (probNet, timeDifference);
-            if(originalPotential == null)
-            {
-                System.out.println();
-            }
         } catch (ProbNodeNotFoundException e) {
             e.printStackTrace();
         }
@@ -109,6 +105,11 @@ public class SameAsPrevious extends Potential
         return originalPotential;
     }
 
+    public Potential sample ()
+    {
+        return originalPotential.sample();
+    }
+    
     @Override
     // TODO Quitar error
     public Potential shift (ProbNet probNet, int timeSlice)

@@ -45,15 +45,16 @@ public class SamplePotentialTable
         List<UncertainValue> uncertainValues = null;
         double[] sampledConfigurationValues;
         int numStates;
-        UncertainValue[] uTable = inputTablePotential.getUncertainTable ();
+        UncertainValue[] uTable = inputTablePotential.getUncertaintyTable ();
         double[] originalValues = inputTablePotential.getValues ();
-        if (!(inputTablePotential.getUncertainTable () == null))
+        if (!(inputTablePotential.getUncertaintyTable () == null))
         {
             List<Variable> inputPotentialVariables = inputTablePotential.getVariables ();
             List<Variable> sampledPotentialVariables = new ArrayList<Variable> (inputPotentialVariables);
             sampledTablePotential = new TablePotential (sampledPotentialVariables,
                                                         inputTablePotential.getPotentialRole ());
             double[] sampledValues = sampledTablePotential.values;
+            sampledTablePotential.setUncertaintyTable(inputTablePotential.getUncertaintyTable());
             if (!inputTablePotential.isUtility ())
             {// Probability potential
                 numStates = inputPotentialVariables.get (0).getNumStates ();
@@ -122,7 +123,7 @@ public class SamplePotentialTable
                     // them in the auxiliary vector 'sampledConfigurationValues'
                     for (int stateIndex = 0; stateIndex < numStates; stateIndex++)
                     {
-                        sampledConfigurationValues[stateIndex] = originalValues[configurationBasePosition + stateIndex];
+                        sampledValues[configurationBasePosition + stateIndex]  = originalValues[configurationBasePosition + stateIndex];
                     }
                 }
             }

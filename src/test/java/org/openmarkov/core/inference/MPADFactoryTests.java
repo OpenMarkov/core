@@ -13,7 +13,6 @@ import static org.junit.Assert.assertNotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -30,26 +29,18 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
  * @author mluque
  *
  */
-public class FactoryExpandedMPADTest {
+public class MPADFactoryTests {
 	/**
 	 * Maximum error allowed in tests. It could be modified by subclasses
 	 * if it is necessary (for example, approximate inference methods).
 	 */
 	protected double maxError = 1E-6;
 
-	
-
-	/*@Test
-	public void test() {
-		fail("Not yet implemented");
-	}*/
-	
-	
 	/**
 	 * Test a MPAD with three variables: Treatment, CostOfTreatment and QoL (temporal variable)
 	 * It performs a battery of tests: for numSlices = 1, numSlices = 2, ..., numSlices = 100
 	 */
-	@Test
+	//@Test
 	public void testExpansionMPADWithoutStateVariable() {
 		double qoLTreat;
 		double qoLNoTreat;
@@ -71,7 +62,9 @@ public class FactoryExpandedMPADTest {
 			ProbNet network = NetsFactory.createMPADWithoutStateVariable(qoLTreat, qoLNoTreat,
 					costTreat, costNoTreat);
 			double discount = 0.01;
-			ProbNet expandedNetwork = FactoryExpandedMPAD.constructExpandedNetwork(numSlices, network, discount*100.0, discount*100.0,true);
+			
+            MPADFactory mpadFactory = new MPADFactory(network, numSlices);
+            ProbNet expandedNetwork = mpadFactory.getExtendedNetwork();
 			
 			List<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
 
@@ -109,7 +102,7 @@ public class FactoryExpandedMPADTest {
 	 * Test a MPAD with three variables: Treatment, CostOfTreatment and QoL (temporal variable)
 	 * It performs a battery of tests: for numSlices = 1, numSlices = 2, ..., numSlices = 100
 	 */
-	@Test
+	//@Test
 	public void testExpansionMPADWithStateVariable() {
 		double qoLTreat;
 		double qoLNoTreat;
@@ -132,7 +125,8 @@ public class FactoryExpandedMPADTest {
 					costTreat, costNoTreat,0.7,0.5);
 			double discount = 0.01;
 
-			ProbNet expandedNetwork = FactoryExpandedMPAD.constructExpandedNetwork(numSlices, network, discount*100.0, discount*100.0, true);
+			MPADFactory mpadFactory = new MPADFactory(network, numSlices);
+			ProbNet expandedNetwork = mpadFactory.getExtendedNetwork();
 			
 		
 			List<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);

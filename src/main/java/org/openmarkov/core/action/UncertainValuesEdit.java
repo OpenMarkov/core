@@ -75,7 +75,7 @@ public class UncertainValuesEdit extends SimplePNEdit
         newUncertainColumn = uncertainColumn;
         newValuesColumn = valuesColumn;
         this.basePosition = basePosition;
-        UncertainValue[] oldUncertainValues = getPotential ().getUncertainTable ();
+        UncertainValue[] oldUncertainValues = getPotential ().getUncertaintyTable ();
         wasNullOldUncertainValues = oldUncertainValues == null;
         oldUncertainColumn = wasNullOldUncertainValues ? null : getColumn (oldUncertainValues,
                                                                            variable, basePosition);
@@ -128,7 +128,7 @@ public class UncertainValuesEdit extends SimplePNEdit
         TablePotential potential = getPotential ();
         if (wasNullOldUncertainValues)
         {
-            potential.setUncertainTable (new UncertainValue[potential.getTableSize ()]);
+            potential.setUncertaintyTable (new UncertainValue[potential.getTableSize ()]);
         }
         placeNewUncertainColumn (potential);
         placeNewValuesColumn (potential);
@@ -177,7 +177,7 @@ public class UncertainValuesEdit extends SimplePNEdit
                                       Variable var,
                                       int basePosition)
     {
-        UncertainValue[] table = (potential.getUncertainTable ());
+        UncertainValue[] table = (potential.getUncertaintyTable ());
         for (int i = 0; i < var.getNumStates (); i++)
         {
             table[i + basePosition] = (column != null) ? column.get (i) : null;
@@ -190,7 +190,7 @@ public class UncertainValuesEdit extends SimplePNEdit
         TablePotential potential = getPotential ();
         if (wasNullOldUncertainValues)
         {
-            potential.setUncertainTable (null);
+            potential.setUncertaintyTable (null);
         }
         else
         {

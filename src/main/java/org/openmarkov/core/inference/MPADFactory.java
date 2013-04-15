@@ -85,6 +85,16 @@ public class MPADFactory {
         applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate,
                 inferenceOptions, evidence);
         
+        if (transitionTime == TransitionTime.BEGINNING) {
+            pruneZeroCycleUtilities();
+        } else if (transitionTime == TransitionTime.END) {
+            // Prune last cycle utilities
+            pruneLastCycleUtilities();
+        } else {
+            // TODO Half zero and last cycle utilities
+            applyHalfCycleCorrection();
+        }            
+        
         List<String> decisionCriteriaNames = new ArrayList<>();
         for (int i = 0; i < probNet.getDecisionCriteria().size(); i++) {
             String decisionCriterion = probNet.getDecisionCriteria().get(i).getString();
@@ -128,15 +138,7 @@ public class MPADFactory {
                 utilityNode.setPotential(treeADDPotential);
             }
         }
-        if (transitionTime == TransitionTime.BEGINNING) {
-            pruneZeroCycleUtilities();
-        } else if (transitionTime == TransitionTime.END) {
-            // Prune last cycle utilities
-            pruneLastCycleUtilities();
-        } else {
-            // TODO Half zero and last cycle utilities
-            pruneZeroCycleUtilities();
-        }        
+    
     }
     
     public ProbNet getExtendedNetwork() {
@@ -217,6 +219,40 @@ public class MPADFactory {
         }
     }
 
+    /**
+     * Divide by two the utilities of the zero and last cycle 
+     */
+    private void applyHalfCycleCorrection() {
+        List<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
+        for (int i = 0; i < utilityExpandedNodes.size(); i++) {
+            ProbNode iUtilityProbNode = utilityExpandedNodes.get(i);
+            int timeSlice = iUtilityProbNode.getVariable().getTimeSlice();
+            if (iUtilityProbNode.getVariable().isTemporal() && timeSlice == numSlices
+                    || iUtilityProbNode.getVariable().isTemporal() && timeSlice == 0
+            // decision criteria of utility nodes must be cost or
+            // effectiveness
+                    && (iUtilityProbNode.getVariable().getDecisionCriteria().getString()
+                            .equalsIgnoreCase("cost") || iUtilityProbNode.getVariable()
+                            .getDecisionCriteria().getString().equalsIgnoreCase("effectiveness"))) {
+                for(Potential utilityPotential : iUtilityProbNode.getPotentials())
+                {
+                    if(utilityPotential instanceof TreeADDPotential)
+                    {
+                        System.out.println("utilityPotential instanceof TreeADDPotential");
+                    }else
+                    {
+                    // We can safely assume they are all table potentials, as evidence
+                    // has already been applied
+                    double[] values = ((TablePotential)utilityPotential).values;
+                    for(int j=0; j<values.length; ++j)
+                    {
+                        values[j] /= 2;
+                    }
+                    }
+                }
+            }
+        }
+    }    
     /**
      * When invoking this method, probNet is a copy of the concise net. We add
      * new nodes, links, and potentials to make it a compact net.

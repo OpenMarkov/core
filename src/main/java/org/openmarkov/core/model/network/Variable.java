@@ -664,6 +664,9 @@ public class Variable implements Cloneable {
 					// There is not a number between brackets
 				}
 			}
+		}else
+		{
+		    baseName = variableName;
 		}
 		return timeSlice;
 	}

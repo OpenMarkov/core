@@ -83,7 +83,7 @@ public class BasicOperations
      * @param network
      * @return A list of utility nodes that have no children
      */
-    private static List<Variable> getTerminalUtilityNodes (ProbNet network)
+    public static List<Variable> getTerminalUtilityVariables (ProbNet network)
     {
         List<Variable> utilityVariables = network.getVariables (NodeType.UTILITY);
         List<Variable> terminalUtilityNodes = new ArrayList<Variable> ();
@@ -97,6 +97,25 @@ public class BasicOperations
         }
         return terminalUtilityNodes;
     }
+    
+    /**
+     * @param network
+     * @return A list of utility nodes that have no children
+     */
+    public static List<ProbNode> getTerminalUtilityNodes (ProbNet network)
+    {
+        List<ProbNode> utilityNodes = network.getProbNodes (NodeType.UTILITY);
+        List<ProbNode> terminalUtilityNodes = new ArrayList<> ();
+        for (ProbNode utilityNode : utilityNodes)
+        {
+            if (utilityNode.getNode().getChildren ().size () == 0)
+            {
+                terminalUtilityNodes.add (utilityNode);
+            }
+        }
+        return terminalUtilityNodes;
+    }
+    
 
     /**
      * @param sourceProbNet
@@ -139,8 +158,6 @@ public class BasicOperations
                                                  boolean keepComponents,
                                                  boolean leaveImplicitSum,
                                                  Variable utilityVariableToKeep)
-        throws NodeNotFoundException,
-        ProbNodeNotFoundException
     {
         ProbNet network = sourceProbNet.copy ();
         List<Variable> utilityVariables = network.getVariables (NodeType.UTILITY);
@@ -166,7 +183,11 @@ public class BasicOperations
                 // add links between of new potential of supervalue nodes
                 for (Variable variable : potential.getVariables ())
                 {
-                    network.addLink (variable, utilityVariable, true);
+                    try {
+                        network.addLink (variable, utilityVariable, true);
+                    } catch (NodeNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
                 // sets the new potential
                 List<Potential> newPotentials = new ArrayList<Potential> ();
@@ -187,7 +208,7 @@ public class BasicOperations
                 }
                 else
                 {
-                    nodesToKeep = getTerminalUtilityNodes (sourceProbNet);
+                    nodesToKeep = getTerminalUtilityVariables (sourceProbNet);
                 }
             }
             else
@@ -216,7 +237,7 @@ public class BasicOperations
      */
     private static List<Variable> getUtilityNodesToKeepImplicitSum (ProbNet sourceProbNet)
     {
-        List<Variable> nodesToKeep = getTerminalUtilityNodes (sourceProbNet);
+        List<Variable> nodesToKeep = getTerminalUtilityVariables (sourceProbNet);
         while (thereAreSumNodesInTheList (sourceProbNet, nodesToKeep))
         {
             removeASumNode (sourceProbNet, nodesToKeep);

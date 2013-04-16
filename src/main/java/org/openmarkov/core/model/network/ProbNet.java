@@ -1230,9 +1230,11 @@ public class ProbNet
      * @param nodeType <code>NodeType</code>
      * @argCondition the variable must not be in the ProbNet.
      */
-    public void addProbNode (Variable variable, NodeType nodeType)
+    public ProbNode addProbNode (Variable variable, NodeType nodeType)
     {
-        addProbNode (new ProbNode (this, variable, nodeType));
+        ProbNode newNode = new ProbNode (this, variable, nodeType);
+        addProbNode (newNode);
+        return newNode;
     }
 
     /**

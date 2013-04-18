@@ -6,6 +6,8 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import java.util.Random;
+
 public class ExactFunction extends ProbDensFunction
 {
     private double nu;
@@ -63,7 +65,7 @@ public class ExactFunction extends ProbDensFunction
     }
 
     @Override
-    public double getSample ()
+    public double getSample (Random randomGenerator)
     {
         return nu;
     }

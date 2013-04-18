@@ -8,6 +8,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -150,15 +151,16 @@ public class SamplePotentialTable
                                      int[] indexesComplement,
                                      int numStates)
     {
+        Random randomGenerator = new Random();
         double[] sampleOther;
         double[] sampleDir;
         double massForComp;
         double[] sampledConfigurationValues = new double[numStates];
         // processes the uncertain values that can be sampled individually
-        sampleOther = otherFamily.getSample ();
+        sampleOther = otherFamily.getSample (randomGenerator);
         placeInArray (sampledConfigurationValues, indexesOther, sampleOther);
         // processes Dirichlet
-        sampleDir = dirFamily.getSample ();
+        sampleDir = dirFamily.getSample (randomGenerator);
         placeInArray (sampledConfigurationValues, indexesDirichlet, sampleDir);
         // Process complements
         massForComp = 1.0 - (Tools.sum (sampleOther));

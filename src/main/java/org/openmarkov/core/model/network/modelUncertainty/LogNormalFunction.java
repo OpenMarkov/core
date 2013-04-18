@@ -6,6 +6,8 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import java.util.Random;
+
 public class LogNormalFunction extends ProbDensFunction
 {
     private double         mu;
@@ -68,9 +70,9 @@ public class LogNormalFunction extends ProbDensFunction
     }
 
     @Override
-    public double getSample ()
+    public double getSample (Random randomGenerator)
     {
-        return Math.exp (normal.getSample ());
+        return Math.exp (normal.getSample (randomGenerator));
     }
 
     @Override

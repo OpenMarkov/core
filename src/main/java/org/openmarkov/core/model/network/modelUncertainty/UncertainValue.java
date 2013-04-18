@@ -6,6 +6,7 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import java.util.Random;
 import java.util.regex.Pattern;
 
 /**
@@ -135,8 +136,8 @@ public class UncertainValue {
 				.doParametersVerifyDomainConstraint(isChanceVariable);
 	}
 
-	public double getSample() {
-		return probDensFunction.getSample();
+	public double getSample(Random randomGenerator) {
+		return probDensFunction.getSample(randomGenerator);
 	}
 	/*
 	 * public boolean isComplementOfOtherValues() { return

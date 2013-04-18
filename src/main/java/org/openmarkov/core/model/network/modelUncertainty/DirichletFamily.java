@@ -7,6 +7,7 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.List;
+import java.util.Random;
 
 public class DirichletFamily extends FamilyDistribution
 {
@@ -41,7 +42,7 @@ public class DirichletFamily extends FamilyDistribution
         return Tools.normalize (alpha);
     }
 
-    public double[] getSample ()
+    public double[] getSample (Random randomGenerator)
     {
         int length = alpha.length;
         double sumAuxSamples;
@@ -54,7 +55,7 @@ public class DirichletFamily extends FamilyDistribution
         // Generate samples using Gamma distributions
         for (int i = 0; i < length; i++)
         {
-            auxSample = (new GammaFunction (alpha[i],1.0)).getSample ();
+            auxSample = (new GammaFunction (alpha[i],1.0)).getSample (randomGenerator);
             auxSamples[i] = auxSample;
             sumAuxSamples = sumAuxSamples + auxSample;
         }

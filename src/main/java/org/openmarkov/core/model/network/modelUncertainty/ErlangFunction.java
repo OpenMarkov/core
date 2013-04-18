@@ -6,10 +6,13 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import java.util.Random;
+
 public class ErlangFunction extends ProbDensFunction
 {
     private int    k;
     private double lambda;
+    private ExponentialFunction exponentialFunction; 
     
     /**
      * @param type
@@ -20,12 +23,12 @@ public class ErlangFunction extends ProbDensFunction
         this ();
         this.k = k;
         this.lambda = lambda;
+        this.exponentialFunction = new ExponentialFunction(lambda);
     }
 
     public ErlangFunction ()
     {
         super (TypeProbDensityFunction.ERLANG);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -47,6 +50,7 @@ public class ErlangFunction extends ProbDensFunction
     {
     	  k = (int) Math.round(args[0]);
           lambda = args[1];
+          exponentialFunction = new ExponentialFunction(lambda);
     }
 
     @Override
@@ -74,13 +78,13 @@ public class ErlangFunction extends ProbDensFunction
     }
 
     @Override
-    public double getSample ()
+    public double getSample (Random randomGenerator)
     {
         double sumSamples;
         sumSamples = 0.0;
         for (int i = 0; i < k; i++)
         {
-            sumSamples = sumSamples + (new ExponentialFunction (lambda)).getSample ();
+            sumSamples = sumSamples + exponentialFunction.getSample (randomGenerator);
         }
         return sumSamples;
     }

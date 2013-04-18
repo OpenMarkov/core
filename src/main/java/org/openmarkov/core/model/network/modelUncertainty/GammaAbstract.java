@@ -6,6 +6,8 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import java.util.Random;
+
 public abstract class GammaAbstract extends ProbDensFunction
 {
     protected double kAbstract;
@@ -49,7 +51,7 @@ public abstract class GammaAbstract extends ProbDensFunction
     }
 
     @Override
-    public final double getSample ()
+    public final double getSample (Random randomGenerator)
     {
         double sample;
         int k;
@@ -64,12 +66,12 @@ public abstract class GammaAbstract extends ProbDensFunction
         if (!isAnErlangFunction (epsilon))
         {
             r = kForSampling - kAbstract;
-            u = (new RangeFunction (0.0, 1.0)).getSample ();
+            u = (new RangeFunction (0.0, 1.0)).getSample (randomGenerator);
             if (u<r){
             	kForSampling = kForSampling-1;
             }
         }
-        sample = (new ErlangFunction (kForSampling, lambdaErlang)).getSample ();
+        sample = (new ErlangFunction (kForSampling, lambdaErlang)).getSample (randomGenerator);
         return sample;
     }
 

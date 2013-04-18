@@ -6,6 +6,7 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+
 public class GammaFunction extends GammaAbstract
 {
     private double k;

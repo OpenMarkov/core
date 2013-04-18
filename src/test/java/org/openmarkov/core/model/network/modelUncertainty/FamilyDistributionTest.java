@@ -10,6 +10,8 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -27,12 +29,12 @@ public abstract class FamilyDistributionTest {
 	@Test
 	public void testMeanAndVariance(){
 		int numSamples = 100000;		
-		
+		Random randomGenerator = new Random();
 		family = constructAndInitializeNewFamilyDistributions();
 		
 		List<double[]>samples = new ArrayList<>();
 		for (int i=0;i<numSamples;i++){
-			samples.add(family.getSample());
+			samples.add(family.getSample(randomGenerator));
 		}
 		testMean(samples);
 		testStandardDeviation(samples);

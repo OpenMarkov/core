@@ -11,7 +11,6 @@ import java.util.Random;
 public abstract class ProbDensFunction
 {
     private TypeProbDensityFunction type;
-    protected Random                stream;
 
     public TypeProbDensityFunction getType ()
     {
@@ -26,7 +25,6 @@ public abstract class ProbDensFunction
     public ProbDensFunction (TypeProbDensityFunction type)
     {
         this.type = type;
-        stream = new Random ();
     }
 
     public static int getNumberOfRequiredArguments (TypeProbDensityFunction type)
@@ -129,5 +127,5 @@ public abstract class ProbDensFunction
 
     public abstract double getMaximum ();
 
-    public abstract double getSample ();
+    public abstract double getSample (Random randomGenerator);
 }

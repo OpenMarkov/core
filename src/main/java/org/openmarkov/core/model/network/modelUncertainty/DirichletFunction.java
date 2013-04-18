@@ -6,6 +6,8 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import java.util.Random;
+
 public class DirichletFunction extends ProbDensFunction
 {
     private double alpha;
@@ -61,7 +63,7 @@ public class DirichletFunction extends ProbDensFunction
     }
 
     @Override
-    public double getSample ()
+    public double getSample (Random randomGenerator)
     {
         return 0;
     }

@@ -7,6 +7,7 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.List;
+import java.util.Random;
 
 public class FamilyDistribution
 {
@@ -96,14 +97,14 @@ public class FamilyDistribution
         family.remove (child);
     }
 
-    public double[] getSample ()
+    public double[] getSample (Random randomGenerator)
     {
         double[] mean;
         int size = family.size ();
         mean = new double[size];
         for (int i = 0; i < size; i++)
         {
-            mean[i] = family.get (i).getProbDensityFunction ().getSample ();
+            mean[i] = family.get (i).getProbDensityFunction ().getSample (randomGenerator);
         }
         return mean;
     }

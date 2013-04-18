@@ -6,6 +6,8 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import java.util.Random;
+
 public class BetaFunction extends ProbDensFunction
 {
     double alpha;
@@ -63,7 +65,7 @@ public class BetaFunction extends ProbDensFunction
     }
 
     @Override
-    public double getSample ()
+    public double getSample (Random randomGenerator)
     {
         double[] alphas;
         DirichletFamily family;
@@ -73,7 +75,7 @@ public class BetaFunction extends ProbDensFunction
         alphas[0] = alpha;
         alphas[1] = beta;
         family = new DirichletFamily (alphas);
-        sample = family.getSample ()[0];
+        sample = family.getSample (randomGenerator)[0];
         return sample;
     }
 

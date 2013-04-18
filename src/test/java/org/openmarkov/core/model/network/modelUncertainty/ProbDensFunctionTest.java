@@ -9,6 +9,9 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import static org.junit.Assert.*;
+
+import java.util.Random;
+
 import org.junit.Test;
 
 
@@ -28,12 +31,13 @@ public abstract class ProbDensFunctionTest {
 	@Test
 	public void testMeanAndVariance(){
 		int numSamples = 1000000;		
+		Random randomGenerator = new Random(); 
 		
 		pdf = ProbDensFunction.constructNewProbDensFunction(getTypeProbDensFunction());
 		initializeAndPlaceParamsProbDensFunctionTest();
 		double[]samples = new double[numSamples];
 		for (int i=0;i<numSamples;i++){
-			samples[i]=pdf.getSample();
+			samples[i]=pdf.getSample(randomGenerator);
 		}
 		testMean(samples);
 		testStandardDeviation(samples);

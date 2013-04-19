@@ -6,6 +6,7 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -151,7 +152,7 @@ public class SamplePotentialTable
                                      int[] indexesComplement,
                                      int numStates)
     {
-        Random randomGenerator = new Random();
+        Random randomGenerator = new XORShiftRandom();
         double[] sampleOther;
         double[] sampleDir;
         double massForComp;

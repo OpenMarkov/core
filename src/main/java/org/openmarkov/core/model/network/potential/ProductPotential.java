@@ -128,10 +128,15 @@ public class ProductPotential extends Potential {
 	}
 
 	@Override
-	public Potential shift(ProbNet probNet, int timeSlice)
+	public Potential shift(ProbNet probNet, int timeDifference)
 			throws ProbNodeNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+        Potential shiftedPotential = new ProductPotential(getShiftedVariables(probNet, timeDifference), role);
+        if (role == PotentialRole.UTILITY)
+        {
+            shiftedPotential.setUtilityVariable (probNet.getShiftedVariable (utilityVariable,
+                                                                             timeDifference));
+        }
+        return shiftedPotential;
 	}
 
     @Override

@@ -9,22 +9,27 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import java.util.List;
 import java.util.Random;
 
+import umontreal.iro.lecuyer.rng.MRG32k3a;
+import umontreal.iro.lecuyer.rng.RandomStream;
+
 public class DirichletFamily extends FamilyDistribution
 {
     private double[] alpha;
+    
+    private RandomStream stream;
 
     public DirichletFamily (List<UncertainValue> siblings)
     {
         super (siblings);
-        double alpha[];
         int size = family.size ();
-        alpha = new double[size];
+        double[] alpha = new double[size];
         for (int i = 0; i < size; i++)
         {
         	alpha[i] = ((DirichletFunction)(siblings.get(i).getProbDensityFunction())).getAlpha();
             ((DirichletFunction) (family.get (i).getProbDensityFunction ())).setAlpha (alpha[i]);
         }
         this.alpha = alpha;
+        this.stream = new MRG32k3a();
     }
 
     public DirichletFamily (double[] alphas)
@@ -35,6 +40,7 @@ public class DirichletFamily extends FamilyDistribution
         {
             this.alpha[i] = alphas[i];
         }
+        this.stream = new MRG32k3a();
     }
 
     public double[] getMean ()
@@ -42,14 +48,20 @@ public class DirichletFamily extends FamilyDistribution
         return Tools.normalize (alpha);
     }
 
+//    public double[] getSample (Random randomGenerator)
+//    {
+//        double[] sample = new double[alpha.length];
+//        DirichletGen.nextPoint(stream, alpha, sample);
+//        return sample;
+//    }
+    
     public double[] getSample (Random randomGenerator)
     {
         int length = alpha.length;
-        double sumAuxSamples;
+        double sumAuxSamples = 0.0;
         double auxSample;
         double[] sample = new double[length];
         double[] auxSamples = new double[length];
-        sumAuxSamples = 0.0;
         
         //double min = Tools.min(alpha);
         // Generate samples using Gamma distributions
@@ -65,7 +77,7 @@ public class DirichletFamily extends FamilyDistribution
             sample[i] = auxSamples[i] / sumAuxSamples;
         }
         return sample;
-    }
+    }    
 
 	/* (non-Javadoc)
 	 * @see org.openmarkov.core.model.network.modelUncertainty.FamilyDistribution#getVariance()

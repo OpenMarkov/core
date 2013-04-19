@@ -18,9 +18,9 @@ import java.util.List;
 public class DirichletFamilyTest extends FamilyDistributionTest {
 
     @Override
-    protected TypeProbDensityFunction getTypeProbDensFunction() {
+    protected ProbDensityFunctionType getTypeProbDensFunction() {
 
-        return TypeProbDensityFunction.DIRICHLET;
+        return ProbDensityFunctionType.DIRICHLET;
     }
 
     @Override

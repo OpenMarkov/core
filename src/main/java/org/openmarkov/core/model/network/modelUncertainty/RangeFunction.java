@@ -13,7 +13,7 @@ public class RangeFunction extends ProbDensFunctionWithKnownInverseCDF
 
     public RangeFunction ()
     {
-        super (TypeProbDensityFunction.RANGE);
+        super (ProbDensityFunctionType.RANGE);
     }
 
     /**
@@ -36,7 +36,7 @@ public class RangeFunction extends ProbDensFunctionWithKnownInverseCDF
     }
 
     @Override
-    public boolean doParametersVerifyDomainConstraint (boolean isChanceVariable)
+    public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return ((0 <= a) && (a < b) && (b <= 1) && isChanceVariable)
                || ((a < b) && !isChanceVariable);

@@ -27,7 +27,7 @@ public class GammaFunction extends GammaAbstract
 
     public GammaFunction ()
     {
-        super (TypeProbDensityFunction.GAMMA);
+        super (ProbDensityFunctionType.GAMMA);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class GammaFunction extends GammaAbstract
     }
 
     @Override
-    public boolean doParametersVerifyDomainConstraint (boolean isChanceVariable)
+    public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return (k > 0) && (theta > 0);
     }

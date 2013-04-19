@@ -15,7 +15,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 public class GammaAbstractTest extends ProbDensFunctionTest {
 
     @Override
-    public TypeProbDensityFunction getTypeProbDensFunction() {
+    public ProbDensityFunctionType getTypeProbDensFunction() {
         // TODO Auto-generated method stub
         return null;
     }

@@ -13,13 +13,16 @@ import java.util.Random;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-public class SamplePotentialTable
+/**
+ * TablePotentialSampler generates samples of table potentials
+ * @author manolo
+ *
+ */
+public class TablePotentialSampler
 {
-    private TablePotential inputTablePotential;
 
-    public SamplePotentialTable (TablePotential potential)
+    public TablePotentialSampler ()
     {
-        this.inputTablePotential = potential;
     }
 
     /**
@@ -29,7 +32,7 @@ public class SamplePotentialTable
      * @return A sampled potential table
      * @throws NotEnoughMemoryException
      */
-    public TablePotential getSampledTable ()
+    public TablePotential sample (TablePotential inputTablePotential)
     {
         TablePotential sampledTablePotential = null;
         int inputTableSize;
@@ -39,10 +42,10 @@ public class SamplePotentialTable
         ComplementFamily complementFamily = null;
         DirichletFamily dirFamily = null;
         FamilyDistribution otherFamily = null;
-        List<TypeProbDensityFunction> functionTypes;
-        functionTypes = new ArrayList<TypeProbDensityFunction> ();
-        functionTypes.add (TypeProbDensityFunction.COMPLEMENT);
-        functionTypes.add (TypeProbDensityFunction.DIRICHLET);
+        List<ProbDensityFunctionType> functionTypes;
+        functionTypes = new ArrayList<ProbDensityFunctionType> ();
+        functionTypes.add (ProbDensityFunctionType.COMPLEMENT);
+        functionTypes.add (ProbDensityFunctionType.DIRICHLET);
         List<UncertainValue> uncertainValues = null;
         double[] sampledConfigurationValues;
         int numStates;
@@ -84,9 +87,9 @@ public class SamplePotentialTable
                     // calculates the indexes of the uncertain values for each
                     // group: Other, Dirichlet and Complement
                     indexesComplement = getIndexesUncertainValuesOfType (familyList,
-                                                                         TypeProbDensityFunction.COMPLEMENT);
+                                                                         ProbDensityFunctionType.COMPLEMENT);
                     indexesDirichlet = getIndexesUncertainValuesOfType (familyList,
-                                                                        TypeProbDensityFunction.DIRICHLET);
+                                                                        ProbDensityFunctionType.DIRICHLET);
                     indexesOther = getIndexesUncertainValuesNotInTypes (familyList, functionTypes);
                     // Create the families of distributions
                     List<UncertainValue> complements = constructListFromIndexes (familyList,
@@ -202,7 +205,7 @@ public class SamplePotentialTable
         return uv;
     }
 
-    public boolean hasUncertainValuesUtility (UncertainValue[] uTable, int basePosition)
+    public static boolean hasUncertainValuesUtility (UncertainValue[] uTable, int basePosition)
     {
         return uTable[basePosition] != null;
     }
@@ -213,13 +216,13 @@ public class SamplePotentialTable
      * @return
      */
     private static int[] getIndexesUncertainValuesOfTypes (List<UncertainValue> arrayUncertain,
-                                                           List<TypeProbDensityFunction> types)
+                                                           List<ProbDensityFunctionType> types)
     {
         List<Integer> indexes = new ArrayList<Integer> ();
         for (int i = 0; i < arrayUncertain.size (); i++)
         {
             UncertainValue aux = arrayUncertain.get (i);
-            TypeProbDensityFunction auxType = aux.getProbDensityFunction ().getType ();
+            ProbDensityFunctionType auxType = aux.getProbDensityFunction ().getType ();
             boolean isInTypes = false;
             for (int j = 0; (j < types.size ()) && !isInTypes; j++)
             {
@@ -240,13 +243,13 @@ public class SamplePotentialTable
     }
 
     public static int[] getIndexesUncertainValuesNotInTypes (List<UncertainValue> arrayUncertain,
-                                                             List<TypeProbDensityFunction> types)
+                                                             List<ProbDensityFunctionType> types)
     {
         List<Integer> indexes = new ArrayList<Integer> ();
         for (int i = 0; i < arrayUncertain.size (); i++)
         {
             UncertainValue aux = arrayUncertain.get (i);
-            TypeProbDensityFunction auxType = aux.getProbDensityFunction ().getType ();
+            ProbDensityFunctionType auxType = aux.getProbDensityFunction ().getType ();
             boolean notInTypes = true;
             for (int j = 0; (j < types.size ()) && notInTypes; j++)
             {
@@ -267,9 +270,9 @@ public class SamplePotentialTable
     }
 
     public static int[] getIndexesUncertainValuesOfType (List<UncertainValue> arrayUncertain,
-                                                         TypeProbDensityFunction type)
+                                                         ProbDensityFunctionType type)
     {
-        List<TypeProbDensityFunction> aux = new ArrayList<TypeProbDensityFunction> ();
+        List<ProbDensityFunctionType> aux = new ArrayList<ProbDensityFunctionType> ();
         aux.add (type);
         return getIndexesUncertainValuesOfTypes (arrayUncertain, aux);
     }

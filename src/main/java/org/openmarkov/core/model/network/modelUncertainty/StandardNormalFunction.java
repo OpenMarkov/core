@@ -19,7 +19,7 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF
 
     public StandardNormalFunction ()
     {
-        super (TypeProbDensityFunction.STANDARDNORMAL);
+        super (ProbDensityFunctionType.STANDARDNORMAL);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF
     }
 
     @Override
-    public boolean doParametersVerifyDomainConstraint (boolean isChanceVariable)
+    public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return true;
     }

@@ -19,7 +19,7 @@ public class LogNormalFunction extends ProbDensFunction
 
     public LogNormalFunction ()
     {
-        super (TypeProbDensityFunction.LOGNORMAL);
+        super (ProbDensityFunctionType.LOGNORMAL);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class LogNormalFunction extends ProbDensFunction
     }
 
     @Override
-    public boolean doParametersVerifyDomainConstraint (boolean isChanceVariable)
+    public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return (sigma > 0);
     }

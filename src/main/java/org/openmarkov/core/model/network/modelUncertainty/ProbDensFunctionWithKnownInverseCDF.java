@@ -10,7 +10,7 @@ import java.util.Random;
 
 public abstract class ProbDensFunctionWithKnownInverseCDF extends ProbDensFunction
 {
-    public ProbDensFunctionWithKnownInverseCDF (TypeProbDensityFunction type)
+    public ProbDensFunctionWithKnownInverseCDF (ProbDensityFunctionType type)
     {
         super (type);
     }

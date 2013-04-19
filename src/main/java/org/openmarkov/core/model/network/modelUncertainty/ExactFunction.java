@@ -14,7 +14,7 @@ public class ExactFunction extends ProbDensFunction
 
     public ExactFunction ()
     {
-        super (TypeProbDensityFunction.EXACT);
+        super (ProbDensityFunctionType.EXACT);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class ExactFunction extends ProbDensFunction
     }
 
     @Override
-    public boolean doParametersVerifyDomainConstraint (boolean isChanceVariable)
+    public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return ((!isChanceVariable) || ((0 <= nu) && (nu <= 1)));
     }

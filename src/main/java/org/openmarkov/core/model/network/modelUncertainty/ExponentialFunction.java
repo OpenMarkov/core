@@ -34,7 +34,7 @@ public class ExponentialFunction extends ProbDensFunctionWithKnownInverseCDF
 
     public ExponentialFunction ()
     {
-        super (TypeProbDensityFunction.EXPONENTIAL);
+        super (ProbDensityFunctionType.EXPONENTIAL);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ExponentialFunction extends ProbDensFunctionWithKnownInverseCDF
     }
 
     @Override
-    public boolean doParametersVerifyDomainConstraint (boolean isChanceVariable)
+    public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return (lambda > 0);
     }

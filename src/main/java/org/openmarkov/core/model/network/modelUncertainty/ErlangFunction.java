@@ -28,7 +28,7 @@ public class ErlangFunction extends ProbDensFunction
 
     public ErlangFunction ()
     {
-        super (TypeProbDensityFunction.ERLANG);
+        super (ProbDensityFunctionType.ERLANG);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ErlangFunction extends ProbDensFunction
     }
 
     @Override
-    public boolean doParametersVerifyDomainConstraint (boolean isChanceVariable)
+    public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return (k >= 0) && (lambda > 0);
     }

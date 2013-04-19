@@ -15,8 +15,8 @@ package org.openmarkov.core.model.network.modelUncertainty;
 public class TriangularFunctionTest extends ProbDensFunctionTest {
 
     @Override
-    public TypeProbDensityFunction getTypeProbDensFunction() {
-        return TypeProbDensityFunction.TRIANGULAR;
+    public ProbDensityFunctionType getTypeProbDensFunction() {
+        return ProbDensityFunctionType.TRIANGULAR;
     }
 
     @Override

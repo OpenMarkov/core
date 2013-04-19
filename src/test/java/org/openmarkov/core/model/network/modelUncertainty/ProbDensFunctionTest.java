@@ -25,7 +25,7 @@ public abstract class ProbDensFunctionTest {
     double maxErrorMean = 0.001;
     double maxErrorStDeviation = 0.01;
 
-    public abstract TypeProbDensityFunction getTypeProbDensFunction();
+    public abstract ProbDensityFunctionType getTypeProbDensFunction();
 
     @Test
     public void testMeanAndVariance() {

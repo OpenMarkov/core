@@ -10,24 +10,24 @@ import java.util.Random;
 
 public abstract class ProbDensFunction
 {
-    private TypeProbDensityFunction type;
+    private ProbDensityFunctionType type;
 
-    public TypeProbDensityFunction getType ()
+    public ProbDensityFunctionType getType ()
     {
         return type;
     }
 
-    public void setType (TypeProbDensityFunction type)
+    public void setType (ProbDensityFunctionType type)
     {
         this.type = type;
     }
 
-    public ProbDensFunction (TypeProbDensityFunction type)
+    public ProbDensFunction (ProbDensityFunctionType type)
     {
         this.type = type;
     }
 
-    public static int getNumberOfRequiredArguments (TypeProbDensityFunction type)
+    public static int getNumberOfRequiredArguments (ProbDensityFunctionType type)
     {
         return constructNewProbDensFunction (type).getNumberOfRequiredArguments ();
     }
@@ -44,7 +44,7 @@ public abstract class ProbDensFunction
 
     public abstract void setParameters (Double[] args);
 
-    public static ProbDensFunction constructNewProbDensFunction (TypeProbDensityFunction type)
+    public static ProbDensFunction constructNewProbDensFunction (ProbDensityFunctionType type)
     {
         ProbDensFunction probDensFunction = null;
         switch (type)
@@ -94,12 +94,12 @@ public abstract class ProbDensFunction
 
     public abstract boolean isPossibleDistribution (boolean isChance);
 
-    public static boolean isPossibleDistribution (TypeProbDensityFunction type, boolean isChance)
+    public static boolean isPossibleDistribution (ProbDensityFunctionType type, boolean isChance)
     {
         return constructNewProbDensFunction (type).isPossibleDistribution (isChance);
     }
 
-    public abstract boolean doParametersVerifyDomainConstraint (boolean isChanceVariable);
+    public abstract boolean verifyParametersDomain (boolean isChanceVariable);
 
     private static Double[] parseDoubles (String[] params)
     {

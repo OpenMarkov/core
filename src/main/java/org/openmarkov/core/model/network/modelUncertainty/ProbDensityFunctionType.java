@@ -12,7 +12,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum TypeProbDensityFunction {
+public enum ProbDensityFunctionType {
 	EXACT("Exact"),
 	RANGE("Range"),
 	TRIANGULAR("Triangular"),
@@ -30,18 +30,18 @@ public enum TypeProbDensityFunction {
 	
     private String name;
 
-    TypeProbDensityFunction (String name)
+    ProbDensityFunctionType (String name)
     {
         this.name = name;
     }
 
-    public static TypeProbDensityFunction valueEnumOf (String str)
+    public static ProbDensityFunctionType valueEnumOf (String str)
     {
-        TypeProbDensityFunction type = null;
+        ProbDensityFunctionType type = null;
         boolean found = false;
         for (int i = 0; (i < values ().length) && !found; i++)
         {
-            TypeProbDensityFunction iValues = values ()[i];
+            ProbDensityFunctionType iValues = values ()[i];
             if (iValues.toString ().equalsIgnoreCase (str))
             {
                 found = true;
@@ -58,7 +58,7 @@ public enum TypeProbDensityFunction {
 
     public static String[] getStringsValues ()
     {
-        TypeProbDensityFunction[] values = TypeProbDensityFunction.values ();
+        ProbDensityFunctionType[] values = ProbDensityFunctionType.values ();
         String[] strings = new String[values.length];
         for (int i = 0; i < strings.length; i++)
         {
@@ -69,12 +69,12 @@ public enum TypeProbDensityFunction {
 
     public static String[] getAllowedStringsValues (boolean isChance)
     {
-        TypeProbDensityFunction[] values = TypeProbDensityFunction.values ();
+        ProbDensityFunctionType[] values = ProbDensityFunctionType.values ();
         List<String> strings = new ArrayList<String> ();
         String[] strReturn;
         for (int i = 0; i < values.length; i++)
         {
-            TypeProbDensityFunction type = values[i];
+            ProbDensityFunctionType type = values[i];
             if (ProbDensFunction.isPossibleDistribution (type, isChance))
             {
                 strings.add (type.toString ());

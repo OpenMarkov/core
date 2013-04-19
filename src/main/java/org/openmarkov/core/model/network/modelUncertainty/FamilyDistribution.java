@@ -34,7 +34,7 @@ public class FamilyDistribution
     }
 
     public static FamilyDistribution constructNewFamilyDistributions (List<UncertainValue> siblings,
-                                                                      TypeProbDensityFunction type)
+                                                                      ProbDensityFunctionType type)
     {
         FamilyDistribution famDist = null;
         switch (type)

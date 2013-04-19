@@ -23,7 +23,7 @@ public class TriangularFunction extends ProbDensFunctionWithKnownInverseCDF
 
     public TriangularFunction ()
     {
-        super (TypeProbDensityFunction.TRIANGULAR);
+        super (ProbDensityFunctionType.TRIANGULAR);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class TriangularFunction extends ProbDensFunctionWithKnownInverseCDF
     }
 
     @Override
-    public boolean doParametersVerifyDomainConstraint (boolean isChanceVariable)
+    public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return (((0 <= a) && (a <= c) && (c <= b) && (b <= 1) && (a < b)) && isChanceVariable)
                || ((a <= c) && (c <= b) && (a < b) && !isChanceVariable);

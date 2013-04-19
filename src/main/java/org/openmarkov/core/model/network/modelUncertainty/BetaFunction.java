@@ -15,7 +15,7 @@ public class BetaFunction extends ProbDensFunction
 
     public BetaFunction ()
     {
-        super (TypeProbDensityFunction.BETA);
+        super (ProbDensityFunctionType.BETA);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class BetaFunction extends ProbDensFunction
     }
 
     @Override
-    public boolean doParametersVerifyDomainConstraint (boolean isChanceVariable)
+    public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return ((alpha > 0) && (beta > 0));
     }
@@ -67,23 +67,16 @@ public class BetaFunction extends ProbDensFunction
     @Override
     public double getSample (Random randomGenerator)
     {
-        double[] alphas;
-        DirichletFamily family;
-        double sample;
+        double[] alphas = new double[]{alpha, beta};
         // We use a Dirichlet family for obtaining the sample
-        alphas = new double[2];
-        alphas[0] = alpha;
-        alphas[1] = beta;
-        family = new DirichletFamily (alphas);
-        sample = family.getSample (randomGenerator)[0];
-        return sample;
+        DirichletFamily family = new DirichletFamily (alphas);
+        return family.getSample (randomGenerator)[0];
     }
 
     @Override
     public double getVariance ()
     {
-        double sumAlphaBeta;
-        sumAlphaBeta = alpha + beta;
+        double sumAlphaBeta = alpha + beta;
         return (alpha * beta) / (Math.pow (sumAlphaBeta, 2.0) * (sumAlphaBeta + 1));
     }
 }

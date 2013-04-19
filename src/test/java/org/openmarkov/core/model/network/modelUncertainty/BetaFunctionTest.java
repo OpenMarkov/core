@@ -15,8 +15,8 @@ package org.openmarkov.core.model.network.modelUncertainty;
 public class BetaFunctionTest extends ProbDensFunctionTest {
 
     @Override
-    public TypeProbDensityFunction getTypeProbDensFunction() {
-        return TypeProbDensityFunction.BETA;
+    public ProbDensityFunctionType getTypeProbDensFunction() {
+        return ProbDensityFunctionType.BETA;
     }
 
     @Override

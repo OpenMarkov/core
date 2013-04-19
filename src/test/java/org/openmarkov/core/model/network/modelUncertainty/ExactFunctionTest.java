@@ -15,9 +15,9 @@ package org.openmarkov.core.model.network.modelUncertainty;
 public class ExactFunctionTest extends ProbDensFunctionTest {
 
     @Override
-    public TypeProbDensityFunction getTypeProbDensFunction() {
+    public ProbDensityFunctionType getTypeProbDensFunction() {
 
-        return TypeProbDensityFunction.EXACT;
+        return ProbDensityFunctionType.EXACT;
     }
 
     @Override

@@ -13,7 +13,7 @@ public class GammamvFunction extends GammaAbstract
 
     public GammamvFunction ()
     {
-        super (TypeProbDensityFunction.GAMMAMV);
+        super (ProbDensityFunctionType.GAMMAMV);
         // TODO Auto-generated constructor stub
     }
 
@@ -28,7 +28,7 @@ public class GammamvFunction extends GammaAbstract
     }
 
     @Override
-    public boolean doParametersVerifyDomainConstraint (boolean isChanceVariable)
+    public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         // TODO Auto-generated method stub
         return (mu > 0) && (sigma > 0);

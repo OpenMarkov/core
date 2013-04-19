@@ -15,8 +15,8 @@ package org.openmarkov.core.model.network.modelUncertainty;
 public class StandardNormalFunctionTest extends ProbDensFunctionTest {
 
     @Override
-    public TypeProbDensityFunction getTypeProbDensFunction() {
-        return TypeProbDensityFunction.STANDARDNORMAL;
+    public ProbDensityFunctionType getTypeProbDensFunction() {
+        return ProbDensityFunctionType.STANDARDNORMAL;
     }
 
     @Override

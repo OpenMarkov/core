@@ -16,7 +16,7 @@ public class NormalFunction extends ProbDensFunction
 
     public NormalFunction ()
     {
-        super (TypeProbDensityFunction.NORMAL);
+        super (ProbDensityFunctionType.NORMAL);
         standard = new StandardNormalFunction ();
     }
 
@@ -47,7 +47,7 @@ public class NormalFunction extends ProbDensFunction
     }
 
     @Override
-    public boolean doParametersVerifyDomainConstraint (boolean isChanceVariable)
+    public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return (sigma > 0);
     }

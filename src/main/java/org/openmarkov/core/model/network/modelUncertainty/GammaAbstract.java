@@ -13,7 +13,7 @@ public abstract class GammaAbstract extends ProbDensFunction
     protected double kAbstract;
     protected double thetaAbstract;
 
-    public GammaAbstract (TypeProbDensityFunction type)
+    public GammaAbstract (ProbDensityFunctionType type)
     {
         super (type);
     }

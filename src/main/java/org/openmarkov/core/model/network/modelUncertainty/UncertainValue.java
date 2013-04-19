@@ -35,7 +35,7 @@ public class UncertainValue {
 		probDensFunction = new ExactFunction();
 	}
 
-	public UncertainValue(TypeProbDensityFunction type, String arguments,
+	public UncertainValue(ProbDensityFunctionType type, String arguments,
 			String name) {
 		this.name = name;
 		this.arguments = arguments;
@@ -54,7 +54,7 @@ public class UncertainValue {
 	}
 	
 	
-	public UncertainValue(TypeProbDensityFunction type, Double[] arguments,
+	public UncertainValue(ProbDensityFunctionType type, Double[] arguments,
 			String name) {
 		this.name = name;
 		ProbDensFunction auxProb;
@@ -63,11 +63,11 @@ public class UncertainValue {
 		this.probDensFunction = auxProb;
 	}
 	
-	public UncertainValue(TypeProbDensityFunction type, Double[] arguments) {
+	public UncertainValue(ProbDensityFunctionType type, Double[] arguments) {
 		this(type, arguments, null);
 	}
 
-	public UncertainValue(TypeProbDensityFunction type, String arguments) {
+	public UncertainValue(ProbDensityFunctionType type, String arguments) {
 		this(type, arguments, null);
 	}
 
@@ -131,9 +131,8 @@ public class UncertainValue {
 	 * Auto-generated method stub String allowed = "1234567890+-e"; return
 	 * (allowed.indexOf(c)!=-1); }
 	 */
-	public boolean doParametersVerifyDomainConstraint(boolean isChanceVariable) {
-		return probDensFunction
-				.doParametersVerifyDomainConstraint(isChanceVariable);
+	public boolean verifyParametersDomain(boolean isChanceVariable) {
+        return probDensFunction.verifyParametersDomain(isChanceVariable);
 	}
 
 	public double getSample(Random randomGenerator) {

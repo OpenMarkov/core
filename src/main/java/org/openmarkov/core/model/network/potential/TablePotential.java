@@ -27,7 +27,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.modelUncertainty.SamplePotentialTable;
+import org.openmarkov.core.model.network.modelUncertainty.TablePotentialSampler;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -1386,8 +1386,8 @@ public class TablePotential extends Potential
         Potential sampledPotential = this;
         if (uncertainValues != null)
         {
-            SamplePotentialTable samplePotentialTable = new SamplePotentialTable (this);
-            sampledPotential = samplePotentialTable.getSampledTable ();
+            TablePotentialSampler samplePotentialTable = new TablePotentialSampler ();
+            sampledPotential = samplePotentialTable.sample (this);
         }
         return sampledPotential;
     }

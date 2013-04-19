@@ -19,7 +19,7 @@ public class ComplementFunction extends ProbDensFunction
 
     public ComplementFunction ()
     {
-        super (TypeProbDensityFunction.COMPLEMENT);
+        super (ProbDensityFunctionType.COMPLEMENT);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class ComplementFunction extends ProbDensFunction
     }
 
     @Override
-    public boolean doParametersVerifyDomainConstraint (boolean isChanceVariable)
+    public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return (nu > 0);
     }
@@ -49,9 +49,7 @@ public class ComplementFunction extends ProbDensFunction
     @Override
     public double[] getParameters ()
     {
-        double[] a = new double[1];
-        a[0] = nu;
-        return a;
+        return new double[]{nu};
     }
 
     @Override

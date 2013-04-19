@@ -14,7 +14,7 @@ public class DirichletFunction extends ProbDensFunction
 
     public DirichletFunction ()
     {
-        super (TypeProbDensityFunction.DIRICHLET);
+        super (ProbDensityFunctionType.DIRICHLET);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class DirichletFunction extends ProbDensFunction
     }
 
     @Override
-    public boolean doParametersVerifyDomainConstraint (boolean isChanceVariable)
+    public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return (alpha > 0);
     }

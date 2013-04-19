@@ -114,6 +114,6 @@ public abstract class FamilyDistributionTest {
     /**
      * @return
      */
-    protected abstract TypeProbDensityFunction getTypeProbDensFunction();
+    protected abstract ProbDensityFunctionType getTypeProbDensFunction();
 
 }

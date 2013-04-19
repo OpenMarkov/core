@@ -18,7 +18,7 @@ public class ExactFunction extends ProbDensFunction
     }
 
     @Override
-    public void placeParameters (Double[] params)
+    public void setParameters (Double[] params)
     {
         nu = params[0];
     }

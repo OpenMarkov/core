@@ -18,7 +18,7 @@ public class DirichletFunction extends ProbDensFunction
     }
 
     @Override
-    public void placeParameters (Double[] params)
+    public void setParameters (Double[] params)
     {
         alpha = params[0];
     }

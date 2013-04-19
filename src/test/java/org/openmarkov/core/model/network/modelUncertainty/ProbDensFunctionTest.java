@@ -1,11 +1,11 @@
 /*
-* Copyright 2011 CISIAD, UNED, Spain
-*
-* Licensed under the European Union Public Licence, version 1.1 (EUPL)
-*
-* Unless required by applicable law, this code is distributed
-* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
-*/
+ * Copyright 2011 CISIAD, UNED, Spain
+ *
+ * Licensed under the European Union Public Licence, version 1.1 (EUPL)
+ *
+ * Unless required by applicable law, this code is distributed
+ * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import static org.junit.Assert.*;
@@ -14,86 +14,81 @@ import java.util.Random;
 
 import org.junit.Test;
 
-
 /**
  * @author manolo
- *
+ * 
  */
 public abstract class ProbDensFunctionTest {
-	
-	ProbDensFunction pdf;
-	
-	double maxErrorMean = 0.001;
-	double maxErrorStDeviation = 0.01;
 
-	public abstract TypeProbDensityFunction getTypeProbDensFunction();
-	
-	@Test
-	public void testMeanAndVariance(){
-		int numSamples = 1000000;		
-		Random randomGenerator = new Random(); 
-		
-		pdf = ProbDensFunction.constructNewProbDensFunction(getTypeProbDensFunction());
-		initializeAndPlaceParamsProbDensFunctionTest();
-		double[]samples = new double[numSamples];
-		for (int i=0;i<numSamples;i++){
-			samples[i]=pdf.getSample(randomGenerator);
-		}
-		testMean(samples);
-		testStandardDeviation(samples);
-		
-	}
-	
-	
-	/**
-	 * @param samples
-	 */
-	private void testStandardDeviation(double[] samples) {
-		double variance = Tools.varianceSample(samples);
-		assertMeanTest(Math.sqrt(variance),pdf.getStandardDeviation(),maxErrorStDeviation);
-		
-	}
+    ProbDensFunction pdf;
 
-	/**
-	 * @return
-	 */
-	protected double getFactorError(){
-		return 2.0*pdf.getStandardDeviation();
-	}
+    double maxErrorMean = 0.001;
+    double maxErrorStDeviation = 0.01;
 
-	public void testMean(double[] samples){
-		
-		double mean = Tools.meanSample(samples);
-		assertMeanTest(mean,pdf.getMean(),maxErrorMean);
-		
-	}
-	
-	
-	/**
-	 * @param samplesMean
-	 * true if the difference between two means is lower than maxError
-	 * @param pdfMean 
-	 * @param maxError 
-	 */
-	public void assertMeanTest(double samplesMean, double pdfMean, double maxError){
-		assertEquals(samplesMean,pdfMean,getFactorError()*maxError);
-	}
+    public abstract TypeProbDensityFunction getTypeProbDensFunction();
 
+    @Test
+    public void testMeanAndVariance() {
+        int numSamples = 1000000;
+        Random randomGenerator = new XORShiftRandom();
 
+        pdf = ProbDensFunction.constructNewProbDensFunction(getTypeProbDensFunction());
+        initializeAndPlaceParamsProbDensFunctionTest();
+        double[] samples = new double[numSamples];
+        for (int i = 0; i < numSamples; i++) {
+            samples[i] = pdf.getSample(randomGenerator);
+        }
+        testMean(samples);
+        testStandardDeviation(samples);
 
-	/**
-	 * @param prob
-	 */
-	public void initializeAndPlaceParamsProbDensFunctionTest(){
-			Double[] params = initializeParamsProbDensFunctionTest();
-			pdf.placeParameters(params);
-	
-	}
+    }
 
-	/**
-	 * @return
-	 */
-	public abstract Double[] initializeParamsProbDensFunctionTest();
-	
-	
+    /**
+     * @param samples
+     */
+    private void testStandardDeviation(double[] samples) {
+        double variance = Tools.varianceSample(samples);
+        assertMeanTest(Math.sqrt(variance), pdf.getStandardDeviation(), maxErrorStDeviation);
+
+    }
+
+    /**
+     * @return
+     */
+    protected double getFactorError() {
+        return 2.0 * pdf.getStandardDeviation();
+    }
+
+    public void testMean(double[] samples) {
+
+        double mean = Tools.meanSample(samples);
+        assertMeanTest(mean, pdf.getMean(), maxErrorMean);
+
+    }
+
+    /**
+     * @param samplesMean
+     *            true if the difference between two means is lower than
+     *            maxError
+     * @param pdfMean
+     * @param maxError
+     */
+    public void assertMeanTest(double samplesMean, double pdfMean, double maxError) {
+        assertEquals(samplesMean, pdfMean, getFactorError() * maxError);
+    }
+
+    /**
+     * @param prob
+     */
+    public void initializeAndPlaceParamsProbDensFunctionTest() {
+        Double[] params = initializeParamsProbDensFunctionTest();
+        pdf.setParameters(params);
+
+    }
+
+    /**
+     * @return
+     */
+    public abstract Double[] initializeParamsProbDensFunctionTest();
+
 }

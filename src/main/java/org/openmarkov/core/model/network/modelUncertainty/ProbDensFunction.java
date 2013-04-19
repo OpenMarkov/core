@@ -36,60 +36,60 @@ public abstract class ProbDensFunction
 
     public abstract double[] getParameters ();
 
-    public void placeParameters (String[] args)
+    public void setParameters (String[] args)
     {
         Double[] values = parseDoubles (args);
-        placeParameters (values);
+        setParameters (values);
     }
 
-    public abstract void placeParameters (Double[] args);
+    public abstract void setParameters (Double[] args);
 
     public static ProbDensFunction constructNewProbDensFunction (TypeProbDensityFunction type)
     {
-        ProbDensFunction auxProb = null;
+        ProbDensFunction probDensFunction = null;
         switch (type)
         {
             case EXACT :
-                auxProb = new ExactFunction ();
+                probDensFunction = new ExactFunction ();
                 break;
             case BETA :
-                auxProb = new BetaFunction ();
+                probDensFunction = new BetaFunction ();
                 break;
             case COMPLEMENT :
-                auxProb = new ComplementFunction ();
+                probDensFunction = new ComplementFunction ();
                 break;
             case DIRICHLET :
-                auxProb = new DirichletFunction ();
+                probDensFunction = new DirichletFunction ();
                 break;
             case GAMMA :
-                auxProb = new GammaFunction ();
+                probDensFunction = new GammaFunction ();
                 break;
             case GAMMAMV :
-                auxProb = new GammamvFunction ();
+                probDensFunction = new GammamvFunction ();
                 break;
             case LOGNORMAL :
-                auxProb = new LogNormalFunction ();
+                probDensFunction = new LogNormalFunction ();
                 break;
             case NORMAL :
-                auxProb = new NormalFunction ();
+                probDensFunction = new NormalFunction ();
                 break;
             case RANGE :
-                auxProb = new RangeFunction ();
+                probDensFunction = new RangeFunction ();
                 break;
             case TRIANGULAR :
-                auxProb = new TriangularFunction ();
+                probDensFunction = new TriangularFunction ();
                 break;
             case EXPONENTIAL :
-                auxProb = new ExponentialFunction ();
+                probDensFunction = new ExponentialFunction ();
                 break;
             case ERLANG :
-                auxProb = new ErlangFunction ();
+                probDensFunction = new ErlangFunction ();
                 break;
             case STANDARDNORMAL :
-                auxProb = new StandardNormalFunction ();
+                probDensFunction = new StandardNormalFunction ();
                 break;
         }
-        return auxProb;
+        return probDensFunction;
     }
 
     public abstract boolean isPossibleDistribution (boolean isChance);

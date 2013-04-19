@@ -9,13 +9,13 @@ package org.openmarkov.core.model.network.modelUncertainty;
 public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF
 {
     // Odeh and Evans' coefficients
-    private static final double p[]         = new double[] {-0.322232431088, -1.0, -0.342242088547,
-            -0.0204231210245, -0.453642210148E-4};
-    private static final double q[]         = new double[] {0.0993484626060, 0.588581570495,
-            0.531103462366, 0.103537752850, 0.38560700634E-2};
+    private static final double p[] = new double[] { -0.322232431088, -1.0, -0.342242088547,
+            -0.0204231210245, -0.453642210148E-4 };
+    private static final double q[] = new double[] { 0.0993484626060, 0.588581570495,
+            0.531103462366, 0.103537752850, 0.38560700634E-2 };
     // Polynomials for the approximation
-    private Polynomial    numerator   = new Polynomial (p, 4);
-    private Polynomial    denominator = new Polynomial (q, 4);
+    private Polynomial numerator = new Polynomial(p, 4);
+    private Polynomial denominator = new Polynomial(q, 4);
 
     public StandardNormalFunction ()
     {
@@ -36,7 +36,7 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF
     }
 
     @Override
-    public void placeParameters (Double[] args)
+    public void setParameters (Double[] args)
     {
         // TODO Auto-generated method stub
     }
@@ -67,9 +67,10 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF
 
     /**
      * We use the method proposed by Odeh and Evan (1974). It is an
-     * approximation for the inverse of the cummulative distribution function of
+     * approximation for the inverse of the cumulative distribution function of
      * the standard normal.
-     * @param y
+     * 
+     * @param beta
      * @return
      */
     @Override
@@ -78,22 +79,19 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF
         double inverse;
         if (beta < 0.5)
         {
-            inverse = auxOdehAndEvansApproximation (beta);
+            inverse = odehAndEvansApproximation (beta);
         }
         else
         {
-            inverse = -auxOdehAndEvansApproximation (1 - beta);
+            inverse = -odehAndEvansApproximation (1 - beta);
         }
         return inverse;
     }
 
-    private double auxOdehAndEvansApproximation (double beta)
+    private double odehAndEvansApproximation (double beta)
     {
-        double y;
-        double evalFunction;
-        y = Math.sqrt (-2.0 * Math.log (1.0 - beta));
-        evalFunction = -y - numerator.evaluate (y) / denominator.evaluate (y);
-        return evalFunction;
+        double y = Math.sqrt (-2.0 * Math.log (1.0 - beta));
+        return -y - numerator.evaluate (y) / denominator.evaluate (y);
     }
 
     @Override

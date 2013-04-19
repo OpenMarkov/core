@@ -48,7 +48,7 @@ public class UncertainValue {
 			System.out.println("Error in the number of arguments.");
 			this.probDensFunction = null;
 		} else {
-			auxProb.placeParameters(args);
+			auxProb.setParameters(args);
 		}
 		this.probDensFunction = auxProb;
 	}
@@ -59,7 +59,7 @@ public class UncertainValue {
 		this.name = name;
 		ProbDensFunction auxProb;
 		auxProb = ProbDensFunction.constructNewProbDensFunction(type);
-		auxProb.placeParameters(arguments);
+		auxProb.setParameters(arguments);
 		this.probDensFunction = auxProb;
 	}
 	

@@ -46,7 +46,7 @@ public class ErlangFunction extends ProbDensFunction
     }
 
     @Override
-    public void placeParameters (Double[] args)
+    public void setParameters (Double[] args)
     {
     	  k = (int) Math.round(args[0]);
           lambda = args[1];

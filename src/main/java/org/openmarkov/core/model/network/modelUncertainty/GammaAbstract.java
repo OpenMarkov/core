@@ -27,7 +27,7 @@ public abstract class GammaAbstract extends ProbDensFunction
     protected abstract void auxPlaceParameters (Double[] args);
 
     @Override
-    public void placeParameters (Double[] params)
+    public void setParameters (Double[] params)
     {
         auxPlaceParameters (params);
     }

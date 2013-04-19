@@ -19,7 +19,7 @@ public class BetaFunction extends ProbDensFunction
     }
 
     @Override
-    public void placeParameters (Double[] params)
+    public void setParameters (Double[] params)
     {
         alpha = params[0];
         beta = params[1];

@@ -53,7 +53,7 @@ public class ExponentialFunction extends ProbDensFunctionWithKnownInverseCDF
     }
 
     @Override
-    public void placeParameters (Double[] params)
+    public void setParameters (Double[] params)
     {
         lambda = params[0];
     }

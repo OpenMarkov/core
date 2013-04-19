@@ -29,7 +29,7 @@ public class LogNormalFunction extends ProbDensFunction
     }
 
     @Override
-    public void placeParameters (Double[] args)
+    public void setParameters (Double[] args)
     {
         mu = args[0];
         sigma = args[1];

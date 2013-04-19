@@ -27,7 +27,7 @@ public class TriangularFunction extends ProbDensFunctionWithKnownInverseCDF
     }
 
     @Override
-    public void placeParameters (Double[] params)
+    public void setParameters (Double[] params)
     {
         a = params[0];
         b = params[1];

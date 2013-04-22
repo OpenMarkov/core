@@ -195,10 +195,10 @@ public class TuningPotential extends ICIPotential
     }
 
     @Override
-    protected int computeFFunction (List<Integer> parentStates)
+    protected int computeFFunction (int[] parentStates)
     {
         int netNumIncr = 0;
-        for(Integer parentState: parentStates)
+        for(int parentState: parentStates)
         {
             netNumIncr += parentState-1;
         }

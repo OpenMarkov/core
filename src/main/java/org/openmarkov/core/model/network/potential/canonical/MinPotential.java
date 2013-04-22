@@ -172,7 +172,7 @@ public class MinPotential extends MinMaxPotential {
     }
     @Override
 	public Potential removeVariable(Variable variable) {
-    	ArrayList<Variable> newVariables = new ArrayList<Variable>();
+    	List<Variable> newVariables = new ArrayList<Variable>();
     	for (int i = 0; i < variables.size(); i++){
     		if (variable == variables.get(i)) {
     			continue;
@@ -192,7 +192,7 @@ public class MinPotential extends MinMaxPotential {
     }
     
     @Override
-    protected int computeFFunction (List<Integer> parentStates)
+    protected int computeFFunction (int[] parentStates)
     {
         int resultingState = variables.get (0).getNumStates () - 1;
         for(Integer parentState: parentStates)

@@ -418,9 +418,10 @@ public abstract class ICIPotential extends Potential {
     @Override
     public Integer sample (Random randomGenerator, HashMap<Variable, Integer> parentStateIndexes)
     {
-        ArrayList<Integer> iciSampledStates = new ArrayList<Integer> ();
+        int[] iciSampledStates = new int[noisyParameters.values().size()+1];
         int childNumStates = variables.get (0).getNumStates ();
         // Sample noisy 
+        int i=0;
         for(Variable variable: noisyParameters.keySet ())
         {
             double[] probabilities = noisyParameters.get (variable);
@@ -433,7 +434,8 @@ public abstract class ICIPotential extends Potential {
                 ++sampleIndex;
                 accumulatedProbability +=probabilities[index + sampleIndex];
             }
-            iciSampledStates.add (sampleIndex);
+            iciSampledStates[i] = sampleIndex;
+            ++i;
         }
             
         // Sample leaky
@@ -445,13 +447,13 @@ public abstract class ICIPotential extends Potential {
             ++sampleIndex;
             accumulatedProbability += leakyParameters[sampleIndex];
         }
-        iciSampledStates.add (sampleIndex);
+        iciSampledStates[i] = sampleIndex;
         
         // Sample child
         return computeFFunction(iciSampledStates);
     }         
     
-    protected abstract int computeFFunction (List<Integer> iciSampledStates);
+    protected abstract int computeFFunction (int[] iciSampledStates);
 
     @Override    
     public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)

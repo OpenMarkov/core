@@ -204,7 +204,7 @@ public class MaxPotential extends MinMaxPotential {
     }
     
     @Override
-    protected int computeFFunction (List<Integer> parentStates)
+    protected int computeFFunction (int[] parentStates)
     {
         int resultingState = 0;
         for(Integer parentState: parentStates)

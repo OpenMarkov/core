@@ -168,7 +168,9 @@ public class TuningPotential extends ICIPotential
 			double []noisyParameters = this.getNoisyParameters(variables.get(i));
 			newICIPotential.setNoisyParameters(variables.get(i), noisyParameters);
 		}
-		newICIPotential.setNoisyParameters(newVariable, newICIPotential.initializeNoisyParameters(newVariable));
+        Variable conditionedVariable = variables.get(0);
+        double[] noisyParameters = newICIPotential.initializeNoisyParameters(conditionedVariable, newVariable);
+        newICIPotential.setNoisyParameters(newVariable, noisyParameters);
 		
 		newICIPotential.setLeakyParameters(getLeakyParameters());
 		return newICIPotential;

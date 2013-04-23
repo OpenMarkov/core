@@ -176,7 +176,9 @@ public class MaxPotential extends MinMaxPotential {
 			double []noisyParameters = this.getNoisyParameters(variables.get(i));
 			newICIPotential.setNoisyParameters(variables.get(i), noisyParameters);
 		}
-		newICIPotential.setNoisyParameters(newVariable, newICIPotential.initializeNoisyParameters(newVariable));
+		Variable conditionedVariable = variables.get(0);
+		double[] noisyParameters = newICIPotential.initializeNoisyParameters(conditionedVariable, newVariable);
+		newICIPotential.setNoisyParameters(newVariable, noisyParameters);
 		
 		newICIPotential.setLeakyParameters(getLeakyParameters());
 		return newICIPotential;
@@ -184,7 +186,7 @@ public class MaxPotential extends MinMaxPotential {
     
     @Override
 	public Potential removeVariable(Variable variable) {
-    	ArrayList<Variable> newVariables = new ArrayList<Variable>();
+    	List<Variable> newVariables = new ArrayList<Variable>();
     	for (int i = 0; i < variables.size(); i++){
     		if (variable == variables.get(i)) {
     			continue;

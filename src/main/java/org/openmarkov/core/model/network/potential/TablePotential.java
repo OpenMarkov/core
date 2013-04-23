@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -1425,14 +1426,14 @@ public class TablePotential extends Potential
     }
 
     @Override
-    public Integer sample (Random randomGenerator, HashMap<Variable, Integer> parentStateIndexes)
+    public int sample (Random randomGenerator, Map<Variable, Integer> sampledParents)
     {
         int index = 0;
         int sampleIndex = 0;
         // find index of first position for the given configuration
         for (int i = 1; i < variables.size (); ++i)
         {
-            index += parentStateIndexes.get (variables.get (i)) * offsets[i];
+            index += sampledParents.get (variables.get (i)) * offsets[i];
         }
         double random = randomGenerator.nextDouble ();
         double accumulatedProbability = values[index + sampleIndex];

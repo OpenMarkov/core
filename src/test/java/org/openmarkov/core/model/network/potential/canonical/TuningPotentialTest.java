@@ -11,6 +11,7 @@ package org.openmarkov.core.model.network.potential.canonical;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class TuningPotentialTest
         Variable dG = new Variable("dG", "down", "st.quo", "up");
         Variable nerveSoft = new Variable("Nerve_Soft", "Softer", "St.quo", "Louder");
 
-        ArrayList<Variable> variables = new ArrayList<Variable> ();
+        List<Variable> variables = new ArrayList<Variable> ();
         variables.add (nerveSoft);
         variables.add (dT);
         variables.add (dM);

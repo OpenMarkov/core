@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.potential.canonical;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -103,9 +104,7 @@ public abstract class MinMaxPotential extends ICIPotential {
 	 * 
 	 */
 	public TablePotential getCPT() {
-		ArrayList<Variable> variablesToEliminate = new ArrayList<Variable>(1);
-		variablesToEliminate.add(pseudoVariable);
-		
+		List<Variable> variablesToEliminate = Arrays.asList(pseudoVariable);
         return DiscretePotentialOperations.multiplyAndMarginalize (buildSubpotentialList(), variables,
                                                                    variablesToEliminate);
 	}

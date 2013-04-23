@@ -10,18 +10,18 @@
 package org.openmarkov.core.model.network.potential.canonical;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -44,16 +44,17 @@ public abstract class ICIPotential extends Potential {
     
 	/**
 	 * Noisy parameters for the canonical model
+	 * The leak parameter is in the last position
 	 */
-	private HashMap<Variable, double[]> noisyParameters;
+	private double[][] noisyParameters;
 	
     /**
      * Leak parameters for the canonical model
      */
-    private double[] leakyParameters;	
+    private double[] leakyParameters;   
     
     private Variable leakyVariable = null;
-
+    
 	// Constructor
 	/** @param variables. <code>ArrayList</code> of <code>Variable</code>
 	 * @param model. <code>ICIModel</code> */
@@ -61,29 +62,28 @@ public abstract class ICIPotential extends Potential {
 		// In principle, role will be "conditional probability"
 		// and the first variable will be the conditioned variable
 		super(variables, PotentialRole.CONDITIONAL_PROBABILITY);
+		Variable conditionedVariable = variables.get (0);		
 		this.modelType = modelType;
 		this.family = modelType.getFamily();
 		this.noisyParameters = getDefaultNoisyParameters();
-		this.leakyParameters = getDefaultLeakyParameters (variables.get (0).getNumStates ());
-		
+		this.leakyParameters = getDefaultLeakyParameters (conditionedVariable.getNumStates ());
         zVariables = new HashMap<Variable, Variable> ();
         for(int i=1; i<variables.size (); ++i)
         {
-            zVariables.put (variables.get (i), createZVariable (variables.get (i), variables.get (0)));
+            zVariables.put (variables.get (i), createZVariable (variables.get (i), conditionedVariable));
         }
+        leakyVariable = new Variable (conditionedVariable.getName () + "-leaky", conditionedVariable.getStates ());
         
-        leakyVariable = new Variable (variables.get (0).getName () + "-leaky", variables.get (0).getStates ());
 	}
 
-    public HashMap<Variable, double[]> getDefaultNoisyParameters()
+    public double[][] getDefaultNoisyParameters()
     {
-        HashMap<Variable, double[]> noisyParameters = new HashMap<Variable, double[]> ();
+        double[][] noisyParameters = new double[variables.size()-1][];
        
-        for (int i = 1; i < variables.size (); ++i)
+        for (int i = 1; i < variables.size () -1; ++i)
         {
             Variable parent = variables.get (i); 
-            double[] probabilities = initializeNoisyParameters(parent);
-            noisyParameters.put (parent, probabilities);
+            noisyParameters[i-1] = initializeNoisyParameters(variables.get (0), parent);
         }
         return noisyParameters;
     }
@@ -102,8 +102,7 @@ public abstract class ICIPotential extends Potential {
      * @param parent
      * @return
      */
-    public double [] initializeNoisyParameters(Variable parent) {
-    	Variable conditionedVariable =  variables.get (0);
+    public double [] initializeNoisyParameters(Variable conditionedVariable, Variable parent) {
     	double[] probabilities = new double[conditionedVariable.getNumStates () * parent.getNumStates ()];
     	for (int j = 0; j < parent.getNumStates (); ++j)
         {
@@ -193,7 +192,7 @@ public abstract class ICIPotential extends Potential {
 
     public double[] getNoisyParameters(Variable variable)
     {
-        return noisyParameters.get(variable);
+        return noisyParameters[variables.indexOf(variable)-1];
     }	
 	/**
 	 * Sets the noisy parameters, i.e. <i>P(z<sub>i</sub>|x<sub>i</sub>)</i>
@@ -216,7 +215,7 @@ public abstract class ICIPotential extends Potential {
             throw new IllegalArgumentException("There is no variable " + parent + " in this ICI family.");
         }
         
-        noisyParameters.put (parent, parameters);
+        noisyParameters[variables.indexOf(parent)-1]= parameters;
 	}
 	
 	/**
@@ -254,11 +253,8 @@ public abstract class ICIPotential extends Potential {
         //Noisy parents
         for(Variable parent: zVariables.keySet ())
         {
-            ArrayList<Variable> linkVariables = new ArrayList<Variable> ();
-            linkVariables.add(zVariables.get (parent)); // Z variable
-            linkVariables.add(parent);
-            
-            noisyPotentials.add (new TablePotential(linkVariables, PotentialRole.CONDITIONAL_PROBABILITY, noisyParameters.get(parent)));
+            List<Variable> linkVariables = Arrays.asList(zVariables.get (parent), parent);
+            noisyPotentials.add (new TablePotential(linkVariables, PotentialRole.CONDITIONAL_PROBABILITY, noisyParameters[variables.indexOf(parent)-1]));
         }
 
          return noisyPotentials;
@@ -266,7 +262,7 @@ public abstract class ICIPotential extends Potential {
 	
 	/** @return Leak potential. <code>TablePotential</code> */
 	public double[] getLeakyParameters() {
-		return this.leakyParameters;
+		return leakyParameters;
 	}
 	
 	public TablePotential getLeakyPotential()
@@ -393,10 +389,6 @@ public abstract class ICIPotential extends Potential {
         // if position == 0, it is the conditioned variable, not a noisy one
         if(position > 0)
         {
-	        double[] noisyParameter = noisyParameters.get (oldVariable);
-	        noisyParameters.remove (oldVariable);
-	        noisyParameters.put (variable, noisyParameter);
-	        
 	        zVariables.remove (oldVariable);
 	        zVariables.put (variable, createZVariable(variables.get (0), variable));
         }
@@ -416,16 +408,16 @@ public abstract class ICIPotential extends Potential {
     }
     
     @Override
-    public Integer sample (Random randomGenerator, HashMap<Variable, Integer> parentStateIndexes)
+    public int sample (Random randomGenerator, Map<Variable, Integer> sampledParents)
     {
-        int[] iciSampledStates = new int[noisyParameters.values().size()+1];
+        int[] iciSampledStates = new int[noisyParameters.length+1];
         int childNumStates = variables.get (0).getNumStates ();
+
         // Sample noisy 
-        int i=0;
-        for(Variable variable: noisyParameters.keySet ())
+        for(int i=1; i < variables.size(); ++i)
         {
-            double[] probabilities = noisyParameters.get (variable);
-            int index = childNumStates * parentStateIndexes.get (variable);
+            double[] probabilities = noisyParameters[i-1];
+            int index = childNumStates * sampledParents.get (variables.get(i));
             int sampleIndex = 0;
             double randomPick = randomGenerator.nextDouble ();
             double accumulatedProbability = probabilities[index + sampleIndex];
@@ -434,10 +426,9 @@ public abstract class ICIPotential extends Potential {
                 ++sampleIndex;
                 accumulatedProbability +=probabilities[index + sampleIndex];
             }
-            iciSampledStates[i] = sampleIndex;
-            ++i;
+            iciSampledStates[i-1] = sampleIndex;
         }
-            
+        
         // Sample leaky
         int sampleIndex = 0;
         double randomPick = randomGenerator.nextDouble ();
@@ -447,8 +438,7 @@ public abstract class ICIPotential extends Potential {
             ++sampleIndex;
             accumulatedProbability += leakyParameters[sampleIndex];
         }
-        iciSampledStates[i] = sampleIndex;
-        
+        iciSampledStates[iciSampledStates.length-1] = sampleIndex;        
         // Sample child
         return computeFFunction(iciSampledStates);
     }         
@@ -465,9 +455,10 @@ public abstract class ICIPotential extends Potential {
 
     public void setNoisyPotentials (List<TablePotential> noisyPotentials)
     {
-        for(TablePotential noisyPotential : noisyPotentials)
+        for(int i=0; i <noisyPotentials.size(); ++i)
         {
-            noisyParameters.put (noisyPotential.getVariable (0), noisyPotential.values);
+            TablePotential noisyPotential = noisyPotentials.get(i);
+            noisyParameters[variables.indexOf(noisyPotential.getVariable (0))-1] = noisyPotential.values;
         }
     }
 
@@ -478,17 +469,13 @@ public abstract class ICIPotential extends Potential {
         // Marginalize out noisy variables
         for(TablePotential noisyPotential: getNoisyPotentials ())
         {
-            ArrayList<TablePotential> potentials = new ArrayList<> (2);
-            potentials.add (expandedPotential);
-            potentials.add (noisyPotential);
+            List<TablePotential> potentials = Arrays.asList(expandedPotential, noisyPotential);
             expandedPotential = (TablePotential)DiscretePotentialOperations.multiplyAndMarginalize (potentials, noisyPotential.getVariable (0));
         }
         
         // Marginalize out leaky variable
-        ArrayList<TablePotential> potentials = new ArrayList<> (2);
-        potentials.add (expandedPotential);
-        potentials.add (getLeakyPotential ());
-        expandedPotential = (TablePotential)DiscretePotentialOperations.multiplyAndMarginalize (potentials, leakyVariable);
+        List<TablePotential> potentials = Arrays.asList(expandedPotential, getLeakyPotential ());
+        expandedPotential = (TablePotential)DiscretePotentialOperations.multiplyAndMarginalize (potentials, getLeakyVariable());
         
         return expandedPotential;
     }

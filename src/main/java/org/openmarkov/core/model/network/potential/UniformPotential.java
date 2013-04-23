@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network.potential;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -237,7 +238,7 @@ public class UniformPotential extends Potential
     }
 
     @Override
-    public Integer sample (Random randomGenerator, HashMap<Variable, Integer> parentStateIndexes)
+    public int sample (Random randomGenerator, Map<Variable, Integer> parentStateIndexes)
     {
         return randomGenerator.nextInt (variables.get (0).getNumStates ());
     }

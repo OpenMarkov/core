@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -507,10 +508,9 @@ public abstract class Potential
         }
     }
 
-    public Integer sample (Random randomGenerator, HashMap<Variable, Integer> sampledStateIndexes)
+    public int sample (Random randomGenerator, Map<Variable, Integer> sampledParents)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return Integer.MAX_VALUE;
     }
 
     /**

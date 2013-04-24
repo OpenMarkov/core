@@ -59,16 +59,8 @@ public class AddLinkEdit extends BaseLinkEdit {
             boolean isDirected, boolean updatePotentials) {
         super(probNet, variable1, variable2, isDirected);
         
-        try
-        {
-            node1 = probNet.getProbNode (variable1.getName());
-            node2 = probNet.getProbNode (variable2.getName());
-        }
-        catch (ProbNodeNotFoundException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        node1 = probNet.getProbNode (variable1);
+        node2 = probNet.getProbNode (variable2);
         this.updatePotentials = updatePotentials;
         this.link = null;
     }

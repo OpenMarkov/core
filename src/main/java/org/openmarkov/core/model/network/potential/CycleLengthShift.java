@@ -57,7 +57,7 @@ public class CycleLengthShift extends Potential {
 
 	// Methods
 	@Override
-	public ArrayList<TablePotential> tableProject(EvidenceCase evidenceCase, 
+	public List<TablePotential> tableProject(EvidenceCase evidenceCase, 
 			InferenceOptions inferenceOptions)
 			throws NonProjectablePotentialException {
 		// TODO 
@@ -71,22 +71,21 @@ public class CycleLengthShift extends Potential {
 	}
 	
 	
-	@Override
-	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength) {
-		Variable conditionedVariable = variables.get(0);
-		Variable conditioningVariable = variables.get(1);
-		ArrayList<Finding> inducedFindings = new ArrayList<Finding>();
-		if (evidenceCase.contains(conditioningVariable) && 
-				!evidenceCase.contains(conditionedVariable)) {
-			double numericalValue = evidenceCase.getFinding(
-					//	conditioningVariable).getNumericalValue() + 1;
-					conditioningVariable).getNumericalValue() + cycleLength;
-			inducedFindings.add(new Finding(conditionedVariable, 
-						numericalValue));
-			
-		}
-		return inducedFindings;
-	}
+    @Override
+    public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength) {
+        Variable conditionedVariable = variables.get(0);
+        Variable conditioningVariable = variables.get(1);
+        ArrayList<Finding> inducedFindings = new ArrayList<Finding>();
+        if (evidenceCase.contains(conditioningVariable)
+                && !evidenceCase.contains(conditionedVariable)) {
+            double numericalValue = evidenceCase.getFinding(
+            // conditioningVariable).getNumericalValue() + 1;
+                    conditioningVariable).getNumericalValue() + cycleLength;
+            inducedFindings.add(new Finding(conditionedVariable, numericalValue));
+
+        }
+        return inducedFindings;
+    }
 
 	@Override
 	public Potential shift(ProbNet probNet, int timeDifference) {

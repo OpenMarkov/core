@@ -48,7 +48,6 @@ public final class DiscretePotentialOperations {
         return multiply (tablePotentials, true);
     }
 
-    @SuppressWarnings("unchecked")
     public static TablePotential multiply (List<TablePotential> tablePotentials, boolean reorder)
     {        
         int numPotentials = tablePotentials.size();
@@ -85,10 +84,9 @@ public final class DiscretePotentialOperations {
         }
 
         // Gets the union
-        TablePotential result = new TablePotential((ArrayList<Variable>)
-            ((Object)AuxiliaryOperations.getUnionVariables(potentials)), role);
+        List<Variable> resultVariables = AuxiliaryOperations.getUnionVariables(potentials);
 
-        int numVariables = result.getNumVariables();
+        int numVariables = resultVariables.size();
 
         // Gets the tables of each TablePotential
         numPotentials = potentials.size();
@@ -98,11 +96,11 @@ public final class DiscretePotentialOperations {
         }
 
         // Gets dimension
-        int[] resultDimension = result.getDimensions();
+        int[] resultDimension = TablePotential.calculateDimensions (resultVariables);
 
         // Gets offset accumulate
         int[][]offsetAccumulate = DiscretePotentialOperations
-            .getAccumulatedOffsets(potentials, result);
+            .getAccumulatedOffsets(potentials, resultVariables);
 
         // Gets coordinate
         int[] resultCoordinate;
@@ -122,14 +120,15 @@ public final class DiscretePotentialOperations {
         // Multiply
         int incrementedVariable = 0;
         double mulResult;
-        int[] dimension = result.getDimensions();
-        int[] offset = result.getOffsets();
-        int tamTable = 1; // If numVariables == 0 the potential is a constant
+        int[] dimensions = TablePotential.calculateDimensions (resultVariables);
+        int[] offsets = TablePotential.calculateOffsets(dimensions);
+        int tableSize = 1; // If numVariables == 0 the potential is a constant
         if (numVariables > 0) {
-            tamTable = dimension[numVariables - 1] * offset[numVariables - 1];
+            tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
         }
+        double[] resultValues = new double[tableSize];
 
-        for (int resultPosition=0; resultPosition<tamTable; resultPosition++) {
+        for (int resultPosition=0; resultPosition<tableSize; resultPosition++) {
             mulResult = constantFactor;
 
            /* increment the result coordinate and
@@ -161,9 +160,10 @@ public final class DiscretePotentialOperations {
                 potentialsPositions[iPotential] +=
                     offsetAccumulate[iPotential][incrementedVariable];
             }
-            result.values[resultPosition] = mulResult;
+            
+            resultValues[resultPosition] = mulResult;
         }
-        return result;
+        return new TablePotential(resultVariables, role, resultValues);
     }
 
     /** @param tablePotentials <code>ArrayList</code> of <code>extends 
@@ -199,9 +199,8 @@ public final class DiscretePotentialOperations {
         PotentialRole role = getRole(tablePotentials);
         
         // Gets the union
-        TablePotential result = new TablePotential(AuxiliaryOperations.getUnionVariables(potentials), role);
-
-        int numVariables = result.getNumVariables();
+        List<Variable> resultVariables = AuxiliaryOperations.getUnionVariables(potentials);
+        int numVariables = resultVariables.size();
 
         // Gets the tables of each TablePotential
         double[][] tables = new double[numPotentials][];
@@ -210,11 +209,11 @@ public final class DiscretePotentialOperations {
         }
 
         // Gets dimension
-        int[] resultDimension = result.getDimensions();
+        int[] resultDimension = TablePotential.calculateDimensions (resultVariables);
 
         // Gets offset accumulate
         int[][]offsetAccumulate = DiscretePotentialOperations
-            .getAccumulatedOffsets(potentials, result);
+            .getAccumulatedOffsets(potentials, resultVariables);
 
         // Gets coordinate
         int[] resultCoordinate;
@@ -233,16 +232,17 @@ public final class DiscretePotentialOperations {
 
         // Add
         int incrementedVariable = 0;
-        int[] dimension = result.getDimensions();
-        int[] offset = result.getOffsets();
-        int tamTable = 1; // If numVariables == 0 the potential is a constant
+        int[] dimensions = (!resultVariables.isEmpty())? TablePotential.calculateDimensions (resultVariables) : new int[0];
+        int[] offsets = (!resultVariables.isEmpty())? TablePotential.calculateOffsets(dimensions): new int[0];
+        int tableSize = 1; // If numVariables == 0 the potential is a constant
         if (numVariables > 0) {
-            tamTable = dimension[numVariables - 1] * offset[numVariables - 1];
+            tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
         }
+        double[] resultValues = new double[tableSize];
 
 		if (potentials.size() > 0) {
 			double addResult;
-			for (int resultPosition = 0; resultPosition < tamTable; resultPosition++) {
+			for (int resultPosition = 0; resultPosition < tableSize; resultPosition++) {
 				/*
 				 * increment the result coordinate and find out which variable
 				 * is to be incremented
@@ -274,18 +274,17 @@ public final class DiscretePotentialOperations {
 					// update the current position in each potential table
 					potentialsPositions[iPotential] += offsetAccumulate[iPotential][incrementedVariable];
 				}
-				result.values[resultPosition] = addResult;
+				resultValues[resultPosition] = addResult;
 			}
 		}
         //Sum constant potentials to the result
 		if ((numConstantPotentials > 0) && (sumConstantPotentials != 0.0)) {
-			double[] resultValues = result.values;
 			int length = resultValues.length;
 			for (int i = 0; i < length; i++) {
 				resultValues[i] = resultValues[i] + sumConstantPotentials;
 			}
 		}
-        return result;
+        return new TablePotential(resultVariables, role, resultValues);
     }
     
     public static TablePotential sum (TablePotential... tablePotentials)
@@ -326,23 +325,17 @@ public final class DiscretePotentialOperations {
      * the union of the variables of the potential
      * @return A <code>TablePotential</code> result of multiply and marginalize.
      * @trows NotEnoughMemoryException */
-    @SuppressWarnings("unchecked")
     public static TablePotential multiplyAndMarginalize(
             List<TablePotential> tablePotentials, 
             List<Variable> variablesToKeep,
             List<Variable> variablesToEliminate) {
 
-        List<TablePotential> potentials = (ArrayList<TablePotential>) ((Object) tablePotentials);
-        
-        TablePotential resultingPotential = new TablePotential(
-                variablesToKeep, getRole(tablePotentials));
-        
         // Constant potentials are those that do not depend on any variables.
         // The product of all the constant potentials is the constant factor.
         double constantFactor = 1.0;
         // Non constant potentials are proper potentials.
         List<TablePotential> properPotentials = new ArrayList<TablePotential> ();
-        for (Potential potential : potentials) {
+        for (Potential potential : tablePotentials) {
             if (potential.getNumVariables() != 0) {
                 properPotentials.add((TablePotential) potential);
             } else {
@@ -354,6 +347,8 @@ public final class DiscretePotentialOperations {
         int numProperPotentials = properPotentials.size();
         
         if (numProperPotentials == 0) {
+            TablePotential resultingPotential = new TablePotential(
+                    variablesToKeep, getRole(tablePotentials));            
             resultingPotential.values[0] = constantFactor;
             return resultingPotential;
         }
@@ -387,7 +382,8 @@ public final class DiscretePotentialOperations {
         
         // The result size is the product of the dimensions of the
         // variables to keep
-        int resultSize = resultingPotential.values.length;
+        int resultSize = TablePotential.computeTableSize(variablesToKeep);
+        double[] resultValues = new double[resultSize];
         // The elimination size is the product of the dimensions of the
         // variables to eliminate
         int eliminationSize = 1;
@@ -482,11 +478,11 @@ public final class DiscretePotentialOperations {
                 }
             }
         
-            resultingPotential.values[outerIteration] = accumulator;
+            resultValues[outerIteration] = accumulator;
         
         } // end of outer iteration
         
-        return resultingPotential;
+        return new TablePotential(variablesToKeep, getRole(tablePotentials), resultValues);
     }
     
     /** @param potentials potentials array to multiply
@@ -629,6 +625,25 @@ public final class DiscretePotentialOperations {
         }
         return accumulatedOffsets;
     }   
+    
+    /** Compute the accumulated offsets of a <code>Potential</code>s array with
+     * the order imposed by <code>variables</code>
+     * @param potentials <code>ArrayList</code> of <code>Potential</code>s.
+     * @param variables
+     * @return An array of arrays of integers (<code>int[][]</code>). */
+    public static int[][] getAccumulatedOffsets(
+            List<TablePotential> potentials,
+            List<Variable> variables) {
+
+        int numPotentials = potentials.size();
+        int[][] accumulatedOffsets = new int[numPotentials][];
+        
+        for (int i = 0; i < numPotentials; i++) {
+            TablePotential potential = potentials.get(i);
+            accumulatedOffsets[i] = TablePotential.getAccumulatedOffsets(variables, potential.getVariables());
+        }
+        return accumulatedOffsets;
+    }       
     
     /** @param potentials
      * @param variablesToEliminate
@@ -1098,8 +1113,6 @@ public final class DiscretePotentialOperations {
             
            List<Variable> variablesToKeep = fSVariablesToKeep;
             
-           PotentialRole role = getRole(tablePotentials);
-           
            PotentialRole roleResult = (isThereAUtilityPotential(tablePotentials))?PotentialRole.UTILITY:PotentialRole.CONDITIONAL_PROBABILITY;
 
             TablePotential resultingPotential = 

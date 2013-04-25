@@ -10,7 +10,9 @@
 package org.openmarkov.core.inference.heuristic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoableEdit;
@@ -36,7 +38,11 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	/** A set of nodes that points to variables that are nor query variables nor
 	 * observed variables. */
 	protected List<List<Variable>> variablesToEliminate;
-    
+
+    /** A set of nodes that points to variables that are nor query variables nor
+     * observed variables. */
+    protected List<List<ProbNode>> nodesToEliminate;
+	
 	/** <code>Variable</code> that the heuristic propose to eliminate. */
 	protected Variable variableProposed;
 	
@@ -50,6 +56,16 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 // con una copia 
 		this.probNet = probNet;
 		this.variablesToEliminate = variablesToEliminate;
+		this.nodesToEliminate = new ArrayList<>(variablesToEliminate.size());
+		for(List<Variable> variables : variablesToEliminate)
+		{
+		    List<ProbNode> probNodes = new ArrayList<>(variables.size());
+		    for(Variable variable : variables)
+		    {
+		        probNodes.add(probNet.getProbNode(variable));
+		    }
+		    this.nodesToEliminate.add(probNodes);
+		}
 		variableProposed = null;
 	}
 
@@ -62,19 +78,25 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 		Variable removedVariable = getEventVariable(event);
 
 		if (removedVariable != null) {
-			// Eliminate node from variablesToEliminate
-			ProbNode toEliminateNode = probNet.getProbNode(removedVariable);
-			int i = variablesToEliminate.size();
-			List<Variable> lastList = null;
-			boolean found = false;
-			if (i>0){
-				for (int j=i-1;j>=0&&!found;j--){
-					lastList = variablesToEliminate.get(j);
-					found = (lastList!=null)&&lastList.size()>0;
-				}
-				if (found){
-					lastList.remove(removedVariable);
-				}
+            int listIndex = -1;
+            for (int j = variablesToEliminate.size() - 1; j >= 0 && listIndex == -1; j--) {
+                if ((variablesToEliminate.get(j) != null) && variablesToEliminate.get(j).size() > 0) {
+                    listIndex = j;
+                }
+            }
+			if (listIndex > -1){
+			    int index = variablesToEliminate.get(listIndex).indexOf(removedVariable);
+			    variablesToEliminate.get(listIndex).remove(removedVariable);
+			    if(variablesToEliminate.get(listIndex).isEmpty())
+			    {
+			        variablesToEliminate.remove(listIndex);
+			    }
+                if (index > -1) {
+                    nodesToEliminate.get(listIndex).remove(index);
+                    if (nodesToEliminate.get(listIndex).isEmpty()) {
+                        nodesToEliminate.remove(listIndex);
+                    }
+                }
 			}
 			//Two lines commented by mluque
 			//probNet.removePotentials(toEliminateNode);

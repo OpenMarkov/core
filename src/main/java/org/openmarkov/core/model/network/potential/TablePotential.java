@@ -174,7 +174,7 @@ public class TablePotential extends Potential
         {
             dimensions = TablePotential.calculateDimensions (variables);
             offsets = TablePotential.calculateOffsets (dimensions);
-            computeTableSize ();
+            tableSize = computeTableSize (variables);
         }
         else
         {
@@ -219,7 +219,7 @@ public class TablePotential extends Potential
         this.initialPosition = initialPosition;
         this.offsets = offsets;
         this.dimensions = dimensions;
-        computeTableSize ();
+        tableSize = computeTableSize (variables);
         type = PotentialType.TABLE;
     }
 
@@ -1333,13 +1333,14 @@ public class TablePotential extends Potential
      * In projected potentials <code>tableSize</code> can be distinct that
      * <code>table.length</code>.
      */
-    private void computeTableSize ()
+    public static int computeTableSize (List<Variable> variables) 
     {
-        tableSize = 1;
-        for (Variable variable : (ArrayList<Variable>) ((Object) variables))
+        int tableSize = 1;
+        for (Variable variable : variables)
         {
             tableSize *= variable.getNumStates ();
         }
+        return tableSize;
     }
 
     /**

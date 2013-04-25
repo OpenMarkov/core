@@ -26,108 +26,87 @@ import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
-public class BasicOperations
-{
+public class BasicOperations {
     /**
      * The source probNet
      */
     // private static ProbNet sourceProbNet;
-    private static TablePotential getUtilityFunction (ProbNode utilityProbNode, EvidenceCase evidence)
-    {
+    private static TablePotential getUtilityFunction(ProbNode utilityProbNode, EvidenceCase evidence) {
         ProbNode probNode;
         TablePotential newPotential = null;
-        Hashtable<ProbNode, TablePotential> hashtable = new Hashtable<> ();
-        if (!isSuperValueNode (utilityProbNode.getVariable (), utilityProbNode.getProbNet ()))
-        {
-            try
-            {
-                newPotential = utilityProbNode.getPotentials ().get (0).tableProject (evidence, null).get (0);
-            }
-            catch (NonProjectablePotentialException | WrongCriterionException e)
-            {
+        Hashtable<ProbNode, TablePotential> hashtable = new Hashtable<>();
+        if (!isSuperValueNode(utilityProbNode)) {
+            try {
+                newPotential = utilityProbNode.getPotentials().get(0).tableProject(evidence, null)
+                        .get(0);
+            } catch (NonProjectablePotentialException | WrongCriterionException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace ();
+                e.printStackTrace();
             }
-        }
-        else
-        {
-            for (Node node : utilityProbNode.getNode ().getParents ())
-            {
-                probNode = (ProbNode) node.getObject ();
-                hashtable.put (probNode, getUtilityFunction (probNode, evidence));
+        } else {
+            for (Node node : utilityProbNode.getNode().getParents()) {
+                probNode = (ProbNode) node.getObject();
+                hashtable.put(probNode, getUtilityFunction(probNode, evidence));
             }
-            List<TablePotential> potentials = new ArrayList<TablePotential> (hashtable.values ());
-            Potential utilityPotential = utilityProbNode.getPotentials ().get (0);
-            if (utilityPotential.getPotentialType () == PotentialType.SUM
-                || (utilityPotential.getPotentialType () == PotentialType.SAME_AS_PREVIOUS &&
-                        ((SameAsPrevious)utilityPotential).getOriginalPotential().getPotentialType() == PotentialType.SUM))
-            {
-                newPotential = DiscretePotentialOperations.sum (potentials);
+            List<TablePotential> potentials = new ArrayList<TablePotential>(hashtable.values());
+            Potential utilityPotential = utilityProbNode.getPotentials().get(0);
+            if (utilityPotential.getPotentialType() == PotentialType.SUM
+                    || (utilityPotential.getPotentialType() == PotentialType.SAME_AS_PREVIOUS && ((SameAsPrevious) utilityPotential)
+                            .getOriginalPotential().getPotentialType() == PotentialType.SUM)) {
+                newPotential = DiscretePotentialOperations.sum(potentials);
+            } else {
+                newPotential = DiscretePotentialOperations.multiply(potentials);
             }
-            else
-            {
-                newPotential = DiscretePotentialOperations.multiply (potentials);
-            }
-            newPotential.setUtilityVariable (utilityProbNode.getVariable ());
+            newPotential.setUtilityVariable(utilityProbNode.getVariable());
         }
         return newPotential;
     }
 
-    private static boolean isSumSuperValueNode (ProbNet network, Variable utilityVariable)
-    {
-        List<Potential> potentials = network.getProbNode (utilityVariable).getPotentials ();
-        return (!potentials.isEmpty() && potentials.get (0).getPotentialType () == PotentialType.SUM);
+    private static boolean isSumSuperValueNode(ProbNet network, Variable utilityVariable) {
+        List<Potential> potentials = network.getProbNode(utilityVariable).getPotentials();
+        return (!potentials.isEmpty() && potentials.get(0).getPotentialType() == PotentialType.SUM);
     }
 
     /**
      * @param network
      * @return A list of utility nodes that have no children
      */
-    public static List<Variable> getTerminalUtilityVariables (ProbNet network)
-    {
-        List<Variable> utilityVariables = network.getVariables (NodeType.UTILITY);
-        List<Variable> terminalUtilityNodes = new ArrayList<Variable> ();
-        for (Variable utilityVariable : utilityVariables)
-        {
-            Node utilityNode = network.getProbNode (utilityVariable).getNode ();
-            if (utilityNode.getChildren ().size () == 0)
-            {
-                terminalUtilityNodes.add (utilityVariable);
+    public static List<Variable> getTerminalUtilityVariables(ProbNet network) {
+        List<Variable> utilityVariables = network.getVariables(NodeType.UTILITY);
+        List<Variable> terminalUtilityNodes = new ArrayList<Variable>();
+        for (Variable utilityVariable : utilityVariables) {
+            Node utilityNode = network.getProbNode(utilityVariable).getNode();
+            if (utilityNode.getChildren().size() == 0) {
+                terminalUtilityNodes.add(utilityVariable);
             }
         }
         return terminalUtilityNodes;
     }
-    
+
     /**
      * @param network
      * @return A list of utility nodes that have no children
      */
-    public static List<ProbNode> getTerminalUtilityNodes (ProbNet network)
-    {
-        List<ProbNode> utilityNodes = network.getProbNodes (NodeType.UTILITY);
-        List<ProbNode> terminalUtilityNodes = new ArrayList<> ();
-        for (ProbNode utilityNode : utilityNodes)
-        {
-            if (utilityNode.getNode().getChildren ().size () == 0)
-            {
-                terminalUtilityNodes.add (utilityNode);
+    public static List<ProbNode> getTerminalUtilityNodes(ProbNet network) {
+        List<ProbNode> utilityNodes = network.getProbNodes(NodeType.UTILITY);
+        List<ProbNode> terminalUtilityNodes = new ArrayList<>();
+        for (ProbNode utilityNode : utilityNodes) {
+            if (utilityNode.getNode().getChildren().size() == 0) {
+                terminalUtilityNodes.add(utilityNode);
             }
         }
         return terminalUtilityNodes;
     }
-    
 
     /**
      * @param sourceProbNet
      * @return A copy of the probNet after removing utility nodes.
      */
-    public static ProbNet removeUtilityNodes (ProbNet sourceProbNet)
-    {
-        ProbNet network = sourceProbNet.copy ();
-        for (Variable utilityVariable : network.getVariables (NodeType.UTILITY))
-        {
-            ProbNode probNode = network.getProbNode (utilityVariable);
-            network.removeProbNode (probNode);
+    public static ProbNet removeUtilityNodes(ProbNet sourceProbNet) {
+        ProbNet network = sourceProbNet.copy();
+        for (Variable utilityVariable : network.getVariables(NodeType.UTILITY)) {
+            ProbNode probNode = network.getProbNode(utilityVariable);
+            network.removeProbNode(probNode);
         }
         return network;
     }
@@ -153,75 +132,57 @@ public class BasicOperations
      * @throws NodeNotFoundException
      * @throws ProbNodeNotFoundException
      */
-    public static ProbNet removeSuperValueNodes (ProbNet sourceProbNet,
-                                                 EvidenceCase evidence,
-                                                 boolean keepComponents,
-                                                 boolean leaveImplicitSum,
-                                                 Variable utilityVariableToKeep)
-    {
-        ProbNet network = sourceProbNet.copy ();
-        List<Variable> utilityVariables = network.getVariables (NodeType.UTILITY);
-        List<TablePotential> potentials = new ArrayList<TablePotential> (0);
-        for (Variable utilityVariable : utilityVariables)
-        {
-            TablePotential potential = getUtilityFunction (network.getProbNode (utilityVariable), evidence);
-            potentials.add (potential);
-            if (((isSuperValueNode (utilityVariable, network) && utilityVariableToKeep == null))
-                || (utilityVariable == utilityVariableToKeep))
-            {
-                Node utilityNode = network.getProbNode (utilityVariable).getNode ();
+    public static ProbNet removeSuperValueNodes(ProbNet sourceProbNet, EvidenceCase evidence,
+            boolean keepComponents, boolean leaveImplicitSum, Variable utilityVariableToKeep) {
+        ProbNet network = sourceProbNet.copy();
+        List<ProbNode> utilityNodes = network.getProbNodes(NodeType.UTILITY);
+        List<TablePotential> potentials = new ArrayList<TablePotential>(0);
+        for (ProbNode utilityNode : utilityNodes) {
+            Variable utilityVariable = utilityNode.getVariable();
+            TablePotential potential = getUtilityFunction(utilityNode, evidence);
+            potentials.add(potential);
+            if (((isSuperValueNode(utilityNode) && utilityVariableToKeep == null))
+                    || (utilityVariable == utilityVariableToKeep)) {
+                List<Node> parents = utilityNode.getNode().getParents();
                 // remove links between supervalue nodes and their utility
                 // parents
-                for (Node parent : utilityNode.getParents ())
-                {
-                    ProbNode probNode = ((ProbNode) parent.getObject ());
-                    if (probNode.getNodeType () == NodeType.UTILITY)
-                    {
-                        network.removeLink (probNode.getVariable (), utilityVariable, true);
+                for (Node parent : parents) {
+                    ProbNode probNode = ((ProbNode) parent.getObject());
+                    if (probNode.getNodeType() == NodeType.UTILITY) {
+                        network.removeLink(probNode.getVariable(), utilityVariable, true);
                     }
                 }
                 // add links between of new potential of supervalue nodes
-                for (Variable variable : potential.getVariables ())
-                {
+                for (Variable variable : potential.getVariables()) {
                     try {
-                        network.addLink (variable, utilityVariable, true);
+                        network.addLink(variable, utilityVariable, true);
                     } catch (NodeNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
                 // sets the new potential
-                List<Potential> newPotentials = new ArrayList<Potential> ();
-                newPotentials.add (potential);
-                network.getProbNode (utilityVariable).setPotentials (newPotentials);
+                List<Potential> newPotentials = new ArrayList<Potential>();
+                newPotentials.add(potential);
+                network.getProbNode(utilityVariable).setPotentials(newPotentials);
             }
         }
-        if (!keepComponents)
-        {
+        if (!keepComponents) {
             List<Variable> nodesToKeep;
-            if (utilityVariableToKeep == null)
-            {
-                if (leaveImplicitSum)
-                {
+            if (utilityVariableToKeep == null) {
+                if (leaveImplicitSum) {
                     // Get the probNodes such as there is an implicit sum
                     // between them
-                    nodesToKeep = getUtilityNodesToKeepImplicitSum (sourceProbNet);
+                    nodesToKeep = getUtilityNodesToKeepImplicitSum(sourceProbNet);
+                } else {
+                    nodesToKeep = getTerminalUtilityVariables(sourceProbNet);
                 }
-                else
-                {
-                    nodesToKeep = getTerminalUtilityVariables (sourceProbNet);
-                }
+            } else {
+                nodesToKeep = new ArrayList<Variable>();
+                nodesToKeep.add(utilityVariableToKeep);
             }
-            else
-            {
-                nodesToKeep = new ArrayList<Variable> ();
-                nodesToKeep.add (utilityVariableToKeep);
-            }
-            for (Variable utilityVariable : utilityVariables)
-            {
-                if (!nodesToKeep.contains (utilityVariable))
-                {
-                    ProbNode probNode = network.getProbNode (utilityVariable);
-                    network.removeProbNode (probNode);
+            for (ProbNode utilityNode : utilityNodes) {
+                if (!nodesToKeep.contains(utilityNode.getVariable())) {
+                    network.removeProbNode(utilityNode);
                 }
             }
         }
@@ -231,16 +192,15 @@ public class BasicOperations
     /**
      * Assumes the structure of super value verifies that there are no more than
      * one path between two utility nodes.
+     * 
      * @param sourceProbNet
      * @return A list of utility nodes that must be kept when we want to have a
      *         set of utility nodes with an implicit sum
      */
-    private static List<Variable> getUtilityNodesToKeepImplicitSum (ProbNet sourceProbNet)
-    {
-        List<Variable> nodesToKeep = getTerminalUtilityVariables (sourceProbNet);
-        while (thereAreSumNodesInTheList (sourceProbNet, nodesToKeep))
-        {
-            removeASumNode (sourceProbNet, nodesToKeep);
+    private static List<Variable> getUtilityNodesToKeepImplicitSum(ProbNet sourceProbNet) {
+        List<Variable> nodesToKeep = getTerminalUtilityVariables(sourceProbNet);
+        while (thereAreSumNodesInTheList(sourceProbNet, nodesToKeep)) {
+            removeASumNode(sourceProbNet, nodesToKeep);
         }
         return nodesToKeep;
     }
@@ -250,66 +210,75 @@ public class BasicOperations
      * @param nodesToKeep
      * @return true if there are some sum node in the list 'nodesToKeep'
      */
-    private static boolean thereAreSumNodesInTheList (ProbNet sourceProbNet,
-                                                      List<Variable> nodesToKeep)
-    {
+    private static boolean thereAreSumNodesInTheList(ProbNet sourceProbNet,
+            List<Variable> nodesToKeep) {
         boolean thereAre = false;
-        for (int i = 0; (i < nodesToKeep.size ()) && !thereAre; i++)
-        {
-            Variable auxVar = nodesToKeep.get (i);
-            thereAre = (isSumSuperValueNode (sourceProbNet, auxVar));
+        for (int i = 0; (i < nodesToKeep.size()) && !thereAre; i++) {
+            Variable auxVar = nodesToKeep.get(i);
+            thereAre = (isSumSuperValueNode(sourceProbNet, auxVar));
         }
         return thereAre;
     }
 
     /**
      * @param sourceProbNet
-     * @param nodesToKeep Removes a sum node of the list and add its parents to
-     *            the list
+     * @param nodesToKeep
+     *            Removes a sum node of the list and add its parents to the list
      */
-    private static void removeASumNode (ProbNet sourceProbNet, List<Variable> nodesToKeep)
-    {
+    private static void removeASumNode(ProbNet sourceProbNet, List<Variable> nodesToKeep) {
         boolean removed = false;
-        for (int i = 0; (i < nodesToKeep.size ()) && !removed; i++)
-        {
-            Variable auxVar = nodesToKeep.get (i);
-            removed = (isSumSuperValueNode (sourceProbNet, auxVar));
-            if(removed)
-            {
-                nodesToKeep.remove (auxVar);
+        for (int i = 0; (i < nodesToKeep.size()) && !removed; i++) {
+            Variable auxVar = nodesToKeep.get(i);
+            removed = (isSumSuperValueNode(sourceProbNet, auxVar));
+            if (removed) {
+                nodesToKeep.remove(auxVar);
                 List<Node> parentNodes = null;
-                try
-                {
-                    parentNodes = sourceProbNet.getProbNode (sourceProbNet.getVariable (auxVar.getName ())).getNode ().getParents ();
-                }
-                catch (ProbNodeNotFoundException e)
-                {
+                try {
+                    parentNodes = sourceProbNet
+                            .getProbNode(sourceProbNet.getVariable(auxVar.getName())).getNode()
+                            .getParents();
+                } catch (ProbNodeNotFoundException e) {
                     // TODO Auto-generated catch block
-                    e.printStackTrace ();
+                    e.printStackTrace();
                 }
-                nodesToKeep.addAll (ProbNet.getVariables (parentNodes));
+                nodesToKeep.addAll(ProbNet.getVariables(parentNodes));
             }
         }
     }
 
     /**
      * Gets if the variable parameter is a supervalue node
-     * @param utilityVariable the variable to test
+     * 
+     * @param utilityVariable
+     *            the variable to test
      * @return true if the variable is a supervalue node. False if does not
      */
-    private static boolean isSuperValueNode (Variable utilityVariable, ProbNet probNet)
-    {
-        ProbNode utilityProbNode = probNet.getProbNode (utilityVariable);
-        Node utilityNode = utilityProbNode.getNode ();
+    private static boolean hasSuperValueNodes(ProbNet probNet) {
+        boolean isThereSVNodes = false;
+        List<ProbNode> utilityNodes = probNet.getProbNodes(NodeType.UTILITY);
+        int i = 0;
+        while (i < utilityNodes.size() && !isThereSVNodes) {
+            isThereSVNodes = isSuperValueNode(utilityNodes.get(i));
+            ++i;
+        }
+        return isThereSVNodes;
+    }
+
+    /**
+     * Gets if the variable parameter is a supervalue node
+     * 
+     * @param utilityVariable
+     *            the variable to test
+     * @return true if the variable is a supervalue node. False if does not
+     */
+    private static boolean isSuperValueNode(ProbNode utilityNode) {
         int numOfUtilityParents = 0;
-        for (Node parent : utilityNode.getParents ())
-        {
-            if (((ProbNode) parent.getObject ()).getNodeType () == NodeType.UTILITY)
-            {
+        List<Node> parents = utilityNode.getNode().getParents();
+        for (Node parent : parents) {
+            if (((ProbNode) parent.getObject()).getNodeType() == NodeType.UTILITY) {
                 // if the node has two or more utility parents then is a super
                 // value node
-                if ((numOfUtilityParents++) >= 1)
-                {
+                if ((numOfUtilityParents++) >= 1) {
                     return true;
                 }
             }

@@ -84,6 +84,9 @@ public class MPADFactory {
         // Extend evidence
         extendEvidence(probNet, evidence);
 
+        // Remove super value nodes
+        probNet = BasicOperations.removeSuperValueNodes(probNet, evidence, false, false, null);
+
         // Project evidence on temporal nodes
         InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
         projectTemporalEvidence(inferenceOptions, evidence);
@@ -96,9 +99,8 @@ public class MPADFactory {
         } else {
             // Half zero and last cycle utilities
             applyHalfCycleCorrection();
+            probNet = BasicOperations.removeSuperValueNodes(probNet, evidence, false, false, null);
         }
-        // Remove super value nodes
-        probNet = BasicOperations.removeSuperValueNodes(probNet, evidence, false, false, null);
         
         applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate);
         

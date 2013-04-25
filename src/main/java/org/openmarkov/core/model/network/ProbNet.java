@@ -579,22 +579,23 @@ public class ProbNet
         {
             copyGraph.makeLinksExplicit (false);
         }
-        for (ProbNode probNode1 : nodes)
+        for (ProbNode node : nodes)
         {
-            ProbNode copyNode1 = copyNet.getProbNode (probNode1.getVariable ());
-            List<ProbNode> neighbors = getProbNodesOfNodes (probNode1.getNode ().getNeighbors ());
-            for (ProbNode probNode2 : neighbors)
+            ProbNode copyNode = copyNet.getProbNode (node.getVariable ());
+            List<ProbNode> siblings = getProbNodesOfNodes (node.getNode ().getSiblings ());
+            for (ProbNode sibling : siblings)
             {
-                ProbNode copyNode2 = copyNet.getProbNode (probNode2.getVariable ());
-                if (probNode1.getNode ().isSibling (probNode2.getNode ())
-                    && !copyNode1.getNode ().isSibling (copyNode2.getNode ()))
+                ProbNode copySibling = copyNet.getProbNode (sibling.getVariable ());
+                if (!copyNode.getNode ().isSibling (copySibling.getNode ()))
                 {
-                    copyGraph.addLink (copyNode1.getNode (), copyNode2.getNode (), false);
+                    copyGraph.addLink (copyNode.getNode (), copySibling.getNode (), false);
                 }
-                if (probNode1.getNode ().isChild (probNode2.getNode ()))
-                {
-                    copyGraph.addLink (copyNode1.getNode (), copyNode2.getNode (), true);
-                }
+            }
+            List<ProbNode> children = getProbNodesOfNodes (node.getNode ().getChildren ());
+            for (ProbNode child : children)
+            {
+                ProbNode copyChild = copyNet.getProbNode (child.getVariable ());
+                copyGraph.addLink (copyNode.getNode (), copyChild.getNode (), true);
             }
         }
         // Copy explicit links' properties
@@ -1379,6 +1380,12 @@ public class ProbNet
         }
         return (probNode != null);
     }
+    
+    public boolean containsVariable (Variable variable)
+    {
+        return getProbNode(variable) != null;
+    }
+    
 
     /**
      * Returns true if this probNet contains the shifted variable

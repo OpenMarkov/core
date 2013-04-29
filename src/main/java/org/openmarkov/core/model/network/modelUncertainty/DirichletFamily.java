@@ -9,14 +9,11 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import java.util.List;
 import java.util.Random;
 
-import umontreal.iro.lecuyer.rng.MRG32k3a;
-import umontreal.iro.lecuyer.rng.RandomStream;
-
 public class DirichletFamily extends FamilyDistribution
 {
     private double[] alpha;
     
-    private RandomStream stream;
+//    private RandomStream stream;
 
     public DirichletFamily (List<UncertainValue> siblings)
     {
@@ -29,7 +26,7 @@ public class DirichletFamily extends FamilyDistribution
             ((DirichletFunction) (family.get (i).getProbDensityFunction ())).setAlpha (alpha[i]);
         }
         this.alpha = alpha;
-        this.stream = new MRG32k3a();
+//        this.stream = new MRG32k3a();
     }
 
     public DirichletFamily (double[] alphas)
@@ -40,7 +37,7 @@ public class DirichletFamily extends FamilyDistribution
         {
             this.alpha[i] = alphas[i];
         }
-        this.stream = new MRG32k3a();
+//        this.stream = new MRG32k3a();
     }
 
     public double[] getMean ()

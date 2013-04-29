@@ -8,7 +8,9 @@ package org.openmarkov.core.inference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -26,9 +28,9 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
-import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
@@ -99,7 +101,6 @@ public class MPADFactory {
         } else {
             // Half zero and last cycle utilities
             applyHalfCycleCorrection();
-            probNet = BasicOperations.removeSuperValueNodes(probNet, evidence, false, false, null);
         }
         
         applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate);
@@ -260,44 +261,49 @@ public class MPADFactory {
      * Divide by two the utilities of the zero and last cycle
      */
     private void applyHalfCycleCorrection() {
+        Map<ProbNode, Potential> halfCyclePotentials = new HashMap<>();
         for (ProbNode utilityProbNode : probNet.getProbNodes(NodeType.UTILITY)) {
             Variable utilityVariable = utilityProbNode.getVariable();
-            int timeSlice = utilityVariable.getTimeSlice();
-            StringWithProperties decisionCriteria = utilityVariable.getDecisionCriteria();
-            if (utilityVariable.isTemporal()) {
+            if (utilityVariable.isTemporal() && utilityVariable.getTimeSlice() > 0) {
+                StringWithProperties decisionCriteria = utilityVariable.getDecisionCriteria();
                 if (decisionCriteria.getString().equalsIgnoreCase("effectiveness")) {
-                    
-                    for (Potential utilityPotential : utilityProbNode.getPotentials()) {
-                        // We can safely assume they are all table potentials,
-                        // as evidence has already been projected
-                        double[] values = ((TablePotential) utilityPotential).values;
-                        for (int j = 0; j < values.length; ++j) {
-                            values[j] /= 2;
-                        }
+                    Variable previousSliceVariable = probNet.getShiftedVariable(utilityVariable, -1);
+                    ProbNode previousSliceNode = probNet.getProbNode(previousSliceVariable);
+                    // Calculate half cycle potentials adding the potentials of
+                    // current and previous time slices and dividing the result
+                    // by two
+                    List<TablePotential> potentialsToSum = Arrays.asList((TablePotential)utilityProbNode.getPotentials().get(0), (TablePotential)previousSliceNode.getPotentials().get(0));
+                    TablePotential sumPotential = DiscretePotentialOperations.sum(potentialsToSum);
+                    sumPotential.setUtilityVariable(utilityVariable);
+                    double[] values = sumPotential.values;
+                    for (int j = 0; j < values.length; ++j) {
+                        values[j] /= 2;
                     }
-
-                    // Create a sum super-value whose parents are this node and the one in the
-                    // next time slice.
-                    if(timeSlice < numSlices)
-                    {
-                        Variable nextSliceVariable = probNet.getShiftedVariable(utilityVariable, 1);
-                        ProbNode nextSliceNode = probNet.getProbNode(nextSliceVariable);
-                        
-                        Variable halfCycleUtility = new Variable(nextSliceVariable.getBaseName()+ " HC");
-                        halfCycleUtility.setTimeSlice(nextSliceVariable.getTimeSlice());
-                        halfCycleUtility.setDecisionCriteria(new StringWithProperties("effectiveness"));
-                        ProbNode halfCycleNode = probNet.addProbNode(halfCycleUtility, NodeType.UTILITY);
-                        halfCycleNode.getNode().setCoordinateX(nextSliceNode.getNode().getCoordinateX());
-                        halfCycleNode.getNode().setCoordinateY(nextSliceNode.getNode().getCoordinateY() + 100);
-                        probNet.addLink(utilityProbNode, halfCycleNode, true);
-                        probNet.addLink(nextSliceNode, halfCycleNode, true);
-                        SumPotential halfCyclePotential = new SumPotential(Arrays.asList(utilityVariable,
-                                nextSliceVariable), PotentialRole.UTILITY, halfCycleUtility);
-                        halfCycleNode.setPotential(halfCyclePotential);
-                    }
-                } else if (decisionCriteria.getString().equalsIgnoreCase("cost") && timeSlice == 0) {
-                    probNet.removeProbNode(utilityProbNode);
+                    halfCyclePotentials.put(utilityProbNode, sumPotential);
                 }
+            }
+        }
+        
+        // Update potentials, add parents of previous time slice
+        for(ProbNode utilityProbNode : halfCyclePotentials.keySet())
+        {
+            Potential halfCyclePotential = halfCyclePotentials.get(utilityProbNode);
+            for(Variable potentialVariable : halfCyclePotential.getVariables())
+            {
+                ProbNode potentialNode = probNet.getProbNode(potentialVariable);
+                if(!utilityProbNode.getNode().isParent(potentialNode.getNode()))
+                {
+                    probNet.addLink(potentialNode, utilityProbNode, true);
+                }
+            }
+            utilityProbNode.setPotential(halfCyclePotential);
+        }
+
+        // Remove utility nodes of cycle zero
+        for (ProbNode utilityProbNode : probNet.getProbNodes(NodeType.UTILITY)) {
+            Variable utilityVariable = utilityProbNode.getVariable();
+            if (utilityVariable.isTemporal() && utilityVariable.getTimeSlice() == 0) {
+                probNet.removeProbNode(utilityProbNode);
             }
         }
     }

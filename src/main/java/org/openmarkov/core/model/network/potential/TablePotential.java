@@ -46,7 +46,6 @@ import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
  * @version 1.0
  * @since OpenMarkov 1.0
  */
-@SuppressWarnings({"unchecked"})
 @RelationPotentialType(name = "Table", family = "")
 public class TablePotential extends Potential
     implements
@@ -80,11 +79,6 @@ public class TablePotential extends Potential
      * <code>TablePotential</code> is a projection.
      */
     protected int                    tableSize;
-    /**
-     * In projected potentials, collection of variables of the original
-     * potential. Original variables are used to calculate accumulated offsets.
-     */
-    // protected ArrayList<Variable> originalVariables;
     /**
      * This object has a function that returns the available memory. Used in the
      * constructor before creating the <code>table</code>

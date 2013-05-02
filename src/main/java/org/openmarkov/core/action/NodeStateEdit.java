@@ -220,7 +220,7 @@ public class NodeStateEdit extends SimplePNEdit {
 	}
 
 	public void renameBranchesStates(TreeADDPotential tree, String oldName, String newName) {
-		if (tree.getTopVariable().equals(probNode.getVariable())) {
+		if (tree.getRootVariable().equals(probNode.getVariable())) {
 			for (int i = 0; i < tree.getBranches().size(); i++) {
 				for (int j = 0; j < tree.getBranches().get(i).getBranchStates().size(); j++) {
 					if (tree.getBranches().get(i).getBranchStates().get(j).getName()

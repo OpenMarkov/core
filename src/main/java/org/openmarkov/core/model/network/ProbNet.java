@@ -1341,28 +1341,37 @@ public class ProbNet
         ProbNode probNode = getProbNode (variableName);
         return probNode.getVariable ();
     }
+    
+    /**
+     * Returns variable on a certain timeSlice
+     * 
+     * @param variable
+     * @param timeSlice
+     * @return
+     * @throws ProbNodeNotFoundException
+     */
+    public Variable getVariable(String baseName, int timeSlice) throws ProbNodeNotFoundException {
+        return getVariable(baseName + " [" + timeSlice + "]");
+    }  
 
     /**
-     * @param variable . a <code>Variable</code>
+     * @param variable
+     *            . a <code>Variable</code>
      * @argCondition variable must be in the network and must be temporal
      * @param int timeSlice
      * @return a new variable having the same base name as the first argument
      *         but in the time slice indicated by the second argument
      * @consultation
      */
-    public Variable getShiftedVariable (Variable variable, int timeDifference)
-    {
-        int timeSlice = variable.getTimeSlice () + timeDifference;
-        String baseName = variable.getBaseName ();
-        try
-        {
-            return getVariable (baseName + " [" + timeSlice + "]");
-        }
-        catch (ProbNodeNotFoundException e)
-        {
+    public Variable getShiftedVariable(Variable variable, int timeDifference) {
+        try {
+            return getVariable(variable.getBaseName(), variable.getTimeSlice() + timeDifference);
+        } catch (ProbNodeNotFoundException e) {
             // TODO Unreachable code
-            throw new Error (" Variable " + baseName + " [" + timeSlice + "] not found");
+            throw new Error(" Variable " + variable.getBaseName() + " ["
+                    + (variable.getTimeSlice() + timeDifference) + "] not found");
         }
+
     }
 
     // TODO Con este nuevo metodo podemos evitar la chapuza hecha en

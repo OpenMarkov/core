@@ -265,18 +265,30 @@ public abstract class Potential
         return numVariables;
     }
 
+    public Variable getConditionedVariable ()
+    {
+        Variable conditionedVariable = null;
+        switch (role)
+        {
+        case CONDITIONAL_PROBABILITY:
+            conditionedVariable = variables.get (0);
+            break;
+        case UTILITY:
+            conditionedVariable = utilityVariable;
+            break;
+        default:
+            conditionedVariable = null;
+            break;
+        }
+        return conditionedVariable;
+    }
+    
     /** @return utilityVariable. <code>Variable</code> */
     public Variable getUtilityVariable ()
     {
         return utilityVariable;
     }
-
-    /** @return <code>PotentialType</code> */
-    public PotentialType getPotentialType ()
-    {
-        return type;
-    }
-
+    
     /** @param utilityVariable. <code>Variable</code> */
     public void setUtilityVariable (Variable utilityVariable)
     {
@@ -285,6 +297,12 @@ public abstract class Potential
         {
             role = PotentialRole.UTILITY;
         }
+    }
+    
+    /** @return <code>PotentialType</code> */
+    public PotentialType getPotentialType ()
+    {
+        return type;
     }
 
     /**

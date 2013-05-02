@@ -21,7 +21,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 public class TreeADDBranch
 {
     /**
-     * Each treeADDBranch has a potential associated
+     * Each TreeADDBranch has an associated potential 
      */
     private Potential      potential;
     /**
@@ -34,22 +34,22 @@ public class TreeADDBranch
      * If the topVariable of the tree is a continuous variable it is defined in
      * a continuous interval which has two thresholds.
      */
-    private Threshold      thresholdMin;
-    private Threshold      thresholdMax;
+    private Threshold      lowerBound;
+    private Threshold      upperBound;
+    private Variable       rootVariable;
     /**
      * A branch can be labeled, labels are used to reference potential from
      * other branches when that potential has more than one parents
      */
-    private Variable       topVariable;
-
-    /* private String label; */
+    private String label;
     /**
      * A branch can reference a potential from other branch that has been
      * labeled
      */
-    /* private String reference; */
+    private String reference;
+    
     /**
-     * Constructor for discretized and finite estates variables
+     * Constructor for discretized and finite states variables
      * @param branchStates
      * @param potential
      * @param topVariable
@@ -62,89 +62,143 @@ public class TreeADDBranch
     {
         this.states = branchStates;
         this.potential = potential;
-        this.topVariable = topVariable;
+        this.rootVariable = topVariable;
         this.parentVariables = parentVariables;
-        // this.treeADD = treeADD;
     }
 
     /**
-     * Constructor for the parser
-     * @param thresholds
+     * Constructor for numeric variables
+     * @param lowerThreshold
+     * @param upperThreshold
      * @param potential
+     * @param topVariable
+     * @param parentVariables
      */
-    public TreeADDBranch (Threshold[] thresholds,
+    public TreeADDBranch (Threshold lowerBound,
+                          Threshold upperBound,
                           Potential potential,
                           Variable topVariable,
                           List<Variable> parentVariables)
     {
-        this.thresholdMax = thresholds[1];
-        this.thresholdMin = thresholds[0];
-        this.topVariable = topVariable;
-        this.parentVariables = parentVariables;
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
         this.potential = potential;
+        this.rootVariable = topVariable;
+        this.parentVariables = parentVariables;
     }
 
-    /*
-     * public TreeADDBranch(ArrayList<State> branchStates, Potential potential,
-     * String label) { this.states = branchStates; this.potential = potential;
-     * this.label = label; //this.treeADD = treeADD; }
-     */
-    /*
-     * @argCondition reference must be one of the labels in this ADD and the
-     * reference must not create a cycle in the ADD. If a branch has assigned a
-     * reference cannot has assigned a potential
-     */
-    /*
-     * public void setReference(String reference) { this.reference = reference;
-     * }
-     */
-    /*
-     * @argCondition label is incompatible with reference
-     */
-    /*
-     * public void setLabel(String label) { this.label = label; }
-     */
-    /*
-     * public TreeADDBranch(ArrayList<State> branchStates, String reference) {
-     * this.states = branchStates; this.reference = reference; }
-     */
     /**
-     * Constructor for numeric variables
+     * Constructor for discretized and finite states variables with reference
+     * @param branchStates
+     * @param potential
+     * @param topVariable
+     * @param parentVariables
+     */
+    public TreeADDBranch (List<State> branchStates,
+                          String reference,
+                          Potential potential,
+                          Variable topVariable,
+                          List<Variable> parentVariables)
+    {
+        this.states = branchStates;
+        this.reference = reference;
+        this.potential = potential;
+        this.rootVariable = topVariable;
+        this.parentVariables = parentVariables;
+    }
+
+    /**
+     * Constructor for numeric variables with reference
      * @param thresholdMin
      * @param thresholdMax
      * @param potential
      * @param topVariable
      * @param parentVariables
      */
-    public TreeADDBranch (Threshold thresholdMin,
-                          Threshold thresholdMax,
+    public TreeADDBranch (Threshold lowerBound,
+                          Threshold upperBound,
                           Potential potential,
+                          String reference,
                           Variable topVariable,
                           List<Variable> parentVariables)
     {
-        this.thresholdMin = thresholdMin;
-        this.thresholdMax = thresholdMax;
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
         this.potential = potential;
-        this.topVariable = topVariable;
+        this.reference = reference;
+        this.rootVariable = topVariable;
         this.parentVariables = parentVariables;
     }
-
-    /*
-     * public TreeADDBranch(ArrayList<State> branchStates, Potential potential,
-     * String label) { this.states = branchStates; this.label = label;
-     * this.potentialsLabeled = new HashMap<String, Potential>(); this.potential
-     * = potentialsLabeled.put(label, potential); } public
-     * TreeADDBranch(ArrayList<State> branchStates, String reference) {
-     * this.states = branchStates; }
-     */
-    public void setThresholdMin (Threshold min)
+    
+    public TreeADDBranch copy ()
     {
-        this.thresholdMin = min;
+        TreeADDBranch branch = null;
+        if(potential != null)
+        {
+            if (this.rootVariable.getVariableType() == VariableType.FINITE_STATES
+                    || this.rootVariable.getVariableType() == VariableType.DISCRETIZED) {
+                branch = new TreeADDBranch(new ArrayList<>(getBranchStates()),
+                        this.getPotential().copy(),
+                        this.getRootVariable(),
+                        this.getParentVariables());
+
+            } else if (this.rootVariable.getVariableType() == VariableType.NUMERIC) {
+                branch = new TreeADDBranch(this.getLowerBound().copy(),
+                        this.getUpperBound().copy(),
+                        this.getPotential().copy(),
+                        this.getRootVariable(),
+                        this.getParentVariables());
+            }
+            if(label != null)
+            {
+                branch.setLabel(label);
+            }
+        }else if(reference != null)
+        {
+            if (this.rootVariable.getVariableType () == VariableType.FINITE_STATES
+                    || this.rootVariable.getVariableType () == VariableType.DISCRETIZED)
+           {            
+                branch = new TreeADDBranch(new ArrayList<>(getBranchStates()),
+                        this.reference,
+                        this.potential,
+                        this.getRootVariable(),
+                        this.getParentVariables());
+                
+            }
+            else if (this.rootVariable.getVariableType () == VariableType.NUMERIC)
+            {
+                branch = new TreeADDBranch(this.getLowerBound().copy(),
+                        this.getUpperBound().copy(),
+                        this.potential,
+                        this.reference,
+                        this.getRootVariable(),
+                        this.getParentVariables());
+           }
+        }
+        return branch;
+    }    
+    
+    public List<Variable> getAddableVariables() {
+        List<Variable> addableVariables = new ArrayList<>();
+        List<Variable> potentialVariables = potential.getVariables();
+        for (Variable variable : parentVariables) {
+            if (!variable.equals(rootVariable)
+                    && !potentialVariables.contains(variable)
+                    && !variable.equals(potential.getConditionedVariable())) {
+                addableVariables.add(variable);
+            }
+        }
+        return addableVariables;
+    }
+    
+    public void setLowerBound (Threshold lowerBound)
+    {
+        this.lowerBound = lowerBound;
     }
 
-    public void setThresholdMax (Threshold max)
+    public void setUpperBound (Threshold upperBound)
     {
-        this.thresholdMax = max;
+        this.upperBound = upperBound;
     }
 
     public List<State> getBranchStates ()
@@ -162,15 +216,11 @@ public class TreeADDBranch
         this.parentVariables = parentVariables;
     }
 
-    public Variable getTopVariable ()
+    public Variable getRootVariable ()
     {
-        return this.topVariable;
+        return this.rootVariable;
     }
 
-    /*
-     * public String getLabel(){ return this.label; } public String
-     * getReference(){ return this.reference; }
-     */
     public Potential getPotential ()
     {
         return this.potential;
@@ -181,9 +231,9 @@ public class TreeADDBranch
         this.potential = potential;
     }
 
-    public void setTopVariable (Variable topVariable)
+    public void setRootVariable (Variable topVariable)
     {
-        this.topVariable = topVariable;
+        this.rootVariable = topVariable;
     }
 
     public void setStates (List<State> states)
@@ -191,38 +241,35 @@ public class TreeADDBranch
         this.states = states;
     }
 
-    public Threshold getMinThreshold ()
+    public Threshold getLowerBound ()
     {
-        return thresholdMin;
+        return lowerBound;
     }
 
-    public Threshold getMaxThreshold ()
+    public Threshold getUpperBound ()
     {
-        return thresholdMax;
+        return upperBound;
     }
 
-    public TreeADDBranch copy ()
-    {
-        TreeADDBranch branch = null;
-        if (this.topVariable.getVariableType () == VariableType.FINITE_STATES
-            || this.topVariable.getVariableType () == VariableType.DISCRETIZED)
-        {
+    public String getLabel() {
+        return this.label;
+    }    
 
-			List<State> states = new ArrayList<>();
-			for (int i = 0; i < this.getBranchStates().size(); i++) {
-				states.add(getBranchStates().get(i));
-			}
-			branch = new TreeADDBranch(states, this.getPotential().copy(),
-					this.getTopVariable(), this.getParentVariables());
-            
-        }
-        else if (this.topVariable.getVariableType () == VariableType.NUMERIC)
-        {
-			branch = new TreeADDBranch(this.getMinThreshold().copy(), this
-					.getMaxThreshold().copy(), this.getPotential().copy(),
-					this.getTopVariable(), this.getParentVariables());
-        }
-        return branch;
+    public void setLabel(String label) {
+        this.label = label;
+    }    
+
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
+
+    public String getReference() {
+        return this.reference;
+    }
+    
+    public boolean isReference()
+    {
+        return this.reference != null;
     }
 
     @Override
@@ -236,11 +283,11 @@ public class TreeADDBranch
         builder.append (", parentVariables=");
         builder.append (parentVariables);
         builder.append (", thresholdMin=");
-        builder.append (thresholdMin);
+        builder.append (lowerBound);
         builder.append (", thresholdMax=");
-        builder.append (thresholdMax);
+        builder.append (upperBound);
         builder.append (", topVariable=");
-        builder.append (topVariable);
+        builder.append (rootVariable);
         builder.append ("]");
         return builder.toString ();
     }

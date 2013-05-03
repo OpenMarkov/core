@@ -215,6 +215,8 @@ public class NodeStateEdit extends SimplePNEdit {
 				state.setName(newStateName);
 			}
 			break;
+        default:
+            break;
 		}
 
 	}

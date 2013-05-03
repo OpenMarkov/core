@@ -9,7 +9,6 @@
 
 package org.openmarkov.core.model.network.potential.operation.concurrent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.model.network.Variable;

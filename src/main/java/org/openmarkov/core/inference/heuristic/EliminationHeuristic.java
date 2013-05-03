@@ -10,9 +10,7 @@
 package org.openmarkov.core.inference.heuristic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoableEdit;

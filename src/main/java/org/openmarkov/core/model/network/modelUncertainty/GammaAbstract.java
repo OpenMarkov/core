@@ -54,7 +54,6 @@ public abstract class GammaAbstract extends ProbDensFunction
     public final double getSample (Random randomGenerator)
     {
         double sample;
-        int k;
         double r;
         double lambdaErlang;
         double u;

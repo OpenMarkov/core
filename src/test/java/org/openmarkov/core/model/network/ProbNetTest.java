@@ -582,7 +582,7 @@ public class ProbNetTest {
 	public void testGetVariablesArrayListOfNode() {
 	    List<ProbNode> probNodes = simpleProbNet.getProbNodes();
 		List<Node> nodes = ProbNet.getNodesOfProbNodes(probNodes);
-		List<Variable> variables = simpleProbNet.getVariables(nodes);
+		List<Variable> variables = ProbNet.getVariables(nodes);
 		assertTrue(variables.contains(A));
 		assertTrue(variables.contains(B));
 		assertTrue(variables.contains(D));

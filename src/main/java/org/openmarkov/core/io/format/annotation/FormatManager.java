@@ -17,7 +17,6 @@ import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
-import org.openmarkov.plugin.service.PluginLoaderIF;
 
 /**
  * This class is the manager of the format annotations. Detects the plugins with FormatType 

@@ -157,7 +157,8 @@ public class PotentialOperations {
 	/** @param potentials potentials array to multiply
 	 * @return The multiplied potentials
 	 * @throws PotentialOperationException */
-	public static Potential multiply(List<? extends Potential> potentials)
+	@SuppressWarnings("unchecked")
+    public static Potential multiply(List<? extends Potential> potentials)
 	        throws PotentialOperationException
 	{	
     	// correct type verification of parameters before calling method.

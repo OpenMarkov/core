@@ -10,6 +10,7 @@
 package org.openmarkov.core.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -30,9 +31,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 @SuppressWarnings("serial")
 public class UncertainValuesRemoveEdit extends SimplePNEdit {
 	
-	private ArrayList<UncertainValue> newUncertainColumn;
-	
-	private ArrayList<UncertainValue> oldUncertainColumn;
+	private List<UncertainValue> oldUncertainColumn;
 
 	private int basePosition;
 

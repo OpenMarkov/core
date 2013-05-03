@@ -264,8 +264,8 @@ public class TreeADDPotential extends Potential {
 
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase,
-            InferenceOptions inferenceOptions) throws NonProjectablePotentialException,
-            WrongCriterionException {
+            InferenceOptions inferenceOptions)
+            throws NonProjectablePotentialException, WrongCriterionException {
         List<TablePotential> potentialsToSumUp = new ArrayList<TablePotential>();
         List<TablePotential> projectedPotentials = new ArrayList<TablePotential>();
         TablePotential projected = null;
@@ -368,7 +368,8 @@ public class TreeADDPotential extends Potential {
      * private TablePotential getPotentialMask () { }
      */
     @Override
-    public Potential shift(ProbNet probNet, int timeDifference) throws ProbNodeNotFoundException {
+    public Potential shift(ProbNet probNet, int timeDifference)
+            throws ProbNodeNotFoundException {
         TreeADDPotential copiedTree = new TreeADDPotential(this);
         List<Variable> copiedTreeVariables = new ArrayList<>();
         for (Variable variable : copiedTree.getVariables()) {
@@ -488,4 +489,15 @@ public class TreeADDPotential extends Potential {
         }
         return labeledPotentials;
     }
+
+    @Override
+    public void setUtilityVariable(Variable utilityVariable) {
+        super.setUtilityVariable(utilityVariable);
+        for (TreeADDBranch branch : branches) {
+            if (branch.getPotential() != null) {
+                branch.getPotential().setUtilityVariable(utilityVariable);
+            }
+        }
+    }
+
 }

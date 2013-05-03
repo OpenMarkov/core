@@ -253,24 +253,6 @@ public class BasicOperations {
      *            the variable to test
      * @return true if the variable is a supervalue node. False if does not
      */
-    private static boolean hasSuperValueNodes(ProbNet probNet) {
-        boolean isThereSVNodes = false;
-        List<ProbNode> utilityNodes = probNet.getProbNodes(NodeType.UTILITY);
-        int i = 0;
-        while (i < utilityNodes.size() && !isThereSVNodes) {
-            isThereSVNodes = isSuperValueNode(utilityNodes.get(i));
-            ++i;
-        }
-        return isThereSVNodes;
-    }
-
-    /**
-     * Gets if the variable parameter is a supervalue node
-     * 
-     * @param utilityVariable
-     *            the variable to test
-     * @return true if the variable is a supervalue node. False if does not
-     */
     private static boolean isSuperValueNode(ProbNode utilityNode) {
         int numOfUtilityParents = 0;
         List<Node> parents = utilityNode.getNode().getParents();

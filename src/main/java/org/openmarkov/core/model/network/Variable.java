@@ -571,11 +571,11 @@ public class Variable implements Cloneable {
 					getDefaultBelongs(1)));
 			break;
 		case DISCRETIZED:
-
 			setPartitionedInterval(new PartitionedInterval(getDefaultInterval(getNumStates()),
 					getDefaultBelongs(getNumStates())));
 			break;
-
+        default:
+            break;
 		}
 
 	}

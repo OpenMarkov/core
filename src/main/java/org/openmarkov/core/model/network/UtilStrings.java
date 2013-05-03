@@ -29,20 +29,6 @@ public class UtilStrings {
 		return result;
 	}
 
-	public static String toScapeString(String string){
-		String[][] escape_symbolos = {
-			 	        {"\"", "&quot;"}, // " - double-quote
-			 	        {"&", "&amp;"},   // & - ampersand
-			 	        {"<", "&lt;"},    // < - less-than
-			 	        {">", "&gt;"},    // > - greater-than
-			 	    };
-		
-		//for (char c:(CharSequence)string){
-			
-		//}
-		return null;
-	}
-	
 	/**
 	 * Gets the corresponding position on potential edited.
 	 * 
@@ -394,6 +380,8 @@ public class UtilStrings {
 			name = getNextUtilityNodeName( existingNames );
 			break;
 		}
+        default:
+            break;
 		}
 		return name;
 	}

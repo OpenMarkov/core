@@ -827,8 +827,8 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		variables.add(state0);
 		variables.add(duration0);
 		ArrayList<TreeADDBranch> branches = new ArrayList<>();
-		branches.add(new TreeADDBranch(new Threshold(0, false), new Threshold(2, true), table1, duration0, variables));
-		branches.add(new TreeADDBranch(new Threshold(2, true), new Threshold(20, true), table2, duration0, variables));
+		branches.add(new TreeADDBranch(new Threshold(0, false), new Threshold(2, true), duration0, table1, variables));
+		branches.add(new TreeADDBranch(new Threshold(2, true), new Threshold(20, true), duration0, table2, variables));
 		TreeADDPotential potentialState1 = new TreeADDPotential(variables, duration0, PotentialRole.CONDITIONAL_PROBABILITY, branches);
 		//potential duratio0
 		ArrayList<Variable> variablesDuration0 = new ArrayList<>();
@@ -916,7 +916,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 			e1.printStackTrace();
 		}
 		
-		TreeADDBranch branchNo = new TreeADDBranch(statesNo, table1, variableTreatment, variablesTree);
+		TreeADDBranch branchNo = new TreeADDBranch(statesNo, variableTreatment, table1, variablesTree);
 		//table
 		double []branch11 = {0.5, 0.5, 0.0, 1.0};
 		TablePotential table11 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY, branch11, state1, state0);
@@ -928,8 +928,8 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		variables.add(state0);
 		variables.add(duration0);
 		ArrayList<TreeADDBranch> branches = new ArrayList<>();
-		branches.add(new TreeADDBranch(new Threshold(0, false), new Threshold(2, true), table11, duration0, variables));
-		branches.add(new TreeADDBranch(new Threshold(2, true), new Threshold(20, true), table2, duration0, variables));
+		branches.add(new TreeADDBranch(new Threshold(0, false), new Threshold(2, true), duration0, table11, variables));
+		branches.add(new TreeADDBranch(new Threshold(2, true), new Threshold(20, true), duration0, table2, variables));
 		TreeADDPotential subPotentialState1 = new TreeADDPotential(variables, duration0, PotentialRole.CONDITIONAL_PROBABILITY, branches);
 		
 		
@@ -941,7 +941,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 			e1.printStackTrace();
 		}
 		
-		TreeADDBranch branchYes = new TreeADDBranch(statesYes, subPotentialState1, variableTreatment, variablesTree);
+		TreeADDBranch branchYes = new TreeADDBranch(statesYes, variableTreatment, subPotentialState1, variablesTree);
 		
 		ArrayList<TreeADDBranch> treeBranches = new ArrayList<>();
 		treeBranches.add(branchNo);
@@ -978,8 +978,8 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		ArrayList<Variable> variablesBranchCost = new ArrayList<>();
 		variablesBranchCost.add(variableCost);
 		variablesBranchCost.addAll(variablesCost);
-		costBranches.add(new TreeADDBranch(statesNo, costNoTreatment, variableTreatment, variablesBranchCost));
-		costBranches.add(new TreeADDBranch(statesYes, costTreatment, variableTreatment, variablesBranchCost));
+		costBranches.add(new TreeADDBranch(statesNo, variableTreatment, costNoTreatment, variablesBranchCost));
+		costBranches.add(new TreeADDBranch(statesYes, variableTreatment, costTreatment, variablesBranchCost));
 		
 		TreeADDPotential potentialCost = new TreeADDPotential(variablesCost, variableTreatment, PotentialRole.UTILITY, costBranches);
 		potentialCost.setUtilityVariable(variableCost);
@@ -999,12 +999,12 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		TablePotential qolTreatment = createTablePotential(PotentialRole.UTILITY, qolTreat, state0);
 		qolTreatment.setUtilityVariable(variableQoL);
 		
-		ArrayList<TreeADDBranch> qolBranches = new ArrayList<>();
-		ArrayList<Variable> variablesBranchQoL = new ArrayList<>();
+		List<TreeADDBranch> qolBranches = new ArrayList<>();
+		List<Variable> variablesBranchQoL = new ArrayList<>();
 		variablesBranchQoL.add(variableQoL);
 		variablesBranchQoL.addAll(variablesQoL);
-		qolBranches.add(new TreeADDBranch(statesNo, qolNoTreatment, variableTreatment, variablesBranchQoL));
-		qolBranches.add(new TreeADDBranch(statesYes, qolTreatment, variableTreatment, variablesBranchQoL));
+		qolBranches.add(new TreeADDBranch(statesNo, variableTreatment, qolNoTreatment, variablesBranchQoL));
+		qolBranches.add(new TreeADDBranch(statesYes, variableTreatment, qolTreatment, variablesBranchQoL));
 		
 		TreeADDPotential potentialQoL = new TreeADDPotential(variablesQoL, variableTreatment, PotentialRole.UTILITY, qolBranches);
 		potentialQoL.setUtilityVariable(variableQoL);

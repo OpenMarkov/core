@@ -20,7 +20,6 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.core.model.network.type.MPADType;
-import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 
 public class TreeADDPotentialTest {
 
@@ -134,12 +133,12 @@ public class TreeADDPotentialTest {
 		startNode = nodeA;
 		branchNode0 = nodeBA0;
 		branchNode1 = nodeBA1;
-		ArrayList<State> absentState = new ArrayList<State>();
-		ArrayList<State> presentState = new ArrayList<State>();
+		List<State> absentState = new ArrayList<State>();
+		List<State> presentState = new ArrayList<State>();
 		absentState.add(absent);
 		presentState.add(present);
-		branchData0= new TreeADDBranch(absentState, potentialBA0, startVariable, listBA);
-		branchData1= new TreeADDBranch(presentState, potentialBA1, startVariable, listBA);
+		branchData0= new TreeADDBranch(absentState, startVariable, potentialBA0, listBA);
+		branchData1= new TreeADDBranch(presentState, startVariable, potentialBA1, listBA);
 		
 		
 		// Append the new 'states' branch to the tree

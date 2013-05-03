@@ -39,16 +39,16 @@ import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
  */
 @RelationPotentialType(name = "Tree/ADD", family = "Tree")
 public class TreeADDPotential extends Potential {
+
     /**
      * topVariable represents the variable on the top of the tree, in other
      * words the root variable
      */
     private Variable            topVariable;
-    private PotentialType       potentialType = PotentialType.TREE_ADD;
     /**
      * This List stores the branches created in the TreeADDPotential constructor
      */
-    private List<TreeADDBranch> branches      = new ArrayList<TreeADDBranch>();
+    private List<TreeADDBranch> branches = new ArrayList<TreeADDBranch>();
 
     /**
      * label is incompatible with reference and reference is incompatible with
@@ -85,7 +85,7 @@ public class TreeADDPotential extends Potential {
                     UniformPotential potential = new UniformPotential(potentialVariables, role);
                     List<State> branchStates = new ArrayList<State>();
                     branchStates.add(states[i]);
-                    branches.add(new TreeADDBranch(branchStates, potential, topVariable, variables));
+                    branches.add(new TreeADDBranch(branchStates, topVariable, potential, variables));
                 }
             }
         }
@@ -99,7 +99,7 @@ public class TreeADDPotential extends Potential {
             potentialVariables = new ArrayList<Variable>();
             potentialVariables.add(variables.get(0));
             UniformPotential potential = new UniformPotential(potentialVariables, role);
-            branches.add(new TreeADDBranch(minimum, maximum, potential, topVariable, variables));
+            branches.add(new TreeADDBranch(minimum, maximum, topVariable, potential, variables));
         }
     }
 
@@ -133,7 +133,7 @@ public class TreeADDPotential extends Potential {
                     // potential.setUtilityVariable(utilityVariable);
                     List<State> branchStates = new ArrayList<State>();
                     branchStates.add(states[i]);
-                    branches.add(new TreeADDBranch(branchStates, potential, topVariable, variables));
+                    branches.add(new TreeADDBranch(branchStates, topVariable, potential, variables));
                 }
             }
         }
@@ -151,7 +151,7 @@ public class TreeADDPotential extends Potential {
                     role,
                     utilityVariable);
             // potential.setUtilityVariable(utilityVariable);
-            branches.add(new TreeADDBranch(minimum, maximum, potential, topVariable, variables));
+            branches.add(new TreeADDBranch(minimum, maximum, topVariable, potential, variables));
         }
     }
 
@@ -175,6 +175,9 @@ public class TreeADDPotential extends Potential {
         this.topVariable = topVariable;
         this.role = role;
         this.branches = branches;
+
+        // Try to fill references in branches
+        updateReferences(getLabeledBranches());
     }
 
     /**
@@ -185,7 +188,6 @@ public class TreeADDPotential extends Potential {
     public TreeADDPotential(TreeADDPotential treeADD) {
         super(treeADD.getVariables(), treeADD.getPotentialRole());
         this.topVariable = treeADD.getRootVariable();
-        this.potentialType = treeADD.getPotentialType();
         List<TreeADDBranch> treeBranches = new ArrayList<>();
         for (int i = 0; i < treeADD.getBranches().size(); i++) {
             treeBranches.add(treeADD.getBranches().get(i).copy());
@@ -196,23 +198,19 @@ public class TreeADDPotential extends Potential {
                 this.setUtilityVariable(treeADD.getUtilityVariable());
             }
         }
+        // TODO fix this: updateReferences(getLabeledBranches());        
+    }
+
+    @Override
+    public PotentialType getPotentialType() {
+        return PotentialType.TREE_ADD;
     }
 
     /**
      * @param branch
      */
-    public void addTreeADDBranch(TreeADDBranch branch) {
+    public void addBranch(TreeADDBranch branch) {
         branches.add(branch);
-    }
-
-    /*
-     * public void setLabeledPotentials(){ for (int i = 0; i < branches.size();
-     * i++) { TreeADDBranch branch = branches.get(i); String label; if ((label =
-     * branch.getLabel()) != null) { potentialsLabeled.put(label,
-     * branch.getPotential()); } } }
-     */
-    public PotentialType getPotentialType() {
-        return this.potentialType;
     }
 
     public List<TreeADDBranch> getBranches() {
@@ -380,39 +378,18 @@ public class TreeADDPotential extends Potential {
             }
         }
         copiedTree.setVariables(copiedTreeVariables);
-        if (isUtility()) {
-            if (getUtilityVariable().isTemporal()) {
-                copiedTree.setUtilityVariable(probNet.getShiftedVariable(getUtilityVariable(),
-                        timeDifference));
-            }
-        }
+        
         if (getRootVariable().isTemporal()) {
             copiedTree.setRootVariable(probNet.getShiftedVariable(getRootVariable(), timeDifference));
         }
         for (TreeADDBranch branch : copiedTree.getBranches()) {
             branch.setParentVariables(copiedTreeVariables);
             branch.setRootVariable(copiedTree.getRootVariable());
-            if (branch.getPotential() instanceof TreeADDPotential) {
-                branch.setPotential(((TreeADDPotential) branch.getPotential()).shift(probNet,
-                        timeDifference));
-            } else {
-                ArrayList<Variable> branchPotentialVariables = new ArrayList<>();
-                for (Variable variable : branch.getPotential().getVariables()) {
-                    if (variable.isTemporal()) {
-                        branchPotentialVariables.add(probNet.getShiftedVariable(variable,
-                                timeDifference));
-                    } else {
-                        branchPotentialVariables.add(variable);
-                    }
-                }
-                branch.getPotential().setVariables(branchPotentialVariables);
-                if (branch.getPotential().isUtility()) {
-                    if (branch.getPotential().getUtilityVariable().isTemporal()) {
-                        branch.getPotential().setUtilityVariable(probNet.getShiftedVariable(branch.getPotential().getUtilityVariable(),
-                                timeDifference));
-                    }
-                }
-            }
+            branch.setPotential(branch.getPotential().shift(probNet, timeDifference));
+        }
+        if (isUtility() && getUtilityVariable().isTemporal()) {
+            copiedTree.setUtilityVariable(probNet.getShiftedVariable(getUtilityVariable(),
+                    timeDifference));
         }
         return copiedTree;
     }
@@ -472,22 +449,46 @@ public class TreeADDPotential extends Potential {
         return sampledTree;
     }
 
-    public Map<String, Potential> getLabeledPotentials() {
-        Map<String, Potential> labeledPotentials = new HashMap<>();
+    public Map<String, TreeADDBranch> getLabeledBranches() {
+        Map<String, TreeADDBranch> labeledBranches = new HashMap<>();
         Stack<TreeADDPotential> subtrees = new Stack<>();
         subtrees.push(this);
         while (!subtrees.isEmpty()) {
             TreeADDPotential treeADD = subtrees.pop();
             for (TreeADDBranch branch : treeADD.getBranches()) {
                 if (branch.getLabel() != null) {
-                    labeledPotentials.put(branch.getLabel(), branch.getPotential());
+                    labeledBranches.put(branch.getLabel(), branch);
                 }
-                if (branch.getPotential() instanceof TreeADDPotential) {
+                if (branch.getPotential() != null
+                        && branch.getPotential() instanceof TreeADDPotential) {
                     subtrees.push((TreeADDPotential) branch.getPotential());
                 }
             }
         }
-        return labeledPotentials;
+        return labeledBranches;
+    }
+
+    /**
+     * 
+     * @param labeledBranches
+     */
+    public void updateReferences(Map<String, TreeADDBranch> labeledBranches) {
+        Stack<TreeADDPotential> subtrees = new Stack<>();
+        if (!labeledBranches.isEmpty()) {
+            subtrees.push(this);
+            while (!subtrees.isEmpty()) {
+                TreeADDPotential treeADD = subtrees.pop();
+                for (TreeADDBranch branch : treeADD.getBranches()) {
+                    if (branch.getReference() != null
+                            && labeledBranches.containsKey(branch.getReference())) {
+                        branch.setReferencedBranch(labeledBranches.get(branch.getReference()));
+                    }
+                    if (branch.getPotential() instanceof TreeADDPotential) {
+                        subtrees.push((TreeADDPotential) branch.getPotential());
+                    }
+                }
+            }
+        }
     }
 
     @Override

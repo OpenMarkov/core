@@ -79,11 +79,11 @@ public class TreeADDTableProjectTest {
 		parentVariables.add(variableC);
 		parentVariables.add(variableA);
 		parentVariables.add(variableB);
-		TreeADDBranch branchModerate = new  TreeADDBranch(branchModerateStates, potentialCB, variableA, parentVariables);
+		TreeADDBranch branchModerate = new  TreeADDBranch(branchModerateStates, variableA, potentialCB, parentVariables);
 		
 		ArrayList<State> branchSevereStates = new ArrayList<State>();
 		branchSevereStates.add(severe);
-		TreeADDBranch branchSevere = new TreeADDBranch(branchSevereStates, potentialC3, variableA, parentVariables);
+		TreeADDBranch branchSevere = new TreeADDBranch(branchSevereStates, variableA, potentialC3, parentVariables);
 		
 		//Subtree
 		ArrayList<State> branchAbsentStates = new ArrayList<State>();
@@ -93,8 +93,8 @@ public class TreeADDTableProjectTest {
 		ArrayList<Variable> subVariables =  new ArrayList<Variable>();
 		subVariables.add(variableC);
 		subVariables.add(variableB);
-		TreeADDBranch branchAbsent = new TreeADDBranch(branchAbsentStates, potentialC1, variableB, subVariables);
-		TreeADDBranch branchPresent = new TreeADDBranch(branchPresentStates, potentialC2, variableB, subVariables);
+		TreeADDBranch branchAbsent = new TreeADDBranch(branchAbsentStates, variableB, potentialC1, subVariables);
+		TreeADDBranch branchPresent = new TreeADDBranch(branchPresentStates, variableB, potentialC2, subVariables);
 		ArrayList<TreeADDBranch> subBranches = new ArrayList<TreeADDBranch>();
 		subBranches.add(branchAbsent);
 		subBranches.add(branchPresent);
@@ -104,7 +104,7 @@ public class TreeADDTableProjectTest {
 		ArrayList<State> branchAbsentMildStates = new ArrayList<State>();
 		branchAbsentMildStates.add(absent);
 		branchAbsentMildStates.add(mild);
-		TreeADDBranch branchAbsentMild = new TreeADDBranch(branchAbsentMildStates, subtreeB, variableA, parentVariables);		
+		TreeADDBranch branchAbsentMild = new TreeADDBranch(branchAbsentMildStates, variableA, subtreeB, parentVariables);		
 		
 		ArrayList<TreeADDBranch> branches = new ArrayList<TreeADDBranch>();
 		branches.add(branchAbsentMild);

@@ -23,7 +23,7 @@ public class TreeADDBranch
     /**
      * Each TreeADDBranch has an associated potential 
      */
-    private Potential      potential;
+    private Potential      potential = null;
     /**
      * If the topVariable of the tree is a finite states or a discretized
      * variable each branch has an associated state.
@@ -46,7 +46,8 @@ public class TreeADDBranch
      * A branch can reference a potential from other branch that has been
      * labeled
      */
-    private String reference;
+    private String reference = null;
+    private TreeADDBranch referencedBranch = null;
     
     /**
      * Constructor for discretized and finite states variables
@@ -55,11 +56,8 @@ public class TreeADDBranch
      * @param topVariable
      * @param parentVariables
      */
-    public TreeADDBranch (List<State> branchStates,
-                          Potential potential,
-                          Variable topVariable,
-                          List<Variable> parentVariables)
-    {
+    public TreeADDBranch(List<State> branchStates, Variable topVariable, Potential potential,
+            List<Variable> parentVariables)    {
         this.states = branchStates;
         this.potential = potential;
         this.rootVariable = topVariable;
@@ -70,14 +68,14 @@ public class TreeADDBranch
      * Constructor for numeric variables
      * @param lowerThreshold
      * @param upperThreshold
-     * @param potential
      * @param topVariable
+     * @param potential
      * @param parentVariables
      */
     public TreeADDBranch (Threshold lowerBound,
                           Threshold upperBound,
-                          Potential potential,
                           Variable topVariable,
+                          Potential potential,
                           List<Variable> parentVariables)
     {
         this.lowerBound = lowerBound;
@@ -90,19 +88,17 @@ public class TreeADDBranch
     /**
      * Constructor for discretized and finite states variables with reference
      * @param branchStates
-     * @param potential
      * @param topVariable
+     * @param reference
      * @param parentVariables
      */
     public TreeADDBranch (List<State> branchStates,
-                          String reference,
-                          Potential potential,
                           Variable topVariable,
+                          String reference,
                           List<Variable> parentVariables)
     {
         this.states = branchStates;
         this.reference = reference;
-        this.potential = potential;
         this.rootVariable = topVariable;
         this.parentVariables = parentVariables;
     }
@@ -117,14 +113,12 @@ public class TreeADDBranch
      */
     public TreeADDBranch (Threshold lowerBound,
                           Threshold upperBound,
-                          Potential potential,
-                          String reference,
                           Variable topVariable,
+                          String reference,
                           List<Variable> parentVariables)
     {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
-        this.potential = potential;
         this.reference = reference;
         this.rootVariable = topVariable;
         this.parentVariables = parentVariables;
@@ -138,15 +132,15 @@ public class TreeADDBranch
             if (this.rootVariable.getVariableType() == VariableType.FINITE_STATES
                     || this.rootVariable.getVariableType() == VariableType.DISCRETIZED) {
                 branch = new TreeADDBranch(new ArrayList<>(getBranchStates()),
-                        this.getPotential().copy(),
                         this.getRootVariable(),
+                        this.getPotential().copy(),
                         this.getParentVariables());
 
             } else if (this.rootVariable.getVariableType() == VariableType.NUMERIC) {
                 branch = new TreeADDBranch(this.getLowerBound().copy(),
                         this.getUpperBound().copy(),
-                        this.getPotential().copy(),
                         this.getRootVariable(),
+                        this.getPotential().copy(),
                         this.getParentVariables());
             }
             if(label != null)
@@ -159,21 +153,22 @@ public class TreeADDBranch
                     || this.rootVariable.getVariableType () == VariableType.DISCRETIZED)
            {            
                 branch = new TreeADDBranch(new ArrayList<>(getBranchStates()),
-                        this.reference,
-                        this.potential,
                         this.getRootVariable(),
+                        this.reference,
                         this.getParentVariables());
-                
             }
             else if (this.rootVariable.getVariableType () == VariableType.NUMERIC)
             {
                 branch = new TreeADDBranch(this.getLowerBound().copy(),
                         this.getUpperBound().copy(),
-                        this.potential,
-                        this.reference,
                         this.getRootVariable(),
+                        this.reference,
                         this.getParentVariables());
            }
+            if(referencedBranch != null)
+            {
+                branch.setReferencedBranch(referencedBranch);
+            }
         }
         return branch;
     }    
@@ -223,7 +218,8 @@ public class TreeADDBranch
 
     public Potential getPotential ()
     {
-        return this.potential;
+        return (potential != null || referencedBranch == null) ? potential
+                : referencedBranch.getPotential();
     }
 
     public void setPotential (Potential potential)
@@ -258,6 +254,11 @@ public class TreeADDBranch
     public void setLabel(String label) {
         this.label = label;
     }    
+    
+    public boolean isLabeled()
+    {
+        return this.label != null;
+    }    
 
     public void setReference(String reference) {
         this.reference = reference;
@@ -291,7 +292,11 @@ public class TreeADDBranch
         builder.append ("]");
         return builder.toString ();
     }
-    
-    
+
+    public void setReferencedBranch(TreeADDBranch treeADDBranch) {
+        this.reference = treeADDBranch.getLabel();
+        this.referencedBranch = treeADDBranch;
+        this.potential = null;
+    }
     
 }

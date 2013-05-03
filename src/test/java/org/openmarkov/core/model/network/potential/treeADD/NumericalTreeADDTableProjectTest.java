@@ -55,7 +55,7 @@ public class NumericalTreeADDTableProjectTest {
 		subParentVariables.add(currentState);
 		subParentVariables.add(age);
 		
-		TreeADDBranch subBranch1 = new TreeADDBranch(min1,max1, subTablePotential1, age, subParentVariables);
+		TreeADDBranch subBranch1 = new TreeADDBranch(min1,max1, age, subTablePotential1, subParentVariables);
 		
 		//branch 2
 		Threshold min2 = new Threshold(5, true);
@@ -66,7 +66,7 @@ public class NumericalTreeADDTableProjectTest {
 		double []tableBranch2 = {0.5, 0.5};
 		TablePotential subTablePotential2 = new TablePotential(table2Variables, 
 				PotentialRole.CONDITIONAL_PROBABILITY,tableBranch2); 
-		TreeADDBranch subBranch2 = new TreeADDBranch(min2,max2, subTablePotential2, age, subParentVariables);
+		TreeADDBranch subBranch2 = new TreeADDBranch(min2,max2, age, subTablePotential2, subParentVariables);
 		
 		List<TreeADDBranch> subBranches = new ArrayList<>();
 		subBranches.add(subBranch1);
@@ -85,12 +85,12 @@ public class NumericalTreeADDTableProjectTest {
 		double []table1 = {0.0, 1.0};
 		TablePotential tablePotential1 = new TablePotential(table2Variables, PotentialRole.CONDITIONAL_PROBABILITY, table1);
 		
-		TreeADDBranch branch1 = new TreeADDBranch(states1, tablePotential1, previousState, parentVariables); 
+		TreeADDBranch branch1 = new TreeADDBranch(states1, previousState, tablePotential1, parentVariables); 
 		
 		List<State> states2 = new ArrayList<>();
 		states2.add(alive);
 		
-		TreeADDBranch branch2 = new TreeADDBranch(states2, subTree, previousState, parentVariables); 
+		TreeADDBranch branch2 = new TreeADDBranch(states2, previousState, subTree, parentVariables); 
 		
 		List<Variable> variables = new ArrayList<>();
 		variables.add(currentState);

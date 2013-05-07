@@ -188,6 +188,10 @@ public class BasicOperations {
         }
         return network;
     }
+    
+    public static ProbNet removeSuperValueNodes(ProbNet sourceProbNet, EvidenceCase evidence) {
+        return removeSuperValueNodes(sourceProbNet, evidence, false, false, null);
+    }
 
     /**
      * Assumes the structure of super value verifies that there are no more than

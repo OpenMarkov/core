@@ -1371,6 +1371,7 @@ public class TablePotential extends Potential
         {
             shiftedPotential.values[i] = values[i];
         }
+        shiftedPotential.setUncertaintyTable(uncertainValues);
         return shiftedPotential;
     }
 

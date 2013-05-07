@@ -198,7 +198,7 @@ public class TreeADDPotential extends Potential {
                 this.setUtilityVariable(treeADD.getUtilityVariable());
             }
         }
-        // TODO fix this: updateReferences(getLabeledBranches());        
+        updateReferences(getLabeledBranches());        
     }
 
     @Override
@@ -385,7 +385,11 @@ public class TreeADDPotential extends Potential {
         for (TreeADDBranch branch : copiedTree.getBranches()) {
             branch.setParentVariables(copiedTreeVariables);
             branch.setRootVariable(copiedTree.getRootVariable());
-            branch.setPotential(branch.getPotential().shift(probNet, timeDifference));
+            if(!branch.isReference())
+            {
+                Potential originalPotential = branch.getPotential();
+                branch.setPotential(originalPotential.shift(probNet, timeDifference));
+            }
         }
         if (isUtility() && getUtilityVariable().isTemporal()) {
             copiedTree.setUtilityVariable(probNet.getShiftedVariable(getUtilityVariable(),
@@ -495,7 +499,8 @@ public class TreeADDPotential extends Potential {
     public void setUtilityVariable(Variable utilityVariable) {
         super.setUtilityVariable(utilityVariable);
         for (TreeADDBranch branch : branches) {
-            if (branch.getPotential() != null) {
+            if (branch.getPotential() != null &&
+                    branch.getPotential().getUtilityVariable() == null) {
                 branch.getPotential().setUtilityVariable(utilityVariable);
             }
         }

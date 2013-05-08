@@ -9,7 +9,7 @@ package org.openmarkov.core.inference;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
@@ -95,7 +95,13 @@ public class MPADFactory {
         for (int i = 0; i < generatedNodes.size(); i++) {
             generatingNode = generatingNodes.get(i);
             generatedNode = generatedNodes.get(i);
-            expandPotentialAndLinks(generatingNode, generatedNode, 1);
+            try {
+                expandPotentialAndLinks(generatingNode, generatedNode, 1);
+            } catch (ProbNodeNotFoundException e) {
+                // If we get here is because we have not generated the nodes as
+                // we should
+                e.printStackTrace();
+            }
         }
     }
 
@@ -158,7 +164,13 @@ public class MPADFactory {
         for (int i = 0; i < lastSliceNodes.size(); i++) {
             generatingNode = lastSliceNodes.get(i);
             generatedNode = newSliceNodes.get(i);
-            expandPotentialAndLinks(generatingNode, generatedNode, 1);
+            try {
+                expandPotentialAndLinks(generatingNode, generatedNode, 1);
+            } catch (ProbNodeNotFoundException e) {
+                // If we get here is because we have not generated the nodes as
+                // we should
+                e.printStackTrace();
+            }
         }
         classifiedNodes.add(newSliceNodes);
     }
@@ -166,8 +178,10 @@ public class MPADFactory {
     /**
      * TODO document: oldNode is a node in the last slice of the compact net
      * TODO We are assuming that there is only one potential per node. Revise
+     * @throws ProbNodeNotFoundException 
      */
-    private void expandPotentialAndLinks(ProbNode oldNode, ProbNode newNode, int timeDifference) {
+    private void expandPotentialAndLinks(ProbNode oldNode, ProbNode newNode, int timeDifference)
+            throws ProbNodeNotFoundException {
         Potential oldPotential = oldNode.getPotentials().get(0);
         Potential newPotential = null;
         if (oldPotential.getPotentialType() == PotentialType.CYCLE_LENGTH_SHIFT) {
@@ -201,12 +215,9 @@ public class MPADFactory {
                 referencePotentialForNewPotential = oldPotential;
                 timeDifferenceWithNew = timeDifference;
             }
-            try {
-                newPotential = new SameAsPrevious(referencePotentialForNewPotential, probNet,
-                        timeDifferenceWithNew);
-            } catch (NodeNotFoundException e) {
-                e.printStackTrace();
-            }
+            newPotential = new SameAsPrevious(referencePotentialForNewPotential,
+                    probNet,
+                    timeDifferenceWithNew);
         }
         newNode.addPotential(newPotential);
         newPotential.createDirectedLinks(probNet);

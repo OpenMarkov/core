@@ -607,8 +607,8 @@ public class ProbNetTest {
 	public void testGetProjectedPotentials() 
 	throws NoFindingException, 
 	NonProjectablePotentialException, WrongCriterionException {
-	    List<Potential> projectedPotentials = 
-			simpleProbNet.getProjectedPotentials(simpleEvidence);
+	    List<? extends Potential> projectedPotentials = 
+			simpleProbNet.tableProjectPotentials(simpleEvidence);
 		assertEquals(3, projectedPotentials.size());
 		boolean constantPotentialFound = false;
 		boolean bPotentialFound = false;
@@ -698,14 +698,14 @@ public class ProbNetTest {
 	public void testGetPotentialsType() {
 		// test chance potentials
 	    List<Potential> chancePotentials = 
-			simpleProbNet.getPotentialsType(NodeType.CHANCE);
+			simpleProbNet.getPotentialsByType(NodeType.CHANCE);
 		assertEquals(2, chancePotentials.size());
 		assertTrue(chancePotentials.contains(pA));
 		assertTrue(chancePotentials.contains(pBA));
 		
 		// test utility potentials
 		List<Potential> utilityPotentials = 
-			simpleProbNet.getPotentialsType(NodeType.UTILITY);
+			simpleProbNet.getPotentialsByType(NodeType.UTILITY);
 		assertEquals(1, utilityPotentials.size());
 		assertTrue(utilityPotentials.contains(pU));
 	}

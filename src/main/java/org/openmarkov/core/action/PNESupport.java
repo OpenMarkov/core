@@ -1,15 +1,15 @@
 /*
-* Copyright 2011 CISIAD, UNED, Spain
-*
-* Licensed under the European Union Public Licence, version 1.1 (EUPL)
-*
-* Unless required by applicable law, this code is distributed
-* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
-*/
+ * Copyright 2011 CISIAD, UNED, Spain
+ *
+ * Licensed under the European Union Public Licence, version 1.1 (EUPL)
+ *
+ * Unless required by applicable law, this code is distributed
+ * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 
 package org.openmarkov.core.action;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.event.UndoableEditEvent;
@@ -36,278 +36,218 @@ import org.openmarkov.core.model.network.constraint.PNConstraint;
  */
 public class PNESupport extends UndoableEditSupport {
 
-	ArrayList<PNConstraint> constraints;
+    List<PNConstraint>           constraints;
 
-	/**
-	 * If <code>true</code> stores editions in
-	 * <code>openmarkov.undo#UndoManager</code> for undo/redo.
-	 */
-	protected boolean withUndo;
+    /**
+     * If <code>true</code> stores editions in
+     * <code>openmarkov.undo#UndoManager</code> for undo/redo.
+     */
+    protected boolean            withUndo;
 
-	/**
-	 * List of undoable edits.
-	 * 
-	 * @see javax.swing.undo#UndoManager
-	 */
-	protected UndoManagerSupport undoManagerSupport;
+    /**
+     * List of undoable edits.
+     * 
+     * @see javax.swing.undo#UndoManager
+     */
+    protected UndoManagerSupport undoManagerSupport;
 
-	private boolean significantEdits = true;
+    private boolean              significantEdits = true;
+    private boolean              openParenthesis  = false;
+    private boolean              editsExecuted    = false;
+    private int                  editCount;
 
-	private boolean openParenthesis = false;
+    // Constructor
+    /**
+     * @param probNet
+     *            <code>ProbNet</code>.
+     * @param withUndo
+     *            <code>boolean</code>
+     */
+    public PNESupport(boolean withUndo) {
+        super();
+        this.withUndo = withUndo;
+        undoManagerSupport = new UndoManagerSupport();
+    }
 
-	private boolean editsExecuted = false;
+    // Methods
+    public void setListeners(Vector<UndoableEditListener> listeners) {
+        this.listeners = listeners;
+    }
 
-	private int editCount;
-	
+    public Vector<UndoableEditListener> getListeners() {
+        return listeners;
+    }
 
+    /**
+     * First part: Announce to the listeners than an edition can happen
+     * 
+     * @param edit
+     *            <code>PNEdit</code>.
+     * @throws NotEnoughMemoryException
+     * @throws WrongCriterionException
+     * @throws NonProjectablePotentialException
+     * @throws <code>ConstraintViolationException</code> in case of illegal
+     *         <code>probNet</code> modification.
+     * @throws <code>CanNotDoEditException</code> in case of illegal
+     *         modifications in others listeners such as heuristics, GUI, ...
+     */
+    public void announceEdit(PNEdit edit)
+            throws ConstraintViolationException, CanNotDoEditException,
+            NonProjectablePotentialException, WrongCriterionException {
+        UndoableEditEvent event = new UndoableEditEvent(this, edit);
+        for (UndoableEditListener listener : listeners) {
+            ((PNUndoableEditListener) listener).undoableEditWillHappen(event);
+        }
+    }
 
-	// Constructor
-	/**
-	 * @param probNet
-	 *            <code>ProbNet</code>.
-	 * @param withUndo
-	 *            <code>boolean</code>
-	 */
-	public PNESupport(boolean withUndo) {
-		super();
-		this.withUndo = withUndo;
-		undoManagerSupport = new UndoManagerSupport();
-}
+    /**
+     * Second part: It does the edition and inform to the listeners
+     * 
+     * @param edit
+     *            <code>PNEdit</code>.
+     * @throws DoEditException
+     * @throws NotEnoughMemoryException
+     * @throws WrongCriterionException
+     * @throws NonProjectablePotentialException
+     */
+    public void doEdit(PNEdit edit)
+            throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
+        // Inform the listeners that an edition will happen
+        // May return an exception
 
-	// Methods
-	public void setListeners(Vector<UndoableEditListener> listeners) {
-		this.listeners = listeners;
-	}
+        edit.doEdit();
+        if (withUndo) {
+            edit.setSignificant(significantEdits);
+            editCount++;
+            if (openParenthesis) {
+                significantEdits = false;// from now, only no significant edits
+                editsExecuted = true; // at least one edit was executed
+            }
 
-	public Vector<UndoableEditListener> getListeners() {
-		return listeners;
-	}
+            undoManagerSupport.addEdit(edit);
+        }
+        postEdit(edit);// Inform the listeners that an edition has happened
+    }
 
-	/**
-	 * First part: Announce to the listeners than an edition can happen
-	 * 
-	 * @param edit
-	 *            <code>PNEdit</code>.
-	 * @throws NotEnoughMemoryException
-	 * @throws WrongCriterionException 
-	 * @throws NonProjectablePotentialException 
-	 * @throws <code>ConstraintViolationException</code> in case of illegal
-	 *         <code>probNet</code> modification.
-	 * @throws <code>CanNotDoEditException</code> in case of illegal
-	 *         modifications in others listeners such as heuristics, GUI, ...
-	 */
-	public void announceEdit(PNEdit edit) throws ConstraintViolationException,
-			CanNotDoEditException, NonProjectablePotentialException, WrongCriterionException {
-		UndoableEditEvent event = new UndoableEditEvent(this, edit);
-		for (UndoableEditListener listener : listeners) {
-			((PNUndoableEditListener) listener).undoableEditWillHappen(event);
-		}
-	}
+    /**
+     * @see javax.swing.undo.UndoManager#canUndo()
+     * @see javax.swing.undo.UndoManager#undo()
+     */
+    public void undo() {
+        if (withUndo && undoManagerSupport.canUndo()) {
 
-	/**
-	 * Second part: It does the edition and inform to the listeners
-	 * 
-	 * @param edit
-	 *            <code>PNEdit</code>.
-	 * @throws DoEditException
-	 * @throws NotEnoughMemoryException
-	 * @throws WrongCriterionException
-	 * @throws NonProjectablePotentialException
-	 */
-	public void doEdit(PNEdit edit) 
-	throws DoEditException,	NonProjectablePotentialException,
-			WrongCriterionException {
-		// Inform the listeners that an edition will happen
-		// May return an exception
-
-		edit.doEdit();
-		if (withUndo) {
-			edit.setSignificant(significantEdits);
-			editCount++;
-			if (openParenthesis) {
-				significantEdits = false;// from now, only no significant edits
-				editsExecuted = true; // at least one edit was executed
-			}
-
-			undoManagerSupport.addEdit(edit);
-			/*
-			 * String undoString = undoManagerSupport.getUndoPresentationName();
-			 * if (undoString.startsWith(OpenParenthesisEdit.description)) {
-			 * parenthesisDeph++; } else if
-			 * (undoString.startsWith(CloseParenthesisEdit.description)){
-			 * parenthesisDeph--; }else{ emptyParenthesis = false; }
-			 */
-		}
-		postEdit(edit);// Inform the listeners that an edition has happened
-	}
-
-	/**
-	 * @see javax.swing.undo.UndoManager#canUndo()
-	 * @see javax.swing.undo.UndoManager#undo()
-	 */
-	public void undo() {
-		if (withUndo && undoManagerSupport.canUndo()) {
-			/*
-			 * String undoString = undoManagerSupport.getUndoPresentationName();
-			 * if (undoString.startsWith(CloseParenthesisEdit.description)) { //
-			 * undo all the edits contained in the parenthesis int
-			 * actualParenthesisDeph = parenthesisDeph;
-			 * undoManagerSupport.undo(); parenthesisDeph++; while
-			 * ((parenthesisDeph != actualParenthesisDeph) &&
-			 * undoManagerSupport.canUndo()) { undoString =
-			 * undoManagerSupport.getUndoPresentationName(); if
-			 * (undoString.startsWith( CloseParenthesisEdit.description)) {
-			 * undoManagerSupport.undo(); parenthesisDeph++; } else if
-			 * (undoString.startsWith( OpenParenthesisEdit.description)) {
-			 * undoManagerSupport.undo(); parenthesisDeph--; }else if
-			 * (actualParenthesisDeph != parenthesisDeph) {
-			 * undoManagerSupport.undo(); PNUndoableEditEvent event = new
-			 * PNUndoableEditEvent(this, null, (ProbNet)realSource); for
-			 * (UndoableEditListener listener : listeners) {
-			 * ((PNUndoableEditListener)listener).undoEditHappened(event); } } }
-			 * }else {
-			 */
-			UndoableEditEvent event = new UndoableEditEvent(this, undoManagerSupport.editToBeUndone ());
+            UndoableEditEvent event = new UndoableEditEvent(this,
+                    undoManagerSupport.editToBeUndone());
             undoManagerSupport.undo();
-			for (UndoableEditListener listener : listeners) {
-				((PNUndoableEditListener) listener).undoEditHappened(event);
-			}
+            for (UndoableEditListener listener : listeners) {
+                ((PNUndoableEditListener) listener).undoEditHappened(event);
+            }
+        }
+    }
 
-			// }
+    /**
+     * @see javax.swing.undo.UndoManager#canRedo()
+     * @see javax.swing.undo.UndoManager#redo()
+     */
+    public void redo() {
+        if (withUndo && undoManagerSupport.canRedo()) {
+            UndoableEditEvent event = new UndoableEditEvent(this,
+                    undoManagerSupport.editToBeRedone());
+            undoManagerSupport.redo();
+            for (UndoableEditListener listener : listeners) {
+                ((PNUndoableEditListener) listener).undoableEditHappened(event);
+            }
+        }
+    }
 
-		}
-	}
+    public UndoManagerSupport getUndoManager() {
+        return undoManagerSupport;
+    }
 
-	/**
-	 * @see javax.swing.undo.UndoManager#canRedo()
-	 * @see javax.swing.undo.UndoManager#redo()
-	 */
-	public void redo() {
-		if (withUndo && undoManagerSupport.canRedo()) {
-			/*
-			 * String redoString = undoManagerSupport.getRedoPresentationName();
-			 * if (redoString.startsWith(OpenParenthesisEdit.description)) { //
-			 * redo all the edits contained in the parenthesis int
-			 * actualParenthesisDeph = parenthesisDeph;
-			 * undoManagerSupport.redo(); parenthesisDeph++; while
-			 * ((parenthesisDeph != actualParenthesisDeph) &&
-			 * undoManagerSupport.canRedo()) { redoString =
-			 * undoManagerSupport.getRedoPresentationName(); if
-			 * (redoString.startsWith( OpenParenthesisEdit.description)) {
-			 * parenthesisDeph++; undoManagerSupport.redo(); } else if
-			 * (redoString.startsWith( CloseParenthesisEdit.description)) {
-			 * parenthesisDeph--; undoManagerSupport.redo(); }else if
-			 * (actualParenthesisDeph != parenthesisDeph) {
-			 * undoManagerSupport.redo(); PNUndoableEditEvent event = new
-			 * PNUndoableEditEvent(this, null, (ProbNet)realSource); for
-			 * (UndoableEditListener listener : listeners) {
-			 * ((PNUndoableEditListener)listener).undoEditHappened(event); } } }
-			 * }else {
-			 */
-            UndoableEditEvent event = new UndoableEditEvent(this, undoManagerSupport.editToBeRedone ());
-			undoManagerSupport.redo();
-			for (UndoableEditListener listener : listeners) {
-				((PNUndoableEditListener) listener).undoableEditHappened(event);
-			}
+    public boolean getCanUndo() {
+        return undoManagerSupport.canUndo();
+    }
 
-			// }
+    public boolean getCanRedo() {
+        return undoManagerSupport.canRedo();
+    }
 
-		}
-	}
+    /**
+     * Add a <code>OpenParenthesisEdit</code> edit instance to
+     * <code>undoManager</code> and increases the parenthesis deph.
+     */
+    public void openParenthesis() {
+        if (withUndo) {
+            openParenthesis = true;
+            editCount = 0;
+            editsExecuted = false;
+        }
+    }
 
-	public UndoManagerSupport getUndoManager() {
-		return undoManagerSupport;
-	}
+    /**
+     * Add a <code>CloseParenthesisEdit</code> edit instance to
+     * <code>undoManager</code> and decreases the parenthesis deph.
+     */
+    public void closeParenthesis() {
+        if (withUndo) {
+            openParenthesis = false;
+            significantEdits = true;
+        }
+    }
 
-	public boolean getCanUndo() {
-		return undoManagerSupport.canUndo();
-	}
+    /** @return withUndo <code>boolean</code>. */
+    public boolean isWithUndo() {
+        return withUndo;
+    }
 
-	public boolean getCanRedo() {
-		return undoManagerSupport.canRedo();
-	}
+    /**
+     * @param withUndo
+     *            <code>boolean</code>.
+     */
+    public void setWithUndo(boolean withUndo) {
+        this.withUndo = withUndo;
+    }
 
-	/**
-	 * Add a <code>OpenParenthesisEdit</code> edit instance to
-	 * <code>undoManager</code> and increases the parenthesis deph.
-	 */
-	public void openParenthesis() {
-		if (withUndo) {
-			openParenthesis = true;
-			editCount = 0;
-			editsExecuted = false;
-		}
-	}
+    /** @return probNet <code>ProbNet</code>. */
+    /*
+     * public ProbNet getProbNet() { return (ProbNet)realSource; }
+     */
 
-	/**
-	 * Add a <code>CloseParenthesisEdit</code> edit instance to
-	 * <code>undoManager</code> and decreases the parenthesis deph.
-	 */
-	public void closeParenthesis() {
-		if (withUndo) {
-			openParenthesis = false;
-			significantEdits = true;
-		}
-	}
+    public String toString() {
+        String out = "PNESupport. probNet: ";
+        if (realSource == null) {
+            out = out + "not defined.";
+        } else {
+            /*
+             * try { String name = (String) ((ProbNet) realSource).getName(); if
+             * (name != null) { out = out + name + '.'; } else { out = out +
+             * "no name."; } } catch (Exception e) { logger.fatal (e); }
+             */
+        }
+        if (listeners != null) {
+            out = out + " Number of listeners: " + listeners.size() + '.';
+        } else {
+            out = out + " Number of listeners: 0.";
+        }
+        if (withUndo) {
+            out = out + " With undo.";
+        } else {
+            out = out + " Without undo.";
+        }
+        return out;
+    }
 
-	/** @return withUndo <code>boolean</code>. */
-	public boolean isWithUndo() {
-		return withUndo;
-	}
+    public void undoAndDelete() {
+        if (editsExecuted) {
+            this.undo();
+            undoManagerSupport.deleteEdits(editCount);
+            UndoableEditEvent event = new UndoableEditEvent(this, null);
+            for (UndoableEditListener listener : listeners) {
+                ((PNUndoableEditListener) listener).undoEditHappened(event);
+            }
 
-	/**
-	 * @param withUndo
-	 *            <code>boolean</code>.
-	 */
-	public void setWithUndo(boolean withUndo) {
-		this.withUndo = withUndo;
-	}
+        }
 
-	/** @return probNet <code>ProbNet</code>. */
-	/*
-	 * public ProbNet getProbNet() { return (ProbNet)realSource; }
-	 */
-
-	public String toString() {
-		String out = "PNESupport. probNet: ";
-		if (realSource == null) {
-			out = out + "not defined.";
-		} else {
-			/*try {
-				String name = (String) ((ProbNet) realSource).getName();
-				if (name != null) {
-					out = out + name + '.';
-				} else {
-					out = out + "no name.";
-				}
-			} catch (Exception e) {
-				logger.fatal (e);
-			}*/
-		}
-		if (listeners != null) {
-			out = out + " Number of listeners: " + listeners.size() + '.';
-		} else {
-			out = out + " Number of listeners: 0.";
-		}
-		if (withUndo) {
-			out = out + " With undo.";
-		} else {
-			out = out + " Without undo.";
-		}
-		return out;
-	}
-
-	public void undoAndDelete() {
-		if (editsExecuted) {
-			this.undo();
-			undoManagerSupport.deleteEdits(editCount);
-			UndoableEditEvent event = new UndoableEditEvent(this, null);
-			for (UndoableEditListener listener : listeners) {
-				((PNUndoableEditListener) listener).undoEditHappened(event);
-			}
-
-		}
-
-	}
+    }
 
 }

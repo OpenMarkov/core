@@ -251,7 +251,7 @@ public class MPADFactoryTests {
 			ProbNet expandedNetwork) {
 		InferenceOptions inferenceOptions;
 		List<Potential> utilityPotentials = expandedNetwork
-				.getPotentialsRole(PotentialRole.UTILITY);
+				.getPotentialsByRole(PotentialRole.UTILITY);
 		
 		
 		inferenceOptions = new InferenceOptions(expandedNetwork, null);

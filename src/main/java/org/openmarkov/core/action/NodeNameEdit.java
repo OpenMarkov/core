@@ -53,7 +53,7 @@ public class NodeNameEdit extends SimplePNEdit {
 				variables.add(variable);
 			}
 		}
-		this.previousName = probNode.getName();
+		this.previousName = probNode.getVariable().getBaseName();
 		this.newName = newName;
 	}	
 	

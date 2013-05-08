@@ -9,11 +9,15 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import java.util.List;
 import java.util.Random;
 
+import umontreal.iro.lecuyer.randvarmulti.DirichletGen;
+import umontreal.iro.lecuyer.rng.MRG32k3a;
+import umontreal.iro.lecuyer.rng.RandomStream;
+
 public class DirichletFamily extends FamilyDistribution
 {
     private double[] alpha;
     
-//    private RandomStream stream;
+    private RandomStream stream;
 
     public DirichletFamily (List<UncertainValue> siblings)
     {
@@ -22,11 +26,11 @@ public class DirichletFamily extends FamilyDistribution
         double[] alpha = new double[size];
         for (int i = 0; i < size; i++)
         {
-        	alpha[i] = ((DirichletFunction)(siblings.get(i).getProbDensityFunction())).getAlpha();
+            alpha[i] = ((DirichletFunction)(siblings.get(i).getProbDensityFunction())).getAlpha();
             ((DirichletFunction) (family.get (i).getProbDensityFunction ())).setAlpha (alpha[i]);
         }
         this.alpha = alpha;
-//        this.stream = new MRG32k3a();
+        this.stream = new MRG32k3a();
     }
 
     public DirichletFamily (double[] alphas)
@@ -37,7 +41,7 @@ public class DirichletFamily extends FamilyDistribution
         {
             this.alpha[i] = alphas[i];
         }
-//        this.stream = new MRG32k3a();
+        this.stream = new MRG32k3a();
     }
 
     public double[] getMean ()
@@ -45,51 +49,51 @@ public class DirichletFamily extends FamilyDistribution
         return Tools.normalize (alpha);
     }
 
-//    public double[] getSample (Random randomGenerator)
-//    {
-//        double[] sample = new double[alpha.length];
-//        DirichletGen.nextPoint(stream, alpha, sample);
-//        return sample;
-//    }
-    
     public double[] getSample (Random randomGenerator)
     {
-        int length = alpha.length;
-        double sumAuxSamples = 0.0;
-        double auxSample;
-        double[] sample = new double[length];
-        double[] auxSamples = new double[length];
-        
-        //double min = Tools.min(alpha);
-        // Generate samples using Gamma distributions
-        for (int i = 0; i < length; i++)
-        {
-            auxSample = (new GammaFunction (alpha[i],1.0)).getSample (randomGenerator);
-            auxSamples[i] = auxSample;
-            sumAuxSamples = sumAuxSamples + auxSample;
-        }
-        // Normalize the samples
-        for (int i = 0; i < length; i++)
-        {
-            sample[i] = auxSamples[i] / sumAuxSamples;
-        }
+        double[] sample = new double[alpha.length];
+        DirichletGen.nextPoint(stream, alpha, sample);
         return sample;
-    }    
+    }
+    
+//    public double[] getSample (Random randomGenerator)
+//    {
+//        int length = alpha.length;
+//        double sumAuxSamples = 0.0;
+//        double auxSample;
+//        double[] sample = new double[length];
+//        double[] auxSamples = new double[length];
+//        
+//        //double min = Tools.min(alpha);
+//        // Generate samples using Gamma distributions
+//        for (int i = 0; i < length; i++)
+//        {
+//            auxSample = (new GammaFunction (alpha[i],1.0)).getSample (randomGenerator);
+//            auxSamples[i] = auxSample;
+//            sumAuxSamples = sumAuxSamples + auxSample;
+//        }
+//        // Normalize the samples
+//        for (int i = 0; i < length; i++)
+//        {
+//            sample[i] = auxSamples[i] / sumAuxSamples;
+//        }
+//        return sample;
+//    }    
 
-	/* (non-Javadoc)
-	 * @see org.openmarkov.core.model.network.modelUncertainty.FamilyDistribution#getVariance()
-	 */
-	@Override
-	public double[] getVariance() {
-		double[] variance;
-		double sumAlpha;
-		
-		sumAlpha = Tools.sum(alpha);
-		variance = new double[alpha.length];
-		for (int i=0;i<alpha.length;i++){
-			double alphaI = alpha[i];
-			variance[i] = alphaI*(sumAlpha-alphaI)/(Math.pow(sumAlpha, 2.0)*(sumAlpha+1.0));
-		}
-		return variance;
-	}
+    /* (non-Javadoc)
+     * @see org.openmarkov.core.model.network.modelUncertainty.FamilyDistribution#getVariance()
+     */
+    @Override
+    public double[] getVariance() {
+        double[] variance;
+        double sumAlpha;
+        
+        sumAlpha = Tools.sum(alpha);
+        variance = new double[alpha.length];
+        for (int i=0;i<alpha.length;i++){
+            double alphaI = alpha[i];
+            variance[i] = alphaI*(sumAlpha-alphaI)/(Math.pow(sumAlpha, 2.0)*(sumAlpha+1.0));
+        }
+        return variance;
+    }
 }

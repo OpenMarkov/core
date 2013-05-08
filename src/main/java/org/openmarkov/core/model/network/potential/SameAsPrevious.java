@@ -38,10 +38,11 @@ public class SameAsPrevious extends Potential
      * @param timeDifference
      * @param probNet The net from which the variables will be taken
      * @throws NodeNotFoundException
+     * @throws ProbNodeNotFoundException 
      * @argCondition The network must contain the shifted variables
      */
     public SameAsPrevious (Potential potential, ProbNet probNet, int timeDifference)
-        throws NodeNotFoundException
+        throws ProbNodeNotFoundException
     {
         super (potential.getShiftedVariables (probNet, timeDifference),
                potential.getPotentialRole ());
@@ -53,11 +54,7 @@ public class SameAsPrevious extends Potential
             Variable originalUtilityVariable = originalPotential.getUtilityVariable ();
             utilityVariable = probNet.getShiftedVariable (originalUtilityVariable, timeDifference);
         }
-        try {
-            originalPotential = originalPotential.shift (probNet, timeDifference);
-        } catch (ProbNodeNotFoundException e) {
-            e.printStackTrace();
-        }
+        originalPotential = originalPotential.shift (probNet, timeDifference);
         type = PotentialType.SAME_AS_PREVIOUS;
     }
 
@@ -66,15 +63,16 @@ public class SameAsPrevious extends Potential
      * @param probNet
      * @param variable
      * @throws NodeNotFoundException
+     * @throws ProbNodeNotFoundException 
      */
     public SameAsPrevious (ProbNet probNet, Variable variable)
-        throws NodeNotFoundException
+        throws NodeNotFoundException, ProbNodeNotFoundException
     {
         this (probNet, variable, 1);
     }
 
     public SameAsPrevious (ProbNet probNet, Variable variable, int timeDifference)
-        throws NodeNotFoundException
+        throws ProbNodeNotFoundException
     {
         this (getPotential (probNet, variable), probNet, timeDifference);
     }
@@ -124,13 +122,14 @@ public class SameAsPrevious extends Potential
      * @param variable. <code>Variable</code>
      * @return Potential The potential referred to by this one
      * @throws NodeNotFoundException
+     * @throws ProbNodeNotFoundException 
      * @argCondition probNet must be a Markov Net with order = 1 because
      *               otherwise the potential returned could not be the right one
      * @precondition The previousProbNode must have at least one potential
      *               assigned
      */
     private static Potential getPotential (ProbNet probNet, Variable variable)
-        throws NodeNotFoundException
+        throws ProbNodeNotFoundException
     {
         String simpleName = variable.getName ();
         Potential previousPotential = null;
@@ -169,14 +168,14 @@ public class SameAsPrevious extends Potential
             }
             if (previousPotential == null)
             {// There is no previous variable
-                throw new NodeNotFoundException ("It does not exists a "
+                throw new ProbNodeNotFoundException (probNet, "It does not exists a "
                                                  + "previous variable called: "
                                                  + variable.getName () + " in this probNet");
             }
         }
         else
         {
-            throw new NodeNotFoundException ("Variable has no a temporal "
+            throw new ProbNodeNotFoundException (probNet, "Variable has not a temporal "
                                              + "type name: varName[number].");
         }
         return previousPotential;
@@ -186,12 +185,11 @@ public class SameAsPrevious extends Potential
     public Potential copy ()
     {
         Potential newPotential = null;
-        try
-        {
+        try {
             newPotential = new SameAsPrevious (originalPotential, probNet, timeDifference);
-        }
-        catch (NodeNotFoundException e)
-        { /* Can never happen */
+        } catch (ProbNodeNotFoundException e) {
+            // Should not happen as it is a copy of an existing potential
+            e.printStackTrace();
         }
         return newPotential;
     }

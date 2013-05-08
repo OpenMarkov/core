@@ -12,7 +12,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
  * @author manolo
  * 
  */
-public class GammaAbstractTest extends ProbDensFunctionTest {
+public abstract class GammaAbstractTest extends ProbDensFunctionTest {
 
     @Override
     public ProbDensityFunctionType getTypeProbDensFunction() {

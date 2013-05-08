@@ -391,10 +391,11 @@ public abstract class Potential
     /**
      * Returns a list with the same variables as this potential, including the
      * utility variable but shifted in time as indicated by timeDifference
+     * @throws ProbNodeNotFoundException 
      * @argCondition The network must contain the shifted variables.
      */
-    public List<Variable> getShiftedVariables (ProbNet probNet, int timeDifference)
-    {
+    public List<Variable> getShiftedVariables(ProbNet probNet, int timeDifference)
+            throws ProbNodeNotFoundException    {
         List<Variable> shiftedVariables = new ArrayList<Variable> ();
         // also shift variables within the tree
         for (Variable variable : getVariables ())

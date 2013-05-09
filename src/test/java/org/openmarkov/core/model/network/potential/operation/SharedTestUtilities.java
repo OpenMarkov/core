@@ -33,7 +33,6 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 public class SharedTestUtilities {
 	
 	// Constants
-	private final static int numLetters = 26;
 
 	private final static String[] letters = {"A", "B", "C", "D", "E", "F", "G",
 		"H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",

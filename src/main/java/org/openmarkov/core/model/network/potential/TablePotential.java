@@ -1131,19 +1131,12 @@ public class TablePotential extends Potential
     }
 
     /**
-     * @return <code>ArrayList</code> of <code>Variable</code>s.
+     * @return <code>List</code> of <code>Variable</code>s.
      * @consultation
      */
     public List<Variable> getVariables ()
     {
-        if (variables != null)
-        {
-            return new ArrayList<Variable> (variables);
-        }
-        else
-        {
-            return variables;
-        }
+        return (variables != null)? new ArrayList<Variable> (variables) : variables;
     }
 
     /** @return tableSize <code>int</code> */

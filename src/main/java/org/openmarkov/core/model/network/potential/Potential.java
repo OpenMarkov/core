@@ -587,6 +587,7 @@ public abstract class Potential
     public void setVariables (List<Variable> variables)
     {
         this.variables = variables;
+        this.numVariables = variables.size();
     }
 
     public double getProbability (EvidenceCase evidenceCase)

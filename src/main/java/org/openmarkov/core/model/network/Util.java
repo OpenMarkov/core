@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 
-public class UtilStrings {
+public class Util {
 
 	/**
 	 * find the symbols for left-closed, left-open, right-closed or right-open

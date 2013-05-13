@@ -10,6 +10,7 @@
 package org.openmarkov.core.action;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.Map;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
@@ -24,6 +26,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
@@ -163,35 +166,109 @@ public class NodeStateEdit extends SimplePNEdit {
 			// set uniform potential for the edited node and children
 			uniformPotential = PotentialOperations.getUniformPotential(probNet, variable,
 					probNode.getNodeType());
-			potentials = new ArrayList<Potential>();
-			potentials.add(uniformPotential);
-
-			probNode.setPotentials(potentials);
+			probNode.setPotentials(Arrays.asList(uniformPotential));
 
 			for (Node node : children) {
-				potentials = new ArrayList<Potential>();
 				ProbNode child = (ProbNode) node.getObject();
 				uniformPotential = PotentialOperations.getUniformPotential(probNet,
 						child.getVariable(), child.getNodeType());
-				potentials.add(uniformPotential);
-				child.setPotentials(potentials);
+				child.setPotentials(Arrays.asList(uniformPotential));
 			}
 			resetLink(probNode.getNode());
 			break;
 		case DOWN:
 			if (stateSelected > 0) {
-
-				State state = variable.getStates()[stateSelected - 1];
-				variable.getStates()[stateSelected - 1] = variable.getStates()[stateSelected];
-				variable.getStates()[stateSelected] = state;
+			    State[] oldStates = variable.getStates();
+			    State[] newStates = new State[oldStates.length];
+			    for(int j=0; j<oldStates.length; ++j)
+			    {
+    				if(j == stateSelected - 1)
+    				{
+    				    newStates[j] = oldStates[stateSelected];
+    				}else if(j == stateSelected)
+    				{
+    				    newStates[j] = oldStates[stateSelected - 1];
+    				}else
+    				{
+    				    newStates[j] = oldStates[j];
+    				}
+			    }
+			    if(probNode.getNodeType() == NodeType.CHANCE ||
+			            probNode.getNodeType() == NodeType.UTILITY)
+			    {
+			        Potential oldPotential = probNode.getPotentials().get(0);
+			        if(oldPotential instanceof TablePotential)
+			        {
+                        TablePotential newPotential = DiscretePotentialOperations.reorder((TablePotential) oldPotential,
+                                variable,
+                                newStates);
+                        probNode.setPotential(newPotential);
+			        }
+			    }
+			    for (Node node : children) {
+	                ProbNode child = (ProbNode) node.getObject();
+	                if(child.getNodeType() == NodeType.CHANCE ||
+	                        child.getNodeType() == NodeType.UTILITY)
+	                {
+	                    Potential oldPotential = child.getPotentials().get(0);
+	                    if(oldPotential instanceof TablePotential)
+	                    {
+	                        TablePotential newPotential = DiscretePotentialOperations.reorder((TablePotential)oldPotential,
+	                                variable,
+	                                newStates);
+	                        child.setPotential(newPotential);
+	                    }
+	                }
+	            }
+			    variable.setStates(newStates);
 				resetLink(probNode.getNode());
 			}
 			break;
 		case UP:
 			if (stateSelected < variable.getNumStates()) {
-				State state = variable.getStates()[stateSelected + 1];
-				variable.getStates()[stateSelected + 1] = variable.getStates()[stateSelected];
-				variable.getStates()[stateSelected] = state;
+                State[] oldStates = variable.getStates();
+                State[] newStates = new State[oldStates.length];
+                for(int j=0; j<oldStates.length; ++j)
+                {
+                    if(j == stateSelected + 1)
+                    {
+                        newStates[j] = oldStates[stateSelected];
+                    }else if(j == stateSelected)
+                    {
+                        newStates[j] = oldStates[stateSelected + 1];
+                    }else
+                    {
+                        newStates[j] = oldStates[j];
+                    }
+                }
+                if(probNode.getNodeType() == NodeType.CHANCE ||
+                        probNode.getNodeType() == NodeType.UTILITY)
+                {
+                    Potential oldPotential = probNode.getPotentials().get(0);
+                    if(oldPotential instanceof TablePotential)
+                    {
+                        TablePotential newPotential = DiscretePotentialOperations.reorder((TablePotential) oldPotential,
+                                variable,
+                                newStates);
+                        probNode.setPotential(newPotential);
+                    }
+                }
+                for (Node node : children) {
+                    ProbNode child = (ProbNode) node.getObject();
+                    if(child.getNodeType() == NodeType.CHANCE ||
+                            child.getNodeType() == NodeType.UTILITY)
+                    {
+                        Potential oldPotential = child.getPotentials().get(0);
+                        if(oldPotential instanceof TablePotential)
+                        {
+                            TablePotential newPotential = DiscretePotentialOperations.reorder((TablePotential)oldPotential,
+                                    variable,
+                                    newStates);
+                            child.setPotential(newPotential);
+                        }
+                    }
+                }
+                variable.setStates(newStates);
 				resetLink(probNode.getNode());
 			}
 

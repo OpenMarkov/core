@@ -26,8 +26,8 @@ public class ComplementFamily extends FamilyDistribution {
         this.probMass = probMass;
     }
 
-    public ComplementFamily(List<UncertainValue> arrayUncertain) {
-        super(arrayUncertain);
+    public ComplementFamily(List<UncertainValue> uncertainValues) {
+        super(filterByFunction(ComplementFunction.class, uncertainValues));
     }
 
     public ComplementFamily() {
@@ -40,7 +40,7 @@ public class ComplementFamily extends FamilyDistribution {
         double[] nu = new double[sizeFamily];
 
         for (int i = 0; i < sizeFamily; i++) {
-            nu[i] = ((ComplementFunction) (family.get(i).getProbDensityFunction())).getNu();
+            nu[i] = ((ComplementFunction) (family.get(i).getProbDensFunction())).getNu();
         }
         return Tools.normalize(nu, probMass);
     }
@@ -51,7 +51,7 @@ public class ComplementFamily extends FamilyDistribution {
         double[] nu = new double[sizeFamily];
 
         for (int i = 0; i < sizeFamily; i++) {
-            nu[i] = ((ComplementFunction) (family.get(i).getProbDensityFunction())).getNu();
+            nu[i] = ((ComplementFunction) (family.get(i).getProbDensFunction())).getNu();
         }
         return Tools.normalize(nu, probMass);
     }

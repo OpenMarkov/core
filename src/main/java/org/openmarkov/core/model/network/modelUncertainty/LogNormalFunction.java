@@ -8,6 +8,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
+@ProbDensFunctionType(name="LogNormal", isValidForProbabilities = false, parameters = {"mu", "sigma"})
 public class LogNormalFunction extends ProbDensFunction
 {
     private double         mu;
@@ -19,27 +20,21 @@ public class LogNormalFunction extends ProbDensFunction
 
     public LogNormalFunction ()
     {
-        super (ProbDensityFunctionType.LOGNORMAL);
+        this(0.0, 1.0);
     }
-
-    @Override
-    public int getNumberOfRequiredArguments ()
+    
+    public LogNormalFunction (double mu, double sigma)
     {
-        return 2;
+        this.mu = mu;
+        this.sigma = sigma;
     }
 
     @Override
-    public void setParameters (Double[] args)
+    public void setParameters (double[] args)
     {
         mu = args[0];
         sigma = args[1];
         normal = new NormalFunction (mu, sigma);
-    }
-
-    @Override
-    public boolean isPossibleDistribution (boolean isChance)
-    {
-        return !isChance;
     }
 
     @Override
@@ -51,10 +46,7 @@ public class LogNormalFunction extends ProbDensFunction
     @Override
     public double[] getParameters ()
     {
-        double[] a = new double[2];
-        a[0] = mu;
-        a[1] = sigma;
-        return a;
+        return new double[]{mu, sigma};
     }
 
     @Override
@@ -78,8 +70,7 @@ public class LogNormalFunction extends ProbDensFunction
     @Override
     public double getVariance ()
     {
-        double squareSigma;
-        squareSigma = Math.pow (sigma, 2.0);
+        double squareSigma = Math.pow (sigma, 2.0);
         return (Math.exp (squareSigma) - 1) * Math.exp (2 * mu + squareSigma);
     }
 }

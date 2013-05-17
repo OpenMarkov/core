@@ -7,6 +7,7 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 
+@ProbDensFunctionType(name="Gamma", isValidForProbabilities = false, parameters = {"k", "theta"})
 public class GammaFunction extends GammaAbstract
 {
     private double k;
@@ -18,7 +19,6 @@ public class GammaFunction extends GammaAbstract
      */
     public GammaFunction (double k, double theta)
     {
-        this ();
         this.k = k;
         this.theta = theta;
         this.kAbstract = k;
@@ -27,14 +27,14 @@ public class GammaFunction extends GammaAbstract
 
     public GammaFunction ()
     {
-        super (ProbDensityFunctionType.GAMMA);
+        this (0.0, 0.0);
     }
 
     @Override
-    public void auxPlaceParameters (Double[] params)
+    public void setParameters (double[] parameters)
     {
-        k = params[0];
-        theta = params[1];
+        k = parameters[0];
+        theta = parameters[1];
         this.kAbstract = k;
         this.thetaAbstract = theta;
     }

@@ -65,10 +65,10 @@ public class SameAsPrevious extends Potential
      * @throws NodeNotFoundException
      * @throws ProbNodeNotFoundException 
      */
-    public SameAsPrevious (ProbNet probNet, Variable variable)
+    public SameAsPrevious (ProbNet probNet, List<Variable> variables)
         throws NodeNotFoundException, ProbNodeNotFoundException
     {
-        this (probNet, variable, 1);
+        this (probNet, variables.get(0), 1);
     }
 
     public SameAsPrevious (ProbNet probNet, Variable variable, int timeDifference)

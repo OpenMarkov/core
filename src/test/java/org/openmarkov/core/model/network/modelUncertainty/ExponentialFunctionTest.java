@@ -15,14 +15,15 @@ package org.openmarkov.core.model.network.modelUncertainty;
 public class ExponentialFunctionTest extends ProbDensFunctionTest {
 
     @Override
-    public ProbDensityFunctionType getTypeProbDensFunction() {
-        return ProbDensityFunctionType.EXPONENTIAL;
+    public ProbDensFunction newProbDensFunctionInstance() {
+        return new ExponentialFunction();
     }
-
+    
     @Override
-    public Double[] initializeParamsProbDensFunctionTest() {
-        Double[] params = { 1.3 };
+    public double[] initializeParams() {
+        double[] params = { 1.3 };
         return params;
     }
+
 
 }

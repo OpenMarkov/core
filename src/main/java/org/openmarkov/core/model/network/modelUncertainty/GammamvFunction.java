@@ -6,6 +6,7 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+@ProbDensFunctionType(name="Gamma-mv", isValidForProbabilities = false, parameters = {"mu", "sigma"})
 public class GammamvFunction extends GammaAbstract
 {
     private double mu;
@@ -13,16 +14,20 @@ public class GammamvFunction extends GammaAbstract
 
     public GammamvFunction ()
     {
-        super (ProbDensityFunctionType.GAMMAMV);
-        // TODO Auto-generated constructor stub
+        this(0.0, 0.0);
     }
+    
+    public GammamvFunction (double mu, double sigma)
+    {
+        this.mu = mu;
+        this.sigma = sigma;
+    }    
 
     @Override
-    public void auxPlaceParameters (Double[] args)
+    public void setParameters (double[] parameters)
     {
-        // TODO Auto-generated method stub
-        mu = args[0];
-        sigma = args[1];
+        mu = parameters[0];
+        sigma = parameters[1];
         this.kAbstract = Math.pow (mu / sigma, 2);
         this.thetaAbstract = Math.pow (sigma, 2) / mu;
     }

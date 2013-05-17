@@ -8,51 +8,22 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
-public abstract class GammaAbstract extends ProbDensFunction
-{
+public abstract class GammaAbstract extends ProbDensFunction {
     protected double kAbstract;
     protected double thetaAbstract;
 
-    public GammaAbstract (ProbDensityFunctionType type)
-    {
-        super (type);
-    }
-
     @Override
-    public int getNumberOfRequiredArguments ()
-    {
-        return 2;
-    }
-
-    protected abstract void auxPlaceParameters (Double[] args);
-
-    @Override
-    public void setParameters (Double[] params)
-    {
-        auxPlaceParameters (params);
-    }
-
-    @Override
-    public boolean isPossibleDistribution (boolean isChance)
-    {
-        return !isChance;
-    }
-
-    @Override
-    public final double getMaximum ()
-    {
+    public final double getMaximum() {
         return Double.POSITIVE_INFINITY;
     }
 
     @Override
-    public final double getMean ()
-    {
+    public final double getMean() {
         return (kAbstract * thetaAbstract);
     }
 
     @Override
-    public final double getSample (Random randomGenerator)
-    {
+    public final double getSample(Random randomGenerator) {
         double sample;
         double r;
         double lambdaErlang;
@@ -61,27 +32,24 @@ public abstract class GammaAbstract extends ProbDensFunction
         int kForSampling;
         lambdaErlang = 1.0 / thetaAbstract;
         // Integer part of kAbstract
-        kForSampling = (int) (Math.ceil (kAbstract));
-        if (!isAnErlangFunction (epsilon))
-        {
+        kForSampling = (int) (Math.ceil(kAbstract));
+        if (!isAnErlangFunction(epsilon)) {
             r = kForSampling - kAbstract;
-            u = (new RangeFunction (0.0, 1.0)).getSample (randomGenerator);
-            if (u<r){
-            	kForSampling = kForSampling-1;
+            u = (new RangeFunction(0.0, 1.0)).getSample(randomGenerator);
+            if (u < r) {
+                kForSampling = kForSampling - 1;
             }
         }
-        sample = (new ErlangFunction (kForSampling, lambdaErlang)).getSample (randomGenerator);
+        sample = (new ErlangFunction(kForSampling, lambdaErlang)).getSample(randomGenerator);
         return sample;
     }
 
-    public boolean isAnErlangFunction (double epsilon)
-    {
-        return (Math.abs(kAbstract - Math.ceil (kAbstract)))<epsilon;
+    public boolean isAnErlangFunction(double epsilon) {
+        return (Math.abs(kAbstract - Math.ceil(kAbstract))) < epsilon;
     }
 
     @Override
-    public final double getVariance ()
-    {
-        return kAbstract*Math.pow(thetaAbstract,2.0);
+    public final double getVariance() {
+        return kAbstract * Math.pow(thetaAbstract, 2.0);
     }
 }

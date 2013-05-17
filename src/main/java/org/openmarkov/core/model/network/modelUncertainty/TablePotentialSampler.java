@@ -42,10 +42,10 @@ public class TablePotentialSampler
         ComplementFamily complementFamily = null;
         DirichletFamily dirFamily = null;
         FamilyDistribution otherFamily = null;
-        List<ProbDensityFunctionType> functionTypes;
-        functionTypes = new ArrayList<ProbDensityFunctionType> ();
-        functionTypes.add (ProbDensityFunctionType.COMPLEMENT);
-        functionTypes.add (ProbDensityFunctionType.DIRICHLET);
+        List<Class<? extends ProbDensFunction>> functionTypes;
+        functionTypes = new ArrayList<> ();
+        functionTypes.add (ComplementFunction.class);
+        functionTypes.add (DirichletFunction.class);
         List<UncertainValue> uncertainValues = null;
         double[] sampledConfigurationValues;
         int numStates;
@@ -86,11 +86,11 @@ public class TablePotentialSampler
                     List<UncertainValue> familyList = family.family;
                     // calculates the indexes of the uncertain values for each
                     // group: Other, Dirichlet and Complement
-                    indexesComplement = getIndexesUncertainValuesOfType (familyList,
-                                                                         ProbDensityFunctionType.COMPLEMENT);
-                    indexesDirichlet = getIndexesUncertainValuesOfType (familyList,
-                                                                        ProbDensityFunctionType.DIRICHLET);
-                    indexesOther = getIndexesUncertainValuesNotInTypes (familyList, functionTypes);
+                    indexesComplement = getIndexesUncertainValuesOfClass (familyList,
+                                                                         ComplementFunction.class);
+                    indexesDirichlet = getIndexesUncertainValuesOfClass (familyList,
+                                                                        DirichletFunction.class);
+                    indexesOther = getIndexesUncertainValuesNotOfClasses (familyList, functionTypes);
                     // Create the families of distributions
                     List<UncertainValue> complements = constructListFromIndexes (familyList,
                                                                                  indexesComplement);
@@ -103,10 +103,6 @@ public class TablePotentialSampler
                     otherFamily = new FamilyDistribution (others);
                     // Initialize the random seed and the random number
                     // generator in the Dirichlet family
-                    /*
-                     * setAndInitializeRandomStreamGenerator(dirFamily,
-                     * arrayFamily);
-                     */
                     // samples and places the results in the auxiliary
                     // vector 'sampledConfigurationValues'
                     sampledConfigurationValues = generateSample (otherFamily, dirFamily,
@@ -139,13 +135,6 @@ public class TablePotentialSampler
         return sampledTablePotential;
     }
 
-    /*
-     * private void setAndInitializeRandomStreamGenerator( DirichletFamily
-     * dirFamily, ArrayList<UncertainValue> arrayFamily) { for (UncertainValue
-     * aux:arrayFamily){ aux.createRandomGenerator(); aux.initializeGenerator();
-     * } // dirFamily.createRandomGenerator(); //
-     * dirFamily.initializeGenerator(); }
-     */
     private double[] generateSample (FamilyDistribution otherFamily,
                                      DirichletFamily dirFamily,
                                      ComplementFamily complementFamily,
@@ -211,69 +200,63 @@ public class TablePotentialSampler
     }
 
     /**
-     * @param arrayUncertain
+     * @param uncertainValues
      * @param types
      * @return
      */
-    private static int[] getIndexesUncertainValuesOfTypes (List<UncertainValue> arrayUncertain,
-                                                           List<ProbDensityFunctionType> types)
-    {
-        List<Integer> indexes = new ArrayList<Integer> ();
-        for (int i = 0; i < arrayUncertain.size (); i++)
-        {
-            UncertainValue aux = arrayUncertain.get (i);
-            ProbDensityFunctionType auxType = aux.getProbDensityFunction ().getType ();
+    private static int[] getIndexesUncertainValuesOfClasses(List<UncertainValue> uncertainValues,
+            List<Class<? extends ProbDensFunction>> types) {
+        List<Integer> indexes = new ArrayList<Integer>();
+        for (int i = 0; i < uncertainValues.size(); i++) {
+            UncertainValue uncertainValue = uncertainValues.get(i);
+            ProbDensFunction probDensFunction = uncertainValue.getProbDensFunction();
             boolean isInTypes = false;
-            for (int j = 0; (j < types.size ()) && !isInTypes; j++)
-            {
-                isInTypes = (auxType == types.get (j));
+            for (int j = 0; (j < types.size()) && !isInTypes; j++) {
+                isInTypes = types.get(j).isAssignableFrom(probDensFunction.getClass());
             }
-            if (isInTypes)
-            {
-                indexes.add (i);
+            if (isInTypes) {
+                indexes.add(i);
             }
         }
-        int numIndexesOfTypes = indexes.size ();
+        int numIndexesOfTypes = indexes.size();
         int[] intIndexes = new int[numIndexesOfTypes];
-        for (int i = 0; i < numIndexesOfTypes; i++)
-        {
-            intIndexes[i] = indexes.get (i);
+        for (int i = 0; i < numIndexesOfTypes; i++) {
+            intIndexes[i] = indexes.get(i);
         }
         return intIndexes;
     }
-
-    public static int[] getIndexesUncertainValuesNotInTypes (List<UncertainValue> arrayUncertain,
-                                                             List<ProbDensityFunctionType> types)
-    {
-        List<Integer> indexes = new ArrayList<Integer> ();
-        for (int i = 0; i < arrayUncertain.size (); i++)
-        {
-            UncertainValue aux = arrayUncertain.get (i);
-            ProbDensityFunctionType auxType = aux.getProbDensityFunction ().getType ();
-            boolean notInTypes = true;
-            for (int j = 0; (j < types.size ()) && notInTypes; j++)
-            {
-                notInTypes = !(auxType == types.get (j));
+    
+    /**
+     * @param uncertainValues
+     * @param types
+     * @return
+     */
+    private static int[] getIndexesUncertainValuesNotOfClasses(List<UncertainValue> uncertainValues,
+            List<Class<? extends ProbDensFunction>> types) {
+        List<Integer> indexes = new ArrayList<Integer>();
+        for (int i = 0; i < uncertainValues.size(); i++) {
+            UncertainValue uncertainValue = uncertainValues.get(i);
+            ProbDensFunction probDensFunction = uncertainValue.getProbDensFunction();
+            boolean isInTypes = false;
+            for (int j = 0; (j < types.size()) && !isInTypes; j++) {
+                isInTypes = types.get(j).isAssignableFrom(probDensFunction.getClass());
             }
-            if (notInTypes)
-            {
-                indexes.add (i);
+            if (!isInTypes) {
+                indexes.add(i);
             }
         }
-        int numIndexesOfTypes = indexes.size ();
+        int numIndexesOfTypes = indexes.size();
         int[] intIndexes = new int[numIndexesOfTypes];
-        for (int i = 0; i < numIndexesOfTypes; i++)
-        {
-            intIndexes[i] = indexes.get (i);
+        for (int i = 0; i < numIndexesOfTypes; i++) {
+            intIndexes[i] = indexes.get(i);
         }
         return intIndexes;
-    }
+    }    
 
-    public static int[] getIndexesUncertainValuesOfType (List<UncertainValue> arrayUncertain,
-                                                         ProbDensityFunctionType type)
-    {
-        List<ProbDensityFunctionType> aux = new ArrayList<ProbDensityFunctionType> ();
-        aux.add (type);
-        return getIndexesUncertainValuesOfTypes (arrayUncertain, aux);
+    public static int[] getIndexesUncertainValuesOfClass(List<UncertainValue> uncertainValues,
+            Class<? extends ProbDensFunction> functionClass) {
+        List<Class<? extends ProbDensFunction>> classes = new ArrayList<>();
+        classes.add(functionClass);
+        return getIndexesUncertainValuesOfClasses(uncertainValues, classes);
     }
 }

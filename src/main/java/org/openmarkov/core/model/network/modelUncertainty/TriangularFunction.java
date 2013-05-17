@@ -6,73 +6,65 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+@ProbDensFunctionType(name="Triangular", parameters = {"minimum", "maximum", "mode"})
 public class TriangularFunction extends ProbDensFunctionWithKnownInverseCDF
 {
     /**
      * Minimum
      */
-    double a;
+    private double minimum;
     /**
      * Maximum
      */
-    double b;
+    private double maximum;
     /**
      * Mode
      */
-    double c;
+    private double mode;
 
     public TriangularFunction ()
     {
-        super (ProbDensityFunctionType.TRIANGULAR);
+        this(0.0, 1.0, 0.5);
     }
+    
+    public TriangularFunction (double minimum, double maximum, double mode)
+    {
+        this.minimum = minimum;
+        this.maximum = maximum;
+        this.mode = mode;
+    }    
 
     @Override
-    public void setParameters (Double[] params)
+    public void setParameters (double[] params)
     {
-        a = params[0];
-        b = params[1];
-        c = params[2];
+        minimum = params[0];
+        maximum = params[1];
+        mode = params[2];
     }
 
     @Override
     public boolean verifyParametersDomain (boolean isChanceVariable)
     {
-        return (((0 <= a) && (a <= c) && (c <= b) && (b <= 1) && (a < b)) && isChanceVariable)
-               || ((a <= c) && (c <= b) && (a < b) && !isChanceVariable);
-    }
-
-    @Override
-    public boolean isPossibleDistribution (boolean isChance)
-    {
-        return true;
-    }
-
-    @Override
-    public int getNumberOfRequiredArguments ()
-    {
-        return 3;
+        return (((0 <= minimum) && (minimum <= mode) && (mode <= maximum) && (maximum <= 1) && (minimum < maximum)) && isChanceVariable)
+               || ((minimum <= mode) && (mode <= maximum) && (minimum < maximum) && !isChanceVariable);
     }
 
     @Override
     public double[] getParameters ()
     {
-        double[] x = new double[3];
-        x[0] = a;
-        x[1] = b;
-        x[2] = c;
-        return x;
+        return new double[]{minimum, maximum, mode};
     }
 
     @Override
     public double getMaximum ()
     {
-        return b;
+        return maximum;
     }
 
     @Override
     public double getMean ()
     {
-        return (a + b + c) / 3;
+        return (minimum + maximum + mode) / 3;
     }
 
     @Override
@@ -81,19 +73,19 @@ public class TriangularFunction extends ProbDensFunctionWithKnownInverseCDF
         double sample;
         double diffBA;
         double ratioCABA;
-        diffBA = b - a;
-        double diffBC = b - c;
-        double diffCA = c - a;
+        diffBA = maximum - minimum;
+        double diffBC = maximum - mode;
+        double diffCA = mode - minimum;
         ratioCABA = diffCA / diffBA;
         // if (x<ratioCABA){
         if (y < ratioCABA)
         {
             // if (x<c){
-            sample = a + Math.sqrt (y * diffBA * diffCA);
+            sample = minimum + Math.sqrt (y * diffBA * diffCA);
         }
         else
         {
-            sample = b - Math.sqrt ((1 - y) * diffBA * diffBC);
+            sample = maximum - Math.sqrt ((1 - y) * diffBA * diffBC);
         }
         return sample;
     }
@@ -101,6 +93,6 @@ public class TriangularFunction extends ProbDensFunctionWithKnownInverseCDF
     @Override
     public double getVariance ()
     {
-        return (Tools.square (a) + Tools.square (b) + Tools.square (c) - a * b - a * c - b * c) / 18;
+        return (Tools.square (minimum) + Tools.square (maximum) + Tools.square (mode) - minimum * maximum - minimum * mode - maximum * mode) / 18;
     }
 }

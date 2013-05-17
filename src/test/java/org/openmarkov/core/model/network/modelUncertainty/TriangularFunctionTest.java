@@ -15,13 +15,13 @@ package org.openmarkov.core.model.network.modelUncertainty;
 public class TriangularFunctionTest extends ProbDensFunctionTest {
 
     @Override
-    public ProbDensityFunctionType getTypeProbDensFunction() {
-        return ProbDensityFunctionType.TRIANGULAR;
+    public ProbDensFunction newProbDensFunctionInstance() {
+        return new TriangularFunction();
     }
-
+    
     @Override
-    public Double[] initializeParamsProbDensFunctionTest() {
-        Double[] params = { 3.0, 11.0, 5.0 };
+    public double[] initializeParams() {
+        double[] params = { 3.0, 11.0, 5.0 };
         return params;
     }
 

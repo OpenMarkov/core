@@ -8,17 +8,22 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
+@ProbDensFunctionType(name="Exact", isValidForNumeric = true, parameters = {"nu"})
 public class ExactFunction extends ProbDensFunction
 {
     private double nu;
 
     public ExactFunction ()
     {
-        super (ProbDensityFunctionType.EXACT);
     }
 
+    public ExactFunction (double nu)
+    {
+        this.nu = nu;
+    }
+    
     @Override
-    public void setParameters (Double[] params)
+    public void setParameters (double[] params)
     {
         nu = params[0];
     }
@@ -27,18 +32,6 @@ public class ExactFunction extends ProbDensFunction
     public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return ((!isChanceVariable) || ((0 <= nu) && (nu <= 1)));
-    }
-
-    @Override
-    public boolean isPossibleDistribution (boolean isChance)
-    {
-        return true;
-    }
-
-    @Override
-    public int getNumberOfRequiredArguments ()
-    {
-        return 1;
     }
 
     /**

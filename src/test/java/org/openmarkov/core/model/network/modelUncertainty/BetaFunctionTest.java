@@ -15,15 +15,16 @@ package org.openmarkov.core.model.network.modelUncertainty;
 public class BetaFunctionTest extends ProbDensFunctionTest {
 
     @Override
-    public ProbDensityFunctionType getTypeProbDensFunction() {
-        return ProbDensityFunctionType.BETA;
+    public ProbDensFunction newProbDensFunctionInstance() {
+        return new BetaFunction();
     }
 
     @Override
-    public Double[] initializeParamsProbDensFunctionTest() {
+    public double[] initializeParams() {
 
-        Double[] params = { 3.0, 17.0 };
-        return params;
+        return new double []{ 3.0, 17.0 };
     }
+
+
 
 }

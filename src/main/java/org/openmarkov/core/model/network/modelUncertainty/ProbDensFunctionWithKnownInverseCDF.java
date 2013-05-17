@@ -8,20 +8,11 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
-public abstract class ProbDensFunctionWithKnownInverseCDF extends ProbDensFunction
-{
-    public ProbDensFunctionWithKnownInverseCDF (ProbDensityFunctionType type)
-    {
-        super (type);
+public abstract class ProbDensFunctionWithKnownInverseCDF extends ProbDensFunction {
+    public abstract double getInverseCumulativeDistributionFunction(double y);
+
+    public final double getSample(Random randomGenerator) {
+        return getInverseCumulativeDistributionFunction(randomGenerator.nextDouble());
     }
 
-    public abstract double getInverseCumulativeDistributionFunction (double y);
-
-    public final double getSample (Random randomGenerator)
-    {
-        return getInverseCumulativeDistributionFunction (randomGenerator.nextDouble ());
-    }
-
-    @Override
-    public abstract double getMaximum ();
 }

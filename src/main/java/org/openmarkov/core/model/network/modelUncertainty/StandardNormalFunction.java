@@ -6,62 +6,41 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
-public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF
-{
+public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF {
     // Odeh and Evans' coefficients
-    private static final double p[] = new double[] { -0.322232431088, -1.0, -0.342242088547,
-            -0.0204231210245, -0.453642210148E-4 };
-    private static final double q[] = new double[] { 0.0993484626060, 0.588581570495,
+    private static final double p[]         = new double[] { -0.322232431088, -1.0,
+            -0.342242088547, -0.0204231210245, -0.453642210148E-4 };
+    private static final double q[]         = new double[] { 0.0993484626060, 0.588581570495,
             0.531103462366, 0.103537752850, 0.38560700634E-2 };
     // Polynomials for the approximation
-    private Polynomial numerator = new Polynomial(p, 4);
-    private Polynomial denominator = new Polynomial(q, 4);
+    private Polynomial          numerator   = new Polynomial(p, 4);
+    private Polynomial          denominator = new Polynomial(q, 4);
 
-    public StandardNormalFunction ()
-    {
-        super (ProbDensityFunctionType.STANDARDNORMAL);
+    public StandardNormalFunction() {
     }
 
     @Override
-    public int getNumberOfRequiredArguments ()
-    {
-        return 0;
+    public double[] getParameters() {
+        return new double[0];
     }
 
     @Override
-    public double[] getParameters ()
-    {
-        // TODO Auto-generated method stub
-        return null;
+    public void setParameters(double[] args) {
+        // ignore
     }
 
     @Override
-    public void setParameters (Double[] args)
-    {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public boolean isPossibleDistribution (boolean isChance)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean verifyParametersDomain (boolean isChanceVariable)
-    {
+    public boolean verifyParametersDomain(boolean isChanceVariable) {
         return true;
     }
 
     @Override
-    public double getMean ()
-    {
+    public double getMean() {
         return 0;
     }
 
     @Override
-    public double getMaximum ()
-    {
+    public double getMaximum() {
         return Double.POSITIVE_INFINITY;
     }
 
@@ -74,51 +53,42 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF
      * @return
      */
     @Override
-    public double getInverseCumulativeDistributionFunction (double beta)
-    {
+    public double getInverseCumulativeDistributionFunction(double beta) {
         double inverse;
-        if (beta < 0.5)
-        {
-            inverse = odehAndEvansApproximation (beta);
-        }
-        else
-        {
-            inverse = -odehAndEvansApproximation (1 - beta);
+        if (beta < 0.5) {
+            inverse = odehAndEvansApproximation(beta);
+        } else {
+            inverse = -odehAndEvansApproximation(1 - beta);
         }
         return inverse;
     }
 
-    private double odehAndEvansApproximation (double beta)
-    {
-        double y = Math.sqrt (-2.0 * Math.log (1.0 - beta));
-        return -y - numerator.evaluate (y) / denominator.evaluate (y);
+    private double odehAndEvansApproximation(double beta) {
+        double y = Math.sqrt(-2.0 * Math.log(1.0 - beta));
+        return -y - numerator.evaluate(y) / denominator.evaluate(y);
     }
 
     @Override
-    public double getVariance ()
-    {
+    public double getVariance() {
         return 1.0;
     }
-    
-    public class Polynomial
-    {
+
+    public class Polynomial {
         // Coefficients
         double[] coeff;
         // Degree
         int      deg;
 
-        public Polynomial (double[] p, int i)
-        {
+        public Polynomial(double[] p, int i) {
             coeff = p;
             deg = i;
         }
 
-        public double evaluate (double x)
-        {
+        public double evaluate(double x) {
             double p = 0;
             for (int i = deg; i >= 0; i--)
                 p = coeff[i] + (x * p);
             return p;
         }
-    }    
+    }
 }

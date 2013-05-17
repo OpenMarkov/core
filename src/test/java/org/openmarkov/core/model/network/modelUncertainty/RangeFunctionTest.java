@@ -14,14 +14,16 @@ package org.openmarkov.core.model.network.modelUncertainty;
  */
 public class RangeFunctionTest extends ProbDensFunctionTest {
 
-    public ProbDensityFunctionType getTypeProbDensFunction() {
-        return ProbDensityFunctionType.RANGE;
-    }
-
     @Override
-    public Double[] initializeParamsProbDensFunctionTest() {
-        Double[] params = { 3.0, 106.0 };
+    public ProbDensFunction newProbDensFunctionInstance() {
+        return new RangeFunction();
+    }
+    
+    @Override
+    public double[] initializeParams() {
+        double[] params = { 3.0, 106.0 };
         return params;
     }
+
 
 }

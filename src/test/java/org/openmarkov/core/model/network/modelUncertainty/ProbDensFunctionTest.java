@@ -25,22 +25,20 @@ public abstract class ProbDensFunctionTest {
     double maxErrorMean = 0.001;
     double maxErrorStDeviation = 0.01;
 
-    public abstract ProbDensityFunctionType getTypeProbDensFunction();
+    public abstract ProbDensFunction newProbDensFunctionInstance();
 
     @Test
     public void testMeanAndVariance() {
         int numSamples = 1000000;
         Random randomGenerator = new XORShiftRandom();
-
-        pdf = ProbDensFunction.constructNewProbDensFunction(getTypeProbDensFunction());
-        initializeAndPlaceParamsProbDensFunctionTest();
+        pdf =  newProbDensFunctionInstance();
+        pdf.setParameters(initializeParams());
         double[] samples = new double[numSamples];
         for (int i = 0; i < numSamples; i++) {
             samples[i] = pdf.getSample(randomGenerator);
         }
         testMean(samples);
         testStandardDeviation(samples);
-
     }
 
     /**
@@ -49,7 +47,6 @@ public abstract class ProbDensFunctionTest {
     private void testStandardDeviation(double[] samples) {
         double variance = Tools.varianceSample(samples);
         assertMeanTest(Math.sqrt(variance), pdf.getStandardDeviation(), maxErrorStDeviation);
-
     }
 
     /**
@@ -63,7 +60,6 @@ public abstract class ProbDensFunctionTest {
 
         double mean = Tools.meanSample(samples);
         assertMeanTest(mean, pdf.getMean(), maxErrorMean);
-
     }
 
     /**
@@ -78,17 +74,8 @@ public abstract class ProbDensFunctionTest {
     }
 
     /**
-     * @param prob
-     */
-    public void initializeAndPlaceParamsProbDensFunctionTest() {
-        Double[] params = initializeParamsProbDensFunctionTest();
-        pdf.setParameters(params);
-
-    }
-
-    /**
      * @return
      */
-    public abstract Double[] initializeParamsProbDensFunctionTest();
+    public abstract double[] initializeParams();
 
 }

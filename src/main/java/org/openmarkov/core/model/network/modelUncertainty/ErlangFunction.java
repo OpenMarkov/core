@@ -20,7 +20,6 @@ public class ErlangFunction extends ProbDensFunction
      */
     public ErlangFunction (int k, double lambda)
     {
-        this ();
         this.k = k;
         this.lambda = lambda;
         this.exponentialFunction = new ExponentialFunction(lambda);
@@ -28,14 +27,7 @@ public class ErlangFunction extends ProbDensFunction
 
     public ErlangFunction ()
     {
-        super (ProbDensityFunctionType.ERLANG);
-    }
-
-    @Override
-    public int getNumberOfRequiredArguments ()
-    {
-        // TODO Auto-generated method stub
-        return 0;
+        this(0 ,0.0);
     }
 
     @Override
@@ -46,17 +38,11 @@ public class ErlangFunction extends ProbDensFunction
     }
 
     @Override
-    public void setParameters (Double[] args)
+    public void setParameters (double[] args)
     {
     	  k = (int) Math.round(args[0]);
           lambda = args[1];
           exponentialFunction = new ExponentialFunction(lambda);
-    }
-
-    @Override
-    public boolean isPossibleDistribution (boolean isChance)
-    {
-        return false;
     }
 
     @Override

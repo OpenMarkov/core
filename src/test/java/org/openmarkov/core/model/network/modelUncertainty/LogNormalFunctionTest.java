@@ -15,14 +15,13 @@ package org.openmarkov.core.model.network.modelUncertainty;
 public class LogNormalFunctionTest extends ProbDensFunctionTest {
 
     @Override
-    public ProbDensityFunctionType getTypeProbDensFunction() {
-
-        return ProbDensityFunctionType.LOGNORMAL;
+    public ProbDensFunction newProbDensFunctionInstance() {
+        return new LogNormalFunction();
     }
 
     @Override
-    public Double[] initializeParamsProbDensFunctionTest() {
-        Double[] params = { 1.5, 1.0 };
+    public double[] initializeParams() {
+        double[] params = { 1.5, 1.0 };
         return params;
     }
 

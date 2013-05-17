@@ -8,22 +8,28 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
+@ProbDensFunctionType(name="Complement", isValidForNumeric = false, parameters = {"nu"})
 public class ComplementFunction extends ProbDensFunction
 {
     private double nu;
+
+    public ComplementFunction ()
+    {
+        this.nu = 0;
+    }
+
+    public ComplementFunction (double nu)
+    {
+        this.nu = nu;
+    }
 
     public double getNu ()
     {
         return nu;
     }
-
-    public ComplementFunction ()
-    {
-        super (ProbDensityFunctionType.COMPLEMENT);
-    }
-
+    
     @Override
-    public void setParameters (Double[] params)
+    public void setParameters (double[] params)
     {
         nu = params[0];
     }
@@ -32,18 +38,6 @@ public class ComplementFunction extends ProbDensFunction
     public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return (nu > 0);
-    }
-
-    @Override
-    public boolean isPossibleDistribution (boolean isChance)
-    {
-        return isChance;
-    }
-
-    @Override
-    public int getNumberOfRequiredArguments ()
-    {
-        return 1;
     }
 
     @Override

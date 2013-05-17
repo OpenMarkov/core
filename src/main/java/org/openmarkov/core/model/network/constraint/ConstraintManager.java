@@ -24,18 +24,18 @@ import org.openmarkov.plugin.service.PluginLoaderIF;
 public class ConstraintManager
 {
     private static ConstraintManager instance;
-    private PluginLoaderIF pluginsLoader;
+    private PluginLoaderIF pluginLoader;
     private HashMap<Class<? extends PNConstraint>, ConstraintBehavior> defaultConstraintBehaviors; 
     
     /**
-     * Constructor for LearningAlgoritmManager.
+     * Constructor for ConstraintManager.
      * @throws ConstraintException 
      */
     @SuppressWarnings("unchecked")
     private ConstraintManager ()
     {
         super ();
-        this.pluginsLoader = new PluginLoader ();
+        this.pluginLoader = new PluginLoader ();
         this.defaultConstraintBehaviors = new HashMap<Class<? extends PNConstraint>, ConstraintBehavior> ();
         
         List<Class<?>> plugins = findAllConstraints ();
@@ -142,7 +142,7 @@ public class ConstraintManager
         try
         {
             FilterIF filter = org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy (Constraint.class);
-            return pluginsLoader.loadAllPlugins (filter);          
+            return pluginLoader.loadAllPlugins (filter);          
         }
         catch (Exception e) {}
         return null;

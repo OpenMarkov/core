@@ -8,44 +8,34 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
-public class BetaFunction extends ProbDensFunction
-{
-    double alpha;
-    double beta;
+@ProbDensFunctionType(name = "Beta", isValidForNumeric = false, parameters = { "alpha", "beta" })
+public class BetaFunction extends ProbDensFunction {
+    private double alpha;
+    private double beta;
 
-    public BetaFunction ()
-    {
-        super (ProbDensityFunctionType.BETA);
+    public BetaFunction() {
+        this.alpha = 0;
+        this.beta = 0;        
+    }
+
+    public BetaFunction(double alpha, double beta) {
+        this.alpha = alpha;
+        this.beta = beta;
     }
 
     @Override
-    public void setParameters (Double[] params)
-    {
+    public void setParameters(double[] params) {
         alpha = params[0];
         beta = params[1];
     }
 
     @Override
-    public boolean verifyParametersDomain (boolean isChanceVariable)
-    {
+    public boolean verifyParametersDomain(boolean isChanceVariable) {
         return ((alpha > 0) && (beta > 0));
     }
 
     @Override
-    public boolean isPossibleDistribution (boolean isChance)
-    {
-        return isChance;
-    }
-
-    @Override
-    public int getNumberOfRequiredArguments ()
-    {
-        return 2;
-    }
-
-    @Override
-    public double[] getParameters ()
-    {
+    public double[] getParameters() {
         double[] a = new double[2];
         a[0] = alpha;
         a[1] = beta;
@@ -53,30 +43,26 @@ public class BetaFunction extends ProbDensFunction
     }
 
     @Override
-    public double getMaximum ()
-    {
+    public double getMaximum() {
         return 1;
     }
 
     @Override
-    public double getMean ()
-    {
+    public double getMean() {
         return alpha / (alpha + beta);
     }
 
     @Override
-    public double getSample (Random randomGenerator)
-    {
-        double[] alphas = new double[]{alpha, beta};
+    public double getSample(Random randomGenerator) {
+        double[] alphas = new double[] { alpha, beta };
         // We use a Dirichlet family for obtaining the sample
-        DirichletFamily family = new DirichletFamily (alphas);
-        return family.getSample (randomGenerator)[0];
+        DirichletFamily family = new DirichletFamily(alphas);
+        return family.getSample(randomGenerator)[0];
     }
 
     @Override
-    public double getVariance ()
-    {
+    public double getVariance() {
         double sumAlphaBeta = alpha + beta;
-        return (alpha * beta) / (Math.pow (sumAlphaBeta, 2.0) * (sumAlphaBeta + 1));
+        return (alpha * beta) / (Math.pow(sumAlphaBeta, 2.0) * (sumAlphaBeta + 1));
     }
 }

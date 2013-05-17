@@ -19,15 +19,14 @@ public class DirichletFamily extends FamilyDistribution
     
     private RandomStream stream;
 
-    public DirichletFamily (List<UncertainValue> siblings)
+    public DirichletFamily (List<UncertainValue> uncertainValues)
     {
-        super (siblings);
+        super (filterByFunction(DirichletFunction.class, uncertainValues));
         int size = family.size ();
         double[] alpha = new double[size];
         for (int i = 0; i < size; i++)
         {
-            alpha[i] = ((DirichletFunction)(siblings.get(i).getProbDensityFunction())).getAlpha();
-            ((DirichletFunction) (family.get (i).getProbDensityFunction ())).setAlpha (alpha[i]);
+            alpha[i] = ((DirichletFunction)(family.get (i).getProbDensFunction())).getAlpha();
         }
         this.alpha = alpha;
         this.stream = new MRG32k3a();
@@ -80,9 +79,6 @@ public class DirichletFamily extends FamilyDistribution
 //        return sample;
 //    }    
 
-    /* (non-Javadoc)
-     * @see org.openmarkov.core.model.network.modelUncertainty.FamilyDistribution#getVariance()
-     */
     @Override
     public double[] getVariance() {
         double[] variance;

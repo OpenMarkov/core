@@ -8,17 +8,23 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
+@ProbDensFunctionType(name="Dirichlet", isValidForNumeric = false, parameters = {"alpha"})
 public class DirichletFunction extends ProbDensFunction
 {
     private double alpha;
 
     public DirichletFunction ()
     {
-        super (ProbDensityFunctionType.DIRICHLET);
+        this.alpha = 0;
     }
 
+    public DirichletFunction (double alpha)
+    {
+        this.alpha = alpha;
+    }
+    
     @Override
-    public void setParameters (Double[] params)
+    public void setParameters (double[] params)
     {
         alpha = params[0];
     }
@@ -27,18 +33,6 @@ public class DirichletFunction extends ProbDensFunction
     public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return (alpha > 0);
-    }
-
-    @Override
-    public boolean isPossibleDistribution (boolean isChance)
-    {
-        return isChance;
-    }
-
-    @Override
-    public int getNumberOfRequiredArguments ()
-    {
-        return 1;
     }
 
     @Override
@@ -52,7 +46,6 @@ public class DirichletFunction extends ProbDensFunction
     @Override
     public double getMaximum ()
     {
-        // TODO Auto-generated method stub
         return 1;
     }
 

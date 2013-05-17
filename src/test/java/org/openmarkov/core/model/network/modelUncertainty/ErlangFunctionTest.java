@@ -15,14 +15,13 @@ package org.openmarkov.core.model.network.modelUncertainty;
 public class ErlangFunctionTest extends ProbDensFunctionTest {
 
     @Override
-    public ProbDensityFunctionType getTypeProbDensFunction() {
-
-        return ProbDensityFunctionType.ERLANG;
+    public ProbDensFunction newProbDensFunctionInstance() {
+        return new ErlangFunction();
     }
-
+    
     @Override
-    public Double[] initializeParamsProbDensFunctionTest() {
-        Double[] params = { 2.0, 1.5 };
+    public double[] initializeParams() {
+        double[] params = { 2.0, 1.5 };
         return params;
     }
 

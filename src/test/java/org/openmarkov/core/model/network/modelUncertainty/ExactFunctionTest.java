@@ -15,14 +15,13 @@ package org.openmarkov.core.model.network.modelUncertainty;
 public class ExactFunctionTest extends ProbDensFunctionTest {
 
     @Override
-    public ProbDensityFunctionType getTypeProbDensFunction() {
-
-        return ProbDensityFunctionType.EXACT;
+    public ProbDensFunction newProbDensFunctionInstance() {
+        return new ExactFunction();
     }
-
+    
     @Override
-    public Double[] initializeParamsProbDensFunctionTest() {
-        Double[] params = { 5.3 };
+    public double[] initializeParams() {
+        double[] params = { 5.3 };
         return params;
     }
 
@@ -32,5 +31,6 @@ public class ExactFunctionTest extends ProbDensFunctionTest {
     protected double getFactorError() {
         return 1.0;
     }
+
 
 }

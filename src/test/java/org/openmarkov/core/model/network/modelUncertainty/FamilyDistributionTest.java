@@ -21,16 +21,17 @@ import static org.junit.Assert.*;
  */
 public abstract class FamilyDistributionTest {
 
-    FamilyDistribution family;
+    private FamilyDistribution family;
 
-    double maxErrorMean = 0.001;
-    double maxErrorStDeviation = 0.01;
+    private double             maxErrorMean        = 0.001;
+    private double             maxErrorStDeviation = 0.01;
 
     @Test
     public void testMeanAndVariance() {
         int numSamples = 100000;
         Random randomGenerator = new XORShiftRandom();
-        family = constructAndInitializeNewFamilyDistributions();
+        List<UncertainValue> list = initializeListUncertainValues();
+        family = newFamilyDistribution(list);
 
         List<double[]> samples = new ArrayList<>();
         for (int i = 0; i < numSamples; i++) {
@@ -41,17 +42,7 @@ public abstract class FamilyDistributionTest {
 
     }
 
-    /**
-     * @return
-     */
-    private FamilyDistribution constructAndInitializeNewFamilyDistributions() {
-
-        List<UncertainValue> list = initializeListUncertainValues();
-
-        FamilyDistribution fam = FamilyDistribution.constructNewFamilyDistributions(list,
-                getTypeProbDensFunction());
-        return fam;
-    }
+    protected abstract FamilyDistribution newFamilyDistribution(List<UncertainValue> list);
 
     /**
      * @return
@@ -108,12 +99,5 @@ public abstract class FamilyDistributionTest {
         for (int i = 0; i < meanSample.length; i++) {
             assertEquals(meanSample[i], meanFamily[i], maxErrorMean2);
         }
-
     }
-
-    /**
-     * @return
-     */
-    protected abstract ProbDensityFunctionType getTypeProbDensFunction();
-
 }

@@ -1,15 +1,15 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
-public class GammamvFunctionTest extends GammaAbstractTest {
+public class GammamvFunctionTest extends ProbDensFunctionTest {
 
     @Override
-    public ProbDensityFunctionType getTypeProbDensFunction() {
-        return ProbDensityFunctionType.GAMMAMV;
+    public ProbDensFunction newProbDensFunctionInstance() {
+        return new GammamvFunction();
     }
-
+    
     @Override
-    public Double[] initializeParamsProbDensFunctionTest() {
-        Double[] params = { 4.2, 3.0 };
+    public double[] initializeParams() {
+        double[] params = { 4.2, 3.0 };
         return params;
     }
 

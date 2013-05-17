@@ -6,84 +6,69 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+@ProbDensFunctionType(name="Range", parameters = {"lower bound", "upper bound"})
 public class RangeFunction extends ProbDensFunctionWithKnownInverseCDF
 {
-    private double a;
-    private double b;
+    private double lowerBound;
+    private double upperBound;
 
     public RangeFunction ()
     {
-        super (ProbDensityFunctionType.RANGE);
+        this (0.0, 1.0);
     }
 
     /**
      * @param type
-     * @param a
-     * @param b
+     * @param lowerBound
+     * @param upperBound
      */
-    public RangeFunction (double a, double b)
+    public RangeFunction (double lowerBound, double upperBound)
     {
-    	this();
-        this.a = a;
-        this.b = b;
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
     }
 
     @Override
-    public void setParameters (Double[] params)
+    public void setParameters (double[] params)
     {
-        a = params[0];
-        b = params[1];
+        lowerBound = params[0];
+        upperBound = params[1];
     }
 
     @Override
     public boolean verifyParametersDomain (boolean isChanceVariable)
     {
-        return ((0 <= a) && (a < b) && (b <= 1) && isChanceVariable)
-               || ((a < b) && !isChanceVariable);
-    }
-
-    @Override
-    public boolean isPossibleDistribution (boolean isChance)
-    {
-        return true;
-    }
-
-    @Override
-    public int getNumberOfRequiredArguments ()
-    {
-        return 2;
+        return ((0 <= lowerBound) && (lowerBound < upperBound) && (upperBound <= 1) && isChanceVariable)
+               || ((lowerBound < upperBound) && !isChanceVariable);
     }
 
     @Override
     public double[] getParameters ()
     {
-        double[] x = new double[2];
-        x[0] = a;
-        x[1] = b;
-        return x;
+        return new double[]{lowerBound, upperBound};
     }
 
     @Override
     public double getMaximum ()
     {
-        return b;
+        return upperBound;
     }
 
     @Override
     public double getMean ()
     {
-        return (a + b) / 2;
+        return (lowerBound + upperBound) / 2;
     }
 
     @Override
     public double getInverseCumulativeDistributionFunction (double y)
     {
-        return a + (b - a) * y;
+        return lowerBound + (upperBound - lowerBound) * y;
     }
 
     @Override
     public double getVariance ()
     {
-        return Math.pow (b - a, 2.0) / 12;
+        return Math.pow (upperBound - lowerBound, 2.0) / 12;
     }
 }

@@ -8,53 +8,34 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
-public class NormalFunction extends ProbDensFunction
-{
+public class NormalFunction extends ProbDensFunction {
     private double                 mu;
     private double                 sigma;
     private StandardNormalFunction standard;
 
-    public NormalFunction ()
-    {
-        super (ProbDensityFunctionType.NORMAL);
-        standard = new StandardNormalFunction ();
+    public NormalFunction() {
+        this(0.0, 1.0);
     }
 
-    public NormalFunction (double mu, double sigma)
-    {
-        this ();
+    public NormalFunction(double mu, double sigma) {
         this.mu = mu;
         this.sigma = sigma;
+        standard = new StandardNormalFunction();
     }
 
     @Override
-    public int getNumberOfRequiredArguments ()
-    {
-        return 2;
-    }
-
-    @Override
-    public void setParameters (Double[] args)
-    {
+    public void setParameters(double[] args) {
         mu = args[0];
         sigma = args[1];
     }
 
     @Override
-    public boolean isPossibleDistribution (boolean isChance)
-    {
-        return !isChance;
-    }
-
-    @Override
-    public boolean verifyParametersDomain (boolean isChanceVariable)
-    {
+    public boolean verifyParametersDomain(boolean isChanceVariable) {
         return (sigma > 0);
     }
 
     @Override
-    public double[] getParameters ()
-    {
+    public double[] getParameters() {
         double[] a = new double[2];
         a[0] = mu;
         a[1] = sigma;
@@ -62,27 +43,23 @@ public class NormalFunction extends ProbDensFunction
     }
 
     @Override
-    public double getMaximum ()
-    {
+    public double getMaximum() {
         return Double.POSITIVE_INFINITY;
     }
 
     @Override
-    public double getMean ()
-    {
+    public double getMean() {
         // TODO Auto-generated method stub
         return mu;
     }
 
     @Override
-    public double getSample (Random randomGenerator)
-    {
-        return sigma * standard.getSample (randomGenerator) + mu;
+    public double getSample(Random randomGenerator) {
+        return sigma * standard.getSample(randomGenerator) + mu;
     }
 
     @Override
-    public double getVariance ()
-    {
-        return Math.pow (sigma, 2.0);
+    public double getVariance() {
+        return Math.pow(sigma, 2.0);
     }
 }

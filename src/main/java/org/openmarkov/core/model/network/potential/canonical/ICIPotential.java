@@ -80,7 +80,7 @@ public abstract class ICIPotential extends Potential {
     {
         double[][] noisyParameters = new double[variables.size()-1][];
        
-        for (int i = 1; i < variables.size () -1; ++i)
+        for (int i = 1; i < variables.size (); ++i)
         {
             Variable parent = variables.get (i); 
             noisyParameters[i-1] = initializeNoisyParameters(variables.get (0), parent);

@@ -9,7 +9,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import java.util.Random;
 
 /**
- * A <code>ExtendedValue</code> is a value of a table of potentials which is
+ * An <code>UncertainValue</code> is a value of a table of potentials which is
  * used for sensitivity analysis.
  * 
  * @author Manuel Luque

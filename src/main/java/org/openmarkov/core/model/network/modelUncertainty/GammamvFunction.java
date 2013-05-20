@@ -19,8 +19,7 @@ public class GammamvFunction extends GammaAbstract
     
     public GammamvFunction (double mu, double sigma)
     {
-        this.mu = mu;
-        this.sigma = sigma;
+        setParameters(new double[] {mu, sigma});
     }    
 
     @Override
@@ -31,20 +30,16 @@ public class GammamvFunction extends GammaAbstract
         this.kAbstract = Math.pow (mu / sigma, 2);
         this.thetaAbstract = Math.pow (sigma, 2) / mu;
     }
-
-    @Override
-    public boolean verifyParametersDomain (boolean isChanceVariable)
-    {
-        // TODO Auto-generated method stub
-        return (mu > 0) && (sigma > 0);
-    }
-
+    
     @Override
     public double[] getParameters ()
     {
-        double[] a = new double[2];
-        a[0] = mu;
-        a[1] = sigma;
-        return a;
+        return new double[] {mu, sigma};
+    }
+    
+    @Override
+    public boolean verifyParametersDomain (boolean isChanceVariable)
+    {
+        return (mu > 0) && (sigma > 0);
     }
 }

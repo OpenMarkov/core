@@ -21,8 +21,8 @@ public enum StateAction implements Serializable {
 	RENAME(2),
     UP(3),
 	DOWN(4),
-	MODIFYDELIMITERINTERVAL(5),
-	MODIFYVALUEINTERVAL(6);
+	MODIFY_DELIMITER_INTERVAL(5),
+	MODIFY_VALUE_INTERVAL(6);
 	
 
 	private final int value;

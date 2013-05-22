@@ -14,26 +14,26 @@ public class WeibullPotentialEdit extends SimplePNEdit {
 
     private double newConstant; 
     private double newShape; 
-    private double newRelativeRisk; 
     private List<Variable> newVariables;
-    private List<Double> newCoefficients;
+    private double[] newCoefficients;
+    private double[] newCovarianceMatrix;
     private Variable newTimeVariable;
     private double oldConstant; 
     private double oldShape; 
-    private double oldRelativeRisk; 
-    private List<Double> oldCoefficients;
+    private double[] oldCoefficients;
     private Variable oldTimeVariable;
     private List<Variable> oldVariables;
+    private double[] oldCovarianceMatrix;
 
     private WeibullPotential potential;
     
     public WeibullPotentialEdit(ProbNet probNet, WeibullPotential potential, List<Variable> variables, double constant,
-            double shape, List<Double> coefficients, double relativeRisk, Variable timeVariable) {
+            double shape, double[] coefficients, Variable timeVariable, double[] covarianceMatrix) {
         super(probNet);
         this.newConstant = constant;
         this.newShape = shape;
         this.newCoefficients = coefficients;
-        this.newRelativeRisk = relativeRisk;
+        this.newCovarianceMatrix = covarianceMatrix;
         this.newTimeVariable = timeVariable;
         this.newVariables = variables;
         this.potential = potential;
@@ -44,15 +44,15 @@ public class WeibullPotentialEdit extends SimplePNEdit {
         this.oldConstant = potential.getConstant();
         this.oldShape = potential.getShape();
         this.oldCoefficients = potential.getCoefficients();
-        this.oldRelativeRisk = potential.getRelativeRisk();
         this.oldTimeVariable = potential.getTimeVariable();
         this.oldVariables = potential.getVariables();
+        this.oldCovarianceMatrix = potential.getCovarianceMatrix();
         potential.setConstant(newConstant);
         potential.setVariables(newVariables);
         potential.setShape(newShape);
         potential.setCoefficients(newCoefficients);
-        potential.setRelativeRisk(newRelativeRisk);
         potential.setTimeVariable(newTimeVariable);
+        potential.setCovarianceMatrix(newCovarianceMatrix);
     }
 
     @Override
@@ -60,9 +60,9 @@ public class WeibullPotentialEdit extends SimplePNEdit {
         potential.setConstant(oldConstant);
         potential.setShape(oldShape);
         potential.setCoefficients(oldCoefficients);
-        potential.setRelativeRisk(oldRelativeRisk);
         potential.setTimeVariable(oldTimeVariable);
         potential.setVariables(oldVariables);
+        potential.setCovarianceMatrix(oldCovarianceMatrix);
     }
 
 }

@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network.potential;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
@@ -19,6 +20,8 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.modelUncertainty.NormalFunction;
+import org.openmarkov.core.model.network.modelUncertainty.XORShiftRandom;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
 @RelationPotentialType(name = "WeibullDistribution", family = "")
@@ -32,11 +35,15 @@ public class WeibullPotential extends Potential {
     /**
      * Coefficients for the parameters of the function
      */
-    private List<Double> coefficients;
+    private double[] coefficients;
+    /**
+     * Coefficients sampled using Cholesky decomposition
+     */
+    private double[] sampledCoefficients;    
     /**
      * Covariance matrix
      */
-    private List<Double> covarianceMatrix = null;
+    private double[] covarianceMatrix = null;
     /**
      * Ancillary parameter for the Weibull distribution
      */
@@ -45,29 +52,25 @@ public class WeibullPotential extends Potential {
      * Constant in survival analysis for baseline hazard.
      */
     private double       constant;
-    /**
-     * Relative risk
-     */
-    private double       relativeRisk;
 
     public WeibullPotential(List<Variable> variables, PotentialRole role,
-            List<Double> coefficients, double shape, double constant, double relativeRisk) {
+            double[] coefficients, double shape, double constant) {
         super(variables, role);
         this.coefficients = coefficients;
         this.shape = shape;
         this.constant = constant;
-        this.relativeRisk = relativeRisk;
+        this.sampledCoefficients = null; 
     }
 
     public WeibullPotential(List<Variable> variables, PotentialRole role,
-            List<Double> coefficients, List<Double> covarianceMatrix, double shape,
-            double constant, double relativeRisk) {
-        this(variables, role, coefficients, shape, constant, relativeRisk);
+            double[] coefficients, double[] covarianceMatrix, double shape,
+            double constant) {
+        this(variables, role, coefficients, shape, constant);
         this.covarianceMatrix = covarianceMatrix;
     }
 
     public WeibullPotential(List<Variable> variables, PotentialRole role) {
-        this(variables, role, new ArrayList<Double>(variables.size()), 0.0, 0.0, 1.0);
+        this(variables, role, new double[variables.size()], 0.0, 0.0);
     }
 
     /**
@@ -91,7 +94,9 @@ public class WeibullPotential extends Potential {
     public List<TablePotential> tableProject(EvidenceCase evidenceCase,
             InferenceOptions inferenceOptions)
             throws NonProjectablePotentialException, WrongCriterionException {
-        
+
+        double[] coefficients = (sampledCoefficients == null) ? this.coefficients
+                : this.sampledCoefficients;
         int timeSlice = variables.get(0).getTimeSlice();
         double t = timeSlice;
         double tMinusOne = timeSlice -1;
@@ -156,11 +161,10 @@ public class WeibullPotential extends Potential {
                 numericValues.set(evidencelessVariablesIndex.get(j - 1), (double) index);
             }
             double lambda = constant;
-            for (int j = 0; j < coefficients.size(); ++j) {
-                lambda += numericValues.get(j) * coefficients.get(j);
+            for (int j = 0; j < coefficients.length; ++j) {
+                lambda += numericValues.get(j) * coefficients[j];
             }
             lambda = Math.exp(lambda);
-            lambda *= relativeRisk;
             if (tMinusOne < 0) {
                 // p
                 projectedPotential.values[i] = 1;
@@ -181,36 +185,114 @@ public class WeibullPotential extends Potential {
     @Override
     public Potential shift(ProbNet probNet, int timeDifference)
             throws ProbNodeNotFoundException {
-        return new WeibullPotential(getShiftedVariables(probNet, timeDifference),
+        WeibullPotential copyPotential = new WeibullPotential(getShiftedVariables(probNet, timeDifference),
                 role,
-                new ArrayList<>(coefficients),
-                (covarianceMatrix != null) ? new ArrayList<>(covarianceMatrix) : covarianceMatrix,
+                coefficients.clone(),
+                (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix,
                 shape,
-                constant,
-                relativeRisk);
+                constant);
+        copyPotential.sampledCoefficients = sampledCoefficients;
+        return copyPotential;
     }
 
     @Override
     public Potential copy() {
-        return new WeibullPotential(variables,
+        WeibullPotential copyPotential = new WeibullPotential(variables,
                 role,
-                new ArrayList<>(coefficients),
-                (covarianceMatrix != null) ? new ArrayList<>(covarianceMatrix) : covarianceMatrix,
+                coefficients.clone(),
+                (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix,
                 shape,
-                constant,
-                relativeRisk);
+                constant);
+        copyPotential.sampledCoefficients = sampledCoefficients;
+        return copyPotential;
+    }
+
+    @Override
+    public Potential sample() {
+        if(covarianceMatrix != null)
+        {
+            if(this.sampledCoefficients == null)
+            {
+                this.sampledCoefficients = new double[coefficients.length];
+            }
+            
+            // Cholesky decomposition using the the Cholesky–Banachiewicz algorithm
+            double[] cholesky = new double[covarianceMatrix.length];
+            double[] diagonals = new double[coefficients.length];
+            int index = 0;
+            for(int i=0; i < coefficients.length; ++i)
+            {
+                double sumOfSquares = 0.0;
+                double sumOfMul = 1.0;
+                for(int j=0; j <= i; ++j)
+                {
+                    if(i == j)
+                    {
+                        diagonals[i] = Math.sqrt(covarianceMatrix[index] - sumOfSquares); 
+                        cholesky[index] = diagonals[i];
+                    }else
+                    {
+                        cholesky[index] = (covarianceMatrix[index] - sumOfMul) / diagonals[j];
+                    }
+                    sumOfSquares += Math.pow(cholesky[index], 2);
+                    sumOfMul += cholesky[index] * diagonals[j];
+                    ++index;
+                }
+            }
+            
+//            // Correlation matrix
+//            double[] correlationMatrix = new double[covarianceMatrix.length];
+//            index = 0;
+//            for(int i=0; i < coefficients.length; ++i)
+//            {
+//                int firstIndexOfRow = index;
+//                double diagonal = covarianceMatrix[firstIndexOfRow + i];
+//                for(int j=0; j <= i; ++j)
+//                {
+//                    if(i==j)
+//                    {
+//                        diagonals[j] = covarianceMatrix[index];
+//                    }
+//                    correlationMatrix[index] = covarianceMatrix[index] / (diagonals[j] * diagonal);  
+//                }
+//                ++index;
+//            }
+            
+            Random randomGenerator = new XORShiftRandom();
+            NormalFunction normalDistribution = new NormalFunction(0, 1); 
+            double[] normalSamples = new double[coefficients.length];
+            for(int i=0; i < normalSamples.length; ++i)
+            {
+                double sample = normalDistribution.getSample(randomGenerator);
+                normalSamples[i] = sample;
+            }
+        
+            index = 0;
+            for(int i=0; i < coefficients.length; ++i)
+            {
+                double value = 0.0;
+                for(int j=0; j <= i; ++j)
+                {
+                    value += cholesky[index] * normalSamples[j];
+                    index++;
+                }
+                sampledCoefficients[i] = value + coefficients[i];
+            }
+        
+        }
+        return this;
     }
 
     @Override
     public boolean isUncertain() {
-        return false;
+        return this.covarianceMatrix != null;
     }
 
-    public List<Double> getCoefficients() {
+    public double[] getCoefficients() {
         return coefficients;
     }
 
-    public void setCoefficients(List<Double> coefficients) {
+    public void setCoefficients(double[] coefficients) {
         this.coefficients = coefficients;
     }
 
@@ -230,18 +312,14 @@ public class WeibullPotential extends Potential {
         this.constant = constant;
     }
 
-    public double getRelativeRisk() {
-        return relativeRisk;
-    }
-
-    public void setRelativeRisk(double relativeRisk) {
-        this.relativeRisk = relativeRisk;
-    }
-
-    public List<Double> getCovarianceMatrix() {
+    public double[] getCovarianceMatrix() {
         return covarianceMatrix;
     }
 
+    public void setCovarianceMatrix(double[] covarianceMatrix) {
+        this.covarianceMatrix = covarianceMatrix;
+    }
+    
     public Variable getTimeVariable() {
         return timeVariable;
     }

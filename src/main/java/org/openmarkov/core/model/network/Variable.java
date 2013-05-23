@@ -113,17 +113,17 @@ public class Variable implements Cloneable {
 	 * 
 	 * @param name
 	 *            a <code>String</code>
-	 * @param numStates
+	 * @param stateNames
 	 *            a sequence of <code>String</code> by using the facilities of
 	 *            Java 5.
 	 */
-	public Variable(String nameVariable, String... namesStates) {
+	public Variable(String nameVariable, String... stateNames) {
 
-		int numStates = namesStates.length;
+		int numStates = stateNames.length;
 		this.name = nameVariable;
 		states = new State[numStates];
 		for (int i = 0; i < numStates; i++) {
-			states[i] = new State(namesStates[i]);
+			states[i] = new State(stateNames[i]);
 		}
 		this.variableType = VariableType.FINITE_STATES;
 		this.partitionedInterval = null;

@@ -1,0 +1,91 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
+package org.openmarkov.core.model.network.potential;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
+import org.openmarkov.core.model.network.Variable;
+
+public class WeibullPotentialTest {
+
+    private WeibullPotential potential = null;
+    private Variable rrVar = null;
+    private Variable sexVar = null;
+    private Variable ageVar = null;
+    private Variable prosthesisTypeVar = null;
+    
+    @Before
+    public void setUp() throws Exception {
+        
+        // Revision Risk
+        rrVar = new Variable("Revision Risk", "no", "yes");
+        rrVar.setTimeSlice(5);
+        sexVar = new Variable("Sex", "Female", "Male");
+        ageVar = new Variable("Age", true, 0.0, Double.POSITIVE_INFINITY, false, 1.0);
+        prosthesisTypeVar = new Variable("Prosthesis Type", "Standard", "NP1");
+        ageVar.setTimeSlice(5);
+
+        List<Variable> variables = Arrays.asList(rrVar, ageVar, sexVar, prosthesisTypeVar);
+        double[] coefficients = new double[]{0.3740968, -5.490935, -0.0367022, 0.768536, -1.344474};
+        double[] covarianceMatrix = new double[] { 0.0022515, -0.005691, 0.0432191, 0.000000028,
+                -0.000783, 0.00002715, 0.0000051, -0.007247, 0.000033, 0.01189, 0.000259,
+                -0.000642, -0.000111, 0.000184, 0.14636 };
+        potential = new WeibullPotential(variables,
+                PotentialRole.CONDITIONAL_PROBABILITY,
+                coefficients,
+                covarianceMatrix);
+    }
+    
+    @Test
+    public void testTableProject() {
+        EvidenceCase evidence = new EvidenceCase();
+        try {
+            evidence.addFinding(new Finding(ageVar, 65.0));
+        } catch (InvalidStateException | IncompatibleEvidenceException e) {
+            e.printStackTrace();
+        }
+        List<TablePotential> projectedPotentials = null;
+        try {
+            projectedPotentials = potential.tableProject(evidence, null);
+        } catch (NonProjectablePotentialException | WrongCriterionException e) {
+            e.printStackTrace();
+        }
+        
+        Assert.assertEquals(1, projectedPotentials.size());
+        
+        TablePotential projectedPotential = projectedPotentials.get(0);
+        
+        double[] expectedValues = new double[] { 0.9986901, 0.0013099, 0.997177, 0.002823,
+                0.9996584, 0.0003416, 0.99926337, 0.00073663 };
+        
+        Assert.assertArrayEquals(expectedValues, projectedPotential.values, 0.00001);
+    }
+    
+    @Test
+    public void testCholeskyDecomposition() {
+        double[] cholesky = potential.getCholeskyDecomposition();
+        double[] expectedCholesky = new double[] { 0.0474, -0.1199, 0.1698, 5.901E-07, -0.00461,
+                0.00242, 0.0001074, -0.0426, -0.0673, 0.07451, 0.005458, 0.00007454, -0.0455,
+                -0.03864, 0.3778};
+        
+        Assert.assertArrayEquals(expectedCholesky, cholesky, 0.0001);
+    }
+    
+}

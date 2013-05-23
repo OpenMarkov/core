@@ -34,6 +34,8 @@ public class WeibullPotential extends Potential {
     
     /**
      * Coefficients for the parameters of the function
+     * In the first position of the array the shape parameter is stored
+     * In the second position of the array the constant coefficient is stored
      */
     private double[] coefficients;
     /**
@@ -45,32 +47,25 @@ public class WeibullPotential extends Potential {
      */
     private double[] covarianceMatrix = null;
     /**
-     * Ancillary parameter for the Weibull distribution
+     * Colesky decomposition
      */
-    private double       shape;
-    /**
-     * Constant in survival analysis for baseline hazard.
-     */
-    private double       constant;
+    private double[] cholesky = null; 
 
-    public WeibullPotential(List<Variable> variables, PotentialRole role,
-            double[] coefficients, double shape, double constant) {
+    public WeibullPotential(List<Variable> variables, PotentialRole role, double[] coefficients) {
         super(variables, role);
         this.coefficients = coefficients;
-        this.shape = shape;
-        this.constant = constant;
         this.sampledCoefficients = null; 
     }
 
     public WeibullPotential(List<Variable> variables, PotentialRole role,
-            double[] coefficients, double[] covarianceMatrix, double shape,
-            double constant) {
-        this(variables, role, coefficients, shape, constant);
+            double[] coefficients, double[] covarianceMatrix) {
+        this(variables, role, coefficients);
         this.covarianceMatrix = covarianceMatrix;
+        this.cholesky = calculateCholesky(covarianceMatrix);
     }
 
     public WeibullPotential(List<Variable> variables, PotentialRole role) {
-        this(variables, role, new double[variables.size()], 0.0, 0.0);
+        this(variables, role, new double[variables.size()+1]);
     }
 
     /**
@@ -107,8 +102,8 @@ public class WeibullPotential extends Potential {
                         + timeVariable.getName());
             }
             t = evidenceCase.getFinding(timeVariable).getNumericalValue();
-            if(inferenceOptions.probNet.containsShiftedVariable(timeVariable, -1))
-            {
+            if (timeVariable != null
+                    && inferenceOptions.probNet.containsShiftedVariable(timeVariable, -1)) {
                 Variable previous;
                 try {
                     previous = inferenceOptions.probNet.getShiftedVariable(timeVariable, -1);
@@ -124,7 +119,7 @@ public class WeibullPotential extends Potential {
         
         List<Variable> evidencelessVariables = new ArrayList<>();
         List<Integer> evidencelessVariablesIndex = new ArrayList<>();
-        List<Double> numericValues = new ArrayList<>(variables.size());
+        double[] numericValues = new double[variables.size() - 1];
 
         for (int i = 1; i < variables.size(); ++i) {
             Variable variable = variables.get(i);
@@ -137,13 +132,13 @@ public class WeibullPotential extends Potential {
                     }
                     evidencelessVariables.add(variable);
                     evidencelessVariablesIndex.add(i - 1);
-                    numericValues.add(0.0);
+                    numericValues[i-1]=0.0;
                 } else {
                     double numericValue = evidenceCase.getFinding(variable).getNumericalValue();
                     if (variable.isTemporal()) {
                         numericValue -= variable.getTimeSlice();
                     }
-                    numericValues.add(numericValue);
+                    numericValues[i-1] = numericValue;
                 }
             }
         }
@@ -152,17 +147,18 @@ public class WeibullPotential extends Potential {
         projectedPotentialVariables.add(0, variables.get(0));
         TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, role);
         int[] offsets = projectedPotential.getOffsets();
+        int[] dimensions = projectedPotential.getDimensions();
+        double gamma = Math.exp(getShape());
         
         for (int i = 0; i < projectedPotential.values.length; i += 2) {
-            // Set the values of variables of variables without evidence
+            // Set the values of variables without evidence
             for (int j = 1; j < projectedPotentialVariables.size(); ++j) {
-                int index = (j + 1 < projectedPotentialVariables.size()) ? (i / offsets[j])
-                        % offsets[j + 1] : i / offsets[j];
-                numericValues.set(evidencelessVariablesIndex.get(j - 1), (double) index);
+                int index = (i / offsets[j]) % dimensions[j];
+                numericValues[evidencelessVariablesIndex.get(j - 1)] = (double) index;
             }
-            double lambda = constant;
-            for (int j = 0; j < coefficients.length; ++j) {
-                lambda += numericValues.get(j) * coefficients[j];
+            double lambda = getConstant();
+            for (int j = 2; j < coefficients.length; ++j) {
+                lambda += numericValues[j-2] * coefficients[j];
             }
             lambda = Math.exp(lambda);
             if (tMinusOne < 0) {
@@ -172,7 +168,7 @@ public class WeibullPotential extends Potential {
                 projectedPotential.values[i + 1] = 0;
             } else {
                 // p
-                double diff = Math.pow(tMinusOne, shape) - Math.pow(t, shape);
+                double diff = Math.pow(tMinusOne, gamma) - Math.pow(t, gamma);
                 projectedPotential.values[i] = Math.exp(lambda * diff);
                 // Complement (1-p)
                 projectedPotential.values[i + 1] = 1 - projectedPotential.values[i];
@@ -188,9 +184,7 @@ public class WeibullPotential extends Potential {
         WeibullPotential copyPotential = new WeibullPotential(getShiftedVariables(probNet, timeDifference),
                 role,
                 coefficients.clone(),
-                (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix,
-                shape,
-                constant);
+                (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix);
         copyPotential.sampledCoefficients = sampledCoefficients;
         return copyPotential;
     }
@@ -200,9 +194,7 @@ public class WeibullPotential extends Potential {
         WeibullPotential copyPotential = new WeibullPotential(variables,
                 role,
                 coefficients.clone(),
-                (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix,
-                shape,
-                constant);
+                (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix);
         copyPotential.sampledCoefficients = sampledCoefficients;
         return copyPotential;
     }
@@ -216,48 +208,6 @@ public class WeibullPotential extends Potential {
                 this.sampledCoefficients = new double[coefficients.length];
             }
             
-            // Cholesky decomposition using the the Cholesky–Banachiewicz algorithm
-            double[] cholesky = new double[covarianceMatrix.length];
-            double[] diagonals = new double[coefficients.length];
-            int index = 0;
-            for(int i=0; i < coefficients.length; ++i)
-            {
-                double sumOfSquares = 0.0;
-                double sumOfMul = 1.0;
-                for(int j=0; j <= i; ++j)
-                {
-                    if(i == j)
-                    {
-                        diagonals[i] = Math.sqrt(covarianceMatrix[index] - sumOfSquares); 
-                        cholesky[index] = diagonals[i];
-                    }else
-                    {
-                        cholesky[index] = (covarianceMatrix[index] - sumOfMul) / diagonals[j];
-                    }
-                    sumOfSquares += Math.pow(cholesky[index], 2);
-                    sumOfMul += cholesky[index] * diagonals[j];
-                    ++index;
-                }
-            }
-            
-//            // Correlation matrix
-//            double[] correlationMatrix = new double[covarianceMatrix.length];
-//            index = 0;
-//            for(int i=0; i < coefficients.length; ++i)
-//            {
-//                int firstIndexOfRow = index;
-//                double diagonal = covarianceMatrix[firstIndexOfRow + i];
-//                for(int j=0; j <= i; ++j)
-//                {
-//                    if(i==j)
-//                    {
-//                        diagonals[j] = covarianceMatrix[index];
-//                    }
-//                    correlationMatrix[index] = covarianceMatrix[index] / (diagonals[j] * diagonal);  
-//                }
-//                ++index;
-//            }
-            
             Random randomGenerator = new XORShiftRandom();
             NormalFunction normalDistribution = new NormalFunction(0, 1); 
             double[] normalSamples = new double[coefficients.length];
@@ -267,7 +217,7 @@ public class WeibullPotential extends Potential {
                 normalSamples[i] = sample;
             }
         
-            index = 0;
+            int index = 0;
             for(int i=0; i < coefficients.length; ++i)
             {
                 double value = 0.0;
@@ -278,7 +228,6 @@ public class WeibullPotential extends Potential {
                 }
                 sampledCoefficients[i] = value + coefficients[i];
             }
-        
         }
         return this;
     }
@@ -297,19 +246,19 @@ public class WeibullPotential extends Potential {
     }
 
     public double getShape() {
-        return shape;
+        return coefficients[0];
     }
 
     public void setShape(double shape) {
-        this.shape = shape;
+        this.coefficients[0] = shape;
     }
 
     public double getConstant() {
-        return constant;
+        return coefficients[1];
     }
 
     public void setConstant(double constant) {
-        this.constant = constant;
+        this.coefficients[1] = constant;
     }
 
     public double[] getCovarianceMatrix() {
@@ -318,6 +267,7 @@ public class WeibullPotential extends Potential {
 
     public void setCovarianceMatrix(double[] covarianceMatrix) {
         this.covarianceMatrix = covarianceMatrix;
+        this.cholesky = calculateCholesky(covarianceMatrix);
     }
     
     public Variable getTimeVariable() {
@@ -327,5 +277,47 @@ public class WeibullPotential extends Potential {
     public void setTimeVariable(Variable timeVariable) {
         this.timeVariable = timeVariable;
     }
+    
+    public double[] getCholeskyDecomposition() {
+        return cholesky;
+    }
 
+    private double[] calculateCholesky(double[] covarianceMatrix)
+    {
+        double[] cholesky = null;
+        if(covarianceMatrix != null)
+        {
+            // Cholesky decomposition using the the Cholesky–Banachiewicz algorithm
+            cholesky = new double[covarianceMatrix.length];
+            // Solve quadratic equation to get n, the number of coefficients
+            int n = (int)(Math.sqrt(covarianceMatrix.length * 8 + 1) - 1)/2;
+            double[] diagonals = new double[n];
+            int[] firstIndexOfRow = new int[n];
+            int index = 0;
+            for(int i=0; i < n; ++i)
+            {
+                double sumOfSquares = 0.0;
+                firstIndexOfRow[i] = index;
+                for(int j=0; j <= i; ++j)
+                {
+                    if(i == j)
+                    {
+                        diagonals[i] = Math.sqrt(covarianceMatrix[index] - sumOfSquares); 
+                        cholesky[index] = diagonals[i];
+                    }else
+                    {
+                        double sumOfMul = 0.0;
+                        for(int k = 0; k < j; ++k)
+                        {
+                            sumOfMul += cholesky[firstIndexOfRow[i] + k] * cholesky[firstIndexOfRow[j] + k]; 
+                        }
+                        cholesky[index] = (covarianceMatrix[index] - sumOfMul) / diagonals[j];
+                    }
+                    sumOfSquares += Math.pow(cholesky[index], 2);
+                    ++index;
+                }
+            }
+        }
+        return cholesky;
+    }
 }

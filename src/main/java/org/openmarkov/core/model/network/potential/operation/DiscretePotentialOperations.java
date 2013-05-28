@@ -172,7 +172,6 @@ public final class DiscretePotentialOperations {
      * @param tablePotentials
      *            <code>ArrayList</code> of <code>extends 
      * Potential</code>.
-     * @throws <code>NotEnoughMemoryException</code>.
      */
     public static TablePotential sum(List<TablePotential> tablePotentials) {
         List<TablePotential> constantPotentials;
@@ -331,7 +330,6 @@ public final class DiscretePotentialOperations {
      * @argCondition variablesToKeep and variablesToEliminate are a partition of
      *               the union of the variables of the potential
      * @return A <code>TablePotential</code> result of multiply and marginalize.
-     * @trows NotEnoughMemoryException
      */
     public static TablePotential multiplyAndMarginalize(List<TablePotential> tablePotentials,
             List<Variable> variablesToKeep,
@@ -498,7 +496,6 @@ public final class DiscretePotentialOperations {
      *            contain some variables that are not in any potential)
      *            <code>potentials</code>
      * @return The multiplied potentials
-     * @throws NotEnoughMemoryException
      */
     public static TablePotential multiplyAndMarginalize(List<TablePotential> potentials,
             List<Variable> variablesOfInterest) {
@@ -530,7 +527,6 @@ public final class DiscretePotentialOperations {
      *            <code>Variable</code>.
      * @return result <code>Potential</code> multiplied without
      *         <code>variableToEliminate</code>
-     * @throws <code>NotEnoughMemoryException</code>
      */
     public static TablePotential multiplyAndMarginalize(List<TablePotential> potentials,
             Variable variableToEliminate) {
@@ -596,7 +592,6 @@ public final class DiscretePotentialOperations {
      *            that will be marginalized
      * @param variablesToKeep
      * @param variablesToEliminate
-     * @throws NotEnoughMemoryException
      * @throws PotentialOperationException
      */
     public static Potential marginalize(TablePotential potential,
@@ -678,7 +673,6 @@ public final class DiscretePotentialOperations {
     /**
      * @param potentials
      * @param variablesToEliminate
-     * @throws NotEnoughMemoryException
      * @throws PotentialOperationException
      */
     public static Potential multiplyAndEliminate(List<TablePotential> potentials,
@@ -945,7 +939,6 @@ public final class DiscretePotentialOperations {
      *         <code>GTablePotential</code> of <code>Choice</code> (same
      *         variables as preceding) with the value choosed for
      *         <code>variableToMaximize</code> in each configuration.
-     * @throws <code>NotEnoughMemoryException</code>
      */
     @SuppressWarnings("unchecked")
     public static Object[] multiplyAndMaximize(List<Potential> tablePotentials,
@@ -1135,7 +1128,6 @@ public final class DiscretePotentialOperations {
      *         uniformly distributed among the maximizing states of
      *         <code>variableToMaximize</code> in each configuration; this is
      *         typically a policy of a decision.
-     * @throws <code>NotEnoughMemoryException</code>
      */
     public static TablePotential[] multiplyAndMaximizeUniformly(List<TablePotential> tablePotentials,
             List<Variable> fSVariablesToKeep,
@@ -1382,7 +1374,6 @@ public final class DiscretePotentialOperations {
      *         uniformly distributed among the maximizing states of
      *         <code>variableToMaximize</code> in each configuration; this is
      *         typically a policy of a decision.
-     * @throws <code>NotEnoughMemoryException</code>
      */
     public static TablePotential[] multiplyAndMaximizeUniformly(List<TablePotential> potentialsVariable,
             Variable variableToMaximize) {

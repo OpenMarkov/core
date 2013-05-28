@@ -103,7 +103,6 @@ public class ProbNetOperationsTest {
 		variablesCAB.add(variableB);
 		
 		
-		//notEnoughMemoryException 
 		TablePotential potentialvaluesCAB = new TablePotential(variablesCAB,role,tableCAB);
 		
 		peque = new ProbNet();
@@ -347,7 +346,6 @@ public class ProbNetOperationsTest {
 		variablesFE.add(variableE);
 
 
-		//notEnoughMemoryException 
 		potentialvaluesFE= new TablePotential(variablesFE,role,tableFE);
 
 		//potentialGD
@@ -357,7 +355,6 @@ public class ProbNetOperationsTest {
 		variablesGD.add(variableD);
 
 
-		//notEnoughMemoryException 
 		potentialvaluesGD= new TablePotential(variablesGD,role,tableGD);
 
 		//Potential I
@@ -384,7 +381,6 @@ public class ProbNetOperationsTest {
 		variablesba.add(variableA);
 
 
-		//notEnoughMemoryException 
 		potentialvaluesBA= new TablePotential(variablesba,role,tableba);
 
 		//potentialAH
@@ -394,7 +390,6 @@ public class ProbNetOperationsTest {
 		variablesAH.add(variableH);
 
 
-		//notEnoughMemoryException 
 		potentialvaluesAH= new TablePotential(variablesAH,role,tableAH);
 
 		//Potential H

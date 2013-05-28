@@ -30,8 +30,7 @@ public class UtilMarkovNet {
 	// TODO eliminar este metodo
 	/** @param probNet <code>ProbNet</code> possibly with directed links
 	 * @return A Markov Network in witch directed links are converted to 
-	 *  undirected links. 
-	 * @throws NotEnoughMemoryException */
+	 *  undirected links.  */
 	public static ProbNet getMarkovNet(ProbNet probNet) {
 		return buildMarkovNet(probNet.getPotentials());
 	}
@@ -46,8 +45,7 @@ public class UtilMarkovNet {
 	 * @param projectedTablePotentials <code>ArrayList</code> of 
 	 *   <code>Potential</code>s
 	 * @return A Markov Network in witch potentials are used to create cliques.
-	 *   (<code>ProbNet</code>). 
-	 * @throws NotEnoughMemoryException */
+	 *   (<code>ProbNet</code>).  */
 	public static ProbNet buildMarkovNet(ProbNet originalNet, List<Potential> projectedTablePotentials) {
 		ProbNet markovNet = getMarkovNet();
 		try {
@@ -74,8 +72,7 @@ public class UtilMarkovNet {
 	 * @param projectedTablePotentials <code>ArrayList</code> of 
 	 *   <code>Potential</code>s
 	 * @return A Markov Network in witch potentials are used to create cliques.
-	 *   (<code>ProbNet</code>). 
-	 * @throws NotEnoughMemoryException */
+	 *   (<code>ProbNet</code>).  */
 	public static ProbNet buildMarkovNet(List<Potential> projectedTablePotentials) {
 		ProbNet markovNet = getMarkovNet();
 		try {

@@ -30,7 +30,6 @@ public class TablePotentialSampler
      *            simulation. The number of simulations performed is the number
      *            of states of this variable
      * @return A sampled potential table
-     * @throws NotEnoughMemoryException
      */
     public TablePotential sample (TablePotential inputTablePotential)
     {

@@ -69,8 +69,7 @@ public abstract class MinMaxPotential extends ICIPotential {
 	/** @return Given a model in witch A->D and B->D, this method returns:
 	 *  delta<sub>D,D'</sub>, C<sub>D'</sub><sup>A</sup>, 
 	 *  C<sub>D'</sub><sup>B</sup>, C<sub>D</sub><sup>*</sup>.
-	 *  <code>ArrayList</code> of <code>TablePotential</code> 
-	 * @throws NotEnoughMemoryException */
+	 *  <code>ArrayList</code> of <code>TablePotential</code>  */
     public List<TablePotential> getTablePotentials ()
     {
         List<TablePotential> iCIPotentials = new ArrayList<TablePotential> ();
@@ -116,7 +115,6 @@ public abstract class MinMaxPotential extends ICIPotential {
     /**
      * There will be a potential for each link, plus the leak potential 
      * @return <code>ArrayList</code> of <code>TablePotential</code>. 
-     * @throws NotEnoughMemoryException 
      * */
     protected List<TablePotential> buildSubpotentialList() {
         List<TablePotential> subpotentials = new ArrayList<TablePotential> ();

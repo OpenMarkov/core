@@ -566,7 +566,6 @@ public abstract class InferenceAlgorithmTests {
      * Tests the a priori joint probabilities obtained in the network Asia
      * @throws UnexpectedInferenceException 
      * @throws IncompatibleEvidenceException 
-     * @throws NotEnoughMemoryException 
      */
     @Test
     public void testAPosterioriJointProbabilitiesBN_Asia ()
@@ -775,7 +774,6 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws NotEnoughMemoryException
 	 * @throws ProbNodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
@@ -869,14 +867,13 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws NotEnoughMemoryException
 	 * @throws ProbNodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 *//*
 	@Test
 	public void testConditioningVariablesEvaluationIDDiagnosisProblem()
-			throws NotEnoughMemoryException, FileNotFoundException,
+			throws FileNotFoundException,
 			IOException, ParserException, ProbNodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 		ProbNet network;
@@ -921,7 +918,6 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws NotEnoughMemoryException
 	 * @throws ProbNodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
@@ -963,7 +959,6 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws NotEnoughMemoryException
 	 * @throws ProbNodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
@@ -1077,7 +1072,6 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws NotEnoughMemoryException
 	 * @throws ProbNodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
@@ -1098,7 +1092,6 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws NotEnoughMemoryException
 	 * @throws ProbNodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
@@ -1119,7 +1112,6 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws NotEnoughMemoryException
 	 * @throws ProbNodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
@@ -1251,14 +1243,13 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws NotEnoughMemoryException
 	 * @throws ProbNodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
 	//@Test
 /*	public void testEvaluationIDDecisionTestProblem()
-			throws NotEnoughMemoryException, FileNotFoundException,
+			throws FileNotFoundException,
 			IOException, ParserException, ProbNodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 
@@ -1314,7 +1305,6 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws NotEnoughMemoryException
 	 * @throws ProbNodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException

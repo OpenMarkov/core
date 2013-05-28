@@ -127,7 +127,6 @@ public abstract class Potential
      * @param evidenceCase. <code>EvidenceCase</code>
      * @return The conditional probability table of this potential given the
      *         evidence
-     * @throws NotEnoughMemoryException
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
      */
@@ -152,7 +151,6 @@ public abstract class Potential
     /**
      * The conditional probability table given by this potential
      * @return <code>TablePotential</code>
-     * @throws NotEnoughMemoryException
      * @throws NonProjectablePotentialException
      * @throws WrongCriterionException
      */
@@ -244,7 +242,6 @@ public abstract class Potential
     /**
      * @param evidenceCase <code>EvidenceCase</code>
      * @param inferenceOptions
-     * @throws NotEnoughMemoryException
      * @throws WrongCriterionException
      * @throws NoFindingException
      */
@@ -312,7 +309,6 @@ public abstract class Potential
      * @param evidenceCase. <code>EvidenceCase</code>
      * @return <code>Collection</code> of <code>Finding</code>s
      * @throws IncompatibleEvidenceException
-     * @throws NotEnoughMemoryException
      * @throws WrongCriterionException
      */
     public Collection<Finding> getInducedFindings (EvidenceCase evidenceCase, double cycleLength)
@@ -349,7 +345,6 @@ public abstract class Potential
      * @param probNet This parameter is necessary because the shifted variables
      *            are taken from the network. <code>ProbNet</code>
      * @throws ProbNodeNotFoundException
-     * @throws NotEnoughMemoryException
      */
     public Potential shift(ProbNet probNet, int timeDifference) throws ProbNodeNotFoundException {
         return this;
@@ -503,7 +498,6 @@ public abstract class Potential
     }
 
     /**
-     * @throws NotEnoughMemoryException
      * @returns a sampled potential. By default, itself, i.e., not sampled.
      */
     public Potential sample ()
@@ -546,7 +540,6 @@ public abstract class Potential
 
     /**
      * Adds variable to a potential implemented in each child class
-     * @throws NotEnoughMemoryException
      */
     public Potential addVariable (Variable variable)
     {
@@ -555,7 +548,6 @@ public abstract class Potential
 
     /**
      * Removes variable to a potential implemented in each child class
-     * @throws NotEnoughMemoryException
      */
     public Potential removeVariable (Variable variable)
     {

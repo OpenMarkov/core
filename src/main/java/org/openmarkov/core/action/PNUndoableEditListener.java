@@ -21,7 +21,6 @@ import org.openmarkov.core.exception.WrongCriterionException;
 public interface PNUndoableEditListener extends UndoableEditListener {
 
 	/** An undoable edit will happen 
-	 * @throws NotEnoughMemoryException 
 	 * @throws WrongCriterionException 
 	 * @throws NonProjectablePotentialException */
     public void undoableEditWillHappen(UndoableEditEvent event) 

@@ -120,7 +120,6 @@ public abstract class ICIPotential extends Potential {
 	/**
 	 * Returns the f function potential
 	 * @return TablePotential containing the f function
-	 * @throws NotEnoughMemoryException
 	 */
 	public abstract TablePotential getFFunctionPotential ();
 
@@ -221,7 +220,6 @@ public abstract class ICIPotential extends Potential {
 	/**
 	 * There will be a potential for each link, plus the leak potential and the f function
 	 * @return <code>ArrayList</code> of <code>TablePotential</code>. 
-	 * @throws NotEnoughMemoryException 
 	 * */
 	public List<TablePotential> getSubpotentials() {
 	    List<TablePotential> subpotentials = new ArrayList<TablePotential> ();
@@ -245,7 +243,6 @@ public abstract class ICIPotential extends Potential {
     /**
      * There will be a potential for each link, plus the leak potential 
      * @return <code>ArrayList</code> of <code>TablePotential</code>. 
-     * @throws NotEnoughMemoryException 
      * */
     public List<TablePotential> getNoisyPotentials() {
         List<TablePotential> noisyPotentials = new ArrayList<> ();

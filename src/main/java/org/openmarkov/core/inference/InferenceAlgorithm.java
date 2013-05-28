@@ -176,7 +176,6 @@ public abstract class InferenceAlgorithm
     
     /**
      * @return The posterior probabilities and utilities of the network.
-     * @throws NotEnoughMemoryException
      * @throws IncompatibleEvidenceException
      * @throws NormalizeNullVectorException
      */
@@ -188,7 +187,6 @@ public abstract class InferenceAlgorithm
     /**
      * @param variablesOfInterest
      * @return The posterior probabilities and utilities of the network.
-     * @throws NotEnoughMemoryException
      * @throws IncompatibleEvidenceException
      * @throws NormalizeNullVectorException
      */
@@ -199,7 +197,6 @@ public abstract class InferenceAlgorithm
     /**
      * @param variables
      * @return The joint probability of a list of variables
-     * @throws NotEnoughMemoryException
      * @throws IncompatibleEvidenceException
      * @throws NormalizeNullVectorException
      */

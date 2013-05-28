@@ -100,7 +100,6 @@ public abstract class Evaluation {
      *  variables, that has a table with one scalar;
      *  by default, its value is 0.0 
      * @throws WrongGraphStructureException 
-     * @throws NotEnoughMemoryException 
      * @throws WrongCriterionException 
      * @throws NonProjectablePotentialException */
 	public TablePotential getMaxExpectedUtility() 
@@ -155,7 +154,6 @@ public abstract class Evaluation {
 	 * @param evidence <code>EvidenceCase</code>.
 	 * @param inferenceOptions TODO
 	 * @return A <code>Potential</code> 
-	 * @throws NotEnoughMemoryException 
 	 * @throws CanNotDoEditException 
 	 * @throws ConstraintViolationException 
 	 * @throws DoEditException 

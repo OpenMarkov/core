@@ -103,7 +103,6 @@ public class ProductPotential extends Potential {
 //	 * @param evidenceCase
 //	 * @param inferenceOptions
 //	 * @return
-//	 * @throws NotEnoughMemoryException
 //	 * @throws NonProjectablePotentialException
 //	 * @throws WrongCriterionException
 //	 */

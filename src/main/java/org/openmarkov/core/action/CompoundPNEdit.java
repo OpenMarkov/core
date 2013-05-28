@@ -43,7 +43,6 @@ public abstract class CompoundPNEdit extends CompoundEdit
     /**
      * Generate edits and does them
      * @throws DoEditException
-     * @throws NotEnoughMemoryException
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
      */
@@ -70,7 +69,6 @@ public abstract class CompoundPNEdit extends CompoundEdit
 
     /**
      * @return <code>Vector</code> of <code>UndoableEdit</code>s
-     * @throws NotEnoughMemoryException
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
      */

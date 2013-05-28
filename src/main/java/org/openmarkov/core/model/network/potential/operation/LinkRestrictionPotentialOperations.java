@@ -226,8 +226,7 @@ public class LinkRestrictionPotentialOperations {
 	 *            - the index of the state of the parent variable
 	 * @param var2StateIndex
 	 *            - the index of the state of the child variable.
-	 * @return the probability potential of the node updated properly.
-	 * @throws NotEnoughMemoryException
+	 * @return the probability potential of the node updated properly.
 	 */
 	public static Potential updatePotentialByAddLinkRestriction(ProbNode node,
 			TablePotential linkRestriction, int var1StateIndex,

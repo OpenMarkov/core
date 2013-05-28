@@ -304,7 +304,6 @@ public class EvidenceCase {
      * Extends an evidence case by taking into account that the deterministic
      * potentials of a <code>ProbNet</code> may induce new findings
      * 
-     * @throws NotEnoughMemoryException
      * @throws InvalidStateException
      * @throws WrongCriterionException
      */

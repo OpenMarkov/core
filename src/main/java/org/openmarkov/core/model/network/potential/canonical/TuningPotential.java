@@ -102,7 +102,6 @@ public class TuningPotential extends ICIPotential
      * Creates a table potential to compute the outcome of the f(tuning)
      * function
      * @return a TablePotential containing the probabilities of the tuning function
-     * @throws NotEnoughMemoryException
      */
     public TablePotential getFFunctionPotential ()
     {

@@ -263,7 +263,6 @@ public class ProbNetTest {
 		variablesCAB.add(variableB);
 		
 		
-		//notEnoughMemoryException 
 		potentialvaluesCAB= new TablePotential(variablesCAB,role,tableCAB);
 		
 		peque = new ProbNet();
@@ -361,8 +360,7 @@ public class ProbNetTest {
 				variablesFE.add(variableE);
 							
 				
-				//notEnoughMemoryException 
-				potentialvaluesFE= new TablePotential(variablesFE,role,tableFE);
+						potentialvaluesFE= new TablePotential(variablesFE,role,tableFE);
 				
 				//potentialGD
 				double [] tableGD ={0.49, 0.51, 0.75, 0.25};				
@@ -371,8 +369,7 @@ public class ProbNetTest {
 				variablesGD.add(variableD);
 							
 				
-				//notEnoughMemoryException 
-				potentialvaluesGD= new TablePotential(variablesGD,role,tableGD);
+						potentialvaluesGD= new TablePotential(variablesGD,role,tableGD);
 				
 				//Potential I
 				double [] tableI ={0.85, 0.15};
@@ -398,8 +395,7 @@ public class ProbNetTest {
 				variablesba.add(variableA);
 							
 				
-				//notEnoughMemoryException 
-				potentialvaluesba= new TablePotential(variablesba,role,tableba);
+						potentialvaluesba= new TablePotential(variablesba,role,tableba);
 				
 				//potentialAH
 				double [] tableAH ={0.09, 0.91, 0.83, 0.17};
@@ -408,8 +404,7 @@ public class ProbNetTest {
 				variablesAH.add(variableH);
 							
 				
-				//notEnoughMemoryException 
-				potentialvaluesAH= new TablePotential(variablesAH,role,tableAH);
+						potentialvaluesAH= new TablePotential(variablesAH,role,tableAH);
 				
 				//Potential H
 				double [] tableH ={0.68, 0.32};

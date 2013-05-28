@@ -236,7 +236,6 @@ public class TreeADDPotential extends Potential {
     /**
      * Adds variable to a treeADD potential
      * 
-     * @throws NotEnoughMemoryException
      */
     public Potential addVariable(Variable variable) {
         // return new UniformPotential(getVariables(), getPotentialRole());
@@ -252,7 +251,6 @@ public class TreeADDPotential extends Potential {
     /**
      * Removes variable from a treeADD potential
      * 
-     * @throws NotEnoughMemoryException
      */
     public Potential removeVariable(Variable variable) {
         List<Variable> newVariables = getVariables();

@@ -170,7 +170,6 @@ public class Link {
 	 * Initializes a TablePotential for the variable associated to node1 and
 	 * node2, whose values are all 1.
 	 * 
-	 * @throws NotEnoughMemoryException
 	 */
 	public void initializesRestrictionsPotential() {
 		List<Variable> variables = new ArrayList<Variable>();
@@ -188,7 +187,6 @@ public class Link {
 	 * Assigns a null value to the restrictionsPotential if the restrictions
 	 * potential does not contain restrictions
 	 * 
-	 * @throws NotEnoughMemoryException
 	 */
 	public void resetRestrictionsPotential() {
 		boolean hasRestriction = false;
@@ -214,7 +212,6 @@ public class Link {
 	 *            state of the variable of node2
 	 * @param compatibility
 	 *            value of compatibility
-	 * @throws NotEnoughMemoryException
 	 */
 	public void setCompatibilityValue(State state1, State state2,
 			int compatibility) {

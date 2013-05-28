@@ -262,8 +262,7 @@ public class SharedTestUtilities {
 	 *  @param table. <code>double[]</code>
 	 *  @param additionalProperties. 
 	 *    <code>HashMap<String, Object> additionalProperties</code>
-	 *  @return TablePotential
-	 *  @throws NotEnoughMemoryException */
+	 *  @return TablePotential */
 	public static TablePotential createTablePotential(int numVariables, 
 			double[] table, HashMap<String, Object> properties) {
 		// Create variables

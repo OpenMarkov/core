@@ -432,22 +432,16 @@ public class TablePotentialTest {
 			}
 			
 		}
-		try {
 			tablePotential =
 				DiscretePotentialOperations.reorder(
 						cabPotential, newOrderVariables );
-		} catch (NotEnoughMemoryException exception) {
-			//ExceptionsHandler.handleException(
-				//exception, "not enougth memory", true );
-			
-		}
     }
     
 
 /*    @Test
     /** Test accumulated offsets in projected potentials. */
 /*    public void testGetAccumulateOffsetsProjected() 
-    		throws NotEnoughMemoryException, NoFindingException {
+    		throws NoFindingException {
 		// Create data
 		// Variables
 		Variable A = new Variable("A", 2);

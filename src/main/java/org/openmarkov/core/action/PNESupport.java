@@ -83,7 +83,6 @@ public class PNESupport extends UndoableEditSupport {
      * 
      * @param edit
      *            <code>PNEdit</code>.
-     * @throws NotEnoughMemoryException
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
      * @throws <code>ConstraintViolationException</code> in case of illegal
@@ -106,7 +105,6 @@ public class PNESupport extends UndoableEditSupport {
      * @param edit
      *            <code>PNEdit</code>.
      * @throws DoEditException
-     * @throws NotEnoughMemoryException
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
      */

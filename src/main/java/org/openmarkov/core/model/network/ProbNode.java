@@ -471,8 +471,7 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 		this.nodeType = nodeType;
 	}
 
-	/** @param simulationIndexVariable. <code>Variable</code>
-	 * @throws NotEnoughMemoryException */
+	/** @param simulationIndexVariable. <code>Variable</code> */
 	public void samplePotentials() {
 		for (int i = 0; i < potentials.size(); i++) {
 			Potential originalPotential = potentials.get(i);
@@ -493,7 +492,6 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 * of parent nodes. If 'computeMax' is true then it computes the maximum; otherwise it computes the minimum.
 	 * For an exact computation of the maximum or the minimum of the utility function then it is required to use
 	 * method 'getUtilityFunction' and computes the maximum or the minimum over the resulting potential.
-	 * @throws NotEnoughMemoryException
 	 * @throws NonProjectablePotentialException 
 	 */
 	private double getApproximateMaxOrMinUtilityFunction(boolean computeMax)
@@ -543,7 +541,6 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 * @return Approximates the maximum of the utility function of the ProbNode. It is computed recursively by using the utility function
 	 * of parent nodes. For an exact computation of the maximum of the utility function then it is required to use
 	 * method 'getUtilityFunction' and computes the maximum over the resulting potential.
-	 * @throws NotEnoughMemoryException
 	 * @throws NonProjectablePotentialException 
 	 */
 	public double getApproximateMaximumUtilityFunction() throws NonProjectablePotentialException{
@@ -555,7 +552,6 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	 * @return Approximates the maximum of the utility function of the ProbNode. It is computed recursively by using the utility function
 	 * of parent nodes. For an exact computation of the maximum of the utility function then it is required to use
 	 * method 'getUtilityFunction' and computes the maximum over the resulting potential.
-	 * @throws NotEnoughMemoryException
 	 * @throws NonProjectablePotentialException 
 	 */
 	public double getApproximateMinimumUtilityFunction() throws NonProjectablePotentialException{
@@ -568,7 +564,6 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	/**
 	 * @return The utility function of a utility variable. If it is a super-value node
      * then it operates their parent's utility functions recursively.
-	 * @throws NotEnoughMemoryException
 	 * @throws NonProjectablePotentialException 
 	 */
 	public TablePotential getUtilityFunction() throws

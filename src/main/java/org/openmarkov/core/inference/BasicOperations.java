@@ -281,12 +281,11 @@ public class BasicOperations {
      *         network (the output would be an influence diagram). Otherwise the
      *         output is a Bayesian network.
      * @throws NodeNotFoundException
-     * @throws NotEnoughMemoryException
      */
     /*
      * public static ProbNet constructPolicyNetwork(ProbNet network,Strategy
-     * strategy,boolean keepUtilityNodes) throws NodeNotFoundException,
-     * NotEnoughMemoryException{ ProbNet policyNetwork; policyNetwork =
+     * strategy,boolean keepUtilityNodes) throws NodeNotFoundException
+     * { ProbNet policyNetwork; policyNetwork =
      * network.copy(); //Remove utility nodes if keepUtilityNodes is false if
      * (!keepUtilityNodes){ ArrayList<ProbNode> utilities =
      * policyNetwork.getProbNodes(NodeType.UTILITY); for (ProbNode

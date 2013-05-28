@@ -53,8 +53,7 @@ public class ProbNetOperations {
 	/**Projects the evidence in the <code>probNet</code> potentials and remove
 	 * evidence variables
 	 * @param probNet. <code>ProbNet</code>
-	 * @param evidence. <code>EvidenceCase</code>
-	 * @throws NotEnoughMemoryException */
+	 * @param evidence. <code>EvidenceCase</code> */
     public static void projectEvidence (ProbNet probNet, EvidenceCase evidence)
     {
         List<Variable> variables = evidence.getVariables ();

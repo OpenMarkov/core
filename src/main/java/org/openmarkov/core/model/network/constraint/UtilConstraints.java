@@ -29,7 +29,6 @@ public class UtilConstraints {
      * @return An <code>ArrayList</code> of <code>PNEdit</code>s of type
      *         <code>typeEdit</code> that are contained in the
      *         <code>event</code> received (if there is any)
-     * @throws NotEnoughMemoryException
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
      */

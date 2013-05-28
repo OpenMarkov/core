@@ -22,7 +22,6 @@ public interface PNEdit extends UndoableEdit {
 
     /**
      * Puts into effect the edition.
-     * @throws NotEnoughMemoryException
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
      */

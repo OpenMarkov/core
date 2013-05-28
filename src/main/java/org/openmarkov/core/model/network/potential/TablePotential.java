@@ -90,7 +90,6 @@ public class TablePotential extends Potential
      * @param variables. <code>List</code> of <code>Variable</code> used to
      *            build the <code>TablePotential</code>.
      * @param role. <code>PotentialRole</code>
-     * @throws <code>NotEnoughMemoryException</code>
      */
     public TablePotential (List<Variable> variables, PotentialRole role)
     {
@@ -124,7 +123,6 @@ public class TablePotential extends Potential
      * For role utility
      * @param variables
      * @param role
-     * @throws NotEnoughMemoryException
      */
     public TablePotential (List<Variable> variables, PotentialRole role, Variable utilityVariable)
     {
@@ -182,7 +180,6 @@ public class TablePotential extends Potential
     /**
      * @param role. <code>PotentialRole</code>
      * @param variables. <code>ArrayList</code> of <code>Variable</code>
-     * @throws NotEnoughMemoryException
      * @argCondition All variables must be discrete.
      */
     public TablePotential (PotentialRole role, Variable... variables)
@@ -260,7 +257,6 @@ public class TablePotential extends Potential
     // Methods
     /**
      * @throws WrongCriterionException
-     * @throws NotEnoughMemoryException
      */
     public Potential removeVariable (Variable variable)
     {
@@ -291,7 +287,6 @@ public class TablePotential extends Potential
      * @param evidenceCase <code>EvidenceCase</code>
      * @return A <code>List</code> of <code>TablePotential</code>s containing
      *         only one element, which is a <code>ProjectedPotential</code>
-     * @throws NotEnoughMemoryException
      * @throws WrongCriterionException
      * @throws NoFindingException
      */

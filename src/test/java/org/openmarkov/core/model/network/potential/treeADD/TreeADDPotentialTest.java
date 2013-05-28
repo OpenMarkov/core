@@ -172,7 +172,7 @@ public class TreeADDPotentialTest {
 	
 	/*@Test
 	public void testTableProject() 
-	throws NotEnoughMemoryException, NonProjectablePotentialException, 
+	throws NonProjectablePotentialException, 
 			WrongCriterionException, InvalidStateException, 
 			IncompatibleEvidenceException {
 								

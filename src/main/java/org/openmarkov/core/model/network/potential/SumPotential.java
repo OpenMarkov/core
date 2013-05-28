@@ -111,7 +111,6 @@ public class SumPotential extends Potential {
 //	 * @param evidenceCase
 //	 * @param inferenceOptions
 //	 * @return
-//	 * @throws NotEnoughMemoryException
 //	 * @throws NonProjectablePotentialException
 //	 * @throws WrongCriterionException
 //	 */
@@ -171,7 +170,6 @@ public class SumPotential extends Potential {
     }
     /**
      * Removes variable to a potential implemented in each child class
-     * @throws NotEnoughMemoryException 
      * 
      */
     public  Potential removeVariable(Variable variable) {

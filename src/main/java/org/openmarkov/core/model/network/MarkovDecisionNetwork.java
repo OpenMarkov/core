@@ -65,7 +65,6 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 *            <code>ArrayList</code> of <code>Potential</code>s
 	 * @return A Markov Network in witch potentials are used to create cliques.
 	 *         (<code>ProbNet</code>).
-	 * @throws NotEnoughMemoryException
 	 */
 	public MarkovDecisionNetwork(ProbNet originalNet,
 			List<? extends Potential> projectedTablePotentials) {

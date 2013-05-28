@@ -119,7 +119,6 @@ public class EvidenceCaseTest {
 		variablesCBA.add(variableB);
 		
 		
-		//notEnoughMemoryException 
 		potentialvaluesCBA= new TablePotential(variablesCBA,role,tableCBA);
 		
 		

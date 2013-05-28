@@ -259,7 +259,7 @@ public abstract class Potential
     /** @return number of variables: <code>int</code> */
     public int getNumVariables ()
     {
-        return numVariables;
+        return variables.size();
     }
 
     public Variable getConditionedVariable ()
@@ -271,7 +271,7 @@ public abstract class Potential
             conditionedVariable = variables.get (0);
             break;
         case UTILITY:
-            conditionedVariable = utilityVariable;
+            conditionedVariable = (utilityVariable != null)? utilityVariable : variables.get (0);
             break;
         default:
             conditionedVariable = null;

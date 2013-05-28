@@ -148,7 +148,7 @@ public class WeibullPotential extends Potential {
         TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, role);
         int[] offsets = projectedPotential.getOffsets();
         int[] dimensions = projectedPotential.getDimensions();
-        double gamma = Math.exp(getShape());
+        double gamma = Math.exp(coefficients[0]);
         
         for (int i = 0; i < projectedPotential.values.length; i += 2) {
             // Set the values of variables without evidence
@@ -156,7 +156,7 @@ public class WeibullPotential extends Potential {
                 int index = (i / offsets[j]) % dimensions[j];
                 numericValues[evidencelessVariablesIndex.get(j - 1)] = (double) index;
             }
-            double lambda = getConstant();
+            double lambda = coefficients[1];
             for (int j = 2; j < coefficients.length; ++j) {
                 lambda += numericValues[j-2] * coefficients[j];
             }

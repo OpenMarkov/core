@@ -8,7 +8,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
-@ProbDensFunctionType(name = "Beta", isValidForNumeric = false, parameters = { "alpha", "beta" })
+@ProbDensFunctionType(name = "Beta", parameters = { "alpha", "beta" })
 public class BetaFunction extends ProbDensFunction {
     private double alpha;
     private double beta;

@@ -20,7 +20,7 @@ import javax.swing.undo.UndoableEdit;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.CRemoveProbNodeEdit;
-import org.openmarkov.core.action.ChangePotentialEdit;
+import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.ICIPotentialEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
@@ -573,10 +573,10 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 								e1.printStackTrace();
 							}
 							
-						} else if(simpleEdit instanceof ChangePotentialEdit)
+						} else if(simpleEdit instanceof PotentialChangeEdit)
 						{
 							try {
-								ChangePotentialEdit changePotentialEdit = (ChangePotentialEdit)simpleEdit;
+								PotentialChangeEdit changePotentialEdit = (PotentialChangeEdit)simpleEdit;
 								
 								// Find oldPotential in instance
 								Potential oldPotential = findEquivalentPotentialInInstance(instanceName, changePotentialEdit.getOldPotential());
@@ -593,7 +593,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
                                     newPotential.replaceVariable (utilityVariable, getVariable(instanceName + "." + utilityVariable.getName()));
                                 }                                   
 								
-								newEdit = new ChangePotentialEdit(this, oldPotential, newPotential);
+								newEdit = new PotentialChangeEdit(this, oldPotential, newPotential);
 							} catch (ProbNodeNotFoundException e1) {
 								e1.printStackTrace();
 							}

@@ -71,7 +71,7 @@ public class CRemoveLinkEdit extends CompoundPNEdit {
 					Potential marginalizedPotential = 
 						PotentialOperations.marginalize(
 						potential, potentialVariables);
-					addEdit(new ChangePotentialEdit(probNet, 
+					addEdit(new PotentialChangeEdit(probNet, 
 						marginalizedPotential, potential));
 				} catch (Exception e) {
 					logger.fatal (e); 

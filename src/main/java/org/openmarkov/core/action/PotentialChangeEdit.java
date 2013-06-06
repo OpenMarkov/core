@@ -15,7 +15,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 
 /** Changes an old potential for a new potential */
 @SuppressWarnings("serial")
-public class ChangePotentialEdit extends SimplePNEdit {
+public class PotentialChangeEdit extends SimplePNEdit {
 
 	// Attribute
 	private Potential newPotential;
@@ -26,7 +26,7 @@ public class ChangePotentialEdit extends SimplePNEdit {
 	/** @param probNet <code>ProbNet</code>
 	 * @param oldPotential <code>Potential</code>
 	 * @param newPotential <code>Potential</code> */
-	public ChangePotentialEdit(ProbNet probNet, Potential oldPotential, 
+	public PotentialChangeEdit(ProbNet probNet, Potential oldPotential, 
 			Potential newPotential) {
 		super(probNet);
 		this.newPotential = newPotential;

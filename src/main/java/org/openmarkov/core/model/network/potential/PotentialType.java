@@ -29,7 +29,8 @@ public enum PotentialType {
 	PROBABILITY_DENSITY(13, "ProbabilityDensity"),
 	STAT_FUNCTION(14, "StatFunction"),
 	TUNING(15,"Tuning"),
-	WEIBULL(16, "WeibullDistribution");
+	WEIBULL(16, "WeibullDistribution"),
+	DELTA(17, "Delta");
 	// Add here more potential types (when available)
 	
 private int type;

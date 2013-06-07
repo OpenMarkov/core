@@ -28,6 +28,7 @@ public class DeltaPotential extends Potential{
 
     private State state = null; 
     private double numericValue = Double.NaN;
+    private int stateIndex = -1;
     
     public DeltaPotential(List<Variable> variables, PotentialRole role, double numericValue)
     {
@@ -39,6 +40,8 @@ public class DeltaPotential extends Potential{
     {
         this(variables, role);
         this.state = state;
+        Variable conditionedVariable = getConditionedVariable();
+        stateIndex = conditionedVariable.getStateIndex(state);
     }
     
     public DeltaPotential(List<Variable> variables, PotentialRole role)
@@ -78,10 +81,8 @@ public class DeltaPotential extends Potential{
         
         if(state != null)
         {
-            Variable conditionedVariable = getConditionedVariable();
-            projectedPotential = new TablePotential (Arrays.asList(conditionedVariable),
+            projectedPotential = new TablePotential (Arrays.asList(getConditionedVariable()),
                     PotentialRole.UNSPECIFIED);
-            int stateIndex = conditionedVariable.getStateIndex(state);
             for(int i=0; i < projectedPotential.values.length; ++i)
             {
                 projectedPotential.values[i] = (i == stateIndex)? 1 : 0;
@@ -121,5 +122,9 @@ public class DeltaPotential extends Potential{
 
     public double getNumericValue() {
         return numericValue;
+    }
+
+    public int getStateIndex() {
+        return stateIndex;
     }    
 }

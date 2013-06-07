@@ -23,9 +23,9 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Variable;
 
-public class WeibullPotentialTest {
+public class WeibullHazardPotentialTest {
 
-    private WeibullPotential potential = null;
+    private WeibullHazardPotential potential = null;
     private Variable rrVar = null;
     private Variable sexVar = null;
     private Variable ageVar = null;
@@ -46,8 +46,8 @@ public class WeibullPotentialTest {
         double[] coefficients = new double[]{0.3740968, -5.490935, -0.0367022, 0.768536, -1.344474};
         double[] covarianceMatrix = new double[] { 0.0022515, -0.005691, 0.0432191, 0.000000028,
                 -0.000783, 0.00002715, 0.0000051, -0.007247, 0.000033, 0.01189, 0.000259,
-                -0.000642, -0.000111, 0.000184, 0.14636 };
-        potential = new WeibullPotential(variables,
+                -0.000642, -0.000111, 0.000184, 0.14636};
+        potential = new WeibullHazardPotential(variables,
                 PotentialRole.CONDITIONAL_PROBABILITY,
                 coefficients,
                 covarianceMatrix);

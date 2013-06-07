@@ -391,7 +391,7 @@ public class Variable implements Cloneable {
 	 */
 	public int getStateIndex(State state) {
 		for (int i = 0; i < states.length; i++) {
-			if (states[i] == state) {
+			if (states[i].equals(state)) {
 				return i;
 			}
 		}

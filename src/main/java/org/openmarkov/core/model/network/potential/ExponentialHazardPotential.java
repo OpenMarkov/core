@@ -28,6 +28,12 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
             double[] coefficients, double[] covarianceMatrix) {
         super(variables, role, coefficients, covarianceMatrix);
     }
+    
+    public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
+            double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
+        super(variables, role, coefficients, uncertaintyMatrix, matrixType);
+    }
+    
 
     /**
      * Returns if an instance of a certain Potential type makes sense given the

@@ -12,6 +12,9 @@ import org.openmarkov.core.model.network.modelUncertainty.NormalFunction;
 import org.openmarkov.core.model.network.modelUncertainty.XORShiftRandom;
 
 public abstract class RegressionPotential extends Potential {
+    public enum MatrixType {
+      COVARIANCE, CHOLESKY  
+    };
 
     /**
      * Coefficients for the parameters of the function 
@@ -41,10 +44,21 @@ public abstract class RegressionPotential extends Potential {
     }
 
     public RegressionPotential(List<Variable> variables, PotentialRole role,
-            double[] coefficients, double[] covarianceMatrix) {
+            double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
         this(variables, role, coefficients);
-        this.covarianceMatrix = covarianceMatrix;
-        this.choleskyDecomposition = calculateCholesky(covarianceMatrix);
+        if(matrixType == MatrixType.COVARIANCE)
+        {
+            this.covarianceMatrix = uncertaintyMatrix;
+            this.choleskyDecomposition = calculateCholesky(uncertaintyMatrix);
+        }else
+        {
+            this.choleskyDecomposition = uncertaintyMatrix;
+        }
+    }
+    
+    public RegressionPotential(List<Variable> variables, PotentialRole role,
+            double[] coefficients, double[] covarianceMatrix) {
+        this(variables, role, coefficients, covarianceMatrix, MatrixType.COVARIANCE);
     }
 
     public double[] getCoefficients() {
@@ -84,12 +98,14 @@ public abstract class RegressionPotential extends Potential {
         return choleskyDecomposition;
     }
     
+    public void setCholeskyDecomposition(double[] choleskyDecomposition) {
+        this.choleskyDecomposition = choleskyDecomposition;
+    }
+    
     @Override
     public boolean isUncertain() {
         return this.covarianceMatrix != null ||  this.choleskyDecomposition != null;
     }    
-
-    
     
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase,

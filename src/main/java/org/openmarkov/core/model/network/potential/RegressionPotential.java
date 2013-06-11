@@ -17,6 +17,10 @@ public abstract class RegressionPotential extends Potential {
     };
 
     /**
+     * Covariates
+     */
+    protected String[] covariates;
+    /**
      * Coefficients for the parameters of the function 
      */
     protected double[] coefficients;
@@ -31,21 +35,22 @@ public abstract class RegressionPotential extends Potential {
     /**
      * Colesky decomposition
      */
-    protected double[] choleskyDecomposition         = null;
+    protected double[] choleskyDecomposition = null;
 
     public RegressionPotential(List<Variable> variables, PotentialRole role) {
         super(variables, role);
     }
 
-    public RegressionPotential(List<Variable> variables, PotentialRole role, double[] coefficients) {
+    public RegressionPotential(List<Variable> variables, PotentialRole role, String[] covariates, double[] coefficients) {
         super(variables, role);
         this.coefficients = coefficients;
+        this.covariates = covariates;
         this.sampledCoefficients = null;
     }
 
     public RegressionPotential(List<Variable> variables, PotentialRole role,
-            double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
-        this(variables, role, coefficients);
+            String[] covariates, double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
+        this(variables, role, covariates, coefficients);
         if(matrixType == MatrixType.COVARIANCE)
         {
             this.covarianceMatrix = uncertaintyMatrix;
@@ -57,8 +62,16 @@ public abstract class RegressionPotential extends Potential {
     }
     
     public RegressionPotential(List<Variable> variables, PotentialRole role,
-            double[] coefficients, double[] covarianceMatrix) {
-        this(variables, role, coefficients, covarianceMatrix, MatrixType.COVARIANCE);
+            String[] covariates, double[] coefficients, double[] covarianceMatrix) {
+        this(variables, role, covariates, coefficients, covarianceMatrix, MatrixType.COVARIANCE);
+    }
+
+    public String[] getCovariates() {
+        return covariates;
+    }
+
+    public void setCovariates(String[] covariates) {
+        this.covariates = covariates;
     }
 
     public double[] getCoefficients() {

@@ -38,24 +38,45 @@ public class WeibullHazardPotential extends RegressionPotential {
     private int gammaIndex = 0;
     private int constantIndex = 1;
     
-    public WeibullHazardPotential(List<Variable> variables, PotentialRole role, double[] coefficients) {
-        super(variables, role, coefficients);
+    public WeibullHazardPotential(List<Variable> variables, PotentialRole role, String[] covariates, double[] coefficients) {
+        super(variables, role, covariates, coefficients);
     }
 
     public WeibullHazardPotential(List<Variable> variables, PotentialRole role,
+            String[] covariates, double[] coefficients, double[] covarianceMatrix) {
+        super(variables, role, covariates, coefficients, covarianceMatrix);
+    }
+    
+    public WeibullHazardPotential(List<Variable> variables, PotentialRole role,
             double[] coefficients, double[] covarianceMatrix) {
-        super(variables, role, coefficients, covarianceMatrix);
+        super(variables, role, getDefaultCovariates(variables), coefficients, covarianceMatrix);
+    }    
+    
+    public WeibullHazardPotential(List<Variable> variables, PotentialRole role,
+            String[] covariates, double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
+        super(variables, role, covariates, coefficients, uncertaintyMatrix, matrixType);
     }
     
     public WeibullHazardPotential(List<Variable> variables, PotentialRole role,
             double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
-        super(variables, role, coefficients, uncertaintyMatrix, matrixType);
+        super(variables, role, getDefaultCovariates(variables), coefficients, uncertaintyMatrix, matrixType);
     }
-    
 
     public WeibullHazardPotential(List<Variable> variables, PotentialRole role) {
-        this(variables, role, new double[variables.size()+1]);
+        this(variables, role, getDefaultCovariates(variables), new double[variables.size()+1]);
     }
+    
+    private static String[] getDefaultCovariates(List<Variable> variables) {
+        String[] covariates = new String[variables.size()+1];
+        covariates[0] = "Gamma";
+        covariates[1] = "Constant";
+        
+        for(int i = 1; i< variables.size(); ++i)
+        {
+            covariates[i+1] = variables.get(i).getName();
+        }
+        return covariates;
+    }    
 
     /**
      * Returns if an instance of a certain Potential type makes sense given the
@@ -173,6 +194,7 @@ public class WeibullHazardPotential extends RegressionPotential {
             throws ProbNodeNotFoundException {
         WeibullHazardPotential copyPotential = new WeibullHazardPotential(getShiftedVariables(probNet, timeDifference),
                 role,
+                covariates.clone(),
                 coefficients.clone(),
                 (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix);
         copyPotential.sampledCoefficients = sampledCoefficients;
@@ -184,6 +206,7 @@ public class WeibullHazardPotential extends RegressionPotential {
     public Potential copy() {
         WeibullHazardPotential copyPotential = new WeibullHazardPotential(variables,
                 role,
+                covariates.clone(),
                 coefficients.clone(),
                 (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix);
         copyPotential.sampledCoefficients = sampledCoefficients;

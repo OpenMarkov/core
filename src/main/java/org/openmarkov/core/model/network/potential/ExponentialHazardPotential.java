@@ -17,23 +17,43 @@ import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 public class ExponentialHazardPotential extends WeibullHazardPotential {
 
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role) {
-        super(variables, role, new double[variables.size()+1]);
+        super(variables, role);
     }
     
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
             double[] coefficients) {
-        this(variables, role, null, null);
+        this(variables, role, getDefaultCovariates(variables), null, null);
     }    
+    
+    public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
+            String[] covariates, double[] coefficients, double[] covarianceMatrix) {
+        super(variables, role, covariates, coefficients, covarianceMatrix);
+    }
+    
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
             double[] coefficients, double[] covarianceMatrix) {
-        super(variables, role, coefficients, covarianceMatrix);
+        super(variables, role, getDefaultCovariates(variables), coefficients, covarianceMatrix);
+    }
+    
+    public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
+            String[] covariates, double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
+        super(variables, role, covariates, coefficients, uncertaintyMatrix, matrixType);
     }
     
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
             double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
-        super(variables, role, coefficients, uncertaintyMatrix, matrixType);
-    }
+        super(variables, role, getDefaultCovariates(variables), coefficients, uncertaintyMatrix, matrixType);
+    }    
     
+    private static String[] getDefaultCovariates(List<Variable> variables) {
+        String[] covariates = new String[variables.size()];
+        covariates[0] = "Constant";
+        for(int i=1; i<variables.size(); ++i)
+        {
+            covariates[i] = variables.get(i).getName();
+        }
+        return covariates;
+    }        
 
     /**
      * Returns if an instance of a certain Potential type makes sense given the
@@ -42,7 +62,7 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
      * @param probNode
      *            . <code>ProbNode</code>
      * @param variables
-     *            . <code>ArrayList</code> of <code>Variable</code>.
+     *            . <code>List</code> of <code>Variable</code>.
      * @param role
      *            . <code>PotentialRole</code>.
      */
@@ -71,6 +91,7 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
             throws ProbNodeNotFoundException {
         ExponentialHazardPotential copyPotential = new ExponentialHazardPotential(getShiftedVariables(probNet, timeDifference),
                 role,
+                covariates.clone(),
                 coefficients.clone(),
                 (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix);
         copyPotential.sampledCoefficients = sampledCoefficients;
@@ -81,6 +102,7 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
     public Potential copy() {
         ExponentialHazardPotential copyPotential = new ExponentialHazardPotential(variables,
                 role,
+                covariates.clone(),
                 coefficients.clone(),
                 (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix);
         copyPotential.sampledCoefficients = sampledCoefficients;

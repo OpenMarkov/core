@@ -29,19 +29,20 @@ import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 @RelationPotentialType(name = "Hazard (Weibull)", family = "Hazard")
 public class WeibullHazardPotential extends RegressionPotential {
 
+    protected static final String GAMMA = "Gamma";
     /**
      * In the coefficients array of a Weibull function, in the first position of
      * the array the gamma (ln shape) parameter is stored and in the second
      * position of the array the constant coefficient is stored
      */
+    private int gammaIndex = 0;
+    private int constantIndex = 1;
     
     /**
      * Time variable
      */
     private Variable timeVariable = null;
     
-    private int gammaIndex = 0;
-    private int constantIndex = 1;
     
     public WeibullHazardPotential(List<Variable> variables, PotentialRole role, String[] covariates, double[] coefficients) {
         super(variables, role, covariates, coefficients);
@@ -72,16 +73,21 @@ public class WeibullHazardPotential extends RegressionPotential {
     }
     
     private static String[] getDefaultCovariates(List<Variable> variables) {
-        String[] covariates = new String[variables.size()+1];
-        covariates[0] = "Gamma";
-        covariates[1] = "Constant";
+        String[] mandatoryCovariates = getMandatoryCovariates();
+        String[] covariates = new String[mandatoryCovariates.length + variables.size()-1];
         
+        int j = 0;
+        while(j< mandatoryCovariates.length)
+        {
+            covariates[j] = mandatoryCovariates[j];
+            ++j;
+        }
         for(int i = 1; i< variables.size(); ++i)
         {
-            covariates[i+1] = variables.get(i).getName();
+            covariates[j++] = variables.get(i).getName();
         }
         return covariates;
-    }    
+    }
 
     /**
      * Returns if an instance of a certain Potential type makes sense given the
@@ -212,6 +218,21 @@ public class WeibullHazardPotential extends RegressionPotential {
     }
 
     @Override
+    public void setCovariates(String[] covariates) {
+        super.setCovariates(covariates);
+        for(int i=0; i < covariates.length; ++i)
+        {
+            if(covariates[i].equals(GAMMA))
+            {
+                gammaIndex = i;
+            }else if(covariates[i].equals(CONSTANT))
+            {
+                constantIndex = i;
+            }
+        }
+    }
+
+    @Override
     public Potential copy() {
         WeibullHazardPotential copyPotential = new WeibullHazardPotential(variables,
                 role,
@@ -246,5 +267,10 @@ public class WeibullHazardPotential extends RegressionPotential {
             shiftedCovariates [i] = shiftedCovariate;
         }
         return shiftedCovariates;
+    }
+    
+    public static String[] getMandatoryCovariates()
+    {
+        return new String[]{GAMMA, CONSTANT};
     }    
 }

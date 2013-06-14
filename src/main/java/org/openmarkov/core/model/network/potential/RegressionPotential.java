@@ -15,6 +15,8 @@ public abstract class RegressionPotential extends Potential {
     public enum MatrixType {
         COVARIANCE, CHOLESKY
     };
+    
+    protected static final String CONSTANT = "Constant";
 
     /**
      * Covariates
@@ -50,10 +52,9 @@ public abstract class RegressionPotential extends Potential {
     public RegressionPotential(List<Variable> variables, PotentialRole role, String[] covariates,
             double[] coefficients) {
         super(variables, role);
-        this.coefficients = coefficients;
-        this.covariates = covariates;
-        this.processedCovariates = processCovariates(variables, covariates);
         this.sampledCoefficients = null;
+        setCoefficients(coefficients);
+        setCovariates(covariates);
     }
 
     public RegressionPotential(List<Variable> variables, PotentialRole role, String[] covariates,
@@ -214,5 +215,10 @@ public abstract class RegressionPotential extends Potential {
             processedCovariates[i] = covariate;
         }
         return processedCovariates;
+    }
+    
+    public static String[] getMandatoryCovariates()
+    {
+        return new String[]{CONSTANT};
     }
 }

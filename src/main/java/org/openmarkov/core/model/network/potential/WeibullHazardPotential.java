@@ -8,7 +8,12 @@ package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import net.sourceforge.jeval.EvaluationException;
+import net.sourceforge.jeval.Evaluator;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
@@ -101,7 +106,7 @@ public class WeibullHazardPotential extends RegressionPotential {
             throws NonProjectablePotentialException, WrongCriterionException {
         
         int timeSlice = variables.get(0).getTimeSlice();
-
+        
         // Set value for t and tMinusOne
         double t = timeSlice;
         double tMinusOne = timeSlice - 1;
@@ -129,7 +134,7 @@ public class WeibullHazardPotential extends RegressionPotential {
         // Fill arrays numericValues and  evidencelessVariables
         List<Variable> evidencelessVariables = new ArrayList<>();
         List<Integer> evidencelessVariablesIndex = new ArrayList<>();
-        double[] variableValues = new double[variables.size() - 1];
+        Map<String, String> variableValues = new HashMap<>();
 
         for (int i = 1; i < variables.size(); ++i) {
             Variable variable = variables.get(i);
@@ -142,13 +147,12 @@ public class WeibullHazardPotential extends RegressionPotential {
                     }
                     evidencelessVariables.add(variable);
                     evidencelessVariablesIndex.add(i - 1);
-                    variableValues[i - 1] = 0.0;
+                    variableValues.put(variable.getName(), "0.0");
                 } else {
                     double numericValue = evidenceCase.getFinding(variable).getNumericalValue();
-                    if (variable.isTemporal()) {
+                    if(variable.isTemporal())
                         numericValue -= variable.getTimeSlice();
-                    }
-                    variableValues[i-1] = numericValue;
+                    variableValues.put(variable.getName(), String.valueOf(numericValue));
                 }
             }
         }
@@ -159,19 +163,25 @@ public class WeibullHazardPotential extends RegressionPotential {
         int[] offsets = projectedPotential.getOffsets();
         int[] dimensions = projectedPotential.getDimensions();
         double shape = Math.exp(coefficients[gammaIndex]);
-        
+        Evaluator evaluator = new Evaluator();
         for (int i = 0; i < projectedPotential.values.length; i += 2) {
             // Set the values of variables without evidence
             for (int j = 1; j < projectedPotentialVariables.size(); ++j) {
                 int index = (i / offsets[j]) % dimensions[j];
-                variableValues[evidencelessVariablesIndex.get(j - 1)] = (double) index;
+                variableValues.put(projectedPotentialVariables.get(j).getName(), String.valueOf(index));
             }
+            evaluator.setVariables(variableValues);
             double lambda = coefficients[constantIndex];
-            int varIndex=0;
             for (int j = 0; j < coefficients.length; ++j) {
+                double covariateValue = 0.0;
                 if(j!=gammaIndex && j!=constantIndex)
                 {
-                    lambda += variableValues[varIndex++] * coefficients[j];
+                    try {
+                        covariateValue = Double.parseDouble(evaluator.evaluate(processedCovariates[j]));
+                    } catch (NumberFormatException | EvaluationException e) {
+                        e.printStackTrace();
+                    }
+                    lambda += covariateValue * coefficients[j];
                 }
             }
             lambda = Math.exp(lambda);
@@ -192,9 +202,10 @@ public class WeibullHazardPotential extends RegressionPotential {
     @Override
     public Potential shift(ProbNet probNet, int timeDifference)
             throws ProbNodeNotFoundException {
-        WeibullHazardPotential copyPotential = new WeibullHazardPotential(getShiftedVariables(probNet, timeDifference),
+        List<Variable> shiftedVariables = getShiftedVariables(probNet, timeDifference);
+        WeibullHazardPotential copyPotential = new WeibullHazardPotential(shiftedVariables,
                 role,
-                covariates.clone(),
+                shiftCovariates(covariates, variables, shiftedVariables),
                 coefficients.clone(),
                 (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix);
         copyPotential.sampledCoefficients = sampledCoefficients;
@@ -221,4 +232,21 @@ public class WeibullHazardPotential extends RegressionPotential {
     public void setTimeVariable(Variable timeVariable) {
         this.timeVariable = timeVariable;
     }
+    
+    private String[] shiftCovariates(String[] covariates,
+            List<Variable> variables,
+            List<Variable> shiftedVariables) {
+        String[] shiftedCovariates = new String[covariates.length];
+        for(int i=0; i<covariates.length; ++i)
+        {
+            String shiftedCovariate = covariates[i];
+            for(int j=0; j< variables.size(); ++j)
+            {
+                shiftedCovariate = shiftedCovariate.replace(variables.get(j).getName(),
+                        shiftedVariables.get(j).getName());
+            }
+            shiftedCovariates [i] = shiftedCovariate;
+        }
+        return shiftedCovariates;
+    }    
 }

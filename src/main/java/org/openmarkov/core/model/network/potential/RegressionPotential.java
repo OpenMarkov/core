@@ -13,15 +13,21 @@ import org.openmarkov.core.model.network.modelUncertainty.XORShiftRandom;
 
 public abstract class RegressionPotential extends Potential {
     public enum MatrixType {
-      COVARIANCE, CHOLESKY  
+        COVARIANCE, CHOLESKY
     };
 
     /**
      * Covariates
      */
     protected String[] covariates;
+
     /**
-     * Coefficients for the parameters of the function 
+     * Covariates processed as to be understood by jeval
+     */
+    protected String[] processedCovariates;
+
+    /**
+     * Coefficients for the parameters of the function
      */
     protected double[] coefficients;
     /**
@@ -31,7 +37,7 @@ public abstract class RegressionPotential extends Potential {
     /**
      * Covariance matrix
      */
-    protected double[] covarianceMatrix = null;
+    protected double[] covarianceMatrix      = null;
     /**
      * Colesky decomposition
      */
@@ -41,28 +47,28 @@ public abstract class RegressionPotential extends Potential {
         super(variables, role);
     }
 
-    public RegressionPotential(List<Variable> variables, PotentialRole role, String[] covariates, double[] coefficients) {
+    public RegressionPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+            double[] coefficients) {
         super(variables, role);
         this.coefficients = coefficients;
         this.covariates = covariates;
+        this.processedCovariates = processCovariates(variables, covariates);
         this.sampledCoefficients = null;
     }
 
-    public RegressionPotential(List<Variable> variables, PotentialRole role,
-            String[] covariates, double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
+    public RegressionPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+            double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
         this(variables, role, covariates, coefficients);
-        if(matrixType == MatrixType.COVARIANCE)
-        {
+        if (matrixType == MatrixType.COVARIANCE) {
             this.covarianceMatrix = uncertaintyMatrix;
             this.choleskyDecomposition = calculateCholesky(uncertaintyMatrix);
-        }else
-        {
+        } else {
             this.choleskyDecomposition = uncertaintyMatrix;
         }
     }
-    
-    public RegressionPotential(List<Variable> variables, PotentialRole role,
-            String[] covariates, double[] coefficients, double[] covarianceMatrix) {
+
+    public RegressionPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+            double[] coefficients, double[] covarianceMatrix) {
         this(variables, role, covariates, coefficients, covarianceMatrix, MatrixType.COVARIANCE);
     }
 
@@ -72,6 +78,7 @@ public abstract class RegressionPotential extends Potential {
 
     public void setCovariates(String[] covariates) {
         this.covariates = covariates;
+        this.processedCovariates = processCovariates(variables, covariates);
     }
 
     public double[] getCoefficients() {
@@ -110,16 +117,16 @@ public abstract class RegressionPotential extends Potential {
     public double[] getCholeskyDecomposition() {
         return choleskyDecomposition;
     }
-    
+
     public void setCholeskyDecomposition(double[] choleskyDecomposition) {
         this.choleskyDecomposition = choleskyDecomposition;
     }
-    
+
     @Override
     public boolean isUncertain() {
-        return this.covarianceMatrix != null ||  this.choleskyDecomposition != null;
-    }    
-    
+        return this.covarianceMatrix != null || this.choleskyDecomposition != null;
+    }
+
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase,
             InferenceOptions inferenceOptions)
@@ -136,28 +143,23 @@ public abstract class RegressionPotential extends Potential {
 
     @Override
     public Potential sample() {
-        if(covarianceMatrix != null)
-        {
-            if(this.sampledCoefficients == null)
-            {
+        if (covarianceMatrix != null) {
+            if (this.sampledCoefficients == null) {
                 this.sampledCoefficients = new double[coefficients.length];
             }
-            
+
             Random randomGenerator = new XORShiftRandom();
-            NormalFunction normalDistribution = new NormalFunction(0, 1); 
+            NormalFunction normalDistribution = new NormalFunction(0, 1);
             double[] normalSamples = new double[coefficients.length];
-            for(int i=0; i < normalSamples.length; ++i)
-            {
+            for (int i = 0; i < normalSamples.length; ++i) {
                 double sample = normalDistribution.getSample(randomGenerator);
                 normalSamples[i] = sample;
             }
-        
+
             int index = 0;
-            for(int i=0; i < coefficients.length; ++i)
-            {
+            for (int i = 0; i < coefficients.length; ++i) {
                 double value = 0.0;
-                for(int j=0; j <= i; ++j)
-                {
+                for (int j = 0; j <= i; ++j) {
                     value += choleskyDecomposition[index] * normalSamples[j];
                     index++;
                 }
@@ -165,7 +167,7 @@ public abstract class RegressionPotential extends Potential {
             }
         }
         return this;
-    }    
+    }
 
     private static double[] calculateCholesky(double[] covarianceMatrix) {
         double[] cholesky = null;
@@ -199,5 +201,18 @@ public abstract class RegressionPotential extends Potential {
             }
         }
         return cholesky;
+    }
+
+    private String[] processCovariates(List<Variable> variables, String[] covariates) {
+        String[] processedCovariates = new String[covariates.length];
+
+        for (int i = 0; i < covariates.length; ++i) {
+            String covariate = covariates[i];
+            for (Variable variable : variables) {
+                covariate = covariate.replace(variable.getName(), "#{" + variable.getName() + "}");
+            }
+            processedCovariates[i] = covariate;
+        }
+        return processedCovariates;
     }
 }

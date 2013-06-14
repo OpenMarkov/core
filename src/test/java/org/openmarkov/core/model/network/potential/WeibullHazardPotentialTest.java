@@ -9,6 +9,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -72,9 +73,8 @@ public class WeibullHazardPotentialTest {
         
         TablePotential projectedPotential = projectedPotentials.get(0);
         
-        double[] expectedValues = new double[] { 0.9986901, 0.0013099, 0.997177, 0.002823,
-                0.9996584, 0.0003416, 0.99926337, 0.00073663 };
-        
+        double[] expectedValues = new double[] { 0.99891, 0.00109, 0.99765, 0.00235, 0.99972,
+                2.84367E-4, 0.99939, 6.13169E-4 };
         Assert.assertArrayEquals(expectedValues, projectedPotential.values, 0.00001);
     }
     

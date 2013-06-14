@@ -150,8 +150,6 @@ public class WeibullHazardPotential extends RegressionPotential {
                     variableValues.put(variable.getName(), "0.0");
                 } else {
                     double numericValue = evidenceCase.getFinding(variable).getNumericalValue();
-                    if(variable.isTemporal())
-                        numericValue -= variable.getTimeSlice();
                     variableValues.put(variable.getName(), String.valueOf(numericValue));
                 }
             }

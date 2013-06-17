@@ -42,7 +42,9 @@ public class CycleLengthShift extends Potential {
     }
 	
     /**
-     * Returns if an instance of a certain Potential type makes sense given the variables and the potential role 
+     * Returns if an instance of a certain Potential type makes sense given the
+     * variables and the potential role
+     * 
      * @param variables
      * @param role
      */
@@ -71,19 +73,16 @@ public class CycleLengthShift extends Potential {
 		return new ArrayList<TablePotential>();
 	}
 	
-	
     @Override
     public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength) {
         Variable conditionedVariable = variables.get(0);
         Variable conditioningVariable = variables.get(1);
-        ArrayList<Finding> inducedFindings = new ArrayList<Finding>();
+        List<Finding> inducedFindings = new ArrayList<Finding>();
         if (evidenceCase.contains(conditioningVariable)
                 && !evidenceCase.contains(conditionedVariable)) {
             double numericalValue = evidenceCase.getFinding(
-            // conditioningVariable).getNumericalValue() + 1;
                     conditioningVariable).getNumericalValue() + cycleLength;
             inducedFindings.add(new Finding(conditionedVariable, numericalValue));
-
         }
         return inducedFindings;
     }
@@ -103,6 +102,13 @@ public class CycleLengthShift extends Potential {
 	@Override
 	public boolean isUncertain() {
 		return false;
-	}	
+	}
+
+    @Override
+    public String toString() {
+        return super.toString() + " = CycleLengthShift";
+    }	
+	
+	
 
 }

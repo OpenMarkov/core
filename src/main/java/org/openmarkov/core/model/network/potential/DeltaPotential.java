@@ -126,5 +126,11 @@ public class DeltaPotential extends Potential{
 
     public int getStateIndex() {
         return stateIndex;
-    }    
+    }
+    
+    @Override
+    public String toString() {
+        return super.toString() + " = Delta (" + (state!=null? state.getName() : numericValue) + ")";
+    }   
+        
 }

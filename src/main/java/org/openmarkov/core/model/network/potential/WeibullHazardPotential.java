@@ -273,4 +273,9 @@ public class WeibullHazardPotential extends RegressionPotential {
     {
         return new String[]{GAMMA, CONSTANT};
     }    
+    
+    @Override
+    public String toString() {
+        return super.toString() + " = Hazard (Weibull)";
+    }       
 }

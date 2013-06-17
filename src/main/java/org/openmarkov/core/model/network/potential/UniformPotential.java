@@ -262,4 +262,9 @@ public class UniformPotential extends Potential
     {
         this.discreteValue = discreteValue;
     }
+    
+    @Override
+    public String toString() {
+        return super.toString() + " = Uniform";
+    }    
 }

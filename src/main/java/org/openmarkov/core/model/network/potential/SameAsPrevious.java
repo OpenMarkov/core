@@ -199,4 +199,9 @@ public class SameAsPrevious extends Potential
     {
         return getOriginalPotential ().isUncertain ();
     }
+    
+    @Override
+    public String toString() {
+        return super.toString() + " = SameAsPrevious";
+    }     
 }

@@ -17,6 +17,7 @@ import java.util.Stack;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.potential.Potential;
 
@@ -323,5 +324,56 @@ public class ProbNetOperations {
 		}
 		return ancestors;
 	}
+	
+    /**
+     * Uses the algorithm by Kahn (1962)
+     * @param probNet
+     * @param variablesToSort
+     */
+    public static List<Variable> sortTopologically (ProbNet probNet, List<Variable> variablesToSort)
+    {
+        Graph graph = probNet.getGraph().copy ();
+        List<Variable> sortedVariables = new ArrayList<Variable> (variablesToSort.size ());
+        // Empty list that will contain the sorted elements
+        Stack<Node> s = new Stack<Node> ();
+        // Set of all nodes with no incoming edges
+        ArrayList<Node> l = new ArrayList<Node> ();
+        // Look for variables/nodes with no parents
+        for(Node node: graph.getNodes ())
+        {
+            if(node.getParents ().size () == 0)
+            {
+                s.push (node);
+            }
+        }
+        // while S is non-empty do
+        while(!s.isEmpty ())
+        {
+            // remove a node n from S
+            Node n = s.pop ();
+            // insert n into L
+            l.add (n);
+            // for each node m with an edge e from n to m do
+            for(Node m: n.getChildren ())
+            {
+                //remove edge e from the graph
+                graph.removeLink (n, m, true);
+                //if m has no other incoming edges then insert m into S
+                if(m.getParents ().isEmpty ())
+                {
+                    s.push (m);
+                }
+            }
+        }
+        // fill sortedVariables list with filtering the l list with the list of variables to sort
+        for(Node node: l)
+        {
+            if(variablesToSort.contains (((ProbNode)node.getObject ()).getVariable ()))
+            {
+                sortedVariables.add (((ProbNode)node.getObject ()).getVariable ());
+            }
+        }        
+        return sortedVariables;
+    }	
 
 }

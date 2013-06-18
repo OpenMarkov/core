@@ -743,19 +743,25 @@ public class ProbNetOperationsTest {
         probNet.getProbNode(timeInStateVar_0).setPotential(timeInStatePotential_0);
         TreeADDPotential timeInStatePotential_1 = new TreeADDPotential(Arrays.asList(timeInStateVar_1,
                 timeInStateVar_0,
-                transitionVar_0), role);
+                transitionVar_0), transitionVar_0, role);
         Potential noTransitionPotentialBranch_1 = new CycleLengthShift(Arrays.asList(timeInStateVar_1, timeInStateVar_0));
         Potential transitionPotentialBranch_1 = new DeltaPotential(Arrays.asList(timeInStateVar_1), role, 0.0);
-        timeInStatePotential_1.addBranch(new TreeADDBranch(Arrays.asList(transitionVar_0.getStates()[0]), transitionVar_0, noTransitionPotentialBranch_1, new ArrayList<Variable>()));
-        timeInStatePotential_1.addBranch(new TreeADDBranch(Arrays.asList(transitionVar_0.getStates()[1]), transitionVar_0, transitionPotentialBranch_1, new ArrayList<Variable>()));
+		timeInStatePotential_1.setBranches(Arrays.asList(
+				new TreeADDBranch(Arrays.asList(transitionVar_0.getStates()[0]), transitionVar_0,
+						noTransitionPotentialBranch_1, new ArrayList<Variable>()),
+				new TreeADDBranch(Arrays.asList(transitionVar_0.getStates()[1]), transitionVar_0,
+						transitionPotentialBranch_1, new ArrayList<Variable>())));
         probNet.getProbNode(timeInStateVar_1).setPotential(timeInStatePotential_1);
         TreeADDPotential timeInStatePotential_2 = new TreeADDPotential(Arrays.asList(timeInStateVar_2,
                 timeInStateVar_1,
-                transitionVar_1), role);
+                transitionVar_1), transitionVar_1, role);
         Potential noTransitionPotentialBranch_2 = new CycleLengthShift(Arrays.asList(timeInStateVar_2, timeInStateVar_1));
         Potential transitionPotentialBranch_2 = new DeltaPotential(Arrays.asList(timeInStateVar_2), role, 0.0);
-        timeInStatePotential_2.addBranch(new TreeADDBranch(Arrays.asList(transitionVar_1.getStates()[0]), transitionVar_1, noTransitionPotentialBranch_2, new ArrayList<Variable>()));
-        timeInStatePotential_2.addBranch(new TreeADDBranch(Arrays.asList(transitionVar_1.getStates()[1]), transitionVar_1, transitionPotentialBranch_2, new ArrayList<Variable>()));
+		timeInStatePotential_2.setBranches(Arrays.asList(
+				new TreeADDBranch(Arrays.asList(transitionVar_1.getStates()[0]), transitionVar_1,
+						noTransitionPotentialBranch_2, new ArrayList<Variable>()),
+				new TreeADDBranch(Arrays.asList(transitionVar_1.getStates()[1]), transitionVar_1,
+						transitionPotentialBranch_2, new ArrayList<Variable>())));
         probNet.getProbNode(timeInStateVar_2).setPotential(timeInStatePotential_2);
 
         WeibullHazardPotential transitionPotential_0 = new WeibullHazardPotential(Arrays.asList(transitionVar_0, ageAtStateEntryVar_0, timeInStateVar_0), role);

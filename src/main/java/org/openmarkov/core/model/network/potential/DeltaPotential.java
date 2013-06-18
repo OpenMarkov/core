@@ -11,12 +11,15 @@ package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
@@ -131,6 +134,22 @@ public class DeltaPotential extends Potential{
     @Override
     public String toString() {
         return super.toString() + " = Delta (" + (state!=null? state.getName() : numericValue) + ")";
+    }
+
+    @Override
+    public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength)
+            throws IncompatibleEvidenceException, WrongCriterionException {
+        Finding inducedFinding = null;
+        if(state !=null)
+        {
+            inducedFinding = new Finding(getConditionedVariable(), state);
+        }else
+        {
+            inducedFinding = new Finding(getConditionedVariable(), numericValue);
+        }
+        return Arrays.asList(inducedFinding);
     }   
+    
+    
         
 }

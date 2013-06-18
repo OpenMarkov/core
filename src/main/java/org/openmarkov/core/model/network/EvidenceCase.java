@@ -309,6 +309,14 @@ public class EvidenceCase {
      */
     public void extendEvidence(ProbNet probNet, double cycleLength)
             throws IncompatibleEvidenceException, InvalidStateException, WrongCriterionException {
+        for(Potential potential: probNet.getPotentials())
+        {
+            List<Finding> newFindings = (List<Finding>) potential.getInducedFindings(this,
+                    cycleLength);
+            for (Finding newFinding : newFindings) {
+                findings.put(newFinding.getVariable(), newFinding);
+            }
+        }
         Queue<Finding> pendingFindings = new LinkedList<Finding>(findings.values());
         while (!pendingFindings.isEmpty()) {
             Finding oldFinding = pendingFindings.poll();
@@ -318,9 +326,12 @@ public class EvidenceCase {
                 List<Finding> newFindings = (List<Finding>) potential.getInducedFindings(this,
                         cycleLength);
                 for (Finding newFinding : newFindings) {
-                    findings.put(newFinding.getVariable(), newFinding);
+                    if(!findings.containsKey(newFinding.getVariable()))
+                    {
+                        findings.put(newFinding.getVariable(), newFinding);
+                        pendingFindings.add(newFinding);
+                    }
                 }
-                pendingFindings.addAll(newFindings);
             }
         }
     }

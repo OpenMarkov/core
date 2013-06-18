@@ -104,19 +104,18 @@ public class EvidenceCase {
      * @throws InvalidStateException
      * @throws IncompatibleEvidenceException
      */
-    public void addFinding(Finding finding)
-            throws InvalidStateException, IncompatibleEvidenceException {
-        if (isCompatible(finding)) {
-            findings.put(finding.getVariable(), finding);
-        } else {
-            throw new IncompatibleEvidenceException("Error trying to add "
-                    + "evidence: "
-                    + finding.toString()
-                    + " having previously "
-                    + "evidence: "
-                    + findings.get(finding.getVariable()));
-        }
-    }
+	public void addFinding(Finding finding) throws InvalidStateException,
+			IncompatibleEvidenceException {
+		if (isCompatible(finding)) {
+			if (!findings.containsKey(finding.getVariable())) {
+				findings.put(finding.getVariable(), finding);
+			}
+		} else {
+			throw new IncompatibleEvidenceException("Error trying to add " + "evidence: "
+					+ finding.toString() + " having previously " + "evidence: "
+					+ findings.get(finding.getVariable()));
+		}
+	}
 
     /**
      * @param finding
@@ -336,46 +335,34 @@ public class EvidenceCase {
         }
     }
 
-    /**
-     * Ensures that the <code>newFinding</code> is not inconsistent with the
-     * actual evidence.
-     * 
-     * @param newFinding
-     *            . <code>Finding</code>
-     * @return <code>boolean</code>
-     * @throws InvalidStateException
-     */
-    public boolean isCompatible(Finding newFinding)
-            throws InvalidStateException {
-        Variable variable = newFinding.getVariable();
-        Finding existingFinding = findings.get(variable);
-        if (existingFinding == null) {
-            return true;
-        } else {
-            VariableType variableType = variable.getVariableType();
-            switch (variableType) {
-            case FINITE_STATES:
-                if (newFinding.stateIndex != existingFinding.stateIndex) {
-                    return false;
-                }
-            case NUMERIC:
-                if (newFinding.numericalValue != existingFinding.numericalValue) {
-                    return false;
-                }
-            case DISCRETIZED:
-                if (newFinding.stateIndex != existingFinding.stateIndex) {
-                    return false;
-                }
-                // checks if the existing finding has a valid numerical value
-                if (variable.getStateIndex(existingFinding.getNumericalValue()) == existingFinding.stateIndex) {
-                    if (newFinding.numericalValue != existingFinding.numericalValue) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
+	/**
+	 * Ensures that the <code>newFinding</code> is not inconsistent with the
+	 * actual evidence.
+	 * 
+	 * @param newFinding
+	 *            . <code>Finding</code>
+	 * @return <code>boolean</code>
+	 * @throws InvalidStateException
+	 */
+	public boolean isCompatible(Finding newFinding) throws InvalidStateException {
+		Variable variable = newFinding.getVariable();
+		Finding existingFinding = findings.get(variable);
+		if (existingFinding == null) {
+			return true;
+		} else {
+			VariableType variableType = variable.getVariableType();
+			switch (variableType) {
+			case FINITE_STATES:
+				return newFinding.stateIndex == existingFinding.stateIndex;
+			case NUMERIC:
+				return newFinding.numericalValue == existingFinding.numericalValue;
+			case DISCRETIZED:
+				return (newFinding.stateIndex == existingFinding.stateIndex)
+						|| (newFinding.numericalValue == existingFinding.numericalValue);
+			}
+		}
+		return true;
+	}
 
     public EvidenceCase shiftEvidenceBackwards(int timeDifference, ProbNet probNet) {
         EvidenceCase shiftedEvidence = new EvidenceCase();

@@ -12,6 +12,7 @@ package org.openmarkov.core.model.network.potential;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,15 +44,15 @@ public class TablePotentialTest {
 	/** Two binary variables: fsVariable1 and fsVariable2. */
 	private TablePotential tablePotential5;
 
-	private ArrayList<Variable> fsVariables1;
+	private List<Variable> fsVariables1;
 	
-	private ArrayList<Variable> fsVariables2;
+	private List<Variable> fsVariables2;
 	
-	private ArrayList<Variable> fsVariables3;
+	private List<Variable> fsVariables3;
 	
-	private ArrayList<Variable> fsVariables4;
+	private List<Variable> fsVariables4;
 	
-	private ArrayList<Variable> fsVariables5;
+	private List<Variable> fsVariables5;
 
 	private Variable fsVariable1;
 
@@ -113,27 +114,12 @@ public class TablePotentialTest {
         fsVariableD = new Variable("VD", threeStates);
         fsVariableA = new Variable("VA", fourStates);
         fsVariableC = new Variable("VC", fiveStates);
-        fsVariables1 = new ArrayList<Variable>();
-        fsVariables2 = new ArrayList<Variable>();
-        fsVariables3 = new ArrayList<Variable>();
-        fsVariables4 = new ArrayList<Variable>();
-        fsVariables5 = new ArrayList<Variable>();
-        fsVariables1.add(fsVariable2); // B (2 states)
-        fsVariables1.add(fsVariable4); // D (2 states)
-        fsVariables1.add(fsVariable1); // A (2 states)
-        fsVariables1.add(fsVariable3); // C (2 states)
-        fsVariables2.add(fsVariable1); // A (2 states)
-        fsVariables2.add(fsVariable2); // B (2 states)
-        fsVariables2.add(fsVariable3); // C (2 states)
-        fsVariables3.add(fsVariableB); // B (2 states) 
-        fsVariables3.add(fsVariableD); // D (3 states) 
-        fsVariables3.add(fsVariableA); // A (4 states) 
-        fsVariables3.add(fsVariableC); // C (5 states) 
-        fsVariables4.add(fsVariableA); // A (4 states) 
-        fsVariables4.add(fsVariableB); // B (s states) 
-        fsVariables4.add(fsVariableC); // C (5 states)
-        fsVariables5.add(fsVariable1); // 1 (2 states)
-        fsVariables5.add(fsVariable2); // 2 (2 states)
+        fsVariables1 = Arrays.asList(fsVariable2, fsVariable4, fsVariable1, fsVariable3);
+        fsVariables2 = Arrays.asList(fsVariable1, fsVariable2, fsVariable3);
+        fsVariables3 = Arrays.asList(fsVariableB, fsVariableD, fsVariableA, fsVariableC);
+        fsVariables4 = Arrays.asList(fsVariableA, fsVariableB, fsVariableC);
+        fsVariables5 = Arrays.asList(fsVariable1, fsVariable2);
+        
         try {
             tablePotential1 = new TablePotential(
             		fsVariables1, PotentialRole.CONDITIONAL_PROBABILITY);

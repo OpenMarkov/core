@@ -80,7 +80,7 @@ public class LinearRegressionPotential extends RegressionPotential {
         TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, role);
         int[] offsets = projectedPotential.getOffsets();
         int[] dimensions = projectedPotential.getDimensions();
-        for (int i = 0; i < projectedPotential.values.length; i += 2) {
+        for (int i = 0; i < projectedPotential.values.length; i += numStates) {
             // Set the values of variables without evidence
             for (int j = 1; j < projectedPotentialVariables.size(); ++j) {
                 int index = (i / offsets[j]) % dimensions[j];
@@ -108,11 +108,17 @@ public class LinearRegressionPotential extends RegressionPotential {
                 }
             }
             try {
-                regression = Math.round(regression*10000)/(double)10000;
-                int stateIndex = getConditionedVariable().getStateIndex(String.valueOf(regression));
-                for (int j = 0; j < numStates; ++j) {
-                    projectedPotential.values[i + j] = (j == stateIndex) ? 1 : 0;
-                }
+            	if(getConditionedVariable().getVariableType() == VariableType.NUMERIC)
+            	{
+            		projectedPotential.values[i] = regression;
+            	}else
+            	{
+	                regression = Math.round(regression*10000)/(double)10000;
+	                int stateIndex = getConditionedVariable().getStateIndex(String.valueOf(regression));
+	                for (int j = 0; j < numStates; ++j) {
+	                    projectedPotential.values[i + j] = (j == stateIndex) ? 1 : 0;
+	                }
+            	}
             } catch (InvalidStateException e) {
                 e.printStackTrace();
             }

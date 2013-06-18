@@ -914,19 +914,6 @@ public class ProbNet implements Cloneable {
     }
 
     /**
-     * @param variable
-     *            <code>Variable</code>
-     * @param nodeType
-     *            <code>NodeType</code>
-     * @argCondition the variable must not be in the ProbNet.
-     */
-    public ProbNode addProbNode(Variable variable, NodeType nodeType) {
-        ProbNode newNode = new ProbNode(this, variable, nodeType);
-        addProbNode(newNode);
-        return newNode;
-    }
-
-    /**
      * @param nameOfVariable
      *            <code>String</code>
      * @return The <code>ProbNode</code> that matches the

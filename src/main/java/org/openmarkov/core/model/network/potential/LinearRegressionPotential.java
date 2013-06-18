@@ -84,8 +84,15 @@ public class LinearRegressionPotential extends RegressionPotential {
             // Set the values of variables without evidence
             for (int j = 1; j < projectedPotentialVariables.size(); ++j) {
                 int index = (i / offsets[j]) % dimensions[j];
-                variableValues.put(projectedPotentialVariables.get(j).getName(),
-                        String.valueOf(index));
+                double value = index;
+                try
+                {
+                    value = Double.parseDouble(projectedPotentialVariables.get(j).getStates()[index].getName());
+                } catch(NumberFormatException e)
+                {
+                    // ignore
+                }
+                variableValues.put(projectedPotentialVariables.get(j).getName(),String.valueOf(value));
             }
             evaluator.setVariables(variableValues);
             double regression = coefficients[constantIndex];
@@ -101,6 +108,7 @@ public class LinearRegressionPotential extends RegressionPotential {
                 }
             }
             try {
+                regression = Math.round(regression*10000)/(double)10000;
                 int stateIndex = getConditionedVariable().getStateIndex(String.valueOf(regression));
                 for (int j = 0; j < numStates; ++j) {
                     projectedPotential.values[i + j] = (j == stateIndex) ? 1 : 0;

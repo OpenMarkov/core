@@ -31,7 +31,8 @@ public enum PotentialType {
 	TUNING(15,"Tuning"),
 	WEIBULL(16, "Hazard (Weibull)"),
     EXPONENTIAL(17, "Hazard (Exponential)"),
-	DELTA(18, "Delta");
+    LINEAR_REGRESSION(18, "Linear regression"),
+	DELTA(19, "Delta");
 	// Add here more potential types (when available)
 	
 private int type;

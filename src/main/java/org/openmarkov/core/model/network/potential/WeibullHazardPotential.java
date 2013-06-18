@@ -26,7 +26,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
-@RelationPotentialType(name = "Hazard (Weibull)", family = "Hazard")
+@RelationPotentialType(name = "Hazard (Weibull)", family = "Regression")
 public class WeibullHazardPotential extends RegressionPotential {
 
     protected static final String GAMMA = "Gamma";
@@ -35,8 +35,8 @@ public class WeibullHazardPotential extends RegressionPotential {
      * the array the gamma (ln shape) parameter is stored and in the second
      * position of the array the constant coefficient is stored
      */
-    private int gammaIndex = 0;
-    private int constantIndex = 1;
+    protected int gammaIndex = 0;
+    protected int constantIndex = 1;
     
     /**
      * Time variable
@@ -72,23 +72,6 @@ public class WeibullHazardPotential extends RegressionPotential {
         this(variables, role, getDefaultCovariates(variables), new double[variables.size()+1]);
     }
     
-    private static String[] getDefaultCovariates(List<Variable> variables) {
-        String[] mandatoryCovariates = getMandatoryCovariates();
-        String[] covariates = new String[mandatoryCovariates.length + variables.size()-1];
-        
-        int j = 0;
-        while(j< mandatoryCovariates.length)
-        {
-            covariates[j] = mandatoryCovariates[j];
-            ++j;
-        }
-        for(int i = 1; i< variables.size(); ++i)
-        {
-            covariates[j++] = variables.get(i).getName();
-        }
-        return covariates;
-    }
-
     /**
      * Returns if an instance of a certain Potential type makes sense given the
      * variables and the potential role.

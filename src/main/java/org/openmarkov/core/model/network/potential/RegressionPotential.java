@@ -18,6 +18,8 @@ public abstract class RegressionPotential extends Potential {
     
     protected static final String CONSTANT = "Constant";
 
+    protected int constantIndex = 0;
+    
     /**
      * Covariates
      */
@@ -221,4 +223,21 @@ public abstract class RegressionPotential extends Potential {
     {
         return new String[]{CONSTANT};
     }
+    
+    protected static String[] getDefaultCovariates(List<Variable> variables) {
+        String[] mandatoryCovariates = getMandatoryCovariates();
+        String[] covariates = new String[mandatoryCovariates.length + variables.size()-1];
+        
+        int j = 0;
+        while(j< mandatoryCovariates.length)
+        {
+            covariates[j] = mandatoryCovariates[j];
+            ++j;
+        }
+        for(int i = 1; i< variables.size(); ++i)
+        {
+            covariates[j++] = variables.get(i).getName();
+        }
+        return covariates;
+    }    
 }

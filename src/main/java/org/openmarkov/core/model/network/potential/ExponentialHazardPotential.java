@@ -13,7 +13,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
-@RelationPotentialType(name = "Hazard (Exponential)", family = "Hazard")
+@RelationPotentialType(name = "Hazard (Exponential)", family = "Regression")
 public class ExponentialHazardPotential extends WeibullHazardPotential {
 
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role) {
@@ -45,16 +45,6 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
         super(variables, role, getDefaultCovariates(variables), coefficients, uncertaintyMatrix, matrixType);
     }    
     
-    private static String[] getDefaultCovariates(List<Variable> variables) {
-        String[] covariates = new String[variables.size()];
-        covariates[0] = "Constant";
-        for(int i=1; i<variables.size(); ++i)
-        {
-            covariates[i] = variables.get(i).getName();
-        }
-        return covariates;
-    }        
-
     /**
      * Returns if an instance of a certain Potential type makes sense given the
      * variables and the potential role.

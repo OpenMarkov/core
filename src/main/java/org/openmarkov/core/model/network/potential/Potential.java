@@ -42,7 +42,7 @@ public abstract class Potential
     protected final int            maxLengthString = 150;
     // Attributes
     /**
-     * <code>ArrayList</code> of <code>extends Variable</code>.
+     * <code>List</code> of <code>Variable</code>s.
      * @frozen
      */
     protected List<Variable>       variables;
@@ -88,7 +88,7 @@ public abstract class Potential
     }
 
     /**
-     * @param variables <code>ArrayList</code> of <code>Variable</code>.
+     * @param variables <code>List</code> of <code>Variable</code>s.
      * @param role. <code>PotentialRole</code>
      * @param utility. <code>Variable</code>
      */

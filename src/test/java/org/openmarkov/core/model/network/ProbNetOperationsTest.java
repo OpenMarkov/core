@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,9 +25,17 @@ import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.inference.InferenceAlgorithmTests;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
+import org.openmarkov.core.model.network.potential.CycleLengthShift;
+import org.openmarkov.core.model.network.potential.DeltaPotential;
+import org.openmarkov.core.model.network.potential.LinearRegressionPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.WeibullHazardPotential;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.core.model.network.type.MPADType;
 import org.openmarkov.core.util.UtilTestMethods;
 
 /** @author marias */
@@ -641,5 +650,129 @@ public class ProbNetOperationsTest {
 	}
 	}
 	
+	@Test
+    public final void testConvertNumericalVariablesToFS() throws Exception {
+	    
+	    // Initialize network
+	    ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
+	    
+	    // Declare variables
+	    Variable ageAtStateEntryVar_0 = new Variable("Age at state entry", true, 0.0, Double.POSITIVE_INFINITY, false, 0.01);
+        Variable ageAtStateEntryVar_1 = new Variable("Age at state entry", true, 0.0, Double.POSITIVE_INFINITY, false, 0.01);
+        Variable ageAtStateEntryVar_2 = new Variable("Age at state entry", true, 0.0, Double.POSITIVE_INFINITY, false, 0.01);
+	    Variable timeInStateVar_0 = new Variable("Time in state", true, 0.0, Double.POSITIVE_INFINITY, false, 0.01);
+        Variable timeInStateVar_1 = new Variable("Time in state", true, 0.0, Double.POSITIVE_INFINITY, false, 0.01);
+        Variable timeInStateVar_2 = new Variable("Time in state", true, 0.0, Double.POSITIVE_INFINITY, false, 0.01);
+        Variable ageVar_0 = new Variable("Age", true, 0.0, Double.POSITIVE_INFINITY, false, 0.01);
+        Variable ageVar_1 = new Variable("Age", true, 0.0, Double.POSITIVE_INFINITY, false, 0.01);
+        Variable ageVar_2 = new Variable("Age", true, 0.0, Double.POSITIVE_INFINITY, false, 0.01);
+        Variable transitionVar_0 = new Variable("Transition", "no", "yes");
+        Variable transitionVar_1 = new Variable("Transition", "no", "yes");
+        Variable transitionVar_2 = new Variable("Transition", "no", "yes");
+
+        // Set time slices
+        ageAtStateEntryVar_0.setTimeSlice(0);
+        ageAtStateEntryVar_1.setTimeSlice(1);
+        ageAtStateEntryVar_2.setTimeSlice(2);
+        ageVar_0.setTimeSlice(0);
+        ageVar_1.setTimeSlice(1);
+        ageVar_2.setTimeSlice(2);
+        timeInStateVar_0.setTimeSlice(0);
+        timeInStateVar_1.setTimeSlice(1);
+        timeInStateVar_2.setTimeSlice(2);
+        transitionVar_0.setTimeSlice(0);
+        transitionVar_1.setTimeSlice(1);
+        transitionVar_2.setTimeSlice(2);
+
+        // Nodes
+        probNet.addVariable(ageAtStateEntryVar_0, NodeType.CHANCE);
+        probNet.addVariable(ageAtStateEntryVar_1, NodeType.CHANCE);
+        probNet.addVariable(ageAtStateEntryVar_2, NodeType.CHANCE);
+        probNet.addVariable(ageVar_0, NodeType.CHANCE);
+        probNet.addVariable(ageVar_1, NodeType.CHANCE);
+        probNet.addVariable(ageVar_2, NodeType.CHANCE);
+        probNet.addVariable(timeInStateVar_0, NodeType.CHANCE);
+        probNet.addVariable(timeInStateVar_1, NodeType.CHANCE);
+        probNet.addVariable(timeInStateVar_2, NodeType.CHANCE);
+        probNet.addVariable(transitionVar_0, NodeType.CHANCE);
+        probNet.addVariable(transitionVar_1, NodeType.CHANCE);
+        probNet.addVariable(transitionVar_2, NodeType.CHANCE);
+
+        // Links
+        probNet.addLink(ageVar_0, ageVar_1, true);
+        probNet.addLink(ageVar_1, ageVar_2, true);
+        probNet.addLink(ageVar_0, ageAtStateEntryVar_0, true);
+        probNet.addLink(ageVar_1, ageAtStateEntryVar_1, true);
+        probNet.addLink(ageVar_2, ageAtStateEntryVar_2, true);
+        probNet.addLink(timeInStateVar_0, timeInStateVar_1, true);
+        probNet.addLink(timeInStateVar_1, timeInStateVar_2, true);
+        probNet.addLink(timeInStateVar_0, ageAtStateEntryVar_0, true);
+        probNet.addLink(timeInStateVar_1, ageAtStateEntryVar_1, true);
+        probNet.addLink(timeInStateVar_2, ageAtStateEntryVar_2, true);
+        probNet.addLink(timeInStateVar_0, transitionVar_0, true);
+        probNet.addLink(timeInStateVar_1, transitionVar_1, true);
+        probNet.addLink(timeInStateVar_2, transitionVar_2, true);
+        probNet.addLink(ageAtStateEntryVar_0, transitionVar_0, true);
+        probNet.addLink(ageAtStateEntryVar_1, transitionVar_1, true);
+        probNet.addLink(ageAtStateEntryVar_2, transitionVar_2, true);
+        probNet.addLink(transitionVar_0, timeInStateVar_1, true);
+        probNet.addLink(transitionVar_1, timeInStateVar_2, true);
+        
+        // Potentials
+        PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
+        Potential agePotential_0 = new DeltaPotential(Arrays.asList(ageVar_0), role);
+        probNet.getProbNode(ageVar_0).setPotential(agePotential_0);
+        probNet.getProbNode(ageVar_1).setPotential(new CycleLengthShift(Arrays.asList(ageVar_1, ageVar_0)));
+        probNet.getProbNode(ageVar_2).setPotential(new CycleLengthShift(Arrays.asList(ageVar_2, ageVar_1)));
+        Potential ageAtStateEntryPotential_0 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_0,
+                ageVar_0,
+                timeInStateVar_0),
+                role);
+        probNet.getProbNode(ageAtStateEntryVar_0).setPotential(ageAtStateEntryPotential_0);
+        Potential ageAtStateEntryPotential_1 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_1,
+                ageVar_1,
+                timeInStateVar_1),
+                role);
+        probNet.getProbNode(ageAtStateEntryVar_1).setPotential(ageAtStateEntryPotential_1);
+        Potential ageAtStateEntryPotential_2 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_2,
+                ageVar_2,
+                timeInStateVar_2),
+                role);
+        probNet.getProbNode(ageAtStateEntryVar_2).setPotential(ageAtStateEntryPotential_2);
+        Potential timeInStatePotential_0 = new DeltaPotential(Arrays.asList(timeInStateVar_0), role);
+        probNet.getProbNode(timeInStateVar_0).setPotential(timeInStatePotential_0);
+        TreeADDPotential timeInStatePotential_1 = new TreeADDPotential(Arrays.asList(timeInStateVar_1,
+                timeInStateVar_0,
+                transitionVar_0), role);
+        Potential noTransitionPotentialBranch_1 = new CycleLengthShift(Arrays.asList(timeInStateVar_1, timeInStateVar_0));
+        Potential transitionPotentialBranch_1 = new DeltaPotential(Arrays.asList(timeInStateVar_1), role, 0.0);
+        timeInStatePotential_1.addBranch(new TreeADDBranch(Arrays.asList(transitionVar_0.getStates()[0]), transitionVar_0, noTransitionPotentialBranch_1, new ArrayList<Variable>()));
+        timeInStatePotential_1.addBranch(new TreeADDBranch(Arrays.asList(transitionVar_0.getStates()[1]), transitionVar_0, transitionPotentialBranch_1, new ArrayList<Variable>()));
+        probNet.getProbNode(timeInStateVar_1).setPotential(timeInStatePotential_1);
+        TreeADDPotential timeInStatePotential_2 = new TreeADDPotential(Arrays.asList(timeInStateVar_2,
+                timeInStateVar_1,
+                transitionVar_1), role);
+        Potential noTransitionPotentialBranch_2 = new CycleLengthShift(Arrays.asList(timeInStateVar_2, timeInStateVar_1));
+        Potential transitionPotentialBranch_2 = new DeltaPotential(Arrays.asList(timeInStateVar_2), role, 0.0);
+        timeInStatePotential_2.addBranch(new TreeADDBranch(Arrays.asList(transitionVar_1.getStates()[0]), transitionVar_1, noTransitionPotentialBranch_2, new ArrayList<Variable>()));
+        timeInStatePotential_2.addBranch(new TreeADDBranch(Arrays.asList(transitionVar_1.getStates()[1]), transitionVar_1, transitionPotentialBranch_2, new ArrayList<Variable>()));
+        probNet.getProbNode(timeInStateVar_2).setPotential(timeInStatePotential_2);
+
+        WeibullHazardPotential transitionPotential_0 = new WeibullHazardPotential(Arrays.asList(transitionVar_0, ageAtStateEntryVar_0, timeInStateVar_0), role);
+        transitionPotential_0.setTimeVariable(timeInStateVar_0);
+        transitionPotential_0.setCovariates(new String[]{"Gamma", "Constant", "Age at state entry [0]"});
+        transitionPotential_0.setCoefficients(new double[]{0.3757164, -1.166541, 0.002097});
+        probNet.getProbNode(transitionVar_0).setPotential(transitionPotential_0);
+
+        WeibullHazardPotential transitionPotential_1 = new WeibullHazardPotential(Arrays.asList(transitionVar_1, ageAtStateEntryVar_1, timeInStateVar_1), role);
+        transitionPotential_1.setTimeVariable(timeInStateVar_0);
+        transitionPotential_1.setCovariates(new String[]{"Gamma", "Constant", "Age at state entry [1]"});
+        transitionPotential_1.setCoefficients(new double[]{0.3757164, -1.166541, 0.002097});
+        probNet.getProbNode(transitionVar_1).setPotential(transitionPotential_1);
+        
+        probNet.getProbNode(transitionVar_2).setPotential(new UniformPotential(Arrays.asList(transitionVar_2), role));
+        
+        ProbNetOperations.convertNumericalVariablesToFS(probNet, new EvidenceCase());
+	}
 
 }

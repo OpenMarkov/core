@@ -217,8 +217,7 @@ public class UniformPotential extends Potential
     public Potential shift (ProbNet probNet, int timeSlice)
         throws ProbNodeNotFoundException
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new UniformPotential(getShiftedVariables(probNet, timeSlice), role);
     }
 
     @Override

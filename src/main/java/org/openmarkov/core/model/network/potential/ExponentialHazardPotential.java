@@ -109,6 +109,6 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
 
     @Override
     public String toString() {
-        return super.toString() + " = Hazard (Exponential)";
+        return super.toShortString() + " = Hazard (Exponential)";
     }      
 }

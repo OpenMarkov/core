@@ -1,3 +1,11 @@
+/*
+* Copyright 2013 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
 package org.openmarkov.core.model.network.potential;
 
 import java.util.List;
@@ -22,7 +30,7 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
     
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
             double[] coefficients) {
-        this(variables, role, getDefaultCovariates(variables), null, null);
+        this(variables, role, getDefaultCovariates(variables, role), null, null);
     }    
     
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
@@ -32,7 +40,7 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
     
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
             double[] coefficients, double[] covarianceMatrix) {
-        super(variables, role, getDefaultCovariates(variables), coefficients, covarianceMatrix);
+        super(variables, role, getDefaultCovariates(variables, role), coefficients, covarianceMatrix);
     }
     
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
@@ -42,7 +50,7 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
     
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
             double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
-        super(variables, role, getDefaultCovariates(variables), coefficients, uncertaintyMatrix, matrixType);
+        super(variables, role, getDefaultCovariates(variables, role), coefficients, uncertaintyMatrix, matrixType);
     }    
     
     /**

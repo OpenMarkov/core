@@ -1,3 +1,11 @@
+/*
+* Copyright 2013 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
 package org.openmarkov.core.model.network.potential;
 
 import java.util.List;
@@ -49,6 +57,9 @@ public abstract class RegressionPotential extends Potential {
 
     public RegressionPotential(List<Variable> variables, PotentialRole role) {
         super(variables, role);
+        this.sampledCoefficients = null;
+        setCovariates(getDefaultCovariates(variables, role));
+        setCoefficients(new double[covariates.length]);
     }
 
     public RegressionPotential(List<Variable> variables, PotentialRole role, String[] covariates,
@@ -223,14 +234,15 @@ public abstract class RegressionPotential extends Potential {
     {
         return new String[]{CONSTANT};
     }
-    
-    protected static String[] getDefaultCovariates(List<Variable> variables)
+
+    protected static String[] getDefaultCovariates(List<Variable> variables, PotentialRole role)
     {
-        return getDefaultCovariates(variables, getMandatoryCovariates());
+        return getDefaultCovariates(variables, role, getMandatoryCovariates());
     }
     
-    protected static String[] getDefaultCovariates(List<Variable> variables, String[] mandatoryCovariates) {
-        String[] covariates = new String[mandatoryCovariates.length + variables.size()-1];
+    protected static String[] getDefaultCovariates(List<Variable> variables, PotentialRole role, String[] mandatoryCovariates) {
+        int firstParentIndex = (role == PotentialRole.UTILITY)? 0 : 1;
+        String[] covariates = new String[mandatoryCovariates.length + variables.size()-firstParentIndex];
         
         int j = 0;
         while(j< mandatoryCovariates.length)
@@ -238,7 +250,7 @@ public abstract class RegressionPotential extends Potential {
             covariates[j] = mandatoryCovariates[j];
             ++j;
         }
-        for(int i = 1; i< variables.size(); ++i)
+        for(int i = firstParentIndex; i< variables.size(); ++i)
         {
             covariates[j++] = variables.get(i).getName();
         }

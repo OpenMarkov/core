@@ -55,7 +55,7 @@ public class WeibullHazardPotential extends RegressionPotential {
     
     public WeibullHazardPotential(List<Variable> variables, PotentialRole role,
             double[] coefficients, double[] covarianceMatrix) {
-        super(variables, role, getDefaultCovariates(variables, getMandatoryCovariates()), coefficients, covarianceMatrix);
+        super(variables, role, getDefaultCovariates(variables, role, getMandatoryCovariates()), coefficients, covarianceMatrix);
     }    
     
     public WeibullHazardPotential(List<Variable> variables, PotentialRole role,
@@ -65,11 +65,11 @@ public class WeibullHazardPotential extends RegressionPotential {
     
     public WeibullHazardPotential(List<Variable> variables, PotentialRole role,
             double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
-        super(variables, role, getDefaultCovariates(variables, getMandatoryCovariates()), coefficients, uncertaintyMatrix, matrixType);
+        super(variables, role, getDefaultCovariates(variables, role, getMandatoryCovariates()), coefficients, uncertaintyMatrix, matrixType);
     }
 
     public WeibullHazardPotential(List<Variable> variables, PotentialRole role) {
-        this(variables, role, getDefaultCovariates(variables, getMandatoryCovariates()), new double[variables.size()+1]);
+        this(variables, role, getDefaultCovariates(variables, role, getMandatoryCovariates()), new double[variables.size()+1]);
     }
     
     /**

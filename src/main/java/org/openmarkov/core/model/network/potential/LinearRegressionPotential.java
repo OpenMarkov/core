@@ -1,3 +1,11 @@
+/*
+* Copyright 2013 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
 package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
@@ -23,7 +31,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 public class LinearRegressionPotential extends RegressionPotential {
 
     public LinearRegressionPotential(List<Variable> variables, PotentialRole role) {
-        super(variables, role, getDefaultCovariates(variables), new double[variables.size()]);
+        super(variables, role, getDefaultCovariates(variables, role), new double[variables.size()]);
     }
 
     public LinearRegressionPotential(List<Variable> variables, PotentialRole role,

@@ -29,10 +29,11 @@ public enum PotentialType {
 	PROBABILITY_DENSITY(13, "ProbabilityDensity"),
 	STAT_FUNCTION(14, "StatFunction"),
 	TUNING(15,"Tuning"),
-	WEIBULL(16, "Hazard (Weibull)"),
-    EXPONENTIAL(17, "Hazard (Exponential)"),
+	WEIBULL_HAZARD(16, "Hazard (Weibull)"),
+    EXPONENTIAL_HAZARD(17, "Hazard (Exponential)"),
     LINEAR_REGRESSION(18, "Linear regression"),
-	DELTA(19, "Delta");
+	DELTA(19, "Delta"),
+	EXPONENTIAL(20, "Exponential");
 	// Add here more potential types (when available)
 	
 private int type;

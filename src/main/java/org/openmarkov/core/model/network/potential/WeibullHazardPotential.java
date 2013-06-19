@@ -79,7 +79,7 @@ public class WeibullHazardPotential extends RegressionPotential {
      * @param probNode
      *            . <code>ProbNode</code>
      * @param variables
-     *            . <code>ArrayList</code> of <code>Variable</code>.
+     *            . <code>List</code> of <code>Variable</code>.
      * @param role
      *            . <code>PotentialRole</code>.
      */
@@ -187,20 +187,6 @@ public class WeibullHazardPotential extends RegressionPotential {
     }
 
     @Override
-    public Potential shift(ProbNet probNet, int timeDifference)
-            throws ProbNodeNotFoundException {
-        List<Variable> shiftedVariables = getShiftedVariables(probNet, timeDifference);
-        WeibullHazardPotential copyPotential = new WeibullHazardPotential(shiftedVariables,
-                role,
-                shiftCovariates(covariates, variables, shiftedVariables),
-                coefficients.clone(),
-                (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix);
-        copyPotential.sampledCoefficients = sampledCoefficients;
-        copyPotential.timeVariable = timeVariable;
-        return copyPotential;
-    }
-
-    @Override
     public void setCovariates(String[] covariates) {
         super.setCovariates(covariates);
         for(int i=0; i < covariates.length; ++i)
@@ -216,12 +202,37 @@ public class WeibullHazardPotential extends RegressionPotential {
     }
 
     @Override
+    public Potential shift(ProbNet probNet, int timeDifference)
+            throws ProbNodeNotFoundException {
+        List<Variable> shiftedVariables = getShiftedVariables(probNet, timeDifference);
+        WeibullHazardPotential copyPotential = new WeibullHazardPotential(shiftedVariables,
+                role);
+        copyPotential.setCovariates(shiftCovariates(covariates, variables, shiftedVariables));
+        copyPotential.setCoefficients(coefficients.clone());
+        if(covarianceMatrix != null)
+        {
+            copyPotential.setCovarianceMatrix(covarianceMatrix.clone());
+        }else if(choleskyDecomposition != null)
+        {
+            copyPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
+        }
+        copyPotential.sampledCoefficients = sampledCoefficients;
+        copyPotential.timeVariable = timeVariable;
+        return copyPotential;
+    }
+    
+    @Override
     public Potential copy() {
-        WeibullHazardPotential copyPotential = new WeibullHazardPotential(variables,
-                role,
-                covariates.clone(),
-                coefficients.clone(),
-                (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix);
+        WeibullHazardPotential copyPotential = new WeibullHazardPotential(variables, role);
+        copyPotential.setCovariates(covariates.clone());
+        copyPotential.setCoefficients(coefficients.clone());
+        if(covarianceMatrix != null)
+        {
+            copyPotential.setCovarianceMatrix(covarianceMatrix.clone());
+        }else if(choleskyDecomposition != null)
+        {
+            copyPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
+        }
         copyPotential.sampledCoefficients = sampledCoefficients;
         copyPotential.timeVariable = timeVariable;
         return copyPotential;
@@ -233,23 +244,6 @@ public class WeibullHazardPotential extends RegressionPotential {
 
     public void setTimeVariable(Variable timeVariable) {
         this.timeVariable = timeVariable;
-    }
-    
-    private String[] shiftCovariates(String[] covariates,
-            List<Variable> variables,
-            List<Variable> shiftedVariables) {
-        String[] shiftedCovariates = new String[covariates.length];
-        for(int i=0; i<covariates.length; ++i)
-        {
-            String shiftedCovariate = covariates[i];
-            for(int j=0; j< variables.size(); ++j)
-            {
-                shiftedCovariate = shiftedCovariate.replace(variables.get(j).getName(),
-                        shiftedVariables.get(j).getName());
-            }
-            shiftedCovariates [i] = shiftedCovariate;
-        }
-        return shiftedCovariates;
     }
     
     public static String[] getMandatoryCovariates()

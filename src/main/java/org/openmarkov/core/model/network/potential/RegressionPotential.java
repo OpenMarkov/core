@@ -217,6 +217,23 @@ public abstract class RegressionPotential extends Potential {
         return cholesky;
     }
 
+    protected String[] shiftCovariates(String[] covariates,
+            List<Variable> variables,
+            List<Variable> shiftedVariables) {
+        String[] shiftedCovariates = new String[covariates.length];
+        for(int i=0; i<covariates.length; ++i)
+        {
+            String shiftedCovariate = covariates[i];
+            for(int j=0; j< variables.size(); ++j)
+            {
+                shiftedCovariate = shiftedCovariate.replace(variables.get(j).getName(),
+                        shiftedVariables.get(j).getName());
+            }
+            shiftedCovariates [i] = shiftedCovariate;
+        }
+        return shiftedCovariates;
+    }
+    
     private String[] processCovariates(List<Variable> variables, String[] covariates) {
         String[] processedCovariates = new String[covariates.length];
 

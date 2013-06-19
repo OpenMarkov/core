@@ -87,22 +87,32 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
     @Override
     public Potential shift(ProbNet probNet, int timeDifference)
             throws ProbNodeNotFoundException {
-        ExponentialHazardPotential copyPotential = new ExponentialHazardPotential(getShiftedVariables(probNet, timeDifference),
-                role,
-                covariates.clone(),
-                coefficients.clone(),
-                (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix);
-        copyPotential.sampledCoefficients = sampledCoefficients;
-        return copyPotential;
+        List<Variable> shiftedVariables = getShiftedVariables(probNet, timeDifference);
+        ExponentialHazardPotential shiftedPotential = new ExponentialHazardPotential(shiftedVariables, role);
+        shiftedPotential.setCovariates(shiftCovariates(covariates, variables, shiftedVariables));
+        shiftedPotential.setCoefficients(coefficients.clone());
+        if (covarianceMatrix != null) {
+            shiftedPotential.setCovarianceMatrix(covarianceMatrix.clone());
+        } else if (choleskyDecomposition != null) {
+            shiftedPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
+        }
+        shiftedPotential.sampledCoefficients = sampledCoefficients;
+        return shiftedPotential;
     }
 
     @Override
     public Potential copy() {
         ExponentialHazardPotential copyPotential = new ExponentialHazardPotential(variables,
-                role,
-                covariates.clone(),
-                coefficients.clone(),
-                (covarianceMatrix != null) ? covarianceMatrix.clone() : covarianceMatrix);
+                role);
+        copyPotential.setCovariates(covariates.clone());
+        copyPotential.setCoefficients(coefficients.clone());
+        if(covarianceMatrix != null)
+        {
+            copyPotential.setCovarianceMatrix(covarianceMatrix.clone());
+        }else if(choleskyDecomposition != null)
+        {
+            copyPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
+        }
         copyPotential.sampledCoefficients = sampledCoefficients;
         return copyPotential;
     }

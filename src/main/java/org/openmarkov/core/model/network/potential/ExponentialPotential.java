@@ -18,9 +18,11 @@ import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -116,12 +118,36 @@ public class ExponentialPotential extends RegressionPotential {
         return Arrays.asList(projectedPotential);
     }
 
+    
+    @Override
+    public Potential shift(ProbNet probNet, int timeDifference)
+            throws ProbNodeNotFoundException {
+        List<Variable> shiftedVariables = getShiftedVariables(probNet, timeDifference);
+        ExponentialPotential shiftedPotential = new ExponentialPotential(shiftedVariables, role);
+        shiftedPotential.setCovariates(shiftCovariates(covariates, variables, shiftedVariables));
+        shiftedPotential.setCoefficients(coefficients.clone());
+        if (covarianceMatrix != null) {
+            shiftedPotential.setCovarianceMatrix(covarianceMatrix.clone());
+        } else if (choleskyDecomposition != null) {
+            shiftedPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
+        }
+        shiftedPotential.sampledCoefficients = sampledCoefficients;
+        return shiftedPotential;
+    }
+
     @Override
     public Potential copy() {
-        ExponentialPotential copyPotential = new ExponentialPotential(variables,
-                role,
-                covariates,
-                coefficients);
+        ExponentialPotential copyPotential = new ExponentialPotential(variables, role);
+        copyPotential.setCovariates(covariates.clone());
+        copyPotential.setCoefficients(coefficients.clone());
+        if(covarianceMatrix != null)
+        {
+            copyPotential.setCovarianceMatrix(covarianceMatrix.clone());
+        }else if(choleskyDecomposition != null)
+        {
+            copyPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
+        }
+        copyPotential.sampledCoefficients = sampledCoefficients;        
         return copyPotential;
     }
     

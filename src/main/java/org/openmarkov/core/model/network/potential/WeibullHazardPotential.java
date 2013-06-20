@@ -20,7 +20,6 @@ import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -204,32 +203,6 @@ public class WeibullHazardPotential extends RegressionPotential {
                 constantIndex = i;
             }
         }
-    }
-
-    @Override
-    public Potential shift(ProbNet probNet, int timeDifference)
-            throws ProbNodeNotFoundException {
-        List<Variable> shiftedVariables = getShiftedVariables(probNet, timeDifference);
-        WeibullHazardPotential shiftedPotential = new WeibullHazardPotential(shiftedVariables,
-                role);
-        shiftedPotential.setCovariates(shiftCovariates(covariates, variables, shiftedVariables));
-        shiftedPotential.setCoefficients(coefficients.clone());
-        if(covarianceMatrix != null)
-        {
-            shiftedPotential.setCovarianceMatrix(covarianceMatrix.clone());
-        }else if(choleskyDecomposition != null)
-        {
-            shiftedPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
-        }
-        shiftedPotential.sampledCoefficients = sampledCoefficients;
-        shiftedPotential.timeVariable = timeVariable;
-        if (role == PotentialRole.UTILITY)
-        {
-            shiftedPotential.setUtilityVariable (probNet.getShiftedVariable (utilityVariable,
-                                                                             timeDifference));
-        }
-        shiftedPotential.comment = comment;
-        return shiftedPotential;
     }
     
     @Override

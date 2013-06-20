@@ -338,8 +338,7 @@ public abstract class Potential
     }
 
     /**
-     * By default, it returns "this". This is OK for potentials that do not
-     * depend on temporal variables. Subclasses of Potential must override this
+     * Subclasses of Potential must override this
      * method.
      * @return <code>Potential</code>
      * @param timeDifference. <code>int</code>
@@ -347,8 +346,12 @@ public abstract class Potential
      *            are taken from the network. <code>ProbNet</code>
      * @throws ProbNodeNotFoundException
      */
-    public Potential shift(ProbNet probNet, int timeDifference) throws ProbNodeNotFoundException {
-        return this;
+    public void shift(ProbNet probNet, int timeDifference) throws ProbNodeNotFoundException {
+        setVariables(getShiftedVariables(probNet, timeDifference));
+        if (isUtility() && getUtilityVariable().isTemporal()) {
+            setUtilityVariable(probNet.getShiftedVariable(getUtilityVariable(),
+                    timeDifference));
+        }
     }
 
     /**

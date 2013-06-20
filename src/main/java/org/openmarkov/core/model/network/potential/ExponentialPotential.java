@@ -18,11 +18,9 @@ import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -119,27 +117,6 @@ public class ExponentialPotential extends RegressionPotential {
     }
 
     
-    @Override
-    public Potential shift(ProbNet probNet, int timeDifference)
-            throws ProbNodeNotFoundException {
-        List<Variable> shiftedVariables = getShiftedVariables(probNet, timeDifference);
-        ExponentialPotential shiftedPotential = new ExponentialPotential(shiftedVariables, role);
-        shiftedPotential.setCovariates(shiftCovariates(covariates, variables, shiftedVariables));
-        shiftedPotential.setCoefficients(coefficients.clone());
-        if (covarianceMatrix != null) {
-            shiftedPotential.setCovarianceMatrix(covarianceMatrix.clone());
-        } else if (choleskyDecomposition != null) {
-            shiftedPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
-        }
-        if (role == PotentialRole.UTILITY)
-        {
-            shiftedPotential.setUtilityVariable (probNet.getShiftedVariable (utilityVariable,
-                                                                             timeDifference));
-        }
-        shiftedPotential.sampledCoefficients = sampledCoefficients;
-        return shiftedPotential;
-    }
-
     @Override
     public Potential copy() {
         ExponentialPotential copyPotential = new ExponentialPotential(variables, role);

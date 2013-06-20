@@ -359,36 +359,23 @@ public class TreeADDPotential extends Potential {
      * private TablePotential getPotentialMask () { }
      */
     @Override
-    public Potential shift(ProbNet probNet, int timeDifference)
+    public void shift(ProbNet probNet, int timeDifference)
             throws ProbNodeNotFoundException {
-        TreeADDPotential copiedTree = new TreeADDPotential(this);
         List<Variable> copiedTreeVariables = new ArrayList<>();
-        for (Variable variable : copiedTree.getVariables()) {
-            if (variable.isTemporal()) {
-                copiedTreeVariables.add(probNet.getShiftedVariable(variable, timeDifference));
-            } else {
-                copiedTreeVariables.add(variable);
-            }
-        }
-        copiedTree.setVariables(copiedTreeVariables);
         
         if (getRootVariable().isTemporal()) {
-            copiedTree.setRootVariable(probNet.getShiftedVariable(getRootVariable(), timeDifference));
+            setRootVariable(probNet.getShiftedVariable(getRootVariable(), timeDifference));
         }
-        for (TreeADDBranch branch : copiedTree.getBranches()) {
+        for (TreeADDBranch branch : getBranches()) {
             branch.setParentVariables(copiedTreeVariables);
-            branch.setRootVariable(copiedTree.getRootVariable());
+            branch.setRootVariable(getRootVariable());
             if(!branch.isReference())
             {
                 Potential originalPotential = branch.getPotential();
-                branch.setPotential(originalPotential.shift(probNet, timeDifference));
+                originalPotential.shift(probNet, timeDifference);
+                branch.setPotential(originalPotential);
             }
         }
-        if (isUtility() && getUtilityVariable().isTemporal()) {
-            copiedTree.setUtilityVariable(probNet.getShiftedVariable(getUtilityVariable(),
-                    timeDifference));
-        }
-        return copiedTree;
     }
 
     @Override

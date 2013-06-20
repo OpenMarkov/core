@@ -19,12 +19,10 @@ import java.util.Random;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -1296,27 +1294,6 @@ public class TablePotential extends Potential
     public static boolean checkUncertainTable (List<UncertainValue> uncertainTable)
     {
         return true;
-    }
-
-    @Override
-    public Potential shift (ProbNet probNet, int timeDifference)
-        throws ProbNodeNotFoundException
-    {
-        List<Variable> shiftedVariables = getShiftedVariables (probNet, timeDifference);
-        TablePotential shiftedPotential = new TablePotential (shiftedVariables, role);
-        if (role == PotentialRole.UTILITY)
-        {
-            shiftedPotential.setUtilityVariable (probNet.getShiftedVariable (utilityVariable,
-                                                                             timeDifference));
-        }
-        // Copy the table because it can be modified later in one potential and
-        // not in the other, i.e. applying a discount in the shifted potential
-        for (int i = 0; i < values.length; i++)
-        {
-            shiftedPotential.values[i] = values[i];
-        }
-        shiftedPotential.setUncertaintyTable(uncertainValues);
-        return shiftedPotential;
     }
 
     /**

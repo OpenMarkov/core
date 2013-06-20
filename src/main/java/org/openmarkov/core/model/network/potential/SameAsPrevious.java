@@ -46,15 +46,11 @@ public class SameAsPrevious extends Potential
     {
         super (potential.getShiftedVariables (probNet, timeDifference),
                potential.getPotentialRole ());
-        this.originalPotential = potential;
+        this.originalPotential = potential.copy();
         this.probNet = probNet;
         this.timeDifference = timeDifference;
-        if (isUtility ())
-        {
-            Variable originalUtilityVariable = originalPotential.getUtilityVariable ();
-            utilityVariable = probNet.getShiftedVariable (originalUtilityVariable, timeDifference);
-        }
-        originalPotential = originalPotential.shift (probNet, timeDifference);
+        originalPotential.shift (probNet, timeDifference);
+        this.utilityVariable = originalPotential.getUtilityVariable(); 
         type = PotentialType.SAME_AS_PREVIOUS;
     }
     
@@ -117,14 +113,6 @@ public class SameAsPrevious extends Potential
         return originalPotential.sample();
     }
     
-    @Override
-    // TODO Quitar error
-    public Potential shift (ProbNet probNet, int timeSlice)
-        throws ProbNodeNotFoundException
-    {
-        throw new Error ("We have invoked SameAsPrevious.shift()");
-    }
-
     /**
      * Looks for a potential with
      * @param probNet. <code>ProbNet</code>

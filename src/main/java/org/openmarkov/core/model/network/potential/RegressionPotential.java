@@ -8,13 +8,16 @@
 */
 package org.openmarkov.core.model.network.potential;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.NormalFunction;
 import org.openmarkov.core.model.network.modelUncertainty.XORShiftRandom;
@@ -287,5 +290,15 @@ public abstract class RegressionPotential extends Potential {
             covariates[j++] = variables.get(i).getName();
         }
         return covariates;
+    }
+
+    @Override
+    public void shift(ProbNet probNet, int timeDifference)
+            throws ProbNodeNotFoundException {
+        List<Variable> unshiftedVariables = new ArrayList<>(variables);
+        super.shift(probNet, timeDifference);
+        setCovariates(shiftCovariates(covariates, unshiftedVariables, variables));
     }    
+    
+    
 }

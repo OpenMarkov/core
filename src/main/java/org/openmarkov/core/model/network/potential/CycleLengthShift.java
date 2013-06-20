@@ -14,11 +14,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
@@ -88,12 +86,6 @@ public class CycleLengthShift extends Potential {
         return inducedFindings;
     }
 
-	@Override
-    public Potential shift(ProbNet probNet, int timeDifference)
-            throws ProbNodeNotFoundException {
-        return new CycleLengthShift(getShiftedVariables(probNet, timeDifference));
-    }
-	
     @Override
     public Potential copy ()
     {

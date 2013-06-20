@@ -13,10 +13,8 @@ import java.util.Map;
 import java.util.Random;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -219,13 +217,6 @@ public class UniformPotential extends Potential
     public double getDiscreteValue ()
     {
         return discreteValue;
-    }
-
-    @Override
-    public Potential shift (ProbNet probNet, int timeSlice)
-        throws ProbNodeNotFoundException
-    {
-        return new UniformPotential(getShiftedVariables(probNet, timeSlice), role);
     }
 
     @Override

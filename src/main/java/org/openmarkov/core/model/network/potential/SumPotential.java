@@ -15,12 +15,10 @@ import java.util.List;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -135,18 +133,6 @@ public class SumPotential extends Potential {
 		return null;
 	}
 
-	@Override
-	public Potential shift(ProbNet probNet, int timeDifference)
-			throws ProbNodeNotFoundException {
-	    Potential shiftedPotential = new SumPotential(getShiftedVariables(probNet, timeDifference), role);
-        if (role == PotentialRole.UTILITY)
-        {
-            shiftedPotential.setUtilityVariable (probNet.getShiftedVariable (utilityVariable,
-                                                                             timeDifference));
-        }
-        return shiftedPotential;
-	}
-	
     @Override
     public Potential copy ()
     {

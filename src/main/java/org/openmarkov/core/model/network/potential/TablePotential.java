@@ -30,7 +30,6 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.TablePotentialSampler;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
@@ -99,7 +98,7 @@ public class TablePotential extends Potential
         {
             dimensions = TablePotential.calculateDimensions (variables);
             offsets = TablePotential.calculateOffsets (dimensions);
-            tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
+            tableSize = computeTableSize (variables);
             try
             {
                 values = new double[tableSize];
@@ -126,29 +125,8 @@ public class TablePotential extends Potential
      */
     public TablePotential (List<Variable> variables, PotentialRole role, Variable utilityVariable)
     {
-        super (variables, role, utilityVariable);
-        if (numVariables != 0)
-        {
-            dimensions = TablePotential.calculateDimensions (variables);
-            offsets = TablePotential.calculateOffsets (dimensions);
-            tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
-            try
-            {
-                values = new double[tableSize];
-            }
-            catch (NegativeArraySizeException e)
-            {
-                throw new OutOfMemoryError ();
-            }
-            setUniform (); // Initializes the table as an uniform potential
-        }
-        else
-        {// In this case the potential is a constant
-            tableSize = 1;
-            values = new double[tableSize];
-            offsets = new int[0];
-        }
-        type = PotentialType.TABLE;
+        this (variables, role);
+        this.utilityVariable = utilityVariable;
     }
 
     /**
@@ -159,22 +137,8 @@ public class TablePotential extends Potential
      */
     public TablePotential (List<Variable> variables, PotentialRole role, double[] table)
     {
-        super (variables, role);
-        // this.originalVariables = this.variables;
+        this (variables, role);
         this.values = table;
-        if (numVariables != 0)
-        {
-            dimensions = TablePotential.calculateDimensions (variables);
-            offsets = TablePotential.calculateOffsets (dimensions);
-            tableSize = computeTableSize (variables);
-        }
-        else
-        {
-            dimensions = new int[0];
-            offsets = new int[0];
-            tableSize = 1;
-        }
-        type = PotentialType.TABLE;
     }
 
     /**
@@ -214,24 +178,16 @@ public class TablePotential extends Potential
         type = PotentialType.TABLE;
     }
 
-    public TablePotential (Potential potential)
+    public TablePotential (TablePotential potential)
     {
-        this (potential.getVariables (), potential.getPotentialRole ());
-        if (potential instanceof TablePotential)
-        {
-            for (int i = 0; i < values.length; ++i)
-            {
-                values[i] = ((TablePotential) potential).values[i];
-            }
-        }
-        else if (potential instanceof ICIPotential)
-        {
-            TablePotential expandedPotential = ((ICIPotential) potential).expand ();
-            for (int i = 0; i < values.length; ++i)
-            {
-                values[i] = expandedPotential.values[i];
-            }
-        }
+        super(potential);
+        this.initialPosition = potential.getInitialPosition();
+        this.offsets = potential.getOffsets();
+        this.dimensions = potential.getDimensions();
+        tableSize = potential.tableSize;
+        values = potential.values.clone();
+        uncertainValues = potential.uncertainValues;
+        type = PotentialType.TABLE;
     }
 
     /**
@@ -1402,13 +1358,7 @@ public class TablePotential extends Potential
     @Override
     public Potential copy ()
     {
-        TablePotential copyPotential = new TablePotential (new ArrayList<Variable> (variables), role);
-        copyPotential.values = this.values.clone ();
-        copyPotential.utilityVariable = this.utilityVariable;
-        copyPotential.uncertainValues = this.uncertainValues;
-        copyPotential.comment = this.comment;
-
-        return copyPotential;
+        return new TablePotential(this);
     }
 
     @Override

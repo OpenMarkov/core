@@ -41,6 +41,15 @@ public class TuningPotential extends ICIPotential
         super (ICIModelType.TUNING, variables);
         type = PotentialType.TUNING;
     }
+    /**
+     * Copy constructor
+     * @param tuningPotential
+     */
+    public TuningPotential (TuningPotential tuningPotential)
+    {
+        super (tuningPotential);
+        type = PotentialType.TUNING;
+    }
     
     public TuningPotential (Variable... variables)
     {
@@ -148,18 +157,11 @@ public class TuningPotential extends ICIPotential
     @Override
     public Potential copy ()
     {
-        TuningPotential copyPotential = new TuningPotential (new ArrayList<Variable> (variables));
-        for(int i=1; i<variables.size (); ++i)
-        {
-            copyPotential.setNoisyParameters(variables.get (i), getNoisyParameters(variables.get (i)).clone ());
-        }
-        copyPotential.setLeakyParameters(getLeakyParameters().clone ());
-        copyPotential.comment = comment;
-        return copyPotential;
+        return new TuningPotential(this);
     }       
     @Override
     public Potential addVariable(Variable newVariable){
-    	ArrayList<Variable> newVariables = new ArrayList<Variable>(variables);
+    	List<Variable> newVariables = new ArrayList<Variable>(variables);
     	newVariables.add(newVariable);
     	TuningPotential newICIPotential = new TuningPotential(newVariables) ;
     	

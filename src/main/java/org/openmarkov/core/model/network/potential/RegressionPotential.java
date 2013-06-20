@@ -86,6 +86,21 @@ public abstract class RegressionPotential extends Potential {
         this(variables, role, covariates, coefficients, covarianceMatrix, MatrixType.COVARIANCE);
     }
 
+    public RegressionPotential(RegressionPotential potential) {
+        super(potential);
+        setCovariates(covariates.clone());
+        setCoefficients(coefficients.clone());
+        if(potential.covarianceMatrix != null)
+        {
+            setCovarianceMatrix(potential.covarianceMatrix.clone());
+        }else if(potential.choleskyDecomposition != null)
+        {
+            setCholeskyDecomposition(potential.choleskyDecomposition.clone());
+        }
+        sampledCoefficients = potential.sampledCoefficients;
+
+    }
+
     public String[] getCovariates() {
         return covariates;
     }

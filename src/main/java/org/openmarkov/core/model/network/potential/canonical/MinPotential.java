@@ -42,6 +42,11 @@ public class MinPotential extends MinMaxPotential {
                 this(ICIModelType.GENERAL_MIN, variables);
     } 
     
+    public MinPotential(MinPotential potential) {
+        super(potential);
+        type = PotentialType.MIN;
+    }
+
     /** Returns if an instance of a certain Potential type makes sense given 
      * the variables and the potential role.
      * @param probNode. <code>ProbNode</code> 
@@ -145,14 +150,7 @@ public class MinPotential extends MinMaxPotential {
     @Override
     public Potential copy ()
     {
-        MinPotential copyPotential = new MinPotential (new ArrayList<Variable> (variables));
-        for(int i=1; i<variables.size (); ++i)
-        {
-            copyPotential.setNoisyParameters(variables.get (i), getNoisyParameters(variables.get (i)));
-        }
-        copyPotential.setLeakyParameters(getLeakyParameters());
-        copyPotential.comment = comment;
-        return copyPotential;
+        return new MinPotential(this);
     }     
     
     @Override

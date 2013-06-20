@@ -131,6 +131,11 @@ public class ExponentialPotential extends RegressionPotential {
         } else if (choleskyDecomposition != null) {
             shiftedPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
         }
+        if (role == PotentialRole.UTILITY)
+        {
+            shiftedPotential.setUtilityVariable (probNet.getShiftedVariable (utilityVariable,
+                                                                             timeDifference));
+        }
         shiftedPotential.sampledCoefficients = sampledCoefficients;
         return shiftedPotential;
     }

@@ -45,8 +45,8 @@ public class ProductPotential extends Potential {
 		type = PotentialType.PRODUCT;
 	}
 	
-    public ProductPotential(Potential potential) {
-        this(potential.getVariables (), potential.getPotentialRole ());
+    public ProductPotential(ProductPotential potential) {
+        super(potential);
     }	
     
 	// Methods
@@ -141,9 +141,7 @@ public class ProductPotential extends Potential {
     @Override
     public Potential copy ()
     {
-        Potential copyPotential  = new ProductPotential(new ArrayList<Variable> (variables), role);
-        copyPotential.comment = this.comment;
-        return copyPotential;
+        return new ProductPotential(this);
     }
 
 	@Override

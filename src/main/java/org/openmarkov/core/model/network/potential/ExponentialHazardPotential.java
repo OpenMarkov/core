@@ -53,6 +53,10 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
         super(variables, role, getDefaultCovariates(variables, role), coefficients, uncertaintyMatrix, matrixType);
     }    
     
+    public ExponentialHazardPotential(ExponentialHazardPotential potential) {
+        super(potential);
+    }
+
     /**
      * Returns if an instance of a certain Potential type makes sense given the
      * variables and the potential role.
@@ -102,20 +106,7 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
 
     @Override
     public Potential copy() {
-        ExponentialHazardPotential copyPotential = new ExponentialHazardPotential(variables,
-                role);
-        copyPotential.setCovariates(covariates.clone());
-        copyPotential.setCoefficients(coefficients.clone());
-        if(covarianceMatrix != null)
-        {
-            copyPotential.setCovarianceMatrix(covarianceMatrix.clone());
-        }else if(choleskyDecomposition != null)
-        {
-            copyPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
-        }
-        copyPotential.sampledCoefficients = sampledCoefficients;
-        copyPotential.comment = comment;
-        return copyPotential;
+        return new ExponentialHazardPotential(this);
     }
 
     @Override

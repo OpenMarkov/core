@@ -62,7 +62,7 @@ public abstract class ICIPotential extends Potential {
 		// In principle, role will be "conditional probability"
 		// and the first variable will be the conditioned variable
 		super(variables, PotentialRole.CONDITIONAL_PROBABILITY);
-		Variable conditionedVariable = variables.get (0);		
+		Variable conditionedVariable = getConditionedVariable();		
 		this.modelType = modelType;
 		this.family = modelType.getFamily();
 		this.noisyParameters = getDefaultNoisyParameters();
@@ -75,6 +75,26 @@ public abstract class ICIPotential extends Potential {
         leakyVariable = new Variable (conditionedVariable.getName () + "-leaky", conditionedVariable.getStates ());
         
 	}
+
+    public ICIPotential(ICIPotential potential) {
+        super(potential);
+        this.modelType = potential.modelType;
+        this.family = modelType.getFamily();
+        this.noisyParameters = getDefaultNoisyParameters();
+        Variable conditionedVariable = getConditionedVariable();        
+        this.leakyParameters = getDefaultLeakyParameters (conditionedVariable.getNumStates ());
+        zVariables = new HashMap<Variable, Variable> ();
+        for(int i=1; i<variables.size (); ++i)
+        {
+            zVariables.put (variables.get (i), createZVariable (variables.get (i), conditionedVariable));
+        }
+        leakyVariable = new Variable (conditionedVariable.getName () + "-leaky", conditionedVariable.getStates ());
+        for(int i=1; i<variables.size (); ++i)
+        {
+            setNoisyParameters(variables.get (i), potential.getNoisyParameters(variables.get (i)).clone ());
+        }
+        setLeakyParameters(potential.getLeakyParameters().clone ());
+    }
 
     public double[][] getDefaultNoisyParameters()
     {

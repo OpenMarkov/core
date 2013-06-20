@@ -43,13 +43,21 @@ public abstract class MinMaxPotential extends ICIPotential {
     {
         // In principle, role will be "conditional probability"
         super (model, variables);
-        Variable conditionedVariable = variables.get (0);
+        Variable conditionedVariable = getConditionedVariable();
         String pseudoVariableName = "pseudo-" + conditionedVariable.getName ();
-        // TODO Comprobar que no existe otra variable que tenga el mismo nombre
+        // TODO Check no other variable exists with the same name
         pseudoVariable = new Variable (pseudoVariableName, conditionedVariable.getNumStates ());
 	}
         
-	// Methods
+	public MinMaxPotential(MinMaxPotential potential) {
+	    super(potential);
+        Variable conditionedVariable = getConditionedVariable();
+        String pseudoVariableName = "pseudo-" + conditionedVariable.getName ();
+        // TODO Check no other variable exists with the same name
+        pseudoVariable = new Variable (pseudoVariableName, conditionedVariable.getNumStates ());
+    }
+
+    // Methods
 	/** @return Delta<sub>Y</sub> potential. <code>TablePotential</code> */
 	protected abstract TablePotential getDeltaPotential();
 	

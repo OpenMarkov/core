@@ -38,7 +38,8 @@ public class CycleLengthShift extends Potential {
 	}
 	
     public CycleLengthShift(Potential potential) {
-        this(potential.getVariables ());
+        super(potential);
+        type = PotentialType.CYCLE_LENGTH_SHIFT;
     }
 	
     /**
@@ -96,9 +97,7 @@ public class CycleLengthShift extends Potential {
     @Override
     public Potential copy ()
     {
-        Potential copyPotential = new CycleLengthShift(new ArrayList<Variable> (variables));
-        copyPotential.comment = comment;
-        return copyPotential;
+        return new CycleLengthShift(this);
     }
 
 	@Override

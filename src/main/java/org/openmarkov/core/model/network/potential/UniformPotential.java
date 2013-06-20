@@ -75,10 +75,18 @@ public class UniformPotential extends Potential
         this (toList (variables), role);
     }
 
-    /** @param potential. <code>Potential</code> */
-    public UniformPotential (Potential potential)
+    /**
+     * Copy constructor for UniformPotential
+     * @param potential
+     */
+    public UniformPotential (UniformPotential potential)
     {
-        this (potential.getVariables (), potential.getPotentialRole ());
+        super (potential);
+        type = PotentialType.UNIFORM;
+        if (allVariablesAreDiscrete (variables))
+        {
+            discreteValue = calculateDiscreteValue (variables);
+        }
     }
 
     // Methods
@@ -223,18 +231,7 @@ public class UniformPotential extends Potential
     @Override
     public Potential copy ()
     {
-        Potential copiedPotential = null;
-        if (role != PotentialRole.UTILITY)
-        {
-            copiedPotential = new UniformPotential (new ArrayList<Variable> (variables), role);
-        }
-        else
-        {
-            copiedPotential = new UniformPotential (new ArrayList<Variable> (variables), role,
-                                                    utilityVariable);
-        }
-        copiedPotential.setComment(comment);
-        return copiedPotential;
+        return new UniformPotential(this);
     }
 
     @Override

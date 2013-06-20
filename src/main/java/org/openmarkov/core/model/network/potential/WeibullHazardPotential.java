@@ -72,6 +72,11 @@ public class WeibullHazardPotential extends RegressionPotential {
         this(variables, role, getDefaultCovariates(variables, role, getMandatoryCovariates()), new double[variables.size()+1]);
     }
     
+    public WeibullHazardPotential(WeibullHazardPotential potential) {
+        super(potential);
+        timeVariable = potential.timeVariable;        
+    }
+
     /**
      * Returns if an instance of a certain Potential type makes sense given the
      * variables and the potential role.
@@ -205,38 +210,31 @@ public class WeibullHazardPotential extends RegressionPotential {
     public Potential shift(ProbNet probNet, int timeDifference)
             throws ProbNodeNotFoundException {
         List<Variable> shiftedVariables = getShiftedVariables(probNet, timeDifference);
-        WeibullHazardPotential copyPotential = new WeibullHazardPotential(shiftedVariables,
+        WeibullHazardPotential shiftedPotential = new WeibullHazardPotential(shiftedVariables,
                 role);
-        copyPotential.setCovariates(shiftCovariates(covariates, variables, shiftedVariables));
-        copyPotential.setCoefficients(coefficients.clone());
+        shiftedPotential.setCovariates(shiftCovariates(covariates, variables, shiftedVariables));
+        shiftedPotential.setCoefficients(coefficients.clone());
         if(covarianceMatrix != null)
         {
-            copyPotential.setCovarianceMatrix(covarianceMatrix.clone());
+            shiftedPotential.setCovarianceMatrix(covarianceMatrix.clone());
         }else if(choleskyDecomposition != null)
         {
-            copyPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
+            shiftedPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
         }
-        copyPotential.sampledCoefficients = sampledCoefficients;
-        copyPotential.timeVariable = timeVariable;
-        copyPotential.comment = comment;
-        return copyPotential;
+        shiftedPotential.sampledCoefficients = sampledCoefficients;
+        shiftedPotential.timeVariable = timeVariable;
+        if (role == PotentialRole.UTILITY)
+        {
+            shiftedPotential.setUtilityVariable (probNet.getShiftedVariable (utilityVariable,
+                                                                             timeDifference));
+        }
+        shiftedPotential.comment = comment;
+        return shiftedPotential;
     }
     
     @Override
     public Potential copy() {
-        WeibullHazardPotential copyPotential = new WeibullHazardPotential(variables, role);
-        copyPotential.setCovariates(covariates.clone());
-        copyPotential.setCoefficients(coefficients.clone());
-        if(covarianceMatrix != null)
-        {
-            copyPotential.setCovarianceMatrix(covarianceMatrix.clone());
-        }else if(choleskyDecomposition != null)
-        {
-            copyPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
-        }
-        copyPotential.sampledCoefficients = sampledCoefficients;
-        copyPotential.timeVariable = timeVariable;
-        return copyPotential;
+        return new WeibullHazardPotential(this);
     }
 
     public Variable getTimeVariable() {

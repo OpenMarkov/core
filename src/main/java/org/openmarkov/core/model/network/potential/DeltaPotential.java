@@ -61,6 +61,18 @@ public class DeltaPotential extends Potential{
         }
     }
     
+    public DeltaPotential(DeltaPotential potential)
+    {
+        super(potential);
+        if(potential.state != null)
+        {
+            state = potential.state;
+        }else
+        {
+            numericValue = potential.numericValue;
+        }
+    }
+    
     /**
      * Returns whether this type of Potential is suitable for the list of
      * variables and the potential role given.
@@ -102,16 +114,7 @@ public class DeltaPotential extends Potential{
 
     @Override
     public Potential copy() {
-        DeltaPotential copyPotential = null;
-        if(state != null)
-        {
-            copyPotential = new DeltaPotential(new ArrayList<>(variables), role, state);
-        }else
-        {
-            copyPotential = new DeltaPotential(new ArrayList<>(variables), role, numericValue);
-        }
-        copyPotential.comment = comment;
-        return copyPotential;
+        return new DeltaPotential(this);
     }
 
     @Override

@@ -72,21 +72,19 @@ public abstract class Potential
      */
     public Potential (List<Variable> variables, PotentialRole role)
     {
-        if (variables != null)
+        numVariables = (variables != null)? variables.size () : 0;
+        if(variables != null)
         {
-            numVariables = variables.size ();
             this.variables = new ArrayList<Variable> (variables);
-        }
-        else
+        }else
         {
-            numVariables = 0;
             this.variables = new ArrayList<Variable> ();
         }
         utilityVariable = null;
         properties = new HashMap<String, Object> ();
         this.role = role;
     }
-
+    
     /**
      * @param variables <code>List</code> of <code>Variable</code>s.
      * @param role. <code>PotentialRole</code>
@@ -94,20 +92,23 @@ public abstract class Potential
      */
     public Potential (List<Variable> variables, PotentialRole role, Variable utility)
     {
-        if (variables != null)
-        {
-            numVariables = variables.size ();
-            this.variables = new ArrayList<Variable> (variables);
-        }
-        else
-        {
-            numVariables = 0;
-            this.variables = new ArrayList<Variable> ();
-        }
+        this(variables, role);
         utilityVariable = utility;
-        properties = new HashMap<String, Object> ();
-        this.role = role;
     }
+    
+    /**
+     * Copy constructor for potential
+     * @param potential
+     */
+    public Potential (Potential potential)
+    {
+        this(potential.getVariables(), potential.getPotentialRole());
+        if(potential.getPotentialRole() == PotentialRole.UTILITY)
+        {
+            this.utilityVariable = potential.getUtilityVariable(); 
+        }
+        this.comment = potential.getComment();
+    }      
 
     // Methods
     /**

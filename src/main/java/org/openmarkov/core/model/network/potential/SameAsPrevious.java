@@ -57,6 +57,15 @@ public class SameAsPrevious extends Potential
         originalPotential = originalPotential.shift (probNet, timeDifference);
         type = PotentialType.SAME_AS_PREVIOUS;
     }
+    
+    public SameAsPrevious (SameAsPrevious potential)
+    {
+        super(potential);
+        this.probNet = potential.probNet;
+        this.originalPotential = potential.originalPotential;
+        this.timeDifference = potential.timeDifference;
+        type = PotentialType.SAME_AS_PREVIOUS;
+    }
 
     /**
      * Constructor for SameAsPrevious. Assumes timeDifference is 1.
@@ -184,15 +193,7 @@ public class SameAsPrevious extends Potential
     @Override
     public Potential copy ()
     {
-        Potential copyPotential = null;
-        try {
-            copyPotential = new SameAsPrevious (originalPotential, probNet, timeDifference);
-        } catch (ProbNodeNotFoundException e) {
-            // Should not happen as it is a copy of an existing potential
-            e.printStackTrace();
-        }
-        copyPotential.comment = comment;
-        return copyPotential;
+        return new SameAsPrevious(this);
     }
 
     @Override

@@ -39,6 +39,10 @@ public class LinearRegressionPotential extends RegressionPotential {
         super(variables, role, covariates, coefficients);
     }
     
+    public LinearRegressionPotential(LinearRegressionPotential potential) {
+        super(potential);
+    }    
+    
     /**
      * Returns if an instance of a certain Potential type makes sense given the
      * variables and the potential role.

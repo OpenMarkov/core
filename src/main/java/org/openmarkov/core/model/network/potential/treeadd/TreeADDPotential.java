@@ -186,19 +186,13 @@ public class TreeADDPotential extends Potential {
      * @param treeADD
      */
     public TreeADDPotential(TreeADDPotential treeADD) {
-        super(treeADD.getVariables(), treeADD.getPotentialRole());
+        super(treeADD);
         this.topVariable = treeADD.getRootVariable();
         List<TreeADDBranch> treeBranches = new ArrayList<>();
         for (int i = 0; i < treeADD.getBranches().size(); i++) {
             treeBranches.add(treeADD.getBranches().get(i).copy());
         }
         this.branches = treeBranches;
-        if (treeADD.getPotentialRole() == PotentialRole.UTILITY) {
-            if (treeADD.getUtilityVariable() != null) {
-                this.setUtilityVariable(treeADD.getUtilityVariable());
-            }
-        }
-        setComment(treeADD.getComment());
         updateReferences(getLabeledBranches());        
     }
 

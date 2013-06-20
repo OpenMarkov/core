@@ -9,7 +9,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -55,8 +54,8 @@ public class SumPotential extends Potential {
 		type = PotentialType.SUM;
 	}
 	
-    public SumPotential(Potential potential) {
-        super(potential.getVariables (), potential.getPotentialRole ());
+    public SumPotential(SumPotential potential) {
+        super(potential);
         type = PotentialType.SUM;
     }
 
@@ -151,9 +150,7 @@ public class SumPotential extends Potential {
     @Override
     public Potential copy ()
     {
-        Potential copyPotential = new SumPotential(new ArrayList<Variable> (variables), role);
-        copyPotential.comment = comment;
-        return copyPotential;
+        return new SumPotential(this);
     }	
 
     public double getUtility (HashMap<Variable, Integer> sampledStateIndexes, HashMap<Variable, Double> utilities)

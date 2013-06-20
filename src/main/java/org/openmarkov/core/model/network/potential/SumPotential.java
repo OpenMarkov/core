@@ -151,7 +151,9 @@ public class SumPotential extends Potential {
     @Override
     public Potential copy ()
     {
-        return new SumPotential(new ArrayList<Variable> (variables), role);
+        Potential copyPotential = new SumPotential(new ArrayList<Variable> (variables), role);
+        copyPotential.comment = comment;
+        return copyPotential;
     }	
 
     public double getUtility (HashMap<Variable, Integer> sampledStateIndexes, HashMap<Variable, Double> utilities)

@@ -184,14 +184,15 @@ public class SameAsPrevious extends Potential
     @Override
     public Potential copy ()
     {
-        Potential newPotential = null;
+        Potential copyPotential = null;
         try {
-            newPotential = new SameAsPrevious (originalPotential, probNet, timeDifference);
+            copyPotential = new SameAsPrevious (originalPotential, probNet, timeDifference);
         } catch (ProbNodeNotFoundException e) {
             // Should not happen as it is a copy of an existing potential
             e.printStackTrace();
         }
-        return newPotential;
+        copyPotential.comment = comment;
+        return copyPotential;
     }
 
     @Override

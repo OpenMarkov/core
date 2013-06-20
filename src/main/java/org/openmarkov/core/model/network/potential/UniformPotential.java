@@ -233,6 +233,7 @@ public class UniformPotential extends Potential
             copiedPotential = new UniformPotential (new ArrayList<Variable> (variables), role,
                                                     utilityVariable);
         }
+        copiedPotential.setComment(comment);
         return copiedPotential;
     }
 

@@ -1402,11 +1402,13 @@ public class TablePotential extends Potential
     @Override
     public Potential copy ()
     {
-        TablePotential newPotential = new TablePotential (new ArrayList<Variable> (variables), role);
-        newPotential.values = this.values.clone ();
-        newPotential.utilityVariable = this.utilityVariable;
-        newPotential.uncertainValues = this.uncertainValues;
-        return newPotential;
+        TablePotential copyPotential = new TablePotential (new ArrayList<Variable> (variables), role);
+        copyPotential.values = this.values.clone ();
+        copyPotential.utilityVariable = this.utilityVariable;
+        copyPotential.uncertainValues = this.uncertainValues;
+        copyPotential.comment = this.comment;
+
+        return copyPotential;
     }
 
     @Override

@@ -102,16 +102,16 @@ public class DeltaPotential extends Potential{
 
     @Override
     public Potential copy() {
-        DeltaPotential deltaPotential = null;
+        DeltaPotential copyPotential = null;
         if(state != null)
         {
-            deltaPotential = new DeltaPotential(new ArrayList<>(variables), role, state);
+            copyPotential = new DeltaPotential(new ArrayList<>(variables), role, state);
         }else
         {
-            deltaPotential = new DeltaPotential(new ArrayList<>(variables), role, numericValue);
+            copyPotential = new DeltaPotential(new ArrayList<>(variables), role, numericValue);
         }
-            
-        return deltaPotential;
+        copyPotential.comment = comment;
+        return copyPotential;
     }
 
     @Override

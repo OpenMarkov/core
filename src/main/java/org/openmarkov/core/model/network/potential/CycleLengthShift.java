@@ -96,7 +96,9 @@ public class CycleLengthShift extends Potential {
     @Override
     public Potential copy ()
     {
-        return new CycleLengthShift(new ArrayList<Variable> (variables));
+        Potential copyPotential = new CycleLengthShift(new ArrayList<Variable> (variables));
+        copyPotential.comment = comment;
+        return copyPotential;
     }
 
 	@Override

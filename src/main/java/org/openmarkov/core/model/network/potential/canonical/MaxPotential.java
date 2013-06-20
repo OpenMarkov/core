@@ -84,7 +84,7 @@ public class MaxPotential extends MinMaxPotential {
 	 *  <code>conditionedVariable</code> and <code>pseudoVariable</code>. */
 	public TablePotential getDeltaPotential() {
 		Variable conditionedVariable = variables.get(0);
-		ArrayList<Variable> deltaVariables = new ArrayList<Variable>();
+		List<Variable> deltaVariables = new ArrayList<Variable>();
 		deltaVariables.add(pseudoVariable);
 		deltaVariables.add(conditionedVariable);
 		TablePotential deltaPotential = new TablePotential(
@@ -157,13 +157,14 @@ public class MaxPotential extends MinMaxPotential {
     @Override
     public Potential copy ()
     {
-        MaxPotential newPotential = new MaxPotential (new ArrayList<Variable> (variables));
+        MaxPotential copyPotential = new MaxPotential (new ArrayList<Variable> (variables));
         for(int i=1; i<variables.size (); ++i)
         {
-            newPotential.setNoisyParameters(variables.get (i), getNoisyParameters(variables.get (i)));
+            copyPotential.setNoisyParameters(variables.get (i), getNoisyParameters(variables.get (i)));
         }
-        newPotential.setLeakyParameters(getLeakyParameters());
-        return newPotential;
+        copyPotential.setLeakyParameters(getLeakyParameters());
+        copyPotential.comment = comment;
+        return copyPotential;
     }       
     
     @Override

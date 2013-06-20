@@ -147,7 +147,8 @@ public class ExponentialPotential extends RegressionPotential {
         {
             copyPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
         }
-        copyPotential.sampledCoefficients = sampledCoefficients;        
+        copyPotential.sampledCoefficients = sampledCoefficients;
+        copyPotential.comment = comment;
         return copyPotential;
     }
     

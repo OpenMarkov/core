@@ -140,6 +140,7 @@ public class LinearRegressionPotential extends RegressionPotential {
                 role,
                 covariates,
                 coefficients);
+        copyPotential.comment = comment;
         return copyPotential;
     }
 

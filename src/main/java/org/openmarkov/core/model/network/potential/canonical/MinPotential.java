@@ -145,13 +145,14 @@ public class MinPotential extends MinMaxPotential {
     @Override
     public Potential copy ()
     {
-        MinPotential newPotential = new MinPotential (new ArrayList<Variable> (variables));
+        MinPotential copyPotential = new MinPotential (new ArrayList<Variable> (variables));
         for(int i=1; i<variables.size (); ++i)
         {
-            newPotential.setNoisyParameters(variables.get (i), getNoisyParameters(variables.get (i)));
+            copyPotential.setNoisyParameters(variables.get (i), getNoisyParameters(variables.get (i)));
         }
-        newPotential.setLeakyParameters(getLeakyParameters());
-        return newPotential;
+        copyPotential.setLeakyParameters(getLeakyParameters());
+        copyPotential.comment = comment;
+        return copyPotential;
     }     
     
     @Override

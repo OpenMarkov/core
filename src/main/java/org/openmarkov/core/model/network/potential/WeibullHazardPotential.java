@@ -218,6 +218,7 @@ public class WeibullHazardPotential extends RegressionPotential {
         }
         copyPotential.sampledCoefficients = sampledCoefficients;
         copyPotential.timeVariable = timeVariable;
+        copyPotential.comment = comment;
         return copyPotential;
     }
     

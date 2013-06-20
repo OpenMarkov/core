@@ -63,7 +63,7 @@ public abstract class Potential
      * <code>Potential</code> object.
      */
     public HashMap<String, Object> properties;
-    private String                 comment         = "";
+    protected String               comment         = "";
 
     // Constructor
     /**

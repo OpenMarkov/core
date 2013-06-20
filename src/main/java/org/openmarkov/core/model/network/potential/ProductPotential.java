@@ -141,7 +141,9 @@ public class ProductPotential extends Potential {
     @Override
     public Potential copy ()
     {
-        return new ProductPotential(new ArrayList<Variable> (variables), role);
+        Potential copyPotential  = new ProductPotential(new ArrayList<Variable> (variables), role);
+        copyPotential.comment = this.comment;
+        return copyPotential;
     }
 
 	@Override

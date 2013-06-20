@@ -114,6 +114,7 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
             copyPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
         }
         copyPotential.sampledCoefficients = sampledCoefficients;
+        copyPotential.comment = comment;
         return copyPotential;
     }
 

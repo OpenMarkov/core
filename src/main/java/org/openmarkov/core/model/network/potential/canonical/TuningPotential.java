@@ -148,13 +148,14 @@ public class TuningPotential extends ICIPotential
     @Override
     public Potential copy ()
     {
-        TuningPotential newPotential = new TuningPotential (new ArrayList<Variable> (variables));
+        TuningPotential copyPotential = new TuningPotential (new ArrayList<Variable> (variables));
         for(int i=1; i<variables.size (); ++i)
         {
-            newPotential.setNoisyParameters(variables.get (i), getNoisyParameters(variables.get (i)).clone ());
+            copyPotential.setNoisyParameters(variables.get (i), getNoisyParameters(variables.get (i)).clone ());
         }
-        newPotential.setLeakyParameters(getLeakyParameters().clone ());
-        return newPotential;
+        copyPotential.setLeakyParameters(getLeakyParameters().clone ());
+        copyPotential.comment = comment;
+        return copyPotential;
     }       
     @Override
     public Potential addVariable(Variable newVariable){

@@ -198,7 +198,7 @@ public class TreeADDPotential extends Potential {
                 this.setUtilityVariable(treeADD.getUtilityVariable());
             }
         }
-        treeADD.setComment(comment);
+        setComment(treeADD.getComment());
         updateReferences(getLabeledBranches());        
     }
 

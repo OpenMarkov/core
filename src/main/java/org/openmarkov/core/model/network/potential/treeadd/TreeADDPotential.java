@@ -359,8 +359,9 @@ public class TreeADDPotential extends Potential {
      * private TablePotential getPotentialMask () { }
      */
     @Override
-    public void shift(ProbNet probNet, int timeDifference)
+	public void shift(ProbNet probNet, int timeDifference)
             throws ProbNodeNotFoundException {
+        super.shift(probNet, timeDifference);
         List<Variable> copiedTreeVariables = new ArrayList<>();
         
         if (getRootVariable().isTemporal()) {

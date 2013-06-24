@@ -46,9 +46,9 @@ public class SameAsPrevious extends Potential
     {
         super (potential.getShiftedVariables (probNet, timeDifference),
                potential.getPotentialRole ());
-        this.originalPotential = potential.copy();
         this.probNet = probNet;
         this.timeDifference = timeDifference;
+        this.originalPotential = potential.copy();
         originalPotential.shift (probNet, timeDifference);
         this.utilityVariable = originalPotential.getUtilityVariable(); 
         type = PotentialType.SAME_AS_PREVIOUS;
@@ -101,7 +101,11 @@ public class SameAsPrevious extends Potential
         throws NonProjectablePotentialException,
         WrongCriterionException
     {
-        return originalPotential.tableProject (evidenceCase, inferenceOptions);
+        Potential potentialToBeProjected = originalPotential.copy();
+        potentialToBeProjected.setVariables(variables);
+        potentialToBeProjected.setUtilityVariable(utilityVariable);
+        
+        return potentialToBeProjected.tableProject (evidenceCase, inferenceOptions);
     }
 
     public Potential getOriginalPotential ()

@@ -29,6 +29,8 @@ import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 @RelationPotentialType(name = "CycleLengthShift", family = "")
 public class CycleLengthShift extends Potential {
 
+    protected int       timeDifference = 1;
+
 	// Constructor
 	/** @param potential
 	 * @param slice */
@@ -65,25 +67,28 @@ public class CycleLengthShift extends Potential {
 			InferenceOptions inferenceOptions,
             List<TablePotential> projectedPotentials)
 			throws NonProjectablePotentialException {
-	    List<TablePotential> newProjectedPotentials = new ArrayList<TablePotential>(); 
         Variable conditionedVariable = getConditionedVariable();
+        Variable conditioningVariable = variables.get((conditionedVariable == variables.get(0))? 1 : 0);
+        TablePotential projectedPotential = null; 
 	    if(conditionedVariable.getVariableType() == VariableType.NUMERIC)
 	    {
     		for (Variable variable : variables) {
-    			if (!evidenceCase.contains(variable)) {
+    			if (!variable.equals(conditionedVariable) && !evidenceCase.contains(variable)) {
     				throw new Error("Variable " + variable.getName() + 
     				" is not included in EvidenceCase.");
     			}
     		}
-    		newProjectedPotentials = new ArrayList<>();
+    		projectedPotential = new TablePotential(new ArrayList<Variable>(), role);
+    		projectedPotential.values[0] = evidenceCase.getNumericalValue(conditioningVariable) + timeDifference;
 	    }else
 	    {
-	        Variable conditioningVariable = variables.get((conditionedVariable == variables.get(0))? 1 : 0);
+	        // Build projected potential based on parent's potential
 	        TablePotential projectedParentPotential = findPotentialByVariable(conditioningVariable, projectedPotentials);
-	        TablePotential projectedPotential = null; 
 	        List<Variable> projectedVariables = projectedParentPotential.getVariables();
 	        if(role != PotentialRole.UTILITY)
 	        {
+                // replace parent variable with child variable in the list of
+                // variables of the projected potential
                 projectedVariables.remove(conditioningVariable);                
                 projectedVariables.add(0, conditionedVariable);
 	            projectedPotential = new TablePotential(projectedVariables, role);
@@ -95,6 +100,7 @@ public class CycleLengthShift extends Potential {
             int numStates = conditionedVariable.getNumStates();
 	        int numStatesParent = conditioningVariable.getNumStates();
             int configurationIndex = 0; 
+            // Copy values from parent's projected potential, shifting values one state
 	        for (int i = 0; i < projectedParentPotential.values.length; i+=numStatesParent) {
 	            projectedPotential.values[configurationIndex * numStates] = 0;
 	            for (int j = 0; j < numStatesParent; ++j) {
@@ -103,9 +109,8 @@ public class CycleLengthShift extends Potential {
 	            }
 	            configurationIndex++;
 	        }
-	        newProjectedPotentials = Arrays.asList(projectedPotential);
 	    }
-		return newProjectedPotentials;
+		return Arrays.asList(projectedPotential);
 	}
 	
     private TablePotential findPotentialByVariable(Variable variable, List<TablePotential> potentials) {
@@ -117,6 +122,7 @@ public class CycleLengthShift extends Potential {
             {
                 potential = potentials.get(i);
             }
+            ++i;
         }
         return potential;
     }
@@ -149,6 +155,14 @@ public class CycleLengthShift extends Potential {
     @Override
     public String toString() {
         return super.toString() + " = CycleLengthShift";
+    }
+
+    public int getTimeDifference() {
+        return timeDifference;
+    }
+
+    public void setTimeDifference(int timeDifference) {
+        this.timeDifference = timeDifference;
     }	
 	
 	

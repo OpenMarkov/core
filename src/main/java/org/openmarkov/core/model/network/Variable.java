@@ -407,15 +407,21 @@ public class Variable implements Cloneable {
 	 */
 	public int getStateIndex(double value) throws InvalidStateException {
 
+	    int state = -1;	    
 		if (variableType == VariableType.FINITE_STATES) {
-			throw new InvalidStateException("Can not use "
-					+ "Variable.getStateIndex(double) in the discrete variable." + name);
-		}
-		int state = partitionedInterval.indexOfSubinterval(value);
-		if (state == -1) {
-			throw new InvalidStateException(value + " is not in any interval "
-					+ "of the discretized variable " + name + " (intervals are "
-					+ partitionedInterval.toString() + ").");
+            state = getStateIndex(String.valueOf(round(value)));
+            if (state == -1) {
+    			throw new InvalidStateException("Can not use "
+    					+ "Variable.getStateIndex(double) in the discrete variable." + name);
+            }
+		} else
+		{
+    		state = partitionedInterval.indexOfSubinterval(value);
+    		if (state == -1) {
+    			throw new InvalidStateException(value + " is not in any interval "
+    					+ "of the discretized variable " + name + " (intervals are "
+    					+ partitionedInterval.toString() + ").");
+    		}
 		}
 		return state;
 	}
@@ -724,6 +730,10 @@ public class Variable implements Cloneable {
 	public void setDecisionCriteria(StringWithProperties decisionCriteria) {
 		this.decisionCriteria = decisionCriteria;
 	}
+
+    public double round(double value) {
+        return Math.round(value/precision)*precision;
+    }
 
 	// TODO Ver si este código resuelve el problema que se puede dar en
 	// Elvira con los dos nombres de las variables que tiene.

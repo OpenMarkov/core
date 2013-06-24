@@ -4,16 +4,19 @@
 package org.openmarkov.core.model.network.potential.treeadd;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -487,4 +490,16 @@ public class TreeADDPotential extends Potential {
         }
     }
 
+    @Override
+    public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength)
+            throws IncompatibleEvidenceException, WrongCriterionException {
+        List<Finding> newFindings = new ArrayList<>();
+        for(TreeADDBranch branch : branches)
+        {
+            newFindings.addAll(branch.getPotential().getInducedFindings(evidenceCase, cycleLength));
+        }
+        return newFindings;
+    }
+
+    
 }

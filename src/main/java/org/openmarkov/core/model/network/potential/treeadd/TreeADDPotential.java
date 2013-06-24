@@ -4,6 +4,7 @@
 package org.openmarkov.core.model.network.potential.treeadd;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -271,24 +272,23 @@ public class TreeADDPotential extends Potential {
                 List<TablePotential> tablePotentials = branchPotential.tableProject(evidenceCase,
                         inferenceOptions);
                 // mask potential, only the top variable
-                TablePotential maskPotential = null;
-                List<Variable> variables = new ArrayList<Variable>();
-                variables.add(branch.getRootVariable());
-                maskPotential = new TablePotential(variables, role);
+                Variable branchVariable = branch.getRootVariable();
+                List<Variable> maskVariables = Arrays.asList(branchVariable);
+                TablePotential maskPotential =  new TablePotential(maskVariables, role);
                 List<State> branchStates = branch.getBranchStates();
-                State[] topVariableStates = branch.getRootVariable().getStates();
-                for (int i = 0; i < topVariableStates.length; i++) {
+                State[] branchVariableStates = branchVariable.getStates();
+                for (int i = 0; i < branchVariableStates.length; i++) {
                     int[] statesIndexes = new int[1];
-                    statesIndexes[0] = branch.getRootVariable().getStateIndex(topVariableStates[i]);
-                    maskPotential.setValue(variables,
+                    statesIndexes[0] = branchVariable.getStateIndex(branchVariableStates[i]);
+                    maskPotential.setValue(maskVariables,
                             statesIndexes,
-                            branchStates.contains(topVariableStates[i]) ? 1 : 0);
+                            branchStates.contains(branchVariableStates[i]) ? 1 : 0);
                 }
                 // multiply mask potential and the table potential of the
                 // current branch
                 List<TablePotential> potentialsToMultiply = new ArrayList<TablePotential>();
                 potentialsToMultiply.add(tablePotentials.get(0));
-                potentialsToMultiply.add(maskPotential);
+                potentialsToMultiply.addAll(maskPotential.tableProject(evidenceCase, inferenceOptions));
                 TablePotential intermediateProduct = (TablePotential) (DiscretePotentialOperations.multiply(potentialsToMultiply,
                         false));
                 potentialsToSumUp.add(intermediateProduct);
@@ -497,7 +497,27 @@ public class TreeADDPotential extends Potential {
         List<Finding> newFindings = new ArrayList<>();
         for(TreeADDBranch branch : branches)
         {
-            newFindings.addAll(branch.getPotential().getInducedFindings(evidenceCase, cycleLength));
+            if(evidenceCase.contains(topVariable))
+            {
+                boolean isInduced = false;
+                Finding finding = evidenceCase.getFinding(topVariable);
+                if(finding.getNumericalValue() != Double.MAX_VALUE)
+                {
+                    isInduced = branch.isInsideInterval(finding.getNumericalValue());
+                }else
+                {
+                    int i=0;
+                    List<State> branchStates = branch.getBranchStates();
+                    while(i < branchStates.size() && !isInduced)
+                    {
+                        isInduced = finding.getState().equals(branchStates.get(i++).getName());
+                    }
+                }
+                if(isInduced)
+                {
+                    newFindings.addAll(branch.getPotential().getInducedFindings(evidenceCase, cycleLength));
+                }
+            }
         }
         return newFindings;
     }

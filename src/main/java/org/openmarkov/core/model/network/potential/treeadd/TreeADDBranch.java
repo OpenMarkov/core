@@ -246,6 +246,11 @@ public class TreeADDBranch
     {
         return upperBound;
     }
+    
+    public boolean isInsideInterval(double numericValue)
+    {
+        return lowerBound.isBelow(numericValue) && upperBound.isAbove(numericValue);
+    }
 
     public String getLabel() {
         return this.label;

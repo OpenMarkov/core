@@ -88,10 +88,11 @@ public class ExponentialPotential extends RegressionPotential {
         List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
         projectedPotentialVariables.add(0, variables.get(0));
         TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, role);
+        int numStates = getConditionedVariable().getNumStates();
         int[] offsets = projectedPotential.getOffsets();
         int[] dimensions = projectedPotential.getDimensions();
         Evaluator evaluator = new Evaluator();
-        for (int i = 0; i < projectedPotential.values.length; i += 2) {
+        for (int i = 0; i < projectedPotential.values.length; i += numStates) {
             // Set the values of variables without evidence
             for (int j = 1; j < projectedPotentialVariables.size(); ++j) {
                 int index = (i / offsets[j]) % dimensions[j];

@@ -24,6 +24,7 @@ import org.openmarkov.core.OpenMarkovTests;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.Choice;
@@ -429,7 +430,7 @@ public class DiscretePotentialOperationsTest {
 	@Test
 	/** Multiplies and marginalize projected potentials */
 	public void testMultiplyAndMarginalizeProjected() 
-			throws NoFindingException, WrongCriterionException {
+			throws NoFindingException, WrongCriterionException, NonProjectablePotentialException {
 		// Create data
 		// Variables
 		Variable A = new Variable("A", 2);

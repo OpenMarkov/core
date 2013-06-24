@@ -77,7 +77,8 @@ public class SumPotential extends Potential {
 	 * <code>evidenceCase</code> variables.
 	 * @param evidenceCase. <code>evidenceCase</code> */
     public List<TablePotential> tableProject (EvidenceCase evidenceCase,
-                                              InferenceOptions inferenceOptions)
+                                              InferenceOptions inferenceOptions,
+                                              List<TablePotential> projectedPotentials)
         throws NonProjectablePotentialException,
         WrongCriterionException
     {

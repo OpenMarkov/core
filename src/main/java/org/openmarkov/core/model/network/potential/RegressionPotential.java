@@ -161,7 +161,8 @@ public abstract class RegressionPotential extends Potential {
 
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase,
-            InferenceOptions inferenceOptions)
+            InferenceOptions inferenceOptions,
+            List<TablePotential> projectedPotentials)
             throws NonProjectablePotentialException, WrongCriterionException {
         double[] coefficients = (sampledCoefficients == null) ? this.coefficients
                 : this.sampledCoefficients;

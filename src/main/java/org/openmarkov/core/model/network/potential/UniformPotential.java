@@ -114,10 +114,11 @@ public class UniformPotential extends Potential
      * @throws NonProjectablePotentialException when this is a conditional
      * probability potential and the conditioned variable is numeric. */
     public List<TablePotential> tableProject (EvidenceCase evidenceCase,
-                                              InferenceOptions inferenceOptions)
+                                              InferenceOptions inferenceOptions,
+                                              List<TablePotential> projectedPotentials)
         throws NonProjectablePotentialException
     {
-        List<TablePotential> projectedPotentials = new ArrayList<TablePotential> ();
+        List<TablePotential> newProjectedPotentials = new ArrayList<TablePotential> ();
         switch (role)
         {
             case CONDITIONAL_PROBABILITY :
@@ -164,7 +165,7 @@ public class UniformPotential extends Potential
                                                                  getPotentialRole ());
                     }
                 }
-                projectedPotentials.add (projectedPotential);
+                newProjectedPotentials.add (projectedPotential);
                 break;
             // In case of utility potentials, return an empty potential
             case UTILITY :
@@ -174,12 +175,12 @@ public class UniformPotential extends Potential
                     potentialVariables.removeAll (evidenceCase.getVariables ());
                 }
                 projectedPotential = new TablePotential (potentialVariables, PotentialRole.UTILITY);
-                projectedPotentials.add (projectedPotential);
+                newProjectedPotentials.add (projectedPotential);
                 break;
             default :
                 break;
         } // end of switch/case statement
-        return projectedPotentials;
+        return newProjectedPotentials;
     }
 
     /**

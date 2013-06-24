@@ -258,10 +258,11 @@ public class TreeADDPotential extends Potential {
 
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase,
-            InferenceOptions inferenceOptions)
+            InferenceOptions inferenceOptions,
+            List<TablePotential> projectedPotentials)
             throws NonProjectablePotentialException, WrongCriterionException {
         List<TablePotential> potentialsToSumUp = new ArrayList<TablePotential>();
-        List<TablePotential> projectedPotentials = new ArrayList<TablePotential>();
+        List<TablePotential> newProjectedPotentials = new ArrayList<TablePotential>();
         TablePotential projected = null;
         List<TreeADDBranch> branches = this.getBranches();
         if (topVariable.getVariableType() != VariableType.NUMERIC) {
@@ -349,13 +350,13 @@ public class TreeADDPotential extends Potential {
          * projected = DiscretePotentialOperations.reorder (projected,
          * correctOrder); } else { projected.setVariables (correctOrder); } }
          */
-        projectedPotentials.add(projected);
+        newProjectedPotentials.add(projected);
         if (role == PotentialRole.UTILITY) {
-            for (Potential auxPot : projectedPotentials) {
+            for (Potential auxPot : newProjectedPotentials) {
                 auxPot.setUtilityVariable(utilityVariable);
             }
         }
-        return projectedPotentials;
+        return newProjectedPotentials;
     }
 
     /*

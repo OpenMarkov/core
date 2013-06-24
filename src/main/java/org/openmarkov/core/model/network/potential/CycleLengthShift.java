@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
 /** Potential identical to another but moved to another temporal slice.
@@ -60,22 +62,69 @@ public class CycleLengthShift extends Potential {
 	// Methods
 	@Override
 	public List<TablePotential> tableProject(EvidenceCase evidenceCase, 
-			InferenceOptions inferenceOptions)
+			InferenceOptions inferenceOptions,
+            List<TablePotential> projectedPotentials)
 			throws NonProjectablePotentialException {
-		// TODO 
-		for (Variable variable : variables) {
-			if (!evidenceCase.contains(variable)) {
-				throw new Error("Variable " + variable.getName() + 
-				" is not included in EvidenceCase.");
-			}
-		}
-		return new ArrayList<TablePotential>();
+	    List<TablePotential> newProjectedPotentials = new ArrayList<TablePotential>(); 
+        Variable conditionedVariable = getConditionedVariable();
+	    if(conditionedVariable.getVariableType() == VariableType.NUMERIC)
+	    {
+    		for (Variable variable : variables) {
+    			if (!evidenceCase.contains(variable)) {
+    				throw new Error("Variable " + variable.getName() + 
+    				" is not included in EvidenceCase.");
+    			}
+    		}
+    		newProjectedPotentials = new ArrayList<>();
+	    }else
+	    {
+	        Variable conditioningVariable = variables.get((conditionedVariable == variables.get(0))? 1 : 0);
+	        TablePotential projectedParentPotential = findPotentialByVariable(conditioningVariable, projectedPotentials);
+	        TablePotential projectedPotential = null; 
+	        List<Variable> projectedVariables = projectedParentPotential.getVariables();
+	        if(role != PotentialRole.UTILITY)
+	        {
+                projectedVariables.remove(conditioningVariable);                
+                projectedVariables.add(0, conditionedVariable);
+	            projectedPotential = new TablePotential(projectedVariables, role);
+	        }else
+	        {
+                projectedPotential = new TablePotential(projectedVariables, role, conditionedVariable);
+	        }
+	        
+            int numStates = conditionedVariable.getNumStates();
+	        int numStatesParent = conditioningVariable.getNumStates();
+            int configurationIndex = 0; 
+	        for (int i = 0; i < projectedParentPotential.values.length; i+=numStatesParent) {
+	            projectedPotential.values[configurationIndex * numStates] = 0;
+	            for (int j = 0; j < numStatesParent; ++j) {
+                    projectedPotential.values[configurationIndex * numStates + j + 1] = projectedParentPotential.values[i
+                            + j];
+	            }
+	            configurationIndex++;
+	        }
+	        newProjectedPotentials = Arrays.asList(projectedPotential);
+	    }
+		return newProjectedPotentials;
 	}
 	
+    private TablePotential findPotentialByVariable(Variable variable, List<TablePotential> potentials) {
+        int i=0;
+        TablePotential potential = null;
+        while(i<potentials.size() && potential==null)
+        {
+            if(potentials.get(i).getConditionedVariable().equals(variable))
+            {
+                potential = potentials.get(i);
+            }
+        }
+        return potential;
+    }
+
     @Override
     public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength) {
-        Variable conditionedVariable = variables.get(0);
-        Variable conditioningVariable = variables.get(1);
+        Variable conditionedVariable = getConditionedVariable();
+        Variable conditioningVariable = variables.get((conditionedVariable == variables.get(0))? 1 : 0);
         List<Finding> inducedFindings = new ArrayList<Finding>();
         if (evidenceCase.contains(conditioningVariable)
                 && !evidenceCase.contains(conditionedVariable)) {

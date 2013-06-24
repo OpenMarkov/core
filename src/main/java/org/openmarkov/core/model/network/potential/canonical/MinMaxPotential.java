@@ -95,14 +95,16 @@ public abstract class MinMaxPotential extends ICIPotential {
 	 * @throws WrongCriterionException 	
 	 * 
 	 */
-	public ArrayList<TablePotential> tableProject(EvidenceCase evidence, 
-			InferenceOptions inferenceOptions) 
+    @Override
+	public List<TablePotential> tableProject(EvidenceCase evidence, 
+			InferenceOptions inferenceOptions,
+            List<TablePotential> projectedPotentials) 
 			throws WrongCriterionException {
-        ArrayList<TablePotential> potentials = new ArrayList<TablePotential> ();
+        List<TablePotential> potentials = new ArrayList<TablePotential> ();
 		for (TablePotential subPotential : buildSubpotentialList()) {
-			potentials.addAll(subPotential.tableProject(evidence, null));
+			potentials.addAll(subPotential.tableProject(evidence, null, projectedPotentials));
 		}
-		ArrayList<TablePotential> singleElementPotentialList = new ArrayList<TablePotential> ();
+		List<TablePotential> singleElementPotentialList = new ArrayList<TablePotential> ();
 		singleElementPotentialList.add (DiscretePotentialOperations.multiplyAndMarginalize (potentials, variables));
 		return singleElementPotentialList;
 	}

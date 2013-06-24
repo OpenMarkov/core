@@ -96,7 +96,8 @@ public class SameAsPrevious extends Potential
     // Methods
     @Override
     public List<TablePotential> tableProject (EvidenceCase evidenceCase,
-                                              InferenceOptions inferenceOptions)
+                                              InferenceOptions inferenceOptions,
+                                              List<TablePotential> projectedPotentials)
         throws NonProjectablePotentialException,
         WrongCriterionException
     {

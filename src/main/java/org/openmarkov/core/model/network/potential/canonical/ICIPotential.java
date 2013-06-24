@@ -165,7 +165,8 @@ public abstract class ICIPotential extends Potential {
     /** @param evidenceCase. <code>EvidenceCase</code>
      * @return <code>ArrayList</code> of <code>Potential</code>*/
     public List<TablePotential> tableProject (EvidenceCase evidenceCase,
-                                                   InferenceOptions inferenceOptions)
+                                                   InferenceOptions inferenceOptions,
+                                                   List<TablePotential> projectedPotentials)
         throws NonProjectablePotentialException,
         WrongCriterionException
     {

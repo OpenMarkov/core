@@ -243,13 +243,20 @@ public abstract class Potential
     /**
      * @param evidenceCase <code>EvidenceCase</code>
      * @param inferenceOptions
+     * @param projectedPotentials <code>List</code> of already projected potentials 
      * @throws WrongCriterionException
      * @throws NoFindingException
      */
-    public abstract List<TablePotential> tableProject (EvidenceCase evidenceCase,
-                                                       InferenceOptions inferenceOptions)
-        throws NonProjectablePotentialException,
-        WrongCriterionException;
+    public abstract List<TablePotential> tableProject(EvidenceCase evidenceCase,
+            InferenceOptions inferenceOptions,
+            List<TablePotential> projectedPotentials)
+            throws NonProjectablePotentialException, WrongCriterionException;
+    
+    public List<TablePotential> tableProject(EvidenceCase evidenceCase,
+            InferenceOptions inferenceOptions)
+            throws NonProjectablePotentialException, WrongCriterionException {
+        return tableProject(evidenceCase, inferenceOptions, new ArrayList<TablePotential>());
+    }
 
     /** @return isUtility <code>boolean</code> */
     public boolean isUtility ()

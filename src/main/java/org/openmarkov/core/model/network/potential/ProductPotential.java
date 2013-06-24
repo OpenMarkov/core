@@ -70,7 +70,8 @@ public class ProductPotential extends Potential {
 	 * <code>evidenceCase</code> variables.
 	 * @param evidenceCase. <code>evidenceCase</code> */
 	public ArrayList<TablePotential> tableProject(EvidenceCase evidenceCase,
-			InferenceOptions inferenceOptions)
+			InferenceOptions inferenceOptions,
+            List<TablePotential> projectedPotentials)
 	throws NonProjectablePotentialException, WrongCriterionException {
 	    /*
 		// TODO se puede simplificar proyectando cada potencial padre

@@ -22,6 +22,7 @@ import org.openmarkov.core.OpenMarkovTests;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -175,7 +176,8 @@ public class TablePotentialTest {
     }
     
     @Test
-    public void testGetAccumulateOffsets() throws NoFindingException, WrongCriterionException {
+    public void testGetAccumulateOffsets()
+            throws NoFindingException, WrongCriterionException, NonProjectablePotentialException {
     	// tablePotential1 contains B,D,A,C. Dimensions (2,2,2,2)
     	// tablePotential2 contains A,B,C. Dimensions (2,2,2)
     	int[] accOffsets = tablePotential1.getAccumulatedOffsets(
@@ -258,8 +260,8 @@ public class TablePotentialTest {
     /** tablePotential5 has two variables: fsVariable1 and fsVariable2, each one
      *  with 2 states.<p>
      *  evidenceCase: fsVariable2 = 1, fsVariable4 = 0. */
-    public void testProject1() 
-    		throws NoFindingException, WrongCriterionException {
+    public void testProject1()
+            throws NoFindingException, WrongCriterionException, NonProjectablePotentialException {
     	// Projection
         List<TablePotential> projectedPotentials = 
     		tablePotential5.tableProject(evidenceCase, null); // fsVariable2 = 1;
@@ -295,7 +297,7 @@ public class TablePotentialTest {
      *  with 2 states.<p>
      *  evidenceCase: fsVariable2 = 1, fsVariable4 = 0. */
     public void testProject2() 
-    		throws NoFindingException, WrongCriterionException {
+    		throws NoFindingException, WrongCriterionException, NonProjectablePotentialException {
     	// Projection
         List<TablePotential> projectedPotentials = 
     		tablePotential5.tableProject(evidenceCase, null); // fsVariable2 = 1;
@@ -329,7 +331,7 @@ public class TablePotentialTest {
     @Test
     /** Test multiplication of projected potentials. */
     public void testMultiplicationProjected() 
-    		throws NoFindingException, WrongCriterionException {
+    		throws NoFindingException, WrongCriterionException, NonProjectablePotentialException {
     	int dimA = 3;
     	int dimB = 2;
     	int dimC = 3;

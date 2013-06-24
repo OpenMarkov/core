@@ -90,7 +90,8 @@ public class DeltaPotential extends Potential{
 
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase,
-            InferenceOptions inferenceOptions)
+            InferenceOptions inferenceOptions,
+            List<TablePotential> projectedPotentials)
             throws NonProjectablePotentialException, WrongCriterionException {
         TablePotential projectedPotential = null;
         

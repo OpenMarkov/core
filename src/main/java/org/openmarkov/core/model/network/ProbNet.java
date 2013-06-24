@@ -559,7 +559,7 @@ public class ProbNet implements Cloneable {
      */
     public List<TablePotential> tableProjectPotentials(EvidenceCase evidenceCase)
             throws NonProjectablePotentialException, WrongCriterionException {
-        List<Potential> originalPotentials = getPotentials();
+        List<Potential> originalPotentials = getSortedPotentials();
         List<TablePotential> projectedPotentials = new ArrayList<TablePotential>();
         // each original potential may yield several projected potentials;
         List<TablePotential> potentials;
@@ -572,8 +572,8 @@ public class ProbNet implements Cloneable {
     }
 
     /**
-     * @return All the potentials of this network. <code>ArrayList</code> of
-     *         <code>Potential</code>
+     * @return All the potentials of this network. <code>List</code> of
+     *         <code>Potential</code>s.
      * @consultation
      */
     public List<Potential> getPotentials() {
@@ -584,6 +584,20 @@ public class ProbNet implements Cloneable {
         }
         return potentials;
     }
+    
+    /**
+     * @return All the potentials of this network sorted topologically.
+     *         <code>List</code> of <code>Potential</code>s.
+     * @consultation
+     */
+    public List<Potential> getSortedPotentials() {
+        List<ProbNode> nodes = ProbNetOperations.sortTopologically(this);
+        List<Potential> potentials = new ArrayList<Potential>();
+        for (ProbNode node : nodes) {
+            potentials.addAll(node.getPotentials());
+        }
+        return potentials;
+    }    
 
     /**
      * @return All the potentials of this network except those assigned to

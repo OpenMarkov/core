@@ -433,16 +433,16 @@ public class ProbNetOperations {
 
         for (ProbNode node : sortedNodes) {
             Variable oldVariable = node.getVariable();
-            EvidenceCase configuration = new EvidenceCase(evidence);
-            Potential oldPotential = node.getPotentials().get(0);
             // Should the node be converted
-            if (node.getVariable().getVariableType() == VariableType.NUMERIC
+            if (oldVariable.getVariableType() == VariableType.NUMERIC
                     && node.getNodeType() == NodeType.CHANCE) {
-                if (configuration.contains(node.getVariable())) {
+                EvidenceCase configuration = new EvidenceCase(evidence);
+                Potential oldPotential = node.getPotentials().get(0);
+                if (configuration.contains(oldVariable)) {
                     // Convert numerical variables with evidence to one-state
                     // variables
-                    double value = configuration.getFinding(node.getVariable()).numericalValue;
-                    Variable newVariable = new Variable(node.getVariable().getName(),
+                    double value = configuration.getFinding(oldVariable).numericalValue;
+                    Variable newVariable = new Variable(oldVariable.getName(),
                             String.valueOf(value));
                     node.setVariable(newVariable);
                     convertedNodes.add(node);
@@ -475,10 +475,24 @@ public class ProbNetOperations {
                     int index = 0;
                     InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
                     while (nextConfiguration) {
+                        
+                        // Calculate scalar value projecting configuration
+                        double scalarValue = Double.NEGATIVE_INFINITY;
+                        try {
+                            scalarValue = oldPotential.tableProject(configuration, inferenceOptions).get(0).values[0];
+                            scalarValue = oldVariable.round(scalarValue);
+                            projectedValues[index++] = scalarValue;
+                        } catch (NonProjectablePotentialException | WrongCriterionException e) {
+                            e.printStackTrace();
+                        }
+                        if (!newStates.contains(scalarValue)) {
+                            newStates.add(scalarValue);
+                        }
+                        
                         // Get next configuration
                         nextConfiguration = false;
                         int parentIndex = 0;
-                        while (nextConfiguration && parentIndex < parents.size()) {
+                        while (!nextConfiguration && parentIndex < parents.size()) {
                             ProbNode parent = parents.get(parentIndex);
                             int stateIndex = configuration.getFinding(parent.getVariable()).getStateIndex();
                             if (stateIndex < parent.getVariable().getNumStates() - 1) {
@@ -491,19 +505,7 @@ public class ProbNetOperations {
                                 }
                             }
                             parentIndex++;
-                        }
-
-                        // Calculate scalar value projecting configuration
-                        double scalarValue = Double.NEGATIVE_INFINITY;
-                        try {
-                            scalarValue = oldPotential.tableProject(configuration, inferenceOptions).get(0).values[0];
-                            projectedValues[index++] = scalarValue;
-                        } catch (NonProjectablePotentialException | WrongCriterionException e) {
-                            e.printStackTrace();
-                        }
-                        if (!newStates.contains(scalarValue)) {
-                            newStates.add(scalarValue);
-                        }
+                        }                        
                     }
 
                     Collections.sort(newStates);

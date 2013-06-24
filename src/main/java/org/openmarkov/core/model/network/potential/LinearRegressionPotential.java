@@ -63,7 +63,8 @@ public class LinearRegressionPotential extends RegressionPotential {
             InferenceOptions inferenceOptions,
             double[] coefficients)
             throws NonProjectablePotentialException, WrongCriterionException {
-        int numStates = getConditionedVariable().getNumStates();
+        Variable conditionedVariable = getConditionedVariable(); 
+        int numStates = conditionedVariable.getNumStates();
         Evaluator evaluator = new Evaluator();
         // Fill arrays numericValues and evidencelessVariables
         List<Variable> evidencelessVariables = new ArrayList<>();
@@ -125,8 +126,7 @@ public class LinearRegressionPotential extends RegressionPotential {
             		projectedPotential.values[i] = regression;
             	}else
             	{
-	                regression = Math.round(regression*10000)/(double)10000;
-	                int stateIndex = getConditionedVariable().getStateIndex(String.valueOf(regression));
+	                int stateIndex = getConditionedVariable().getStateIndex(regression);
 	                for (int j = 0; j < numStates; ++j) {
 	                    projectedPotential.values[i + j] = (j == stateIndex) ? 1 : 0;
 	                }

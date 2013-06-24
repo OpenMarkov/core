@@ -43,6 +43,10 @@ public class ExponentialPotential extends RegressionPotential {
         super(variables, role, covariates, coefficients);
     }
 
+    public ExponentialPotential(ExponentialPotential potential) {
+        super(potential);
+    }
+
     /**
      * Returns if an instance of a certain Potential type makes sense given the
      * variables and the potential role.
@@ -120,19 +124,7 @@ public class ExponentialPotential extends RegressionPotential {
     
     @Override
     public Potential copy() {
-        ExponentialPotential copyPotential = new ExponentialPotential(variables, role);
-        copyPotential.setCovariates(covariates.clone());
-        copyPotential.setCoefficients(coefficients.clone());
-        if(covarianceMatrix != null)
-        {
-            copyPotential.setCovarianceMatrix(covarianceMatrix.clone());
-        }else if(choleskyDecomposition != null)
-        {
-            copyPotential.setCholeskyDecomposition(choleskyDecomposition.clone());
-        }
-        copyPotential.sampledCoefficients = sampledCoefficients;
-        copyPotential.comment = comment;
-        return copyPotential;
+        return new ExponentialPotential(this);
     }
     
     @Override

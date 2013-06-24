@@ -91,8 +91,8 @@ public abstract class RegressionPotential extends Potential {
 
     public RegressionPotential(RegressionPotential potential) {
         super(potential);
-        setCovariates(covariates.clone());
-        setCoefficients(coefficients.clone());
+        setCovariates(potential.covariates.clone());
+        setCoefficients(potential.coefficients.clone());
         if(potential.covarianceMatrix != null)
         {
             setCovarianceMatrix(potential.covarianceMatrix.clone());

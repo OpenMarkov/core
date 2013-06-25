@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.OpenMarkovTests;
@@ -724,20 +725,27 @@ public class ProbNetOperationsTest {
         probNet.getProbNode(ageVar_0).setPotential(agePotential_0);
         probNet.getProbNode(ageVar_1).setPotential(new CycleLengthShift(Arrays.asList(ageVar_1, ageVar_0)));
         probNet.getProbNode(ageVar_2).setPotential(new CycleLengthShift(Arrays.asList(ageVar_2, ageVar_1)));
-        Potential ageAtStateEntryPotential_0 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_0,
+        LinearRegressionPotential ageAtStateEntryPotential_0 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_0,
                 ageVar_0,
                 timeInStateVar_0),
                 role);
+        ageAtStateEntryPotential_0.setCovariates(new String[]{"Constant", "Age [0]", "Time in state [0]"});
+        ageAtStateEntryPotential_0.setCoefficients(new double[]{0, 1, -1});
+        
         probNet.getProbNode(ageAtStateEntryVar_0).setPotential(ageAtStateEntryPotential_0);
-        Potential ageAtStateEntryPotential_1 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_1,
+        LinearRegressionPotential ageAtStateEntryPotential_1 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_1,
                 ageVar_1,
                 timeInStateVar_1),
                 role);
+        ageAtStateEntryPotential_1.setCovariates(new String[]{"Constant", "Age [1]", "Time in state [1]"});
+        ageAtStateEntryPotential_1.setCoefficients(new double[]{0, 1, -1});
         probNet.getProbNode(ageAtStateEntryVar_1).setPotential(ageAtStateEntryPotential_1);
-        Potential ageAtStateEntryPotential_2 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_2,
+        LinearRegressionPotential ageAtStateEntryPotential_2 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_2,
                 ageVar_2,
                 timeInStateVar_2),
                 role);
+        ageAtStateEntryPotential_2.setCovariates(new String[]{"Constant", "Age [2]", "Time in state [2]"});
+        ageAtStateEntryPotential_2.setCoefficients(new double[]{0, 1, -1});
         probNet.getProbNode(ageAtStateEntryVar_2).setPotential(ageAtStateEntryPotential_2);
         Potential timeInStatePotential_0 = new DeltaPotential(Arrays.asList(timeInStateVar_0), role);
         probNet.getProbNode(timeInStateVar_0).setPotential(timeInStatePotential_0);
@@ -778,7 +786,29 @@ public class ProbNetOperationsTest {
         
         probNet.getProbNode(transitionVar_2).setPotential(new UniformPotential(Arrays.asList(transitionVar_2), role));
         
-        ProbNetOperations.convertNumericalVariablesToFS(probNet, new EvidenceCase());
+        ProbNet convertedNet = ProbNetOperations.convertNumericalVariablesToFS(probNet);
+
+        double[] ageAtStateEntry_1_expectedValues = new double[]{ 0, 1, 1, 0}; 
+        double[] ageAtStateEntry_1_Values = ((TablePotential)convertedNet.getProbNode("Age at state entry [1]").getPotentials().get(0)).values;
+        
+        Assert.assertArrayEquals(ageAtStateEntry_1_expectedValues, ageAtStateEntry_1_Values, 0.001);
+
+        double[] timeInState_1_expectedValues = new double[]{ 0, 1, 1, 0}; 
+        double[] timeInState_1_Values = ((TablePotential)convertedNet.getProbNode("Time in state [1]").getPotentials().get(0)).values;
+
+        Assert.assertArrayEquals(timeInState_1_expectedValues, timeInState_1_Values, 0.001);
+
+        
+        double[] ageAtStateEntry_2_expectedValues = new double[]{ 0, 0, 1, 0, 1, 0, 1, 0, 0}; 
+        double[] ageAtStateEntry_2_Values = ((TablePotential)convertedNet.getProbNode("Age at state entry [2]").getPotentials().get(0)).values;
+        
+        Assert.assertArrayEquals(ageAtStateEntry_2_expectedValues, ageAtStateEntry_2_Values, 0.001);
+
+        double[] timeInState_2_expectedValues = new double[]{ 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0}; 
+        double[] timeInState_2_Values = ((TablePotential)convertedNet.getProbNode("Time in state [2]").getPotentials().get(0)).values;
+
+        Assert.assertArrayEquals(timeInState_2_expectedValues, timeInState_2_Values, 0.001);
+        
 	}
 
 }

@@ -208,11 +208,7 @@ public class EvidenceCase {
      *         same order: <code>ArrayList</code> of <code>Variable</code>.
      */
     public List<Variable> getVariables() {
-        List<Variable> variables = new ArrayList<Variable>();
-        for (Finding finding : findings.values()) {
-            variables.add(finding.getVariable());
-        }
-        return variables;
+        return new ArrayList<Variable>(findings.keySet());
     }
 
     /**
@@ -238,7 +234,7 @@ public class EvidenceCase {
      *            . <code>Variable</code>
      */
     public boolean contains(Variable variable) {
-        return (findings.get(variable) != null);
+        return findings.containsKey(variable);
     }
 
     /**

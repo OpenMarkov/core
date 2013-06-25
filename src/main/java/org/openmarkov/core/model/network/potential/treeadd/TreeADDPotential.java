@@ -274,7 +274,7 @@ public class TreeADDPotential extends Potential {
                 // mask potential, only the top variable
                 Variable branchVariable = branch.getRootVariable();
                 List<Variable> maskVariables = Arrays.asList(branchVariable);
-                TablePotential maskPotential =  new TablePotential(maskVariables, role);
+                TablePotential maskPotential =  new TablePotential(maskVariables, PotentialRole.CONDITIONAL_PROBABILITY);
                 List<State> branchStates = branch.getBranchStates();
                 State[] branchVariableStates = branchVariable.getStates();
                 for (int i = 0; i < branchVariableStates.length; i++) {

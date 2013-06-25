@@ -249,7 +249,8 @@ public class TreeADDBranch
     
     public boolean isInsideInterval(double numericValue)
     {
-        return lowerBound.isBelow(numericValue) && upperBound.isAbove(numericValue);
+        return (lowerBound == null || lowerBound.isBelow(numericValue))
+                && (upperBound == null || upperBound.isAbove(numericValue));
     }
 
     public String getLabel() {

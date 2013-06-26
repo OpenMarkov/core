@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -424,6 +425,7 @@ public class ProbNetOperations {
         ProbNet convertedNet = probNet.copy();
         List<ProbNode> sortedNodes = sortTopologically(convertedNet);
         List<ProbNode> convertedNodes = new ArrayList<>();
+        Map<Variable, Variable> originalVariables = new HashMap<>();
         Map<Variable, Variable> convertedVariables = new HashMap<>();
         EvidenceCase evidence = new EvidenceCase();
         try {
@@ -446,7 +448,8 @@ public class ProbNetOperations {
                     Variable newVariable = new Variable(oldVariable.getName(),
                             String.valueOf(value));
                     node.setVariable(newVariable);
-                    convertedVariables.put(newVariable, oldVariable);
+                    originalVariables.put(newVariable, oldVariable);
+                    convertedVariables.put(oldVariable, newVariable);
                     convertedNodes.add(node);
                     TablePotential potential = new TablePotential(Arrays.asList(newVariable),
                             oldPotential.getPotentialRole());
@@ -457,7 +460,7 @@ public class ProbNetOperations {
                     // For each configuration x, add f(x) to the list (if it is
                     // not already in)
                     List<ProbNode> parents = ProbNet.getProbNodesOfNodes(node.getNode().getParents());
-                    // Set initial evidence case
+                    // Set initial configuration
                     int numConfigurations = 1;
                     int[] parentIndices = new int[parents.size()];
                     for (int i = 0; i < parents.size(); ++i) {
@@ -465,8 +468,8 @@ public class ProbNetOperations {
                         numConfigurations *= parentVariable.getNumStates();
                         parentIndices[i] = 0;
                         try {
-                            if (convertedVariables.containsKey(parentVariable)) {
-                                Variable originalVariable = convertedVariables.get(parentVariable);
+                            if (originalVariables.containsKey(parentVariable)) {
+                                Variable originalVariable = originalVariables.get(parentVariable);
                                 double numericalValue = Double.valueOf(parentVariable.getStates()[0].getName());
                                 configuration.addFinding(new Finding(originalVariable,
                                         numericalValue));
@@ -504,16 +507,17 @@ public class ProbNetOperations {
                         while (!nextConfiguration && parentIndex < parents.size()) {
                             ProbNode parent = parents.get(parentIndex);
                             Variable parentVariable = parent.getVariable();
-                            Variable findingVariable = (convertedVariables.containsKey(parent.getVariable())) ? convertedVariables.get(parent.getVariable())
+                            Variable findingVariable = (originalVariables.containsKey(parent.getVariable())) ? originalVariables.get(parent.getVariable())
                                     : parent.getVariable();
                             int nextStateIndex = ++parentIndices[parentIndex];
                             if (nextStateIndex < parent.getVariable().getNumStates()) {
                                 nextConfiguration = true;
                                 try {
-                                    if (convertedVariables.containsKey(parentVariable)) {
-                                        Variable originalVariable = convertedVariables.get(parentVariable);
+                                    if (originalVariables.containsKey(parentVariable)) {
+                                        Variable originalVariable = originalVariables.get(parentVariable);
                                         double numericalValue = Double.valueOf(parentVariable.getStates()[nextStateIndex].getName());
-                                        configuration.changeFinding(new Finding(originalVariable, numericalValue));
+                                        configuration.changeFinding(new Finding(originalVariable,
+                                                numericalValue));
                                     } else if (parentVariable.getVariableType() == VariableType.FINITE_STATES) {
                                         configuration.changeFinding(new Finding(findingVariable,
                                                 nextStateIndex));
@@ -521,8 +525,7 @@ public class ProbNetOperations {
                                 } catch (InvalidStateException | IncompatibleEvidenceException e) {
                                     e.printStackTrace();
                                 }
-                            }else
-                            {
+                            } else {
                                 parentIndices[parentIndex] = 0;
                                 parentIndex++;
                             }
@@ -539,7 +542,8 @@ public class ProbNetOperations {
 
                     Variable newVariable = new Variable(oldVariable.getName(), states);
                     node.setVariable(newVariable);
-                    convertedVariables.put(newVariable, oldVariable);
+                    originalVariables.put(newVariable, oldVariable);
+                    convertedVariables.put(oldVariable, newVariable);
                     convertedNodes.add(node);
 
                     List<Variable> newPotentialVariables = new ArrayList<>();
@@ -555,14 +559,108 @@ public class ProbNetOperations {
                     for (int i = 0; i < numConfigurations; i++) {
                         int stateIndex = stateIndices.get(projectedValues[i]);
                         for (int j = 0; j < newVariableNumStates; j++) {
-                            values[i * newVariableNumStates + j] = (stateIndex == j)? 1 : 0;
+                            values[i * newVariableNumStates + j] = (stateIndex == j) ? 1 : 0;
                         }
                     }
                     node.setPotential(newPotential);
+                }
+            } else if (!node.getPotentials().isEmpty()
+                    && potentialContainsConvertedNodes(node.getPotentials().get(0),
+                            convertedVariables.keySet())) {
+                // Convert to table potential
+                Potential oldPotential = node.getPotentials().get(0);
+                List<Variable> convertedParentVariables = getConvertedParentVariables(oldPotential,
+                        convertedVariables.keySet());
+                convertedParentVariables.remove(oldPotential.getConditionedVariable());
+                EvidenceCase configuration = new EvidenceCase();
+                int[] parentIndices = new int[convertedParentVariables.size()];
+                int i = 0;
+                for (Variable parentVariable : convertedParentVariables) {
+                    parentIndices[i++] = 0;
+                    try {
+                        if (originalVariables.containsKey(parentVariable)) {
+                            Variable originalVariable = originalVariables.get(parentVariable);
+                            double numericalValue = Double.valueOf(parentVariable.getStates()[0].getName());
+                            configuration.addFinding(new Finding(originalVariable, numericalValue));
+                        } else if (parentVariable.getVariableType() == VariableType.FINITE_STATES) {
+                            configuration.addFinding(new Finding(parentVariable, 0));
+                        } else {
+                            // TODO throw some exception
+                        }
+                    } catch (InvalidStateException | IncompatibleEvidenceException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                boolean nextConfiguration = true;
+                int parentIndex = 0;
+                InferenceOptions inferenceOptions = new InferenceOptions(convertedNet, null);
+                while (nextConfiguration) {
+
+                    // Calculate scalar value projecting configuration
+                    double scalarValue = Double.NEGATIVE_INFINITY;
+                    try {
+                        scalarValue = oldPotential.tableProject(configuration, inferenceOptions).get(0).values[0];
+                        scalarValue = oldVariable.round(scalarValue);
+                    } catch (NonProjectablePotentialException | WrongCriterionException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Get next configuration
+                    nextConfiguration = false;
+                    while (!nextConfiguration && parentIndex < convertedParentVariables.size()) {
+                        Variable parentVariable = convertedParentVariables.get(parentIndex);
+                        Variable findingVariable = (originalVariables.containsKey(parentVariable)) ? originalVariables.get(parentVariable)
+                                : parentVariable;
+                        int nextStateIndex = ++parentIndices[parentIndex];
+                        if (nextStateIndex < parentVariable.getNumStates()) {
+                            nextConfiguration = true;
+                            try {
+                                if (originalVariables.containsKey(parentVariable)) {
+                                    Variable originalVariable = originalVariables.get(parentVariable);
+                                    double numericalValue = Double.valueOf(parentVariable.getStates()[nextStateIndex].getName());
+                                    configuration.changeFinding(new Finding(originalVariable,
+                                            numericalValue));
+                                } else if (parentVariable.getVariableType() == VariableType.FINITE_STATES) {
+                                    configuration.changeFinding(new Finding(findingVariable,
+                                            nextStateIndex));
+                                }
+                            } catch (InvalidStateException | IncompatibleEvidenceException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            parentIndices[parentIndex] = 0;
+                            parentIndex++;
+                        }
+                    }
+
                 }
             }
         }
 
         return convertedNet;
+    }
+
+    private static List<Variable> getConvertedParentVariables(Potential potential,
+            Set<Variable> convertedVariables) {
+        List<Variable> convertedParentVariables = new ArrayList<>();
+        for (Variable parentVariable : potential.getVariables()) {
+            if (convertedVariables.contains(parentVariable)) {
+                convertedParentVariables.add(parentVariable);
+            }
+        }
+        convertedParentVariables.remove(potential.getConditionedVariable());
+        return convertedParentVariables;
+    }
+
+    private static boolean potentialContainsConvertedNodes(Potential potential,
+            Set<Variable> convertedVariables) {
+        boolean contains = false;
+        List<Variable> variables = potential.getVariables();
+        int i = 0;
+        while (i < variables.size() && !contains) {
+            contains = convertedVariables.contains(variables.get(i));
+        }
+        return contains;
     }
 }

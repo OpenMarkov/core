@@ -184,17 +184,7 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 
 	@Override
 	public String getOperationName() {
-		return "Remove";
-	}
-
-	public String toString() {
-		if (isDirected) {
-			return new String(
-					"RemoveLinkEdit: " + variable1 + " --> " + variable2);
-		} else {
-			return new String(
-					"RemoveLinkEdit: " + variable1 + " --- " + variable2);
-		}
+		return "Remove link";
 	}
 
     @Override

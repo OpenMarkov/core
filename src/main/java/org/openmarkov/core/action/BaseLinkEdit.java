@@ -74,7 +74,7 @@ public abstract class BaseLinkEdit extends SimplePNEdit{
 	 *  <code>variable1</code> and <code>variable2</code>. */
 	@Override
 	public String toString() {
-		StringBuffer buffer = new StringBuffer( this.getClass().getSimpleName() + ": ");
+		StringBuffer buffer = new StringBuffer( getOperationName() + ": ");
 		if (variable1 == null) {
 			buffer.append("null");
 		} else {

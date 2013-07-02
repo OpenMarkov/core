@@ -29,10 +29,19 @@ public class COrientLinksEdit extends CompoundPNEdit {
 	}	
 		
 	public String toString() {
-		StringBuffer buffer = new StringBuffer("OrientLinksEdit: ");
+		StringBuffer buffer = new StringBuffer("Orient links: ");
 		for (UndoableEdit edit : edits){
-			buffer.append(edit.toString());
+			OrientLinkEdit orientLinkEdit = (OrientLinkEdit)edit;
+			buffer.append(orientLinkEdit.getVariable1().getName());
+			if (orientLinkEdit.isDirected()) {
+				buffer.append(" --> ");
+			} else {			
+				buffer.append(" --- ");
+			}
+			buffer.append(orientLinkEdit.getVariable2().getName());
+			buffer.append(", ");
 		}
+		buffer.delete(buffer.lastIndexOf(","), buffer.length());
 		return buffer.toString();
 	}
 

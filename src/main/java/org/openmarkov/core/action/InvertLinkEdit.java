@@ -151,14 +151,15 @@ public class InvertLinkEdit extends BaseLinkEdit {
 
 	@Override
 	public String getOperationName() {
-		return "Invert";
+		return "Invert link";
 	}
 	
 	/** This method assumes that the link is directed, otherwise has no sense.
 	 * @return <code>String</code> */
 	public String toString() {
-		return new String("InvertLinkEdit: " + variable1 + "-->" + variable2 + 
-				" ==> " + variable2 + "-->"	+ variable1);
+		return new StringBuffer(getOperationName()).append(": ").append(variable1).append("-->")
+				.append(variable2).append(" ==> ").append(variable2).append("-->")
+				.append(variable1).toString();
 	}
 
     @Override

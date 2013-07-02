@@ -173,7 +173,7 @@ public class AddLinkEdit extends BaseLinkEdit {
 
     @Override
     public String getOperationName() {
-        return "Add";
+        return "Add link";
     }
 
     

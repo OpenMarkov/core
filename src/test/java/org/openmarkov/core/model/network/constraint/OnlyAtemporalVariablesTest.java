@@ -38,7 +38,7 @@ public class OnlyAtemporalVariablesTest {
 		try {
 			influenceDiagram.removeConstraint(new OnlyAtemporalVariables());
 			Variable var = new Variable(" [10]", "YES", "NO");
-			influenceDiagram.addVariable(var, NodeType.CHANCE);
+			influenceDiagram.addProbNode(var, NodeType.CHANCE);
 			influenceDiagram.addConstraint(new OnlyAtemporalVariables(), true);
 		} catch (ConstraintViolationException e1) {
 			exceptionLaunched = true;

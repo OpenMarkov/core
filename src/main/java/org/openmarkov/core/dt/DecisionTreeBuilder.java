@@ -249,7 +249,7 @@ public class DecisionTreeBuilder
         if (leaves.size () > 1)
         {
             Variable svVariable = new Variable ("Global Utility");
-            svNode = probNet.addVariable (svVariable, NodeType.UTILITY);
+            svNode = probNet.addProbNode (svVariable, NodeType.UTILITY);
             List<Variable> leafVariables = new ArrayList<> (leaves.size ());
             for (ProbNode leafNode : leaves)
             {

@@ -44,7 +44,7 @@ public class OnlyFiniteStateVariablesTest {
 
 		try {
 			Variable vU=net.getVariable("U");
-			net.addVariable(vC, NodeType.CHANCE);
+			net.addProbNode(vC, NodeType.CHANCE);
 			net.addLink(vU, vC, true);
 		} catch (Exception e) {
 			e.printStackTrace();

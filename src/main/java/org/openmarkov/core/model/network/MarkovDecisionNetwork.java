@@ -112,7 +112,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 				if (getProbNode(variable) == null) {
 					ProbNode node = originalNet.getProbNode(variable);
 					NodeType nodeType = node.getNodeType();
-					addVariable(variable, nodeType);
+					addProbNode(variable, nodeType);
 				}
 				// }
 			}
@@ -143,7 +143,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 			for (Variable variable : variables) {
 				ProbNode node = originalID.getProbNode(variable);
 				NodeType nodeType = node.getNodeType();
-				addVariable(variable, nodeType);
+				addProbNode(variable, nodeType);
 			}
 		}
 

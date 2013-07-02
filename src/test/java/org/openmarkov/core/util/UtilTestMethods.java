@@ -147,7 +147,7 @@ public class UtilTestMethods {
     	Variable[] variables = new Variable[numVariables];
     	for (int i = 0; i < numVariables; i++) {
     		variables[i] = new Variable(variablesNames[i], "positive", "negative");
-    		probNet.addVariable(variables[i], NodeType.CHANCE);
+    		probNet.addProbNode(variables[i], NodeType.CHANCE);
     	}
     	return probNet;
     }

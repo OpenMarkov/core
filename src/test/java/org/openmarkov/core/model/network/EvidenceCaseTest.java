@@ -130,9 +130,9 @@ public class EvidenceCaseTest {
 		
 		NodeType nodeType = NodeType.CHANCE;
 		
-		probNet.addVariable(variableA, nodeType);
-		probNet.addVariable(variableB, nodeType);
-		probNet.addVariable(variableC, nodeType);
+		probNet.addProbNode(variableA, nodeType);
+		probNet.addProbNode(variableB, nodeType);
+		probNet.addProbNode(variableC, nodeType);
 		
 		//Links throws NodeNotFoundException
 		try {

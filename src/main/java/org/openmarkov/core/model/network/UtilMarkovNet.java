@@ -117,7 +117,7 @@ public class UtilMarkovNet {
 				if (markovNet.getProbNode(variable) == null) {
 					ProbNode node = originalNet.getProbNode(variable);
 					NodeType nodeType = node.getNodeType();
-					markovNet.addVariable(variable, nodeType);
+					markovNet.addProbNode(variable, nodeType);
 				}
 				//}
 			}
@@ -167,7 +167,7 @@ public class UtilMarkovNet {
 				if (markovNet.getProbNode(variable) == null) {
 					// in a Markov net all nodes are treated as if they were
 					// CHANCE
-					markovNet.addVariable(variable, NodeType.CHANCE);
+					markovNet.addProbNode(variable, NodeType.CHANCE);
 					
 				}
 			}

@@ -42,9 +42,9 @@ public class LinkRestrictionPotentialOperationsTest {
 		variables.add(varA);
 		variables.add(varC);
 		net = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
-		net.addVariable(varA, NodeType.CHANCE);
-		net.addVariable(varB, NodeType.CHANCE);
-		net.addVariable(varC, NodeType.CHANCE);
+		net.addProbNode(varA, NodeType.CHANCE);
+		net.addProbNode(varB, NodeType.CHANCE);
+		net.addProbNode(varC, NodeType.CHANCE);
 		ProbNode node = new ProbNode(net, varA, NodeType.CHANCE);
 		net.addProbNode(node);
 		ProbNode nodeB = new ProbNode(net, varB, NodeType.CHANCE);

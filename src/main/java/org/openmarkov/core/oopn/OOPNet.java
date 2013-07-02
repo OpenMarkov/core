@@ -103,7 +103,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
             // Add variables and create corresponding nodes
             Variable variable = probNode.getVariable();
             ProbNode newProbNode = null;
-            newProbNode = addVariable (variable, probNode.getNodeType ());
+            newProbNode = addProbNode (variable, probNode.getNodeType ());
             Node newNode = newProbNode.getNode();
             Node node = probNode.getNode();
             newNode.setCoordinateX(node.getCoordinateX());

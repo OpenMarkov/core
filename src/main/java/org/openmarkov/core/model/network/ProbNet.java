@@ -394,7 +394,7 @@ public class ProbNet implements Cloneable {
             // Add variables and create corresponding nodes
             Variable variable = probNode.getVariable();
             ProbNode newProbNode = null;
-            newProbNode = copyNet.addVariable(variable, probNode.getNodeType());
+            newProbNode = copyNet.addProbNode(variable, probNode.getNodeType());
             Node newNode = newProbNode.getNode();
             Node node = probNode.getNode();
             newNode.setCoordinateX(node.getCoordinateX());
@@ -905,7 +905,7 @@ public class ProbNet implements Cloneable {
      *         <code>this</code> network.
      * @argCondition the variable must not be in the ProbNet.
      */
-    public ProbNode addVariable(Variable variable, NodeType nodeType) {
+    public ProbNode addProbNode(Variable variable, NodeType nodeType) {
         ProbNode probNode = probNodeDepot.getProbNode(nodeType, variable);
         if (probNode == null) {
             probNode = new ProbNode(this, variable, nodeType);
@@ -1110,14 +1110,14 @@ public class ProbNet implements Cloneable {
         for (Variable variable : potentialVariables) {
             // add the variables that were not yet in the network
             if (getProbNode(variable) == null) {
-                addVariable(variable, NodeType.CHANCE);
+                addProbNode(variable, NodeType.CHANCE);
             }
         }
         // Only for utility potentials
         if (potential.isUtility()) {
             Variable utilityVariable = potential.getUtilityVariable();
             if (getProbNode(utilityVariable) == null) {
-                addVariable(utilityVariable, NodeType.UTILITY);
+                addProbNode(utilityVariable, NodeType.UTILITY);
             }
         }
     }
@@ -1427,7 +1427,7 @@ public class ProbNet implements Cloneable {
         Variable oldVariable = oldProbNode.getVariable();
         Variable newVariable = (Variable) oldVariable.clone();
         newVariable.setTimeSlice(oldVariable.getTimeSlice() + timeDifference);
-        ProbNode newProbNode = addVariable(newVariable, oldProbNode.getNodeType());
+        ProbNode newProbNode = addProbNode(newVariable, oldProbNode.getNodeType());
         Node oldNode = oldProbNode.getNode();
         Node newNode = newProbNode.getNode();
         newNode.setCoordinateX(oldNode.getCoordinateX() + coordinateXOffset);

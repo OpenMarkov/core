@@ -44,7 +44,7 @@ public class MaxNumParentsTest {
 			net.removeConstraint(constraint);
 			Variable vD = new Variable("D");
 			Variable vB = net.getVariable("B");
-			net.addVariable(vD, NodeType.CHANCE);
+			net.addProbNode(vD, NodeType.CHANCE);
 			net.addLink(vD, vB, true);
 			net.addConstraint(constraint, true);
 		} catch (ConstraintViolationException e) {

@@ -119,9 +119,9 @@ public class ProbNetOperationsTest {
 		
 		NodeType nodeType = NodeType.CHANCE;
 		
-		peque.addVariable(variableA, nodeType);
-		peque.addVariable(variableB, nodeType);
-		peque.addVariable(variableC, nodeType);
+		peque.addProbNode(variableA, nodeType);
+		peque.addProbNode(variableB, nodeType);
+		peque.addProbNode(variableC, nodeType);
 		
 		//Links throws NodeNotFoundException
 		try {
@@ -316,7 +316,7 @@ public class ProbNetOperationsTest {
 		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);
 		// add potentials and variables
 		simpleProbNet.addPotential(pA); // add variable and potential
-		simpleProbNet.addVariable(D, NodeType.DECISION);
+		simpleProbNet.addProbNode(D, NodeType.DECISION);
 		simpleProbNet.addPotential(pU);
 		simpleProbNet.addPotential(pBA);
 		simpleProbNet.addLink(B, D, true);
@@ -413,15 +413,15 @@ public class ProbNetOperationsTest {
 
 		NodeType nodeType = NodeType.CHANCE;
 
-		pruebaInferencia.addVariable(variableA, nodeType);
-		pruebaInferencia.addVariable(variableB, nodeType);
-		pruebaInferencia.addVariable(variableC, nodeType);
-		pruebaInferencia.addVariable(variableD, nodeType);
-		pruebaInferencia.addVariable(variableE, nodeType);
-		pruebaInferencia.addVariable(variableF, nodeType);
-		pruebaInferencia.addVariable(variableG, nodeType);
-		pruebaInferencia.addVariable(variableH, nodeType);
-		pruebaInferencia.addVariable(variableI, nodeType);
+		pruebaInferencia.addProbNode(variableA, nodeType);
+		pruebaInferencia.addProbNode(variableB, nodeType);
+		pruebaInferencia.addProbNode(variableC, nodeType);
+		pruebaInferencia.addProbNode(variableD, nodeType);
+		pruebaInferencia.addProbNode(variableE, nodeType);
+		pruebaInferencia.addProbNode(variableF, nodeType);
+		pruebaInferencia.addProbNode(variableG, nodeType);
+		pruebaInferencia.addProbNode(variableH, nodeType);
+		pruebaInferencia.addProbNode(variableI, nodeType);
 
 		pruebaInferencia.addLink(variableA, variableB, true);
 		pruebaInferencia.addLink(variableA, variableC, true);
@@ -686,18 +686,18 @@ public class ProbNetOperationsTest {
         transitionVar_2.setTimeSlice(2);
 
         // Nodes
-        probNet.addVariable(ageAtStateEntryVar_0, NodeType.CHANCE);
-        probNet.addVariable(ageAtStateEntryVar_1, NodeType.CHANCE);
-        probNet.addVariable(ageAtStateEntryVar_2, NodeType.CHANCE);
-        probNet.addVariable(ageVar_0, NodeType.CHANCE);
-        probNet.addVariable(ageVar_1, NodeType.CHANCE);
-        probNet.addVariable(ageVar_2, NodeType.CHANCE);
-        probNet.addVariable(timeInStateVar_0, NodeType.CHANCE);
-        probNet.addVariable(timeInStateVar_1, NodeType.CHANCE);
-        probNet.addVariable(timeInStateVar_2, NodeType.CHANCE);
-        probNet.addVariable(transitionVar_0, NodeType.CHANCE);
-        probNet.addVariable(transitionVar_1, NodeType.CHANCE);
-        probNet.addVariable(transitionVar_2, NodeType.CHANCE);
+        probNet.addProbNode(ageAtStateEntryVar_0, NodeType.CHANCE);
+        probNet.addProbNode(ageAtStateEntryVar_1, NodeType.CHANCE);
+        probNet.addProbNode(ageAtStateEntryVar_2, NodeType.CHANCE);
+        probNet.addProbNode(ageVar_0, NodeType.CHANCE);
+        probNet.addProbNode(ageVar_1, NodeType.CHANCE);
+        probNet.addProbNode(ageVar_2, NodeType.CHANCE);
+        probNet.addProbNode(timeInStateVar_0, NodeType.CHANCE);
+        probNet.addProbNode(timeInStateVar_1, NodeType.CHANCE);
+        probNet.addProbNode(timeInStateVar_2, NodeType.CHANCE);
+        probNet.addProbNode(transitionVar_0, NodeType.CHANCE);
+        probNet.addProbNode(transitionVar_1, NodeType.CHANCE);
+        probNet.addProbNode(transitionVar_2, NodeType.CHANCE);
 
         // Links
         probNet.addLink(ageVar_0, ageVar_1, true);

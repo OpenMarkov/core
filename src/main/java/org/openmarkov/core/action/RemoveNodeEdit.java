@@ -59,7 +59,7 @@ public class RemoveNodeEdit extends SimplePNEdit implements UsesVariable {
 		super.undo();
 		if (variable != null) {
 			try {
-				probNet.addVariable(variable, kindOfNode);
+				probNet.addProbNode(variable, kindOfNode);
 			} catch (Exception e) {
 				logger.fatal (e);
 			}

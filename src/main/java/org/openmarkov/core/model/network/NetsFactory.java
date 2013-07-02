@@ -103,7 +103,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	 */
 	private static void addVariables(ProbNet net,NodeType nodeType,Variable...variables){
 		for (int i=0;i<variables.length;i++){
-			net.addVariable(variables[i],nodeType);
+			net.addProbNode(variables[i],nodeType);
 		}
 	}
 	

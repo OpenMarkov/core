@@ -192,7 +192,7 @@ public class ProbNetTest {
 		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);
 		// add potentials and variables
 		simpleProbNet.addPotential(pA); // add variable and potential
-		simpleProbNet.addVariable(D, NodeType.DECISION);
+		simpleProbNet.addProbNode(D, NodeType.DECISION);
 		simpleProbNet.addPotential(pU);
 		simpleProbNet.addPotential(pBA);
 		simpleProbNet.addLink(B, D, true);
@@ -269,9 +269,9 @@ public class ProbNetTest {
 		
 		NodeType nodeType = NodeType.CHANCE;
 		
-		peque.addVariable(variableA, nodeType);
-		peque.addVariable(variableB, nodeType);
-		peque.addVariable(variableC, nodeType);
+		peque.addProbNode(variableA, nodeType);
+		peque.addProbNode(variableB, nodeType);
+		peque.addProbNode(variableC, nodeType);
 		
 		//Links throws NodeNotFoundException
 		try {
@@ -416,15 +416,15 @@ public class ProbNetTest {
 				pruebaInferencia = new ProbNet();
 				
 							
-				pruebaInferencia.addVariable(variableA, nodeType);
-				pruebaInferencia.addVariable(variableB, nodeType);
-				pruebaInferencia.addVariable(variableC, nodeType);
-				pruebaInferencia.addVariable(variableD, nodeType);
-				pruebaInferencia.addVariable(variableE, nodeType);
-				pruebaInferencia.addVariable(variableF, nodeType);
-				pruebaInferencia.addVariable(variableG, nodeType);
-				pruebaInferencia.addVariable(variableH, nodeType);
-				pruebaInferencia.addVariable(variableI, nodeType);
+				pruebaInferencia.addProbNode(variableA, nodeType);
+				pruebaInferencia.addProbNode(variableB, nodeType);
+				pruebaInferencia.addProbNode(variableC, nodeType);
+				pruebaInferencia.addProbNode(variableD, nodeType);
+				pruebaInferencia.addProbNode(variableE, nodeType);
+				pruebaInferencia.addProbNode(variableF, nodeType);
+				pruebaInferencia.addProbNode(variableG, nodeType);
+				pruebaInferencia.addProbNode(variableH, nodeType);
+				pruebaInferencia.addProbNode(variableI, nodeType);
 				
 				//Links throws NodeNotFoundException
 				try {
@@ -524,7 +524,7 @@ public class ProbNetTest {
 		assertTrue(probNodeA.getPotentials().contains(pA));
 		// Add a potential with two variables. Both variables exists in probNet
 		try {
-			probNet.addVariable(B, NodeType.CHANCE);
+			probNet.addProbNode(B, NodeType.CHANCE);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

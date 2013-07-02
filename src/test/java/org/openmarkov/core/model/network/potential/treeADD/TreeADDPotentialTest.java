@@ -153,8 +153,8 @@ public class TreeADDPotentialTest {
 		
 		nodeType = NodeType.CHANCE;
 		
-		probNet.addVariable(variableA, nodeType);
-		probNet.addVariable(variableB, nodeType);
+		probNet.addProbNode(variableA, nodeType);
+		probNet.addProbNode(variableB, nodeType);
 		probNet.addLink(variableA, variableB, true);
 		probNet.addPotential(potentialvaluesA);
 		probNet.addPotential(treeADD);

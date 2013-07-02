@@ -37,7 +37,7 @@ public class OnlyTemporalVariablesTest {
 		try {
 			network.removeConstraint(new OnlyTemporalVariables());
 			Variable var = new Variable("A");
-			network.addVariable(var, NodeType.CHANCE);
+			network.addProbNode(var, NodeType.CHANCE);
 			network.addConstraint(new OnlyTemporalVariables(), true);
 		} catch (ConstraintViolationException e1) {
 			exceptionLaunched = true;

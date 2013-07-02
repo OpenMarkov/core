@@ -43,7 +43,7 @@ private ProbNet influenceDiagram;
 			influenceDiagram.removeConstraint(new NoMixedParents());
 			Variable vc=influenceDiagram.getVariable("C");
 			Variable ve=new Variable("E", 2);
-			influenceDiagram.addVariable(ve, NodeType.DECISION);
+			influenceDiagram.addProbNode(ve, NodeType.DECISION);
 			influenceDiagram.addLink(ve, vc, true);
 			influenceDiagram.addConstraint(new NoMixedParents(), true);
 		}  catch (ConstraintViolationException e) {

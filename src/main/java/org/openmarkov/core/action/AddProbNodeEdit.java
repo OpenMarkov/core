@@ -86,7 +86,7 @@ public class AddProbNodeEdit extends SimplePNEdit
     public void doEdit ()
     {
         // Adds the new variable to network ( creates a probNode instance )
-        newNode = probNet.addVariable (variable, nodeType);
+        newNode = probNet.addProbNode (variable, nodeType);
         // TODO revisar si es conveniente utilizar una constraint
         // Sets a uniformPotential for the new probNode
         // Decision node has no potential when is created

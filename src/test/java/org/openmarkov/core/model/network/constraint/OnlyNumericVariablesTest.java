@@ -39,7 +39,7 @@ public class OnlyNumericVariablesTest {
 		try {
 			influenceDiagram.removeConstraint(new OnlyNumericVariables());
 			Variable varE = new Variable("E", 2);
-			influenceDiagram.addVariable(varE, NodeType.CHANCE);
+			influenceDiagram.addProbNode(varE, NodeType.CHANCE);
 			influenceDiagram.addConstraint(new OnlyNumericVariables(), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;

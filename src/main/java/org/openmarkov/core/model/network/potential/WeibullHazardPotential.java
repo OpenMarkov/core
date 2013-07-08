@@ -20,6 +20,7 @@ import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -97,33 +98,7 @@ public class WeibullHazardPotential extends RegressionPotential {
     public List<TablePotential> tableProject(EvidenceCase evidenceCase,
             InferenceOptions inferenceOptions, double[] coefficients)
             throws NonProjectablePotentialException, WrongCriterionException {
-        
-        int timeSlice = variables.get(0).getTimeSlice();
-        
-        // Set value for t and tMinusOne
-        double t = timeSlice;
-        double tMinusOne = timeSlice - 1;
-        if (timeVariable != null) {
-            if (!evidenceCase.contains(timeVariable)) {
-                throw new NonProjectablePotentialException("Can not project potential without evidence on timeVariable "
-                        + timeVariable.getName());
-            }
-            t = evidenceCase.getFinding(timeVariable).getNumericalValue();
-            if (timeVariable != null
-                    && inferenceOptions.probNet.containsShiftedVariable(timeVariable, -1)) {
-                Variable timeVariablePreviousSlice = null;
-                try {
-                    timeVariablePreviousSlice = inferenceOptions.probNet.getShiftedVariable(timeVariable, -1);
-                    tMinusOne = evidenceCase.getFinding(timeVariablePreviousSlice).getNumericalValue();
-                } catch (ProbNodeNotFoundException e) {
-                    // Unreachable code.
-                }
-            }else
-            {
-                tMinusOne = Double.NEGATIVE_INFINITY;
-            }
-        }
-        
+        Variable conditionedVariable = getConditionedVariable();
         // Fill arrays numericValues and  evidencelessVariables
         List<Variable> evidencelessVariables = new ArrayList<>();
         List<Integer> evidencelessVariablesIndex = new ArrayList<>();
@@ -147,44 +122,79 @@ public class WeibullHazardPotential extends RegressionPotential {
                 }
             }
         }
+        
+        int numConfigurations = 1;
+        for(Variable evidencelessVariable : evidencelessVariables)
+        {
+        	numConfigurations *= evidencelessVariable.getNumStates();
+        }
 
         List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
         projectedPotentialVariables.add(0, variables.get(0));
+		if (timeVariable != null && timeVariable.getVariableType() != VariableType.NUMERIC) {
+			projectedPotentialVariables.add(timeVariable);
+		}
         TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, role);
         int[] offsets = projectedPotential.getOffsets();
         int[] dimensions = projectedPotential.getDimensions();
+        
+        double[] ts = null;
+        if(timeVariable != null && timeVariable.getVariableType() != VariableType.NUMERIC)
+        {
+        	ts = new double[timeVariable.getNumStates()];
+        	double timeDifference = conditionedVariable.getTimeSlice() - timeVariable.getTimeSlice();
+        	for(int i=0; i<ts.length;++i)
+        	{
+        		ts[i] = Double.parseDouble(timeVariable.getStates()[i].getName()) + timeDifference;
+        	}
+        }else
+        {
+        	ts = new double[1];
+        	double t = conditionedVariable.getTimeSlice();
+	        if (timeVariable != null) {
+	            if (!evidenceCase.contains(timeVariable)) {
+	                throw new NonProjectablePotentialException("Can not project potential without evidence on timeVariable "
+	                        + timeVariable.getName());
+	            }
+	        	double timeDifference = conditionedVariable.getTimeSlice() - timeVariable.getTimeSlice();
+	            t = evidenceCase.getFinding(timeVariable).getNumericalValue() + timeDifference;
+	        }
+	        ts[0] = t;
+        }
         double shape = Math.exp(coefficients[gammaIndex]);
         Evaluator evaluator = new Evaluator();
-        for (int i = 0; i < projectedPotential.values.length; i += 2) {
-            // Set the values of variables without evidence
-            for (int j = 1; j < projectedPotentialVariables.size(); ++j) {
-                int index = (i / offsets[j]) % dimensions[j];
-                variableValues.put(projectedPotentialVariables.get(j).getName(), String.valueOf(index));
-            }
-            evaluator.setVariables(variableValues);
-            double lambda = coefficients[constantIndex];
-            for (int j = 0; j < coefficients.length; ++j) {
-                double covariateValue = 0.0;
-                if(j!=gammaIndex && j!=constantIndex)
-                {
-                    try {
-                        covariateValue = Double.parseDouble(evaluator.evaluate(processedCovariates[j]));
-                    } catch (NumberFormatException | EvaluationException e) {
-                        e.printStackTrace();
-                    }
-                    lambda += covariateValue * coefficients[j];
-                }
-            }
-            lambda = Math.exp(lambda);
-            double probability = 0;
-            if (tMinusOne >= 0) {
-                double diff = Math.pow(tMinusOne, shape) - Math.pow(t, shape);
-                probability = 1 - Math.exp(lambda * diff);
-            }
-            // p
-            projectedPotential.values[i + 1] = probability;
-            // Complement (1-p)
-            projectedPotential.values[i] = 1 - probability;
+        for(int timeVariableState = 0; timeVariableState < ts.length; ++timeVariableState)
+        {
+        	double t = ts[timeVariableState];
+	        for (int i = 0; i < numConfigurations; i ++) {
+	        	int configBaseIndex = i*2 + timeVariableState * numConfigurations;
+	            // Set the values of variables without evidence
+	            for (int j = 1; j < projectedPotentialVariables.size(); ++j) {
+	                int index = (configBaseIndex / offsets[j]) % dimensions[j];
+	                variableValues.put(projectedPotentialVariables.get(j).getName(), String.valueOf(index));
+	            }
+	            evaluator.setVariables(variableValues);
+	            double lambda = coefficients[constantIndex];
+	            for (int j = 0; j < coefficients.length; ++j) {
+	                double covariateValue = 0.0;
+	                if(j!=gammaIndex && j!=constantIndex)
+	                {
+	                    try {
+	                        covariateValue = Double.parseDouble(evaluator.evaluate(processedCovariates[j]));
+	                    } catch (NumberFormatException | EvaluationException e) {
+	                        e.printStackTrace();
+	                    }
+	                    lambda += covariateValue * coefficients[j];
+	                }
+	            }
+	            lambda = Math.exp(lambda);
+	            double diff = Math.pow(t - 1, shape) - Math.pow(t, shape);
+	            double probability = 1 - Math.exp(lambda * diff);
+	            // p
+	            projectedPotential.values[configBaseIndex + 1] = probability;
+	            // Complement (1-p)
+	            projectedPotential.values[configBaseIndex] = 1 - probability;
+	        }
         }
 
         return Arrays.asList(projectedPotential);
@@ -226,5 +236,16 @@ public class WeibullHazardPotential extends RegressionPotential {
     @Override
     public String toString() {
         return super.toString() + " = Hazard (Weibull)";
-    }       
+    }
+
+	@Override
+	public void shift(ProbNet probNet, int timeDifference) throws ProbNodeNotFoundException {
+		super.shift(probNet, timeDifference);
+		if(timeVariable != null)
+		{
+			timeVariable = probNet.getShiftedVariable(timeVariable, timeDifference);
+		}
+	}
+    
+    
 }

@@ -847,5 +847,31 @@ public class ProbNetOperationsTest {
 		
 		Assert.assertArrayEquals(expectedValues, originalPotential.values, 0.0001);
 	}
+	
+	@Test
+    public final void testSumProjectedPotentialUnorderedVariables() throws Exception {
+		Variable varTransition = new Variable ("Transition", "no", "yes");
+		Variable varTherapy = new Variable ("Therapy", "placebo", "drug");
+		Variable varState = new Variable ("State", "dead", "low", "medium", "high");
+		List<Variable> originalVariables = Arrays.asList(varTransition, varState, varTherapy);
+		List<Variable> projectedPotentialVariables = Arrays.asList(varTransition, varTherapy, varState);
+		TablePotential originalPotential = new TablePotential(originalVariables, PotentialRole.CONDITIONAL_PROBABILITY);
+		TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
+		projectedPotential.values =  new double [] {1, 0, 1, 0, 1, 0, 1, 0, 0.883, 0.117, 0.904, 0.096, 0.764, 0.236, 0.773, 0.227};
+		EvidenceCase configuration = new EvidenceCase();
+		
+		for(int i=0; i < originalPotential.values.length; ++i)
+		{
+			originalPotential.values[i] = 0;
+		}
+		
+		ProbNetOperations.sumProjectedPotential(originalPotential, projectedPotential, configuration);
+		
+		double[] expectedValues = new double[] {1, 0, 1, 0, 0.883, 0.117, 0.764, 0.236, 1, 0, 1, 0, 0.904, 0.096, 0.773, 0.227};
+		
+		Assert.assertArrayEquals(expectedValues, originalPotential.values, 0.0001);
+	}	
+	
+	
 
 }

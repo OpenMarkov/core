@@ -577,6 +577,10 @@ public class ProbNetOperations {
                 List<Variable> newPotentialVariables = getConvertedPotentialVariables(oldPotential, convertedVariables);
                 TablePotential newPotential = new TablePotential(newPotentialVariables,
                         oldPotential.getPotentialRole());
+                if(oldPotential.isUtility())
+                {
+                	newPotential.setUtilityVariable(oldPotential.getUtilityVariable());
+                }
         		for(int i=0; i < newPotential.values.length; ++i)
         		{
         			newPotential.values[i] = 0;
@@ -657,16 +661,16 @@ public class ProbNetOperations {
     	List<Variable> unprojectedVariables = projectedPotential.getVariables();
     	int[] unprojectedVariablesIndices = new int[unprojectedVariables.size()];
         int[] potentialVariableIndices = new int[variables.size()];
-        int j = 0;
         // Set indices for initial configuration
         for(int i=0; i< potentialVariableIndices.length; ++i)
         {
-        	if(configuration.contains(variables.get(i)))
+        	Variable variable = variables.get(i);
+        	if(configuration.contains(variable))
         	{
-        		potentialVariableIndices[i] = configuration.getState(variables.get(i));
+        		potentialVariableIndices[i] = configuration.getState(variable);
         	}else
         	{
-        		unprojectedVariablesIndices[j++] = i;
+        		unprojectedVariablesIndices[unprojectedVariables.indexOf(variable)] = i;
         		potentialVariableIndices[i] = 0;
         	}
         }
@@ -675,7 +679,7 @@ public class ProbNetOperations {
     	int projectedConfigIndex = 0;
         // Index of the current configuration in the original potential
         int configIndex = 0;
-        int unprojectedParentIndex = 1;
+        int unprojectedParentIndex = (conditionedVariable == variables.get(unprojectedVariablesIndices[0]))? 1 : 0;
         boolean nextConfiguration = true;
         while(nextConfiguration)
         {

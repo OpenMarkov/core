@@ -28,8 +28,6 @@ public abstract class RegressionPotential extends Potential {
     };
     
     protected static final String CONSTANT = "Constant";
-
-    protected int constantIndex = 0;
     
     /**
      * Covariates
@@ -166,12 +164,13 @@ public abstract class RegressionPotential extends Potential {
             throws NonProjectablePotentialException, WrongCriterionException {
         double[] coefficients = (sampledCoefficients == null) ? this.coefficients
                 : this.sampledCoefficients;
-        return tableProject(evidenceCase, inferenceOptions, coefficients);
+        return tableProject(evidenceCase, inferenceOptions, coefficients, processedCovariates);
     }
 
     protected abstract List<TablePotential> tableProject(EvidenceCase evidenceCase,
             InferenceOptions inferenceOptions,
-            double[] coefficients)
+            double[] coefficients,
+            String[] covariates)
             throws NonProjectablePotentialException, WrongCriterionException;
 
     @Override

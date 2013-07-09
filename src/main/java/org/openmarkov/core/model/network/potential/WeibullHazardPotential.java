@@ -30,13 +30,6 @@ import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 public class WeibullHazardPotential extends RegressionPotential {
 
     protected static final String GAMMA = "Gamma";
-    /**
-     * In the coefficients array of a Weibull function, in the first position of
-     * the array the gamma (ln shape) parameter is stored and in the second
-     * position of the array the constant coefficient is stored
-     */
-    protected int gammaIndex = 0;
-    protected int constantIndex = 1;
     
     /**
      * Time variable
@@ -96,13 +89,26 @@ public class WeibullHazardPotential extends RegressionPotential {
 
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase,
-            InferenceOptions inferenceOptions, double[] coefficients)
+            InferenceOptions inferenceOptions, double[] coefficients,String[] covariates)
             throws NonProjectablePotentialException, WrongCriterionException {
         Variable conditionedVariable = getConditionedVariable();
         // Fill arrays numericValues and  evidencelessVariables
         List<Variable> evidencelessVariables = new ArrayList<>();
         List<Integer> evidencelessVariablesIndex = new ArrayList<>();
         Map<String, String> variableValues = new HashMap<>();
+        
+        int gammaIndex = -1;
+        int constantIndex = -1;
+        for(int i=0; i < covariates.length; ++i)
+        {
+            if(covariates[i].equals(GAMMA))
+            {
+                gammaIndex = i;
+            }else if(covariates[i].equals(CONSTANT))
+            {
+                constantIndex = i;
+            }
+        }        
 
         for (int i = 1; i < variables.size(); ++i) {
             Variable variable = variables.get(i);
@@ -180,7 +186,7 @@ public class WeibullHazardPotential extends RegressionPotential {
 	                if(j!=gammaIndex && j!=constantIndex)
 	                {
 	                    try {
-	                        covariateValue = Double.parseDouble(evaluator.evaluate(processedCovariates[j]));
+	                        covariateValue = Double.parseDouble(evaluator.evaluate(covariates[j]));
 	                    } catch (NumberFormatException | EvaluationException e) {
 	                        e.printStackTrace();
 	                    }
@@ -198,21 +204,6 @@ public class WeibullHazardPotential extends RegressionPotential {
         }
 
         return Arrays.asList(projectedPotential);
-    }
-
-    @Override
-    public void setCovariates(String[] covariates) {
-        super.setCovariates(covariates);
-        for(int i=0; i < covariates.length; ++i)
-        {
-            if(covariates[i].equals(GAMMA))
-            {
-                gammaIndex = i;
-            }else if(covariates[i].equals(CONSTANT))
-            {
-                constantIndex = i;
-            }
-        }
     }
     
     @Override

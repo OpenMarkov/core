@@ -61,7 +61,8 @@ public class LinearRegressionPotential extends RegressionPotential {
     @Override
     protected List<TablePotential> tableProject(EvidenceCase evidenceCase,
             InferenceOptions inferenceOptions,
-            double[] coefficients)
+            double[] coefficients,
+            String[] covariates)
             throws NonProjectablePotentialException, WrongCriterionException {
         Variable conditionedVariable = getConditionedVariable(); 
         int numStates = conditionedVariable.getNumStates();
@@ -71,6 +72,14 @@ public class LinearRegressionPotential extends RegressionPotential {
         List<Integer> evidencelessVariablesIndex = new ArrayList<>();
         Map<String, String> variableValues = new HashMap<>();
 
+        int constantIndex = -1;
+        for(int i=0; i < covariates.length; ++i)
+        {
+            if(covariates[i].equals(CONSTANT))
+            {
+                constantIndex = i;
+            }
+        }        
         for (int i = 1; i < variables.size(); ++i) {
             Variable variable = variables.get(i);
 
@@ -113,7 +122,7 @@ public class LinearRegressionPotential extends RegressionPotential {
                 double covariateValue = 0.0;
                 if (j != constantIndex) {
                     try {
-                        covariateValue = Double.parseDouble(evaluator.evaluate(processedCovariates[j]));
+                        covariateValue = Double.parseDouble(evaluator.evaluate(covariates[j]));
                     } catch (NumberFormatException | EvaluationException e) {
                         e.printStackTrace();
                     }

@@ -75,15 +75,20 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase,
             InferenceOptions inferenceOptions,
-            double[] coefficients)
+            double[] coefficients,
+            String[] covariates)
             throws NonProjectablePotentialException, WrongCriterionException {
         double[] weibullCoeficients = new double[coefficients.length+1];
-        weibullCoeficients[0] = 0; // The exponential is a special case of Weibull where k=1 (gamma= ln(k));
+        String[] weibullCovariates = new String[covariates.length+1];
+        // The exponential is a special case of Weibull where k=1 (gamma= ln(k));
+        weibullCoeficients[0] = 0;
+        weibullCovariates[0] = GAMMA;
         for(int i = 0; i < coefficients.length; ++i)
         {
             weibullCoeficients[i+1] = coefficients[i];
+            weibullCovariates[i+1] = covariates[i];
         }
-        return super.tableProject(evidenceCase, inferenceOptions, weibullCoeficients);
+        return super.tableProject(evidenceCase, inferenceOptions, weibullCoeficients, weibullCovariates);
     }
 
     @Override
@@ -94,5 +99,5 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
     @Override
     public String toString() {
         return super.toShortString() + " = Hazard (Exponential)";
-    }      
+    }    
 }

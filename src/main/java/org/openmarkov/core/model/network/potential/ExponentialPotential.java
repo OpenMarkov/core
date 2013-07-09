@@ -66,12 +66,20 @@ public class ExponentialPotential extends RegressionPotential {
     @Override
     protected List<TablePotential> tableProject(EvidenceCase evidenceCase,
             InferenceOptions inferenceOptions,
-            double[] coefficients)
+            double[] coefficients,
+            String[] covariates)
             throws NonProjectablePotentialException, WrongCriterionException {
         // Fill arrays numericValues and evidencelessVariables
         List<Variable> evidencelessVariables = new ArrayList<>();
         List<Integer> evidencelessVariablesIndex = new ArrayList<>();
         Map<String, String> variableValues = new HashMap<>();
+        
+		int constantIndex = -1;
+		for (int i = 0; i < covariates.length; ++i) {
+			if (covariates[i].equals(CONSTANT)) {
+				constantIndex = i;
+			}
+		}
 
         for (int i = 1; i < variables.size(); ++i) {
             Variable variable = variables.get(i);
@@ -92,13 +100,19 @@ public class ExponentialPotential extends RegressionPotential {
         List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
         projectedPotentialVariables.add(0, variables.get(0));
         TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, role);
-        int numStates = getConditionedVariable().getNumStates();
+        if(isUtility())
+        {
+        	projectedPotential.setUtilityVariable(utilityVariable);
+        }
+        Variable conditionedVariable = getConditionedVariable();
+        int numStates = conditionedVariable.getNumStates();
+        int parentFirstIndex = (conditionedVariable == projectedPotentialVariables.get(0))? 1 :0;
         int[] offsets = projectedPotential.getOffsets();
         int[] dimensions = projectedPotential.getDimensions();
         Evaluator evaluator = new Evaluator();
         for (int i = 0; i < projectedPotential.values.length; i += numStates) {
             // Set the values of variables without evidence
-            for (int j = 1; j < projectedPotentialVariables.size(); ++j) {
+            for (int j = parentFirstIndex; j < projectedPotentialVariables.size(); ++j) {
                 int index = (i / offsets[j]) % dimensions[j];
                 variableValues.put(projectedPotentialVariables.get(j).getName(),
                         String.valueOf(index));
@@ -109,7 +123,7 @@ public class ExponentialPotential extends RegressionPotential {
                 double covariateValue = 0.0;
                 if (j != constantIndex) {
                     try {
-                        covariateValue = Double.parseDouble(evaluator.evaluate(processedCovariates[j]));
+                        covariateValue = Double.parseDouble(evaluator.evaluate(covariates[j]));
                     } catch (NumberFormatException | EvaluationException e) {
                         e.printStackTrace();
                     }

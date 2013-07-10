@@ -679,7 +679,6 @@ public class ProbNetOperations {
     	int projectedConfigIndex = 0;
         // Index of the current configuration in the original potential
         int configIndex = 0;
-        int unprojectedParentIndex = (conditionedVariable == variables.get(unprojectedVariablesIndices[0]))? 1 : 0;
         boolean nextConfiguration = true;
         while(nextConfiguration)
         {
@@ -694,7 +693,7 @@ public class ProbNetOperations {
 	        
 	        // Get next configuration
 	        nextConfiguration = false;
-	        unprojectedParentIndex = 1;
+	        int unprojectedParentIndex = (conditionedVariable == variables.get(unprojectedVariablesIndices[0]))? 1 : 0;
 	        while(!nextConfiguration && unprojectedParentIndex < unprojectedVariablesIndices.length)
 	        {
 	        	int parentIndex = unprojectedVariablesIndices[unprojectedParentIndex];

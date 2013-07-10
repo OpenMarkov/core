@@ -872,6 +872,29 @@ public class ProbNetOperationsTest {
 		Assert.assertArrayEquals(expectedValues, originalPotential.values, 0.0001);
 	}	
 	
+	@Test
+    public final void testSumProjectedUtilityPotential() throws Exception {
+		Variable costVar = new Variable ("Cost", true, 0.0, Double.POSITIVE_INFINITY, false, 0.001);
+		Variable varTherapy = new Variable ("Therapy", "placebo", "drug");
+		Variable varStateA = new Variable ("State A", "no", "yes");
+		Variable varStateB = new Variable ("State B", "no", "yes");
+		Variable ageVar = new Variable ("Age", "4.4");
+		List<Variable> originalVariables = Arrays.asList(varTherapy, varStateA, varStateB, ageVar);
+		List<Variable> projectedPotentialVariables = Arrays.asList(varTherapy, varStateA, varStateB);
+		TablePotential originalPotential = new TablePotential(originalVariables, PotentialRole.UTILITY, costVar);
+		TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, PotentialRole.UTILITY, costVar);
+		projectedPotential.values =  new double [] {19.969, 19.542, 18.858, 18.455, 20.161, 19.731, 19.04, 18.633};
+		EvidenceCase configuration = new EvidenceCase();
+		configuration.addFinding(new Finding(ageVar, 0));
+		
+		ProbNetOperations.sumProjectedPotential(originalPotential, projectedPotential, configuration);
+		
+		double[] expectedValues = new double[] {19.969, 19.542, 18.858, 18.455, 20.161, 19.731, 19.04, 18.633};
+		
+		Assert.assertArrayEquals(expectedValues, originalPotential.values, 0.001);
+	}	
+		
+	
 	
 
 }

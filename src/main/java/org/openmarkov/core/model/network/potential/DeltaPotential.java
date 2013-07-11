@@ -58,6 +58,7 @@ public class DeltaPotential extends Potential{
         }else
         {
             state = conditionedVariable.getStates()[0];
+            stateIndex = conditionedVariable.getStateIndex(state);
         }
     }
     
@@ -67,6 +68,7 @@ public class DeltaPotential extends Potential{
         if(potential.state != null)
         {
             state = potential.state;
+            stateIndex = getConditionedVariable().getStateIndex(state);
         }else
         {
             numericValue = potential.numericValue;
@@ -138,6 +140,7 @@ public class DeltaPotential extends Potential{
     public void setValue(State state)
     {
     	this.state = state;
+    	stateIndex = getConditionedVariable().getStateIndex(state);
     }
     
     public void setValue(double numericValue)

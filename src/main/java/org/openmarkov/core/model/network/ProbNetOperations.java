@@ -422,18 +422,12 @@ public class ProbNetOperations {
      * @param evidence
      * @return
      */
-    public static ProbNet convertNumericalVariablesToFS(ProbNet probNet) {
+    public static ProbNet convertNumericalVariablesToFS(ProbNet probNet, EvidenceCase evidence) {
         ProbNet convertedNet = probNet.copy();
         List<ProbNode> sortedNodes = sortTopologically(convertedNet);
         List<ProbNode> convertedNodes = new ArrayList<>();
         Map<Variable, Variable> originalVariables = new LinkedHashMap<>();
         Map<Variable, Variable> convertedVariables = new LinkedHashMap<>();
-        EvidenceCase evidence = new EvidenceCase();
-        try {
-            evidence.extendEvidence(convertedNet, 1);
-        } catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e) {
-            e.printStackTrace();
-        }
 
         for (ProbNode node : sortedNodes) {
             Variable oldVariable = node.getVariable();
@@ -585,7 +579,8 @@ public class ProbNetOperations {
         		{
         			newPotential.values[i] = 0;
         		}                
-                EvidenceCase configuration = new EvidenceCase();
+                EvidenceCase oldPotentialConfiguration = new EvidenceCase(evidence);
+                EvidenceCase newPotentialConfiguration = new EvidenceCase(evidence);
                 // Create initial configuration
                 int[] convertedParentIndices = new int[convertedParentVariables.size()];
                 int i = 0;
@@ -595,7 +590,8 @@ public class ProbNetOperations {
                         if (originalVariables.containsKey(convertedVariable)) {
                             Variable originalVariable = originalVariables.get(convertedVariable);
                             double numericalValue = Double.valueOf(convertedVariable.getStates()[0].getName());
-                            configuration.addFinding(new Finding(originalVariable, numericalValue));
+                            oldPotentialConfiguration.addFinding(new Finding(originalVariable, numericalValue));
+                            newPotentialConfiguration.addFinding(new Finding(convertedVariable, 0));
                         }
                     } catch (InvalidStateException | IncompatibleEvidenceException e) {
                         e.printStackTrace();
@@ -610,34 +606,40 @@ public class ProbNetOperations {
                     // Calculate projected table potential
                     TablePotential projectedPotential = null;
                     try {
-                    	projectedPotential = oldPotential.tableProject(configuration, inferenceOptions).get(0);
+                    	projectedPotential = oldPotential.tableProject(oldPotentialConfiguration, inferenceOptions).get(0);
                     } catch (NonProjectablePotentialException | WrongCriterionException e) {
                         e.printStackTrace();
                     }
                     
                     // Copy values of projected potential onto the new potential
-                    sumProjectedPotential(newPotential, projectedPotential, convertedParentVariables, convertedParentIndices);
+                    sumProjectedPotential(newPotential, projectedPotential, newPotentialConfiguration);
 
                     // Get next configuration
                     nextConfiguration = false;
                     parentIndex = 0;
                     while (!nextConfiguration && parentIndex < convertedParentVariables.size()) {
                         Variable convertedVariable = convertedParentVariables.get(parentIndex);
-                        Variable originalVariable = originalVariables.get(convertedVariable);
                         int nextStateIndex = ++convertedParentIndices[parentIndex];
+                        Variable originalVariable = originalVariables.get(convertedVariable);
+                        try {
                         if (nextStateIndex < convertedVariable.getNumStates()) {
                             nextConfiguration = true;
-                            try {
 								double numericalValue = Double.valueOf(convertedVariable
 										.getStates()[nextStateIndex].getName());
-								configuration.changeFinding(new Finding(originalVariable,
+								oldPotentialConfiguration.changeFinding(new Finding(originalVariable,
 										numericalValue));
-                            } catch (InvalidStateException | IncompatibleEvidenceException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            convertedParentIndices[parentIndex] = 0;
-                            parentIndex++;
+								newPotentialConfiguration.changeFinding(new Finding(convertedVariable, nextStateIndex));
+	                        } else {
+	                            convertedParentIndices[parentIndex] = 0;
+								double numericalValue = Double.valueOf(convertedVariable
+										.getStates()[0].getName());
+								oldPotentialConfiguration.changeFinding(new Finding(originalVariable,
+										numericalValue));
+								newPotentialConfiguration.changeFinding(new Finding(convertedVariable, 0));
+	                            parentIndex++;
+	                        }
+                        } catch (InvalidStateException | IncompatibleEvidenceException e) {
+                            e.printStackTrace();
                         }
                     }
 
@@ -648,6 +650,12 @@ public class ProbNetOperations {
 
         return convertedNet;
     }
+    
+    public static ProbNet convertNumericalVariablesToFS(ProbNet probNet)
+    {
+    	return convertNumericalVariablesToFS(probNet, new EvidenceCase());
+    }
+
 
     /**
      * 

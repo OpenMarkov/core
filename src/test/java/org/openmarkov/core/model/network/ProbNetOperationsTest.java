@@ -773,17 +773,17 @@ public class ProbNetOperationsTest {
 						transitionPotentialBranch_2, new ArrayList<Variable>())));
         probNet.getProbNode(timeInStateVar_2).setPotential(timeInStatePotential_2);
 
-        WeibullHazardPotential transitionPotential_0 = new WeibullHazardPotential(Arrays.asList(transitionVar_1, ageAtStateEntryVar_0, timeInStateVar_0), role);
-        transitionPotential_0.setTimeVariable(timeInStateVar_0);
-        transitionPotential_0.setCovariates(new String[]{"Gamma", "Constant", "Age at state entry [0]"});
-        transitionPotential_0.setCoefficients(new double[]{0.3757164, -1.166541, 0.002097});
-        probNet.getProbNode(transitionVar_1).setPotential(transitionPotential_0);
-
-        WeibullHazardPotential transitionPotential_1 = new WeibullHazardPotential(Arrays.asList(transitionVar_2, ageAtStateEntryVar_1, timeInStateVar_1), role);
-        transitionPotential_1.setTimeVariable(timeInStateVar_1);
-        transitionPotential_1.setCovariates(new String[]{"Gamma", "Constant", "Age at state entry [1]"});
+        WeibullHazardPotential transitionPotential_1 = new WeibullHazardPotential(Arrays.asList(transitionVar_1, ageAtStateEntryVar_0, timeInStateVar_0), role);
+        transitionPotential_1.setTimeVariable(timeInStateVar_0);
+        transitionPotential_1.setCovariates(new String[]{"Gamma", "Constant", "Age at state entry [0]"});
         transitionPotential_1.setCoefficients(new double[]{0.3757164, -1.166541, 0.002097});
-        probNet.getProbNode(transitionVar_2).setPotential(transitionPotential_1);
+        probNet.getProbNode(transitionVar_1).setPotential(transitionPotential_1);
+
+        WeibullHazardPotential transitionPotential_2 = new WeibullHazardPotential(Arrays.asList(transitionVar_2, ageAtStateEntryVar_1, timeInStateVar_1), role);
+        transitionPotential_2.setTimeVariable(timeInStateVar_1);
+        transitionPotential_2.setCovariates(new String[]{"Gamma", "Constant", "Age at state entry [1]"});
+        transitionPotential_2.setCoefficients(new double[]{0.3757164, -1.166541, 0.002097});
+        probNet.getProbNode(transitionVar_2).setPotential(transitionPotential_2);
         
         probNet.getProbNode(transitionVar_3).setPotential(new UniformPotential(Arrays.asList(transitionVar_3), role));
         

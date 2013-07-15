@@ -28,4 +28,20 @@ public abstract class ProbDensFunction
     public abstract double getMaximum ();
 
     public abstract double getSample (Random randomGenerator);
+    
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		ProbDensFunctionType probDensAnnotation = getClass().getAnnotation(ProbDensFunctionType.class);
+		if(probDensAnnotation != null)
+		{
+			sb.append(probDensAnnotation.name());
+			sb.append(" :");
+		}
+		for(double parameter : getParameters())
+		{
+			sb.append(parameter + " ");
+		}
+		return sb.toString();
+	}    
 }

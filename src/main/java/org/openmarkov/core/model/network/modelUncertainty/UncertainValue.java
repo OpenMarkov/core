@@ -58,4 +58,18 @@ public class UncertainValue {
 	public double getSample(Random randomGenerator) {
 		return probDensFunction.getSample(randomGenerator);
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		if(name != null && name.isEmpty())
+		{
+			sb.append(name);
+			sb.append(": ");
+		}
+		sb.append(probDensFunction.toString());
+		return sb.toString();
+	}
+	
+	
 }

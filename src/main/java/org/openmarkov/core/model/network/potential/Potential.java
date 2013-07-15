@@ -282,7 +282,7 @@ public abstract class Potential
             conditionedVariable = (utilityVariable != null)? utilityVariable : variables.get (0);
             break;
         default:
-            conditionedVariable = null;
+            conditionedVariable = variables.get (0);
             break;
         }
         return conditionedVariable;

@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -96,52 +97,49 @@ public class DiscretePotentialOperationsTest {
     }
 
 	@Test
-	public void testAdd() {
+	public void testSum() {
 		List<TablePotential> potentials = new ArrayList<TablePotential>();
 		potentials.add(commonVariables.t2);
 		potentials.add(commonVariables.t4);
 		// Call method under test
-		TablePotential addition = DiscretePotentialOperations.sum(potentials);
+		TablePotential sum = DiscretePotentialOperations.sum(potentials);
 		// test variables
-		List<Variable> additionVariables = addition.getVariables();
-		assertEquals(4, additionVariables.size());
-		List<Variable> testVariables = new ArrayList<Variable>();
-		testVariables.add(commonVariables.a);
-		testVariables.add(commonVariables.b);
-		testVariables.add(commonVariables.c);
-		testVariables.add(commonVariables.d);
-		assertTrue(additionVariables.containsAll(testVariables));
+		List<Variable> sumVariables = sum.getVariables();
+		assertEquals(4, sumVariables.size());
+		List<Variable> testVariables = Arrays.asList(commonVariables.a, commonVariables.b,
+				commonVariables.c, commonVariables.d);
+		assertTrue(sumVariables.containsAll(testVariables));
 		// test table content
-		double[] table = addition.values;
+		double[] table = sum.values;
 		assertEquals(36, table.length);
 		int[] configuration = { 0, 0, 0, 0 };
 		assertEquals(0.3,
-				getConfiguration(testVariables, configuration, addition),
+				getConfiguration(testVariables, configuration, sum),
 				OpenMarkovTests.maxError);
 		configuration[0] = 1; // a=1, b=0, c=0, d=0
 		assertEquals(0.3,
-				getConfiguration(testVariables, configuration, addition),
+				getConfiguration(testVariables, configuration, sum),
 				OpenMarkovTests.maxError);
 		configuration[0] = 0;
 		configuration[1] = 1; // a=0, b=1, c=0, d=0
 		assertEquals(0.4,
-				getConfiguration(testVariables, configuration, addition),
+				getConfiguration(testVariables, configuration, sum),
 				OpenMarkovTests.maxError);
 		configuration[1] = 0;
 		configuration[2] = 1; // a=0, b=0, c=1, d=0
 		assertEquals(0.9,
-				getConfiguration(testVariables, configuration, addition),
+				getConfiguration(testVariables, configuration, sum),
 				OpenMarkovTests.maxError);
 		configuration[2] = 0;
 		configuration[3] = 1; // a=0, b=0, c=0, d=1
 		assertEquals(0.5,
-				getConfiguration(testVariables, configuration, addition),
+				getConfiguration(testVariables, configuration, sum),
 				OpenMarkovTests.maxError);
 		configuration[0] = 1;
 		configuration[1] = 1;
 		configuration[2] = 1; // a=1, b=1, c=1, d=1
 		assertEquals(0.6,
-				getConfiguration(testVariables, configuration, addition),
+				getConfiguration(testVariables, configuration, sum),
 				OpenMarkovTests.maxError);
 	}
 

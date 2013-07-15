@@ -28,6 +28,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -682,6 +683,12 @@ public class ProbNetOperations {
         		potentialVariableIndices[i] = 0;
         	}
         }
+        // Add uncertain values if projected potential has them
+        if(projectedPotential.isUncertain() && !potential.isUncertain())
+        {
+        	potential.uncertainValues = new UncertainValue[potential.getTableSize()];
+        }
+        
         Variable conditionedVariable = potential.getConditionedVariable();
         // Index of the current configuration in the projected potential
     	int projectedConfigIndex = 0;
@@ -695,6 +702,10 @@ public class ProbNetOperations {
 	        for(int i = 0; i< conditionedVariable.getNumStates(); ++i)
 	        {
 				potential.values[configIndex + i] = projectedPotential.values[projectedConfigIndex + i];
+				if(projectedPotential.isUncertain())
+				{
+					potential.uncertainValues[configIndex + i] = projectedPotential.uncertainValues[projectedConfigIndex + i];
+				}
 	        }
 	        // TODO update projectedConfigIndex
 	        projectedConfigIndex += conditionedVariable.getNumStates();		

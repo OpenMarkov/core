@@ -199,7 +199,6 @@ public final class DiscretePotentialOperations {
         }
 
         int numPotentials = potentials.size();
-        PotentialRole role = getRole(tablePotentials);
 
         // Gets the union
         List<Variable> resultVariables = AuxiliaryOperations.getUnionVariables(potentials);
@@ -211,29 +210,29 @@ public final class DiscretePotentialOperations {
             tables[i] = potentials.get(i).values;
         }
 
-        // Gets dimension
-        int[] resultDimension = TablePotential.calculateDimensions(resultVariables);
+        // Gets dimensions
+        int[] resultDimensions = TablePotential.calculateDimensions(resultVariables);
 
-        // Gets offset accumulate
-        int[][] offsetAccumulate = DiscretePotentialOperations.getAccumulatedOffsets(potentials,
+        // Gets accumulated offsets
+        int[][] accumulatedOffsets = DiscretePotentialOperations.getAccumulatedOffsets(potentials,
                 resultVariables);
 
         // Gets coordinate
-        int[] resultCoordinate;
+        int[] resultCoordinates;
         if (numVariables != 0) {
-            resultCoordinate = new int[numVariables];
+            resultCoordinates = new int[numVariables];
         } else {
-            resultCoordinate = new int[1];
-            resultCoordinate[0] = 0;
+            resultCoordinates = new int[1];
+            resultCoordinates[0] = 0;
         }
 
         // Position in each table potential
-        int[] potentialsPositions = new int[numPotentials];
+        int[] potentialPositions = new int[numPotentials];
         for (int i = 0; i < numPotentials; i++) {
-            potentialsPositions[i] = 0;
+            potentialPositions[i] = 0;
         }
 
-        // Add
+        // Sum
         int incrementedVariable = 0;
         int[] dimensions = (!resultVariables.isEmpty()) ? TablePotential.calculateDimensions(resultVariables)
                 : new int[0];
@@ -246,17 +245,17 @@ public final class DiscretePotentialOperations {
         double[] resultValues = new double[tableSize];
 
         if (potentials.size() > 0) {
-            double addResult;
+            double sum;
             for (int resultPosition = 0; resultPosition < tableSize; resultPosition++) {
                 /*
                  * increment the result coordinate and find out which variable
                  * is to be incremented
                  */
-                for (int iVariable = 0; iVariable < resultCoordinate.length; iVariable++) {
+                for (int iVariable = 0; iVariable < resultCoordinates.length; iVariable++) {
                     // try by incrementing the current variable (given by
                     // iVariable)
-                    resultCoordinate[iVariable]++;
-                    if (resultCoordinate[iVariable] != resultDimension[iVariable]) {
+                    resultCoordinates[iVariable]++;
+                    if (resultCoordinates[iVariable] != resultDimensions[iVariable]) {
                         // we have incremented the right variable
                         incrementedVariable = iVariable;
                         // do not increment other variables;
@@ -267,18 +266,18 @@ public final class DiscretePotentialOperations {
                      * resultCoordinate (the next iteration of the for-loop will
                      * increment the next variable)
                      */
-                    resultCoordinate[iVariable] = 0;
+                    resultCoordinates[iVariable] = 0;
                 }
-                addResult = 0;
 
-                // multiply
+                // sum
+                sum = 0;
                 for (int iPotential = 0; iPotential < numPotentials; iPotential++) {
-                    // multiply the numbers
-                    addResult = addResult + tables[iPotential][potentialsPositions[iPotential]];
+                    // sum the numbers
+                    sum = sum + tables[iPotential][potentialPositions[iPotential]];
                     // update the current position in each potential table
-                    potentialsPositions[iPotential] += offsetAccumulate[iPotential][incrementedVariable];
-                }
-                resultValues[resultPosition] = addResult;
+                    potentialPositions[iPotential] += accumulatedOffsets[iPotential][incrementedVariable];
+                }                
+                resultValues[resultPosition] = sum;
             }
         }
         // Sum constant potentials to the result
@@ -288,7 +287,7 @@ public final class DiscretePotentialOperations {
                 resultValues[i] = resultValues[i] + sumConstantPotentials;
             }
         }
-        return new TablePotential(resultVariables, role, resultValues);
+        return new TablePotential(resultVariables, getRole(tablePotentials), resultValues);
     }
 
     public static TablePotential sum(TablePotential... tablePotentials) {

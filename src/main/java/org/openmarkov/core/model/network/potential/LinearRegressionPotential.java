@@ -33,6 +33,11 @@ public class LinearRegressionPotential extends RegressionPotential {
     public LinearRegressionPotential(List<Variable> variables, PotentialRole role) {
         super(variables, role, getDefaultCovariates(variables, role), new double[variables.size()]);
     }
+    
+    public LinearRegressionPotential(List<Variable> variables, PotentialRole role, Variable utilityVariable) {
+        super(variables, role, getDefaultCovariates(variables, role), new double[variables.size()+1]);
+        this.utilityVariable = utilityVariable;
+    }      
 
     public LinearRegressionPotential(List<Variable> variables, PotentialRole role,
             String[] covariates, double[] coefficients) {
@@ -55,7 +60,7 @@ public class LinearRegressionPotential extends RegressionPotential {
      *            . <code>PotentialRole</code>.
      */
     public static boolean validate(ProbNode probNode, List<Variable> variables, PotentialRole role) {
-        return variables.get(0).getVariableType() == VariableType.NUMERIC && variables.size() > 1;
+        return variables.get(0).getVariableType() == VariableType.NUMERIC;
     }    
 
     @Override
@@ -149,12 +154,7 @@ public class LinearRegressionPotential extends RegressionPotential {
 
     @Override
     public Potential copy() {
-        LinearRegressionPotential copyPotential = new LinearRegressionPotential(variables,
-                role,
-                covariates,
-                coefficients);
-        copyPotential.comment = comment;
-        return copyPotential;
+        return new LinearRegressionPotential(this);
     }
 
 }

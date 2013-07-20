@@ -198,5 +198,13 @@ public class SameAsPrevious extends Potential
     @Override
     public String toString() {
         return super.toString() + " = SameAsPrevious";
-    }     
+    }
+
+	@Override
+	public void replaceNumericVariable(Variable convertedParentVariable) {
+		super.replaceNumericVariable(convertedParentVariable);
+		originalPotential.replaceNumericVariable(convertedParentVariable);
+	}     
+    
+    
 }

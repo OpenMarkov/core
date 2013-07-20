@@ -599,10 +599,6 @@ public class TreeADDPotential extends Potential {
 				// Find out which is the relevant potential for this state of the root variable
 				
 				// Copy the value of the relevant potential onto the result potential
-				if((resultValues.length <= resultPosition) || tables.length <= potentialIndex || tables[potentialIndex].length <= potentialPositions[potentialIndex])
-				{
-					System.out.println("fdx");
-				}
 				resultValues[resultPosition] =  tables[potentialIndex][potentialPositions[potentialIndex]];
 				if(uncertaintyTables[potentialIndex]!=null)
 				{
@@ -623,5 +619,40 @@ public class TreeADDPotential extends Potential {
 		}
 		return resultPotential;
 	}
+
+	@Override
+	public void replaceNumericVariable(Variable convertedParentVariable) {
+		super.replaceNumericVariable(convertedParentVariable);
+		
+		if(topVariable.getName().equals(convertedParentVariable.getName()))
+		{
+			State[] states = convertedParentVariable.getStates();
+			double[] stateValues = new double[states.length];
+			for(int i=0; i< states.length; ++i)
+			{
+				stateValues[i] = Double.parseDouble(states[i].getName());
+			}			
+			for(TreeADDBranch branch: branches)
+			{
+				List<State> branchStates = new ArrayList<>();
+				for(int i=0; i< stateValues.length; ++i)
+				{
+					if(branch.isInsideInterval(stateValues[i]))
+					{
+						branchStates.add(states[i]);
+					}
+				}
+				branch.setStates(branchStates);
+				branch.setRootVariable(convertedParentVariable);
+			}
+			topVariable = convertedParentVariable;
+		}		
+		for(TreeADDBranch branch: branches)
+		{
+			branch.getPotential().replaceNumericVariable(convertedParentVariable);
+		}
+	}
+	
+	
 
 }

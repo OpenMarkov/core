@@ -175,7 +175,7 @@ public abstract class RegressionPotential extends Potential {
 
     @Override
     public Potential sample() {
-        if (covarianceMatrix != null) {
+        if (choleskyDecomposition != null) {
             if (this.sampledCoefficients == null) {
                 this.sampledCoefficients = new double[coefficients.length];
             }

@@ -602,4 +602,20 @@ public abstract class Potential
         }
         return getProbability (configuration);
     }
+
+	public void replaceNumericVariable(Variable convertedParentVariable) {
+		int varIndex = -1;
+		for(int i=0; i<variables.size();++i)
+		{
+			if(variables.get(i).getName().equals(convertedParentVariable.getName()))
+			{
+				varIndex = i;
+			}
+		}
+		if(varIndex != -1)
+		{
+			variables.set(varIndex, convertedParentVariable);
+		}
+			
+	}
 }

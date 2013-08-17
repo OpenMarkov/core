@@ -88,7 +88,7 @@ public class LinearRegressionPotential extends RegressionPotential {
         for (int i = 1; i < variables.size(); ++i) {
             Variable variable = variables.get(i);
 
-            if (!evidenceCase.contains(variable)) {
+            if (evidenceCase == null || !evidenceCase.contains(variable)) {
                 if (variable.getVariableType() == VariableType.NUMERIC) {
                     throw new NonProjectablePotentialException("Can not project potential with numeric variable "
                             + variable.getName());

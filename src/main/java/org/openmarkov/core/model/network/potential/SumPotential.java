@@ -9,19 +9,19 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 
 /** Potential associated to supervalue node to indicate that the utility is a
@@ -82,56 +82,16 @@ public class SumPotential extends Potential {
         throws NonProjectablePotentialException,
         WrongCriterionException
     {
-/*		// TODO se puede simplificar proyectando cada potencial padre
-		// dentro del bucle for. Asi se elimina el metodo getTableProjectedParentPotentials
-		// Get potentials to be multiplied
-		ArrayList<Potential> factorPotentials = 
-				new ArrayList<Potential>(parentProbNodes.size());
-		for (ProbNode parentProbNode : parentProbNodes) {
-			factorPotentials.add(parentProbNode.getPotentials().get(0));
+		List<Variable> parentVariables = new ArrayList<>(variables);
+		parentVariables.remove(getConditionedVariable());
+		List<TablePotential> parentPotentials = new ArrayList<>();
+		for(Variable parentVariable : parentVariables)
+		{
+			parentPotentials.add(findPotentialByVariable(parentVariable, projectedPotentials));
 		}
-		ArrayList<TablePotential> projectedFactorPotentials =
-				getTableProjectedParentPotentials(
-						factorPotentials, evidenceCase, inferenceOptions);
-		TablePotential multiplication = 
-				DiscretePotentialOperations.multiply(projectedFactorPotentials);
-		if (multiplication.isUtility() && 
-				multiplication.getUtilityVariable() == null) {
-			multiplication.setUtilityVariable(utilityVariable);
-		}
-		return multiplication.tableProject(evidenceCase, inferenceOptions);
-		*/
-	       throw new NonProjectablePotentialException("Cannot project into tables a SumPotential");
-	}
-
-//	/**
-//	 * @param parentPotentials
-//	 * @param evidenceCase
-//	 * @param inferenceOptions
-//	 * @return
-//	 * @throws NonProjectablePotentialException
-//	 * @throws WrongCriterionException
-//	 */
-//    private List<TablePotential> getTableProjectedParentPotentials (List<Potential> parentPotentials,
-//                                                                    EvidenceCase evidenceCase,
-//                                                                    InferenceOptions inferenceOptions)
-//        throws NonProjectablePotentialException,
-//        WrongCriterionException
-//    {
-//        List<TablePotential> tableProjectedParentPotentials = new ArrayList<TablePotential> (
-//                                                                                             parentPotentials.size ());
-//        for (Potential potential : parentPotentials)
-//        {
-//            tableProjectedParentPotentials.addAll (potential.tableProject (evidenceCase,
-//                                                                           inferenceOptions));
-//        }
-//        return tableProjectedParentPotentials;
-//    }
-
-	@Override
-	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength)
-			throws IncompatibleEvidenceException {
-		return null;
+		TablePotential sumPotential = DiscretePotentialOperations.sum(parentPotentials);
+		sumPotential.utilityVariable = utilityVariable;
+		return Arrays.asList(sumPotential);
 	}
 
     @Override

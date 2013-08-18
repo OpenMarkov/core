@@ -39,7 +39,7 @@ public abstract class Potential
 {
     // Constants
     /** Maximum size of a String used in toString() */
-    protected final int            maxLengthString = 150;
+    protected static final int            STRING_MAX_LENGTH = 150;
     // Attributes
     /**
      * <code>List</code> of <code>Variable</code>s.
@@ -432,7 +432,7 @@ public abstract class Potential
             switch (role)
             {
                 case UTILITY :
-                    buffer.append (utilityVariable.getName ());
+                    buffer.append (utilityVariable == null? "unspecified" : utilityVariable.getName ());
                     break;
                 case CONDITIONAL_PROBABILITY :
                     break;
@@ -522,9 +522,9 @@ public abstract class Potential
         if (arg0.getClass ().equals (this.getClass ()))
         {
             Potential potential = (Potential) arg0;
-            return variables.equals (potential.getVariables ())
-                   && type == potential.getPotentialType ()
-                   && role == potential.getPotentialRole ();
+            return variables.equals (potential.variables)
+                   && type == potential.type
+                   && role == potential.role;
         }
         else
         {

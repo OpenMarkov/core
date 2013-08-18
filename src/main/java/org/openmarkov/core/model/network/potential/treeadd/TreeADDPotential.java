@@ -266,7 +266,7 @@ public class TreeADDPotential extends Potential {
 			for (TreeADDBranch branch : branches) {
 				Potential branchPotential = branch.getPotential();
 				List<TablePotential> tablePotentials = branchPotential.tableProject(evidenceCase,
-						inferenceOptions);
+						inferenceOptions, projectedPotentials);
 				potentialsToBlend.put(branch, tablePotentials.get(0));
 			}
 			projected = blendPotentials(topVariable, potentialsToBlend, evidenceCase);

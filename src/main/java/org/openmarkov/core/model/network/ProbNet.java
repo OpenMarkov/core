@@ -565,7 +565,7 @@ public class ProbNet implements Cloneable {
         List<TablePotential> potentials;
         for (Potential potential : originalPotentials) {
             InferenceOptions inferenceOptions = new InferenceOptions(this, null);
-            potentials = potential.tableProject(evidenceCase, inferenceOptions);
+            potentials = potential.tableProject(evidenceCase, inferenceOptions, projectedPotentials);
             projectedPotentials.addAll(potentials);
         }
         return projectedPotentials;

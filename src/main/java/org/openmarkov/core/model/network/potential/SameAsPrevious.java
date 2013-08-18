@@ -105,7 +105,7 @@ public class SameAsPrevious extends Potential
         potentialToBeProjected.setVariables(variables);
         potentialToBeProjected.setUtilityVariable(utilityVariable);
         
-        return potentialToBeProjected.tableProject (evidenceCase, inferenceOptions);
+        return potentialToBeProjected.tableProject (evidenceCase, inferenceOptions, projectedPotentials);
     }
 
     public Potential getOriginalPotential ()

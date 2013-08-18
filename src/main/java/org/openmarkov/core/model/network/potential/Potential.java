@@ -275,14 +275,11 @@ public abstract class Potential
         Variable conditionedVariable = null;
         switch (role)
         {
-        case CONDITIONAL_PROBABILITY:
-            conditionedVariable = variables.get (0);
-            break;
         case UTILITY:
             conditionedVariable = (utilityVariable != null)? utilityVariable : variables.get (0);
             break;
         default:
-            conditionedVariable = variables.get (0);
+            conditionedVariable = variables.isEmpty()? null : variables.get (0);
             break;
         }
         return conditionedVariable;
@@ -616,6 +613,19 @@ public abstract class Potential
 		{
 			variables.set(varIndex, convertedParentVariable);
 		}
-			
 	}
+
+    protected static TablePotential findPotentialByVariable(Variable variable, List<TablePotential> potentials) {
+        int i=0;
+        TablePotential potential = null;
+        while(i<potentials.size() && potential==null)
+        {
+            if(variable.equals(potentials.get(i).getConditionedVariable()))
+            {
+                potential = potentials.get(i);
+            }
+            ++i;
+        }
+        return potential;
+    }	
 }

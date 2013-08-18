@@ -112,20 +112,7 @@ public class CycleLengthShift extends Potential {
 	    }
 		return Arrays.asList(projectedPotential);
 	}
-	
-    private TablePotential findPotentialByVariable(Variable variable, List<TablePotential> potentials) {
-        int i=0;
-        TablePotential potential = null;
-        while(i<potentials.size() && potential==null)
-        {
-            if(potentials.get(i).getConditionedVariable().equals(variable))
-            {
-                potential = potentials.get(i);
-            }
-            ++i;
-        }
-        return potential;
-    }
+
 
     @Override
     public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength) {

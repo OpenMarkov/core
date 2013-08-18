@@ -1123,16 +1123,16 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         StringBuffer buffer = new StringBuffer(super.toString());
         // Print configurations
         int valuesPosition = 0;
-        if (buffer.length() < maxLengthString) {
+        if (buffer.length() < STRING_MAX_LENGTH) {
             if (variables.size() > 0) {
                 buffer.append(" = {");
             } else {
                 buffer.append((role == PotentialRole.UTILITY) ? " = " : " ");
             }
         }
-        while ((buffer.length() < maxLengthString) && (valuesPosition < values.length)) {
+        while ((buffer.length() < STRING_MAX_LENGTH) && (valuesPosition < values.length)) {
             buffer.append(formatter.format(values[valuesPosition++]));
-            if ((valuesPosition < values.length) && (buffer.length() < (maxLengthString - 2))) {
+            if ((valuesPosition < values.length) && (buffer.length() < (STRING_MAX_LENGTH - 2))) {
                 buffer.append(", ");
             }
         }

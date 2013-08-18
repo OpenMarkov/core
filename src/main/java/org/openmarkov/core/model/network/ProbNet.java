@@ -1222,24 +1222,32 @@ public class ProbNet implements Cloneable {
 
     /**
      * @param nodes
-     *            list of nodes of this <code>ProbNet</code>.
-     *            <code>ArrayList</code> of <code>extends Node</code>
+     *            list of <code>Node</code>s
      * @return variables corresponding to the received nodes.
-     *         <code>ArrayList</code> of <code>Variable</code>
+     *         <code>List</code> of <code>Variable</code>
      */
-    public static List<Variable> getVariables(List<?> objects) {
-        List<Variable> variables = new ArrayList<Variable>(objects.size());
-        for (Object object : objects) {
-            if (object.getClass() == Node.class) {
-                ProbNode probNode = (ProbNode) ((Node) object).getObject();
+    public static List<Variable> getVariablesOfNodes(List<Node> nodes) {
+        List<Variable> variables = new ArrayList<Variable>(nodes.size());
+        for (Node node : nodes) {
+                ProbNode probNode = (ProbNode) node.getObject();
                 variables.add(probNode.getVariable());
-            } else if (object.getClass() == ProbNode.class) {
-                ProbNode probNode = (ProbNode) object;
-                variables.add(probNode.getVariable());
-            }
         }
         return variables;
     }
+    
+    /**
+     * @param nodes
+     *            list of <code>ProbNode</code>s
+     * @return variables corresponding to the received nodes.
+     *         <code>List</code> of <code>Variable</code>
+     */
+    public static List<Variable> getVariables(List<ProbNode> nodes) {
+        List<Variable> variables = new ArrayList<Variable>(nodes.size());
+        for (ProbNode node : nodes) {
+            variables.add(node.getVariable());
+        }
+        return variables;
+    }    
 
     /**
      * @return All the variables. <code>ArrayList</code> of

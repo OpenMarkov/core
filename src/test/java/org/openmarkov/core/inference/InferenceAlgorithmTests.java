@@ -222,7 +222,7 @@ public abstract class InferenceAlgorithmTests {
 	@SuppressWarnings("restriction")
 	protected void printExceptionAndFailIfImplemented(Exception e) {
 		if (e.getClass()!=NotImplementedException.class){
-			System.err.println(e.getMessage());
+			e.printStackTrace();
 			fail();
 		}
 	}
@@ -1463,7 +1463,7 @@ public abstract class InferenceAlgorithmTests {
 	protected void checkUtility(TablePotential x, double v) {
 
 		assertEquals(1, x.getTableSize());
-		assertEquals(x.values[0], v, maxError);
+		assertEquals(v, x.values[0], maxError);
 
 	}
 	

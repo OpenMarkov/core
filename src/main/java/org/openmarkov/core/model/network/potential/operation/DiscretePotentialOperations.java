@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.potential.operation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -170,8 +171,7 @@ public final class DiscretePotentialOperations {
 
     /**
      * @param tablePotentials
-     *            <code>ArrayList</code> of <code>extends 
-     * Potential</code>.
+     *            <code>List</code> of <code>TablePotential</code>s.
      */
     public static TablePotential sum(List<TablePotential> tablePotentials) {
         List<TablePotential> constantPotentials;
@@ -338,18 +338,18 @@ public final class DiscretePotentialOperations {
         // The product of all the constant potentials is the constant factor.
         double constantFactor = 1.0;
         // Non constant potentials are proper potentials.
-        List<TablePotential> properPotentials = new ArrayList<TablePotential>();
-        for (Potential potential : tablePotentials) {
+        List<TablePotential> nonConstantPotentials = new ArrayList<TablePotential>();
+        for (TablePotential potential : tablePotentials) {
             if (potential.getNumVariables() != 0) {
-                properPotentials.add((TablePotential) potential);
+                nonConstantPotentials.add(potential);
             } else {
-                constantFactor *= ((TablePotential) potential).values[((TablePotential) potential).getInitialPosition()];
+                constantFactor *= potential.values[potential.getInitialPosition()];
             }
         }
 
-        int numProperPotentials = properPotentials.size();
+        int numNonConstantPotentials = nonConstantPotentials.size();
 
-        if (numProperPotentials == 0) {
+        if (numNonConstantPotentials == 0) {
             TablePotential resultingPotential = new TablePotential(variablesToKeep,
                     getRole(tablePotentials));
             resultingPotential.values[0] = constantFactor;
@@ -366,22 +366,19 @@ public final class DiscretePotentialOperations {
         int[] unionDimensions = TablePotential.calculateDimensions(unionVariables);
 
         // Defines some arrays for the proper potentials...
-        double[][] tables = new double[numProperPotentials][];
-        int[] initialPositions = new int[numProperPotentials];
-        int[] currentPositions = new int[numProperPotentials];
-        int[][] accumulatedOffsets = new int[numProperPotentials][];
+        double[][] tables = new double[numNonConstantPotentials][];
+        int[] initialPositions = new int[numNonConstantPotentials];
+        int[] currentPositions = new int[numNonConstantPotentials];
+        int[][] accumulatedOffsets = new int[numNonConstantPotentials][];
         // ... and initializes them
         // TablePotential unionPotential = new
         // TablePotential(unionVariables,null);
-        for (int i = 0; i < numProperPotentials; i++) {
-            TablePotential potential = (TablePotential) properPotentials.get(i);
+        for (int i = 0; i < numNonConstantPotentials; i++) {
+            TablePotential potential = nonConstantPotentials.get(i);
             tables[i] = potential.values;
             initialPositions[i] = potential.getInitialPosition();
             currentPositions[i] = initialPositions[i];
-            accumulatedOffsets[i] = TablePotential
-            // .getAccumulatedOffsets(unionVariables,
-            // potential.getOriginalVariables());
-            .getAccumulatedOffsets(unionVariables, potential.getVariables());
+            accumulatedOffsets[i] = TablePotential.getAccumulatedOffsets(unionVariables, potential.getVariables());
         }
 
         // The result size is the product of the dimensions of the
@@ -407,7 +404,7 @@ public final class DiscretePotentialOperations {
 
             // first inner iteration
             multiplicationResult = constantFactor;
-            for (int i = 0; i < numProperPotentials; i++) {
+            for (int i = 0; i < numNonConstantPotentials; i++) {
                 // multiply the numbers
                 multiplicationResult *= tables[i][currentPositions[i]];
             }
@@ -427,22 +424,14 @@ public final class DiscretePotentialOperations {
                     unionCoordinate[j] = 0;
                 }
 
-                // if(unionCoordinate[increasedVariable] + 1 >=
-                // unionDimensions[increasedVariable])
-                // {
-                // unionCoordinate[increasedVariable] = 0;
-                // increasedVariable++;
-                // }
-                // unionCoordinate[increasedVariable]++;
-
                 // update the positions of the potentials we are multiplying
-                for (int i = 0; i < numProperPotentials; i++) {
+                for (int i = 0; i < numNonConstantPotentials; i++) {
                     currentPositions[i] += accumulatedOffsets[i][increasedVariable];
                 }
 
                 // multiply the table values of the potentials
                 multiplicationResult = constantFactor;
-                for (int i = 0; i < numProperPotentials; i++) {
+                for (int i = 0; i < numNonConstantPotentials; i++) {
                     multiplicationResult *= tables[i][currentPositions[i]];
                 }
 
@@ -466,16 +455,9 @@ public final class DiscretePotentialOperations {
                     }
                     unionCoordinate[j] = 0;
                 }
-                // if(unionCoordinate[increasedVariable] + 1 >=
-                // unionDimensions[increasedVariable])
-                // {
-                // unionCoordinate[increasedVariable] = 0;
-                // increasedVariable++;
-                // }
-                // unionCoordinate[increasedVariable]++;
 
                 // update the positions of the potentials we are multiplying
-                for (int i = 0; i < numProperPotentials; i++) {
+                for (int i = 0; i < numNonConstantPotentials; i++) {
                     currentPositions[i] += accumulatedOffsets[i][increasedVariable];
                 }
             }
@@ -529,12 +511,9 @@ public final class DiscretePotentialOperations {
      */
     public static TablePotential multiplyAndMarginalize(List<TablePotential> potentials,
             Variable variableToEliminate) {
-        List<Variable> variablesToEliminate = new ArrayList<Variable>();
-        variablesToEliminate.add(variableToEliminate);
-        List<Variable> variablesToKeep = new ArrayList<Variable>();
-        variablesToKeep = AuxiliaryOperations.getUnionVariables(potentials);
+        List<Variable> variablesToKeep = AuxiliaryOperations.getUnionVariables(potentials);
         variablesToKeep.remove(variableToEliminate);
-        return multiplyAndMarginalize(potentials, variablesToKeep, variablesToEliminate);
+        return multiplyAndMarginalize(potentials, variablesToKeep, Arrays.asList(variableToEliminate));
     }
 
     /**
@@ -1129,39 +1108,21 @@ public final class DiscretePotentialOperations {
      *         typically a policy of a decision.
      */
     public static TablePotential[] multiplyAndMaximizeUniformly(List<TablePotential> tablePotentials,
-            List<Variable> fSVariablesToKeep,
-            Variable fSVariableToMaximize) {
-        List<Variable> variablesPolicy;
-
-        /*
-         * TablePotential[] potentialsToReturn = new TablePotential[2];
-         * 
-         * Object[] auxPotentials =
-         * multiplyAndMaximize(tablePotentials,fSVariablesToKeep
-         * ,fSVariableToMaximize);
-         * 
-         * potentialsToReturn[0] = auxPotentials[0]; potentialsToReturn[1] =
-         * constructTablePotentialUniformProbInTies(auxPotentials[1]);
-         * 
-         * return potentialsToReturn;
-         */
-
+            List<Variable> variablesToKeep,
+            Variable variableToMaximize) {
         List<TablePotential> potentials = tablePotentials;
-
-        List<Variable> variablesToKeep = fSVariablesToKeep;
 
         PotentialRole roleResult = (isThereAUtilityPotential(tablePotentials)) ? PotentialRole.UTILITY
                 : PotentialRole.CONDITIONAL_PROBABILITY;
 
         TablePotential resultingPotential = new TablePotential(variablesToKeep, roleResult);
 
-        variablesPolicy = new ArrayList<Variable>();
-        variablesPolicy.add(fSVariableToMaximize);
-        variablesPolicy.addAll(fSVariablesToKeep);
+        List<Variable> variablesPolicy = new ArrayList<Variable>();
+        variablesPolicy.add(variableToMaximize);
+        variablesPolicy.addAll(variablesToKeep);
 
         TablePotential policy = new TablePotential(variablesPolicy,
                 PotentialRole.CONDITIONAL_PROBABILITY);
-        List<Integer> statesTies;
 
         // Constant potentials are those that do not depend on any variables.
         // The product of all the constant potentials is the constant factor.
@@ -1185,7 +1146,7 @@ public final class DiscretePotentialOperations {
 
         // variables in the resulting potential
         List<Variable> unionVariables = new ArrayList<Variable>();
-        unionVariables.add((Variable) fSVariableToMaximize);
+        unionVariables.add((Variable) variableToMaximize);
         unionVariables.addAll(variablesToKeep);
         int numUnionVariables = unionVariables.size();
 
@@ -1216,13 +1177,15 @@ public final class DiscretePotentialOperations {
         // The elimination size is the product of the dimensions of the
         // variables to eliminate
         int eliminationSize = 1;
-        eliminationSize *= ((Variable) fSVariableToMaximize).getNumStates();
+        eliminationSize *= ((Variable) variableToMaximize).getNumStates();
 
         // Auxiliary variables for the nested loops
         double multiplicationResult; // product of the table values
         double accumulator; // in general, the sum or the maximum
         int increasedVariable = 0; // when computing the next configuration
 
+        List<Integer> statesTies;
+        
         // outer iterations correspond to the variables to keep
         for (int outerIteration = 0; outerIteration < resultSize; outerIteration++) {
             // Inner iterations correspond to the variables to eliminate
@@ -1301,7 +1264,7 @@ public final class DiscretePotentialOperations {
 
             resultingPotential.values[outerIteration] = accumulator;
             assignProbabilityUniformlyInTies(policy,
-                    fSVariableToMaximize.getNumStates(),
+                    variableToMaximize.getNumStates(),
                     statesTies,
                     resultingPotential.getConfiguration(outerIteration));
             // .elementTable.add(choice);
@@ -1356,7 +1319,7 @@ public final class DiscretePotentialOperations {
         for (Potential potential : potentialsVariable) {
             addedVariables.addAll(potential.getVariables());
         }
-        ArrayList<Variable> variablesToKeep = new ArrayList<Variable>(addedVariables);
+        List<Variable> variablesToKeep = new ArrayList<Variable>(addedVariables);
         variablesToKeep.remove(variableToMaximize);
         return multiplyAndMaximize(potentialsVariable, variablesToKeep, variableToMaximize);
     }
@@ -1382,7 +1345,7 @@ public final class DiscretePotentialOperations {
         for (TablePotential potential : potentialsVariable) {
             addedVariables.addAll(potential.getVariables());
         }
-        ArrayList<Variable> variablesToKeep = new ArrayList<Variable>(addedVariables);
+        List<Variable> variablesToKeep = new ArrayList<Variable>(addedVariables);
         variablesToKeep.remove(variableToMaximize);
         return multiplyAndMaximizeUniformly(potentialsVariable, variablesToKeep, variableToMaximize);
     }

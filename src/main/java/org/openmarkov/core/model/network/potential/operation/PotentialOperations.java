@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network.potential.operation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openmarkov.core.exception.IllegalArgumentTypeException;
@@ -119,13 +120,6 @@ public class PotentialOperations {
                                                   List<Variable> variablesToEliminate)
         throws PotentialOperationException
     {	
-		// parameters correct type verification before calling right method
-		if (!AuxiliaryOperations.checkObjectsCollectionType(
-				potentials, TablePotential.class)) {
-			throw new IllegalArgumentTypeException("Unsupported operation: " + 
-				"multiplyAndEliminate can only manage potential of type " + 
-				"TablePotential");    						
-		}		
         if (!hasFiniteStates (variablesToEliminate)) {
 			throw new IllegalArgumentTypeException("Unsupported operation: " + 
 				"multiplyAndEliminate can only manage variables of type " + 
@@ -148,10 +142,7 @@ public class PotentialOperations {
                                                   Variable variableToEliminate)
         throws PotentialOperationException
 	{
-        List<Variable> variablesToEliminate = new ArrayList<Variable>();
-		variablesToEliminate.add(variableToEliminate);
-	
-		return multiplyAndEliminate(potentials, variablesToEliminate);
+		return multiplyAndEliminate(potentials, Arrays.asList(variableToEliminate));
 	}
 
 	/** @param potentials potentials array to multiply

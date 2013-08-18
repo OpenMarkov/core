@@ -11,7 +11,9 @@ package org.openmarkov.core.model.network.potential.operation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -76,20 +78,15 @@ public class AuxiliaryOperations {
 		return true;		
 	}
 
-
-	
 	/** @param potentials <code>Collection</code> of <code>Potential</code>s
 	 * @return <code>ArrayList</code> of <code>Variable</code>s. */
 	public static List<Variable> getUnionVariables(List<? extends Potential> potentials) {
 		
-		List<Variable> variables = new ArrayList<Variable>();
+		Set<Variable> variables = new HashSet<>();
 		for (Potential potential : potentials) {
-			for (Variable variable : potential.getVariables())
-				if (!variables.contains(variable)) {
-					variables.add(variable);
-				}
+			variables.addAll(potential.getVariables());
 		}
-	    return variables;
+	    return new ArrayList<>(variables);
 	}
 
 	/** @param allVariables. <code>ArrayList</code> of <code>Variable</code>s

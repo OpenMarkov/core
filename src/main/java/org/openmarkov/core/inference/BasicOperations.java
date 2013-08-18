@@ -136,13 +136,11 @@ public class BasicOperations {
             boolean keepComponents, boolean leaveImplicitSum, Variable utilityVariableToKeep) {
         ProbNet network = sourceProbNet.copy();
         List<ProbNode> utilityNodes = network.getProbNodes(NodeType.UTILITY);
-        List<TablePotential> potentials = new ArrayList<TablePotential>(0);
         for (ProbNode utilityNode : utilityNodes) {
             Variable utilityVariable = utilityNode.getVariable();
-            TablePotential potential = getUtilityFunction(utilityNode, evidence);
-            potentials.add(potential);
-            if (((isSuperValueNode(utilityNode) && utilityVariableToKeep == null))
-                    || (utilityVariable == utilityVariableToKeep)) {
+            if ((isSuperValueNode(utilityNode) && utilityVariableToKeep == null)
+                    || utilityVariable == utilityVariableToKeep) {
+                TablePotential potential = getUtilityFunction(utilityNode, evidence);
                 List<Node> parents = utilityNode.getNode().getParents();
                 // remove links between supervalue nodes and their utility
                 // parents
@@ -245,7 +243,7 @@ public class BasicOperations {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                nodesToKeep.addAll(ProbNet.getVariables(parentNodes));
+                nodesToKeep.addAll(ProbNet.getVariablesOfNodes(parentNodes));
             }
         }
     }

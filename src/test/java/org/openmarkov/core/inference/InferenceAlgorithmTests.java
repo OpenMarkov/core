@@ -154,8 +154,7 @@ public abstract class InferenceAlgorithmTests {
 			checkProbabilityPotential(aPrioriProbabilities,variableC,0.2784);
 			
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			fail();
+			printExceptionAndFailIfImplemented(e);
 		}
 	}
 	

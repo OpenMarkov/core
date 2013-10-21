@@ -255,7 +255,7 @@ public class BasicOperations {
      *            the variable to test
      * @return true if the variable is a supervalue node. False if does not
      */
-    private static boolean isSuperValueNode(ProbNode utilityNode) {
+    public static boolean isSuperValueNode(ProbNode utilityNode) {
         int numOfUtilityParents = 0;
         List<Node> parents = utilityNode.getNode().getParents();
         for (Node parent : parents) {

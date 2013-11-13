@@ -75,10 +75,9 @@ public class ProbNet implements Cloneable {
     /** Set of agents, defined by a name. Each one may have several properties. */
     // private StringsWithProperties agents;
     private List<StringWithProperties> agents;
-    // TODO Cambiar nombre a decisionCriteria y eliminar el otro
-    // decisionCriteria
+    // TODO eliminar el otro decisionCriteria
     /**
-     * Set of criteria for decision, defined by a name. Each one may have
+     * Set of criterion for decision, defined by a name. Each one may have
      * several properties.
      */
     private List<StringWithProperties> decisionCriteria2;
@@ -89,10 +88,10 @@ public class ProbNet implements Cloneable {
      */
     protected ProbNodeDepot            probNodeDepot;
     /**
-     * Each value of the decision criteria variable represents one criterion,
-     * used in multicriteria decision analysis
+     * Each value of the decision criterion variable represents one criterion,
+     * used in multicriterion decision analysis
      */
-    public Variable                    decisionCriteria;
+    public Variable                    decisionCriterion;
     private PNESupport                 pNESupport;
     /** The file where the network has been saved */
     private String                     name;
@@ -449,13 +448,13 @@ public class ProbNet implements Cloneable {
             copyProperties.put(key, additionalProperties.get(key));
         }
         copyNet.additionalProperties = copyProperties;
-        // Copy decisionCriteria variable
-        // copy decision criteria
+        // Copy decisionCriterion variable
+        // copy decision criterion
         if (this.getDecisionCriteria() != null) {
             copyNet.setDecisionCriteria2(this.getDecisionCriteria());
         }
-        if (this.getDecisionCriteriaVariable() != null) {
-            copyNet.setDecisionCriteriaVariable(this.getDecisionCriteriaVariable());
+        if (this.getDecisionCriterionVariable() != null) {
+            copyNet.setDecisionCriterionVariable(this.getDecisionCriterionVariable());
         }
         return copyNet;
     }
@@ -1449,8 +1448,8 @@ public class ProbNet implements Cloneable {
         return newProbNode;
     }
 
-    public void setDecisionCriteriaVariable(Variable decisionCriteriaVariable) {
-        this.decisionCriteria = decisionCriteriaVariable;
+    public void setDecisionCriterionVariable(Variable decisionCriterionVariable) {
+        this.decisionCriterion = decisionCriterionVariable;
     }
 
     public void setDecisionCriteria(List<String> criteriaNames) {
@@ -1458,7 +1457,7 @@ public class ProbNet implements Cloneable {
         for (int i = 0; i < criteriaNames.size(); i++) {
             states[i] = new State(criteriaNames.get(i));
         }
-        decisionCriteria = new Variable("Decision Criteria", states);
+        decisionCriterion = new Variable("Decision Criterion", states);
     }
 
     /**
@@ -1483,8 +1482,8 @@ public class ProbNet implements Cloneable {
         return decisionCriteria2;
     }
 
-    public Variable getDecisionCriteriaVariable() {
-        return decisionCriteria;
+    public Variable getDecisionCriterionVariable() {
+        return decisionCriterion;
     }
 
     /**

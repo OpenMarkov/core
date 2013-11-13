@@ -658,9 +658,9 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 				
 		Variable variableTreatment = new Variable("Treatment",yesNoStates);
 		Variable variableCostOfTreatment = new Variable("Cost of treatment");
-		variableCostOfTreatment.setDecisionCriteria(cost);
+		variableCostOfTreatment.setDecisionCriterion(cost);
 		Variable variableQoL = createTemporalVariable("QoL",0);
-		variableQoL.setDecisionCriteria(effectiveness);
+		variableQoL.setDecisionCriterion(effectiveness);
 		ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
 
 		//set decision criteria to the network
@@ -722,9 +722,9 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		
 		Variable variableTreatment = new Variable("Treatment",yesNoStates);
 		Variable variableCostOfTreatment = new Variable("Cost of treatment");
-		variableCostOfTreatment.setDecisionCriteria(cost);
+		variableCostOfTreatment.setDecisionCriterion(cost);
 		Variable variableQoL = createTemporalVariable("QoL",0);
-		variableQoL.setDecisionCriteria(effectiveness);
+		variableQoL.setDecisionCriterion(effectiveness);
 		Variable variableState0 = createTemporalVariable("State",0,statesStateVariable);
 		Variable variableState1 = createTemporalVariable("State",1,statesStateVariable);
 		
@@ -884,9 +884,9 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		
 		Variable variableTreatment = new Variable("Treatment",yesNoStates);
 		Variable variableCost = createTemporalVariable("Cost",0);
-		variableCost.setDecisionCriteria(cost);
+		variableCost.setDecisionCriterion(cost);
 		Variable variableQoL = createTemporalVariable("QoL",0);
-		variableQoL.setDecisionCriteria(effectiveness);
+		variableQoL.setDecisionCriterion(effectiveness);
 		
 		//Add variables to the network	
 		addVariables(probNet,NodeType.CHANCE,duration0,duration1,state0,state1,variableTreatment,variableCost,variableQoL);

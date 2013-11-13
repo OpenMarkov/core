@@ -82,7 +82,7 @@ public class MPADFactoryTests {
 			} catch (ProbNodeNotFoundException e) {
 				e.printStackTrace();
 			}
-			variablesUtil.add(expandedNetwork.decisionCriteria);
+			variablesUtil.add(expandedNetwork.decisionCriterion);
 			TablePotential expectedPotential = new TablePotential(variablesUtil, PotentialRole.UTILITY);
 			// TODO We should consider here the order of the states of
 			// DecisionCriteria variable
@@ -194,7 +194,7 @@ public class MPADFactoryTests {
 		ArrayList<Variable> variablesUtil = new ArrayList<>();
 		try {
 			variablesUtil.add(expandedNetwork.getVariable("Treatment"));
-			variablesUtil.add(expandedNetwork.decisionCriteria);
+			variablesUtil.add(expandedNetwork.decisionCriterion);
 			variablesUtil.add(expandedNetwork.getVariable(nameStateVariable(auxPot.getUtilityVariable())));
 
 		} catch (ProbNodeNotFoundException e1) {

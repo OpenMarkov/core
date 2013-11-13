@@ -81,9 +81,9 @@ public class Variable implements Cloneable {
 	private StringWithProperties agent;
 
 	/**
-	 * Decision criteria for utility nodes
+	 * Decision criterion for utility nodes
 	 */
-	private StringWithProperties decisionCriteria;
+	private StringWithProperties decisionCriterion;
 
 	/**
 	 * Constructor for discrete variables.
@@ -723,12 +723,12 @@ public class Variable implements Cloneable {
 		this.agent = agent;
 	}
 
-	public StringWithProperties getDecisionCriteria() {
-		return decisionCriteria;
+	public StringWithProperties getDecisionCriterion() {
+		return decisionCriterion;
 	}
 
-	public void setDecisionCriteria(StringWithProperties decisionCriteria) {
-		this.decisionCriteria = decisionCriteria;
+	public void setDecisionCriterion(StringWithProperties decisionCriterion) {
+		this.decisionCriterion = decisionCriterion;
 	}
 
     public double round(double value) {

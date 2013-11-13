@@ -333,9 +333,9 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         // Cylindrical extension for utility potentials in the case of
         // multicriteria decision making
         if (role == PotentialRole.UTILITY && inferenceOptions != null) {
-            Variable decisionCriteria = inferenceOptions.decisionCriteria;
+            Variable decisionCriteria = inferenceOptions.decisionCriterion;
             if (role == PotentialRole.UTILITY && decisionCriteria != null) {
-                String criterion = utilityVariable.getDecisionCriteria().getString();
+                String criterion = utilityVariable.getDecisionCriterion().getString();
                 List<TablePotential> potentials = new ArrayList<TablePotential>(2);
                 potentials.add(projectedPotential);
                 try {

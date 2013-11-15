@@ -27,6 +27,7 @@ public class LogNormalFunction extends ProbDensFunction
     {
         this.mu = mu;
         this.sigma = sigma;
+        this.normal = new NormalFunction (mu, sigma);
     }
 
     @Override

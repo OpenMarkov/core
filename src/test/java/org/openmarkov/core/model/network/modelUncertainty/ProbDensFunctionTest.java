@@ -22,8 +22,8 @@ public abstract class ProbDensFunctionTest {
 
     ProbDensFunction pdf;
 
-    double maxErrorMean = 0.001;
-    double maxErrorStDeviation = 0.01;
+    private double maxErrorMean = 0.001;
+    private double maxErrorStDeviation = 0.01;
 
     public abstract ProbDensFunction newProbDensFunctionInstance();
 

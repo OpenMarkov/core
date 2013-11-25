@@ -14,6 +14,7 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.inference.heuristic.HeuristicFactory;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -34,7 +35,9 @@ public abstract class InferenceAlgorithm
     /** For undo/redo operations. */
     protected PNESupport                  pNESupport;
    
-  
+    /** Elimination heuristic factory **/
+    protected HeuristicFactory heuristicFactory;
+
 	/**
 	 * Evidence introduced before the network is resolved. 
 	 * In influence diagrams this is Ezawa's evidence.
@@ -47,6 +50,38 @@ public abstract class InferenceAlgorithm
 	 */
 	private EvidenceCase postResolutionEvidence;
 	
+	/**
+     * Policies set by the user. The optimal policy would only be calculated for the decisions
+     * without imposed policies.
+     * Each policy is stochastic, which implies it is a probability potential whose domain
+     * contains the decision.
+     */
+   // private List<TablePotential> imposedPolicies;
+    
+    /**
+     * Variables that will not be eliminated during the inference, and therefore all the results
+     * contain these variables in the domain.
+     */
+    private List<Variable> conditioningVariables;
+    
+    
+    /**
+     * @param probNet The network used in the inference
+     * @throws NotEvaluableNetworkException
+     */
+    public InferenceAlgorithm (ProbNet probNet)
+        throws NotEvaluableNetworkException
+    {
+        this.probNet = probNet;
+        preResolutionEvidence = new EvidenceCase();
+        postResolutionEvidence = new EvidenceCase();
+        if (!isEvaluable (probNet))
+        {
+            throw new NotEvaluableNetworkException (probNet.toString ());
+        }
+    }
+
+    
 	/**
 	 * @return The post-resolution evidence.
 	 */
@@ -61,21 +96,6 @@ public abstract class InferenceAlgorithm
 		this.postResolutionEvidence = postResolutionEvidence;
 	}
 
-	/**
-     * Policies set by the user. The optimal policy would only be calculated for the decisions
-     * without imposed policies.
-     * Each policy is stochastic, which implies it is a probability potential whose domain
-     * contains the decision.
-     */
-   // private ArrayList<TablePotential> imposedPolicies;
-    
-    /**
-     * Variables that will not be eliminated during the inference, and therefore all the results
-     * contain these variables in the domain.
-     */
-    private List<Variable> conditioningVariables;
-    
-  
     /**
      * @return The pre-resolution evidence
      */
@@ -110,22 +130,6 @@ public abstract class InferenceAlgorithm
 	protected ArrayList<TablePotential> getImposedPolicies() {
 		return imposedPolicies;
 	}*/
-  
-    /**
-     * @param probNet The network used in the inference
-     * @throws NotEvaluableNetworkException
-     */
-    public InferenceAlgorithm (ProbNet probNet)
-        throws NotEvaluableNetworkException
-    {
-        this.probNet = probNet;
-        preResolutionEvidence = new EvidenceCase();
-        postResolutionEvidence = new EvidenceCase();
-        if (!isEvaluable (probNet))
-        {
-            throw new NotEvaluableNetworkException (probNet.toString ());
-        }
-    }
 
     /**
      * @param probNet
@@ -236,6 +240,11 @@ public abstract class InferenceAlgorithm
     public boolean hasImposedPolicy(Variable decision){
     	return (getImposedPolicy(decision)!=null);
     }
+    
+	public void setHeuristicFactory(HeuristicFactory heuristicFactory) {
+		this.heuristicFactory = heuristicFactory;
+	}
+    
 
     protected static void checkEvaluability (ProbNet probNet)
         throws NotEvaluableNetworkException

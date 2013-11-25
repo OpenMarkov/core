@@ -80,7 +80,7 @@ public final class DiscretePotentialOperations {
         // get role
         PotentialRole role = getRole(potentials);
 
-        potentials = AuxiliaryOperations.getProperPotentials(potentials);
+        potentials = AuxiliaryOperations.getNonConstantPotentials(potentials);
         if (potentials.size() == 0) {
             TablePotential constantTablePotential = new TablePotential(null, role);
             constantTablePotential.values[0] = constantFactor;
@@ -587,7 +587,7 @@ public final class DiscretePotentialOperations {
      *            An array of ordered <code>TablePotential</code>s
      * @return constantFactor: The product of the constant potentials (the first
      *         <i>k</i> because the array is ordered by size)
-     * @see org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations#getProperPotentials(ArrayList)
+     * @see org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations#getNonConstantPotentials(ArrayList)
      */
     public static double getConstantFactor(List<TablePotential> potentials) {
         double constantFactor = 1.0;

@@ -78,7 +78,7 @@ public class SharedDataMultiply {
 			.getConstantFactor(potentials);
 		
 		potentials = 
-			AuxiliaryOperations.getProperPotentials(potentials);
+			AuxiliaryOperations.getNonConstantPotentials(potentials);
 
 		numPotentials = potentials.size();
 

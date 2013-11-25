@@ -522,7 +522,7 @@ public class DiscretePotentialOperationsTest {
 	@Test
 	public void testGetProperPotentials() {
 		// Call method under test
-		List<TablePotential> properPotentials = AuxiliaryOperations.getProperPotentials(commonVariables.potentials);
+		List<TablePotential> properPotentials = AuxiliaryOperations.getNonConstantPotentials(commonVariables.potentials);
 		assertEquals(2, properPotentials.size());
 		assertTrue(properPotentials.contains(commonVariables.t2));
 		assertTrue(properPotentials.contains(commonVariables.t4));

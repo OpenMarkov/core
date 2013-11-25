@@ -101,18 +101,18 @@ public class AuxiliaryOperationsTest {
 	public void testGetProperPotentials() {
 		// Test empty list
 		List<TablePotential> properPotentials = 
-			AuxiliaryOperations.getProperPotentials(emptyPotentialsList);
+			AuxiliaryOperations.getNonConstantPotentials(emptyPotentialsList);
 		assertNotNull(properPotentials);
 		assertEquals(0, properPotentials.size());
 		
 		// Test list with one constant potential
 		properPotentials = 
-			AuxiliaryOperations.getProperPotentials(oneConstantPotentialsList);
+			AuxiliaryOperations.getNonConstantPotentials(oneConstantPotentialsList);
 		assertEquals(0, properPotentials.size());
 		
 		// Test list with several proper and constant potentials
 		properPotentials =
-			AuxiliaryOperations.getProperPotentials(severalMixedPotentialsList);
+			AuxiliaryOperations.getNonConstantPotentials(severalMixedPotentialsList);
 		assertEquals(NUM_POTENTIALS_ARRAY, properPotentials.size());
 	}
 

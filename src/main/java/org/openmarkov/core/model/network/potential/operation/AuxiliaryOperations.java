@@ -37,10 +37,9 @@ public class AuxiliaryOperations {
 	 *   <code>TablePotential</code>s
 	 * @return An <code>ArrayList</code> of <code>TablePotential</code>s without
 	 *   the constant potentials. */
-    public static List<TablePotential> getProperPotentials (List<TablePotential> potentials)
+    public static List<TablePotential> getNonConstantPotentials (List<TablePotential> potentials)
     {
-		List<TablePotential> properPotentials =
-			new ArrayList<TablePotential>();
+		List<TablePotential> properPotentials = new ArrayList<TablePotential>();
 		for (TablePotential potential : potentials) {
 			if (potential.values.length > 1) {
 				properPotentials.add(potential);

@@ -92,16 +92,20 @@ public abstract class InferenceAlgorithmTests {
 	protected ProbNet bN_Asia;
 
  
-	@Before
-	public void setUp() throws Exception {
+	public InferenceAlgorithmTests () {
 
-		bN_X = NetsFactory.createBN_X(1.0);
-		bN_XY = NetsFactory.createBN_XY(prevalence,
-				sensitivity, specificity);
-		bN_ABC = NetsFactory.createBN_ABC();
-		bN_XYZ = NetsFactory.createBN_XYZ(prevalence,
-				sensitivity, specificity, 0.86, 0.89);
-		bN_Asia = NetsFactory.createBN_Asia();
+		try {
+			bN_X = NetsFactory.createBN_X(1.0);
+			bN_XY = NetsFactory.createBN_XY(prevalence,
+					sensitivity, specificity);
+			bN_ABC = NetsFactory.createBN_ABC();
+			bN_XYZ = NetsFactory.createBN_XYZ(prevalence,
+					sensitivity, specificity, 0.86, 0.89);
+			bN_Asia = NetsFactory.createBN_Asia();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		/*iD_DiagnosisProblem = NetsFactory
 				.createInfluenceDiagramDiagnosisProblem();*/
 		iD_UniformDiagnosisProblem = NetsFactory

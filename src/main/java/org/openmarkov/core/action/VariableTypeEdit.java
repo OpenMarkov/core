@@ -92,7 +92,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 		{
 			probNode.getVariable().setStates(
 					probNode.getProbNet().getDefaultStates());
-			ArrayList<Variable> variables = new ArrayList<Variable>();
+			List<Variable> variables = new ArrayList<Variable>();
 			if (probNode.getNodeType() != NodeType.UTILITY) {
 				variables.add(probNode.getVariable());
 			}
@@ -101,7 +101,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 			}
 			UniformPotential uniformPotential = new UniformPotential(variables,
 					probNode.getPotentials().get(0).getPotentialRole());
-			ArrayList<Potential> potentials = new ArrayList<Potential>(1);
+			List<Potential> potentials = new ArrayList<Potential>(1);
 			potentials.add(uniformPotential);
 			probNode.setPotentials(potentials);
 			probNode.setUniformPotential();

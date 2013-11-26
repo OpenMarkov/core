@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.exception;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Variable;
 
 @SuppressWarnings("serial")
 public class NodeNotFoundException extends WrongGraphStructureException {
@@ -20,9 +20,8 @@ public class NodeNotFoundException extends WrongGraphStructureException {
 		super(message);
 	}
 
-    public NodeNotFoundException(ProbNode node) {
-       super("Node: " + node.getName() + 
-               " not found in network " + node.getProbNet().getName() + ".");
+    public NodeNotFoundException(Variable variable) {
+       super("Node: " + variable.getName());
     }
 
 }

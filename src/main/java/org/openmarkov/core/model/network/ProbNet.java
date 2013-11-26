@@ -500,10 +500,10 @@ public class ProbNet implements Cloneable {
         ProbNode node1 = getProbNode(variable1);
         ProbNode node2 = getProbNode(variable2);
         if (node1 == null) {
-            throw new NodeNotFoundException(node1);
+            throw new NodeNotFoundException(variable1);
         }
         if (node2 == null) {
-            throw new NodeNotFoundException(node2);
+            throw new NodeNotFoundException(variable2);
         }
         addLink(node1, node2, directed);
     }

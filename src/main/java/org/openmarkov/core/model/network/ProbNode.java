@@ -44,9 +44,6 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	protected NodeType nodeType;
 	
 	/** @frozen */
-	protected UtilityCombinationFunction utilityCombinationFunction;
-	
-	/** @frozen */
 	protected ProbNet probNet;
 
     /** Each <code>probNode</code> has a list of potentials */
@@ -148,11 +145,6 @@ public class ProbNode implements Cloneable, PotentialsContainer {
     	return getVariable().getName();
     }
 
-    /** @return Type of function. <code>UtilityCombinationFunction</code> */
-    public UtilityCombinationFunction getUtilityCombinationFunction() {
-		return utilityCombinationFunction;
-	}
-
     /** @param potential. <code>Potential</code> */
     public void addPotential(Potential potential) {
         this.potentials.add(potential);
@@ -204,12 +196,6 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	/** @return probNet. <code>ProbNet</code> */
 	public ProbNet getProbNet() {
 		return probNet;
-	}
-	
-	/** @param utilityCombinationFunction. <code>UtilityCombinationFunction</code> */
- 	public void setUtilityCombinationFunction(
-			UtilityCombinationFunction utilityCombinationFunction) {
-		this.utilityCombinationFunction = utilityCombinationFunction;
 	}
 	
 	public String toString() {

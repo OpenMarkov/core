@@ -881,8 +881,8 @@ public class ProbNetOperationsTest {
 		Variable ageVar = new Variable ("Age", "4.4");
 		List<Variable> originalVariables = Arrays.asList(varTherapy, varStateA, varStateB, ageVar);
 		List<Variable> projectedPotentialVariables = Arrays.asList(varTherapy, varStateA, varStateB);
-		TablePotential originalPotential = new TablePotential(originalVariables, PotentialRole.UTILITY, costVar);
-		TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, PotentialRole.UTILITY, costVar);
+		TablePotential originalPotential = new TablePotential(costVar, originalVariables);
+		TablePotential projectedPotential = new TablePotential(costVar, projectedPotentialVariables);
 		projectedPotential.values =  new double [] {19.969, 19.542, 18.858, 18.455, 20.161, 19.731, 19.04, 18.633};
 		EvidenceCase configuration = new EvidenceCase();
 		configuration.addFinding(new Finding(ageVar, 0));

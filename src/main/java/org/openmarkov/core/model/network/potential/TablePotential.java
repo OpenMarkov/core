@@ -116,8 +116,8 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      * @param variables
      * @param role
      */
-    public TablePotential(List<Variable> variables, PotentialRole role, Variable utilityVariable) {
-        this(variables, role);
+    public TablePotential(Variable utilityVariable, List<Variable> variables) {
+        this(variables, PotentialRole.UTILITY);
         this.utilityVariable = utilityVariable;
     }
 

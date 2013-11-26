@@ -94,7 +94,7 @@ public class CycleLengthShift extends Potential {
 	            projectedPotential = new TablePotential(projectedVariables, role);
 	        }else
 	        {
-                projectedPotential = new TablePotential(projectedVariables, role, conditionedVariable);
+                projectedPotential = new TablePotential(conditionedVariable, projectedVariables);
 	        }
 	        
             int numStates = conditionedVariable.getNumStates();

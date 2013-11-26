@@ -30,7 +30,7 @@ import org.openmarkov.core.model.network.potential.operation.Util;
  * etc. The structural aspect of the underlying  graph is in the node
  * associated.  * @author marias * @author fjdiez
  * @since OpenMarkov 1.0 * @see openmarkov.graphs.Node * @see org.openmarkov.core.model.network.ProbNet * @version 1.0 */
-public class ProbNode implements Cloneable, PotentialsContainer {
+public class ProbNode {
 	
 	// Constants
 	public final static double defaultRelevance = 5.0;
@@ -294,8 +294,8 @@ public class ProbNode implements Cloneable, PotentialsContainer {
 	// TODO Comentar
 	public void setUniformPotential() {
 		
-		ArrayList<Potential> newListPotentials = new ArrayList<Potential> ();
-		ArrayList<Variable> variables = new ArrayList<Variable>();
+		List<Potential> newListPotentials = new ArrayList<Potential> ();
+		List<Variable> variables = new ArrayList<Variable>();
 		Variable thisVariable;
         // first, this variable. The potentials is not null
 		if (this.getNodeType() == NodeType.UTILITY)

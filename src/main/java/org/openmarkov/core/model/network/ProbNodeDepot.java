@@ -54,9 +54,9 @@ public class ProbNodeDepot {
         }
     }
 
-    LinkedHashMap<NodeType, NodesHashMap> nodesHashMaps;
+    private LinkedHashMap<NodeType, NodesHashMap> nodesHashMaps;
 
-    ProbNodeDepot() {
+    public ProbNodeDepot() {
         nodesHashMaps = new LinkedHashMap<NodeType, NodesHashMap>();
         // create a linkedHashMap for each type of nodes
         for (NodeType type : NodeType.values()) {

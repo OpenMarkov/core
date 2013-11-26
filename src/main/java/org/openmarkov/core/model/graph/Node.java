@@ -188,7 +188,7 @@ public class Node {
 	 * This method should be called only by 
 	 * <code>openmarkov.Graph#removeNode</code> */
 	void uf_removeAllLinks() {
-		if (graph.useExplicitLinks()) {
+		if (graph.hasExplicitLinks()) {
 			List<Link> listLinks = getLinks();
 			if (listLinks.size() != 0) {
 				for (Link link : listLinks) {

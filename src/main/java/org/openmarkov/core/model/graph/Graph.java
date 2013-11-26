@@ -52,7 +52,7 @@ public class Graph {
 
 	// Methods
 	/** @return explicitLinks <code>boolean</code>. */
-	public boolean useExplicitLinks() {
+	public boolean hasExplicitLinks() {
 		return explicitLinks;
 	}
 

@@ -254,7 +254,7 @@ public class GraphTest {
 		int numLinks = countLinks(graph);
 		graph.marry(nodesToMarry);
 		assertEquals(numLinks + 1, countLinks(graph));
-		assertFalse(graph.useExplicitLinks()); // it does not add explicit links
+		assertFalse(graph.hasExplicitLinks()); // it does not add explicit links
 		assertEquals(1, nodeA.getNumSiblings());
 		assertTrue(nodeA.getSiblings().contains(nodeB));
 		assertTrue(nodeB.getSiblings().contains(nodeA));
@@ -275,7 +275,7 @@ public class GraphTest {
 	private int countLinks(Graph graph) {
 		List<Node> nodes = graph.getNodes();
 		int numLinks = 0;
-		if (graph.useExplicitLinks()) {
+		if (graph.hasExplicitLinks()) {
 			for (Node node : nodes) {
 				numLinks += node.getNumLinks();
 			}

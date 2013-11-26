@@ -81,7 +81,7 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 	public void doEdit () {
 		probNet.removeLink (node1, node2, isDirected);
 		Graph graph = probNet.getGraph();
-		if (graph.useExplicitLinks()) {
+		if (graph.hasExplicitLinks()) {
 			this.link = graph.getLink (node1.getNode (), node2.getNode (), isDirected);
 		}
 		if (updatePotentials)
@@ -148,7 +148,7 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 		try {
 			probNet.addLink(variable1, variable2, isDirected);
 			Graph graph = probNet.getGraph();
-			if (graph.useExplicitLinks()) {
+			if (graph.hasExplicitLinks()) {
 				Link newLink = graph.getLink (node1.getNode (), node2.getNode (), isDirected);
 				if (link != null && newLink != null) {
 					Potential restrictionsPotential = link.getRestrictionsPotential();

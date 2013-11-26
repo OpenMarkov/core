@@ -410,7 +410,7 @@ public class ProbNet implements Cloneable {
         // Adds links
         List<ProbNode> nodes = this.getProbNodes();
         Graph copyGraph = copyNet.getGraph();
-        if (graph.useExplicitLinks()) {
+        if (graph.hasExplicitLinks()) {
             copyGraph.makeLinksExplicit(false);
         }
         for (ProbNode node : nodes) {
@@ -429,7 +429,7 @@ public class ProbNet implements Cloneable {
             }
         }
         // Copy explicit links' properties
-        if (graph.useExplicitLinks()) {
+        if (graph.hasExplicitLinks()) {
             for (Link originalLink : graph.getLinks()) {
                 Node copyNode1 = copyNet.getProbNode(((ProbNode) originalLink.getNode1().getObject()).getVariable()).getNode();
                 Node copyNode2 = copyNet.getProbNode(((ProbNode) originalLink.getNode2().getObject()).getVariable()).getNode();

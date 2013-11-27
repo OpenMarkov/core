@@ -133,8 +133,7 @@ public class TreeADDPotential extends Potential {
 				// potential
 				if (role == PotentialRole.UTILITY) {
 					potentialVariables = new ArrayList<Variable>();
-					UniformPotential potential = new UniformPotential(potentialVariables, role,
-							utilityVariable);
+					Potential potential = new UniformPotential(utilityVariable, potentialVariables);
 					// potential.setUtilityVariable(utilityVariable);
 					List<State> branchStates = new ArrayList<State>();
 					branchStates.add(states[i]);
@@ -152,8 +151,7 @@ public class TreeADDPotential extends Potential {
 			potentialVariables = new ArrayList<Variable>();
 			// it is an utility potential for sure so it is not necessary to add
 			// variable 0 to potential variables
-			UniformPotential potential = new UniformPotential(potentialVariables, role,
-					utilityVariable);
+			Potential potential = new UniformPotential(utilityVariable, potentialVariables);
 			// potential.setUtilityVariable(utilityVariable);
 			branches.add(new TreeADDBranch(minimum, maximum, topVariable, potential, variables));
 		}

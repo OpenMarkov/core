@@ -10,21 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.inference.PartialOrder;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNetOperations;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
@@ -358,31 +354,7 @@ public class DecisionTreeBuilder
                 }
                 if(link.hasRestrictions ())
                 {
-                    List<State> nonRestrictedStates = new ArrayList<State>();
-                    Potential linkRestrictions = link.getRestrictionsPotential ();
-                    EvidenceCase configuration = new EvidenceCase ();
-                    try
-                    {
-                        try
-                        {
-                            configuration.addFinding (new Finding (originalProbNet.getVariable (probNode.getVariable ().getName ()), state));
-                        }
-                        catch (ProbNodeNotFoundException e){
-                            e.printStackTrace();
-                        }
-                        for(State destState : destinationNode.getVariable ().getStates ())
-                        {
-                            configuration.changeFinding (new Finding (destinationNode.getVariable (), destState));
-                            if (linkRestrictions.getProbability (configuration) > 0)
-                            {
-                                nonRestrictedStates.add (destState);
-                            }
-                        }
-                    }
-                    catch (InvalidStateException | IncompatibleEvidenceException e)
-                    {
-                        // Not going to happen
-                    }
+                    List<State> nonRestrictedStates = ProbNetOperations.getUnrestrictedStates(link, state);
                 
                     if(nonRestrictedStates.isEmpty ())
                     {

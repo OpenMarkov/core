@@ -21,17 +21,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.graph.Graph;
+import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
 /**
  * This class performs prune on <code>ProbNet</code>
@@ -731,5 +735,74 @@ public class ProbNetOperations {
             contains = convertedVariables.contains(variables.get(i++));
         }
         return contains;
+    }
+    
+    public static List<State> getUnrestrictedStates(Link link, State state)
+    {
+    	List<State> nonRestrictedStates = new ArrayList<State>();
+        Potential linkRestrictions = link.getRestrictionsPotential ();
+        List<Variable> variables = linkRestrictions.getVariables(); 
+        Variable sourceVariable = variables.get(0);
+        Variable destinationVariable = variables.get(1);
+        EvidenceCase configuration = new EvidenceCase ();
+        try
+        {
+            configuration.addFinding (new Finding (sourceVariable, state));
+            for(State destState : destinationVariable.getStates ())
+            {
+                configuration.changeFinding (new Finding (destinationVariable, destState));
+                if (linkRestrictions.getProbability (configuration) > 0)
+                {
+                    nonRestrictedStates.add (destState);
+                }
+            }
+        }
+        catch (InvalidStateException | IncompatibleEvidenceException e)
+        {
+            // Not going to happen
+        }
+        return nonRestrictedStates;
+    }
+
+    public static boolean hasStructuralAsymmetry(ProbNet probNet)
+    {
+    	boolean asymmetryFound = false;
+    	
+    	for(Link link : probNet.getGraph().getLinks())
+    	{
+    		if(link.hasRestrictions())
+    		{
+    			Variable sourceVariable = ((ProbNode)link.getNode1().getObject()).getVariable();
+    			Variable destinationVariable = ((ProbNode)link.getNode2().getObject()).getVariable();
+    			for(State state : sourceVariable.getStates())
+    			{
+    				asymmetryFound |= getUnrestrictedStates(link, state).size() == destinationVariable.getNumStates(); 
+    			}
+    		}
+    	}
+    	
+    	return asymmetryFound;
+    }
+
+    public static boolean hasOrderAsymmetry(ProbNet probNet)
+    {
+    	return false;
+    }
+    
+    
+    public static ProbNet makeDANSymmetric(ProbNet probNet)
+    {
+    	ProbNet symmetricNet = probNet.copy();
+    	
+    	
+    	
+    	try {
+			symmetricNet.setNetworkType(InfluenceDiagramType.getUniqueInstance());
+		} catch (ConstraintViolationException e) {
+			// Shouldn't happen unless symmetrization has failed
+			e.printStackTrace();
+		}
+    	
+    	return symmetricNet;
     }
 }

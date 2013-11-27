@@ -39,7 +39,7 @@ import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 
-public class NetworkTypeTests
+public class NetworkTypeTest
 {
 
     @Test 

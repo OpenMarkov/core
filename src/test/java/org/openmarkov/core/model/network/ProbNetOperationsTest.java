@@ -18,7 +18,6 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.OpenMarkovTests;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -41,6 +40,9 @@ import org.openmarkov.core.util.UtilTestMethods;
 
 /** @author marias */
 public class ProbNetOperationsTest {
+
+	/*  Public scope for use in all tests. */
+	public static final double maxError = 0.0001;
 
 	@Before
 	public void setUp() throws Exception {
@@ -187,8 +189,8 @@ public class ProbNetOperationsTest {
 		int initialPosition = bPotential.getInitialPosition();
 		assertEquals(0, initialPosition);
 		double a = bPotential.values[initialPosition];
-			assertEquals(a, 0.9,OpenMarkovTests.maxError);
-		assertEquals(bPotential.values[initialPosition + offsets[0]], 0.1,OpenMarkovTests.maxError);
+			assertEquals(a, 0.9,maxError);
+		assertEquals(bPotential.values[initialPosition + offsets[0]], 0.1,maxError);
 	}
 
 	@Test
@@ -200,7 +202,7 @@ public class ProbNetOperationsTest {
 		 * one utility U, A --> U, D --> U. */
 		ProbNet simpleProbNet;
 		
-		ProbNet pruebaInferencia;
+		ProbNet inferenceTestNet;
 		
 		Variable A;
 		
@@ -409,39 +411,39 @@ public class ProbNetOperationsTest {
 
 		potentialvaluesH= new TablePotential(variablesH,role, tableH);
 
-		pruebaInferencia = new ProbNet();
+		inferenceTestNet = new ProbNet();
 
 		NodeType nodeType = NodeType.CHANCE;
 
-		pruebaInferencia.addProbNode(variableA, nodeType);
-		pruebaInferencia.addProbNode(variableB, nodeType);
-		pruebaInferencia.addProbNode(variableC, nodeType);
-		pruebaInferencia.addProbNode(variableD, nodeType);
-		pruebaInferencia.addProbNode(variableE, nodeType);
-		pruebaInferencia.addProbNode(variableF, nodeType);
-		pruebaInferencia.addProbNode(variableG, nodeType);
-		pruebaInferencia.addProbNode(variableH, nodeType);
-		pruebaInferencia.addProbNode(variableI, nodeType);
+		inferenceTestNet.addProbNode(variableA, nodeType);
+		inferenceTestNet.addProbNode(variableB, nodeType);
+		inferenceTestNet.addProbNode(variableC, nodeType);
+		inferenceTestNet.addProbNode(variableD, nodeType);
+		inferenceTestNet.addProbNode(variableE, nodeType);
+		inferenceTestNet.addProbNode(variableF, nodeType);
+		inferenceTestNet.addProbNode(variableG, nodeType);
+		inferenceTestNet.addProbNode(variableH, nodeType);
+		inferenceTestNet.addProbNode(variableI, nodeType);
 
-		pruebaInferencia.addLink(variableA, variableB, true);
-		pruebaInferencia.addLink(variableA, variableC, true);
-		pruebaInferencia.addLink(variableB, variableD, true);
-		pruebaInferencia.addLink(variableB, variableE, true);
-		pruebaInferencia.addLink(variableC, variableE, true);
-		pruebaInferencia.addLink(variableD, variableG, true);
-		pruebaInferencia.addLink(variableE, variableF, true);
-		pruebaInferencia.addLink(variableH, variableA, true);
-		pruebaInferencia.addLink(variableI, variableD, true);
+		inferenceTestNet.addLink(variableA, variableB, true);
+		inferenceTestNet.addLink(variableA, variableC, true);
+		inferenceTestNet.addLink(variableB, variableD, true);
+		inferenceTestNet.addLink(variableB, variableE, true);
+		inferenceTestNet.addLink(variableC, variableE, true);
+		inferenceTestNet.addLink(variableD, variableG, true);
+		inferenceTestNet.addLink(variableE, variableF, true);
+		inferenceTestNet.addLink(variableH, variableA, true);
+		inferenceTestNet.addLink(variableI, variableD, true);
 
-		pruebaInferencia.addPotential((Potential)potentialvaluesCA);
-		pruebaInferencia.addPotential((Potential)potentialvaluesEBC);
-		pruebaInferencia.addPotential((Potential)potentialvaluesFE);
-		pruebaInferencia.addPotential((Potential)potentialvaluesGD);
-		pruebaInferencia.addPotential((Potential)potentialvaluesI);
-		pruebaInferencia.addPotential((Potential)potentialvaluesDBI);
-		pruebaInferencia.addPotential((Potential)potentialvaluesBA);
-		pruebaInferencia.addPotential((Potential)potentialvaluesH);
-		pruebaInferencia.addPotential((Potential)potentialvaluesAH);
+		inferenceTestNet.addPotential((Potential)potentialvaluesCA);
+		inferenceTestNet.addPotential((Potential)potentialvaluesEBC);
+		inferenceTestNet.addPotential((Potential)potentialvaluesFE);
+		inferenceTestNet.addPotential((Potential)potentialvaluesGD);
+		inferenceTestNet.addPotential((Potential)potentialvaluesI);
+		inferenceTestNet.addPotential((Potential)potentialvaluesDBI);
+		inferenceTestNet.addPotential((Potential)potentialvaluesBA);
+		inferenceTestNet.addPotential((Potential)potentialvaluesH);
+		inferenceTestNet.addPotential((Potential)potentialvaluesAH);
 
 		// Set up evidence: A = 1 and D = 1
 		Finding findingA = new Finding(variableA, 1);
@@ -454,7 +456,7 @@ public class ProbNetOperationsTest {
 		variablesOfInterest.add(variableE);
 		
 		ProbNet pruned = ProbNetOperations.getPruned(
-				pruebaInferencia, variablesOfInterest, evidence);
+				inferenceTestNet, variablesOfInterest, evidence);
 		ProbNetOperations.projectEvidence(pruned, evidence);
 		
 		List<Variable> variablesPruned = pruned.getVariables();
@@ -486,9 +488,9 @@ public class ProbNetOperationsTest {
 		assertEquals(1, offsets0B[0]);
 		int initialPosition = potential0B.getInitialPosition();
 		assertEquals(0, initialPosition);
-		assertEquals(0.26, potential0B.values[potential0B.getInitialPosition()],OpenMarkovTests.maxError);
+		assertEquals(0.26, potential0B.values[potential0B.getInitialPosition()],maxError);
 		assertEquals(0.74, potential0B.values[
-		        potential0B.getInitialPosition() + offsets0B[0]],OpenMarkovTests.maxError);
+		        potential0B.getInitialPosition() + offsets0B[0]],maxError);
 		// Test projected potential p(D|B,I), D = 1 = psi(B,I)
 		TablePotential potential1B = (TablePotential)potentialsB.get(1);
 		if (potential1B.getNumVariables() == 1) {
@@ -894,6 +896,27 @@ public class ProbNetOperationsTest {
 		Assert.assertArrayEquals(expectedValues, originalPotential.values, 0.001);
 	}	
 		
+
+	@Test
+	public void testHasStructuralAssymetry() throws NodeNotFoundException
+	{
+		ProbNet decideTestDAN = NetsFactory.buildDecideTestDAN();
+		ProbNet decideTestID = NetsFactory.createInfluenceDiagramDecisionTestProblem(0.14, 0.91, 0.97);
+		ProbNet datingDAN = NetsFactory.buildDatingDAN();
+		
+		Assert.assertTrue(ProbNetOperations.hasStructuralAsymmetry(decideTestDAN));
+		Assert.assertFalse(ProbNetOperations.hasStructuralAsymmetry(decideTestID));
+		Assert.assertTrue(ProbNetOperations.hasStructuralAsymmetry(datingDAN));
+	}
+
+	
+	@Test
+	public void testConvertDecideTestDANtoID() throws NodeNotFoundException
+	{
+		ProbNet decideTestDAN = NetsFactory.buildDecideTestDAN();
+		
+		ProbNet decideTestID = ProbNetOperations.makeDANSymmetric(decideTestDAN);
+	}
 	
 	
 

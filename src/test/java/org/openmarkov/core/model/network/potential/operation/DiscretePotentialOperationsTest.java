@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.OpenMarkovTests;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -43,6 +42,9 @@ public class DiscretePotentialOperationsTest {
 
 	private SharedTestUtilities commonVariables;
 	
+	/*  Public scope for use in all tests. */
+	public static final double maxError = 0.0001;
+			
 	private final int numConstantPotentials = 10;
 
 	private final int numNormalPotentials = 10;
@@ -115,32 +117,32 @@ public class DiscretePotentialOperationsTest {
 		int[] configuration = { 0, 0, 0, 0 };
 		assertEquals(0.3,
 				getConfiguration(testVariables, configuration, sum),
-				OpenMarkovTests.maxError);
+				maxError);
 		configuration[0] = 1; // a=1, b=0, c=0, d=0
 		assertEquals(0.3,
 				getConfiguration(testVariables, configuration, sum),
-				OpenMarkovTests.maxError);
+				maxError);
 		configuration[0] = 0;
 		configuration[1] = 1; // a=0, b=1, c=0, d=0
 		assertEquals(0.4,
 				getConfiguration(testVariables, configuration, sum),
-				OpenMarkovTests.maxError);
+				maxError);
 		configuration[1] = 0;
 		configuration[2] = 1; // a=0, b=0, c=1, d=0
 		assertEquals(0.9,
 				getConfiguration(testVariables, configuration, sum),
-				OpenMarkovTests.maxError);
+				maxError);
 		configuration[2] = 0;
 		configuration[3] = 1; // a=0, b=0, c=0, d=1
 		assertEquals(0.5,
 				getConfiguration(testVariables, configuration, sum),
-				OpenMarkovTests.maxError);
+				maxError);
 		configuration[0] = 1;
 		configuration[1] = 1;
 		configuration[2] = 1; // a=1, b=1, c=1, d=1
 		assertEquals(0.6,
 				getConfiguration(testVariables, configuration, sum),
-				OpenMarkovTests.maxError);
+				maxError);
 	}
 
 	@Test
@@ -159,26 +161,26 @@ public class DiscretePotentialOperationsTest {
 		int[] coordinate = { 0, 0, 0, 0 }; // test configuration a=0,b=0,c=0,d=0
 		double value = getConfiguration(commonVariables.totalVariables,
 				coordinate, multiplication);
-		assertEquals(0.007, value, OpenMarkovTests.maxError);
+		assertEquals(0.007, value, maxError);
 		coordinate[0] = 1; // test configuration a=1,b=0,c=0,d=0
 		value = getConfiguration(commonVariables.totalVariables, coordinate,
 				multiplication);
-		assertEquals(0.007, value, OpenMarkovTests.maxError);
+		assertEquals(0.007, value, maxError);
 		coordinate[0] = 0;
 		coordinate[1] = 1; // test configuration a=0,b=1,c=0,d=0
 		value = getConfiguration(commonVariables.totalVariables, coordinate,
 				multiplication);
-		assertEquals(0.014, value, OpenMarkovTests.maxError);
+		assertEquals(0.014, value, maxError);
 		coordinate[1] = 0;
 		coordinate[2] = 1; // test configuration a=0,b=0,c=1,d=0
 		value = getConfiguration(commonVariables.totalVariables, coordinate,
 				multiplication);
-		assertEquals(0.028, value, OpenMarkovTests.maxError);
+		assertEquals(0.028, value, maxError);
 		coordinate[2] = 0;
 		coordinate[3] = 1; // test configuration a=0,b=0,c=0,d=1
 		value = getConfiguration(commonVariables.totalVariables, coordinate,
 				multiplication);
-		assertEquals(0.014, value, OpenMarkovTests.maxError);
+		assertEquals(0.014, value, maxError);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -198,7 +200,7 @@ public class DiscretePotentialOperationsTest {
 			fail("testNewMultiply: one constant potential");
 		}
 		assertEquals(1, aPotential.values.length);
-		assertEquals(2.0, aPotential.values[0],OpenMarkovTests.maxError);
+		assertEquals(2.0, aPotential.values[0],maxError);
 		
 		// Two constant potentials
 		potentials.add(constantPotentials.get(1));
@@ -210,7 +212,7 @@ public class DiscretePotentialOperationsTest {
 			e.printStackTrace();
 			fail("testNewMultiply: two constant potentials");
 		}
-		assertEquals(4.0, aPotential.values[0],OpenMarkovTests.maxError);
+		assertEquals(4.0, aPotential.values[0],maxError);
 		
 		// Several constant potentials
 		for (int i = 2; i < numConstantPotentials; i++) {
@@ -224,7 +226,7 @@ public class DiscretePotentialOperationsTest {
 			e.printStackTrace();
 			fail("testNewMultiply: several constant potentials");
 		}
-		assertEquals(7257600.0, aPotential.values[0],OpenMarkovTests.maxError);
+		assertEquals(7257600.0, aPotential.values[0],maxError);
 		
 		// Test constant and binary potential multiplication
 		// Only 1 potential so in this case the method does not do anything
@@ -252,7 +254,7 @@ public class DiscretePotentialOperationsTest {
 		// size:
 		assertEquals(81, aPotential.values.length);
 		// travels around all the table
-		assertEquals(1.0, aPotential.values[0],OpenMarkovTests.maxError);
+		assertEquals(1.0, aPotential.values[0],maxError);
 		
 		// Two normal potentials
 		potentials.add(normalPotentials.get(1));
@@ -267,17 +269,17 @@ public class DiscretePotentialOperationsTest {
 		// check table size
 		assertEquals(81 * 81, aPotential.values.length);
 		// check table content
-		assertEquals(82.0, aPotential.values[0],OpenMarkovTests.maxError);
+		assertEquals(82.0, aPotential.values[0],maxError);
 		ArrayList<Variable> variablesPotentials = (ArrayList<Variable>)
 			((Object)getUnionVariablesOrdered(potentials));
 		int[] coordinate1 = {1,0,0,0,0,0,0,0};
 		double configuration = UtilTestMethods.getConfiguration(
 			variablesPotentials, coordinate1, aPotential);
-		assertEquals(164.0, configuration,OpenMarkovTests.maxError);
+		assertEquals(164.0, configuration,maxError);
 		coordinate1[2] = 1; coordinate1[4] = 1; coordinate1[6] = 1;
 		configuration = UtilTestMethods.getConfiguration(
 			variablesPotentials, coordinate1, aPotential);
-		assertEquals(1012.0, configuration,OpenMarkovTests.maxError);
+		assertEquals(1012.0, configuration,maxError);
 		
 		// Two potentials constant and normal: c * n
 		potentials.clear();
@@ -292,13 +294,13 @@ public class DiscretePotentialOperationsTest {
 			fail("testNewMultiply: two potentials constant and normal: c * n");
 		}
 		assertEquals(81, aPotential.values.length);
-		assertEquals(2.0, aPotential.values[0],OpenMarkovTests.maxError);
+		assertEquals(2.0, aPotential.values[0],maxError);
 		int[] coordinate2 = {1,0,0,0};
 		variablesPotentials = (ArrayList<Variable>)
             ((Object)getUnionVariablesOrdered(potentials));
 		configuration = UtilTestMethods.getConfiguration(
 			variablesPotentials, coordinate2, aPotential);
-		assertEquals(4.0, configuration,OpenMarkovTests.maxError);
+		assertEquals(4.0, configuration,maxError);
 
 		// Two potentials constant and normal: n * c
 		potentials.clear();
@@ -313,12 +315,12 @@ public class DiscretePotentialOperationsTest {
 			fail("testNewMultiply: two potentials constant and normal: n * c");
 		}
 		assertEquals(81, aPotential.values.length);
-		assertEquals(2.0, aPotential.values[0],OpenMarkovTests.maxError);
+		assertEquals(2.0, aPotential.values[0],maxError);
 		variablesPotentials = (ArrayList<Variable>)
             ((Object)getUnionVariablesOrdered(potentials));
         configuration = UtilTestMethods.getConfiguration(
     		variablesPotentials, coordinate2, aPotential);
-		assertEquals(4.0, configuration,OpenMarkovTests.maxError);
+		assertEquals(4.0, configuration,maxError);
 
 		// Three potentials constant and normal: c1 * c2 * n
 		potentials.clear();
@@ -335,13 +337,13 @@ public class DiscretePotentialOperationsTest {
 				"c1 * c2 * n");
 		}
 		assertEquals(81, aPotential.values.length);
-		assertEquals(6.0, aPotential.values[0],OpenMarkovTests.maxError);
+		assertEquals(6.0, aPotential.values[0],maxError);
 		variablesPotentials = (ArrayList<Variable>)
             ((Object)getUnionVariablesOrdered(potentials));
 		int[] coordinate3 = {1,0,0,0,0,0,0,0};
         configuration = UtilTestMethods.getConfiguration(
 		    variablesPotentials, coordinate3, aPotential);
-		assertEquals(12.0, configuration,OpenMarkovTests.maxError);
+		assertEquals(12.0, configuration,maxError);
 
 		// Three potentials constant and normal: c1 * n * c2
 		potentials.clear();
@@ -358,12 +360,12 @@ public class DiscretePotentialOperationsTest {
 				"c1 * n * c2");
 		}
 		assertEquals(81, aPotential.values.length);
-		assertEquals(6.0, aPotential.values[0],OpenMarkovTests.maxError);
+		assertEquals(6.0, aPotential.values[0],maxError);
 		variablesPotentials = (ArrayList<Variable>)
             ((Object)getUnionVariablesOrdered(potentials));
         configuration = UtilTestMethods.getConfiguration(
 	        variablesPotentials, coordinate3, aPotential);
-		assertEquals(12.0, configuration,OpenMarkovTests.maxError);
+		assertEquals(12.0, configuration,maxError);
 
 		// Three potentials constant and normal: n * c1 * c2
 		potentials.clear();
@@ -380,12 +382,12 @@ public class DiscretePotentialOperationsTest {
 				"n * c1 * c2");
 		}
 		assertEquals(81, aPotential.values.length);
-		assertEquals(6.0, aPotential.values[0],OpenMarkovTests.maxError);
+		assertEquals(6.0, aPotential.values[0],maxError);
 		variablesPotentials = (ArrayList<Variable>)
             ((Object)getUnionVariablesOrdered(potentials));
         configuration = UtilTestMethods.getConfiguration(
             variablesPotentials, coordinate3, aPotential);
-	    assertEquals(12.0, configuration,OpenMarkovTests.maxError);
+	    assertEquals(12.0, configuration,maxError);
     }
 
 	@Test
@@ -403,26 +405,26 @@ public class DiscretePotentialOperationsTest {
 		int[] coordinate = { 0, 0, 0 }; // coordinate = {0,0,0}
 		double value = getConfiguration(commonVariables.arrayVariablesBCD,
 				coordinate, mulAndMarg);
-		assertEquals(0.0875, value, OpenMarkovTests.maxError);
+		assertEquals(0.0875, value, maxError);
 		coordinate[0] = 1; // coordinate = {1,0,0}
 		value = getConfiguration(commonVariables.arrayVariablesBCD, coordinate,
 				mulAndMarg);
-		assertEquals(0.063, value, OpenMarkovTests.maxError);
+		assertEquals(0.063, value, maxError);
 		coordinate[0] = 0;
 		coordinate[1] = 1; // coordinate = {0,1,0}
 		value = getConfiguration(commonVariables.arrayVariablesBCD, coordinate,
 				mulAndMarg);
-		assertEquals(0.2625, value, OpenMarkovTests.maxError);
+		assertEquals(0.2625, value, maxError);
 		coordinate[1] = 0;
 		coordinate[2] = 1; // coordinate = {0,0,1}
 		value = getConfiguration(commonVariables.arrayVariablesBCD, coordinate,
 				mulAndMarg);
-		assertEquals(0.273, value, OpenMarkovTests.maxError);
+		assertEquals(0.273, value, maxError);
 		coordinate[0] = 2;
 		coordinate[1] = 1; // coordinate = {2,1,1}
 		value = getConfiguration(commonVariables.arrayVariablesBCD, coordinate,
 				mulAndMarg);
-		assertEquals(0.1435, value, OpenMarkovTests.maxError);
+		assertEquals(0.1435, value, maxError);
 	}
 	
 	@Test
@@ -480,8 +482,8 @@ public class DiscretePotentialOperationsTest {
 				.multiplyAndMarginalize(potentials, variablesToKeep,
 						variablesToMarginalize);
 		// Test table
-		assertEquals(0.192, result.values[0], OpenMarkovTests.maxError);
-		assertEquals(0.808, result.values[1], OpenMarkovTests.maxError);
+		assertEquals(0.192, result.values[0], maxError);
+		assertEquals(0.808, result.values[1], maxError);
 		assertEquals(2, result.values.length);
 
 		// Test variables
@@ -516,7 +518,7 @@ public class DiscretePotentialOperationsTest {
 		assertFalse(maximizedVariables.contains(commonVariables.a));
 		// Test maximization
 		assertEquals(12, maximized.values.length);
-		assertEquals(0.21, maximized.values[0], OpenMarkovTests.maxError);
+		assertEquals(0.21, maximized.values[0], maxError);
 	}
 
 	@Test
@@ -533,7 +535,7 @@ public class DiscretePotentialOperationsTest {
 		// Call method under test
 		double constantFactor = DiscretePotentialOperations
 		    .getConstantFactor(commonVariables.potentials);
-		assertEquals(0.35, constantFactor,OpenMarkovTests.maxError);
+		assertEquals(0.35, constantFactor,maxError);
 	}
 
 	@Test
@@ -565,7 +567,7 @@ public class DiscretePotentialOperationsTest {
 		assertEquals(2, division.getVariables().size());
 		assertTrue(division.contains(commonVariables.a));
 		assertTrue(division.contains(commonVariables.b));
-		assertEquals(7, division.values[0], OpenMarkovTests.maxError);
+		assertEquals(7, division.values[0], maxError);
 		
 		division = (TablePotential)DiscretePotentialOperations
 			.divide(commonVariables.t2, commonVariables.t4);
@@ -578,26 +580,26 @@ public class DiscretePotentialOperationsTest {
 		int[] coordinate = {0,0,0,0};
 		double value = getConfiguration(
 			commonVariables.totalVariables, coordinate, division);
-		assertEquals(0.5, value, OpenMarkovTests.maxError);
+		assertEquals(0.5, value, maxError);
 		coordinate[2] = 1; // {0,0,1,0}
 		value = getConfiguration(
 			commonVariables.totalVariables, coordinate, division);
-		assertEquals(0.125, value, OpenMarkovTests.maxError);
+		assertEquals(0.125, value, maxError);
 		coordinate[2] = 0;
 		coordinate[0] = 1; // {1,0,0,0}
 		value = getConfiguration(
 				commonVariables.totalVariables, coordinate, division);
-		assertEquals(2, value, OpenMarkovTests.maxError);
+		assertEquals(2, value, maxError);
 		coordinate[0] = 0;
 		coordinate[1] = 1; // {0,1,0,0}
 		value = getConfiguration(
 				commonVariables.totalVariables, coordinate, division);
-		assertEquals(1, value, OpenMarkovTests.maxError);
+		assertEquals(1, value, maxError);
 		coordinate[1] = 0;
 		coordinate[3] = 1; // {0,0,0,1}
 		value = getConfiguration(
 				commonVariables.totalVariables, coordinate, division);
-		assertEquals(0.25, value, OpenMarkovTests.maxError);
+		assertEquals(0.25, value, maxError);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -616,9 +618,9 @@ public class DiscretePotentialOperationsTest {
 		// Check table
 		double[] table = maximizedPotential.values;
 		assertEquals(3, table.length); // size table reduced
-		assertEquals(0.7, table[0], OpenMarkovTests.maxError);
-		assertEquals(0.5, table[1], OpenMarkovTests.maxError);
-		assertEquals(0.6, table[2], OpenMarkovTests.maxError);
+		assertEquals(0.7, table[0], maxError);
+		assertEquals(0.5, table[1], maxError);
+		assertEquals(0.6, table[2], maxError);
 		// Test choices potential
 		// Check variables. It must contain same variables as
 		// maximized potential
@@ -669,10 +671,10 @@ public class DiscretePotentialOperationsTest {
 		assertEquals(variablesReordered.get(0), variablesAB.get(1));
 		assertEquals(variablesReordered.get(1), variablesAB.get(0));
 		// 2. Test table
-		assertEquals(0.2, reorderedBA.values[0],OpenMarkovTests.maxError);
-		assertEquals(0.4, reorderedBA.values[1],OpenMarkovTests.maxError);
-		assertEquals(0.8, reorderedBA.values[2],OpenMarkovTests.maxError);
-		assertEquals(0.6, reorderedBA.values[3],OpenMarkovTests.maxError);
+		assertEquals(0.2, reorderedBA.values[0],maxError);
+		assertEquals(0.4, reorderedBA.values[1],maxError);
+		assertEquals(0.8, reorderedBA.values[2],maxError);
+		assertEquals(0.6, reorderedBA.values[3],maxError);
 	}
 	
     @Test
@@ -706,7 +708,7 @@ public class DiscretePotentialOperationsTest {
 				{0.2, 0.4, 0.1, 0.9, 0.3, 0.8, 0.8, 0.6, 0.9, 0.1, 0.7, 0.2};
 			for (int i = 0; i < reorderedTable.length; i++) {
 				assertEquals(
-						reorderedTable[i], tablePotentialAfterReorder.values[i],OpenMarkovTests.maxError);
+						reorderedTable[i], tablePotentialAfterReorder.values[i],maxError);
 			}
 	}
 	
@@ -741,7 +743,7 @@ public class DiscretePotentialOperationsTest {
 		for (int i = 0; i < reorderedTable.length; i++) {
 			assertEquals(reorderedTable[i],
 					tablePotentialAfterReorder.values[i],
-					OpenMarkovTests.maxError);
+					maxError);
 		}
 	}
 

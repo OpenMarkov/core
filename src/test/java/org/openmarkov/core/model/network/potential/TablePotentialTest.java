@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.OpenMarkovTests;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -35,6 +34,9 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
  * @author fjdiez
  */
 public class TablePotentialTest {
+	
+	/*  Public scope for use in all tests. */
+	public static final double maxError = 0.0001;
 
 	private TablePotential tablePotential1;
 
@@ -319,10 +321,10 @@ public class TablePotentialTest {
 		int[] offsets = projected.getOffsets();
 
 		// Test table content
-		assertEquals(1, offsets.length, OpenMarkovTests.maxError);
-		assertEquals(1, offsets[0], OpenMarkovTests.maxError);
-		assertEquals(2.0, tableProjected[initialPosition], OpenMarkovTests.maxError);
-		assertEquals(3.0, tableProjected[initialPosition + offsets[0]], OpenMarkovTests.maxError);
+		assertEquals(1, offsets.length, maxError);
+		assertEquals(1, offsets[0], maxError);
+		assertEquals(2.0, tableProjected[initialPosition], maxError);
+		assertEquals(3.0, tableProjected[initialPosition + offsets[0]], maxError);
 	}
 
 	@Test
@@ -369,12 +371,12 @@ public class TablePotentialTest {
 
 		// Test table
 		assertEquals(multiplication.values.length, 6);
-		assertEquals(0.06, multiplication.values[0], OpenMarkovTests.maxError);
-		assertEquals(0.06, multiplication.values[1], OpenMarkovTests.maxError);
-		assertEquals(0.02, multiplication.values[2], OpenMarkovTests.maxError);
-		assertEquals(0.14, multiplication.values[3], OpenMarkovTests.maxError);
-		assertEquals(0.02, multiplication.values[4], OpenMarkovTests.maxError);
-		assertEquals(0.2, multiplication.values[5], OpenMarkovTests.maxError);
+		assertEquals(0.06, multiplication.values[0], maxError);
+		assertEquals(0.06, multiplication.values[1], maxError);
+		assertEquals(0.02, multiplication.values[2], maxError);
+		assertEquals(0.14, multiplication.values[3], maxError);
+		assertEquals(0.02, multiplication.values[4], maxError);
+		assertEquals(0.2, multiplication.values[5], maxError);
 	}
 
 	@Test

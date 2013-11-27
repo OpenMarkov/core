@@ -53,7 +53,16 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 // TODO Revisar todas las heuristicas que suponian que trabajaban
 // con una copia 
 		this.probNet = probNet;
-		this.variablesToEliminate = variablesToEliminate;
+		
+		// this.variablesToEliminate = variablesToEliminate;
+		// Make a deep copy of variablesToEliminate
+		this.variablesToEliminate = new ArrayList<List<Variable>>(variablesToEliminate.size());
+		for (List<Variable> list : variablesToEliminate) {
+			ArrayList<Variable> listOfVariables = new ArrayList<Variable>(list.size());
+			listOfVariables.addAll(list);
+			this.variablesToEliminate.add(listOfVariables);
+		}
+		
 		this.nodesToEliminate = new ArrayList<>(variablesToEliminate.size());
 		for(List<Variable> variables : variablesToEliminate)
 		{

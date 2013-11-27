@@ -76,29 +76,22 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 		Variable removedVariable = getEventVariable(event);
 
 		if (removedVariable != null) {
-            int listIndex = -1;
-            for (int j = variablesToEliminate.size() - 1; j >= 0 && listIndex == -1; j--) {
-                if ((variablesToEliminate.get(j) != null) && variablesToEliminate.get(j).size() > 0) {
-                    listIndex = j;
-                }
-            }
-			if (listIndex > -1){
-			    int index = variablesToEliminate.get(listIndex).indexOf(removedVariable);
-			    variablesToEliminate.get(listIndex).remove(removedVariable);
-			    if(variablesToEliminate.get(listIndex).isEmpty())
-			    {
-			        variablesToEliminate.remove(listIndex);
+            int listOfListsIndex = variablesToEliminate.size() - 1;
+			if (listOfListsIndex >= 0) {
+			    int listIndex = variablesToEliminate.get(listOfListsIndex).indexOf(removedVariable);
+			    if (listIndex >= 0) {
+			    	variablesToEliminate.get(listOfListsIndex).remove(listIndex);
 			    }
-                if (index > -1) {
-                    nodesToEliminate.get(listIndex).remove(index);
-                    if (nodesToEliminate.get(listIndex).isEmpty()) {
-                        nodesToEliminate.remove(listIndex);
+			    if(variablesToEliminate.get(listOfListsIndex).isEmpty()) {
+			        variablesToEliminate.remove(listOfListsIndex);
+			    }
+                if (listIndex >= 0) {
+                    nodesToEliminate.get(listOfListsIndex).remove(listIndex);
+                    if (nodesToEliminate.get(listOfListsIndex).isEmpty()) {
+                        nodesToEliminate.remove(listOfListsIndex);
                     }
                 }
 			}
-			//Two lines commented by mluque
-			//probNet.removePotentials(toEliminateNode);
-			//probNet.removeProbNode(toEliminateNode);
 		}
 	}
 	

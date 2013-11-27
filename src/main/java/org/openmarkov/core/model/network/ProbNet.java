@@ -818,29 +818,36 @@ public class ProbNet implements Cloneable {
      */
     public ProbNode removePotential(Potential potential) {
         List<Variable> variables = potential.getVariables();
-        List<ProbNode> candidateNodes = new ArrayList<ProbNode>();
+        List<ProbNode> candidateProbNodes = new ArrayList<ProbNode>();
         // gets probNodes that could contain the potential
         if (!potential.isUtility()) { // chance potential
                                       // find nodes corresponding to variables
             for (Variable variable : variables) {
                 ProbNode probNode = getProbNode(variable);
                 if (probNode != null) {
-                    candidateNodes.add(getProbNode(variable));
+                    candidateProbNodes.add(getProbNode(variable));
                 }
             }
         } else { // utility potential.
             if (variables.size() == 0) {// Constant potentials can be in any
                                         // probNode
-                candidateNodes = this.getProbNodes();
+                candidateProbNodes = this.getProbNodes();
             } else {
                 List<ProbNode> utilityNodes = getProbNodes(NodeType.UTILITY);
-                candidateNodes.addAll(utilityNodes);
+                candidateProbNodes.addAll(utilityNodes);
                 ProbNode firstProbNode = getProbNode(variables.get(0));
-                candidateNodes.add(firstProbNode);
+                candidateProbNodes.add(firstProbNode);
+                Variable utilityVariable = potential.getUtilityVariable();
+                if (utilityVariable != null) {
+                	ProbNode utilityProbNode = getProbNode(utilityVariable);
+                	if ((utilityProbNode != null) && (!candidateProbNodes.contains(utilityProbNode))) {
+                		candidateProbNodes.add(utilityProbNode);
+                	}
+                }
             }
         }
         // find in such nodes the potential to remove
-        for (ProbNode probNode : candidateNodes) {
+        for (ProbNode probNode : candidateProbNodes) {
             if (probNode != null) {
                 List<Potential> potentialsNode = probNode.getPotentials();
                 for (Potential potentialNode : potentialsNode) {

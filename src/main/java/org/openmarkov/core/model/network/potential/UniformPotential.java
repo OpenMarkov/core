@@ -56,7 +56,7 @@ public class UniformPotential extends Potential
      */
     public UniformPotential (Variable utilityVariable, List<Variable> variables)
     {
-        super (variables, PotentialRole.UTILITY, utilityVariable);
+        super (utilityVariable, variables);
         if (allVariablesAreDiscrete (variables))
         {
             discreteValue = calculateDiscreteValue (variables);

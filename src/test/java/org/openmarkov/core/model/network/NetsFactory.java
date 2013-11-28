@@ -49,14 +49,12 @@ public class NetsFactory {
 	 * @param variables
 	 * @return An ArrayList containing the variables
 	 */
-	private static List<Variable> createArrayListVariables(Variable...variables){
-		List<Variable> arrayList;
-		
-		arrayList = new ArrayList<Variable>();
+	private static List<Variable> createVariableList(Variable...variables){
+		List<Variable> list = new ArrayList<Variable>();
 		for (int i=0;i<variables.length;i++){
-			arrayList.add(variables[i]);
+			list.add(variables[i]);
 		}
-		return arrayList;
+		return list;
 		
 	}
 	
@@ -121,22 +119,18 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	private static TablePotential createTablePotential(PotentialRole role,
 			double[] values, Variable... variables) {
 		
-		List<Variable> arrayListVariables = createArrayListVariables(variables);
-		
-		return new TablePotential(arrayListVariables, role, values);
+		return new TablePotential(createVariableList(variables), role, values);
 	}
 	
 	/**
-	 * @param role Role of the potential
+	 * Create utility potential
 	 * @param values Values of the potential
 	 * @param variables Variables
 	 * @return A TablePotential
 	 */
 	private static SumPotential createSumPotential(Variable varSV,Variable... parents) {
 		
-		List<Variable> arrayListVariables = createArrayListVariables(parents);
-		
-		return new SumPotential(arrayListVariables, PotentialRole.UTILITY, varSV);
+		return new SumPotential(varSV, createVariableList(parents));
 	}
 	
 	/**

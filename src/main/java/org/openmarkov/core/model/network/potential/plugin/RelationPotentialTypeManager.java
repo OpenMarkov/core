@@ -98,7 +98,7 @@ public class RelationPotentialTypeManager
      * @param utilityVariable
      * @return
      */
-    public final Potential getByName (String name, List<Variable> variables, PotentialRole role, Variable utilityVariable)
+    public final Potential getByName (String name, Variable utilityVariable, List<Variable> variables)
     {
         Potential instance = null;
         try
@@ -107,8 +107,8 @@ public class RelationPotentialTypeManager
             
             try
             {
-                constructor = potentials.get (name).getConstructor (List.class, PotentialRole.class, Variable.class);
-                instance = (Potential) constructor.newInstance (variables, role, utilityVariable);
+                constructor = potentials.get (name).getConstructor (Variable.class, List.class);
+                instance = (Potential) constructor.newInstance (utilityVariable, variables);
             }catch (NoSuchMethodException e) {
                 constructor = potentials.get (name).getConstructor (List.class);
                 instance = constructor.newInstance (variables);

@@ -117,9 +117,8 @@ public class TreeADDPotential extends Potential {
 	 * @param role
 	 * @param utilityVariable
 	 */
-	public TreeADDPotential(List<Variable> variables, Variable topVariable, PotentialRole role,
-			Variable utilityVariable) {
-		super(variables, role, utilityVariable);
+	public TreeADDPotential(Variable utilityVariable, List<Variable> variables, Variable topVariable) {
+		super(utilityVariable, variables);
 		// setUtilityVariable(utilityVariable);
 		this.topVariable = topVariable;
 		VariableType variableType = topVariable.getVariableType();
@@ -161,9 +160,8 @@ public class TreeADDPotential extends Potential {
 		this(variables, (role == PotentialRole.UTILITY) ? variables.get(0) : variables.get(1), role);
 	}
 
-	public TreeADDPotential(List<Variable> variables, PotentialRole role, Variable utilityVariable) {
-		this(variables, (role == PotentialRole.UTILITY) ? variables.get(0) : variables.get(1),
-				role, utilityVariable);
+	public TreeADDPotential(Variable utilityVariable, List<Variable> variables) {
+		this(utilityVariable, variables, variables.get(0));
 	}
 
 	/**

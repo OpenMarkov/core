@@ -119,8 +119,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 			RelationPotentialTypeManager relationTypeManager = new RelationPotentialTypeManager();
 			if (lastPotential.isUtility()) {
 				newPotential = relationTypeManager.getByName(newPotentialType,
-						variables, role, lastPotential
-						.getUtilityVariable());
+						lastPotential.getUtilityVariable(), variables);
 			} else {
 			newPotential = relationTypeManager.getByName(newPotentialType, variables, role);
 			}

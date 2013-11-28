@@ -38,8 +38,8 @@ public class SumPotential extends Potential {
 	 * @param role
 	 * @param utilityVariable
 	 */
-	public SumPotential(List<Variable> variables, PotentialRole role, Variable utilityVariable) {
-		super(variables, role, utilityVariable);
+	public SumPotential(Variable utilityVariable, List<Variable> variables) {
+		super(utilityVariable, variables);
 		type = PotentialType.SUM;
 	}	
 	/**

@@ -34,8 +34,8 @@ public class LinearRegressionPotential extends RegressionPotential {
         super(variables, role, getDefaultCovariates(variables, role), new double[variables.size()]);
     }
     
-    public LinearRegressionPotential(List<Variable> variables, PotentialRole role, Variable utilityVariable) {
-        super(variables, role, getDefaultCovariates(variables, role), new double[variables.size()+1]);
+    public LinearRegressionPotential(Variable utilityVariable, List<Variable> variables) {
+        super(variables, PotentialRole.UTILITY, getDefaultCovariates(variables, PotentialRole.UTILITY), new double[variables.size()+1]);
         this.utilityVariable = utilityVariable;
     }      
 

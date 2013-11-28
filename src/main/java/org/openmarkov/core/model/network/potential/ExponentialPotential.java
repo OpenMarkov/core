@@ -33,9 +33,8 @@ public class ExponentialPotential extends RegressionPotential {
 		super(variables, role);
 	}
 
-	public ExponentialPotential(List<Variable> variables, PotentialRole role,
-			Variable utilityVariable) {
-		this(variables, role);
+	public ExponentialPotential(Variable utilityVariable, List<Variable> variables) {
+		this(variables, PotentialRole.UTILITY);
 		this.utilityVariable = utilityVariable;
 	}
 

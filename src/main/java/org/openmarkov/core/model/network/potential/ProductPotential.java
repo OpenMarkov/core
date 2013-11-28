@@ -40,6 +40,10 @@ public class ProductPotential extends Potential {
 	public ProductPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role);
 	}
+
+	public ProductPotential(Variable utilityVariable, List<Variable> variables) {
+		super(utilityVariable, variables);
+	}
 	
     public ProductPotential(ProductPotential potential) {
         super(potential);

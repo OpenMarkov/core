@@ -61,6 +61,12 @@ public class DeltaPotential extends Potential{
             stateIndex = conditionedVariable.getStateIndex(state);
         }
     }
+
+    public DeltaPotential(Variable utilityVariable, List<Variable> variables)
+    {
+    	this(variables, PotentialRole.UTILITY);
+    	this.utilityVariable = utilityVariable;
+    }
     
     public DeltaPotential(DeltaPotential potential)
     {

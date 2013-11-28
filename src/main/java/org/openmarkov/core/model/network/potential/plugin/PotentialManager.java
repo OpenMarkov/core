@@ -58,6 +58,12 @@ public class PotentialManager
             }
         }  
     }
+    
+    public static String getPotentialName(Class<?> clazz)
+    {
+    	return clazz.getAnnotation(PotentialType.class).name();
+    }
+    
     /**
      * Returns a potential by name. 
      * @param name the potential's name.
@@ -79,9 +85,9 @@ public class PotentialManager
                 instance = constructor.newInstance (variables);
             }
         }catch (NoSuchMethodException e) {
-            throw new InvalidParameterException ("A Potential subclass must have a constructor "
-                    + "either that receives a list of variables or"
-                    + " a list of variables and a potential role.");
+            throw new InvalidParameterException ("\""+ name + "\" does not have a constructor"
+                    + " neither that receives a list of variables"
+                    + " a list of variables and a potential role." );
         }
         catch (Exception e)
         {
@@ -106,18 +112,11 @@ public class PotentialManager
         {
             Constructor<? extends Potential> constructor;
             
-            try
-            {
-                constructor = potentials.get (name).getConstructor (Variable.class, List.class);
-                instance = (Potential) constructor.newInstance (utilityVariable, variables);
-            }catch (NoSuchMethodException e) {
-                constructor = potentials.get (name).getConstructor (List.class);
-                instance = constructor.newInstance (variables);
-            }
+            constructor = potentials.get (name).getConstructor (Variable.class, List.class);
+            instance = (Potential) constructor.newInstance (utilityVariable, variables);
         }catch (NoSuchMethodException e) {
-            throw new InvalidParameterException ("A Potential subclass must have a constructor "
-                    + "either that receives a list of variables or"
-                    + " a list of variables a potential role and a utility variable.");
+            throw new InvalidParameterException ("\""+ name + "\" does not have a constructor"
+                    + "that receives a tuility variable and a list of variables.");
         }
         catch (Exception e)
         {

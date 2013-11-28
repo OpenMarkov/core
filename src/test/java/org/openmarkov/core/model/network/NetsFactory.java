@@ -1370,5 +1370,92 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	  
 	  return probNet;
 	}	
+	
+	public static ProbNet buildDiabetesDAN () {
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  // Variables
+		  Variable varUrine_test_result = new Variable("Urine test result", "negative", "positive");
+		  Variable varSymptom = new Variable("Symptom", "absent", "present");
+		  Variable varDiabetes = new Variable("Diabetes", "absent", "present");
+		  Variable varBlood_test_result = new Variable("Blood test result", "negative", "positive");
+		  Variable varDec_Blood_Test = new Variable("Dec: Blood Test", "no", "yes");
+		  Variable varDec_Urine_test = new Variable("Dec: Urine test", "no", "yes");
+		  Variable varTherapy = new Variable("Therapy", "no", "yes");
+		  Variable varCost_of_blood_test = new Variable("Cost of blood test");
+		  Variable varCost_of_urine_test = new Variable("Cost of urine test");
+		  Variable varQuality_of_life = new Variable("Quality of life");
 
+		  // Nodes
+		  ProbNode nodeUrine_test_result= probNet.addProbNode(varUrine_test_result, NodeType.CHANCE);
+		  ProbNode nodeSymptom= probNet.addProbNode(varSymptom, NodeType.CHANCE);
+		  ProbNode nodeDiabetes= probNet.addProbNode(varDiabetes, NodeType.CHANCE);
+		  ProbNode nodeBlood_test_result= probNet.addProbNode(varBlood_test_result, NodeType.CHANCE);
+		  ProbNode nodeDec_Blood_Test= probNet.addProbNode(varDec_Blood_Test, NodeType.DECISION);
+		  ProbNode nodeDec_Urine_test= probNet.addProbNode(varDec_Urine_test, NodeType.DECISION);
+		  ProbNode nodeTherapy= probNet.addProbNode(varTherapy, NodeType.DECISION);
+		  ProbNode nodeCost_of_blood_test= probNet.addProbNode(varCost_of_blood_test, NodeType.UTILITY);
+		  ProbNode nodeCost_of_urine_test= probNet.addProbNode(varCost_of_urine_test, NodeType.UTILITY);
+		  ProbNode nodeQuality_of_life= probNet.addProbNode(varQuality_of_life, NodeType.UTILITY);
+
+		  // Links
+		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.addLink(nodeDiabetes, nodeSymptom, true);
+		  probNet.addLink(nodeDiabetes, nodeUrine_test_result, true);
+		  probNet.addLink(nodeDiabetes, nodeBlood_test_result, true);
+		  probNet.addLink(nodeDiabetes, nodeQuality_of_life, true);
+		  probNet.addLink(nodeDec_Blood_Test, nodeBlood_test_result, true);
+		  probNet.addLink(nodeDec_Blood_Test, nodeTherapy, true);
+		  probNet.addLink(nodeDec_Blood_Test, nodeCost_of_blood_test, true);
+		  probNet.addLink(nodeDec_Urine_test, nodeUrine_test_result, true);
+		  probNet.addLink(nodeDec_Urine_test, nodeTherapy, true);
+		  probNet.addLink(nodeDec_Urine_test, nodeCost_of_urine_test, true);
+		  probNet.addLink(nodeTherapy, nodeQuality_of_life, true);
+
+		  // Potentials
+		  TablePotential potUrine_test_result = new TablePotential(Arrays.asList(varUrine_test_result, varDec_Urine_test, varDiabetes), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potUrine_test_result.values = new double[]{0, 0, 0.99, 0.01, 0, 0, 0.03, 0.97};
+		  nodeUrine_test_result.setPotential(potUrine_test_result);
+
+		  TablePotential potSymptom = new TablePotential(Arrays.asList(varSymptom, varDiabetes), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potSymptom.values = new double[]{0.999, 0.001, 0.15, 0.85};
+		  nodeSymptom.setPotential(potSymptom);
+
+		  TablePotential potDiabetes = new TablePotential(Arrays.asList(varDiabetes), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potDiabetes.values = new double[]{0.93, 0.07};
+		  nodeDiabetes.setPotential(potDiabetes);
+
+		  TablePotential potBlood_test_result = new TablePotential(Arrays.asList(varBlood_test_result, varDec_Blood_Test, varDiabetes), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potBlood_test_result.values = new double[]{0, 0, 0.98, 0.02, 0, 0, 0.04, 0.96};
+		  nodeBlood_test_result.setPotential(potBlood_test_result);
+
+		  TablePotential potCost_of_blood_test = new TablePotential(varCost_of_blood_test,Arrays.asList(varDec_Blood_Test));
+		  potCost_of_blood_test.values = new double[]{0, 50};
+		  nodeCost_of_blood_test.setPotential(potCost_of_blood_test);
+
+		  TablePotential potCost_of_urine_test = new TablePotential(varCost_of_urine_test,Arrays.asList(varDec_Urine_test));
+		  potCost_of_urine_test.values = new double[]{0, 30};
+		  nodeCost_of_urine_test.setPotential(potCost_of_urine_test);
+
+		  TablePotential potQuality_of_life = new TablePotential(varQuality_of_life,Arrays.asList(varDiabetes, varTherapy));
+		  potQuality_of_life.values = new double[]{10, 3, 9, 8};
+		  nodeQuality_of_life.setPotential(potQuality_of_life);
+
+
+		  // Link restrictions and revealing states
+		  Link link_nodeDec_Blood_Test_nodeBlood_test_result = probNet.getGraph().getLink(nodeDec_Blood_Test.getNode(),nodeBlood_test_result.getNode(), true);
+		  link_nodeDec_Blood_Test_nodeBlood_test_result.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDec_Blood_Test_nodeBlood_test_result = (TablePotential)link_nodeDec_Blood_Test_nodeBlood_test_result.getRestrictionsPotential();
+		  restrictions_nodeDec_Blood_Test_nodeBlood_test_result.values = new double[] {0, 1, 0, 1};
+		  link_nodeDec_Blood_Test_nodeBlood_test_result.setRevealingStates(Arrays.asList(varDec_Blood_Test.getStates()[1]));
+
+		  Link link_nodeDec_Urine_test_nodeUrine_test_result = probNet.getGraph().getLink(nodeDec_Urine_test.getNode(),nodeUrine_test_result.getNode(), true);
+		  link_nodeDec_Urine_test_nodeUrine_test_result.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDec_Urine_test_nodeUrine_test_result = (TablePotential)link_nodeDec_Urine_test_nodeUrine_test_result.getRestrictionsPotential();
+		  restrictions_nodeDec_Urine_test_nodeUrine_test_result.values = new double[] {0, 1, 0, 1};
+		  link_nodeDec_Urine_test_nodeUrine_test_result.setRevealingStates(Arrays.asList(varDec_Urine_test.getStates()[1]));
+
+		  nodeSymptom.setAlwaysObserved(true);
+
+		 return probNet;
+	}	
 }

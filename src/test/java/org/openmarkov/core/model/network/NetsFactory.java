@@ -1458,4 +1458,86 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 
 		 return probNet;
 	}	
+	
+	public static ProbNet buildTwoTestDAN () {
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  // Variables
+		  Variable varDisease = new Variable("Disease", "absent", "present");
+		  Variable varR_T1 = new Variable("R T1", "negative", "positive");
+		  Variable varR_T2 = new Variable("R T2", "negative", "positive");
+		  Variable varT1 = new Variable("T1", "no", "yes");
+		  Variable varT2 = new Variable("T2", "no", "yes");
+		  Variable varTh = new Variable("Th", "no", "yes");
+		  Variable varU = new Variable("U");
+		  Variable varU1 = new Variable("U1");
+		  Variable varU2 = new Variable("U2");
+
+		  // Nodes
+		  ProbNode nodeDisease= probNet.addProbNode(varDisease, NodeType.CHANCE);
+		  ProbNode nodeR_T1= probNet.addProbNode(varR_T1, NodeType.CHANCE);
+		  ProbNode nodeR_T2= probNet.addProbNode(varR_T2, NodeType.CHANCE);
+		  ProbNode nodeT1= probNet.addProbNode(varT1, NodeType.DECISION);
+		  ProbNode nodeT2= probNet.addProbNode(varT2, NodeType.DECISION);
+		  ProbNode nodeTh= probNet.addProbNode(varTh, NodeType.DECISION);
+		  ProbNode nodeU= probNet.addProbNode(varU, NodeType.UTILITY);
+		  ProbNode nodeU1= probNet.addProbNode(varU1, NodeType.UTILITY);
+		  ProbNode nodeU2= probNet.addProbNode(varU2, NodeType.UTILITY);
+
+		  // Links
+		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.addLink(nodeDisease, nodeR_T1, true);
+		  probNet.addLink(nodeDisease, nodeR_T2, true);
+		  probNet.addLink(nodeDisease, nodeU, true);
+		  probNet.addLink(nodeT1, nodeR_T1, true);
+		  probNet.addLink(nodeT1, nodeU1, true);
+		  probNet.addLink(nodeT1, nodeTh, true);
+		  probNet.addLink(nodeT2, nodeR_T2, true);
+		  probNet.addLink(nodeT2, nodeU2, true);
+		  probNet.addLink(nodeT2, nodeTh, true);
+		  probNet.addLink(nodeTh, nodeU, true);
+
+		  // Potentials
+		  TablePotential potDisease = new TablePotential(Arrays.asList(varDisease), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potDisease.values = new double[]{0.85, 0.15};
+		  nodeDisease.setPotential(potDisease);
+
+		  TablePotential potR_T1 = new TablePotential(Arrays.asList(varR_T1, varDisease, varT1), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potR_T1.values = new double[]{0, 0, 0, 0, 0.85, 0.15, 0.1, 0.9};
+		  nodeR_T1.setPotential(potR_T1);
+
+		  TablePotential potR_T2 = new TablePotential(Arrays.asList(varR_T2, varDisease, varT2), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potR_T2.values = new double[]{0, 0, 0, 0, 0.99, 0.01, 0.005, 0.995};
+		  nodeR_T2.setPotential(potR_T2);
+
+		  TablePotential potU = new TablePotential(varU,Arrays.asList(varTh, varDisease));
+		  potU.values = new double[]{10, 8, 2, 7};
+		  nodeU.setPotential(potU);
+
+		  TablePotential potU1 = new TablePotential(varU1,Arrays.asList(varT1));
+		  potU1.values = new double[]{0, -0.05};
+		  nodeU1.setPotential(potU1);
+
+		  TablePotential potU2 = new TablePotential(varU2,Arrays.asList(varT2));
+		  potU2.values = new double[]{0, -0.33};
+		  nodeU2.setPotential(potU2);
+
+
+		  // Link restrictions and revealing states
+		  Link link_nodeT1_nodeR_T1 = probNet.getGraph().getLink(nodeT1.getNode(),nodeR_T1.getNode(), true);
+		  link_nodeT1_nodeR_T1.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeT1_nodeR_T1 = (TablePotential)link_nodeT1_nodeR_T1.getRestrictionsPotential();
+		  restrictions_nodeT1_nodeR_T1.values = new double[] {0, 1, 0, 1};
+		  link_nodeT1_nodeR_T1.setRevealingStates(Arrays.asList(varT1.getStates()[1]));
+
+		  Link link_nodeT2_nodeR_T2 = probNet.getGraph().getLink(nodeT2.getNode(),nodeR_T2.getNode(), true);
+		  link_nodeT2_nodeR_T2.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeT2_nodeR_T2 = (TablePotential)link_nodeT2_nodeR_T2.getRestrictionsPotential();
+		  restrictions_nodeT2_nodeR_T2.values = new double[] {0, 1, 0, 1};
+		  link_nodeT2_nodeR_T2.setRevealingStates(Arrays.asList(varT2.getStates()[1]));
+
+
+		  // Always observed nodes
+
+		 return probNet;
+		}	
 }

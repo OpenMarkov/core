@@ -51,4 +51,11 @@ public class DecisionTreeTest {
 		Assert.assertEquals(89.8558, decisionTree.getUtility(), 0.0001);
 	}		
 	
+	@Test
+	public void testTwoTestsDAN() throws NodeNotFoundException {
+		ProbNet diabetesDAN = NetsFactory.buildTwoTestDAN();
+		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(diabetesDAN);
+		Assert.assertEquals(9.3324, decisionTree.getUtility(), 0.0001);
+	}			
+	
 }

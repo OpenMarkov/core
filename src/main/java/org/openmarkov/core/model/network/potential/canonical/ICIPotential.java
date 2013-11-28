@@ -40,7 +40,7 @@ public abstract class ICIPotential extends Potential {
     /**
      * List of Z variables we are going to use in the canonical model
      */
-    private HashMap<Variable, Variable> zVariables;
+    private Map<Variable, Variable> zVariables;
     
 	/**
 	 * Noisy parameters for the canonical model

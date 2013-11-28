@@ -30,7 +30,7 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.TablePotentialSampler;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 /**
  * A <code>TablePotential</code> is a type of relation with a list of
@@ -45,7 +45,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
  * @version 1.0
  * @since OpenMarkov 1.0
  */
-@RelationPotentialType(name = "Table", family = "")
+@PotentialType(name = "Table", family = "")
 public class TablePotential extends Potential implements Comparable<TablePotential> {
     // Attributes
     /** Dimensions (number of states) of the variables. */
@@ -107,7 +107,6 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
             values = new double[tableSize];
             offsets = new int[0];
         }
-        type = PotentialType.TABLE;
     }
 
     /**
@@ -172,7 +171,6 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         this.offsets = offsets;
         this.dimensions = dimensions;
         tableSize = computeTableSize(variables);
-        type = PotentialType.TABLE;
     }
 
     public TablePotential(TablePotential potential) {
@@ -183,7 +181,6 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         tableSize = potential.tableSize;
         values = potential.values.clone();
         uncertainValues = potential.uncertainValues;
-        type = PotentialType.TABLE;
     }
 
     /**
@@ -1040,7 +1037,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
             try {
                 TablePotential projectedPotential = tableProject(evidenceCase, null).get(0);
                 if ((projectedPotential.getNumVariables() == 1)
-                        && (projectedPotential.getPotentialType() == PotentialType.TABLE)) {
+                        && (projectedPotential instanceof TablePotential)) {
                     double[] table = ((TablePotential) projectedPotential).values;
                     int zeros = 0;
                     int position = 0;

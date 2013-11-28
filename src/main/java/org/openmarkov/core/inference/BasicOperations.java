@@ -21,8 +21,8 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
+import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
@@ -50,9 +50,9 @@ public class BasicOperations {
             }
             List<TablePotential> potentials = new ArrayList<TablePotential>(hashtable.values());
             Potential utilityPotential = utilityProbNode.getPotentials().get(0);
-            if (utilityPotential.getPotentialType() == PotentialType.SUM
-                    || (utilityPotential.getPotentialType() == PotentialType.SAME_AS_PREVIOUS && ((SameAsPrevious) utilityPotential)
-                            .getOriginalPotential().getPotentialType() == PotentialType.SUM)) {
+            if (utilityPotential instanceof SumPotential
+                    || (utilityPotential instanceof  SameAsPrevious && ((SameAsPrevious) utilityPotential)
+                            .getOriginalPotential() instanceof SumPotential)) {
                 newPotential = DiscretePotentialOperations.sum(potentials);
             } else {
                 newPotential = DiscretePotentialOperations.multiply(potentials);
@@ -64,7 +64,7 @@ public class BasicOperations {
 
     private static boolean isSumSuperValueNode(ProbNet network, Variable utilityVariable) {
         List<Potential> potentials = network.getProbNode(utilityVariable).getPotentials();
-        return (!potentials.isEmpty() && potentials.get(0).getPotentialType() == PotentialType.SUM);
+        return (!potentials.isEmpty() && potentials.get(0) instanceof SumPotential);
     }
 
     /**

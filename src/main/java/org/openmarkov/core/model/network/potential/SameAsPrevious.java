@@ -17,13 +17,13 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 /**
  * @author marias
  * @version 1.0
  */
-@RelationPotentialType(name = "Same as previous", family = "Temporal")
+@PotentialType(name = "Same as previous", family = "Temporal")
 public class SameAsPrevious extends Potential
 {
     // Attributes
@@ -51,7 +51,6 @@ public class SameAsPrevious extends Potential
         this.originalPotential = potential.copy();
         originalPotential.shift (probNet, timeDifference);
         this.utilityVariable = originalPotential.getUtilityVariable(); 
-        type = PotentialType.SAME_AS_PREVIOUS;
     }
     
     public SameAsPrevious (SameAsPrevious potential)
@@ -60,7 +59,6 @@ public class SameAsPrevious extends Potential
         this.probNet = potential.probNet;
         this.originalPotential = potential.originalPotential;
         this.timeDifference = potential.timeDifference;
-        type = PotentialType.SAME_AS_PREVIOUS;
     }
 
     /**
@@ -156,7 +154,7 @@ public class SameAsPrevious extends Potential
                     {
                         // finally, ensures that the potential is not another
                         // SAME_AS_PREVIOUS
-                        if (potential.getPotentialType () != PotentialType.SAME_AS_PREVIOUS)
+                        if (!(potential instanceof SameAsPrevious))
                         {
                             previousPotential = potential;
                             break;

@@ -27,12 +27,11 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 /**
  * A TreeADDPotential is a type of Potential that implies several advantages
@@ -43,7 +42,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
  * @author myebra
  * 
  */
-@RelationPotentialType(name = "Tree/ADD", family = "Tree")
+@PotentialType(name = "Tree/ADD", family = "Tree")
 public class TreeADDPotential extends Potential {
 
 	/**
@@ -192,11 +191,6 @@ public class TreeADDPotential extends Potential {
 		}
 		this.branches = treeBranches;
 		updateReferences(getLabeledBranches());
-	}
-
-	@Override
-	public PotentialType getPotentialType() {
-		return PotentialType.TREE_ADD;
 	}
 
 	/**

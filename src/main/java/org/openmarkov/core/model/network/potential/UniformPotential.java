@@ -18,14 +18,14 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 /**
  * Potential with discrete and/or continuous variables.
  * @author marias
  * @version 1.0
  */
-@RelationPotentialType(name = "Uniform", family = "")
+@PotentialType(name = "Uniform", family = "")
 public class UniformPotential extends Potential
 {
     // Attributes
@@ -46,7 +46,6 @@ public class UniformPotential extends Potential
         {
             discreteValue = calculateDiscreteValue (variables);
         }
-        type = PotentialType.UNIFORM;
     }
 
     /**
@@ -61,7 +60,6 @@ public class UniformPotential extends Potential
         {
             discreteValue = calculateDiscreteValue (variables);
         }
-        type = PotentialType.UNIFORM;
     }
 
     /**
@@ -80,7 +78,6 @@ public class UniformPotential extends Potential
     public UniformPotential (UniformPotential potential)
     {
         super (potential);
-        type = PotentialType.UNIFORM;
         if (allVariablesAreDiscrete (variables))
         {
             discreteValue = calculateDiscreteValue (variables);

@@ -15,7 +15,6 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
@@ -162,7 +161,7 @@ public class TreeADDPotentialTest {
 		
 		List<Potential> potentials = probNet.getPotentials();
 		for (Potential potential : potentials) {
-			if (potential.getPotentialType() == PotentialType.TREE_ADD) {
+			if (potential instanceof TreeADDPotential) {
 				this.treeADD = (TreeADDPotential) potential;
 				variableB = potential.getVariable(0);
 				variableA = potential.getVariable(1);

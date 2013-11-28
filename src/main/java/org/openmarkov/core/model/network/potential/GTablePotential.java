@@ -42,12 +42,6 @@ public class GTablePotential<Element> extends TablePotential {
         this (potential.getVariables (), potential.getPotentialRole ());
     }
     
-    
-	@Override
-	public PotentialType getPotentialType() {
-		return PotentialType.GTABLE;
-	}
-    
 	/** Overrides <code>toString</code> method. Mainly for test purposes */
 	public String toString() {
 		// writes the variables names

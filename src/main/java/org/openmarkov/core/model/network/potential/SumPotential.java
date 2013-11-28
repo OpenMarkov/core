@@ -22,13 +22,13 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 /** Potential associated to supervalue node to indicate that the utility is a
  * sum of the utilities of its parents.
  * @author mkpalacio
  * @version 1.0 */
-@RelationPotentialType(name="Sum", family="Utility")
+@PotentialType(name="Sum", family="Utility")
 public class SumPotential extends Potential {
 
 	// Constructor
@@ -40,7 +40,6 @@ public class SumPotential extends Potential {
 	 */
 	public SumPotential(Variable utilityVariable, List<Variable> variables) {
 		super(utilityVariable, variables);
-		type = PotentialType.SUM;
 	}	
 	/**
 	 * @param variables
@@ -49,12 +48,10 @@ public class SumPotential extends Potential {
 	 */
 	public SumPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role);
-		type = PotentialType.SUM;
 	}
 	
     public SumPotential(SumPotential potential) {
         super(potential);
-        type = PotentialType.SUM;
     }
 
 	// Methods

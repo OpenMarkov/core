@@ -25,9 +25,9 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-@RelationPotentialType(name = "Linear regression", family = "Regression")
+@PotentialType(name = "Linear regression", family = "Regression")
 public class LinearRegressionPotential extends RegressionPotential {
 
     public LinearRegressionPotential(List<Variable> variables, PotentialRole role) {

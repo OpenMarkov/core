@@ -24,9 +24,9 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-@RelationPotentialType(name = "Delta", family = "")
+@PotentialType(name = "Delta", family = "")
 public class DeltaPotential extends Potential{
 
     private State state = null; 

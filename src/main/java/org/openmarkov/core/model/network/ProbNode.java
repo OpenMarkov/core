@@ -20,6 +20,8 @@ import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.ProductPotential;
+import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -504,16 +506,13 @@ public class ProbNode {
 					parentValues[i] = ((ProbNode) (parents.get(i).getObject()))
 							.getApproximateMaxOrMinUtilityFunction(computeMax);
 				}
-				switch (firstPotential.getPotentialType()){
-				case SUM:
+				if (firstPotential instanceof SumPotential) {
 					result = Tools.sum(parentValues);
-					break;
-				case PRODUCT:
+				} else if (firstPotential instanceof ProductPotential) {
 					result = Tools.multiply(parentValues);
-					break;
-				default:
-					throw new NonProjectablePotentialException("Super-value nodes must be sum or product.");
-					
+				} else {
+					throw new NonProjectablePotentialException(
+							"Super-value nodes must be sum or product.");
 				}
 			}
 		} else {
@@ -569,19 +568,19 @@ public class ProbNode {
 					probNode = (ProbNode) node.getObject();
 					utilityFunctionsParents.add(probNode.getUtilityFunction());
 				}
-				switch (firstPotential.getPotentialType()) {
-				case SUM:
+				if (firstPotential instanceof SumPotential)
+				{
 					result = DiscretePotentialOperations
 							.sum(utilityFunctionsParents);
-					break;
-				case PRODUCT:
+				} else if (firstPotential instanceof ProductPotential)
+				{
 					result = DiscretePotentialOperations
 							.multiply(utilityFunctionsParents);
-					break;
-				default:
+				}
+				else
+				{
 					throw new NonProjectablePotentialException(
 							"Super-value nodes must be sum or product.");
-
 				}
 
 			}

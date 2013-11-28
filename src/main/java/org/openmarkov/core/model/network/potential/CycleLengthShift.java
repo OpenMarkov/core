@@ -21,12 +21,12 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 /** Potential identical to another but moved to another temporal slice.
  * @author marias
  * @version 1.0 */
-@RelationPotentialType(name = "CycleLengthShift", family = "")
+@PotentialType(name = "CycleLengthShift", family = "")
 public class CycleLengthShift extends Potential {
 
     protected int       timeDifference = 1;
@@ -36,12 +36,10 @@ public class CycleLengthShift extends Potential {
 	 * @param slice */
 	public CycleLengthShift(List<Variable> variables) {
 		super(variables, PotentialRole.CONDITIONAL_PROBABILITY);
-		type = PotentialType.CYCLE_LENGTH_SHIFT;
 	}
 	
     public CycleLengthShift(Potential potential) {
         super(potential);
-        type = PotentialType.CYCLE_LENGTH_SHIFT;
     }
 	
     /**

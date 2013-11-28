@@ -15,6 +15,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.openmarkov.core.model.network.ProbNode;
@@ -25,18 +26,18 @@ import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 import org.openmarkov.plugin.service.PluginLoaderIF;
 
-public class RelationPotentialTypeManager
+public class PotentialManager
 {
 
     private PluginLoaderIF pluginsLoader;
-    private HashMap<String, Class<? extends Potential>> potentials;
-    private HashMap<String, String> potentialFamilies;
+    private Map<String, Class<? extends Potential>> potentials;
+    private Map<String, String> potentialFamilies;
     
     /**
      * Constructor for PotentialClassManager.
      */
     @SuppressWarnings("unchecked")
-    public RelationPotentialTypeManager ()
+    public PotentialManager ()
     {
         super ();
         this.pluginsLoader = new PluginLoader ();
@@ -45,7 +46,7 @@ public class RelationPotentialTypeManager
         
         for (Class<?> plugin : findAllPotentials ())	
         {
-            RelationPotentialType lAnnotation = plugin.getAnnotation (RelationPotentialType.class);
+            PotentialType lAnnotation = plugin.getAnnotation (PotentialType.class);
             if (Potential.class.isAssignableFrom (plugin))
             {
                 potentials.put (lAnnotation.name (), (Class<? extends Potential>)plugin);
@@ -180,7 +181,7 @@ public class RelationPotentialTypeManager
     {
         try
         {
-            FilterIF filter = org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy (RelationPotentialType.class);
+            FilterIF filter = org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy (PotentialType.class);
             return pluginsLoader.loadAllPlugins (filter);          
         }
         catch (Exception e) {}

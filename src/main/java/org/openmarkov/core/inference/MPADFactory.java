@@ -15,7 +15,6 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
 
 public class MPADFactory {
@@ -183,13 +182,13 @@ public class MPADFactory {
 			throws ProbNodeNotFoundException {
 		Potential oldPotential = oldNode.getPotentials().get(0);
 		Potential newPotential = null;
-		if (oldPotential.getPotentialType() == PotentialType.CYCLE_LENGTH_SHIFT) {
+		if (oldPotential instanceof CycleLengthShift) {
 			newPotential = new CycleLengthShift(oldPotential.getShiftedVariables(probNet,
 					timeDifference));
 		} else {
 			int timeDifferenceWithNew = timeDifference;
 			Potential referencePotentialForNewPotential = oldPotential;
-			if (oldPotential.getPotentialType() == PotentialType.SAME_AS_PREVIOUS) {
+			if (oldPotential instanceof SameAsPrevious) {
 				Potential originalPotential = ((SameAsPrevious) oldPotential)
 						.getOriginalPotential();
 				// Sets time difference respect to the original potential

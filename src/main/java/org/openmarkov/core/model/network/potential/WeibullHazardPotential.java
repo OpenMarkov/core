@@ -24,9 +24,9 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-@RelationPotentialType(name = "Hazard (Weibull)", family = "Regression")
+@PotentialType(name = "Hazard (Weibull)", family = "Regression")
 public class WeibullHazardPotential extends RegressionPotential {
 
 	protected static final String GAMMA = "Gamma";

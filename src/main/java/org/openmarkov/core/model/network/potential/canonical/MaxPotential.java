@@ -17,11 +17,10 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-@RelationPotentialType(name="OR / MAX", family="ICI")
+@PotentialType(name="OR / MAX", family="ICI")
 public class MaxPotential extends MinMaxPotential {
 
 	/** @param model. <code>ICIModel</code>.
@@ -29,7 +28,6 @@ public class MaxPotential extends MinMaxPotential {
 	public MaxPotential(
 			ICIModelType model, List<Variable> variables) {
 		super(model, variables);
-		type = PotentialType.MAX;
 	}
 	
 	/**
@@ -45,7 +43,6 @@ public class MaxPotential extends MinMaxPotential {
 	public MaxPotential(MaxPotential potential)
 	{
 	    super(potential);
-	    type = PotentialType.MAX;
 	}
 	
     /** Returns if an instance of a certain Potential type makes sense given 

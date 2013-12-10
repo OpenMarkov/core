@@ -130,7 +130,6 @@ public class SetPotentialEdit extends SimplePNEdit {
 
 		if (!(probNode.getNodeType() == NodeType.DECISION && probNode
 				.getPolicyType() == PolicyType.OPTIMAL)) {
-		} else {
 		//	probNet.getProbNode(variable).setPolicyType(PolicyType.PROBABILISTIC);
 			probNode.setPolicyType(PolicyType.PROBABILISTIC);
 		}

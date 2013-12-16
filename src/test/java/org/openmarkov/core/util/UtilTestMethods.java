@@ -65,7 +65,7 @@ public class UtilTestMethods {
      * @param variables <code>ArrayList</code> of <code>Variable</code>.
      * @param coordinateVariables <code>int[]</code>.
      * @param potential <code>GTablePotential</code>. */
-	public static Object getConfiguration(ArrayList<Variable> variables, 
+	public static Object getConfiguration(List<Variable> variables, 
     		int[] coordinateVariables, GTablePotential potential) {
     	int position = 
     		getConfigurationPosition(variables, coordinateVariables, potential);
@@ -127,7 +127,7 @@ public class UtilTestMethods {
      * @param variables <code>ArrayList</code> of <code>Variable</code>.
      * @param coordinateVariables <code>int[]</code>.
      * @param potential <code>TablePotential</code>. */
-    private static int getConfigurationPosition(ArrayList<Variable> variables,
+    private static int getConfigurationPosition(List<Variable> variables,
     		int[] coordinateVariables, TablePotential potential) {
     	List<Variable> variablesPotential = potential.getVariables();
     	int[] coordinate = new int[variablesPotential.size()];

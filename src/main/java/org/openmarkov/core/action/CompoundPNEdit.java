@@ -99,4 +99,5 @@ public abstract class CompoundPNEdit extends CompoundEdit
     {
         return probNet;
     }
+    
 }

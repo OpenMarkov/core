@@ -41,15 +41,15 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 * Creates a <code>MarkovDecisionNetwork</code> without utility nodes from
 	 * the received influence diagram and computes the partial order.
 	 * 
-	 * @param originalID
+	 * @param influenceDiagram
 	 *            <code>ProbNet</code>
 	 * @throws WrongGraphStructureException
 	 */
-	public MarkovDecisionNetwork(ProbNet originalID)
+	public MarkovDecisionNetwork(ProbNet influenceDiagram)
 			throws WrongGraphStructureException {
 		super();
-		partialOrder = new PartialOrder(originalID);
-		addVariablesAndLinks(originalID);
+		partialOrder = new PartialOrder(influenceDiagram);
+		addVariablesAndLinks(influenceDiagram);
 	}
 
 	/**
@@ -97,6 +97,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 * @return The <code>ProbNode</code> in which the <code>potential</code>
 	 *         received has been added.
 	 */
+	// TODO addPotential should be common to all ProbNet's
 	public void addPotential(ProbNet originalNet, Potential potential) {
 		List<Variable> potentialVariables = potential.getVariables();
 		// the probNode where the potential will be stored
@@ -138,6 +139,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 * @param originalID
 	 *            . <code>ProbNet</code>
 	 */
+	// TODO addVariablesAndLinks should be common to all ProbNet's
 	private void addVariablesAndLinks(ProbNet originalID) {
 		for (List<Variable> variables : partialOrder.getOrder()) {
 			for (Variable variable : variables) {
@@ -159,6 +161,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 *            <code>Potential</code>
 	 * @argCondition All potential variables already exists in this network
 	 */
+	// TODO addPotential should be common to all ProbNet's
 	public ProbNode addPotential(Potential potential) {
 		int numVariables = potential.getNumVariables();
 		ProbNode probNode;
@@ -347,6 +350,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 * @param potential
 	 *            <code>Potential</code>
 	 */
+	// TODO addLinks should be common to all ProbNet's
 	private void addLinks(Potential potential) {
 		List<Variable> variablesPotential = potential.getVariables();
 		int potentialSize = variablesPotential.size();

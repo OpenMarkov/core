@@ -97,6 +97,8 @@ public class ProbNet implements Cloneable {
     private String                     name;
     /** ProbNet comment */
     private String                     comment              = "";
+    /** Indicates whether the comment should be shown when opening the net */
+    private boolean showCommentWhenOpening					= false;
     /** Default States of the probNet */
     private State[]                    defaultStates        = { new State("absent"),
             new State("present")                           };
@@ -1508,4 +1510,12 @@ public class ProbNet implements Cloneable {
     public void setAgents(List<StringWithProperties> agents) {
         this.agents = agents;
     }
+
+    public boolean getShowCommentWhenOpening() {
+		return showCommentWhenOpening;
+	}
+    
+	public void setShowCommentWhenOpening(boolean showCommentWhenOpening) {
+		this.showCommentWhenOpening = showCommentWhenOpening;
+	}
 }

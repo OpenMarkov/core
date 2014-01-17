@@ -29,6 +29,9 @@ public class NetworkCommentEdit extends SimplePNEdit {
 	 */
 	private String newComment;
 	
+	/** Indicates whether the comment should be shown when opening the net */
+    private boolean showCommentWhenOpening;
+	
 	/**
 	 * Creates a new <code>NetworkCommentEdit</code> with the network and new 
 	 * comment specified.
@@ -39,16 +42,18 @@ public class NetworkCommentEdit extends SimplePNEdit {
 	 * 			the new comment
 	 */
 	public NetworkCommentEdit(ProbNet probNet,
-			String newComment) {
+			String newComment, boolean showCommentWhenOpening) {
 		super(probNet);
 		this.newComment = newComment;
 		this.currentComment = probNet.getComment();
+		this.showCommentWhenOpening = showCommentWhenOpening;
 	}
 	
 	
 	@Override
 	public void doEdit() {
 		probNet.setComment(newComment);
+		probNet.setShowCommentWhenOpening(showCommentWhenOpening); 
 	}
 	public void undo() {
 		super.undo();

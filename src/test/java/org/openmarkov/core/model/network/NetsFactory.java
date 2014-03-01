@@ -1540,4 +1540,99 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 
 		 return probNet;
 		}	
+	
+	/**
+	 * @return A DAN with 5 tests, similarly to the diabetes problem, but where the partial order of tests Ti is: {T0,T1}<{T2}<{T3,T4}.
+	 * Thus, the SDAG has 3 phases of tests.
+	 */
+	public static ProbNet buildThreePhasesOfTestsDAN () {
+		 int numTests = 5;
+		 
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  // Variables
+		
+		  Variable varSymptom = new Variable("Symptom", "absent", "present");
+		  Variable varDiabetes = new Variable("Diabetes", "absent", "present");
+		  Variable varTherapy = new Variable("Therapy", "no", "yes");
+		  Variable varQuality_of_life = new Variable("Quality of life");
+		  Variable varDec_Test[]=new Variable[numTests];
+		  Variable varTest_Result[]=new Variable[numTests];
+		  Variable varCost_of_Test[]=new Variable[numTests];
+		  for (int i=0;i<numTests;i++){
+			  varDec_Test[i] = new Variable("Dec: Test "+i, "no", "yes");
+			  varTest_Result[i] = new Variable("Test Result "+i, "negative", "positive");
+			  varCost_of_Test[i] = new Variable("Cost of test "+i);
+		  }
+
+		  // Nodes
+		  ProbNode nodeSymptom= probNet.addProbNode(varSymptom, NodeType.CHANCE);
+		  ProbNode nodeDiabetes= probNet.addProbNode(varDiabetes, NodeType.CHANCE);
+		  ProbNode nodeTherapy= probNet.addProbNode(varTherapy, NodeType.DECISION);
+		  ProbNode nodeQuality_of_life= probNet.addProbNode(varQuality_of_life, NodeType.UTILITY);
+		  ProbNode nodeDecTest[]=new ProbNode[numTests];
+		  ProbNode nodeTestResult[]=new ProbNode[numTests];
+		  ProbNode nodeCostOfTest[]=new ProbNode[numTests];
+		  for (int i=0;i<numTests;i++){
+			  nodeTestResult[i]=probNet.addProbNode(varTest_Result[i], NodeType.CHANCE);
+			  nodeDecTest[i]=probNet.addProbNode(varDec_Test[i], NodeType.DECISION);
+			  nodeCostOfTest[i]=probNet.addProbNode(varTest_Result[i], NodeType.UTILITY);
+		  }
+	
+		  // Links
+		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.addLink(nodeDiabetes, nodeSymptom, true);
+		  for (int i=0;i<numTests;i++){
+			  probNet.addLink(nodeDiabetes, nodeTestResult[i], true);
+			  probNet.addLink(nodeDecTest[i], nodeTestResult[i], true);
+			  probNet.addLink(nodeDecTest[i], nodeCostOfTest[i], true);
+		  }
+		  probNet.addLink(nodeDiabetes, nodeQuality_of_life, true);
+		  probNet.addLink(nodeTherapy, nodeQuality_of_life, true);
+		  //Create the three phases of tests
+		  for (int i=0;i<2;i++){
+			  for (int j=2;j<5;j++){
+				  probNet.addLink(nodeDecTest[i], nodeDecTest[j], true);
+			  }
+		  }
+		  for (int j=3;j<5;j++){
+			  probNet.addLink(nodeDecTest[2], nodeDecTest[j], true);
+		  }
+
+		  //TODO Assign different numbers to potentials.
+		  // Potentials for test results
+		  TablePotential potentialTestResult[] = new TablePotential[numTests];
+		  for (int i=1;i<numTests;i++){
+			  potentialTestResult[i] = new TablePotential(Arrays.asList(varTest_Result[i],varDec_Test[i], varDiabetes), PotentialRole.CONDITIONAL_PROBABILITY);
+			  potentialTestResult[i].values = new double[]{0, 0, 0.99, 0.01, 0, 0, 0.03, 0.97};
+			  nodeTestResult[i].setPotential(potentialTestResult[i]);
+		  }
+		  
+		  //TODO Assign different numbers to potentials.
+		  //Potentials for costs of tests
+		  TablePotential potentialCostOfTest[] = new TablePotential[numTests];
+		  for (int i=1;i<numTests;i++){
+			  potentialCostOfTest[i] = new TablePotential(varCost_of_Test[i],Arrays.asList(varDec_Test));
+			  potentialCostOfTest[i].values =new double[]{0, 50};
+			  nodeCostOfTest[i].setPotential(potentialCostOfTest[i]);
+		  }
+	
+		  TablePotential potQuality_of_life = new TablePotential(varQuality_of_life,Arrays.asList(varDiabetes, varTherapy));
+		  potQuality_of_life.values = new double[]{10, 3, 9, 8};
+		  nodeQuality_of_life.setPotential(potQuality_of_life);
+
+
+		  // Link restrictions and revealing states
+		  for (int i=1;i<numTests;i++){
+			  Link link_Dec_To_Test_Result = probNet.getGraph().getLink(nodeDecTest[i].getNode(),nodeTestResult[i].getNode(), true);
+			  link_Dec_To_Test_Result.initializesRestrictionsPotential();
+			  TablePotential restrictions_nodeDec_Test_node_test_result = (TablePotential)link_Dec_To_Test_Result.getRestrictionsPotential();
+			  restrictions_nodeDec_Test_node_test_result.values = new double[] {0, 1, 0, 1};
+			  link_Dec_To_Test_Result.setRevealingStates(Arrays.asList(varDec_Test[i].getStates()[1]));
+		  }
+
+		  nodeSymptom.setAlwaysObserved(true);
+
+		 return probNet;
+	}	
+	
 }

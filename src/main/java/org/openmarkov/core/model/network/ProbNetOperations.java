@@ -18,8 +18,10 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -798,7 +800,52 @@ public class ProbNetOperations {
         }
         return neverObservedVariables;    
     }
-
+    
+    
+    /**
+     * @param probNet
+     * @return A list or chance variables that are observable; this list includes always observed variables and
+     * those variables that can be reached from an always observed variable or from a decision, always following
+     * a path formed exclusively by revelation links.
+     */
+    public static List<ProbNode> getObservableVariables(ProbNet probNet){
+    	List<ProbNode> observable;
+    	List<ProbNode> visitedDecisions;
+      	ConcurrentLinkedQueue<ProbNode> nodesToProcess = new ConcurrentLinkedQueue<>();
+    	   	
+    	observable = getAlwaysObservedVariables(probNet);
+      	nodesToProcess.addAll(observable);
+    	nodesToProcess.addAll(getParentlessDecisions(probNet));
+      	visitedDecisions = new ArrayList<>();
+      	while (!nodesToProcess.isEmpty())
+    	{
+    		ProbNode nodeToProcess = nodesToProcess.poll();
+    		if (nodeToProcess.getNodeType()==NodeType.DECISION){
+    			visitedDecisions.add(nodeToProcess);
+    		}
+    		for (Node child:nodeToProcess.getNode().getChildren())
+    		{
+    			ProbNode childProbNode = (ProbNode)(child.getObject());
+    			if (!observable.contains(childProbNode))
+    			{
+    				if ((probNet.getGraph().getLink(nodeToProcess.getNode(), child, true)).hasRevealingConditions())
+    				{
+    					observable.add(childProbNode);
+    					nodesToProcess.add(childProbNode);
+    				}
+    				else if ((childProbNode.getNodeType()==NodeType.DECISION)
+    						&&!visitedDecisions.contains(childProbNode))
+    				{
+    					nodesToProcess.add(childProbNode);
+    				}
+    			}
+    			
+    		}
+    	}
+    	return observable;
+    	
+    }
+    
     /**
      * Generates a list of decision nodes that don't have parent decisions
      * @param probNet

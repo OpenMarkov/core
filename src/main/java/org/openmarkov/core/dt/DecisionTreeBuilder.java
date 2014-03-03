@@ -50,9 +50,9 @@ public class DecisionTreeBuilder
      */    
     private static DecisionTreeElement buildDecisionTreeFromDAN (ProbNet originalProbNet, ProbNet probNet)
     {
-        List<ProbNode> alwaysObservedVariables = getAlwaysObservedVariables (probNet);
-        List<ProbNode> parentlessDecisions = getParentlessDecisions (probNet);
-        List<ProbNode> neverObservedNodes = getNeverObservedVariables (probNet);
+        List<ProbNode> alwaysObservedVariables = ProbNetOperations.getAlwaysObservedVariables (probNet);
+        List<ProbNode> parentlessDecisions = ProbNetOperations.getParentlessDecisions (probNet);
+        List<ProbNode> neverObservedNodes = ProbNetOperations.getNeverObservedVariables (probNet);
         DecisionTreeElement root = null;
         try{
             if(!alwaysObservedVariables.isEmpty ()) // Always observed variables 
@@ -426,67 +426,5 @@ public class DecisionTreeBuilder
             }
         }
         return found;
-    }
-
-    private static List<ProbNode> getNeverObservedVariables (ProbNet dtProbNet)
-    {
-        List<ProbNode> neverObservedVariables = new ArrayList<> ();
-        for (ProbNode probNode : dtProbNet.getProbNodes (NodeType.CHANCE))
-        {
-            if (probNode.getNode ().getParents ().isEmpty ())
-            {
-                neverObservedVariables.add (probNode);
-            }
-        }
-        return neverObservedVariables;    
-    }
-
-    /**
-     * Generates a list of decision nodes that don't have parent decisions
-     * @param probNet
-     * @return
-     */
-    private static List<ProbNode> getParentlessDecisions (ProbNet probNet)
-    {
-        List<ProbNode> parentlessDecisions = new ArrayList<> ();
-        for (ProbNode probNode : probNet.getProbNodes (NodeType.DECISION))
-        {
-            boolean hasParentDecisions = false;
-            Stack<ProbNode> parentNodes = new Stack<> ();
-            parentNodes.push (probNode);
-            while (!hasParentDecisions && !parentNodes.isEmpty ())
-            {
-                ProbNode node = parentNodes.pop ();
-                for (Node parent : node.getNode ().getParents ())
-                {
-                    ProbNode parentNode = (ProbNode) parent.getObject ();
-                    hasParentDecisions |= parentNode.getNodeType () == NodeType.DECISION;
-                    parentNodes.push (parentNode);
-                }
-            }
-            if (!hasParentDecisions)
-            {
-                parentlessDecisions.add (probNode);
-            }
-        }
-        return parentlessDecisions;
-    }
-
-    /**
-     * Gets the list of always-observed-variables in the DAN 
-     * @param dtProbNet
-     * @return
-     */
-    private static List<ProbNode> getAlwaysObservedVariables (ProbNet dtProbNet)
-    {
-        List<ProbNode> alwaysObservedVariables = new ArrayList<> ();
-        for (ProbNode probNode : dtProbNet.getProbNodes ())
-        {
-            if (probNode.isAlwaysObserved ())
-            {
-                alwaysObservedVariables.add (probNode);
-            }
-        }
-        return alwaysObservedVariables;
-    }    
+    }  
 }

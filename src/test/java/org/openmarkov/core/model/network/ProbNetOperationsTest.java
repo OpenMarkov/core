@@ -910,14 +910,5 @@ public class ProbNetOperationsTest {
 	}
 
 	
-	@Test
-	public void testConvertDecideTestDANtoID() throws NodeNotFoundException
-	{
-		ProbNet decideTestDAN = NetsFactory.buildDecideTestDAN();
-		
-		ProbNet decideTestID = ProbNetOperations.makeDANSymmetric(decideTestDAN);
-	}
-	
-	
 
 }

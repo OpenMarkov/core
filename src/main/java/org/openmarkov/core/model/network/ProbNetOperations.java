@@ -21,12 +21,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.graph.Graph;
@@ -35,7 +33,6 @@ import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
 /**
  * This class performs prune on <code>ProbNet</code>
@@ -789,20 +786,65 @@ public class ProbNetOperations {
     	return false;
     }
     
-    
-    public static ProbNet makeDANSymmetric(ProbNet probNet)
+    public static List<ProbNode> getNeverObservedVariables (ProbNet probNet)
     {
-    	ProbNet symmetricNet = probNet.copy();
-    	
-    	
-    	
-    	try {
-			symmetricNet.setNetworkType(InfluenceDiagramType.getUniqueInstance());
-		} catch (ConstraintViolationException e) {
-			// Shouldn't happen unless symmetrization has failed
-			e.printStackTrace();
-		}
-    	
-    	return symmetricNet;
+        List<ProbNode> neverObservedVariables = new ArrayList<> ();
+        for (ProbNode probNode : probNet.getProbNodes (NodeType.CHANCE))
+        {
+            if (probNode.getNode ().getParents ().isEmpty ())
+            {
+                neverObservedVariables.add (probNode);
+            }
+        }
+        return neverObservedVariables;    
     }
+
+    /**
+     * Generates a list of decision nodes that don't have parent decisions
+     * @param probNet
+     * @return
+     */
+    public static List<ProbNode> getParentlessDecisions (ProbNet probNet)
+    {
+        List<ProbNode> parentlessDecisions = new ArrayList<> ();
+        for (ProbNode probNode : probNet.getProbNodes (NodeType.DECISION))
+        {
+            boolean hasParentDecisions = false;
+            Stack<ProbNode> parentNodes = new Stack<> ();
+            parentNodes.push (probNode);
+            while (!hasParentDecisions && !parentNodes.isEmpty ())
+            {
+                ProbNode node = parentNodes.pop ();
+                for (Node parent : node.getNode ().getParents ())
+                {
+                    ProbNode parentNode = (ProbNode) parent.getObject ();
+                    hasParentDecisions |= parentNode.getNodeType () == NodeType.DECISION;
+                    parentNodes.push (parentNode);
+                }
+            }
+            if (!hasParentDecisions)
+            {
+                parentlessDecisions.add (probNode);
+            }
+        }
+        return parentlessDecisions;
+    }
+
+    /**
+     * Gets the list of always-observed-variables in the DAN 
+     * @param probNet
+     * @return
+     */
+    public static List<ProbNode> getAlwaysObservedVariables (ProbNet probNet)
+    {
+        List<ProbNode> alwaysObservedVariables = new ArrayList<> ();
+        for (ProbNode probNode : probNet.getProbNodes ())
+        {
+            if (probNode.isAlwaysObserved ())
+            {
+                alwaysObservedVariables.add (probNode);
+            }
+        }
+        return alwaysObservedVariables;
+    }      
 }

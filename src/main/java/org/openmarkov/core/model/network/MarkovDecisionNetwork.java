@@ -32,10 +32,6 @@ public class MarkovDecisionNetwork extends ProbNet {
 	/** Partial partialOrder of chance and decision nodes */
 	private PartialOrder partialOrder;
 
-	public void setPartialOrder(PartialOrder partialOrder) {
-		this.partialOrder = partialOrder;
-	}
-
 	// Constructor
 	/**
 	 * Creates a <code>MarkovDecisionNetwork</code> without utility nodes from
@@ -45,11 +41,11 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 *            <code>ProbNet</code>
 	 * @throws WrongGraphStructureException
 	 */
-	public MarkovDecisionNetwork(ProbNet influenceDiagram)
+	public MarkovDecisionNetwork(ProbNet originalNet)
 			throws WrongGraphStructureException {
 		super();
-		partialOrder = new PartialOrder(influenceDiagram);
-		addVariablesAndLinks(influenceDiagram);
+		partialOrder = new PartialOrder(originalNet);
+		addVariablesAndLinks(originalNet);
 	}
 
 	/**
@@ -65,10 +61,12 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 *            <code>ArrayList</code> of <code>Potential</code>s
 	 * @return A Markov Network in witch potentials are used to create cliques.
 	 *         (<code>ProbNet</code>).
+	 * @throws WrongGraphStructureException 
 	 */
 	public MarkovDecisionNetwork(ProbNet originalNet,
-			List<? extends Potential> projectedTablePotentials) {
+			List<? extends Potential> projectedTablePotentials) throws WrongGraphStructureException {
 		super(MarkovNetworkType.getUniqueInstance());
+		partialOrder = new PartialOrder(originalNet);
 		try {
 			addConstraint(new OnlyUndirectedLinks(), true);
 			// addConstraint (new OnlyDiscreteVariables (), false);

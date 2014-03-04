@@ -26,9 +26,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
+import org.openmarkov.core.inference.PartialOrderDAN;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
@@ -791,9 +794,19 @@ public class ProbNetOperations {
     public static List<ProbNode> getNeverObservedVariables (ProbNet probNet)
     {
         List<ProbNode> neverObservedVariables = new ArrayList<> ();
+        HashSet<ProbNode> observableVariables = null;
+        
+        try {
+			observableVariables = getObservableVariables(probNet);
+		} catch (ProbNodeNotFoundException e) {
+			e.printStackTrace();
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+		}
+        
         for (ProbNode probNode : probNet.getProbNodes (NodeType.CHANCE))
         {
-            if (probNode.getNode ().getParents ().isEmpty ())
+        	if (!observableVariables.contains(probNode))
             {
                 neverObservedVariables.add (probNode);
             }
@@ -803,44 +816,57 @@ public class ProbNetOperations {
     
     
     /**
-     * @param probNet
-     * @return A list or chance variables that are observable; this list includes always observed variables and
+     * @param probNet A DAN
+     * @return A list of chance variables that are observable; this list includes always observed variables and
      * those variables that can be reached from an always observed variable or from a decision, always following
      * a path formed exclusively by revelation links.
+     * @throws ProbNodeNotFoundException 
+     * @throws NodeNotFoundException 
      */
-    public static List<ProbNode> getObservableVariables(ProbNet probNet){
-    	List<ProbNode> observable;
-    	List<ProbNode> visitedDecisions;
-      	ConcurrentLinkedQueue<ProbNode> nodesToProcess = new ConcurrentLinkedQueue<>();
+    public static HashSet<ProbNode> getObservableVariables(ProbNet probNet) throws ProbNodeNotFoundException, NodeNotFoundException{
+    	HashSet<ProbNode> observable;
+    	List<Variable> visitedDecisions;
+      	ConcurrentLinkedQueue<Variable> variablesToProcess = new ConcurrentLinkedQueue<>();
     	   	
-    	observable = getAlwaysObservedVariables(probNet);
-      	nodesToProcess.addAll(observable);
-    	nodesToProcess.addAll(getParentlessDecisions(probNet));
-      	visitedDecisions = new ArrayList<>();
-      	while (!nodesToProcess.isEmpty())
+    	observable = new HashSet<>();
+    	observable.addAll(getAlwaysObservedVariables(probNet));
+    	for (ProbNode auxProbNode:observable)
     	{
-    		ProbNode nodeToProcess = nodesToProcess.poll();
-    		if (nodeToProcess.getNodeType()==NodeType.DECISION){
-    			visitedDecisions.add(nodeToProcess);
-    		}
-    		for (Node child:nodeToProcess.getNode().getChildren())
+    		variablesToProcess.add(auxProbNode.getVariable());
+    	}
+      	PartialOrderDAN order = new PartialOrderDAN(probNet);
+      	for (ProbNode auxProbNode:getParentlessDecisions(probNet)){
+      		variablesToProcess.add(auxProbNode.getVariable());
+      	}
+      	visitedDecisions = new ArrayList<>();
+      	while (!variablesToProcess.isEmpty())
+    	{
+    		Variable variableToProcess = variablesToProcess.poll();
+    		ProbNode probNodeToProcess = probNet.getProbNode(variableToProcess);
+    		
+    		//Process children in the graph
+    		for (Node child:probNodeToProcess.getNode().getChildren())
     		{
     			ProbNode childProbNode = (ProbNode)(child.getObject());
     			if (!observable.contains(childProbNode))
     			{
-    				if ((probNet.getGraph().getLink(nodeToProcess.getNode(), child, true)).hasRevealingConditions())
+    				if ((probNet.getGraph().getLink(probNodeToProcess.getNode(), child, true)).hasRevealingConditions())
     				{
     					observable.add(childProbNode);
-    					nodesToProcess.add(childProbNode);
-    				}
-    				else if ((childProbNode.getNodeType()==NodeType.DECISION)
-    						&&!visitedDecisions.contains(childProbNode))
-    				{
-    					nodesToProcess.add(childProbNode);
+    					variablesToProcess.add(childProbNode.getVariable());
     				}
     			}
-    			
+       		}
+    		if (probNodeToProcess.getNodeType()==NodeType.DECISION){
+    			visitedDecisions.add(variableToProcess);
+    			//Process the children of the decision in the partial order that we have not still visited
+    			for (Node childNodeInOrder:order.getOrder().getProbNode(variableToProcess).getNode().getChildren()){
+    				Variable varChild = ((ProbNode)childNodeInOrder.getObject()).getVariable();
+    				if (!visitedDecisions.contains(varChild))
+    					variablesToProcess.add(varChild);
+    			}
     		}
+    		
     	}
     	return observable;
     	

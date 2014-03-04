@@ -11,6 +11,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -908,7 +909,36 @@ public class ProbNetOperationsTest {
 		Assert.assertFalse(ProbNetOperations.hasStructuralAsymmetry(decideTestID));
 		Assert.assertTrue(ProbNetOperations.hasStructuralAsymmetry(datingDAN));
 	}
-
 	
+	
+	@Test
+	public void testGetObservableAndNonObservedVariables() throws NodeNotFoundException, ProbNodeNotFoundException
+	{
+		auxTestGetObservableAndNonObservedVariables(NetsFactory.buildDecideTestDAN(),Arrays.asList("Y"),Arrays.asList("X"));
+		auxTestGetObservableAndNonObservedVariables(NetsFactory.buildDiabetesDAN(),Arrays.asList("Blood test result","Urine test result","Symptom"),Arrays.asList("Diabetes"));
+		auxTestGetObservableAndNonObservedVariables(NetsFactory.buildDatingDAN(),
+				Arrays.asList("Accept","ToDo","TVExp","Club","MeetFr","mExp","rExp","TV"),Arrays.asList("LikesMe","mMood","rMood","NCExp"));
+		auxTestGetObservableAndNonObservedVariables(NetsFactory.buildReactorDAN(),Arrays.asList("Result of test","Result of conventional reactor","Result of advanced reactor"),
+				Arrays.asList("Advanced reactor reliability"));
+
+	}
+	
+	private void auxTestGetObservableAndNonObservedVariables(ProbNet probNet, List<String> observable, List<String> nonObservable) throws NodeNotFoundException, ProbNodeNotFoundException {
+		
+		checkEqualVariables(ProbNetOperations.getObservableVariables(probNet),observable);
+		checkEqualVariables(ProbNetOperations.getNeverObservedVariables(probNet),nonObservable);
+	}
+	
+	
+	public void checkEqualVariables(Collection<ProbNode> probNodes,List<String> stringVariables){
+		
+		assertEquals(probNodes.size(),stringVariables.size());
+		
+		for (ProbNode probNode:probNodes)
+		{
+			assertTrue(stringVariables.contains(probNode.getVariable().getName()));
+		}
+		
+	}
 
 }

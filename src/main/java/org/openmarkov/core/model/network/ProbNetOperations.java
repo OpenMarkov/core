@@ -794,7 +794,7 @@ public class ProbNetOperations {
     public static List<ProbNode> getNeverObservedVariables (ProbNet probNet)
     {
         List<ProbNode> neverObservedVariables = new ArrayList<> ();
-        HashSet<ProbNode> observableVariables = null;
+        Set<ProbNode> observableVariables = null;
         
         try {
 			observableVariables = getObservableVariables(probNet);
@@ -823,9 +823,9 @@ public class ProbNetOperations {
      * @throws ProbNodeNotFoundException 
      * @throws NodeNotFoundException 
      */
-    public static HashSet<ProbNode> getObservableVariables(ProbNet probNet) throws ProbNodeNotFoundException, NodeNotFoundException{
-    	HashSet<ProbNode> observable;
-    	List<Variable> visitedDecisions;
+    public static Set<ProbNode> getObservableVariables(ProbNet probNet) throws ProbNodeNotFoundException, NodeNotFoundException{
+    	Set<ProbNode> observable;
+    	Set<Variable> visitedDecisions;
       	ConcurrentLinkedQueue<Variable> variablesToProcess = new ConcurrentLinkedQueue<>();
     	   	
     	observable = new HashSet<>();
@@ -838,7 +838,7 @@ public class ProbNetOperations {
       	for (ProbNode auxProbNode:getParentlessDecisions(probNet)){
       		variablesToProcess.add(auxProbNode.getVariable());
       	}
-      	visitedDecisions = new ArrayList<>();
+      	visitedDecisions = new HashSet<>();
       	while (!variablesToProcess.isEmpty())
     	{
     		Variable variableToProcess = variablesToProcess.poll();
@@ -862,8 +862,9 @@ public class ProbNetOperations {
     			//Process the children of the decision in the partial order that we have not still visited
     			for (Node childNodeInOrder:order.getOrder().getProbNode(variableToProcess).getNode().getChildren()){
     				Variable varChild = ((ProbNode)childNodeInOrder.getObject()).getVariable();
-    				if (!visitedDecisions.contains(varChild))
+    				if (!visitedDecisions.contains(varChild)){
     					variablesToProcess.add(varChild);
+    				}
     			}
     		}
     		

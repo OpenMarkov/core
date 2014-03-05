@@ -9,6 +9,9 @@
 package org.openmarkov.core.inference;
 
 
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,14 +52,7 @@ public class PartialOrderDAN {
 				order.addProbNode(auxNode.getVariable(), auxType);
 			}
 		}
-		
-		Graph orderGraph = order.getGraph();
-		
-		//Remove all the links in orderGraph
-		/*for (Link auxLink:orderGraph.getLinks()){
-			orderGraph.removeLink(auxLink);
-		}*/
-				
+					
 		//Transitive closure among decision nodes
 		for (ProbNode nodeI:order.getProbNodes())
 		{
@@ -69,7 +65,7 @@ public class PartialOrderDAN {
 			    		ProbNode probNetProbNodeJ = probNet.getProbNode(variableJ);
 						if (probNet.existsPath(probNetProbNodeI,probNetProbNodeJ,true))
 						{
-							order.addLink(variableI, variableJ,true);
+							order.addLink(order.getProbNode(variableI), order.getProbNode(variableJ),true);
 						}
 			    	}
 			    }
@@ -80,24 +76,69 @@ public class PartialOrderDAN {
 			for (ProbNode dec:order.getProbNodes())
 			{
 				    Node decNode = dec.getNode();
-					List<Node> childrenOfDec = decNode.getChildren();
-					for (int i=0;i<childrenOfDec.size();i++)
+				    List<Link> decLinks = decNode.getLinks();
+					for (int i=0;i<decLinks.size();i++)
 					{
-						Node nodeI = childrenOfDec.get(i);
-						for (int j=0;j<childrenOfDec.size();j++)
+						Node nodeI = decLinks.get(i).getNode2();
+						for (int j=0;j<decLinks.size();j++)
 						{
-							Node nodeJ = childrenOfDec.get(j);
-							if ((nodeI!=nodeJ)&&orderGraph.existsPath(nodeI,nodeJ,true))
+							Link linkJ = decLinks.get(j);
+							Node nodeJ = linkJ.getNode2();
+							if ((nodeI!=nodeJ)&&order.getGraph().existsPath(nodeI,nodeJ,true))
 							{
-								linksToRemove.add(orderGraph.getLink(decNode, nodeJ,true));
+								linksToRemove.add(linkJ);
+								
 							}
 						}
 					}
 			}
 			for (Link auxLink:linksToRemove){
-				orderGraph.removeLink(auxLink);
+				order.getGraph().removeLink(auxLink);
 			}
 			System.out.println(order.toString());
 		}
+	
+	public String toStringForGraphviz() throws ProbNodeNotFoundException {
+	
+		String content = null;
+		
+		ProbNet probNet = this.getOrder();
+		List<Link> links = probNet.getGraph().getLinks();
+		content = "digraph G {\n";
+		
+		for (Node node:probNet.getGraph().getNodes()){
+			String strType = null;;
+			switch (probNet.getProbNode(node).getNodeType()){
+			case CHANCE:
+				strType = "ellipse";
+				break;
+			case DECISION:
+				strType = "decision";
+				break;
+			}
+			content = content + getNameWithQuotes(probNet, node) + "[shape="+strType+"]\n";
+		}
+		
+		for (Link link:links){
+			Node node1 = link.getNode1();
+			Node node2 = link.getNode2();
+			
+			content = content +  getNameWithQuotes(probNet,node1)+ "-> "+ getNameWithQuotes(probNet,node2)+"\n";
+			
+			
+		}
+		content = content + "}\n";
+		
+		
+		
+		return content;
+		
+	}
+	
+
+	private String getNameWithQuotes(ProbNet probNet,Node node) throws ProbNodeNotFoundException {
+		return "\""+probNet.getProbNode(node).getVariable().getName()+"\"";
+		
+	}
 
 }

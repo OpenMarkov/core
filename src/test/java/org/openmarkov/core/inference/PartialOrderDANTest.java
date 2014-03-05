@@ -45,60 +45,7 @@ public class PartialOrderDANTest {
 		//printOrderToGraphviz(order,"/home/manolo/testTemporalOrder.dot");
 	}
 
-	private void printOrderToGraphviz(PartialOrderDAN order, String string) throws ProbNodeNotFoundException {
-		DataOutputStream out=null;
-		
-		try {
-			out = new DataOutputStream(
-						 new FileOutputStream(string));
-		}
-		catch (IOException e) {
-			System.err.println("Couldn't open: "+string);
-			System.exit(-1);
-		}
-		String content = null;
-		
-		ProbNet probNet = order.getOrder();
-		List<Link> links = probNet.getGraph().getLinks();
-		content = "digraph G {\n";
-		
-		for (Node node:probNet.getGraph().getNodes()){
-			String strType = null;;
-			switch (probNet.getProbNode(node).getNodeType()){
-			case CHANCE:
-				strType = "ellipse";
-				break;
-			case DECISION:
-				strType = "decision";
-				break;
-			}
-			content = content + getNameWithQuotes(probNet, node) + "[shape="+strType+"]\n";
-		}
-		
-		for (Link link:links){
-			Node node1 = link.getNode1();
-			Node node2 = link.getNode2();
-			
-			content = content +  getNameWithQuotes(probNet,node1)+ "-> "+ getNameWithQuotes(probNet,node2)+"\n";
-			
-			
-		}
-		content = content + "}\n";
-		
-		System.out.print(content);
-		try {
-			out.writeBytes(content);
-		}
-		catch (IOException e) {
-			System.err.println("Couldn't write in output");
-			System.exit(-1);
-		}
-		
-	}
+	
 
-	private String getNameWithQuotes(ProbNet probNet,Node node) throws ProbNodeNotFoundException {
-		return "\""+probNet.getProbNode(node).getVariable().getName()+"\"";
-		
-	}
 
 }

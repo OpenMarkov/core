@@ -910,6 +910,22 @@ public class ProbNetOperationsTest {
 		Assert.assertTrue(ProbNetOperations.hasStructuralAsymmetry(datingDAN));
 	}
 	
+	@Test
+	public void testHasOrderAssymetry() throws NodeNotFoundException
+	{
+		ProbNet decideTestDAN = NetsFactory.buildDecideTestDAN();
+		ProbNet decideTestID = NetsFactory.createInfluenceDiagramDecisionTestProblem(0.14, 0.91, 0.97);
+		ProbNet datingDAN = NetsFactory.buildDatingDAN();
+		ProbNet reactorDAN = NetsFactory.buildReactorDAN();
+		ProbNet diabetesDAN = NetsFactory.buildDiabetesDAN();
+		
+		Assert.assertFalse(ProbNetOperations.hasOrderAsymmetry(decideTestDAN));
+		Assert.assertFalse(ProbNetOperations.hasOrderAsymmetry(decideTestID));
+		Assert.assertFalse(ProbNetOperations.hasOrderAsymmetry(reactorDAN));
+		Assert.assertTrue(ProbNetOperations.hasOrderAsymmetry(datingDAN));
+		Assert.assertTrue(ProbNetOperations.hasOrderAsymmetry(diabetesDAN));
+	}	
+	
 	
 	@Test
 	public void testGetObservableAndNonObservedVariables() throws NodeNotFoundException, ProbNodeNotFoundException

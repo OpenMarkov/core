@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -772,23 +771,32 @@ public class ProbNetOperations {
     	
     	for(Link link : probNet.getGraph().getLinks())
     	{
-    		if(link.hasRestrictions())
-    		{
-    			Variable sourceVariable = ((ProbNode)link.getNode1().getObject()).getVariable();
-    			Variable destinationVariable = ((ProbNode)link.getNode2().getObject()).getVariable();
-    			for(State state : sourceVariable.getStates())
-    			{
-    				asymmetryFound |= getUnrestrictedStates(link, state).size() == destinationVariable.getNumStates(); 
-    			}
-    		}
+    		// There is asymmetry if there are restrictions or if only some states reveal a certain variable 
+    		asymmetryFound |= link.hasRestrictions() || 
+    				link.hasRevealingConditions() && link.getRevealingStates().size() < ((ProbNode)link.getNode1().getObject()).getVariable().getNumStates();
     	}
     	
     	return asymmetryFound;
     }
 
+    /**
+	 * Returns if a ProbNet has order asymmetry. A ProbNet has order asymmetry
+	 * if and only if there is no directed path that goes through all the
+	 * decision nodes
+	 * 
+	 * @param probNet
+	 * @return
+	 */
     public static boolean hasOrderAsymmetry(ProbNet probNet)
     {
-    	return false;
+    	ProbNet probNetCopy = probNet.copy();
+    	List<ProbNode> orphanDecisionNodes = getParentlessDecisions(probNetCopy);
+    	while(orphanDecisionNodes.size() == 1)
+    	{
+    		probNetCopy.removeProbNode(orphanDecisionNodes.iterator().next());
+    		orphanDecisionNodes = getParentlessDecisions(probNetCopy);
+    	}
+    	return orphanDecisionNodes.size() > 1;
     }
     
     public static List<ProbNode> getNeverObservedVariables (ProbNet probNet)
@@ -889,9 +897,11 @@ public class ProbNetOperations {
             while (!hasParentDecisions && !parentNodes.isEmpty ())
             {
                 ProbNode node = parentNodes.pop ();
-                for (Node parent : node.getNode ().getParents ())
+                List<Node> parents = node.getNode ().getParents ();
+                int i=0;
+                while (i < parents.size() && !hasParentDecisions)
                 {
-                    ProbNode parentNode = (ProbNode) parent.getObject ();
+                    ProbNode parentNode = (ProbNode) parents.get(i++).getObject ();
                     hasParentDecisions |= parentNode.getNodeType () == NodeType.DECISION;
                     parentNodes.push (parentNode);
                 }
@@ -920,5 +930,36 @@ public class ProbNetOperations {
             }
         }
         return alwaysObservedVariables;
-    }      
+    }   
+    
+
+    /**
+     * Returns whether the decisionNode has another predecessor decision
+     * The path must not include the removedNode.
+     * @param decisionNode
+     * @param removedNode
+     * @param probNet
+     * @return
+     */
+    public static boolean hasAnotherPredecessorDecision (ProbNode decisionNode,
+                                                          ProbNode removedNode,
+                                                          ProbNet probNet)
+    {
+        Stack<ProbNode> predecessors = new Stack<>();
+        predecessors.add (decisionNode);
+        boolean found = false;
+        while(!found && !predecessors.isEmpty ())
+        {
+            ProbNode node = predecessors.pop ();
+            found = !node.equals (decisionNode)  && node.getNodeType () == NodeType.DECISION;
+            for(Node parent : node.getNode().getParents ())
+            {
+                if(!parent.getObject ().equals (removedNode))
+                {
+                    predecessors.push ((ProbNode)parent.getObject ());
+                }
+            }
+        }
+        return found;
+    } 
 }

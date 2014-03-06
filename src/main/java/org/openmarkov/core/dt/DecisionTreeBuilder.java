@@ -8,6 +8,7 @@ package org.openmarkov.core.dt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
@@ -50,11 +51,9 @@ public class DecisionTreeBuilder
      */    
     private static DecisionTreeElement buildDecisionTreeFromDAN (ProbNet originalProbNet, ProbNet probNet)
     {
-        List<ProbNode> alwaysObservedVariables = ProbNetOperations.getAlwaysObservedVariables (probNet);
-        List<ProbNode> parentlessDecisions = ProbNetOperations.getParentlessDecisions (probNet);
-        List<ProbNode> neverObservedNodes = ProbNetOperations.getNeverObservedVariables (probNet);
         DecisionTreeElement root = null;
         try{
+            List<ProbNode> alwaysObservedVariables = ProbNetOperations.getAlwaysObservedVariables (probNet);
             if(!alwaysObservedVariables.isEmpty ()) // Always observed variables 
             {
                 // Get first node in the list
@@ -72,81 +71,88 @@ public class DecisionTreeBuilder
                     treeBranch.setChild ((DecisionTreeNode)buildDecisionTreeFromDAN (originalProbNet, restrictedProbNet));
                 }         
                 root = treeNode;
-            }else if(!parentlessDecisions.isEmpty ()) // Parentless decision nodes
-            {
-                if(parentlessDecisions.size () == 1)
-                {
-                    ProbNode decisionNode = parentlessDecisions.get (0);
-                    DecisionTreeNode treeNode = new DecisionTreeNode (decisionNode);
-                    Variable decisionVariable = decisionNode.getVariable ();
-                    for (State state : decisionVariable.getStates ())
-                    {
-                        DecisionTreeBranch treeBranch = new DecisionTreeBranch (originalProbNet,
-                                                                                originalProbNet.getVariable (decisionVariable.getName ()),
-                                                                                state);
-                        treeNode.addChild (treeBranch);
-                        ProbNet restrictedProbNet = applyRestrictionsAndReveal (probNet, decisionNode, state, originalProbNet);
-                        treeBranch.setChild ((DecisionTreeNode) buildDecisionTreeFromDAN (originalProbNet, restrictedProbNet));
-                    }          
-                    root = treeNode;
-                }else // If more than one parentless decision, introduce metadecision
-                {
-                    Variable orderDecisionVariable = new  Variable("OD");
-                    State[] states = new State[parentlessDecisions.size ()];
-                    for(int i = 0; i < parentlessDecisions.size (); ++i)
-                    {
-                        states[i] = new State (parentlessDecisions.get (i).getName ());
-                    }
-                    orderDecisionVariable.setStates (states);
-                    ProbNode orderDecisionNode = new ProbNode (probNet, orderDecisionVariable, NodeType.DECISION);
-                    DecisionTreeNode treeNode = new DecisionTreeNode (orderDecisionNode);
-                    int i= 0;
-                    for (State metaState : orderDecisionVariable.getStates ())
-                    {
-                        DecisionTreeBranch treeBranch = new DecisionTreeBranch (originalProbNet,
-                                                                                orderDecisionVariable, 
-                                                                                metaState);
-                        treeNode.addChild (treeBranch);
-                        ProbNode parentlessDecisionNode = parentlessDecisions.get (i);
-                        Variable parentlessDecisionVariable = parentlessDecisionNode.getVariable ();
-                        DecisionTreeNode decisionTreeNode = new DecisionTreeNode (parentlessDecisionNode);
-                        treeBranch.setChild (decisionTreeNode);
-                        for (State state : parentlessDecisionVariable.getStates ())
-                        {
-                            DecisionTreeBranch subTreeBranch = new DecisionTreeBranch (originalProbNet,
-                                                                                       originalProbNet.getVariable (parentlessDecisionVariable.getName ()), 
-                                                                                    state);
-                            decisionTreeNode.addChild (subTreeBranch);
-                            ProbNet restrictedProbNet = applyRestrictionsAndReveal (probNet, parentlessDecisionNode, state, originalProbNet);
-                            subTreeBranch.setChild ((DecisionTreeNode)buildDecisionTreeFromDAN (originalProbNet, restrictedProbNet));
-                        }          
-                        ++i;
-                        
-                    }
-                    root = treeNode;
-                }
-            }else if(!neverObservedNodes.isEmpty ()) // Never observed variables
-            {
-                ProbNet dtProbNet = probNet.copy ();
-                ProbNode neverObservedNode = neverObservedNodes.get (0);
-                Variable neverObservedVariable = neverObservedNode.getVariable ();
-                DecisionTreeNode treeNode = new DecisionTreeNode (neverObservedNode);
-                dtProbNet.removeProbNode (dtProbNet.getProbNode (neverObservedVariable));
-                for (State state : neverObservedVariable.getStates ())
-                {
-                    DecisionTreeBranch treeBranch = new DecisionTreeBranch (originalProbNet,
-                                                                            originalProbNet.getVariable (neverObservedVariable.getName ()), 
-                                                                            state);
-                    treeNode.addChild (treeBranch);
-                    treeBranch.setChild ((DecisionTreeNode)buildDecisionTreeFromDAN (originalProbNet, dtProbNet));
-                }
-                
-                root = treeNode;
-            }else // Utility nodes
-            {
-                ProbNet dtProbNet = probNet.copy ();
-                ProbNode svNode = getSuperValueNode (dtProbNet);
-                root = addUtilityNodes (svNode);
+            }else{
+            	List<ProbNode> parentlessDecisions = ProbNetOperations.getParentlessDecisions (probNet);
+            	if(!parentlessDecisions.isEmpty ()) // Parentless decision nodes
+            	{
+	                if(parentlessDecisions.size () == 1)
+	                {
+	                    ProbNode decisionNode = parentlessDecisions.iterator().next ();
+	                    DecisionTreeNode treeNode = new DecisionTreeNode (decisionNode);
+	                    Variable decisionVariable = decisionNode.getVariable ();
+	                    for (State state : decisionVariable.getStates ())
+	                    {
+	                        DecisionTreeBranch treeBranch = new DecisionTreeBranch (originalProbNet,
+	                                                                                originalProbNet.getVariable (decisionVariable.getName ()),
+	                                                                                state);
+	                        treeNode.addChild (treeBranch);
+	                        ProbNet restrictedProbNet = applyRestrictionsAndReveal (probNet, decisionNode, state, originalProbNet);
+	                        treeBranch.setChild ((DecisionTreeNode) buildDecisionTreeFromDAN (originalProbNet, restrictedProbNet));
+	                    }          
+	                    root = treeNode;
+	                }else // If more than one parentless decision, introduce metadecision
+	                {
+	                    Variable orderDecisionVariable = new  Variable("OD");
+	                    State[] states = new State[parentlessDecisions.size ()];
+	                    int i =0;
+	                    for(ProbNode parentlessDecision : parentlessDecisions)
+	                    {
+	                        states[i++] = new State (parentlessDecision.getName ());
+	                    }
+	                    orderDecisionVariable.setStates (states);
+	                    ProbNode orderDecisionNode = new ProbNode (probNet, orderDecisionVariable, NodeType.DECISION);
+	                    DecisionTreeNode treeNode = new DecisionTreeNode (orderDecisionNode);
+	                    i= 0;
+	                    for (State metaState : orderDecisionVariable.getStates ())
+	                    {
+	                        DecisionTreeBranch treeBranch = new DecisionTreeBranch (originalProbNet,
+	                                                                                orderDecisionVariable, 
+	                                                                                metaState);
+	                        treeNode.addChild (treeBranch);
+	                        ProbNode parentlessDecisionNode = parentlessDecisions.get (i);
+	                        Variable parentlessDecisionVariable = parentlessDecisionNode.getVariable ();
+	                        DecisionTreeNode decisionTreeNode = new DecisionTreeNode (parentlessDecisionNode);
+	                        treeBranch.setChild (decisionTreeNode);
+	                        for (State state : parentlessDecisionVariable.getStates ())
+	                        {
+	                            DecisionTreeBranch subTreeBranch = new DecisionTreeBranch (originalProbNet,
+	                                                                                       originalProbNet.getVariable (parentlessDecisionVariable.getName ()), 
+	                                                                                    state);
+	                            decisionTreeNode.addChild (subTreeBranch);
+	                            ProbNet restrictedProbNet = applyRestrictionsAndReveal (probNet, parentlessDecisionNode, state, originalProbNet);
+	                            subTreeBranch.setChild ((DecisionTreeNode)buildDecisionTreeFromDAN (originalProbNet, restrictedProbNet));
+	                        }          
+	                        ++i;
+	                        
+	                    }
+	                    root = treeNode;
+	                }
+	            }else {
+	                List<ProbNode> neverObservedNodes = ProbNetOperations.getNeverObservedVariables (probNet);
+	            	if(!neverObservedNodes.isEmpty ()) // Never observed variables
+	            	{
+		                ProbNet dtProbNet = probNet.copy ();
+		                ProbNode neverObservedNode = neverObservedNodes.get (0);
+		                Variable neverObservedVariable = neverObservedNode.getVariable ();
+		                DecisionTreeNode treeNode = new DecisionTreeNode (neverObservedNode);
+		                dtProbNet.removeProbNode (dtProbNet.getProbNode (neverObservedVariable));
+		                for (State state : neverObservedVariable.getStates ())
+		                {
+		                    DecisionTreeBranch treeBranch = new DecisionTreeBranch (originalProbNet,
+		                                                                            originalProbNet.getVariable (neverObservedVariable.getName ()), 
+		                                                                            state);
+		                    treeNode.addChild (treeBranch);
+		                    treeBranch.setChild ((DecisionTreeNode)buildDecisionTreeFromDAN (originalProbNet, dtProbNet));
+		                }
+		                
+		                root = treeNode;
+		            }else // Utility nodes
+		            {
+		                ProbNet dtProbNet = probNet.copy ();
+		                ProbNode svNode = getSuperValueNode (dtProbNet);
+		                root = addUtilityNodes (svNode);
+		            }
+		        }
             }
         }catch(ProbNodeNotFoundException ignoreException)
         {
@@ -363,7 +369,7 @@ public class DecisionTreeBuilder
                             // path to it from another decision
                             if(disposableNode.getNodeType() != NodeType.DECISION ||
                                     disposableNode == destinationNode || 
-                                    !hasAnotherPredecessorDecision(disposableNode, destinationNode, probNetCopy))
+                                    !ProbNetOperations.hasAnotherPredecessorDecision(disposableNode, destinationNode, probNetCopy))
                             {
                                 for(Node descendant : disposableNode.getNode ().getChildren ())
                                 {
@@ -398,33 +404,4 @@ public class DecisionTreeBuilder
         return probNetCopy;
     }
 
-    /**
-     * Returns whether the decisionNode has another predecessor decision
-     * The path must not include the removedNode.
-     * @param decisionNode
-     * @param removedNode
-     * @param probNet
-     * @return
-     */
-    private static boolean hasAnotherPredecessorDecision (ProbNode decisionNode,
-                                                          ProbNode removedNode,
-                                                          ProbNet probNet)
-    {
-        Stack<ProbNode> predecessors = new Stack<>();
-        predecessors.add (decisionNode);
-        boolean found = false;
-        while(!found && !predecessors.isEmpty ())
-        {
-            ProbNode node = predecessors.pop ();
-            found = !node.equals (decisionNode)  && node.getNodeType () == NodeType.DECISION;
-            for(Node parent : node.getNode().getParents ())
-            {
-                if(!parent.getObject ().equals (removedNode))
-                {
-                    predecessors.push ((ProbNode)parent.getObject ());
-                }
-            }
-        }
-        return found;
-    }  
 }

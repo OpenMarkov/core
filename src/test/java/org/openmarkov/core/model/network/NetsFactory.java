@@ -1429,11 +1429,11 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  nodeBlood_test_result.setPotential(potBlood_test_result);
 
 		  TablePotential potCost_of_blood_test = new TablePotential(varCost_of_blood_test,Arrays.asList(varDec_Blood_Test));
-		  potCost_of_blood_test.values = new double[]{0, 50};
+		  potCost_of_blood_test.values = new double[]{0, -0.05};
 		  nodeCost_of_blood_test.setPotential(potCost_of_blood_test);
 
 		  TablePotential potCost_of_urine_test = new TablePotential(varCost_of_urine_test,Arrays.asList(varDec_Urine_test));
-		  potCost_of_urine_test.values = new double[]{0, 30};
+		  potCost_of_urine_test.values = new double[]{0, -0.03};
 		  nodeCost_of_urine_test.setPotential(potCost_of_urine_test);
 
 		  TablePotential potQuality_of_life = new TablePotential(varQuality_of_life,Arrays.asList(varDiabetes, varTherapy));

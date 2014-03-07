@@ -72,6 +72,10 @@ public class PartialOrder {
     public PartialOrder(ProbNet id) throws WrongGraphStructureException {
         calculatePartialOrder(id);
     }
+    
+    public PartialOrder() throws WrongGraphStructureException {
+        
+    }
 
     /**
      * @param id

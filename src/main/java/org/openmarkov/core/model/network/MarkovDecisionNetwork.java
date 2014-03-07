@@ -9,6 +9,7 @@
 
 package org.openmarkov.core.model.network;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -45,6 +46,33 @@ public class MarkovDecisionNetwork extends ProbNet {
 			throws WrongGraphStructureException {
 		super();
 		partialOrder = new PartialOrder(originalNet);
+		addVariablesAndLinks(originalNet);
+	}
+	
+	
+	/**
+	 * 
+	 * Creates a <code>MarkovDecisionNetwork</code> without utility nodes from
+	 * the received network. It computes the partial order if 'useTrivialPartialOrder' is false; otherwise, it
+	 * considers that all the variables are unordered.
+	 * @param originalNet
+	 * @param useTrivialPartialOrder
+	 * @throws WrongGraphStructureException
+	 */
+	public MarkovDecisionNetwork(ProbNet originalNet,boolean useTrivialPartialOrder)
+			throws WrongGraphStructureException {
+		super();		
+		if (useTrivialPartialOrder)
+		{
+			partialOrder = new PartialOrder();
+			List<Variable> variables = originalNet.getChanceAndDecisionVariables();
+			List<List<Variable>> variablesOrder = new ArrayList<>();
+			variablesOrder.add(variables);
+			partialOrder.setOrder(variablesOrder);
+		}
+		else{
+			partialOrder = new PartialOrder(originalNet);
+		}
 		addVariablesAndLinks(originalNet);
 	}
 

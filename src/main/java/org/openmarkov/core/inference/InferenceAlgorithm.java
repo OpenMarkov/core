@@ -62,7 +62,7 @@ public abstract class InferenceAlgorithm
      * Variables that will not be eliminated during the inference, and therefore all the results
      * contain these variables in the domain.
      */
-    private List<Variable> conditioningVariables;
+    protected List<Variable> conditioningVariables;
     
     
     /**

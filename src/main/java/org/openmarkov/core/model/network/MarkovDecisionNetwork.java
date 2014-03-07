@@ -44,9 +44,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 */
 	public MarkovDecisionNetwork(ProbNet originalNet)
 			throws WrongGraphStructureException {
-		super();
-		partialOrder = new PartialOrder(originalNet);
-		addVariablesAndLinks(originalNet);
+		this(originalNet,false);
 	}
 	
 	
@@ -62,6 +60,13 @@ public class MarkovDecisionNetwork extends ProbNet {
 	public MarkovDecisionNetwork(ProbNet originalNet,boolean useTrivialPartialOrder)
 			throws WrongGraphStructureException {
 		super();		
+		constructPartialOrder(originalNet,useTrivialPartialOrder);
+		addVariablesAndLinks(originalNet);
+	}
+	
+	
+	
+	public void constructPartialOrder(ProbNet originalNet,boolean useTrivialPartialOrder) throws WrongGraphStructureException{
 		if (useTrivialPartialOrder)
 		{
 			partialOrder = new PartialOrder();
@@ -73,7 +78,6 @@ public class MarkovDecisionNetwork extends ProbNet {
 		else{
 			partialOrder = new PartialOrder(originalNet);
 		}
-		addVariablesAndLinks(originalNet);
 	}
 
 	/**
@@ -92,9 +96,9 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 * @throws WrongGraphStructureException 
 	 */
 	public MarkovDecisionNetwork(ProbNet originalNet,
-			List<? extends Potential> projectedTablePotentials) throws WrongGraphStructureException {
+			List<? extends Potential> projectedTablePotentials,boolean useTrivialPartialOrder) throws WrongGraphStructureException {
 		super(MarkovNetworkType.getUniqueInstance());
-		partialOrder = new PartialOrder(originalNet);
+		constructPartialOrder(originalNet, useTrivialPartialOrder);
 		try {
 			addConstraint(new OnlyUndirectedLinks(), true);
 			// addConstraint (new OnlyDiscreteVariables (), false);
@@ -105,6 +109,12 @@ public class MarkovDecisionNetwork extends ProbNet {
 		for (Potential potential : projectedTablePotentials) {
 			addPotential(originalNet, potential);
 		}
+	}
+	
+	public MarkovDecisionNetwork(ProbNet originalNet,
+			List<? extends Potential> projectedTablePotentials) throws WrongGraphStructureException{
+		this(originalNet,projectedTablePotentials,false);
+		
 	}
 
 	/**

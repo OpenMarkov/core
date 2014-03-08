@@ -10,7 +10,9 @@
 package org.openmarkov.core.model.graph;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
@@ -163,6 +165,41 @@ public class Link {
 		}
 
 		return totalRestriction;
+
+	}
+	
+	
+	
+	/****
+	 * @return<code>true</code> if a value of the first variable makes all
+	 *                          values of the second variable impossible.
+	 * 
+	 */
+	public Set<State> getStatesRestrictTotally() {
+		
+		Set<State> statesRestrictTotally = new HashSet<>();
+		
+		if (hasRestrictions()) {
+			Variable parentVariable = restrictionsPotential.getVariables().get(0);
+			int numStates = parentVariable
+					.getNumStates();
+			int valuesSize = restrictionsPotential.getValues().length;
+
+			for (int index = 0; index < numStates ; index++) {
+				boolean totalRestriction = true;
+				int i = index;
+				while (i < valuesSize && totalRestriction) {
+					totalRestriction = (restrictionsPotential.getValues()[i] != 1);
+					i += numStates;
+				}
+
+				if (totalRestriction) {
+					statesRestrictTotally.add(parentVariable.getStates()[index]);
+				}
+			}
+		}
+
+		return statesRestrictTotally;
 
 	}
 

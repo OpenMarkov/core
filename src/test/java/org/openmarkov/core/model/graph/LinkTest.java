@@ -1,5 +1,8 @@
 package org.openmarkov.core.model.graph;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -50,7 +53,25 @@ public class LinkTest {
 		link.setCompatibilityValue(stateA[0], stateB[0], 0);
 		link.setCompatibilityValue(stateA[0], stateB[1], 0);
 		Assert.assertTrue(link.hasTotalRestriction());
+		
+		Set<State> statesRestrictTotally = link.getStatesRestrictTotally();
+		Set<State> expectedStates = new HashSet<>();
+		expectedStates.add(stateA[0]);
+		Assert.assertTrue(statesRestrictTotally.equals(expectedStates));
+		link.setCompatibilityValue(stateA[2], stateB[0], 0);
+		statesRestrictTotally = link.getStatesRestrictTotally();
+		Assert.assertTrue(statesRestrictTotally.equals(expectedStates));
+		link.setCompatibilityValue(stateA[1], stateB[0], 0);
+		statesRestrictTotally = link.getStatesRestrictTotally();
+		Assert.assertTrue(statesRestrictTotally.equals(expectedStates));
+		link.setCompatibilityValue(stateA[2], stateB[1], 0);
+		statesRestrictTotally = link.getStatesRestrictTotally();
+		expectedStates.add(stateA[2]);
+		Assert.assertTrue(statesRestrictTotally.equals(expectedStates));
+		
 	}
+	
+	
 
 	@Test
 	public void testRevelationArc() {

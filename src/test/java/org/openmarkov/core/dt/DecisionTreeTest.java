@@ -34,7 +34,7 @@ public class DecisionTreeTest {
 	public void testDatingDAN() throws NodeNotFoundException {
 		ProbNet datingDAN = NetsFactory.buildDatingDAN();
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(datingDAN);
-		Assert.assertEquals(9.4016, decisionTree.getUtility(), 0.0001);
+		Assert.assertEquals(9.4076, decisionTree.getUtility(), 0.0001);
 	}
 	
 	@Test

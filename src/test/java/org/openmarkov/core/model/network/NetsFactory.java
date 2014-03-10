@@ -1109,7 +1109,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		Variable variableUTVExp = new Variable("U TVExp");
 		Variable variableUNCExp = new Variable("U NCExp");
 		Variable variableUmExp = new Variable("U mExp");
-		Variable variableUrExp = new Variable("U rCExp");
+		Variable variableUrExp = new Variable("U rExp");
 		
 		ProbNode nodeAsk = datingDAN.addProbNode(variableAsk, NodeType.DECISION);
 		ProbNode nodeNClub = datingDAN.addProbNode(variableNClub, NodeType.DECISION);
@@ -1158,7 +1158,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		datingDAN.addLink(variableRExp, variableUrExp, true);
 		
 		TablePotential potentialAccept = new TablePotential(Arrays.asList(variableAccept, variableAsk, variableLikesMe), PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialAccept.values = new double [] {1, 0, 0.99, 0.01, 1, 0, 0.9, 0.1};
+		potentialAccept.values = new double [] {1, 0, 0.99, 0.01, 1, 0, 0.25, 0.75};
 		nodeAccept.setPotential(potentialAccept);
 
 		UniformPotential potentialLikesMe = new UniformPotential(Arrays.asList(variableLikesMe), PotentialRole.CONDITIONAL_PROBABILITY);
@@ -1172,7 +1172,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		potentialMMood.values = new double [] {0.25, 0.75, 0.88, 0.12};
 		nodeMMood.setPotential(potentialMMood);
 
-		TablePotential potentialMExp = new TablePotential(Arrays.asList(variableMExp, variableMMood, variableMovie), PotentialRole.CONDITIONAL_PROBABILITY);
+		TablePotential potentialMExp = new TablePotential(Arrays.asList(variableMExp, variableMovie, variableMMood), PotentialRole.CONDITIONAL_PROBABILITY);
 		potentialMExp.values = new double [] {0.99, 0.01, 0.95, 0.05, 0.15, 0.85, 0.01, 0.99};
 		nodeMExp.setPotential(potentialMExp);
 
@@ -1184,7 +1184,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		potentialRMood.values = new double [] {0.5, 0.5, 0.2, 0.8};
 		nodeRMood.setPotential(potentialRMood);
 
-		TablePotential potentialRExp = new TablePotential(Arrays.asList(variableRExp, variableRMood, variableRest), PotentialRole.CONDITIONAL_PROBABILITY);
+		TablePotential potentialRExp = new TablePotential(Arrays.asList(variableRExp, variableRest, variableRMood), PotentialRole.CONDITIONAL_PROBABILITY);
 		potentialRExp.values = new double [] {0.95, 0.05, 1, 0, 0.01, 0.99, 0.08, 0.92};
 		nodeRExp.setPotential(potentialRExp);
 

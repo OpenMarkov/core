@@ -32,6 +32,7 @@ public class DecisionTreeBranch implements DecisionTreeElement
     private ProbNet			 probNet;
     private double           utility = Double.NEGATIVE_INFINITY; 
     private double           scenarioProbability = Double.NEGATIVE_INFINITY; 
+    private EvidenceCase     scenarioEvidence = null;
 
     public DecisionTreeBranch (ProbNet probNet,
                                Variable branchVariable,
@@ -75,19 +76,22 @@ public class DecisionTreeBranch implements DecisionTreeElement
     
     public EvidenceCase getBranchStates()
     {
-        EvidenceCase evidenceCase = (parent!=null)? new EvidenceCase(parent.getBranchStates()) : new EvidenceCase();
-        if(branchVariable != null)
-        {
-            try
-            {
-                evidenceCase.addFinding (new Finding(branchVariable, branchState));
-            }
-            catch (InvalidStateException | IncompatibleEvidenceException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        return evidenceCase;
+    	if(scenarioEvidence == null)
+    	{
+	        scenarioEvidence = (parent!=null)? new EvidenceCase(parent.getBranchStates()) : new EvidenceCase();
+	        if(branchVariable != null)
+	        {
+	            try
+	            {
+	            	scenarioEvidence.addFinding (new Finding(branchVariable, branchState));
+	            }
+	            catch (InvalidStateException | IncompatibleEvidenceException e)
+	            {
+	                e.printStackTrace();
+	            }
+	        }
+    	}
+        return scenarioEvidence;
     }
     
     /**

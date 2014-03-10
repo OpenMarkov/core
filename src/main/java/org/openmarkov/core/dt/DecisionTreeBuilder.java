@@ -8,7 +8,6 @@ package org.openmarkov.core.dt;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
@@ -128,7 +127,7 @@ public class DecisionTreeBuilder
 	                    root = treeNode;
 	                }
 	            }else {
-	                List<ProbNode> neverObservedNodes = ProbNetOperations.getNeverObservedVariables (probNet);
+	                List<ProbNode> neverObservedNodes = getNeverObservedVariables (probNet);
 	            	if(!neverObservedNodes.isEmpty ()) // Never observed variables
 	            	{
 		                ProbNet dtProbNet = probNet.copy ();
@@ -404,4 +403,16 @@ public class DecisionTreeBuilder
         return probNetCopy;
     }
 
+    public static List<ProbNode> getNeverObservedVariables (ProbNet probNet)
+    {
+        List<ProbNode> neverObservedVariables = new ArrayList<> ();
+        for (ProbNode probNode : probNet.getProbNodes (NodeType.CHANCE))
+        {
+            if (probNode.getNode ().getParents ().isEmpty ())
+            {
+                neverObservedVariables.add (probNode);
+            }
+        }
+        return neverObservedVariables;    
+    }
 }

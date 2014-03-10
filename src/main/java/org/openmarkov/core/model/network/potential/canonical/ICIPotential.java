@@ -55,6 +55,8 @@ public abstract class ICIPotential extends Potential {
     
     private Variable leakyVariable = null;
     
+    private TablePotential expandedPotential = null;
+    
 	// Constructor
 	/** @param variables. <code>ArrayList</code> of <code>Variable</code>
 	 * @param model. <code>ICIModel</code> */
@@ -234,7 +236,7 @@ public abstract class ICIPotential extends Potential {
         {
             throw new IllegalArgumentException("There is no variable " + parent + " in this ICI family.");
         }
-        
+        expandedPotential = null;
         noisyParameters[variables.indexOf(parent)-1]= parameters;
 	}
 	
@@ -307,7 +309,7 @@ public abstract class ICIPotential extends Potential {
                                                         + variables.get (0).getNumStates ()
                                                         + " and is " + leakyParameters.length);
         }
-        
+        expandedPotential = null;
         this.leakyParameters = leakyParameters;
     }
     
@@ -466,9 +468,15 @@ public abstract class ICIPotential extends Potential {
     @Override    
     public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)
     {
-        int sampledState = sample(new Random (), sampledStateIndexes);
-        
-        return (sampledStateIndexes.get (variables.get (0)) == sampledState)? 1.0 : 0.0;
+    	if(expandedPotential == null)
+    	{
+			try {
+				expandedPotential = getCPT();
+			} catch (NonProjectablePotentialException | WrongCriterionException e) {
+				e.printStackTrace();
+			}
+    	}
+        return expandedPotential.getProbability(sampledStateIndexes);
     }
 
     public void setNoisyPotentials (List<TablePotential> noisyPotentials)
@@ -478,24 +486,6 @@ public abstract class ICIPotential extends Potential {
             TablePotential noisyPotential = noisyPotentials.get(i);
             noisyParameters[variables.indexOf(noisyPotential.getVariable (0))-1] = noisyPotential.values;
         }
-    }
-
-    public TablePotential expand ()
-    {
-        TablePotential expandedPotential = getFFunctionPotential ();
-        
-        // Marginalize out noisy variables
-        for(TablePotential noisyPotential: getNoisyPotentials ())
-        {
-            List<TablePotential> potentials = Arrays.asList(expandedPotential, noisyPotential);
-            expandedPotential = (TablePotential)DiscretePotentialOperations.multiplyAndMarginalize (potentials, noisyPotential.getVariable (0));
-        }
-        
-        // Marginalize out leaky variable
-        List<TablePotential> potentials = Arrays.asList(expandedPotential, getLeakyPotential ());
-        expandedPotential = (TablePotential)DiscretePotentialOperations.multiplyAndMarginalize (potentials, getLeakyVariable());
-        
-        return expandedPotential;
     }
 
 }

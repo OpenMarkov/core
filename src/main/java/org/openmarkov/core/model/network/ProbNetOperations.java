@@ -961,5 +961,19 @@ public class ProbNetOperations {
             }
         }
         return found;
-    } 
+    }
+
+	public static List<ProbNode> getDecisionSequence(ProbNet probNet) {
+		List<ProbNode> decisionSequence = new ArrayList<>();
+    	ProbNet probNetCopy = probNet.copy();
+    	List<ProbNode> orphanDecisionNodes = getParentlessDecisions(probNetCopy);
+    	while(orphanDecisionNodes.size() == 1)
+    	{
+    		ProbNode decision = orphanDecisionNodes.iterator().next();
+    		decisionSequence.add(decision);
+    		probNetCopy.removeProbNode(decision);
+    		orphanDecisionNodes = getParentlessDecisions(probNetCopy);
+    	}
+    	return decisionSequence;
+	} 
 }

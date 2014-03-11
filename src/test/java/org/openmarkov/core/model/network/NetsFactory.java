@@ -1311,6 +1311,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	  probNet.addLink(nodeAdvanced_reactor_reliability, nodeResult_of_advanced_reactor, true);
 	  probNet.addLink(nodeTest_decision, nodeCost_of_test, true);
 	  probNet.addLink(nodeTest_decision, nodeResult_of_test, true);
+	  probNet.addLink(nodeTest_decision, nodeBuild_decision, true);
 	  probNet.addLink(nodeBuild_decision, nodeResult_of_advanced_reactor, true);
 	  probNet.addLink(nodeBuild_decision, nodeResult_of_conventional_reactor, true);
 	
@@ -1320,7 +1321,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	  nodeResult_of_advanced_reactor.setPotential(potResult_of_advanced_reactor);
 	
 	  TablePotential potResult_of_test = new TablePotential(Arrays.asList(varResult_of_test, varTest_decision, varAdvanced_reactor_reliability), PotentialRole.CONDITIONAL_PROBABILITY);
-	  potResult_of_test.values = new double[]{0.33333, 0.33333, 0.33333, 0, 0, 0, 0.33333, 0.33333, 0.33333, 0, 0, 0, 0.33333, 0.33333, 0.33333, 0, 0, 0};
+	  potResult_of_test.values = new double[]{0.05, 0.6, 0.35, 0, 0, 0, 0.85, 0.1, 0.05, 0, 0, 0, 0.9, 0.08, 0.02, 0, 0, 0};
 	  nodeResult_of_test.setPotential(potResult_of_test);
 	
 	  TablePotential potResult_of_conventional_reactor = new TablePotential(Arrays.asList(varResult_of_conventional_reactor, varBuild_decision), PotentialRole.CONDITIONAL_PROBABILITY);
@@ -1328,11 +1329,11 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	  nodeResult_of_conventional_reactor.setPotential(potResult_of_conventional_reactor);
 	
 	  TablePotential potAdvanced_reactor_reliability = new TablePotential(Arrays.asList(varAdvanced_reactor_reliability), PotentialRole.CONDITIONAL_PROBABILITY);
-	  potAdvanced_reactor_reliability.values = new double[]{0.33333, 0.33333, 0.33333};
+	  potAdvanced_reactor_reliability.values = new double[]{0.88, 0.1, 0.02};
 	  nodeAdvanced_reactor_reliability.setPotential(potAdvanced_reactor_reliability);
 	
 	  TablePotential potCost_of_test = new TablePotential(varCost_of_test,Arrays.asList(varTest_decision));
-	  potCost_of_test.values = new double[]{1, 0};
+	  potCost_of_test.values = new double[]{-1, 0};
 	  nodeCost_of_test.setPotential(potCost_of_test);
 	
 	  TablePotential potBenefit_of_advanced_reactor = new TablePotential(varBenefit_of_advanced_reactor,Arrays.asList(varResult_of_advanced_reactor));
@@ -1342,8 +1343,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	  TablePotential potBenefit_of_conventional_reactor = new TablePotential(varBenefit_of_conventional_reactor,Arrays.asList(varResult_of_conventional_reactor));
 	  potBenefit_of_conventional_reactor.values = new double[]{8, -4};
 	  nodeBenefit_of_conventional_reactor.setPotential(potBenefit_of_conventional_reactor);
-	
-	
+		
 	  // Link restrictions and revealing states
 	  Link link_nodeResult_of_test_nodeBuild_decision = probNet.getGraph().getLink(nodeResult_of_test.getNode(),nodeBuild_decision.getNode(), true);
 	  link_nodeResult_of_test_nodeBuild_decision.initializesRestrictionsPotential();
@@ -1759,7 +1759,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  for (int i=0;i<numTests;i++){
 			  nodeTestResult[i]=probNet.addProbNode(varTest_Result[i], NodeType.CHANCE);
 			  nodeDecTest[i]=probNet.addProbNode(varDec_Test[i], NodeType.DECISION);
-			  nodeCostOfTest[i]=probNet.addProbNode(varTest_Result[i], NodeType.UTILITY);
+			  nodeCostOfTest[i]=probNet.addProbNode(varCost_of_Test[i], NodeType.UTILITY);
 		  }
 	
 		  // Links
@@ -1786,8 +1786,8 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  //Potentials for costs of tests
 		  TablePotential potentialCostOfTest[] = new TablePotential[numTests];
 		  for (int i=0;i<numTests;i++){
-			  potentialCostOfTest[i] = new TablePotential(varCost_of_Test[i],Arrays.asList(varDec_Test));
-			  potentialCostOfTest[i].values =new double[]{0, 50};
+			  potentialCostOfTest[i] = new TablePotential(varCost_of_Test[i],Arrays.asList(varDec_Test[i]));
+			  potentialCostOfTest[i].values =new double[]{0, -0.5};
 			  nodeCostOfTest[i].setPotential(potentialCostOfTest[i]);
 		  }
 	

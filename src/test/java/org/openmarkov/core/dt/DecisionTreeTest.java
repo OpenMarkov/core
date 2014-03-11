@@ -41,7 +41,7 @@ public class DecisionTreeTest {
 	public void testReactorDAN() throws NodeNotFoundException {
 		ProbNet reactorDAN = NetsFactory.buildReactorDAN();
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(reactorDAN);
-		Assert.assertEquals(8.76, decisionTree.getUtility(), 0.0001);
+		Assert.assertEquals(10.0627, decisionTree.getUtility(), 0.0001);
 	}		
 
 	@Test

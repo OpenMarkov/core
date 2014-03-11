@@ -22,6 +22,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.MarkovNetworkType;
+import org.openmarkov.core.model.network.type.NetworkType;
 
 /**
  * This class is a type of Markov network created from an influence diagram that
@@ -48,6 +49,21 @@ public class MarkovDecisionNetwork extends ProbNet {
 	}
 	
 	
+	@Override
+	public MarkovDecisionNetwork copy() {
+		 MarkovDecisionNetwork copyNet = new MarkovDecisionNetwork(MarkovNetworkType.getUniqueInstance());
+	     copyNet.partialOrder = partialOrder;
+		 return (MarkovDecisionNetwork) auxCopy(copyNet);
+	}
+
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
+	}
+
+
 	/**
 	 * 
 	 * Creates a <code>MarkovDecisionNetwork</code> without utility nodes from
@@ -116,6 +132,14 @@ public class MarkovDecisionNetwork extends ProbNet {
 		this(originalNet,projectedTablePotentials,false);
 		
 	}
+
+	/**
+	 * @param networkType
+	 */
+	public MarkovDecisionNetwork(NetworkType networkType) {
+		// TODO Auto-generated constructor stub
+	}
+
 
 	/**
 	 * Adds the received potential to the list of potentials of the first

@@ -857,8 +857,14 @@ public class ProbNetOperations {
     		{
     			ProbNode childProbNode = (ProbNode)(child.getObject());
     			if (!observable.contains(childProbNode))
-    			{
-    				if ((probNet.getGraph().getLink(probNodeToProcess.getNode(), child, true)).hasRevealingConditions())
+    			{ 	boolean isFound = false;
+    				List<Link> links = probNet.getGraph().getLinks();
+    				Link link = null;
+    				for (int i=0;(i<links.size())&&!isFound;i++){
+    					link = links.get(i);
+    					isFound = link.getNode1()==probNodeToProcess.getNode()&&link.getNode2()==child;
+    				}
+					if (link.hasRevealingConditions())
     				{
     					observable.add(childProbNode);
     					variablesToProcess.add(childProbNode.getVariable());

@@ -1037,7 +1037,55 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		return variable;
 		
 	}
+	
+	public static ProbNet buildOneChanceDAN() throws NodeNotFoundException {
+		ProbNet oneChanceDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		Variable variableX = new Variable("X", "absent", "present");
+		Variable variableU = new Variable("U");
+		
+		ProbNode nodeX = oneChanceDAN.addProbNode(variableX, NodeType.CHANCE);
+		ProbNode nodeU = oneChanceDAN.addProbNode(variableU, NodeType.UTILITY);
+		
+		oneChanceDAN.getGraph().makeLinksExplicit(false);
+		oneChanceDAN.addLink(variableX, variableU, true);
+		
+		TablePotential potentialX = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialX.values = new double [] {0.86, 0.14};
+		nodeX.setPotential(potentialX);
 
+		TablePotential potentialU = new TablePotential(variableU, Arrays.asList(variableX));
+		potentialU.values = new double [] {100, 30};
+		nodeU.setPotential(potentialU);
+		
+		return oneChanceDAN;
+	}
+	
+	public static ProbNet buildBlindTreatmentDAN() throws NodeNotFoundException {
+		ProbNet blindTreatmentDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		Variable variableX = new Variable("X", "absent", "present");
+		Variable variableT = new Variable("T", "no", "yes");
+		Variable variableU = new Variable("U");
+		
+		ProbNode nodeX = blindTreatmentDAN.addProbNode(variableX, NodeType.CHANCE);
+		blindTreatmentDAN.addProbNode(variableT, NodeType.DECISION);
+		ProbNode nodeU = blindTreatmentDAN.addProbNode(variableU, NodeType.UTILITY);
+		
+		blindTreatmentDAN.getGraph().makeLinksExplicit(false);
+		blindTreatmentDAN.addLink(variableX, variableU, true);
+		blindTreatmentDAN.addLink(variableT, variableU, true);
+		
+		TablePotential potentialX = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialX.values = new double [] {0.86, 0.14};
+		nodeX.setPotential(potentialX);
+
+		TablePotential potentialU = new TablePotential(variableU, Arrays.asList(variableX,variableT));
+		potentialU.values = new double [] {100, 30, 90, 80};
+		nodeU.setPotential(potentialU);	
+		
+		return blindTreatmentDAN;
+	}
+	
+	
 	public static ProbNet buildDecideTestDAN() throws NodeNotFoundException {
 		ProbNet decideTestDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
 		Variable variableX = new Variable("X", "absent", "present");

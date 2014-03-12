@@ -11,7 +11,9 @@ package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -44,6 +46,19 @@ public class NetsFactory {
 	static String diseaseStates[]={"present","absent"};
 	static String testResultStates[]={"positive","negative"};
 	static String yesNoStates[]={"yes","no"};
+	
+	public enum NamesNetworks {
+		ONE_CHANCE_DAN,
+		BLIND_TREATMENT_DAN,
+		PERFECT_INFORMATION_TREATMENT_DAN,
+		DECIDE_TEST_DAN,
+		TWO_TEST_DAN,
+		DIABETES_DAN,
+		DATING_DAN,
+		REACTOR_DAN;
+		
+		
+	}
 	
 	/**
 	 * @param variables
@@ -1040,6 +1055,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	
 	public static ProbNet buildOneChanceDAN() throws NodeNotFoundException {
 		ProbNet oneChanceDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		oneChanceDAN.setName(NamesNetworks.ONE_CHANCE_DAN.toString());
 		Variable variableX = new Variable("X", "absent", "present");
 		Variable variableU = new Variable("U");
 		
@@ -1061,7 +1077,16 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	}
 	
 	public static ProbNet buildBlindTreatmentDAN() throws NodeNotFoundException {
+		return buildDecideTreatmentDAN(NamesNetworks.BLIND_TREATMENT_DAN,false);
+	}
+	
+	public static ProbNet buildPerfectInformationTreatmentDAN() throws NodeNotFoundException {
+		return buildDecideTreatmentDAN(NamesNetworks.BLIND_TREATMENT_DAN,true);
+	}
+	
+	public static ProbNet buildDecideTreatmentDAN(NamesNetworks name,boolean isXKnown) throws NodeNotFoundException {
 		ProbNet blindTreatmentDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		blindTreatmentDAN.setName(NamesNetworks.BLIND_TREATMENT_DAN.toString());
 		Variable variableX = new Variable("X", "absent", "present");
 		Variable variableT = new Variable("T", "no", "yes");
 		Variable variableU = new Variable("U");
@@ -1073,6 +1098,9 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		blindTreatmentDAN.getGraph().makeLinksExplicit(false);
 		blindTreatmentDAN.addLink(variableX, variableU, true);
 		blindTreatmentDAN.addLink(variableT, variableU, true);
+		if (isXKnown){
+			blindTreatmentDAN.addLink(variableX, variableT, true);
+		}
 		
 		TablePotential potentialX = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
 		potentialX.values = new double [] {0.86, 0.14};
@@ -1080,14 +1108,19 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 
 		TablePotential potentialU = new TablePotential(variableU, Arrays.asList(variableX,variableT));
 		potentialU.values = new double [] {100, 30, 90, 80};
-		nodeU.setPotential(potentialU);	
+		nodeU.setPotential(potentialU);
 		
 		return blindTreatmentDAN;
 	}
 	
 	
+	
+
+	
+	
 	public static ProbNet buildDecideTestDAN() throws NodeNotFoundException {
 		ProbNet decideTestDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		decideTestDAN.setName(NamesNetworks.DECIDE_TEST_DAN.toString());
 		Variable variableX = new Variable("X", "absent", "present");
 		Variable variableY = new Variable("Y", "negative", "positive");
 		Variable variableD = new Variable("D","no","yes");
@@ -1138,6 +1171,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	
 	public static ProbNet buildDatingDAN() throws NodeNotFoundException {
 		ProbNet datingDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		datingDAN.setName(NamesNetworks.DECIDE_TEST_DAN.toString());
 		Variable variableAsk = new Variable("Ask", "no", "yes");
 		Variable variableNClub = new Variable("NClub", "no", "yes");
 		Variable variableAccept = new Variable("Accept", "no", "yes");
@@ -1328,6 +1362,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	public static ProbNet buildReactorDAN () {
 		
 	  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+	  probNet.setName("ReactorDAN");
 	  // Variables
 	  Variable varResult_of_advanced_reactor = new Variable("Result of advanced reactor", "success", "limited accident", "major accident");
 	  Variable varResult_of_test = new Variable("Result of test", "bad", "good", "excellent");
@@ -1421,6 +1456,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	
 	public static ProbNet buildDiabetesDAN () {
 		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  probNet.setName(NamesNetworks.DIABETES_DAN.toString());
 		  // Variables
 		  Variable varUrine_test_result = new Variable("Urine test result", "negative", "positive");
 		  Variable varSymptom = new Variable("Symptom", "absent", "present");
@@ -1509,6 +1545,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	
 	public static ProbNet buildTwoTestDAN () {
 		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  probNet.setName(NamesNetworks.TWO_TEST_DAN.toString());
 		  // Variables
 		  Variable varDisease = new Variable("Disease", "absent", "present");
 		  Variable varR_T1 = new Variable("R T1", "negative", "positive");

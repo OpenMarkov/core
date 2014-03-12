@@ -10,6 +10,12 @@ package org.openmarkov.core.inference;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeTrue;
+
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -20,6 +26,7 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.NetsFactory;
+import org.openmarkov.core.model.network.NetsFactory.NamesNetworks;
 import org.openmarkov.core.model.network.ProbNet;
 
 /**
@@ -62,48 +69,48 @@ public abstract class InferenceAlgorithmDANTests {
 		assumeTrue(isEvaluable);
 		return algorithm;
 	}
-
 	
-	
-	//@Test
-	public void testDecideTestDAN() throws IncompatibleEvidenceException, UnexpectedInferenceException {	
-		ProbNet network = null;
-		try {
-			network = NetsFactory.buildDecideTestDAN();
-		} catch (NodeNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
-		Double meuEvaluation = algorithm.getGlobalUtility().values[0];
-		assertEquals(94.312, meuEvaluation, maxError );
-	}
 	
 	@Test
-	public void testOneChanceDAN() throws IncompatibleEvidenceException, UnexpectedInferenceException {	
-		ProbNet network = null;
-		try {
-			network = NetsFactory.buildOneChanceDAN();
-		} catch (NodeNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void testMEUBasicBatteryDAN() throws IncompatibleEvidenceException, UnexpectedInferenceException {	
+		Set<ProbNet> dans;
+		Map<NamesNetworks, Double> meu = meuDANFactory();
+		dans = basicDANBattery();
+		for (ProbNet dan:dans){
+			InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(dan);
+			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+		assertEquals(meu.get(NetsFactory.NamesNetworks.valueOf(dan.getName())),meuEvaluation, maxError );
 		}
-		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
-		Double meuEvaluation = algorithm.getGlobalUtility().values[0];
-		assertEquals(90.2,meuEvaluation, maxError );
 	}
-	
-	//@Test
-	public void testBlindTreatmentDAN() throws IncompatibleEvidenceException, UnexpectedInferenceException {	
-		ProbNet network = null;
-		try {
-			network = NetsFactory.buildBlindTreatmentDAN();
-		} catch (NodeNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		public Map<NetsFactory.NamesNetworks,Double> meuDANFactory(){
+			Map<NetsFactory.NamesNetworks,Double> meu = new Hashtable<NetsFactory.NamesNetworks,Double>();
+			meu.put(NetsFactory.NamesNetworks.ONE_CHANCE_DAN,90.2);
+			meu.put(NetsFactory.NamesNetworks.BLIND_TREATMENT_DAN,90.2);
+			meu.put(NetsFactory.NamesNetworks.PERFECT_INFORMATION_TREATMENT_DAN,97.2);
+			meu.put(NetsFactory.NamesNetworks.DECIDE_TEST_DAN,94.312);
+			meu.put(NetsFactory.NamesNetworks.TWO_TEST_DAN, 9.3324);
+			meu.put(NetsFactory.NamesNetworks.DIABETES_DAN,9.8261);
+			return meu;
+		}	
+		
+		/**
+		 * @return A set of basic DANs for tests, including OneChance, BlindTreatment, DecideTest and Diabetes.
+		 */
+		public static Set<ProbNet> basicDANBattery(){
+			Set<ProbNet> battery = new HashSet<>();
+			try {
+				battery.add(NetsFactory.buildOneChanceDAN());
+				battery.add(NetsFactory.buildBlindTreatmentDAN());
+				battery.add(NetsFactory.buildPerfectInformationTreatmentDAN());
+				battery.add(NetsFactory.buildDecideTestDAN());
+				
+			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+			}
+			//battery.add(NetsFactory.buildTwoTestDAN());
+			//battery.add(NetsFactory.buildDiabetesDAN());
+			
+			return battery;
 		}
-		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
-		Double meuEvaluation = algorithm.getGlobalUtility().values[0];
-		assertEquals(90.2,meuEvaluation, maxError );
-	}
 }

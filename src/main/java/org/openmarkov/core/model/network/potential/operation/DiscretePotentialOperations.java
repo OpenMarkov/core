@@ -11,9 +11,12 @@ package org.openmarkov.core.model.network.potential.operation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.openmarkov.core.exception.IllegalArgumentTypeException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -1488,5 +1491,49 @@ public final class DiscretePotentialOperations {
         }
         copyPotential.properties = potential.properties;
         return copyPotential;
+    }
+    
+    
+    /**
+     * @param potentials
+     * @return The maximization of a list of potentials defined over the same variables
+     */
+    public static TablePotential maximize(Set<TablePotential> potentials){
+    	TablePotential result;
+    	Set<TablePotential> setPot;
+    	
+    	if (potentials == null){
+    		result = null;
+    	}
+    	else{
+    		int numPotentials = potentials.size();
+    		if (numPotentials == 0)
+    		{
+    			result = null;
+    		}
+    		else
+    		{
+    			Iterator<TablePotential> iterPotentials = potentials.iterator();
+	    		TablePotential potFirst = potentials.iterator().next();
+				List<Variable> variablesFirst = potFirst.getVariables();
+	    		setPot = new HashSet<>();
+	    		setPot.add(potFirst);
+	    		while (iterPotentials.hasNext())
+	    		{
+	    			setPot.add(reorder(iterPotentials.next(),variablesFirst));
+	    		}
+	    		int lengthValues = potFirst.values.length;
+				for (int i=0;i<lengthValues;i++){
+	    			double max = Double.NEGATIVE_INFINITY;
+	    			for (TablePotential pot:setPot)
+	    			{
+	    				max = Math.max(pot.values[i], max);
+	    			}
+	    		}
+				double newValues[] = new double[lengthValues];
+				result = new TablePotential(variablesFirst,potFirst.getPotentialRole(),newValues);
+    		}
+    	}
+    	return result;
     }
 }

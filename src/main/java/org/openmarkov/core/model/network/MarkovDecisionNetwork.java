@@ -11,6 +11,7 @@ package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -53,7 +54,14 @@ public class MarkovDecisionNetwork extends ProbNet {
 	public MarkovDecisionNetwork copy() {
 		 MarkovDecisionNetwork copyNet = new MarkovDecisionNetwork(MarkovNetworkType.getUniqueInstance());
 	     copyNet.partialOrder = partialOrder;
-		 return (MarkovDecisionNetwork) auxCopy(copyNet);
+		 copyNet = (MarkovDecisionNetwork) auxCopy(copyNet);
+		 try {
+			copyNet.setNetworkType(MarkovNetworkType.getUniqueInstance());
+		} catch (ConstraintViolationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 return copyNet;
 	}
 
 
@@ -94,6 +102,21 @@ public class MarkovDecisionNetwork extends ProbNet {
 		else{
 			partialOrder = new PartialOrder(originalNet);
 		}
+	}
+	
+	
+	public void resetPartialOrderToTrivial(){
+		
+			try {
+				partialOrder = new PartialOrder();
+			} catch (WrongGraphStructureException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			List<Variable> variables = this.getChanceAndDecisionVariables();
+			List<List<Variable>> variablesOrder = new ArrayList<>();
+			variablesOrder.add(variables);
+			partialOrder.setOrder(variablesOrder);
 	}
 
 	/**
@@ -423,6 +446,18 @@ public class MarkovDecisionNetwork extends ProbNet {
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * @param differentUtilityPotentials
+	 */
+	public void removePotentials(Set<TablePotential> potentials) {
+		for (TablePotential pot:potentials)
+		{
+			this.removePotential(pot);
+		}
+		
 	}
 
 }

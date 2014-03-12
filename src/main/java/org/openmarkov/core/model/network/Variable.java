@@ -30,7 +30,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * @see org.openmarkov.core.model.network.ProbNet
  * @version 1.0
  */
-public class Variable implements Cloneable {
+public class Variable implements Cloneable, Comparable<Variable> {
 
 	// Constant
 	/** Time slice value when the variable is not temporal. */
@@ -643,7 +643,15 @@ public class Variable implements Cloneable {
 			return true;
 		if ((obj == null) || (obj.getClass() != this.getClass()))
 			return false;
-		return (this.name.equals(((Variable) obj).name));
+		Variable otherVariable = (Variable) obj;
+		if(!this.name.equals(otherVariable.name))
+			return false;
+		if(states.length != otherVariable.states.length)
+			return false;
+		for(int i=0; i<states.length; ++i)
+			if(!states[i].equals(otherVariable.states[i]))
+				return false;
+		return true;
 	}
 
 	// @Override
@@ -734,6 +742,18 @@ public class Variable implements Cloneable {
     public double round(double value) {
         return Math.round(value/precision)*precision;
     }
+
+	@Override
+	public int compareTo(Variable o) {
+		int othersHashCode = o.hashCode();
+		int thisHashCode = hashCode();
+		int result = 0;
+		if(othersHashCode > thisHashCode)
+			result = -1;
+		else if (othersHashCode < thisHashCode)
+			result = 0;
+		return result;
+	}
 
 	// TODO Ver si este código resuelve el problema que se puede dar en
 	// Elvira con los dos nombres de las variables que tiene.

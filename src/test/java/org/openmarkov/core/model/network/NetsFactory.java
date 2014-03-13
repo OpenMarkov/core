@@ -1755,7 +1755,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  for (int i=0;i<numTests;i++){
 			  nodeTestResult[i]=probNet.addProbNode(varTest_Result[i], NodeType.CHANCE);
 			  nodeDecTest[i]=probNet.addProbNode(varDec_Test[i], NodeType.DECISION);
-			  nodeCostOfTest[i]=probNet.addProbNode(varTest_Result[i], NodeType.UTILITY);
+			  nodeCostOfTest[i]=probNet.addProbNode(varCost_of_Test[i], NodeType.UTILITY);
 		  }
 	
 		  // Links
@@ -1788,8 +1788,8 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  //Potentials for costs of tests
 		  TablePotential potentialCostOfTest[] = new TablePotential[numTests];
 		  for (int i=0;i<numTests;i++){
-			  potentialCostOfTest[i] = new TablePotential(varCost_of_Test[i],Arrays.asList(varDec_Test));
-			  potentialCostOfTest[i].values =new double[]{0, 50};
+			  potentialCostOfTest[i] = new TablePotential(varCost_of_Test[i],Arrays.asList(varDec_Test[i]));
+			  potentialCostOfTest[i].values =new double[]{0, -0.5};
 			  nodeCostOfTest[i].setPotential(potentialCostOfTest[i]);
 		  }
 	
@@ -1797,6 +1797,13 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  potQuality_of_life.values = new double[]{10, 3, 9, 8};
 		  nodeQuality_of_life.setPotential(potQuality_of_life);
 
+		  TablePotential potSymptom = new TablePotential(Arrays.asList(varSymptom, varDiabetes), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potSymptom.values = new double[]{0.999, 0.001, 0.15, 0.85};
+		  nodeSymptom.setPotential(potSymptom);
+
+		  TablePotential potDiabetes = new TablePotential(Arrays.asList(varDiabetes), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potDiabetes.values = new double[]{0.93, 0.07};
+		  nodeDiabetes.setPotential(potDiabetes);
 
 		  // Link restrictions and revealing states
 		  for (int i=0;i<numTests;i++){
@@ -1880,6 +1887,14 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  potQuality_of_life.values = new double[]{10, 3, 9, 8};
 		  nodeQuality_of_life.setPotential(potQuality_of_life);
 
+		  TablePotential potSymptom = new TablePotential(Arrays.asList(varSymptom, varDiabetes), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potSymptom.values = new double[]{0.999, 0.001, 0.15, 0.85};
+		  nodeSymptom.setPotential(potSymptom);
+
+		  TablePotential potDiabetes = new TablePotential(Arrays.asList(varDiabetes), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potDiabetes.values = new double[]{0.93, 0.07};
+		  nodeDiabetes.setPotential(potDiabetes);
+		  
 
 		  // Link restrictions and revealing states
 		  for (int i=0;i<numTests;i++){

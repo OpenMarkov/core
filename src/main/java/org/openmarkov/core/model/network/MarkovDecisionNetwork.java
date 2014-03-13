@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,6 +35,19 @@ public class MarkovDecisionNetwork extends ProbNet {
 	// Attributes
 	/** Partial partialOrder of chance and decision nodes */
 	private PartialOrder partialOrder;
+	
+	
+	Set<TablePotential> constantPotentials;
+
+	public Set<TablePotential> getConstantPotentials() {
+		return constantPotentials;
+	}
+
+
+	public void setConstantPotentials(Set<TablePotential> constantPotentials) {
+		this.constantPotentials = constantPotentials;
+	}
+
 
 	// Constructor
 	/**
@@ -61,6 +75,8 @@ public class MarkovDecisionNetwork extends ProbNet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		 copyNet.constantPotentials = new HashSet<>();
+		 copyNet.constantPotentials.addAll(constantPotentials);
 		 return copyNet;
 	}
 
@@ -86,6 +102,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 		super();		
 		constructPartialOrder(originalNet,useTrivialPartialOrder);
 		addVariablesAndLinks(originalNet);
+		constantPotentials = new HashSet<>();
 	}
 	
 	
@@ -146,7 +163,14 @@ public class MarkovDecisionNetwork extends ProbNet {
 			e.printStackTrace();
 		}
 		for (Potential potential : projectedTablePotentials) {
-			addPotential(originalNet, potential);
+			if (potential.getVariables().size()>0)
+			{
+				addPotential(originalNet, potential);
+			}
+			else
+			{
+				constantPotentials.add((TablePotential) potential);
+			}
 		}
 	}
 	
@@ -247,7 +271,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	// TODO addPotential should be common to all ProbNet's
 	public ProbNode addPotential(Potential potential) {
 		int numVariables = potential.getNumVariables();
-		ProbNode probNode;
+		ProbNode probNode = null;
 		if (numVariables >= 1) {
 			if (numVariables > 1) { // creates a clique using undirected links
 				addLinks(potential);
@@ -256,7 +280,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 			probNode = getProbNode(potential.getVariable(0));
 			probNode.addPotential(potential);
 		} else { // The potential is a constant.
-			TablePotential constantPotential = (TablePotential) potential;
+			/*TablePotential constantPotential = (TablePotential) potential;
 			double constant = constantPotential.values[0];
 			probNode = getChanceNode();
 			PotentialRole potentialRole = constantPotential.getPotentialRole();
@@ -273,7 +297,8 @@ public class MarkovDecisionNetwork extends ProbNet {
 				}
 			} else {
 				probNode.addPotential(potential);
-			}
+			}*/
+			constantPotentials.add((TablePotential) potential);
 		}
 		return probNode;
 	}
@@ -458,6 +483,20 @@ public class MarkovDecisionNetwork extends ProbNet {
 			this.removePotential(pot);
 		}
 		
+	}
+
+
+	@Override
+	public ProbNode removePotential(Potential potential) {
+		ProbNode probNode;
+		if (potential.getVariables().size()>0){
+			probNode = super.removePotential(potential);
+		}
+		else{
+			constantPotentials.remove(potential);
+			probNode = null;
+		}
+		return probNode;
 	}
 
 }

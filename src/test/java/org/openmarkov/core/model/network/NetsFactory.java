@@ -1825,6 +1825,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	public static ProbNet buildNTestsDAN (int numTests) {
 				 
 		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  probNet.setName("N_tests");
 		  // Variables
 		
 		  Variable varSymptom = new Variable("Symptom", "absent", "present");

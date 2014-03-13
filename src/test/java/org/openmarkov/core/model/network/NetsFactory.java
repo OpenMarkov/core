@@ -1454,6 +1454,193 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	  return probNet;
 	}	
 	
+	public static ProbNet buildWooerDAN () {
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  // Variables
+		  Variable varResult_1 = new Variable("Result 1", "fail", "pass");
+		  Variable varResult_2 = new Variable("Result 2", "fail", "pass");
+		  Variable varResult_3 = new Variable("Result 3", "fail", "pass");
+		  Variable varQuality_of_wooer = new Variable("Quality of wooer", "bad", "good");
+		  Variable varWedding = new Variable("Wedding", "no", "yes");
+		  Variable varQuality_of_general = new Variable("Quality of general", "bad", "good");
+		  Variable varWealth = new Variable("Wealth", "poor", "wealthy");
+		  Variable varOffspring = new Variable("Offspring", "no", "yes");
+		  Variable varNoble_descent = new Variable("Noble descent", "no", "yes");
+		  Variable varTask_1 = new Variable("Task 1", "kill dragon", "kill unicorn");
+		  Variable varTask_2 = new Variable("Task 2", "night in tower", "night in tomb");
+		  Variable varDec_Task_3 = new Variable("Dec Task 3", "climb", "swim");
+		  Variable varMarriage = new Variable("Marriage", "no", "yes");
+		  Variable varWar = new Variable("War", "no", "yes");
+		  Variable varRetire = new Variable("Retire", "no", "yes");
+		  Variable varU1 = new Variable("U1");
+		  Variable varU2 = new Variable("U2");
+		  Variable varU3 = new Variable("U3");
+		  Variable varcost_task_1 = new Variable("cost task 1");
+		  Variable varcost_task_2 = new Variable("cost task 2");
+		  Variable varcost_task_3 = new Variable("cost task 3");
+		  Variable varcost_marriage = new Variable("cost marriage");
+		  Variable varcost_war = new Variable("cost war");
+		  Variable varcost_retirement = new Variable("cost retirement");
+
+		  // Nodes
+		  ProbNode nodeResult_1= probNet.addProbNode(varResult_1, NodeType.CHANCE);
+		  ProbNode nodeResult_2= probNet.addProbNode(varResult_2, NodeType.CHANCE);
+		  ProbNode nodeResult_3= probNet.addProbNode(varResult_3, NodeType.CHANCE);
+		  ProbNode nodeQuality_of_wooer= probNet.addProbNode(varQuality_of_wooer, NodeType.CHANCE);
+		  ProbNode nodeWedding= probNet.addProbNode(varWedding, NodeType.CHANCE);
+		  ProbNode nodeQuality_of_general= probNet.addProbNode(varQuality_of_general, NodeType.CHANCE);
+		  ProbNode nodeWealth= probNet.addProbNode(varWealth, NodeType.CHANCE);
+		  ProbNode nodeOffspring= probNet.addProbNode(varOffspring, NodeType.CHANCE);
+		  ProbNode nodeNoble_descent= probNet.addProbNode(varNoble_descent, NodeType.CHANCE);
+		  ProbNode nodeTask_1= probNet.addProbNode(varTask_1, NodeType.DECISION);
+		  ProbNode nodeTask_2= probNet.addProbNode(varTask_2, NodeType.DECISION);
+		  ProbNode nodeDec_Task_3= probNet.addProbNode(varDec_Task_3, NodeType.DECISION);
+		  ProbNode nodeMarriage= probNet.addProbNode(varMarriage, NodeType.DECISION);
+		  ProbNode nodeWar= probNet.addProbNode(varWar, NodeType.DECISION);
+		  ProbNode nodeRetire= probNet.addProbNode(varRetire, NodeType.DECISION);
+		  ProbNode nodeU1= probNet.addProbNode(varU1, NodeType.UTILITY);
+		  ProbNode nodeU2= probNet.addProbNode(varU2, NodeType.UTILITY);
+		  ProbNode nodeU3= probNet.addProbNode(varU3, NodeType.UTILITY);
+		  ProbNode nodecost_task_1= probNet.addProbNode(varcost_task_1, NodeType.UTILITY);
+		  ProbNode nodecost_task_2= probNet.addProbNode(varcost_task_2, NodeType.UTILITY);
+		  ProbNode nodecost_task_3= probNet.addProbNode(varcost_task_3, NodeType.UTILITY);
+		  ProbNode nodecost_marriage= probNet.addProbNode(varcost_marriage, NodeType.UTILITY);
+		  ProbNode nodecost_war= probNet.addProbNode(varcost_war, NodeType.UTILITY);
+		  ProbNode nodecost_retirement= probNet.addProbNode(varcost_retirement, NodeType.UTILITY);
+
+		  // Links
+		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.addLink(nodeQuality_of_wooer, nodeQuality_of_general, true);
+		  probNet.addLink(nodeQuality_of_wooer, nodeOffspring, true);
+		  probNet.addLink(nodeQuality_of_wooer, nodeU1, true);
+		  probNet.addLink(nodeQuality_of_wooer, nodeResult_1, true);
+		  probNet.addLink(nodeQuality_of_wooer, nodeResult_2, true);
+		  probNet.addLink(nodeQuality_of_wooer, nodeResult_3, true);
+		  probNet.addLink(nodeWedding, nodeQuality_of_general, true);
+		  probNet.addLink(nodeWedding, nodeOffspring, true);
+		  probNet.addLink(nodeQuality_of_general, nodeWealth, true);
+		  probNet.addLink(nodeWealth, nodeU3, true);
+		  probNet.addLink(nodeOffspring, nodeU2, true);
+		  probNet.addLink(nodeOffspring, nodeWealth, true);
+		  probNet.addLink(nodeNoble_descent, nodeU2, true);
+		  probNet.addLink(nodeTask_1, nodecost_task_1, true);
+		  probNet.addLink(nodeTask_1, nodeMarriage, true);
+		  probNet.addLink(nodeTask_1, nodeResult_1, true);
+		  probNet.addLink(nodeTask_2, nodecost_task_2, true);
+		  probNet.addLink(nodeTask_2, nodeMarriage, true);
+		  probNet.addLink(nodeTask_2, nodeResult_2, true);
+		  probNet.addLink(nodeDec_Task_3, nodecost_task_3, true);
+		  probNet.addLink(nodeDec_Task_3, nodeMarriage, true);
+		  probNet.addLink(nodeDec_Task_3, nodeResult_3, true);
+		  probNet.addLink(nodeMarriage, nodeWedding, true);
+		  probNet.addLink(nodeMarriage, nodecost_marriage, true);
+		  probNet.addLink(nodeMarriage, nodeWar, true);
+		  probNet.addLink(nodeWar, nodeU3, true);
+		  probNet.addLink(nodeWar, nodeWealth, true);
+		  probNet.addLink(nodeWar, nodeRetire, true);
+		  probNet.addLink(nodeWar, nodecost_war, true);
+		  probNet.addLink(nodeRetire, nodeU2, true);
+		  probNet.addLink(nodeRetire, nodeU3, true);
+		  probNet.addLink(nodeRetire, nodecost_retirement, true);
+
+		  // Potentials
+		  TablePotential potResult_1 = new TablePotential(Arrays.asList(varResult_1, varQuality_of_wooer, varTask_1), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potResult_1.values = new double[]{0.97, 0.03, 0.75, 0.25, 0.75, 0.25, 0.25, 0.75};
+		  nodeResult_1.setPotential(potResult_1);
+
+		  TablePotential potResult_2 = new TablePotential(Arrays.asList(varResult_2, varQuality_of_wooer, varTask_2), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potResult_2.values = new double[]{0.9, 0.1, 0.2, 0.8, 0.75, 0.25, 0.25, 0.75};
+		  nodeResult_2.setPotential(potResult_2);
+
+		  TablePotential potResult_3 = new TablePotential(Arrays.asList(varResult_3, varQuality_of_wooer, varDec_Task_3), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potResult_3.values = new double[]{0.6, 0.4, 0.4, 0.6, 0.55, 0.45, 0.45, 0.55};
+		  nodeResult_3.setPotential(potResult_3);
+
+		  UniformPotential potQuality_of_wooer = new UniformPotential(Arrays.asList(varQuality_of_wooer), PotentialRole.CONDITIONAL_PROBABILITY);
+		  nodeQuality_of_wooer.setPotential(potQuality_of_wooer);
+
+		  TablePotential potWedding = new TablePotential(Arrays.asList(varWedding, varMarriage), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potWedding.values = new double[]{1, 0, 0, 1};
+		  nodeWedding.setPotential(potWedding);
+
+		  UniformPotential potQuality_of_general = new UniformPotential(Arrays.asList(varQuality_of_general, varQuality_of_wooer, varWedding), PotentialRole.CONDITIONAL_PROBABILITY);
+		  nodeQuality_of_general.setPotential(potQuality_of_general);
+
+		  TablePotential potWealth = new TablePotential(Arrays.asList(varWealth, varQuality_of_general, varWar, varOffspring), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potWealth.values = new double[]{0.5, 0.5, 0.5, 0.5, 0.85, 0.15, 0.15, 0.85, 0.6, 0.4, 0.6, 0.4, 0.9, 0.1, 0.2, 0.8};
+		  nodeWealth.setPotential(potWealth);
+
+		  TablePotential potOffspring = new TablePotential(Arrays.asList(varOffspring, varQuality_of_wooer, varWedding), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potOffspring.values = new double[]{1, 0, 1, 0, 0.6, 0.4, 0.2, 0.8};
+		  nodeOffspring.setPotential(potOffspring);
+
+		  UniformPotential potNoble_descent = new UniformPotential(Arrays.asList(varNoble_descent), PotentialRole.CONDITIONAL_PROBABILITY);
+		  nodeNoble_descent.setPotential(potNoble_descent);
+
+		  UniformPotential potU1 = new UniformPotential(varU1,Arrays.asList(varQuality_of_wooer));
+		  nodeU1.setPotential(potU1);
+
+		  TablePotential potU2 = new TablePotential(varU2,Arrays.asList(varNoble_descent, varOffspring, varRetire));
+		  potU2.values = new double[]{0, 0, 2, 3, 1, 3, 4, 7};
+		  nodeU2.setPotential(potU2);
+
+		  TablePotential potU3 = new TablePotential(varU3,Arrays.asList(varRetire, varWar, varWealth));
+		  potU3.values = new double[]{0, 1, 2, 3, 6, 8, 7, 10};
+		  nodeU3.setPotential(potU3);
+
+		  TablePotential potcost_task_1 = new TablePotential(varcost_task_1,Arrays.asList(varTask_1));
+		  potcost_task_1.values = new double[]{-1, -0.2};
+		  nodecost_task_1.setPotential(potcost_task_1);
+
+		  TablePotential potcost_task_2 = new TablePotential(varcost_task_2,Arrays.asList(varTask_2));
+		  potcost_task_2.values = new double[]{-0.5, -0.2};
+		  nodecost_task_2.setPotential(potcost_task_2);
+
+		  TablePotential potcost_task_3 = new TablePotential(varcost_task_3,Arrays.asList(varDec_Task_3));
+		  potcost_task_3.values = new double[]{-0.1, -0.05};
+		  nodecost_task_3.setPotential(potcost_task_3);
+
+		  UniformPotential potcost_marriage = new UniformPotential(varcost_marriage,Arrays.asList(varMarriage));
+		  nodecost_marriage.setPotential(potcost_marriage);
+
+		  TablePotential potcost_war = new TablePotential(varcost_war,Arrays.asList(varWar));
+		  potcost_war.values = new double[]{0, -5};
+		  nodecost_war.setPotential(potcost_war);
+
+		  UniformPotential potcost_retirement = new UniformPotential(varcost_retirement,Arrays.asList(varRetire));
+		  nodecost_retirement.setPotential(potcost_retirement);
+
+		  // Link restrictions and revealing states
+		  Link link_nodeWedding_nodeOffspring = probNet.getGraph().getLink(nodeWedding.getNode(),nodeOffspring.getNode(), true);
+		  link_nodeWedding_nodeOffspring.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeWedding_nodeOffspring = (TablePotential)link_nodeWedding_nodeOffspring.getRestrictionsPotential();
+		  restrictions_nodeWedding_nodeOffspring.values = new double[] {1, 1, 0, 1};
+		  link_nodeWedding_nodeOffspring.setRevealingStates(Arrays.asList(varWedding.getStates()[1], varWedding.getStates()[0]));
+
+		  Link link_nodeTask_1_nodeResult_1 = probNet.getGraph().getLink(nodeTask_1.getNode(),nodeResult_1.getNode(), true);
+		  link_nodeTask_1_nodeResult_1.setRevealingStates(Arrays.asList(varTask_1.getStates()[1], varTask_1.getStates()[0]));
+
+		  Link link_nodeTask_2_nodeResult_2 = probNet.getGraph().getLink(nodeTask_2.getNode(),nodeResult_2.getNode(), true);
+		  link_nodeTask_2_nodeResult_2.setRevealingStates(Arrays.asList(varTask_2.getStates()[1], varTask_2.getStates()[0]));
+
+		  Link link_nodeDec_Task_3_nodeResult_3 = probNet.getGraph().getLink(nodeDec_Task_3.getNode(),nodeResult_3.getNode(), true);
+		  link_nodeDec_Task_3_nodeResult_3.setRevealingStates(Arrays.asList(varDec_Task_3.getStates()[1], varDec_Task_3.getStates()[0]));
+
+		  Link link_nodeMarriage_nodeWedding = probNet.getGraph().getLink(nodeMarriage.getNode(),nodeWedding.getNode(), true);
+		  link_nodeMarriage_nodeWedding.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeMarriage_nodeWedding = (TablePotential)link_nodeMarriage_nodeWedding.getRestrictionsPotential();
+		  restrictions_nodeMarriage_nodeWedding.values = new double[] {1, 0, 0, 1};
+		  link_nodeMarriage_nodeWedding.setRevealingStates(Arrays.asList(varMarriage.getStates()[1], varMarriage.getStates()[0]));
+
+		  Link link_nodeWar_nodeWealth = probNet.getGraph().getLink(nodeWar.getNode(),nodeWealth.getNode(), true);
+		  link_nodeWar_nodeWealth.setRevealingStates(Arrays.asList(varWar.getStates()[1], varWar.getStates()[0]));
+
+		  // Always observed nodes
+		  nodeNoble_descent.setAlwaysObserved(true);
+
+		 return probNet;
+		}
+	
 	public static ProbNet buildDiabetesDAN () {
 		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
 		  probNet.setName(NamesNetworks.DIABETES_DAN.toString());

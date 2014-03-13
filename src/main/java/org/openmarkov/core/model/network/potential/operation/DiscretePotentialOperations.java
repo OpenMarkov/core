@@ -1523,15 +1523,20 @@ public final class DiscretePotentialOperations {
 	    			setPot.add(reorder(iterPotentials.next(),variablesFirst));
 	    		}
 	    		int lengthValues = potFirst.values.length;
+	    		double newValues[] = new double[lengthValues];
 				for (int i=0;i<lengthValues;i++){
 	    			double max = Double.NEGATIVE_INFINITY;
 	    			for (TablePotential pot:setPot)
 	    			{
 	    				max = Math.max(pot.values[i], max);
 	    			}
+	    			newValues[i]=max;
 	    		}
-				double newValues[] = new double[lengthValues];
+				
 				result = new TablePotential(variablesFirst,potFirst.getPotentialRole(),newValues);
+				if (result.getPotentialRole()==PotentialRole.UTILITY){
+					result.setUtilityVariable(potFirst.getUtilityVariable());
+				}
     		}
     	}
     	return result;

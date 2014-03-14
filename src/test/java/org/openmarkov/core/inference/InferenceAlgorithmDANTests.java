@@ -91,6 +91,10 @@ public abstract class InferenceAlgorithmDANTests {
 			meu.put(NetsFactory.NamesNetworks.DECIDE_TEST_DAN,94.312);
 			meu.put(NetsFactory.NamesNetworks.TWO_TEST_DAN, 9.3324);
 			meu.put(NetsFactory.NamesNetworks.DIABETES_DAN,9.8261);
+			meu.put(NetsFactory.NamesNetworks.REACTOR_DAN,10.0627);
+			meu.put(NetsFactory.NamesNetworks.DATING_DAN,9.4076);
+			meu.put(NetsFactory.NamesNetworks.WOOER_DAN,7.73);
+			
 			return meu;
 		}	
 		
@@ -108,8 +112,18 @@ public abstract class InferenceAlgorithmDANTests {
 			} catch (NodeNotFoundException e) {
 				e.printStackTrace();
 			}
-			//battery.add(NetsFactory.buildTwoTestDAN());
-			//battery.add(NetsFactory.buildDiabetesDAN());
+			battery.add(NetsFactory.buildTwoTestDAN());
+			battery.add(NetsFactory.buildDiabetesDAN());
+			battery.add(NetsFactory.buildReactorDAN());
+			
+			battery.add(NetsFactory.buildWooerDAN());
+			
+			/*try {
+				battery.add(NetsFactory.buildDatingDAN());
+			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+			}*/
+			
 			
 			return battery;
 		}

@@ -55,7 +55,8 @@ public class NetsFactory {
 		TWO_TEST_DAN,
 		DIABETES_DAN,
 		DATING_DAN,
-		REACTOR_DAN;
+		REACTOR_DAN,
+		WOOER_DAN;
 		
 		
 	}
@@ -1155,7 +1156,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		potentialU1.values = new double [] {100, 30, 90, 80};
 		nodeU1.setPotential(potentialU1);		
 		
-		TablePotential potentialU2 = new TablePotential(variableU1, Arrays.asList(variableD));
+		TablePotential potentialU2 = new TablePotential(variableU2, Arrays.asList(variableD));
 		potentialU2.values = new double [] {0, -2};
 		nodeU2.setPotential(potentialU2);		
 		
@@ -1171,7 +1172,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	
 	public static ProbNet buildDatingDAN() throws NodeNotFoundException {
 		ProbNet datingDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
-		datingDAN.setName(NamesNetworks.DECIDE_TEST_DAN.toString());
+		datingDAN.setName(NamesNetworks.DATING_DAN.toString());
 		Variable variableAsk = new Variable("Ask", "no", "yes");
 		Variable variableNClub = new Variable("NClub", "no", "yes");
 		Variable variableAccept = new Variable("Accept", "no", "yes");
@@ -1362,7 +1363,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	public static ProbNet buildReactorDAN () {
 		
 	  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
-	  probNet.setName("ReactorDAN");
+	  probNet.setName(NamesNetworks.REACTOR_DAN.toString());
 	  // Variables
 	  Variable varResult_of_advanced_reactor = new Variable("Result of advanced reactor", "success", "limited accident", "major accident");
 	  Variable varResult_of_test = new Variable("Result of test", "bad", "good", "excellent");
@@ -1456,6 +1457,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	
 	public static ProbNet buildWooerDAN () {
 		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  probNet.setName(NamesNetworks.WOOER_DAN.toString());
 		  // Variables
 		  Variable varResult_1 = new Variable("Result 1", "fail", "pass");
 		  Variable varResult_2 = new Variable("Result 2", "fail", "pass");

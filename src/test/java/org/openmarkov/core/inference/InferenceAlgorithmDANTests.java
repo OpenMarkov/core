@@ -35,7 +35,7 @@ import org.openmarkov.core.model.network.ProbNet;
  */
 public abstract class InferenceAlgorithmDANTests {
 	
-	private double maxError = 0.0001;
+	protected double maxError = 0.001;
 
 
 
@@ -88,12 +88,18 @@ public abstract class InferenceAlgorithmDANTests {
 			meu.put(NetsFactory.NamesNetworks.ONE_CHANCE_DAN,90.2);
 			meu.put(NetsFactory.NamesNetworks.BLIND_TREATMENT_DAN,90.2);
 			meu.put(NetsFactory.NamesNetworks.PERFECT_INFORMATION_TREATMENT_DAN,97.2);
+			meu.put(NetsFactory.NamesNetworks.PERFECT_INFORMATION_TREATMENT_RESTRICTED_DAN,88.6);
 			meu.put(NetsFactory.NamesNetworks.DECIDE_TEST_DAN,94.312);
 			meu.put(NetsFactory.NamesNetworks.TWO_TEST_DAN, 9.3324);
 			meu.put(NetsFactory.NamesNetworks.DIABETES_DAN,9.8261);
 			meu.put(NetsFactory.NamesNetworks.REACTOR_DAN,10.0627);
 			meu.put(NetsFactory.NamesNetworks.DATING_DAN,9.4076);
+			meu.put(NetsFactory.NamesNetworks.BRANCH_ACCEPT_DATING_SIMPLIFIED_DAN,9.88);
+			meu.put(NetsFactory.NamesNetworks.DATING_ACCEPT_NO_DAN,9.4076);
+			meu.put(NetsFactory.NamesNetworks.DATING_TV_BAD_DAN,9.3);
 			meu.put(NetsFactory.NamesNetworks.WOOER_DAN,7.73);
+			meu.put(NetsFactory.NamesNetworks.MEDIASTINET_DAN,1.532843777055973);
+			
 			
 			return meu;
 		}	
@@ -108,22 +114,45 @@ public abstract class InferenceAlgorithmDANTests {
 				battery.add(NetsFactory.buildBlindTreatmentDAN());
 				battery.add(NetsFactory.buildPerfectInformationTreatmentDAN());
 				battery.add(NetsFactory.buildDecideTestDAN());
-				
 			} catch (NodeNotFoundException e) {
 				e.printStackTrace();
 			}
 			battery.add(NetsFactory.buildTwoTestDAN());
-			battery.add(NetsFactory.buildDiabetesDAN());
+			battery.add(NetsFactory.buildDiabetesDAN());	
+			
+			try {
+				battery.add(NetsFactory.buildDecideTreatmentRestrictedDAN());
+			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+			}
+			
 			battery.add(NetsFactory.buildReactorDAN());
 			
-			battery.add(NetsFactory.buildWooerDAN());
+			try {
+				battery.add(NetsFactory.buildDatingBranchAcceptSimplifiedDAN());
+			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+			}
 			
-			/*try {
+			try {
+				battery.add(NetsFactory.buildDatingAcceptNoDAN());
+			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			try {
 				battery.add(NetsFactory.buildDatingDAN());
 			} catch (NodeNotFoundException e) {
 				e.printStackTrace();
-			}*/
+			}
 			
+			
+			battery.add(NetsFactory.buildWooerDAN());
+			
+			ProbNet danMed;
+			danMed = BasicOperations.removeSuperValueNodes(NetsFactory.buildMediastinetDAN(),null,false,true,null);
+			
+			battery.add(danMed);
 			
 			return battery;
 		}

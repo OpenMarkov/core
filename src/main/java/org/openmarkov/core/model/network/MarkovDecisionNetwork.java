@@ -499,4 +499,35 @@ public class MarkovDecisionNetwork extends ProbNet {
 		return probNode;
 	}
 
+
+	public void removePotentials(PotentialRole role) {
+		for (Potential pot:this.getPotentials()){
+			if (pot.getPotentialRole()==role){
+				removePotential(pot);
+			}
+		}
+		constantPotentials = new HashSet<>();
+		
+	}
+
+
+	@Override
+	public List<Potential> getPotentials() {
+		// TODO Auto-generated method stub
+		List<Potential> pots = super.getPotentials();
+		pots.addAll(constantPotentials);
+		return pots;
+	}
+
+
+	@Override
+	public List<Potential> getPotentialsByRole(PotentialRole role) {
+		// TODO Auto-generated method stub
+		List<Potential> pots = super.getPotentialsByRole(role);
+		pots.addAll(constantPotentials);
+		return pots;
+	}
+	
+	
+
 }

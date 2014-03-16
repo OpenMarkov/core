@@ -60,7 +60,7 @@ public class DecisionTreeBranch implements DecisionTreeElement
         if(utility == Double.NEGATIVE_INFINITY)
         {
             utility = (child != null)? child.getUtility () : 0;
-            if(parent != null && ((DecisionTreeNode)parent).getProbNode ().getNodeType () == NodeType.CHANCE)
+            if(parent != null && ((DecisionTreeNode)parent).getNodeType () == NodeType.CHANCE)
             {
                 utility *= getBranchProbability ();
             }
@@ -117,7 +117,7 @@ public class DecisionTreeBranch implements DecisionTreeElement
         if(scenarioProbability == Double.NEGATIVE_INFINITY)
         {
         	scenarioProbability = 1;    	
-        	if(child.getProbNode().getNodeType() == NodeType.UTILITY)
+        	if(child.getNodeType() == NodeType.UTILITY)
         	{
             	EvidenceCase evidenceCase = getBranchStates();
     	    	for(Finding finding : evidenceCase.getFindings())

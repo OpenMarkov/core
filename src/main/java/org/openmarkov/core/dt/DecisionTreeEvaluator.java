@@ -1,0 +1,369 @@
+package org.openmarkov.core.dt;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNetOperations;
+import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.ProductPotential;
+import org.openmarkov.core.model.network.potential.SumPotential;
+
+public class DecisionTreeEvaluator {
+
+	private class DecisionTreeNode{
+		private DecisionTreeNode parent;
+		private Variable variable;
+		private int state;
+		private double utility = Double.NEGATIVE_INFINITY;
+		private double probability = Double.NEGATIVE_INFINITY;
+
+		public DecisionTreeNode()
+		{
+		}
+
+		public DecisionTreeNode(Variable variable, int state, DecisionTreeNode parentNode)
+		{
+			this.variable = variable;
+			this.state = state;
+			this.parent = parentNode;
+		}
+
+		public DecisionTreeNode getParent() {
+			return parent;
+		}
+
+		public Variable getVariable() {
+			return variable;
+		}
+
+		public int getState() {
+			return state;
+		}
+
+		public double getUtility() {
+			return utility;
+		}
+
+		public void setUtility(double utility) {
+			this.utility = utility;
+		}
+
+		public double getProbability() {
+			return probability;
+		}
+
+		public void setProbability(double probability) {
+			this.probability = probability;
+		}
+		
+		public String toString()
+		{
+			StringBuffer sb = new StringBuffer();
+			sb.append((variable !=null)? variable.getName() + "=" + state : "");
+			sb.append(utility != Double.NEGATIVE_INFINITY? " U="+utility:"");
+			sb.append(probability != Double.NEGATIVE_INFINITY? " P="+probability:"");
+			return sb.toString();
+		}
+		
+	}
+
+   public double getMEU(ProbNet danNet)
+   {
+	   DecisionTreeNode root = resolve(danNet, danNet, null);
+	   return root.getUtility();
+   }
+   private DecisionTreeNode resolve (ProbNet probNet, ProbNet originalProbNet, DecisionTreeNode parentNode)
+    {
+	   DecisionTreeNode root = null;
+    	try
+    	{
+    		 List<ProbNode> alwaysObservedVariables = ProbNetOperations.getAlwaysObservedVariables (probNet);
+             if(!alwaysObservedVariables.isEmpty ()) // Always observed variables 
+             {
+                 // Get first node in the list
+                 ProbNode alwaysObservedNode = alwaysObservedVariables.get (0); 
+                 Variable alwaysObservedVariable = alwaysObservedNode.getVariable ();
+                 Variable originalVariable = getOriginalVariable(alwaysObservedVariable, originalProbNet);
+                 DecisionTreeNode treeNode = null;
+                 double utility =0;
+                 double scenarioProbability = 0;
+                 for (int i=0; i<alwaysObservedVariable.getNumStates(); ++i)
+                 {
+                	 State state = alwaysObservedVariable.getStates ()[i];
+                     int originalState = originalVariable.getStateIndex(alwaysObservedVariable.getStates()[i]);
+	                 treeNode = new DecisionTreeNode (originalVariable, originalState, parentNode);
+                     ProbNet restrictedProbNet = applyRestrictionsAndReveal(probNet, alwaysObservedNode, state, originalProbNet);
+                     DecisionTreeNode node =  resolve (restrictedProbNet, originalProbNet, treeNode);
+                     // Join
+	                 utility += node.getUtility() * node.getProbability();
+	                 scenarioProbability += node.getProbability();
+                 }
+                 treeNode.setProbability(scenarioProbability);
+                 treeNode.setUtility((scenarioProbability!=0)?utility/scenarioProbability:0);
+                 root = treeNode; 
+             }else{
+             	List<ProbNode> parentlessDecisions = ProbNetOperations.getParentlessDecisions (probNet);
+             	if(!parentlessDecisions.isEmpty ()) // Parentless decision nodes
+             	{
+                    double utility = Double.NEGATIVE_INFINITY;
+                    DecisionTreeNode treeNode = null;
+             		for(ProbNode decisionNode : parentlessDecisions)
+ 	                {
+ 	                    Variable decisionVariable = decisionNode.getVariable ();
+ 	                    Variable originalVariable = getOriginalVariable(decisionVariable, originalProbNet);
+ 	                    for (int i=0; i<decisionVariable.getNumStates(); ++i)
+ 	                    {
+ 	                 	    State state = decisionVariable.getStates ()[i];
+    	                    int originalState = originalVariable.getStateIndex(decisionVariable.getStates()[i]);
+ 	                    	treeNode = new DecisionTreeNode (originalVariable, originalState, parentNode);
+ 	                        ProbNet restrictedProbNet = applyRestrictionsAndReveal (probNet, decisionNode, state, originalProbNet);
+ 	                        DecisionTreeNode node = resolve (restrictedProbNet, originalProbNet, treeNode);
+ 	                        // All probabilities should be equal
+ 	                        treeNode.setProbability(node.getProbability());
+ 	                        // join by maximization
+ 	                        utility = (node.getUtility() > utility)? node.getUtility() : utility;
+ 	                     }
+ 	                }
+             	   treeNode.setUtility(utility);
+                   root = treeNode;
+ 	            }else {
+ 	                List<ProbNode> neverObservedNodes = probNet.getProbNodes(NodeType.CHANCE);
+ 	            	if(!neverObservedNodes.isEmpty ()) // Never observed variables
+ 	            	{
+ 		                ProbNet dtProbNet = probNet.copy ();
+ 		                ProbNode neverObservedNode = neverObservedNodes.get (0);
+ 		                Variable neverObservedVariable = neverObservedNode.getVariable ();
+ 		                Variable originalVariable = getOriginalVariable(neverObservedVariable, originalProbNet);
+ 		                dtProbNet.removeProbNode (dtProbNet.getProbNode (neverObservedVariable));
+ 		                DecisionTreeNode treeNode = null;
+ 		                double scenarioProbability = 0;
+ 		                double utility = 0;
+ 	                    for (int i=0; i<neverObservedVariable.getNumStates(); ++i)
+ 	                    {
+ 	                    	int originalState = originalVariable.getStateIndex(neverObservedVariable.getStates()[i]);
+ 		                	treeNode = new DecisionTreeNode(originalVariable, originalState, parentNode);
+ 		                	DecisionTreeNode node = resolve (dtProbNet, originalProbNet, treeNode);
+ 		                	utility += node.getUtility() * node.getProbability();
+ 		                	scenarioProbability += node.getProbability();
+ 		                }
+ 	                    treeNode.setProbability(scenarioProbability);
+ 	                    treeNode.setUtility((scenarioProbability!=0)?utility/scenarioProbability:0);
+ 		                root = treeNode;
+ 		            }else // Utility nodes
+ 		            {
+ 		                // Calculate utility and scenario probability
+ 		            	ProbNet dtProbNet = probNet.copy ();
+ 		                root = new DecisionTreeNode();
+ 		                HashMap<Variable, Integer> scenarioMap = getScenarioMap(originalProbNet, parentNode);
+ 		                root.setProbability(getScenarioProbability(originalProbNet, parentNode, scenarioMap));
+ 		                root.setUtility(getUtility(dtProbNet, scenarioMap));
+ 		            }
+ 		        }
+             }
+    	}catch(Exception e)
+    	{
+    		e.printStackTrace();
+    	}
+    	return root;
+    }
+   
+   private Variable getOriginalVariable(Variable variable, ProbNet originalProbNet) {
+	Variable originalVariable = variable;
+	if(!originalProbNet.containsVariable(variable))
+	{
+		try {
+			originalVariable = originalProbNet.getVariable(variable.getName());
+		} catch (ProbNodeNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}	
+	return originalVariable;
+   }
+
+private double getUtility(ProbNet probNet, HashMap<Variable, Integer> scenarioMap)
+   {
+	   Map<Variable, Double> utilities = new HashMap<>();
+        double utility = Double.NaN;
+        while(probNet.getNumNodes()>0)
+        {
+        	// Find utilities without parents
+        	List<ProbNode> orphanNodes = new ArrayList<>();
+        	for(ProbNode node: probNet.getProbNodes())
+        	{
+        		if(node.getNode().getNumParents() == 0)
+        			orphanNodes.add(node);
+        	}
+        	for(ProbNode orphanNode : orphanNodes)
+        	{
+        		Potential potential = orphanNode.getPotentials().get(0);
+             	// If it is a Sum Potential, sum their parents
+        		double nodeUtility = Double.NaN;
+        		if(potential instanceof SumPotential)
+        		{
+        			nodeUtility = 0;
+        			for(Variable parentVariable : potential.getVariables())
+        			{
+        				nodeUtility += utilities.get(parentVariable);
+        			}
+        		}else if(potential instanceof ProductPotential){
+	                	// If they are products, multiply their parents
+        			nodeUtility = 1;
+        			for(Variable parentVariable : potential.getVariables())
+        			{
+        				nodeUtility *= utilities.get(parentVariable);
+        			}
+        		}else
+        		{
+	                // Otherwise, calculate their utility
+        			nodeUtility = potential.getProbability(scenarioMap);
+        		}
+        		utilities.put(orphanNode.getVariable(), nodeUtility);
+        	}
+        	// Remove nodes from probNet
+        	for(ProbNode orphanNode : orphanNodes)
+        	{
+        		probNet.removeProbNode(orphanNode);	
+        	}
+        	
+        	if(probNet.getNumNodes() == 0)
+        	{
+        		// Sum utilities of all orphanNodes
+        		utility = 0;
+        		for(ProbNode orphanNode : orphanNodes)
+             	{
+        			utility += utilities.get(orphanNode.getVariable());
+             	}
+        	}
+        }
+        return utility;
+   }
+
+	private double getScenarioProbability(ProbNet originalProbNet, DecisionTreeNode parentNode, HashMap<Variable, Integer> scenarioMap) throws InvalidStateException, IncompatibleEvidenceException {
+		List<Potential> parentPotentials = getScenarioPotentials(originalProbNet, parentNode);
+		double probability = 1;
+		for(Potential potential : parentPotentials)
+		{
+			probability *= potential.getProbability(scenarioMap);
+		}
+		return probability;
+	}
+
+	private List<Potential> getScenarioPotentials(ProbNet probNet, DecisionTreeNode node) {
+		List<Potential> parentPotentials = new ArrayList<>(); 
+		DecisionTreeNode currentNode = node;
+		while(currentNode != null)
+		{
+			ProbNode probNode = probNet.getProbNode(currentNode.getVariable());
+			if(probNode == null)
+			{
+				try {
+					probNode = probNet.getProbNode(currentNode.getVariable().getName());
+				} catch (ProbNodeNotFoundException e) {
+				}
+			}
+			List<Potential> potentials = probNode.getPotentials();
+			if(potentials !=null && !potentials.isEmpty())
+				parentPotentials.add(potentials.get(0));
+			currentNode = currentNode.getParent();
+		}
+		return parentPotentials;
+	}	
+	
+	private HashMap<Variable,Integer> getScenarioMap(ProbNet probNet, DecisionTreeNode parentNode)
+			throws InvalidStateException, IncompatibleEvidenceException {
+		HashMap<Variable,Integer> scenarioMap = new LinkedHashMap<>();
+		DecisionTreeNode node = parentNode;
+		while(node != null)
+		{
+			scenarioMap.put(node.getVariable(), node.getState());
+			node = node.getParent();
+		}
+		return scenarioMap;
+	}
+	private static ProbNet applyRestrictionsAndReveal(ProbNet probNet, ProbNode probNode, State state, ProbNet originalProbNet)
+    {
+        ProbNet probNetCopy = probNet.copy ();
+        
+        for (Link link : probNode.getNode ().getLinks ())
+        {
+            if(link.getNode1 ().getObject ().equals (probNode)) // Our node is the source node
+            {
+                ProbNode destinationNode = probNetCopy.getProbNode (((ProbNode) link.getNode2 ().getObject ()).getVariable ());
+                if(destinationNode.getNodeType () == NodeType.CHANCE)
+                {
+                    if (link.hasRevealingConditions ())
+                    {
+                        if (link.getRevealingStates ().contains (state))
+                        {
+                            destinationNode.setAlwaysObserved (true);
+                        }
+                    }
+                }
+                if(link.hasRestrictions ())
+                {
+                    List<State> nonRestrictedStates = ProbNetOperations.getUnrestrictedStates(link, state);
+                
+                    if(nonRestrictedStates.isEmpty ())
+                    {
+                        // Remove destination node and its descendants!
+                        Stack<ProbNode> disposableNodes = new Stack<> ();
+                        disposableNodes.push (destinationNode);
+                        while(!disposableNodes.isEmpty ())
+                        {
+                            ProbNode disposableNode = disposableNodes.pop ();
+                            // If it's a decision node, check if there is another 
+                            // path to it from another decision
+                            if(disposableNode.getNodeType() != NodeType.DECISION ||
+                                    disposableNode == destinationNode || 
+                                    !ProbNetOperations.hasAnotherPredecessorDecision(disposableNode, destinationNode, probNetCopy))
+                            {
+                                for(Node descendant : disposableNode.getNode ().getChildren ())
+                                {
+                                    disposableNodes.push((ProbNode)descendant.getObject ());
+                                }
+                                probNetCopy.removeProbNode (disposableNode);
+                            }
+                        }
+                        
+//                    }else if(nonRestrictedStates.size () == 1) // Remove variables with a single variable
+//                    {
+//                        ProbNet probNetWithoutSingleStateVariable = probNetCopy.copy ();
+//                        probNetWithoutSingleStateVariable.removeProbNode (probNetWithoutSingleStateVariable.getProbNode (destinationNode.getVariable ()));
+//                        probNetCopy = applyRestrictionsAndReveal(probNetWithoutSingleStateVariable, destinationNode, nonRestrictedStates.get (0), originalProbNet);
+                    }else if(nonRestrictedStates.size () < destinationNode.getVariable ().getStates ().length)
+                    {
+                        // At least one of the states of the destination node is restricted.
+                        // Make a copy of the variable and remove the restricted states
+                        State[] unrestrictedStates = nonRestrictedStates.toArray (new State[0]);
+                        Variable restrictedVariable = new Variable (destinationNode.getVariable ().getName (), unrestrictedStates);
+                        restrictedVariable.setVariableType (destinationNode.getVariable ().getVariableType ());
+                        destinationNode.setVariable(restrictedVariable);
+                    }else
+                    {
+                        // No state restricted, leave destinationNode as it is 
+                    }
+                }
+            }
+         } 
+        
+        probNetCopy.removeProbNode (probNetCopy.getProbNode (probNode.getVariable ()));
+        return probNetCopy;
+    }
+ 
+	    	
+}

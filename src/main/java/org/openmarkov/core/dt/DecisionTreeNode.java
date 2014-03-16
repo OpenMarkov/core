@@ -8,12 +8,13 @@
  */
 package org.openmarkov.core.dt;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.ProductPotential;
 import org.openmarkov.core.model.network.potential.SumPotential;
@@ -21,7 +22,9 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 public class DecisionTreeNode implements DecisionTreeElement
 {
-    private ProbNode                  probNode            = null;
+    private Variable                  variable            = null;
+    private NodeType                  nodeType            = null;
+    private Potential                 potential            = null;
     private List<DecisionTreeElement> children            = null;
     private DecisionTreeElement       parent              = null;
     private double                    utility             = Double.NEGATIVE_INFINITY;
@@ -29,17 +32,26 @@ public class DecisionTreeNode implements DecisionTreeElement
 
     public DecisionTreeNode (ProbNode probNode)
     {
-        this.probNode = probNode;
-        children = new LinkedList<> ();
+        this.variable = probNode.getVariable();
+        this.nodeType = probNode.getNodeType();
+        List<Potential> potentials = probNode.getPotentials();
+        if(potentials != null && !potentials.isEmpty())
+        	this.potential = potentials.get(0);
+        children = new ArrayList<> ();
     }
 
     /**
      * Returns the probNode.
      * @return the probNode.
      */
-    public ProbNode getProbNode ()
+    public Variable getVariable ()
     {
-        return probNode;
+        return variable;
+    }
+    
+    public NodeType getNodeType()
+    {
+    	return nodeType;
     }
 
     /**
@@ -56,7 +68,7 @@ public class DecisionTreeNode implements DecisionTreeElement
         if(utility == Double.NEGATIVE_INFINITY)
         {
             utility = 0;
-            if (probNode.getNodeType () == NodeType.DECISION)
+            if (nodeType == NodeType.DECISION)
             {
                 double maxUtility = Double.NEGATIVE_INFINITY;
                 for (DecisionTreeElement branch : children)
@@ -69,7 +81,7 @@ public class DecisionTreeNode implements DecisionTreeElement
                 }
                 utility = maxUtility;
             }
-            else if (probNode.getNodeType () == NodeType.CHANCE)
+            else if (nodeType == NodeType.CHANCE)
             {
                 double sumUtility = 0;
                 for (DecisionTreeElement child : children)
@@ -77,9 +89,8 @@ public class DecisionTreeNode implements DecisionTreeElement
                     sumUtility += child.getUtility ();
                 }
                 utility = sumUtility;
-            }else if (probNode.getNodeType () == NodeType.UTILITY)
+            }else if (nodeType == NodeType.UTILITY)
             {
-                Potential potential = probNode.getPotentials ().get (0);
                 if(potential instanceof SumPotential)
                 {
                     double sumUtility = 0;
@@ -114,7 +125,7 @@ public class DecisionTreeNode implements DecisionTreeElement
     public boolean isBestDecision (DecisionTreeElement branch)
     {
         boolean isBestDecision = false;
-        if (probNode.getNodeType () == NodeType.DECISION)
+        if (nodeType == NodeType.DECISION)
         {
             isBestDecision = true;
             double thisUtility = branch.getUtility ();
@@ -131,13 +142,13 @@ public class DecisionTreeNode implements DecisionTreeElement
         if(scenarioProbability == Double.NEGATIVE_INFINITY)
         {
         	scenarioProbability = 0;
-        	if(probNode.getNodeType() == NodeType.CHANCE)
+        	if(nodeType == NodeType.CHANCE)
         	{
     	    	for(DecisionTreeElement child : children)
     	    	{
     	    		scenarioProbability +=child.getScenarioProbability();
     	    	}
-        	}else if(probNode.getNodeType() == NodeType.DECISION)
+        	}else if(nodeType == NodeType.DECISION)
         	{
         		scenarioProbability = children.get(0).getScenarioProbability();
         	}
@@ -156,7 +167,7 @@ public class DecisionTreeNode implements DecisionTreeElement
     {
         StringBuilder builder = new StringBuilder ();
         builder.append ("DecisionTreeNode [probNode=");
-        builder.append (probNode.getName ());
+        builder.append (variable.getName ());
         builder.append (", children=").append (children);
         builder.append ("]");
         return builder.toString ();

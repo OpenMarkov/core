@@ -11,9 +11,7 @@ package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -22,6 +20,7 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.ProductPotential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -2099,6 +2098,284 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 
 		 return probNet;
 	}	
+	
+	public static ProbNet buildMediastinetDAN () {
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  // Variables
+		  Variable varN2_N3 = new Variable("N2 N3", "negative", "positive");
+		  Variable varCT_scan = new Variable("CT scan", "negative", "positive");
+		  Variable varTBNA = new Variable("TBNA", "negative", "positive");
+		  Variable varPET = new Variable("PET", "no result", "negative", "positive");
+		  Variable varEBUS = new Variable("EBUS", "negative", "positive");
+		  Variable varEUS = new Variable("EUS", "negative", "positive");
+		  Variable varMED = new Variable("MED", "negative", "positive");
+		  Variable varMED_Sv = new Variable("MED Sv", "no", "yes");
+		  Variable varDecTBNA = new Variable("Dec:TBNA", "no", "yes");
+		  Variable varDecPET = new Variable("Dec:PET", "no", "yes");
+		  Variable varDecMED = new Variable("Dec:MED", "no", "yes");
+		  Variable varTreatment = new Variable("Treatment", "palliative", "chemotherapy", "thoracotomy");
+		  Variable varDecEBUS = new Variable("Dec:EBUS", "no", "yes");
+		  Variable varDecEUS = new Variable("Dec:EUS", "no", "yes");
+		  Variable varSurvivors_QALE = new Variable("Survivors QALE");
+		  Variable varInmediate_Survival = new Variable("Inmediate Survival");
+		  Variable varMED_Survival = new Variable("MED Survival");
+		  Variable varNet_QALE = new Variable("Net QALE");
+		  Variable varTBNA_Morbidity = new Variable("TBNA Morbidity");
+		  Variable varMED_Morbidity = new Variable("MED Morbidity");
+		  Variable varEUS_Morbidity = new Variable("EUS Morbidity");
+		  Variable varEBUS_Morbidity = new Variable("EBUS Morbidity");
+		  Variable varTotal_QALE = new Variable("Total QALE");
+		  Variable varCostCT_scan = new Variable("Cost:CT scan");
+		  Variable varCostTBNA = new Variable("Cost:TBNA");
+		  Variable varCostEBUS = new Variable("Cost:EBUS");
+		  Variable varCostEUS = new Variable("Cost:EUS");
+		  Variable varCostMED = new Variable("Cost:MED");
+		  Variable varCostPET = new Variable("Cost:PET");
+		  Variable varCostTreatment = new Variable("Cost:Treatment");
+		  Variable varTotal_Economic_Cost = new Variable("Total Economic Cost");
+		  Variable varC2E = new Variable("C2E");
+		  Variable varWeighted_Economic_Cost = new Variable("Weighted Economic Cost");
+		  Variable varNet_Effectiveness = new Variable("Net Effectiveness");
+
+		  // Nodes
+		  ProbNode nodeN2_N3= probNet.addProbNode(varN2_N3, NodeType.CHANCE);
+		  ProbNode nodeCT_scan= probNet.addProbNode(varCT_scan, NodeType.CHANCE);
+		  ProbNode nodeTBNA= probNet.addProbNode(varTBNA, NodeType.CHANCE);
+		  ProbNode nodePET= probNet.addProbNode(varPET, NodeType.CHANCE);
+		  ProbNode nodeEBUS= probNet.addProbNode(varEBUS, NodeType.CHANCE);
+		  ProbNode nodeEUS= probNet.addProbNode(varEUS, NodeType.CHANCE);
+		  ProbNode nodeMED= probNet.addProbNode(varMED, NodeType.CHANCE);
+		  ProbNode nodeMED_Sv= probNet.addProbNode(varMED_Sv, NodeType.CHANCE);
+		  ProbNode nodeDecTBNA= probNet.addProbNode(varDecTBNA, NodeType.DECISION);
+		  ProbNode nodeDecPET= probNet.addProbNode(varDecPET, NodeType.DECISION);
+		  ProbNode nodeDecMED= probNet.addProbNode(varDecMED, NodeType.DECISION);
+		  ProbNode nodeTreatment= probNet.addProbNode(varTreatment, NodeType.DECISION);
+		  ProbNode nodeDecEBUS= probNet.addProbNode(varDecEBUS, NodeType.DECISION);
+		  ProbNode nodeDecEUS= probNet.addProbNode(varDecEUS, NodeType.DECISION);
+		  ProbNode nodeSurvivors_QALE= probNet.addProbNode(varSurvivors_QALE, NodeType.UTILITY);
+		  ProbNode nodeInmediate_Survival= probNet.addProbNode(varInmediate_Survival, NodeType.UTILITY);
+		  ProbNode nodeMED_Survival= probNet.addProbNode(varMED_Survival, NodeType.UTILITY);
+		  ProbNode nodeNet_QALE= probNet.addProbNode(varNet_QALE, NodeType.UTILITY);
+		  ProbNode nodeTBNA_Morbidity= probNet.addProbNode(varTBNA_Morbidity, NodeType.UTILITY);
+		  ProbNode nodeMED_Morbidity= probNet.addProbNode(varMED_Morbidity, NodeType.UTILITY);
+		  ProbNode nodeEUS_Morbidity= probNet.addProbNode(varEUS_Morbidity, NodeType.UTILITY);
+		  ProbNode nodeEBUS_Morbidity= probNet.addProbNode(varEBUS_Morbidity, NodeType.UTILITY);
+		  ProbNode nodeTotal_QALE= probNet.addProbNode(varTotal_QALE, NodeType.UTILITY);
+		  ProbNode nodeCostCT_scan= probNet.addProbNode(varCostCT_scan, NodeType.UTILITY);
+		  ProbNode nodeCostTBNA= probNet.addProbNode(varCostTBNA, NodeType.UTILITY);
+		  ProbNode nodeCostEBUS= probNet.addProbNode(varCostEBUS, NodeType.UTILITY);
+		  ProbNode nodeCostEUS= probNet.addProbNode(varCostEUS, NodeType.UTILITY);
+		  ProbNode nodeCostMED= probNet.addProbNode(varCostMED, NodeType.UTILITY);
+		  ProbNode nodeCostPET= probNet.addProbNode(varCostPET, NodeType.UTILITY);
+		  ProbNode nodeCostTreatment= probNet.addProbNode(varCostTreatment, NodeType.UTILITY);
+		  ProbNode nodeTotal_Economic_Cost= probNet.addProbNode(varTotal_Economic_Cost, NodeType.UTILITY);
+		  ProbNode nodeC2E= probNet.addProbNode(varC2E, NodeType.UTILITY);
+		  ProbNode nodeWeighted_Economic_Cost= probNet.addProbNode(varWeighted_Economic_Cost, NodeType.UTILITY);
+		  ProbNode nodeNet_Effectiveness= probNet.addProbNode(varNet_Effectiveness, NodeType.UTILITY);
+
+		  // Links
+		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.addLink(nodeN2_N3, nodeCT_scan, true);
+		  probNet.addLink(nodeN2_N3, nodeEBUS, true);
+		  probNet.addLink(nodeN2_N3, nodeEUS, true);
+		  probNet.addLink(nodeN2_N3, nodeMED, true);
+		  probNet.addLink(nodeN2_N3, nodePET, true);
+		  probNet.addLink(nodeN2_N3, nodeSurvivors_QALE, true);
+		  probNet.addLink(nodeN2_N3, nodeTBNA, true);
+		  probNet.addLink(nodeCT_scan, nodeEBUS, true);
+		  probNet.addLink(nodeCT_scan, nodeMED, true);
+		  probNet.addLink(nodeCT_scan, nodePET, true);
+		  probNet.addLink(nodeCT_scan, nodeTBNA, true);
+		  probNet.addLink(nodeCT_scan, nodeEUS, true);
+		  probNet.addLink(nodePET, nodeEBUS, true);
+		  probNet.addLink(nodePET, nodeEUS, true);
+		  probNet.addLink(nodePET, nodeMED, true);
+		  probNet.addLink(nodeMED_Sv, nodeMED_Morbidity, true);
+		  probNet.addLink(nodeMED_Sv, nodeMED_Survival, true);
+		  probNet.addLink(nodeDecTBNA, nodeCostTBNA, true);
+		  probNet.addLink(nodeDecTBNA, nodeTBNA, true);
+		  probNet.addLink(nodeDecTBNA, nodeTBNA_Morbidity, true);
+		  probNet.addLink(nodeDecPET, nodeCostPET, true);
+		  probNet.addLink(nodeDecPET, nodePET, true);
+		  probNet.addLink(nodeDecPET, nodeDecEBUS, true);
+		  probNet.addLink(nodeDecPET, nodeDecEUS, true);
+		  probNet.addLink(nodeDecPET, nodeDecMED, true);
+		  probNet.addLink(nodeDecMED, nodeCostMED, true);
+		  probNet.addLink(nodeDecMED, nodeMED, true);
+		  probNet.addLink(nodeDecMED, nodeMED_Sv, true);
+		  probNet.addLink(nodeTreatment, nodeCostTreatment, true);
+		  probNet.addLink(nodeTreatment, nodeInmediate_Survival, true);
+		  probNet.addLink(nodeTreatment, nodeSurvivors_QALE, true);
+		  probNet.addLink(nodeDecEBUS, nodeEBUS, true);
+		  probNet.addLink(nodeDecEBUS, nodeCostEBUS, true);
+		  probNet.addLink(nodeDecEBUS, nodeEBUS_Morbidity, true);
+		  probNet.addLink(nodeDecEUS, nodeEUS, true);
+		  probNet.addLink(nodeDecEUS, nodeEUS_Morbidity, true);
+		  probNet.addLink(nodeDecEUS, nodeCostEUS, true);
+		  probNet.addLink(nodeSurvivors_QALE, nodeNet_QALE, true);
+		  probNet.addLink(nodeInmediate_Survival, nodeNet_QALE, true);
+		  probNet.addLink(nodeMED_Survival, nodeNet_QALE, true);
+		  probNet.addLink(nodeNet_QALE, nodeTotal_QALE, true);
+		  probNet.addLink(nodeTBNA_Morbidity, nodeTotal_QALE, true);
+		  probNet.addLink(nodeMED_Morbidity, nodeTotal_QALE, true);
+		  probNet.addLink(nodeEUS_Morbidity, nodeTotal_QALE, true);
+		  probNet.addLink(nodeEBUS_Morbidity, nodeTotal_QALE, true);
+		  probNet.addLink(nodeTotal_QALE, nodeNet_Effectiveness, true);
+		  probNet.addLink(nodeCostCT_scan, nodeTotal_Economic_Cost, true);
+		  probNet.addLink(nodeCostTBNA, nodeTotal_Economic_Cost, true);
+		  probNet.addLink(nodeCostEBUS, nodeTotal_Economic_Cost, true);
+		  probNet.addLink(nodeCostEUS, nodeTotal_Economic_Cost, true);
+		  probNet.addLink(nodeCostMED, nodeTotal_Economic_Cost, true);
+		  probNet.addLink(nodeCostPET, nodeTotal_Economic_Cost, true);
+		  probNet.addLink(nodeCostTreatment, nodeTotal_Economic_Cost, true);
+		  probNet.addLink(nodeTotal_Economic_Cost, nodeWeighted_Economic_Cost, true);
+		  probNet.addLink(nodeC2E, nodeWeighted_Economic_Cost, true);
+		  probNet.addLink(nodeWeighted_Economic_Cost, nodeNet_Effectiveness, true);
+
+		  // Potentials
+		  TablePotential potN2_N3 = new TablePotential(Arrays.asList(varN2_N3), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potN2_N3.values = new double[]{0.7193, 0.2807};
+		  nodeN2_N3.setPotential(potN2_N3);
+
+		  TablePotential potCT_scan = new TablePotential(Arrays.asList(varCT_scan, varN2_N3), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potCT_scan.values = new double[]{0.85676, 0.14324, 0.48966, 0.51034};
+		  nodeCT_scan.setPotential(potCT_scan);
+
+		  TablePotential potTBNA = new TablePotential(Arrays.asList(varTBNA, varCT_scan, varN2_N3, varDecTBNA), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potTBNA.values = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0.92143, 0.07857, 0.90435, 0.09565, 0.98, 0.02, 0.54032, 0.45968};
+		  nodeTBNA.setPotential(potTBNA);
+
+		  TablePotential potPET = new TablePotential(Arrays.asList(varPET, varCT_scan, varN2_N3, varDecPET), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potPET.values = new double[]{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92473, 0.07527, 0, 0.775, 0.225, 0, 0.25974, 0.74026, 0, 0.09524, 0.90476};
+		  nodePET.setPotential(potPET);
+
+		  TablePotential potEBUS = new TablePotential(Arrays.asList(varEBUS, varPET, varCT_scan, varN2_N3, varDecEBUS), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potEBUS.values = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.97778, 0.02222, 0.975, 0.025, 0.96667, 0.03333, 0.97368, 0.02632, 0.97561, 0.02439, 0.96552, 0.03448, 0.10811, 0.89189, 0.11905, 0.88095, 0.10811, 0.89189, 0.08108, 0.91892, 0.11111, 0.88889, 0.12121, 0.87879};
+		  nodeEBUS.setPotential(potEBUS);
+
+		  TablePotential potEUS = new TablePotential(Arrays.asList(varEUS, varPET, varCT_scan, varN2_N3, varDecEUS), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potEUS.values = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.92308, 0.07692, 0.9375, 0.0625, 0.92593, 0.07407, 0.92857, 0.07143, 0.93333, 0.06667, 0.93548, 0.06452, 0.2381, 0.7619, 0.43333, 0.56667, 0.41935, 0.58065, 0.14286, 0.85714, 0.13158, 0.86842, 0.13889, 0.86111};
+		  nodeEUS.setPotential(potEUS);
+
+		  TablePotential potMED = new TablePotential(Arrays.asList(varMED, varPET, varCT_scan, varN2_N3, varDecMED), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potMED.values = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.94444, 0.05556, 0.9375, 0.0625, 0.94737, 0.05263, 0.92857, 0.07143, 0.94118, 0.05882, 0.95, 0.05, 0.27273, 0.72727, 0.2, 0.8, 0.21429, 0.78571, 0.1875, 0.8125, 0.1875, 0.8125, 0.2, 0.8};
+		  nodeMED.setPotential(potMED);
+
+		  TablePotential potMED_Sv = new TablePotential(Arrays.asList(varMED_Sv, varDecMED), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potMED_Sv.values = new double[]{0, 1, 0.03704, 0.96296};
+		  nodeMED_Sv.setPotential(potMED_Sv);
+
+		  TablePotential potSurvivors_QALE = new TablePotential(varSurvivors_QALE,Arrays.asList(varN2_N3, varTreatment));
+		  potSurvivors_QALE.values = new double[]{1.25, 0.5, 2, 0.83, 3, 0.66};
+		  nodeSurvivors_QALE.setPotential(potSurvivors_QALE);
+
+		  TablePotential potInmediate_Survival = new TablePotential(varInmediate_Survival,Arrays.asList(varTreatment));
+		  potInmediate_Survival.values = new double[]{0.98113, 0.98039, 0.90909};
+		  nodeInmediate_Survival.setPotential(potInmediate_Survival);
+
+		  TablePotential potMED_Survival = new TablePotential(varMED_Survival,Arrays.asList(varMED_Sv));
+		  potMED_Survival.values = new double[]{0, 1};
+		  nodeMED_Survival.setPotential(potMED_Survival);
+
+		  ProductPotential potNet_QALE = new ProductPotential(varNet_QALE,Arrays.asList(varInmediate_Survival, varMED_Survival, varSurvivors_QALE));
+		  nodeNet_QALE.setPotential(potNet_QALE);
+
+		  TablePotential potTBNA_Morbidity = new TablePotential(varTBNA_Morbidity,Arrays.asList(varDecTBNA));
+		  potTBNA_Morbidity.values = new double[]{0, -0.0001};
+		  nodeTBNA_Morbidity.setPotential(potTBNA_Morbidity);
+
+		  TablePotential potMED_Morbidity = new TablePotential(varMED_Morbidity,Arrays.asList(varMED_Sv));
+		  potMED_Morbidity.values = new double[]{0, -0.05};
+		  nodeMED_Morbidity.setPotential(potMED_Morbidity);
+
+		  TablePotential potEUS_Morbidity = new TablePotential(varEUS_Morbidity,Arrays.asList(varDecEUS));
+		  potEUS_Morbidity.values = new double[]{0, -0.03};
+		  nodeEUS_Morbidity.setPotential(potEUS_Morbidity);
+
+		  TablePotential potEBUS_Morbidity = new TablePotential(varEBUS_Morbidity,Arrays.asList(varDecEBUS));
+		  potEBUS_Morbidity.values = new double[]{0, -0.03};
+		  nodeEBUS_Morbidity.setPotential(potEBUS_Morbidity);
+
+		  SumPotential potTotal_QALE = new SumPotential(varTotal_QALE,Arrays.asList(varEBUS_Morbidity, varEUS_Morbidity, varMED_Morbidity, varNet_QALE, varTBNA_Morbidity));
+		  nodeTotal_QALE.setPotential(potTotal_QALE);
+
+		  TablePotential potCostCT_scan = new TablePotential(varCostCT_scan,new ArrayList<Variable>());
+		  potCostCT_scan.values = new double[]{670};
+		  nodeCostCT_scan.setPotential(potCostCT_scan);
+
+		  TablePotential potCostTBNA = new TablePotential(varCostTBNA,Arrays.asList(varDecTBNA));
+		  potCostTBNA.values = new double[]{0, 80};
+		  nodeCostTBNA.setPotential(potCostTBNA);
+
+		  TablePotential potCostEBUS = new TablePotential(varCostEBUS,Arrays.asList(varDecEBUS));
+		  potCostEBUS.values = new double[]{0, 620};
+		  nodeCostEBUS.setPotential(potCostEBUS);
+
+		  TablePotential potCostEUS = new TablePotential(varCostEUS,Arrays.asList(varDecEUS));
+		  potCostEUS.values = new double[]{0, 620};
+		  nodeCostEUS.setPotential(potCostEUS);
+
+		  TablePotential potCostMED = new TablePotential(varCostMED,Arrays.asList(varDecMED));
+		  potCostMED.values = new double[]{0, 1620};
+		  nodeCostMED.setPotential(potCostMED);
+
+		  TablePotential potCostPET = new TablePotential(varCostPET,Arrays.asList(varDecPET));
+		  potCostPET.values = new double[]{0, 2250};
+		  nodeCostPET.setPotential(potCostPET);
+
+		  TablePotential potCostTreatment = new TablePotential(varCostTreatment,Arrays.asList(varTreatment));
+		  potCostTreatment.values = new double[]{3000, 11242, 19646};
+		  nodeCostTreatment.setPotential(potCostTreatment);
+
+		  SumPotential potTotal_Economic_Cost = new SumPotential(varTotal_Economic_Cost,Arrays.asList(varCostCT_scan, varCostEBUS, varCostEUS, varCostMED, varCostPET, varCostTBNA, varCostTreatment));
+		  nodeTotal_Economic_Cost.setPotential(potTotal_Economic_Cost);
+
+		  TablePotential potC2E = new TablePotential(varC2E,new ArrayList<Variable>());
+		  potC2E.values = new double[]{-0.00003};
+		  nodeC2E.setPotential(potC2E);
+
+		  ProductPotential potWeighted_Economic_Cost = new ProductPotential(varWeighted_Economic_Cost,Arrays.asList(varC2E, varTotal_Economic_Cost));
+		  nodeWeighted_Economic_Cost.setPotential(potWeighted_Economic_Cost);
+
+		  SumPotential potNet_Effectiveness = new SumPotential(varNet_Effectiveness,Arrays.asList(varTotal_QALE, varWeighted_Economic_Cost));
+		  nodeNet_Effectiveness.setPotential(potNet_Effectiveness);
+
+		  // Link restrictions and revealing states
+		  Link link_nodeDecTBNA_nodeTBNA = probNet.getGraph().getLink(nodeDecTBNA.getNode(),nodeTBNA.getNode(), true);
+		  link_nodeDecTBNA_nodeTBNA.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDecTBNA_nodeTBNA = (TablePotential)link_nodeDecTBNA_nodeTBNA.getRestrictionsPotential();
+		  restrictions_nodeDecTBNA_nodeTBNA.values = new double[] {0, 1, 0, 1};
+		  link_nodeDecTBNA_nodeTBNA.setRevealingStates(Arrays.asList(varDecTBNA.getStates()[1]));
+
+		  Link link_nodeDecPET_nodePET = probNet.getGraph().getLink(nodeDecPET.getNode(),nodePET.getNode(), true);
+		  link_nodeDecPET_nodePET.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDecPET_nodePET = (TablePotential)link_nodeDecPET_nodePET.getRestrictionsPotential();
+		  restrictions_nodeDecPET_nodePET.values = new double[] {1, 0, 0, 1, 0, 1};
+		  link_nodeDecPET_nodePET.setRevealingStates(Arrays.asList(varDecPET.getStates()[0], varDecPET.getStates()[1]));
+
+		  Link link_nodeDecMED_nodeMED = probNet.getGraph().getLink(nodeDecMED.getNode(),nodeMED.getNode(), true);
+		  link_nodeDecMED_nodeMED.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDecMED_nodeMED = (TablePotential)link_nodeDecMED_nodeMED.getRestrictionsPotential();
+		  restrictions_nodeDecMED_nodeMED.values = new double[] {0, 1, 0, 1};
+		  link_nodeDecMED_nodeMED.setRevealingStates(Arrays.asList(varDecMED.getStates()[1]));
+
+		  Link link_nodeDecEBUS_nodeEBUS = probNet.getGraph().getLink(nodeDecEBUS.getNode(),nodeEBUS.getNode(), true);
+		  link_nodeDecEBUS_nodeEBUS.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDecEBUS_nodeEBUS = (TablePotential)link_nodeDecEBUS_nodeEBUS.getRestrictionsPotential();
+		  restrictions_nodeDecEBUS_nodeEBUS.values = new double[] {0, 1, 0, 1};
+		  link_nodeDecEBUS_nodeEBUS.setRevealingStates(Arrays.asList(varDecEBUS.getStates()[1]));
+
+		  Link link_nodeDecEUS_nodeEUS = probNet.getGraph().getLink(nodeDecEUS.getNode(),nodeEUS.getNode(), true);
+		  link_nodeDecEUS_nodeEUS.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDecEUS_nodeEUS = (TablePotential)link_nodeDecEUS_nodeEUS.getRestrictionsPotential();
+		  restrictions_nodeDecEUS_nodeEUS.values = new double[] {0, 1, 0, 1};
+		  link_nodeDecEUS_nodeEUS.setRevealingStates(Arrays.asList(varDecEUS.getStates()[1]));
+
+		  // Always observed nodes
+		  nodeCT_scan.setAlwaysObserved(true);
+
+		 return probNet;
+		}		
 
 	
 }

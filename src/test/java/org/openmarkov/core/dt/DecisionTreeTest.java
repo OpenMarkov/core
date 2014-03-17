@@ -123,8 +123,7 @@ public class DecisionTreeTest {
 	@Test
 	public void testEvalMediastiNetDAN() throws NodeNotFoundException, IncompatibleEvidenceException,
 			UnexpectedInferenceException, NotEvaluableNetworkException {
-
-		ProbNet mediastiNetDAN = NetsFactory.buildmediastiNetDAN2();
+		ProbNet mediastiNetDAN = NetsFactory.buildMediastinetDAN();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		System.out.println(evaluator.getMEU(mediastiNetDAN));
 	}	

@@ -127,4 +127,17 @@ public class DecisionTreeTest {
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		System.out.println(evaluator.getMEU(mediastiNetDAN));
 	}	
+	
+	@Test
+	public void testEvalUsedCarBuyerDAN() throws NodeNotFoundException, IncompatibleEvidenceException,
+			UnexpectedInferenceException, NotEvaluableNetworkException {
+
+		ProbNet usedCarBuyerDAN = NetsFactory.buildUsedCarBuyer();
+		long startTime = System.nanoTime();
+		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
+		double meu = evaluator.getMEU(usedCarBuyerDAN);
+		long ellapsedTime = (System.nanoTime() - startTime) / 1000000;
+		System.out.println(" Execution time =" +ellapsedTime);
+		Assert.assertEquals(32.96, meu, 0.0001);
+	}
 }

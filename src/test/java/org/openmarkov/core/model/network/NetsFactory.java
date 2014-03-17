@@ -2768,5 +2768,124 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		 return probNet;
 		}		
 
-	
+	public static ProbNet buildUsedCarBuyer () {
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  // Variables
+		  Variable varCars_Condition = new Variable("Car's Condition", "lemon", "peach");
+		  Variable varFirst_Result = new Variable("First Result", "no result", "no defect", "one defect", "two defects");
+		  Variable varSecond_result = new Variable("Second result", "no defect", "one defect");
+		  Variable varDec_Purchase = new Variable("Dec: Purchase", "do not buy", "buy without guarantee", "buy with guarantee");
+		  Variable varDec_Second_Test = new Variable("Dec: Second Test", "no test", "differential");
+		  Variable varDec_First_Test = new Variable("Dec: First Test", "no test", "fuel-electrical", "transmission", "steering");
+		  Variable varCost_First_test = new Variable("Cost: First test");
+		  Variable varCost_Second_Test = new Variable("Cost: Second Test");
+		  Variable varBuySell_difference = new Variable("Buy-sell difference");
+		  Variable varCost_Guarantee = new Variable("Cost: Guarantee");
+		  Variable varCost_Repair = new Variable("Cost: Repair");
+		  Variable varTotal = new Variable("Total");
+
+		  // Nodes
+		  ProbNode nodeCars_Condition= probNet.addProbNode(varCars_Condition, NodeType.CHANCE);
+		  ProbNode nodeFirst_Result= probNet.addProbNode(varFirst_Result, NodeType.CHANCE);
+		  ProbNode nodeSecond_result= probNet.addProbNode(varSecond_result, NodeType.CHANCE);
+		  ProbNode nodeDec_Purchase= probNet.addProbNode(varDec_Purchase, NodeType.DECISION);
+		  ProbNode nodeDec_Second_Test= probNet.addProbNode(varDec_Second_Test, NodeType.DECISION);
+		  ProbNode nodeDec_First_Test= probNet.addProbNode(varDec_First_Test, NodeType.DECISION);
+		  ProbNode nodeCost_First_test= probNet.addProbNode(varCost_First_test, NodeType.UTILITY);
+		  ProbNode nodeCost_Second_Test= probNet.addProbNode(varCost_Second_Test, NodeType.UTILITY);
+		  ProbNode nodeBuySell_difference= probNet.addProbNode(varBuySell_difference, NodeType.UTILITY);
+		  ProbNode nodeCost_Guarantee= probNet.addProbNode(varCost_Guarantee, NodeType.UTILITY);
+		  ProbNode nodeCost_Repair= probNet.addProbNode(varCost_Repair, NodeType.UTILITY);
+		  ProbNode nodeTotal= probNet.addProbNode(varTotal, NodeType.UTILITY);
+
+		  // Links
+		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.addLink(nodeCars_Condition, nodeFirst_Result, true);
+		  probNet.addLink(nodeCars_Condition, nodeCost_Repair, true);
+		  probNet.addLink(nodeCars_Condition, nodeSecond_result, true);
+		  probNet.addLink(nodeFirst_Result, nodeSecond_result, true);
+		  probNet.addLink(nodeDec_Purchase, nodeCost_Guarantee, true);
+		  probNet.addLink(nodeDec_Purchase, nodeBuySell_difference, true);
+		  probNet.addLink(nodeDec_Purchase, nodeCost_Repair, true);
+		  probNet.addLink(nodeDec_Second_Test, nodeDec_Purchase, true);
+		  probNet.addLink(nodeDec_Second_Test, nodeCost_Second_Test, true);
+		  probNet.addLink(nodeDec_Second_Test, nodeSecond_result, true);
+		  probNet.addLink(nodeDec_First_Test, nodeFirst_Result, true);
+		  probNet.addLink(nodeDec_First_Test, nodeDec_Second_Test, true);
+		  probNet.addLink(nodeDec_First_Test, nodeCost_First_test, true);
+		  probNet.addLink(nodeDec_First_Test, nodeSecond_result, true);
+		  probNet.addLink(nodeCost_First_test, nodeTotal, true);
+		  probNet.addLink(nodeCost_Second_Test, nodeTotal, true);
+		  probNet.addLink(nodeBuySell_difference, nodeTotal, true);
+		  probNet.addLink(nodeCost_Guarantee, nodeTotal, true);
+		  probNet.addLink(nodeCost_Repair, nodeTotal, true);
+
+		  // Potentials
+		  TablePotential potCars_Condition = new TablePotential(Arrays.asList(varCars_Condition), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potCars_Condition.values = new double[]{0.2, 0.8};
+		  nodeCars_Condition.setPotential(potCars_Condition);
+
+		  TablePotential potFirst_Result = new TablePotential(Arrays.asList(varFirst_Result, varCars_Condition, varDec_First_Test), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potFirst_Result.values = new double[]{1, 0, 0, 0, 1, 0, 0, 0, 0, 0.13, 0.53, 0.34, 0, 0.8, 0.2, 0, 0, 0.4, 0.6, 0, 0, 0.9, 0.1, 0, 0, 0.4, 0.6, 0, 0, 0.9, 0.1, 0};
+		  nodeFirst_Result.setPotential(potFirst_Result);
+
+		  TablePotential potSecond_result = new TablePotential(Arrays.asList(varSecond_result, varCars_Condition, varDec_Second_Test, varFirst_Result, varDec_First_Test), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potSecond_result.values = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.67, 0.33, 0.89, 0.11, 0, 0, 0, 0, 0.44, 0.56, 1, 0, 0, 0, 0, 0, 0.44, 0.56, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		  nodeSecond_result.setPotential(potSecond_result);
+
+		  TablePotential potCost_First_test = new TablePotential(varCost_First_test,Arrays.asList(varDec_First_Test));
+		  potCost_First_test.values = new double[]{0, -13, -10, -9};
+		  nodeCost_First_test.setPotential(potCost_First_test);
+
+		  TablePotential potCost_Second_Test = new TablePotential(varCost_Second_Test,Arrays.asList(varDec_Second_Test));
+		  potCost_Second_Test.values = new double[]{0, -4};
+		  nodeCost_Second_Test.setPotential(potCost_Second_Test);
+
+		  TablePotential potBuySell_difference = new TablePotential(varBuySell_difference,Arrays.asList(varDec_Purchase));
+		  potBuySell_difference.values = new double[]{0, 100, 100};
+		  nodeBuySell_difference.setPotential(potBuySell_difference);
+
+		  TablePotential potCost_Guarantee = new TablePotential(varCost_Guarantee,Arrays.asList(varDec_Purchase));
+		  potCost_Guarantee.values = new double[]{0, 0, -60};
+		  nodeCost_Guarantee.setPotential(potCost_Guarantee);
+
+		  TablePotential potCost_Repair = new TablePotential(varCost_Repair,Arrays.asList(varCars_Condition, varDec_Purchase));
+		  potCost_Repair.values = new double[]{0, 0, -200, -40, 0, -20};
+		  nodeCost_Repair.setPotential(potCost_Repair);
+
+		  SumPotential potTotal = new SumPotential(varTotal,Arrays.asList(varCost_First_test, varCost_Second_Test, varCost_Guarantee, varCost_Repair, varBuySell_difference));
+		  nodeTotal.setPotential(potTotal);
+
+		  // Link restrictions and revealing states
+		  Link link_nodeFirst_Result_nodeSecond_result = probNet.getGraph().getLink(nodeFirst_Result.getNode(),nodeSecond_result.getNode(), true);
+		  link_nodeFirst_Result_nodeSecond_result.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeFirst_Result_nodeSecond_result = (TablePotential)link_nodeFirst_Result_nodeSecond_result.getRestrictionsPotential();
+		  restrictions_nodeFirst_Result_nodeSecond_result.values = new double[] {0, 1, 1, 1, 0, 1, 1, 1};
+
+		  Link link_nodeDec_Second_Test_nodeSecond_result = probNet.getGraph().getLink(nodeDec_Second_Test.getNode(),nodeSecond_result.getNode(), true);
+		  link_nodeDec_Second_Test_nodeSecond_result.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDec_Second_Test_nodeSecond_result = (TablePotential)link_nodeDec_Second_Test_nodeSecond_result.getRestrictionsPotential();
+		  restrictions_nodeDec_Second_Test_nodeSecond_result.values = new double[] {0, 1, 0, 1};
+		  link_nodeDec_Second_Test_nodeSecond_result.setRevealingStates(Arrays.asList(varDec_Second_Test.getStates()[1]));
+
+		  Link link_nodeDec_First_Test_nodeFirst_Result = probNet.getGraph().getLink(nodeDec_First_Test.getNode(),nodeFirst_Result.getNode(), true);
+		  link_nodeDec_First_Test_nodeFirst_Result.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDec_First_Test_nodeFirst_Result = (TablePotential)link_nodeDec_First_Test_nodeFirst_Result.getRestrictionsPotential();
+		  restrictions_nodeDec_First_Test_nodeFirst_Result.values = new double[] {1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0};
+		  link_nodeDec_First_Test_nodeFirst_Result.setRevealingStates(Arrays.asList(varDec_First_Test.getStates()[3], varDec_First_Test.getStates()[2], varDec_First_Test.getStates()[1]));
+
+		  Link link_nodeDec_First_Test_nodeDec_Second_Test = probNet.getGraph().getLink(nodeDec_First_Test.getNode(),nodeDec_Second_Test.getNode(), true);
+		  link_nodeDec_First_Test_nodeDec_Second_Test.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDec_First_Test_nodeDec_Second_Test = (TablePotential)link_nodeDec_First_Test_nodeDec_Second_Test.getRestrictionsPotential();
+		  restrictions_nodeDec_First_Test_nodeDec_Second_Test.values = new double[] {1, 1, 1, 1, 0, 0, 1, 0};
+
+		  Link link_nodeDec_First_Test_nodeSecond_result = probNet.getGraph().getLink(nodeDec_First_Test.getNode(),nodeSecond_result.getNode(), true);
+		  link_nodeDec_First_Test_nodeSecond_result.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDec_First_Test_nodeSecond_result = (TablePotential)link_nodeDec_First_Test_nodeSecond_result.getRestrictionsPotential();
+		  restrictions_nodeDec_First_Test_nodeSecond_result.values = new double[] {0, 0, 1, 0, 0, 0, 1, 0};
+
+		  // Always observed nodes
+
+		 return probNet;
+		}	
 }

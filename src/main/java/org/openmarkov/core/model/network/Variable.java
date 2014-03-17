@@ -654,13 +654,14 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		return true;
 	}
 
-	// @Override
-	// public int hashCode ()
-	// {
-	// int hashCode = 17;
-	// hashCode = 37 * hashCode + name.hashCode ();
-	// return hashCode;
-	// }
+	 @Override
+	 public int hashCode ()
+	 {
+		 int hashCode = 0;
+		 for(int i=0;i<states.length;++i)
+			 hashCode += 7* i * states[i].getName().hashCode();
+		 return 17 * hashCode + 37 *name.hashCode ();
+	 }
 
 	private int getTimeSlice(String variableName) {
 		int timeSlice = noTemporalTimeSlice;

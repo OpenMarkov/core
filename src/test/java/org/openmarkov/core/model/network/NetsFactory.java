@@ -60,7 +60,8 @@ public class NetsFactory {
 		MEDIASTINET_DAN, 
 		BRANCH_ACCEPT_DATING_SIMPLIFIED_DAN, 
 		DATING_TV_BAD_DAN, 
-		DATING_ACCEPT_NO_DAN;
+		DATING_ACCEPT_NO_DAN,
+		USED_CAR_BUYER_DAN;
 		
 		
 	}
@@ -2771,6 +2772,8 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	public static ProbNet buildUsedCarBuyer () {
 		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
 		  // Variables
+		  probNet.setName(NamesNetworks.USED_CAR_BUYER_DAN.toString());
+		  
 		  Variable varCars_Condition = new Variable("Car's Condition", "lemon", "peach");
 		  Variable varFirst_Result = new Variable("First Result", "no result", "no defect", "one defect", "two defects");
 		  Variable varSecond_result = new Variable("Second result", "no defect", "one defect");

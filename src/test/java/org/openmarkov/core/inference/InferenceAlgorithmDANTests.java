@@ -35,7 +35,7 @@ import org.openmarkov.core.model.network.ProbNet;
  */
 public abstract class InferenceAlgorithmDANTests {
 	
-	protected double maxError = 0.001;
+	protected double maxError = 0.0001;
 
 
 
@@ -99,6 +99,7 @@ public abstract class InferenceAlgorithmDANTests {
 			meu.put(NetsFactory.NamesNetworks.DATING_TV_BAD_DAN,9.3);
 			meu.put(NetsFactory.NamesNetworks.WOOER_DAN,7.73);
 			meu.put(NetsFactory.NamesNetworks.MEDIASTINET_DAN,1.532843777055973);
+			meu.put(NetsFactory.NamesNetworks.USED_CAR_BUYER_DAN,32.96);
 			
 			
 			return meu;
@@ -153,6 +154,10 @@ public abstract class InferenceAlgorithmDANTests {
 			danMed = BasicOperations.removeSuperValueNodes(NetsFactory.buildMediastinetDAN(),null,false,true,null);
 			
 			battery.add(danMed);
+			
+			battery.add(NetsFactory.buildUsedCarBuyer());
+			
+			battery.add(NetsFactory.buildNTestsDAN(3));
 			
 			return battery;
 		}

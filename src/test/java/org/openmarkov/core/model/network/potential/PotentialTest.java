@@ -65,18 +65,10 @@ public class PotentialTest {
 				i++;
 			}
 			// TODO Mover a TablePotential
-			/*if (potential1 instanceof TablePotential && potential2 instanceof TablePotential) {
-				double[] values1 = ((TablePotential)potential1).values;
-				double[] values2 = ((TablePotential)potential2).values;
-				equals = values1.length == values2.length;
-				i = 0; 
-				while (equals && i < values1.length) {
-					equals = values1[i] == values2[i];
-					i++;
-				}
-			}*/
-			TablePotentialTest.checkEqualPotentials((TablePotential)potential1, (TablePotential)potential2,0.0001);
-			equals = true;
+			if (potential1 instanceof TablePotential && potential2 instanceof TablePotential) {
+				TablePotentialTest.checkEqualPotentials((TablePotential)potential1, (TablePotential)potential2,0.0001);
+				equals = true;
+			}
 		}
 		return equals;
 	}

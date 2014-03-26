@@ -153,11 +153,4 @@ public abstract class MinMaxPotential extends ICIPotential {
          return accruedPotentials;
     }	
 	
-	
-    @Override
-    public TablePotential getFFunctionPotential ()
-    {
-        // We won't be using it
-        return null;
-    }	
 }

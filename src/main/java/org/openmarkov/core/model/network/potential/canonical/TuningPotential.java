@@ -112,16 +112,17 @@ public class TuningPotential extends ICIPotential
     public TablePotential getFFunctionPotential ()
     {
         // Build the list of variables: child node first, z variables
-        ArrayList<Variable> tuningFunctionVariables = new ArrayList<Variable> (getAuxiliaryVariables());
+        List<Variable> tuningFunctionVariables = new ArrayList<Variable> (getAuxiliaryVariables());
         tuningFunctionVariables.add (0, variables.get (0));
         tuningFunctionVariables.add (getLeakyVariable());
         TablePotential tablePotential = new TablePotential (tuningFunctionVariables, role);
+        int numParents = tuningFunctionVariables.size() - 1;
         // Set the values for the deterministic tuning function
         for (int i = 0; i < tablePotential.values.length; i += NUM_STATES)
         {
             int index = i / NUM_STATES;
             int netNumIncr = 0;
-            for (int j = 0; j < getAuxiliaryVariables().size () + 1; ++j)
+            for (int j = 0; j < numParents; ++j)
             {
                 // netNumIncr = -1 if v-, netNumIncr = 0 if v0, netNumIncr = 1
                 // if v+

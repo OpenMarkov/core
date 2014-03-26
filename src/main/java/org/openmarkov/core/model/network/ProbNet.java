@@ -379,6 +379,20 @@ public class ProbNet implements Cloneable {
      */
     public ProbNet copy() {
         ProbNet copyNet = new ProbNet(this.networkType);
+        return auxCopy(copyNet);
+    }
+    
+    
+    /**
+     * Auxiliary metod for copy, which creates a low deep copy of <code>this ProbNet</code>: copy the
+     * <code>graph</code> and the <code>probNodes</code> but do not copy nor
+     * variables nor potentials.
+     * 
+     * @return <code>this probNet</code> copied.
+     * @throws ConstraintViolationException
+     */
+    protected ProbNet auxCopy(ProbNet copyNet) {
+        //ProbNet copyNet = new ProbNet(this.networkType);
         copyNet.setName(name);
         // copy constraints
         int numConstraints = constraints.size();
@@ -460,6 +474,7 @@ public class ProbNet implements Cloneable {
         }
         return copyNet;
     }
+
 
     /**
      * Inserts a link (<code>directed = true</code> or <code>false</code>)

@@ -789,14 +789,43 @@ public class ProbNetOperations {
 	 */
     public static boolean hasOrderAsymmetry(ProbNet probNet)
     {
-    	ProbNet probNetCopy = probNet.copy();
-    	List<ProbNode> orphanDecisionNodes = getParentlessDecisions(probNetCopy);
-    	while(orphanDecisionNodes.size() == 1)
+    	List<ProbNode> parentlessDecisions = getParentlessDecisions(probNet);
+    	if(parentlessDecisions.size() == 1)
     	{
-    		probNetCopy.removeProbNode(orphanDecisionNodes.iterator().next());
-    		orphanDecisionNodes = getParentlessDecisions(probNetCopy);
+			List<ProbNode> decisionNodes = probNet.getProbNodes (NodeType.DECISION);
+	    	while(parentlessDecisions.size() == 1)
+	    	{
+	    		decisionNodes.remove(parentlessDecisions.get(0));
+	            parentlessDecisions.clear();
+	            for (ProbNode probNode : decisionNodes)
+	            {
+	                boolean hasParentDecisions = false;
+	                Stack<ProbNode> parentNodes = new Stack<> ();
+	                parentNodes.push (probNode);
+	                while (!hasParentDecisions && !parentNodes.isEmpty ())
+	                {
+	                    ProbNode node = parentNodes.pop ();
+	                    List<Node> parents = node.getNode ().getParents ();
+	                    int i=0;
+	                    while (i < parents.size() && !hasParentDecisions)
+	                    {
+	                        ProbNode parentNode = (ProbNode) parents.get(i++).getObject ();
+	                        boolean isDecision = parentNode.getNodeType () == NodeType.DECISION;
+	                        if(!isDecision || decisionNodes.contains(parentNode))
+	                        {
+	                        	hasParentDecisions |= isDecision;
+	                        	parentNodes.push (parentNode);
+	                        }
+	                    }
+	                }
+	                if (!hasParentDecisions)
+	                {
+	                    parentlessDecisions.add (probNode);
+	                }
+	            }
+	         }
     	}
-    	return orphanDecisionNodes.size() > 1;
+    	return parentlessDecisions.size() > 1;
     }
     
     public static List<ProbNode> getNeverObservedVariables (ProbNet probNet)
@@ -857,8 +886,14 @@ public class ProbNetOperations {
     		{
     			ProbNode childProbNode = (ProbNode)(child.getObject());
     			if (!observable.contains(childProbNode))
-    			{
-    				if ((probNet.getGraph().getLink(probNodeToProcess.getNode(), child, true)).hasRevealingConditions())
+    			{ 	boolean isFound = false;
+    				List<Link> links = probNet.getGraph().getLinks();
+    				Link link = null;
+    				for (int i=0;(i<links.size())&&!isFound;i++){
+    					link = links.get(i);
+    					isFound = link.getNode1()==probNodeToProcess.getNode()&&link.getNode2()==child;
+    				}
+					if (link.hasRevealingConditions())
     				{
     					observable.add(childProbNode);
     					variablesToProcess.add(childProbNode.getVariable());
@@ -961,5 +996,19 @@ public class ProbNetOperations {
             }
         }
         return found;
-    } 
+    }
+
+	public static List<ProbNode> getDecisionSequence(ProbNet probNet) {
+		List<ProbNode> decisionSequence = new ArrayList<>();
+    	ProbNet probNetCopy = probNet.copy();
+    	List<ProbNode> orphanDecisionNodes = getParentlessDecisions(probNetCopy);
+    	while(orphanDecisionNodes.size() == 1)
+    	{
+    		ProbNode decision = orphanDecisionNodes.iterator().next();
+    		decisionSequence.add(decision);
+    		probNetCopy.removeProbNode(decision);
+    		orphanDecisionNodes = getParentlessDecisions(probNetCopy);
+    	}
+    	return decisionSequence;
+	} 
 }

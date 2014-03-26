@@ -221,4 +221,33 @@ public class MaxPotential extends MinMaxPotential {
 		// TODO Auto-generated method stub
 		return false;
 	}     
+	
+    @Override
+    public TablePotential getFFunctionPotential ()
+    {
+        // Build the list of variables: child node first, z variables
+        List<Variable> functionVariables = new ArrayList<Variable> (getAuxiliaryVariables());
+        functionVariables.add (0, variables.get (0));
+        functionVariables.add (getLeakyVariable());
+        TablePotential tablePotential = new TablePotential (functionVariables, role);
+        int numParents = functionVariables.size() - 1;
+        int numStates = variables.get (0).getNumStates();
+        // Set the values for the deterministic f function
+        for (int i = 0; i < tablePotential.values.length; i += numStates)
+        {
+            int index = i / numStates;
+            int max = 0;
+            for (int j = 0; j < numParents; ++j)
+            {
+                max = (index % numStates) > max ? (index % numStates) : max;
+                index /= functionVariables.get(j+1).getNumStates();
+            }
+            // max function
+            for (int j = 0; j < numParents; ++j)
+            {
+            	tablePotential.values[j] = j == max ? 1.0 : 0.0;
+            }
+        }
+        return tablePotential;
+      }		
 }

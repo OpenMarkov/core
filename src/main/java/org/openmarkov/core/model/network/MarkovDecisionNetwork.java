@@ -10,7 +10,9 @@
 package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -22,6 +24,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.MarkovNetworkType;
+import org.openmarkov.core.model.network.type.NetworkType;
 
 /**
  * This class is a type of Markov network created from an influence diagram that
@@ -32,6 +35,19 @@ public class MarkovDecisionNetwork extends ProbNet {
 	// Attributes
 	/** Partial partialOrder of chance and decision nodes */
 	private PartialOrder partialOrder;
+	
+	
+	Set<TablePotential> constantPotentials;
+
+	public Set<TablePotential> getConstantPotentials() {
+		return constantPotentials;
+	}
+
+
+	public void setConstantPotentials(Set<TablePotential> constantPotentials) {
+		this.constantPotentials = constantPotentials;
+	}
+
 
 	// Constructor
 	/**
@@ -48,6 +64,30 @@ public class MarkovDecisionNetwork extends ProbNet {
 	}
 	
 	
+	@Override
+	public MarkovDecisionNetwork copy() {
+		 MarkovDecisionNetwork copyNet = new MarkovDecisionNetwork(MarkovNetworkType.getUniqueInstance());
+	     copyNet.partialOrder = partialOrder;
+		 copyNet = (MarkovDecisionNetwork) auxCopy(copyNet);
+		 try {
+			copyNet.setNetworkType(MarkovNetworkType.getUniqueInstance());
+		} catch (ConstraintViolationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 copyNet.constantPotentials = new HashSet<>();
+		 copyNet.constantPotentials.addAll(constantPotentials);
+		 return copyNet;
+	}
+
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
+	}
+
+
 	/**
 	 * 
 	 * Creates a <code>MarkovDecisionNetwork</code> without utility nodes from
@@ -62,6 +102,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 		super();		
 		constructPartialOrder(originalNet,useTrivialPartialOrder);
 		addVariablesAndLinks(originalNet);
+		constantPotentials = new HashSet<>();
 	}
 	
 	
@@ -78,6 +119,21 @@ public class MarkovDecisionNetwork extends ProbNet {
 		else{
 			partialOrder = new PartialOrder(originalNet);
 		}
+	}
+	
+	
+	public void resetPartialOrderToTrivial(){
+		
+			try {
+				partialOrder = new PartialOrder();
+			} catch (WrongGraphStructureException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			List<Variable> variables = this.getChanceAndDecisionVariables();
+			List<List<Variable>> variablesOrder = new ArrayList<>();
+			variablesOrder.add(variables);
+			partialOrder.setOrder(variablesOrder);
 	}
 
 	/**
@@ -107,7 +163,14 @@ public class MarkovDecisionNetwork extends ProbNet {
 			e.printStackTrace();
 		}
 		for (Potential potential : projectedTablePotentials) {
-			addPotential(originalNet, potential);
+			if (potential.getVariables().size()>0)
+			{
+				addPotential(originalNet, potential);
+			}
+			else
+			{
+				constantPotentials.add((TablePotential) potential);
+			}
 		}
 	}
 	
@@ -116,6 +179,14 @@ public class MarkovDecisionNetwork extends ProbNet {
 		this(originalNet,projectedTablePotentials,false);
 		
 	}
+
+	/**
+	 * @param networkType
+	 */
+	public MarkovDecisionNetwork(NetworkType networkType) {
+		// TODO Auto-generated constructor stub
+	}
+
 
 	/**
 	 * Adds the received potential to the list of potentials of the first
@@ -200,7 +271,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	// TODO addPotential should be common to all ProbNet's
 	public ProbNode addPotential(Potential potential) {
 		int numVariables = potential.getNumVariables();
-		ProbNode probNode;
+		ProbNode probNode = null;
 		if (numVariables >= 1) {
 			if (numVariables > 1) { // creates a clique using undirected links
 				addLinks(potential);
@@ -209,7 +280,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 			probNode = getProbNode(potential.getVariable(0));
 			probNode.addPotential(potential);
 		} else { // The potential is a constant.
-			TablePotential constantPotential = (TablePotential) potential;
+			/*TablePotential constantPotential = (TablePotential) potential;
 			double constant = constantPotential.values[0];
 			probNode = getChanceNode();
 			PotentialRole potentialRole = constantPotential.getPotentialRole();
@@ -226,7 +297,8 @@ public class MarkovDecisionNetwork extends ProbNet {
 				}
 			} else {
 				probNode.addPotential(potential);
-			}
+			}*/
+			constantPotentials.add((TablePotential) potential);
 		}
 		return probNode;
 	}
@@ -400,5 +472,66 @@ public class MarkovDecisionNetwork extends ProbNet {
 			}
 		}
 	}
+
+
+	/**
+	 * @param differentUtilityPotentials
+	 */
+	public void removePotentials(Set<TablePotential> potentials) {
+		for (TablePotential pot:potentials)
+		{
+			this.removePotential(pot);
+		}
+		
+	}
+
+
+	@Override
+	public ProbNode removePotential(Potential potential) {
+		ProbNode probNode;
+		if (potential.getVariables().size()>0){
+			probNode = super.removePotential(potential);
+		}
+		else{
+			constantPotentials.remove(potential);
+			probNode = null;
+		}
+		return probNode;
+	}
+
+
+	public void removePotentials(PotentialRole role) {
+		for (Potential pot:this.getPotentials()){
+			if (pot.getPotentialRole()==role){
+				removePotential(pot);
+			}
+		}
+		constantPotentials = new HashSet<>();
+		
+	}
+
+
+	@Override
+	public List<Potential> getPotentials() {
+		List<Potential> pots = super.getPotentials();
+		pots.addAll(constantPotentials);
+		return pots;
+	}
+
+
+	@Override
+	public List<Potential> getPotentialsByRole(PotentialRole role) {
+		List<Potential> pots = super.getPotentialsByRole(role);
+		for(Potential constantPotential : constantPotentials)
+		{
+			if(constantPotential.getPotentialRole().equals(role))
+			{
+				pots.add(constantPotential);
+			}
+		}
+		return pots;
+	}
+	
+	
 
 }

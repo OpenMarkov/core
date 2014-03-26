@@ -20,6 +20,7 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.ProductPotential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -44,6 +45,27 @@ public class NetsFactory {
 	static String diseaseStates[]={"present","absent"};
 	static String testResultStates[]={"positive","negative"};
 	static String yesNoStates[]={"yes","no"};
+	
+	public enum NamesNetworks {
+		ONE_CHANCE_DAN,
+		BLIND_TREATMENT_DAN,
+		PERFECT_INFORMATION_TREATMENT_DAN,
+		DECIDE_TEST_DAN,
+		TWO_TEST_DAN,
+		DIABETES_DAN,
+		DATING_DAN,
+		REACTOR_DAN,
+		WOOER_DAN, 
+		PERFECT_INFORMATION_TREATMENT_RESTRICTED_DAN,
+		MEDIASTINET_DAN, 
+		BRANCH_ACCEPT_DATING_SIMPLIFIED_DAN, 
+		DATING_TV_BAD_DAN, 
+		DATING_ACCEPT_NO_DAN,
+		USED_CAR_BUYER_DAN,
+		N_TESTS;
+		
+		
+	}
 	
 	/**
 	 * @param variables
@@ -1037,9 +1059,112 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		return variable;
 		
 	}
+	
+	public static ProbNet buildOneChanceDAN() throws NodeNotFoundException {
+		ProbNet oneChanceDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		oneChanceDAN.setName(NamesNetworks.ONE_CHANCE_DAN.toString());
+		Variable variableX = new Variable("X", "absent", "present");
+		Variable variableU = new Variable("U");
+		
+		ProbNode nodeX = oneChanceDAN.addProbNode(variableX, NodeType.CHANCE);
+		ProbNode nodeU = oneChanceDAN.addProbNode(variableU, NodeType.UTILITY);
+		
+		oneChanceDAN.getGraph().makeLinksExplicit(false);
+		oneChanceDAN.addLink(variableX, variableU, true);
+		
+		TablePotential potentialX = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialX.values = new double [] {0.86, 0.14};
+		nodeX.setPotential(potentialX);
 
+		TablePotential potentialU = new TablePotential(variableU, Arrays.asList(variableX));
+		potentialU.values = new double [] {100, 30};
+		nodeU.setPotential(potentialU);
+		
+		return oneChanceDAN;
+	}
+	
+	public static ProbNet buildBlindTreatmentDAN() throws NodeNotFoundException {
+		return buildDecideTreatmentDAN(NamesNetworks.BLIND_TREATMENT_DAN,false);
+	}
+	
+	public static ProbNet buildPerfectInformationTreatmentDAN() throws NodeNotFoundException {
+		return buildDecideTreatmentDAN(NamesNetworks.PERFECT_INFORMATION_TREATMENT_DAN,true);
+	}
+	
+	public static ProbNet buildDecideTreatmentDAN(NamesNetworks name,boolean isXKnown) throws NodeNotFoundException {
+		ProbNet blindTreatmentDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		blindTreatmentDAN.setName(name.toString());
+		Variable variableX = new Variable("X", "absent", "present");
+		Variable variableT = new Variable("T", "no", "yes");
+		Variable variableU = new Variable("U");
+		
+		ProbNode nodeX = blindTreatmentDAN.addProbNode(variableX, NodeType.CHANCE);
+		blindTreatmentDAN.addProbNode(variableT, NodeType.DECISION);
+		ProbNode nodeU = blindTreatmentDAN.addProbNode(variableU, NodeType.UTILITY);
+		
+		blindTreatmentDAN.getGraph().makeLinksExplicit(false);
+		blindTreatmentDAN.addLink(variableX, variableU, true);
+		blindTreatmentDAN.addLink(variableT, variableU, true);
+		if (isXKnown){
+			blindTreatmentDAN.addLink(variableX, variableT, true);
+		}
+		
+		TablePotential potentialX = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialX.values = new double [] {0.86, 0.14};
+		nodeX.setPotential(potentialX);
+
+		TablePotential potentialU = new TablePotential(variableU, Arrays.asList(variableX,variableT));
+		potentialU.values = new double [] {100, 30, 90, 80};
+		nodeU.setPotential(potentialU);
+		
+		nodeX.setAlwaysObserved(isXKnown);
+		
+		return blindTreatmentDAN;
+	}
+	
+	
+	public static ProbNet buildDecideTreatmentRestrictedDAN() throws NodeNotFoundException {
+		ProbNet dan = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		dan.setName(NamesNetworks.PERFECT_INFORMATION_TREATMENT_RESTRICTED_DAN.toString());
+		Variable variableX = new Variable("X", "absent", "present");
+		Variable variableT = new Variable("T", "no", "yes");
+		Variable variableU = new Variable("U");
+		
+		ProbNode nodeX = dan.addProbNode(variableX, NodeType.CHANCE);
+		ProbNode nodeT = dan.addProbNode(variableT, NodeType.DECISION);
+		ProbNode nodeU = dan.addProbNode(variableU, NodeType.UTILITY);
+		
+		dan.getGraph().makeLinksExplicit(false);
+		dan.addLink(variableX, variableU, true);
+		dan.addLink(variableT, variableU, true);
+		dan.addLink(variableX, variableT, true);
+		
+		TablePotential potentialX = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialX.values = new double [] {0.86, 0.14};
+		nodeX.setPotential(potentialX);
+
+		TablePotential potentialU = new TablePotential(variableU, Arrays.asList(variableX,variableT));
+		potentialU.values = new double [] {100, 30, 90, 80};
+		nodeU.setPotential(potentialU);
+		
+		nodeX.setAlwaysObserved(true);
+		
+		Link link = dan.getGraph().getLink(nodeX.getNode(), nodeT.getNode(), true);
+		link.initializesRestrictionsPotential();
+		TablePotential restrictionsPotential = (TablePotential)link.getRestrictionsPotential();
+		restrictionsPotential.values = new double[]{0,1,1,1};
+		
+		return dan;
+	}
+	
+	
+	
+
+	
+	
 	public static ProbNet buildDecideTestDAN() throws NodeNotFoundException {
 		ProbNet decideTestDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		decideTestDAN.setName(NamesNetworks.DECIDE_TEST_DAN.toString());
 		Variable variableX = new Variable("X", "absent", "present");
 		Variable variableY = new Variable("Y", "negative", "positive");
 		Variable variableD = new Variable("D","no","yes");
@@ -1074,7 +1199,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		potentialU1.values = new double [] {100, 30, 90, 80};
 		nodeU1.setPotential(potentialU1);		
 		
-		TablePotential potentialU2 = new TablePotential(variableU1, Arrays.asList(variableD));
+		TablePotential potentialU2 = new TablePotential(variableU2, Arrays.asList(variableD));
 		potentialU2.values = new double [] {0, -2};
 		nodeU2.setPotential(potentialU2);		
 		
@@ -1090,6 +1215,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	
 	public static ProbNet buildDatingDAN() throws NodeNotFoundException {
 		ProbNet datingDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		datingDAN.setName(NamesNetworks.DATING_DAN.toString());
 		Variable variableAsk = new Variable("Ask", "no", "yes");
 		Variable variableNClub = new Variable("NClub", "no", "yes");
 		Variable variableAccept = new Variable("Accept", "no", "yes");
@@ -1109,7 +1235,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		Variable variableUTVExp = new Variable("U TVExp");
 		Variable variableUNCExp = new Variable("U NCExp");
 		Variable variableUmExp = new Variable("U mExp");
-		Variable variableUrExp = new Variable("U rCExp");
+		Variable variableUrExp = new Variable("U rExp");
 		
 		ProbNode nodeAsk = datingDAN.addProbNode(variableAsk, NodeType.DECISION);
 		ProbNode nodeNClub = datingDAN.addProbNode(variableNClub, NodeType.DECISION);
@@ -1158,7 +1284,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		datingDAN.addLink(variableRExp, variableUrExp, true);
 		
 		TablePotential potentialAccept = new TablePotential(Arrays.asList(variableAccept, variableAsk, variableLikesMe), PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialAccept.values = new double [] {1, 0, 0.99, 0.01, 1, 0, 0.9, 0.1};
+		potentialAccept.values = new double [] {1, 0, 0.99, 0.01, 1, 0, 0.25, 0.75};
 		nodeAccept.setPotential(potentialAccept);
 
 		UniformPotential potentialLikesMe = new UniformPotential(Arrays.asList(variableLikesMe), PotentialRole.CONDITIONAL_PROBABILITY);
@@ -1172,7 +1298,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		potentialMMood.values = new double [] {0.25, 0.75, 0.88, 0.12};
 		nodeMMood.setPotential(potentialMMood);
 
-		TablePotential potentialMExp = new TablePotential(Arrays.asList(variableMExp, variableMMood, variableMovie), PotentialRole.CONDITIONAL_PROBABILITY);
+		TablePotential potentialMExp = new TablePotential(Arrays.asList(variableMExp, variableMovie, variableMMood), PotentialRole.CONDITIONAL_PROBABILITY);
 		potentialMExp.values = new double [] {0.99, 0.01, 0.95, 0.05, 0.15, 0.85, 0.01, 0.99};
 		nodeMExp.setPotential(potentialMExp);
 
@@ -1184,7 +1310,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		potentialRMood.values = new double [] {0.5, 0.5, 0.2, 0.8};
 		nodeRMood.setPotential(potentialRMood);
 
-		TablePotential potentialRExp = new TablePotential(Arrays.asList(variableRExp, variableRMood, variableRest), PotentialRole.CONDITIONAL_PROBABILITY);
+		TablePotential potentialRExp = new TablePotential(Arrays.asList(variableRExp, variableRest, variableRMood), PotentialRole.CONDITIONAL_PROBABILITY);
 		potentialRExp.values = new double [] {0.95, 0.05, 1, 0, 0.01, 0.99, 0.08, 0.92};
 		nodeRExp.setPotential(potentialRExp);
 
@@ -1276,10 +1402,358 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		
 		return datingDAN;
 	}	
+	
+	public static ProbNet buildDatingAcceptNoDAN() throws NodeNotFoundException {
+		ProbNet datingDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		datingDAN.setName(NamesNetworks.DATING_ACCEPT_NO_DAN.toString());
+		Variable variableNClub = new Variable("NClub", "no", "yes");
+		Variable variableTV = new Variable("TV","good","bad");
+		Variable variableTVExp = new Variable("TVExp","negative","positive");
+		Variable variableClub = new Variable("Club","negative","positive");
+		Variable variableMeetFr = new Variable("MeetFr","negative","positive");
+		Variable variableNCExp = new Variable("NCExp","negative","positive");
+		Variable variableUTVExp = new Variable("U TVExp");
+		Variable variableUNCExp = new Variable("U NCExp");
+		
+		ProbNode nodeNClub = datingDAN.addProbNode(variableNClub, NodeType.DECISION);
+		ProbNode nodeTV = datingDAN.addProbNode(variableTV, NodeType.CHANCE);
+		ProbNode nodeTVExp = datingDAN.addProbNode(variableTVExp, NodeType.CHANCE);
+		ProbNode nodeClub = datingDAN.addProbNode(variableClub, NodeType.CHANCE);
+		ProbNode nodeMeetFr = datingDAN.addProbNode(variableMeetFr, NodeType.CHANCE);
+		ProbNode nodeNCExp = datingDAN.addProbNode(variableNCExp, NodeType.CHANCE);
+		ProbNode nodeUTVExp = datingDAN.addProbNode(variableUTVExp, NodeType.UTILITY);
+		ProbNode nodeUNCExp = datingDAN.addProbNode(variableUNCExp, NodeType.UTILITY);
+		
+		datingDAN.getGraph().makeLinksExplicit(false);
+		datingDAN.addLink(variableTV, variableTVExp, true);
+		datingDAN.addLink(variableNClub, variableTVExp, true);
+		datingDAN.addLink(variableNClub, variableClub, true);
+		datingDAN.addLink(variableNClub, variableMeetFr, true);
+		datingDAN.addLink(variableClub, variableNCExp, true);
+		datingDAN.addLink(variableMeetFr, variableNCExp, true);
+		datingDAN.addLink(variableTVExp, variableUTVExp, true);
+		datingDAN.addLink(variableNCExp, variableUNCExp, true);
+		
+				
+		TablePotential potentialTV = new TablePotential(Arrays.asList(variableTV), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialTV.values = new double [] {0.15, 0.85};
+		nodeTV.setPotential(potentialTV);	
+		
+		TablePotential potentialTVExp = new TablePotential(Arrays.asList(variableTVExp, variableNClub, variableTV), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialTVExp.values = new double [] {0, 1, 0, 0, 1, 0, 0, 0};
+		nodeTVExp.setPotential(potentialTVExp);		
 
+		TablePotential potentialClub = new TablePotential(Arrays.asList(variableClub, variableNClub), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialClub.values = new double [] {0, 0, 0.22, 0.78};
+		nodeClub.setPotential(potentialClub);
+
+		TablePotential potentialMeetFr = new TablePotential(Arrays.asList(variableMeetFr, variableNClub), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialMeetFr.values = new double [] {0, 0, 0.16, 0.84};
+		nodeMeetFr.setPotential(potentialMeetFr);
+		
+		ICIPotential potentialNCExp = new MaxPotential(Arrays.asList(variableNCExp, variableMeetFr, variableClub));
+		potentialNCExp.setLeakyParameters(new double [] {0.99, 0.01});
+		nodeNCExp.setPotential(potentialNCExp);			
+		
+		TablePotential potentialUTVExp = new TablePotential(variableUTVExp, Arrays.asList(variableTVExp));
+		potentialUTVExp.values = new double [] {-10, 10};
+		nodeUTVExp.setPotential(potentialUTVExp);		
+
+		TablePotential potentialUNCExp = new TablePotential(variableUNCExp, Arrays.asList(variableNCExp));
+		potentialUNCExp.values = new double [] {-10, 10};
+		nodeUNCExp.setPotential(potentialUNCExp);	
+		
+		Link linkNClubTVExp = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeTVExp.getNode(), true);
+		linkNClubTVExp.initializesRestrictionsPotential();
+		TablePotential restrictionsNClubTVExp = (TablePotential)linkNClubTVExp.getRestrictionsPotential();
+		restrictionsNClubTVExp.values = new double[]{1,0,1,0};
+		linkNClubTVExp.setRevealingStates(Arrays.asList(variableNClub.getStates()[0]));
+
+		Link linkNClubClub = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeClub.getNode(), true);
+		linkNClubClub.initializesRestrictionsPotential();
+		TablePotential restrictionsNClubClub = (TablePotential)linkNClubClub.getRestrictionsPotential();
+		restrictionsNClubClub.values = new double[]{0,1,0,1};
+		linkNClubClub.setRevealingStates(Arrays.asList(variableNClub.getStates()[1]));
+
+		Link linkNClubMeetFr = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeMeetFr.getNode(), true);
+		linkNClubMeetFr.initializesRestrictionsPotential();
+		TablePotential restrictionsNClubMeetFr = (TablePotential)linkNClubMeetFr.getRestrictionsPotential();
+		restrictionsNClubMeetFr.values = new double[]{0,1,0,1};
+		linkNClubMeetFr.setRevealingStates(Arrays.asList(variableNClub.getStates()[1]));
+		
+		nodeTV.setAlwaysObserved(true);
+		
+		return datingDAN;
+	}	
+	
+	public static ProbNet buildDatingTVBadDAN() throws NodeNotFoundException {
+		ProbNet datingDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		datingDAN.setName(NamesNetworks.DATING_TV_BAD_DAN.toString());
+		Variable variableAsk = new Variable("Ask", "no", "yes");
+		Variable variableNClub = new Variable("NClub", "no", "yes");
+		Variable variableAccept = new Variable("Accept", "no", "yes");
+		Variable variableLikesMe = new Variable("LikesMe","no","yes");
+		Variable variableToDo = new Variable("ToDo","restaurant","movie");
+		//Variable variableTV = new Variable("TV","good","bad");
+		Variable variableTVExp = new Variable("TVExp","negative","positive");
+		Variable variableClub = new Variable("Club","negative","positive");
+		Variable variableMeetFr = new Variable("MeetFr","negative","positive");
+		Variable variableNCExp = new Variable("NCExp","negative","positive");
+		Variable variableMovie = new Variable("Movie","romantic","action");
+		Variable variableRest = new Variable("Rest","cheap","expensive");
+		Variable variableMMood = new Variable("mMood","bad","good");
+		Variable variableRMood = new Variable("rMood","bad","good");
+		Variable variableMExp = new Variable("mExp","negative","positive");
+		Variable variableRExp = new Variable("rExp","negative","positive");
+		Variable variableUTVExp = new Variable("U TVExp");
+		Variable variableUNCExp = new Variable("U NCExp");
+		Variable variableUmExp = new Variable("U mExp");
+		Variable variableUrExp = new Variable("U rExp");
+		
+		ProbNode nodeAsk = datingDAN.addProbNode(variableAsk, NodeType.DECISION);
+		ProbNode nodeNClub = datingDAN.addProbNode(variableNClub, NodeType.DECISION);
+		ProbNode nodeAccept = datingDAN.addProbNode(variableAccept, NodeType.CHANCE);
+		ProbNode nodeLikesMe = datingDAN.addProbNode(variableLikesMe, NodeType.CHANCE);
+		ProbNode nodeToDo = datingDAN.addProbNode(variableToDo, NodeType.CHANCE);
+		//ProbNode nodeTV = datingDAN.addProbNode(variableTV, NodeType.CHANCE);
+		ProbNode nodeTVExp = datingDAN.addProbNode(variableTVExp, NodeType.CHANCE);
+		ProbNode nodeClub = datingDAN.addProbNode(variableClub, NodeType.CHANCE);
+		ProbNode nodeMeetFr = datingDAN.addProbNode(variableMeetFr, NodeType.CHANCE);
+		ProbNode nodeNCExp = datingDAN.addProbNode(variableNCExp, NodeType.CHANCE);
+		ProbNode nodeMovie = datingDAN.addProbNode(variableMovie, NodeType.DECISION);
+		ProbNode nodeRest = datingDAN.addProbNode(variableRest, NodeType.DECISION);
+		ProbNode nodeMMood = datingDAN.addProbNode(variableMMood, NodeType.CHANCE);
+		ProbNode nodeRMood = datingDAN.addProbNode(variableRMood, NodeType.CHANCE);
+		ProbNode nodeMExp = datingDAN.addProbNode(variableMExp, NodeType.CHANCE);
+		ProbNode nodeRExp = datingDAN.addProbNode(variableRExp, NodeType.CHANCE);
+		ProbNode nodeUTVExp = datingDAN.addProbNode(variableUTVExp, NodeType.UTILITY);
+		ProbNode nodeUNCExp = datingDAN.addProbNode(variableUNCExp, NodeType.UTILITY);
+		ProbNode nodeUmExp = datingDAN.addProbNode(variableUmExp, NodeType.UTILITY);
+		ProbNode nodeUrExp = datingDAN.addProbNode(variableUrExp, NodeType.UTILITY);
+		
+		datingDAN.getGraph().makeLinksExplicit(false);
+		datingDAN.addLink(variableAsk, variableAccept, true);
+		datingDAN.addLink(variableLikesMe, variableAccept, true);
+		datingDAN.addLink(variableLikesMe, variableToDo, true);
+		datingDAN.addLink(variableAccept, variableNClub, true);
+		datingDAN.addLink(variableAccept, variableToDo, true);
+		//datingDAN.addLink(variableTV, variableTVExp, true);
+		datingDAN.addLink(variableNClub, variableTVExp, true);
+		datingDAN.addLink(variableNClub, variableClub, true);
+		datingDAN.addLink(variableNClub, variableMeetFr, true);
+		datingDAN.addLink(variableClub, variableNCExp, true);
+		datingDAN.addLink(variableMeetFr, variableNCExp, true);
+		datingDAN.addLink(variableTVExp, variableUTVExp, true);
+		datingDAN.addLink(variableNCExp, variableUNCExp, true);
+		datingDAN.addLink(variableToDo, variableMovie, true);
+		datingDAN.addLink(variableToDo, variableRest, true);
+		datingDAN.addLink(variableMovie, variableMMood, true);
+		datingDAN.addLink(variableMovie, variableMExp, true);
+		datingDAN.addLink(variableMMood, variableMExp, true);
+		datingDAN.addLink(variableMExp, variableUmExp, true);
+		datingDAN.addLink(variableRest, variableRMood, true);
+		datingDAN.addLink(variableRest, variableRExp, true);
+		datingDAN.addLink(variableRMood, variableRExp, true);
+		datingDAN.addLink(variableRExp, variableUrExp, true);
+		
+		TablePotential potentialAccept = new TablePotential(Arrays.asList(variableAccept, variableAsk, variableLikesMe), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialAccept.values = new double [] {1, 0, 0.99, 0.01, 1, 0, 0.25, 0.75};
+		nodeAccept.setPotential(potentialAccept);
+
+		UniformPotential potentialLikesMe = new UniformPotential(Arrays.asList(variableLikesMe), PotentialRole.CONDITIONAL_PROBABILITY);
+		nodeLikesMe.setPotential(potentialLikesMe);
+		
+		TablePotential potentialToDo = new TablePotential(Arrays.asList(variableToDo, variableAccept, variableLikesMe), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialToDo.values = new double [] {0, 0, 0.65, 0.35, 0, 0, 0.15, 0.85};
+		nodeToDo.setPotential(potentialToDo);		
+		
+		TablePotential potentialMMood = new TablePotential(Arrays.asList(variableMMood, variableMovie), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialMMood.values = new double [] {0.25, 0.75, 0.88, 0.12};
+		nodeMMood.setPotential(potentialMMood);
+
+		TablePotential potentialMExp = new TablePotential(Arrays.asList(variableMExp, variableMovie, variableMMood), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialMExp.values = new double [] {0.99, 0.01, 0.95, 0.05, 0.15, 0.85, 0.01, 0.99};
+		nodeMExp.setPotential(potentialMExp);
+
+		TablePotential potentialUmExp = new TablePotential(variableUmExp, Arrays.asList(variableMExp));
+		potentialUmExp.values = new double [] {-10, 10};
+		nodeUmExp.setPotential(potentialUmExp);
+		
+		TablePotential potentialRMood = new TablePotential(Arrays.asList(variableRMood, variableRest), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialRMood.values = new double [] {0.5, 0.5, 0.2, 0.8};
+		nodeRMood.setPotential(potentialRMood);
+
+		TablePotential potentialRExp = new TablePotential(Arrays.asList(variableRExp, variableRest, variableRMood), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialRExp.values = new double [] {0.95, 0.05, 1, 0, 0.01, 0.99, 0.08, 0.92};
+		nodeRExp.setPotential(potentialRExp);
+
+		TablePotential potentialUrExp = new TablePotential(variableUrExp, Arrays.asList(variableRExp));
+		potentialUrExp.values = new double [] {-10, 10};
+		nodeUrExp.setPotential(potentialUrExp);		
+		
+		TablePotential potentialTVExp = new TablePotential(Arrays.asList(variableTVExp, variableNClub), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialTVExp.values = new double [] {1.0, 0.0, 0.0, 0.0};
+		nodeTVExp.setPotential(potentialTVExp);		
+
+		TablePotential potentialClub = new TablePotential(Arrays.asList(variableClub, variableNClub), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialClub.values = new double [] {0, 0, 0.22, 0.78};
+		nodeClub.setPotential(potentialClub);
+
+		TablePotential potentialMeetFr = new TablePotential(Arrays.asList(variableMeetFr, variableNClub), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialMeetFr.values = new double [] {0, 0, 0.16, 0.84};
+		nodeMeetFr.setPotential(potentialMeetFr);
+		
+		ICIPotential potentialNCExp = new MaxPotential(Arrays.asList(variableNCExp, variableMeetFr, variableClub));
+		potentialNCExp.setLeakyParameters(new double [] {0.99, 0.01});
+		nodeNCExp.setPotential(potentialNCExp);			
+		
+		TablePotential potentialUTVExp = new TablePotential(variableUTVExp, Arrays.asList(variableTVExp));
+		potentialUTVExp.values = new double [] {-10, 10};
+		nodeUTVExp.setPotential(potentialUTVExp);		
+
+		TablePotential potentialUNCExp = new TablePotential(variableUNCExp, Arrays.asList(variableNCExp));
+		potentialUNCExp.values = new double [] {-10, 10};
+		nodeUNCExp.setPotential(potentialUNCExp);		
+		
+		
+		Link linkAskAccept = datingDAN.getGraph().getLink(nodeAsk.getNode(), nodeAccept.getNode(), true);
+		linkAskAccept.initializesRestrictionsPotential();
+		TablePotential restrictionsAskAccept = (TablePotential)linkAskAccept.getRestrictionsPotential();
+		restrictionsAskAccept.values = new double[]{1,1,0,1};
+		linkAskAccept.setRevealingStates(Arrays.asList(variableAsk.getStates()[0], variableAsk.getStates()[1]));
+
+		Link linkAcceptNClub = datingDAN.getGraph().getLink(nodeAccept.getNode(), nodeNClub.getNode(), true);
+		linkAcceptNClub.initializesRestrictionsPotential();
+		TablePotential restrictionsAcceptNClub = (TablePotential)linkAcceptNClub.getRestrictionsPotential();
+		restrictionsAcceptNClub.values = new double[]{1,0,1,0};
+
+		Link linkAcceptToDo = datingDAN.getGraph().getLink(nodeAccept.getNode(), nodeToDo.getNode(), true);
+		linkAcceptToDo.initializesRestrictionsPotential();
+		TablePotential restrictionsAcceptToDo = (TablePotential)linkAcceptToDo.getRestrictionsPotential();
+		restrictionsAcceptToDo.values = new double[]{0,1,0,1};
+		linkAcceptToDo.setRevealingStates(Arrays.asList(variableAccept.getStates()[1]));
+
+		Link linkToDoMovie = datingDAN.getGraph().getLink(nodeToDo.getNode(), nodeMovie.getNode(), true);
+		linkToDoMovie.initializesRestrictionsPotential();
+		TablePotential restrictionsToDoMovie = (TablePotential)linkToDoMovie.getRestrictionsPotential();
+		restrictionsToDoMovie.values = new double[]{0,1,0,1};
+
+		Link linkToDoRest = datingDAN.getGraph().getLink(nodeToDo.getNode(), nodeRest.getNode(), true);
+		linkToDoRest.initializesRestrictionsPotential();
+		TablePotential restrictionsToDoRest = (TablePotential)linkToDoRest.getRestrictionsPotential();
+		restrictionsToDoRest.values = new double[]{1,0,1,0};
+
+		Link linkMovieMEXp = datingDAN.getGraph().getLink(nodeMovie.getNode(), nodeMExp.getNode(), true);
+		linkMovieMEXp.setRevealingStates(Arrays.asList(variableMovie.getStates()[0], variableMovie.getStates()[1]));
+
+		Link linkRestREXp = datingDAN.getGraph().getLink(nodeRest.getNode(), nodeRExp.getNode(), true);
+		linkRestREXp.setRevealingStates(Arrays.asList(variableRest.getStates()[0], variableRest.getStates()[1]));
+		
+		Link linkNClubTVExp = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeTVExp.getNode(), true);
+		linkNClubTVExp.initializesRestrictionsPotential();
+		TablePotential restrictionsNClubTVExp = (TablePotential)linkNClubTVExp.getRestrictionsPotential();
+		restrictionsNClubTVExp.values = new double[]{1,0,1,0};
+		linkNClubTVExp.setRevealingStates(Arrays.asList(variableNClub.getStates()[0]));
+
+		Link linkNClubClub = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeClub.getNode(), true);
+		linkNClubClub.initializesRestrictionsPotential();
+		TablePotential restrictionsNClubClub = (TablePotential)linkNClubClub.getRestrictionsPotential();
+		restrictionsNClubClub.values = new double[]{0,1,0,1};
+		linkNClubClub.setRevealingStates(Arrays.asList(variableNClub.getStates()[1]));
+
+		Link linkNClubMeetFr = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeMeetFr.getNode(), true);
+		linkNClubMeetFr.initializesRestrictionsPotential();
+		TablePotential restrictionsNClubMeetFr = (TablePotential)linkNClubMeetFr.getRestrictionsPotential();
+		restrictionsNClubMeetFr.values = new double[]{0,1,0,1};
+		linkNClubMeetFr.setRevealingStates(Arrays.asList(variableNClub.getStates()[1]));
+		
+		return datingDAN;
+	}	
+	
+	public static ProbNet buildDatingBranchAcceptSimplifiedDAN() throws NodeNotFoundException {
+		ProbNet datingDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		datingDAN.setName(NamesNetworks.BRANCH_ACCEPT_DATING_SIMPLIFIED_DAN.toString());
+		Variable variableToDo = new Variable("ToDo","restaurant","movie");
+		Variable variableMovie = new Variable("Movie","romantic","action");
+		Variable variableRest = new Variable("Rest","cheap","expensive");
+		Variable variableMExp = new Variable("mExp","negative","positive");
+		Variable variableRExp = new Variable("rExp","negative","positive");
+		Variable variableUmExp = new Variable("U mExp");
+		Variable variableUrExp = new Variable("U rExp");
+		Variable variableLikesMe = new Variable("LikesMe","no","yes");
+		
+		ProbNode nodeToDo = datingDAN.addProbNode(variableToDo, NodeType.CHANCE);
+		ProbNode nodeMovie = datingDAN.addProbNode(variableMovie, NodeType.DECISION);
+		ProbNode nodeRest = datingDAN.addProbNode(variableRest, NodeType.DECISION);
+		ProbNode nodeMExp = datingDAN.addProbNode(variableMExp, NodeType.CHANCE);
+		ProbNode nodeRExp = datingDAN.addProbNode(variableRExp, NodeType.CHANCE);
+		ProbNode nodeUmExp = datingDAN.addProbNode(variableUmExp, NodeType.UTILITY);
+		ProbNode nodeUrExp = datingDAN.addProbNode(variableUrExp, NodeType.UTILITY);
+		ProbNode nodeLikesMe = datingDAN.addProbNode(variableLikesMe, NodeType.CHANCE);
+		
+		datingDAN.getGraph().makeLinksExplicit(false);
+		datingDAN.addLink(variableToDo, variableMovie, true);
+		datingDAN.addLink(variableToDo, variableRest, true);
+		datingDAN.addLink(variableMovie, variableMExp, true);
+		datingDAN.addLink(variableMExp, variableUmExp, true);
+		datingDAN.addLink(variableRest, variableRExp, true);
+		datingDAN.addLink(variableRExp, variableUrExp, true);
+		datingDAN.addLink(variableLikesMe, variableToDo, true);
+		
+		
+	    UniformPotential potentialLikesMe = new UniformPotential(Arrays.asList(variableLikesMe), PotentialRole.CONDITIONAL_PROBABILITY);
+		nodeLikesMe.setPotential(potentialLikesMe);
+		
+		TablePotential potentialToDo = new TablePotential(Arrays.asList(variableToDo, variableLikesMe), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialToDo.values = new double [] {0.65, 0.35, 0.15, 0.85};
+		nodeToDo.setPotential(potentialToDo);
+
+		TablePotential potentialMExp = new TablePotential(Arrays.asList(variableMExp, variableMovie), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialMExp.values = new double [] {0.01, 0.99, 0.95, 0.05};
+		nodeMExp.setPotential(potentialMExp);
+
+		TablePotential potentialUmExp = new TablePotential(variableUmExp, Arrays.asList(variableMExp));
+		potentialUmExp.values = new double [] {-10, 10};
+		nodeUmExp.setPotential(potentialUmExp);
+
+		TablePotential potentialRExp = new TablePotential(Arrays.asList(variableRExp, variableRest), PotentialRole.CONDITIONAL_PROBABILITY);
+		potentialRExp.values = new double [] {0.95, 0.05, 0.0, 1.0};
+		nodeRExp.setPotential(potentialRExp);
+
+		TablePotential potentialUrExp = new TablePotential(variableUrExp, Arrays.asList(variableRExp));
+		potentialUrExp.values = new double [] {-10, 10};
+		nodeUrExp.setPotential(potentialUrExp);		
+		
+			
+		
+		Link linkToDoMovie = datingDAN.getGraph().getLink(nodeToDo.getNode(), nodeMovie.getNode(), true);
+		linkToDoMovie.initializesRestrictionsPotential();
+		TablePotential restrictionsToDoMovie = (TablePotential)linkToDoMovie.getRestrictionsPotential();
+		restrictionsToDoMovie.values = new double[]{0,1,0,1};
+
+		Link linkToDoRest = datingDAN.getGraph().getLink(nodeToDo.getNode(), nodeRest.getNode(), true);
+		linkToDoRest.initializesRestrictionsPotential();
+		TablePotential restrictionsToDoRest = (TablePotential)linkToDoRest.getRestrictionsPotential();
+		restrictionsToDoRest.values = new double[]{1,0,1,0};
+
+		Link linkMovieMEXp = datingDAN.getGraph().getLink(nodeMovie.getNode(), nodeMExp.getNode(), true);
+		linkMovieMEXp.setRevealingStates(Arrays.asList(variableMovie.getStates()[0], variableMovie.getStates()[1]));
+
+		Link linkRestREXp = datingDAN.getGraph().getLink(nodeRest.getNode(), nodeRExp.getNode(), true);
+		linkRestREXp.setRevealingStates(Arrays.asList(variableRest.getStates()[0], variableRest.getStates()[1]));
+		
+		nodeToDo.setAlwaysObserved(true);
+		
+		
+		
+		return datingDAN;
+	}	
+	
+	
 	public static ProbNet buildReactorDAN () {
 		
 	  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+	  probNet.setName(NamesNetworks.REACTOR_DAN.toString());
 	  // Variables
 	  Variable varResult_of_advanced_reactor = new Variable("Result of advanced reactor", "success", "limited accident", "major accident");
 	  Variable varResult_of_test = new Variable("Result of test", "bad", "good", "excellent");
@@ -1311,6 +1785,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	  probNet.addLink(nodeAdvanced_reactor_reliability, nodeResult_of_advanced_reactor, true);
 	  probNet.addLink(nodeTest_decision, nodeCost_of_test, true);
 	  probNet.addLink(nodeTest_decision, nodeResult_of_test, true);
+	  probNet.addLink(nodeTest_decision, nodeBuild_decision, true);
 	  probNet.addLink(nodeBuild_decision, nodeResult_of_advanced_reactor, true);
 	  probNet.addLink(nodeBuild_decision, nodeResult_of_conventional_reactor, true);
 	
@@ -1320,7 +1795,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	  nodeResult_of_advanced_reactor.setPotential(potResult_of_advanced_reactor);
 	
 	  TablePotential potResult_of_test = new TablePotential(Arrays.asList(varResult_of_test, varTest_decision, varAdvanced_reactor_reliability), PotentialRole.CONDITIONAL_PROBABILITY);
-	  potResult_of_test.values = new double[]{0.33333, 0.33333, 0.33333, 0, 0, 0, 0.33333, 0.33333, 0.33333, 0, 0, 0, 0.33333, 0.33333, 0.33333, 0, 0, 0};
+	  potResult_of_test.values = new double[]{0.05, 0.6, 0.35, 0, 0, 0, 0.85, 0.1, 0.05, 0, 0, 0, 0.9, 0.08, 0.02, 0, 0, 0};
 	  nodeResult_of_test.setPotential(potResult_of_test);
 	
 	  TablePotential potResult_of_conventional_reactor = new TablePotential(Arrays.asList(varResult_of_conventional_reactor, varBuild_decision), PotentialRole.CONDITIONAL_PROBABILITY);
@@ -1328,11 +1803,11 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	  nodeResult_of_conventional_reactor.setPotential(potResult_of_conventional_reactor);
 	
 	  TablePotential potAdvanced_reactor_reliability = new TablePotential(Arrays.asList(varAdvanced_reactor_reliability), PotentialRole.CONDITIONAL_PROBABILITY);
-	  potAdvanced_reactor_reliability.values = new double[]{0.33333, 0.33333, 0.33333};
+	  potAdvanced_reactor_reliability.values = new double[]{0.88, 0.1, 0.02};
 	  nodeAdvanced_reactor_reliability.setPotential(potAdvanced_reactor_reliability);
 	
 	  TablePotential potCost_of_test = new TablePotential(varCost_of_test,Arrays.asList(varTest_decision));
-	  potCost_of_test.values = new double[]{1, 0};
+	  potCost_of_test.values = new double[]{-1, 0};
 	  nodeCost_of_test.setPotential(potCost_of_test);
 	
 	  TablePotential potBenefit_of_advanced_reactor = new TablePotential(varBenefit_of_advanced_reactor,Arrays.asList(varResult_of_advanced_reactor));
@@ -1342,8 +1817,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	  TablePotential potBenefit_of_conventional_reactor = new TablePotential(varBenefit_of_conventional_reactor,Arrays.asList(varResult_of_conventional_reactor));
 	  potBenefit_of_conventional_reactor.values = new double[]{8, -4};
 	  nodeBenefit_of_conventional_reactor.setPotential(potBenefit_of_conventional_reactor);
-	
-	
+		
 	  // Link restrictions and revealing states
 	  Link link_nodeResult_of_test_nodeBuild_decision = probNet.getGraph().getLink(nodeResult_of_test.getNode(),nodeBuild_decision.getNode(), true);
 	  link_nodeResult_of_test_nodeBuild_decision.initializesRestrictionsPotential();
@@ -1371,8 +1845,197 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	  return probNet;
 	}	
 	
+	public static ProbNet buildWooerDAN () {
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  probNet.setName(NamesNetworks.WOOER_DAN.toString());
+		  // Variables
+		  Variable varResult_1 = new Variable("Result 1", "fail", "pass");
+		  Variable varResult_2 = new Variable("Result 2", "fail", "pass");
+		  Variable varResult_3 = new Variable("Result 3", "fail", "pass");
+		  Variable varQuality_of_wooer = new Variable("Quality of wooer", "bad", "good");
+		  Variable varWedding = new Variable("Wedding", "no", "yes");
+		  Variable varQuality_of_general = new Variable("Quality of general", "bad", "good");
+		  Variable varWealth = new Variable("Wealth", "poor", "wealthy");
+		  Variable varOffspring = new Variable("Offspring", "no", "yes");
+		  Variable varNoble_descent = new Variable("Noble descent", "no", "yes");
+		  Variable varTask_1 = new Variable("Task 1", "kill dragon", "kill unicorn");
+		  Variable varTask_2 = new Variable("Task 2", "night in tower", "night in tomb");
+		  Variable varDec_Task_3 = new Variable("Dec Task 3", "climb", "swim");
+		  Variable varMarriage = new Variable("Marriage", "no", "yes");
+		  Variable varWar = new Variable("War", "no", "yes");
+		  Variable varRetire = new Variable("Retire", "no", "yes");
+		  Variable varU1 = new Variable("U1");
+		  Variable varU2 = new Variable("U2");
+		  Variable varU3 = new Variable("U3");
+		  Variable varcost_task_1 = new Variable("cost task 1");
+		  Variable varcost_task_2 = new Variable("cost task 2");
+		  Variable varcost_task_3 = new Variable("cost task 3");
+		  Variable varcost_marriage = new Variable("cost marriage");
+		  Variable varcost_war = new Variable("cost war");
+		  Variable varcost_retirement = new Variable("cost retirement");
+
+		  // Nodes
+		  ProbNode nodeResult_1= probNet.addProbNode(varResult_1, NodeType.CHANCE);
+		  ProbNode nodeResult_2= probNet.addProbNode(varResult_2, NodeType.CHANCE);
+		  ProbNode nodeResult_3= probNet.addProbNode(varResult_3, NodeType.CHANCE);
+		  ProbNode nodeQuality_of_wooer= probNet.addProbNode(varQuality_of_wooer, NodeType.CHANCE);
+		  ProbNode nodeWedding= probNet.addProbNode(varWedding, NodeType.CHANCE);
+		  ProbNode nodeQuality_of_general= probNet.addProbNode(varQuality_of_general, NodeType.CHANCE);
+		  ProbNode nodeWealth= probNet.addProbNode(varWealth, NodeType.CHANCE);
+		  ProbNode nodeOffspring= probNet.addProbNode(varOffspring, NodeType.CHANCE);
+		  ProbNode nodeNoble_descent= probNet.addProbNode(varNoble_descent, NodeType.CHANCE);
+		  ProbNode nodeTask_1= probNet.addProbNode(varTask_1, NodeType.DECISION);
+		  ProbNode nodeTask_2= probNet.addProbNode(varTask_2, NodeType.DECISION);
+		  ProbNode nodeDec_Task_3= probNet.addProbNode(varDec_Task_3, NodeType.DECISION);
+		  ProbNode nodeMarriage= probNet.addProbNode(varMarriage, NodeType.DECISION);
+		  ProbNode nodeWar= probNet.addProbNode(varWar, NodeType.DECISION);
+		  ProbNode nodeRetire= probNet.addProbNode(varRetire, NodeType.DECISION);
+		  ProbNode nodeU1= probNet.addProbNode(varU1, NodeType.UTILITY);
+		  ProbNode nodeU2= probNet.addProbNode(varU2, NodeType.UTILITY);
+		  ProbNode nodeU3= probNet.addProbNode(varU3, NodeType.UTILITY);
+		  ProbNode nodecost_task_1= probNet.addProbNode(varcost_task_1, NodeType.UTILITY);
+		  ProbNode nodecost_task_2= probNet.addProbNode(varcost_task_2, NodeType.UTILITY);
+		  ProbNode nodecost_task_3= probNet.addProbNode(varcost_task_3, NodeType.UTILITY);
+		  ProbNode nodecost_marriage= probNet.addProbNode(varcost_marriage, NodeType.UTILITY);
+		  ProbNode nodecost_war= probNet.addProbNode(varcost_war, NodeType.UTILITY);
+		  ProbNode nodecost_retirement= probNet.addProbNode(varcost_retirement, NodeType.UTILITY);
+
+		  // Links
+		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.addLink(nodeQuality_of_wooer, nodeQuality_of_general, true);
+		  probNet.addLink(nodeQuality_of_wooer, nodeOffspring, true);
+		  probNet.addLink(nodeQuality_of_wooer, nodeU1, true);
+		  probNet.addLink(nodeQuality_of_wooer, nodeResult_1, true);
+		  probNet.addLink(nodeQuality_of_wooer, nodeResult_2, true);
+		  probNet.addLink(nodeQuality_of_wooer, nodeResult_3, true);
+		  probNet.addLink(nodeWedding, nodeQuality_of_general, true);
+		  probNet.addLink(nodeWedding, nodeOffspring, true);
+		  probNet.addLink(nodeQuality_of_general, nodeWealth, true);
+		  probNet.addLink(nodeWealth, nodeU3, true);
+		  probNet.addLink(nodeOffspring, nodeU2, true);
+		  probNet.addLink(nodeOffspring, nodeWealth, true);
+		  probNet.addLink(nodeNoble_descent, nodeU2, true);
+		  probNet.addLink(nodeTask_1, nodecost_task_1, true);
+		  probNet.addLink(nodeTask_1, nodeMarriage, true);
+		  probNet.addLink(nodeTask_1, nodeResult_1, true);
+		  probNet.addLink(nodeTask_2, nodecost_task_2, true);
+		  probNet.addLink(nodeTask_2, nodeMarriage, true);
+		  probNet.addLink(nodeTask_2, nodeResult_2, true);
+		  probNet.addLink(nodeDec_Task_3, nodecost_task_3, true);
+		  probNet.addLink(nodeDec_Task_3, nodeMarriage, true);
+		  probNet.addLink(nodeDec_Task_3, nodeResult_3, true);
+		  probNet.addLink(nodeMarriage, nodeWedding, true);
+		  probNet.addLink(nodeMarriage, nodecost_marriage, true);
+		  probNet.addLink(nodeMarriage, nodeWar, true);
+		  probNet.addLink(nodeWar, nodeU3, true);
+		  probNet.addLink(nodeWar, nodeWealth, true);
+		  probNet.addLink(nodeWar, nodeRetire, true);
+		  probNet.addLink(nodeWar, nodecost_war, true);
+		  probNet.addLink(nodeRetire, nodeU2, true);
+		  probNet.addLink(nodeRetire, nodeU3, true);
+		  probNet.addLink(nodeRetire, nodecost_retirement, true);
+
+		  // Potentials
+		  TablePotential potResult_1 = new TablePotential(Arrays.asList(varResult_1, varQuality_of_wooer, varTask_1), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potResult_1.values = new double[]{0.97, 0.03, 0.75, 0.25, 0.75, 0.25, 0.25, 0.75};
+		  nodeResult_1.setPotential(potResult_1);
+
+		  TablePotential potResult_2 = new TablePotential(Arrays.asList(varResult_2, varQuality_of_wooer, varTask_2), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potResult_2.values = new double[]{0.9, 0.1, 0.2, 0.8, 0.75, 0.25, 0.25, 0.75};
+		  nodeResult_2.setPotential(potResult_2);
+
+		  TablePotential potResult_3 = new TablePotential(Arrays.asList(varResult_3, varQuality_of_wooer, varDec_Task_3), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potResult_3.values = new double[]{0.6, 0.4, 0.4, 0.6, 0.55, 0.45, 0.45, 0.55};
+		  nodeResult_3.setPotential(potResult_3);
+
+		  UniformPotential potQuality_of_wooer = new UniformPotential(Arrays.asList(varQuality_of_wooer), PotentialRole.CONDITIONAL_PROBABILITY);
+		  nodeQuality_of_wooer.setPotential(potQuality_of_wooer);
+
+		  TablePotential potWedding = new TablePotential(Arrays.asList(varWedding, varMarriage), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potWedding.values = new double[]{1, 0, 0, 1};
+		  nodeWedding.setPotential(potWedding);
+
+		  UniformPotential potQuality_of_general = new UniformPotential(Arrays.asList(varQuality_of_general, varQuality_of_wooer, varWedding), PotentialRole.CONDITIONAL_PROBABILITY);
+		  nodeQuality_of_general.setPotential(potQuality_of_general);
+
+		  TablePotential potWealth = new TablePotential(Arrays.asList(varWealth, varQuality_of_general, varWar, varOffspring), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potWealth.values = new double[]{0.5, 0.5, 0.5, 0.5, 0.85, 0.15, 0.15, 0.85, 0.6, 0.4, 0.6, 0.4, 0.9, 0.1, 0.2, 0.8};
+		  nodeWealth.setPotential(potWealth);
+
+		  TablePotential potOffspring = new TablePotential(Arrays.asList(varOffspring, varQuality_of_wooer, varWedding), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potOffspring.values = new double[]{1, 0, 1, 0, 0.6, 0.4, 0.2, 0.8};
+		  nodeOffspring.setPotential(potOffspring);
+
+		  UniformPotential potNoble_descent = new UniformPotential(Arrays.asList(varNoble_descent), PotentialRole.CONDITIONAL_PROBABILITY);
+		  nodeNoble_descent.setPotential(potNoble_descent);
+
+		  UniformPotential potU1 = new UniformPotential(varU1,Arrays.asList(varQuality_of_wooer));
+		  nodeU1.setPotential(potU1);
+
+		  TablePotential potU2 = new TablePotential(varU2,Arrays.asList(varNoble_descent, varOffspring, varRetire));
+		  potU2.values = new double[]{0, 0, 2, 3, 1, 3, 4, 7};
+		  nodeU2.setPotential(potU2);
+
+		  TablePotential potU3 = new TablePotential(varU3,Arrays.asList(varRetire, varWar, varWealth));
+		  potU3.values = new double[]{0, 1, 2, 3, 6, 8, 7, 10};
+		  nodeU3.setPotential(potU3);
+
+		  TablePotential potcost_task_1 = new TablePotential(varcost_task_1,Arrays.asList(varTask_1));
+		  potcost_task_1.values = new double[]{-1, -0.2};
+		  nodecost_task_1.setPotential(potcost_task_1);
+
+		  TablePotential potcost_task_2 = new TablePotential(varcost_task_2,Arrays.asList(varTask_2));
+		  potcost_task_2.values = new double[]{-0.5, -0.2};
+		  nodecost_task_2.setPotential(potcost_task_2);
+
+		  TablePotential potcost_task_3 = new TablePotential(varcost_task_3,Arrays.asList(varDec_Task_3));
+		  potcost_task_3.values = new double[]{-0.1, -0.05};
+		  nodecost_task_3.setPotential(potcost_task_3);
+
+		  UniformPotential potcost_marriage = new UniformPotential(varcost_marriage,Arrays.asList(varMarriage));
+		  nodecost_marriage.setPotential(potcost_marriage);
+
+		  TablePotential potcost_war = new TablePotential(varcost_war,Arrays.asList(varWar));
+		  potcost_war.values = new double[]{0, -5};
+		  nodecost_war.setPotential(potcost_war);
+
+		  UniformPotential potcost_retirement = new UniformPotential(varcost_retirement,Arrays.asList(varRetire));
+		  nodecost_retirement.setPotential(potcost_retirement);
+
+		  // Link restrictions and revealing states
+		  Link link_nodeWedding_nodeOffspring = probNet.getGraph().getLink(nodeWedding.getNode(),nodeOffspring.getNode(), true);
+		  link_nodeWedding_nodeOffspring.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeWedding_nodeOffspring = (TablePotential)link_nodeWedding_nodeOffspring.getRestrictionsPotential();
+		  restrictions_nodeWedding_nodeOffspring.values = new double[] {1, 1, 0, 1};
+		  link_nodeWedding_nodeOffspring.setRevealingStates(Arrays.asList(varWedding.getStates()[1], varWedding.getStates()[0]));
+
+		  Link link_nodeTask_1_nodeResult_1 = probNet.getGraph().getLink(nodeTask_1.getNode(),nodeResult_1.getNode(), true);
+		  link_nodeTask_1_nodeResult_1.setRevealingStates(Arrays.asList(varTask_1.getStates()[1], varTask_1.getStates()[0]));
+
+		  Link link_nodeTask_2_nodeResult_2 = probNet.getGraph().getLink(nodeTask_2.getNode(),nodeResult_2.getNode(), true);
+		  link_nodeTask_2_nodeResult_2.setRevealingStates(Arrays.asList(varTask_2.getStates()[1], varTask_2.getStates()[0]));
+
+		  Link link_nodeDec_Task_3_nodeResult_3 = probNet.getGraph().getLink(nodeDec_Task_3.getNode(),nodeResult_3.getNode(), true);
+		  link_nodeDec_Task_3_nodeResult_3.setRevealingStates(Arrays.asList(varDec_Task_3.getStates()[1], varDec_Task_3.getStates()[0]));
+
+		  Link link_nodeMarriage_nodeWedding = probNet.getGraph().getLink(nodeMarriage.getNode(),nodeWedding.getNode(), true);
+		  link_nodeMarriage_nodeWedding.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeMarriage_nodeWedding = (TablePotential)link_nodeMarriage_nodeWedding.getRestrictionsPotential();
+		  restrictions_nodeMarriage_nodeWedding.values = new double[] {1, 0, 0, 1};
+		  link_nodeMarriage_nodeWedding.setRevealingStates(Arrays.asList(varMarriage.getStates()[1], varMarriage.getStates()[0]));
+
+		  Link link_nodeWar_nodeWealth = probNet.getGraph().getLink(nodeWar.getNode(),nodeWealth.getNode(), true);
+		  link_nodeWar_nodeWealth.setRevealingStates(Arrays.asList(varWar.getStates()[1], varWar.getStates()[0]));
+
+		  // Always observed nodes
+		  nodeNoble_descent.setAlwaysObserved(true);
+
+		 return probNet;
+		}
+	
 	public static ProbNet buildDiabetesDAN () {
 		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  probNet.setName(NamesNetworks.DIABETES_DAN.toString());
 		  // Variables
 		  Variable varUrine_test_result = new Variable("Urine test result", "negative", "positive");
 		  Variable varSymptom = new Variable("Symptom", "absent", "present");
@@ -1461,6 +2124,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	
 	public static ProbNet buildTwoTestDAN () {
 		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  probNet.setName(NamesNetworks.TWO_TEST_DAN.toString());
 		  // Variables
 		  Variable varDisease = new Variable("Disease", "absent", "present");
 		  Variable varR_T1 = new Variable("R T1", "negative", "positive");
@@ -1670,7 +2334,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  for (int i=0;i<numTests;i++){
 			  nodeTestResult[i]=probNet.addProbNode(varTest_Result[i], NodeType.CHANCE);
 			  nodeDecTest[i]=probNet.addProbNode(varDec_Test[i], NodeType.DECISION);
-			  nodeCostOfTest[i]=probNet.addProbNode(varTest_Result[i], NodeType.UTILITY);
+			  nodeCostOfTest[i]=probNet.addProbNode(varCost_of_Test[i], NodeType.UTILITY);
 		  }
 	
 		  // Links
@@ -1703,8 +2367,8 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  //Potentials for costs of tests
 		  TablePotential potentialCostOfTest[] = new TablePotential[numTests];
 		  for (int i=0;i<numTests;i++){
-			  potentialCostOfTest[i] = new TablePotential(varCost_of_Test[i],Arrays.asList(varDec_Test));
-			  potentialCostOfTest[i].values =new double[]{0, 50};
+			  potentialCostOfTest[i] = new TablePotential(varCost_of_Test[i],Arrays.asList(varDec_Test[i]));
+			  potentialCostOfTest[i].values =new double[]{0, -0.5};
 			  nodeCostOfTest[i].setPotential(potentialCostOfTest[i]);
 		  }
 	
@@ -1712,6 +2376,13 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  potQuality_of_life.values = new double[]{10, 3, 9, 8};
 		  nodeQuality_of_life.setPotential(potQuality_of_life);
 
+		  TablePotential potSymptom = new TablePotential(Arrays.asList(varSymptom, varDiabetes), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potSymptom.values = new double[]{0.999, 0.001, 0.15, 0.85};
+		  nodeSymptom.setPotential(potSymptom);
+
+		  TablePotential potDiabetes = new TablePotential(Arrays.asList(varDiabetes), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potDiabetes.values = new double[]{0.93, 0.07};
+		  nodeDiabetes.setPotential(potDiabetes);
 
 		  // Link restrictions and revealing states
 		  for (int i=0;i<numTests;i++){
@@ -1733,6 +2404,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	public static ProbNet buildNTestsDAN (int numTests) {
 				 
 		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  probNet.setName(NamesNetworks.N_TESTS.toString());
 		  // Variables
 		
 		  Variable varSymptom = new Variable("Symptom", "absent", "present");
@@ -1759,7 +2431,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  for (int i=0;i<numTests;i++){
 			  nodeTestResult[i]=probNet.addProbNode(varTest_Result[i], NodeType.CHANCE);
 			  nodeDecTest[i]=probNet.addProbNode(varDec_Test[i], NodeType.DECISION);
-			  nodeCostOfTest[i]=probNet.addProbNode(varTest_Result[i], NodeType.UTILITY);
+			  nodeCostOfTest[i]=probNet.addProbNode(varCost_of_Test[i], NodeType.UTILITY);
 		  }
 	
 		  // Links
@@ -1786,8 +2458,8 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  //Potentials for costs of tests
 		  TablePotential potentialCostOfTest[] = new TablePotential[numTests];
 		  for (int i=0;i<numTests;i++){
-			  potentialCostOfTest[i] = new TablePotential(varCost_of_Test[i],Arrays.asList(varDec_Test));
-			  potentialCostOfTest[i].values =new double[]{0, 50};
+			  potentialCostOfTest[i] = new TablePotential(varCost_of_Test[i],Arrays.asList(varDec_Test[i]));
+			  potentialCostOfTest[i].values =new double[]{0, -0.5};
 			  nodeCostOfTest[i].setPotential(potentialCostOfTest[i]);
 		  }
 	
@@ -1795,6 +2467,14 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  potQuality_of_life.values = new double[]{10, 3, 9, 8};
 		  nodeQuality_of_life.setPotential(potQuality_of_life);
 
+		  TablePotential potSymptom = new TablePotential(Arrays.asList(varSymptom, varDiabetes), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potSymptom.values = new double[]{0.999, 0.001, 0.15, 0.85};
+		  nodeSymptom.setPotential(potSymptom);
+
+		  TablePotential potDiabetes = new TablePotential(Arrays.asList(varDiabetes), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potDiabetes.values = new double[]{0.93, 0.07};
+		  nodeDiabetes.setPotential(potDiabetes);
+		  
 
 		  // Link restrictions and revealing states
 		  for (int i=0;i<numTests;i++){
@@ -1809,6 +2489,407 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 
 		 return probNet;
 	}	
-
 	
+	public static ProbNet buildMediastinetDAN () {
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+
+		  probNet.setName(NamesNetworks.MEDIASTINET_DAN.toString());
+		  // Variables
+		  Variable varN2_N3 = new Variable("N2 N3", "negative", "positive");
+		  Variable varCT_scan = new Variable("CT scan", "negative", "positive");
+		  Variable varTBNA = new Variable("TBNA", "negative", "positive");
+		  Variable varPET = new Variable("PET", "no result", "negative", "positive");
+		  Variable varEBUS = new Variable("EBUS", "negative", "positive");
+		  Variable varEUS = new Variable("EUS", "negative", "positive");
+		  Variable varMED = new Variable("MED", "negative", "positive");
+		  Variable varMED_Sv = new Variable("MED Sv", "no", "yes");
+		  Variable varDecTBNA = new Variable("Dec:TBNA", "no", "yes");
+		  Variable varDecPET = new Variable("Dec:PET", "no", "yes");
+		  Variable varDecMED = new Variable("Dec:MED", "no", "yes");
+		  Variable varTreatment = new Variable("Treatment", "palliative", "chemotherapy", "thoracotomy");
+		  Variable varDecEBUS = new Variable("Dec:EBUS", "no", "yes");
+		  Variable varDecEUS = new Variable("Dec:EUS", "no", "yes");
+		  Variable varSurvivors_QALE = new Variable("Survivors QALE");
+		  Variable varInmediate_Survival = new Variable("Inmediate Survival");
+		  Variable varMED_Survival = new Variable("MED Survival");
+		  Variable varNet_QALE = new Variable("Net QALE");
+		  Variable varTBNA_Morbidity = new Variable("TBNA Morbidity");
+		  Variable varMED_Morbidity = new Variable("MED Morbidity");
+		  Variable varEUS_Morbidity = new Variable("EUS Morbidity");
+		  Variable varEBUS_Morbidity = new Variable("EBUS Morbidity");
+		  Variable varTotal_QALE = new Variable("Total QALE");
+		  Variable varCostCT_scan = new Variable("Cost:CT scan");
+		  Variable varCostTBNA = new Variable("Cost:TBNA");
+		  Variable varCostEBUS = new Variable("Cost:EBUS");
+		  Variable varCostEUS = new Variable("Cost:EUS");
+		  Variable varCostMED = new Variable("Cost:MED");
+		  Variable varCostPET = new Variable("Cost:PET");
+		  Variable varCostTreatment = new Variable("Cost:Treatment");
+		  Variable varTotal_Economic_Cost = new Variable("Total Economic Cost");
+		  Variable varC2E = new Variable("C2E");
+		  Variable varWeighted_Economic_Cost = new Variable("Weighted Economic Cost");
+		  Variable varNet_Effectiveness = new Variable("Net Effectiveness");
+
+		  // Nodes
+		  ProbNode nodeN2_N3= probNet.addProbNode(varN2_N3, NodeType.CHANCE);
+		  ProbNode nodeCT_scan= probNet.addProbNode(varCT_scan, NodeType.CHANCE);
+		  ProbNode nodeTBNA= probNet.addProbNode(varTBNA, NodeType.CHANCE);
+		  ProbNode nodePET= probNet.addProbNode(varPET, NodeType.CHANCE);
+		  ProbNode nodeEBUS= probNet.addProbNode(varEBUS, NodeType.CHANCE);
+		  ProbNode nodeEUS= probNet.addProbNode(varEUS, NodeType.CHANCE);
+		  ProbNode nodeMED= probNet.addProbNode(varMED, NodeType.CHANCE);
+		  ProbNode nodeMED_Sv= probNet.addProbNode(varMED_Sv, NodeType.CHANCE);
+		  ProbNode nodeDecTBNA= probNet.addProbNode(varDecTBNA, NodeType.DECISION);
+		  ProbNode nodeDecPET= probNet.addProbNode(varDecPET, NodeType.DECISION);
+		  ProbNode nodeDecMED= probNet.addProbNode(varDecMED, NodeType.DECISION);
+		  ProbNode nodeTreatment= probNet.addProbNode(varTreatment, NodeType.DECISION);
+		  ProbNode nodeDecEBUS= probNet.addProbNode(varDecEBUS, NodeType.DECISION);
+		  ProbNode nodeDecEUS= probNet.addProbNode(varDecEUS, NodeType.DECISION);
+		  ProbNode nodeSurvivors_QALE= probNet.addProbNode(varSurvivors_QALE, NodeType.UTILITY);
+		  ProbNode nodeInmediate_Survival= probNet.addProbNode(varInmediate_Survival, NodeType.UTILITY);
+		  ProbNode nodeMED_Survival= probNet.addProbNode(varMED_Survival, NodeType.UTILITY);
+		  ProbNode nodeNet_QALE= probNet.addProbNode(varNet_QALE, NodeType.UTILITY);
+		  ProbNode nodeTBNA_Morbidity= probNet.addProbNode(varTBNA_Morbidity, NodeType.UTILITY);
+		  ProbNode nodeMED_Morbidity= probNet.addProbNode(varMED_Morbidity, NodeType.UTILITY);
+		  ProbNode nodeEUS_Morbidity= probNet.addProbNode(varEUS_Morbidity, NodeType.UTILITY);
+		  ProbNode nodeEBUS_Morbidity= probNet.addProbNode(varEBUS_Morbidity, NodeType.UTILITY);
+		  ProbNode nodeTotal_QALE= probNet.addProbNode(varTotal_QALE, NodeType.UTILITY);
+		  ProbNode nodeCostCT_scan= probNet.addProbNode(varCostCT_scan, NodeType.UTILITY);
+		  ProbNode nodeCostTBNA= probNet.addProbNode(varCostTBNA, NodeType.UTILITY);
+		  ProbNode nodeCostEBUS= probNet.addProbNode(varCostEBUS, NodeType.UTILITY);
+		  ProbNode nodeCostEUS= probNet.addProbNode(varCostEUS, NodeType.UTILITY);
+		  ProbNode nodeCostMED= probNet.addProbNode(varCostMED, NodeType.UTILITY);
+		  ProbNode nodeCostPET= probNet.addProbNode(varCostPET, NodeType.UTILITY);
+		  ProbNode nodeCostTreatment= probNet.addProbNode(varCostTreatment, NodeType.UTILITY);
+		  ProbNode nodeTotal_Economic_Cost= probNet.addProbNode(varTotal_Economic_Cost, NodeType.UTILITY);
+		  ProbNode nodeC2E= probNet.addProbNode(varC2E, NodeType.UTILITY);
+		  ProbNode nodeWeighted_Economic_Cost= probNet.addProbNode(varWeighted_Economic_Cost, NodeType.UTILITY);
+		  ProbNode nodeNet_Effectiveness= probNet.addProbNode(varNet_Effectiveness, NodeType.UTILITY);
+
+		  // Links
+		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.addLink(nodeN2_N3, nodeCT_scan, true);
+		  probNet.addLink(nodeN2_N3, nodeEBUS, true);
+		  probNet.addLink(nodeN2_N3, nodeEUS, true);
+		  probNet.addLink(nodeN2_N3, nodeMED, true);
+		  probNet.addLink(nodeN2_N3, nodePET, true);
+		  probNet.addLink(nodeN2_N3, nodeSurvivors_QALE, true);
+		  probNet.addLink(nodeN2_N3, nodeTBNA, true);
+		  probNet.addLink(nodeCT_scan, nodeEBUS, true);
+		  probNet.addLink(nodeCT_scan, nodeMED, true);
+		  probNet.addLink(nodeCT_scan, nodePET, true);
+		  probNet.addLink(nodeCT_scan, nodeTBNA, true);
+		  probNet.addLink(nodeCT_scan, nodeEUS, true);
+		  probNet.addLink(nodePET, nodeEBUS, true);
+		  probNet.addLink(nodePET, nodeEUS, true);
+		  probNet.addLink(nodePET, nodeMED, true);
+		  probNet.addLink(nodeMED_Sv, nodeMED_Morbidity, true);
+		  probNet.addLink(nodeMED_Sv, nodeMED_Survival, true);
+		  probNet.addLink(nodeDecTBNA, nodeCostTBNA, true);
+		  probNet.addLink(nodeDecTBNA, nodeTBNA, true);
+		  probNet.addLink(nodeDecTBNA, nodeTBNA_Morbidity, true);
+		  probNet.addLink(nodeDecPET, nodeCostPET, true);
+		  probNet.addLink(nodeDecPET, nodePET, true);
+		  probNet.addLink(nodeDecPET, nodeDecEBUS, true);
+		  probNet.addLink(nodeDecPET, nodeDecEUS, true);
+		  probNet.addLink(nodeDecPET, nodeDecMED, true);
+		  probNet.addLink(nodeDecMED, nodeCostMED, true);
+		  probNet.addLink(nodeDecMED, nodeMED, true);
+		  probNet.addLink(nodeDecMED, nodeMED_Sv, true);
+		  probNet.addLink(nodeTreatment, nodeCostTreatment, true);
+		  probNet.addLink(nodeTreatment, nodeInmediate_Survival, true);
+		  probNet.addLink(nodeTreatment, nodeSurvivors_QALE, true);
+		  probNet.addLink(nodeDecEBUS, nodeEBUS, true);
+		  probNet.addLink(nodeDecEBUS, nodeCostEBUS, true);
+		  probNet.addLink(nodeDecEBUS, nodeEBUS_Morbidity, true);
+		  probNet.addLink(nodeDecEUS, nodeEUS, true);
+		  probNet.addLink(nodeDecEUS, nodeEUS_Morbidity, true);
+		  probNet.addLink(nodeDecEUS, nodeCostEUS, true);
+		  probNet.addLink(nodeSurvivors_QALE, nodeNet_QALE, true);
+		  probNet.addLink(nodeInmediate_Survival, nodeNet_QALE, true);
+		  probNet.addLink(nodeMED_Survival, nodeNet_QALE, true);
+		  probNet.addLink(nodeNet_QALE, nodeTotal_QALE, true);
+		  probNet.addLink(nodeTBNA_Morbidity, nodeTotal_QALE, true);
+		  probNet.addLink(nodeMED_Morbidity, nodeTotal_QALE, true);
+		  probNet.addLink(nodeEUS_Morbidity, nodeTotal_QALE, true);
+		  probNet.addLink(nodeEBUS_Morbidity, nodeTotal_QALE, true);
+		  probNet.addLink(nodeTotal_QALE, nodeNet_Effectiveness, true);
+		  probNet.addLink(nodeCostCT_scan, nodeTotal_Economic_Cost, true);
+		  probNet.addLink(nodeCostTBNA, nodeTotal_Economic_Cost, true);
+		  probNet.addLink(nodeCostEBUS, nodeTotal_Economic_Cost, true);
+		  probNet.addLink(nodeCostEUS, nodeTotal_Economic_Cost, true);
+		  probNet.addLink(nodeCostMED, nodeTotal_Economic_Cost, true);
+		  probNet.addLink(nodeCostPET, nodeTotal_Economic_Cost, true);
+		  probNet.addLink(nodeCostTreatment, nodeTotal_Economic_Cost, true);
+		  probNet.addLink(nodeTotal_Economic_Cost, nodeWeighted_Economic_Cost, true);
+		  probNet.addLink(nodeC2E, nodeWeighted_Economic_Cost, true);
+		  probNet.addLink(nodeWeighted_Economic_Cost, nodeNet_Effectiveness, true);
+
+		  // Potentials
+		  TablePotential potN2_N3 = new TablePotential(Arrays.asList(varN2_N3), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potN2_N3.values = new double[]{0.7193, 0.2807};
+		  nodeN2_N3.setPotential(potN2_N3);
+
+		  TablePotential potCT_scan = new TablePotential(Arrays.asList(varCT_scan, varN2_N3), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potCT_scan.values = new double[]{0.85676, 0.14324, 0.48966, 0.51034};
+		  nodeCT_scan.setPotential(potCT_scan);
+
+		  TablePotential potTBNA = new TablePotential(Arrays.asList(varTBNA, varCT_scan, varN2_N3, varDecTBNA), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potTBNA.values = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0.92143, 0.07857, 0.90435, 0.09565, 0.98, 0.02, 0.54032, 0.45968};
+		  nodeTBNA.setPotential(potTBNA);
+
+		  TablePotential potPET = new TablePotential(Arrays.asList(varPET, varCT_scan, varN2_N3, varDecPET), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potPET.values = new double[]{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92473, 0.07527, 0, 0.775, 0.225, 0, 0.25974, 0.74026, 0, 0.09524, 0.90476};
+		  nodePET.setPotential(potPET);
+
+		  TablePotential potEBUS = new TablePotential(Arrays.asList(varEBUS, varPET, varCT_scan, varN2_N3, varDecEBUS), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potEBUS.values = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.97778, 0.02222, 0.975, 0.025, 0.96667, 0.03333, 0.97368, 0.02632, 0.97561, 0.02439, 0.96552, 0.03448, 0.10811, 0.89189, 0.11905, 0.88095, 0.10811, 0.89189, 0.08108, 0.91892, 0.11111, 0.88889, 0.12121, 0.87879};
+		  nodeEBUS.setPotential(potEBUS);
+
+		  TablePotential potEUS = new TablePotential(Arrays.asList(varEUS, varPET, varCT_scan, varN2_N3, varDecEUS), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potEUS.values = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.92308, 0.07692, 0.9375, 0.0625, 0.92593, 0.07407, 0.92857, 0.07143, 0.93333, 0.06667, 0.93548, 0.06452, 0.2381, 0.7619, 0.43333, 0.56667, 0.41935, 0.58065, 0.14286, 0.85714, 0.13158, 0.86842, 0.13889, 0.86111};
+		  nodeEUS.setPotential(potEUS);
+
+		  TablePotential potMED = new TablePotential(Arrays.asList(varMED, varPET, varCT_scan, varN2_N3, varDecMED), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potMED.values = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.94444, 0.05556, 0.9375, 0.0625, 0.94737, 0.05263, 0.92857, 0.07143, 0.94118, 0.05882, 0.95, 0.05, 0.27273, 0.72727, 0.2, 0.8, 0.21429, 0.78571, 0.1875, 0.8125, 0.1875, 0.8125, 0.2, 0.8};
+		  nodeMED.setPotential(potMED);
+
+		  TablePotential potMED_Sv = new TablePotential(Arrays.asList(varMED_Sv, varDecMED), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potMED_Sv.values = new double[]{0, 1, 0.03704, 0.96296};
+		  nodeMED_Sv.setPotential(potMED_Sv);
+
+		  TablePotential potSurvivors_QALE = new TablePotential(varSurvivors_QALE,Arrays.asList(varN2_N3, varTreatment));
+		  potSurvivors_QALE.values = new double[]{1.25, 0.5, 2, 0.83, 3, 0.66};
+		  nodeSurvivors_QALE.setPotential(potSurvivors_QALE);
+
+		  TablePotential potInmediate_Survival = new TablePotential(varInmediate_Survival,Arrays.asList(varTreatment));
+		  potInmediate_Survival.values = new double[]{0.98113, 0.98039, 0.90909};
+		  nodeInmediate_Survival.setPotential(potInmediate_Survival);
+
+		  TablePotential potMED_Survival = new TablePotential(varMED_Survival,Arrays.asList(varMED_Sv));
+		  potMED_Survival.values = new double[]{0, 1};
+		  nodeMED_Survival.setPotential(potMED_Survival);
+
+		  ProductPotential potNet_QALE = new ProductPotential(varNet_QALE,Arrays.asList(varInmediate_Survival, varMED_Survival, varSurvivors_QALE));
+		  nodeNet_QALE.setPotential(potNet_QALE);
+
+		  TablePotential potTBNA_Morbidity = new TablePotential(varTBNA_Morbidity,Arrays.asList(varDecTBNA));
+		  potTBNA_Morbidity.values = new double[]{0, -0.0001};
+		  nodeTBNA_Morbidity.setPotential(potTBNA_Morbidity);
+
+		  TablePotential potMED_Morbidity = new TablePotential(varMED_Morbidity,Arrays.asList(varMED_Sv));
+		  potMED_Morbidity.values = new double[]{0, -0.05};
+		  nodeMED_Morbidity.setPotential(potMED_Morbidity);
+
+		  TablePotential potEUS_Morbidity = new TablePotential(varEUS_Morbidity,Arrays.asList(varDecEUS));
+		  potEUS_Morbidity.values = new double[]{0, -0.03};
+		  nodeEUS_Morbidity.setPotential(potEUS_Morbidity);
+
+		  TablePotential potEBUS_Morbidity = new TablePotential(varEBUS_Morbidity,Arrays.asList(varDecEBUS));
+		  potEBUS_Morbidity.values = new double[]{0, -0.03};
+		  nodeEBUS_Morbidity.setPotential(potEBUS_Morbidity);
+
+		  SumPotential potTotal_QALE = new SumPotential(varTotal_QALE,Arrays.asList(varEBUS_Morbidity, varEUS_Morbidity, varMED_Morbidity, varNet_QALE, varTBNA_Morbidity));
+		  nodeTotal_QALE.setPotential(potTotal_QALE);
+
+		  TablePotential potCostCT_scan = new TablePotential(varCostCT_scan,new ArrayList<Variable>());
+		  potCostCT_scan.values = new double[]{670};
+		  nodeCostCT_scan.setPotential(potCostCT_scan);
+
+		  TablePotential potCostTBNA = new TablePotential(varCostTBNA,Arrays.asList(varDecTBNA));
+		  potCostTBNA.values = new double[]{0, 80};
+		  nodeCostTBNA.setPotential(potCostTBNA);
+
+		  TablePotential potCostEBUS = new TablePotential(varCostEBUS,Arrays.asList(varDecEBUS));
+		  potCostEBUS.values = new double[]{0, 620};
+		  nodeCostEBUS.setPotential(potCostEBUS);
+
+		  TablePotential potCostEUS = new TablePotential(varCostEUS,Arrays.asList(varDecEUS));
+		  potCostEUS.values = new double[]{0, 620};
+		  nodeCostEUS.setPotential(potCostEUS);
+
+		  TablePotential potCostMED = new TablePotential(varCostMED,Arrays.asList(varDecMED));
+		  potCostMED.values = new double[]{0, 1620};
+		  nodeCostMED.setPotential(potCostMED);
+
+		  TablePotential potCostPET = new TablePotential(varCostPET,Arrays.asList(varDecPET));
+		  potCostPET.values = new double[]{0, 2250};
+		  nodeCostPET.setPotential(potCostPET);
+
+		  TablePotential potCostTreatment = new TablePotential(varCostTreatment,Arrays.asList(varTreatment));
+		  potCostTreatment.values = new double[]{3000, 11242, 19646};
+		  nodeCostTreatment.setPotential(potCostTreatment);
+
+		  SumPotential potTotal_Economic_Cost = new SumPotential(varTotal_Economic_Cost,Arrays.asList(varCostCT_scan, varCostEBUS, varCostEUS, varCostMED, varCostPET, varCostTBNA, varCostTreatment));
+		  nodeTotal_Economic_Cost.setPotential(potTotal_Economic_Cost);
+
+		  TablePotential potC2E = new TablePotential(varC2E,new ArrayList<Variable>());
+		  potC2E.values = new double[]{-0.00003};
+		  nodeC2E.setPotential(potC2E);
+
+		  ProductPotential potWeighted_Economic_Cost = new ProductPotential(varWeighted_Economic_Cost,Arrays.asList(varC2E, varTotal_Economic_Cost));
+		  nodeWeighted_Economic_Cost.setPotential(potWeighted_Economic_Cost);
+
+		  SumPotential potNet_Effectiveness = new SumPotential(varNet_Effectiveness,Arrays.asList(varTotal_QALE, varWeighted_Economic_Cost));
+		  nodeNet_Effectiveness.setPotential(potNet_Effectiveness);
+
+		  // Link restrictions and revealing states
+		  Link link_nodeDecTBNA_nodeTBNA = probNet.getGraph().getLink(nodeDecTBNA.getNode(),nodeTBNA.getNode(), true);
+		  link_nodeDecTBNA_nodeTBNA.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDecTBNA_nodeTBNA = (TablePotential)link_nodeDecTBNA_nodeTBNA.getRestrictionsPotential();
+		  restrictions_nodeDecTBNA_nodeTBNA.values = new double[] {0, 1, 0, 1};
+		  link_nodeDecTBNA_nodeTBNA.setRevealingStates(Arrays.asList(varDecTBNA.getStates()[1]));
+
+		  Link link_nodeDecPET_nodePET = probNet.getGraph().getLink(nodeDecPET.getNode(),nodePET.getNode(), true);
+		  link_nodeDecPET_nodePET.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDecPET_nodePET = (TablePotential)link_nodeDecPET_nodePET.getRestrictionsPotential();
+		  restrictions_nodeDecPET_nodePET.values = new double[] {1, 0, 0, 1, 0, 1};
+		  link_nodeDecPET_nodePET.setRevealingStates(Arrays.asList(varDecPET.getStates()[0], varDecPET.getStates()[1]));
+
+		  Link link_nodeDecMED_nodeMED = probNet.getGraph().getLink(nodeDecMED.getNode(),nodeMED.getNode(), true);
+		  link_nodeDecMED_nodeMED.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDecMED_nodeMED = (TablePotential)link_nodeDecMED_nodeMED.getRestrictionsPotential();
+		  restrictions_nodeDecMED_nodeMED.values = new double[] {0, 1, 0, 1};
+		  link_nodeDecMED_nodeMED.setRevealingStates(Arrays.asList(varDecMED.getStates()[1]));
+
+		  Link link_nodeDecEBUS_nodeEBUS = probNet.getGraph().getLink(nodeDecEBUS.getNode(),nodeEBUS.getNode(), true);
+		  link_nodeDecEBUS_nodeEBUS.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDecEBUS_nodeEBUS = (TablePotential)link_nodeDecEBUS_nodeEBUS.getRestrictionsPotential();
+		  restrictions_nodeDecEBUS_nodeEBUS.values = new double[] {0, 1, 0, 1};
+		  link_nodeDecEBUS_nodeEBUS.setRevealingStates(Arrays.asList(varDecEBUS.getStates()[1]));
+
+		  Link link_nodeDecEUS_nodeEUS = probNet.getGraph().getLink(nodeDecEUS.getNode(),nodeEUS.getNode(), true);
+		  link_nodeDecEUS_nodeEUS.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDecEUS_nodeEUS = (TablePotential)link_nodeDecEUS_nodeEUS.getRestrictionsPotential();
+		  restrictions_nodeDecEUS_nodeEUS.values = new double[] {0, 1, 0, 1};
+		  link_nodeDecEUS_nodeEUS.setRevealingStates(Arrays.asList(varDecEUS.getStates()[1]));
+
+		  // Always observed nodes
+		  nodeCT_scan.setAlwaysObserved(true);
+
+		 return probNet;
+		}		
+
+	public static ProbNet buildUsedCarBuyer () {
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  // Variables
+		  probNet.setName(NamesNetworks.USED_CAR_BUYER_DAN.toString());
+		  
+		  Variable varCars_Condition = new Variable("Car's Condition", "lemon", "peach");
+		  Variable varFirst_Result = new Variable("First Result", "no result", "no defect", "one defect", "two defects");
+		  Variable varSecond_result = new Variable("Second result", "no defect", "one defect");
+		  Variable varDec_Purchase = new Variable("Dec: Purchase", "do not buy", "buy without guarantee", "buy with guarantee");
+		  Variable varDec_Second_Test = new Variable("Dec: Second Test", "no test", "differential");
+		  Variable varDec_First_Test = new Variable("Dec: First Test", "no test", "fuel-electrical", "transmission", "steering");
+		  Variable varCost_First_test = new Variable("Cost: First test");
+		  Variable varCost_Second_Test = new Variable("Cost: Second Test");
+		  Variable varBuySell_difference = new Variable("Buy-sell difference");
+		  Variable varCost_Guarantee = new Variable("Cost: Guarantee");
+		  Variable varCost_Repair = new Variable("Cost: Repair");
+		  Variable varTotal = new Variable("Total");
+
+		  // Nodes
+		  ProbNode nodeCars_Condition= probNet.addProbNode(varCars_Condition, NodeType.CHANCE);
+		  ProbNode nodeFirst_Result= probNet.addProbNode(varFirst_Result, NodeType.CHANCE);
+		  ProbNode nodeSecond_result= probNet.addProbNode(varSecond_result, NodeType.CHANCE);
+		  ProbNode nodeDec_Purchase= probNet.addProbNode(varDec_Purchase, NodeType.DECISION);
+		  ProbNode nodeDec_Second_Test= probNet.addProbNode(varDec_Second_Test, NodeType.DECISION);
+		  ProbNode nodeDec_First_Test= probNet.addProbNode(varDec_First_Test, NodeType.DECISION);
+		  ProbNode nodeCost_First_test= probNet.addProbNode(varCost_First_test, NodeType.UTILITY);
+		  ProbNode nodeCost_Second_Test= probNet.addProbNode(varCost_Second_Test, NodeType.UTILITY);
+		  ProbNode nodeBuySell_difference= probNet.addProbNode(varBuySell_difference, NodeType.UTILITY);
+		  ProbNode nodeCost_Guarantee= probNet.addProbNode(varCost_Guarantee, NodeType.UTILITY);
+		  ProbNode nodeCost_Repair= probNet.addProbNode(varCost_Repair, NodeType.UTILITY);
+		  ProbNode nodeTotal= probNet.addProbNode(varTotal, NodeType.UTILITY);
+
+		  // Links
+		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.addLink(nodeCars_Condition, nodeFirst_Result, true);
+		  probNet.addLink(nodeCars_Condition, nodeCost_Repair, true);
+		  probNet.addLink(nodeCars_Condition, nodeSecond_result, true);
+		  probNet.addLink(nodeFirst_Result, nodeSecond_result, true);
+		  probNet.addLink(nodeDec_Purchase, nodeCost_Guarantee, true);
+		  probNet.addLink(nodeDec_Purchase, nodeBuySell_difference, true);
+		  probNet.addLink(nodeDec_Purchase, nodeCost_Repair, true);
+		  probNet.addLink(nodeDec_Second_Test, nodeDec_Purchase, true);
+		  probNet.addLink(nodeDec_Second_Test, nodeCost_Second_Test, true);
+		  probNet.addLink(nodeDec_Second_Test, nodeSecond_result, true);
+		  probNet.addLink(nodeDec_First_Test, nodeFirst_Result, true);
+		  probNet.addLink(nodeDec_First_Test, nodeDec_Second_Test, true);
+		  probNet.addLink(nodeDec_First_Test, nodeCost_First_test, true);
+		  probNet.addLink(nodeDec_First_Test, nodeSecond_result, true);
+		  probNet.addLink(nodeCost_First_test, nodeTotal, true);
+		  probNet.addLink(nodeCost_Second_Test, nodeTotal, true);
+		  probNet.addLink(nodeBuySell_difference, nodeTotal, true);
+		  probNet.addLink(nodeCost_Guarantee, nodeTotal, true);
+		  probNet.addLink(nodeCost_Repair, nodeTotal, true);
+
+		  // Potentials
+		  TablePotential potCars_Condition = new TablePotential(Arrays.asList(varCars_Condition), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potCars_Condition.values = new double[]{0.2, 0.8};
+		  nodeCars_Condition.setPotential(potCars_Condition);
+
+		  TablePotential potFirst_Result = new TablePotential(Arrays.asList(varFirst_Result, varCars_Condition, varDec_First_Test), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potFirst_Result.values = new double[]{1, 0, 0, 0, 1, 0, 0, 0, 0, 0.13, 0.53, 0.34, 0, 0.8, 0.2, 0, 0, 0.4, 0.6, 0, 0, 0.9, 0.1, 0, 0, 0.4, 0.6, 0, 0, 0.9, 0.1, 0};
+		  nodeFirst_Result.setPotential(potFirst_Result);
+
+		  TablePotential potSecond_result = new TablePotential(Arrays.asList(varSecond_result, varCars_Condition, varDec_Second_Test, varFirst_Result, varDec_First_Test), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potSecond_result.values = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.67, 0.33, 0.89, 0.11, 0, 0, 0, 0, 0.44, 0.56, 1, 0, 0, 0, 0, 0, 0.44, 0.56, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		  nodeSecond_result.setPotential(potSecond_result);
+
+		  TablePotential potCost_First_test = new TablePotential(varCost_First_test,Arrays.asList(varDec_First_Test));
+		  potCost_First_test.values = new double[]{0, -13, -10, -9};
+		  nodeCost_First_test.setPotential(potCost_First_test);
+
+		  TablePotential potCost_Second_Test = new TablePotential(varCost_Second_Test,Arrays.asList(varDec_Second_Test));
+		  potCost_Second_Test.values = new double[]{0, -4};
+		  nodeCost_Second_Test.setPotential(potCost_Second_Test);
+
+		  TablePotential potBuySell_difference = new TablePotential(varBuySell_difference,Arrays.asList(varDec_Purchase));
+		  potBuySell_difference.values = new double[]{0, 100, 100};
+		  nodeBuySell_difference.setPotential(potBuySell_difference);
+
+		  TablePotential potCost_Guarantee = new TablePotential(varCost_Guarantee,Arrays.asList(varDec_Purchase));
+		  potCost_Guarantee.values = new double[]{0, 0, -60};
+		  nodeCost_Guarantee.setPotential(potCost_Guarantee);
+
+		  TablePotential potCost_Repair = new TablePotential(varCost_Repair,Arrays.asList(varCars_Condition, varDec_Purchase));
+		  potCost_Repair.values = new double[]{0, 0, -200, -40, 0, -20};
+		  nodeCost_Repair.setPotential(potCost_Repair);
+
+		  SumPotential potTotal = new SumPotential(varTotal,Arrays.asList(varCost_First_test, varCost_Second_Test, varCost_Guarantee, varCost_Repair, varBuySell_difference));
+		  nodeTotal.setPotential(potTotal);
+
+		  // Link restrictions and revealing states
+		  Link link_nodeFirst_Result_nodeSecond_result = probNet.getGraph().getLink(nodeFirst_Result.getNode(),nodeSecond_result.getNode(), true);
+		  link_nodeFirst_Result_nodeSecond_result.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeFirst_Result_nodeSecond_result = (TablePotential)link_nodeFirst_Result_nodeSecond_result.getRestrictionsPotential();
+		  restrictions_nodeFirst_Result_nodeSecond_result.values = new double[] {0, 1, 1, 1, 0, 1, 1, 1};
+
+		  Link link_nodeDec_Second_Test_nodeSecond_result = probNet.getGraph().getLink(nodeDec_Second_Test.getNode(),nodeSecond_result.getNode(), true);
+		  link_nodeDec_Second_Test_nodeSecond_result.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDec_Second_Test_nodeSecond_result = (TablePotential)link_nodeDec_Second_Test_nodeSecond_result.getRestrictionsPotential();
+		  restrictions_nodeDec_Second_Test_nodeSecond_result.values = new double[] {0, 1, 0, 1};
+		  link_nodeDec_Second_Test_nodeSecond_result.setRevealingStates(Arrays.asList(varDec_Second_Test.getStates()[1]));
+
+		  Link link_nodeDec_First_Test_nodeFirst_Result = probNet.getGraph().getLink(nodeDec_First_Test.getNode(),nodeFirst_Result.getNode(), true);
+		  link_nodeDec_First_Test_nodeFirst_Result.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDec_First_Test_nodeFirst_Result = (TablePotential)link_nodeDec_First_Test_nodeFirst_Result.getRestrictionsPotential();
+		  restrictions_nodeDec_First_Test_nodeFirst_Result.values = new double[] {1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0};
+		  link_nodeDec_First_Test_nodeFirst_Result.setRevealingStates(Arrays.asList(varDec_First_Test.getStates()[3], varDec_First_Test.getStates()[2], varDec_First_Test.getStates()[1]));
+
+		  Link link_nodeDec_First_Test_nodeDec_Second_Test = probNet.getGraph().getLink(nodeDec_First_Test.getNode(),nodeDec_Second_Test.getNode(), true);
+		  link_nodeDec_First_Test_nodeDec_Second_Test.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDec_First_Test_nodeDec_Second_Test = (TablePotential)link_nodeDec_First_Test_nodeDec_Second_Test.getRestrictionsPotential();
+		  restrictions_nodeDec_First_Test_nodeDec_Second_Test.values = new double[] {1, 1, 1, 1, 0, 0, 1, 0};
+
+		  Link link_nodeDec_First_Test_nodeSecond_result = probNet.getGraph().getLink(nodeDec_First_Test.getNode(),nodeSecond_result.getNode(), true);
+		  link_nodeDec_First_Test_nodeSecond_result.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDec_First_Test_nodeSecond_result = (TablePotential)link_nodeDec_First_Test_nodeSecond_result.getRestrictionsPotential();
+		  restrictions_nodeDec_First_Test_nodeSecond_result.values = new double[] {0, 0, 1, 0, 0, 0, 1, 0};
+
+		  // Always observed nodes
+
+		 return probNet;
+		}	
 }

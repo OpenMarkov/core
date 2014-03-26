@@ -8,7 +8,6 @@ package org.openmarkov.core.dt;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
@@ -128,7 +127,7 @@ public class DecisionTreeBuilder
 	                    root = treeNode;
 	                }
 	            }else {
-	                List<ProbNode> neverObservedNodes = ProbNetOperations.getNeverObservedVariables (probNet);
+	                List<ProbNode> neverObservedNodes = getNeverObservedVariables (probNet);
 	            	if(!neverObservedNodes.isEmpty ()) // Never observed variables
 	            	{
 		                ProbNet dtProbNet = probNet.copy ();
@@ -183,9 +182,8 @@ public class DecisionTreeBuilder
             // If a node
             if (treeElement instanceof DecisionTreeNode)
             {
-                ProbNode probNode = ((DecisionTreeNode) treeElement).getProbNode ();
                 // Get next variable in the list
-                Variable variable = probNode.getVariable ();
+                Variable variable = ((DecisionTreeNode) treeElement).getVariable ();
                 for (State state : variable.getStates ())
                 {
                     DecisionTreeBranch treeBranch = new DecisionTreeBranch (dtProbNet, 
@@ -313,13 +311,13 @@ public class DecisionTreeBuilder
     {
         // Add utility nodes
         DecisionTreeNode svTreeNode = new DecisionTreeNode (svNode);
-
+        ProbNet probNet = svNode.getProbNet();        
         Stack<DecisionTreeNode> utilityTreeStack = new Stack<> ();
         utilityTreeStack.push (svTreeNode);
         while (!utilityTreeStack.isEmpty ())
         {
             DecisionTreeNode utilityTreeNode = utilityTreeStack.pop ();
-            ProbNode utilityNode = utilityTreeNode.getProbNode ();
+            ProbNode utilityNode = probNet.getProbNode(utilityTreeNode.getVariable ());
             for (Node parentNode : utilityNode.getNode ().getParents ())
             {
                 ProbNode parentProbNode = (ProbNode) parentNode.getObject ();
@@ -379,11 +377,11 @@ public class DecisionTreeBuilder
                             }
                         }
                         
-                    }else if(nonRestrictedStates.size () == 1) // Remove variables with a single variable
-                    {
-                        ProbNet probNetWithoutSingleStateVariable = probNetCopy.copy ();
-                        probNetWithoutSingleStateVariable.removeProbNode (probNetWithoutSingleStateVariable.getProbNode (destinationNode.getVariable ()));
-                        probNetCopy = applyRestrictionsAndReveal(probNetWithoutSingleStateVariable, destinationNode, nonRestrictedStates.get (0), originalProbNet);
+//                    }else if(nonRestrictedStates.size () == 1) // Remove variables with a single variable
+//                    {
+//                        ProbNet probNetWithoutSingleStateVariable = probNetCopy.copy ();
+//                        probNetWithoutSingleStateVariable.removeProbNode (probNetWithoutSingleStateVariable.getProbNode (destinationNode.getVariable ()));
+//                        probNetCopy = applyRestrictionsAndReveal(probNetWithoutSingleStateVariable, destinationNode, nonRestrictedStates.get (0), originalProbNet);
                     }else if(nonRestrictedStates.size () < destinationNode.getVariable ().getStates ().length)
                     {
                         // At least one of the states of the destination node is restricted.
@@ -404,4 +402,16 @@ public class DecisionTreeBuilder
         return probNetCopy;
     }
 
+    public static List<ProbNode> getNeverObservedVariables (ProbNet probNet)
+    {
+        List<ProbNode> neverObservedVariables = new ArrayList<> ();
+        for (ProbNode probNode : probNet.getProbNodes (NodeType.CHANCE))
+        {
+            if (probNode.getNode ().getParents ().isEmpty ())
+            {
+                neverObservedVariables.add (probNode);
+            }
+        }
+        return neverObservedVariables;    
+    }
 }

@@ -9,15 +9,11 @@
 package org.openmarkov.core.inference;
 
 
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -95,7 +91,6 @@ public class PartialOrderDAN {
 			for (Link auxLink:linksToRemove){
 				order.getGraph().removeLink(auxLink);
 			}
-			System.out.println(order.toString());
 		}
 	
 	public String toStringForGraphviz() throws ProbNodeNotFoundException {

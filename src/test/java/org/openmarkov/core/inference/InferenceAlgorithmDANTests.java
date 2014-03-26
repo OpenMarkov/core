@@ -98,8 +98,9 @@ public abstract class InferenceAlgorithmDANTests {
 			meu.put(NetsFactory.NamesNetworks.DATING_ACCEPT_NO_DAN,9.4076);
 			meu.put(NetsFactory.NamesNetworks.DATING_TV_BAD_DAN,9.3);
 			meu.put(NetsFactory.NamesNetworks.WOOER_DAN,7.73);
-			meu.put(NetsFactory.NamesNetworks.MEDIASTINET_DAN,1.532843777055973);
+			meu.put(NetsFactory.NamesNetworks.MEDIASTINET_DAN,1.5328);
 			meu.put(NetsFactory.NamesNetworks.USED_CAR_BUYER_DAN,32.96);
+			meu.put(NetsFactory.NamesNetworks.N_TESTS,9.80657);
 			
 			
 			return meu;

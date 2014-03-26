@@ -61,7 +61,8 @@ public class NetsFactory {
 		BRANCH_ACCEPT_DATING_SIMPLIFIED_DAN, 
 		DATING_TV_BAD_DAN, 
 		DATING_ACCEPT_NO_DAN,
-		USED_CAR_BUYER_DAN;
+		USED_CAR_BUYER_DAN,
+		N_TESTS;
 		
 		
 	}
@@ -2403,7 +2404,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	public static ProbNet buildNTestsDAN (int numTests) {
 				 
 		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
-		  probNet.setName("N_tests");
+		  probNet.setName(NamesNetworks.N_TESTS.toString());
 		  // Variables
 		
 		  Variable varSymptom = new Variable("Symptom", "absent", "present");

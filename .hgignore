@@ -1,0 +1,11 @@
+
+syntax: regexp
+\.checkstyle
+syntax: regexp
+target/
+syntax: regexp
+\.settings
+syntax: regexp
+^sonar
+syntax: regexp
+^\.sonar

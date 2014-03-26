@@ -484,6 +484,16 @@ public class Variable implements Cloneable, Comparable<Variable> {
 
 		return states[index].getName();
 	}
+	
+	
+	/**
+	 * @param name
+	 * @return The state whose name is 'name'
+	 * @throws InvalidStateException
+	 */
+	public State getState(String name) throws InvalidStateException{
+		return states[getStateIndex(name)];
+	}
 
 	/** @return partitionedInterval. <code>PartitionedInterval</code> */
 	public PartitionedInterval getPartitionedInterval() {

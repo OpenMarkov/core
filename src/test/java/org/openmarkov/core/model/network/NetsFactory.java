@@ -202,6 +202,16 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	 * @throws Exception
 	 */
 	public static ProbNet createBN_XY(double prevalence,double sensitivity,double specificity) throws Exception {
+		return createBN_XY("X","Y",prevalence,sensitivity,specificity);
+}
+	
+	
+	
+	/**
+	 * @return a Bayesian network with two nodes (X and Y) and a link X -> Y
+	 * @throws Exception
+	 */
+	public static ProbNet createBN_XY(String nameX, String nameY, double prevalence,double sensitivity,double specificity) throws Exception {
 		ProbNet probNet;
 		double[] valuesX;
 		double [] valuesYX;
@@ -211,11 +221,11 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
 		
 		// Define the variables
-		Variable variableX = new Variable("X",diseaseStates);
-		Variable variableY = new Variable("Y",testResultStates);
+		Variable variableX = new Variable(nameX,diseaseStates);
+		Variable variableY = new Variable(nameY,testResultStates);
 			
 		addVariables(probNet,NodeType.CHANCE,variableX,variableY);
-
+		
 		probNet.addLink(variableX,variableY, true);		
 
 		valuesX = valuesAPrioriDisease(prevalence);

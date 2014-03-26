@@ -18,16 +18,19 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.constraint.ConstraintManager;
 import org.openmarkov.core.model.network.constraint.MaxNumParents;
@@ -36,6 +39,7 @@ import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.PotentialTest;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
@@ -874,6 +878,90 @@ public class ProbNetTest {
 		List<PNConstraint> additionalConstraints = bnProbNet.getAdditionalConstraints();
 		assertEquals(1, additionalConstraints.size());
 		assertTrue(additionalConstraints.contains(maxNumParents));
+	}
+
+	// TODO Sobrecargar método equals.
+	/** Compares to probNets: number of nodes, variables, links and potentials. 
+	 * @param probNet1. <code>ProbNet</code>
+	 * @param probNet2. <code>ProbNet</code> */
+	public static void compareNetworks(ProbNet probNet1, ProbNet probNet2) {
+		// Compare network type restrictions
+		assertEquals(probNet1.getNetworkType(), probNet2.getNetworkType());
+		// Compare constraints
+		for (PNConstraint constraint2 : probNet2.getConstraints()) {
+		    boolean found = true;
+		    for (PNConstraint constraint1 : probNet1.getConstraints()) {
+		        found |= constraint1.getClass () == constraint2.getClass();
+		    }
+			assertTrue(found);
+		}
+		// Compare variables
+		// Number of nodes of each node type
+		for (NodeType nodeType : NodeType.values()) {
+			assertEquals(probNet1.getNumNodes(nodeType), 
+					probNet2.getNumNodes(nodeType));
+		}
+		// Variables
+		List<Variable> variables1 = probNet1.getVariables();
+		for (Variable variable1 : variables1) {
+			String variableName1 = variable1.getName();
+			try {
+				ProbNode probNode2 = probNet2.getProbNode(variableName1);
+				ProbNode probNode1 = probNet1.getProbNode(variable1);
+				Node node1 = probNode1.getNode();
+				Node node2 = probNode2.getNode();
+				// Checks that probNode1 and probNode2 has the same number of 
+				// children, siblings and parents.
+				assertEquals(node1.getNumChildren(), node2.getNumChildren());
+				assertEquals(node1.getNumParents(), node2.getNumParents());
+				assertEquals(node1.getNumSiblings(), node2.getNumSiblings());
+				// Checks the variable name
+				Variable variable2 = probNode2.getVariable();
+				assertTrue(variableName1.contentEquals(variable2.getName()));
+				assertEquals(probNode1.isAlwaysObserved(),probNode2.isAlwaysObserved());
+				// Check that the states are the same
+				int numStates1 = variable1.getNumStates();
+				assertEquals(numStates1, variable2.getNumStates());
+				for (int i = 0; i < numStates1; i++) {
+					String nameStateVariable1 = variable1.getStateName(i);
+				assertTrue(nameStateVariable1.contentEquals(
+						variable2.getState(nameStateVariable1).getName()));
+				}
+				
+				
+				// checks the links
+				assertEquals(node1.getLinks().size(),node2.getLinks().size());
+				Iterator<Link> it1= node1.getLinks().iterator();
+				Iterator<Link> it2= node2.getLinks().iterator();
+				while(it1.hasNext() && it2.hasNext())
+				{
+					Link link1=(Link) it1.next();
+					Link link2= (Link) it2.next();
+					 assertEquals(((ProbNode)link1.getNode1().getObject()).getVariable().getName()
+							 ,((ProbNode)link2.getNode1().getObject()).getVariable().getName());
+					 assertEquals(((ProbNode)link1.getNode2().getObject()).getVariable().getName()
+							 ,((ProbNode)link2.getNode2().getObject()).getVariable().getName());
+					assertEquals(link1.hasRestrictions(),link2.hasRestrictions());
+					assertEquals(link1.hasRevealingConditions(),link2.hasRevealingConditions());
+					
+				}
+				
+				// Check that the potentials are the same
+				List<Potential> potentials1 = probNode1.getPotentials();
+				List<Potential> potentials2 = probNode2.getPotentials();
+				int numPotentials1 = potentials1.size();
+				assertEquals(numPotentials1, potentials2.size());
+				// Until now (24-11-2011) a node has 0 or 1 potentials
+				if (numPotentials1 == 1) { 
+					assertTrue(PotentialTest.equalPotentials(potentials1.get(0), potentials2.get(0)));
+				}
+			} catch (ProbNodeNotFoundException e) {
+				fail("Node " + variableName1 + " not found.");
+			} catch (InvalidStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 }

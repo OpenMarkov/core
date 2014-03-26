@@ -453,6 +453,8 @@ public class TablePotentialTest {
 	 * assertEquals(cabAccOffsetsNotProjected[i], cbAccOffsetsProjected[i]); } }
 	 */
 
+	
+	
 	/**
 	 * @param actual
 	 * @param expected
@@ -472,7 +474,13 @@ public class TablePotentialTest {
 			findings = new ArrayList<>();
 			List<Variable> variables = actual.getVariables();
 			for (int j = 0; j < variables.size(); j++) {
-				findings.add(new Finding(variables.get(j), auxConfiguration[j]));
+				Variable variableJActual = variables.get(j);
+				Variable variableInExpected = getVariableName(expected.getVariables(),variableJActual.getName());
+				try {
+					findings.add(new Finding(variableInExpected, variableInExpected.getState(variableJActual.getStates()[auxConfiguration[j]].getName())));
+				} catch (InvalidStateException e) {
+					e.printStackTrace();
+				}
 			}
 			double expectedValue = expected.getValue(new EvidenceCase(findings));
 			assertEquals(expectedValue, actualValue, maxError);
@@ -480,5 +488,21 @@ public class TablePotentialTest {
 		}
 
 	}
+
+	private static Variable getVariableName(List<Variable> variables, String name) {
+		boolean found = false;
+		Variable var = null;
+		for (int i=0;i<variables.size()&&!found;i++){
+			Variable auxVar;
+			auxVar = variables.get(i);
+			if (auxVar.getName().equalsIgnoreCase(name)){
+				found = true;
+				var = auxVar;
+			}
+		}
+		
+		return var;
+	}
+
 
 }

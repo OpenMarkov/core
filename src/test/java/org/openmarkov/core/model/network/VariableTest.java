@@ -89,4 +89,42 @@ public class VariableTest {
 		}
 	}
 
+	// TODO Sobrecargar equals y poner en el comentario que 
+	// equals ya NO consiste en comparar la dirección de memoria de dos objetos
+	// TODO Cada tipo de variable tiene que tener un método equals y llamar al del padre
+	/** Compares variable1 and variable2.
+	 * @param variable1. <code>Variable</code>
+	 * @param variable2. <code>Variable</code>
+	 * @return <code>true</code> if both variables are equal. */
+	public static boolean equalVariables(Variable variable1, Variable variable2) {
+		boolean equals = true;
+		// TODO Usar en Variable.equals: if (!super.equals(variableReceived)) {...}
+		if (variable1.getVariableType() == variable2.getVariableType() &&
+				variable1.isTemporal() == variable2.isTemporal() && 
+				variable1.getNumStates() == variable2.getNumStates() &&
+				variable1.getBaseName().contentEquals(variable2.getBaseName()) &&
+				variable1.getName().contentEquals(variable2.getName())) {
+			State[] states1 = variable1.getStates();
+			State[] states2 = variable2.getStates();
+			int i = 0;
+			while (i < states1.length && equals) {
+				if (!StateTest.equalStates(states1[i], states2[i])) {
+					equals = false;
+				}
+				i++;
+			}
+			if (equals) {
+				PartitionedInterval interval1 = variable1.getPartitionedInterval();
+				PartitionedInterval interval2 = variable2.getPartitionedInterval();
+				
+				equals = (interval1 == null &&	interval2 == null) || 
+						(interval1 != null && interval2 != null);
+				if (equals && interval1 != null) {
+					equals = interval1.equals(interval2);
+				}
+			}
+		}
+		return equals;
+	}
+
 }

@@ -336,7 +336,7 @@ public class Graph <T> {
 			makeLinksExplicit(false);
 		}
 		List<Link<T>> links = new ArrayList<Link<T>>();
-		for(T node : nodeLinks.keySet())
+		for(T node : nodes)
 		{
 			for(Link<T> link : nodeLinks.get(node))
 			{

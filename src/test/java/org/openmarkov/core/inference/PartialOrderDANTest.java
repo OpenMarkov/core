@@ -8,20 +8,9 @@
 */
 package org.openmarkov.core.inference;
 
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.List;
-
 import org.junit.Test;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.inference.PartialOrderDAN;
-import org.openmarkov.core.model.graph.Graph;
-import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.graph.Node;
-import org.openmarkov.core.model.network.NetsFactory;
-import org.openmarkov.core.model.network.ProbNet;
 
 /**
  * @author manolo

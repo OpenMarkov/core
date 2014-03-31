@@ -6,7 +6,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
@@ -38,7 +38,7 @@ public class OnlyAtemporalVariablesTest {
 		try {
 			influenceDiagram.removeConstraint(new OnlyAtemporalVariables());
 			Variable var = new Variable(" [10]", "YES", "NO");
-			influenceDiagram.addProbNode(var, NodeType.CHANCE);
+			influenceDiagram.addNode(var, NodeType.CHANCE);
 			influenceDiagram.addConstraint(new OnlyAtemporalVariables(), true);
 		} catch (ConstraintViolationException e1) {
 			exceptionLaunched = true;
@@ -58,7 +58,7 @@ public class OnlyAtemporalVariablesTest {
 		
 		boolean exceptionLaunched = false;
 		Variable var= new Variable("F");
-		AddProbNodeEdit legalEdit= new AddProbNodeEdit(influenceDiagram,var,NodeType.CHANCE); 
+		AddNodeEdit legalEdit= new AddNodeEdit(influenceDiagram,var,NodeType.CHANCE); 
 		// add the variable
 				try {
 					pNESupport.announceEdit(legalEdit);
@@ -68,7 +68,7 @@ public class OnlyAtemporalVariablesTest {
 				}
 
 		Variable var1= new Variable(" [11]","Y","N");
-		AddProbNodeEdit ilegalEdit= new AddProbNodeEdit(influenceDiagram,var1,NodeType.CHANCE); 
+		AddNodeEdit ilegalEdit= new AddNodeEdit(influenceDiagram,var1,NodeType.CHANCE); 
 		// add the variable
 				try {
 					pNESupport.announceEdit(ilegalEdit);

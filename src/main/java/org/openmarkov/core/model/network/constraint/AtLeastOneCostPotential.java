@@ -15,7 +15,7 @@ import java.util.List;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 
@@ -33,16 +33,15 @@ public class AtLeastOneCostPotential extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-	    List<ProbNode> costNodes = probNet.getProbNodes(NodeType.COST);
+	    List<Node> costNodes = probNet.getProbNodes(NodeType.COST);
 		if (costNodes.size() == 0) {
 			return false;
 		}
-		for (ProbNode costNode : costNodes) {
-		    List<ProbNode> parents = 
-				ProbNet.getProbNodesOfNodes(costNode.getNode().getParents());
-			Iterator<ProbNode> i = parents.iterator();
+		for (Node costNode : costNodes) {
+		    List<Node> parents = probNet.getParents(costNode);
+			Iterator<Node> i = parents.iterator();
 			boolean chanceOrDecision = false;
-			ProbNode parent;
+			Node parent;
 			do {
 				parent = i.next();
 				NodeType nodeType = parent.getNodeType();

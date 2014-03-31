@@ -95,7 +95,7 @@ public class Util {
 	public static boolean existNode(ProbNet probNet, String name) {
 		
 		try {
-			probNet.getProbNode(name);
+			probNet.getNode(name);
 			return true;
 		} catch (ProbNodeNotFoundException e) {
 			return false;

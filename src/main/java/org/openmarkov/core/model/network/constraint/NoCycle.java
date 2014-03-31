@@ -16,9 +16,8 @@ import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.graph.Graph;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
@@ -27,12 +26,10 @@ public class NoCycle extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-		Graph graph = probNet.getGraph();
-		List<Node> nodesGraph = graph.getNodes();
-		for (Node parent : nodesGraph) {
-			List<Node> children = parent.getChildren();
+		for (Node parent : probNet.getNodes()) {
+			List<Node> children = probNet.getChildren(parent);
 			for (Node child : children) {
-				if (graph.existsPath(child, parent, true)) {
+				if (probNet.existsPath(child, parent, true)) {
 					return false;
 				}
 			}
@@ -50,14 +47,13 @@ public class NoCycle extends PNConstraint {
 		List<PNEdit> edits = 
 			UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
 		//int u=0;
-		Graph graph = probNet.getGraph();
 		for (PNEdit simpleEdit : edits) {
 			if (((AddLinkEdit)simpleEdit).isDirected()) { // checks constraint
 				Variable variable1 = ((AddLinkEdit)simpleEdit).getVariable1(); 
-				Node node1 = probNet.getProbNode(variable1).getNode();
+				Node node1 = probNet.getNode(variable1);
 				Variable variable2 = ((AddLinkEdit)simpleEdit).getVariable2(); 
-				Node node2 = probNet.getProbNode(variable2).getNode();
-				if (graph.existsPath(node2, node1, true)) {
+				Node node2 = probNet.getNode(variable2);
+				if (probNet.existsPath(node2, node1, true)) {
 					return false;
 				}
 			}
@@ -67,30 +63,18 @@ public class NoCycle extends PNConstraint {
         for (PNEdit simpleEdit : edits2) {
             if (((InvertLinkEdit)simpleEdit).isDirected()) { // checks constraint
                 Variable variable1 = ((InvertLinkEdit)simpleEdit).getVariable1(); 
-                Node node1 = probNet.getProbNode(variable1).getNode();
+                Node node1 = probNet.getNode(variable1);
                 Variable variable2 = ((InvertLinkEdit)simpleEdit).getVariable2(); 
-                Node node2 = probNet.getProbNode(variable2).getNode();
-                probNet.getGraph ().removeLink (node1, node2, true);
-                boolean existsPath = graph.existsPath(node1, node2, true);
-                probNet.getGraph ().addLink (node1, node2, true);
+                Node node2 = probNet.getNode(variable2);
+                probNet.removeLink (node1, node2, true);
+                boolean existsPath = probNet.existsPath(node1, node2, true);
+                probNet.addLink (node1, node2, true);
                 if (existsPath)
                 {
                     return false;
                 }
             }
         }		
-		
-		/**ArrayList<PNEdit> edits3 = 
-			UtilConstraints.getEditsType(edit, LinkEdit.class);
-		for (PNEdit simpleEdit : edits3) {
-			if (((LinkEdit)simpleEdit).isDirected()) { // checks constraint
-				Node node1 = ((LinkEdit)simpleEdit).getProbNode1().getNode();
-				Node node2 = ((LinkEdit)simpleEdit).getProbNode2().getNode();
-				if (graph.existsPath(node2, node1, true)) {
-					return false;
-				}
-			}
-		}*/
 		return true;
 	}
 
@@ -100,8 +84,4 @@ public class NoCycle extends PNConstraint {
         return "no cycles allowed";
     }
 	
-	
-	
-	
-
 }

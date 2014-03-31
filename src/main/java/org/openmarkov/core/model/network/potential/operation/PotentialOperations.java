@@ -15,10 +15,9 @@ import java.util.List;
 
 import org.openmarkov.core.exception.IllegalArgumentTypeException;
 import org.openmarkov.core.exception.PotentialOperationException;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -297,8 +296,8 @@ public class PotentialOperations {
 
 	    List<Variable> variables = new ArrayList<Variable>();
 		variables.add(variable);
-		for (Node node:probNet.getProbNode(variable).getNode().getParents()){
-			variables.add(((ProbNode)node.getObject()).getVariable());
+		for (Node node:probNet.getParents(probNet.getNode(variable))){
+			variables.add(node.getVariable());
 		}
 		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
 		if (auxNodeType == NodeType.UTILITY) {

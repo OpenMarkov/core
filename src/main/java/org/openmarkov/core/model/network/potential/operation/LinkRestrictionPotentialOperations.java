@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.NoLinkRestriction;
@@ -33,7 +33,7 @@ public class LinkRestrictionPotentialOperations {
 	 * @param node
 	 * @return <code>true</code> if the node has a link restriction
 	 */
-	public static boolean hasLinkRestriction(ProbNode node) {
+	public static boolean hasLinkRestriction(Node node) {
 		if (!node.getProbNet().hasConstraint(NoLinkRestriction.class)) {
 			return (!getParentLinksWithRestriction(node).isEmpty());
 		}
@@ -46,12 +46,12 @@ public class LinkRestrictionPotentialOperations {
 	 * @param node
 	 * @return a collection of links which have a link restriction.
 	 */
-	public static List<Link> getParentLinksWithRestriction(ProbNode node) {
-	    List<Link> links = node.getNode().getLinks();
-	    List<Link> linksWithRestriction = new ArrayList<Link>();
-	    List<Node> parents = node.getNode().getParents();
+	public static List<Link<Node>> getParentLinksWithRestriction(Node node) {
+		List<Link<Node>> links = node.getLinks();
+	    List<Link<Node>> linksWithRestriction = new ArrayList<>();
+	    List<Node> parents = node.getParents();
 
-		for (Link link : links) {
+		for (Link<Node> link : links) {
 			if (parents.contains(link.getNode1()) && link.hasRestrictions()) {
 				linksWithRestriction.add(link);
 			}
@@ -59,17 +59,17 @@ public class LinkRestrictionPotentialOperations {
 		return linksWithRestriction;
 	}
 
-    public static List<int[]> getStateCombinationsWithLinkRestriction (ProbNode node)
+    public static List<int[]> getStateCombinationsWithLinkRestriction (Node node)
     {
         TablePotential potential = (TablePotential) node.getPotentials ().get (0);
         List<Variable> nodeVariables = potential.getVariables ();
         List<int[]> stateList = new ArrayList<int[]> ();
-        List<Link> links = getParentLinksWithRestriction (node);
-        for (Link link : links)
+        List<Link<Node>> links = getParentLinksWithRestriction (node);
+        for (Link<Node> link : links)
         {
-            Variable var1 = ((ProbNode) link.getNode1 ().getObject ()).getVariable ();
+            Variable var1 = link.getNode1 ().getVariable ();
             State[] var1States = var1.getStates ();
-            Variable var2 = ((ProbNode) link.getNode2 ().getObject ()).getVariable ();
+            Variable var2 = link.getNode2 ().getVariable ();
             State[] var2States = var2.getStates ();
             Map<Integer, Integer> independentVariables = new HashMap<Integer, Integer> ();
             int var1Index = 0, var2Index = 0;
@@ -129,15 +129,15 @@ public class LinkRestrictionPotentialOperations {
 	 *         by a link restriction
 	 */
     private static boolean hasRestriction (int[] combination,
-                                           Collection<Link> links,
-                                           ProbNode node,
+                                           Collection<Link<Node>> links,
+                                           Node node,
                                            List<Variable> nodeVariables,
                                            int nodeStateIndex)
     {
         State[] nodeStates = node.getVariable ().getStates ();
-        for (Link link : links)
+        for (Link<Node> link : links)
         {
-            Variable var1 = ((ProbNode) link.getNode1 ().getObject ()).getVariable ();
+            Variable var1 = link.getNode1 ().getVariable ();
             State[] var1States = var1.getStates ();
             int var1Index = nodeVariables.indexOf (var1);
             int var1StateIndex = combination[var1Index];
@@ -165,12 +165,12 @@ public class LinkRestrictionPotentialOperations {
 	 * 
 	 * @return the potential with the updated probabilities.
 	 */
-	public static Potential redistributeProbabilities(ProbNode node,
+	public static Potential redistributeProbabilities(Node node,
 			TablePotential potential, int[] stateCombination) {
 	    List<Variable> nodeVariables = potential.getVariables();
 		int varIndex = nodeVariables.indexOf(node.getVariable());
 		Variable var = nodeVariables.get(varIndex);
-		List<Link> parentLinks = getParentLinksWithRestriction(node);
+		List<Link<Node>> parentLinks = getParentLinksWithRestriction(node);
 		List<Integer> modifiableStateList = new ArrayList<Integer>();
 		int states = var.getNumStates();
 		if (states > 1) {
@@ -228,7 +228,7 @@ public class LinkRestrictionPotentialOperations {
 	 *            - the index of the state of the child variable.
 	 * @return the probability potential of the node updated properly.
 	 */
-	public static Potential updatePotentialByAddLinkRestriction(ProbNode node,
+	public static Potential updatePotentialByAddLinkRestriction(Node node,
 			TablePotential linkRestriction, int var1StateIndex,
 			int var2StateIndex) {
 
@@ -278,15 +278,12 @@ public class LinkRestrictionPotentialOperations {
 	 *         link restrictions.
 	 */
 	public static Potential updatePotentialByLinkRestrictions(Node node) {
-		ProbNode probNode = (ProbNode) node.getObject();
-		TablePotential potential = (TablePotential) (probNode.getPotentials()
-				.get(0));
-		List<Link> parentLinks = getParentLinksWithRestriction(probNode);
+		TablePotential potential = (TablePotential) (node.getPotentials().get(0));
+		List<Link<Node>> parentLinks = getParentLinksWithRestriction(node);
 
-		for (Link link : parentLinks) {
-			ProbNode node2 = (ProbNode) link.getNode2().getObject();
+		for (Link<Node> link : parentLinks) {
 			potential = (TablePotential) updatePotentialByLinkRestriction(
-					node2, (TablePotential) link.getRestrictionsPotential(),
+					link.getNode2(), (TablePotential) link.getRestrictionsPotential(),
 					potential);
 		}
 		return potential;
@@ -305,7 +302,7 @@ public class LinkRestrictionPotentialOperations {
 	 * @return the probability potential updated according to the link
 	 *         restriction.
 	 */
-	public static Potential updatePotentialByLinkRestriction(ProbNode node,
+	public static Potential updatePotentialByLinkRestriction(Node node,
 			TablePotential linkRestriction, Potential potential) {
 
 	    List<Variable> linkVariables = linkRestriction.getVariables();

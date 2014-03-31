@@ -14,7 +14,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.model.network.NodeType;
@@ -44,7 +44,7 @@ public class OnlyFiniteStateVariablesTest {
 
 		try {
 			Variable vU=net.getVariable("U");
-			net.addProbNode(vC, NodeType.CHANCE);
+			net.addNode(vC, NodeType.CHANCE);
 			net.addLink(vU, vC, true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -87,7 +87,7 @@ public class OnlyFiniteStateVariablesTest {
 			
 
 			// test no exception in legal edit
-			AddProbNodeEdit legalAdd = new AddProbNodeEdit(influenceDiagram, vc1, 
+			AddNodeEdit legalAdd = new AddNodeEdit(influenceDiagram, vc1, 
 				NodeType.DECISION);
 			//add the node D1 (decision + finite state)
 			try{
@@ -99,7 +99,7 @@ public class OnlyFiniteStateVariablesTest {
 		
 			Variable vc2 = new Variable("C1",0);
 			// test no exception in legal edit
-			 legalAdd = new AddProbNodeEdit(influenceDiagram, vc2, 
+			 legalAdd = new AddNodeEdit(influenceDiagram, vc2, 
 				NodeType.CHANCE);
 			//add the node C1 (chance + finite state)
 			try{
@@ -111,7 +111,7 @@ public class OnlyFiniteStateVariablesTest {
 		
 			Variable vc3 = new Variable("U1");
 			// test no exception in legal edit (utility + numeric)
-			 legalAdd = new AddProbNodeEdit(influenceDiagram, vc3, 
+			 legalAdd = new AddNodeEdit(influenceDiagram, vc3, 
 				NodeType.UTILITY);
 			//add the node U1
 			try{
@@ -124,7 +124,7 @@ public class OnlyFiniteStateVariablesTest {
 		
 			Variable vc4 = new Variable("D2");
 			// test exception in illegal edit (decision + numeric)
-			AddProbNodeEdit illegalAdd = new AddProbNodeEdit(influenceDiagram, vc4, 
+			AddNodeEdit illegalAdd = new AddNodeEdit(influenceDiagram, vc4, 
 				NodeType.DECISION);
 			//add the node D2
 			boolean exceptionLaunched=false;
@@ -139,7 +139,7 @@ public class OnlyFiniteStateVariablesTest {
 		
 			Variable vc5 = new Variable("C2");
 			// test  exception in illegal edit (chance + numeric)
-			 illegalAdd = new AddProbNodeEdit(influenceDiagram, vc5, 
+			 illegalAdd = new AddNodeEdit(influenceDiagram, vc5, 
 				NodeType.CHANCE);
 			//add the node D2
 			 exceptionLaunched=false;
@@ -154,7 +154,7 @@ public class OnlyFiniteStateVariablesTest {
 		
 			
 			
-			VariableTypeEdit legalEdit= new VariableTypeEdit(influenceDiagram.getProbNode("D1") ,VariableType.DISCRETIZED ); 
+			VariableTypeEdit legalEdit= new VariableTypeEdit(influenceDiagram.getNode("D1") ,VariableType.DISCRETIZED ); 
 			//edit variable type of D1
 			// test  exception in legal edit (decision + discrete)
 			try{
@@ -164,7 +164,7 @@ public class OnlyFiniteStateVariablesTest {
 				fail(cve.getMessage());
 			}
 			
-			legalEdit= new VariableTypeEdit(influenceDiagram.getProbNode("C1") ,VariableType.DISCRETIZED ); 
+			legalEdit= new VariableTypeEdit(influenceDiagram.getNode("C1") ,VariableType.DISCRETIZED ); 
 			//edit variable type of C1
 			// test  exception in legal edit (chance + discrete)
 			try{
@@ -174,7 +174,7 @@ public class OnlyFiniteStateVariablesTest {
 				fail(cve.getMessage());
 			}
 			
-			VariableTypeEdit illegalEdit= new VariableTypeEdit(influenceDiagram.getProbNode("C1") ,VariableType.NUMERIC ); 
+			VariableTypeEdit illegalEdit= new VariableTypeEdit(influenceDiagram.getNode("C1") ,VariableType.NUMERIC ); 
 			//edit variable type of C1
 			// test  exception in illegal edit (chance + numeric)
 			 exceptionLaunched=false;

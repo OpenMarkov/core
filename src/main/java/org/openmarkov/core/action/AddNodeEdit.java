@@ -11,7 +11,7 @@ import java.awt.geom.Point2D;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 
@@ -22,7 +22,7 @@ import org.openmarkov.core.model.network.potential.operation.PotentialOperations
  * @author mpalacios
  */
 @SuppressWarnings("serial")
-public class AddProbNodeEdit extends SimplePNEdit
+public class AddNodeEdit extends SimplePNEdit
 {
 
 	// Atribbutes
@@ -45,7 +45,7 @@ public class AddProbNodeEdit extends SimplePNEdit
     /**
      * The new node
      */
-    protected ProbNode       newNode;
+    protected Node       newNode;
 
     /**
      * Creates a new <code>AddProbNodeEdit</code> with the network where the new
@@ -55,7 +55,7 @@ public class AddProbNodeEdit extends SimplePNEdit
      * @param nodeType The new node type.
      * @param cursorposition the position (coordinates X,Y) of the node.
      */
-    public AddProbNodeEdit (ProbNet probNet,
+    public AddNodeEdit (ProbNet probNet,
                             Variable variable,
                             NodeType nodeType,
                             Point2D.Double cursorPosition)
@@ -74,7 +74,7 @@ public class AddProbNodeEdit extends SimplePNEdit
      * @param variable the variable contained in the new node
      * @param nodeType The new node type.
      */
-    public AddProbNodeEdit (ProbNet probNet,
+    public AddNodeEdit (ProbNet probNet,
                             Variable variable,
                             NodeType nodeType)
     {
@@ -86,7 +86,7 @@ public class AddProbNodeEdit extends SimplePNEdit
     public void doEdit ()
     {
         // Adds the new variable to network ( creates a probNode instance )
-        newNode = probNet.addProbNode (variable, nodeType);
+        newNode = probNet.addNode (variable, nodeType);
         // TODO revisar si es conveniente utilizar una constraint
         // Sets a uniformPotential for the new probNode
         // Decision node has no potential when is created
@@ -100,18 +100,18 @@ public class AddProbNodeEdit extends SimplePNEdit
             newNode.setPolicyType (PolicyType.OPTIMAL);
         }
         // Sets the visual node position
-        newNode.getNode ().setCoordinateX ((int) cursorPosition.getX ());
-        newNode.getNode ().setCoordinateY ((int) cursorPosition.getY ());
+        newNode.setCoordinateX ((int) cursorPosition.getX ());
+        newNode.setCoordinateY ((int) cursorPosition.getY ());
     }
 
     public void undo ()
     {
         super.undo ();
-        probNet.removeProbNode (newNode);
+        probNet.removeNode (newNode);
     }
 
     /** @return newNode the new <code>ProbNode</code> added */
-    public ProbNode getProbNode ()
+    public Node getProbNode ()
     {
         return newNode;
     }
@@ -149,6 +149,6 @@ public class AddProbNodeEdit extends SimplePNEdit
     {
         setTypicalRedo (false);
         super.redo ();
-        probNet.addProbNode (newNode);
+        probNet.addNode (newNode);
     }
 }

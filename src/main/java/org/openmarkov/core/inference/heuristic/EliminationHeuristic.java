@@ -18,7 +18,7 @@ import javax.swing.undo.UndoableEdit;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.UsesVariable;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 
 /** Here we define the skeleton (an abstract class) of a heuristic algorithm 
@@ -39,7 +39,7 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 
     /** A set of nodes that points to variables that are nor query variables nor
      * observed variables. */
-    protected List<List<ProbNode>> nodesToEliminate;
+    protected List<List<Node>> nodesToEliminate;
 	
 	/** <code>Variable</code> that the heuristic propose to eliminate. */
 	protected Variable variableProposed;
@@ -66,10 +66,10 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 		this.nodesToEliminate = new ArrayList<>(variablesToEliminate.size());
 		for(List<Variable> variables : variablesToEliminate)
 		{
-		    List<ProbNode> probNodes = new ArrayList<>(variables.size());
+		    List<Node> probNodes = new ArrayList<>(variables.size());
 		    for(Variable variable : variables)
 		    {
-		        ProbNode probNode = probNet.getProbNode(variable);
+		        Node probNode = probNet.getNode(variable);
 		        if (probNode!=null){
 		        	probNodes.add(probNode);
 		        }

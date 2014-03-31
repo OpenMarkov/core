@@ -116,7 +116,7 @@ public class DecisionTreeTest {
 	public void testEvalNtests() throws NodeNotFoundException, IncompatibleEvidenceException,
 			UnexpectedInferenceException, NotEvaluableNetworkException {
 
-		ProbNet nTestsDAN = NetsFactory.buildNTestsDAN(5);
+		ProbNet nTestsDAN = NetsFactory.buildNTestsDAN(3);
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		System.out.println(evaluator.getMEU(nTestsDAN));
 	}
@@ -124,8 +124,11 @@ public class DecisionTreeTest {
 	public void testEvalMediastiNetDAN() throws NodeNotFoundException, IncompatibleEvidenceException,
 			UnexpectedInferenceException, NotEvaluableNetworkException {
 		ProbNet mediastiNetDAN = NetsFactory.buildMediastinetDAN();
+		long startTime = System.nanoTime();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
-		System.out.println(evaluator.getMEU(mediastiNetDAN));
+		double meu = evaluator.getMEU(mediastiNetDAN);
+		long ellapsedTime = (System.nanoTime() - startTime) / 1000000;
+		System.out.println("MEU="+meu+" Execution time =" +ellapsedTime);
 	}	
 	
 	@Test

@@ -15,7 +15,7 @@ import java.util.List;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -36,7 +36,7 @@ public class UncertainValuesRemoveEdit extends SimplePNEdit {
 
 	private int basePosition;
 
-	private ProbNode probNode;
+	private Node probNode;
 	
 	private boolean wasNullOldUncertainColumn;
 
@@ -50,7 +50,7 @@ public class UncertainValuesRemoveEdit extends SimplePNEdit {
 	 * @param cursorposition the position (coordinates X,Y) of the node.
 	 *            
 	 */
-	public UncertainValuesRemoveEdit(ProbNode probNode, EvidenceCase 
+	public UncertainValuesRemoveEdit(Node probNode, EvidenceCase 
 			configuration){
 		super(probNode.getProbNet());
 		

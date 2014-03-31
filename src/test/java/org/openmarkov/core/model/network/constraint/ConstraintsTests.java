@@ -52,9 +52,9 @@ public class ConstraintsTests {
 		Variable vb = new Variable("B", 2);
 		Variable vc = new Variable("C", 2);
 		try {
-			probNet.addProbNode(va, NodeType.CHANCE);
-			probNet.addProbNode(vb, NodeType.DECISION);
-			probNet.addProbNode(vc, NodeType.CHANCE);
+			probNet.addNode(va, NodeType.CHANCE);
+			probNet.addNode(vb, NodeType.DECISION);
+			probNet.addNode(vc, NodeType.CHANCE);
 			probNet.addLink(va, vb, true);
 			probNet.addLink(vb, vc, false);
 		} catch (Exception e) {
@@ -71,9 +71,9 @@ public class ConstraintsTests {
 		Variable vb = new Variable("B", 2);
 		Variable vc = new Variable("C", 2);
 		try {
-			probNet.addProbNode(va, NodeType.CHANCE);
-			probNet.addProbNode(vb, NodeType.CHANCE);
-			probNet.addProbNode(vc, NodeType.CHANCE);
+			probNet.addNode(va, NodeType.CHANCE);
+			probNet.addNode(vb, NodeType.CHANCE);
+			probNet.addNode(vc, NodeType.CHANCE);
 			probNet.addLink(va, vb, false);
 			probNet.addLink(vb, vc, false);
 			
@@ -91,9 +91,9 @@ public class ConstraintsTests {
 		Variable vb = new Variable("B", 2);
 		Variable vc = new Variable("C", 2);
 		try {
-			probNet.addProbNode(va, NodeType.CHANCE);
-			probNet.addProbNode(vb, NodeType.CHANCE);
-			probNet.addProbNode(vc, NodeType.CHANCE);
+			probNet.addNode(va, NodeType.CHANCE);
+			probNet.addNode(vb, NodeType.CHANCE);
+			probNet.addNode(vc, NodeType.CHANCE);
 			probNet.addLink(va, vb, true);
 			probNet.addLink(vb, vc, true);
 			
@@ -115,15 +115,15 @@ public class ConstraintsTests {
 		variables.add(vA);
 		variables.add(vD);
 		try {
-			influenceDiagram.addProbNode(vA, NodeType.CHANCE);
-			influenceDiagram.addProbNode(vD, NodeType.DECISION);
-			influenceDiagram.addProbNode(vU, NodeType.UTILITY);
+			influenceDiagram.addNode(vA, NodeType.CHANCE);
+			influenceDiagram.addNode(vD, NodeType.DECISION);
+			influenceDiagram.addNode(vU, NodeType.UTILITY);
 			TablePotential utilityPotential = 
 				new TablePotential(variables, PotentialRole.UTILITY);
 			utilityPotential.setUtilityVariable(vU);
 			influenceDiagram.addPotential(utilityPotential);
 			influenceDiagram.addLink(vA, vD, true);
-			influenceDiagram.getGraph().makeLinksExplicit(true);
+			influenceDiagram.makeLinksExplicit(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -138,7 +138,7 @@ public class ConstraintsTests {
 		Variable vC = new Variable("C", 2);
 		try {
 		Variable vU=influenceDiagram.getVariable("U");
-			influenceDiagram.addProbNode(vC, NodeType.DECISION);
+			influenceDiagram.addNode(vC, NodeType.DECISION);
 			influenceDiagram.addLink(vU, vC, true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -155,7 +155,7 @@ public class ConstraintsTests {
 		
 		try {
 			Variable vU=influenceDiagram.getVariable("U");
-			influenceDiagram.addProbNode(vC, NodeType.UTILITY);
+			influenceDiagram.addNode(vC, NodeType.UTILITY);
 			influenceDiagram.addLink(vU, vC, true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -178,15 +178,15 @@ public class ConstraintsTests {
 		variables.add(vA);
 		variables.add(vD);
 		try {
-			influenceDiagram.addProbNode(vA, NodeType.CHANCE);
-			influenceDiagram.addProbNode(vD, NodeType.DECISION);
-			influenceDiagram.addProbNode(vU, NodeType.UTILITY);
+			influenceDiagram.addNode(vA, NodeType.CHANCE);
+			influenceDiagram.addNode(vD, NodeType.DECISION);
+			influenceDiagram.addNode(vU, NodeType.UTILITY);
 			TablePotential utilityPotential = 
 				new TablePotential(variables, PotentialRole.UTILITY);
 			utilityPotential.setUtilityVariable(vU);
 			influenceDiagram.addPotential(utilityPotential);
 			influenceDiagram.addLink(vA, vD, true);
-			influenceDiagram.getGraph().makeLinksExplicit(true);
+			influenceDiagram.makeLinksExplicit(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -210,15 +210,15 @@ public class ConstraintsTests {
 		variables.add(vA);
 		variables.add(vD);
 		try {
-			influenceDiagram.addProbNode(vA, NodeType.CHANCE);
-			influenceDiagram.addProbNode(vD, NodeType.DECISION);
-			influenceDiagram.addProbNode(vU, NodeType.UTILITY);
+			influenceDiagram.addNode(vA, NodeType.CHANCE);
+			influenceDiagram.addNode(vD, NodeType.DECISION);
+			influenceDiagram.addNode(vU, NodeType.UTILITY);
 			TablePotential utilityPotential = 
 				new TablePotential(variables, PotentialRole.UTILITY);
 			utilityPotential.setUtilityVariable(vU);
 			influenceDiagram.addPotential(utilityPotential);
 			influenceDiagram.addLink(vA, vD, true);
-			influenceDiagram.getGraph().makeLinksExplicit(true);
+			influenceDiagram.makeLinksExplicit(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

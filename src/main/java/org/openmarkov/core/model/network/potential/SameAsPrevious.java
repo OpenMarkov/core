@@ -15,7 +15,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
@@ -86,7 +86,7 @@ public class SameAsPrevious extends Potential
      * @param variables
      * @param role
      */
-    public static boolean validate (ProbNode probNode, List<Variable> variables, PotentialRole role)
+    public static boolean validate (Node probNode, List<Variable> variables, PotentialRole role)
     {
         return probNode.getVariable ().isTemporal () && probNode.getVariable ().getTimeSlice () > 0;
     }
@@ -146,7 +146,7 @@ public class SameAsPrevious extends Potential
                 if (probNetVariable.getName ().startsWith (simpleNameExtended))
                 {
                     // ...then get its potentials
-                    ProbNode probNode = probNet.getProbNode (probNetVariable);
+                    Node probNode = probNet.getNode (probNetVariable);
                     List<Potential> potentialsNode = probNode.getPotentials ();
                     // Assumption: all the variables have only one
                     // potential P(C|P1,P2,...,Pn)

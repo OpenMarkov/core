@@ -31,7 +31,6 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.constraint.ConstraintManager;
 import org.openmarkov.core.model.network.constraint.MaxNumParents;
 import org.openmarkov.core.model.network.constraint.NoCycle;
@@ -196,7 +195,7 @@ public class ProbNetTest {
 		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);
 		// add potentials and variables
 		simpleProbNet.addPotential(pA); // add variable and potential
-		simpleProbNet.addProbNode(D, NodeType.DECISION);
+		simpleProbNet.addNode(D, NodeType.DECISION);
 		simpleProbNet.addPotential(pU);
 		simpleProbNet.addPotential(pBA);
 		simpleProbNet.addLink(B, D, true);
@@ -273,9 +272,9 @@ public class ProbNetTest {
 		
 		NodeType nodeType = NodeType.CHANCE;
 		
-		peque.addProbNode(variableA, nodeType);
-		peque.addProbNode(variableB, nodeType);
-		peque.addProbNode(variableC, nodeType);
+		peque.addNode(variableA, nodeType);
+		peque.addNode(variableB, nodeType);
+		peque.addNode(variableC, nodeType);
 		
 		//Links throws NodeNotFoundException
 		try {
@@ -420,15 +419,15 @@ public class ProbNetTest {
 				pruebaInferencia = new ProbNet();
 				
 							
-				pruebaInferencia.addProbNode(variableA, nodeType);
-				pruebaInferencia.addProbNode(variableB, nodeType);
-				pruebaInferencia.addProbNode(variableC, nodeType);
-				pruebaInferencia.addProbNode(variableD, nodeType);
-				pruebaInferencia.addProbNode(variableE, nodeType);
-				pruebaInferencia.addProbNode(variableF, nodeType);
-				pruebaInferencia.addProbNode(variableG, nodeType);
-				pruebaInferencia.addProbNode(variableH, nodeType);
-				pruebaInferencia.addProbNode(variableI, nodeType);
+				pruebaInferencia.addNode(variableA, nodeType);
+				pruebaInferencia.addNode(variableB, nodeType);
+				pruebaInferencia.addNode(variableC, nodeType);
+				pruebaInferencia.addNode(variableD, nodeType);
+				pruebaInferencia.addNode(variableE, nodeType);
+				pruebaInferencia.addNode(variableF, nodeType);
+				pruebaInferencia.addNode(variableG, nodeType);
+				pruebaInferencia.addNode(variableH, nodeType);
+				pruebaInferencia.addNode(variableI, nodeType);
 				
 				//Links throws NodeNotFoundException
 				try {
@@ -523,47 +522,45 @@ public class ProbNetTest {
 		ProbNet probNet = new ProbNet();
 		// Add a potential and a variable
 		probNet.addPotential(pA);
-		ProbNode probNodeA = probNet.getProbNode(A);
+		Node probNodeA = probNet.getNode(A);
 		assertNotNull(probNodeA);
 		assertTrue(probNodeA.getPotentials().contains(pA));
 		// Add a potential with two variables. Both variables exists in probNet
 		try {
-			probNet.addProbNode(B, NodeType.CHANCE);
+			probNet.addNode(B, NodeType.CHANCE);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		probNet.addPotential(pBA);
 		assertEquals(2, probNet.getNumPotentials());
-		ProbNode probNodeB = probNet.getProbNode(B);
+		Node probNodeB = probNet.getNode(B);
 		assertEquals(pBA, probNodeB.getPotentials().get(0));
 	}
 
 	@Test
 	public void testGetProbNodeString() throws ProbNodeNotFoundException {
-		ProbNode probNodeA = simpleProbNet.getProbNode("A");
+		Node probNodeA = simpleProbNet.getNode("A");
 		assertNotNull(probNodeA);
-		ProbNode probNodeB = simpleProbNet.getProbNode("B");
+		Node probNodeB = simpleProbNet.getNode("B");
 		assertNotNull(probNodeB);
-		ProbNode probNodeD = simpleProbNet.getProbNode("D");
+		Node probNodeD = simpleProbNet.getNode("D");
 		assertNotNull(probNodeD);
 	}
 
 	@Test
 	public void testAddLink() throws ProbNodeNotFoundException {
-		ProbNode probNodeA = simpleProbNet.getProbNode("A");
-		ProbNode probNodeB = simpleProbNet.getProbNode("B");
-		Node nodeA = probNodeA.getNode();
-		Node nodeB = probNodeB.getNode();
-		List<Node> AChildren = nodeA.getChildren();
-		assertTrue(AChildren.contains(nodeB)); // test addLink
-		List<Node> BParents = nodeB.getParents();
-		assertTrue(BParents.contains(nodeA)); // test addLink
+		Node probNodeA = simpleProbNet.getNode("A");
+		Node probNodeB = simpleProbNet.getNode("B");
+		List<Node> AChildren = probNodeA.getChildren();
+		assertTrue(AChildren.contains(probNodeB)); // test addLink
+		List<Node> BParents = probNodeB.getParents();
+		assertTrue(BParents.contains(probNodeA)); // test addLink
 		assertEquals(1, BParents.size());// test that addLink adds only one link
 	}
 
 	@Test
 	public void testGetProbNodes() {
-	    List<ProbNode> probNodes = simpleProbNet.getProbNodes();
+	    List<Node> probNodes = simpleProbNet.getNodes();
 		assertEquals(4, probNodes.size());
 	}
 
@@ -579,7 +576,7 @@ public class ProbNetTest {
 	
 	@Test
 	public void testGetVariablesArrayListOfNode() {
-	    List<ProbNode> probNodes = simpleProbNet.getProbNodes();
+	    List<Node> probNodes = simpleProbNet.getNodes();
 		List<Variable> variables = ProbNet.getVariables(probNodes);
 		assertTrue(variables.contains(A));
 		assertTrue(variables.contains(B));
@@ -636,8 +633,8 @@ public class ProbNetTest {
 		for (Variable variable : this.abVariables) {
 			abVariables.add(variable);
 		}
-		List<ProbNode> chanceProbNodes = 
-			simpleProbNet.getProbNodes(abVariables);
+		List<Node> chanceProbNodes = 
+			simpleProbNet.getNodes(abVariables);
 		assertEquals(2, chanceProbNodes.size());
 		Variable variable0 = chanceProbNodes.get(0).getVariable();
 		Variable variable1 = chanceProbNodes.get(1).getVariable();
@@ -659,7 +656,7 @@ public class ProbNetTest {
 	@Test
 	public void testGetProbNodesNodeType() {
 		// test chance nodes
-	    List<ProbNode> chanceProbNodes = 
+	    List<Node> chanceProbNodes = 
 			simpleProbNet.getProbNodes(NodeType.CHANCE);
 		assertEquals(2, chanceProbNodes.size());
 		Variable variable0 = chanceProbNodes.get(0).getVariable();
@@ -671,15 +668,15 @@ public class ProbNetTest {
 			assertEquals(variable1, A);
 		}
 		// test decision nodes
-		List<ProbNode> decisionProbNodes = 
+		List<Node> decisionProbNodes = 
 			simpleProbNet.getProbNodes(NodeType.DECISION);
 		assertEquals(1, decisionProbNodes.size());
 		assertEquals(D, decisionProbNodes.get(0).getVariable());
 		// test utility nodes
-		List<ProbNode> utilityProbNodes = 
+		List<Node> utilityProbNodes = 
 			simpleProbNet.getProbNodes(NodeType.UTILITY);
 		assertEquals(1, utilityProbNodes.size());
-		ProbNode utilityNode = utilityProbNodes.get(0);
+		Node utilityNode = utilityProbNodes.get(0);
 		assertTrue(utilityNode.getPotentials().contains(pU));
 	}
 
@@ -756,25 +753,25 @@ public class ProbNetTest {
 
 	@Test
 	public void testRemovePotentialsProbNode() {
-		ProbNode probNodeA = simpleProbNet.getProbNode(A);
+		Node probNodeA = simpleProbNet.getNode(A);
 		simpleProbNet.removePotentials(probNodeA);
 		assertEquals(2, simpleProbNet.getNumPotentials());
-		ProbNode probNodeB = simpleProbNet.getProbNode(B);
+		Node probNodeB = simpleProbNet.getNode(B);
 		simpleProbNet.removePotentials(probNodeB);
 		assertEquals(1, simpleProbNet.getNumPotentials());
 	}
 
 	@Test
 	public void testGetProbNode() throws ProbNodeNotFoundException {
-		ProbNode probNodeD = simpleProbNet.getProbNode("D", NodeType.DECISION);
+		Node probNodeD = simpleProbNet.getNode("D", NodeType.DECISION);
 		assertNotNull(probNodeD);
-		ProbNode probNodeB = null;
+		Node probNodeB = null;
 		try {
-			probNodeB = simpleProbNet.getProbNode("B", NodeType.DECISION);
+			probNodeB = simpleProbNet.getNode("B", NodeType.DECISION);
 		} catch (ProbNodeNotFoundException e) {
 		}
 		assertNull(probNodeB);
-		probNodeB = simpleProbNet.getProbNode("B", NodeType.CHANCE);
+		probNodeB = simpleProbNet.getNode("B", NodeType.CHANCE);
 		assertNotNull(probNodeB);
 	}
 
@@ -784,8 +781,8 @@ public class ProbNetTest {
 	    List<Variable> utilityVariables = 
 			simpleProbNet.getVariables(NodeType.UTILITY);
 		assertEquals(1, utilityVariables.size());
-		ProbNode utilityNode = 
-			simpleProbNet.getProbNode(utilityVariables.get(0));
+		Node utilityNode = 
+			simpleProbNet.getNode(utilityVariables.get(0));
 		assertTrue(utilityNode.getPotentials().get(0).isUtility());
 		
 		// test chance variables
@@ -804,24 +801,24 @@ public class ProbNetTest {
 
 	@Test
 	public void testRemoveProbNode() {
-		ProbNode probNodeB = simpleProbNet.getProbNode(B); 
-		simpleProbNet.removeProbNode(probNodeB);
-		ProbNode probNodeA = simpleProbNet.getProbNode(A);
-		assertEquals(1, probNodeA.getNode().getNumChildren());
-		ProbNode probNodeD = simpleProbNet.getProbNode(D);
-		assertEquals(0, probNodeD.getNode().getNumParents());
+		Node probNodeB = simpleProbNet.getNode(B); 
+		simpleProbNet.removeNode(probNodeB);
+		Node probNodeA = simpleProbNet.getNode(A);
+		assertEquals(1, probNodeA.getNumChildren());
+		Node probNodeD = simpleProbNet.getNode(D);
+		assertEquals(0, probNodeD.getNumParents());
 	}
 
 	@Test
 	public void testRemoveLink() {
 		// No remove because link is directed
 		simpleProbNet.removeLink(A, B, false); // It directed would be true
-		ProbNode probNodeA = simpleProbNet.getProbNode(A);
-		ProbNode probNodeB = simpleProbNet.getProbNode(B); 
-		assertTrue(probNodeA.node.getChildren().contains(probNodeB.node));
+		Node probNodeA = simpleProbNet.getNode(A);
+		Node probNodeB = simpleProbNet.getNode(B); 
+		assertTrue(probNodeA.getChildren().contains(probNodeB));
 		// Remove a link
 		simpleProbNet.removeLink(A, B, true);
-		assertFalse(probNodeA.node.getChildren().contains(probNodeB.node));		
+		assertFalse(probNodeA.getChildren().contains(probNodeB));		
 	}
 
 	@Test
@@ -839,31 +836,26 @@ public class ProbNetTest {
 		assertEquals(1, utilityVariables.size());
 		// test potentials
 		assertEquals(3, copied.getNumPotentials());
-		ProbNode probNodeA = copied.getProbNode(A);
+		Node probNodeA = copied.getNode(A);
 		assertTrue(probNodeA.getPotentials().contains(pA));
-		ProbNode probNodeB = copied.getProbNode(B);
+		Node probNodeB = copied.getNode(B);
 		assertTrue(probNodeB.getPotentials().contains(pBA));
-		ProbNode probNodeD = copied.getProbNode(D);
-		ProbNode probNodeU = 
-			(ProbNode)probNodeD.node.getChildren().get(0).getObject();
+		Node probNodeD = copied.getNode(D);
+		Node probNodeU = probNodeD.getChildren().get(0);
 		assertTrue(probNodeU.getPotentials().contains(pU));
 		// test graph structure
-		Node nodeA = probNodeA.node;
-		Node nodeB = probNodeB.node;
-		Node nodeD = probNodeD.node;
-		Node nodeU = probNodeU.node;
-		assertTrue(nodeA.getChildren().contains(nodeB));
-		assertTrue(nodeA.getChildren().contains(nodeU));
-		assertEquals(2, nodeA.getNeighbors().size());
-		assertTrue(nodeB.getParents().contains(nodeA));
-		assertTrue(nodeB.getChildren().contains(nodeD));
-		assertEquals(2, nodeB.getNeighbors().size());
-		assertTrue(nodeD.getParents().contains(nodeB));
-		assertTrue(nodeD.getChildren().contains(nodeU));
-		assertEquals(2, nodeD.getNeighbors().size());
-		assertTrue(nodeU.getParents().contains(nodeA));
-		assertTrue(nodeU.getParents().contains(nodeD));
-		assertEquals(2, nodeU.getNeighbors().size());
+		assertTrue(probNodeA.getChildren().contains(probNodeB));
+		assertTrue(probNodeA.getChildren().contains(probNodeU));
+		assertEquals(2, probNodeA.getNeighbors().size());
+		assertTrue(probNodeB.getParents().contains(probNodeA));
+		assertTrue(probNodeB.getChildren().contains(probNodeD));
+		assertEquals(2, probNodeB.getNeighbors().size());
+		assertTrue(probNodeD.getParents().contains(probNodeB));
+		assertTrue(probNodeD.getChildren().contains(probNodeU));
+		assertEquals(2, probNodeD.getNeighbors().size());
+		assertTrue(probNodeU.getParents().contains(probNodeA));
+		assertTrue(probNodeU.getParents().contains(probNodeD));
+		assertEquals(2, probNodeU.getNeighbors().size());
 	}
 
 	@Test
@@ -906,15 +898,13 @@ public class ProbNetTest {
 		for (Variable variable1 : variables1) {
 			String variableName1 = variable1.getName();
 			try {
-				ProbNode probNode2 = probNet2.getProbNode(variableName1);
-				ProbNode probNode1 = probNet1.getProbNode(variable1);
-				Node node1 = probNode1.getNode();
-				Node node2 = probNode2.getNode();
+				Node probNode2 = probNet2.getNode(variableName1);
+				Node probNode1 = probNet1.getNode(variable1);
 				// Checks that probNode1 and probNode2 has the same number of 
 				// children, siblings and parents.
-				assertEquals(node1.getNumChildren(), node2.getNumChildren());
-				assertEquals(node1.getNumParents(), node2.getNumParents());
-				assertEquals(node1.getNumSiblings(), node2.getNumSiblings());
+				assertEquals(probNode1.getNumChildren(), probNode2.getNumChildren());
+				assertEquals(probNode1.getNumParents(), probNode2.getNumParents());
+				assertEquals(probNode1.getNumSiblings(), probNode2.getNumSiblings());
 				// Checks the variable name
 				Variable variable2 = probNode2.getVariable();
 				assertTrue(variableName1.contentEquals(variable2.getName()));
@@ -930,20 +920,18 @@ public class ProbNetTest {
 				
 				
 				// checks the links
-				assertEquals(node1.getLinks().size(),node2.getLinks().size());
-				Iterator<Link> it1= node1.getLinks().iterator();
-				Iterator<Link> it2= node2.getLinks().iterator();
-				while(it1.hasNext() && it2.hasNext())
+				assertEquals(probNode1.getLinks().size(),probNode2.getLinks().size());
+				Iterator<Link<Node>> it1= probNode1.getLinks().iterator();
+				while(it1.hasNext())
 				{
-					Link link1=(Link) it1.next();
-					Link link2= (Link) it2.next();
-					 assertEquals(((ProbNode)link1.getNode1().getObject()).getVariable().getName()
-							 ,((ProbNode)link2.getNode1().getObject()).getVariable().getName());
-					 assertEquals(((ProbNode)link1.getNode2().getObject()).getVariable().getName()
-							 ,((ProbNode)link2.getNode2().getObject()).getVariable().getName());
+					Link<Node> link1= it1.next();
+					Node node1 = probNet2.getNode(link1.getNode1().getVariable());
+					Node node2 = probNet2.getNode(link1.getNode2().getVariable());
+					Link<Node> link2= probNet2.getLink(node1, node2, link1.isDirected());
+					assertEquals(link1.getNode1().getVariable().getName(),link2.getNode1().getVariable().getName());
+					assertEquals(link1.getNode2().getVariable().getName(),link2.getNode2().getVariable().getName());
 					assertEquals(link1.hasRestrictions(),link2.hasRestrictions());
 					assertEquals(link1.hasRevealingConditions(),link2.hasRevealingConditions());
-					
 				}
 				
 				// Check that the potentials are the same

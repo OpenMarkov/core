@@ -14,7 +14,7 @@ package org.openmarkov.core.model.graph;
  * @version 1.0
  * @since OpenMarkov 1.0
  * @see openmarkov.graphs.Link */
-public class LabelledLink extends Link {
+public class LabelledLink <T> extends Link <T>{
 
 	// Attributes
 	/** In labelled graphs labels are used to distinguish among links.
@@ -27,7 +27,7 @@ public class LabelledLink extends Link {
 	 * @param node2 <code>Node</code>
 	 * @param directed <code>boolean</code>
 	 * @param label <code>Object</code> */
-	public LabelledLink(Node node1, Node node2, boolean directed, Object label) 
+	public LabelledLink(T node1, T node2, boolean directed, Object label) 
 	{
 		super(node1, node2, directed);
 		this.label = label;

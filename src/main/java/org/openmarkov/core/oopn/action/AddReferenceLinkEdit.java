@@ -13,7 +13,7 @@ import javax.swing.undo.CannotUndoException;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.oopn.Instance;
 import org.openmarkov.core.oopn.InstanceReferenceLink;
 import org.openmarkov.core.oopn.NodeReferenceLink;
@@ -32,7 +32,7 @@ public class AddReferenceLinkEdit extends SimplePNEdit{
 		referenceLink = new InstanceReferenceLink(sourceInstance, destinationInstance, destinationParameter);
 	}
 	
-	public AddReferenceLinkEdit(ProbNet probNet, ProbNode sourceNode, ProbNode destinationNode) {
+	public AddReferenceLinkEdit(ProbNet probNet, Node sourceNode, Node destinationNode) {
 		super(probNet);
 		
 		referenceLink = new NodeReferenceLink(sourceNode, destinationNode);

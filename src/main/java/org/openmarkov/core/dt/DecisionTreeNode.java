@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.ProductPotential;
@@ -30,7 +30,7 @@ public class DecisionTreeNode implements DecisionTreeElement
     private double                    utility             = Double.NEGATIVE_INFINITY;
     private double                    scenarioProbability = Double.NEGATIVE_INFINITY;
 
-    public DecisionTreeNode (ProbNode probNode)
+    public DecisionTreeNode (Node probNode)
     {
         this.variable = probNode.getVariable();
         this.nodeType = probNode.getNodeType();

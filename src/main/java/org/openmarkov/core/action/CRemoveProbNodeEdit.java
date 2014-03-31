@@ -12,10 +12,9 @@ package org.openmarkov.core.action;
 import java.util.List;
 
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 
@@ -32,7 +31,7 @@ public class CRemoveProbNodeEdit extends CompoundPNEdit{ //implements UsesVariab
 
 	// Attributes
 	
-	protected ProbNode probNode;
+	protected Node probNode;
 	
 	protected NodeType nodeType;
 	
@@ -51,7 +50,7 @@ public class CRemoveProbNodeEdit extends CompoundPNEdit{ //implements UsesVariab
 	// Constructor
 	/** @param probNet </code>ProbNet</code>
 	 * @param variable <code>Variable</code> */
-	public CRemoveProbNodeEdit(ProbNet probNet, ProbNode probNode) {
+	public CRemoveProbNodeEdit(ProbNet probNet, Node probNode) {
 		super(probNet);
 		this.probNet = probNet;
 		this.probNode = probNode;
@@ -60,11 +59,11 @@ public class CRemoveProbNodeEdit extends CompoundPNEdit{ //implements UsesVariab
 
 	public void generateEdits() {
 		// gets neighbors of this node
-		parents = probNode.getNode().getParents();
-		children = probNode.getNode().getChildren();
+		parents = probNet.getParents(probNode);
+		children = probNet.getChildren(probNode);
 		
 		for (Node parent : parents) {
-			String name = (String) ((ProbNode)(parent.getObject())).getName();
+			String name = parent.getName();
 			try {
 				addEdit(new RemoveLinkEdit(probNode.getProbNet(),probNet.getVariable(name), probNet.getVariable(probNode.getName()), true));
 			} catch (ProbNodeNotFoundException e) {
@@ -74,8 +73,7 @@ public class CRemoveProbNodeEdit extends CompoundPNEdit{ //implements UsesVariab
 		}
 		for (Node child : children) {
 			try {
-				addEdit(new RemoveLinkEdit(probNode.getProbNet(), probNet.getVariable(probNode.getName()), probNet.getVariable(((ProbNode)child.
-						getObject()).getName()), true));
+				addEdit(new RemoveLinkEdit(probNode.getProbNet(), probNet.getVariable(probNode.getName()), probNet.getVariable(child.getName()), true));
 			} catch (ProbNodeNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

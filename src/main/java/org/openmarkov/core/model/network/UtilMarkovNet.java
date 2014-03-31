@@ -109,19 +109,19 @@ public class UtilMarkovNet {
 		if (potential.getVariables().size() == 0) {
 			// it is a constant potential;
 			// adds it to any variable of the network
-			markovNet.getProbNodes().get(0).addPotential(potential);
+			markovNet.getNodes().get(0).addPotential(potential);
 		} else {
 			// the potential depends on several variables
 			for (Variable variable : potentialVariables) {
 				//if (originalNet.getProbNode(variable)!=null){
-				if (markovNet.getProbNode(variable) == null) {
-					ProbNode node = originalNet.getProbNode(variable);
+				if (markovNet.getNode(variable) == null) {
+					Node node = originalNet.getNode(variable);
 					NodeType nodeType = node.getNodeType();
-					markovNet.addProbNode(variable, nodeType);
+					markovNet.addNode(variable, nodeType);
 				}
 				//}
 			}
-			markovNet.getProbNode(potentialVariables.get(0)).
+			markovNet.getNode(potentialVariables.get(0)).
 				addPotential(potential);
 			int numVariables = potentialVariables.size();
 			for (int i = 0; i < numVariables - 1; i++) {
@@ -160,18 +160,18 @@ public class UtilMarkovNet {
 		if (potential.getVariables().size() == 0) {
 			// it is a constant potential;
 			// adds it to any variable of the network
-			markovNet.getProbNodes().get(0).addPotential(potential);
+			markovNet.getNodes().get(0).addPotential(potential);
 		} else {
 			// the potential depends on several variables
 			for (Variable variable : potentialVariables) {
-				if (markovNet.getProbNode(variable) == null) {
+				if (markovNet.getNode(variable) == null) {
 					// in a Markov net all nodes are treated as if they were
 					// CHANCE
-					markovNet.addProbNode(variable, NodeType.CHANCE);
+					markovNet.addNode(variable, NodeType.CHANCE);
 					
 				}
 			}
-			markovNet.getProbNode(potentialVariables.get(0)).
+			markovNet.getNode(potentialVariables.get(0)).
 				addPotential(potential);
 			int numVariables = potentialVariables.size();
 			for (int i = 0; i < numVariables - 1; i++) {

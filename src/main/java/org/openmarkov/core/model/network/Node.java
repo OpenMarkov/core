@@ -16,14 +16,13 @@ import java.util.Map;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.ProductPotential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.Util;
 
@@ -32,15 +31,14 @@ import org.openmarkov.core.model.network.potential.operation.Util;
  * etc. The structural aspect of the underlying  graph is in the node
  * associated.  * @author marias * @author fjdiez
  * @since OpenMarkov 1.0 * @see openmarkov.graphs.Node * @see org.openmarkov.core.model.network.ProbNet * @version 1.0 */
-public class ProbNode {
+public class Node {
 	
 	// Constants
 	public final static double defaultRelevance = 5.0;
 
+	private int hashCode = 0;
+
 	// Attributes/
-	/** @frozen
-	 * <code>node</code> that supplies the structural aspect. */
-	protected Node node;
 
 	/** @frozen */
 	protected NodeType nodeType;
@@ -63,12 +61,6 @@ public class ProbNode {
     /** Comment about node definition */
     private String comment = "";
     
-    /** For ICI Models visualization. */
-    private boolean canonicalParameters = false;
-    
-    /** Indicate how to visualize data: as values or not. */
-    private boolean asValues = false;
-    
     private PolicyType policyType = PolicyType.OPTIMAL;
     
     //TODO OOPN start
@@ -76,7 +68,10 @@ public class ProbNode {
     private boolean isInput = false;
     //TODO OOPN end
     
+    private double coordinateX = 100;
 
+    private double coordinateY = 100;
+    
     private boolean alwaysObserved=false;    
 
     
@@ -89,7 +84,7 @@ public class ProbNode {
     /** @param probNet. <code>ProbNet</code>
       * @param variable. <code>Variable</code> 
       * @param nodeType. <code>NodeType</code> */
-	public ProbNode(ProbNet probNet, Variable variable, NodeType nodeType) {
+	public Node(ProbNet probNet, Variable variable, NodeType nodeType) {
     	this.probNet = probNet;
     	this.variable = variable;
     	if(nodeType == NodeType.UTILITY)
@@ -97,50 +92,33 @@ public class ProbNode {
     	    this.variable.setVariableType (VariableType.NUMERIC);
     	}
         this.nodeType = nodeType;
-        node = new Node(probNet.getGraph(), this);
         potentials = new ArrayList<Potential>();
         additionalProperties = new HashMap<String, String>();
-        
+        hashCode = 31 * variable.hashCode() + 17 * nodeType.hashCode();
 	}
 	/**
 	 * Copy Constructor for the GUI
 	 * @param probNode
 	 */
-	public ProbNode(ProbNode probNode) {
+	public Node(Node probNode) {
     	this.probNet = probNode.getProbNet();
     	this.variable = probNode.getVariable();
         this.nodeType = probNode.getNodeType();
-       // node = new Node(probNet.getGraph(), this);
-        node = probNode.getNode();
-       // node = new Node(probNet.getGraph(), this);
         potentials = new ArrayList<Potential>(probNode.getPotentials());
-        additionalProperties = new HashMap<String, String>();
+        additionalProperties = new HashMap<String, String>(probNode.additionalProperties);
         alwaysObserved = probNode.isAlwaysObserved (); 
+        hashCode = 31 * variable.hashCode() + 17 * nodeType.hashCode();
 	}	
 
 
    //Methods
-    /** @return Potentials associated to this <code>ProbNode</code> that 
-     *  contains the received variable.
-     *  <code>ArrayList</code> of <code>Potential</code>
-     * @param variable. <code>Variable</code> */
-    public List<Potential> getPotentials(Variable variable) {
-        List<Potential> clonedPotentials = new ArrayList<Potential>();
-        for (Potential potential : clonedPotentials) {
-            if (potential.getVariables().contains(variable)) {
-                clonedPotentials.add(potential);
-            }
-        }
-        return clonedPotentials;
-    }
-    
+   
     /** @return The <code>Variable</code> associated to this 
      *   <code>probNode</code>.
      * @consultation */
     public Variable getVariable() {
     	return variable;
     }
-    
     
     /** @return Variable name. <code>String</code> */
     public String getName() {
@@ -161,8 +139,7 @@ public class ProbNode {
     public void setPotentials(List<Potential> potentials) {
         this.potentials = potentials;
     }
-  
-
+ 
     /** @param potential. <code>Potential</code>
      * @return <code>true</code> if <code>potentialList</code> contained the
      *   specified element; otherwise <code>false</code>. */
@@ -179,17 +156,9 @@ public class ProbNode {
     /** @return An <code>ArrayList</code> cloned with all the potentials 
      *   associated to this <code>ProbNode</code> */
 	public List<Potential> getPotentials() {
-		if (potentials != null) {
-			return new ArrayList<Potential> (potentials);
-		}
-		return null;
+		return new ArrayList<Potential> (potentials);
     }
 
-	/** @return node. <code>Node</code> */
-	public Node getNode() {
-		return node;
-	}
-	
 	/** @return Number of potentials. <code>int</code> */
 	public int getNumPotentials() {
 		return potentials.size();
@@ -198,6 +167,91 @@ public class ProbNode {
 	/** @return probNet. <code>ProbNet</code> */
 	public ProbNet getProbNet() {
 		return probNet;
+	}
+	
+	public List<Link<Node>> getLinks()
+	{
+		return probNet.getLinks(this);
+	}
+	
+	public List<Node> getChildren()
+	{
+		return probNet.getChildren(this);
+	}
+	
+	public List<Node> getParents()
+	{
+		return probNet.getParents(this);
+	}
+	
+	public List<Node> getSiblings()
+	{
+		return probNet.getSiblings(this);
+	}
+	
+	public List<Node> getNeighbors()
+	{
+		return probNet.getNeighbors(this);
+	}
+
+	public int getNumChildren()
+	{
+		return probNet.getNumChildren(this);
+	}
+	
+	public int getNumParents()
+	{
+		return probNet.getNumParents(this);
+	}
+
+	public int getNumSiblings()
+	{
+		return probNet.getNumSiblings(this);
+	}
+	
+	/** @param node. <code>ProbNode</code>
+	 * @return True if <code>node</code> is parent of <code>this</code> node */
+	public boolean isParent(Node node) {
+        return probNet.isParent (node, this);
+	}
+	
+	/** @param node. <code>ProbNode</code>
+	 * @return True if <code>node</code> is child of <code>this</code> node */
+	public boolean isChild(Node node) {
+        return probNet.isChild (node, this);
+	}
+	
+	/** @param node. <code>ProbNode</code>
+	 * @return True if <code>node</code> and <code>this</code> are siblings */
+	public boolean isSibling(Node node) {
+        return probNet.isSibling (node, this);
+	}
+	
+	/** @param node. <code>ProbNode</code>
+	 * @return True if <code>node</code> and <code>this</code> are neighbors */
+	public boolean isNeighbor(Node node) {
+        return probNet.isNeighbor (node, this);
+	}
+	
+//	@Override
+//	public int hashCode() {
+//		return super.hashCode();
+//	}
+	@Override
+	public boolean equals(Object obj) {
+		boolean equals = obj instanceof Node;
+		if(equals)
+		{
+			Node otherNode = (Node) obj;
+			equals = variable.equals(otherNode.variable) && probNet.equals(otherNode.probNet)
+					&& nodeType.equals(otherNode.nodeType);
+		}
+		return equals;
+	}
+	
+	@Override
+	public int hashCode() {
+		return hashCode;
 	}
 	
 	public String toString() {
@@ -230,43 +284,40 @@ public class ProbNode {
                 break;
 		}
 		out.append("): ");
-        int numParents = node.getNumParents();
-        int numChildren = node.getNumChildren();
-        int numSiblings = node.getNumSiblings();
-        int numNeighbors = numParents + numChildren + numSiblings;
-        if (numNeighbors == 0) {
+        List<Node> parents = getParents();
+        List<Node> children = getChildren();
+        List<Node> siblings = getSiblings();
+        List<Node> neighbors = getNeighbors();
+        if (neighbors.isEmpty()) {
         	out.append("No neighbors - ");
         } else {
-	        if (numParents > 0) {
-        		out.append (((numParents == 1)? "Parent" : "Parents") + ": {");        		
-        		List<Node> parents = node.getParents();
+	        if (!parents.isEmpty()) {
+        		out.append (((parents.size() == 1)? "Parent" : "Parents") + ": {");        		
 	        	for (int i = 0; i < parents.size(); i++) {
-	        		ProbNode probNode =(ProbNode)parents.get(i).getObject(); 
-	        		out.append(probNode.getVariable());
+	        		Node parent = parents.get(i); 
+	        		out.append(parent.getVariable());
 	        		if (i < parents.size() - 1) {
 	        			out.append(", ");	        		
 	        		}
 	        	}
 	            out.append("} - ");          
 	    	}
-	    	if (numChildren > 0) {
-	    	    out.append (((numChildren == 1)? "Child" : "Children") + ": {");              
-	    	    List<Node> children = node.getChildren();
+	    	if (!children.isEmpty()) {
+	    	    out.append (((children.size() == 1)? "Child" : "Children") + ": {");              
 	        	for (int i = 0; i < children.size(); i++) {
-	        		ProbNode probNode =(ProbNode)children.get(i).getObject(); 
-	        		out.append(probNode.getVariable());
+	        		Node child = children.get(i); 
+	        		out.append(child.getVariable());
 	        		if (i < children.size() - 1) {
 	        			out.append(", ");	        		
 	        		}
 	        	}
                 out.append("} - ");          
 	    	}
-	    	if (numSiblings > 0) {
-                out.append (((numSiblings == 1)? "Sibling" : "Siblings") + ": {");              
-                List<Node> siblings = node.getSiblings();
+	    	if (!siblings.isEmpty()) {
+                out.append (((siblings.size() == 1)? "Sibling" : "Siblings") + ": {");              
 	        	for (int i = 0; i < siblings.size(); i++) {
-	        		ProbNode probNode =(ProbNode)siblings.get(i).getObject(); 
-                    out.append(probNode.getVariable());
+	        		Node sibling = siblings.get(i); 
+                    out.append(sibling.getVariable());
 	        		if (i < siblings.size() - 1) {
                         out.append(", ");                   
 	        		}
@@ -293,6 +344,8 @@ public class ProbNode {
 		return out.toString ();
 	}
 	
+	
+	
 	// TODO Comentar
 	public void setUniformPotential() {
 		
@@ -300,7 +353,7 @@ public class ProbNode {
 		List<Variable> variables = new ArrayList<Variable>();
 		Variable thisVariable;
         // first, this variable. The potentials is not null
-		if (this.getNodeType() == NodeType.UTILITY)
+		if (getNodeType() == NodeType.UTILITY)
 			thisVariable = potentials.get( 0 ).getUtilityVariable();
 		else{
 			thisVariable = potentials.get( 0 ).getVariable( 0 );
@@ -312,12 +365,12 @@ public class ProbNode {
 				"0.01");
 		    // add now all the parents 
 		
-		for (Node node: getNode().getParents()) {
+		for (Node parent: getParents()) {
 			//TODO Revisar, ¿Solo se agrega/elimina un padre a la vez?
 			//mpalacios
 			//the set of variables could be changed, so , have to be updated.
-			variables.add(((ProbNode)node.getObject()).getVariable());
-			numOfCellsInTable *= ((ProbNode)node.getObject()).getVariable().
+			variables.add(parent.getVariable());
+			numOfCellsInTable *= parent.getVariable().
 			getNumStates();
 		}
 		// sets a new table with new columns and with all the same values
@@ -332,7 +385,7 @@ public class ProbNode {
 				variables, PotentialRole.CONDITIONAL_PROBABILITY, table);
 		newListPotentials.add( tablePotential );
 		
-		if (this.getNodeType() == NodeType.UTILITY){
+		if (getNodeType() == NodeType.UTILITY){
 			//tablePotential.getVariables().remove(0);
 			tablePotential.setUtilityVariable(thisVariable);
 		}
@@ -340,52 +393,6 @@ public class ProbNode {
 		
 	}
 
-	public void setUniformPotential2ProbNode() {
-		
-	    List<Potential> newListPotentials = new ArrayList<Potential> ();
-	    List<Variable> variables = new ArrayList<Variable>();
-		Variable thisVariable;
-		PotentialRole role = potentials.get(0).getPotentialRole();
-        // first, this variable. The potentials is not null
-		if (this.getNodeType() == NodeType.UTILITY)
-			thisVariable = potentials.get( 0 ).getUtilityVariable();
-		else{
-			thisVariable = potentials.get( 0 ).getVariable( 0 );
-			variables.add(thisVariable);
-		}
-		
-		int numOfCellsInTable = thisVariable.getNumStates();
-		double initialValue = Util.round( 1 / (new Double(numOfCellsInTable)), 
-				"0.01");
-		    // add now all the parents 
-		
-		for (Node node: getNode().getParents()) {
-			//TODO Revisar, ¿Solo se agrega/elimina un padre a la vez?
-			//mpalacios
-			//the set of variables could be changed, so , have to be updated.
-			variables.add(((ProbNode)node.getObject()).getVariable());
-			numOfCellsInTable *= ((ProbNode)node.getObject()).getVariable().
-			getNumStates();
-		}
-		// sets a new table with new columns and with all the same values
-		double[] table = new double[numOfCellsInTable] ;
-		for (int i=0; i<numOfCellsInTable; i++) {
-			table[i] = initialValue;
-		}
-		// and finally, create the potential and the list of potentials
-		
-		// TODO Comprobar que efectivamente es un CONDITIONAL_PROBABILITY
-		UniformPotential uniformPotetnial = new UniformPotential(variables, role);
-		
-		newListPotentials.add( uniformPotetnial );
-		
-		if (this.getNodeType() == NodeType.UTILITY && role == PotentialRole.UTILITY){
-			//tablePotential.getVariables().remove(0);
-			uniformPotetnial.setUtilityVariable(thisVariable);
-		}
-		potentials = newListPotentials;
-		
-	}
 	
 	/** @param purpose. <code>String</code>	 */
 	public void setPurpose(String purpose) {
@@ -417,26 +424,6 @@ public class ProbNode {
 		return comment;
 	}
 
-	/** @param <code>canonicalParameters</code>. <code>boolean</code>
-	 */
-	public void setCanonicalParameters(boolean canonicalParameters) {
-		this.canonicalParameters = canonicalParameters;
-	}
-
-	/** @return the canonicalParameters. <code>boolean</code> */
-	public boolean isCanonicalParameters() {
-		return canonicalParameters;
-	}
-
-	/** @param asValues the asValues to set. <code>boolean</code> */
-	public void setAsValues(boolean asValues) {
-		this.asValues = asValues;
-	}
-
-	/** @return the asValues. <code>boolean</code> */
-	public boolean isAsValues() {
-		return asValues;
-	}
 
 	/** @param modelType the modelType to set. <code>PolicyType</code> */
 	public void setPolicyType(PolicyType policyType) {
@@ -468,13 +455,6 @@ public class ProbNode {
 		}
 	}
 	
-	/** @param node. <code>ProbNode</code>
-	 * @return True if <code>node</code> is parent of <code>this</code> node */
-	public boolean isParent(ProbNode node) {
-        return this.getNode ().isParent (node.getNode ());
-	}
-	
-	
 	/**
 	 * @return Approximates the maximum or the minimum of the utility function of the ProbNode. It is computed recursively by using the utility function
 	 * of parent nodes. If 'computeMax' is true then it computes the maximum; otherwise it computes the minimum.
@@ -489,7 +469,7 @@ public class ProbNode {
 
 		if ((potentials != null) && (potentials.size() > 0)) {
 			Potential firstPotential = potentials.get(0);
-			if (!isSuperValueNode(getVariable(), getProbNet())) {
+			if (!isSuperValueNode()) {
 				double[] values = null;
 				try {
 					values = firstPotential.tableProject(null, null).get(0).values;
@@ -500,11 +480,10 @@ public class ProbNode {
 			} else {
 				double parentValues[];
 
-				List<Node> parents = getNode().getParents();
+				List<Node> parents = getParents();
 				parentValues = new double[parents.size()];
 				for (int i = 0; i < parents.size(); i++) {
-					parentValues[i] = ((ProbNode) (parents.get(i).getObject()))
-							.getApproximateMaxOrMinUtilityFunction(computeMax);
+					parentValues[i] = parents.get(i).getApproximateMaxOrMinUtilityFunction(computeMax);
 				}
 				if (firstPotential instanceof SumPotential) {
 					result = Tools.sum(parentValues);
@@ -553,20 +532,18 @@ public class ProbNode {
 	 */
 	public TablePotential getUtilityFunction() throws
 			NonProjectablePotentialException, WrongCriterionException {
-		ProbNode probNode;
 		TablePotential result;
 		List<Potential> potentials = getPotentials();
 
 		if ((potentials != null) && (potentials.size() > 0)) {
 			Potential firstPotential = potentials.get(0);
-			if (!isSuperValueNode(getVariable(), getProbNet())) {
+			if (!isSuperValueNode()) {
 				result = firstPotential.tableProject(null, null).get(0);
 			} else {
 			    List<TablePotential> utilityFunctionsParents;
 				utilityFunctionsParents = new ArrayList<TablePotential>();
-				for (Node node : getNode().getParents()) {
-					probNode = (ProbNode) node.getObject();
-					utilityFunctionsParents.add(probNode.getUtilityFunction());
+				for (Node node : getParents()) {
+					utilityFunctionsParents.add(node.getUtilityFunction());
 				}
 				if (firstPotential instanceof SumPotential)
 				{
@@ -595,12 +572,11 @@ public class ProbNode {
 	 * @param probNet 
 	 * @return true if the variable is a supervalue node. False if does not
 	 */
-	public boolean isSuperValueNode(Variable utilityVariable, ProbNet probNet) {
-		ProbNode utilityProbNode = probNet.getProbNode( utilityVariable );
-		Node utilityNode = utilityProbNode.getNode();
+	public boolean isSuperValueNode() {
+		Node utilityProbNode = probNet.getNode( variable );
 		int numOfUtilityParents = 0;
-		for (Node parent:utilityNode.getParents()){
-			if (( (ProbNode)parent.getObject() ).getNodeType() == NodeType.UTILITY ){
+		for (Node parent: probNet.getParents(utilityProbNode)){
+			if (parent.getNodeType() == NodeType.UTILITY ){
 				//if the node has two or more utility parents then is a super value node
 				if (( numOfUtilityParents ++) >= 1 ){
 				  return true;
@@ -614,12 +590,11 @@ public class ProbNode {
 	 * This method is used to 
 	 * @return a list with utility parents
 	 */
-	public List<ProbNode> getUtilityParents() {
-	    List<ProbNode> utilityParents =  new ArrayList<>();
-		for (Node parent:this.getNode().getParents()){
-			if (( (ProbNode)parent.getObject() ).getNodeType() == NodeType.UTILITY ){
-				utilityParents.add((ProbNode)parent.getObject());
-				
+	public List<Node> getUtilityParents() {
+	    List<Node> utilityParents =  new ArrayList<>();
+		for (Node parent: getParents()){
+			if (parent.getNodeType() == NodeType.UTILITY ){
+				utilityParents.add(parent);
 			}
 		}
 		return utilityParents;
@@ -629,25 +604,25 @@ public class ProbNode {
 	 * @return true if a node has only utility parents
 	 */
 	public boolean checkOnlyUtilityparents() {
-		return getUtilityParents().size() == this.getNode().getParents().size() ? true: false;
+		return getUtilityParents().size() == getParents().size() ? true: false;
 	}
 	/**
 	 * 
 	 * @return
 	 */
 	public boolean onlyNumericalParents() {
-	    List<ProbNode> numericalParents = new ArrayList<>();
-	    List<ProbNode> finiteStatesOrDiscretizedParents = new ArrayList<>();
+	    List<Node> numericalParents = new ArrayList<>();
+	    List<Node> finiteStatesOrDiscretizedParents = new ArrayList<>();
 		
-		for (Node parent:this.getNode().getParents()){
-			if (((ProbNode)parent.getObject()).getVariable().getVariableType() == VariableType.NUMERIC ) {
-				numericalParents.add((ProbNode)parent.getObject());
-			} else if (((ProbNode)parent.getObject()).getVariable().getVariableType() == VariableType.FINITE_STATES ||
-					((ProbNode)parent.getObject()).getVariable().getVariableType() == VariableType.DISCRETIZED ) {
-				finiteStatesOrDiscretizedParents.add((ProbNode)parent.getObject());
+		for (Node parent : getParents()){
+			if (parent.getVariable().getVariableType() == VariableType.NUMERIC ) {
+				numericalParents.add(parent);
+			} else if (parent.getVariable().getVariableType() == VariableType.FINITE_STATES ||
+					parent.getVariable().getVariableType() == VariableType.DISCRETIZED ) {
+				finiteStatesOrDiscretizedParents.add(parent);
 			}
 		}
-		return  ((!numericalParents.isEmpty()) && finiteStatesOrDiscretizedParents.isEmpty()) ? true: false ;
+		return  !numericalParents.isEmpty() && finiteStatesOrDiscretizedParents.isEmpty();
 	 }
 	
     /**
@@ -690,5 +665,17 @@ public class ProbNode {
         this.variable = newVariable;
         // TODO update potentials
     }
+	public double getCoordinateX() {
+		return coordinateX;
+	}
+	public void setCoordinateX(double coordinateX) {
+		this.coordinateX = coordinateX;
+	}
+	public double getCoordinateY() {
+		return coordinateY;
+	}
+	public void setCoordinateY(double coordinateY) {
+		this.coordinateY = coordinateY;
+	}
     
 }

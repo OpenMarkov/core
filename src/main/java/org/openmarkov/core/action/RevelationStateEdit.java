@@ -2,7 +2,7 @@ package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 
 /*******
@@ -13,14 +13,14 @@ import org.openmarkov.core.model.network.State;
 @SuppressWarnings("serial")
 public class RevelationStateEdit extends SimplePNEdit {
 
-	private Link link;
+	private Link<Node> link;
 
 	private State newState;
 
 	private boolean selected;
 
-	public RevelationStateEdit(Link link, State state, boolean selected) {
-		super(((ProbNode) link.getNode1().getObject()).getProbNet());
+	public RevelationStateEdit(Link<Node> link, State state, boolean selected) {
+		super(link.getNode1().getProbNet());
 		this.link = link;
 		this.selected = selected;
 		this.newState = state;

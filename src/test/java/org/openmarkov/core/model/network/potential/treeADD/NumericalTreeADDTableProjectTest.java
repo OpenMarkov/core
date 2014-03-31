@@ -140,7 +140,7 @@ public class NumericalTreeADDTableProjectTest {
 		
 		TablePotential tablePotential1;
 		try {
-			tablePotential1 = probNet.getProbNode("State [1]").getPotentials().get(0).tableProject(evidence, null).get(0);
+			tablePotential1 = probNet.getNode("State [1]").getPotentials().get(0).tableProject(evidence, null).get(0);
 			List<Variable> variables = tablePotential1.getVariables();
 			assertEquals(2, variables.size());
 			assertEquals(4, tablePotential1.values.length);
@@ -165,7 +165,7 @@ public class NumericalTreeADDTableProjectTest {
 		
 		TablePotential tablePotential2;
 		try {
-			tablePotential2 = probNet.getProbNode("State [1]").getPotentials().get(0).tableProject(evidence2, null).get(0);
+			tablePotential2 = probNet.getNode("State [1]").getPotentials().get(0).tableProject(evidence2, null).get(0);
 			List<Variable> variables2 = tablePotential2.getVariables();
 			assertEquals(2, variables2.size());
 			assertEquals(4, tablePotential2.values.length);
@@ -191,7 +191,7 @@ public class NumericalTreeADDTableProjectTest {
         TablePotential tablePotential3;
         try
         {
-            tablePotential3 = probNet.getProbNode ("State [1]").getPotentials ().get (0).tableProject (evidence3,
+            tablePotential3 = probNet.getNode ("State [1]").getPotentials ().get (0).tableProject (evidence3,
                                                                                                        null).get (0);
             List<Variable> variables3 = tablePotential3.getVariables ();
             assertEquals (2, variables3.size ());

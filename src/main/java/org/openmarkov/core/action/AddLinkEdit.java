@@ -17,7 +17,7 @@ import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
@@ -32,7 +32,7 @@ public class AddLinkEdit extends BaseLinkEdit {
     /**
      * Resulting link of addition or removal.
      */
-    protected Link link;
+    protected Link<Node> link;
     /**
      * The last <code>Potential</code> of the second node before the edition
      */
@@ -44,11 +44,11 @@ public class AddLinkEdit extends BaseLinkEdit {
     /**
      * parent node
      */
-    protected ProbNode node1;
+    protected Node node1;
     /**
      * child node
      */
-    protected ProbNode node2;
+    protected Node node2;
 
     // Constructor
     /** @param probNet <code>ProbNet</code>
@@ -59,8 +59,8 @@ public class AddLinkEdit extends BaseLinkEdit {
             boolean isDirected, boolean updatePotentials) {
         super(probNet, variable1, variable2, isDirected);
         
-        node1 = probNet.getProbNode (variable1);
-        node2 = probNet.getProbNode (variable2);
+        node1 = probNet.getNode (variable1);
+        node2 = probNet.getNode (variable2);
         this.updatePotentials = updatePotentials;
         this.link = null;
     }
@@ -76,7 +76,7 @@ public class AddLinkEdit extends BaseLinkEdit {
     /** @throws exception <code>Exception</code> */
     public void doEdit() throws DoEditException {
         probNet.addLink (node1, node2, isDirected);
-        this.link = probNet.getGraph ().getLink (node1.getNode (), node2.getNode (), isDirected);
+        this.link = probNet.getLink (node1, node2, isDirected);
         if (updatePotentials)
         {
         	this.oldPotentials = node2.getPotentials ();
@@ -141,7 +141,7 @@ public class AddLinkEdit extends BaseLinkEdit {
         super.undo();
         
         try {
-            node2 = probNet.getProbNode (variable2.getName ());
+            node2 = probNet.getNode (variable2.getName ());
         } catch (ProbNodeNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -182,7 +182,7 @@ public class AddLinkEdit extends BaseLinkEdit {
     * 
     * @return the first <code>ProbNode</code> object in the link. 
     */
-    public ProbNode getProbNode1 ()
+    public Node getProbNode1 ()
     {
         return node1;
     }
@@ -192,7 +192,7 @@ public class AddLinkEdit extends BaseLinkEdit {
     * 
     * @return the second <code>ProbNode</code> object in the link. 
     */
-    public ProbNode getProbNode2 ()
+    public Node getProbNode2 ()
     {
         return node2;
     }
@@ -201,7 +201,7 @@ public class AddLinkEdit extends BaseLinkEdit {
     * Returns the link.
     * @return the link.
     */
-   public Link getLink ()
+   public Link<Node> getLink ()
    {
        return link;
    }

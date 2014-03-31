@@ -22,11 +22,11 @@ import org.junit.Test;
  * Test elementary methods in <code>Node</code> class. */
 public class NodeTest {
 
-	private Graph graph;
+	private Graph<String> graph;
 	
-	private List<Node> nodes;
+	private List<String> nodes;
 	
-	private Node nodeA, nodeB, nodeC, nodeD;
+	private String nodeA, nodeB, nodeC, nodeD;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -42,33 +42,33 @@ public class NodeTest {
 	public void testNode() {
         // Test created nodes in GraphsTest.createTestGraph()
 		assertEquals(4, nodes.size());
-		assertTrue(((String)nodeA.getObject()).contains("A"));
-		assertTrue(((String)nodeB.getObject()).contains("B"));
-		assertTrue(((String)nodeC.getObject()).contains("C"));
-		assertTrue(((String)nodeD.getObject()).contains("D"));
+		assertTrue(nodeA.equals("A"));
+		assertTrue(nodeB.equals("B"));
+		assertTrue(nodeC.equals("C"));
+		assertTrue(nodeD.equals("D"));
 	}
 	
 	@Test
 	public void testIsChild() {
-		assertTrue(nodeA.isChild(nodeB));
-		assertTrue(nodeB.isChild(nodeC));
+		assertTrue(graph.isChild(nodeB, nodeA));
+		assertTrue(graph.isChild(nodeC, nodeB));
 	}
 
 	@Test
 	public void testIsParent() {
-		assertTrue(nodeB.isParent(nodeA));
-		assertTrue(nodeC.isParent(nodeB));
+		assertTrue(graph.isParent(nodeA, nodeB));
+		assertTrue(graph.isParent(nodeB, nodeC));
 	}
 	
 	@Test
 	public void testIsSibling() {
-		assertTrue(nodeB.isSibling(nodeD));
-		assertTrue(nodeD.isSibling(nodeB));
+		assertTrue(graph.isSibling(nodeB, nodeD));
+		assertTrue(graph.isSibling(nodeD, nodeB));
 	}
 	
 	@Test
 	public void testGetNeighbors() {
-		List<Node> neighborsB = nodeB.getNeighbors();
+		List<String> neighborsB = graph.getNeighbors(nodeB);
 		assertEquals(3, neighborsB.size());
 		assertTrue(neighborsB.contains(nodeA));
 		assertTrue(neighborsB.contains(nodeC));
@@ -78,11 +78,11 @@ public class NodeTest {
 	@Test
 	public void testGetLinks() {
 		graph.makeLinksExplicit(false);
-		List<Link> links = nodeB.getLinks();
+		List<Link<String>> links = graph.getLinks(nodeB);
 		assertEquals(3, links.size());
 		int directed = 0;
 		int undirected = 0;
-		for (Link link : links) {
+		for (Link<String> link : links) {
 			assertTrue(link.contains(nodeB));
 			if (link.isDirected()) {
 				directed++;

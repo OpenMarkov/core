@@ -15,10 +15,9 @@ import java.util.List;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 
 /**
@@ -40,47 +39,46 @@ public class PartialOrderDAN {
 		order = new ProbNet();
 		
 		//Only keep decision nodes
-		for (ProbNode auxNode:probNet.getProbNodes()){
+		for (Node auxNode:probNet.getNodes()){
 			//order.getGraph().removeLinks(auxNode.getNode());
 			NodeType auxType = auxNode.getNodeType();
 			//if ((auxType!=NodeType.CHANCE)&&(auxType!=NodeType.DECISION)){
 			if (auxType==NodeType.DECISION){
-				order.addProbNode(auxNode.getVariable(), auxType);
+				order.addNode(auxNode.getVariable(), auxType);
 			}
 		}
 					
 		//Transitive closure among decision nodes
-		for (ProbNode nodeI:order.getProbNodes())
+		for (Node nodeI:order.getNodes())
 		{
-			    for (ProbNode nodeJ:order.getProbNodes())
+			    for (Node nodeJ:order.getNodes())
 			    {
 			    	if (nodeI!=nodeJ){
 			    		Variable variableI = nodeI.getVariable();
 			    		Variable variableJ = nodeJ.getVariable();
-			    		ProbNode probNetProbNodeI = probNet.getProbNode(variableI);
-			    		ProbNode probNetProbNodeJ = probNet.getProbNode(variableJ);
+			    		Node probNetProbNodeI = probNet.getNode(variableI);
+			    		Node probNetProbNodeJ = probNet.getNode(variableJ);
 						if (probNet.existsPath(probNetProbNodeI,probNetProbNodeJ,true))
 						{
-							order.addLink(order.getProbNode(variableI), order.getProbNode(variableJ),true);
+							order.addLink(order.getNode(variableI), order.getNode(variableJ),true);
 						}
 			    	}
 			    }
 		}
 		
 		//Transitive reduction
-			ArrayList<Link> linksToRemove = new ArrayList<>();
-			for (ProbNode dec:order.getProbNodes())
+			List<Link<Node>> linksToRemove = new ArrayList<>();
+			for (Node dec:order.getNodes())
 			{
-				    Node decNode = dec.getNode();
-				    List<Link> decLinks = decNode.getLinks();
+				    List<Link<Node>> decLinks = order.getLinks(dec);
 					for (int i=0;i<decLinks.size();i++)
 					{
 						Node nodeI = decLinks.get(i).getNode2();
 						for (int j=0;j<decLinks.size();j++)
 						{
-							Link linkJ = decLinks.get(j);
+							Link<Node> linkJ = decLinks.get(j);
 							Node nodeJ = linkJ.getNode2();
-							if ((nodeI!=nodeJ)&&order.getGraph().existsPath(nodeI,nodeJ,true))
+							if ((nodeI!=nodeJ)&&order.existsPath(nodeI,nodeJ,true))
 							{
 								linksToRemove.add(linkJ);
 								
@@ -88,8 +86,8 @@ public class PartialOrderDAN {
 						}
 					}
 			}
-			for (Link auxLink:linksToRemove){
-				order.getGraph().removeLink(auxLink);
+			for (Link<Node> auxLink:linksToRemove){
+				order.removeLink(auxLink);
 			}
 		}
 	
@@ -98,12 +96,12 @@ public class PartialOrderDAN {
 		String content = null;
 		
 		ProbNet probNet = this.getOrder();
-		List<Link> links = probNet.getGraph().getLinks();
+		List<Link<Node>> links = probNet.getLinks();
 		content = "digraph G {\n";
 		
-		for (Node node:probNet.getGraph().getNodes()){
+		for (Node node:probNet.getNodes()){
 			String strType = null;;
-			switch (probNet.getProbNode(node).getNodeType()){
+			switch (node.getNodeType()){
 			case CHANCE:
 				strType = "ellipse";
 				break;
@@ -111,14 +109,14 @@ public class PartialOrderDAN {
 				strType = "decision";
 				break;
 			}
-			content = content + getNameWithQuotes(probNet, node) + "[shape="+strType+"]\n";
+			content = content + getNameWithQuotes(node) + "[shape="+strType+"]\n";
 		}
 		
-		for (Link link:links){
+		for (Link<Node> link:links){
 			Node node1 = link.getNode1();
 			Node node2 = link.getNode2();
 			
-			content = content +  getNameWithQuotes(probNet,node1)+ "-> "+ getNameWithQuotes(probNet,node2)+"\n";
+			content = content +  getNameWithQuotes(node1)+ "-> "+ getNameWithQuotes(node2)+"\n";
 			
 			
 		}
@@ -131,8 +129,8 @@ public class PartialOrderDAN {
 	}
 	
 
-	private String getNameWithQuotes(ProbNet probNet,Node node) throws ProbNodeNotFoundException {
-		return "\""+probNet.getProbNode(node).getVariable().getName()+"\"";
+	private String getNameWithQuotes(Node node) throws ProbNodeNotFoundException {
+		return "\""+node.getVariable().getName()+"\"";
 		
 	}
 

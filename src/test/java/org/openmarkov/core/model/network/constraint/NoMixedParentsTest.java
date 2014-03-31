@@ -9,7 +9,7 @@ import java.awt.geom.Point2D;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -43,7 +43,7 @@ private ProbNet influenceDiagram;
 			influenceDiagram.removeConstraint(new NoMixedParents());
 			Variable vc=influenceDiagram.getVariable("C");
 			Variable ve=new Variable("E", 2);
-			influenceDiagram.addProbNode(ve, NodeType.DECISION);
+			influenceDiagram.addNode(ve, NodeType.DECISION);
 			influenceDiagram.addLink(ve, vc, true);
 			influenceDiagram.addConstraint(new NoMixedParents(), true);
 		}  catch (ConstraintViolationException e) {
@@ -68,9 +68,9 @@ private ProbNet influenceDiagram;
 				
 				
 				//do legal AddLink: add link from utility node E to utility node C
-				new AddProbNodeEdit(influenceDiagram, new Variable("E"),NodeType.UTILITY).doEdit();
+				new AddNodeEdit(influenceDiagram, new Variable("E"),NodeType.UTILITY).doEdit();
 				Variable vE = 
-						influenceDiagram.getProbNode("E", NodeType.UTILITY).getVariable();
+						influenceDiagram.getNode("E", NodeType.UTILITY).getVariable();
 				Variable vC=influenceDiagram.getVariable("C");
 					// creates a link from utility node E to utility node C
 				AddLinkEdit legalEdit=	new AddLinkEdit(influenceDiagram, vE, vC, true); 
@@ -82,7 +82,7 @@ private ProbNet influenceDiagram;
 					}
 				
 				//do legal LinkEdit:  add directed link from chance node F to utility node U
-					new AddProbNodeEdit(influenceDiagram, new Variable("F"),NodeType.CHANCE,new Point2D.Double()).doEdit();
+					new AddNodeEdit(influenceDiagram, new Variable("F"),NodeType.CHANCE,new Point2D.Double()).doEdit();
 					
 					
 					AddLinkEdit legalLinkEdit=	new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("F"), influenceDiagram.getVariable("U"), true); 
@@ -120,9 +120,9 @@ private ProbNet influenceDiagram;
 				
 				//do ilegal AddLink: add link from utility node G to utility node U
 		
-				new AddProbNodeEdit(influenceDiagram, new Variable("G"),NodeType.UTILITY,new Point2D.Double()).doEdit();
+				new AddNodeEdit(influenceDiagram, new Variable("G"),NodeType.UTILITY,new Point2D.Double()).doEdit();
 				Variable vG = 
-						influenceDiagram.getProbNode("G", NodeType.UTILITY).getVariable();
+						influenceDiagram.getNode("G", NodeType.UTILITY).getVariable();
 				
 					// creates a link from utility node G to utility node U
 				AddLinkEdit ilegalEdit=	new AddLinkEdit(influenceDiagram, vG, vU, true); 

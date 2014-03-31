@@ -17,7 +17,7 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotUndoException;
 
 import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -27,7 +27,7 @@ import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -65,27 +65,27 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
 		// Calculate top left corner of net
 		double topCorner = Double.POSITIVE_INFINITY;
 		double leftCorner = Double.POSITIVE_INFINITY;
-		for(ProbNode probNode : classNet.getProbNodes())
+		for(Node probNode : classNet.getNodes())
 		{
-			if(probNode.getNode ().getCoordinateX () < leftCorner)
+			if(probNode.getCoordinateX () < leftCorner)
 			{
-				leftCorner = probNode.getNode ().getCoordinateX ();
+				leftCorner = probNode.getCoordinateX ();
 			}
-			if(probNode.getNode ().getCoordinateY () < topCorner)
+			if(probNode.getCoordinateY () < topCorner)
 			{
-				topCorner = probNode.getNode ().getCoordinateY ();
+				topCorner = probNode.getCoordinateY ();
 			}
 		}
 		
 		// Add nodes to the probNet class
-		for(ProbNode probNode : classNet.getProbNodes())
+		for(Node probNode : classNet.getNodes())
 		{
 			Variable variable = new Variable (probNode.getVariable ());
 	        variable.setName (instanceName + "." + variable.getName());	
-	        Point2D.Double position = new Point2D.Double (probNode.getNode ().getCoordinateX () - leftCorner + cursorPositon.getX(),
-	                probNode.getNode ().getCoordinateY () - topCorner + cursorPositon.getY());
+	        Point2D.Double position = new Point2D.Double (probNode.getCoordinateX () - leftCorner + cursorPositon.getX(),
+	                probNode.getCoordinateY () - topCorner + cursorPositon.getY());
 	        
-	        edits.add (new AddProbNodeEdit (oopNet, variable, probNode.getNodeType (), position));			
+	        edits.add (new AddNodeEdit (oopNet, variable, probNode.getNodeType (), position));			
 		}
 	    // Apply node generation edits
         for (PNEdit edit : edits)
@@ -101,12 +101,12 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
 		
 		// Add links to the probNet class
         // Gather link creation edits
-        for (Link link : classNet.getGraph().getLinks())
+        for (Link<Node> link : classNet.getLinks())
         {
             try
             {
-                String originalSourceNodeName = classNet.getProbNode (link.getNode1 ()).getName ();
-                String originalDestinationNodeName = classNet.getProbNode (link.getNode2 ()).getName ();
+                String originalSourceNodeName = link.getNode1 ().getName ();
+                String originalDestinationNodeName = link.getNode2 ().getName ();
 
                 edits.add(new AddLinkEdit (oopNet,
                         oopNet.getVariable(instanceName + "." + originalSourceNodeName),
@@ -119,7 +119,7 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
         }
         
         //Apply link creation edits
-        ArrayList<Link> pastedLinks = new ArrayList<Link> ();
+        List<Link<Node>> pastedLinks = new ArrayList<Link<Node>> ();
         for (PNEdit edit : edits)
         {
             if (edit instanceof AddLinkEdit)
@@ -136,14 +136,14 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
             }
         }
         
-        ArrayList<ProbNode> instanceNodes = new ArrayList<ProbNode>(); 
+        List<Node> instanceNodes = new ArrayList<Node>(); 
         //Replace potentials to already created nodes with copies of copied nodes
-        for (ProbNode originalNode : classNet.getProbNodes())
+        for (Node originalNode : classNet.getNodes())
         {
-            ArrayList<Potential> newPotentials = new ArrayList<Potential>();
+            List<Potential> newPotentials = new ArrayList<Potential>();
             try
             {
-                ProbNode newNode = oopNet.getProbNode (instanceName + "." + originalNode.getName ());
+                Node newNode = oopNet.getNode (instanceName + "." + originalNode.getName ());
                 for(Potential originalPotential: originalNode.getPotentials ())
                 {
                     Potential potential = originalPotential.copy ();

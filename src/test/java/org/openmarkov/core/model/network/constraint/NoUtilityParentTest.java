@@ -16,7 +16,7 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -57,7 +57,7 @@ public class NoUtilityParentTest {
 		Variable vc2 = new Variable("C2", 0);
 
 		// test no exception in legal edit
-		AddProbNodeEdit legalAddC1 = new AddProbNodeEdit (influenceDiagram, vc1, NodeType.UTILITY);
+		AddNodeEdit legalAddC1 = new AddNodeEdit (influenceDiagram, vc1, NodeType.UTILITY);
 		
 		//add the node C1
 		try{
@@ -76,7 +76,7 @@ public class NoUtilityParentTest {
 		}
 
 		// test exception in no legal edit
-		AddProbNodeEdit legalAddC2 = new AddProbNodeEdit (influenceDiagram, vc2, NodeType.DECISION);
+		AddNodeEdit legalAddC2 = new AddNodeEdit (influenceDiagram, vc2, NodeType.DECISION);
 		
 		//add the node C2
 		try{

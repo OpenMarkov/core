@@ -13,10 +13,9 @@ import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
@@ -35,21 +34,20 @@ public class NoMixedParents extends PNConstraint
     @Override
     public boolean checkProbNet (ProbNet probNet)
     {
-        List<ProbNode> utilityNodes = probNet.getProbNodes (NodeType.UTILITY);
-        for (ProbNode utilNode : utilityNodes)
+        List<Node> utilityNodes = probNet.getProbNodes (NodeType.UTILITY);
+        for (Node utilNode : utilityNodes)
         {
             boolean utilityParent = false;
             boolean chanceOrDecisionParent = false;
-            List<Node> parents = utilNode.getNode ().getParents ();
+            List<Node> parents = probNet.getParents (utilNode);
             for (Node parent : parents)
             {
-                ProbNode probParent = (ProbNode) parent.getObject ();
-                if (probParent.getNodeType () == NodeType.UTILITY)
+                if (parent.getNodeType () == NodeType.UTILITY)
                 {
                     utilityParent = true;
                 }
-                if (probParent.getNodeType () == NodeType.CHANCE
-                    || probParent.getNodeType () == NodeType.DECISION)
+                if (parent.getNodeType () == NodeType.CHANCE
+                    || parent.getNodeType () == NodeType.DECISION)
                 {
                     chanceOrDecisionParent = true;
                 }
@@ -70,41 +68,31 @@ public class NoMixedParents extends PNConstraint
         List<PNEdit> edits = UtilConstraints.getSimpleEditsByType (edit, AddLinkEdit.class);
         for (PNEdit simpleEdit : edits)
         {
-            if (((AddLinkEdit) simpleEdit).isDirected ())
+        	AddLinkEdit addLinkEdit = (AddLinkEdit) simpleEdit;
+            if (addLinkEdit.isDirected ())
             {
-                Variable variable2 = ((AddLinkEdit) simpleEdit).getVariable2 ();
-                ProbNode node2 = probNet.getProbNode (variable2);
+                Variable variable2 = addLinkEdit.getVariable2 ();
+                Node node2 = probNet.getNode (variable2);
                 if (node2.getNodeType () == NodeType.UTILITY)
                 {
-                    Variable variable1 = ((AddLinkEdit) simpleEdit).getVariable1 ();
-                    ProbNode node1 = probNet.getProbNode (variable1);
-                    return !hasMixedParents (node1, node2);
+                    Variable variable1 = addLinkEdit.getVariable1 ();
+                    Node node1 = probNet.getNode (variable1);
+                    return !hasMixedParents (probNet, node1, node2);
                 }
             }
         }
-        /**List<PNEdit> edits2 = UtilConstraints.getEditsType (edit, LinkEdit.class);
-        for (PNEdit simpleEdit : edits2)
-        {
-            if (((LinkEdit) simpleEdit).isDirected ())
-            {
-                ProbNode node2 = ((LinkEdit) simpleEdit).getProbNode2 ();
-                if (node2.getNodeType () == NodeType.UTILITY)
-                {
-                    ProbNode node1 = ((LinkEdit) simpleEdit).getProbNode1 ();
-                    return !hasMixedParents (node1, node2);
-                }
-            }
-        }**/
+
         List<PNEdit> edits3 = UtilConstraints.getSimpleEditsByType (edit, InvertLinkEdit.class);
         for (PNEdit simpleEdit : edits3)
         {
-            Variable variable2 = ((InvertLinkEdit) simpleEdit).getVariable2 ();
-            ProbNode node2 = probNet.getProbNode (variable2);
+        	InvertLinkEdit invertLinkEdit = (InvertLinkEdit) simpleEdit;
+            Variable variable2 = invertLinkEdit.getVariable2 ();
+            Node node2 = probNet.getNode (variable2);
             if (node2.getNodeType () == NodeType.UTILITY)
             {
-                Variable variable1 = ((InvertLinkEdit) simpleEdit).getVariable1 ();
-                ProbNode node1 = probNet.getProbNode (variable1);
-                return !hasMixedParents (node2, node1);
+                Variable variable1 = invertLinkEdit.getVariable1 ();
+                Node node1 = probNet.getNode (variable1);
+                return !hasMixedParents (probNet, node2, node1);
             }
         }
         return true;
@@ -116,31 +104,17 @@ public class NoMixedParents extends PNConstraint
      * @param childNode the child node
      * @return <code>true</code> if the <code>childNode</code> has mixedParents
      */
-    private boolean hasMixedParents (ProbNode parentNode, ProbNode childNode)
+    private boolean hasMixedParents (ProbNet probNet, Node parentNode, Node childNode)
     {
-        boolean utilityParent = false;
-        boolean chanceOrDecisionParent = false;
-        if (parentNode.getNodeType () == NodeType.UTILITY)
+        boolean utilityParent = parentNode.getNodeType () == NodeType.UTILITY;
+        boolean chanceOrDecisionParent = parentNode.getNodeType () == NodeType.DECISION || parentNode.getNodeType () == NodeType.CHANCE;
+
+        for (Node parent : probNet.getParents (childNode))
         {
-            utilityParent = true;
-        }
-        if (parentNode.getNodeType () == NodeType.DECISION
-            || parentNode.getNodeType () == NodeType.CHANCE)
-        {
-            chanceOrDecisionParent = true;
-        }
-        for (Node parent : childNode.getNode ().getParents ())
-        {
-            ProbNode probParent = (ProbNode) parent.getObject ();
-            if (probParent.getNodeType () == NodeType.UTILITY)
-            {
-                utilityParent = true;
-            }
-            if (probParent.getNodeType () == NodeType.CHANCE
-                || probParent.getNodeType () == NodeType.DECISION)
-            {
-                chanceOrDecisionParent = true;
-            }
+        	NodeType parentNodeType = parent.getNodeType ();
+            utilityParent |= parentNodeType == NodeType.UTILITY;
+            chanceOrDecisionParent |= parentNodeType == NodeType.CHANCE || parentNodeType == NodeType.DECISION;
+            
             if (utilityParent && chanceOrDecisionParent)
             {
                 return true;

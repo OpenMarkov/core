@@ -21,7 +21,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -58,7 +58,7 @@ public class ExponentialPotential extends RegressionPotential {
 	 * @param role
 	 *            . <code>PotentialRole</code>.
 	 */
-	public static boolean validate(ProbNode probNode, List<Variable> variables, PotentialRole role) {
+	public static boolean validate(Node probNode, List<Variable> variables, PotentialRole role) {
 		return role == PotentialRole.UTILITY
 				|| variables.get(0).getVariableType() == VariableType.NUMERIC;
 	}

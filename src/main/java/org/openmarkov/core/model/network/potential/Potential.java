@@ -24,7 +24,7 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -116,7 +116,7 @@ public abstract class Potential
      * @param variables. <code>ArrayList</code> of <code>Variable</code>.
      * @param role. <code>PotentialRole</code>.
      */
-    public static boolean validate (ProbNode probNode, List<Variable> variables, PotentialRole role)
+    public static boolean validate (Node probNode, List<Variable> variables, PotentialRole role)
     {
         // Default implementation: always return true
         return true;

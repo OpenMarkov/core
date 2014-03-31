@@ -9,7 +9,7 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * <code>NodeAlwaysObservedEdit</code> is a simple edit that allow modify the always observed property of a variable
@@ -23,13 +23,13 @@ public class NodeAlwaysObservedEdit extends SimplePNEdit {
 	/**
 	 * The node edited
 	 */
-	private ProbNode probNode = null;
+	private Node probNode = null;
 
 	private boolean previousValue;
 
 	private boolean newValue;
 
-	public NodeAlwaysObservedEdit(ProbNode node, boolean alwaysObserved) {
+	public NodeAlwaysObservedEdit(Node node, boolean alwaysObserved) {
 		super(node.getProbNet());
 		this.probNode = node;
 		this.previousValue = node.isAlwaysObserved();

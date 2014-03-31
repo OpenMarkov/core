@@ -6,13 +6,13 @@ import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 
@@ -39,7 +39,7 @@ public class OnlyNumericVariablesTest {
 		try {
 			influenceDiagram.removeConstraint(new OnlyNumericVariables());
 			Variable varE = new Variable("E", 2);
-			influenceDiagram.addProbNode(varE, NodeType.CHANCE);
+			influenceDiagram.addNode(varE, NodeType.CHANCE);
 			influenceDiagram.addConstraint(new OnlyNumericVariables(), true);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
@@ -59,7 +59,7 @@ public class OnlyNumericVariablesTest {
 		boolean exceptionLaunched = false;
 		Variable vc1 = new Variable("E");
 		// test no exception in legal edit
-		AddProbNodeEdit legalAdd = new AddProbNodeEdit(influenceDiagram, vc1,
+		AddNodeEdit legalAdd = new AddNodeEdit(influenceDiagram, vc1,
 				NodeType.DECISION);
 		// add the node E (decision + numeric)
 		try {
@@ -71,7 +71,7 @@ public class OnlyNumericVariablesTest {
 
 		Variable vc2 = new Variable("F", 3);
 		// test exception in ilegal edit
-		AddProbNodeEdit ilegalAdd = new AddProbNodeEdit(influenceDiagram, vc2,
+		AddNodeEdit ilegalAdd = new AddNodeEdit(influenceDiagram, vc2,
 				NodeType.DECISION);
 		// add the node F (decision + finite state)
 		try {
@@ -85,7 +85,7 @@ public class OnlyNumericVariablesTest {
 		assertTrue(exceptionLaunched);
 
 		exceptionLaunched = false;
-		ProbNode node = influenceDiagram.getProbNode(vc1);
+		Node node = influenceDiagram.getNode(vc1);
 		VariableTypeEdit ilegalEdit = new VariableTypeEdit(node,
 				VariableType.DISCRETIZED);
 		// add the node F (decision + finite state)

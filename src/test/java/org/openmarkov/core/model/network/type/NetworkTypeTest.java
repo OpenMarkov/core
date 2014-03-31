@@ -15,7 +15,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
@@ -87,7 +87,7 @@ public class NetworkTypeTest
 			NonProjectablePotentialException, WrongCriterionException,
 			DoEditException    {
         ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-        AddProbNodeEdit addVariableEdit = new AddProbNodeEdit (probNet, new Variable("a"), NodeType.DECISION); 
+        AddNodeEdit addVariableEdit = new AddNodeEdit (probNet, new Variable("a"), NodeType.DECISION); 
         probNet.setNetworkType (InfluenceDiagramType.getUniqueInstance ());
 
         probNet.doEdit(addVariableEdit);

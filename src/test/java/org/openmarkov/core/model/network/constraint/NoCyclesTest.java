@@ -42,9 +42,9 @@ public class NoCyclesTest {
 		}
         probNetDirected.removeConstraint (new NoCycle ());
 		Variable va = 
-			probNetDirected.getProbNode("A", NodeType.CHANCE).getVariable();
+			probNetDirected.getNode("A", NodeType.CHANCE).getVariable();
 		Variable vc = 
-			probNetDirected.getProbNode("C", NodeType.CHANCE).getVariable();
+			probNetDirected.getNode("C", NodeType.CHANCE).getVariable();
 		
 		boolean constraintExcepctionLaunched = false;
 		try {

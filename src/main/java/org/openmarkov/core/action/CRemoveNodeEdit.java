@@ -13,10 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.PotentialOperationException;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -55,17 +54,16 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 	public CRemoveNodeEdit(ProbNet probNet, Variable variable) {
 		super(probNet);
 		this.variable = variable;
-		this.nodeType = probNet.getProbNode(variable).getNodeType();
+		this.nodeType = probNet.getNode(variable).getNodeType();
 	}
 
 	public void generateEdits() {
-		ProbNode probNode = probNet.getProbNode(variable);
-		Node node = probNode.getNode();
+		Node probNode = probNet.getNode(variable);
 
 		// gets neighbors of this node
-		parents = node.getParents();
-		children = node.getChildren();
-		siblings = node.getSiblings();
+		parents = probNet.getParents(probNode);
+		children = probNet.getChildren(probNode);
+		siblings = probNet.getSiblings(probNode);
 		
 		// collect potentials of this node ...
 		List<? extends Potential> auxPotentialsContainingVariable = 
@@ -93,28 +91,23 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 		// add a link between the siblings of the removed node
 		for (Node node1 : siblings) {
 			for (Node node2 : siblings) {
-				if ((node1 != node2) && (!node1.isSibling(node2))) {
-					addEdit(new AddLinkEdit(probNet, 
-						((ProbNode)node1.getObject()).getVariable(), 
-						((ProbNode)node2.getObject()).getVariable(), false, false));
+				if ((node1 != node2) && (!probNet.isSibling(node1, node2))) {
+					addEdit(new AddLinkEdit(probNet, node1.getVariable(), node2.getVariable(), false, false));
 				}
 			}
 		}
 		
 		// remove links between probNode and its parents, children and siblings
 		for (Node parent : parents) {
-			addEdit(new RemoveLinkEdit(probNet, 
-				((ProbNode)parent.getObject()).getVariable(), 
-				probNode.getVariable(), true, false));
+			addEdit(new RemoveLinkEdit(probNet, parent.getVariable(), probNode.getVariable(), true, false));
 		}
+		
 		for (Node child : children) {
-			Variable variable = ((ProbNode)child.getObject()).getVariable();
-			addEdit(new RemoveLinkEdit(probNet,	probNode.getVariable(), variable, true, false));
+			addEdit(new RemoveLinkEdit(probNet,	probNode.getVariable(), child.getVariable(), true, false));
 		}
+		
 		for (Node sibling : siblings) {
-			addEdit(new RemoveLinkEdit(probNet, 
-				((ProbNode)sibling.getObject()).getVariable(), 
-				probNode.getVariable(), false, false));
+			addEdit(new RemoveLinkEdit(probNet, sibling.getVariable(), probNode.getVariable(), false, false));
 		}
 
 		// add edit to remove the variable

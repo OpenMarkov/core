@@ -128,7 +128,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	 */
 	private static void addVariables(ProbNet net,NodeType nodeType,Variable...variables){
 		for (int i=0;i<variables.length;i++){
-			net.addProbNode(variables[i],nodeType);
+			net.addNode(variables[i],nodeType);
 		}
 	}
 	
@@ -1076,10 +1076,10 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		Variable variableX = new Variable("X", "absent", "present");
 		Variable variableU = new Variable("U");
 		
-		ProbNode nodeX = oneChanceDAN.addProbNode(variableX, NodeType.CHANCE);
-		ProbNode nodeU = oneChanceDAN.addProbNode(variableU, NodeType.UTILITY);
+		Node nodeX = oneChanceDAN.addNode(variableX, NodeType.CHANCE);
+		Node nodeU = oneChanceDAN.addNode(variableU, NodeType.UTILITY);
 		
-		oneChanceDAN.getGraph().makeLinksExplicit(false);
+		oneChanceDAN.makeLinksExplicit(false);
 		oneChanceDAN.addLink(variableX, variableU, true);
 		
 		TablePotential potentialX = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
@@ -1108,11 +1108,11 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		Variable variableT = new Variable("T", "no", "yes");
 		Variable variableU = new Variable("U");
 		
-		ProbNode nodeX = blindTreatmentDAN.addProbNode(variableX, NodeType.CHANCE);
-		blindTreatmentDAN.addProbNode(variableT, NodeType.DECISION);
-		ProbNode nodeU = blindTreatmentDAN.addProbNode(variableU, NodeType.UTILITY);
+		Node nodeX = blindTreatmentDAN.addNode(variableX, NodeType.CHANCE);
+		blindTreatmentDAN.addNode(variableT, NodeType.DECISION);
+		Node nodeU = blindTreatmentDAN.addNode(variableU, NodeType.UTILITY);
 		
-		blindTreatmentDAN.getGraph().makeLinksExplicit(false);
+		blindTreatmentDAN.makeLinksExplicit(false);
 		blindTreatmentDAN.addLink(variableX, variableU, true);
 		blindTreatmentDAN.addLink(variableT, variableU, true);
 		if (isXKnown){
@@ -1140,11 +1140,11 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		Variable variableT = new Variable("T", "no", "yes");
 		Variable variableU = new Variable("U");
 		
-		ProbNode nodeX = dan.addProbNode(variableX, NodeType.CHANCE);
-		ProbNode nodeT = dan.addProbNode(variableT, NodeType.DECISION);
-		ProbNode nodeU = dan.addProbNode(variableU, NodeType.UTILITY);
+		Node nodeX = dan.addNode(variableX, NodeType.CHANCE);
+		Node nodeT = dan.addNode(variableT, NodeType.DECISION);
+		Node nodeU = dan.addNode(variableU, NodeType.UTILITY);
 		
-		dan.getGraph().makeLinksExplicit(false);
+		dan.makeLinksExplicit(false);
 		dan.addLink(variableX, variableU, true);
 		dan.addLink(variableT, variableU, true);
 		dan.addLink(variableX, variableT, true);
@@ -1159,7 +1159,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		
 		nodeX.setAlwaysObserved(true);
 		
-		Link link = dan.getGraph().getLink(nodeX.getNode(), nodeT.getNode(), true);
+		Link<Node> link = dan.getLink(nodeX, nodeT, true);
 		link.initializesRestrictionsPotential();
 		TablePotential restrictionsPotential = (TablePotential)link.getRestrictionsPotential();
 		restrictionsPotential.values = new double[]{0,1,1,1};
@@ -1182,14 +1182,14 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		Variable variableU1 = new Variable("U1");
 		Variable variableU2 = new Variable("U2");
 		
-		ProbNode nodeX = decideTestDAN.addProbNode(variableX, NodeType.CHANCE);
-		ProbNode nodeY = decideTestDAN.addProbNode(variableY, NodeType.CHANCE);
-		ProbNode nodeU1 = decideTestDAN.addProbNode(variableU1, NodeType.UTILITY);
-		ProbNode nodeU2 = decideTestDAN.addProbNode(variableU2, NodeType.UTILITY);
-		ProbNode nodeD = decideTestDAN.addProbNode(variableD, NodeType.DECISION);
-		decideTestDAN.addProbNode(variableT, NodeType.DECISION);
+		Node nodeX = decideTestDAN.addNode(variableX, NodeType.CHANCE);
+		Node nodeY = decideTestDAN.addNode(variableY, NodeType.CHANCE);
+		Node nodeU1 = decideTestDAN.addNode(variableU1, NodeType.UTILITY);
+		Node nodeU2 = decideTestDAN.addNode(variableU2, NodeType.UTILITY);
+		Node nodeD = decideTestDAN.addNode(variableD, NodeType.DECISION);
+		decideTestDAN.addNode(variableT, NodeType.DECISION);
 		
-		decideTestDAN.getGraph().makeLinksExplicit(false);
+		decideTestDAN.makeLinksExplicit(false);
 		decideTestDAN.addLink(variableX, variableY, true);
 		decideTestDAN.addLink(variableX, variableU1, true);
 		decideTestDAN.addLink(variableD, variableY, true);
@@ -1213,7 +1213,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		potentialU2.values = new double [] {0, -2};
 		nodeU2.setPotential(potentialU2);		
 		
-		Link link = decideTestDAN.getGraph().getLink(nodeD.getNode(), nodeY.getNode(), true);
+		Link<Node> link = decideTestDAN.getLink(nodeD, nodeY, true);
 		link.initializesRestrictionsPotential();
 		TablePotential restrictionsPotential = (TablePotential)link.getRestrictionsPotential();
 		restrictionsPotential.values = new double[]{0,1,0,1};
@@ -1247,28 +1247,28 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		Variable variableUmExp = new Variable("U mExp");
 		Variable variableUrExp = new Variable("U rExp");
 		
-		ProbNode nodeAsk = datingDAN.addProbNode(variableAsk, NodeType.DECISION);
-		ProbNode nodeNClub = datingDAN.addProbNode(variableNClub, NodeType.DECISION);
-		ProbNode nodeAccept = datingDAN.addProbNode(variableAccept, NodeType.CHANCE);
-		ProbNode nodeLikesMe = datingDAN.addProbNode(variableLikesMe, NodeType.CHANCE);
-		ProbNode nodeToDo = datingDAN.addProbNode(variableToDo, NodeType.CHANCE);
-		ProbNode nodeTV = datingDAN.addProbNode(variableTV, NodeType.CHANCE);
-		ProbNode nodeTVExp = datingDAN.addProbNode(variableTVExp, NodeType.CHANCE);
-		ProbNode nodeClub = datingDAN.addProbNode(variableClub, NodeType.CHANCE);
-		ProbNode nodeMeetFr = datingDAN.addProbNode(variableMeetFr, NodeType.CHANCE);
-		ProbNode nodeNCExp = datingDAN.addProbNode(variableNCExp, NodeType.CHANCE);
-		ProbNode nodeMovie = datingDAN.addProbNode(variableMovie, NodeType.DECISION);
-		ProbNode nodeRest = datingDAN.addProbNode(variableRest, NodeType.DECISION);
-		ProbNode nodeMMood = datingDAN.addProbNode(variableMMood, NodeType.CHANCE);
-		ProbNode nodeRMood = datingDAN.addProbNode(variableRMood, NodeType.CHANCE);
-		ProbNode nodeMExp = datingDAN.addProbNode(variableMExp, NodeType.CHANCE);
-		ProbNode nodeRExp = datingDAN.addProbNode(variableRExp, NodeType.CHANCE);
-		ProbNode nodeUTVExp = datingDAN.addProbNode(variableUTVExp, NodeType.UTILITY);
-		ProbNode nodeUNCExp = datingDAN.addProbNode(variableUNCExp, NodeType.UTILITY);
-		ProbNode nodeUmExp = datingDAN.addProbNode(variableUmExp, NodeType.UTILITY);
-		ProbNode nodeUrExp = datingDAN.addProbNode(variableUrExp, NodeType.UTILITY);
+		Node nodeAsk = datingDAN.addNode(variableAsk, NodeType.DECISION);
+		Node nodeNClub = datingDAN.addNode(variableNClub, NodeType.DECISION);
+		Node nodeAccept = datingDAN.addNode(variableAccept, NodeType.CHANCE);
+		Node nodeLikesMe = datingDAN.addNode(variableLikesMe, NodeType.CHANCE);
+		Node nodeToDo = datingDAN.addNode(variableToDo, NodeType.CHANCE);
+		Node nodeTV = datingDAN.addNode(variableTV, NodeType.CHANCE);
+		Node nodeTVExp = datingDAN.addNode(variableTVExp, NodeType.CHANCE);
+		Node nodeClub = datingDAN.addNode(variableClub, NodeType.CHANCE);
+		Node nodeMeetFr = datingDAN.addNode(variableMeetFr, NodeType.CHANCE);
+		Node nodeNCExp = datingDAN.addNode(variableNCExp, NodeType.CHANCE);
+		Node nodeMovie = datingDAN.addNode(variableMovie, NodeType.DECISION);
+		Node nodeRest = datingDAN.addNode(variableRest, NodeType.DECISION);
+		Node nodeMMood = datingDAN.addNode(variableMMood, NodeType.CHANCE);
+		Node nodeRMood = datingDAN.addNode(variableRMood, NodeType.CHANCE);
+		Node nodeMExp = datingDAN.addNode(variableMExp, NodeType.CHANCE);
+		Node nodeRExp = datingDAN.addNode(variableRExp, NodeType.CHANCE);
+		Node nodeUTVExp = datingDAN.addNode(variableUTVExp, NodeType.UTILITY);
+		Node nodeUNCExp = datingDAN.addNode(variableUNCExp, NodeType.UTILITY);
+		Node nodeUmExp = datingDAN.addNode(variableUmExp, NodeType.UTILITY);
+		Node nodeUrExp = datingDAN.addNode(variableUrExp, NodeType.UTILITY);
 		
-		datingDAN.getGraph().makeLinksExplicit(false);
+		datingDAN.makeLinksExplicit(false);
 		datingDAN.addLink(variableAsk, variableAccept, true);
 		datingDAN.addLink(variableLikesMe, variableAccept, true);
 		datingDAN.addLink(variableLikesMe, variableToDo, true);
@@ -1357,52 +1357,52 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		nodeUNCExp.setPotential(potentialUNCExp);		
 		
 		
-		Link linkAskAccept = datingDAN.getGraph().getLink(nodeAsk.getNode(), nodeAccept.getNode(), true);
+		Link<Node> linkAskAccept = datingDAN.getLink(nodeAsk, nodeAccept, true);
 		linkAskAccept.initializesRestrictionsPotential();
 		TablePotential restrictionsAskAccept = (TablePotential)linkAskAccept.getRestrictionsPotential();
 		restrictionsAskAccept.values = new double[]{1,1,0,1};
 		linkAskAccept.setRevealingStates(Arrays.asList(variableAsk.getStates()[0], variableAsk.getStates()[1]));
 
-		Link linkAcceptNClub = datingDAN.getGraph().getLink(nodeAccept.getNode(), nodeNClub.getNode(), true);
+		Link<Node> linkAcceptNClub = datingDAN.getLink(nodeAccept, nodeNClub, true);
 		linkAcceptNClub.initializesRestrictionsPotential();
 		TablePotential restrictionsAcceptNClub = (TablePotential)linkAcceptNClub.getRestrictionsPotential();
 		restrictionsAcceptNClub.values = new double[]{1,0,1,0};
 
-		Link linkAcceptToDo = datingDAN.getGraph().getLink(nodeAccept.getNode(), nodeToDo.getNode(), true);
+		Link<Node> linkAcceptToDo = datingDAN.getLink(nodeAccept, nodeToDo, true);
 		linkAcceptToDo.initializesRestrictionsPotential();
 		TablePotential restrictionsAcceptToDo = (TablePotential)linkAcceptToDo.getRestrictionsPotential();
 		restrictionsAcceptToDo.values = new double[]{0,1,0,1};
 		linkAcceptToDo.setRevealingStates(Arrays.asList(variableAccept.getStates()[1]));
 
-		Link linkToDoMovie = datingDAN.getGraph().getLink(nodeToDo.getNode(), nodeMovie.getNode(), true);
+		Link<Node> linkToDoMovie = datingDAN.getLink(nodeToDo, nodeMovie, true);
 		linkToDoMovie.initializesRestrictionsPotential();
 		TablePotential restrictionsToDoMovie = (TablePotential)linkToDoMovie.getRestrictionsPotential();
 		restrictionsToDoMovie.values = new double[]{0,1,0,1};
 
-		Link linkToDoRest = datingDAN.getGraph().getLink(nodeToDo.getNode(), nodeRest.getNode(), true);
+		Link<Node> linkToDoRest = datingDAN.getLink(nodeToDo, nodeRest, true);
 		linkToDoRest.initializesRestrictionsPotential();
 		TablePotential restrictionsToDoRest = (TablePotential)linkToDoRest.getRestrictionsPotential();
 		restrictionsToDoRest.values = new double[]{1,0,1,0};
 
-		Link linkMovieMEXp = datingDAN.getGraph().getLink(nodeMovie.getNode(), nodeMExp.getNode(), true);
+		Link<Node> linkMovieMEXp = datingDAN.getLink(nodeMovie, nodeMExp, true);
 		linkMovieMEXp.setRevealingStates(Arrays.asList(variableMovie.getStates()[0], variableMovie.getStates()[1]));
 
-		Link linkRestREXp = datingDAN.getGraph().getLink(nodeRest.getNode(), nodeRExp.getNode(), true);
+		Link<Node> linkRestREXp = datingDAN.getLink(nodeRest, nodeRExp, true);
 		linkRestREXp.setRevealingStates(Arrays.asList(variableRest.getStates()[0], variableRest.getStates()[1]));
 		
-		Link linkNClubTVExp = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeTVExp.getNode(), true);
+		Link<Node> linkNClubTVExp = datingDAN.getLink(nodeNClub, nodeTVExp, true);
 		linkNClubTVExp.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubTVExp = (TablePotential)linkNClubTVExp.getRestrictionsPotential();
 		restrictionsNClubTVExp.values = new double[]{1,0,1,0};
 		linkNClubTVExp.setRevealingStates(Arrays.asList(variableNClub.getStates()[0]));
 
-		Link linkNClubClub = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeClub.getNode(), true);
+		Link<Node> linkNClubClub = datingDAN.getLink(nodeNClub, nodeClub, true);
 		linkNClubClub.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubClub = (TablePotential)linkNClubClub.getRestrictionsPotential();
 		restrictionsNClubClub.values = new double[]{0,1,0,1};
 		linkNClubClub.setRevealingStates(Arrays.asList(variableNClub.getStates()[1]));
 
-		Link linkNClubMeetFr = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeMeetFr.getNode(), true);
+		Link<Node> linkNClubMeetFr = datingDAN.getLink(nodeNClub, nodeMeetFr, true);
 		linkNClubMeetFr.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubMeetFr = (TablePotential)linkNClubMeetFr.getRestrictionsPotential();
 		restrictionsNClubMeetFr.values = new double[]{0,1,0,1};
@@ -1425,16 +1425,16 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		Variable variableUTVExp = new Variable("U TVExp");
 		Variable variableUNCExp = new Variable("U NCExp");
 		
-		ProbNode nodeNClub = datingDAN.addProbNode(variableNClub, NodeType.DECISION);
-		ProbNode nodeTV = datingDAN.addProbNode(variableTV, NodeType.CHANCE);
-		ProbNode nodeTVExp = datingDAN.addProbNode(variableTVExp, NodeType.CHANCE);
-		ProbNode nodeClub = datingDAN.addProbNode(variableClub, NodeType.CHANCE);
-		ProbNode nodeMeetFr = datingDAN.addProbNode(variableMeetFr, NodeType.CHANCE);
-		ProbNode nodeNCExp = datingDAN.addProbNode(variableNCExp, NodeType.CHANCE);
-		ProbNode nodeUTVExp = datingDAN.addProbNode(variableUTVExp, NodeType.UTILITY);
-		ProbNode nodeUNCExp = datingDAN.addProbNode(variableUNCExp, NodeType.UTILITY);
+		Node nodeNClub = datingDAN.addNode(variableNClub, NodeType.DECISION);
+		Node nodeTV = datingDAN.addNode(variableTV, NodeType.CHANCE);
+		Node nodeTVExp = datingDAN.addNode(variableTVExp, NodeType.CHANCE);
+		Node nodeClub = datingDAN.addNode(variableClub, NodeType.CHANCE);
+		Node nodeMeetFr = datingDAN.addNode(variableMeetFr, NodeType.CHANCE);
+		Node nodeNCExp = datingDAN.addNode(variableNCExp, NodeType.CHANCE);
+		Node nodeUTVExp = datingDAN.addNode(variableUTVExp, NodeType.UTILITY);
+		Node nodeUNCExp = datingDAN.addNode(variableUNCExp, NodeType.UTILITY);
 		
-		datingDAN.getGraph().makeLinksExplicit(false);
+		datingDAN.makeLinksExplicit(false);
 		datingDAN.addLink(variableTV, variableTVExp, true);
 		datingDAN.addLink(variableNClub, variableTVExp, true);
 		datingDAN.addLink(variableNClub, variableClub, true);
@@ -1473,19 +1473,19 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		potentialUNCExp.values = new double [] {-10, 10};
 		nodeUNCExp.setPotential(potentialUNCExp);	
 		
-		Link linkNClubTVExp = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeTVExp.getNode(), true);
+		Link<Node> linkNClubTVExp = datingDAN.getLink(nodeNClub, nodeTVExp, true);
 		linkNClubTVExp.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubTVExp = (TablePotential)linkNClubTVExp.getRestrictionsPotential();
 		restrictionsNClubTVExp.values = new double[]{1,0,1,0};
 		linkNClubTVExp.setRevealingStates(Arrays.asList(variableNClub.getStates()[0]));
 
-		Link linkNClubClub = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeClub.getNode(), true);
+		Link<Node> linkNClubClub = datingDAN.getLink(nodeNClub, nodeClub, true);
 		linkNClubClub.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubClub = (TablePotential)linkNClubClub.getRestrictionsPotential();
 		restrictionsNClubClub.values = new double[]{0,1,0,1};
 		linkNClubClub.setRevealingStates(Arrays.asList(variableNClub.getStates()[1]));
 
-		Link linkNClubMeetFr = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeMeetFr.getNode(), true);
+		Link<Node> linkNClubMeetFr = datingDAN.getLink(nodeNClub, nodeMeetFr, true);
 		linkNClubMeetFr.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubMeetFr = (TablePotential)linkNClubMeetFr.getRestrictionsPotential();
 		restrictionsNClubMeetFr.values = new double[]{0,1,0,1};
@@ -1520,28 +1520,28 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		Variable variableUmExp = new Variable("U mExp");
 		Variable variableUrExp = new Variable("U rExp");
 		
-		ProbNode nodeAsk = datingDAN.addProbNode(variableAsk, NodeType.DECISION);
-		ProbNode nodeNClub = datingDAN.addProbNode(variableNClub, NodeType.DECISION);
-		ProbNode nodeAccept = datingDAN.addProbNode(variableAccept, NodeType.CHANCE);
-		ProbNode nodeLikesMe = datingDAN.addProbNode(variableLikesMe, NodeType.CHANCE);
-		ProbNode nodeToDo = datingDAN.addProbNode(variableToDo, NodeType.CHANCE);
+		Node nodeAsk = datingDAN.addNode(variableAsk, NodeType.DECISION);
+		Node nodeNClub = datingDAN.addNode(variableNClub, NodeType.DECISION);
+		Node nodeAccept = datingDAN.addNode(variableAccept, NodeType.CHANCE);
+		Node nodeLikesMe = datingDAN.addNode(variableLikesMe, NodeType.CHANCE);
+		Node nodeToDo = datingDAN.addNode(variableToDo, NodeType.CHANCE);
 		//ProbNode nodeTV = datingDAN.addProbNode(variableTV, NodeType.CHANCE);
-		ProbNode nodeTVExp = datingDAN.addProbNode(variableTVExp, NodeType.CHANCE);
-		ProbNode nodeClub = datingDAN.addProbNode(variableClub, NodeType.CHANCE);
-		ProbNode nodeMeetFr = datingDAN.addProbNode(variableMeetFr, NodeType.CHANCE);
-		ProbNode nodeNCExp = datingDAN.addProbNode(variableNCExp, NodeType.CHANCE);
-		ProbNode nodeMovie = datingDAN.addProbNode(variableMovie, NodeType.DECISION);
-		ProbNode nodeRest = datingDAN.addProbNode(variableRest, NodeType.DECISION);
-		ProbNode nodeMMood = datingDAN.addProbNode(variableMMood, NodeType.CHANCE);
-		ProbNode nodeRMood = datingDAN.addProbNode(variableRMood, NodeType.CHANCE);
-		ProbNode nodeMExp = datingDAN.addProbNode(variableMExp, NodeType.CHANCE);
-		ProbNode nodeRExp = datingDAN.addProbNode(variableRExp, NodeType.CHANCE);
-		ProbNode nodeUTVExp = datingDAN.addProbNode(variableUTVExp, NodeType.UTILITY);
-		ProbNode nodeUNCExp = datingDAN.addProbNode(variableUNCExp, NodeType.UTILITY);
-		ProbNode nodeUmExp = datingDAN.addProbNode(variableUmExp, NodeType.UTILITY);
-		ProbNode nodeUrExp = datingDAN.addProbNode(variableUrExp, NodeType.UTILITY);
+		Node nodeTVExp = datingDAN.addNode(variableTVExp, NodeType.CHANCE);
+		Node nodeClub = datingDAN.addNode(variableClub, NodeType.CHANCE);
+		Node nodeMeetFr = datingDAN.addNode(variableMeetFr, NodeType.CHANCE);
+		Node nodeNCExp = datingDAN.addNode(variableNCExp, NodeType.CHANCE);
+		Node nodeMovie = datingDAN.addNode(variableMovie, NodeType.DECISION);
+		Node nodeRest = datingDAN.addNode(variableRest, NodeType.DECISION);
+		Node nodeMMood = datingDAN.addNode(variableMMood, NodeType.CHANCE);
+		Node nodeRMood = datingDAN.addNode(variableRMood, NodeType.CHANCE);
+		Node nodeMExp = datingDAN.addNode(variableMExp, NodeType.CHANCE);
+		Node nodeRExp = datingDAN.addNode(variableRExp, NodeType.CHANCE);
+		Node nodeUTVExp = datingDAN.addNode(variableUTVExp, NodeType.UTILITY);
+		Node nodeUNCExp = datingDAN.addNode(variableUNCExp, NodeType.UTILITY);
+		Node nodeUmExp = datingDAN.addNode(variableUmExp, NodeType.UTILITY);
+		Node nodeUrExp = datingDAN.addNode(variableUrExp, NodeType.UTILITY);
 		
-		datingDAN.getGraph().makeLinksExplicit(false);
+		datingDAN.makeLinksExplicit(false);
 		datingDAN.addLink(variableAsk, variableAccept, true);
 		datingDAN.addLink(variableLikesMe, variableAccept, true);
 		datingDAN.addLink(variableLikesMe, variableToDo, true);
@@ -1626,52 +1626,52 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		nodeUNCExp.setPotential(potentialUNCExp);		
 		
 		
-		Link linkAskAccept = datingDAN.getGraph().getLink(nodeAsk.getNode(), nodeAccept.getNode(), true);
+		Link<Node> linkAskAccept = datingDAN.getLink(nodeAsk, nodeAccept, true);
 		linkAskAccept.initializesRestrictionsPotential();
 		TablePotential restrictionsAskAccept = (TablePotential)linkAskAccept.getRestrictionsPotential();
 		restrictionsAskAccept.values = new double[]{1,1,0,1};
 		linkAskAccept.setRevealingStates(Arrays.asList(variableAsk.getStates()[0], variableAsk.getStates()[1]));
 
-		Link linkAcceptNClub = datingDAN.getGraph().getLink(nodeAccept.getNode(), nodeNClub.getNode(), true);
+		Link<Node> linkAcceptNClub = datingDAN.getLink(nodeAccept, nodeNClub, true);
 		linkAcceptNClub.initializesRestrictionsPotential();
 		TablePotential restrictionsAcceptNClub = (TablePotential)linkAcceptNClub.getRestrictionsPotential();
 		restrictionsAcceptNClub.values = new double[]{1,0,1,0};
 
-		Link linkAcceptToDo = datingDAN.getGraph().getLink(nodeAccept.getNode(), nodeToDo.getNode(), true);
+		Link<Node> linkAcceptToDo = datingDAN.getLink(nodeAccept, nodeToDo, true);
 		linkAcceptToDo.initializesRestrictionsPotential();
 		TablePotential restrictionsAcceptToDo = (TablePotential)linkAcceptToDo.getRestrictionsPotential();
 		restrictionsAcceptToDo.values = new double[]{0,1,0,1};
 		linkAcceptToDo.setRevealingStates(Arrays.asList(variableAccept.getStates()[1]));
 
-		Link linkToDoMovie = datingDAN.getGraph().getLink(nodeToDo.getNode(), nodeMovie.getNode(), true);
+		Link<Node> linkToDoMovie = datingDAN.getLink(nodeToDo, nodeMovie, true);
 		linkToDoMovie.initializesRestrictionsPotential();
 		TablePotential restrictionsToDoMovie = (TablePotential)linkToDoMovie.getRestrictionsPotential();
 		restrictionsToDoMovie.values = new double[]{0,1,0,1};
 
-		Link linkToDoRest = datingDAN.getGraph().getLink(nodeToDo.getNode(), nodeRest.getNode(), true);
+		Link<Node> linkToDoRest = datingDAN.getLink(nodeToDo, nodeRest, true);
 		linkToDoRest.initializesRestrictionsPotential();
 		TablePotential restrictionsToDoRest = (TablePotential)linkToDoRest.getRestrictionsPotential();
 		restrictionsToDoRest.values = new double[]{1,0,1,0};
 
-		Link linkMovieMEXp = datingDAN.getGraph().getLink(nodeMovie.getNode(), nodeMExp.getNode(), true);
+		Link<Node> linkMovieMEXp = datingDAN.getLink(nodeMovie, nodeMExp, true);
 		linkMovieMEXp.setRevealingStates(Arrays.asList(variableMovie.getStates()[0], variableMovie.getStates()[1]));
 
-		Link linkRestREXp = datingDAN.getGraph().getLink(nodeRest.getNode(), nodeRExp.getNode(), true);
+		Link<Node> linkRestREXp = datingDAN.getLink(nodeRest, nodeRExp, true);
 		linkRestREXp.setRevealingStates(Arrays.asList(variableRest.getStates()[0], variableRest.getStates()[1]));
 		
-		Link linkNClubTVExp = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeTVExp.getNode(), true);
+		Link<Node> linkNClubTVExp = datingDAN.getLink(nodeNClub, nodeTVExp, true);
 		linkNClubTVExp.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubTVExp = (TablePotential)linkNClubTVExp.getRestrictionsPotential();
 		restrictionsNClubTVExp.values = new double[]{1,0,1,0};
 		linkNClubTVExp.setRevealingStates(Arrays.asList(variableNClub.getStates()[0]));
 
-		Link linkNClubClub = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeClub.getNode(), true);
+		Link<Node> linkNClubClub = datingDAN.getLink(nodeNClub, nodeClub, true);
 		linkNClubClub.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubClub = (TablePotential)linkNClubClub.getRestrictionsPotential();
 		restrictionsNClubClub.values = new double[]{0,1,0,1};
 		linkNClubClub.setRevealingStates(Arrays.asList(variableNClub.getStates()[1]));
 
-		Link linkNClubMeetFr = datingDAN.getGraph().getLink(nodeNClub.getNode(), nodeMeetFr.getNode(), true);
+		Link<Node> linkNClubMeetFr = datingDAN.getLink(nodeNClub, nodeMeetFr, true);
 		linkNClubMeetFr.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubMeetFr = (TablePotential)linkNClubMeetFr.getRestrictionsPotential();
 		restrictionsNClubMeetFr.values = new double[]{0,1,0,1};
@@ -1692,16 +1692,16 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		Variable variableUrExp = new Variable("U rExp");
 		Variable variableLikesMe = new Variable("LikesMe","no","yes");
 		
-		ProbNode nodeToDo = datingDAN.addProbNode(variableToDo, NodeType.CHANCE);
-		ProbNode nodeMovie = datingDAN.addProbNode(variableMovie, NodeType.DECISION);
-		ProbNode nodeRest = datingDAN.addProbNode(variableRest, NodeType.DECISION);
-		ProbNode nodeMExp = datingDAN.addProbNode(variableMExp, NodeType.CHANCE);
-		ProbNode nodeRExp = datingDAN.addProbNode(variableRExp, NodeType.CHANCE);
-		ProbNode nodeUmExp = datingDAN.addProbNode(variableUmExp, NodeType.UTILITY);
-		ProbNode nodeUrExp = datingDAN.addProbNode(variableUrExp, NodeType.UTILITY);
-		ProbNode nodeLikesMe = datingDAN.addProbNode(variableLikesMe, NodeType.CHANCE);
+		Node nodeToDo = datingDAN.addNode(variableToDo, NodeType.CHANCE);
+		Node nodeMovie = datingDAN.addNode(variableMovie, NodeType.DECISION);
+		Node nodeRest = datingDAN.addNode(variableRest, NodeType.DECISION);
+		Node nodeMExp = datingDAN.addNode(variableMExp, NodeType.CHANCE);
+		Node nodeRExp = datingDAN.addNode(variableRExp, NodeType.CHANCE);
+		Node nodeUmExp = datingDAN.addNode(variableUmExp, NodeType.UTILITY);
+		Node nodeUrExp = datingDAN.addNode(variableUrExp, NodeType.UTILITY);
+		Node nodeLikesMe = datingDAN.addNode(variableLikesMe, NodeType.CHANCE);
 		
-		datingDAN.getGraph().makeLinksExplicit(false);
+		datingDAN.makeLinksExplicit(false);
 		datingDAN.addLink(variableToDo, variableMovie, true);
 		datingDAN.addLink(variableToDo, variableRest, true);
 		datingDAN.addLink(variableMovie, variableMExp, true);
@@ -1736,20 +1736,20 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		
 			
 		
-		Link linkToDoMovie = datingDAN.getGraph().getLink(nodeToDo.getNode(), nodeMovie.getNode(), true);
+		Link<Node> linkToDoMovie = datingDAN.getLink(nodeToDo, nodeMovie, true);
 		linkToDoMovie.initializesRestrictionsPotential();
 		TablePotential restrictionsToDoMovie = (TablePotential)linkToDoMovie.getRestrictionsPotential();
 		restrictionsToDoMovie.values = new double[]{0,1,0,1};
 
-		Link linkToDoRest = datingDAN.getGraph().getLink(nodeToDo.getNode(), nodeRest.getNode(), true);
+		Link<Node> linkToDoRest = datingDAN.getLink(nodeToDo, nodeRest, true);
 		linkToDoRest.initializesRestrictionsPotential();
 		TablePotential restrictionsToDoRest = (TablePotential)linkToDoRest.getRestrictionsPotential();
 		restrictionsToDoRest.values = new double[]{1,0,1,0};
 
-		Link linkMovieMEXp = datingDAN.getGraph().getLink(nodeMovie.getNode(), nodeMExp.getNode(), true);
+		Link<Node> linkMovieMEXp = datingDAN.getLink(nodeMovie, nodeMExp, true);
 		linkMovieMEXp.setRevealingStates(Arrays.asList(variableMovie.getStates()[0], variableMovie.getStates()[1]));
 
-		Link linkRestREXp = datingDAN.getGraph().getLink(nodeRest.getNode(), nodeRExp.getNode(), true);
+		Link<Node> linkRestREXp = datingDAN.getLink(nodeRest, nodeRExp, true);
 		linkRestREXp.setRevealingStates(Arrays.asList(variableRest.getStates()[0], variableRest.getStates()[1]));
 		
 		nodeToDo.setAlwaysObserved(true);
@@ -1776,18 +1776,18 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	  Variable varBenefit_of_conventional_reactor = new Variable("Benefit of conventional reactor");
 	
 	  // Nodes
-	  ProbNode nodeResult_of_advanced_reactor= probNet.addProbNode(varResult_of_advanced_reactor, NodeType.CHANCE);
-	  ProbNode nodeResult_of_test= probNet.addProbNode(varResult_of_test, NodeType.CHANCE);
-	  ProbNode nodeResult_of_conventional_reactor= probNet.addProbNode(varResult_of_conventional_reactor, NodeType.CHANCE);
-	  ProbNode nodeAdvanced_reactor_reliability= probNet.addProbNode(varAdvanced_reactor_reliability, NodeType.CHANCE);
-	  ProbNode nodeTest_decision= probNet.addProbNode(varTest_decision, NodeType.DECISION);
-	  ProbNode nodeBuild_decision= probNet.addProbNode(varBuild_decision, NodeType.DECISION);
-	  ProbNode nodeCost_of_test= probNet.addProbNode(varCost_of_test, NodeType.UTILITY);
-	  ProbNode nodeBenefit_of_advanced_reactor= probNet.addProbNode(varBenefit_of_advanced_reactor, NodeType.UTILITY);
-	  ProbNode nodeBenefit_of_conventional_reactor= probNet.addProbNode(varBenefit_of_conventional_reactor, NodeType.UTILITY);
+	  Node nodeResult_of_advanced_reactor= probNet.addNode(varResult_of_advanced_reactor, NodeType.CHANCE);
+	  Node nodeResult_of_test= probNet.addNode(varResult_of_test, NodeType.CHANCE);
+	  Node nodeResult_of_conventional_reactor= probNet.addNode(varResult_of_conventional_reactor, NodeType.CHANCE);
+	  Node nodeAdvanced_reactor_reliability= probNet.addNode(varAdvanced_reactor_reliability, NodeType.CHANCE);
+	  Node nodeTest_decision= probNet.addNode(varTest_decision, NodeType.DECISION);
+	  Node nodeBuild_decision= probNet.addNode(varBuild_decision, NodeType.DECISION);
+	  Node nodeCost_of_test= probNet.addNode(varCost_of_test, NodeType.UTILITY);
+	  Node nodeBenefit_of_advanced_reactor= probNet.addNode(varBenefit_of_advanced_reactor, NodeType.UTILITY);
+	  Node nodeBenefit_of_conventional_reactor= probNet.addNode(varBenefit_of_conventional_reactor, NodeType.UTILITY);
 	
 	  // Links
-	  probNet.getGraph().makeLinksExplicit(false);
+	  probNet.makeLinksExplicit(false);
 	  probNet.addLink(nodeResult_of_advanced_reactor, nodeBenefit_of_advanced_reactor, true);
 	  probNet.addLink(nodeResult_of_test, nodeBuild_decision, true);
 	  probNet.addLink(nodeResult_of_conventional_reactor, nodeBenefit_of_conventional_reactor, true);
@@ -1828,25 +1828,25 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	  potBenefit_of_conventional_reactor.values = new double[]{8, -4};
 	  nodeBenefit_of_conventional_reactor.setPotential(potBenefit_of_conventional_reactor);
 		
-	  // Link restrictions and revealing states
-	  Link link_nodeResult_of_test_nodeBuild_decision = probNet.getGraph().getLink(nodeResult_of_test.getNode(),nodeBuild_decision.getNode(), true);
+	  // Link<ProbNode> restrictions and revealing states
+	  Link<Node> link_nodeResult_of_test_nodeBuild_decision = probNet.getLink(nodeResult_of_test,nodeBuild_decision, true);
 	  link_nodeResult_of_test_nodeBuild_decision.initializesRestrictionsPotential();
 	  TablePotential restrictions_nodeResult_of_test_nodeBuild_decision = (TablePotential)link_nodeResult_of_test_nodeBuild_decision.getRestrictionsPotential();
 	  restrictions_nodeResult_of_test_nodeBuild_decision.values = new double[] {0, 1, 1, 1, 1, 1, 1, 1, 1};
 	
-	  Link link_nodeTest_decision_nodeResult_of_test = probNet.getGraph().getLink(nodeTest_decision.getNode(),nodeResult_of_test.getNode(), true);
+	  Link<Node> link_nodeTest_decision_nodeResult_of_test = probNet.getLink(nodeTest_decision,nodeResult_of_test, true);
 	  link_nodeTest_decision_nodeResult_of_test.initializesRestrictionsPotential();
 	  TablePotential restrictions_nodeTest_decision_nodeResult_of_test = (TablePotential)link_nodeTest_decision_nodeResult_of_test.getRestrictionsPotential();
 	  restrictions_nodeTest_decision_nodeResult_of_test.values = new double[] {1, 0, 1, 0, 1, 0};
 	  link_nodeTest_decision_nodeResult_of_test.setRevealingStates(Arrays.asList(varTest_decision.getStates()[0]));
 	
-	  Link link_nodeBuild_decision_nodeResult_of_advanced_reactor = probNet.getGraph().getLink(nodeBuild_decision.getNode(),nodeResult_of_advanced_reactor.getNode(), true);
+	  Link<Node> link_nodeBuild_decision_nodeResult_of_advanced_reactor = probNet.getLink(nodeBuild_decision,nodeResult_of_advanced_reactor, true);
 	  link_nodeBuild_decision_nodeResult_of_advanced_reactor.initializesRestrictionsPotential();
 	  TablePotential restrictions_nodeBuild_decision_nodeResult_of_advanced_reactor = (TablePotential)link_nodeBuild_decision_nodeResult_of_advanced_reactor.getRestrictionsPotential();
 	  restrictions_nodeBuild_decision_nodeResult_of_advanced_reactor.values = new double[] {1, 0, 0, 1, 0, 0, 1, 0, 0};
 	  link_nodeBuild_decision_nodeResult_of_advanced_reactor.setRevealingStates(Arrays.asList(varBuild_decision.getStates()[0]));
 	
-	  Link link_nodeBuild_decision_nodeResult_of_conventional_reactor = probNet.getGraph().getLink(nodeBuild_decision.getNode(),nodeResult_of_conventional_reactor.getNode(), true);
+	  Link<Node> link_nodeBuild_decision_nodeResult_of_conventional_reactor = probNet.getLink(nodeBuild_decision,nodeResult_of_conventional_reactor, true);
 	  link_nodeBuild_decision_nodeResult_of_conventional_reactor.initializesRestrictionsPotential();
 	  TablePotential restrictions_nodeBuild_decision_nodeResult_of_conventional_reactor = (TablePotential)link_nodeBuild_decision_nodeResult_of_conventional_reactor.getRestrictionsPotential();
 	  restrictions_nodeBuild_decision_nodeResult_of_conventional_reactor.values = new double[] {0, 1, 0, 0, 1, 0};
@@ -1885,33 +1885,33 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  Variable varcost_retirement = new Variable("cost retirement");
 
 		  // Nodes
-		  ProbNode nodeResult_1= probNet.addProbNode(varResult_1, NodeType.CHANCE);
-		  ProbNode nodeResult_2= probNet.addProbNode(varResult_2, NodeType.CHANCE);
-		  ProbNode nodeResult_3= probNet.addProbNode(varResult_3, NodeType.CHANCE);
-		  ProbNode nodeQuality_of_wooer= probNet.addProbNode(varQuality_of_wooer, NodeType.CHANCE);
-		  ProbNode nodeWedding= probNet.addProbNode(varWedding, NodeType.CHANCE);
-		  ProbNode nodeQuality_of_general= probNet.addProbNode(varQuality_of_general, NodeType.CHANCE);
-		  ProbNode nodeWealth= probNet.addProbNode(varWealth, NodeType.CHANCE);
-		  ProbNode nodeOffspring= probNet.addProbNode(varOffspring, NodeType.CHANCE);
-		  ProbNode nodeNoble_descent= probNet.addProbNode(varNoble_descent, NodeType.CHANCE);
-		  ProbNode nodeTask_1= probNet.addProbNode(varTask_1, NodeType.DECISION);
-		  ProbNode nodeTask_2= probNet.addProbNode(varTask_2, NodeType.DECISION);
-		  ProbNode nodeDec_Task_3= probNet.addProbNode(varDec_Task_3, NodeType.DECISION);
-		  ProbNode nodeMarriage= probNet.addProbNode(varMarriage, NodeType.DECISION);
-		  ProbNode nodeWar= probNet.addProbNode(varWar, NodeType.DECISION);
-		  ProbNode nodeRetire= probNet.addProbNode(varRetire, NodeType.DECISION);
-		  ProbNode nodeU1= probNet.addProbNode(varU1, NodeType.UTILITY);
-		  ProbNode nodeU2= probNet.addProbNode(varU2, NodeType.UTILITY);
-		  ProbNode nodeU3= probNet.addProbNode(varU3, NodeType.UTILITY);
-		  ProbNode nodecost_task_1= probNet.addProbNode(varcost_task_1, NodeType.UTILITY);
-		  ProbNode nodecost_task_2= probNet.addProbNode(varcost_task_2, NodeType.UTILITY);
-		  ProbNode nodecost_task_3= probNet.addProbNode(varcost_task_3, NodeType.UTILITY);
-		  ProbNode nodecost_marriage= probNet.addProbNode(varcost_marriage, NodeType.UTILITY);
-		  ProbNode nodecost_war= probNet.addProbNode(varcost_war, NodeType.UTILITY);
-		  ProbNode nodecost_retirement= probNet.addProbNode(varcost_retirement, NodeType.UTILITY);
+		  Node nodeResult_1= probNet.addNode(varResult_1, NodeType.CHANCE);
+		  Node nodeResult_2= probNet.addNode(varResult_2, NodeType.CHANCE);
+		  Node nodeResult_3= probNet.addNode(varResult_3, NodeType.CHANCE);
+		  Node nodeQuality_of_wooer= probNet.addNode(varQuality_of_wooer, NodeType.CHANCE);
+		  Node nodeWedding= probNet.addNode(varWedding, NodeType.CHANCE);
+		  Node nodeQuality_of_general= probNet.addNode(varQuality_of_general, NodeType.CHANCE);
+		  Node nodeWealth= probNet.addNode(varWealth, NodeType.CHANCE);
+		  Node nodeOffspring= probNet.addNode(varOffspring, NodeType.CHANCE);
+		  Node nodeNoble_descent= probNet.addNode(varNoble_descent, NodeType.CHANCE);
+		  Node nodeTask_1= probNet.addNode(varTask_1, NodeType.DECISION);
+		  Node nodeTask_2= probNet.addNode(varTask_2, NodeType.DECISION);
+		  Node nodeDec_Task_3= probNet.addNode(varDec_Task_3, NodeType.DECISION);
+		  Node nodeMarriage= probNet.addNode(varMarriage, NodeType.DECISION);
+		  Node nodeWar= probNet.addNode(varWar, NodeType.DECISION);
+		  Node nodeRetire= probNet.addNode(varRetire, NodeType.DECISION);
+		  Node nodeU1= probNet.addNode(varU1, NodeType.UTILITY);
+		  Node nodeU2= probNet.addNode(varU2, NodeType.UTILITY);
+		  Node nodeU3= probNet.addNode(varU3, NodeType.UTILITY);
+		  Node nodecost_task_1= probNet.addNode(varcost_task_1, NodeType.UTILITY);
+		  Node nodecost_task_2= probNet.addNode(varcost_task_2, NodeType.UTILITY);
+		  Node nodecost_task_3= probNet.addNode(varcost_task_3, NodeType.UTILITY);
+		  Node nodecost_marriage= probNet.addNode(varcost_marriage, NodeType.UTILITY);
+		  Node nodecost_war= probNet.addNode(varcost_war, NodeType.UTILITY);
+		  Node nodecost_retirement= probNet.addNode(varcost_retirement, NodeType.UTILITY);
 
 		  // Links
-		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.makeLinksExplicit(false);
 		  probNet.addLink(nodeQuality_of_wooer, nodeQuality_of_general, true);
 		  probNet.addLink(nodeQuality_of_wooer, nodeOffspring, true);
 		  probNet.addLink(nodeQuality_of_wooer, nodeU1, true);
@@ -2012,29 +2012,29 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  UniformPotential potcost_retirement = new UniformPotential(varcost_retirement,Arrays.asList(varRetire));
 		  nodecost_retirement.setPotential(potcost_retirement);
 
-		  // Link restrictions and revealing states
-		  Link link_nodeWedding_nodeOffspring = probNet.getGraph().getLink(nodeWedding.getNode(),nodeOffspring.getNode(), true);
+		  // Link<ProbNode> restrictions and revealing states
+		  Link<Node> link_nodeWedding_nodeOffspring = probNet.getLink(nodeWedding,nodeOffspring, true);
 		  link_nodeWedding_nodeOffspring.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeWedding_nodeOffspring = (TablePotential)link_nodeWedding_nodeOffspring.getRestrictionsPotential();
 		  restrictions_nodeWedding_nodeOffspring.values = new double[] {1, 1, 0, 1};
 		  link_nodeWedding_nodeOffspring.setRevealingStates(Arrays.asList(varWedding.getStates()[1], varWedding.getStates()[0]));
 
-		  Link link_nodeTask_1_nodeResult_1 = probNet.getGraph().getLink(nodeTask_1.getNode(),nodeResult_1.getNode(), true);
+		  Link<Node> link_nodeTask_1_nodeResult_1 = probNet.getLink(nodeTask_1,nodeResult_1, true);
 		  link_nodeTask_1_nodeResult_1.setRevealingStates(Arrays.asList(varTask_1.getStates()[1], varTask_1.getStates()[0]));
 
-		  Link link_nodeTask_2_nodeResult_2 = probNet.getGraph().getLink(nodeTask_2.getNode(),nodeResult_2.getNode(), true);
+		  Link<Node> link_nodeTask_2_nodeResult_2 = probNet.getLink(nodeTask_2,nodeResult_2, true);
 		  link_nodeTask_2_nodeResult_2.setRevealingStates(Arrays.asList(varTask_2.getStates()[1], varTask_2.getStates()[0]));
 
-		  Link link_nodeDec_Task_3_nodeResult_3 = probNet.getGraph().getLink(nodeDec_Task_3.getNode(),nodeResult_3.getNode(), true);
+		  Link<Node> link_nodeDec_Task_3_nodeResult_3 = probNet.getLink(nodeDec_Task_3,nodeResult_3, true);
 		  link_nodeDec_Task_3_nodeResult_3.setRevealingStates(Arrays.asList(varDec_Task_3.getStates()[1], varDec_Task_3.getStates()[0]));
 
-		  Link link_nodeMarriage_nodeWedding = probNet.getGraph().getLink(nodeMarriage.getNode(),nodeWedding.getNode(), true);
+		  Link<Node> link_nodeMarriage_nodeWedding = probNet.getLink(nodeMarriage,nodeWedding, true);
 		  link_nodeMarriage_nodeWedding.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeMarriage_nodeWedding = (TablePotential)link_nodeMarriage_nodeWedding.getRestrictionsPotential();
 		  restrictions_nodeMarriage_nodeWedding.values = new double[] {1, 0, 0, 1};
 		  link_nodeMarriage_nodeWedding.setRevealingStates(Arrays.asList(varMarriage.getStates()[1], varMarriage.getStates()[0]));
 
-		  Link link_nodeWar_nodeWealth = probNet.getGraph().getLink(nodeWar.getNode(),nodeWealth.getNode(), true);
+		  Link<Node> link_nodeWar_nodeWealth = probNet.getLink(nodeWar,nodeWealth, true);
 		  link_nodeWar_nodeWealth.setRevealingStates(Arrays.asList(varWar.getStates()[1], varWar.getStates()[0]));
 
 		  // Always observed nodes
@@ -2059,19 +2059,19 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  Variable varQuality_of_life = new Variable("Quality of life");
 
 		  // Nodes
-		  ProbNode nodeUrine_test_result= probNet.addProbNode(varUrine_test_result, NodeType.CHANCE);
-		  ProbNode nodeSymptom= probNet.addProbNode(varSymptom, NodeType.CHANCE);
-		  ProbNode nodeDiabetes= probNet.addProbNode(varDiabetes, NodeType.CHANCE);
-		  ProbNode nodeBlood_test_result= probNet.addProbNode(varBlood_test_result, NodeType.CHANCE);
-		  ProbNode nodeDec_Blood_Test= probNet.addProbNode(varDec_Blood_Test, NodeType.DECISION);
-		  ProbNode nodeDec_Urine_test= probNet.addProbNode(varDec_Urine_test, NodeType.DECISION);
-		  ProbNode nodeTherapy= probNet.addProbNode(varTherapy, NodeType.DECISION);
-		  ProbNode nodeCost_of_blood_test= probNet.addProbNode(varCost_of_blood_test, NodeType.UTILITY);
-		  ProbNode nodeCost_of_urine_test= probNet.addProbNode(varCost_of_urine_test, NodeType.UTILITY);
-		  ProbNode nodeQuality_of_life= probNet.addProbNode(varQuality_of_life, NodeType.UTILITY);
+		  Node nodeUrine_test_result= probNet.addNode(varUrine_test_result, NodeType.CHANCE);
+		  Node nodeSymptom= probNet.addNode(varSymptom, NodeType.CHANCE);
+		  Node nodeDiabetes= probNet.addNode(varDiabetes, NodeType.CHANCE);
+		  Node nodeBlood_test_result= probNet.addNode(varBlood_test_result, NodeType.CHANCE);
+		  Node nodeDec_Blood_Test= probNet.addNode(varDec_Blood_Test, NodeType.DECISION);
+		  Node nodeDec_Urine_test= probNet.addNode(varDec_Urine_test, NodeType.DECISION);
+		  Node nodeTherapy= probNet.addNode(varTherapy, NodeType.DECISION);
+		  Node nodeCost_of_blood_test= probNet.addNode(varCost_of_blood_test, NodeType.UTILITY);
+		  Node nodeCost_of_urine_test= probNet.addNode(varCost_of_urine_test, NodeType.UTILITY);
+		  Node nodeQuality_of_life= probNet.addNode(varQuality_of_life, NodeType.UTILITY);
 
 		  // Links
-		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.makeLinksExplicit(false);
 		  probNet.addLink(nodeDiabetes, nodeSymptom, true);
 		  probNet.addLink(nodeDiabetes, nodeUrine_test_result, true);
 		  probNet.addLink(nodeDiabetes, nodeBlood_test_result, true);
@@ -2114,14 +2114,14 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  nodeQuality_of_life.setPotential(potQuality_of_life);
 
 
-		  // Link restrictions and revealing states
-		  Link link_nodeDec_Blood_Test_nodeBlood_test_result = probNet.getGraph().getLink(nodeDec_Blood_Test.getNode(),nodeBlood_test_result.getNode(), true);
+		  // Link<ProbNode> restrictions and revealing states
+		  Link<Node> link_nodeDec_Blood_Test_nodeBlood_test_result = probNet.getLink(nodeDec_Blood_Test,nodeBlood_test_result, true);
 		  link_nodeDec_Blood_Test_nodeBlood_test_result.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeDec_Blood_Test_nodeBlood_test_result = (TablePotential)link_nodeDec_Blood_Test_nodeBlood_test_result.getRestrictionsPotential();
 		  restrictions_nodeDec_Blood_Test_nodeBlood_test_result.values = new double[] {0, 1, 0, 1};
 		  link_nodeDec_Blood_Test_nodeBlood_test_result.setRevealingStates(Arrays.asList(varDec_Blood_Test.getStates()[1]));
 
-		  Link link_nodeDec_Urine_test_nodeUrine_test_result = probNet.getGraph().getLink(nodeDec_Urine_test.getNode(),nodeUrine_test_result.getNode(), true);
+		  Link<Node> link_nodeDec_Urine_test_nodeUrine_test_result = probNet.getLink(nodeDec_Urine_test,nodeUrine_test_result, true);
 		  link_nodeDec_Urine_test_nodeUrine_test_result.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeDec_Urine_test_nodeUrine_test_result = (TablePotential)link_nodeDec_Urine_test_nodeUrine_test_result.getRestrictionsPotential();
 		  restrictions_nodeDec_Urine_test_nodeUrine_test_result.values = new double[] {0, 1, 0, 1};
@@ -2147,18 +2147,18 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  Variable varU2 = new Variable("U2");
 
 		  // Nodes
-		  ProbNode nodeDisease= probNet.addProbNode(varDisease, NodeType.CHANCE);
-		  ProbNode nodeR_T1= probNet.addProbNode(varR_T1, NodeType.CHANCE);
-		  ProbNode nodeR_T2= probNet.addProbNode(varR_T2, NodeType.CHANCE);
-		  ProbNode nodeT1= probNet.addProbNode(varT1, NodeType.DECISION);
-		  ProbNode nodeT2= probNet.addProbNode(varT2, NodeType.DECISION);
-		  ProbNode nodeTh= probNet.addProbNode(varTh, NodeType.DECISION);
-		  ProbNode nodeU= probNet.addProbNode(varU, NodeType.UTILITY);
-		  ProbNode nodeU1= probNet.addProbNode(varU1, NodeType.UTILITY);
-		  ProbNode nodeU2= probNet.addProbNode(varU2, NodeType.UTILITY);
+		  Node nodeDisease= probNet.addNode(varDisease, NodeType.CHANCE);
+		  Node nodeR_T1= probNet.addNode(varR_T1, NodeType.CHANCE);
+		  Node nodeR_T2= probNet.addNode(varR_T2, NodeType.CHANCE);
+		  Node nodeT1= probNet.addNode(varT1, NodeType.DECISION);
+		  Node nodeT2= probNet.addNode(varT2, NodeType.DECISION);
+		  Node nodeTh= probNet.addNode(varTh, NodeType.DECISION);
+		  Node nodeU= probNet.addNode(varU, NodeType.UTILITY);
+		  Node nodeU1= probNet.addNode(varU1, NodeType.UTILITY);
+		  Node nodeU2= probNet.addNode(varU2, NodeType.UTILITY);
 
 		  // Links
-		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.makeLinksExplicit(false);
 		  probNet.addLink(nodeDisease, nodeR_T1, true);
 		  probNet.addLink(nodeDisease, nodeR_T2, true);
 		  probNet.addLink(nodeDisease, nodeU, true);
@@ -2196,14 +2196,14 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  nodeU2.setPotential(potU2);
 
 
-		  // Link restrictions and revealing states
-		  Link link_nodeT1_nodeR_T1 = probNet.getGraph().getLink(nodeT1.getNode(),nodeR_T1.getNode(), true);
+		  // Link<ProbNode> restrictions and revealing states
+		  Link<Node> link_nodeT1_nodeR_T1 = probNet.getLink(nodeT1,nodeR_T1, true);
 		  link_nodeT1_nodeR_T1.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeT1_nodeR_T1 = (TablePotential)link_nodeT1_nodeR_T1.getRestrictionsPotential();
 		  restrictions_nodeT1_nodeR_T1.values = new double[] {0, 1, 0, 1};
 		  link_nodeT1_nodeR_T1.setRevealingStates(Arrays.asList(varT1.getStates()[1]));
 
-		  Link link_nodeT2_nodeR_T2 = probNet.getGraph().getLink(nodeT2.getNode(),nodeR_T2.getNode(), true);
+		  Link<Node> link_nodeT2_nodeR_T2 = probNet.getLink(nodeT2,nodeR_T2, true);
 		  link_nodeT2_nodeR_T2.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeT2_nodeR_T2 = (TablePotential)link_nodeT2_nodeR_T2.getRestrictionsPotential();
 		  restrictions_nodeT2_nodeR_T2.values = new double[] {0, 1, 0, 1};
@@ -2239,21 +2239,21 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  }
 
 		  // Nodes
-		  ProbNode nodeSymptom= probNet.addProbNode(varSymptom, NodeType.CHANCE);
-		  ProbNode nodeDiabetes= probNet.addProbNode(varDiabetes, NodeType.CHANCE);
-		  ProbNode nodeTherapy= probNet.addProbNode(varTherapy, NodeType.DECISION);
-		  ProbNode nodeQuality_of_life= probNet.addProbNode(varQuality_of_life, NodeType.UTILITY);
-		  ProbNode nodeDecTest[]=new ProbNode[numTests];
-		  ProbNode nodeTestResult[]=new ProbNode[numTests];
-		  ProbNode nodeCostOfTest[]=new ProbNode[numTests];
+		  Node nodeSymptom= probNet.addNode(varSymptom, NodeType.CHANCE);
+		  Node nodeDiabetes= probNet.addNode(varDiabetes, NodeType.CHANCE);
+		  Node nodeTherapy= probNet.addNode(varTherapy, NodeType.DECISION);
+		  Node nodeQuality_of_life= probNet.addNode(varQuality_of_life, NodeType.UTILITY);
+		  Node nodeDecTest[]=new Node[numTests];
+		  Node nodeTestResult[]=new Node[numTests];
+		  Node nodeCostOfTest[]=new Node[numTests];
 		  for (int i=0;i<numTests;i++){
-			  nodeTestResult[i]=probNet.addProbNode(varTest_Result[i], NodeType.CHANCE);
-			  nodeDecTest[i]=probNet.addProbNode(varDec_Test[i], NodeType.DECISION);
-			  nodeCostOfTest[i]=probNet.addProbNode(varTest_Result[i], NodeType.UTILITY);
+			  nodeTestResult[i]=probNet.addNode(varTest_Result[i], NodeType.CHANCE);
+			  nodeDecTest[i]=probNet.addNode(varDec_Test[i], NodeType.DECISION);
+			  nodeCostOfTest[i]=probNet.addNode(varTest_Result[i], NodeType.UTILITY);
 		  }
 	
 		  // Links
-		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.makeLinksExplicit(false);
 		  probNet.addLink(nodeDiabetes, nodeSymptom, true);
 		  for (int i=0;i<numTests;i++){
 			  probNet.addLink(nodeDiabetes, nodeTestResult[i], true);
@@ -2295,9 +2295,9 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  nodeQuality_of_life.setPotential(potQuality_of_life);
 
 
-		  // Link restrictions and revealing states
+		  // Link<ProbNode> restrictions and revealing states
 		  for (int i=0;i<numTests;i++){
-			  Link link_Dec_To_Test_Result = probNet.getGraph().getLink(nodeDecTest[i].getNode(),nodeTestResult[i].getNode(), true);
+			  Link<Node> link_Dec_To_Test_Result = probNet.getLink(nodeDecTest[i],nodeTestResult[i], true);
 			  link_Dec_To_Test_Result.initializesRestrictionsPotential();
 			  TablePotential restrictions_nodeDec_Test_node_test_result = (TablePotential)link_Dec_To_Test_Result.getRestrictionsPotential();
 			  restrictions_nodeDec_Test_node_test_result.values = new double[] {0, 1, 0, 1};
@@ -2334,21 +2334,21 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  }
 
 		  // Nodes
-		  ProbNode nodeSymptom= probNet.addProbNode(varSymptom, NodeType.CHANCE);
-		  ProbNode nodeDiabetes= probNet.addProbNode(varDiabetes, NodeType.CHANCE);
-		  ProbNode nodeTherapy= probNet.addProbNode(varTherapy, NodeType.DECISION);
-		  ProbNode nodeQuality_of_life= probNet.addProbNode(varQuality_of_life, NodeType.UTILITY);
-		  ProbNode nodeDecTest[]=new ProbNode[numTests];
-		  ProbNode nodeTestResult[]=new ProbNode[numTests];
-		  ProbNode nodeCostOfTest[]=new ProbNode[numTests];
+		  Node nodeSymptom= probNet.addNode(varSymptom, NodeType.CHANCE);
+		  Node nodeDiabetes= probNet.addNode(varDiabetes, NodeType.CHANCE);
+		  Node nodeTherapy= probNet.addNode(varTherapy, NodeType.DECISION);
+		  Node nodeQuality_of_life= probNet.addNode(varQuality_of_life, NodeType.UTILITY);
+		  Node nodeDecTest[]=new Node[numTests];
+		  Node nodeTestResult[]=new Node[numTests];
+		  Node nodeCostOfTest[]=new Node[numTests];
 		  for (int i=0;i<numTests;i++){
-			  nodeTestResult[i]=probNet.addProbNode(varTest_Result[i], NodeType.CHANCE);
-			  nodeDecTest[i]=probNet.addProbNode(varDec_Test[i], NodeType.DECISION);
-			  nodeCostOfTest[i]=probNet.addProbNode(varCost_of_Test[i], NodeType.UTILITY);
+			  nodeTestResult[i]=probNet.addNode(varTest_Result[i], NodeType.CHANCE);
+			  nodeDecTest[i]=probNet.addNode(varDec_Test[i], NodeType.DECISION);
+			  nodeCostOfTest[i]=probNet.addNode(varCost_of_Test[i], NodeType.UTILITY);
 		  }
 	
 		  // Links
-		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.makeLinksExplicit(false);
 		  probNet.addLink(nodeDiabetes, nodeSymptom, true);
 		  for (int i=0;i<numTests;i++){
 			  probNet.addLink(nodeDiabetes, nodeTestResult[i], true);
@@ -2394,9 +2394,9 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  potDiabetes.values = new double[]{0.93, 0.07};
 		  nodeDiabetes.setPotential(potDiabetes);
 
-		  // Link restrictions and revealing states
+		  // Link<ProbNode> restrictions and revealing states
 		  for (int i=0;i<numTests;i++){
-			  Link link_Dec_To_Test_Result = probNet.getGraph().getLink(nodeDecTest[i].getNode(),nodeTestResult[i].getNode(), true);
+			  Link<Node> link_Dec_To_Test_Result = probNet.getLink(nodeDecTest[i],nodeTestResult[i], true);
 			  link_Dec_To_Test_Result.initializesRestrictionsPotential();
 			  TablePotential restrictions_nodeDec_Test_node_test_result = (TablePotential)link_Dec_To_Test_Result.getRestrictionsPotential();
 			  restrictions_nodeDec_Test_node_test_result.values = new double[] {0, 1, 0, 1};
@@ -2431,21 +2431,21 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  }
 
 		  // Nodes
-		  ProbNode nodeSymptom= probNet.addProbNode(varSymptom, NodeType.CHANCE);
-		  ProbNode nodeDiabetes= probNet.addProbNode(varDiabetes, NodeType.CHANCE);
-		  ProbNode nodeTherapy= probNet.addProbNode(varTherapy, NodeType.DECISION);
-		  ProbNode nodeQuality_of_life= probNet.addProbNode(varQuality_of_life, NodeType.UTILITY);
-		  ProbNode nodeDecTest[]=new ProbNode[numTests];
-		  ProbNode nodeTestResult[]=new ProbNode[numTests];
-		  ProbNode nodeCostOfTest[]=new ProbNode[numTests];
+		  Node nodeSymptom= probNet.addNode(varSymptom, NodeType.CHANCE);
+		  Node nodeDiabetes= probNet.addNode(varDiabetes, NodeType.CHANCE);
+		  Node nodeTherapy= probNet.addNode(varTherapy, NodeType.DECISION);
+		  Node nodeQuality_of_life= probNet.addNode(varQuality_of_life, NodeType.UTILITY);
+		  Node nodeDecTest[]=new Node[numTests];
+		  Node nodeTestResult[]=new Node[numTests];
+		  Node nodeCostOfTest[]=new Node[numTests];
 		  for (int i=0;i<numTests;i++){
-			  nodeTestResult[i]=probNet.addProbNode(varTest_Result[i], NodeType.CHANCE);
-			  nodeDecTest[i]=probNet.addProbNode(varDec_Test[i], NodeType.DECISION);
-			  nodeCostOfTest[i]=probNet.addProbNode(varCost_of_Test[i], NodeType.UTILITY);
+			  nodeTestResult[i]=probNet.addNode(varTest_Result[i], NodeType.CHANCE);
+			  nodeDecTest[i]=probNet.addNode(varDec_Test[i], NodeType.DECISION);
+			  nodeCostOfTest[i]=probNet.addNode(varCost_of_Test[i], NodeType.UTILITY);
 		  }
 	
 		  // Links
-		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.makeLinksExplicit(false);
 		  probNet.addLink(nodeDiabetes, nodeSymptom, true);
 		  for (int i=0;i<numTests;i++){
 			  probNet.addLink(nodeDiabetes, nodeTestResult[i], true);
@@ -2486,9 +2486,9 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  nodeDiabetes.setPotential(potDiabetes);
 		  
 
-		  // Link restrictions and revealing states
+		  // Link<ProbNode> restrictions and revealing states
 		  for (int i=0;i<numTests;i++){
-			  Link link_Dec_To_Test_Result = probNet.getGraph().getLink(nodeDecTest[i].getNode(),nodeTestResult[i].getNode(), true);
+			  Link<Node> link_Dec_To_Test_Result = probNet.getLink(nodeDecTest[i],nodeTestResult[i], true);
 			  link_Dec_To_Test_Result.initializesRestrictionsPotential();
 			  TablePotential restrictions_nodeDec_Test_node_test_result = (TablePotential)link_Dec_To_Test_Result.getRestrictionsPotential();
 			  restrictions_nodeDec_Test_node_test_result.values = new double[] {0, 1, 0, 1};
@@ -2541,43 +2541,43 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  Variable varNet_Effectiveness = new Variable("Net Effectiveness");
 
 		  // Nodes
-		  ProbNode nodeN2_N3= probNet.addProbNode(varN2_N3, NodeType.CHANCE);
-		  ProbNode nodeCT_scan= probNet.addProbNode(varCT_scan, NodeType.CHANCE);
-		  ProbNode nodeTBNA= probNet.addProbNode(varTBNA, NodeType.CHANCE);
-		  ProbNode nodePET= probNet.addProbNode(varPET, NodeType.CHANCE);
-		  ProbNode nodeEBUS= probNet.addProbNode(varEBUS, NodeType.CHANCE);
-		  ProbNode nodeEUS= probNet.addProbNode(varEUS, NodeType.CHANCE);
-		  ProbNode nodeMED= probNet.addProbNode(varMED, NodeType.CHANCE);
-		  ProbNode nodeMED_Sv= probNet.addProbNode(varMED_Sv, NodeType.CHANCE);
-		  ProbNode nodeDecTBNA= probNet.addProbNode(varDecTBNA, NodeType.DECISION);
-		  ProbNode nodeDecPET= probNet.addProbNode(varDecPET, NodeType.DECISION);
-		  ProbNode nodeDecMED= probNet.addProbNode(varDecMED, NodeType.DECISION);
-		  ProbNode nodeTreatment= probNet.addProbNode(varTreatment, NodeType.DECISION);
-		  ProbNode nodeDecEBUS= probNet.addProbNode(varDecEBUS, NodeType.DECISION);
-		  ProbNode nodeDecEUS= probNet.addProbNode(varDecEUS, NodeType.DECISION);
-		  ProbNode nodeSurvivors_QALE= probNet.addProbNode(varSurvivors_QALE, NodeType.UTILITY);
-		  ProbNode nodeInmediate_Survival= probNet.addProbNode(varInmediate_Survival, NodeType.UTILITY);
-		  ProbNode nodeMED_Survival= probNet.addProbNode(varMED_Survival, NodeType.UTILITY);
-		  ProbNode nodeNet_QALE= probNet.addProbNode(varNet_QALE, NodeType.UTILITY);
-		  ProbNode nodeTBNA_Morbidity= probNet.addProbNode(varTBNA_Morbidity, NodeType.UTILITY);
-		  ProbNode nodeMED_Morbidity= probNet.addProbNode(varMED_Morbidity, NodeType.UTILITY);
-		  ProbNode nodeEUS_Morbidity= probNet.addProbNode(varEUS_Morbidity, NodeType.UTILITY);
-		  ProbNode nodeEBUS_Morbidity= probNet.addProbNode(varEBUS_Morbidity, NodeType.UTILITY);
-		  ProbNode nodeTotal_QALE= probNet.addProbNode(varTotal_QALE, NodeType.UTILITY);
-		  ProbNode nodeCostCT_scan= probNet.addProbNode(varCostCT_scan, NodeType.UTILITY);
-		  ProbNode nodeCostTBNA= probNet.addProbNode(varCostTBNA, NodeType.UTILITY);
-		  ProbNode nodeCostEBUS= probNet.addProbNode(varCostEBUS, NodeType.UTILITY);
-		  ProbNode nodeCostEUS= probNet.addProbNode(varCostEUS, NodeType.UTILITY);
-		  ProbNode nodeCostMED= probNet.addProbNode(varCostMED, NodeType.UTILITY);
-		  ProbNode nodeCostPET= probNet.addProbNode(varCostPET, NodeType.UTILITY);
-		  ProbNode nodeCostTreatment= probNet.addProbNode(varCostTreatment, NodeType.UTILITY);
-		  ProbNode nodeTotal_Economic_Cost= probNet.addProbNode(varTotal_Economic_Cost, NodeType.UTILITY);
-		  ProbNode nodeC2E= probNet.addProbNode(varC2E, NodeType.UTILITY);
-		  ProbNode nodeWeighted_Economic_Cost= probNet.addProbNode(varWeighted_Economic_Cost, NodeType.UTILITY);
-		  ProbNode nodeNet_Effectiveness= probNet.addProbNode(varNet_Effectiveness, NodeType.UTILITY);
+		  Node nodeN2_N3= probNet.addNode(varN2_N3, NodeType.CHANCE);
+		  Node nodeCT_scan= probNet.addNode(varCT_scan, NodeType.CHANCE);
+		  Node nodeTBNA= probNet.addNode(varTBNA, NodeType.CHANCE);
+		  Node nodePET= probNet.addNode(varPET, NodeType.CHANCE);
+		  Node nodeEBUS= probNet.addNode(varEBUS, NodeType.CHANCE);
+		  Node nodeEUS= probNet.addNode(varEUS, NodeType.CHANCE);
+		  Node nodeMED= probNet.addNode(varMED, NodeType.CHANCE);
+		  Node nodeMED_Sv= probNet.addNode(varMED_Sv, NodeType.CHANCE);
+		  Node nodeDecTBNA= probNet.addNode(varDecTBNA, NodeType.DECISION);
+		  Node nodeDecPET= probNet.addNode(varDecPET, NodeType.DECISION);
+		  Node nodeDecMED= probNet.addNode(varDecMED, NodeType.DECISION);
+		  Node nodeTreatment= probNet.addNode(varTreatment, NodeType.DECISION);
+		  Node nodeDecEBUS= probNet.addNode(varDecEBUS, NodeType.DECISION);
+		  Node nodeDecEUS= probNet.addNode(varDecEUS, NodeType.DECISION);
+		  Node nodeSurvivors_QALE= probNet.addNode(varSurvivors_QALE, NodeType.UTILITY);
+		  Node nodeInmediate_Survival= probNet.addNode(varInmediate_Survival, NodeType.UTILITY);
+		  Node nodeMED_Survival= probNet.addNode(varMED_Survival, NodeType.UTILITY);
+		  Node nodeNet_QALE= probNet.addNode(varNet_QALE, NodeType.UTILITY);
+		  Node nodeTBNA_Morbidity= probNet.addNode(varTBNA_Morbidity, NodeType.UTILITY);
+		  Node nodeMED_Morbidity= probNet.addNode(varMED_Morbidity, NodeType.UTILITY);
+		  Node nodeEUS_Morbidity= probNet.addNode(varEUS_Morbidity, NodeType.UTILITY);
+		  Node nodeEBUS_Morbidity= probNet.addNode(varEBUS_Morbidity, NodeType.UTILITY);
+		  Node nodeTotal_QALE= probNet.addNode(varTotal_QALE, NodeType.UTILITY);
+		  Node nodeCostCT_scan= probNet.addNode(varCostCT_scan, NodeType.UTILITY);
+		  Node nodeCostTBNA= probNet.addNode(varCostTBNA, NodeType.UTILITY);
+		  Node nodeCostEBUS= probNet.addNode(varCostEBUS, NodeType.UTILITY);
+		  Node nodeCostEUS= probNet.addNode(varCostEUS, NodeType.UTILITY);
+		  Node nodeCostMED= probNet.addNode(varCostMED, NodeType.UTILITY);
+		  Node nodeCostPET= probNet.addNode(varCostPET, NodeType.UTILITY);
+		  Node nodeCostTreatment= probNet.addNode(varCostTreatment, NodeType.UTILITY);
+		  Node nodeTotal_Economic_Cost= probNet.addNode(varTotal_Economic_Cost, NodeType.UTILITY);
+		  Node nodeC2E= probNet.addNode(varC2E, NodeType.UTILITY);
+		  Node nodeWeighted_Economic_Cost= probNet.addNode(varWeighted_Economic_Cost, NodeType.UTILITY);
+		  Node nodeNet_Effectiveness= probNet.addNode(varNet_Effectiveness, NodeType.UTILITY);
 
 		  // Links
-		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.makeLinksExplicit(false);
 		  probNet.addLink(nodeN2_N3, nodeCT_scan, true);
 		  probNet.addLink(nodeN2_N3, nodeEBUS, true);
 		  probNet.addLink(nodeN2_N3, nodeEUS, true);
@@ -2743,32 +2743,32 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  SumPotential potNet_Effectiveness = new SumPotential(varNet_Effectiveness,Arrays.asList(varTotal_QALE, varWeighted_Economic_Cost));
 		  nodeNet_Effectiveness.setPotential(potNet_Effectiveness);
 
-		  // Link restrictions and revealing states
-		  Link link_nodeDecTBNA_nodeTBNA = probNet.getGraph().getLink(nodeDecTBNA.getNode(),nodeTBNA.getNode(), true);
+		  // Link<ProbNode> restrictions and revealing states
+		  Link<Node> link_nodeDecTBNA_nodeTBNA = probNet.getLink(nodeDecTBNA,nodeTBNA, true);
 		  link_nodeDecTBNA_nodeTBNA.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeDecTBNA_nodeTBNA = (TablePotential)link_nodeDecTBNA_nodeTBNA.getRestrictionsPotential();
 		  restrictions_nodeDecTBNA_nodeTBNA.values = new double[] {0, 1, 0, 1};
 		  link_nodeDecTBNA_nodeTBNA.setRevealingStates(Arrays.asList(varDecTBNA.getStates()[1]));
 
-		  Link link_nodeDecPET_nodePET = probNet.getGraph().getLink(nodeDecPET.getNode(),nodePET.getNode(), true);
+		  Link<Node> link_nodeDecPET_nodePET = probNet.getLink(nodeDecPET,nodePET, true);
 		  link_nodeDecPET_nodePET.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeDecPET_nodePET = (TablePotential)link_nodeDecPET_nodePET.getRestrictionsPotential();
 		  restrictions_nodeDecPET_nodePET.values = new double[] {1, 0, 0, 1, 0, 1};
 		  link_nodeDecPET_nodePET.setRevealingStates(Arrays.asList(varDecPET.getStates()[0], varDecPET.getStates()[1]));
 
-		  Link link_nodeDecMED_nodeMED = probNet.getGraph().getLink(nodeDecMED.getNode(),nodeMED.getNode(), true);
+		  Link<Node> link_nodeDecMED_nodeMED = probNet.getLink(nodeDecMED,nodeMED, true);
 		  link_nodeDecMED_nodeMED.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeDecMED_nodeMED = (TablePotential)link_nodeDecMED_nodeMED.getRestrictionsPotential();
 		  restrictions_nodeDecMED_nodeMED.values = new double[] {0, 1, 0, 1};
 		  link_nodeDecMED_nodeMED.setRevealingStates(Arrays.asList(varDecMED.getStates()[1]));
 
-		  Link link_nodeDecEBUS_nodeEBUS = probNet.getGraph().getLink(nodeDecEBUS.getNode(),nodeEBUS.getNode(), true);
+		  Link<Node> link_nodeDecEBUS_nodeEBUS = probNet.getLink(nodeDecEBUS,nodeEBUS, true);
 		  link_nodeDecEBUS_nodeEBUS.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeDecEBUS_nodeEBUS = (TablePotential)link_nodeDecEBUS_nodeEBUS.getRestrictionsPotential();
 		  restrictions_nodeDecEBUS_nodeEBUS.values = new double[] {0, 1, 0, 1};
 		  link_nodeDecEBUS_nodeEBUS.setRevealingStates(Arrays.asList(varDecEBUS.getStates()[1]));
 
-		  Link link_nodeDecEUS_nodeEUS = probNet.getGraph().getLink(nodeDecEUS.getNode(),nodeEUS.getNode(), true);
+		  Link<Node> link_nodeDecEUS_nodeEUS = probNet.getLink(nodeDecEUS,nodeEUS, true);
 		  link_nodeDecEUS_nodeEUS.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeDecEUS_nodeEUS = (TablePotential)link_nodeDecEUS_nodeEUS.getRestrictionsPotential();
 		  restrictions_nodeDecEUS_nodeEUS.values = new double[] {0, 1, 0, 1};
@@ -2799,21 +2799,21 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  Variable varTotal = new Variable("Total");
 
 		  // Nodes
-		  ProbNode nodeCars_Condition= probNet.addProbNode(varCars_Condition, NodeType.CHANCE);
-		  ProbNode nodeFirst_Result= probNet.addProbNode(varFirst_Result, NodeType.CHANCE);
-		  ProbNode nodeSecond_result= probNet.addProbNode(varSecond_result, NodeType.CHANCE);
-		  ProbNode nodeDec_Purchase= probNet.addProbNode(varDec_Purchase, NodeType.DECISION);
-		  ProbNode nodeDec_Second_Test= probNet.addProbNode(varDec_Second_Test, NodeType.DECISION);
-		  ProbNode nodeDec_First_Test= probNet.addProbNode(varDec_First_Test, NodeType.DECISION);
-		  ProbNode nodeCost_First_test= probNet.addProbNode(varCost_First_test, NodeType.UTILITY);
-		  ProbNode nodeCost_Second_Test= probNet.addProbNode(varCost_Second_Test, NodeType.UTILITY);
-		  ProbNode nodeBuySell_difference= probNet.addProbNode(varBuySell_difference, NodeType.UTILITY);
-		  ProbNode nodeCost_Guarantee= probNet.addProbNode(varCost_Guarantee, NodeType.UTILITY);
-		  ProbNode nodeCost_Repair= probNet.addProbNode(varCost_Repair, NodeType.UTILITY);
-		  ProbNode nodeTotal= probNet.addProbNode(varTotal, NodeType.UTILITY);
+		  Node nodeCars_Condition= probNet.addNode(varCars_Condition, NodeType.CHANCE);
+		  Node nodeFirst_Result= probNet.addNode(varFirst_Result, NodeType.CHANCE);
+		  Node nodeSecond_result= probNet.addNode(varSecond_result, NodeType.CHANCE);
+		  Node nodeDec_Purchase= probNet.addNode(varDec_Purchase, NodeType.DECISION);
+		  Node nodeDec_Second_Test= probNet.addNode(varDec_Second_Test, NodeType.DECISION);
+		  Node nodeDec_First_Test= probNet.addNode(varDec_First_Test, NodeType.DECISION);
+		  Node nodeCost_First_test= probNet.addNode(varCost_First_test, NodeType.UTILITY);
+		  Node nodeCost_Second_Test= probNet.addNode(varCost_Second_Test, NodeType.UTILITY);
+		  Node nodeBuySell_difference= probNet.addNode(varBuySell_difference, NodeType.UTILITY);
+		  Node nodeCost_Guarantee= probNet.addNode(varCost_Guarantee, NodeType.UTILITY);
+		  Node nodeCost_Repair= probNet.addNode(varCost_Repair, NodeType.UTILITY);
+		  Node nodeTotal= probNet.addNode(varTotal, NodeType.UTILITY);
 
 		  // Links
-		  probNet.getGraph().makeLinksExplicit(false);
+		  probNet.makeLinksExplicit(false);
 		  probNet.addLink(nodeCars_Condition, nodeFirst_Result, true);
 		  probNet.addLink(nodeCars_Condition, nodeCost_Repair, true);
 		  probNet.addLink(nodeCars_Condition, nodeSecond_result, true);
@@ -2870,30 +2870,30 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  SumPotential potTotal = new SumPotential(varTotal,Arrays.asList(varCost_First_test, varCost_Second_Test, varCost_Guarantee, varCost_Repair, varBuySell_difference));
 		  nodeTotal.setPotential(potTotal);
 
-		  // Link restrictions and revealing states
-		  Link link_nodeFirst_Result_nodeSecond_result = probNet.getGraph().getLink(nodeFirst_Result.getNode(),nodeSecond_result.getNode(), true);
+		  // Link<ProbNode> restrictions and revealing states
+		  Link<Node> link_nodeFirst_Result_nodeSecond_result = probNet.getLink(nodeFirst_Result,nodeSecond_result, true);
 		  link_nodeFirst_Result_nodeSecond_result.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeFirst_Result_nodeSecond_result = (TablePotential)link_nodeFirst_Result_nodeSecond_result.getRestrictionsPotential();
 		  restrictions_nodeFirst_Result_nodeSecond_result.values = new double[] {0, 1, 1, 1, 0, 1, 1, 1};
 
-		  Link link_nodeDec_Second_Test_nodeSecond_result = probNet.getGraph().getLink(nodeDec_Second_Test.getNode(),nodeSecond_result.getNode(), true);
+		  Link<Node> link_nodeDec_Second_Test_nodeSecond_result = probNet.getLink(nodeDec_Second_Test,nodeSecond_result, true);
 		  link_nodeDec_Second_Test_nodeSecond_result.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeDec_Second_Test_nodeSecond_result = (TablePotential)link_nodeDec_Second_Test_nodeSecond_result.getRestrictionsPotential();
 		  restrictions_nodeDec_Second_Test_nodeSecond_result.values = new double[] {0, 1, 0, 1};
 		  link_nodeDec_Second_Test_nodeSecond_result.setRevealingStates(Arrays.asList(varDec_Second_Test.getStates()[1]));
 
-		  Link link_nodeDec_First_Test_nodeFirst_Result = probNet.getGraph().getLink(nodeDec_First_Test.getNode(),nodeFirst_Result.getNode(), true);
+		  Link<Node> link_nodeDec_First_Test_nodeFirst_Result = probNet.getLink(nodeDec_First_Test,nodeFirst_Result, true);
 		  link_nodeDec_First_Test_nodeFirst_Result.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeDec_First_Test_nodeFirst_Result = (TablePotential)link_nodeDec_First_Test_nodeFirst_Result.getRestrictionsPotential();
 		  restrictions_nodeDec_First_Test_nodeFirst_Result.values = new double[] {1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0};
 		  link_nodeDec_First_Test_nodeFirst_Result.setRevealingStates(Arrays.asList(varDec_First_Test.getStates()[3], varDec_First_Test.getStates()[2], varDec_First_Test.getStates()[1]));
 
-		  Link link_nodeDec_First_Test_nodeDec_Second_Test = probNet.getGraph().getLink(nodeDec_First_Test.getNode(),nodeDec_Second_Test.getNode(), true);
+		  Link<Node> link_nodeDec_First_Test_nodeDec_Second_Test = probNet.getLink(nodeDec_First_Test,nodeDec_Second_Test, true);
 		  link_nodeDec_First_Test_nodeDec_Second_Test.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeDec_First_Test_nodeDec_Second_Test = (TablePotential)link_nodeDec_First_Test_nodeDec_Second_Test.getRestrictionsPotential();
 		  restrictions_nodeDec_First_Test_nodeDec_Second_Test.values = new double[] {1, 1, 1, 1, 0, 0, 1, 0};
 
-		  Link link_nodeDec_First_Test_nodeSecond_result = probNet.getGraph().getLink(nodeDec_First_Test.getNode(),nodeSecond_result.getNode(), true);
+		  Link<Node> link_nodeDec_First_Test_nodeSecond_result = probNet.getLink(nodeDec_First_Test,nodeSecond_result, true);
 		  link_nodeDec_First_Test_nodeSecond_result.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeDec_First_Test_nodeSecond_result = (TablePotential)link_nodeDec_First_Test_nodeSecond_result.getRestrictionsPotential();
 		  restrictions_nodeDec_First_Test_nodeSecond_result.values = new double[] {0, 0, 1, 0, 0, 0, 1, 0};

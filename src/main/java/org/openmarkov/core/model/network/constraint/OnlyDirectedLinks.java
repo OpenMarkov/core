@@ -15,8 +15,8 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 @Constraint (name = "OnlyDirectedLinks", defaultBehavior = ConstraintBehavior.YES)
@@ -26,9 +26,9 @@ public class OnlyDirectedLinks extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-		List<Node> nodes = probNet.getGraph().getNodes();
+		List<Node> nodes = probNet.getNodes();
 		for (Node node : nodes) {
-			if (node.getSiblings().size() != 0) {
+			if (probNet.getNumSiblings(node) != 0) {
 				return false;
 			}
 		}

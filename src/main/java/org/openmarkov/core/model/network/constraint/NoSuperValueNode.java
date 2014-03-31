@@ -11,13 +11,13 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.List;
 
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 
@@ -26,8 +26,8 @@ public class NoSuperValueNode extends PNConstraint {
 	
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-	    List<ProbNode> probNodes = probNet.getProbNodes();
-		for (ProbNode probNode : probNodes) {
+	    List<Node> probNodes = probNet.getNodes();
+		for (Node probNode : probNodes) {
 			NodeType nodeType = probNode.getNodeType();
 			if ((nodeType == NodeType.SV_PRODUCT) || 
 					(nodeType == NodeType.SV_SUM)) {
@@ -43,9 +43,9 @@ public class NoSuperValueNode extends PNConstraint {
 	WrongCriterionException {
 		// AddVariableEdit
 	    List<PNEdit> edits = 
-			UtilConstraints.getSimpleEditsByType(edit, AddProbNodeEdit.class);
+			UtilConstraints.getSimpleEditsByType(edit, AddNodeEdit.class);
 		for (PNEdit simpleEdit : edits) {
-			NodeType nodeType = ((AddProbNodeEdit)simpleEdit).getNodeType ();
+			NodeType nodeType = ((AddNodeEdit)simpleEdit).getNodeType ();
 			if ((nodeType == NodeType.SV_PRODUCT) || 
 					(nodeType == NodeType.SV_SUM)) {
 				return false;

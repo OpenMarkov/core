@@ -10,7 +10,7 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * <code>RelevanceEdit</code> is a simple edit that allows modify
@@ -32,14 +32,14 @@ public class RelevanceEdit extends SimplePNEdit {
 	/**
 	 * The edited node
 	 */
-	private ProbNode probNode = null;
+	private Node probNode = null;
 	/**
 	 * Creates a new <code>RelevanceEdit</code> with the node and new relevance
 	 * specified.
 	 * @param probNode the node that will be edited
 	 * @param newRelevance the new relevance
 	 */
-	public RelevanceEdit (ProbNode probNode, double newRelevance){
+	public RelevanceEdit (Node probNode, double newRelevance){
 		super(probNode.getProbNet());
 		this.lastRelevance = probNode.getRelevance();
 		this.newRelevance = newRelevance;

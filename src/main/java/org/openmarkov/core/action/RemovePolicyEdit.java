@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 
@@ -32,7 +32,7 @@ public class RemovePolicyEdit extends SimplePNEdit {
 	 * 
 	 * @param probNode
 	 */
-	public RemovePolicyEdit(ProbNode probNode) {
+	public RemovePolicyEdit(Node probNode) {
 		super(probNode.getProbNet());
 		this.variable = probNode.getVariable();
 		if (probNode.getNodeType() == NodeType.DECISION && 
@@ -45,21 +45,21 @@ public class RemovePolicyEdit extends SimplePNEdit {
 	@Override
 	public void doEdit() throws DoEditException {
 		ArrayList<Potential> potentials = new ArrayList <Potential>();
-		if ( probNet.getProbNode(variable).getNodeType()== NodeType.DECISION && 
+		if ( probNet.getNode(variable).getNodeType()== NodeType.DECISION && 
 				lastPolicyType != PolicyType.OPTIMAL){
-			probNet.getProbNode(variable).setPolicyType(PolicyType.OPTIMAL);
-			probNet.getProbNode(variable).setPotentials(potentials);
+			probNet.getNode(variable).setPolicyType(PolicyType.OPTIMAL);
+			probNet.getNode(variable).setPotentials(potentials);
 		}
 	}
 	
 	public void undo(){
 		super.undo();
 		ArrayList<Potential> potentials = new ArrayList <Potential>();
-		if ( probNet.getProbNode(variable).getNodeType()== NodeType.DECISION &&
+		if ( probNet.getNode(variable).getNodeType()== NodeType.DECISION &&
 				lastPolicyType != PolicyType.OPTIMAL){
 			potentials.add(lastPotential);
-			probNet.getProbNode(variable).setPotentials(potentials);
-			probNet.getProbNode(variable).setPolicyType(lastPolicyType);
+			probNet.getNode(variable).setPotentials(potentials);
+			probNet.getNode(variable).setPolicyType(lastPolicyType);
 		}
 	}
 }

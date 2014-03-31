@@ -13,10 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -57,22 +56,22 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 	public CompoundRemoveNodeEdit(ProbNet probNet, Variable variable) {
 		super(probNet);
 		this.variable = variable;
-		this.nodeType = probNet.getProbNode(variable).getNodeType();
+		this.nodeType = probNet.getNode(variable).getNodeType();
 		this.logger = Logger.getLogger(CompoundPNEdit.class);
 	}
 
 	public void generateEdits() {
-		ProbNode probNode = probNet.getProbNode(variable);
+		Node probNode = probNet.getNode(variable);
 
 		// gets neighbors of this node
-		parents = probNode.getNode().getParents();
-		children = probNode.getNode().getChildren();
-		siblings = probNode.getNode().getSiblings();
+		parents = probNet.getParents(probNode);
+		children = probNet.getChildren(probNode);
+		siblings = probNet.getSiblings(probNode);
 		
 		// collect potentials of this node ...
 		List<TablePotential> potentialsVariable = new ArrayList<>();
 		
-		for (Potential pot:probNet.extractPotentials(variable)){
+		for (Potential pot : probNet.extractPotentials(variable)){
 			potentialsVariable.add((TablePotential)pot);
 		}
 		
@@ -96,28 +95,21 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 		// add a link between the siblings of the removed node
 		for (Node node1 : siblings) {
 			for (Node node2 : siblings) {
-				if ((node1 != node2) && (!node1.isSibling(node2))) {
-					addEdit(new AddLinkEdit(probNet, 
-						((Variable)node1.getObject()), 
-						((Variable)node2.getObject()), false));
+				if ((node1 != node2) && (!probNet.isSibling(node1, node2))) {
+					addEdit(new AddLinkEdit(probNet, node1.getVariable(), node2.getVariable(), false));
 				}
 			}
 		}
 		
 		// remove links between probNode and its parents, children and siblings
 		for (Node parent : parents) {
-			addEdit(new RemoveLinkEdit(probNet, 
-				((ProbNode)parent.getObject()).getVariable(), 
-				probNode.getVariable(), true));
+			addEdit(new RemoveLinkEdit(probNet, parent.getVariable(), probNode.getVariable(), true));
 		}
 		for (Node child : children) {
-			addEdit(new RemoveLinkEdit(probNet,	probNode.getVariable(),
-				((ProbNode)child.getObject()).getVariable(), true));
+			addEdit(new RemoveLinkEdit(probNet,	probNode.getVariable(), child.getVariable(), true));
 		}
 		for (Node sibling : siblings) {
-			addEdit(new RemoveLinkEdit(probNet, 
-				((ProbNode)sibling.getObject()).getVariable(), 
-				probNode.getVariable(), false));
+			addEdit(new RemoveLinkEdit(probNet, sibling.getVariable(), probNode.getVariable(), false));
 		}
 
 		// generate edit related to remove the variable

@@ -12,7 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 
@@ -27,17 +26,17 @@ public class ProbNodeDepot {
      *         <code>Variable</code> to <code>ProbNode</code>.
      */
     private class NodesHashMap {
-        LinkedHashMap<Variable, ProbNode> nodesHashMap;
+        LinkedHashMap<Variable, Node> nodesHashMap;
 
         NodesHashMap() {
-            nodesHashMap = new LinkedHashMap<Variable, ProbNode>();
+            nodesHashMap = new LinkedHashMap<Variable, Node>();
         }
 
-        public ProbNode get(Variable variable) {
+        public Node get(Variable variable) {
             return nodesHashMap.get(variable);
         }
 
-        public void put(Variable variable, ProbNode probNode) {
+        public void put(Variable variable, Node probNode) {
             nodesHashMap.put(variable, probNode);
         }
 
@@ -45,7 +44,7 @@ public class ProbNodeDepot {
             return nodesHashMap.size();
         }
 
-        public Collection<ProbNode> values() {
+        public Collection<Node> values() {
             return nodesHashMap.values();
         }
 
@@ -76,8 +75,8 @@ public class ProbNodeDepot {
         return nodesHashMaps.get(nodeType).size();
     }
 
-    public List<ProbNode> getProbNodes() {
-        List<ProbNode> nodes = new ArrayList<ProbNode>(getNumNodes());
+    public List<Node> getProbNodes() {
+        List<Node> nodes = new ArrayList<Node>(getNumNodes());
         for (NodesHashMap hashMap : nodesHashMaps.values()) {
             nodes.addAll(hashMap.values());
         }
@@ -87,7 +86,7 @@ public class ProbNodeDepot {
     public List<Potential> getPotentialsByType(NodeType nodeType) {
         NodesHashMap nodesType = nodesHashMaps.get(nodeType);
         List<Potential> potentials = new ArrayList<Potential>();
-        for (ProbNode node : nodesType.values()) {
+        for (Node node : nodesType.values()) {
             potentials.addAll(node.getPotentials());
         }
         return potentials;
@@ -98,14 +97,14 @@ public class ProbNodeDepot {
      * @param nodeType
      * @consultation
      */
-    public List<ProbNode> getProbNodes(NodeType nodeType) {
-        return new ArrayList<ProbNode>(nodesHashMaps.get(nodeType).values());
+    public List<Node> getProbNodes(NodeType nodeType) {
+        return new ArrayList<Node>(nodesHashMaps.get(nodeType).values());
     }
 
     public List<Potential> getPotentialsByRole(PotentialRole role) {
         List<Potential> potentials = new ArrayList<Potential>();
         for (NodesHashMap nodesHashMap : nodesHashMaps.values()) {
-            for (ProbNode auxProbNode : nodesHashMap.values()) {
+            for (Node auxProbNode : nodesHashMap.values()) {
                 for (Potential auxPot : auxProbNode.getPotentials()) {
                     if (auxPot.getPotentialRole() == role) {
                         potentials.add(auxPot);
@@ -116,14 +115,14 @@ public class ProbNodeDepot {
         return potentials;
     }
 
-    public ProbNode getProbNode(NodeType nodeType, Variable variable) {
+    public Node getProbNode(NodeType nodeType, Variable variable) {
         return nodesHashMaps.get(nodeType).get(variable);
     }
 
-    public ProbNode getProbNode(String nameOfVariable) {
+    public Node getProbNode(String nameOfVariable) {
         for (NodeType nodeType : NodeType.values()) {
-            Collection<ProbNode> probNodes = nodesHashMaps.get(nodeType).values();
-            for (ProbNode probNode : probNodes) {
+            Collection<Node> probNodes = nodesHashMaps.get(nodeType).values();
+            for (Node probNode : probNodes) {
                 if (probNode.getVariable().getName().contentEquals(nameOfVariable)) {
                     return probNode;
                 }
@@ -132,21 +131,9 @@ public class ProbNodeDepot {
         return null;
     }
 
-    public ProbNode getProbNode(Node node) {
-        for (NodeType nodeType : NodeType.values()) {
-            Collection<ProbNode> probNodes = nodesHashMaps.get(nodeType).values();
-            for (ProbNode probNode : probNodes) {
-                if (probNode.getNode().equals(node)) {
-                    return probNode;
-                }
-            }
-        }
-        return null;
-    }
-    
-    public ProbNode getProbNode (Variable variable)
+    public Node getProbNode (Variable variable)
     {
-        ProbNode probNode = null;
+        Node probNode = null;
         for (NodesHashMap nodes : nodesHashMaps.values ())
         {
             if ((probNode = nodes.get (variable)) != null)
@@ -164,9 +151,9 @@ public class ProbNodeDepot {
      *         <code>kindOfNode</code> if exists otherwhise null
      * @throws ProbNodeNotFoundException
      */
-    public ProbNode getProbNode (String nameOfVariable, NodeType nodeType)
+    public Node getProbNode (String nameOfVariable, NodeType nodeType)
     {
-        for (ProbNode node : nodesHashMaps.get (nodeType).values ())
+        for (Node node : nodesHashMaps.get (nodeType).values ())
         {
             if (node.getVariable ().getName ().contentEquals (nameOfVariable))
             {
@@ -176,11 +163,11 @@ public class ProbNodeDepot {
         return null;
     }    
 
-    public void addProbNode(Variable variable, ProbNode probNode) {
-        nodesHashMaps.get(probNode.getNodeType()).put(variable, probNode);
+    public void addProbNode(Node probNode) {
+        nodesHashMaps.get(probNode.getNodeType()).put(probNode.getVariable(), probNode);
     }
 
-    public void removeProbNode(ProbNode probNode) {
+    public void removeProbNode(Node probNode) {
         NodeType nodeKindValue = probNode.getNodeType ();
         Variable variable = probNode.getVariable ();
         NodesHashMap nodesMap = nodesHashMaps.get (nodeKindValue);
@@ -191,7 +178,7 @@ public class ProbNodeDepot {
         int numPotentials = 0;
         for (NodesHashMap linkedHasMap : nodesHashMaps.values ())
         {
-            for (ProbNode probNode : linkedHasMap.values ())
+            for (Node probNode : linkedHasMap.values ())
             {
                 numPotentials += probNode.getNumPotentials ();
             }

@@ -14,18 +14,18 @@ import javax.swing.undo.CannotUndoException;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.oopn.Instance;
 
 @SuppressWarnings("serial")
 public class MarkAsInputEdit extends SimplePNEdit{
 
-	private ProbNode probNode = null;
+	private Node probNode = null;
 	private Instance instance = null;
 	private boolean isInput = false;
 	private boolean wasInput = false;
 	
-	public MarkAsInputEdit(ProbNet probNet, boolean isInput, ProbNode probNode) {
+	public MarkAsInputEdit(ProbNet probNet, boolean isInput, Node probNode) {
 		super(probNet);
 		this.isInput = isInput;
 		this.probNode = probNode;

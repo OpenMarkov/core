@@ -11,7 +11,7 @@ package org.openmarkov.core.action;
 
 import java.util.List;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.Potential;
 
 /**
@@ -39,13 +39,13 @@ public class NodeCommentEdit extends SimplePNEdit{
 	/**
 	 * The node
 	 */
-	private ProbNode probNode;
+	private Node probNode;
 	
 	/**
 	 * Creates a <code>NodeCommentEdit</code> with the node, new comment and 
 	 * type of comment specified.
 	 */
-	public NodeCommentEdit(ProbNode probNode,String newComment,
+	public NodeCommentEdit(Node probNode,String newComment,
 			String typeComment) {
 		super(probNode.getProbNet());
 		this.newComment = newComment;

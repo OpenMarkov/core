@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -24,7 +24,7 @@ public class PotentialManagerTest {
 	Variable variableB;
 	Variable variableC;
 	Variable variableU;
-	ProbNode nodeU;
+	Node nodeU;
 			
 	@Before
     public void setUp() throws Exception {
@@ -36,10 +36,10 @@ public class PotentialManagerTest {
 		variableC = new Variable("C", "no", "yes");
 		variableU = new Variable("U");
 		
-		probNet.addProbNode(variableA, NodeType.CHANCE);
-		probNet.addProbNode(variableB, NodeType.CHANCE);
-		probNet.addProbNode(variableC, NodeType.CHANCE);
-		nodeU = probNet.addProbNode(variableU, NodeType.UTILITY);
+		probNet.addNode(variableA, NodeType.CHANCE);
+		probNet.addNode(variableB, NodeType.CHANCE);
+		probNet.addNode(variableC, NodeType.CHANCE);
+		nodeU = probNet.addNode(variableU, NodeType.UTILITY);
 		
 		probNet.addLink(variableB, variableA, true);
 		probNet.addLink(variableC, variableA, true);

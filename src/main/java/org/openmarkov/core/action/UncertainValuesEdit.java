@@ -9,7 +9,7 @@ package org.openmarkov.core.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -33,7 +33,7 @@ public class UncertainValuesEdit extends SimplePNEdit
     {
         return basePosition;
     }
-    private ProbNode probNode;
+    private Node probNode;
     private boolean  isChanceVariable;
 
     public boolean isChanceVariable ()
@@ -41,7 +41,7 @@ public class UncertainValuesEdit extends SimplePNEdit
         return isChanceVariable;
     }
 
-    public ProbNode getProbNode ()
+    public Node getProbNode ()
     {
         return probNode;
     }
@@ -61,7 +61,7 @@ public class UncertainValuesEdit extends SimplePNEdit
      * @param nodeType The new node type.
      * @param cursorposition the position (coordinates X,Y) of the node.
      */
-    public UncertainValuesEdit (ProbNode probNode,
+    public UncertainValuesEdit (Node probNode,
                                 List<UncertainValue> uncertainColumn,
                                 List<Double> valuesColumn,
                                 int basePosition,

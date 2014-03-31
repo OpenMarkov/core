@@ -13,10 +13,9 @@ import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
@@ -33,16 +32,15 @@ public class NoMultipleLinks extends PNConstraint
     @Override
     public boolean checkProbNet (ProbNet probNet)
     {
-        Graph graph = probNet.getGraph ();
-        List<Node> nodesGraph = graph.getNodes ();
+        List<Node> nodesGraph = probNet.getNodes ();
         for (Node node : nodesGraph)
         {
-            for (Link link : node.getLinks ())
+            for (Link<Node> link : probNet.getLinks (node))
             {
-                Node node1 = link.getNode1 ();
-                Node node2 = link.getNode2 ();
+            	Node node1 = link.getNode1 ();
+            	Node node2 = link.getNode2 ();
                 boolean directed = link.isDirected ();
-                if (!checkLink (graph, node1, node2, directed))
+                if (!checkLink (probNet, node1, node2, directed))
                 {
                     return false;
                 }
@@ -56,40 +54,29 @@ public class NoMultipleLinks extends PNConstraint
         throws NonProjectablePotentialException,
         WrongCriterionException
     {
-        Graph graph = probNet.getGraph ();
         List<PNEdit> edits = UtilConstraints.getSimpleEditsByType (edit, AddLinkEdit.class);
         for (PNEdit simpleEdit : edits)
         {
             Variable variable1 = ((AddLinkEdit) simpleEdit).getVariable1 ();
-            Node node1 = probNet.getProbNode (variable1).getNode ();
+            Node node1 = probNet.getNode (variable1);
             Variable variable2 = ((AddLinkEdit) simpleEdit).getVariable2 ();
-            Node node2 = probNet.getProbNode (variable2).getNode ();
+            Node node2 = probNet.getNode (variable2);
             boolean directed = ((AddLinkEdit) simpleEdit).isDirected ();
-            if (!checkLink (graph, node1, node2, directed))
+            if (!checkLink (probNet, node1, node2, directed))
             {
                 return false;
             }
         }
-        /*List<PNEdit> edits2 = UtilConstraints.getEditsType (edit, LinkEdit.class);
-        for (PNEdit simpleEdit : edits2)
-        {
-            Node node1 = ((LinkEdit) simpleEdit).getProbNode1 ().getNode ();
-            Node node2 = ((LinkEdit) simpleEdit).getProbNode2 ().getNode ();
-            boolean directed = ((LinkEdit) simpleEdit).isDirected ();
-            if (!checkLink (graph, node1, node2, directed))
-            {
-                return false;
-            }
-        }*/
+       
         List<PNEdit> edits3 = UtilConstraints.getSimpleEditsByType (edit, InvertLinkEdit.class);
         for (PNEdit simpleEdit : edits3)
         {
             Variable variable1 = ((InvertLinkEdit) simpleEdit).getVariable1 ();
-            Node node1 = probNet.getProbNode (variable1).getNode ();
+            Node node1 = probNet.getNode (variable1);
             Variable variable2 = ((InvertLinkEdit) simpleEdit).getVariable2 ();
-            Node node2 = probNet.getProbNode (variable2).getNode ();
+            Node node2 = probNet.getNode (variable2);
             boolean directed = ((InvertLinkEdit) simpleEdit).isDirected ();
-            if (!checkLink (graph, node2, node1, directed))
+            if (!checkLink (probNet, node2, node1, directed))
             {
                 return false;
             }
@@ -107,15 +94,15 @@ public class NoMultipleLinks extends PNConstraint
      * @return code>true</code> if the link between <code>node1</code> and
      *         <code>node2</code>has no multipleLinks
      */
-    private boolean checkLink (Graph graph, Node node1, Node node2, boolean directed)
+    private boolean checkLink (ProbNet probNet, Node node1, Node node2, boolean directed)
     {
         if (directed)
         {
-            return checkDirectedLink (graph, node1, node2);
+            return checkDirectedLink (probNet, node1, node2);
         }
         else
         {
-            return checkUndirectedLink (graph, node1, node2);
+            return checkUndirectedLink (probNet, node1, node2);
         }
     }
 
@@ -128,9 +115,9 @@ public class NoMultipleLinks extends PNConstraint
      * @return <code>true</code> if the link between <code>node1</code> and
      *         <code>node2</code>has no multipleLinks
      */
-    private boolean checkDirectedLink (Graph graph, Node node1, Node node2)
+    private boolean checkDirectedLink (ProbNet probNet, Node node1, Node node2)
     {
-        if (graph.getLink (node1, node2, false) != null)
+        if (probNet.getLink (node1, node2, false) != null)
         {
             return false;
         }
@@ -140,18 +127,18 @@ public class NoMultipleLinks extends PNConstraint
     /*****
      * Checks if a undirected link between <code>node1</code> and
      * <code>node2</code> satisfies the restriction of noMultipleLinks
-     * @param graph
+     * @param probNet
      * @param node1
      * @param node2
      * @return <code>true</code> if the link between <code>node1</code> and
      *         <code>node2</code>has no multipleLinks
      */
-    private boolean checkUndirectedLink (Graph graph, Node node1, Node node2)
+    private boolean checkUndirectedLink (ProbNet probNet, Node node1, Node node2)
     {
         // neither a directed link from node1 -> node2 nor node2 ->
         // node1 may exist
-        if ((graph.getLink (node1, node2, true) != null)
-            || (graph.getLink (node2, node1, true) != null))
+        if ((probNet.getLink (node1, node2, true) != null)
+            || (probNet.getLink (node2, node1, true) != null))
         {
             return false;
         }

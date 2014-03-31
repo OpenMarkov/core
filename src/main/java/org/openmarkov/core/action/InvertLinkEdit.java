@@ -16,7 +16,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -28,11 +28,11 @@ public class InvertLinkEdit extends BaseLinkEdit {
     /**
      * parent node
      */
-    protected ProbNode node1;
+    protected Node node1;
     /**
      * child node
      */
-    protected ProbNode node2;
+    protected Node node2;
     
     /**
      * Parent node's old potentials
@@ -57,8 +57,8 @@ public class InvertLinkEdit extends BaseLinkEdit {
         super (probNet, variable1, variable2, isDirected);
         try
         {
-            node1 = probNet.getProbNode (variable1.getName());
-            node2 = probNet.getProbNode (variable2.getName());
+            node1 = probNet.getNode (variable1.getName());
+            node2 = probNet.getNode (variable2.getName());
         }
         catch (ProbNodeNotFoundException e)
         {

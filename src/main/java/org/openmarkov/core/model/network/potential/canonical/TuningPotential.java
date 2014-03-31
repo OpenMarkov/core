@@ -9,7 +9,7 @@ package org.openmarkov.core.model.network.potential.canonical;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -58,7 +58,7 @@ public class TuningPotential extends ICIPotential
      * @param variables
      * @param role
      */
-    public static boolean validate (ProbNode probNode, List<Variable> variables, PotentialRole role)
+    public static boolean validate (Node probNode, List<Variable> variables, PotentialRole role)
     {
         boolean valid = ICIPotential.validate (probNode, variables, role) && role.equals (PotentialRole.CONDITIONAL_PROBABILITY);
         for(Variable variable : variables)

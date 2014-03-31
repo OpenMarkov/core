@@ -15,9 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -48,7 +47,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	 */
 	private State[] newStates;
 
-	private ProbNode probNode;
+	private Node probNode;
 
 	private List<Potential> lastPotential;
 
@@ -56,12 +55,12 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 
 	private PartitionedInterval currentPartitionedInterval;
 
-	private Map<Link, double[]> linkRestrictionMap;
+	private Map<Link<Node>, double[]> linkRestrictionMap;
 
 	/***
 	 * Map with the revelation condition list for each link.
 	 */
-	private Map<Link, List> revelationConditionMap;
+	private Map<Link<Node>, List> revelationConditionMap;
 
 	/**
 	 * Creates a <code>NodeReplaceStatesEdit</code> with the node and new states
@@ -72,7 +71,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	 * @param newDefaulStates
 	 *            the new default states.
 	 */
-	public NodeReplaceStatesEdit(ProbNode probNode, State[] newStates) {
+	public NodeReplaceStatesEdit(Node probNode, State[] newStates) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
 
@@ -83,7 +82,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 				.getPartitionedInterval();
 
 		this.newStates = newStates;
-		this.linkRestrictionMap = new HashMap<Link, double[]>();
+		this.linkRestrictionMap = new HashMap<Link<Node>, double[]>();
 		this.revelationConditionMap = new HashMap<>();
 	}
 
@@ -109,12 +108,11 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 				}
 
 				UniformPotential childLastPotential;
-				nodes = probNode.getNode().getChildren();
+				nodes = probNet.getChildren(probNode);
 
-				for (Node node : nodes) {
-					if (((ProbNode) node.getObject()).getPotentials().size() != 0) {
-						ArrayList<Potential> container = new ArrayList<Potential>();
-						ProbNode child = (ProbNode) node.getObject();
+				for (Node child : nodes) {
+					if (child.getPotentials().size() != 0) {
+						List<Potential> container = new ArrayList<Potential>();
 						childrenLastPotential.add(child.getPotentials().get(0));
 						childLastPotential = new UniformPotential(child
 								.getPotentials().get(0).getVariables(), child
@@ -126,7 +124,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 						child.setPotentials(container);
 					}
 				}
-				resetLink(probNode.getNode());
+				resetLink(probNode);
 			}
 
 			if (probNode.getVariable().getVariableType() == VariableType.DISCRETIZED) {
@@ -148,32 +146,25 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	}
 
 	public void undo() {
-		List<Node> nodes;
 		super.undo();
 		if (lastStates != null) {
 			probNode.getVariable().setStates(lastStates);
 			if (lastStates.length != newStates.length) {
-
 				probNode.setPotentials(lastPotential);
-				nodes = probNode.getNode().getChildren();
-				int index = 0;
-				for (Node node : nodes) {
-					ArrayList<Potential> container = new ArrayList<Potential>();
-					ProbNode child = (ProbNode) node.getObject();
-					container.add(childrenLastPotential.get(index));
-					child.setPotentials(container);
+				List<Node> nodes = probNet.getChildren(probNode);
+				for (Node child : nodes) {
+					child.setPotential(childrenLastPotential.get(0));
 				}
 			}
 		}
-		for (Link link : linkRestrictionMap.keySet()) {
+		for (Link<Node> link : linkRestrictionMap.keySet()) {
 			link.initializesRestrictionsPotential();
 			TablePotential restrictionPotential = (TablePotential) link
 					.getRestrictionsPotential();
 			restrictionPotential.setValues(linkRestrictionMap.get(link));
 		}
-		for (Link link : revelationConditionMap.keySet()) {
-			VariableType varType = ((ProbNode) link.getNode1().getObject())
-					.getVariable().getVariableType();
+		for (Link<Node>  link : revelationConditionMap.keySet()) {
+			VariableType varType = link.getNode1().getVariable().getVariableType();
 			if ((varType == VariableType.NUMERIC)) {
 				link.setRevealingIntervals(revelationConditionMap.get(link));
 			} else {
@@ -207,7 +198,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	 */
 	private void resetLink(Node node) {
 
-		for (Link link : node.getLinks()) {
+		for (Link<Node> link : probNet.getLinks(node)) {
 			if (link.hasRestrictions()) {
 				double[] lastPotential = ((TablePotential) link
 						.getRestrictionsPotential()).values.clone();
@@ -215,12 +206,11 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 				link.setRestrictionsPotential(null);
 			}
 		}
-		List<Node> children = node.getChildren();
+		List<Node> children = probNet.getChildren(node);
 		for (Node child : children) {
-			Link link = node.getGraph().getLink(node, child, true);
+			Link<Node> link = probNet.getLink(node, child, true);
 			if (link.hasRevealingConditions()) {
-				VariableType varType = ((ProbNode) link.getNode1().getObject())
-						.getVariable().getVariableType();
+				VariableType varType = link.getNode1().getVariable().getVariableType();
 				if (varType == VariableType.NUMERIC) {
 					this.revelationConditionMap.put(link,
 							link.getRevealingIntervals());

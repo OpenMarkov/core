@@ -260,10 +260,10 @@ public class EvidenceCase {
      *            <code>ProbNet</code>.
      * @return An <code>ArrayList</code> of <code>ProbNode</code>s.
      */
-    public List<ProbNode> getRemainingNodes(ProbNet probNet) {
-        List<ProbNode> probNetNodes = probNet.getProbNodes();
-        List<ProbNode> remainingNodes = new ArrayList<ProbNode>();
-        for (ProbNode probNode : probNetNodes) {
+    public List<Node> getRemainingNodes(ProbNet probNet) {
+        List<Node> probNetNodes = probNet.getNodes();
+        List<Node> remainingNodes = new ArrayList<Node>();
+        for (Node probNode : probNetNodes) {
             if (!contains(probNode.getVariable())) {
                 remainingNodes.add(probNode);
             }

@@ -10,7 +10,7 @@
 package org.openmarkov.core.exception;
 
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 @SuppressWarnings("serial")
 public class ProbNodeNotFoundException extends Exception {
@@ -23,7 +23,7 @@ public class ProbNodeNotFoundException extends Exception {
 				" not found in network " + network.getName() + ".");
 	}
 
-    public ProbNodeNotFoundException(ProbNode node) {
+    public ProbNodeNotFoundException(Node node) {
         this(node.getProbNet(), node.getName());
     }
 

@@ -11,7 +11,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.List;
 
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -36,9 +36,9 @@ public class OnlyContinuousVariables extends PNConstraint {
 	throws NonProjectablePotentialException, 
 	WrongCriterionException {
 	    List<PNEdit> edits = 
-			UtilConstraints.getSimpleEditsByType(edit, AddProbNodeEdit.class);
+			UtilConstraints.getSimpleEditsByType(edit, AddNodeEdit.class);
 		for (PNEdit simpleEdit : edits) {
-			Variable variable = ((AddProbNodeEdit)simpleEdit).getVariable(); 
+			Variable variable = ((AddNodeEdit)simpleEdit).getVariable(); 
 			if (variable.getVariableType() != VariableType.NUMERIC) {
 				return false;
 			}

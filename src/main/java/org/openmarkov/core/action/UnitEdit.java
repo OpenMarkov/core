@@ -1,7 +1,7 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.StringWithProperties;
 /**
  * Edit for variable´s unit
@@ -11,11 +11,11 @@ import org.openmarkov.core.model.network.StringWithProperties;
 @SuppressWarnings("serial")
 public class UnitEdit extends SimplePNEdit {
 
-	private ProbNode probNode;
+	private Node probNode;
 	private StringWithProperties lastUnit;
 	private StringWithProperties newUnit;
 	
-	public UnitEdit(ProbNode probNode, String newUnit) {
+	public UnitEdit(Node probNode, String newUnit) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
 		this.lastUnit = probNode.getVariable().getUnit().copy();

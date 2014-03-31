@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 public class Instance {
 
@@ -36,7 +36,7 @@ public class Instance {
     private ProbNet                   classNet;
     private boolean                   isInput;
     private ParameterArity            arity;
-    private List<ProbNode>            instanceNodes;
+    private List<Node>            instanceNodes;
     private HashMap<String, Instance> subInstances;
 
     /**
@@ -47,7 +47,7 @@ public class Instance {
      * @param instanceNodes
      * @param isInput
      */
-    public Instance(String name, ProbNet classNet, List<ProbNode> instanceNodes, boolean isInput) {
+    public Instance(String name, ProbNet classNet, List<Node> instanceNodes, boolean isInput) {
         super();
         this.name = name;
         this.classNet = classNet;
@@ -60,8 +60,8 @@ public class Instance {
             for (String subInstanceName : ((OOPNet) classNet).getInstances().keySet()) {
                 Instance originalSubinstance = ((OOPNet) classNet).getInstances().get(subInstanceName);
 
-                ArrayList<ProbNode> subInstanceNodes = new ArrayList<ProbNode>();
-                for (ProbNode originalSubinstanceNode : originalSubinstance.getNodes()) {
+                ArrayList<Node> subInstanceNodes = new ArrayList<Node>();
+                for (Node originalSubinstanceNode : originalSubinstance.getNodes()) {
                     String subinstanceNodeName = name + "." + originalSubinstanceNode.getName();
                     int i = 0;
                     boolean found = false;
@@ -90,7 +90,7 @@ public class Instance {
      * @param classNet
      * @param instanceNodes
      */
-    public Instance(String name, ProbNet classNet, ArrayList<ProbNode> instanceNodes) {
+    public Instance(String name, ProbNet classNet, List<Node> instanceNodes) {
         this(name, classNet, instanceNodes, false);
     }
 
@@ -126,7 +126,7 @@ public class Instance {
     /**
      * @return the instanceNodes
      */
-    public List<ProbNode> getNodes() {
+    public List<Node> getNodes() {
         return instanceNodes;
     }
 

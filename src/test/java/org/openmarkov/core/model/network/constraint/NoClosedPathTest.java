@@ -9,7 +9,7 @@ import java.awt.geom.Point2D;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
@@ -90,7 +90,7 @@ public class NoClosedPathTest {
 		Variable vC = undirectedNet.getVariable("C");
 		try {
 
-			new AddProbNodeEdit(undirectedNet, new Variable("D"), NodeType.UTILITY,
+			new AddNodeEdit(undirectedNet, new Variable("D"), NodeType.UTILITY,
 					new Point2D.Double()).doEdit();
 			Variable vD = undirectedNet.getVariable("D");
 

@@ -12,7 +12,7 @@ package org.openmarkov.core.model.network.constraint;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.NodeNameEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -29,7 +29,7 @@ public class DistinctVariableNames extends PNConstraint {
 			throws NonProjectablePotentialException,
 			WrongCriterionException {
 	    List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit,
-				AddProbNodeEdit.class);
+				AddNodeEdit.class);
 		List<Variable> variablesProbNet = probNet.getVariables();
 		List<String> variablesProbNetNames = new ArrayList<String>();
 		for (Variable variable : variablesProbNet) {
@@ -39,7 +39,7 @@ public class DistinctVariableNames extends PNConstraint {
 		// get new variables names
 		List<String> newVariablesNames = new ArrayList<String>();
 		for (PNEdit simpleEdit : edits) {
-			newVariablesNames.add(((AddProbNodeEdit) simpleEdit).getVariable ().getName());
+			newVariablesNames.add(((AddNodeEdit) simpleEdit).getVariable ().getName());
 		}
 
 		// check that new variables have distinct names

@@ -26,7 +26,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * 
  * @author marias
  * @author fjdiez
- * @see org.openmarkov.core.model.network.ProbNode
+ * @see org.openmarkov.core.model.network.Node
  * @see org.openmarkov.core.model.network.ProbNet
  * @version 1.0
  */

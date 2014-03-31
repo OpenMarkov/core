@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
@@ -64,7 +64,7 @@ public class OnlyChanceNodesTest {
 		Variable ve = new Variable("E", 0);
 
 		// test no exception in legal edit
-		AddProbNodeEdit legalEdit = new AddProbNodeEdit(probNetDirected, ve, 
+		AddNodeEdit legalEdit = new AddNodeEdit(probNetDirected, ve, 
 			NodeType.CHANCE);
 		try {
 			pNESupport.announceEdit(legalEdit);
@@ -74,7 +74,7 @@ public class OnlyChanceNodesTest {
 		}
 		
 		// test exception in no legal edit
-		AddProbNodeEdit ilegalEdit = new AddProbNodeEdit(probNetDirected, vd, 
+		AddNodeEdit ilegalEdit = new AddNodeEdit(probNetDirected, vd, 
 				NodeType.DECISION);
 		boolean exceptionLaunched = false;
 		try {

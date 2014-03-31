@@ -14,7 +14,7 @@ import java.util.List;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import org.openmarkov.core.model.network.potential.Potential;
 
@@ -29,7 +29,7 @@ public class UtilityNodes extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-	    List<ProbNode> utilityNodes = 
+	    List<Node> utilityNodes = 
 			probNet.getProbNodes(NodeType.UTILITY);
 		int numUtilityNodes = utilityNodes.size();
 		if (numUtilityNodes == 0) {

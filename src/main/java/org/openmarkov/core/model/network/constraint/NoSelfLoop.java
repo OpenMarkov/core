@@ -15,9 +15,8 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.graph.Graph;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
@@ -34,7 +33,7 @@ public class NoSelfLoop extends PNConstraint {
 		for (PNEdit simpleEdit : edits) {
 			Variable variable1 = ((AddLinkEdit)simpleEdit).getVariable1(); 
 			Variable variable2 = ((AddLinkEdit)simpleEdit).getVariable2(); 
-			if (variable1 == variable2) {
+			if (variable1.equals(variable2)) {
 				return false;
 			}
 		}
@@ -43,10 +42,8 @@ public class NoSelfLoop extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-		Graph graph = probNet.getGraph();
-		List<Node> nodes = graph.getNodes();
-		for (Node node : nodes) {
-			if (node.isChild(node) || node.isSibling(node)) {
+		for (Node node : probNet.getNodes()) {
+			if (probNet.isChild(node, node) || probNet.isSibling(node,node)) {
 				return false;
 			}
 		}

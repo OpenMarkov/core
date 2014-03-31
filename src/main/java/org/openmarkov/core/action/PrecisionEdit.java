@@ -10,7 +10,7 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 @SuppressWarnings("serial")
 /**
@@ -32,13 +32,13 @@ public class PrecisionEdit extends SimplePNEdit {
 	/**
 	 * The edited node
 	 */
-	private ProbNode probNode = null;
+	private Node probNode = null;
 	/**
 	 * Creates a new <code>PurposeEdit</code> with the node and its new purpose.
 	 * @param probNode the edited node
 	 * @param newPurpose the new purpose
 	 */
-	public PrecisionEdit (ProbNode probNode, double newPrecision){
+	public PrecisionEdit (Node probNode, double newPrecision){
 		super(probNode.getProbNet());
 		this.lastPrecision = probNode.getVariable().getPrecision();
 		this.newPrecision = newPrecision;

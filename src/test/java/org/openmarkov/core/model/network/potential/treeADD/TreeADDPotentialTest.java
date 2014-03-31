@@ -5,11 +5,10 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.LabelledLink;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
@@ -48,23 +47,15 @@ public class TreeADDPotentialTest {
 	
 	private TreeADDPotential treeADD;
 	
-	private Graph graph; 
+	private List<Variable> listA;
 	
-	private Node nodeA;
+	private List<Variable> listB;
 	
-	private Node nodeBA0;
+	private List<Variable> listBA;
 	
-	private Node nodeBA1;
+	private List<Variable> variablesBA;
 	
-	private ArrayList<Variable> listA;
-	
-	private ArrayList<Variable> listB;
-	
-	private ArrayList<Variable> listBA;
-	
-	private ArrayList<Variable> variablesBA;
-	
-	private ArrayList<Potential> leaves;
+	private List<Potential> leaves;
 	
 	private Variable startVariable;
 	
@@ -78,9 +69,9 @@ public class TreeADDPotentialTest {
 		
 	private Node branchNode1;
 	
-	private LabelledLink labelledlink0;
+	private LabelledLink<Node> labelledlink0;
 	
-	private LabelledLink labelledlink1;
+	private LabelledLink<Node> labelledlink1;
 	
 	@Before
     public void setUp() throws Exception {
@@ -119,19 +110,8 @@ public class TreeADDPotentialTest {
 		listBA.add(variableB);
 		listBA.add(variableA);
 		
-		// create graph
-		graph = new Graph();
-		graph.makeLinksExplicit(true);
-		
-		nodeA = new Node(graph, variableA);// object stored variable A
-		nodeBA0 = new Node(graph, potentialBA0);// object stored table potential
-		nodeBA1 = new Node(graph, potentialBA1);// object stored table potential
-		
 		//create branches
 		startVariable = variableA;
-		startNode = nodeA;
-		branchNode0 = nodeBA0;
-		branchNode1 = nodeBA1;
 		List<State> absentState = new ArrayList<State>();
 		List<State> presentState = new ArrayList<State>();
 		absentState.add(absent);
@@ -141,8 +121,8 @@ public class TreeADDPotentialTest {
 		
 		
 		// Append the new 'states' branch to the tree
-		labelledlink0 = new LabelledLink (startNode, branchNode0, true, branchData0);
-		labelledlink1 = new LabelledLink (startNode, branchNode1, true, branchData1);
+		labelledlink0 = new LabelledLink<Node> (startNode, branchNode0, true, branchData0);
+		labelledlink1 = new LabelledLink<Node> (startNode, branchNode1, true, branchData1);
 		
 		// create treeADD
 		treeADD = new TreeADDPotential(listBA, startVariable, PotentialRole.CONDITIONAL_PROBABILITY) ;
@@ -152,8 +132,8 @@ public class TreeADDPotentialTest {
 		
 		nodeType = NodeType.CHANCE;
 		
-		probNet.addProbNode(variableA, nodeType);
-		probNet.addProbNode(variableB, nodeType);
+		probNet.addNode(variableA, nodeType);
+		probNet.addNode(variableB, nodeType);
 		probNet.addLink(variableA, variableB, true);
 		probNet.addPotential(potentialvaluesA);
 		probNet.addPotential(treeADD);

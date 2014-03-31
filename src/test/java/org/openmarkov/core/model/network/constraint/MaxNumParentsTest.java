@@ -9,7 +9,7 @@ import java.awt.geom.Point2D;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
@@ -44,7 +44,7 @@ public class MaxNumParentsTest {
 			net.removeConstraint(constraint);
 			Variable vD = new Variable("D");
 			Variable vB = net.getVariable("B");
-			net.addProbNode(vD, NodeType.CHANCE);
+			net.addNode(vD, NodeType.CHANCE);
 			net.addLink(vD, vB, true);
 			net.addConstraint(constraint, true);
 		} catch (ConstraintViolationException e) {
@@ -68,7 +68,7 @@ public class MaxNumParentsTest {
 		Variable vB = net.getVariable("B");
 		try {
 
-			new AddProbNodeEdit(net, new Variable("D"), NodeType.CHANCE, new Point2D.Double())
+			new AddNodeEdit(net, new Variable("D"), NodeType.CHANCE, new Point2D.Double())
 					.doEdit();
 			Variable vD = net.getVariable("D");
 
@@ -84,7 +84,7 @@ public class MaxNumParentsTest {
 		boolean exceptionLaunched = false;
 		try {
 
-			new AddProbNodeEdit(net, new Variable("E"), NodeType.CHANCE, new Point2D.Double())
+			new AddNodeEdit(net, new Variable("E"), NodeType.CHANCE, new Point2D.Double())
 					.doEdit();
 			Variable vE = net.getVariable("E");
 

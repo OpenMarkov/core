@@ -15,9 +15,8 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.graph.Graph;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
@@ -31,13 +30,12 @@ public class NoLoops extends PNConstraint {
 	    List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit,
 				AddLinkEdit.class);
 	
-		Graph graph = probNet.getGraph();
 		for (PNEdit simpleEdit : edits) {
 			Variable variable1 = ((AddLinkEdit) simpleEdit).getVariable1();
-			Node node1 = probNet.getProbNode(variable1).getNode();
+			Node node1 = probNet.getNode(variable1);
 			Variable variable2 = ((AddLinkEdit) simpleEdit).getVariable2();
-			Node node2 = probNet.getProbNode(variable2).getNode();
-			if (graph.existsPath(node2, node1, false)) {
+			Node node2 = probNet.getNode(variable2);
+			if (probNet.existsPath(node2, node1, false)) {
 				return false;
 			}
 		}
@@ -46,30 +44,25 @@ public class NoLoops extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-		Graph graph = probNet.getGraph();
-		List<Node> nodesGraph = graph.getNodes();
+		List<Node> nodesGraph = probNet.getNodes();
 		boolean probNetOK = true;
 		boolean directed;
 		for (Node node1 : nodesGraph) {
-			List<Node> neighbors = node1.getNeighbors();
+			List<Node> neighbors = probNet.getNeighbors(node1);
 			for (Node node2 : neighbors) {
-				if (node2.isChild(node1)) {
-					graph.removeLink(node2, node1, true);
+				if (probNet.isChild(node1, node2)) {
+					probNet.removeLink(node2, node1, true);
 					directed = true;
-				} else if (node1.isSibling(node2)) {
-					graph.removeLink(node1, node2, false);
+				} else if (probNet.isSibling(node1, node2)) {
+					probNet.removeLink(node1, node2, false);
 					directed = false;
 				} else {
 					continue;
 				}
-				if (graph.existsPath(node1, node2, false)) {
+				if (probNet.existsPath(node1, node2, false)) {
 					probNetOK = false;
 				}
-				if (directed) {
-					graph.addLink(node1, node2, true);
-				} else {
-					graph.addLink(node1, node2, false);
-				}
+				probNet.addLink(node1, node2, directed);
 				if (!probNetOK) {
 					return probNetOK;
 				}

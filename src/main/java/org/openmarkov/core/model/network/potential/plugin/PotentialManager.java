@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -139,7 +139,7 @@ public class PotentialManager
      * Returns all potentials' names applicable to the given variable list and potential role. 
      * @return a list of potentials' names.
      */
-    public final  List<String> getFilteredPotentials (ProbNode probNode)
+    public final  List<String> getFilteredPotentials (Node probNode)
     {
         List<String> filteredPotentials = new ArrayList<String> ();
         
@@ -148,7 +148,7 @@ public class PotentialManager
             Method validateMethod = null;
             try
             {
-                validateMethod = potentials.get (potentialName).getMethod ("validate", ProbNode.class, List.class, PotentialRole.class);
+                validateMethod = potentials.get (potentialName).getMethod ("validate", Node.class, List.class, PotentialRole.class);
                 if((Boolean)validateMethod.invoke (null, probNode, probNode.getPotentials ().get (0).getVariables (), probNode.getPotentials ().get (0).getPotentialRole ()))
                 {
                     filteredPotentials.add (potentialName);

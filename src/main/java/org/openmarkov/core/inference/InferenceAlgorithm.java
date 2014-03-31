@@ -17,7 +17,7 @@ import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.inference.heuristic.HeuristicFactory;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -218,7 +218,7 @@ public abstract class InferenceAlgorithm
 	protected Potential getImposedPolicy(Variable decision) {
 		Potential policy = null;
 		
-		ProbNode decisionNode = probNet.getProbNode(decision);
+		Node decisionNode = probNet.getNode(decision);
 		if (decisionNode==null){
 			policy = null;
 		}

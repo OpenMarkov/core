@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 
@@ -17,20 +17,19 @@ public class LinkTest {
 	private State[] stateA, stateB;
 	private Variable varA, varB;
 	private Node nodeA, nodeB;
-	private Link link;
+	private Link<Node> link;
 
 	@Before
 	public void setUp() throws Exception {
-		Graph graph = new Graph();
 		stateA = new State[] { new State("A1"), new State("A2"),
 				new State("A3") };
 		stateB = new State[] { new State("B1"), new State("B2") };
 		varA = new Variable("A", stateA);
 		varB = new Variable("B", stateB);
 		ProbNet net = new ProbNet();
-		nodeA = new Node(graph, new ProbNode(net, varA, NodeType.CHANCE));
-		nodeB = new Node(graph, new ProbNode(net, varB, NodeType.CHANCE));
-		link = new Link(nodeA, nodeB, true);
+		nodeA = net.addNode(varA, NodeType.CHANCE);
+		nodeB = net.addNode(varB, NodeType.CHANCE);
+		link = new Link<Node>(nodeA, nodeB, true);
 		link.initializesRestrictionsPotential();
 	}
 

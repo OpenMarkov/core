@@ -20,7 +20,7 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -356,7 +356,7 @@ public class TreeADDPotential extends Potential {
 	 * @param variables
 	 * @param role
 	 */
-	public static boolean validate(ProbNode probNode, List<Variable> variables, PotentialRole role) {
+	public static boolean validate(Node probNode, List<Variable> variables, PotentialRole role) {
 		boolean validate = false;
 		// node must have at least one parent node
 		if (role == PotentialRole.UTILITY) {

@@ -17,7 +17,7 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -122,7 +122,7 @@ public class DecisionTreeBranch implements DecisionTreeElement
             	EvidenceCase evidenceCase = getBranchStates();
     	    	for(Finding finding : evidenceCase.getFindings())
     	    	{
-    	    		ProbNode probNode = probNet.getProbNode(finding.getVariable());
+    	    		Node probNode = probNet.getNode(finding.getVariable());
     	    		if(probNode != null && probNode.getNodeType() == NodeType.CHANCE)
     	    		{
     	    			Potential potential = probNode.getPotentials().get(0);

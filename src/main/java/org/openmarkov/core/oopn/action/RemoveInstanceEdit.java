@@ -21,7 +21,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.oopn.Instance;
 import org.openmarkov.core.oopn.InstanceReferenceLink;
 import org.openmarkov.core.oopn.OOPNet;
@@ -36,8 +36,8 @@ import org.openmarkov.core.oopn.exception.InstanceAlreadyExistsException;
 public class RemoveInstanceEdit extends CompoundPNEdit {
 	
 	private Instance instance;
-	private HashSet<ProbNode> nodesToRemove;
-	private HashSet<Link> linksToRemove;
+	private HashSet<Node> nodesToRemove;
+	private HashSet<Link<Node>> linksToRemove;
 	private HashSet<ReferenceLink> instanceLinksToRemove;
 
 	/**
@@ -47,13 +47,13 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 		super(probNet);
 		this.instance = ((OOPNet)probNet).getInstances().get(instanceName);
 		
-		nodesToRemove = new HashSet<ProbNode>();
-		linksToRemove = new HashSet<Link>();
+		nodesToRemove = new HashSet<Node>();
+		linksToRemove = new HashSet<Link<Node>>();
 		instanceLinksToRemove = new HashSet<ReferenceLink>();
-		for(ProbNode probNode : instance.getNodes())
+		for(Node probNode : instance.getNodes())
 		{
 			nodesToRemove.add(probNode);
-			linksToRemove.addAll(probNode.getNode().getLinks());
+			linksToRemove.addAll(probNode.getLinks());
 		}
 		for(ReferenceLink link : ((OOPNet)probNet).getReferenceLinks())
 		{
@@ -73,15 +73,15 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 	public void generateEdits() throws
 			NonProjectablePotentialException, WrongCriterionException {
 		
-		for(Link link : linksToRemove)
+		for(Link<Node> link : linksToRemove)
 		{
 			edits.add(new RemoveLinkEdit(probNet, 
-						((ProbNode) link.getNode1().getObject()).getVariable(),
-						((ProbNode) link.getNode2().getObject()).getVariable(), 
+						link.getNode1().getVariable(),
+						link.getNode2().getVariable(), 
 						link.isDirected()));
 		}
 
-		for(ProbNode probNode : nodesToRemove)
+		for(Node probNode : nodesToRemove)
 		{
 			edits.add ( new CRemoveProbNodeEdit( probNet, probNode));
 		}		

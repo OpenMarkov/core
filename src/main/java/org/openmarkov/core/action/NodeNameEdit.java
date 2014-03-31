@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 
 /**
@@ -43,7 +43,7 @@ public class NodeNameEdit extends SimplePNEdit {
 	 * @param probNode the node that will be modified
 	 * @param newName the new name of the node
 	 */
-	public NodeNameEdit (ProbNode probNode, String newName){
+	public NodeNameEdit (Node probNode, String newName){
 		super(probNode.getProbNet());
 		variables = new ArrayList<Variable>();
 		for(Variable variable : probNode.getProbNet().getVariables())

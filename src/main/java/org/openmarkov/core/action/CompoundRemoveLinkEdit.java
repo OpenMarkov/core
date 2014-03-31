@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
@@ -60,7 +60,7 @@ public class CompoundRemoveLinkEdit extends CompoundPNEdit {
 	}
 
 	private void generateEditsDirectedLink() {
-		ProbNode node2 = probNet.getProbNode(variable2);
+		Node node2 = probNet.getNode(variable2);
 		List<Potential> potentials = node2.getPotentials();
 		for (Potential potential : potentials) {
 		    List<Variable> potentialVariables = potential.getVariables();

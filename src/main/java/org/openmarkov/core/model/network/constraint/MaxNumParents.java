@@ -15,9 +15,8 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.graph.Graph;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
@@ -36,10 +35,8 @@ public class MaxNumParents extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-		Graph graph = probNet.getGraph();
-		List<Node> nodesGraph = graph.getNodes();
-		for (Node child : nodesGraph) {
-			int numParents = child.getParents().size();
+		for (Node child : probNet.getNodes()) {
+			int numParents = probNet.getNumParents(child);
 			if (numParents > maxNumParents) {
 				return false;
 			}
@@ -57,8 +54,8 @@ public class MaxNumParents extends PNConstraint {
 		for (PNEdit simpleEdit : edits) {
 			if (((AddLinkEdit)simpleEdit).isDirected()) { 
 				Variable variable2 = ((AddLinkEdit)simpleEdit).getVariable2(); 
-				Node node2 = probNet.getProbNode(variable2).getNode();
-				int numParents=node2.getParents().size();
+				Node node2 = probNet.getNode(variable2);
+				int numParents= probNet.getNumParents(node2);
 				if (numParents >=maxNumParents) {
 					return false;
 				}

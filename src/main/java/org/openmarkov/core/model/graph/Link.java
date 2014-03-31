@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -33,14 +33,14 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * @see openmarkov.graphs.Node
  * @see openmarkov.graphs.Graph
  */
-public class Link {
+public class Link <T>{
 
 	// Attributes
 	/** The first node. If the link is directed, this node is the parent. */
-	private Node node1;
+	private T node1;
 
 	/** The first node. If the link is directed, this node is the parent. */
-	private Node node2;
+	private T node2;
 
 	/** If true, the link is directed. Otherwise, it is an undirected link. */
 	private boolean directed;
@@ -75,14 +75,10 @@ public class Link {
 	 *            <code>boolean</code>.
 	 * @argCondition Both nodes must belong to the same graph.
 	 */
-	public Link(Node node1, Node node2, boolean directed) {
-		Graph graph = node1.getGraph();
+	public Link(T node1, T node2, boolean directed) {
 		this.node1 = node1;
 		this.node2 = node2;
 		this.directed = directed;
-		graph.uf_addImplicitLink(this);
-		node1.uf_addLink(this);
-		node2.uf_addLink(this);
 		revealingStates = new ArrayList<State>();
 		revealingIntervals = new ArrayList<PartitionedInterval>();
 
@@ -94,7 +90,7 @@ public class Link {
 	 *         link is undirected).
 	 * @consultation
 	 */
-	public Node getNode1() {
+	public T getNode1() {
 		return node1;
 	}
 
@@ -103,7 +99,7 @@ public class Link {
 	 *         link is undirected).
 	 * @consultation
 	 */
-	public Node getNode2() {
+	public T getNode2() {
 		return node2;
 	}
 
@@ -113,7 +109,7 @@ public class Link {
 	 * @return <code>true</code> if the link contains <code>node</code>.
 	 * @consultation
 	 */
-	public boolean contains(Node node) {
+	public boolean contains(T node) {
 		return ((node1 == node) || (node2 == node));
 	}
 
@@ -210,8 +206,8 @@ public class Link {
 	 */
 	public void initializesRestrictionsPotential() {
 		List<Variable> variables = new ArrayList<Variable>();
-		variables.add(((ProbNode) node1.getObject()).getVariable());
-		variables.add(((ProbNode) node2.getObject()).getVariable());
+		variables.add(((Node) node1).getVariable());
+		variables.add(((Node) node2).getVariable());
 		restrictionsPotential = new TablePotential(variables,
 				PotentialRole.LINK_RESTRICTION);
 		for (int i = 0; i < restrictionsPotential.getValues().length; i++) {
@@ -305,13 +301,13 @@ public class Link {
 
 	/** @return String */
 	public String toString() {
-		StringBuffer buffer = new StringBuffer(node1.getObject().toString());
+		StringBuffer buffer = new StringBuffer(node1.toString());
 		if (!directed) {
 			buffer.append(" --- ");
 		} else {
 			buffer.append(" --> ");
 		}
-		buffer.append(node2.getObject().toString());
+		buffer.append(node2.toString());
 		return buffer.toString();
 	}
 
@@ -323,7 +319,7 @@ public class Link {
 	 */
 	public boolean hasRevealingConditions() {
 
-		VariableType varType = ((ProbNode) node1.getObject()).getVariable()
+		VariableType varType = ((Node) node1).getVariable()
 				.getVariableType();
 		if (varType.equals(VariableType.NUMERIC)) {
 			return !revealingIntervals.isEmpty();

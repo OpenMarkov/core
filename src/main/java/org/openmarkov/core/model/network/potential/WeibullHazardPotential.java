@@ -21,7 +21,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -85,7 +85,7 @@ public class WeibullHazardPotential extends RegressionPotential {
 	 * @param role
 	 *            . <code>PotentialRole</code>.
 	 */
-	public static boolean validate(ProbNode probNode, List<Variable> variables, PotentialRole role) {
+	public static boolean validate(Node probNode, List<Variable> variables, PotentialRole role) {
 		return variables.get(0).isTemporal()
 				&& variables.get(0).getVariableType() == VariableType.FINITE_STATES
 				&& variables.get(0).getNumStates() == 2;

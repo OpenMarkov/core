@@ -33,12 +33,17 @@ public class GraphsTests {
 	 * <li> Undirected links: B--D
 	 * </ul>
 	 * @return <code>Graph</code> */
-	public static Graph createTestGraph() {
-		Graph graph = new Graph();
-		Node nodeA = new Node(graph, "A");
-		Node nodeB = new Node(graph, "B");
-		Node nodeC = new Node(graph, "C");
-		Node nodeD = new Node(graph, "D");
+	public static Graph<String> createTestGraph() {
+		Graph<String> graph = new Graph<String>();
+		String nodeA = "A";
+		String nodeB = "B";
+		String nodeC = "C";
+		String nodeD = "D";
+		
+		graph.addNode(nodeA);
+		graph.addNode(nodeB);
+		graph.addNode(nodeC);
+		graph.addNode(nodeD);
 		
 		graph.addLink(nodeA, nodeB, true);
 		graph.addLink(nodeB, nodeC, true);

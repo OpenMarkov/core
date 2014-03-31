@@ -11,14 +11,14 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.List;
 
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
@@ -31,11 +31,11 @@ public class OnlyFiniteStatesVariables extends PNConstraint {
 	throws NonProjectablePotentialException, 
 	WrongCriterionException {
 	    List<PNEdit> edits = 
-			UtilConstraints.getSimpleEditsByType(edit, AddProbNodeEdit.class);
+			UtilConstraints.getSimpleEditsByType(edit, AddNodeEdit.class);
 		
 		for (PNEdit simpleEdit : edits) {
-			Variable variable = ((AddProbNodeEdit)simpleEdit).getVariable (); 
-			NodeType nodetype=((AddProbNodeEdit)simpleEdit).getNodeType ();
+			Variable variable = ((AddNodeEdit)simpleEdit).getVariable (); 
+			NodeType nodetype=((AddNodeEdit)simpleEdit).getNodeType ();
 			
 
 			if(nodetype == NodeType.CHANCE || nodetype == NodeType.DECISION )
@@ -72,7 +72,7 @@ public class OnlyFiniteStatesVariables extends PNConstraint {
 	public boolean checkProbNet(ProbNet probNet) {
 	    List<Variable> variables = probNet.getVariables();
 		for (Variable variable : variables) {
-			ProbNode node= probNet.getProbNode(variable);
+			Node node= probNet.getNode(variable);
 			if(node.getNodeType()== NodeType.CHANCE || node.getNodeType()== NodeType.DECISION )
 			{
 

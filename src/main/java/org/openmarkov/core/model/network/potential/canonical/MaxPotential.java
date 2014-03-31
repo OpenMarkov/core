@@ -12,7 +12,7 @@ package org.openmarkov.core.model.network.potential.canonical;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -50,7 +50,7 @@ public class MaxPotential extends MinMaxPotential {
      * @param probNode. <code>ProbNode</code> 
      * @param variables. <code>ArrayList</code> of <code>Variable</code>.
      * @param role. <code>PotentialRole</code>. */
-	public static boolean validate(ProbNode probNode, List<Variable> variables, 
+	public static boolean validate(Node probNode, List<Variable> variables, 
 			PotentialRole role) {
 		boolean valid = ICIPotential.validate(probNode, variables, role) && 
 		        ((role == PotentialRole.CONDITIONAL_PROBABILITY)

@@ -13,12 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -34,17 +33,17 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 	/**
 	 * Resulting link of addition or removal.
 	 */
-	protected Link link;
+	protected Link<Node> link;
 	/**
 	 * The last <code>Potential</code> of the second node before the edition
 	 * /**
 	 * parent node
 	 */
-	protected ProbNode node1;
+	protected Node node1;
 	/**
 	 * child node
 	 */
-	protected ProbNode node2;
+	protected Node node2;
 
 	/**
 	 * The new <code>Potential</code> of the second node
@@ -61,8 +60,8 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 			Variable variable2,	boolean isDirected, boolean updatePotentials) {
 		super(probNet, variable1, variable2, isDirected);
 		
-        node1 = probNet.getProbNode (variable1);
-        node2 = probNet.getProbNode (variable2);
+        node1 = probNet.getNode (variable1);
+        node2 = probNet.getNode (variable2);
 		
         this.updatePotentials = updatePotentials;
 		this.link = null;
@@ -80,9 +79,8 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 	@Override
 	public void doEdit () {
 		probNet.removeLink (node1, node2, isDirected);
-		Graph graph = probNet.getGraph();
-		if (graph.hasExplicitLinks()) {
-			this.link = graph.getLink (node1.getNode (), node2.getNode (), isDirected);
+		if (probNet.hasExplicitLinks()) {
+			this.link = probNet.getLink (node1, node2, isDirected);
 		}
 		if (updatePotentials)
 		{
@@ -147,9 +145,8 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 		}
 		try {
 			probNet.addLink(variable1, variable2, isDirected);
-			Graph graph = probNet.getGraph();
-			if (graph.hasExplicitLinks()) {
-				Link newLink = graph.getLink (node1.getNode (), node2.getNode (), isDirected);
+			if (probNet.hasExplicitLinks()) {
+				Link<Node> newLink = probNet.getLink (node1, node2, isDirected);
 				if (link != null && newLink != null) {
 					Potential restrictionsPotential = link.getRestrictionsPotential();
 					newLink.setRestrictionsPotential(restrictionsPotential);

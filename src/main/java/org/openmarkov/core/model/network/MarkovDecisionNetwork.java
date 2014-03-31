@@ -18,7 +18,6 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.inference.PartialOrder;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -212,19 +211,19 @@ public class MarkovDecisionNetwork extends ProbNet {
 		if (potential.getVariables().size() == 0) {
 			// it is a constant potential;
 			// adds it to any variable of the network
-			getProbNodes().get(0).addPotential(potential);
+			getNodes().get(0).addPotential(potential);
 		} else {
 			// the potential depends on several variables
 			for (Variable variable : potentialVariables) {
 				// if (originalNet.getProbNode(variable)!=null){
-				if (getProbNode(variable) == null) {
-					ProbNode node = originalNet.getProbNode(variable);
+				if (getNode(variable) == null) {
+					Node node = originalNet.getNode(variable);
 					NodeType nodeType = node.getNodeType();
-					addProbNode(variable, nodeType);
+					addNode(variable, nodeType);
 				}
 				// }
 			}
-			getProbNode(potentialVariables.get(0)).addPotential(potential);
+			getNode(potentialVariables.get(0)).addPotential(potential);
 			int numVariables = potentialVariables.size();
 			for (int i = 0; i < numVariables - 1; i++) {
 				Variable variable1 = potentialVariables.get(i);
@@ -250,9 +249,9 @@ public class MarkovDecisionNetwork extends ProbNet {
 	private void addVariablesAndLinks(ProbNet originalID) {
 		for (List<Variable> variables : partialOrder.getOrder()) {
 			for (Variable variable : variables) {
-				ProbNode node = originalID.getProbNode(variable);
+				Node node = originalID.getNode(variable);
 				NodeType nodeType = node.getNodeType();
-				addProbNode(variable, nodeType);
+				addNode(variable, nodeType);
 			}
 		}
 
@@ -269,15 +268,15 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 * @argCondition All potential variables already exists in this network
 	 */
 	// TODO addPotential should be common to all ProbNet's
-	public ProbNode addPotential(Potential potential) {
+	public Node addPotential(Potential potential) {
 		int numVariables = potential.getNumVariables();
-		ProbNode probNode = null;
+		Node probNode = null;
 		if (numVariables >= 1) {
 			if (numVariables > 1) { // creates a clique using undirected links
 				addLinks(potential);
 			}
 			// add the potential to the corresponding node in the MarkovNet
-			probNode = getProbNode(potential.getVariable(0));
+			probNode = getNode(potential.getVariable(0));
 			probNode.addPotential(potential);
 		} else { // The potential is a constant.
 			/*TablePotential constantPotential = (TablePotential) potential;
@@ -306,10 +305,10 @@ public class MarkovDecisionNetwork extends ProbNet {
 	/**
 	 * @return The first chance node in the partial order. <code>ProbNode</code>
 	 */
-	private ProbNode getChanceNode() {
+	private Node getChanceNode() {
 		for (List<Variable> array : partialOrder.getOrder()) {
 			for (Variable variable : array) {
-				ProbNode probNode = getProbNode(variable);
+				Node probNode = getNode(variable);
 				if ((probNode != null)
 						&& (probNode.getNodeType() == NodeType.CHANCE)
 						&& (probNode.getPotentials().size() != 0)) {
@@ -463,11 +462,11 @@ public class MarkovDecisionNetwork extends ProbNet {
 		List<Variable> variablesPotential = potential.getVariables();
 		int potentialSize = variablesPotential.size();
 		for (int i = 0; i < potentialSize - 1; i++) {
-			Node node1 = getProbNode(variablesPotential.get(i)).getNode();
+			Node node1 = getNode(variablesPotential.get(i));
 			for (int j = i + 1; j < potentialSize; j++) {
-				Node node2 = getProbNode(variablesPotential.get(j)).getNode();
-				if (!node1.isSibling(node2)) {
-					graph.addLink(node1, node2, false);
+				Node node2 = getNode(variablesPotential.get(j));
+				if (!isSibling(node1, node2)) {
+					addLink(node1, node2, false);
 				}
 			}
 		}
@@ -487,8 +486,8 @@ public class MarkovDecisionNetwork extends ProbNet {
 
 
 	@Override
-	public ProbNode removePotential(Potential potential) {
-		ProbNode probNode;
+	public Node removePotential(Potential potential) {
+		Node probNode;
 		if (potential.getVariables().size()>0){
 			probNode = super.removePotential(potential);
 		}

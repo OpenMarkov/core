@@ -11,14 +11,14 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.List;
 
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.RemoveNodeEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import org.openmarkov.core.model.network.potential.Potential;
 
@@ -26,11 +26,11 @@ import org.openmarkov.core.model.network.potential.Potential;
 public class ProperUtilityPotentials extends PNConstraint {
 	
 	public boolean checkProbNet(ProbNet probNet) {
-	    List<ProbNode> utilityNodes = probNet.getProbNodes(NodeType.UTILITY);
+	    List<Node> utilityNodes = probNet.getProbNodes(NodeType.UTILITY);
 		if (utilityNodes.size() == 0) {
 			return false;
 		}
-		for (ProbNode utilityNode : utilityNodes) {
+		for (Node utilityNode : utilityNodes) {
 		    List<Potential> utilityPotentials =utilityNode.getPotentials();
 			if ((utilityPotentials == null) || (utilityPotentials.size() == 0)){
 				return false;
@@ -42,10 +42,10 @@ public class ProperUtilityPotentials extends PNConstraint {
 	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 	throws NonProjectablePotentialException, 
 	WrongCriterionException {
-	    List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddProbNodeEdit.class);
+	    List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddNodeEdit.class);
 		int numUtilities = probNet.getNumNodes(NodeType.UTILITY);
 		for (PNEdit simpleEdit : edits) {
-			if (((AddProbNodeEdit)simpleEdit).getNodeType() == NodeType.UTILITY) {
+			if (((AddNodeEdit)simpleEdit).getNodeType() == NodeType.UTILITY) {
 				numUtilities = numUtilities + 1;
 			}
 		}		

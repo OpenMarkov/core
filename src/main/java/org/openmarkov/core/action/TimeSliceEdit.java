@@ -1,7 +1,7 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 /**
  * 
  * @author myebra
@@ -20,7 +20,7 @@ public class TimeSliceEdit extends SimplePNEdit{
 	/**
 	 * The edited node
 	 */
-	private ProbNode probNode = null;
+	private Node probNode = null;
 	/**
 	 * the last base name of the temporal variable
 	 */
@@ -35,7 +35,7 @@ public class TimeSliceEdit extends SimplePNEdit{
  * @param probNode
  * @param timeSlice
  */
-	public TimeSliceEdit(ProbNode probNode, int timeSlice) {
+	public TimeSliceEdit(Node probNode, int timeSlice) {
 		super(probNode.getProbNet());
 		this.lastTimeSlice = probNode.getVariable().getTimeSlice();
 		this.newTimeSlice = timeSlice;

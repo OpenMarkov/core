@@ -13,9 +13,8 @@ import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.graph.Graph;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
@@ -31,11 +30,10 @@ public class DistinctLinks extends PNConstraint
     @Override
     public boolean checkProbNet (ProbNet probNet)
     {
-        Graph graph = probNet.getGraph ();
-        List<Node> nodesGraph = graph.getNodes ();
-        for (Node node : nodesGraph)
+        List<Node> nodes = probNet.getNodes ();
+        for (Node node : nodes)
         {
-            if (node.getNumLinks () > (node.getNumChildren () + node.getNumParents () + node.getNumSiblings ()))
+            if (probNet.getNumLinks (node) > (probNet.getNumChildren (node) + probNet.getNumParents (node) + probNet.getNumSiblings (node)))
             {
                 return false;
             }
@@ -48,16 +46,16 @@ public class DistinctLinks extends PNConstraint
         throws NonProjectablePotentialException,
         WrongCriterionException
     {
-        Graph graph = probNet.getGraph ();
         List<PNEdit> edits = UtilConstraints.getSimpleEditsByType (edit, AddLinkEdit.class);
         for (PNEdit simpleEdit : edits)
         {
-            Variable variable1 = ((AddLinkEdit) simpleEdit).getVariable1 ();
-            Node node1 = probNet.getProbNode (variable1).getNode ();
+        	AddLinkEdit addLinkEdit = (AddLinkEdit) simpleEdit;
+            Variable variable1 = addLinkEdit.getVariable1 ();
+            Node node1 = probNet.getNode (variable1);
             Variable variable2 = ((AddLinkEdit) simpleEdit).getVariable2 ();
-            Node node2 = probNet.getProbNode (variable2).getNode ();
+            Node node2 = probNet.getNode (variable2);
             boolean directed = ((AddLinkEdit) simpleEdit).isDirected ();
-            if (!checkLink (graph, node1, node2, directed))
+            if (!checkLink (probNet, node1, node2, directed))
             {
                 return false;
             }
@@ -78,11 +76,11 @@ public class DistinctLinks extends PNConstraint
         for (PNEdit simpleEdit : edits3)
         {
             Variable variable1 = ((InvertLinkEdit) simpleEdit).getVariable1 ();
-            Node node1 = probNet.getProbNode (variable1).getNode ();
+            Node node1 = probNet.getNode (variable1);
             Variable variable2 = ((InvertLinkEdit) simpleEdit).getVariable2 ();
-            Node node2 = probNet.getProbNode (variable2).getNode ();
+            Node node2 = probNet.getNode (variable2);
             boolean directed = ((InvertLinkEdit) simpleEdit).isDirected ();
-            if (!checkLink (graph, node2, node1, directed))
+            if (!checkLink (probNet, node2, node1, directed))
             {
                 return false;
             }
@@ -100,7 +98,7 @@ public class DistinctLinks extends PNConstraint
      * @return code>true</code> if the link between <code>node1</code> and
      *         <code>node2</code>has distinctLinks
      */
-    private boolean checkLink (Graph graph, Node node1, Node node2, boolean directed)
+    private boolean checkLink (ProbNet graph, Node node1, Node node2, boolean directed)
     {
         if (directed)
         {

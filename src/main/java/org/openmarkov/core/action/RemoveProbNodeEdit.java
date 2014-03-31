@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 
 	
@@ -24,7 +24,7 @@ public class RemoveProbNodeEdit extends SimplePNEdit implements UsesVariable {
 
 		// Attributes
 		/** Node associated to variable */
-		private ProbNode probNode;
+		private Node probNode;
 		
 		private NodeType kindOfNode;
 		
@@ -35,7 +35,7 @@ public class RemoveProbNodeEdit extends SimplePNEdit implements UsesVariable {
 		// Constructor
 		/** @param probNet <code>ProbNet</code>
 		 * @param variable <code>Variable</code> */
-		public RemoveProbNodeEdit(ProbNet probNet, ProbNode probNode) {
+		public RemoveProbNodeEdit(ProbNet probNet, Node probNode) {
 			super(probNet);
 			this.variable = probNode.getVariable();
 			this.probNode = probNode;
@@ -51,14 +51,14 @@ public class RemoveProbNodeEdit extends SimplePNEdit implements UsesVariable {
 					throw new DoEditException("Trying to access a null node");
 			}
 			
-			probNet.removeProbNode(probNode);
+			probNet.removeNode(probNode);
 			
 		}
 		
 		public void undo() {
 			super.undo();
 			try {
-				probNet.addProbNode(probNode);
+				probNet.addNode(probNode);
 			} catch (Exception e) {
 				logger.fatal(e);
 			}

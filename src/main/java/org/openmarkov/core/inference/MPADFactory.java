@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -27,9 +27,9 @@ public class MPADFactory {
 
 	private ProbNet probNet;
 	/** Set of probNodes that will be cloned in each slice. */
-	private List<ProbNode> generatedNodes;
+	private List<Node> generatedNodes;
 	/** Each <ArrayList<ProbNode> contains the nodes of a time slice */
-	private List<List<ProbNode>> classifiedNodes;
+	private List<List<Node>> classifiedNodes;
 
 	// Constructor
 	/**
@@ -67,27 +67,27 @@ public class MPADFactory {
 	private void compactNetwork() {
 		classifiedNodes = classifyNodesbySlices(probNet, probNet.getVariables());
 		// generate the new nodes of the compact net
-		List<ProbNode> generatingNodes = new ArrayList<ProbNode>();
-		generatedNodes = new ArrayList<ProbNode>();
+		List<Node> generatingNodes = new ArrayList<Node>();
+		generatedNodes = new ArrayList<Node>();
 		for (int slice = 0; slice < classifiedNodes.size() - 1; slice++) {
 			double sliceWidth = getSliceWidth(classifiedNodes.get(slice));
-			List<ProbNode> generatedNodesInThisSlice = new ArrayList<ProbNode>(classifiedNodes.get(
+			List<Node> generatedNodesInThisSlice = new ArrayList<Node>(classifiedNodes.get(
 					slice).size());
-			for (ProbNode generatingProbNode : classifiedNodes.get(slice)) {
+			for (Node generatingProbNode : classifiedNodes.get(slice)) {
 				if (!probNet.containsShiftedVariable(generatingProbNode.getVariable(), 1)) {
-					ProbNode newProbNode = probNet.addShiftedProbNode(generatingProbNode, 1,
+					Node newProbNode = probNet.addShiftedProbNode(generatingProbNode, 1,
 							sliceWidth + MARGIN_BETWEEN_SLICES, VERTICAL_OFFSET);
 					generatingNodes.add(generatingProbNode);
 					generatedNodes.add(newProbNode);
 					generatedNodesInThisSlice.add(newProbNode);
 				}
 			}
-			for (ProbNode probNode : generatedNodesInThisSlice) {
+			for (Node probNode : generatedNodesInThisSlice) {
 				classifiedNodes.get(probNode.getVariable().getTimeSlice()).add(probNode);
 			}
 		}
 		// assign potentials to the new nodes of the compact net
-		ProbNode generatingNode, generatedNode;
+		Node generatingNode, generatedNode;
 		for (int i = 0; i < generatedNodes.size(); i++) {
 			generatingNode = generatingNodes.get(i);
 			generatedNode = generatedNodes.get(i);
@@ -107,9 +107,9 @@ public class MPADFactory {
 	 * 
 	 * @return <code>List</code> of <code>List</code> of <code>ProbNode</code>
 	 */
-	private static List<List<ProbNode>> classifyNodesbySlices(ProbNet probNet,
+	private static List<List<Node>> classifyNodesbySlices(ProbNet probNet,
 			List<Variable> variables) {
-		List<List<ProbNode>> classifiedNodes;
+		List<List<Node>> classifiedNodes;
 		int firstSliceIndex = Integer.MAX_VALUE;
 		int lastSliceIndex = Integer.MIN_VALUE;
 		// find the indexes of the first and last slice
@@ -129,11 +129,11 @@ public class MPADFactory {
 		// initializes the variable classifiedNodes
 		classifiedNodes = new ArrayList<>(numSlices);
 		for (int slice = 0; slice < numSlices; slice++) {
-			classifiedNodes.add(new ArrayList<ProbNode>());
+			classifiedNodes.add(new ArrayList<Node>());
 		}
 		// assigns each node to its slice
 		Variable variable;
-		for (ProbNode node : probNet.getProbNodes()) {
+		for (Node node : probNet.getNodes()) {
 			variable = node.getVariable();
 			if (variable.isTemporal()) {
 				classifiedNodes.get(variable.getTimeSlice()).add(node);
@@ -146,18 +146,18 @@ public class MPADFactory {
 	 * @precondition extendedNet in this class must be a compact net
 	 */
 	private void generateNextSlice() {
-		List<ProbNode> lastSliceNodes = classifiedNodes.get(classifiedNodes.size() - 1);
-		List<ProbNode> newSliceNodes = new ArrayList<ProbNode>();
+		List<Node> lastSliceNodes = classifiedNodes.get(classifiedNodes.size() - 1);
+		List<Node> newSliceNodes = new ArrayList<Node>();
 		// generates the new nodes
 		double sliceWidth = getSliceWidth(lastSliceNodes);
-		for (ProbNode generatingProbNode : lastSliceNodes) {
-			ProbNode newProbNode = probNet.addShiftedProbNode(generatingProbNode, 1, sliceWidth
+		for (Node generatingProbNode : lastSliceNodes) {
+			Node newProbNode = probNet.addShiftedProbNode(generatingProbNode, 1, sliceWidth
 					+ MARGIN_BETWEEN_SLICES, VERTICAL_OFFSET);
 			newSliceNodes.add(newProbNode);
 		}
 		// generates new slices
 		// assign potentials to the new nodes
-		ProbNode generatingNode, generatedNode;
+		Node generatingNode, generatedNode;
 		for (int i = 0; i < lastSliceNodes.size(); i++) {
 			generatingNode = lastSliceNodes.get(i);
 			generatedNode = newSliceNodes.get(i);
@@ -178,7 +178,7 @@ public class MPADFactory {
 	 * 
 	 * @throws ProbNodeNotFoundException
 	 */
-	private void expandPotentialAndLinks(ProbNode oldNode, ProbNode newNode, int timeDifference)
+	private void expandPotentialAndLinks(Node oldNode, Node newNode, int timeDifference)
 			throws ProbNodeNotFoundException {
 		Potential oldPotential = oldNode.getPotentials().get(0);
 		Potential newPotential = null;
@@ -205,15 +205,15 @@ public class MPADFactory {
 		newPotential.createDirectedLinks(probNet);
 	}
 
-	private double getSliceWidth(List<ProbNode> nodes) {
+	private double getSliceWidth(List<Node> nodes) {
 		double minX = Double.POSITIVE_INFINITY;
 		double maxX = 0.0;
-		for (ProbNode probNode : nodes) {
-			if (probNode.getNode().getCoordinateX() > maxX) {
-				maxX = probNode.getNode().getCoordinateX();
+		for (Node probNode : nodes) {
+			if (probNode.getCoordinateX() > maxX) {
+				maxX = probNode.getCoordinateX();
 			}
-			if (probNode.getNode().getCoordinateX() < minX) {
-				minX = probNode.getNode().getCoordinateX();
+			if (probNode.getCoordinateX() < minX) {
+				minX = probNode.getCoordinateX();
 			}
 		}
 		return maxX - minX;

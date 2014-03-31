@@ -122,9 +122,9 @@ public class ProbNetOperationsTest {
 		
 		NodeType nodeType = NodeType.CHANCE;
 		
-		peque.addProbNode(variableA, nodeType);
-		peque.addProbNode(variableB, nodeType);
-		peque.addProbNode(variableC, nodeType);
+		peque.addNode(variableA, nodeType);
+		peque.addNode(variableB, nodeType);
+		peque.addNode(variableC, nodeType);
 		
 		//Links throws NodeNotFoundException
 		try {
@@ -148,8 +148,8 @@ public class ProbNetOperationsTest {
 		peque.addPotential((Potential)potentialvaluesBA);
 		peque.addPotential((Potential)potentialvaluesCAB);
 				
-		ProbNode probNodeA = peque.getProbNode("A");
-		ProbNode probNodeB = peque.getProbNode("B");
+		Node probNodeA = peque.getNode("A");
+		Node probNodeB = peque.getNode("B");
 		Variable A = probNodeA.getVariable();
 		Variable B = probNodeB.getVariable();
 		Finding findingA = new Finding(A, 1); // A:absent(0)
@@ -179,7 +179,7 @@ public class ProbNetOperationsTest {
 		}
 		assertTrue(throwNodeNotFound);
 		assertEquals(1, pruned.getNumPotentials());
-		probNodeB = pruned.getProbNode("B");
+		probNodeB = pruned.getNode("B");
 		TablePotential bPotential = 
 			(TablePotential)probNodeB.getPotentials().get(0);
 		assertEquals(1, bPotential.getNumVariables());
@@ -319,7 +319,7 @@ public class ProbNetOperationsTest {
 		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);
 		// add potentials and variables
 		simpleProbNet.addPotential(pA); // add variable and potential
-		simpleProbNet.addProbNode(D, NodeType.DECISION);
+		simpleProbNet.addNode(D, NodeType.DECISION);
 		simpleProbNet.addPotential(pU);
 		simpleProbNet.addPotential(pBA);
 		simpleProbNet.addLink(B, D, true);
@@ -416,15 +416,15 @@ public class ProbNetOperationsTest {
 
 		NodeType nodeType = NodeType.CHANCE;
 
-		inferenceTestNet.addProbNode(variableA, nodeType);
-		inferenceTestNet.addProbNode(variableB, nodeType);
-		inferenceTestNet.addProbNode(variableC, nodeType);
-		inferenceTestNet.addProbNode(variableD, nodeType);
-		inferenceTestNet.addProbNode(variableE, nodeType);
-		inferenceTestNet.addProbNode(variableF, nodeType);
-		inferenceTestNet.addProbNode(variableG, nodeType);
-		inferenceTestNet.addProbNode(variableH, nodeType);
-		inferenceTestNet.addProbNode(variableI, nodeType);
+		inferenceTestNet.addNode(variableA, nodeType);
+		inferenceTestNet.addNode(variableB, nodeType);
+		inferenceTestNet.addNode(variableC, nodeType);
+		inferenceTestNet.addNode(variableD, nodeType);
+		inferenceTestNet.addNode(variableE, nodeType);
+		inferenceTestNet.addNode(variableF, nodeType);
+		inferenceTestNet.addNode(variableG, nodeType);
+		inferenceTestNet.addNode(variableH, nodeType);
+		inferenceTestNet.addNode(variableI, nodeType);
 
 		inferenceTestNet.addLink(variableA, variableB, true);
 		inferenceTestNet.addLink(variableA, variableC, true);
@@ -472,7 +472,7 @@ public class ProbNetOperationsTest {
 		assertTrue(variablesPruned.contains(variableI));
 
 		// Test B potentials
-		ProbNode probNodeB = pruned.getProbNode("B");
+		Node probNodeB = pruned.getNode("B");
 		List<Potential> potentialsB = probNodeB.getPotentials();
 		assertEquals(2, potentialsB.size());
 		// Test projected potential p(B|A), A = 1 = psi(B)
@@ -689,18 +689,18 @@ public class ProbNetOperationsTest {
         transitionVar_3.setTimeSlice(3);
 
         // Nodes
-        probNet.addProbNode(ageAtStateEntryVar_0, NodeType.CHANCE);
-        probNet.addProbNode(ageAtStateEntryVar_1, NodeType.CHANCE);
-        probNet.addProbNode(ageAtStateEntryVar_2, NodeType.CHANCE);
-        probNet.addProbNode(ageVar_0, NodeType.CHANCE);
-        probNet.addProbNode(ageVar_1, NodeType.CHANCE);
-        probNet.addProbNode(ageVar_2, NodeType.CHANCE);
-        probNet.addProbNode(timeInStateVar_0, NodeType.CHANCE);
-        probNet.addProbNode(timeInStateVar_1, NodeType.CHANCE);
-        probNet.addProbNode(timeInStateVar_2, NodeType.CHANCE);
-        probNet.addProbNode(transitionVar_1, NodeType.CHANCE);
-        probNet.addProbNode(transitionVar_2, NodeType.CHANCE);
-        probNet.addProbNode(transitionVar_3, NodeType.CHANCE);
+        probNet.addNode(ageAtStateEntryVar_0, NodeType.CHANCE);
+        probNet.addNode(ageAtStateEntryVar_1, NodeType.CHANCE);
+        probNet.addNode(ageAtStateEntryVar_2, NodeType.CHANCE);
+        probNet.addNode(ageVar_0, NodeType.CHANCE);
+        probNet.addNode(ageVar_1, NodeType.CHANCE);
+        probNet.addNode(ageVar_2, NodeType.CHANCE);
+        probNet.addNode(timeInStateVar_0, NodeType.CHANCE);
+        probNet.addNode(timeInStateVar_1, NodeType.CHANCE);
+        probNet.addNode(timeInStateVar_2, NodeType.CHANCE);
+        probNet.addNode(transitionVar_1, NodeType.CHANCE);
+        probNet.addNode(transitionVar_2, NodeType.CHANCE);
+        probNet.addNode(transitionVar_3, NodeType.CHANCE);
 
         // Links
         probNet.addLink(ageVar_0, ageVar_1, true);
@@ -726,9 +726,9 @@ public class ProbNetOperationsTest {
         PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
         DeltaPotential agePotential_0 = new DeltaPotential(Arrays.asList(ageVar_0), role);
         agePotential_0.setValue(4.4);
-        probNet.getProbNode(ageVar_0).setPotential(agePotential_0);
-        probNet.getProbNode(ageVar_1).setPotential(new CycleLengthShift(Arrays.asList(ageVar_1, ageVar_0)));
-        probNet.getProbNode(ageVar_2).setPotential(new CycleLengthShift(Arrays.asList(ageVar_2, ageVar_1)));
+        probNet.getNode(ageVar_0).setPotential(agePotential_0);
+        probNet.getNode(ageVar_1).setPotential(new CycleLengthShift(Arrays.asList(ageVar_1, ageVar_0)));
+        probNet.getNode(ageVar_2).setPotential(new CycleLengthShift(Arrays.asList(ageVar_2, ageVar_1)));
         LinearRegressionPotential ageAtStateEntryPotential_0 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_0,
                 ageVar_0,
                 timeInStateVar_0),
@@ -736,23 +736,23 @@ public class ProbNetOperationsTest {
         ageAtStateEntryPotential_0.setCovariates(new String[]{"Constant", "Age [0]", "Time in state [0]"});
         ageAtStateEntryPotential_0.setCoefficients(new double[]{0, 1, -1});
         
-        probNet.getProbNode(ageAtStateEntryVar_0).setPotential(ageAtStateEntryPotential_0);
+        probNet.getNode(ageAtStateEntryVar_0).setPotential(ageAtStateEntryPotential_0);
         LinearRegressionPotential ageAtStateEntryPotential_1 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_1,
                 ageVar_1,
                 timeInStateVar_1),
                 role);
         ageAtStateEntryPotential_1.setCovariates(new String[]{"Constant", "Age [1]", "Time in state [1]"});
         ageAtStateEntryPotential_1.setCoefficients(new double[]{0, 1, -1});
-        probNet.getProbNode(ageAtStateEntryVar_1).setPotential(ageAtStateEntryPotential_1);
+        probNet.getNode(ageAtStateEntryVar_1).setPotential(ageAtStateEntryPotential_1);
         LinearRegressionPotential ageAtStateEntryPotential_2 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_2,
                 ageVar_2,
                 timeInStateVar_2),
                 role);
         ageAtStateEntryPotential_2.setCovariates(new String[]{"Constant", "Age [2]", "Time in state [2]"});
         ageAtStateEntryPotential_2.setCoefficients(new double[]{0, 1, -1});
-        probNet.getProbNode(ageAtStateEntryVar_2).setPotential(ageAtStateEntryPotential_2);
+        probNet.getNode(ageAtStateEntryVar_2).setPotential(ageAtStateEntryPotential_2);
         Potential timeInStatePotential_0 = new DeltaPotential(Arrays.asList(timeInStateVar_0), role);
-        probNet.getProbNode(timeInStateVar_0).setPotential(timeInStatePotential_0);
+        probNet.getNode(timeInStateVar_0).setPotential(timeInStatePotential_0);
         TreeADDPotential timeInStatePotential_1 = new TreeADDPotential(Arrays.asList(timeInStateVar_1,
                 timeInStateVar_0,
                 transitionVar_1), transitionVar_1, role);
@@ -763,7 +763,7 @@ public class ProbNetOperationsTest {
 						noTransitionPotentialBranch_1, new ArrayList<Variable>()),
 				new TreeADDBranch(Arrays.asList(transitionVar_1.getStates()[1]), transitionVar_1,
 						transitionPotentialBranch_1, new ArrayList<Variable>())));
-        probNet.getProbNode(timeInStateVar_1).setPotential(timeInStatePotential_1);
+        probNet.getNode(timeInStateVar_1).setPotential(timeInStatePotential_1);
         TreeADDPotential timeInStatePotential_2 = new TreeADDPotential(Arrays.asList(timeInStateVar_2,
                 timeInStateVar_1,
                 transitionVar_2), transitionVar_2, role);
@@ -774,42 +774,42 @@ public class ProbNetOperationsTest {
 						noTransitionPotentialBranch_2, new ArrayList<Variable>()),
 				new TreeADDBranch(Arrays.asList(transitionVar_2.getStates()[1]), transitionVar_2,
 						transitionPotentialBranch_2, new ArrayList<Variable>())));
-        probNet.getProbNode(timeInStateVar_2).setPotential(timeInStatePotential_2);
+        probNet.getNode(timeInStateVar_2).setPotential(timeInStatePotential_2);
 
         WeibullHazardPotential transitionPotential_1 = new WeibullHazardPotential(Arrays.asList(transitionVar_1, ageAtStateEntryVar_0, timeInStateVar_0), role);
         transitionPotential_1.setTimeVariable(timeInStateVar_0);
         transitionPotential_1.setCovariates(new String[]{"Gamma", "Constant", "Age at state entry [0]"});
         transitionPotential_1.setCoefficients(new double[]{0.3757164, -1.166541, 0.002097});
-        probNet.getProbNode(transitionVar_1).setPotential(transitionPotential_1);
+        probNet.getNode(transitionVar_1).setPotential(transitionPotential_1);
 
         WeibullHazardPotential transitionPotential_2 = new WeibullHazardPotential(Arrays.asList(transitionVar_2, ageAtStateEntryVar_1, timeInStateVar_1), role);
         transitionPotential_2.setTimeVariable(timeInStateVar_1);
         transitionPotential_2.setCovariates(new String[]{"Gamma", "Constant", "Age at state entry [1]"});
         transitionPotential_2.setCoefficients(new double[]{0.3757164, -1.166541, 0.002097});
-        probNet.getProbNode(transitionVar_2).setPotential(transitionPotential_2);
+        probNet.getNode(transitionVar_2).setPotential(transitionPotential_2);
         
-        probNet.getProbNode(transitionVar_3).setPotential(new UniformPotential(Arrays.asList(transitionVar_3), role));
+        probNet.getNode(transitionVar_3).setPotential(new UniformPotential(Arrays.asList(transitionVar_3), role));
         
         ProbNet convertedNet = ProbNetOperations.convertNumericalVariablesToFS(probNet);
 
         double[] ageAtStateEntry_1_expectedValues = new double[]{ 0, 1, 1, 0}; 
-        double[] ageAtStateEntry_1_Values = ((TablePotential)convertedNet.getProbNode("Age at state entry [1]").getPotentials().get(0)).values;
+        double[] ageAtStateEntry_1_Values = ((TablePotential)convertedNet.getNode("Age at state entry [1]").getPotentials().get(0)).values;
         
         Assert.assertArrayEquals(ageAtStateEntry_1_expectedValues, ageAtStateEntry_1_Values, 0.001);
 
         double[] timeInState_1_expectedValues = new double[]{ 0, 1, 1, 0}; 
-        double[] timeInState_1_Values = ((TablePotential)convertedNet.getProbNode("Time in state [1]").getPotentials().get(0)).values;
+        double[] timeInState_1_Values = ((TablePotential)convertedNet.getNode("Time in state [1]").getPotentials().get(0)).values;
 
         Assert.assertArrayEquals(timeInState_1_expectedValues, timeInState_1_Values, 0.001);
 
         
         double[] ageAtStateEntry_2_expectedValues = new double[]{ 0, 0, 1, 0, 1, 0, 1, 0, 0}; 
-        double[] ageAtStateEntry_2_Values = ((TablePotential)convertedNet.getProbNode("Age at state entry [2]").getPotentials().get(0)).values;
+        double[] ageAtStateEntry_2_Values = ((TablePotential)convertedNet.getNode("Age at state entry [2]").getPotentials().get(0)).values;
         
         Assert.assertArrayEquals(ageAtStateEntry_2_expectedValues, ageAtStateEntry_2_Values, 0.001);
 
         double[] timeInState_2_expectedValues = new double[]{ 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0}; 
-        double[] timeInState_2_Values = ((TablePotential)convertedNet.getProbNode("Time in state [2]").getPotentials().get(0)).values;
+        double[] timeInState_2_Values = ((TablePotential)convertedNet.getNode("Time in state [2]").getPotentials().get(0)).values;
 
         Assert.assertArrayEquals(timeInState_2_expectedValues, timeInState_2_Values, 0.001);
 
@@ -946,15 +946,16 @@ public class ProbNetOperationsTest {
 	}
 	
 	
-	public void checkEqualVariables(Collection<ProbNode> probNodes,List<String> stringVariables){
+	public void checkEqualVariables(Collection<Node> probNodes,List<String> stringVariables){
 		
 		assertEquals(probNodes.size(),stringVariables.size());
 		
-		for (ProbNode probNode:probNodes)
+		for (Node probNode:probNodes)
 		{
 			assertTrue(stringVariables.contains(probNode.getVariable().getName()));
 		}
 		
 	}
+
 
 }

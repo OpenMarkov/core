@@ -15,7 +15,7 @@ import java.util.List;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -32,7 +32,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 	// private ICIModelType newICIModelType;
 	private Variable variable;
 	private Potential newPotential = null;
-	private ProbNode probNode;
+	private Node probNode;
 
 	/**
 	 * Creates a new SetPotentialEdit object that sets the a new potential with
@@ -43,7 +43,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 	 * @param newPotentialType
 	 *            The potential type of the new potential to be created
 	 */
-	public SetPotentialEdit(ProbNode probNode, String newPotentialType) {
+	public SetPotentialEdit(Node probNode, String newPotentialType) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
 		this.variable = probNode.getVariable();
@@ -65,7 +65,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 	 * @param newPotentialType
 	 *            The new potential object
 	 */
-	public SetPotentialEdit(ProbNode probNode, Potential potential) {
+	public SetPotentialEdit(Node probNode, Potential potential) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
 		this.variable = probNode.getVariable();
@@ -141,7 +141,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 		if (newPotentialType == TablePotential.class.getAnnotation(
 				PotentialType.class).name() && probNode.getNodeType() != NodeType.DECISION ) {
 			newPotential = (TablePotential) LinkRestrictionPotentialOperations
-					.updatePotentialByLinkRestrictions(probNode.getNode());
+					.updatePotentialByLinkRestrictions(probNode);
 			potentials = new ArrayList<Potential>();
 			potentials.add(newPotential);
 			probNode.setPotentials(potentials);
@@ -151,7 +151,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 
 	public void undo() {
 		super.undo();
-		ProbNode probNode = probNet.getProbNode(variable);
+		Node probNode = probNet.getNode(variable);
 		List<Potential> potentials = new ArrayList<Potential>();
 		if (lastPotential != null) {
 			potentials.add(lastPotential);
@@ -170,7 +170,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 		return newPotentialType;
 	}
 
-	public ProbNode getProbNode() {
+	public Node getProbNode() {
 		return probNode;
 	}
 

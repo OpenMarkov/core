@@ -18,7 +18,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -49,7 +49,7 @@ public class CycleLengthShift extends Potential {
      * @param variables
      * @param role
      */
-    public static boolean validate (ProbNode probNode, List<Variable> variables, PotentialRole role)
+    public static boolean validate (Node probNode, List<Variable> variables, PotentialRole role)
     {
         return role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size () == 2
                 // child = variables.get (0)

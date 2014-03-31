@@ -10,7 +10,7 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 @SuppressWarnings("serial")
 /**
  * <code>PurposeEdit</code> is a simple edit that allows modify
@@ -31,13 +31,13 @@ public class PurposeEdit extends SimplePNEdit {
 	/**
 	 * The edited node
 	 */
-	private ProbNode probNode = null;
+	private Node probNode = null;
 	/**
 	 * Creates a new <code>PurposeEdit</code> with the node and its new purpose.
 	 * @param probNode the edited node
 	 * @param newPurpose the new purpose
 	 */
-	public PurposeEdit (ProbNode probNode, String newPurpose){
+	public PurposeEdit (Node probNode, String newPurpose){
 		super(probNode.getProbNet());
 		this.lastPurpose = probNode.getPurpose();
 		this.newPurpose = newPurpose;

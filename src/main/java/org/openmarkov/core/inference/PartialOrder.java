@@ -16,10 +16,9 @@ import java.util.List;
 import java.util.Stack;
 
 import org.openmarkov.core.exception.WrongGraphStructureException;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 
 /**
@@ -89,38 +88,37 @@ public class PartialOrder {
         int numDecisions = idCopy.getNumNodes(NodeType.DECISION);
         Stack<Variable> decisions = new Stack<Variable>();
         do {
-            List<ProbNode> probNodes = idCopy.getProbNodes();
-            for (ProbNode probNode : probNodes) {
-                if (probNode.getNode().getNumChildren() == 0) {
+            List<Node> probNodes = idCopy.getNodes();
+            for (Node probNode : probNodes) {
+                if (idCopy.getNumChildren(probNode) == 0) {
                     if (probNode.getNodeType() == NodeType.DECISION) {
                         decisions.push(probNode.getVariable());
                         numDecisions--;
                     }
-                    idCopy.removeProbNode(probNode);
+                    idCopy.removeNode(probNode);
                 }
             }
         } while (numDecisions > 0);
 
         // Create elimination order adding chance nodes
         order = new ArrayList<>(numDecisions * 2 + 1);
-        List<ProbNode> chanceProbNodes = id.getProbNodes(NodeType.CHANCE);
+        List<Node> chanceProbNodes = id.getProbNodes(NodeType.CHANCE);
         HashSet<Variable> chanceVariables = new HashSet<Variable>();
-        for (ProbNode chanceProbNode : chanceProbNodes) {
+        for (Node chanceProbNode : chanceProbNodes) {
             chanceVariables.add(chanceProbNode.getVariable());
         }
         while (!decisions.empty()) {
             Variable decision = decisions.pop();
-            ProbNode decisionProbNode = id.getProbNode(decision);
-            List<Node> decisionNodeParents = decisionProbNode.getNode().getParents();
+            Node decisionProbNode = id.getNode(decision);
+            List<Node> decisionNodeParents = id.getParents(decisionProbNode);
             // Get ProbNodes of the decision parents
-            List<ProbNode> decisionProbNodeParents = new ArrayList<ProbNode>(
+            List<Node> decisionProbNodeParents = new ArrayList<Node>(
                     decisionNodeParents.size());
             for (Node node : decisionNodeParents) {
-                ProbNode probNode = (ProbNode) node.getObject();
-                if (probNode.getNodeType() != NodeType.DECISION) {
-                    if (chanceVariables.contains(probNode.getVariable())) {
-                        decisionProbNodeParents.add(probNode);
-                        chanceVariables.remove(probNode.getVariable());
+                if (node.getNodeType() != NodeType.DECISION) {
+                    if (chanceVariables.contains(node.getVariable())) {
+                        decisionProbNodeParents.add(node);
+                        chanceVariables.remove(node.getVariable());
                     }
                 }
             }
@@ -128,7 +126,7 @@ public class PartialOrder {
             int numParents = decisionProbNodeParents.size();
             if (numParents > 0) {
                 List<Variable> decisionVariableParents = new ArrayList<Variable>(numParents);
-                for (ProbNode parent : decisionProbNodeParents) {
+                for (Node parent : decisionProbNodeParents) {
                     decisionVariableParents.add(parent.getVariable());
                 }
                 order.add(decisionVariableParents);

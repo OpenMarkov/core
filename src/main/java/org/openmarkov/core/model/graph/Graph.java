@@ -202,15 +202,11 @@ public class Graph <T> {
 	public void removeLink(Link<T> link) {
 		T node1 = link.getNode1();
 		T node2 = link.getNode2();
-		boolean directed = link.isDirected();
 		
-		if(directed)
-		{
-			nodeLinks.get(node1).remove(link);
-			nodeLinks.get(node2).remove(link);
-		}
+		nodeLinks.get(node1).remove(link);
+		nodeLinks.get(node2).remove(link);
 
-		removeImplicitLink(node1, node2, directed);
+		removeImplicitLink(node1, node2, link.isDirected());
 	}
 
 	/** @param node1 <code>Node</code>

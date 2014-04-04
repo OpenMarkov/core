@@ -9,32 +9,29 @@
 
 package org.openmarkov.core.action;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.exception.PotentialOperationException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 
-/** Removes a node performing this steps:<ol>
- * <li>Collect all potentials with this node variable
- * <li>Multiply and eliminates the variable
- * <li>Removes the collected potentials
- * <li>Adds to the <code>probNet</code> the new potential
- * <li>Adds links between the node siblings
- * <li>Remove links between the node and its children, parents and siblings
- * <li>Removes the node
+
+/** <code>CRemoveNodeEdit</code> is an compound edit that removes a node 
+ * performing this steps:<ol>
+ * <ol> 
+ * <li>Remove links between the node and its children
+ * <li> Remove links between the node and its children
+ * <li> Removes the node
  * </ol> */
 @SuppressWarnings("serial")
-public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
+public class CRemoveNodeEdit extends CompoundPNEdit{ //implements UsesVariable{
 
 	// Attributes
-	protected Variable variable;
+	
+	protected Node node;
 	
 	protected NodeType nodeType;
 	
@@ -48,73 +45,46 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 
 	protected List<Potential> allPotentials;
 	
+	protected ProbNet probNet;
+	
 	// Constructor
 	/** @param probNet </code>ProbNet</code>
 	 * @param variable <code>Variable</code> */
-	public CRemoveNodeEdit(ProbNet probNet, Variable variable) {
+	public CRemoveNodeEdit(ProbNet probNet, Node node) {
 		super(probNet);
-		this.variable = variable;
-		this.nodeType = probNet.getNode(variable).getNodeType();
+		this.probNet = probNet;
+		this.node = node;
+		this.nodeType = node.getNodeType();
 	}
 
 	public void generateEdits() {
-		Node probNode = probNet.getNode(variable);
-
 		// gets neighbors of this node
-		parents = probNet.getParents(probNode);
-		children = probNet.getChildren(probNode);
-		siblings = probNet.getSiblings(probNode);
+		parents = probNet.getParents(node);
+		children = probNet.getChildren(node);
 		
-		// collect potentials of this node ...
-		List<? extends Potential> auxPotentialsContainingVariable = 
-			probNet.extractPotentials(variable);
-		
-		ArrayList<TablePotential> potentialsContainingVariable = new ArrayList<>();
-		
-		for (Potential auxPot:auxPotentialsContainingVariable){
-			potentialsContainingVariable.add((TablePotential) auxPot);
+		for (Node parent : parents) {
+			String name = parent.getName();
+			try {
+				addEdit(new RemoveLinkEdit(node.getProbNet(),probNet.getVariable(name), probNet.getVariable(node.getName()), true));
+			} catch (NodeNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-
-		Potential newPotential = null;
-		// ... multiply and eliminate the variable
-		try {
-			newPotential = PotentialOperations.multiplyAndEliminate(
-				potentialsContainingVariable, variable);
-        } catch (PotentialOperationException e) {
-			e.printStackTrace();
-		}
-		
-		for (Potential potential : potentialsContainingVariable) {
-			edits.add(new RemovePotentialEdit(probNet, potential));
-		}
-
-		// add a link between the siblings of the removed node
-		for (Node node1 : siblings) {
-			for (Node node2 : siblings) {
-				if ((node1 != node2) && (!probNet.isSibling(node1, node2))) {
-					addEdit(new AddLinkEdit(probNet, node1.getVariable(), node2.getVariable(), false, false));
-				}
+		for (Node child : children) {
+			try {
+				addEdit(new RemoveLinkEdit(node.getProbNet(), probNet.getVariable(node.getName()), probNet.getVariable(child.getName()), true));
+			} catch (NodeNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		
-		// remove links between probNode and its parents, children and siblings
-		for (Node parent : parents) {
-			addEdit(new RemoveLinkEdit(probNet, parent.getVariable(), probNode.getVariable(), true, false));
-		}
-		
-		for (Node child : children) {
-			addEdit(new RemoveLinkEdit(probNet,	probNode.getVariable(), child.getVariable(), true, false));
-		}
-		
-		for (Node sibling : siblings) {
-			addEdit(new RemoveLinkEdit(probNet, sibling.getVariable(), probNode.getVariable(), false, false));
-		}
-
 		// add edit to remove the variable
-		addEdit(new RemoveNodeEdit(probNet, variable));
+		addEdit(new RemoveNodeEdit(probNet, node));
 		
 		// add edit to add the new potential
-		edits.add(new AddPotentialEdit(probNet, newPotential));
+		//edits.add(new AddPotentialEdit(probNet, newPotential));
 	}
 	
 	public void undo() {
@@ -123,12 +93,12 @@ public class CRemoveNodeEdit extends CompoundPNEdit implements UsesVariable{
 
 	/** @return variable <code>Variable</code> */
 	public Variable getVariable() {
-		return variable;
+		return node.getVariable();
 	}
 
 	/** @return <code>String</code> */
 	public String toString() {
-		return new String("CompoundRemoveNodeEdit: " +	variable);
+		return new String("CompoundRemoveNodeEdit: " +	node.getName());
 	}
 
 }

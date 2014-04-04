@@ -46,7 +46,7 @@ public class Node {
 	/** @frozen */
 	protected ProbNet probNet;
 
-    /** Each <code>probNode</code> has a list of potentials */
+    /** Each <code>Node</code> has a list of potentials */
     protected List<Potential> potentials;
     
     /** The variable associated */
@@ -77,7 +77,7 @@ public class Node {
     
     /** This object contains all the information that the parser reads from 
 	 *  disk that does not have a direct connection with the attributes stored 
-	 *  in the <code>ProbNode</code> object. */
+	 *  in the <code>Node</code> object. */
 	public Map<String, String> additionalProperties;
 
     // Constructor
@@ -98,15 +98,15 @@ public class Node {
 	}
 	/**
 	 * Copy Constructor for the GUI
-	 * @param probNode
+	 * @param node
 	 */
-	public Node(Node probNode) {
-    	this.probNet = probNode.getProbNet();
-    	this.variable = probNode.getVariable();
-        this.nodeType = probNode.getNodeType();
-        potentials = new ArrayList<Potential>(probNode.getPotentials());
-        additionalProperties = new HashMap<String, String>(probNode.additionalProperties);
-        alwaysObserved = probNode.isAlwaysObserved (); 
+	public Node(Node node) {
+    	this.probNet = node.getProbNet();
+    	this.variable = node.getVariable();
+        this.nodeType = node.getNodeType();
+        potentials = new ArrayList<Potential>(node.getPotentials());
+        additionalProperties = new HashMap<String, String>(node.additionalProperties);
+        alwaysObserved = node.isAlwaysObserved (); 
         hashCode = 31 * variable.hashCode() + 17 * nodeType.hashCode();
 	}	
 
@@ -114,7 +114,7 @@ public class Node {
    //Methods
    
     /** @return The <code>Variable</code> associated to this 
-     *   <code>probNode</code>.
+     *   <code>node</code>.
      * @consultation */
     public Variable getVariable() {
     	return variable;
@@ -154,7 +154,7 @@ public class Node {
 	}
 
     /** @return An <code>ArrayList</code> cloned with all the potentials 
-     *   associated to this <code>ProbNode</code> */
+     *   associated to this <code>Node</code> */
 	public List<Potential> getPotentials() {
 		return new ArrayList<Potential> (potentials);
     }
@@ -209,25 +209,25 @@ public class Node {
 		return probNet.getNumSiblings(this);
 	}
 	
-	/** @param node. <code>ProbNode</code>
+	/** @param node. <code>Node</code>
 	 * @return True if <code>node</code> is parent of <code>this</code> node */
 	public boolean isParent(Node node) {
         return probNet.isParent (node, this);
 	}
 	
-	/** @param node. <code>ProbNode</code>
+	/** @param node. <code>Node</code>
 	 * @return True if <code>node</code> is child of <code>this</code> node */
 	public boolean isChild(Node node) {
         return probNet.isChild (node, this);
 	}
 	
-	/** @param node. <code>ProbNode</code>
+	/** @param node. <code>Node</code>
 	 * @return True if <code>node</code> and <code>this</code> are siblings */
 	public boolean isSibling(Node node) {
         return probNet.isSibling (node, this);
 	}
 	
-	/** @param node. <code>ProbNode</code>
+	/** @param node. <code>Node</code>
 	 * @return True if <code>node</code> and <code>this</code> are neighbors */
 	public boolean isNeighbor(Node node) {
         return probNet.isNeighbor (node, this);
@@ -456,7 +456,7 @@ public class Node {
 	}
 	
 	/**
-	 * @return Approximates the maximum or the minimum of the utility function of the ProbNode. It is computed recursively by using the utility function
+	 * @return Approximates the maximum or the minimum of the utility function of the Node. It is computed recursively by using the utility function
 	 * of parent nodes. If 'computeMax' is true then it computes the maximum; otherwise it computes the minimum.
 	 * For an exact computation of the maximum or the minimum of the utility function then it is required to use
 	 * method 'getUtilityFunction' and computes the maximum or the minimum over the resulting potential.
@@ -502,7 +502,7 @@ public class Node {
 	}
 
 	/**
-	 * @return Approximates the maximum of the utility function of the ProbNode. It is computed recursively by using the utility function
+	 * @return Approximates the maximum of the utility function of the Node. It is computed recursively by using the utility function
 	 * of parent nodes. For an exact computation of the maximum of the utility function then it is required to use
 	 * method 'getUtilityFunction' and computes the maximum over the resulting potential.
 	 * @throws NonProjectablePotentialException 
@@ -513,7 +513,7 @@ public class Node {
 	}
 	
 	/**
-	 * @return Approximates the maximum of the utility function of the ProbNode. It is computed recursively by using the utility function
+	 * @return Approximates the maximum of the utility function of the Node. It is computed recursively by using the utility function
 	 * of parent nodes. For an exact computation of the maximum of the utility function then it is required to use
 	 * method 'getUtilityFunction' and computes the maximum over the resulting potential.
 	 * @throws NonProjectablePotentialException 
@@ -573,9 +573,9 @@ public class Node {
 	 * @return true if the variable is a supervalue node. False if does not
 	 */
 	public boolean isSuperValueNode() {
-		Node utilityProbNode = probNet.getNode( variable );
+		Node utilityNode = probNet.getNode( variable );
 		int numOfUtilityParents = 0;
-		for (Node parent: probNet.getParents(utilityProbNode)){
+		for (Node parent: probNet.getParents(utilityNode)){
 			if (parent.getNodeType() == NodeType.UTILITY ){
 				//if the node has two or more utility parents then is a super value node
 				if (( numOfUtilityParents ++) >= 1 ){

@@ -19,7 +19,7 @@ import javax.swing.undo.UndoableEdit;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
-import org.openmarkov.core.action.CRemoveProbNodeEdit;
+import org.openmarkov.core.action.CRemoveNodeEdit;
 import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.ICIPotentialEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
@@ -34,7 +34,7 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
@@ -96,9 +96,9 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
                 // Unreachable code because constraints are not tested in copy
             }
         }
-        List<Node> probNodes = probNet.getNodes();
+         List<Node> nodes = probNet.getNodes();
         // Adds variables and create corresponding nodes. Also add potentials
-        for (Node node : probNodes) {
+        for (Node node : nodes) {
             // Add variables and create corresponding nodes
             Variable variable = node.getVariable();
             Node newNode = null;
@@ -107,7 +107,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
             newNode.setCoordinateY(node.getCoordinateY());
             newNode.setPotentials(node.getPotentials());
 
-            // TODO Hacer clon para probNode y quitar estas lineas
+            // TODO Hacer clon para node y quitar estas lineas
             newNode.setPurpose(node.getPurpose());
             newNode.setRelevance(node.getRelevance());
             newNode.setComment(node.getComment());
@@ -115,20 +115,19 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
         }
 
         // Add links
-        List<Node> nodes = probNet.getNodes();
-        for (Node probNode1 : nodes) {
-            Variable variable1 = probNode1.getVariable();
+        for (Node node1 : nodes) {
+            Variable variable1 = node1.getVariable();
             Node newNode1 = this.getNode(variable1);
-            List<Node> neighbors = probNode1.getNeighbors();
-            for (Node probNode2 : neighbors) {
-                Variable variable2 = probNode2.getVariable();
+            List<Node> neighbors = node1.getNeighbors();
+            for (Node node2 : neighbors) {
+                Variable variable2 = node2.getVariable();
                 Node newNode2 = this.getNode(variable2);
-                if (probNet.isSibling(probNode1, probNode2)) {
+                if (probNet.isSibling(node1, node2)) {
                     if (!isSibling(newNode1, newNode2)) {
                         addLink(newNode1, newNode2, false);
                     }
                 }
-                if (probNet.isChild(probNode2, probNode1)) {
+                if (probNet.isChild(node2, node1)) {
                     addLink(newNode1, newNode2, true);
                 }
             }
@@ -204,19 +203,19 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 
     /**
      * Returns the equivalent node in <code>sourceInstance</code> to the
-     * <code>probNode</code> in <code>destinationInstance</code>
+     * <code>Node</code> in <code>destinationInstance</code>
      * @param sourceInstance
      * @param destInstance
-     * @param probNode
+     * @param node
      * @return
      */
     private Node getEquivalentNode (Instance sourceInstance,
                                         Instance destInstance,
-                                        Node probNode)
+                                        Node node)
     {
         Node equivalentNode = null;
         int i = 0;
-        String nodeName = probNode.getName ();
+        String nodeName = node.getName ();
         nodeName = nodeName.replace (destInstance.getName () + ".", "");
         while (equivalentNode == null && i < sourceInstance.getNodes ().size ())
         {
@@ -322,16 +321,16 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 				}
 	        }
 		}
-		for (Node probNode : probNet.getNodes ())
+		for (Node node : probNet.getNodes ())
 		{
 		    for (Potential potentialToReplace : potentialsToReplace.keySet ())
 		    {
-		        if (probNode.getPotentials ().contains (potentialToReplace))
+		        if (node.getPotentials ().contains (potentialToReplace))
 		        {
-		            List<Potential> potentials = probNode.getPotentials ();
+		            List<Potential> potentials = node.getPotentials ();
 		            potentials.remove (potentialToReplace);
 		            potentials.add (potentialsToReplace.get (potentialToReplace));
-		            probNode.setPotentials (potentials);
+		            node.setPotentials (potentials);
 		        }
 		    }
 		}
@@ -379,16 +378,16 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 					paramNode.getVariable());
 			potentialsToReplace.put(potential, potentialCopy);
 		}
-		for (Node probNode : probNet.getNodes ())
+		for (Node node : probNet.getNodes ())
 		{
 		    for (Potential potentialToReplace : potentialsToReplace.keySet ())
 		    {
-		        if (probNode.getPotentials ().contains (potentialToReplace))
+		        if (node.getPotentials ().contains (potentialToReplace))
 		        {
-		            List<Potential> potentials = probNode.getPotentials ();
+		            List<Potential> potentials = node.getPotentials ();
 		            potentials.remove (potentialToReplace);
 		            potentials.add (potentialsToReplace.get (potentialToReplace));
-		            probNode.setPotentials (potentials);
+		            node.setPotentials (potentials);
 		        }
 		    }
 		}
@@ -458,7 +457,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 								variable1 = getVariable(instanceName + "." + addLinkEdit.getVariable1().getName());
 								Variable variable2 = getVariable(instanceName + "." + addLinkEdit.getVariable2().getName());
 								newEdit = new AddLinkEdit(this, variable1, variable2, addLinkEdit.isDirected());
-							} catch (ProbNodeNotFoundException e1) {
+							} catch (NodeNotFoundException e1) {
 								e1.printStackTrace();
 							}
 						}else if(simpleEdit instanceof RemoveLinkEdit)
@@ -469,7 +468,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 								variable1 = getVariable(instanceName + "." + removeLinkEdit.getVariable1().getName());
 								Variable variable2 = getVariable(instanceName + "." + removeLinkEdit.getVariable2().getName());
 								newEdit = new RemoveLinkEdit(this, variable1, variable2, removeLinkEdit.isDirected());
-							} catch (ProbNodeNotFoundException e1) {
+							} catch (NodeNotFoundException e1) {
 								e1.printStackTrace();
 							}
 							
@@ -481,14 +480,14 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 								variable1 = getVariable(instanceName + "." + invertLinkEdit.getVariable1().getName());
 								Variable variable2 = getVariable(instanceName + "." + invertLinkEdit.getVariable2().getName());
 								newEdit = new InvertLinkEdit(this, variable1, variable2, invertLinkEdit.isDirected());
-							} catch (ProbNodeNotFoundException e1) {
+							} catch (NodeNotFoundException e1) {
 								e1.printStackTrace();
 							}
 						} else if(simpleEdit instanceof AddNodeEdit)
 						{
-							AddNodeEdit addProbNodeEdit = (AddNodeEdit)simpleEdit;
+							AddNodeEdit addNodeEdit = (AddNodeEdit)simpleEdit;
 							
-							Variable newVariable = new Variable(addProbNodeEdit.getVariable());
+							Variable newVariable = new Variable(addNodeEdit.getVariable());
 							newVariable.setName(instanceName + "." + newVariable.getName());
 							
 							//determine position of new node inside instance, using a node as reference
@@ -500,42 +499,42 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 								Node referenceInstanceNode = null;
 								try {
 									referenceInstanceNode = getNode(instanceName + "." + referenceNode.getVariable().getName());
-								} catch (ProbNodeNotFoundException e1) {
+								} catch (NodeNotFoundException e1) {
 									e1.printStackTrace();
 								}
-								double x = addProbNodeEdit.getCursorPosition().getX() 
+								double x = addNodeEdit.getCursorPosition().getX() 
 										- referenceNode.getCoordinateX() 
 										+ referenceInstanceNode.getCoordinateX();
-								double y = addProbNodeEdit.getCursorPosition().getY() 
+								double y = addNodeEdit.getCursorPosition().getY() 
 										- referenceNode.getCoordinateY() 
 										+ referenceInstanceNode.getCoordinateY();
 								position = new Point2D.Double(x, y);
 							}
 							newEdit = new AddNodeEdit(this,
 									newVariable,
-									addProbNodeEdit.getNodeType(),
+									addNodeEdit.getNodeType(),
 									position);
 						} else if(simpleEdit instanceof RemoveNodeEdit)
 						{
 							RemoveNodeEdit removeNodeEdit = (RemoveNodeEdit)simpleEdit;
 							newEdit = new RemoveNodeEdit(this, removeNodeEdit.getVariable());
-						} else if(simpleEdit instanceof CRemoveProbNodeEdit)
+						} else if(simpleEdit instanceof CRemoveNodeEdit)
 						{
-							CRemoveProbNodeEdit removeNodeEdit = (CRemoveProbNodeEdit)simpleEdit;
+							CRemoveNodeEdit removeNodeEdit = (CRemoveNodeEdit)simpleEdit;
 							Node nodeToRemove = null;
 							try {
 								nodeToRemove = getNode(instanceName + "." + removeNodeEdit.getVariable().getName());
-							} catch (ProbNodeNotFoundException e1) {
+							} catch (NodeNotFoundException e1) {
 								e1.printStackTrace();
 							}
-							newEdit = new CRemoveProbNodeEdit(this, nodeToRemove);
+							newEdit = new CRemoveNodeEdit(this, nodeToRemove);
 						} else if(simpleEdit instanceof NodeStateEdit)
 						{
 							NodeStateEdit nodeStateEdit = (NodeStateEdit)simpleEdit;
 							Node nodeInInstance = null;
 							try {
-								nodeInInstance = getNode(instanceName + "." + nodeStateEdit.getProbNode().getName());
-							} catch (ProbNodeNotFoundException e1) {
+								nodeInInstance = getNode(instanceName + "." + nodeStateEdit.getNode().getName());
+							} catch (NodeNotFoundException e1) {
 								e1.printStackTrace();
 							}
 							newEdit = new NodeStateEdit(nodeInInstance,
@@ -546,7 +545,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 						{
 							try {
 								SetPotentialEdit setPotentialEdit = (SetPotentialEdit)simpleEdit;
-								Node probNode = getNode(instanceName + "." + setPotentialEdit.getProbNode().getName());
+								Node node = getNode(instanceName + "." + setPotentialEdit.getNode().getName());
 								if(setPotentialEdit.getNewPotential() != null)
 								{
 									Potential newPotential = setPotentialEdit.getNewPotential().copy();
@@ -559,12 +558,12 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 				                        Variable utilityVariable = newPotential.getUtilityVariable();
 			                            newPotential.replaceVariable (utilityVariable, getVariable(instanceName + "." + utilityVariable.getName()));
 				                    }									
-									newEdit = new SetPotentialEdit(probNode, newPotential);
+									newEdit = new SetPotentialEdit(node, newPotential);
 								}else
 								{
-									newEdit = new SetPotentialEdit(probNode, setPotentialEdit.getNewPotentialType());
+									newEdit = new SetPotentialEdit(node, setPotentialEdit.getNewPotentialType());
 								}
-							} catch (ProbNodeNotFoundException e1) {
+							} catch (NodeNotFoundException e1) {
 								e1.printStackTrace();
 							}
 							
@@ -589,7 +588,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
                                 }                                   
 								
 								newEdit = new PotentialChangeEdit(this, oldPotential, newPotential);
-							} catch (ProbNodeNotFoundException e1) {
+							} catch (NodeNotFoundException e1) {
 								e1.printStackTrace();
 							}
 						}else if(simpleEdit instanceof ICIPotentialEdit)
@@ -603,7 +602,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 								try {
 									variable = getVariable(instanceName + "." + iciPotentialEdit.getVariable().getName());
 									newEdit = new ICIPotentialEdit(this, potential, variable, iciPotentialEdit.getNoisyParameters());
-								} catch (ProbNodeNotFoundException e1) {
+								} catch (NodeNotFoundException e1) {
 									e1.printStackTrace();
 								}
 							}else
@@ -654,7 +653,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 				instanceVariables.add(getVariable(instanceName + "." + variable.getName()));
 			}
 			oldPotential = findPotentialByVariables(instanceVariables);
-		} catch (ProbNodeNotFoundException e) {
+		} catch (NodeNotFoundException e) {
 			e.printStackTrace();
 		}
 		return oldPotential;

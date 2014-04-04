@@ -31,7 +31,7 @@ public class AtLeastOneEffectivenessPotential extends PNConstraint {
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
 	    List<Node> effectivenessNodes = 
-			probNet.getProbNodes(NodeType.EFFECTIVENESS);
+			probNet.getNodes(NodeType.EFFECTIVENESS);
 		if (effectivenessNodes.size() == 0) {
 			return false;
 		}

@@ -9,6 +9,7 @@
 
 package org.openmarkov.core.action;
 
+
 import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.NodeType;
@@ -16,68 +17,68 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 
+	
+
 @SuppressWarnings("serial")
 public class RemoveNodeEdit extends SimplePNEdit implements UsesVariable {
 
-	// Attributes
-	/** Node associated to variable */
-	private Node probNode;
-	
-	private NodeType kindOfNode;
-	
-	protected Variable variable;
-	
-	private Logger logger;
-	
-	// Constructor
-	/** @param probNet <code>ProbNet</code>
-	 * @param variable <code>Variable</code> */
-	public RemoveNodeEdit(ProbNet probNet, Variable variable) {
-		super(probNet);
-		this.variable = variable;
-		probNode = null;
-		kindOfNode = null;
-		this.logger = Logger.getLogger(RemoveNodeEdit.class);
-	}
-
-	// Methods
-	@Override
-	public void doEdit() throws DoEditException {
-		if (variable != null) {
-			probNode = probNet.getNode(variable);
-			if (probNode == null) {
-				throw new DoEditException("Trying to access a null node");
-			}
-			kindOfNode = probNode.getNodeType();
-			probNet.removeNode(probNode);
-		} else {
-			throw new DoEditException("Trying to access a null variable");
+		// Attributes
+		/** Node associated to variable */
+		private Node node;
+		
+		protected Variable variable;
+		
+		
+		// Constructor
+		/** @param probNet <code>ProbNet</code>
+		 * @param variable <code>Variable</code> */
+		public RemoveNodeEdit(ProbNet probNet, Node node) {
+			super(probNet);
+			this.variable = node.getVariable();
+			this.node = node;
 		}
-	}
-	
-	public void undo() {
-		super.undo();
-		if (variable != null) {
-			try {
-				probNet.addNode(variable, kindOfNode);
-			} catch (Exception e) {
-				logger.fatal (e);
-			}
+		
+		public RemoveNodeEdit(ProbNet probNet, Variable variable) {
+			super(probNet);
+			this.variable = variable;
+			this.node = probNet.getNode(variable);
 		}
-	}
 
-	/** @return nodeType <code>NodeType</code> */
-	public NodeType getNodeType() {
-		return kindOfNode;
-	}
+		// Methods
+		@Override
+		public void doEdit() throws DoEditException {
+			if (node == null) {
+					throw new DoEditException("Trying to access a null node");
+			}
+			probNet.removeNode(node);
+			
+		}
+		
+		public void undo() {
+			super.undo();
+			probNet.addNode(node);
+		}
 
-	/** @return variable <code>Variable</code> */
-	public Variable getVariable() {
-		return variable;
-	}
+		/** @return nodeType <code>NodeType</code> */
+		public NodeType getNodeType() {
+			return node.getNodeType();
+		}
 
-	public String toString() {
-		return new String("RemoveNodeEdit: " + variable);
-	}
+		/** @return variable <code>Variable</code> */
+		public Variable getVariable() {
+			return variable;
+		}
+
+		public String toString() {
+			StringBuffer buffer = new StringBuffer("RemoveNodeEdit: ");
+			if (variable == null) {
+				buffer.append("null");
+			} else {
+				buffer.append(variable.getName());
+			}
+			return buffer.toString();
+		}
+
+	
 
 }

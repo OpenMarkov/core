@@ -200,13 +200,13 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 *               B<sub>i</sub> in the potential (other than A)
 	 * @param potential
 	 *            . <code>Potential</code>
-	 * @return The <code>ProbNode</code> in which the <code>potential</code>
+	 * @return The <code>Node</code> in which the <code>potential</code>
 	 *         received has been added.
 	 */
 	// TODO addPotential should be common to all ProbNet's
 	public void addPotential(ProbNet originalNet, Potential potential) {
 		List<Variable> potentialVariables = potential.getVariables();
-		// the probNode where the potential will be stored
+		// the node where the potential will be stored
 		// TODO hacerlo con edits
 		if (potential.getVariables().size() == 0) {
 			// it is a constant potential;
@@ -215,7 +215,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 		} else {
 			// the potential depends on several variables
 			for (Variable variable : potentialVariables) {
-				// if (originalNet.getProbNode(variable)!=null){
+				// if (originalNet.getNode(variable)!=null){
 				if (getNode(variable) == null) {
 					Node node = originalNet.getNode(variable);
 					NodeType nodeType = node.getNodeType();
@@ -270,23 +270,23 @@ public class MarkovDecisionNetwork extends ProbNet {
 	// TODO addPotential should be common to all ProbNet's
 	public Node addPotential(Potential potential) {
 		int numVariables = potential.getNumVariables();
-		Node probNode = null;
+		Node node = null;
 		if (numVariables >= 1) {
 			if (numVariables > 1) { // creates a clique using undirected links
 				addLinks(potential);
 			}
 			// add the potential to the corresponding node in the MarkovNet
-			probNode = getNode(potential.getVariable(0));
-			probNode.addPotential(potential);
+			node = getNode(potential.getVariable(0));
+			node.addPotential(potential);
 		} else { // The potential is a constant.
 			/*TablePotential constantPotential = (TablePotential) potential;
 			double constant = constantPotential.values[0];
-			probNode = getChanceNode();
+			node = getChanceNode();
 			PotentialRole potentialRole = constantPotential.getPotentialRole();
 			if (potentialRole != PotentialRole.UTILITY) {
 				if (Math.abs(constant - 1.0) > 0.00000001) { // Constant != 1.0
 					// Gets randomly a chance node with a potential ...
-					TablePotential firstPotential = (TablePotential) probNode
+					TablePotential firstPotential = (TablePotential) node
 							.getPotentials().get(0);
 					// ... and multiplies the first potential by the constant.
 					double[] table = firstPotential.values;
@@ -295,24 +295,24 @@ public class MarkovDecisionNetwork extends ProbNet {
 					}
 				}
 			} else {
-				probNode.addPotential(potential);
+				node.addPotential(potential);
 			}*/
 			constantPotentials.add((TablePotential) potential);
 		}
-		return probNode;
+		return node;
 	}
 
 	/**
-	 * @return The first chance node in the partial order. <code>ProbNode</code>
+	 * @return The first chance node in the partial order. <code>Node</code>
 	 */
 	private Node getChanceNode() {
 		for (List<Variable> array : partialOrder.getOrder()) {
 			for (Variable variable : array) {
-				Node probNode = getNode(variable);
-				if ((probNode != null)
-						&& (probNode.getNodeType() == NodeType.CHANCE)
-						&& (probNode.getPotentials().size() != 0)) {
-					return probNode;
+				Node node = getNode(variable);
+				if ((node != null)
+						&& (node.getNodeType() == NodeType.CHANCE)
+						&& (node.getPotentials().size() != 0)) {
+					return node;
 				}
 			}
 		}
@@ -352,7 +352,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 * and add them and their potential to this MarkovDecisionNetwork. int
 	 * numVariablesToRemove = chanceVariables.size() + decisionVariables.size();
 	 * for (int i = 0; i < numVariablesToRemove; i++) { // gets the node
-	 * ProbNode node = getNextNodeToDelete(idCopy); NodeType nodeType =
+	 * Node node = getNextNodeToDelete(idCopy); NodeType nodeType =
 	 * node.getNodeType(); Variable variable = node.getVariable(); // adds the
 	 * node to this MarkovDecisionNetwork addVariable(variable, nodeType); //
 	 * adds decision nodes and its parents to partialOrder if (nodeType ==
@@ -361,7 +361,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 * partialOrder.add(parentsOfDecisions.get(index)); } ArrayList<Variable>
 	 * oneDecisionArray = new ArrayList<Variable>();
 	 * oneDecisionArray.add(variable); partialOrder.add(oneDecisionArray); }
-	 * idCopy.removeProbNode(node); // remove from influenceDiagram } if
+	 * idCopy.removeNode(node); // remove from influenceDiagram } if
 	 * (unobservableVariables.size() > 0) {
 	 * partialOrder.add(unobservableVariables); }
 	 * 
@@ -382,7 +382,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 * 
 	 * @param influenceDiagram
 	 *            <code>InfluenceDiagram</code>
-	 * @return A <code>ProbNode</code> without parents or without children.
+	 * @return A <code>Node</code> without parents or without children.
 	 *         <p>
 	 *         It first tries to get a chance node;
 	 * @argCondition The influence diagram contains at least one chance or
@@ -390,20 +390,20 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 * @throws <code>WrongGraphStructureException</code>
 	 */
 	/*
-	 * private ProbNode getNextNodeToDelete(ProbNet influenceDiagram) throws
+	 * private Node getNextNodeToDelete(ProbNet influenceDiagram) throws
 	 * WrongGraphStructureException { // looks for a chance node
-	 * ArrayList<ProbNode> chanceNodes =
-	 * influenceDiagram.getProbNodes(NodeType.CHANCE); for (ProbNode probNode :
-	 * chanceNodes) { Node node = probNode.getNode(); if ((node.getNumChildren()
-	 * == 0) || (node.getNumParents() == 0)) { return probNode; } } // looks for
-	 * a decision node ArrayList<ProbNode> decisionNodes =
-	 * influenceDiagram.getProbNodes(NodeType.DECISION); ProbNode decisionNode =
-	 * null; for (ProbNode probNode : decisionNodes) { if
-	 * (probNode.getNode().getNumParents() == 0) { if (decisionNode != null) {
+	 * ArrayList<Node> chanceNodes =
+	 * influenceDiagram.getNodes(NodeType.CHANCE); for (Node node :
+	 * chanceNodes) { Node node = node.getNode(); if ((node.getNumChildren()
+	 * == 0) || (node.getNumParents() == 0)) { return node; } } // looks for
+	 * a decision node ArrayList<Node> decisionNodes =
+	 * influenceDiagram.getNodes(NodeType.DECISION); Node decisionNode =
+	 * null; for (Node node : decisionNodes) { if
+	 * (node.getNode().getNumParents() == 0) { if (decisionNode != null) {
 	 * //More than two decision without parents throw new
 	 * WrongGraphStructureException(
 	 * "No partial order for decision nodes in this " + "influence diagram"); }
-	 * decisionNode = probNode; } } return decisionNode; }
+	 * decisionNode = node; } } return decisionNode; }
 	 */
 	/**
 	 * @param chanceVariables
@@ -439,11 +439,11 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 * influenceDiagram, ArrayList<Variable> decisionVariables) {
 	 * ArrayList<ArrayList<Variable>> parentsVariables = new
 	 * ArrayList<ArrayList<Variable>>(); for(Variable decision :
-	 * decisionVariables) { // Remove decision nodes from node parents ProbNode
-	 * probNode =influenceDiagram.getProbNode(decision); ArrayList<Node>
-	 * nodeParents = probNode.getNode().getParents(); ArrayList<Node>
+	 * decisionVariables) { // Remove decision nodes from node parents Node
+	 * node =influenceDiagram.getNode(decision); ArrayList<Node>
+	 * nodeParents = node.getNode().getParents(); ArrayList<Node>
 	 * nodeParentCloned = (ArrayList<Node>)nodeParents.clone(); for (Node node :
-	 * nodeParentCloned) { if (((ProbNode)node.getObject()).getNodeType() ==
+	 * nodeParentCloned) { if (((Node)node.getObject()).getNodeType() ==
 	 * NodeType.DECISION) { nodeParents.remove(node); } } ArrayList<Variable>
 	 * parentVariables = influenceDiagram.getVariables(nodeParents);
 	 * parentsVariables.add(parentVariables); } return parentsVariables; }
@@ -487,15 +487,15 @@ public class MarkovDecisionNetwork extends ProbNet {
 
 	@Override
 	public Node removePotential(Potential potential) {
-		Node probNode;
+		Node node;
 		if (potential.getVariables().size()>0){
-			probNode = super.removePotential(potential);
+			node = super.removePotential(potential);
 		}
 		else{
 			constantPotentials.remove(potential);
-			probNode = null;
+			node = null;
 		}
-		return probNode;
+		return node;
 	}
 
 

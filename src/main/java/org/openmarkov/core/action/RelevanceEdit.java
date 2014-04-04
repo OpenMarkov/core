@@ -32,28 +32,28 @@ public class RelevanceEdit extends SimplePNEdit {
 	/**
 	 * The edited node
 	 */
-	private Node probNode = null;
+	private Node node = null;
 	/**
 	 * Creates a new <code>RelevanceEdit</code> with the node and new relevance
 	 * specified.
-	 * @param probNode the node that will be edited
+	 * @param node the node that will be edited
 	 * @param newRelevance the new relevance
 	 */
-	public RelevanceEdit (Node probNode, double newRelevance){
-		super(probNode.getProbNet());
-		this.lastRelevance = probNode.getRelevance();
+	public RelevanceEdit (Node node, double newRelevance){
+		super(node.getProbNet());
+		this.lastRelevance = node.getRelevance();
 		this.newRelevance = newRelevance;
-		this.probNode = probNode;
+		this.node = node;
 	}	
 	
 	@Override
 	public void doEdit() throws DoEditException {
-		probNode.setRelevance(newRelevance);
+		node.setRelevance(newRelevance);
 	}
 	@Override
 	public void undo() {
 		super.undo();
-		probNode.setRelevance(lastRelevance);
+		node.setRelevance(lastRelevance);
 	}
 	/**
 	 * Gets the new relevance after the edition

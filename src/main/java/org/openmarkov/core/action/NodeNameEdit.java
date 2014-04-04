@@ -40,20 +40,20 @@ public class NodeNameEdit extends SimplePNEdit {
 	/**
 	 * Creates a new <code>NodeNameEdit</code> with the node and new name 
 	 * specified.
-	 * @param probNode the node that will be modified
+	 * @param node the node that will be modified
 	 * @param newName the new name of the node
 	 */
-	public NodeNameEdit (Node probNode, String newName){
-		super(probNode.getProbNet());
+	public NodeNameEdit (Node node, String newName){
+		super(node.getProbNet());
 		variables = new ArrayList<Variable>();
-		for(Variable variable : probNode.getProbNet().getVariables())
+		for(Variable variable : node.getProbNet().getVariables())
 		{
-			if(variable.getBaseName().equals(probNode.getVariable().getBaseName()))
+			if(variable.getBaseName().equals(node.getVariable().getBaseName()))
 			{
 				variables.add(variable);
 			}
 		}
-		this.previousName = probNode.getVariable().getBaseName();
+		this.previousName = node.getVariable().getBaseName();
 		this.newName = newName;
 	}	
 	

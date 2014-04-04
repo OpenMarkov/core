@@ -32,27 +32,27 @@ public class PrecisionEdit extends SimplePNEdit {
 	/**
 	 * The edited node
 	 */
-	private Node probNode = null;
+	private Node node = null;
 	/**
 	 * Creates a new <code>PurposeEdit</code> with the node and its new purpose.
-	 * @param probNode the edited node
+	 * @param node the edited node
 	 * @param newPurpose the new purpose
 	 */
-	public PrecisionEdit (Node probNode, double newPrecision){
-		super(probNode.getProbNet());
-		this.lastPrecision = probNode.getVariable().getPrecision();
+	public PrecisionEdit (Node node, double newPrecision){
+		super(node.getProbNet());
+		this.lastPrecision = node.getVariable().getPrecision();
 		this.newPrecision = newPrecision;
-		this.probNode = probNode;
+		this.node = node;
 	}	
 	
 	@Override
 	public void doEdit() throws DoEditException {
-		probNode.getVariable().setPrecision(newPrecision);
+		node.getVariable().setPrecision(newPrecision);
 	}
 	@Override
 	public void undo() {
 		super.undo();
-		probNode.getVariable().setPrecision(lastPrecision);
+		node.getVariable().setPrecision(lastPrecision);
 	}
 	/**
 	 * Gets the new purpose after the edition

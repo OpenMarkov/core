@@ -60,8 +60,8 @@ public class CRemoveLinkEdit extends CompoundPNEdit {
 	}
 
 	private void generateEditsDirectedLink() {
-		Node probNode2 = probNet.getNode(variable2);
-		List<Potential> potentials = probNode2.getPotentials();
+		Node node2 = probNet.getNode(variable2);
+		List<Potential> potentials = node2.getPotentials();
 		for (Potential potential : potentials) {
 		    List<Variable> potentialVariables = potential.getVariables();
 			if (potentialVariables.contains(variable1)) {

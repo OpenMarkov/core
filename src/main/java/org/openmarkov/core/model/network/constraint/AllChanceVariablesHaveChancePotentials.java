@@ -30,7 +30,7 @@ public class AllChanceVariablesHaveChancePotentials extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-	    List<Node> chanceNodes = probNet.getProbNodes(NodeType.CHANCE);
+	    List<Node> chanceNodes = probNet.getNodes(NodeType.CHANCE);
 		for (Node chanceNode : chanceNodes) {
 			Variable variable = chanceNode.getVariable();
 			List<Potential> potentialsNode = chanceNode.getPotentials();

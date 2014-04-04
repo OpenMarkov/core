@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.inference.PartialOrder;
 import org.openmarkov.core.model.graph.Link;
@@ -152,7 +152,7 @@ public class DecisionTreeBuilder
 		            }
 		        }
             }
-        }catch(ProbNodeNotFoundException ignoreException)
+        }catch(NodeNotFoundException ignoreException)
         {
             ignoreException.printStackTrace ();
         }
@@ -330,13 +330,13 @@ public class DecisionTreeBuilder
         return svTreeNode;
    }
     
-    private static ProbNet applyRestrictionsAndReveal(ProbNet probNet, Node probNode, State state, ProbNet originalProbNet)
+    private static ProbNet applyRestrictionsAndReveal(ProbNet probNet, Node node, State state, ProbNet originalProbNet)
     {
         ProbNet probNetCopy = probNet.copy ();
         
-        for (Link<Node> link : probNet.getLinks (probNode))
+        for (Link<Node> link : probNet.getLinks (node))
         {
-            if(link.getNode1 ().equals (probNode)) // Our node is the source node
+            if(link.getNode1 ().equals (node)) // Our node is the source node
             {
                 Node destinationNode = probNetCopy.getNode (link.getNode2 ().getVariable ());
                 if(destinationNode.getNodeType () == NodeType.CHANCE)
@@ -378,7 +378,7 @@ public class DecisionTreeBuilder
 //                    }else if(nonRestrictedStates.size () == 1) // Remove variables with a single variable
 //                    {
 //                        ProbNet probNetWithoutSingleStateVariable = probNetCopy.copy ();
-//                        probNetWithoutSingleStateVariable.removeProbNode (probNetWithoutSingleStateVariable.getProbNode (destinationNode.getVariable ()));
+//                        probNetWithoutSingleStateVariable.removeNode (probNetWithoutSingleStateVariable.getNode (destinationNode.getVariable ()));
 //                        probNetCopy = applyRestrictionsAndReveal(probNetWithoutSingleStateVariable, destinationNode, nonRestrictedStates.get (0), originalProbNet);
                     }else if(nonRestrictedStates.size () < destinationNode.getVariable ().getStates ().length)
                     {
@@ -396,18 +396,18 @@ public class DecisionTreeBuilder
             }
          } 
         
-        probNetCopy.removeNode (probNetCopy.getNode (probNode.getVariable ()));
+        probNetCopy.removeNode (probNetCopy.getNode (node.getVariable ()));
         return probNetCopy;
     }
 
     public static List<Node> getNeverObservedVariables (ProbNet probNet)
     {
         List<Node> neverObservedVariables = new ArrayList<> ();
-        for (Node probNode : probNet.getProbNodes (NodeType.CHANCE))
+        for (Node node : probNet.getNodes (NodeType.CHANCE))
         {
-            if (probNet.getParents (probNode).isEmpty ())
+            if (probNet.getParents (node).isEmpty ())
             {
-                neverObservedVariables.add (probNode);
+                neverObservedVariables.add (node);
             }
         }
         return neverObservedVariables;    

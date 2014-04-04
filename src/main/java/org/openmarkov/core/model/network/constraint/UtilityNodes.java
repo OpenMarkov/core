@@ -30,7 +30,7 @@ public class UtilityNodes extends PNConstraint {
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
 	    List<Node> utilityNodes = 
-			probNet.getProbNodes(NodeType.UTILITY);
+			probNet.getNodes(NodeType.UTILITY);
 		int numUtilityNodes = utilityNodes.size();
 		if (numUtilityNodes == 0) {
 			return false;

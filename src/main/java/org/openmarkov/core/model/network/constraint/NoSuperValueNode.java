@@ -26,9 +26,9 @@ public class NoSuperValueNode extends PNConstraint {
 	
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-	    List<Node> probNodes = probNet.getNodes();
-		for (Node probNode : probNodes) {
-			NodeType nodeType = probNode.getNodeType();
+	    List<Node> nodes = probNet.getNodes();
+		for (Node node : nodes) {
+			NodeType nodeType = node.getNodeType();
 			if ((nodeType == NodeType.SV_PRODUCT) || 
 					(nodeType == NodeType.SV_SUM)) {
 				return false;

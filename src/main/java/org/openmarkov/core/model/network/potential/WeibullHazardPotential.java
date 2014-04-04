@@ -16,7 +16,7 @@ import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -78,14 +78,14 @@ public class WeibullHazardPotential extends RegressionPotential {
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role.
 	 * 
-	 * @param probNode
-	 *            . <code>ProbNode</code>
+	 * @param node
+	 *            . <code>Node</code>
 	 * @param variables
 	 *            . <code>List</code> of <code>Variable</code>.
 	 * @param role
 	 *            . <code>PotentialRole</code>.
 	 */
-	public static boolean validate(Node probNode, List<Variable> variables, PotentialRole role) {
+	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		return variables.get(0).isTemporal()
 				&& variables.get(0).getVariableType() == VariableType.FINITE_STATES
 				&& variables.get(0).getNumStates() == 2;
@@ -249,7 +249,7 @@ public class WeibullHazardPotential extends RegressionPotential {
 	}
 
 	@Override
-	public void shift(ProbNet probNet, int timeDifference) throws ProbNodeNotFoundException {
+	public void shift(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
 		super.shift(probNet, timeDifference);
 		if (timeVariable != null) {
 			timeVariable = probNet.getShiftedVariable(timeVariable, timeDifference);

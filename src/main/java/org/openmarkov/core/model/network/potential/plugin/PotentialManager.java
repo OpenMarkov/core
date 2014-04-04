@@ -139,7 +139,7 @@ public class PotentialManager
      * Returns all potentials' names applicable to the given variable list and potential role. 
      * @return a list of potentials' names.
      */
-    public final  List<String> getFilteredPotentials (Node probNode)
+    public final  List<String> getFilteredPotentials (Node node)
     {
         List<String> filteredPotentials = new ArrayList<String> ();
         
@@ -149,7 +149,7 @@ public class PotentialManager
             try
             {
                 validateMethod = potentials.get (potentialName).getMethod ("validate", Node.class, List.class, PotentialRole.class);
-                if((Boolean)validateMethod.invoke (null, probNode, probNode.getPotentials ().get (0).getVariables (), probNode.getPotentials ().get (0).getPotentialRole ()))
+                if((Boolean)validateMethod.invoke (null, node, node.getPotentials ().get (0).getVariables (), node.getPotentials ().get (0).getPotentialRole ()))
                 {
                     filteredPotentials.add (potentialName);
                 }                

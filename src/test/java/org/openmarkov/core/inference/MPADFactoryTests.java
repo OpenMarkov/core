@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.NetsFactory;
 import org.openmarkov.core.model.network.ProbNet;
@@ -79,7 +79,7 @@ public class MPADFactoryTests {
 			variablesUtil = new ArrayList<>();
 			try {
 				variablesUtil.add(expandedNetwork.getVariable("Treatment"));
-			} catch (ProbNodeNotFoundException e) {
+			} catch (NodeNotFoundException e) {
 				e.printStackTrace();
 			}
 			variablesUtil.add(expandedNetwork.decisionCriterion);
@@ -197,7 +197,7 @@ public class MPADFactoryTests {
 			variablesUtil.add(expandedNetwork.decisionCriterion);
 			variablesUtil.add(expandedNetwork.getVariable(nameStateVariable(auxPot.getUtilityVariable())));
 
-		} catch (ProbNodeNotFoundException e1) {
+		} catch (NodeNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}

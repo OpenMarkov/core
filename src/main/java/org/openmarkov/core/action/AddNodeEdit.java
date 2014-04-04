@@ -16,7 +16,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 
 /**
- * <code>AddProbNodeEdit</code> is a edit that allow add a node to
+ * <code>AddNodeEdit</code> is a edit that allow add a node to
  * <code>ProbNet</code> object.
  * @version 1 21/12/10
  * @author mpalacios
@@ -48,7 +48,7 @@ public class AddNodeEdit extends SimplePNEdit
     protected Node       newNode;
 
     /**
-     * Creates a new <code>AddProbNodeEdit</code> with the network where the new
+     * Creates a new <code>AddNodeEdit</code> with the network where the new
      * new node will be added and basic information about it.
      * @param probNet the <code>ProbNet</code> where the new node will be added.
      * @param variable the variable contained in the new node
@@ -68,7 +68,7 @@ public class AddNodeEdit extends SimplePNEdit
     }
     
     /**
-     * Creates a new <code>AddProbNodeEdit</code> with the network where the new
+     * Creates a new <code>AddNodeEdit</code> with the network where the new
      * new node will be added and basic information about it.
      * @param probNet the <code>ProbNet</code> where the new node will be added.
      * @param variable the variable contained in the new node
@@ -85,10 +85,10 @@ public class AddNodeEdit extends SimplePNEdit
     @Override
     public void doEdit ()
     {
-        // Adds the new variable to network ( creates a probNode instance )
+        // Adds the new variable to network ( creates a node instance )
         newNode = probNet.addNode (variable, nodeType);
         // TODO revisar si es conveniente utilizar una constraint
-        // Sets a uniformPotential for the new probNode
+        // Sets a uniformPotential for the new node
         // Decision node has no potential when is created
         if (nodeType != NodeType.DECISION)
         {
@@ -110,8 +110,8 @@ public class AddNodeEdit extends SimplePNEdit
         probNet.removeNode (newNode);
     }
 
-    /** @return newNode the new <code>ProbNode</code> added */
-    public Node getProbNode ()
+    /** @return newNode the new <code>Node</code> added */
+    public Node getNode ()
     {
         return newNode;
     }
@@ -132,17 +132,17 @@ public class AddNodeEdit extends SimplePNEdit
 
     public String getPresentationName ()
     {
-        return "Edit.AddProbNodeEdit";
+        return "Edit.AddNodeEdit";
     }
 
     public String getUndoPresentationName ()
     {
-        return "Edit.AddProbNodeEdit.Undo";
+        return "Edit.AddNodeEdit.Undo";
     }
 
     public String getRedoPresentationName ()
     {
-        return "Edit.AddProbNodeEdit.Redo";
+        return "Edit.AddNodeEdit.Redo";
     }
 
     public void redo ()

@@ -61,12 +61,12 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 	}
 
 	public void generateEdits() {
-		Node probNode = probNet.getNode(variable);
+		Node node = probNet.getNode(variable);
 
 		// gets neighbors of this node
-		parents = probNet.getParents(probNode);
-		children = probNet.getChildren(probNode);
-		siblings = probNet.getSiblings(probNode);
+		parents = probNet.getParents(node);
+		children = probNet.getChildren(node);
+		siblings = probNet.getSiblings(node);
 		
 		// collect potentials of this node ...
 		List<TablePotential> potentialsVariable = new ArrayList<>();
@@ -101,15 +101,15 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 			}
 		}
 		
-		// remove links between probNode and its parents, children and siblings
+		// remove links between node and its parents, children and siblings
 		for (Node parent : parents) {
-			addEdit(new RemoveLinkEdit(probNet, parent.getVariable(), probNode.getVariable(), true));
+			addEdit(new RemoveLinkEdit(probNet, parent.getVariable(), node.getVariable(), true));
 		}
 		for (Node child : children) {
-			addEdit(new RemoveLinkEdit(probNet,	probNode.getVariable(), child.getVariable(), true));
+			addEdit(new RemoveLinkEdit(probNet,	node.getVariable(), child.getVariable(), true));
 		}
 		for (Node sibling : siblings) {
-			addEdit(new RemoveLinkEdit(probNet, sibling.getVariable(), probNode.getVariable(), false));
+			addEdit(new RemoveLinkEdit(probNet, sibling.getVariable(), node.getVariable(), false));
 		}
 
 		// generate edit related to remove the variable

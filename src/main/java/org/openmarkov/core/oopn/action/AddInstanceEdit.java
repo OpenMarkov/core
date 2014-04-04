@@ -23,7 +23,7 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
@@ -65,27 +65,27 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
 		// Calculate top left corner of net
 		double topCorner = Double.POSITIVE_INFINITY;
 		double leftCorner = Double.POSITIVE_INFINITY;
-		for(Node probNode : classNet.getNodes())
+		for(Node node : classNet.getNodes())
 		{
-			if(probNode.getCoordinateX () < leftCorner)
+			if(node.getCoordinateX () < leftCorner)
 			{
-				leftCorner = probNode.getCoordinateX ();
+				leftCorner = node.getCoordinateX ();
 			}
-			if(probNode.getCoordinateY () < topCorner)
+			if(node.getCoordinateY () < topCorner)
 			{
-				topCorner = probNode.getCoordinateY ();
+				topCorner = node.getCoordinateY ();
 			}
 		}
 		
 		// Add nodes to the probNet class
-		for(Node probNode : classNet.getNodes())
+		for(Node node : classNet.getNodes())
 		{
-			Variable variable = new Variable (probNode.getVariable ());
+			Variable variable = new Variable (node.getVariable ());
 	        variable.setName (instanceName + "." + variable.getName());	
-	        Point2D.Double position = new Point2D.Double (probNode.getCoordinateX () - leftCorner + cursorPositon.getX(),
-	                probNode.getCoordinateY () - topCorner + cursorPositon.getY());
+	        Point2D.Double position = new Point2D.Double (node.getCoordinateX () - leftCorner + cursorPositon.getX(),
+	                node.getCoordinateY () - topCorner + cursorPositon.getY());
 	        
-	        edits.add (new AddNodeEdit (oopNet, variable, probNode.getNodeType (), position));			
+	        edits.add (new AddNodeEdit (oopNet, variable, node.getNodeType (), position));			
 		}
 	    // Apply node generation edits
         for (PNEdit edit : edits)
@@ -113,7 +113,7 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
                         oopNet.getVariable(instanceName + "." + originalDestinationNodeName),
                         link.isDirected ()));
             }
-            catch (ProbNodeNotFoundException e)
+            catch (NodeNotFoundException e)
             {/* Can not possibly happen */
             }
         }

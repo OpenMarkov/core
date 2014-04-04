@@ -29,21 +29,21 @@ import org.openmarkov.core.model.network.potential.operation.Util;
 @SuppressWarnings("serial")
 public class VariableTypeEdit extends SimplePNEdit {
 	// private ProbNet probNet;
-	private Node probNode;
+	private Node node;
 	private VariableType newType;
 	private VariableType currentType;
 
-	public VariableTypeEdit(Node probNode, VariableType newType) {
-		super(probNode.getProbNet());
-		this.probNode = probNode;
+	public VariableTypeEdit(Node node, VariableType newType) {
+		super(node.getProbNet());
+		this.node = node;
 		this.newType = newType;
-		this.currentType = probNode.getVariable().getVariableType();
+		this.currentType = node.getVariable().getVariableType();
 
 	}
 
 	@Override
 	public void doEdit() throws DoEditException {
-		probNode.getVariable().setVariableType(newType);
+		node.getVariable().setVariableType(newType);
 		if (currentType != newType) {
 			if ((newType.compareTo(VariableType.DISCRETIZED) == 0 && currentType
 					.compareTo(VariableType.FINITE_STATES) == 0)
@@ -54,8 +54,8 @@ public class VariableTypeEdit extends SimplePNEdit {
 				// from numeric to finite states or discretized or vice versa
 				//if child is utility to potential to be set depends on the type of the other parents
 				//it is not always uniform
-				setUniformPotential2ProbNode(probNode);
-				for (Node child : probNet.getChildren(probNode)) {
+				setUniformPotential2Node(node);
+				for (Node child : probNet.getChildren(node)) {
 					if (child.getNodeType() == NodeType.UTILITY) {
 						List<Potential> newPotentials = new ArrayList<Potential>();
 						if (child.onlyNumericalParents()) {// utility and numerical parents sum
@@ -80,7 +80,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 						child.setPotentials (newPotentials);
 					} else {
 						//if child is not utility always change potential to Uniform
-						setUniformPotential2ProbNode(child);
+						setUniformPotential2Node(child);
 					}
 				}
 			}
@@ -88,40 +88,40 @@ public class VariableTypeEdit extends SimplePNEdit {
 		if (currentType.compareTo(VariableType.NUMERIC) == 0 ) // if current type
 			// is numeric
 		{
-			probNode.getVariable().setStates(
-					probNode.getProbNet().getDefaultStates());
+			node.getVariable().setStates(
+					node.getProbNet().getDefaultStates());
 			List<Variable> variables = new ArrayList<Variable>();
-			if (probNode.getNodeType() != NodeType.UTILITY) {
-				variables.add(probNode.getVariable());
-			}
-			for (Node node : probNet.getParents(probNode)) {
+			if (node.getNodeType() != NodeType.UTILITY) {
 				variables.add(node.getVariable());
 			}
+			for (Node parent : probNet.getParents(node)) {
+				variables.add(parent.getVariable());
+			}
 			UniformPotential uniformPotential = new UniformPotential(variables,
-					probNode.getPotentials().get(0).getPotentialRole());
+					node.getPotentials().get(0).getPotentialRole());
 			List<Potential> potentials = new ArrayList<Potential>(1);
 			potentials.add(uniformPotential);
-			probNode.setPotentials(potentials);
-			probNode.setUniformPotential();
+			node.setPotentials(potentials);
+			node.setUniformPotential();
 		}
 
-		resetLink(probNode);
+		resetLink(node);
 
 	}
 
 	@Override
 	public void undo() {
 		super.undo();
-		probNode.getVariable().setVariableType(currentType);
+		node.getVariable().setVariableType(currentType);
 	}
 
 	public VariableType getNewVariableType() {
 		return newType;
 	}
 
-	public Node getProbNode() {
+	public Node getNode() {
 
-		return this.probNode;
+		return this.node;
 	}
 
 	/****
@@ -148,7 +148,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 		}
 	}
 	
-	public void setUniformPotential2ProbNode(Node node) {
+	public void setUniformPotential2Node(Node node) {
 		
 	    List<Potential> newListPotentials = new ArrayList<Potential> ();
 	    List<Variable> variables = new ArrayList<Variable>();

@@ -34,7 +34,7 @@ public class NoMixedParents extends PNConstraint
     @Override
     public boolean checkProbNet (ProbNet probNet)
     {
-        List<Node> utilityNodes = probNet.getProbNodes (NodeType.UTILITY);
+        List<Node> utilityNodes = probNet.getNodes (NodeType.UTILITY);
         for (Node utilNode : utilityNodes)
         {
             boolean utilityParent = false;

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -294,7 +294,7 @@ public abstract class RegressionPotential extends Potential {
 
     @Override
     public void shift(ProbNet probNet, int timeDifference)
-            throws ProbNodeNotFoundException {
+            throws NodeNotFoundException {
         List<Variable> unshiftedVariables = new ArrayList<>(variables);
         super.shift(probNet, timeDifference);
         setCovariates(shiftCovariates(covariates, unshiftedVariables, variables));

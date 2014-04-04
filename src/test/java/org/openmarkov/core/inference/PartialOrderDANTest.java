@@ -10,7 +10,7 @@ package org.openmarkov.core.inference;
 
 import org.junit.Test;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 
 /**
  * @author manolo
@@ -20,14 +20,14 @@ public class PartialOrderDANTest {
 	
 	
 //	@Test
-	/*public void testDiabetesDAN() throws NodeNotFoundException, ProbNodeNotFoundException {
+	/*public void testDiabetesDAN() throws NodeNotFoundException, NodeNotFoundException {
 		ProbNet diabetesDAN = NetsFactory.buildDiabetesDAN();
 		PartialTemporalOrder order = new PartialTemporalOrder(diabetesDAN);
 		printOrderToGraphviz(order,"/home/manolo/testTemporalOrder.dot");
 	}*/
 	
 	@Test
-	public void testThreePhasesOfTestsDAN() throws NodeNotFoundException, ProbNodeNotFoundException {
+	public void testThreePhasesOfTestsDAN() throws NodeNotFoundException, NodeNotFoundException {
 		//ProbNet threePhasesOfTestsDAN = NetsFactory.buildThreePhasesOfTestsDAN();
 		//PartialOrderDAN order = new PartialOrderDAN(threePhasesOfTestsDAN);
 		int i = 0;

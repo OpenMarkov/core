@@ -18,13 +18,12 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -49,7 +48,7 @@ public abstract class Potential
     /** @frozen */
     protected int                  numVariables;
     /**
-     * Utility variable associated to the <code>ProbNode</code> that contains
+     * Utility variable associated to the <code>Node</code> that contains
      * this potential.
      */
     protected Variable             utilityVariable;
@@ -112,11 +111,11 @@ public abstract class Potential
     /**
      * Returns if an instance of a certain Potential type makes sense given the
      * variables and the potential role.
-     * @param probNode. <code>ProbNode</code>
+     * @param node. <code>Node</code>
      * @param variables. <code>ArrayList</code> of <code>Variable</code>.
      * @param role. <code>PotentialRole</code>.
      */
-    public static boolean validate (Node probNode, List<Variable> variables, PotentialRole role)
+    public static boolean validate (Node node, List<Variable> variables, PotentialRole role)
     {
         // Default implementation: always return true
         return true;
@@ -340,9 +339,9 @@ public abstract class Potential
      * @param timeDifference. <code>int</code>
      * @param probNet This parameter is necessary because the shifted variables
      *            are taken from the network. <code>ProbNet</code>
-     * @throws ProbNodeNotFoundException
+     * @throws NodeNotFoundException
      */
-    public void shift(ProbNet probNet, int timeDifference) throws ProbNodeNotFoundException {
+    public void shift(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
         setVariables(getShiftedVariables(probNet, timeDifference));
         if (isUtility() && getUtilityVariable().isTemporal()) {
             setUtilityVariable(probNet.getShiftedVariable(getUtilityVariable(),
@@ -386,11 +385,11 @@ public abstract class Potential
     /**
      * Returns a list with the same variables as this potential, including the
      * utility variable but shifted in time as indicated by timeDifference
-     * @throws ProbNodeNotFoundException 
+     * @throws NodeNotFoundException 
      * @argCondition The network must contain the shifted variables.
      */
     public List<Variable> getShiftedVariables(ProbNet probNet, int timeDifference)
-            throws ProbNodeNotFoundException    {
+            throws NodeNotFoundException    {
         List<Variable> shiftedVariables = new ArrayList<Variable> ();
         // also shift variables within the tree
         for (Variable variable : getVariables ())

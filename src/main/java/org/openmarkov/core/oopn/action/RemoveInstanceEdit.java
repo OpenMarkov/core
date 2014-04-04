@@ -13,7 +13,7 @@ import java.util.HashSet;
 
 import javax.swing.undo.CannotUndoException;
 
-import org.openmarkov.core.action.CRemoveProbNodeEdit;
+import org.openmarkov.core.action.CRemoveNodeEdit;
 import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.exception.DoEditException;
@@ -50,10 +50,10 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 		nodesToRemove = new HashSet<Node>();
 		linksToRemove = new HashSet<Link<Node>>();
 		instanceLinksToRemove = new HashSet<ReferenceLink>();
-		for(Node probNode : instance.getNodes())
+		for(Node node : instance.getNodes())
 		{
-			nodesToRemove.add(probNode);
-			linksToRemove.addAll(probNode.getLinks());
+			nodesToRemove.add(node);
+			linksToRemove.addAll(node.getLinks());
 		}
 		for(ReferenceLink link : ((OOPNet)probNet).getReferenceLinks())
 		{
@@ -81,9 +81,9 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 						link.isDirected()));
 		}
 
-		for(Node probNode : nodesToRemove)
+		for(Node node : nodesToRemove)
 		{
-			edits.add ( new CRemoveProbNodeEdit( probNet, probNode));
+			edits.add ( new CRemoveNodeEdit( probNet, node));
 		}		
 	}
 

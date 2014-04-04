@@ -32,24 +32,24 @@ public class SetPotentialEdit extends SimplePNEdit {
 	// private ICIModelType newICIModelType;
 	private Variable variable;
 	private Potential newPotential = null;
-	private Node probNode;
+	private Node node;
 
 	/**
 	 * Creates a new SetPotentialEdit object that sets the a new potential with
-	 * the type specified for the probNode object.
+	 * the type specified for the node object.
 	 * 
-	 * @param probNode
-	 *            The probNode that contains the potential to modify
+	 * @param node
+	 *            The node that contains the potential to modify
 	 * @param newPotentialType
 	 *            The potential type of the new potential to be created
 	 */
-	public SetPotentialEdit(Node probNode, String newPotentialType) {
-		super(probNode.getProbNet());
-		this.probNode = probNode;
-		this.variable = probNode.getVariable();
-		//if (!(probNode.getNodeType() == NodeType.DECISION && probNode
+	public SetPotentialEdit(Node node, String newPotentialType) {
+		super(node.getProbNet());
+		this.node = node;
+		this.variable = node.getVariable();
+		//if (!(node.getNodeType() == NodeType.DECISION && node
 			//	.getPolicyType() == PolicyType.OPTIMAL)) {
-			lastPotential = probNode.getPotentials().get(0);
+			lastPotential = node.getPotentials().get(0);
 	//	}
 
 		this.newPotentialType = newPotentialType;
@@ -58,19 +58,19 @@ public class SetPotentialEdit extends SimplePNEdit {
 
 	/**
 	 * SetPotentialEdit object that changes the last Potential with the
-	 * potential specified for the probNode object.
+	 * potential specified for the node object.
 	 * 
-	 * @param probNode
-	 *            The probNode that contains the potential to set.
+	 * @param node
+	 *            The node that contains the potential to set.
 	 * @param newPotentialType
 	 *            The new potential object
 	 */
-	public SetPotentialEdit(Node probNode, Potential potential) {
-		super(probNode.getProbNet());
-		this.probNode = probNode;
-		this.variable = probNode.getVariable();
-		if (probNode.getPotentials().size() != 0) {// if probNode is a decision node it could not have a potential assigned yet
-			lastPotential = probNode.getPotentials().get(0);
+	public SetPotentialEdit(Node node, Potential potential) {
+		super(node.getProbNet());
+		this.node = node;
+		this.variable = node.getVariable();
+		if (node.getPotentials().size() != 0) {// if node is a decision node it could not have a potential assigned yet
+			lastPotential = node.getPotentials().get(0);
 		}
 		
 		newPotential = potential;
@@ -82,12 +82,12 @@ public class SetPotentialEdit extends SimplePNEdit {
 	@Override
 	public void doEdit() throws DoEditException {
 		List<Variable> variables = new ArrayList<Variable>();
-		//ProbNode probNode = probNet.getProbNode(variable);
+		//Node node = probNet.getNode(variable);
 		PotentialRole role;
 		// si es un nodo de decision y la politica es optima se asume un cambio
 		// de politica optima a probabilista (de momento no se tiene en cuenta
 		// la politica determinista)
-	/*	if ((probNode.getNodeType() == NodeType.DECISION && probNode
+	/*	if ((node.getNodeType() == NodeType.DECISION && node
 				.getPolicyType() == PolicyType.OPTIMAL)) {// no tiene potencial
 															// hay que crear uno
 															// uniforme en
@@ -96,7 +96,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 															// informativos
 			role = PotentialRole.POLICY;
 			variables.add(variable);
-			for (Node node : probNode.getNode().getParents()) {// cambiando el
+			for (Node node : node.getNode().getParents()) {// cambiando el
 																// getParents
 																// por
 																// predecesores
@@ -108,7 +108,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 																// Manolo que me
 																// devuelve las
 																// variables
-				variables.add(((ProbNode) node.getObject()).getVariable());
+				variables.add(((Node) node.getObject()).getVariable());
 			}
 		} else {*/
 			variables = lastPotential.getVariables();
@@ -128,38 +128,38 @@ public class SetPotentialEdit extends SimplePNEdit {
 			// newPotential = new SameAsPrevious (probNet, variable);
 		}
 
-		if (!(probNode.getNodeType() == NodeType.DECISION && probNode
+		if (!(node.getNodeType() == NodeType.DECISION && node
 				.getPolicyType() == PolicyType.OPTIMAL)) {
-		//	probNet.getProbNode(variable).setPolicyType(PolicyType.PROBABILISTIC);
-			probNode.setPolicyType(PolicyType.PROBABILISTIC);
+		//	probNet.getNode(variable).setPolicyType(PolicyType.PROBABILISTIC);
+			node.setPolicyType(PolicyType.PROBABILISTIC);
 		}
 
 		potentials.add(newPotential);
-		//probNet.getProbNode(variable).setPotentials(potentials);
-		probNode.setPotentials(potentials);
+		//probNet.getNode(variable).setPotentials(potentials);
+		node.setPotentials(potentials);
 		// update potential with link restriction
 		if (newPotentialType == TablePotential.class.getAnnotation(
-				PotentialType.class).name() && probNode.getNodeType() != NodeType.DECISION ) {
+				PotentialType.class).name() && node.getNodeType() != NodeType.DECISION ) {
 			newPotential = (TablePotential) LinkRestrictionPotentialOperations
-					.updatePotentialByLinkRestrictions(probNode);
+					.updatePotentialByLinkRestrictions(node);
 			potentials = new ArrayList<Potential>();
 			potentials.add(newPotential);
-			probNode.setPotentials(potentials);
-			//probNet.getProbNode(variable).setPotentials(potentials);
+			node.setPotentials(potentials);
+			//probNet.getNode(variable).setPotentials(potentials);
 		}
 	}
 
 	public void undo() {
 		super.undo();
-		Node probNode = probNet.getNode(variable);
+		Node node = probNet.getNode(variable);
 		List<Potential> potentials = new ArrayList<Potential>();
 		if (lastPotential != null) {
 			potentials.add(lastPotential);
-		} else if (probNode.getNodeType() == NodeType.DECISION) {
-			probNode.setPolicyType(PolicyType.OPTIMAL);
+		} else if (node.getNodeType() == NodeType.DECISION) {
+			node.setPolicyType(PolicyType.OPTIMAL);
 
 		}
-		probNode.setPotentials(potentials);
+		node.setPotentials(potentials);
 	}
 
 	public Potential getNewPotential() {
@@ -170,8 +170,8 @@ public class SetPotentialEdit extends SimplePNEdit {
 		return newPotentialType;
 	}
 
-	public Node getProbNode() {
-		return probNode;
+	public Node getNode() {
+		return node;
 	}
 
 }

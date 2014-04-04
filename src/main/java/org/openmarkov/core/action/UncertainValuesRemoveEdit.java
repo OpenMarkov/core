@@ -36,13 +36,13 @@ public class UncertainValuesRemoveEdit extends SimplePNEdit {
 
 	private int basePosition;
 
-	private Node probNode;
+	private Node node;
 	
 	private boolean wasNullOldUncertainColumn;
 
 
 	/**
-	 * Creates a new <code>AddProbNodeEdit</code> with the network where the new
+	 * Creates a new <code>AddNodeEdit</code> with the network where the new
 	 * new node will be added and basic information about it. 
 	 * @param probNet the <code>ProbNet</code> where the new node will be added.
 	 * @param newNodeName the name of the new node
@@ -50,11 +50,11 @@ public class UncertainValuesRemoveEdit extends SimplePNEdit {
 	 * @param cursorposition the position (coordinates X,Y) of the node.
 	 *            
 	 */
-	public UncertainValuesRemoveEdit(Node probNode, EvidenceCase 
+	public UncertainValuesRemoveEdit(Node node, EvidenceCase 
 			configuration){
-		super(probNode.getProbNet());
+		super(node.getProbNet());
 		
-		this.probNode = probNode;
+		this.node = node;
 		
 		TablePotential potential = getPotential();
 		
@@ -83,13 +83,13 @@ public class UncertainValuesRemoveEdit extends SimplePNEdit {
 	
 	
 	private TablePotential getPotential(){
-		return (TablePotential)(probNode.getPotentials().get(0));
+		return (TablePotential)(node.getPotentials().get(0));
 	}
 
 	
 	
 	public Variable getVariable(){
-		return probNode.getVariable();
+		return node.getVariable();
 	}
 	
 	@Override

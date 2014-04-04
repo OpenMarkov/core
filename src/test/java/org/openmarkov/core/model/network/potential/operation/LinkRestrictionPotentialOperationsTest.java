@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -73,7 +73,7 @@ public class LinkRestrictionPotentialOperationsTest {
 	}
 
 	@Test
-	public void testHasLinkRestriction() throws ProbNodeNotFoundException {
+	public void testHasLinkRestriction() throws NodeNotFoundException {
 		Assert.assertTrue(LinkRestrictionPotentialOperations
 				.hasLinkRestriction(this.net.getNode("B")));
 		Assert.assertFalse(LinkRestrictionPotentialOperations
@@ -83,7 +83,7 @@ public class LinkRestrictionPotentialOperationsTest {
 
 	@Test
 	public void testGetParentLinksWithRestriction()
-			throws ProbNodeNotFoundException {
+			throws NodeNotFoundException {
 		Assert.assertEquals(1, LinkRestrictionPotentialOperations
 				.getParentLinksWithRestriction(net.getNode("B")).size());
 		Assert.assertEquals(0, LinkRestrictionPotentialOperations
@@ -92,7 +92,7 @@ public class LinkRestrictionPotentialOperationsTest {
 
 	@Test
 	public void testUpdatePotentialByAddLinkRestriction()
-			throws ProbNodeNotFoundException {
+			throws NodeNotFoundException {
 
 		TablePotential probabilityPotential = (TablePotential) LinkRestrictionPotentialOperations
 				.updatePotentialByAddLinkRestriction(net.getNode("B"),
@@ -131,7 +131,7 @@ public class LinkRestrictionPotentialOperationsTest {
 
 	@Test
 	public void testUpdatePotentialByLinkRestrictions()
-			throws ProbNodeNotFoundException {
+			throws NodeNotFoundException {
 		link.setCompatibilityValue(stateA[0], stateB[0], 0);
 		link2.initializesRestrictionsPotential();
 		link2.setCompatibilityValue(stateC[0], stateB[0], 0);
@@ -165,7 +165,7 @@ public class LinkRestrictionPotentialOperationsTest {
 	}
 
 	@Test
-	public void testGetStateCombinationsWithLinkRestriction() throws ProbNodeNotFoundException {
+	public void testGetStateCombinationsWithLinkRestriction() throws NodeNotFoundException {
 		link.setCompatibilityValue(stateA[0], stateB[0], 0);
 		link2.initializesRestrictionsPotential();
 		link2.setCompatibilityValue(stateC[0], stateB[0], 0);

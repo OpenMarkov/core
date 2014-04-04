@@ -20,15 +20,15 @@ import org.openmarkov.core.oopn.Instance;
 @SuppressWarnings("serial")
 public class MarkAsInputEdit extends SimplePNEdit{
 
-	private Node probNode = null;
+	private Node node = null;
 	private Instance instance = null;
 	private boolean isInput = false;
 	private boolean wasInput = false;
 	
-	public MarkAsInputEdit(ProbNet probNet, boolean isInput, Node probNode) {
+	public MarkAsInputEdit(ProbNet probNet, boolean isInput, Node node) {
 		super(probNet);
 		this.isInput = isInput;
-		this.probNode = probNode;
+		this.node = node;
 	}
 
 	public MarkAsInputEdit(ProbNet probNet, boolean isInput, Instance instance) {
@@ -39,10 +39,10 @@ public class MarkAsInputEdit extends SimplePNEdit{
 
 	@Override
 	public void doEdit() throws DoEditException {
-		if(probNode != null)
+		if(node != null)
 		{
-			probNode.setInput(isInput);
-			wasInput = probNode.isInput();
+			node.setInput(isInput);
+			wasInput = node.isInput();
 		}
 		if(instance != null)
 		{
@@ -54,9 +54,9 @@ public class MarkAsInputEdit extends SimplePNEdit{
 	@Override
 	public void undo() throws CannotUndoException {
 		super.undo();
-		if(probNode != null)
+		if(node != null)
 		{
-			probNode.setInput(wasInput);
+			node.setInput(wasInput);
 		}
 		if(instance != null)
 		{

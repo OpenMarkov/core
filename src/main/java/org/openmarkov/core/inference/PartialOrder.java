@@ -88,45 +88,43 @@ public class PartialOrder {
         int numDecisions = idCopy.getNumNodes(NodeType.DECISION);
         Stack<Variable> decisions = new Stack<Variable>();
         do {
-            List<Node> probNodes = idCopy.getNodes();
-            for (Node probNode : probNodes) {
-                if (idCopy.getNumChildren(probNode) == 0) {
-                    if (probNode.getNodeType() == NodeType.DECISION) {
-                        decisions.push(probNode.getVariable());
+            List<Node> nodes = idCopy.getNodes();
+            for (Node node : nodes) {
+                if (idCopy.getNumChildren(node) == 0) {
+                    if (node.getNodeType() == NodeType.DECISION) {
+                        decisions.push(node.getVariable());
                         numDecisions--;
                     }
-                    idCopy.removeNode(probNode);
+                    idCopy.removeNode(node);
                 }
             }
         } while (numDecisions > 0);
 
         // Create elimination order adding chance nodes
         order = new ArrayList<>(numDecisions * 2 + 1);
-        List<Node> chanceProbNodes = id.getProbNodes(NodeType.CHANCE);
+        List<Node> chanceNodes = id.getNodes(NodeType.CHANCE);
         HashSet<Variable> chanceVariables = new HashSet<Variable>();
-        for (Node chanceProbNode : chanceProbNodes) {
-            chanceVariables.add(chanceProbNode.getVariable());
+        for (Node chanceNode : chanceNodes) {
+            chanceVariables.add(chanceNode.getVariable());
         }
         while (!decisions.empty()) {
             Variable decision = decisions.pop();
-            Node decisionProbNode = id.getNode(decision);
-            List<Node> decisionNodeParents = id.getParents(decisionProbNode);
-            // Get ProbNodes of the decision parents
-            List<Node> decisionProbNodeParents = new ArrayList<Node>(
-                    decisionNodeParents.size());
-            for (Node node : decisionNodeParents) {
-                if (node.getNodeType() != NodeType.DECISION) {
-                    if (chanceVariables.contains(node.getVariable())) {
-                        decisionProbNodeParents.add(node);
-                        chanceVariables.remove(node.getVariable());
+            Node decisionNode = id.getNode(decision);
+            // Get nodes of the decision parents
+            List<Node> parentDecisionNodes = new ArrayList<Node>();
+            for (Node parent : id.getParents(decisionNode)) {
+                if (parent.getNodeType() != NodeType.DECISION) {
+                    if (chanceVariables.contains(parent.getVariable())) {
+                        parentDecisionNodes.add(parent);
+                        chanceVariables.remove(parent.getVariable());
                     }
                 }
             }
             // Add parents and decision
-            int numParents = decisionProbNodeParents.size();
+            int numParents = parentDecisionNodes.size();
             if (numParents > 0) {
                 List<Variable> decisionVariableParents = new ArrayList<Variable>(numParents);
-                for (Node parent : decisionProbNodeParents) {
+                for (Node parent : parentDecisionNodes) {
                     decisionVariableParents.add(parent.getVariable());
                 }
                 order.add(decisionVariableParents);

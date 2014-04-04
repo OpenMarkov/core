@@ -49,7 +49,7 @@ public class CycleLengthShift extends Potential {
      * @param variables
      * @param role
      */
-    public static boolean validate (Node probNode, List<Variable> variables, PotentialRole role)
+    public static boolean validate (Node node, List<Variable> variables, PotentialRole role)
     {
         return role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size () == 2
                 // child = variables.get (0)

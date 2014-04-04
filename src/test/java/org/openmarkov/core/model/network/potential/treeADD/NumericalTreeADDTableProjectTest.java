@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -132,7 +132,7 @@ public class NumericalTreeADDTableProjectTest {
 		List<Finding> findings = new ArrayList<>();
 		try {
 			findings.add(new Finding(probNet.getVariable("Duration [0]"), 1.0));
-		} catch (ProbNodeNotFoundException e) {
+		} catch (NodeNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -148,7 +148,7 @@ public class NumericalTreeADDTableProjectTest {
 			assertEquals(0.5, tablePotential1.values[1], 0.1);
 			assertEquals(0.0, tablePotential1.values[2], 0.1);
 			assertEquals(1.0, tablePotential1.values[3], 0.1);
-		} catch (ProbNodeNotFoundException e1) {
+		} catch (NodeNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -157,7 +157,7 @@ public class NumericalTreeADDTableProjectTest {
 		List<Finding> findings2 = new ArrayList<>();
 		try {
 			findings2.add(new Finding(probNet.getVariable("Duration [0]"), 2.0));
-		} catch (ProbNodeNotFoundException e) {
+		} catch (NodeNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -173,7 +173,7 @@ public class NumericalTreeADDTableProjectTest {
 			assertEquals(0.5, tablePotential2.values[1], 0.1);
 			assertEquals(0.0, tablePotential2.values[2], 0.1);
 			assertEquals(1.0, tablePotential2.values[3], 0.1);
-		} catch (ProbNodeNotFoundException e1) {
+		} catch (NodeNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -182,7 +182,7 @@ public class NumericalTreeADDTableProjectTest {
 		List<Finding> findings3 = new ArrayList<>();
 		try {
 			findings3.add(new Finding(probNet.getVariable("Duration [0]"), 2.0));
-		} catch (ProbNodeNotFoundException e) {
+		} catch (NodeNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -201,7 +201,7 @@ public class NumericalTreeADDTableProjectTest {
             assertEquals (0.0, tablePotential3.values[2], 0.1);
             assertEquals (1.0, tablePotential3.values[3], 0.1);
         }
-        catch (ProbNodeNotFoundException e)
+        catch (NodeNotFoundException e)
         {
             // TODO Auto-generated catch block
             e.printStackTrace ();

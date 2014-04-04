@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -142,7 +142,7 @@ public class AddLinkEdit extends BaseLinkEdit {
         
         try {
             node2 = probNet.getNode (variable2.getName ());
-        } catch (ProbNodeNotFoundException e) {
+        } catch (NodeNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -178,21 +178,21 @@ public class AddLinkEdit extends BaseLinkEdit {
 
     
     /**
-    * Gets the first <code>ProbNode</code> object in the link. 
+    * Gets the first <code>Node</code> object in the link. 
     * 
-    * @return the first <code>ProbNode</code> object in the link. 
+    * @return the first <code>Node</code> object in the link. 
     */
-    public Node getProbNode1 ()
+    public Node getNode1 ()
     {
         return node1;
     }
 
     /**
-    * Gets the second <code>ProbNode</code> object in the link. 
+    * Gets the second <code>Node</code> object in the link. 
     * 
-    * @return the second <code>ProbNode</code> object in the link. 
+    * @return the second <code>Node</code> object in the link. 
     */
-    public Node getProbNode2 ()
+    public Node getNode2 ()
     {
         return node2;
     }

@@ -29,7 +29,7 @@ import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.ParserException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -133,12 +133,12 @@ public abstract class InferenceAlgorithmTests {
 	public abstract InferenceAlgorithm buildInferenceAlgorithm(ProbNet probNet) throws NotEvaluableNetworkException;
 	
 	/**
-	 * @throws ProbNodeNotFoundException
+	 * @throws NodeNotFoundException
 	 * Tests the a priori probabilities obtained in the network bN_ABC
 	 */
 	@Test
 	public void testAPrioriProbabilitiesBN_ABC()
-			throws ProbNodeNotFoundException {
+			throws NodeNotFoundException {
 		InferenceAlgorithm elimination1;
 		ProbNet network;
 		
@@ -163,12 +163,12 @@ public abstract class InferenceAlgorithmTests {
 	}
 	
 	/**
-	 * @throws ProbNodeNotFoundException
+	 * @throws NodeNotFoundException
 	 * Tests the a priori probabilities obtained in the network bN_ABC
 	 */
 	@Test
 	public void testAPrioriProbabilitiesBN_Asia()
-			throws ProbNodeNotFoundException {
+			throws NodeNotFoundException {
 					
 		String namesVariables[]={"A","B","T","L","TOrC","X","D","S"};
 		double expectedProbs[] = {0.01,0.45,0.0104,0.055,0.064828,0.11029004,0.3974534,0.5};
@@ -195,7 +195,7 @@ public abstract class InferenceAlgorithmTests {
 			Variable auxVar = null;
 			try {
 				auxVar = getVariableAndAssertNotNull(network,namesVariables[i]);
-			} catch (ProbNodeNotFoundException e) {
+			} catch (NodeNotFoundException e) {
 				e.printStackTrace();
 			}
 			variables.add(auxVar);
@@ -235,12 +235,12 @@ public abstract class InferenceAlgorithmTests {
 
 
 	/**
-	 * @throws ProbNodeNotFoundException
+	 * @throws NodeNotFoundException
 	 * Tests the a priori probabilities obtained in the network bN_ABC
 	 */
 	@Test
 	public void testAPosterioriProbabilitiesBN_Asia()
-			throws ProbNodeNotFoundException {
+			throws NodeNotFoundException {
 		ProbNet network;
 		int numIter=10;
 		
@@ -360,9 +360,9 @@ public abstract class InferenceAlgorithmTests {
 	 * @param network
 	 * @param variableName
 	 * @return The variable in 'network' whose name is 'variableName'. It also checks whether the variable is not null.
-	 * @throws ProbNodeNotFoundException	 
+	 * @throws NodeNotFoundException	 
 	 */
-	public static Variable getVariableAndAssertNotNull(ProbNet network, String variableName) throws ProbNodeNotFoundException {
+	public static Variable getVariableAndAssertNotNull(ProbNet network, String variableName) throws NodeNotFoundException {
 		Variable variable;
 		
 		variable = network.getVariable(variableName);
@@ -413,7 +413,7 @@ public abstract class InferenceAlgorithmTests {
 		EvidenceCase evidence = new EvidenceCase();
 		try {
 			evidence.addFinding(network, "X", "absent");
-		} catch (ProbNodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
+		} catch (NodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
 			//e.printStackTrace();
 		} 
 		
@@ -449,7 +449,7 @@ public abstract class InferenceAlgorithmTests {
 		EvidenceCase evidence = new EvidenceCase();
 		try {
 			evidence.addFinding(network, "Y", "negative");
-		} catch (ProbNodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
+		} catch (NodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
 			//e.printStackTrace();
 		} 
 		
@@ -487,7 +487,7 @@ public abstract class InferenceAlgorithmTests {
 			evidence.addFinding(network, "T", "absent");
 			evidence.addFinding(network, "L", "absent");
 			evidence.addFinding(network, "TOrC", "yes");
-		} catch (ProbNodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
+		} catch (NodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
 			//e.printStackTrace();
 		} 
 		
@@ -565,14 +565,14 @@ public abstract class InferenceAlgorithmTests {
 	}
 	
     /**
-     * @throws ProbNodeNotFoundException
+     * @throws NodeNotFoundException
      * Tests the a priori joint probabilities obtained in the network Asia
      * @throws UnexpectedInferenceException 
      * @throws IncompatibleEvidenceException 
      */
     @Test
     public void testAPosterioriJointProbabilitiesBN_Asia ()
-        throws ProbNodeNotFoundException,
+        throws NodeNotFoundException,
         IncompatibleEvidenceException,
         UnexpectedInferenceException
     {
@@ -777,14 +777,14 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProbNodeNotFoundException
+	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
 	@Test
 	public void testEvaluationIDDiagnosisProblem()
 			throws FileNotFoundException,
-			IOException, ParserException, ProbNodeNotFoundException,
+			IOException, ParserException, NodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 		ProbNet network;
 		
@@ -870,14 +870,14 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProbNodeNotFoundException
+	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 *//*
 	@Test
 	public void testConditioningVariablesEvaluationIDDiagnosisProblem()
 			throws FileNotFoundException,
-			IOException, ParserException, ProbNodeNotFoundException,
+			IOException, ParserException, NodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 		ProbNet network;
 		
@@ -921,14 +921,14 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProbNodeNotFoundException
+	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
 	@Test
 	public void testAPrioriProbabilitiesID_DiagnosisProblem()
 			throws FileNotFoundException,
-			IOException, ParserException, ProbNodeNotFoundException,
+			IOException, ParserException, NodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 		ProbNet diagram;
 		
@@ -962,13 +962,13 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProbNodeNotFoundException
+	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
 	public void testEvaluationIDDecisionTestProblem(ProbNet diagram)
 			throws FileNotFoundException,
-			IOException, ParserException, ProbNodeNotFoundException,
+			IOException, ParserException, NodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 		Variable variableX = null;
 		Variable variableY = null;
@@ -1075,14 +1075,14 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProbNodeNotFoundException
+	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
 	@Test
 	public void testEvaluationIDDecisionTestProblemWithoutSV()
 			throws FileNotFoundException,
-			IOException, ParserException, ProbNodeNotFoundException,
+			IOException, ParserException, NodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 
 		testEvaluationIDDecisionTestProblem(iD_DecisionTestProblemWithoutSV);
@@ -1095,14 +1095,14 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProbNodeNotFoundException
+	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
 	@Test
 	public void testEvaluationIDDecisionTestProblemWithSV()
 			throws FileNotFoundException,
-			IOException, ParserException, ProbNodeNotFoundException,
+			IOException, ParserException, NodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 
 		testEvaluationIDDecisionTestProblem(iD_DecisionTestProblemWithSV);
@@ -1115,7 +1115,7 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProbNodeNotFoundException
+	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
@@ -1123,7 +1123,7 @@ public abstract class InferenceAlgorithmTests {
 	//@Test
 	public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
 			throws FileNotFoundException,
-			IOException, ParserException, ProbNodeNotFoundException,
+			IOException, ParserException, NodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 		
 		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(iD_DecisionTestProblemWithoutSV);
@@ -1170,7 +1170,7 @@ public abstract class InferenceAlgorithmTests {
 		evi = new EvidenceCase();
 		try {
 			evi.addFinding(diagram, nameVariable, state);
-		} catch (ProbNodeNotFoundException e) {
+		} catch (NodeNotFoundException e) {
 			e.printStackTrace();
 		} catch (InvalidStateException e) {
 			e.printStackTrace();
@@ -1247,14 +1247,14 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProbNodeNotFoundException
+	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
 	//@Test
 /*	public void testEvaluationIDDecisionTestProblem()
 			throws FileNotFoundException,
-			IOException, ParserException, ProbNodeNotFoundException,
+			IOException, ParserException, NodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 
 		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(iD_DecisionTestProblemWithoutSV);
@@ -1309,14 +1309,14 @@ public abstract class InferenceAlgorithmTests {
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProbNodeNotFoundException
+	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
 	@Test
 	public void testEvaluationIDUniformDiagnosisProblem()
 			throws FileNotFoundException,
-			IOException, ParserException, ProbNodeNotFoundException,
+			IOException, ParserException, NodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 		ProbNet diagram;
 

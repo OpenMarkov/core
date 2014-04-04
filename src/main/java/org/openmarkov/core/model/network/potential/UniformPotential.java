@@ -88,11 +88,11 @@ public class UniformPotential extends Potential
     /**
      * Returns if an instance of a certain Potential type makes sense given the
      * variables and the potential role
-     * @param probNode. <code>ProbNode</code>
+     * @param node. <code>Node</code>
      * @param variables. <code>ArrayList</code> of <code>Variable</code>
      * @param role. <code>PotentialRole</code>
      */
-    public static boolean validate (Node probNode, List<Variable> variables, PotentialRole role)
+    public static boolean validate (Node node, List<Variable> variables, PotentialRole role)
     {
         // TODO
         return true;

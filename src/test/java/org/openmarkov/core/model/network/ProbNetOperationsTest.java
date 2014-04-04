@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.inference.InferenceAlgorithmTests;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
@@ -148,10 +148,10 @@ public class ProbNetOperationsTest {
 		peque.addPotential((Potential)potentialvaluesBA);
 		peque.addPotential((Potential)potentialvaluesCAB);
 				
-		Node probNodeA = peque.getNode("A");
-		Node probNodeB = peque.getNode("B");
-		Variable A = probNodeA.getVariable();
-		Variable B = probNodeB.getVariable();
+		Node nodeA = peque.getNode("A");
+		Node nodeB = peque.getNode("B");
+		Variable A = nodeA.getVariable();
+		Variable B = nodeB.getVariable();
 		Finding findingA = new Finding(A, 1); // A:absent(0)
 		HashMap<Variable, Finding> findings = new HashMap<Variable, Finding>();
 		findings.put(A, findingA);
@@ -166,7 +166,7 @@ public class ProbNetOperationsTest {
 		boolean throwNodeNotFound = false;
 		try {
 			pruned.getVariable("A");
-		} catch (ProbNodeNotFoundException e) {
+		} catch (NodeNotFoundException e) {
 			throwNodeNotFound = true;
 		}
 		assertTrue(throwNodeNotFound);
@@ -174,14 +174,14 @@ public class ProbNetOperationsTest {
 		throwNodeNotFound = false;
 		try {
 			pruned.getVariable("C");
-		} catch (ProbNodeNotFoundException e) {
+		} catch (NodeNotFoundException e) {
 			throwNodeNotFound = true;
 		}
 		assertTrue(throwNodeNotFound);
 		assertEquals(1, pruned.getNumPotentials());
-		probNodeB = pruned.getNode("B");
+		nodeB = pruned.getNode("B");
 		TablePotential bPotential = 
-			(TablePotential)probNodeB.getPotentials().get(0);
+			(TablePotential)nodeB.getPotentials().get(0);
 		assertEquals(1, bPotential.getNumVariables());
 		assertTrue(bPotential.contains(B));
 		assertEquals(2, ((TablePotential)bPotential).values.length);
@@ -472,8 +472,8 @@ public class ProbNetOperationsTest {
 		assertTrue(variablesPruned.contains(variableI));
 
 		// Test B potentials
-		Node probNodeB = pruned.getNode("B");
-		List<Potential> potentialsB = probNodeB.getPotentials();
+		Node nodeB = pruned.getNode("B");
+		List<Potential> potentialsB = nodeB.getPotentials();
 		assertEquals(2, potentialsB.size());
 		// Test projected potential p(B|A), A = 1 = psi(B)
 		// Get psi(B)
@@ -547,7 +547,7 @@ public class ProbNetOperationsTest {
 			Variable variable = probNet.getVariable(variableName);
 			Finding finding = new Finding(variable, stateNumber);
 			evidence.addFinding(finding);
-		} catch (ProbNodeNotFoundException e) {
+		} catch (NodeNotFoundException e) {
 			e.printStackTrace();
 			fail("Variable " + variableName + " not found in probNet.");
 		} catch (InvalidStateException e) {
@@ -583,12 +583,12 @@ public class ProbNetOperationsTest {
 	}
 	
 	/**
-	 * @throws ProbNodeNotFoundException
+	 * @throws NodeNotFoundException
 	 * Tests the a priori probabilities obtained in the network bN_ABC
 	 */
 	@Test
 	public void testGetPrunedMethodBN_Asia()
-			throws ProbNodeNotFoundException {
+			throws NodeNotFoundException {
 		ProbNet network;
 		ProbNet outputNetwork;
 		ProbNet intermediate;
@@ -815,7 +815,7 @@ public class ProbNetOperationsTest {
 
         // Test projection of potentials of not-numeric nodes with numeric parents
 //        double[] transitionPotential_2_expectedValues = new double[]{ 0.730278527, 0.269721473, 0.729796819, 0.270203181, 0.578080011, 0.421919989, 0.57741534, 0.42258466}; 
-//        double[] transitionPotential_2_Values = ((TablePotential)convertedNet.getProbNode("Transition [2]").getPotentials().get(0)).values;
+//        double[] transitionPotential_2_Values = ((TablePotential)convertedNet.getNode("Transition [2]").getPotentials().get(0)).values;
 //
 //        Assert.assertArrayEquals(transitionPotential_2_expectedValues, transitionPotential_2_Values, 0.001);
 
@@ -928,7 +928,7 @@ public class ProbNetOperationsTest {
 	
 	
 	@Test
-	public void testGetObservableAndNonObservedVariables() throws NodeNotFoundException, ProbNodeNotFoundException
+	public void testGetObservableAndNonObservedVariables() throws NodeNotFoundException, NodeNotFoundException
 	{
 		auxTestGetObservableAndNonObservedVariables(NetsFactory.buildDecideTestDAN(),Arrays.asList("Y"),Arrays.asList("X"));
 		auxTestGetObservableAndNonObservedVariables(NetsFactory.buildDiabetesDAN(),Arrays.asList("Blood test result","Urine test result","Symptom"),Arrays.asList("Diabetes"));
@@ -939,20 +939,20 @@ public class ProbNetOperationsTest {
 
 	}
 	
-	private void auxTestGetObservableAndNonObservedVariables(ProbNet probNet, List<String> observable, List<String> nonObservable) throws NodeNotFoundException, ProbNodeNotFoundException {
+	private void auxTestGetObservableAndNonObservedVariables(ProbNet probNet, List<String> observable, List<String> nonObservable) throws NodeNotFoundException, NodeNotFoundException {
 		
 		checkEqualVariables(ProbNetOperations.getObservableVariables(probNet),observable);
 		checkEqualVariables(ProbNetOperations.getNeverObservedVariables(probNet),nonObservable);
 	}
 	
 	
-	public void checkEqualVariables(Collection<Node> probNodes,List<String> stringVariables){
+	public void checkEqualVariables(Collection<Node> nodes,List<String> stringVariables){
 		
-		assertEquals(probNodes.size(),stringVariables.size());
+		assertEquals(nodes.size(),stringVariables.size());
 		
-		for (Node probNode:probNodes)
+		for (Node node:nodes)
 		{
-			assertTrue(stringVariables.contains(probNode.getVariable().getName()));
+			assertTrue(stringVariables.contains(node.getVariable().getName()));
 		}
 		
 	}

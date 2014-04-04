@@ -9,19 +9,31 @@
 
 package org.openmarkov.core.exception;
 
+import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
 @SuppressWarnings("serial")
-public class NodeNotFoundException extends WrongGraphStructureException {
+public class NodeNotFoundException extends Exception {
 
 	// Constructor
 	/** @param message <code>String</code> */
 	public NodeNotFoundException(String message) {
 		super(message);
 	}
+	/** @param networkName TODO
+	 * @param message */
+	public NodeNotFoundException(ProbNet network, String variableName) {
+		super("Variable: " + variableName + 
+				" not found in network " + network.getName() + ".");
+	}
 
-    public NodeNotFoundException(Variable variable) {
-       super("Node: " + variable.getName());
+    public NodeNotFoundException(Node node) {
+        this(node.getProbNet(), node.getName());
+    }
+    
+    public NodeNotFoundException(ProbNet network, Variable variable) {
+        this(network, variable.getName());
     }
 
 }

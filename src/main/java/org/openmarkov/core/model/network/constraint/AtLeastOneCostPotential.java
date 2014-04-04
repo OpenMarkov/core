@@ -33,7 +33,7 @@ public class AtLeastOneCostPotential extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-	    List<Node> costNodes = probNet.getProbNodes(NodeType.COST);
+	    List<Node> costNodes = probNet.getNodes(NodeType.COST);
 		if (costNodes.size() == 0) {
 			return false;
 		}

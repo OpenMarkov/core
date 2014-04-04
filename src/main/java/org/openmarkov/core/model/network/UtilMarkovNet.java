@@ -99,12 +99,12 @@ public class UtilMarkovNet {
 	 *               B<sub>i</sub> in the potential (other than A)
 	 * @param potential
 	 *            . <code>Potential</code>
-	 * @return The <code>ProbNode</code> in which the <code>potential</code>
+	 * @return The <code>Node</code> in which the <code>potential</code>
 	 *         received has been added.
 	 */
 	public static void addPotential(ProbNet markovNet, ProbNet originalNet, Potential potential) {
 		List<Variable> potentialVariables = potential.getVariables();
-		// the probNode where the potential will be stored
+		// the node where the potential will be stored
 		// TODO hacerlo con edits
 		if (potential.getVariables().size() == 0) {
 			// it is a constant potential;
@@ -113,7 +113,7 @@ public class UtilMarkovNet {
 		} else {
 			// the potential depends on several variables
 			for (Variable variable : potentialVariables) {
-				//if (originalNet.getProbNode(variable)!=null){
+				//if (originalNet.getNode(variable)!=null){
 				if (markovNet.getNode(variable) == null) {
 					Node node = originalNet.getNode(variable);
 					NodeType nodeType = node.getNodeType();
@@ -150,12 +150,12 @@ public class UtilMarkovNet {
 	 *               B<sub>i</sub> in the potential (other than A)
 	 * @param potential
 	 *            . <code>Potential</code>
-	 * @return The <code>ProbNode</code> in which the <code>potential</code>
+	 * @return The <code>Node</code> in which the <code>potential</code>
 	 *         received has been added.
 	 */
 	public static void addPotential(ProbNet markovNet, Potential potential) {
 		List<Variable> potentialVariables = potential.getVariables();
-		// the probNode where the potential will be stored
+		// the node where the potential will be stored
 		// TODO hacerlo con edits
 		if (potential.getVariables().size() == 0) {
 			// it is a constant potential;

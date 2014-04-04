@@ -13,11 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 
 /**
@@ -34,7 +33,7 @@ public class PartialOrderDAN {
 	}
 
 
-	public PartialOrderDAN(ProbNet probNet) throws ProbNodeNotFoundException, NodeNotFoundException{
+	public PartialOrderDAN(ProbNet probNet) throws NodeNotFoundException, NodeNotFoundException{
 		
 		order = new ProbNet();
 		
@@ -56,9 +55,9 @@ public class PartialOrderDAN {
 			    	if (nodeI!=nodeJ){
 			    		Variable variableI = nodeI.getVariable();
 			    		Variable variableJ = nodeJ.getVariable();
-			    		Node probNetProbNodeI = probNet.getNode(variableI);
-			    		Node probNetProbNodeJ = probNet.getNode(variableJ);
-						if (probNet.existsPath(probNetProbNodeI,probNetProbNodeJ,true))
+			    		Node probNetnodeI = probNet.getNode(variableI);
+			    		Node probNetNodeJ = probNet.getNode(variableJ);
+						if (probNet.existsPath(probNetnodeI,probNetNodeJ,true))
 						{
 							order.addLink(order.getNode(variableI), order.getNode(variableJ),true);
 						}
@@ -91,7 +90,7 @@ public class PartialOrderDAN {
 			}
 		}
 	
-	public String toStringForGraphviz() throws ProbNodeNotFoundException {
+	public String toStringForGraphviz() throws NodeNotFoundException {
 	
 		String content = null;
 		
@@ -129,7 +128,7 @@ public class PartialOrderDAN {
 	}
 	
 
-	private String getNameWithQuotes(Node node) throws ProbNodeNotFoundException {
+	private String getNameWithQuotes(Node node) throws NodeNotFoundException {
 		return "\""+node.getVariable().getName()+"\"";
 		
 	}

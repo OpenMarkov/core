@@ -9,7 +9,7 @@ import java.util.Stack;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -140,7 +140,7 @@ public class DecisionTreeEvaluator {
              	   treeNode.setUtility(utility);
                    root = treeNode;
  	            }else {
- 	                List<Node> neverObservedNodes = probNet.getProbNodes(NodeType.CHANCE);
+ 	                List<Node> neverObservedNodes = probNet.getNodes(NodeType.CHANCE);
  	            	if(!neverObservedNodes.isEmpty ()) // Never observed variables
  	            	{
  		                ProbNet dtProbNet = probNet.copy ();
@@ -186,7 +186,7 @@ public class DecisionTreeEvaluator {
 	{
 		try {
 			originalVariable = originalProbNet.getVariable(variable.getName());
-		} catch (ProbNodeNotFoundException e) {
+		} catch (NodeNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -262,23 +262,23 @@ private double getUtility(ProbNet probNet, HashMap<Variable, Integer> scenarioMa
 		return probability;
 	}
 
-	private List<Potential> getScenarioPotentials(ProbNet probNet, DecisionTreeNode node) {
+	private List<Potential> getScenarioPotentials(ProbNet probNet, DecisionTreeNode treeNode) {
 		List<Potential> parentPotentials = new ArrayList<>(); 
-		DecisionTreeNode currentNode = node;
-		while(currentNode != null)
+		DecisionTreeNode currentTreeNode = treeNode;
+		while(currentTreeNode != null)
 		{
-			Node probNode = probNet.getNode(currentNode.getVariable());
-			if(probNode == null)
+			Node node = probNet.getNode(currentTreeNode.getVariable());
+			if(node == null)
 			{
 				try {
-					probNode = probNet.getNode(currentNode.getVariable().getName());
-				} catch (ProbNodeNotFoundException e) {
+					node = probNet.getNode(currentTreeNode.getVariable().getName());
+				} catch (NodeNotFoundException e) {
 				}
 			}
-			List<Potential> potentials = probNode.getPotentials();
+			List<Potential> potentials = node.getPotentials();
 			if(potentials !=null && !potentials.isEmpty())
 				parentPotentials.add(potentials.get(0));
-			currentNode = currentNode.getParent();
+			currentTreeNode = currentTreeNode.getParent();
 		}
 		return parentPotentials;
 	}	
@@ -294,13 +294,13 @@ private double getUtility(ProbNet probNet, HashMap<Variable, Integer> scenarioMa
 		}
 		return scenarioMap;
 	}
-	private static ProbNet applyRestrictionsAndReveal(ProbNet probNet, Node probNode, State state, ProbNet originalProbNet)
+	private static ProbNet applyRestrictionsAndReveal(ProbNet probNet, Node node, State state, ProbNet originalProbNet)
     {
         ProbNet probNetCopy = probNet.copy ();
         
-        for (Link<Node> link : probNet.getLinks (probNode))
+        for (Link<Node> link : probNet.getLinks (node))
         {
-            if(link.getNode1 ().equals (probNode)) // Our node is the source node
+            if(link.getNode1 ().equals (node)) // Our node is the source node
             {
                 Node destinationNode = probNetCopy.getNode (link.getNode2 ().getVariable ());
                 if(destinationNode.getNodeType () == NodeType.CHANCE)
@@ -342,7 +342,7 @@ private double getUtility(ProbNet probNet, HashMap<Variable, Integer> scenarioMa
 //                    }else if(nonRestrictedStates.size () == 1) // Remove variables with a single variable
 //                    {
 //                        ProbNet probNetWithoutSingleStateVariable = probNetCopy.copy ();
-//                        probNetWithoutSingleStateVariable.removeProbNode (probNetWithoutSingleStateVariable.getProbNode (destinationNode.getVariable ()));
+//                        probNetWithoutSingleStateVariable.removeNode (probNetWithoutSingleStateVariable.getNode (destinationNode.getVariable ()));
 //                        probNetCopy = applyRestrictionsAndReveal(probNetWithoutSingleStateVariable, destinationNode, nonRestrictedStates.get (0), originalProbNet);
                     }else if(nonRestrictedStates.size () < destinationNode.getVariable ().getStates ().length)
                     {
@@ -351,10 +351,10 @@ private double getUtility(ProbNet probNet, HashMap<Variable, Integer> scenarioMa
                         State[] unrestrictedStates = nonRestrictedStates.toArray (new State[0]);
                         Variable restrictedVariable = new Variable (destinationNode.getVariable ().getName (), unrestrictedStates);
                         restrictedVariable.setVariableType (destinationNode.getVariable ().getVariableType ());
-//                        List<ProbNode> parents = destinationNode.getParents();
-//                        List<ProbNode> children = destinationNode.getChildren();
+//                        List<Node> parents = destinationNode.getParents();
+//                        List<Node> children = destinationNode.getChildren();
 //                        probNetCopy.removeNode(destinationNode);
-//                        ProbNode newNode = probNetCopy.addNode(restrictedVariable, destinationNode.getNodeType());
+//                        Node newNode = probNetCopy.addNode(restrictedVariable, destinationNode.getNodeType());
                         destinationNode.setVariable(restrictedVariable);
                     }else
                     {
@@ -364,7 +364,7 @@ private double getUtility(ProbNet probNet, HashMap<Variable, Integer> scenarioMa
             }
          } 
         
-        probNetCopy.removeNode (probNetCopy.getNode (probNode.getVariable ()));
+        probNetCopy.removeNode (probNetCopy.getNode (node.getVariable ()));
         return probNetCopy;
     }
  

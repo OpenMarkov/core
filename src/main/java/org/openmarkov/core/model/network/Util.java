@@ -3,7 +3,7 @@ package org.openmarkov.core.model.network;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 
 public class Util {
 
@@ -97,7 +97,7 @@ public class Util {
 		try {
 			probNet.getNode(name);
 			return true;
-		} catch (ProbNodeNotFoundException e) {
+		} catch (NodeNotFoundException e) {
 			return false;
 		}
 	}

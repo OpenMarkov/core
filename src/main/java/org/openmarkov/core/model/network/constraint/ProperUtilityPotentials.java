@@ -26,7 +26,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 public class ProperUtilityPotentials extends PNConstraint {
 	
 	public boolean checkProbNet(ProbNet probNet) {
-	    List<Node> utilityNodes = probNet.getProbNodes(NodeType.UTILITY);
+	    List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
 		if (utilityNodes.size() == 0) {
 			return false;
 		}

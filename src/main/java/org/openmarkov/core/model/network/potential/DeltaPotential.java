@@ -85,14 +85,14 @@ public class DeltaPotential extends Potential{
      * Returns whether this type of Potential is suitable for the list of
      * variables and the potential role given.
      * 
-     * @param probNode
-     *            . <code>ProbNode</code>
+     * @param node
+     *            . <code>Node</code>
      * @param variables
      *            . <code>List</code> of <code>Variable</code>.
      * @param role
      *            . <code>PotentialRole</code>.
      */
-    public static boolean validate(Node probNode, List<Variable> variables, PotentialRole role) {
+    public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
         return variables.size() <= 1 && role != PotentialRole.UTILITY;
     }
 

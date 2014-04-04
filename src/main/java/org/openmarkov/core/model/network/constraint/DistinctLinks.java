@@ -64,8 +64,8 @@ public class DistinctLinks extends PNConstraint
         for (PNEdit simpleEdit : edits2)
         {
             LinkEdit linkEdit = (LinkEdit) simpleEdit;
-            Node node1 = linkEdit.getProbNode1 ().getNode ();
-            Node node2 = linkEdit.getProbNode2 ().getNode ();
+            Node node1 = linkEdit.getNode1 ().getNode ();
+            Node node2 = linkEdit.getNode2 ().getNode ();
             boolean directed = linkEdit.isDirected ();
             if (linkEdit.isAdd () && !checkLink (graph, node1, node2, directed))
             {

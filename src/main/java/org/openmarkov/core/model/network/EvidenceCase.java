@@ -19,7 +19,7 @@ import java.util.Queue;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.potential.Potential;
 
@@ -147,10 +147,10 @@ public class EvidenceCase {
      *            <code>Finding</code>.
      * @throws InvalidStateException
      * @throws IncompatibleEvidenceException
-     * @throws ProbNodeNotFoundException
+     * @throws NodeNotFoundException
      */
     public void addFinding(ProbNet probNet, String variableName, String stateName)
-            throws ProbNodeNotFoundException, InvalidStateException, IncompatibleEvidenceException {
+            throws NodeNotFoundException, InvalidStateException, IncompatibleEvidenceException {
         Variable variable = probNet.getVariable(variableName);
         int stateIndex = variable.getStateIndex(stateName);
         addFinding(new Finding(variable, stateIndex));
@@ -160,10 +160,10 @@ public class EvidenceCase {
      * @param finding
      *            <code>Finding</code>.
      * @throws IncompatibleEvidenceException
-     * @throws ProbNodeNotFoundException
+     * @throws NodeNotFoundException
      */
     public void addFinding(ProbNet probNet, String variableName, double value)
-            throws ProbNodeNotFoundException, InvalidStateException, IncompatibleEvidenceException {
+            throws NodeNotFoundException, InvalidStateException, IncompatibleEvidenceException {
         Variable variable = probNet.getVariable(variableName);
         Finding finding = new Finding(variable, value);
         addFinding(finding);
@@ -258,14 +258,14 @@ public class EvidenceCase {
      * 
      * @param probNet
      *            <code>ProbNet</code>.
-     * @return An <code>ArrayList</code> of <code>ProbNode</code>s.
+     * @return An <code>ArrayList</code> of <code>Node</code>s.
      */
     public List<Node> getRemainingNodes(ProbNet probNet) {
         List<Node> probNetNodes = probNet.getNodes();
         List<Node> remainingNodes = new ArrayList<Node>();
-        for (Node probNode : probNetNodes) {
-            if (!contains(probNode.getVariable())) {
-                remainingNodes.add(probNode);
+        for (Node node : probNetNodes) {
+            if (!contains(node.getVariable())) {
+                remainingNodes.add(node);
             }
         }
         return remainingNodes;

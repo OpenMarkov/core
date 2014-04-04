@@ -10,12 +10,11 @@ import java.util.List;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
@@ -38,11 +37,11 @@ public class SameAsPrevious extends Potential
      * @param timeDifference
      * @param probNet The net from which the variables will be taken
      * @throws NodeNotFoundException
-     * @throws ProbNodeNotFoundException 
+     * @throws NodeNotFoundException 
      * @argCondition The network must contain the shifted variables
      */
     public SameAsPrevious (Potential potential, ProbNet probNet, int timeDifference)
-        throws ProbNodeNotFoundException
+        throws NodeNotFoundException
     {
         super (potential.getShiftedVariables (probNet, timeDifference),
                potential.getPotentialRole ());
@@ -66,16 +65,16 @@ public class SameAsPrevious extends Potential
      * @param probNet
      * @param variable
      * @throws NodeNotFoundException
-     * @throws ProbNodeNotFoundException 
+     * @throws NodeNotFoundException 
      */
     public SameAsPrevious (ProbNet probNet, List<Variable> variables)
-        throws NodeNotFoundException, ProbNodeNotFoundException
+        throws NodeNotFoundException, NodeNotFoundException
     {
         this (probNet, variables.get(0), 1);
     }
 
     public SameAsPrevious (ProbNet probNet, Variable variable, int timeDifference)
-        throws ProbNodeNotFoundException
+        throws NodeNotFoundException
     {
         this (getPotential (probNet, variable), probNet, timeDifference);
     }
@@ -86,9 +85,9 @@ public class SameAsPrevious extends Potential
      * @param variables
      * @param role
      */
-    public static boolean validate (Node probNode, List<Variable> variables, PotentialRole role)
+    public static boolean validate (Node node, List<Variable> variables, PotentialRole role)
     {
-        return probNode.getVariable ().isTemporal () && probNode.getVariable ().getTimeSlice () > 0;
+        return node.getVariable ().isTemporal () && node.getVariable ().getTimeSlice () > 0;
     }
 
     // Methods
@@ -122,14 +121,14 @@ public class SameAsPrevious extends Potential
      * @param variable. <code>Variable</code>
      * @return Potential The potential referred to by this one
      * @throws NodeNotFoundException
-     * @throws ProbNodeNotFoundException 
+     * @throws NodeNotFoundException 
      * @argCondition probNet must be a Markov Net with order = 1 because
      *               otherwise the potential returned could not be the right one
-     * @precondition The previousProbNode must have at least one potential
+     * @precondition The previousNode must have at least one potential
      *               assigned
      */
     private static Potential getPotential (ProbNet probNet, Variable variable)
-        throws ProbNodeNotFoundException
+        throws NodeNotFoundException
     {
         String simpleName = variable.getName ();
         Potential previousPotential = null;
@@ -146,8 +145,8 @@ public class SameAsPrevious extends Potential
                 if (probNetVariable.getName ().startsWith (simpleNameExtended))
                 {
                     // ...then get its potentials
-                    Node probNode = probNet.getNode (probNetVariable);
-                    List<Potential> potentialsNode = probNode.getPotentials ();
+                    Node node = probNet.getNode (probNetVariable);
+                    List<Potential> potentialsNode = node.getPotentials ();
                     // Assumption: all the variables have only one
                     // potential P(C|P1,P2,...,Pn)
                     for (Potential potential : potentialsNode)
@@ -168,14 +167,14 @@ public class SameAsPrevious extends Potential
             }
             if (previousPotential == null)
             {// There is no previous variable
-                throw new ProbNodeNotFoundException (probNet, "It does not exists a "
+                throw new NodeNotFoundException (probNet, "It does not exists a "
                                                  + "previous variable called: "
                                                  + variable.getName () + " in this probNet");
             }
         }
         else
         {
-            throw new ProbNodeNotFoundException (probNet, "Variable has not a temporal "
+            throw new NodeNotFoundException (probNet, "Variable has not a temporal "
                                              + "type name: varName[number].");
         }
         return previousPotential;

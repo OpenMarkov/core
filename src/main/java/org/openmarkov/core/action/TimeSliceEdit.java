@@ -20,7 +20,7 @@ public class TimeSliceEdit extends SimplePNEdit{
 	/**
 	 * The edited node
 	 */
-	private Node probNode = null;
+	private Node node = null;
 	/**
 	 * the last base name of the temporal variable
 	 */
@@ -32,47 +32,47 @@ public class TimeSliceEdit extends SimplePNEdit{
 	
 /**
  * 
- * @param probNode
+ * @param node
  * @param timeSlice
  */
-	public TimeSliceEdit(Node probNode, int timeSlice) {
-		super(probNode.getProbNet());
-		this.lastTimeSlice = probNode.getVariable().getTimeSlice();
+	public TimeSliceEdit(Node node, int timeSlice) {
+		super(node.getProbNet());
+		this.lastTimeSlice = node.getVariable().getTimeSlice();
 		this.newTimeSlice = timeSlice;
-		this.lastBaseName =  probNode.getVariable().getBaseName();
-		this.lastName =  probNode.getVariable().getName();
-		this.probNode = probNode;
+		this.lastBaseName =  node.getVariable().getBaseName();
+		this.lastName =  node.getVariable().getName();
+		this.node = node;
 		
 	}
 
 	@Override
 	public void doEdit() throws DoEditException {
 		//onlyTemporal && not only atemporal
-		probNode.getVariable().setTimeSlice(newTimeSlice);
+		node.getVariable().setTimeSlice(newTimeSlice);
 		if (newTimeSlice == Integer.MIN_VALUE && lastTimeSlice != Integer.MIN_VALUE && lastBaseName != null) {
-			probNode.getVariable().setBaseName(null);
+			node.getVariable().setBaseName(null);
 			int beginSlicePart = lastName.lastIndexOf('[') - 1;
 			String newName = null;
 			if (beginSlicePart > 0) {
 				newName = lastName.substring(0, beginSlicePart);
 			}
-			probNode.getVariable().setName(newName);
+			node.getVariable().setName(newName);
 		}
 		//not only temporaL && not only atemporal but also set name and base name
 		if (lastTimeSlice == Integer.MIN_VALUE) {
-			probNode.getVariable().setBaseName(lastBaseName);	
-			probNode.getVariable().setName(lastName+ " " + "["+ String.valueOf(newTimeSlice)+"]");
+			node.getVariable().setBaseName(lastBaseName);	
+			node.getVariable().setName(lastName+ " " + "["+ String.valueOf(newTimeSlice)+"]");
 		}
 	}
 	@Override
 	public void undo() {
 		super.undo();
 		//onlyTemporal
-		probNode.getVariable().setTimeSlice(lastTimeSlice);
+		node.getVariable().setTimeSlice(lastTimeSlice);
 		//not only temporaL && not only atemporal but also set name and base name
 		if (lastTimeSlice == Integer.MIN_VALUE) {
-			probNode.getVariable().setBaseName(lastBaseName);
-			probNode.getVariable().setName(lastName);
+			node.getVariable().setBaseName(lastBaseName);
+			node.getVariable().setName(lastName);
 		}
 	}
 

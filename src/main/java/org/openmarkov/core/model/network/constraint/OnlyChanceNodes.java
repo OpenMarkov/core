@@ -26,9 +26,9 @@ public class OnlyChanceNodes extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-	    List<Node> probNodes = probNet.getNodes();
-		for (Node probNode : probNodes) {
-			if (probNode.getNodeType() != NodeType.CHANCE) {
+	    List<Node> nodes = probNet.getNodes();
+		for (Node node : nodes) {
+			if (node.getNodeType() != NodeType.CHANCE) {
 				return false;
 			}
 		}

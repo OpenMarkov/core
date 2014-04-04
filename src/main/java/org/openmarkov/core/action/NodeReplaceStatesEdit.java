@@ -25,7 +25,7 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 
 /**
  * <code>NodeReplaceStatesEdit</code> is a simple edit that allows modify the
- * states of probNode
+ * states of node
  * 
  * @version 1.0 10/05/2011
  * @author Miguel Palacios
@@ -47,7 +47,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	 */
 	private State[] newStates;
 
-	private Node probNode;
+	private Node node;
 
 	private List<Potential> lastPotential;
 
@@ -71,14 +71,14 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	 * @param newDefaulStates
 	 *            the new default states.
 	 */
-	public NodeReplaceStatesEdit(Node probNode, State[] newStates) {
-		super(probNode.getProbNet());
-		this.probNode = probNode;
+	public NodeReplaceStatesEdit(Node node, State[] newStates) {
+		super(node.getProbNet());
+		this.node = node;
 
-		this.lastStates = probNode.getVariable().getStates();
-		this.lastPotential = probNode.getPotentials();
+		this.lastStates = node.getVariable().getStates();
+		this.lastPotential = node.getPotentials();
 
-		this.currentPartitionedInterval = probNode.getVariable()
+		this.currentPartitionedInterval = node.getVariable()
 				.getPartitionedInterval();
 
 		this.newStates = newStates;
@@ -91,7 +91,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	public void doEdit() {
 		if (newStates != null) {
 			List<Node> nodes;
-			probNode.getVariable().setStates(newStates);
+			node.getVariable().setStates(newStates);
 			List<Potential> newPotentials = new ArrayList<Potential>();
 			// set uniform potential for the edited node and children if the
 			// new number of states is different that the last states
@@ -104,11 +104,11 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 					newPotential.setUtilityVariable(lastPotential.get(0)
 							.getUtilityVariable());
 					newPotentials.add(newPotential);
-					probNode.setPotentials(newPotentials);
+					node.setPotentials(newPotentials);
 				}
 
 				UniformPotential childLastPotential;
-				nodes = probNet.getChildren(probNode);
+				nodes = probNet.getChildren(node);
 
 				for (Node child : nodes) {
 					if (child.getPotentials().size() != 0) {
@@ -124,21 +124,21 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 						child.setPotentials(container);
 					}
 				}
-				resetLink(probNode);
+				resetLink(node);
 			}
 
-			if (probNode.getVariable().getVariableType() == VariableType.DISCRETIZED) {
+			if (node.getVariable().getVariableType() == VariableType.DISCRETIZED) {
 
-				probNode.getVariable()
+				node.getVariable()
 						.setPartitionedInterval(
 								new PartitionedInterval(
-										probNode.getVariable()
+										node.getVariable()
 												.getDefaultInterval(
-														probNode.getVariable()
+														node.getVariable()
 																.getNumStates()),
-										probNode.getVariable()
+										node.getVariable()
 												.getDefaultBelongs(
-														probNode.getVariable()
+														node.getVariable()
 																.getNumStates())));
 
 			}
@@ -148,10 +148,10 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	public void undo() {
 		super.undo();
 		if (lastStates != null) {
-			probNode.getVariable().setStates(lastStates);
+			node.getVariable().setStates(lastStates);
 			if (lastStates.length != newStates.length) {
-				probNode.setPotentials(lastPotential);
-				List<Node> nodes = probNet.getChildren(probNode);
+				node.setPotentials(lastPotential);
+				List<Node> nodes = probNet.getChildren(node);
 				for (Node child : nodes) {
 					child.setPotential(childrenLastPotential.get(0));
 				}

@@ -13,7 +13,7 @@ import java.util.Stack;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -326,7 +326,7 @@ public class TreeADDPotential extends Potential {
 	 * private TablePotential getPotentialMask () { }
 	 */
 	@Override
-	public void shift(ProbNet probNet, int timeDifference) throws ProbNodeNotFoundException {
+	public void shift(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
 		super.shift(probNet, timeDifference);
 		List<Variable> copiedTreeVariables = new ArrayList<>();
 
@@ -356,7 +356,7 @@ public class TreeADDPotential extends Potential {
 	 * @param variables
 	 * @param role
 	 */
-	public static boolean validate(Node probNode, List<Variable> variables, PotentialRole role) {
+	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean validate = false;
 		// node must have at least one parent node
 		if (role == PotentialRole.UTILITY) {

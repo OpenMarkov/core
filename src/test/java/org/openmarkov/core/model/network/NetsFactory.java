@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -563,13 +563,13 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 			Variable variableU1 = null;
 			try {
 				variableU1 = probNet.getVariable("U1");
-			} catch (ProbNodeNotFoundException e1) {
+			} catch (NodeNotFoundException e1) {
 				e1.printStackTrace();
 			}
 			Variable variableU2 = null;
 			try {
 				variableU2 = probNet.getVariable("U2");
-			} catch (ProbNodeNotFoundException e1) {
+			} catch (NodeNotFoundException e1) {
 				e1.printStackTrace();
 			}
 			Variable variableU = new Variable("U");
@@ -1525,7 +1525,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		Node nodeAccept = datingDAN.addNode(variableAccept, NodeType.CHANCE);
 		Node nodeLikesMe = datingDAN.addNode(variableLikesMe, NodeType.CHANCE);
 		Node nodeToDo = datingDAN.addNode(variableToDo, NodeType.CHANCE);
-		//ProbNode nodeTV = datingDAN.addProbNode(variableTV, NodeType.CHANCE);
+		//Node nodeTV = datingDAN.addNode(variableTV, NodeType.CHANCE);
 		Node nodeTVExp = datingDAN.addNode(variableTVExp, NodeType.CHANCE);
 		Node nodeClub = datingDAN.addNode(variableClub, NodeType.CHANCE);
 		Node nodeMeetFr = datingDAN.addNode(variableMeetFr, NodeType.CHANCE);
@@ -1828,7 +1828,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	  potBenefit_of_conventional_reactor.values = new double[]{8, -4};
 	  nodeBenefit_of_conventional_reactor.setPotential(potBenefit_of_conventional_reactor);
 		
-	  // Link<ProbNode> restrictions and revealing states
+	  // Link<Node> restrictions and revealing states
 	  Link<Node> link_nodeResult_of_test_nodeBuild_decision = probNet.getLink(nodeResult_of_test,nodeBuild_decision, true);
 	  link_nodeResult_of_test_nodeBuild_decision.initializesRestrictionsPotential();
 	  TablePotential restrictions_nodeResult_of_test_nodeBuild_decision = (TablePotential)link_nodeResult_of_test_nodeBuild_decision.getRestrictionsPotential();
@@ -2012,7 +2012,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  UniformPotential potcost_retirement = new UniformPotential(varcost_retirement,Arrays.asList(varRetire));
 		  nodecost_retirement.setPotential(potcost_retirement);
 
-		  // Link<ProbNode> restrictions and revealing states
+		  // Link<Node> restrictions and revealing states
 		  Link<Node> link_nodeWedding_nodeOffspring = probNet.getLink(nodeWedding,nodeOffspring, true);
 		  link_nodeWedding_nodeOffspring.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeWedding_nodeOffspring = (TablePotential)link_nodeWedding_nodeOffspring.getRestrictionsPotential();
@@ -2114,7 +2114,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  nodeQuality_of_life.setPotential(potQuality_of_life);
 
 
-		  // Link<ProbNode> restrictions and revealing states
+		  // Link<Node> restrictions and revealing states
 		  Link<Node> link_nodeDec_Blood_Test_nodeBlood_test_result = probNet.getLink(nodeDec_Blood_Test,nodeBlood_test_result, true);
 		  link_nodeDec_Blood_Test_nodeBlood_test_result.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeDec_Blood_Test_nodeBlood_test_result = (TablePotential)link_nodeDec_Blood_Test_nodeBlood_test_result.getRestrictionsPotential();
@@ -2196,7 +2196,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  nodeU2.setPotential(potU2);
 
 
-		  // Link<ProbNode> restrictions and revealing states
+		  // Link<Node> restrictions and revealing states
 		  Link<Node> link_nodeT1_nodeR_T1 = probNet.getLink(nodeT1,nodeR_T1, true);
 		  link_nodeT1_nodeR_T1.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeT1_nodeR_T1 = (TablePotential)link_nodeT1_nodeR_T1.getRestrictionsPotential();
@@ -2295,7 +2295,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  nodeQuality_of_life.setPotential(potQuality_of_life);
 
 
-		  // Link<ProbNode> restrictions and revealing states
+		  // Link<Node> restrictions and revealing states
 		  for (int i=0;i<numTests;i++){
 			  Link<Node> link_Dec_To_Test_Result = probNet.getLink(nodeDecTest[i],nodeTestResult[i], true);
 			  link_Dec_To_Test_Result.initializesRestrictionsPotential();
@@ -2394,7 +2394,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  potDiabetes.values = new double[]{0.93, 0.07};
 		  nodeDiabetes.setPotential(potDiabetes);
 
-		  // Link<ProbNode> restrictions and revealing states
+		  // Link<Node> restrictions and revealing states
 		  for (int i=0;i<numTests;i++){
 			  Link<Node> link_Dec_To_Test_Result = probNet.getLink(nodeDecTest[i],nodeTestResult[i], true);
 			  link_Dec_To_Test_Result.initializesRestrictionsPotential();
@@ -2486,7 +2486,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  nodeDiabetes.setPotential(potDiabetes);
 		  
 
-		  // Link<ProbNode> restrictions and revealing states
+		  // Link<Node> restrictions and revealing states
 		  for (int i=0;i<numTests;i++){
 			  Link<Node> link_Dec_To_Test_Result = probNet.getLink(nodeDecTest[i],nodeTestResult[i], true);
 			  link_Dec_To_Test_Result.initializesRestrictionsPotential();
@@ -2743,7 +2743,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  SumPotential potNet_Effectiveness = new SumPotential(varNet_Effectiveness,Arrays.asList(varTotal_QALE, varWeighted_Economic_Cost));
 		  nodeNet_Effectiveness.setPotential(potNet_Effectiveness);
 
-		  // Link<ProbNode> restrictions and revealing states
+		  // Link<Node> restrictions and revealing states
 		  Link<Node> link_nodeDecTBNA_nodeTBNA = probNet.getLink(nodeDecTBNA,nodeTBNA, true);
 		  link_nodeDecTBNA_nodeTBNA.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeDecTBNA_nodeTBNA = (TablePotential)link_nodeDecTBNA_nodeTBNA.getRestrictionsPotential();
@@ -2870,7 +2870,7 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		  SumPotential potTotal = new SumPotential(varTotal,Arrays.asList(varCost_First_test, varCost_Second_Test, varCost_Guarantee, varCost_Repair, varBuySell_difference));
 		  nodeTotal.setPotential(potTotal);
 
-		  // Link<ProbNode> restrictions and revealing states
+		  // Link<Node> restrictions and revealing states
 		  Link<Node> link_nodeFirst_Result_nodeSecond_result = probNet.getLink(nodeFirst_Result,nodeSecond_result, true);
 		  link_nodeFirst_Result_nodeSecond_result.initializesRestrictionsPotential();
 		  TablePotential restrictions_nodeFirst_Result_nodeSecond_result = (TablePotential)link_nodeFirst_Result_nodeSecond_result.getRestrictionsPotential();

@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -156,11 +156,11 @@ public class UtilTestMethods {
      * @param variableName1
      * @param variableName2
      * @param directed
-     * @throws ProbNodeNotFoundException
+     * @throws NodeNotFoundException
      * @throws NodeNotFoundException
      */
     public static void addLink(ProbNet probNet, String variableName1, String variableName2, boolean directed) 
-    		throws ProbNodeNotFoundException, NodeNotFoundException {
+    		throws NodeNotFoundException, NodeNotFoundException {
     	Variable variable1 = probNet.getVariable(variableName1);
     	Variable variable2 = probNet.getVariable(variableName2);
     	probNet.addLink(variable1, variable2, directed);

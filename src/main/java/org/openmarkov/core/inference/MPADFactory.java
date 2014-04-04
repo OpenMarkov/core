@@ -9,7 +9,7 @@ package org.openmarkov.core.inference;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
@@ -26,9 +26,9 @@ public class MPADFactory {
 	private final double MARGIN_BETWEEN_SLICES = 150;
 
 	private ProbNet probNet;
-	/** Set of probNodes that will be cloned in each slice. */
+	/** Set of nodes that will be cloned in each slice. */
 	private List<Node> generatedNodes;
-	/** Each <ArrayList<ProbNode> contains the nodes of a time slice */
+	/** Each List<Node> contains the nodes of a time slice */
 	private List<List<Node>> classifiedNodes;
 
 	// Constructor
@@ -73,17 +73,17 @@ public class MPADFactory {
 			double sliceWidth = getSliceWidth(classifiedNodes.get(slice));
 			List<Node> generatedNodesInThisSlice = new ArrayList<Node>(classifiedNodes.get(
 					slice).size());
-			for (Node generatingProbNode : classifiedNodes.get(slice)) {
-				if (!probNet.containsShiftedVariable(generatingProbNode.getVariable(), 1)) {
-					Node newProbNode = probNet.addShiftedProbNode(generatingProbNode, 1,
+			for (Node generatingNode : classifiedNodes.get(slice)) {
+				if (!probNet.containsShiftedVariable(generatingNode.getVariable(), 1)) {
+					Node newNode = probNet.addShiftedNode(generatingNode, 1,
 							sliceWidth + MARGIN_BETWEEN_SLICES, VERTICAL_OFFSET);
-					generatingNodes.add(generatingProbNode);
-					generatedNodes.add(newProbNode);
-					generatedNodesInThisSlice.add(newProbNode);
+					generatingNodes.add(generatingNode);
+					generatedNodes.add(newNode);
+					generatedNodesInThisSlice.add(newNode);
 				}
 			}
-			for (Node probNode : generatedNodesInThisSlice) {
-				classifiedNodes.get(probNode.getVariable().getTimeSlice()).add(probNode);
+			for (Node node : generatedNodesInThisSlice) {
+				classifiedNodes.get(node.getVariable().getTimeSlice()).add(node);
 			}
 		}
 		// assign potentials to the new nodes of the compact net
@@ -93,7 +93,7 @@ public class MPADFactory {
 			generatedNode = generatedNodes.get(i);
 			try {
 				expandPotentialAndLinks(generatingNode, generatedNode, 1);
-			} catch (ProbNodeNotFoundException e) {
+			} catch (NodeNotFoundException e) {
 				// If we get here is because we have not generated the nodes as
 				// we should
 				e.printStackTrace();
@@ -105,7 +105,7 @@ public class MPADFactory {
 	 * Assigns nodes to slices in a collection of slices. Each slice is a
 	 * collection of nodes.
 	 * 
-	 * @return <code>List</code> of <code>List</code> of <code>ProbNode</code>
+	 * @return <code>List</code> of <code>List</code> of <code>Node</code>
 	 */
 	private static List<List<Node>> classifyNodesbySlices(ProbNet probNet,
 			List<Variable> variables) {
@@ -150,10 +150,10 @@ public class MPADFactory {
 		List<Node> newSliceNodes = new ArrayList<Node>();
 		// generates the new nodes
 		double sliceWidth = getSliceWidth(lastSliceNodes);
-		for (Node generatingProbNode : lastSliceNodes) {
-			Node newProbNode = probNet.addShiftedProbNode(generatingProbNode, 1, sliceWidth
+		for (Node generatingNode : lastSliceNodes) {
+			Node newNode = probNet.addShiftedNode(generatingNode, 1, sliceWidth
 					+ MARGIN_BETWEEN_SLICES, VERTICAL_OFFSET);
-			newSliceNodes.add(newProbNode);
+			newSliceNodes.add(newNode);
 		}
 		// generates new slices
 		// assign potentials to the new nodes
@@ -163,7 +163,7 @@ public class MPADFactory {
 			generatedNode = newSliceNodes.get(i);
 			try {
 				expandPotentialAndLinks(generatingNode, generatedNode, 1);
-			} catch (ProbNodeNotFoundException e) {
+			} catch (NodeNotFoundException e) {
 				// If we get here is because we have not generated the nodes as
 				// we should
 				e.printStackTrace();
@@ -176,10 +176,10 @@ public class MPADFactory {
 	 * TODO document: oldNode is a node in the last slice of the compact net
 	 * TODO We are assuming that there is only one potential per node. Revise
 	 * 
-	 * @throws ProbNodeNotFoundException
+	 * @throws NodeNotFoundException
 	 */
 	private void expandPotentialAndLinks(Node oldNode, Node newNode, int timeDifference)
-			throws ProbNodeNotFoundException {
+			throws NodeNotFoundException {
 		Potential oldPotential = oldNode.getPotentials().get(0);
 		Potential newPotential = null;
 		if (oldPotential instanceof CycleLengthShift) {
@@ -208,12 +208,12 @@ public class MPADFactory {
 	private double getSliceWidth(List<Node> nodes) {
 		double minX = Double.POSITIVE_INFINITY;
 		double maxX = 0.0;
-		for (Node probNode : nodes) {
-			if (probNode.getCoordinateX() > maxX) {
-				maxX = probNode.getCoordinateX();
+		for (Node node : nodes) {
+			if (node.getCoordinateX() > maxX) {
+				maxX = node.getCoordinateX();
 			}
-			if (probNode.getCoordinateX() < minX) {
-				minX = probNode.getCoordinateX();
+			if (node.getCoordinateX() < minX) {
+				minX = node.getCoordinateX();
 			}
 		}
 		return maxX - minX;

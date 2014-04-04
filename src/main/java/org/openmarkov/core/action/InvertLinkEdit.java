@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
@@ -60,7 +60,7 @@ public class InvertLinkEdit extends BaseLinkEdit {
             node1 = probNet.getNode (variable1.getName());
             node2 = probNet.getNode (variable2.getName());
         }
-        catch (ProbNodeNotFoundException e)
+        catch (NodeNotFoundException e)
         {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -30,19 +30,19 @@ public class DecisionTreeNode implements DecisionTreeElement
     private double                    utility             = Double.NEGATIVE_INFINITY;
     private double                    scenarioProbability = Double.NEGATIVE_INFINITY;
 
-    public DecisionTreeNode (Node probNode)
+    public DecisionTreeNode (Node node)
     {
-        this.variable = probNode.getVariable();
-        this.nodeType = probNode.getNodeType();
-        List<Potential> potentials = probNode.getPotentials();
+        this.variable = node.getVariable();
+        this.nodeType = node.getNodeType();
+        List<Potential> potentials = node.getPotentials();
         if(potentials != null && !potentials.isEmpty())
         	this.potential = potentials.get(0);
         children = new ArrayList<> ();
     }
 
     /**
-     * Returns the probNode.
-     * @return the probNode.
+     * Returns the variable.
+     * @return the Variable.
      */
     public Variable getVariable ()
     {
@@ -166,7 +166,7 @@ public class DecisionTreeNode implements DecisionTreeElement
     public String toString ()
     {
         StringBuilder builder = new StringBuilder ();
-        builder.append ("DecisionTreeNode [probNode=");
+        builder.append ("DecisionTreeNode [variable=");
         builder.append (variable.getName ());
         builder.append (", children=").append (children);
         builder.append ("]");

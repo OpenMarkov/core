@@ -39,22 +39,22 @@ public class NodeCommentEdit extends SimplePNEdit{
 	/**
 	 * The node
 	 */
-	private Node probNode;
+	private Node node;
 	
 	/**
 	 * Creates a <code>NodeCommentEdit</code> with the node, new comment and 
 	 * type of comment specified.
 	 */
-	public NodeCommentEdit(Node probNode,String newComment,
+	public NodeCommentEdit(Node node,String newComment,
 			String typeComment) {
-		super(probNode.getProbNet());
+		super(node.getProbNet());
 		this.newComment = newComment;
 		this.typeComment = typeComment;
-		this.probNode = probNode;
+		this.node = node;
 		if (typeComment.equals("DefinitionComment")){
-			this.currentComment = probNode.getComment();
+			this.currentComment = node.getComment();
 		}else{
-			this.currentComment = probNode.getPotentials().get(0).getComment();
+			this.currentComment = node.getPotentials().get(0).getComment();
 
 		}
 	}
@@ -62,11 +62,11 @@ public class NodeCommentEdit extends SimplePNEdit{
 	@Override
 	public void doEdit() {
 		if (typeComment.equals("DefinitionComment")){
-			 probNode.setComment(newComment);
+			 node.setComment(newComment);
 		}else{
-		    List<Potential> potential = probNode.getPotentials();
+		    List<Potential> potential = node.getPotentials();
 			potential.get(0).setComment(newComment);
-			probNode.setPotentials(potential); 
+			node.setPotentials(potential); 
 			
 		}
 	}
@@ -74,11 +74,11 @@ public class NodeCommentEdit extends SimplePNEdit{
 	public void undo() {
 		super.undo();
 		if (typeComment.equals("DefinitionComment")){
-			probNode.setComment(currentComment);
+			node.setComment(currentComment);
 		}else{
-		    List<Potential> potential = probNode.getPotentials();
+		    List<Potential> potential = node.getPotentials();
 			potential.get(0).setComment(currentComment);
-			probNode.setPotentials(potential); 
+			node.setPotentials(potential); 
 		}
 	}
 }

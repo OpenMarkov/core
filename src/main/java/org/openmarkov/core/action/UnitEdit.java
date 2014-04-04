@@ -11,25 +11,25 @@ import org.openmarkov.core.model.network.StringWithProperties;
 @SuppressWarnings("serial")
 public class UnitEdit extends SimplePNEdit {
 
-	private Node probNode;
+	private Node node;
 	private StringWithProperties lastUnit;
 	private StringWithProperties newUnit;
 	
-	public UnitEdit(Node probNode, String newUnit) {
-		super(probNode.getProbNet());
-		this.probNode = probNode;
-		this.lastUnit = probNode.getVariable().getUnit().copy();
+	public UnitEdit(Node node, String newUnit) {
+		super(node.getProbNet());
+		this.node = node;
+		this.lastUnit = node.getVariable().getUnit().copy();
 		this.newUnit = new StringWithProperties(newUnit);
 	}
 
 	@Override
 	public void doEdit() throws DoEditException {
-		probNode.getVariable().setUnit(newUnit);
+		node.getVariable().setUnit(newUnit);
 	}
 
 	@Override
 	public void undo() {
 		super.undo();
-		probNode.getVariable().setUnit(lastUnit);
+		node.getVariable().setUnit(lastUnit);
 	}
 }

@@ -59,14 +59,14 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
      * Returns if an instance of a certain Potential type makes sense given the
      * variables and the potential role.
      * 
-     * @param probNode
-     *            . <code>ProbNode</code>
+     * @param node
+     *            . <code>Node</code>
      * @param variables
      *            . <code>List</code> of <code>Variable</code>.
      * @param role
      *            . <code>PotentialRole</code>.
      */
-    public static boolean validate(Node probNode, List<Variable> variables, PotentialRole role) {
+    public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
         return variables.get(0).isTemporal()
                 && variables.get(0).getVariableType() == VariableType.FINITE_STATES
                 && variables.get(0).getNumStates() == 2;

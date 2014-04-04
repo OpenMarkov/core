@@ -21,7 +21,7 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -163,7 +163,7 @@ public class EvidenceCaseTest {
 	
 
 	@Test 
-	public void extendEvidence() throws IOException, ProbNodeNotFoundException, 
+	public void extendEvidence() throws IOException, NodeNotFoundException, 
 	ConstraintViolationException, IncompatibleEvidenceException,
 	InvalidStateException, WrongCriterionException, NullPointerException {
 		

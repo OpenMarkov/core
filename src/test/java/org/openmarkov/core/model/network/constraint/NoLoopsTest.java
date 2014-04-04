@@ -12,7 +12,7 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -29,7 +29,7 @@ public class NoLoopsTest {
 	}
 
 	@Test
-	public void testCheckProbNet() throws ProbNodeNotFoundException {
+	public void testCheckProbNet() throws NodeNotFoundException {
 
 		boolean exceptionLaunched = false;
 		try {

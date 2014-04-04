@@ -65,7 +65,7 @@ public class MaxNumParents extends PNConstraint {
 		/**edits = UtilConstraints.getEditsType(edit, RemoveLinkEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			if (((RemoveLinkEdit)simpleEdit).isDirected()) { 
-				Node node2 = ((RemoveLinkEdit)simpleEdit).getProbNode2().getNode();
+				Node node2 = ((RemoveLinkEdit)simpleEdit).getNode2().getNode();
 				int numParents=node2.getParents().size();
 				if (numParents >=maxNumParents) {
 					return false;

@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NodeType;
@@ -30,23 +30,23 @@ public class BasicOperations {
      * The source probNet
      */
     // private static ProbNet sourceProbNet;
-    private static TablePotential getUtilityFunction(Node utilityProbNode, EvidenceCase evidence) {
+    private static TablePotential getUtilityFunction(Node utilityNode, EvidenceCase evidence) {
         TablePotential newPotential = null;
         Hashtable<Node, TablePotential> hashtable = new Hashtable<>();
-        if (!isSuperValueNode(utilityProbNode)) {
+        if (!isSuperValueNode(utilityNode)) {
             try {
-                newPotential = utilityProbNode.getPotentials().get(0).tableProject(evidence, null)
+                newPotential = utilityNode.getPotentials().get(0).tableProject(evidence, null)
                         .get(0);
             } catch (NonProjectablePotentialException | WrongCriterionException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         } else {
-        	for (Node node : utilityProbNode.getParents()) {
+        	for (Node node : utilityNode.getParents()) {
                 hashtable.put(node, getUtilityFunction(node, evidence));
             }
             List<TablePotential> potentials = new ArrayList<TablePotential>(hashtable.values());
-            Potential utilityPotential = utilityProbNode.getPotentials().get(0);
+            Potential utilityPotential = utilityNode.getPotentials().get(0);
             if (utilityPotential instanceof SumPotential
                     || (utilityPotential instanceof  SameAsPrevious && ((SameAsPrevious) utilityPotential)
                             .getOriginalPotential() instanceof SumPotential)) {
@@ -54,7 +54,7 @@ public class BasicOperations {
             } else {
                 newPotential = DiscretePotentialOperations.multiply(potentials);
             }
-            newPotential.setUtilityVariable(utilityProbNode.getVariable());
+            newPotential.setUtilityVariable(utilityNode.getVariable());
         }
         return newPotential;
     }
@@ -85,7 +85,7 @@ public class BasicOperations {
      * @return A list of utility nodes that have no children
      */
     public static List<Node> getTerminalUtilityNodes(ProbNet network) {
-        List<Node> utilityNodes = network.getProbNodes(NodeType.UTILITY);
+        List<Node> utilityNodes = network.getNodes(NodeType.UTILITY);
         List<Node> terminalUtilityNodes = new ArrayList<>();
         for (Node utilityNode : utilityNodes) {
             if (network.getNumChildren(utilityNode) == 0) {
@@ -102,8 +102,8 @@ public class BasicOperations {
     public static ProbNet removeUtilityNodes(ProbNet sourceProbNet) {
         ProbNet network = sourceProbNet.copy();
         for (Variable utilityVariable : network.getVariables(NodeType.UTILITY)) {
-            Node probNode = network.getNode(utilityVariable);
-            network.removeNode(probNode);
+            Node node = network.getNode(utilityVariable);
+            network.removeNode(node);
         }
         return network;
     }
@@ -127,12 +127,12 @@ public class BasicOperations {
      *         different from null then it is the only potential to keep.
      *         Otherwise all the variables are considered.
      * @throws NodeNotFoundException
-     * @throws ProbNodeNotFoundException
+     * @throws NodeNotFoundException
      */
     public static ProbNet removeSuperValueNodes(ProbNet sourceProbNet, EvidenceCase evidence,
             boolean keepComponents, boolean leaveImplicitSum, Variable utilityVariableToKeep) {
         ProbNet network = sourceProbNet.copy();
-        List<Node> utilityNodes = network.getProbNodes(NodeType.UTILITY);
+        List<Node> utilityNodes = network.getNodes(NodeType.UTILITY);
         for (Node utilityNode : utilityNodes) {
             Variable utilityVariable = utilityNode.getVariable();
             if ((isSuperValueNode(utilityNode) && utilityVariableToKeep == null)
@@ -164,7 +164,7 @@ public class BasicOperations {
             List<Variable> nodesToKeep;
             if (utilityVariableToKeep == null) {
                 if (leaveImplicitSum) {
-                    // Get the probNodes such as there is an implicit sum
+                    // Get the nodes such as there is an implicit sum
                     // between them
                     nodesToKeep = getUtilityNodesToKeepImplicitSum(sourceProbNet);
                 } else {
@@ -257,64 +257,4 @@ public class BasicOperations {
         }
         return false;
     }
-    /**
-     * @param network
-     * @param strategy
-     * @param keepUtilityNodes
-     * @return A copy of a network, where decision nodes are replaced by chance
-     *         nodes whose probability tables are provided by the strategy. If
-     *         'keepUtilityNodes' is true then utility nodes are kept in the
-     *         network (the output would be an influence diagram). Otherwise the
-     *         output is a Bayesian network.
-     * @throws NodeNotFoundException
-     */
-    /*
-     * public static ProbNet constructPolicyNetwork(ProbNet network,Strategy
-     * strategy,boolean keepUtilityNodes) throws NodeNotFoundException
-     * { ProbNet policyNetwork; policyNetwork =
-     * network.copy(); //Remove utility nodes if keepUtilityNodes is false if
-     * (!keepUtilityNodes){ ArrayList<ProbNode> utilities =
-     * policyNetwork.getProbNodes(NodeType.UTILITY); for (ProbNode
-     * util:utilities){ policyNetwork.removeProbNode(util); } } //Change
-     * decision nodes by chance nodes whose probability potential //is given by
-     * the corresponding policy ArrayList<ProbNode> decisions =
-     * policyNetwork.getProbNodes(NodeType.DECISION); for (ProbNode
-     * decision:decisions){ Variable varDecision = decision.getVariable();
-     * //Remove decision policyNetwork.removeProbNode(decision); //Create a
-     * chance node for the same variable policyNetwork.addVariable(varDecision,
-     * NodeType.CHANCE); //Add the links to the children (chance) of decision
-     * node ArrayList<Node> childrenOfDecision =
-     * network.getProbNode(varDecision).getNode().getChildren();
-     * ArrayList<ProbNode> probNodesChildrenOfDecision =
-     * ProbNet.getProbNodesOfNodes(childrenOfDecision); for (ProbNode
-     * child:probNodesChildrenOfDecision){ NodeType type = child.getNodeType();
-     * if (type == NodeType.CHANCE){
-     * policyNetwork.addLink(varDecision,child.getVariable(),true); } }
-     * //Incoming Links for the variable ArrayList<Variable> domainPolicy =
-     * strategy.getDomainOfPolicy(varDecision); for (Variable
-     * varInDomain:domainPolicy){
-     * policyNetwork.addLink(varInDomain,varDecision,true); } //Potential
-     * probability for the variable ArrayList<Variable> domainPotential = new
-     * ArrayList<Variable>(); domainPotential.add(varDecision);
-     * domainPotential.addAll(domainPolicy); TablePotential tp = new
-     * TablePotential(domainPotential,PotentialRole.CONDITIONAL_PROBABILITY);
-     * GTablePotential<Choice> policy =
-     * strategy.getPolicy(varDecision).getPotential(); int numElemsPolicy =
-     * policy.elementTable.size(); for (int i = 0; i < numElemsPolicy ; i++){
-     * int[] configurationPolicy = policy.getConfiguration(i); int
-     * lenghtConfigurationPolicy = configurationPolicy.length; int[]
-     * configurationTP = new int[lenghtConfigurationPolicy+1]; int[] choices =
-     * policy.elementTable.get(i).getValues(); int choicesLength =
-     * choices.length; double probabilityChoices = 1.0/choicesLength; for (int
-     * indexChoice=0;indexChoice<choicesLength;indexChoice++){
-     * configurationTP[0] = choices[indexChoice]; for (int j=0; j <
-     * lenghtConfigurationPolicy ; j++){ configurationTP[j+1] =
-     * configurationPolicy[j]; } int posConfigurationTP =
-     * tp.getPosition(configurationTP); tp.values[posConfigurationTP] =
-     * probabilityChoices; } policyNetwork.addPotential(tp); } } if
-     * (keepUtilityNodes){ try { policyNetwork =
-     * removeSuperValueNodes(policyNetwork,true,false); } catch
-     * (ProbNodeNotFoundException e) { e.printStackTrace(); } } return
-     * policyNetwork; }
-     */
 }

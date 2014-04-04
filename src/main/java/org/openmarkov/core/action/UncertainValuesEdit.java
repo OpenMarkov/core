@@ -15,7 +15,7 @@ import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
- * <code>AddProbNodeEdit</code> is a edit that allow add a node to
+ * <code>AddNodeEdit</code> is a edit that allow add a node to
  * <code>ProbNet</code> object.
  * @version 1 23/06/11
  * @author mluque
@@ -33,7 +33,7 @@ public class UncertainValuesEdit extends SimplePNEdit
     {
         return basePosition;
     }
-    private Node probNode;
+    private Node node;
     private boolean  isChanceVariable;
 
     public boolean isChanceVariable ()
@@ -41,9 +41,9 @@ public class UncertainValuesEdit extends SimplePNEdit
         return isChanceVariable;
     }
 
-    public Node getProbNode ()
+    public Node getNode ()
     {
-        return probNode;
+        return node;
     }
     private boolean wasNullOldUncertainValues;
     /**
@@ -52,7 +52,7 @@ public class UncertainValuesEdit extends SimplePNEdit
     private int     selectedColumn;
 
     /**
-     * Creates a new <code>AddProbNodeEdit</code> with the network where the new
+     * Creates a new <code>AddNodeEdit</code> with the network where the new
      * new node will be added and basic information about it.
      * @param selectedColumn
      * @param b
@@ -61,17 +61,17 @@ public class UncertainValuesEdit extends SimplePNEdit
      * @param nodeType The new node type.
      * @param cursorposition the position (coordinates X,Y) of the node.
      */
-    public UncertainValuesEdit (Node probNode,
+    public UncertainValuesEdit (Node node,
                                 List<UncertainValue> uncertainColumn,
                                 List<Double> valuesColumn,
                                 int basePosition,
                                 int selectedColumn,
                                 boolean isChanceVariable)
     {
-        super (probNode.getProbNet ());
-        this.probNode = probNode;
+        super (node.getProbNet ());
+        this.node = node;
         this.isChanceVariable = isChanceVariable;
-        Variable variable = probNode.getVariable ();
+        Variable variable = node.getVariable ();
         newUncertainColumn = uncertainColumn;
         newValuesColumn = valuesColumn;
         this.basePosition = basePosition;
@@ -114,12 +114,12 @@ public class UncertainValuesEdit extends SimplePNEdit
 
     private TablePotential getPotential ()
     {
-        return (TablePotential) (probNode.getPotentials ().get (0));
+        return (TablePotential) (node.getPotentials ().get (0));
     }
 
     public Variable getVariable ()
     {
-        return probNode.getVariable ();
+        return node.getVariable ();
     }
 
     @Override

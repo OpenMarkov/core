@@ -52,7 +52,7 @@ public class OnlyFiniteStatesVariables extends PNConstraint {
 			UtilConstraints.getSimpleEditsByType(edit, VariableTypeEdit.class);
 		for (PNEdit simpleEdit : edits) {
 
-			NodeType nodetype=((VariableTypeEdit)simpleEdit).getProbNode().getNodeType();
+			NodeType nodetype=((VariableTypeEdit)simpleEdit).getNode().getNodeType();
 
 			if(nodetype == NodeType.CHANCE || nodetype == NodeType.DECISION )
 			{

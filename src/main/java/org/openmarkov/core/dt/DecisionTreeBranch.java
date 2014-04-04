@@ -122,10 +122,10 @@ public class DecisionTreeBranch implements DecisionTreeElement
             	EvidenceCase evidenceCase = getBranchStates();
     	    	for(Finding finding : evidenceCase.getFindings())
     	    	{
-    	    		Node probNode = probNet.getNode(finding.getVariable());
-    	    		if(probNode != null && probNode.getNodeType() == NodeType.CHANCE)
+    	    		Node node = probNet.getNode(finding.getVariable());
+    	    		if(node != null && node.getNodeType() == NodeType.CHANCE)
     	    		{
-    	    			Potential potential = probNode.getPotentials().get(0);
+    	    			Potential potential = node.getPotentials().get(0);
     	    			scenarioProbability *= potential.getProbability(evidenceCase);
     	    		}
     	    	}

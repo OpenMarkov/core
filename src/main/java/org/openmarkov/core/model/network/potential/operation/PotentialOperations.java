@@ -287,7 +287,7 @@ public class PotentialOperations {
      *
      * @param probNet the <code>probNet</code> object that contains the variable
      * @param variable  the <code>Variable</code> object.
-     * @param auxNodeType the nodeType of the probNode that match the variable.
+     * @param auxNodeType the nodeType of the node that match the variable.
      * 
      * @return a new UniformPotential. 
      */

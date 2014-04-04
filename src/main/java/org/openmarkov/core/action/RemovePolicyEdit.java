@@ -30,15 +30,15 @@ public class RemovePolicyEdit extends SimplePNEdit {
 	
 	/**
 	 * 
-	 * @param probNode
+	 * @param node
 	 */
-	public RemovePolicyEdit(Node probNode) {
-		super(probNode.getProbNet());
-		this.variable = probNode.getVariable();
-		if (probNode.getNodeType() == NodeType.DECISION && 
-				probNode.getPolicyType() != PolicyType.OPTIMAL){
-			lastPotential = probNode.getPotentials().get( 0 );
-			lastPolicyType = probNode.getPolicyType();
+	public RemovePolicyEdit(Node node) {
+		super(node.getProbNet());
+		this.variable = node.getVariable();
+		if (node.getNodeType() == NodeType.DECISION && 
+				node.getPolicyType() != PolicyType.OPTIMAL){
+			lastPotential = node.getPotentials().get( 0 );
+			lastPolicyType = node.getPolicyType();
 		}
 		
 	}

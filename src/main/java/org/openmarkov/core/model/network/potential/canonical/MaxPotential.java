@@ -47,12 +47,12 @@ public class MaxPotential extends MinMaxPotential {
 	
     /** Returns if an instance of a certain Potential type makes sense given 
      * the variables and the potential role.
-     * @param probNode. <code>ProbNode</code> 
+     * @param node. <code>Node</code> 
      * @param variables. <code>ArrayList</code> of <code>Variable</code>.
      * @param role. <code>PotentialRole</code>. */
-	public static boolean validate(Node probNode, List<Variable> variables, 
+	public static boolean validate(Node node, List<Variable> variables, 
 			PotentialRole role) {
-		boolean valid = ICIPotential.validate(probNode, variables, role) && 
+		boolean valid = ICIPotential.validate(node, variables, role) && 
 		        ((role == PotentialRole.CONDITIONAL_PROBABILITY)
 				|| (role == PotentialRole.POLICY));
 		int i = 0;

@@ -115,7 +115,7 @@ public abstract class ICIPotential extends Potential {
      * @param variables
      * @param role
      */
-    public static boolean validate (Node probNode, List<Variable> variables, PotentialRole role)
+    public static boolean validate (Node node, List<Variable> variables, PotentialRole role)
     {
         return variables.size () > 1;
     }   

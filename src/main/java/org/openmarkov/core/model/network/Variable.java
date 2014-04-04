@@ -21,7 +21,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
  * A variable (for instance, a random variable or a decision). Each
- * <code>ProbNode</code> in a <code>ProbNet</code>work represents a
+ * <code>Node</code> in a <code>ProbNet</code>work represents a
  * <code>Variable</code>
  * 
  * @author marias
@@ -577,7 +577,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 
 		this.variableType = variableType;
 		// TODO this method assume that the states exists a priori
-		// when ProbNode is created, Variable is created, then when node
+		// when Node is created, Variable is created, then when node
 		// is changed from continuous to discrete, the edit has to
 		// assign the default state indicated in probNet.
 		switch (variableType) {

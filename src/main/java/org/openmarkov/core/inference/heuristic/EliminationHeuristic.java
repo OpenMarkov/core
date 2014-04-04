@@ -66,23 +66,23 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 		this.nodesToEliminate = new ArrayList<>(variablesToEliminate.size());
 		for(List<Variable> variables : variablesToEliminate)
 		{
-		    List<Node> probNodes = new ArrayList<>(variables.size());
+		    List<Node> nodes = new ArrayList<>(variables.size());
 		    for(Variable variable : variables)
 		    {
-		        Node probNode = probNet.getNode(variable);
-		        if (probNode!=null){
-		        	probNodes.add(probNode);
+		        Node node = probNet.getNode(variable);
+		        if (node!=null){
+		        	nodes.add(node);
 		        }
 		    }
-		    if (probNodes.size()>0){
-		    	this.nodesToEliminate.add(probNodes);
+		    if (nodes.size()>0){
+		    	this.nodesToEliminate.add(nodes);
 		    }
 		}
 		variableProposed = null;
 	}
 
 	// Methods
-	/** @return The <code>ProbNode</code> that the heuristic suggest to 
+	/** @return The <code>Variable</code> the heuristic suggests to 
 	 * eliminate. */
 	public abstract Variable getVariableToDelete();
 	
@@ -110,7 +110,7 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	}
 	
 	/** @param event <code>UndoableEditEvent</code>
-	 * @return probNode (<code>ProbNode</code>) in the heuristic 
+	 * @return node (<code>Node</code>) in the heuristic 
 	 *   <code>ProbNet</code> that will be removed */
 	protected Variable getEventVariable(UndoableEditEvent event) {
 		Variable variable = null;

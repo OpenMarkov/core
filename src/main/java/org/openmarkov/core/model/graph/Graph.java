@@ -485,9 +485,40 @@ public class Graph <T> {
 	 * </ol> */
 	public String toString() {
 		StringBuffer buffer = 
-			new StringBuffer("Number of nodes: " + nodes.size() + "\n");
+			new StringBuffer("Nodes (" + nodes.size() + "): \n");
 		for (T node : nodes) {
 			buffer.append(node.toString() + "\n");
+		}
+		buffer.append("Links: \n");
+		if(explicitLinks)
+		{
+			for(T node : nodeLinks.keySet())
+			{
+				List<Link<T>> links = nodeLinks.get(node);
+				for(Link<T> link : links)
+				{
+					if(node.equals(link.getNode1()))
+						buffer.append(link.toString() + "\n");
+				}
+			}
+		}else
+		{
+			for(T node : nodeChildren.keySet())
+			{
+				for(T child : nodeChildren.get(node))
+				{
+					buffer.append(node.toString() +" --> "+ child.toString() + "\n");
+				}
+			}
+			for(T node : nodeSiblings.keySet())
+			{
+				int indexNode = nodes.indexOf(node);
+				for(T sibling : nodeSiblings.get(node))
+				{
+					if(indexNode < nodes.indexOf(sibling))
+						buffer.append(node.toString() +" --- "+ sibling.toString() + "\n");
+				}
+			}
 		}
 		return buffer.toString();
 	}

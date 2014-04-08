@@ -647,32 +647,6 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		return name;
 	}
 
-	public boolean equals(Object obj) {
-
-		if (this == obj)
-			return true;
-		if ((obj == null) || (obj.getClass() != this.getClass()))
-			return false;
-		Variable otherVariable = (Variable) obj;
-		if(!this.name.equals(otherVariable.name))
-			return false;
-		if(states.length != otherVariable.states.length)
-			return false;
-		for(int i=0; i<states.length; ++i)
-			if(!states[i].equals(otherVariable.states[i]))
-				return false;
-		return true;
-	}
-
-	 @Override
-	 public int hashCode ()
-	 {
-		 int hashCode = 0;
-		 for(int i=0;i<states.length;++i)
-			 hashCode += 7* i * states[i].getName().hashCode();
-		 return 17 * hashCode + 37 *name.hashCode ();
-	 }
-
 	private int getTimeSlice(String variableName) {
 		int timeSlice = noTemporalTimeSlice;
 		if (variableName.contains(" [")) {

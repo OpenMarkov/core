@@ -10,7 +10,6 @@ package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,15 +66,14 @@ public class LinearRegressionPotential extends RegressionPotential {
     protected List<TablePotential> tableProject(EvidenceCase evidenceCase,
             InferenceOptions inferenceOptions,
             double[] coefficients,
-            String[] covariates)
+            String[] covariates,
+            List<Variable> evidencelessVariables,
+            Map<String, String> variableValues)
             throws NonProjectablePotentialException, WrongCriterionException {
         Variable conditionedVariable = getConditionedVariable(); 
         int numStates = conditionedVariable.getNumStates();
         Evaluator evaluator = new Evaluator();
         // Fill arrays numericValues and evidencelessVariables
-        List<Variable> evidencelessVariables = new ArrayList<>();
-        List<Integer> evidencelessVariablesIndex = new ArrayList<>();
-        Map<String, String> variableValues = new HashMap<>();
 
         int constantIndex = -1;
         for(int i=0; i < covariates.length; ++i)
@@ -85,22 +83,6 @@ public class LinearRegressionPotential extends RegressionPotential {
                 constantIndex = i;
             }
         }        
-        for (int i = 1; i < variables.size(); ++i) {
-            Variable variable = variables.get(i);
-
-            if (evidenceCase == null || !evidenceCase.contains(variable)) {
-                if (variable.getVariableType() == VariableType.NUMERIC) {
-                    throw new NonProjectablePotentialException("Can not project potential with numeric variable "
-                            + variable.getName());
-                }
-                evidencelessVariables.add(variable);
-                evidencelessVariablesIndex.add(i - 1);
-                variableValues.put("v"+i, "0.0");
-            } else {
-                double numericValue = evidenceCase.getFinding(variable).getNumericalValue();
-                variableValues.put("v"+i, String.valueOf(numericValue));
-            }
-        }
 
         List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
         projectedPotentialVariables.add(0, variables.get(0));

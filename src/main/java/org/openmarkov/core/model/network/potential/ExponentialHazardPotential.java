@@ -9,6 +9,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import java.util.List;
+import java.util.Map;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -76,7 +77,9 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
     public List<TablePotential> tableProject(EvidenceCase evidenceCase,
             InferenceOptions inferenceOptions,
             double[] coefficients,
-            String[] covariates)
+            String[] covariates,
+            List<Variable> evidencelessVariables,
+            Map<String, String> variableValues)
             throws NonProjectablePotentialException, WrongCriterionException {
         double[] weibullCoeficients = new double[coefficients.length+1];
         String[] weibullCovariates = new String[covariates.length+1];
@@ -88,7 +91,7 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
             weibullCoeficients[i+1] = coefficients[i];
             weibullCovariates[i+1] = covariates[i];
         }
-        return super.tableProject(evidenceCase, inferenceOptions, weibullCoeficients, weibullCovariates);
+        return super.tableProject(evidenceCase, inferenceOptions, weibullCoeficients, weibullCovariates, evidencelessVariables, variableValues);
     }
 
     @Override

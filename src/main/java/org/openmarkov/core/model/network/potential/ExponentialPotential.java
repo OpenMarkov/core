@@ -10,7 +10,6 @@ package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,44 +64,16 @@ public class ExponentialPotential extends RegressionPotential {
 
 	@Override
 	protected List<TablePotential> tableProject(EvidenceCase evidenceCase,
-			InferenceOptions inferenceOptions, double[] coefficients, String[] covariates)
+			InferenceOptions inferenceOptions, double[] coefficients, String[] covariates,
+            List<Variable> evidencelessVariables,
+            Map<String, String> variableValues)
 			throws NonProjectablePotentialException, WrongCriterionException {
 		// Fill arrays numericValues and evidencelessVariables
-		List<Variable> evidencelessVariables = new ArrayList<>();
-		List<Integer> evidencelessVariablesIndex = new ArrayList<>();
-		Map<String, String> variableValues = new HashMap<>();
 
 		int constantIndex = -1;
 		for (int i = 0; i < covariates.length; ++i) {
 			if (covariates[i].equals(CONSTANT)) {
 				constantIndex = i;
-			}
-		}
-
-		for (int i = 1; i < variables.size(); ++i) {
-			Variable variable = variables.get(i);
-			if (evidenceCase == null || !evidenceCase.contains(variable)) {
-				if (variable.getVariableType() == VariableType.NUMERIC) {
-					throw new NonProjectablePotentialException(
-							"Can not project potential with numeric variable " + variable.getName());
-				}
-				evidencelessVariables.add(variable);
-				evidencelessVariablesIndex.add(i - 1);
-				variableValues.put("v"+i, "0.0");
-			} else {
-				double numericValue = 0;
-				if (variable.getVariableType() == VariableType.NUMERIC) {
-					numericValue = evidenceCase.getFinding(variable).getNumericalValue();
-				} else {
-					int index = evidenceCase.getFinding(variable).getStateIndex();
-					numericValue = index;
-					try {
-						numericValue = Double.parseDouble(variable.getStates()[index].getName());
-					} catch (NumberFormatException e) {
-						// ignore
-					}
-				}
-				variableValues.put("v"+i, String.valueOf(numericValue));
 			}
 		}
 

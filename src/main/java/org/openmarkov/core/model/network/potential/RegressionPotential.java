@@ -9,7 +9,9 @@
 package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -19,6 +21,7 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.NormalFunction;
 import org.openmarkov.core.model.network.modelUncertainty.XORShiftRandom;
 
@@ -164,14 +167,43 @@ public abstract class RegressionPotential extends Potential {
             throws NonProjectablePotentialException, WrongCriterionException {
         double[] coefficients = (sampledCoefficients == null) ? this.coefficients
                 : this.sampledCoefficients;
-        
-        return tableProject(evidenceCase, inferenceOptions, coefficients, processedCovariates);
+        List<Variable> evidencelessVariables = new ArrayList<>();
+		Map<String, String> variableValues = new HashMap<>();
+
+		for (int i = 1; i < variables.size(); ++i) {
+			Variable variable = variables.get(i);
+			if (evidenceCase == null || !evidenceCase.contains(variable)) {
+				if (variable.getVariableType() == VariableType.NUMERIC) {
+					throw new NonProjectablePotentialException(
+							"Can not project potential with numeric variable " + variable.getName());
+				}
+				evidencelessVariables.add(variable);
+				variableValues.put("v"+i, "0.0");
+			} else {
+				double numericValue = 0;
+				if (variable.getVariableType() == VariableType.NUMERIC) {
+					numericValue = evidenceCase.getFinding(variable).getNumericalValue();
+				} else {
+					int index = evidenceCase.getFinding(variable).getStateIndex();
+					numericValue = index;
+					try {
+						numericValue = Double.parseDouble(variable.getStates()[index].getName());
+					} catch (NumberFormatException e) {
+						// ignore
+					}
+				}
+				variableValues.put("v"+i, String.valueOf(numericValue));
+			}
+		}		
+        return tableProject(evidenceCase, inferenceOptions, coefficients, processedCovariates, evidencelessVariables, variableValues);
     }
 
     protected abstract List<TablePotential> tableProject(EvidenceCase evidenceCase,
             InferenceOptions inferenceOptions,
             double[] coefficients,
-            String[] covariates)
+            String[] covariates,
+            List<Variable> evidencelessVariables,
+            Map<String, String> variableValues)
             throws NonProjectablePotentialException, WrongCriterionException;
 
     @Override

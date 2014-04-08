@@ -43,11 +43,6 @@ public class GraphTest {
 
 	@Test
 	public void testMakeLinksExplicit() {
-		// Part 1: test that there are not explicit links before making links explicit
-		for (String node : nodes) {
-			List<Link<String>> linksNode = graph.getLinks(node);
-			assertEquals(0, linksNode.size());
-		}
 		
 		// Test that the number of links does not change after making them explicit
 		int numLinksBefore = countLinks(graph);
@@ -55,7 +50,7 @@ public class GraphTest {
 		int numLinksAfter = countLinks(graph);
 		assertEquals(numLinksBefore, numLinksAfter);
 
-		// Part 2: examine the explicit links and compare them with the implicit ones
+		// Examine the explicit links and compare them with the implicit ones
 		// Check that the explicit link A->B
 		List<Link<String>> linksOfA = graph.getLinks();
 		assertEquals(3, linksOfA.size());

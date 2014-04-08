@@ -205,12 +205,6 @@ public class ProbNetOperationsTest {
 		
 		ProbNet inferenceTestNet;
 		
-		Variable A;
-		
-		Variable B; 
-		
-		Variable D;
-		
 		Variable variableA = new Variable("A", 2);
 		
 		Variable variableB = new Variable("B", 2); 
@@ -229,7 +223,7 @@ public class ProbNetOperationsTest {
 		
 		Variable variableI = new Variable("I", 2);
 		
-		Variable U;
+		Variable U = new Variable("U");
 		
 		
 		List<Variable> aVariables;
@@ -287,20 +281,15 @@ public class ProbNetOperationsTest {
 		Finding eA;
 
 		// create simpleProbNet
-		// create variables
-		A = new Variable("A", 2);
-		B = new Variable("B", 2); 
-		D = new Variable("D", 2);
-		U = new Variable("U");
 		// create Arrays of variables used in potentials
 		aVariables = new ArrayList<Variable>(1);
-		aVariables.add(A);
+		aVariables.add(variableA);
 		baVariables = new ArrayList<Variable>(2);
-		baVariables.add(B);
-		baVariables.add(A);
+		baVariables.add(variableB);
+		baVariables.add(variableA);
 		adVariables = new ArrayList<Variable>(2);
-		adVariables.add(A);
-		adVariables.add(D);
+		adVariables.add(variableA);
+		adVariables.add(variableD);
 		// create potentials
 		pA = new TablePotential(
 				aVariables, PotentialRole.CONDITIONAL_PROBABILITY);
@@ -319,11 +308,11 @@ public class ProbNetOperationsTest {
 		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);
 		// add potentials and variables
 		simpleProbNet.addPotential(pA); // add variable and potential
-		simpleProbNet.addNode(D, NodeType.DECISION);
+		simpleProbNet.addNode(variableD, NodeType.DECISION);
 		simpleProbNet.addPotential(pU);
 		simpleProbNet.addPotential(pBA);
-		simpleProbNet.addLink(B, D, true);
-		eA = new Finding(A, 0);
+		simpleProbNet.addLink(variableB, variableD, true);
+		eA = new Finding(variableA, 0);
 		// eB = new Finding(B, 1);
 		simpleEvidence = new EvidenceCase();
 		simpleEvidence.addFinding(eA);
@@ -482,7 +471,7 @@ public class ProbNetOperationsTest {
 			potential0B = (TablePotential)potentialsB.get(1);
 		}
 		assertEquals(1, potential0B.getNumVariables());
-		assertTrue(potential0B.contains(B));
+		assertTrue(potential0B.contains(variableB));
 		assertEquals(2, potential0B.values.length);
 		int[] offsets0B = potential0B.getOffsets();
 		assertEquals(1, offsets0B.length);

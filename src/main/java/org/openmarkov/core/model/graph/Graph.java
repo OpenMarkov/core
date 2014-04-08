@@ -216,6 +216,7 @@ public class Graph <T> {
 	 *         returns <code>null</code>
 	 * @consultation */
 	public Link<T> getLink(T node1, T node2, boolean directed) {
+		makeLinksExplicit(false);
 		List<Link<T>> linksNode1 = nodeLinks.get(node1);
 		if(linksNode1 !=null)
 		{
@@ -320,21 +321,24 @@ public class Graph <T> {
 	}
 
 	public List<Link<T>> getLinks(T node) {
-
+		makeLinksExplicit(false);
 		return nodeLinks.containsKey(node)? new ArrayList<>(nodeLinks.get(node)) : new ArrayList<Link<T>>();
 	}
 	
 	public int getNumLinks(T node) {
-
-		return nodeLinks.containsKey(node)?  nodeLinks.get(node).size() : 0;
+		int numLinks = 0;
+		if(explicitLinks)
+			numLinks = nodeLinks.containsKey(node)?  nodeLinks.get(node).size() : 0;
+		else
+			numLinks = getNumParents(node) + getNumChildren(node) + getNumSiblings(node); 
+		return numLinks;
 	}	
 	
 	
 	/** @return The <code>Graph</code> explicit links. */
 	public List<Link<T>> getLinks() {
-		if (!explicitLinks) {
-			makeLinksExplicit(false);
-		}
+		makeLinksExplicit(false);
+
 		List<Link<T>> links = new ArrayList<Link<T>>();
 		for(T node : nodes)
 		{

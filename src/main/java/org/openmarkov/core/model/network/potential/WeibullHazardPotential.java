@@ -15,13 +15,14 @@ import java.util.Map;
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -122,7 +123,7 @@ public class WeibullHazardPotential extends RegressionPotential {
 					}
 					evidencelessVariables.add(variable);
 					evidencelessVariablesIndex.add(i - 1);
-					variableValues.put(variable.getName(), "0.0");
+					variableValues.put("v"+i, "0.0");
 				} else {
 					double numericValue = 0;
 					if (variable.getVariableType() == VariableType.NUMERIC) {
@@ -131,13 +132,12 @@ public class WeibullHazardPotential extends RegressionPotential {
 						int index = evidenceCase.getFinding(variable).getStateIndex();
 						numericValue = index;
 						try {
-							numericValue = Double
-									.parseDouble(variable.getStates()[index].getName());
+							numericValue = Double.parseDouble(variable.getStates()[index].getName());
 						} catch (NumberFormatException e) {
 							// ignore
 						}
 					}
-					variableValues.put(variable.getName(), String.valueOf(numericValue));
+					variableValues.put("v"+i, String.valueOf(numericValue));
 				}
 			}
 		}
@@ -189,16 +189,15 @@ public class WeibullHazardPotential extends RegressionPotential {
 				// Set the values of variables without evidence
 				for (int j = 1; j < projectedPotentialVariables.size(); ++j) {
 					int index = (configBaseIndex / offsets[j]) % dimensions[j];
+					Variable variable = projectedPotentialVariables.get(j);
+					State[] states = variable.getStates();
 					double value = index;
 					try {
-						value = Double
-								.parseDouble(projectedPotentialVariables.get(j).getStates()[index]
-										.getName());
+						value = Double.parseDouble(states[index].getName());
 					} catch (NumberFormatException e) {
 						// ignore
 					}
-					variableValues.put(projectedPotentialVariables.get(j).getName(),
-							String.valueOf(value));
+					variableValues.put("v"+variables.indexOf(variable), String.valueOf(value));
 				}
 				evaluator.setVariables(variableValues);
 				double lambda = coefficients[constantIndex];

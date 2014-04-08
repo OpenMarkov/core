@@ -164,6 +164,7 @@ public abstract class RegressionPotential extends Potential {
             throws NonProjectablePotentialException, WrongCriterionException {
         double[] coefficients = (sampledCoefficients == null) ? this.coefficients
                 : this.sampledCoefficients;
+        
         return tableProject(evidenceCase, inferenceOptions, coefficients, processedCovariates);
     }
 
@@ -258,7 +259,7 @@ public abstract class RegressionPotential extends Potential {
         for (int i = 0; i < covariates.length; ++i) {
             String covariate = covariates[i];
             for (Variable variable : variables) {
-                covariate = covariate.replace(variable.getName(), "#{" + variable.getName() + "}");
+                covariate = covariate.replace(variable.getName(), "#{v" + variables.indexOf(variable) + "}");
             }
             processedCovariates[i] = covariate;
         }

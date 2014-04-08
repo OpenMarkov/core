@@ -88,7 +88,7 @@ public class ExponentialPotential extends RegressionPotential {
 				}
 				evidencelessVariables.add(variable);
 				evidencelessVariablesIndex.add(i - 1);
-				variableValues.put(variable.getName(), "0.0");
+				variableValues.put("v"+i, "0.0");
 			} else {
 				double numericValue = 0;
 				if (variable.getVariableType() == VariableType.NUMERIC) {
@@ -102,7 +102,7 @@ public class ExponentialPotential extends RegressionPotential {
 						// ignore
 					}
 				}
-				variableValues.put(variable.getName(), String.valueOf(numericValue));
+				variableValues.put("v"+i, String.valueOf(numericValue));
 			}
 		}
 
@@ -121,17 +121,15 @@ public class ExponentialPotential extends RegressionPotential {
 		for (int i = 0; i < projectedPotential.values.length; i += numStates) {
 			// Set the values of variables without evidence
 			for (int j = parentFirstIndex; j < projectedPotentialVariables.size(); ++j) {
+				Variable variable = projectedPotentialVariables.get(j);
 				int index = (i / offsets[j]) % dimensions[j];
 				double value = index;
 				try {
-					value = Double
-							.parseDouble(projectedPotentialVariables.get(j).getStates()[index]
-									.getName());
+					value = Double.parseDouble(variable.getStates()[index] .getName());
 				} catch (NumberFormatException e) {
 					// ignore
 				}
-				variableValues.put(projectedPotentialVariables.get(j).getName(),
-						String.valueOf(value));
+				variableValues.put("v"+j, String.valueOf(value));
 			}
 			evaluator.setVariables(variableValues);
 			double regression = coefficients[constantIndex];

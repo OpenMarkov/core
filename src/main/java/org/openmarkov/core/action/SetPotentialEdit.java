@@ -138,8 +138,8 @@ public class SetPotentialEdit extends SimplePNEdit {
 		//probNet.getNode(variable).setPotentials(potentials);
 		node.setPotentials(potentials);
 		// update potential with link restriction
-		if (newPotentialType == TablePotential.class.getAnnotation(
-				PotentialType.class).name() && node.getNodeType() != NodeType.DECISION ) {
+		if (newPotentialType.contentEquals(TablePotential.class.getAnnotation(
+				PotentialType.class).name()) && node.getNodeType() != NodeType.DECISION ) {
 			newPotential = (TablePotential) LinkRestrictionPotentialOperations
 					.updatePotentialByLinkRestrictions(node);
 			potentials = new ArrayList<Potential>();

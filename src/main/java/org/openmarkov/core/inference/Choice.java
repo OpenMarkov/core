@@ -130,7 +130,7 @@ public class Choice {
 	 * @param object <code>Object</code>
 	 * @return <code>true</code> if the object received has the same variable 
 	 *   and the same option (or options set) */
-	public boolean equals(Object object) {
+	public boolean sameInformation(Object object) {
 		Choice choice = (Choice)object;
 		if (choice.variable.getName().equals(this.variable.getName())) {
 			if (choice.getNumValues() != numValues) {

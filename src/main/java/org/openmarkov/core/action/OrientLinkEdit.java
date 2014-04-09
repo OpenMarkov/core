@@ -9,6 +9,7 @@
 
 package org.openmarkov.core.action;
 
+import org.apache.mahout.math.Arrays;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.ProbNet;
@@ -36,7 +37,7 @@ public class OrientLinkEdit extends BaseLinkEdit{
 			probNet.removeLink(variable1, variable2, false);
 			probNet.addLink(variable1, variable2, true);
 		} catch (NodeNotFoundException e) {
-			throw new DoEditException(e.getMessage() + e.getStackTrace());
+			throw new DoEditException(e.getMessage() + Arrays.toString(e.getStackTrace()));
 		}
 	}
 
@@ -48,7 +49,7 @@ public class OrientLinkEdit extends BaseLinkEdit{
 			probNet.removeLink(variable1, variable2, true);
 			probNet.addLink(variable1, variable2, false);
 		} catch (NodeNotFoundException e) {
-			System.err.println(e.getMessage() + e.getStackTrace());
+			System.err.println(e.getMessage() + Arrays.toString(e.getStackTrace()));
 		}
 	}
    

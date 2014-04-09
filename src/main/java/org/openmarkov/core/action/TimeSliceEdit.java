@@ -2,6 +2,7 @@ package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.Variable;
 /**
  * 
  * @author myebra
@@ -28,7 +29,9 @@ public class TimeSliceEdit extends SimplePNEdit{
 	/**
 	 * The last variable name
 	 */
-	private String lastName; 
+	private String lastName;
+	
+	private Variable variable;
 	
 /**
  * 
@@ -37,10 +40,11 @@ public class TimeSliceEdit extends SimplePNEdit{
  */
 	public TimeSliceEdit(Node node, int timeSlice) {
 		super(node.getProbNet());
-		this.lastTimeSlice = node.getVariable().getTimeSlice();
+		variable = node.getVariable();
+		this.lastTimeSlice = variable.getTimeSlice();
 		this.newTimeSlice = timeSlice;
-		this.lastBaseName =  node.getVariable().getBaseName();
-		this.lastName =  node.getVariable().getName();
+		this.lastBaseName =  variable.getBaseName();
+		this.lastName =  variable.getName();
 		this.node = node;
 		
 	}
@@ -48,31 +52,31 @@ public class TimeSliceEdit extends SimplePNEdit{
 	@Override
 	public void doEdit() throws DoEditException {
 		//onlyTemporal && not only atemporal
-		node.getVariable().setTimeSlice(newTimeSlice);
+		variable.setTimeSlice(newTimeSlice);
 		if (newTimeSlice == Integer.MIN_VALUE && lastTimeSlice != Integer.MIN_VALUE && lastBaseName != null) {
-			node.getVariable().setBaseName(null);
+			variable.setBaseName(null);
 			int beginSlicePart = lastName.lastIndexOf('[') - 1;
 			String newName = null;
 			if (beginSlicePart > 0) {
 				newName = lastName.substring(0, beginSlicePart);
 			}
-			node.getVariable().setName(newName);
+			variable.setName(newName);
 		}
 		//not only temporaL && not only atemporal but also set name and base name
 		if (lastTimeSlice == Integer.MIN_VALUE) {
-			node.getVariable().setBaseName(lastBaseName);	
-			node.getVariable().setName(lastName+ " " + "["+ String.valueOf(newTimeSlice)+"]");
+			variable.setBaseName(lastBaseName);	
+			variable.setName(lastName+ " " + "["+ String.valueOf(newTimeSlice)+"]");
 		}
 	}
 	@Override
 	public void undo() {
 		super.undo();
 		//onlyTemporal
-		node.getVariable().setTimeSlice(lastTimeSlice);
+		variable.setTimeSlice(lastTimeSlice);
 		//not only temporaL && not only atemporal but also set name and base name
 		if (lastTimeSlice == Integer.MIN_VALUE) {
-			node.getVariable().setBaseName(lastBaseName);
-			node.getVariable().setName(lastName);
+			variable.setBaseName(lastBaseName);
+			variable.setName(lastName);
 		}
 	}
 

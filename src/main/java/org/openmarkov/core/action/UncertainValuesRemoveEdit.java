@@ -70,7 +70,7 @@ public class UncertainValuesRemoveEdit extends SimplePNEdit {
 		
 		wasNullOldUncertainColumn = !hasUncertainValues(auxUncertainTable);
 				
-		UncertainValue[] oldUncertainColumnArray = (wasNullOldUncertainColumn?null:auxUncertainTable);
+		UncertainValue[] oldUncertainColumnArray = (wasNullOldUncertainColumn ? null : auxUncertainTable);
 		
 		oldUncertainColumn = new ArrayList<UncertainValue>();
 		for (UncertainValue aux:oldUncertainColumnArray){

@@ -9,6 +9,8 @@
 
 package org.openmarkov.core.exception;
 
+import org.apache.mahout.math.Arrays;
+
 @SuppressWarnings("serial")
 public class DoEditException extends Exception {
     /**
@@ -26,7 +28,7 @@ public class DoEditException extends Exception {
      *            . <code>Exception</code>
      */
     public DoEditException(Exception exception) {
-        super(exception.getMessage() + "\n" + exception.getStackTrace());
+        super(exception.getMessage() + "\n" + Arrays.toString(exception.getStackTrace()));
     }
 
 }

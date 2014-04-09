@@ -45,31 +45,27 @@ public class COrientLinksEdit extends CompoundPNEdit {
 		return buffer.toString();
 	}
 
-    @Override
-    public boolean equals (Object arg0)
-    {
-        boolean equals = true;
-        
-        if(arg0 instanceof COrientLinksEdit)
-        {
-            COrientLinksEdit editToCompare = (COrientLinksEdit)arg0;
-            
-            for(UndoableEdit edit : editToCompare.edits)
-            {
-                equals &= edits.contains (edit);
-            }
-            
-            for(UndoableEdit edit : edits)
-            {
-                equals &= editToCompare.edits.contains (edit);
-            }            
-        }else
-        {
-            equals = false;
-        }
+	@Override
+	public boolean equals(Object arg0)
+	{
+		boolean sameInformation = true;
 
-        return equals;
-    }
+		if (arg0 instanceof COrientLinksEdit) {
+			COrientLinksEdit editToCompare = (COrientLinksEdit)arg0;
+
+			for(UndoableEdit edit : editToCompare.edits) {
+				sameInformation &= edits.contains(edit);
+			}
+
+			for(UndoableEdit edit : edits) {
+				sameInformation &= editToCompare.edits.contains(edit);
+			}            
+		} else {
+			sameInformation = false;
+		}
+
+		return sameInformation;
+	}
 
 	
 }

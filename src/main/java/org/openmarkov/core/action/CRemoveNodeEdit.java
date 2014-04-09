@@ -11,6 +11,7 @@ package org.openmarkov.core.action;
 
 import java.util.List;
 
+import org.apache.mahout.math.Arrays;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -45,8 +46,6 @@ public class CRemoveNodeEdit extends CompoundPNEdit{ //implements UsesVariable{
 
 	protected List<Potential> allPotentials;
 	
-	protected ProbNet probNet;
-	
 	// Constructor
 	/** @param probNet </code>ProbNet</code>
 	 * @param variable <code>Variable</code> */
@@ -67,16 +66,16 @@ public class CRemoveNodeEdit extends CompoundPNEdit{ //implements UsesVariable{
 			try {
 				addEdit(new RemoveLinkEdit(node.getProbNet(),probNet.getVariable(name), probNet.getVariable(node.getName()), true));
 			} catch (NodeNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println(e.getMessage());
+				System.err.println(Arrays.toString(e.getStackTrace()));
 			}
 		}
 		for (Node child : children) {
 			try {
 				addEdit(new RemoveLinkEdit(node.getProbNet(), probNet.getVariable(node.getName()), probNet.getVariable(child.getName()), true));
 			} catch (NodeNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println(e.getMessage());
+				System.err.println(Arrays.toString(e.getStackTrace()));
 			}
 		}
 		

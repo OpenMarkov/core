@@ -12,6 +12,7 @@ package org.openmarkov.core.action;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.mahout.math.Arrays;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
@@ -55,15 +56,13 @@ public class InvertLinkEdit extends BaseLinkEdit {
                            boolean isDirected)
     {
         super (probNet, variable1, variable2, isDirected);
-        try
-        {
+        try {
             node1 = probNet.getNode (variable1.getName());
             node2 = probNet.getNode (variable2.getName());
         }
-        catch (NodeNotFoundException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        catch (NodeNotFoundException e) {
+			System.err.println(e.getMessage());
+			System.err.println(Arrays.toString(e.getStackTrace()));
         }      
     }
 
@@ -128,7 +127,10 @@ public class InvertLinkEdit extends BaseLinkEdit {
 			probNet.addLink(variable1, variable2, isDirected);
             node1.setPotentials(parentsOldPotentials);
             node2.setPotentials(childsOldPotentials);
-		} catch (Exception exc){}
+		} catch (Exception e){
+			System.err.println(e.getMessage());
+			System.err.println(Arrays.toString(e.getStackTrace()));
+		}
 	}
 		
     /** Method to compare two InvertLinkEdits comparing the names of

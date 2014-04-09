@@ -30,18 +30,17 @@ public class AddNodeEdit extends SimplePNEdit
      * The new Variable object that match the new node.
      */
     protected Variable       variable;
+
     /**
      * The node type of the new node.
      */
     protected NodeType       nodeType;
-    /**
-     * The network where the new node will be inserted.
-     */
-    protected ProbNet        probNet;
+
     /**
      * Graphic position of the new node
      */
     protected Point2D.Double cursorPosition;
+
     /**
      * The new node
      */

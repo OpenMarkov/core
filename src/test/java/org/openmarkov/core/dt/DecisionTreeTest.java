@@ -61,14 +61,15 @@ public class DecisionTreeTest {
 		Assert.assertEquals(9.3324, decisionTree.getUtility(), 0.0001);
 	}			
 	
-	@Test
-	public void testNtests() throws NodeNotFoundException, IncompatibleEvidenceException,
-			UnexpectedInferenceException, NotEvaluableNetworkException {
-
-		ProbNet nTestsDAN = NetsFactory.buildNTestsDAN(4);
-		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(nTestsDAN);
-		System.out.println(decisionTree.getUtility());
-	}
+// This test doesn't check anything.
+//	@Test
+//	public void testNtests() throws NodeNotFoundException, IncompatibleEvidenceException,
+//			UnexpectedInferenceException, NotEvaluableNetworkException {
+//
+//		ProbNet nTestsDAN = NetsFactory.buildNTestsDAN(4);
+//		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(nTestsDAN);
+//		System.out.println(decisionTree.getUtility());
+//	}
 	
 	@Test
 	public void testEvalDecideTestDAN() throws NodeNotFoundException {
@@ -111,25 +112,27 @@ public class DecisionTreeTest {
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		Assert.assertEquals(7.73, evaluator.getMEU(wooerDAN), 0.0001);
 	}	
-	
-	@Test
-	public void testEvalNtests() throws NodeNotFoundException, IncompatibleEvidenceException,
-			UnexpectedInferenceException, NotEvaluableNetworkException {
 
-		ProbNet nTestsDAN = NetsFactory.buildNTestsDAN(3);
-		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
-		System.out.println(evaluator.getMEU(nTestsDAN));
-	}
-	@Test
-	public void testEvalMediastiNetDAN() throws NodeNotFoundException, IncompatibleEvidenceException,
-			UnexpectedInferenceException, NotEvaluableNetworkException {
-		ProbNet mediastiNetDAN = NetsFactory.buildMediastinetDAN();
-		long startTime = System.nanoTime();
-		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
-		double meu = evaluator.getMEU(mediastiNetDAN);
-		long ellapsedTime = (System.nanoTime() - startTime) / 1000000;
-		System.out.println("MEU="+meu+" Execution time =" +ellapsedTime);
-	}	
+// All these test doesn't check anything.
+//	@Test
+//	public void testEvalNtests() throws NodeNotFoundException, IncompatibleEvidenceException,
+//			UnexpectedInferenceException, NotEvaluableNetworkException {
+//
+//		ProbNet nTestsDAN = NetsFactory.buildNTestsDAN(3);
+//		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
+//		System.out.println(evaluator.getMEU(nTestsDAN));
+//	}
+//	
+//	@Test
+//	public void testEvalMediastiNetDAN() throws NodeNotFoundException, IncompatibleEvidenceException,
+//			UnexpectedInferenceException, NotEvaluableNetworkException {
+//		ProbNet mediastiNetDAN = NetsFactory.buildMediastinetDAN();
+//		long startTime = System.nanoTime();
+//		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
+//		double meu = evaluator.getMEU(mediastiNetDAN);
+//		long ellapsedTime = (System.nanoTime() - startTime) / 1000000;
+//		System.out.println("MEU="+meu+" Execution time =" +ellapsedTime);
+//	}	
 	
 	@Test
 	public void testEvalUsedCarBuyerDAN() throws NodeNotFoundException, IncompatibleEvidenceException,

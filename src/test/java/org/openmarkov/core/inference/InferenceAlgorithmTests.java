@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Before;
+import org.apache.mahout.math.Arrays;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -439,27 +439,29 @@ public abstract class InferenceAlgorithmTests {
 				
 		try {
 			network = NetsFactory.createBN_XY(0.5,1.0,0.0);
+			InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
+			
+			// Test when Y = absent, which is incompatible evidence
+			EvidenceCase evidence = new EvidenceCase();
+			try {
+				evidence.addFinding(network, "Y", "negative");
+			} catch (NodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
+				System.err.println(e.getMessage());
+				System.err.println(Arrays.toString(e.getStackTrace()));
+			} 
+			
+			algorithm.setPostResolutionEvidence(evidence);
+			
+			try {
+				algorithm.getProbsAndUtilities();
+			} catch (UnexpectedInferenceException e) {
+				System.err.println(e.getMessage());
+				System.err.println(Arrays.toString(e.getStackTrace()));
+			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 		
-		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
-				
-		// Test when Y = absent, which is incompatible evidence
-		EvidenceCase evidence = new EvidenceCase();
-		try {
-			evidence.addFinding(network, "Y", "negative");
-		} catch (NodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
-			//e.printStackTrace();
-		} 
-		
-		algorithm.setPostResolutionEvidence(evidence);
-		
-		try {
-			algorithm.getProbsAndUtilities();
-		} catch (UnexpectedInferenceException e) {
-			printExceptionAndFailIfImplemented(e);
-		}
 
 	}
 

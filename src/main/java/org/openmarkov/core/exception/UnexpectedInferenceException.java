@@ -12,8 +12,17 @@ package org.openmarkov.core.exception;
 public class UnexpectedInferenceException extends Exception {
 	
 	// Constructor
-		/** @param message */
-		public UnexpectedInferenceException(String message) {
-			super(message);
-		}
+	/** @param message */
+	public UnexpectedInferenceException(String message) {
+		super(message);
+	}
+	
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public UnexpectedInferenceException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
 }

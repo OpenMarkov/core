@@ -18,5 +18,9 @@ public class NonProjectablePotentialException extends Exception {
 		super(string);
 	}
 
+	public NonProjectablePotentialException(String string, Throwable cause) {
+		super(string, cause);
+	}
+
 
 }

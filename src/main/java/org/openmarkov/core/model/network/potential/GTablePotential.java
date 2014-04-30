@@ -25,7 +25,11 @@ public class GTablePotential<Element> extends TablePotential {
      *   public for the sake of efficiency. */
     public List<Element> elementTable; 
 
-    // Constructor
+    // Constructors
+    /**
+     * @param variables
+     * @param role
+     */
     public GTablePotential(List<Variable> variables, PotentialRole role)  {
         super(variables, null); // <- Don't create a table of doubles
         if (numVariables != 0) {
@@ -37,10 +41,22 @@ public class GTablePotential<Element> extends TablePotential {
         }
     }
     
-    public GTablePotential (Potential potential)
-    {
+    /**
+     * @param variables
+     * @param role
+     * @param elementTable
+     */
+    public GTablePotential(List<Variable> variables, PotentialRole role, List<Element> elementTable)  {
+    	this(variables, role);
+    	this.elementTable = elementTable; 
+    }
+    
+    // Methods
+    public GTablePotential (Potential potential) {
         this (potential.getVariables (), potential.getPotentialRole ());
     }
+    
+    
     
 //	/** Overrides <code>toString</code> method. Mainly for test purposes */
 //	public String toString() {

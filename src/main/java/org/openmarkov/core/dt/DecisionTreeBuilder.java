@@ -51,7 +51,7 @@ public class DecisionTreeBuilder
     {
         DecisionTreeElement root = null;
         try{
-            List<Node> alwaysObservedVariables = ProbNetOperations.getAlwaysObservedVariables (probNet);
+            List<Node> alwaysObservedVariables = getAlwaysObservedVariablesWithoutObservableParents(probNet);
             if(!alwaysObservedVariables.isEmpty ()) // Always observed variables 
             {
                 // Get first node in the list
@@ -70,7 +70,7 @@ public class DecisionTreeBuilder
                 }         
                 root = treeNode;
             }else{
-            	List<Node> parentlessDecisions = ProbNetOperations.getParentlessDecisions (probNet);
+            	List<Node> parentlessDecisions = getNextDecisions (probNet);
             	if(!parentlessDecisions.isEmpty ()) // Parentless decision nodes
             	{
 	                if(parentlessDecisions.size () == 1)
@@ -160,7 +160,56 @@ public class DecisionTreeBuilder
         return root;
     }
     
-    /**
+    public static List<Node> getAlwaysObservedVariablesWithoutObservableParents(ProbNet probNet) {
+    	List<Node> alwaysObservedVariables = ProbNetOperations.getAlwaysObservedVariables (probNet);
+    	List<Node> filteredVariables = new ArrayList<>();
+    	for(Node alwaysObservedVariable : alwaysObservedVariables)
+    	{
+    		boolean noObservedParent = true;
+    		int i = 0;
+    		while(i<alwaysObservedVariables.size() && noObservedParent)
+    		{
+    			if(!alwaysObservedVariable.equals(alwaysObservedVariables.get(i)))
+    				noObservedParent = !probNet.isParent(alwaysObservedVariables.get(i), alwaysObservedVariable);
+    			++i;
+    		}
+    		if(noObservedParent)
+    			filteredVariables.add(alwaysObservedVariable);
+    	}
+		return filteredVariables;
+	}
+    
+	public static List<Node> getNextDecisions(ProbNet probNet) {
+			
+			List<Node> decisionNodes = ProbNetOperations.getParentlessDecisions(probNet);
+			// Check if the nodes revealed by a decision node are the subset of another
+			// In that case we don't need to consider them as valid orders
+			List<List<Node>> revealedNodes = new ArrayList<>();
+			for (Node node : decisionNodes) {
+				List<Node> revealedByDecision = new ArrayList<>();
+				for (Link<Node> link : node.getLinks()) {
+					if (link.getNode1().equals(node) && link.hasRevealingConditions()) {
+						revealedByDecision.add((Node) link.getNode2());
+					}
+				}
+				revealedNodes.add(revealedByDecision);
+			}
+			List<Node> dominatedDecisions = new ArrayList<>();
+			for (int i=0; i<decisionNodes.size(); ++i) {
+				Node nodeA = decisionNodes.get(i);
+				for (int j=0; j<decisionNodes.size(); ++j) {
+					Node nodeB = decisionNodes.get(j);
+					if (nodeA != nodeB
+							&& revealedNodes.get(i).containsAll(revealedNodes.get(j)))
+						dominatedDecisions.add(nodeB);
+				}
+			}
+			decisionNodes.removeAll(dominatedDecisions);
+	
+			return decisionNodes;
+		}
+
+	/**
      * Builds a decision tree from an influence diagram
      * @param probNet
      * @return

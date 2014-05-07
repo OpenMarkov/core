@@ -90,7 +90,7 @@ public class DecisionTreeEvaluator {
 	   DecisionTreeNode root = null;
     	try
     	{
-    		 List<Node> alwaysObservedVariables = ProbNetOperations.getAlwaysObservedVariables (probNet);
+    		 List<Node> alwaysObservedVariables = DecisionTreeBuilder.getAlwaysObservedVariablesWithoutObservableParents (probNet);
              if(!alwaysObservedVariables.isEmpty ()) // Always observed variables 
              {
                  // Get first node in the list
@@ -115,7 +115,7 @@ public class DecisionTreeEvaluator {
                  treeNode.setUtility((scenarioProbability!=0)?utility/scenarioProbability:0);
                  root = treeNode; 
              }else{
-             	List<Node> parentlessDecisions = ProbNetOperations.getParentlessDecisions (probNet);
+             	List<Node> parentlessDecisions = DecisionTreeBuilder.getNextDecisions (probNet);
              	if(!parentlessDecisions.isEmpty ()) // Parentless decision nodes
              	{
                     double utility = Double.NEGATIVE_INFINITY;

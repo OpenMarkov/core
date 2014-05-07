@@ -924,8 +924,8 @@ public class ProbNetTest {
 				while(it1.hasNext())
 				{
 					Link<Node> link1= it1.next();
-					Node linkNode1 = probNet2.getNode(link1.getNode1().getVariable());
-					Node linkNode2 = probNet2.getNode(link1.getNode2().getVariable());
+					Node linkNode1 = probNet2.getNode(link1.getNode1().getVariable().getName());
+					Node linkNode2 = probNet2.getNode(link1.getNode2().getVariable().getName());
 					Link<Node> link2= probNet2.getLink(linkNode1, linkNode2, link1.isDirected());
 					assertEquals(link1.getNode1().getVariable().getName(),link2.getNode1().getVariable().getName());
 					assertEquals(link1.getNode2().getVariable().getName(),link2.getNode2().getVariable().getName());

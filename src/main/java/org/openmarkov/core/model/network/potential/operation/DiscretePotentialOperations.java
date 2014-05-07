@@ -308,7 +308,11 @@ public final class DiscretePotentialOperations {
         return sum(potentialList);
     }
 
-    private static PotentialRole getRole(List<? extends Potential> potentials) {
+    /**
+     * @param potentials
+     * @return
+     */
+    public static PotentialRole getRole(List<? extends Potential> potentials) {
         boolean atLeastOneUtility = false;
         for (Potential potential : potentials) {
             atLeastOneUtility = atLeastOneUtility || potential.isUtility();

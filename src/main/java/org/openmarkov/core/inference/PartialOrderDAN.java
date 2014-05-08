@@ -107,6 +107,8 @@ public class PartialOrderDAN {
 			case DECISION:
 				strType = "decision";
 				break;
+			default:
+				strType = "";
 			}
 			content = content + getNameWithQuotes(node) + "[shape="+strType+"]\n";
 		}

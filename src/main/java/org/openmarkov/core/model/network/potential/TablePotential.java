@@ -29,7 +29,6 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.TablePotentialSampler;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.potential.intervention.Intervention;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
@@ -60,8 +59,6 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      */
     public volatile double[]         values;
     
-    /** Table storing the decisions made for each parent configuration. */
-    public Intervention[] interventions;
     /**
      * Table storing the values of the potential for the sensitivity analysis.
      * This attribute is public for efficiency and volatile for efficiency in

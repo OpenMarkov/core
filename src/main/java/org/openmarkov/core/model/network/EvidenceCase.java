@@ -174,13 +174,13 @@ public class EvidenceCase {
      *            <code>Variable</code>.
      * @throws NoFindingException
      */
-    public void removeFinding(Variable variable)
+    public Finding removeFinding(Variable variable)
             throws NoFindingException {
         Finding finding = getFinding(variable);
         if (finding == null) {
             throw new NoFindingException(variable);
         }
-        findings.remove(finding.getVariable());
+        return findings.remove(finding.getVariable());
     }
 
     /**

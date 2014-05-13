@@ -461,17 +461,23 @@ public class ProbNetOperations {
                 if (configuration.contains(oldVariable)) {
                     // Convert numerical variables with evidence to one-state
                     // variables
-                    double value = configuration.getFinding(oldVariable).numericalValue;
-                    Variable newVariable = new Variable(oldVariable.getName(),
-                            String.valueOf(value));
-                    node.setVariable(newVariable);
-                    originalVariables.put(newVariable, oldVariable);
-                    convertedVariables.put(oldVariable, newVariable);
-                    convertedNodes.add(node);
-                    TablePotential potential = new TablePotential(Arrays.asList(newVariable),
-                            oldPotential.getPotentialRole());
-                    potential.values[0] = 1;
-                    node.setPotential(potential);
+                	Finding finding;
+					try {
+						finding = configuration.removeFinding(oldVariable);
+	                    double value = finding.numericalValue;
+	                    Variable newVariable = new Variable(oldVariable.getName(),
+	                            String.valueOf(value));
+	                    node.setVariable(newVariable);
+	                    originalVariables.put(newVariable, oldVariable);
+	                    convertedVariables.put(oldVariable, newVariable);
+	                    convertedNodes.add(node);
+	                    TablePotential potential = new TablePotential(Arrays.asList(newVariable),
+	                            oldPotential.getPotentialRole());
+	                    potential.values[0] = 1;
+	                    node.setPotential(potential);
+					} catch (NoFindingException e) {
+						e.printStackTrace();
+					}
                 } else {
                     List<Double> newStates = new ArrayList<>();
                     // For each configuration x, add f(x) to the list (if it is

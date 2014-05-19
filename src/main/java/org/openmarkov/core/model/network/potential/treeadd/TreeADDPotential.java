@@ -213,6 +213,7 @@ public class TreeADDPotential extends Potential {
 		boolean equals = true;
 		equals &= otherPotential.getNumVariables() == variables.size();
 		equals &= otherPotential.getRootVariable() == topVariable;
+		// TODO
 		return equals;
 	}
 
@@ -699,6 +700,7 @@ public class TreeADDPotential extends Potential {
 		}
 	}
 	
+	// Methods for toString()
 	
 
 }

@@ -55,6 +55,17 @@ public class TreeADDPotential extends Potential {
 	 */
 	private List<TreeADDBranch> branches = new ArrayList<TreeADDBranch>();
 
+	// Attributes used in toString()
+	protected static String defaultIndentString = "";
+
+	protected String indent = defaultIndentString;
+	
+	protected int indentLevel;
+
+	protected static int indentIncrement = 4;
+	
+	private static String stringIndentIncrement = null;
+	
 	/**
 	 * label is incompatible with reference and reference is incompatible with
 	 * potential This HashMap stores those potentials that have been labeled
@@ -191,6 +202,51 @@ public class TreeADDPotential extends Potential {
 		}
 		this.branches = treeBranches;
 		updateReferences(getLabeledBranches());
+	}
+	
+	/**
+	 * Compares the content of this TreeADDPotential with the received.
+	 * @param object. <code>Object</code>
+	 * @return boolean
+	 */
+	public boolean sameAs(TreeADDPotential otherPotential) {
+		boolean equals = true;
+		equals &= otherPotential.getNumVariables() == variables.size();
+		equals &= otherPotential.getRootVariable() == topVariable;
+		return equals;
+	}
+
+	/**
+	 * If the intervention is a decision the number of branches is 1, otherwise, 
+	 * it is the number of states of the chance variable with probability greater than 0.
+	 * @return <code>int</code>
+	 */
+	protected int getNumBranches() {
+		return branches.size();
+	}
+	
+	/** 
+	 * Recursively goes through the interventions tree adding the number of leaves.
+	 * @return <code>int</code>
+	 */
+	protected int getNumLeaves() {
+		int numLeaves = 0;
+		for (TreeADDBranch branch : branches) {
+			Potential potential = branch.getPotential();
+			if (potential.getClass() == TreeADDPotential.class) {
+				numLeaves += ((TreeADDPotential)potential).getNumLeaves();
+			} else {
+				numLeaves++;
+			}
+		}
+		return (numLeaves == 0) ? 1 : numLeaves;
+	}
+
+	/**
+	 * @return <code>False</code> when this intervention is a leaf.
+	 */
+	public boolean hasAnySubIntervention() {
+		return branches.size() != 0;
 	}
 
 	/**

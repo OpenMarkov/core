@@ -72,7 +72,7 @@ public class CycleLengthShift extends Potential {
 	    {
     		for (Variable variable : variables) {
     			if (!variable.equals(conditionedVariable) && !evidenceCase.contains(variable)) {
-    				throw new Error("Variable " + variable.getName() + 
+    				throw new NonProjectablePotentialException("Variable " + variable.getName() + 
     				" is not included in EvidenceCase.");
     			}
     		}

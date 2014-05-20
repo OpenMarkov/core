@@ -105,12 +105,21 @@ public class DeltaPotential extends Potential{
         
         if(state != null)
         {
-            projectedPotential = new TablePotential (Arrays.asList(getConditionedVariable()),
-                    PotentialRole.UNSPECIFIED);
-            for(int i=0; i < projectedPotential.values.length; ++i)
-            {
-                projectedPotential.values[i] = (i == stateIndex)? 1 : 0;
-            }
+        	Variable conditionedVariable = getConditionedVariable();
+        	if(evidenceCase.contains(conditionedVariable))
+        	{
+        		projectedPotential = new TablePotential (new ArrayList<Variable>(),
+	                    PotentialRole.UNSPECIFIED);
+        		projectedPotential.values[0] = 1;
+        	}else
+        	{
+	            projectedPotential = new TablePotential (Arrays.asList(conditionedVariable),
+	                    PotentialRole.UNSPECIFIED);
+	            for(int i=0; i < projectedPotential.values.length; ++i)
+	            {
+	                projectedPotential.values[i] = (i == stateIndex)? 1 : 0;
+	            }
+        	}
         }else
         {
             projectedPotential = new TablePotential (new ArrayList<Variable> (),

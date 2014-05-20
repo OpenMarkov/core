@@ -190,7 +190,7 @@ public class MPADFactory {
 			Potential referencePotentialForNewPotential = oldPotential;
 			if (oldPotential instanceof SameAsPrevious) {
 				Potential originalPotential = ((SameAsPrevious) oldPotential)
-						.getOriginalPotential();
+						.getShiftedPotential();
 				// Sets time difference respect to the original potential
 				Variable originalConditionedVariable = originalPotential.getConditionedVariable();
 				Variable newVariable = newNode.getVariable();

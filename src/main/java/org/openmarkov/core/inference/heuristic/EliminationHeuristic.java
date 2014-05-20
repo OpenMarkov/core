@@ -58,21 +58,22 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 		// Make a deep copy of variablesToEliminate
 		this.variablesToEliminate = new ArrayList<List<Variable>>(variablesToEliminate.size());
 		for (List<Variable> list : variablesToEliminate) {
-			ArrayList<Variable> listOfVariables = new ArrayList<Variable>(list.size());
-			listOfVariables.addAll(list);
+			List<Variable> listOfVariables = new ArrayList<Variable>(list.size());
+			for(Variable variable : list)
+			{
+				if(probNet.containsVariable(variable))
+					listOfVariables.add(variable);
+			}
 			this.variablesToEliminate.add(listOfVariables);
 		}
 		
 		this.nodesToEliminate = new ArrayList<>(variablesToEliminate.size());
-		for(List<Variable> variables : variablesToEliminate)
+		for(List<Variable> variables : this.variablesToEliminate)
 		{
 		    List<Node> nodes = new ArrayList<>(variables.size());
 		    for(Variable variable : variables)
 		    {
-		        Node node = probNet.getNode(variable);
-		        if (node!=null){
-		        	nodes.add(node);
-		        }
+	        	nodes.add(probNet.getNode(variable));
 		    }
 		    if (nodes.size()>0){
 		    	this.nodesToEliminate.add(nodes);

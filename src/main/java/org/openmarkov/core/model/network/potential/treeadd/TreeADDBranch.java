@@ -137,8 +137,8 @@ public class TreeADDBranch
                         this.getParentVariables());
 
             } else if (this.rootVariable.getVariableType() == VariableType.NUMERIC) {
-                branch = new TreeADDBranch(this.getLowerBound().copy(),
-                        this.getUpperBound().copy(),
+                branch = new TreeADDBranch(new Threshold(this.getLowerBound()),
+                		new Threshold(this.getUpperBound()),
                         this.getRootVariable(),
                         this.getPotential().copy(),
                         this.getParentVariables());
@@ -159,8 +159,8 @@ public class TreeADDBranch
             }
             else if (this.rootVariable.getVariableType () == VariableType.NUMERIC)
             {
-                branch = new TreeADDBranch(this.getLowerBound().copy(),
-                        this.getUpperBound().copy(),
+                branch = new TreeADDBranch(new Threshold(this.getLowerBound()),
+                		new Threshold(this.getUpperBound()),
                         this.getRootVariable(),
                         this.reference,
                         this.getParentVariables());

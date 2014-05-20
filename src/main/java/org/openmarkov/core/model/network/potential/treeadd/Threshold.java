@@ -19,7 +19,11 @@ public class Threshold {
 	public Threshold(double limit, boolean belongsToLeft){
 		this.limit = limit;
 		this.belongsToLeft = belongsToLeft;
-		
+	}
+	
+	public Threshold(Threshold threshold){
+		this.limit = threshold.limit;
+		this.belongsToLeft = threshold.belongsToLeft;
 	}
 	
 	public double getLimit() {
@@ -49,10 +53,6 @@ public class Threshold {
 	
 	public boolean equals (Threshold threshold) {
 	    return limit == threshold.getLimit() && belongsToLeft == threshold.belongsToLeft();
-	}
-	
-	public Threshold copy() {
-		return new Threshold(this.limit, this.belongsToLeft);
 	}
 
 }

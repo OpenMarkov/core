@@ -26,37 +26,37 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 public class SameAsPrevious extends Potential
 {
     // Attributes
-    protected Potential originalPotential;
+    protected Potential shiftedPotential;
     protected int       timeDifference;
     protected ProbNet   probNet;
 
     // Constructors
     /**
      * Creates a potential linked to the original potential
-     * @param originalPotential
+     * @param shiftedPotential
      * @param timeDifference
      * @param probNet The net from which the variables will be taken
      * @throws NodeNotFoundException
      * @throws NodeNotFoundException 
      * @argCondition The network must contain the shifted variables
      */
-    public SameAsPrevious (Potential potential, ProbNet probNet, int timeDifference)
+    public SameAsPrevious (Potential originalPotential, ProbNet probNet, int timeDifference)
         throws NodeNotFoundException
     {
-        super (potential.getShiftedVariables (probNet, timeDifference),
-               potential.getPotentialRole ());
+        super (originalPotential.getShiftedVariables (probNet, timeDifference),
+               originalPotential.getPotentialRole ());
         this.probNet = probNet;
         this.timeDifference = timeDifference;
-        this.originalPotential = potential.copy();
-        originalPotential.shift (probNet, timeDifference);
-        this.utilityVariable = originalPotential.getUtilityVariable(); 
+        this.shiftedPotential = originalPotential.copy();
+        shiftedPotential.shift (probNet, timeDifference);
+        this.utilityVariable = shiftedPotential.getUtilityVariable(); 
     }
     
     public SameAsPrevious (SameAsPrevious potential)
     {
         super(potential);
         this.probNet = potential.probNet;
-        this.originalPotential = potential.originalPotential;
+        this.shiftedPotential = potential.shiftedPotential.copy();
         this.timeDifference = potential.timeDifference;
     }
 
@@ -72,6 +72,19 @@ public class SameAsPrevious extends Potential
     {
         this (probNet, variables.get(0), 1);
     }
+    
+    /**
+     * Utility constructor
+     * @param probNet
+     * @param variable
+     * @throws NodeNotFoundException
+     * @throws NodeNotFoundException
+     */
+    public SameAsPrevious (ProbNet probNet, Variable variable)
+            throws NodeNotFoundException, NodeNotFoundException
+     {
+         this (probNet, variable, 1);
+     }    
 
     public SameAsPrevious (ProbNet probNet, Variable variable, int timeDifference)
         throws NodeNotFoundException
@@ -98,21 +111,17 @@ public class SameAsPrevious extends Potential
         throws NonProjectablePotentialException,
         WrongCriterionException
     {
-        Potential potentialToBeProjected = originalPotential.copy();
-        potentialToBeProjected.setVariables(variables);
-        potentialToBeProjected.setUtilityVariable(utilityVariable);
-        
-        return potentialToBeProjected.tableProject (evidenceCase, inferenceOptions, projectedPotentials);
+        return shiftedPotential.tableProject (evidenceCase, inferenceOptions, projectedPotentials);
     }
 
-    public Potential getOriginalPotential ()
+    public Potential getShiftedPotential ()
     {
-        return originalPotential;
+        return shiftedPotential;
     }
 
     public Potential sample ()
     {
-        return originalPotential.sample();
+        return shiftedPotential.sample();
     }
     
     /**
@@ -180,6 +189,7 @@ public class SameAsPrevious extends Potential
         return previousPotential;
     }
 
+   
     @Override
     public Potential copy ()
     {
@@ -189,7 +199,7 @@ public class SameAsPrevious extends Potential
     @Override
     public boolean isUncertain ()
     {
-        return getOriginalPotential ().isUncertain ();
+        return getShiftedPotential ().isUncertain ();
     }
     
     @Override
@@ -200,7 +210,7 @@ public class SameAsPrevious extends Potential
 	@Override
 	public void replaceNumericVariable(Variable convertedParentVariable) {
 		super.replaceNumericVariable(convertedParentVariable);
-		originalPotential.replaceNumericVariable(convertedParentVariable);
+		shiftedPotential.replaceNumericVariable(convertedParentVariable);
 	}     
     
     

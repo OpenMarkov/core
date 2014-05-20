@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network.potential.plugin;
 
 import java.lang.annotation.AnnotationFormatError;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -69,7 +71,7 @@ public class PotentialManager
      * @param name the potential's name.
      * @return a new Potential instance given the parameters.
      */
-    public final Potential getByName (String name, List<Variable> variables, PotentialRole role)
+    public final Potential getByName (String name, ProbNet probNet, List<Variable> variables, PotentialRole role)
     {
         Potential instance = null;
         try
@@ -81,8 +83,14 @@ public class PotentialManager
                 constructor = potentials.get (name).getConstructor (List.class, PotentialRole.class);
                 instance = (Potential) constructor.newInstance (variables, role);
             }catch (NoSuchMethodException e) {
-                constructor = potentials.get (name).getConstructor (List.class);
-                instance = constructor.newInstance (variables);
+                try
+                {
+                    constructor = potentials.get (name).getConstructor (List.class);
+                    instance = constructor.newInstance (variables);
+                }catch (NoSuchMethodException e1) {
+                    constructor = potentials.get (name).getConstructor (ProbNet.class, List.class);
+                    instance = constructor.newInstance (probNet, variables);
+                }
             }
         }catch (NoSuchMethodException e) {
             throw new InvalidParameterException ("\""+ name + "\" does not have a constructor"
@@ -91,7 +99,7 @@ public class PotentialManager
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+        	throw new InvalidParameterException(e.getMessage());
         }
         if(instance == null)
             throw new InvalidParameterException();
@@ -105,7 +113,7 @@ public class PotentialManager
      * @param utilityVariable
      * @return
      */
-    public final Potential getByName (String name, Variable utilityVariable, List<Variable> variables)
+    public final Potential getByName (String name, ProbNet probNet, Variable utilityVariable, List<Variable> variables)
     {
         Potential instance = null;
         try
@@ -115,8 +123,15 @@ public class PotentialManager
             constructor = potentials.get (name).getConstructor (Variable.class, List.class);
             instance = (Potential) constructor.newInstance (utilityVariable, variables);
         }catch (NoSuchMethodException e) {
-            throw new InvalidParameterException ("\""+ name + "\" does not have a constructor"
-                    + "that receives a tuility variable and a list of variables.");
+        	try
+            {
+                Constructor<? extends Potential> constructor;
+                constructor = potentials.get (name).getConstructor (ProbNet.class, Variable.class);
+                instance = (Potential) constructor.newInstance (probNet, utilityVariable);
+            }catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+                throw new InvalidParameterException ("\""+ name + "\" does not have a constructor"
+                        + "that receives a utility variable and a list of variables.");
+            }
         }
         catch (Exception e)
         {

@@ -24,13 +24,14 @@ public class PotentialManagerTest {
 	Variable variableB;
 	Variable variableC;
 	Variable variableU;
+	ProbNet probNet;
 	Node nodeU;
 			
 	@Before
     public void setUp() throws Exception {
 		manager = new PotentialManager();
 		
-		ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance()); 
+		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance()); 
 		variableA = new Variable("A", "no", "yes");
 		variableB = new Variable("B", "no", "yes");
 		variableC = new Variable("C", "no", "yes");
@@ -69,7 +70,7 @@ public class PotentialManagerTest {
     	{
     		if(!potentialType.equals(PotentialManager.getPotentialName(SameAsPrevious.class)))
     		{
-		    	Potential potential =  manager.getByName(potentialType, variables, role);
+		    	Potential potential =  manager.getByName(potentialType, probNet, variables, role);
 		    	Assert.assertNotNull(potential);
 		    	Assert.assertEquals(potentialType, PotentialManager.getPotentialName(potential.getClass()));
     		}
@@ -84,7 +85,7 @@ public class PotentialManagerTest {
     	
     	for(String potentialType : potentialNames)
     	{
-	    	Potential potential =  manager.getByName(potentialType, variableU, variables);
+	    	Potential potential =  manager.getByName(potentialType, probNet, variableU, variables);
 	    	Assert.assertNotNull(potential);
 	    	Assert.assertEquals(PotentialRole.UTILITY, potential.getPotentialRole());
 	    	Assert.assertEquals(potentialType, PotentialManager.getPotentialName(potential.getClass()));

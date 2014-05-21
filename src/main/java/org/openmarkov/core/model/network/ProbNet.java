@@ -1382,4 +1382,17 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 	public void setShowCommentWhenOpening(boolean showCommentWhenOpening) {
 		this.showCommentWhenOpening = showCommentWhenOpening;
 	}
+	
+	/**
+	 * Node calls this method when its variable instance has beens changed, so
+	 * that probNet updates its reference too.
+	 * 
+	 * @param oldVariable
+	 */
+	public void updateVariable(Variable oldVariable)
+	{
+		Node node = nodeDepot.getNode(oldVariable);
+		nodeDepot.removeNode(node);
+		nodeDepot.addNode(node);
+	}
 }

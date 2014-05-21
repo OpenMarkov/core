@@ -657,13 +657,14 @@ public class Node {
     }
     
     /**
-     * Sets a new variable
+     * Sets a new variable and updates the reference in ProbNet
      * @param newVariable
      */
     public void setVariable (Variable newVariable)
     {
+    	Variable oldVariable = this.variable; 
         this.variable = newVariable;
-        // TODO update potentials
+        this.probNet.updateVariable(oldVariable);
     }
 	public double getCoordinateX() {
 		return coordinateX;

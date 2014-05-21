@@ -49,7 +49,7 @@ public class BasicOperations {
             Potential utilityPotential = utilityNode.getPotentials().get(0);
             if (utilityPotential instanceof SumPotential
                     || (utilityPotential instanceof  SameAsPrevious && ((SameAsPrevious) utilityPotential)
-                            .getShiftedPotential() instanceof SumPotential)) {
+                            .getOriginalPotential() instanceof SumPotential)) {
                 newPotential = DiscretePotentialOperations.sum(potentials);
             } else {
                 newPotential = DiscretePotentialOperations.multiply(potentials);

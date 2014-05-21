@@ -190,7 +190,7 @@ public class MPADFactory {
 			Potential referencePotentialForNewPotential = oldPotential;
 			if (oldPotential instanceof SameAsPrevious) {
 				Potential originalPotential = ((SameAsPrevious) oldPotential)
-						.getShiftedPotential();
+						.getOriginalPotential();
 				// Sets time difference respect to the original potential
 				Variable originalConditionedVariable = originalPotential.getConditionedVariable();
 				Variable newVariable = newNode.getVariable();
@@ -198,8 +198,8 @@ public class MPADFactory {
 						- originalConditionedVariable.getTimeSlice();
 				referencePotentialForNewPotential = originalPotential;
 			} 
-			newPotential = new SameAsPrevious(referencePotentialForNewPotential, probNet,
-					timeDifferenceWithNew);
+			newPotential = referencePotentialForNewPotential.copy();
+			newPotential.shift(probNet, timeDifferenceWithNew);
 		}
 		newNode.addPotential(newPotential);
 		newPotential.createDirectedLinks(probNet);

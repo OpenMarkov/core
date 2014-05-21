@@ -167,6 +167,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		this.partitionedInterval = (variable.getPartitionedInterval() != null) ? (PartitionedInterval) variable
 				.getPartitionedInterval().clone() : null;
 		this.precision = variable.getPrecision();
+		this.unit = variable.unit;
 		setTimeSlice(getTimeSlice(variable.getName()));
 	}
 

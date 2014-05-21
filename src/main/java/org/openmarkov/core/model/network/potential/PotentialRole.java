@@ -22,7 +22,8 @@ public enum PotentialRole {
 	POLICY(3, "policy"),
 	UTILITY(4, "utility"),
 	LINK_RESTRICTION(5,"linkRestriction"),
-	UNSPECIFIED(6,"unspecified");
+	INTERVENTION(6, "intervention"),
+	UNSPECIFIED(7,"unspecified");
 	
 	private int type;
 	

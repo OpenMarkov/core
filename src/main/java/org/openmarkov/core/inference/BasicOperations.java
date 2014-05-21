@@ -12,15 +12,13 @@ import java.util.List;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -47,9 +45,7 @@ public class BasicOperations {
             }
             List<TablePotential> potentials = new ArrayList<TablePotential>(hashtable.values());
             Potential utilityPotential = utilityNode.getPotentials().get(0);
-            if (utilityPotential instanceof SumPotential
-                    || (utilityPotential instanceof  SameAsPrevious && ((SameAsPrevious) utilityPotential)
-                            .getOriginalPotential() instanceof SumPotential)) {
+            if (utilityPotential instanceof SumPotential) {
                 newPotential = DiscretePotentialOperations.sum(potentials);
             } else {
                 newPotential = DiscretePotentialOperations.multiply(potentials);

@@ -80,6 +80,22 @@ public class MPADFactory {
 					generatingNodes.add(generatingNode);
 					generatedNodes.add(newNode);
 					generatedNodesInThisSlice.add(newNode);
+				}else
+				{
+					// Replace all SameAsPrevious potentials
+					try {
+						Variable variable = probNet.getShiftedVariable(generatingNode.getVariable(), 1);
+						Node node = probNet.getNode(variable);
+						if(!node.getPotentials().isEmpty() && node.getPotentials().get(0) instanceof SameAsPrevious)
+						{
+							Potential newPotential = ((SameAsPrevious)node.getPotentials().get(0)).getOriginalPotential(probNet).copy();
+							newPotential.shift(probNet, variable.getTimeSlice() - newPotential.getConditionedVariable().getTimeSlice());
+							node.setPotential(newPotential);
+						}
+							
+					} catch (NodeNotFoundException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			for (Node node : generatedNodesInThisSlice) {
@@ -186,20 +202,8 @@ public class MPADFactory {
 			newPotential = new CycleLengthShift(oldPotential.getShiftedVariables(probNet,
 					timeDifference));
 		} else {
-			int timeDifferenceWithNew = timeDifference;
-			Potential referencePotentialForNewPotential = oldPotential;
-			if (oldPotential instanceof SameAsPrevious) {
-				Potential originalPotential = ((SameAsPrevious) oldPotential)
-						.getOriginalPotential();
-				// Sets time difference respect to the original potential
-				Variable originalConditionedVariable = originalPotential.getConditionedVariable();
-				Variable newVariable = newNode.getVariable();
-				timeDifferenceWithNew = newVariable.getTimeSlice()
-						- originalConditionedVariable.getTimeSlice();
-				referencePotentialForNewPotential = originalPotential;
-			} 
-			newPotential = referencePotentialForNewPotential.copy();
-			newPotential.shift(probNet, timeDifferenceWithNew);
+			newPotential = oldPotential.copy();
+			newPotential.shift(probNet, timeDifference);
 		}
 		newNode.addPotential(newPotential);
 		newPotential.createDirectedLinks(probNet);

@@ -118,10 +118,9 @@ public class SetPotentialEdit extends SimplePNEdit {
 		if (newPotential == null) {
 			PotentialManager relationTypeManager = new PotentialManager();
 			if (lastPotential.isUtility()) {
-				newPotential = relationTypeManager.getByName(newPotentialType, probNet,
-						lastPotential.getUtilityVariable(), variables);
+				newPotential = relationTypeManager.getByName(newPotentialType, lastPotential.getUtilityVariable(), variables);
 			} else {
-			newPotential = relationTypeManager.getByName(newPotentialType, probNet, variables, role);
+			newPotential = relationTypeManager.getByName(newPotentialType, variables, role);
 			}
 
 			// TODO Potential: SameAsPrevious without ProbNet

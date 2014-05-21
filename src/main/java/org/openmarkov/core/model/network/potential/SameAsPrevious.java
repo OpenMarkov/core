@@ -26,19 +26,13 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 @PotentialType(name = "Same as previous", family = "Temporal")
 public class SameAsPrevious extends Potential
 {
-    // Attributes
-    protected ProbNet   probNet;
-
     // Constructors
     /**
-     * @param probNet
      * @param variable
      */
-    public SameAsPrevious (ProbNet probNet, List<Variable> variables)
-        throws NodeNotFoundException, NodeNotFoundException
+    public SameAsPrevious (List<Variable> variables)
     {
         super (variables, PotentialRole.UNSPECIFIED);
-        this.probNet = probNet;
     }
     
     /**
@@ -48,11 +42,9 @@ public class SameAsPrevious extends Potential
      * @throws NodeNotFoundException
      * @throws NodeNotFoundException
      */
-    public SameAsPrevious (ProbNet probNet, Variable variable)
-            throws NodeNotFoundException, NodeNotFoundException
+    public SameAsPrevious (Variable variable)
      {
          super (variable, new ArrayList<Variable>());
-         this.probNet = probNet;
      }    
 
     
@@ -63,7 +55,6 @@ public class SameAsPrevious extends Potential
     public SameAsPrevious (SameAsPrevious potential)
     {
         super(potential);
-        this.probNet = potential.probNet;
     }
     
     /**
@@ -85,18 +76,10 @@ public class SameAsPrevious extends Potential
         throws NonProjectablePotentialException,
         WrongCriterionException
     {
-    	Potential shiftedPotential;
-		try {
-			shiftedPotential = getOriginalPotential(probNet, getConditionedVariable());
-	    	int timeDiff = getConditionedVariable().getTimeSlice() - shiftedPotential.getConditionedVariable().getTimeSlice();
-	    	shiftedPotential.shift(probNet, timeDiff);
-		} catch (NodeNotFoundException e) {
-			throw new NonProjectablePotentialException(e.getMessage(), e);
-		}
-        return shiftedPotential.tableProject (evidenceCase, inferenceOptions, projectedPotentials);
+    	throw new NonProjectablePotentialException("SameAsPrevious potentials cannot be projected");
     }
 
-    public Potential getOriginalPotential ()
+    public Potential getOriginalPotential (ProbNet probNet)
     {
     	Potential originalPotential = null;
     	try
@@ -109,84 +92,11 @@ public class SameAsPrevious extends Potential
 
     public Potential sample ()
     {
-    	Potential shiftedPotential = null;
-		try {
-			shiftedPotential = getOriginalPotential(probNet, getConditionedVariable());
-	    	int timeDiff = getConditionedVariable().getTimeSlice() - shiftedPotential.getConditionedVariable().getTimeSlice();
-	    	shiftedPotential.shift(probNet, timeDiff);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		return shiftedPotential.sample();
+    	throw new IllegalArgumentException("SameAsPrevious potentials cannot be sampled.");
     }
     
-    /**
-     * Looks for a potential with
-     * @param probNet. <code>ProbNet</code>
-     * @param variable. <code>Variable</code>
-     * @return Potential The potential referred to by this one
-     * @throws NodeNotFoundException
-     * @throws NodeNotFoundException 
-     * @argCondition probNet must be a Markov Net with order = 1 because
-     *               otherwise the potential returned could not be the right one
-     * @precondition The previousNode must have at least one potential
-     *               assigned
-     */
-//    private static Potential getPotential (ProbNet probNet, Variable variable)
-//        throws NodeNotFoundException
-//    {
-//        String simpleName = variable.getName ();
-//        Potential previousPotential = null;
-//        int indexC = simpleName.lastIndexOf (" [");
-//        if (indexC != -1)
-//        {
-//            // For each variable in probNet...
-//            List<Variable> variables = probNet.getVariables ();
-//            simpleName = simpleName.substring (0, indexC);
-//            String simpleNameExtended = new String (simpleName + " [");
-//            // ... looks for a variable that starts with variable.getName()+" ["
-//            for (Variable probNetVariable : variables)
-//            {
-//                if (probNetVariable.getName ().startsWith (simpleNameExtended))
-//                {
-//                    // ...then get its potentials
-//                    Node node = probNet.getNode (probNetVariable);
-//                    List<Potential> potentialsNode = node.getPotentials ();
-//                    // Assumption: all the variables have only one
-//                    // potential P(C|P1,P2,...,Pn)
-//                    for (Potential potential : potentialsNode)
-//                    {
-//                        // finally, ensures that the potential is not another
-//                        // SAME_AS_PREVIOUS
-//                        if (!(potential instanceof SameAsPrevious))
-//                        {
-//                            previousPotential = potential;
-//                            break;
-//                        }
-//                    }
-//                    if (previousPotential != null)
-//                    {
-//                        break;
-//                    }
-//                }
-//            }
-//            if (previousPotential == null)
-//            {// There is no previous variable
-//                throw new NodeNotFoundException (probNet, "It does not exists a "
-//                                                 + "previous variable called: "
-//                                                 + variable.getName () + " in this probNet");
-//            }
-//        }
-//        else
-//        {
-//            throw new NodeNotFoundException (probNet, "Variable has not a temporal "
-//                                             + "type name: varName[number].");
-//        }
-//        return previousPotential;
-//    }
 
-    private static Potential getOriginalPotential (ProbNet probNet, Variable variable)
+    private Potential getOriginalPotential (ProbNet probNet, Variable variable)
             throws NodeNotFoundException
         {
     	     Potential previousPotential = null;
@@ -228,12 +138,6 @@ public class SameAsPrevious extends Potential
     }
 
     @Override
-    public boolean isUncertain ()
-    {
-        return getOriginalPotential ().isUncertain ();
-    }
-    
-    @Override
     public String toString() {
         return super.toString() + " = SameAsPrevious";
     }
@@ -241,6 +145,11 @@ public class SameAsPrevious extends Potential
 	@Override
 	public void replaceNumericVariable(Variable convertedParentVariable) {
 		super.replaceNumericVariable(convertedParentVariable);
+	}
+
+	@Override
+	public boolean isUncertain() {
+		throw new IllegalArgumentException("There is no way to know whether SameAsPrevious potentials are uncertain");
 	}     
     
     

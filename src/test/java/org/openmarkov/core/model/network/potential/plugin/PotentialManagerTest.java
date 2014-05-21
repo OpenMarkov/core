@@ -70,7 +70,7 @@ public class PotentialManagerTest {
     	{
     		if(!potentialType.equals(PotentialManager.getPotentialName(SameAsPrevious.class)))
     		{
-		    	Potential potential =  manager.getByName(potentialType, probNet, variables, role);
+		    	Potential potential =  manager.getByName(potentialType, variables, role);
 		    	Assert.assertNotNull(potential);
 		    	Assert.assertEquals(potentialType, PotentialManager.getPotentialName(potential.getClass()));
     		}
@@ -85,7 +85,7 @@ public class PotentialManagerTest {
     	
     	for(String potentialType : potentialNames)
     	{
-	    	Potential potential =  manager.getByName(potentialType, probNet, variableU, variables);
+	    	Potential potential =  manager.getByName(potentialType, variableU, variables);
 	    	Assert.assertNotNull(potential);
 	    	Assert.assertEquals(PotentialRole.UTILITY, potential.getPotentialRole());
 	    	Assert.assertEquals(potentialType, PotentialManager.getPotentialName(potential.getClass()));

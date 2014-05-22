@@ -26,24 +26,24 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-@PotentialType(name = "Linear regression", family = "Regression")
-public class LinearRegressionPotential extends RegressionPotential {
+@PotentialType(name = "Linear combination", family = "GLM", altNames = {"Linear regression"})
+public class LinearCombinationPotential extends GLMPotential {
 
-    public LinearRegressionPotential(List<Variable> variables, PotentialRole role) {
+    public LinearCombinationPotential(List<Variable> variables, PotentialRole role) {
         super(variables, role, getDefaultCovariates(variables, role), new double[variables.size()]);
     }
     
-    public LinearRegressionPotential(Variable utilityVariable, List<Variable> variables) {
+    public LinearCombinationPotential(Variable utilityVariable, List<Variable> variables) {
         super(variables, PotentialRole.UTILITY, getDefaultCovariates(variables, PotentialRole.UTILITY), new double[variables.size()+1]);
         this.utilityVariable = utilityVariable;
     }      
 
-    public LinearRegressionPotential(List<Variable> variables, PotentialRole role,
+    public LinearCombinationPotential(List<Variable> variables, PotentialRole role,
             String[] covariates, double[] coefficients) {
         super(variables, role, covariates, coefficients);
     }
     
-    public LinearRegressionPotential(LinearRegressionPotential potential) {
+    public LinearCombinationPotential(LinearCombinationPotential potential) {
         super(potential);
     }    
     
@@ -137,7 +137,7 @@ public class LinearRegressionPotential extends RegressionPotential {
 
     @Override
     public Potential copy() {
-        return new LinearRegressionPotential(this);
+        return new LinearCombinationPotential(this);
     }
 
 }

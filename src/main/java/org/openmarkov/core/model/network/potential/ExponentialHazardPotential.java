@@ -20,7 +20,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-@PotentialType(name = "Hazard (Exponential)", family = "Regression")
+@PotentialType(name = "Hazard (Exponential)", family = "GLM")
 public class ExponentialHazardPotential extends WeibullHazardPotential {
 
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role) {

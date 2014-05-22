@@ -25,7 +25,7 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.NormalFunction;
 import org.openmarkov.core.model.network.modelUncertainty.XORShiftRandom;
 
-public abstract class RegressionPotential extends Potential {
+public abstract class GLMPotential extends Potential {
     public enum MatrixType {
         COVARIANCE, CHOLESKY
     };
@@ -59,14 +59,14 @@ public abstract class RegressionPotential extends Potential {
      */
     protected double[] choleskyDecomposition = null;
 
-    public RegressionPotential(List<Variable> variables, PotentialRole role) {
+    public GLMPotential(List<Variable> variables, PotentialRole role) {
         super(variables, role);
         this.sampledCoefficients = null;
         setCovariates(getDefaultCovariates(variables, role));
         setCoefficients(new double[covariates.length]);
     }
 
-    public RegressionPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+    public GLMPotential(List<Variable> variables, PotentialRole role, String[] covariates,
             double[] coefficients) {
         super(variables, role);
         this.sampledCoefficients = null;
@@ -74,7 +74,7 @@ public abstract class RegressionPotential extends Potential {
         setCovariates(covariates);
     }
 
-    public RegressionPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+    public GLMPotential(List<Variable> variables, PotentialRole role, String[] covariates,
             double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
         this(variables, role, covariates, coefficients);
         if (matrixType == MatrixType.COVARIANCE) {
@@ -85,12 +85,12 @@ public abstract class RegressionPotential extends Potential {
         }
     }
 
-    public RegressionPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+    public GLMPotential(List<Variable> variables, PotentialRole role, String[] covariates,
             double[] coefficients, double[] covarianceMatrix) {
         this(variables, role, covariates, coefficients, covarianceMatrix, MatrixType.COVARIANCE);
     }
 
-    public RegressionPotential(RegressionPotential potential) {
+    public GLMPotential(GLMPotential potential) {
         super(potential);
         setCovariates(potential.covariates.clone());
         setCoefficients(potential.coefficients.clone());

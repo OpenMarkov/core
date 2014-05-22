@@ -13,6 +13,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,11 @@ public class PotentialManager
     public static String getPotentialName(Class<?> clazz)
     {
     	return clazz.getAnnotation(PotentialType.class).name();
+    }
+    
+    public static List<String> getAlternativeNames(Class<?> clazz)
+    {
+    	return Arrays.asList(clazz.getAnnotation(PotentialType.class).altNames());
     }
     
     /**

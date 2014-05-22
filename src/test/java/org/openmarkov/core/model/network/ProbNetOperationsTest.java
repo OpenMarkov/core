@@ -28,7 +28,7 @@ import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.DeltaPotential;
-import org.openmarkov.core.model.network.potential.LinearRegressionPotential;
+import org.openmarkov.core.model.network.potential.LinearCombinationPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -718,7 +718,7 @@ public class ProbNetOperationsTest {
         probNet.getNode(ageVar_0).setPotential(agePotential_0);
         probNet.getNode(ageVar_1).setPotential(new CycleLengthShift(Arrays.asList(ageVar_1, ageVar_0)));
         probNet.getNode(ageVar_2).setPotential(new CycleLengthShift(Arrays.asList(ageVar_2, ageVar_1)));
-        LinearRegressionPotential ageAtStateEntryPotential_0 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_0,
+        LinearCombinationPotential ageAtStateEntryPotential_0 = new LinearCombinationPotential(Arrays.asList(ageAtStateEntryVar_0,
                 ageVar_0,
                 timeInStateVar_0),
                 role);
@@ -726,14 +726,14 @@ public class ProbNetOperationsTest {
         ageAtStateEntryPotential_0.setCoefficients(new double[]{0, 1, -1});
         
         probNet.getNode(ageAtStateEntryVar_0).setPotential(ageAtStateEntryPotential_0);
-        LinearRegressionPotential ageAtStateEntryPotential_1 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_1,
+        LinearCombinationPotential ageAtStateEntryPotential_1 = new LinearCombinationPotential(Arrays.asList(ageAtStateEntryVar_1,
                 ageVar_1,
                 timeInStateVar_1),
                 role);
         ageAtStateEntryPotential_1.setCovariates(new String[]{"Constant", "Age [1]", "Time in state [1]"});
         ageAtStateEntryPotential_1.setCoefficients(new double[]{0, 1, -1});
         probNet.getNode(ageAtStateEntryVar_1).setPotential(ageAtStateEntryPotential_1);
-        LinearRegressionPotential ageAtStateEntryPotential_2 = new LinearRegressionPotential(Arrays.asList(ageAtStateEntryVar_2,
+        LinearCombinationPotential ageAtStateEntryPotential_2 = new LinearCombinationPotential(Arrays.asList(ageAtStateEntryVar_2,
                 ageVar_2,
                 timeInStateVar_2),
                 role);

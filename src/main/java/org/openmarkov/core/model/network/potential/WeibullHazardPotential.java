@@ -26,8 +26,8 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-@PotentialType(name = "Hazard (Weibull)", family = "Regression")
-public class WeibullHazardPotential extends RegressionPotential {
+@PotentialType(name = "Hazard (Weibull)", family = "GLM")
+public class WeibullHazardPotential extends GLMPotential {
 
 	protected static final String GAMMA = "Gamma";
 

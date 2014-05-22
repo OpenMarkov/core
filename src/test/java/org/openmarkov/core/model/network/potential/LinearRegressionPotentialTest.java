@@ -22,7 +22,7 @@ import org.openmarkov.core.model.network.Variable;
 
 public class LinearRegressionPotentialTest {
 
-    private LinearRegressionPotential potential = null;
+    private LinearCombinationPotential potential = null;
     private Variable ageAtStateEntryVar = null;
     private Variable timeInStateVar = null;
     private Variable ageVar = null;
@@ -39,7 +39,7 @@ public class LinearRegressionPotentialTest {
         double[] coefficients = new double[]{0, 1, -1};
         String[] covariates =  new String[]{ "Constant", "Age", "Time in state"};
         
-        potential = new LinearRegressionPotential(variables,
+        potential = new LinearCombinationPotential(variables,
                 PotentialRole.CONDITIONAL_PROBABILITY,
                 covariates, coefficients);
     }

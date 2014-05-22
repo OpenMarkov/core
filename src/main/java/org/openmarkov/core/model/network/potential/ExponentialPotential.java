@@ -25,8 +25,8 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-@PotentialType(name = "Exponential", family = "Regression")
-public class ExponentialPotential extends RegressionPotential {
+@PotentialType(name = "Exponential", family = "GLM")
+public class ExponentialPotential extends GLMPotential {
 
 	public ExponentialPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role);

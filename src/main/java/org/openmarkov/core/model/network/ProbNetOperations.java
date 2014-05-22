@@ -9,6 +9,8 @@
 
 package org.openmarkov.core.model.network;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -559,9 +562,10 @@ public class ProbNetOperations {
                     Collections.sort(newStates);
                     State[] states = new State[newStates.size()];
                     Map<Double, Integer> stateIndices = new HashMap<>();
+                    DecimalFormat df = new DecimalFormat("#.#####", new DecimalFormatSymbols(Locale.US));
                     for (int i = 0; i < newStates.size(); ++i) {
-                        states[i] = new State(String.valueOf(newStates.get(i)));
-                        stateIndices.put(newStates.get(i), i);
+                        states[i] = new State(df.format(newStates.get(i)));
+                        stateIndices.put(newStates.get(i) , i);
                     }
 
                     Variable newVariable = new Variable(oldVariable.getName(), states);

@@ -233,20 +233,20 @@ public class BasicOperations {
     }
 
     /**
-     * Gets if the variable parameter is a supervalue node
+     * Returns whether the node <code>utilityNode</code> is a supervalue node
      * 
-     * @param utilityVariable
-     *            the variable to test
-     * @return true if the variable is a supervalue node. False if does not
+     * @param utilityNode the node to test
+     * @return true if the node is a supervalue node, false otherwise
      */
     public static boolean isSuperValueNode(Node utilityNode) {
         int numOfUtilityParents = 0;
         List<Node> parents = utilityNode.getParents();
         for (Node parent : parents) {
             if (parent.getNodeType() == NodeType.UTILITY) {
-                // if the node has two or more utility parents then is a super
-                // value node
-                if ((numOfUtilityParents++) >= 1) {
+                // if the node has more than one utility parent then  
+            	// it is a super value node
+            	numOfUtilityParents++;
+                if (numOfUtilityParents > 1) {
                     return true;
                 }
             }

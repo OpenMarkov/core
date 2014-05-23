@@ -80,41 +80,22 @@ public class AddLinkEdit extends BaseLinkEdit {
         if (updatePotentials)
         {
         	this.oldPotentials = node2.getPotentials ();
-        	//if (node2.isSuperValueNode(node2.getVariable(), probNet)) {// supervalue nodes
-        	if (node2.getNodeType() == NodeType.UTILITY) {
-        		
-        		if (node2.onlyNumericalParents()) {// utility and numerical parents sum
-        			for (Potential oldPotential : oldPotentials)
-            		{
-            		// Update potential
-        				List<Variable> variables = oldPotential.getVariables ();
-        				if(!variables.contains (node1.getVariable ()))
-        				{
-        					variables.add (node1.getVariable ());
-        				}
-        				Potential newPotential = new SumPotential (variables,
-        						oldPotential.getPotentialRole ());
-        				newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
-        				newPotentials.add (newPotential);
-            		}
-        		}else if (!node2.onlyNumericalParents()) {//mixture of finite states and numerical Uniform
-        			for (Potential oldPotential : oldPotentials)
-            		{
-            		// Update potential
-        				List<Variable> variables = oldPotential.getVariables ();
-        				if(!variables.contains (node1.getVariable ()))
-        				{
-        					variables.add (node1.getVariable ());
-        				}
-        				Potential newPotential = new UniformPotential (variables,
-        						oldPotential.getPotentialRole ());
-        				newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
-        				newPotentials.add (newPotential);
-            		}
+        	if (node2.getNodeType() == NodeType.UTILITY && node2.onlyNumericalParents()) {
+    		// Add a default Sum potential to utility supervalue nodes
+    			for (Potential oldPotential : oldPotentials)
+        		{
+        		// Update potential
+    				List<Variable> variables = oldPotential.getVariables ();
+    				if(!variables.contains (node1.getVariable ()))
+    				{
+    					variables.add (node1.getVariable ());
+    				}
+    				Potential newPotential = new SumPotential (variables,
+    						oldPotential.getPotentialRole ());
+    				newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
+    				newPotentials.add (newPotential);
         		}
-        		node2.setPotentials (newPotentials);
         	} else {
-
         		for (Potential oldPotential : oldPotentials)
         		{
         			// Update potential
@@ -132,8 +113,8 @@ public class AddLinkEdit extends BaseLinkEdit {
         			newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
         			newPotentials.add (newPotential);
         		}
-        		node2.setPotentials (newPotentials);
         	}
+    		node2.setPotentials (newPotentials);
         }
     }
 

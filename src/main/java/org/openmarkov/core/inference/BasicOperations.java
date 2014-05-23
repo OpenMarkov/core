@@ -239,18 +239,13 @@ public class BasicOperations {
      * @return true if the node is a supervalue node, false otherwise
      */
     public static boolean isSuperValueNode(Node utilityNode) {
-        int numOfUtilityParents = 0;
+    	boolean found = false;
+    	int i = 0;
         List<Node> parents = utilityNode.getParents();
-        for (Node parent : parents) {
-            if (parent.getNodeType() == NodeType.UTILITY) {
-                // if the node has more than one utility parent then  
-            	// it is a super value node
-            	numOfUtilityParents++;
-                if (numOfUtilityParents > 1) {
-                    return true;
-                }
-            }
+        while (i < parents.size() && !found) {
+            found = parents.get(i).getNodeType() == NodeType.UTILITY;
+            ++i;
         }
-        return false;
+        return found;
     }
 }

@@ -74,6 +74,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 		}
 		
 		newPotential = potential;
+		this.newPotentialType = newPotential.getClass().getAnnotation(PotentialType.class).name();
 	}
 
 	// TODO al asignar un potencial tener en cuenta a los padres y a los
@@ -122,9 +123,6 @@ public class SetPotentialEdit extends SimplePNEdit {
 			} else {
 			newPotential = relationTypeManager.getByName(newPotentialType, variables, role);
 			}
-
-			// TODO Potential: SameAsPrevious without ProbNet
-			// newPotential = new SameAsPrevious (probNet, variable);
 		}
 
 		if (!(node.getNodeType() == NodeType.DECISION && node
@@ -137,8 +135,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 		//probNet.getNode(variable).setPotentials(potentials);
 		node.setPotentials(potentials);
 		// update potential with link restriction
-		if (newPotentialType.contentEquals(TablePotential.class.getAnnotation(
-				PotentialType.class).name()) && node.getNodeType() != NodeType.DECISION ) {
+		if (newPotential instanceof TablePotential && node.getNodeType() != NodeType.DECISION ) {
 			newPotential = (TablePotential) LinkRestrictionPotentialOperations
 					.updatePotentialByLinkRestrictions(node);
 			potentials = new ArrayList<Potential>();

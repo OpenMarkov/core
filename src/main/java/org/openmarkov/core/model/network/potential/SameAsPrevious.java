@@ -32,7 +32,7 @@ public class SameAsPrevious extends Potential
      */
     public SameAsPrevious (List<Variable> variables)
     {
-        super (variables, PotentialRole.UNSPECIFIED);
+        super (variables, PotentialRole.CONDITIONAL_PROBABILITY);
     }
     
     /**

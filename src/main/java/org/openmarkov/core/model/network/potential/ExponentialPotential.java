@@ -59,7 +59,7 @@ public class ExponentialPotential extends GLMPotential {
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		return role == PotentialRole.UTILITY
-				|| variables.get(0).getVariableType() == VariableType.NUMERIC;
+				|| (!variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC);
 	}
 
 	@Override

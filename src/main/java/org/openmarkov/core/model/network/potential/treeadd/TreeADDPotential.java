@@ -683,7 +683,63 @@ public class TreeADDPotential extends Potential {
 		}
 	}
 	
+	public void setIndentLevel(int indentLevel) {
+		this.indentLevel = indentLevel;
+		indent = "";
+		for (int i = 0; i < indentLevel; i++) {
+			indent = indent + " ";
+		}
+	}
+
 	// Methods for toString()
-	
+	public String toString() {
+		StringBuffer strBuffer = new StringBuffer();
+		strBuffer.append(indent);
+		strBuffer.append("TreeADDPotential("); // Print name
+		// Print variables
+		int numVariables = variables.size();
+		int i = 0;
+		for (Variable variable : variables) {
+			strBuffer.append(variable.getName());
+			if (i++ == numVariables - 1) {
+				strBuffer.append(")");
+			} else {
+				strBuffer.append(",");
+			}
+		}
+		strBuffer.append(" - topVariable: ");
+		strBuffer.append(topVariable.getName());
+		strBuffer.append("\n");
+		if (branches.size() > 0) {
+			for (TreeADDBranch branch : branches) {
+				strBuffer.append(indent);
+				strBuffer.append("Branch: ");
+				List<State> states = branch.getBranchStates();
+				i = 0;
+				int numStates = states.size();
+				for (State state : states) {
+					strBuffer.append(state.getName());
+					if (i++ == numStates - 1) {
+						strBuffer.append("\n");
+					} else {
+						strBuffer.append(",");
+					}
+				}
+				Potential potential = branch.getPotential();
+				if (potential.getClass() == TreeADDPotential.class) {
+					TreeADDPotential treeADDPotential = (TreeADDPotential)potential;
+					treeADDPotential.setIndentLevel(indentLevel + indentIncrement);
+					strBuffer.append(treeADDPotential);
+				} else {
+					strBuffer.append(indent);
+					for (i = 0; i < indentIncrement; i++) {
+						strBuffer.append(" ");
+					}
+					strBuffer.append(potential);
+				}
+			}
+		}
+		return strBuffer.toString();
+	}
 
 }

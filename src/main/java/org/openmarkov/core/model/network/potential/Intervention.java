@@ -39,7 +39,12 @@ public class Intervention extends TreeADDPotential {
 		}
 	}
 
-	// Static methods
+	/**
+	 * @param chanceVariable
+	 * @param probabilities
+	 * @param interventions
+	 * @return
+	 */
 	public static Intervention averageOfInterventions(Variable chanceVariable, 
 			double[] probabilities, Intervention[] interventions) {
 		Intervention intervention = null;
@@ -95,9 +100,18 @@ public class Intervention extends TreeADDPotential {
 					new ArrayList<Variable>(allVariables));
 	}
 
+	/**
+	 * @param intervention
+	 */
 	public void concatenate(Intervention intervention) {
-		// TODO Descenso recursivo. En cada hoja de este árbol poner intervention
-		
+		for (TreeADDBranch branch : branches) {
+			Potential potentialBranch = branch.getPotential();
+			if (potentialBranch == null || potentialBranch.getClass() == UniformPotential.class) {
+				branch.setPotential(intervention);
+			} else if (potentialBranch.getClass() == Intervention.class) {
+				((Intervention)potentialBranch).concatenate(intervention);
+			}
+		}
 	}
 		
 }

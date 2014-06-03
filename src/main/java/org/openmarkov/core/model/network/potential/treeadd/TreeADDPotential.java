@@ -46,10 +46,10 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 public class TreeADDPotential extends Potential {
 
 	/** topVariable is the variable at the root of the tree */
-	private Variable topVariable;
+	protected Variable topVariable;
 	
 	/** This List stores the branches created in the TreeADDPotential constructor */
-	private List<TreeADDBranch> branches = new ArrayList<TreeADDBranch>();
+	protected List<TreeADDBranch> branches = new ArrayList<TreeADDBranch>();
 
 	// Attributes used in toString()
 	protected static String defaultIndentString = "";

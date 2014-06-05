@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -149,6 +150,13 @@ public abstract class InferenceAlgorithm
     	
     }
 
+    
+    /**
+     * @return The optimal strategy
+     * @throws UnexpectedInferenceException 
+     * @throws IncompatibleEvidenceException 
+     */
+    public abstract Intervention getOptimalStrategy() throws IncompatibleEvidenceException, UnexpectedInferenceException;
       
        
   	/**

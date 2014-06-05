@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
@@ -94,6 +95,11 @@ public class Intervention extends TreeADDPotential {
 				}
 				optimalStates.add(states[i]);
 				selectedInterventions.add(interventions[i]);
+				/*
+				TODO I suppose here you have forgotten to add the line:
+				allVariables.addAll(interventions[i].getVariables());
+				and to initiliaze allVariables in a line above:
+				allVariables = new HashSet<Variable>();*/
 			}
 		}
 		return new Intervention(decisionVariable, optimalStates, selectedInterventions, 
@@ -109,9 +115,78 @@ public class Intervention extends TreeADDPotential {
 			if (potentialBranch == null || potentialBranch.getClass() == UniformPotential.class) {
 				branch.setPotential(intervention);
 			} else if (potentialBranch.getClass() == Intervention.class) {
-				((Intervention)potentialBranch).concatenate(intervention);
+				((Intervention) potentialBranch).concatenate(intervention);
 			}
 		}
 	}
+	
+	/**
+	 * @param state
+	 * @return The intervention corresponding to a state
+	 */
+	private Intervention getInterventionChild(State state) {
+		Intervention child = null;
+		boolean found = false;
+		for (int i = 0; i < branches.size() && !found; i++) {
+			TreeADDBranch auxBranch = branches.get(0);
+			if (auxBranch.getBranchStates().contains(state)) {
+				found = true;
+				child = getInterventionBranch(auxBranch);
+			}
+		}
+		return child;
+	}
+	
+	/**
+	 * @param variable
+	 * @param state
+	 * @return Projects an Intervention over an assignment 'variable' = 'state'
+	 */
+	private Intervention project(Variable variable, State state) {
+		Intervention projection = null;
+
+		if (this.topVariable == variable) {
+			projection = getInterventionChild(state);
+		} else {
+			if (branches != null) {
+				for (int i = 0; i < branches.size(); i++) {
+					TreeADDBranch auxBranch = branches.get(i);
+					Intervention auxProjection = getInterventionBranch(auxBranch).project(variable, state);
+					auxBranch.setPotential(auxProjection);
+				}
+			}
+		}
+		return projection;
+	}
+	
+	/**
+	 * @param intervention
+	 * @return True if this and 'intervention' are equal. Note that the variables can be in different order in the paths
+	 */
+	public boolean equals(Intervention intervention) {
+		boolean areEquals = false;
+		if (branches != null) {
+			for (int i = 0; i < branches.size() && areEquals; i++) {
+				TreeADDBranch auxBranch = branches.get(i);
+				Intervention auxInterventionBranch = getInterventionBranch(auxBranch);
+				for (State state : auxBranch.getStates()) {
+					areEquals = auxInterventionBranch.equals(intervention.project(topVariable, state));
+				}
+			}
+		} else {
+			areEquals = intervention.branches == null;
+		}
+		return areEquals;
+	}
+		
+		
+	/**
+	 * @param branch
+	 * @return The intervention corresponding to 'branch'
+	 */
+	private static Intervention getInterventionBranch(TreeADDBranch branch) {
+		return (Intervention) (branch.getPotential());
+	}
+	
 		
 }

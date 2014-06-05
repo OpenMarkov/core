@@ -30,7 +30,11 @@ public class TreeADDBranch
      */
     private List<State>    states;
     
-    /** If this treeADD is embedded in a larger treeADD and role is not INTERVENTION, then parentVariables 
+    public List<State> getStates() {
+		return states;
+	}
+
+	/** If this treeADD is embedded in a larger treeADD and role is not INTERVENTION, then parentVariables 
      * is the set of variables of that treeADD.
      * This attribute is used when building a TreeADD at the GUI.
      * This attribute is not necessary for interventions. */

@@ -94,6 +94,11 @@ public class Intervention extends TreeADDPotential {
 				}
 				optimalStates.add(states[i]);
 				selectedInterventions.add(interventions[i]);
+				/*
+				TODO I suppose here you have forgotten to add the line:
+				allVariables.addAll(interventions[i].getVariables());
+				and to initiliaze allVariables in a line above:
+				allVariables = new HashSet<Variable>();*/
 			}
 		}
 		return new Intervention(decisionVariable, optimalStates, selectedInterventions, 

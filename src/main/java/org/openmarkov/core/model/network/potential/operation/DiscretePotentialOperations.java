@@ -1571,6 +1571,9 @@ public final class DiscretePotentialOperations {
      */
     public List<TablePotential> eliminateChanceVariable(Variable chanceVariable, 
     		List<TablePotential> probabilityPotentials, List<TablePotential> utilityPotentials) {
+    	Intervention[] interventions = null;
+    	double[] probabilities = null;
+   
     	TablePotential globalUtilityPotential = sum(utilityPotentials);
     	TablePotential joinProbability = multiply(probabilityPotentials);
     	TablePotential marginalProbability = marginalize(joinProbability, chanceVariable);
@@ -1607,38 +1610,34 @@ public final class DiscretePotentialOperations {
     	boolean interventionsPresent = globalUtilityPotential.interventions != null && 
 				globalUtilityPotential.interventions.length == globalUtilityPotential.values.length;
     	double sum;
-		if (interventionsPresent) {
-			for (int external = 0; external < newUtilitySize; external++) {
-				sum = 0.0; // Accumulate utility
-				Intervention[] interventions = new Intervention[chanceVariableSize];
-				double[] probabilities = new double[chanceVariableSize];
-				for (int internal = 0; internal < chanceVariableSize; internal++) {
-					sum += conditionalProbability.values[conditionalPosition] * globalUtilityPotential.values[globalUtilityPosition];
+	
+		for (int external = 0; external < newUtilitySize; external++) {
+			sum = 0.0; // Accumulate utility
+			if (interventionsPresent) {
+				interventions = new Intervention[chanceVariableSize];
+				probabilities = new double[chanceVariableSize];
+			}
+			for (int internal = 0; internal < chanceVariableSize; internal++) {
+				sum += conditionalProbability.values[conditionalPosition]
+						* globalUtilityPotential.values[globalUtilityPosition];
+				if (interventionsPresent) {
 					interventions[internal] = globalUtilityPotential.interventions[globalUtilityPosition];
 					probabilities[internal] = conditionalProbability.values[conditionalPosition];
-					// Update coordinates
-					globalUtilityPosition++;
-					utilityPosition = TablePotential.getNextPosition(utilityPosition, utilityPositionCoordinate, globalUtilityDimensions, accOffsetsUtility);
-					conditionalPosition = TablePotential.getNextPosition(conditionalPosition, conditionalCoordinate, globalUtilityDimensions, accOffsetsConditional);
 				}
-				Intervention newIntervention = 
-						Intervention.averageOfInterventions(chanceVariable, probabilities, interventions);
-				newUtilityPotential.values[utilityPosition] = sum;
-				newUtilityPotential.interventions[utilityPosition] = newIntervention;
+				// Update coordinates
+				globalUtilityPosition++;
+				utilityPosition = TablePotential.getNextPosition(utilityPosition, utilityPositionCoordinate,
+						globalUtilityDimensions, accOffsetsUtility);
+				conditionalPosition = TablePotential.getNextPosition(conditionalPosition,
+						conditionalCoordinate, globalUtilityDimensions, accOffsetsConditional);
 			}
-		} else {
-			for (int external = 0; external < newUtilitySize; external++) {
-				sum = 0.0; // Accumulate utility
-				for (int internal = 0; internal < chanceVariableSize; internal++) {
-					sum += conditionalProbability.values[conditionalPosition] * globalUtilityPotential.values[globalUtilityPosition];
-					// Update coordinates
-					globalUtilityPosition++;
-					utilityPosition = TablePotential.getNextPosition(utilityPosition, utilityPositionCoordinate, globalUtilityDimensions, accOffsetsUtility);
-					conditionalPosition = TablePotential.getNextPosition(conditionalPosition, conditionalCoordinate, globalUtilityDimensions, accOffsetsConditional);
-				}
-				newUtilityPotential.values[utilityPosition] = sum;
+			if (interventionsPresent) {
+				newUtilityPotential.interventions[utilityPosition] = Intervention.averageOfInterventions(
+						chanceVariable, probabilities, interventions);
 			}
+			newUtilityPotential.values[utilityPosition] = sum;
 		}
+		
 
 		List<TablePotential> result = new ArrayList<TablePotential>(2);
     	result.add(marginalProbability);

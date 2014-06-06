@@ -1569,7 +1569,7 @@ public final class DiscretePotentialOperations {
      * @param utilityPotentials
      * @return
      */
-    public List<TablePotential> eliminateChanceVariable(Variable chanceVariable, 
+    public static List<TablePotential> eliminateChanceVariable(Variable chanceVariable, 
     		List<TablePotential> probabilityPotentials, List<TablePotential> utilityPotentials) {
     	Intervention[] interventions = null;
     	double[] probabilities = null;

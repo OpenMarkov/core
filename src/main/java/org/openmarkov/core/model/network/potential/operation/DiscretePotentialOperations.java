@@ -180,8 +180,8 @@ public final class DiscretePotentialOperations {
     }
 
     /**
-     * @param tablePotentials
-     *            <code>List</code> of <code>TablePotential</code>s.
+     * @param tablePotentials <code>List</code> of <code>TablePotential</code>s.
+     * @return <code>TablePotential</code>
      */
     public static TablePotential sum(List<TablePotential> tablePotentials) {
         List<TablePotential> constantPotentials;
@@ -315,6 +315,10 @@ public final class DiscretePotentialOperations {
         return result;
     }
 
+    /**
+     * @param potentials. <code>TablePotential</code>
+     * @return <code>true</code> when at least one potential has an array of interventions.
+     */
     private static boolean anyPotentialWithInterventions(List<TablePotential> potentials) {
     	int i;
     	for (i = 0; i < potentials.size() && potentials.get(i).interventions == null; i++);
@@ -322,9 +326,9 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param result
-	 * @param allThePotentials
-	 * @return result with the interventions
+	 * @param result. <code>TablePotential</code>
+	 * @param allThePotentials. <code>List</code> of <code>TablePotential</code>
+	 * @return result with the interventions. <code>TablePotential</code>
 	 */
 	private static TablePotential sumInterventions(TablePotential result, List<TablePotential> allThePotentials) {
 		result.interventions = new Intervention[result.values.length];
@@ -1058,7 +1062,7 @@ public final class DiscretePotentialOperations {
      *         <code>variableToMaximize</code> in each configuration.
      */
     @SuppressWarnings("unchecked")
-    public static Object[] multiplyAndMaximize(List<Potential> tablePotentials,
+    public static Object[] multiplyAndMaximize(List<? extends Potential> tablePotentials,
             List<Variable> fSVariablesToKeep,
             Variable fSVariableToMaximize) {
         List<TablePotential> potentials = (ArrayList<TablePotential>) ((Object) tablePotentials);
@@ -1450,7 +1454,7 @@ public final class DiscretePotentialOperations {
      *         variables as preceding) with the value chosen for
      *         <code>variableToMaximize</code> in each configuration.
      */
-    public static Object[] multiplyAndMaximize(List<Potential> potentialsVariable,
+    public static Object[] multiplyAndMaximize(List<? extends Potential> potentialsVariable,
             Variable variableToMaximize) {
         // Use a HashSet to add the variables to avoid adding one variable more
         // than one time
@@ -1680,15 +1684,20 @@ public final class DiscretePotentialOperations {
     
     /**
      * @param chanceVariable. <code>Variable</code>
-     * @param probabilityPotentials. <code>List</code> of <code>TablePotential</code>
-     * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>
+     * @param potentials. <code>List</code> of <code>TablePotential</code>
      * @return. A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
      */
-    public static List<TablePotential> eliminateChanceVariable(Variable chanceVariable, 
-    		List<TablePotential> probabilityPotentials, List<TablePotential> utilityPotentials) {
+    public static List<TablePotential> sumOutVariable(Variable chanceVariable, List<TablePotential> potentials) {
+    	// Get probability and utility potentials
+    	List<TablePotential> probabilityPotentials = new ArrayList<TablePotential>();
+    	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
+    	classifyProbabilityAndUtilityPotentials(potentials, probabilityPotentials, utilityPotentials);
+    	
+    	// operations to sum out variable
     	TablePotential globalUtilityPotential = sum(utilityPotentials);
     	TablePotential joinProbability = multiply(probabilityPotentials);
     	TablePotential marginalProbability = marginalize(joinProbability, chanceVariable);
+    	marginalProbability.setPotentialRole(PotentialRole.JOINT_PROBABILITY);
     	TablePotential conditionalProbability = divide(joinProbability, marginalProbability);
 
     	// Get the variables of the new utility potential that will be returned
@@ -1723,43 +1732,86 @@ public final class DiscretePotentialOperations {
     	boolean interventionsPresent = globalUtilityPotential.interventions != null && 
 				globalUtilityPotential.interventions.length == globalUtilityPotential.values.length;
     	double sum;
-		if (interventionsPresent) {
-			for (int external = 0; external < newUtilitySize; external++) {
-				sum = 0.0; // Accumulate utility
-				Intervention[] interventions = new Intervention[chanceVariableSize];
-				double[] probabilities = new double[chanceVariableSize];
-				for (int internal = 0; internal < chanceVariableSize; internal++) {
-					sum += conditionalProbability.values[conditionalPosition] * globalUtilityPotential.values[globalUtilityPosition];
+		Intervention[] interventions = null;
+		double[] probabilities = null;
+		for (int external = 0; external < newUtilitySize; external++) {
+			sum = 0.0; // Accumulate utility
+			if (interventionsPresent) {
+				interventions = new Intervention[chanceVariableSize];
+				probabilities = new double[chanceVariableSize];
+			}
+			for (int internal = 0; internal < chanceVariableSize; internal++) {
+				sum += conditionalProbability.values[conditionalPosition]
+						* globalUtilityPotential.values[globalUtilityPosition];
+				if (interventionsPresent) {
 					interventions[internal] = globalUtilityPotential.interventions[globalUtilityPosition];
 					probabilities[internal] = conditionalProbability.values[conditionalPosition];
-					// Update coordinates
-					globalUtilityPosition++;
-					utilityPosition = TablePotential.getNextPosition(utilityPosition, utilityPositionCoordinate, globalUtilityDimensions, accOffsetsUtility);
-					conditionalPosition = TablePotential.getNextPosition(conditionalPosition, conditionalCoordinate, globalUtilityDimensions, accOffsetsConditional);
 				}
-				Intervention newIntervention = 
-						Intervention.averageOfInterventions(chanceVariable, probabilities, interventions);
-				newUtilityPotential.values[utilityPosition] = sum;
-				newUtilityPotential.interventions[utilityPosition] = newIntervention;
+				// Update coordinates
+				globalUtilityPosition++;
+				utilityPosition = TablePotential.getNextPosition(utilityPosition, utilityPositionCoordinate,
+						globalUtilityDimensions, accOffsetsUtility);
+				conditionalPosition = TablePotential.getNextPosition(conditionalPosition,
+						conditionalCoordinate, globalUtilityDimensions, accOffsetsConditional);
 			}
-		} else {
-			for (int external = 0; external < newUtilitySize; external++) {
-				sum = 0.0; // Accumulate utility
-				for (int internal = 0; internal < chanceVariableSize; internal++) {
-					sum += conditionalProbability.values[conditionalPosition] * globalUtilityPotential.values[globalUtilityPosition];
-					// Update coordinates
-					globalUtilityPosition++;
-					utilityPosition = TablePotential.getNextPosition(utilityPosition, utilityPositionCoordinate, globalUtilityDimensions, accOffsetsUtility);
-					conditionalPosition = TablePotential.getNextPosition(conditionalPosition, conditionalCoordinate, globalUtilityDimensions, accOffsetsConditional);
-				}
-				newUtilityPotential.values[utilityPosition] = sum;
+			if (interventionsPresent) {
+				newUtilityPotential.interventions[utilityPosition] = Intervention.averageOfInterventions(
+						chanceVariable, probabilities, interventions);
 			}
+			newUtilityPotential.values[utilityPosition] = sum;
 		}
-
+		
 		List<TablePotential> result = new ArrayList<TablePotential>(2);
     	result.add(marginalProbability);
     	result.add(newUtilityPotential);
     	return result;
     }
      
+    /**
+     * @param decisionVariable. <code>Variable</code>
+     * @param probabilityPotentials. <code>List</code> of <code>TablePotential</code>
+     * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>
+     * @return. A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
+     */
+    public static List<TablePotential> maxOutVariable(Variable decisionVariable, List<TablePotential> potentials) {
+    	// Get probability and utility potentials
+    	List<TablePotential> probabilityPotentials = new ArrayList<TablePotential>();
+    	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
+    	classifyProbabilityAndUtilityPotentials(potentials, probabilityPotentials, utilityPotentials);
+    	
+    	// Calculate new potentials
+    	TablePotential globalUtilityPotential = sum(utilityPotentials);
+    	TablePotential joinProbability = multiply(probabilityPotentials);
+    	Object[] projectedPotentials = multiplyAndMaximize(probabilityPotentials, decisionVariable);
+    	TablePotential projectedProbability = (TablePotential)projectedPotentials[0];
+		TablePotential normalizedProb =	divide(joinProbability, projectedProbability);
+		
+		List<TablePotential> utilities = new ArrayList<TablePotential>(2);
+		utilities.add(globalUtilityPotential);
+		utilities.add(normalizedProb);
+		TablePotential utilityPotential = multiply(utilities, false);
+		Object[] maxUtilities = maximize(utilityPotential, decisionVariable);
+
+    	// TODO Terminar esto
+    	return null;
+    }
+
+	/** 
+	 * Classifies each potential into potentials into probability or utility
+	 * @param potentials
+	 * @param probabilityPotentials
+	 * @param utilityPotentials
+	 */
+	private static void classifyProbabilityAndUtilityPotentials(
+			List<TablePotential> potentials,
+			List<TablePotential> probabilityPotentials,
+			List<TablePotential> utilityPotentials) {
+    	for (TablePotential potential : potentials) {
+    		if (potential.getPotentialRole() == PotentialRole.UTILITY) {
+    			utilityPotentials.add(potential);
+    		} else {
+    			probabilityPotentials.add(potential);
+    		}
+    	}
+	}
 }

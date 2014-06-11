@@ -1761,8 +1761,12 @@ public final class DiscretePotentialOperations {
 			newUtilityPotential.values[utilityPosition] = sum;
 		}
 		
-		List<TablePotential> result = new ArrayList<TablePotential>(2);
-    	result.add(marginalProbability);
+		List<TablePotential> result = new ArrayList<TablePotential>(2); 
+		if (marginalProbability.getNumVariables() > 0 || 
+				marginalProbability.values[0] < 1.0 - maxRoundErrorAllowed ||
+				marginalProbability.values[0] > 1.0 + maxRoundErrorAllowed) {
+			result.add(marginalProbability);
+		}
     	result.add(newUtilityPotential);
     	return result;
     }
@@ -1797,10 +1801,10 @@ public final class DiscretePotentialOperations {
     }
 
 	/** 
-	 * Classifies each potential into potentials into probability or utility
-	 * @param potentials
-	 * @param probabilityPotentials
-	 * @param utilityPotentials
+	 * Classifies potential from the first list between probability and utility and stores them in the second and third list
+	 * @param potentials. <code>List</code> of <code>TablePotential</code>
+	 * @param probabilityPotentials. <code>List</code> of <code>TablePotential</code>
+	 * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>
 	 */
 	private static void classifyProbabilityAndUtilityPotentials(
 			List<TablePotential> potentials,

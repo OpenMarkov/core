@@ -9,6 +9,10 @@
 
 package org.openmarkov.core.inference;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 
 /** A choice is a value assignment to a decision variable. It is possible that
@@ -53,6 +57,15 @@ public class Choice {
 	/** @return values <code>int[]</code>. */
 	public int[] getValues() {
 		return values;
+	}
+	
+	public List<State> getStates() {
+		List<State> states = new ArrayList<State>(numValues);
+		State[] variableStates = variable.getStates();
+		for (int i = 0; i < numValues; i++) {
+			states.add(variableStates[values[i]]);
+		}
+		return states;
 	}
 	
 	/** Used in case of draw.

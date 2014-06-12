@@ -187,6 +187,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         tableSize = potential.tableSize;
         values = potential.values.clone();
         uncertainValues = potential.uncertainValues;
+        interventions = potential.interventions;
     }
 
     // Methods

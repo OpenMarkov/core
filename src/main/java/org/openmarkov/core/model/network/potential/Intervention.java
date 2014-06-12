@@ -23,10 +23,10 @@ public class Intervention extends TreeADDPotential {
 	// Static methods
 	/**
 	 * Creates an intervention whose topVariable is a finite-states chance variable. Each branch has one state.
-	 * @param topVariable
-	 * @param states
-	 * @param interventions
-	 * @param variables
+	 * @param topVariable. <code>Variable</code>
+	 * @param states. <code>List</code> of <code>State</code>
+	 * @param interventions. <code>List</code> of <code>Intervention</code>
+	 * @param variables. <code>List</code> of <code>Variable</code>
 	 */
 	public Intervention(Variable topVariable, List<State> states, 
 			List<Intervention> interventions, List<Variable> variables) {
@@ -40,10 +40,11 @@ public class Intervention extends TreeADDPotential {
 	}
 
 	/**
-	 * @param chanceVariable
-	 * @param probabilities
-	 * @param interventions
-	 * @return
+	 * Creates an intervention from a set of interventions and probabilities.
+	 * @param chanceVariable. <code>Variable</code>
+	 * @param probabilities. <code>double[]</code>
+	 * @param interventions. <code>Intervention[]</code>
+	 * @return A Intervention. <code>Intervention</code>
 	 */
 	public static Intervention averageOfInterventions(Variable chanceVariable, 
 			double[] probabilities, Intervention[] interventions) {
@@ -72,6 +73,7 @@ public class Intervention extends TreeADDPotential {
 	}
 	
 	/**
+	 * Creates an intervention 
 	 * @param decisionVariable
 	 * @param utilities
 	 * @param interventions

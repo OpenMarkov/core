@@ -1763,8 +1763,8 @@ public final class DiscretePotentialOperations {
 		
 		List<TablePotential> result; 
 		if (marginalProbability.getNumVariables() > 0 || 
-				marginalProbability.values[0] < 1.0 - maxRoundErrorAllowed ||
-				marginalProbability.values[0] > 1.0 + maxRoundErrorAllowed) {
+				!(almostEqual(marginalProbability.values[0], 1.0) || // Do not include constant potentials equal to 1.0
+				 almostEqual(marginalProbability.values[0], 0.0))) { // Do not include constant potentials equal to 0.0
 			result = new ArrayList<TablePotential>(2);
 			result.add(marginalProbability);
 		} else {
@@ -1853,4 +1853,18 @@ public final class DiscretePotentialOperations {
     		}
     	}
 	}
+	
+
+	/** 
+	 * Compares two numbers
+	 * @param a. <code>double</double>
+	 * @param b. <code>double</double>
+	 * @return <code>true</code> when a and b are close.
+	 */
+	private static boolean almostEqual(double a, double b) {
+		double aux = b - a;
+		return (aux >= 0.0 && aux <= maxRoundErrorAllowed) || 
+				(aux <= 0.0 && aux >= -maxRoundErrorAllowed);
+	}
+	
 }

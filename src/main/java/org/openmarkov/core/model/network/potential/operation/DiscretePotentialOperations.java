@@ -31,7 +31,6 @@ import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 
 /**
  * This class defines a set of common operations over discrete potentials (
@@ -137,19 +136,13 @@ public final class DiscretePotentialOperations {
         double mulResult;
         int[] dimensions = TablePotential.calculateDimensions(resultVariables);
         int[] offsets = TablePotential.calculateOffsets(dimensions);
-        int tableSize = 1; // If numVariables == 0 the potential is a constant
-        if (numVariables > 0) {
-            tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
-        }
+        int tableSize = numVariables > 0 ? dimensions[numVariables - 1] * offsets[numVariables - 1] : 1;
         double[] resultValues = new double[tableSize];
 
         for (int resultPosition = 0; resultPosition < tableSize; resultPosition++) {
             mulResult = constantFactor;
 
-            /*
-             * increment the result coordinate and find out which variable is to
-             * be incremented
-             */
+            //increment the result coordinate and find out which variable is to be incremented
             for (int iVariable = 0; iVariable < resultCoordinate.length; iVariable++) {
                 // try by incrementing the current variable (given by iVariable)
                 resultCoordinate[iVariable]++;
@@ -736,10 +729,9 @@ public final class DiscretePotentialOperations {
     public static double getConstantFactor(List<TablePotential> potentials) {
         double constantFactor = 1.0;
         for (TablePotential potential : potentials) {
-            if (potential.values.length > 1) {
-                continue;
+            if (potential.values.length == 1) {
+                constantFactor *= potential.values[0];
             }
-            constantFactor *= potential.values[0];
         }
         return constantFactor;
     }
@@ -1134,6 +1126,8 @@ public final class DiscretePotentialOperations {
         double maxValue; // in general, the sum or the maximum
         int increasedVariable = 0; // when computing the next configuration
 
+        boolean useInterventions = numProperPotentials == 1 && properPotentials.get(0).interventions != null;
+
         // outer iterations correspond to the variables to keep
         for (int outerIteration = 0; outerIteration < resultSize; outerIteration++) {
             // Inner iterations correspond to the variables to eliminate
@@ -1178,7 +1172,7 @@ public final class DiscretePotentialOperations {
                 for (int i = 0; i < numProperPotentials; i++) {
                     multiplicationResult = multiplicationResult * tables[i][currentPositions[i]];
                 }
-
+                
                 // update the accumulator (for this inner iteration)
                 if (multiplicationResult > (maxValue + maxRoundErrorAllowed)) {
                     choice.setValue(innerIteration);
@@ -1214,16 +1208,36 @@ public final class DiscretePotentialOperations {
                 }
             }
 
+            // TODO Crear aqui la intervencion
+//            if (useInterventions) {
+//            	resultingPotential.interventions[outerIteration] = 
+//            			Intervention.optimalIntervention(fSVariableToMaximize, utilities, interventions);
+//            }
             resultingPotential.values[outerIteration] = maxValue;
             gResult.elementTable.add(choice);
 
         } // end of outer iteration
 
+//        createInterventions(resultingPotential, gResult, fSVariableToMaximize);
         Object[] resultPotentials = { resultingPotential, gResult };
         return resultPotentials;
     }
 
-    /**
+//    /**
+//     * Create the Interventions array in resultingPotential
+//     * @param resultingPotential
+//     * @param gResult
+//     */
+//    private static void createInterventions(TablePotential resultingPotential,
+//    		GTablePotential<Choice> gResult, Variable fSVariableToMaximize) {
+//    	resultingPotential.interventions = new Intervention[resultingPotential.values.length];
+//    	for (int i = 0; i < resultingPotential.values.length; i++) {
+//    		List<State> states = gResult.elementTable.get(i).getStates();
+//    		resultingPotential.interventions[i] = new Intervention(fSVariableToMaximize, states);
+//    	}
+//    }
+
+	/**
      * @param arrayListPotentials
      * @return true if there is utility potential in a list of potentials
      */
@@ -1286,7 +1300,7 @@ public final class DiscretePotentialOperations {
             resultingPotential.values[0] = constantFactor;
             return new TablePotential[] { resultingPotential, policy };
         }
-
+        
         // variables in the resulting potential
         List<Variable> unionVariables = new ArrayList<Variable>();
         unionVariables.add((Variable) variableToMaximize);
@@ -1343,6 +1357,10 @@ public final class DiscretePotentialOperations {
             statesTies = new ArrayList<Integer>();
             statesTies.add(0);
             accumulator = multiplicationResult;
+            int[] positionTies = new int[eliminationSize];
+            int numTies = 0;
+            positionTies[numTies] = currentPositions[0];
+            numTies++;
 
             // next inner iterations
             for (int innerIteration = 1; innerIteration < eliminationSize; innerIteration++) {
@@ -1375,9 +1393,14 @@ public final class DiscretePotentialOperations {
                     statesTies = new ArrayList<Integer>();
                     statesTies.add(innerIteration);
                     accumulator = multiplicationResult;
+                    numTies = 0;
+                    positionTies[numTies] = currentPositions[0];
+                    numTies++;
                 } else {
                     if (Math.abs(diffWithAccumulator) < maxRoundErrorAllowed) {
                         statesTies.add(innerIteration);
+                        positionTies[numTies] = currentPositions[0];
+                        numTies++;
                     }
                 }
                 // accumulator =
@@ -1410,8 +1433,6 @@ public final class DiscretePotentialOperations {
                     variableToMaximize.getNumStates(),
                     statesTies,
                     resultingPotential.getConfiguration(outerIteration));
-            // .elementTable.add(choice);
-
         } // end of outer iteration
 
         TablePotential[] resultPotentials = { resultingPotential, policy };
@@ -1761,16 +1782,18 @@ public final class DiscretePotentialOperations {
 			newUtilityPotential.values[utilityPosition] = sum;
 		}
 		
-		List<TablePotential> result; 
+		
+		List<TablePotential> result = new ArrayList<TablePotential>(2);
+		// Do not include constant probability potentials equal to 1.0
 		if (marginalProbability.getNumVariables() > 0 || 
-				!(almostEqual(marginalProbability.values[0], 1.0) || // Do not include constant potentials equal to 1.0
-				 almostEqual(marginalProbability.values[0], 0.0))) { // Do not include constant potentials equal to 0.0
-			result = new ArrayList<TablePotential>(2);
+				!almostEqual(marginalProbability.values[0], 1.0)) {
 			result.add(marginalProbability);
-		} else {
-			result = new ArrayList<TablePotential>(1);
 		}
-    	result.add(newUtilityPotential);
+		// Do not include constant utility potentials equal to 0.0
+		if (newUtilityPotential.getNumVariables() > 0 || 
+				!almostEqual(newUtilityPotential.values[0], 0.0)) {// Do not include constant potentials equal to 0.0
+			result.add(newUtilityPotential);
+		}
     	return result;
     }
      
@@ -1804,7 +1827,6 @@ public final class DiscretePotentialOperations {
 		TablePotential maxOutPotential = (TablePotential)maxUtilities[0];
 		// Iterate for each configuration of maxOutPotential
 		int tableSize = maxOutPotential.values.length;
-		// TODO Ver que pasa en multiply and maximize con las intervenciones
 		boolean noInterventions = maxOutPotential.interventions == null;
 		if (noInterventions) {
 			maxOutPotential.interventions = new Intervention[tableSize];
@@ -1815,7 +1837,7 @@ public final class DiscretePotentialOperations {
 			Choice choice = maxChoicesPotential.elementTable.get(i);
 			List<State> states = choice.getStates();
 			if (noInterventions) {
-
+				// TODO
 			} else {
 				
 			}
@@ -1836,7 +1858,8 @@ public final class DiscretePotentialOperations {
     }
 
 	/** 
-	 * Classifies potential from the first list between probability and utility and stores them in the second and third list
+	 * Classifies potential from the first list between probability and utility and stores them 
+	 * in the second and third list
 	 * @param potentials. <code>List</code> of <code>TablePotential</code>
 	 * @param probabilityPotentials. <code>List</code> of <code>TablePotential</code>
 	 * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>

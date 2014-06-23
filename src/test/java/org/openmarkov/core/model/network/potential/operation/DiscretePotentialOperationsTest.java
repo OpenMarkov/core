@@ -14,7 +14,9 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -519,6 +521,16 @@ public class DiscretePotentialOperationsTest {
 		// Test maximization
 		assertEquals(12, maximized.values.length);
 		assertEquals(0.21, maximized.values[0], maxError);
+		HashMap<Variable, Integer> coordinate = new HashMap<Variable, Integer>();
+		coordinate.put(commonVariables.b, 0);
+		coordinate.put(commonVariables.c, 0);
+		coordinate.put(commonVariables.d, 0);
+		assertEquals(0.21, maximized.getProbability(coordinate), 0.0001);
+		coordinate.put(commonVariables.b, 1);
+		assertEquals(0.09, maximized.getProbability(coordinate), 0.0001);
+		
+//		assertNotNull(maximized.interventions);
+//		assertEquals(maximized.interventions.length, maximized.values.length);
 	}
 
 	@Test

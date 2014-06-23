@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;

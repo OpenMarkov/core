@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;

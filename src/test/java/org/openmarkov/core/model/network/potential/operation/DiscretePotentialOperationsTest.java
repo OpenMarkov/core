@@ -546,13 +546,13 @@ public class DiscretePotentialOperationsTest {
 	public void testNormalize() {
 			TablePotential multiplication = DiscretePotentialOperations
 				.multiply(commonVariables.potentials);
-			TablePotential normalized;
+//			TablePotential normalized;
 			try {
-				normalized = (TablePotential) 
+//				normalized = (TablePotential) 
 					DiscretePotentialOperations.normalize(multiplication);
-				int[] configuration = {0, 0, 0, 0};
-				int[] dimensions = normalized.getDimensions();
-				List<Variable> variablesNormalized = normalized.getVariables();
+//				int[] configuration = {0, 0, 0, 0};
+//				int[] dimensions = normalized.getDimensions();
+//				List<Variable> variablesNormalized = normalized.getVariables();
 			} catch (NormalizeNullVectorException e) {
 				fail("Null vector exception");
 				e.printStackTrace();
@@ -652,7 +652,7 @@ public class DiscretePotentialOperationsTest {
 		
 		// Setup: create a table potential
 		TablePotential orderedAB = // Variables: A, B
-			SharedTestUtilities.createTablePotential(numVariables, table, null);
+			SharedTestUtilities.createTablePotential(numVariables, table);
 		List<Variable> variablesAB = orderedAB.getVariables();
 		
 		// Create variables in other order: B, A
@@ -749,7 +749,7 @@ public class DiscretePotentialOperationsTest {
 
 	@Test
 	public void testSumOutVariable() {
-		// Test 1
+		// Test 1: No utilities
 		List<TablePotential> resultingPotentials = DiscretePotentialOperations.sumOutVariable(
 				commonVariables.a, commonVariables.potentials);
 		assertEquals(1, resultingPotentials.size()); // No utility
@@ -761,6 +761,9 @@ public class DiscretePotentialOperationsTest {
 		assertTrue(variables.contains(commonVariables.c));
 		assertTrue(variables.contains(commonVariables.d));
 		assertEquals(12, tablePotential.values.length);
+		
+		// Test 2: IDE1-perfect-knowledge
+//		ProbNet perfectKnowledge = 
 	}
 	
 	@Test

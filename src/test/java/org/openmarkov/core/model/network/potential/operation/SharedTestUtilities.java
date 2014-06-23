@@ -10,7 +10,6 @@
 package org.openmarkov.core.model.network.potential.operation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
@@ -56,6 +55,11 @@ public class SharedTestUtilities {
 	 * table = {0.2, 0.8, 0.1, 0.9, 0.3, 0.7, 0.4, 0.6, 0.9, 0.1, 0.8, 0.2}<p>
 	 * table.length = 12.*/
 	public TablePotential t4;
+	
+	/** 1 variable. <code>a</code> (3 states)<p>
+     * table = {0.5, 0.4, 0.1}.<p>
+     * table.length = 3. */
+	public TablePotential t5;
 	
 	// Variables used to create the preceding TablePotentials
 	/** <code>Variable</code> with 3 states */
@@ -170,6 +174,8 @@ public class SharedTestUtilities {
 				variablesT3, PotentialRole.CONDITIONAL_PROBABILITY);
 		t4 = new TablePotential(
 				variablesT4, PotentialRole.CONDITIONAL_PROBABILITY);
+		t5 = new TablePotential(
+				arrayVariablesA, PotentialRole.CONDITIONAL_PROBABILITY);
 		// Initialize not constant potentials tables
 		t2.values[0] = 0.1;
 		t2.values[1] = 0.2;
@@ -193,6 +199,10 @@ public class SharedTestUtilities {
 		t4.values[9] = 0.1;
 		t4.values[10] = 0.8;
 		t4.values[11] = 0.2;
+		
+		t5.values[0] = 0.5;
+		t5.values[1] = 0.4;
+		t5.values[2] = 0.1;
 		
 		// Create array of potentials
 		potentials = new ArrayList<TablePotential>();
@@ -252,19 +262,12 @@ public class SharedTestUtilities {
 	}
 	
 	/** Create a <code>TablePotential</code> with binary variables A, B, ... X 
-	 *  (<code>numVariables</code>) and additionalProperties = received 
-	 *  <code>additionalProperties</code> object if it is not <code>null</code>
-	 *  or additionalProperties = 
-	 *  <code>HashMap<String, Object> additionalProperties</code> with one 
-	 *  entry: key = "property", value = "property" if 
-	 *  <code>additionalProperties</code> is <code>null</code>
+	 *  (<code>numVariables</code>)
 	 *  @param numVariables. <code>int</code>
 	 *  @param table. <code>double[]</code>
-	 *  @param additionalProperties. 
-	 *    <code>HashMap<String, Object> additionalProperties</code>
 	 *  @return TablePotential */
 	public static TablePotential createTablePotential(int numVariables, 
-			double[] table, HashMap<String, Object> properties) {
+			double[] table) {
 		// Create variables
 		ArrayList<Variable> variables = new ArrayList<Variable>(numVariables);
 		Variable variable;
@@ -274,12 +277,6 @@ public class SharedTestUtilities {
 			String variableName = letters[numVariable];
 			variable = new Variable(variableName, states);
 			variables.add(variable);
-		}
-		
-		// Create additionalProperties
-		if (properties == null) {
-			properties = new HashMap<String, Object>();
-			properties.put("property", "property");
 		}
 		
 		TablePotential tablePotential = new TablePotential(

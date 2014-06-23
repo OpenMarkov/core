@@ -951,8 +951,7 @@ public final class DiscretePotentialOperations {
 
             // divide
             if (tDenominator.values[potentialsPositions[1]] == 0.0) {
-            	throw new DivideByZeroException("DiscretePotentialOperations.divide");
-//                quotient.values[quotientPosition] = 0.0;
+                quotient.values[quotientPosition] = 0.0;
             } else {
                 quotient.values[quotientPosition] = tNumerator.values[potentialsPositions[0]]
                         / tDenominator.values[potentialsPositions[1]];

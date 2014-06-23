@@ -863,7 +863,7 @@ public final class DiscretePotentialOperations {
      *         variables of numerator and denominator.
      * @throws DivideByZeroException 
      */
-    public static TablePotential divide(Potential numerator, Potential denominator) throws DivideByZeroException {
+    public static TablePotential divide(Potential numerator, Potential denominator) {
         // Get variables and create quotient potential.
         // Quotient potential variables = numerator potential variables union
         // denominator potential variables
@@ -1710,9 +1710,8 @@ public final class DiscretePotentialOperations {
      * @param chanceVariable. <code>Variable</code>
      * @param potentials. <code>List</code> of <code>TablePotential</code>
      * @return. A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
-     * @throws DivideByZeroException 
      */
-    public static List<TablePotential> sumOutVariable(Variable chanceVariable, List<TablePotential> potentials) throws DivideByZeroException {
+    public static List<TablePotential> sumOutVariable(Variable chanceVariable, List<TablePotential> potentials) {
     	// Get probability and utility potentials
     	List<TablePotential> probabilityPotentials = new ArrayList<TablePotential>();
     	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();

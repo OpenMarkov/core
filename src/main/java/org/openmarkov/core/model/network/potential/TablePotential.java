@@ -745,12 +745,11 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      */
     public static int getNextPosition(int actualPosition, 
     		int[] actualCoordinate, int[] dimensions, int[] accOffsets) {
-    	int increasedVariable = 0;
         for (int j = 0; j < actualCoordinate.length; j++) {
         	actualCoordinate[j]++;
             if (actualCoordinate[j] < dimensions[j]) {
             	// this is what never should be done like this, but it is fast and here that is more important
-            	return actualPosition + accOffsets[increasedVariable];
+            	return actualPosition + accOffsets[j];
             }
             actualCoordinate[j] = 0;
         }

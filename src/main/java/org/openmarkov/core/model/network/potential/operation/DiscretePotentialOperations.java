@@ -1749,6 +1749,7 @@ public final class DiscretePotentialOperations {
     		int[] conditionalCoordinate = new int[numUnionVariables];
 
     		int utilityPosition = 0;
+    		int previousUtilityPosition = 0;
     		int[] utilityPositionCoordinate = new int[numUnionVariables];
 
     		int globalUtilityPosition = 0;
@@ -1777,16 +1778,17 @@ public final class DiscretePotentialOperations {
     				}
     				// Update coordinates
     				globalUtilityPosition++;
+    				previousUtilityPosition = utilityPosition;
     				utilityPosition = TablePotential.getNextPosition(utilityPosition, utilityPositionCoordinate,
     						globalUtilityDimensions, accOffsetsUtility);
     				conditionalPosition = TablePotential.getNextPosition(conditionalPosition,
     						conditionalCoordinate, globalUtilityDimensions, accOffsetsConditional);
     			}
     			if (interventionsPresent) {
-    				newUtilityPotential.interventions[utilityPosition] = Intervention.averageOfInterventions(
+    				newUtilityPotential.interventions[previousUtilityPosition] = Intervention.averageOfInterventions(
     						chanceVariable, probabilities, interventions);
     			}
-    			newUtilityPotential.values[utilityPosition] = sum;
+    			newUtilityPotential.values[previousUtilityPosition] = sum;
     		}
 
 

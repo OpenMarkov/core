@@ -9,10 +9,7 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,12 +21,14 @@ import org.junit.Test;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.Choice;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -748,10 +747,10 @@ public class DiscretePotentialOperationsTest {
 	}
 
 	@Test
-	public void testSumOutVariable() {
-		// Test 1: No utilities
-		List<TablePotential> resultingPotentials = DiscretePotentialOperations.sumOutVariable(
-				commonVariables.a, commonVariables.potentials);
+	/** Test without utilities */
+	public void testSumOutVariable1() {
+		List<TablePotential> resultingPotentials = 
+				DiscretePotentialOperations.sumOutVariable(commonVariables.a, commonVariables.potentials);
 		assertEquals(1, resultingPotentials.size()); // No utility
 		TablePotential tablePotential = resultingPotentials.get(0);
 		assertEquals(tablePotential.getPotentialRole(), PotentialRole.JOINT_PROBABILITY);
@@ -761,11 +760,43 @@ public class DiscretePotentialOperationsTest {
 		assertTrue(variables.contains(commonVariables.c));
 		assertTrue(variables.contains(commonVariables.d));
 		assertEquals(12, tablePotential.values.length);
-		
-		// Test 2: IDE1-perfect-knowledge
-//		ProbNet perfectKnowledge = 
 	}
+
+	@Test
+	/** Test perfect-knowledge */
+	public void testSumOutVariable2() {
+		ProbNet perfectKnowledge = IDFactory.createNoKnowledge();
+		Variable disease = null;
+		Variable therapy = null;
+		try {
+			disease = perfectKnowledge.getVariable("Disease");
+			therapy = perfectKnowledge.getVariable("Therapy");
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+			fail("Variable not found");
+		}
+		List<Potential> networkPotentials = perfectKnowledge.getPotentials(disease);
+		List<TablePotential> networkTablePotentials = getTablePotentials(networkPotentials);
+		List<TablePotential> resultingPotentials = DiscretePotentialOperations.sumOutVariable(disease, networkTablePotentials);
+		// Asserts
+		assertEquals(1, resultingPotentials.size());
+		TablePotential utility = resultingPotentials.get(0);
+		assertEquals(2, utility.values.length);
+		assertNull(utility.interventions);
+		List<Variable> utilityVariables = utility.getVariables();
+		assertEquals(1, utilityVariables.size());
+		assertTrue(utilityVariables.contains(therapy));
+	}
+
 	
+	private List<TablePotential> getTablePotentials(List<Potential> potentials) {
+		List<TablePotential> tablePotentials = new ArrayList<TablePotential>(potentials.size());
+		for (Potential potential : potentials) {
+			tablePotentials.add((TablePotential)potential);
+		}
+		return tablePotentials;
+	}
+
 	@Test
 	public void testMaxOutVariable() {
 		

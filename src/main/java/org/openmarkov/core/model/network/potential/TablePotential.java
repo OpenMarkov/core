@@ -749,7 +749,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         for (int j = 0; j < actualCoordinate.length; j++) {
         	actualCoordinate[j]++;
             if (actualCoordinate[j] < dimensions[j]) {
-            	// this is what never should be done like this, but it is fast and here it is important
+            	// this is what never should be done like this, but it is fast and here that is more important
             	return actualPosition + accOffsets[increasedVariable];
             }
             actualCoordinate[j] = 0;

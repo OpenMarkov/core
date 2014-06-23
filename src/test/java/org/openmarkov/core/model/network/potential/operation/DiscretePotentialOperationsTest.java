@@ -747,6 +747,26 @@ public class DiscretePotentialOperationsTest {
 		}
 	}
 
+	@Test
+	public void testSumOutVariable() {
+		// Test 1
+		List<TablePotential> resultingPotentials = DiscretePotentialOperations.sumOutVariable(
+				commonVariables.a, commonVariables.potentials);
+		assertEquals(1, resultingPotentials.size()); // No utility
+		TablePotential tablePotential = resultingPotentials.get(0);
+		assertEquals(tablePotential.getPotentialRole(), PotentialRole.JOINT_PROBABILITY);
+		List<Variable> variables = tablePotential.getVariables();
+		assertEquals(3, variables.size());
+		assertTrue(variables.contains(commonVariables.b));
+		assertTrue(variables.contains(commonVariables.c));
+		assertTrue(variables.contains(commonVariables.d));
+		assertEquals(12, tablePotential.values.length);
+	}
+	
+	@Test
+	public void testMaxOutVariable() {
+		
+	}
 
     /** Translates the coordinate received in (variables, coordinateVariables)
      *  to the potential variables ordination and returns the configuration

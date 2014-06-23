@@ -1713,87 +1713,96 @@ public final class DiscretePotentialOperations {
     	List<TablePotential> probabilityPotentials = new ArrayList<TablePotential>();
     	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
     	classifyProbabilityAndUtilityPotentials(potentials, probabilityPotentials, utilityPotentials);
-    	
+    	boolean thereIsUtility = utilityPotentials.size() != 0;
+
     	// operations to sum out variable
-    	TablePotential globalUtilityPotential = sum(utilityPotentials);
+    	TablePotential globalUtilityPotential = null;
+    	if (thereIsUtility) {
+    		globalUtilityPotential = sum(utilityPotentials);
+    	}
     	TablePotential joinProbability = multiply(probabilityPotentials);
     	TablePotential marginalProbability = marginalize(joinProbability, chanceVariable);
     	marginalProbability.setPotentialRole(PotentialRole.JOINT_PROBABILITY);
     	TablePotential conditionalProbability = divide(joinProbability, marginalProbability);
+    	List<TablePotential> result = new ArrayList<TablePotential>(2);
 
-    	// Get the variables of the new utility potential that will be returned
-    	Set<Variable> variablesInUtilityPotential = new HashSet<Variable>();
-    	variablesInUtilityPotential.addAll(conditionalProbability.getVariables());
-    	List<Variable> globalVariables = globalUtilityPotential.getVariables();
-    	variablesInUtilityPotential.addAll(globalVariables);
-    	variablesInUtilityPotential.remove(chanceVariable);
+    	if (thereIsUtility) {
+    		// Get the variables of the new utility potential that will be returned
+    		Set<Variable> variablesInUtilityPotential = null;
+    		List<Variable> globalUtilityVariables = null;
+    		variablesInUtilityPotential = new HashSet<Variable>();
+    		variablesInUtilityPotential.addAll(conditionalProbability.getVariables());
+    		globalUtilityVariables = globalUtilityPotential.getVariables();
+    		variablesInUtilityPotential.addAll(globalUtilityVariables);
+    		variablesInUtilityPotential.remove(chanceVariable);
+    		List<Variable> newUtilityVariables = new ArrayList<Variable>(variablesInUtilityPotential);
+    		TablePotential newUtilityPotential = new TablePotential(newUtilityVariables, PotentialRole.UTILITY);
+    		// Iterate for each configuration of variablesInUtilityPotential
+    		List<Variable> unionUtilityVariables = new ArrayList<Variable>(variablesInUtilityPotential.size() + 1);
+    		unionUtilityVariables.add(chanceVariable);
+    		unionUtilityVariables.addAll(variablesInUtilityPotential);
+    		int conditionalPosition = 0;
+    		int[] accOffsetsConditional = TablePotential.getAccumulatedOffsets(unionUtilityVariables, conditionalProbability.getVariables());
+    		int[] accOffsetsUtility = TablePotential.getAccumulatedOffsets(unionUtilityVariables, newUtilityVariables);
 
-    	List<Variable> newUtilityVariables = new ArrayList<Variable>(variablesInUtilityPotential);
-    	TablePotential newUtilityPotential = new TablePotential(newUtilityVariables, PotentialRole.UTILITY);
-    	// Iterate for each configuration of variablesInUtilityPotential
-    	List<Variable> unionUtilityVariables = new ArrayList<Variable>(variablesInUtilityPotential.size() + 1);
-    	unionUtilityVariables.add(chanceVariable);
-    	unionUtilityVariables.addAll(variablesInUtilityPotential);
-    	int conditionalPosition = 0;
-    	int[] accOffsetsConditional = TablePotential.getAccumulatedOffsets(unionUtilityVariables, conditionalProbability.getVariables());
-    	int[] accOffsetsUtility = TablePotential.getAccumulatedOffsets(unionUtilityVariables, newUtilityVariables);
+    		int numUnionVariables = unionUtilityVariables.size();
+    		int[] conditionalCoordinate = new int[numUnionVariables];
 
-    	int numUnionVariables = unionUtilityVariables.size();
-    	int[] conditionalCoordinate = new int[numUnionVariables];
-    	
-    	int utilityPosition = 0;
-    	int[] utilityPositionCoordinate = new int[numUnionVariables];
-    	
-    	int globalUtilityPosition = 0;
-    	int[] globalUtilityDimensions = TablePotential.calculateDimensions(globalVariables);
-    	
-    	int chanceVariableSize = chanceVariable.getNumStates();
-    	int newUtilitySize = TablePotential.computeTableSize(newUtilityVariables);
-    	
-    	boolean interventionsPresent = globalUtilityPotential.interventions != null && 
-				globalUtilityPotential.interventions.length == globalUtilityPotential.values.length;
-    	double sum;
-		Intervention[] interventions = null;
-		double[] probabilities = null;
-		for (int external = 0; external < newUtilitySize; external++) {
-			sum = 0.0; // Accumulate utility
-			if (interventionsPresent) {
-				interventions = new Intervention[chanceVariableSize];
-				probabilities = new double[chanceVariableSize];
-			}
-			for (int internal = 0; internal < chanceVariableSize; internal++) {
-				sum += conditionalProbability.values[conditionalPosition]
-						* globalUtilityPotential.values[globalUtilityPosition];
-				if (interventionsPresent) {
-					interventions[internal] = globalUtilityPotential.interventions[globalUtilityPosition];
-					probabilities[internal] = conditionalProbability.values[conditionalPosition];
-				}
-				// Update coordinates
-				globalUtilityPosition++;
-				utilityPosition = TablePotential.getNextPosition(utilityPosition, utilityPositionCoordinate,
-						globalUtilityDimensions, accOffsetsUtility);
-				conditionalPosition = TablePotential.getNextPosition(conditionalPosition,
-						conditionalCoordinate, globalUtilityDimensions, accOffsetsConditional);
-			}
-			if (interventionsPresent) {
-				newUtilityPotential.interventions[utilityPosition] = Intervention.averageOfInterventions(
-						chanceVariable, probabilities, interventions);
-			}
-			newUtilityPotential.values[utilityPosition] = sum;
-		}
-		
-		
-		List<TablePotential> result = new ArrayList<TablePotential>(2);
-		// Do not include constant probability potentials equal to 1.0
-		if (marginalProbability.getNumVariables() > 0 || 
-				!almostEqual(marginalProbability.values[0], 1.0)) {
-			result.add(marginalProbability);
-		}
-		// Do not include constant utility potentials equal to 0.0
-		if (newUtilityPotential.getNumVariables() > 0 || 
-				!almostEqual(newUtilityPotential.values[0], 0.0)) {// Do not include constant potentials equal to 0.0
-			result.add(newUtilityPotential);
-		}
+    		int utilityPosition = 0;
+    		int[] utilityPositionCoordinate = new int[numUnionVariables];
+
+    		int globalUtilityPosition = 0;
+    		int[] globalUtilityDimensions = TablePotential.calculateDimensions(globalUtilityVariables);
+
+    		int chanceVariableSize = chanceVariable.getNumStates();
+    		int newUtilitySize = TablePotential.computeTableSize(newUtilityVariables);
+
+    		boolean interventionsPresent = globalUtilityPotential.interventions != null && 
+    				globalUtilityPotential.interventions.length == globalUtilityPotential.values.length;
+    		double sum;
+    		Intervention[] interventions = null;
+    		double[] probabilities = null;
+    		for (int external = 0; external < newUtilitySize; external++) {
+    			sum = 0.0; // Accumulate utility
+    			if (interventionsPresent) {
+    				interventions = new Intervention[chanceVariableSize];
+    				probabilities = new double[chanceVariableSize];
+    			}
+    			for (int internal = 0; internal < chanceVariableSize; internal++) {
+    				sum += conditionalProbability.values[conditionalPosition]
+    						* globalUtilityPotential.values[globalUtilityPosition];
+    				if (interventionsPresent) {
+    					interventions[internal] = globalUtilityPotential.interventions[globalUtilityPosition];
+    					probabilities[internal] = conditionalProbability.values[conditionalPosition];
+    				}
+    				// Update coordinates
+    				globalUtilityPosition++;
+    				utilityPosition = TablePotential.getNextPosition(utilityPosition, utilityPositionCoordinate,
+    						globalUtilityDimensions, accOffsetsUtility);
+    				conditionalPosition = TablePotential.getNextPosition(conditionalPosition,
+    						conditionalCoordinate, globalUtilityDimensions, accOffsetsConditional);
+    			}
+    			if (interventionsPresent) {
+    				newUtilityPotential.interventions[utilityPosition] = Intervention.averageOfInterventions(
+    						chanceVariable, probabilities, interventions);
+    			}
+    			newUtilityPotential.values[utilityPosition] = sum;
+    		}
+
+
+    		// Do not include constant probability potentials equal to 1.0
+    		if (marginalProbability.getNumVariables() > 0 || 
+    				!almostEqual(marginalProbability.values[0], 1.0)) {
+    			result.add(marginalProbability);
+    		}
+    		// Do not include constant utility potentials equal to 0.0
+    		if (newUtilityPotential.getNumVariables() > 0 || 
+    				!almostEqual(newUtilityPotential.values[0], 0.0)) {// Do not include constant potentials equal to 0.0
+    			result.add(newUtilityPotential);
+    		}
+    	} else {
+    		result.add(marginalProbability);
+    	}
     	return result;
     }
      

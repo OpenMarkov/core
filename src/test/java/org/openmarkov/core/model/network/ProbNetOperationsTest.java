@@ -22,8 +22,8 @@ import org.junit.Test;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.inference.InferenceAlgorithmTests;
+import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
@@ -36,6 +36,7 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.WeibullHazardPotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MPADType;
 import org.openmarkov.core.util.UtilTestMethods;
 
@@ -945,6 +946,109 @@ public class ProbNetOperationsTest {
 		}
 		
 	}
+	
+	@Test
+	public void testAddNoForgettingArcs() throws Exception {
+        Boolean shareAllLinks = false;
+        // We create the influence diagram
+        ProbNet influenceDiagram = createInfluenceForAddNoForgettingArcsTest();
+        // And manually no-forgetting arcs
+        ProbNet idWithNoForgettingArcs = influenceDiagram.copy();
+        try {
+            // New links from decision nodes
+        	idWithNoForgettingArcs.addLink(idWithNoForgettingArcs.getVariable("D1"), idWithNoForgettingArcs.getVariable("D3"), true);
+        	idWithNoForgettingArcs.addLink(idWithNoForgettingArcs.getVariable("D1"), idWithNoForgettingArcs.getVariable("D4"), true);
+        	idWithNoForgettingArcs.addLink(idWithNoForgettingArcs.getVariable("D2"), idWithNoForgettingArcs.getVariable("D4"), true);
+        } catch (NodeNotFoundException e) {
+            e.printStackTrace();
+        }
+        // Along with all the links
+        List<Link<Node>> allLinks = idWithNoForgettingArcs.getLinks();
+        // We call the method to transform the influence diagram in its limid version
+        ProbNetOperations.addNoForgettingArcs(influenceDiagram);
+        // And we iterate over its links
+        for (Link<Node> nodeLink : influenceDiagram.getLinks()) {
+            shareAllLinks = false;
+            for (Link<Node> limidLink : allLinks) {
+                if (nodeLink.getNode1().getName().compareTo(limidLink.getNode1().getName()) == 0 &&
+                    nodeLink.getNode2().getName().compareTo(limidLink.getNode2().getName()) == 0 &&
+                    nodeLink.isDirected() == limidLink.isDirected()) {
+                    shareAllLinks = true;
+                    break;
+                }
+            }
+            if (shareAllLinks) {
+                allLinks.remove(nodeLink);
+            }
+            else {
+                break;
+            }
+        }
+        assertTrue(shareAllLinks);
+    }
+	
+	public static ProbNet createInfluenceForAddNoForgettingArcsTest () {
+        ProbNet probNet;
+        probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+        // Define the variables
+        // Chance variables
+        String diseaseStates[]={"present","absent"};
+        String yesNoStates[]={"yes","no"};
+        Variable variableR1 = new Variable("R1",diseaseStates);
+        Variable variableR2 = new Variable("R2",diseaseStates);
+        Variable variableR3 = new Variable("R3",diseaseStates);
+        Variable variableR4 = new Variable("R4",diseaseStates);
+        // Decision variables
+        Variable variableD1 = new Variable("D1",yesNoStates);
+        Variable variableD2 = new Variable("D2",yesNoStates);
+        Variable variableD3 = new Variable("D3",yesNoStates);
+        Variable variableD4 = new Variable("D4",yesNoStates);
+        // Utility variables
+        Variable variableU1 = new Variable("U1");
+        Variable variableU2 = new Variable("U2");
+        Variable variableU3 = new Variable("U3");
+        Variable variableU4 = new Variable("U4");
+        //Add variables to the network
+        addVariables(probNet, NodeType.CHANCE,variableR1,variableR2,variableR3,variableR4);
+        addVariables(probNet,NodeType.DECISION,variableD1,variableD2,variableD3,variableD4);
+        addVariables(probNet,NodeType.UTILITY,variableU1,variableU2,variableU3,variableU4);
+        //Links throws NodeNotFoundException
+        try {
+            // Links from decision nodes
+            probNet.addLink(variableD1, variableD2, true);
+            probNet.addLink(variableD1, variableU3, true);
+            probNet.addLink(variableD2, variableD3, true);
+            probNet.addLink(variableD2, variableR1, true);
+            probNet.addLink(variableD3, variableU1, true);
+            probNet.addLink(variableD3, variableD4, true);
+            probNet.addLink(variableD4, variableU4, true);
+            probNet.addLink(variableD4, variableR3, true);
+            // Links from chance nodes
+            probNet.addLink(variableR1, variableR2, true);
+            probNet.addLink(variableR1, variableR4, true);
+            probNet.addLink(variableR1, variableU3, true);
+            probNet.addLink(variableR2, variableR3, true);
+            probNet.addLink(variableR2, variableU1, true);
+            probNet.addLink(variableR3, variableU2, true);
+            probNet.addLink(variableR4, variableD4, true);
+            probNet.addLink(variableR4, variableU4, true);
+        } catch (NodeNotFoundException e) {
+            e.printStackTrace();
+        }
+        return probNet;
+    }
+	
+	/**
+     * @param net Network
+     * @param nodeType The type of node
+     * @param variables List of variables to add
+     * It adds a list of variables to the network.
+     */
+    private static void addVariables(ProbNet net,NodeType nodeType,Variable...variables){
+        for (Variable variable : variables) {
+            net.addNode(variable, nodeType);
+        }
+    }
 
 
 }

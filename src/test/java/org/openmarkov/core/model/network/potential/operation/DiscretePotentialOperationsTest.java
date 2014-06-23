@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmarkov.core.exception.DivideByZeroException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -559,7 +560,7 @@ public class DiscretePotentialOperationsTest {
 	}
 
 	@Test
-	public void testDivide() {
+	public void testDivide() throws DivideByZeroException {
 		// Call method under test
 		TablePotential division = (TablePotential) DiscretePotentialOperations
 			.divide(commonVariables.t1, commonVariables.t2);
@@ -748,7 +749,7 @@ public class DiscretePotentialOperationsTest {
 
 	@Test
 	/** Test without utilities */
-	public void testSumOutVariable1() {
+	public void testSumOutVariable1() throws DivideByZeroException {
 		List<TablePotential> resultingPotentials = 
 				DiscretePotentialOperations.sumOutVariable(commonVariables.a, commonVariables.potentials);
 		assertEquals(1, resultingPotentials.size()); // No utility
@@ -764,7 +765,7 @@ public class DiscretePotentialOperationsTest {
 
 	@Test
 	/** Test perfect-knowledge */
-	public void testSumOutVariable2() {
+	public void testSumOutVariable2() throws DivideByZeroException {
 		ProbNet perfectKnowledge = IDFactory.createNoKnowledge();
 		Variable disease = null;
 		Variable therapy = null;

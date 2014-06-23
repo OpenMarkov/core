@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.openmarkov.core.exception.DivideByZeroException;
 import org.openmarkov.core.exception.IllegalArgumentTypeException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
@@ -860,8 +861,9 @@ public final class DiscretePotentialOperations {
      *            <code>Potential</code>.
      * @return The quotient: A <code>TablePotential</code> with the union of the
      *         variables of numerator and denominator.
+     * @throws DivideByZeroException 
      */
-    public static TablePotential divide(Potential numerator, Potential denominator) {
+    public static TablePotential divide(Potential numerator, Potential denominator) throws DivideByZeroException {
         // Get variables and create quotient potential.
         // Quotient potential variables = numerator potential variables union
         // denominator potential variables
@@ -949,7 +951,8 @@ public final class DiscretePotentialOperations {
 
             // divide
             if (tDenominator.values[potentialsPositions[1]] == 0.0) {
-                quotient.values[quotientPosition] = 0.0;
+            	throw new DivideByZeroException("DiscretePotentialOperations.divide");
+//                quotient.values[quotientPosition] = 0.0;
             } else {
                 quotient.values[quotientPosition] = tNumerator.values[potentialsPositions[0]]
                         / tDenominator.values[potentialsPositions[1]];
@@ -1008,9 +1011,10 @@ public final class DiscretePotentialOperations {
      * @throws <tt>IllegalArgumentTypeException</tt> if numerator of denominator
      *         are not <tt>TablePotential</tt>
      * @return The quotient
+     * @throws DivideByZeroException 
      */
     public static Potential dividePotentials(Potential numerator, Potential denominator)
-            throws IllegalArgumentTypeException {
+            throws IllegalArgumentTypeException, DivideByZeroException {
         // parameter correct type verification before calling right method
         if (!(numerator instanceof TablePotential) || !(denominator instanceof TablePotential)) {
             String errMsg = new String("");
@@ -1707,8 +1711,9 @@ public final class DiscretePotentialOperations {
      * @param chanceVariable. <code>Variable</code>
      * @param potentials. <code>List</code> of <code>TablePotential</code>
      * @return. A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
+     * @throws DivideByZeroException 
      */
-    public static List<TablePotential> sumOutVariable(Variable chanceVariable, List<TablePotential> potentials) {
+    public static List<TablePotential> sumOutVariable(Variable chanceVariable, List<TablePotential> potentials) throws DivideByZeroException {
     	// Get probability and utility potentials
     	List<TablePotential> probabilityPotentials = new ArrayList<TablePotential>();
     	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
@@ -1875,7 +1880,7 @@ public final class DiscretePotentialOperations {
 	 * @param probabilityPotentials. <code>List</code> of <code>TablePotential</code>
 	 * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>
 	 */
-	private static void classifyProbabilityAndUtilityPotentials(
+	public static void classifyProbabilityAndUtilityPotentials(
 			List<TablePotential> potentials,
 			List<TablePotential> probabilityPotentials,
 			List<TablePotential> utilityPotentials) {

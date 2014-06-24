@@ -442,6 +442,67 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 	return network;
 }
 	
+	/**
+	 * @return An influence diagram with four nodes: X, Y, D and U. It represents a diagnosis problem.
+	 * It is the example of influence diagram described in page 11 in the book available online at URL:
+	 * http://www.cisiad.uned.es/techreports/decision-medicina.pdf
+	 * The numerical parameters of this method are
+	 */
+	public static ProbNet createInfluenceDiagramWithoutDecisions(){
+		double util[] = {90,20};
+		return createSimpleIDWithoutDecisions(0.09,util);
+	}
+	
+	/**
+	 * @return An influence diagram with four nodes: X, Y, D and U. It represents a diagnosis problem.
+	 * It is the example of influence diagram described in page 11 in the book available online at URL:
+	 * http://www.cisiad.uned.es/techreports/decision-medicina.pdf
+	 * The numerical parameters of this method are
+	 */
+	public static ProbNet createSimpleIDWithoutDecisions(
+			double prevalence,
+			double[] tableUX) {
+			
+			ProbNet probNet;
+			PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
+			TablePotential potentialX;
+			TablePotential potentialU;
+						
+			probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+			
+			// Define the variables
+			Variable variableX = new Variable("X",diseaseStates);
+			Variable variableU = new Variable("U");
+			
+			//Add variables to the network			
+			addVariables(probNet,NodeType.CHANCE,variableX);
+			addVariables(probNet,NodeType.UTILITY,variableU);
+			
+			//additional properties
+			String relevance = new String("Relevance");
+			String value = new String("7.0");				
+			setAdditionalProperties(relevance,value,variableX,variableU);		
+				
+			//Potential X
+			potentialX = createPotentialDisease(prevalence,roleProbability,variableX);
+			
+			potentialU = createTablePotential(PotentialRole.UTILITY,tableUX,variableX);
+			potentialU.setUtilityVariable(variableU);
+			
+			//Links throws NodeNotFoundException
+			try {
+				probNet.addLink(variableX, variableU, true);
+			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			addPotentials(probNet,potentialX,potentialU);
+			
+			return probNet;
+		}
+	
+	
+	
 	
 	/**
 	 * @return An influence diagram with four nodes: X, Y, D and U. It represents a diagnosis problem.

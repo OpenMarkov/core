@@ -32,6 +32,7 @@ import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 
 /**
  * This class defines a set of common operations over discrete potentials (
@@ -1837,29 +1838,16 @@ public final class DiscretePotentialOperations {
 		utilities.add(joinProbability);
 		TablePotential utilityPotential = multiply(utilities, false);
 		Object[] maxUtilities = maximize(utilityPotential, decisionVariable);
-		
 		TablePotential maxOutPotential = (TablePotential)maxUtilities[0];
+		maxOutPotential = addInterventions(utilityPotential, maxOutPotential, decisionVariable);
+		
 		// Iterate for each configuration of maxOutPotential
 		int tableSize = maxOutPotential.values.length;
 		boolean noInterventions = maxOutPotential.interventions == null;
 		if (noInterventions) {
 			maxOutPotential.interventions = new Intervention[tableSize];
 		}
-		@SuppressWarnings("unchecked")
-		GTablePotential<Choice> maxChoicesPotential = (GTablePotential<Choice>)maxUtilities[1];
-		for (int i = 0; i < tableSize; i++) {
-			Choice choice = maxChoicesPotential.elementTable.get(i);
-			List<State> states = choice.getStates();
-			if (noInterventions) {
-				// TODO
-			} else {
-				
-			}
-			Intervention intervention;
-			//Intervention intervention = new Intervention();
-			
-			// maxOutPotential.interventions[i] = intervention;
-		}
+		
 		List<TablePotential> result;
 		if (includeProbability) {
 			result = new ArrayList<TablePotential>(2);
@@ -1870,6 +1858,70 @@ public final class DiscretePotentialOperations {
 		result.add(maxOutPotential);
     	return result;
     }
+
+	/**
+	 * @param utilityPotential. <code>TablePotential</code>
+	 * @param maxOutPotential. <code>TablePotential</code>
+	 * @param maxVariable. <code>Variable</code>
+	 * @return The potential <code>maxOutPotential</code> with the interventions array.
+	 */
+	private static TablePotential addInterventions(
+			TablePotential utilityPotential, TablePotential maxOutPotential, Variable maxVariable) {
+		// Create auxiliary potential to be used as reference with offsets accumulated algorithm
+		List<Variable> referenceVariables = new ArrayList<Variable>();
+		referenceVariables.add(maxVariable);
+		referenceVariables.addAll(maxOutPotential.getVariables());
+		TablePotential referencePotential = 
+				new TablePotential(referenceVariables, PotentialRole.CONDITIONAL_PROBABILITY, null);
+		
+		// Variables related to interventions
+		boolean thereAreInterventions = utilityPotential.interventions != null;
+		
+		// Get accumulated offsets and other variables
+		int maxOutPosition = 0;
+		int[] maxOutAccOffsets = referencePotential.getAccumulatedOffsets(maxOutPotential.getVariables());
+		int[] maxOutCoordinate = new int[maxOutPotential.getNumVariables()];
+		int[] maxOutDimensions = maxOutPotential.getDimensions();
+		int utilityPosition = 0;
+		int[] utilityAccOffsets = referencePotential.getAccumulatedOffsets(utilityPotential.getVariables());
+		int[] utilityCoordinate = new int[utilityPotential.getNumVariables()];
+		int[] utilityDimensions = utilityPotential.getDimensions(); 
+		
+		int externalSize = maxOutPotential.values.length;
+		int internalSize = maxVariable.getNumStates();
+		double[] utilitiesToMaximize = new double[internalSize];
+		Intervention[] interventionsToMaximize = null;
+		if (thereAreInterventions) {
+			interventionsToMaximize = new Intervention[internalSize];
+		}
+		
+		List<State> maxStates = new ArrayList<State>();
+		
+		for (int external = 0; external < externalSize; external++) {
+			maxStates.clear();
+			int previousMaxOutPosition = 0;
+			for (int internal = 0; internal < internalSize; internal++) {
+				utilitiesToMaximize[internal] = utilityPotential.values[utilityPosition];
+				if (thereAreInterventions) {
+					interventionsToMaximize[internal] = utilityPotential.interventions[utilityPosition];
+				}
+				// Update positions
+				previousMaxOutPosition = maxOutPosition;
+				maxOutPosition = TablePotential.getNextPosition(
+						maxOutPosition, maxOutCoordinate, maxOutDimensions, maxOutAccOffsets);
+				utilityPosition = TablePotential.getNextPosition(
+						utilityPosition, utilityCoordinate, utilityDimensions, utilityAccOffsets);
+			}
+			if (thereAreInterventions) {
+				maxOutPotential.interventions[previousMaxOutPosition] = Intervention.optimalIntervention(
+						maxVariable, utilitiesToMaximize, interventionsToMaximize);
+			} else {
+				maxOutPotential.interventions[previousMaxOutPosition] = new Intervention(maxVariable, maxStates, null, null);
+			}
+		}
+		
+		return maxOutPotential;
+	}
 
 	/** 
 	 * Classifies potential from the first list between probability and utility and stores them 

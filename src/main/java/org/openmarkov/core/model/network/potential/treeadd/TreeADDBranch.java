@@ -61,16 +61,28 @@ public class TreeADDBranch
     /**
      * Constructor for discretized and finite states variables
      * @param branchStates
+     * @param topVariable
+     * @param parentVariables
+     */
+    public TreeADDBranch(List<State> branchStates, Variable topVariable, 
+            List<Variable> parentVariables) {
+        this.states = branchStates;
+        this.rootVariable = topVariable;
+        this.parentVariables = parentVariables;
+        this.potential = null;
+    }
+
+    /**
+     * Constructor for discretized and finite states variables
+     * @param branchStates
      * @param potential
      * @param topVariable
      * @param parentVariables
      */
     public TreeADDBranch(List<State> branchStates, Variable topVariable, Potential potential,
-            List<Variable> parentVariables)    {
-        this.states = branchStates;
+            List<Variable> parentVariables) {
+    	this(branchStates, topVariable, parentVariables);
         this.potential = potential;
-        this.rootVariable = topVariable;
-        this.parentVariables = parentVariables;
     }
 
     /**

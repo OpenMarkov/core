@@ -31,10 +31,15 @@ public class Intervention extends TreeADDPotential {
 	public Intervention(Variable topVariable, List<State> states, 
 			List<Intervention> interventions, List<Variable> variables) {
 		super(variables, topVariable, PotentialRole.INTERVENTION);
-		for (int i = 0; i < interventions.size(); i++) {
+		for (int i = 0; i < states.size(); i++) {
 			List<State> branchStates = new ArrayList<State>(1);
 			branchStates.add(states.get(i));
-			TreeADDBranch branch = new TreeADDBranch(branchStates, topVariable, interventions.get(i), null);
+			TreeADDBranch branch = null;
+			if (interventions == null) {
+				branch = new TreeADDBranch(branchStates, topVariable, null);
+			} else {
+				branch = new TreeADDBranch(branchStates, topVariable, interventions.get(i), null);
+			}
 			this.addBranch(branch);
 		}
 	}
@@ -85,7 +90,7 @@ public class Intervention extends TreeADDPotential {
 		// Select interventions and states whose probability is greater than 0.0.
 		List<Intervention> selectedInterventions = new ArrayList<Intervention>();
 		List<State> optimalStates = new ArrayList<State>();
-		Set<Variable> allVariables = null;
+		Set<Variable> variables = new HashSet<Variable>();
 		double max = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < utilities.length; i++) {
 			if (utilities[i] >= max) {
@@ -93,18 +98,22 @@ public class Intervention extends TreeADDPotential {
 					max = utilities[i];
 					optimalStates.clear();
 					selectedInterventions.clear();
+					selectedInterventions.add(interventions[i]); // Currently only one intervention can be here, also in draws.
+					variables.clear();
+					variables.addAll(interventions[i].getVariables());
+				} else {
+					optimalStates.add(states[i]);
+					/* TODO Change several classes to deal with draws that points to different previous interventions. 
+					 * Currently, we leave as is, that is, we choose the first intervention, almost equivalent to choose
+					 * randomly, because otherwise it suppose to change several classes and this can take a lot of time. 
+					 * Anyway, draws will correspond to cases with zero probability that will be pruned because
+					 * there are no real known cases, so far, with this type of draws. */
+					variables.addAll(interventions[i].getVariables());
 				}
-				optimalStates.add(states[i]);
-				selectedInterventions.add(interventions[i]);
-				/*
-				TODO I suppose here you have forgotten to add the line:
-				allVariables.addAll(interventions[i].getVariables());
-				and to initiliaze allVariables in a line above:
-				allVariables = new HashSet<Variable>();*/
 			}
 		}
 		return new Intervention(decisionVariable, optimalStates, selectedInterventions, 
-					new ArrayList<Variable>(allVariables));
+					new ArrayList<Variable>(variables));
 	}
 
 	/**

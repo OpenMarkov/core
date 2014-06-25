@@ -1823,19 +1823,25 @@ public final class DiscretePotentialOperations {
     	List<TablePotential> probabilityPotentials = new ArrayList<TablePotential>();
     	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
     	classifyProbabilityAndUtilityPotentials(potentials, probabilityPotentials, utilityPotentials);
+    	boolean thereAreProbabilities = probabilityPotentials.size() > 0;
     	
     	// Calculate new potentials
     	TablePotential globalUtilityPotential = sum(utilityPotentials);
-    	TablePotential joinProbability = multiply(probabilityPotentials);
+    	TablePotential joinProbability = null;
+    	if (thereAreProbabilities) {
+    		joinProbability = multiply(probabilityPotentials);
+    	}
     	boolean includeProbability = false;
-    	if (joinProbability.contains(decisionVariable)) {
+    	if (thereAreProbabilities && joinProbability.contains(decisionVariable)) {
     		Object[] projectedPotentials = maximize(joinProbability, decisionVariable);
     		joinProbability = (TablePotential) projectedPotentials[0];
     		includeProbability = true;
     	}
 		List<TablePotential> utilities = new ArrayList<TablePotential>(2);
 		utilities.add(globalUtilityPotential);
-		utilities.add(joinProbability);
+    	if (thereAreProbabilities) {
+    		utilities.add(joinProbability);
+    	}
 		TablePotential utilityPotential = multiply(utilities, false);
 		Object[] maxUtilities = maximize(utilityPotential, decisionVariable);
 		TablePotential maxOutPotential = (TablePotential)maxUtilities[0];
@@ -1868,6 +1874,9 @@ public final class DiscretePotentialOperations {
 	private static TablePotential addInterventions(
 			TablePotential utilityPotential, TablePotential maxOutPotential, Variable maxVariable) {
 		// Create auxiliary potential to be used as reference with offsets accumulated algorithm
+		if (maxOutPotential.interventions == null) {
+			maxOutPotential.interventions = new Intervention[maxOutPotential.values.length];
+		}
 		List<Variable> referenceVariables = new ArrayList<Variable>();
 		referenceVariables.add(maxVariable);
 		referenceVariables.addAll(maxOutPotential.getVariables());
@@ -1880,12 +1889,12 @@ public final class DiscretePotentialOperations {
 		// Get accumulated offsets and other variables
 		int maxOutPosition = 0;
 		int[] maxOutAccOffsets = referencePotential.getAccumulatedOffsets(maxOutPotential.getVariables());
-		int[] maxOutCoordinate = new int[maxOutPotential.getNumVariables()];
-		int[] maxOutDimensions = maxOutPotential.getDimensions();
+		int[] maxOutCoordinate = new int[referencePotential.getNumVariables()];
+		int[] maxOutDimensions = referencePotential.getDimensions();
 		int utilityPosition = 0;
 		int[] utilityAccOffsets = referencePotential.getAccumulatedOffsets(utilityPotential.getVariables());
-		int[] utilityCoordinate = new int[utilityPotential.getNumVariables()];
-		int[] utilityDimensions = utilityPotential.getDimensions(); 
+		int[] utilityCoordinate = new int[referencePotential.getNumVariables()];
+		int[] utilityDimensions = referencePotential.getDimensions(); 
 		
 		int externalSize = maxOutPotential.values.length;
 		int internalSize = maxVariable.getNumStates();
@@ -1895,11 +1904,10 @@ public final class DiscretePotentialOperations {
 			interventionsToMaximize = new Intervention[internalSize];
 		}
 		
-		List<State> maxStates = new ArrayList<State>();
+		List<State> maxStates;
 		
+		int previousMaxOutPosition = 0;
 		for (int external = 0; external < externalSize; external++) {
-			maxStates.clear();
-			int previousMaxOutPosition = 0;
 			for (int internal = 0; internal < internalSize; internal++) {
 				utilitiesToMaximize[internal] = utilityPotential.values[utilityPosition];
 				if (thereAreInterventions) {
@@ -1912,15 +1920,34 @@ public final class DiscretePotentialOperations {
 				utilityPosition = TablePotential.getNextPosition(
 						utilityPosition, utilityCoordinate, utilityDimensions, utilityAccOffsets);
 			}
+			maxStates = setStates(utilitiesToMaximize, maxVariable);
 			if (thereAreInterventions) {
 				maxOutPotential.interventions[previousMaxOutPosition] = Intervention.optimalIntervention(
 						maxVariable, utilitiesToMaximize, interventionsToMaximize);
 			} else {
-				maxOutPotential.interventions[previousMaxOutPosition] = new Intervention(maxVariable, maxStates, null, null);
+				maxOutPotential.interventions[previousMaxOutPosition] = 
+						new Intervention(maxVariable, maxStates, null, null);
 			}
 		}
 		
 		return maxOutPotential;
+	}
+
+	private static List<State> setStates(double[] utilitiesToMaximize, Variable maxVariable) {
+		List<State> states = new ArrayList<State>();
+		double max = Double.NEGATIVE_INFINITY;
+		for (int i = 0; i < utilitiesToMaximize.length; i++) {
+			if (utilitiesToMaximize[i] > max) {
+				states.clear();
+				max = utilitiesToMaximize[i];
+				states.add(maxVariable.getStates()[i]);
+			} else {
+				if (utilitiesToMaximize[i] == max) {
+					states.add(maxVariable.getStates()[i]);
+				}
+			}
+		}
+		return states;
 	}
 
 	/** 

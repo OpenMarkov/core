@@ -93,22 +93,27 @@ public class Intervention extends TreeADDPotential {
 		Set<Variable> variables = new HashSet<Variable>();
 		double max = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < utilities.length; i++) {
-			if (utilities[i] >= max) {
+			if (utilities[i] > max) {
 				if (utilities[i] > max) {
 					max = utilities[i];
 					optimalStates.clear();
+					optimalStates.add(states[i]);
 					selectedInterventions.clear();
-					selectedInterventions.add(interventions[i]); // Currently only one intervention can be here, also in draws.
-					variables.clear();
-					variables.addAll(interventions[i].getVariables());
-				} else {
+					if (interventions != null) {
+						selectedInterventions.add(interventions[i]); // Currently only one intervention can be here, also in draws.
+						variables.clear();
+						variables.addAll(interventions[i].getVariables());
+					}
+				} else if (utilities[i] == max) {
 					optimalStates.add(states[i]);
 					/* TODO Change several classes to deal with draws that points to different previous interventions. 
 					 * Currently, we leave as is, that is, we choose the first intervention, almost equivalent to choose
 					 * randomly, because otherwise it suppose to change several classes and this can take a lot of time. 
 					 * Anyway, draws will correspond to cases with zero probability that will be pruned because
 					 * there are no real known cases, so far, with this type of draws. */
-					variables.addAll(interventions[i].getVariables());
+					if (interventions != null) {
+						variables.addAll(interventions[i].getVariables());
+					}
 				}
 			}
 		}

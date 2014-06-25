@@ -32,11 +32,14 @@ import org.openmarkov.core.inference.Choice;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GTablePotential;
+import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.util.UtilTestMethods;
 
 
@@ -802,6 +805,11 @@ public class DiscretePotentialOperationsTest {
 	}
 
 	
+	/**
+	 * Convert a Potential list to a TablePotential list.
+	 * @param potentials
+	 * @return
+	 */
 	private List<TablePotential> getTablePotentials(List<Potential> potentials) {
 		List<TablePotential> tablePotentials = new ArrayList<TablePotential>(potentials.size());
 		for (Potential potential : potentials) {
@@ -812,7 +820,49 @@ public class DiscretePotentialOperationsTest {
 
 	@Test
 	public void testMaxOutVariable() {
+		// Method invocation
+		ProbNet perfectKnowledge = IDFactory.createPerfectKnowledge();
+		Variable disease = null;
+		Variable therapy = null;
+		try {
+			disease = perfectKnowledge.getVariable("Disease");
+			therapy = perfectKnowledge.getVariable("Therapy");
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+			fail("Variable not found");
+		}
+		List<Potential> potentials = perfectKnowledge.getPotentials(therapy);
+		List<TablePotential> tablePotentials = getTablePotentials(potentials);
+		List<TablePotential> newPotentials = DiscretePotentialOperations.
+				maxOutVariable(therapy, tablePotentials);
+
+		// Asserts
+		// Test utility potential
+		assertEquals(1, newPotentials.size());
+		TablePotential utility = newPotentials.get(0);
 		
+		// Utility variables
+		List<Variable> utilityVariables = utility.getVariables(); 
+		assertEquals(1, utilityVariables.size());
+		
+		// Test utility values
+		assertEquals(disease, utilityVariables.get(0));
+		assertEquals(2, utility.values.length);
+		assertEquals(10, utility.values[0], maxError);
+		assertEquals(7.75, utility.values[1], maxError);
+		
+		 // Test utility interventions
+		assertNotNull(utility.interventions);
+		assertEquals(2, utility.interventions.length);
+		Intervention interventionNo = utility.interventions[0];
+		assertEquals(therapy, interventionNo.getRootVariable());
+		List<TreeADDBranch> branches = interventionNo.getBranches();
+		assertEquals(1, branches.size());
+		TreeADDBranch branch = branches.get(0);
+		List<State> states = branch.getBranchStates();
+		assertEquals(1, states.size());
+		State noState = states.get(0);
+		assertEquals(0, therapy.getStateIndex(noState));
 	}
 
     /** Translates the coordinate received in (variables, coordinateVariables)

@@ -16,6 +16,7 @@ import static org.junit.Assume.assumeTrue;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,12 +36,14 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NetsFactory;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.TablePotentialTest;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -1360,21 +1363,55 @@ public abstract class InferenceAlgorithmTests {
 	
 	@Test
 	public void testEvaluationIDOneDecision(){
+		Intervention expectedInt;
 		
 		ProbNet id = NetsFactory.createIDOneDecision();
 		testMEUDiagram(id,87.4);
 		
-		getOptimalStrategy(id);
+		Intervention strategy = getOptimalStrategy(id);
+			
+		expectedInt = createSimpleIntervention(id,"D","yes");
 		
+		assertTrue(expectedInt.equals(strategy));
 	}
 	
+	private Intervention createSimpleIntervention(ProbNet id, String decision, String state) {
+		Intervention interv;
+		List<Variable> vars = new ArrayList();
+		List<State> states = new ArrayList();
+		Variable dec = null;
+		try {
+			dec = id.getVariable(decision);
+		} catch (NodeNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		vars.add(dec);
+		
+		interv = new Intervention(dec, states, null, null);
+		interv.setRootVariable(dec);
+		try {
+			states.add(dec.getState(state));
+		} catch (InvalidStateException e) {
+			e.printStackTrace();
+		}
+		TreeADDBranch branch = new TreeADDBranch(states, dec, vars);
+		interv.addBranch(branch);
+		
+		return interv;
+	}
+
 	@Test
 	public void testEvaluationIDBlindDiagnosis(){
+		Intervention expectedInt;
 		
 		ProbNet id = NetsFactory.createIDBlindDiagnosis();
 		testMEUDiagram(id,93.1);
 		
-		getOptimalStrategy(id);
+		Intervention strategy = getOptimalStrategy(id);
+		
+		expectedInt = createSimpleIntervention(id,"D","no");
+	
+		assertTrue(expectedInt.equals(strategy));
 		
 	}
 	

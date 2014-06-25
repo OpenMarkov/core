@@ -443,21 +443,17 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 }
 	
 	/**
-	 * @return An influence diagram with four nodes: X, Y, D and U. It represents a diagnosis problem.
-	 * It is the example of influence diagram described in page 11 in the book available online at URL:
-	 * http://www.cisiad.uned.es/techreports/decision-medicina.pdf
-	 * The numerical parameters of this method are
+	 * @return An influence diagram without decisions, with only two nodes: X (chance) and U (utility).
+	 * 
 	 */
-	public static ProbNet createInfluenceDiagramWithoutDecisions(){
-		double util[] = {90,20};
+	public static ProbNet createSimpleIDWithoutDecisions(){
+		double util[] = {20,90};
 		return createSimpleIDWithoutDecisions(0.09,util);
 	}
 	
 	/**
-	 * @return An influence diagram with four nodes: X, Y, D and U. It represents a diagnosis problem.
-	 * It is the example of influence diagram described in page 11 in the book available online at URL:
-	 * http://www.cisiad.uned.es/techreports/decision-medicina.pdf
-	 * The numerical parameters of this method are
+	 * @return An influence diagram without decisions, with only two nodes: X (chance) and U (utility).
+	 * 
 	 */
 	public static ProbNet createSimpleIDWithoutDecisions(
 			double prevalence,
@@ -567,6 +563,58 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		}
 	
 	
+	/**
+	 * @return An influence diagram with four nodes: X, Y, D and U. It represents a diagnosis problem.
+	 * It is the example of influence diagram described in page 11 in the book available online at URL:
+	 * http://www.cisiad.uned.es/techreports/decision-medicina.pdf
+	 * The numerical parameters of this method are
+	 */
+	public static ProbNet createIDBlindDiagnosis(
+			double prevalence,
+			double[] tableUXD) {
+			
+			ProbNet probNet;
+			PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
+			TablePotential potentialX;
+			TablePotential potentialU;
+						
+			probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+			
+			// Define the variables
+			Variable variableX = new Variable("X",diseaseStates);
+			Variable variableD = new Variable("D","yes","no");
+			Variable variableU = new Variable("U");
+			
+			//Add variables to the network			
+			addVariables(probNet,NodeType.CHANCE,variableX);
+			addVariables(probNet,NodeType.DECISION,variableD);
+			addVariables(probNet,NodeType.UTILITY,variableU);
+			
+			//additional properties
+			String relevance = new String("Relevance");
+			String value = new String("7.0");				
+			setAdditionalProperties(relevance,value,variableX,variableD,variableU);		
+				
+			//Potential X
+			potentialX = createPotentialDisease(prevalence,roleProbability,variableX);
+				
+			potentialU = createTablePotential(PotentialRole.UTILITY,tableUXD,variableX, variableD);
+			potentialU.setUtilityVariable(variableU);
+			
+			//Links throws NodeNotFoundException
+			try {
+				probNet.addLink(variableX, variableU, true);
+				probNet.addLink(variableD, variableU, true);
+			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			addPotentials(probNet,potentialX,potentialU);
+			
+			return probNet;
+		}
+	
+	
 	private static TablePotential createPotentialDisease(double prevalence,
 			PotentialRole roleProbability, Variable variableX) {
 		double[] tableX = valuesAPrioriDisease(prevalence);
@@ -585,6 +633,17 @@ private static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity, d
 		double specificity=0.97;
 		double [] tableUXD ={78.0, 88.0, 28.0, 98.0};
 		return createInfluenceDiagramDiagnosisProblem(prevalence,sensitivity,specificity,tableUXD);
+	}
+	
+	/**
+	 * @return An influence diagram with four nodes: X, Y, D and U. It represents a diagnosis problem.
+	 * It is the example of influence diagram described in page 11 in the book available online at URL:
+	 * http://www.cisiad.uned.es/techreports/decision-medicina.pdf
+	 */
+	public static ProbNet createIDBlindDiagnosis() {
+		double prevalence=0.07;
+		double [] tableUXD ={78.0, 88.0, 28.0, 98.0};
+		return createIDBlindDiagnosis(prevalence,tableUXD);
 	}
 	
 	/**

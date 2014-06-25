@@ -1350,6 +1350,20 @@ public abstract class InferenceAlgorithmTests {
 		}
 	}
 	
+	
+	@Test
+	public void testEvaluationSimpleIDWithoutDecisions(){
+		
+		testMEUDiagram(NetsFactory.createSimpleIDWithoutDecisions(),83.7);
+	}
+	
+	@Test
+	public void testEvaluationIDBlindDiagnosis(){
+		
+		testMEUDiagram(NetsFactory.createIDBlindDiagnosis(),93.1);
+	}
+	
+	
 	//@Test
 	//TODO Review the minor error in test
 	public void testPreAndPostResolutionEvidenceIDDecisionTestProblem() throws NotEvaluableNetworkException{
@@ -1489,6 +1503,24 @@ public abstract class InferenceAlgorithmTests {
 		}
 		return areEquals;
 
+	}
+	
+	private void testMEUDiagram(ProbNet diagram,double expectedMeu){
+		
+		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(diagram);
+
+		
+			// test max expected utility
+			Double meuEvaluation = null;
+			try {
+				meuEvaluation = algorithm.getGlobalUtility().values[0];
+			} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			assertEquals(expectedMeu, meuEvaluation, maxError);
+	
+		
 	}
 
 

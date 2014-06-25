@@ -208,8 +208,10 @@ public class Intervention extends TreeADDPotential {
 	 */
 	private boolean hasBranchWithState(State state) {
 		boolean has = false;
-		for (int i=0;i< branches.size() && !has; i++){
-			has = branches.get(i).getBranchStates().contains(state);
+		if (branches != null) {
+			for (int i=0;i< branches.size() && !has; i++){
+				has = branches.get(i).getBranchStates().contains(state);
+			}
 		}
 		
 		return has;

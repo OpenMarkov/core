@@ -1735,7 +1735,8 @@ public final class DiscretePotentialOperations {
     		Set<Variable> variablesInUtilityPotential = null;
     		List<Variable> globalUtilityVariables = null;
     		variablesInUtilityPotential = new HashSet<Variable>();
-    		variablesInUtilityPotential.addAll(conditionalProbability.getVariables());
+    		List<Variable> conditionalProbabilityVariables = conditionalProbability.getVariables();
+    		variablesInUtilityPotential.addAll(conditionalProbabilityVariables);
     		globalUtilityVariables = globalUtilityPotential.getVariables();
     		variablesInUtilityPotential.addAll(globalUtilityVariables);
     		variablesInUtilityPotential.remove(chanceVariable);
@@ -1745,8 +1746,12 @@ public final class DiscretePotentialOperations {
     		List<Variable> unionUtilityVariables = new ArrayList<Variable>(variablesInUtilityPotential.size() + 1);
     		unionUtilityVariables.add(chanceVariable);
     		unionUtilityVariables.addAll(variablesInUtilityPotential);
+    		TablePotential referencePotential = 
+    				new TablePotential(unionUtilityVariables, PotentialRole.CONDITIONAL_PROBABILITY, null);
+
     		int conditionalPosition = 0;
-    		int[] accOffsetsConditional = TablePotential.getAccumulatedOffsets(unionUtilityVariables, conditionalProbability.getVariables());
+    		int[] accOffsetsConditional = TablePotential.getAccumulatedOffsets(
+    				unionUtilityVariables, conditionalProbabilityVariables);
     		int[] accOffsetsUtility = TablePotential.getAccumulatedOffsets(unionUtilityVariables, newUtilityVariables);
 
     		int numUnionVariables = unionUtilityVariables.size();
@@ -1757,7 +1762,7 @@ public final class DiscretePotentialOperations {
     		int[] utilityPositionCoordinate = new int[numUnionVariables];
 
     		int globalUtilityPosition = 0;
-    		int[] globalUtilityDimensions = TablePotential.calculateDimensions(globalUtilityVariables);
+    		int[] globalUtilityDimensions = referencePotential.getDimensions();
 
     		int chanceVariableSize = chanceVariable.getNumStates();
     		int newUtilitySize = TablePotential.computeTableSize(newUtilityVariables);
@@ -1783,10 +1788,10 @@ public final class DiscretePotentialOperations {
     				// Update coordinates
     				globalUtilityPosition++;
     				previousUtilityPosition = utilityPosition;
-    				utilityPosition = TablePotential.getNextPosition(utilityPosition, utilityPositionCoordinate,
-    						globalUtilityDimensions, accOffsetsUtility);
-    				conditionalPosition = TablePotential.getNextPosition(conditionalPosition,
-    						conditionalCoordinate, globalUtilityDimensions, accOffsetsConditional);
+    				utilityPosition = TablePotential.getNextPosition(
+    						utilityPosition, utilityPositionCoordinate, globalUtilityDimensions, accOffsetsUtility);
+    				conditionalPosition = TablePotential.getNextPosition(
+    						conditionalPosition, conditionalCoordinate, globalUtilityDimensions, accOffsetsConditional);
     			}
     			if (interventionsPresent) {
     				newUtilityPotential.interventions[previousUtilityPosition] = Intervention.averageOfInterventions(

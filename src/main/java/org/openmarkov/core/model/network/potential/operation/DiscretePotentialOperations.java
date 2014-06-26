@@ -307,10 +307,28 @@ public final class DiscretePotentialOperations {
         if (anyPotentialWithInterventions(potentials)) {
         	result = sumInterventions(result, potentials);
         }
+        if (result.isUtility()) {
+        	result.setUtilityVariable(getNewUtilityVariable(tablePotentials));
+        }
         return result;
     }
 
-    /**
+	/**
+	 * @param tablePotentials
+	 * @return A new variable whose name is the concatenation of the names of the utility variables.
+	 */
+	private static Variable getNewUtilityVariable(
+			List<TablePotential> tablePotentials) {
+		String utilityName = "";
+		for (TablePotential potential : tablePotentials) {
+			if (potential.isUtility()) {
+				utilityName = utilityName + potential.getUtilityVariable().getName();
+			}
+		}
+		return new Variable(utilityName);
+	}
+
+	/**
      * @param potentials. <code>TablePotential</code>
      * @return <code>true</code> when at least one potential has an array of interventions.
      */
@@ -1722,6 +1740,7 @@ public final class DiscretePotentialOperations {
     		variablesInUtilityPotential.remove(chanceVariable);
     		List<Variable> newUtilityVariables = new ArrayList<Variable>(variablesInUtilityPotential);
     		TablePotential newUtilityPotential = new TablePotential(newUtilityVariables, PotentialRole.UTILITY);
+    		newUtilityPotential.setUtilityVariable(globalUtilityPotential.getUtilityVariable());
     		// Iterate for each configuration of variablesInUtilityPotential
     		List<Variable> unionUtilityVariables = new ArrayList<Variable>(variablesInUtilityPotential.size() + 1);
     		unionUtilityVariables.add(chanceVariable);

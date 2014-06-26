@@ -819,7 +819,7 @@ public class DiscretePotentialOperationsTest {
 	}
 
 	@Test
-	public void testMaxOutVariable() {
+	public void testMaxOutVariable1() {
 		// Method invocation
 		ProbNet perfectKnowledge = IDFactory.createPerfectKnowledge();
 		Variable disease = null;
@@ -863,6 +863,22 @@ public class DiscretePotentialOperationsTest {
 		assertEquals(1, states.size());
 		State noState = states.get(0);
 		assertEquals(0, therapy.getStateIndex(noState));
+	}
+
+	@Test
+	public void testMaxOutVariable2() {
+		Variable X = new Variable("X", "a", "b");
+		Variable Y = new Variable("Y", "c", "d");
+		Variable D = new Variable("D", "opt 1", "opt 2");
+		Variable U = new Variable("U");
+		List<Variable> pXvariables = new ArrayList<Variable>(1);
+		pXvariables.add(X);
+		TablePotential pX = new TablePotential(pXvariables, PotentialRole.CONDITIONAL_PROBABILITY, new double[]{0.3, 0.7});
+		List<Variable> pYXvariables = new ArrayList<Variable>(2);
+		pXvariables.add(Y);
+		pXvariables.add(X);
+		TablePotential pYX = new TablePotential(pYXvariables, PotentialRole.CONDITIONAL_PROBABILITY, new double[]{0.1, 0.9, 0.4, 0.6});
+		// TODO Finish
 	}
 
     /** Translates the coordinate received in (variables, coordinateVariables)

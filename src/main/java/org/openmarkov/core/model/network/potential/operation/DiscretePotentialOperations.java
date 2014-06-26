@@ -32,7 +32,6 @@ import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 
 /**
  * This class defines a set of common operations over discrete potentials (
@@ -1212,11 +1211,6 @@ public final class DiscretePotentialOperations {
                 }
             }
 
-            // TODO Crear aqui la intervencion
-//            if (useInterventions) {
-//            	resultingPotential.interventions[outerIteration] = 
-//            			Intervention.optimalIntervention(fSVariableToMaximize, utilities, interventions);
-//            }
             resultingPotential.values[outerIteration] = maxValue;
             gResult.elementTable.add(choice);
 
@@ -1226,20 +1220,6 @@ public final class DiscretePotentialOperations {
         Object[] resultPotentials = { resultingPotential, gResult };
         return resultPotentials;
     }
-
-//    /**
-//     * Create the Interventions array in resultingPotential
-//     * @param resultingPotential
-//     * @param gResult
-//     */
-//    private static void createInterventions(TablePotential resultingPotential,
-//    		GTablePotential<Choice> gResult, Variable fSVariableToMaximize) {
-//    	resultingPotential.interventions = new Intervention[resultingPotential.values.length];
-//    	for (int i = 0; i < resultingPotential.values.length; i++) {
-//    		List<State> states = gResult.elementTable.get(i).getStates();
-//    		resultingPotential.interventions[i] = new Intervention(fSVariableToMaximize, states);
-//    	}
-//    }
 
 	/**
      * @param arrayListPotentials
@@ -1779,6 +1759,10 @@ public final class DiscretePotentialOperations {
     				probabilities = new double[chanceVariableSize];
     			}
     			for (int internal = 0; internal < chanceVariableSize; internal++) {
+    				if (conditionalPosition >= conditionalProbability.values.length || conditionalPosition < 0 ||
+    						globalUtilityPosition <0 || globalUtilityPosition >= globalUtilityPotential.values.length) {
+    					System.err.println("aqui");
+    				}
     				sum += conditionalProbability.values[conditionalPosition]
     						* globalUtilityPotential.values[globalUtilityPosition];
     				if (interventionsPresent) {

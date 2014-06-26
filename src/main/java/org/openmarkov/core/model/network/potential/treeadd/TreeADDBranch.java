@@ -190,6 +190,22 @@ public class TreeADDBranch
             {
                 branch.setReferencedBranch(referencedBranch);
             }
+        }else // HACK for interventions 
+        {
+        	if (this.rootVariable.getVariableType() == VariableType.FINITE_STATES
+                    || this.rootVariable.getVariableType() == VariableType.DISCRETIZED) {
+                branch = new TreeADDBranch(new ArrayList<>(getBranchStates()),
+                        this.getRootVariable(),
+                        (Potential)null,
+                        this.getParentVariables());
+
+            } else if (this.rootVariable.getVariableType() == VariableType.NUMERIC) {
+                branch = new TreeADDBranch(new Threshold(this.getLowerBound()),
+                		new Threshold(this.getUpperBound()),
+                        this.getRootVariable(),
+                        (Potential)null,
+                        this.getParentVariables());
+            }
         }
         return branch;
     }    

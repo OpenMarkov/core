@@ -725,16 +725,19 @@ public class TreeADDPotential extends Potential {
 					}
 				}
 				Potential potential = branch.getPotential();
-				if (potential.getClass() == TreeADDPotential.class) {
-					TreeADDPotential treeADDPotential = (TreeADDPotential)potential;
-					treeADDPotential.setIndentLevel(indentLevel + indentIncrement);
-					strBuffer.append(treeADDPotential);
-				} else {
-					strBuffer.append(indent);
-					for (i = 0; i < indentIncrement; i++) {
-						strBuffer.append(" ");
+				if(potential !=null)
+				{
+					if (potential.getClass() == TreeADDPotential.class) {
+						TreeADDPotential treeADDPotential = (TreeADDPotential)potential;
+						treeADDPotential.setIndentLevel(indentLevel + indentIncrement);
+						strBuffer.append(treeADDPotential);
+					} else {
+						strBuffer.append(indent);
+						for (i = 0; i < indentIncrement; i++) {
+							strBuffer.append(" ");
+						}
+						strBuffer.append(potential);
 					}
-					strBuffer.append(potential);
 				}
 			}
 		}

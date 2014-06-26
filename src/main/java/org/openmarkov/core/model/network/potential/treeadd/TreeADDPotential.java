@@ -694,25 +694,27 @@ public class TreeADDPotential extends Potential {
 		strBuffer.append(this.getClass().getSimpleName()); // Print name
 		strBuffer.append("(");
 		// Print variables
-		int numVariables = variables.size();
-		int i = 0;
-		for (Variable variable : variables) {
-			strBuffer.append(variable.getName());
-			if (i++ == numVariables - 1) {
-				strBuffer.append(")");
-			} else {
-				strBuffer.append(",");
+		if (variables != null) {
+			int numVariables = variables.size();
+			int i = 0;
+			for (Variable variable : variables) {
+				strBuffer.append(variable.getName());
+				if (i++ == numVariables - 1) {
+					strBuffer.append(")");
+				} else {
+					strBuffer.append(",");
+				}
 			}
 		}
 		strBuffer.append(" - topVariable: ");
 		strBuffer.append(topVariable.getName());
 		strBuffer.append("\n");
-		if (branches.size() > 0) {
+		if (branches != null && branches.size() > 0) {
 			for (TreeADDBranch branch : branches) {
 				strBuffer.append(indent);
 				strBuffer.append("Branch: ");
 				List<State> states = branch.getBranchStates();
-				i = 0;
+				int i = 0;
 				int numStates = states.size();
 				for (State state : states) {
 					strBuffer.append(state.getName());

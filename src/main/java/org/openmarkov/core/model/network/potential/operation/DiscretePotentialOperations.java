@@ -1724,10 +1724,14 @@ public final class DiscretePotentialOperations {
     	boolean thereIsUtility = utilityPotentials.size() != 0;
 
     	// operations to sum out variable
+    	boolean interventionsPresent = false;
     	TablePotential globalUtilityPotential = null;
     	if (thereIsUtility) {
     		globalUtilityPotential = sum(utilityPotentials);
+    		interventionsPresent = globalUtilityPotential.interventions != null && 
+    				globalUtilityPotential.interventions.length == globalUtilityPotential.values.length;
     	}
+		
     	TablePotential joinProbability = multiply(probabilityPotentials);
     	TablePotential marginalProbability = marginalize(joinProbability, chanceVariable);
     	marginalProbability.setPotentialRole(PotentialRole.JOINT_PROBABILITY);
@@ -1747,7 +1751,9 @@ public final class DiscretePotentialOperations {
     		List<Variable> newUtilityVariables = new ArrayList<Variable>(variablesInUtilityPotential);
     		TablePotential newUtilityPotential = new TablePotential(newUtilityVariables, PotentialRole.UTILITY);
     		newUtilityPotential.setUtilityVariable(globalUtilityPotential.getUtilityVariable());
-    		newUtilityPotential.interventions = new Intervention[newUtilityPotential.values.length];
+    		if (interventionsPresent) {
+    			newUtilityPotential.interventions = new Intervention[newUtilityPotential.values.length];
+    		}
     		// Iterate for each configuration of variablesInUtilityPotential
     		List<Variable> unionUtilityVariables = new ArrayList<Variable>(variablesInUtilityPotential.size() + 1);
     		unionUtilityVariables.add(chanceVariable);
@@ -1777,8 +1783,6 @@ public final class DiscretePotentialOperations {
     		int chanceVariableSize = chanceVariable.getNumStates();
     		int newUtilitySize = TablePotential.computeTableSize(newUtilityVariables);
 
-    		boolean interventionsPresent = globalUtilityPotential.interventions != null && 
-    				globalUtilityPotential.interventions.length == globalUtilityPotential.values.length;
     		double sum;
     		Intervention[] interventions = null;
     		double[] probabilities = null;

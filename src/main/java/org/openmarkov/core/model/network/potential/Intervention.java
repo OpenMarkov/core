@@ -225,5 +225,4 @@ public class Intervention extends TreeADDPotential {
 		return (Intervention) (branch.getPotential());
 	}
 	
-		
 }

@@ -764,7 +764,7 @@ public class DiscretePotentialOperationsTest {
 
 	@Test
 	/** Test without utilities */
-	public void testSumOutVariable1() throws DivideByZeroException {
+	public void testSumOutVariable1() {
 		List<TablePotential> resultingPotentials = 
 				DiscretePotentialOperations.sumOutVariable(commonVariables.a, commonVariables.potentials);
 		assertEquals(1, resultingPotentials.size()); // No utility
@@ -780,7 +780,7 @@ public class DiscretePotentialOperationsTest {
 
 	@Test
 	/** Test perfect-knowledge */
-	public void testSumOutVariable2() throws DivideByZeroException {
+	public void testSumOutVariable2() {
 		ProbNet perfectKnowledge = IDFactory.createNoKnowledge();
 		Variable disease = null;
 		Variable therapy = null;

@@ -11,6 +11,7 @@ package org.openmarkov.core.model.network.potential.operation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -313,25 +314,54 @@ public final class DiscretePotentialOperations {
         return result;
     }
 
+    /** Given a collection of variables, creates a new variable whose name is the concatenation 
+     * of the names of the other variables. If there is only one, returns that one. If the collection is empty,
+     * returns a new variable with name "U"
+     * @param variables
+     * @return <code>Variable</code>
+     */
+    private static Variable composeVariable(Collection<Variable> variables) {
+    	Variable finalVariable = null;
+		String name = "";
+		if (variables.isEmpty()) {
+			name = "U";
+			finalVariable = new Variable(name);
+		} else {
+			if (variables.size() > 1) {
+				int i = 0;
+				int size = variables.size();
+				for (Variable variable : variables) {
+					i++;
+					name = name + variable.getName();
+					if (i < size) {
+						name = name + "-";
+					}
+				}
+				finalVariable = new Variable(name);
+			} else {
+				for (Variable variable : variables) {
+					finalVariable = variable;
+				}
+			}
+		}
+		return finalVariable;
+    }
+    
 	/**
 	 * @param tablePotentials
 	 * @return A new variable whose name is the concatenation of the names of the utility variables.
 	 */
-	private static Variable getNewUtilityVariable(
-			List<TablePotential> tablePotentials) {
-		String utilityName = "";
+	private static Variable getNewUtilityVariable(List<TablePotential> tablePotentials) {
+		Set<Variable> utilityVariables = new HashSet<Variable>();
 		for (TablePotential potential : tablePotentials) {
 			if (potential.isUtility()) {
 				Variable utilityVariable = potential.getUtilityVariable();
 				if (utilityVariable != null) {
-					utilityName = utilityName + utilityVariable.getName();
+					utilityVariables.add(utilityVariable);
 				}
 			}
 		}
-		if (utilityName.isEmpty()) {
-			utilityName = "U";
-		}
-		return new Variable(utilityName);
+		return composeVariable(utilityVariables);
 	}
 
 	/**
@@ -1091,6 +1121,9 @@ public final class DiscretePotentialOperations {
         PotentialRole role = getRole(tablePotentials);
 
         TablePotential resultingPotential = new TablePotential(variablesToKeep, role);
+        if (role == PotentialRole.UTILITY) {
+        	resultingPotential.setUtilityVariable(composeVariable(fSVariablesToKeep));
+        }
 
         GTablePotential<Choice> gResult = new GTablePotential<Choice>(variablesToKeep, role);
         int numStates = ((Variable) fSVariableToMaximize).getNumStates();

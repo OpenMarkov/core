@@ -804,6 +804,43 @@ public class DiscretePotentialOperationsTest {
 		assertTrue(utilityVariables.contains(therapy));
 	}
 
+	@Test
+	public void testSumOutVariable3() {
+		// Create P(X), P/Y/X), U(X,D)
+		// Variables
+		Variable X = new Variable("X", "a", "b");
+		Variable Y = new Variable("Y", "c", "d");
+		Variable decisionVariable = new Variable("D", "opt 1", "opt 2");
+		Variable U = new Variable("U");
+		// Potential P(X)
+		List<Variable> pXvariables = new ArrayList<Variable>(1);
+		pXvariables.add(X);
+		TablePotential pX = new TablePotential(
+				pXvariables, PotentialRole.CONDITIONAL_PROBABILITY, new double[]{0.8, 0.2});
+		// Potential P(Y|X)
+		List<Variable> pYXvariables = new ArrayList<Variable>(2);
+		pYXvariables.add(Y);
+		pYXvariables.add(X);
+		TablePotential pYX = new TablePotential(
+				pYXvariables, PotentialRole.CONDITIONAL_PROBABILITY, new double[]{0.9, 0.1, 0.4, 0.6});
+		// Potential U(X,D)
+		List<Variable> decXDVariables = new ArrayList<Variable>(2);
+		decXDVariables.add(X);
+		decXDVariables.add(decisionVariable);
+		TablePotential pU = new TablePotential(decXDVariables, PotentialRole.UTILITY, new double[]{20, 30, 10, 40});
+		pU.setUtilityVariable(U);
+		// List of potentials
+		List<TablePotential> potentials = new ArrayList<TablePotential>(3);
+		potentials.add(pX);
+		potentials.add(pYX);
+		potentials.add(pU);
+		
+		// Invocation
+		DiscretePotentialOperations.maxOutVariable(decisionVariable, potentials);
+		
+		
+		// TODO Finish
+	}
 	
 	/**
 	 * Convert a Potential list to a TablePotential list.
@@ -863,22 +900,6 @@ public class DiscretePotentialOperationsTest {
 		assertEquals(1, states.size());
 		State noState = states.get(0);
 		assertEquals(0, therapy.getStateIndex(noState));
-	}
-
-	@Test
-	public void testMaxOutVariable2() {
-		Variable X = new Variable("X", "a", "b");
-		Variable Y = new Variable("Y", "c", "d");
-		Variable D = new Variable("D", "opt 1", "opt 2");
-		Variable U = new Variable("U");
-		List<Variable> pXvariables = new ArrayList<Variable>(1);
-		pXvariables.add(X);
-		TablePotential pX = new TablePotential(pXvariables, PotentialRole.CONDITIONAL_PROBABILITY, new double[]{0.3, 0.7});
-		List<Variable> pYXvariables = new ArrayList<Variable>(2);
-		pXvariables.add(Y);
-		pXvariables.add(X);
-		TablePotential pYX = new TablePotential(pYXvariables, PotentialRole.CONDITIONAL_PROBABILITY, new double[]{0.1, 0.9, 0.4, 0.6});
-		// TODO Finish
 	}
 
     /** Translates the coordinate received in (variables, coordinateVariables)

@@ -1732,7 +1732,8 @@ public final class DiscretePotentialOperations {
     		int conditionalPosition = 0;
     		int[] accOffsetsConditional = TablePotential.getAccumulatedOffsets(
     				unionUtilityVariables, conditionalProbabilityVariables);
-    		int[] accOffsetsUtility = TablePotential.getAccumulatedOffsets(unionUtilityVariables, newUtilityVariables);
+    		int[] accOffsetsUtility = TablePotential.getAccumulatedOffsets(
+    				unionUtilityVariables, newUtilityVariables);
 
     		int numUnionVariables = unionUtilityVariables.size();
     		int[] conditionalCoordinate = new int[numUnionVariables];
@@ -1743,6 +1744,9 @@ public final class DiscretePotentialOperations {
 
     		int globalUtilityPosition = 0;
     		int[] globalUtilityDimensions = referencePotential.getDimensions();
+    		int[] accOffsetsGlobalUtility = TablePotential.getAccumulatedOffsets(
+    				unionUtilityVariables, globalUtilityVariables);
+    		int[] globalUtilityCoordinate = new int[numUnionVariables];
 
     		int chanceVariableSize = chanceVariable.getNumStates();
     		int newUtilitySize = TablePotential.computeTableSize(newUtilityVariables);
@@ -1759,10 +1763,6 @@ public final class DiscretePotentialOperations {
     				probabilities = new double[chanceVariableSize];
     			}
     			for (int internal = 0; internal < chanceVariableSize; internal++) {
-    				if (conditionalPosition >= conditionalProbability.values.length || conditionalPosition < 0 ||
-    						globalUtilityPosition <0 || globalUtilityPosition >= globalUtilityPotential.values.length) {
-    					System.err.println("aqui");
-    				}
     				sum += conditionalProbability.values[conditionalPosition]
     						* globalUtilityPotential.values[globalUtilityPosition];
     				if (interventionsPresent) {
@@ -1770,7 +1770,8 @@ public final class DiscretePotentialOperations {
     					probabilities[internal] = conditionalProbability.values[conditionalPosition];
     				}
     				// Update coordinates
-    				globalUtilityPosition++;
+    				globalUtilityPosition = TablePotential.getNextPosition(
+    						globalUtilityPosition, globalUtilityCoordinate, globalUtilityDimensions, accOffsetsGlobalUtility);
     				previousUtilityPosition = utilityPosition;
     				utilityPosition = TablePotential.getNextPosition(
     						utilityPosition, utilityPositionCoordinate, globalUtilityDimensions, accOffsetsUtility);

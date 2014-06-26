@@ -691,7 +691,8 @@ public class TreeADDPotential extends Potential {
 	public String toString() {
 		StringBuffer strBuffer = new StringBuffer();
 		strBuffer.append(indent);
-		strBuffer.append("TreeADDPotential("); // Print name
+		strBuffer.append(this.getClass().getSimpleName()); // Print name
+		strBuffer.append("(");
 		// Print variables
 		int numVariables = variables.size();
 		int i = 0;

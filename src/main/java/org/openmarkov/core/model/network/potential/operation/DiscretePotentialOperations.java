@@ -322,8 +322,14 @@ public final class DiscretePotentialOperations {
 		String utilityName = "";
 		for (TablePotential potential : tablePotentials) {
 			if (potential.isUtility()) {
-				utilityName = utilityName + potential.getUtilityVariable().getName();
+				Variable utilityVariable = potential.getUtilityVariable();
+				if (utilityVariable != null) {
+					utilityName = utilityName + utilityVariable.getName();
+				}
 			}
+		}
+		if (utilityName.isEmpty()) {
+			utilityName = "U";
 		}
 		return new Variable(utilityName);
 	}
@@ -1741,6 +1747,7 @@ public final class DiscretePotentialOperations {
     		List<Variable> newUtilityVariables = new ArrayList<Variable>(variablesInUtilityPotential);
     		TablePotential newUtilityPotential = new TablePotential(newUtilityVariables, PotentialRole.UTILITY);
     		newUtilityPotential.setUtilityVariable(globalUtilityPotential.getUtilityVariable());
+    		newUtilityPotential.interventions = new Intervention[newUtilityPotential.values.length];
     		// Iterate for each configuration of variablesInUtilityPotential
     		List<Variable> unionUtilityVariables = new ArrayList<Variable>(variablesInUtilityPotential.size() + 1);
     		unionUtilityVariables.add(chanceVariable);

@@ -25,7 +25,7 @@ import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-public class InferenceAlgorithmIDTest  extends InferenceAlgorithmDecTest {
+public abstract class InferenceAlgorithmIDTest  extends InferenceAlgorithmDecTest {
 
 	//protected ProbNet iD_DiagnosisProblem;
 	protected ProbNet iD_UniformDiagnosisProblem;
@@ -47,12 +47,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 	}
 
-	@Override
-	public InferenceAlgorithm buildInferenceAlgorithm(ProbNet probNet) throws NotEvaluableNetworkException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 
 	@Override
 	public void testMEUAndStrategyBattery() throws IncompatibleEvidenceException,
@@ -401,7 +396,6 @@ iD_DecisionTestProblemWithSV = IDFactory
 			printExceptionAndFailIfImplemented(e);
 		}
 	}
-	
 
 	
 }

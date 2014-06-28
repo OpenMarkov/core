@@ -12,10 +12,11 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.NetsFactory;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.factory.MarkovFactory;
+import org.openmarkov.core.model.network.factory.NetsFactory;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
@@ -128,7 +129,7 @@ public class NumericalTreeADDTableProjectTest {
 	public void testTablePorjectNumericalTop()
 			throws NonProjectablePotentialException, WrongCriterionException {
 		//Evidence
-		ProbNet probNet = NetsFactory.createSemiMarkovOnlyChanceNet();
+		ProbNet probNet = MarkovFactory.createSemiMarkovOnlyChanceNet();
 		List<Finding> findings = new ArrayList<>();
 		try {
 			findings.add(new Finding(probNet.getVariable("Duration [0]"), 1.0));

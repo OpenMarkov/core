@@ -16,9 +16,10 @@ import java.util.List;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.network.NetsFactory;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.factory.MarkovFactory;
+import org.openmarkov.core.model.network.factory.NetsFactory;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -29,7 +30,7 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
  * @author mluque
  *
  */
-public class MPADFactoryTests {
+public class MPADFactoryTest {
 	/**
 	 * Maximum error allowed in tests. It could be modified by subclasses
 	 * if it is necessary (for example, approximate inference methods).
@@ -59,7 +60,7 @@ public class MPADFactoryTests {
 		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
 			
 			//Create the MPAD and expand it
-			ProbNet network = NetsFactory.createMPADWithoutStateVariable(qoLTreat, qoLNoTreat,
+			ProbNet network = MarkovFactory.createMPADWithoutStateVariable(qoLTreat, qoLNoTreat,
 					costTreat, costNoTreat);
 			double discount = 0.01;
 			
@@ -121,7 +122,7 @@ public class MPADFactoryTests {
 		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
 			
 			//Create the MPAD and expand it
-			ProbNet network = NetsFactory.createMPADWithStateVariable(qoLTreat, qoLNoTreat,
+			ProbNet network = MarkovFactory.createMPADWithStateVariable(qoLTreat, qoLNoTreat,
 					costTreat, costNoTreat,0.7,0.5);
 			double discount = 0.01;
 

@@ -2,9 +2,12 @@ package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
@@ -164,10 +167,13 @@ public class Intervention extends TreeADDPotential {
 			projection = getInterventionChild(state);
 		} else {
 			if (branches != null) {
+				projection = new Intervention(this.getVariables());
 				for (int i = 0; i < branches.size(); i++) {
 					TreeADDBranch auxBranch = branches.get(i);
+					TreeADDBranch auxBranchCopy = new TreeADDBranch(auxBranch.getBranchStates(),auxBranch.getRootVariable(), auxBranch.getParentVariables());
 					Intervention auxProjection = getInterventionBranch(auxBranch).project(variable, state);
-					auxBranch.setPotential(auxProjection);
+					auxBranchCopy.setPotential(auxProjection);
+					projection.addBranch(auxBranchCopy);
 				}
 			}
 		}
@@ -225,4 +231,121 @@ public class Intervention extends TreeADDPotential {
 		return (Intervention) (branch.getPotential());
 	}
 	
+	
+	
+	public String toStringForGraphviz(ProbNet net) {
+		
+		String content = null;
+		
+		content = "digraph G {\n";
+		
+		content = content + "rankdir=LR\n";
+		
+		Map<Intervention,Integer> idNode = new Hashtable<Intervention,Integer>();
+		Set<Intervention> nodes = this.getInterventions();
+		int i = 0;
+		for (Intervention skNode:nodes){
+			idNode.put(skNode, i);
+			String strNodes;
+			
+			if (skNode.topVariable!=null){
+				strNodes = skNode.topVariable.getName();
+			
+			content = content + i+" [label=\""+strNodes+"\",shape="+toStringShapeForGraphviz(net,skNode.topVariable)+"];\n";
+			}
+			i = i + 1;
+		}
+	
+		
+		for (Intervention node:nodes)
+		{
+			int nodeIdNode = idNode.get(node);
+			if (node.branches!=null){
+				List<Intervention> nodeInterv = node.getInterventionsChildren();
+			
+			for (int j=0;j<node.branches.size();j++){
+			//for (Intervention child:node.getInterventionsChildren())
+				Intervention child = nodeInterv.get(j);
+				if (child!=null){
+
+					List<State> states = branches.get(j).getBranchStates();
+				    String strStates = getStringStates(states);
+					content = content + nodeIdNode+"->"+idNode.get(child)+"[label=\""+strStates+"\"];\n";
+				}
+			}
+			}
+		}
+		
+		content = content + "}\n";
+		return content;
+}
+
+	private String getStringStates(List<State> states) {
+		String str = "";
+		
+		if (states!=null){
+			int size = states.size();
+			if (size>0){
+				str = states.get(0).toString();
+				for (int i=1;i<size;i++){
+					str = str + states.get(i).toString();
+					if (i<size-1){
+						str = str + ", ";
+					}
+				}
+			}			
+		}
+		
+		return str;
+	}
+
+	private List<Intervention> getInterventionsChildren() {
+		
+		List<Intervention> list = new ArrayList<Intervention>();
+		if (branches!=null){
+			for (TreeADDBranch branch:branches){
+				list.add(getInterventionBranch(branch));
+			}
+		}
+		return list;
+	}
+
+	private String toStringShapeForGraphviz(ProbNet net,Variable topVariable) {
+		String string = null;
+		switch (net.getNode(topVariable).getNodeType()){
+		case DECISION:
+			string = "decision";
+			break;
+		case CHANCE:
+			string = "ellipse";
+			break;
+		}
+		return string;
+	}
+
+	private Set<Intervention> getInterventions() {
+		return this.auxGetInterventions();
+	}
+
+	private Set<Intervention> auxGetInterventions() {
+		Set<Intervention> auxSet;
+		
+		auxSet = new HashSet<>();
+		auxSet.add(this);
+		
+		if (branches!=null){
+			
+			for (int i = 0; i < branches.size(); i++) {
+				TreeADDBranch auxBranch = branches.get(i);
+				Intervention auxInterventionBranch = getInterventionBranch(auxBranch);
+				if (auxInterventionBranch!=null){
+					auxSet.addAll(auxInterventionBranch.auxGetInterventions());
+				}
+			}
+		}
+		
+		return auxSet;
+	}
+	
+		
 }

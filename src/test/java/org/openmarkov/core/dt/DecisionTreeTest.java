@@ -8,8 +8,10 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.model.network.NetsFactory;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.factory.DANFactory;
+import org.openmarkov.core.model.network.factory.IDFactory;
+import org.openmarkov.core.model.network.factory.NetsFactory;
 
 public class DecisionTreeTest {
 
@@ -19,44 +21,43 @@ public class DecisionTreeTest {
 
 	@Test
 	public void testDecideTestID() {
-		ProbNet decideTestID = NetsFactory
-				.createInfluenceDiagramDecisionTestProblem(0.14, 0.91, 0.97);
+		ProbNet decideTestID = IDFactory.buildIDDecideTest();
 		
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(decideTestID);
-		Assert.assertEquals(94.312, decisionTree.getUtility(), 0.0001);
+		Assert.assertEquals(9.3929, decisionTree.getUtility(), 0.0001);
 	}
 
 	@Test
 	public void testDecideTestDAN() throws NodeNotFoundException {
-		ProbNet decideTestDAN = NetsFactory.buildDecideTestDAN();
+		ProbNet decideTestDAN = DANFactory.buildDecideTestDAN();
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(decideTestDAN);
 		Assert.assertEquals(94.312, decisionTree.getUtility(), 0.0001);
 	}
 	
 	@Test
 	public void testDatingDAN() throws NodeNotFoundException {
-		ProbNet datingDAN = NetsFactory.buildDatingDAN();
+		ProbNet datingDAN = DANFactory.buildDatingDAN();
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(datingDAN);
 		Assert.assertEquals(9.4076, decisionTree.getUtility(), 0.0001);
 	}
 	
 	@Test
 	public void testReactorDAN() throws NodeNotFoundException {
-		ProbNet reactorDAN = NetsFactory.buildReactorDAN();
+		ProbNet reactorDAN = DANFactory.buildReactorDAN();
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(reactorDAN);
 		Assert.assertEquals(10.0627, decisionTree.getUtility(), 0.0001);
 	}		
 
 	@Test
 	public void testDiabetesDAN() throws NodeNotFoundException {
-		ProbNet diabetesDAN = NetsFactory.buildDiabetesDAN();
+		ProbNet diabetesDAN = DANFactory.buildDiabetesDAN();
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(diabetesDAN);
 		Assert.assertEquals(9.8261, decisionTree.getUtility(), 0.0001);
 	}		
 	
 	@Test
 	public void testTwoTestsDAN() throws NodeNotFoundException {
-		ProbNet diabetesDAN = NetsFactory.buildTwoTestDAN();
+		ProbNet diabetesDAN = DANFactory.buildTwoTestDAN();
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(diabetesDAN);
 		Assert.assertEquals(9.3324, decisionTree.getUtility(), 0.0001);
 	}			
@@ -65,7 +66,7 @@ public class DecisionTreeTest {
 	public void testNtests() throws NodeNotFoundException, IncompatibleEvidenceException,
 			UnexpectedInferenceException, NotEvaluableNetworkException {
 
-		ProbNet nTestsDAN = NetsFactory.buildNTestsDAN(3);
+		ProbNet nTestsDAN = DANFactory.buildNTestsDAN(3);
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(nTestsDAN);
 		double utility = decisionTree.getUtility();
 		Assert.assertEquals(9.8066, utility, 0.0001);
@@ -73,42 +74,42 @@ public class DecisionTreeTest {
 	
 	@Test
 	public void testEvalDecideTestDAN() throws NodeNotFoundException {
-		ProbNet decideTestDAN = NetsFactory.buildDecideTestDAN();
+		ProbNet decideTestDAN = DANFactory.buildDecideTestDAN();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		Assert.assertEquals(94.312, evaluator.getMEU(decideTestDAN), 0.0001);
 	}
 	
 	@Test
 	public void testEvalDatingDAN() throws NodeNotFoundException {
-		ProbNet datingDAN = NetsFactory.buildDatingDAN();
+		ProbNet datingDAN = DANFactory.buildDatingDAN();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		Assert.assertEquals(9.4076, evaluator.getMEU(datingDAN), 0.0001);
 	}
 	
 	@Test
 	public void testEvalReactorDAN() throws NodeNotFoundException {
-		ProbNet reactorDAN = NetsFactory.buildReactorDAN();
+		ProbNet reactorDAN = DANFactory.buildReactorDAN();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		Assert.assertEquals(10.0627, evaluator.getMEU(reactorDAN), 0.0001);
 	}		
 
 	@Test
 	public void testEvalDiabetesDAN() throws NodeNotFoundException {
-		ProbNet diabetesDAN = NetsFactory.buildDiabetesDAN();
+		ProbNet diabetesDAN = DANFactory.buildDiabetesDAN();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		Assert.assertEquals(9.8261, evaluator.getMEU(diabetesDAN), 0.0001);
 	}		
 	
 	@Test
 	public void testEvalTwoTestsDAN() throws NodeNotFoundException {
-		ProbNet twoTestsDAN = NetsFactory.buildTwoTestDAN();
+		ProbNet twoTestsDAN = DANFactory.buildTwoTestDAN();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		Assert.assertEquals(9.3324, evaluator.getMEU(twoTestsDAN), 0.0001);
 	}	
 	
 	@Test
 	public void testEvalWooerDAN() throws NodeNotFoundException {
-		ProbNet wooerDAN = NetsFactory.buildWooerDAN();
+		ProbNet wooerDAN = DANFactory.buildWooerDAN();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		Assert.assertEquals(7.73, evaluator.getMEU(wooerDAN), 0.0001);
 	}	
@@ -117,7 +118,7 @@ public class DecisionTreeTest {
 	public void testEvalNtests() throws NodeNotFoundException, IncompatibleEvidenceException,
 			UnexpectedInferenceException, NotEvaluableNetworkException {
 
-		ProbNet nTestsDAN = NetsFactory.buildNTestsDAN(3);
+		ProbNet nTestsDAN = DANFactory.buildNTestsDAN(3);
 		long startTime = System.nanoTime();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		double meu =  evaluator.getMEU(nTestsDAN);
@@ -143,7 +144,7 @@ public class DecisionTreeTest {
 	public void testEvalUsedCarBuyerDAN() throws NodeNotFoundException, IncompatibleEvidenceException,
 			UnexpectedInferenceException, NotEvaluableNetworkException {
 
-		ProbNet usedCarBuyerDAN = NetsFactory.buildUsedCarBuyer();
+		ProbNet usedCarBuyerDAN = DANFactory.buildUsedCarBuyer();
 		long startTime = System.nanoTime();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		double meu = evaluator.getMEU(usedCarBuyerDAN);

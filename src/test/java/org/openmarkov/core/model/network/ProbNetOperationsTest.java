@@ -22,10 +22,14 @@ import org.junit.Test;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.inference.InferenceAlgorithmTests;
+import org.openmarkov.core.inference.InferenceAlgorithmBNTest;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
+import org.openmarkov.core.model.network.factory.BNFactory;
+import org.openmarkov.core.model.network.factory.DANFactory;
+import org.openmarkov.core.model.network.factory.IDFactory;
+import org.openmarkov.core.model.network.factory.NetsFactory;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.DeltaPotential;
 import org.openmarkov.core.model.network.potential.LinearCombinationPotential;
@@ -586,12 +590,12 @@ public class ProbNetOperationsTest {
 		List<Variable> variablesOfInterest;
 		//Repeat the test, because the behaviour of method getPruned is non-deterministic
 	for (int i=1;i<100;i++){
-		network = NetsFactory.createBN_Asia();
+		network = BNFactory.createBN_Asia();
 		System.out.println("Iteration " + i);
 		
-		Variable variableD = InferenceAlgorithmTests.getVariableAndAssertNotNull(network,"D"); 
-		Variable variableTOrC = InferenceAlgorithmTests.getVariableAndAssertNotNull(network,"TOrC");
-		Variable variableT = InferenceAlgorithmTests.getVariableAndAssertNotNull(network,"T");
+		Variable variableD = InferenceAlgorithmBNTest.getVariableAndAssertNotNull(network,"D"); 
+		Variable variableTOrC = InferenceAlgorithmBNTest.getVariableAndAssertNotNull(network,"TOrC");
+		Variable variableT = InferenceAlgorithmBNTest.getVariableAndAssertNotNull(network,"T");
 		variablesOfInterest = new ArrayList<>();
 		variablesOfInterest.add(variableD);
 		variablesOfEvidence = new HashSet<>();
@@ -891,9 +895,9 @@ public class ProbNetOperationsTest {
 	@Test
 	public void testHasStructuralAssymetry() throws NodeNotFoundException
 	{
-		ProbNet decideTestDAN = NetsFactory.buildDecideTestDAN();
-		ProbNet decideTestID = NetsFactory.createInfluenceDiagramDecisionTestProblem(0.14, 0.91, 0.97);
-		ProbNet datingDAN = NetsFactory.buildDatingDAN();
+		ProbNet decideTestDAN = DANFactory.buildDecideTestDAN();
+		ProbNet decideTestID = IDFactory.buildIDDecideTest();
+		ProbNet datingDAN = DANFactory.buildDatingDAN();
 		
 		Assert.assertTrue(ProbNetOperations.hasStructuralAsymmetry(decideTestDAN));
 		Assert.assertFalse(ProbNetOperations.hasStructuralAsymmetry(decideTestID));
@@ -903,11 +907,11 @@ public class ProbNetOperationsTest {
 	@Test
 	public void testHasOrderAssymetry() throws NodeNotFoundException
 	{
-		ProbNet decideTestDAN = NetsFactory.buildDecideTestDAN();
-		ProbNet decideTestID = NetsFactory.createInfluenceDiagramDecisionTestProblem(0.14, 0.91, 0.97);
-		ProbNet datingDAN = NetsFactory.buildDatingDAN();
-		ProbNet reactorDAN = NetsFactory.buildReactorDAN();
-		ProbNet diabetesDAN = NetsFactory.buildDiabetesDAN();
+		ProbNet decideTestDAN = DANFactory.buildDecideTestDAN();
+		ProbNet decideTestID = IDFactory.buildIDDecideTest();
+		ProbNet datingDAN = DANFactory.buildDatingDAN();
+		ProbNet reactorDAN = DANFactory.buildReactorDAN();
+		ProbNet diabetesDAN = DANFactory.buildDiabetesDAN();
 		
 		Assert.assertFalse(ProbNetOperations.hasOrderAsymmetry(decideTestDAN));
 		Assert.assertFalse(ProbNetOperations.hasOrderAsymmetry(decideTestID));
@@ -920,11 +924,11 @@ public class ProbNetOperationsTest {
 	@Test
 	public void testGetObservableAndNonObservedVariables() throws NodeNotFoundException, NodeNotFoundException
 	{
-		auxTestGetObservableAndNonObservedVariables(NetsFactory.buildDecideTestDAN(),Arrays.asList("Y"),Arrays.asList("X"));
-		auxTestGetObservableAndNonObservedVariables(NetsFactory.buildDiabetesDAN(),Arrays.asList("Blood test result","Urine test result","Symptom"),Arrays.asList("Diabetes"));
-		auxTestGetObservableAndNonObservedVariables(NetsFactory.buildDatingDAN(),
+		auxTestGetObservableAndNonObservedVariables(DANFactory.buildDecideTestDAN(),Arrays.asList("Y"),Arrays.asList("X"));
+		auxTestGetObservableAndNonObservedVariables(DANFactory.buildDiabetesDAN(),Arrays.asList("Blood test result","Urine test result","Symptom"),Arrays.asList("Diabetes"));
+		auxTestGetObservableAndNonObservedVariables(DANFactory.buildDatingDAN(),
 				Arrays.asList("Accept","ToDo","TVExp","Club","MeetFr","mExp","rExp","TV"),Arrays.asList("LikesMe","mMood","rMood","NCExp"));
-		auxTestGetObservableAndNonObservedVariables(NetsFactory.buildReactorDAN(),Arrays.asList("Result of test","Result of conventional reactor","Result of advanced reactor"),
+		auxTestGetObservableAndNonObservedVariables(DANFactory.buildReactorDAN(),Arrays.asList("Result of test","Result of conventional reactor","Result of advanced reactor"),
 				Arrays.asList("Advanced reactor reliability"));
 
 	}

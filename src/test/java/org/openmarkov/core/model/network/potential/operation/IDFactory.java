@@ -19,11 +19,7 @@ public class IDFactory {
 
 	public static ProbNet createPerfectKnowledge() {
 		ProbNet perfectKnowledge = createNoKnowledge();
-		Variable disease = null;
-		Variable therapy = null;
 		try {
-			disease = perfectKnowledge.getVariable("Disease");
-			therapy = perfectKnowledge.getVariable("Therapy");
 			perfectKnowledge.addLink(disease, therapy, true);
 		} catch (NodeNotFoundException e) {
 			e.printStackTrace();
@@ -36,40 +32,66 @@ public class IDFactory {
 		ProbNet noKnowledge = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 
 		// Create disease variable and potential
-		Variable disease = new Variable("Disease", "absent", "present");
 		noKnowledge.addNode(disease, NodeType.CHANCE);
-		List<Variable> diseaseVariables = new ArrayList<Variable>(1);
-		diseaseVariables.add(disease);
 		double[] diseaseValues = {0.14, 0.86};
 		TablePotential diseasePotential = new TablePotential(
-				diseaseVariables, PotentialRole.CONDITIONAL_PROBABILITY, diseaseValues) ;
+				getVariablesList(disease), PotentialRole.CONDITIONAL_PROBABILITY, diseaseValues) ;
 		noKnowledge.addPotential(diseasePotential);
 
 		// Decision variable
-		Variable therapy = new Variable("Therapy", "no", "yes");
 		noKnowledge.addNode(therapy, NodeType.DECISION);
 		
 		// Create health state variable and potential
-		Variable healthState = new Variable("Health state");
 		noKnowledge.addNode(healthState, NodeType.UTILITY);
-		List<Variable> healthStateVariables = new ArrayList<Variable>(2);
-		healthStateVariables.add(therapy);
-		healthStateVariables.add(disease);
-		TablePotential healthStatePotential = new TablePotential(healthState, healthStateVariables);
+		TablePotential healthStatePotential = 
+				new TablePotential(healthState, getVariablesList(therapy, disease));
 		healthStatePotential.values = new double[]{10.0, 9.0, 3.0, 8.0};
 		noKnowledge.addPotential(healthStatePotential);
 
 		// Create cost of therapy variable and potential
-		Variable costOfTherapy = new Variable("Cost of therapy");
 		noKnowledge.addNode(costOfTherapy, NodeType.UTILITY);
-		List<Variable> costOfTherapyVariables = new ArrayList<Variable>(1);
-		costOfTherapyVariables.add(therapy);
-		TablePotential costOfTherapyPotential = new TablePotential(costOfTherapy, costOfTherapyVariables);
+		TablePotential costOfTherapyPotential = 
+				new TablePotential(costOfTherapy, getVariablesList(therapy));
 		costOfTherapyPotential.values = new double[]{0.0, -0.25};
 		noKnowledge.addPotential(costOfTherapyPotential);
 
 		return noKnowledge;
 	}
 	
+	public static ProbNet createTestDecisionID() {
+		ProbNet testDecision = createNoKnowledge();
+		TablePotential costOfTherapyPotential = 
+				new TablePotential(costOfTherapy, getVariablesList(resultOfTest, doTest, disease));
+		costOfTherapyPotential.values = new double[]{0.0, 20000.0, 70000.0};
+		try {
+			testDecision.addLink(disease, resultOfTest, true);
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+			System.err.println("Variable not found");
+		}
+		
+		return testDecision;
+	}
 
+	/**
+	 * @param variablesArray
+	 * @return A <code>List</code> of <code>Variable</code>s
+	 */
+	private static List<Variable> getVariablesList(Variable... variablesArray) {
+		List<Variable> variablesList = new ArrayList<Variable>(variablesArray.length);
+		for (Variable variable : variablesArray) {
+			variablesList.add(variable);
+		}
+		return variablesList;
+	}
+
+	private static Variable costOfTherapy = new Variable("Cost of therapy");
+	private static Variable costOfTest = new Variable("Cost of test");
+	private static Variable effectiveness = new Variable("Effectiveness");
+	private static Variable disease = new Variable("Disease", "absent", "present");
+	private static Variable resultOfTest = new Variable("Result of test", "negative", "positive", "not performed");
+	private static Variable doTest = new Variable("Do test", "no", "yes");
+	private static Variable therapy = new Variable("Therapy", "no", "yes");
+	private static Variable healthState = new Variable("Health state");
+	
 }

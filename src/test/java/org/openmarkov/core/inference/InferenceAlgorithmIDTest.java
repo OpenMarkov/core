@@ -60,6 +60,8 @@ iD_DecisionTestProblemWithSV = IDFactory
 		testMEUAndStrategy(IDFactory.buildIDTestAlways(),9.3929,null);
 		testMEUAndStrategy(IDFactory.buildIDPerfectKnowledge(),9.72,null);
 		testMEUAndStrategy(IDFactory.buildIDNoKnowledge(),9.02,null);
+		//testMEUAndStrategy(IDFactory.buildIDSVDecideTestSymptom(),9.9143,null);
+		//testMEUAndStrategy(IDFactory.buildIDDecideTestSymptom(),9.9143,null);
 		
 		
 	}

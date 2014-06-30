@@ -1,10 +1,14 @@
 package org.openmarkov.core.model.network.factory;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.io.ProbNetWriter;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -16,6 +20,8 @@ public class IDFactory extends NetsFactory {
 	public static String healthStateName = "Health state";
 	public static String therapyCostName = "Cost of therapy";
 	public static String testCostName = "Cost of test";
+	private static String symptomName = "Symptom";
+	private static State[] symptomStates;
 
 	
 	/**
@@ -410,6 +416,72 @@ public class IDFactory extends NetsFactory {
 			return probNet;
 	}
 	
+	public static ProbNet buildIDDecideTestSymptom() {
+		  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+		  // Variables
+		  Variable varDisease = new Variable("Disease", "absent", "present");
+		  Variable varResult_of_test = new Variable("Result of test", "not-performed", "negative", "positive");
+		  Variable varSymptom = new Variable("Symptom", "absent", "present");
+		  Variable varTherapy = new Variable("Therapy", "no", "yes");
+		  Variable varDo_test = new Variable("Do test?", "no", "yes");
+		  Variable varHealth_state = new Variable("Health state");
+		  Variable varCost_of_test = new Variable("Cost of test");
+		  Variable varCost_of_therapy = new Variable("Cost of therapy");
+
+		  // Nodes
+		  Node nodeDisease= probNet.addNode(varDisease, NodeType.CHANCE);
+		  Node nodeResult_of_test= probNet.addNode(varResult_of_test, NodeType.CHANCE);
+		  Node nodeSymptom= probNet.addNode(varSymptom, NodeType.CHANCE);
+		  Node nodeTherapy = probNet.addNode(varTherapy, NodeType.DECISION);
+		  Node nodeDo_test = probNet.addNode(varDo_test, NodeType.DECISION);
+		  Node nodeHealth_state= probNet.addNode(varHealth_state, NodeType.UTILITY);
+		  Node nodeCost_of_test= probNet.addNode(varCost_of_test, NodeType.UTILITY);
+		  Node nodeCost_of_therapy= probNet.addNode(varCost_of_therapy, NodeType.UTILITY);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeDisease, nodeHealth_state, true);
+		  probNet.addLink(nodeDisease, nodeResult_of_test, true);
+		  probNet.addLink(nodeDisease, nodeSymptom, true);
+		  probNet.addLink(nodeResult_of_test, nodeTherapy, true);
+		  probNet.addLink(nodeSymptom, nodeDo_test, true);
+		  probNet.addLink(nodeTherapy, nodeHealth_state, true);
+		  probNet.addLink(nodeTherapy, nodeCost_of_therapy, true);
+		  probNet.addLink(nodeDo_test, nodeCost_of_test, true);
+		  probNet.addLink(nodeDo_test, nodeTherapy, true);
+		  probNet.addLink(nodeDo_test, nodeResult_of_test, true);
+
+		  // Potentials
+		  TablePotential potDisease = new TablePotential(Arrays.asList(varDisease), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potDisease.values = new double[]{0.98, 0.02};
+		  nodeDisease.setPotential(potDisease);
+
+		  TablePotential potResult_of_test = new TablePotential(Arrays.asList(varResult_of_test, varDisease, varDo_test), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potResult_of_test.values = new double[]{1, 0, 0, 1, 0, 0, 0, 0.97, 0.03, 0, 0.09, 0.91};
+		  nodeResult_of_test.setPotential(potResult_of_test);
+
+		  TablePotential potSymptom = new TablePotential(Arrays.asList(varSymptom, varDisease), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potSymptom.values = new double[]{0.95, 0.05, 0.2, 0.8};
+		  nodeSymptom.setPotential(potSymptom);
+
+		  TablePotential potHealth_state = new TablePotential(varHealth_state,Arrays.asList(varDisease, varTherapy));
+		  potHealth_state.values = new double[]{10, 3, 9, 8};
+		  nodeHealth_state.setPotential(potHealth_state);
+
+		  TablePotential potCost_of_test = new TablePotential(varCost_of_test,Arrays.asList(varDo_test));
+		  potCost_of_test.values = new double[]{0, -0.2};
+		  nodeCost_of_test.setPotential(potCost_of_test);
+
+		  TablePotential potCost_of_therapy = new TablePotential(varCost_of_therapy,Arrays.asList(varTherapy));
+		  potCost_of_therapy.values = new double[]{0, -0.25};
+		  nodeCost_of_therapy.setPotential(potCost_of_therapy);
+
+		  // Link restrictions and revealing states
+		  // Always observed nodes
+
+		 return probNet;
+		}
+	
 	public static ProbNet buildIDTestAlways(){
 		return buildIDTestAlways(0.14,0.91,0.97);
 	}
@@ -480,7 +552,7 @@ public class IDFactory extends NetsFactory {
 			return probNet;
 	}
 	
-	protected static ProbNet buildIDPerfectKnowledge(){
+	public static ProbNet buildIDPerfectKnowledge(){
 		ProbNet perfectKnowledge = buildIDNoKnowledge();
 			Variable disease = null;
 			Variable therapy = null;

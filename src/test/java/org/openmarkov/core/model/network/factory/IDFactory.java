@@ -1,6 +1,7 @@
 package org.openmarkov.core.model.network.factory;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -11,6 +12,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
@@ -414,6 +416,44 @@ public class IDFactory extends NetsFactory {
 			addPotentials(probNet,potentialX,potentialY,potentialU1,potentialU2,potentialU3);
 			
 			return probNet;
+	}
+	
+	public static ProbNet buildIDSVDecideTestSymptom() {
+		ProbNet probNet = buildIDDecideTestSymptom();
+		
+		List<Node> utilNodes = probNet.getNodes(NodeType.UTILITY);
+		Variable utilVariables[] = new Variable[utilNodes.size()];
+		
+		for (int i=0; i < utilNodes.size(); i++) {
+			utilVariables[i] = utilNodes.get(i).getVariable();
+		}
+		
+		Variable variableU = new Variable("U");
+
+		// Add variables to the network
+		addVariables(probNet, NodeType.UTILITY, variableU);
+
+		// additional properties
+		String relevance = new String("Relevance");
+		String value = new String("7.0");
+		setAdditionalProperties(relevance, value, variableU);
+
+		
+
+		// Potential U2
+		SumPotential potentialU = createSumPotential(variableU,utilVariables);
+
+		// Links throws NodeNotFoundException
+		try {
+			for (Variable utilVar:utilVariables) {
+				probNet.addLink(utilVar, variableU, true);
+			}
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+		}
+		addPotentials(probNet, potentialU);
+		
+		return probNet;
 	}
 	
 	public static ProbNet buildIDDecideTestSymptom() {

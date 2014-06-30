@@ -153,51 +153,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 	}
 
 
-	protected Intervention getExpectedStrategyDiagnosisProblem(ProbNet id,
-			String resultTestName,
-			String decisionName,
-			String positiveResult,
-			String negativeResult,
-			String yesTherapy,
-			String noTherapy) throws InvalidStateException{
-		Intervention interv;
-		List<Variable> vars = new ArrayList();
-		List<State> states = new ArrayList();
-		Variable dec = null;
-		Variable resultTest = null;
-		String statesResultTestNames[] = new String[2];
-		String statesTherapyNames[]=new String[2];
-		
-		statesResultTestNames[0]=positiveResult;
-		statesResultTestNames[1]=negativeResult;
-		statesTherapyNames[0]=yesTherapy;
-		statesTherapyNames[1]=noTherapy;
-		try {
-			dec = id.getVariable(decisionName);
-			resultTest = id.getVariable(resultTestName);
-		} catch (NodeNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		vars.add(dec);
-		vars.add(resultTest);	
-		List<State> statesRoot = new ArrayList<>();
-		for (String nameState:statesResultTestNames){
-				statesRoot.add(resultTest.getState(nameState));
-		}
-		
-		List<Intervention> interventionsChildren;
-		
-		interventionsChildren = new ArrayList<>();
-		for (String nameState:statesTherapyNames){
-			interventionsChildren.add(createSimpleIntervention(id,decisionName,nameState));
-		}
-			
-		
-		interv = new Intervention(resultTest, statesRoot, interventionsChildren, vars);
-				
-		return interv;
-	}
-
+	
 
 
 	private TablePotential constructExpectedUtilitiesPolicyDDecisionTestProblem(Variable variableT,
@@ -309,7 +265,13 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 	}
 	
 
-	private Intervention createSimpleIntervention(ProbNet id, String decision, String state) {
+	/**
+	 * @param id
+	 * @param decision
+	 * @param state
+	 * @return An Intervention with the assignment 'decision = state' 
+	 */
+	protected Intervention createSimpleIntervention(ProbNet id, String decision, String state) {
 		Intervention interv;
 		List<Variable> vars = new ArrayList();
 		List<State> states = new ArrayList();

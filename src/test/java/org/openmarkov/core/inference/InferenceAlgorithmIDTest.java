@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.factory.IDFactory;
 import org.openmarkov.core.model.network.potential.Intervention;
@@ -56,6 +58,8 @@ iD_DecisionTestProblemWithSV = IDFactory
 		testMEUAndStrategy(IDFactory.buildIDOneDecision(),87.4,null);
 		testMEUAndStrategy(IDFactory.buildIDDecideTest(),9.3929,null);
 		testMEUAndStrategy(IDFactory.buildIDTestAlways(),9.3929,null);
+		testMEUAndStrategy(IDFactory.buildIDPerfectKnowledge(),9.72,null);
+		testMEUAndStrategy(IDFactory.buildIDNoKnowledge(),9.02,null);
 		
 		
 	}
@@ -395,6 +399,53 @@ iD_DecisionTestProblemWithSV = IDFactory
 		} catch (Exception e) {
 			printExceptionAndFailIfImplemented(e);
 		}
+	}
+
+	
+	
+	protected Intervention getStrategyDiagnosisProblem(ProbNet id,
+			String resultTestName,
+			String decisionName,
+			String positiveResult,
+			String negativeResult,
+			String yesTherapy,
+			String noTherapy) throws InvalidStateException{
+		Intervention interv;
+		List<Variable> vars = new ArrayList();
+		List<State> states = new ArrayList();
+		Variable dec = null;
+		Variable resultTest = null;
+		String statesResultTestNames[] = new String[2];
+		String statesTherapyNames[]=new String[2];
+		
+		statesResultTestNames[0]=positiveResult;
+		statesResultTestNames[1]=negativeResult;
+		statesTherapyNames[0]=yesTherapy;
+		statesTherapyNames[1]=noTherapy;
+		try {
+			dec = id.getVariable(decisionName);
+			resultTest = id.getVariable(resultTestName);
+		} catch (NodeNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		vars.add(dec);
+		vars.add(resultTest);	
+		List<State> statesRoot = new ArrayList<>();
+		for (String nameState:statesResultTestNames){
+				statesRoot.add(resultTest.getState(nameState));
+		}
+		
+		List<Intervention> interventionsChildren;
+		
+		interventionsChildren = new ArrayList<>();
+		for (String nameState:statesTherapyNames){
+			interventionsChildren.add(createSimpleIntervention(id,decisionName,nameState));
+		}
+			
+		
+		interv = new Intervention(resultTest, statesRoot, interventionsChildren, vars);
+				
+		return interv;
 	}
 
 	

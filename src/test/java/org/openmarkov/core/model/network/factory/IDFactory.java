@@ -480,7 +480,7 @@ public class IDFactory extends NetsFactory {
 			return probNet;
 	}
 	
-	protected static ProbNet buildIDPerfectKnowledge(){
+	public static ProbNet buildIDPerfectKnowledge(){
 		ProbNet perfectKnowledge = buildIDNoKnowledge();
 			Variable disease = null;
 			Variable therapy = null;

@@ -218,11 +218,14 @@ public class Intervention extends TreeADDPotential {
 			for (int i = 0; i < branches.size() && areEqual; i++) {
 				TreeADDBranch branch = branches.get(i);
 				List<State> states = branch.getStates();
+				// Compare each branch
 				TreeADDBranch interventionBranch = intervention.getBranch(states.get(0));
+				// Compare states
 				areEqual &= interventionBranch != null && interventionBranch.getStates().size() == states.size() &&
 						interventionBranch.getStates().containsAll(states);
+				// Compare potentials
 				areEqual &= interventionBranch.getPotential().getClass() == branch.getPotential().getClass();
-				areEqual &= interventionBranch.getPotential().equals(branch.getPotential());
+				areEqual &= interventionBranch.getPotential().equals(branch.getPotential()); // Recursive part
 			}
 		}
 		return areEqual;
@@ -252,7 +255,10 @@ public class Intervention extends TreeADDPotential {
 		return (Intervention) (branch.getPotential());
 	}
 	
-	/** Get the branch corresponding with state or null */
+	/** 
+	 * @param state
+	 * @return branch that contains state or null
+	 */
 	private TreeADDBranch getBranch(State state) {
 		for (TreeADDBranch branch : branches) {
 			if (branch.getBranchStates().contains(state)) {

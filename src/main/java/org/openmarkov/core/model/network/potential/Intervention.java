@@ -209,25 +209,21 @@ public class Intervention extends TreeADDPotential {
 	 * @return True if this and 'intervention' are equal. Note that the variables can be in different order in the paths
 	 */
 	public boolean equals(Intervention intervention) {
-		boolean areEqual = true;
-		if (branches != null) {
+		boolean areEqual = 
+					intervention!= null && intervention.topVariable == topVariable && 
+					intervention.getBranches().size() == branches.size() && 
+					intervention.getVariables().size() == variables.size() &&
+					intervention.getVariables().containsAll(variables);
+		if (areEqual) {
 			for (int i = 0; i < branches.size() && areEqual; i++) {
-				TreeADDBranch auxBranch = branches.get(i);
-				Intervention auxInterventionBranch = getInterventionBranch(auxBranch);
-				for (State state : auxBranch.getStates()) {
-					if (topVariable==intervention.topVariable){
-						areEqual = intervention.hasBranchWithState(state);
-					}
-					if (areEqual){
-						Intervention auxIntervState = intervention.project(topVariable, state);
-						areEqual = ((auxInterventionBranch==null) && (auxIntervState==null)) 
-								|| ((auxInterventionBranch!=null) && 
-										auxInterventionBranch.equals(intervention.project(topVariable, state)));
-					}					
-				}
+				TreeADDBranch branch = branches.get(i);
+				List<State> states = branch.getStates();
+				TreeADDBranch interventionBranch = intervention.getBranch(states.get(0));
+				areEqual &= interventionBranch != null && interventionBranch.getStates().size() == states.size() &&
+						interventionBranch.getStates().containsAll(states);
+				areEqual &= interventionBranch.getPotential().getClass() == branch.getPotential().getClass();
+				areEqual &= interventionBranch.getPotential().equals(branch.getPotential());
 			}
-		} else {
-			areEqual = intervention.branches == null;
 		}
 		return areEqual;
 	}
@@ -238,14 +234,14 @@ public class Intervention extends TreeADDPotential {
 	 * @return true if one of its branches children contains 'state'
 	 */
 	private boolean hasBranchWithState(State state) {
-		boolean has = false;
+		boolean hasBranch = false;
 		if (branches != null) {
-			for (int i=0;i< branches.size() && !has; i++){
-				has = branches.get(i).getBranchStates().contains(state);
+			for (int i=0;i< branches.size() && !hasBranch; i++){
+				hasBranch = branches.get(i).getBranchStates().contains(state);
 			}
 		}
 		
-		return has;
+		return hasBranch;
 	}
 
 	/**
@@ -256,7 +252,15 @@ public class Intervention extends TreeADDPotential {
 		return (Intervention) (branch.getPotential());
 	}
 	
-	
+	/** Get the branch corresponding with state or null */
+	private TreeADDBranch getBranch(State state) {
+		for (TreeADDBranch branch : branches) {
+			if (branch.getBranchStates().contains(state)) {
+				return branch;
+			}
+		}
+		return null;
+	}
 	
 	public String toStringForGraphviz(ProbNet net) {
 		

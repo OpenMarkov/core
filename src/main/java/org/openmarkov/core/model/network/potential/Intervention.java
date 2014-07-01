@@ -266,6 +266,34 @@ public class Intervention extends TreeADDPotential {
 		}
 		return areEqual;
 	}
+	
+	
+	/**
+	 * @param intervention
+	 * @return True if this and 'intervention' are equal. Note that the variables can be in different order in the paths
+	 */
+	public boolean equals2(Intervention intervention) {
+		boolean areEquals = true;
+		if (branches != null) {
+			for (int i = 0; i < branches.size() && areEquals; i++) {
+				TreeADDBranch auxBranch = branches.get(i);
+				Intervention auxInterventionBranch = getInterventionBranch(auxBranch);
+				for (State state : auxBranch.getStates()) {
+					if (topVariable==intervention.topVariable){
+						areEquals = intervention.hasBranchWithState(state);
+					}
+					if (areEquals){
+						Intervention auxIntervState = intervention.project(topVariable, state);
+						areEquals = ((auxInterventionBranch==null)&&(auxIntervState==null)) 
+								|| ((auxInterventionBranch!=null)&&auxInterventionBranch.equals(intervention.project(topVariable, state)));
+					}					
+				}
+			}
+		} else {
+			areEquals = intervention.branches == null;
+		}
+		return areEquals;
+	}
 		
 		
 	/**

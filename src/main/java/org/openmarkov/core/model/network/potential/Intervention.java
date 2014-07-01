@@ -55,7 +55,7 @@ public class Intervention extends TreeADDPotential {
 	 * @param variables
 	 */
 	public Intervention(Variable topVariable, List<State> states,
-			Intervention intervention, List<Variable> variables) {
+			Intervention intervention, List<Variable> variables, boolean one) {
 		super(variables, topVariable, PotentialRole.INTERVENTION);
 		List<State> branchStates = new ArrayList<State>(states.size());
 		branchStates.addAll(states);
@@ -171,7 +171,7 @@ public class Intervention extends TreeADDPotential {
 					new ArrayList<Variable>(variables));
 		} else {
 			intervention = new Intervention(decisionVariable, optimalStates, optimalIntervention, 
-					new ArrayList<Variable>(variables));
+					new ArrayList<Variable>(variables), true);
 		}
     	return intervention;
 	}

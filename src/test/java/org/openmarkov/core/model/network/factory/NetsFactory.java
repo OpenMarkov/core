@@ -10,31 +10,15 @@
 package org.openmarkov.core.model.network.factory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.ProductPotential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
-import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
-import org.openmarkov.core.model.network.potential.canonical.MaxPotential;
-import org.openmarkov.core.model.network.potential.treeadd.Threshold;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
-import org.openmarkov.core.model.network.type.BayesianNetworkType;
-import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
-import org.openmarkov.core.model.network.type.InfluenceDiagramType;
-import org.openmarkov.core.model.network.type.MPADType;
 
 /**
  * @author manolo

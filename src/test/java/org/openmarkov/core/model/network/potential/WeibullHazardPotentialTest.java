@@ -9,7 +9,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

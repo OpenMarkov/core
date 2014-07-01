@@ -12,8 +12,6 @@ import static org.junit.Assert.*;
 
 import java.util.Random;
 
-import org.junit.Test;
-
 /**
  * @author manolo
  * 

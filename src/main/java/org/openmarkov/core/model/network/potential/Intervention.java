@@ -46,6 +46,23 @@ public class Intervention extends TreeADDPotential {
 			this.addBranch(branch);
 		}
 	}
+	
+	/**
+	 * Creates an intervention with only one branch. 
+	 * @param topVariable
+	 * @param states
+	 * @param intervention
+	 * @param variables
+	 */
+	public Intervention(Variable topVariable, List<State> states,
+			Intervention intervention, List<Variable> variables) {
+		super(variables, topVariable, PotentialRole.INTERVENTION);
+		List<State> branchStates = new ArrayList<State>(states.size());
+		branchStates.addAll(states);
+		TreeADDBranch branch = null;
+		branch = new TreeADDBranch(branchStates, topVariable, intervention, variables);
+		this.addBranch(branch);
+	}
 
 	/**
 	 * Creates an intervention from a set of interventions and probabilities.
@@ -123,6 +140,7 @@ public class Intervention extends TreeADDPotential {
 		List<Intervention> optimalInterventions = new ArrayList<Intervention>();
 		Set<Variable> variables = new HashSet<Variable>(); //???
 		double max = Double.NEGATIVE_INFINITY;
+		Intervention optimalIntervention = null;
 		for (int i = 0; i < states.length; i++) {
         	System.out.println("entrada (optimal): " + interventions[i]);
 			if (utilities[i] > max) {
@@ -133,19 +151,29 @@ public class Intervention extends TreeADDPotential {
 				optimalInterventions.add(interventions[i]);
 				variables.clear();
 				if (interventions[i] != null) {
+					optimalIntervention = interventions[i];
 					variables.addAll(interventions[i].getVariables());
 				}
 			} else if (utilities[i] == max) {  // there is a tie
 				// TODO deal properly with ties
 				optimalStates.add(states[i]);
 				if (interventions[i] != null) {
+					if (!optimalInterventions.equals(interventions[i])) {
+						optimalInterventions.add(interventions[i]);
+					}
 					variables.addAll(interventions[i].getVariables());
 				}
-				variables.addAll(interventions[i].getVariables());
 			}
 		}
-    	return new Intervention(decisionVariable, optimalStates, optimalInterventions, 
-				new ArrayList<Variable>(variables));
+		Intervention intervention = null;
+		if (optimalInterventions.size() > 1) {
+			intervention = new Intervention(decisionVariable, optimalStates, optimalInterventions, 
+					new ArrayList<Variable>(variables));
+		} else {
+			intervention = new Intervention(decisionVariable, optimalStates, optimalIntervention, 
+					new ArrayList<Variable>(variables));
+		}
+    	return intervention;
 	}
 
 	/**
@@ -224,8 +252,16 @@ public class Intervention extends TreeADDPotential {
 				areEqual &= interventionBranch != null && interventionBranch.getStates().size() == states.size() &&
 						interventionBranch.getStates().containsAll(states);
 				// Compare potentials
-				areEqual &= interventionBranch.getPotential().getClass() == branch.getPotential().getClass();
-				areEqual &= interventionBranch.getPotential().equals(branch.getPotential()); // Recursive part
+				if (areEqual) {
+					Potential interventionBranchPotential = interventionBranch.getPotential();
+					Potential branchPotential = branch.getPotential();
+					areEqual &= !((interventionBranchPotential == null && branchPotential != null) ||
+							(interventionBranch != null && branchPotential == null));
+					if (branchPotential != null) {
+						areEqual &= interventionBranch.getPotential().getClass() == branch.getPotential().getClass();
+						areEqual &= interventionBranch.getPotential().equals(branch.getPotential()); // Recursive part
+					}
+				}
 			}
 		}
 		return areEqual;

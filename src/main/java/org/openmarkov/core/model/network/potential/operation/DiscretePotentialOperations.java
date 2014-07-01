@@ -1777,7 +1777,8 @@ public final class DiscretePotentialOperations {
      * @return. A <code>List</code> with two <code>TablePotential</code>, 
      * marginal probability and new utility in this order.
      */
-    public static List<TablePotential> sumOutVariable(Variable chanceVariable, List<TablePotential> potentials) {
+    public static List<TablePotential> sumOutVariable(Variable chanceVariable, 
+    		List<TablePotential> potentials) {
     	System.out.println("sumOut: " + chanceVariable.getName());
     	// Get probability and utility potentials
     	List<TablePotential> probPotentials = new ArrayList<TablePotential>();
@@ -2013,7 +2014,31 @@ public final class DiscretePotentialOperations {
 			outputUtilityPotentialPosition++;
 			
 		} // end of the outer loop
-
+		
+		// Return the utility potential if some of its values is different from 0.0
+		// or if any of the interventions is not null
+		boolean thereAreInterventions = false;
+		for (int i = 0; i < outputUtilityPotential.values.length; i++) {
+			if (outputUtilityPotential.interventions[i] != null) {
+				thereAreInterventions = true;
+				break;
+			}
+		}
+		if (thereAreInterventions) {
+			outputPotentials.add(outputUtilityPotential);
+		} else {
+			boolean thereAreRelevantUtilities = false;
+			for (int i = 0; i < outputUtilityPotential.values.length; i++) {
+				if (!almostEqual(outputUtilityPotential.values[i], 0.0)) {
+					thereAreRelevantUtilities = true;
+					break;
+				}
+			}
+			if (thereAreRelevantUtilities) {
+				outputPotentials.add(outputUtilityPotential);
+			}
+		}
+		
 		return outputPotentials;
 	}
 

@@ -835,8 +835,7 @@ public class DiscretePotentialOperationsTest {
 		potentials.add(pU);
 		
 		// Invocation
-		DiscretePotentialOperations.maxOutVariable(decisionVariable, potentials);
-		
+		DiscretePotentialOperations.sumOutVariable(X, potentials);
 		
 		// TODO Finish
 	}

@@ -1921,144 +1921,146 @@ public final class DiscretePotentialOperations {
     * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>
     * @return. A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
     */
-   public static List<TablePotential> maxOutVariable(Variable decisionVariable, 
-		   List<TablePotential> potentials) {
-	System.out.println("maxOut: " + decisionVariable.getName());
-   	// Get probability and utility potentials
-   	List<TablePotential> probPotentials = new ArrayList<TablePotential>();
-   	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
-   	classifyProbAndUtilityPotentials(potentials, probPotentials, utilityPotentials);
-   	List<TablePotential> outputPotentials = new ArrayList<TablePotential>(2);
-		
-   	// if there are probability potentials depending on decisionVariable,
-   	// its product does not depend on decisionVariable and should be projected
-   	boolean thereAreProbabilities = probPotentials.size() > 0;
-   	if (thereAreProbabilities) {
-   		TablePotential projectedPotential = projectOutVariable(decisionVariable, multiply(probPotentials));
-       	if (projectedPotential != null) {
-       		outputPotentials.add(projectedPotential);
-       	}
-   	}
-   	
-   	TablePotential inputUtilityPotential = sum(utilityPotentials);
-   	List<Variable> inputUtilityVariables =  inputUtilityPotential.getVariables();
+    public static List<TablePotential> maxOutVariable(Variable decisionVariable, 
+    		List<TablePotential> potentials) {
+    	System.out.println("maxOut: " + decisionVariable.getName());
+    	// Get probability and utility potentials
+    	List<TablePotential> probPotentials = new ArrayList<TablePotential>();
+    	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
+    	classifyProbAndUtilityPotentials(potentials, probPotentials, utilityPotentials);
+    	List<TablePotential> outputPotentials = new ArrayList<TablePotential>(2);
 
-		// initialize the output utility potential
-		List<Variable> outputUtilityVariables = inputUtilityPotential.getVariables();
-		outputUtilityVariables.remove(decisionVariable);
-		TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables, PotentialRole.UTILITY);
-		// TODO Check whether the next line can be removed
-		outputUtilityPotential.setUtilityVariable(inputUtilityPotential.getUtilityVariable());
-		outputUtilityPotential.interventions = new Intervention[outputUtilityPotential.values.length];
+    	// if there are probability potentials depending on decisionVariable,
+    	// its product does not depend on decisionVariable and should be projected
+    	boolean thereAreProbabilities = probPotentials.size() > 0;
+    	if (thereAreProbabilities) {
+    		TablePotential projectedPotential = projectOutVariable(decisionVariable, multiply(probPotentials));
+    		if (projectedPotential != null) {
+    			outputPotentials.add(projectedPotential);
+    		}
+    	}
 
-		// in allVariables, the first variable is decisionVariable
-		List<Variable> allVariables = new ArrayList<Variable>(outputUtilityVariables.size() + 1);
-		allVariables.add(decisionVariable);
-		allVariables.addAll(outputUtilityVariables);
-		int numVariables = allVariables.size();
-		int[] allVariablesDimensions = TablePotential.calculateDimensions(allVariables); 
+    	TablePotential inputUtilityPotential = sum(utilityPotentials);
+    	List<Variable> inputUtilityVariables =  inputUtilityPotential.getVariables();
 
-		// initialize the policy 
-		TablePotential policyPotential = new TablePotential(allVariables, PotentialRole.POLICY);
-		double[] policyValues = policyPotential.values;
+    	// initialize the output utility potential
+    	List<Variable> outputUtilityVariables = inputUtilityPotential.getVariables();
+    	outputUtilityVariables.remove(decisionVariable);
+    	TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables, PotentialRole.UTILITY);
+    	// TODO Check whether the next line can be removed
+    	outputUtilityPotential.setUtilityVariable(inputUtilityPotential.getUtilityVariable());
+    	outputUtilityPotential.interventions = new Intervention[outputUtilityPotential.values.length];
 
-		// constants for the iterations
-		int decisionVariableSize = decisionVariable.getNumStates();
-		int[] accOffsetsInputUtilityPotential = TablePotential.getAccumulatedOffsets(
-				allVariables, inputUtilityVariables);
+    	// in allVariables, the first variable is decisionVariable
+    	List<Variable> allVariables = new ArrayList<Variable>(outputUtilityVariables.size() + 1);
+    	allVariables.add(decisionVariable);
+    	allVariables.addAll(outputUtilityVariables);
+    	int numVariables = allVariables.size();
+    	int[] allVariablesDimensions = TablePotential.calculateDimensions(allVariables); 
 
-		// auxiliary variables that may change in every iteration
-		int[] allVariablesCoordinate = new int[numVariables];
-		int outputUtilityPotentialPosition = 0;
-		int conditionalProbPotentialPosition = 0;
-		int inputUtilityPotentialPosition = 0;
-		int increasedVariable = 0;
+    	// initialize the policy 
+    	TablePotential policyPotential = new TablePotential(allVariables, PotentialRole.POLICY);
+    	double[] policyValues = policyPotential.values;
 
-		double max;
-		ArrayList<Integer> optimalStatesIndices = new ArrayList<Integer>(decisionVariableSize);
-		
-		double[] utilities = new double[decisionVariableSize];
-		Intervention[] interventions = new Intervention[decisionVariableSize];
+    	// constants for the iterations
+    	int decisionVariableSize = decisionVariable.getNumStates();
+    	int[] accOffsetsInputUtilityPotential = TablePotential.getAccumulatedOffsets(
+    			allVariables, inputUtilityVariables);
 
-		// outer iterations correspond to the variables to in the outputUtilityPotential
-		for (int outerIteration = 0; 
-				outerIteration < TablePotential.computeTableSize(outputUtilityVariables); 
-				outerIteration++) {
-			max = Double.NEGATIVE_INFINITY;
-			// inner iterations correspond to the decision variable to eliminate
-			for (int innerIteration = 0; innerIteration < decisionVariableSize; 
-					innerIteration++) {
-				if (inputUtilityPotential.values[inputUtilityPotentialPosition] > max) {
-					max = inputUtilityPotential.values[inputUtilityPotentialPosition];
-					optimalStatesIndices.clear();
-					optimalStatesIndices.add(innerIteration);
-				} else if (inputUtilityPotential.values[inputUtilityPotentialPosition] == max) {
-					optimalStatesIndices.add(innerIteration);
-				}
-				utilities[innerIteration] = inputUtilityPotential.values[inputUtilityPotentialPosition];
-				if (inputUtilityPotential.interventions != null) {
-					interventions[innerIteration] = 
-							inputUtilityPotential.interventions[inputUtilityPotentialPosition];
-				}
+    	// auxiliary variables that may change in every iteration
+    	int[] allVariablesCoordinate = new int[numVariables];
+    	int outputUtilityPotentialPosition = 0;
+    	int conditionalProbPotentialPosition = 0;
+    	int inputUtilityPotentialPosition = 0;
+    	int increasedVariable = 0;
 
-				// find the next configuration and the index of the increased variable
-				for (int j = 0; j < numVariables; j++) {
-					allVariablesCoordinate[j]++;
-					if (allVariablesCoordinate[j] < allVariablesDimensions[j]) {
-						increasedVariable = j;
-						break;
-					}
-					allVariablesCoordinate[j] = 0;
-				}
+    	double max;
+    	ArrayList<Integer> optimalStatesIndices = new ArrayList<Integer>(decisionVariableSize);
 
-				// Update coordinates
-				inputUtilityPotentialPosition +=
-						accOffsetsInputUtilityPotential[increasedVariable];
-			}
-			
-			outputUtilityPotential.values[outputUtilityPotentialPosition] = max;
-			outputUtilityPotential.interventions[outputUtilityPotentialPosition] = 
-					Intervention.optimalIntervention(decisionVariable, utilities, interventions);
+    	double[] utilities = new double[decisionVariableSize];
+    	Intervention[] interventions = new Intervention[decisionVariableSize];
 
-			// set the values of policyPotential
-			int policyPotentialPosition = outputUtilityPotentialPosition * decisionVariableSize;
-			for (int i = 0; i < optimalStatesIndices.size(); i++) {
-				policyValues[policyPotentialPosition + optimalStatesIndices.get(i)] =
-						1.0 / optimalStatesIndices.size();
-			}
-						
-			outputUtilityPotentialPosition++;
-			
-		} // end of the outer loop
-		
-		// Return the utility potential if some of its values is different from 0.0
-		// or if any of the interventions is not null
-		boolean thereAreInterventions = false;
-		for (int i = 0; i < outputUtilityPotential.values.length; i++) {
-			if (outputUtilityPotential.interventions[i] != null) {
-				thereAreInterventions = true;
-				break;
-			}
-		}
-		if (thereAreInterventions) {
-			outputPotentials.add(outputUtilityPotential);
-		} else {
-			boolean thereAreRelevantUtilities = false;
-			for (int i = 0; i < outputUtilityPotential.values.length; i++) {
-				if (!almostEqual(outputUtilityPotential.values[i], 0.0)) {
-					thereAreRelevantUtilities = true;
-					break;
-				}
-			}
-			if (thereAreRelevantUtilities) {
-				outputPotentials.add(outputUtilityPotential);
-			}
-		}
-		
-		outputPotentials.add(policyPotential);
-		
-		return outputPotentials;
-	}
+    	// outer iterations correspond to the variables to in the outputUtilityPotential
+    	for (int outerIteration = 0; 
+    			outerIteration < TablePotential.computeTableSize(outputUtilityVariables); 
+    			outerIteration++) {
+    		// reset auxiliary variables before enteriong the loop
+    		max = Double.NEGATIVE_INFINITY;
+    		optimalStatesIndices.clear();
+    		// inner iterations correspond to the decision variable to eliminate
+    		for (int innerIteration = 0; innerIteration < decisionVariableSize; 
+    				innerIteration++) {
+    			if (inputUtilityPotential.values[inputUtilityPotentialPosition] > max) {
+    				max = inputUtilityPotential.values[inputUtilityPotentialPosition];
+    				optimalStatesIndices.clear();
+    				optimalStatesIndices.add(innerIteration);
+    			} else if (inputUtilityPotential.values[inputUtilityPotentialPosition] == max) {
+    				optimalStatesIndices.add(innerIteration);
+    			}
+    			utilities[innerIteration] = inputUtilityPotential.values[inputUtilityPotentialPosition];
+    			if (inputUtilityPotential.interventions != null) {
+    				interventions[innerIteration] = 
+    						inputUtilityPotential.interventions[inputUtilityPotentialPosition];
+    			}
+
+    			// find the next configuration and the index of the increased variable
+    			for (int j = 0; j < numVariables; j++) {
+    				allVariablesCoordinate[j]++;
+    				if (allVariablesCoordinate[j] < allVariablesDimensions[j]) {
+    					increasedVariable = j;
+    					break;
+    				}
+    				allVariablesCoordinate[j] = 0;
+    			}
+
+    			// Update coordinates
+    			inputUtilityPotentialPosition +=
+    					accOffsetsInputUtilityPotential[increasedVariable];
+    		}
+
+    		outputUtilityPotential.values[outputUtilityPotentialPosition] = max;
+    		outputUtilityPotential.interventions[outputUtilityPotentialPosition] = 
+    				Intervention.optimalIntervention(decisionVariable, utilities, interventions);
+
+    		// set the values of policyPotential
+    		int policyPotentialPosition = outputUtilityPotentialPosition * decisionVariableSize;
+    		for (int i = 0; i < optimalStatesIndices.size(); i++) {
+    			policyValues[policyPotentialPosition + optimalStatesIndices.get(i)] =
+    					1.0 / optimalStatesIndices.size();
+    		}
+
+    		outputUtilityPotentialPosition++;
+
+    	} // end of the outer loop
+
+    	// Return the utility potential if some of its values is different from 0.0
+    	// or if any of the interventions is not null
+    	boolean thereAreInterventions = false;
+    	for (int i = 0; i < outputUtilityPotential.values.length; i++) {
+    		if (outputUtilityPotential.interventions[i] != null) {
+    			thereAreInterventions = true;
+    			break;
+    		}
+    	}
+    	if (thereAreInterventions) {
+    		outputPotentials.add(outputUtilityPotential);
+    	} else {
+    		boolean thereAreRelevantUtilities = false;
+    		for (int i = 0; i < outputUtilityPotential.values.length; i++) {
+    			if (!almostEqual(outputUtilityPotential.values[i], 0.0)) {
+    				thereAreRelevantUtilities = true;
+    				break;
+    			}
+    		}
+    		if (thereAreRelevantUtilities) {
+    			outputPotentials.add(outputUtilityPotential);
+    		}
+    	}
+
+    	outputPotentials.add(policyPotential);
+
+    	return outputPotentials;
+    }
 
     /** This method is used to remove a decision variable from a probability potential
      * that in fact does not depend on the decision variable
@@ -2134,11 +2136,7 @@ public final class DiscretePotentialOperations {
     			break;
     		}
     	}
-    	if (thereAreRelevantProbabilities) {
-    		return projectedPotential;
-    	}
-    	return null;
-		
+    	return thereAreRelevantProbabilities ? projectedPotential : null;
 	}
 
 	// TODO remove

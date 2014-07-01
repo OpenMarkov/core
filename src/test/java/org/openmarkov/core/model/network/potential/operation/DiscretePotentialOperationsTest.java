@@ -873,7 +873,7 @@ public class DiscretePotentialOperationsTest {
 
 		// Asserts
 		// Test utility potential
-		assertEquals(1, newPotentials.size());
+		assertEquals(2, newPotentials.size());
 		TablePotential utility = newPotentials.get(0);
 		
 		// Utility variables

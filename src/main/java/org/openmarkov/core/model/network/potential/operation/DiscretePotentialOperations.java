@@ -1955,10 +1955,12 @@ public final class DiscretePotentialOperations {
 		List<Variable> allVariables = new ArrayList<Variable>(outputUtilityVariables.size() + 1);
 		allVariables.add(decisionVariable);
 		allVariables.addAll(outputUtilityVariables);
-
-		
 		int numVariables = allVariables.size();
 		int[] allVariablesDimensions = TablePotential.calculateDimensions(allVariables); 
+
+		// initialize the policy 
+		TablePotential policyPotential = new TablePotential(allVariables, PotentialRole.POLICY);
+		double[] policyValues = policyPotential.values;
 
 		// constants for the iterations
 		int decisionVariableSize = decisionVariable.getNumStates();
@@ -1973,6 +1975,8 @@ public final class DiscretePotentialOperations {
 		int increasedVariable = 0;
 
 		double max;
+		ArrayList<Integer> optimalStatesIndices = new ArrayList<Integer>(decisionVariableSize);
+		
 		double[] utilities = new double[decisionVariableSize];
 		Intervention[] interventions = new Intervention[decisionVariableSize];
 
@@ -1984,8 +1988,13 @@ public final class DiscretePotentialOperations {
 			// inner iterations correspond to the decision variable to eliminate
 			for (int innerIteration = 0; innerIteration < decisionVariableSize; 
 					innerIteration++) {
-				max = max > inputUtilityPotential.values[inputUtilityPotentialPosition] ? 
-						max : inputUtilityPotential.values[inputUtilityPotentialPosition];
+				if (inputUtilityPotential.values[inputUtilityPotentialPosition] > max) {
+					max = inputUtilityPotential.values[inputUtilityPotentialPosition];
+					optimalStatesIndices.clear();
+					optimalStatesIndices.add(innerIteration);
+				} else if (inputUtilityPotential.values[inputUtilityPotentialPosition] == max) {
+					optimalStatesIndices.add(innerIteration);
+				}
 				utilities[innerIteration] = inputUtilityPotential.values[inputUtilityPotentialPosition];
 				if (inputUtilityPotential.interventions != null) {
 					interventions[innerIteration] = 
@@ -2006,11 +2015,18 @@ public final class DiscretePotentialOperations {
 				inputUtilityPotentialPosition +=
 						accOffsetsInputUtilityPotential[increasedVariable];
 			}
-
+			
 			outputUtilityPotential.values[outputUtilityPotentialPosition] = max;
 			outputUtilityPotential.interventions[outputUtilityPotentialPosition] = 
 					Intervention.optimalIntervention(decisionVariable, utilities, interventions);
 
+			// set the values of policyPotential
+			int policyPotentialPosition = outputUtilityPotentialPosition * decisionVariableSize;
+			for (int i = 0; i < optimalStatesIndices.size(); i++) {
+				policyValues[policyPotentialPosition + optimalStatesIndices.get(i)] =
+						1.0 / optimalStatesIndices.size();
+			}
+						
 			outputUtilityPotentialPosition++;
 			
 		} // end of the outer loop
@@ -2038,6 +2054,8 @@ public final class DiscretePotentialOperations {
 				outputPotentials.add(outputUtilityPotential);
 			}
 		}
+		
+		outputPotentials.add(policyPotential);
 		
 		return outputPotentials;
 	}

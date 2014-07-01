@@ -185,6 +185,7 @@ public final class DiscretePotentialOperations {
             return (TablePotential) tablePotentials.get(0);
         }
 
+        // list of non-constant potentials
         List<TablePotential> potentials = new ArrayList<>(tablePotentials);
 
         // Leave out the constant potentials
@@ -225,14 +226,27 @@ public final class DiscretePotentialOperations {
             tables[i] = potentials.get(i).values;
         }
 
-        // Gets dimensions
+        // Gets the interventions if necessary
+        boolean thereAreInterventions = false;
+        for (int i = 0; i < numPotentials && !thereAreInterventions; i++) {
+        	thereAreInterventions = (potentials.get(i).interventions != null);
+        }
+        Intervention[][] interventions = null;
+        if (thereAreInterventions) {
+        	interventions = new Intervention[numPotentials][];
+        	for (int i = 0; i < numPotentials; i++) {
+        		interventions[i] = potentials.get(i).interventions;
+        	}
+        }
+
+        // Gets the dimensions
         int[] resultDimensions = TablePotential.calculateDimensions(resultVariables);
 
-        // Gets accumulated offsets
+        // Gets the accumulated offsets
         int[][] accumulatedOffsets = DiscretePotentialOperations.getAccumulatedOffsets(potentials,
                 resultVariables);
 
-        // Gets coordinate
+        // Gets the coordinates
         int[] resultCoordinates;
         if (numVariables != 0) {
             resultCoordinates = new int[numVariables];
@@ -258,6 +272,10 @@ public final class DiscretePotentialOperations {
             tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
         }
         double[] resultValues = new double[tableSize];
+        Intervention[] resultInterventions = null;
+        if (thereAreInterventions) {
+        	resultInterventions = new Intervention[tableSize];
+        }
 
         if (potentials.size() > 0) {
             double sum;
@@ -286,14 +304,26 @@ public final class DiscretePotentialOperations {
 
                 // sum
                 sum = 0;
+                Intervention resultIntervention = null;
                 for (int iPotential = 0; iPotential < numPotentials; iPotential++) {
                     // sum the numbers
                     sum = sum + tables[iPotential][potentialPositions[iPotential]];
-                    // TODO Hacer lo mismo que arriba con la misma lógica
+                    if (thereAreInterventions && interventions[iPotential] != null) {
+                    	if (resultIntervention == null) {
+                    		resultIntervention = interventions[iPotential][potentialPositions[iPotential]];
+                    	} else {
+                    		resultIntervention = resultIntervention.
+                    				concatenate(interventions[iPotential][potentialPositions[iPotential]]);
+                    	}
+                    }
+                    
                     // update the current position in each potential table
                     potentialPositions[iPotential] += accumulatedOffsets[iPotential][incrementedVariable];
                 }                
                 resultValues[resultPosition] = sum;
+                if (thereAreInterventions) {
+                	resultInterventions[resultPosition] = resultIntervention;
+                }
             }
         }
         // Sum constant potentials to the result
@@ -305,9 +335,7 @@ public final class DiscretePotentialOperations {
             }
         }
         TablePotential result = new TablePotential(resultVariables, getRole(tablePotentials), resultValues);
-        if (anyPotentialWithInterventions(potentials)) {
-        	result = sumInterventions(result, potentials);
-        }
+        result.interventions = resultInterventions;
         if (result.isUtility()) {
         	result.setUtilityVariable(getNewUtilityVariable(tablePotentials));
         }
@@ -364,119 +392,119 @@ public final class DiscretePotentialOperations {
 		return composeVariable(utilityVariables);
 	}
 
-	/**
-     * @param potentials. <code>TablePotential</code>
-     * @return <code>true</code> when at least one potential has an array of interventions.
-     */
-    private static boolean anyPotentialWithInterventions(List<TablePotential> potentials) {
-    	int i;
-    	for (i = 0; i < potentials.size() && potentials.get(i).interventions == null; i++);
-		return i < potentials.size();
-	}
-
-	/**
-	 * @param result. <code>TablePotential</code>
-	 * @param allThePotentials. <code>List</code> of <code>TablePotential</code>
-	 * @return result with the interventions. <code>TablePotential</code>
-	 */
-	private static TablePotential sumInterventions(TablePotential result, List<TablePotential> allThePotentials) {
-		result.interventions = new Intervention[result.values.length];
-		List<TablePotential> potentials = new ArrayList<TablePotential>();
-		for (TablePotential potential : allThePotentials) {
-			if (potential.interventions != null) {
-				potentials.add(potential);
-			}
-		}
-		int numPotentials = potentials.size();
-
-		// Gets the tables of each TablePotential
-        Intervention[][] interventionTables = new Intervention[numPotentials][];
-        for (int i = 0; i < numPotentials; i++) {
-            interventionTables[i] = potentials.get(i).interventions;
-        }
-        
-        List<Variable> resultVariables = result.getVariables();
-
-        // Gets dimensions
-        int[] resultDimensions = TablePotential.calculateDimensions(resultVariables);
-
-        // Gets accumulated offsets
-        int[][] accumulatedOffsets = DiscretePotentialOperations.getAccumulatedOffsets(potentials,
-                resultVariables);
-        
-        int numVariables = resultVariables.size();
-
-        // Gets coordinate
-        int[] resultCoordinates;
-        if (numVariables != 0) {
-            resultCoordinates = new int[numVariables];
-        } else {
-            resultCoordinates = new int[1];
-            resultCoordinates[0] = 0;
-        }
-
-        // Position in each table potential
-        int[] potentialPositions = new int[numPotentials];
-        for (int i = 0; i < numPotentials; i++) {
-            potentialPositions[i] = 0;
-        }
-
-        // Sum
-        int incrementedVariable = 0;
-        int[] dimensions = (!resultVariables.isEmpty()) ? TablePotential.calculateDimensions(resultVariables)
-                : new int[0];
-        int[] offsets = (!resultVariables.isEmpty()) ? TablePotential.calculateOffsets(dimensions)
-                : new int[0];
-        int tableSize = 1; // If numVariables == 0 the potential is a constant
-        if (numVariables > 0) {
-            tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
-        }
-        Intervention[] resultInterventions = new Intervention[tableSize];
-
-        if (allThePotentials.size() > 0) {
-            Intervention sum = null;
-            for (int resultPosition = 0; resultPosition < tableSize; resultPosition++) {
-                /*
-                 * increment the result coordinate and find out which variable
-                 * is to be incremented
-                 */
-                for (int iVariable = 0; iVariable < resultCoordinates.length; iVariable++) {
-                    // try by incrementing the current variable (given by
-                    // iVariable)
-                    resultCoordinates[iVariable]++;
-                    if (resultCoordinates[iVariable] != resultDimensions[iVariable]) {
-                        // we have incremented the right variable
-                        incrementedVariable = iVariable;
-                        // do not increment other variables;
-                        break;
-                    }
-                    /*
-                     * this variable could not be incremented; we set it to 0 in
-                     * resultCoordinate (the next iteration of the for-loop will
-                     * increment the next variable)
-                     */
-                    resultCoordinates[iVariable] = 0;
-                }
-
-                // sum
-                sum = null;
-                for (int iPotential = 0; iPotential < numPotentials; iPotential++) {
-                    // sum the numbers
-                	Intervention intervention = interventionTables[iPotential][potentialPositions[iPotential]];
-                	if (sum == null) {
-                		sum = intervention; 
-                	} else {
-                		sum.concatenate(intervention);
-                	}
-                    // update the current position in each potential table
-                    potentialPositions[iPotential] += accumulatedOffsets[iPotential][incrementedVariable];
-                }                
-                resultInterventions[resultPosition] = sum;
-            }
-        }
-		
-		return result;
-	}
+//	/**
+//     * @param potentials. <code>TablePotential</code>
+//     * @return <code>true</code> when at least one potential has an array of interventions.
+//     */
+//    private static boolean anyPotentialWithInterventions(List<TablePotential> potentials) {
+//    	int i;
+//    	for (i = 0; i < potentials.size() && potentials.get(i).interventions == null; i++);
+//		return i < potentials.size();
+//	}
+//
+//	/**
+//	 * @param result. <code>TablePotential</code>
+//	 * @param allThePotentials. <code>List</code> of <code>TablePotential</code>
+//	 * @return result with the interventions. <code>TablePotential</code>
+//	 */
+//	private static TablePotential sumInterventions(TablePotential result, List<TablePotential> allThePotentials) {
+//		result.interventions = new Intervention[result.values.length];
+//		List<TablePotential> potentials = new ArrayList<TablePotential>();
+//		for (TablePotential potential : allThePotentials) {
+//			if (potential.interventions != null) {
+//				potentials.add(potential);
+//			}
+//		}
+//		int numPotentials = potentials.size();
+//
+//		// Gets the tables of each TablePotential
+//        Intervention[][] interventionTables = new Intervention[numPotentials][];
+//        for (int i = 0; i < numPotentials; i++) {
+//            interventionTables[i] = potentials.get(i).interventions;
+//        }
+//        
+//        List<Variable> resultVariables = result.getVariables();
+//
+//        // Gets dimensions
+//        int[] resultDimensions = TablePotential.calculateDimensions(resultVariables);
+//
+//        // Gets accumulated offsets
+//        int[][] accumulatedOffsets = DiscretePotentialOperations.getAccumulatedOffsets(potentials,
+//                resultVariables);
+//        
+//        int numVariables = resultVariables.size();
+//
+//        // Gets coordinate
+//        int[] resultCoordinates;
+//        if (numVariables != 0) {
+//            resultCoordinates = new int[numVariables];
+//        } else {
+//            resultCoordinates = new int[1];
+//            resultCoordinates[0] = 0;
+//        }
+//
+//        // Position in each table potential
+//        int[] potentialPositions = new int[numPotentials];
+//        for (int i = 0; i < numPotentials; i++) {
+//            potentialPositions[i] = 0;
+//        }
+//
+//        // Sum
+//        int incrementedVariable = 0;
+//        int[] dimensions = (!resultVariables.isEmpty()) ? TablePotential.calculateDimensions(resultVariables)
+//                : new int[0];
+//        int[] offsets = (!resultVariables.isEmpty()) ? TablePotential.calculateOffsets(dimensions)
+//                : new int[0];
+//        int tableSize = 1; // If numVariables == 0 the potential is a constant
+//        if (numVariables > 0) {
+//            tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
+//        }
+//        Intervention[] resultInterventions = new Intervention[tableSize];
+//
+//        if (allThePotentials.size() > 0) {
+//            Intervention sum = null;
+//            for (int resultPosition = 0; resultPosition < tableSize; resultPosition++) {
+//                /*
+//                 * increment the result coordinate and find out which variable
+//                 * is to be incremented
+//                 */
+//                for (int iVariable = 0; iVariable < resultCoordinates.length; iVariable++) {
+//                    // try by incrementing the current variable (given by
+//                    // iVariable)
+//                    resultCoordinates[iVariable]++;
+//                    if (resultCoordinates[iVariable] != resultDimensions[iVariable]) {
+//                        // we have incremented the right variable
+//                        incrementedVariable = iVariable;
+//                        // do not increment other variables;
+//                        break;
+//                    }
+//                    /*
+//                     * this variable could not be incremented; we set it to 0 in
+//                     * resultCoordinate (the next iteration of the for-loop will
+//                     * increment the next variable)
+//                     */
+//                    resultCoordinates[iVariable] = 0;
+//                }
+//
+//                // sum
+//                sum = null;
+//                for (int iPotential = 0; iPotential < numPotentials; iPotential++) {
+//                    // sum the numbers
+//                	Intervention intervention = interventionTables[iPotential][potentialPositions[iPotential]];
+//                	if (sum == null) {
+//                		sum = intervention; 
+//                	} else {
+//                		sum.concatenate(intervention);
+//                	}
+//                    // update the current position in each potential table
+//                    potentialPositions[iPotential] += accumulatedOffsets[iPotential][incrementedVariable];
+//                }                
+//                resultInterventions[resultPosition] = sum;
+//            }
+//        }
+//		
+//		return result;
+//	}
 
 	public static TablePotential sum(TablePotential... tablePotentials) {
         List<TablePotential> potentialList = new ArrayList<TablePotential>(tablePotentials.length);
@@ -1745,7 +1773,8 @@ public final class DiscretePotentialOperations {
     /**
      * @param chanceVariable. <code>Variable</code>
      * @param potentials. <code>List</code> of <code>TablePotential</code>
-     * @return. A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
+     * @return. A <code>List</code> with two <code>TablePotential</code>, 
+     * marginal probability and new utility in this order.
      */
     public static List<TablePotential> sumOutVariable(Variable chanceVariable, List<TablePotential> potentials) {
     	// Get probability and utility potentials

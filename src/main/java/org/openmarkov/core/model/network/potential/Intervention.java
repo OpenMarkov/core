@@ -19,13 +19,21 @@ public class Intervention extends TreeADDPotential {
 	/**
 	 * @param variables
 	 */
+	// TODO Try to do without this method. 
 	public Intervention(List<Variable> variables) {
 		super(variables, PotentialRole.INTERVENTION);
 	}
 
-	// Static methods
 	/**
-	 * Creates an intervention whose topVariable is a finite-states chance variable. Each branch has one state.
+	 * Creates an intervention with no branches.
+	 * @param topVariable. <code>Variable</code>
+	 */
+	public Intervention(List<Variable> variables, Variable topVariable) {
+		super(variables, topVariable, PotentialRole.INTERVENTION);
+	}
+	
+	/**
+	 * Creates an intervention having one state in each branch.
 	 * @param topVariable. <code>Variable</code>
 	 * @param states. <code>List</code> of <code>State</code>
 	 * @param interventions. <code>List</code> of <code>Intervention</code>
@@ -179,15 +187,27 @@ public class Intervention extends TreeADDPotential {
 	/**
 	 * @param intervention
 	 */
-	public void concatenate(Intervention intervention) {
-		for (TreeADDBranch branch : branches) {
-			Potential potentialBranch = branch.getPotential();
-			if (potentialBranch == null || potentialBranch.getClass() == UniformPotential.class) {
-				branch.setPotential(intervention);
-			} else if (potentialBranch.getClass() == Intervention.class) {
-				((Intervention) potentialBranch).concatenate(intervention);
+	public Intervention concatenate(Intervention intervention) {
+		Intervention resultIntervention;
+		if (intervention == null) {
+			resultIntervention = this;
+		} else {
+			// create a copy of this intervention
+			resultIntervention = new Intervention(variables, topVariable);
+			// add branches to resultIntervention 
+			Intervention oldIntervention;
+			for (TreeADDBranch oldBranch : branches) {
+				oldIntervention = (Intervention)oldBranch.getPotential();
+				if (oldIntervention == null) {
+					resultIntervention.addBranch(new TreeADDBranch(oldBranch.getStates(), 
+							topVariable, intervention, oldBranch.getParentVariables()));
+				} else {
+					resultIntervention.addBranch(new TreeADDBranch(oldBranch.getStates(), 
+							topVariable, oldIntervention.concatenate(intervention), oldBranch.getParentVariables()));
+				}
 			}
 		}
+		return resultIntervention;
 	}
 	
 	/**
@@ -233,8 +253,8 @@ public class Intervention extends TreeADDPotential {
 	}
 	
 	/**
-	 * @param intervention
-	 * @return True if this and 'intervention' are equal. Note that the variables can be in different order in the paths
+	 * @param intervention. <code>Intervention</code>
+	 * @return True when <code>this</code> and <code>intervention</code> are equals.
 	 */
 	public boolean equals(Intervention intervention) {
 		boolean areEqual = 
@@ -448,5 +468,4 @@ public class Intervention extends TreeADDPotential {
 		return auxSet;
 	}
 	
-		
 }

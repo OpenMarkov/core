@@ -936,7 +936,7 @@ public class DiscretePotentialOperationsTest {
 		List<TablePotential> resultOfTestPotentials = getTablePotentials(testDecision.getPotentials(resultOfTest));
 		List<TablePotential> afterRemovingResultOfTestPotentials = 
 				DiscretePotentialOperations.sumOutVariable(resultOfTest, resultOfTestPotentials);
-		for (Potential potential : afterRemovingResultOfTestPotentials) { 
+		for (Potential potential : resultOfTestPotentials) { 
 			testDecision.removePotential(potential);
 		}
 		testDecision.removeNode(testDecision.getNode(resultOfTest));
@@ -945,17 +945,17 @@ public class DiscretePotentialOperationsTest {
 		}
 
 		// Remove do test
-//		Variable resultOfTest = testDecision.getVariable("Result of test");
-//		List<TablePotential> resultOfTestPotentials = getTablePotentials(testDecision.getPotentials(resultOfTest));
-//		List<TablePotential> afterRemovingResultOfTestPotentials = 
-//				DiscretePotentialOperations.maxOutVariable(resultOfTest, resultOfTestPotentials);
-//		for (Potential potential : afterRemovingResultOfTestPotentials) { 
-//			testDecision.removePotential(potential);
-//		}
-//		testDecision.removeNode(testDecision.getNode(resultOfTest));
-//		for (Potential potential : afterRemovingResultOfTestPotentials) { 
-//			testDecision.addPotential(potential);
-//		}
+		Variable doTest = testDecision.getVariable("Do test?");
+		List<TablePotential> doTestPotentials = getTablePotentials(testDecision.getPotentials(doTest));
+		List<TablePotential> afterRemovingDoTestPotentials = 
+				DiscretePotentialOperations.maxOutVariable(doTest, doTestPotentials);
+		for (Potential potential : afterRemovingDoTestPotentials) { 
+			testDecision.removePotential(potential);
+		}
+		testDecision.removeNode(testDecision.getNode(doTest));
+		for (Potential potential : afterRemovingDoTestPotentials) { 
+			testDecision.addPotential(potential);
+		}
 
 	}
 

@@ -2024,10 +2024,11 @@ public final class DiscretePotentialOperations {
 
     		// set the values of policyPotential
     		int policyPotentialPosition = outputUtilityPotentialPosition * decisionVariableSize;
-    		for (int i = 0; i < optimalStatesIndices.size(); i++) {
-    			policyValues[policyPotentialPosition + optimalStatesIndices.get(i)] =
-    					1.0 / optimalStatesIndices.size();
-    		}
+			double probForOptimalStates = 1.0 / optimalStatesIndices.size();
+			for (int i = 0; i < decisionVariableSize; i++) {
+				policyValues[policyPotentialPosition + i] = (optimalStatesIndices
+						.contains(i)) ? probForOptimalStates : 0.0;
+			}
 
     		outputUtilityPotentialPosition++;
 

@@ -33,7 +33,7 @@ public class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
 		}
 
 
-		@Override
+
 		public void testMEUAndStrategyBattery() throws IncompatibleEvidenceException,
 				UnexpectedInferenceException {
 			//TODO Adapt to the new variable-elimination based inference implementation

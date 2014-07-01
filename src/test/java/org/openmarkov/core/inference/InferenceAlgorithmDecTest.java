@@ -38,9 +38,6 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 	
 
 	
-			
-	@Test
-	public abstract void testMEUAndStrategyBattery() throws IncompatibleEvidenceException, UnexpectedInferenceException;	
 	
 	
 	protected void testMEUAndStrategy(ProbNet net,double expectedMEU,Intervention expectedStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException{

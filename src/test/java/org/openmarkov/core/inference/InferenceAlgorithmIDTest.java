@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.junit.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -48,24 +49,36 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 	}
 
-	
-
-	@Override
-	public void testMEUAndStrategyBattery() throws IncompatibleEvidenceException,
-			UnexpectedInferenceException {
-		
-		//testMEUAndStrategy(IDFactory.buildIDOneDecision(),87.4,null);
-		//testMEUAndStrategy(IDFactory.buildIDNoKnowledge(),9.02,null);
-		testMEUAndStrategy(IDFactory.buildIDPerfectKnowledge(),9.72,null);		
-		//testMEUAndStrategy(IDFactory.buildIDTestAlways(),9.3929,null);
-		//testMEUAndStrategy(IDFactory.buildIDDecideTest(),9.3929,null);
-		//testMEUAndStrategy(IDFactory.buildIDDecideTestSymptom(),9.9143,null);
-		
-		
+	@Test
+	public void testIDOneDecision() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDOneDecision(),87.4,null);	
 	}
 	
-
+	@Test
+	public void testIDPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDPerfectKnowledge(),9.72,null);	
+	}
 	
+	@Test
+	public void testIDNoKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDNoKnowledge(),9.02,null);	
+	}
+	
+	@Test
+	public void testIDTestAlways() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDTestAlways(),9.3929,null);	
+	}
+	
+	@Test
+	public void testIDDecideTest() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDDecideTest(),9.3929,null);	
+	}
+	
+	@Test
+	public void testIDDecideTestSymptom() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDDecideTestSymptom(),9.9143,null);	
+	}
+
 	
 	
 	/**
@@ -78,41 +91,41 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
-	//TODO Review the minor error in test
+	//TODO Adapt to the new structure and variables' names of the decision test problem
 	//@Test
 	public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
-		
-		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(iD_DecisionTestProblemWithoutSV);
+		ProbNet network = IDFactory.buildIDDecideTest();
+		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
 
 		
 		checkPosteriorProbsAndUtilitiesDecisionTestProblem(algorithm,
-				iD_DecisionTestProblemWithoutSV, IDFactory.therapyName, "no", 1.0, 0.0, 1.0, 0.0, 0.0069352708058,
+				network, IDFactory.therapyName, "no", 1.0, 0.0, 1.0, 0.0, 0.0069352708058,
 				99.51453104359314, -2.0);
 		checkPosteriorProbsAndUtilitiesDecisionTestProblem(algorithm,
-				iD_DecisionTestProblemWithoutSV, IDFactory.testResultName, "negative", 1.0, 0.0, 1.0, 0.0, 0.0069352708058,
+				network, IDFactory.testResultName, "negative", 1.0, 0.0, 1.0, 0.0, 0.0069352708058,
 				99.51453104359314, -2.0);
 		checkPosteriorProbsAndUtilitiesDecisionTestProblem(algorithm,
-				iD_DecisionTestProblemWithoutSV, IDFactory.testResultName, "yes", 1.0, 0.0916, 0.9084, 0.0916, 0.07, 98.006,
+				network, IDFactory.testResultName, "yes", 1.0, 0.0916, 0.9084, 0.0916, 0.07, 98.006,
 				-2.0);
 
 		EvidenceCase evi = new EvidenceCase();
 		try {
-			evi.addFinding(iD_DecisionTestProblemWithoutSV, "T", "yes");
-			evi.addFinding(iD_DecisionTestProblemWithoutSV, "Y", "positive");
+			evi.addFinding(network, IDFactory.decTestName, "yes");
+			evi.addFinding(network, IDFactory.testResultName, "positive");
 		} catch (InvalidStateException e) {
 			e.printStackTrace();
 		} catch (IncompatibleEvidenceException e) {
 			e.printStackTrace();
 		}
 
-		checkPosteriorProbsAndUtilitiesEvidenceDecisionTestProblem(
-				algorithm, iD_DecisionTestProblemWithoutSV, evi, 1.0, 1.0, 0.0, 1.0,
+		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(
+				algorithm, network, evi, 1.0, 1.0, 0.0, 1.0,
 				0.6954148, 83.045851, -2.0);
 		try {
-			evi.addFinding(iD_DecisionTestProblemWithoutSV, "X", "present");
+			evi.addFinding(network,  IDFactory.diseaseName, "present");
 
 		} catch (InvalidStateException | IncompatibleEvidenceException e) {
 			
@@ -121,7 +134,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 	}
 	
-	protected void checkPosteriorProbsAndUtilitiesEvidenceDecisionTestProblem(
+	protected void checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(
 			InferenceAlgorithm algorithm, ProbNet diagram,
 			EvidenceCase evi, double t, double y1, double y2, double d,
 			double x, double u1, double u2) {
@@ -134,12 +147,12 @@ iD_DecisionTestProblemWithSV = IDFactory
 		Variable variableU2 = null;
 
 		try {
-			variableT = diagram.getVariable("T");
-			variableD = diagram.getVariable("D");
+			variableT = diagram.getVariable(IDFactory.decTestName);
+			variableD = diagram.getVariable(IDFactory.therapyName);
 
-			variableX = diagram.getVariable("X");
+			variableX = diagram.getVariable(IDFactory.diseaseName);
 
-			variableY = diagram.getVariable("Y");
+			variableY = diagram.getVariable(IDFactory.testResultName);
 
 			variableU1 = diagram.getVariable("U1");
 
@@ -188,7 +201,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 		} catch (IncompatibleEvidenceException e) {
 			e.printStackTrace();
 		}
-		checkPosteriorProbsAndUtilitiesEvidenceDecisionTestProblem(
+		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(
 				algorithm, diagram, evi, t, y1, y2, d, x, u1, u2);
 
 	}
@@ -370,7 +383,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
-	//@Test
+	@Test
 	public void testAPrioriProbabilitiesIDTestAlways()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
@@ -394,7 +407,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 			aPrioriProbabilities = algorithm.getProbsAndUtilities();
 			// test potential probabilities
 			checkProbabilityPotential(aPrioriProbabilities,variableX,0.14);
-			checkProbabilityPotential(aPrioriProbabilities,variableY,0.1532);
+			checkProbabilityPotential(aPrioriProbabilities,variableY,0.1532,0.8468);
 			checkProbabilityPotential(aPrioriProbabilities,variableD,0.1532);
 		} catch (Exception e) {
 			printExceptionAndFailIfImplemented(e);

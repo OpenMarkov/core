@@ -593,18 +593,36 @@ public class IDFactory extends NetsFactory {
 	}
 	
 	public static ProbNet buildIDPerfectKnowledge(){
-		ProbNet perfectKnowledge = buildIDNoKnowledge();
-			Variable disease = null;
-			Variable therapy = null;
-			try {
-				disease = perfectKnowledge.getVariable(diseaseName);
-				therapy = perfectKnowledge.getVariable(therapyName);
-				perfectKnowledge.addLink(disease, therapy, true);
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-				System.err.println("Variable not found");
-			}
-			return perfectKnowledge;
+		  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+		  // Variables
+		  Variable varDisease = new Variable("Disease", "absent", "present");
+		  Variable varTherapy = new Variable("Therapy", "no", "yes");
+		  Variable varHealth_state = new Variable("Health state");
+
+		  // Nodes
+		  Node nodeDisease= probNet.addNode(varDisease, NodeType.CHANCE);
+		  Node nodeTherapy= probNet.addNode(varTherapy, NodeType.DECISION);
+		  Node nodeHealth_state= probNet.addNode(varHealth_state, NodeType.UTILITY);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeDisease, nodeTherapy, true);
+		  probNet.addLink(nodeDisease, nodeHealth_state, true);
+		  probNet.addLink(nodeTherapy, nodeHealth_state, true);
+
+		  // Potentials
+		  TablePotential potDisease = new TablePotential(Arrays.asList(varDisease), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potDisease.values = new double[]{0.86, 0.14};
+		  nodeDisease.setPotential(potDisease);
+
+		  TablePotential potHealth_state = new TablePotential(varHealth_state,Arrays.asList(varDisease, varTherapy));
+		  potHealth_state.values = new double[]{10, 3, 9, 8};
+		  nodeHealth_state.setPotential(potHealth_state);
+
+		  // Link restrictions and revealing states
+		  // Always observed nodes
+
+		 return probNet;
 		}
 	
 

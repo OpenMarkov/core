@@ -11,7 +11,6 @@ import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.factory.DANFactory;
 import org.openmarkov.core.model.network.factory.IDFactory;
-import org.openmarkov.core.model.network.factory.NetsFactory;
 
 public class DecisionTreeTest {
 

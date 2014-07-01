@@ -2,14 +2,10 @@ package org.openmarkov.core.model.network.factory;
 
 import java.util.Arrays;
 import java.util.List;
-
-import org.junit.Test;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.SumPotential;
@@ -22,8 +18,6 @@ public class IDFactory extends NetsFactory {
 	public static String healthStateName = "Health state";
 	public static String therapyCostName = "Cost of therapy";
 	public static String testCostName = "Cost of test";
-	private static String symptomName = "Symptom";
-	private static State[] symptomStates;
 
 	
 	/**

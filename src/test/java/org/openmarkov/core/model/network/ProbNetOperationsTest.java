@@ -29,7 +29,6 @@ import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.factory.BNFactory;
 import org.openmarkov.core.model.network.factory.DANFactory;
 import org.openmarkov.core.model.network.factory.IDFactory;
-import org.openmarkov.core.model.network.factory.NetsFactory;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.DeltaPotential;
 import org.openmarkov.core.model.network.potential.LinearCombinationPotential;

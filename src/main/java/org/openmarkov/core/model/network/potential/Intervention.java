@@ -418,6 +418,8 @@ public class Intervention extends TreeADDPotential {
 		case CHANCE:
 			string = "ellipse";
 			break;
+		default:
+			break;
 		}
 		return string;
 	}

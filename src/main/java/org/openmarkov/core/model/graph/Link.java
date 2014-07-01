@@ -321,6 +321,7 @@ public class Link <T>{
 
 		VariableType varType = ((Node) node1).getVariable()
 				.getVariableType();
+				
 		if (varType.equals(VariableType.NUMERIC)) {
 			return !revealingIntervals.isEmpty();
 		} else {

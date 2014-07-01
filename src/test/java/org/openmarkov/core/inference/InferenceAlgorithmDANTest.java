@@ -8,26 +8,9 @@
 */
 package org.openmarkov.core.inference;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeTrue;
-
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Set;
-
-import junit.framework.Assert;
-
-import org.junit.Test;
-import org.openmarkov.core.dt.DecisionTreeBuilder;
-import org.openmarkov.core.dt.DecisionTreeElement;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.model.network.factory.DANFactory;
-import org.openmarkov.core.model.network.factory.NetsFactory;
-import org.openmarkov.core.model.network.factory.NetsFactory.NamesNetworks;
 import org.openmarkov.core.model.network.ProbNet;
 
 /**

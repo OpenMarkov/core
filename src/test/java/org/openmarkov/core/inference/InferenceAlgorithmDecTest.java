@@ -8,11 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.junit.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -22,7 +18,6 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
@@ -273,8 +268,8 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 	 */
 	protected Intervention createSimpleIntervention(ProbNet id, String decision, String state) {
 		Intervention interv;
-		List<Variable> vars = new ArrayList();
-		List<State> states = new ArrayList();
+		List<Variable> vars = new ArrayList<>();
+		List<State> states = new ArrayList<>();
 		Variable dec = null;
 		try {
 			dec = id.getVariable(decision);

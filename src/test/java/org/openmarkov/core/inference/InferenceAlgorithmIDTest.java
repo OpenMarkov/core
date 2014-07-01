@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -56,12 +55,11 @@ iD_DecisionTestProblemWithSV = IDFactory
 			UnexpectedInferenceException {
 		
 		testMEUAndStrategy(IDFactory.buildIDOneDecision(),87.4,null);
-		testMEUAndStrategy(IDFactory.buildIDDecideTest(),9.3929,null);
-		testMEUAndStrategy(IDFactory.buildIDTestAlways(),9.3929,null);
-		testMEUAndStrategy(IDFactory.buildIDPerfectKnowledge(),9.72,null);
 		testMEUAndStrategy(IDFactory.buildIDNoKnowledge(),9.02,null);
-		//testMEUAndStrategy(IDFactory.buildIDSVDecideTestSymptom(),9.9143,null);
-		//testMEUAndStrategy(IDFactory.buildIDDecideTestSymptom(),9.9143,null);
+		testMEUAndStrategy(IDFactory.buildIDPerfectKnowledge(),9.72,null);		
+		testMEUAndStrategy(IDFactory.buildIDTestAlways(),9.3929,null);
+		testMEUAndStrategy(IDFactory.buildIDDecideTest(),9.3929,null);
+		testMEUAndStrategy(IDFactory.buildIDDecideTestSymptom(),9.9143,null);
 		
 		
 	}
@@ -413,8 +411,8 @@ iD_DecisionTestProblemWithSV = IDFactory
 			String yesTherapy,
 			String noTherapy) throws InvalidStateException{
 		Intervention interv;
-		List<Variable> vars = new ArrayList();
-		List<State> states = new ArrayList();
+		List<Variable> vars = new ArrayList<>();
+		List<State> states = new ArrayList<>();
 		Variable dec = null;
 		Variable resultTest = null;
 		String statesResultTestNames[] = new String[2];

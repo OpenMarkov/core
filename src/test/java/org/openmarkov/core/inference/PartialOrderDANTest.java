@@ -10,7 +10,6 @@ package org.openmarkov.core.inference;
 
 import org.junit.Test;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 
 /**
  * @author manolo

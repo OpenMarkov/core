@@ -60,6 +60,11 @@ iD_DecisionTestProblemWithSV = IDFactory
 	}
 	
 	@Test
+	public void testIDPerfectKnowledgeCostTherapy() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDPerfectKnowledgeCostTherapy(),9.685,null);	
+	}
+	
+	@Test
 	public void testIDNoKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDNoKnowledge(),9.02,null);	
 	}
@@ -91,25 +96,23 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
-	//TODO Adapt to the new structure and variables' names of the decision test problem
-	//@Test
+	@Test
 	public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 		ProbNet network = IDFactory.buildIDDecideTest();
 		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
-
 		
-		checkPosteriorProbsAndUtilitiesDecisionTestProblem(algorithm,
-				network, IDFactory.therapyName, "no", 1.0, 0.0, 1.0, 0.0, 0.0069352708058,
-				99.51453104359314, -2.0);
-		checkPosteriorProbsAndUtilitiesDecisionTestProblem(algorithm,
-				network, IDFactory.testResultName, "negative", 1.0, 0.0, 1.0, 0.0, 0.0069352708058,
-				99.51453104359314, -2.0);
-		checkPosteriorProbsAndUtilitiesDecisionTestProblem(algorithm,
-				network, IDFactory.testResultName, "yes", 1.0, 0.0916, 0.9084, 0.0916, 0.07, 98.006,
-				-2.0);
+		checkPosteriorProbsAndUtilitiesDecideTest(algorithm,
+				network, IDFactory.therapyName, "no", 1.0, 0.0, 1.0, 0.0, 0.014879546528105,
+				9.895843174303259, 0.0,-0.2);
+		checkPosteriorProbsAndUtilitiesDecideTest(algorithm,
+				network, IDFactory.testResultName, "negative", 1.0, 0.0, 1.0, 0.0, 0.014879546528105,
+				9.895843174303259, 0.0,-0.2);
+		checkPosteriorProbsAndUtilitiesDecideTest(algorithm,
+				network, IDFactory.decTestName, "yes", 1.0, 0.1532, 0.8468, 0.1532, 0.14, 9.6312,
+				-0.0383,-0.2);
 
 		EvidenceCase evi = new EvidenceCase();
 		try {
@@ -123,7 +126,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(
 				algorithm, network, evi, 1.0, 1.0, 0.0, 1.0,
-				0.6954148, 83.045851, -2.0);
+				0.8316, 8.1684, -0.25,-0.2);
 		try {
 			evi.addFinding(network,  IDFactory.diseaseName, "present");
 
@@ -137,7 +140,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 	protected void checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(
 			InferenceAlgorithm algorithm, ProbNet diagram,
 			EvidenceCase evi, double t, double y1, double y2, double d,
-			double x, double u1, double u2) {
+			double x, double  uHealthState,  double uCostOfTherapy, double uCostOfTest) {
 
 		Variable variableX = null;
 		Variable variableY = null;
@@ -145,18 +148,17 @@ iD_DecisionTestProblemWithSV = IDFactory
 		Variable variableD = null;
 		Variable variableU1 = null;
 		Variable variableU2 = null;
+		Variable variableU3 = null;
 
 		try {
 			variableT = diagram.getVariable(IDFactory.decTestName);
 			variableD = diagram.getVariable(IDFactory.therapyName);
-
 			variableX = diagram.getVariable(IDFactory.diseaseName);
-
 			variableY = diagram.getVariable(IDFactory.testResultName);
-
-			variableU1 = diagram.getVariable("U1");
-
-			variableU2 = diagram.getVariable("U2");
+			variableU1 = diagram.getVariable(IDFactory.healthStateName);
+			variableU2 = diagram.getVariable(IDFactory.therapyCostName);
+			variableU3 = diagram.getVariable(IDFactory.testCostName);
+			
 		} catch (Exception e) {
 			printExceptionAndFailIfImplemented(e);
 		}
@@ -176,8 +178,9 @@ iD_DecisionTestProblemWithSV = IDFactory
 					y2);
 			checkProbabilityPotential(aPosterioriProbabilities, variableD, d);
 			checkProbabilityPotential(aPosterioriProbabilities, variableT, t);
-			checkUtilityPotential(aPosterioriProbabilities, variableU1, u1);
-			checkUtilityPotential(aPosterioriProbabilities, variableU2, u2);
+			checkUtilityPotential(aPosterioriProbabilities, variableU1, uHealthState);
+			checkUtilityPotential(aPosterioriProbabilities, variableU2, uCostOfTherapy);
+			checkUtilityPotential(aPosterioriProbabilities, variableU3, uCostOfTest);
 		} catch (IncompatibleEvidenceException e) {
 			printExceptionAndFailIfImplemented(e);
 		}
@@ -186,10 +189,10 @@ iD_DecisionTestProblemWithSV = IDFactory
 	
 
 
-	protected void checkPosteriorProbsAndUtilitiesDecisionTestProblem(
+	protected void checkPosteriorProbsAndUtilitiesDecideTest(
 			InferenceAlgorithm algorithm, ProbNet diagram,
 			String nameVariable, String state, double t, double y1, double y2,
-			double d, double x, double u1, double u2) {
+			double d, double x, double uHealthState, double uCostOfTherapy,double uCostOfTest) {
 		EvidenceCase evi;
 		evi = new EvidenceCase();
 		try {
@@ -202,7 +205,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 			e.printStackTrace();
 		}
 		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(
-				algorithm, diagram, evi, t, y1, y2, d, x, u1, u2);
+				algorithm, diagram, evi, t, y1, y2, d, x, uHealthState, uCostOfTherapy, uCostOfTest);
 
 	}
 	/**

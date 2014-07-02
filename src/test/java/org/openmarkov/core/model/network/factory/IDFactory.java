@@ -619,5 +619,45 @@ public class IDFactory extends NetsFactory {
 		 return probNet;
 		}
 	
+	public static ProbNet buildIDPerfectKnowledgeCostTherapy () {
+		  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+		  // Variables
+		  Variable varDisease = new Variable("Disease", "absent", "present");
+		  Variable varTherapy = new Variable("Therapy", "no", "yes");
+		  Variable varHealth_state = new Variable("Health state");
+		  Variable varCost_of_therapy = new Variable("Cost of therapy");
+
+		  // Nodes
+		  Node nodeDisease= probNet.addNode(varDisease, NodeType.CHANCE);
+		  Node nodeTherapy= probNet.addNode(varTherapy, NodeType.DECISION);
+		  Node nodeHealth_state= probNet.addNode(varHealth_state, NodeType.UTILITY);
+		  Node nodeCost_of_therapy= probNet.addNode(varCost_of_therapy, NodeType.UTILITY);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeDisease, nodeTherapy, true);
+		  probNet.addLink(nodeDisease, nodeHealth_state, true);
+		  probNet.addLink(nodeTherapy, nodeHealth_state, true);
+		  probNet.addLink(nodeTherapy, nodeCost_of_therapy, true);
+
+		  // Potentials
+		  TablePotential potDisease = new TablePotential(Arrays.asList(varDisease), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potDisease.values = new double[]{0.86, 0.14};
+		  nodeDisease.setPotential(potDisease);
+
+		  TablePotential potHealth_state = new TablePotential(varHealth_state,Arrays.asList(varDisease, varTherapy));
+		  potHealth_state.values = new double[]{10, 3, 9, 8};
+		  nodeHealth_state.setPotential(potHealth_state);
+
+		  TablePotential potCost_of_therapy = new TablePotential(varCost_of_therapy,Arrays.asList(varTherapy));
+		  potCost_of_therapy.values = new double[]{0, -0.25};
+		  nodeCost_of_therapy.setPotential(potCost_of_therapy);
+
+		  // Link restrictions and revealing states
+		  // Always observed nodes
+
+		 return probNet;
+		}
+	
 
 }

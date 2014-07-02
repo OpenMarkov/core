@@ -1934,6 +1934,7 @@ public final class DiscretePotentialOperations {
     	// its product does not depend on decisionVariable and should be projected
     	boolean thereAreProbabilities = probPotentials.size() > 0;
     	if (thereAreProbabilities) {
+   			System.out.println("Aquí");
     		TablePotential projectedPotential = projectOutVariable(decisionVariable, multiply(probPotentials));
     		if (projectedPotential != null) {
     			outputPotentials.add(projectedPotential);
@@ -2102,13 +2103,13 @@ public final class DiscretePotentialOperations {
 		double projectedValue = 0.0;
 
 		// outer iterations correspond to the variables in the output potential
-		for (int outerIteration = 0; 
-				outerIteration < TablePotential.computeTableSize(projectedPotentialVariables); 
-				outerIteration++) {
+		int numOuterIterations = TablePotential.computeTableSize(projectedPotentialVariables);
+		for (int outerIteration = 0; outerIteration < numOuterIterations; outerIteration++) {
 			// inner iterations correspond to the variable to eliminate
 			for (int innerIteration = 0; innerIteration < variableSize; innerIteration++) {
 				projectedValue = inputPotential.values[inputPotentialPosition];
-				
+
+				if (outerIteration != numOuterIterations - 1 && innerIteration < variableSize - 1) {
 				// find the next configuration and the index of the increased variable
 				for (int j = 0; 0 < numVariables; j++) {
 					allVariablesCoordinate[j]++;
@@ -2122,6 +2123,7 @@ public final class DiscretePotentialOperations {
 				// Update coordinates
 				inputPotentialPosition +=
 						accOffsetsInputPotential[increasedVariable];
+				}
 			}
 
 			projectedPotential.values[projectedPotentialPosition] = projectedValue;

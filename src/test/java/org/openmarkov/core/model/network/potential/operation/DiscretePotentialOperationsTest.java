@@ -909,56 +909,53 @@ public class DiscretePotentialOperationsTest {
 		List<TablePotential> diseasePotentials = getTablePotentials(testDecision.getPotentials(disease));
 		List<TablePotential> afterRemovingDiseasePotentials = 
 				DiscretePotentialOperations.sumOutVariable(disease, diseasePotentials);
-		for (Potential potential : diseasePotentials) { 
-			testDecision.removePotential(potential);
-		}
+		removePotentials(testDecision, diseasePotentials);
 		testDecision.removeNode(testDecision.getNode(disease));
-		for (Potential potential : afterRemovingDiseasePotentials) { 
-			testDecision.addPotential(potential);
-		}
+		addNoPolicyPotentials(testDecision, afterRemovingDiseasePotentials);
 		
 		// Remove therapy
 		Variable therapy = testDecision.getVariable("Therapy");
 		List<TablePotential> therapyPotentials = getTablePotentials(testDecision.getPotentials(therapy));
 		List<TablePotential> afterRemovingTherapyPotentials = 
 				DiscretePotentialOperations.maxOutVariable(therapy, therapyPotentials);
-		for (Potential potential : therapyPotentials) { 
-			testDecision.removePotential(potential);
-		}
+		removePotentials(testDecision, therapyPotentials);
 		testDecision.removeNode(testDecision.getNode(therapy));
-		for (Potential potential : afterRemovingTherapyPotentials) { 
-			testDecision.addPotential(potential);
-		}
+		addNoPolicyPotentials(testDecision, afterRemovingTherapyPotentials);
 	
 		// Remove result of test
 		Variable resultOfTest = testDecision.getVariable("Result of test");
 		List<TablePotential> resultOfTestPotentials = getTablePotentials(testDecision.getPotentials(resultOfTest));
 		List<TablePotential> afterRemovingResultOfTestPotentials = 
 				DiscretePotentialOperations.sumOutVariable(resultOfTest, resultOfTestPotentials);
-		for (Potential potential : resultOfTestPotentials) { 
-			testDecision.removePotential(potential);
-		}
+		removePotentials(testDecision, resultOfTestPotentials);
 		testDecision.removeNode(testDecision.getNode(resultOfTest));
-		for (Potential potential : afterRemovingResultOfTestPotentials) { 
-			testDecision.addPotential(potential);
-		}
+		addNoPolicyPotentials(testDecision, afterRemovingResultOfTestPotentials);
 
 		// Remove do test
 		Variable doTest = testDecision.getVariable("Do test?");
 		List<TablePotential> doTestPotentials = getTablePotentials(testDecision.getPotentials(doTest));
 		List<TablePotential> afterRemovingDoTestPotentials = 
 				DiscretePotentialOperations.maxOutVariable(doTest, doTestPotentials);
-		for (Potential potential : afterRemovingDoTestPotentials) { 
-			testDecision.removePotential(potential);
-		}
+		removePotentials(testDecision, afterRemovingDoTestPotentials);
 		testDecision.removeNode(testDecision.getNode(doTest));
-		for (Potential potential : afterRemovingDoTestPotentials) { 
-			testDecision.addPotential(potential);
-		}
-
+		addNoPolicyPotentials(testDecision, afterRemovingDoTestPotentials);
 	}
 
-    /** Translates the coordinate received in (variables, coordinateVariables)
+    private void addNoPolicyPotentials(ProbNet probNet,	List<TablePotential> potentials) {
+    	for (Potential potential : potentials) {
+    		if (potential.getPotentialRole() != PotentialRole.POLICY) {
+    			probNet.addPotential(potential);
+    		}
+    	}
+	}
+
+	private void removePotentials(ProbNet probNet,	List<TablePotential> potentials) {
+    	for (Potential potential : potentials) {
+   			probNet.removePotential(potential);
+    	}
+	}
+
+	/** Translates the coordinate received in (variables, coordinateVariables)
      *  to the potential variables ordination and returns the configuration
      *  value. 
      * @return configuration value. <code>double</code>

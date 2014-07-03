@@ -2071,12 +2071,11 @@ public final class DiscretePotentialOperations {
      * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>
      * @return. A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
      */
-    public static TablePotential projectOutVariable(Variable variable, 
-    		TablePotential inputPotential) {
+    public static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential) {
     	System.out.println("projectOut: " + variable.getName());
     	
 		List<Variable> inputPotentialVariables = inputPotential.getVariables();
-		int numVariables = inputPotentialVariables.size();
+		int numInputVariables = inputPotentialVariables.size();
 
 		// initialize the output potential
 		List<Variable> projectedPotentialVariables = inputPotential.getVariables();
@@ -2094,9 +2093,11 @@ public final class DiscretePotentialOperations {
 		int[] allVariablesDimensions = TablePotential.calculateDimensions(allVariables); 
 		int[] accOffsetsInputPotential = TablePotential.getAccumulatedOffsets(
 				allVariables, inputPotentialVariables);
+		int[] accOffsetsProjectedPotential = TablePotential.getAccumulatedOffsets(
+				allVariables, projectedPotentialVariables); 
 
 		// auxiliary variables that may change in every iteration
-		int[] allVariablesCoordinate = new int[numVariables];
+		int[] allVariablesCoordinate = new int[numInputVariables];
 		int inputPotentialPosition = 0;
 		int projectedPotentialPosition = 0;
 		int increasedVariable = 0;
@@ -2109,26 +2110,26 @@ public final class DiscretePotentialOperations {
 			for (int innerIteration = 0; innerIteration < variableSize; innerIteration++) {
 				projectedValue = inputPotential.values[inputPotentialPosition];
 
-				if (outerIteration != numOuterIterations - 1 && innerIteration < variableSize - 1) {
-				// find the next configuration and the index of the increased variable
-				for (int j = 0; 0 < numVariables; j++) {
-					allVariablesCoordinate[j]++;
-					if (allVariablesCoordinate[j] < allVariablesDimensions[j]) {
-						increasedVariable = j;
-						break;
+				if (outerIteration < numOuterIterations - 1 && innerIteration < variableSize - 1) {
+					// find the next configuration and the index of the increased variable
+					for (int j = 0; 0 < numInputVariables; j++) {
+						allVariablesCoordinate[j]++;
+						if (allVariablesCoordinate[j] < allVariablesDimensions[j]) {
+							increasedVariable = j;
+							break;
+						}
+						allVariablesCoordinate[j] = 0;
 					}
-					allVariablesCoordinate[j] = 0;
-				}
 
-				// Update coordinates
-				inputPotentialPosition +=
-						accOffsetsInputPotential[increasedVariable];
+					// Update coordinates
+					inputPotentialPosition +=
+							accOffsetsInputPotential[increasedVariable];
+					projectedPotentialPosition +=
+							accOffsetsProjectedPotential[increasedVariable];
 				}
 			}
 
 			projectedPotential.values[projectedPotentialPosition] = projectedValue;
-			projectedPotentialPosition++;
-			
 		} // end of the outer loop
 		
     	// Return the projected potential only if some of its values is different from 1.0

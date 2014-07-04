@@ -1923,7 +1923,7 @@ public final class DiscretePotentialOperations {
     */
     public static List<TablePotential> maxOutVariable(Variable decisionVariable, 
     		List<TablePotential> potentials) {
-    	System.out.println("maxOut: " + decisionVariable.getName());
+    	//System.out.println("maxOut: " + decisionVariable.getName());
     	// Get probability and utility potentials
     	List<TablePotential> probPotentials = new ArrayList<TablePotential>();
     	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();

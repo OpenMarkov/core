@@ -255,21 +255,31 @@ public class Intervention extends TreeADDPotential {
      */
     public boolean equals(Intervention intervention) {
         boolean areEqual =
-                    intervention!= null && intervention.topVariable == topVariable &&
-                    intervention.getBranches().size() == branches.size() &&
-                    intervention.getVariables().size() == variables.size() &&
-                    intervention.getVariables().containsAll(variables);
+                    intervention!= null && 
+                    intervention.topVariable == topVariable &&
+                    intervention.getBranches().size() == branches.size();
+        if (areEqual) { 
+        	// Compare variables of each intervention
+        	List<Variable> interventionVariables = intervention.getVariables();
+        	areEqual &= interventionVariables.size() == variables.size() &&
+                    interventionVariables.containsAll(variables);
+        }
         if (areEqual) {
             // Compare each branch
-            for (int i = 0; i < branches.size() && areEqual; i++) {
+        	int numBranches = branches.size();
+            for (int i = 0; i < numBranches && areEqual; i++) {
                 TreeADDBranch branch = branches.get(i);
+                // Get the corresponding branch to "this.branches.get(i)" in "intervention"
                 List<State> states = branch.getStates();
-                TreeADDBranch interventionBranch = intervention.getBranch(states.get(0));
-                // Compare states
+                TreeADDBranch interventionBranch = intervention.getBranch(states.get(0)); // A branch allways has at least one state
                 areEqual &= interventionBranch != null && 
-                        branch.getRootVariable() == interventionBranch.getRootVariable() && 
-                		interventionBranch.getStates().size() == states.size() &&
-                        interventionBranch.getStates().containsAll(states);
+                        branch.getRootVariable() == interventionBranch.getRootVariable();
+                // Compare states
+                if (areEqual) {
+                	List<State> interventionBranchStates = interventionBranch.getStates(); 
+                	areEqual &= interventionBranchStates.size() == states.size() &&
+                			interventionBranchStates.containsAll(states);
+                }
                 // Compare potentials
                 if (areEqual) {
                     Potential interventionBranchPotential = interventionBranch.getPotential();

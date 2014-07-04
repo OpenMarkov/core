@@ -854,7 +854,7 @@ public class DiscretePotentialOperationsTest {
 	}
 
 	@Test
-	public void testMaxOutVariable1() {
+	public void testMaxOutVariable() {
 		// Method invocation
 		ProbNet perfectKnowledge = IDFactory.createPerfectKnowledge();
 		Variable disease = null;

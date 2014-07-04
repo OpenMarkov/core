@@ -249,41 +249,40 @@ public class Intervention extends TreeADDPotential {
 		return projection;
 	}
 	
-	/**
-	 * @param intervention. <code>Intervention</code>
-	 * @return True when <code>this</code> and <code>intervention</code> are equals.
-	 */
-	public boolean equals(Intervention intervention) {
-		boolean areEqual = 
-					intervention!= null && intervention.topVariable == topVariable && 
-					intervention.getBranches().size() == branches.size() && 
-					intervention.getVariables().size() == variables.size() &&
-					intervention.getVariables().containsAll(variables);
-		if (areEqual) {
-			for (int i = 0; i < branches.size() && areEqual; i++) {
-				TreeADDBranch branch = branches.get(i);
-				List<State> states = branch.getStates();
-				// Compare each branch
-				TreeADDBranch interventionBranch = intervention.getBranch(states.get(0));
-				// Compare states
-				areEqual &= interventionBranch != null && interventionBranch.getStates().size() == states.size() &&
-						interventionBranch.getStates().containsAll(states);
-				// Compare potentials
-				if (areEqual) {
-					Potential interventionBranchPotential = interventionBranch.getPotential();
-					Potential branchPotential = branch.getPotential();
-					areEqual &= !((interventionBranchPotential == null && branchPotential != null) ||
-							(interventionBranch != null && branchPotential == null));
-					if (branchPotential != null) {
-						areEqual &= interventionBranch.getPotential().getClass() == branch.getPotential().getClass();
-						areEqual &= interventionBranch.getPotential().equals(branch.getPotential()); // Recursive part
-					}
-				}
-			}
-		}
-		return areEqual;
-	}
-	
+	 /**
+     * @param intervention. <code>Intervention</code>
+     * @return True when <code>this</code> and <code>intervention</code> are equals.
+     */
+    public boolean equals(Intervention intervention) {
+        boolean areEqual =
+                    intervention!= null && intervention.topVariable == topVariable &&
+                    intervention.getBranches().size() == branches.size() &&
+                    intervention.getVariables().size() == variables.size() &&
+                    intervention.getVariables().containsAll(variables);
+        if (areEqual) {
+            // Compare each branch
+            for (int i = 0; i < branches.size() && areEqual; i++) {
+                TreeADDBranch branch = branches.get(i);
+                List<State> states = branch.getStates();
+                TreeADDBranch interventionBranch = intervention.getBranch(states.get(0));
+                // Compare states
+                areEqual &= interventionBranch != null && 
+                        branch.getRootVariable() == interventionBranch.getRootVariable() && 
+                		interventionBranch.getStates().size() == states.size() &&
+                        interventionBranch.getStates().containsAll(states);
+                // Compare potentials
+                if (areEqual) {
+                    Potential interventionBranchPotential = interventionBranch.getPotential();
+                    Potential branchPotential = branch.getPotential();
+                    areEqual &= !((interventionBranchPotential == null && branchPotential != null) ||
+                            (interventionBranch != null && branchPotential == null));
+                    // Recursive part
+                    areEqual &= branchPotential != null ? interventionBranchPotential.equals(branchPotential) : true;
+                }
+            }
+        }
+        return areEqual;
+    }	
 	
 	/**
 	 * @param intervention

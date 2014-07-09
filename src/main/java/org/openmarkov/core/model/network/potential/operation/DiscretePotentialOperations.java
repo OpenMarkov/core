@@ -48,7 +48,7 @@ public final class DiscretePotentialOperations {
      * Round error used to compare two numbers. If they differ in less than
      * <code>maxRoundErrorAllowed</code> they will be considered equals.
      */
-    public static double maxRoundErrorAllowed = 1E-5;
+    public static double maxRoundErrorAllowed = 1E-8;
 
     /**
      * @param tablePotentials

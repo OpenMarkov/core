@@ -2108,11 +2108,11 @@ public final class DiscretePotentialOperations {
 		for (int outerIteration = 0; outerIteration < numOuterIterations; outerIteration++) {
 			// inner iterations correspond to the variable to eliminate
 			for (int innerIteration = 0; innerIteration < variableSize; innerIteration++) {
-				projectedValue = inputPotential.values[inputPotentialPosition];
+				projectedPotential.values[projectedPotentialPosition] = inputPotential.values[inputPotentialPosition];
 
-				if (outerIteration < numOuterIterations - 1 && innerIteration < variableSize - 1) {
+				if (!(outerIteration == numOuterIterations - 1 && innerIteration == variableSize - 1)) {
 					// find the next configuration and the index of the increased variable
-					for (int j = 0; 0 < numInputVariables; j++) {
+					for (int j = 0; j < numInputVariables; j++) {
 						allVariablesCoordinate[j]++;
 						if (allVariablesCoordinate[j] < allVariablesDimensions[j]) {
 							increasedVariable = j;
@@ -2128,8 +2128,6 @@ public final class DiscretePotentialOperations {
 							accOffsetsProjectedPotential[increasedVariable];
 				}
 			}
-
-			projectedPotential.values[projectedPotentialPosition] = projectedValue;
 		} // end of the outer loop
 		
     	// Return the projected potential only if some of its values is different from 1.0

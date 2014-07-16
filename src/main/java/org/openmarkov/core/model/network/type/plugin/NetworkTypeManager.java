@@ -105,7 +105,7 @@ public class NetworkTypeManager
         }
         catch (Exception e)
         {
-            System.out.println ();
+            //ignore
         }
         return null;
     }

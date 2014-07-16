@@ -17,6 +17,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.factory.MarkovFactory;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -29,7 +30,7 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
  * @author mluque
  *
  */
-public class MPADFactoryTest {
+public class TemporalNetOperationsTest {
 	/**
 	 * Maximum error allowed in tests. It could be modified by subclasses
 	 * if it is necessary (for example, approximate inference methods).
@@ -63,8 +64,7 @@ public class MPADFactoryTest {
 					costTreat, costNoTreat);
 			double discount = 0.01;
 			
-            MPADFactory mpadFactory = new MPADFactory(network, numSlices);
-            ProbNet expandedNetwork = mpadFactory.getExtendedNetwork();
+            ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(network, numSlices);
 			
 			List<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
 
@@ -125,8 +125,7 @@ public class MPADFactoryTest {
 					costTreat, costNoTreat,0.7,0.5);
 			double discount = 0.01;
 
-			MPADFactory mpadFactory = new MPADFactory(network, numSlices);
-			ProbNet expandedNetwork = mpadFactory.getExtendedNetwork();
+			ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(network, numSlices);
 			
 		
 			List<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);

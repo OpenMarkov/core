@@ -1779,7 +1779,6 @@ public final class DiscretePotentialOperations {
      */
     public static List<TablePotential> sumOutVariable(Variable chanceVariable, 
     		List<TablePotential> potentials) {
-    	System.out.println("sumOut: " + chanceVariable.getName());
     	// Get probability and utility potentials
     	List<TablePotential> probPotentials = new ArrayList<TablePotential>();
     	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
@@ -1923,7 +1922,6 @@ public final class DiscretePotentialOperations {
     */
     public static List<TablePotential> maxOutVariable(Variable decisionVariable, 
     		List<TablePotential> potentials) {
-    	//System.out.println("maxOut: " + decisionVariable.getName());
     	// Get probability and utility potentials
     	List<TablePotential> probPotentials = new ArrayList<TablePotential>();
     	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
@@ -1934,7 +1932,6 @@ public final class DiscretePotentialOperations {
     	// its product does not depend on decisionVariable and should be projected
     	boolean thereAreProbabilities = probPotentials.size() > 0;
     	if (thereAreProbabilities) {
-   			System.out.println("Aquí");
     		TablePotential projectedPotential = projectOutVariable(decisionVariable, multiply(probPotentials));
     		if (projectedPotential != null) {
     			outputPotentials.add(projectedPotential);
@@ -2072,8 +2069,6 @@ public final class DiscretePotentialOperations {
      * @return. A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
      */
     public static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential) {
-    	System.out.println("projectOut: " + variable.getName());
-    	
 		List<Variable> inputPotentialVariables = inputPotential.getVariables();
 		int numInputVariables = inputPotentialVariables.size();
 

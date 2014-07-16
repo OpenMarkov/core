@@ -269,7 +269,6 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 */
 	// TODO addPotential should be common to all ProbNet's
 	public Node addPotential(Potential potential) {
-		System.out.println(potential);
 		int numVariables = potential.getNumVariables();
 		Node node = null;
 		if (numVariables >= 1) {

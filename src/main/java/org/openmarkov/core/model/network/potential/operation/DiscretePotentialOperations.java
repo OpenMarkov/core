@@ -1899,15 +1899,8 @@ public final class DiscretePotentialOperations {
 
     	} // end of if (!thereIsUtility)
 
-    	// Return the marginal probability if some of its values is different from 1.0
-    	boolean thereAreRelevantProbabilities = false;
-    	for (int i = 0; i < marginalProb.values.length; i++) {
-    		if (!almostEqual(marginalProb.values[i], 1.0)) {
-    			thereAreRelevantProbabilities = true;
-    			break;
-    		}
-    	}
-    	if (thereAreRelevantProbabilities) {
+    	// Do not return the probability potential if it depends on no variables and its value is 1
+    	if (marginalProb.getNumVariables() > 0 || !almostEqual(marginalProb.values[0], 1.0)) {
     		marginalProb.setPotentialRole(PotentialRole.JOINT_PROBABILITY);
     		outputPotentials.add(marginalProb);
     	}
@@ -2125,14 +2118,9 @@ public final class DiscretePotentialOperations {
 			}
 		} // end of the outer loop
 		
-    	// Return the projected potential only if some of its values is different from 1.0
-    	boolean thereAreRelevantProbabilities = false;
-    	for (int i = 0; i < projectedPotential.values.length; i++) {
-    		if (!almostEqual(projectedPotential.values[i], 1.0)) {
-    			thereAreRelevantProbabilities = true;
-    			break;
-    		}
-    	}
+		// Do not return the probability potential if it depends on no variables and its value is 1
+    	boolean thereAreRelevantProbabilities = projectedPotential.getNumVariables() > 0 || !almostEqual(projectedPotential.values[0], 1.0);
+    	
     	return thereAreRelevantProbabilities ? projectedPotential : null;
 	}
 

@@ -715,13 +715,16 @@ public class TreeADDPotential extends Potential {
 				strBuffer.append("Branch: ");
 				List<State> states = branch.getBranchStates();
 				int i = 0;
-				int numStates = states.size();
-				for (State state : states) {
-					strBuffer.append(state.getName());
-					if (i++ == numStates - 1) {
-						strBuffer.append("\n");
-					} else {
-						strBuffer.append(",");
+				if(states != null)
+				{
+					int numStates = states.size();
+					for (State state : states) {
+						strBuffer.append(state.getName());
+						if (i++ == numStates - 1) {
+							strBuffer.append("\n");
+						} else {
+							strBuffer.append(",");
+						}
 					}
 				}
 				Potential potential = branch.getPotential();

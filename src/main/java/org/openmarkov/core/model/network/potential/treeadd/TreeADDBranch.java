@@ -18,34 +18,39 @@ import org.openmarkov.core.model.network.potential.Potential;
  * <code>TreeADDPotential</code>
  * @author myebra
  */
-public class TreeADDBranch
-{
+public class TreeADDBranch {
     /**
      * Each TreeADDBranch has an associated potential 
      */
     private Potential      potential = null;
+    
+    private Variable       rootVariable;
+
     /**
      * If the topVariable of the tree is a finite states or a discretized
      * variable each branch has an associated state.
      */
     private List<State>    states;
     
-    public List<State> getStates() {
-		return states;
-	}
-
-	/** If this treeADD is embedded in a larger treeADD and role is not INTERVENTION, then parentVariables 
-     * is the set of variables of that treeADD.
-     * This attribute is used when building a TreeADD at the GUI.
-     * This attribute is not necessary for interventions. */
-    private List<Variable> parentVariables;
     /**
      * If the topVariable of the tree is a continuous variable it is defined in
      * a continuous interval which has two thresholds.
      */
     private Threshold      lowerBound;
     private Threshold      upperBound;
-    private Variable       rootVariable;
+    
+    /** If the top variable is continuous, there is an interval and this variable is true. */
+    private boolean intervalBranch;
+
+    /** If the top variable is discrete, the branch is associated to one or more states and this variable is true. */
+    private boolean statesBranch;
+
+    /** If this treeADD is embedded in a larger treeADD and role is not INTERVENTION, then parentVariables 
+     * is the set of variables of that treeADD.
+     * This attribute is used when building a TreeADD at the GUI.
+     * This attribute is not necessary for interventions. */
+    private List<Variable> parentVariables;
+
     /**
      * A branch can be labeled, labels are used to reference potential from
      * other branches when that potential has more than one parents
@@ -70,6 +75,8 @@ public class TreeADDBranch
         this.rootVariable = topVariable;
         this.parentVariables = parentVariables;
         this.potential = null;
+        this.statesBranch = true;
+        this.intervalBranch = false;
     }
 
     /**
@@ -83,6 +90,8 @@ public class TreeADDBranch
             List<Variable> parentVariables) {
     	this(branchStates, topVariable, parentVariables);
         this.potential = potential;
+        this.statesBranch = true;
+        this.intervalBranch = false;
     }
 
     /**
@@ -104,9 +113,11 @@ public class TreeADDBranch
         this.potential = potential;
         this.rootVariable = topVariable;
         this.parentVariables = parentVariables;
+        this.statesBranch = false;
+        this.intervalBranch = true;
     }
 
-    /**
+	/**
      * Constructor for discretized and finite states variables with reference
      * @param branchStates
      * @param topVariable
@@ -122,6 +133,8 @@ public class TreeADDBranch
         this.reference = reference;
         this.rootVariable = topVariable;
         this.parentVariables = parentVariables;
+        this.statesBranch = true;
+        this.intervalBranch = false;
     }
 
     /**
@@ -143,6 +156,8 @@ public class TreeADDBranch
         this.reference = reference;
         this.rootVariable = topVariable;
         this.parentVariables = parentVariables;
+        this.statesBranch = false;
+        this.intervalBranch = true;
     }
     
     public TreeADDBranch copy ()
@@ -210,6 +225,10 @@ public class TreeADDBranch
         return branch;
     }    
     
+    public List<State> getStates() {
+		return states;
+	}
+
     public List<Variable> getAddableVariables() {
         List<Variable> addableVariables = new ArrayList<>();
         List<Variable> potentialVariables = potential.getVariables();
@@ -342,4 +361,12 @@ public class TreeADDBranch
         this.potential = null;
     }
     
+    public boolean isIntervalBranch() {
+		return intervalBranch;
+	}
+
+	public boolean isStatesBranch() {
+		return statesBranch;
+	}
+
 }

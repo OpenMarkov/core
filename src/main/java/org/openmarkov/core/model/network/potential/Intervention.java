@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
@@ -67,9 +69,25 @@ public class Intervention extends TreeADDPotential {
 		super(variables, topVariable, PotentialRole.INTERVENTION);
 		List<State> branchStates = new ArrayList<State>(states.size());
 		branchStates.addAll(states);
-		TreeADDBranch branch = null;
-		branch = new TreeADDBranch(branchStates, topVariable, intervention, variables);
-		this.addBranch(branch);
+		addBranch(new TreeADDBranch(branchStates, topVariable, intervention, variables));
+	}
+	
+	/**
+	 * Creates an intervention with a continuous variable with a partitioned interval.
+	 * @param topVariable
+	 * @param interventions
+	 * @param variables
+	 */
+	public Intervention(Variable topVariable, List<Intervention> interventions, 
+			List<Variable> variables) {
+		super(variables, topVariable, PotentialRole.INTERVENTION);
+		PartitionedInterval partitionedInterval = topVariable.getPartitionedInterval();
+		double[] limits = partitionedInterval.getLimits();
+		for (int i = 0; i < limits.length - 1; i++) {
+			addBranch(new TreeADDBranch(
+					new Threshold(limits[i], false), new Threshold(limits[i + 1], true), 
+					topVariable, interventions.get(i), variables));
+		}
 	}
 
 	/**

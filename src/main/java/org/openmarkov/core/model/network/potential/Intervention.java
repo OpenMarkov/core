@@ -81,7 +81,7 @@ public class Intervention extends TreeADDPotential {
 	 */
 	public static Intervention averageOfInterventions(Variable chanceVariable, 
 			double[] probabilities, Intervention[] interventions) {
-		Intervention intervention = null;
+		Intervention intervention;
 		State[] states = chanceVariable.getStates();
 		// Select interventions and states whose probability is greater than 0.0.
 		List<Intervention> selectedInterventions = new ArrayList<Intervention>();
@@ -96,15 +96,18 @@ public class Intervention extends TreeADDPotential {
 				}
 			}
 		}
-		if (equalInterventions(selectedInterventions.toArray(new Intervention[selectedInterventions.size()]))) {
-			return selectedInterventions.get(0);
-		}
-		if (selectedInterventions.size() > 1) {
-			intervention = new Intervention(chanceVariable, selectedStates, selectedInterventions, 
-					new ArrayList<Variable>(allVariables));
+		if (selectedInterventions.size() == 0) {
+			intervention = null;
 		} else {
 			if (selectedInterventions.size() == 1) {
 				intervention = selectedInterventions.get(0);
+			} else {
+				if (equalInterventions(selectedInterventions.toArray(new Intervention[selectedInterventions.size()]))) {
+					intervention = selectedInterventions.get(0);
+				} else {
+					intervention = new Intervention(chanceVariable, selectedStates, selectedInterventions, 
+							new ArrayList<Variable>(allVariables));
+				}
 			}
 		}
 		return intervention;
@@ -112,23 +115,22 @@ public class Intervention extends TreeADDPotential {
 	
 	private static boolean equalInterventions(Intervention[] interventions) {
 		boolean equalInterventions = true;
-		if (interventions[0] == null) {
-			for (int i = 1; i < interventions.length; i++) {
-				if (interventions[i] != null) {
-					equalInterventions = false;
-					break;
+		if (interventions != null && interventions.length > 1) {
+			if (interventions[0] == null) {
+				for (int i = 1; i < interventions.length && equalInterventions; i++) {
+					if (interventions[i] != null) {
+						equalInterventions = false;
+					}
 				}
-			}
-		} else {
-			for (int i = 1;  i < interventions.length; i++) {
-				if (!interventions[0].equals(interventions[i])) {
-					equalInterventions = false;
-					break;
+			} else {
+				for (int i = 1;  i < interventions.length && equalInterventions; i++) {
+					if (interventions[i] == null || !interventions[0].equals(interventions[i])) {
+						equalInterventions = false;
+					}
 				}
 			}
 		}
-		return false;
-		//return equalInterventions;
+		return equalInterventions;
 	}
 
 	/**

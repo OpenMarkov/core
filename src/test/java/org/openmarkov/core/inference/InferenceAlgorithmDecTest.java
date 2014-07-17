@@ -275,7 +275,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		}
 		vars.add(dec);
 		
-		interv = new Intervention(dec, states, null, null);
+		interv = new Intervention(dec, states, new ArrayList<Intervention>(), null);
 		interv.setRootVariable(dec);
 		try {
 			states.add(dec.getState(state));

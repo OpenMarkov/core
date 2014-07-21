@@ -21,7 +21,6 @@ public class Intervention extends TreeADDPotential {
 	/**
 	 * @param variables
 	 */
-	// TODO Try to do without this method. 
 	public Intervention(List<Variable> variables) {
 		super(variables, PotentialRole.INTERVENTION);
 	}
@@ -313,7 +312,29 @@ public class Intervention extends TreeADDPotential {
         }
         return areEqual;
     }	
+    
+    /**
+     * @return List of interventions contained in branches.
+     */
+    public List<Intervention> getNextInterventions() {
+    	List<Intervention> nextInterventions = new ArrayList<Intervention>();
+    	for (TreeADDBranch branch : branches) { // branches is never null according to TreeADDPotential code
+    		Potential branchPotential = branch.getPotential();
+    		if (branchPotential != null) {
+    			nextInterventions.add((Intervention)branchPotential);
+    		}
+    	}
+    	return nextInterventions;
+    }
 	
+    public List<State> getNonZeroProbabilityStates() {
+    	List<State> states = new ArrayList<State>();
+    	for (TreeADDBranch branch : branches) {
+    		states.addAll(branch.getStates());
+    	}
+    	return states;
+    }
+    
 	/**
 	 * @param intervention
 	 * @return True if this and 'intervention' are equal. Note that the variables can be in different order in the paths

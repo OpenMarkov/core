@@ -83,7 +83,23 @@ iD_DecisionTestProblemWithSV = IDFactory
 	public void testIDDecideTestSymptom() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDDecideTestSymptom(),9.9143,null);	
 	}
+	
+	//@Test
+	public void testIDArthronet() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDArthronet(),0.4960714549037456,null);	
+	}
 
+	//@Test
+	public void testIDMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDMediastinet(),1.4709741803092176,null);	
+	}
+	
+	@Test
+	public void testIDQaleMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDQaleMediastinet(),2.1154194051058286,null);	
+	}
+	
+	
 	
 	
 	/**

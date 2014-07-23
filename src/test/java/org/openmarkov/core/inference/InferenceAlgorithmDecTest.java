@@ -8,7 +8,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -18,6 +20,8 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
@@ -44,10 +48,60 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(net);
 		Double meuEvaluation = algorithm.getGlobalUtility().values[0];
 		assertEquals(expectedMEU,meuEvaluation, maxError);
+		//testScenariosIntervention(net,algorithm);
 	}
 	
 	
 	
+
+	private void testScenariosIntervention(ProbNet net,
+			InferenceAlgorithm algorithm) throws IncompatibleEvidenceException, UnexpectedInferenceException {
+		Intervention interv = null;
+		try {
+			interv = algorithm.getOptimalStrategy();
+		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
+			e.printStackTrace();
+		}
+		
+		testLeavesScenarios(algorithm,interv,new EvidenceCase());
+		
+		
+	}
+
+
+
+
+	private void testLeavesScenarios(InferenceAlgorithm algorithm,
+			Intervention interv, EvidenceCase parentEvi)
+			throws IncompatibleEvidenceException, UnexpectedInferenceException {
+
+		if (interv != null) {
+			interv.getRootVariable();
+			List<TreeADDBranch> branches = interv.getBranches();
+			if (branches != null) {
+				for (int i = 0; i < branches.size(); i++) {
+					TreeADDBranch auxBranch = branches.get(i);
+					Intervention auxInterventionBranch = Intervention
+							.getInterventionBranch(auxBranch);
+					for (State state : auxBranch.getStates()) {
+						EvidenceCase newEvi = new EvidenceCase(
+								parentEvi.getFindings());
+						Finding finding = new Finding(interv.getRootVariable(),
+								state);
+						try {
+							newEvi.addFinding(finding);
+						} catch (InvalidStateException e) {
+							e.printStackTrace();
+						}
+						algorithm.setPostResolutionEvidence(newEvi);
+						algorithm.getProbsAndUtilities();
+						testLeavesScenarios(algorithm, auxInterventionBranch,
+								newEvi);
+					}
+				}
+			}
+		}
+	}
 
 	/**
 	 * Test for diagnosis problem

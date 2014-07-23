@@ -369,7 +369,7 @@ public class Intervention extends TreeADDPotential {
 	 * @param branch
 	 * @return The intervention corresponding to 'branch'
 	 */
-	private static Intervention getInterventionBranch(TreeADDBranch branch) {
+	public static Intervention getInterventionBranch(TreeADDBranch branch) {
 		return (Intervention) (branch.getPotential());
 	}
 	

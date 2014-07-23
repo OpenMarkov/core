@@ -34,11 +34,12 @@ public class Intervention extends TreeADDPotential {
 	}
 	
 	/**
-	 * Creates an intervention having one state in each branch.
+	 * Creates an intervention having one state in each branch. 
+	 * The number of states and interventions must be the same.
 	 * @param topVariable. <code>Variable</code>
 	 * @param states. <code>List</code> of <code>State</code>
 	 * @param interventions. <code>List</code> of <code>Intervention</code>
-	 * @param variables. <code>List</code> of <code>Variable</code>
+	 * @param variables. Potential variables <code>List</code> of <code>Variable</code>
 	 */
 	public Intervention(Variable topVariable, List<State> states, 
 			List<Intervention> interventions, List<Variable> variables) {
@@ -280,7 +281,9 @@ public class Intervention extends TreeADDPotential {
         if (areEqual) { 
         	// Compare variables of each intervention
         	List<Variable> interventionVariables = intervention.getVariables();
-        	areEqual &= interventionVariables.size() == variables.size() &&
+        	areEqual &= (interventionVariables != null && variables != null) || 
+        			(interventionVariables == null && variables == null); 
+        	areEqual &= interventionVariables != null && variables != null && interventionVariables.size() == variables.size() &&
                     interventionVariables.containsAll(variables);
         }
         if (areEqual) {

@@ -104,14 +104,10 @@ public class Intervention extends TreeADDPotential {
 		// Select interventions and states whose probability is greater than 0.0.
 		List<Intervention> selectedInterventions = new ArrayList<Intervention>();
 		List<State> selectedStates = new ArrayList<State>();
-		Set<Variable> allVariables = new HashSet<Variable>();
 		for (int i = 0; i < probabilities.length; i++) {
 			if (probabilities[i] > 0.0) {
 				selectedInterventions.add(interventions[i]);
 				selectedStates.add(states[i]);
-				if (interventions[i] != null) {
-					allVariables.addAll(interventions[i].getVariables());
-				}
 			}
 		}
 		if (selectedInterventions.size() == 0) {
@@ -123,8 +119,7 @@ public class Intervention extends TreeADDPotential {
 				if (equalInterventions(selectedInterventions.toArray(new Intervention[selectedInterventions.size()]))) {
 					intervention = selectedInterventions.get(0);
 				} else {
-					intervention = new Intervention(chanceVariable, selectedStates, selectedInterventions, 
-							new ArrayList<Variable>(allVariables));
+					intervention = new Intervention(chanceVariable, selectedStates, selectedInterventions, null);
 				}
 			}
 		}
@@ -192,11 +187,9 @@ public class Intervention extends TreeADDPotential {
 		}
 		Intervention intervention = null;
 		if (optimalInterventions.size() > 1) {
-			intervention = new Intervention(decisionVariable, optimalStates, optimalInterventions, 
-					new ArrayList<Variable>(variables));
+			intervention = new Intervention(decisionVariable, optimalStates, optimalInterventions, null);
 		} else {
-			intervention = new Intervention(decisionVariable, optimalStates, optimalIntervention, 
-					new ArrayList<Variable>(variables));
+			intervention = new Intervention(decisionVariable, optimalStates, optimalIntervention, null);
 		}
     	return intervention;
 	}
@@ -278,24 +271,15 @@ public class Intervention extends TreeADDPotential {
                     intervention!= null && 
                     intervention.topVariable == topVariable &&
                     intervention.getBranches().size() == branches.size();
-        if (areEqual) { 
-        	// Compare variables of each intervention
-        	List<Variable> interventionVariables = intervention.getVariables();
-        	areEqual &= (interventionVariables != null && variables != null) || 
-        			(interventionVariables == null && variables == null); 
-        	areEqual &= interventionVariables != null && variables != null && interventionVariables.size() == variables.size() &&
-                    interventionVariables.containsAll(variables);
-        }
         if (areEqual) {
             // Compare each branch
         	int numBranches = branches.size();
             for (int i = 0; i < numBranches && areEqual; i++) {
                 TreeADDBranch branch = branches.get(i);
-                // Get the corresponding branch to "this.branches.get(i)" in "intervention"
+                // Get the corresponding branch to "this.branches.get(i)" in the other "intervention"
                 List<State> states = branch.getStates();
-                TreeADDBranch interventionBranch = intervention.getBranch(states.get(0)); // A branch allways has at least one state
-                areEqual &= interventionBranch != null && 
-                        branch.getRootVariable() == interventionBranch.getRootVariable();
+                TreeADDBranch interventionBranch = intervention.getBranch(states.get(0)); // A branch always has at least one state
+                areEqual &= interventionBranch != null;
                 // Compare states
                 if (areEqual) {
                 	List<State> interventionBranchStates = interventionBranch.getStates(); 

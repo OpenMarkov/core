@@ -692,24 +692,28 @@ public class TreeADDPotential extends Potential {
 		StringBuffer strBuffer = new StringBuffer();
 		strBuffer.append(indent);
 		strBuffer.append(this.getClass().getSimpleName()); // Print name
-		strBuffer.append("(");
+		strBuffer.append(" - topVariable: ");
+		strBuffer.append(topVariable.getName());
 		// Print variables
 		if (variables != null) {
 			int numVariables = variables.size();
 			int i = 0;
+			if (numVariables > 0) {
+				strBuffer.append(" - Variables (");
+			} else {
+				strBuffer.append(" - No variables");
+			}
 			for (Variable variable : variables) {
 				strBuffer.append(variable.getName());
 				if (i++ == numVariables - 1) {
 					strBuffer.append(")");
 				} else {
-					strBuffer.append(",");
+					strBuffer.append(", ");
 				}
 			}
 		}
-		strBuffer.append(" - topVariable: ");
-		strBuffer.append(topVariable.getName());
-		strBuffer.append("\n");
 		if (branches != null && branches.size() > 0) {
+			strBuffer.append("\n");
 			for (TreeADDBranch branch : branches) {
 				strBuffer.append(indent);
 				strBuffer.append("Branch: ");
@@ -743,6 +747,8 @@ public class TreeADDPotential extends Potential {
 					}
 				}
 			}
+		} else {
+			strBuffer.append(" - No branches.");
 		}
 		return strBuffer.toString();
 	}

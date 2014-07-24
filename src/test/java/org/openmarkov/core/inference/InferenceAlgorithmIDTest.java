@@ -490,7 +490,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 		}
 			
 		
-		interv = new Intervention(resultTest, statesRoot, interventionsChildren, vars);
+		interv = new Intervention(resultTest, statesRoot, interventionsChildren);
 				
 		return interv;
 	}

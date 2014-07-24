@@ -336,12 +336,30 @@ public class TreeADDBranch {
     }
 
     @Override
-    public String toString ()
-    {
+    public String toString () {
         StringBuilder builder = new StringBuilder ();
-        builder.append ("TreeADDBranch [potential=");
-        builder.append (potential);
-        builder.append (", states=");
+        builder.append ("TreeADDBranch ");
+        if (potential == null) {
+        	builder.append("potential: null");
+    		builder.append("\n");
+        } else {
+        	builder.append("potential.class=");
+            builder.append(potential.getClass().toString());
+            List<Variable> potentialVariables = potential.getVariables();
+            builder.append(" ");
+            builder.append(potentialVariables.size());
+            builder.append(" variables(");
+            for (int i = 0; i < potentialVariables.size(); i++) {
+        		builder.append(potentialVariables.get(i));
+            	if (i < potentialVariables.size() - 1) {
+            		builder.append(", ");
+            	} else {
+            		builder.append(")");
+            		builder.append("\n");
+            	}
+            }
+        }
+        builder.append ("states=");
         builder.append (states);
         builder.append (", parentVariables=");
         builder.append (parentVariables);
@@ -349,9 +367,8 @@ public class TreeADDBranch {
         builder.append (lowerBound);
         builder.append (", thresholdMax=");
         builder.append (upperBound);
-        builder.append (", topVariable=");
+        builder.append (", rootVariable=");
         builder.append (rootVariable);
-        builder.append ("]");
         return builder.toString ();
     }
 

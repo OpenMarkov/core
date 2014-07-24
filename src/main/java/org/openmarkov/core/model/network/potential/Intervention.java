@@ -1,6 +1,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -19,18 +20,12 @@ public class Intervention extends TreeADDPotential {
 
 	// Constructors
 	/**
-	 * @param variables
+	 * Creates an intervention without branches. 
+	 * @param topVariable
+	 * @param state
 	 */
-	public Intervention(List<Variable> variables) {
-		super(variables, PotentialRole.INTERVENTION);
-	}
-
-	/**
-	 * Creates an intervention with no branches.
-	 * @param topVariable. <code>Variable</code>
-	 */
-	public Intervention(List<Variable> variables, Variable topVariable) {
-		super(variables, topVariable, PotentialRole.INTERVENTION);
+	public Intervention(Variable topVariable) {
+		super(null, topVariable, PotentialRole.INTERVENTION);
 	}
 	
 	/**
@@ -39,11 +34,9 @@ public class Intervention extends TreeADDPotential {
 	 * @param topVariable. <code>Variable</code>
 	 * @param states. <code>List</code> of <code>State</code>
 	 * @param interventions. <code>List</code> of <code>Intervention</code>
-	 * @param variables. Potential variables <code>List</code> of <code>Variable</code>
 	 */
-	public Intervention(Variable topVariable, List<State> states, 
-			List<Intervention> interventions, List<Variable> variables) {
-		super(variables, topVariable, PotentialRole.INTERVENTION);
+	public Intervention(Variable topVariable, List<State> states, List<Intervention> interventions) {
+		super(null, topVariable, PotentialRole.INTERVENTION);
 		for (int i = 0; i < states.size(); i++) {
 			List<State> branchStates = new ArrayList<State>(1);
 			branchStates.add(states.get(i));
@@ -58,15 +51,48 @@ public class Intervention extends TreeADDPotential {
 	}
 	
 	/**
+	 * Creates an intervention with only one branch containing several states.
+	 * @param topVariable
+	 * @param states
+	 */
+	public Intervention(Variable topVariable, State... states) {
+		super(null, topVariable, PotentialRole.INTERVENTION);
+		List<State> branchStates = Arrays.asList(states);
+		addBranch(new TreeADDBranch(branchStates, topVariable, null));
+	}
+	
+	/**
+	 * Creates an intervention with only one branch containing several states. 
+	 * @param topVariable
+	 * @param states
+	 */
+	public Intervention(Variable topVariable, List<State> states) {
+		super(null, topVariable, PotentialRole.INTERVENTION);
+		List<State> branchStates = new ArrayList<State>(states.size());
+		branchStates.addAll(states);
+		addBranch(new TreeADDBranch(branchStates, topVariable, null));
+	}
+	
+	/**
+	 * Creates an intervention with only one branch and one state. 
+	 * @param topVariable
+	 * @param state
+	 */
+	public Intervention(Variable topVariable, State state) {
+		super(null, topVariable, PotentialRole.INTERVENTION);
+		List<State> branchStates = new ArrayList<State>();
+		branchStates.add(state);
+		addBranch(new TreeADDBranch(branchStates, topVariable, null));
+	}
+	
+	/**
 	 * Creates an intervention with only one branch. 
 	 * @param topVariable
 	 * @param states
 	 * @param intervention
-	 * @param variables
 	 */
-	public Intervention(Variable topVariable, List<State> states,
-			Intervention intervention, List<Variable> variables) {
-		super(variables, topVariable, PotentialRole.INTERVENTION);
+	public Intervention(Variable topVariable, List<State> states, Intervention intervention) {
+		super(null, topVariable, PotentialRole.INTERVENTION);
 		List<State> branchStates = new ArrayList<State>(states.size());
 		branchStates.addAll(states);
 		addBranch(new TreeADDBranch(branchStates, topVariable, intervention, variables));
@@ -74,14 +100,12 @@ public class Intervention extends TreeADDPotential {
 	
 	/**
 	 * Creates an intervention with a continuous variable with a partitioned interval.
+	 * The partitioned interval must have the same number of sub-intervals than interventions.
 	 * @param topVariable
 	 * @param interventions
-	 * @param variables
 	 */
-	public Intervention(Variable topVariable, List<Intervention> interventions, 
-			List<Variable> variables) {
-		super(variables, topVariable, PotentialRole.INTERVENTION);
-		PartitionedInterval partitionedInterval = topVariable.getPartitionedInterval();
+	public Intervention(Variable topVariable, PartitionedInterval partitionedInterval, List<Intervention> interventions) {
+		super(null, topVariable, PotentialRole.INTERVENTION);
 		double[] limits = partitionedInterval.getLimits();
 		for (int i = 0; i < limits.length - 1; i++) {
 			addBranch(new TreeADDBranch(
@@ -119,7 +143,7 @@ public class Intervention extends TreeADDPotential {
 				if (equalInterventions(selectedInterventions.toArray(new Intervention[selectedInterventions.size()]))) {
 					intervention = selectedInterventions.get(0);
 				} else {
-					intervention = new Intervention(chanceVariable, selectedStates, selectedInterventions, null);
+					intervention = new Intervention(chanceVariable, selectedStates, selectedInterventions);
 				}
 			}
 		}
@@ -151,15 +175,13 @@ public class Intervention extends TreeADDPotential {
 	 * @param decisionVariable
 	 * @param utilities
 	 * @param interventions
-	 * @return
+	 * @return Optimal intervention
 	 */
 	public static Intervention optimalIntervention(Variable decisionVariable, 
 			double[] utilities, Intervention[] interventions) {
-		
 		State[] states = decisionVariable.getStates();
 		List<State> optimalStates = new ArrayList<State>();
 		List<Intervention> optimalInterventions = new ArrayList<Intervention>();
-		Set<Variable> variables = new HashSet<Variable>(); //???
 		double max = Double.NEGATIVE_INFINITY;
 		Intervention optimalIntervention = null;
 		for (int i = 0; i < states.length; i++) {
@@ -169,27 +191,23 @@ public class Intervention extends TreeADDPotential {
 				optimalStates.add(states[i]);
 				optimalInterventions.clear();
 				optimalInterventions.add(interventions[i]);
-				variables.clear();
 				if (interventions[i] != null) {
 					optimalIntervention = interventions[i];
-					variables.addAll(interventions[i].getVariables());
 				}
 			} else if (utilities[i] == max) {  // there is a tie
-				// TODO deal properly with ties
 				optimalStates.add(states[i]);
 				if (interventions[i] != null) {
 					if (!optimalInterventions.equals(interventions[i])) {
 						optimalInterventions.add(interventions[i]);
 					}
-					variables.addAll(interventions[i].getVariables());
 				}
 			}
 		}
 		Intervention intervention = null;
 		if (optimalInterventions.size() > 1) {
-			intervention = new Intervention(decisionVariable, optimalStates, optimalInterventions, null);
+			intervention = new Intervention(decisionVariable, optimalStates, optimalInterventions);
 		} else {
-			intervention = new Intervention(decisionVariable, optimalStates, optimalIntervention, null);
+			intervention = new Intervention(decisionVariable, optimalStates, optimalIntervention);
 		}
     	return intervention;
 	}
@@ -198,70 +216,61 @@ public class Intervention extends TreeADDPotential {
 	 * @param intervention
 	 */
 	public Intervention concatenate(Intervention intervention) {
-		Intervention resultIntervention;
-		if (intervention == null) {
-			resultIntervention = this;
-		} else {
-			// create a copy of this intervention
-			resultIntervention = new Intervention(variables, topVariable);
-			// add branches to resultIntervention 
-			Intervention oldIntervention;
-			for (TreeADDBranch oldBranch : branches) {
-				oldIntervention = (Intervention)oldBranch.getPotential();
-				if (oldIntervention == null) {
-					resultIntervention.addBranch(new TreeADDBranch(oldBranch.getStates(), 
-							topVariable, intervention, oldBranch.getParentVariables()));
-				} else {
-					resultIntervention.addBranch(new TreeADDBranch(oldBranch.getStates(), 
-							topVariable, oldIntervention.concatenate(intervention), oldBranch.getParentVariables()));
-				}
+		// add branches to resultIntervention 
+		Intervention oldIntervention;
+		for (TreeADDBranch branch : branches) {
+			oldIntervention = (Intervention)branch.getPotential();
+			if (oldIntervention == null) {
+				branch.setPotential(intervention);
+			} else {
+				((Intervention)branch.getPotential()).concatenate(intervention);
 			}
 		}
-		return resultIntervention;
+		return this;
 	}
 	
-	/**
-	 * @param state
-	 * @return The intervention corresponding to a state
-	 */
-	private Intervention getInterventionChild(State state) {
-		Intervention child = null;
-		boolean found = false;
-		for (int i = 0; i < branches.size() && !found; i++) {
-			TreeADDBranch auxBranch = branches.get(0);
-			if (auxBranch.getBranchStates().contains(state)) {
-				found = true;
-				child = getInterventionBranch(auxBranch);
-			}
-		}
-		return child;
-	}
-	
-	/**
-	 * @param variable
-	 * @param state
-	 * @return Projects an Intervention over an assignment 'variable' = 'state'
-	 */
-	private Intervention project(Variable variable, State state) {
-		Intervention projection = null;
-
-		if (this.topVariable == variable) {
-			projection = getInterventionChild(state);
-		} else {
-			if (branches != null) {
-				projection = new Intervention(this.getVariables());
-				for (int i = 0; i < branches.size(); i++) {
-					TreeADDBranch auxBranch = branches.get(i);
-					TreeADDBranch auxBranchCopy = new TreeADDBranch(auxBranch.getBranchStates(),auxBranch.getRootVariable(), auxBranch.getParentVariables());
-					Intervention auxProjection = getInterventionBranch(auxBranch).project(variable, state);
-					auxBranchCopy.setPotential(auxProjection);
-					projection.addBranch(auxBranchCopy);
-				}
-			}
-		}
-		return projection;
-	}
-	
+//	/**
+//	 * @param state
+//	 * @return The intervention corresponding to a state
+//	 */
+//	private Intervention getInterventionChild(State state) {
+//		Intervention child = null;
+//		boolean found = false;
+//		for (int i = 0; i < branches.size() && !found; i++) {
+//			TreeADDBranch auxBranch = branches.get(0);
+//			if (auxBranch.getBranchStates().contains(state)) {
+//				found = true;
+//				child = getInterventionBranch(auxBranch);
+//			}
+//		}
+//		return child;
+//	}
+//	
+//	/**
+//	 * @param variable
+//	 * @param state
+//	 * @return Projects an Intervention over an assignment 'variable' = 'state'
+//	 */
+//	private Intervention project(Variable variable, State state) {
+//		Intervention projection = null;
+//
+//		if (this.topVariable == variable) {
+//			projection = getInterventionChild(state);
+//		} else {
+//			if (branches != null) {
+//				projection = new Intervention(this.getVariables());
+//				for (int i = 0; i < branches.size(); i++) {
+//					TreeADDBranch auxBranch = branches.get(i);
+//					TreeADDBranch auxBranchCopy = new TreeADDBranch(auxBranch.getBranchStates(),auxBranch.getRootVariable(), auxBranch.getParentVariables());
+//					Intervention auxProjection = getInterventionBranch(auxBranch).project(variable, state);
+//					auxBranchCopy.setPotential(auxProjection);
+//					projection.addBranch(auxBranchCopy);
+//				}
+//			}
+//		}
+//		return projection;
+//	}
+//	
 	 /**
      * @param intervention. <code>Intervention</code>
      * @return True when <code>this</code> and <code>intervention</code> are equals.
@@ -322,34 +331,34 @@ public class Intervention extends TreeADDPotential {
     	return states;
     }
     
-	/**
-	 * @param intervention
-	 * @return True if this and 'intervention' are equal. Note that the variables can be in different order in the paths
-	 */
-	public boolean equals2(Intervention intervention) {
-		boolean areEquals = true;
-		if (branches != null) {
-			for (int i = 0; i < branches.size() && areEquals; i++) {
-				TreeADDBranch auxBranch = branches.get(i);
-				Intervention auxInterventionBranch = getInterventionBranch(auxBranch);
-				for (State state : auxBranch.getStates()) {
-					if (topVariable==intervention.topVariable){
-						areEquals = intervention.hasBranchWithState(state);
-					}
-					if (areEquals){
-						Intervention auxIntervState = intervention.project(topVariable, state);
-						areEquals = ((auxInterventionBranch==null)&&(auxIntervState==null)) 
-								|| ((auxInterventionBranch!=null)&&auxInterventionBranch.equals(intervention.project(topVariable, state)));
-					}					
-				}
-			}
-		} else {
-			areEquals = intervention.branches == null;
-		}
-		return areEquals;
-	}
-		
-		
+//	/**
+//	 * @param intervention
+//	 * @return True if this and 'intervention' are equal. Note that the variables can be in different order in the paths
+//	 */
+//	public boolean equals2(Intervention intervention) {
+//		boolean areEquals = true;
+//		if (branches != null) {
+//			for (int i = 0; i < branches.size() && areEquals; i++) {
+//				TreeADDBranch auxBranch = branches.get(i);
+//				Intervention auxInterventionBranch = getInterventionBranch(auxBranch);
+//				for (State state : auxBranch.getStates()) {
+//					if (topVariable==intervention.topVariable){
+//						areEquals = intervention.hasBranchWithState(state);
+//					}
+//					if (areEquals){
+//						Intervention auxIntervState = intervention.project(topVariable, state);
+//						areEquals = ((auxInterventionBranch==null)&&(auxIntervState==null)) 
+//								|| ((auxInterventionBranch!=null)&&auxInterventionBranch.equals(intervention.project(topVariable, state)));
+//					}					
+//				}
+//			}
+//		} else {
+//			areEquals = intervention.branches == null;
+//		}
+//		return areEquals;
+//	}
+//		
+//		
 	/**
 	 * @param state
 	 * @return true if one of its branches children contains 'state'

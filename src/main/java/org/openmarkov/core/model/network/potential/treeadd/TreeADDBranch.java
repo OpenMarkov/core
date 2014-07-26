@@ -338,7 +338,12 @@ public class TreeADDBranch {
     @Override
     public String toString () {
         StringBuilder builder = new StringBuilder ();
-        builder.append ("TreeADDBranch ");
+        builder.append ("TreeADDBranch");
+        builder.append (", rootVariable=");
+        builder.append (rootVariable);
+        builder.append (" States=");
+        builder.append (states);
+        builder.append(" ");
         if (potential == null) {
         	builder.append("potential: null");
     		builder.append("\n");
@@ -346,29 +351,35 @@ public class TreeADDBranch {
         	builder.append("potential.class=");
             builder.append(potential.getClass().toString());
             List<Variable> potentialVariables = potential.getVariables();
-            builder.append(" ");
-            builder.append(potentialVariables.size());
-            builder.append(" variables(");
-            for (int i = 0; i < potentialVariables.size(); i++) {
-        		builder.append(potentialVariables.get(i));
-            	if (i < potentialVariables.size() - 1) {
-            		builder.append(", ");
-            	} else {
-            		builder.append(")");
-            		builder.append("\n");
+            if (potentialVariables == null || potentialVariables.size() == 0) {
+                builder.append("No variables");
+            } else {
+            	builder.append(" ");
+            	builder.append(potentialVariables.size());
+            	builder.append(" variables(");
+            	for (int i = 0; i < potentialVariables.size(); i++) {
+            		builder.append(potentialVariables.get(i));
+            		if (i < potentialVariables.size() - 1) {
+            			builder.append(", ");
+            		} else {
+            			builder.append(")");
+            			builder.append("\n");
+            		}
             	}
             }
         }
-        builder.append ("states=");
-        builder.append (states);
-        builder.append (", parentVariables=");
-        builder.append (parentVariables);
-        builder.append (", thresholdMin=");
-        builder.append (lowerBound);
-        builder.append (", thresholdMax=");
-        builder.append (upperBound);
-        builder.append (", rootVariable=");
-        builder.append (rootVariable);
+        if (parentVariables == null || parentVariables.size() == 0) {
+        	builder.append ("No parentVariables=");
+        } else {
+        	builder.append ("ParentVariables=");
+        	builder.append (parentVariables);
+        }
+        if (lowerBound != null && upperBound != null) {
+        	builder.append (", thresholdMin=");
+        	builder.append (lowerBound);
+        	builder.append (", thresholdMax=");
+        	builder.append (upperBound);
+        }
         return builder.toString ();
     }
 

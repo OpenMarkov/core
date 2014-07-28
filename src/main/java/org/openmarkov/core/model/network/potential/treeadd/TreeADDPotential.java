@@ -713,40 +713,44 @@ public class TreeADDPotential extends Potential {
 			}
 		}
 		if (branches != null && branches.size() > 0) {
-			strBuffer.append("\n");
 			for (TreeADDBranch branch : branches) {
-				strBuffer.append(indent);
-				strBuffer.append("Branch: ");
-				List<State> states = branch.getBranchStates();
-				int i = 0;
-				if(states != null)
-				{
-					int numStates = states.size();
-					for (State state : states) {
-						strBuffer.append(state.getName());
-						if (i++ == numStates - 1) {
-							strBuffer.append("\n");
-						} else {
-							strBuffer.append(",");
-						}
-					}
-				}
-				Potential potential = branch.getPotential();
-				if(potential !=null)
-				{
-					if (potential.getClass() == TreeADDPotential.class) {
-						TreeADDPotential treeADDPotential = (TreeADDPotential)potential;
-						treeADDPotential.setIndentLevel(indentLevel + indentIncrement);
-						strBuffer.append(treeADDPotential);
-					} else {
-						strBuffer.append(indent);
-						for (i = 0; i < indentIncrement; i++) {
-							strBuffer.append(" ");
-						}
-						strBuffer.append(potential);
-					}
-				}
+				strBuffer.append("\n");
+				strBuffer.append(branch);
 			}
+//			strBuffer.append("\n");
+//			for (TreeADDBranch branch : branches) {
+//				strBuffer.append(indent);
+//				strBuffer.append("Branch: ");
+//				List<State> states = branch.getBranchStates();
+//				int i = 0;
+//				if(states != null)
+//				{
+//					int numStates = states.size();
+//					for (State state : states) {
+//						strBuffer.append(state.getName());
+//						if (i++ == numStates - 1) {
+//							strBuffer.append("\n");
+//						} else {
+//							strBuffer.append(",");
+//						}
+//					}
+//				}
+//				Potential potential = branch.getPotential();
+//				if(potential != null)
+//				{
+//					if (potential.getClass() == TreeADDPotential.class) {
+//						TreeADDPotential treeADDPotential = (TreeADDPotential)potential;
+//						treeADDPotential.setIndentLevel(indentLevel + indentIncrement);
+//						strBuffer.append(treeADDPotential);
+//					} else {
+//						strBuffer.append(indent);
+//						for (i = 0; i < indentIncrement; i++) {
+//							strBuffer.append(" ");
+//						}
+//						strBuffer.append(potential);
+//					}
+//				}
+//			}
 		} else {
 			strBuffer.append(" - No branches.");
 		}

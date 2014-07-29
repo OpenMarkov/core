@@ -108,6 +108,13 @@ public class GTablePotential<Element> extends TablePotential {
 			// writes each configuration and its value
 			int[] configuration = null;
 			int numElementsTable = elementTable.size();
+			if (numElementsTable == 0) {
+				buffer.append("Empty potential.\n");
+			} else {
+				buffer.append("Number of elements : ");
+				buffer.append(numElementsTable);
+				buffer.append("\n");
+			}
 			for (int i = 0; i < numElementsTable; i++) {
 				buffer.append("If ");
 				if (dimensions != null) {
@@ -124,7 +131,6 @@ public class GTablePotential<Element> extends TablePotential {
 					}
 				}
 				buffer.append(elementTable.get(i).toString());
-				buffer.append("\n");
 			}
 		}
 		return buffer.toString();

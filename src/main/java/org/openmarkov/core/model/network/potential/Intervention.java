@@ -2,6 +2,7 @@ package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -37,6 +38,34 @@ public class Intervention extends TreeADDPotential {
 	 */
 	public Intervention(Variable topVariable, List<State> states, List<Intervention> interventions) {
 		super(null, topVariable, PotentialRole.INTERVENTION);
+//		List<Intervention> distinctInterventions = new ArrayList<Intervention>();
+//		Map<Intervention, Set<State>> correspondingStates = new HashMap<Intervention, Set<State>>();
+//		int numInterventions = interventions.size();
+//		for (int i = 0; i < numInterventions; i++) {
+//			Intervention intervention = interventions.get(i);
+//			int numDistinctInterventions = distinctInterventions.size();
+//			boolean noMatch = true;
+//			Intervention distinctIntervention = null;
+//			State correspondingState = null;
+//			for (int j = 0; j < numDistinctInterventions && noMatch; j++) {
+//				distinctIntervention = distinctInterventions.get(j);
+//				noMatch &= !intervention.equals(distinctIntervention);
+//				correspondingState = (!noMatch) ? states.get(i) : correspondingState;
+//			}
+//			if (noMatch) {
+//				distinctInterventions.add(intervention);
+//				Set<State> statesIntervention = new HashSet<State>();
+//				statesIntervention.add(states.get(i));
+//				correspondingStates.put(intervention, statesIntervention);
+//			} else {
+//				if (distinctIntervention != null) {
+//					correspondingStates.get(distinctIntervention).add(correspondingState);
+//				}
+//			}
+//		}
+		// TODO Finish and remove next lines
+		
+		
 		for (int i = 0; i < states.size(); i++) {
 			List<State> branchStates = new ArrayList<State>(1);
 			branchStates.add(states.get(i));
@@ -123,8 +152,8 @@ public class Intervention extends TreeADDPotential {
 	 */
 	public static Intervention averageOfInterventions(Variable chanceVariable, 
 			double[] probabilities, Intervention[] interventions) {
-		Intervention intervention;
 		State[] states = chanceVariable.getStates();
+		
 		// Select interventions and states whose probability is greater than 0.0.
 		List<Intervention> selectedInterventions = new ArrayList<Intervention>();
 		List<State> selectedStates = new ArrayList<State>();
@@ -134,36 +163,39 @@ public class Intervention extends TreeADDPotential {
 				selectedStates.add(states[i]);
 			}
 		}
-		if (selectedInterventions.size() == 0) {
+		
+		Intervention intervention;
+		if (selectedInterventions.size() == 0) { // All probabilities == 0.0
 			intervention = null;
 		} else {
-			if (selectedInterventions.size() == 1) {
+			if (selectedInterventions.size() == 1) { // Only one intervention with probability != 0.0
 				intervention = selectedInterventions.get(0);
-			} else {
+			} else { // More than one intervention with probability != 0.0
 				if (equalInterventions(selectedInterventions.toArray(new Intervention[selectedInterventions.size()]))) {
-					intervention = selectedInterventions.get(0);
+					intervention = selectedInterventions.get(0); // All interventions are equals
 				} else {
 					intervention = new Intervention(chanceVariable, selectedStates, selectedInterventions);
 				}
 			}
 		}
+		
 		return intervention;
 	}
 	
+	/**
+	 * @param interventions
+	 * @return <code>true</code> when all the interventions are equal.
+	 */
 	private static boolean equalInterventions(Intervention[] interventions) {
 		boolean equalInterventions = true;
 		if (interventions != null && interventions.length > 1) {
 			if (interventions[0] == null) {
 				for (int i = 1; i < interventions.length && equalInterventions; i++) {
-					if (interventions[i] != null) {
-						equalInterventions = false;
-					}
+					equalInterventions &= interventions[i] == null;
 				}
 			} else {
 				for (int i = 1;  i < interventions.length && equalInterventions; i++) {
-					if (interventions[i] == null || !interventions[0].equals(interventions[i])) {
-						equalInterventions = false;
-					}
+					equalInterventions &= interventions[0].equals(interventions[i]);
 				}
 			}
 		}
@@ -245,7 +277,8 @@ public class Intervention extends TreeADDPotential {
                 TreeADDBranch branch = branches.get(i);
                 // Get the corresponding branch to "this.branches.get(i)" in the other "intervention"
                 List<State> states = branch.getStates();
-                TreeADDBranch interventionBranch = intervention.getBranch(states.get(0)); // A branch always has at least one state
+                // A branch always has at least one state
+                TreeADDBranch interventionBranch = intervention.getBranch(states.get(0)); 
                 areEqual &= interventionBranch != null;
                 // Compare states
                 if (areEqual) {

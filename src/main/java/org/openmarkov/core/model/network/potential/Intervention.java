@@ -332,6 +332,21 @@ public class Intervention extends TreeADDPotential {
 		return null;
 	}
 	
+	public String toString() {
+		StringBuffer strBuffer = new StringBuffer();
+		strBuffer.append(indent);
+		strBuffer.append(topVariable.getName());
+		// Print variables
+		if (branches != null && branches.size() > 0) {
+			strBuffer.append("\n");
+			for (TreeADDBranch branch : branches) {
+				strBuffer.append(branch);
+			}
+		}
+		return strBuffer.toString();
+	}
+
+	
 	public String toStringForGraphviz(ProbNet net) {
 		
 		String content = null;

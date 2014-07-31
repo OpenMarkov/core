@@ -7,6 +7,7 @@ import java.util.List;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 
 /**
@@ -351,17 +352,9 @@ public class TreeADDBranch {
         builder.append(". States = ");
         builder.append(states);
         builder.append(". ");
-        if (potential == null) {
-        	builder.append("Object: null ");
-    		builder.append("\n");
-        } else {
-        	builder.append("Object = ");
-            builder.append(potential.getClass().getSimpleName());
-        	builder.append(" ");
+        if (potential != null) {
             List<Variable> potentialVariables = potential.getVariables();
-            if (potentialVariables == null || potentialVariables.size() == 0) {
-                builder.append("No vars.");
-            } else {
+            if (potentialVariables != null && potentialVariables.size() > 0) {
             	builder.append(" ");
             	builder.append(potentialVariables.size());
             	builder.append(" variables(");
@@ -375,7 +368,7 @@ public class TreeADDBranch {
             	}
             }
         }
-        if (parentVariables != null && parentVariables.size() > 0) {
+        if (parentVariables != null && parentVariables.size() > 0 && potential.getClass() != Intervention.class) {
 			builder.append("\n");
 			builder.append(indent);
         	builder.append("ParentVariables = ");
@@ -391,6 +384,13 @@ public class TreeADDBranch {
         	builder.append(")");
         }
 		builder.append("\n");
+		if (potential != null && potential.getClass() == Intervention.class) {
+			List<TreeADDBranch> branches = ((Intervention)potential).getBranches();
+			for (TreeADDBranch branch : branches) {
+				branch.setIndent(indent + "    ");
+				builder.append(branch.toString());
+			}
+		}
         return builder.toString ();
     }
 

@@ -30,52 +30,49 @@ public class Intervention extends TreeADDPotential {
 	}
 	
 	/**
-	 * Creates an intervention having one state in each branch. 
+	 * Creates an intervention having as much states in each branch as equal interventions. 
 	 * The number of states and interventions must be the same.
 	 * @param topVariable. <code>Variable</code>
-	 * @param states. <code>List</code> of <code>State</code>
-	 * @param interventions. <code>List</code> of <code>Intervention</code>
+	 * @param states. One state for each intervention in the list. <code>List</code> of <code>State</code>
+	 * @param interventions. It is possible that this list contains some equal interventions.
+	 *  <code>List</code> of <code>Intervention</code>
 	 */
 	public Intervention(Variable topVariable, List<State> states, List<Intervention> interventions) {
 		super(null, topVariable, PotentialRole.INTERVENTION);
-//		List<Intervention> distinctInterventions = new ArrayList<Intervention>();
-//		Map<Intervention, Set<State>> correspondingStates = new HashMap<Intervention, Set<State>>();
-//		int numInterventions = interventions.size();
-//		for (int i = 0; i < numInterventions; i++) {
-//			Intervention intervention = interventions.get(i);
-//			int numDistinctInterventions = distinctInterventions.size();
-//			boolean noMatch = true;
-//			Intervention distinctIntervention = null;
-//			State correspondingState = null;
-//			for (int j = 0; j < numDistinctInterventions && noMatch; j++) {
-//				distinctIntervention = distinctInterventions.get(j);
-//				noMatch &= !intervention.equals(distinctIntervention);
-//				correspondingState = (!noMatch) ? states.get(i) : correspondingState;
-//			}
-//			if (noMatch) {
-//				distinctInterventions.add(intervention);
-//				Set<State> statesIntervention = new HashSet<State>();
-//				statesIntervention.add(states.get(i));
-//				correspondingStates.put(intervention, statesIntervention);
-//			} else {
-//				if (distinctIntervention != null) {
-//					correspondingStates.get(distinctIntervention).add(correspondingState);
-//				}
-//			}
-//		}
-		// TODO Finish and remove next lines
-		
-		
-		for (int i = 0; i < states.size(); i++) {
-			List<State> branchStates = new ArrayList<State>(1);
-			branchStates.add(states.get(i));
-			TreeADDBranch branch = null;
-			if (interventions == null || i >= interventions.size() || interventions.get(i) == null) {
-				branch = new TreeADDBranch(branchStates, topVariable, null);
-			} else {
-				branch = new TreeADDBranch(branchStates, topVariable, interventions.get(i), null);
+		List<Intervention> distinctInterventions = new ArrayList<Intervention>();
+		Map<Intervention, Set<State>> correspondingStates = new HashMap<Intervention, Set<State>>();
+		int numInterventions = interventions.size();
+		for (int i = 0; i < numInterventions; i++) {
+			Intervention intervention = interventions.get(i);
+			int numDistinctInterventions = distinctInterventions.size();
+			boolean noMatch = true;
+			Intervention distinctIntervention = null;
+			State correspondingState = null;
+			
+			// See if there is any intervention equal to "intervention" in "distinctInterventions"
+			for (int j = 0; j < numDistinctInterventions && noMatch; j++) {
+				distinctIntervention = distinctInterventions.get(j);
+				noMatch &= !(distinctIntervention == intervention || distinctIntervention.equals(intervention));
+				correspondingState = (!noMatch) ? states.get(i) : correspondingState;
 			}
-			this.addBranch(branch);
+			if (noMatch) { // If no, add it to distinctInterventions and create a set of states in corresponding states
+				distinctInterventions.add(intervention);
+				Set<State> statesIntervention = new HashSet<State>();
+				statesIntervention.add(states.get(i));
+				correspondingStates.put(intervention, statesIntervention);
+			} else { // Intervention is equal to a previous intervention. Add the state to the corresponding states set
+				if (distinctIntervention != null) {
+					correspondingStates.get(distinctIntervention).add(correspondingState);
+				}
+			}
+		}
+		
+		// Create branches
+		for (Intervention intervention : distinctInterventions) {
+			ArrayList<State> statesOfIntervention = new ArrayList<State>(correspondingStates.get(intervention));
+			if (intervention != null) {
+				addBranch(new TreeADDBranch(statesOfIntervention, topVariable, intervention, null));
+			}
 		}
 	}
 	
@@ -103,18 +100,6 @@ public class Intervention extends TreeADDPotential {
 	}
 	
 	/**
-	 * Creates an intervention with only one branch and one state. 
-	 * @param topVariable
-	 * @param state
-	 */
-	public Intervention(Variable topVariable, State state) {
-		super(null, topVariable, PotentialRole.INTERVENTION);
-		List<State> branchStates = new ArrayList<State>();
-		branchStates.add(state);
-		addBranch(new TreeADDBranch(branchStates, topVariable, null));
-	}
-	
-	/**
 	 * Creates an intervention with only one branch. 
 	 * @param topVariable
 	 * @param states
@@ -124,7 +109,7 @@ public class Intervention extends TreeADDPotential {
 		super(null, topVariable, PotentialRole.INTERVENTION);
 		List<State> branchStates = new ArrayList<State>(states.size());
 		branchStates.addAll(states);
-		addBranch(new TreeADDBranch(branchStates, topVariable, intervention, variables));
+		addBranch(new TreeADDBranch(branchStates, topVariable, intervention, null));
 	}
 	
 	/**
@@ -139,7 +124,7 @@ public class Intervention extends TreeADDPotential {
 		for (int i = 0; i < limits.length - 1; i++) {
 			addBranch(new TreeADDBranch(
 					new Threshold(limits[i], false), new Threshold(limits[i + 1], true), 
-					topVariable, interventions.get(i), variables));
+					topVariable, interventions.get(i), null));
 		}
 	}
 
@@ -183,26 +168,6 @@ public class Intervention extends TreeADDPotential {
 	}
 	
 	/**
-	 * @param interventions
-	 * @return <code>true</code> when all the interventions are equal.
-	 */
-	private static boolean equalInterventions(Intervention[] interventions) {
-		boolean equalInterventions = true;
-		if (interventions != null && interventions.length > 1) {
-			if (interventions[0] == null) {
-				for (int i = 1; i < interventions.length && equalInterventions; i++) {
-					equalInterventions &= interventions[i] == null;
-				}
-			} else {
-				for (int i = 1;  i < interventions.length && equalInterventions; i++) {
-					equalInterventions &= interventions[0].equals(interventions[i]);
-				}
-			}
-		}
-		return equalInterventions;
-	}
-
-	/**
 	 * Creates an intervention 
 	 * @param decisionVariable
 	 * @param utilities
@@ -244,11 +209,12 @@ public class Intervention extends TreeADDPotential {
     	return intervention;
 	}
 
-	/**
+	/** 
+	 * Add <code>Intervention</code> to edges of this intervention
 	 * @param intervention
 	 */
 	public Intervention concatenate(Intervention intervention) {
-		// add branches to resultIntervention 
+		//  
 		Intervention oldIntervention;
 		for (TreeADDBranch branch : branches) {
 			oldIntervention = (Intervention)branch.getPotential();
@@ -300,8 +266,28 @@ public class Intervention extends TreeADDPotential {
         return areEqual;
     }	
     
+	/**
+	 * @param interventions
+	 * @return <code>true</code> when all the interventions are equal.
+	 */
+	private static boolean equalInterventions(Intervention[] interventions) {
+		boolean equalInterventions = true;
+		if (interventions != null && interventions.length > 1) {
+			if (interventions[0] == null) {
+				for (int i = 1; i < interventions.length && equalInterventions; i++) {
+					equalInterventions &= interventions[i] == null;
+				}
+			} else {
+				for (int i = 1;  i < interventions.length && equalInterventions; i++) {
+					equalInterventions &= interventions[0].equals(interventions[i]);
+				}
+			}
+		}
+		return equalInterventions;
+	}
+
     /**
-     * @return List of interventions contained in branches.
+     * @return List of interventions contained in branches if they are not null.
      */
     public List<Intervention> getNextInterventions() {
     	List<Intervention> nextInterventions = new ArrayList<Intervention>();
@@ -314,6 +300,9 @@ public class Intervention extends TreeADDPotential {
     	return nextInterventions;
     }
 	
+    /**
+     * @return <code>List</code> of <code>State</code>
+     */
     public List<State> getNonZeroProbabilityStates() {
     	List<State> states = new ArrayList<State>();
     	for (TreeADDBranch branch : branches) {
@@ -334,7 +323,7 @@ public class Intervention extends TreeADDPotential {
 	 * @param state
 	 * @return branch that contains state or null
 	 */
-	private TreeADDBranch getBranch(State state) {
+	public TreeADDBranch getBranch(State state) {
 		for (TreeADDBranch branch : branches) {
 			if (branch.getBranchStates().contains(state)) {
 				return branch;

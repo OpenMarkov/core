@@ -87,4 +87,72 @@ public class InterventionTest {
 		assertEquals(decisionVar, testIntervention2.getRootVariable());
 	}
 	
+	/**
+	 * Simple test for equals
+	 */
+	@Test
+	public void testEquals1() {
+		// Create several interventions with small differences. All of them are different
+		Intervention[] testInterventions0 = new Intervention[5];
+		testInterventions0[0] = new Intervention(chanceVar0);
+		
+		testInterventions0[1] = new Intervention(chanceVar0);
+		List<State> statesTestIntervention1 = null;
+		try {
+			statesTestIntervention1 = Arrays.asList(chanceVar0.getState("chance0"));
+		} catch (InvalidStateException e) {
+			fail(e.getMessage());
+		}
+		testInterventions0[1].addBranch(new TreeADDBranch(statesTestIntervention1, chanceVar0, intervention0, null));
+		
+		testInterventions0[2] = new Intervention(chanceVar0);
+		List<State> statesTestIntervention2 = null;
+		try {
+			statesTestIntervention2 = Arrays.asList(chanceVar0.getState("chance1"));
+		} catch (InvalidStateException e) {
+			fail(e.getMessage());
+		}
+		testInterventions0[2].addBranch(new TreeADDBranch(statesTestIntervention2, chanceVar0, intervention0, null));
+		
+		testInterventions0[3] = new Intervention(chanceVar1);
+		testInterventions0[3].addBranch(new TreeADDBranch(statesTestIntervention1, chanceVar1, intervention0, null));
+		
+		testInterventions0[4] = new Intervention(chanceVar0);
+		testInterventions0[4].addBranch(new TreeADDBranch(statesTestIntervention1, chanceVar0, intervention1, null));
+		
+		// Test begins here
+		for (int i = 0; i < testInterventions0.length - 1; i++) {
+			for (int j = i + 1; j < testInterventions0.length; j++) {
+				if (testInterventions0[i].equals(testInterventions0[j])) {
+					System.out.println("Aqui");
+				}
+				assertFalse(testInterventions0[i].equals(testInterventions0[j]));
+			}
+		}
+		
+		// Create the same interventions with different objects
+		Intervention[] testInterventions1 = new Intervention[5];
+		testInterventions1[0] = new Intervention(chanceVar0);
+		
+		testInterventions1[1] = new Intervention(chanceVar0);
+		testInterventions1[1].addBranch(new TreeADDBranch(statesTestIntervention1, chanceVar0, intervention0, null));
+		
+		testInterventions1[2] = new Intervention(chanceVar0);
+		testInterventions1[2].addBranch(new TreeADDBranch(statesTestIntervention2, chanceVar0, intervention0, null));
+		
+		testInterventions1[3] = new Intervention(chanceVar1);
+		testInterventions1[3].addBranch(new TreeADDBranch(statesTestIntervention1, chanceVar1, intervention0, null));
+		
+		testInterventions1[4] = new Intervention(chanceVar0);
+		testInterventions1[4].addBranch(new TreeADDBranch(statesTestIntervention1, chanceVar0, intervention1, null));
+
+		// Test begins here
+		for (int i = 0; i < testInterventions1.length; i++) {
+			if (!testInterventions0[i].equals(testInterventions1[i])) {
+				System.out.println("Aqui");
+			}
+			assertTrue(testInterventions0[i].equals(testInterventions1[i]));
+		}
+	}
+	
 }

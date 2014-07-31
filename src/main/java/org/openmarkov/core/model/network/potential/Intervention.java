@@ -254,8 +254,8 @@ public class Intervention extends TreeADDPotential {
                 }
                 // Compare potentials
                 if (areEqual) {
-                    Potential interventionBranchPotential = interventionBranch.getPotential();
-                    Potential branchPotential = branch.getPotential();
+                    Intervention interventionBranchPotential = (Intervention)interventionBranch.getPotential();
+                    Intervention branchPotential = (Intervention)branch.getPotential();
                     areEqual &= !((interventionBranchPotential == null && branchPotential != null) ||
                             (interventionBranchPotential != null && branchPotential == null));
                     // Recursive part

@@ -48,6 +48,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(net);
 		Double meuEvaluation = algorithm.getGlobalUtility().values[0];
 		assertEquals(expectedMEU,meuEvaluation, maxError);
+		assertNotNull(algorithm.getOptimalStrategy());
 		//testScenariosIntervention(net,algorithm);
 	}
 	

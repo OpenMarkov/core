@@ -47,8 +47,38 @@ public class DANFactory extends NetsFactory {
 		return buildDecideTreatmentDAN(NamesNetworks.BLIND_TREATMENT_DAN,false);
 	}
 	
-	public static ProbNet buildPerfectInformationTreatmentDAN() throws NodeNotFoundException {
-		return buildDecideTreatmentDAN(NamesNetworks.PERFECT_INFORMATION_TREATMENT_DAN,true);
+	public static ProbNet buildDANPerfectKnowledge() throws NodeNotFoundException {
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  // Variables
+		  Variable varDisease = new Variable("Disease", "absent", "present");
+		  Variable varTherapy = new Variable("Therapy", "no", "yes");
+		  Variable varHealth_state = new Variable("Health state");
+
+		  // Nodes
+		  Node nodeDisease= probNet.addNode(varDisease, NodeType.CHANCE);
+		  Node nodeTherapy= probNet.addNode(varTherapy, NodeType.DECISION);
+		  Node nodeHealth_state= probNet.addNode(varHealth_state, NodeType.UTILITY);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeDisease, nodeHealth_state, true);
+		  probNet.addLink(nodeTherapy, nodeHealth_state, true);
+
+		  // Potentials
+		  TablePotential potDisease = new TablePotential(Arrays.asList(varDisease), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potDisease.values = new double[]{0.86, 0.14};
+		  nodeDisease.setPotential(potDisease);
+
+		  TablePotential potHealth_state = new TablePotential(varHealth_state,Arrays.asList(varDisease, varTherapy));
+		  potHealth_state.values = new double[]{10, 3, 9, 8};
+		  nodeHealth_state.setPotential(potHealth_state);
+
+		  // Link restrictions and revealing states
+		  // Always observed nodes
+		  nodeDisease.setAlwaysObserved(true);
+
+		 return probNet;
+			
 	}
 	
 	public static ProbNet buildDecideTreatmentDAN(NamesNetworks name,boolean isXKnown) throws NodeNotFoundException {

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
@@ -369,6 +371,10 @@ public class Intervention extends TreeADDPotential {
 			}
 			i = i + 1;
 		}
+		
+		
+		//TODO Get the leaves and, for each one, draw an arc from to a an empty/sink artificial node
+		//Map<Intervention,Integer> leaves = new Hashtable<Intervention,Integer>();
 	
 		
 		for (Intervention node:nodes)
@@ -426,16 +432,33 @@ public class Intervention extends TreeADDPotential {
 
 	private String toStringShapeForGraphviz(ProbNet net,Variable topVariable) {
 		String string = null;
-		switch (net.getNode(topVariable).getNodeType()){
-		case DECISION:
+		
+		if (net != null) {
+			Node node;
+			try {
+				node = net.getNode(topVariable.getName());
+			} catch (NodeNotFoundException e) {
+				node = null;
+			}
+			if (node != null) {
+				switch (node.getNodeType()) {
+				case DECISION:
+					string = "decision";
+					break;
+				case CHANCE:
+					string = "ellipse";
+					break;
+				default:
+					break;
+				}
+			}
+			else {
+				string = "decision";
+			}
+		} else {
 			string = "decision";
-			break;
-		case CHANCE:
-			string = "ellipse";
-			break;
-		default:
-			break;
 		}
+			
 		return string;
 	}
 

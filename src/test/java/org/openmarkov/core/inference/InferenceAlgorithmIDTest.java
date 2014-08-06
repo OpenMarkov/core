@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.factory.IDFactory;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 public abstract class InferenceAlgorithmIDTest  extends InferenceAlgorithmDecTest {
@@ -372,24 +374,20 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
-/*	@Test
-	public void testEvaluationIDDiagnosisProblem()
+	@Test
+	public void testOptimizedPolicyIDPerfectKnowledge()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 		ProbNet network;
 		
-		network = IDFactory.createInfluenceDiagramDiagnosisProblem();
+		network = IDFactory.buildIDPerfectKnowledge();
 		
 		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
 		
 		try {
-			// test max expected utility
-			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
-			assertEquals(96.006, meuEvaluation, maxError);
-
 			// Test optimal policy
-			Variable D = network.getVariable("D");
+			Variable D = network.getVariable("Therapy");
 			
 			Potential policy = algorithm.getOptimizedPolicy(D);
 			assertNotNull(policy);
@@ -399,18 +397,56 @@ iD_DecisionTestProblemWithSV = IDFactory
 			domainPolicy.remove(D);
 			assertEquals(1, domainPolicy.size());
 			
-			Intervention optimalStrategy = algorithm.getOptimalStrategy();
-			assertTrue(optimalStrategy.equals(getExpectedStrategyDiagnosisProblem(network,
-					"Y","D","positive","negative","yes","no")));
-			int i = 0;
 			// Test the optimal choice of the policy
 			double[] truePolicy = { 1.0, 0.0, 0.0, 1.0 };
-			//TODO Uncomment next line to check policy
-			//assertTrue(areEquals(getTablePotential(policy).getValues(), truePolicy));
+			assertTrue(areEquals(getTablePotential(policy).getValues(), truePolicy));
 		} catch (Exception e) {
 			printExceptionAndFailIfImplemented(e);
 		}
-	}*/
+	}
+	
+	/**
+	 * Test for diagnosis problem
+	 * 
+	 * @throws ParserException
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 * @throws NodeNotFoundException
+	 * @throws ConstraintViolationException
+	 * @throws NotEvaluableNetworkException
+	 */
+	@Test
+	public void testExpectedUtilitiesIDPerfectKnowledge()
+			throws FileNotFoundException,
+			IOException, ParserException, NodeNotFoundException,
+			ConstraintViolationException, NotEvaluableNetworkException {
+		ProbNet network;
+		
+		network = IDFactory.buildIDPerfectKnowledge();
+		
+		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
+		
+		try {
+			// Test optimal policy
+			Variable D = network.getVariable("Therapy");
+			
+			Potential utilities = algorithm.getExpectedUtilities(D);
+			assertNotNull(utilities);
+
+			// Test the size of the domain of the utilities table
+			assertEquals(2, utilities.getVariables().size());
+			
+			Variable X = network.getVariable("Disease");
+			
+			TablePotential expectedPotential = new TablePotential(Arrays.asList(X,D), PotentialRole.UTILITY);
+			double [] values = {10.0,3.0,9.0,8.0};
+			expectedPotential.setValues(values);
+			
+			assertTrue(areEqualPotentials(getTablePotential(utilities), expectedPotential));
+		} catch (Exception e) {
+			printExceptionAndFailIfImplemented(e);
+		}
+	}
 	
 	
 	/**

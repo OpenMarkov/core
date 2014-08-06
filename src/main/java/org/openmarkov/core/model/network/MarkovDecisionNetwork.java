@@ -10,6 +10,7 @@
 package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -476,7 +477,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	/**
 	 * @param differentUtilityPotentials
 	 */
-	public void removePotentials(Set<TablePotential> potentials) {
+	public void removePotentials(Collection<TablePotential> potentials) {
 		for (TablePotential pot:potentials)
 		{
 			this.removePotential(pot);

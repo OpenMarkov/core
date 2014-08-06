@@ -112,9 +112,15 @@ iD_DecisionTestProblemWithSV = IDFactory
 		testMEUAndStrategy(IDFactory.buildIDArthronet(),0.4960714549037456,null);	
 	}
 	
+	@Test
+	public void testIDRedundantChance() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDRedundantChance(),175.0,null);	
+	}
 	
-	
-	
+	@Test
+	public void testIDTwoIndependentDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDTwoIndependentDecisions(),4.0,null);	
+	}
 	
 	
 	/**

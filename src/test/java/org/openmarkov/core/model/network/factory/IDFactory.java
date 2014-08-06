@@ -1611,6 +1611,87 @@ public class IDFactory extends NetsFactory {
 		}
 	
 	
+	/**
+	 * @return A network identical to id/ID-redundant-chance.pgmx
+	 */
+	public static ProbNet buildIDRedundantChance() {
+		  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+		  // Variables
+		  Variable varU = new Variable("U");
+		  Variable varD = new Variable("D", "no", "yes");
+		  Variable varU1 = new Variable("U1");
+		  Variable varE = new Variable("E", "absent", "present");
+
+		  // Nodes
+		  Node nodeU= probNet.addNode(varU, NodeType.UTILITY);
+		  Node nodeD= probNet.addNode(varD, NodeType.DECISION);
+		  Node nodeU1= probNet.addNode(varU1, NodeType.UTILITY);
+		  Node nodeE= probNet.addNode(varE, NodeType.CHANCE);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeD, nodeU, true);
+		  probNet.addLink(nodeE, nodeU1, true);
+		  probNet.addLink(nodeE, nodeD, true);
+
+		  // Potentials
+		  TablePotential potU = new TablePotential(varU,Arrays.asList(varD));
+		  potU.values = new double[]{1, 2};
+		  nodeU.setPotential(potU);
+
+		  TablePotential potU1 = new TablePotential(varU1,Arrays.asList(varE));
+		  potU1.values = new double[]{112, 234};
+		  nodeU1.setPotential(potU1);
+
+		  TablePotential potE = new TablePotential(Arrays.asList(varE), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potE.values = new double[]{0.5, 0.5};
+		  nodeE.setPotential(potE);
+
+		  // Link restrictions and revealing states
+		  // Always observed nodes
+
+		 return probNet;
+		}
+	
+	/**
+	 * @return A network identical to id/ID-two-independent-decisions.pgmx
+	 */
+	public static ProbNet buildIDTwoIndependentDecisions() {
+		  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+		  // Variables
+		  Variable varD = new Variable("D", "no", "yes");
+		  Variable varD1 = new Variable("D1", "no", "yes");
+		  Variable varU = new Variable("U");
+		  Variable varU1 = new Variable("U1");
+
+		  // Nodes
+		  Node nodeD= probNet.addNode(varD, NodeType.DECISION);
+		  Node nodeD1= probNet.addNode(varD1, NodeType.DECISION);
+		  Node nodeU= probNet.addNode(varU, NodeType.UTILITY);
+		  Node nodeU1= probNet.addNode(varU1, NodeType.UTILITY);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeD, nodeU1, true);
+		  probNet.addLink(nodeD, nodeD1, true);
+		  probNet.addLink(nodeD1, nodeU, true);
+
+		  // Potentials
+		  TablePotential potU = new TablePotential(varU,Arrays.asList(varD1));
+		  potU.values = new double[]{2, 3};
+		  nodeU.setPotential(potU);
+
+		  TablePotential potU1 = new TablePotential(varU1,Arrays.asList(varD));
+		  potU1.values = new double[]{1, 0};
+		  nodeU1.setPotential(potU1);
+
+		  // Link restrictions and revealing states
+		  // Always observed nodes
+
+		 return probNet;
+		}
+	
+	
 	
 
 }

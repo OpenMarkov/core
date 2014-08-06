@@ -48,13 +48,21 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(net);
 		Double meuEvaluation = algorithm.getGlobalUtility().values[0];
 		assertEquals(expectedMEU,meuEvaluation, maxError);
-		assertNotNull(algorithm.getOptimalStrategy());
-		//testScenariosIntervention(net,algorithm);
+		testScenariosIntervention(net,algorithm);
 	}
 	
 	
 	
 
+	/**
+	 * Checks that the Intervention (optimal strategy) obtained from the evaluation optimal is not null
+	 * and that it is consistent with the Cooper policy network (CPN) built using the policies obtained
+	 * from the method getOptimizedPolicies
+	 * @param net
+	 * @param algorithm
+	 * @throws IncompatibleEvidenceException
+	 * @throws UnexpectedInferenceException
+	 */
 	private void testScenariosIntervention(ProbNet net,
 			InferenceAlgorithm algorithm) throws IncompatibleEvidenceException, UnexpectedInferenceException {
 		Intervention interv = null;
@@ -63,8 +71,8 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
 			e.printStackTrace();
 		}
-		
-		testLeavesScenarios(algorithm,interv,new EvidenceCase());
+		assertNotNull(interv);
+		testIntervention(algorithm,interv,new EvidenceCase());
 		
 		
 	}
@@ -72,37 +80,97 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 
 
 
-	private void testLeavesScenarios(InferenceAlgorithm algorithm,
+	/**
+	 * Checks that the Intervention 'interv' rooted at the evidence scenario 'parentEvi' is consistent with the
+	 * Cooper policy network (CPN) that has been obtained by the inference algorithm 'algorithm'
+	 * The  method checks correctness and completeness:
+	 * - Correctness: Every scenario in the intervention has non-zero probability in the CPN
+	 * - Completeness: The Intervention covers all the non-zero probability states of the CPN
+	 * @param algorithm
+	 * @param interv
+	 * @param parentEvi
+	 * @throws IncompatibleEvidenceException
+	 * @throws UnexpectedInferenceException
+	 */
+	private void testIntervention(InferenceAlgorithm algorithm,
 			Intervention interv, EvidenceCase parentEvi)
 			throws IncompatibleEvidenceException, UnexpectedInferenceException {
 
 		if (interv != null) {
 			interv.getRootVariable();
 			List<TreeADDBranch> branches = interv.getBranches();
+			Variable rootVariable = interv.getRootVariable();
+			algorithm.setPostResolutionEvidence(parentEvi);
+			List<Variable> interestVariables = new ArrayList<>();
+			interestVariables.add(rootVariable);
+			TablePotential probs = algorithm.getProbsAndUtilities().get(rootVariable);
 			if (branches != null) {
+				// Check that the number of branches is equal to the non-zero probability states
+				assertEquals(getNumStatesBranches(branches),getNumProbsNotZero(probs));
 				for (int i = 0; i < branches.size(); i++) {
 					TreeADDBranch auxBranch = branches.get(i);
 					Intervention auxInterventionBranch = Intervention
 							.getInterventionBranch(auxBranch);
 					for (State state : auxBranch.getStates()) {
+						// Check that 'state' has non-zero probability in the CPN
+						assertTrue(probs.values[rootVariable.getStateIndex(state)]>0);
 						EvidenceCase newEvi = new EvidenceCase(
 								parentEvi.getFindings());
-						Finding finding = new Finding(interv.getRootVariable(),
+						
+						Finding finding = new Finding(rootVariable,
 								state);
 						try {
 							newEvi.addFinding(finding);
 						} catch (InvalidStateException e) {
 							e.printStackTrace();
 						}
-						algorithm.setPostResolutionEvidence(newEvi);
-						algorithm.getProbsAndUtilities();
-						testLeavesScenarios(algorithm, auxInterventionBranch,
+						testIntervention(algorithm, auxInterventionBranch,
 								newEvi);
 					}
 				}
 			}
 		}
 	}
+
+	/**
+	 * @param branches
+	 * @return The total number of states in 'branches'
+	 */
+	private int getNumStatesBranches(List<TreeADDBranch> branches) {
+		int numStates = 0;
+		Set<State> states = new HashSet<State>();
+		if (branches != null){
+			for (int i = 0; i < branches.size(); i++) {
+				TreeADDBranch auxBranch = branches.get(i);
+				if (auxBranch != null){
+					states.addAll(auxBranch.getStates());
+				}
+			}
+		}
+		numStates = states.size();
+		return numStates;
+	}
+
+
+
+
+	/**
+	 * @param probs
+	 * @return The number of values in the potential that are greater than zero
+	 */
+	private int getNumProbsNotZero(TablePotential probs) {
+		int numNotZero = 0;
+		double[] values = probs.values;
+		for (int i=0;i<values.length;i++){
+			if (values[i]>0.0){
+				numNotZero = numNotZero + 1;
+			}
+		}
+		return numNotZero;
+	}
+
+
+
 
 	/**
 	 * Test for diagnosis problem

@@ -9,6 +9,8 @@
 package org.openmarkov.core.inference;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 
 import org.junit.Test;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -17,7 +19,6 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.factory.DANFactory;
-import org.openmarkov.core.model.network.factory.IDFactory;
 import org.openmarkov.core.model.network.potential.Intervention;
 
 /**
@@ -38,6 +39,13 @@ public class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
 				throws NotEvaluableNetworkException {
 			return null;
 		}
+		
+		
+		protected void testMEU(ProbNet net, double expectedMEU) throws IncompatibleEvidenceException, UnexpectedInferenceException {
+			InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(net);
+			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+			assertEquals(expectedMEU,meuEvaluation, maxError);
+		}
 
 
 		@Override
@@ -48,15 +56,31 @@ public class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
 			InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(net);
 			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
 			assertEquals(expectedMEU,meuEvaluation, maxError);
+			assertNotNull(algorithm.getOptimalStrategy());
+		}
+		
+		@Test
+		public void testDANUnorderedTwoDecsNoChance() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
+			testMEUAndStrategy(DANFactory.buildDANUnorderedTwoDecsNoChance(),4.0,null);	
+		}
+		
+		@Test
+		public void testDANUnorderedTwoDecs() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
+			testMEUAndStrategy(DANFactory.buildDANUnorderedTwoDecs(),9.0,null);	
+		}
+		
+		@Test
+		public void testDANTestAlways() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
+			testMEUAndStrategy(DANFactory.buildDANTestAlways(),9.3929,null);	
 		}
 
 		
-		//@Test
+		@Test
 		public void testDANOneChance() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
-			testMEUAndStrategy(DANFactory.buildOneChanceDAN(),90.2,null);	
+			testMEU(DANFactory.buildOneChanceDAN(),90.2);	
 		}
 		
-		//@Test
+		@Test
 		public void testDANBlindTreatment() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
 			testMEUAndStrategy(DANFactory.buildBlindTreatmentDAN(),90.2,null);	
 		}
@@ -66,9 +90,9 @@ public class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
 			testMEUAndStrategy(DANFactory.buildDANPerfectKnowledge(),9.72,null);	
 		}
 		
-		//@Test
+		@Test
 		public void testDANDecideTest() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
-			testMEUAndStrategy(DANFactory.buildDecideTestDAN(),94.312,null);	
+			testMEUAndStrategy(DANFactory.buildDecideTestDAN(),9.3929,null);	
 		}
 		
 		//@Test
@@ -76,7 +100,7 @@ public class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
 			testMEUAndStrategy(DANFactory.buildTwoTestDAN(),9.3324,null);	
 		}
 		
-		//@Test
+		@Test
 		public void testDANDiabetes() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
 			testMEUAndStrategy(DANFactory.buildDiabetesDAN(),9.8261,null);	
 		}
@@ -86,17 +110,17 @@ public class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
 			testMEUAndStrategy(DANFactory.buildDecideTreatmentRestrictedDAN(),88.6,null);	
 		}
 		
-		//@Test
+		@Test
 		public void testDANReactor() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
 			testMEUAndStrategy(DANFactory.buildReactorDAN(),10.0627,null);	
 		}
 		
-		//@Test
+		@Test
 		public void testDANDatingBranchAcceptSimplified() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
 			testMEUAndStrategy(DANFactory.buildDatingBranchAcceptSimplifiedDAN(),9.88,null);	
 		}
 		
-		//@Test
+		@Test
 		public void testDANDatingAcceptNo() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
 			testMEUAndStrategy(DANFactory.buildDatingAcceptNoDAN(),9.4076,null);	
 		}
@@ -106,17 +130,17 @@ public class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
 			testMEUAndStrategy(DANFactory.buildDatingDAN(),9.4076,null);	
 		}
 		
-		//@Test
+		@Test
 		public void testDANWooer() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
 			testMEUAndStrategy(DANFactory.buildWooerDAN(),7.73,null);	
 		}
 		
-		//@Test
+		@Test
 		public void testDANUserCarBuyer() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
 			testMEUAndStrategy(DANFactory.buildUsedCarBuyer(),32.96,null);	
 		}
 		
-		//@Test
+		@Test
 		public void testDANNTest3Tests() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
 			testMEUAndStrategy(DANFactory.buildNTestsDAN(3),9.80657,null);	
 		}

@@ -81,6 +81,53 @@ public class DANFactory extends NetsFactory {
 			
 	}
 	
+	public static ProbNet buildDANTestAlways() {
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  // Variables
+		  Variable varDisease = new Variable("Disease", "absent", "present");
+		  Variable varResult_of_test = new Variable("Result of test", "negative", "positive");
+		  Variable varTherapy = new Variable("Therapy", "no", "yes");
+		  Variable varHealth_state = new Variable("Health state");
+		  Variable varCost_of_therapy = new Variable("Cost of therapy");
+
+		  // Nodes
+		  Node nodeDisease= probNet.addNode(varDisease, NodeType.CHANCE);
+		  Node nodeResult_of_test= probNet.addNode(varResult_of_test, NodeType.CHANCE);
+		  Node nodeTherapy= probNet.addNode(varTherapy, NodeType.DECISION);
+		  Node nodeHealth_state= probNet.addNode(varHealth_state, NodeType.UTILITY);
+		  Node nodeCost_of_therapy= probNet.addNode(varCost_of_therapy, NodeType.UTILITY);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeDisease, nodeHealth_state, true);
+		  probNet.addLink(nodeDisease, nodeResult_of_test, true);
+		  probNet.addLink(nodeTherapy, nodeHealth_state, true);
+		  probNet.addLink(nodeTherapy, nodeCost_of_therapy, true);
+
+		  // Potentials
+		  TablePotential potDisease = new TablePotential(Arrays.asList(varDisease), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potDisease.values = new double[]{0.86, 0.14};
+		  nodeDisease.setPotential(potDisease);
+
+		  TablePotential potResult_of_test = new TablePotential(Arrays.asList(varResult_of_test, varDisease), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potResult_of_test.values = new double[]{0.97, 0.03, 0.09, 0.91};
+		  nodeResult_of_test.setPotential(potResult_of_test);
+
+		  TablePotential potHealth_state = new TablePotential(varHealth_state,Arrays.asList(varDisease, varTherapy));
+		  potHealth_state.values = new double[]{9.8, 2.8, 8.8, 7.8};
+		  nodeHealth_state.setPotential(potHealth_state);
+
+		  TablePotential potCost_of_therapy = new TablePotential(varCost_of_therapy,Arrays.asList(varTherapy));
+		  potCost_of_therapy.values = new double[]{0, -0.25};
+		  nodeCost_of_therapy.setPotential(potCost_of_therapy);
+
+		  // Link restrictions and revealing states
+		  // Always observed nodes
+		  nodeResult_of_test.setAlwaysObserved(true);
+
+		 return probNet;
+		}
+	
 	public static ProbNet buildDecideTreatmentDAN(NamesNetworks name,boolean isXKnown) throws NodeNotFoundException {
 		ProbNet blindTreatmentDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
 		blindTreatmentDAN.setName(name.toString());
@@ -153,54 +200,66 @@ public class DANFactory extends NetsFactory {
 	
 	
 	public static ProbNet buildDecideTestDAN() throws NodeNotFoundException {
-		ProbNet decideTestDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
-		decideTestDAN.setName(NamesNetworks.DECIDE_TEST_DAN.toString());
-		Variable variableX = new Variable("X", "absent", "present");
-		Variable variableY = new Variable("Y", "negative", "positive");
-		Variable variableD = new Variable("D","no","yes");
-		Variable variableT = new Variable("T","no","yes");
-		Variable variableU1 = new Variable("U1");
-		Variable variableU2 = new Variable("U2");
 		
-		Node nodeX = decideTestDAN.addNode(variableX, NodeType.CHANCE);
-		Node nodeY = decideTestDAN.addNode(variableY, NodeType.CHANCE);
-		Node nodeU1 = decideTestDAN.addNode(variableU1, NodeType.UTILITY);
-		Node nodeU2 = decideTestDAN.addNode(variableU2, NodeType.UTILITY);
-		Node nodeD = decideTestDAN.addNode(variableD, NodeType.DECISION);
-		decideTestDAN.addNode(variableT, NodeType.DECISION);
-		
-		decideTestDAN.makeLinksExplicit(false);
-		decideTestDAN.addLink(variableX, variableY, true);
-		decideTestDAN.addLink(variableX, variableU1, true);
-		decideTestDAN.addLink(variableD, variableY, true);
-		decideTestDAN.addLink(variableD, variableT, true);
-		decideTestDAN.addLink(variableD, variableU2, true);
-		decideTestDAN.addLink(variableT, variableU1, true);
-		
-		TablePotential potentialX = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialX.values = new double [] {0.86, 0.14};
-		nodeX.setPotential(potentialX);
+		 ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  // Variables
+		  Variable varDisease = new Variable("Disease", "absent", "present");
+		  Variable varResult_of_test = new Variable("Result of test", "negative", "positive");
+		  Variable varTherapy = new Variable("Therapy", "no", "yes");
+		  Variable varDo_test_ = new Variable("Do test?", "no", "yes");
+		  Variable varHealth_state = new Variable("Health state");
+		  Variable varCost_of_test = new Variable("Cost of test");
+		  Variable varCost_of_Therapy = new Variable("Cost of Therapy");
 
-		TablePotential potentialY = new TablePotential(Arrays.asList(variableY, variableD, variableX), PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialY.values = new double [] {0, 0, 0.97, 0.03, 0, 0, 0.09, 0.91};
-		nodeY.setPotential(potentialY);
-		
-		TablePotential potentialU1 = new TablePotential(variableU1, Arrays.asList(variableX, variableT));
-		potentialU1.values = new double [] {100, 30, 90, 80};
-		nodeU1.setPotential(potentialU1);		
-		
-		TablePotential potentialU2 = new TablePotential(variableU2, Arrays.asList(variableD));
-		potentialU2.values = new double [] {0, -2};
-		nodeU2.setPotential(potentialU2);		
-		
-		Link<Node> link = decideTestDAN.getLink(nodeD, nodeY, true);
-		link.initializesRestrictionsPotential();
-		TablePotential restrictionsPotential = (TablePotential)link.getRestrictionsPotential();
-		restrictionsPotential.values = new double[]{0,1,0,1};
-		
-		link.setRevealingStates(Arrays.asList(variableD.getStates()[1]));
-		
-		return decideTestDAN;
+		  // Nodes
+		  Node nodeDisease= probNet.addNode(varDisease, NodeType.CHANCE);
+		  Node nodeResult_of_test= probNet.addNode(varResult_of_test, NodeType.CHANCE);
+		  Node nodeTherapy= probNet.addNode(varTherapy, NodeType.DECISION);
+		  Node nodeDo_test_= probNet.addNode(varDo_test_, NodeType.DECISION);
+		  Node nodeHealth_state= probNet.addNode(varHealth_state, NodeType.UTILITY);
+		  Node nodeCost_of_test= probNet.addNode(varCost_of_test, NodeType.UTILITY);
+		  Node nodeCost_of_Therapy= probNet.addNode(varCost_of_Therapy, NodeType.UTILITY);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeDisease, nodeHealth_state, true);
+		  probNet.addLink(nodeDisease, nodeResult_of_test, true);
+		  probNet.addLink(nodeTherapy, nodeHealth_state, true);
+		  probNet.addLink(nodeTherapy, nodeCost_of_Therapy, true);
+		  probNet.addLink(nodeDo_test_, nodeCost_of_test, true);
+		  probNet.addLink(nodeDo_test_, nodeResult_of_test, true);
+
+		  // Potentials
+		  TablePotential potDisease = new TablePotential(Arrays.asList(varDisease), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potDisease.values = new double[]{0.86, 0.14};
+		  nodeDisease.setPotential(potDisease);
+
+		  TablePotential potResult_of_test = new TablePotential(Arrays.asList(varResult_of_test, varDisease, varDo_test_), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potResult_of_test.values = new double[]{0, 0, 0, 0, 0.97, 0.03, 0.09, 0.91};
+		  nodeResult_of_test.setPotential(potResult_of_test);
+
+		  TablePotential potHealth_state = new TablePotential(varHealth_state,Arrays.asList(varDisease, varTherapy));
+		  potHealth_state.values = new double[]{10, 3, 9, 8};
+		  nodeHealth_state.setPotential(potHealth_state);
+
+		  TablePotential potCost_of_test = new TablePotential(varCost_of_test,Arrays.asList(varDo_test_));
+		  potCost_of_test.values = new double[]{0, -0.2};
+		  nodeCost_of_test.setPotential(potCost_of_test);
+
+		  TablePotential potCost_of_Therapy = new TablePotential(varCost_of_Therapy,Arrays.asList(varTherapy));
+		  potCost_of_Therapy.values = new double[]{0, -0.25};
+		  nodeCost_of_Therapy.setPotential(potCost_of_Therapy);
+
+		  // Link restrictions and revealing states
+		  Link link_nodeDo_test__nodeResult_of_test = probNet.getLink(nodeDo_test_,nodeResult_of_test, true);
+		  link_nodeDo_test__nodeResult_of_test.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeDo_test__nodeResult_of_test = (TablePotential)link_nodeDo_test__nodeResult_of_test.getRestrictionsPotential();
+		  restrictions_nodeDo_test__nodeResult_of_test.values = new double[] {0, 1, 0, 1};
+		  link_nodeDo_test__nodeResult_of_test.setRevealingStates(Arrays.asList(varDo_test_.getStates()[1]));
+
+		  // Always observed nodes
+
+		 return probNet;
 	}
 	
 	public static ProbNet buildDatingDAN() throws NodeNotFoundException {
@@ -738,6 +797,85 @@ public class DANFactory extends NetsFactory {
 		
 		return datingDAN;
 	}	
+	
+	
+	public static ProbNet buildDANUnorderedTwoDecsNoChance() {
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  // Variables
+		  Variable varU = new Variable("U");
+		  Variable varD = new Variable("D", "no", "yes");
+		  Variable varE = new Variable("E", "no", "yes");
+
+		  // Nodes
+		  Node nodeU= probNet.addNode(varU, NodeType.UTILITY);
+		  Node nodeD= probNet.addNode(varD, NodeType.DECISION);
+		  Node nodeE= probNet.addNode(varE, NodeType.DECISION);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeD, nodeU, true);
+		  probNet.addLink(nodeE, nodeU, true);
+
+		  // Potentials
+		  TablePotential potU = new TablePotential(varU,Arrays.asList(varD, varE));
+		  potU.values = new double[]{1, 2, 3, 4};
+		  nodeU.setPotential(potU);
+
+		  // Link restrictions and revealing states
+		  // Always observed nodes
+
+		 return probNet;
+		}
+	
+	public static ProbNet buildDANUnorderedTwoDecs() {
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  // Variables
+		  Variable varY = new Variable("Y", "negative", "positive");
+		  Variable varX = new Variable("X", "negative", "positive");
+		  Variable varD = new Variable("D", "absent", "present");
+		  Variable varE = new Variable("E", "absent", "present");
+		  Variable varU = new Variable("U");
+
+		  // Nodes
+		  Node nodeY= probNet.addNode(varY, NodeType.CHANCE);
+		  Node nodeX= probNet.addNode(varX, NodeType.CHANCE);
+		  Node nodeD= probNet.addNode(varD, NodeType.DECISION);
+		  Node nodeE= probNet.addNode(varE, NodeType.DECISION);
+		  Node nodeU= probNet.addNode(varU, NodeType.UTILITY);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeY, nodeU, true);
+		  probNet.addLink(nodeX, nodeU, true);
+		  probNet.addLink(nodeD, nodeX, true);
+		  probNet.addLink(nodeD, nodeU, true);
+		  probNet.addLink(nodeE, nodeY, true);
+		  probNet.addLink(nodeE, nodeU, true);
+
+		  // Potentials
+		  TablePotential potY = new TablePotential(Arrays.asList(varY, varE), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potY.values = new double[]{0.9, 0.1, 0.1, 0.9};
+		  nodeY.setPotential(potY);
+
+		  TablePotential potX = new TablePotential(Arrays.asList(varX, varD), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potX.values = new double[]{0.6, 0.4, 0.4, 0.6};
+		  nodeX.setPotential(potX);
+
+		  TablePotential potU = new TablePotential(varU,Arrays.asList(varE, varD, varY, varX));
+		  potU.values = new double[]{0, 10, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10};
+		  nodeU.setPotential(potU);
+
+		  // Link restrictions and revealing states
+		  Link link_nodeD_nodeX = probNet.getLink(nodeD,nodeX, true);
+		  link_nodeD_nodeX.setRevealingStates(Arrays.asList(varD.getStates()[1], varD.getStates()[0]));
+
+		  Link link_nodeE_nodeY = probNet.getLink(nodeE,nodeY, true);
+		  link_nodeE_nodeY.setRevealingStates(Arrays.asList(varE.getStates()[1], varE.getStates()[0]));
+
+		  // Always observed nodes
+
+		 return probNet;
+		}
 	
 	
 	public static ProbNet buildReactorDAN () {

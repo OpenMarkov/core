@@ -350,55 +350,86 @@ public class Intervention extends TreeADDPotential {
 
 	
 	public String toStringForGraphviz(ProbNet net) {
-		
+
 		String content = null;
-		
+
 		content = "digraph G {\n";
-		
-		content = content + "rankdir=LR\n";
-		
-		Map<Intervention,Integer> idNode = new Hashtable<Intervention,Integer>();
+
+		Map<Intervention, Integer> idNode = new Hashtable<Intervention, Integer>();
+
 		Set<Intervention> nodes = this.getInterventions();
+		Set<Intervention> leaves = this.getInterventionsLeaves();
 		int i = 0;
-		for (Intervention skNode:nodes){
+		for (Intervention skNode : nodes) {
 			idNode.put(skNode, i);
 			String strNodes;
-			
-			if (skNode.topVariable!=null){
+
+			if (skNode.topVariable != null) {
 				strNodes = skNode.topVariable.getName();
-			
-			content = content + i+" [label=\""+strNodes+"\",shape="+toStringShapeForGraphviz(net,skNode.topVariable)+"];\n";
+				if (leaves.contains(skNode)) {
+					strNodes = strNodes + "=" + skNode.getBranches().get(0).getStates().toString();
+				}
+
+				content = content + i + " [label=\"" + strNodes + "\",shape="
+						+ toStringShapeForGraphviz(net, skNode.topVariable) + "];\n";
 			}
 			i = i + 1;
 		}
-		
-		
-		//TODO Get the leaves and, for each one, draw an arc from to a an empty/sink artificial node
-		//Map<Intervention,Integer> leaves = new Hashtable<Intervention,Integer>();
-	
-		
-		for (Intervention node:nodes)
-		{
-			int nodeIdNode = idNode.get(node);
-			if (node.branches!=null){
-				List<Intervention> nodeInterv = node.getInterventionsChildren();
-			
-			for (int j=0;j<node.branches.size();j++){
-			//for (Intervention child:node.getInterventionsChildren())
-				Intervention child = nodeInterv.get(j);
-				if (child!=null){
 
-					List<State> states = branches.get(j).getBranchStates();
-				    String strStates = getStringStates(states);
-					content = content + nodeIdNode+"->"+idNode.get(child)+"[label=\""+strStates+"\"];\n";
+		for (Intervention node : nodes) {
+			int nodeIdNode = idNode.get(node);
+			if (node.branches != null) {
+				List<Intervention> nodeInterv = node.getInterventionsChildren();
+
+				for (int j = 0; j < node.branches.size(); j++) {
+
+					Intervention child = nodeInterv.get(j);
+					if (child != null) {
+
+						List<State> states = node.branches.get(j).getBranchStates();
+						String strStates = getStringStates(states);
+						content = content + nodeIdNode + "->" + idNode.get(child) + "[label=\"" + strStates
+								+ "\"];\n";
+					}
 				}
 			}
-			}
 		}
-		
+
 		content = content + "}\n";
 		return content;
-}
+	}
+	
+	
+
+	/**
+	 * @return The Interventions that are the leaves of the tree rooted at 'this'
+	 */
+	private Set<Intervention> getInterventionsLeaves() {
+
+		Set<Intervention> auxSet;
+
+		auxSet = new HashSet<>();
+
+		if (branches != null) {
+			if (branches.size() > 0) {
+				for (int i = 0; i < branches.size(); i++) {
+					TreeADDBranch auxBranch = branches.get(i);
+					Intervention auxInterventionBranch = getInterventionBranch(auxBranch);
+					if (auxInterventionBranch != null) {
+						auxSet.addAll(auxInterventionBranch.getInterventionsLeaves());
+					} else {
+						auxSet.add(this);
+					}
+				}
+			} else {
+				auxSet.add(this);
+			}
+		} else {
+			auxSet.add(this);
+		}
+
+		return auxSet;
+	}
 
 	private String getStringStates(List<State> states) {
 		String str = "";

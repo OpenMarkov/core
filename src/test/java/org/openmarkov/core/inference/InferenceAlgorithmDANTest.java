@@ -41,12 +41,7 @@ public class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
 		}
 		
 		
-		protected void testMEU(ProbNet net, double expectedMEU) throws IncompatibleEvidenceException, UnexpectedInferenceException {
-			InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(net);
-			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
-			assertEquals(expectedMEU,meuEvaluation, maxError);
-		}
-
+		
 
 		@Override
 		protected void testMEUAndStrategy(ProbNet net, double expectedMEU,
@@ -95,7 +90,7 @@ public class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
 			testMEUAndStrategy(DANFactory.buildDecideTestDAN(),9.3929,null);	
 		}
 		
-		//@Test
+		@Test
 		public void testDANTwoTest() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
 			testMEUAndStrategy(DANFactory.buildTwoTestDAN(),9.3324,null);	
 		}
@@ -105,7 +100,7 @@ public class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
 			testMEUAndStrategy(DANFactory.buildDiabetesDAN(),9.8261,null);	
 		}
 		
-		//@Test
+		@Test
 		public void testDANDecideTreatmentRestricted() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
 			testMEUAndStrategy(DANFactory.buildDecideTreatmentRestrictedDAN(),88.6,null);	
 		}
@@ -125,7 +120,7 @@ public class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
 			testMEUAndStrategy(DANFactory.buildDatingAcceptNoDAN(),9.4076,null);	
 		}
 		
-		//@Test
+		@Test
 		public void testDANDating() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
 			testMEUAndStrategy(DANFactory.buildDatingDAN(),9.4076,null);	
 		}

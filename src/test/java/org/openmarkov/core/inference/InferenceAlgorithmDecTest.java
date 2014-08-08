@@ -376,7 +376,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 	//@Test
 	public void testEvaluationSimpleIDWithoutDecisions(){
 		
-		testMEUDiagram(IDFactory.createSimpleIDWithoutDecisions(),83.7);
+		testMEU(IDFactory.createSimpleIDWithoutDecisions(),83.7);
 	}
 	
 
@@ -461,7 +461,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		assertEquals(v, x.values[0], maxError);
 
 	}
-private void testMEUDiagram(ProbNet diagram,double expectedMeu){
+protected void testMEU(ProbNet diagram,double expectedMeu){
 		
 		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(diagram);
 

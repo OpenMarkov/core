@@ -1615,28 +1615,39 @@ public final class DiscretePotentialOperations {
      *               variables of <code>potential</code>
      */
     public static TablePotential reorder(TablePotential potential, List<Variable> orderVariables) {
-        TablePotential copyPotential = new TablePotential(orderVariables,
+    	boolean hasInterventions = false;
+        TablePotential newPotential = new TablePotential(orderVariables,
                 potential.getPotentialRole());
         int[] accOffsets = potential.getAccumulatedOffsets(orderVariables);
         int[] potentialPositions = new int[potential.getNumVariables()];
         int[] potentialDimensions = potential.getDimensions();
-        double[] tablePotential = potential.values;
-        double[] tableCopyPotential = copyPotential.values;
+        double[] valuesOrigPotential = potential.values;
+        double[] valuesNewPotential = newPotential.values;
+        Intervention[] intervOrigPotential = potential.interventions;
+        Intervention[] intervNewPotential = null;
         UncertainValue[] uncertainValues = null;
         UncertainValue[] copyUncertainValues = null;
         if (potential.isUncertain()) {
             uncertainValues = potential.uncertainValues;
-            copyPotential.uncertainValues = new UncertainValue[potential.uncertainValues.length];
-            copyUncertainValues = copyPotential.uncertainValues;
+            newPotential.uncertainValues = new UncertainValue[potential.uncertainValues.length];
+            copyUncertainValues = newPotential.uncertainValues;
+        }
+        hasInterventions = intervOrigPotential!=null && intervOrigPotential.length > 0;
+        if (hasInterventions){
+        	newPotential.interventions = new Intervention[potential.interventions.length];
+        	intervNewPotential = newPotential.interventions;
         }
 
         int copyTablePosition = 0;
         int numVariables = orderVariables.size();
         int incrementedVariable, i;
-        for (i = 0; i < tablePotential.length - 1; i++) {
-            tableCopyPotential[copyTablePosition] = tablePotential[i];
+        for (i = 0; i < valuesOrigPotential.length - 1; i++) {
+            valuesNewPotential[copyTablePosition] = valuesOrigPotential[i];
             if (potential.isUncertain()) {
                 copyUncertainValues[copyTablePosition] = uncertainValues[i];
+            }
+            if (hasInterventions){
+            	intervNewPotential[copyTablePosition] = intervOrigPotential[i];
             }
 
             for (incrementedVariable = 0; incrementedVariable < numVariables; incrementedVariable++) {
@@ -1649,15 +1660,18 @@ public final class DiscretePotentialOperations {
             }
             copyTablePosition += accOffsets[incrementedVariable];
         }
-        tableCopyPotential[copyTablePosition] = tablePotential[i];
+        valuesNewPotential[copyTablePosition] = valuesOrigPotential[i];
         if (potential.isUncertain()) {
             copyUncertainValues[copyTablePosition] = uncertainValues[i];
         }
-        if (potential.isUtility()) {
-            copyPotential.setUtilityVariable(potential.getUtilityVariable());
+        if (hasInterventions){
+        	intervNewPotential[copyTablePosition] = intervOrigPotential[i];
         }
-        copyPotential.properties = potential.properties;
-        return copyPotential;
+        if (potential.isUtility()) {
+            newPotential.setUtilityVariable(potential.getUtilityVariable());
+        }
+        newPotential.properties = potential.properties;
+        return newPotential;
     }
 
     /**

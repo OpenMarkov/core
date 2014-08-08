@@ -214,8 +214,9 @@ public class Intervention extends TreeADDPotential {
 	/** 
 	 * Add <code>Intervention</code> to edges of this intervention
 	 * @param intervention
+	 * @throws Exception 
 	 */
-	public Intervention concatenate(Intervention intervention) {
+	public void concatenate(Intervention intervention) {
 		//  
 		Intervention oldIntervention;
 		for (TreeADDBranch branch : branches) {
@@ -223,10 +224,14 @@ public class Intervention extends TreeADDPotential {
 			if (oldIntervention == null) {
 				branch.setPotential(intervention);
 			} else {
-				((Intervention)branch.getPotential()).concatenate(intervention);
+				Intervention branchIntervention = (Intervention)branch.getPotential();
+				//TODO Consider what to do if it the concatenate creates a cycle
+				/*if (intervention.isReachable(branchIntervention)){
+						System.out.println("Not allowed to create Intervention with cycles");
+				}*/				
+				branchIntervention.concatenate(intervention);
 			}
 		}
-		return this;
 	}
 	
 	
@@ -250,7 +255,11 @@ public class Intervention extends TreeADDPotential {
 		
 	}
 	
-	 private boolean isReachable(Intervention intervention) {
+	 /**
+	 * @param intervention
+	 * @return True iff 'intervention' can be reached from 'this'
+	 */
+	private boolean isReachable(Intervention intervention) {
 		 boolean isReachable = false;
 		 if (branches != null)
 		 for (int i=0;(i<branches.size()&&!isReachable);i++){
@@ -302,7 +311,8 @@ public class Intervention extends TreeADDPotential {
                 }
             }
         }
-        return areEqual;
+        //return areEqual;
+        return false;
     }	
     
 	/**

@@ -312,8 +312,7 @@ public final class DiscretePotentialOperations {
                     	if (resultIntervention == null) {
                     		resultIntervention = interventions[iPotential][potentialPositions[iPotential]];
                     	} else {
-                    		resultIntervention = resultIntervention.
-                    				concatenate(interventions[iPotential][potentialPositions[iPotential]]);
+                    		resultIntervention.concatenate(interventions[iPotential][potentialPositions[iPotential]]);
                     	}
                     }
                     

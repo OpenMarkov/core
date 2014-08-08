@@ -229,7 +229,44 @@ public class Intervention extends TreeADDPotential {
 		return this;
 	}
 	
-	 /**
+	
+	
+	public boolean hasCycle(){
+		boolean hasCycle;
+		hasCycle = false;
+		if (branches!=null){
+		for (int i=0;(i<branches.size()&&!hasCycle);i++){
+			TreeADDBranch branch = branches.get(i);	
+			if (branch != null){
+			Intervention interventionBranch = (Intervention)branch.getPotential();
+			if (interventionBranch != null){
+				hasCycle = interventionBranch.isReachable(this);
+			}
+			}
+			
+		}
+		}
+	return hasCycle;
+		
+	}
+	
+	 private boolean isReachable(Intervention intervention) {
+		 boolean isReachable = false;
+		 if (branches != null)
+		 for (int i=0;(i<branches.size()&&!isReachable);i++){
+				TreeADDBranch branch = branches.get(i);		
+				if (branch != null){
+				Intervention auxBranchIntervention = (Intervention)branch.getPotential();
+				if (auxBranchIntervention != null){
+				isReachable = auxBranchIntervention == intervention;
+				isReachable = isReachable || auxBranchIntervention.isReachable(intervention);
+				}
+				}
+		 }
+		 return isReachable;
+	}
+
+	/**
      * @param intervention. <code>Intervention</code>
      * @return True when <code>this</code> and <code>intervention</code> are equals.
      */

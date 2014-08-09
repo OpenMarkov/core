@@ -30,7 +30,7 @@ public class DecisionTreeTest {
 	public void testDecideTestDAN() throws NodeNotFoundException {
 		ProbNet decideTestDAN = DANFactory.buildDecideTestDAN();
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(decideTestDAN);
-		Assert.assertEquals(94.312, decisionTree.getUtility(), 0.0001);
+		Assert.assertEquals(9.3929, decisionTree.getUtility(), 0.0001);
 	}
 	
 	@Test
@@ -75,7 +75,7 @@ public class DecisionTreeTest {
 	public void testEvalDecideTestDAN() throws NodeNotFoundException {
 		ProbNet decideTestDAN = DANFactory.buildDecideTestDAN();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
-		Assert.assertEquals(94.312, evaluator.getMEU(decideTestDAN), 0.0001);
+		Assert.assertEquals(9.3929, evaluator.getMEU(decideTestDAN), 0.0001);
 	}
 	
 	@Test

@@ -33,6 +33,7 @@ import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.sdag.CoalescedIntervention;
 
 /**
  * This class defines a set of common operations over discrete potentials (
@@ -174,12 +175,20 @@ public final class DiscretePotentialOperations {
         }
         return new TablePotential(resultVariables, role, resultValues);
     }
-
+    
     /**
      * @param tablePotentials <code>List</code> of <code>TablePotential</code>s.
      * @return <code>TablePotential</code>
      */
     public static TablePotential sum(List<TablePotential> tablePotentials) {
+    	return sum(tablePotentials,false);
+    }
+
+    /**
+     * @param tablePotentials <code>List</code> of <code>TablePotential</code>s.
+     * @return <code>TablePotential</code>
+     */
+    public static TablePotential sum(List<TablePotential> tablePotentials,boolean coalescedInterventions) {
         List<TablePotential> constantPotentials;
         if (tablePotentials.size() == 1) {
             return (TablePotential) tablePotentials.get(0);
@@ -208,7 +217,7 @@ public final class DiscretePotentialOperations {
             	if (constantPotentialsIntervention == null) {
             		constantPotentialsIntervention = constantPotentials.get(i).interventions[0];
             	} else {
-            		constantPotentialsIntervention.concatenate(constantPotentials.get(i).interventions[0]);
+            		constantPotentialsIntervention = constantPotentialsIntervention.concatenate(constantPotentials.get(i).interventions[0]);
             	}
             }
         }
@@ -312,7 +321,7 @@ public final class DiscretePotentialOperations {
                     	if (resultIntervention == null) {
                     		resultIntervention = interventions[iPotential][potentialPositions[iPotential]];
                     	} else {
-                    		resultIntervention.concatenate(interventions[iPotential][potentialPositions[iPotential]]);
+                    		resultIntervention = resultIntervention.concatenate(interventions[iPotential][potentialPositions[iPotential]]);
                     	}
                     }
                     
@@ -1211,9 +1220,7 @@ public final class DiscretePotentialOperations {
         double multiplicationResult; // product of the table values
         double maxValue; // in general, the sum or the maximum
         int increasedVariable = 0; // when computing the next configuration
-
-        boolean useInterventions = numProperPotentials == 1 && properPotentials.get(0).interventions != null;
-
+        
         // outer iterations correspond to the variables to keep
         for (int outerIteration = 0; outerIteration < resultSize; outerIteration++) {
             // Inner iterations correspond to the variables to eliminate
@@ -1230,9 +1237,6 @@ public final class DiscretePotentialOperations {
             choice = new Choice(fSVariableToMaximize, statesChoosed);
             maxValue = multiplicationResult;
             choice.setValue(0); // because in first iteration we have a maximum
-
-            Intervention[] interventions = new Intervention[eliminationSize];
-            double[] valuesToMaximize = new double[eliminationSize];
 
             // next inner iterations
             for (int innerIteration = 1; innerIteration < eliminationSize; innerIteration++) {
@@ -1600,7 +1604,7 @@ public final class DiscretePotentialOperations {
         variablesToKeep.remove(variableToMaximize);
         return multiplyAndMaximize(potentialsVariable, variablesToKeep, variableToMaximize);
     }
-
+    
     /**
      * Copy the potential received to another potential with the same variables
      * but with the order received in <code>otherVariables</code>
@@ -1633,7 +1637,8 @@ public final class DiscretePotentialOperations {
         }
         hasInterventions = intervOrigPotential!=null && intervOrigPotential.length > 0;
         if (hasInterventions){
-        	newPotential.interventions = new Intervention[potential.interventions.length];
+        	int newInterventionsLength = potential.interventions.length;
+        	newPotential.interventions = new Intervention[newInterventionsLength];
         	intervNewPotential = newPotential.interventions;
         }
 
@@ -1792,6 +1797,17 @@ public final class DiscretePotentialOperations {
      */
     public static List<TablePotential> sumOutVariable(Variable chanceVariable, 
     		List<TablePotential> potentials) {
+    	return sumOutVariable(chanceVariable,potentials,false);
+    }
+    
+    /**
+     * @param chanceVariable. <code>Variable</code>
+     * @param potentials. <code>List</code> of <code>TablePotential</code>
+     * @return. A <code>List</code> with two <code>TablePotential</code>, 
+     * marginal probability and new utility in this order.
+     */
+    public static List<TablePotential> sumOutVariable(Variable chanceVariable, 
+    		List<TablePotential> potentials,boolean coalescedInterventions) {
     	// Get probability and utility potentials
     	List<TablePotential> probPotentials = new ArrayList<TablePotential>();
     	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
@@ -1824,7 +1840,8 @@ public final class DiscretePotentialOperations {
     		// TODO Check whether the next line can be removed
     		outputUtilityPotential.setUtilityVariable(inputUtilityPotential.getUtilityVariable());
     		if (thereAreInterventions) {
-    			outputUtilityPotential.interventions = new Intervention[outputUtilityPotential.values.length];
+    			int outputValuesLength = outputUtilityPotential.values.length;
+    			outputUtilityPotential.interventions = new Intervention[outputValuesLength];
     		}
 
     		List<Variable> allVariables = new ArrayList<Variable>(outputUtilityVariables.size() + 1);
@@ -1886,7 +1903,7 @@ public final class DiscretePotentialOperations {
     			outputUtilityPotential.values[outputUtilityPotentialPosition] = sum;
     			if (thereAreInterventions) {
     				outputUtilityPotential.interventions[outputUtilityPotentialPosition] = 
-    						Intervention.averageOfInterventions(chanceVariable, probabilities, interventions);
+    						Intervention.averageOfInterventions(chanceVariable, probabilities, interventions,coalescedInterventions);
     			}
 
     			outputUtilityPotentialPosition++;
@@ -1920,14 +1937,27 @@ public final class DiscretePotentialOperations {
     	return outputPotentials;
     }
     
+    /**
+     * @param coalescedInterventions 
+  * @param decisionVariable. <code>Variable</code>
+     * @param probPotentials. <code>List</code> of <code>TablePotential</code>
+     * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>
+     * @return. A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
+     */
+     public static List<TablePotential> maxOutVariable(Variable decisionVariable, 
+     		List<TablePotential> potentials) {
+    	 return maxOutVariable(decisionVariable,potentials,false);
+     }
+    
    /**
-    * @param decisionVariable. <code>Variable</code>
+    * @param coalescedInterventions 
+ * @param decisionVariable. <code>Variable</code>
     * @param probPotentials. <code>List</code> of <code>TablePotential</code>
     * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>
     * @return. A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
     */
     public static List<TablePotential> maxOutVariable(Variable decisionVariable, 
-    		List<TablePotential> potentials) {
+    		List<TablePotential> potentials, boolean coalescedInterventions) {
     	// Get probability and utility potentials
     	List<TablePotential> probPotentials = new ArrayList<TablePotential>();
     	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
@@ -1953,7 +1983,9 @@ public final class DiscretePotentialOperations {
     	TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables, PotentialRole.UTILITY);
     	// TODO Check whether the next line can be removed
     	outputUtilityPotential.setUtilityVariable(inputUtilityPotential.getUtilityVariable());
-    	outputUtilityPotential.interventions = new Intervention[outputUtilityPotential.values.length];
+    	int outputUtilityPotentialValuesLength = outputUtilityPotential.values.length;
+    	outputUtilityPotential.interventions = (!coalescedInterventions)?new Intervention[outputUtilityPotentialValuesLength]:
+    		new CoalescedIntervention[outputUtilityPotentialValuesLength];
 
     	// in allVariables, the first variable is decisionVariable
     	List<Variable> allVariables = new ArrayList<Variable>(outputUtilityVariables.size() + 1);
@@ -2024,7 +2056,7 @@ public final class DiscretePotentialOperations {
 
     		outputUtilityPotential.values[outputUtilityPotentialPosition] = max;
     		outputUtilityPotential.interventions[outputUtilityPotentialPosition] = 
-    				Intervention.optimalIntervention(decisionVariable, utilities, interventions);
+    				Intervention.optimalIntervention(decisionVariable, utilities, interventions,coalescedInterventions);
 
     		// set the values of policyPotential
     		int policyPotentialPosition = outputUtilityPotentialPosition * decisionVariableSize;

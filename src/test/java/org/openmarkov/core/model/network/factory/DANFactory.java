@@ -43,9 +43,7 @@ public class DANFactory extends NetsFactory {
 		return oneChanceDAN;
 	}
 	
-	public static ProbNet buildBlindTreatmentDAN() throws NodeNotFoundException {
-		return buildDecideTreatmentDAN(NamesNetworks.BLIND_TREATMENT_DAN,false);
-	}
+	
 	
 	public static ProbNet buildDANPerfectKnowledge() throws NodeNotFoundException {
 		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
@@ -76,6 +74,40 @@ public class DANFactory extends NetsFactory {
 		  // Link restrictions and revealing states
 		  // Always observed nodes
 		  nodeDisease.setAlwaysObserved(true);
+
+		 return probNet;
+			
+	}
+	
+	public static ProbNet buildDANNoKnowledge() throws NodeNotFoundException {
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  // Variables
+		  Variable varDisease = new Variable("Disease", "absent", "present");
+		  Variable varTherapy = new Variable("Therapy", "no", "yes");
+		  Variable varHealth_state = new Variable("Health state");
+
+		  // Nodes
+		  Node nodeDisease= probNet.addNode(varDisease, NodeType.CHANCE);
+		  Node nodeTherapy= probNet.addNode(varTherapy, NodeType.DECISION);
+		  Node nodeHealth_state= probNet.addNode(varHealth_state, NodeType.UTILITY);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeDisease, nodeHealth_state, true);
+		  probNet.addLink(nodeTherapy, nodeHealth_state, true);
+
+		  // Potentials
+		  TablePotential potDisease = new TablePotential(Arrays.asList(varDisease), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potDisease.values = new double[]{0.86, 0.14};
+		  nodeDisease.setPotential(potDisease);
+
+		  TablePotential potHealth_state = new TablePotential(varHealth_state,Arrays.asList(varDisease, varTherapy));
+		  potHealth_state.values = new double[]{10, 3, 9, 8};
+		  nodeHealth_state.setPotential(potHealth_state);
+
+		  // Link restrictions and revealing states
+		  // Always observed nodes
+		  nodeDisease.setAlwaysObserved(false);
 
 		 return probNet;
 			
@@ -128,36 +160,6 @@ public class DANFactory extends NetsFactory {
 		 return probNet;
 		}
 	
-	public static ProbNet buildDecideTreatmentDAN(NamesNetworks name,boolean isXKnown) throws NodeNotFoundException {
-		ProbNet blindTreatmentDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
-		blindTreatmentDAN.setName(name.toString());
-		Variable variableX = new Variable("X", "absent", "present");
-		Variable variableT = new Variable("T", "no", "yes");
-		Variable variableU = new Variable("U");
-		
-		Node nodeX = blindTreatmentDAN.addNode(variableX, NodeType.CHANCE);
-		blindTreatmentDAN.addNode(variableT, NodeType.DECISION);
-		Node nodeU = blindTreatmentDAN.addNode(variableU, NodeType.UTILITY);
-		
-		blindTreatmentDAN.makeLinksExplicit(false);
-		blindTreatmentDAN.addLink(variableX, variableU, true);
-		blindTreatmentDAN.addLink(variableT, variableU, true);
-		if (isXKnown){
-			blindTreatmentDAN.addLink(variableX, variableT, true);
-		}
-		
-		TablePotential potentialX = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialX.values = new double [] {0.86, 0.14};
-		nodeX.setPotential(potentialX);
-
-		TablePotential potentialU = new TablePotential(variableU, Arrays.asList(variableX,variableT));
-		potentialU.values = new double [] {100, 30, 90, 80};
-		nodeU.setPotential(potentialU);
-		
-		nodeX.setAlwaysObserved(isXKnown);
-		
-		return blindTreatmentDAN;
-	}
 	
 	
 	public static ProbNet buildDecideTreatmentRestrictedDAN() throws NodeNotFoundException {

@@ -912,7 +912,7 @@ public class ProbNetOperationsTest {
 		ProbNet reactorDAN = DANFactory.buildReactorDAN();
 		ProbNet diabetesDAN = DANFactory.buildDiabetesDAN();
 		
-		Assert.assertFalse(ProbNetOperations.hasOrderAsymmetry(decideTestDAN));
+		Assert.assertTrue(ProbNetOperations.hasOrderAsymmetry(decideTestDAN));
 		Assert.assertFalse(ProbNetOperations.hasOrderAsymmetry(decideTestID));
 		Assert.assertFalse(ProbNetOperations.hasOrderAsymmetry(reactorDAN));
 		Assert.assertTrue(ProbNetOperations.hasOrderAsymmetry(datingDAN));
@@ -923,7 +923,7 @@ public class ProbNetOperationsTest {
 	@Test
 	public void testGetObservableAndNonObservedVariables() throws NodeNotFoundException, NodeNotFoundException
 	{
-		auxTestGetObservableAndNonObservedVariables(DANFactory.buildDecideTestDAN(),Arrays.asList("Y"),Arrays.asList("X"));
+		auxTestGetObservableAndNonObservedVariables(DANFactory.buildDecideTestDAN(),Arrays.asList("Result of test"),Arrays.asList("Disease"));
 		auxTestGetObservableAndNonObservedVariables(DANFactory.buildDiabetesDAN(),Arrays.asList("Blood test result","Urine test result","Symptom"),Arrays.asList("Diabetes"));
 		auxTestGetObservableAndNonObservedVariables(DANFactory.buildDatingDAN(),
 				Arrays.asList("Accept","ToDo","TVExp","Club","MeetFr","mExp","rExp","TV"),Arrays.asList("LikesMe","mMood","rMood","NCExp"));

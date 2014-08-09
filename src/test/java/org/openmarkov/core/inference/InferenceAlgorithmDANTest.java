@@ -25,7 +25,7 @@ import org.openmarkov.core.model.network.potential.Intervention;
  * @author manolo
  *
  */
-public class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
+public abstract class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
 	
 
 	public InferenceAlgorithmDANTest() {
@@ -76,12 +76,12 @@ public class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
 		}
 		
 		@Test
-		public void testDANBlindTreatment() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
-			testMEUAndStrategy(DANFactory.buildBlindTreatmentDAN(),90.2,null);	
+		public void testDANNoKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
+			testMEUAndStrategy(DANFactory.buildDANNoKnowledge(),9.02,null);	
 		}
 		
-		//@Test
-		public void testDANPerfectInformationTreatment() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
+		@Test
+		public void testDANPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
 			testMEUAndStrategy(DANFactory.buildDANPerfectKnowledge(),9.72,null);	
 		}
 		
@@ -138,6 +138,12 @@ public class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTest {
 		@Test
 		public void testDANNTest3Tests() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
 			testMEUAndStrategy(DANFactory.buildNTestsDAN(3),9.80657,null);	
+		}
+		
+		//@Test
+		//TODO Find out the exact MEU
+		public void testDANMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
+			testMEUAndStrategy(DANFactory.buildMediastinetDAN(),25510.106934000007,null);	
 		}
 
 }

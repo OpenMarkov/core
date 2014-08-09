@@ -15,6 +15,7 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.sdag.CoalescedIntervention;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
@@ -129,9 +130,10 @@ public class Intervention extends TreeADDPotential {
 					topVariable, interventions.get(i), null));
 		}
 	}
-
+	
 	/**
 	 * Creates an intervention from a set of interventions and probabilities.
+	 * @param coalescedInterventions 
 	 * @param chanceVariable. <code>Variable</code>
 	 * @param probabilities. <code>double[]</code>
 	 * @param interventions. <code>Intervention[]</code>
@@ -139,6 +141,20 @@ public class Intervention extends TreeADDPotential {
 	 */
 	public static Intervention averageOfInterventions(Variable chanceVariable, 
 			double[] probabilities, Intervention[] interventions) {
+		return Intervention.averageOfInterventions(chanceVariable, probabilities, interventions,false);
+	}
+
+	/**
+	 * Creates an intervention from a set of interventions and probabilities.
+	 * @param coalescedInterventions 
+	 * @param chanceVariable. <code>Variable</code>
+	 * @param probabilities. <code>double[]</code>
+	 * @param interventions. <code>Intervention[]</code>
+	 * @param coalescedInterventions. <code>boolean</code>
+	 * @return A Intervention. <code>Intervention</code>
+	 */
+	public static Intervention averageOfInterventions(Variable chanceVariable, 
+			double[] probabilities, Intervention[] interventions, boolean coalescedInterventions) {
 		State[] states = chanceVariable.getStates();
 		
 		// Select interventions and states whose probability is greater than 0.0.
@@ -161,7 +177,10 @@ public class Intervention extends TreeADDPotential {
 				if (equalInterventions(selectedInterventions.toArray(new Intervention[selectedInterventions.size()]))) {
 					intervention = selectedInterventions.get(0); // All interventions are equals
 				} else {
-					intervention = new Intervention(chanceVariable, selectedStates, selectedInterventions);
+					intervention = (!coalescedInterventions)?
+							new Intervention(chanceVariable, selectedStates, selectedInterventions):
+								new CoalescedIntervention(chanceVariable, selectedStates, selectedInterventions);
+					
 				}
 			}
 		}
@@ -174,49 +193,64 @@ public class Intervention extends TreeADDPotential {
 	 * @param decisionVariable
 	 * @param utilities
 	 * @param interventions
+	 * @param coalescedInterventions 
 	 * @return Optimal intervention
 	 */
 	public static Intervention optimalIntervention(Variable decisionVariable, 
-			double[] utilities, Intervention[] interventions) {
+			double[] utilities, Intervention[] interventions, boolean coalescedInterventions) {
 		State[] states = decisionVariable.getStates();
 		List<State> optimalStates = new ArrayList<State>();
 		List<Intervention> optimalInterventions = new ArrayList<Intervention>();
 		double max = Double.NEGATIVE_INFINITY;
-		Intervention optimalIntervention = null;
 		for (int i = 0; i < states.length; i++) {
-			if (utilities[i] > max) {
-				max = utilities[i];
+			Intervention interventionI = interventions[i];
+			double utilityI = utilities[i];
+			if (utilityI > max) {
+				max = utilityI;
 				optimalStates.clear();
 				optimalStates.add(states[i]);
 				optimalInterventions.clear();
-				optimalInterventions.add(interventions[i]);
-				if (interventions[i] != null) {
-					optimalIntervention = interventions[i];
-				}
-			} else if (utilities[i] == max) {  // there is a tie
+				optimalInterventions.add(interventionI);
+			} else if (utilityI == max) {  // there is a tie
 				optimalStates.add(states[i]);
-				if (interventions[i] != null) {
-					if (!optimalInterventions.equals(interventions[i])) {
-						optimalInterventions.add(interventions[i]);
+				if (interventionI != null) {
+					boolean isInOptimalInterventions = false;
+					for (int j = 0; j < optimalInterventions.size() && !isInOptimalInterventions ; j++){
+						isInOptimalInterventions = optimalInterventions.get(j).equals(interventionI);
+					}
+					if (!isInOptimalInterventions) {
+						optimalInterventions.add(interventionI);
 					}
 				}
 			}
 		}
+		
 		Intervention intervention = null;
-		if (optimalInterventions.size() > 1) {
-			intervention = new Intervention(decisionVariable, optimalStates, optimalInterventions);
+		boolean severalOptimalInterventions = optimalInterventions.size() > 1;
+		if (!coalescedInterventions) {
+			intervention = severalOptimalInterventions ? new Intervention(decisionVariable, optimalStates,
+					optimalInterventions) : new Intervention(decisionVariable, optimalStates,
+					optimalInterventions.get(0));
 		} else {
-			intervention = new Intervention(decisionVariable, optimalStates, optimalIntervention);
+			intervention = severalOptimalInterventions ? new CoalescedIntervention(decisionVariable,
+					optimalStates, optimalInterventions) : new CoalescedIntervention(decisionVariable,
+					optimalStates, optimalInterventions.get(0));
+
 		}
+		
     	return intervention;
+		
 	}
+	
+	
 
 	/** 
 	 * Add <code>Intervention</code> to edges of this intervention
 	 * @param intervention
+	 * @return 
 	 * @throws Exception 
 	 */
-	public void concatenate(Intervention intervention) {
+	public Intervention concatenate(Intervention intervention) {
 		//  
 		Intervention oldIntervention;
 		for (TreeADDBranch branch : branches) {
@@ -225,13 +259,10 @@ public class Intervention extends TreeADDPotential {
 				branch.setPotential(intervention);
 			} else {
 				Intervention branchIntervention = (Intervention)branch.getPotential();
-				//TODO Consider what to do if it the concatenate creates a cycle
-				/*if (intervention.isReachable(branchIntervention)){
-						System.out.println("Not allowed to create Intervention with cycles");
-				}*/				
-				branchIntervention.concatenate(intervention);
+				branchIntervention = branchIntervention.concatenate(intervention);
 			}
 		}
+		return this;
 	}
 	
 	
@@ -307,12 +338,11 @@ public class Intervention extends TreeADDPotential {
                     areEqual &= !((interventionBranchPotential == null && branchPotential != null) ||
                             (interventionBranchPotential != null && branchPotential == null));
                     // Recursive part
-                    areEqual &= branchPotential != null ? interventionBranchPotential.equals(branchPotential) : true;
+                    areEqual &= interventionBranchPotential != null ? interventionBranchPotential.equals(branchPotential) : true;
                 }
             }
         }
-        //return areEqual;
-        return false;
+        return areEqual;
     }	
     
 	/**
@@ -414,7 +444,10 @@ public class Intervention extends TreeADDPotential {
 			if (skNode.topVariable != null) {
 				strNodes = skNode.topVariable.getName();
 				if (leaves.contains(skNode)) {
-					strNodes = strNodes + "=" + skNode.getBranches().get(0).getStates().toString();
+					List<TreeADDBranch> skNodeBranches = skNode.getBranches();
+					if ((skNodeBranches != null)&&(skNodeBranches.size()>0)){
+						strNodes = strNodes + "=" + skNodeBranches.get(0).getStates().toString();
+					}
 				}
 
 				content = content + i + " [label=\"" + strNodes + "\",shape="
@@ -563,5 +596,7 @@ public class Intervention extends TreeADDPotential {
 		
 		return auxSet;
 	}
+	
+	
 	
 }

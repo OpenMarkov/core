@@ -33,7 +33,7 @@ import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.sdag.CoalescedIntervention;
+import org.openmarkov.core.model.network.potential.sdag.SDAGIntervention;
 
 /**
  * This class defines a set of common operations over discrete potentials (
@@ -188,7 +188,7 @@ public final class DiscretePotentialOperations {
      * @param tablePotentials <code>List</code> of <code>TablePotential</code>s.
      * @return <code>TablePotential</code>
      */
-    public static TablePotential sum(List<TablePotential> tablePotentials,boolean coalescedInterventions) {
+    public static TablePotential sum(List<TablePotential> tablePotentials,boolean sdagInterventions) {
         List<TablePotential> constantPotentials;
         if (tablePotentials.size() == 1) {
             return (TablePotential) tablePotentials.get(0);
@@ -1807,7 +1807,7 @@ public final class DiscretePotentialOperations {
      * marginal probability and new utility in this order.
      */
     public static List<TablePotential> sumOutVariable(Variable chanceVariable, 
-    		List<TablePotential> potentials,boolean coalescedInterventions) {
+    		List<TablePotential> potentials,boolean sdagInterventions) {
     	// Get probability and utility potentials
     	List<TablePotential> probPotentials = new ArrayList<TablePotential>();
     	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
@@ -1903,7 +1903,7 @@ public final class DiscretePotentialOperations {
     			outputUtilityPotential.values[outputUtilityPotentialPosition] = sum;
     			if (thereAreInterventions) {
     				outputUtilityPotential.interventions[outputUtilityPotentialPosition] = 
-    						Intervention.averageOfInterventions(chanceVariable, probabilities, interventions,coalescedInterventions);
+    						Intervention.averageOfInterventions(chanceVariable, probabilities, interventions,sdagInterventions);
     			}
 
     			outputUtilityPotentialPosition++;
@@ -1950,14 +1950,14 @@ public final class DiscretePotentialOperations {
      }
     
    /**
-    * @param coalescedInterventions 
+    * @param sdagInterventions 
  * @param decisionVariable. <code>Variable</code>
     * @param probPotentials. <code>List</code> of <code>TablePotential</code>
     * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>
     * @return. A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
     */
     public static List<TablePotential> maxOutVariable(Variable decisionVariable, 
-    		List<TablePotential> potentials, boolean coalescedInterventions) {
+    		List<TablePotential> potentials, boolean sdagInterventions) {
     	// Get probability and utility potentials
     	List<TablePotential> probPotentials = new ArrayList<TablePotential>();
     	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
@@ -1984,8 +1984,7 @@ public final class DiscretePotentialOperations {
     	// TODO Check whether the next line can be removed
     	outputUtilityPotential.setUtilityVariable(inputUtilityPotential.getUtilityVariable());
     	int outputUtilityPotentialValuesLength = outputUtilityPotential.values.length;
-    	outputUtilityPotential.interventions = (!coalescedInterventions)?new Intervention[outputUtilityPotentialValuesLength]:
-    		new CoalescedIntervention[outputUtilityPotentialValuesLength];
+    	outputUtilityPotential.interventions = new Intervention[outputUtilityPotentialValuesLength];
 
     	// in allVariables, the first variable is decisionVariable
     	List<Variable> allVariables = new ArrayList<Variable>(outputUtilityVariables.size() + 1);
@@ -2055,8 +2054,9 @@ public final class DiscretePotentialOperations {
     		}
 
     		outputUtilityPotential.values[outputUtilityPotentialPosition] = max;
+    		//TODO In testing phase it is easier to assume that there are no ties between interventions
     		outputUtilityPotential.interventions[outputUtilityPotentialPosition] = 
-    				Intervention.optimalIntervention(decisionVariable, utilities, interventions,coalescedInterventions);
+    				Intervention.optimalInterventionTakingOneOptimal(decisionVariable, utilities, interventions,sdagInterventions);
 
     		// set the values of policyPotential
     		int policyPotentialPosition = outputUtilityPotentialPosition * decisionVariableSize;

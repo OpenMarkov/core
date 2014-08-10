@@ -140,10 +140,9 @@ public abstract class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTes
 			testMEUAndStrategy(DANFactory.buildNTestsDAN(3),9.80657,null);	
 		}
 		
-		//@Test
-		//TODO Find out the exact MEU
+		@Test
 		public void testDANMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException{
-			testMEUAndStrategy(DANFactory.buildMediastinetDAN(),25510.106934000007,null);	
+			testMEUAndStrategy(DANFactory.buildMediastinetDAN(),1.4709741803076086,null);	
 		}
 
 }

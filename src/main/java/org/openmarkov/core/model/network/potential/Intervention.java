@@ -15,7 +15,7 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.sdag.CoalescedIntervention;
+import org.openmarkov.core.model.network.potential.sdag.SDAGIntervention;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
@@ -179,7 +179,7 @@ public class Intervention extends TreeADDPotential {
 				} else {
 					intervention = (!coalescedInterventions)?
 							new Intervention(chanceVariable, selectedStates, selectedInterventions):
-								new CoalescedIntervention(chanceVariable, selectedStates, selectedInterventions);
+								new SDAGIntervention(chanceVariable, selectedStates, selectedInterventions);
 					
 				}
 			}
@@ -232,12 +232,54 @@ public class Intervention extends TreeADDPotential {
 					optimalInterventions) : new Intervention(decisionVariable, optimalStates,
 					optimalInterventions.get(0));
 		} else {
-			intervention = severalOptimalInterventions ? new CoalescedIntervention(decisionVariable,
-					optimalStates, optimalInterventions) : new CoalescedIntervention(decisionVariable,
+			intervention = severalOptimalInterventions ? new SDAGIntervention(decisionVariable,
+					optimalStates, optimalInterventions) : new SDAGIntervention(decisionVariable,
 					optimalStates, optimalInterventions.get(0));
 
 		}
 		
+    	return intervention;
+		
+	}
+	
+	
+	
+	/**
+	 * Creates an intervention 
+	 * @param decisionVariable
+	 * @param utilities
+	 * @param interventions
+	 * @param coalescedInterventions 
+	 * @return Optimal intervention
+	 */
+	public static Intervention optimalInterventionTakingOneOptimal(Variable decisionVariable, 
+			double[] utilities, Intervention[] interventions, boolean coalescedInterventions) {
+		State[] states = decisionVariable.getStates();
+		List<State> optimalStates = new ArrayList<>();
+		State optimalState = null;
+		Intervention optimalIntervention = null;
+		double max = Double.NEGATIVE_INFINITY;
+		for (int i = 0; i < states.length; i++) {
+			Intervention interventionI = interventions[i];
+			double utilityI = utilities[i];
+			if (utilityI > max) {
+				max = utilityI;
+				optimalState = states[i];
+				optimalIntervention = interventionI;
+			}
+		}
+		optimalStates.add(optimalState);
+		Intervention intervention = null;
+		if (optimalIntervention!=null){
+			intervention = (!coalescedInterventions)? new Intervention(decisionVariable, optimalStates,
+					optimalIntervention): new SDAGIntervention(decisionVariable,
+					optimalStates, optimalIntervention);
+		}
+		else{
+			intervention = (!coalescedInterventions)? new Intervention(decisionVariable, optimalStates): 
+				new SDAGIntervention(decisionVariable,optimalStates);
+			
+		}
     	return intervention;
 		
 	}
@@ -436,6 +478,7 @@ public class Intervention extends TreeADDPotential {
 
 		Set<Intervention> nodes = this.getInterventions();
 		Set<Intervention> leaves = this.getInterventionsLeaves();
+		
 		int i = 0;
 		for (Intervention skNode : nodes) {
 			idNode.put(skNode, i);
@@ -598,5 +641,23 @@ public class Intervention extends TreeADDPotential {
 	}
 	
 	
+	public boolean hasInterventionForDecision(Variable decision) {
+		boolean hasInterv = false;
+
+		if (topVariable == decision) {
+			hasInterv = true;
+		} else {
+			if (branches != null) {
+				for (int i = 0; i < branches.size() && !hasInterv; i++) {
+					TreeADDBranch branch = branches.get(i);
+					Intervention branchInterv = getInterventionBranch(branch);
+					if (branchInterv != null) {
+						hasInterv = branchInterv.hasInterventionForDecision(decision);
+					}
+				}
+			}
+		}
+		return hasInterv;
+	}
 	
 }

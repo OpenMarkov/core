@@ -1854,7 +1854,7 @@ public class DANFactory extends NetsFactory {
 		  nodeTotal_Economic_Cost.setPotential(potTotal_Economic_Cost);
 
 		  TablePotential potC2E = new TablePotential(varC2E,new ArrayList<Variable>());
-		  potC2E.values = new double[]{-0.00003};
+		  potC2E.values = new double[]{-0.00003333};
 		  nodeC2E.setPotential(potC2E);
 
 		  ProductPotential potWeighted_Economic_Cost = new ProductPotential(varWeighted_Economic_Cost,Arrays.asList(varC2E, varTotal_Economic_Cost));

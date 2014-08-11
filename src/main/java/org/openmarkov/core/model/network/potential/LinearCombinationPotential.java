@@ -59,8 +59,8 @@ public class LinearCombinationPotential extends GLMPotential {
      *            . <code>PotentialRole</code>.
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        return !variables.isEmpty() 
-        		&& variables.get(0).getVariableType() == VariableType.NUMERIC;
+        return role == PotentialRole.UTILITY || (!variables.isEmpty() 
+        		&& variables.get(0).getVariableType() == VariableType.NUMERIC);
     }    
 
     @Override

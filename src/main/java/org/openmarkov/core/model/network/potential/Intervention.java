@@ -284,7 +284,79 @@ public class Intervention extends TreeADDPotential {
 		
 	}
 	
+	/**
+	 * Creates an intervention 
+	 * @param decisionVariable
+	 * @param utilities
+	 * @param interventions
+	 * @param coalescedInterventions 
+	 * @return Optimal intervention
+	 */
+	public static Intervention optimalInterventionTakingOptimalMinimalDepth(Variable decisionVariable, 
+			double[] utilities, Intervention[] interventions, boolean coalescedInterventions) {
+		State[] states = decisionVariable.getStates();
+		List<State> optimalStates = new ArrayList<>();
+		State optimalState = null;
+		Intervention optimalIntervention = null;
+		int depthOfOptimalInterv = Integer.MAX_VALUE;
+		double max = Double.NEGATIVE_INFINITY;
+		for (int i = 0; i < states.length; i++) {
+			Intervention interventionI = interventions[i];
+			double utilityI = utilities[i];
+			if (utilityI > max) {
+				max = utilityI;
+				optimalState = states[i];
+				optimalIntervention = interventionI;
+			}
+			if (utilityI == max){
+				if (interventionI != null){
+				int auxDepth = interventionI.getDepth();
+				if (auxDepth<depthOfOptimalInterv){
+					optimalState = states[i];
+					optimalIntervention = interventionI;
+					depthOfOptimalInterv = auxDepth;
+				}
+				}
+				
+			}
+		}
+		optimalStates.add(optimalState);
+		Intervention intervention = null;
+		if (optimalIntervention!=null){
+			intervention = (!coalescedInterventions)? new Intervention(decisionVariable, optimalStates,
+					optimalIntervention): new SDAGIntervention(decisionVariable,
+					optimalStates, optimalIntervention);
+		}
+		else{
+			intervention = (!coalescedInterventions)? new Intervention(decisionVariable, optimalStates): 
+				new SDAGIntervention(decisionVariable,optimalStates);
+			
+		}
+    	return intervention;
+		
+	}
 	
+	
+
+	private int getDepth() {
+		int depth = 0;
+
+		if (branches != null) {
+			if (branches.size() > 0) {
+				int auxDepth = 0;
+				for (int i = 0; i < branches.size(); i++) {
+					TreeADDBranch auxBranch = branches.get(i);
+					Intervention auxInterventionBranch = getInterventionBranch(auxBranch);
+					if (auxInterventionBranch != null) {
+						auxDepth = Math.max(auxDepth,auxInterventionBranch.getDepth());
+					}
+				}
+				depth = 1 + auxDepth;
+			}
+		} 
+
+		return depth;
+	}
 
 	/** 
 	 * Add <code>Intervention</code> to edges of this intervention

@@ -25,7 +25,7 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
  * @author marias
  * @version 1.0
  */
-@PotentialType(name = "Uniform", family = "")
+@PotentialType(name = "Uniform")
 public class UniformPotential extends Potential
 {
     // Attributes

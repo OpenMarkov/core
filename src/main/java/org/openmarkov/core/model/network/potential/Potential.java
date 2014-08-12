@@ -87,10 +87,10 @@ public abstract class Potential
      * @param role. <code>PotentialRole</code>
      * @param utility. <code>Variable</code>
      */
-    public Potential (Variable utility, List<Variable> variables)
+    public Potential (Variable utilityVariable, List<Variable> variables)
     {
         this(variables, PotentialRole.UTILITY);
-        utilityVariable = utility;
+        this.utilityVariable = utilityVariable;
     }
     
     /**

@@ -45,7 +45,7 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
  * @version 1.0
  * @since OpenMarkov 1.0
  */
-@PotentialType(name = "Table", family = "")
+@PotentialType(name = "Table")
 public class TablePotential extends Potential implements Comparable<TablePotential> {
     // Attributes
     /** Dimensions (number of states) of the variables. */

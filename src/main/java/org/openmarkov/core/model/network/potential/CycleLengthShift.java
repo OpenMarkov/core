@@ -26,7 +26,7 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 /** Potential identical to another but moved to another temporal slice.
  * @author marias
  * @version 1.0 */
-@PotentialType(name = "CycleLengthShift", family = "")
+@PotentialType(name = "CycleLengthShift", family = "Temporal")
 public class CycleLengthShift extends Potential {
 
     protected int       timeDifference = 1;

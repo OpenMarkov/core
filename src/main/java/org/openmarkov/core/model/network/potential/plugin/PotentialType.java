@@ -17,6 +17,6 @@ import java.lang.annotation.Target;
 @Target (ElementType.TYPE)
 public @interface PotentialType {
     String name();
-    String family();
+    String family() default "";
     String[] altNames() default "";
 }

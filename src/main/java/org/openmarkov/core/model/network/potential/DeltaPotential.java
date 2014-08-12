@@ -26,7 +26,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-@PotentialType(name = "Delta", family = "")
+@PotentialType(name = "Delta")
 public class DeltaPotential extends Potential{
 
     private State state = null; 

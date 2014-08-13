@@ -35,15 +35,11 @@ public class ConditionalGaussianPotentialTest {
 		electrodeChanged = new Variable("Electrode changed", "0", "1", "2", "3+");
 		audiometry = new Variable("Audiometry", "off/off", "off", "on");
 		List<Variable> parentVariables = Arrays.asList(predictedAudiometry, processorTypeChanged, micAge, electrodeChanged);
-		List<Variable> meanPotentialVariables = new ArrayList<>(parentVariables);
-		meanPotentialVariables.add(0, meanVariable);
-		List<Variable> variancePotentialVariables = new ArrayList<>(parentVariables);
-		variancePotentialVariables.add(0, varianceVariable);
 		List<Variable> potentialVariables = new ArrayList<>(parentVariables);
 		potentialVariables.add(0, audiometry);
-		LinearCombinationPotential meanPotential = new LinearCombinationPotential(meanPotentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
+		LinearCombinationPotential meanPotential = new LinearCombinationPotential(meanVariable, parentVariables);
 		meanPotential.setCoefficients(new double[] {0, 1, 0.1, -0.2, 0.05});
-		LinearCombinationPotential variancePotential = new LinearCombinationPotential(variancePotentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);;
+		LinearCombinationPotential variancePotential = new LinearCombinationPotential(varianceVariable, parentVariables);
 		variancePotential.setCoefficients(new double[] {1, 0, 0.2, 0.2, 0.1});
 		gaussianPotential = new ConditionalGaussianPotential(potentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
 		gaussianPotential.setMean(meanPotential);

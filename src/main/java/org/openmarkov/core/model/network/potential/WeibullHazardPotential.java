@@ -92,6 +92,13 @@ public class WeibullHazardPotential extends GLMPotential {
 				&& variables.get(0).getNumStates() == 2;
 	}
 
+    public double getGamma() {
+        return coefficients[getGammaIndex(covariates)];
+    }
+
+    public void setGamma(double gamma) {
+        this.coefficients[getGammaIndex(covariates)] = gamma;
+    }	
 	@Override
 	public List<TablePotential> tableProject(EvidenceCase evidenceCase,
 			InferenceOptions inferenceOptions, double[] coefficients, String[] covariates,
@@ -101,15 +108,8 @@ public class WeibullHazardPotential extends GLMPotential {
 		Variable conditionedVariable = getConditionedVariable();
 		// Fill arrays numericValues and evidencelessVariables
 		
-		int gammaIndex = -1;
-		int constantIndex = -1;
-		for (int i = 0; i < covariates.length; ++i) {
-			if (covariates[i].equals(GAMMA)) {
-				gammaIndex = i;
-			} else if (covariates[i].equals(CONSTANT)) {
-				constantIndex = i;
-			}
-		}
+		int gammaIndex = getGammaIndex(covariates);
+		int constantIndex = getConstantIndex(covariates);
 		
 		evidencelessVariables.remove(timeVariable);
 		
@@ -234,5 +234,18 @@ public class WeibullHazardPotential extends GLMPotential {
 			setTimeVariable(convertedParentVariable);
 		}
 	}
+	
+	protected int getGammaIndex(String[] covariates)
+    {
+    	int gammaIndex = -1;
+        for(int i=0; i < covariates.length; ++i)
+        {
+            if(covariates[i].equals(GAMMA))
+            {
+                gammaIndex = i;
+            }
+        }
+        return gammaIndex;
+    }
 
 }

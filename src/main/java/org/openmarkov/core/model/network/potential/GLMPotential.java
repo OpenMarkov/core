@@ -122,20 +122,12 @@ public abstract class GLMPotential extends Potential {
         this.coefficients = coefficients;
     }
 
-    public double getGamma() {
-        return coefficients[0];
-    }
-
-    public void setGamma(double gamma) {
-        this.coefficients[0] = gamma;
-    }
-
     public double getConstant() {
-        return coefficients[1];
+        return coefficients[getConstantIndex(covariates)];
     }
 
     public void setConstant(double constant) {
-        this.coefficients[1] = constant;
+        this.coefficients[getConstantIndex(covariates)] = constant;
     }
 
     public double[] getCovarianceMatrix() {
@@ -296,6 +288,19 @@ public abstract class GLMPotential extends Potential {
             processedCovariates[i] = covariate;
         }
         return processedCovariates;
+    }
+    
+    protected int getConstantIndex(String[] covariates)
+    {
+    	int constantIndex = -1;
+        for(int i=0; i < covariates.length; ++i)
+        {
+            if(covariates[i].equals(CONSTANT))
+            {
+                constantIndex = i;
+            }
+        }
+        return constantIndex;
     }
     
     public static String[] getMandatoryCovariates()

@@ -293,12 +293,14 @@ public abstract class GLMPotential extends Potential {
     protected int getConstantIndex(String[] covariates)
     {
     	int constantIndex = -1;
-        for(int i=0; i < covariates.length; ++i)
+    	int i=0;
+        while(i < covariates.length && constantIndex == -1)
         {
             if(covariates[i].equals(CONSTANT))
             {
                 constantIndex = i;
             }
+            ++i;
         }
         return constantIndex;
     }

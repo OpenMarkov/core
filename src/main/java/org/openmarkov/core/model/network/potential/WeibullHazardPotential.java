@@ -238,12 +238,14 @@ public class WeibullHazardPotential extends GLMPotential {
 	protected int getGammaIndex(String[] covariates)
     {
     	int gammaIndex = -1;
-        for(int i=0; i < covariates.length; ++i)
+    	int i=0;
+        while(i < covariates.length && gammaIndex == -1)
         {
             if(covariates[i].equals(GAMMA))
             {
                 gammaIndex = i;
             }
+            ++i;
         }
         return gammaIndex;
     }

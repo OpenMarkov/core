@@ -69,19 +69,16 @@ public class ExponentialPotential extends GLMPotential {
             Map<String, String> variableValues)
 			throws NonProjectablePotentialException, WrongCriterionException {
 		// Fill arrays numericValues and evidencelessVariables
-
-		int constantIndex = -1;
-		for (int i = 0; i < covariates.length; ++i) {
-			if (covariates[i].equals(CONSTANT)) {
-				constantIndex = i;
-			}
-		}
+		int constantIndex = getConstantIndex(covariates);
 
 		List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
-		projectedPotentialVariables.add(0, variables.get(0));
-		TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, role);
+		TablePotential projectedPotential = null; 
 		if (isUtility()) {
-			projectedPotential.setUtilityVariable(utilityVariable);
+			projectedPotential = new TablePotential(utilityVariable, projectedPotentialVariables);
+		}else
+		{
+			projectedPotentialVariables.add(0, variables.get(0));
+			projectedPotential = new TablePotential(projectedPotentialVariables, role);
 		}
 		Variable conditionedVariable = getConditionedVariable();
 		int numStates = conditionedVariable.getNumStates();

@@ -79,13 +79,21 @@ public class LinearCombinationPotential extends GLMPotential {
         int constantIndex = getConstantIndex(covariates);
 
         List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
-        projectedPotentialVariables.add(0, variables.get(0));
-        TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, role);
+        TablePotential projectedPotential = null;
+        if(isUtility())
+        {
+        	projectedPotential = new TablePotential(utilityVariable, projectedPotentialVariables);
+        }else
+        {
+        	projectedPotentialVariables.add(0, variables.get(0));
+        	projectedPotential = new TablePotential(projectedPotentialVariables, role);
+        }
         int[] offsets = projectedPotential.getOffsets();
         int[] dimensions = projectedPotential.getDimensions();
+        int firstParentIndex = isUtility()? 0 : 1;
         for (int i = 0; i < projectedPotential.values.length; i += numStates) {
             // Set the values of variables without evidence
-            for (int j = 1; j < projectedPotentialVariables.size(); ++j) {
+            for (int j = firstParentIndex; j < projectedPotentialVariables.size(); ++j) {
             	Variable variable = projectedPotentialVariables.get(j);
                 int index = (i / offsets[j]) % dimensions[j];
                 double value = index;

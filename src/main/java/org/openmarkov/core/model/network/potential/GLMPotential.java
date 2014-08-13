@@ -161,8 +161,8 @@ public abstract class GLMPotential extends Potential {
                 : this.sampledCoefficients;
         List<Variable> evidencelessVariables = new ArrayList<>();
 		Map<String, String> variableValues = new HashMap<>();
-
-		for (int i = 1; i < variables.size(); ++i) {
+		int firstParentVariableIndex = isUtility()? 0 : 1;
+		for (int i = firstParentVariableIndex; i < variables.size(); ++i) {
 			Variable variable = variables.get(i);
 			if (evidenceCase == null || !evidenceCase.contains(variable)) {
 				if (variable.getVariableType() == VariableType.NUMERIC) {

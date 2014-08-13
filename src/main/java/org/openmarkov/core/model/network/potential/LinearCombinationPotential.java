@@ -76,14 +76,7 @@ public class LinearCombinationPotential extends GLMPotential {
         Evaluator evaluator = new Evaluator();
         // Fill arrays numericValues and evidencelessVariables
 
-        int constantIndex = -1;
-        for(int i=0; i < covariates.length; ++i)
-        {
-            if(covariates[i].equals(CONSTANT))
-            {
-                constantIndex = i;
-            }
-        }        
+        int constantIndex = getConstantIndex(covariates);
 
         List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
         projectedPotentialVariables.add(0, variables.get(0));
@@ -103,7 +96,7 @@ public class LinearCombinationPotential extends GLMPotential {
                 {
                     // ignore
                 }
-                variableValues.put("v"+j,String.valueOf(value));
+                variableValues.put("v"+variables.indexOf(variable),String.valueOf(value));
             }
             evaluator.setVariables(variableValues);
             double regression = coefficients[constantIndex];

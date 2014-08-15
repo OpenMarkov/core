@@ -1,3 +1,11 @@
+/*
+* Copyright 2014 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
 package org.openmarkov.core.model.network.potential;
 
 import java.util.ArrayList;
@@ -15,6 +23,11 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import umontreal.iro.lecuyer.probdist.NormalDist;
 
+/**
+ * This class represents a conditional Gaussian potential for discrete variables. 
+ * It is defined by two potentials, namely the mean and the variance potentials 
+ * In the case of discrete variables it uses each state index 
+ */
 @PotentialType(name = "Conditional Gaussian")
 public class ConditionalGaussianPotential extends Potential{
 
@@ -147,7 +160,6 @@ public class ConditionalGaussianPotential extends Potential{
 
 	@Override
 	public boolean isUncertain() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
@@ -176,5 +188,23 @@ public class ConditionalGaussianPotential extends Potential{
 			variancePotential.values[i] = 1;
 		return variancePotential;
 	}
+
+	@Override
+	public Potential addVariable(Variable variable) {
+		variables.add(variable);
+		mean = mean.addVariable(variable);
+		variance = variance.addVariable(variable);
+		return this;
+	}
+
+	@Override
+	public Potential removeVariable(Variable variable) {
+		variables.remove(variable);
+		mean = mean.removeVariable(variable);
+		variance = variance.removeVariable(variable);
+		return this;
+	}
+	
+	
 
 }

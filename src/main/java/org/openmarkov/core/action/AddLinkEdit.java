@@ -15,13 +15,12 @@ import java.util.List;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
 
 /** Creates a directed or undirected link between two nodes associated to two
  * variables in a <code>ProbNet</code> */
@@ -99,18 +98,7 @@ public class AddLinkEdit extends BaseLinkEdit {
         		for (Potential oldPotential : oldPotentials)
         		{
         			// Update potential
-        			Potential newPotential = oldPotential.copy().addVariable (node1.getVariable ());
-        			if (newPotential == null)
-        			{// It has not been implemented yet for this type of potential
-        				List<Variable> variables = oldPotential.getVariables ();
-        				if(!variables.contains (node1.getVariable ()))
-        				{
-        					variables.add (node1.getVariable ());
-        				}
-        				newPotential = new UniformPotential (variables,
-        						oldPotential.getPotentialRole ());
-        			}
-        			newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
+        			Potential newPotential = oldPotential.addVariable (node1.getVariable ());
         			newPotentials.add (newPotential);
         		}
         	}

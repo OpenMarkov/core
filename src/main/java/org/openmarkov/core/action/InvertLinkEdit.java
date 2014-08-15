@@ -15,12 +15,11 @@ import java.util.List;
 import org.apache.mahout.math.Arrays;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
 
 /** Inverts an existing link. */
 @SuppressWarnings("serial")
@@ -77,18 +76,7 @@ public class InvertLinkEdit extends BaseLinkEdit {
 			List<Potential> newPotentials = new ArrayList<Potential>();
 			this.childsOldPotentials = node2.getPotentials();
 			for (Potential oldPotential : childsOldPotentials) {
-				Potential newPotential = oldPotential.removeVariable(node1
-						.getVariable());
-				if (newPotential == null) {// It has not been implemented yet
-											// for this type of
-											// potential
-					List<Variable> variables = oldPotential.getVariables();
-					variables.add(node1.getVariable());
-					newPotential = new UniformPotential(variables,
-							oldPotential.getPotentialRole());
-				}
-				newPotential.setUtilityVariable(oldPotential
-						.getUtilityVariable());
+				Potential newPotential = oldPotential.removeVariable(node1.getVariable());
 				newPotentials.add(newPotential);
 			}
 			node2.setPotentials(newPotentials);
@@ -101,19 +89,7 @@ public class InvertLinkEdit extends BaseLinkEdit {
 			List<Potential> newPotentials = new ArrayList<Potential>();
 			for (Potential oldPotential : parentsOldPotentials) {
 				// Update potential
-				Potential newPotential = oldPotential.addVariable(node2
-						.getVariable());
-				if (newPotential == null) {// It has not been implemented yet
-											// for this type of potential
-					List<Variable> variables = oldPotential.getVariables();
-					if (!variables.contains(node2.getVariable())) {
-						variables.add(node2.getVariable());
-					}
-					newPotential = new UniformPotential(variables,
-							oldPotential.getPotentialRole());
-				}
-				newPotential.setUtilityVariable(oldPotential
-						.getUtilityVariable());
+				Potential newPotential = oldPotential.addVariable(node2.getVariable());
 				newPotentials.add(newPotential);
 			}
 			node1.setPotentials(newPotentials);

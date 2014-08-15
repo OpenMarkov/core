@@ -541,7 +541,13 @@ public abstract class Potential
      */
     public Potential addVariable (Variable variable)
     {
-        return null;
+		if(!variables.contains (variable))
+		{
+			variables.add (variable);
+		}
+    	Potential newPotential = new UniformPotential (variables, role);
+    	newPotential.setUtilityVariable(utilityVariable);
+    	return newPotential;
     }
 
     /**
@@ -549,7 +555,10 @@ public abstract class Potential
      */
     public Potential removeVariable (Variable variable)
     {
-        return null;
+    	variables.remove (variable);
+    	Potential newPotential = new UniformPotential (variables, role);
+    	newPotential.setUtilityVariable(utilityVariable);
+    	return newPotential;
     }
 
     public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)

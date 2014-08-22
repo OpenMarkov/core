@@ -89,6 +89,11 @@ public class Graph <T> {
 		return (nodeSiblings.containsKey(node))? nodeSiblings.get(node).size() : 0;
 	}
 	
+	public int getNumNeighbors(T node)
+	{
+		return getNumParents(node) + getNumChildren(node) + getNumSiblings(node);
+	}
+	
 	public List<T> getNeighbors(T node) {
 		List<T> neighbors = new ArrayList<>();
 		if(nodeChildren.containsKey(node))

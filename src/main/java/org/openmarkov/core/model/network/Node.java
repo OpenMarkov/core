@@ -209,6 +209,11 @@ public class Node {
 		return probNet.getNumSiblings(this);
 	}
 	
+	public int getNumNeighbors()
+	{
+		return probNet.getNumNeighbors(this);
+	}
+	
 	/** @param node. <code>Node</code>
 	 * @return True if <code>node</code> is parent of <code>this</code> node */
 	public boolean isParent(Node node) {

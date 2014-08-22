@@ -59,6 +59,12 @@ public abstract class BaseLinkEdit extends SimplePNEdit{
 		return isDirected;
 	}
 	
+	
+	@Override
+	public int hashCode() {
+		return variable1.hashCode() + 7 * variable2.hashCode() + 17 * ((isDirected)? 1 : 0);
+	}
+
 	@Override
 	public boolean equals(Object obj){
         if(this == obj)

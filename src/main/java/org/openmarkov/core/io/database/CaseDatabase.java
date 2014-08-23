@@ -105,5 +105,14 @@ public class CaseDatabase
         
         return casesOfVariable;
     }    
+    
+    /**
+     * Returns the number of cases
+     * @return
+     */
+    public int getNumCases()
+    {
+    	return cases.length;
+    }
 
 }

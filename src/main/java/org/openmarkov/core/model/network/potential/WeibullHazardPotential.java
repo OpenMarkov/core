@@ -30,6 +30,7 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 public class WeibullHazardPotential extends GLMPotential {
 
 	protected static final String GAMMA = "Gamma";
+	protected static final String[] MANDATORY_COVARIATES = new String[] { GAMMA, CONSTANT };
 
 	/**
 	 * Time variable
@@ -48,7 +49,7 @@ public class WeibullHazardPotential extends GLMPotential {
 
 	public WeibullHazardPotential(List<Variable> variables, PotentialRole role,
 			double[] coefficients, double[] covarianceMatrix) {
-		super(variables, role, getDefaultCovariates(variables, role, getMandatoryCovariates()),
+		super(variables, role, getDefaultCovariates(variables, role, MANDATORY_COVARIATES),
 				coefficients, covarianceMatrix);
 	}
 
@@ -60,12 +61,12 @@ public class WeibullHazardPotential extends GLMPotential {
 
 	public WeibullHazardPotential(List<Variable> variables, PotentialRole role,
 			double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
-		super(variables, role, getDefaultCovariates(variables, role, getMandatoryCovariates()),
+		super(variables, role, getDefaultCovariates(variables, role, MANDATORY_COVARIATES),
 				coefficients, uncertaintyMatrix, matrixType);
 	}
 
 	public WeibullHazardPotential(List<Variable> variables, PotentialRole role) {
-		this(variables, role, getDefaultCovariates(variables, role, getMandatoryCovariates()),
+		this(variables, role, getDefaultCovariates(variables, role, MANDATORY_COVARIATES),
 				new double[variables.size() + 1]);
 	}
 
@@ -207,10 +208,6 @@ public class WeibullHazardPotential extends GLMPotential {
 
 	public void setTimeVariable(Variable timeVariable) {
 		this.timeVariable = timeVariable;
-	}
-
-	public static String[] getMandatoryCovariates() {
-		return new String[] { GAMMA, CONSTANT };
 	}
 
 	@Override

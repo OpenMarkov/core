@@ -23,13 +23,16 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 @PotentialType(name = "Hazard (Exponential)", family = "GLM")
 public class ExponentialHazardPotential extends WeibullHazardPotential {
 
+	protected static final String[] MANDATORY_COVARIATES = new String[] { CONSTANT };
+	
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role) {
-        super(variables, role);
+        super(variables, role, getDefaultCovariates(variables, role, MANDATORY_COVARIATES),
+				new double[variables.size()]);
     }
     
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
             double[] coefficients) {
-        this(variables, role, getDefaultCovariates(variables, role), null, null);
+        this(variables, role, getDefaultCovariates(variables, role, MANDATORY_COVARIATES), null, null);
     }    
     
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
@@ -39,7 +42,7 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
     
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
             double[] coefficients, double[] covarianceMatrix) {
-        super(variables, role, getDefaultCovariates(variables, role), coefficients, covarianceMatrix);
+        super(variables, role, getDefaultCovariates(variables, role, MANDATORY_COVARIATES), coefficients, covarianceMatrix);
     }
     
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
@@ -49,7 +52,7 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
     
     public ExponentialHazardPotential(List<Variable> variables, PotentialRole role,
             double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
-        super(variables, role, getDefaultCovariates(variables, role), coefficients, uncertaintyMatrix, matrixType);
+        super(variables, role, getDefaultCovariates(variables, role, MANDATORY_COVARIATES), coefficients, uncertaintyMatrix, matrixType);
     }    
     
     public ExponentialHazardPotential(ExponentialHazardPotential potential) {
@@ -95,7 +98,12 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
         return super.tableProject(evidenceCase, inferenceOptions, weibullCoeficients, weibullCovariates, evidencelessVariables, variableValues);
     }
 
-    @Override
+    public static String[] getMandatoryCovariates()
+    {
+        return new String[]{CONSTANT};
+    }
+    
+	@Override
     public Potential copy() {
         return new ExponentialHazardPotential(this);
     }

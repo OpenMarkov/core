@@ -282,7 +282,7 @@ public final class DiscretePotentialOperations {
         }
         double[] resultValues = new double[tableSize];
         Intervention[] resultInterventions = null;
-        if (thereAreInterventions) {
+        if (thereAreInterventions || constantPotentialsIntervention != null) {
         	resultInterventions = new Intervention[tableSize];
         }
 
@@ -335,11 +335,16 @@ public final class DiscretePotentialOperations {
             }
         }
         // Sum constant potentials to the result
-        if ((numConstantPotentials > 0) && (sumConstantPotentials != 0.0)) {
-            int length = resultValues.length;
-            for (int i = 0; i < length; i++) {
+        if ((numConstantPotentials > 0) && (sumConstantPotentials != 0.0 || constantPotentialsIntervention != null)) {
+            for (int i = 0; i < resultValues.length; i++) {
                 resultValues[i] = resultValues[i] + sumConstantPotentials;
-                // TODO Hacer lo mismo que arriba con la misma lógica
+                if (constantPotentialsIntervention != null) {
+                	if (resultInterventions[i] == null) {
+                		resultInterventions[i] = constantPotentialsIntervention;
+                	} else {
+                		resultInterventions[i].concatenate(constantPotentialsIntervention);
+                	}
+                }
             }
         }
         TablePotential result = new TablePotential(resultVariables, getRole(tablePotentials), resultValues);
@@ -1981,10 +1986,10 @@ public final class DiscretePotentialOperations {
     	List<Variable> outputUtilityVariables = inputUtilityPotential.getVariables();
     	outputUtilityVariables.remove(decisionVariable);
     	TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables, PotentialRole.UTILITY);
+    	outputUtilityPotential.interventions = new Intervention[outputUtilityPotential.values.length];
+
     	// TODO Check whether the next line can be removed
     	outputUtilityPotential.setUtilityVariable(inputUtilityPotential.getUtilityVariable());
-    	int outputUtilityPotentialValuesLength = outputUtilityPotential.values.length;
-    	outputUtilityPotential.interventions = new Intervention[outputUtilityPotentialValuesLength];
 
     	// in allVariables, the first variable is decisionVariable
     	List<Variable> allVariables = new ArrayList<Variable>(outputUtilityVariables.size() + 1);

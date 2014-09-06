@@ -1151,11 +1151,14 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      *         <code>List</code> of <code>Variable</code>
      */
     public static List<Variable> getVariables(List<Node> nodes) {
-        List<Variable> variables = new ArrayList<Variable>(nodes.size());
-        for (Node node : nodes) {
-            variables.add(node.getVariable());
+        List<Variable> variables = null;
+        if (nodes != null) {
+        	variables = new ArrayList<Variable>(nodes.size());
+            for (Node node : nodes) {
+                variables.add(node.getVariable());
+            }
         }
-        return variables;
+        return variables != null ? variables : new ArrayList<Variable>();
     }    
 
     /**

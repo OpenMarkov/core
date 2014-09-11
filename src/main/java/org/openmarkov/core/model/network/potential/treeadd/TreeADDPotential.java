@@ -266,8 +266,10 @@ public class TreeADDPotential extends Potential {
 		variables.add(variable);
 		for (TreeADDBranch branch : getBranches()) {
 			branch.setParentVariables(variables);
-			Potential newPotential = branch.getPotential().addVariable(variable);
-			branch.setPotential(newPotential);
+			if(branch.getPotential() instanceof TreeADDPotential)
+			{
+				branch.getPotential().addVariable(variable);
+			}
 		}
 		return this;
 	}

@@ -32,6 +32,11 @@ public class WeibullHazardPotential extends GLMPotential {
 	protected static final String GAMMA = "Gamma";
 	protected static final String[] MANDATORY_COVARIATES = new String[] { GAMMA, CONSTANT };
 
+    /**
+     * Determines whether it represents a log hazard 
+     */
+    protected boolean log = true;
+
 	/**
 	 * Time variable
 	 */
@@ -73,6 +78,7 @@ public class WeibullHazardPotential extends GLMPotential {
 	public WeibullHazardPotential(WeibullHazardPotential potential) {
 		super(potential);
 		timeVariable = potential.timeVariable;
+		log = potential.log;
 	}
 
 	/**
@@ -184,7 +190,10 @@ public class WeibullHazardPotential extends GLMPotential {
 						lambda += covariateValue * coefficients[j];
 					}
 				}
-				lambda = Math.exp(lambda);
+				if(log)
+				{
+					lambda = Math.exp(lambda);
+				}
 				double diff = Math.pow(t - 1, shape) - Math.pow(t, shape);
 				double probability = 1 - Math.exp(lambda * diff);
 				// p
@@ -246,5 +255,13 @@ public class WeibullHazardPotential extends GLMPotential {
         }
         return gammaIndex;
     }
+	
+    
+    public boolean isLog() {
+		return log;
+	}
 
+	public void setLog(boolean log) {
+		this.log = log;
+	} 
 }

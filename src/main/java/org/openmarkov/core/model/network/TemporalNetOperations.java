@@ -1,19 +1,16 @@
 package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -110,47 +107,12 @@ public class TemporalNetOperations {
 				variablesOfInterest.add(node.getVariable());
 			}
 		}
-		// Impose policy according to interest variable's decision criterion
-		if (variableOfInterest.getDecisionCriterion() != null) {
-			try {
-				String decisionCriterion = variableOfInterest.getDecisionCriterion().getString();
-				Variable decisionCriteriaVariable;
-					decisionCriteriaVariable = expandedNetwork.getVariable("Decision criterion");
-				Node decisionCriteriaNode = expandedNetwork.getNode(expandedNetwork
-						.getDecisionCriterionVariable());
-				TablePotential decisionCriterionPolicy = new TablePotential(
-						Arrays.asList(decisionCriteriaVariable), PotentialRole.POLICY);
-				for (int i = 0; i < decisionCriterionPolicy.values.length; ++i) {
-					try {
-						decisionCriterionPolicy.values[i] = (decisionCriteriaVariable
-								.getStateIndex(decisionCriterion) == i) ? 1 : 0;
-					} catch (InvalidStateException e) {
-						e.printStackTrace();
-					}
-				}
-				decisionCriteriaNode.setPotential(decisionCriterionPolicy);
-			} catch (NodeNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
+
 		try {
 			probsAndUtilities = inferenceAlgorithm.getProbsAndUtilities(variablesOfInterest);
 		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
 			e.printStackTrace();
 		}
-//			// Replace constant potentials of variables with evidence with proper potentials
-//			for(Variable variable : probsAndUtilities.keySet())
-//			{
-//				if(evidence.contains(variable))
-//				{
-//					TablePotential newPotential = new TablePotential(Arrays.asList(variable), PotentialRole.JOINT_PROBABILITY);
-//					int state = evidence.getFinding(variable).getStateIndex();
-//					for(int i=0; i<newPotential.values.length;++i)
-//						newPotential.values[i] = (i==state)? 1 : 0;
-//					probsAndUtilities.put(variable, newPotential);
-//				}
-//			}
 		return probsAndUtilities;
 	}	
 

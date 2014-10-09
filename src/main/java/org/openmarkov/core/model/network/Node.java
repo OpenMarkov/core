@@ -29,8 +29,13 @@ import org.openmarkov.core.model.network.potential.operation.Util;
 
 /** A probabilistic node has a set of conditional probabilities, one variable, 
  * etc. The structural aspect of the underlying  graph is in the node
- * associated.  * @author marias * @author fjdiez
- * @since OpenMarkov 1.0 * @see openmarkov.graphs.Node * @see org.openmarkov.core.model.network.ProbNet * @version 1.0 */
+ * associated. 
+ * @author marias
+ * @author fjdiez
+ * @since OpenMarkov 1.0
+ * @see openmarkov.graphs.Node
+ * @see org.openmarkov.core.model.network.ProbNet
+ * @version 1.0 */
 public class Node {
 	
 	// Constants
@@ -448,7 +453,12 @@ public class Node {
 	}
 	
 	public void setNodeType(NodeType nodeType) {
+        // Remove node from NodeTypeDepot HashMap
+        this.probNet.nodeDepot.removeNode(this);
+        // Change of nodeType
 		this.nodeType = nodeType;
+        // Add node to NodeTypeDepot HashMap
+        this.probNet.nodeDepot.addNode(this);
 	}
 
 	/** @param simulationIndexVariable. <code>Variable</code> */

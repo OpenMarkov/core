@@ -92,8 +92,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 	 * @throws IncompatibleEvidenceException
 	 * @throws UnexpectedInferenceException
 	 */
-	private void testIntervention(InferenceAlgorithm algorithm,
-			Intervention interv, EvidenceCase parentEvi)
+	private void testIntervention(InferenceAlgorithm algorithm, Intervention interv, EvidenceCase parentEvi)
 			throws IncompatibleEvidenceException, UnexpectedInferenceException {
 
 		if (interv != null) {
@@ -105,27 +104,25 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 			interestVariables.add(rootVariable);
 			TablePotential probs = algorithm.getProbsAndUtilities().get(rootVariable);
 			if (branches != null) {
-				// Check that the number of branches is equal to the non-zero probability states
-				assertEquals(getNumStatesBranches(branches),getNumProbsNotZero(probs));
+				// Check that the number of branches is equal to the non-zero
+				// probability states
+				assertEquals(getNumStatesBranches(branches), getNumProbsNotZero(probs));
 				for (int i = 0; i < branches.size(); i++) {
 					TreeADDBranch auxBranch = branches.get(i);
-					Intervention auxInterventionBranch = Intervention
-							.getInterventionBranch(auxBranch);
+					Intervention auxInterventionBranch = Intervention.getInterventionBranch(auxBranch);
 					for (State state : auxBranch.getStates()) {
-						// Check that 'state' has non-zero probability in the CPN
-						assertTrue(probs.values[rootVariable.getStateIndex(state)]>0);
-						EvidenceCase newEvi = new EvidenceCase(
-								parentEvi.getFindings());
-						
-						Finding finding = new Finding(rootVariable,
-								state);
+						// Check that 'state' has non-zero probability in the
+						// CPN
+						assertTrue(probs.values[rootVariable.getStateIndex(state)] > 0);
+						EvidenceCase newEvi = new EvidenceCase(parentEvi.getFindings());
+
+						Finding finding = new Finding(rootVariable, state);
 						try {
 							newEvi.addFinding(finding);
 						} catch (InvalidStateException e) {
 							e.printStackTrace();
 						}
-						testIntervention(algorithm, auxInterventionBranch,
-								newEvi);
+						testIntervention(algorithm, auxInterventionBranch, newEvi);
 					}
 				}
 			}

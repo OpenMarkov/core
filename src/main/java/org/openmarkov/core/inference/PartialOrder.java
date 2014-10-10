@@ -53,6 +53,8 @@ public class PartialOrder {
 
     /** A partial order is a list of lists of variables. */
     private List<List<Variable>> order;
+    
+    ProbNet diagram;
 
     public List<List<Variable>> getOrder() {
         return order;
@@ -70,6 +72,7 @@ public class PartialOrder {
      */
     public PartialOrder(ProbNet id) throws WrongGraphStructureException {
         calculatePartialOrder(id);
+        diagram = id;
     }
     
     public PartialOrder() throws WrongGraphStructureException {
@@ -138,6 +141,18 @@ public class PartialOrder {
         }
         order.add(remainingVariables);
 
+    }
+    
+    
+    public List<Variable> getAnAdmissibleOrderOfDecisions(){
+    	List<Variable> decisions = new ArrayList<>();
+    	
+    	for (List<Variable> variablesSet:order){
+    		if (variablesSet.size()>0 && diagram.getNode(variablesSet.get(0)).getNodeType()==NodeType.DECISION){
+    			decisions.addAll(variablesSet);
+    		}
+    	}
+    	return decisions;
     }
 
     /**

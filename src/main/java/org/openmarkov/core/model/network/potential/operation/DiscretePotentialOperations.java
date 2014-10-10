@@ -1920,13 +1920,7 @@ public final class DiscretePotentialOperations {
     		if (thereAreInterventions) {
     			outputPotentials.add(outputUtilityPotential);
     		} else {
-    			boolean thereAreRelevantUtilities = false;
-    			for (int i = 0; i < outputUtilityPotential.values.length; i++) {
-    				if (!almostEqual(outputUtilityPotential.values[i], 0.0)) {
-    					thereAreRelevantUtilities = true;
-    					break;
-    				}
-    			}
+    			boolean thereAreRelevantUtilities = thereAreRelevantUtilities(outputUtilityPotential);
     			if (thereAreRelevantUtilities) {
     				outputPotentials.add(outputUtilityPotential);
     			}
@@ -2010,7 +2004,6 @@ public final class DiscretePotentialOperations {
     	// auxiliary variables that may change in every iteration
     	int[] allVariablesCoordinate = new int[numVariables];
     	int outputUtilityPotentialPosition = 0;
-    	int conditionalProbPotentialPosition = 0;
     	int inputUtilityPotentialPosition = 0;
     	int increasedVariable = 0;
 
@@ -2030,14 +2023,15 @@ public final class DiscretePotentialOperations {
     		// inner iterations correspond to the decision variable to eliminate
     		for (int innerIteration = 0; innerIteration < decisionVariableSize; 
     				innerIteration++) {
-    			if (inputUtilityPotential.values[inputUtilityPotentialPosition] > max) {
-    				max = inputUtilityPotential.values[inputUtilityPotentialPosition];
-    				optimalStatesIndices.clear();
+    			double auxInputUtilityPotentialValue = inputUtilityPotential.values[inputUtilityPotentialPosition];
+    			if (auxInputUtilityPotentialValue >= max){
+    				if (auxInputUtilityPotentialValue > max) {
+    					max = auxInputUtilityPotentialValue;
+    					optimalStatesIndices.clear();
+    				}
     				optimalStatesIndices.add(innerIteration);
-    			} else if (inputUtilityPotential.values[inputUtilityPotentialPosition] == max) {
-    				optimalStatesIndices.add(innerIteration);
-    			}
-    			utilities[innerIteration] = inputUtilityPotential.values[inputUtilityPotentialPosition];
+     			}
+    			utilities[innerIteration] = auxInputUtilityPotentialValue;
     			if (inputUtilityPotential.interventions != null) {
     				interventions[innerIteration] = 
     						inputUtilityPotential.interventions[inputUtilityPotentialPosition];
@@ -2077,32 +2071,38 @@ public final class DiscretePotentialOperations {
 
     	// Return the utility potential if some of its values is different from 0.0
     	// or if any of the interventions is not null
-    	boolean thereAreInterventions = false;
-    	for (int i = 0; i < outputUtilityPotential.values.length; i++) {
-    		if (outputUtilityPotential.interventions[i] != null) {
-    			thereAreInterventions = true;
-    			break;
-    		}
-    	}
-    	if (thereAreInterventions) {
-    		outputPotentials.add(outputUtilityPotential);
-    	} else {
-    		boolean thereAreRelevantUtilities = false;
-    		for (int i = 0; i < outputUtilityPotential.values.length; i++) {
-    			if (!almostEqual(outputUtilityPotential.values[i], 0.0)) {
-    				thereAreRelevantUtilities = true;
-    				break;
-    			}
-    		}
-    		if (thereAreRelevantUtilities) {
-    			outputPotentials.add(outputUtilityPotential);
-    		}
-    	}
+		if (thereAreInterventionsInOutputUtilityPotential(outputUtilityPotential)
+				|| thereAreRelevantUtilities(outputUtilityPotential)) {
+			outputPotentials.add(outputUtilityPotential);
+		}
 
     	outputPotentials.add(policyPotential);
 
     	return outputPotentials;
     }
+
+private static boolean thereAreRelevantUtilities(TablePotential outputUtilityPotential) {
+	boolean thereAreRelevantUtilities = false;
+	for (int i = 0; i < outputUtilityPotential.values.length; i++) {
+		if (!almostEqual(outputUtilityPotential.values[i], 0.0)) {
+			thereAreRelevantUtilities = true;
+			break;
+		}
+	}
+	return thereAreRelevantUtilities;
+}
+
+private static boolean thereAreInterventionsInOutputUtilityPotential(TablePotential outputUtilityPotential) {
+	
+	boolean thereAreInterventions = false;
+	for (int i = 0; i < outputUtilityPotential.values.length; i++) {
+		if (outputUtilityPotential.interventions[i] != null) {
+			thereAreInterventions = true;
+			break;
+		}
+	}
+	return thereAreInterventions;
+}
 
     /** This method is used to remove a decision variable from a probability potential
      * that in fact does not depend on the decision variable

@@ -33,7 +33,6 @@ import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.sdag.SDAGIntervention;
 
 /**
  * This class defines a set of common operations over discrete potentials (
@@ -50,7 +49,8 @@ public final class DiscretePotentialOperations {
      * <code>maxRoundErrorAllowed</code> they will be considered equals.
      */
     public static double maxRoundErrorAllowed = 1E-8;
-
+    
+	
     /**
      * @param tablePotentials
      *            <code>ArrayList</code> of extends <code>Potential</code>.
@@ -120,14 +120,8 @@ public final class DiscretePotentialOperations {
                 resultVariables);
 
         // Gets coordinate
-        int[] resultCoordinate;
-        if (numVariables != 0) {
-            resultCoordinate = new int[numVariables];
-        } else {
-            resultCoordinate = new int[1];
-            resultCoordinate[0] = 0;
-        }
-
+        int[] resultCoordinate = initializeCoordinates(numVariables);
+        
         // Position in each table potential
         int[] potentialsPositions = new int[numPotentials];
         for (int i = 0; i < numPotentials; i++) {
@@ -176,19 +170,12 @@ public final class DiscretePotentialOperations {
         return new TablePotential(resultVariables, role, resultValues);
     }
     
+   
     /**
      * @param tablePotentials <code>List</code> of <code>TablePotential</code>s.
      * @return <code>TablePotential</code>
      */
     public static TablePotential sum(List<TablePotential> tablePotentials) {
-    	return sum(tablePotentials,false);
-    }
-
-    /**
-     * @param tablePotentials <code>List</code> of <code>TablePotential</code>s.
-     * @return <code>TablePotential</code>
-     */
-    public static TablePotential sum(List<TablePotential> tablePotentials,boolean sdagInterventions) {
         List<TablePotential> constantPotentials;
         if (tablePotentials.size() == 1) {
             return (TablePotential) tablePotentials.get(0);
@@ -213,12 +200,11 @@ public final class DiscretePotentialOperations {
         int numConstantPotentials = constantPotentials.size();
         for (int i = 0; i < numConstantPotentials; i++) {
             sumConstantPotentials += constantPotentials.get(i).values[0];
-            if (constantPotentials.get(i).interventions != null) {
-            	if (constantPotentialsIntervention == null) {
-            		constantPotentialsIntervention = constantPotentials.get(i).interventions[0];
-            	} else {
-            		constantPotentialsIntervention = constantPotentialsIntervention.concatenate(constantPotentials.get(i).interventions[0]);
-            	}
+            Intervention[] iConstantPotentialInterventions = constantPotentials.get(i).interventions;
+			if (iConstantPotentialInterventions != null) {
+            	Intervention onlyInterventionIConstantPotential = iConstantPotentialInterventions[0];
+            	constantPotentialsIntervention = (constantPotentialsIntervention == null)?onlyInterventionIConstantPotential:
+            		constantPotentialsIntervention.concatenate(onlyInterventionIConstantPotential);            	
             }
         }
 
@@ -256,13 +242,7 @@ public final class DiscretePotentialOperations {
                 resultVariables);
 
         // Gets the coordinates
-        int[] resultCoordinates;
-        if (numVariables != 0) {
-            resultCoordinates = new int[numVariables];
-        } else {
-            resultCoordinates = new int[1];
-            resultCoordinates[0] = 0;
-        }
+        int[] resultCoordinates = initializeCoordinates(numVariables);
 
         // Position in each table potential
         int[] potentialPositions = new int[numPotentials];
@@ -272,19 +252,18 @@ public final class DiscretePotentialOperations {
 
         // Sum
         int incrementedVariable = 0;
-        int[] dimensions = (!resultVariables.isEmpty()) ? TablePotential.calculateDimensions(resultVariables)
+        boolean resultVariablesNotEmpty = !resultVariables.isEmpty();
+		int[] dimensions = resultVariablesNotEmpty ? TablePotential.calculateDimensions(resultVariables)
                 : new int[0];
-        int[] offsets = (!resultVariables.isEmpty()) ? TablePotential.calculateOffsets(dimensions)
+        int[] offsets = resultVariablesNotEmpty ? TablePotential.calculateOffsets(dimensions)
                 : new int[0];
         int tableSize = 1; // If numVariables == 0 the potential is a constant
         if (numVariables > 0) {
             tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
         }
         double[] resultValues = new double[tableSize];
-        Intervention[] resultInterventions = null;
-        if (thereAreInterventions || constantPotentialsIntervention != null) {
-        	resultInterventions = new Intervention[tableSize];
-        }
+		Intervention[] resultInterventions = (thereAreInterventions || constantPotentialsIntervention != null) ? new Intervention[tableSize]
+				: null;
 
         if (potentials.size() > 0) {
             double sum;
@@ -317,13 +296,11 @@ public final class DiscretePotentialOperations {
                 for (int iPotential = 0; iPotential < numPotentials; iPotential++) {
                     // sum the numbers
                     sum = sum + tables[iPotential][potentialPositions[iPotential]];
-                    if (thereAreInterventions && interventions[iPotential] != null) {
-                    	if (resultIntervention == null) {
-                    		resultIntervention = interventions[iPotential][potentialPositions[iPotential]];
-                    	} else {
-                    		resultIntervention = resultIntervention.concatenate(interventions[iPotential][potentialPositions[iPotential]]);
-                    	}
-                    }
+					if (thereAreInterventions && interventions[iPotential] != null) {
+						Intervention auxIIntervention = interventions[iPotential][potentialPositions[iPotential]];
+						resultIntervention = (resultIntervention == null) ? auxIIntervention
+								: resultIntervention.concatenate(auxIIntervention);
+					}
                     
                     // update the current position in each potential table
                     potentialPositions[iPotential] += accumulatedOffsets[iPotential][incrementedVariable];
@@ -356,7 +333,16 @@ public final class DiscretePotentialOperations {
         return result;
     }
 
-    /** Given a collection of variables, creates a new variable whose name is the concatenation 
+	private static int[] initializeCoordinates(int numVariables) {
+		int[] resultCoordinates = new int[Math.max(1,numVariables)];
+        if (numVariables == 0) {
+        	resultCoordinates[0] = 0;
+        }
+		return resultCoordinates;
+	}
+
+    
+	/** Given a collection of variables, creates a new variable whose name is the concatenation 
      * of the names of the other variables. If there is only one, returns that one. If the collection is empty,
      * returns a new variable with name "U"
      * @param variables
@@ -647,14 +633,8 @@ public final class DiscretePotentialOperations {
 
                 // find the next configuration and the index of the
                 // increased variable
-                for (int j = 0; j < unionCoordinate.length; j++) {
-                    unionCoordinate[j]++;
-                    if (unionCoordinate[j] < unionDimensions[j]) {
-                        increasedVariable = j;
-                        break;
-                    }
-                    unionCoordinate[j] = 0;
-                }
+            	increasedVariable = findNextConfigurationAndIndexIncreasedVariable(unionDimensions,
+            			unionCoordinate,increasedVariable);
 
                 // update the positions of the potentials we are multiplying
                 for (int i = 0; i < numNonConstantPotentials; i++) {
@@ -679,15 +659,9 @@ public final class DiscretePotentialOperations {
             if (outerIteration < resultSize - 1) {
                 // find the next configuration and the index of the
                 // increased variable
-                for (int j = 0; j < unionCoordinate.length; j++) {
-                    unionCoordinate[j]++;
-                    if (unionCoordinate[j] < unionDimensions[j]) {
-                        increasedVariable = j;
-                        break;
-                    }
-                    unionCoordinate[j] = 0;
-                }
-
+            	increasedVariable = findNextConfigurationAndIndexIncreasedVariable(unionDimensions,
+            			unionCoordinate,increasedVariable);
+                
                 // update the positions of the potentials we are multiplying
                 for (int i = 0; i < numNonConstantPotentials; i++) {
                     currentPositions[i] += accumulatedOffsets[i][increasedVariable];
@@ -998,13 +972,7 @@ public final class DiscretePotentialOperations {
                 quotient);
 
         // Gets coordinate
-        int[] quotientCoordinate;
-        if (numVariables != 0) {
-            quotientCoordinate = new int[numVariables];
-        } else {
-            quotientCoordinate = new int[1];
-            quotientCoordinate[0] = 0;
-        }
+        int[] quotientCoordinate = initializeCoordinates(numVariables);
 
         // Position in each table potential
         int[] potentialsPositions = new int[2];
@@ -1248,15 +1216,9 @@ public final class DiscretePotentialOperations {
 
                 // find the next configuration and the index of the
                 // increased variable
-                for (int j = 0; j < unionCoordinate.length; j++) {
-                    unionCoordinate[j]++;
-                    if (unionCoordinate[j] < unionDimensions[j]) {
-                        increasedVariable = j;
-                        break;
-                    }
-                    unionCoordinate[j] = 0;
-                }
-
+            	increasedVariable = findNextConfigurationAndIndexIncreasedVariable(unionDimensions,
+            			unionCoordinate,increasedVariable);
+               
                 // update the positions of the potentials we are multiplying
                 for (int i = 0; i < numProperPotentials; i++) {
                     currentPositions[i] += accumulatedOffsets[i][increasedVariable];
@@ -1288,15 +1250,9 @@ public final class DiscretePotentialOperations {
             if (outerIteration < resultSize - 1) {
                 // find the next configuration and the index of the
                 // increased variable
-                for (int j = 0; j < unionCoordinate.length; j++) {
-                    unionCoordinate[j]++;
-                    if (unionCoordinate[j] < unionDimensions[j]) {
-                        increasedVariable = j;
-                        break;
-                    }
-                    unionCoordinate[j] = 0;
-                }
-
+            	increasedVariable = findNextConfigurationAndIndexIncreasedVariable(unionDimensions,
+            			unionCoordinate,increasedVariable);
+                
                 // update the positions of the potentials we are multiplying
                 for (int i = 0; i < numProperPotentials; i++) {
                     currentPositions[i] += accumulatedOffsets[i][increasedVariable];
@@ -1443,15 +1399,9 @@ public final class DiscretePotentialOperations {
 
                 // find the next configuration and the index of the
                 // increased variable
-                for (int j = 0; j < unionCoordinate.length; j++) {
-                    unionCoordinate[j]++;
-                    if (unionCoordinate[j] < unionDimensions[j]) {
-                        increasedVariable = j;
-                        break;
-                    }
-                    unionCoordinate[j] = 0;
-                }
-
+            	increasedVariable = findNextConfigurationAndIndexIncreasedVariable(unionDimensions,
+            			unionCoordinate,increasedVariable);
+                
                 // update the positions of the potentials we are multiplying
                 for (int i = 0; i < numProperPotentials; i++) {
                     currentPositions[i] += accumulatedOffsets[i][increasedVariable];
@@ -1489,15 +1439,9 @@ public final class DiscretePotentialOperations {
             if (outerIteration < resultSize - 1) {
                 // find the next configuration and the index of the
                 // increased variable
-                for (int j = 0; j < unionCoordinate.length; j++) {
-                    unionCoordinate[j]++;
-                    if (unionCoordinate[j] < unionDimensions[j]) {
-                        increasedVariable = j;
-                        break;
-                    }
-                    unionCoordinate[j] = 0;
-                }
-
+            	increasedVariable = findNextConfigurationAndIndexIncreasedVariable(unionDimensions,
+            			unionCoordinate,increasedVariable);
+                
                 // update the positions of the potentials we are multiplying
                 for (int i = 0; i < numProperPotentials; i++) {
                     currentPositions[i] += accumulatedOffsets[i][increasedVariable];
@@ -1869,14 +1813,13 @@ public final class DiscretePotentialOperations {
     		int inputUtilityPotentialPosition = 0;
     		int increasedVariable = 0;
 
-    		double sum;
     		double[] probabilities = new double[chanceVariableSize];
     		Intervention[] interventions = new Intervention[chanceVariableSize];
 
     		// outer iterations correspond to the variables to in the outputUtilityPotential
     		for (int outerIteration = 0; outerIteration < TablePotential.computeTableSize(outputUtilityVariables); 
     				outerIteration++) {
-    			sum = 0;
+    			double sum = 0;
     			// inner iterations correspond to the chance variable to eliminate
     			for (int innerIteration = 0; innerIteration < chanceVariableSize; innerIteration++) {
     				sum += conditionalProb.values[conditionalProbPotentialPosition]
@@ -1889,14 +1832,8 @@ public final class DiscretePotentialOperations {
     				}
 
     				// find the next configuration and the index of the increased variable
-    				for (int j = 0; j < numVariables; j++) {
-    					allVariablesCoordinate[j]++;
-    					if (allVariablesCoordinate[j] < allVariablesDimensions[j]) {
-    						increasedVariable = j;
-    						break;
-    					}
-    					allVariablesCoordinate[j] = 0;
-    				}
+    				increasedVariable = findNextConfigurationAndIndexIncreasedVariable(allVariablesDimensions, 
+    						allVariablesCoordinate,increasedVariable);
 
     				// Update coordinates
     				conditionalProbPotentialPosition += 
@@ -1917,13 +1854,8 @@ public final class DiscretePotentialOperations {
 
     		// Return the utility potential if some of its values is different from 0.0
     		// or if there are interventions
-    		if (thereAreInterventions) {
+    		if (thereAreInterventions || thereAreRelevantUtilities(outputUtilityPotential)) {
     			outputPotentials.add(outputUtilityPotential);
-    		} else {
-    			boolean thereAreRelevantUtilities = thereAreRelevantUtilities(outputUtilityPotential);
-    			if (thereAreRelevantUtilities) {
-    				outputPotentials.add(outputUtilityPotential);
-    			}
     		}
 
     	} // end of if (!thereIsUtility)
@@ -1935,6 +1867,29 @@ public final class DiscretePotentialOperations {
     	}
     	return outputPotentials;
     }
+
+	/**
+	 * @param numVariables
+	 * @param dimension
+	 * @param coordinate
+	 * @param increasedVariable
+	 * @return
+	 */
+	private static int findNextConfigurationAndIndexIncreasedVariable(
+			int[] dimension, int[] coordinate, int increasedVariable) {
+		boolean isCoordinateJLessThanDimensionJ = false;
+		for (int j = 0; j < dimension.length && !isCoordinateJLessThanDimensionJ; j++) {
+			coordinate[j]++;
+			if (coordinate[j] < dimension[j]){
+				increasedVariable = j;
+				isCoordinateJLessThanDimensionJ = true;
+			}
+			else{
+				coordinate[j] = 0;
+			}
+		}
+		return increasedVariable;
+	}
     
     /**
      * @param coalescedInterventions 
@@ -2038,15 +1993,9 @@ public final class DiscretePotentialOperations {
     			}
 
     			// find the next configuration and the index of the increased variable
-    			for (int j = 0; j < numVariables; j++) {
-    				allVariablesCoordinate[j]++;
-    				if (allVariablesCoordinate[j] < allVariablesDimensions[j]) {
-    					increasedVariable = j;
-    					break;
-    				}
-    				allVariablesCoordinate[j] = 0;
-    			}
-
+    			increasedVariable = findNextConfigurationAndIndexIncreasedVariable(allVariablesDimensions,
+    					allVariablesCoordinate,increasedVariable);
+    			
     			// Update coordinates
     			inputUtilityPotentialPosition +=
     					accOffsetsInputUtilityPotential[increasedVariable];
@@ -2139,7 +2088,6 @@ private static boolean thereAreInterventionsInOutputUtilityPotential(TablePotent
 		int inputPotentialPosition = 0;
 		int projectedPotentialPosition = 0;
 		int increasedVariable = 0;
-		double projectedValue = 0.0;
 
 		// outer iterations correspond to the variables in the output potential
 		int numOuterIterations = TablePotential.computeTableSize(projectedPotentialVariables);
@@ -2150,15 +2098,9 @@ private static boolean thereAreInterventionsInOutputUtilityPotential(TablePotent
 
 				if (!(outerIteration == numOuterIterations - 1 && innerIteration == variableSize - 1)) {
 					// find the next configuration and the index of the increased variable
-					for (int j = 0; j < numInputVariables; j++) {
-						allVariablesCoordinate[j]++;
-						if (allVariablesCoordinate[j] < allVariablesDimensions[j]) {
-							increasedVariable = j;
-							break;
-						}
-						allVariablesCoordinate[j] = 0;
-					}
-
+					increasedVariable = findNextConfigurationAndIndexIncreasedVariable(allVariablesDimensions,
+							allVariablesCoordinate,increasedVariable);
+					
 					// Update coordinates
 					inputPotentialPosition +=
 							accOffsetsInputPotential[increasedVariable];
@@ -2174,24 +2116,7 @@ private static boolean thereAreInterventionsInOutputUtilityPotential(TablePotent
     	return thereAreRelevantProbabilities ? projectedPotential : null;
 	}
 
-	// TODO remove
-    private static List<State> setStates(double[] utilitiesToMaximize, Variable maxVariable) {
-		List<State> states = new ArrayList<State>();
-		double max = Double.NEGATIVE_INFINITY;
-		for (int i = 0; i < utilitiesToMaximize.length; i++) {
-			if (utilitiesToMaximize[i] > max) {
-				states.clear();
-				max = utilitiesToMaximize[i];
-				states.add(maxVariable.getStates()[i]);
-			} else {
-				if (utilitiesToMaximize[i] == max) {
-					states.add(maxVariable.getStates()[i]);
-				}
-			}
-		}
-		return states;
-	}
-
+	
 	/** 
 	 * Classifies potential from the first list between probability and utility and stores them 
 	 * in the second and third list

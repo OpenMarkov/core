@@ -1690,7 +1690,68 @@ public class IDFactory extends NetsFactory {
 
 		return probNet;
 	}
+	
+	public static ProbNet buildIDThreeIndependentDecisions() {
+		ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+		// Variables
+		Variable varD2 = new Variable("D2", "no", "yes");
+		Variable varD1 = new Variable("D1", "no", "yes");
+		Variable varU1 = new Variable("U1");
+		Variable varU2 = new Variable("U2");
+		Variable varB = new Variable("B", "absent", "present");
+		Variable varA = new Variable("A", "absent", "present");
+		Variable varU3 = new Variable("U3");
+		Variable varD3 = new Variable("D3", "no", "yes");
 
+		// Nodes
+		Node nodeD2 = probNet.addNode(varD2, NodeType.DECISION);
+		Node nodeD1 = probNet.addNode(varD1, NodeType.DECISION);
+		Node nodeU1 = probNet.addNode(varU1, NodeType.UTILITY);
+		Node nodeU2 = probNet.addNode(varU2, NodeType.UTILITY);
+		Node nodeB = probNet.addNode(varB, NodeType.CHANCE);
+		Node nodeA = probNet.addNode(varA, NodeType.CHANCE);
+		Node nodeU3 = probNet.addNode(varU3, NodeType.UTILITY);
+		Node nodeD3 = probNet.addNode(varD3, NodeType.DECISION);
+
+		// Links
+		probNet.makeLinksExplicit(false);
+		probNet.addLink(nodeD2, nodeU2, true);
+		probNet.addLink(nodeD2, nodeD3, true);
+		probNet.addLink(nodeD1, nodeU1, true);
+		probNet.addLink(nodeD1, nodeD2, true);
+		probNet.addLink(nodeB, nodeD2, true);
+		probNet.addLink(nodeB, nodeU2, true);
+		probNet.addLink(nodeA, nodeD1, true);
+		probNet.addLink(nodeA, nodeU1, true);
+		probNet.addLink(nodeD3, nodeU3, true);
+
+		// Potentials
+		TablePotential potU1 = new TablePotential(varU1, Arrays.asList(varD1, varA));
+		potU1.values = new double[] { 2, 0, 0, 2 };
+		nodeU1.setPotential(potU1);
+
+		TablePotential potU2 = new TablePotential(varU2, Arrays.asList(varD2, varB));
+		potU2.values = new double[] { 1, 8, 3, 4 };
+		nodeU2.setPotential(potU2);
+
+		TablePotential potB = new TablePotential(Arrays.asList(varB), PotentialRole.CONDITIONAL_PROBABILITY);
+		potB.values = new double[] { 0.4, 0.6 };
+		nodeB.setPotential(potB);
+
+		TablePotential potA = new TablePotential(Arrays.asList(varA), PotentialRole.CONDITIONAL_PROBABILITY);
+		potA.values = new double[] { 0.7, 0.3 };
+		nodeA.setPotential(potA);
+
+		TablePotential potU3 = new TablePotential(varU3, Arrays.asList(varD3));
+		potU3.values = new double[] { 12, 30.03 };
+		nodeU3.setPotential(potU3);
+
+		// Link restrictions and revealing states
+		// Always observed nodes
+
+		return probNet;
+	}
+	
 	public static ProbNet buildIDConcatenateOrderTwoDecisions() {
 		ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		// Variables

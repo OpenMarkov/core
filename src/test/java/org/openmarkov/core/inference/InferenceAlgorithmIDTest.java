@@ -130,6 +130,12 @@ iD_DecisionTestProblemWithSV = IDFactory
 		testMEUAndStrategy(IDFactory.buildIDConcatenateOrderTwoDecisions(),8.15,null);	
 	}
 	
+	@Test
+	public void testIDThreeIndependentDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDThreeIndependentDecisions(),37.63,null);	
+	}
+	
+	
 	
 	
 	

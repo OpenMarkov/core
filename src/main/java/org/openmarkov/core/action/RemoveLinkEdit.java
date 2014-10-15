@@ -76,13 +76,13 @@ public class RemoveLinkEdit extends BaseLinkEdit {
         this (probNet, variable1, variable2, isDirected, true);
     }
 
-	@Override
-	public void doEdit () {
-		probNet.removeLink (node1, node2, isDirected);
-		if (probNet.hasExplicitLinks()) {
-			this.link = probNet.getLink (node1, node2, isDirected);
-		}
-		if (updatePotentials)
+    @Override
+    public void doEdit () {
+        if (probNet.hasExplicitLinks()) {
+            this.link = probNet.getLink (node1, node2, isDirected);
+        }
+        probNet.removeLink (node1, node2, isDirected);
+        if (updatePotentials)
 		{
 			this.oldPotentials = node2.getPotentials ();
 			if (node2.getNodeType() == NodeType.UTILITY) {// supervalue nodes

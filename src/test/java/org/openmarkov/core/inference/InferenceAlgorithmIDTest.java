@@ -135,6 +135,11 @@ iD_DecisionTestProblemWithSV = IDFactory
 		testMEUAndStrategy(IDFactory.buildIDThreeIndependentDecisions(),37.63,null);	
 	}
 	
+	@Test
+	public void testIDStatesTies() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDStatesTies(),13.7,null);	
+	}
+	
 	
 	
 	

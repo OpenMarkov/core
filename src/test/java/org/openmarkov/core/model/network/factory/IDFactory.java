@@ -1796,6 +1796,31 @@ public class IDFactory extends NetsFactory {
 
 	}
 	
+	public static ProbNet buildIDStatesTies() {
+	  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+	  // Variables
+	  Variable varU = new Variable("U");
+	  Variable varD = new Variable("D", "s1", "s2", "s3", "s4", "s5");
+
+	  // Nodes
+	  Node nodeU= probNet.addNode(varU, NodeType.UTILITY);
+	  Node nodeD= probNet.addNode(varD, NodeType.DECISION);
+
+	  // Links
+	  probNet.makeLinksExplicit(false);
+	  probNet.addLink(nodeD, nodeU, true);
+
+	  // Potentials
+	  TablePotential potU = new TablePotential(varU,Arrays.asList(varD));
+	  potU.values = new double[]{11.4, 11.4, 13.7, 11.4, 13.7};
+	  nodeU.setPotential(potU);	  
+
+	  // Link restrictions and revealing states
+	  // Always observed nodes
+
+	 return probNet;
+	}
+	
 	
 	
 

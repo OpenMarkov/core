@@ -145,8 +145,11 @@ iD_DecisionTestProblemWithSV = IDFactory
 		testMEUAndStrategy(IDFactory.buildIDStatesTiesPerfectKnowledge(),1.5,null);	
 	}
 	
-	
-	
+
+	@Test
+	public void testIDConsecutiveDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		testMEUAndStrategy(IDFactory.buildIDConsecutiveDecisions(),4.57501894,null);	
+	}
 	
 	
 	/**

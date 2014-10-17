@@ -1854,6 +1854,42 @@ public class IDFactory extends NetsFactory {
 		 return probNet;
 	}
 	
+	public static ProbNet buildIDConsecutiveDecisions() {
+		  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+		  // Variables
+		  Variable varX0 = new Variable("X0", "yes", "no");
+		  Variable varD2 = new Variable("D2", "present", "absent");
+		  Variable varD3 = new Variable("D3", "no", "yes");
+		  Variable varU = new Variable("U");
+
+		  // Nodes
+		  Node nodeX0= probNet.addNode(varX0, NodeType.CHANCE);
+		  Node nodeD2= probNet.addNode(varD2, NodeType.DECISION);
+		  Node nodeD3= probNet.addNode(varD3, NodeType.DECISION);
+		  Node nodeU= probNet.addNode(varU, NodeType.UTILITY);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeX0, nodeD2, true);
+		  probNet.addLink(nodeX0, nodeU, true);
+		  probNet.addLink(nodeD2, nodeD3, true);
+		  probNet.addLink(nodeD3, nodeU, true);
+
+		  // Potentials
+		  TablePotential potX0 = new TablePotential(Arrays.asList(varX0), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potX0.values = new double[]{0.21249053, 0.78750947};
+		  nodeX0.setPotential(potX0);
+
+		  TablePotential potU = new TablePotential(varU,Arrays.asList(varD3, varX0));
+		  potU.values = new double[]{0.4, 3, 5, 4.8};
+		  nodeU.setPotential(potU);
+
+		  // Link restrictions and revealing states
+		  // Always observed nodes
+
+		 return probNet;
+		}
+	
 	
 	
 

@@ -2004,7 +2004,7 @@ public final class DiscretePotentialOperations {
     		outputUtilityPotential.values[outputUtilityPotentialPosition] = max;
     		//TODO In testing phase it is easier to assume that there are no ties between interventions
     		outputUtilityPotential.interventions[outputUtilityPotentialPosition] = 
-    				Intervention.optimalInterventionTakingOneOptimal(decisionVariable, utilities, interventions,sdagInterventions);
+    				Intervention.optimalInterventionTakingAllOptimal(decisionVariable, utilities, interventions,sdagInterventions);
 
     		// set the values of policyPotential
     		int policyPotentialPosition = outputUtilityPotentialPosition * decisionVariableSize;

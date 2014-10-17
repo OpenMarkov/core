@@ -284,6 +284,53 @@ public class Intervention extends TreeADDPotential {
 		
 	}
 	
+
+	/**
+	 * Creates an intervention 
+	 * @param decisionVariable
+	 * @param utilities
+	 * @param interventions
+	 * @param coalescedInterventions 
+	 * @return Optimal intervention
+	 */
+	public static Intervention optimalInterventionTakingAllOptimal(Variable decisionVariable, 
+			double[] utilities, Intervention[] interventions, boolean coalescedInterventions) {
+		State[] states = decisionVariable.getStates();
+		List<State> optimalStates = new ArrayList<>();
+		List<Intervention> optimalInterventions = new ArrayList<>();
+		Intervention intervention;
+		double max = Double.NEGATIVE_INFINITY;
+		for (int i = 0; i < states.length; i++) {
+			double utilityI = utilities[i];
+			if (utilityI >= max) {
+				if (utilityI > max) {
+					max = utilityI;
+					optimalStates = new ArrayList<>();
+					optimalInterventions = new ArrayList<>();
+				}
+				optimalStates.add(states[i]);
+				optimalInterventions.add(interventions[i]);
+			}
+		}
+		
+		if (!areNullOptimalInterventions(optimalInterventions)){
+			intervention = (!coalescedInterventions)? new Intervention(decisionVariable, optimalStates,
+					optimalInterventions): new SDAGIntervention(decisionVariable,
+					optimalStates, optimalInterventions);
+		}
+		else{
+			intervention = (!coalescedInterventions)? new Intervention(decisionVariable, optimalStates): 
+				new SDAGIntervention(decisionVariable,optimalStates);
+			
+		}
+    	return intervention;
+		
+	}
+	
+	private static boolean areNullOptimalInterventions(List<Intervention> interventions){
+		return (interventions.isEmpty() || interventions.get(0)==null);
+	}
+	
 	/**
 	 * Creates an intervention 
 	 * @param decisionVariable

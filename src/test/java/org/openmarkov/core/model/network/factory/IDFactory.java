@@ -1820,6 +1820,39 @@ public class IDFactory extends NetsFactory {
 
 	 return probNet;
 	}
+
+	public static ProbNet buildIDStatesTiesPerfectKnowledge() {
+		  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+		  // Variables
+		  Variable varA = new Variable("A", "absent", "present");
+		  Variable varD = new Variable("D", "low", "medium", "high");
+		  Variable varU = new Variable("U");
+
+		  // Nodes
+		  Node nodeA= probNet.addNode(varA, NodeType.CHANCE);
+		  Node nodeD= probNet.addNode(varD, NodeType.DECISION);
+		  Node nodeU= probNet.addNode(varU, NodeType.UTILITY);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeA, nodeU, true);
+		  probNet.addLink(nodeA, nodeD, true);
+		  probNet.addLink(nodeD, nodeU, true);
+
+		  // Potentials
+		  TablePotential potA = new TablePotential(Arrays.asList(varA), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potA.values = new double[]{0.5, 0.5};
+		  nodeA.setPotential(potA);
+
+		  TablePotential potU = new TablePotential(varU,Arrays.asList(varD, varA));
+		  potU.values = new double[]{-1, 0, 0, 1, 2, 3};
+		  nodeU.setPotential(potU);
+
+		  // Link restrictions and revealing states
+		  // Always observed nodes
+
+		 return probNet;
+	}
 	
 	
 	

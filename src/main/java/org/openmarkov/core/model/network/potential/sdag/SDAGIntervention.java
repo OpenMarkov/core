@@ -159,11 +159,6 @@ public class SDAGIntervention extends Intervention {
 
 	}
 	
-	@Override
-	public boolean equals(Intervention intervention) {
-		return false;
-	}
-
 	public SDAGIntervention getCoalescedInterventionBranch(TreeADDBranch branch){
 		return (SDAGIntervention)getInterventionBranch(branch);
 	}

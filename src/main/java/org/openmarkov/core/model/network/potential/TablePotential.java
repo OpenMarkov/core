@@ -1106,10 +1106,16 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
                 setValue = true;
                 value = 0.0;
                 switch (role) {
+                /*
+                20/10/2014 - Solving issue 211
+                https://bitbucket.org/cisiad/org.openmarkov.issues/issue/211/policy-tables-imposed-should-be-a
+                Moved the case POLICY statement to share the code with CONDITIONAL_PROBABILITY.
+                Before, it was acting as JOINT_PROBABILITY
+                 */
                 case CONDITIONAL_PROBABILITY:
+                case POLICY:
                     value = 1.0 / new Double(variables.get(0).getNumStates());
                     break;
-                case POLICY:
                 case JOINT_PROBABILITY:
                     value = 1.0;
                     for (Variable variable : variables) {

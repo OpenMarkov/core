@@ -350,6 +350,56 @@ public class LinkRestrictionPotentialOperations {
 
 	}
 
+	/*
+	/*****
+	 * Generates the state combinations for a set of variables having variable 1
+	 * and variable 2 a given value.
+	 * 
+	 * @param independentVariables
+	 *            - Set of independent variables
+	 * @param variables
+	 *            - List containing the variables
+	 * @param var1Value
+	 *            - the value of the state of variable1
+	 * @param var1Index
+	 *            - the index to which corresponds variable1 in the variables
+	 *            list.
+	 * @param var2Value
+	 *            - the value of the state of variable2.
+	 * @param var2Index
+	 *            - the index to which corresponds variable2 in the variables
+	 *            list.
+	 * @return an List containing the generated state combinations.
+	 *//*
+	private static List<int[]> getStateCombinations(
+			Map<Integer, Integer> independentVariables,
+			List<Variable> variables, int var1Value, int var1Index,
+			int var2Value, int var2Index) {
+	    List<int[]> combinationList = new ArrayList<int[]>();
+		LinkedList<Integer> leftLifo = new LinkedList<Integer>();
+		LinkedList<Integer> rightLifo = new LinkedList<Integer>();
+
+		int[] combination = new int[independentVariables.size() + 2];
+		combination[var1Index] = var1Value;
+		combination[var2Index] = var2Value;
+		combinationList.add(combination.clone());
+
+		Iterator<Integer> it = independentVariables.keySet().iterator();
+		while (it.hasNext()) {
+			Integer varIndex = (Integer) it.next();
+			leftLifo.addLast(varIndex);
+		}
+
+		while (!leftLifo.isEmpty()) {
+			Integer variableIndex = (Integer) leftLifo.removeLast();
+			//generateCombination(rightLifo, variableIndex, independentVariables,
+			//		combination, combinationList);
+			generateCombinationNew(independentVariables,
+							combination, combinationList);
+		}
+		return combinationList;
+	}*/
+	
 	/*****
 	 * Generates the state combinations for a set of variables having variable 1
 	 * and variable 2 a given value.
@@ -375,28 +425,19 @@ public class LinkRestrictionPotentialOperations {
 			List<Variable> variables, int var1Value, int var1Index,
 			int var2Value, int var2Index) {
 	    List<int[]> combinationList = new ArrayList<int[]>();
-		LinkedList<Integer> leftLifo = new LinkedList<Integer>();
-		LinkedList<Integer> rightLifo = new LinkedList<Integer>();
 
 		int[] combination = new int[independentVariables.size() + 2];
 		combination[var1Index] = var1Value;
 		combination[var2Index] = var2Value;
+		// We add the combination of zeros to this pair of values
 		combinationList.add(combination.clone());
 
-		Iterator<Integer> it = independentVariables.keySet().iterator();
-		while (it.hasNext()) {
-			Integer varIndex = (Integer) it.next();
-			leftLifo.addLast(varIndex);
-		}
-
-		while (!leftLifo.isEmpty()) {
-			Integer variableIndex = (Integer) leftLifo.removeLast();
-			generateCombination(rightLifo, variableIndex, independentVariables,
-					combination, combinationList);
-		}
+		// We generate the combinations for the two main variables (var1 and var2)
+		generateCombinationNew(independentVariables,combination, combinationList);
 		return combinationList;
 	}
-
+	
+    /*
 	/*******
 	 * Generates a new state combination for the variable corresponding to the
 	 * variableIndex inside the independent variable list.
@@ -413,7 +454,7 @@ public class LinkRestrictionPotentialOperations {
 	 *            - the current combination of variables
 	 * @param combinationsList
 	 *            - the list of combinations
-	 */
+	 *//*
 	private static void generateCombination(LinkedList<Integer> rightLifo,
 			int variableIndex, Map<Integer, Integer> independentVariables,
 			int[] currentCombination, List<int[]> combinationsList) {
@@ -429,6 +470,52 @@ public class LinkRestrictionPotentialOperations {
 			}
 		}
 		rightLifo.addLast(variableIndex);
+	}*/
+	
+	/**
+	 * Generates all the possible states of the independents variables 
+	 * (the current combination sets the immutable states defined by the nodes with the link restriction.
+	 * @param independentVariables Variables for that we need to generate combinations 
+	 * @param currentCombination Predefined combination with the values of the nodes with the link restriction
+	 * @param combinationsList List of all posibles combinations
+	 */
+	private static void generateCombinationNew(Map<Integer, Integer> independentVariables,
+			int[] currentCombination, List<int[]> combinationsList) {
+		
+		// Calculate the number of possible combinations of the current combination
+		int numCombinations = 1;
+		int[] independentVariablesKeys = new int[independentVariables.size()];
+		int temporalIndex = 0;
+		for(Integer key : independentVariables.keySet()){
+			numCombinations = numCombinations * independentVariables.get(key);
+			independentVariablesKeys[temporalIndex] = key;
+			temporalIndex++;
+		}
+		
+		// Constructs the combinations repetitions array. 
+		//This array sets the number of occurrences of the same value for each state (to do the combinatory task)
+		int temporal = numCombinations;
+		int[] combinationsRepetitions = new int[independentVariables.size()];
+		for(int i = 0; i < independentVariables.size(); i++){
+			combinationsRepetitions[i] = temporal/independentVariables.get(independentVariablesKeys[i]);
+			temporal = combinationsRepetitions[i];
+		}
+		
+		// We start at the second combination because the first combination is formed with zeros 
+		// (and it was inserted before the call to this method)
+		int[] newCombination;
+		for(int i = 1; i < numCombinations; i++){
+			newCombination = currentCombination.clone();
+			// For each combination we set the states of each independent variable
+			int coordinate = 0;
+			int temporalRest = i;
+			for(Integer key : independentVariables.keySet()){
+				newCombination[key] = temporalRest/combinationsRepetitions[coordinate];
+				temporalRest = temporalRest%combinationsRepetitions[coordinate];
+				coordinate++;
+			}
+			combinationsList.add(newCombination);			
+		}
+		
 	}
-
 }

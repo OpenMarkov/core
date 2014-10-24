@@ -1,6 +1,7 @@
 package org.openmarkov.core.model.network.potential.operation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -16,6 +17,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 
 public class LinkRestrictionPotentialOperationsTest {
@@ -173,5 +175,71 @@ public class LinkRestrictionPotentialOperationsTest {
 				.getStateCombinationsWithLinkRestriction(net.getNode("B"));
 		Assert.assertEquals(5, states.size());
 	}
+	
+	@Test
+	public void testGetStateCombinationsWithLinkRestrictionBig() throws NodeNotFoundException{
+		ProbNet probNet = buildDAN_error_res_5_parents_pgmx();
+		
+		List<int[]> states=LinkRestrictionPotentialOperations
+				.getStateCombinationsWithLinkRestriction(probNet.getNode("E"));
+		Assert.assertEquals(64, states.size());
+	}
+	
+	private static ProbNet buildDAN_error_res_5_parents_pgmx () {
+		  ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
+		  // Variables
+		  Variable varA = new Variable("A", "absent", "present");
+		  Variable varB = new Variable("B", "absent", "present");
+		  Variable varC = new Variable("C", "absent", "present");
+		  Variable varE = new Variable("E", "absent", "mild", "moderate", "severe");
+		  Variable varF = new Variable("F", "absent", "present");
+		  Variable varG = new Variable("G", "absent", "present");
+
+		  // Nodes
+		  Node nodeA= probNet.addNode(varA, NodeType.CHANCE);
+		  Node nodeB= probNet.addNode(varB, NodeType.CHANCE);
+		  Node nodeC= probNet.addNode(varC, NodeType.CHANCE);
+		  Node nodeE= probNet.addNode(varE, NodeType.CHANCE);
+		  Node nodeF= probNet.addNode(varF, NodeType.CHANCE);
+		  Node nodeG= probNet.addNode(varG, NodeType.CHANCE);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeA, nodeE, true);
+		  probNet.addLink(nodeB, nodeE, true);
+		  probNet.addLink(nodeC, nodeE, true);
+		  probNet.addLink(nodeF, nodeE, true);
+		  probNet.addLink(nodeG, nodeE, true);
+
+		  // Potentials
+		  UniformPotential potA = new UniformPotential(Arrays.asList(varA), PotentialRole.CONDITIONAL_PROBABILITY);
+		  nodeA.setPotential(potA);
+
+		  UniformPotential potB = new UniformPotential(Arrays.asList(varB), PotentialRole.CONDITIONAL_PROBABILITY);
+		  nodeB.setPotential(potB);
+
+		  UniformPotential potC = new UniformPotential(Arrays.asList(varC), PotentialRole.CONDITIONAL_PROBABILITY);
+		  nodeC.setPotential(potC);
+
+		  TablePotential potE = new TablePotential(Arrays.asList(varE, varA, varB, varC, varF, varG), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potE.values = new double[]{0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25};
+		  nodeE.setPotential(potE);
+
+		  UniformPotential potF = new UniformPotential(Arrays.asList(varF), PotentialRole.CONDITIONAL_PROBABILITY);
+		  nodeF.setPotential(potF);
+
+		  UniformPotential potG = new UniformPotential(Arrays.asList(varG), PotentialRole.CONDITIONAL_PROBABILITY);
+		  nodeG.setPotential(potG);
+
+		  // Link restrictions and revealing states
+		  Link link_nodeA_nodeE = probNet.getLink(nodeA,nodeE, true);
+		  link_nodeA_nodeE.initializesRestrictionsPotential();
+		  TablePotential restrictions_nodeA_nodeE = (TablePotential)link_nodeA_nodeE.getRestrictionsPotential();
+		  restrictions_nodeA_nodeE.values = new double[] {0, 1, 0, 1, 0, 1, 0, 1};
+
+		  // Always observed nodes
+
+		 return probNet;
+		}
 
 }

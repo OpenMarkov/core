@@ -301,7 +301,7 @@ public class Link <T>{
 
 	/** @return String */
 	public String toString() {
-		StringBuffer buffer = new StringBuffer(node1.toString());
+		StringBuilder buffer = new StringBuilder(node1.toString());
 		if (!directed) {
 			buffer.append(" --- ");
 		} else {

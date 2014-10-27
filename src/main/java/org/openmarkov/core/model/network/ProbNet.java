@@ -1238,7 +1238,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 
     /** @return String */
     public String toString() {
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
         out.append("Type: " + networkType.toString() + "\n");
         List<Node> nodes = getNodes();
         int numPotentials = getNumPotentials();

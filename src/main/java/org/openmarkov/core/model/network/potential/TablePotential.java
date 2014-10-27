@@ -1153,7 +1153,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
     public String toString() {
         DecimalFormat formatter = new DecimalFormat("0.###", new DecimalFormatSymbols(Locale.US));
         // writes variables names
-        StringBuffer buffer = new StringBuffer(super.toString());
+        StringBuilder buffer = new StringBuilder(super.toString());
         // Print configurations
         int valuesPosition = 0;
         if (buffer.length() < STRING_MAX_LENGTH) {

@@ -50,7 +50,7 @@ public class PotentialChangeEdit extends SimplePNEdit {
 
 	/** @return A <code>String</code> with the variables of both potentials. */
 	public String toString() {
-		StringBuffer buffer = new StringBuffer(
+		StringBuilder buffer = new StringBuilder(
 				"ChangePotentialEdit: " +	oldPotential.getVariables());
 		if (oldPotential.isUtility()) {
 			buffer.append("-utility");

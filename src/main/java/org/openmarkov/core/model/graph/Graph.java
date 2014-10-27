@@ -493,8 +493,8 @@ public class Graph <T> {
 	 * <li>List of nodes. For each node calls <code>node.toString()</code>.
 	 * </ol> */
 	public String toString() {
-		StringBuffer buffer = 
-			new StringBuffer("Nodes (" + nodes.size() + "): \n");
+		StringBuilder buffer = 
+			new StringBuilder("Nodes (" + nodes.size() + "): \n");
 		for (T node : nodes) {
 			buffer.append(node.toString() + "\n");
 		}

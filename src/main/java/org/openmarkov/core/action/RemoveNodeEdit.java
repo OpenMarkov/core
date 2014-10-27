@@ -70,7 +70,7 @@ public class RemoveNodeEdit extends SimplePNEdit implements UsesVariable {
 		}
 
 		public String toString() {
-			StringBuffer buffer = new StringBuffer("RemoveNodeEdit: ");
+			StringBuilder buffer = new StringBuilder("RemoveNodeEdit: ");
 			if (variable == null) {
 				buffer.append("null");
 			} else {

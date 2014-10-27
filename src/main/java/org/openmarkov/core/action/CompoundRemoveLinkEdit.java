@@ -82,7 +82,7 @@ public class CompoundRemoveLinkEdit extends CompoundPNEdit {
 	}
 	
 	public String toString() {
-		StringBuffer buffer = new StringBuffer("CompoundRemoveLinkEdit: ");
+		StringBuilder buffer = new StringBuilder("CompoundRemoveLinkEdit: ");
 		buffer.append(variable1.getName());
 		if (isDirected) {
 			buffer.append(" --> ");

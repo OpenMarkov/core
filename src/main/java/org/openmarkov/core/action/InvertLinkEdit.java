@@ -135,7 +135,7 @@ public class InvertLinkEdit extends BaseLinkEdit {
 	/** This method assumes that the link is directed, otherwise has no sense.
 	 * @return <code>String</code> */
 	public String toString() {
-		return new StringBuffer(getOperationName()).append(": ").append(variable1).append("-->")
+		return new StringBuilder(getOperationName()).append(": ").append(variable1).append("-->")
 				.append(variable2).append(" ==> ").append(variable2).append("-->")
 				.append(variable1).toString();
 	}

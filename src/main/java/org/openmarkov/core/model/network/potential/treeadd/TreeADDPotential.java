@@ -692,7 +692,7 @@ public class TreeADDPotential extends Potential {
 
 	// Methods for toString()
 	public String toString() {
-		StringBuffer strBuffer = new StringBuffer();
+		StringBuilder strBuffer = new StringBuilder();
 		strBuffer.append(indent);
 		strBuffer.append(this.getClass().getSimpleName()); // Print name
 		strBuffer.append(" - topVariable: ");

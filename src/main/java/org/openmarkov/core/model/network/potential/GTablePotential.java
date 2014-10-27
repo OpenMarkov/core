@@ -103,7 +103,7 @@ public class GTablePotential<Element> extends TablePotential {
 
 	/** Overrides <code>toString</code> method. Mainly for test purposes */
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		if (numVariables > 0) {
 			// writes each configuration and its value
 			int[] configuration = null;

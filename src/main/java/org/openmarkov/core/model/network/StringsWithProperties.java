@@ -148,7 +148,7 @@ public class StringsWithProperties {
 	
 	/** @return <code>String</code> */
 	public String toString() {
-		StringBuffer outString = new StringBuffer();
+		StringBuilder outString = new StringBuilder();
 		Set<String> strings = stringsWithProperties.keySet();
 		for (String stringWithProperties : strings) {
 			outString.append(stringWithProperties);

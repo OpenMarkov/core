@@ -125,7 +125,7 @@ public class Choice {
 	/** Overrides <code>toString</code> method. Mainly for test purposes.
 	 * @return String */
 	public String toString() {
-		StringBuffer buffer = new StringBuffer(variable.getName());
+		StringBuilder buffer = new StringBuilder(variable.getName());
 		if (numValues == 1) {
 			buffer.append("=" + values[0]);
 		} else {

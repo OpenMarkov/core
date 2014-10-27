@@ -38,7 +38,7 @@ public class RemovePotentialEdit extends SimplePNEdit implements PNEdit {
 	}
     
     public String toString() {
-		StringBuffer buffer = new StringBuffer("RemovePotentialEdit: "+ 
+		StringBuilder buffer = new StringBuilder("RemovePotentialEdit: "+ 
 				oldPotential.getVariables());
 		if (oldPotential.isUtility()) {
 			buffer.append("-Utility");

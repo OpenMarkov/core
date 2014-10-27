@@ -573,7 +573,7 @@ public class Intervention extends TreeADDPotential {
 	}
 	
 	public String toString() {
-		StringBuffer strBuffer = new StringBuffer();
+		StringBuilder strBuffer = new StringBuilder();
 		strBuffer.append(indent);
 		strBuffer.append(topVariable.getName());
 		// Print variables

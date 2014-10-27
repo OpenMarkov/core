@@ -196,7 +196,7 @@ public class PartialOrder {
 
     /** @return A <code>String</code> with an array of arrays. */
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         int numArrays = order.size();
         for (int i = 0; i < numArrays; i++) {
             List<Variable> array = order.get(i);

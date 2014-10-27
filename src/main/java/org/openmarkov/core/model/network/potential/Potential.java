@@ -414,7 +414,7 @@ public abstract class Potential
 
     public String toShortString ()
     {
-        StringBuffer buffer = new StringBuffer ();
+        StringBuilder buffer = new StringBuilder ();
         if (numVariables == 0)
         { // Constant potential
             switch (role)
@@ -480,7 +480,7 @@ public abstract class Potential
      * Prints in buffer the variables and in case of TablePotential the
      * configurations
      */
-    private StringBuffer printVariables (StringBuffer buffer, int firstVariable)
+    private StringBuilder printVariables (StringBuilder buffer, int firstVariable)
     {
         // Print variables
         for (int i = firstVariable; i < numVariables - 1; i++)

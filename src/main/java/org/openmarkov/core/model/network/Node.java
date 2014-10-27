@@ -265,7 +265,7 @@ public class Node {
 	}
 	
 	public String toString() {
-		StringBuffer out = new StringBuffer();
+		StringBuilder out = new StringBuilder();
 		out.append (variable.getName() + " (");
 		switch(nodeType) {
 		case CHANCE:   

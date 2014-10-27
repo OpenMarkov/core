@@ -342,7 +342,7 @@ public abstract class ICIPotential extends Potential {
 	}
 
 	public String toString() {
-		StringBuffer buffer = new StringBuffer(super.toString());
+		StringBuilder buffer = new StringBuilder(super.toString());
 		buffer.append("\nFamily: " + family + ". Model: " + modelType);
 		buffer.append("\nNumber of variables: " +  variables.size());
 		buffer.append("\nVariables: ");

@@ -44,7 +44,7 @@ public class AddPotentialEdit extends SimplePNEdit {
 
 	/** @return A <code>String</code> with the potential variables. */
 	public String toString() {
-		StringBuffer buffer = new StringBuffer("AddPotentialEdit: ");
+		StringBuilder buffer = new StringBuilder("AddPotentialEdit: ");
 		if (potential != null) {
 			buffer.append(potential.getVariables());
 			if (potential.isUtility()) {

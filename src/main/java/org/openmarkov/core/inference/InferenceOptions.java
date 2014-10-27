@@ -40,7 +40,7 @@ public class InferenceOptions {
 	// Methods
 	/** Prints decision criteria, simulation indices and discount rate */
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		if (decisionCriterion != null) {
 			buffer.append("Decision criteria: ");
 			printVariable(buffer, decisionCriterion);
@@ -58,7 +58,7 @@ public class InferenceOptions {
 	}
 	
 	/** Inserts in buffer the name and states of the received variable */
-	private void printVariable(StringBuffer buffer, Variable variable) {
+	private void printVariable(StringBuilder buffer, Variable variable) {
 		buffer.append(variable.getName());
 		if (variable.getVariableType() != VariableType.NUMERIC) {
 			buffer.append("(");

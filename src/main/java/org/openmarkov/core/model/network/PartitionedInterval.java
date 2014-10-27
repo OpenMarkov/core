@@ -280,7 +280,7 @@ public class PartitionedInterval implements Cloneable {
 	 * print a readable format of the Partitioned Interval
 	 */
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append("Partitioned Interval ");
 		buffer.append("\n");
 		buffer.append("  > numSubIntervals = " + getNumSubintervals());

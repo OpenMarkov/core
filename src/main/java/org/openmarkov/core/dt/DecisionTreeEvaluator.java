@@ -71,7 +71,7 @@ public class DecisionTreeEvaluator {
 		
 		public String toString()
 		{
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append((variable !=null)? variable.getName() + "=" + state : "");
 			sb.append(utility != Double.NEGATIVE_INFINITY? " U="+utility:"");
 			sb.append(probability != Double.NEGATIVE_INFINITY? " P="+probability:"");

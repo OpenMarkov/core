@@ -7,17 +7,19 @@
 package org.openmarkov.core.dt;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.inference.PartialOrder;
 import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNetOperations;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -184,9 +186,9 @@ public class DecisionTreeBuilder
 			List<Node> decisionNodes = ProbNetOperations.getParentlessDecisions(probNet);
 			// Check if the nodes revealed by a decision node are the subset of another
 			// In that case we don't need to consider them as valid orders
-			List<List<Node>> revealedNodes = new ArrayList<>();
+			List<Set<Node>> revealedNodes = new ArrayList<>();
 			for (Node node : decisionNodes) {
-				List<Node> revealedByDecision = new ArrayList<>();
+				Set<Node> revealedByDecision = new HashSet<>();
 				for (Link<Node> link : node.getLinks()) {
 					if (link.getNode1().equals(node) && link.hasRevealingConditions()) {
 						revealedByDecision.add((Node) link.getNode2());
@@ -200,8 +202,8 @@ public class DecisionTreeBuilder
 				for (int j=0; j<decisionNodes.size(); ++j) {
 					Node nodeB = decisionNodes.get(j);
 					if (nodeA != nodeB
-							// if both sets are empty, just eliminate one of the nodes
-							&& !(revealedNodes.get(i).isEmpty() && revealedNodes.get(j).isEmpty() && i < j)
+							// if both sets are equal, just mark one of the nodes as dominated
+							&& !(revealedNodes.get(i).equals(revealedNodes.get(j)) && i < j)
 							&& revealedNodes.get(i).containsAll(revealedNodes.get(j)))
 						dominatedDecisions.add(nodeB);
 				}

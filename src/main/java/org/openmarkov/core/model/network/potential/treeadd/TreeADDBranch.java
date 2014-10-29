@@ -368,7 +368,7 @@ public class TreeADDBranch {
             	}
             }
         }
-        if (parentVariables != null && parentVariables.size() > 0 && potential.getClass() != Intervention.class) {
+        if (parentVariables != null && parentVariables.size() > 0 && !(potential instanceof Intervention)) {
 			builder.append("\n");
 			builder.append(indent);
         	builder.append("ParentVariables = ");

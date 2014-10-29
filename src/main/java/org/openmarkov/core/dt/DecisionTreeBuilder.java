@@ -200,6 +200,8 @@ public class DecisionTreeBuilder
 				for (int j=0; j<decisionNodes.size(); ++j) {
 					Node nodeB = decisionNodes.get(j);
 					if (nodeA != nodeB
+							// if both sets are empty, just eliminate one of the nodes
+							&& !(revealedNodes.get(i).isEmpty() && revealedNodes.get(i).isEmpty() && i < j)
 							&& revealedNodes.get(i).containsAll(revealedNodes.get(j)))
 						dominatedDecisions.add(nodeB);
 				}

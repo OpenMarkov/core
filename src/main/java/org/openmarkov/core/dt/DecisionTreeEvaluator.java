@@ -315,7 +315,8 @@ private double getUtility(ProbNet probNet, HashMap<Variable, Integer> scenarioMa
                 }
                 if(link.hasRestrictions ())
                 {
-                    List<State> nonRestrictedStates = ProbNetOperations.getUnrestrictedStates(link, state);
+                	State[] restrictedVariableStates = destinationNode.getVariable ().getStates ();
+                    List<State> nonRestrictedStates = ProbNetOperations.getUnrestrictedStates(link, restrictedVariableStates, state);
                 
                     if(nonRestrictedStates.isEmpty ())
                     {
@@ -344,7 +345,7 @@ private double getUtility(ProbNet probNet, HashMap<Variable, Integer> scenarioMa
 //                        ProbNet probNetWithoutSingleStateVariable = probNetCopy.copy ();
 //                        probNetWithoutSingleStateVariable.removeNode (probNetWithoutSingleStateVariable.getNode (destinationNode.getVariable ()));
 //                        probNetCopy = applyRestrictionsAndReveal(probNetWithoutSingleStateVariable, destinationNode, nonRestrictedStates.get (0), originalProbNet);
-                    }else if(nonRestrictedStates.size () < destinationNode.getVariable ().getStates ().length)
+                    }else if(nonRestrictedStates.size () < restrictedVariableStates.length)
                     {
                         // At least one of the states of the destination node is restricted.
                         // Make a copy of the variable and remove the restricted states

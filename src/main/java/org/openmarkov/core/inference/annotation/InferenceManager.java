@@ -237,7 +237,7 @@ public class InferenceManager
             }
             else if (probNet.getNetworkType ().equals (TuningNetworkType.getUniqueInstance ()))
             {
-                defaultAlgorithm = getInferenceAlgorithmByName ("LikelihoodWeighting", probNet);
+                defaultAlgorithm = getInferenceAlgorithmByName ("VariableElimination", probNet);
             }else 
             {
                 List<InferenceAlgorithm> possibleAlgorithms = getInferenceAlgorithms (probNet);

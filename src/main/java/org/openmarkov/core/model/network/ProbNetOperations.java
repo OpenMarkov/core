@@ -763,7 +763,7 @@ public class ProbNetOperations {
         return contains;
     }
     
-    public static List<State> getUnrestrictedStates(Link<Node> link, State state)
+    public static List<State> getUnrestrictedStates(Link<Node> link, State[] restrictedVariableStates, State state)
     {
     	List<State> nonRestrictedStates = new ArrayList<State>();
         Potential linkRestrictions = link.getRestrictionsPotential ();
@@ -774,12 +774,12 @@ public class ProbNetOperations {
         try
         {
             configuration.addFinding (new Finding (sourceVariable, state));
-            for(State destState : destinationVariable.getStates ())
+            for(State restrictedVariableState : restrictedVariableStates)
             {
-                configuration.changeFinding (new Finding (destinationVariable, destState));
+                configuration.changeFinding (new Finding (destinationVariable, restrictedVariableState));
                 if (linkRestrictions.getProbability (configuration) > 0)
                 {
-                    nonRestrictedStates.add (destState);
+                    nonRestrictedStates.add (restrictedVariableState);
                 }
             }
         }

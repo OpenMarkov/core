@@ -84,6 +84,8 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * Decision criterion for utility nodes
 	 */
 	private StringWithProperties decisionCriterion;
+	
+	private final String STATE_BASE_NAME = "state";
 
 	// Constructors
 	/**
@@ -741,6 +743,44 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		else if (othersHashCode < thisHashCode)
 			result = 0;
 		return result;
+	}
+	
+	/**
+	 * This methods checks if a string may be a valid state name
+	 * @param newState
+	 * @return
+	 */
+	public boolean chekNewStateName(String newState){
+		for(State state : states){
+			if(state.getName().equals(newState)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * This method returns a valid status name based on the current 
+	 * states and a based prefix defined as a constant in this class
+	 * @return a new valid name for a state
+	 */
+	public String getNewValidName(){
+		String newValidName = null;
+		int actualState = 0;
+		boolean validName;
+		do{
+			validName = true;
+			newValidName = STATE_BASE_NAME + actualState;
+			for(State state : states){
+				if(state.getName().equals(newValidName)){
+					validName = false;
+					break;
+				}
+			}
+			actualState++;
+		}while(!validName);
+		
+		return newValidName;
 	}
 
 	// TODO Ver si este código resuelve el problema que se puede dar en

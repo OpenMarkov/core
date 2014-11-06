@@ -32,7 +32,7 @@ public class TimeSliceEdit extends SimplePNEdit{
 	private String lastName;
 	
 	private Variable variable;
-	
+
 /**
  * 
  * @param node
@@ -46,7 +46,6 @@ public class TimeSliceEdit extends SimplePNEdit{
 		this.lastBaseName =  variable.getBaseName();
 		this.lastName =  variable.getName();
 		this.node = node;
-		
 	}
 
 	@Override
@@ -80,4 +79,23 @@ public class TimeSliceEdit extends SimplePNEdit{
 		}
 	}
 
+    /**
+     * Gets the new name of the node
+     *
+     * @return
+     * 		the new name of the node
+     */
+    public String getNewName(){
+        return lastBaseName+ " " + "["+ String.valueOf(newTimeSlice)+"]";
+    }
+
+    /**
+     * Gets the previous name of the node
+     *
+     * @return
+     * 		the previous name of the node
+     */
+    public String getPreviousName(){
+        return lastBaseName+ " " + "["+ String.valueOf(lastTimeSlice)+"]";
+    }
 }

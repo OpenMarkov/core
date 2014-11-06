@@ -335,20 +335,20 @@ public class NodeStateEdit extends SimplePNEdit {
                     node.getNodeType());
             potentials = new ArrayList<Potential>();
             potentials.add(uniformPotential);
-
-        
         	node.setPotentials(potentials);
-            for (Node child : node.getChildren()) {
-            	if(child.getNodeType() != NodeType.DECISION){
-	                potentials = new ArrayList<Potential>();
-	                uniformPotential = PotentialOperations.getUniformPotential(probNet,
-	                        child.getVariable(),
-	                        child.getNodeType());
-	                potentials.add(uniformPotential);
-	                child.setPotentials(potentials);
-            	}
-            }
+        	
         }
+        for (Node child : node.getChildren()) {
+        	if(child.getNodeType() != NodeType.DECISION){
+                potentials = new ArrayList<Potential>();
+                uniformPotential = PotentialOperations.getUniformPotential(probNet,
+                        child.getVariable(),
+                        child.getNodeType());
+                potentials.add(uniformPotential);
+                child.setPotentials(potentials);
+        	}
+        }
+        
 		
 	}
 

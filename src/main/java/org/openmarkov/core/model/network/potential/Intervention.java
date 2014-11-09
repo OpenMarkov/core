@@ -510,21 +510,22 @@ public class Intervention extends TreeADDPotential {
 	 * @param interventions
 	 * @return <code>true</code> when all the interventions are equal.
 	 */
-	private static boolean equalInterventions(Intervention[] interventions) {
+	protected static boolean equalInterventions(Intervention[] interventions) {
 		boolean equalInterventions = true;
-		if (interventions != null && interventions.length > 1) {
-			if (interventions[0] == null) {
-				for (int i = 1; i < interventions.length && equalInterventions; i++) {
-					equalInterventions &= interventions[i] == null;
-				}
-			} else {
-				for (int i = 1;  i < interventions.length && equalInterventions; i++) {
-					equalInterventions &= interventions[0].equals(interventions[i]);
-				}
+		int numInterventions = interventions.length;
+		if (interventions != null && numInterventions > 1) {
+			Intervention firstIntervention = interventions[0];
+			for (int i = 1; i < numInterventions && equalInterventions; i++) {
+				equalInterventions &= (firstIntervention == null) ? interventions[i] == null
+						: firstIntervention.equals(interventions[i]);
 			}
 		}
 		return equalInterventions;
 	}
+	
+	/*protected static boolean equalInterventions(Intervention[] interventions) {
+		return false;
+	}*/
 
     /**
      * @return List of interventions contained in branches if they are not null.

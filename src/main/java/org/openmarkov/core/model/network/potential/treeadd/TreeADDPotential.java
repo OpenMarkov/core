@@ -398,10 +398,16 @@ public class TreeADDPotential extends Potential {
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean validate = false;
 		// node must have at least one parent node
+		// @12/11/2014
+		// Fixing issue #216
+		// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/216/treeadd-as-possible-type-of-potential-for
+		// [...] and the node cannot be a super value node
 		if (role == PotentialRole.UTILITY) {
-			// in variables there is not utility variable
-			if (variables.size() >= 1) {
-				validate = true;
+			if (!node.isSuperValueNode()) {
+				// in variables there is not utility variable
+				if (variables.size() >= 1) {
+					validate = true;
+				}
 			}
 		}
 		if (role == PotentialRole.CONDITIONAL_PROBABILITY) {

@@ -77,6 +77,11 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      * several properties.
      */
     private List<StringWithProperties> decisionCriteria2;
+    
+    /**
+     * Constant with the default criterion of a ProbNet
+     */
+    private final String defaultCriterion = "Benefit";
 
     /**
      * Nodes are stored in several HashMaps to accelerate the access. The type
@@ -1398,4 +1403,14 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 		nodeDepot.removeNode(node);
 		nodeDepot.addNode(node);
 	}
+
+	/**
+	 * Method to obtain the default criterion of a ProbNet
+	 * @return String with the default criterion
+	 */
+	public String getDefaultCriterion() {
+		return defaultCriterion;
+	}
+	
+	
 }

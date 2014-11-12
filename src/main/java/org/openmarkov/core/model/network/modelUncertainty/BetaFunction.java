@@ -65,4 +65,9 @@ public class BetaFunction extends ProbDensFunction {
         double sumAlphaBeta = alpha + beta;
         return (alpha * beta) / (Math.pow(sumAlphaBeta, 2.0) * (sumAlphaBeta + 1));
     }
+
+	@Override
+	public double getMinimum() {
+		return 0;
+	}
 }

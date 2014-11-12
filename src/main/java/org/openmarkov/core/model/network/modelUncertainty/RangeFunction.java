@@ -71,4 +71,9 @@ public class RangeFunction extends ProbDensFunctionWithKnownInverseCDF
     {
         return Math.pow (upperBound - lowerBound, 2.0) / 12;
     }
+
+	@Override
+	public double getMinimum() {
+		return lowerBound;
+	}
 }

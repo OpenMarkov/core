@@ -68,4 +68,9 @@ public class ExactFunction extends ProbDensFunction
     {
         return 0;
     }
+
+	@Override
+	public double getMinimum() {
+		return 0;
+	}
 }

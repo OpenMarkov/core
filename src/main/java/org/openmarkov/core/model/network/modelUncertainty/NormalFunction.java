@@ -62,4 +62,9 @@ public class NormalFunction extends ProbDensFunction {
     public double getVariance() {
         return Math.pow(sigma, 2.0);
     }
+
+	@Override
+	public double getMinimum() {
+		return Double.NEGATIVE_INFINITY;
+	}
 }

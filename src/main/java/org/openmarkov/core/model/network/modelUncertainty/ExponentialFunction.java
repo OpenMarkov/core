@@ -68,4 +68,9 @@ public class ExponentialFunction extends ProbDensFunctionWithKnownInverseCDF {
     public double getVariance() {
         return Math.pow(lambda, -2.0);
     }
+
+	@Override
+	public double getMinimum() {
+		return 0;
+	}
 }

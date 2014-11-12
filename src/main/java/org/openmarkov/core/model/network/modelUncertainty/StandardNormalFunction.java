@@ -91,4 +91,9 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF 
             return p;
         }
     }
+
+	@Override
+	public double getMinimum() {
+		return Double.NEGATIVE_INFINITY;
+	}
 }

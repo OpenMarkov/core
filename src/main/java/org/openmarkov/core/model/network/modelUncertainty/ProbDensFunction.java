@@ -26,6 +26,8 @@ public abstract class ProbDensFunction
     public abstract double getVariance ();
 
     public abstract double getMaximum ();
+    
+    public abstract double getMinimum ();
 
     public abstract double getSample (Random randomGenerator);
     

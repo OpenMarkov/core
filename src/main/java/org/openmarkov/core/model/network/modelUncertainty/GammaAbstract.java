@@ -12,9 +12,13 @@ public abstract class GammaAbstract extends ProbDensFunction {
     protected double kAbstract;
     protected double thetaAbstract;
 
-    @Override
     public final double getMaximum() {
         return Double.POSITIVE_INFINITY;
+    }
+    
+    @Override
+    public final double getMinimum() {
+        return 0.0;
     }
 
     @Override

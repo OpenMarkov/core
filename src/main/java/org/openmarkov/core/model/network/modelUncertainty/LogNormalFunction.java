@@ -50,7 +50,6 @@ public class LogNormalFunction extends ProbDensFunction
         return new double[]{mu, sigma};
     }
 
-    @Override
     public double getMaximum ()
     {
         return Double.POSITIVE_INFINITY;
@@ -74,4 +73,9 @@ public class LogNormalFunction extends ProbDensFunction
         double squareSigma = Math.pow (sigma, 2.0);
         return (Math.exp (squareSigma) - 1) * Math.exp (2 * mu + squareSigma);
     }
+
+	@Override
+	public double getMinimum() {
+		return 0;
+	}
 }

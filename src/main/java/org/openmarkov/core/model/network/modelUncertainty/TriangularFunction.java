@@ -95,4 +95,9 @@ public class TriangularFunction extends ProbDensFunctionWithKnownInverseCDF
     {
         return (Tools.square (minimum) + Tools.square (maximum) + Tools.square (mode) - minimum * maximum - minimum * mode - maximum * mode) / 18;
     }
+
+	@Override
+	public double getMinimum() {
+		return minimum;
+	}
 }

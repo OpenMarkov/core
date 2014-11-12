@@ -70,4 +70,9 @@ public class ComplementFunction extends ProbDensFunction
         // TODO Auto-generated method stub
         return 0;
     }
+
+	@Override
+	public double getMinimum() {
+		return 0;
+	}
 }

@@ -62,9 +62,7 @@ public class DirichletFunction extends ProbDensFunction
     }
 
     @Override
-    public double getVariance ()
-    {
-        // TODO Auto-generated method stub
+    public double getVariance () {
         return 0;
     }
 
@@ -85,4 +83,9 @@ public class DirichletFunction extends ProbDensFunction
     {
         this.alpha = alpha;
     }
+
+	@Override
+	public double getMinimum() {
+		return 0;
+	}
 }

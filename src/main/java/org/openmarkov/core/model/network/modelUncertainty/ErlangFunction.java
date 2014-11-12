@@ -80,4 +80,9 @@ public class ErlangFunction extends ProbDensFunction
     {
         return k / Math.pow (lambda, 2.0);
     }
+
+	@Override
+	public double getMinimum() {
+		return 0;
+	}
 }

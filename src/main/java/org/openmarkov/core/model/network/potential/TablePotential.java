@@ -29,7 +29,6 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.TablePotentialSampler;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 /**
@@ -332,22 +331,6 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
             double discount = Math.pow(inferenceOptions.discountRate, timeSlice);
             for (int i = 0; i < projectedPotential.values.length; i++) {
                 projectedPotential.values[i] *= discount;
-            }
-        }
-        // Cylindrical extension for utility potentials in the case of
-        // multicriteria decision making
-        if (role == PotentialRole.UTILITY && inferenceOptions != null) {
-            Variable decisionCriteria = inferenceOptions.decisionCriterion;
-            if (role == PotentialRole.UTILITY && decisionCriteria != null) {
-                String criterion = utilityVariable.getDecisionCriterion().getString();
-                List<TablePotential> potentials = new ArrayList<TablePotential>(2);
-                potentials.add(projectedPotential);
-                try {
-                    potentials.add(decisionCriteria.deltaTablePotential(criterion));
-                } catch (InvalidStateException e) {
-                    throw new WrongCriterionException(utilityVariable, criterion, decisionCriteria);
-                }
-                projectedPotential = DiscretePotentialOperations.multiply(potentials);
             }
         }
         if (role == PotentialRole.UTILITY) {

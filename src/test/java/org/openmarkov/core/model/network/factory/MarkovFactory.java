@@ -54,7 +54,7 @@ public class MarkovFactory extends NetsFactory {
 		ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
 
 		//set decision criteria to the network
-		probNet.setDecisionCriteria2(decisionCriteria);
+		probNet.setDecisionCriteria(decisionCriteria);
 		
 		//Add variables to the network	
 		addVariables(probNet,NodeType.CHANCE,variableState0,variableState1);
@@ -109,7 +109,7 @@ public class MarkovFactory extends NetsFactory {
 		decisionCriteria.add(effectiveness);
 		
 		//set decision criteria to the network
-		probNet.setDecisionCriteria2(decisionCriteria);
+		probNet.setDecisionCriteria(decisionCriteria);
 
 		//Variables
 		Variable duration0 = new Variable("Duration", true, 0.0, 20.0, true, 1);
@@ -189,7 +189,7 @@ public class MarkovFactory extends NetsFactory {
 		decisionCriteria.add(effectiveness);
 		
 		//set decision criteria to the network
-		probNet.setDecisionCriteria2(decisionCriteria);
+		probNet.setDecisionCriteria(decisionCriteria);
 
 		//Variables
 		Variable duration0 = new Variable("Duration", true, 0.0, 20.0, true, 1);
@@ -392,7 +392,7 @@ public class MarkovFactory extends NetsFactory {
 		ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
 
 		//set decision criteria to the network
-		probNet.setDecisionCriteria2(decisionCriteria);
+		probNet.setDecisionCriteria(decisionCriteria);
 		
 		//Add variables to the network			
 		addVariables(probNet,NodeType.DECISION,variableTreatment);

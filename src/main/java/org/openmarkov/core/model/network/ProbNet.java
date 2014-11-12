@@ -76,7 +76,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      * Set of criterion for decision, defined by a name. Each one may have
      * several properties.
      */
-    private List<StringWithProperties> decisionCriteria2;
+    private List<StringWithProperties> decisionCriteria;
     
     /**
      * Constant with the default criterion of a ProbNet
@@ -88,11 +88,6 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      * of node determines the <code>HashMap</code> in which the node is stored.
      */
     protected NodeTypeDepot            nodeDepot;
-    /**
-     * Each value of the decision criterion variable represents one criterion,
-     * used in multicriterion decision analysis
-     */
-    public Variable                    decisionCriterion;
     private PNESupport                 pNESupport;
     /** The file where the network has been saved */
     private String                     name;
@@ -459,12 +454,9 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         }
         copyNet.additionalProperties = copyProperties;
         // Copy decisionCriterion variable
-        // copy decision criterion
+        // copy decision criteria
         if (this.getDecisionCriteria() != null) {
-            copyNet.setDecisionCriteria2(this.getDecisionCriteria());
-        }
-        if (this.getDecisionCriterionVariable() != null) {
-            copyNet.setDecisionCriterionVariable(this.getDecisionCriterionVariable());
+            copyNet.setDecisionCriteria(this.getDecisionCriteria());
         }
         return copyNet;
     }
@@ -1341,18 +1333,6 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         return newNode;
     }
 
-    public void setDecisionCriterionVariable(Variable decisionCriterionVariable) {
-        this.decisionCriterion = decisionCriterionVariable;
-    }
-
-    public void setDecisionCriteria(List<String> criteriaNames) {
-        State[] states = new State[criteriaNames.size()];
-        for (int i = 0; i < criteriaNames.size(); i++) {
-            states[i] = new State(criteriaNames.get(i));
-        }
-        decisionCriterion = new Variable("Decision Criterion", states);
-    }
-
     /** @return <code>ArrayList</code> of <code>StringsWithProperties</code> */
     public List<StringWithProperties> getAgents() {
         return agents;
@@ -1360,19 +1340,15 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 
     /** @return <code>StringsWithProperties</code> */
     public List<StringWithProperties> getDecisionCriteria() {
-        return decisionCriteria2;
-    }
-
-    public Variable getDecisionCriterionVariable() {
-        return decisionCriterion;
+        return decisionCriteria;
     }
 
     /**
-     * @param decisionCriteria2
+     * @param decisionCriteria
      *            . <code>StringsWithProperties</code>
      */
-    public void setDecisionCriteria2(List<StringWithProperties> decisionCriteria2) {
-        this.decisionCriteria2 = decisionCriteria2;
+    public void setDecisionCriteria(List<StringWithProperties> decisionCriteria) {
+        this.decisionCriteria = decisionCriteria;
     }
 
     /**

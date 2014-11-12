@@ -18,9 +18,6 @@ import org.openmarkov.core.model.network.VariableType;
 public class InferenceOptions {
 	
 	// Attributes
-	/**  */
-	// TODO eliminar este atributo
-	public Variable decisionCriterion;
 	
 	/** */
 	public Variable simulationIndexVariable;
@@ -33,7 +30,6 @@ public class InferenceOptions {
 	// Constructor
 	public InferenceOptions(ProbNet probNet, Variable simulationIndexVariable) {
 		this.probNet = probNet;
-		this.decisionCriterion = probNet.decisionCriterion;
 		this.simulationIndexVariable = simulationIndexVariable;
 	}
 	
@@ -41,12 +37,6 @@ public class InferenceOptions {
 	/** Prints decision criteria, simulation indices and discount rate */
 	public String toString() {
 		StringBuilder buffer = new StringBuilder();
-		if (decisionCriterion != null) {
-			buffer.append("Decision criteria: ");
-			printVariable(buffer, decisionCriterion);
-		} else {
-			buffer.append("No decision criteria.\n");
-		}
 		if (simulationIndexVariable != null) {
 			buffer.append("Simulation indices: ");
 			printVariable(buffer, simulationIndexVariable);

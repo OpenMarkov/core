@@ -79,10 +79,10 @@ public class TemporalNetOperationsTest {
 			variablesUtil = new ArrayList<>();
 			try {
 				variablesUtil.add(expandedNetwork.getVariable("Treatment"));
+				variablesUtil.add(expandedNetwork.getVariable("Decision criteria"));
 			} catch (NodeNotFoundException e) {
 				e.printStackTrace();
 			}
-			variablesUtil.add(expandedNetwork.decisionCriterion);
 			TablePotential expectedPotential = new TablePotential(variablesUtil, PotentialRole.UTILITY);
 			// TODO We should consider here the order of the states of
 			// DecisionCriteria variable
@@ -193,7 +193,7 @@ public class TemporalNetOperationsTest {
 		ArrayList<Variable> variablesUtil = new ArrayList<>();
 		try {
 			variablesUtil.add(expandedNetwork.getVariable("Treatment"));
-			variablesUtil.add(expandedNetwork.decisionCriterion);
+			variablesUtil.add(expandedNetwork.getVariable("Decision criteria"));
 			variablesUtil.add(expandedNetwork.getVariable(nameStateVariable(auxPot.getUtilityVariable())));
 
 		} catch (NodeNotFoundException e1) {

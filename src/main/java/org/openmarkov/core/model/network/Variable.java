@@ -83,7 +83,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	/**
 	 * Decision criterion for utility nodes
 	 */
-	private StringWithProperties decisionCriterion;
+	private Criterion decisionCriterion;
 	
 	private final String STATE_BASE_NAME = "state";
 
@@ -721,11 +721,11 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		this.agent = agent;
 	}
 
-	public StringWithProperties getDecisionCriterion() {
+	public Criterion getDecisionCriterion() {
 		return decisionCriterion;
 	}
 
-	public void setDecisionCriterion(StringWithProperties decisionCriterion) {
+	public void setDecisionCriterion(Criterion decisionCriterion) {
 		this.decisionCriterion = decisionCriterion;
 	}
 

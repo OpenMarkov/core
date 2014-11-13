@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
@@ -37,9 +38,9 @@ public class MarkovFactory extends NetsFactory {
 		String[] statesStateVariable = {"dead", "alive"};
 		
 		//Decision criteria
-		ArrayList<StringWithProperties> decisionCriteria = new ArrayList<>();
-		StringWithProperties cost = new StringWithProperties("cost");
-		StringWithProperties effectiveness = new StringWithProperties("effectiveness");
+		ArrayList<Criterion> decisionCriteria = new ArrayList<>();
+		Criterion cost = new Criterion("cost");
+		Criterion effectiveness = new Criterion("effectiveness");
 		decisionCriteria.add(cost);
 		decisionCriteria.add(effectiveness);
 		
@@ -102,9 +103,9 @@ public class MarkovFactory extends NetsFactory {
 	public static ProbNet createSemiMarkovOnlyChanceNet() {
 		ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
 		//Decision criteria
-		ArrayList<StringWithProperties> decisionCriteria = new ArrayList<>();
-		StringWithProperties cost = new StringWithProperties("cost");
-		StringWithProperties effectiveness = new StringWithProperties("effectiveness");
+		ArrayList<Criterion> decisionCriteria = new ArrayList<>();
+		Criterion cost = new Criterion("cost");
+		Criterion effectiveness = new Criterion("effectiveness");
 		decisionCriteria.add(cost);
 		decisionCriteria.add(effectiveness);
 		
@@ -182,9 +183,9 @@ public class MarkovFactory extends NetsFactory {
 	public static ProbNet createSemiMarkovModelNet() {
 		ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
 		//Decision criteria
-		ArrayList<StringWithProperties> decisionCriteria = new ArrayList<>();
-		StringWithProperties cost = new StringWithProperties("cost");
-		StringWithProperties effectiveness = new StringWithProperties("effectiveness");
+		ArrayList<Criterion> decisionCriteria = new ArrayList<>();
+		Criterion cost = new Criterion("cost");
+		Criterion effectiveness = new Criterion("effectiveness");
 		decisionCriteria.add(cost);
 		decisionCriteria.add(effectiveness);
 		
@@ -377,9 +378,9 @@ public class MarkovFactory extends NetsFactory {
 		double[] tableCostOfTreatment = {costTreat, costNoTreat};
 		
 		//Decision criteria
-		ArrayList<StringWithProperties> decisionCriteria = new ArrayList<>();
-		StringWithProperties cost = new StringWithProperties("cost");
-		StringWithProperties effectiveness = new StringWithProperties("effectiveness");
+		ArrayList<Criterion> decisionCriteria = new ArrayList<>();
+		Criterion cost = new Criterion("cost");
+		Criterion effectiveness = new Criterion("effectiveness");
 		decisionCriteria.add(cost);
 		decisionCriteria.add(effectiveness);
 		

@@ -21,7 +21,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-import umontreal.iro.lecuyer.probdist.NormalDist;
+import cern.jet.random.engine.MersenneTwister;
 
 /**
  * This class represents a conditional Gaussian potential for discrete variables. 
@@ -121,9 +121,10 @@ public class ConditionalGaussianPotential extends Potential{
             	int configurationIndex = configuration*numStates;
             	double mean = projectedMeanPotential.values[configuration];
             	double variance = projectedVariancePotential.values[configuration];
+            	cern.jet.random.Normal dist = new cern.jet.random.Normal(mean, variance, new MersenneTwister());
             	double lastCdf = 0;
             	for (int i = 0; i < numStates - 1; i++) {
-            		double cdf = NormalDist.cdf(mean, variance, thresholds[i]);
+            		double cdf = dist.cdf(thresholds[i]);
             		projectedPotential.values[configurationIndex+i] = cdf - lastCdf;
             		lastCdf = cdf;
             	}

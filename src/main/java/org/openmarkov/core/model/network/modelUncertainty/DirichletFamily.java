@@ -9,27 +9,21 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import java.util.List;
 import java.util.Random;
 
-import umontreal.iro.lecuyer.randvarmulti.DirichletGen;
-import umontreal.iro.lecuyer.rng.MRG32k3a;
-import umontreal.iro.lecuyer.rng.RandomStream;
+import cern.jet.random.Gamma;
 
 public class DirichletFamily extends FamilyDistribution
 {
     private double[] alpha;
     
-    private RandomStream stream;
-
     public DirichletFamily (List<UncertainValue> uncertainValues)
     {
         super (filterByFunction(DirichletFunction.class, uncertainValues));
         int size = family.size ();
-        double[] alpha = new double[size];
+        this.alpha = new double[size];
         for (int i = 0; i < size; i++)
         {
             alpha[i] = ((DirichletFunction)(family.get (i).getProbDensFunction())).getAlpha();
         }
-        this.alpha = alpha;
-        this.stream = new MRG32k3a();
     }
 
     public DirichletFamily (double[] alphas)
@@ -40,20 +34,32 @@ public class DirichletFamily extends FamilyDistribution
         {
             this.alpha[i] = alphas[i];
         }
-        this.stream = new MRG32k3a();
     }
 
     public double[] getMean ()
     {
         return Tools.normalize (alpha);
     }
-
+   
+    
     public double[] getSample (Random randomGenerator)
     {
-        double[] sample = new double[alpha.length];
-        DirichletGen.nextPoint(stream, alpha, sample);
-        return sample;
-    }
+        int length = alpha.length;
+        double sum = 0.0;
+        double[] samples = new double[length];
+        
+        for (int i = 0; i < length; i++)
+        {
+        	samples[i] = Gamma.staticNextDouble(alpha[i], 1);
+        	sum += samples[i];
+        }
+        // Normalize the samples
+        for (int i = 0; i < length; i++)
+        {
+            samples[i] /= sum;
+        }
+        return samples;
+    }    
     
 //    public double[] getSample (Random randomGenerator)
 //    {

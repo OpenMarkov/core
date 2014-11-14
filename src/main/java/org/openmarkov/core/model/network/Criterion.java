@@ -20,7 +20,12 @@ public class Criterion {
     /**
      * Constant with the default criterion of a ProbNet
      */
-    private final String defaultCriterion = "Benefit";
+    private final String defaultCriterion = "benefit";
+    
+    /**
+     * Constant with the default unit of a criterion
+     */
+    private final String defaultUnit = "";
 	
 	/**
 	 * Constructor with parameters
@@ -38,7 +43,7 @@ public class Criterion {
 	 */
 	public Criterion (String criterionName){
 		this.criterionName = criterionName;
-		this.criterionUnit = null;
+		this.criterionUnit = defaultUnit;
 	}
 	
 	/**
@@ -46,7 +51,7 @@ public class Criterion {
 	 */
 	public Criterion(){
 		this.criterionName = defaultCriterion;
-		this.criterionUnit = null;
+		this.criterionUnit = defaultUnit;
 	}
 
 	public String getCriterionName() {
@@ -68,5 +73,12 @@ public class Criterion {
 	public String getDefaultCriterion() {
 		return defaultCriterion;
 	}
+
+	@Override
+	public String toString() {
+		return criterionName + " " + criterionUnit;
+	}
+	
+	
 	
 }

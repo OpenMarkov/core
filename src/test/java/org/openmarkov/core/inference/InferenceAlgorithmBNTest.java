@@ -14,7 +14,6 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.apache.mahout.math.Arrays;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -325,7 +324,7 @@ public abstract class InferenceAlgorithmBNTest extends InferenceAlgorithmTest {
 				evidence.addFinding(network, "Y", "negative");
 			} catch (NodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
 				System.err.println(e.getMessage());
-				System.err.println(Arrays.toString(e.getStackTrace()));
+				e.printStackTrace(System.err);
 			} 
 			
 			algorithm.setPostResolutionEvidence(evidence);
@@ -334,7 +333,7 @@ public abstract class InferenceAlgorithmBNTest extends InferenceAlgorithmTest {
 				algorithm.getProbsAndUtilities();
 			} catch (UnexpectedInferenceException e) {
 				System.err.println(e.getMessage());
-				System.err.println(Arrays.toString(e.getStackTrace()));
+				e.printStackTrace(System.err);
 			}
 		} catch (Exception e1) {
 			e1.printStackTrace();

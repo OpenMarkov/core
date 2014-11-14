@@ -11,11 +11,10 @@ package org.openmarkov.core.action;
 
 import java.util.List;
 
-import org.apache.mahout.math.Arrays;
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 
@@ -67,7 +66,7 @@ public class CRemoveNodeEdit extends CompoundPNEdit{ //implements UsesVariable{
 				addEdit(new RemoveLinkEdit(node.getProbNet(),probNet.getVariable(name), probNet.getVariable(node.getName()), true));
 			} catch (NodeNotFoundException e) {
 				System.err.println(e.getMessage());
-				System.err.println(Arrays.toString(e.getStackTrace()));
+				e.printStackTrace(System.err);
 			}
 		}
 		for (Node child : children) {
@@ -75,7 +74,7 @@ public class CRemoveNodeEdit extends CompoundPNEdit{ //implements UsesVariable{
 				addEdit(new RemoveLinkEdit(node.getProbNet(), probNet.getVariable(node.getName()), probNet.getVariable(child.getName()), true));
 			} catch (NodeNotFoundException e) {
 				System.err.println(e.getMessage());
-				System.err.println(Arrays.toString(e.getStackTrace()));
+				e.printStackTrace(System.err);
 			}
 		}
 		

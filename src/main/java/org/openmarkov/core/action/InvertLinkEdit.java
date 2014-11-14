@@ -12,7 +12,6 @@ package org.openmarkov.core.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.mahout.math.Arrays;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
@@ -61,7 +60,7 @@ public class InvertLinkEdit extends BaseLinkEdit {
         }
         catch (NodeNotFoundException e) {
 			System.err.println(e.getMessage());
-			System.err.println(Arrays.toString(e.getStackTrace()));
+			e.printStackTrace(System.err);
         }      
     }
 
@@ -105,7 +104,7 @@ public class InvertLinkEdit extends BaseLinkEdit {
             node2.setPotentials(childsOldPotentials);
 		} catch (Exception e){
 			System.err.println(e.getMessage());
-			System.err.println(Arrays.toString(e.getStackTrace()));
+			e.printStackTrace(System.err);
 		}
 	}
 		

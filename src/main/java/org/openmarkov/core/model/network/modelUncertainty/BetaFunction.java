@@ -5,6 +5,8 @@
  */
 
 package org.openmarkov.core.model.network.modelUncertainty;
+import cern.jet.random.Beta;
+import org.apache.commons.math3.distribution.BetaDistribution;
 
 import java.util.Random;
 
@@ -69,5 +71,13 @@ public class BetaFunction extends ProbDensFunction {
 	@Override
 	public double getMinimum() {
 		return 0;
+	}
+
+	@Override
+	public DomainInterval getInterval(double p) {
+		BetaDistribution auxBeta = new BetaDistribution(alpha,beta);
+		double halfP = p/2.0;
+		
+		return new DomainInterval(auxBeta.inverseCumulativeProbability(0.5-halfP),auxBeta.inverseCumulativeProbability(0.5+halfP));
 	}
 }

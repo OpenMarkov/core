@@ -12,6 +12,8 @@ import static org.junit.Assert.*;
 
 import java.util.Random;
 
+import org.junit.Test;
+
 /**
  * @author manolo
  * 
@@ -20,15 +22,15 @@ public abstract class ProbDensFunctionTest {
 
     ProbDensFunction pdf;
 
-    private double maxErrorMean = 0.001;
+    protected double maxErrorMean = 0.001;
     private double maxErrorStDeviation = 0.01;
+    private double maxErrorQuantile = 0.001;
 
     public abstract ProbDensFunction newProbDensFunctionInstance();
 
-    // Uncomment back when we find out why there are so many test failures 
-    //@Test
+    @Test
     public void testMeanAndVariance() {
-        int numSamples = 1000000;
+        int numSamples = 10000000;
         Random randomGenerator = new XORShiftRandom();
         pdf =  newProbDensFunctionInstance();
         pdf.setParameters(initializeParams());
@@ -38,9 +40,34 @@ public abstract class ProbDensFunctionTest {
         }
         testMean(samples);
         testStandardDeviation(samples);
+        testQuantileFunction(samples);
     }
 
-    /**
+    public void testQuantileFunction(double[] samples) {
+		RangeFunction pGenerator = new RangeFunction(0.5,1.0);
+		double p = pGenerator.getSample(new XORShiftRandom());
+		int numSamplesLowestExtreme = 0;
+		int numSamplesUpperExtreme = 0;
+		
+		DomainInterval interval = pdf.getInterval(p);
+		double min = interval.min();
+		double max = interval.max();
+		
+		for (double sample:samples){
+			if (sample<min){
+				numSamplesLowestExtreme++;
+			}
+			else if (sample>max){
+				numSamplesUpperExtreme++;
+			}
+		}
+		double extremeProbMass = (1.0-p)/2.0;
+		double numSamples = samples.length;
+		assertMeanTest(numSamplesLowestExtreme/numSamples,extremeProbMass,maxErrorQuantile);
+		assertMeanTest(numSamplesUpperExtreme/numSamples,extremeProbMass,maxErrorQuantile);		
+	}
+
+	/**
      * @param samples
      */
     private void testStandardDeviation(double[] samples) {

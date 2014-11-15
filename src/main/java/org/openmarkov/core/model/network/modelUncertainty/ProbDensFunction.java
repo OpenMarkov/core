@@ -45,5 +45,8 @@ public abstract class ProbDensFunction
 			sb.append(parameter + " ");
 		}
 		return sb.toString();
-	}    
+	}
+	
+	
+	public abstract DomainInterval getInterval(double p);
 }

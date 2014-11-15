@@ -88,4 +88,10 @@ public class DirichletFunction extends ProbDensFunction
 	public double getMinimum() {
 		return 0;
 	}
+
+	@Override
+	public DomainInterval getInterval(double p) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

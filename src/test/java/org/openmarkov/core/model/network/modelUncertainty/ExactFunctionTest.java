@@ -8,6 +8,8 @@
  */
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import static org.junit.Assert.*;
+
 /**
  * @author manolo
  * 
@@ -31,6 +33,13 @@ public class ExactFunctionTest extends ProbDensFunctionTest {
     protected double getFactorError() {
         return 1.0;
     }
+
+	@Override
+	public void testQuantileFunction(double[] samples) {
+		for (double sample:samples){
+			assertEquals(sample,pdf.getMean(),this.maxErrorMean);			
+		}
+	}
 
 
 }

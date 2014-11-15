@@ -8,6 +8,8 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
+import org.apache.commons.math3.distribution.LogNormalDistribution;
+
 @ProbDensFunctionType(name="LogNormal", isValidForProbabilities = false, parameters = {"mu", "sigma"})
 public class LogNormalFunction extends ProbDensFunction
 {
@@ -77,5 +79,12 @@ public class LogNormalFunction extends ProbDensFunction
 	@Override
 	public double getMinimum() {
 		return 0;
+	}
+
+	@Override
+	public DomainInterval getInterval(double p) {
+		LogNormalDistribution auxLognormalDist = new LogNormalDistribution(mu,sigma);
+		double halfP = p/2;
+		return new DomainInterval(auxLognormalDist.inverseCumulativeProbability(0.5-halfP),auxLognormalDist.inverseCumulativeProbability(0.5+halfP));
 	}
 }

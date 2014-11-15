@@ -6,7 +6,9 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+
 import java.util.Random;
+import org.apache.commons.math3.distribution.GammaDistribution;
 
 public abstract class GammaAbstract extends ProbDensFunction {
     protected double kAbstract;
@@ -56,4 +58,13 @@ public abstract class GammaAbstract extends ProbDensFunction {
     public final double getVariance() {
         return kAbstract * Math.pow(thetaAbstract, 2.0);
     }
+    
+    @Override
+	public DomainInterval getInterval(double p) {
+    	GammaDistribution auxGammaDist = new GammaDistribution(kAbstract,thetaAbstract);
+		double halfP = p/2;
+		return new DomainInterval(auxGammaDist.inverseCumulativeProbability(0.5-halfP),auxGammaDist.inverseCumulativeProbability(0.5+halfP));
+	}
+    
+    
 }

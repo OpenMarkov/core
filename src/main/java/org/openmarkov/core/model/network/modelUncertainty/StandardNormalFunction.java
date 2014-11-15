@@ -96,4 +96,11 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF 
 	public double getMinimum() {
 		return Double.NEGATIVE_INFINITY;
 	}
+
+	@Override
+	public DomainInterval getInterval(double p) {
+		double halfP = p/2.0;
+		double value = Math.abs(getInverseCumulativeDistributionFunction(0.5-halfP));
+		return new DomainInterval(-value,value);
+	}
 }

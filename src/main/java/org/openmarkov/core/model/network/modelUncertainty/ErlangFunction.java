@@ -85,4 +85,10 @@ public class ErlangFunction extends ProbDensFunction
 	public double getMinimum() {
 		return 0;
 	}
+
+	@Override
+	public DomainInterval getInterval(double p) {
+		GammaFunction auxGamma = new GammaFunction(k,1.0/lambda);
+		return auxGamma.getInterval(p);
+	}
 }

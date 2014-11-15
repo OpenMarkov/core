@@ -73,4 +73,9 @@ public class ExactFunction extends ProbDensFunction
 	public double getMinimum() {
 		return 0;
 	}
+
+	@Override
+	public DomainInterval getInterval(double p) {
+		return new DomainInterval(nu,nu);
+	}
 }

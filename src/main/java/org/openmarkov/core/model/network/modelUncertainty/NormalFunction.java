@@ -55,7 +55,11 @@ public class NormalFunction extends ProbDensFunction {
 
     @Override
     public double getSample(Random randomGenerator) {
-        return sigma * standard.getSample(randomGenerator) + mu;
+        return translationFromStandardNormal(standard.getSample(randomGenerator));
+    }
+    
+    private double translationFromStandardNormal(double x){
+    	return sigma * x + mu;
     }
 
     @Override
@@ -66,5 +70,11 @@ public class NormalFunction extends ProbDensFunction {
 	@Override
 	public double getMinimum() {
 		return Double.NEGATIVE_INFINITY;
+	}
+
+	@Override
+	public DomainInterval getInterval(double p) {
+		DomainInterval standardInterval = standard.getInterval(p);		
+		return new DomainInterval(translationFromStandardNormal(standardInterval.min()),translationFromStandardNormal(standardInterval.max()));
 	}
 }

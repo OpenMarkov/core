@@ -65,14 +65,17 @@ public class ComplementFunction extends ProbDensFunction
     }
 
     @Override
-    public double getVariance ()
-    {
-        // TODO Auto-generated method stub
+    public double getVariance (){
         return 0;
     }
 
 	@Override
 	public double getMinimum() {
 		return 0;
+	}
+
+	@Override
+	public DomainInterval getInterval(double p) {
+		return new DomainInterval(nu,nu);
 	}
 }

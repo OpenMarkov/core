@@ -53,4 +53,6 @@ public class GammaFunction extends GammaAbstract
         a[1] = theta;
         return a;
     }
+
+	
 }

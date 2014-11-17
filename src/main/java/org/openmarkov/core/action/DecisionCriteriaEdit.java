@@ -167,8 +167,27 @@ public class DecisionCriteriaEdit extends SimplePNEdit
 			break;
         }
     }
+    
+    
 
-    @Override
+    public StateAction getStateAction() {
+		return stateAction;
+	}
+
+	public String getNewName() {
+		return newName;
+	}
+	
+
+	public List<Criterion> getLastCriteria() {
+		return lastCriteria;
+	}
+
+	public void setLastCriteria(List<Criterion> lastCriteria) {
+		this.lastCriteria = lastCriteria;
+	}
+
+	@Override
     public void undo ()
     {
         super.undo ();

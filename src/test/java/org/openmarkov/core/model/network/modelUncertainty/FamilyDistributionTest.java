@@ -12,13 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.junit.Ignore;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
  * @author manolo
  * 
  */
+@Ignore
 public abstract class FamilyDistributionTest {
 
     private FamilyDistribution family;
@@ -26,33 +29,46 @@ public abstract class FamilyDistributionTest {
     private double             maxErrorMean        = 0.001;
     private double             maxErrorStDeviation = 0.01;
 
-    @Test
-    public void testMeanAndVariance() {
-        int numSamples = 100000;
-        Random randomGenerator = new XORShiftRandom();
-        List<UncertainValue> list = initializeListUncertainValues();
-        family = newFamilyDistribution(list);
+	//@Test
+	public void testMeanAndVariance() {
 
-        List<double[]> samples = new ArrayList<>();
-        for (int i = 0; i < numSamples; i++) {
-            samples.add(family.getSample(randomGenerator));
-        }
-        testMean(samples);
-        testStandardDeviation(samples);
+		int numSamples = 1000000;
+		Random randomGenerator = new XORShiftRandom();
+		List<UncertainValue> list = initializeListUncertainValues();
+		family = newFamilyDistribution(list);
 
-    }
+		List<double[]> samples = new ArrayList<>();
+		for (int i = 0; i < numSamples; i++) {
+			samples.add(family.getSample(randomGenerator));
+		}
+		testMean(samples);
+		testStandardDeviation(samples);
+	}
+    
+	@Test
+	public void repeatTestMeanAndVariance() {
+		boolean debug = false;
+		int numRepetitions = debug?10:1;
 
-    protected abstract FamilyDistribution newFamilyDistribution(List<UncertainValue> list);
+		for (int iRepetition = 0; iRepetition < numRepetitions; iRepetition++) {
+			testMeanAndVariance();
+			if (debug){
+				System.out.println("iRepetition= " + iRepetition);
+			}
+		}
+	}
+
+	public abstract FamilyDistribution newFamilyDistribution(List<UncertainValue> list);
 
     /**
      * @return
      */
-    protected abstract List<UncertainValue> initializeListUncertainValues();
+	public abstract List<UncertainValue> initializeListUncertainValues();
 
     /**
      * @param samples
      */
-    private void testMean(List<double[]> samples) {
+    protected void testMean(List<double[]> samples) {
 
         int numChildrenFam = samples.get(0).length;
         double[] auxSamples;
@@ -73,7 +89,7 @@ public abstract class FamilyDistributionTest {
     /**
      * @param samples
      */
-    private void testStandardDeviation(List<double[]> samples) {
+    protected void testStandardDeviation(List<double[]> samples) {
         int numChildrenFam = samples.get(0).length;
         double[] auxSamples;
         double[] stDSample;
@@ -94,7 +110,7 @@ public abstract class FamilyDistributionTest {
      * @param mean
      * @param maxErrorMean2
      */
-    private void assertMeanTest(double[] meanSample, double[] meanFamily, double maxErrorMean2) {
+    protected void assertMeanTest(double[] meanSample, double[] meanFamily, double maxErrorMean2) {
 
         for (int i = 0; i < meanSample.length; i++) {
             assertEquals(meanSample[i], meanFamily[i], maxErrorMean2);

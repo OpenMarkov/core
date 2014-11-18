@@ -18,7 +18,7 @@ import java.util.List;
 public class DirichletFamilyTest extends FamilyDistributionTest {
 
     @Override
-    protected List<UncertainValue> initializeListUncertainValues() {
+    public List<UncertainValue> initializeListUncertainValues() {
 
         List<UncertainValue> list;
         double[] alpha = { 1.0, 2.0, 3.0, 4.0 };
@@ -30,7 +30,7 @@ public class DirichletFamilyTest extends FamilyDistributionTest {
     }
 
     @Override
-    protected FamilyDistribution newFamilyDistribution(List<UncertainValue> list) {
+    public FamilyDistribution newFamilyDistribution(List<UncertainValue> list) {
         return new DirichletFamily(list);
     }
 

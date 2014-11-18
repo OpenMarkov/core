@@ -49,9 +49,9 @@ public class DirichletFamily extends FamilyDistribution
         double[] samples = new double[length];
         
         for (int i = 0; i < length; i++)
-        {
-        	samples[i] = Gamma.staticNextDouble(alpha[i], 1);
-        	sum += samples[i];
+        {	double auxSample = Gamma.staticNextDouble(alpha[i], 1);
+        	samples[i] = auxSample;
+        	sum += auxSample;
         }
         // Normalize the samples
         for (int i = 0; i < length; i++)
@@ -61,30 +61,6 @@ public class DirichletFamily extends FamilyDistribution
         return samples;
     }    
     
-//    public double[] getSample (Random randomGenerator)
-//    {
-//        int length = alpha.length;
-//        double sumAuxSamples = 0.0;
-//        double auxSample;
-//        double[] sample = new double[length];
-//        double[] auxSamples = new double[length];
-//        
-//        //double min = Tools.min(alpha);
-//        // Generate samples using Gamma distributions
-//        for (int i = 0; i < length; i++)
-//        {
-//            auxSample = (new GammaFunction (alpha[i],1.0)).getSample (randomGenerator);
-//            auxSamples[i] = auxSample;
-//            sumAuxSamples = sumAuxSamples + auxSample;
-//        }
-//        // Normalize the samples
-//        for (int i = 0; i < length; i++)
-//        {
-//            sample[i] = auxSamples[i] / sumAuxSamples;
-//        }
-//        return sample;
-//    }    
-
     @Override
     public double[] getVariance() {
         double[] variance;

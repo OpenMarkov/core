@@ -56,12 +56,8 @@ public class BetaFunction extends ProbDensFunction {
 
     @Override
     public double getSample(Random randomGenerator) {
-        double[] alphas = new double[] { alpha, beta };
-        // We use a Dirichlet family for obtaining the sample
-        DirichletFamily family = new DirichletFamily(alphas);
-        return family.getSample(randomGenerator)[0];
+        return Beta.staticNextDouble(alpha,beta);
     }
-
     @Override
     public double getVariance() {
         double sumAlphaBeta = alpha + beta;

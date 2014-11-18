@@ -17,9 +17,13 @@ public class CloseParenthesisEdit extends SimplePNEdit {
 	// Constant
 	public static final String description = ")";
 	
+	// The open parenthesis of the close parenthesis
+	private OpenParenthesisEdit openParenthesisEdit;
+	
 	// Constructor
-	public CloseParenthesisEdit() {
+	public CloseParenthesisEdit(OpenParenthesisEdit openParenthesisEdit) {
         super(null);
+        this.openParenthesisEdit = openParenthesisEdit;
 	}
 
 	// Methods
@@ -43,6 +47,12 @@ public class CloseParenthesisEdit extends SimplePNEdit {
 	public String toString() {
 		return description;
 	}
+
+	public OpenParenthesisEdit getOpenParenthesisEdit() {
+		return openParenthesisEdit;
+	}
+	
+	
 	
 
 }

@@ -17,16 +17,13 @@ public class NullEdit extends SimplePNEdit{
 
 	@Override
 	public void doEdit() {
-		// TODO Auto-generated method stub
-		System.out.println("Doing edit #" + numEdit);
 		
 	}
 
 	@Override
 	public void undo() {
-		// TODO Auto-generated method stub
 		super.undo();
-		System.out.println("Undoing edit #" + numEdit);
+
 	}
 
 	public int getNumEdit() {

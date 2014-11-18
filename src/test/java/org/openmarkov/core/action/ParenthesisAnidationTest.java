@@ -33,9 +33,7 @@ public class ParenthesisAnidationTest {
 
 	@Test
 	public void addParenthesisTest() {
-		System.out.println();
-		System.out.println("Open Parenthesis Test");
-		System.out.println("=====================");
+
 		probNet.getPNESupport().setWithUndo(true);
 		probNet.getPNESupport().openParenthesis();
 		probNet.getPNESupport().openParenthesis();
@@ -48,9 +46,7 @@ public class ParenthesisAnidationTest {
 	
 	@Test
 	public void closeParenthesisTest(){
-		System.out.println();
-		System.out.println("Close Parenthesis Test");
-		System.out.println("=====================");
+
 		probNet.getPNESupport().setWithUndo(true);
 		probNet.getPNESupport().openParenthesis();
 		probNet.getPNESupport().openParenthesis();
@@ -68,9 +64,7 @@ public class ParenthesisAnidationTest {
 	
 	@Test
 	public void undoManagerTest1(){
-		System.out.println();
-		System.out.println("UndoManager Test 1");
-		System.out.println("=====================");
+
 		probNet.getPNESupport().setWithUndo(true);
 		int numNullEdit = 0;
 		/*
@@ -135,9 +129,7 @@ public class ParenthesisAnidationTest {
 	
 	@Test
 	public void undoManagerTestEmptyParenthesis(){
-		System.out.println();
-		System.out.println("Empty Parenthesis Test");
-		System.out.println("=====================");
+
 		probNet.getPNESupport().setWithUndo(true);
 		int numEdit = 0;
 		numEdit = doNullEdit(numEdit);
@@ -152,9 +144,7 @@ public class ParenthesisAnidationTest {
 	
 	@Test
 	public void undoManagerWithUndoAndDelete(){
-		System.out.println();
-		System.out.println("UndoManager With Undo & Delete");
-		System.out.println("=====================");
+
 		probNet.getPNESupport().setWithUndo(true);
 		int numNullEdit = 0;
 		/*

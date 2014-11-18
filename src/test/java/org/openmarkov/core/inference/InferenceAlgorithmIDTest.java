@@ -79,7 +79,6 @@ iD_DecisionTestProblemWithSV = IDFactory
 	@Test
 	public void testIDDecideTest() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(getIDDecideTest(),9.3929,null);
-		testIDDecideTest();	
 	}
 	
 	protected ProbNet getIDDecideTest() {

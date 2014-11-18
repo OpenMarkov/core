@@ -24,20 +24,21 @@ import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	OnlyDirectedLinksTest.class,
-	NoCyclesTest.class,
-	OnlyChanceNodesTest.class,
-	NoUtilityParentTest.class,
-	OnlyFiniteStateVariablesTest.class,
+	AtLeastOneUtilityPotentialTest.class,
 	DistinctLinksTest.class,
+	MaxNumParentsTest.class,
+	NoClosedPathTest.class,
+	NoCyclesTest.class,
+	NoLoopsTest.class,
 	NoMixedParentsTest.class,
 	NoMultipleLinksTest.class,
+	NoUtilityParentTest.class,
 	OnlyAtemporalVariablesTest.class,
+	OnlyChanceNodesTest.class,
+	OnlyDirectedLinksTest.class,
+	OnlyFiniteStateVariablesTest.class,
 	OnlyNumericVariablesTest.class,
-	OnlyTemporalVariablesTest.class,
-	NoClosedPathTest.class,
-	NoLoopsTest.class,
-	MaxNumParentsTest.class
+	OnlyTemporalVariablesTest.class
 })
 
 /** Test constraints applied to networks. 

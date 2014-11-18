@@ -14,10 +14,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	UtilTest.class,
 	AuxiliaryOperationsTest.class,
-    DiscretePotentialOperationsTest.class,
-    LinkRestrictionPotentialOperationsTest.class
+	DiscretePotentialOperationsTest.class,
+	LinkRestrictionPotentialOperationsTest.class,
+	UtilTest.class,
+    
 })
         
 /** @author manuel */

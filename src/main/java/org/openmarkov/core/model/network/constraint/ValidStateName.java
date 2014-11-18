@@ -11,16 +11,17 @@ package org.openmarkov.core.model.network.constraint;
 
 import java.util.List;
 
-import org.openmarkov.core.action.DecisionCriteriaEdit;
+import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
-@Constraint(name = "NoValidCriterionName", defaultBehavior = ConstraintBehavior.YES)
-public class NoValidCriterionName extends PNConstraint {
+@Constraint(name = "NoValidStateName", defaultBehavior = ConstraintBehavior.YES)
+public class ValidStateName extends PNConstraint {
 
 	// Flag of the error
 	private int type_error;
@@ -31,34 +32,28 @@ public class NoValidCriterionName extends PNConstraint {
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 			throws NonProjectablePotentialException, WrongCriterionException {
-		// DecisionCriteriaEdit
+		// NodeStateEdit
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit,
-				DecisionCriteriaEdit.class);
+				NodeStateEdit.class);
 		for (PNEdit simpleEdit : edits) {
-			String name = ((DecisionCriteriaEdit) simpleEdit).getNewName();
+			String name = ((NodeStateEdit) simpleEdit).getNewState().getName();
 
 			// Get the trim and lowerCase state
 			name = name.trim();
 			name = name.toLowerCase();
 			
-			switch (((DecisionCriteriaEdit) simpleEdit).getStateAction()) {
+			switch (((NodeStateEdit) simpleEdit).getStateAction()) {
 			case ADD:
 			case RENAME:
 				if ((name == null) || (name.contentEquals(""))) {
 					type_error = IS_EMPTY_NAME;
 					return false;
 				}
-				
-				for(Criterion criterion : ((DecisionCriteriaEdit) simpleEdit).getLastCriteria()){
-					if(criterion.getCriterionName().trim().toLowerCase().equals(name)){
-						type_error = IS_NAME_ALREADY_EXIST;
-						return false;
-					}
+				if (!((NodeStateEdit) simpleEdit).getNode().getVariable()
+						.chekNewStateName(name)) {
+					type_error = IS_NAME_ALREADY_EXIST;
+					return false;
 				}
-				
-				break;
-
-			default:
 				break;
 			}
 		}
@@ -67,26 +62,21 @@ public class NoValidCriterionName extends PNConstraint {
 
 	@Override
 	public boolean checkProbNet(ProbNet probNet) {
-		
-		/*
-		List<Criterion> criteria = probNet.getDecisionCriteria();
-		
-		for(int i = 0; i < criteria.size(); i++){
-			Criterion criterion = criteria.get(i);
-			
-			if(criterion.getCriterionName().equals("")){
-				type_error = IS_EMPTY_NAME;
-				return false;
-			} else {
-				for(int j = i+1; j < criteria.size(); j++){
-					if(criterion.getCriterionName().equals(criteria.get(j).getCriterionName())){
-						type_error = IS_NAME_ALREADY_EXIST;
-						return false;
-					}
+		List<Variable> variables = probNet.getVariables();
+		for (Variable variable : variables) {
+			State[] states = variable.getStates();
+			for (State state : states) {
+				String name = state.getName();
+				if ((name == null) || (name.contentEquals(""))) {
+					type_error = IS_EMPTY_NAME;
+					return false;
+				} else if (!variable.chekNewStateName(name)) {
+					type_error = IS_NAME_ALREADY_EXIST;
+					return false;
 				}
 			}
-		}*/
-		
+
+		}
 		return true;
 	}
 
@@ -96,7 +86,7 @@ public class NoValidCriterionName extends PNConstraint {
 		case IS_EMPTY_NAME:
 			return "there should be no empty names";
 		case IS_NAME_ALREADY_EXIST:
-			return "There is already a criterion with that name in the net.";
+			return "There is already a state with that name in the variable.";
 		default:
 			return "Unknown problem";
 

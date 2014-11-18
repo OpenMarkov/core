@@ -20,7 +20,7 @@ public class Criterion {
     /**
      * Constant with the default criterion of a ProbNet
      */
-    private final String defaultCriterion = "benefit";
+    private final String defaultCriterion = "---";
     
     /**
      * Constant with the default unit of a criterion

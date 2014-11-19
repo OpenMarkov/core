@@ -12,21 +12,26 @@ import java.util.Random;
 public class DirichletFunction extends ProbDensFunction
 {
     private double alpha;
+    
+    private GammaFunction gammaForSampling;
 
     public DirichletFunction ()
     {
         this.alpha = 0;
+        initializePdfForSampling();
     }
-
+    
     public DirichletFunction (double alpha)
     {
         this.alpha = alpha;
+        initializePdfForSampling();
     }
     
     @Override
     public void setParameters (double[] params)
     {
         alpha = params[0];
+        initializePdfForSampling();
     }
 
     @Override
@@ -58,7 +63,7 @@ public class DirichletFunction extends ProbDensFunction
     @Override
     public double getSample (Random randomGenerator)
     {
-        return 0;
+        return gammaForSampling.getSample(randomGenerator);
     }
 
     @Override
@@ -82,6 +87,7 @@ public class DirichletFunction extends ProbDensFunction
     public void setAlpha (double alpha)
     {
         this.alpha = alpha;
+        initializePdfForSampling();
     }
 
 	@Override
@@ -91,7 +97,10 @@ public class DirichletFunction extends ProbDensFunction
 
 	@Override
 	public DomainInterval getInterval(double p) {
-		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private void initializePdfForSampling(){
+		gammaForSampling = new GammaFunction(alpha,1.0);
 	}
 }

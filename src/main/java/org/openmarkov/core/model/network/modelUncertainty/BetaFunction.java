@@ -5,7 +5,6 @@
  */
 
 package org.openmarkov.core.model.network.modelUncertainty;
-import cern.jet.random.Beta;
 import org.apache.commons.math3.distribution.BetaDistribution;
 
 import java.util.Random;
@@ -14,21 +13,26 @@ import java.util.Random;
 public class BetaFunction extends ProbDensFunction {
     private double alpha;
     private double beta;
+    
+    private DirichletFamily dirichletForSampling;
 
     public BetaFunction() {
         this.alpha = 0;
-        this.beta = 0;        
+        this.beta = 0;   
+        initializePdfForSampling();
     }
 
     public BetaFunction(double alpha, double beta) {
         this.alpha = alpha;
         this.beta = beta;
+        initializePdfForSampling();
     }
 
     @Override
     public void setParameters(double[] params) {
         alpha = params[0];
         beta = params[1];
+        initializePdfForSampling();
     }
 
     @Override
@@ -56,7 +60,7 @@ public class BetaFunction extends ProbDensFunction {
 
     @Override
     public double getSample(Random randomGenerator) {
-        return Beta.staticNextDouble(alpha,beta);
+        return dirichletForSampling.getSample(randomGenerator)[0];
     }
     @Override
     public double getVariance() {
@@ -75,5 +79,10 @@ public class BetaFunction extends ProbDensFunction {
 		double halfP = p/2.0;
 		
 		return new DomainInterval(auxBeta.inverseCumulativeProbability(0.5-halfP),auxBeta.inverseCumulativeProbability(0.5+halfP));
+	}
+	
+	private void initializePdfForSampling(){
+		
+		dirichletForSampling = new DirichletFamily(getParameters());
 	}
 }

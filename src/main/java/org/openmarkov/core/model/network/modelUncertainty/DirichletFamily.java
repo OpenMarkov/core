@@ -33,8 +33,7 @@ public class DirichletFamily extends FamilyDistribution
    
     public double[] getSample (Random randomGenerator)
     {
-        double[] samples = super.getSample(randomGenerator); 
-        return Tools.normalize(samples);
+        return Tools.normalize(super.getSample(randomGenerator));
     }    
     
     @Override

@@ -220,5 +220,53 @@ public class TemporalNetOperations {
 			}
 		}
 		return maxX - minX;
-	}	
+	}
+
+	/**
+	 * Method that receives a node and retrieves all the nodes related to it that belong to other time slices
+	 * @param node
+	 * @return a list with the nodes that belong to other time slices. Null if there no nodes related to other
+	 * time slices or if the received node is not 'temporal'
+	 */
+	public static List<Node> getRelatedNodesOtherTimeSlices(Node node) {
+		// We define the list that will be returned
+		List<Variable> listOfRelatedVariables = null;
+		try {
+			// The node can have related variables only if its variable is temporal
+			if (node.getProbNet().getVariable(node.getName()).isTemporal()) {
+				// If so, we retrieve all the variables of the network as potentially
+				// all of the can be related to the node
+				listOfRelatedVariables = new ArrayList<>(node.getProbNet().getVariables());
+				// and we create a list to store all those variables that are not related to the node
+				List<Variable> listOfNotRelatedVariables = new ArrayList<>();
+				// we add to this list the variable of the node itself
+				listOfNotRelatedVariables.add(node.getVariable());
+				// we store the name of the node
+				String nodeName = node.getVariable().getBaseName();
+				// and then we go through all the potential variables
+				for (Variable variable : listOfRelatedVariables) {
+					// if the variable being studied is not temporal and does not share its base name with the node
+					if (!(variable.isTemporal() && variable.getBaseName().compareTo(nodeName) == 0)) {
+						// it is removed from the list of related variables
+						listOfNotRelatedVariables.add(variable);
+					}
+				}
+				// From the potential list we remove all the variables that are not related to the variable of the node
+				listOfRelatedVariables.removeAll(listOfNotRelatedVariables);
+				// if the list is empty, the node has no related variables and we reset the list as null
+				if (listOfRelatedVariables.size() == 0) {
+					listOfRelatedVariables = null;
+				}
+			}
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+		}
+		// The nodes of the variables remaining in the list are returned, if any
+		if (listOfRelatedVariables != null) {
+			return node.getProbNet().getNodes(listOfRelatedVariables);
+		}
+		else {
+			return null;
+		}
+	}
 }

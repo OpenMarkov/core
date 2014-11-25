@@ -63,7 +63,7 @@ public class SumPotential extends Potential {
 		boolean suitable = (role == PotentialRole.CONDITIONAL_PROBABILITY
 				|| role == PotentialRole.POLICY) && variables.get(0).getVariableType() == VariableType.NUMERIC;
 				
-        return suitable || role == PotentialRole.UTILITY;
+        return suitable || (role == PotentialRole.UTILITY && node.isSuperValueNode());
     }
     
 	@Override

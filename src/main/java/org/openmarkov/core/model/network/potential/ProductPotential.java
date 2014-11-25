@@ -33,8 +33,8 @@ public class ProductPotential extends Potential {
 
 	// Constructor
 	/**
-	 * @param variables
-	 * @param role
+	 * @param variables variables
+	 * @param role potential role
 	 */
 	public ProductPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role);
@@ -51,15 +51,15 @@ public class ProductPotential extends Potential {
 	// Methods
     /** Returns if an instance of a certain Potential type makes sense given 
      * the variables and the potential role.
-     * @param node. <code>Node</code> 
-     * @param variables. <code>ArrayList</code> of <code>Variable</code>.
-     * @param role. <code>PotentialRole</code>. */
+     * @param node <code>Node</code>
+     * @param variables <code>ArrayList</code> of <code>Variable</code>.
+     * @param role <code>PotentialRole</code>. */
 	public static boolean validate(Node node, List<Variable> variables, 
 			PotentialRole role) {
 		boolean suitable = (role == PotentialRole.CONDITIONAL_PROBABILITY
 				|| role == PotentialRole.POLICY) && variables.get(0).getVariableType() == VariableType.NUMERIC;
 				
-        return suitable || role == PotentialRole.UTILITY;
+        return suitable || (role == PotentialRole.UTILITY && node.isSuperValueNode());
     }        
     
 

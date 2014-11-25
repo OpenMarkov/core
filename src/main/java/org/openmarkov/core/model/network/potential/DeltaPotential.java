@@ -93,7 +93,9 @@ public class DeltaPotential extends Potential{
      *            . <code>PotentialRole</code>.
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        return (variables.size() <= 1 || role == PotentialRole.POLICY) && role != PotentialRole.UTILITY;
+        return ((variables.size() <= 1 || role == PotentialRole.POLICY) ||
+                (variables.size() > 1 && role == PotentialRole.CONDITIONAL_PROBABILITY && node.getVariable().getVariableType() == VariableType.NUMERIC)) &&
+                role != PotentialRole.UTILITY;
     }
 
     @Override

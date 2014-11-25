@@ -21,18 +21,18 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 
-/** Here we define the skeleton (an abstract class) of a heuristic algorithm 
- * that eliminates variables from a <code>MarkovNet</code> 
+/** Here we define the skeleton (an abstract class) of a heuristic algorithm
+ * that eliminates variables from a <code>MarkovNet</code>
  * @author  manuel
  * @author  fjdiez
  * @version  1.0
  * @since  OpenMarkov 1.0 */
 public abstract class EliminationHeuristic implements PNUndoableEditListener {
-	
+
 	// Attributes
 	/** A pointer to the received <code>Graph</code>. */
 	protected ProbNet probNet;
-	
+
 	/** A set of nodes that points to variables that are nor query variables nor
 	 * observed variables. */
 	protected List<List<Variable>> variablesToEliminate;
@@ -40,33 +40,37 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
     /** A set of nodes that points to variables that are nor query variables nor
      * observed variables. */
     protected List<List<Node>> nodesToEliminate;
-	
+
 	/** <code>Variable</code> that the heuristic propose to eliminate. */
 	protected Variable variableProposed;
-	
+
 	// Constructor
 	/** Variables will be eliminated from the last array to the first.
 	 * @param <code>probNet</code> it's a network that can contain decisions. <code>ProbNet</code>
 	 * @param variablesToEliminate. <code>ArrayList</code> of <code>ArrayList</code> of <code>Variable</code> */
-	public EliminationHeuristic(ProbNet probNet, 
+	public EliminationHeuristic(ProbNet probNet,
 			List<List<Variable>> variablesToEliminate) {
-// TODO Revisar todas las heuristicas que suponian que trabajaban
-// con una copia 
+// TODO Revisar todas las heuristicas que suponian que trabajaban con una copia
 		this.probNet = probNet;
-		
+
 		// this.variablesToEliminate = variablesToEliminate;
 		// Make a deep copy of variablesToEliminate
-		this.variablesToEliminate = new ArrayList<List<Variable>>(variablesToEliminate.size());
+		this.variablesToEliminate = new ArrayList<>(variablesToEliminate.size());
 		for (List<Variable> list : variablesToEliminate) {
-			List<Variable> listOfVariables = new ArrayList<Variable>(list.size());
-			for(Variable variable : list)
-			{
-				if(probNet.containsVariable(variable))
+			List<Variable> listOfVariables = new ArrayList<>(list.size());
+			for(Variable variable : list) {
+				if(probNet.containsVariable(variable)) {
 					listOfVariables.add(variable);
+				}
 			}
-			this.variablesToEliminate.add(listOfVariables);
+			// Solving issue #227
+			// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/227/inconsistency-between-the-lists
+			// Making consistent the way both lists are created
+			if (listOfVariables.size() > 0) {
+				this.variablesToEliminate.add(listOfVariables);
+			}
 		}
-		
+
 		this.nodesToEliminate = new ArrayList<>(variablesToEliminate.size());
 		for(List<Variable> variables : this.variablesToEliminate)
 		{
@@ -83,10 +87,10 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	}
 
 	// Methods
-	/** @return The <code>Variable</code> the heuristic suggests to 
+	/** @return The <code>Variable</code> the heuristic suggests to
 	 * eliminate. */
 	public abstract Variable getVariableToDelete();
-	
+
 	public void undoableEditHappened(UndoableEditEvent event) {
 		Variable removedVariable = getEventVariable(event);
 
@@ -102,27 +106,30 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 			    }
                 if (listIndex >= 0) {
                     nodesToEliminate.get(listOfListsIndex).remove(listIndex);
-                    if (nodesToEliminate.get(listOfListsIndex).isEmpty()) {
-                        nodesToEliminate.remove(listOfListsIndex);
-                    }
-                }
+				}
+				// Solving issue #227
+				// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/227/inconsistency-between-the-lists
+				// Making consistent the way the undoableEditHappened is executed in both lists
+				if (nodesToEliminate.get(listOfListsIndex).isEmpty()) {
+					nodesToEliminate.remove(listOfListsIndex);
+				}
 			}
 		}
 	}
-	
+
 	/** @param event <code>UndoableEditEvent</code>
-	 * @return node (<code>Node</code>) in the heuristic 
+	 * @return node (<code>Node</code>) in the heuristic
 	 *   <code>ProbNet</code> that will be removed */
 	protected Variable getEventVariable(UndoableEditEvent event) {
 		Variable variable = null;
 		UndoableEdit pNEdit = event.getEdit();
-		
+
 		if (pNEdit instanceof UsesVariable) {
 			variable = ((UsesVariable)pNEdit).getVariable();
 		}
 		return variable;
 	}
-    
+
     /** @return The class name */
     public String toString() {
         return this.getClass().getName();

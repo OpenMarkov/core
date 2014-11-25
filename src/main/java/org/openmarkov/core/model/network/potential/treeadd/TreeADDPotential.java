@@ -410,7 +410,7 @@ public class TreeADDPotential extends Potential {
 				}
 			}
 		}
-		if (role == PotentialRole.CONDITIONAL_PROBABILITY) {
+		if (role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.POLICY) {
 			if (variables.size() >= 2) {
 				validate = true;
 			}

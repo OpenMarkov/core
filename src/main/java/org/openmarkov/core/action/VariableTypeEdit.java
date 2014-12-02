@@ -237,9 +237,16 @@ public class VariableTypeEdit extends SimplePNEdit {
 				}
 				child.setPotentials(newPotentials);
 			} else {
-				// if child is not utility always change potential to
-				// Uniform
-				setUniformPotential2Node(child);
+				// if child is not utility always change potential to Uniform
+				// 25/11/2014
+				// If there are any potentials in the child
+				// Example. In the "ID-decide-test" network, if you change the Domain of Result of test variable,
+				// no potential should be set to Therapy
+				if (child.getPotentials() != null) {
+					if (child.getPotentials().size() > 0) {
+						setUniformPotential2Node(child);
+					}
+				}
 			}
 		}
 	}

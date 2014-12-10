@@ -52,4 +52,8 @@ public class UncertainParameter {
 		return !isProbabilityParameter();
 	}
 
+	public String getName() {
+		return uncertainValue.getName();
+	}
+
 }

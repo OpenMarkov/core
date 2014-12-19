@@ -1,10 +1,12 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
+
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -32,6 +34,22 @@ public class SystematicSampling {
 			return position;
 		}
 		private int position;
+		
+	}
+	
+	private static class ParameterAnalysisInformation {
+		UncertainParameter uncertainParameter;
+		double min;
+		double max;
+		String iterationVariableName;
+		public ParameterAnalysisInformation(
+				UncertainParameter uncertainParameter, double min, double max,
+				 String iterationVariableName) {
+			this.uncertainParameter = uncertainParameter;
+			this.min = min;
+			this.max = max;
+			this.iterationVariableName = iterationVariableName;
+		}
 		
 	}
 	
@@ -117,8 +135,7 @@ public class SystematicSampling {
 		if (!uncertainValuesHash.containsKey(auxUncertain)) {
 			uncertainValuesHash.put(auxUncertain, subPotentialAndPosition);
 		}
-	}
-		
+	}	
 		
 		
 	
@@ -157,6 +174,57 @@ public class SystematicSampling {
 		return newPotential;
 	}
 	
+	
+	private static ProbNet sampleNetwork(ProbNet originalNet,
+			List<ParameterAnalysisInformation> parameters, int numIntervals) {
+		ProbNet net = originalNet.copy();
+
+		UncertainParameter uncertainParameter;
+		int numPoints = numIntervals + 1;
+		
+		for (ParameterAnalysisInformation parameter : parameters) {
+			uncertainParameter = parameter.uncertainParameter;
+			if (uncertainParameter != null) {
+				
+				String iterationVariableName = parameter.iterationVariableName;
+				Variable iterVariable = new Variable(iterationVariableName,
+						numPoints);
+				Potential originalPotential = uncertainParameter.potential;
+				Potential newPotential = originalPotential.copy();
+				TablePotential originalSubPotential = uncertainParameter.subPotential;
+				TablePotential newSubPotential;
+				if (originalPotential != originalSubPotential) {
+					newPotential.addVariable(iterVariable);
+					newSubPotential = (TablePotential) originalSubPotential
+							.copy();
+				} else {
+					newSubPotential = (TablePotential) newPotential;
+				}
+				int position = getPosition(originalSubPotential,
+						uncertainParameter.uncertainValue);
+				int originalValuesLength = originalSubPotential.getTableSize();
+				TablePotential newTablePot = addVariableReplicatingValuesAndUncertainValues(
+						originalSubPotential, iterVariable);
+				newSubPotential.setVariables(newTablePot.getVariables());
+				newSubPotential.setValues(newTablePot.getValues());
+				newSubPotential.setUncertaintyTable(newTablePot
+						.getUncertaintyTable());
+				double min = parameter.min;
+				double pointsDistance = (parameter.max - min) / numIntervals;
+				for (int i = 0; i < numPoints; i++) {
+					newSubPotential.values[position + i * originalValuesLength] = min
+							+ i * pointsDistance;
+				}
+				if (originalPotential != originalSubPotential) {
+					replace((TreeADDPotential) newPotential,
+							originalSubPotential, newSubPotential);
+				}
+				net.removePotential(originalPotential);
+				net.addPotential(newPotential);
+			}
+		}
+		return net;
+	}
 
 	/**
 	 * @param originalNet
@@ -171,39 +239,17 @@ public class SystematicSampling {
 	 */
 	public static ProbNet sampleNetwork(ProbNet originalNet, UncertainParameter uncertainParameter, double min, double max,
 	 int numIntervals, String iterationVariableName){
-		ProbNet net = originalNet.copy();
-		
-		if (uncertainParameter!=null){
-			int numPoints = numIntervals + 1;
-			Variable iterVariable = new Variable(iterationVariableName,numPoints);
-			Potential originalPotential = uncertainParameter.potential;
-			Potential newPotential = originalPotential.copy();
-			TablePotential originalSubPotential = uncertainParameter.subPotential;
-			TablePotential newSubPotential;
-			if (originalPotential!=originalSubPotential){
-				newPotential.addVariable(iterVariable);
-				newSubPotential = (TablePotential) originalSubPotential.copy();				
-			}
-			else{
-				newSubPotential = (TablePotential) newPotential;
-			}
-			int position = getPosition(originalSubPotential,uncertainParameter.uncertainValue);
-			int originalValuesLength = originalSubPotential.getTableSize();
-			TablePotential newTablePot = addVariableReplicatingValuesAndUncertainValues(originalSubPotential,iterVariable);
-			newSubPotential.setVariables(newTablePot.getVariables());
-			newSubPotential.setValues(newTablePot.getValues());
-			newSubPotential.setUncertaintyTable(newTablePot.getUncertaintyTable());
-			double pointsDistance = (max - min)/numIntervals;
-			for (int i=0;i<numPoints;i++){
-				newSubPotential.values[position+i*originalValuesLength]= min+i*pointsDistance;
-			}
-			if (originalPotential!=originalSubPotential){
-				replace((TreeADDPotential) newPotential,originalSubPotential,newSubPotential);
-			}
-			net.removePotential(originalPotential);
-			net.addPotential(newPotential);
-		}
-		return net;
+		List<ParameterAnalysisInformation> parameters = Arrays.asList(new ParameterAnalysisInformation(uncertainParameter,min,max,iterationVariableName));
+		return SystematicSampling.sampleNetwork(originalNet, parameters, numIntervals);
+	}
+	
+	public static ProbNet sampleNetwork(ProbNet originalNet, UncertainParameter uncertainParameter1, double min1, double max1,
+			UncertainParameter uncertainParameter2, double min2, double max2,
+			int numIntervals, String iterationVariableName1, String iterationVariableName2){
+		List<ParameterAnalysisInformation> parameters = Arrays.asList(
+				new ParameterAnalysisInformation(uncertainParameter1,min1,max1,iterationVariableName1),
+				new ParameterAnalysisInformation(uncertainParameter2,min2,max2,iterationVariableName2));
+		return SystematicSampling.sampleNetwork(originalNet, parameters, numIntervals);
 	}
 	
 	

@@ -40,7 +40,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
  * This class performs prune on <code>ProbNet</code>
- * 
+ *
  * @author marias
  */
 public class ProbNetOperations {
@@ -54,13 +54,13 @@ public class ProbNetOperations {
      * <li>Remove unreachable nodes from <code>variablesOfInterest</code> given
      * the <code>variablesOfEvidence</code>.
      * </ol>
-     * 
+     *
      * @return <code>ProbNet</code>. Evidence variables are removed in serial
      *         connections
      */
     public static ProbNet getPruned(ProbNet probNet,
-            Collection<Variable> variablesOfInterest,
-            EvidenceCase evidence) {
+                                    Collection<Variable> variablesOfInterest,
+                                    EvidenceCase evidence) {
         ProbNet prunedProbNet = probNet.copy();
         HashSet<Variable> variablesOfInterest2 = new HashSet<Variable>(variablesOfInterest);
         HashSet<Variable> variablesOfEvidence2 = new HashSet<Variable>(evidence.getVariables());
@@ -74,7 +74,7 @@ public class ProbNetOperations {
     /**
      * Projects the evidence in the <code>probNet</code> potentials and remove
      * evidence variables
-     * 
+     *
      * @param probNet
      *            . <code>ProbNet</code>
      * @param evidence
@@ -107,30 +107,30 @@ public class ProbNetOperations {
             probNet.removeNode(probNet.getNode(variable));
         }
     }
-    
-	/** @param node <code>Node</code>
-	 * @param nodes <code>Collection</code> of <code>Node</code>
-	 * @return <code>true</code> if <code>node</code> has at least a neighbor 
-	 * other than those in <code>nodeList</code> */
-	public static boolean hasNeighborsOutside(ProbNet probNet, Node node,
-			Collection<Node> nodes) {
-		boolean hasNeighborsOutside = false;
-		boolean neighborIsInList; // aux for the for-loop
-		for (Node neighbor : probNet.getNeighbors(node)) {
-			neighborIsInList = false;
-			for (Node cliqueNode : nodes) {
-				if (neighbor == cliqueNode) {
-					neighborIsInList = true;
-					break;
-				}
-			}
-			if (!neighborIsInList) {
-				hasNeighborsOutside = true;
-				break;
-			}
-		}
-		return hasNeighborsOutside;
-	}
+
+    /** @param node <code>Node</code>
+     * @param nodes <code>Collection</code> of <code>Node</code>
+     * @return <code>true</code> if <code>node</code> has at least a neighbor
+     * other than those in <code>nodeList</code> */
+    public static boolean hasNeighborsOutside(ProbNet probNet, Node node,
+                                              Collection<Node> nodes) {
+        boolean hasNeighborsOutside = false;
+        boolean neighborIsInList; // aux for the for-loop
+        for (Node neighbor : probNet.getNeighbors(node)) {
+            neighborIsInList = false;
+            for (Node cliqueNode : nodes) {
+                if (neighbor == cliqueNode) {
+                    neighborIsInList = true;
+                    break;
+                }
+            }
+            if (!neighborIsInList) {
+                hasNeighborsOutside = true;
+                break;
+            }
+        }
+        return hasNeighborsOutside;
+    }
 
     /**
      * Remove nodes that:
@@ -139,7 +139,7 @@ public class ProbNetOperations {
      * <li>Are not included in <code>variablesOfEvidence</code>
      * <li>Have no children or all its children are barren nodes.
      * </ol>
-     * 
+     *
      * @param variablesOfEvidence2
      * @param variablesOfInterest2
      * @param prunedProbNet
@@ -147,8 +147,8 @@ public class ProbNetOperations {
      * @return <code>ProbNet</code> without barren nodes.
      */
     public static ProbNet removeBarrenNodes(ProbNet prunedProbNet,
-            Collection<Variable> variablesOfInterest,
-            HashSet<Variable> variablesOfEvidence) {
+                                            Collection<Variable> variablesOfInterest,
+                                            HashSet<Variable> variablesOfEvidence) {
         HashSet<Node> barrenNodes = new HashSet<Node>();
         List<Node> nodes = prunedProbNet.getNodes();
         for (Node node : nodes) {
@@ -177,9 +177,9 @@ public class ProbNetOperations {
                         boolean allChildrenBarren = true;
                         int numChildren = childrenOfParent.size();
                         if (numChildren > 1) { // at least one children is
-                                               // barren
+                            // barren
                             for (int i = 0; allChildrenBarren && i < numChildren; i++) {
-                            	Node child = childrenOfParent.get(i);
+                                Node child = childrenOfParent.get(i);
                                 allChildrenBarren &= barrenNodes.contains(child);
                             }
                         }
@@ -204,7 +204,7 @@ public class ProbNetOperations {
     /**
      * Removes the nodes that are not connected to the variables of interest by
      * any path
-     * 
+     *
      * @param probNet
      *            . <code>ProbNet</code>
      * @param variablesOfInterest
@@ -214,10 +214,10 @@ public class ProbNetOperations {
      * @return <code>ProbNet</code>
      */
     public static ProbNet removeUnreachableNodes(ProbNet probNet,
-            Collection<Variable> variablesOfInterest,
-            HashSet<Variable> variablesOfEvidence) {
+                                                 Collection<Variable> variablesOfInterest,
+                                                 HashSet<Variable> variablesOfEvidence) {
         // Gets nodes of interest and adds nodes connected to them
-    	UniqueStack<Node> nodesToExplore = new UniqueStack<>();
+        UniqueStack<Node> nodesToExplore = new UniqueStack<>();
         Set<Node> nodesToKeep = new HashSet<>();
 
         // Store nodes of variablesOfInterest in nodesToKeep
@@ -244,7 +244,7 @@ public class ProbNetOperations {
 
         // For each interest node, finds connected nodes via valid paths.
         while (!nodesToExplore.empty()) {
-        	Node node = nodesToExplore.pop();
+            Node node = nodesToExplore.pop();
 
             // Find head to head connected nodes: X->Y<-Z and
             // Y is evidence or Y has a descendent that is evidence
@@ -252,10 +252,10 @@ public class ProbNetOperations {
                 List<Node> parents = node.getParents();
                 int parentsSize = parents.size();
                 for (int i = 0; i < parentsSize - 1; i++) {
-                	Node parentI = parents.get(i);
+                    Node parentI = parents.get(i);
                     boolean toKeepI = nodesToKeep.contains(parentI);
                     for (int j = i + 1; j < parentsSize; j++) {
-                    	Node parentJ = parents.get(j);
+                        Node parentJ = parents.get(j);
                         boolean toKeepJ = nodesToKeep.contains(parentJ);
                         if (toKeepI && !toKeepJ) {
                             pushInExploreAndAddToKeep(parentJ, nodesToExplore, nodesToKeep);
@@ -281,7 +281,7 @@ public class ProbNetOperations {
                 List<Node> parents = node.getParents();
                 int numChildren = children.size();
                 for (int i = 0; i < numChildren; i++) {
-                	Node child = children.get(i);
+                    Node child = children.get(i);
                     boolean childInNodesToKeep = nodesToKeep.contains(child);
                     // X->Y->Z and X<-Y<-Z
                     for (Node parent : parents) {
@@ -296,7 +296,7 @@ public class ProbNetOperations {
                     }
                     // X<-Y->Z
                     for (int j = i + 1; j < numChildren; j++) {
-                    	Node child2 = children.get(j);
+                        Node child2 = children.get(j);
                         boolean child2InNodesToKeep = nodesToKeep.contains(child2);
                         if (child2InNodesToKeep && !childInNodesToKeep) {
                             pushInExploreAndAddToKeep(child, nodesToExplore, nodesToKeep);
@@ -328,11 +328,11 @@ public class ProbNetOperations {
      * @param nodesToKeep
      *            . <code>HashSet</code> of <code>Node</code>
      */
-	private static void pushInExploreAndAddToKeep(Node node, UniqueStack<Node> nodesToExplore,
-			Set<Node> nodesToKeep) {
-		nodesToExplore.push(node);
-		nodesToKeep.add(node);
-	}
+    private static void pushInExploreAndAddToKeep(Node node, UniqueStack<Node> nodesToExplore,
+                                                  Set<Node> nodesToKeep) {
+        nodesToExplore.push(node);
+        nodesToKeep.add(node);
+    }
 
     /**
      * @param probNet
@@ -342,12 +342,12 @@ public class ProbNetOperations {
      * @return <code>HashSet</code> of <code>Node</code>
      */
     private static Set<Node> getEvidenceNodes(ProbNet probNet,
-            Collection<Variable> variablesOfEvidence) {
+                                              Collection<Variable> variablesOfEvidence) {
         Set<Node> hashEvidenceNodes = new HashSet<>();
         for (Variable variable : variablesOfEvidence) {
             Node evidenceNode = probNet.getNode(variable);
             if (evidenceNode != null) {
-            	hashEvidenceNodes.add(evidenceNode);
+                hashEvidenceNodes.add(evidenceNode);
             }
         }
         return hashEvidenceNodes;
@@ -366,7 +366,7 @@ public class ProbNetOperations {
         noExploredNodes.addAll(nodes);
 
         while (!noExploredNodes.empty()) {
-        	Node node = noExploredNodes.pop();
+            Node node = noExploredNodes.pop();
             List<Node> parents = node.getParents();
             for (Node parent : parents) {
                 if (ancestors.add(parent)) {
@@ -379,7 +379,7 @@ public class ProbNetOperations {
 
     /**
      * Uses the algorithm by Kahn (1962)
-     * 
+     *
      * @param probNet
      * @param variablesToSort
      */
@@ -398,7 +398,7 @@ public class ProbNetOperations {
 
     /**
      * Uses the algorithm by Kahn (1962)
-     * 
+     *
      * @param probNet
      */
     public static List<Node> sortTopologically(ProbNet probNet) {
@@ -417,7 +417,7 @@ public class ProbNetOperations {
         // while S is non-empty do
         while (!s.isEmpty()) {
             // remove a node n from S
-        	Node n = s.pop();
+            Node n = s.pop();
             // insert n into L
             l.add(n);
             // for each node m with an edge e from n to m do
@@ -430,10 +430,10 @@ public class ProbNetOperations {
                 }
             }
         }
-        
+
         List<Node> sortedNodes = new ArrayList<>();
         for(Node node : l)
-        	sortedNodes.add(probNet.getNode(node.getVariable()));
+            sortedNodes.add(probNet.getNode(node.getVariable()));
         return sortedNodes;
     }
 
@@ -442,7 +442,7 @@ public class ProbNetOperations {
      * (such as a delta potential) that are deterministically defined by their
      * parents into finite state variables. It also adapts the potentials
      * affected by these conversions.
-     * 
+     *
      * @param probNet
      * @param evidence
      * @return
@@ -464,23 +464,23 @@ public class ProbNetOperations {
                 if (configuration.contains(oldVariable)) {
                     // Convert numerical variables with evidence to one-state
                     // variables
-                	Finding finding;
-					try {
-						finding = configuration.removeFinding(oldVariable);
-	                    double value = finding.numericalValue;
-	                    Variable newVariable = new Variable(oldVariable.getName(),
-	                            String.valueOf(value));
-	                    node.setVariable(newVariable);
-	                    originalVariables.put(newVariable, oldVariable);
-	                    convertedVariables.put(oldVariable, newVariable);
-	                    convertedNodes.add(node);
-	                    TablePotential potential = new TablePotential(Arrays.asList(newVariable),
-	                            oldPotential.getPotentialRole());
-	                    potential.values[0] = 1;
-	                    node.setPotential(potential);
-					} catch (NoFindingException e) {
-						e.printStackTrace();
-					}
+                    Finding finding;
+                    try {
+                        finding = configuration.removeFinding(oldVariable);
+                        double value = finding.numericalValue;
+                        Variable newVariable = new Variable(oldVariable.getName(),
+                                String.valueOf(value));
+                        node.setVariable(newVariable);
+                        originalVariables.put(newVariable, oldVariable);
+                        convertedVariables.put(oldVariable, newVariable);
+                        convertedNodes.add(node);
+                        TablePotential potential = new TablePotential(Arrays.asList(newVariable),
+                                oldPotential.getPotentialRole());
+                        potential.values[0] = 1;
+                        node.setPotential(potential);
+                    } catch (NoFindingException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     List<Double> newStates = new ArrayList<>();
                     // For each configuration x, add f(x) to the list (if it is
@@ -594,154 +594,154 @@ public class ProbNetOperations {
                 }
             } else if (!node.getPotentials().isEmpty()
                     && potentialContainsConvertedNodes(node.getPotentials().get(0),
-                            convertedVariables.keySet())) {
-            	// Node is not numeric but contains numeric parents
+                    convertedVariables.keySet())) {
+                // Node is not numeric but contains numeric parents
                 // Adapt potential to numeric finite states variables
                 Potential newPotential = node.getPotentials().get(0).copy();
                 List<Variable> convertedParentVariables = getConvertedParentVariables(newPotential,
                         convertedVariables);
                 for(Variable convertedParentVariable : convertedParentVariables)
                 {
-                	newPotential.replaceNumericVariable(convertedParentVariable);
+                    newPotential.replaceNumericVariable(convertedParentVariable);
                 }
                 node.setPotential(newPotential);
             }
         }
-        
+
         // Update evidence, replacing references to old variables with new ones
         List<Finding> findings = evidence.getFindings();
         for(Finding finding: findings)
         {
-    		Variable originalVariable = finding.getVariable();
-        	if(convertedVariables.containsKey(originalVariable))
-        	{
-        		try {
-					evidence.removeFinding(originalVariable);
-					Variable convertedVariable = convertedVariables.get(originalVariable);
-					double numericalValue = convertedVariable.round(finding.getNumericalValue());
-					int stateIndex = convertedVariable.getStateIndex(String.valueOf(numericalValue));
-					evidence.addFinding(new Finding(convertedVariable,stateIndex));
-				} catch (NoFindingException | InvalidStateException | IncompatibleEvidenceException e) {
-					e.printStackTrace();
-				}
-        	}
+            Variable originalVariable = finding.getVariable();
+            if(convertedVariables.containsKey(originalVariable))
+            {
+                try {
+                    evidence.removeFinding(originalVariable);
+                    Variable convertedVariable = convertedVariables.get(originalVariable);
+                    double numericalValue = convertedVariable.round(finding.getNumericalValue());
+                    int stateIndex = convertedVariable.getStateIndex(String.valueOf(numericalValue));
+                    evidence.addFinding(new Finding(convertedVariable,stateIndex));
+                } catch (NoFindingException | InvalidStateException | IncompatibleEvidenceException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         return convertedNet;
     }
-    
+
     public static ProbNet convertNumericalVariablesToFS(ProbNet probNet)
     {
-    	return convertNumericalVariablesToFS(probNet, new EvidenceCase());
+        return convertNumericalVariablesToFS(probNet, new EvidenceCase());
     }
 
 
     /**
-     * 
+     *
      * @param potential
      * @param projectedPotential
      * @param configuration - configuration of projected variables
      */
     public static void sumProjectedPotential(TablePotential potential,
-			TablePotential projectedPotential, EvidenceCase configuration) {
-    	List<Variable> variables = potential.getVariables();
-    	List<Variable> unprojectedVariables = projectedPotential.getVariables();
-    	int[] unprojectedVariablesIndices = new int[unprojectedVariables.size()];
+                                             TablePotential projectedPotential, EvidenceCase configuration) {
+        List<Variable> variables = potential.getVariables();
+        List<Variable> unprojectedVariables = projectedPotential.getVariables();
+        int[] unprojectedVariablesIndices = new int[unprojectedVariables.size()];
         int[] potentialVariableIndices = new int[variables.size()];
         // Set indices for initial configuration
         for(int i=0; i< potentialVariableIndices.length; ++i)
         {
-        	Variable variable = variables.get(i);
-        	if(configuration.contains(variable))
-        	{
-        		potentialVariableIndices[i] = configuration.getState(variable);
-        	}else
-        	{
-        		unprojectedVariablesIndices[unprojectedVariables.indexOf(variable)] = i;
-        		potentialVariableIndices[i] = 0;
-        	}
+            Variable variable = variables.get(i);
+            if(configuration.contains(variable))
+            {
+                potentialVariableIndices[i] = configuration.getState(variable);
+            }else
+            {
+                unprojectedVariablesIndices[unprojectedVariables.indexOf(variable)] = i;
+                potentialVariableIndices[i] = 0;
+            }
         }
         // Add uncertain values if projected potential has them
         if(projectedPotential.isUncertain() && !potential.isUncertain())
         {
-        	potential.uncertainValues = new UncertainValue[potential.getTableSize()];
+            potential.uncertainValues = new UncertainValue[potential.getTableSize()];
         }
-        
+
         Variable conditionedVariable = potential.getConditionedVariable();
         // Index of the current configuration in the projected potential
-    	int projectedConfigIndex = 0;
+        int projectedConfigIndex = 0;
         // Index of the current configuration in the original potential
         int configIndex = 0;
         boolean nextConfiguration = true;
         while(nextConfiguration)
         {
-	        configIndex = potential.getPosition(potentialVariableIndices);
-	        // TODO update potentialVariableIndices
-	        for(int i = 0; i< conditionedVariable.getNumStates(); ++i)
-	        {
-				potential.values[configIndex + i] = projectedPotential.values[projectedConfigIndex + i];
-				if(projectedPotential.isUncertain())
-				{
-					potential.uncertainValues[configIndex + i] = projectedPotential.uncertainValues[projectedConfigIndex + i];
-				}
-	        }
-	        // TODO update projectedConfigIndex
-	        projectedConfigIndex += conditionedVariable.getNumStates();		
-	        
-	        // Get next configuration
-	        nextConfiguration = false;
-	        int unprojectedParentIndex = (conditionedVariable == variables.get(unprojectedVariablesIndices[0]))? 1 : 0;
-	        while(!nextConfiguration && unprojectedParentIndex < unprojectedVariablesIndices.length)
-	        {
-	        	int parentIndex = unprojectedVariablesIndices[unprojectedParentIndex];
-	        	if(potentialVariableIndices[parentIndex]+1 < variables.get(parentIndex).getNumStates())
-	        	{
-	        		potentialVariableIndices[parentIndex]++;
-	        		nextConfiguration = true;
-	        	}else
-	        	{
-	        		potentialVariableIndices[parentIndex] = 0;
-	        		unprojectedParentIndex++;
-	        	}
-	        }
+            configIndex = potential.getPosition(potentialVariableIndices);
+            // TODO update potentialVariableIndices
+            for(int i = 0; i< conditionedVariable.getNumStates(); ++i)
+            {
+                potential.values[configIndex + i] = projectedPotential.values[projectedConfigIndex + i];
+                if(projectedPotential.isUncertain())
+                {
+                    potential.uncertainValues[configIndex + i] = projectedPotential.uncertainValues[projectedConfigIndex + i];
+                }
+            }
+            // TODO update projectedConfigIndex
+            projectedConfigIndex += conditionedVariable.getNumStates();
+
+            // Get next configuration
+            nextConfiguration = false;
+            int unprojectedParentIndex = (conditionedVariable == variables.get(unprojectedVariablesIndices[0]))? 1 : 0;
+            while(!nextConfiguration && unprojectedParentIndex < unprojectedVariablesIndices.length)
+            {
+                int parentIndex = unprojectedVariablesIndices[unprojectedParentIndex];
+                if(potentialVariableIndices[parentIndex]+1 < variables.get(parentIndex).getNumStates())
+                {
+                    potentialVariableIndices[parentIndex]++;
+                    nextConfiguration = true;
+                }else
+                {
+                    potentialVariableIndices[parentIndex] = 0;
+                    unprojectedParentIndex++;
+                }
+            }
         }
-	}
-    
-    public static void sumProjectedPotential(TablePotential potential,
-			TablePotential projectedPotential, List<Variable> projectedVariables, int[] projectedIndices) {
-    	EvidenceCase configuration = new EvidenceCase();
-    	for(int i=0; i<projectedVariables.size();++i)
-    	{
-    		try {
-				configuration.addFinding(new Finding(projectedVariables.get(i), projectedIndices[i]));
-			} catch (InvalidStateException | IncompatibleEvidenceException e) {
-				e.printStackTrace();
-			}
-    	}
-    	sumProjectedPotential(potential, projectedPotential, configuration);
     }
-    
 
-	@SuppressWarnings("unused")
-	private static List<Variable> getConvertedPotentialVariables(Potential oldPotential,
-			Map<Variable, Variable> convertedVariables) {
-    	List<Variable> originalVariables = oldPotential.getVariables();
-		List<Variable> convertedPotentialVariables = new ArrayList<>(originalVariables.size());
-		for(Variable originalVariable : originalVariables)
-		{
-			if(convertedVariables.containsKey(originalVariable))
-			{
-				convertedPotentialVariables.add(convertedVariables.get(originalVariable));
-			} else
-			{
-				convertedPotentialVariables.add(originalVariable);
-			}
-		}
-		return convertedPotentialVariables;
-	}
+    public static void sumProjectedPotential(TablePotential potential,
+                                             TablePotential projectedPotential, List<Variable> projectedVariables, int[] projectedIndices) {
+        EvidenceCase configuration = new EvidenceCase();
+        for(int i=0; i<projectedVariables.size();++i)
+        {
+            try {
+                configuration.addFinding(new Finding(projectedVariables.get(i), projectedIndices[i]));
+            } catch (InvalidStateException | IncompatibleEvidenceException e) {
+                e.printStackTrace();
+            }
+        }
+        sumProjectedPotential(potential, projectedPotential, configuration);
+    }
 
-	private static List<Variable> getConvertedParentVariables(Potential potential,
-            Map<Variable, Variable> convertedVariables) {
+
+    @SuppressWarnings("unused")
+    private static List<Variable> getConvertedPotentialVariables(Potential oldPotential,
+                                                                 Map<Variable, Variable> convertedVariables) {
+        List<Variable> originalVariables = oldPotential.getVariables();
+        List<Variable> convertedPotentialVariables = new ArrayList<>(originalVariables.size());
+        for(Variable originalVariable : originalVariables)
+        {
+            if(convertedVariables.containsKey(originalVariable))
+            {
+                convertedPotentialVariables.add(convertedVariables.get(originalVariable));
+            } else
+            {
+                convertedPotentialVariables.add(originalVariable);
+            }
+        }
+        return convertedPotentialVariables;
+    }
+
+    private static List<Variable> getConvertedParentVariables(Potential potential,
+                                                              Map<Variable, Variable> convertedVariables) {
         List<Variable> convertedParentVariables = new ArrayList<>();
         for (Variable parentVariable : potential.getVariables()) {
             if (convertedVariables.containsKey(parentVariable)) {
@@ -753,7 +753,7 @@ public class ProbNetOperations {
     }
 
     private static boolean potentialContainsConvertedNodes(Potential potential,
-            Set<Variable> convertedVariables) {
+                                                           Set<Variable> convertedVariables) {
         boolean contains = false;
         List<Variable> variables = potential.getVariables();
         int i = 0;
@@ -762,12 +762,12 @@ public class ProbNetOperations {
         }
         return contains;
     }
-    
+
     public static List<State> getUnrestrictedStates(Link<Node> link, State[] restrictedVariableStates, State state)
     {
-    	List<State> nonRestrictedStates = new ArrayList<State>();
+        List<State> nonRestrictedStates = new ArrayList<State>();
         Potential linkRestrictions = link.getRestrictionsPotential ();
-        List<Variable> variables = linkRestrictions.getVariables(); 
+        List<Variable> variables = linkRestrictions.getVariables();
         Variable sourceVariable = variables.get(0);
         Variable destinationVariable = variables.get(1);
         EvidenceCase configuration = new EvidenceCase ();
@@ -792,152 +792,152 @@ public class ProbNetOperations {
 
     public static boolean hasStructuralAsymmetry(ProbNet probNet)
     {
-    	boolean asymmetryFound = false;
-    	
-    	for(Link<Node> link : probNet.getLinks())
-    	{
-    		// There is asymmetry if there are restrictions or if only some states reveal a certain variable 
-    		asymmetryFound |= link.hasRestrictions() || 
-    				link.hasRevealingConditions() && link.getRevealingStates().size() < link.getNode1().getVariable().getNumStates();
-    	}
-    	
-    	return asymmetryFound;
+        boolean asymmetryFound = false;
+
+        for(Link<Node> link : probNet.getLinks())
+        {
+            // There is asymmetry if there are restrictions or if only some states reveal a certain variable
+            asymmetryFound |= link.hasRestrictions() ||
+                    link.hasRevealingConditions() && link.getRevealingStates().size() < link.getNode1().getVariable().getNumStates();
+        }
+
+        return asymmetryFound;
     }
 
     /**
-	 * Returns if a ProbNet has order asymmetry. A ProbNet has order asymmetry
-	 * if and only if there is no directed path that goes through all the
-	 * decision nodes
-	 * 
-	 * @param probNet
-	 * @return
-	 */
+     * Returns if a ProbNet has order asymmetry. A ProbNet has order asymmetry
+     * if and only if there is no directed path that goes through all the
+     * decision nodes
+     *
+     * @param probNet
+     * @return
+     */
     public static boolean hasOrderAsymmetry(ProbNet probNet)
     {
-    	List<Node> parentlessDecisions = getParentlessDecisions(probNet);
-    	if(parentlessDecisions.size() == 1)
-    	{
-			List<Node> decisionNodes = probNet.getNodes (NodeType.DECISION);
-	    	while(parentlessDecisions.size() == 1)
-	    	{
-	    		decisionNodes.remove(parentlessDecisions.get(0));
-	            parentlessDecisions.clear();
-	            for (Node decisionNode : decisionNodes)
-	            {
-	                boolean hasParentDecisions = false;
-	                Stack<Node> parentNodes = new Stack<> ();
-	                parentNodes.push (decisionNode);
-	                while (!hasParentDecisions && !parentNodes.isEmpty ())
-	                {
-	                    Node node = parentNodes.pop ();
-	                    List<Node> parents = node.getParents ();
-	                    int i=0;
-	                    while (i < parents.size() && !hasParentDecisions)
-	                    {
-	                        Node parentNode = parents.get(i++);
-	                        boolean isDecision = parentNode.getNodeType () == NodeType.DECISION;
-	                        if(!isDecision || decisionNodes.contains(parentNode))
-	                        {
-	                        	hasParentDecisions |= isDecision;
-	                        	parentNodes.push (parentNode);
-	                        }
-	                    }
-	                }
-	                if (!hasParentDecisions)
-	                {
-	                    parentlessDecisions.add (decisionNode);
-	                }
-	            }
-	         }
-    	}
-    	return parentlessDecisions.size() > 1;
+        List<Node> parentlessDecisions = getParentlessDecisions(probNet);
+        if(parentlessDecisions.size() == 1)
+        {
+            List<Node> decisionNodes = probNet.getNodes (NodeType.DECISION);
+            while(parentlessDecisions.size() == 1)
+            {
+                decisionNodes.remove(parentlessDecisions.get(0));
+                parentlessDecisions.clear();
+                for (Node decisionNode : decisionNodes)
+                {
+                    boolean hasParentDecisions = false;
+                    Stack<Node> parentNodes = new Stack<> ();
+                    parentNodes.push (decisionNode);
+                    while (!hasParentDecisions && !parentNodes.isEmpty ())
+                    {
+                        Node node = parentNodes.pop ();
+                        List<Node> parents = node.getParents ();
+                        int i=0;
+                        while (i < parents.size() && !hasParentDecisions)
+                        {
+                            Node parentNode = parents.get(i++);
+                            boolean isDecision = parentNode.getNodeType () == NodeType.DECISION;
+                            if(!isDecision || decisionNodes.contains(parentNode))
+                            {
+                                hasParentDecisions |= isDecision;
+                                parentNodes.push (parentNode);
+                            }
+                        }
+                    }
+                    if (!hasParentDecisions)
+                    {
+                        parentlessDecisions.add (decisionNode);
+                    }
+                }
+            }
+        }
+        return parentlessDecisions.size() > 1;
     }
-    
+
     public static List<Node> getNeverObservedVariables (ProbNet probNet)
     {
         List<Node> neverObservedVariables = new ArrayList<> ();
         Set<Node> observableVariables = null;
-        
+
         try {
-			observableVariables = getObservableVariables(probNet);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-        
+            observableVariables = getObservableVariables(probNet);
+        } catch (NodeNotFoundException e) {
+            e.printStackTrace();
+        }
+
         for (Node node : probNet.getNodes (NodeType.CHANCE))
         {
-        	if (!observableVariables.contains(node))
+            if (!observableVariables.contains(node))
             {
                 neverObservedVariables.add (node);
             }
         }
-        return neverObservedVariables;    
+        return neverObservedVariables;
     }
-    
-    
+
+
     /**
      * @param probNet A DAN
      * @return A list of chance variables that are observable; this list includes always observed variables and
      * those variables that can be reached from an always observed variable or from a decision, always following
      * a path formed exclusively by revelation links.
-     * @throws NodeNotFoundException 
-     * @throws NodeNotFoundException 
+     * @throws NodeNotFoundException
+     * @throws NodeNotFoundException
      */
     public static Set<Node> getObservableVariables(ProbNet probNet) throws NodeNotFoundException, NodeNotFoundException{
-    	Set<Node> observable;
-    	Set<Variable> visitedDecisions;
-      	ConcurrentLinkedQueue<Variable> variablesToProcess = new ConcurrentLinkedQueue<>();
-    	   	
-    	observable = new HashSet<>();
-    	observable.addAll(getAlwaysObservedVariables(probNet));
-    	for (Node auxNode:observable)
-    	{
-    		variablesToProcess.add(auxNode.getVariable());
-    	}
-      	PartialOrderDAN order = new PartialOrderDAN(probNet);
-      	for (Node auxNode:getParentlessDecisions(probNet)){
-      		variablesToProcess.add(auxNode.getVariable());
-      	}
-      	visitedDecisions = new HashSet<>();
-      	while (!variablesToProcess.isEmpty())
-    	{
-    		Variable variableToProcess = variablesToProcess.poll();
-    		Node nodeToProcess = probNet.getNode(variableToProcess);
-    		
-    		//Process children in the graph
-    		for (Node child: nodeToProcess.getChildren())
-    		{
-    			if (!observable.contains(child))
-    			{ 	boolean isFound = false;
-    				List<Link<Node>> links = probNet.getLinks();
-    				Link<Node> link = null;
-    				for (int i=0;(i<links.size())&&!isFound;i++){
-    					link = links.get(i);
-    					isFound = link.getNode1().equals(nodeToProcess) &&link.getNode2()==child;
-    				}
-					if (link.hasRevealingConditions())
-    				{
-    					observable.add(child);
-    					variablesToProcess.add(child.getVariable());
-    				}
-    			}
-       		}
-    		if (nodeToProcess.getNodeType()==NodeType.DECISION){
-    			visitedDecisions.add(variableToProcess);
-    			//Process the children of the decision in the partial order that we have not still visited
-    			for (Node childNodeInOrder:order.getOrder().getNode(variableToProcess).getChildren()){
-    				Variable varChild = childNodeInOrder.getVariable();
-    				if (!visitedDecisions.contains(varChild)){
-    					variablesToProcess.add(varChild);
-    				}
-    			}
-    		}
-    		
-    	}
-    	return observable;
-    	
+        Set<Node> observable;
+        Set<Variable> visitedDecisions;
+        ConcurrentLinkedQueue<Variable> variablesToProcess = new ConcurrentLinkedQueue<>();
+
+        observable = new HashSet<>();
+        observable.addAll(getAlwaysObservedVariables(probNet));
+        for (Node auxNode:observable)
+        {
+            variablesToProcess.add(auxNode.getVariable());
+        }
+        PartialOrderDAN order = new PartialOrderDAN(probNet);
+        for (Node auxNode:getParentlessDecisions(probNet)){
+            variablesToProcess.add(auxNode.getVariable());
+        }
+        visitedDecisions = new HashSet<>();
+        while (!variablesToProcess.isEmpty())
+        {
+            Variable variableToProcess = variablesToProcess.poll();
+            Node nodeToProcess = probNet.getNode(variableToProcess);
+
+            //Process children in the graph
+            for (Node child: nodeToProcess.getChildren())
+            {
+                if (!observable.contains(child))
+                { 	boolean isFound = false;
+                    List<Link<Node>> links = probNet.getLinks();
+                    Link<Node> link = null;
+                    for (int i=0;(i<links.size())&&!isFound;i++){
+                        link = links.get(i);
+                        isFound = link.getNode1().equals(nodeToProcess) &&link.getNode2()==child;
+                    }
+                    if (link.hasRevealingConditions())
+                    {
+                        observable.add(child);
+                        variablesToProcess.add(child.getVariable());
+                    }
+                }
+            }
+            if (nodeToProcess.getNodeType()==NodeType.DECISION){
+                visitedDecisions.add(variableToProcess);
+                //Process the children of the decision in the partial order that we have not still visited
+                for (Node childNodeInOrder:order.getOrder().getNode(variableToProcess).getChildren()){
+                    Variable varChild = childNodeInOrder.getVariable();
+                    if (!visitedDecisions.contains(varChild)){
+                        variablesToProcess.add(varChild);
+                    }
+                }
+            }
+
+        }
+        return observable;
+
     }
-    
+
     /**
      * Generates a list of decision nodes that don't have parent decisions
      * @param probNet
@@ -972,7 +972,7 @@ public class ProbNetOperations {
     }
 
     /**
-     * Gets the list of always-observed-variables in the DAN 
+     * Gets the list of always-observed-variables in the DAN
      * @param probNet
      * @return
      */
@@ -987,8 +987,8 @@ public class ProbNetOperations {
             }
         }
         return alwaysObservedVariables;
-    }   
-    
+    }
+
 
     /**
      * Returns whether the decisionNode has another predecessor decision
@@ -999,8 +999,8 @@ public class ProbNetOperations {
      * @return
      */
     public static boolean hasAnotherPredecessorDecision (Node decisionNode,
-                                                          Node removedNode,
-                                                          ProbNet probNet)
+                                                         Node removedNode,
+                                                         ProbNet probNet)
     {
         Stack<Node> predecessors = new Stack<>();
         predecessors.add (decisionNode);
@@ -1020,73 +1020,100 @@ public class ProbNetOperations {
         return found;
     }
 
-	public static List<Node> getDecisionSequence(ProbNet probNet) {
-		List<Node> decisionSequence = new ArrayList<>();
-    	ProbNet probNetCopy = probNet.copy();
-    	List<Node> orphanDecisionNodes = getParentlessDecisions(probNetCopy);
-    	while(orphanDecisionNodes.size() == 1)
-    	{
-    		Node decision = orphanDecisionNodes.iterator().next();
-    		decisionSequence.add(decision);
-    		probNetCopy.removeNode(decision);
-    		orphanDecisionNodes = getParentlessDecisions(probNetCopy);
-    	}
-    	return decisionSequence;
-	} 
-	
-	/**
-    *
-    * Method to add non-forgetting arcs.
-    * The assumption of “no forgetting” is made explicit by arcs
-    * from predecessors of decision nodes
-    */
-   public static void addNoForgettingArcs(ProbNet probNet) {
-       // First, we retrieve the decision variables from the network
-       List<Variable> decisionVariables = probNet.getVariables(NodeType.DECISION);
-       // We need some auxiliary variables
-       List<Variable> orderedVariables;
-       Variable upperVariable;
-       Node upperNode;
-       List<Variable> lowerVariables;
-       Node lowerNode;
-       List<Node> nodesParentsUpperVariable;
-       // It's only necessary to add "no forgetting arcs" when there is more than one decision node
-       if (decisionVariables.size() > 1) {
-           // If so, we order the decision variables
-           orderedVariables = ProbNetOperations.sortTopologically(probNet, decisionVariables);
-           // There is no need to treat the last decision, as it does not have decisions after it
-           for (int i = 0; i < orderedVariables.size() - 1; i++) {
-               // The "upper" variable is the one that is before in the order
-               upperVariable = orderedVariables.get(i);
-               // We retrieve also its node
-               upperNode = probNet.getNode(upperVariable);
-               // and its parents
-               nodesParentsUpperVariable = probNet.getNode(upperVariable).getParents();
-               // And then, the "lower" variables, those that came after the "upperNode", one are calculated
-               lowerVariables = new ArrayList<>();
-               for (int j = i + 1; j < orderedVariables.size(); j++) {
-                   lowerVariables.add(orderedVariables.get(j));
-               }
-               // All the parents of the upper decision have to be parents of the lower decisions
-               // Therefore, we iterate "lower" variables
-               for (Variable lowerVariable : lowerVariables) {
-                   // retrieve the corresponding node of the variable that is being treated
-                   lowerNode = probNet.getNode(lowerVariable);
-                   // and for each one of the fathers of the upper variable
-                   for (Node nodeParentsHigherVariable : nodesParentsUpperVariable) {
-                       // if the parent node is not already parent of the lower variable
-                       if (!lowerNode.isParent(nodeParentsHigherVariable)) {
-                           // a new link is created
-                           probNet.addLink(nodeParentsHigherVariable,lowerNode, true);
-                       }
-                   }
-                   // Should the upper node not be a father of the lower decision.
-                   if (!lowerNode.isParent(upperNode)) {
-                       // a new link is created for the former has to be a father of the latter
-                       probNet.addLink(upperNode, lowerNode,true);
-                   }
-               }
-           }
-       }
-   }
+    public static List<Node> getDecisionSequence(ProbNet probNet) {
+        List<Node> decisionSequence = new ArrayList<>();
+        ProbNet probNetCopy = probNet.copy();
+        List<Node> orphanDecisionNodes = getParentlessDecisions(probNetCopy);
+        while(orphanDecisionNodes.size() == 1)
+        {
+            Node decision = orphanDecisionNodes.iterator().next();
+            decisionSequence.add(decision);
+            probNetCopy.removeNode(decision);
+            orphanDecisionNodes = getParentlessDecisions(probNetCopy);
+        }
+        return decisionSequence;
+    }
+
+    /**
+     *
+     * Method to add non-forgetting arcs.
+     * The assumption of “no forgetting” is made explicit by arcs
+     * from predecessors of decision nodes
+     */
+    public static void addNoForgettingArcs(ProbNet probNet) {
+        // First, we retrieve the decision variables from the network
+        List<Variable> decisionVariables = probNet.getVariables(NodeType.DECISION);
+        // We need some auxiliary variables
+        List<Variable> orderedVariables;
+        Variable upperVariable;
+        Node upperNode;
+        List<Variable> lowerVariables;
+        Node lowerNode;
+        List<Node> nodesParentsUpperVariable;
+        // It's only necessary to add "no forgetting arcs" when there is more than one decision node
+        if (decisionVariables.size() > 1) {
+            // If so, we order the decision variables
+            orderedVariables = ProbNetOperations.sortTopologically(probNet, decisionVariables);
+            // There is no need to treat the last decision, as it does not have decisions after it
+            for (int i = 0; i < orderedVariables.size() - 1; i++) {
+                // The "upper" variable is the one that is before in the order
+                upperVariable = orderedVariables.get(i);
+                // We retrieve also its node
+                upperNode = probNet.getNode(upperVariable);
+                // and its parents
+                nodesParentsUpperVariable = probNet.getNode(upperVariable).getParents();
+                // And then, the "lower" variables, those that came after the "upperNode", one are calculated
+                lowerVariables = new ArrayList<>();
+                for (int j = i + 1; j < orderedVariables.size(); j++) {
+                    lowerVariables.add(orderedVariables.get(j));
+                }
+                // All the parents of the upper decision have to be parents of the lower decisions
+                // Therefore, we iterate "lower" variables
+                for (Variable lowerVariable : lowerVariables) {
+                    // retrieve the corresponding node of the variable that is being treated
+                    lowerNode = probNet.getNode(lowerVariable);
+                    // and for each one of the fathers of the upper variable
+                    for (Node nodeParentsHigherVariable : nodesParentsUpperVariable) {
+                        // if the parent node is not already parent of the lower variable
+                        if (!lowerNode.isParent(nodeParentsHigherVariable)) {
+                            // a new link is created
+                            probNet.addLink(nodeParentsHigherVariable,lowerNode, true);
+                        }
+                    }
+                    // Should the upper node not be a father of the lower decision.
+                    if (!lowerNode.isParent(upperNode)) {
+                        // a new link is created for the former has to be a father of the latter
+                        probNet.addLink(upperNode, lowerNode,true);
+                    }
+                }
+            }
+        }
+    }
+
+    public static List<Variable> getInformationalPredecessors(ProbNet network, Variable variable) {
+        List<Variable> informationalPredecessors = new ArrayList<>();
+        Node decisionNode = network.getNode(variable);
+
+        List<Node> predecessorDecisions = new ArrayList<>();
+        for (Node candidateDecisionNode : network.getNodes(NodeType.DECISION)) {
+            if (network.existsPath(candidateDecisionNode, decisionNode, true)) {
+                predecessorDecisions.add(candidateDecisionNode);
+            }
+        }
+        informationalPredecessors.addAll(ProbNet.getVariables(predecessorDecisions));
+
+        for (Node candidateNode : network.getNodes(NodeType.CHANCE)) {
+            boolean isInformationalPredecessor = decisionNode.isParent(candidateNode);
+            int i = 0;
+            while (i < predecessorDecisions.size() && !isInformationalPredecessor) {
+                isInformationalPredecessor = predecessorDecisions.get(i).isParent(candidateNode);
+                ++i;
+            }
+            if (isInformationalPredecessor) {
+                informationalPredecessors.add(candidateNode.getVariable());
+            }
+        }
+        return informationalPredecessors;
+    }
+
 }

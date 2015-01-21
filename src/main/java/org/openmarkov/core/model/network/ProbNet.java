@@ -93,12 +93,15 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
     /** Default States of the probNet */
     private State[]                    defaultStates        = { new State("absent"),
             new State("present")                           };
+    
+    private InferenceOptions inferenceOptions;
 
     // Constructors
     public ProbNet(NetworkType networkType) {
         this.pNESupport = new PNESupport(false);
         this.constraints = new ArrayList<PNConstraint>();
         this.nodeDepot = new NodeTypeDepot();
+        this.inferenceOptions = new InferenceOptions();
         try {
             this.setNetworkType(networkType);
         } catch (ConstraintViolationException e) {
@@ -1374,6 +1377,9 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 		nodeDepot.removeNode(node);
 		nodeDepot.addNode(node);
 	}
-	
+
+	public InferenceOptions getInferenceOptions() {
+		return inferenceOptions;
+	}
 	
 }

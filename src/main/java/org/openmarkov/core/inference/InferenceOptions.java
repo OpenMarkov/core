@@ -27,12 +27,28 @@ public class InferenceOptions {
 
 	public ProbNet probNet;
 	
+	private MulticriteriaOptions multiCriteriaOptions;
+	
 	// Constructor
 	public InferenceOptions(ProbNet probNet, Variable simulationIndexVariable) {
 		this.probNet = probNet;
 		this.simulationIndexVariable = simulationIndexVariable;
 	}
 	
+	public InferenceOptions(){
+		this.multiCriteriaOptions = new MulticriteriaOptions();
+	}
+	
+	
+	
+	public MulticriteriaOptions getMultiCriteriaOptions() {
+		return multiCriteriaOptions;
+	}
+
+	public void setMultiCriteriaOptions(MulticriteriaOptions multiCriteriaOptions) {
+		this.multiCriteriaOptions = multiCriteriaOptions;
+	}
+
 	// Methods
 	/** Prints decision criteria, simulation indices and discount rate */
 	public String toString() {

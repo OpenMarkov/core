@@ -5,8 +5,18 @@ package org.openmarkov.core.model.network;
  * @author jperez
  *
  */
-public class Criterion {
+public class Criterion implements Cloneable {
 
+	/**
+	 * Emum with the values of Cost and Effectiveness for the CE Analysis
+	 *
+	 */
+	public enum CostEffectivenessType {
+	    Null,
+		Cost,
+	    Effectiveness
+	}
+	
 	/**
 	 * Name of the criterion
 	 */
@@ -20,13 +30,29 @@ public class Criterion {
     /**
      * Constant with the default criterion of a ProbNet
      */
-    private final String defaultCriterion = "---";
+    private final static String defaultCriterion = "---";
     
     /**
      * Constant with the default unit of a criterion
      */
-    private final String defaultUnit = "";
+    private final static String defaultUnit = " ";
 	
+    
+    /**
+     * In the unicriteria analysis, the scale of this criterion above the main criterion choosed
+     */
+    private double scale;
+    
+    /**
+     * In the cost-effectiveness, specifies if the criterion acts as a cost or as a effectiveness 
+     */
+    private CostEffectivenessType ce_criterion;
+    
+    /**
+     * In temporal evolution analysis, the rate of discount of the criterion
+     */
+    private double discount;
+    
 	/**
 	 * Constructor with parameters
 	 * @param criterionName Name of the criterion
@@ -35,6 +61,9 @@ public class Criterion {
 	public Criterion (String criterionName, String criterionUnit){
 		this.criterionName = criterionName;
 		this.criterionUnit = criterionUnit;
+		this.discount = 0;
+		this.scale = 1;
+		this.ce_criterion = CostEffectivenessType.Null;
 	}
 	
 	/**
@@ -42,16 +71,14 @@ public class Criterion {
 	 * @param criterionName Name of the criterion
 	 */
 	public Criterion (String criterionName){
-		this.criterionName = criterionName;
-		this.criterionUnit = defaultUnit;
+		this(criterionName, defaultUnit);
 	}
 	
 	/**
 	 * Empty constructor, this creates the default criterion
 	 */
 	public Criterion(){
-		this.criterionName = defaultCriterion;
-		this.criterionUnit = defaultUnit;
+		this(defaultCriterion, defaultUnit);
 	}
 
 	public String getCriterionName() {
@@ -73,11 +100,50 @@ public class Criterion {
 	public String getDefaultCriterion() {
 		return defaultCriterion;
 	}
+	
+	public double getScale() {
+		return scale;
+	}
+
+	public void setScale(double scale) {
+		this.scale = scale;
+	}
+
+	public CostEffectivenessType getCe_criterion() {
+		return ce_criterion;
+	}
+
+	public void setCe_criterion(CostEffectivenessType ce_criterion) {
+		this.ce_criterion = ce_criterion;
+	}
+
+	public double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(double discount) {
+		this.discount = discount;
+	}
 
 	@Override
 	public String toString() {
 		return criterionName + " " + criterionUnit;
 	}
+
+
+	/**
+	 * Gets a copy of the criterion in a new object
+	 * @return copied criterion
+	 */
+	public Criterion clone() {
+		Criterion criterion = new Criterion(this.criterionName, this.criterionUnit);
+		criterion.setCe_criterion(this.getCe_criterion());
+		criterion.setDiscount(this.getDiscount());
+		criterion.setScale(this.getScale());
+		return criterion;
+	}
+
+	
 	
 	
 	

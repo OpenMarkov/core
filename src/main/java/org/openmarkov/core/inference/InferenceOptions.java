@@ -29,6 +29,8 @@ public class InferenceOptions {
 	
 	private MulticriteriaOptions multiCriteriaOptions;
 	
+	private TemporalOptions temporalOptions;
+	
 	// Constructor
 	public InferenceOptions(ProbNet probNet, Variable simulationIndexVariable) {
 		this.probNet = probNet;
@@ -37,9 +39,8 @@ public class InferenceOptions {
 	
 	public InferenceOptions(){
 		this.multiCriteriaOptions = new MulticriteriaOptions();
+		this.temporalOptions = new TemporalOptions();
 	}
-	
-	
 	
 	public MulticriteriaOptions getMultiCriteriaOptions() {
 		return multiCriteriaOptions;
@@ -47,6 +48,16 @@ public class InferenceOptions {
 
 	public void setMultiCriteriaOptions(MulticriteriaOptions multiCriteriaOptions) {
 		this.multiCriteriaOptions = multiCriteriaOptions;
+	}
+	
+	
+
+	public TemporalOptions getTemporalOptions() {
+		return temporalOptions;
+	}
+
+	public void setTemporalOptions(TemporalOptions temporalOptions) {
+		this.temporalOptions = temporalOptions;
 	}
 
 	// Methods

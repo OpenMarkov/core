@@ -173,6 +173,17 @@ public class NodeTypeDepot {
         NodesHashMap nodesMap = nodesHashMaps.get (nodeKindValue);
         nodesMap.remove (variable);
      }
+    
+    public void removeNode(Variable variable) {
+        for (NodesHashMap nodes : nodesHashMaps.values ())
+        {
+        	if(nodes.get(variable) != null)
+        	{
+                nodes.remove (variable);
+                break;
+        	}
+        }
+     }
 
     public int getNumPotentials() {
         int numPotentials = 0;

@@ -1380,7 +1380,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 	public void updateVariable(Variable oldVariable)
 	{
 		Node node = nodeDepot.getNode(oldVariable);
-		nodeDepot.removeNode(node);
+		nodeDepot.removeNode(oldVariable);
 		nodeDepot.addNode(node);
 	}
 

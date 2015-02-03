@@ -71,12 +71,14 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
     /** Set of agents, defined by a name. Each one may have several properties. */
     // private StringsWithProperties agents;
     private List<StringWithProperties> agents;
-    // TODO eliminar el otro decisionCriteria
+
     /**
      * Set of criterion for decision, defined by a name. Each one may have
      * several properties.
      */
     private List<Criterion> decisionCriteria;
+    
+    private TemporalUnit temporalUnit;
 
     /**
      * Nodes are stored in several HashMaps to accelerate the access. The type
@@ -102,6 +104,10 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         this.constraints = new ArrayList<PNConstraint>();
         this.nodeDepot = new NodeTypeDepot();
         this.inferenceOptions = new InferenceOptions();
+        if(hasConstraint(OnlyAtemporalVariables.class)){
+        	this.temporalUnit = new TemporalUnit();
+        }
+        
         try {
             this.setNetworkType(networkType);
         } catch (ConstraintViolationException e) {
@@ -1381,5 +1387,14 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 	public InferenceOptions getInferenceOptions() {
 		return inferenceOptions;
 	}
+
+	public TemporalUnit getTemporalUnit() {
+		return temporalUnit;
+	}
+
+	public void setTemporalUnit(TemporalUnit temporalUnit) {
+		this.temporalUnit = temporalUnit;
+	}
+	
 	
 }

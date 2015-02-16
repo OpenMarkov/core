@@ -31,6 +31,8 @@ public class InferenceOptions {
 	
 	private TemporalOptions temporalOptions;
 	
+	private boolean launchedBefore = false;
+	
 	// Constructor
 	public InferenceOptions(ProbNet probNet, Variable simulationIndexVariable) {
 		this.probNet = probNet;
@@ -100,4 +102,14 @@ public class InferenceOptions {
 		}
 		return newVariable;
 	}
+
+	public boolean getLaunchedBefore() {
+		return launchedBefore;
+	}
+
+	public void setLaunchedBefore(boolean launchedBefore) {
+		this.launchedBefore = launchedBefore;
+	}
+	
+	
 }

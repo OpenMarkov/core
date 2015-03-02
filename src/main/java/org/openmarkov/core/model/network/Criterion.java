@@ -57,7 +57,7 @@ public class Criterion implements Cloneable {
     /**
      * In temporal evolution analysis, the measure units for the discount of the criterion
      */
-    private TemporalUnit.Unit discountUnit;
+    private TemporalUnit.DiscountUnit discountUnit;
     
 	/**
 	 * Constructor with parameters
@@ -69,7 +69,7 @@ public class Criterion implements Cloneable {
 		this.criterionUnit = criterionUnit;
 		this.discount = 0;
 		this.scale = 1;
-		this.discountUnit = TemporalUnit.Unit.YEAR;
+		this.discountUnit = TemporalUnit.DiscountUnit.YEAR;
 		this.ce_criterion = CostEffectivenessType.Null;
 	}
 	
@@ -132,11 +132,11 @@ public class Criterion implements Cloneable {
 		this.discount = discount;
 	}
 
-	public TemporalUnit.Unit getDiscountUnit() {
+	public TemporalUnit.DiscountUnit getDiscountUnit() {
 		return this.discountUnit;
 	}
 
-	public void setDiscountUnit(TemporalUnit.Unit discountUnit) {
+	public void setDiscountUnit(TemporalUnit.DiscountUnit discountUnit) {
 		this.discountUnit = discountUnit;
 	}
 	

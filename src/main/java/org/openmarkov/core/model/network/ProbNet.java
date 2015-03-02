@@ -462,6 +462,11 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         if (this.getDecisionCriteria() != null) {
             copyNet.setDecisionCriteria(this.getDecisionCriteria());
         }
+        
+        // Copy temporal units
+        if(this.getTemporalUnit() != null){
+        	copyNet.setTemporalUnit(this.getTemporalUnit());
+        }
         return copyNet;
     }
 

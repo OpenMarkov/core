@@ -38,7 +38,7 @@ public class UtilityOperationsTest {
 	}
 	
 	@Test
-	public void removeTerminalNullCostEffectivenessNodes(){
+	public void removeTerminalNullCostEffectivenessNodesTest(){
 		ProbNet probNet = getProbNet4Test();
 		UtilityOperations.removeTerminalNullCostEffectivenessNodes(probNet);
 		

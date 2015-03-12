@@ -1,0 +1,114 @@
+package org.openmarkov.core.model.network;
+
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Test;
+import org.openmarkov.core.inference.MulticriteriaOptions.Type;
+import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.SumPotential;
+import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+
+public class UtilityOperationsTest {
+	
+	
+	@Test
+	public void transformToUnicriterionTest(){
+		ProbNet probNet = getProbNet4Test();
+		
+		Criterion mainCriterion = null;
+		for(Criterion criterion : probNet.getDecisionCriteria()){
+			if(criterion.getCriterionName().equals("Cost")){
+				mainCriterion = criterion;
+				break;
+			}
+		}
+		
+		UtilityOperations.transformToUnicriterion(probNet);
+		
+		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
+		for(Node node : utilityNodes){
+			assertTrue(node.getVariable().getDecisionCriterion().equals(mainCriterion));
+		}
+		
+	}
+	
+	public static ProbNet getProbNet4Test () {
+		  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+		  // Variables
+		  Variable varDisease = new Variable("Disease", "absent", "present");
+		  Variable varResult_of_test = new Variable("Result of test", "not-performed", "negative", "positive");
+		  Variable varTherapy = new Variable("Therapy", "no", "yes");
+		  Variable varDo_test_ = new Variable("Do test?", "no", "yes");
+		  Variable varHealth_state = new Variable("Health state");
+		  Variable varCost_of_test = new Variable("Cost of test");
+		  Variable varGlobal_utility = new Variable("Global utility");
+
+		  // ProbNet Criteria
+		  List<Criterion> decisionCriteria = new ArrayList<Criterion>();
+		  Criterion criHealth_state = new Criterion("Effectiveness", "QALY");
+		  criHealth_state.setScale(0.8);
+		  decisionCriteria.add(criHealth_state);
+		  Criterion criCost_of_test = new Criterion("Cost", "€");
+		  criCost_of_test.setScale(1);
+		  decisionCriteria.add(criCost_of_test);
+		  probNet.setDecisionCriteria(decisionCriteria);
+		  
+		  // Assign criteria to variables
+		  varHealth_state.setDecisionCriterion(criHealth_state);
+		  varCost_of_test.setDecisionCriterion(criCost_of_test);
+		  
+		  probNet.getInferenceOptions().getMultiCriteriaOptions().setMainUnit("€");
+		  probNet.getInferenceOptions().getMultiCriteriaOptions().setMulticriteriaType(Type.UNICRITERION);
+		  
+		  // Nodes
+		  Node nodeDisease= probNet.addNode(varDisease, NodeType.CHANCE);
+		  Node nodeResult_of_test= probNet.addNode(varResult_of_test, NodeType.CHANCE);
+		  Node nodeTherapy= probNet.addNode(varTherapy, NodeType.DECISION);
+		  Node nodeDo_test_= probNet.addNode(varDo_test_, NodeType.DECISION);
+		  Node nodeHealth_state= probNet.addNode(varHealth_state, NodeType.UTILITY);
+		  Node nodeCost_of_test= probNet.addNode(varCost_of_test, NodeType.UTILITY);
+		  Node nodeGlobal_utility= probNet.addNode(varGlobal_utility, NodeType.UTILITY);
+
+		  // Links
+		  probNet.makeLinksExplicit(false);
+		  probNet.addLink(nodeDisease, nodeHealth_state, true);
+		  probNet.addLink(nodeDisease, nodeResult_of_test, true);
+		  probNet.addLink(nodeResult_of_test, nodeTherapy, true);
+		  probNet.addLink(nodeTherapy, nodeHealth_state, true);
+		  probNet.addLink(nodeDo_test_, nodeCost_of_test, true);
+		  probNet.addLink(nodeDo_test_, nodeTherapy, true);
+		  probNet.addLink(nodeDo_test_, nodeResult_of_test, true);
+		  probNet.addLink(nodeHealth_state, nodeGlobal_utility, true);
+		  probNet.addLink(nodeCost_of_test, nodeGlobal_utility, true);
+
+		  // Potentials
+		  TablePotential potDisease = new TablePotential(Arrays.asList(varDisease), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potDisease.values = new double[]{0.86, 0.14};
+		  nodeDisease.setPotential(potDisease);
+
+		  TablePotential potResult_of_test = new TablePotential(Arrays.asList(varResult_of_test, varDo_test_, varDisease), PotentialRole.CONDITIONAL_PROBABILITY);
+		  potResult_of_test.values = new double[]{1, 0, 0, 0, 0.97, 0.03, 1, 0, 0, 0, 0.09, 0.91};
+		  nodeResult_of_test.setPotential(potResult_of_test);
+
+		  TablePotential potHealth_state = new TablePotential(varHealth_state,Arrays.asList(varDisease, varTherapy));
+		  potHealth_state.values = new double[]{10, 3, 9, 8};
+		  nodeHealth_state.setPotential(potHealth_state);
+
+		  TablePotential potCost_of_test = new TablePotential(varCost_of_test,Arrays.asList(varDo_test_));
+		  potCost_of_test.values = new double[]{0, -0.2};
+		  nodeCost_of_test.setPotential(potCost_of_test);
+
+		  SumPotential potGlobal_utility = new SumPotential(varGlobal_utility,Arrays.asList(varHealth_state, varCost_of_test));
+		  nodeGlobal_utility.setPotential(potGlobal_utility);
+
+		  // Link restrictions and revealing states
+		  // Always observed nodes
+
+		 return probNet;
+		}
+}

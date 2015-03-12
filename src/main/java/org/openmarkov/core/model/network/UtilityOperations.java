@@ -58,7 +58,7 @@ public class UtilityOperations {
 	 * @param probNet
 	 * @return probNet without that utility nodes
 	 */
-	private static ProbNet removeTerminalNullCostEffectivenessNodes(
+	public static ProbNet removeTerminalNullCostEffectivenessNodes(
 			ProbNet probNet) {
 
 		boolean stillHaveNodes;

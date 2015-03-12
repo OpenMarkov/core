@@ -8,13 +8,13 @@ import java.util.List;
 
 import org.junit.Test;
 import org.openmarkov.core.inference.MulticriteriaOptions.Type;
+import org.openmarkov.core.model.network.Criterion.CECriterion;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
 public class UtilityOperationsTest {
-	
 	
 	@Test
 	public void transformToUnicriterionTest(){
@@ -37,6 +37,20 @@ public class UtilityOperationsTest {
 		
 	}
 	
+	@Test
+	public void removeTerminalNullCostEffectivenessNodes(){
+		ProbNet probNet = getProbNet4Test();
+		UtilityOperations.removeTerminalNullCostEffectivenessNodes(probNet);
+		
+		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
+		assertTrue(utilityNodes.size() == 1);
+		
+		for(Node node : utilityNodes){
+			assertTrue(node.getVariable().getDecisionCriterion().getCECriterion() != CECriterion.Null);
+		}
+		
+	}
+	
 	public static ProbNet getProbNet4Test () {
 		  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		  // Variables
@@ -46,16 +60,20 @@ public class UtilityOperationsTest {
 		  Variable varDo_test_ = new Variable("Do test?", "no", "yes");
 		  Variable varHealth_state = new Variable("Health state");
 		  Variable varCost_of_test = new Variable("Cost of test");
-		  Variable varGlobal_utility = new Variable("Global utility");
 
 		  // ProbNet Criteria
 		  List<Criterion> decisionCriteria = new ArrayList<Criterion>();
+		  
 		  Criterion criHealth_state = new Criterion("Effectiveness", "QALY");
 		  criHealth_state.setScale(0.8);
+		  criHealth_state.setCECriterion(CECriterion.Null);
 		  decisionCriteria.add(criHealth_state);
+		  
 		  Criterion criCost_of_test = new Criterion("Cost", "€");
 		  criCost_of_test.setScale(1);
+		  criCost_of_test.setCECriterion(CECriterion.Cost);
 		  decisionCriteria.add(criCost_of_test);
+		  
 		  probNet.setDecisionCriteria(decisionCriteria);
 		  
 		  // Assign criteria to variables
@@ -72,7 +90,6 @@ public class UtilityOperationsTest {
 		  Node nodeDo_test_= probNet.addNode(varDo_test_, NodeType.DECISION);
 		  Node nodeHealth_state= probNet.addNode(varHealth_state, NodeType.UTILITY);
 		  Node nodeCost_of_test= probNet.addNode(varCost_of_test, NodeType.UTILITY);
-		  Node nodeGlobal_utility= probNet.addNode(varGlobal_utility, NodeType.UTILITY);
 
 		  // Links
 		  probNet.makeLinksExplicit(false);
@@ -83,8 +100,7 @@ public class UtilityOperationsTest {
 		  probNet.addLink(nodeDo_test_, nodeCost_of_test, true);
 		  probNet.addLink(nodeDo_test_, nodeTherapy, true);
 		  probNet.addLink(nodeDo_test_, nodeResult_of_test, true);
-		  probNet.addLink(nodeHealth_state, nodeGlobal_utility, true);
-		  probNet.addLink(nodeCost_of_test, nodeGlobal_utility, true);
+
 
 		  // Potentials
 		  TablePotential potDisease = new TablePotential(Arrays.asList(varDisease), PotentialRole.CONDITIONAL_PROBABILITY);
@@ -103,8 +119,6 @@ public class UtilityOperationsTest {
 		  potCost_of_test.values = new double[]{0, -0.2};
 		  nodeCost_of_test.setPotential(potCost_of_test);
 
-		  SumPotential potGlobal_utility = new SumPotential(varGlobal_utility,Arrays.asList(varHealth_state, varCost_of_test));
-		  nodeGlobal_utility.setPotential(potGlobal_utility);
 
 		  // Link restrictions and revealing states
 		  // Always observed nodes

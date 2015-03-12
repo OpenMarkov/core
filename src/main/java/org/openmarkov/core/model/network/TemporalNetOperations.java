@@ -399,7 +399,7 @@ public class TemporalNetOperations {
 	 */
 	private static void applyDiscountToUtilityPotential(Potential potential, int timeSlice,
 			double discount) {
-		double discountRate = 1.0 / (Math.pow((1.0 + (discount / 100.0)), timeSlice));
+		double discountRate = 1.0 / (Math.pow((1.0 + discount), timeSlice));
 		if (potential instanceof TablePotential) {
 			
 			double[] potentialValues = ((TablePotential) potential).getValues();

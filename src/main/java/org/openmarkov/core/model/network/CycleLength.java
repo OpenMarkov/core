@@ -1,8 +1,8 @@
 package org.openmarkov.core.model.network;
 
-public class TemporalUnit {
+public class CycleLength {
 
-	private final double DEFAULT_SCALE = 1;
+	private final double DEFAULT_CYCLE_LENGTH = 1;
 	
 	private final Unit DEFAULT_UNIT = Unit.YEAR;
 	
@@ -43,21 +43,21 @@ public class TemporalUnit {
 	/**
 	 * Scale of the unit
 	 */
-	private double scale;
+	private double value;
 	
-	public TemporalUnit(){
+	public CycleLength(){
 		this.unit = DEFAULT_UNIT;
-		this.scale = DEFAULT_SCALE;
+		this.value = DEFAULT_CYCLE_LENGTH;
 	}
 	
-	public TemporalUnit(Unit unit){
+	public CycleLength(Unit unit){
 		this.unit = unit;
-		this.scale = DEFAULT_SCALE;
+		this.value = DEFAULT_CYCLE_LENGTH;
 	}
 	
-	public TemporalUnit(Unit unit, double scale){
+	public CycleLength(Unit unit, double value){
 		this.unit = unit;
-		this.scale = scale;
+		this.value = value;
 	}
 
 	public Unit getUnit() {
@@ -68,16 +68,16 @@ public class TemporalUnit {
 		this.unit = unit;
 	}
 
-	public double getScale() {
-		return scale;
+	public double getValue() {
+		return value;
 	}
 
-	public void setScale(double scale) {
-		this.scale = scale;
+	public void setValue(double value) {
+		this.value = value;
 	}
 	
-	public TemporalUnit clone() {
-		TemporalUnit temporalUnit = new TemporalUnit(this.unit, this.scale);
+	public CycleLength clone() {
+		CycleLength temporalUnit = new CycleLength(this.unit, this.value);
 		return temporalUnit;
 	}
 	

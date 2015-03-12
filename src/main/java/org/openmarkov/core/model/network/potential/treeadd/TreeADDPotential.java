@@ -496,7 +496,7 @@ public class TreeADDPotential extends Potential {
 	}
 
 	@Override
-	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength)
+	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
 			throws IncompatibleEvidenceException, WrongCriterionException {
 		List<Finding> newFindings = new ArrayList<>();
 		for (TreeADDBranch branch : branches) {
@@ -513,8 +513,7 @@ public class TreeADDPotential extends Potential {
 					}
 				}
 				if (isInduced) {
-					newFindings.addAll(branch.getPotential().getInducedFindings(evidenceCase,
-							cycleLength));
+					newFindings.addAll(branch.getPotential().getInducedFindings(evidenceCase));
 				}
 			}
 		}

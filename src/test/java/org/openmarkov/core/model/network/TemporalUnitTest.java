@@ -2,26 +2,31 @@ package org.openmarkov.core.model.network;
 
 import static org.junit.Assert.*;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.model.network.TemporalUnit.DiscountUnit;
-import org.openmarkov.core.model.network.TemporalUnit.Unit;
+import org.openmarkov.core.model.network.CycleLength.DiscountUnit;
+import org.openmarkov.core.model.network.CycleLength.Unit;
 
 public class TemporalUnitTest {
 
-	
-	@Before
-	public void setUp() throws Exception {
-		
-	}
-
 	@Test
-	public void testMonthToYear() {
-		double adjustedDiscount = TemporalUnit.getTemporalAdjustedDiscount(Unit.MONTH, 3, DiscountUnit.YEAR, 0.1);
-		assertTrue(true);
-		
-		
-		
+	public void testYearToThreeMonths() {
+		double adjustedDiscount = CycleLength.getTemporalAdjustedDiscount(Unit.MONTH, 3, DiscountUnit.YEAR, 0.1);
+		double realAdjustedDiscount = 0.02411368908444512940414496002301;
+		assertTrue(Math.abs((adjustedDiscount - realAdjustedDiscount)) < (adjustedDiscount / Math.pow(10, 9)));
+	}
+	
+	@Test
+	public void testYearToThirtyMinutes(){
+		double adjustedDiscount = CycleLength.getTemporalAdjustedDiscount(Unit.MINUTE, 30, DiscountUnit.YEAR, 0.3);
+		double realAdjustedDiscount = 1.4975241378235313741624150657728e-5;
+		assertTrue(Math.abs((adjustedDiscount - realAdjustedDiscount)) < (adjustedDiscount / Math.pow(10, 9)));
+	}
+	
+	@Test
+	public void testYearToEightyNineMiliseconds(){
+		double adjustedDiscount = CycleLength.getTemporalAdjustedDiscount(Unit.MILISECOND, 89, DiscountUnit.YEAR, 0.15);
+		double realAdjustedDiscount = 3.944321687545109726884071225588e-10;
+		assertTrue(Math.abs((adjustedDiscount - realAdjustedDiscount)) < (adjustedDiscount / Math.pow(10, 6)));
 	}
 
 }

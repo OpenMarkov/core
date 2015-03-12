@@ -94,6 +94,7 @@ public abstract class Potential
     }
     
     /**
+     * TODO - Remove this constructor, replace with a copy method
      * Copy constructor for potential
      * @param potential
      */
@@ -105,7 +106,8 @@ public abstract class Potential
             this.utilityVariable = potential.getUtilityVariable(); 
         }
         this.comment = potential.getComment();
-    }      
+    }
+    
 
     // Methods
     /**
@@ -240,13 +242,13 @@ public abstract class Potential
     /**
      * @param evidenceCase <code>EvidenceCase</code>
      * @param inferenceOptions
-     * @param projectedPotentials <code>List</code> of already projected potentials 
+     * @param alreadyProjectedPotentials <code>List</code> of already projected potentials 
      * @throws WrongCriterionException
      * @throws NoFindingException
      */
     public abstract List<TablePotential> tableProject(EvidenceCase evidenceCase,
             InferenceOptions inferenceOptions,
-            List<TablePotential> projectedPotentials)
+            List<TablePotential> alreadyProjectedPotentials)
             throws NonProjectablePotentialException, WrongCriterionException;
     
     public List<TablePotential> tableProject(EvidenceCase evidenceCase,
@@ -307,7 +309,7 @@ public abstract class Potential
      * @throws IncompatibleEvidenceException
      * @throws WrongCriterionException
      */
-    public Collection<Finding> getInducedFindings (EvidenceCase evidenceCase, double cycleLength)
+    public Collection<Finding> getInducedFindings (EvidenceCase evidenceCase)
         throws IncompatibleEvidenceException,
         WrongCriterionException
     {

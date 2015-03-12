@@ -1,6 +1,6 @@
 package org.openmarkov.core.model.network;
 
-import org.openmarkov.core.model.network.TemporalUnit.Unit;
+import org.openmarkov.core.model.network.CycleLength.Unit;
 
 /**
  * A criterion has a name and the units of measure
@@ -13,7 +13,7 @@ public class Criterion implements Cloneable {
 	 * Emum with the values of Cost and Effectiveness for the CE Analysis
 	 *
 	 */
-	public enum CostEffectivenessType {
+	public enum CECriterion {
 	    Null,
 		Cost,
 	    Effectiveness
@@ -45,9 +45,9 @@ public class Criterion implements Cloneable {
     private double scale;
     
     /**
-     * In the cost-effectiveness, specifies if the criterion acts as a cost or as a effectiveness 
+     * In the cost-effectiveness, specifies if the criterion acts as a cost or as effectiveness 
      */
-    private CostEffectivenessType ce_criterion;
+    private CECriterion ceCriterion;
     
     /**
      * In temporal evolution analysis, the rate of discount of the criterion
@@ -57,7 +57,7 @@ public class Criterion implements Cloneable {
     /**
      * In temporal evolution analysis, the measure units for the discount of the criterion
      */
-    private TemporalUnit.DiscountUnit discountUnit;
+    private CycleLength.DiscountUnit discountUnit;
     
 	/**
 	 * Constructor with parameters
@@ -69,8 +69,8 @@ public class Criterion implements Cloneable {
 		this.criterionUnit = criterionUnit;
 		this.discount = 0;
 		this.scale = 1;
-		this.discountUnit = TemporalUnit.DiscountUnit.YEAR;
-		this.ce_criterion = CostEffectivenessType.Null;
+		this.discountUnit = CycleLength.DiscountUnit.YEAR;
+		this.ceCriterion = CECriterion.Null;
 	}
 	
 	/**
@@ -116,12 +116,12 @@ public class Criterion implements Cloneable {
 		this.scale = scale;
 	}
 
-	public CostEffectivenessType getCe_criterion() {
-		return ce_criterion;
+	public CECriterion getCECriterion() {
+		return ceCriterion;
 	}
 
-	public void setCe_criterion(CostEffectivenessType ce_criterion) {
-		this.ce_criterion = ce_criterion;
+	public void setCECriterion(CECriterion ce_criterion) {
+		this.ceCriterion = ce_criterion;
 	}
 
 	public double getDiscount() {
@@ -132,11 +132,11 @@ public class Criterion implements Cloneable {
 		this.discount = discount;
 	}
 
-	public TemporalUnit.DiscountUnit getDiscountUnit() {
+	public CycleLength.DiscountUnit getDiscountUnit() {
 		return this.discountUnit;
 	}
 
-	public void setDiscountUnit(TemporalUnit.DiscountUnit discountUnit) {
+	public void setDiscountUnit(CycleLength.DiscountUnit discountUnit) {
 		this.discountUnit = discountUnit;
 	}
 	
@@ -152,11 +152,24 @@ public class Criterion implements Cloneable {
 	 */
 	public Criterion clone() {
 		Criterion criterion = new Criterion(this.criterionName, this.criterionUnit);
-		criterion.setCe_criterion(this.getCe_criterion());
+		criterion.setCECriterion(this.getCECriterion());
 		criterion.setDiscount(this.getDiscount());
 		criterion.setScale(this.getScale());
 		criterion.setDiscountUnit(this.getDiscountUnit());
 		return criterion;
+	}
+
+	/**
+	 * Copy the attributes of the new criterion in the current object
+	 * @param newCriterion
+	 */
+	public void copy(Criterion newCriterion) {
+		this.ceCriterion = newCriterion.getCECriterion();
+		this.criterionName = newCriterion.getCriterionName();
+		this.criterionUnit = newCriterion.getCriterionUnit();
+		this.discount = newCriterion.getDiscount();
+		this.discountUnit = newCriterion.getDiscountUnit();
+		this.scale = newCriterion.getScale();
 	}
 
 	

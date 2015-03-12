@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -75,7 +76,7 @@ public class PotentialManager
      * @param name the potential's name.
      * @return a new Potential instance given the parameters.
      */
-    public final Potential getByName (String name, List<Variable> variables, PotentialRole role)
+    public final Potential getByName (String name, List<Variable> variables, PotentialRole role, CycleLength...cycleLength)
     {
         Potential instance = null;
         try
@@ -84,8 +85,13 @@ public class PotentialManager
             
             try
             {
-                constructor = potentials.get (name).getConstructor (List.class, PotentialRole.class);
-                instance = (Potential) constructor.newInstance (variables, role);
+            	if(cycleLength != null && cycleLength.length != 0){
+            		constructor = potentials.get(name).getConstructor(List.class, CycleLength.class);
+            		instance = (Potential) constructor.newInstance(variables, cycleLength[0]);
+            	} else {
+	                constructor = potentials.get (name).getConstructor (List.class, PotentialRole.class);
+	                instance = (Potential) constructor.newInstance (variables, role);
+            	}
             }catch (NoSuchMethodException e) {
                 constructor = potentials.get (name).getConstructor (List.class);
                 instance = constructor.newInstance (variables);

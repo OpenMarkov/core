@@ -1034,7 +1034,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
     }
 
     // TODO revisar para que no use tableProject(...)
-    public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength)
+    public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
             throws IncompatibleEvidenceException, WrongCriterionException {
         Collection<Finding> inducedFindings = new ArrayList<Finding>();
         if (role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.POLICY) {

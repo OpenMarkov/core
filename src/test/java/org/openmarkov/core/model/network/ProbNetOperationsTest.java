@@ -720,8 +720,8 @@ public class ProbNetOperationsTest {
         DeltaPotential agePotential_0 = new DeltaPotential(Arrays.asList(ageVar_0), role);
         agePotential_0.setValue(4.4);
         probNet.getNode(ageVar_0).setPotential(agePotential_0);
-        probNet.getNode(ageVar_1).setPotential(new CycleLengthShift(Arrays.asList(ageVar_1, ageVar_0)));
-        probNet.getNode(ageVar_2).setPotential(new CycleLengthShift(Arrays.asList(ageVar_2, ageVar_1)));
+        probNet.getNode(ageVar_1).setPotential(new CycleLengthShift(Arrays.asList(ageVar_1, ageVar_0), probNet.getCycleLength()));
+        probNet.getNode(ageVar_2).setPotential(new CycleLengthShift(Arrays.asList(ageVar_2, ageVar_1), probNet.getCycleLength()));
         LinearCombinationPotential ageAtStateEntryPotential_0 = new LinearCombinationPotential(Arrays.asList(ageAtStateEntryVar_0,
                 ageVar_0,
                 timeInStateVar_0),
@@ -749,7 +749,7 @@ public class ProbNetOperationsTest {
         TreeADDPotential timeInStatePotential_1 = new TreeADDPotential(Arrays.asList(timeInStateVar_1,
                 timeInStateVar_0,
                 transitionVar_1), transitionVar_1, role);
-        Potential noTransitionPotentialBranch_1 = new CycleLengthShift(Arrays.asList(timeInStateVar_1, timeInStateVar_0));
+        Potential noTransitionPotentialBranch_1 = new CycleLengthShift(Arrays.asList(timeInStateVar_1, timeInStateVar_0), probNet.getCycleLength());
         Potential transitionPotentialBranch_1 = new DeltaPotential(Arrays.asList(timeInStateVar_1), role, 0.0);
 		timeInStatePotential_1.setBranches(Arrays.asList(
 				new TreeADDBranch(Arrays.asList(transitionVar_1.getStates()[0]), transitionVar_1,
@@ -760,7 +760,7 @@ public class ProbNetOperationsTest {
         TreeADDPotential timeInStatePotential_2 = new TreeADDPotential(Arrays.asList(timeInStateVar_2,
                 timeInStateVar_1,
                 transitionVar_2), transitionVar_2, role);
-        Potential noTransitionPotentialBranch_2 = new CycleLengthShift(Arrays.asList(timeInStateVar_2, timeInStateVar_1));
+        Potential noTransitionPotentialBranch_2 = new CycleLengthShift(Arrays.asList(timeInStateVar_2, timeInStateVar_1), probNet.getCycleLength());
         Potential transitionPotentialBranch_2 = new DeltaPotential(Arrays.asList(timeInStateVar_2), role, 0.0);
 		timeInStatePotential_2.setBranches(Arrays.asList(
 				new TreeADDBranch(Arrays.asList(transitionVar_2.getStates()[0]), transitionVar_2,

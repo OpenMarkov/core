@@ -7,10 +7,12 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
@@ -63,6 +65,8 @@ public class PotentialManagerTest {
     public void testGetByName() {
     	List<Variable> variables = Arrays.asList(variableA, variableB, variableC);
     	PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
+    	CycleLength defaultCycleLength = new CycleLength();
+    	String cycleLengthShiftName = manager.getPotentialName(CycleLengthShift.class);
     	
     	Set<String> potentialNames = manager.getAllPotentialsNames();
     	
@@ -70,7 +74,14 @@ public class PotentialManagerTest {
     	{
     		if(!potentialType.equals(PotentialManager.getPotentialName(SameAsPrevious.class)))
     		{
-		    	Potential potential =  manager.getByName(potentialType, variables, role);
+    			Potential potential = null;
+    			
+    			if(potentialType.equals(cycleLengthShiftName)){
+    				potential =  manager.getByName(potentialType, variables, role, defaultCycleLength);
+    			}else{
+    				potential =  manager.getByName(potentialType, variables, role);
+    			}
+		    	
 		    	Assert.assertNotNull(potential);
 		    	Assert.assertEquals(potentialType, PotentialManager.getPotentialName(potential.getClass()));
     		}

@@ -38,7 +38,16 @@ public class MulticriteriaEdit extends SimplePNEdit {
 
 	@Override
 	public void doEdit() throws DoEditException {
-		probNet.setDecisionCriteria(this.newDecisionCriteria);
+		//probNet.setDecisionCriteria(this.newDecisionCriteria);
+		// Set the new data at the probNet criteria 
+		for(Criterion oldCriterion : probNet.getDecisionCriteria()){
+			for(Criterion newCriterion: this.newDecisionCriteria){
+				if(oldCriterion.getCriterionName().equals(newCriterion.getCriterionName())){
+					oldCriterion.copy(newCriterion);
+				}
+			}
+		}
+		
 		probNet.getInferenceOptions().setMultiCriteriaOptions(this.newMulticriteriaOptions);
 		
 	}
@@ -46,7 +55,14 @@ public class MulticriteriaEdit extends SimplePNEdit {
 	@Override
 	public void undo() throws CannotUndoException {
 		super.undo();
-		probNet.setDecisionCriteria(oldDecisionCriteria);
+		//probNet.setDecisionCriteria(oldDecisionCriteria);
+		for(Criterion oldCriterion : probNet.getDecisionCriteria()){
+			for(Criterion newCriterion: this.oldDecisionCriteria){
+				if(oldCriterion.getCriterionName().equals(newCriterion.getCriterionName())){
+					oldCriterion.copy(newCriterion);
+				}
+			}
+		}
 		probNet.getInferenceOptions().setMultiCriteriaOptions(this.oldMulticriteriaOptions);
 	}
 

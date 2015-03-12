@@ -171,7 +171,7 @@ public class DeltaPotential extends Potential{
     }
 
     @Override
-    public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase, double cycleLength)
+    public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
             throws IncompatibleEvidenceException, WrongCriterionException {
         Finding inducedFinding = null;
         if(state !=null)

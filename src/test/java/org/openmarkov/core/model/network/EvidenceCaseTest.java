@@ -21,7 +21,6 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -41,7 +40,7 @@ public class EvidenceCaseTest {
 	private PotentialRole role;
 	
 	private ArrayList<Variable> variablesA; 
-	private ArrayList<Variable> variablesAB;
+	private ArrayList<Variable> variablesBA;
 	private ArrayList<Variable> variablesCBA;
 	
 	private TablePotential potentialvaluesA;
@@ -92,47 +91,38 @@ public class EvidenceCaseTest {
 		//PotentialType type = PotentialType.TABLE;
 		role = PotentialRole.CONDITIONAL_PROBABILITY;
 		
-		//Potential A
-		double [] tableA ={0.3, 0.7};
-		
+		// Potential for A: P(a)
+		// It will induce the finding A = 0
+		double [] tableA ={1.0, 0.0};
 		variablesA = new ArrayList<Variable>();
 		variablesA.add(variableA);
-		
 		potentialvaluesA= new TablePotential(variablesA,role, tableA);
 		
+		// Potential for B: P(b|a)
+		// It will induce the finding B = 1
+		double [] tableBA ={0.0, 1.0, 0.2, 0.8};
+		variablesBA = new ArrayList<Variable>();;
+		variablesBA.add(variableB);
+		variablesBA.add(variableA);
+		potentialvaluesAB= new TablePotential(variablesBA,role,tableBA);
 		
-		//Potential AB
-		double [] tableAB ={0.0, 1.0, 1.0, 0.0};
-		
-		variablesAB = new ArrayList<Variable>();;
-		variablesAB.add(variableB);
-		variablesAB.add(variableA);
-		
-		
-		potentialvaluesAB= new TablePotential(variablesAB,role,tableAB);
-		
-		double [] tableCBA ={0.2, 0.8, 0.6, 0.4, 0.5, 0.5, 0.8, 0.2};
-		
+		// Potential for C: P(c|a,b)
+		// It will induce the finding C = 1
+		double [] tableCBA ={0.2, 0.8, 0.6, 0.4, 0.0, 1.0, 0.8, 0.2};
 		variablesCBA = new ArrayList<Variable>();
 		variablesCBA.add(variableC);
 		variablesCBA.add(variableA);
 		variablesCBA.add(variableB);
-		
-		
 		potentialvaluesCBA= new TablePotential(variablesCBA,role,tableCBA);
-		
-		
 				
-		//If NetworkTypeConstraint is null we create a Bayesian network
-		//NetworkTypeConstraint networkTypeConstraint = null; 
-		//ProbNet probNet = new ProbNet(networkTypeConstraint); 
+		// If NetworkTypeConstraint is null we create a Bayesian network
+		// NetworkTypeConstraint networkTypeConstraint = null; 
+		// ProbNet probNet = new ProbNet(networkTypeConstraint); 
 		probNet = new ProbNet();
 		
-		NodeType nodeType = NodeType.CHANCE;
-		
-		probNet.addNode(variableA, nodeType);
-		probNet.addNode(variableB, nodeType);
-		probNet.addNode(variableC, nodeType);
+		probNet.addNode(variableA, NodeType.CHANCE);
+		probNet.addNode(variableB, NodeType.CHANCE);
+		probNet.addNode(variableC, NodeType.CHANCE);
 		
 		//Links throws NodeNotFoundException
 		try {
@@ -172,10 +162,8 @@ public class EvidenceCaseTest {
 		EvidenceCase evidence = new EvidenceCase();
 		Variable A = probNet.getVariable("A");
 		assertNotNull(A);
-		Finding aFinding = new Finding(A, 0);
-		evidence.addFinding(aFinding);
-		evidence.extendEvidence(probNet, 1.0);
-		assertEquals(2, evidence.getFindings().size());
+		evidence.extendEvidence(probNet);
+		assertEquals(3, evidence.getFindings().size());
 		Variable B = probNet.getVariable("B");
 		Finding bFinding = evidence.getFinding(B);
 		assertNotNull(bFinding);

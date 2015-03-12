@@ -23,6 +23,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.Criterion.CECriterion;
 import org.openmarkov.core.model.network.constraint.ConstraintManager;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
@@ -78,7 +79,10 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      */
     private List<Criterion> decisionCriteria;
     
-    private TemporalUnit temporalUnit;
+    /**
+     * Cycle length value and unit of the probNet
+     */
+    private CycleLength cycleLength;
 
     /**
      * Nodes are stored in several HashMaps to accelerate the access. The type
@@ -104,8 +108,8 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         this.constraints = new ArrayList<PNConstraint>();
         this.nodeDepot = new NodeTypeDepot();
         this.inferenceOptions = new InferenceOptions();
-        if(hasConstraint(OnlyAtemporalVariables.class)){
-        	this.temporalUnit = new TemporalUnit();
+        if(!hasConstraint(OnlyAtemporalVariables.class)){
+        	this.cycleLength = new CycleLength();
         }
         
         try {
@@ -464,8 +468,8 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         }
         
         // Copy temporal units
-        if(this.getTemporalUnit() != null){
-        	copyNet.setTemporalUnit(this.getTemporalUnit());
+        if(this.getCycleLength() != null){
+        	copyNet.setCycleLength(this.getCycleLength());
         }
         return copyNet;
     }
@@ -613,6 +617,24 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      */
     public List<Node> getNodes(NodeType nodeType) {
         return nodeDepot.getNodes(nodeType);
+    }
+    
+
+    /**
+     * Gets all utility nodes with the cECriterion
+     * @param cECriterion 
+     * @return All utility nodes with the cost effectiveness criterion
+     */
+    public List<Node> getNodes(CECriterion cECriterion){
+    	List<Node> utilityNodes = getNodes(NodeType.UTILITY);
+    	List<Node> nodes = new ArrayList<Node>();
+    	
+    	for(Node utilityNode : utilityNodes){
+    		if(utilityNode.getVariable().getDecisionCriterion().getCECriterion() == cECriterion){
+    			nodes.add(utilityNode);
+    		}
+    	}
+    	return nodes;
     }
 
     /**
@@ -1393,12 +1415,12 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 		return inferenceOptions;
 	}
 
-	public TemporalUnit getTemporalUnit() {
-		return temporalUnit;
+	public CycleLength getCycleLength() {
+		return cycleLength;
 	}
 
-	public void setTemporalUnit(TemporalUnit temporalUnit) {
-		this.temporalUnit = temporalUnit;
+	public void setCycleLength(CycleLength temporalUnit) {
+		this.cycleLength = temporalUnit;
 	}
 	
 	

@@ -277,15 +277,11 @@ public class Node {
 		case UTILITY:
             out.append("Utility"); 
 			break;
-		case COST:
-            out.append("Utility, Cost node"); 
-			break;
-		case EFFECTIVENESS:
-            out.append("Utility, Effectiveness node"); 
-			break;
-		case CE:
-            out.append("Utility, Cost-Effectiveness"); 
-			break;
+			/*
+		 * case COST: out.append("Utility, Cost node"); break; case
+		 * EFFECTIVENESS: out.append("Utility, Effectiveness node"); break; case
+		 * CE: out.append("Utility, Cost-Effectiveness"); break;
+		 */
             case SV_PRODUCT :
                 break;
             case SV_SUM :

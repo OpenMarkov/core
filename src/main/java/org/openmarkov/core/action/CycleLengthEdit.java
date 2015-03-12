@@ -4,33 +4,33 @@ import javax.swing.undo.CannotUndoException;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.TemporalUnit;
+import org.openmarkov.core.model.network.CycleLength;
 
-public class TemporalUnitEdit extends SimplePNEdit{
+public class CycleLengthEdit extends SimplePNEdit{
 
 	/**
 	 * Default serial UID
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private TemporalUnit oldTemporalUnit;
-	private TemporalUnit newTemporalUnit;
+	private CycleLength oldTemporalUnit;
+	private CycleLength newTemporalUnit;
 	
-	public TemporalUnitEdit(ProbNet probNet, TemporalUnit newTemporalUnit) {
+	public CycleLengthEdit(ProbNet probNet, CycleLength newTemporalUnit) {
 		super(probNet);
-		this.oldTemporalUnit = probNet.getTemporalUnit().clone();
+		this.oldTemporalUnit = probNet.getCycleLength().clone();
 		this.newTemporalUnit = newTemporalUnit;
 	}
 
 	@Override
 	public void doEdit() throws DoEditException {
-		probNet.setTemporalUnit(this.newTemporalUnit);
+		probNet.setCycleLength(this.newTemporalUnit);
 	}
 
 	@Override
 	public void undo() throws CannotUndoException {
 		super.undo();
-		probNet.setTemporalUnit(this.oldTemporalUnit);
+		probNet.setCycleLength(this.oldTemporalUnit);
 	}
 
 	@Override

@@ -1,18 +1,31 @@
 package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.inference.InferenceAlgorithm;
+import org.openmarkov.core.inference.TransitionTime;
+import org.openmarkov.core.model.network.Criterion.CECriterion;
+import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 public class TemporalNetOperations {
 
@@ -83,10 +96,10 @@ public class TemporalNetOperations {
 		return classifiedNodes;
 	}
 	
-	public static ProbNet expandNetwork(ProbNet probNet, int numSlices) {
+	public static ProbNet expandNetwork(ProbNet probNet) {
 		ProbNet expandedNet = probNet.copy(); 
 		List<List<Node>> classifiedNodes = compactNetwork(expandedNet);
-		while (classifiedNodes.size() <= numSlices) {
+		while (classifiedNodes.size() <= probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices()) {
 			generateNextSlice(expandedNet, classifiedNodes);
 		}
 		return expandedNet;
@@ -199,7 +212,7 @@ public class TemporalNetOperations {
 		Potential newPotential = null;
 		if (oldPotential instanceof CycleLengthShift) {
 			newPotential = new CycleLengthShift(oldPotential.getShiftedVariables(probNet,
-					timeDifference));
+					timeDifference), probNet.getCycleLength());
 		} else {
 			newPotential = oldPotential.copy();
 			newPotential.shift(probNet, timeDifference);
@@ -269,4 +282,219 @@ public class TemporalNetOperations {
 			return null;
 		}
 	}
+	
+	/**
+	 * Applies the changes necessary to indicate the time at which the transition of states
+	 *  in temporary networks is performed. 
+	 * @param network Network to be transformed
+	 */
+	public static void applyTransitionTime(ProbNet network)
+	{
+		int numSlices = network.getInferenceOptions().getTemporalOptions().getNumberOfSlices();
+		List<Node> utilityNodes = network.getNodes(NodeType.UTILITY);
+		TransitionTime transitionTime = network.getInferenceOptions().getTemporalOptions().getTransition();
+		List<Node> nodesToRemove = new ArrayList<>();
+		if (transitionTime == TransitionTime.HALF) {
+			// Half cycle correction
+			Map<String, Node[]> temporalNodes = new HashMap<>(); 
+			for(Node utilityNode : utilityNodes)
+			{
+				Variable utilityVariable = utilityNode.getVariable();
+				if(utilityVariable.isTemporal() && 
+						utilityVariable.getTimeSlice() > 0 &&
+						utilityVariable.getDecisionCriterion().getCriterionName()
+						.equalsIgnoreCase("effectiveness"))
+				{
+					if(!temporalNodes.containsKey(utilityVariable.getBaseName()))
+						temporalNodes.put(utilityVariable.getBaseName(), new Node[numSlices + 1]);
+					temporalNodes.get(utilityVariable.getBaseName())[utilityVariable.getTimeSlice()] = utilityNode; 
+				}
+			}
+			for(Node[] tempNodes : temporalNodes.values())
+			{
+				for(int k = tempNodes.length - 1; k > 0; --k)
+				{
+					if(tempNodes[k] != null && tempNodes[k-1] != null)
+					{
+						Node utilityNode = tempNodes[k]; 
+						Node previousCycleNode = tempNodes[k-1];
+						List<Potential> currentCyclePotentials = utilityNode.getPotentials();
+						List<Potential> previousCyclePotentials = previousCycleNode.getPotentials();
+						List<Potential> newPotentials = new ArrayList<>();
+						for(int i=0; i < utilityNode.getNumPotentials();++i)
+						{
+							TablePotential currentCyclePotential = (TablePotential) currentCyclePotentials.get(i);
+							TablePotential previousCyclePotential = (TablePotential) previousCyclePotentials.get(i);
+							TablePotential sumPotential = DiscretePotentialOperations.sum(Arrays.asList(currentCyclePotential, previousCyclePotential));
+							sumPotential.setUtilityVariable(utilityNode.getVariable());
+							for(int j=0; j<sumPotential.values.length;++j)
+								sumPotential.values[j] /= 2;
+							newPotentials.add(sumPotential);
+						}
+						
+						utilityNode.setPotentials(newPotentials);
+						for(Node parent : previousCycleNode.getParents())
+						{
+							network.addLink(parent, utilityNode, true);
+						}
+						
+					}
+				}
+			}
+			
+		}
+		if (transitionTime == TransitionTime.BEGINNING || transitionTime == TransitionTime.HALF) {
+			// prune zero cycle utilities
+			for (Node utilityNode : utilityNodes) {
+				if (utilityNode.getVariable().getTimeSlice() == 0) {
+					nodesToRemove.add(utilityNode);
+				}
+			}
+		} else if (transitionTime == TransitionTime.END) {
+			// Prune last cycle utilities
+			for (Node utilityNode : utilityNodes) {
+				if (utilityNode.getVariable().getTimeSlice() == numSlices) {
+					nodesToRemove.add(utilityNode);
+				}
+			}
+		}
+		for(Node nodeToRemove : nodesToRemove)
+		{
+			network.removeNode(nodeToRemove);
+		}
+	}	
+	
+	/**
+	 * TODO - Failed Test attempt
+	 * Apply the discounts for all temporal utility nodes in the expanded network
+	 * @param probNet Expanded network
+	 */
+	public static void applyDiscountToUtilityNodes(ProbNet probNet) {
+
+		// Get the utility nodes of the expanded network
+		List<Node> utilityExpandedNodes = probNet.getNodes(NodeType.UTILITY);
+		//For each utility Node, applies the discount of its criterion
+		for (Node utilityNode : utilityExpandedNodes) {
+			Variable utilityVariable = utilityNode.getVariable();
+
+			if (utilityVariable.isTemporal()) {
+				Potential potential = utilityNode.getPotentials().get(0);
+				int timeSlice = utilityVariable.getTimeSlice();
+				double discount = CycleLength.getTemporalAdjustedDiscount(
+						probNet.getCycleLength().getUnit(),
+						probNet.getCycleLength().getValue(),
+						utilityVariable.getDecisionCriterion().getDiscountUnit(),
+						utilityVariable.getDecisionCriterion().getDiscount());
+				
+				applyDiscountToUtilityPotential(potential, timeSlice, discount);
+			}
+		}
+	}
+	
+	/**
+	 * Applies a discount to a utility potential used by "applyDiscountToUtilityNodes" method
+	 * @param potential Potential to be discounted
+	 * @param timeSlice Time slice in which the potential is
+	 * @param discount Discount of the criterion
+	 */
+	private static void applyDiscountToUtilityPotential(Potential potential, int timeSlice,
+			double discount) {
+		double discountRate = 1.0 / (Math.pow((1.0 + (discount / 100.0)), timeSlice));
+		if (potential instanceof TablePotential) {
+			
+			double[] potentialValues = ((TablePotential) potential).getValues();
+			for (int j = 0; j < potentialValues.length; j++) {
+				potentialValues[j] = potentialValues[j] * discountRate;
+			}
+		} else if (potential instanceof TreeADDPotential) {
+			TreeADDPotential treeADD = (TreeADDPotential) potential;
+			for (TreeADDBranch branch : treeADD.getBranches()) {
+				applyDiscountToUtilityPotential(branch.getPotential(), timeSlice, discount);
+			}
+		}
+	}
+	
+	/**
+	 * TODO - This method is not working, the TreeADDPotential cannot be casted to a TablePotential
+	 * @param expandedNetwork
+	 * @param evidence
+	 * @return
+	 * @throws NotEvaluableNetworkException
+	 */
+	public static ProbNet adaptNetworkforCE(ProbNet expandedNetwork,
+			EvidenceCase evidence) throws NotEvaluableNetworkException {
+
+		// Convert numeric variables
+		expandedNetwork = ProbNetOperations.convertNumericalVariablesToFS(expandedNetwork, evidence);
+		
+		// make all utility nodes of the expanded probNet children of the decision criteria node
+		Variable decisionCriteriaVariable = 
+				new Variable("***CECriteria***", CECriterion.Cost.toString(), CECriterion.Effectiveness.toString());
+		Node decisionCECriteriaNode = expandedNetwork.addNode(decisionCriteriaVariable, NodeType.DECISION);
+		
+		for (Node utilityNode : BasicOperations.getTerminalUtilityNodes(expandedNetwork)) {
+			expandedNetwork.addLink(decisionCECriteriaNode, utilityNode, true);
+			List<Variable> newPotentialVariables = utilityNode.getPotentials().get(0).getVariables();
+			newPotentialVariables.add(decisionCriteriaVariable);
+			TablePotential oldTablePotential = null;
+			try {
+				oldTablePotential = utilityNode.getPotentials().get(0).getCPT();
+			} catch (NonProjectablePotentialException | WrongCriterionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			TablePotential decisionCEPotential = new TablePotential(newPotentialVariables, PotentialRole.UTILITY);
+			double newValues [] = new double[decisionCEPotential.values.length];
+			
+			int startPosition = 0;
+			if(utilityNode.getVariable().getDecisionCriterion().getCECriterion() == CECriterion.Cost){
+				startPosition = 0;
+			}else{
+				startPosition = oldTablePotential.getValues().length;
+			}
+			
+			for(int i = 0; i < oldTablePotential.getValues().length; i++){
+				newValues[i + startPosition] = oldTablePotential.getValues()[i];
+			}
+			utilityNode.setPotential(decisionCEPotential);
+			
+		}
+		
+		return expandedNetwork;
+	}
+
+	//	 TODO - ¿Unused method?
+//	/**
+//	 * Applies a discount to a utility potential with uncertainty
+//	 * @param potential Potential to be discounted
+//	 * @param timeSlice Time slice in which the potential is
+//	 * @param discount Discount of the criterion
+//	 */
+//    public static void applyDiscountToUncertainPotential(Potential potential, int timeSlice, double discount) {
+//        double discountRate = 1.0 / (Math.pow((1.0 + (discount / 100.0)), timeSlice));
+//        if(potential instanceof TablePotential)
+//        {
+//            TablePotential tablePotential = ((TablePotential)potential);
+//            double[] potentialValues = tablePotential.getValues();
+//            if(tablePotential.getUncertaintyTable() != null)
+//            {
+//                UncertainValue[] uncertaintyTable = tablePotential.getUncertaintyTable();
+//                for(int j=0; j < uncertaintyTable.length; ++j)
+//                {
+//                    if(uncertaintyTable[j] != null)
+//                    {
+//                        potentialValues[j] = potentialValues[j] * discountRate;
+//                    }
+//                }
+//            }
+//        }else if (potential instanceof TreeADDPotential)
+//        {
+//            TreeADDPotential treeADD = (TreeADDPotential)potential; 
+//            for(TreeADDBranch branch : treeADD.getBranches())
+//            {
+//                applyDiscountToUncertainPotential(branch.getPotential(), timeSlice, discount);
+//            }
+//        }
+//    }
+
 }

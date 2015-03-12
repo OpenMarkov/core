@@ -162,7 +162,7 @@ public class MarkovFactory extends NetsFactory {
 		ArrayList<Variable> variablesDuration1 = new ArrayList<>();
 		variablesDuration1.add(duration1);
 		variablesDuration1.add(duration0);
-		CycleLengthShift potetialDuration1 = new CycleLengthShift(variablesDuration1);
+		CycleLengthShift potetialDuration1 = new CycleLengthShift(variablesDuration1, probNet.getCycleLength());
 		
 		//links
 		try {
@@ -281,7 +281,7 @@ public class MarkovFactory extends NetsFactory {
 		ArrayList<Variable> variablesDuration1 = new ArrayList<>();
 		variablesDuration1.add(duration1);
 		variablesDuration1.add(duration0);
-		CycleLengthShift potetialDuration1 = new CycleLengthShift(variablesDuration1);
+		CycleLengthShift potetialDuration1 = new CycleLengthShift(variablesDuration1, probNet.getCycleLength());
 		
 		//potential cost [0]
 		ArrayList<Variable> variablesCost = new ArrayList<>();

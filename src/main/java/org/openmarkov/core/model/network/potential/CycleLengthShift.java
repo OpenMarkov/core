@@ -147,11 +147,11 @@ public class CycleLengthShift extends Potential {
 
 	@Override
 	public Potential copy() {
-		List<Variable> variables = null;
+		List<Variable> copiedVariables = null;
 		if (this.getVariables() != null && this.getVariables().size() != 0) {
-			variables = new ArrayList<Variable>();
+			copiedVariables = new ArrayList<Variable>(this.getVariables());
 		}
-		CycleLengthShift cycleLengthShift = new CycleLengthShift(variables, this.cycleLength);
+		CycleLengthShift cycleLengthShift = new CycleLengthShift(copiedVariables, this.cycleLength);
 		cycleLengthShift.comment = this.comment;
 		return cycleLengthShift;
 

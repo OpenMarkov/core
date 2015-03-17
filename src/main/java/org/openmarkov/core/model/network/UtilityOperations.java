@@ -49,6 +49,27 @@ public class UtilityOperations {
 			}
 		}
 	}
+	
+	/**
+	 * Transform the probNet scaling the utility potentials with the cost-effectiveness scale
+	 * @param probNet transformed probNet
+	 */
+	public static void applyCEUtilityScaling(ProbNet probNet){
+		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
+		for (Node utilityNode : utilityNodes) {
+
+			// Save the actual criterion scale
+			double scale = utilityNode.getVariable().getDecisionCriterion()
+					.getCeScale();
+
+			// Transform the potential with the scale
+			Potential potential = utilityNode.getPotentials().get(0);
+			double[] potentialValues = ((TablePotential) potential).getValues();
+			for (int j = 0; j < potentialValues.length; j++) {
+				potentialValues[j] = potentialValues[j] * scale;
+			}
+		}
+	}
 
 	/**
 	 * This method remove all terminal utility nodes (without childrens) which
@@ -61,23 +82,24 @@ public class UtilityOperations {
 	public static ProbNet removeTerminalNullCostEffectivenessNodes(
 			ProbNet probNet) {
 
+		ProbNet copyProbNet = probNet.copy();
 		boolean stillHaveNodes;
 
 		do {
 			stillHaveNodes = false;
 			List<Node> terminalUtiliyNodes = BasicOperations
-					.getTerminalUtilityNodes(probNet);
+					.getTerminalUtilityNodes(copyProbNet);
 
 			for (Node terminalUtiliyNode : terminalUtiliyNodes) {
 				if (terminalUtiliyNode.getVariable().getDecisionCriterion()
 						.getCECriterion() == CECriterion.Null) {
-					probNet.removeNode(terminalUtiliyNode);
+					copyProbNet.removeNode(terminalUtiliyNode);
 					stillHaveNodes = true;
 				}
 			}
 
 		} while (stillHaveNodes);
 
-		return probNet;
+		return copyProbNet;
 	}
 }

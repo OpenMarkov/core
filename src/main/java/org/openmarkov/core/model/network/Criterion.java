@@ -42,7 +42,12 @@ public class Criterion implements Cloneable {
     /**
      * In the unicriteria analysis, the scale of this criterion above the main criterion choosed
      */
-    private double scale;
+    private double unicriteriaScale;
+    
+    /**
+     * In the cost-effectiveness analysis, the scale of this criterion
+     */
+    private double ceScale;
     
     /**
      * In the cost-effectiveness, specifies if the criterion acts as a cost or as effectiveness 
@@ -68,7 +73,7 @@ public class Criterion implements Cloneable {
 		this.criterionName = criterionName;
 		this.criterionUnit = criterionUnit;
 		this.discount = 0;
-		this.scale = 1;
+		this.unicriteriaScale = 1;
 		this.discountUnit = CycleLength.DiscountUnit.YEAR;
 		this.ceCriterion = CECriterion.Null;
 	}
@@ -108,12 +113,20 @@ public class Criterion implements Cloneable {
 		return defaultCriterion;
 	}
 	
-	public double getScale() {
-		return scale;
+	public double getUnicriteriaScale() {
+		return unicriteriaScale;
 	}
 
-	public void setScale(double scale) {
-		this.scale = scale;
+	public void setUnicriteriaScale(double scale) {
+		this.unicriteriaScale = scale;
+	}
+
+	public double getCeScale() {
+		return ceScale;
+	}
+
+	public void setCeScale(double ceScale) {
+		this.ceScale = ceScale;
 	}
 
 	public CECriterion getCECriterion() {
@@ -140,6 +153,8 @@ public class Criterion implements Cloneable {
 		this.discountUnit = discountUnit;
 	}
 	
+	
+	
 	@Override
 	public String toString() {
 		return criterionName + " " + criterionUnit;
@@ -154,7 +169,8 @@ public class Criterion implements Cloneable {
 		Criterion criterion = new Criterion(this.criterionName, this.criterionUnit);
 		criterion.setCECriterion(this.getCECriterion());
 		criterion.setDiscount(this.getDiscount());
-		criterion.setScale(this.getScale());
+		criterion.setUnicriteriaScale(this.getUnicriteriaScale());
+		criterion.setCeScale(this.getCeScale());
 		criterion.setDiscountUnit(this.getDiscountUnit());
 		return criterion;
 	}
@@ -169,7 +185,8 @@ public class Criterion implements Cloneable {
 		this.criterionUnit = newCriterion.getCriterionUnit();
 		this.discount = newCriterion.getDiscount();
 		this.discountUnit = newCriterion.getDiscountUnit();
-		this.scale = newCriterion.getScale();
+		this.unicriteriaScale = newCriterion.getUnicriteriaScale();
+		this.ceScale = newCriterion.getCeScale();
 	}
 
 	

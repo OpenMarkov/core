@@ -26,7 +26,7 @@ public class UtilityOperations {
 
 			// Save the actual criterion scale
 			double scale = utilityNode.getVariable().getDecisionCriterion()
-					.getScale();
+					.getUnicriteriaScale();
 
 			// Gets the main conversion unit (main criterion)
 			String mainUnit = probNet.getInferenceOptions()

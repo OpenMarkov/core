@@ -65,12 +65,12 @@ public class UtilityOperationsTest {
 		  List<Criterion> decisionCriteria = new ArrayList<Criterion>();
 		  
 		  Criterion criHealth_state = new Criterion("Effectiveness", "QALY");
-		  criHealth_state.setScale(0.8);
+		  criHealth_state.setUnicriteriaScale(0.8);
 		  criHealth_state.setCECriterion(CECriterion.Null);
 		  decisionCriteria.add(criHealth_state);
 		  
 		  Criterion criCost_of_test = new Criterion("Cost", "€");
-		  criCost_of_test.setScale(1);
+		  criCost_of_test.setUnicriteriaScale(1);
 		  criCost_of_test.setCECriterion(CECriterion.Cost);
 		  decisionCriteria.add(criCost_of_test);
 		  

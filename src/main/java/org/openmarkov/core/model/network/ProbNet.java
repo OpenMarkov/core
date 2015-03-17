@@ -471,6 +471,10 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         if(this.getCycleLength() != null){
         	copyNet.setCycleLength(this.getCycleLength());
         }
+        
+        //Copy Inference Options
+        copyNet.getInferenceOptions().setMultiCriteriaOptions(this.getInferenceOptions().getMultiCriteriaOptions());
+        copyNet.getInferenceOptions().setTemporalOptions(this.getInferenceOptions().getTemporalOptions());
         return copyNet;
     }
 

@@ -74,6 +74,7 @@ public class Criterion implements Cloneable {
 		this.criterionUnit = criterionUnit;
 		this.discount = 0;
 		this.unicriteriaScale = 1;
+		this.ceScale = 1;
 		this.discountUnit = CycleLength.DiscountUnit.YEAR;
 		this.ceCriterion = CECriterion.Null;
 	}

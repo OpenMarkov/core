@@ -95,6 +95,12 @@ public class ProductPotential extends Potential {
 	public boolean isUncertain() {
 		return false;
 	}	
+	
+	@Override
+	public void scalePotential(double scale) {
+		throw new UnsupportedOperationException();
+		
+	}    
 
 }
 

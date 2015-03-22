@@ -121,6 +121,11 @@ public class SumPotential extends Potential {
 	@Override
 	public boolean isUncertain() {
 		return false;
+	}
+	@Override
+	public void scalePotential(double scale) {
+		throw new UnsupportedOperationException();
+		
 	}    
 }
 

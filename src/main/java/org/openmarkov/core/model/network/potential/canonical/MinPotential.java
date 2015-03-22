@@ -236,6 +236,12 @@ public class MinPotential extends MinMaxPotential {
             }
         }
         return tablePotential;
-    }		
+    }
+
+	@Override
+	public void scalePotential(double scale) {
+		throw new UnsupportedOperationException();
+		
+	}    
 	
 }

@@ -184,6 +184,12 @@ public class DeltaPotential extends Potential{
         return Arrays.asList(inducedFinding);
     }   
     
+	@Override
+	public void scalePotential(double scale) {
+		this.numericValue *= scale; 
+		
+	}    
+    
     
         
 }

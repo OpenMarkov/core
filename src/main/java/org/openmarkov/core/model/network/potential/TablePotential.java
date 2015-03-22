@@ -1292,4 +1292,12 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
     public boolean isUncertain() {
         return (this.uncertainValues != null) ? true : false;
     }
+
+	@Override
+	public void scalePotential(double scale) {
+		for (int j = 0; j < this.values.length; j++) {
+			this.values[j] = this.values[j] * scale;
+		}
+		
+	}
 }

@@ -629,4 +629,10 @@ public abstract class Potential
         }
         return potential;
     }	
+    
+    /**
+     * Multiply the potential by a scale
+     * @param scale
+     */
+    public abstract void scalePotential(double scale);
 }

@@ -252,5 +252,11 @@ public class UniformPotential extends Potential
     @Override
     public String toString() {
         return super.toString() + " = Uniform";
-    }    
+    }
+
+	@Override
+	public void scalePotential(double scale) {
+		throw new UnsupportedOperationException();
+		
+	}    
 }

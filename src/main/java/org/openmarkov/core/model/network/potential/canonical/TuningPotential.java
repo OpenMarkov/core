@@ -220,4 +220,9 @@ public class TuningPotential extends ICIPotential
 		// TODO Auto-generated method stub
 		return false;
 	}
+	@Override
+	public void scalePotential(double scale) {
+		throw new UnsupportedOperationException();
+		
+	}
 }

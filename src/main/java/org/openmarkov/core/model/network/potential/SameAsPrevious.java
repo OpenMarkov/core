@@ -150,6 +150,12 @@ public class SameAsPrevious extends Potential
 	@Override
 	public boolean isUncertain() {
 		throw new IllegalArgumentException("There is no way to know whether SameAsPrevious potentials are uncertain");
+	}
+
+	@Override
+	public void scalePotential(double scale) {
+		throw new UnsupportedOperationException();
+		
 	}     
     
     

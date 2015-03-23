@@ -205,6 +205,12 @@ public class ConditionalGaussianPotential extends Potential{
 		variance = variance.removeVariable(variable);
 		return this;
 	}
+
+	@Override
+	public void scalePotential(double scale) {
+		throw new UnsupportedOperationException();
+		
+	}
 	
 	
 

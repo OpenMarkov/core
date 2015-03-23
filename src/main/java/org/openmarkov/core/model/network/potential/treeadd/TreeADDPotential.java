@@ -731,4 +731,13 @@ public class TreeADDPotential extends Potential {
 		return strBuffer.toString();
 	}
 
+	@Override
+	public void scalePotential(double scale) {
+		// Scale all the potentials of the branches
+		for(TreeADDBranch branch : branches){
+			branch.getPotential().scalePotential(scale);
+		}
+		
+	}
+
 }

@@ -631,7 +631,7 @@ public abstract class Potential
     }	
     
     /**
-     * Multiply the potential by a scale
+     * Multiply the potential by a scale. If the Potential is not scalable it must throw UnsupportedOperationException
      * @param scale
      */
     public abstract void scalePotential(double scale);

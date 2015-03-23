@@ -167,4 +167,10 @@ public class CycleLengthShift extends Potential {
 		return super.toString() + " = CycleLengthShift";
 	}
 
+	@Override
+	public void scalePotential(double scale) {
+		throw new UnsupportedOperationException();
+		
+	}
+
 }

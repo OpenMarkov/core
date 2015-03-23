@@ -263,5 +263,11 @@ public class WeibullHazardPotential extends GLMPotential {
 
 	public void setLog(boolean log) {
 		this.log = log;
+	}
+
+	@Override
+	public void scalePotential(double scale) {
+		throw new UnsupportedOperationException();
+		
 	} 
 }

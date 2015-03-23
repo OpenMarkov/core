@@ -142,4 +142,13 @@ public class LinearCombinationPotential extends GLMPotential {
         return new LinearCombinationPotential(this);
     }
 
+	@Override
+	public void scalePotential(double scale) {
+		// Multiply all the coefficients by the scale
+		for(int i = 0; i < coefficients.length; i++){
+			coefficients[i] *= scale;
+		}
+		
+	}
+
 }

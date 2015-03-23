@@ -127,4 +127,14 @@ public class ExponentialPotential extends GLMPotential {
 		return super.toString() + " = Exponential";
 	}
 
+	@Override
+	public void scalePotential(double scale) {
+		/*
+		 * Add ln(scale) to the first coefficient (constant covariate) is the same as
+		 * multiply all the exponential potential by the scale 
+		 */
+		coefficients[0] += Math.log(scale);
+		
+	}
+
 }

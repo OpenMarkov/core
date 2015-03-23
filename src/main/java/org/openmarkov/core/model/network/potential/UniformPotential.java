@@ -256,7 +256,7 @@ public class UniformPotential extends Potential
 
 	@Override
 	public void scalePotential(double scale) {
-		throw new UnsupportedOperationException();
+		
 		
 	}    
 }

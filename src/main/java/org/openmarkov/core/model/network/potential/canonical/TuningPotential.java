@@ -221,7 +221,7 @@ public class TuningPotential extends ICIPotential
 		return false;
 	}
 	@Override
-	public void scalePotential(double scale) {
+	public void scalePotential(double scale) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 		
 	}

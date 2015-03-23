@@ -185,9 +185,9 @@ public class DeltaPotential extends Potential{
     }   
     
 	@Override
-	public void scalePotential(double scale) {
-		this.numericValue *= scale; 
-		
+	public void scalePotential(double scale) throws UnsupportedOperationException {
+		// this.numericValue *= scale;
+		throw new UnsupportedOperationException();
 	}    
     
     

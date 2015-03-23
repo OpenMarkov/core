@@ -43,10 +43,12 @@ public class UtilityOperations {
 
 			// Transform the potential with the scale
 			Potential potential = utilityNode.getPotentials().get(0);
+			potential.scalePotential(scale);
+			/* 
 			double[] potentialValues = ((TablePotential) potential).getValues();
 			for (int j = 0; j < potentialValues.length; j++) {
 				potentialValues[j] = potentialValues[j] * scale;
-			}
+			}*/
 		}
 	}
 	
@@ -64,10 +66,12 @@ public class UtilityOperations {
 
 			// Transform the potential with the scale
 			Potential potential = utilityNode.getPotentials().get(0);
+			potential.scalePotential(scale);
+			/*
 			double[] potentialValues = ((TablePotential) potential).getValues();
 			for (int j = 0; j < potentialValues.length; j++) {
 				potentialValues[j] = potentialValues[j] * scale;
-			}
+			}*/
 		}
 	}
 

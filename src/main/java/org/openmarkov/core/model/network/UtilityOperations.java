@@ -22,33 +22,26 @@ public class UtilityOperations {
 	 */
 	public static void transformToUnicriterion(ProbNet probNet) {
 		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
+		
+		// Gets the main conversion unit (main criterion)
+		String mainUnit = probNet.getInferenceOptions().getMultiCriteriaOptions().getMainUnit();
+		
+		// Creates a global criterion
+		Criterion globalUtilityCriterion = new Criterion("GlobalUtility", mainUnit);
+		
 		for (Node utilityNode : utilityNodes) {
 
-			// Save the actual criterion scale
+			// Get the actual criterion scale
 			double scale = utilityNode.getVariable().getDecisionCriterion()
 					.getUnicriteriaScale();
-
-			// Gets the main conversion unit (main criterion)
-			String mainUnit = probNet.getInferenceOptions()
-					.getMultiCriteriaOptions().getMainUnit();
-
-			// Sets the main criterion as the node criterion
-			for (Criterion probNetCriterion : probNet.getDecisionCriteria()) {
-				if (probNetCriterion.getCriterionUnit().equals(mainUnit)) {
-					utilityNode.getVariable().setDecisionCriterion(
-							probNetCriterion);
-					break;
-				}
-			}
-
+			
 			// Transform the potential with the scale
 			Potential potential = utilityNode.getPotentials().get(0);
 			potential.scalePotential(scale);
-			/* 
-			double[] potentialValues = ((TablePotential) potential).getValues();
-			for (int j = 0; j < potentialValues.length; j++) {
-				potentialValues[j] = potentialValues[j] * scale;
-			}*/
+			
+			// Sets a global criterion as the node criterion
+			utilityNode.getVariable().setDecisionCriterion(globalUtilityCriterion);
+			
 		}
 	}
 	
@@ -67,11 +60,7 @@ public class UtilityOperations {
 			// Transform the potential with the scale
 			Potential potential = utilityNode.getPotentials().get(0);
 			potential.scalePotential(scale);
-			/*
-			double[] potentialValues = ((TablePotential) potential).getValues();
-			for (int j = 0; j < potentialValues.length; j++) {
-				potentialValues[j] = potentialValues[j] * scale;
-			}*/
+
 		}
 	}
 

@@ -37,7 +37,7 @@ public class Criterion implements Cloneable {
     /**
      * Constant with the default unit of a criterion
      */
-    private final static String defaultUnit = " ";
+    private final static String defaultUnit = "---";
     
     /**
      * In the unicriteria analysis, the scale of this criterion above the main criterion choosed

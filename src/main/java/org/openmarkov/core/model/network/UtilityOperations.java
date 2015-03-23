@@ -72,6 +72,7 @@ public class UtilityOperations {
 	 * @param probNet
 	 * @return probNet without that utility nodes
 	 */
+	/*
 	public static ProbNet removeTerminalNullCostEffectivenessNodes(
 			ProbNet probNet) {
 
@@ -95,4 +96,5 @@ public class UtilityOperations {
 
 		return copyProbNet;
 	}
+	*/
 }

@@ -20,23 +20,15 @@ public class UtilityOperationsTest {
 	public void transformToUnicriterionTest(){
 		ProbNet probNet = getProbNet4Test();
 		
-		Criterion mainCriterion = null;
-		for(Criterion criterion : probNet.getDecisionCriteria()){
-			if(criterion.getCriterionName().equals("Cost")){
-				mainCriterion = criterion;
-				break;
-			}
-		}
-		
 		UtilityOperations.transformToUnicriterion(probNet);
 		
 		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
 		for(Node node : utilityNodes){
-			assertTrue(node.getVariable().getDecisionCriterion().equals(mainCriterion));
+			assertTrue(node.getVariable().getDecisionCriterion().getCriterionName().equals("GlobalUtility"));
 		}
 		
 	}
-	
+	/* TODO - Change the method. Use a 0 scale?
 	@Test
 	public void removeTerminalNullCostEffectivenessNodesTest(){
 		ProbNet probNet = getProbNet4Test();
@@ -49,7 +41,7 @@ public class UtilityOperationsTest {
 			assertTrue(node.getVariable().getDecisionCriterion().getCECriterion() != CECriterion.Null);
 		}
 		
-	}
+	}*/
 	
 	public static ProbNet getProbNet4Test () {
 		  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
@@ -66,7 +58,7 @@ public class UtilityOperationsTest {
 		  
 		  Criterion criHealth_state = new Criterion("Effectiveness", "QALY");
 		  criHealth_state.setUnicriteriaScale(0.8);
-		  criHealth_state.setCECriterion(CECriterion.Null);
+		  criHealth_state.setCECriterion(CECriterion.Effectiveness);
 		  decisionCriteria.add(criHealth_state);
 		  
 		  Criterion criCost_of_test = new Criterion("Cost", "€");

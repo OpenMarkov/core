@@ -14,7 +14,6 @@ public class Criterion implements Cloneable {
 	 *
 	 */
 	public enum CECriterion {
-	    Null,
 		Cost,
 	    Effectiveness
 	}
@@ -76,7 +75,7 @@ public class Criterion implements Cloneable {
 		this.unicriteriaScale = 1;
 		this.ceScale = 1;
 		this.discountUnit = CycleLength.DiscountUnit.YEAR;
-		this.ceCriterion = CECriterion.Null;
+		this.ceCriterion = CECriterion.Cost;
 	}
 	
 	/**

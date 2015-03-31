@@ -14,17 +14,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.NormalFunction;
 import org.openmarkov.core.model.network.modelUncertainty.XORShiftRandom;
-
+/**
+ * Generalised Linear Model potential
+ */
 public abstract class GLMPotential extends Potential {
     public enum MatrixType {
         COVARIANCE, CHOLESKY
@@ -173,8 +176,10 @@ public abstract class GLMPotential extends Potential {
 				variableValues.put("v"+i, "0.0");
 			} else {
 				double numericValue = 0;
-				if (variable.getVariableType() == VariableType.NUMERIC) {
-					numericValue = evidenceCase.getFinding(variable).getNumericalValue();
+				Finding finding = evidenceCase.getFinding(variable);
+				if (variable.getVariableType() == VariableType.NUMERIC 
+						|| variable.getVariableType() == VariableType.DISCRETIZED) {
+					numericValue = finding.getNumericalValue();
 				} else {
 					int index = evidenceCase.getFinding(variable).getStateIndex();
 					numericValue = index;

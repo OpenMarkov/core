@@ -464,7 +464,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         // Copy decisionCriterion variable
         // copy decision criteria
         if (this.getDecisionCriteria() != null) {
-            copyNet.setDecisionCriteria(this.getDecisionCriteria());
+            copyNet.setDecisionCriteria(new ArrayList<Criterion>(this.getDecisionCriteria()));
         }
         
         // Copy temporal units

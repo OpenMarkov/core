@@ -43,6 +43,9 @@ public class UtilityOperations {
 			utilityNode.getVariable().setDecisionCriterion(globalUtilityCriterion);
 			
 		}
+		
+		probNet.getDecisionCriteria().clear();
+		probNet.getDecisionCriteria().add(globalUtilityCriterion);
 	}
 	
 	/**

@@ -17,6 +17,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -121,7 +122,12 @@ public class SetPotentialEdit extends SimplePNEdit {
 			if (lastPotential.isUtility()) {
 				newPotential = relationTypeManager.getByName(newPotentialType, lastPotential.getUtilityVariable(), variables);
 			} else {
-			newPotential = relationTypeManager.getByName(newPotentialType, variables, role);
+				if(newPotentialType.equals(relationTypeManager.getPotentialName(CycleLengthShift.class))){
+					newPotential =  relationTypeManager.getByName(newPotentialType, variables, role, probNet.getCycleLength());
+    			}else{
+    				newPotential = relationTypeManager.getByName(newPotentialType, variables, role);
+    			}
+//			newPotential = relationTypeManager.getByName(newPotentialType, variables, role);
 			}
 		}
 

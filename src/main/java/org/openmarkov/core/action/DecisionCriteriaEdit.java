@@ -27,7 +27,12 @@ public class DecisionCriteriaEdit extends SimplePNEdit
     {
         super (probnet);
         this.modifiedCriterion = modifiedCriterion;
-        this.newName = newName;
+        
+        if(stateAction.equals(StateAction.ADD)){
+        	this.newName = modifiedCriterion.getCriterionName();
+        }else if(stateAction.equals(StateAction.RENAME)){
+        	this.newName = newName;
+        }
         this.stateAction = stateAction;
         this.lastCriteria = new ArrayList<Criterion> (probnet.getDecisionCriteria ());
     }

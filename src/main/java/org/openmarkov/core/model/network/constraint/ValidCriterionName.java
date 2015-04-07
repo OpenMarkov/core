@@ -37,9 +37,11 @@ public class ValidCriterionName extends PNConstraint {
 		for (PNEdit simpleEdit : edits) {
 			String name = ((DecisionCriteriaEdit) simpleEdit).getNewName();
 
-			// Get the trim and lowerCase state
-			name = name.trim();
-			name = name.toLowerCase();
+			if(name != null){
+				// Get the trim and lowerCase state
+				name = name.trim();
+				name = name.toLowerCase();
+			}
 			
 			switch (((DecisionCriteriaEdit) simpleEdit).getStateAction()) {
 			case ADD:

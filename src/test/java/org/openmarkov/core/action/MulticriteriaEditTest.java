@@ -42,6 +42,7 @@ public class MulticriteriaEditTest {
 		List<Criterion> decisionCriteria = new ArrayList<Criterion>();
 		Criterion criterion1 = new Criterion("Criterion A");
 		decisionCriteria.add(criterion1);
+		probNet.setDecisionCriteria(decisionCriteria);
 		MulticriteriaEdit edit = new MulticriteriaEdit(probNet, decisionCriteria, multicriteriaOptions);
 		
 		try {
@@ -61,6 +62,7 @@ public class MulticriteriaEditTest {
 		List<Criterion> decisionCriteria2 = new ArrayList<Criterion>();
 		Criterion criterion2 = new Criterion("Criterion B");
 		decisionCriteria2.add(criterion2);
+		probNet.setDecisionCriteria(decisionCriteria2);
 		
 		MulticriteriaEdit edit2 = new MulticriteriaEdit(probNet, decisionCriteria2, multicriteriaOptions2);
 		try {

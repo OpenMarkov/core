@@ -41,9 +41,7 @@ public class Finding {
      * @param fsVariable. <code>Variable</code>
      * @param state. <code>int</code> */
     public Finding(Variable fsVariable, State state) {
-        variable = fsVariable;
-        this.stateIndex = variable.getStateIndex (state);
-        numericalValue = Double.MAX_VALUE; // Default value to localize mistakes
+        this(fsVariable, fsVariable.getStateIndex (state));
     }
     
     /** Creates a <code>Finding</code> associated to a discrete variable 
@@ -52,7 +50,13 @@ public class Finding {
     public Finding(Variable fsVariable, int state) {
         variable = fsVariable;
         this.stateIndex = state;
-        numericalValue = Double.MAX_VALUE; // Default value to localize mistakes
+        if (variable.getVariableType() == VariableType.DISCRETIZED) {
+        	numericalValue = (variable.getPartitionedInterval().getLimit(state) +
+        			variable.getPartitionedInterval().getLimit(state+1))/2;
+        }else
+        {
+        	numericalValue = Double.NaN; // Default value
+        }
     }
     
     /** Creates a <code>Finding</code> associated to a numerical or discretized 
@@ -107,7 +111,7 @@ public class Finding {
     /** @return numericalValue. <code>double</code>
 	 * @precondition This finding stores a hybrid or continuous variable */
     public double getNumericalValue() {
-        return (numericalValue == Double.MAX_VALUE)? stateIndex : numericalValue;
+        return Double.isNaN(numericalValue)? stateIndex : numericalValue;
     }
     
     /** @param numericalValue. <code>double</code> 

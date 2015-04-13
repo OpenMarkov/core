@@ -194,8 +194,12 @@ public class WeibullHazardPotential extends GLMPotential {
 				{
 					lambda = Math.exp(lambda);
 				}
-				double diff = Math.pow(t - 1, shape) - Math.pow(t, shape);
-				double probability = 1 - Math.exp(lambda * diff);
+				double probability = 0;
+				if(t > 0)
+				{
+					double diff = Math.pow(t - 1, shape) - Math.pow(t, shape);
+					probability = 1 - Math.exp(lambda * diff);
+				}
 				// p
 				projectedPotential.values[configBaseIndex + 1] = probability;
 				// Complement (1-p)

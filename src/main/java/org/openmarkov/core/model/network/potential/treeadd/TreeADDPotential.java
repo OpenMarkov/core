@@ -538,6 +538,15 @@ public class TreeADDPotential extends Potential {
 		// Gets the union
 		List<Variable> resultVariables = AuxiliaryOperations.getUnionVariables(potentials);
 		
+		// Make sure conditioned variable is in first position
+		int conditionedVarIndex = resultVariables.indexOf(getConditionedVariable());
+		if(!isUtility() && conditionedVarIndex>0)
+		{
+			Variable otherVariable = resultVariables.get(0);
+			resultVariables.set(0, getConditionedVariable());
+			resultVariables.set(conditionedVarIndex, otherVariable);
+		}
+		
 		// Add top variable to resulting potential's variable list
 		int topVariableIndex = resultVariables.indexOf(topVariable);
 		int topVariableEvidenceStateIndex = -1;

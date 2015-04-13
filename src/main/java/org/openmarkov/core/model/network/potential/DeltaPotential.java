@@ -15,12 +15,14 @@ import java.util.Collection;
 import java.util.List;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -36,29 +38,28 @@ public class DeltaPotential extends Potential{
     public DeltaPotential(List<Variable> variables, PotentialRole role, double numericValue)
     {
         this(variables, role);
-        this.numericValue = numericValue;
+        initNumeric(getConditionedVariable(), numericValue);
     }
     
     public DeltaPotential(List<Variable> variables, PotentialRole role, State state)
     {
         this(variables, role);
-        this.state = state;
-        Variable conditionedVariable = getConditionedVariable();
-        stateIndex = conditionedVariable.getStateIndex(state);
+        initFiniteStates(getConditionedVariable(), state);
     }
     
     public DeltaPotential(List<Variable> variables, PotentialRole role)
     {
         super(variables, role);
         // set default values
-        Variable conditionedVariable = variables.get(0);
-        if(conditionedVariable.getVariableType() == VariableType.NUMERIC)
+        Variable conditionedVariable = getConditionedVariable();
+        if(conditionedVariable.getVariableType() != VariableType.FINITE_STATES)
         {
-            numericValue = conditionedVariable.getPartitionedInterval().getMin();
+        	PartitionedInterval variableDomain = conditionedVariable.getPartitionedInterval();
+            double numericValue = variableDomain.isLeftClosed()? variableDomain.getMin() : variableDomain.getMin() + conditionedVariable.getPrecision();
+            initNumeric(conditionedVariable, numericValue);
         }else
         {
-            state = conditionedVariable.getStates()[0];
-            stateIndex = conditionedVariable.getStateIndex(state);
+            initFiniteStates(conditionedVariable, conditionedVariable.getStates()[0]);
         }
     }
 
@@ -71,15 +72,31 @@ public class DeltaPotential extends Potential{
     public DeltaPotential(DeltaPotential potential)
     {
         super(potential);
-        if(potential.state != null)
+        state = potential.state;
+        stateIndex = potential.stateIndex;
+        numericValue = potential.numericValue;
+    }
+    
+    private void initFiniteStates(Variable conditionedVariable, State state)
+    {
+        this.state = state;
+        stateIndex = conditionedVariable.getStateIndex(state);
+    }
+    
+    private void initNumeric(Variable conditionedVariable, double numericValue)
+    {
+    	this.numericValue = numericValue;
+        if(conditionedVariable.getVariableType() == VariableType.DISCRETIZED)
         {
-            state = potential.state;
-            stateIndex = getConditionedVariable().getStateIndex(state);
-        }else
-        {
-            numericValue = potential.numericValue;
+        	try {
+				stateIndex = conditionedVariable.getStateIndex(numericValue);
+			} catch (InvalidStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
+
     
     /**
      * Returns whether this type of Potential is suitable for the list of
@@ -174,7 +191,7 @@ public class DeltaPotential extends Potential{
     public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
             throws IncompatibleEvidenceException, WrongCriterionException {
         Finding inducedFinding = null;
-        if(state !=null)
+        if(getConditionedVariable().getVariableType() == VariableType.FINITE_STATES)
         {
             inducedFinding = new Finding(getConditionedVariable(), state);
         }else

@@ -103,8 +103,8 @@ public class SensitivityAnalysisFactory extends IDFactory {
 
 	  // Potentials
 	  TablePotential potAlive = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
-	  potAlive.values = new double[]{0.86, 0.14};
-	  potAlive.uncertainValues = new UncertainValue[]{new UncertainValue(new ComplementFunction(1),""), new UncertainValue(new BetaFunction(14, 86),"prevalence")};
+	  potAlive.values = new double[]{0.14, 0.86};
+	  potAlive.uncertainValues = new UncertainValue[]{new UncertainValue(new BetaFunction(14, 86),"prevalence"),new UncertainValue(new ComplementFunction(1),"")};
 	  nodeAlive.setPotential(potAlive);
 
 	  TablePotential potHealth_state = new TablePotential(variableU,Arrays.asList(variableX));

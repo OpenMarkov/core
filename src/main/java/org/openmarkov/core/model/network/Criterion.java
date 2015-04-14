@@ -1,7 +1,5 @@
 package org.openmarkov.core.model.network;
 
-import org.openmarkov.core.model.network.CycleLength.Unit;
-
 /**
  * A criterion has a name and the units of measure
  * @author jperez

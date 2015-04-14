@@ -29,10 +29,7 @@ public enum NodeType implements Serializable {
 	DECISION(1, "decision"), 
 	UTILITY(2, "utility"),
 	SV_SUM(3, "svSum"),
-	SV_PRODUCT(4, "svProduct")/*,
-//	COST(5, "cost"),
-//	EFFECTIVENESS(6, "effectiveness"),
-//	CE(7, "ce")*/;//  (Cost-Effectiveness)
+	SV_PRODUCT(4, "svProduct");
 	
 	/** Existing types: CHANCE(0), DECISION(1), UTILITY(2), ... */
 	private int type;

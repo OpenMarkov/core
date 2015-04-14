@@ -82,11 +82,96 @@ public class SensitivityAnalysisFactory extends IDFactory {
 		 return probNet;
 		}
 	
+	public static ProbNet createSimpleIDWithoutDecisionsBeta() {
+		return createSimpleIDWithoutDecisions(new BetaFunction(14, 86));		
+	}
+	
+	public static ProbNet createSimpleIDWithoutDecisionsTriangular() {
+		return createSimpleIDWithoutDecisions(new TriangularFunction(0.1, 0.18, 0.14));		
+	}
+	
+	/**
+	 * @param betaFunction TODO
+	 * @return An influence diagram without decisions, with only two nodes: X (chance) and U (utility).
+	 * 
+	 */
+	public static ProbNet createSimpleIDWithoutDecisions(ProbDensFunction prevalenceProbFunction) 
+	{
+	  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+	  // Variables
+	  Variable variableX = new Variable(diseaseName,diseaseStates);
+	  Variable variableU = new Variable(healthStateName);
+
+	  // Nodes
+	  Node nodeAlive= probNet.addNode(variableX, NodeType.CHANCE);
+	  Node nodeHealth_state= probNet.addNode(variableU, NodeType.UTILITY);
+
+	  // Links
+	  probNet.makeLinksExplicit(false);
+	  probNet.addLink(nodeAlive, nodeHealth_state, true);
+
+	  // Potentials
+	  TablePotential potAlive = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
+	  potAlive.values = new double[]{0.14, 0.86};
+	  potAlive.uncertainValues = new UncertainValue[]{new UncertainValue(prevalenceProbFunction,"prevalence"),new UncertainValue(new ComplementFunction(1),"")};
+	  nodeAlive.setPotential(potAlive);
+
+	  TablePotential potHealth_state = new TablePotential(variableU,Arrays.asList(variableX));
+	  potHealth_state.values = new double[]{0, 1};
+	  nodeHealth_state.setPotential(potHealth_state);
+
+	  // Link restrictions and revealing states
+	  // Always observed nodes
+
+	 return probNet;
+	 
+	}
+	
+	/**
+	 * @param betaFunction TODO
+	 * @return An influence diagram without decisions, with only two nodes: X (chance) and U (utility).
+	 * 
+	 */
+	public static ProbNet createSimpleIDWithoutDecisionsDiseaseFourStates() 
+	{
+	  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+	  // Variables
+	  
+	  Variable variableX = new Variable(diseaseName,"s1","s2","s3","s4");
+	  Variable variableU = new Variable(healthStateName);
+
+	  // Nodes
+	  Node nodeAlive= probNet.addNode(variableX, NodeType.CHANCE);
+	  Node nodeHealth_state= probNet.addNode(variableU, NodeType.UTILITY);
+
+	  // Links
+	  probNet.makeLinksExplicit(false);
+	  probNet.addLink(nodeAlive, nodeHealth_state, true);
+
+	  // Potentials
+	  TablePotential potAlive = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
+	  potAlive.values = new double[]{0.2, 0.35,0.15,0.3};
+	  potAlive.uncertainValues = new UncertainValue[]{new UncertainValue(new RangeFunction(0.1,0.3),"prevalence1"),
+			  new UncertainValue(new RangeFunction(0.2,0.5),"prevalence2"),new UncertainValue(new ComplementFunction(1),""),
+			  new UncertainValue(new ComplementFunction(2),"")};
+	  nodeAlive.setPotential(potAlive);
+
+	  TablePotential potHealth_state = new TablePotential(variableU,Arrays.asList(variableX));
+	  potHealth_state.values = new double[]{0, 0.1,0.4,1};
+	  nodeHealth_state.setPotential(potHealth_state);
+
+	  // Link restrictions and revealing states
+	  // Always observed nodes
+
+	 return probNet;
+	 
+	}
+	
 	/**
 	 * @return An influence diagram without decisions, with only two nodes: X (chance) and U (utility).
 	 * 
 	 */
-	public static ProbNet createSimpleIDWithoutDecisions() 
+	public static ProbNet createSimpleIDWithoutDecisionsBeta(BetaFunction betaFunction) 
 	{
 			ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 	  // Variables

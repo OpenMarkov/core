@@ -56,4 +56,8 @@ public class UncertainParameter {
 		return uncertainValue.getName();
 	}
 
+	public boolean hasName() {
+		return uncertainValue.hasName();
+	}
+
 }

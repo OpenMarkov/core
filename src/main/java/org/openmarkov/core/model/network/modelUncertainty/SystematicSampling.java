@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import org.openmarkov.core.model.network.ProbNet;
@@ -15,7 +16,7 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 
-public class SystematicSampling {
+public class SystematicSampling extends Sampler {
 	
 	ProbNet network;
 	
@@ -175,12 +176,15 @@ public class SystematicSampling {
 	}
 	
 	
+	
 	private static ProbNet sampleNetwork(ProbNet originalNet,
 			List<ParameterAnalysisInformation> parameters, int numIntervals) {
 		ProbNet net = originalNet.copy();
+		int posBeginColumn;
 
 		UncertainParameter uncertainParameter;
 		int numPoints = numIntervals + 1;
+		List<Class<? extends ProbDensFunction>> functionTypes = initializeTypeFunctions();
 		
 		for (ParameterAnalysisInformation parameter : parameters) {
 			uncertainParameter = parameter.uncertainParameter;
@@ -202,6 +206,7 @@ public class SystematicSampling {
 				}
 				int position = getPosition(originalSubPotential,
 						uncertainParameter.uncertainValue);
+				int posUncertainInColumn = calculatePositionUncertainInColumn(originalSubPotential,position);
 				int originalValuesLength = originalSubPotential.getTableSize();
 				TablePotential newTablePot = addVariableReplicatingValuesAndUncertainValues(
 						originalSubPotential, iterVariable);
@@ -211,9 +216,23 @@ public class SystematicSampling {
 						.getUncertaintyTable());
 				double min = parameter.min;
 				double pointsDistance = (parameter.max - min) / numIntervals;
+				int numStates = numElementsInColumn(originalSubPotential);
+				int configurationBasePositionInitColumn = position-posUncertainInColumn;
+				List<UncertainValue> columnUncertainValues = getUncertainValuesChance(originalSubPotential.uncertainValues,configurationBasePositionInitColumn,numStates);
+			 	Sampler sampler = new SystematicSampling();
+                double[] sampledConfigurationValues = sampler.generateSample(columnUncertainValues,numStates,functionTypes);
+    				
+                double[] auxSampledConfigurationValues = new double[numStates];
+                double auxValueToAssign = min;
 				for (int i = 0; i < numPoints; i++) {
-					newSubPotential.values[position + i * originalValuesLength] = min
-							+ i * pointsDistance;
+					System.arraycopy(sampledConfigurationValues, 0, auxSampledConfigurationValues, 0, numStates);
+					double[] newSubpotentialValues = newSubPotential.values;
+					replaceValueAndRedistributeComplements(auxSampledConfigurationValues,sampler,posUncertainInColumn,auxValueToAssign);					
+					copyInArray(newSubpotentialValues,configurationBasePositionInitColumn+ i * originalValuesLength,auxSampledConfigurationValues);					
+					//TODO Distribute the probability mass when changing one value
+					/*newSubPotential.values[position + i * originalValuesLength] = min
+							+ i * pointsDistance;*/
+					auxValueToAssign += pointsDistance;
 				}
 				if (originalPotential != originalSubPotential) {
 					replace((TreeADDPotential) newPotential,
@@ -225,7 +244,33 @@ public class SystematicSampling {
 		}
 		return net;
 	}
+	
+	
+	private static void replaceValueAndRedistributeComplements(
+			double[] samples, Sampler sampler, int posToReplace, double newValue) {
+		double oldValue = samples[posToReplace];
+		samples[posToReplace] = newValue;		
+		ComplementFamily complemFamily = sampler.samplerUncertainValues.complementFamily;
+		ComplementFamily auxComplementFamily = new ComplementFamily(complemFamily.family);
+		auxComplementFamily.setProbMass(complemFamily.getProbMass()+oldValue-newValue);
+		double[] newComplementSamples = auxComplementFamily.getSample();		
+		placeInArray(samples,sampler.samplerUncertainValues.indexesComplement,newComplementSamples);		
+	}
 
+	private static int calculatePositionUncertainInColumn(
+			TablePotential pot, int position) {
+		int posInCol;
+		if (pot.isUtility()){
+			posInCol = 0;
+		}
+		else{//Probability potential
+			Variable var = pot.getVariable(0);
+			posInCol = position % var.getNumStates();
+		}
+		return posInCol;
+	}
+
+	
 	/**
 	 * @param originalNet
 	 * @param parameterName
@@ -335,24 +380,6 @@ public class SystematicSampling {
 		return pos;
 	}
 	
-	/*public static double max(ProbNet net, String parameterName,double prob){
-		DomainInterval interval = getInterval(net, parameterName, prob);
-		return interval.max();
-	}
-	
-	public static double min(ProbNet net, String parameterName,double prob){
-		DomainInterval interval = getInterval(net, parameterName, prob);
-		return interval.min();
-	}*/
-
-	/*private static DomainInterval getInterval(ProbNet net,
-			String parameterName, double prob) {
-		UncertainParameter uncertain = getUncertainParameter(net,parameterName);
-		ProbDensFunction pdf = uncertain.getProbDensFunction();
-		DomainInterval interval = pdf.getInterval(prob);
-		return interval;
-	}*/
-
 	
 	/**
 	 * @param uncertainParameters
@@ -372,5 +399,17 @@ public class SystematicSampling {
 			}
 		}
 		return paramFound;
+	}
+
+	@Override
+	protected double[] getSample(FamilyDistribution family,
+			Random randomGenerator) {
+		return family.getMean();
+	}
+
+	@Override
+	protected Random createRandomGenerator() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -16,6 +16,7 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -31,7 +32,7 @@ public abstract class InferenceAlgorithmTest {
 	 * Maximum error allowed in tests. It could be modified by subclasses
 	 * if it is necessary (for example, approximate inference methods).
 	 */
-	protected double maxError = 0.0001;
+	protected static double maxError = 0.0001;
 	
 	
 	
@@ -216,8 +217,27 @@ public abstract class InferenceAlgorithmTest {
 		}
 		assertEquals(1.0 - sum, potValues[potValuesLength - 1], maxError);
 	}
-
 	
+	/**
+	 * @param pot
+	 * @param values
+	 * Checks if 'pot' is a conditional probability potential correctly defined: the values in each column sum 1.0.
+	 */
+	public static void checkIsAConditionalProbability(TablePotential pot) {
+
+		double[] potValues = pot.values;
+		int numStates = pot.getVariable(0).getNumStates();
+		double[] auxValues = new double[numStates];
+		int numColumns = potValues.length / numStates;
+		int posInValues = 0;
+		for (int i = 0; i < numColumns; i++) {
+			for (int j = 0; j < numStates; j++){
+				auxValues[j] = potValues[posInValues];				
+				posInValues++;
+			}
+			assertEquals(1.0,Tools.sum(auxValues),maxError);
+		}		
+	}	
 
 	
 	protected boolean areEquals(double[] v1, double[] v2) {

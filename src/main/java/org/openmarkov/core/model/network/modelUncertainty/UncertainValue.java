@@ -71,5 +71,11 @@ public class UncertainValue {
 		return sb.toString();
 	}
 	
+	public boolean hasName() {
+		return name!= null && name.length()>0;
+	}
+	
+	
+	
 	
 }

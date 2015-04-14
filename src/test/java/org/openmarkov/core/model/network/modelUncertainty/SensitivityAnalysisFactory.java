@@ -2,10 +2,12 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Arrays;
 
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.factory.IDFactory;
 import org.openmarkov.core.model.network.modelUncertainty.BetaFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ComplementFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ExactFunction;
@@ -16,7 +18,7 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
-public class SensitivityAnalysisFactory {
+public class SensitivityAnalysisFactory extends IDFactory {
 	public static ProbNet buildIDDecideTestSA() {
 		  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		  // Variables
@@ -79,4 +81,42 @@ public class SensitivityAnalysisFactory {
 
 		 return probNet;
 		}
+	
+	/**
+	 * @return An influence diagram without decisions, with only two nodes: X (chance) and U (utility).
+	 * 
+	 */
+	public static ProbNet createSimpleIDWithoutDecisions() 
+	{
+			ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+	  // Variables
+	 	Variable variableX = new Variable(diseaseName,diseaseStates);
+		Variable variableU = new Variable(healthStateName);
+
+	  // Nodes
+	  Node nodeAlive= probNet.addNode(variableX, NodeType.CHANCE);
+	  Node nodeHealth_state= probNet.addNode(variableU, NodeType.UTILITY);
+
+	  // Links
+	  probNet.makeLinksExplicit(false);
+	  probNet.addLink(nodeAlive, nodeHealth_state, true);
+
+	  // Potentials
+	  TablePotential potAlive = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
+	  potAlive.values = new double[]{0.86, 0.14};
+	  potAlive.uncertainValues = new UncertainValue[]{new UncertainValue(new ComplementFunction(1),""), new UncertainValue(new BetaFunction(14, 86),"prevalence")};
+	  nodeAlive.setPotential(potAlive);
+
+	  TablePotential potHealth_state = new TablePotential(variableU,Arrays.asList(variableX));
+	  potHealth_state.values = new double[]{0, 1};
+	  nodeHealth_state.setPotential(potHealth_state);
+
+	  // Link restrictions and revealing states
+	  // Always observed nodes
+
+	 return probNet;
+	 
+}
+	
+	
 }

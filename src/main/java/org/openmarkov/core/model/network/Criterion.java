@@ -73,7 +73,12 @@ public class Criterion implements Cloneable {
 		this.unicriteriaScale = 1;
 		this.ceScale = 1;
 		this.discountUnit = CycleLength.DiscountUnit.YEAR;
-		this.ceCriterion = CECriterion.Cost;
+		this.ceCriterion = CECriterion.Cost; // Default. 
+		for (CECriterion ceCriterion : CECriterion.values()) {
+			if (ceCriterion.toString().toLowerCase().contentEquals(criterionName.toLowerCase())) {
+				this.ceCriterion = ceCriterion;
+			}
+		}
 	}
 	
 	/**

@@ -193,16 +193,24 @@ public class ConditionalGaussianPotential extends Potential{
 	@Override
 	public Potential addVariable(Variable variable) {
 		variables.add(variable);
+		Variable meanVariable = mean.getUtilityVariable();
 		mean = mean.addVariable(variable);
+		mean.setUtilityVariable(meanVariable);
+		Variable varianceVariable = variance.getUtilityVariable();
 		variance = variance.addVariable(variable);
+		variance.setUtilityVariable(varianceVariable);
 		return this;
 	}
 
 	@Override
 	public Potential removeVariable(Variable variable) {
 		variables.remove(variable);
+		Variable meanVariable = mean.getUtilityVariable();
 		mean = mean.removeVariable(variable);
+		mean.setUtilityVariable(meanVariable);
+		Variable varianceVariable = variance.getUtilityVariable();
 		variance = variance.removeVariable(variable);
+		variance.setUtilityVariable(varianceVariable);
 		return this;
 	}
 

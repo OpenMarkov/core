@@ -150,5 +150,63 @@ public class LinearCombinationPotential extends GLMPotential {
 		}
 		
 	}
+	
+	@Override
+	public Potential addVariable(Variable variable) {
+		LinearCombinationPotential newPotential = null;
+		if(!variables.contains (variable))
+		{
+			List<Variable> newVariables = new ArrayList<>(variables);
+			newVariables.add (variable);
+			newPotential = new LinearCombinationPotential(newVariables, this.role);
+			String[] newCovariates = new String[covariates.length +1];
+			for(int i=0; i<covariates.length; ++i)
+				newCovariates[i] = covariates[i];
+			newCovariates[covariates.length] = variable.getName();
+			newPotential.setCovariates(newCovariates);
+			
+			double[] newCoefficients = new double[coefficients.length +1];
+			for(int i=0; i<coefficients.length; ++i)
+				newCoefficients[i] = coefficients[i];
+			newCoefficients[coefficients.length] = 0.0;
+			newPotential.setCoefficients(newCoefficients);
+		}else
+		{
+			newPotential = new LinearCombinationPotential(this); 
+		}
+		return newPotential;
+		
+	}
+
+	@Override
+	public Potential removeVariable(Variable variable) {
+		LinearCombinationPotential newPotential = null;
+		if(!variables.contains (variable))
+		{
+			List<Variable> newVariables = new ArrayList<>(variables);
+			newVariables.remove (variable);
+			newPotential = new LinearCombinationPotential(newVariables, this.role);
+			List<String> newCovariates = new ArrayList<>();
+			List<Double> newCoefficientsList = new ArrayList<>();
+			for(int i=0; i<covariates.length; ++i)
+			{
+				if(covariates[i].contains(variable.getName()))
+				{
+					newCovariates.add(covariates[i]);
+					newCoefficientsList.add(coefficients[i]);
+				}
+			}
+			newPotential.setCovariates((String[])newCovariates.toArray());
+			double[] newCoefficients = new double[newCoefficientsList.size()];
+			for(int i=0; i<newCoefficientsList.size(); ++i)
+			{
+				newCoefficients[i] = newCoefficientsList.get(i);	
+			}
+		}else
+		{
+			newPotential = new LinearCombinationPotential(this); 
+		}
+		return newPotential;
+	}   
 
 }

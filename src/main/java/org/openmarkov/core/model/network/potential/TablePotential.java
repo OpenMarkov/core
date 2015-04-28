@@ -93,7 +93,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      */
     public TablePotential(List<Variable> variables, PotentialRole role) {
         super(variables, role);
-        // this.originalVariables = this.variables;
+        int numVariables = (variables != null)? variables.size () : 0;
         if (numVariables != 0) {
             dimensions = TablePotential.calculateDimensions(variables);
             offsets = TablePotential.calculateOffsets(dimensions);
@@ -257,6 +257,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         }
         int numUnobservedVariables = unobservedVariables.size();
         TablePotential projectedPotential;
+        int numVariables = (variables != null)? variables.size () : 0;
         if (numVariables == numUnobservedVariables) { // No projection.
             projectedPotential = this;
         } else {// Common part in constant potential and not constant potentials
@@ -565,6 +566,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      */
     public int getPosition(int[] coordinates) {
         int position = 0;
+        int numVariables = (variables != null)? variables.size () : 0;
         for (int i = 0; i < numVariables; i++) {
             position += offsets[i] * coordinates[i];
         }
@@ -1162,7 +1164,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
     }
 
     public String treeADDString() {
-        if (role == PotentialRole.CONDITIONAL_PROBABILITY && numVariables == 1) {
+        if (role == PotentialRole.CONDITIONAL_PROBABILITY && variables != null && variables.size () == 1) {
             Variable firstVariable = variables.get(0);
             for (int i = 0; i < firstVariable.getNumStates(); i++) {
                 if (values[i] == 1) {

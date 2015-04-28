@@ -32,6 +32,7 @@ public class GTablePotential<Element> extends TablePotential {
      */
     public GTablePotential(List<Variable> variables, PotentialRole role)  {
         super(variables, null); // <- Don't create a table of doubles
+        int numVariables = (variables != null)? variables.size () : 0; 
         if (numVariables != 0) {
             int sizeTable = dimensions[numVariables - 1] * 
                 offsets[numVariables - 1];
@@ -104,6 +105,7 @@ public class GTablePotential<Element> extends TablePotential {
 	/** Overrides <code>toString</code> method. Mainly for test purposes */
 	public String toString() {
 		StringBuilder buffer = new StringBuilder();
+		int numVariables = (variables != null)? variables.size () : 0;
 		if (numVariables > 0) {
 			// writes each configuration and its value
 			int[] configuration = null;

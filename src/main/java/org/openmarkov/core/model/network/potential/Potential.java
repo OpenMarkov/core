@@ -45,8 +45,6 @@ public abstract class Potential
      * @frozen
      */
     protected List<Variable>       variables;
-    /** @frozen */
-    protected int                  numVariables;
     /**
      * Utility variable associated to the <code>Node</code> that contains
      * this potential.
@@ -69,7 +67,6 @@ public abstract class Potential
      */
     public Potential (List<Variable> variables, PotentialRole role)
     {
-        numVariables = (variables != null)? variables.size () : 0;
         if(variables != null)
         {
             this.variables = new ArrayList<Variable> (variables);
@@ -417,6 +414,7 @@ public abstract class Potential
     public String toShortString ()
     {
         StringBuilder buffer = new StringBuilder ();
+        int numVariables = (variables != null)? variables.size () : 0;
         if (numVariables == 0)
         { // Constant potential
             switch (role)
@@ -485,11 +483,11 @@ public abstract class Potential
     private StringBuilder printVariables (StringBuilder buffer, int firstVariable)
     {
         // Print variables
-        for (int i = firstVariable; i < numVariables - 1; i++)
+        for (int i = firstVariable; i < variables.size() - 1; i++)
         {
             buffer.append (variables.get (i) + ", ");
         }
-        buffer.append (variables.get (numVariables - 1));
+        buffer.append (variables.get (variables.size() - 1));
         return buffer;
     }
 
@@ -588,7 +586,6 @@ public abstract class Potential
     public void setVariables (List<Variable> variables)
     {
         this.variables = variables;
-        this.numVariables = variables.size();
     }
 
     public double getProbability (EvidenceCase evidenceCase)

@@ -95,6 +95,16 @@ public class Criterion implements Cloneable {
 	public Criterion(){
 		this(defaultCriterion, defaultUnit);
 	}
+	
+	public Criterion(Criterion criterion){
+		this.criterionName = criterion.criterionName;
+		this.criterionUnit = criterion.criterionUnit;
+		this.discount = criterion.discount;
+		this.unicriteriaScale = criterion.unicriteriaScale;
+		this.ceScale = criterion.ceScale;
+		this.discountUnit = criterion.discountUnit;
+		this.ceCriterion = criterion.ceCriterion;
+	}
 
 	public String getCriterionName() {
 		return criterionName;

@@ -164,13 +164,13 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 */
 	public Variable(Variable variable) {
 
-		this.name = variable.getName();
+		this.name = new String(variable.getName());
 		this.states = variable.states.clone();
 		this.variableType = variable.getVariableType();
 		this.partitionedInterval = (variable.getPartitionedInterval() != null) ? (PartitionedInterval) variable
 				.getPartitionedInterval().clone() : null;
 		this.precision = variable.getPrecision();
-		this.unit = variable.unit;
+		this.unit = variable.unit.copy();
 		setTimeSlice(getTimeSlice(variable.getName()));
 	}
 

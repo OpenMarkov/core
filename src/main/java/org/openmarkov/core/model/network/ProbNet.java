@@ -1436,8 +1436,19 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         if (this.getDecisionCriteria() != null) {
             copyNet.setDecisionCriteria(new ArrayList<Criterion>(this.getDecisionCriteria()));
         }
-
-        copyNet.setName(name);
+        
+        // copy net name
+        copyNet.setName(new String(name));
+        
+        // Copy temporal units
+        if(this.getCycleLength() != null){
+        	copyNet.setCycleLength(this.getCycleLength());
+        }
+        
+        //Copy Inference Options
+        copyNet.getInferenceOptions().setMultiCriteriaOptions(this.getInferenceOptions().getMultiCriteriaOptions());
+        copyNet.getInferenceOptions().setTemporalOptions(this.getInferenceOptions().getTemporalOptions());
+        
         // copy constraints
         int numConstraints = constraints.size();
         for (int i = 1; i < numConstraints; i++) {
@@ -1447,7 +1458,6 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
                 // Unreachable code because constraints are not tested in copy
             }
         }
-        
         
         List<Node> nodes = getNodes();
         // Adds variables and create corresponding nodes. Also add potentials
@@ -1466,7 +1476,6 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
                     e.printStackTrace();
                 }
             }
-
 
             ArrayList<Potential> newPotentials = new ArrayList<Potential>();
             for(Potential potential : node.getPotentials()){
@@ -1543,16 +1552,6 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         }
         copyNet.additionalProperties = copyProperties;
 
-
-
-        // Copy temporal units
-        if(this.getCycleLength() != null){
-            copyNet.setCycleLength(this.getCycleLength());
-        }
-
-        //Copy Inference Options
-        copyNet.getInferenceOptions().setMultiCriteriaOptions(this.getInferenceOptions().getMultiCriteriaOptions());
-        copyNet.getInferenceOptions().setTemporalOptions(this.getInferenceOptions().getTemporalOptions());
         return copyNet;
     }
 

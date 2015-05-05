@@ -1427,5 +1427,135 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 		this.cycleLength = temporalUnit;
 	}
 	
+
+
+    public ProbNet deepCopy() {
+        ProbNet copyNet = new ProbNet(this.networkType);
+
+        // copy decision criteria
+        if (this.getDecisionCriteria() != null) {
+            copyNet.setDecisionCriteria(new ArrayList<Criterion>(this.getDecisionCriteria()));
+        }
+
+        copyNet.setName(name);
+        // copy constraints
+        int numConstraints = constraints.size();
+        for (int i = 1; i < numConstraints; i++) {
+            try {
+                copyNet.addConstraint(constraints.get(i), false);
+            } catch (ConstraintViolationException e) {
+                // Unreachable code because constraints are not tested in copy
+            }
+        }
+        
+        
+        List<Node> nodes = getNodes();
+        // Adds variables and create corresponding nodes. Also add potentials
+        for (Node node : nodes) {
+            Node newNode = node.clone(copyNet);            
+            copyNet.addNode(newNode);
+        }
+
+        // Add new potentials and update list of neighbours
+        for(Node node : nodes){
+            List<Node> neighbours = this.getNeighbors(node);
+            for(Node neighbour : neighbours){
+                try {
+                    neighbour = copyNet.getNode(neighbour.getName());
+                } catch (NodeNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+            ArrayList<Potential> newPotentials = new ArrayList<Potential>();
+            for(Potential potential : node.getPotentials()){
+                newPotentials.add(potential.deepCopy(copyNet));
+            }
+            
+            try {
+                copyNet.getNode(node.getName()).setPotentials(newPotentials);
+            } catch (NodeNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
+        // Adds links
+        // Copy explicit links' properties
+        // TODO - Check this code
+        if (hasExplicitLinks()) {
+            copyNet.makeLinksExplicit(false);
+            for (Link<Node> originalLink : getLinks()) {
+                try {
+
+                    Node copyNode1 = copyNet.getNode(originalLink.getNode1().getVariable().getName());
+                    Node copyNode2 = copyNet.getNode(originalLink.getNode2().getVariable().getName());
+
+                    Link<Node> copyLink = copyNet.addLink(copyNode1, copyNode2, originalLink.isDirected());
+                    if(originalLink.getRestrictionsPotential() != null){
+                    	copyLink.setRestrictionsPotential(originalLink.getRestrictionsPotential().deepCopy(copyNet));
+                    }
+                    
+                    List<PartitionedInterval> newRevealingIntervals = new ArrayList<PartitionedInterval>();
+                    for(PartitionedInterval interval : originalLink.getRevealingIntervals()){
+                    	PartitionedInterval newInterval = new PartitionedInterval(interval.limits.clone(), interval.belongsToLeftSide.clone());
+                    	newRevealingIntervals.add(newInterval);
+                    }
+                    
+                    copyLink.setRevealingIntervals(newRevealingIntervals);
+                    copyLink.setRevealingStates(new ArrayList<State>(originalLink.getRevealingStates()));
+                } catch (NodeNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }else
+        {
+            for (Node node : nodes) {
+                try {
+                    Node copyNode = copyNet.getNode(node.getVariable().getName());
+                    List<Node> siblings = getSiblings(node);
+                    for (Node sibling : siblings) {
+                        Node copySibling = copyNet.getNode(sibling.getVariable().getName());
+                        if (!copyNet.isSibling(copyNode, copySibling)) {
+                            copyNet.addLink(copyNode, copySibling, false);
+                        }
+                    }
+                    List<Node> children = getChildren(node);
+                    for (Node child : children) {
+                        Node copyChild = copyNet.getNode(child.getVariable().getName());
+                        copyNet.addLink(copyNode, copyChild, true);
+                    }
+                } catch (NodeNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        // copy listeners
+        copyNet.getPNESupport().setListeners(pNESupport.getListeners());
+        // Copy additionalProperties
+        Set<String> keys = additionalProperties.keySet();
+        HashMap<String, String> copyProperties = new HashMap<String, String>();
+        for (String key : keys) {
+            copyProperties.put(key, additionalProperties.get(key));
+        }
+        copyNet.additionalProperties = copyProperties;
+
+
+
+        // Copy temporal units
+        if(this.getCycleLength() != null){
+            copyNet.setCycleLength(this.getCycleLength());
+        }
+
+        //Copy Inference Options
+        copyNet.getInferenceOptions().setMultiCriteriaOptions(this.getInferenceOptions().getMultiCriteriaOptions());
+        copyNet.getInferenceOptions().setTemporalOptions(this.getInferenceOptions().getTemporalOptions());
+        return copyNet;
+    }
+
+	
 	
 }

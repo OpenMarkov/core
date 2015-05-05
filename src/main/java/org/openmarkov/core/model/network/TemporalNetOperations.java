@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -26,6 +27,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
 public class TemporalNetOperations {
 
@@ -461,6 +463,22 @@ public class TemporalNetOperations {
 		}
 		
 		return expandedNetwork;
+	}
+	
+	public static void transformToID(ProbNet expandedNetwork) {
+		for(Node node : expandedNetwork.getNodes()){
+			Variable variable = node.getVariable();
+			if(variable.isTemporal()){
+				variable.setName(variable.getBaseName() + " [" + variable.getTimeSlice() + "]");
+				variable.setTimeSlice(Variable.noTemporalTimeSlice);
+			}
+		}
+		try {
+			expandedNetwork.setNetworkType(InfluenceDiagramType.getUniqueInstance());
+		} catch (ConstraintViolationException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	//	 TODO - ¿Unused method?

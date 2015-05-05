@@ -689,5 +689,30 @@ public class Node {
 	public void setCoordinateY(double coordinateY) {
 		this.coordinateY = coordinateY;
 	}
+	
+	public Node clone(ProbNet probNet){
+		Variable newVariable = new Variable(this.variable);
+		
+		if(this.getNodeType().equals(NodeType.UTILITY)){
+			for(Criterion criterion : probNet.getDecisionCriteria()){
+				if(criterion.getCriterionName().equals(this.variable.getDecisionCriterion().getCriterionName())){
+					newVariable.setDecisionCriterion(criterion);
+					break;
+				}
+			}
+		}
+
+		Node newNode = new Node(probNet, newVariable, this.getNodeType());
+		newNode.coordinateX = this.coordinateX;
+		newNode.setCoordinateX(this.getCoordinateX());
+        newNode.setCoordinateY(this.getCoordinateY());
+        newNode.setPurpose(this.getPurpose());
+        newNode.setRelevance(this.getRelevance());
+        newNode.setComment(this.getComment());
+        newNode.additionalProperties = additionalProperties;
+        newNode.setAlwaysObserved(this.isAlwaysObserved());
+        
+        return newNode;
+	}
     
 }

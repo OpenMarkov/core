@@ -49,6 +49,12 @@ public class CycleLengthShift extends Potential {
 	// public CycleLengthShift(Potential potential) {
 	// super(potential);
 	// }
+	
+	 public CycleLengthShift(CycleLengthShift potential) {
+		 super(potential);
+		 this.cycleLength = potential.cycleLength;
+		 
+	 }
 
 	/**
 	 * Returns if an instance of a certain Potential type makes sense given the

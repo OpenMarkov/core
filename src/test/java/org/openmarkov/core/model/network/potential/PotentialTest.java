@@ -11,15 +11,20 @@ package org.openmarkov.core.model.network.potential;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableTest;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
@@ -117,6 +122,308 @@ public class PotentialTest {
 			}
 		}
 		
+	}
+	
+	@Test
+	public void deltaPotentialDeepCopyTest(){
+		Variable variable = new Variable("DeltaVariable");
+		State deltaState = new State("Delta");
+		State [] states = {deltaState,new State("state2"),new State("state3")};
+		variable.setStates(states);
+		List<Variable> variableList = new ArrayList<>();
+		variableList.add(variable);
+
+		ProbNet probNet = getProbNet4ScaleTest();
+		probNet.addNode(variable, NodeType.CHANCE);
+
+		DeltaPotential deltaPotential = new DeltaPotential(variableList, PotentialRole.CONDITIONAL_PROBABILITY,deltaState);
+		DeltaPotential deltaPotentialCopy = (DeltaPotential) deltaPotential.deepCopy(probNet);
+
+		compareBasicCopiedAttributesPotential(deltaPotential, deltaPotentialCopy);
+		assertTrue(deltaPotential.getState() != deltaPotentialCopy.getState());
+	}
+
+	@Test
+	public void tablePotentialDeepCopyTest(){
+		Variable variable = new Variable("TablePotentialVariable");
+		List<Variable> variableList = new ArrayList<>();
+		variableList.add(variable);
+
+		ProbNet probNet = getProbNet4ScaleTest();
+		probNet.addNode(variable, NodeType.CHANCE);
+
+		TablePotential potential = new TablePotential(variableList, PotentialRole.CONDITIONAL_PROBABILITY);
+		potential.setComment("Comment");
+		TablePotential potentialCopy = (TablePotential) potential.deepCopy(probNet);
+
+		compareBasicCopiedAttributesPotential(potential, potentialCopy);
+		assertTrue(potential.getValues() != potentialCopy.getValues());
+
+		if(potential.interventions != null){
+			for (int i = 0; i < potential.interventions.length; i++) {
+				assertTrue(potential.interventions[i] != potentialCopy.interventions[i]);
+			}
+		}
+	}
+
+	@Test
+	public void cycleLengthShiftDeepCopyTest(){
+		Variable variable = new Variable("CycleLengthShiftVariable");
+		List<Variable> variableList = new ArrayList<>();
+		variableList.add(variable);
+
+		ProbNet probNet = getProbNet4ScaleTest();
+		probNet.addNode(variable, NodeType.CHANCE);
+
+		CycleLengthShift potential = new CycleLengthShift(variableList, new CycleLength());
+		potential.setComment("Comment");
+		CycleLengthShift potentialCopy = (CycleLengthShift) potential.deepCopy(probNet);
+
+		compareBasicCopiedAttributesPotential(potential, potentialCopy);
+	}
+
+	@Test
+	public void conditionalGaussianPotentialDeepCopyTest(){
+		Variable variable = new Variable("CycleLengthShiftVariable");
+		List<Variable> variableList = new ArrayList<>();
+		variableList.add(variable);
+
+		ProbNet probNet = getProbNet4ScaleTest();
+		probNet.addNode(variable, NodeType.CHANCE);
+
+		CycleLengthShift cycleLengthShift = new CycleLengthShift(variableList, new CycleLength());
+
+
+		try {
+			probNet.getNode("CycleLengthShiftVariable").setPotential(cycleLengthShift);
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		Variable variable2 = new Variable("TablePotentialVariable");
+		List<Variable> variableList2 = new ArrayList<>();
+		variableList2.add(variable2);
+
+		probNet.addNode(variable2, NodeType.CHANCE);
+
+		TablePotential tablePotential = new TablePotential(variableList2, PotentialRole.CONDITIONAL_PROBABILITY);
+
+		try {
+			probNet.getNode("TablePotentialVariable").setPotential(tablePotential);
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		List<Variable> allVariables = new ArrayList<>();
+		allVariables.addAll(variableList);
+		allVariables.addAll(variableList2);
+		ConditionalGaussianPotential conditionalGaussianPotential = new ConditionalGaussianPotential(allVariables, PotentialRole.CONDITIONAL_PROBABILITY);
+		conditionalGaussianPotential.setComment("Comment");
+		conditionalGaussianPotential.setMean(cycleLengthShift);
+		conditionalGaussianPotential.setVariance(tablePotential);
+
+		ConditionalGaussianPotential conditionalGaussianPotentialCopy = (ConditionalGaussianPotential) conditionalGaussianPotential.deepCopy(probNet);
+
+		compareBasicCopiedAttributesPotential(conditionalGaussianPotential, conditionalGaussianPotentialCopy);
+		assertTrue(conditionalGaussianPotential.getMean() != conditionalGaussianPotentialCopy.getMean());
+		assertTrue(conditionalGaussianPotential.getVariance() != conditionalGaussianPotentialCopy.getVariance());
+
+	}
+
+	@Test
+	public void exponentialPotentialDeepCopyTest(){
+		Variable variable = new Variable("ExponentialPotentialVariable");
+		List<Variable> variableList = new ArrayList<>();
+		variableList.add(variable);
+
+		ProbNet probNet = getProbNet4ScaleTest();
+		probNet.addNode(variable, NodeType.CHANCE);
+
+		ExponentialPotential potential = new ExponentialPotential(variableList, PotentialRole.CONDITIONAL_PROBABILITY);
+		potential.setComment("Comment");
+		potential.setCholeskyDecomposition(new double[]{1, 2, 3});
+		potential.setCoefficients(new double[]{4, 5, 6});
+		potential.setConstant(3);
+		potential.setCovarianceMatrix(new double[]{8, 9, 10});
+		potential.setCovariates(new String[]{"11", "12", "13"});
+		potential.processedCovariates = new String[]{"14", "15", "16"};
+		potential.sampledCoefficients = new double[]{17, 18, 19};
+
+		ExponentialPotential potentialCopy = (ExponentialPotential) potential.deepCopy(probNet);
+
+		compareBasicCopiedAttributesPotential(potential, potentialCopy);
+
+		assertTrue(potential.getCholeskyDecomposition() != potentialCopy.getCholeskyDecomposition());
+		assertTrue(potential.getCoefficients() != potentialCopy.getCoefficients());
+		assertTrue(potential.getCovarianceMatrix() != potentialCopy.getCovarianceMatrix());
+		assertTrue(potential.getCovariates() != potentialCopy.getCovariates());
+		assertTrue(potential.processedCovariates != potentialCopy.processedCovariates);
+		assertTrue(potential.sampledCoefficients != potentialCopy.sampledCoefficients);
+
+	}
+
+	@Test
+	public void linearCombinationPotentialDeepCopyTest(){
+		Variable variable = new Variable("ExponentialPotentialVariable");
+		List<Variable> variableList = new ArrayList<>();
+		variableList.add(variable);
+
+		ProbNet probNet = getProbNet4ScaleTest();
+		probNet.addNode(variable, NodeType.CHANCE);
+
+		LinearCombinationPotential potential = new LinearCombinationPotential(variableList, PotentialRole.CONDITIONAL_PROBABILITY);
+		potential.setComment("Comment");
+		potential.setCholeskyDecomposition(new double[]{1, 2, 3});
+		potential.setCoefficients(new double[]{4, 5, 6});
+		potential.setConstant(3);
+		potential.setCovarianceMatrix(new double[]{8, 9, 10});
+		potential.setCovariates(new String[]{"11", "12", "13"});
+		potential.processedCovariates = new String[]{"14", "15", "16"};
+		potential.sampledCoefficients = new double[]{17, 18, 19};
+
+		LinearCombinationPotential potentialCopy = (LinearCombinationPotential) potential.deepCopy(probNet);
+
+		compareBasicCopiedAttributesPotential(potential, potentialCopy);
+
+		assertTrue(potential.getCholeskyDecomposition() != potentialCopy.getCholeskyDecomposition());
+		assertTrue(potential.getCoefficients() != potentialCopy.getCoefficients());
+		assertTrue(potential.getCovarianceMatrix() != potentialCopy.getCovarianceMatrix());
+		assertTrue(potential.getCovariates() != potentialCopy.getCovariates());
+		assertTrue(potential.processedCovariates != potentialCopy.processedCovariates);
+		assertTrue(potential.sampledCoefficients != potentialCopy.sampledCoefficients);
+
+	}
+
+	@Test
+	public void productPotentialDeepCopyTest(){
+		Variable variable = new Variable("ExponentialPotentialVariable");
+		List<Variable> variableList = new ArrayList<>();
+		variableList.add(variable);
+
+		ProbNet probNet = getProbNet4ScaleTest();
+		probNet.addNode(variable, NodeType.CHANCE);
+
+		ProductPotential potential = new ProductPotential(variableList, PotentialRole.CONDITIONAL_PROBABILITY);
+		potential.setComment("Comment");
+
+		ProductPotential potentialCopy = (ProductPotential) potential.deepCopy(probNet);
+
+		compareBasicCopiedAttributesPotential(potential, potentialCopy);
+	}
+
+	@Test
+	public void sameAsPreviousPotentialDeepCopyTest(){
+		Variable variable = new Variable("ExponentialPotentialVariable");
+		List<Variable> variableList = new ArrayList<>();
+		variableList.add(variable);
+
+		ProbNet probNet = getProbNet4ScaleTest();
+		probNet.addNode(variable, NodeType.CHANCE);
+
+		SameAsPrevious potential = new SameAsPrevious(variableList);
+		potential.setComment("Comment");
+
+		SameAsPrevious potentialCopy = (SameAsPrevious) potential.deepCopy(probNet);
+
+		compareBasicCopiedAttributesPotential(potential, potentialCopy);
+	}
+
+	@Test
+	public void sumPotentialDeepCopyTest(){
+		Variable variable = new Variable("ExponentialPotentialVariable");
+		List<Variable> variableList = new ArrayList<>();
+		variableList.add(variable);
+
+		ProbNet probNet = getProbNet4ScaleTest();
+		probNet.addNode(variable, NodeType.CHANCE);
+
+		SumPotential potential = new SumPotential(variableList, PotentialRole.CONDITIONAL_PROBABILITY);
+		potential.setComment("Comment");
+
+		SumPotential potentialCopy = (SumPotential) potential.deepCopy(probNet);
+
+		compareBasicCopiedAttributesPotential(potential, potentialCopy);
+	}
+
+	@Test
+	public void uniformPotentialDeepCopyTest(){
+		Variable variable = new Variable("ExponentialPotentialVariable");
+		List<Variable> variableList = new ArrayList<>();
+		variableList.add(variable);
+
+		ProbNet probNet = getProbNet4ScaleTest();
+		probNet.addNode(variable, NodeType.CHANCE);
+
+		UniformPotential potential = new UniformPotential(variableList, PotentialRole.CONDITIONAL_PROBABILITY);
+		potential.setComment("Comment");
+
+		UniformPotential potentialCopy = (UniformPotential) potential.deepCopy(probNet);
+
+		compareBasicCopiedAttributesPotential(potential, potentialCopy);
+
+		assertTrue(potential.getDiscreteValue() == potentialCopy.getDiscreteValue());
+	}
+
+	@Test
+	public void weibullHazardPotentialDeepCopyTest(){
+		Variable variable = new Variable("ExponentialPotentialVariable");
+		List<Variable> variableList = new ArrayList<>();
+		variableList.add(variable);
+
+		ProbNet probNet = getProbNet4ScaleTest();
+		probNet.addNode(variable, NodeType.CHANCE);
+
+		WeibullHazardPotential potential = new WeibullHazardPotential(variableList, PotentialRole.CONDITIONAL_PROBABILITY);
+		potential.setComment("Comment");
+		potential.setCholeskyDecomposition(new double[]{1, 2, 3});
+		potential.setCoefficients(new double[]{4, 5, 6});
+		potential.setCovarianceMatrix(new double[]{8, 9, 10});
+		potential.setCovariates(new String[]{"11", "12", "13"});
+		potential.processedCovariates = new String[]{"14", "15", "16"};
+		potential.sampledCoefficients = new double[]{17, 18, 19};
+		potential.setLog(true);
+
+
+		WeibullHazardPotential potentialCopy = (WeibullHazardPotential) potential.deepCopy(probNet);
+
+		compareBasicCopiedAttributesPotential(potential, potentialCopy);
+
+		assertTrue(potential.getCholeskyDecomposition() != potentialCopy.getCholeskyDecomposition());
+		assertTrue(potential.getCoefficients() != potentialCopy.getCoefficients());
+		assertTrue(potential.getCovarianceMatrix() != potentialCopy.getCovarianceMatrix());
+		assertTrue(potential.getCovariates() != potentialCopy.getCovariates());
+		assertTrue(potential.processedCovariates != potentialCopy.processedCovariates);
+		assertTrue(potential.sampledCoefficients != potentialCopy.sampledCoefficients);
+		assertTrue(potential.isLog() == potentialCopy.isLog());
+
+	}
+
+
+
+	/**
+	 * This method assert true if basic attributes of a potential are copies of the other.
+	 * @param potential1
+	 * @param potential2
+	 */
+	private void compareBasicCopiedAttributesPotential(Potential potential1, Potential potential2) {
+
+		assertTrue(potential1 != potential2);
+
+		if(potential1.getComment() != null) {
+			assertTrue(potential1.getComment() != potential2.getComment());
+		}
+
+		if(potential1.getUtilityVariable() != null) {
+			assertTrue(potential1.getUtilityVariable() != potential2.getUtilityVariable());
+		}
+
+		if(potential1.getVariables() != null){
+			assertTrue(potential1.getVariables() != potential2.getVariables());
+		}
+
+		assertTrue(potential1.getNumVariables() == potential2.getNumVariables());
+
+		assertTrue(potential1.getPotentialRole().equals(potential2.getPotentialRole()));
 	}
 	
 	

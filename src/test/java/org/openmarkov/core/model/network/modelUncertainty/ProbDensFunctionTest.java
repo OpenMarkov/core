@@ -61,6 +61,13 @@ public abstract class ProbDensFunctionTest {
 		}
 	}
     
+    @Test
+    public void copyProbDensFuncion(){
+        ProbDensFunction probDensFunction = newProbDensFunctionInstance();
+        ProbDensFunction copyProbDensFunction = probDensFunction.copy();
+
+        assertTrue(probDensFunction != copyProbDensFunction);
+    }
     
 
     public void testQuantileFunction(double[] samples) {

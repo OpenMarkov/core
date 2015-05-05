@@ -17,6 +17,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -63,6 +64,13 @@ public class ConditionalGaussianPotential extends Potential{
 			mean =  ((ConditionalGaussianPotential)potential).mean.copy();
 			variance =  ((ConditionalGaussianPotential)potential).variance.copy();
 		}
+	}
+	
+	public ConditionalGaussianPotential(ConditionalGaussianPotential potential) {
+		super(potential);
+		this.mean =  ((ConditionalGaussianPotential)potential).mean.copy();
+		this.variance =  ((ConditionalGaussianPotential)potential).variance.copy();
+		
 	}
 
 	public ConditionalGaussianPotential(List<Variable> variables,
@@ -218,6 +226,15 @@ public class ConditionalGaussianPotential extends Potential{
 	public void scalePotential(double scale) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 		
+	}
+	
+	@Override
+	public Potential deepCopy(ProbNet copyNet) {
+		ConditionalGaussianPotential potential = (ConditionalGaussianPotential) super.deepCopy(copyNet);
+		potential.mean = this.mean.deepCopy(copyNet);
+		potential.variance = this.variance.deepCopy(copyNet);
+
+		return potential;
 	}
 	
 	

@@ -20,6 +20,7 @@ import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -171,6 +172,13 @@ public class CycleLengthShift extends Potential {
 	public void scalePotential(double scale) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 		
+	}
+	
+	@Override
+	public Potential deepCopy(ProbNet copyNet) {
+		CycleLengthShift potential = (CycleLengthShift) super.deepCopy(copyNet);
+		potential.cycleLength = this.cycleLength.clone();
+		return potential;
 	}
 
 }

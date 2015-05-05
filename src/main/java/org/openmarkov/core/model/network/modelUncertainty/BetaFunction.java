@@ -27,6 +27,15 @@ public class BetaFunction extends ProbDensFunction {
         this.beta = beta;
         initializePdfForSampling();
     }
+    
+    public BetaFunction(BetaFunction betaFunction) {
+        super();
+        this.alpha = betaFunction.alpha;
+        this.beta = betaFunction.beta;
+        if(betaFunction.dirichletForSampling != null){
+        	this.dirichletForSampling = betaFunction.dirichletForSampling;
+        }
+    }
 
     @Override
     public void setParameters(double[] params) {
@@ -85,4 +94,9 @@ public class BetaFunction extends ProbDensFunction {
 		
 		dirichletForSampling = new DirichletFamily(getParameters());
 	}
+	
+    @Override
+    public ProbDensFunction copy() {
+        return new BetaFunction(this);
+    }
 }

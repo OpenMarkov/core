@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -255,5 +256,10 @@ public class MaxPotential extends MinMaxPotential {
 	public void scalePotential(double scale) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 		
-	}    
+	}  
+    
+	@Override
+	public Potential deepCopy(ProbNet copyNet) {
+		return (MaxPotential) super.deepCopy(copyNet);
+	}
 }

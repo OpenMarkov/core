@@ -27,6 +27,14 @@ public class DirichletFunction extends ProbDensFunction
         initializePdfForSampling();
     }
     
+    public DirichletFunction(DirichletFunction dirichletFunction) {
+        super();
+        this.alpha = dirichletFunction.alpha;
+        if(dirichletFunction.gammaForSampling != null){
+        	this.gammaForSampling = (GammaFunction) dirichletFunction.gammaForSampling.copy();
+        }
+    }
+    
     @Override
     public void setParameters (double[] params)
     {
@@ -103,4 +111,9 @@ public class DirichletFunction extends ProbDensFunction
 	private void initializePdfForSampling(){
 		gammaForSampling = new GammaFunction(alpha,1.0);
 	}
+	
+    @Override
+    public ProbDensFunction copy() {
+        return new DirichletFunction(this);
+    }
 }

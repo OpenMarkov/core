@@ -33,6 +33,13 @@ public class TriangularFunction extends ProbDensFunctionWithKnownInverseCDF
         this.maximum = maximum;
         this.mode = mode;
     }    
+    
+    public TriangularFunction(TriangularFunction triangularFunction) {
+        super();
+        this.maximum = triangularFunction.maximum;
+        this.minimum = triangularFunction.minimum;
+        this.mode = triangularFunction.mode;
+    }
 
     @Override
     public void setParameters (double[] params)
@@ -100,4 +107,9 @@ public class TriangularFunction extends ProbDensFunctionWithKnownInverseCDF
 	public double getMinimum() {
 		return minimum;
 	}
+	
+    @Override
+    public ProbDensFunction copy() {
+        return new TriangularFunction(this);
+    }
 }

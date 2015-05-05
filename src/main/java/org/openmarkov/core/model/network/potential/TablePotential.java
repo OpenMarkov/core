@@ -25,6 +25,7 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.TablePotentialSampler;
@@ -1302,4 +1303,41 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
 		}
 		
 	}
+	
+    @Override
+    public Potential deepCopy(ProbNet copyNet) {
+        TablePotential potential = (TablePotential) super.deepCopy(copyNet);
+        
+        if(this.dimensions != null){
+        	potential.dimensions = this.dimensions.clone();
+        }
+        
+        potential.initialPosition = this.initialPosition;
+
+        if(this.interventions != null){
+        	potential.interventions = new Intervention[this.interventions.length];
+
+	        for (int interventionIndex = 0; interventionIndex < this.interventions.length; interventionIndex++) {
+	            potential.interventions[interventionIndex] = (Intervention) this.interventions[interventionIndex].deepCopy(copyNet);
+	        }
+        }
+
+        potential.offsets = this.offsets.clone();
+        potential.tableSize = this.tableSize;
+
+        if(this.uncertainValues != null){
+	        potential.uncertainValues = new UncertainValue[this.uncertainValues.length];
+	        for (int uncertainValueIndex = 0; uncertainValueIndex < this.uncertainValues.length; uncertainValueIndex++) {
+	        	if(this.uncertainValues[uncertainValueIndex] != null){
+	        		potential.uncertainValues[uncertainValueIndex] = this.uncertainValues[uncertainValueIndex].copy();
+	        	}
+	        }
+        }
+
+        potential.setValues(this.values.clone());
+
+
+        return potential;
+
+    }
 }

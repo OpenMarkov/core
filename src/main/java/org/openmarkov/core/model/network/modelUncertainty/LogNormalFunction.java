@@ -31,6 +31,15 @@ public class LogNormalFunction extends ProbDensFunction
         this.sigma = sigma;
         this.normal = new NormalFunction (mu, sigma);
     }
+    
+    public LogNormalFunction(LogNormalFunction logNormalFunction) {
+        super();
+        this.mu = logNormalFunction.mu;
+        this.sigma = logNormalFunction.sigma;
+        if(logNormalFunction.normal != null){
+        	this.normal = (NormalFunction) logNormalFunction.normal.copy();
+        }
+    }
 
     @Override
     public void setParameters (double[] args)
@@ -87,4 +96,9 @@ public class LogNormalFunction extends ProbDensFunction
 		double halfP = p/2;
 		return new DomainInterval(auxLognormalDist.inverseCumulativeProbability(0.5-halfP),auxLognormalDist.inverseCumulativeProbability(0.5+halfP));
 	}
+	
+    @Override
+    public ProbDensFunction copy() {
+        return new LogNormalFunction(this);
+    }
 }

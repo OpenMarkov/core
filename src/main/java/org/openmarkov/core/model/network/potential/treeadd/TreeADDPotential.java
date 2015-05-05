@@ -748,5 +748,34 @@ public class TreeADDPotential extends Potential {
 		}
 		
 	}
+	
+	@Override
+	public Potential deepCopy(ProbNet copyNet) {
+		TreeADDPotential treeADDPotential = (TreeADDPotential) super.deepCopy(copyNet);
+		List<TreeADDBranch> treeADDBranches = new ArrayList<>();
+		for(TreeADDBranch branch : this.branches){
+			treeADDBranches.add(branch.deepCopy(copyNet));
+		}
+
+		treeADDPotential.setBranches(treeADDBranches);
+
+//		treeADDPotential.defaultIndentString = new String(this.defaultIndentString);
+
+		treeADDPotential.indent = new String(this.indent);
+
+//		treeADDPotential.indentIncrement = this.indentIncrement;
+
+		treeADDPotential.indentLevel = this.indentLevel;
+
+		if(this.topVariable != null){
+			try {
+				treeADDPotential.topVariable = copyNet.getVariable(this.topVariable.getName());
+			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return treeADDPotential;
+	}
 
 }

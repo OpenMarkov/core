@@ -22,6 +22,11 @@ public class ComplementFunction extends ProbDensFunction
     {
         this.nu = nu;
     }
+    
+    public ComplementFunction(ComplementFunction complementFunction) {
+        super();
+        this.nu = complementFunction.getNu();
+    }
 
     public double getNu ()
     {
@@ -78,4 +83,9 @@ public class ComplementFunction extends ProbDensFunction
 	public DomainInterval getInterval(double p) {
 		return new DomainInterval(nu,nu);
 	}
+	
+    @Override
+    public ProbDensFunction copy() {
+        return new ComplementFunction(this);
+    }
 }

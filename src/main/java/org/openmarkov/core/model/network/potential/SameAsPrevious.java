@@ -157,6 +157,11 @@ public class SameAsPrevious extends Potential
 		
 		
 	}     
+	
+    @Override
+    public Potential deepCopy(ProbNet copyNet) {
+        return (SameAsPrevious) super.deepCopy(copyNet);
+    }
     
     
 }

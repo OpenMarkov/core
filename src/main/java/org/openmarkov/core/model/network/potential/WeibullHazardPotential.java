@@ -273,5 +273,22 @@ public class WeibullHazardPotential extends GLMPotential {
 	public void scalePotential(double scale) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 		
-	} 
+	}
+	
+	@Override
+	public Potential deepCopy(ProbNet copyNet) {
+		WeibullHazardPotential potential = (WeibullHazardPotential) super.deepCopy(copyNet);
+
+		potential.setLog(this.log);
+
+		if(timeVariable != null) {
+			try {
+				potential.setTimeVariable(copyNet.getVariable(this.getTimeVariable().getName()));
+			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return potential;
+	}
 }

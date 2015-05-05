@@ -27,6 +27,12 @@ public class RangeFunction extends ProbDensFunctionWithKnownInverseCDF
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
     }
+    
+    public RangeFunction(RangeFunction rangeFunction) {
+        super();
+        this.lowerBound = rangeFunction.lowerBound;
+        this.upperBound = rangeFunction.upperBound;
+    }
 
     @Override
     public void setParameters (double[] params)
@@ -76,4 +82,9 @@ public class RangeFunction extends ProbDensFunctionWithKnownInverseCDF
 	public double getMinimum() {
 		return lowerBound;
 	}
+	
+    @Override
+    public ProbDensFunction copy() {
+        return new RangeFunction(this);
+    }
 }

@@ -29,6 +29,14 @@ public class GammaFunction extends GammaAbstract
     {
         this (0.0, 0.0);
     }
+    
+    public GammaFunction(GammaFunction gammaFunction) {
+        super();
+        this.kAbstract = gammaFunction.kAbstract;
+        this.k = gammaFunction.k;
+        this.thetaAbstract = gammaFunction.thetaAbstract;
+        this.theta = gammaFunction.theta;
+    }
 
     @Override
     public void setParameters (double[] parameters)
@@ -54,5 +62,9 @@ public class GammaFunction extends GammaAbstract
         return a;
     }
 
+    @Override
+    public ProbDensFunction copy() {
+        return new GammaFunction(this);
+    }
 	
 }

@@ -22,6 +22,11 @@ public class ExactFunction extends ProbDensFunction
         this.nu = nu;
     }
     
+    public ExactFunction(ExactFunction exactFunction){
+        super();
+        this.nu = exactFunction.nu;
+    }
+    
     @Override
     public void setParameters (double[] params)
     {
@@ -78,4 +83,9 @@ public class ExactFunction extends ProbDensFunction
 	public DomainInterval getInterval(double p) {
 		return new DomainInterval(nu,nu);
 	}
+	
+    @Override
+    public ProbDensFunction copy() {
+        return new ExactFunction(this);
+    }
 }

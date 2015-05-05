@@ -21,6 +21,14 @@ public class GammamvFunction extends GammaAbstract
     {
         setParameters(new double[] {mu, sigma});
     }    
+    
+    public GammamvFunction(GammamvFunction gammamvFunction) {
+        super();
+        this.kAbstract = gammamvFunction.kAbstract;
+        this.thetaAbstract = gammamvFunction.thetaAbstract;
+        this.mu = gammamvFunction.mu;
+        this.sigma = gammamvFunction.sigma;
+    }
 
     @Override
     public void setParameters (double[] parameters)
@@ -41,5 +49,10 @@ public class GammamvFunction extends GammaAbstract
     public boolean verifyParametersDomain (boolean isChanceVariable)
     {
         return (mu > 0) && (sigma > 0);
+    }
+    
+    @Override
+    public ProbDensFunction copy() {
+        return new GammamvFunction(this);
     }
 }

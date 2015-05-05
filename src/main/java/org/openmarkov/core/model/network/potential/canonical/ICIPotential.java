@@ -18,11 +18,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -486,6 +488,39 @@ public abstract class ICIPotential extends Potential {
             TablePotential noisyPotential = noisyPotentials.get(i);
             noisyParameters[variables.indexOf(noisyPotential.getVariable (0))-1] = noisyPotential.values;
         }
+    }
+    
+    @Override
+    public Potential deepCopy(ProbNet copyNet) {
+        ICIPotential potential = (ICIPotential) super.deepCopy(copyNet);
+        potential.expandedPotential = (TablePotential) this.expandedPotential.deepCopy(copyNet);
+        potential.family = this.family;
+        potential.modelType = this.modelType;
+        potential.leakyParameters = this.leakyParameters.clone();
+
+        if(this.leakyVariable != null) {
+            try {
+                potential.leakyVariable = copyNet.getVariable(this.leakyVariable.getName());
+            } catch (NodeNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        potential.noisyParameters = this.noisyParameters.clone();
+
+        HashMap<Variable, Variable> newZVariables = new HashMap<>();
+        for(Variable keyVariable : this.zVariables.keySet()){
+            try {
+                Variable newKeyVariable = copyNet.getVariable(keyVariable.getName());
+                Variable newValueVariable = copyNet.getVariable(this.zVariables.get(keyVariable).getName());
+                newZVariables.put(newKeyVariable, newValueVariable);
+            } catch (NodeNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        potential.zVariables = newZVariables;
+
+        return potential;
     }
 
 }

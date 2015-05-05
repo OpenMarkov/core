@@ -24,6 +24,11 @@ public class State {
 		additionalProperties = new LinkedHashMap<String, String>(); 
 	}
 
+	public State(State state) {
+		this.additionalProperties = state.additionalProperties;
+		this.name = state.getName();
+	}
+
 	// Methods
 	public String getName() {
 		return name;

@@ -29,6 +29,15 @@ public class ErlangFunction extends ProbDensFunction
     {
         this(0 ,0.0);
     }
+    
+    public ErlangFunction(ErlangFunction erlangFunction) {
+        super();
+        this.k = erlangFunction.k;
+        this.lambda = erlangFunction.lambda;
+        if(erlangFunction.exponentialFunction != null){
+        	this.exponentialFunction = (ExponentialFunction) erlangFunction.exponentialFunction.copy();
+        }
+    }
 
     @Override
     public double[] getParameters ()
@@ -91,4 +100,9 @@ public class ErlangFunction extends ProbDensFunction
 		GammaFunction auxGamma = new GammaFunction(k,1.0/lambda);
 		return auxGamma.getInterval(p);
 	}
+	
+    @Override
+    public ProbDensFunction copy() {
+        return new ErlangFunction(this);
+    }
 }

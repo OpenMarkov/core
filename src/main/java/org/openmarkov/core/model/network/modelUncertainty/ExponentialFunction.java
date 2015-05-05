@@ -17,6 +17,11 @@ public class ExponentialFunction extends ProbDensFunctionWithKnownInverseCDF {
         this.lambda = lambda;
     }
 
+    public ExponentialFunction(ExponentialFunction exponentialFunction){
+        super();
+        this.lambda = exponentialFunction.lambda;
+    }
+    
     /**
      * @return the lambda
      */
@@ -73,4 +78,9 @@ public class ExponentialFunction extends ProbDensFunctionWithKnownInverseCDF {
 	public double getMinimum() {
 		return 0;
 	}
+	
+    @Override
+    public ProbDensFunction copy() {
+        return new ExponentialFunction(this);
+    }
 }

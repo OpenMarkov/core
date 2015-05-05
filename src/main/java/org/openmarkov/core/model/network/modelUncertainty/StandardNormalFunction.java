@@ -18,6 +18,23 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF 
 
     public StandardNormalFunction() {
     }
+    
+    public StandardNormalFunction(StandardNormalFunction standardNormalFunction) {
+        super();
+        
+        if(standardNormalFunction.numerator != null){
+	        this.numerator = new Polynomial(
+	                standardNormalFunction.numerator.coeff.clone(),
+	                standardNormalFunction.numerator.deg);
+        }
+        
+        if(standardNormalFunction.denominator != null){
+	        this.denominator = new Polynomial(
+	                standardNormalFunction.denominator.coeff.clone(),
+	                standardNormalFunction.denominator.deg);
+        }
+                
+    }
 
     @Override
     public double[] getParameters() {
@@ -103,4 +120,9 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF 
 		double value = Math.abs(getInverseCumulativeDistributionFunction(0.5-halfP));
 		return new DomainInterval(-value,value);
 	}
+	
+    @Override
+    public ProbDensFunction copy() {
+        return new StandardNormalFunction(this);
+    }
 }

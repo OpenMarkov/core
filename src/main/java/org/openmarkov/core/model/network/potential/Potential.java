@@ -6,6 +6,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -632,4 +633,49 @@ public abstract class Potential
      * @param scale
      */
     public abstract void scalePotential(double scale);
+    
+    /**
+     * Copy this potential attributes to the newPotential potential of the copyNet
+     * @param copyNet
+     * @return
+     */
+    public Potential deepCopy(ProbNet copyNet){
+        Potential potential = newInstance();
+
+        List<Variable> newReferences = new ArrayList<>();
+        for(Variable variable : this.variables){
+            try {
+                newReferences.add(copyNet.getVariable(variable.getName()));
+            } catch (NodeNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        potential.setVariables(newReferences);
+        potential.setPotentialRole(this.getPotentialRole());
+        potential.setComment(new String(this.comment));
+
+        if(utilityVariable != null) {
+            try {
+                potential.setUtilityVariable(copyNet.getVariable(this.getUtilityVariable().getName()));
+            } catch (NodeNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return potential;
+    }
+
+    private Potential newInstance() {
+        try {
+        	//this creates an instance of the subclass
+			return this.getClass().getConstructor(this.getClass()).newInstance(this);
+		} catch (InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+		}
+        return null;
+    }
 }

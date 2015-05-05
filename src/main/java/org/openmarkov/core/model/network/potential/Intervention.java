@@ -780,4 +780,10 @@ public class Intervention extends TreeADDPotential {
 		return hasInterv;
 	}
 	
+	@Override
+	public Potential deepCopy(ProbNet copyNet) {
+		Intervention intervention = (Intervention) super.deepCopy(copyNet);
+		return intervention;
+	}
+	
 }

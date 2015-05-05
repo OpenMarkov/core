@@ -49,4 +49,6 @@ public abstract class ProbDensFunction
 	
 	
 	public abstract DomainInterval getInterval(double p);
+	
+	public abstract ProbDensFunction copy();
 }

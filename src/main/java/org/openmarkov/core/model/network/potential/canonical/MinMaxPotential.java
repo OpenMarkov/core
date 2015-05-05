@@ -13,10 +13,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -152,5 +155,19 @@ public abstract class MinMaxPotential extends ICIPotential {
             
          return accruedPotentials;
     }	
+    
+    @Override
+    public Potential deepCopy(ProbNet copyNet) {
+        MinMaxPotential potential = (MinMaxPotential) super.deepCopy(copyNet);
+        if(this.pseudoVariable != null) {
+            try {
+                potential.pseudoVariable = copyNet.getVariable(this.pseudoVariable.getName());
+            } catch (NodeNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return potential;
+    }
 	
 }

@@ -39,6 +39,17 @@ public class UncertainValue {
         this(probDensFunction, null);
     }   
     
+	public UncertainValue(UncertainValue uncertainValue) {
+		super();
+		if(uncertainValue.name != null){
+			this.name = new String(uncertainValue.name);
+		}
+		
+		if(uncertainValue.probDensFunction != null){
+			this.probDensFunction = uncertainValue.probDensFunction.copy();
+		}
+	}
+    
 	public String getName() {
 		return name;
 	}
@@ -75,7 +86,9 @@ public class UncertainValue {
 		return name!= null && name.length()>0;
 	}
 	
-	
+	public UncertainValue copy(){
+		return new UncertainValue(this);
+	}
 	
 	
 }

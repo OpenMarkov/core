@@ -11,12 +11,15 @@ package org.openmarkov.core.model.network.potential.sdag;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Intervention;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 
 public class SDAGIntervention extends Intervention {
@@ -178,5 +181,20 @@ public class SDAGIntervention extends Intervention {
 	private void addParent(TreeADDBranch newBranch) {
 		parents.add(newBranch);
 		
+	}
+	
+	@Override
+	public Potential deepCopy(ProbNet copyNet) {
+		SDAGIntervention potential = (SDAGIntervention) super.deepCopy(copyNet);
+		Set<TreeADDBranch> newParents = new HashSet<>();
+		Iterator<TreeADDBranch> iterator = this.parents.iterator();
+
+		while(iterator.hasNext()){
+			newParents.add(iterator.next().deepCopy(copyNet));
+		}
+
+		potential.parents = newParents;
+
+		return potential;
 	}
 }

@@ -4,6 +4,8 @@ package org.openmarkov.core.model.network.potential.treeadd;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -418,5 +420,62 @@ public class TreeADDBranch {
 	public boolean isStatesBranch() {
 		return statesBranch;
 	}
+	
+	public TreeADDBranch deepCopy(ProbNet copyNet) {
+    	List<State> newStates = null;
+    	if(states != null){
+    		newStates = new ArrayList<>(states);
+    	}
+        Variable newRootVariable = null;
+        try {
+            newRootVariable = copyNet.getVariable(this.rootVariable.getName());
+        } catch (NodeNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        List<Variable> newParentVariables = new ArrayList<>();
+        for(Variable variable : this.parentVariables){
+            try {
+                newParentVariables.add(copyNet.getVariable(variable.getName()));
+            } catch (NodeNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        TreeADDBranch branch = new TreeADDBranch(newStates, newRootVariable, newParentVariables);
+
+        branch.indent = new String(this.indent);
+        branch.intervalBranch = this.intervalBranch;
+        
+        if(this.label != null){
+        	branch.label = new String(this.label);
+        }
+
+        if(this.lowerBound != null){
+        	branch.lowerBound = new Threshold(this.lowerBound);
+        }
+        
+        if(this.upperBound != null){
+        	branch.upperBound = new Threshold(this.upperBound);
+        }
+
+        if(this.potential != null){
+            branch.potential = this.potential.deepCopy(copyNet);
+        }
+
+        if(this.reference != null){
+        	branch.reference = new String(this.reference);
+        }
+        
+
+        if(this.referencedBranch != null) {
+            branch.referencedBranch = this.referencedBranch.deepCopy(copyNet);
+        }
+
+        branch.statesBranch = this.statesBranch;
+
+
+        return branch;
+    }
 
 }

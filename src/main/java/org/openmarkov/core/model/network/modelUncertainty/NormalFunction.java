@@ -22,6 +22,15 @@ public class NormalFunction extends ProbDensFunction {
         this.sigma = sigma;
         standard = new StandardNormalFunction();
     }
+    
+    public NormalFunction(NormalFunction normalFunction) {
+        super();
+        this.mu = normalFunction.mu;
+        this.sigma = normalFunction.sigma;
+        if(normalFunction.standard != null){
+        	this.standard = (StandardNormalFunction) normalFunction.standard.copy();
+        }
+    }
 
     @Override
     public void setParameters(double[] args) {
@@ -77,4 +86,9 @@ public class NormalFunction extends ProbDensFunction {
 		DomainInterval standardInterval = standard.getInterval(p);		
 		return new DomainInterval(translationFromStandardNormal(standardInterval.min()),translationFromStandardNormal(standardInterval.max()));
 	}
+	
+    @Override
+    public ProbDensFunction copy() {
+        return new NormalFunction(this);
+    }
 }

@@ -23,6 +23,7 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -207,6 +208,20 @@ public class DeltaPotential extends Potential{
 		throw new UnsupportedOperationException();
 	}    
     
+    @Override
+    public Potential deepCopy(ProbNet copyNet) {
+        DeltaPotential potential = (DeltaPotential) super.deepCopy(copyNet);
+
+        potential.numericValue = this.numericValue;
+
+        if(this.state != null){
+            potential.setValue(new State(this.state));
+        }
+        potential.stateIndex = this.stateIndex;
+
+        return potential;
+
+    }
     
         
 }

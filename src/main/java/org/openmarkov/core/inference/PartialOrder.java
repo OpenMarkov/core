@@ -144,7 +144,9 @@ public class PartialOrder {
         for (Variable remainingVariable : chanceVariables) {
             remainingVariables.add(remainingVariable);
         }
-        order.add(remainingVariables);
+        if (remainingVariables.size() > 0) {
+        	order.add(remainingVariables);
+        }
 
     }
     

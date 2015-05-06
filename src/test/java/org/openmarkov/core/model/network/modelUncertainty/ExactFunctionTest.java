@@ -1,0 +1,45 @@
+/*
+ * Copyright 2011 CISIAD, UNED, Spain
+ *
+ * Licensed under the European Union Public Licence, version 1.1 (EUPL)
+ *
+ * Unless required by applicable law, this code is distributed
+ * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
+package org.openmarkov.core.model.network.modelUncertainty;
+
+import static org.junit.Assert.*;
+
+/**
+ * @author manolo
+ * 
+ */
+public class ExactFunctionTest extends ProbDensFunctionTest {
+
+    @Override
+    public ProbDensFunction newProbDensFunctionInstance() {
+        return new ExactFunction();
+    }
+    
+    @Override
+    public double[] initializeParams() {
+        double[] params = { 5.3 };
+        return params;
+    }
+
+    /**
+     * @return
+     */
+    protected double getFactorError() {
+        return 1.0;
+    }
+
+	@Override
+	public void testQuantileFunction(double[] samples) {
+		for (double sample:samples){
+			assertEquals(sample,pdf.getMean(),this.maxErrorMean);			
+		}
+	}
+
+
+}

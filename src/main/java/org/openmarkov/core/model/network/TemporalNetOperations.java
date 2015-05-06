@@ -469,7 +469,7 @@ public class TemporalNetOperations {
 		for(Node node : expandedNetwork.getNodes()){
 			Variable variable = node.getVariable();
 			if(variable.isTemporal()){
-				variable.setName(variable.getBaseName() + " [" + variable.getTimeSlice() + "]");
+				variable.setName(variable.getBaseName() + " |" + variable.getTimeSlice() + "|");
 				variable.setTimeSlice(Variable.noTemporalTimeSlice);
 			}
 		}

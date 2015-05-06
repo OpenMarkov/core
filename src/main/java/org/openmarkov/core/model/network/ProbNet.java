@@ -1419,7 +1419,11 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 		return inferenceOptions;
 	}
 
-	public CycleLength getCycleLength() {
+    public void setInferenceOptions(InferenceOptions inferenceOptions) {
+        this.inferenceOptions = inferenceOptions;
+    }
+
+    public CycleLength getCycleLength() {
 		return cycleLength;
 	}
 
@@ -1431,10 +1435,16 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 
     public ProbNet deepCopy() {
         ProbNet copyNet = new ProbNet(this.networkType);
+        copyNet.constraints = new ArrayList<>();
 
         // copy decision criteria
         if (this.getDecisionCriteria() != null) {
-            copyNet.setDecisionCriteria(new ArrayList<Criterion>(this.getDecisionCriteria()));
+            List<Criterion> newDecisionCriteria = new ArrayList<Criterion>();
+            for(Criterion criterion : this.getDecisionCriteria()){
+                Criterion newCriterion = new Criterion(criterion);
+                newDecisionCriteria.add(newCriterion);
+            }
+            copyNet.setDecisionCriteria(newDecisionCriteria);
         }
         
         // copy net name
@@ -1442,12 +1452,11 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         
         // Copy temporal units
         if(this.getCycleLength() != null){
-        	copyNet.setCycleLength(this.getCycleLength());
+        	copyNet.setCycleLength(new CycleLength(this.getCycleLength()));
         }
         
         //Copy Inference Options
-        copyNet.getInferenceOptions().setMultiCriteriaOptions(this.getInferenceOptions().getMultiCriteriaOptions());
-        copyNet.getInferenceOptions().setTemporalOptions(this.getInferenceOptions().getTemporalOptions());
+        copyNet.setInferenceOptions(new InferenceOptions(this.getInferenceOptions()));
         
         // copy constraints
         int numConstraints = constraints.size();

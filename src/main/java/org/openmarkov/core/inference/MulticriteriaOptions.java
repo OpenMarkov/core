@@ -21,6 +21,11 @@ public class MulticriteriaOptions implements Cloneable{
 		this.mainUnit = mainUnit;
 	}
 
+	public MulticriteriaOptions(MulticriteriaOptions multiCriteriaOptions) {
+		this.multicriteriaType = multiCriteriaOptions.getMulticriteriaType();
+		this.mainUnit = multiCriteriaOptions.getMainUnit();
+	}
+
 	public Type getMulticriteriaType() {
 		return multicriteriaType;
 	}
@@ -38,10 +43,7 @@ public class MulticriteriaOptions implements Cloneable{
 	}
 	
 	public MulticriteriaOptions clone(){
-		MulticriteriaOptions multicriteriaOptions = new MulticriteriaOptions();
-		multicriteriaOptions.setMainUnit(this.getMainUnit());
-		multicriteriaOptions.setMulticriteriaType(this.getMulticriteriaType());
-		return multicriteriaOptions;
+		return new MulticriteriaOptions(this);
 	}
 	
 }

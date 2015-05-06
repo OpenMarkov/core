@@ -43,6 +43,12 @@ public class InferenceOptions {
 		this.multiCriteriaOptions = new MulticriteriaOptions();
 		this.temporalOptions = new TemporalOptions();
 	}
+
+	public InferenceOptions(InferenceOptions inferenceOptions){
+		this.multiCriteriaOptions = new MulticriteriaOptions(inferenceOptions.getMultiCriteriaOptions());
+		this.temporalOptions = new TemporalOptions(inferenceOptions.getTemporalOptions());
+		this.launchedBefore = inferenceOptions.launchedBefore;
+	}
 	
 	public MulticriteriaOptions getMultiCriteriaOptions() {
 		return multiCriteriaOptions;

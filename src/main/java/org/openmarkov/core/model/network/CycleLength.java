@@ -60,6 +60,11 @@ public class CycleLength {
 		this.value = value;
 	}
 
+	public CycleLength(CycleLength cycleLength){
+		this.unit = cycleLength.unit;
+		this.value = cycleLength.value;
+	}
+
 	public Unit getUnit() {
 		return unit;
 	}
@@ -77,7 +82,7 @@ public class CycleLength {
 	}
 	
 	public CycleLength clone() {
-		CycleLength temporalUnit = new CycleLength(this.unit, this.value);
+		CycleLength temporalUnit = new CycleLength(this);
 		return temporalUnit;
 	}
 	

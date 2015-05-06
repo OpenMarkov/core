@@ -11,6 +11,11 @@ public class TemporalOptions implements Cloneable {
 		transition = TransitionTime.BEGINNING;
 	}
 
+	public TemporalOptions(TemporalOptions temporalOptions) {
+		this.setNumberOfSlices(temporalOptions.numberOfSlices);
+		this.setTransition(temporalOptions.getTransition());
+	}
+
 	public int getNumberOfSlices() {
 		return numberOfSlices;
 	}
@@ -28,10 +33,7 @@ public class TemporalOptions implements Cloneable {
 	}
 
 	public TemporalOptions clone() {
-		TemporalOptions temporalOptions = new TemporalOptions();
-		temporalOptions.setNumberOfSlices(this.numberOfSlices);
-		temporalOptions.setTransition(this.getTransition());
-		return temporalOptions;
+		return new TemporalOptions(this);
 	}
 	
 	

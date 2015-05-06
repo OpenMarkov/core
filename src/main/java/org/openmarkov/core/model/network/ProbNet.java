@@ -1431,6 +1431,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 
     public ProbNet deepCopy() {
         ProbNet copyNet = new ProbNet(this.networkType);
+        copyNet.constraints = new ArrayList<>();
 
         // copy decision criteria
         if (this.getDecisionCriteria() != null) {

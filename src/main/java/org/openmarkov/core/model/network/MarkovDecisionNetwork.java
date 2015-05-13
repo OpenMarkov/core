@@ -29,6 +29,7 @@ import org.openmarkov.core.model.network.type.NetworkType;
 /**
  * This class is a type of Markov network created from an influence diagram that
  * can generate and store the partial order.
+ * @author Manuel Arias
  */
 public class MarkovDecisionNetwork extends ProbNet {
 
@@ -36,18 +37,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	/** Partial partialOrder of chance and decision nodes */
 	private PartialOrder partialOrder;
 	
-	
 	Set<TablePotential> constantPotentials;
-
-	public Set<TablePotential> getConstantPotentials() {
-		return constantPotentials;
-	}
-
-
-	public void setConstantPotentials(Set<TablePotential> constantPotentials) {
-		this.constantPotentials = constantPotentials;
-	}
-
 
 	// Constructor
 	/**
@@ -72,7 +62,6 @@ public class MarkovDecisionNetwork extends ProbNet {
 		 try {
 			copyNet.setNetworkType(MarkovNetworkType.getUniqueInstance());
 		} catch (ConstraintViolationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		 copyNet.constantPotentials = new HashSet<>();
@@ -83,7 +72,6 @@ public class MarkovDecisionNetwork extends ProbNet {
 
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
-		// TODO Auto-generated method stub
 		return super.clone();
 	}
 
@@ -280,44 +268,9 @@ public class MarkovDecisionNetwork extends ProbNet {
 			node = getNode(potential.getVariable(0));
 			node.addPotential(potential);
 		} else { // The potential is a constant.
-			/*TablePotential constantPotential = (TablePotential) potential;
-			double constant = constantPotential.values[0];
-			node = getChanceNode();
-			PotentialRole potentialRole = constantPotential.getPotentialRole();
-			if (potentialRole != PotentialRole.UTILITY) {
-				if (Math.abs(constant - 1.0) > 0.00000001) { // Constant != 1.0
-					// Gets randomly a chance node with a potential ...
-					TablePotential firstPotential = (TablePotential) node
-							.getPotentials().get(0);
-					// ... and multiplies the first potential by the constant.
-					double[] table = firstPotential.values;
-					for (int i = 0; i < table.length; i++) {
-						table[i] *= constant;
-					}
-				}
-			} else {
-				node.addPotential(potential);
-			}*/
 			constantPotentials.add((TablePotential) potential);
 		}
 		return node;
-	}
-
-	/**
-	 * @return The first chance node in the partial order. <code>Node</code>
-	 */
-	private Node getChanceNode() {
-		for (List<Variable> array : partialOrder.getOrder()) {
-			for (Variable variable : array) {
-				Node node = getNode(variable);
-				if ((node != null)
-						&& (node.getNodeType() == NodeType.CHANCE)
-						&& (node.getPotentials().size() != 0)) {
-					return node;
-				}
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -326,129 +279,6 @@ public class MarkovDecisionNetwork extends ProbNet {
 	public PartialOrder getPartialOrder() {
 		return partialOrder;
 	}
-
-	/**
-	 * @param originalID
-	 *            influence diagram. <code>ProbNet</code>
-	 */
-	/*
-	 * private void calculatePartialOrder(ProbNet originalID) throws
-	 * WrongGraphStructureException { partialOrder = new
-	 * ArrayList<ArrayList<Variable>>(); ProbNet idCopy =
-	 * originalID.copy();//The copy will be destroyed ArrayList<Variable>
-	 * decisionVariables = idCopy.getVariables(NodeType.DECISION);
-	 * ArrayList<Variable> chanceVariables =
-	 * idCopy.getVariables(NodeType.CHANCE);
-	 * 
-	 * // Build an array of arrays containing the parents // of each decision
-	 * ArrayList<ArrayList<Variable>> parentsOfDecisions =
-	 * getParentsOfDecisions(idCopy, decisionVariables);
-	 * 
-	 * // Gets the unobservable variables, i.e., the variables that are not // a
-	 * parent of any decision ArrayList<Variable> unobservableVariables =
-	 * getUnobservableVariables(chanceVariables, parentsOfDecisions);
-	 * 
-	 * // Iteratively remove from the influence diagram // chance nodes without
-	 * parents or without // children, and decision nodes without parents, //
-	 * and add them and their potential to this MarkovDecisionNetwork. int
-	 * numVariablesToRemove = chanceVariables.size() + decisionVariables.size();
-	 * for (int i = 0; i < numVariablesToRemove; i++) { // gets the node
-	 * Node node = getNextNodeToDelete(idCopy); NodeType nodeType =
-	 * node.getNodeType(); Variable variable = node.getVariable(); // adds the
-	 * node to this MarkovDecisionNetwork addVariable(variable, nodeType); //
-	 * adds decision nodes and its parents to partialOrder if (nodeType ==
-	 * NodeType.DECISION) { int index = decisionVariables.indexOf(variable); if
-	 * (parentsOfDecisions.get(index).size() > 0) {
-	 * partialOrder.add(parentsOfDecisions.get(index)); } ArrayList<Variable>
-	 * oneDecisionArray = new ArrayList<Variable>();
-	 * oneDecisionArray.add(variable); partialOrder.add(oneDecisionArray); }
-	 * idCopy.removeNode(node); // remove from influenceDiagram } if
-	 * (unobservableVariables.size() > 0) {
-	 * partialOrder.add(unobservableVariables); }
-	 * 
-	 * // adds the potentials to this MarkovDecisionNetwork, // which entails
-	 * adding links among the nodes ArrayList<Potential> potentials =
-	 * originalID.getPotentials(); for (Potential potential : potentials) {
-	 * addPotential(potential); }
-	 * 
-	 * // Add restriction applied in Markov networks: only undirected links. try
-	 * { addConstraint (new OnlyUndirectedLinks (), true); } catch
-	 * (ConstraintViolationException e) { logger.fatal (e); } }
-	 */
-	/*	*//**
-	 * If there is a chance node without parents or without children,
-	 * returns that node. Otherwise, if there is just one decision node without
-	 * nodes, returns that node. Otherwise, i.e., if there are more than one
-	 * decision nodes without parents, throws an exception.
-	 * 
-	 * @param influenceDiagram
-	 *            <code>InfluenceDiagram</code>
-	 * @return A <code>Node</code> without parents or without children.
-	 *         <p>
-	 *         It first tries to get a chance node;
-	 * @argCondition The influence diagram contains at least one chance or
-	 *               decision node
-	 * @throws <code>WrongGraphStructureException</code>
-	 */
-	/*
-	 * private Node getNextNodeToDelete(ProbNet influenceDiagram) throws
-	 * WrongGraphStructureException { // looks for a chance node
-	 * ArrayList<Node> chanceNodes =
-	 * influenceDiagram.getNodes(NodeType.CHANCE); for (Node node :
-	 * chanceNodes) { Node node = node.getNode(); if ((node.getNumChildren()
-	 * == 0) || (node.getNumParents() == 0)) { return node; } } // looks for
-	 * a decision node ArrayList<Node> decisionNodes =
-	 * influenceDiagram.getNodes(NodeType.DECISION); Node decisionNode =
-	 * null; for (Node node : decisionNodes) { if
-	 * (node.getNode().getNumParents() == 0) { if (decisionNode != null) {
-	 * //More than two decision without parents throw new
-	 * WrongGraphStructureException(
-	 * "No partial order for decision nodes in this " + "influence diagram"); }
-	 * decisionNode = node; } } return decisionNode; }
-	 */
-	/**
-	 * @param chanceVariables
-	 *            <code>ArrayList</code> of <code>Variable</code>
-	 * @param parentsVariables
-	 *            <code>ArrayList</code> of <code>ArrayList</code> of
-	 *            <code>Variable</code>
-	 * @return An <code>ArrayList</code> of <code>Variable</code> that are not
-	 *         parents of any decision.
-	 */
-	/*
-	 * private ArrayList<Variable> getUnobservableVariables( ArrayList<Variable>
-	 * chanceVariables, ArrayList<ArrayList<Variable>> parentsVariables) {
-	 * ArrayList<Variable> unobservableVariables = new
-	 * ArrayList<Variable>(chanceVariables); for (ArrayList<Variable> variables
-	 * : parentsVariables) { unobservableVariables.removeAll(variables); }
-	 * return unobservableVariables; }
-	 */
-
-	/*	*//**
-	 * @return An <code>ArrayList</code> of <code>ArrayList</code> of
-	 *         <code>Variable</code>. It contains the parents of each decision.
-	 *         The <code>ArrayList</code> nested in the i-th position contains
-	 *         the parents of the i-th decision node.
-	 * @param influenceDiagram
-	 *            <code>InfluenceDiagram</code>.
-	 * @param decisionVariables
-	 *            <code>ArrayList</code> of <code>Variable</code>
-	 */
-	/*
-	 * @SuppressWarnings({ "unchecked", "static-access" }) private
-	 * ArrayList<ArrayList<Variable>> getParentsOfDecisions( ProbNet
-	 * influenceDiagram, ArrayList<Variable> decisionVariables) {
-	 * ArrayList<ArrayList<Variable>> parentsVariables = new
-	 * ArrayList<ArrayList<Variable>>(); for(Variable decision :
-	 * decisionVariables) { // Remove decision nodes from node parents Node
-	 * node =influenceDiagram.getNode(decision); ArrayList<Node>
-	 * nodeParents = node.getNode().getParents(); ArrayList<Node>
-	 * nodeParentCloned = (ArrayList<Node>)nodeParents.clone(); for (Node node :
-	 * nodeParentCloned) { if (((Node)node.getObject()).getNodeType() ==
-	 * NodeType.DECISION) { nodeParents.remove(node); } } ArrayList<Variable>
-	 * parentVariables = influenceDiagram.getVariables(nodeParents);
-	 * parentsVariables.add(parentVariables); } return parentsVariables; }
-	 */
 
 	/**
 	 * Creates a clique with undirected links between the nodes of the received
@@ -473,18 +303,14 @@ public class MarkovDecisionNetwork extends ProbNet {
 		}
 	}
 
-
 	/**
 	 * @param differentUtilityPotentials
 	 */
 	public void removePotentials(Collection<TablePotential> potentials) {
-		for (TablePotential pot:potentials)
-		{
-			this.removePotential(pot);
+		for (TablePotential potential : potentials)	{
+			this.removePotential(potential);
 		}
-		
 	}
-
 
 	@Override
 	public Node removePotential(Potential potential) {
@@ -499,7 +325,9 @@ public class MarkovDecisionNetwork extends ProbNet {
 		return node;
 	}
 
-
+	/**
+	 * @param role
+	 */
 	public void removePotentials(PotentialRole role) {
 		for (Potential pot:this.getPotentials()){
 			if (pot.getPotentialRole()==role){
@@ -510,14 +338,12 @@ public class MarkovDecisionNetwork extends ProbNet {
 		
 	}
 
-
 	@Override
 	public List<Potential> getPotentials() {
 		List<Potential> pots = super.getPotentials();
 		pots.addAll(constantPotentials);
 		return pots;
 	}
-
 
 	@Override
 	public List<Potential> getPotentialsByRole(PotentialRole role) {
@@ -532,6 +358,12 @@ public class MarkovDecisionNetwork extends ProbNet {
 		return pots;
 	}
 	
-	
+	public Set<TablePotential> getConstantPotentials() {
+		return constantPotentials;
+	}
+
+	public void setConstantPotentials(Set<TablePotential> constantPotentials) {
+		this.constantPotentials = constantPotentials;
+	}
 
 }

@@ -48,8 +48,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 *            <code>ProbNet</code>
 	 * @throws WrongGraphStructureException
 	 */
-	public MarkovDecisionNetwork(ProbNet originalNet)
-			throws WrongGraphStructureException {
+	public MarkovDecisionNetwork(ProbNet originalNet) {
 		this(originalNet,false);
 	}
 	
@@ -85,8 +84,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 * @param useTrivialPartialOrder
 	 * @throws WrongGraphStructureException
 	 */
-	public MarkovDecisionNetwork(ProbNet originalNet,boolean useTrivialPartialOrder)
-			throws WrongGraphStructureException {
+	public MarkovDecisionNetwork(ProbNet originalNet,boolean useTrivialPartialOrder) {
 		super();		
 		constructPartialOrder(originalNet,useTrivialPartialOrder);
 		addVariablesAndLinks(originalNet);
@@ -95,7 +93,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	
 	
 	
-	public void constructPartialOrder(ProbNet originalNet,boolean useTrivialPartialOrder) throws WrongGraphStructureException{
+	public void constructPartialOrder(ProbNet originalNet,boolean useTrivialPartialOrder) {
 		if (useTrivialPartialOrder)
 		{
 			partialOrder = new PartialOrder();
@@ -112,12 +110,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	
 	public void resetPartialOrderToTrivial(){
 		
-			try {
-				partialOrder = new PartialOrder();
-			} catch (WrongGraphStructureException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			partialOrder = new PartialOrder();
 			List<Variable> variables = this.getChanceAndDecisionVariables();
 			List<List<Variable>> variablesOrder = new ArrayList<>();
 			variablesOrder.add(variables);

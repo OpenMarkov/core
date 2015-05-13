@@ -76,12 +76,12 @@ public class PartialOrder {
      * Builds the list.
      * @param probNet. <code>ProbNet</code>
      */
-    public PartialOrder(ProbNet probNet) throws WrongGraphStructureException {
+    public PartialOrder(ProbNet probNet) {
         calculatePartialOrder(probNet);
         diagram = probNet;
     }
     
-    public PartialOrder() throws WrongGraphStructureException {
+    public PartialOrder() {
     }
 
     /**

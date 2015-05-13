@@ -338,14 +338,7 @@ public class DecisionTreeBuilder
     {
         List<Variable> variables = null;
         PartialOrder partialOrder = null;
-        try
-        {
-            partialOrder = new PartialOrder (probNet);
-        }
-        catch (WrongGraphStructureException e)
-        {
-            e.printStackTrace ();
-        }
+        partialOrder = new PartialOrder (probNet);
         variables = new ArrayList<Variable> (partialOrder.getNumVariables ());
         for (List<Variable> variableSubList : partialOrder.getOrder ())
         {

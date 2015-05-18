@@ -185,7 +185,7 @@ public class DeltaPotential extends Potential{
     
     @Override
     public String toString() {
-        return super.toString() + " = " + (state!=null? state.getName() : numericValue);
+        return variables.get(0) + " = " + (state!=null? state.getName() : numericValue);
     }
 
     @Override

@@ -348,12 +348,29 @@ public abstract class GLMPotential extends Potential {
     @Override
     public Potential deepCopy(ProbNet copyNet) {
         GLMPotential potential = (GLMPotential) super.deepCopy(copyNet);
-        potential.choleskyDecomposition = this.choleskyDecomposition.clone();
-        potential.coefficients = this.coefficients.clone();
-        potential.covarianceMatrix = this.covarianceMatrix.clone();
-        potential.covariates = this.covariates.clone();
-        potential.processedCovariates = this.processedCovariates.clone();
-        potential.sampledCoefficients = this.sampledCoefficients.clone();
+        if(this.choleskyDecomposition != null) {
+            potential.choleskyDecomposition = this.choleskyDecomposition.clone();
+        }
+
+        if(this.coefficients != null){
+            potential.coefficients = this.coefficients.clone();
+        }
+
+        if(this.covarianceMatrix != null) {
+            potential.covarianceMatrix = this.covarianceMatrix.clone();
+        }
+
+        if(this.covariates != null) {
+            potential.covariates = this.covariates.clone();
+        }
+
+        if(this.processedCovariates != null) {
+            potential.processedCovariates = this.processedCovariates.clone();
+        }
+
+        if(sampledCoefficients != null) {
+            potential.sampledCoefficients = this.sampledCoefficients.clone();
+        }
 
         return potential;
     }

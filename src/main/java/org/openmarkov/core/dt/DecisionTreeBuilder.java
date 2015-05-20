@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.inference.PartialOrder;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;

@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
 
-import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;

@@ -176,7 +176,9 @@ public final class DiscretePotentialOperations {
      * @return <code>TablePotential</code>
      */
     public static TablePotential sum(List<TablePotential> tablePotentials) {
-        List<TablePotential> constantPotentials;
+    	if (tablePotentials == null || tablePotentials.size() == 0) {
+    		return new TablePotential(null, PotentialRole.CONDITIONAL_PROBABILITY, new double[]{0.0});
+    	}
         if (tablePotentials.size() == 1) {
             return (TablePotential) tablePotentials.get(0);
         }
@@ -185,7 +187,7 @@ public final class DiscretePotentialOperations {
         List<TablePotential> potentials = new ArrayList<>(tablePotentials);
 
         // Leave out the constant potentials
-        constantPotentials = new ArrayList<TablePotential>();
+        List<TablePotential> constantPotentials = new ArrayList<TablePotential>();
         for (int i = 0; i < tablePotentials.size(); i++) {
             Potential auxPotential = tablePotentials.get(i);
             if (auxPotential.getVariables().size() == 0) {

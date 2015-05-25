@@ -9,6 +9,7 @@ package org.openmarkov.core.inference;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.annotation.InferenceManager;
 import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -651,5 +652,38 @@ public class Resolution {
             newPotential = DiscretePotentialOperations.reorder(potential, reorderedVariables);
         }
         return newPotential;
+    }
+
+    private ProbNet preprocessProbnet(ProbNet probNet, EvidenceCase evidence){
+        ProbNet copyProbNet = probNet.deepCopy();
+        ProbNet expandedProbNet = copyProbNet;
+
+        if(!probNet.hasConstraint(OnlyAtemporalVariables.class)) {
+            expandedProbNet = TemporalNetOperations.expandNetwork(copyProbNet);
+            try {
+                evidence.extendEvidence(expandedProbNet);
+            } catch (IncompatibleEvidenceException e) {
+                e.printStackTrace();
+            } catch (InvalidStateException e) {
+                e.printStackTrace();
+            } catch (WrongCriterionException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Convert numeric variables
+        expandedProbNet = ProbNetOperations.convertNumericalVariablesToFS(expandedProbNet, evidence);
+
+        if(!probNet.hasConstraint(OnlyAtemporalVariables.class)) {
+            TemporalNetOperations.applyDiscountToUtilityNodes(expandedProbNet);
+            TemporalNetOperations.applyTransitionTime(expandedProbNet);
+        }
+
+        if(probNet.getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType() == MulticriteriaOptions.Type.UNICRITERION){
+            UtilityOperations.transformToUnicriterion(expandedProbNet);
+        }
+
+
+        return expandedProbNet;
     }
 }

@@ -126,16 +126,16 @@ public class DecisionTreeTest {
 		System.out.println("MEU="+meu+" Execution time =" +ellapsedTime);
 	}
 
-//  Interesting test to keep but it takes to long to execute every time
+  //Interesting test to keep but it takes to long to execute every time
 //	@Test
 //	public void testEvalMediastiNetDAN() throws NodeNotFoundException, IncompatibleEvidenceException,
 //			UnexpectedInferenceException, NotEvaluableNetworkException {
-//		ProbNet mediastiNetDAN = NetsFactory.buildMediastinetDAN();
+//		ProbNet mediastiNetDAN = DANFactory.buildMediastinetDAN();
 //		long startTime = System.nanoTime();
 //		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 //		double meu = evaluator.getMEU(mediastiNetDAN);
 //		long ellapsedTime = (System.nanoTime() - startTime) / 1000000;
-//		Assert.assertEquals(1.5328, meu, 0.0001);
+//		Assert.assertEquals(1.4710368294106826, meu, 0.000001);
 //		System.out.println("MEU="+meu+" Execution time =" +ellapsedTime);
 //	}	
 	

@@ -796,8 +796,8 @@ public class ProbNetOperations {
 
         for(Link<Node> link : probNet.getLinks())
         {
-            // There is asymmetry if there are restrictions or if only some states reveal a certain variable
-            asymmetryFound |= link.hasRestrictions() ||
+            // There is asymmetry if there are total restrictions or if only some states reveal a certain variable
+            asymmetryFound |= link.hasTotalRestriction() ||
                     link.hasRevealingConditions() && link.getRevealingStates().size() < link.getNode1().getVariable().getNumStates();
         }
 

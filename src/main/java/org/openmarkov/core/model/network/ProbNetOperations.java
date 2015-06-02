@@ -998,8 +998,7 @@ public class ProbNetOperations {
      * @param probNet
      * @return
      */
-    public static boolean hasAnotherPredecessorDecision (Node decisionNode,
-                                                         Node removedNode,
+    public static boolean hasPredecessorDecision (Node decisionNode,
                                                          ProbNet probNet)
     {
         Stack<Node> predecessors = new Stack<>();
@@ -1011,10 +1010,7 @@ public class ProbNetOperations {
             found = !node.equals (decisionNode)  && node.getNodeType () == NodeType.DECISION;
             for(Node parent : node.getParents ())
             {
-                if(!parent.equals (removedNode))
-                {
-                    predecessors.push (parent);
-                }
+                predecessors.push (parent);
             }
         }
         return found;

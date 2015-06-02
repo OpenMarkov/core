@@ -18,6 +18,7 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.TuningNetworkType;
 import org.openmarkov.plugin.PluginLoader;
@@ -238,6 +239,9 @@ public class InferenceManager
             else if (probNet.getNetworkType ().equals (TuningNetworkType.getUniqueInstance ()))
             {
                 defaultAlgorithm = getInferenceAlgorithmByName ("VariableElimination", probNet);
+            }else if (probNet.getNetworkType ().equals (DecisionAnalysisNetworkType.getUniqueInstance ()))
+            {
+                defaultAlgorithm = getInferenceAlgorithmByName ("DSD", probNet);
             }else 
             {
                 List<InferenceAlgorithm> possibleAlgorithms = getInferenceAlgorithms (probNet);

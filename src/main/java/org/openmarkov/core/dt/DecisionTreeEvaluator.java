@@ -320,6 +320,8 @@ private double getUtility(ProbNet probNet, HashMap<Variable, Integer> scenarioMa
                 
                     if(nonRestrictedStates.isEmpty ())
                     {
+                    	// Remove link between restricting node and restricted node
+                    	probNetCopy.removeLink(link.getNode1().getVariable(), link.getNode2().getVariable(),true);
                         // Remove destination node and its descendants!
                         Stack<Node> disposableNodes = new Stack<> ();
                         disposableNodes.push (destinationNode);
@@ -329,8 +331,7 @@ private double getUtility(ProbNet probNet, HashMap<Variable, Integer> scenarioMa
                             // If it's a decision node, check if there is another 
                             // path to it from another decision
                             if(disposableNode.getNodeType() != NodeType.DECISION ||
-                                    disposableNode == destinationNode || 
-                                    !ProbNetOperations.hasAnotherPredecessorDecision(disposableNode, destinationNode, probNetCopy))
+                                    !ProbNetOperations.hasPredecessorDecision(disposableNode, probNetCopy))
                             {
                                 for(Node descendant : probNetCopy.getChildren (disposableNode))
                                 {

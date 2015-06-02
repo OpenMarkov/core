@@ -917,6 +917,11 @@ public final class DiscretePotentialOperations {
                 }
             }
         }
+        
+        if(potential.interventions !=null && potential.interventions.length > 0)
+        {
+        	tablePotential.interventions = potential.interventions.clone();
+        }
         return tablePotential;
     }
 

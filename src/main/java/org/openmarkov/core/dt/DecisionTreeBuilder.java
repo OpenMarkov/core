@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.inference.PartialOrder;
+import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -330,16 +330,16 @@ public class DecisionTreeBuilder
 
     /**
      * Using PartialOrder generates a sorted plain list of decision and chance variables
-     * @param probNet
-     * @return
+     * @param probNet ProbNet
+     * @return List<Variable>
      */
     private static List<Variable> getPartiallySortedVariables (ProbNet probNet)
     {
-        List<Variable> variables = null;
-        PartialOrder partialOrder = null;
-        partialOrder = new PartialOrder (probNet);
-        variables = new ArrayList<Variable> (partialOrder.getNumVariables ());
-        for (List<Variable> variableSubList : partialOrder.getOrder ())
+        List<Variable> variables;
+        //PartialOrder partialOrder = null;
+        List<List<Variable>> partialOrder = BasicOperations.calculatePartialOrder(probNet); //new PartialOrder (probNet);
+        variables = new ArrayList<> (BasicOperations.getNumVariables(probNet)); //(partialOrder.getNumVariables ());
+        for (List<Variable> variableSubList : partialOrder) //partialOrder.getOrder ())
         {
             variables.addAll (variableSubList);
         }
@@ -348,8 +348,7 @@ public class DecisionTreeBuilder
     
     /**
      * Adds a utility tree at the tip of each leaf
-     * @param leaves
-     * @param svNode
+     * @param svNode A super value node
      */
     private static DecisionTreeNode addUtilityNodes (Node svNode)
     {

@@ -23,7 +23,7 @@ import org.openmarkov.plugin.service.PluginLoaderIF;
 public class NetworkTypeManager
 {
     private Map<String, Class<? extends NetworkType>> networkTypeClasses = null;
-    
+
     public NetworkType getNetworkType(String name)
     {
         if(networkTypeClasses == null)
@@ -46,7 +46,7 @@ public class NetworkTypeManager
         }
         return instance;
     }
-    
+
     /**
      * Gets the set of all defined network types
      * @return
@@ -58,8 +58,8 @@ public class NetworkTypeManager
             networkTypeClasses = getNetworkTypesMap ();
         }
         return networkTypeClasses.keySet ();
-    }    
-    
+    }
+
     /**
      * Returns the name of the given network type
      * @param networkType
@@ -68,8 +68,8 @@ public class NetworkTypeManager
     public String getName(NetworkType networkType)
     {
         return networkType.getClass ().getAnnotation (ProbNetType.class).name ();
-    }    
-    
+    }
+
     /**
      * Builds the network type map looking for classes annotated as ProbNetType
      * @return
@@ -79,7 +79,7 @@ public class NetworkTypeManager
     {
         List<Class<?>> networkTypes = findAllNetworkTypes ();
         Map<String, Class<? extends NetworkType>> networkTypeClasses = new HashMap<String, Class<? extends NetworkType>>();
-        
+
         for(Class<?> networkTypeClass : networkTypes)
         {
             if(NetworkType.class.isAssignableFrom (networkTypeClass))
@@ -89,7 +89,7 @@ public class NetworkTypeManager
                 String[] alternativeNames = lAnnotation.alternativeNames();
                 for(int i=0; i<alternativeNames.length;++i)
                 {
-                	networkTypeClasses.put (alternativeNames[i], (Class<? extends NetworkType>)networkTypeClass);
+                    networkTypeClasses.put (alternativeNames[i], (Class<? extends NetworkType>)networkTypeClass);
                 }
             }
         }

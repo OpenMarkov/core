@@ -999,7 +999,7 @@ public class ProbNetOperations {
      * @return
      */
     public static boolean hasPredecessorDecision (Node decisionNode,
-                                                         ProbNet probNet)
+                                                  ProbNet probNet)
     {
         Stack<Node> predecessors = new Stack<>();
         predecessors.add (decisionNode);

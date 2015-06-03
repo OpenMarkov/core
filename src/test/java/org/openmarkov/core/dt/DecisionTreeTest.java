@@ -126,7 +126,7 @@ public class DecisionTreeTest {
 		System.out.println("MEU="+meu+" Execution time =" +ellapsedTime);
 	}
 
-	  //Interesting test to keep but it takes to long to execute every time
+//  Interesting test to keep but it takes to long to execute every time
 //	@Test
 //	public void testEvalMediastiNetDAN() throws NodeNotFoundException, IncompatibleEvidenceException,
 //			UnexpectedInferenceException, NotEvaluableNetworkException {

@@ -9,7 +9,6 @@
 
 package org.openmarkov.core.model.network;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.Set;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongGraphStructureException;
-import org.openmarkov.core.inference.PartialOrder;
+import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -34,38 +33,27 @@ import org.openmarkov.core.model.network.type.NetworkType;
 public class MarkovDecisionNetwork extends ProbNet {
 
 	// Attributes
-	/** Partial partialOrder of chance and decision nodes */
-	private PartialOrder partialOrder;
-	
-	Set<TablePotential> constantPotentials;
+/*	*//** Partial partialOrder of chance and decision nodes *//*
+	private PartialOrder partialOrder;*/
 
-	// Constructor
-	/**
-	 * Creates a <code>MarkovDecisionNetwork</code> without utility nodes from
-	 * the received influence diagram and computes the partial order.
-	 * 
-	 * @param influenceDiagram
-	 *            <code>ProbNet</code>
-	 * @throws WrongGraphStructureException
-	 */
-	public MarkovDecisionNetwork(ProbNet originalNet) {
-		this(originalNet,false);
-	}
-	
-	
+	private Set<TablePotential> constantPotentials;
+
+
+
+
 	@Override
 	public MarkovDecisionNetwork copy() {
-		 MarkovDecisionNetwork copyNet = new MarkovDecisionNetwork(MarkovNetworkType.getUniqueInstance());
-	     copyNet.partialOrder = partialOrder;
-		 copyNet = (MarkovDecisionNetwork) auxCopy(copyNet);
-		 try {
+		MarkovDecisionNetwork copyNet = new MarkovDecisionNetwork(MarkovNetworkType.getUniqueInstance());
+		//copyNet.partialOrder = partialOrder;
+		copyNet = (MarkovDecisionNetwork) auxCopy(copyNet);
+		try {
 			copyNet.setNetworkType(MarkovNetworkType.getUniqueInstance());
 		} catch (ConstraintViolationException e) {
 			e.printStackTrace();
 		}
-		 copyNet.constantPotentials = new HashSet<>();
-		 copyNet.constantPotentials.addAll(constantPotentials);
-		 return copyNet;
+		copyNet.constantPotentials = new HashSet<>();
+		copyNet.constantPotentials.addAll(constantPotentials);
+		return copyNet;
 	}
 
 
@@ -76,53 +64,29 @@ public class MarkovDecisionNetwork extends ProbNet {
 
 
 	/**
-	 * 
+	 *
 	 * Creates a <code>MarkovDecisionNetwork</code> without utility nodes from
 	 * the received network. It computes the partial order if 'useTrivialPartialOrder' is false; otherwise, it
 	 * considers that all the variables are unordered.
-	 * @param originalNet
-	 * @param useTrivialPartialOrder
-	 * @throws WrongGraphStructureException
+	 * @param originalNet ProbNet
 	 */
-	public MarkovDecisionNetwork(ProbNet originalNet,boolean useTrivialPartialOrder) {
-		super();		
-		constructPartialOrder(originalNet,useTrivialPartialOrder);
+	public MarkovDecisionNetwork(ProbNet originalNet) {
+		super();
+		//constructPartialOrder(originalNet);
 		addVariablesAndLinks(originalNet);
 		constantPotentials = new HashSet<>();
 	}
-	
-	
-	
-	public void constructPartialOrder(ProbNet originalNet,boolean useTrivialPartialOrder) {
-		if (useTrivialPartialOrder)
-		{
-			partialOrder = new PartialOrder();
-			List<Variable> variables = originalNet.getChanceAndDecisionVariables();
-			List<List<Variable>> variablesOrder = new ArrayList<>();
-			variablesOrder.add(variables);
-			partialOrder.setOrder(variablesOrder);
-		}
-		else{
-			partialOrder = new PartialOrder(originalNet);
-		}
-	}
-	
-	
-	public void resetPartialOrderToTrivial(){
-		
-			partialOrder = new PartialOrder();
-			List<Variable> variables = this.getChanceAndDecisionVariables();
-			List<List<Variable>> variablesOrder = new ArrayList<>();
-			variablesOrder.add(variables);
-			partialOrder.setOrder(variablesOrder);
-	}
+
+/*	public void constructPartialOrder(ProbNet originalNet) {
+		partialOrder = new PartialOrder(originalNet);
+	}*/
 
 	/**
 	 * Adds the variables in the received <code>Potential</code> to this
 	 * <code>MarkovNet</code>, creates links between those variables creating
 	 * cliques and assigns the <code>potential</code> to the conditioned
 	 * variable (the first one).
-	 * 
+	 *
 	 * @argCondition At least one potential depends on at least one variable
 	 *               (otherwise the network would have no node, and it would be
 	 *               impossible to assign constant potentials)
@@ -130,12 +94,11 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 *            <code>ArrayList</code> of <code>Potential</code>s
 	 * @return A Markov Network in witch potentials are used to create cliques.
 	 *         (<code>ProbNet</code>).
-	 * @throws WrongGraphStructureException 
 	 */
 	public MarkovDecisionNetwork(ProbNet originalNet,
-			List<? extends Potential> projectedTablePotentials,boolean useTrivialPartialOrder) throws WrongGraphStructureException {
+								 List<? extends Potential> projectedTablePotentials) {
 		super(MarkovNetworkType.getUniqueInstance());
-		constructPartialOrder(originalNet, useTrivialPartialOrder);
+		//constructPartialOrder(originalNet);
 		try {
 			addConstraint(new OnlyUndirectedLinks(), true);
 			// addConstraint (new OnlyDiscreteVariables (), false);
@@ -154,12 +117,6 @@ public class MarkovDecisionNetwork extends ProbNet {
 			}
 		}
 	}
-	
-	public MarkovDecisionNetwork(ProbNet originalNet,
-			List<? extends Potential> projectedTablePotentials) throws WrongGraphStructureException{
-		this(originalNet,projectedTablePotentials,false);
-		
-	}
 
 	/**
 	 * @param networkType
@@ -172,9 +129,9 @@ public class MarkovDecisionNetwork extends ProbNet {
 	/**
 	 * Adds the received potential to the list of potentials of the first
 	 * variable.
-	 * 
+	 *
 	 * @param originalNet
-	 * 
+	 *            . <code>ProbNet</code>
 	 * @preCondition network contains at least one variable
 	 * @argCondition If A is the first variable in the potential and
 	 *               B<sub>0</sub> ... B<sub>n</sub> are the others, there must
@@ -223,13 +180,13 @@ public class MarkovDecisionNetwork extends ProbNet {
 
 	/**
 	 * Adds chance and decision nodes to this object from originalID
-	 * 
+	 *
 	 * @param originalID
 	 *            . <code>ProbNet</code>
 	 */
 	// TODO addVariablesAndLinks should be common to all ProbNet's
 	private void addVariablesAndLinks(ProbNet originalID) {
-		for (List<Variable> variables : partialOrder.getOrder()) {
+		for (List<Variable> variables : BasicOperations.calculatePartialOrder(originalID)) { //partialOrder.getOrder()) {
 			for (Variable variable : variables) {
 				Node node = originalID.getNode(variable);
 				NodeType nodeType = node.getNodeType();
@@ -266,17 +223,17 @@ public class MarkovDecisionNetwork extends ProbNet {
 		return node;
 	}
 
-	/**
+/*	*//**
 	 * @return the partial order
-	 */
+	 *//*
 	public PartialOrder getPartialOrder() {
 		return partialOrder;
-	}
+	}*/
 
 	/**
 	 * Creates a clique with undirected links between the nodes of the received
 	 * <code>potential</code>.
-	 * 
+	 *
 	 * @argCondition All the potential variables belongs to this network.
 	 * @param potential
 	 *            <code>Potential</code>
@@ -297,7 +254,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	}
 
 	/**
-	 * @param differentUtilityPotentials
+	 * @param potentials a Collection<TablePotential>
 	 */
 	public void removePotentials(Collection<TablePotential> potentials) {
 		for (TablePotential potential : potentials)	{
@@ -319,7 +276,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	}
 
 	/**
-	 * @param role
+	 * @param role a PotentialRole
 	 */
 	public void removePotentials(PotentialRole role) {
 		for (Potential pot:this.getPotentials()){
@@ -328,7 +285,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 			}
 		}
 		constantPotentials = new HashSet<>();
-		
+
 	}
 
 	@Override
@@ -350,7 +307,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 		}
 		return pots;
 	}
-	
+
 	public Set<TablePotential> getConstantPotentials() {
 		return constantPotentials;
 	}

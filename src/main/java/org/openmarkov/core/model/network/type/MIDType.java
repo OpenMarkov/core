@@ -15,14 +15,14 @@ import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
-@ProbNetType(name="MPAD")
-public class MPADType extends NetworkType
+@ProbNetType(name="MID", alternativeNames = {"MPAD", "Markov influence diagram"})
+public class MIDType extends NetworkType
 {
     // Attributes
-    private static MPADType instance = null;
+    private static MIDType instance = null;
 
     // Constructor
-    private MPADType ()
+    private MIDType ()
     {
         super ();
         overrideConstraintBehavior (OnlyAtemporalVariables.class, ConstraintBehavior.NO);
@@ -30,18 +30,18 @@ public class MPADType extends NetworkType
     }
 
     // Methods
-    public static MPADType getUniqueInstance ()
+    public static MIDType getUniqueInstance ()
     {
         if (instance == null)
         {
-            instance = new MPADType ();
+            instance = new MIDType ();
         }
         return instance;
     }
 
-    /** @return String "MPAD" */
+    /** @return String "MARKOV_INFLUENCE_DIAGRAM" */
     public String toString() {
-        return "MARKOV_PROCESS_WITH_ATEMPORAL_DECISIONS";
+        return "MARKOV_INFLUENCE_DIAGRAM";
     }
     
 }

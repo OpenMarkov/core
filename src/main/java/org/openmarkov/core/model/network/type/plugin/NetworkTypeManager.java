@@ -86,6 +86,11 @@ public class NetworkTypeManager
             {
                 ProbNetType lAnnotation = networkTypeClass.getAnnotation (ProbNetType.class);
                 networkTypeClasses.put (lAnnotation.name (), (Class<? extends NetworkType>)networkTypeClass);
+                String[] alternativeNames = lAnnotation.alternativeNames();
+                for(int i=0; i<alternativeNames.length;++i)
+                {
+                	networkTypeClasses.put (alternativeNames[i], (Class<? extends NetworkType>)networkTypeClass);
+                }
             }
         }
         return networkTypeClasses;

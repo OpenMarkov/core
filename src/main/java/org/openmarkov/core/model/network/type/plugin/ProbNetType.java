@@ -17,4 +17,5 @@ import java.lang.annotation.Target;
 @Target (ElementType.TYPE)
 public @interface ProbNetType {
     String name ();
+    String[] alternativeNames() default "";
 }

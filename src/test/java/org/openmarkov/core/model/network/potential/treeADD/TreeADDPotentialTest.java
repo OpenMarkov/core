@@ -17,7 +17,7 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
-import org.openmarkov.core.model.network.type.MPADType;
+import org.openmarkov.core.model.network.type.MIDType;
 
 public class TreeADDPotentialTest {
 
@@ -127,8 +127,8 @@ public class TreeADDPotentialTest {
 		// create treeADD
 		treeADD = new TreeADDPotential(listBA, startVariable, PotentialRole.CONDITIONAL_PROBABILITY) ;
 	
-		//MPADConstraint Markov Process with Atemporal Decisions
-		probNet = new ProbNet(MPADType.getUniqueInstance());
+		//MID Markov influence diagram
+		probNet = new ProbNet(MIDType.getUniqueInstance());
 		
 		nodeType = NodeType.CHANCE;
 		

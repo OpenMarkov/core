@@ -40,7 +40,7 @@ import org.openmarkov.core.model.network.potential.WeibullHazardPotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
-import org.openmarkov.core.model.network.type.MPADType;
+import org.openmarkov.core.model.network.type.MIDType;
 import org.openmarkov.core.util.UtilTestMethods;
 
 /** @author marias */
@@ -651,7 +651,7 @@ public class ProbNetOperationsTest {
     public final void testConvertNumericalVariablesToFS() throws Exception {
 	    
 	    // Initialize network
-	    ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
+	    ProbNet probNet = new ProbNet(MIDType.getUniqueInstance());
 	    
 	    // Declare variables
 	    Variable ageAtStateEntryVar_0 = new Variable("Age at state entry", true, 0.0, Double.POSITIVE_INFINITY, false, 0.01);

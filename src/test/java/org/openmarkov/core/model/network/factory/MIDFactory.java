@@ -18,19 +18,19 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
-import org.openmarkov.core.model.network.type.MPADType;
+import org.openmarkov.core.model.network.type.MIDType;
 
-public class MarkovFactory extends NetsFactory {
+public class MIDFactory extends NetsFactory {
 	/**
-	 * @return A simple Markov Model proposed for jdiez for testing cost-effectiveness analysis and inference
+	 * @return A Markov influence diagram proposed for jdiez for testing cost-effectiveness analysis and inference
 	 */
-	public static ProbNet createMPADDeadAlive(){
-		return createMPADWithStateVariable(0.8,1.0,40000,0,0.7,0.5);
+	public static ProbNet createMIDDeadAlive(){
+		return createMIDWithStateVariable(0.8,1.0,40000,0,0.7,0.5);
 	}
 	
 	
 	
-	public static ProbNet createMPADWithStateVariable(double qoLTreat,double qoLNoTreat,double costTreat,double costNoTreat,double probAliveIfTreat, double probAliveIfNoTreat){
+	public static ProbNet createMIDWithStateVariable(double qoLTreat,double qoLNoTreat,double costTreat,double costNoTreat,double probAliveIfTreat, double probAliveIfNoTreat){
 		TablePotential potentialQoL;
 		TablePotential potentialCostOfTreatment;
 		double[] tableQoL = {0.0, qoLTreat, 0.0, qoLNoTreat};
@@ -52,7 +52,7 @@ public class MarkovFactory extends NetsFactory {
 		Variable variableState0 = createTemporalVariable("State",0,statesStateVariable);
 		Variable variableState1 = createTemporalVariable("State",1,statesStateVariable);
 		
-		ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
+		ProbNet probNet = new ProbNet(MIDType.getUniqueInstance());
 
 		//set decision criteria to the network
 		probNet.setDecisionCriteria(decisionCriteria);
@@ -101,7 +101,7 @@ public class MarkovFactory extends NetsFactory {
 	}
 	
 	public static ProbNet createSemiMarkovOnlyChanceNet() {
-		ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
+		ProbNet probNet = new ProbNet(MIDType.getUniqueInstance());
 		//Decision criteria
 		ArrayList<Criterion> decisionCriteria = new ArrayList<>();
 		Criterion cost = new Criterion("cost");
@@ -181,7 +181,7 @@ public class MarkovFactory extends NetsFactory {
 	}
 	
 	public static ProbNet createSemiMarkovModelNet() {
-		ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
+		ProbNet probNet = new ProbNet(MIDType.getUniqueInstance());
 		//Decision criteria
 		ArrayList<Criterion> decisionCriteria = new ArrayList<>();
 		Criterion cost = new Criterion("cost");
@@ -366,11 +366,11 @@ public class MarkovFactory extends NetsFactory {
 	
 
 	
-	public static ProbNet createMPADWithoutStateVariable(){
-		return createMPADWithoutStateVariable(0.9,1.0,40000,0);
+	public static ProbNet createMIDWithoutStateVariable(){
+		return createMIDWithoutStateVariable(0.9,1.0,40000,0);
 	}
 	
-	public static ProbNet createMPADWithoutStateVariable(double qoLTreat,double qoLNoTreat,double costTreat,double costNoTreat){
+	public static ProbNet createMIDWithoutStateVariable(double qoLTreat,double qoLNoTreat,double costTreat,double costNoTreat){
 		// Define the variables
 		TablePotential potentialQoL;
 		TablePotential potentialCostOfTreatment;
@@ -390,7 +390,7 @@ public class MarkovFactory extends NetsFactory {
 		variableCostOfTreatment.setDecisionCriterion(cost);
 		Variable variableQoL = createTemporalVariable("QoL",0);
 		variableQoL.setDecisionCriterion(effectiveness);
-		ProbNet probNet = new ProbNet(MPADType.getUniqueInstance());
+		ProbNet probNet = new ProbNet(MIDType.getUniqueInstance());
 
 		//set decision criteria to the network
 		probNet.setDecisionCriteria(decisionCriteria);

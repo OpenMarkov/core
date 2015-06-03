@@ -20,7 +20,7 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.factory.MarkovFactory;
+import org.openmarkov.core.model.network.factory.MIDFactory;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -39,11 +39,11 @@ public class TemporalNetOperationsTest {
 	protected double maxError = 1E-6;
 
 	/**
-	 * Test a MPAD with three variables: Treatment, CostOfTreatment and QoL (temporal variable)
+	 * Test a MID with three variables: Treatment, CostOfTreatment and QoL (temporal variable)
 	 * It performs a battery of tests: for numSlices = 1, numSlices = 2, ..., numSlices = 100
 	 */
 	//@Test
-	public void testExpansionMPADWithoutStateVariable() {
+	public void testExpansionMIDWithoutStateVariable() {
 		double qoLTreat;
 		double qoLNoTreat;
 		double costTreat;
@@ -60,8 +60,8 @@ public class TemporalNetOperationsTest {
 
 		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
 			
-			//Create the MPAD and expand it
-			ProbNet network = MarkovFactory.createMPADWithoutStateVariable(qoLTreat, qoLNoTreat,
+			//Create the MID and expand it
+			ProbNet network = MIDFactory.createMIDWithoutStateVariable(qoLTreat, qoLNoTreat,
 					costTreat, costNoTreat);
 			double discount = 0.01;
 			
@@ -100,11 +100,11 @@ public class TemporalNetOperationsTest {
 
 		
 	/**
-	 * Test a MPAD with three variables: Treatment, CostOfTreatment and QoL (temporal variable)
+	 * Test a MID with three variables: Treatment, CostOfTreatment and QoL (temporal variable)
 	 * It performs a battery of tests: for numSlices = 1, numSlices = 2, ..., numSlices = 100
 	 */
 	//@Test
-	public void testExpansionMPADWithStateVariable() {
+	public void testExpansionMIDWithStateVariable() {
 		double qoLTreat;
 		double qoLNoTreat;
 		double costTreat;
@@ -121,8 +121,8 @@ public class TemporalNetOperationsTest {
 
 		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
 			
-			//Create the MPAD and expand it
-			ProbNet network = MarkovFactory.createMPADWithStateVariable(qoLTreat, qoLNoTreat,
+			//Create the MID and expand it
+			ProbNet network = MIDFactory.createMIDWithStateVariable(qoLTreat, qoLNoTreat,
 					costTreat, costNoTreat,0.7,0.5);
 			double discount = 0.01;
 
@@ -135,7 +135,7 @@ public class TemporalNetOperationsTest {
 			for (TablePotential auxPot:tablePotentials){
 				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot,PotentialRole.UTILITY)){
 					int slice = auxPot.getUtilityVariable().getTimeSlice();
-					checkUtilityPotentialQoLMPADWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
+					checkUtilityPotentialQoLMIDWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
 				}
 			}
 			
@@ -144,7 +144,7 @@ public class TemporalNetOperationsTest {
 				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot)){
 					int slice = auxPot.getUtilityVariable().getTimeSlice();
 				
-					checkUtilityPotentialQoLMPADWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
+					checkUtilityPotentialQoLMIDWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
 				}
 			}
 	*/
@@ -163,11 +163,11 @@ public class TemporalNetOperationsTest {
 
 		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
 			
-			//Create the MPAD and expand it
+			//Create the MID and expand it
 			ProbNet network = NetsFactory.createSemiMarkovOnlyChanceNet();
 			double discount = 0.0;
 
-			ProbNet expandedNetwork = FactoryExpandedMPAD.constructExpandedNetwork(numSlices, network, discount*100.0, discount*100.0, true);
+			ProbNet expandedNetwork = FactoryExpandedMID.constructExpandedNetwork(numSlices, network, discount*100.0, discount*100.0, true);
 			
 		
 			ArrayList<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
@@ -176,7 +176,7 @@ public class TemporalNetOperationsTest {
 			for (TablePotential auxPot:tablePotentials){
 				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot,PotentialRole.UTILITY)){
 					int slice = auxPot.getUtilityVariable().getTimeSlice();
-					checkUtilityPotentialQoLMPADWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
+					checkUtilityPotentialQoLMIDWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
 				}
 			}
 			
@@ -186,7 +186,7 @@ public class TemporalNetOperationsTest {
 	}*/
 
 
-	public void checkUtilityPotentialQoLMPADWithState(ProbNet expandedNetwork, TablePotential auxPot, double qoLTreat, double qoLNoTreat, double ratio, int slice) {
+	public void checkUtilityPotentialQoLMIDWithState(ProbNet expandedNetwork, TablePotential auxPot, double qoLTreat, double qoLNoTreat, double ratio, int slice) {
 	
 		
 		ArrayList<Variable> variablesUtil = new ArrayList<>();

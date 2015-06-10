@@ -8,6 +8,7 @@ import static org.junit.Assume.assumeTrue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Ignore;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -131,7 +132,7 @@ public abstract class InferenceAlgorithmTest {
 	 * the same size.
 	 * */
 	protected void checkProbabilities(
-			HashMap<Variable, TablePotential> aPosterioriProbs,
+			Map<Variable, TablePotential> aPosterioriProbs,
 			ArrayList<Variable> variables, double[] expectedProbs) {
 		
 			int size = variables.size();
@@ -189,7 +190,7 @@ public abstract class InferenceAlgorithmTest {
 	 * to x[0],..,x[n], where 'n' is the number of states of 'variableX'
 	 */
 	protected void checkProbabilityPotential(
-			HashMap<Variable, TablePotential> probabilities,
+			Map<Variable, TablePotential> probabilities,
 			Variable variableX, double... x) {
 		TablePotential X = (TablePotential) probabilities.get(variableX);
 		checkProbabilities(X, x);

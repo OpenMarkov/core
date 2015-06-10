@@ -13,6 +13,8 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -111,7 +113,7 @@ public abstract class InferenceAlgorithmBNTest extends InferenceAlgorithmTest {
 		Variable variableC = getVariableAndAssertNotNull(network,"C");
 
 		try {
-			HashMap<Variable, TablePotential> aPrioriProbabilities;
+			Map<Variable, TablePotential> aPrioriProbabilities;
 			aPrioriProbabilities = elimination1.getProbsAndUtilities();
 			checkProbabilityPotential(aPrioriProbabilities,variableA,0.8);
 			checkProbabilityPotential(aPrioriProbabilities,variableB,0.14);
@@ -169,7 +171,7 @@ public abstract class InferenceAlgorithmBNTest extends InferenceAlgorithmTest {
 		}
 		
 		try {
-			HashMap<Variable, TablePotential> aPosterioriProbs;
+			Map<Variable, TablePotential> aPosterioriProbs;
 			aPosterioriProbs = elimination.getProbsAndUtilities();
 			checkProbabilities(aPosterioriProbs,variables,expectedProbs);
 		
@@ -239,7 +241,7 @@ public abstract class InferenceAlgorithmBNTest extends InferenceAlgorithmTest {
 		// Test when Y = positive
 		EvidenceCase evidence1 = new EvidenceCase();
 		evidence1.addFinding(network, "Y", "positive");
-		HashMap<Variable, TablePotential> yPositiveProbabilities;
+		Map<Variable, TablePotential> yPositiveProbabilities;
 		algorithm.setPostResolutionEvidence(evidence1);
 
 		probPositiveX = prevalence * sensitivity;
@@ -396,7 +398,7 @@ public abstract class InferenceAlgorithmBNTest extends InferenceAlgorithmTest {
 
 		// A priori probabilities
 		try {
-			HashMap<Variable, TablePotential> aPrioriProbabilities;
+			Map<Variable, TablePotential> aPrioriProbabilities;
 			aPrioriProbabilities = elimination1.getProbsAndUtilities();
 			// Read the variables
 			Variable variableX = getVariableAndAssertNotNull(network,"X");
@@ -537,7 +539,7 @@ public abstract class InferenceAlgorithmBNTest extends InferenceAlgorithmTest {
 			// A = absent
 			EvidenceCase evidence1 = new EvidenceCase();
 			evidence1.addFinding(network, "A", "absent");
-			HashMap<Variable, TablePotential> aAbsentProbabilities;
+			Map<Variable, TablePotential> aAbsentProbabilities;
 			algorithm1.setPostResolutionEvidence(evidence1);
 			try {
 				aAbsentProbabilities = algorithm1.getProbsAndUtilities();
@@ -552,7 +554,7 @@ public abstract class InferenceAlgorithmBNTest extends InferenceAlgorithmTest {
 			// A = present
 			EvidenceCase evidence2 = new EvidenceCase();
 			evidence2.addFinding(network, "A", "present");
-			HashMap<Variable, TablePotential> aPresentProbabilities;
+			Map<Variable, TablePotential> aPresentProbabilities;
 			InferenceAlgorithm algorithm2 = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
 			algorithm2.setPostResolutionEvidence(evidence2);
 			try {
@@ -586,7 +588,7 @@ public abstract class InferenceAlgorithmBNTest extends InferenceAlgorithmTest {
 		// Test when A = absent
 		EvidenceCase evidence1 = new EvidenceCase();
 		evidence1.addFinding(network, "A", "absent");
-		HashMap<Variable, TablePotential> aAbsentProbabilities;
+		Map<Variable, TablePotential> aAbsentProbabilities;
 		algorithm.setPreResolutionEvidence(evidence1);
 		try {
 			aAbsentProbabilities = algorithm.getProbsAndUtilities();
@@ -611,7 +613,7 @@ public abstract class InferenceAlgorithmBNTest extends InferenceAlgorithmTest {
 		}
 		
 		//Test when B = present and invoke getProbsAndUtilities for variable C
-		ArrayList<Variable> variablesOfInterest = new ArrayList<Variable>();
+		List<Variable> variablesOfInterest = new ArrayList<Variable>();
 		variablesOfInterest = new ArrayList<Variable>();
 		variablesOfInterest.add(variableC);
 		try {
@@ -635,7 +637,7 @@ public abstract class InferenceAlgorithmBNTest extends InferenceAlgorithmTest {
 			// Test when Y = positive
 			EvidenceCase evidence1 = new EvidenceCase();
 			evidence1.addFinding(bN_XYZ, "Y", "positive");
-			HashMap<Variable, TablePotential> yPositiveProbabilities;
+			Map<Variable, TablePotential> yPositiveProbabilities;
 			algorithm.setPostResolutionEvidence(evidence1);
 			try {
 				yPositiveProbabilities = algorithm.getProbsAndUtilities();

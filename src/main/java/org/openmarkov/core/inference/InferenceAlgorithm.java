@@ -6,8 +6,8 @@
 
 package org.openmarkov.core.inference;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -29,8 +29,8 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * @author fjdiez
  *
  */
-public abstract class InferenceAlgorithm
-{
+public abstract class InferenceAlgorithm {
+	
     /** This is a copy of the <code>ProbNet</code> received. */
     protected ProbNet                     probNet;
     /** For undo/redo operations. */
@@ -156,34 +156,32 @@ public abstract class InferenceAlgorithm
      * @throws UnexpectedInferenceException 
      * @throws IncompatibleEvidenceException 
      */
-    public abstract Intervention getOptimalStrategy() throws IncompatibleEvidenceException, UnexpectedInferenceException;
+    public abstract Intervention getOptimalStrategy() 
+    		throws IncompatibleEvidenceException, UnexpectedInferenceException;
       
        
   	/**
      * @return The optimal policy for the decision that does not have any imposed policy.
      * The domain of the policy also includes the decision and the conditioning variables.
      */
-    public abstract Potential getOptimizedPolicy(Variable decisionVariable) throws
-	IncompatibleEvidenceException,
-	UnexpectedInferenceException;
+    public abstract Potential getOptimizedPolicy(Variable decisionVariable) 
+    		throws IncompatibleEvidenceException, UnexpectedInferenceException;
     
     
     /**
      * @return The expected utilities of the optimal policy for the decision that does not have any imposed policy.
      * The domain of the policy also includes the decision and the conditioning variables.
      */
-    public abstract Potential getExpectedUtilities(Variable decisionVariable) throws
-	IncompatibleEvidenceException,
-	UnexpectedInferenceException;
+    public abstract Potential getExpectedUtilities(Variable decisionVariable) 
+    		throws IncompatibleEvidenceException, UnexpectedInferenceException;
     
   
 	/**
      * @return The global expected utility of the influence diagram. It is a potential
      * defined over the conditioning variables.
      */
-    public abstract TablePotential getGlobalUtility() throws
-	IncompatibleEvidenceException,
-	UnexpectedInferenceException;
+    public abstract TablePotential getGlobalUtility() 
+    		throws IncompatibleEvidenceException, UnexpectedInferenceException;
     
     
     /**
@@ -191,7 +189,7 @@ public abstract class InferenceAlgorithm
      * @throws IncompatibleEvidenceException
      * @throws NormalizeNullVectorException
      */
-    public abstract HashMap<Variable,TablePotential> getProbsAndUtilities() throws
+    public abstract Map<Variable,TablePotential> getProbsAndUtilities() throws
     	IncompatibleEvidenceException,
         UnexpectedInferenceException;
     
@@ -202,9 +200,8 @@ public abstract class InferenceAlgorithm
      * @throws IncompatibleEvidenceException
      * @throws NormalizeNullVectorException
      */
-    public abstract HashMap<Variable,TablePotential> getProbsAndUtilities(List<Variable> variablesOfInterest) throws
-	IncompatibleEvidenceException,
-	UnexpectedInferenceException;
+    public abstract Map<Variable,TablePotential> getProbsAndUtilities(List<Variable> variablesOfInterest) 
+    		throws IncompatibleEvidenceException, UnexpectedInferenceException;
     
     /**
      * @param variables
@@ -212,12 +209,8 @@ public abstract class InferenceAlgorithm
      * @throws IncompatibleEvidenceException
      * @throws NormalizeNullVectorException
      */
-    public abstract TablePotential getJointProbability(List<Variable> variables)throws
-	IncompatibleEvidenceException,
-	UnexpectedInferenceException;
-    
-  
-	
+    public abstract TablePotential getJointProbability(List<Variable> variables) 
+    		throws IncompatibleEvidenceException, UnexpectedInferenceException;
 	
 	/**
 	 * @param decision

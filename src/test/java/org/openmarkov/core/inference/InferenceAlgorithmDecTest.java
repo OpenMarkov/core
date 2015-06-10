@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -38,20 +39,12 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
  */
 public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 	
-	
-
-	
-	
-	
 	protected void testMEUAndStrategy(ProbNet net,double expectedMEU,Intervention expectedStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(net);
 		Double meuEvaluation = algorithm.getGlobalUtility().values[0];
 		assertEquals(expectedMEU,meuEvaluation, maxError);
 		testScenariosIntervention(net,algorithm);
 	}
-	
-	
-	
 
 	/**
 	 * Checks that the Intervention (optimal strategy) obtained from the evaluation optimal is not null
@@ -216,7 +209,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 			assertTrue(checkPolicy(getTablePotential(policyD), variableD, 2));
 	
 			// Test the a priori case
-			HashMap<Variable, TablePotential> aPrioriProbabilities = algorithm
+			Map<Variable, TablePotential> aPrioriProbabilities = algorithm
 					.getProbsAndUtilities();
 			// Read the variables
 			variableX = getVariableAndAssertNotNull(diagram,"X");
@@ -283,26 +276,13 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		return pot;
 	}
 
-
-
-
-
-
-
-
-
-	
-
-	
-
 	public void checkUtilityPotential(
-			HashMap<Variable, TablePotential> aPrioriProbabilities,
+			Map<Variable, TablePotential> aPrioriProbabilities,
 			Variable variableU, double u) {
 		TablePotential U = (TablePotential) aPrioriProbabilities.get(variableU);
 		checkUtility(U, u);
 
 	}
-
 	
 	/**
 	 * Test for diagnosis problem

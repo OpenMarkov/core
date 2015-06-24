@@ -160,10 +160,10 @@ public class LinearCombinationPotential extends GLMPotential {
 			List<Variable> newVariables = new ArrayList<>(variables);
 			newVariables.add (variable);
 			newPotential = new LinearCombinationPotential(newVariables, this.role);
-			String[] newCovariates = new String[covariates.length +1];
-			for(int i=0; i<covariates.length; ++i)
-				newCovariates[i] = covariates[i];
-			newCovariates[covariates.length] = variable.getName();
+			String[] newCovariates = new String[processedCovariates.length +1];
+			for(int i=0; i<processedCovariates.length; ++i)
+				newCovariates[i] = processedCovariates[i];
+			newCovariates[processedCovariates.length] = processCovariate(variable.getName(), newVariables);
 			newPotential.setCovariates(newCovariates);
 			
 			double[] newCoefficients = new double[coefficients.length +1];
@@ -182,27 +182,24 @@ public class LinearCombinationPotential extends GLMPotential {
 	@Override
 	public Potential removeVariable(Variable variable) {
 		LinearCombinationPotential newPotential = null;
-		if(!variables.contains (variable))
+		if(variables.contains (variable))
 		{
 			List<Variable> newVariables = new ArrayList<>(variables);
 			newVariables.remove (variable);
 			newPotential = new LinearCombinationPotential(newVariables, this.role);
 			List<String> newCovariates = new ArrayList<>();
-			List<Double> newCoefficientsList = new ArrayList<>();
-			for(int i=0; i<covariates.length; ++i)
+			List<Double> newCoefficients = new ArrayList<>();
+			removeVariableFromCovariates(variables, variable, processedCovariates, coefficients, newCovariates, newCoefficients);
+			
+			String[] newCovariatesArray = new String[newCovariates.size()];
+			double[] newCoefficientsArray = new double[newCoefficients.size()];
+			for(int i=0; i<newCoefficients.size(); ++i)
 			{
-				if(covariates[i].contains(variable.getName()))
-				{
-					newCovariates.add(covariates[i]);
-					newCoefficientsList.add(coefficients[i]);
-				}
+				newCoefficientsArray[i] = newCoefficients.get(i);	
+				newCovariatesArray[i] = newCovariates.get(i);
 			}
-			newPotential.setCovariates((String[])newCovariates.toArray());
-			double[] newCoefficients = new double[newCoefficientsList.size()];
-			for(int i=0; i<newCoefficientsList.size(); ++i)
-			{
-				newCoefficients[i] = newCoefficientsList.get(i);	
-			}
+			newPotential.setCovariates(newCovariatesArray);
+			newPotential.setCoefficients(newCoefficientsArray);
 		}else
 		{
 			newPotential = new LinearCombinationPotential(this); 
@@ -210,9 +207,32 @@ public class LinearCombinationPotential extends GLMPotential {
 		return newPotential;
 	}   
 	
-    @Override
+
+	@Override
     public Potential deepCopy(ProbNet copyNet) {
         return super.deepCopy(copyNet);
     }
+    
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer(super.toString() + " = ");
+		String[] covariates = unprocessCovariates(variables, processedCovariates);
+		for(int i=0; i<covariates.length;++i)
+		{
+			if(this.coefficients[i] !=0.0)
+			{
+				if(this.coefficients[i] !=1.0)
+					sb.append(this.coefficients[i] + "*");
+				sb.append(covariates[i]);
+				if(i<covariates.length-1)
+				{
+					sb.append(" + ");
+				}
+			}
+		}
+		return sb.toString();
+	}
+    
+    
 
 }

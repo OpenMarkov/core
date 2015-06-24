@@ -38,11 +38,6 @@ public abstract class GLMPotential extends Potential {
     /**
      * Covariates
      */
-    protected String[] covariates;
-
-    /**
-     * Covariates processed as to be understood by jeval
-     */
     protected String[] processedCovariates;
 
     /**
@@ -66,7 +61,7 @@ public abstract class GLMPotential extends Potential {
         super(variables, role);
         this.sampledCoefficients = null;
         setCovariates(getDefaultCovariates(variables, role));
-        setCoefficients(new double[covariates.length]);
+        setCoefficients(new double[processedCovariates.length]);
     }
 
     public GLMPotential(List<Variable> variables, PotentialRole role, String[] covariates,
@@ -95,7 +90,7 @@ public abstract class GLMPotential extends Potential {
 
     public GLMPotential(GLMPotential potential) {
         super(potential);
-        setCovariates(potential.covariates.clone());
+        setCovariates(potential.processedCovariates.clone());
         setCoefficients(potential.coefficients.clone());
         if(potential.covarianceMatrix != null)
         {
@@ -109,11 +104,10 @@ public abstract class GLMPotential extends Potential {
     }
 
     public String[] getCovariates() {
-        return covariates;
+        return unprocessCovariates(variables, processedCovariates);
     }
 
-    public void setCovariates(String[] covariates) {
-        this.covariates = covariates;
+	public void setCovariates(String[] covariates) {
         this.processedCovariates = processCovariates(variables, covariates);
     }
 
@@ -126,11 +120,11 @@ public abstract class GLMPotential extends Potential {
     }
 
     public double getConstant() {
-        return coefficients[getConstantIndex(covariates)];
+        return coefficients[getConstantIndex(processedCovariates)];
     }
 
     public void setConstant(double constant) {
-        this.coefficients[getConstantIndex(covariates)] = constant;
+        this.coefficients[getConstantIndex(processedCovariates)] = constant;
     }
 
     public double[] getCovarianceMatrix() {
@@ -264,37 +258,62 @@ public abstract class GLMPotential extends Potential {
         }
         return cholesky;
     }
-
-    protected String[] shiftCovariates(String[] covariates,
-            List<Variable> variables,
-            List<Variable> shiftedVariables) {
-        String[] shiftedCovariates = new String[covariates.length];
-        for(int i=0; i<covariates.length; ++i)
-        {
-            String shiftedCovariate = covariates[i];
-            for(int j=0; j< variables.size(); ++j)
-            {
-                shiftedCovariate = shiftedCovariate.replace(variables.get(j).getName(),
-                        shiftedVariables.get(j).getName());
-            }
-            shiftedCovariates [i] = shiftedCovariate;
-        }
-        return shiftedCovariates;
-    }
     
-    private String[] processCovariates(List<Variable> variables, String[] covariates) {
+    protected String[] processCovariates(List<Variable> variables, String[] covariates) {
         String[] processedCovariates = new String[covariates.length];
 
         for (int i = 0; i < covariates.length; ++i) {
-            String covariate = covariates[i];
-            for (Variable variable : variables) {
-                covariate = covariate.replace(variable.getName(), "#{v" + variables.indexOf(variable) + "}");
-            }
-            processedCovariates[i] = covariate;
+            processedCovariates[i] = processCovariate(covariates[i], variables);
         }
         return processedCovariates;
     }
     
+    protected String processCovariate(String covariate, List<Variable> variables)
+    {
+    	String processedCovariate = covariate;
+    	for (int i= 0; i<variables.size(); ++i) {
+    		Variable variable = variables.get(i);
+    		if(processedCovariate.contains(variable.getName()))
+    		{
+    			processedCovariate = processedCovariate.replace(variable.getName(), "#{v" + i + "}");
+    		}
+        }
+    	return processedCovariate;
+    }
+    
+
+    protected String[] unprocessCovariates(List<Variable> variables,
+			String[] processedCovariates) {
+    	String[] covariates = processedCovariates.clone();
+		for(int j=0; j<covariates.length;++j)
+		{
+	    	for(int i=0; i<variables.size();++i)
+	    	{
+	    		if(covariates[j].contains("#{v"+i+"}"))
+	    			covariates[j] = covariates[j].replace("#{v"+i+"}", variables.get(i).getName());
+	    	}
+		}
+		return covariates;
+	}
+    
+    protected void removeVariableFromCovariates(List<Variable> variables, Variable variable, String[] covariates, double[] coefficients, List<String> newCovariates, List<Double> newCoefficients) {
+    	int index = variables.indexOf(variable);
+    	String variableToRemove = "#{v"+index+"}";
+    	for(int i=0; i<covariates.length; ++i)
+		{
+			if(!covariates[i].contains(variableToRemove))
+			{
+				String newCovariate = covariates[i];
+				for(int j = index+1; j < variables.size();++j)
+				{
+					if(newCovariate.contains("#{v"+j+"}"))
+						newCovariate = newCovariate.replace("#{v"+j+"}", "#{v"+(j-1)+"}");
+				}
+				newCovariates.add(newCovariate);
+				newCoefficients.add(coefficients[i]);
+			}
+		}
+	}
     protected int getConstantIndex(String[] covariates)
     {
     	int constantIndex = -1;
@@ -340,9 +359,7 @@ public abstract class GLMPotential extends Potential {
     @Override
     public void shift(ProbNet probNet, int timeDifference)
             throws NodeNotFoundException {
-        List<Variable> unshiftedVariables = new ArrayList<>(variables);
         super.shift(probNet, timeDifference);
-        setCovariates(shiftCovariates(covariates, unshiftedVariables, variables));
     }    
     
     @Override
@@ -358,10 +375,6 @@ public abstract class GLMPotential extends Potential {
 
         if(this.covarianceMatrix != null) {
             potential.covarianceMatrix = this.covarianceMatrix.clone();
-        }
-
-        if(this.covariates != null) {
-            potential.covariates = this.covariates.clone();
         }
 
         if(this.processedCovariates != null) {

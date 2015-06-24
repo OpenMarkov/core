@@ -100,11 +100,11 @@ public class WeibullHazardPotential extends GLMPotential {
 	}
 
     public double getGamma() {
-        return coefficients[getGammaIndex(covariates)];
+        return coefficients[getGammaIndex(processedCovariates)];
     }
 
     public void setGamma(double gamma) {
-        this.coefficients[getGammaIndex(covariates)] = gamma;
+        this.coefficients[getGammaIndex(processedCovariates)] = gamma;
     }	
 	@Override
 	public List<TablePotential> tableProject(EvidenceCase evidenceCase,

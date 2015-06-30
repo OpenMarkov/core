@@ -299,7 +299,7 @@ public abstract class GLMPotential extends Potential {
 	    			covariates[j] = variables.get(i).getName();
 	    		}else if(covariates[j].contains(processedVariableName))
 	    		{
-	    			covariates[j].replace(processedVariableName, "{"+variables.get(i).getName()+"}");
+	    			covariates[j] = covariates[j].replace(processedVariableName, "{"+variables.get(i).getName()+"}");
 	    		}
 	    	}
 		}

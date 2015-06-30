@@ -30,6 +30,7 @@ import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.inference.PartialOrderDAN;
@@ -446,8 +447,9 @@ public class ProbNetOperations {
      * @param probNet
      * @param evidence
      * @return
+     * @throws NotEvaluableNetworkException 
      */
-    public static ProbNet convertNumericalVariablesToFS(ProbNet probNet, EvidenceCase evidence) {
+    public static ProbNet convertNumericalVariablesToFS(ProbNet probNet, EvidenceCase evidence) throws NotEvaluableNetworkException {
         ProbNet convertedNet = probNet.copy();
         List<Node> sortedNodes = sortTopologically(convertedNet);
         List<Node> convertedNodes = new ArrayList<>();
@@ -522,7 +524,7 @@ public class ProbNetOperations {
                             scalarValue = oldVariable.round(scalarValue);
                             projectedValues[index++] = scalarValue;
                         } catch (NonProjectablePotentialException | WrongCriterionException e) {
-                            e.printStackTrace();
+                            throw new NotEvaluableNetworkException(e.getMessage());
                         }
                         if (!newStates.contains(scalarValue)) {
                             newStates.add(scalarValue);
@@ -630,7 +632,7 @@ public class ProbNetOperations {
         return convertedNet;
     }
 
-    public static ProbNet convertNumericalVariablesToFS(ProbNet probNet)
+    public static ProbNet convertNumericalVariablesToFS(ProbNet probNet) throws NotEvaluableNetworkException
     {
         return convertNumericalVariablesToFS(probNet, new EvidenceCase());
     }

@@ -273,6 +273,10 @@ public abstract class GLMPotential extends Potential {
     	String processedCovariate = covariate;
     	for (int i= 0; i<variables.size(); ++i) {
     		Variable variable = variables.get(i);
+    		if(processedCovariate.contains("{"+variable.getName()+"}"))
+    		{
+    			processedCovariate = processedCovariate.replace("{"+variable.getName()+"}", "#{v" + i + "}");
+    		}
     		if(processedCovariate.contains(variable.getName()))
     		{
     			processedCovariate = processedCovariate.replace(variable.getName(), "#{v" + i + "}");
@@ -289,8 +293,14 @@ public abstract class GLMPotential extends Potential {
 		{
 	    	for(int i=0; i<variables.size();++i)
 	    	{
-	    		if(covariates[j].contains("#{v"+i+"}"))
-	    			covariates[j] = covariates[j].replace("#{v"+i+"}", variables.get(i).getName());
+	    		String processedVariableName = "#{v"+i+"}";
+	    		if(covariates[j].equals(processedVariableName))
+	    		{
+	    			covariates[j] = variables.get(i).getName();
+	    		}else if(covariates[j].contains(processedVariableName))
+	    		{
+	    			covariates[j].replace(processedVariableName, "{"+variables.get(i).getName()+"}");
+	    		}
 	    	}
 		}
 		return covariates;

@@ -663,6 +663,19 @@ public class TreeADDPotential extends Potential {
 	}
 
 	@Override
+	public void replaceVariable(int position, Variable variable) {
+		Variable oldVariable = variables.get(position);
+		super.replaceVariable(position, variable);
+		if(topVariable.equals(oldVariable))
+		{
+			topVariable = variable;
+		}		
+		for(TreeADDBranch branch: branches)
+		{
+			branch.getPotential().replaceVariable(oldVariable, variable);
+		}
+	}
+	@Override
 	public void replaceNumericVariable(Variable convertedParentVariable) {
 		super.replaceNumericVariable(convertedParentVariable);
 		

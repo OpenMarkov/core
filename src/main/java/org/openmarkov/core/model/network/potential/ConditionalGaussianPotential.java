@@ -237,6 +237,12 @@ public class ConditionalGaussianPotential extends Potential{
 		return potential;
 	}
 	
+	@Override
+	public void replaceVariable(int position, Variable variable) {
+		Variable oldVariable = variables.get(position);
+		super.replaceVariable(position, variable);
+		mean.replaceVariable(oldVariable, variable);
+		variance.replaceVariable(oldVariable, variable);
+	}
 	
-
 }

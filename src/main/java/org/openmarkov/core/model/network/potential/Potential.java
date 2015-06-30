@@ -211,13 +211,13 @@ public abstract class Potential
 
     public void replaceVariable (Variable variableToReplace, Variable variable)
     {
-        if (!variableToReplace.equals (utilityVariable))
+        if (variableToReplace.equals (utilityVariable))
         {
-            replaceVariable (variables.indexOf (variableToReplace), variable);
+        	utilityVariable = variable;
         }
-        else
+        else if(variables.contains(variableToReplace))
         {
-            utilityVariable = variable;
+        	replaceVariable (variables.indexOf (variableToReplace), variable);
         }
     }
 

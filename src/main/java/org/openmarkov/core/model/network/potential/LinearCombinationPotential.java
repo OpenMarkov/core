@@ -115,7 +115,7 @@ public class LinearCombinationPotential extends GLMPotential {
                     try {
                         covariateValue = Double.parseDouble(evaluator.evaluate(covariates[j]));
                     } catch (NumberFormatException | EvaluationException e) {
-                        e.printStackTrace();
+                        throw new NonProjectablePotentialException(e.getMessage());
                     }
                     regression += covariateValue * coefficients[j];
                 }
@@ -217,17 +217,17 @@ public class LinearCombinationPotential extends GLMPotential {
 	public String toString() {
 		StringBuffer sb = new StringBuffer(super.toString() + " = ");
 		String[] covariates = unprocessCovariates(variables, processedCovariates);
+		boolean first = true;
 		for(int i=0; i<covariates.length;++i)
 		{
 			if(this.coefficients[i] !=0.0)
 			{
+				if(!first)
+					sb.append(" + ");
+				first = false;
 				if(this.coefficients[i] !=1.0)
 					sb.append(this.coefficients[i] + "*");
 				sb.append(covariates[i]);
-				if(i<covariates.length-1)
-				{
-					sb.append(" + ");
-				}
 			}
 		}
 		return sb.toString();

@@ -108,7 +108,7 @@ public class ExponentialPotential extends GLMPotential {
 					try {
 						covariateValue = Double.parseDouble(evaluator.evaluate(covariates[j]));
 					} catch (NumberFormatException | EvaluationException e) {
-						e.printStackTrace();
+						throw new NonProjectablePotentialException(e.getMessage());
 					}
 					regression += covariateValue * coefficients[j];
 				}

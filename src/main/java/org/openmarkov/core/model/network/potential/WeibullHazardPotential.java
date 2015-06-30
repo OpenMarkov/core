@@ -185,7 +185,7 @@ public class WeibullHazardPotential extends GLMPotential {
 						try {
 							covariateValue = Double.parseDouble(evaluator.evaluate(covariates[j]));
 						} catch (NumberFormatException | EvaluationException e) {
-							e.printStackTrace();
+							throw new NonProjectablePotentialException(e.getMessage());
 						}
 						lambda += covariateValue * coefficients[j];
 					}

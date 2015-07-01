@@ -57,7 +57,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 		testMEUAndStrategy(IDFactory.buildIDOneDecision(),87.4,null);	
 	}
 	
-	//@Test
+	@Test
 	public void testIDPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDPerfectKnowledge(),9.72,null);	
 	}
@@ -67,7 +67,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 		testMEUAndStrategy(IDFactory.buildIDPerfectKnowledgeCostTherapy(),9.685,null);	
 	}
 	
-	//@Test
+	@Test
 	public void testIDNoKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDNoKnowledge(),9.02,null);	
 	}
@@ -145,7 +145,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 		testMEUAndStrategy(IDFactory.buildIDStatesTies(),13.7,null);	
 	}
 	
-	//@Test
+	@Test
 	public void testIDStatesTiesPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDStatesTiesPerfectKnowledge(),1.5,null);	
 	}

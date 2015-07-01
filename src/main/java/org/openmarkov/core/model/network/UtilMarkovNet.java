@@ -9,12 +9,11 @@
 
 package org.openmarkov.core.model.network;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables;
-import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.type.MarkovNetworkType;
 
@@ -27,187 +26,64 @@ import org.openmarkov.core.model.network.type.MarkovNetworkType;
  * @author marias */
 public class UtilMarkovNet {
 
-	// TODO eliminar este metodo
-	/** @param probNet <code>ProbNet</code> possibly with directed links
-	 * @return A Markov Network in witch directed links are converted to 
-	 *  undirected links.  */
-	public static ProbNet getMarkovNet(ProbNet probNet) {
-		return buildMarkovNet(probNet.getPotentials());
-	}
-	
-	/** Adds the variables in the received <code>Potential</code> to this 
-	 *   <code>MarkovNet</code>, creates links between those variables creating
-	 *   cliques and assigns the <code>potential</code> to the conditioned
-	 *   variable (the first one).
-	 * @argCondition At least one potential depends on at least one variable
-	 * (otherwise the network would have no node, and it would be impossible
-	 * to assign constant potentials)
-	 * @param projectedTablePotentials <code>ArrayList</code> of 
-	 *   <code>Potential</code>s
-	 * @return A Markov Network in witch potentials are used to create cliques.
-	 *   (<code>ProbNet</code>).  */
-	public static ProbNet buildMarkovNet(ProbNet originalNet, List<Potential> projectedTablePotentials) {
-		ProbNet markovNet = getMarkovNet();
-		try {
-            markovNet.addConstraint (new OnlyDiscreteVariables (), false);
-		} catch (ConstraintViolationException e) {
-			// Unreachable code
-			e.printStackTrace();
-		}
-    	for (Potential potential : projectedTablePotentials) {
-    		addPotential(markovNet,originalNet, potential);
-    	}
-		return markovNet;
-	}
-	
-	
-	
-	/** Adds the variables in the received <code>Potential</code> to this 
-	 *   <code>MarkovNet</code>, creates links between those variables creating
-	 *   cliques and assigns the <code>potential</code> to the conditioned
-	 *   variable (the first one).
-	 * @argCondition At least one potential depends on at least one variable
-	 * (otherwise the network would have no node, and it would be impossible
-	 * to assign constant potentials)
-	 * @param projectedTablePotentials <code>ArrayList</code> of 
-	 *   <code>Potential</code>s
-	 * @return A Markov Network in witch potentials are used to create cliques.
-	 *   (<code>ProbNet</code>).  */
-	public static ProbNet buildMarkovNet(List<Potential> projectedTablePotentials) {
-		ProbNet markovNet = getMarkovNet();
-		try {
-            markovNet.addConstraint (new OnlyDiscreteVariables (), false);
-		} catch (ConstraintViolationException e) {
-			// Unreachable code
-			e.printStackTrace();
-		}
-    	for (Potential potential : projectedTablePotentials) {
-    		addPotential(markovNet, potential);
-    	}
-		return markovNet;
-	}
-
 	/**
-	 * Adds the received potential to the list of potentials of the first 
-	 * variable.
-	 * @param originalNet 
-	 * 
-	 * @preCondition network contains at least one variable
-	 * @argCondition If A is the first variable in the potential and
-	 *               B<sub>0</sub> ... B<sub>n</sub> are the others, there must
-	 *               be a directed link B<sub>i</sub> -> A for every variable
-	 *               B<sub>i</sub> in the potential (other than A)
-	 * @param potential
-	 *            . <code>Potential</code>
-	 * @return The <code>Node</code> in which the <code>potential</code>
-	 *         received has been added.
+	 * @param probNet. <code>ProbNeta</code>
+	 * @return A Markov decision network without the OnlyUndirectedLinks constraint. <code>ProbNeta</code> 
 	 */
-	public static void addPotential(ProbNet markovNet, ProbNet originalNet, Potential potential) {
-		List<Variable> potentialVariables = potential.getVariables();
-		// the node where the potential will be stored
-		// TODO hacerlo con edits
-		if (potential.getVariables().size() == 0) {
-			// it is a constant potential;
-			// adds it to any variable of the network
-			markovNet.getNodes().get(0).addPotential(potential);
-		} else {
-			// the potential depends on several variables
-			for (Variable variable : potentialVariables) {
-				//if (originalNet.getNode(variable)!=null){
-				if (markovNet.getNode(variable) == null) {
-					Node node = originalNet.getNode(variable);
-					NodeType nodeType = node.getNodeType();
-					markovNet.addNode(variable, nodeType);
-				}
-				//}
-			}
-			markovNet.getNode(potentialVariables.get(0)).
-				addPotential(potential);
-			int numVariables = potentialVariables.size();
-			for (int i = 0; i < numVariables - 1; i++) {
-				Variable variable1 = potentialVariables.get(i);
-				for (int j = i + 1; j < numVariables; j++) {
-					Variable variable2 = potentialVariables.get(j);
-					try {
-						markovNet.addLink(variable1, variable2, false);
-					} catch (NodeNotFoundException e) {
-						// Unreachable code because the variables are in the net
+	public static ProbNet getMarkovDecisionNetworkWithoutConstraints(ProbNet probNet) {
+		ProbNet markovDecisionNetwork = new ProbNet(MarkovNetworkType.getUniqueInstance());
+		Collection<Potential> potentials = probNet.getPotentials();
+		List<Potential> constantPotentials = new ArrayList<Potential>();
+		Node lastNodeAdded = null; // This node will contain the last variable added to the markovDecisionNetwork
+		
+		for (Potential potential : potentials) {
+			List<Variable> potentialVariables = potential.getVariables();
+			if (potentialVariables.size() == 0) {
+				// it is a constant potential, that can be added to any variable, 
+				// but we wait until the end because if it is found one of these potentials at the beginning, 
+				// the network could be empty of nodes;
+				constantPotentials.add(potential);
+			} else {
+				
+				// Add variables when they do not exist in the Markov decision network
+				for (Variable variable : potentialVariables) {
+					if (!markovDecisionNetwork.containsVariable(variable)) {
+						Node probNetNode = probNet.getNode(variable);
+						NodeType nodeType = probNetNode.getNodeType();
+						lastNodeAdded = markovDecisionNetwork.addNode(variable, nodeType);
 					}
 				}
-			}
-		}
-	}
-	
-	
-	/**
-	 * Adds the received potential to the list of potentials of the first 
-	 * variable.
-	 * 
-	 * @preCondition network contains at least one variable
-	 * @argCondition If A is the first variable in the potential and
-	 *               B<sub>0</sub> ... B<sub>n</sub> are the others, there must
-	 *               be a directed link B<sub>i</sub> -> A for every variable
-	 *               B<sub>i</sub> in the potential (other than A)
-	 * @param potential
-	 *            . <code>Potential</code>
-	 * @return The <code>Node</code> in which the <code>potential</code>
-	 *         received has been added.
-	 */
-	public static void addPotential(ProbNet markovNet, Potential potential) {
-		List<Variable> potentialVariables = potential.getVariables();
-		// the node where the potential will be stored
-		// TODO hacerlo con edits
-		if (potential.getVariables().size() == 0) {
-			// it is a constant potential;
-			// adds it to any variable of the network
-			markovNet.getNodes().get(0).addPotential(potential);
-		} else {
-			// the potential depends on several variables
-			for (Variable variable : potentialVariables) {
-				if (markovNet.getNode(variable) == null) {
-					// in a Markov net all nodes are treated as if they were
-					// CHANCE
-					markovNet.addNode(variable, NodeType.CHANCE);
-					
-				}
-			}
-			markovNet.getNode(potentialVariables.get(0)).
-				addPotential(potential);
-			int numVariables = potentialVariables.size();
-			for (int i = 0; i < numVariables - 1; i++) {
-				Variable variable1 = potentialVariables.get(i);
-				for (int j = i + 1; j < numVariables; j++) {
-					Variable variable2 = potentialVariables.get(j);
-					try {
-						markovNet.addLink(variable1, variable2, false);
-					} catch (NodeNotFoundException e) {
-						// Unreachable code because the variables are in the net
+				
+				// Add the potential to the node that contains the first variable of the potential
+				markovDecisionNetwork.getNode(potentialVariables.get(0)).addPotential(potential);
+
+				// Add undirected links when they do not exist in the Markov decision network
+				int numVariables = potentialVariables.size();
+				for (int i = 0; i < numVariables - 1; i++) {
+					Variable variable1 = potentialVariables.get(i);
+					for (int j = i + 1; j < numVariables; j++) {
+						Variable variable2 = potentialVariables.get(j);
+						try {
+							markovDecisionNetwork.addLink(variable1, variable2, false);
+						} catch (NodeNotFoundException e) {
+							// Unreachable code because the variables variable1 and variable2 exists in the network
+							System.err.println(e.getMessage());
+							System.err.println(e.getStackTrace());
+						}
 					}
 				}
+				
 			}
 		}
-	}
-	
-
-	/** @return An empty Markov Network. <code>ProbNet</code> */
-	public static ProbNet getMarkovNet() {
-		ProbNet probNet = new ProbNet(MarkovNetworkType.getUniqueInstance ());
-		try {
-            probNet.addConstraint (new OnlyUndirectedLinks (), true);
-		} catch (ConstraintViolationException e) {
-			System.err.println(e.getStackTrace()); // Unreachable code
+		
+		// Add constant potentials
+		if (lastNodeAdded != null) { // This condition ensures that the original probNet contains at least one node 
+			for (Potential constantPotential : constantPotentials) {
+				lastNodeAdded.addPotential(constantPotential);
+			}
 		}
-		return probNet;		
-	}
-	
-	
 
-	// TODO eliminar 
-	/** @return <code>true</code> if the received <code>probNet</code> has all
-	 *   the restrictions applied to a Markov network.
-	 * @param probNet <code>ProbNet</code> */
-	public static boolean isMarkovNet(ProbNet probNet) {
-        return probNet.getConstraints ().contains (new OnlyUndirectedLinks ());
+		return markovDecisionNetwork;
 	}
 	
 }

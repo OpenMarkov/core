@@ -70,14 +70,11 @@ public abstract class InferenceAlgorithm {
      * @param probNet The network used in the inference
      * @throws NotEvaluableNetworkException
      */
-    public InferenceAlgorithm (ProbNet probNet)
-        throws NotEvaluableNetworkException
-    {
+    public InferenceAlgorithm (ProbNet probNet) throws NotEvaluableNetworkException {
         this.probNet = probNet;
         preResolutionEvidence = new EvidenceCase();
         postResolutionEvidence = new EvidenceCase();
-        if (!isEvaluable (probNet))
-        {
+        if (!isEvaluable (probNet)) {
             throw new NotEvaluableNetworkException (probNet.toString ());
         }
     }

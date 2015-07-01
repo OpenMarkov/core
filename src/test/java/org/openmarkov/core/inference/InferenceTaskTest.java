@@ -6,6 +6,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.tasks.Task;
+import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
@@ -28,7 +29,28 @@ import static org.junit.Assume.assumeTrue;
 @Ignore
 public abstract class InferenceTaskTest {
 
-	
+	/**
+	 * @param network
+	 * @return An InferenceAlgorithm for 'network'. If the network is not evaluable
+	 * with the algorithm then the test calling this method is skipped.
+	 */
+	protected Task buildInferenceAlgorithmAndSkipTestIfNotEvaluable(
+			ProbNet network) {
+		boolean isEvaluable;
+		Task algorithm = null;
+
+		//If the network is not evaluable then the test is skipped
+		isEvaluable = true;
+		try {
+			algorithm = buildInferenceTask(network);
+		} catch (NotEvaluableNetworkException e1) {
+			isEvaluable = false;
+		}
+		assumeTrue(isEvaluable);
+		return algorithm;
+	}
+
+
 	/**
 	 * Maximum error allowed in tests. It could be modified by subclasses
 	 * if it is necessary (for example, approximate inference methods).
@@ -256,9 +278,9 @@ public abstract class InferenceTaskTest {
 		return areEquals;
 
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 }

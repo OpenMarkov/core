@@ -30,22 +30,24 @@ public class UtilityOperations {
 		Criterion globalUtilityCriterion = new Criterion("GlobalUtility", mainUnit);
 		
 		for (Node utilityNode : utilityNodes) {
+			if (utilityNode.getVariable().getDecisionCriterion() != null) {
+				// Get the actual criterion scale
+				double scale = utilityNode.getVariable().getDecisionCriterion()
+						.getUnicriteriaScale();
 
-			// Get the actual criterion scale
-			double scale = utilityNode.getVariable().getDecisionCriterion()
-					.getUnicriteriaScale();
-			
-			// Transform the potential with the scale
-			Potential potential = utilityNode.getPotentials().get(0);
-			potential.scalePotential(scale);
-			
+				// Transform the potential with the scale
+				Potential potential = utilityNode.getPotentials().get(0);
+				potential.scalePotential(scale);
+			}
 			// Sets a global criterion as the node criterion
 			utilityNode.getVariable().setDecisionCriterion(globalUtilityCriterion);
 			
 		}
-		
-		probNet.getDecisionCriteria().clear();
-		probNet.getDecisionCriteria().add(globalUtilityCriterion);
+
+		if (probNet.getDecisionCriteria() != null) {
+			probNet.getDecisionCriteria().clear();
+			probNet.getDecisionCriteria().add(globalUtilityCriterion);
+		}
 	}
 	
 	/**

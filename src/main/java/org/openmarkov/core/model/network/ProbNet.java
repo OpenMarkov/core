@@ -105,6 +105,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
     // Constructors
     public ProbNet(NetworkType networkType) {
         this.pNESupport = new PNESupport(false);
+        this.decisionCriteria = new ArrayList<Criterion>();
         this.constraints = new ArrayList<PNConstraint>();
         this.nodeDepot = new NodeTypeDepot();
         this.inferenceOptions = new InferenceOptions();

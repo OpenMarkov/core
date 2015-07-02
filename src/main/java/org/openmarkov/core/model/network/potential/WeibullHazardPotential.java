@@ -35,7 +35,7 @@ public class WeibullHazardPotential extends GLMPotential {
     /**
      * Determines whether it represents a log hazard 
      */
-    protected boolean log = true;
+    protected boolean log = false;
 
 	/**
 	 * Time variable
@@ -145,7 +145,7 @@ public class WeibullHazardPotential extends GLMPotential {
 			}
 		} else {
 			ts = new double[1];
-			double t = conditionedVariable.getTimeSlice();
+			double t = (conditionedVariable.getTimeSlice() >= 0)? conditionedVariable.getTimeSlice() : 1;
 			if (timeVariable != null) {
 				if (!evidenceCase.contains(timeVariable)) {
 					throw new NonProjectablePotentialException(

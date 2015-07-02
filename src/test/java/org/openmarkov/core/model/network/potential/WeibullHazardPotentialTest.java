@@ -51,6 +51,7 @@ public class WeibullHazardPotentialTest {
                 PotentialRole.CONDITIONAL_PROBABILITY,
                 coefficients,
                 covarianceMatrix);
+        potential.log = true;
     }
     
     @Test

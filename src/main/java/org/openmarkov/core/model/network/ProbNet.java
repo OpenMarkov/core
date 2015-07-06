@@ -134,6 +134,54 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
     }
 
     // Methods
+	/**
+	 * Creates a Markov decision network from <code>this</code> without utility nodes. 
+	 * @return A Markov decision network. <code>ProbNet</code>
+	 */
+	public ProbNet getMarkovDecisionNetwork() {
+		ProbNet newProbNet = new ProbNet(MarkovNetworkType.getUniqueInstance());
+		List<Potential> potentials = getPotentials();
+		for (Potential potential : potentials) {
+			if (potential.getPotentialRole() != PotentialRole.UTILITY) {
+				addPotential(potential);
+			}
+		}
+		newProbNet.setConstantPotentials(constantPotentials);
+		return newProbNet;
+	}
+	
+	/**
+	 * Adds the variables in the received <code>Potential</code> to this
+	 * <code>MarkovNet</code>, creates links between those variables creating
+	 * cliques and assigns the <code>potential</code> to the conditioned
+	 * variable (the first one).
+	 *
+	 * @argCondition At least one potential depends on at least one variable
+	 *               (otherwise the network would have no node, and it would be
+	 *               impossible to assign constant potentials)
+	 * @param projectedTablePotentials
+	 *            <code>ArrayList</code> of <code>Potential</code>s
+	 * @return A Markov Network in witch potentials are used to create cliques.
+	 *         (<code>ProbNet</code>).
+	 */
+	public ProbNet getMarkovDecisionNetwork(List<? extends Potential> projectedTablePotentials) {
+		ProbNet probNet = new ProbNet(MarkovNetworkType.getUniqueInstance());
+		//constructPartialOrder(originalNet);
+		try {
+			probNet.addConstraint(new OnlyUndirectedLinks(), true);
+		} catch (ConstraintViolationException e) {
+			e.printStackTrace(); // Unreachable code because probNet is empty.
+		}
+		for (Potential potential : projectedTablePotentials) {
+			if (potential.getVariables().size() > 0) {
+				probNet.addPotential(potential);
+			} else {
+				probNet.constantPotentials.add((TablePotential) potential);
+			}
+		}
+		return probNet;
+	}
+
     /**
      * Applies edit to the probNet
      * 
@@ -236,21 +284,6 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         constraints.removeAll(constraintsToRemove);
     }
 
-	/**
-	 * Creates a Markov decision network from <code>this</code> without utility nodes. 
-	 * @return A Markov decision network. <code>ProbNet</code>
-	 */
-	public ProbNet getMarkovDecisionNetwork() {
-		ProbNet newProbNet = new ProbNet(MarkovNetworkType.getUniqueInstance());
-		List<Potential> potentials = getPotentials();
-		for (Potential potential : potentials) {
-			if (potential.getPotentialRole() != PotentialRole.UTILITY) {
-				addPotential(potential);
-			}
-		}
-		newProbNet.setConstantPotentials(constantPotentials);
-		return newProbNet;
-	}
 
     /** @return <code>ArrayList</code> of <code>PNConstraint</code>s */
     public List<PNConstraint> getConstraints() {

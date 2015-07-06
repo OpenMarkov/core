@@ -7,6 +7,7 @@
 package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -164,9 +165,9 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 	 * @return A Markov Network in witch potentials are used to create cliques.
 	 *         (<code>ProbNet</code>).
 	 */
-	public ProbNet getMarkovDecisionNetwork(List<? extends Potential> projectedTablePotentials) {
+	public static ProbNet getMarkovDecisionNetwork(Collection<? extends Potential> projectedTablePotentials) {
 		ProbNet probNet = new ProbNet(MarkovNetworkType.getUniqueInstance());
-		//constructPartialOrder(originalNet);
+
 		try {
 			probNet.addConstraint(new OnlyUndirectedLinks(), true);
 		} catch (ConstraintViolationException e) {

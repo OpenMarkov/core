@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -73,7 +72,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	public MarkovDecisionNetwork(ProbNet originalNet) {
 		super();
 		//constructPartialOrder(originalNet);
-		addVariablesAndLinks(originalNet);
+		addVariablesAndUndirectedLinks(originalNet);
 		constantPotentials = new HashSet<>();
 	}
 
@@ -185,8 +184,8 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 *            . <code>ProbNet</code>
 	 */
 	// TODO addVariablesAndLinks should be common to all ProbNet's
-	private void addVariablesAndLinks(ProbNet originalID) {
-		for (List<Variable> variables : BasicOperations.calculatePartialOrder(originalID)) { //partialOrder.getOrder()) {
+	private void addVariablesAndUndirectedLinks(ProbNet originalID) {
+		for (List<Variable> variables : BasicOperations.calculatePartialOrder(originalID)) {
 			for (Variable variable : variables) {
 				Node node = originalID.getNode(variable);
 				NodeType nodeType = node.getNodeType();
@@ -212,7 +211,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 		Node node = null;
 		if (numVariables >= 1) {
 			if (numVariables > 1) { // creates a clique using undirected links
-				addLinks(potential);
+				addUndirectedLinks(potential);
 			}
 			// add the potential to the corresponding node in the MarkovNet
 			node = getNode(potential.getVariable(0));
@@ -239,7 +238,7 @@ public class MarkovDecisionNetwork extends ProbNet {
 	 *            <code>Potential</code>
 	 */
 	// TODO addLinks should be common to all ProbNet's
-	private void addLinks(Potential potential) {
+	private void addUndirectedLinks(Potential potential) {
 		List<Variable> variablesPotential = potential.getVariables();
 		int potentialSize = variablesPotential.size();
 		for (int i = 0; i < potentialSize - 1; i++) {

@@ -1098,15 +1098,16 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      *         received has been added.
      */
     public Node addPotential(Potential potential) {
+    	boolean isMarkovNetwork = getNetworkType() == MarkovNetworkType.getUniqueInstance();
         List<Variable> potentialVariables = potential.getVariables();
-        addPotentialVariables(potential);
         Node node = null; // The potential will be added here
+        
+        addPotentialVariables(potential, isMarkovNetwork);
         if (potential.isUtility()) { // Create node without variable
-            node = addUtilityPotential(potential, potentialVariables);
+            node = addUtilityPotential(potential, potentialVariables, isMarkovNetwork);
         } else {
             if (potentialVariables.size() > 0) {
-            	if (getNetworkType() == MarkovNetworkType.getUniqueInstance() ||
-            			containsConstraint(OnlyUndirectedLinks.class)) {
+            	if (isMarkovNetwork || containsConstraint(OnlyUndirectedLinks.class)) {
             		addUndirectedLinks(potential);
             		node = getNode(potential.getVariables().get(0));
             		node.addPotential(potential);
@@ -1134,20 +1135,23 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      * @param potential
      *            . <code>Potential</code>
      */
-    private void addPotentialVariables(Potential potential) {
+    private void addPotentialVariables(Potential potential, boolean isMarkovNetwork) {
         // Common part
-        List<Variable> potentialVariables = potential.getVariables();
-        for (Variable variable : potentialVariables) {
-            // add the variables that were not yet in the network
-            if (getNode(variable) == null) {
-                addNode(variable, NodeType.CHANCE);
-            }
-        }
+        addVariables(potential.getVariables());
         // Only for utility potentials
-        if (potential.isUtility()) {
+        if (potential.isUtility() && !isMarkovNetwork) {
             Variable utilityVariable = potential.getUtilityVariable();
             if (getNode(utilityVariable) == null) {
                 addNode(utilityVariable, NodeType.UTILITY);
+            }
+        }
+    }
+    
+    private void addVariables(Collection<Variable> variables) {
+        for (Variable variable : variables) {
+            // add the variables that were not yet in the network
+            if (getNode(variable) == null) {
+                addNode(variable, NodeType.CHANCE);
             }
         }
     }
@@ -1174,22 +1178,38 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      * @return The <code>Node</code> in which the <code>potential</code> is
      *         stored
      */
-    private Node addUtilityPotential(Potential potential, List<Variable> potentialVariables) {
-        Variable utilityVariable = potential.getUtilityVariable();
-        Node utilityNode = this.getNode(utilityVariable);
-        if (utilityNode == null) { // The variable does not exists yet
-            utilityNode = new Node(this, utilityVariable, NodeType.UTILITY);
-        }
-        utilityNode.addPotential(potential);
-        if (!hasConstraint(OnlyUndirectedLinks.class)) {
-            for (Variable variable : potentialVariables) {
-                Node parent = getNode(variable);
-                if (!isParent(parent, utilityNode)) {
-                    addLink(parent, utilityNode, true);
-                }
-            }
-        }
-        return utilityNode;
+	private Node addUtilityPotential(
+			Potential potential, 
+			List<Variable> potentialVariables, 
+			boolean isMarkovNetwork) {
+		Node assignedNode = null;
+		if (!isMarkovNetwork) {
+			Variable utilityVariable = potential.getUtilityVariable();
+			assignedNode = this.getNode(utilityVariable);
+			if (assignedNode == null) { // The variable does not exists yet
+				assignedNode = new Node(this, utilityVariable, NodeType.UTILITY);
+			}
+			assignedNode.addPotential(potential);
+			if (!hasConstraint(OnlyUndirectedLinks.class)) {
+				for (Variable variable : potentialVariables) {
+					Node parent = getNode(variable);
+					if (!isParent(parent, assignedNode)) {
+						addLink(parent, assignedNode, true);
+					}
+				}
+			}
+		} else {
+			if (potentialVariables.size() > 0) {
+				assignedNode = getNode(potentialVariables.get(0));
+				assignedNode.addPotential(potential);
+			} else {
+				if (constantPotentials == null) {
+					constantPotentials = new HashSet<TablePotential>();
+				}
+				constantPotentials.add((TablePotential)potential);
+			}
+		}
+		return assignedNode;
     }
 
     /**

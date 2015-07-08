@@ -165,7 +165,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 	 * @return A Markov Network in witch potentials are used to create cliques.
 	 *         (<code>ProbNet</code>).
 	 */
-	public static ProbNet getMarkovDecisionNetwork(Collection<? extends Potential> projectedTablePotentials) {
+	public ProbNet getMarkovDecisionNetwork(Collection<? extends Potential> projectedTablePotentials) {
 		ProbNet probNet = new ProbNet(MarkovNetworkType.getUniqueInstance());
 
 		try {
@@ -175,7 +175,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 		}
 		for (Potential potential : projectedTablePotentials) {
 			if (potential.getVariables().size() > 0) {
-				probNet.addPotential(potential);
+				probNet.addPotential(potential, this);
 			} else {
 				probNet.constantPotentials.add((TablePotential) potential);
 			}
@@ -1102,7 +1102,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         List<Variable> potentialVariables = potential.getVariables();
         Node node = null; // The potential will be added here
         
-        addPotentialVariables(potential, isMarkovNetwork);
+        addPotentialVariables(potential, isMarkovNetwork, this);
         if (potential.isUtility()) { // Create node without variable
             node = addUtilityPotential(potential, potentialVariables, isMarkovNetwork);
         } else {
@@ -1127,6 +1127,36 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         return node;
     }
 
+    public Node addPotential(Potential potential, ProbNet originalProbNet) {
+    	boolean isMarkovNetwork = getNetworkType() == MarkovNetworkType.getUniqueInstance();
+        List<Variable> potentialVariables = potential.getVariables();
+        Node node = null; // The potential will be added here
+        
+        addPotentialVariables(potential, isMarkovNetwork, originalProbNet);
+        if (potential.isUtility()) { // Create node without variable
+            node = addUtilityPotential(potential, potentialVariables, isMarkovNetwork);
+        } else {
+            if (potentialVariables.size() > 0) {
+            	if (isMarkovNetwork || containsConstraint(OnlyUndirectedLinks.class)) {
+            		addUndirectedLinks(potential);
+            		node = getNode(potential.getVariables().get(0));
+            		node.addPotential(potential);
+            	} else {
+            		node = addProbabilityPotential(potential, potentialVariables);
+            	}
+            } else {// potential does not depend on any variable (is a constant)
+                List<Node> chanceNodes = getNodes(NodeType.CHANCE);
+                if (chanceNodes.size() > 0) {
+                    node = chanceNodes.get(0);
+                    node.addPotential(potential);
+                    // If there are no chance nodes there is no reason to
+                    // add the constant potential
+                }
+            }
+        }
+        return node;
+    }
+    
     /**
      * If there are missing variables (variables that exists in the
      * <code>potential</code> but not in the <code>probNet</code>), the method
@@ -1135,9 +1165,9 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      * @param potential
      *            . <code>Potential</code>
      */
-    private void addPotentialVariables(Potential potential, boolean isMarkovNetwork) {
+    private void addPotentialVariables(Potential potential, boolean isMarkovNetwork, ProbNet originalProbNet) {
         // Common part
-        addVariables(potential.getVariables());
+        addVariables(potential.getVariables(), originalProbNet);
         // Only for utility potentials
         if (potential.isUtility() && !isMarkovNetwork) {
             Variable utilityVariable = potential.getUtilityVariable();
@@ -1147,11 +1177,16 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         }
     }
     
-    private void addVariables(Collection<Variable> variables) {
+    private void addVariables(Collection<Variable> variables, ProbNet originalProbNet) {
         for (Variable variable : variables) {
             // add the variables that were not yet in the network
             if (getNode(variable) == null) {
-                addNode(variable, NodeType.CHANCE);
+            	NodeType nodeType = originalProbNet.getNode(variable).getNodeType();
+            	if (nodeType == NodeType.CHANCE) {
+            		addNode(variable, NodeType.CHANCE);
+            	} else {
+            		addNode(variable, NodeType.DECISION);
+            	}
             }
         }
     }

@@ -44,7 +44,7 @@ public abstract class InferenceResolutionTaskDecTest extends InferenceTaskTest {
 		Task algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(net);
 		Double meuEvaluation = algorithm.getGlobalUtility().values[0];
 		assertEquals(expectedMEU,meuEvaluation, maxError);
-		testScenariosIntervention(net,algorithm);
+		// testScenariosIntervention(net,algorithm); // TODO No se que hace esto. Documentar
 	}
 
 	/**

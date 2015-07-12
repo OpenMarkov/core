@@ -177,10 +177,14 @@ public class Intervention extends TreeADDPotential {
 				if (equalInterventions(selectedInterventions.toArray(new Intervention[selectedInterventions.size()]))) {
 					intervention = selectedInterventions.get(0); // All interventions are equals
 				} else {
-					intervention = (!coalescedInterventions)?
-							new Intervention(chanceVariable, selectedStates, selectedInterventions):
-								new SDAGIntervention(chanceVariable, selectedStates, selectedInterventions);
-					
+					// TODO Arreglar esto. No puede haber una referencia a SDAGInterventions desde Intervention. 
+					// TODO SDAGIntervention no se sabe que es. No está documentado.
+					// TODO coalescedInterventions no está documentado.
+					//					intervention = (!coalescedInterventions)?
+					//							new Intervention(chanceVariable, selectedStates, selectedInterventions):
+					//								new SDAGIntervention(chanceVariable, selectedStates, selectedInterventions);
+					intervention = new Intervention(chanceVariable, selectedStates, selectedInterventions);
+
 				}
 			}
 		}

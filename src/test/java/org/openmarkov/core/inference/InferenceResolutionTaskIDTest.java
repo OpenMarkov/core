@@ -52,7 +52,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 	}
 
-	//@Test
+	@Test
 	public void testIDOneDecision() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDOneDecision(),87.4,null);	
 	}
@@ -62,22 +62,22 @@ iD_DecisionTestProblemWithSV = IDFactory
 		testMEUAndStrategy(IDFactory.buildIDPerfectKnowledge(),9.72,null);	
 	}
 	
-	//@Test
+	@Test
 	public void testIDPerfectKnowledgeCostTherapy() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDPerfectKnowledgeCostTherapy(),9.685,null);	
 	}
 	
-	////@Test
+	@Test
 	public void testIDNoKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDNoKnowledge(),9.02,null);	
 	}
 	
-	//@Test
+	@Test
 	public void testIDTestAlways() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDTestAlways(),9.3929,null);	
 	}
 	
-	//@Test
+	@Test
 	public void testIDDecideTest() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(getIDDecideTest(),9.3929,null);
 	}
@@ -86,72 +86,72 @@ iD_DecisionTestProblemWithSV = IDFactory
 		return IDFactory.buildIDDecideTest();
 	}
 	
-	//@Test
+	@Test
 	public void testIDDecideTestSymptom() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDDecideTestSymptom(),9.9143,null);	
 	}
 	
-	//@Test
+	@Test
 	public void testIDQaleMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDQaleMediastinet(),2.1154194051058286,null);	
 	}
 	
 	
 
-	//@Test
+	@Test
 	public void testIDMediastinetWithoutSV() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDMediastinetWithoutSV(),1.4709741803092176,null);	
 	}
 	
-	//@Test
+	@Test
 	public void testIDMediastinetWithoutMediastinoscopy() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDMediastinetWithoutMediastinoscopy(),1.5209741803092172,null);	
 	}
 	
 	
-	//@Test
+	@Test
 	public void testIDMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDMediastinet(),1.4709741803092176,null);	
 	}
 	
-	//@Test
+	@Test
 	public void testIDArthronet() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDArthronet(),0.4960714549037456,null);	
 	}
 	
-	//@Test
+	@Test
 	public void testIDRedundantChance() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDRedundantChance(),175.0,null);	
 	}
 	
 
-	//@Test
+	@Test
 	public void testIDTwoIndependentDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDTwoIndependentDecisions(),4.0,null);	
 	}
 	
-	//@Test
+	@Test
 	public void testIDConcatenateOrderTwoDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDConcatenateOrderTwoDecisions(),8.15,null);	
 	}
 	
-	//@Test
+	@Test
 	public void testIDThreeIndependentDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDThreeIndependentDecisions(),37.63,null);	
 	}
 	
-	//@Test
+	@Test
 	public void testIDStatesTies() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDStatesTies(),13.7,null);	
 	}
 	
-	//@Test
+	@Test
 	public void testIDStatesTiesPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDStatesTiesPerfectKnowledge(),1.5,null);	
 	}
 	
 
-	//@Test
+	@Test
 	public void testIDConsecutiveDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDConsecutiveDecisions(),4.57501894,null);	
 	}
@@ -167,7 +167,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
-	//@Test
+	@Test
 	public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
@@ -289,7 +289,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
-	//@Test
+	@Test
 	public void testEvaluationIDUniformDiagnosisProblem()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
@@ -325,7 +325,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 	}
 	
 
-	//@Test
+	@Test
 	//TODO Review the minor error in test
 	public void testPreAndPostResolutionEvidenceIDDecisionTestProblem() throws NotEvaluableNetworkException{
 		ProbNet diagram = iD_DecisionTestProblemWithSV;
@@ -406,7 +406,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
-	//@Test
+	@Test
 	public void testOptimizedPolicyIDPerfectKnowledge()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
@@ -447,7 +447,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
-	//@Test
+	@Test
 	public void testExpectedUtilitiesIDPerfectKnowledge()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
@@ -491,7 +491,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
-	//@Test
+	@Test
 	public void testAPrioriProbabilitiesIDTestAlways()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,

@@ -1131,10 +1131,14 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         Node node = null; // The potential will be added here
         
         addPotentialVariables(potential, isMarkovNetwork, originalProbNet);
+        int numPotentialVariables = potentialVariables.size();
         if (potential.isUtility()) { // Create node without variable
+        	if (numPotentialVariables > 0 && isMarkovNetwork) {
+        		addUndirectedLinks(potential);
+        	}
             node = addUtilityPotential(potential, potentialVariables, isMarkovNetwork);
         } else {
-            if (potentialVariables.size() > 0) {
+            if (numPotentialVariables > 0) {
             	if (isMarkovNetwork || containsConstraint(OnlyUndirectedLinks.class)) {
             		addUndirectedLinks(potential);
             		node = getNode(potential.getVariables().get(0));
@@ -1176,17 +1180,22 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
     }
     
     private void addVariables(Collection<Variable> variables, ProbNet originalProbNet) {
-        for (Variable variable : variables) {
-            // add the variables that were not yet in the network
-            if (getNode(variable) == null) {
-            	NodeType nodeType = originalProbNet.getNode(variable).getNodeType();
-            	if (nodeType == NodeType.CHANCE) {
-            		addNode(variable, NodeType.CHANCE);
-            	} else {
-            		addNode(variable, NodeType.DECISION);
-            	}
-            }
-        }
+    	for (Variable variable : variables) {
+    		// add the variables that were not yet in the network
+    		if (getNode(variable) == null) {
+    			Node originalNode = originalProbNet.getNode(variable);
+    			if (originalProbNet == this || originalNode == null) {
+    				addNode(variable, NodeType.CHANCE);
+    			} else {
+    				NodeType nodeType = originalNode.getNodeType();
+    				if (nodeType == NodeType.CHANCE) {
+    					addNode(variable, NodeType.CHANCE);
+    				} else {
+    					addNode(variable, NodeType.DECISION);
+    				}
+    			}
+    		}
+    	}
     }
 
 	private void addUndirectedLinks(Potential potential) {

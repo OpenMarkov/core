@@ -57,7 +57,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 		testMEUAndStrategy(IDFactory.buildIDOneDecision(),87.4,null);	
 	}
 	
-	////@Test
+	@Test
 	public void testIDPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDPerfectKnowledge(),9.72,null);	
 	}

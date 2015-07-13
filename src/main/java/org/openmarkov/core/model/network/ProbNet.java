@@ -143,9 +143,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 		ProbNet newProbNet = new ProbNet(MarkovNetworkType.getUniqueInstance());
 		List<Potential> potentials = getPotentials();
 		for (Potential potential : potentials) {
-			if (potential.getPotentialRole() != PotentialRole.UTILITY) {
-				addPotential(potential);
-			}
+			addPotential(potential);
 		}
 		newProbNet.setConstantPotentials(constantPotentials);
 		return newProbNet;
@@ -1235,6 +1233,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 			}
 		} else {
 			if (potentialVariables.size() > 0) {
+				addUndirectedLinks(potential);
 				assignedNode = getNode(potentialVariables.get(0));
 				assignedNode.addPotential(potential);
 			} else {

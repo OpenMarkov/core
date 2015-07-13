@@ -623,7 +623,7 @@ public class DiscretePotentialOperationsTest {
 		Object[] potentials = DiscretePotentialOperations.maximize(
 				commonVariables.t2, commonVariables.a);
 		TablePotential maximizedPotential = (TablePotential) potentials[0];
-		GTablePotential<Choice> choicesPotential = (GTablePotential<Choice>) potentials[1];
+		GTablePotential choicesPotential = (GTablePotential) potentials[1];
 		// Test maximized potential
 		// Check variables
 		List<Variable> variablesPotential = maximizedPotential.getVariables();
@@ -642,17 +642,17 @@ public class DiscretePotentialOperationsTest {
 		assertEquals(1, variablesPotential.size());
 		assertTrue(variablesPotential.contains(commonVariables.b));
 		// Check table
-		Choice choice = choicesPotential.elementTable.get(0); // table[0]
+		Choice choice = (Choice) choicesPotential.elementTable.get(0); // table[0]
 		assertEquals(2, choice.getValues()[0]);
 		assertEquals(commonVariables.a, choice.getVariable());
 		assertEquals(1, choice.getNumValues());
 
-		choice = choicesPotential.elementTable.get(1); // table[1]
+		choice = (Choice) choicesPotential.elementTable.get(1); // table[1]
 		assertEquals(1, choice.getValues()[0]);
 		assertEquals(commonVariables.a, choice.getVariable());
 		assertEquals(1, choice.getNumValues());
 
-		choice = choicesPotential.elementTable.get(2); // table[2]
+		choice = (Choice) choicesPotential.elementTable.get(2); // table[2]
 		assertEquals(0, choice.getValues()[0]);
 		assertEquals(commonVariables.a, choice.getVariable());
 		assertEquals(1, choice.getNumValues());

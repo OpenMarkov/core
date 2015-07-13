@@ -1140,7 +1140,7 @@ public final class DiscretePotentialOperations {
         	resultingPotential.setUtilityVariable(composeVariable(fSVariablesToKeep));
         }
 
-        GTablePotential<Choice> gResult = new GTablePotential<Choice>(variablesToKeep, role);
+        GTablePotential gResult = new GTablePotential(variablesToKeep, role);
         int numStates = ((Variable) fSVariableToMaximize).getNumStates();
         int[] statesChoosed;
         Choice choice;

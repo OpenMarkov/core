@@ -13,6 +13,7 @@ import java.awt.Choice;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -89,7 +90,7 @@ public abstract class Evaluation {
 	 *  no decisions. 
 	 * @throws WrongCriterionException 
 	 * @throws NonProjectablePotentialException */
-	public HashMap<Variable, GTablePotential<Choice>> optimalStrategy() 
+	public Map<Variable, GTablePotential> optimalStrategy() 
 	throws WrongGraphStructureException, 
     ConstraintViolationException, CanNotDoEditException, DoEditException, 
     NonProjectablePotentialException, WrongCriterionException {

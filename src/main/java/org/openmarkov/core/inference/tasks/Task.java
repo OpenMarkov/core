@@ -16,6 +16,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Task {
 
@@ -214,7 +215,7 @@ public abstract class Task {
      * @return The posterior probabilities and utilities of the network.
      * @throws IncompatibleEvidenceException
      */
-    public abstract HashMap<Variable,TablePotential> getProbsAndUtilities() throws
+    public abstract Map<Variable,TablePotential> getProbsAndUtilities() throws
             IncompatibleEvidenceException,
             UnexpectedInferenceException;
 
@@ -224,7 +225,7 @@ public abstract class Task {
      * @return The posterior probabilities and utilities of the network.
      * @throws IncompatibleEvidenceException
      */
-    public abstract HashMap<Variable,TablePotential> getProbsAndUtilities(List<Variable> variablesOfInterest) throws
+    public abstract Map<Variable,TablePotential> getProbsAndUtilities(List<Variable> variablesOfInterest) throws
             IncompatibleEvidenceException,
             UnexpectedInferenceException;
 

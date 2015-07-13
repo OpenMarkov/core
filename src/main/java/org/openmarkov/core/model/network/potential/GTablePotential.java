@@ -17,13 +17,13 @@ import org.openmarkov.core.model.network.Variable;
 
 /** A generalized <code>TablePotential</code> that contains an 
  * <code>Objects</code> table of the same type: <code>Element</code>. */
-public class GTablePotential<Element> extends TablePotential {
+public class GTablePotential extends TablePotential {
 
     // Attributes
     /** The array buffer into which the elements of the 
      *   <code>GeneralizedTablePotential</code> are stored. This attribute is 
      *   public for the sake of efficiency. */
-    public List<Element> elementTable; 
+    public List elementTable; 
 
     // Constructors
     /**
@@ -36,9 +36,9 @@ public class GTablePotential<Element> extends TablePotential {
         if (numVariables != 0) {
             int sizeTable = dimensions[numVariables - 1] * 
                 offsets[numVariables - 1];
-                elementTable = new ArrayList<Element>(sizeTable);
+                elementTable = new ArrayList(sizeTable);
         } else {// In this case the potential is a constant
-            elementTable =  new ArrayList<Element>(1);
+            elementTable =  new ArrayList(1);
         }
     }
     
@@ -47,7 +47,7 @@ public class GTablePotential<Element> extends TablePotential {
      * @param role
      * @param elementTable
      */
-    public GTablePotential(List<Variable> variables, PotentialRole role, List<Element> elementTable)  {
+    public GTablePotential(List<Variable> variables, PotentialRole role, List elementTable)  {
     	this(variables, role);
     	this.elementTable = elementTable; 
     }

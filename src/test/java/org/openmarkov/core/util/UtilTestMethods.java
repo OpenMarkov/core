@@ -64,7 +64,7 @@ public class UtilTestMethods {
      * @param coordinateVariables <code>int[]</code>.
      * @param potential <code>GTablePotential</code>. */
 	public static Object getConfiguration(List<Variable> variables, 
-    		int[] coordinateVariables, GTablePotential<?> potential) {
+    		int[] coordinateVariables, GTablePotential potential) {
     	int position = 
     		getConfigurationPosition(variables, coordinateVariables, potential);
     	return potential.elementTable.get(position);

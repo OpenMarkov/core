@@ -1,9 +1,11 @@
 package org.openmarkov.core.inference;
 
 import org.junit.Ignore;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.tasks.Task;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -12,6 +14,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
@@ -33,9 +36,11 @@ public abstract class InferenceTaskTest {
 	 * @param network
 	 * @return An InferenceAlgorithm for 'network'. If the network is not evaluable
 	 * with the algorithm then the test calling this method is skipped.
+	 * @throws UnexpectedInferenceException 
+	 * @throws IncompatibleEvidenceException 
 	 */
 	protected Task buildInferenceAlgorithmAndSkipTestIfNotEvaluable(
-			ProbNet network) {
+			ProbNet network) throws IncompatibleEvidenceException, UnexpectedInferenceException {
 		boolean isEvaluable;
 		Task algorithm = null;
 
@@ -63,9 +68,11 @@ public abstract class InferenceTaskTest {
 	 * @param network
 	 * @return An InferenceAlgorithm for 'network'. If the network is not evaluable
 	 * with the algorithm then the test calling this method is skipped.
+	 * @throws UnexpectedInferenceException 
+	 * @throws IncompatibleEvidenceException 
 	 */
 	protected Task buildInferenceTaskAndSkipTestIfNotEvaluable(
-			ProbNet network) {
+			ProbNet network) throws IncompatibleEvidenceException, UnexpectedInferenceException {
 		boolean isEvaluable;
 		Task task = null;
 		
@@ -86,8 +93,10 @@ public abstract class InferenceTaskTest {
 	 * @throws NotEvaluableNetworkException
 	 * Builds an InferenceAlgorithm object with 'probNet'.
 	 * This method must be implemented by each inference test class.
+	 * @throws UnexpectedInferenceException 
+	 * @throws IncompatibleEvidenceException 
 	 */
-	public abstract Task buildInferenceTask(ProbNet probNet) throws NotEvaluableNetworkException;
+	public abstract Task buildInferenceTask(ProbNet probNet) throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException;
 
 	protected void setUp() throws Exception {
 		// TODO Auto-generated method stub

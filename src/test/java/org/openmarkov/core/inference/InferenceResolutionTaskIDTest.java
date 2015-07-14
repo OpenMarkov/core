@@ -166,12 +166,14 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
+	 * @throws UnexpectedInferenceException 
+	 * @throws IncompatibleEvidenceException 
 	 */
 	@Test
 	public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
-			ConstraintViolationException, NotEvaluableNetworkException {
+			ConstraintViolationException, NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
 		ProbNet network = IDFactory.buildIDDecideTest();
 		Task algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
 		
@@ -288,12 +290,14 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
+	 * @throws UnexpectedInferenceException 
+	 * @throws IncompatibleEvidenceException 
 	 */
 	@Test
 	public void testEvaluationIDUniformDiagnosisProblem()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
-			ConstraintViolationException, NotEvaluableNetworkException {
+			ConstraintViolationException, NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
 		ProbNet diagram;
 
 		diagram = iD_UniformDiagnosisProblem;
@@ -327,7 +331,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 	@Test
 	//TODO Review the minor error in test
-	public void testPreAndPostResolutionEvidenceIDDecisionTestProblem() throws NotEvaluableNetworkException{
+	public void testPreAndPostResolutionEvidenceIDDecisionTestProblem() throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException{
 		ProbNet diagram = iD_DecisionTestProblemWithSV;
 		
 		Task algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(diagram);
@@ -405,12 +409,14 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
+	 * @throws UnexpectedInferenceException 
+	 * @throws IncompatibleEvidenceException 
 	 */
 	@Test
 	public void testOptimizedPolicyIDPerfectKnowledge()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
-			ConstraintViolationException, NotEvaluableNetworkException {
+			ConstraintViolationException, NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
 		ProbNet network;
 		
 		network = IDFactory.buildIDPerfectKnowledge();
@@ -446,12 +452,14 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
+	 * @throws UnexpectedInferenceException 
+	 * @throws IncompatibleEvidenceException 
 	 */
 	@Test
 	public void testExpectedUtilitiesIDPerfectKnowledge()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
-			ConstraintViolationException, NotEvaluableNetworkException {
+			ConstraintViolationException, NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
 		ProbNet network;
 		
 		network = IDFactory.buildIDPerfectKnowledge();
@@ -490,12 +498,14 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
+	 * @throws UnexpectedInferenceException 
+	 * @throws IncompatibleEvidenceException 
 	 */
 	@Test
 	public void testAPrioriProbabilitiesIDTestAlways()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
-			ConstraintViolationException, NotEvaluableNetworkException {
+			ConstraintViolationException, NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
 		ProbNet diagram;
 		
 		diagram = IDFactory.buildIDTestAlways();

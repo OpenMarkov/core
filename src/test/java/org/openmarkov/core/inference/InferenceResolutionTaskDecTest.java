@@ -173,11 +173,13 @@ public abstract class InferenceResolutionTaskDecTest extends InferenceTaskTest {
 	 * @throws NodeNotFoundException
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
+	 * @throws UnexpectedInferenceException 
+	 * @throws IncompatibleEvidenceException 
 	 */
 	public void testEvaluationIDDecisionTestProblem(ProbNet diagram)
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
-			ConstraintViolationException, NotEvaluableNetworkException {
+			ConstraintViolationException, NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
 		Variable variableX = null;
 		Variable variableY = null;
 		Variable variableT = null;
@@ -353,7 +355,7 @@ public abstract class InferenceResolutionTaskDecTest extends InferenceTaskTest {
 	
 	
 	//@Test
-	public void testEvaluationSimpleIDWithoutDecisions(){
+	public void testEvaluationSimpleIDWithoutDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		
 		testMEU(IDFactory.createSimpleIDWithoutDecisions(),83.7);
 	}
@@ -393,7 +395,7 @@ public abstract class InferenceResolutionTaskDecTest extends InferenceTaskTest {
 	
 	
 	
-	private Intervention getOptimalStrategy(ProbNet id) {
+	private Intervention getOptimalStrategy(ProbNet id) throws IncompatibleEvidenceException, UnexpectedInferenceException {
 		Intervention strategy = null;
 		Task algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(id);
 		try {
@@ -440,7 +442,7 @@ public abstract class InferenceResolutionTaskDecTest extends InferenceTaskTest {
 		assertEquals(v, x.values[0], maxError);
 
 	}
-protected void testMEU(ProbNet diagram,double expectedMeu){
+protected void testMEU(ProbNet diagram,double expectedMeu) throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		
 		Task algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(diagram);
 

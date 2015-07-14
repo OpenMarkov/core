@@ -97,10 +97,12 @@ public abstract class InferenceResolutionTaskBNTest extends InferenceTaskTest {
 	/**
 	 * @throws NodeNotFoundException
 	 * Tests the a priori probabilities obtained in the network bN_ABC
+	 * @throws UnexpectedInferenceException 
+	 * @throws IncompatibleEvidenceException 
 	 */
 	//@Test
 	public void testAPrioriProbabilitiesBN_ABC()
-			throws NodeNotFoundException {
+			throws NodeNotFoundException, IncompatibleEvidenceException, UnexpectedInferenceException {
 		Task elimination1;
 		ProbNet network;
 
@@ -127,10 +129,12 @@ public abstract class InferenceResolutionTaskBNTest extends InferenceTaskTest {
 	/**
 	 * @throws NodeNotFoundException
 	 * Tests the a priori probabilities obtained in the network bN_ABC
+	 * @throws UnexpectedInferenceException 
+	 * @throws IncompatibleEvidenceException 
 	 */
 	//@Test
 	public void testAPrioriProbabilitiesBN_Asia()
-			throws NodeNotFoundException {
+			throws NodeNotFoundException, IncompatibleEvidenceException, UnexpectedInferenceException {
 
 		String namesVariables[]={"A","B","T","L","TOrC","X","D","S"};
 		double expectedProbs[] = {0.01,0.45,0.0104,0.055,0.064828,0.11029004,0.3974534,0.5};
@@ -144,10 +148,12 @@ public abstract class InferenceResolutionTaskBNTest extends InferenceTaskTest {
 	 * @param namesVariables
 	 * @param expectedProbs
 	 * Performs a complete propagation and checks the probabilities obtained
+	 * @throws UnexpectedInferenceException 
+	 * @throws IncompatibleEvidenceException 
 	 */
 	private void checkVariablesAndProbabilities(ProbNet network,String[] namesVariables,EvidenceCase preResolutionEvidence,
 			EvidenceCase postResolutionEvidence,
-			double[] expectedProbs) {
+			double[] expectedProbs) throws IncompatibleEvidenceException, UnexpectedInferenceException {
 
 		Task elimination = buildInferenceTaskAndSkipTestIfNotEvaluable(network);
 
@@ -188,10 +194,12 @@ public abstract class InferenceResolutionTaskBNTest extends InferenceTaskTest {
 	/**
 	 * @throws NodeNotFoundException
 	 * Tests the a priori probabilities obtained in the network bN_ABC
+	 * @throws UnexpectedInferenceException 
+	 * @throws IncompatibleEvidenceException 
 	 */
 	//@Test
 	public void testAPosterioriProbabilitiesBN_Asia()
-			throws NodeNotFoundException {
+			throws NodeNotFoundException, IncompatibleEvidenceException, UnexpectedInferenceException {
 		ProbNet network;
 		int numIter=10;
 
@@ -272,9 +280,10 @@ public abstract class InferenceResolutionTaskBNTest extends InferenceTaskTest {
 	 * @throws IncompatibleEvidenceException
 	 * Tests if the inference on a network with a deterministic variable throws IncompatibleEvidenceException
 	 * if there is evidence on the state whose probability is 0.
+	 * @throws UnexpectedInferenceException 
 	 */
 	//@Test (expected = IncompatibleEvidenceException.class)
-	public void testIncompatibleEvidenceBN_X() throws IncompatibleEvidenceException {
+	public void testIncompatibleEvidenceBN_X() throws IncompatibleEvidenceException, UnexpectedInferenceException {
 		ProbNet network;
 
 		network = bN_X;
@@ -341,10 +350,11 @@ public abstract class InferenceResolutionTaskBNTest extends InferenceTaskTest {
 	 * @throws IncompatibleEvidenceException
 	 * Tests if the inference on the network Asia throws IncompatibleEvidenceException
 	 * if the evidence is (T=absent,L=absent,TOrC=yes).
+	 * @throws UnexpectedInferenceException 
 	 */
 
 	//@Test (expected = IncompatibleEvidenceException.class)
-	public void testIncompatibleEvidenceBN_Asia() throws IncompatibleEvidenceException {
+	public void testIncompatibleEvidenceBN_Asia() throws IncompatibleEvidenceException, UnexpectedInferenceException {
 		ProbNet network = null;
 
 		try {

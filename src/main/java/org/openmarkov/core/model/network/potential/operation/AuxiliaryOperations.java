@@ -20,9 +20,9 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-
 /** Auxiliary methods for <code>DiscretePotentialOperations</code> and 
- * <code>PotentialOperations</code> classes */
+ * <code>PotentialOperations</code> classes
+ * @author Manuel Arias */
 public class AuxiliaryOperations {
 
 	// Constructor
@@ -37,7 +37,7 @@ public class AuxiliaryOperations {
 	 *   <code>TablePotential</code>s
 	 * @return An <code>ArrayList</code> of <code>TablePotential</code>s without
 	 *   the constant potentials. */
-    public static List<TablePotential> getNonConstantPotentials (List<TablePotential> potentials)
+    public static List<TablePotential> getNonConstantPotentials (Collection<TablePotential> potentials)
     {
 		List<TablePotential> properPotentials = new ArrayList<TablePotential>();
 		for (TablePotential potential : potentials) {
@@ -79,7 +79,7 @@ public class AuxiliaryOperations {
 
 	/** @param potentials <code>Collection</code> of <code>Potential</code>s
 	 * @return <code>ArrayList</code> of <code>Variable</code>s. */
-	public static List<Variable> getUnionVariables(List<? extends Potential> potentials) {
+	public static List<Variable> getUnionVariables(Collection<? extends Potential> potentials) {
 		
 		Set<Variable> variables = new HashSet<>();
 		for (Potential potential : potentials) {
@@ -94,15 +94,11 @@ public class AuxiliaryOperations {
 	 *   variables in <code>allVariables</code> whose names are contained in 
 	 *   <code>selectedVariables</code>, in the same order they are stored in 
 	 *   <code>variablesNames</code> */
-    public static List<Variable> getVariables (List<Variable> allVariables, String[] variablesNames)
-    {
+    public static List<Variable> getVariables (List<Variable> allVariables, String[] variablesNames) {
         List<Variable> variables = new ArrayList<Variable> ();
-        for (String name : variablesNames)
-        {
-            for (Variable variable : allVariables)
-            {
-                if (name.contentEquals (variable.getName ()))
-                {
+        for (String name : variablesNames) {
+            for (Variable variable : allVariables) {
+                if (name.contentEquals (variable.getName ())) {
                     variables.add (variable);
                 }
             }

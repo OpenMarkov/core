@@ -7,6 +7,7 @@
 package org.openmarkov.core.inference;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -271,7 +272,7 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
      */
     public static List<List<Variable>> getOrder(ProbNet probNet) {
         List<List<Variable>> copyOfOrder = new ArrayList<>();
-        for (List<Variable> list : calculatePartialOrder(probNet)) {
+        for (Collection<Variable> list : calculatePartialOrder(probNet)) {
             copyOfOrder.add(new ArrayList<>(list));
         }
         return copyOfOrder;
@@ -282,11 +283,11 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
      * @return <code>ArrayList</code> of <code>ArrayList</code> of
      *         <code>Variables</code> with the partial order of the received probNet
      */
-    public static List<List<Variable>> calculatePartialOrder(ProbNet probNet) {
+    public static List<Collection<Variable>> calculatePartialOrder(ProbNet probNet) {
         ProbNet idCopy = probNet.copy(); // Copy influence diagram
 
         /** A partial order is a list of lists of variables. */
-        List<List<Variable>> partialOrder;
+        List<Collection<Variable>> partialOrder;
 
         // Get decisions (only) in elimination order
         int numDecisions = idCopy.getNumNodes(NodeType.DECISION);
@@ -350,12 +351,23 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
     public static List<Variable> getAnAdmissibleOrderOfDecisions(ProbNet probNet){
         List<Variable> decisions = new ArrayList<>();
 
-        for (List<Variable> variablesSet:calculatePartialOrder(probNet)){
-            if (variablesSet.size()>0 && probNet.getNode(variablesSet.get(0)).getNodeType()==NodeType.DECISION){
+        for (Collection<Variable> variablesSet:calculatePartialOrder(probNet)){
+            if (containsOneDecision(probNet, variablesSet)) {
                 decisions.addAll(variablesSet);
             }
         }
         return decisions;
+    }
+    
+    private static boolean containsOneDecision(ProbNet probNet, Collection<Variable> variables) {
+    	boolean containsOneDecision = false;
+    	if (variables.size() == 1) {
+    		for (Variable variable : variables) {
+    			containsOneDecision = probNet.getNode(variable).getNodeType() == NodeType.DECISION;
+    		}	
+    	}
+    	
+    	return containsOneDecision;
     }
 
     /**
@@ -366,13 +378,13 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
      * @return An order that has been pruned by eliminating the variables that
      *         are in queryVariables or in evidenceVariables or in conditioningVariables or not in variablesToEliminate
      */
-    public static List<List<Variable>> projectPartialOrder(ProbNet probNet, List<Variable> queryVariables,
+    public static List<Collection<Variable>> projectPartialOrder(ProbNet probNet, List<Variable> queryVariables,
                                                            List<Variable> evidenceVariables, List<Variable> conditioningVariables, List<Variable> variablesToEliminate) {
         List<List<Variable>> newOrder;
-        List<List<Variable>> newOrder2;
+        List<Collection<Variable>> newOrder2;
         // Remove variables
         newOrder = new ArrayList<>();
-        for (List<Variable> auxArray : calculatePartialOrder(probNet)) {
+        for (Collection<Variable> auxArray : calculatePartialOrder(probNet)) {
             List<Variable> cloneAuxArray;
             cloneAuxArray = new ArrayList<>(auxArray);
             for (Variable auxVar : auxArray) {
@@ -398,19 +410,20 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
     /** @return A <code>String</code> with an array of arrays. */
     public static String toStringPartialOrder(ProbNet probNet) {
 
-        List<List<Variable>> partialOrder = calculatePartialOrder(probNet);
+        List<Collection<Variable>> partialOrder = calculatePartialOrder(probNet);
 
         StringBuilder buffer = new StringBuilder();
         int numArrays = partialOrder.size();
         for (int i = 0; i < numArrays; i++) {
-            List<Variable> array = partialOrder.get(i);
+            Collection<Variable> array = partialOrder.get(i);
             int arraySize = array.size();
             if (arraySize > 1) {
                 buffer.append("{");
             }
-            for (int j = 0; j < arraySize; j++) {
-                buffer.append(array.get(j));
-                if (j < arraySize - 1) {
+            int j = 0;
+            for (Variable variable : array) {
+                buffer.append(variable);
+                if (j++ < arraySize - 1) {
                     buffer.append(", ");
                 }
             }
@@ -427,10 +440,10 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
     public static int getNumVariables(ProbNet probNet) {
         int num = 0;
 
-        List<List<Variable>> partialOrder = calculatePartialOrder(probNet);
+        List<Collection<Variable>> partialOrder = calculatePartialOrder(probNet);
 
         if (partialOrder != null) {
-            for (List<Variable> auxArray : partialOrder) {
+            for (Collection<Variable> auxArray : partialOrder) {
                 if (auxArray != null) {
                     num = num + auxArray.size();
                 }
@@ -440,8 +453,6 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
         }
         return num;
     }
-
-
 
     public static List<List<Variable>> resetPartialOrderToTrivial(ProbNet probNet){
         List<List<Variable>> partialOrder;

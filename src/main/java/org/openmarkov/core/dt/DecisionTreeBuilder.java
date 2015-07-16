@@ -7,6 +7,7 @@
 package org.openmarkov.core.dt;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -337,9 +338,9 @@ public class DecisionTreeBuilder
     {
         List<Variable> variables;
         //PartialOrder partialOrder = null;
-        List<List<Variable>> partialOrder = BasicOperations.calculatePartialOrder(probNet); //new PartialOrder (probNet);
+        List<Collection<Variable>> partialOrder = BasicOperations.calculatePartialOrder(probNet); //new PartialOrder (probNet);
         variables = new ArrayList<> (BasicOperations.getNumVariables(probNet)); //(partialOrder.getNumVariables ());
-        for (List<Variable> variableSubList : partialOrder) //partialOrder.getOrder ())
+        for (Collection<Variable> variableSubList : partialOrder) //partialOrder.getOrder ())
         {
             variables.addAll (variableSubList);
         }

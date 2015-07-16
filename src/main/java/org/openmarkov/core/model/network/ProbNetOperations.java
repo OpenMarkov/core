@@ -993,29 +993,62 @@ public class ProbNetOperations {
 
 
     /**
-     * Returns whether the decisionNode has a predecessor decision
-     * The path must not include the removedNode.
-     * @param decisionNode
+     * Returns whether the node has a predecessor decision
+     * @param node
      * @param removedNode
      * @param probNet
      * @return
      */
-    public static boolean hasPredecessorDecision (Node decisionNode,
+    public static boolean hasPredecessorDecision (Node node,
                                                          ProbNet probNet)
     {
         Stack<Node> predecessors = new Stack<>();
-        predecessors.add (decisionNode);
+        predecessors.add (node);
         boolean found = false;
         while(!found && !predecessors.isEmpty ())
         {
-            Node node = predecessors.pop ();
-            found = !node.equals (decisionNode)  && node.getNodeType () == NodeType.DECISION;
-            for(Node parent : node.getParents ())
+            Node predecessor = predecessors.pop ();
+            found = !predecessor.equals (node)  && predecessor.getNodeType () == NodeType.DECISION;
+            for(Node parent : predecessor.getParents ())
             {
                 predecessors.push (parent);
             }
         }
         return found;
+    }
+    
+    /**
+     * Returns the list of predecessor decisions of node decisionNode
+     * @param node
+     * @param removedNode
+     * @param probNet
+     * @return 
+     */
+    public static List<Node> getPredecessorDecisions (Node node, ProbNet probNet)
+    {
+    	List<Node> predecessorDecisions = new ArrayList<>();
+        Stack<Node> predecessors = new Stack<>();
+        // push first the parents of node
+        for(Node parent : node.getParents ())
+    	{
+    		predecessors.push (parent);
+    	}
+        // loop until we have processed all predecessors
+        while(!predecessors.isEmpty ())
+        {
+            Node predecessor = predecessors.pop ();
+            if(predecessor.getNodeType () == NodeType.DECISION)
+            {
+            	predecessorDecisions.add(predecessor);
+            }else
+            {
+            	for(Node parent : predecessor.getParents ())
+            	{
+            		predecessors.push (parent);
+            	}
+            }
+        }
+        return predecessorDecisions;
     }
 
     public static List<Node> getDecisionSequence(ProbNet probNet) {

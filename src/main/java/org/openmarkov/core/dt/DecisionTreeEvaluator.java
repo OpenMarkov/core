@@ -105,7 +105,7 @@ public class DecisionTreeEvaluator {
                 	 State state = alwaysObservedVariable.getStates ()[i];
                      int originalState = originalVariable.getStateIndex(alwaysObservedVariable.getStates()[i]);
 	                 treeNode = new DecisionTreeNode (originalVariable, originalState, parentNode);
-                     ProbNet restrictedProbNet = applyRestrictionsAndReveal(probNet, alwaysObservedNode, state, originalProbNet);
+                     ProbNet restrictedProbNet = instantiate(probNet, alwaysObservedNode, state, originalProbNet);
                      DecisionTreeNode node =  resolve (restrictedProbNet, originalProbNet, treeNode);
                      // Join
 	                 utility += node.getUtility() * node.getProbability();
@@ -129,7 +129,7 @@ public class DecisionTreeEvaluator {
  	                 	    State state = decisionVariable.getStates ()[i];
     	                    int originalState = originalVariable.getStateIndex(decisionVariable.getStates()[i]);
  	                    	treeNode = new DecisionTreeNode (originalVariable, originalState, parentNode);
- 	                        ProbNet restrictedProbNet = applyRestrictionsAndReveal (probNet, decisionNode, state, originalProbNet);
+ 	                        ProbNet restrictedProbNet = instantiate (probNet, decisionNode, state, originalProbNet);
  	                        DecisionTreeNode node = resolve (restrictedProbNet, originalProbNet, treeNode);
  	                        // All probabilities should be equal
  	                        treeNode.setProbability(node.getProbability());
@@ -294,22 +294,41 @@ private double getUtility(ProbNet probNet, HashMap<Variable, Integer> scenarioMa
 		}
 		return scenarioMap;
 	}
-	private static ProbNet applyRestrictionsAndReveal(ProbNet probNet, Node node, State state, ProbNet originalProbNet)
+	private static ProbNet instantiate(ProbNet probNet, Node node, State state, ProbNet originalProbNet)
     {
-        ProbNet probNetCopy = probNet.copy ();
+        ProbNet instantiatedNet = probNet.copy ();
         
         for (Link<Node> link : probNet.getLinks (node))
         {
             if(link.getNode1 ().equals (node)) // Our node is the source node
             {
-                Node destinationNode = probNetCopy.getNode (link.getNode2 ().getVariable ());
+                Node destinationNode = instantiatedNet.getNode (link.getNode2 ().getVariable ());
+
+                // Remove link between restricting node and restricted node
+            	instantiatedNet.removeLink(link.getNode1().getVariable(), link.getNode2().getVariable(),true);
+            	
                 if(destinationNode.getNodeType () == NodeType.CHANCE)
                 {
                     if (link.hasRevealingConditions ())
                     {
                         if (link.getRevealingStates ().contains (state))
                         {
-                            destinationNode.setAlwaysObserved (true);
+                        	List<Node> predecessorDecisions = ProbNetOperations.getPredecessorDecisions(destinationNode, instantiatedNet);
+                        	// If it has predecessor decisions, do not reveal it yet, but add revealing links
+                        	// from every predecessor decision to the node
+                        	if(predecessorDecisions.isEmpty())
+                        	{
+                        		destinationNode.setAlwaysObserved (true);
+                        	}else
+                        	{
+                        		for(Node predecessorDecision : predecessorDecisions)
+                        		{
+                        			Link<Node> revealingArc = instantiatedNet.addLink(predecessorDecision, destinationNode, true);
+                        			State[] predecessorDecisionStates = predecessorDecision.getVariable().getStates();
+                        			for(int i=0; i<predecessorDecisionStates.length;++i)
+                        				revealingArc.addRevealingState(predecessorDecisionStates[i]);
+                        		}
+                        	}
                         }
                     }
                 }
@@ -320,8 +339,6 @@ private double getUtility(ProbNet probNet, HashMap<Variable, Integer> scenarioMa
                 
                     if(nonRestrictedStates.isEmpty ())
                     {
-                    	// Remove link between restricting node and restricted node
-                    	probNetCopy.removeLink(link.getNode1().getVariable(), link.getNode2().getVariable(),true);
                         // Remove destination node and its descendants!
                         Stack<Node> disposableNodes = new Stack<> ();
                         disposableNodes.push (destinationNode);
@@ -331,13 +348,13 @@ private double getUtility(ProbNet probNet, HashMap<Variable, Integer> scenarioMa
                             // If it's a decision node, check if there is another 
                             // path to it from another decision
                             if(disposableNode.getNodeType() != NodeType.DECISION ||
-                                    !ProbNetOperations.hasPredecessorDecision(disposableNode, probNetCopy))
+                                    !ProbNetOperations.hasPredecessorDecision(disposableNode, instantiatedNet))
                             {
-                                for(Node descendant : probNetCopy.getChildren (disposableNode))
+                                for(Node descendant : instantiatedNet.getChildren (disposableNode))
                                 {
                                     disposableNodes.push(descendant);
                                 }
-                                probNetCopy.removeNode (disposableNode);
+                                instantiatedNet.removeNode (disposableNode);
                             }
                         }
                         
@@ -366,8 +383,8 @@ private double getUtility(ProbNet probNet, HashMap<Variable, Integer> scenarioMa
             }
          } 
         
-        probNetCopy.removeNode (probNetCopy.getNode (node.getVariable ()));
-        return probNetCopy;
+        instantiatedNet.removeNode (instantiatedNet.getNode (node.getVariable ()));
+        return instantiatedNet;
     }
  
 	    	

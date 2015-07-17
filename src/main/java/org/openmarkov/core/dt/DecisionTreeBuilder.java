@@ -338,7 +338,7 @@ public class DecisionTreeBuilder
     {
         List<Variable> variables;
         //PartialOrder partialOrder = null;
-        List<Collection<Variable>> partialOrder = BasicOperations.calculatePartialOrder(probNet); //new PartialOrder (probNet);
+        List<List<Variable>> partialOrder = BasicOperations.calculatePartialOrder(probNet); //new PartialOrder (probNet);
         variables = new ArrayList<> (BasicOperations.getNumVariables(probNet)); //(partialOrder.getNumVariables ());
         for (Collection<Variable> variableSubList : partialOrder) //partialOrder.getOrder ())
         {

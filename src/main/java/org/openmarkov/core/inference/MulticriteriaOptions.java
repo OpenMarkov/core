@@ -10,7 +10,11 @@ public class MulticriteriaOptions implements Cloneable{
 	private Type multicriteriaType;
 	
 	private String mainUnit;
-	
+
+	private boolean unicriterionOptionsShowed = false;
+
+	private boolean ceOptionsShowed = false;
+
 	public MulticriteriaOptions() {
 		this.mainUnit = " ";
 		this.multicriteriaType = Type.UNICRITERION;
@@ -45,5 +49,20 @@ public class MulticriteriaOptions implements Cloneable{
 	public MulticriteriaOptions clone(){
 		return new MulticriteriaOptions(this);
 	}
-	
+
+	public boolean isUnicriterionOptionsShowed() {
+		return unicriterionOptionsShowed;
+	}
+
+	public void setUnicriterionOptionsShowed(boolean unicriterionOptionsShowed) {
+		this.unicriterionOptionsShowed = unicriterionOptionsShowed;
+	}
+
+	public boolean isCeOptionsShowed() {
+		return ceOptionsShowed;
+	}
+
+	public void setCeOptionsShowed(boolean ceOptionsShowed) {
+		this.ceOptionsShowed = ceOptionsShowed;
+	}
 }

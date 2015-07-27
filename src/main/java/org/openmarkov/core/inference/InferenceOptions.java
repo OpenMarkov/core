@@ -31,8 +31,6 @@ public class InferenceOptions {
 	
 	private TemporalOptions temporalOptions;
 	
-	private boolean launchedBefore = false;
-	
 	// Constructor
 	public InferenceOptions(ProbNet probNet, Variable simulationIndexVariable) {
 		this.probNet = probNet;
@@ -47,7 +45,6 @@ public class InferenceOptions {
 	public InferenceOptions(InferenceOptions inferenceOptions){
 		this.multiCriteriaOptions = new MulticriteriaOptions(inferenceOptions.getMultiCriteriaOptions());
 		this.temporalOptions = new TemporalOptions(inferenceOptions.getTemporalOptions());
-		this.launchedBefore = inferenceOptions.launchedBefore;
 	}
 	
 	public MulticriteriaOptions getMultiCriteriaOptions() {
@@ -107,14 +104,6 @@ public class InferenceOptions {
 			newVariable = new Variable("###SimulationIndexes###", numSimulations);
 		}
 		return newVariable;
-	}
-
-	public boolean getLaunchedBefore() {
-		return launchedBefore;
-	}
-
-	public void setLaunchedBefore(boolean launchedBefore) {
-		this.launchedBefore = launchedBefore;
 	}
 	
 	

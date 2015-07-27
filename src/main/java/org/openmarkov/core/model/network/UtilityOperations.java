@@ -54,6 +54,14 @@ public class UtilityOperations {
 	 */
 	public static void applyCEUtilityScaling(ProbNet probNet){
 		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
+
+		// Creates a effectiveness criterion
+		Criterion effectivenessCriterion = new Criterion("effectiveness");
+		effectivenessCriterion.setCECriterion(CECriterion.Effectiveness);
+
+		Criterion costCriterion = new Criterion("cost");
+		effectivenessCriterion.setCECriterion(CECriterion.Cost);
+
 		for (Node utilityNode : utilityNodes) {
 
 			// Save the actual criterion scale
@@ -63,6 +71,12 @@ public class UtilityOperations {
 			// Transform the potential with the scale
 			Potential potential = utilityNode.getPotentials().get(0);
 			potential.scalePotential(scale);
+
+			if(utilityNode.getVariable().getDecisionCriterion().getCECriterion().equals(CECriterion.Effectiveness)){
+				utilityNode.getVariable().setDecisionCriterion(effectivenessCriterion);
+			} else if(utilityNode.getVariable().getDecisionCriterion().getCECriterion().equals(CECriterion.Cost)){
+				utilityNode.getVariable().setDecisionCriterion(costCriterion);
+			}
 
 		}
 	}

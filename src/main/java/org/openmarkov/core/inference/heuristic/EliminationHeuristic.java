@@ -17,6 +17,7 @@ import javax.swing.undo.UndoableEdit;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.UsesVariable;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
@@ -130,9 +131,34 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 		return variable;
 	}
 
-    /** @return The class name */
+    /** @return The class name + list of list of variables to eliminate. */
     public String toString() {
-        return this.getClass().getName();
+    	String string = new String(this.getClass().getSimpleName() + " : ");
+    	int numLists = variablesToEliminate.size();
+    	for (int i = numLists - 1; i >= 0; i--) {
+    		List<Variable> variables = variablesToEliminate.get(i);
+    		boolean decision = false;
+    		if (variables.size() == 1) {
+    			decision = probNet.getNode(variables.get(0)).getNodeType() == NodeType.DECISION;
+    		}
+			if (decision) {
+	    		string += "{";
+			} else {
+				string += "[";
+			}
+    		for (int j = 0; j < variables.size(); j++) {
+    			string += variables.get(j).getName();
+    			if (j < variables.size() - 1) {
+    				string += ",";
+    			}
+    		}
+			if (decision) {
+	    		string += "}";
+			} else {
+				string += "]";
+			}
+    	}
+        return string;
     }
 
 	public int getNumVariablesToEliminate() {

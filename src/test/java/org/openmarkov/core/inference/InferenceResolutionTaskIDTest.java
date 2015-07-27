@@ -18,17 +18,20 @@ import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 public abstract class InferenceResolutionTaskIDTest extends InferenceResolutionTaskDecTest {
 
@@ -36,8 +39,6 @@ public abstract class InferenceResolutionTaskIDTest extends InferenceResolutionT
 	protected ProbNet iD_UniformDiagnosisProblem;
 	protected ProbNet iD_DecisionTestProblemWithoutSV;
 	protected ProbNet iD_DecisionTestProblemWithSV;
-
-
 
 	public InferenceResolutionTaskIDTest() {
 	/*iD_DiagnosisProblem = NetsFactory
@@ -49,6 +50,183 @@ iD_DecisionTestProblemWithoutSV = IDFactory
 			0.97);
 iD_DecisionTestProblemWithSV = IDFactory
 	.createInfluenceDiagramDecisionTestProblem(0.07, 0.91, 0.97);*/
+
+	}
+
+	protected void testMEUAndStrategy(ProbNet net,double expectedMEU,Intervention expectedStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(net);
+		Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+		assertEquals(expectedMEU,meuEvaluation, maxError);
+
+		// TODO No se que hace esto. Documentar
+		// testScenariosIntervention(net,algorithm);
+	}
+
+	/**
+	 * Test for diagnosis problem
+	 *
+	 * @throws ParserException
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 * @throws NodeNotFoundException
+	 * @throws ConstraintViolationException
+	 * @throws NotEvaluableNetworkException
+	 * @throws UnexpectedInferenceException
+	 * @throws IncompatibleEvidenceException
+	 */
+	public void testEvaluationIDDecisionTestProblem(ProbNet diagram)
+			throws FileNotFoundException,
+			IOException, ParserException, NodeNotFoundException,
+			ConstraintViolationException, NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
+		Variable variableX = null;
+		Variable variableY = null;
+		Variable variableT = null;
+		Variable variableD = null;
+		Variable variableU1 = null;
+		Variable variableU2 = null;
+
+		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
+
+		try {
+			// test max expected utility
+
+			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+			assertEquals(96.006, meuEvaluation, maxError);
+
+			// Test optimal policy
+			variableT = getVariableAndAssertNotNull(diagram,"T");
+			variableD = getVariableAndAssertNotNull(diagram,"D");
+
+
+			Intervention optimalStrategy = algorithm.getOptimalStrategy();
+
+			Potential policyT = algorithm.getOptimizedPolicy(variableT);
+			Potential policyD = algorithm.getOptimizedPolicy(variableD);
+			assertNotNull(policyT);
+			assertNotNull(policyD);
+
+			// Test the size of the domain of the policy of T
+			assertTrue(checkPolicy(getTablePotential(policyT), variableT, 0));
+
+			// Test the size of the domain of the policy of D
+			assertTrue(checkPolicy(getTablePotential(policyD), variableD, 2));
+
+			// Test the a priori case
+			Map<Variable, TablePotential> aPrioriProbabilities = algorithm
+					.getProbsAndUtilities();
+			// Read the variables
+			variableX = getVariableAndAssertNotNull(diagram,"X");
+			variableY = getVariableAndAssertNotNull(diagram,"Y");
+			variableU1 = getVariableAndAssertNotNull(diagram,"U1");
+			variableU2 = getVariableAndAssertNotNull(diagram,"U2");
+
+
+
+			//euPotT
+			TablePotential euPotT = constructExpectedUtilitiesPolicyTDecisionTestProblem(variableT);
+			assertTrue(areEqualPotentials(euPotT,(TablePotential) algorithm.getExpectedUtilities(variableT)));
+
+			//euPotT
+			TablePotential euPotD = constructExpectedUtilitiesPolicyDDecisionTestProblem(variableT,variableY,variableD);
+			assertTrue(areEqualPotentials(euPotD,(TablePotential) algorithm.getExpectedUtilities(variableD)));
+
+			checkProbabilityPotential(aPrioriProbabilities, variableX, 0.07);
+			checkProbabilityPotential(aPrioriProbabilities, variableY, 0.0916,
+					0.9084);
+			checkProbabilityPotential(aPrioriProbabilities, variableD, 0.0916);
+			checkProbabilityPotential(aPrioriProbabilities, variableT, 1.0);
+			checkUtilityPotential(aPrioriProbabilities, variableU1, 98.006);
+			checkUtilityPotential(aPrioriProbabilities, variableU2, -2.0);
+
+
+		} catch (Exception e) {
+			printExceptionAndFailIfImplemented(e);
+		}
+
+	}
+
+	//@Test
+	public void testEvaluationSimpleIDWithoutDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+
+		testMEU(IDFactory.createSimpleIDWithoutDecisions(), 83.7);
+	}
+
+	/**
+	 * @param id
+	 * @param decision
+	 * @param state
+	 * @return An Intervention with the assignment 'decision = state'
+	 */
+	protected Intervention createSimpleIntervention(ProbNet id, String decision, String state) {
+		Intervention interv;
+		List<Variable> vars = new ArrayList<>();
+		List<State> states = new ArrayList<>();
+		Variable dec = null;
+		try {
+			dec = id.getVariable(decision);
+		} catch (NodeNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		vars.add(dec);
+
+		interv = new Intervention(dec, states);
+		interv.setRootVariable(dec);
+		try {
+			states.add(dec.getState(state));
+		} catch (InvalidStateException e) {
+			e.printStackTrace();
+		}
+		TreeADDBranch branch = new TreeADDBranch(states, dec, vars);
+		interv.addBranch(branch);
+
+		return interv;
+	}
+
+	private Intervention getOptimalStrategy(ProbNet id) throws IncompatibleEvidenceException, UnexpectedInferenceException {
+		Intervention strategy = null;
+		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(id);
+		try {
+			strategy = algorithm.getOptimalStrategy();
+		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
+			e.printStackTrace();
+		}
+		return strategy;
+	}
+
+	/**
+	 * @param aPosterioriUtils
+	 * @param variables
+	 * @param expectedUtils
+	 * Checks the posterior utilities of a list of utility nodes.
+	 * The utilities are ordered according the order in 'variables'.
+	 * */
+	protected void checkUtilities(
+			HashMap<Variable, TablePotential> aPosterioriUtils,
+			ArrayList<Variable> variables, double[] expectedUtils) {
+
+		int size = variables.size();
+
+		for (int i=0;i<size;i++){
+			checkUtilityPotential(aPosterioriUtils,variables.get(i),expectedUtils[i]);
+		}
+
+	}
+
+	protected void testMEU(ProbNet diagram,double expectedMeu) throws IncompatibleEvidenceException, UnexpectedInferenceException{
+
+		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
+
+
+		// test max expected utility
+		Double meuEvaluation = null;
+		try {
+			meuEvaluation = algorithm.getGlobalUtility().values[0];
+		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertEquals(expectedMeu, meuEvaluation, maxError);
+
 
 	}
 
@@ -149,259 +327,12 @@ iD_DecisionTestProblemWithSV = IDFactory
 	public void testIDStatesTiesPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDStatesTiesPerfectKnowledge(),1.5,null);	
 	}
-	
 
 	@Test
 	public void testIDConsecutiveDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		testMEUAndStrategy(IDFactory.buildIDConsecutiveDecisions(),4.57501894,null);	
 	}
-	
-// TODO Redefine test. It's not possible to get probabilities from a network without nodes and potentials.	
-//	/**
-//	 * Test for diagnosis problem
-//	 * 
-//	 * @throws ParserException
-//	 * @throws IOException
-//	 * @throws FileNotFoundException
-//	 * @throws NodeNotFoundException
-//	 * @throws ConstraintViolationException
-//	 * @throws NotEvaluableNetworkException
-//	 * @throws UnexpectedInferenceException 
-//	 * @throws IncompatibleEvidenceException 
-//	 */
-//	@Test
-//	public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
-//			throws FileNotFoundException,
-//			IOException, ParserException, NodeNotFoundException,
-//			ConstraintViolationException, NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
-//		ProbNet network = IDFactory.buildIDDecideTest();
-//		Task algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
-//		
-//		checkPosteriorProbsAndUtilitiesDecideTest(algorithm,
-//				network, IDFactory.therapyName, "no", 1.0, 0.0, 1.0, 0.0, 0.014879546528105,
-//				9.895843174303259, 0.0,-0.2);
-//		checkPosteriorProbsAndUtilitiesDecideTest(algorithm,
-//				network, IDFactory.testResultName, "negative", 1.0, 0.0, 1.0, 0.0, 0.014879546528105,
-//				9.895843174303259, 0.0,-0.2);
-//		checkPosteriorProbsAndUtilitiesDecideTest(algorithm,
-//				network, IDFactory.decTestName, "yes", 1.0, 0.1532, 0.8468, 0.1532, 0.14, 9.6312,
-//				-0.0383,-0.2);
-//
-//		EvidenceCase evi = new EvidenceCase();
-//		try {
-//			evi.addFinding(network, IDFactory.decTestName, "yes");
-//			evi.addFinding(network, IDFactory.testResultName, "positive");
-//		} catch (InvalidStateException e) {
-//			e.printStackTrace();
-//		} catch (IncompatibleEvidenceException e) {
-//			e.printStackTrace();
-//		}
-//
-//		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(
-//				algorithm, network, evi, 1.0, 1.0, 0.0, 1.0,
-//				0.8316, 8.1684, -0.25,-0.2);
-//		try {
-//			evi.addFinding(network,  IDFactory.diseaseName, "present");
-//
-//		} catch (InvalidStateException | IncompatibleEvidenceException e) {
-//			
-//			printExceptionAndFailIfImplemented(e);
-//		}	
-//
-//	}
-	
-	protected void checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(
-			Task algorithm, ProbNet diagram,
-			EvidenceCase evi, double t, double y1, double y2, double d,
-			double x, double  uHealthState,  double uCostOfTherapy, double uCostOfTest) {
 
-		Variable variableX = null;
-		Variable variableY = null;
-		Variable variableT = null;
-		Variable variableD = null;
-		Variable variableU1 = null;
-		Variable variableU2 = null;
-		Variable variableU3 = null;
-
-		try {
-			variableT = diagram.getVariable(IDFactory.decTestName);
-			variableD = diagram.getVariable(IDFactory.therapyName);
-			variableX = diagram.getVariable(IDFactory.diseaseName);
-			variableY = diagram.getVariable(IDFactory.testResultName);
-			variableU1 = diagram.getVariable(IDFactory.healthStateName);
-			variableU2 = diagram.getVariable(IDFactory.therapyCostName);
-			variableU3 = diagram.getVariable(IDFactory.testCostName);
-			
-		} catch (Exception e) {
-			printExceptionAndFailIfImplemented(e);
-		}
-
-		try {
-			algorithm.setPostResolutionEvidence(evi);
-			Map<Variable, TablePotential> aPosterioriProbabilities = null;
-			try {
-				aPosterioriProbabilities = algorithm.getProbsAndUtilities();
-			} catch (UnexpectedInferenceException e) {
-				
-				e.printStackTrace();
-			}
-			
-			checkProbabilityPotential(aPosterioriProbabilities, variableX, x);
-			checkProbabilityPotential(aPosterioriProbabilities, variableY, y1,
-					y2);
-			checkProbabilityPotential(aPosterioriProbabilities, variableD, d);
-			checkProbabilityPotential(aPosterioriProbabilities, variableT, t);
-			checkUtilityPotential(aPosterioriProbabilities, variableU1, uHealthState);
-			checkUtilityPotential(aPosterioriProbabilities, variableU2, uCostOfTherapy);
-			checkUtilityPotential(aPosterioriProbabilities, variableU3, uCostOfTest);
-		} catch (IncompatibleEvidenceException e) {
-			printExceptionAndFailIfImplemented(e);
-		}
-
-	}
-	
-
-
-	protected void checkPosteriorProbsAndUtilitiesDecideTest(
-			Task algorithm, ProbNet diagram,
-			String nameVariable, String state, double t, double y1, double y2,
-			double d, double x, double uHealthState, double uCostOfTherapy,double uCostOfTest) {
-		EvidenceCase evi;
-		evi = new EvidenceCase();
-		try {
-			evi.addFinding(diagram, nameVariable, state);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		} catch (InvalidStateException e) {
-			e.printStackTrace();
-		} catch (IncompatibleEvidenceException e) {
-			e.printStackTrace();
-		}
-		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(
-				algorithm, diagram, evi, t, y1, y2, d, x, uHealthState, uCostOfTherapy, uCostOfTest);
-
-	}
-	
-// TODO Fix the test. Can not perform any operation in a network = null.	
-//	/**
-//	 * Test for diagnosis problem
-//	 * 
-//	 * @throws ParserException
-//	 * @throws IOException
-//	 * @throws FileNotFoundException
-//	 * @throws NodeNotFoundException
-//	 * @throws ConstraintViolationException
-//	 * @throws NotEvaluableNetworkException
-//	 * @throws UnexpectedInferenceException 
-//	 * @throws IncompatibleEvidenceException 
-//	 */
-//	@Test
-//	public void testEvaluationIDUniformDiagnosisProblem()
-//			throws FileNotFoundException,
-//			IOException, ParserException, NodeNotFoundException,
-//			ConstraintViolationException, NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
-//		ProbNet diagram;
-//
-//		diagram = iD_UniformDiagnosisProblem;
-//
-//		Task algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(diagram);
-//		try {
-//			// test max expected utility
-//			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
-//			assertEquals(10.0, meuEvaluation, maxError);
-//
-//			// Test optimal policy
-//			Variable D = diagram.getVariable("D");
-//			
-//			Potential policy = algorithm.getOptimizedPolicy(D);
-//			assertNotNull(policy);
-//
-//			// Test the size of the domain of the policy
-//			List<Variable> domainPolicy = policy.getVariables();
-//			domainPolicy.remove(D);
-//			assertEquals(1, domainPolicy.size());
-//
-//			// Test the optimal choice of the policy
-//			double[] truePolicy = { 0.5, 0.5, 0.5, 0.5 };
-//
-//			assertTrue(areEquals(getTablePotential(policy).getValues(), truePolicy));
-//		} catch (Exception e) {
-//			printExceptionAndFailIfImplemented(e);
-//		}
-//	}
-//	
-
-	//TODO The "diagram" is "null". The test is wrong.
-//	@Test
-//	public void testPreAndPostResolutionEvidenceIDDecisionTestProblem() throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException{
-//		ProbNet diagram = iD_DecisionTestProblemWithSV;
-//		
-//		Task algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(diagram);
-//		
-//		//TODO Test combination of pre and post resolution findings.
-//		try {
-//			//Variable variableT = diagram.getVariable("T");
-//			//Variable variableD = diagram.getVariable("D");
-//			
-//			EvidenceCase preResolutionEvidence = new EvidenceCase();
-//			preResolutionEvidence.addFinding(diagram,IDFactory.diseaseName,"present");
-//			algorithm.setPreResolutionEvidence(preResolutionEvidence);
-//			// test max expected utility
-//			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
-//			assertEquals(80.0, meuEvaluation, maxError);
-//
-//			// Test optimal policy
-//			
-//		/*	HashMap<Variable, TablePotential> optimalStrategy = variableElimination
-//					.getOptimizedPolicies();
-//			TablePotential policyT = optimalStrategy.get(variableT);
-//			TablePotential policyD = optimalStrategy.get(variableD);
-//			assertNotNull(policyT);
-//			assertNotNull(policyD);
-//
-//			// Test the size of the domain of the policy of T
-//			assertTrue(checkPolicy(policyT, variableT, 0));
-//
-//			// Test the size of the domain of the policy of D
-//			assertTrue(checkPolicy(policyD, variableD, 2));
-//
-//			// Test the a priori case
-//			HashMap<Variable, TablePotential> aPrioriProbabilities = variableElimination
-//					.getProbsAndUtilities();*/
-//			// Read the variables
-//		/*	variableX = diagram.getVariable("X");
-//			assertNotNull(variableX);
-//			variableY = diagram.getVariable("Y");
-//			assertNotNull(variableY);
-//			variableU1 = diagram.getVariable("U1");
-//			assertNotNull(variableU1);
-//			variableU2 = diagram.getVariable("U2");
-//			assertNotNull(variableU2);
-//
-//			checkProbabilityPotential(aPrioriProbabilities, variableX, 0.07);
-//			checkProbabilityPotential(aPrioriProbabilities, variableY, 0.0916,
-//					0.9084);
-//			checkProbabilityPotential(aPrioriProbabilities, variableD, 0.0916);
-//			checkProbabilityPotential(aPrioriProbabilities, variableT, 1.0);
-//			checkUtilityPotential(aPrioriProbabilities, variableU1, 98.006);
-//			checkUtilityPotential(aPrioriProbabilities, variableU2, -2.0);*/
-//
-//			// Test the expected utilities of the policy
-//			// StrategyUtilities strategyUtilities =
-//			// variableElimination.getUtilityTables();
-//			// TablePotential policyUtilities =
-//			// strategyUtilities.getUtilities(D);
-//
-//			// Test the optimal choice of the policy
-//			// double[] truePolicy = {1.0, 0.0, 0.0, 1.0};
-//
-//			// assertTrue(areEquals(policy.getValues(),truePolicy));
-//		} catch (Exception e) {
-//			printExceptionAndFailIfImplemented(e);
-//		}
-//	}
-//	
-	
 	/**
 	 * Test for diagnosis problem
 	 * 
@@ -423,7 +354,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 		
 		network = IDFactory.buildIDPerfectKnowledge();
 		
-		Task algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
+		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network);
 		
 		try {
 			// Test optimal policy
@@ -466,8 +397,8 @@ iD_DecisionTestProblemWithSV = IDFactory
 		
 		network = IDFactory.buildIDPerfectKnowledge();
 		
-		Task algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
-		
+		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network);
+
 		try {
 			// Test optimal policy
 			Variable D = network.getVariable("Therapy");
@@ -489,52 +420,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 			printExceptionAndFailIfImplemented(e);
 		}
 	}
-	
-// TODO Fix the method or invocation to VariableEliminationCore. 
-// The following test has no sense. It's not possible to ask for the probability or utility of a removed variable.	
-//	/**
-//	 * Test for diagnosis problem
-//	 * 
-//	 * @throws ParserException
-//	 * @throws IOException
-//	 * @throws FileNotFoundException
-//	 * @throws NodeNotFoundException
-//	 * @throws ConstraintViolationException
-//	 * @throws NotEvaluableNetworkException
-//	 * @throws UnexpectedInferenceException 
-//	 * @throws IncompatibleEvidenceException 
-//	 */
-//	@Test
-//	public void testAPrioriProbabilitiesIDTestAlways()
-//			throws FileNotFoundException,
-//			IOException, ParserException, NodeNotFoundException,
-//			ConstraintViolationException, NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
-//		ProbNet diagram;
-//		
-//		diagram = IDFactory.buildIDTestAlways();
-//				
-//		Task algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(diagram);
-//		
-//		Variable variableX = diagram.getVariable(IDFactory.diseaseName);
-//		assertNotNull(variableX);
-//		Variable variableY = diagram.getVariable(IDFactory.testResultName);
-//		assertNotNull(variableY);
-//		Variable variableD = diagram.getVariable(IDFactory.therapyName);
-//		assertNotNull(variableD);
-//
-//		// A priori probabilities
-//		try {
-//			Map<Variable, TablePotential> aPrioriProbabilities;
-//			aPrioriProbabilities = algorithm.getProbsAndUtilities();
-//			// test potential probabilities
-//			checkProbabilityPotential(aPrioriProbabilities,variableX,0.14);
-//			checkProbabilityPotential(aPrioriProbabilities,variableY,0.1532,0.8468);
-//			checkProbabilityPotential(aPrioriProbabilities,variableD,0.1532);
-//		} catch (Exception e) {
-//			printExceptionAndFailIfImplemented(e);
-//		}
-//	}
-	
+
 	protected Intervention getStrategyDiagnosisProblem(
 			ProbNet id,
 			String resultTestName,
@@ -581,5 +467,32 @@ iD_DecisionTestProblemWithSV = IDFactory
 		return interv;
 	}
 
-	
+	/**
+	 * @param network
+	 * @return An InferenceAlgorithm for 'network'. If the network is not evaluable
+	 * with the algorithm then the test calling this method is skipped.
+	 * @throws UnexpectedInferenceException
+	 * @throws IncompatibleEvidenceException
+	 */
+	protected Task buildInferenceTaskAndSkipTestIfNotEvaluable(
+			ProbNet network) throws IncompatibleEvidenceException, UnexpectedInferenceException {
+		boolean isEvaluable;
+		Task task = null;
+
+		//If the network is not evaluable then the test is skipped
+		isEvaluable = true;
+		try {
+			task = buildInferenceTask(network);
+		} catch (NotEvaluableNetworkException e1) {
+			isEvaluable = false;
+		}
+		assumeTrue(isEvaluable);
+		return task;
+	}
+
+	protected void setUp() throws Exception {
+		// TODO Auto-generated method stub
+
+	}
+
 }

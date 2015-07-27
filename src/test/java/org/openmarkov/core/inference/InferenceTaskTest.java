@@ -13,6 +13,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -32,81 +33,18 @@ import static org.junit.Assume.assumeTrue;
 @Ignore
 public abstract class InferenceTaskTest {
 
-	/**
-	 * @param network
-	 * @return An InferenceAlgorithm for 'network'. If the network is not evaluable
-	 * with the algorithm then the test calling this method is skipped.
-	 * @throws UnexpectedInferenceException 
-	 * @throws IncompatibleEvidenceException 
-	 */
-	protected Task buildInferenceAlgorithmAndSkipTestIfNotEvaluable(
-			ProbNet network) throws IncompatibleEvidenceException, UnexpectedInferenceException {
-		boolean isEvaluable;
-		Task algorithm = null;
-
-		//If the network is not evaluable then the test is skipped
-		isEvaluable = true;
-		try {
-			algorithm = buildInferenceTask(network);
-		} catch (NotEvaluableNetworkException e1) {
-			isEvaluable = false;
-		}
-		assumeTrue(isEvaluable);
-		return algorithm;
-	}
-
 
 	/**
 	 * Maximum error allowed in tests. It could be modified by subclasses
 	 * if it is necessary (for example, approximate inference methods).
 	 */
 	protected static double maxError = 0.0001;
-	
-	
-	
-	/**
-	 * @param network
-	 * @return An InferenceAlgorithm for 'network'. If the network is not evaluable
-	 * with the algorithm then the test calling this method is skipped.
-	 * @throws UnexpectedInferenceException 
-	 * @throws IncompatibleEvidenceException 
-	 */
-	protected Task buildInferenceTaskAndSkipTestIfNotEvaluable(
-			ProbNet network) throws IncompatibleEvidenceException, UnexpectedInferenceException {
-		boolean isEvaluable;
-		Task task = null;
-		
-		//If the network is not evaluable then the test is skipped
-		isEvaluable = true;
-		try {
-			task = buildInferenceTask(network);
-		} catch (NotEvaluableNetworkException e1) {
-			isEvaluable = false;
-		}
-		assumeTrue(isEvaluable);
-		return task;
-	}
-	
-	/**
-	 * @param probNet
-	 * @return
-	 * @throws NotEvaluableNetworkException
-	 * Builds an InferenceAlgorithm object with 'probNet'.
-	 * This method must be implemented by each inference test class.
-	 * @throws UnexpectedInferenceException 
-	 * @throws IncompatibleEvidenceException 
-	 */
-	public abstract Task buildInferenceTask(ProbNet probNet) throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException;
 
-	protected void setUp() throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	
 	/**
-	 * @param potA
-	 * @param potB
+	 * @param potA First potential in the comparison
+	 * @param potB Second potential in the comparison
 	 * @return true if potA and potB are equal (variables can be in different order)
 	 */
 	protected boolean areEqualPotentials(TablePotential potA,TablePotential potB){
@@ -223,7 +161,7 @@ public abstract class InferenceTaskTest {
 	protected void checkProbabilityPotential(
 			Map<Variable, TablePotential> probabilities,
 			Variable variableX, double... x) {
-		TablePotential X = (TablePotential) probabilities.get(variableX);
+		TablePotential X = probabilities.get(variableX);
 		checkProbabilities(X, x);
 
 	}
@@ -288,8 +226,39 @@ public abstract class InferenceTaskTest {
 
 	}
 
+	protected boolean checkPolicy(TablePotential policy, Variable d, int numVar) {
+		List<Variable> domainPolicy = policy.getVariables();
+		domainPolicy.remove(d);
+		return (numVar == domainPolicy.size());
+	}
 
+	protected TablePotential constructExpectedUtilitiesPolicyDDecisionTestProblem(Variable variableT,
+																				Variable variableY, Variable variableD) {
+		TablePotential pot;
 
+		ArrayList<Variable> variables;
+		variables = new ArrayList<Variable>();
+		variables.add(variableT);
+		variables.add(variableY);
+		variables.add(variableD);
 
+		pot = new TablePotential(variables, PotentialRole.UTILITY);
+		double values[]={81.04585153,0.0,87.93064729,0.0,-2.0,89.3,49.3209607,0.0,97.51453104,0.0,-2.0,95.1};
+		pot.setValues(values);
+		return pot;
+	}
 
+	protected TablePotential constructExpectedUtilitiesPolicyTDecisionTestProblem(Variable variableT) {
+
+		TablePotential pot;
+
+		ArrayList<Variable> variables;
+		variables = new ArrayList<Variable>();
+		variables.add(variableT);
+
+		pot = new TablePotential(variables,PotentialRole.UTILITY);
+		double values[]={96.006,95.1};
+		pot.setValues(values);
+		return pot;
+	}
 }

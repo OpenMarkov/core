@@ -766,7 +766,7 @@ public class ProbNetOperations {
     public static List<State> getUnrestrictedStates(Link<Node> link, State[] restrictedVariableStates, State state)
     {
         List<State> nonRestrictedStates = new ArrayList<State>();
-        Potential linkRestrictions = link.getRestrictionsPotential ();
+        Potential linkRestrictions = link.getRestrictionsPotential();
         List<Variable> variables = linkRestrictions.getVariables();
         Variable sourceVariable = variables.get(0);
         Variable destinationVariable = variables.get(1);
@@ -1110,6 +1110,30 @@ public class ProbNetOperations {
             }
         }
         return informationalPredecessors;
+    }
+
+    /**
+     * @param nodes
+     *            . <code>ArrayList</code> of <code>Node</code>.
+     * @return <code>nodes</code> and its ancestors. <code>ArrayList</code> of
+     *         <code>Node</code>.
+     */
+    public static Set<Node> getNodeAncestors(Node node) {
+        Set<Node> ancestors = new HashSet<>();
+
+        Stack<Node> noExploredNodes = new Stack<>();
+        noExploredNodes.add(node);
+
+        while (!noExploredNodes.empty()) {
+            Node noExploredNode = noExploredNodes.pop();
+            List<Node> parents = noExploredNode.getParents();
+            for (Node parent : parents) {
+                if (ancestors.add(parent)) {
+                    noExploredNodes.push(parent);
+                }
+            }
+        }
+        return ancestors;
     }
 
 }

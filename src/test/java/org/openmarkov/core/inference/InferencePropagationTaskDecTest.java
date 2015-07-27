@@ -38,31 +38,12 @@ import static org.junit.Assert.assertTrue;
  * Tests class for models that contain decisions. Different subclasses share that they have to test the MEU and the strategy
  *
  */
-public abstract class InferenceResolutionTaskDecTest extends InferenceTaskTest {
+public abstract class InferencePropagationTaskDecTest extends InferenceTaskTest {
 
-	/**
-	 * @param probNet
-	 * @return
-	 * @throws NotEvaluableNetworkException
-	 * Builds an InferenceAlgorithm object with 'probNet'.
-	 * This method must be implemented by each inference test class.
-	 * @throws UnexpectedInferenceException
-	 * @throws IncompatibleEvidenceException
-	 */
-	public abstract Task buildInferenceTask(ProbNet probNet) throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException;
+	public abstract Task buildInferenceTask(ProbNet probNet, List<Variable> variablesOfInterest,
+								   EvidenceCase preResolutionEvidence, EvidenceCase postResolutionEvidence)
+			throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException;
 
-	/**
-	 * @param x
-	 * @param v
-	 * Checks if the values of the potential 'x' are equal to 'v' and if the number
-	 * of values in 'x' is 1.
-	 */
-	protected void checkUtility(TablePotential x, double v) {
-
-		assertEquals(1, x.getTableSize());
-		assertEquals(v, x.values[0], maxError);
-
-	}
 
 	/**
 	 * Checks that the Intervention (optimal strategy) obtained from the evaluation optimal is not null
@@ -162,19 +143,20 @@ public abstract class InferenceResolutionTaskDecTest extends InferenceTaskTest {
 	private int getNumProbsNotZero(TablePotential probs) {
 		int numNotZero = 0;
 		double[] values = probs.values;
-		for (double value : values) {
-			if (value > 0.0) {
+		for (int i=0;i<values.length;i++){
+			if (values[i]>0.0){
 				numNotZero = numNotZero + 1;
 			}
 		}
 		return numNotZero;
 	}
-
+	
 	public void checkUtilityPotential(
 			Map<Variable, TablePotential> aPrioriProbabilities,
 			Variable variableU, double u) {
 		TablePotential U = (TablePotential) aPrioriProbabilities.get(variableU);
 		checkUtility(U, u);
+
 	}
 	
 	/**
@@ -232,6 +214,70 @@ public abstract class InferenceResolutionTaskDecTest extends InferenceTaskTest {
 		}
 	}
 */
+
+
+	/**
+	 * @param id
+	 * @param decision
+	 * @param state
+	 * @return An Intervention with the assignment 'decision = state' 
+	 */
+	protected Intervention createSimpleIntervention(ProbNet id, String decision, String state) {
+		Intervention interv;
+		List<Variable> vars = new ArrayList<>();
+		List<State> states = new ArrayList<>();
+		Variable dec = null;
+		try {
+			dec = id.getVariable(decision);
+		} catch (NodeNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		vars.add(dec);
+		
+		interv = new Intervention(dec, states);
+		interv.setRootVariable(dec);
+		try {
+			states.add(dec.getState(state));
+		} catch (InvalidStateException e) {
+			e.printStackTrace();
+		}
+		TreeADDBranch branch = new TreeADDBranch(states, dec, vars);
+		interv.addBranch(branch);
+		
+		return interv;
+	}
+
+	/**
+	 * @param aPosterioriUtils
+	 * @param variables
+	 * @param expectedUtils
+	 * Checks the posterior utilities of a list of utility nodes.
+	 * The utilities are ordered according the order in 'variables'.
+	 * */
+	protected void checkUtilities(
+			HashMap<Variable, TablePotential> aPosterioriUtils,
+			ArrayList<Variable> variables, double[] expectedUtils) {
+		
+			int size = variables.size();
+			
+			for (int i=0;i<size;i++){
+				checkUtilityPotential(aPosterioriUtils,variables.get(i),expectedUtils[i]);
+			}
+		
+	}
 	
+	/**
+	 * @param x
+	 * @param v
+	 * Checks if the values of the potential 'x' are equal to 'v' and if the number
+	 * of values in 'x' is 1. 
+	 */
+	protected void checkUtility(TablePotential x, double v) {
+
+		assertEquals(1, x.getTableSize());
+		assertEquals(v, x.values[0], maxError);
+
+	}
+
 
 }

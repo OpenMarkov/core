@@ -2008,7 +2008,8 @@ public final class DiscretePotentialOperations {
     		outputUtilityPotential.values[outputUtilityPotentialPosition] = max;
     		//TODO In testing phase it is easier to assume that there are no ties between interventions
     		outputUtilityPotential.interventions[outputUtilityPotentialPosition] = 
-    				Intervention.optimalInterventionTakingAllOptimal(decisionVariable, utilities, interventions,sdagInterventions);
+    				Intervention.optimalInterventionTakingAllOptimal(
+    						decisionVariable, utilities, interventions, sdagInterventions);
 
     		// set the values of policyPotential
     		int policyPotentialPosition = outputUtilityPotentialPosition * decisionVariableSize;
@@ -2079,8 +2080,10 @@ public final class DiscretePotentialOperations {
     	// initialize the output potential
     	List<Variable> projectedPotentialVariables = inputPotential.getVariables();
     	projectedPotentialVariables.remove(variable);
-    	TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, 
-    			PotentialRole.JOINT_PROBABILITY);
+    	PotentialRole projectedPotentialRole = inputPotential.getPotentialRole() == 
+    			PotentialRole.CONDITIONAL_PROBABILITY ? PotentialRole.JOINT_PROBABILITY : 
+    				inputPotential.getPotentialRole();
+    	TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, projectedPotentialRole);
 
     	// in allVariables, the first variable is variable
     	List<Variable> allVariables = new ArrayList<Variable>(projectedPotentialVariables.size() + 1);

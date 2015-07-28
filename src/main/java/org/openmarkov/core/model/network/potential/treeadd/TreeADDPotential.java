@@ -66,14 +66,28 @@ public class TreeADDPotential extends Potential {
 	 * within the branches in a TreeADDPotential
 	 */
 	// private HashMap<String, Potential> potentialsLabeled;
+
 	/**
-	 * For role conditional
+	 * For role conditional. Call to the complex constructor
 	 * 
 	 * @param variables
 	 * @param topVariable
 	 * @param role
 	 */
 	public TreeADDPotential(List<Variable> variables, Variable topVariable, PotentialRole role) {
+		this(variables, topVariable, topVariable.getStates(), role);
+	}
+
+
+	/**
+	 * For role conditional
+	 *
+	 * @param variables
+	 * @param topVariable
+	 * @param branchingStates
+	 * @param role
+	 */
+	public TreeADDPotential(List<Variable> variables, Variable topVariable, State[] branchingStates, PotentialRole role) {
 		super(variables, role);
 		this.topVariable = topVariable;
 		VariableType variableType = topVariable.getVariableType();
@@ -81,9 +95,8 @@ public class TreeADDPotential extends Potential {
 		// if topVariable is finite states or discretized, it creates a branch
 		// for each state
 		if (variableType == VariableType.FINITE_STATES || variableType == VariableType.DISCRETIZED) {
-			State[] states = topVariable.getStates();
 
-			for (int i = states.length - 1; i >= 0; i--) {
+			for (int i = branchingStates.length - 1; i >= 0; i--) {
 				// if potential role of the treeADD is a conditional probability
 				// it is assigned an uniform potential
 				// to the conditioned variable which is always the first
@@ -94,7 +107,7 @@ public class TreeADDPotential extends Potential {
 					potentialVariables.add(conditionedVariable);
 					UniformPotential potential = new UniformPotential(potentialVariables, role);
 					List<State> branchStates = new ArrayList<State>();
-					branchStates.add(states[i]);
+					branchStates.add(branchingStates[i]);
 					branches.add(new TreeADDBranch(branchStates, topVariable, potential, variables));
 				}
 			}
@@ -118,10 +131,21 @@ public class TreeADDPotential extends Potential {
 	 * 
 	 * @param variables
 	 * @param topVariable
-	 * @param role
 	 * @param utilityVariable
 	 */
 	public TreeADDPotential(Variable utilityVariable, List<Variable> variables, Variable topVariable) {
+		this(utilityVariable, variables, topVariable, topVariable.getStates());
+	}
+
+	/**
+	 * For role Utility
+	 *
+	 * @param variables
+	 * @param topVariable
+	 * @param branchingStates
+	 * @param utilityVariable
+	 */
+	public TreeADDPotential(Variable utilityVariable, List<Variable> variables, Variable topVariable, State[] branchingStates) {
 		super(utilityVariable, variables);
 		// setUtilityVariable(utilityVariable);
 		this.topVariable = topVariable;
@@ -130,8 +154,7 @@ public class TreeADDPotential extends Potential {
 		// if topVariable is finite states or discretized, it creates a branch
 		// for each state
 		if (variableType == VariableType.FINITE_STATES || variableType == VariableType.DISCRETIZED) {
-			State[] states = topVariable.getStates();
-			for (int i = 0; i < states.length; i++) {
+			for (int i = 0; i < branchingStates.length; i++) {
 				// if the role of the treeADD is utility, it assigns a uniform
 				// potential
 				if (role == PotentialRole.UTILITY) {
@@ -139,7 +162,7 @@ public class TreeADDPotential extends Potential {
 					Potential potential = new UniformPotential(utilityVariable, potentialVariables);
 					// potential.setUtilityVariable(utilityVariable);
 					List<State> branchStates = new ArrayList<State>();
-					branchStates.add(states[i]);
+					branchStates.add(branchingStates[i]);
 					branches.add(new TreeADDBranch(branchStates, topVariable, potential, variables));
 				}
 			}
@@ -364,6 +387,7 @@ public class TreeADDPotential extends Potential {
 	/*
 	 * private TablePotential getPotentialMask () { }
 	 */
+
 	@Override
 	public void shift(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
 		super.shift(probNet, timeDifference);

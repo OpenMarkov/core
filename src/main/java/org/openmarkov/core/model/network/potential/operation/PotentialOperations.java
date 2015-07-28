@@ -304,7 +304,8 @@ public class PotentialOperations {
 			variables.remove(0);
 			role = PotentialRole.UTILITY;
 		}else if (auxNodeType == NodeType.DECISION) {
-			role = PotentialRole.DECISION;
+//			role = PotentialRole.DECISION;
+			role = PotentialRole.POLICY;
 		}
 		UniformPotential uniformPotential = new UniformPotential(variables, role);
 		if ( auxNodeType == NodeType.UTILITY ){

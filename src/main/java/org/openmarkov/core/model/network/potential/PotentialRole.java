@@ -17,7 +17,7 @@ package org.openmarkov.core.model.network.potential;
 public enum PotentialRole {
 
 	CONDITIONAL_PROBABILITY(0, "conditionalProbability"),
-	DECISION(1, "decision"),
+//	DECISION(1, "decision"),
 	JOINT_PROBABILITY(2, "joinProbability"),
 	POLICY(3, "policy"),
 	UTILITY(4, "utility"),

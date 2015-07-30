@@ -139,7 +139,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 	 * Creates a Markov decision network from <code>this</code> without utility nodes. 
 	 * @return A Markov decision network. <code>ProbNet</code>
 	 */
-	public ProbNet getMarkovDecisionNetwork() {
+	public ProbNet buildMarkovDecisionNetwork() {
 		ProbNet newProbNet = new ProbNet(MarkovNetworkType.getUniqueInstance());
 		List<Potential> potentials = getPotentials();
 		for (Potential potential : potentials) {
@@ -163,7 +163,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 	 * @return A Markov Network in witch potentials are used to create cliques.
 	 *         (<code>ProbNet</code>).
 	 */
-	public ProbNet getMarkovDecisionNetwork(Collection<? extends Potential> projectedTablePotentials) {
+	public ProbNet buildMarkovDecisionNetwork(Collection<? extends Potential> projectedTablePotentials) {
 		ProbNet probNet = new ProbNet(MarkovNetworkType.getUniqueInstance());
 
 		try {
@@ -175,6 +175,9 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 			if (potential.getVariables().size() > 0) {
 				probNet.addPotential(potential, this);
 			} else {
+                if (probNet.constantPotentials == null) {
+                    probNet.constantPotentials = new HashSet<>();
+                }
 				probNet.constantPotentials.add((TablePotential) potential);
 			}
 		}

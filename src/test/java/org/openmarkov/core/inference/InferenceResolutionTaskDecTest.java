@@ -109,7 +109,8 @@ public abstract class InferenceResolutionTaskDecTest extends InferenceTaskTest {
 			algorithm.setPostResolutionEvidence(parentEvi);
 			List<Variable> interestVariables = new ArrayList<>();
 			interestVariables.add(rootVariable);
-			TablePotential probs = algorithm.getProbsAndUtilities().get(rootVariable);
+			//TablePotential probs = algorithm.getProbsAndUtilities().get(rootVariable);
+			TablePotential probs = algorithm.getProbability();
 			if (branches != null) {
 				// Check that the number of branches is equal to the non-zero
 				// probability states

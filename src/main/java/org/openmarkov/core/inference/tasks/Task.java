@@ -2,12 +2,15 @@ package org.openmarkov.core.inference.tasks;
 
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.inference.heuristic.HeuristicFactory;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Intervention;
@@ -24,6 +27,9 @@ public abstract class Task {
     protected ProbNet probNet;
     /** For undo/redo operations. */
     protected PNESupport pNESupport;
+
+    protected boolean isTemporal;
+
 
     /** Elimination heuristic factory **/
     protected HeuristicFactory heuristicFactory;
@@ -46,7 +52,7 @@ public abstract class Task {
      * Each policy is stochastic, which implies it is a probability potential whose domain
      * contains the decision.
      */
-    // private List<TablePotential> imposedPolicies;
+    private List<TablePotential> imposedPolicies;
 
     /**
      * Variables that will not be eliminated during the inference, and therefore all the results
@@ -97,6 +103,16 @@ public abstract class Task {
         this.preResolutionEvidence = preResolutionEvidence;
     }
 
+    public EvidenceCase getJoinResolutionEvidence() throws IncompatibleEvidenceException {
+        EvidenceCase evidence = new EvidenceCase(preResolutionEvidence);
+        try {
+            evidence.addFindings(postResolutionEvidence.getFindings());
+        } catch (InvalidStateException e) {
+            e.printStackTrace();
+        }
+        return evidence;
+    }
+
     /**
      * @return The conditioning variables
      */
@@ -140,11 +156,11 @@ public abstract class Task {
      * @param decision
      * @return The imposed policy of the decision
      */
-    protected Potential getImposedPolicy(Variable decision) {
-        Potential policy = null;
+    protected Potential getPolicy(Variable decision) {
+        Potential policy;
 
         Node decisionNode = probNet.getNode(decision);
-        if (decisionNode==null){
+        if (decisionNode == null){
             policy = null;
         }
         else{
@@ -163,7 +179,7 @@ public abstract class Task {
      * @return True if the decision has an imposed policy.
      */
     public boolean hasImposedPolicy(Variable decision){
-        return (getImposedPolicy(decision)!=null);
+        return (getPolicy(decision)!=null);
     }
 
     public void setHeuristicFactory(HeuristicFactory heuristicFactory) {
@@ -183,59 +199,94 @@ public abstract class Task {
      */
     public abstract Intervention getOptimalStrategy() throws IncompatibleEvidenceException, UnexpectedInferenceException;
 
-
     /**
-     * @return The optimal policy for the decision that does not have any imposed policy.
-     * The domain of the policy also includes the decision and the conditioning variables.
+     * @return The global expected utility of the influence diagram. It is a potential
+     * defined over the conditioning variables.
      */
-    public abstract Potential getOptimizedPolicy(Variable decisionVariable) throws
+    public abstract TablePotential getUtility() throws
             IncompatibleEvidenceException,
             UnexpectedInferenceException;
 
-
-    /**
-     * @return The expected utilities of the optimal policy for the decision that does not have any imposed policy.
-     * The domain of the policy also includes the decision and the conditioning variables.
-     */
-    public abstract Potential getExpectedUtilities(Variable decisionVariable) throws
+    public abstract TablePotential getGlobalUtility() throws
             IncompatibleEvidenceException,
             UnexpectedInferenceException;
-
 
     /**
      * @return The global expected utility of the influence diagram. It is a potential
      * defined over the conditioning variables.
      */
-    public abstract TablePotential getGlobalUtility() throws
+    public abstract TablePotential getProbability() throws
             IncompatibleEvidenceException,
             UnexpectedInferenceException;
 
+    public abstract HashMap<Variable, TablePotential> getPosteriorValues()
+            throws IncompatibleEvidenceException, UnexpectedInferenceException;
+
+    public abstract Potential getOptimizedPolicy(Variable decisionVariable)
+            throws IncompatibleEvidenceException, UnexpectedInferenceException;
 
     /**
-     * @return The posterior probabilities and utilities of the network.
-     * @throws IncompatibleEvidenceException
+     * @param probNet
+     *            Replaces decision nodes in 'probNet' by chance nodes by using
+     *            the corresponding policies. In PRERESOLUTION phase only
+     *            imposed policies are used. In POSTRESOLUTION phase both
+     *            imposed and calculated policies are used. Decision nodes in
+     *            'informationalPredecessors' are not changed.
+     * @param informationalPredecessors
      */
-    public abstract Map<Variable,TablePotential> getProbsAndUtilities() throws
-            IncompatibleEvidenceException,
-            UnexpectedInferenceException;
+    protected void replaceDecisionsByChanceNodesWithPolicies(ProbNet probNet, List<Variable> informationalPredecessors) {
+        // Change decision nodes by chance nodes whose probability potential
+        // is given by the corresponding policy
+        List<Node> decisions = probNet.getNodes(NodeType.DECISION);
+        for (Node decision : decisions) {
+            Variable varDecision = decision.getVariable();
 
+            if ((informationalPredecessors == null) || (!informationalPredecessors.contains(varDecision))) {
 
-    /**
-     * @param variablesOfInterest
-     * @return The posterior probabilities and utilities of the network.
-     * @throws IncompatibleEvidenceException
-     */
-    public abstract Map<Variable,TablePotential> getProbsAndUtilities(List<Variable> variablesOfInterest) throws
-            IncompatibleEvidenceException,
-            UnexpectedInferenceException;
+                Potential policy = getPolicy(varDecision);
 
-    /**
-     * @param variables
-     * @return The joint probability of a list of variables
-     * @throws IncompatibleEvidenceException
-     */
-    public abstract TablePotential getJointProbability(List<Variable> variables)throws
-            IncompatibleEvidenceException,
-            UnexpectedInferenceException;
+                if (policy != null) {
+                    List<Node> childrenOfDecision = probNet.getNode(varDecision).getChildren();
+                    // Remove decision
+                    probNet.removeNode(decision);
+                    // Create a chance node for the same variable
+                    Node decisionNode = probNet.addNode(varDecision, NodeType.CHANCE);
+
+                    // Add the links to the children (chance) of decision node
+                    for (Node child : childrenOfDecision) {
+                        NodeType type = child.getNodeType();
+                        if (type == NodeType.CHANCE || type == NodeType.UTILITY) {
+                            try {
+                                probNet.addLink(varDecision, child.getVariable(), true);
+                            } catch (NodeNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    // Incoming Links for the variable
+                    List<Variable> domainPolicy = policy.getVariables();
+                    domainPolicy.remove(varDecision);
+                    for (Variable varInDomain : domainPolicy) {
+                        try {
+                            probNet.addLink(varInDomain, varDecision, true);
+                        } catch (NodeNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    List<Potential> potentials = decisionNode.getPotentials();
+                    if (potentials != null) {
+                        for (Potential potential : potentials) {
+                            decisionNode.removePotential(potential);
+                        }
+                    }
+
+                    // Potential probability for the variable
+                    probNet.addPotential(policy);
+                }
+            }
+        }
+    }
 
 }

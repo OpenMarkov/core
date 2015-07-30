@@ -29,7 +29,6 @@ import java.util.List;
  */
 public abstract class Resolution extends Task {
 
-
     /**
      * @param probNet The network used in the inference
      * @throws NotEvaluableNetworkException

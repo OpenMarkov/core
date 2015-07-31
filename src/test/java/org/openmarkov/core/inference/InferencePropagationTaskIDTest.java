@@ -66,6 +66,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 		EvidenceCase preResolutionEvidence;
 		EvidenceCase postResolutionEvidence;
 
+
 		List<Variable> variablesOfInterest = Arrays.asList(network.getVariable(decTestName),
 				network.getVariable(therapyName),
 				network.getVariable(diseaseName),
@@ -77,12 +78,12 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 		preResolutionEvidence = new EvidenceCase();
 
 		//Without post-resolution evidence
-/*		postResolutionEvidence = new EvidenceCase();
+		postResolutionEvidence = new EvidenceCase();
 
 		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network,variablesOfInterest,preResolutionEvidence,postResolutionEvidence);
 
 		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm,network, 1.0, 0.1532, 0.8468, 0.1532, 0.14,
-				9.6312, -0.0383, -0.2);*/
+				9.6312, -0.0383, -0.2);
 
 		// Post-resolution evidence: therapy = no
 		postResolutionEvidence = new EvidenceCase();
@@ -98,7 +99,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 				9.895843174303259, 0.0, -0.2);
 
 		// Post-resolution evidence: result of test = negative
-/*		postResolutionEvidence = new EvidenceCase();
+		postResolutionEvidence = new EvidenceCase();
 		try {
 			postResolutionEvidence.addFinding(network, IDFactory.testResultName, "negative");
 		} catch (NodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
@@ -109,10 +110,10 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 				Collections.singletonList(network.getVariable(IDFactory.testResultName)),preResolutionEvidence,postResolutionEvidence);
 
 		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm,network, 1.0, 0.0, 1.0, 0.0, 0.014879546528105,
-				9.895843174303259, 0.0, -0.2);*/
+				9.895843174303259, 0.0, -0.2);
 
 		// Post-resolution evidence: do test? = yes
-/*		postResolutionEvidence = new EvidenceCase();
+		postResolutionEvidence = new EvidenceCase();
 		try {
 			postResolutionEvidence.addFinding(network, IDFactory.decTestName, "yes");
 		} catch (NodeNotFoundException | InvalidStateException | IncompatibleEvidenceException e) {
@@ -123,7 +124,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 				Collections.singletonList(network.getVariable(IDFactory.decTestName)),preResolutionEvidence,postResolutionEvidence);
 
 		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm,network, 1.0, 0.1532, 0.8468, 0.1532, 0.14, 9.6312,
-				-0.0383,-0.2);*/
+				-0.0383,-0.2);
 
 		// Post-resolution evidence: do test? = yes & result of test = positive
 /*		postResolutionEvidence = new EvidenceCase();

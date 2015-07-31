@@ -13,13 +13,13 @@ import org.openmarkov.core.model.network.ProbNet;
  * @author jorgepmartin
  * @author artasom
  */
-public abstract class Resolution extends Task {
+public abstract class PosteriorValues extends Task {
 
     /**
      * @param probNet The network used in the inference
      * @throws NotEvaluableNetworkException
      */
-    public Resolution(ProbNet probNet) throws NotEvaluableNetworkException {
+    public PosteriorValues(ProbNet probNet) throws NotEvaluableNetworkException {
         super(probNet);
     }
 }

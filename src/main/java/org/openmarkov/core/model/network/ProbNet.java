@@ -164,24 +164,26 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 	 *         (<code>ProbNet</code>).
 	 */
 	public ProbNet buildMarkovDecisionNetwork(Collection<? extends Potential> projectedTablePotentials) {
-		ProbNet probNet = new ProbNet(MarkovNetworkType.getUniqueInstance());
+		ProbNet markovDecisionNetwork = new ProbNet(MarkovNetworkType.getUniqueInstance());
 
 		try {
-			probNet.addConstraint(new OnlyUndirectedLinks(), true);
+			markovDecisionNetwork.addConstraint(new OnlyUndirectedLinks(), true);
 		} catch (ConstraintViolationException e) {
 			e.printStackTrace(); // Unreachable code because probNet is empty.
 		}
 		for (Potential potential : projectedTablePotentials) {
 			if (potential.getVariables().size() > 0) {
-				probNet.addPotential(potential, this);
+				markovDecisionNetwork.addPotential(potential, this);
 			} else {
-                if (probNet.constantPotentials == null) {
-                    probNet.constantPotentials = new HashSet<>();
+                if (markovDecisionNetwork.constantPotentials == null) {
+                    markovDecisionNetwork.constantPotentials = new HashSet<>();
                 }
-				probNet.constantPotentials.add((TablePotential) potential);
+				markovDecisionNetwork.constantPotentials.add((TablePotential) potential);
 			}
 		}
-		return probNet;
+
+        markovDecisionNetwork.setInferenceOptions(this.getInferenceOptions());
+		return markovDecisionNetwork;
 	}
 
     /**

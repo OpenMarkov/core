@@ -50,8 +50,11 @@ public class DecisionTreeTest {
 	@Test
 	public void testDiabetesDAN() throws NodeNotFoundException {
 		ProbNet diabetesDAN = DANFactory.buildDiabetesDAN();
+		long startTime = System.nanoTime();
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(diabetesDAN);
 		Assert.assertEquals(9.8261, decisionTree.getUtility(), 0.0001);
+		long ellapsedTime = (System.nanoTime() - startTime) / 1000000;
+		System.out.println(" Execution time =" +ellapsedTime);
 	}		
 	
 	@Test
@@ -81,22 +84,31 @@ public class DecisionTreeTest {
 	@Test
 	public void testEvalDatingDAN() throws NodeNotFoundException {
 		ProbNet datingDAN = DANFactory.buildDatingDAN();
+		long startTime = System.nanoTime();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		Assert.assertEquals(9.4076, evaluator.getMEU(datingDAN), 0.0001);
+		long ellapsedTime = (System.nanoTime() - startTime) / 1000000;
+		System.out.println(" Execution time =" +ellapsedTime);
 	}
 	
 	@Test
 	public void testEvalReactorDAN() throws NodeNotFoundException {
 		ProbNet reactorDAN = DANFactory.buildReactorDAN();
+		long startTime = System.nanoTime();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		Assert.assertEquals(10.0627, evaluator.getMEU(reactorDAN), 0.0001);
+		long ellapsedTime = (System.nanoTime() - startTime) / 1000000;
+		System.out.println(" Execution time =" +ellapsedTime);
 	}		
 
 	@Test
 	public void testEvalDiabetesDAN() throws NodeNotFoundException {
 		ProbNet diabetesDAN = DANFactory.buildDiabetesDAN();
+		long startTime = System.nanoTime();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
+		long ellapsedTime = (System.nanoTime() - startTime) / 1000000;
 		Assert.assertEquals(9.8261, evaluator.getMEU(diabetesDAN), 0.0001);
+		System.out.println(" Execution time =" +ellapsedTime);
 	}		
 	
 	@Test
@@ -107,10 +119,13 @@ public class DecisionTreeTest {
 	}	
 	
 	@Test
-	public void testEvalWooerDAN() throws NodeNotFoundException {
+	public void testEvalKingDAN() throws NodeNotFoundException {
 		ProbNet wooerDAN = DANFactory.buildWooerDAN();
+		long startTime = System.nanoTime();
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
 		Assert.assertEquals(7.73, evaluator.getMEU(wooerDAN), 0.0001);
+		long ellapsedTime = (System.nanoTime() - startTime) / 1000000;
+		System.out.println(" Execution time =" +ellapsedTime);
 	}	
 
 	@Test
@@ -126,18 +141,18 @@ public class DecisionTreeTest {
 		System.out.println("MEU="+meu+" Execution time =" +ellapsedTime);
 	}
 
-	  //Interesting test to keep but it takes to long to execute every time
-//	@Test
-//	public void testEvalMediastiNetDAN() throws NodeNotFoundException, IncompatibleEvidenceException,
-//			UnexpectedInferenceException, NotEvaluableNetworkException {
-//		ProbNet mediastiNetDAN = DANFactory.buildMediastinetDAN();
-//		long startTime = System.nanoTime();
-//		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
-//		double meu = evaluator.getMEU(mediastiNetDAN);
-//		long ellapsedTime = (System.nanoTime() - startTime) / 1000000;
-//		Assert.assertEquals(1.4710368294106826, meu, 0.000001);
-//		System.out.println("MEU="+meu+" Execution time =" +ellapsedTime);
-//	}	
+	//Interesting test to keep but it takes to long to execute every time
+	//@Test
+	public void testEvalMediastiNetDAN() throws NodeNotFoundException, IncompatibleEvidenceException,
+			UnexpectedInferenceException, NotEvaluableNetworkException {
+		ProbNet mediastiNetDAN = DANFactory.buildMediastinetDAN();
+		long startTime = System.nanoTime();
+		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator();
+		double meu = evaluator.getMEU(mediastiNetDAN);
+		long ellapsedTime = (System.nanoTime() - startTime) / 1000000;
+		Assert.assertEquals(1.4710368294106826, meu, 0.000001);
+		System.out.println("MEU="+meu+" Execution time =" +ellapsedTime);
+	}	
 	
 	@Test
 	public void testEvalUsedCarBuyerDAN() throws NodeNotFoundException, IncompatibleEvidenceException,

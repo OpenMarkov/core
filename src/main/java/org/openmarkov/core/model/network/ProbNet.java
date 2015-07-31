@@ -638,7 +638,8 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
     }
 
     /**
-     * @return All the potentials of this network. <code>List</code> of
+     * @return All the potentials of this network that contains at least one variable 
+     * 				(except constant potentials). <code>List</code> of
      *         <code>Potential</code>s.
      * @consultation
      */
@@ -649,6 +650,19 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
             potentials.addAll(node.getPotentials());
         }
         return potentials;
+    }
+    
+    /**
+     * @return All the potentials of this network. <code>List</code> of
+     *         <code>Potential</code>s.
+     * @consultation
+     */
+    public List<Potential> getAllPotentials() {
+        List<Potential> potentials = getPotentials();
+    	if (constantPotentials != null) {
+    		potentials.addAll(constantPotentials);
+    	}
+    	return potentials;
     }
     
     /**

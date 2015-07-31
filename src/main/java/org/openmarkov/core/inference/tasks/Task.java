@@ -152,35 +152,7 @@ public abstract class Task {
 
     }
 
-    /**
-     * @param decision
-     * @return The imposed policy of the decision
-     */
-    protected Potential getPolicy(Variable decision) {
-        Potential policy;
 
-        Node decisionNode = probNet.getNode(decision);
-        if (decisionNode == null){
-            policy = null;
-        }
-        else{
-            List<Potential> potentials = decisionNode.getPotentials();
-            if ((potentials == null)||(potentials.size()==0)){
-                policy = null;
-            }
-            else{
-                policy = potentials.get(0);
-            }
-        }
-        return policy;
-    }
-    /**
-     * @param decision
-     * @return True if the decision has an imposed policy.
-     */
-    public boolean hasImposedPolicy(Variable decision){
-        return (getPolicy(decision)!=null);
-    }
 
     public void setHeuristicFactory(HeuristicFactory heuristicFactory) {
         this.heuristicFactory = heuristicFactory;
@@ -224,69 +196,5 @@ public abstract class Task {
 
     public abstract Potential getOptimizedPolicy(Variable decisionVariable)
             throws IncompatibleEvidenceException, UnexpectedInferenceException;
-
-    /**
-     * @param probNet
-     *            Replaces decision nodes in 'probNet' by chance nodes by using
-     *            the corresponding policies. In PRERESOLUTION phase only
-     *            imposed policies are used. In POSTRESOLUTION phase both
-     *            imposed and calculated policies are used. Decision nodes in
-     *            'informationalPredecessors' are not changed.
-     * @param informationalPredecessors
-     */
-    protected void replaceDecisionsByChanceNodesWithPolicies(ProbNet probNet, List<Variable> informationalPredecessors) {
-        // Change decision nodes by chance nodes whose probability potential
-        // is given by the corresponding policy
-        List<Node> decisions = probNet.getNodes(NodeType.DECISION);
-        for (Node decision : decisions) {
-            Variable varDecision = decision.getVariable();
-
-            if ((informationalPredecessors == null) || (!informationalPredecessors.contains(varDecision))) {
-
-                Potential policy = getPolicy(varDecision);
-
-                if (policy != null) {
-                    List<Node> childrenOfDecision = probNet.getNode(varDecision).getChildren();
-                    // Remove decision
-                    probNet.removeNode(decision);
-                    // Create a chance node for the same variable
-                    Node decisionNode = probNet.addNode(varDecision, NodeType.CHANCE);
-
-                    // Add the links to the children (chance) of decision node
-                    for (Node child : childrenOfDecision) {
-                        NodeType type = child.getNodeType();
-                        if (type == NodeType.CHANCE || type == NodeType.UTILITY) {
-                            try {
-                                probNet.addLink(varDecision, child.getVariable(), true);
-                            } catch (NodeNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                    // Incoming Links for the variable
-                    List<Variable> domainPolicy = policy.getVariables();
-                    domainPolicy.remove(varDecision);
-                    for (Variable varInDomain : domainPolicy) {
-                        try {
-                            probNet.addLink(varInDomain, varDecision, true);
-                        } catch (NodeNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    List<Potential> potentials = decisionNode.getPotentials();
-                    if (potentials != null) {
-                        for (Potential potential : potentials) {
-                            decisionNode.removePotential(potential);
-                        }
-                    }
-
-                    // Potential probability for the variable
-                    probNet.addPotential(policy);
-                }
-            }
-        }
-    }
 
 }

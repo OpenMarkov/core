@@ -2,7 +2,6 @@ package org.openmarkov.core.inference;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 import static org.openmarkov.core.model.network.factory.IDFactory.*;
 
@@ -10,7 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,19 +27,11 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.factory.IDFactory;
 import org.openmarkov.core.model.network.potential.Intervention;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 public abstract class InferencePropagationTaskIDTest  extends InferencePropagationTaskDecTest {
 
-	//protected ProbNet iD_DiagnosisProblem;
-	protected ProbNet iD_UniformDiagnosisProblem;
-	protected ProbNet iD_DecisionTestProblemWithoutSV;
 	protected ProbNet iD_DecisionTestProblemWithSV;
-
-	protected ProbNet getIDDecideTest() {
-		return buildIDDecideTest();
-	}
 
 	/**
 	 * Test for diagnosis problem
@@ -57,8 +47,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 	 */
 	@Test
 	public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
-			throws FileNotFoundException,
-			IOException, ParserException, NodeNotFoundException,
+			throws IOException, ParserException, NodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
 		ProbNet network = buildIDDecideTest();
 
@@ -107,7 +96,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 		}
 
 		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network,
-				Collections.singletonList(network.getVariable(IDFactory.testResultName)),preResolutionEvidence,postResolutionEvidence);
+				variablesOfInterest,preResolutionEvidence,postResolutionEvidence);
 
 		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm,network, 1.0, 0.0, 1.0, 0.0, 0.014879546528105,
 				9.895843174303259, 0.0, -0.2);
@@ -120,14 +109,14 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 			e.printStackTrace();
 		}
 
-		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network,
-				Collections.singletonList(network.getVariable(IDFactory.decTestName)),preResolutionEvidence,postResolutionEvidence);
+		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network,variablesOfInterest,
+				preResolutionEvidence,postResolutionEvidence);
 
 		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm,network, 1.0, 0.1532, 0.8468, 0.1532, 0.14, 9.6312,
 				-0.0383,-0.2);
 
 		// Post-resolution evidence: do test? = yes & result of test = positive
-/*		postResolutionEvidence = new EvidenceCase();
+		postResolutionEvidence = new EvidenceCase();
 		try {
 			postResolutionEvidence.addFinding(network, IDFactory.decTestName, "yes");
 			postResolutionEvidence.addFinding(network, IDFactory.testResultName, "positive");
@@ -135,17 +124,16 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 			e.printStackTrace();
 		}
 
-		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network,
-				Arrays.asList(network.getVariable(IDFactory.decTestName),network.getVariable(IDFactory.testResultName)),
+		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network,variablesOfInterest,
 				preResolutionEvidence,postResolutionEvidence);
 
-		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm, network, 1.0, 1.0, 0.0, 1.0, 0.8316, 8.1684, -0.25,-0.2);*/
+		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm, network, 1.0, 1.0, 0.0, 1.0, 0.8316, 8.1684, -0.25,-0.2);
 
-/*		try {
+		try {
 			postResolutionEvidence.addFinding(network, IDFactory.diseaseName, "present");
 		} catch (InvalidStateException | IncompatibleEvidenceException e) {
 			printExceptionAndFailIfImplemented(e);
-		}*/
+		}
 
 	}
 
@@ -177,7 +165,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 		try {
 			HashMap<Variable, TablePotential> aPosterioriProbabilities = null;
 			try {
-				aPosterioriProbabilities = (HashMap<Variable, TablePotential>) algorithm.getPosteriorValues();
+				aPosterioriProbabilities = algorithm.getPosteriorValues();
 			} catch (UnexpectedInferenceException e) {
 				e.printStackTrace();
 			}
@@ -196,54 +184,9 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 
 	}
 
-	/**
-	 * Test for diagnosis problem
-	 *
-	 * @throws ParserException
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 * @throws NodeNotFoundException
-	 * @throws ConstraintViolationException
-	 * @throws NotEvaluableNetworkException
-	 */
-	//@Test
-	public void testEvaluationIDUniformDiagnosisProblem()
-			throws FileNotFoundException,
-			IOException, ParserException, NodeNotFoundException,
-			ConstraintViolationException, NotEvaluableNetworkException, UnexpectedInferenceException, IncompatibleEvidenceException {
-		ProbNet diagram;
-
-		diagram = iD_UniformDiagnosisProblem;
-
-		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram,null,null,null);
-		try {
-			// test max expected utility
-			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
-			assertEquals(10.0, meuEvaluation, maxError);
-
-			// Test optimal policy
-			Variable D = diagram.getVariable("D");
-
-			Potential policy = algorithm.getOptimizedPolicy(D);
-			assertNotNull(policy);
-
-			// Test the size of the domain of the policy
-			List<Variable> domainPolicy = policy.getVariables();
-			domainPolicy.remove(D);
-			assertEquals(1, domainPolicy.size());
-
-			// Test the optimal choice of the policy
-			double[] truePolicy = { 0.5, 0.5, 0.5, 0.5 };
-
-			assertTrue(areEquals(getTablePotential(policy).getValues(), truePolicy));
-		} catch (Exception e) {
-			printExceptionAndFailIfImplemented(e);
-		}
-	}
-
-
 	//@Test
 	//TODO Review the minor error in test
+	//TODO: has this test sense here
 	public void testPreAndPostResolutionEvidenceIDDecisionTestProblem() throws NotEvaluableNetworkException, UnexpectedInferenceException, IncompatibleEvidenceException {
 		ProbNet diagram = iD_DecisionTestProblemWithSV;
 
@@ -311,50 +254,6 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 			printExceptionAndFailIfImplemented(e);
 		}
 	}
-
-
-	/**
-	 * Test for diagnosis problem
-	 *
-	 * @throws ParserException
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 * @throws NodeNotFoundException
-	 * @throws ConstraintViolationException
-	 * @throws NotEvaluableNetworkException
-	 */
-	//@Test
-	//TODO: has this test sense here?
-	public void testAPrioriProbabilitiesIDTestAlways()
-			throws FileNotFoundException,
-			IOException, ParserException, NodeNotFoundException,
-			ConstraintViolationException, NotEvaluableNetworkException, UnexpectedInferenceException, IncompatibleEvidenceException {
-		ProbNet diagram;
-
-		diagram = buildIDTestAlways();
-
-		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram,null,null,null);
-
-		Variable variableX = diagram.getVariable(diseaseName);
-		assertNotNull(variableX);
-		Variable variableY = diagram.getVariable(testResultName);
-		assertNotNull(variableY);
-		Variable variableD = diagram.getVariable(therapyName);
-		assertNotNull(variableD);
-
-		// A priori probabilities
-		try {
-			HashMap<Variable, TablePotential> aPrioriProbabilities;
-			aPrioriProbabilities = null; //(HashMap<Variable, TablePotential>) algorithm.getProbsAndUtilities();
-			// test potential probabilities
-			checkProbabilityPotential(aPrioriProbabilities,variableX,0.14);
-			checkProbabilityPotential(aPrioriProbabilities,variableY,0.1532,0.8468);
-			checkProbabilityPotential(aPrioriProbabilities, variableD, 0.1532);
-		} catch (Exception e) {
-			printExceptionAndFailIfImplemented(e);
-		}
-	}
-
 
 
 	protected Intervention getStrategyDiagnosisProblem(ProbNet id,

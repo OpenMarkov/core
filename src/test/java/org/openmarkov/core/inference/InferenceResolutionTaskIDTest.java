@@ -32,6 +32,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+import static org.openmarkov.core.model.network.factory.IDFactory.buildIDTestAlways;
+import static org.openmarkov.core.model.network.factory.IDFactory.therapyName;
+import static org.openmarkov.core.model.network.factory.NetsFactory.diseaseName;
+import static org.openmarkov.core.model.network.factory.NetsFactory.testResultName;
 
 public abstract class InferenceResolutionTaskIDTest extends InferenceResolutionTaskDecTest {
 
@@ -231,7 +235,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 	@Test
 	public void testIDOneDecision() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDOneDecision(),87.4,null);	
+		testMEUAndStrategy(IDFactory.buildIDOneDecision(), 87.4, null);
 	}
 	
 	@Test
@@ -495,4 +499,91 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 	}
 
+	/**
+	 * Test for diagnosis problem
+	 *
+	 * @throws ParserException
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 * @throws NodeNotFoundException
+	 * @throws ConstraintViolationException
+	 * @throws NotEvaluableNetworkException
+	 */
+	//@Test
+	//TODO: review how to refactor it
+	public void testEvaluationIDUniformDiagnosisProblem()
+			throws IOException, ParserException, NodeNotFoundException,
+			ConstraintViolationException, NotEvaluableNetworkException,
+			UnexpectedInferenceException, IncompatibleEvidenceException {
+		ProbNet diagram;
+
+		diagram = iD_UniformDiagnosisProblem;
+
+		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
+		try {
+			// test max expected utility
+			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+			assertEquals(10.0, meuEvaluation, maxError);
+
+			// Test optimal policy
+			Variable D = diagram.getVariable("D");
+
+			Potential policy = algorithm.getOptimizedPolicy(D);
+			assertNotNull(policy);
+
+			// Test the size of the domain of the policy
+			List<Variable> domainPolicy = policy.getVariables();
+			domainPolicy.remove(D);
+			assertEquals(1, domainPolicy.size());
+
+			// Test the optimal choice of the policy
+			double[] truePolicy = { 0.5, 0.5, 0.5, 0.5 };
+
+			assertTrue(areEquals(getTablePotential(policy).getValues(), truePolicy));
+		} catch (Exception e) {
+			printExceptionAndFailIfImplemented(e);
+		}
+	}
+
+	/**
+	 * Test for diagnosis problem
+	 *
+	 * @throws ParserException
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 * @throws NodeNotFoundException
+	 * @throws ConstraintViolationException
+	 * @throws NotEvaluableNetworkException
+	 */
+	//@Test
+	//TODO: has this test sense here?
+	public void testAPrioriProbabilitiesIDTestAlways()
+			throws FileNotFoundException,
+			IOException, ParserException, NodeNotFoundException,
+			ConstraintViolationException, NotEvaluableNetworkException, UnexpectedInferenceException, IncompatibleEvidenceException {
+		ProbNet diagram;
+
+		diagram = buildIDTestAlways();
+
+		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
+
+		Variable variableX = diagram.getVariable(diseaseName);
+		assertNotNull(variableX);
+		Variable variableY = diagram.getVariable(testResultName);
+		assertNotNull(variableY);
+		Variable variableD = diagram.getVariable(therapyName);
+		assertNotNull(variableD);
+
+		// A priori probabilities
+		try {
+			HashMap<Variable, TablePotential> aPrioriProbabilities;
+			aPrioriProbabilities = null; //(HashMap<Variable, TablePotential>) algorithm.getProbsAndUtilities();
+			// test potential probabilities
+			checkProbabilityPotential(aPrioriProbabilities,variableX,0.14);
+			checkProbabilityPotential(aPrioriProbabilities,variableY,0.1532,0.8468);
+			checkProbabilityPotential(aPrioriProbabilities, variableD, 0.1532);
+		} catch (Exception e) {
+			printExceptionAndFailIfImplemented(e);
+		}
+	}
 }

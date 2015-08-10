@@ -12,15 +12,15 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -75,7 +75,7 @@ public class TreeADDPotential extends Potential {
 	 * @param role
 	 */
 	public TreeADDPotential(List<Variable> variables, Variable topVariable, PotentialRole role) {
-		this(variables, topVariable, topVariable.getStates(), role);
+		this(variables, topVariable, topVariable.getStates(), topVariable.getPartitionedInterval(), role);
 	}
 
 
@@ -87,7 +87,7 @@ public class TreeADDPotential extends Potential {
 	 * @param branchingStates
 	 * @param role
 	 */
-	public TreeADDPotential(List<Variable> variables, Variable topVariable, State[] branchingStates, PotentialRole role) {
+	public TreeADDPotential(List<Variable> variables, Variable topVariable, State[] branchingStates, PartitionedInterval interval, PotentialRole role) {
 		super(variables, role);
 		this.topVariable = topVariable;
 		VariableType variableType = topVariable.getVariableType();
@@ -113,10 +113,8 @@ public class TreeADDPotential extends Potential {
 			}
 		}
 		// if topVariable is numeric, it creates a branch whose thresholds are
-		// the
-		// same as those defined for the variable
+		// the same as those defined for the variable
 		if (variableType == VariableType.NUMERIC) {
-			PartitionedInterval interval = topVariable.getPartitionedInterval();
 			Threshold minimum = new Threshold(interval.getMin(), !interval.isLeftClosed());
 			Threshold maximum = new Threshold(interval.getMax(), interval.isRightClosed());
 			potentialVariables = new ArrayList<Variable>();
@@ -134,7 +132,7 @@ public class TreeADDPotential extends Potential {
 	 * @param utilityVariable
 	 */
 	public TreeADDPotential(Variable utilityVariable, List<Variable> variables, Variable topVariable) {
-		this(utilityVariable, variables, topVariable, topVariable.getStates());
+		this(utilityVariable, variables, topVariable, topVariable.getStates(), topVariable.getPartitionedInterval());
 	}
 
 	/**
@@ -145,7 +143,7 @@ public class TreeADDPotential extends Potential {
 	 * @param branchingStates
 	 * @param utilityVariable
 	 */
-	public TreeADDPotential(Variable utilityVariable, List<Variable> variables, Variable topVariable, State[] branchingStates) {
+	public TreeADDPotential(Variable utilityVariable, List<Variable> variables, Variable topVariable, State[] branchingStates, PartitionedInterval interval) {
 		super(utilityVariable, variables);
 		// setUtilityVariable(utilityVariable);
 		this.topVariable = topVariable;
@@ -171,7 +169,6 @@ public class TreeADDPotential extends Potential {
 		// the
 		// same as those defined for the variable
 		if (variableType == VariableType.NUMERIC) {
-			PartitionedInterval interval = topVariable.getPartitionedInterval();
 			Threshold minimum = new Threshold(interval.getMin(), !interval.isLeftClosed());
 			Threshold maximum = new Threshold(interval.getMax(), interval.isRightClosed());
 			potentialVariables = new ArrayList<Variable>();

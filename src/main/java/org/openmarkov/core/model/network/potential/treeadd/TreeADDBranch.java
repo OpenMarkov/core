@@ -239,26 +239,8 @@ public class TreeADDBranch {
 	}
 
     public List<Variable> getAddableVariables() {
-        List<Variable> addableVariables = new ArrayList<>();
-        List<Variable> potentialVariables = potential.getVariables();
-        for (Variable variable : parentVariables) {
-        	// TODO - Check temporal hack for numerical variables.
-        	if(variable.getVariableType().equals(VariableType.NUMERIC)){
-        		if (//!variable.equals(rootVariable)
-                        !potentialVariables.contains(variable) &&
-                        !variable.equals(potential.getConditionedVariable())
-            			) {
-                    addableVariables.add(variable);
-                }
-        	}else{
-	        	if (!variable.equals(rootVariable) &&
-	                    !potentialVariables.contains(variable) &&
-	                    !variable.equals(potential.getConditionedVariable())
-	        			) {
-	                addableVariables.add(variable);
-	            }
-        	}
-        }
+        List<Variable> addableVariables = new ArrayList<>(parentVariables);
+        parentVariables.removeAll(potential.getVariables());
         return addableVariables;
     }
     

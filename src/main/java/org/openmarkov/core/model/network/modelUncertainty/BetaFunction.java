@@ -71,6 +71,7 @@ public class BetaFunction extends ProbDensFunction {
     public double getSample(Random randomGenerator) {
         return dirichletForSampling.getSample(randomGenerator)[0];
     }
+
     @Override
     public double getVariance() {
         double sumAlphaBeta = alpha + beta;
@@ -85,9 +86,19 @@ public class BetaFunction extends ProbDensFunction {
 	@Override
 	public DomainInterval getInterval(double p) {
 		BetaDistribution auxBeta = new BetaDistribution(alpha,beta);
+        double l;
+        double u;
 		double halfP = p/2.0;
-		
-		return new DomainInterval(auxBeta.inverseCumulativeProbability(0.5-halfP),auxBeta.inverseCumulativeProbability(0.5+halfP));
+        if (getVariance()>0.0){
+            l = auxBeta.inverseCumulativeProbability(0.5-halfP);
+            u = auxBeta.inverseCumulativeProbability(0.5+halfP);
+        }
+        else {
+            double mean = getMean();
+            l = mean;
+            u = mean;
+        }
+		return new DomainInterval(l,u);
 	}
 	
 	private void initializePdfForSampling(){
@@ -98,5 +109,13 @@ public class BetaFunction extends ProbDensFunction {
     @Override
     public ProbDensFunction copy() {
         return new BetaFunction(this);
+    }
+
+    public double getAlpha(){
+        return alpha;
+    }
+
+    public double getBeta(){
+        return beta;
     }
 }

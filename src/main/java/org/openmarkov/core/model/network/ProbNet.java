@@ -757,8 +757,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 
     /**
      * @param nodeType
-     * @return All the utility potentials when <code>isUtility</code> param =
-     *         <code>true</code> otherwise returns all chance potentials.
+     * @return All the utility potentials of a type.
      * @consultation
      */
     public List<Potential> getPotentialsByType(NodeType nodeType) {
@@ -770,7 +769,18 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      * @return All the potentials of a role.
      */
     public List<Potential> getPotentialsByRole(PotentialRole role) {
-        return nodeDepot.getPotentialsByRole(role);
+    	
+    	List<Potential> potentials = nodeDepot.getPotentialsByRole(role);
+    	
+    	if (constantPotentials != null) {
+    		for (Potential potential : constantPotentials) {
+    			if (potential.getPotentialRole() == role) {
+    				potentials.add(potential);
+    			}
+    		}
+    	}
+    	
+        return potentials;
     }
 
     /**

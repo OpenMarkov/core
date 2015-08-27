@@ -2140,14 +2140,14 @@ public final class DiscretePotentialOperations {
      * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>
      */
     public static void classifyProbAndUtilityPotentials(
-    		Collection<TablePotential> potentials,
+    		Collection<? extends Potential> potentials,
     		Collection<TablePotential> probPotentials,
     		Collection<TablePotential> utilityPotentials) {
-    	for (TablePotential potential : potentials) {
+    	for (Potential potential : potentials) {
     		if (potential.getPotentialRole() == PotentialRole.UTILITY) {
-    			utilityPotentials.add(potential);
+    			utilityPotentials.add((TablePotential)potential);
     		} else {
-    			probPotentials.add(potential);
+    			probPotentials.add((TablePotential)potential);
     		}
     	}
     }

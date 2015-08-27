@@ -106,10 +106,10 @@ public class GTablePotential extends TablePotential {
 	public String toString() {
 		StringBuilder buffer = new StringBuilder();
 		int numVariables = (variables != null)? variables.size () : 0;
+		int numElementsTable = elementTable.size();
 		if (numVariables > 0) {
 			// writes each configuration and its value
 			int[] configuration = null;
-			int numElementsTable = elementTable.size();
 			if (numElementsTable == 0) {
 				buffer.append("Empty potential.\n");
 			} else {
@@ -132,6 +132,13 @@ public class GTablePotential extends TablePotential {
 						buffer.append("then\n");
 					}
 				}
+				buffer.append(elementTable.get(i).toString());
+			}
+		} else {
+			buffer.append("No variables.\nNumber of elements in table: ");
+			buffer.append(numElementsTable);
+			buffer.append("\n");
+			for (int i = 0; i < numElementsTable; i++) {
 				buffer.append(elementTable.get(i).toString());
 			}
 		}

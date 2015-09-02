@@ -447,9 +447,8 @@ public class ProbNetOperations {
      * @param probNet
      * @param evidence
      * @return
-     * @throws NotEvaluableNetworkException 
      */
-    public static ProbNet convertNumericalVariablesToFS(ProbNet probNet, EvidenceCase evidence) throws NotEvaluableNetworkException {
+    public static ProbNet convertNumericalVariablesToFS(ProbNet probNet, EvidenceCase evidence)  {
         ProbNet convertedNet = probNet.copy();
         List<Node> sortedNodes = sortTopologically(convertedNet);
         List<Node> convertedNodes = new ArrayList<>();
@@ -524,7 +523,7 @@ public class ProbNetOperations {
                             scalarValue = oldVariable.round(scalarValue);
                             projectedValues[index++] = scalarValue;
                         } catch (NonProjectablePotentialException | WrongCriterionException e) {
-                            throw new NotEvaluableNetworkException(e.getMessage());
+                            e.printStackTrace();
                         }
                         if (!newStates.contains(scalarValue)) {
                             newStates.add(scalarValue);
@@ -1036,7 +1035,7 @@ public class ProbNetOperations {
         // loop until we have processed all predecessors
         while(!predecessors.isEmpty ())
         {
-            Node predecessor = predecessors.pop ();
+            Node predecessor = predecessors.pop();
             if(predecessor.getNodeType () == NodeType.DECISION)
             {
             	predecessorDecisions.add(predecessor);
@@ -1145,6 +1144,30 @@ public class ProbNetOperations {
             }
         }
         return informationalPredecessors;
+    }
+
+    /**
+     * @param nodes
+     * . <code>ArrayList</code> of <code>Node</code>.
+     * @return <code>nodes</code> and its ancestors. <code>ArrayList</code> of
+     * <code>Node</code>.
+     */
+    public static Set<Node> getNodeAncestors(Node node) {
+        Set<Node> ancestors = new HashSet<>();
+
+        Stack<Node> noExploredNodes = new Stack<>();
+        noExploredNodes.add(node);
+
+        while (!noExploredNodes.empty()) {
+            Node noExploredNode = noExploredNodes.pop();
+            List<Node> parents = noExploredNode.getParents();
+            for (Node parent : parents) {
+                if (ancestors.add(parent)) {
+                    noExploredNodes.push(parent);
+                }
+            }
+        }
+        return ancestors;
     }
 
 }

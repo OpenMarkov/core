@@ -7,7 +7,9 @@
 package org.openmarkov.core.model.network;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +22,7 @@ import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
@@ -36,6 +39,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.model.network.type.MarkovNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
 
 /**
@@ -102,6 +106,8 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
     
     private InferenceOptions inferenceOptions;
 
+	private Set<TablePotential> constantPotentials;
+
     // Constructors
     public ProbNet(NetworkType networkType) {
         this.pNESupport = new PNESupport(false);
@@ -130,6 +136,57 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
     }
 
     // Methods
+	/**
+	 * Creates a Markov decision network from <code>this</code> without utility nodes. 
+	 * @return A Markov decision network. <code>ProbNet</code>
+	 */
+	public ProbNet buildMarkovDecisionNetwork() {
+		ProbNet newProbNet = new ProbNet(MarkovNetworkType.getUniqueInstance());
+		List<Potential> potentials = getPotentials();
+		for (Potential potential : potentials) {
+			newProbNet.addPotential(potential, this);
+		}
+		newProbNet.setConstantPotentials(constantPotentials);
+		return newProbNet;
+	}
+	
+	/**
+	 * Adds the variables in the received <code>Potential</code> to this
+	 * <code>MarkovNet</code>, creates links between those variables creating
+	 * cliques and assigns the <code>potential</code> to the conditioned
+	 * variable (the first one).
+	 *
+	 * @argCondition At least one potential depends on at least one variable
+	 *               (otherwise the network would have no node, and it would be
+	 *               impossible to assign constant potentials)
+	 * @param projectedTablePotentials
+	 *            <code>ArrayList</code> of <code>Potential</code>s
+	 * @return A Markov Network in witch potentials are used to create cliques.
+	 *         (<code>ProbNet</code>).
+	 */
+	public ProbNet buildMarkovDecisionNetwork(Collection<? extends Potential> projectedTablePotentials) {
+		ProbNet markovDecisionNetwork = new ProbNet(MarkovNetworkType.getUniqueInstance());
+
+		try {
+			markovDecisionNetwork.addConstraint(new OnlyUndirectedLinks(), true);
+		} catch (ConstraintViolationException e) {
+			e.printStackTrace(); // Unreachable code because probNet is empty.
+		}
+		for (Potential potential : projectedTablePotentials) {
+			if (potential.getVariables().size() > 0) {
+				markovDecisionNetwork.addPotential(potential, this);
+			} else {
+                if (markovDecisionNetwork.constantPotentials == null) {
+                    markovDecisionNetwork.constantPotentials = new HashSet<>();
+                }
+				markovDecisionNetwork.constantPotentials.add((TablePotential) potential);
+			}
+		}
+
+        markovDecisionNetwork.setInferenceOptions(this.getInferenceOptions());
+		return markovDecisionNetwork;
+	}
+
     /**
      * Applies edit to the probNet
      * 
@@ -232,6 +289,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         constraints.removeAll(constraintsToRemove);
     }
 
+
     /** @return <code>ArrayList</code> of <code>PNConstraint</code>s */
     public List<PNConstraint> getConstraints() {
         return new ArrayList<PNConstraint>(constraints);
@@ -243,6 +301,16 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         List<PNConstraint> networkTypeConstraints = ConstraintManager.getUniqueInstance().buildConstraintList(networkType);
         additionalConstraints.removeAll(networkTypeConstraints);
         return additionalConstraints;
+    }
+    
+    @SuppressWarnings("rawtypes")
+	public boolean containsConstraint(Class receivedConstraintClass) {
+    	boolean containsConstraint = false;
+    	int numConstraints = constraints.size();
+        for (int i = 0; i < numConstraints && !containsConstraint; i++) {
+        	containsConstraint = constraints.get(i).getClass() == receivedConstraintClass;
+        }
+        return containsConstraint;
     }
 
     /**
@@ -573,7 +641,8 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
     }
 
     /**
-     * @return All the potentials of this network. <code>List</code> of
+     * @return All the potentials of this network that contains at least one variable 
+     * 				(except constant potentials). <code>List</code> of
      *         <code>Potential</code>s.
      * @consultation
      */
@@ -584,6 +653,19 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
             potentials.addAll(node.getPotentials());
         }
         return potentials;
+    }
+    
+    /**
+     * @return All the potentials of this network. <code>List</code> of
+     *         <code>Potential</code>s.
+     * @consultation
+     */
+    public List<Potential> getAllPotentials() {
+        List<Potential> potentials = getPotentials();
+    	if (constantPotentials != null) {
+    		potentials.addAll(constantPotentials);
+    	}
+    	return potentials;
     }
     
     /**
@@ -676,8 +758,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 
     /**
      * @param nodeType
-     * @return All the utility potentials when <code>isUtility</code> param =
-     *         <code>true</code> otherwise returns all chance potentials.
+     * @return All the utility potentials of a type.
      * @consultation
      */
     public List<Potential> getPotentialsByType(NodeType nodeType) {
@@ -689,7 +770,18 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      * @return All the potentials of a role.
      */
     public List<Potential> getPotentialsByRole(PotentialRole role) {
-        return nodeDepot.getPotentialsByRole(role);
+    	
+    	List<Potential> potentials = nodeDepot.getPotentialsByRole(role);
+    	
+    	if (constantPotentials != null) {
+    		for (Potential potential : constantPotentials) {
+    			if (potential.getPotentialRole() == role) {
+    				potentials.add(potential);
+    			}
+    		}
+    	}
+    	
+        return potentials;
     }
 
     /**
@@ -1034,14 +1126,22 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      *         received has been added.
      */
     public Node addPotential(Potential potential) {
+    	boolean isMarkovNetwork = getNetworkType() == MarkovNetworkType.getUniqueInstance();
         List<Variable> potentialVariables = potential.getVariables();
-        addPotentialVariables(potential);
         Node node = null; // The potential will be added here
+        
+        addPotentialVariables(potential, isMarkovNetwork, this);
         if (potential.isUtility()) { // Create node without variable
-            node = addUtilityPotential(potential, potentialVariables);
+            node = addUtilityPotential(potential, potentialVariables, isMarkovNetwork);
         } else {
             if (potentialVariables.size() > 0) {
-                node = addProbabilityPotential(potential, potentialVariables);
+            	if (isMarkovNetwork || containsConstraint(OnlyUndirectedLinks.class)) {
+            		addUndirectedLinks(potential);
+            		node = getNode(potential.getVariables().get(0));
+            		node.addPotential(potential);
+            	} else {
+            		node = addProbabilityPotential(potential, potentialVariables);
+            	}
             } else {// potential does not depend on any variable (is a constant)
                 List<Node> chanceNodes = getNodes(NodeType.CHANCE);
                 if (chanceNodes.size() > 0) {
@@ -1055,6 +1155,40 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         return node;
     }
 
+    public Node addPotential(Potential potential, ProbNet originalProbNet) {
+    	boolean isMarkovNetwork = getNetworkType() == MarkovNetworkType.getUniqueInstance();
+        List<Variable> potentialVariables = potential.getVariables();
+        Node node = null; // The potential will be added here
+        
+        addPotentialVariables(potential, isMarkovNetwork, originalProbNet);
+        int numPotentialVariables = potentialVariables.size();
+        if (potential.isUtility()) { // Create node without variable
+        	if (numPotentialVariables > 0 && isMarkovNetwork) {
+        		addUndirectedLinks(potential);
+        	}
+            node = addUtilityPotential(potential, potentialVariables, isMarkovNetwork);
+        } else {
+            if (numPotentialVariables > 0) {
+            	if (isMarkovNetwork || containsConstraint(OnlyUndirectedLinks.class)) {
+            		addUndirectedLinks(potential);
+            		node = getNode(potential.getVariables().get(0));
+            		node.addPotential(potential);
+            	} else {
+            		node = addProbabilityPotential(potential, potentialVariables);
+            	}
+            } else {// potential does not depend on any variable (is a constant)
+                List<Node> chanceNodes = getNodes(NodeType.CHANCE);
+                if (chanceNodes.size() > 0) {
+                    node = chanceNodes.get(0);
+                    node.addPotential(potential);
+                    // If there are no chance nodes there is no reason to
+                    // add the constant potential
+                }
+            }
+        }
+        return node;
+    }
+    
     /**
      * If there are missing variables (variables that exists in the
      * <code>potential</code> but not in the <code>probNet</code>), the method
@@ -1063,23 +1197,50 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      * @param potential
      *            . <code>Potential</code>
      */
-    private void addPotentialVariables(Potential potential) {
+    private void addPotentialVariables(Potential potential, boolean isMarkovNetwork, ProbNet originalProbNet) {
         // Common part
-        List<Variable> potentialVariables = potential.getVariables();
-        for (Variable variable : potentialVariables) {
-            // add the variables that were not yet in the network
-            if (getNode(variable) == null) {
-                addNode(variable, NodeType.CHANCE);
-            }
-        }
+        addVariables(potential.getVariables(), originalProbNet);
         // Only for utility potentials
-        if (potential.isUtility()) {
+        if (potential.isUtility() && !isMarkovNetwork) {
             Variable utilityVariable = potential.getUtilityVariable();
             if (getNode(utilityVariable) == null) {
                 addNode(utilityVariable, NodeType.UTILITY);
             }
         }
     }
+    
+    private void addVariables(Collection<Variable> variables, ProbNet originalProbNet) {
+    	for (Variable variable : variables) {
+    		// add the variables that were not yet in the network
+    		if (getNode(variable) == null) {
+    			Node originalNode = originalProbNet.getNode(variable);
+    			if (originalProbNet == this || originalNode == null) {
+    				addNode(variable, NodeType.CHANCE);
+    			} else {
+    				NodeType nodeType = originalNode.getNodeType();
+    				if (nodeType == NodeType.CHANCE) {
+    					addNode(variable, NodeType.CHANCE);
+    				} else {
+    					addNode(variable, NodeType.DECISION);
+    				}
+    			}
+    		}
+    	}
+    }
+
+	private void addUndirectedLinks(Potential potential) {
+		List<Variable> variablesPotential = potential.getVariables();
+		int potentialSize = variablesPotential.size();
+		for (int i = 0; i < potentialSize - 1; i++) {
+			Node node1 = getNode(variablesPotential.get(i));
+			for (int j = i + 1; j < potentialSize; j++) {
+				Node node2 = getNode(variablesPotential.get(j));
+				if (!isSibling(node1, node2)) {
+					addLink(node1, node2, false);
+				}
+			}
+		}
+	}
 
     /**
      * @param potential
@@ -1089,22 +1250,39 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      * @return The <code>Node</code> in which the <code>potential</code> is
      *         stored
      */
-    private Node addUtilityPotential(Potential potential, List<Variable> potentialVariables) {
-        Variable utilityVariable = potential.getUtilityVariable();
-        Node utilityNode = this.getNode(utilityVariable);
-        if (utilityNode == null) { // The variable does not exists yet
-            utilityNode = new Node(this, utilityVariable, NodeType.UTILITY);
-        }
-        utilityNode.addPotential(potential);
-        if (!hasConstraint(OnlyUndirectedLinks.class)) {
-            for (Variable variable : potentialVariables) {
-                Node parent = getNode(variable);
-                if (!isParent(parent, utilityNode)) {
-                    addLink(parent, utilityNode, true);
-                }
-            }
-        }
-        return utilityNode;
+	private Node addUtilityPotential(
+			Potential potential, 
+			List<Variable> potentialVariables, 
+			boolean isMarkovNetwork) {
+		Node assignedNode = null;
+		if (!isMarkovNetwork) {
+			Variable utilityVariable = potential.getUtilityVariable();
+			assignedNode = this.getNode(utilityVariable);
+			if (assignedNode == null) { // The variable does not exists yet
+				assignedNode = new Node(this, utilityVariable, NodeType.UTILITY);
+			}
+			assignedNode.addPotential(potential);
+			if (!hasConstraint(OnlyUndirectedLinks.class)) {
+				for (Variable variable : potentialVariables) {
+					Node parent = getNode(variable);
+					if (!isParent(parent, assignedNode)) {
+						addLink(parent, assignedNode, true);
+					}
+				}
+			}
+		} else {
+			if (potentialVariables.size() > 0) {
+				addUndirectedLinks(potential);
+				assignedNode = getNode(potentialVariables.get(0));
+				assignedNode.addPotential(potential);
+			} else {
+				if (constantPotentials == null) {
+					constantPotentials = new HashSet<TablePotential>();
+				}
+				constantPotentials.add((TablePotential)potential);
+			}
+		}
+		return assignedNode;
     }
 
     /**
@@ -1565,6 +1743,13 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         return copyNet;
     }
 
+	public Set<TablePotential> getConstantPotentials() {
+		return constantPotentials;
+	}
+
+	public void setConstantPotentials(Set<TablePotential> constantPotentials) {
+		this.constantPotentials = constantPotentials;
+	}
 	
 	
 }

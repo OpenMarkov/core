@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -235,7 +236,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 		try {
 			algorithm.setPostResolutionEvidence(evi);
-			HashMap<Variable, TablePotential> aPosterioriProbabilities = null;
+			Map<Variable, TablePotential> aPosterioriProbabilities = null;
 			try {
 				aPosterioriProbabilities = algorithm.getProbsAndUtilities();
 			} catch (UnexpectedInferenceException e) {
@@ -446,7 +447,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws ConstraintViolationException
 	 * @throws NotEvaluableNetworkException
 	 */
-	@Test
+	//@Test
 	public void testExpectedUtilitiesIDPerfectKnowledge()
 			throws FileNotFoundException,
 			IOException, ParserException, NodeNotFoundException,
@@ -510,7 +511,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 		// A priori probabilities
 		try {
-			HashMap<Variable, TablePotential> aPrioriProbabilities;
+			Map<Variable, TablePotential> aPrioriProbabilities;
 			aPrioriProbabilities = algorithm.getProbsAndUtilities();
 			// test potential probabilities
 			checkProbabilityPotential(aPrioriProbabilities,variableX,0.14);
@@ -520,10 +521,9 @@ iD_DecisionTestProblemWithSV = IDFactory
 			printExceptionAndFailIfImplemented(e);
 		}
 	}
-
 	
-	
-	protected Intervention getStrategyDiagnosisProblem(ProbNet id,
+	protected Intervention getStrategyDiagnosisProblem(
+			ProbNet id,
 			String resultTestName,
 			String decisionName,
 			String positiveResult,

@@ -1,81 +1,50 @@
 package org.openmarkov.core.inference;
 
+import org.junit.Ignore;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.tasks.Task;
+import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.modelUncertainty.Tools;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.TablePotential;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Ignore;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.modelUncertainty.Tools;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TablePotential;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /** @author mluque */
+
 /** @author ibermejo */
 @Ignore
-public abstract class InferenceAlgorithmTest {
+public abstract class InferenceTaskTest {
 
-	
+
 	/**
 	 * Maximum error allowed in tests. It could be modified by subclasses
 	 * if it is necessary (for example, approximate inference methods).
 	 */
 	protected static double maxError = 0.0001;
-	
-	
-	
-	/**
-	 * @param network
-	 * @return An InferenceAlgorithm for 'network'. If the network is not evaluable
-	 * with the algorithm then the test calling this method is skipped.
-	 */
-	protected InferenceAlgorithm buildInferenceAlgorithmAndSkipTestIfNotEvaluable(
-			ProbNet network) {
-		boolean isEvaluable;
-		InferenceAlgorithm algorithm = null;
-		
-		//If the network is not evaluable then the test is skipped
-		isEvaluable = true;
-		try {
-			algorithm = buildInferenceAlgorithm(network);
-		} catch (NotEvaluableNetworkException e1) {
-			isEvaluable = false;
-		}
-		assumeTrue(isEvaluable);
-		return algorithm;
-	}
-	
-	/**
-	 * @param probNet
-	 * @return
-	 * @throws NotEvaluableNetworkException
-	 * Builds an InferenceAlgorithm object with 'probNet'.
-	 * This method must be implemented by each inference test class.
-	 */
-	public abstract InferenceAlgorithm buildInferenceAlgorithm(ProbNet probNet) throws NotEvaluableNetworkException;
 
-	protected void setUp() throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	
 	/**
-	 * @param potA
-	 * @param potB
+	 * @param potA First potential in the comparison
+	 * @param potB Second potential in the comparison
 	 * @return true if potA and potB are equal (variables can be in different order)
 	 */
 	protected boolean areEqualPotentials(TablePotential potA,TablePotential potB){
@@ -192,7 +161,7 @@ public abstract class InferenceAlgorithmTest {
 	protected void checkProbabilityPotential(
 			Map<Variable, TablePotential> probabilities,
 			Variable variableX, double... x) {
-		TablePotential X = (TablePotential) probabilities.get(variableX);
+		TablePotential X = probabilities.get(variableX);
 		checkProbabilities(X, x);
 
 	}
@@ -220,8 +189,7 @@ public abstract class InferenceAlgorithmTest {
 	}
 	
 	/**
-	 * @param pot
-	 * @param values
+	 * @param pot a table potential
 	 * Checks if 'pot' is a conditional probability potential correctly defined: the values in each column sum 1.0.
 	 */
 	public static void checkIsAConditionalProbability(TablePotential pot) {
@@ -257,9 +225,40 @@ public abstract class InferenceAlgorithmTest {
 		return areEquals;
 
 	}
-	
-	
-	
-	
-	
+
+	protected boolean checkPolicy(TablePotential policy, Variable d, int numVar) {
+		List<Variable> domainPolicy = policy.getVariables();
+		domainPolicy.remove(d);
+		return (numVar == domainPolicy.size());
+	}
+
+	protected TablePotential constructExpectedUtilitiesPolicyDDecisionTestProblem(Variable variableT,
+																				Variable variableY, Variable variableD) {
+		TablePotential pot;
+
+		ArrayList<Variable> variables;
+		variables = new ArrayList<Variable>();
+		variables.add(variableT);
+		variables.add(variableY);
+		variables.add(variableD);
+
+		pot = new TablePotential(variables, PotentialRole.UTILITY);
+		double values[]={81.04585153,0.0,87.93064729,0.0,-2.0,89.3,49.3209607,0.0,97.51453104,0.0,-2.0,95.1};
+		pot.setValues(values);
+		return pot;
+	}
+
+	protected TablePotential constructExpectedUtilitiesPolicyTDecisionTestProblem(Variable variableT) {
+
+		TablePotential pot;
+
+		ArrayList<Variable> variables;
+		variables = new ArrayList<Variable>();
+		variables.add(variableT);
+
+		pot = new TablePotential(variables,PotentialRole.UTILITY);
+		double values[]={96.006,95.1};
+		pot.setValues(values);
+		return pot;
+	}
 }

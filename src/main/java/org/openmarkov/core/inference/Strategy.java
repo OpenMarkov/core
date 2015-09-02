@@ -24,12 +24,12 @@ public class Strategy {
 
     public class Policy {
 
-        GTablePotential<Choice> potential;
+        GTablePotential potential;
 
         @SuppressWarnings("unchecked")
         public Policy(Variable dec, TablePotential utilities) {
             this();
-            potential = (GTablePotential<Choice>) DiscretePotentialOperations.maximize(utilities,
+            potential = (GTablePotential) DiscretePotentialOperations.maximize(utilities,
                     dec)[1];
         }
 
@@ -37,7 +37,7 @@ public class Strategy {
             // TODO Auto-generated constructor stub
         }
 
-        public GTablePotential<Choice> getPotential() {
+        public GTablePotential getPotential() {
 
             return potential;
         }

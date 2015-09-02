@@ -116,8 +116,7 @@ public final class DiscretePotentialOperations {
         int[] resultDimension = TablePotential.calculateDimensions(resultVariables);
 
         // Gets offset accumulate
-        int[][] offsetAccumulate = DiscretePotentialOperations.getAccumulatedOffsets(potentials,
-                resultVariables);
+        int[][] offsetAccumulate = DiscretePotentialOperations.getAccumulatedOffsets(potentials, resultVariables);
 
         // Gets coordinate
         int[] resultCoordinate = initializeCoordinates(numVariables);
@@ -342,7 +341,6 @@ public final class DiscretePotentialOperations {
         }
 		return resultCoordinates;
 	}
-
     
 	/** Given a collection of variables, creates a new variable whose name is the concatenation 
      * of the names of the other variables. If there is only one, returns that one. If the collection is empty,
@@ -381,7 +379,7 @@ public final class DiscretePotentialOperations {
 	 * @param tablePotentials
 	 * @return A new variable whose name is the concatenation of the names of the utility variables.
 	 */
-	private static Variable getNewUtilityVariable(List<TablePotential> tablePotentials) {
+	private static Variable getNewUtilityVariable(Collection<TablePotential> tablePotentials) {
 		Set<Variable> utilityVariables = new HashSet<Variable>();
 		for (TablePotential potential : tablePotentials) {
 			if (potential.isUtility()) {
@@ -520,7 +518,7 @@ public final class DiscretePotentialOperations {
      * @param potentials
      * @return
      */
-    public static PotentialRole getRole(List<? extends Potential> potentials) {
+    public static PotentialRole getRole(Collection<? extends Potential> potentials) {
         boolean atLeastOneUtility = false;
         for (Potential potential : potentials) {
             atLeastOneUtility = atLeastOneUtility || potential.isUtility();
@@ -552,7 +550,7 @@ public final class DiscretePotentialOperations {
      *               the union of the variables of the potential
      * @return A <code>TablePotential</code> result of multiply and marginalize.
      */
-    public static TablePotential multiplyAndMarginalize(List<TablePotential> tablePotentials,
+    public static TablePotential multiplyAndMarginalize(Collection<TablePotential> tablePotentials,
             List<Variable> variablesToKeep,
             List<Variable> variablesToEliminate) {
 
@@ -1140,7 +1138,7 @@ public final class DiscretePotentialOperations {
         	resultingPotential.setUtilityVariable(composeVariable(fSVariablesToKeep));
         }
 
-        GTablePotential<Choice> gResult = new GTablePotential<Choice>(variablesToKeep, role);
+        GTablePotential gResult = new GTablePotential(variablesToKeep, role);
         int numStates = ((Variable) fSVariableToMaximize).getNumStates();
         int[] statesChoosed;
         Choice choice;
@@ -1752,7 +1750,7 @@ public final class DiscretePotentialOperations {
      * marginal probability and new utility in this order.
      */
     public static List<TablePotential> sumOutVariable(Variable chanceVariable, 
-    		List<TablePotential> potentials) {
+    		Collection<TablePotential> potentials) {
     	return sumOutVariable(chanceVariable,potentials,false);
     }
     
@@ -1762,8 +1760,9 @@ public final class DiscretePotentialOperations {
      * @return. A <code>List</code> with two <code>TablePotential</code>, 
      * marginal probability and new utility in this order.
      */
+    // TODO Documentar sdagInterventions.
     public static List<TablePotential> sumOutVariable(Variable chanceVariable, 
-    		List<TablePotential> potentials,boolean sdagInterventions) {
+    		Collection<TablePotential> potentials,boolean sdagInterventions) {
     	// Get probability and utility potentials
     	List<TablePotential> probPotentials = new ArrayList<TablePotential>();
     	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
@@ -1899,26 +1898,24 @@ public final class DiscretePotentialOperations {
 	}
     
     /**
-     * @param coalescedInterventions 
-  * @param decisionVariable. <code>Variable</code>
+     * @param decisionVariable. <code>Variable</code>
      * @param probPotentials. <code>List</code> of <code>TablePotential</code>
-     * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>
      * @return. A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
      */
      public static List<TablePotential> maxOutVariable(Variable decisionVariable, 
      		List<TablePotential> potentials) {
-    	 return maxOutVariable(decisionVariable,potentials,false);
+    	 return maxOutVariable(decisionVariable, potentials, false);
      }
     
    /**
-    * @param sdagInterventions 
- * @param decisionVariable. <code>Variable</code>
+    * @param decisionVariable. <code>Variable</code>
     * @param probPotentials. <code>List</code> of <code>TablePotential</code>
     * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>
+    * @param sdagInterventions 
     * @return. A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
     */
     public static List<TablePotential> maxOutVariable(Variable decisionVariable, 
-    		List<TablePotential> potentials, boolean sdagInterventions) {
+    		Collection<TablePotential> potentials, boolean sdagInterventions) {
     	// Get probability and utility potentials
     	List<TablePotential> probPotentials = new ArrayList<TablePotential>();
     	List<TablePotential> utilityPotentials = new ArrayList<TablePotential>();
@@ -2011,7 +2008,8 @@ public final class DiscretePotentialOperations {
     		outputUtilityPotential.values[outputUtilityPotentialPosition] = max;
     		//TODO In testing phase it is easier to assume that there are no ties between interventions
     		outputUtilityPotential.interventions[outputUtilityPotentialPosition] = 
-    				Intervention.optimalInterventionTakingAllOptimal(decisionVariable, utilities, interventions,sdagInterventions);
+    				Intervention.optimalInterventionTakingAllOptimal(
+    						decisionVariable, utilities, interventions, sdagInterventions);
 
     		// set the values of policyPotential
     		int policyPotentialPosition = outputUtilityPotentialPosition * decisionVariableSize;
@@ -2037,28 +2035,36 @@ public final class DiscretePotentialOperations {
     	return outputPotentials;
     }
 
-private static boolean thereAreRelevantUtilities(TablePotential outputUtilityPotential) {
-	boolean thereAreRelevantUtilities = false;
-	for (int i = 0; i < outputUtilityPotential.values.length; i++) {
-		if (!almostEqual(outputUtilityPotential.values[i], 0.0)) {
-			thereAreRelevantUtilities = true;
-			break;
-		}
-	}
-	return thereAreRelevantUtilities;
-}
+    /**
+     * @param outputUtilityPotential
+     * @return boolean
+     */
+    private static boolean thereAreRelevantUtilities(TablePotential outputUtilityPotential) {
+    	boolean thereAreRelevantUtilities = false;
+    	for (int i = 0; i < outputUtilityPotential.values.length; i++) {
+    		if (!almostEqual(outputUtilityPotential.values[i], 0.0)) {
+    			thereAreRelevantUtilities = true;
+    			break;
+    		}
+    	}
+    	return thereAreRelevantUtilities;
+    }
 
-private static boolean thereAreInterventionsInOutputUtilityPotential(TablePotential outputUtilityPotential) {
-	
-	boolean thereAreInterventions = false;
-	for (int i = 0; i < outputUtilityPotential.values.length; i++) {
-		if (outputUtilityPotential.interventions[i] != null) {
-			thereAreInterventions = true;
-			break;
-		}
-	}
-	return thereAreInterventions;
-}
+    /**
+     * @param outputUtilityPotential
+     * @return boolean
+     */
+    private static boolean thereAreInterventionsInOutputUtilityPotential(TablePotential outputUtilityPotential) {
+
+    	boolean thereAreInterventions = false;
+    	for (int i = 0; i < outputUtilityPotential.values.length; i++) {
+    		if (outputUtilityPotential.interventions[i] != null) {
+    			thereAreInterventions = true;
+    			break;
+    		}
+    	}
+    	return thereAreInterventions;
+    }
 
     /** This method is used to remove a decision variable from a probability potential
      * that in fact does not depend on the decision variable
@@ -2068,93 +2074,95 @@ private static boolean thereAreInterventionsInOutputUtilityPotential(TablePotent
      * @return. A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
      */
     public static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential) {
-		List<Variable> inputPotentialVariables = inputPotential.getVariables();
-		int numInputVariables = inputPotentialVariables.size();
+    	List<Variable> inputPotentialVariables = inputPotential.getVariables();
+    	int numInputVariables = inputPotentialVariables.size();
 
-		// initialize the output potential
-		List<Variable> projectedPotentialVariables = inputPotential.getVariables();
-		projectedPotentialVariables.remove(variable);
-		TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, 
-				PotentialRole.JOINT_PROBABILITY);
-		
-		// in allVariables, the first variable is variable
-		List<Variable> allVariables = new ArrayList<Variable>(projectedPotentialVariables.size() + 1);
-		allVariables.add(variable);
-		allVariables.addAll(projectedPotentialVariables);
-		
-		// constants for the iterations
-		int variableSize = variable.getNumStates();
-		int[] allVariablesDimensions = TablePotential.calculateDimensions(allVariables); 
-		int[] accOffsetsInputPotential = TablePotential.getAccumulatedOffsets(
-				allVariables, inputPotentialVariables);
-		int[] accOffsetsProjectedPotential = TablePotential.getAccumulatedOffsets(
-				allVariables, projectedPotentialVariables); 
+    	// initialize the output potential
+    	List<Variable> projectedPotentialVariables = inputPotential.getVariables();
+    	projectedPotentialVariables.remove(variable);
+    	PotentialRole projectedPotentialRole = inputPotential.getPotentialRole() == 
+    			PotentialRole.CONDITIONAL_PROBABILITY ? PotentialRole.JOINT_PROBABILITY : 
+    				inputPotential.getPotentialRole();
+    	TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, projectedPotentialRole);
 
-		// auxiliary variables that may change in every iteration
-		int[] allVariablesCoordinate = new int[numInputVariables];
-		int inputPotentialPosition = 0;
-		int projectedPotentialPosition = 0;
-		int increasedVariable = 0;
+    	// in allVariables, the first variable is variable
+    	List<Variable> allVariables = new ArrayList<Variable>(projectedPotentialVariables.size() + 1);
+    	allVariables.add(variable);
+    	allVariables.addAll(projectedPotentialVariables);
 
-		// outer iterations correspond to the variables in the output potential
-		int numOuterIterations = TablePotential.computeTableSize(projectedPotentialVariables);
-		for (int outerIteration = 0; outerIteration < numOuterIterations; outerIteration++) {
-			// inner iterations correspond to the variable to eliminate
-			for (int innerIteration = 0; innerIteration < variableSize; innerIteration++) {
-				projectedPotential.values[projectedPotentialPosition] = inputPotential.values[inputPotentialPosition];
+    	// constants for the iterations
+    	int variableSize = variable.getNumStates();
+    	int[] allVariablesDimensions = TablePotential.calculateDimensions(allVariables); 
+    	int[] accOffsetsInputPotential = TablePotential.getAccumulatedOffsets(
+    			allVariables, inputPotentialVariables);
+    	int[] accOffsetsProjectedPotential = TablePotential.getAccumulatedOffsets(
+    			allVariables, projectedPotentialVariables); 
 
-				if (!(outerIteration == numOuterIterations - 1 && innerIteration == variableSize - 1)) {
-					// find the next configuration and the index of the increased variable
-					increasedVariable = findNextConfigurationAndIndexIncreasedVariable(allVariablesDimensions,
-							allVariablesCoordinate,increasedVariable);
-					
-					// Update coordinates
-					inputPotentialPosition +=
-							accOffsetsInputPotential[increasedVariable];
-					projectedPotentialPosition +=
-							accOffsetsProjectedPotential[increasedVariable];
-				}
-			}
-		} // end of the outer loop
-		
-		// Do not return the probability potential if it depends on no variables and its value is 1
+    	// auxiliary variables that may change in every iteration
+    	int[] allVariablesCoordinate = new int[numInputVariables];
+    	int inputPotentialPosition = 0;
+    	int projectedPotentialPosition = 0;
+    	int increasedVariable = 0;
+
+    	// outer iterations correspond to the variables in the output potential
+    	int numOuterIterations = TablePotential.computeTableSize(projectedPotentialVariables);
+    	for (int outerIteration = 0; outerIteration < numOuterIterations; outerIteration++) {
+    		// inner iterations correspond to the variable to eliminate
+    		for (int innerIteration = 0; innerIteration < variableSize; innerIteration++) {
+    			projectedPotential.values[projectedPotentialPosition] = inputPotential.values[inputPotentialPosition];
+
+    			if (!(outerIteration == numOuterIterations - 1 && innerIteration == variableSize - 1)) {
+    				// find the next configuration and the index of the increased variable
+    				increasedVariable = findNextConfigurationAndIndexIncreasedVariable(allVariablesDimensions,
+    						allVariablesCoordinate,increasedVariable);
+
+    				// Update coordinates
+    				inputPotentialPosition +=
+    						accOffsetsInputPotential[increasedVariable];
+    				projectedPotentialPosition +=
+    						accOffsetsProjectedPotential[increasedVariable];
+    			}
+    		}
+    	} // end of the outer loop
+
+    	// Do not return the probability potential if it depends on no variables and its value is 1
     	boolean thereAreRelevantProbabilities = projectedPotential.getNumVariables() > 0 || !almostEqual(projectedPotential.values[0], 1.0);
-    	
-    	return thereAreRelevantProbabilities ? projectedPotential : null;
-	}
 
-	
-	/** 
-	 * Classifies potential from the first list between probability and utility and stores them 
-	 * in the second and third list
-	 * @param potentials. <code>List</code> of <code>TablePotential</code>
-	 * @param probPotentials. <code>List</code> of <code>TablePotential</code>
-	 * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>
-	 */
-	public static void classifyProbAndUtilityPotentials(
-			List<TablePotential> potentials,
-			List<TablePotential> probPotentials,
-			List<TablePotential> utilityPotentials) {
-    	for (TablePotential potential : potentials) {
+    	return thereAreRelevantProbabilities ? projectedPotential : null;
+    }
+
+
+    /** 
+     * Classifies potential from the first list between probability and utility and stores them 
+     * in the second and third list
+     * @param potentials. <code>List</code> of <code>TablePotential</code>
+     * @param probPotentials. <code>List</code> of <code>TablePotential</code>
+     * @param utilityPotentials. <code>List</code> of <code>TablePotential</code>
+     */
+    public static void classifyProbAndUtilityPotentials(
+    		Collection<? extends Potential> potentials,
+    		Collection<TablePotential> probPotentials,
+    		Collection<TablePotential> utilityPotentials) {
+    	for (Potential potential : potentials) {
     		if (potential.getPotentialRole() == PotentialRole.UTILITY) {
-    			utilityPotentials.add(potential);
+    			utilityPotentials.add((TablePotential)potential);
     		} else {
-    			probPotentials.add(potential);
+    			probPotentials.add((TablePotential)potential);
     		}
     	}
-	}
-	
+    }
 
-	/** 
-	 * Compares two numbers
-	 * @param a. <code>double</double>
-	 * @param b. <code>double</double>
-	 * @return <code>true</code> when a and b are close.
-	 */
-	private static boolean almostEqual(double a, double b) {
-		double aux = b - a;
-		return (aux >= 0.0 && aux <= maxRoundErrorAllowed) || 
-				(aux <= 0.0 && aux >= -maxRoundErrorAllowed);
-	}
-	
+
+    /** 
+     * Compares two numbers
+     * @param a. <code>double</double>
+     * @param b. <code>double</double>
+     * @return <code>true</code> when a and b are close.
+     */
+    private static boolean almostEqual(double a, double b) {
+    	double aux = b - a;
+    	return (aux >= 0.0 && aux <= maxRoundErrorAllowed) || 
+    			(aux <= 0.0 && aux >= -maxRoundErrorAllowed);
+    }
+
 }

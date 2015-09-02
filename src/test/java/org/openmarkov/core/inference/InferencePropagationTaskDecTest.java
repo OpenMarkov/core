@@ -1,18 +1,5 @@
 package org.openmarkov.core.inference;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -20,6 +7,7 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.inference.tasks.Task;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
@@ -32,19 +20,30 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 /**
  * @author manolo
  * Tests class for models that contain decisions. Different subclasses share that they have to test the MEU and the strategy
  *
  */
-public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
-	
-	protected void testMEUAndStrategy(ProbNet net,double expectedMEU,Intervention expectedStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(net);
-		Double meuEvaluation = algorithm.getGlobalUtility().values[0];
-		assertEquals(expectedMEU,meuEvaluation, maxError);
-		testScenariosIntervention(net,algorithm);
-	}
+public abstract class InferencePropagationTaskDecTest extends InferenceTaskTest {
+
+	public abstract Task buildInferenceTask(ProbNet probNet, List<Variable> variablesOfInterest,
+								   EvidenceCase preResolutionEvidence, EvidenceCase postResolutionEvidence)
+			throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException;
+
 
 	/**
 	 * Checks that the Intervention (optimal strategy) obtained from the evaluation optimal is not null
@@ -56,7 +55,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 	 * @throws UnexpectedInferenceException
 	 */
 	private void testScenariosIntervention(ProbNet net,
-			InferenceAlgorithm algorithm) throws IncompatibleEvidenceException, UnexpectedInferenceException {
+			Task algorithm) throws IncompatibleEvidenceException, UnexpectedInferenceException {
 		Intervention interv = null;
 		try {
 			interv = algorithm.getOptimalStrategy();
@@ -68,9 +67,6 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		
 		
 	}
-
-
-
 
 	/**
 	 * Checks that the Intervention 'interv' rooted at the evidence scenario 'parentEvi' is consistent with the
@@ -84,7 +80,8 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 	 * @throws IncompatibleEvidenceException
 	 * @throws UnexpectedInferenceException
 	 */
-	private void testIntervention(InferenceAlgorithm algorithm, Intervention interv, EvidenceCase parentEvi)
+	//TODO: check this tests and enable it
+	private void testIntervention(Task algorithm, Intervention interv, EvidenceCase parentEvi)
 			throws IncompatibleEvidenceException, UnexpectedInferenceException {
 
 		if (interv != null) {
@@ -94,7 +91,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 			algorithm.setPostResolutionEvidence(parentEvi);
 			List<Variable> interestVariables = new ArrayList<>();
 			interestVariables.add(rootVariable);
-			TablePotential probs = algorithm.getProbsAndUtilities().get(rootVariable);
+			TablePotential probs = null; //algorithm.getProbsAndUtilities().get(rootVariable);
 			if (branches != null) {
 				// Check that the number of branches is equal to the non-zero
 				// probability states
@@ -140,9 +137,6 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		return numStates;
 	}
 
-
-
-
 	/**
 	 * @param probs
 	 * @return The number of values in the potential that are greater than zero
@@ -157,125 +151,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		}
 		return numNotZero;
 	}
-
-
-
-
-	/**
-	 * Test for diagnosis problem
-	 * 
-	 * @throws ParserException
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 * @throws NodeNotFoundException
-	 * @throws ConstraintViolationException
-	 * @throws NotEvaluableNetworkException
-	 */
-	public void testEvaluationIDDecisionTestProblem(ProbNet diagram)
-			throws FileNotFoundException,
-			IOException, ParserException, NodeNotFoundException,
-			ConstraintViolationException, NotEvaluableNetworkException {
-		Variable variableX = null;
-		Variable variableY = null;
-		Variable variableT = null;
-		Variable variableD = null;
-		Variable variableU1 = null;
-		Variable variableU2 = null;
-		
-		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(diagram);
-
-		try {
-			// test max expected utility
-			
-			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
-			assertEquals(96.006, meuEvaluation, maxError);
-
-			// Test optimal policy
-			variableT = getVariableAndAssertNotNull(diagram,"T");
-			variableD = getVariableAndAssertNotNull(diagram,"D");
-			
-
-			Intervention optimalStrategy = algorithm.getOptimalStrategy();
-						
-			Potential policyT = algorithm.getOptimizedPolicy(variableT);
-			Potential policyD = algorithm.getOptimizedPolicy(variableD);
-			assertNotNull(policyT);
-			assertNotNull(policyD);
-
-			// Test the size of the domain of the policy of T
-			assertTrue(checkPolicy(getTablePotential(policyT), variableT, 0));
-
-			// Test the size of the domain of the policy of D
-			assertTrue(checkPolicy(getTablePotential(policyD), variableD, 2));
 	
-			// Test the a priori case
-			Map<Variable, TablePotential> aPrioriProbabilities = algorithm
-					.getProbsAndUtilities();
-			// Read the variables
-			variableX = getVariableAndAssertNotNull(diagram,"X");
-			variableY = getVariableAndAssertNotNull(diagram,"Y");
-			variableU1 = getVariableAndAssertNotNull(diagram,"U1");
-			variableU2 = getVariableAndAssertNotNull(diagram,"U2");
-			
-			
-			
-			//euPotT 
-			TablePotential euPotT = constructExpectedUtilitiesPolicyTDecisionTestProblem(variableT);
-			assertTrue(areEqualPotentials(euPotT,(TablePotential) algorithm.getExpectedUtilities(variableT)));
-			
-			  //euPotT 
-			TablePotential euPotD = constructExpectedUtilitiesPolicyDDecisionTestProblem(variableT,variableY,variableD);
-			assertTrue(areEqualPotentials(euPotD,(TablePotential) algorithm.getExpectedUtilities(variableD)));
-
-			checkProbabilityPotential(aPrioriProbabilities, variableX, 0.07);
-			checkProbabilityPotential(aPrioriProbabilities, variableY, 0.0916,
-					0.9084);
-			checkProbabilityPotential(aPrioriProbabilities, variableD, 0.0916);
-			checkProbabilityPotential(aPrioriProbabilities, variableT, 1.0);
-			checkUtilityPotential(aPrioriProbabilities, variableU1, 98.006);
-			checkUtilityPotential(aPrioriProbabilities, variableU2, -2.0);
-
-
-		} catch (Exception e) {
-			printExceptionAndFailIfImplemented(e);
-		}
-
-	}
-
-	private TablePotential constructExpectedUtilitiesPolicyTDecisionTestProblem(Variable variableT) {
-		
-	TablePotential pot;
-	
-	ArrayList<Variable> variables;
-	variables = new ArrayList<Variable>();
-	variables.add(variableT);
-			
-	pot = new TablePotential(variables,PotentialRole.UTILITY);
-	double values[]={96.006,95.1};
-	pot.setValues(values);
-	return pot;
-	}
-
-
-	
-
-
-	private TablePotential constructExpectedUtilitiesPolicyDDecisionTestProblem(Variable variableT,
-			Variable variableY, Variable variableD) {
-		TablePotential pot;
-		
-		ArrayList<Variable> variables;
-		variables = new ArrayList<Variable>();
-		variables.add(variableT);
-		variables.add(variableY);
-		variables.add(variableD);
-				
-		pot = new TablePotential(variables,PotentialRole.UTILITY);
-		double values[]={81.04585153,0.0,87.93064729,0.0,-2.0,89.3,49.3209607,0.0,97.51453104,0.0,-2.0,95.1};
-		pot.setValues(values);
-		return pot;
-	}
-
 	public void checkUtilityPotential(
 			Map<Variable, TablePotential> aPrioriProbabilities,
 			Variable variableU, double u) {
@@ -300,7 +176,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 			IOException, ParserException, NodeNotFoundException,
 			ConstraintViolationException, NotEvaluableNetworkException {
 
-		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(iD_DecisionTestProblemWithoutSV);
+		Task algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(iD_DecisionTestProblemWithoutSV);
 		try {
 			// test max expected utility
 			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
@@ -339,22 +215,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		}
 	}
 */
-	
-	private boolean checkPolicy(TablePotential policy, Variable d, int numVar) {
-	    List<Variable> domainPolicy = policy.getVariables();
-		domainPolicy.remove(d);
-		return (numVar == domainPolicy.size());
-	}
 
-
-	
-	
-	//@Test
-	public void testEvaluationSimpleIDWithoutDecisions(){
-		
-		testMEU(IDFactory.createSimpleIDWithoutDecisions(),83.7);
-	}
-	
 
 	/**
 	 * @param id
@@ -387,25 +248,6 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		return interv;
 	}
 
-	
-	
-	
-	private Intervention getOptimalStrategy(ProbNet id) {
-		Intervention strategy = null;
-		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(id);
-		try {
-			strategy = algorithm.getOptimalStrategy();
-		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
-			e.printStackTrace();
-		}
-		return strategy;
-	}
-
-
-
-
-
-
 	/**
 	 * @param aPosterioriUtils
 	 * @param variables
@@ -437,21 +279,6 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		assertEquals(v, x.values[0], maxError);
 
 	}
-protected void testMEU(ProbNet diagram,double expectedMeu){
-		
-		InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(diagram);
 
-		
-			// test max expected utility
-			Double meuEvaluation = null;
-			try {
-				meuEvaluation = algorithm.getGlobalUtility().values[0];
-			} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			assertEquals(expectedMeu, meuEvaluation, maxError);
-	
-		
-	}
+
 }

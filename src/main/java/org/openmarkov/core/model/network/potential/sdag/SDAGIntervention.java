@@ -22,6 +22,7 @@ import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 
+// TODO Documentar
 public class SDAGIntervention extends Intervention {
 	
 	public SDAGIntervention(Variable topVariable) {

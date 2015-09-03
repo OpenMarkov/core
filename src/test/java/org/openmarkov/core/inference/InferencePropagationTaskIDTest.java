@@ -20,7 +20,7 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.inference.tasks.Task;
+import org.openmarkov.core.inference.tasks.PosteriorValues;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
@@ -51,7 +51,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 			ConstraintViolationException, NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
 		ProbNet network = buildIDDecideTest();
 
-		Task algorithm;
+		PosteriorValues algorithm;
 		EvidenceCase preResolutionEvidence;
 		EvidenceCase postResolutionEvidence;
 
@@ -138,7 +138,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 	}
 
 	protected void checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(
-			Task algorithm, ProbNet diagram, double t, double y1, double y2, double d,
+			PosteriorValues algorithm, ProbNet diagram, double t, double y1, double y2, double d,
 			double x, double  uHealthState,  double uCostOfTherapy, double uCostOfTest) {
 
 		Variable variableX = null;
@@ -190,7 +190,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 	public void testPreAndPostResolutionEvidenceIDDecisionTestProblem() throws NotEvaluableNetworkException, UnexpectedInferenceException, IncompatibleEvidenceException {
 		ProbNet diagram = iD_DecisionTestProblemWithSV;
 
-		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram,null,null,null);
+		PosteriorValues algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram,null,null,null);
 
 		//TODO Test combination of pre and post resolution findings.
 		try {
@@ -256,50 +256,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 	}
 
 
-	protected Intervention getStrategyDiagnosisProblem(ProbNet id,
-													   String resultTestName,
-													   String decisionName,
-													   String positiveResult,
-													   String negativeResult,
-													   String yesTherapy,
-													   String noTherapy) throws InvalidStateException{
-		Intervention interv;
-		List<Variable> vars = new ArrayList<>();
-		List<State> states = new ArrayList<>();
-		Variable dec = null;
-		Variable resultTest = null;
-		String statesResultTestNames[] = new String[2];
-		String statesTherapyNames[]=new String[2];
 
-		statesResultTestNames[0]=positiveResult;
-		statesResultTestNames[1]=negativeResult;
-		statesTherapyNames[0]=yesTherapy;
-		statesTherapyNames[1]=noTherapy;
-		try {
-			dec = id.getVariable(decisionName);
-			resultTest = id.getVariable(resultTestName);
-		} catch (NodeNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		vars.add(dec);
-		vars.add(resultTest);
-		List<State> statesRoot = new ArrayList<>();
-		for (String nameState:statesResultTestNames){
-			statesRoot.add(resultTest.getState(nameState));
-		}
-
-		List<Intervention> interventionsChildren;
-
-		interventionsChildren = new ArrayList<>();
-		for (String nameState:statesTherapyNames){
-			interventionsChildren.add(createSimpleIntervention(id,decisionName,nameState));
-		}
-
-
-		interv = new Intervention(resultTest, statesRoot, interventionsChildren);
-
-		return interv;
-	}
 
 
 	/**
@@ -309,12 +266,12 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 	 * @throws UnexpectedInferenceException
 	 * @throws IncompatibleEvidenceException
 	 */
-	protected Task buildInferenceTaskAndSkipTestIfNotEvaluable(ProbNet network, List<Variable>  variablesOfInterest,
+	protected PosteriorValues buildInferenceTaskAndSkipTestIfNotEvaluable(ProbNet network, List<Variable>  variablesOfInterest,
 															   EvidenceCase preResolutionEvidence,
 															   EvidenceCase postResolutionEvidence)
 			throws IncompatibleEvidenceException, UnexpectedInferenceException {
 		boolean isEvaluable;
-		Task task = null;
+		PosteriorValues task = null;
 
 		//If the network is not evaluable then the test is skipped
 		isEvaluable = true;

@@ -65,8 +65,6 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		}
 		assertNotNull(interv);
 		testIntervention(algorithm,interv,new EvidenceCase());
-		
-		
 	}
 
 

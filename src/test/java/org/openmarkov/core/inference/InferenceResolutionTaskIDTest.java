@@ -8,8 +8,7 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.inference.tasks.Task;
-import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.inference.tasks.Resolution;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
@@ -57,13 +56,10 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 	}
 
-	protected void testMEUAndStrategy(ProbNet net,double expectedMEU,Intervention expectedStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(net);
+	protected void testMEU(ProbNet net, double expectedMEU, Intervention expectedStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException{
+		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(net);
 		Double meuEvaluation = algorithm.getGlobalUtility().values[0];
 		assertEquals(expectedMEU,meuEvaluation, maxError);
-
-		// TODO No se que hace esto. Documentar
-		// testScenariosIntervention(net,algorithm);
 	}
 
 	/**
@@ -90,7 +86,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 		Variable variableU1 = null;
 		Variable variableU2 = null;
 
-		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
+		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
 
 		try {
 			// test max expected utility
@@ -187,7 +183,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 	private Intervention getOptimalStrategy(ProbNet id) throws IncompatibleEvidenceException, UnexpectedInferenceException {
 		Intervention strategy = null;
-		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(id);
+		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(id);
 		try {
 			strategy = algorithm.getOptimalStrategy();
 		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
@@ -217,7 +213,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 	protected void testMEU(ProbNet diagram,double expectedMeu) throws IncompatibleEvidenceException, UnexpectedInferenceException{
 
-		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
+		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
 
 
 		// test max expected utility
@@ -235,32 +231,32 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 	@Test
 	public void testIDOneDecision() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDOneDecision(), 87.4, null);
+		testMEU(IDFactory.buildIDOneDecision(), 87.4, null);
 	}
 	
 	@Test
 	public void testIDPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDPerfectKnowledge(),9.72,null);	
+		testMEU(IDFactory.buildIDPerfectKnowledge(), 9.72, null);
 	}
 	
 	@Test
 	public void testIDPerfectKnowledgeCostTherapy() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDPerfectKnowledgeCostTherapy(),9.685,null);	
+		testMEU(IDFactory.buildIDPerfectKnowledgeCostTherapy(), 9.685, null);
 	}
 	
 	@Test
 	public void testIDNoKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDNoKnowledge(),9.02,null);	
+		testMEU(IDFactory.buildIDNoKnowledge(), 9.02, null);
 	}
 	
 	@Test
 	public void testIDTestAlways() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDTestAlways(),9.3929,null);	
+		testMEU(IDFactory.buildIDTestAlways(), 9.3929, null);
 	}
 	
 	@Test
 	public void testIDDecideTest() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(getIDDecideTest(),9.3929,null);
+		testMEU(getIDDecideTest(), 9.3929, null);
 	}
 	
 	protected ProbNet getIDDecideTest() {
@@ -269,71 +265,67 @@ iD_DecisionTestProblemWithSV = IDFactory
 	
 	@Test
 	public void testIDDecideTestSymptom() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDDecideTestSymptom(),9.9143,null);	
+		testMEU(IDFactory.buildIDDecideTestSymptom(), 9.9143, null);
 	}
 	
 	@Test
 	public void testIDQaleMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDQaleMediastinet(),2.1154194051058286,null);	
+		testMEU(IDFactory.buildIDQaleMediastinet(), 2.1154194051058286, null);
 	}
-	
-	
 
 	@Test
 	public void testIDMediastinetWithoutSV() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDMediastinetWithoutSV(),1.4709741803092176,null);	
+		testMEU(IDFactory.buildIDMediastinetWithoutSV(), 1.4709741803092176, null);
 	}
 	
 	@Test
 	public void testIDMediastinetWithoutMediastinoscopy() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDMediastinetWithoutMediastinoscopy(),1.5209741803092172,null);	
+		testMEU(IDFactory.buildIDMediastinetWithoutMediastinoscopy(), 1.5209741803092172, null);
 	}
-	
-	
+
 	@Test
 	public void testIDMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDMediastinet(),1.4709741803092176,null);	
+		testMEU(IDFactory.buildIDMediastinet(), 1.4709741803092176, null);
 	}
 	
 	@Test
 	public void testIDArthronet() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDArthronet(),0.4960714549037456,null);	
+		testMEU(IDFactory.buildIDArthronet(), 0.4960714549037456, null);
 	}
 	
 	@Test
 	public void testIDRedundantChance() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDRedundantChance(),175.0,null);	
+		testMEU(IDFactory.buildIDRedundantChance(), 175.0, null);
 	}
-	
 
 	@Test
 	public void testIDTwoIndependentDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDTwoIndependentDecisions(),4.0,null);	
+		testMEU(IDFactory.buildIDTwoIndependentDecisions(), 4.0, null);
 	}
 	
 	@Test
 	public void testIDConcatenateOrderTwoDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDConcatenateOrderTwoDecisions(),8.15,null);	
+		testMEU(IDFactory.buildIDConcatenateOrderTwoDecisions(), 8.15, null);
 	}
 	
 	@Test
 	public void testIDThreeIndependentDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDThreeIndependentDecisions(),37.63,null);	
+		testMEU(IDFactory.buildIDThreeIndependentDecisions(), 37.63, null);
 	}
 	
 	@Test
 	public void testIDStatesTies() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDStatesTies(),13.7,null);	
+		testMEU(IDFactory.buildIDStatesTies(), 13.7, null);
 	}
 	
 	@Test
 	public void testIDStatesTiesPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDStatesTiesPerfectKnowledge(),1.5,null);	
+		testMEU(IDFactory.buildIDStatesTiesPerfectKnowledge(), 1.5, null);
 	}
 
 	@Test
 	public void testIDConsecutiveDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		testMEUAndStrategy(IDFactory.buildIDConsecutiveDecisions(),4.57501894,null);	
+		testMEU(IDFactory.buildIDConsecutiveDecisions(), 4.57501894, null);
 	}
 
 	/**
@@ -356,8 +348,8 @@ iD_DecisionTestProblemWithSV = IDFactory
 		ProbNet network;
 		
 		network = IDFactory.buildIDPerfectKnowledge();
-		
-		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network);
+
+		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network);
 		
 		try {
 			// Test optimal policy
@@ -400,8 +392,8 @@ iD_DecisionTestProblemWithSV = IDFactory
 		ProbNet network;
 		
 		network = IDFactory.buildIDPerfectKnowledge();
-		
-		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network);
+
+		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network);
 
 		try {
 			// Test optimal policy
@@ -478,10 +470,10 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws UnexpectedInferenceException
 	 * @throws IncompatibleEvidenceException
 	 */
-	protected Task buildInferenceTaskAndSkipTestIfNotEvaluable(
+	protected Resolution buildInferenceTaskAndSkipTestIfNotEvaluable(
 			ProbNet network) throws IncompatibleEvidenceException, UnexpectedInferenceException {
 		boolean isEvaluable;
-		Task task = null;
+		Resolution task = null;
 
 		//If the network is not evaluable then the test is skipped
 		isEvaluable = true;
@@ -519,7 +511,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 		diagram = iD_UniformDiagnosisProblem;
 
-		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
+		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
 		try {
 			// test max expected utility
 			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
@@ -565,7 +557,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 		diagram = buildIDTestAlways();
 
-		Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
+		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
 
 		Variable variableX = diagram.getVariable(diseaseName);
 		assertNotNull(variableX);

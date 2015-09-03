@@ -13,10 +13,17 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.NoMixedParents;
+import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.model.network.type.MIDType;
+import org.openmarkov.core.model.network.type.NetworkType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,7 +160,6 @@ public abstract class Task {
     }
 
 
-
     public void setHeuristicFactory(HeuristicFactory heuristicFactory) {
         this.heuristicFactory = heuristicFactory;
     }
@@ -197,4 +203,7 @@ public abstract class Task {
     public abstract Potential getOptimizedPolicy(Variable decisionVariable)
             throws IncompatibleEvidenceException, UnexpectedInferenceException;
 
+    public abstract boolean checkNetworkConsistency() throws NotEvaluableNetworkException;
+    public abstract boolean checkEvidenceConsistency();
+    public abstract boolean checkPoliciesConsistency();
 }

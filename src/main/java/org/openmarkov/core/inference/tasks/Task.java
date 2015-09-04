@@ -73,11 +73,10 @@ public abstract class Task {
      */
     public Task (ProbNet probNet)
             throws NotEvaluableNetworkException {
-        this.probNet = probNet;
+        this.probNet = probNet.copy();
         preResolutionEvidence = new EvidenceCase();
         postResolutionEvidence = new EvidenceCase();
-        if (!isEvaluable (probNet))
-        {
+        if (!isEvaluable (probNet)) {
             throw new NotEvaluableNetworkException (probNet.toString ());
         }
     }

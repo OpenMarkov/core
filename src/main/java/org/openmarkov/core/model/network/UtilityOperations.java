@@ -1,5 +1,6 @@
 package org.openmarkov.core.model.network;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -58,11 +59,15 @@ public class UtilityOperations {
 		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
 
 		// Creates a effectiveness criterion
-		Criterion effectivenessCriterion = new Criterion("effectiveness");
+/*		Criterion effectivenessCriterion = new Criterion("effectiveness");
 		effectivenessCriterion.setCECriterion(CECriterion.Effectiveness);
 
 		Criterion costCriterion = new Criterion("cost");
 		effectivenessCriterion.setCECriterion(CECriterion.Cost);
+
+		List<Criterion> newCriteria = new ArrayList<>();
+		newCriteria.add(costCriterion);
+		newCriteria.add(effectivenessCriterion);*/
 
 		for (Node utilityNode : utilityNodes) {
 
@@ -74,13 +79,15 @@ public class UtilityOperations {
 			Potential potential = utilityNode.getPotentials().get(0);
 			potential.scalePotential(scale);
 
-			if(utilityNode.getVariable().getDecisionCriterion().getCECriterion().equals(CECriterion.Effectiveness)){
+/*			if(utilityNode.getVariable().getDecisionCriterion().getCECriterion().equals(CECriterion.Effectiveness)){
 				utilityNode.getVariable().setDecisionCriterion(effectivenessCriterion);
 			} else if(utilityNode.getVariable().getDecisionCriterion().getCECriterion().equals(CECriterion.Cost)){
 				utilityNode.getVariable().setDecisionCriterion(costCriterion);
-			}
-
+			}*/
 		}
+
+		/*probNet.setDecisionCriteria(newCriteria);*/
+
 	}
 
 	/**

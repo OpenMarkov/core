@@ -1,5 +1,7 @@
 package org.openmarkov.core.model.network;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 
@@ -331,6 +333,12 @@ public class Util {
 		return lastRounded;
 	}
 
+	public static double roundWithSignificantFigures(double x, int numDecimals) {
+		BigDecimal bigX = new BigDecimal(x);
+		bigX = bigX.round(new MathContext(numDecimals));
+		return bigX.doubleValue();
+	}
+	
 	/**
 	* It rounds 'x' with 'numDecimals' exact decimals
 	*/

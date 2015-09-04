@@ -22,13 +22,13 @@ import java.util.List;
  * @author jorgepmartin
  * @author artasom
  */
-public abstract class PosteriorValues extends Task {
+public abstract class Propagation extends Task {
 
     /**
      * @param probNet The network used in the inference
      * @throws NotEvaluableNetworkException
      */
-    public PosteriorValues(ProbNet probNet) throws NotEvaluableNetworkException {
+    public Propagation(ProbNet probNet) throws NotEvaluableNetworkException {
         super(probNet);
     }
 

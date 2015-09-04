@@ -7,7 +7,6 @@ import static org.openmarkov.core.model.network.factory.IDFactory.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -20,13 +19,11 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.inference.tasks.PosteriorValues;
+import org.openmarkov.core.inference.tasks.Propagation;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.factory.IDFactory;
-import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 public abstract class InferencePropagationTaskIDTest  extends InferencePropagationTaskDecTest {
@@ -51,7 +48,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 			ConstraintViolationException, NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
 		ProbNet network = buildIDDecideTest();
 
-		PosteriorValues algorithm;
+		Propagation algorithm;
 		EvidenceCase preResolutionEvidence;
 		EvidenceCase postResolutionEvidence;
 
@@ -138,7 +135,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 	}
 
 	protected void checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(
-			PosteriorValues algorithm, ProbNet diagram, double t, double y1, double y2, double d,
+			Propagation algorithm, ProbNet diagram, double t, double y1, double y2, double d,
 			double x, double  uHealthState,  double uCostOfTherapy, double uCostOfTest) {
 
 		Variable variableX = null;
@@ -190,7 +187,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 	public void testPreAndPostResolutionEvidenceIDDecisionTestProblem() throws NotEvaluableNetworkException, UnexpectedInferenceException, IncompatibleEvidenceException {
 		ProbNet diagram = iD_DecisionTestProblemWithSV;
 
-		PosteriorValues algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram,null,null,null);
+		Propagation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram,null,null,null);
 
 		//TODO Test combination of pre and post resolution findings.
 		try {
@@ -266,12 +263,12 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 	 * @throws UnexpectedInferenceException
 	 * @throws IncompatibleEvidenceException
 	 */
-	protected PosteriorValues buildInferenceTaskAndSkipTestIfNotEvaluable(ProbNet network, List<Variable>  variablesOfInterest,
+	protected Propagation buildInferenceTaskAndSkipTestIfNotEvaluable(ProbNet network, List<Variable>  variablesOfInterest,
 															   EvidenceCase preResolutionEvidence,
 															   EvidenceCase postResolutionEvidence)
 			throws IncompatibleEvidenceException, UnexpectedInferenceException {
 		boolean isEvaluable;
-		PosteriorValues task = null;
+		Propagation task = null;
 
 		//If the network is not evaluable then the test is skipped
 		isEvaluable = true;

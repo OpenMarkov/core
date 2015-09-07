@@ -340,13 +340,14 @@ public class TreeADDBranch {
     @Override
     public String toString () {
         StringBuilder builder = new StringBuilder ();
-        builder.append(indent);
-        builder.append("branch (");
+//        builder.append(indent);
+//        builder.append("branch (");
+        builder.append("IF ");
         builder.append(rootVariable);
-        builder.append(")");
-        builder.append(". States = ");
+//        builder.append(")");
+        builder.append("=");
         builder.append(states);
-        builder.append(". ");
+        builder.append("->");
         if (potential != null) {
             List<Variable> potentialVariables = potential.getVariables();
             if (potentialVariables != null && potentialVariables.size() > 0) {
@@ -358,19 +359,19 @@ public class TreeADDBranch {
             		if (i < potentialVariables.size() - 1) {
             			builder.append(", ");
             		} else {
-            			builder.append(")");
+            			builder.append("); ");
             		}
             	}
             }
         }
         if (parentVariables != null && parentVariables.size() > 0 && !(potential instanceof Intervention)) {
-			builder.append("\n");
+//			builder.append("\n");
 			builder.append(indent);
         	builder.append("ParentVariables = ");
         	builder.append(parentVariables);
         }
         if (lowerBound != null && upperBound != null) {
-			builder.append("\n");
+//			builder.append("\n");
 			builder.append(indent);
         	builder.append("Interval: (");
         	builder.append(lowerBound);
@@ -378,7 +379,7 @@ public class TreeADDBranch {
         	builder.append(upperBound);
         	builder.append(")");
         }
-		builder.append("\n");
+		//builder.append("\n");
 		if (potential != null && potential.getClass() == Intervention.class) {
 			List<TreeADDBranch> branches = ((Intervention)potential).getBranches();
 			for (TreeADDBranch branch : branches) {

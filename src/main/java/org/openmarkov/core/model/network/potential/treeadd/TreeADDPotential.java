@@ -52,9 +52,9 @@ public class TreeADDPotential extends Potential {
 	protected List<TreeADDBranch> branches = new ArrayList<TreeADDBranch>();
 
 	// Attributes used in toString()
-	protected static String defaultIndentString = "";
+	protected static String DEFAULT_INDENT_STRING = "";
 
-	protected String indent = defaultIndentString;
+	protected String indent = DEFAULT_INDENT_STRING;
 	
 	protected int indentLevel;
 

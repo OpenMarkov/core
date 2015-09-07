@@ -59,7 +59,7 @@ public abstract class Task {
      * Each policy is stochastic, which implies it is a probability potential whose domain
      * contains the decision.
      */
-    private List<TablePotential> imposedPolicies;
+    // private List<TablePotential> imposedPolicies;
 
     /**
      * Variables that will not be eliminated during the inference, and therefore all the results

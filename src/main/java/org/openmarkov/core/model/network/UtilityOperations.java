@@ -23,31 +23,14 @@ public class UtilityOperations {
 	 */
 	public static void transformToUnicriterion(ProbNet probNet) {
 		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
-		
-		// Gets the main conversion unit (main criterion)
-		String mainUnit = probNet.getInferenceOptions().getMultiCriteriaOptions().getMainUnit();
-		
-		// Creates a global criterion
-		Criterion globalUtilityCriterion = new Criterion("GlobalUtility", mainUnit);
-		
 		for (Node utilityNode : utilityNodes) {
 			if (utilityNode.getVariable().getDecisionCriterion() != null) {
 				// Get the actual criterion scale
-				double scale = utilityNode.getVariable().getDecisionCriterion()
-						.getUnicriteriaScale();
-
+				double scale = utilityNode.getVariable().getDecisionCriterion().getUnicriteriaScale();
 				// Transform the potential with the scale
 				Potential potential = utilityNode.getPotentials().get(0);
 				potential.scalePotential(scale);
 			}
-			// Sets a global criterion as the node criterion
-			utilityNode.getVariable().setDecisionCriterion(globalUtilityCriterion);
-			
-		}
-
-		if (probNet.getDecisionCriteria() != null) {
-			probNet.getDecisionCriteria().clear();
-			probNet.getDecisionCriteria().add(globalUtilityCriterion);
 		}
 	}
 	
@@ -57,37 +40,42 @@ public class UtilityOperations {
 	 */
 	public static void applyCEUtilityScaling(ProbNet probNet){
 		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
-
-		// Creates a effectiveness criterion
-/*		Criterion effectivenessCriterion = new Criterion("effectiveness");
-		effectivenessCriterion.setCECriterion(CECriterion.Effectiveness);
-
-		Criterion costCriterion = new Criterion("cost");
-		effectivenessCriterion.setCECriterion(CECriterion.Cost);
-
-		List<Criterion> newCriteria = new ArrayList<>();
-		newCriteria.add(costCriterion);
-		newCriteria.add(effectivenessCriterion);*/
-
 		for (Node utilityNode : utilityNodes) {
-
-			// Save the actual criterion scale
-			double scale = utilityNode.getVariable().getDecisionCriterion()
-					.getCeScale();
-
-			// Transform the potential with the scale
-			Potential potential = utilityNode.getPotentials().get(0);
-			potential.scalePotential(scale);
-
-/*			if(utilityNode.getVariable().getDecisionCriterion().getCECriterion().equals(CECriterion.Effectiveness)){
-				utilityNode.getVariable().setDecisionCriterion(effectivenessCriterion);
-			} else if(utilityNode.getVariable().getDecisionCriterion().getCECriterion().equals(CECriterion.Cost)){
-				utilityNode.getVariable().setDecisionCriterion(costCriterion);
-			}*/
+			if (utilityNode.getVariable().getDecisionCriterion() != null) {
+				// Save the actual criterion scale
+				double scale = utilityNode.getVariable().getDecisionCriterion().getCeScale();
+				// Transform the potential with the scale
+				Potential potential = utilityNode.getPotentials().get(0);
+				potential.scalePotential(scale);
+			}
 		}
+	}
 
-		/*probNet.setDecisionCriteria(newCriteria);*/
 
+	public static void unicriterionUtilityUnscaling(ProbNet probNet){
+		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
+		for (Node utilityNode : utilityNodes) {
+			if (utilityNode.getVariable().getDecisionCriterion() != null) {
+				// Save the actual criterion scale
+				double scale = 1 / utilityNode.getVariable().getDecisionCriterion().getUnicriteriaScale();
+				// Transform the potential with the scale
+				Potential potential = utilityNode.getPotentials().get(0);
+				potential.scalePotential(scale);
+			}
+		}
+	}
+
+	public static void ceUtilityUnscaling(ProbNet probNet){
+		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
+		for (Node utilityNode : utilityNodes) {
+			if (utilityNode.getVariable().getDecisionCriterion() != null) {
+				// Save the actual criterion scale
+				double scale = 1 / utilityNode.getVariable().getDecisionCriterion().getCeScale();
+				// Transform the potential with the scale
+				Potential potential = utilityNode.getPotentials().get(0);
+				potential.scalePotential(scale);
+			}
+		}
 	}
 
 	/**

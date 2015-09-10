@@ -25,6 +25,7 @@ import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.PotentialOperationException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.Choice;
+import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
@@ -327,12 +328,37 @@ public final class DiscretePotentialOperations {
         }
         TablePotential result = new TablePotential(resultVariables, getRole(tablePotentials), resultValues);
         result.interventions = resultInterventions;
-        // TODO Ver si esto es eliminable
+
         if (result.isUtility()) {
-        	result.setUtilityVariable(getNewUtilityVariable(tablePotentials));
+        	Variable newUtilityVariable = getNewUtilityVariable(tablePotentials);
+        	result.setUtilityVariable(newUtilityVariable);
+        	newUtilityVariable.setDecisionCriterion(getCommonDecisionCriterion(tablePotentials));
         }
         return result;
     }
+
+	/**
+	 * @param potentials
+	 * @return if all the potentials have the same criterion, that criterion; otherwise, <code>null</code>.
+	 */
+	private static Criterion getCommonDecisionCriterion(List<? extends Potential> potentials) {
+		Criterion criteron, lastCriterion = null;
+		int numPotentials = potentials.size();
+		boolean existsSameCriterion = (numPotentials > 0) ? 
+				((potentials.get(0).getUtilityVariable() != null) ? 
+					(lastCriterion = potentials.get(0).getUtilityVariable().getDecisionCriterion()) != null 
+					: 
+					false)    
+				: 
+				false;
+		for (int i = 1; i < numPotentials && existsSameCriterion; i++) {
+			Potential potential = potentials.get(i);
+			existsSameCriterion = 
+					potential.isUtility() && 
+					potential.getUtilityVariable().getDecisionCriterion() == lastCriterion;
+		}
+		return existsSameCriterion ? lastCriterion : null;
+	}
 
 	private static int[] initializeCoordinates(int numVariables) {
 		int[] resultCoordinates = new int[Math.max(1,numVariables)];

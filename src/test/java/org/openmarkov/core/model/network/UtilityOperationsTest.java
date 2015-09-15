@@ -16,7 +16,7 @@ import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
 public class UtilityOperationsTest {
 	
-	@Test
+	//@Test
 	public void transformToUnicriterionTest(){
 		ProbNet probNet = getProbNet4Test();
 		

@@ -134,8 +134,7 @@ public class UniformPotential extends Potential
                     else
                     {
                         // returns a constant
-                        projectedPotential = new TablePotential (new ArrayList<Variable> (),
-                                                                 PotentialRole.UNSPECIFIED);
+                        projectedPotential = new TablePotential (new ArrayList<Variable> (), role);
                         projectedPotential.values[0] = 1.0 / conditionedVariable.getNumStates ();
                     }
                 }

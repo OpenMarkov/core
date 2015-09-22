@@ -32,10 +32,12 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 @PotentialType(name = "Delta")
 public class DeltaPotential extends Potential{
 
-    private State state = null; 
-    private double numericValue = Double.NaN;
+    // state and stateIndex are used for finite states variables
+    private State state = null;
     private int stateIndex = -1;
-    
+    // numericValue is used for numeric variables
+    private double numericValue = Double.NaN;
+
     public DeltaPotential(List<Variable> variables, PotentialRole role, double numericValue)
     {
         this(variables, role);
@@ -121,32 +123,27 @@ public class DeltaPotential extends Potential{
             InferenceOptions inferenceOptions,
             List<TablePotential> projectedPotentials)
             throws NonProjectablePotentialException, WrongCriterionException {
-        TablePotential projectedPotential = null;
-        
-        if(state != null)
-        {
+        TablePotential projectedPotential;
+        if (state != null) {
+            // finite states variable
         	Variable conditionedVariable = getConditionedVariable();
-        	if(evidenceCase.contains(conditionedVariable))
-        	{
+        	if (evidenceCase.contains(conditionedVariable)) {
         		projectedPotential = new TablePotential (new ArrayList<Variable>(),
-	                    PotentialRole.UNSPECIFIED);
+	                    PotentialRole.CONDITIONAL_PROBABILITY);
         		projectedPotential.values[0] = 1;
-        	}else
-        	{
+        	} else {
 	            projectedPotential = new TablePotential (Arrays.asList(conditionedVariable),
-	                    PotentialRole.UNSPECIFIED);
-	            for(int i=0; i < projectedPotential.values.length; ++i)
-	            {
+	                    PotentialRole.CONDITIONAL_PROBABILITY);
+	            for(int i=0; i < projectedPotential.values.length; ++i) {
 	                projectedPotential.values[i] = (i == stateIndex)? 1 : 0;
 	            }
         	}
-        }else
-        {
+        } else {
+            // numeric variable
             projectedPotential = new TablePotential (new ArrayList<Variable> (),
-                                                     PotentialRole.UNSPECIFIED);
+                                                     PotentialRole.CONDITIONAL_PROBABILITY);
             projectedPotential.values[0] = numericValue;
         }
-        
         return Arrays.asList(projectedPotential);
     }
 

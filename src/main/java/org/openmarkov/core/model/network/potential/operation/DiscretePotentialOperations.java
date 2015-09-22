@@ -1801,9 +1801,6 @@ public final class DiscretePotentialOperations {
         // Do not return the probability potential if it depends on no variables and its value is 1
 
         if (thereIsUtility) {
-
-            List<TablePotential> utilityPotentialsByCriteria = new ArrayList<>();
-
             for (TablePotential inputUtilityPotential : utilityPotentials) {
                 List<Variable> inputUtilityVariables = inputUtilityPotential.getVariables();
                 boolean thereAreInterventions = inputUtilityPotential.interventions != null;

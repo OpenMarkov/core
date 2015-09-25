@@ -52,31 +52,31 @@ public class UtilityOperations {
 	}
 
 
-	public static void unicriterionUtilityUnscaling(ProbNet probNet){
-		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
-		for (Node utilityNode : utilityNodes) {
-			if (utilityNode.getVariable().getDecisionCriterion() != null) {
-				// Save the actual criterion scale
-				double scale = 1 / utilityNode.getVariable().getDecisionCriterion().getUnicriteriaScale();
-				// Transform the potential with the scale
-				Potential potential = utilityNode.getPotentials().get(0);
-				potential.scalePotential(scale);
-			}
-		}
-	}
-
-	public static void ceUtilityUnscaling(ProbNet probNet){
-		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
-		for (Node utilityNode : utilityNodes) {
-			if (utilityNode.getVariable().getDecisionCriterion() != null) {
-				// Save the actual criterion scale
-				double scale = 1 / utilityNode.getVariable().getDecisionCriterion().getCeScale();
-				// Transform the potential with the scale
-				Potential potential = utilityNode.getPotentials().get(0);
-				potential.scalePotential(scale);
-			}
-		}
-	}
+//	public static void unicriterionUtilityUnscaling(ProbNet probNet){
+//		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
+//		for (Node utilityNode : utilityNodes) {
+//			if (utilityNode.getVariable().getDecisionCriterion() != null) {
+//				// Save the actual criterion scale
+//				double scale = 1 / utilityNode.getVariable().getDecisionCriterion().getUnicriteriaScale();
+//				// Transform the potential with the scale
+//				Potential potential = utilityNode.getPotentials().get(0);
+//				potential.scalePotential(scale);
+//			}
+//		}
+//	}
+//
+//	public static void ceUtilityUnscaling(ProbNet probNet){
+//		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
+//		for (Node utilityNode : utilityNodes) {
+//			if (utilityNode.getVariable().getDecisionCriterion() != null) {
+//				// Save the actual criterion scale
+//				double scale = 1 / utilityNode.getVariable().getDecisionCriterion().getCeScale();
+//				// Transform the potential with the scale
+//				Potential potential = utilityNode.getPotentials().get(0);
+//				potential.scalePotential(scale);
+//			}
+//		}
+//	}
 
 	/**
 	 * This method remove all terminal utility nodes (without childrens) which

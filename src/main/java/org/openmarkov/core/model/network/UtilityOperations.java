@@ -22,14 +22,14 @@ public class UtilityOperations {
 	 * @param probNet
 	 */
 	public static void transformToUnicriterion(ProbNet probNet) {
-		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
-		for (Node utilityNode : utilityNodes) {
+		for (Node utilityNode : probNet.getNodes(NodeType.UTILITY)) {
 			if (utilityNode.getVariable().getDecisionCriterion() != null) {
 				// Get the actual criterion scale
 				double scale = utilityNode.getVariable().getDecisionCriterion().getUnicriteriaScale();
 				// Transform the potential with the scale
-				Potential potential = utilityNode.getPotentials().get(0);
+				Potential potential = utilityNode.getPotentials().get(0).deepCopy(probNet);
 				potential.scalePotential(scale);
+				utilityNode.setPotential(potential);
 			}
 		}
 	}
@@ -39,14 +39,14 @@ public class UtilityOperations {
 	 * @param probNet transformed probNet
 	 */
 	public static void applyCEUtilityScaling(ProbNet probNet){
-		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
-		for (Node utilityNode : utilityNodes) {
+		for (Node utilityNode : probNet.getNodes(NodeType.UTILITY)) {
 			if (utilityNode.getVariable().getDecisionCriterion() != null) {
 				// Save the actual criterion scale
 				double scale = utilityNode.getVariable().getDecisionCriterion().getCeScale();
 				// Transform the potential with the scale
-				Potential potential = utilityNode.getPotentials().get(0);
+				Potential potential = utilityNode.getPotentials().get(0).deepCopy(probNet);
 				potential.scalePotential(scale);
+				utilityNode.setPotential(potential);
 			}
 		}
 	}

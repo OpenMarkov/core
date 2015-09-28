@@ -362,12 +362,14 @@ public class TemporalNetOperations {
 		}
 		for(Node nodeToRemove : nodesToRemove)
 		{
+//			Potential potential = nodeToRemove.getPotentials().get(0);
+//			potential.scalePotential(0);
+//			nodeToRemove.setPotential(potential);
 			network.removeNode(nodeToRemove);
 		}
 	}	
 	
 	/**
-	 * TODO - Failed Test attempt
 	 * Apply the discounts for all temporal utility nodes in the expanded network
 	 * @param probNet Expanded network
 	 */
@@ -380,90 +382,75 @@ public class TemporalNetOperations {
 			Variable utilityVariable = utilityNode.getVariable();
 
 			if (utilityVariable.isTemporal()) {
-				Potential potential = utilityNode.getPotentials().get(0);
+				// Get a deep copy of the potential. Deep copy re-links the potential to their variaible in the
+				// probNet
+				Potential potential = utilityNode.getPotentials().get(0).deepCopy(probNet);
 				int timeSlice = utilityVariable.getTimeSlice();
 				double discount = CycleLength.getTemporalAdjustedDiscount(
 						probNet.getCycleLength().getUnit(),
 						probNet.getCycleLength().getValue(),
 						utilityVariable.getDecisionCriterion().getDiscountUnit(),
 						utilityVariable.getDecisionCriterion().getDiscount());
-				
-				applyDiscountToUtilityPotential(potential, timeSlice, discount);
-			}
-		}
-	}
-	
-	/**
-	 * Applies a discount to a utility potential used by "applyDiscountToUtilityNodes" method
-	 * @param potential Potential to be discounted
-	 * @param timeSlice Time slice in which the potential is
-	 * @param discount Discount of the criterion
-	 */
-	private static void applyDiscountToUtilityPotential(Potential potential, int timeSlice,
-			double discount) {
-		double discountRate = 1.0 / (Math.pow((1.0 + discount), timeSlice));
-		if (potential instanceof TablePotential) {
-			
-			double[] potentialValues = ((TablePotential) potential).getValues();
-			for (int j = 0; j < potentialValues.length; j++) {
-				potentialValues[j] = potentialValues[j] * discountRate;
-			}
-		} else if (potential instanceof TreeADDPotential) {
-			TreeADDPotential treeADD = (TreeADDPotential) potential;
-			for (TreeADDBranch branch : treeADD.getBranches()) {
-				applyDiscountToUtilityPotential(branch.getPotential(), timeSlice, discount);
-			}
-		}
-	}
-	
-	/**
-	 * TODO - This method is not working, the TreeADDPotential cannot be casted to a TablePotential
-	 * @param expandedNetwork
-	 * @param evidence
-	 * @return
-	 * @throws NotEvaluableNetworkException
-	 */
-	public static ProbNet adaptNetworkforCE(ProbNet expandedNetwork,
-			EvidenceCase evidence) throws NotEvaluableNetworkException {
 
-		// Convert numeric variables
-		expandedNetwork = ProbNetOperations.convertNumericalVariablesToFS(expandedNetwork, evidence);
-		
-		// make all utility nodes of the expanded probNet children of the decision criteria node
-		Variable decisionCriteriaVariable = 
-				new Variable("***CECriteria***", CECriterion.Cost.toString(), CECriterion.Effectiveness.toString());
-		Node decisionCECriteriaNode = expandedNetwork.addNode(decisionCriteriaVariable, NodeType.DECISION);
-		
-		for (Node utilityNode : BasicOperations.getTerminalUtilityNodes(expandedNetwork)) {
-			expandedNetwork.addLink(decisionCECriteriaNode, utilityNode, true);
-			List<Variable> newPotentialVariables = utilityNode.getPotentials().get(0).getVariables();
-			newPotentialVariables.add(decisionCriteriaVariable);
-			TablePotential oldTablePotential = null;
-			try {
-				oldTablePotential = utilityNode.getPotentials().get(0).getCPT();
-			} catch (NonProjectablePotentialException | WrongCriterionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// Get the discount rate
+				double discountRate = 1.0 / (Math.pow((1.0 + discount), timeSlice));
+
+				// Scale the potential by the discount rate
+				potential.scalePotential(discountRate);
+				utilityNode.setPotential(potential);
 			}
-			TablePotential decisionCEPotential = new TablePotential(newPotentialVariables, PotentialRole.UTILITY);
-			double newValues [] = new double[decisionCEPotential.values.length];
-			
-			int startPosition = 0;
-			if(utilityNode.getVariable().getDecisionCriterion().getCECriterion() == CECriterion.Cost){
-				startPosition = 0;
-			}else{
-				startPosition = oldTablePotential.getValues().length;
-			}
-			
-			for(int i = 0; i < oldTablePotential.getValues().length; i++){
-				newValues[i + startPosition] = oldTablePotential.getValues()[i];
-			}
-			utilityNode.setPotential(decisionCEPotential);
-			
 		}
-		
-		return expandedNetwork;
 	}
+	
+
+//	/**
+//	 * TODO - This method is not working, the TreeADDPotential cannot be casted to a TablePotential
+//	 * @param expandedNetwork
+//	 * @param evidence
+//	 * @return
+//	 * @throws NotEvaluableNetworkException
+//	 */
+//	public static ProbNet adaptNetworkforCE(ProbNet expandedNetwork,
+//			EvidenceCase evidence) throws NotEvaluableNetworkException {
+//
+//		// Convert numeric variables
+//		expandedNetwork = ProbNetOperations.convertNumericalVariablesToFS(expandedNetwork, evidence);
+//
+//		// make all utility nodes of the expanded probNet children of the decision criteria node
+//		Variable decisionCriteriaVariable =
+//				new Variable("***CECriteria***", CECriterion.Cost.toString(), CECriterion.Effectiveness.toString());
+//		Node decisionCECriteriaNode = expandedNetwork.addNode(decisionCriteriaVariable, NodeType.DECISION);
+//
+//		for (Node utilityNode : BasicOperations.getTerminalUtilityNodes(expandedNetwork)) {
+//			expandedNetwork.addLink(decisionCECriteriaNode, utilityNode, true);
+//			List<Variable> newPotentialVariables = utilityNode.getPotentials().get(0).getVariables();
+//			newPotentialVariables.add(decisionCriteriaVariable);
+//			TablePotential oldTablePotential = null;
+//			try {
+//				oldTablePotential = utilityNode.getPotentials().get(0).getCPT();
+//			} catch (NonProjectablePotentialException | WrongCriterionException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			TablePotential decisionCEPotential = new TablePotential(newPotentialVariables, PotentialRole.UTILITY);
+//			double newValues [] = new double[decisionCEPotential.values.length];
+//
+//			int startPosition = 0;
+//			if(utilityNode.getVariable().getDecisionCriterion().getCECriterion() == CECriterion.Cost){
+//				startPosition = 0;
+//			}else{
+//				startPosition = oldTablePotential.getValues().length;
+//			}
+//
+//			for(int i = 0; i < oldTablePotential.getValues().length; i++){
+//				newValues[i + startPosition] = oldTablePotential.getValues()[i];
+//			}
+//			utilityNode.setPotential(decisionCEPotential);
+//
+//		}
+//
+//		return expandedNetwork;
+//	}
 	
 	public static void transformToID(ProbNet expandedNetwork) {
 		for(Node node : expandedNetwork.getNodes()){

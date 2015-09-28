@@ -362,10 +362,10 @@ public class TemporalNetOperations {
 		}
 		for(Node nodeToRemove : nodesToRemove)
 		{
-//			Potential potential = nodeToRemove.getPotentials().get(0);
-//			potential.scalePotential(0);
-//			nodeToRemove.setPotential(potential);
-			network.removeNode(nodeToRemove);
+			Potential potential = nodeToRemove.getPotentials().get(0).deepCopy(network);
+			potential.scalePotential(0);
+			nodeToRemove.setPotential(potential);
+//			network.removeNode(nodeToRemove);
 		}
 	}	
 	

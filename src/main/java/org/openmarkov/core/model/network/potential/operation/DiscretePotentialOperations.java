@@ -65,7 +65,7 @@ public final class DiscretePotentialOperations {
     /**
      * @param tablePotentials
      *            <code>ArrayList</code> of extends <code>Potential</code>.
-     * @param reorder. Sorts or not the potentials prior to multiplication.
+     * @param reorder Sorts or not the potentials prior to multiplication.
      *            <code>boolean</code>.
      * @return A <code>TablePotential</code> as result.
      */
@@ -1781,6 +1781,9 @@ public final class DiscretePotentialOperations {
 
     		// build the marginal and conditional probabilities
     		TablePotential joinProb = multiply(probPotentials);
+    		if (joinProb==null){
+    			joinProb = new TablePotential(new ArrayList<Variable>(),PotentialRole.CONDITIONAL_PROBABILITY);
+    		}
     		marginalProb = marginalize(joinProb, chanceVariable);
     		TablePotential conditionalProb = divide(joinProb, marginalProb);
 

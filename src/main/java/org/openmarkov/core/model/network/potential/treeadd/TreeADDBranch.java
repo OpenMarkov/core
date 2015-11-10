@@ -240,7 +240,7 @@ public class TreeADDBranch {
 
     public List<Variable> getAddableVariables() {
         List<Variable> addableVariables = new ArrayList<>(parentVariables);
-        parentVariables.removeAll(potential.getVariables());
+        addableVariables.removeAll(potential.getVariables());
         return addableVariables;
     }
     

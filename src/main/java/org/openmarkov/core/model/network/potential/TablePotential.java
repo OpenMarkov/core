@@ -750,7 +750,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      * @param potential
      * @param configuration
      */
-    private int getPosition(EvidenceCase configuration) {
+    public int getPosition(EvidenceCase configuration) {
         int[] coordinates;
         int sizeCoordinates;
         int pos;

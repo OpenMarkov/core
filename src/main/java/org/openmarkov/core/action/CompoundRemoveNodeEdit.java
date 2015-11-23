@@ -71,7 +71,7 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 		// collect potentials of this node ...
 		List<TablePotential> potentialsVariable = new ArrayList<>();
 		
-		for (Potential pot : probNet.extractPotentials(variable)){
+		for (Potential pot : probNet.getPotentials(variable)){
 			potentialsVariable.add((TablePotential)pot);
 		}
 		

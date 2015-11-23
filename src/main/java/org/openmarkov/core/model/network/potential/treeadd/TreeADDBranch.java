@@ -342,12 +342,18 @@ public class TreeADDBranch {
         StringBuilder builder = new StringBuilder ();
 //        builder.append(indent);
 //        builder.append("branch (");
-        builder.append("IF ");
+
         builder.append(rootVariable);
 //        builder.append(")");
-        builder.append("=");
-        builder.append(states);
-        builder.append("->");
+        builder.append(" = ");
+
+        for(State state : states){
+            builder.append(state);
+        }
+
+        if(potential != null) {
+            builder.append(" -> ");
+        }
         if (potential != null) {
             List<Variable> potentialVariables = potential.getVariables();
             if (potentialVariables != null && potentialVariables.size() > 0) {
@@ -384,6 +390,9 @@ public class TreeADDBranch {
 			List<TreeADDBranch> branches = ((Intervention)potential).getBranches();
 			for (TreeADDBranch branch : branches) {
 				branch.setIndent(indent + "    ");
+                if(branches.size() > 1){
+                    builder.append(" IF ");
+                }
 				builder.append(branch.toString());
 			}
 		}

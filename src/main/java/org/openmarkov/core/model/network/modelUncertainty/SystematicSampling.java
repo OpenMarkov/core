@@ -61,9 +61,9 @@ public class SystematicSampling extends Sampler {
 	public static List<UncertainParameter> getUncertainParameters(ProbNet net){
 		List<Potential> potentials = net.getPotentials();
 		List<UncertainParameter> uncertainParams = new ArrayList<>();
-		for (Potential pot:potentials){
+		for (Potential pot : potentials){
 			Set<UncertainParameter> auxUncertainParameters = getUncertainParameters(pot);
-			if (auxUncertainParameters!=null){
+			if (auxUncertainParameters != null){
 				uncertainParams.addAll(auxUncertainParameters);
 			}			
 		}

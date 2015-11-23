@@ -723,16 +723,16 @@ public class ProbNetTest {
 	}
 
 	@Test
-	public void testExtractPotentials() {
-	    List<Potential> APotentials = simpleProbNet.extractPotentials(A);
+	public void testGetPotentials2() {
+	    List<Potential> APotentials = simpleProbNet.getPotentials(A);
 		assertEquals(3, APotentials.size());
 		assertTrue(APotentials.contains(pA));
 		assertTrue(APotentials.contains(pBA));
 		assertTrue(APotentials.contains(pU));
-		List<Potential> DPotentials = simpleProbNet.extractPotentials(D);
+		List<Potential> DPotentials = simpleProbNet.getPotentials(D);
 		assertEquals(1, DPotentials.size());
 		assertTrue(DPotentials.contains(pU));
-		List<Potential> BPotentials = simpleProbNet.extractPotentials(B);
+		List<Potential> BPotentials = simpleProbNet.getPotentials(B);
 		assertEquals(1, BPotentials.size());
 		assertTrue(BPotentials.contains(pBA));
 	}
@@ -740,13 +740,13 @@ public class ProbNetTest {
 	@Test
 	public void testRemovePotential() {
 		simpleProbNet.removePotential(pBA);
-		assertEquals(0, simpleProbNet.extractPotentials(B).size());
+		assertEquals(0, simpleProbNet.getPotentials(B).size());
 		assertEquals(2, simpleProbNet.getNumPotentials());
 		simpleProbNet.removePotential(pA);
-		assertEquals(1, simpleProbNet.extractPotentials(A).size());
+		assertEquals(1, simpleProbNet.getPotentials(A).size());
 		assertEquals(1, simpleProbNet.getNumPotentials());
 		simpleProbNet.removePotential(pU);
-		assertEquals(0, simpleProbNet.extractPotentials(D).size());
+		assertEquals(0, simpleProbNet.getPotentials(D).size());
 		assertEquals(0, simpleProbNet.getNumPotentials());		
 	}
 

@@ -1334,7 +1334,13 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      * @return the defaultStates
      */
     public State[] getDefaultStates() {
-        return defaultStates;
+        State[] states = new State[defaultStates.length];
+
+        for (int stateIndex = 0; stateIndex < defaultStates.length; stateIndex++) {
+            states[stateIndex] = new State(defaultStates[stateIndex]);
+        }
+
+        return states;
     }
 
     /** @argCondition oldNode belongs to this probNet */

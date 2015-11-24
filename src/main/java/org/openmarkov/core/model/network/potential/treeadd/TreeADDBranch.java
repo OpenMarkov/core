@@ -347,8 +347,10 @@ public class TreeADDBranch {
 //        builder.append(")");
         builder.append(" = ");
 
-        for(State state : states){
-            builder.append(state);
+        if(states != null) {
+            for (State state : states) {
+                builder.append(state);
+            }
         }
 
         if(potential != null) {

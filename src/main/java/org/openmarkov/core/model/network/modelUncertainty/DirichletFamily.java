@@ -19,7 +19,7 @@ public class DirichletFamily extends FamilyDistribution
     
     public DirichletFamily (double[] alphas)
     {
-    	 family = new ArrayList<UncertainValue>();
+    	 family = new ArrayList<>();
          for (Double alpha:alphas)
          {
             family.add(new UncertainValue(new DirichletFunction(alpha)));

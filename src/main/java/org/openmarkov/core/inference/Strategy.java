@@ -76,7 +76,7 @@ public class Strategy {
     }
 
     public Strategy() {
-        strategy = new Hashtable<Variable, Policy>();
+        strategy = new Hashtable<>();
     }
 
 }

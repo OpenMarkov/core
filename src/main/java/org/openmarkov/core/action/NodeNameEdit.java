@@ -45,7 +45,7 @@ public class NodeNameEdit extends SimplePNEdit {
 	 */
 	public NodeNameEdit (Node node, String newName){
 		super(node.getProbNet());
-		variables = new ArrayList<Variable>();
+		variables = new ArrayList<>();
 		for(Variable variable : node.getProbNet().getVariables())
 		{
 			if(variable.getBaseName().equals(node.getVariable().getBaseName()))

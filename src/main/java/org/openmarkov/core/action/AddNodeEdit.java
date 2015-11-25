@@ -52,7 +52,7 @@ public class AddNodeEdit extends SimplePNEdit
      * @param probNet the <code>ProbNet</code> where the new node will be added.
      * @param variable the variable contained in the new node
      * @param nodeType The new node type.
-     * @param cursorposition the position (coordinates X,Y) of the node.
+     * @param cursorPosition the position (coordinates X,Y) of the node.
      */
     public AddNodeEdit (ProbNet probNet,
                             Variable variable,

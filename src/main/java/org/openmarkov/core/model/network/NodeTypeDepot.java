@@ -29,7 +29,7 @@ public class NodeTypeDepot {
         LinkedHashMap<Variable, Node> nodesHashMap;
 
         NodesHashMap() {
-            nodesHashMap = new LinkedHashMap<Variable, Node>();
+            nodesHashMap = new LinkedHashMap<>();
         }
 
         public Node get(Variable variable) {
@@ -56,7 +56,7 @@ public class NodeTypeDepot {
     private LinkedHashMap<NodeType, NodesHashMap> nodesHashMaps;
 
     public NodeTypeDepot() {
-        nodesHashMaps = new LinkedHashMap<NodeType, NodesHashMap>();
+        nodesHashMaps = new LinkedHashMap<>();
         // create a linkedHashMap for each type of nodes
         for (NodeType type : NodeType.values()) {
             nodesHashMaps.put(type, new NodesHashMap());
@@ -76,7 +76,7 @@ public class NodeTypeDepot {
     }
 
     public List<Node> getNodes() {
-        List<Node> nodes = new ArrayList<Node>(getNumNodes());
+        List<Node> nodes = new ArrayList<>(getNumNodes());
         for (NodesHashMap hashMap : nodesHashMaps.values()) {
             nodes.addAll(hashMap.values());
         }
@@ -85,7 +85,7 @@ public class NodeTypeDepot {
 
     public List<Potential> getPotentialsByType(NodeType nodeType) {
         NodesHashMap nodesType = nodesHashMaps.get(nodeType);
-        List<Potential> potentials = new ArrayList<Potential>();
+        List<Potential> potentials = new ArrayList<>();
         for (Node node : nodesType.values()) {
             potentials.addAll(node.getPotentials());
         }
@@ -98,11 +98,11 @@ public class NodeTypeDepot {
      * @consultation
      */
     public List<Node> getNodes(NodeType nodeType) {
-        return new ArrayList<Node>(nodesHashMaps.get(nodeType).values());
+        return new ArrayList<>(nodesHashMaps.get(nodeType).values());
     }
 
     public List<Potential> getPotentialsByRole(PotentialRole role) {
-        List<Potential> potentials = new ArrayList<Potential>();
+        List<Potential> potentials = new ArrayList<>();
         for (NodesHashMap nodesHashMap : nodesHashMaps.values()) {
             for (Node auxNode : nodesHashMap.values()) {
                 for (Potential auxPot : auxNode.getPotentials()) {

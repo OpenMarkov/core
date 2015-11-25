@@ -44,7 +44,7 @@ public class RemovePolicyEdit extends SimplePNEdit {
 	}
 	@Override
 	public void doEdit() throws DoEditException {
-		ArrayList<Potential> potentials = new ArrayList <Potential>();
+		ArrayList<Potential> potentials = new ArrayList<>();
 		if ( probNet.getNode(variable).getNodeType()== NodeType.DECISION && 
 				lastPolicyType != PolicyType.OPTIMAL){
 			probNet.getNode(variable).setPolicyType(PolicyType.OPTIMAL);
@@ -54,7 +54,7 @@ public class RemovePolicyEdit extends SimplePNEdit {
 	
 	public void undo(){
 		super.undo();
-		ArrayList<Potential> potentials = new ArrayList <Potential>();
+		ArrayList<Potential> potentials = new ArrayList<>();
 		if ( probNet.getNode(variable).getNodeType()== NodeType.DECISION &&
 				lastPolicyType != PolicyType.OPTIMAL){
 			potentials.add(lastPotential);

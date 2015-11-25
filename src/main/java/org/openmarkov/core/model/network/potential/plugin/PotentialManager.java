@@ -43,8 +43,8 @@ public class PotentialManager
     {
         super ();
         this.pluginsLoader = new PluginLoader ();
-        potentials = new HashMap<String, Class<? extends Potential>> ();
-        potentialFamilies = new HashMap<String, String> ();
+        potentials = new HashMap<>();
+        potentialFamilies = new HashMap<>();
         
         for (Class<?> plugin : findAllPotentials ())	
         {
@@ -113,7 +113,6 @@ public class PotentialManager
      * For utility potentials
      * @param name
      * @param variables
-     * @param role
      * @param utilityVariable
      * @return
      */
@@ -153,7 +152,7 @@ public class PotentialManager
      */
     public final  List<String> getFilteredPotentials (Node node)
     {
-        List<String> filteredPotentials = new ArrayList<String> ();
+        List<String> filteredPotentials = new ArrayList<>();
         
         for(String potentialName : potentials.keySet ())
         {
@@ -188,7 +187,7 @@ public class PotentialManager
      * Finds all learning algorithms. 
      * @return a list of learning algorithms.
      */
-    private final  List<Class<?>> findAllPotentials ()
+    private List<Class<?>> findAllPotentials ()
     {
         try
         {

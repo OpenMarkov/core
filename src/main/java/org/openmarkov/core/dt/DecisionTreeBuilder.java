@@ -46,8 +46,9 @@ public class DecisionTreeBuilder
 
     /**
      * Builds a decision tree from a decision analysis network
-     * @param probNet
-     * @return
+     * @param probNet probNet
+     * @param originalProbNet original probNet
+     * @return decision tree
      */    
     private static DecisionTreeElement buildDecisionTreeFromDAN (ProbNet originalProbNet, ProbNet probNet)
     {
@@ -215,8 +216,8 @@ public class DecisionTreeBuilder
 
 	/**
      * Builds a decision tree from an influence diagram
-     * @param probNet
-     * @return
+     * @param probNet influence diagram
+     * @return decision tree
      */
     private static DecisionTreeElement buildDecisionTreeFromID (ProbNet probNet)
     {
@@ -284,8 +285,8 @@ public class DecisionTreeBuilder
 
     /**
      * Looks for the super value node. If there is none, it creates it.
-     * @param probNet
-     * @return
+     * @param probNet network
+     * @return supervalue node
      */
     private static Node getSuperValueNode (ProbNet probNet)
     {

@@ -127,12 +127,12 @@ public class NodeStateEdit extends SimplePNEdit {
         this.stateAction = stateAction;
         this.currentPartitionedInterval = node.getVariable().getPartitionedInterval();
         this.oldStates = node.getVariable().getStates();
-        this.linkRestrictionMap = new HashMap<Link<Node>, double[]>();
+        this.linkRestrictionMap = new HashMap<>();
         this.revelationConditionMap = new HashMap<>();
         
         // Save the potentials of the node and its neighbours
         this.oldPotentials = probNet.getPotentials(node.getVariable());
-        this.listOldPotentials = new HashMap<Variable, List<Potential>>();
+        this.listOldPotentials = new HashMap<>();
     	for(Node nodeNeighbour : probNet.getNeighbors(node)){
     		this.listOldPotentials.put(nodeNeighbour.getVariable(), probNet.getPotentials(nodeNeighbour.getVariable())); 
     	}
@@ -193,8 +193,8 @@ public class NodeStateEdit extends SimplePNEdit {
 
                 int positionToRemove = selectedStateIndex;
 
-                List<Double> newLimits = new ArrayList<Double>(oldLimits.length - 1);
-                List<Boolean> newBelongs = new ArrayList<Boolean>(oldLimits.length - 1);
+                List<Double> newLimits = new ArrayList<>(oldLimits.length - 1);
+                List<Boolean> newBelongs = new ArrayList<>(oldLimits.length - 1);
 
                 for (int j = 0; j < oldLimits.length; j++) {
                     if (j != positionToRemove) {
@@ -333,14 +333,14 @@ public class NodeStateEdit extends SimplePNEdit {
             uniformPotential = PotentialOperations.getUniformPotential(probNet,
                     node.getVariable(),
                     node.getNodeType());
-            potentials = new ArrayList<Potential>();
+            potentials = new ArrayList<>();
             potentials.add(uniformPotential);
         	node.setPotentials(potentials);
         	
         }
         for (Node child : node.getChildren()) {
         	if(child.getNodeType() != NodeType.DECISION){
-                potentials = new ArrayList<Potential>();
+                potentials = new ArrayList<>();
                 uniformPotential = PotentialOperations.getUniformPotential(probNet,
                         child.getVariable(),
                         child.getNodeType());

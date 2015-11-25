@@ -125,7 +125,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 	 */
 	private int getNumStatesBranches(List<TreeADDBranch> branches) {
 		int numStates = 0;
-		Set<State> states = new HashSet<State>();
+		Set<State> states = new HashSet<>();
 		if (branches != null){
 			for (int i = 0; i < branches.size(); i++) {
 				TreeADDBranch auxBranch = branches.get(i);
@@ -245,7 +245,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 	TablePotential pot;
 	
 	ArrayList<Variable> variables;
-	variables = new ArrayList<Variable>();
+	variables = new ArrayList<>();
 	variables.add(variableT);
 			
 	pot = new TablePotential(variables,PotentialRole.UTILITY);
@@ -263,7 +263,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		TablePotential pot;
 		
 		ArrayList<Variable> variables;
-		variables = new ArrayList<Variable>();
+		variables = new ArrayList<>();
 		variables.add(variableT);
 		variables.add(variableY);
 		variables.add(variableD);

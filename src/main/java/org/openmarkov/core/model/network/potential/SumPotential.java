@@ -36,7 +36,6 @@ public class SumPotential extends Potential {
 	/**
 	 * 
 	 * @param variables
-	 * @param role
 	 * @param utilityVariable
 	 */
 	public SumPotential(Variable utilityVariable, List<Variable> variables) {
@@ -57,9 +56,9 @@ public class SumPotential extends Potential {
 	// Methods
     /** Returns if an instance of a certain Potential type makes sense given 
      * the variables and the potential role.
-     * @param node. <code>Node</code> 
-     * @param variables. <code>ArrayList</code> of <code>Variable</code>.
-     * @param role. <code>PotentialRole</code>. */
+     * @param node <code>Node</code>
+     * @param variables <code>ArrayList</code> of <code>Variable</code>.
+     * @param role <code>PotentialRole</code>. */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean suitable = (role == PotentialRole.CONDITIONAL_PROBABILITY
 				|| role == PotentialRole.POLICY) && variables.get(0).getVariableType() == VariableType.NUMERIC;

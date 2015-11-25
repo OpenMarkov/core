@@ -56,7 +56,7 @@ public class AuxiliaryOperationsTest {
 
 	@Before
 	public void setUp() throws Exception {
-		emptyPotentialsList = new ArrayList<TablePotential>();
+		emptyPotentialsList = new ArrayList<>();
 
 		try {
     		constantPotentials = SharedTestUtilities
@@ -64,7 +64,7 @@ public class AuxiliaryOperationsTest {
 		} catch (Exception e) {
 			System.err.println(e.getStackTrace());
 		}
-		oneConstantPotentialsList = new ArrayList<TablePotential>();
+		oneConstantPotentialsList = new ArrayList<>();
 		oneConstantPotentialsList.add(constantPotentials.get(0));
 
 		try {
@@ -74,10 +74,10 @@ public class AuxiliaryOperationsTest {
 		} catch (Exception e) {
 			System.out.println(e.getStackTrace());
 		}
-		oneProperPotentialsList = new ArrayList<TablePotential>();
+		oneProperPotentialsList = new ArrayList<>();
 		oneProperPotentialsList.add(normalPotentials.get(0));
 
-		severalMixedPotentialsList = new ArrayList<TablePotential>();
+		severalMixedPotentialsList = new ArrayList<>();
 
 		// Initializes constant potentials tables with 1, 2, ... n
 		for (int i = 0; i < NUM_CONSTANT_POTENTIALS; i++) {

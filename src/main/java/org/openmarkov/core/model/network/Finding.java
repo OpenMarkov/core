@@ -38,15 +38,15 @@ public class Finding {
     // Constructors
     
     /** Creates a <code>Finding</code> associated to a discrete variable 
-     * @param fsVariable. <code>Variable</code>
-     * @param state. <code>int</code> */
+     * @param fsVariable <code>Variable</code>
+     * @param state <code>int</code> */
     public Finding(Variable fsVariable, State state) {
         this(fsVariable, fsVariable.getStateIndex (state));
     }
     
     /** Creates a <code>Finding</code> associated to a discrete variable 
-     * @param fsVariable. <code>Variable</code>
-     * @param state. <code>int</code> */
+     * @param fsVariable <code>Variable</code>
+     * @param state <code>int</code> */
     public Finding(Variable fsVariable, int state) {
         variable = fsVariable;
         this.stateIndex = state;
@@ -83,7 +83,7 @@ public class Finding {
 	// Methods
     /** @return <code>true</code> if the parameter name is equal to the internal
      *   variable name. <code>boolean</code>
-     * @param name. <code>String</code> */
+     * @param name <code>String</code> */
     public boolean match(String name) {
         return variable.getName().matches(name);
     }
@@ -103,7 +103,7 @@ public class Finding {
 		return variable.getStateName(stateIndex);
 	}
 
-    /** @param state. <code>int</code> */
+    /** @param stateIndex <code>int</code> */
     public void setStateIndex(int stateIndex) {
         this.stateIndex = stateIndex;
     }
@@ -114,7 +114,7 @@ public class Finding {
         return Double.isNaN(numericalValue)? stateIndex : numericalValue;
     }
     
-    /** @param numericalValue. <code>double</code> 
+    /** @param numericalValue <code>double</code>
      * @throws InvalidStateException */
     public void setNumericalValue(double numericalValue)
     throws InvalidStateException {

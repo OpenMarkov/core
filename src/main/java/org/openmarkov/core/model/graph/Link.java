@@ -30,8 +30,8 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * @author fjdiez
  * @version 1.0
  * @since OpenMarkov 1.0
- * @see openmarkov.graphs.Node
- * @see openmarkov.graphs.Graph
+ * @see Node
+ * @see Graph
  */
 public class Link <T>{
 
@@ -79,8 +79,8 @@ public class Link <T>{
 		this.node1 = node1;
 		this.node2 = node2;
 		this.directed = directed;
-		revealingStates = new ArrayList<State>();
-		revealingIntervals = new ArrayList<PartitionedInterval>();
+		revealingStates = new ArrayList<>();
+		revealingIntervals = new ArrayList<>();
 
 	}
 
@@ -205,7 +205,7 @@ public class Link <T>{
 	 * 
 	 */
 	public void initializesRestrictionsPotential() {
-		List<Variable> variables = new ArrayList<Variable>();
+		List<Variable> variables = new ArrayList<>();
 		variables.add(((Node) node1).getVariable());
 		variables.add(((Node) node2).getVariable());
 		restrictionsPotential = new TablePotential(variables,

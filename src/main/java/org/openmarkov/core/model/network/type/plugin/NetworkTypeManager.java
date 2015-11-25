@@ -78,7 +78,7 @@ public class NetworkTypeManager
     private Map<String, Class<? extends NetworkType>> getNetworkTypesMap()
     {
         List<Class<?>> networkTypes = findAllNetworkTypes ();
-        Map<String, Class<? extends NetworkType>> networkTypeClasses = new HashMap<String, Class<? extends NetworkType>>();
+        Map<String, Class<? extends NetworkType>> networkTypeClasses = new HashMap<>();
 
         for(Class<?> networkTypeClass : networkTypes)
         {
@@ -100,7 +100,7 @@ public class NetworkTypeManager
      * This method gets all the plugins with ProbNetType annotations
      * @return a list with the plugins detected with ProbNetType annotations.
      */
-    private final List<Class<?>> findAllNetworkTypes ()
+    private List<Class<?>> findAllNetworkTypes ()
     {
         PluginLoaderIF pluginsLoader = new PluginLoader ();
         try

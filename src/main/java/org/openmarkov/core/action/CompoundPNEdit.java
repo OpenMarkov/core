@@ -46,7 +46,6 @@ public abstract class CompoundPNEdit extends CompoundEdit
      * @throws DoEditException
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
-     * @throws UnexpectedInferenceException 
      */
     public void doEdit ()
         throws DoEditException,
@@ -73,7 +72,6 @@ public abstract class CompoundPNEdit extends CompoundEdit
      * @return <code>Vector</code> of <code>UndoableEdit</code>s
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
-     * @throws UnexpectedInferenceException 
      */
     public Vector<UndoableEdit> getEdits ()
         throws NonProjectablePotentialException,

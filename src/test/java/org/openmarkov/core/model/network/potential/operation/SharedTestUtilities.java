@@ -140,27 +140,27 @@ public class SharedTestUtilities {
 		d = new Variable("D", statesD);
 		
 		// Create ArrayList's for the TablePotential's constructors
-		variablesT1 = new ArrayList<Variable>(); // 0 variables. A constant.
-		variablesT2 = new ArrayList<Variable>(); // 2 variables
+		variablesT1 = new ArrayList<>(); // 0 variables. A constant.
+		variablesT2 = new ArrayList<>(); // 2 variables
 		variablesT2.add(a);
 		variablesT2.add(b);
-		variablesT3 = new ArrayList<Variable>(); // 0 variables. A constant.
-		variablesT4 = new ArrayList<Variable>(); // 3 variables
+		variablesT3 = new ArrayList<>(); // 0 variables. A constant.
+		variablesT4 = new ArrayList<>(); // 3 variables
 		variablesT4.add(c);
 		variablesT4.add(a);
 		variablesT4.add(d);
-		totalVariables = new ArrayList<Variable>();
+		totalVariables = new ArrayList<>();
 		totalVariables.add(a);
 		totalVariables.add(b);
 		totalVariables.add(c);
 		totalVariables.add(d);
-		arrayVariablesA = new ArrayList<Variable>();
+		arrayVariablesA = new ArrayList<>();
 		arrayVariablesA.add(a);
-		arrayVariablesABC = new ArrayList<Variable>();
+		arrayVariablesABC = new ArrayList<>();
 		arrayVariablesABC.add(a);
 		arrayVariablesABC.add(b);
 		arrayVariablesABC.add(c);
-		arrayVariablesBCD = new ArrayList<Variable>();
+		arrayVariablesBCD = new ArrayList<>();
 		arrayVariablesBCD.add(b);
 		arrayVariablesBCD.add(c);
 		arrayVariablesBCD.add(d);
@@ -205,7 +205,7 @@ public class SharedTestUtilities {
 		t5.values[2] = 0.1;
 		
 		// Create array of potentials
-		potentials = new ArrayList<TablePotential>();
+		potentials = new ArrayList<>();
 		
 		// Initialize array with potentials
 		potentials.add(t1);
@@ -227,7 +227,7 @@ public class SharedTestUtilities {
 	public static ArrayList<TablePotential> generatePotentials(
 			int numPotentials, int numVarsEachPotential, int numVarsInCommon, 
 			int numStates) throws Exception {
-		ArrayList<TablePotential> potentials = new ArrayList<TablePotential>();
+		ArrayList<TablePotential> potentials = new ArrayList<>();
 	    
 		// Creates the states of each variable
 		State[] states = new State[numStates]; 
@@ -246,8 +246,8 @@ public class SharedTestUtilities {
 
 		// Creates the potentials
 		for (int iPotential = 0; iPotential < numPotentials; iPotential++) {
-			ArrayList<Variable> variablesPotential = 
-				    new ArrayList<Variable>(numVarsEachPotential);
+			ArrayList<Variable> variablesPotential =
+					new ArrayList<>(numVarsEachPotential);
 			for (int iVariable = 0; iVariable < numVarsEachPotential; 
 			        iVariable++) {
 				variablesPotential.add(variables[iPotential * 
@@ -263,13 +263,13 @@ public class SharedTestUtilities {
 	
 	/** Create a <code>TablePotential</code> with binary variables A, B, ... X 
 	 *  (<code>numVariables</code>)
-	 *  @param numVariables. <code>int</code>
-	 *  @param table. <code>double[]</code>
+	 *  @param numVariables <code>int</code>
+	 *  @param table <code>double[]</code>
 	 *  @return TablePotential */
 	public static TablePotential createTablePotential(int numVariables, 
 			double[] table) {
 		// Create variables
-		ArrayList<Variable> variables = new ArrayList<Variable>(numVariables);
+		ArrayList<Variable> variables = new ArrayList<>(numVariables);
 		Variable variable;
 		State[] states = {new State("0"), new State("1")};
 		

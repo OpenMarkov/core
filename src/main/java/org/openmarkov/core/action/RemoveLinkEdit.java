@@ -48,7 +48,7 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 	/**
 	 * The new <code>Potential</code> of the second node
 	 */
-	protected List<Potential> newPotentials = new ArrayList<Potential>() ;
+	protected List<Potential> newPotentials = new ArrayList<>() ;
 	
 	protected List<Potential> oldPotentials;
 	// Constructor

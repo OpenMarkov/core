@@ -38,8 +38,8 @@ public class CycleLengthShift extends Potential {
 
 	// Constructor
 	/**
-	 * @param potential
-	 * @param slice
+	 * @param variables list of variables
+	 * @param cycleLength cycle length of the potential
 	 */
 	public CycleLengthShift(List<Variable> variables, CycleLength cycleLength) {
 		super(variables, PotentialRole.CONDITIONAL_PROBABILITY);
@@ -60,11 +60,10 @@ public class CycleLengthShift extends Potential {
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role
 	 * 
-	 * @param variables
-	 * @param role
+	 * @param variables List of variables
+	 * @param role PotentialRole
 	 */
-	public static boolean validate(Node node, List<Variable> variables,
-			PotentialRole role) {
+	public static boolean validate(List<Variable> variables, PotentialRole role) {
 		return role == PotentialRole.CONDITIONAL_PROBABILITY
 				&& variables.size() == 2
 				// child = variables.get (0)
@@ -140,7 +139,7 @@ public class CycleLengthShift extends Potential {
 		Variable conditionedVariable = getConditionedVariable();
 		Variable conditioningVariable = variables
 				.get((conditionedVariable == variables.get(0)) ? 1 : 0);
-		List<Finding> inducedFindings = new ArrayList<Finding>();
+		List<Finding> inducedFindings = new ArrayList<>();
 		if (evidenceCase.contains(conditioningVariable)
 				&& !evidenceCase.contains(conditionedVariable)) {
 			double numericalValue = evidenceCase.getFinding(
@@ -156,7 +155,7 @@ public class CycleLengthShift extends Potential {
 	public Potential copy() {
 		List<Variable> copiedVariables = null;
 		if (this.getVariables() != null && this.getVariables().size() != 0) {
-			copiedVariables = new ArrayList<Variable>(this.getVariables());
+			copiedVariables = new ArrayList<>(this.getVariables());
 		}
 		CycleLengthShift cycleLengthShift = new CycleLengthShift(copiedVariables, this.cycleLength);
 		cycleLengthShift.comment = this.comment;

@@ -20,7 +20,7 @@ package org.openmarkov.core.exception;
 public class CanNotWriteNetworkToFileException extends Exception {
 
 	// Constructor
-	/** @param fileName */
+	/** @param fileName file name */
 	public CanNotWriteNetworkToFileException(String fileName) {
 		super("Can not write network to file: " + fileName);
 	}

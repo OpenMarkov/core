@@ -26,7 +26,7 @@ public class MulticriteriaEdit extends SimplePNEdit {
 	public MulticriteriaEdit(ProbNet probNet, List<Criterion> decisionCriteria, MulticriteriaOptions options) {
 		super(probNet);
 		if(probNet.getDecisionCriteria() != null && !probNet.getDecisionCriteria().isEmpty()){
-			this.oldDecisionCriteria = new ArrayList<Criterion>();
+			this.oldDecisionCriteria = new ArrayList<>();
 			for(Criterion criterion : probNet.getDecisionCriteria()){
 				this.oldDecisionCriteria.add(criterion.clone());
 			}

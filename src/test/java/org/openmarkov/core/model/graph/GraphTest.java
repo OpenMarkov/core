@@ -201,7 +201,7 @@ public class GraphTest {
 	@Test
 	public void testMarry() {
 		// Marry 2 nodes
-		List<String> nodesToMarry = new ArrayList<String>();
+		List<String> nodesToMarry = new ArrayList<>();
 		nodesToMarry.add(nodeA);
 		nodesToMarry.add(nodeB);
 		int numLinks = countLinks(graph);

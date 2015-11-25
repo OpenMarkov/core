@@ -69,9 +69,9 @@ public class DiscretePotentialOperationsTest {
 	/** This method creates the variables used in the tests */
 	@Before
 	public void setUp() throws Exception {
-		constantPotentials = new ArrayList<TablePotential>();
-		normalPotentials = new ArrayList<TablePotential>();
-		allPotentials =	new ArrayList<TablePotential>();
+		constantPotentials = new ArrayList<>();
+		normalPotentials = new ArrayList<>();
+		allPotentials = new ArrayList<>();
 		try {
     		constantPotentials = SharedTestUtilities
     		    .generatePotentials(numConstantPotentials, 0, 0, 0);
@@ -104,7 +104,7 @@ public class DiscretePotentialOperationsTest {
 
 	@Test
 	public void testSum() {
-		List<TablePotential> potentials = new ArrayList<TablePotential>();
+		List<TablePotential> potentials = new ArrayList<>();
 		potentials.add(commonVariables.t2);
 		potentials.add(commonVariables.t4);
 		// Call method under test
@@ -441,10 +441,10 @@ public class DiscretePotentialOperationsTest {
 		Variable B = new Variable("B", 2);
 		Variable C = new Variable("C", 2);
 		// Arrays of variables
-		ArrayList<Variable> bPotentialVariables = new ArrayList<Variable>();
+		ArrayList<Variable> bPotentialVariables = new ArrayList<>();
 		bPotentialVariables.add(B);
 		bPotentialVariables.add(A);
-		ArrayList<Variable> bcPotentialVariables = new ArrayList<Variable>();
+		ArrayList<Variable> bcPotentialVariables = new ArrayList<>();
 		bcPotentialVariables.add(C);
 		bcPotentialVariables.add(A);
 		bcPotentialVariables.add(B);
@@ -472,13 +472,13 @@ public class DiscretePotentialOperationsTest {
 		bPotential = bPotential.tableProject(evidenceCase, null).get(0);
 		bcPotential = bcPotential.tableProject(evidenceCase, null).get(0);
 		// collection of potentials to multiply and marginalize
-		ArrayList<TablePotential> potentials = new ArrayList<TablePotential>();
+		ArrayList<TablePotential> potentials = new ArrayList<>();
 		potentials.add(bPotential);
 		potentials.add(bcPotential);
 		// variables to keep and marginalize
-		ArrayList<Variable> variablesToKeep = new ArrayList<Variable>();
+		ArrayList<Variable> variablesToKeep = new ArrayList<>();
 		variablesToKeep.add(C);
-		ArrayList<Variable> variablesToMarginalize = new ArrayList<Variable>();
+		ArrayList<Variable> variablesToMarginalize = new ArrayList<>();
 		variablesToMarginalize.add(B);
 
 		// Do test
@@ -504,7 +504,7 @@ public class DiscretePotentialOperationsTest {
 	/** Multiplies and maximizes two potentials: <code>t2(a,b)</code> and 
 	 * <code>t4(c,a,d)</code> that share a variable: <code>a</code>. */
 	public void testMultiplyAndMaximize() {
-		ArrayList<Potential> potentialsVariable = new ArrayList<Potential>();
+		ArrayList<Potential> potentialsVariable = new ArrayList<>();
 		potentialsVariable.add(commonVariables.t2);
 		potentialsVariable.add(commonVariables.t4);
 		Variable variableToMaximize = commonVariables.a; // The common variable
@@ -523,7 +523,7 @@ public class DiscretePotentialOperationsTest {
 		// Test maximization
 		assertEquals(12, maximized.values.length);
 		assertEquals(0.21, maximized.values[0], maxError);
-		HashMap<Variable, Integer> coordinate = new HashMap<Variable, Integer>();
+		HashMap<Variable, Integer> coordinate = new HashMap<>();
 		coordinate.put(commonVariables.b, 0);
 		coordinate.put(commonVariables.c, 0);
 		coordinate.put(commonVariables.d, 0);
@@ -670,7 +670,7 @@ public class DiscretePotentialOperationsTest {
 		List<Variable> variablesAB = orderedAB.getVariables();
 		
 		// Create variables in other order: B, A
-		List<Variable> variablesBA = new ArrayList<Variable>();
+		List<Variable> variablesBA = new ArrayList<>();
 		variablesBA.add(variablesAB.get(1));
 		variablesBA.add(variablesAB.get(0));
 		
@@ -695,7 +695,7 @@ public class DiscretePotentialOperationsTest {
     public void testReorder2() {
 		// Original TablePotential: commonVariables.t4. Variables: C,A,D
 	    List<Variable> variablesBeforeReorder = commonVariables.t4.getVariables();
-	    List<Variable> variablesAfterReorder = new ArrayList<Variable> (variablesBeforeReorder);
+	    List<Variable> variablesAfterReorder = new ArrayList<>(variablesBeforeReorder);
 		Collections.reverse(variablesAfterReorder); // reorder the variables
 		assertEquals(
 				variablesAfterReorder.size(),variablesBeforeReorder.size());
@@ -731,7 +731,7 @@ public class DiscretePotentialOperationsTest {
 		// another reorder
 	    List<Variable> variablesBeforeReorder = 
 			commonVariables.t4.getVariables();
-	    List<Variable> variablesAfterReorder = new ArrayList<Variable>(variablesBeforeReorder);
+	    List<Variable> variablesAfterReorder = new ArrayList<>(variablesBeforeReorder);
 		variablesAfterReorder.remove( 0 );
 		Collections.reverse(variablesAfterReorder); // reorder the variables
 		variablesAfterReorder.add( 0, variablesBeforeReorder.get(0 ));
@@ -812,24 +812,24 @@ public class DiscretePotentialOperationsTest {
 		Variable decisionVariable = new Variable("D", "opt 1", "opt 2");
 		Variable U = new Variable("U");
 		// Potential P(X)
-		List<Variable> pXvariables = new ArrayList<Variable>(1);
+		List<Variable> pXvariables = new ArrayList<>(1);
 		pXvariables.add(X);
 		TablePotential pX = new TablePotential(
 				pXvariables, PotentialRole.CONDITIONAL_PROBABILITY, new double[]{0.8, 0.2});
 		// Potential P(Y|X)
-		List<Variable> pYXvariables = new ArrayList<Variable>(2);
+		List<Variable> pYXvariables = new ArrayList<>(2);
 		pYXvariables.add(Y);
 		pYXvariables.add(X);
 		TablePotential pYX = new TablePotential(
 				pYXvariables, PotentialRole.CONDITIONAL_PROBABILITY, new double[]{0.9, 0.1, 0.4, 0.6});
 		// Potential U(X,D)
-		List<Variable> decXDVariables = new ArrayList<Variable>(2);
+		List<Variable> decXDVariables = new ArrayList<>(2);
 		decXDVariables.add(X);
 		decXDVariables.add(decisionVariable);
 		TablePotential pU = new TablePotential(decXDVariables, PotentialRole.UTILITY, new double[]{20, 30, 10, 40});
 		pU.setUtilityVariable(U);
 		// List of potentials
-		List<TablePotential> potentials = new ArrayList<TablePotential>(3);
+		List<TablePotential> potentials = new ArrayList<>(3);
 		potentials.add(pX);
 		potentials.add(pYX);
 		potentials.add(pU);
@@ -846,7 +846,7 @@ public class DiscretePotentialOperationsTest {
 	 * @return
 	 */
 	private List<TablePotential> getTablePotentials(List<Potential> potentials) {
-		List<TablePotential> tablePotentials = new ArrayList<TablePotential>(potentials.size());
+		List<TablePotential> tablePotentials = new ArrayList<>(potentials.size());
 		for (Potential potential : potentials) {
 			tablePotentials.add((TablePotential)potential);
 		}
@@ -980,7 +980,7 @@ public class DiscretePotentialOperationsTest {
      * potential, next the remaining variables of the second potential, etc.  */
     private List<Variable> getUnionVariablesOrdered(
     		List<? extends Potential> potentials) {
-        List<Variable> variables = new ArrayList<Variable>();
+        List<Variable> variables = new ArrayList<>();
     	for(Potential potential : potentials) {
     		for (Variable variable : potential.getVariables()) {
     			if (!variables.contains(variable)) {

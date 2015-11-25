@@ -52,7 +52,7 @@ public class InferenceManager
     {
         super ();
         this.pluginsLoader = new PluginLoader ();
-        this.inferenceAlgorithms = new HashMap<String, Class<? extends InferenceAlgorithm>> ();
+        this.inferenceAlgorithms = new HashMap<>();
         for (Class<?> InferenceAlgorithmClass : findAllInferencePlugins ())
         {
             InferenceAnnotation lAnnotation = InferenceAlgorithmClass.getAnnotation (InferenceAnnotation.class);
@@ -78,7 +78,7 @@ public class InferenceManager
      */
     public List<String> getInferenceAlgorithmNames (ProbNet probNet)
     {
-        List<String> inferenceAlgorithmNames = new ArrayList<String> ();
+        List<String> inferenceAlgorithmNames = new ArrayList<>();
         for (String algorithmName : inferenceAlgorithms.keySet ())
         {
             Constructor<? extends InferenceAlgorithm> constructor = null;
@@ -120,7 +120,7 @@ public class InferenceManager
      */
     public List<InferenceAlgorithm> getInferenceAlgorithms (ProbNet probNet)
     {
-        List<InferenceAlgorithm> inferenceAlgorithms = new ArrayList<InferenceAlgorithm> ();
+        List<InferenceAlgorithm> inferenceAlgorithms = new ArrayList<>();
         for (String algorithmName : this.inferenceAlgorithms.keySet ())
         {
             Constructor<? extends InferenceAlgorithm> constructor = null;
@@ -292,7 +292,7 @@ public class InferenceManager
      * This method gets all the plugins with InferenceType annotations
      * @return a list with the plugins detected with InferenceType annotations.
      */
-    private final List<Class<?>> findAllInferencePlugins ()
+    private List<Class<?>> findAllInferencePlugins ()
     {
         try
         {

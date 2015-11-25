@@ -38,13 +38,13 @@ public class DistinctVariableNames extends PNConstraint {
         List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit,
                 AddNodeEdit.class);
         List<Variable> variablesProbNet = probNet.getVariables();
-        List<String> variablesProbNetNames = new ArrayList<String>();
+        List<String> variablesProbNetNames = new ArrayList<>();
         for (Variable variable : variablesProbNet) {
             variablesProbNetNames.add(variable.getName());
         }
 
         // get new variables names
-        List<String> newVariablesNames = new ArrayList<String>();
+        List<String> newVariablesNames = new ArrayList<>();
         for (PNEdit simpleEdit : edits) {
             newVariablesNames.add(((AddNodeEdit) simpleEdit).getVariable ().getName());
         }
@@ -114,7 +114,7 @@ public class DistinctVariableNames extends PNConstraint {
     @Override
     public boolean checkProbNet(ProbNet probNet) {
         List<Variable> variablesProbNet = probNet.getVariables();
-        List<String> variablesProbNetNames = new ArrayList<String>();
+        List<String> variablesProbNetNames = new ArrayList<>();
         for (Variable variable : variablesProbNet) {
             variablesProbNetNames.add(variable.getName());
         }

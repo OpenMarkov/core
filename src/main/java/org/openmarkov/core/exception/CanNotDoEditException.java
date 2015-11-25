@@ -13,7 +13,7 @@ package org.openmarkov.core.exception;
 public class CanNotDoEditException extends Exception {
 
 	// Constructor
-	/** @param message */
+	/** @param message message of the exception */
 	public CanNotDoEditException(String message) {
 		super(message);
 	}

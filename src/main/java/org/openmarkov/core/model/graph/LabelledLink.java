@@ -13,7 +13,7 @@ package org.openmarkov.core.model.graph;
  * @author manuel
  * @version 1.0
  * @since OpenMarkov 1.0
- * @see openmarkov.graphs.Link */
+ * @see Link */
 public class LabelledLink <T> extends Link <T>{
 
 	// Attributes

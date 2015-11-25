@@ -44,10 +44,8 @@ public class UncertainValuesRemoveEdit extends SimplePNEdit {
 	/**
 	 * Creates a new <code>AddNodeEdit</code> with the network where the new
 	 * new node will be added and basic information about it. 
-	 * @param probNet the <code>ProbNet</code> where the new node will be added.
-	 * @param newNodeName the name of the new node
-	 * @param nodeType The new node type.
-	 * @param cursorposition the position (coordinates X,Y) of the node.
+	 * @param node the new node
+	 * @param configuration
 	 *            
 	 */
 	public UncertainValuesRemoveEdit(Node node, EvidenceCase 
@@ -72,7 +70,7 @@ public class UncertainValuesRemoveEdit extends SimplePNEdit {
 				
 		UncertainValue[] oldUncertainColumnArray = (wasNullOldUncertainColumn ? null : auxUncertainTable);
 		
-		oldUncertainColumn = new ArrayList<UncertainValue>();
+		oldUncertainColumn = new ArrayList<>();
 		for (UncertainValue aux:oldUncertainColumnArray){
 			oldUncertainColumn.add(aux);
 		}

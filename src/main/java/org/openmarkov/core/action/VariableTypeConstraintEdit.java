@@ -40,7 +40,7 @@ public class VariableTypeConstraintEdit extends SimplePNEdit {
 	 * This method creates a new VariableTypeConstraintEdit
 	 * @param probNet the network that will be edited
 	 *            <code>ProbNet</code>
-	 * @param newVariableTypeCosntraint the new constraint. If null, the network 
+	 * @param newVariableTypeConstraint the new constraint. If null, the network
 	 * will do not have constraint about variables, i.e, works with continuous 
 	 * and discrete variables.          
 	 */

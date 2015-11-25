@@ -35,7 +35,7 @@ public class Choice {
 	
 	// Constructors
 	/** @param variable <code>Variable</code>
-	 * @param value <code>int[]</code>. Most times only one value; in case of
+	 * @param values <code>int[]</code>. Most times only one value; in case of
 	 *   draws more than one value. */
 	public Choice(Variable variable, int[] values) {
 		this.variable = variable;
@@ -60,7 +60,7 @@ public class Choice {
 	}
 	
 	public List<State> getStates() {
-		List<State> states = new ArrayList<State>(numValues);
+		List<State> states = new ArrayList<>(numValues);
 		State[] variableStates = variable.getStates();
 		for (int i = 0; i < numValues; i++) {
 			states.add(variableStates[values[i]]);

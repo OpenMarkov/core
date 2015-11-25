@@ -96,10 +96,10 @@ public class UtilTestMethods {
 	 * assertEquals(expResult, result);<p>
 	 * </code>
 	 * @param test Object of the class that will be checked. <code>Object</code>
-	 * @param methodName. <code>String</code>
-	 * @param params[]. <code>Object[]</code>
+	 * @param methodName <code>String</code>
+	 * @param params <code>Object[]</code>
 	 * @return The <code>Object</code> returned by the private method.
-	 * @throws Exception. A generic exception because the invoked method can 
+	 * @throws Exception A generic exception because the invoked method can
 	 *  fail in unpredictable ways. */
     public static Object invokePrivateMethod (Object test, String methodName, 
     		Object params[]) throws Exception {
@@ -138,7 +138,7 @@ public class UtilTestMethods {
     }
     
     /** Create a <code>ProbNet</code> with the variables names received. All variables are binary.
-     * @param variablesNames. <code>String[]</code> */
+     * @param variablesNames <code>String[]</code> */
     public static ProbNet createProbNet(String ... variablesNames) {
     	int numVariables = variablesNames.length;
     	ProbNet probNet = new ProbNet();

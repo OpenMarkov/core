@@ -66,9 +66,9 @@ public class NetsFactory {
 		DATING_TV_BAD_DAN, 
 		DATING_ACCEPT_NO_DAN,
 		USED_CAR_BUYER_DAN,
-		N_TESTS;
-		
-		
+		N_TESTS
+
+
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class NetsFactory {
 	 * @return An ArrayList containing the variables
 	 */
 	private static List<Variable> createVariableList(Variable...variables){
-		List<Variable> list = new ArrayList<Variable>();
+		List<Variable> list = new ArrayList<>();
 		for (int i=0;i<variables.length;i++){
 			list.add(variables[i]);
 		}
@@ -150,8 +150,8 @@ protected static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity,
 	
 	/**
 	 * Create utility potential
-	 * @param values Values of the potential
-	 * @param variables Variables
+	 * @param varSV
+	 * @param parents Variables
 	 * @return A TablePotential
 	 */
 	protected static SumPotential createSumPotential(Variable varSV,Variable... parents) {

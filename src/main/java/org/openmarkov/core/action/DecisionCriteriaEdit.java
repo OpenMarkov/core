@@ -34,7 +34,7 @@ public class DecisionCriteriaEdit extends SimplePNEdit
         	this.newName = newName;
         }
         this.stateAction = stateAction;
-        this.lastCriteria = new ArrayList<Criterion> (probnet.getDecisionCriteria ());
+        this.lastCriteria = new ArrayList<>(probnet.getDecisionCriteria());
     }
 
     @Override

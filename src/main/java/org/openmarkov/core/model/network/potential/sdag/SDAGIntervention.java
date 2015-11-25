@@ -142,7 +142,7 @@ public class SDAGIntervention extends Intervention {
 		if (this.getBranches() != null) {
 			// Create branches
 			for (TreeADDBranch branch : getBranches()) {
-				List<State> newStates = new ArrayList<State>();
+				List<State> newStates = new ArrayList<>();
 				newStates.addAll(branch.getStates());
 				SDAGIntervention interv = getCoalescedInterventionBranch(branch);
 				SDAGIntervention intervCopy;

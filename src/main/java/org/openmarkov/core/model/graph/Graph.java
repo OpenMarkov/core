@@ -33,8 +33,8 @@ import java.util.Stack;
  * @since OpenMarkov 1.0
  * @version 1.1
  * @author ibermejo
- * @see openmarkov.graphs.Node
- * @see openmarkov.graphs.Link<T>
+ * @see org.openmarkov.core.model.network.Node
+ * @see Link
  * @invariant Two different nodes can not represent the same object */
 public class Graph <T> {
 
@@ -51,7 +51,7 @@ public class Graph <T> {
 	
 	// Constructor
 	public Graph() {
-		this.nodes = new ArrayList<T>();
+		this.nodes = new ArrayList<>();
 		this.nodeLinks = new HashMap<>();
 		this.nodeChildren = new HashMap<>();
 		this.nodeParents = new HashMap<>();
@@ -61,17 +61,17 @@ public class Graph <T> {
 	// Methods
 	public List<T> getChildren(T node)
 	{
-		return (nodeChildren.containsKey(node))? new ArrayList<T>(nodeChildren.get(node)) : new ArrayList<T>();
+		return (nodeChildren.containsKey(node))? new ArrayList<>(nodeChildren.get(node)) : new ArrayList<T>();
 	}
 
 	public List<T> getParents(T node)
 	{
-		return (nodeParents.containsKey(node))? new ArrayList<T>(nodeParents.get(node)) : new ArrayList<T>();
+		return (nodeParents.containsKey(node))? new ArrayList<>(nodeParents.get(node)) : new ArrayList<T>();
 	}
 
 	public List<T> getSiblings(T node)
 	{
-		return (nodeSiblings.containsKey(node))? new ArrayList<T>(nodeSiblings.get(node)) : new ArrayList<T>();
+		return (nodeSiblings.containsKey(node))? new ArrayList<>(nodeSiblings.get(node)) : new ArrayList<T>();
 	}
 	
 	public int getNumChildren(T node)
@@ -172,13 +172,13 @@ public class Graph <T> {
 	/** Inserts a link between <code>node1</code> and <code>node2</code>. 
 	 * @argCondition <code>node1</code> and <code>node2</code> belongs to this 
 	 *  <code>graph</code> 
-	 * @param node1. <code>Node</code>
-	 * @param node2. <code>Node</code>
-	 * @param directed. <code>boolean</code> */
+	 * @param node1 <code>Node</code>
+	 * @param node2 <code>Node</code>
+	 * @param directed <code>boolean</code> */
 	public Link<T> addLink(T node1, T node2, boolean directed) {
 		Link<T> newLink = null;
 		if (explicitLinks) {
-			newLink = new Link<T>(node1, node2, directed);
+			newLink = new Link<>(node1, node2, directed);
 			addLink(newLink);
 		} 
 		addImplicitLink(node1, node2, directed);
@@ -238,7 +238,7 @@ public class Graph <T> {
 	/** Creates the explicit links (based on the implicit links).<p> When
 	 *  <code>createLabelledLinks = true</code> create explicit links with label
 	 *  = <code>null</code>. Otherwise, create unlabeled explicit links.
-	 * @param createLabelledLinks. <code>boolean</code> */
+	 * @param createLabelledLinks <code>boolean</code> */
 	public void makeLinksExplicit(boolean createLabelledLinks) {
 		if (!explicitLinks) {
 			for (T node : nodes) {
@@ -251,9 +251,9 @@ public class Graph <T> {
 					for (T child : children) {
 						Link<T> newLink = null;
 						if (createLabelledLinks) {
-							newLink = new LabelledLink<T>(node, child, true, null);
+							newLink = new LabelledLink<>(node, child, true, null);
 						} else {
-							newLink = new Link<T>(node, child, true);
+							newLink = new Link<>(node, child, true);
 						}
 						addLink(newLink);
 					}
@@ -266,9 +266,9 @@ public class Graph <T> {
 						if (auxNode1Index > nodes.indexOf(sibling)) {
 							Link<T> newLink = null;
 							if (createLabelledLinks) {
-								newLink = new LabelledLink<T>(node, sibling, false, null);
+								newLink = new LabelledLink<>(node, sibling, false, null);
 							} else {
-								newLink = new Link<T>(node, sibling, false);
+								newLink = new Link<>(node, sibling, false);
 							}
 							addLink(newLink);
 						}
@@ -322,7 +322,7 @@ public class Graph <T> {
 	/** @return A clone of the list of nodes (<code>List</code> of 
 	 * <code>Node</code>). */
 	public List<T> getNodes() {
-		return new ArrayList<T>(nodes);
+		return new ArrayList<>(nodes);
 	}
 
 	public List<Link<T>> getLinks(T node) {
@@ -344,7 +344,7 @@ public class Graph <T> {
 	public List<Link<T>> getLinks() {
 		makeLinksExplicit(false);
 
-		List<Link<T>> links = new ArrayList<Link<T>>();
+		List<Link<T>> links = new ArrayList<>();
 		for(T node : nodes)
 		{
 			for(Link<T> link : nodeLinks.get(node))
@@ -375,7 +375,7 @@ public class Graph <T> {
 		}
 		int numNodes = nodes.size();
 		boolean[] markedNodes = new boolean[numNodes];
-		Stack<T> nodesToExpand = new Stack<T>();
+		Stack<T> nodesToExpand = new Stack<>();
 
 		for (int i = 0; i < numNodes; i++) {
 			markedNodes[i] = false;
@@ -385,7 +385,7 @@ public class Graph <T> {
 		nodesToExpand.push(node1);
 		markedNodes[nodes.indexOf(node1)] = true;
 
-		List<T> neighbors = new ArrayList<T>();
+		List<T> neighbors = new ArrayList<>();
 		while (!nodesToExpand.empty()) {
 			T expandableNode = nodesToExpand.pop(); // the top of the stack
 			neighbors = (directed)? getChildren(expandableNode) : getNeighbors(expandableNode);

@@ -28,7 +28,7 @@ public class SameAsPrevious extends Potential
 {
     // Constructors
     /**
-     * @param variable
+     * @param variables
      */
     public SameAsPrevious (List<Variable> variables)
     {
@@ -37,7 +37,6 @@ public class SameAsPrevious extends Potential
     
     /**
      * Utility constructor
-     * @param probNet
      * @param variable
      * @throws NodeNotFoundException
      * @throws NodeNotFoundException

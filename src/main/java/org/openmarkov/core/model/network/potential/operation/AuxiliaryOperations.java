@@ -39,7 +39,7 @@ public class AuxiliaryOperations {
 	 *   the constant potentials. */
     public static List<TablePotential> getNonConstantPotentials (Collection<TablePotential> potentials)
     {
-		List<TablePotential> properPotentials = new ArrayList<TablePotential>();
+		List<TablePotential> properPotentials = new ArrayList<>();
 		for (TablePotential potential : potentials) {
 			if (potential.values.length > 1) {
 				properPotentials.add(potential);
@@ -88,14 +88,14 @@ public class AuxiliaryOperations {
 	    return new ArrayList<>(variables);
 	}
 
-	/** @param allVariables. <code>ArrayList</code> of <code>Variable</code>s
-	 * @param variablesNames. <code>String[]</code>s
+	/** @param allVariables <code>ArrayList</code> of <code>Variable</code>s
+	 * @param variablesNames <code>String[]</code>s
 	 * @return an <code>ArrayList</code> of <code>Variable</code>s with the
 	 *   variables in <code>allVariables</code> whose names are contained in 
 	 *   <code>selectedVariables</code>, in the same order they are stored in 
 	 *   <code>variablesNames</code> */
     public static List<Variable> getVariables (List<Variable> allVariables, String[] variablesNames) {
-        List<Variable> variables = new ArrayList<Variable> ();
+        List<Variable> variables = new ArrayList<>();
         for (String name : variablesNames) {
             for (Variable variable : allVariables) {
                 if (name.contentEquals (variable.getName ())) {

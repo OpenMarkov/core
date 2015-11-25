@@ -21,7 +21,7 @@ public class State {
 	// Constructor
 	public State(String name) {
 		this.name = name;
-		additionalProperties = new LinkedHashMap<String, String>(); 
+		additionalProperties = new LinkedHashMap<>();
 	}
 
 	public State(State state) {

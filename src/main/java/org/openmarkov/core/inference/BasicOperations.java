@@ -47,7 +47,7 @@ public class BasicOperations {
         	for (Node node : utilityNode.getParents()) {
                 hashtable.put(node, getUtilityFunction(node, evidence));
             }
-            List<TablePotential> potentials = new ArrayList<TablePotential>(hashtable.values());
+            List<TablePotential> potentials = new ArrayList<>(hashtable.values());
             Potential utilityPotential = utilityNode.getPotentials().get(0);
             if (utilityPotential instanceof SumPotential) {
                 newPotential = DiscretePotentialOperations.sum(potentials);
@@ -65,12 +65,12 @@ public class BasicOperations {
     }
 
     /**
-     * @param network
+     * @param network Network from which we extract terminal utility variables
      * @return A list of utility nodes that have no children
      */
     public static List<Variable> getTerminalUtilityVariables(ProbNet network) {
         List<Variable> utilityVariables = network.getVariables(NodeType.UTILITY);
-        List<Variable> terminalUtilityNodes = new ArrayList<Variable>();
+        List<Variable> terminalUtilityNodes = new ArrayList<>();
         for (Variable utilityVariable : utilityVariables) {
             Node utilityNode = network.getNode(utilityVariable);
             if (network.getNumChildren(utilityNode) == 0) {
@@ -81,7 +81,7 @@ public class BasicOperations {
     }
 
     /**
-     * @param network
+     * @param network Network from which we extract terminal utility nodes
      * @return A list of utility nodes that have no children
      */
     public static List<Node> getTerminalUtilityNodes(ProbNet network) {
@@ -96,7 +96,7 @@ public class BasicOperations {
     }
 
     /**
-     * @param sourceProbNet
+     * @param sourceProbNet Network from which we remove utility nodes
      * @return A copy of the probNet after removing utility nodes.
      */
     public static ProbNet removeUtilityNodes(ProbNet sourceProbNet) {
@@ -109,9 +109,12 @@ public class BasicOperations {
     }
 
     /**
-     * @param sourceProbNet
-     * @param keepComponents
-     * @param utilityVariableToKeep
+     * @param sourceProbNet Network from which we remove super value nodes
+     * @param evidence Evidence of the nerwork
+     * @param keepComponents keep (or not) components
+     * @param leaveImplicitSum leave (or not) the implicit sum
+     * @param utilityVariableToKeep utility variable to keep
+     *
      * @return A copy of the probNet by removing super-value nodes. When
      *         keepComponents is false the output network is equivalent to
      *         'sourceProbNet'. However, when keepComponents is true the output
@@ -126,8 +129,6 @@ public class BasicOperations {
      *         reduced into an only utility node. If 'utilityVariableToKeep' is
      *         different from null then it is the only potential to keep.
      *         Otherwise all the variables are considered.
-     * @throws NodeNotFoundException
-     * @throws NodeNotFoundException
      */
     public static ProbNet removeSuperValueNodes(ProbNet sourceProbNet, EvidenceCase evidence,
             boolean keepComponents, boolean leaveImplicitSum, Variable utilityVariableToKeep) {
@@ -155,7 +156,7 @@ public class BasicOperations {
                     }
                 }
                 // sets the new potential
-                List<Potential> newPotentials = new ArrayList<Potential>();
+                List<Potential> newPotentials = new ArrayList<>();
                 newPotentials.add(potential);
                 network.getNode(utilityVariable).setPotentials(newPotentials);
             }
@@ -171,7 +172,7 @@ public class BasicOperations {
                     nodesToKeep = getTerminalUtilityVariables(sourceProbNet);
                 }
             } else {
-                nodesToKeep = new ArrayList<Variable>();
+                nodesToKeep = new ArrayList<>();
                 nodesToKeep.add(utilityVariableToKeep);
             }
             for (Node utilityNode : utilityNodes) {
@@ -191,7 +192,7 @@ public class BasicOperations {
      * Assumes the structure of super value verifies that there are no more than
      * one path between two utility nodes.
      *
-     * @param sourceProbNet
+     * @param sourceProbNet Network from which we extract the utility nodes
      * @return A list of utility nodes that must be kept when we want to have a
      *         set of utility nodes with an implicit sum
      */
@@ -204,8 +205,8 @@ public class BasicOperations {
     }
 
     /**
-     * @param sourceProbNet
-     * @param nodesToKeep
+     * @param sourceProbNet Network in which we test if there are sum nodes
+     * @param nodesToKeep List of variables (of the nodes to keep)
      * @return true if there are some sum node in the list 'nodesToKeep'
      */
     private static boolean thereAreSumNodesInTheList(ProbNet sourceProbNet,
@@ -219,8 +220,8 @@ public class BasicOperations {
     }
 
     /**
-     * @param sourceProbNet
-     * @param nodesToKeep
+     * @param sourceProbNet source network
+     * @param nodesToKeep list of variables of the nodes to keep
      *            Removes a sum node of the list and add its parents to the list
      */
     private static void removeASumNode(ProbNet sourceProbNet, List<Variable> nodesToKeep) {

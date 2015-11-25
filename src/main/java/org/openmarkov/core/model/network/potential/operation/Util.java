@@ -58,7 +58,7 @@ public class Util {
 	 * @return The string with commas */
 	public static String printInteger(long number) {
 		String numberString = new String();
-		Stack<String> stack = new Stack<String>();
+		Stack<String> stack = new Stack<>();
 		long remainder;
 		do {
 			remainder = number % 1000;

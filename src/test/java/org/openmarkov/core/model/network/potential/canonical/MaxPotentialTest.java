@@ -34,7 +34,7 @@ public class MaxPotentialTest {
 		Variable variableC = new Variable("C", "C0", "C1", "C2");
 
 		// Conditional probability table for C: causal MAX
-		ArrayList<Variable> variablesABC = new ArrayList<Variable>();
+		ArrayList<Variable> variablesABC = new ArrayList<>();
 		variablesABC.add(variableC);
 		variablesABC.add(variableA);
 		variablesABC.add(variableB);

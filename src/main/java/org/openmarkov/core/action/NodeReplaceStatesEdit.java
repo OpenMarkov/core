@@ -51,7 +51,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 
 	private List<Potential> lastPotential;
 
-	private List<Potential> childrenLastPotential = new ArrayList<Potential>();
+	private List<Potential> childrenLastPotential = new ArrayList<>();
 
 	private PartitionedInterval currentPartitionedInterval;
 
@@ -66,10 +66,10 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	 * Creates a <code>NodeReplaceStatesEdit</code> with the node and new states
 	 * specified for replace.
 	 * 
-	 * @param probNet
-	 *            the network that will be modified.
-	 * @param newDefaulStates
-	 *            the new default states.
+	 * @param node
+	 *            the node that will be modified.
+	 * @param newStates
+	 *            the new states.
 	 */
 	public NodeReplaceStatesEdit(Node node, State[] newStates) {
 		super(node.getProbNet());
@@ -82,7 +82,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 				.getPartitionedInterval();
 
 		this.newStates = newStates;
-		this.linkRestrictionMap = new HashMap<Link<Node>, double[]>();
+		this.linkRestrictionMap = new HashMap<>();
 		this.revelationConditionMap = new HashMap<>();
 	}
 
@@ -92,7 +92,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 		if (newStates != null) {
 			List<Node> nodes;
 			node.getVariable().setStates(newStates);
-			List<Potential> newPotentials = new ArrayList<Potential>();
+			List<Potential> newPotentials = new ArrayList<>();
 			// set uniform potential for the edited node and children if the
 			// new number of states is different that the last states
 			if (newStates.length != lastStates.length) {
@@ -112,7 +112,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 
 				for (Node child : nodes) {
 					if (child.getPotentials().size() != 0) {
-						List<Potential> container = new ArrayList<Potential>();
+						List<Potential> container = new ArrayList<>();
 						childrenLastPotential.add(child.getPotentials().get(0));
 						childLastPotential = new UniformPotential(child
 								.getPotentials().get(0).getVariables(), child

@@ -13,5 +13,5 @@ import java.io.IOException;
 
 public interface CaseDatabaseReader
 {
-    public CaseDatabase load(String filename) throws IOException;
+    CaseDatabase load(String filename) throws IOException;
 }

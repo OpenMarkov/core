@@ -21,8 +21,8 @@ public class NodeNotFoundException extends Exception {
 	public NodeNotFoundException(String message) {
 		super(message);
 	}
-	/** @param networkName TODO
-	 * @param message */
+	/** @param network TODO
+	 * @param variableName */
 	public NodeNotFoundException(ProbNet network, String variableName) {
 		super("Variable: " + variableName + 
 				" not found in network " + network.getName() + ".");

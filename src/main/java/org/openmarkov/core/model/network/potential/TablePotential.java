@@ -119,7 +119,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      * For role utility
      * 
      * @param variables
-     * @param role
+     * @param utilityVariable
      */
     public TablePotential(Variable utilityVariable, List<Variable> variables) {
         this(variables, PotentialRole.UTILITY);
@@ -251,8 +251,8 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
             throws WrongCriterionException {
         // returned value
         boolean hasUncertainTable = (uncertainValues != null);
-        List<TablePotential> newProjectedPotentials = new ArrayList<TablePotential>(1);
-        List<Variable> unobservedVariables = new ArrayList<Variable>(variables);
+        List<TablePotential> newProjectedPotentials = new ArrayList<>(1);
+        List<Variable> unobservedVariables = new ArrayList<>(variables);
         if (evidenceCase != null) {
             unobservedVariables.removeAll(evidenceCase.getVariables());
         }
@@ -747,7 +747,6 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      * a configuration of variables which are not necessarily in the same order
      * that the variables in the potential
      * 
-     * @param potential
      * @param configuration
      */
     private int getPosition(EvidenceCase configuration) {
@@ -830,7 +829,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      *               received variables.
      * @param variables
      *            . <code>ArrayList</code> of <code>Variable</code>
-     * @param stateIndices
+     * @param statesIndices
      *            . <code>int[]</code>
      * @return <code>double</code>
      */
@@ -990,7 +989,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      * Compares two <code>TablePotential</code>s using <code>tableSize</code> as
      * a criterion.
      * 
-     * @param tablePotential
+     * @param other
      *            <code>Object</code>.
      * @return <code>int</code>:
      *         <p>
@@ -1028,7 +1027,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      * @consultation
      */
     public List<Variable> getVariables() {
-        return (variables != null) ? new ArrayList<Variable>(variables) : variables;
+        return (variables != null) ? new ArrayList<>(variables) : variables;
     }
 
     /** @return tableSize <code>int</code> */
@@ -1039,7 +1038,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
     // TODO revisar para que no use tableProject(...)
     public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
             throws IncompatibleEvidenceException, WrongCriterionException {
-        Collection<Finding> inducedFindings = new ArrayList<Finding>();
+        Collection<Finding> inducedFindings = new ArrayList<>();
         if (role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.POLICY) {
             // Iterates over the list of parents. If some parent is not in the
             // evidence case, it is not possible to induce a new Finding
@@ -1275,7 +1274,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
     @Override
     public Potential addVariable(Variable newVariable) {
         // creates the new potential
-        List<Variable> newVariables = new ArrayList<Variable>(variables);
+        List<Variable> newVariables = new ArrayList<>(variables);
         newVariables.add(newVariable);
         TablePotential newPotential = new TablePotential(newVariables, role);
         newPotential.setUtilityVariable(utilityVariable);

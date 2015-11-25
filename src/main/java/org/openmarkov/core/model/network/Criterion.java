@@ -190,7 +190,7 @@ public class Criterion implements Cloneable {
 
 	/**
 	 * Copy the attributes of the new criterion in the current object
-	 * @param newCriterion
+	 * @param newCriterion Criterion to be copied
 	 */
 	public void copy(Criterion newCriterion) {
 		this.ceCriterion = newCriterion.getCECriterion();

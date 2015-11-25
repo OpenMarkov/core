@@ -105,7 +105,7 @@ public class DecisionTreeBranch implements DecisionTreeElement
 
     /**
      * Returns the branch state
-     * @return
+     * @return the branch state
      */
     public State getBranchState ()
     {

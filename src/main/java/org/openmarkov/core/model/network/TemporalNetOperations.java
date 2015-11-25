@@ -47,11 +47,11 @@ public class TemporalNetOperations {
 	public static List<List<Node>> compactNetwork(ProbNet probNet) {
 		List<List<Node>> classifiedNodes = classifyNodesbySlices(probNet, probNet.getVariables());
 		// generate the new nodes of the compact net
-		List<Node> generatingNodes = new ArrayList<Node>();
-		List<Node> generatedNodes = new ArrayList<Node>();
+		List<Node> generatingNodes = new ArrayList<>();
+		List<Node> generatedNodes = new ArrayList<>();
 		for (int slice = 0; slice < classifiedNodes.size() - 1; slice++) {
 			double sliceWidth = getSliceWidth(classifiedNodes.get(slice));
-			List<Node> generatedNodesInThisSlice = new ArrayList<Node>(classifiedNodes.get(
+			List<Node> generatedNodesInThisSlice = new ArrayList<>(classifiedNodes.get(
 					slice).size());
 			for (Node generatingNode : classifiedNodes.get(slice)) {
 				if (!probNet.containsShiftedVariable(generatingNode.getVariable(), 1)) {
@@ -177,7 +177,7 @@ public class TemporalNetOperations {
 	 */
 	private static void generateNextSlice(ProbNet probNet, List<List<Node>> classifiedNodes) {
 		List<Node> lastSliceNodes = classifiedNodes.get(classifiedNodes.size() - 1);
-		List<Node> newSliceNodes = new ArrayList<Node>();
+		List<Node> newSliceNodes = new ArrayList<>();
 		// generates the new nodes
 		double sliceWidth = getSliceWidth(lastSliceNodes);
 		for (Node generatingNode : lastSliceNodes) {

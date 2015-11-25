@@ -23,7 +23,7 @@ public class AdditionalProperties {
 	
 	// Constructor
 	public AdditionalProperties() {
-		information = new HashMap<String, String>();
+		information = new HashMap<>();
 	}
 	
 	// Methods
@@ -33,8 +33,8 @@ public class AdditionalProperties {
 		return information.get(key);
 	}
 	
-	/** @param key. <code>String</code>
-	 * @param value. <code>Object</code> */
+	/** @param key <code>String</code>
+	 * @param value <code>Object</code> */
 	public void put(String key, String value) {
 		information.put(key, value);
 	}

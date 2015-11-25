@@ -100,7 +100,7 @@ public class FormatManager
 	 * This method gets all the plugins with FormatType annotations
 	 * @return a list with the plugins detected with FormatType annotations.
 	 */
-	private final  List<Class<?>> findAllFormatPlugins ()
+	private List<Class<?>> findAllFormatPlugins ()
 	{
 	    PluginLoader pluginsLoader = new PluginLoader ();
 		try
@@ -169,7 +169,7 @@ public class FormatManager
 
 	public HashMap<String, String> getWriters()
 	{
-		HashMap<String, String> writers = new HashMap<String, String> ();
+		HashMap<String, String> writers = new HashMap<>();
 		for (String extension : writerClasses.keySet ()) {
 			FormatType lAnnotation = writerClasses.get (extension).getAnnotation (FormatType.class);
 			writers.put (lAnnotation.description(), lAnnotation.extension());
@@ -185,7 +185,7 @@ public class FormatManager
 
     public HashMap<String, String> getReaders()
     {
-        HashMap<String, String> writers = new HashMap<String, String> ();
+        HashMap<String, String> writers = new HashMap<>();
         for (String extension : readerClasses.keySet ()) {
             FormatType lAnnotation = readerClasses.get (extension).getAnnotation (FormatType.class);
             writers.put (lAnnotation.description(), lAnnotation.extension());

@@ -34,7 +34,6 @@ public class TuningPotential extends ICIPotential
     /**
      * Constructor for TuningModelPotential.
      * @param variables
-     * @param role
      */
     public TuningPotential (List<Variable> variables)
     {
@@ -113,7 +112,7 @@ public class TuningPotential extends ICIPotential
     public TablePotential getFFunctionPotential ()
     {
         // Build the list of variables: child node first, z variables
-        List<Variable> tuningFunctionVariables = new ArrayList<Variable> (getAuxiliaryVariables());
+        List<Variable> tuningFunctionVariables = new ArrayList<>(getAuxiliaryVariables());
         tuningFunctionVariables.add (0, variables.get (0));
         tuningFunctionVariables.add (getLeakyVariable());
         TablePotential tablePotential = new TablePotential (tuningFunctionVariables, role);
@@ -160,7 +159,7 @@ public class TuningPotential extends ICIPotential
     }       
     @Override
     public Potential addVariable(Variable newVariable){
-    	List<Variable> newVariables = new ArrayList<Variable>(variables);
+    	List<Variable> newVariables = new ArrayList<>(variables);
     	newVariables.add(newVariable);
     	TuningPotential newICIPotential = new TuningPotential(newVariables) ;
     	
@@ -178,7 +177,7 @@ public class TuningPotential extends ICIPotential
     }
     @Override
 	public Potential removeVariable(Variable variable) {
-    	ArrayList<Variable> newVariables = new ArrayList<Variable>();
+    	ArrayList<Variable> newVariables = new ArrayList<>();
     	for (int i = 0; i < variables.size(); i++){
     		if (variable == variables.get(i)) {
     			continue;

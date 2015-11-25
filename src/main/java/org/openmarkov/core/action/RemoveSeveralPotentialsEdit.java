@@ -26,7 +26,7 @@ public class RemoveSeveralPotentialsEdit extends SimplePNEdit {
 	public RemoveSeveralPotentialsEdit(ProbNet probNet, 
 			ArrayList<Potential> potentials) {
 		super(probNet);
-		potentialsToDelete = new ArrayList<Potential>(potentials);
+		potentialsToDelete = new ArrayList<>(potentials);
 	}
 	
 	/** Adds more potentials to delete

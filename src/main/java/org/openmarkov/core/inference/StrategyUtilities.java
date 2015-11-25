@@ -23,7 +23,7 @@ public class StrategyUtilities {
 	 */
 	public StrategyUtilities() {
 		super();
-		utilities = new Hashtable<Variable,TablePotential>();
+		utilities = new Hashtable<>();
 	}
 
 	/**

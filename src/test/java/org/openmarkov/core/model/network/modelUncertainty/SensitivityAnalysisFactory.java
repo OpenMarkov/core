@@ -91,7 +91,7 @@ public class SensitivityAnalysisFactory extends IDFactory {
 	}
 	
 	/**
-	 * @param betaFunction TODO
+	 * @param prevalenceProbFunction TODO
 	 * @return An influence diagram without decisions, with only two nodes: X (chance) and U (utility).
 	 * 
 	 */
@@ -128,7 +128,6 @@ public class SensitivityAnalysisFactory extends IDFactory {
 	}
 	
 	/**
-	 * @param betaFunction TODO
 	 * @return An influence diagram without decisions, with only two nodes: X (chance) and U (utility).
 	 * 
 	 */

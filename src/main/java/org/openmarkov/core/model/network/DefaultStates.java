@@ -39,26 +39,26 @@ public class DefaultStates {
 		ArrayList<String> defaultStates = null;
 
 		if (list == null) {
-			list = new ArrayList<ArrayList<String>>();
-			defaultStates = new ArrayList<String>();
+			list = new ArrayList<>();
+			defaultStates = new ArrayList<>();
 			defaultStates.add("absent");
 			defaultStates.add("present");
 			list.add(defaultStates);
-			defaultStates = new ArrayList<String>();
+			defaultStates = new ArrayList<>();
 			defaultStates.add("no");
 			defaultStates.add("yes");
 			list.add(defaultStates);
-			defaultStates = new ArrayList<String>();
+			defaultStates = new ArrayList<>();
 			defaultStates.add("negative");
 			defaultStates.add("positive");
 			list.add(defaultStates);
-			defaultStates = new ArrayList<String>();
+			defaultStates = new ArrayList<>();
 			defaultStates.add("absent");
 			defaultStates.add("mild");
 			defaultStates.add("moderate");
 			defaultStates.add("severe");
 			list.add(defaultStates);
-			defaultStates = new ArrayList<String>();
+			defaultStates = new ArrayList<>();
 			defaultStates.add("low");
 			defaultStates.add("medium");
 			defaultStates.add("high");
@@ -109,7 +109,7 @@ public class DefaultStates {
 	 */
 	public static int getIndex(State[] states) {
 
-		ArrayList<String> statesAsList = new ArrayList<String>();
+		ArrayList<String> statesAsList = new ArrayList<>();
 		int i = 0, l = 0;
 		boolean found = false;
 

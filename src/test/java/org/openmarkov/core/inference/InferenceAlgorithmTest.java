@@ -221,7 +221,6 @@ public abstract class InferenceAlgorithmTest {
 	
 	/**
 	 * @param pot
-	 * @param values
 	 * Checks if 'pot' is a conditional probability potential correctly defined: the values in each column sum 1.0.
 	 */
 	public static void checkIsAConditionalProbability(TablePotential pot) {

@@ -38,7 +38,7 @@ public class LinkRestrictionPotentialOperationsTest {
 		varA = new Variable("A", stateA);
 		varB = new Variable("B", stateB);
 		varC = new Variable("C", stateC);
-		ArrayList<Variable> variables = new ArrayList<Variable>();
+		ArrayList<Variable> variables = new ArrayList<>();
 
 		variables.add(varB);
 		variables.add(varA);

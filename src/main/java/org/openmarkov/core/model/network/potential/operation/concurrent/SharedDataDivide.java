@@ -75,7 +75,7 @@ public class SharedDataDivide {
 		quotientDimension = quotient.getDimensions();
 
 		// Gets offset accumulate
-		ArrayList<TablePotential> potentials = new ArrayList<TablePotential>();
+		ArrayList<TablePotential> potentials = new ArrayList<>();
 		potentials.add(numerator);
 		potentials.add(denominator);
 		offsetAccumulate = DiscretePotentialOperations

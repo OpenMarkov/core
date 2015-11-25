@@ -10,7 +10,7 @@ public class CycleLength {
 	 * Possible units
 	 *
 	 */
-	public static enum Unit {
+	public enum Unit {
 		YEAR,
 		MONTH,
 		WEEK,
@@ -30,7 +30,7 @@ public class CycleLength {
 	 * Temporal units of discounts
 	 *
 	 */
-	public static enum DiscountUnit {
+	public enum DiscountUnit {
 		YEAR,
 		CYCLE
 	}
@@ -82,8 +82,7 @@ public class CycleLength {
 	}
 	
 	public CycleLength clone() {
-		CycleLength temporalUnit = new CycleLength(this);
-		return temporalUnit;
+		return new CycleLength(this);
 	}
 	
 	/**
@@ -97,8 +96,7 @@ public class CycleLength {
 	public static double getTemporalAdjustedDiscount(Unit cycleUnit, double cycleLength, DiscountUnit unitToBeConverted, double discount){
 		if(unitToBeConverted.equals(DiscountUnit.YEAR)){
 			double rate = cyclesInAYear[cycleUnit.ordinal()]/cycleLength;
-			double newDiscount = Math.pow(1 + discount, 1/rate) - 1.0;
-			return newDiscount;
+			return Math.pow(1 + discount, 1/rate) - 1.0;
 		}else { // if(unitToBeConverted.equals(DiscountUnit.CYCLE)){
 			return discount;
 		}

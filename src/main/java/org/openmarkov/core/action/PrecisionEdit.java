@@ -36,7 +36,7 @@ public class PrecisionEdit extends SimplePNEdit {
 	/**
 	 * Creates a new <code>PurposeEdit</code> with the node and its new purpose.
 	 * @param node the edited node
-	 * @param newPurpose the new purpose
+	 * @param newPrecision the new precision
 	 */
 	public PrecisionEdit (Node node, double newPrecision){
 		super(node.getProbNet());

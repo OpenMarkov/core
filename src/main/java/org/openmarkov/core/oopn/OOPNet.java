@@ -46,9 +46,9 @@ import org.openmarkov.core.oopn.exception.InstanceAlreadyExistsException;
 
 public class OOPNet extends ProbNet implements PNUndoableEditListener
 {
-    private LinkedHashMap<String, ProbNet> classes = new LinkedHashMap<String, ProbNet> ();
-    private Map<String, Instance> instances        = new HashMap<String, Instance> ();
-    private List<ReferenceLink>   referenceLinks  = new ArrayList<ReferenceLink> ();
+    private LinkedHashMap<String, ProbNet> classes = new LinkedHashMap<>();
+    private Map<String, Instance> instances        = new HashMap<>();
+    private List<ReferenceLink>   referenceLinks  = new ArrayList<>();
 
     
     /**
@@ -70,7 +70,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
     
     /**
      * Constructor for OOPNet.
-     * @param networkType
+     * @param probNet
      */
     public OOPNet (ProbNet probNet)
     {
@@ -138,7 +138,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
         
         // Copy additionalProperties
         Set<String> keys = probNet.additionalProperties.keySet();
-        HashMap<String, String> copyProperties = new HashMap<String, String>();
+        HashMap<String, String> copyProperties = new HashMap<>();
         for (String key : keys) {
             copyProperties.put(key, probNet.additionalProperties.get(key));
         }
@@ -148,9 +148,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
     
 
     /**
-     * @param classNet
-     * @param instanceName
-     * @param instanceNodes
+     * @param instance
      * @throws InstanceAlreadyExistsException
      */
     public void addInstance (Instance instance)
@@ -298,7 +296,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 	private void replaceNodes(ProbNet probNet, Node formalNode,
 			List<Node> paramNodes) {
 		// Update potentials
-		HashMap<Potential, Potential> potentialsToReplace = new HashMap<Potential, Potential> ();
+		HashMap<Potential, Potential> potentialsToReplace = new HashMap<>();
 		for (Potential potential : probNet.getPotentials (formalNode.getVariable ()))
 		{
 	        if(potential instanceof ICIPotential)
@@ -364,13 +362,12 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 
 	/**
 	 * @param probNet
-	 * @param node
 	 * @param formalNode
 	 * @param paramNode
 	 */
 	private void replaceNode(ProbNet probNet, Node formalNode, Node paramNode) {
 		// Update potentials
-		HashMap<Potential, Potential> potentialsToReplace = new HashMap<Potential, Potential> ();
+		HashMap<Potential, Potential> potentialsToReplace = new HashMap<>();
 		for (Potential potential : probNet.getPotentials (formalNode.getVariable ()))
 		{
 		    Potential potentialCopy = potential.copy();

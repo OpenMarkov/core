@@ -18,7 +18,6 @@ public class RangeFunction extends ProbDensFunctionWithKnownInverseCDF
     }
 
     /**
-     * @param type
      * @param lowerBound
      * @param upperBound
      */

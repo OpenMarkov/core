@@ -47,8 +47,8 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 
 	// Constructor
 	/** Variables will be eliminated from the last array to the first.
-	 * @param <code>probNet</code> it's a network that can contain decisions. <code>ProbNet</code>
-	 * @param variablesToEliminate. <code>ArrayList</code> of <code>ArrayList</code> of <code>Variable</code> */
+	 * @param probNet <code>probNet</code> it's a network that can contain decisions. <code>ProbNet</code>
+	 * @param variablesToEliminate <code>ArrayList</code> of <code>ArrayList</code> of <code>Variable</code> */
 	public EliminationHeuristic(ProbNet probNet,
 			List<List<Variable>> variablesToEliminate) {
 // TODO Revisar todas las heuristicas que suponian que trabajaban con una copia

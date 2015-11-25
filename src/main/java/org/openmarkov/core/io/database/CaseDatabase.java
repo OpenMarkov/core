@@ -21,8 +21,8 @@ public class CaseDatabase
 
     /**
      * Constructor for CaseDatabase.
-     * @param probNet
-     * @param cases
+     * @param variables List of variables
+     * @param cases bidimensional array with the cases
      */
     public CaseDatabase (List<Variable> variables, int[][] cases)
     {
@@ -67,8 +67,8 @@ public class CaseDatabase
     
     /**
      * Returns the variable given the name
-     * @param name
-     * @return
+     * @param name name of the variable
+     * @return Variable given the name
      */
     public Variable getVariable (String name)
     {
@@ -108,7 +108,7 @@ public class CaseDatabase
     
     /**
      * Returns the number of cases
-     * @return
+     * @return number of cases
      */
     public int getNumCases()
     {

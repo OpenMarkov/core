@@ -47,7 +47,7 @@ public class CRemoveNodeEdit extends CompoundPNEdit{ //implements UsesVariable{
 	
 	// Constructor
 	/** @param probNet </code>ProbNet</code>
-	 * @param variable <code>Variable</code> */
+	 * @param node <code>Node</code> */
 	public CRemoveNodeEdit(ProbNet probNet, Node node) {
 		super(probNet);
 		this.probNet = probNet;

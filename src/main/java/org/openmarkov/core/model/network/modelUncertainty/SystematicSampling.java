@@ -148,7 +148,7 @@ public class SystematicSampling extends Sampler {
 	private static TablePotential addVariableReplicatingValuesAndUncertainValues(TablePotential pot,
 			Variable newVariable) {
 		// creates the new potential
-		List<Variable> newVariables = new ArrayList<Variable>(pot.getVariables());
+		List<Variable> newVariables = new ArrayList<>(pot.getVariables());
 		newVariables.add(newVariable);
 		TablePotential newPotential = new TablePotential(newVariables, pot.getPotentialRole());
 		newPotential.setUtilityVariable(pot.getUtilityVariable());
@@ -273,7 +273,7 @@ public class SystematicSampling extends Sampler {
 	
 	/**
 	 * @param originalNet
-	 * @param parameterName
+	 * @param uncertainParameter
 	 * @param min
 	 * @param max
 	 * @param numIntervals

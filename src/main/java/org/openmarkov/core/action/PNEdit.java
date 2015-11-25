@@ -27,14 +27,14 @@ public interface PNEdit extends UndoableEdit {
      * @throws NonProjectablePotentialException
      * @throws UnexpectedInferenceException 
      */
-    public void doEdit ()
+    void doEdit()
         throws DoEditException,
         NonProjectablePotentialException,
         WrongCriterionException;
 
-    public void setSignificant (boolean significant);
+    void setSignificant(boolean significant);
     
-    public ProbNet getProbNet();
+    ProbNet getProbNet();
 	
 	
 }

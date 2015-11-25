@@ -49,7 +49,7 @@ public class PNESupport extends UndoableEditSupport {
     /**
      * List of undoable edits.
      * 
-     * @see javax.swing.undo#UndoManager
+     * @see javax.swing.undo.UndoManager
      */
     protected UndoManagerSupport undoManagerSupport;
 
@@ -67,8 +67,6 @@ public class PNESupport extends UndoableEditSupport {
 
     // Constructor
     /**
-     * @param probNet
-     *            <code>ProbNet</code>.
      * @param withUndo
      *            <code>boolean</code>
      */
@@ -76,7 +74,7 @@ public class PNESupport extends UndoableEditSupport {
         super();
         this.withUndo = withUndo;
         undoManagerSupport = new UndoManagerSupport();
-        this.openParenthesisStack = new Stack<OpenParenthesisEdit>();
+        this.openParenthesisStack = new Stack<>();
     }
 
     // Methods

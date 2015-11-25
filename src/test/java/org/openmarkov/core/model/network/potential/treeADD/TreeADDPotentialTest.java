@@ -90,14 +90,14 @@ public class TreeADDPotentialTest {
 		variableB.setStates(states);
 		
 		// create table potential P(a)
-		listA = new ArrayList<Variable>(1);
+		listA = new ArrayList<>(1);
 		double [] tableA ={0.9, 0.1};
 		listA.add(variableA);
 		role = PotentialRole.CONDITIONAL_PROBABILITY;
 		potentialvaluesA = new TablePotential(listA, role, tableA);
 		
 		// create subpotentials (leaves of the treeADD)
-		listB = new ArrayList<Variable>(1);
+		listB = new ArrayList<>(1);
 		double [] tableBA0 ={1.0, 0.0};
 		double [] tableBA1 ={0.9, 0.1};
 		listB.add(variableB);
@@ -106,14 +106,14 @@ public class TreeADDPotentialTest {
 		
 				
 		// create treeADD potential P(b|a)
-		listBA = new ArrayList<Variable>(2);
+		listBA = new ArrayList<>(2);
 		listBA.add(variableB);
 		listBA.add(variableA);
 		
 		//create branches
 		startVariable = variableA;
-		List<State> absentState = new ArrayList<State>();
-		List<State> presentState = new ArrayList<State>();
+		List<State> absentState = new ArrayList<>();
+		List<State> presentState = new ArrayList<>();
 		absentState.add(absent);
 		presentState.add(present);
 		branchData0= new TreeADDBranch(absentState, startVariable, potentialBA0, listBA);
@@ -121,8 +121,8 @@ public class TreeADDPotentialTest {
 		
 		
 		// Append the new 'states' branch to the tree
-		labelledlink0 = new LabelledLink<Node> (startNode, branchNode0, true, branchData0);
-		labelledlink1 = new LabelledLink<Node> (startNode, branchNode1, true, branchData1);
+		labelledlink0 = new LabelledLink<>(startNode, branchNode0, true, branchData0);
+		labelledlink1 = new LabelledLink<>(startNode, branchNode1, true, branchData1);
 		
 		// create treeADD
 		treeADD = new TreeADDPotential(listBA, startVariable, PotentialRole.CONDITIONAL_PROBABILITY) ;

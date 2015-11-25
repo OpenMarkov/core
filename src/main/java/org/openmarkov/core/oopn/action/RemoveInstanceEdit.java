@@ -47,9 +47,9 @@ public class RemoveInstanceEdit extends CompoundPNEdit {
 		super(probNet);
 		this.instance = ((OOPNet)probNet).getInstances().get(instanceName);
 		
-		nodesToRemove = new HashSet<Node>();
-		linksToRemove = new HashSet<Link<Node>>();
-		instanceLinksToRemove = new HashSet<ReferenceLink>();
+		nodesToRemove = new HashSet<>();
+		linksToRemove = new HashSet<>();
+		instanceLinksToRemove = new HashSet<>();
 		for(Node node : instance.getNodes())
 		{
 			nodesToRemove.add(node);

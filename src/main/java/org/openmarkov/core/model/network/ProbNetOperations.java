@@ -63,8 +63,8 @@ public class ProbNetOperations {
                                     Collection<Variable> variablesOfInterest,
                                     EvidenceCase evidence) {
         ProbNet prunedProbNet = probNet.copy();
-        HashSet<Variable> variablesOfInterest2 = new HashSet<Variable>(variablesOfInterest);
-        HashSet<Variable> variablesOfEvidence2 = new HashSet<Variable>(evidence.getVariables());
+        HashSet<Variable> variablesOfInterest2 = new HashSet<>(variablesOfInterest);
+        HashSet<Variable> variablesOfEvidence2 = new HashSet<>(evidence.getVariables());
         prunedProbNet = removeBarrenNodes(prunedProbNet, variablesOfInterest2, variablesOfEvidence2);
         prunedProbNet = removeUnreachableNodes(prunedProbNet,
                 variablesOfInterest2,
@@ -141,8 +141,8 @@ public class ProbNetOperations {
      * <li>Have no children or all its children are barren nodes.
      * </ol>
      *
-     * @param variablesOfEvidence2
-     * @param variablesOfInterest2
+     * @param variablesOfEvidence
+     * @param variablesOfInterest
      * @param prunedProbNet
      *            . <code>ProbNet</code>
      * @return <code>ProbNet</code> without barren nodes.
@@ -150,7 +150,7 @@ public class ProbNetOperations {
     public static ProbNet removeBarrenNodes(ProbNet prunedProbNet,
                                             Collection<Variable> variablesOfInterest,
                                             HashSet<Variable> variablesOfEvidence) {
-        HashSet<Node> barrenNodes = new HashSet<Node>();
+        HashSet<Node> barrenNodes = new HashSet<>();
         List<Node> nodes = prunedProbNet.getNodes();
         for (Node node : nodes) {
             if (node.getNumChildren() == 0) {
@@ -161,11 +161,11 @@ public class ProbNetOperations {
                 }
             }
         }
-        HashSet<Node> newBarrenNodes = new HashSet<Node>(barrenNodes);
+        HashSet<Node> newBarrenNodes = new HashSet<>(barrenNodes);
         boolean foundBarrenNodes = newBarrenNodes.size() > 0;
         while (foundBarrenNodes) {
             foundBarrenNodes = false;
-            List<Node> listNewBarrenNodes = new ArrayList<Node>(newBarrenNodes);
+            List<Node> listNewBarrenNodes = new ArrayList<>(newBarrenNodes);
             for (Node node : listNewBarrenNodes) {
                 newBarrenNodes.remove(node);
                 List<Node> parents = node.getParents();
@@ -386,7 +386,7 @@ public class ProbNetOperations {
      */
     public static List<Variable> sortTopologically(ProbNet probNet, List<Variable> variablesToSort) {
         List<Node> sortedNodes = sortTopologically(probNet);
-        List<Variable> sortedVariables = new ArrayList<Variable>(sortedNodes.size());
+        List<Variable> sortedVariables = new ArrayList<>(sortedNodes.size());
         // fill sortedVariables list with filtering the l list with the list of
         // variables to sort
         for (Node node : sortedNodes) {
@@ -766,7 +766,7 @@ public class ProbNetOperations {
 
     public static List<State> getUnrestrictedStates(Link<Node> link, State[] restrictedVariableStates, State state)
     {
-        List<State> nonRestrictedStates = new ArrayList<State>();
+        List<State> nonRestrictedStates = new ArrayList<>();
         Potential linkRestrictions = link.getRestrictionsPotential ();
         List<Variable> variables = linkRestrictions.getVariables();
         Variable sourceVariable = variables.get(0);
@@ -994,7 +994,6 @@ public class ProbNetOperations {
     /**
      * Returns whether the node has a predecessor decision
      * @param node
-     * @param removedNode
      * @param probNet
      * @return
      */
@@ -1019,7 +1018,6 @@ public class ProbNetOperations {
     /**
      * Returns the list of predecessor decisions of node decisionNode
      * @param node
-     * @param removedNode
      * @param probNet
      * @return 
      */
@@ -1147,9 +1145,9 @@ public class ProbNetOperations {
     }
 
     /**
-     * @param nodes
-     * . <code>ArrayList</code> of <code>Node</code>.
-     * @return <code>nodes</code> and its ancestors. <code>ArrayList</code> of
+     * @param node
+     *      <code>Node</code>.
+     * @return <code>node</code> and its ancestors. <code>Set</code> of
      * <code>Node</code>.
      */
     public static Set<Node> getNodeAncestors(Node node) {

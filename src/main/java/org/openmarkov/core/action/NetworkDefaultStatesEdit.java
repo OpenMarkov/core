@@ -39,7 +39,7 @@ public class NetworkDefaultStatesEdit extends SimplePNEdit {
 	 * 
 	 * @param probNet
 	 *            the network that will be modified.
-	 * @param newDefaulStates 
+	 * @param defaultStates
 	 * 			the new default states.
 	 */
 	public NetworkDefaultStatesEdit(ProbNet probNet,

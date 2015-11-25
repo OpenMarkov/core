@@ -72,7 +72,7 @@ public class InvertLinkEdit extends BaseLinkEdit {
 		probNet.removeLink(node1, node2, isDirected);
 		if (node2.getNodeType() != NodeType.DECISION) {
 			// Update potentials
-			List<Potential> newPotentials = new ArrayList<Potential>();
+			List<Potential> newPotentials = new ArrayList<>();
 			this.childsOldPotentials = node2.getPotentials();
 			for (Potential oldPotential : childsOldPotentials) {
 				Potential newPotential = oldPotential.removeVariable(node1.getVariable());
@@ -85,7 +85,7 @@ public class InvertLinkEdit extends BaseLinkEdit {
 		probNet.addLink(node2, node1, isDirected);
 		if (node2.getNodeType() != NodeType.DECISION) {
 			this.parentsOldPotentials = node1.getPotentials();
-			List<Potential> newPotentials = new ArrayList<Potential>();
+			List<Potential> newPotentials = new ArrayList<>();
 			for (Potential oldPotential : parentsOldPotentials) {
 				// Update potential
 				Potential newPotential = oldPotential.addVariable(node2.getVariable());

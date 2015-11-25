@@ -8,8 +8,8 @@ import java.util.Stack;
 /** This class stack ensures that each element is stored only once.
  * @author marias */ 
 public class UniqueStack<T> {
-	private final Stack<T> stack = new Stack<T>();
-	private final HashSet<T> set = new HashSet<T>();
+	private final Stack<T> stack = new Stack<>();
+	private final HashSet<T> set = new HashSet<>();
 
 	/** @param t template parameter. <code>T</code>
 	 * @return true (as specified by Collection.add) <code>boolean</code> */
@@ -35,7 +35,7 @@ public class UniqueStack<T> {
 	
 	/** @return <code>List</code> of the template class T */
 	public List<T> list() {
-		return new ArrayList<T>(stack);
+		return new ArrayList<>(stack);
 	}
 }
 

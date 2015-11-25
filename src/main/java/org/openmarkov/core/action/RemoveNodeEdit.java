@@ -31,7 +31,7 @@ public class RemoveNodeEdit extends SimplePNEdit implements UsesVariable {
 		
 		// Constructor
 		/** @param probNet <code>ProbNet</code>
-		 * @param variable <code>Variable</code> */
+		 * @param node <code>Node</code> */
 		public RemoveNodeEdit(ProbNet probNet, Node node) {
 			super(probNet);
 			this.variable = node.getVariable();

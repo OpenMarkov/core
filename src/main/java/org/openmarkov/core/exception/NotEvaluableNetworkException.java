@@ -14,7 +14,7 @@ public class NotEvaluableNetworkException extends Exception {
 	private static final long serialVersionUID = -6555375975623328551L;
 
 	// Constructor
-	/** @param message <code>String</code> */
+	/** @param e <code>Exception</code> */
 	public NotEvaluableNetworkException(Exception e) {
 		super(e.getMessage());
 	}

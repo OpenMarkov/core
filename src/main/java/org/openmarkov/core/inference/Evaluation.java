@@ -70,16 +70,16 @@ public abstract class Evaluation {
 	
 	/** This method must be overriden in the child classes */
 	protected Collection<PNConstraint> getRequiredConstraints() {
-		return new ArrayList<PNConstraint>();
+		return new ArrayList<>();
 	}
 
 	//Methods
-	/** @param policies. <code>ArrayList</code> of <code>Potential</code> */
+	/** @param policies <code>ArrayList</code> of <code>Potential</code> */
 	public void imposePolicies(ArrayList<Potential> policies) {
 		imposedPolicies = policies;
 	}
 	
-	/** @param evidence. <code>EvidenceCase</code> */
+	/** @param evidence <code>EvidenceCase</code> */
 	public void setEvidence(EvidenceCase evidence) {
 		this.evidence = evidence;
 	}
@@ -146,8 +146,8 @@ public abstract class Evaluation {
 			throws NormalizeNullVectorException,
 			DoEditException, ConstraintViolationException,
 			CanNotDoEditException, NotEvaluableNetworkException, 
-			NonProjectablePotentialException, WrongCriterionException;;
-	
+			NonProjectablePotentialException, WrongCriterionException;
+
 	/** This method calculates the probabilities of the variables included in
 	 *   the evidence case in the form: P(a,b,....x|evidence)
 	 * @param variablesOfInterest <code>ArrayList</code> of

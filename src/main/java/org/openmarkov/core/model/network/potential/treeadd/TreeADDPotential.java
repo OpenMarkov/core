@@ -49,7 +49,7 @@ public class TreeADDPotential extends Potential {
 	protected Variable topVariable;
 	
 	/** This List stores the branches created in the TreeADDPotential constructor */
-	protected List<TreeADDBranch> branches = new ArrayList<TreeADDBranch>();
+	protected List<TreeADDBranch> branches = new ArrayList<>();
 
 	// Attributes used in toString()
 	protected static String DEFAULT_INDENT_STRING = "";
@@ -103,10 +103,10 @@ public class TreeADDPotential extends Potential {
 				// variable of the arrayList of variables
 				if (role == PotentialRole.CONDITIONAL_PROBABILITY) {
 					Variable conditionedVariable = variables.get(0);
-					potentialVariables = new ArrayList<Variable>();
+					potentialVariables = new ArrayList<>();
 					potentialVariables.add(conditionedVariable);
 					UniformPotential potential = new UniformPotential(potentialVariables, role);
-					List<State> branchStates = new ArrayList<State>();
+					List<State> branchStates = new ArrayList<>();
 					branchStates.add(branchingStates[i]);
 					branches.add(new TreeADDBranch(branchStates, topVariable, potential, variables));
 				}
@@ -117,7 +117,7 @@ public class TreeADDPotential extends Potential {
 		if (variableType == VariableType.NUMERIC) {
 			Threshold minimum = new Threshold(interval.getMin(), !interval.isLeftClosed());
 			Threshold maximum = new Threshold(interval.getMax(), interval.isRightClosed());
-			potentialVariables = new ArrayList<Variable>();
+			potentialVariables = new ArrayList<>();
 			potentialVariables.add(variables.get(0));
 			UniformPotential potential = new UniformPotential(potentialVariables, role);
 			branches.add(new TreeADDBranch(minimum, maximum, topVariable, potential, variables));
@@ -156,10 +156,10 @@ public class TreeADDPotential extends Potential {
 				// if the role of the treeADD is utility, it assigns a uniform
 				// potential
 				if (role == PotentialRole.UTILITY) {
-					potentialVariables = new ArrayList<Variable>();
+					potentialVariables = new ArrayList<>();
 					Potential potential = new UniformPotential(utilityVariable, potentialVariables);
 					// potential.setUtilityVariable(utilityVariable);
-					List<State> branchStates = new ArrayList<State>();
+					List<State> branchStates = new ArrayList<>();
 					branchStates.add(branchingStates[i]);
 					branches.add(new TreeADDBranch(branchStates, topVariable, potential, variables));
 				}
@@ -171,7 +171,7 @@ public class TreeADDPotential extends Potential {
 		if (variableType == VariableType.NUMERIC) {
 			Threshold minimum = new Threshold(interval.getMin(), !interval.isLeftClosed());
 			Threshold maximum = new Threshold(interval.getMax(), interval.isRightClosed());
-			potentialVariables = new ArrayList<Variable>();
+			potentialVariables = new ArrayList<>();
 			// it is an utility potential for sure so it is not necessary to add
 			// variable 0 to potential variables
 			Potential potential = new UniformPotential(utilityVariable, potentialVariables);

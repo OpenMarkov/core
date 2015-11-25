@@ -69,7 +69,7 @@ public class CaseDatabaseManager
      * This method gets all the plugins with CaseDatabaseFormat annotations
      * @return a list with the plugins detected with CaseDatabaseFormat annotations.
      */
-    private final  List<Class<?>> findAllFormatPlugins ()
+    private List<Class<?>> findAllFormatPlugins ()
     {
         try
         {
@@ -117,7 +117,8 @@ public class CaseDatabaseManager
     /**
      * Returns a HashMap whose keys are extensions accepted by the readers and
      * whose values are descriptions of the file format read by the reader
-     * @return
+     * @return a HashMap whose keys are extensions accepted by the readers and
+     * whose values are descriptions of the file format read by the reader
      */
     public HashMap<String, String> getAllReaders()
     {
@@ -134,7 +135,8 @@ public class CaseDatabaseManager
     /**
      * Returns a HashMap whose keys are extensions accepted by the writers and
      * whose values are descriptions of the file format written by the writer
-     * @return
+     * @return a HashMap whose keys are extensions accepted by the writers and
+     * whose values are descriptions of the file format written by the writer
      */    
     public HashMap<String, String> getAllWriters()
     {

@@ -54,7 +54,7 @@ public class UtilityOperationsTest {
 		  Variable varCost_of_test = new Variable("Cost of test");
 
 		  // ProbNet Criteria
-		  List<Criterion> decisionCriteria = new ArrayList<Criterion>();
+		  List<Criterion> decisionCriteria = new ArrayList<>();
 		  
 		  Criterion criHealth_state = new Criterion("Effectiveness", "QALY");
 		  criHealth_state.setUnicriteriaScale(0.8);

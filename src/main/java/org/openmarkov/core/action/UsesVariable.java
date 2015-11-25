@@ -16,6 +16,6 @@ import org.openmarkov.core.model.network.Variable;
 public interface UsesVariable {
 
 	/** @return A <code>Variable</code> */
-	public Variable getVariable();
+	Variable getVariable();
 	
 }

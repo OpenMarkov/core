@@ -63,7 +63,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 	 * 
 	 * @param node
 	 *            The node that contains the potential to set.
-	 * @param newPotentialType
+	 * @param potential
 	 *            The new potential object
 	 */
 	public SetPotentialEdit(Node node, Potential potential) {
@@ -83,7 +83,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 	// funcion
 	@Override
 	public void doEdit() throws DoEditException {
-		List<Variable> variables = new ArrayList<Variable>();
+		List<Variable> variables = new ArrayList<>();
 		//Node node = probNet.getNode(variable);
 		PotentialRole role;
 		// si es un nodo de decision y la politica es optima se asume un cambio
@@ -116,7 +116,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 			variables = lastPotential.getVariables();
 			role = lastPotential.getPotentialRole();
 	//	}
-		List<Potential> potentials = new ArrayList<Potential>();
+		List<Potential> potentials = new ArrayList<>();
 		if (newPotential == null) {
 			PotentialManager relationTypeManager = new PotentialManager();
 			if (lastPotential.isUtility()) {
@@ -144,7 +144,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 		if (newPotential instanceof TablePotential && node.getNodeType() != NodeType.DECISION ) {
 			newPotential = (TablePotential) LinkRestrictionPotentialOperations
 					.updatePotentialByLinkRestrictions(node);
-			potentials = new ArrayList<Potential>();
+			potentials = new ArrayList<>();
 			potentials.add(newPotential);
 			node.setPotentials(potentials);
 			//probNet.getNode(variable).setPotentials(potentials);
@@ -154,7 +154,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 	public void undo() {
 		super.undo();
 		Node node = probNet.getNode(variable);
-		List<Potential> potentials = new ArrayList<Potential>();
+		List<Potential> potentials = new ArrayList<>();
 		if (lastPotential != null) {
 			potentials.add(lastPotential);
 		} else if (node.getNodeType() == NodeType.DECISION) {

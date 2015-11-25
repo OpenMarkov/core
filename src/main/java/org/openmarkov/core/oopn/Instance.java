@@ -52,7 +52,7 @@ public class Instance {
         this.name = name;
         this.classNet = classNet;
         this.instanceNodes = instanceNodes;
-        this.subInstances = new HashMap<String, Instance>();
+        this.subInstances = new HashMap<>();
         this.isInput = isInput;
         this.arity = ParameterArity.ONE;
 
@@ -60,7 +60,7 @@ public class Instance {
             for (String subInstanceName : ((OOPNet) classNet).getInstances().keySet()) {
                 Instance originalSubinstance = ((OOPNet) classNet).getInstances().get(subInstanceName);
 
-                ArrayList<Node> subInstanceNodes = new ArrayList<Node>();
+                ArrayList<Node> subInstanceNodes = new ArrayList<>();
                 for (Node originalSubinstanceNode : originalSubinstance.getNodes()) {
                     String subinstanceNodeName = name + "." + originalSubinstanceNode.getName();
                     int i = 0;

@@ -337,10 +337,10 @@ public class TablePotentialTest {
 		Variable A = new Variable("A", dimA);
 		Variable B = new Variable("B", dimB);
 		Variable C = new Variable("C", dimC);
-		List<Variable> variablesTPAB = new ArrayList<Variable>();
+		List<Variable> variablesTPAB = new ArrayList<>();
 		variablesTPAB.add(A);
 		variablesTPAB.add(B);
-		List<Variable> variablesTPCBA = new ArrayList<Variable>();
+		List<Variable> variablesTPCBA = new ArrayList<>();
 		variablesTPCBA.add(C);
 		variablesTPCBA.add(B);
 		variablesTPCBA.add(A);
@@ -353,7 +353,7 @@ public class TablePotentialTest {
 				PotentialRole.CONDITIONAL_PROBABILITY, tableCBA);
 
 		Finding findingA1 = new Finding(A, 1);
-		HashMap<Variable, Finding> findingsA1 = new HashMap<Variable, Finding>();
+		HashMap<Variable, Finding> findingsA1 = new HashMap<>();
 		findingsA1.put(A, findingA1);
 		EvidenceCase evidenceCaseA1 = new EvidenceCase(findingsA1);
 

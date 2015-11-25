@@ -24,8 +24,8 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 @PotentialType(name="OR / MAX", family="ICI")
 public class MaxPotential extends MinMaxPotential {
 
-	/** @param model. <code>ICIModel</code>.
-	 * @param variables. <code>ArrayList</code> of <code>Variable</code>. */
+	/** @param model <code>ICIModel</code>.
+	 * @param variables <code>ArrayList</code> of <code>Variable</code>. */
 	public MaxPotential(
 			ICIModelType model, List<Variable> variables) {
 		super(model, variables);
@@ -48,9 +48,9 @@ public class MaxPotential extends MinMaxPotential {
 	
     /** Returns if an instance of a certain Potential type makes sense given 
      * the variables and the potential role.
-     * @param node. <code>Node</code> 
-     * @param variables. <code>ArrayList</code> of <code>Variable</code>.
-     * @param role. <code>PotentialRole</code>. */
+     * @param node <code>Node</code>
+     * @param variables <code>ArrayList</code> of <code>Variable</code>.
+     * @param role <code>PotentialRole</code>. */
 	public static boolean validate(Node node, List<Variable> variables, 
 			PotentialRole role) {
 		boolean valid = ICIPotential.validate(node, variables, role) && 
@@ -69,7 +69,7 @@ public class MaxPotential extends MinMaxPotential {
 	
     public TablePotential getDefaultLeakyPotential ()
     {
-        ArrayList<Variable> leakyVariables = new ArrayList<Variable> ();
+        ArrayList<Variable> leakyVariables = new ArrayList<>();
         leakyVariables.add (variables.get (0));
         TablePotential tablePotential = new TablePotential (leakyVariables,
                                                             PotentialRole.CONDITIONAL_PROBABILITY);
@@ -88,7 +88,7 @@ public class MaxPotential extends MinMaxPotential {
 	 *  <code>conditionedVariable</code> and <code>pseudoVariable</code>. */
 	public TablePotential getDeltaPotential() {
 		Variable conditionedVariable = variables.get(0);
-		List<Variable> deltaVariables = new ArrayList<Variable>();
+		List<Variable> deltaVariables = new ArrayList<>();
 		deltaVariables.add(pseudoVariable);
 		deltaVariables.add(conditionedVariable);
 		TablePotential deltaPotential = new TablePotential(
@@ -125,7 +125,7 @@ public class MaxPotential extends MinMaxPotential {
 	public TablePotential getAccruedPotential(TablePotential subPotential) {
 		// TODO Revisar este metodo para el caso de un potential proyectado
 	    List<Variable> subPotentialVariables = subPotential.getVariables();
-	    List<Variable> accruedPotentialVariables = new ArrayList<Variable>(subPotentialVariables);
+	    List<Variable> accruedPotentialVariables = new ArrayList<>(subPotentialVariables);
 		accruedPotentialVariables.set(0, pseudoVariable);
 
 		TablePotential accruedPotential = new TablePotential(
@@ -166,7 +166,7 @@ public class MaxPotential extends MinMaxPotential {
     
     @Override
     public Potential addVariable(Variable newVariable){
-    	List<Variable> newVariables = new ArrayList<Variable> (variables);
+    	List<Variable> newVariables = new ArrayList<>(variables);
     	newVariables.add(newVariable);
     	MaxPotential newICIPotential = new MaxPotential(this.modelType, newVariables);
     	
@@ -184,7 +184,7 @@ public class MaxPotential extends MinMaxPotential {
     
     @Override
 	public Potential removeVariable(Variable variable) {
-    	List<Variable> newVariables = new ArrayList<Variable>();
+    	List<Variable> newVariables = new ArrayList<>();
     	for (int i = 0; i < variables.size(); i++){
     		if (variable == variables.get(i)) {
     			continue;
@@ -227,7 +227,7 @@ public class MaxPotential extends MinMaxPotential {
     public TablePotential getFFunctionPotential ()
     {
         // Build the list of variables: child node first, z variables
-        List<Variable> functionVariables = new ArrayList<Variable> (getAuxiliaryVariables());
+        List<Variable> functionVariables = new ArrayList<>(getAuxiliaryVariables());
         functionVariables.add (0, variables.get (0));
         functionVariables.add (getLeakyVariable());
         TablePotential tablePotential = new TablePotential (functionVariables, role);

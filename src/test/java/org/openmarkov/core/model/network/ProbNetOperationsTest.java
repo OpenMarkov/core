@@ -95,7 +95,7 @@ public class ProbNetOperationsTest {
 		//Potential A
 		double [] tableA ={0.2, 0.8};
 		
-		List<Variable> variablesA = new ArrayList<Variable>();
+		List<Variable> variablesA = new ArrayList<>();
 		variablesA.add(variableA);
 		
 		TablePotential potentialvaluesA= new TablePotential(variablesA,role, tableA);
@@ -104,7 +104,7 @@ public class ProbNetOperationsTest {
 		//Potential BA
 		double [] tableBA ={0.7, 0.3, 0.9, 0.1};
 		
-		List<Variable> variablesBA = new ArrayList<Variable>();
+		List<Variable> variablesBA = new ArrayList<>();
 		variablesBA.add(variableB);
 		variablesBA.add(variableA);
 		
@@ -114,7 +114,7 @@ public class ProbNetOperationsTest {
 		//potencial CAB
 		double [] tableCAB ={0.15, 0.29, 0.84, 0.98, 0.85, 0.71, 0.16, 0.02};
 		
-		List<Variable> variablesCAB = new ArrayList<Variable>();
+		List<Variable> variablesCAB = new ArrayList<>();
 		variablesCAB.add(variableC);
 		variablesCAB.add(variableA);
 		variablesCAB.add(variableB);
@@ -157,10 +157,10 @@ public class ProbNetOperationsTest {
 		Variable A = nodeA.getVariable();
 		Variable B = nodeB.getVariable();
 		Finding findingA = new Finding(A, 1); // A:absent(0)
-		HashMap<Variable, Finding> findings = new HashMap<Variable, Finding>();
+		HashMap<Variable, Finding> findings = new HashMap<>();
 		findings.put(A, findingA);
 		EvidenceCase evidenceCase = new EvidenceCase(findings);
-		List<Variable> variablesOfInterest = new ArrayList<Variable>();
+		List<Variable> variablesOfInterest = new ArrayList<>();
 		variablesOfInterest.add(B);
 		// test pruned net
 		ProbNet pruned = ProbNetOperations.
@@ -286,12 +286,12 @@ public class ProbNetOperationsTest {
 
 		// create simpleProbNet
 		// create Arrays of variables used in potentials
-		aVariables = new ArrayList<Variable>(1);
+		aVariables = new ArrayList<>(1);
 		aVariables.add(variableA);
-		baVariables = new ArrayList<Variable>(2);
+		baVariables = new ArrayList<>(2);
 		baVariables.add(variableB);
 		baVariables.add(variableA);
-		adVariables = new ArrayList<Variable>(2);
+		adVariables = new ArrayList<>(2);
 		adVariables.add(variableA);
 		adVariables.add(variableD);
 		// create potentials
@@ -329,7 +329,7 @@ public class ProbNetOperationsTest {
 
 		//Potential CA
 		double [] tableCA ={0.81, 0.19, 0.98, 0.02};
-		variablesCA = new ArrayList<Variable>();
+		variablesCA = new ArrayList<>();
 		variablesCA.add(variableC);
 		variablesCA.add(variableA);
 
@@ -338,7 +338,7 @@ public class ProbNetOperationsTest {
 
 		//Potential EBC
 		double [] tableEBC ={0.02, 0.98, 0.68, 0.32, 0.24, 0.76, 0.79, 0.21};
-		variablesEBC = new ArrayList<Variable>();
+		variablesEBC = new ArrayList<>();
 		variablesEBC.add(variableE);
 		variablesEBC.add(variableB);
 		variablesEBC.add(variableC);
@@ -347,7 +347,7 @@ public class ProbNetOperationsTest {
 
 		//potentialFE
 		double [] tableFE ={0.12, 0.88, 0.77, 0.23};
-		variablesFE = new ArrayList<Variable>();
+		variablesFE = new ArrayList<>();
 		variablesFE.add(variableF);
 		variablesFE.add(variableE);
 
@@ -356,7 +356,7 @@ public class ProbNetOperationsTest {
 
 		//potentialGD
 		double [] tableGD ={0.49, 0.51, 0.75, 0.25};				
-		variablesGD = new ArrayList<Variable>();
+		variablesGD = new ArrayList<>();
 		variablesGD.add(variableG);
 		variablesGD.add(variableD);
 
@@ -366,14 +366,14 @@ public class ProbNetOperationsTest {
 		//Potential I
 		double [] tableI ={0.85, 0.15};
 
-		variablesI= new ArrayList<Variable>();
+		variablesI= new ArrayList<>();
 		variablesI.add(variableI);
 
 		potentialvaluesI= new TablePotential(variablesI,role, tableI);
 
 		//Potential DBI
 		double [] tableDBI ={0.22, 0.78, 0.86, 0.14, 0.57, 0.43, 0.9, 0.1};
-		variablesDBI = new ArrayList<Variable>();
+		variablesDBI = new ArrayList<>();
 		variablesDBI.add(variableD);
 		variablesDBI.add(variableB);
 		variablesDBI.add(variableI);
@@ -382,7 +382,7 @@ public class ProbNetOperationsTest {
 
 		//potentialBA
 		double [] tableba ={0.77, 0.23, 0.26, 0.74};
-		variablesba = new ArrayList<Variable>();
+		variablesba = new ArrayList<>();
 		variablesba.add(variableB);
 		variablesba.add(variableA);
 
@@ -391,7 +391,7 @@ public class ProbNetOperationsTest {
 
 		//potentialAH
 		double [] tableAH ={0.09, 0.91, 0.83, 0.17};
-		variablesAH = new ArrayList<Variable>();
+		variablesAH = new ArrayList<>();
 		variablesAH.add(variableA);
 		variablesAH.add(variableH);
 
@@ -400,7 +400,7 @@ public class ProbNetOperationsTest {
 
 		//Potential H
 		double [] tableH ={0.68, 0.32};
-		variablesH= new ArrayList<Variable>();
+		variablesH= new ArrayList<>();
 		variablesH.add(variableH);
 
 		potentialvaluesH= new TablePotential(variablesH,role, tableH);
@@ -446,7 +446,7 @@ public class ProbNetOperationsTest {
 		evidence.addFinding(findingA);
 		evidence.addFinding(findingD);
 		// Set up variables of interest: E	
-		List<Variable> variablesOfInterest = new ArrayList<Variable>();
+		List<Variable> variablesOfInterest = new ArrayList<>();
 		variablesOfInterest.add(variableE);
 		
 		ProbNet pruned = ProbNetOperations.getPruned(
@@ -519,7 +519,7 @@ public class ProbNetOperationsTest {
 		
 		EvidenceCase evidence = addEvidence(probNetAsia, null, strTuberculosis, 0);
 		addEvidence(probNetAsia, null, strTuberculosisOrCancer, 0);
-		List<Variable> variablesOfInterest = new ArrayList<Variable>(1);
+		List<Variable> variablesOfInterest = new ArrayList<>(1);
 		variablesOfInterest.add(probNetAsia.getVariable(strDyspnea));
 		
 		// Call method

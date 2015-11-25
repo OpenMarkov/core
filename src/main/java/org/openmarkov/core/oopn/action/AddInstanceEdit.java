@@ -119,7 +119,7 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
         }
         
         //Apply link creation edits
-        List<Link<Node>> pastedLinks = new ArrayList<Link<Node>> ();
+        List<Link<Node>> pastedLinks = new ArrayList<>();
         for (PNEdit edit : edits)
         {
             if (edit instanceof AddLinkEdit)
@@ -136,11 +136,11 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
             }
         }
         
-        List<Node> instanceNodes = new ArrayList<Node>(); 
+        List<Node> instanceNodes = new ArrayList<>();
         //Replace potentials to already created nodes with copies of copied nodes
         for (Node originalNode : classNet.getNodes())
         {
-            List<Potential> newPotentials = new ArrayList<Potential>();
+            List<Potential> newPotentials = new ArrayList<>();
             try
             {
                 Node newNode = oopNet.getNode (instanceName + "." + originalNode.getName ());
@@ -164,7 +164,7 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
                 newNode.setComment (originalNode.getComment ());
                 newNode.setRelevance (originalNode.getRelevance ());
                 newNode.setPurpose (originalNode.getPurpose ());
-                newNode.additionalProperties = new HashMap<String, String>(originalNode.additionalProperties);
+                newNode.additionalProperties = new HashMap<>(originalNode.additionalProperties);
                 newNode.setInput(originalNode.isInput());
                 instanceNodes.add(newNode);
             }

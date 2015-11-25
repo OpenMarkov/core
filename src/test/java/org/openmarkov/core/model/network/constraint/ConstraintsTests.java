@@ -112,7 +112,7 @@ public class ConstraintsTests {
 		Variable vA = new Variable("A", 2);
 		Variable vD = new Variable("D", 2);
 		Variable vU = new Variable("U");
-		ArrayList<Variable> variables = new ArrayList<Variable>();
+		ArrayList<Variable> variables = new ArrayList<>();
 		variables.add(vA);
 		variables.add(vD);
 		try {
@@ -175,7 +175,7 @@ public class ConstraintsTests {
 		Variable vA = new Variable("A");
 		Variable vD = new Variable("D");
 		Variable vU = new Variable("U");
-		ArrayList<Variable> variables = new ArrayList<Variable>();
+		ArrayList<Variable> variables = new ArrayList<>();
 		variables.add(vA);
 		variables.add(vD);
 		try {
@@ -207,7 +207,7 @@ public class ConstraintsTests {
 		Variable vA = new Variable(" [12]","YES","NO");
 		Variable vD = new Variable(" [14]","YES","NO");
 		Variable vU = new Variable(" [15]","YES","NO");
-		ArrayList<Variable> variables = new ArrayList<Variable>();
+		ArrayList<Variable> variables = new ArrayList<>();
 		variables.add(vA);
 		variables.add(vD);
 		try {

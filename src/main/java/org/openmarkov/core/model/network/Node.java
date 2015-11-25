@@ -33,7 +33,7 @@ import org.openmarkov.core.model.network.potential.operation.Util;
  * @author marias
  * @author fjdiez
  * @since OpenMarkov 1.0
- * @see openmarkov.graphs.Node
+ * @see Node
  * @see org.openmarkov.core.model.network.ProbNet
  * @version 1.0 */
 public class Node {
@@ -86,9 +86,9 @@ public class Node {
 	public Map<String, String> additionalProperties;
 
     // Constructor
-    /** @param probNet. <code>ProbNet</code>
-      * @param variable. <code>Variable</code> 
-      * @param nodeType. <code>NodeType</code> */
+    /** @param probNet <code>ProbNet</code>
+      * @param variable <code>Variable</code>
+      * @param nodeType <code>NodeType</code> */
 	public Node(ProbNet probNet, Variable variable, NodeType nodeType) {
     	this.probNet = probNet;
     	this.variable = variable;
@@ -97,8 +97,8 @@ public class Node {
     	    this.variable.setVariableType (VariableType.NUMERIC);
     	}
         this.nodeType = nodeType;
-        potentials = new ArrayList<Potential>();
-        additionalProperties = new HashMap<String, String>();
+        potentials = new ArrayList<>();
+        additionalProperties = new HashMap<>();
         hashCode = 31 * variable.hashCode() + 17 * nodeType.hashCode();
 	}
 	/**
@@ -109,8 +109,8 @@ public class Node {
     	this.probNet = node.getProbNet();
     	this.variable = node.getVariable();
         this.nodeType = node.getNodeType();
-        potentials = new ArrayList<Potential>(node.getPotentials());
-        additionalProperties = new HashMap<String, String>(node.additionalProperties);
+        potentials = new ArrayList<>(node.getPotentials());
+        additionalProperties = new HashMap<>(node.additionalProperties);
         alwaysObserved = node.isAlwaysObserved (); 
         hashCode = 31 * variable.hashCode() + 17 * nodeType.hashCode();
 	}	
@@ -130,22 +130,22 @@ public class Node {
     	return getVariable().getName();
     }
 
-    /** @param potential. <code>Potential</code> */
+    /** @param potential <code>Potential</code> */
     public void addPotential(Potential potential) {
         this.potentials.add(potential);
     }
     
-    /** @param potential. <code>Potential</code> */
+    /** @param potential <code>Potential</code> */
     public void setPotential(Potential potential) {
         this.potentials.clear ();
         addPotential(potential);
     }    
-    /** @param potential. <code>Potential</code> */
+    /** @param potentials <code>Potential</code> */
     public void setPotentials(List<Potential> potentials) {
         this.potentials = potentials;
     }
  
-    /** @param potential. <code>Potential</code>
+    /** @param potential <code>Potential</code>
      * @return <code>true</code> if <code>potentialList</code> contained the
      *   specified element; otherwise <code>false</code>. */
     public boolean removePotential(Potential potential) {
@@ -161,7 +161,7 @@ public class Node {
     /** @return An <code>ArrayList</code> cloned with all the potentials 
      *   associated to this <code>Node</code> */
 	public List<Potential> getPotentials() {
-		return new ArrayList<Potential> (potentials);
+		return new ArrayList<>(potentials);
     }
 
 	/** @return Number of potentials. <code>int</code> */
@@ -219,25 +219,25 @@ public class Node {
 		return probNet.getNumNeighbors(this);
 	}
 	
-	/** @param node. <code>Node</code>
+	/** @param node <code>Node</code>
 	 * @return True if <code>node</code> is parent of <code>this</code> node */
 	public boolean isParent(Node node) {
         return probNet.isParent (node, this);
 	}
 	
-	/** @param node. <code>Node</code>
+	/** @param node <code>Node</code>
 	 * @return True if <code>node</code> is child of <code>this</code> node */
 	public boolean isChild(Node node) {
         return probNet.isChild (node, this);
 	}
 	
-	/** @param node. <code>Node</code>
+	/** @param node <code>Node</code>
 	 * @return True if <code>node</code> and <code>this</code> are siblings */
 	public boolean isSibling(Node node) {
         return probNet.isSibling (node, this);
 	}
 	
-	/** @param node. <code>Node</code>
+	/** @param node <code>Node</code>
 	 * @return True if <code>node</code> and <code>this</code> are neighbors */
 	public boolean isNeighbor(Node node) {
         return probNet.isNeighbor (node, this);
@@ -355,8 +355,8 @@ public class Node {
 	// TODO Comentar
 	public void setUniformPotential() {
 		
-		List<Potential> newListPotentials = new ArrayList<Potential> ();
-		List<Variable> variables = new ArrayList<Variable>();
+		List<Potential> newListPotentials = new ArrayList<>();
+		List<Variable> variables = new ArrayList<>();
 		Variable thisVariable;
         // first, this variable. The potentials is not null
 		if (getNodeType() == NodeType.UTILITY)
@@ -400,7 +400,7 @@ public class Node {
 	}
 
 	
-	/** @param purpose. <code>String</code>	 */
+	/** @param purpose <code>String</code>	 */
 	public void setPurpose(String purpose) {
 		this.purpose = purpose;
 	}
@@ -410,7 +410,7 @@ public class Node {
 		return purpose;
 	}
 
-	/** @param relevance. <code>double</code> */
+	/** @param relevance <code>double</code> */
 	public void setRelevance(double relevance) {
 		this.relevance = relevance;
 	}
@@ -431,7 +431,7 @@ public class Node {
 	}
 
 
-	/** @param modelType the modelType to set. <code>PolicyType</code> */
+	/** @param policyType the modelType to set. <code>PolicyType</code> */
 	public void setPolicyType(PolicyType policyType) {
 		this.policyType = policyType;
 	}
@@ -457,7 +457,6 @@ public class Node {
         this.probNet.nodeDepot.addNode(this);
 	}
 
-	/** @param simulationIndexVariable. <code>Variable</code> */
 	public void samplePotentials() {
 		for (int i = 0; i < potentials.size(); i++) {
 			Potential originalPotential = potentials.get(i);
@@ -552,7 +551,7 @@ public class Node {
 				result = firstPotential.tableProject(null, null).get(0);
 			} else {
 			    List<TablePotential> utilityFunctionsParents;
-				utilityFunctionsParents = new ArrayList<TablePotential>();
+				utilityFunctionsParents = new ArrayList<>();
 				for (Node node : getParents()) {
 					utilityFunctionsParents.add(node.getUtilityFunction());
 				}
@@ -579,8 +578,6 @@ public class Node {
 	}
 
 	/**
-	 * @param utilityVariable the variable to test
-	 * @param probNet 
 	 * @return true if the variable is a supervalue node. False if does not
 	 */
 	public boolean isSuperValueNode() {

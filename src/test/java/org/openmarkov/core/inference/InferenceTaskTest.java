@@ -237,7 +237,7 @@ public abstract class InferenceTaskTest {
 		TablePotential pot;
 
 		ArrayList<Variable> variables;
-		variables = new ArrayList<Variable>();
+		variables = new ArrayList<>();
 		variables.add(variableT);
 		variables.add(variableY);
 		variables.add(variableD);
@@ -253,7 +253,7 @@ public abstract class InferenceTaskTest {
 		TablePotential pot;
 
 		ArrayList<Variable> variables;
-		variables = new ArrayList<Variable>();
+		variables = new ArrayList<>();
 		variables.add(variableT);
 
 		pot = new TablePotential(variables,PotentialRole.UTILITY);

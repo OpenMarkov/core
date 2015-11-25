@@ -22,7 +22,7 @@ public abstract class NetworkType
     	constraints;
     
     public NetworkType() {
-        constraints = new HashMap<Class<? extends PNConstraint>, ConstraintBehavior>();
+        constraints = new HashMap<>();
     }
     
     public boolean isApplicableConstraint(PNConstraint constraint)

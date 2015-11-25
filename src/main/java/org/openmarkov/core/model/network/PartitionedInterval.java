@@ -101,7 +101,7 @@ public class PartitionedInterval implements Cloneable {
     }
 
     /**
-	 * @param number.
+	 * @param number
 	 *            <code>double</code>
 	 * @return The number of subinterval where is located the number (0, 1, ...)
 	 *         or -1 if it is outside
@@ -120,7 +120,7 @@ public class PartitionedInterval implements Cloneable {
 	
 	/**
 	 * This method remove the index-th subinterval. 
-	 * @param index.
+	 * @param index
 	 *            <code>int</code>
 	 * @consultation
 	 */

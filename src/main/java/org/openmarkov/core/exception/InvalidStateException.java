@@ -16,15 +16,15 @@ import org.openmarkov.core.model.network.Variable;
 public class InvalidStateException extends Exception {
 
 	// Constructor
-	/** @param message <code>String</code> */
+	/** @param msg <code>String</code> */
 	public InvalidStateException(String msg) {
 		super(msg);
 	}
 	
 	/** Generate a message for this exception given a variable and a missing 
 	 * state
-	 * @param variable. <code>Variable</code>
-	 * @param state. <code>String</code> */
+	 * @param variable <code>Variable</code>
+	 * @param missingState <code>String</code> */
 	public static String generateMsg(Variable variable, String missingState) {
 		String msg = "InvalidStateException trying access state " + missingState
 			+ " in variable: " + variable.getName() 

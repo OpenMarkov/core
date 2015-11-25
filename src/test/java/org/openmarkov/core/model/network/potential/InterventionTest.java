@@ -32,8 +32,8 @@ public class InterventionTest {
 		intervention0 = new Intervention(chanceVar0);
 		intervention1 = new Intervention(chanceVar1);
 		intervention2 = new Intervention(chanceVar2);
-		interventions = new ArrayList<Intervention>();
-		chanceStates = new ArrayList<State>();
+		interventions = new ArrayList<>();
+		chanceStates = new ArrayList<>();
 	}
 
 	@Test

@@ -38,9 +38,9 @@ public class ConditionalGaussianPotential extends Potential{
     /**
      * Returns if an instance of a certain Potential type makes sense given the
      * variables and the potential role.
-     * @param node. <code>Node</code>
-     * @param variables. <code>ArrayList</code> of <code>Variable</code>.
-     * @param role. <code>PotentialRole</code>.
+     * @param node <code>Node</code>
+     * @param variables <code>ArrayList</code> of <code>Variable</code>.
+     * @param role <code>PotentialRole</code>.
      */
     public static boolean validate (Node node, List<Variable> variables, PotentialRole role)
     {
@@ -104,7 +104,7 @@ public class ConditionalGaussianPotential extends Potential{
 			throws NonProjectablePotentialException, WrongCriterionException {
 		// returned value
 
-        List<Variable> unobservedVariables = new ArrayList<Variable>(variables);
+        List<Variable> unobservedVariables = new ArrayList<>(variables);
         if (evidenceCase != null) {
             unobservedVariables.removeAll(evidenceCase.getVariables());
         }

@@ -65,7 +65,7 @@ public class ChangeNetworkTypeEdit extends SimplePNEdit {
             {
                 probNet.setNetworkType(newNetworkType);
                 if (probNet.isMultiagent()) {
-                	ArrayList<StringWithProperties> agents = new ArrayList<StringWithProperties>();
+                	ArrayList<StringWithProperties> agents = new ArrayList<>();
         			agents.add(new StringWithProperties(" Agent 1"));
         			agents.add(new StringWithProperties(" Agent 2"));
         			probNet.setAgents(agents);

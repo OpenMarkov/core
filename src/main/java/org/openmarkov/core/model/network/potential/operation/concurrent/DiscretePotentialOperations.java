@@ -34,7 +34,7 @@ public class DiscretePotentialOperations {
 	/** @param potentials <code>ArrayList</code> of 
 	 *   <code>? extends Potential</code>
 	  * @return The multiplied potentials <code>TablePotential</code>
-	 * @throws <code>Exception</code> */
+	 * @throws Exception <code>Exception</code> */
     public static TablePotential multiply (List<TablePotential> potentials)
         throws Exception
     {
@@ -106,7 +106,7 @@ public class DiscretePotentialOperations {
 	 * @param denominatorPotential <code>Potential</code>
 	  * @return numeratorPotential / denominatorPotential 
 	  *   <code>TablePotential</code> 
-	 * @throws <code>Exception</code> */
+	 * @throws Exception <code>Exception</code> */
 	public static TablePotential divide(Potential numeratorPotential, 
 			Potential denominatorPotential) throws Exception {
 		// Sequential part

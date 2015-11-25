@@ -39,7 +39,7 @@ public class AddLinkEdit extends BaseLinkEdit {
     /**
      * The new <code>Potential</code> of the second node
      */
-    protected List<Potential> newPotentials = new ArrayList<Potential>() ;
+    protected List<Potential> newPotentials = new ArrayList<>() ;
     /**
      * parent node
      */
@@ -124,8 +124,8 @@ public class AddLinkEdit extends BaseLinkEdit {
    
     /** Method to compare two AddLinkEdits comparing the names of
      * the source and destination variable alphabetically.
-     * @param obj
-     * @return
+     * @param obj AddLinkEdit to be compared
+     * @return result of the comparison
      */
     public int compareTo(AddLinkEdit obj){
         int result;

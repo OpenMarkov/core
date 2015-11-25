@@ -37,7 +37,7 @@ public class TuningPotentialTest
         Variable dG = new Variable("dG", "down", "st.quo", "up");
         Variable nerveSoft = new Variable("Nerve_Soft", "Softer", "St.quo", "Louder");
 
-        List<Variable> variables = new ArrayList<Variable> ();
+        List<Variable> variables = new ArrayList<>();
         variables.add (nerveSoft);
         variables.add (dT);
         variables.add (dM);

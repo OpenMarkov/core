@@ -49,7 +49,7 @@ public abstract class Sampler {
 	     */
 	    protected static int[] getIndexesUncertainValuesNotOfClasses(List<UncertainValue> uncertainValues,
 	            List<Class<? extends ProbDensFunction>> types) {
-	        List<Integer> indexes = new ArrayList<Integer>();
+	        List<Integer> indexes = new ArrayList<>();
 	        for (int i = 0; i < uncertainValues.size(); i++) {
 	            UncertainValue uncertainValue = uncertainValues.get(i);
 	            ProbDensFunction probDensFunction = uncertainValue.getProbDensFunction();
@@ -126,7 +126,7 @@ public abstract class Sampler {
 	protected static List<UncertainValue> getUncertainValuesChance(
 			UncertainValue[] uTable, int basePos, int numStates) {
 		List<UncertainValue> uv;
-		uv = new ArrayList<UncertainValue>();
+		uv = new ArrayList<>();
 		for (int i = 0; i < numStates; i++) {
 			uv.add(uTable[basePos + i]);
 		}
@@ -146,7 +146,7 @@ public abstract class Sampler {
 	     */
 	    private static int[] getIndexesUncertainValuesOfClasses(List<UncertainValue> uncertainValues,
 	            List<Class<? extends ProbDensFunction>> types) {
-	        List<Integer> indexes = new ArrayList<Integer>();
+	        List<Integer> indexes = new ArrayList<>();
 	        for (int i = 0; i < uncertainValues.size(); i++) {
 	            UncertainValue uncertainValue = uncertainValues.get(i);
 	            ProbDensFunction probDensFunction = uncertainValue.getProbDensFunction();

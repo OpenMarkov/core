@@ -13,7 +13,7 @@ package org.openmarkov.core.exception;
 public class CanNotAccessFileException extends Exception {
 
 	// Constructor
-	/** @param fileName */
+	/** @param fileName string with the filename */
 	public CanNotAccessFileException(String fileName) {
 		super("It is not possible to access file: " + fileName);
 	}

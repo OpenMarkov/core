@@ -40,7 +40,7 @@ class SamplerUncertainValues {
 	List<UncertainValue> constructListFromIndexes (List<UncertainValue> arrayFamily,
 			int[] indComp)
 	{
-		List<UncertainValue> array = new ArrayList<UncertainValue> ();
+		List<UncertainValue> array = new ArrayList<>();
 		for (int i : indComp)
 		{
 			array.add (arrayFamily.get (i));

@@ -105,8 +105,8 @@ public class TreeADDBranch {
 
     /**
      * Constructor for numeric variables
-     * @param lowerThreshold
-     * @param upperThreshold
+     * @param lowerBound
+     * @param upperBound
      * @param topVariable
      * @param potential
      * @param parentVariables
@@ -148,9 +148,9 @@ public class TreeADDBranch {
 
     /**
      * Constructor for numeric variables with reference
-     * @param thresholdMin
-     * @param thresholdMax
-     * @param potential
+     * @param lowerBound
+     * @param upperBound
+     * @param reference
      * @param topVariable
      * @param parentVariables
      */

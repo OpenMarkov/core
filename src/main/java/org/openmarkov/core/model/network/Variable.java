@@ -114,7 +114,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * Creates a <code>FSVariable</code> whose states are given by the names
 	 * <code>namesStates</code> states.
 	 * 
-	 * @param name
+	 * @param nameVariable
 	 *            a <code>String</code>
 	 * @param stateNames
 	 *            a sequence of <code>String</code> by using the facilities of
@@ -282,7 +282,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 */
 	public void setAdditionalProperty(String propertyName, String propertyValue) {
 		if (additionalProperties == null) {
-			additionalProperties = new HashMap<String, String>();
+			additionalProperties = new HashMap<>();
 		}
 		additionalProperties.put(propertyName, propertyValue);
 	}
@@ -290,7 +290,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	public void setStateAdditionalProperties(String stateName,
 			HashMap<String, String> stateAdditionalProperties) {
 		if (statesAdditionalProperties == null) {
-			statesAdditionalProperties = new HashMap<String, HashMap<String, String>>();
+			statesAdditionalProperties = new HashMap<>();
 		}
 		statesAdditionalProperties.put(stateName, stateAdditionalProperties);
 	}
@@ -311,11 +311,11 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	public void setStateAdditionalProperty(String stateName, String propertyName,
 			String propertyValue) {
 		if (statesAdditionalProperties == null) {
-			statesAdditionalProperties = new HashMap<String, HashMap<String, String>>();
+			statesAdditionalProperties = new HashMap<>();
 		}
 		HashMap<String, String> stateProperties = statesAdditionalProperties.get(stateName);
 		if (stateProperties == null) {
-			stateProperties = new HashMap<String, String>();
+			stateProperties = new HashMap<>();
 			statesAdditionalProperties.put(stateName, stateProperties);
 		}
 		stateProperties.put(propertyName, propertyValue);
@@ -339,9 +339,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 *            . <code>String</code>.
 	 * @param newName
 	 *            . <code>String</code>.
-	 * @throws An
-	 *             exception if exists one state with name =
-	 *             <code>newName</code>.
+	 * @throws Exception
 	 */
 	public void renameState(String oldName, String newName) throws Exception {
 
@@ -371,7 +369,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 
 	/**
 	 * @consultation
-	 * @param state
+	 * @param stateName
 	 *            . <code>String</code>
 	 * @return The index of <code>state</code> or -1 if it does not exists.
 	 *         <code>int</code>
@@ -407,7 +405,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * @param value
 	 *            . <code>double</code>
 	 * @return The state index corresponding to value. <code>int</code>
-	 * @throws An
+	 * @throws InvalidStateException
 	 *             exception when variable is discrete.
 	 */
 	public int getStateIndex(double value) throws InvalidStateException {
@@ -522,7 +520,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @param newName
+	 * @param newBaseName
 	 *            . <code>String</code>
 	 */
 	public void setBaseName(String newBaseName) {
@@ -540,7 +538,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	public TablePotential deltaTablePotential(String stateName) throws InvalidStateException {
-		List<Variable> potentialVariables = new ArrayList<Variable>();
+		List<Variable> potentialVariables = new ArrayList<>();
 		potentialVariables.add(this);
 		TablePotential potential = new TablePotential(potentialVariables,
 				PotentialRole.CONDITIONAL_PROBABILITY);
@@ -553,7 +551,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	public TablePotential deltaTablePotential(State state) {
-		List<Variable> potentialVariables = new ArrayList<Variable>();
+		List<Variable> potentialVariables = new ArrayList<>();
 		potentialVariables.add(this);
 		TablePotential potential = new TablePotential(potentialVariables,
 				PotentialRole.CONDITIONAL_PROBABILITY);
@@ -566,7 +564,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	public TablePotential createDeltaTablePotential(int stateIndex) throws InvalidStateException {
-		List<Variable> potentialVariables = new ArrayList<Variable>();
+		List<Variable> potentialVariables = new ArrayList<>();
 		potentialVariables.add(this);
 		TablePotential potential = new TablePotential(potentialVariables,
 				PotentialRole.CONDITIONAL_PROBABILITY);

@@ -62,7 +62,7 @@ public class LinkRestrictionPotentialOperations {
     {
         TablePotential potential = (TablePotential) node.getPotentials ().get (0);
         List<Variable> nodeVariables = potential.getVariables ();
-        List<int[]> stateList = new ArrayList<int[]> ();
+        List<int[]> stateList = new ArrayList<>();
         List<Link<Node>> links = getParentLinksWithRestriction (node);
         for (Link<Node> link : links)
         {
@@ -70,7 +70,7 @@ public class LinkRestrictionPotentialOperations {
             State[] var1States = var1.getStates ();
             Variable var2 = link.getNode2 ().getVariable ();
             State[] var2States = var2.getStates ();
-            Map<Integer, Integer> independentVariables = new HashMap<Integer, Integer> ();
+            Map<Integer, Integer> independentVariables = new HashMap<>();
             int var1Index = 0, var2Index = 0;
             for (int i = 0; i < nodeVariables.size (); i++)
             {
@@ -170,7 +170,7 @@ public class LinkRestrictionPotentialOperations {
 		int varIndex = nodeVariables.indexOf(node.getVariable());
 		Variable var = nodeVariables.get(varIndex);
 		List<Link<Node>> parentLinks = getParentLinksWithRestriction(node);
-		List<Integer> modifiableStateList = new ArrayList<Integer>();
+		List<Integer> modifiableStateList = new ArrayList<>();
 		int states = var.getNumStates();
 		if (states > 1) {
 			double sum = 0;
@@ -225,7 +225,8 @@ public class LinkRestrictionPotentialOperations {
 	 *            - the index of the state of the parent variable
 	 * @param var2StateIndex
 	 *            - the index of the state of the child variable.
-	 * @return the probability potential of the node updated properly.
+	 * @return the probability potential of the node updated properly.
+
 	 */
 	public static Potential updatePotentialByAddLinkRestriction(Node node,
 			TablePotential linkRestriction, int var1StateIndex,
@@ -237,7 +238,7 @@ public class LinkRestrictionPotentialOperations {
 		Potential potential = node.getPotentials().get(0);
 
 		List<Variable> nodeVariables = potential.getVariables();
-		Map<Integer, Integer> independentVarMap = new HashMap<Integer, Integer>();
+		Map<Integer, Integer> independentVarMap = new HashMap<>();
 		int var1Index = 0, var2Index = 0;
 		for (int i = 0; i < nodeVariables.size(); i++) {
 			Variable var = nodeVariables.get(i);
@@ -311,7 +312,7 @@ public class LinkRestrictionPotentialOperations {
 		State[] state2 = linkVariables.get(1).getStates();
 
 		List<Variable> nodeVariables = potential.getVariables();
-		Map<Integer, Integer> independentVarMap = new HashMap<Integer, Integer>();
+		Map<Integer, Integer> independentVarMap = new HashMap<>();
 		int var1Index = 0, var2Index = 0;
 		for (int i = 0; i < nodeVariables.size(); i++) {
 			Variable var = nodeVariables.get(i);
@@ -424,7 +425,7 @@ public class LinkRestrictionPotentialOperations {
 			Map<Integer, Integer> independentVariables,
 			List<Variable> variables, int var1Value, int var1Index,
 			int var2Value, int var2Index) {
-	    List<int[]> combinationList = new ArrayList<int[]>();
+	    List<int[]> combinationList = new ArrayList<>();
 
 		int[] combination = new int[independentVariables.size() + 2];
 		combination[var1Index] = var1Value;

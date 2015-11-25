@@ -60,8 +60,8 @@ public abstract class ICIPotential extends Potential {
     private TablePotential expandedPotential = null;
     
 	// Constructor
-	/** @param variables. <code>ArrayList</code> of <code>Variable</code>
-	 * @param model. <code>ICIModel</code> */
+	/** @param variables <code>ArrayList</code> of <code>Variable</code>
+	 * @param modelType <code>ICIModel</code> */
 	public ICIPotential(ICIModelType modelType, List<Variable> variables) {
 		// In principle, role will be "conditional probability"
 		// and the first variable will be the conditioned variable
@@ -71,7 +71,7 @@ public abstract class ICIPotential extends Potential {
 		this.family = modelType.getFamily();
 		this.noisyParameters = getDefaultNoisyParameters();
 		this.leakyParameters = getDefaultLeakyParameters (conditionedVariable.getNumStates ());
-        zVariables = new HashMap<Variable, Variable> ();
+        zVariables = new HashMap<>();
         for(int i=1; i<variables.size (); ++i)
         {
             zVariables.put (variables.get (i), createZVariable (variables.get (i), conditionedVariable));
@@ -87,7 +87,7 @@ public abstract class ICIPotential extends Potential {
         this.noisyParameters = getDefaultNoisyParameters();
         Variable conditionedVariable = getConditionedVariable();        
         this.leakyParameters = getDefaultLeakyParameters (conditionedVariable.getNumStates ());
-        zVariables = new HashMap<Variable, Variable> ();
+        zVariables = new HashMap<>();
         for(int i=1; i<variables.size (); ++i)
         {
             zVariables.put (variables.get (i), createZVariable (variables.get (i), conditionedVariable));
@@ -147,7 +147,7 @@ public abstract class ICIPotential extends Potential {
 	 */
 	public abstract TablePotential getFFunctionPotential ();
 
-    /** @param evidenceCase. <code>EvidenceCase</code>
+    /** @param evidenceCase <code>EvidenceCase</code>
      * @return <code>ArrayList</code> of <code>Potential</code>*/
     // TODO This is the actual valid tableProject that should be used once the
     // bug in projectEvidence (assuming tableProject always returns a
@@ -157,7 +157,7 @@ public abstract class ICIPotential extends Potential {
         throws NonProjectablePotentialException,
         WrongCriterionException
     {
-        List<TablePotential> projectedPotentials = new ArrayList<TablePotential> ();
+        List<TablePotential> projectedPotentials = new ArrayList<>();
         for (TablePotential subPotential : getSubpotentials ())
         {
             projectedPotentials.add (subPotential.tableProject (evidenceCase, null).get (0));
@@ -175,22 +175,22 @@ public abstract class ICIPotential extends Potential {
         WrongCriterionException
     {
         List<TablePotential> potentials = internalTableProject (evidenceCase, inferenceOptions);
-        HashSet<Variable> variablesToEliminate = new HashSet<Variable> ();
+        HashSet<Variable> variablesToEliminate = new HashSet<>();
         // Fill it with variables appearing in all potentials except this
         for (TablePotential tablePotential : potentials)
         {
             variablesToEliminate.addAll (tablePotential.getVariables ());
         }
         variablesToEliminate.removeAll (variables);
-        List<TablePotential> singleElementPotentialList = new ArrayList<TablePotential> ();
+        List<TablePotential> singleElementPotentialList = new ArrayList<>();
         
-        List<Variable> allVariables = new ArrayList<Variable>(variables);
+        List<Variable> allVariables = new ArrayList<>(variables);
         allVariables.addAll (variablesToEliminate);
         while (allVariables.size () > variables.size ())
         {
             Variable variableToEliminate = allVariables.get (allVariables.size () - 1);
             allVariables.remove (allVariables.size () - 1);
-            List<TablePotential> relatedPotentials = new ArrayList<TablePotential> ();
+            List<TablePotential> relatedPotentials = new ArrayList<>();
             int i = 0;
             while (i < potentials.size ())
             {
@@ -247,7 +247,7 @@ public abstract class ICIPotential extends Potential {
 	 * @return <code>ArrayList</code> of <code>TablePotential</code>. 
 	 * */
 	public List<TablePotential> getSubpotentials() {
-	    List<TablePotential> subpotentials = new ArrayList<TablePotential> ();
+	    List<TablePotential> subpotentials = new ArrayList<>();
 
 	    // F function
 	    subpotentials.add (getFFunctionPotential ());
@@ -292,7 +292,7 @@ public abstract class ICIPotential extends Potential {
 	    TablePotential leakyPotential = null;
         if(this.leakyParameters != null)
         {
-            ArrayList<Variable> leakVariables = new ArrayList<Variable> ();
+            ArrayList<Variable> leakVariables = new ArrayList<>();
             leakVariables.add(leakyVariable); // conditioned variable
             leakyPotential = new TablePotential(leakVariables, PotentialRole.CONDITIONAL_PROBABILITY, leakyParameters);
         }

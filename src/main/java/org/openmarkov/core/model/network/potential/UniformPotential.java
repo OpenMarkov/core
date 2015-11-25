@@ -37,8 +37,8 @@ public class UniformPotential extends Potential
 
     // Constructors
     /**
-     * @param variables. <code>ArrayList</code> of <code>Variable</code>
-     * @param role. <code>PotentialRole</code>
+     * @param variables <code>ArrayList</code> of <code>Variable</code>
+     * @param role <code>PotentialRole</code>
      */
     public UniformPotential (List<Variable> variables, PotentialRole role)
     {
@@ -50,9 +50,8 @@ public class UniformPotential extends Potential
     }
 
     /**
-     * @param variables. <code>ArrayList</code> of <code>Variable</code>
-     * @param role. <code>PotentialRole</code>
-     * @param utilityVariable. <code>Variable</code>
+     * @param variables <code>ArrayList</code> of <code>Variable</code>
+     * @param utilityVariable <code>Variable</code>
      */
     public UniformPotential (Variable utilityVariable, List<Variable> variables)
     {
@@ -64,8 +63,8 @@ public class UniformPotential extends Potential
     }
 
     /**
-     * @param role. <code>PotentialRole</code>
-     * @param variables... <code>Variable</code>
+     * @param role <code>PotentialRole</code>
+     * @param variables <code>Variable</code>
      */
     public UniformPotential (PotentialRole role, Variable... variables)
     {
@@ -89,9 +88,9 @@ public class UniformPotential extends Potential
     /**
      * Returns if an instance of a certain Potential type makes sense given the
      * variables and the potential role
-     * @param node. <code>Node</code>
-     * @param variables. <code>ArrayList</code> of <code>Variable</code>
-     * @param role. <code>PotentialRole</code>
+     * @param node <code>Node</code>
+     * @param variables <code>ArrayList</code> of <code>Variable</code>
+     * @param role <code>PotentialRole</code>
      */
     public static boolean validate (Node node, List<Variable> variables, PotentialRole role)
     {
@@ -116,7 +115,7 @@ public class UniformPotential extends Potential
                                               List<TablePotential> projectedPotentials)
         throws NonProjectablePotentialException
     {
-        List<TablePotential> newProjectedPotentials = new ArrayList<TablePotential> ();
+        List<TablePotential> newProjectedPotentials = new ArrayList<>();
         switch (role)
         {
             case CONDITIONAL_PROBABILITY :
@@ -129,7 +128,7 @@ public class UniformPotential extends Potential
                     if (conditionedVariable.getVariableType () == VariableType.NUMERIC)
                     {
                         // returns an empty list of potentials
-                        return new ArrayList<TablePotential> ();
+                        return new ArrayList<>();
                     }
                     else
                     {
@@ -153,7 +152,7 @@ public class UniformPotential extends Potential
                     else
                     {
                         // returns a uniform potential
-                        List<Variable> potentialVariables = new ArrayList<Variable> (variables);
+                        List<Variable> potentialVariables = new ArrayList<>(variables);
                         if (evidenceCase != null)
                         {
                             potentialVariables.removeAll (evidenceCase.getVariables ());
@@ -166,7 +165,7 @@ public class UniformPotential extends Potential
                 break;
             // In case of utility potentials, return an empty potential
             case UTILITY :
-                ArrayList<Variable> potentialVariables = new ArrayList<Variable> (variables);
+                ArrayList<Variable> potentialVariables = new ArrayList<>(variables);
                 if (evidenceCase != null)
                 {
                     potentialVariables.removeAll (evidenceCase.getVariables ());
@@ -182,7 +181,7 @@ public class UniformPotential extends Potential
 
     /**
      * @return <code>true</code> if all the variables are FINITE_STATES.
-     * @param variables. <code>ArrayList</code> of <code>Variable</code>
+     * @param variables <code>ArrayList</code> of <code>Variable</code>
      */
     private boolean allVariablesAreDiscrete (List<Variable> variables)
     {
@@ -197,7 +196,7 @@ public class UniformPotential extends Potential
     }
 
     /**
-     * @param variables. <code>ArrayList</code> of <code>Variable</code>
+     * @param variables <code>ArrayList</code> of <code>Variable</code>
      * @return 1 / multiplication of the number of states of conditioning
      *         variables.
      */

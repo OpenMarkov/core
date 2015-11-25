@@ -29,7 +29,7 @@ public class LinkTest {
 		ProbNet net = new ProbNet();
 		nodeA = net.addNode(varA, NodeType.CHANCE);
 		nodeB = net.addNode(varB, NodeType.CHANCE);
-		link = new Link<Node>(nodeA, nodeB, true);
+		link = new Link<>(nodeA, nodeB, true);
 		link.initializesRestrictionsPotential();
 	}
 

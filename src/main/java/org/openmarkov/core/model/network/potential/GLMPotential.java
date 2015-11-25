@@ -31,8 +31,8 @@ import org.openmarkov.core.model.network.modelUncertainty.XORShiftRandom;
 public abstract class GLMPotential extends Potential {
     public enum MatrixType {
         COVARIANCE, CHOLESKY
-    };
-    
+    }
+
     protected static final String CONSTANT = "Constant";
     
     /**

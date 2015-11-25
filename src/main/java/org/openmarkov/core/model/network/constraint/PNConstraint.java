@@ -64,13 +64,13 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
         // Do nothing
     }
 
-    /** @param probNet. <code>ProbNet</code>
+    /** @param probNet <code>ProbNet</code>
 	 * @return <code>true</code> if the <code>probNet</code> fulfills the 
 	 * constraint. */
 	public abstract boolean checkProbNet(ProbNet probNet);
 	
 	/** Make sure all editions of the event do not violate restrictions.
-	 * @param probNet. <code>ProbNet</code>
+	 * @param probNet <code>ProbNet</code>
 	 * @param edit <code>PNEdit</code>
      * @return <code>true</code> if the <code>ProbNet</code> will fulfill the
 	 *  constraint after applying the <code>event</code> in a 

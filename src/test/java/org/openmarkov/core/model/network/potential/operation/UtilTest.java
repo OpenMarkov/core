@@ -28,7 +28,7 @@ public class UtilTest {
 	}
 
 	/**
-	 * Test method for {@link openmarkov.networks.potentials.operations.Util#round(double, java.lang.String)}.
+	 * Test method for {@link Util#round(double, java.lang.String)}.
 	 */
 	@Test
 	public void testRound() {
@@ -61,7 +61,7 @@ public class UtilTest {
 	}
 
 	/**
-	 * Test method for {@link openmarkov.networks.potentials.operations.Util#roundedString(double, java.lang.String)}.
+	 * Test method for {@link Util#roundedString(double, java.lang.String)}.
 	 */
 	@Test
 	public void testRoundedString() {

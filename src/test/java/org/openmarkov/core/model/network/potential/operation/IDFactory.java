@@ -93,7 +93,7 @@ public class IDFactory {
 	 * @return A <code>List</code> of <code>Variable</code>s
 	 */
 	private static List<Variable> getVariablesList(Variable... variablesArray) {
-		List<Variable> variablesList = new ArrayList<Variable>(variablesArray.length);
+		List<Variable> variablesList = new ArrayList<>(variablesArray.length);
 		for (Variable variable : variablesArray) {
 			variablesList.add(variable);
 		}

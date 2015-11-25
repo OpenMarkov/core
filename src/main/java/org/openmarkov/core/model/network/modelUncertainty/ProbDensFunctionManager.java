@@ -30,7 +30,7 @@ public class ProbDensFunctionManager {
     private ProbDensFunctionManager() {
         super();
         this.pluginLoader = new PluginLoader();
-        this.probDensFunctions = new HashMap<String, Class<?>>();
+        this.probDensFunctions = new HashMap<>();
 
         List<Class<?>> plugins = findAllProbDensFunctions();
         for (Class<?> plugin : plugins) {
@@ -87,7 +87,7 @@ public class ProbDensFunctionManager {
         return newInstance;
     }
 
-    private final List<Class<?>> findAllProbDensFunctions() {
+    private List<Class<?>> findAllProbDensFunctions() {
         try {
             FilterIF filter = org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy(ProbDensFunctionType.class);
             return pluginLoader.loadAllPlugins(filter);

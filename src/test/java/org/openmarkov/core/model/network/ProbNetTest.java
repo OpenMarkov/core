@@ -168,12 +168,12 @@ public class ProbNetTest {
 		D = new Variable("D", 2);
 		U = new Variable("U");
 		// create Arrays of variables used in potentials
-		aVariables = new ArrayList<Variable>(1);
+		aVariables = new ArrayList<>(1);
 		aVariables.add(A);
-		abVariables = new ArrayList<Variable>(2);
+		abVariables = new ArrayList<>(2);
 		abVariables.add(B);
 		abVariables.add(A);
-		adVariables = new ArrayList<Variable>(2);
+		adVariables = new ArrayList<>(2);
 		adVariables.add(A);
 		adVariables.add(D);
 		// create potentials
@@ -240,7 +240,7 @@ public class ProbNetTest {
 		//Potential A
 		double [] tableA ={0.2, 0.8};
 		
-		variablesA = new ArrayList<Variable>();
+		variablesA = new ArrayList<>();
 		variablesA.add(variableA);
 		
 		potentialvaluesA= new TablePotential(variablesA,role, tableA);
@@ -249,7 +249,7 @@ public class ProbNetTest {
 		//Potential BA
 		double [] tableBA ={0.7, 0.3, 0.9, 0.1};
 		
-		variablesBA = new ArrayList<Variable>();;
+		variablesBA = new ArrayList<>();
 		variablesBA.add(variableB);
 		variablesBA.add(variableA);
 		
@@ -259,7 +259,7 @@ public class ProbNetTest {
 		//potencial CAB
 		double [] tableCAB ={0.15, 0.29, 0.84, 0.98, 0.85, 0.71, 0.16, 0.02};
 		
-		variablesCAB = new ArrayList<Variable>();
+		variablesCAB = new ArrayList<>();
 		variablesCAB.add(variableC);
 		variablesCAB.add(variableA);
 		variablesCAB.add(variableB);
@@ -339,7 +339,7 @@ public class ProbNetTest {
 				
 				//Potential CA
 				double [] tableCA ={0.81, 0.19, 0.98, 0.02};
-				variablesCA = new ArrayList<Variable>();
+				variablesCA = new ArrayList<>();
 				variablesCA.add(variableC);
 				variablesCA.add(variableA);
 				
@@ -348,7 +348,7 @@ public class ProbNetTest {
 				
 				//Potential EBC
 				double [] tableEBC ={0.02, 0.98, 0.68, 0.32, 0.24, 0.76, 0.79, 0.21};
-				variablesEBC = new ArrayList<Variable>();
+				variablesEBC = new ArrayList<>();
 				variablesEBC.add(variableE);
 				variablesEBC.add(variableB);
 				variablesEBC.add(variableC);
@@ -357,7 +357,7 @@ public class ProbNetTest {
 				
 				//potentialFE
 				double [] tableFE ={0.12, 0.88, 0.77, 0.23};
-				variablesFE = new ArrayList<Variable>();
+				variablesFE = new ArrayList<>();
 				variablesFE.add(variableF);
 				variablesFE.add(variableE);
 							
@@ -366,7 +366,7 @@ public class ProbNetTest {
 				
 				//potentialGD
 				double [] tableGD ={0.49, 0.51, 0.75, 0.25};				
-				variablesGD = new ArrayList<Variable>();
+				variablesGD = new ArrayList<>();
 				variablesGD.add(variableG);
 				variablesGD.add(variableD);
 							
@@ -376,14 +376,14 @@ public class ProbNetTest {
 				//Potential I
 				double [] tableI ={0.85, 0.15};
 				
-				variablesI= new ArrayList<Variable>();
+				variablesI= new ArrayList<>();
 				variablesI.add(variableI);
 				
 				potentialvaluesI= new TablePotential(variablesI,role, tableI);
 				
 				//Potential DBI
 				double [] tableDBI ={0.22, 0.78, 0.86, 0.14, 0.57, 0.43, 0.9, 0.1};
-				variablesDBI = new ArrayList<Variable>();
+				variablesDBI = new ArrayList<>();
 				variablesDBI.add(variableD);
 				variablesDBI.add(variableB);
 				variablesDBI.add(variableI);
@@ -392,7 +392,7 @@ public class ProbNetTest {
 				
 				//potentialBA
 				double [] tableba ={0.77, 0.23, 0.26, 0.74};
-				variablesba = new ArrayList<Variable>();
+				variablesba = new ArrayList<>();
 				variablesba.add(variableB);
 				variablesba.add(variableA);
 							
@@ -401,7 +401,7 @@ public class ProbNetTest {
 				
 				//potentialAH
 				double [] tableAH ={0.09, 0.91, 0.83, 0.17};
-				variablesAH = new ArrayList<Variable>();
+				variablesAH = new ArrayList<>();
 				variablesAH.add(variableA);
 				variablesAH.add(variableH);
 							
@@ -410,7 +410,7 @@ public class ProbNetTest {
 				
 				//Potential H
 				double [] tableH ={0.68, 0.32};
-				variablesH= new ArrayList<Variable>();
+				variablesH= new ArrayList<>();
 				variablesH.add(variableH);
 				
 				potentialvaluesH= new TablePotential(variablesH,role, tableH);
@@ -628,7 +628,7 @@ public class ProbNetTest {
 
 	@Test
 	public void testGetNodesArrayListOfVariable() {
-	    List<Variable> abVariables = new ArrayList<Variable>();
+	    List<Variable> abVariables = new ArrayList<>();
 		for (Variable variable : this.abVariables) {
 			abVariables.add(variable);
 		}
@@ -873,8 +873,8 @@ public class ProbNetTest {
 
 	// TODO Sobrecargar método equals.
 	/** Compares to probNets: number of nodes, variables, links and potentials. 
-	 * @param probNet1. <code>ProbNet</code>
-	 * @param probNet2. <code>ProbNet</code> */
+	 * @param probNet1 <code>ProbNet</code>
+	 * @param probNet2 <code>ProbNet</code> */
 	public static void compareNetworks(ProbNet probNet1, ProbNet probNet2) {
 		// Compare network type restrictions
 		assertEquals(probNet1.getNetworkType(), probNet2.getNetworkType());

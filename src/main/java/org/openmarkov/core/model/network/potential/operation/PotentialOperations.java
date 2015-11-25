@@ -32,7 +32,7 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
   * @author manuel
   * @author fjdiez
   * @version 1.0
-  * @see openmarkov.networks.potentials.TablePotential
+  * @see TablePotential
   * @since OpenMarkov 1.0 */
 public class PotentialOperations {
 
@@ -64,8 +64,8 @@ public class PotentialOperations {
 				"marginalize can only manage variables of type FSVariable");    						
 		}
 	
-		List<Variable> variablesToKeep = new ArrayList<Variable>();
-		List<Variable> variablesToEliminate = new ArrayList<Variable>();
+		List<Variable> variablesToKeep = new ArrayList<>();
+		List<Variable> variablesToEliminate = new ArrayList<>();
 	
 		for (Variable variable : variables) {
 			if (variablesOfInterest.contains(variable)) {
@@ -75,7 +75,7 @@ public class PotentialOperations {
 			}
 		}
 	
-		List<TablePotential> potentials = new ArrayList<TablePotential>();
+		List<TablePotential> potentials = new ArrayList<>();
 		potentials.add((TablePotential) potential);
 	
 		return DiscretePotentialOperations.multiplyAndMarginalize(
@@ -105,7 +105,7 @@ public class PotentialOperations {
 				"marginalize can only manage variables of type FSVariable");    						
 		}
 		
-		List<TablePotential> potentials = new ArrayList<TablePotential>();
+		List<TablePotential> potentials = new ArrayList<>();
 		potentials.add((TablePotential) potential);
 	
 		return DiscretePotentialOperations.multiplyAndMarginalize(
@@ -191,8 +191,8 @@ public class PotentialOperations {
 		}
 	
 		// Classify unionVariables in two possibles arrays
-		List<Variable> variablesToKeep = new ArrayList<Variable>();
-		List<Variable> variablesToEliminate = new ArrayList<Variable>();
+		List<Variable> variablesToKeep = new ArrayList<>();
+		List<Variable> variablesToEliminate = new ArrayList<>();
 		for (Variable variable : unionVariables) {
 			if (variablesOfInterest.contains(variable)) {
 				variablesToKeep.add(variable);
@@ -237,8 +237,8 @@ public class PotentialOperations {
         }
     
         // Classify unionVariables in two possibles arrays
-        List<Variable> variablesToKeep = new ArrayList<Variable>();
-        List<Variable> variablesToEliminate = new ArrayList<Variable>();
+        List<Variable> variablesToKeep = new ArrayList<>();
+        List<Variable> variablesToEliminate = new ArrayList<>();
         for (Variable variable : unionVariables) {
             if (variablesOfInterest.contains(variable)) {
                 variablesToKeep.add(variable);
@@ -294,7 +294,7 @@ public class PotentialOperations {
 	public static Potential getUniformPotential(ProbNet probNet, 
 			Variable variable, NodeType auxNodeType) {
 
-	    List<Variable> variables = new ArrayList<Variable>();
+	    List<Variable> variables = new ArrayList<>();
 		variables.add(variable);
 		for (Node node:probNet.getParents(probNet.getNode(variable))){
 			variables.add(node.getVariable());

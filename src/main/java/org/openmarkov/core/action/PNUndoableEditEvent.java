@@ -25,9 +25,9 @@ public class PNUndoableEditEvent extends UndoableEditEvent {
 	private ProbNet probNet;
 	
 	// Constructor
-	/** @param source. The <code>Object</code> that originated the event.
-	 * @param edit. An <code>UndoableEdit</code> object.
-	 * @param probNet. The <code>ProbNet</code> on witch the event will operate 
+	/** @param source The <code>Object</code> that originated the event.
+	 * @param edit An <code>UndoableEdit</code> object.
+	 * @param probNet The <code>ProbNet</code> on witch the event will operate
 	 */
 	public PNUndoableEditEvent(
 			Object source, UndoableEdit edit, ProbNet probNet) {

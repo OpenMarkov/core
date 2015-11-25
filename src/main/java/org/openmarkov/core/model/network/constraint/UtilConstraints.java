@@ -24,7 +24,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 public class UtilConstraints {
 
     /**
-     * @param event <code>UndoableEditEvent</code>
+     * @param edit <code>UndoableEditEvent</code>
      * @param typeEdit <code>Class</code>
      * @return An <code>ArrayList</code> of <code>PNEdit</code>s of type
      *         <code>typeEdit</code> that are contained in the
@@ -37,7 +37,7 @@ public class UtilConstraints {
         throws NonProjectablePotentialException,
         WrongCriterionException
     {
-        List<PNEdit> edits = new ArrayList<PNEdit> ();
+        List<PNEdit> edits = new ArrayList<>();
         if (edit.getClass () == typeEdit)
         {
             edits.add ((PNEdit) edit);

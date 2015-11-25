@@ -54,12 +54,12 @@ public class UncertainValuesEdit extends SimplePNEdit
     /**
      * Creates a new <code>AddNodeEdit</code> with the network where the new
      * new node will be added and basic information about it.
+     * @param node the new node
+     * @param uncertainColumn
+     * @param valuesColumn
+     * @param basePosition
      * @param selectedColumn
-     * @param b
-     * @param probNet the <code>ProbNet</code> where the new node will be added.
-     * @param newNodeName the name of the new node
-     * @param nodeType The new node type.
-     * @param cursorposition the position (coordinates X,Y) of the node.
+     * @param isChanceVariable
      */
     public UncertainValuesEdit (Node node,
                                 List<UncertainValue> uncertainColumn,
@@ -85,7 +85,7 @@ public class UncertainValuesEdit extends SimplePNEdit
 
     private List<Double> getColumn (double[] values, Variable variable, int basePosition)
     {
-        List<Double> column = new ArrayList<Double> ();
+        List<Double> column = new ArrayList<>();
         int numElements = (isChanceVariable) ? variable.getNumStates () : 1;
         for (int i = 0; i < numElements; i++)
         {
@@ -98,7 +98,7 @@ public class UncertainValuesEdit extends SimplePNEdit
                                                  Variable variable,
                                                  int basePosition)
     {
-        List<UncertainValue> column = new ArrayList<UncertainValue> ();
+        List<UncertainValue> column = new ArrayList<>();
         int numElements = (isChanceVariable) ? variable.getNumStates () : 1;
         for (int i = 0; i < numElements; i++)
         {

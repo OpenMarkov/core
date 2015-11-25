@@ -104,7 +104,7 @@ public abstract class BaseLinkEdit extends SimplePNEdit{
     /**
      * Returns the opposite edit. E.g. an AddLinkEdit would return a
      * RemoveLinkEdit instance
-     * @return
+     * @return the opposite edit
      */
     public abstract BaseLinkEdit getUndoEdit();
 }

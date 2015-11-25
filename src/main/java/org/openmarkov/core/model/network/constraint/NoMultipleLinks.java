@@ -87,7 +87,7 @@ public class NoMultipleLinks extends PNConstraint
     /*****
      * Checks if a link between <code>node1</code> and <code>node2</code>
      * satisfies the restriction of noMultipleLinks
-     * @param graph
+     * @param probNet
      * @param node1
      * @param node2
      * @param directed - true if the link is directed
@@ -109,7 +109,7 @@ public class NoMultipleLinks extends PNConstraint
     /*********
      * Checks if a directed link between <code>node1</code> and
      * <code>node2</code> satisfies the restriction of noMultipleLinks
-     * @param graph
+     * @param probNet
      * @param node1
      * @param node2
      * @return <code>true</code> if the link between <code>node1</code> and

@@ -65,7 +65,7 @@ public class CRemoveLinkEdit extends CompoundPNEdit {
 		for (Potential potential : potentials) {
 		    List<Variable> potentialVariables = potential.getVariables();
 			if (potentialVariables.contains(variable1)) {
-				potentialVariables = new ArrayList<Variable>(potentialVariables);
+				potentialVariables = new ArrayList<>(potentialVariables);
 				potentialVariables.remove(variable1);
 				try {
 					Potential marginalizedPotential = 

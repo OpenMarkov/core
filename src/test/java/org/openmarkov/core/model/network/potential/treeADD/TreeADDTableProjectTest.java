@@ -70,12 +70,12 @@ public class TreeADDTableProjectTest {
 		TablePotential aModeratePotential = new TablePotential(variablesCB,PotentialRole.CONDITIONAL_PROBABILITY, tableAmoderate);
 		
 		//Branches
-		List<State> branchModerateStates = new ArrayList<State>();
+		List<State> branchModerateStates = new ArrayList<>();
 		branchModerateStates.add(moderate);
 		List<Variable> parentVariables = Arrays.asList(variableC, variableA, variableB);
 		TreeADDBranch branchModerate = new  TreeADDBranch(branchModerateStates, variableA, aModeratePotential, parentVariables);
 		
-		List<State> branchSevereStates = new ArrayList<State>();
+		List<State> branchSevereStates = new ArrayList<>();
 		branchSevereStates.add(severe);
 		TreeADDBranch branchSevere = new TreeADDBranch(branchSevereStates, variableA, aSeverePotential, parentVariables);
 		
@@ -89,7 +89,7 @@ public class TreeADDTableProjectTest {
 		
 		TreeADDBranch branchAbsentMild = new TreeADDBranch(Arrays.asList(absent, mild), variableA, aAbsentMildPotential, parentVariables);		
 		
-		List<TreeADDBranch> branches = new ArrayList<TreeADDBranch>();
+		List<TreeADDBranch> branches = new ArrayList<>();
 		branches.add(branchAbsentMild);
 		branches.add(branchModerate);
 		branches.add(branchSevere);

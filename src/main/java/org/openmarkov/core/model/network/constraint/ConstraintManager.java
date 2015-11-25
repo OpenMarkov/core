@@ -29,14 +29,13 @@ public class ConstraintManager
     
     /**
      * Constructor for ConstraintManager.
-     * @throws ConstraintException 
      */
     @SuppressWarnings("unchecked")
     private ConstraintManager ()
     {
         super ();
         this.pluginLoader = new PluginLoader ();
-        this.defaultConstraintBehaviors = new HashMap<Class<? extends PNConstraint>, ConstraintBehavior> ();
+        this.defaultConstraintBehaviors = new HashMap<>();
         
         List<Class<?>> plugins = findAllConstraints ();
         for (Class<?> plugin : plugins)
@@ -74,14 +73,11 @@ public class ConstraintManager
      * such.
      * @param type of the network the list is being generated for.
      * @return a minimal list of constraint.
-     * @throws ConstraintException 
-     * @throws IllegalAccessException 
-     * @throws InstantiationException 
      */
     public ArrayList<PNConstraint> buildConstraintList (NetworkType type, boolean includeOptionals)
     {
         // Init the list with those constraints that have the default value set to YES 
-        ArrayList<PNConstraint> constraints = new  ArrayList<PNConstraint> ();
+        ArrayList<PNConstraint> constraints = new ArrayList<>();
         for (Class<? extends PNConstraint> constraintClass : defaultConstraintBehaviors.keySet ())
         {
             if (getDefaultBehavior (constraintClass).equals (ConstraintBehavior.YES)

@@ -93,8 +93,8 @@ public class VariableTest {
 	// equals ya NO consiste en comparar la dirección de memoria de dos objetos
 	// TODO Cada tipo de variable tiene que tener un método equals y llamar al del padre
 	/** Compares variable1 and variable2.
-	 * @param variable1. <code>Variable</code>
-	 * @param variable2. <code>Variable</code>
+	 * @param variable1 <code>Variable</code>
+	 * @param variable2 <code>Variable</code>
 	 * @return <code>true</code> if both variables are equal. */
 	public static boolean equalVariables(Variable variable1, Variable variable2) {
 		boolean equals = true;

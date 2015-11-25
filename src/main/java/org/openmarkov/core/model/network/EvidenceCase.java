@@ -58,14 +58,14 @@ public class EvidenceCase {
      * @param findings
      */
     public EvidenceCase(List<Finding> findings) {
-        this.findings = new HashMap<Variable, Finding>();
+        this.findings = new HashMap<>();
         for (Finding finding : findings) {
             this.findings.put(finding.getVariable(), finding);
         }
     }
 
     public EvidenceCase() {
-        findings = new HashMap<Variable, Finding>();
+        findings = new HashMap<>();
     }
 
     /**
@@ -74,7 +74,7 @@ public class EvidenceCase {
      * @param evidenceCase
      */
     public EvidenceCase(EvidenceCase evidenceCase) {
-        findings = new HashMap<Variable, Finding>(evidenceCase.findings);
+        findings = new HashMap<>(evidenceCase.findings);
     }
 
     // Methods
@@ -143,7 +143,9 @@ public class EvidenceCase {
     }
 
     /**
-     * @param finding
+     * @param probNet
+     * @param variableName
+     * @param stateName
      *            <code>Finding</code>.
      * @throws InvalidStateException
      * @throws IncompatibleEvidenceException
@@ -157,7 +159,9 @@ public class EvidenceCase {
     }
 
     /**
-     * @param finding
+     * @param probNet
+     * @param variableName
+     * @param value
      *            <code>Finding</code>.
      * @throws IncompatibleEvidenceException
      * @throws NodeNotFoundException
@@ -190,7 +194,7 @@ public class EvidenceCase {
      */
     public void removeFinding(String variableName)
             throws NoFindingException {
-        ArrayList<Variable> findingsVariables = new ArrayList<Variable>(findings.keySet());
+        ArrayList<Variable> findingsVariables = new ArrayList<>(findings.keySet());
         int i = 0, numVariables = findingsVariables.size();
         Variable variable = null;
         do {
@@ -208,7 +212,7 @@ public class EvidenceCase {
      *         same order: <code>ArrayList</code> of <code>Variable</code>.
      */
     public List<Variable> getVariables() {
-        return new ArrayList<Variable>(findings.keySet());
+        return new ArrayList<>(findings.keySet());
     }
 
     /**
@@ -223,7 +227,7 @@ public class EvidenceCase {
 
     /** @return findings: <code>ArrayList</code> of <code>Finding</code>s. */
     public List<Finding> getFindings() {
-        return new ArrayList<Finding>(findings.values());
+        return new ArrayList<>(findings.values());
     }
 
     /**
@@ -262,7 +266,7 @@ public class EvidenceCase {
      */
     public List<Node> getRemainingNodes(ProbNet probNet) {
         List<Node> probNetNodes = probNet.getNodes();
-        List<Node> remainingNodes = new ArrayList<Node>();
+        List<Node> remainingNodes = new ArrayList<>();
         for (Node node : probNetNodes) {
             if (!contains(node.getVariable())) {
                 remainingNodes.add(node);
@@ -311,7 +315,7 @@ public class EvidenceCase {
                 findings.put(newFinding.getVariable(), newFinding);
             }
         }
-        Queue<Finding> pendingFindings = new LinkedList<Finding>(findings.values());
+        Queue<Finding> pendingFindings = new LinkedList<>(findings.values());
         while (!pendingFindings.isEmpty()) {
             Finding oldFinding = pendingFindings.poll();
             Variable oldVariable = oldFinding.getVariable();

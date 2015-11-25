@@ -62,7 +62,7 @@ public class SharedDataMultiply {
 	
 	// Constructor
 	public SharedDataMultiply(List<TablePotential> potentials) {
-		this.potentials = new ArrayList<TablePotential>(potentials);
+		this.potentials = new ArrayList<>(potentials);
 	}
 	
 	// Methods

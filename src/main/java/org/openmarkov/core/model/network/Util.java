@@ -40,7 +40,7 @@ public class Util {
 	 *           column of JTable
 	 * @param numStates
 	 *           Number of states of the node.
-	 * @param numParents
+	 * @param numOfParents
 	 *           Number of parents of the node.
 	 *                    
 	 * @return the value position on potential. -1 if the the position is 
@@ -68,9 +68,9 @@ public class Util {
 	 *           index of the value in the potential
 	 * @param col
 	 *           column of JTable
-	 * @param numStates
+	 * @param numOfStates
 	 *           Number of states of the node.
-	 * @param numParents
+	 * @param numOfParents
 	 *           Number of parents of the node.
 	 *                    
 	 * @return the value position on potential.

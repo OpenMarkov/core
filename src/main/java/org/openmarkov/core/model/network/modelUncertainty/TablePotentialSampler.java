@@ -26,7 +26,7 @@ public class TablePotentialSampler extends Sampler
     }
 
     /**
-     * @param simulationIndexVariable Variable indexing the number of
+     * @param inputTablePotential Variable indexing the number of
      *            simulation. The number of simulations performed is the number
      *            of states of this variable
      * @return A sampled potential table
@@ -44,7 +44,7 @@ public class TablePotentialSampler extends Sampler
         if (!(inputTablePotential.getUncertaintyTable () == null))
         {
             List<Variable> inputPotentialVariables = inputTablePotential.getVariables ();
-            List<Variable> sampledPotentialVariables = new ArrayList<Variable> (inputPotentialVariables);
+            List<Variable> sampledPotentialVariables = new ArrayList<>(inputPotentialVariables);
             sampledTablePotential = new TablePotential (sampledPotentialVariables,
                                                         inputTablePotential.getPotentialRole ());
             double[] sampledValues = sampledTablePotential.values;

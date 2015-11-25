@@ -19,15 +19,15 @@ public interface ProbNetWriter {
 
     /**
      * @param netName = path + network name + extension.
-     * @param probNet. <code>ProbNet</code> <code>String</code>
+     * @param probNet <code>ProbNet</code> <code>String</code>
      */
-    public void writeProbNet (String netName, ProbNet probNet)
+    void writeProbNet(String netName, ProbNet probNet)
         throws WriterException;
 
     /**
      * @param netName = path + network name + extension.
-     * @param probNet. <code>ProbNet</code> <code>String</code>
+     * @param probNet <code>ProbNet</code> <code>String</code>
      */
-    public void writeProbNet (String netName, ProbNet probNet, List<EvidenceCase> evidence)
+    void writeProbNet(String netName, ProbNet probNet, List<EvidenceCase> evidence)
         throws WriterException;	
 }

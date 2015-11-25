@@ -11,7 +11,7 @@ package org.openmarkov.core.exception;
 
 /** Thrown when trying to do an edit that violates one of the 
  * <code>PNConstraints</code> of the <code>ProbNet</code>
- * @see openmarkov.graphs.Link#Link(openmarkov.Node, openmarkov.Node, boolean) */
+ * @see org.openmarkov.core.model.graph.Link#Link(Object, Object, boolean)  */
 @SuppressWarnings("serial")
 public class ConstraintViolationException extends Exception {
 

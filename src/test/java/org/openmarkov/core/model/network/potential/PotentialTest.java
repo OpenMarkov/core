@@ -57,8 +57,8 @@ public class PotentialTest {
 	// equals ya NO consiste en comparar la dirección de memoria de dos objetos
 	// TODO Cada tipo de potential tiene que tener un método equals y llamar al del padre
 	/** Compares potential1 and potential2.
-	 * @param potential1. <code>Potential</code>
-	 * @param potential2. <code>Potential</code>
+	 * @param potential1 <code>Potential</code>
+	 * @param potential2 <code>Potential</code>
 	 * @return <code>true</code> if both potentials are equal. */
 	public static boolean equalPotentials(Potential potential1, Potential potential2) {
 		boolean equals = true;

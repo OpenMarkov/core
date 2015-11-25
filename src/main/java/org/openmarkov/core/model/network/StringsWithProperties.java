@@ -12,23 +12,23 @@ public class StringsWithProperties {
 	
 	// Constructors
 	public StringsWithProperties() {
-		stringsWithProperties = new LinkedHashMap<String, AdditionalProperties>();
+		stringsWithProperties = new LinkedHashMap<>();
 	}
 	
 	/** Constructor that receives a collection of strings (without properties) 
-	 * @param strings. <code>Collection</code> of <code>String</code>s */
+	 * @param strings <code>Collection</code> of <code>String</code>s */
 	public StringsWithProperties(Collection<String> strings) {
-		stringsWithProperties = new LinkedHashMap<String, AdditionalProperties>();
+		stringsWithProperties = new LinkedHashMap<>();
 		for (String string : strings) {
 			stringsWithProperties.put(string, null);
 		}
 	}
 	
 	/** Constructor based in a previous LinkedHashMap
-	 * @param stringsWithProperties. <code>LinkedHashMap with key type = <code>String</code> and 
+	 * @param stringsWithProperties <code>LinkedHashMap with key type = <code>String</code> and
 	 *   value type = <code>AdditionalProperties</code> */
 	public StringsWithProperties(LinkedHashMap<String, AdditionalProperties> stringsWithProperties) {
-		 LinkedHashMap<String, AdditionalProperties> stringsWithPropertiesCopied = new LinkedHashMap<String, AdditionalProperties>();
+		 LinkedHashMap<String, AdditionalProperties> stringsWithPropertiesCopied = new LinkedHashMap<>();
 		Set<String> keys = stringsWithProperties.keySet();
 		for (String key : keys) {
 			stringsWithPropertiesCopied.put(key, stringsWithProperties.get(key));
@@ -54,12 +54,12 @@ public class StringsWithProperties {
 	
 	/** @return All the properties of a given <code>String</code>, or <code>null</code> 
 	 * if the string does not exists. <code>AdditionalProperties</code>. 
-	 * @param string. <code>String</code> */
+	 * @param string <code>String</code> */
 	public AdditionalProperties getProperties(String string) {
 		return stringsWithProperties.get(string);
 	}
 
-	/** @param key. <code>String</code> */
+	/** @param key <code>String</code> */
 	public void put(String key) {
 		AdditionalProperties properties = stringsWithProperties.get(key);
 		if (properties == null) {
@@ -72,9 +72,9 @@ public class StringsWithProperties {
 		
 	}
 	
-	/** @param key. <code>String</code>
-	 * @param propertyName. <code>String</code>
-	 * @param propertyValue. <code>String</code> */
+	/** @param key <code>String</code>
+	 * @param propertyName <code>String</code>
+	 * @param propertyValue <code>String</code> */
 	public void put(String key, String propertyName, String propertyValue) {
 		AdditionalProperties properties = stringsWithProperties.get(key);
 		if (properties == null) {
@@ -84,8 +84,8 @@ public class StringsWithProperties {
 		properties.put(propertyName, propertyValue);
 	}
 	
-	/** @param key. <code>String</code>
-	 * @param properties. <code>AdditionalProperties</code> */
+	/** @param key <code>String</code>
+	 * @param properties <code>AdditionalProperties</code> */
 	public void put(String key, AdditionalProperties properties) {
 		if (properties == null) {
 			properties = new AdditionalProperties();
@@ -96,7 +96,7 @@ public class StringsWithProperties {
 	}
 	
 	/** Removes they key and all its properties. 
-	 * @param key. <code>String</code>
+	 * @param key <code>String</code>
 	 * @return The object stored with <code>key</code> or <code>null</code> if
 	 * it does not exists. */
 	public void remove(String key) {
@@ -107,8 +107,8 @@ public class StringsWithProperties {
 		}*/
 	}
 
-	/** @param key. <code>String</code>
-	 * @param propertyName. <code>String</code>
+	/** @param key <code>String</code>
+	 * @param propertyName <code>String</code>
 	 * @return The object stored with <code>key</code> or <code>null</code> if
 	 * it does not exists. */
 	public Object remove(String key, String propertyName) {
@@ -122,8 +122,8 @@ public class StringsWithProperties {
 	
 	/** 
 	 * Renames the key entry
-	 * @param key. <code>String</code>
-	 * @param newKey. <code>String</code>
+	 * @param key <code>String</code>
+	 * @param newKey <code>String</code>
 	  */
 	public void rename(String key, String newKey) {
 		AdditionalProperties properties = stringsWithProperties.get(key);

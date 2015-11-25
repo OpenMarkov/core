@@ -17,7 +17,7 @@ public class SetPotentialVariablesEdit extends SimplePNEdit{
 	public SetPotentialVariablesEdit(Node node, List<Variable> newVariables) {
 		super(node.getProbNet());
 		this.node = node;
-		this.oldVariables = new ArrayList<Variable>(node.getPotentials().get(0).getVariables());
+		this.oldVariables = new ArrayList<>(node.getPotentials().get(0).getVariables());
 		this.newVariables = newVariables;
 	}
 

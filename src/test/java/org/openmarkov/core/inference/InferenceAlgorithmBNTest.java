@@ -151,7 +151,7 @@ public abstract class InferenceAlgorithmBNTest extends InferenceAlgorithmTest {
 		
 		InferenceAlgorithm elimination = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(network);
 		
-		ArrayList<Variable> variables = new ArrayList<Variable>();
+		ArrayList<Variable> variables = new ArrayList<>();
 		
 		for (int i=0;i<namesVariables.length;i++){
 			Variable auxVar = null;
@@ -613,8 +613,8 @@ public abstract class InferenceAlgorithmBNTest extends InferenceAlgorithmTest {
 		}
 		
 		//Test when B = present and invoke getProbsAndUtilities for variable C
-		List<Variable> variablesOfInterest = new ArrayList<Variable>();
-		variablesOfInterest = new ArrayList<Variable>();
+		List<Variable> variablesOfInterest = new ArrayList<>();
+		variablesOfInterest = new ArrayList<>();
 		variablesOfInterest.add(variableC);
 		try {
 			aAbsentProbabilities = algorithm.getProbsAndUtilities(variablesOfInterest);

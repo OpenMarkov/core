@@ -26,11 +26,12 @@ public class EvidencePotentials {
 	 *  are 0.0 except the value corresponding to the finding.<p>
 	 *  Finally the method inserts the new potential in 
 	 *   <code>individualProbabilities</code>. 
-	 *  @param individualProbabilities. <code>HashMap</code> of key = String
+	 *  @param individualProbabilities <code>HashMap</code> of key = String
 	 *   with variable name and value = Potential. 
-	 *  @param variablesOfInterest. <code>ArrayList</code> of 
+	 *  @param variablesOfInterest <code>ArrayList</code> of
 	 *   <code>Variable</code>
-	 *  @param evidence. <code>EvidenceCase</code>  */
+	 *  @param evidence <code>EvidenceCase</code>
+ */
 	public static HashMap<Variable, TablePotential> addEvidencePotentials(
 			HashMap<Variable, TablePotential> individualProbabilities,
 			List<Variable> variablesOfInterest, EvidenceCase evidence) 
@@ -38,13 +39,13 @@ public class EvidencePotentials {
 		
 		// Creates a fast structure for consultation with evidence variables
 		if ((evidence != null) && (!evidence.isEmpty())) {
-			HashSet<Variable> evidenceVariables = 
-				new HashSet<Variable>(evidence.getVariables());
+			HashSet<Variable> evidenceVariables =
+					new HashSet<>(evidence.getVariables());
 
 			for (Variable variable : variablesOfInterest) {
 				if (evidenceVariables.contains(variable)) {
 					// Creates a potential with the evidence variable
-				    List<Variable> potentialVariables = new ArrayList<Variable>(1);
+				    List<Variable> potentialVariables = new ArrayList<>(1);
 					potentialVariables.add(variable);
 					TablePotential potential = null;
 					potential = new TablePotential(potentialVariables, 

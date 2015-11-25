@@ -34,7 +34,7 @@ public class GraphsTests {
 	 * </ul>
 	 * @return <code>Graph</code> */
 	public static Graph<String> createTestGraph() {
-		Graph<String> graph = new Graph<String>();
+		Graph<String> graph = new Graph<>();
 		String nodeA = "A";
 		String nodeB = "B";
 		String nodeC = "C";

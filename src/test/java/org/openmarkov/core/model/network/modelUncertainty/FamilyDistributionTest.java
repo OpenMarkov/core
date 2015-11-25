@@ -107,7 +107,7 @@ public abstract class FamilyDistributionTest {
 
     /**
      * @param meanSample
-     * @param mean
+     * @param meanFamily
      * @param maxErrorMean2
      */
     protected void assertMeanTest(double[] meanSample, double[] meanFamily, double maxErrorMean2) {

@@ -69,8 +69,8 @@ public abstract class MinMaxPotential extends ICIPotential {
     protected abstract TablePotential getAccruedPotential (TablePotential potential);
 
 	public List<TablePotential> getAccruedPotentials(List<TablePotential> subpotentials) {
-		List<TablePotential> accruedPotentials = 
-			new ArrayList<TablePotential>(subpotentials.size());
+		List<TablePotential> accruedPotentials =
+                new ArrayList<>(subpotentials.size());
 		for (TablePotential subpotential : subpotentials) {
 			accruedPotentials.add(getAccruedPotential(subpotential));
 		}
@@ -80,10 +80,11 @@ public abstract class MinMaxPotential extends ICIPotential {
 	/** @return Given a model in witch A->D and B->D, this method returns:
 	 *  delta<sub>D,D'</sub>, C<sub>D'</sub><sup>A</sup>, 
 	 *  C<sub>D'</sub><sup>B</sup>, C<sub>D</sub><sup>*</sup>.
-	 *  <code>ArrayList</code> of <code>TablePotential</code>  */
+	 *  <code>ArrayList</code> of <code>TablePotential</code> 
+ */
     public List<TablePotential> getTablePotentials ()
     {
-        List<TablePotential> iCIPotentials = new ArrayList<TablePotential> ();
+        List<TablePotential> iCIPotentials = new ArrayList<>();
         iCIPotentials.add (getDeltaPotential ());
         // subPotentials must be of sub-type TablePotential
         for (TablePotential potential : buildSubpotentialList())
@@ -103,11 +104,11 @@ public abstract class MinMaxPotential extends ICIPotential {
 			InferenceOptions inferenceOptions,
             List<TablePotential> projectedPotentials) 
 			throws WrongCriterionException {
-        List<TablePotential> potentials = new ArrayList<TablePotential> ();
+        List<TablePotential> potentials = new ArrayList<>();
 		for (TablePotential subPotential : buildSubpotentialList()) {
 			potentials.addAll(subPotential.tableProject(evidence, null, projectedPotentials));
 		}
-		List<TablePotential> singleElementPotentialList = new ArrayList<TablePotential> ();
+		List<TablePotential> singleElementPotentialList = new ArrayList<>();
 		singleElementPotentialList.add (DiscretePotentialOperations.multiplyAndMarginalize (potentials, variables));
 		return singleElementPotentialList;
 	}
@@ -130,12 +131,12 @@ public abstract class MinMaxPotential extends ICIPotential {
      * @return <code>ArrayList</code> of <code>TablePotential</code>. 
      * */
     protected List<TablePotential> buildSubpotentialList() {
-        List<TablePotential> subpotentials = new ArrayList<TablePotential> ();
+        List<TablePotential> subpotentials = new ArrayList<>();
 
         //Noisy parents
         for(int i=1; i<variables.size(); ++i)
         {
-            List<Variable> linkVariables = new ArrayList<Variable> ();
+            List<Variable> linkVariables = new ArrayList<>();
             linkVariables.add(variables.get (0)); // conditioned variable
             linkVariables.add(variables.get (i)); // parent i
             
@@ -145,7 +146,7 @@ public abstract class MinMaxPotential extends ICIPotential {
         // Leak parent
         if(getLeakyParameters() != null)
         {
-            List<Variable> leakVariables = new ArrayList<Variable> ();
+            List<Variable> leakVariables = new ArrayList<>();
             leakVariables.add(variables.get(0)); // conditioned variable
             subpotentials.add (new TablePotential(leakVariables, PotentialRole.CONDITIONAL_PROBABILITY, getLeakyParameters()));
         }

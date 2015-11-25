@@ -15,13 +15,13 @@ import org.openmarkov.core.model.network.EvidenceCase;
 
 public interface DecisionTreeElement
 {
-    public abstract List<DecisionTreeElement> getChildren();
+    List<DecisionTreeElement> getChildren();
     
-    public abstract double getUtility ();
+    double getUtility();
     
-    public abstract EvidenceCase getBranchStates ();
+    EvidenceCase getBranchStates();
     
-    public abstract double getScenarioProbability();
+    double getScenarioProbability();
     
-    public abstract void setParent(DecisionTreeElement parent);
+    void setParent(DecisionTreeElement parent);
 }

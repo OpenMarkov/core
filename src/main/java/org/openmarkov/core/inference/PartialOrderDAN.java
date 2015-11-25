@@ -99,7 +99,7 @@ public class PartialOrderDAN {
 		content = "digraph G {\n";
 		
 		for (Node node:probNet.getNodes()){
-			String strType = null;;
+			String strType = null;
 			switch (node.getNodeType()){
 			case CHANCE:
 				strType = "ellipse";

@@ -39,7 +39,7 @@ public class MulticriteriaEditTest {
 		multicriteriaOptions.setMainUnit("Unit A");
 		multicriteriaOptions.setMulticriteriaType(MulticriteriaOptions.Type.UNICRITERION);
 		
-		List<Criterion> decisionCriteria = new ArrayList<Criterion>();
+		List<Criterion> decisionCriteria = new ArrayList<>();
 		Criterion criterion1 = new Criterion("Criterion A");
 		decisionCriteria.add(criterion1);
 		probNet.setDecisionCriteria(decisionCriteria);
@@ -59,7 +59,7 @@ public class MulticriteriaEditTest {
 		MulticriteriaOptions multicriteriaOptions2 = new MulticriteriaOptions();
 		multicriteriaOptions2.setMainUnit("Unit B");
 		multicriteriaOptions2.setMulticriteriaType(MulticriteriaOptions.Type.COST_EFFECTIVENESS);
-		List<Criterion> decisionCriteria2 = new ArrayList<Criterion>();
+		List<Criterion> decisionCriteria2 = new ArrayList<>();
 		Criterion criterion2 = new Criterion("Criterion B");
 		decisionCriteria2.add(criterion2);
 		probNet.setDecisionCriteria(decisionCriteria2);

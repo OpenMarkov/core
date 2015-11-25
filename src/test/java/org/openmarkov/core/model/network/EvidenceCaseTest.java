@@ -94,14 +94,14 @@ public class EvidenceCaseTest {
 		// Potential for A: P(a)
 		// It will induce the finding A = 0
 		double [] tableA ={1.0, 0.0};
-		variablesA = new ArrayList<Variable>();
+		variablesA = new ArrayList<>();
 		variablesA.add(variableA);
 		potentialvaluesA= new TablePotential(variablesA,role, tableA);
 		
 		// Potential for B: P(b|a)
 		// It will induce the finding B = 1
 		double [] tableBA ={0.0, 1.0, 0.2, 0.8};
-		variablesBA = new ArrayList<Variable>();;
+		variablesBA = new ArrayList<>();
 		variablesBA.add(variableB);
 		variablesBA.add(variableA);
 		potentialvaluesAB= new TablePotential(variablesBA,role,tableBA);
@@ -109,7 +109,7 @@ public class EvidenceCaseTest {
 		// Potential for C: P(c|a,b)
 		// It will induce the finding C = 1
 		double [] tableCBA ={0.2, 0.8, 0.6, 0.4, 0.0, 1.0, 0.8, 0.2};
-		variablesCBA = new ArrayList<Variable>();
+		variablesCBA = new ArrayList<>();
 		variablesCBA.add(variableC);
 		variablesCBA.add(variableA);
 		variablesCBA.add(variableB);

@@ -93,7 +93,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 
 				}
 
-				List<Variable> variables = new ArrayList<Variable>();
+				List<Variable> variables = new ArrayList<>();
 				if (node.getNodeType() != NodeType.UTILITY) {
 					variables.add(node.getVariable());
 				}
@@ -102,7 +102,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 				}
 				UniformPotential uniformPotential = new UniformPotential(variables, node.getPotentials().get(0)
 						.getPotentialRole());
-				List<Potential> potentials = new ArrayList<Potential>(1);
+				List<Potential> potentials = new ArrayList<>(1);
 				potentials.add(uniformPotential);
 				node.setPotentials(potentials);
 				node.setUniformPotential();
@@ -158,8 +158,8 @@ public class VariableTypeEdit extends SimplePNEdit {
 
 	public void setUniformPotential2Node(Node node) {
 
-		List<Potential> newListPotentials = new ArrayList<Potential>();
-		List<Variable> variables = new ArrayList<Variable>();
+		List<Potential> newListPotentials = new ArrayList<>();
+		List<Variable> variables = new ArrayList<>();
 		Variable thisVariable;
 		List<Potential> potentials = node.getPotentials();
 		PotentialRole role = potentials.get(0).getPotentialRole();
@@ -210,7 +210,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 		setUniformPotential2Node(node);
 		for (Node child : probNet.getChildren(node)) {
 			if (child.getNodeType() == NodeType.UTILITY) {
-				List<Potential> newPotentials = new ArrayList<Potential>();
+				List<Potential> newPotentials = new ArrayList<>();
 				if (child.onlyNumericalParents()) {// utility and
 													// numerical parents
 													// sum

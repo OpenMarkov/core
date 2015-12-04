@@ -15,12 +15,12 @@ import java.util.List;
 /**
  * Created by Jorge on 13/07/2015.
  */
-public abstract class GlobalCEA extends Task {
+public abstract class CEPSA extends Task {
     /**
      * @param probNet The network used in the inference
      * @throws NotEvaluableNetworkException
      */
-    public GlobalCEA(ProbNet probNet) throws NotEvaluableNetworkException {
+    public CEPSA(ProbNet probNet) throws NotEvaluableNetworkException {
         super(probNet);
     }
 

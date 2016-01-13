@@ -1057,11 +1057,19 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         return addPotential(potential, null);
     }
 
+    /**
+     * @param potential. <code>Potential</code>
+     * @param originalProbNet. To get information from nodes when using this method to build a <code>ProbNet</code> 
+     * 	from another one.
+     * @return The <code>Node</code> in which the <code>potential</code>
+     *         received has been added.
+     * @see org.openmarkov.core.model.network.ProbNet#addPotential(Potential) 
+     */
     public Node addPotential(Potential potential, ProbNet originalProbNet) {
 
         List<Variable> variables = potential.getVariables();
 
-        if(potential.isUtility() && (this.networkType != MarkovNetworkType.getUniqueInstance())){
+        if (potential.isUtility() && (this.networkType != MarkovNetworkType.getUniqueInstance())){
             Variable utilityVariable = potential.getUtilityVariable();
             if (getNode(utilityVariable) == null) {
                 if (originalProbNet == null || originalProbNet.getNode(utilityVariable) == null) {

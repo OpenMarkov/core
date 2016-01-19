@@ -1070,28 +1070,27 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         List<Variable> variables = potential.getVariables();
 
         if (potential.isUtility() && (this.networkType != MarkovNetworkType.getUniqueInstance())){
+            // the potential must be added to a utility node
             Variable utilityVariable = potential.getUtilityVariable();
             if (getNode(utilityVariable) == null) {
-                if (originalProbNet == null || originalProbNet.getNode(utilityVariable) == null) {
-                    addNode(utilityVariable, NodeType.UTILITY);
-                } else {
-                    addNode(utilityVariable, originalProbNet.getNode(utilityVariable).getNodeType());
-                }
+                // create a utility node
+                addNode(utilityVariable, NodeType.UTILITY);
             }
-        } else {
-            // add the variables if necessary
-            for (Variable variable : variables) {
-                // add the variables that were not yet in the network
-                if (getNode(variable) == null) {
-                    if (originalProbNet == null || originalProbNet.getNode(variable) == null) {
-                        addNode(variable, NodeType.CHANCE);
-                    } else {
-                        addNode(variable, originalProbNet.getNode(variable).getNodeType());
-                    }
+        }
+
+        // add the variables (other than the utility variable) if necessary
+        for (Variable variable : variables) {
+            // add the variables that are not yet in the network
+            if (getNode(variable) == null) {
+                if (originalProbNet == null || originalProbNet.getNode(variable) == null) {
+                    addNode(variable, NodeType.CHANCE);
+                } else {
+                    addNode(variable, originalProbNet.getNode(variable).getNodeType());
                 }
             }
         }
-        // store the potential
+
+        // add the potential
         if (potential.isUtility() && this.getNode(potential.getUtilityVariable()) != null ){
             // assign the potential to the utility node
             this.getNode(potential.getUtilityVariable()).addPotential(potential);

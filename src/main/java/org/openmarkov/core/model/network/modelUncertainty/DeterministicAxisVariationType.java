@@ -1,7 +1,7 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 /**
- * Created by Jorge on 30/06/2015.
+ * Enumerated class with deterministic axis variation types
  */
 public enum DeterministicAxisVariationType {
 
@@ -10,27 +10,27 @@ public enum DeterministicAxisVariationType {
     /**
      * Percentage of the parameter probability
      */
-    POPP ("Options.VT_POPP"),
+    POPP ("SensitivityAnalysis.Axis.Variation.POPP"),
 
     /**
      * Same variation as the X axis
      */
-    PREV ("Options.VT_PREV"),
+    PREV ("SensitivityAnalysis.Axis.Variation.PREV"),
 
     /**
      * Percentage over reference value
      */
-    PORV ("Options.VT_PORV"),
+    PORV ("SensitivityAnalysis.Axis.Variation.PORV"),
 
     /**
      * Ratio over reference value
      */
-    RORV ("Options.VT_RORV"),
+    RORV ("SensitivityAnalysis.Axis.Variation.RORV"),
 
     /**
      * User defined interval between 0 and 1
      */
-    UDIN ("Options.VT_UDIN");
+    UDIN ("SensitivityAnalysis.Axis.Variation.UDIN");
 
     private final String display;
 

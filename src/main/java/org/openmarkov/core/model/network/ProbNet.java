@@ -620,10 +620,19 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         List<Node> nodes = getNodes();
         List<Potential> potentials = new ArrayList<>();
         for (Node node : nodes) {
-            potentials.addAll(node.getPotentials());
+        	List<Potential> potentialsNode = node.getPotentials();
+            for (Potential potential : potentialsNode) {
+            	if (null != potential) {
+            		potentials.add(potential);
+            	}
+            }
         }
     	if (constantPotentials != null) {
-    		potentials.addAll(constantPotentials);
+    		for (Potential potential : constantPotentials) {
+    			if (null != potential) {
+    				potentials.add(potential);
+    			}
+    		}
     	}
     	return potentials;
     }

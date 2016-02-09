@@ -3,7 +3,7 @@ package org.openmarkov.core.inference;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.inference.tasks.OptimalStrategy;
+import org.openmarkov.core.inference.tasks.OptimalIntervention;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 
@@ -17,6 +17,6 @@ import static org.junit.Assert.assertTrue;
  *
  */
 public abstract class OptimalStrategyTaskDecTest extends InferenceTaskTest {
-	public abstract OptimalStrategy buildInferenceTask(ProbNet probNet, EvidenceCase preResolutionEvidence)
+	public abstract OptimalIntervention buildInferenceTask(ProbNet probNet, EvidenceCase preResolutionEvidence)
 			throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException;
 }

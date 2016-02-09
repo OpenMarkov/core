@@ -58,7 +58,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 	protected void testMEU(ProbNet net, double expectedMEU, Intervention expectedStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException{
 		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(net);
-		Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+		Double meuEvaluation = algorithm.getUtility().values[0];
 		assertEquals(expectedMEU,meuEvaluation, maxError);
 	}
 
@@ -91,17 +91,15 @@ iD_DecisionTestProblemWithSV = IDFactory
 		try {
 			// test max expected utility
 
-			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+			Double meuEvaluation = algorithm.getUtility().values[0];
 			assertEquals(96.006, meuEvaluation, maxError);
 
 			// Test optimal policy
 			variableT = getVariableAndAssertNotNull(diagram,"T");
 			variableD = getVariableAndAssertNotNull(diagram,"D");
 
-			Intervention optimalStrategy = algorithm.getOptimalStrategy();
-
-			Potential policyT = algorithm.getOptimizedPolicy(variableT);
-			Potential policyD = algorithm.getOptimizedPolicy(variableD);
+			Potential policyT = algorithm.getOptimalPolicy(variableT);
+			Potential policyD = algorithm.getOptimalPolicy(variableD);
 			assertNotNull(policyT);
 			assertNotNull(policyD);
 
@@ -181,17 +179,6 @@ iD_DecisionTestProblemWithSV = IDFactory
 		return interv;
 	}
 
-	private Intervention getOptimalStrategy(ProbNet id) throws IncompatibleEvidenceException, UnexpectedInferenceException {
-		Intervention strategy = null;
-		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(id);
-		try {
-			strategy = algorithm.getOptimalStrategy();
-		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
-			e.printStackTrace();
-		}
-		return strategy;
-	}
-
 	/**
 	 * @param aPosterioriUtils
 	 * @param variables
@@ -219,8 +206,8 @@ iD_DecisionTestProblemWithSV = IDFactory
 		// test max expected utility
 		Double meuEvaluation = null;
 		try {
-			meuEvaluation = algorithm.getGlobalUtility().values[0];
-		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
+			meuEvaluation = algorithm.getUtility().values[0];
+		} catch (UnexpectedInferenceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -355,7 +342,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 			// Test optimal policy
 			Variable D = network.getVariable("Therapy");
 			
-			Potential policy = algorithm.getOptimizedPolicy(D);
+			Potential policy = algorithm.getOptimalPolicy(D);
 			assertNotNull(policy);
 
 			// Test the size of the domain of the policy
@@ -514,13 +501,13 @@ iD_DecisionTestProblemWithSV = IDFactory
 		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
 		try {
 			// test max expected utility
-			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+			Double meuEvaluation = algorithm.getUtility().values[0];
 			assertEquals(10.0, meuEvaluation, maxError);
 
 			// Test optimal policy
 			Variable D = diagram.getVariable("D");
 
-			Potential policy = algorithm.getOptimizedPolicy(D);
+			Potential policy = algorithm.getOptimalPolicy(D);
 			assertNotNull(policy);
 
 			// Test the size of the domain of the policy

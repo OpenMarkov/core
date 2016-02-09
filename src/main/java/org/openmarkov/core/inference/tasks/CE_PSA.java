@@ -1,46 +1,39 @@
-/*
- * Copyright 2015 CISIAD, UNED, Spain Licensed under the European Union Public
- * Licence, version 1.1 (EUPL) Unless required by applicable law, this code is
- * distributed on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
- */
-
 package org.openmarkov.core.inference.tasks;
 
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.NoMixedParents;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
+import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MIDType;
 import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
- * @author jorgepmartin
- * @author artasom
+ * Created by Jorge on 13/07/2015.
  */
-public abstract class OptimalStrategy extends Task {
-
+public abstract class CE_PSA extends Task {
     /**
      * @param probNet The network used in the inference
      * @throws NotEvaluableNetworkException
      */
-    public OptimalStrategy(ProbNet probNet) throws NotEvaluableNetworkException {
+    public CE_PSA(ProbNet probNet) throws NotEvaluableNetworkException {
         super(probNet);
     }
 
     public boolean checkNetworkConsistency() throws NotEvaluableNetworkException {
         if (!isEvaluable(probNet)) {
-            throw new NotEvaluableNetworkException("Not evaluable (Optimal Strategy)");
+            throw new NotEvaluableNetworkException("Not evaluable (CE)");
         } else {
             return true;
         }
     }
 
-    //TODO: check consistency of pre-resolution evidence
     public boolean checkEvidenceConsistency() {
         return true;
     }
@@ -113,4 +106,5 @@ public abstract class OptimalStrategy extends Task {
         }
     }
 
+    public abstract Collection<GTablePotential> getCEPPotential();
 }

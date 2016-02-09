@@ -197,9 +197,6 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 			EvidenceCase preResolutionEvidence = new EvidenceCase();
 			preResolutionEvidence.addFinding(diagram, diseaseName,"present");
 			algorithm.setPreResolutionEvidence(preResolutionEvidence);
-			// test max expected utility
-			Double meuEvaluation = algorithm.getGlobalUtility().values[0];
-			assertEquals(80.0, meuEvaluation, maxError);
 
 			// Test optimal policy
 			

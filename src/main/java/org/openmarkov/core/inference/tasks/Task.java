@@ -20,6 +20,7 @@ public abstract class Task {
 
     /** This is a copy of the <code>ProbNet</code> received. */
     protected ProbNet probNet;
+
     /** For undo/redo operations. */
     protected PNESupport pNESupport;
 
@@ -157,38 +158,32 @@ public abstract class Task {
     {
     }
 
-    /**
-     * @return The optimal strategy
-     * @throws UnexpectedInferenceException
-     * @throws IncompatibleEvidenceException
-     */
-    public abstract Intervention getOptimalStrategy() throws IncompatibleEvidenceException, UnexpectedInferenceException;
 
-    /**
-     * @return The global expected utility of the influence diagram. It is a potential
-     * defined over the conditioning variables.
-     */
-    public abstract TablePotential getUtility() throws
-            IncompatibleEvidenceException,
-            UnexpectedInferenceException;
 
-    public abstract TablePotential getGlobalUtility() throws
-            IncompatibleEvidenceException,
-            UnexpectedInferenceException;
+//    /**
+//     * @return The global expected utility of the influence diagram. It is a potential
+//     * defined over the conditioning variables.
+//     */
+//    public abstract TablePotential getUtility() throws
+//            IncompatibleEvidenceException,
+//            UnexpectedInferenceException;
+//
+//    public abstract TablePotential getGlobalUtility() throws
+//            IncompatibleEvidenceException,
+//            UnexpectedInferenceException;
+//
+//    /**
+//     * @return The global expected utility of the influence diagram. It is a potential
+//     * defined over the conditioning variables.
+//     */
+//    public abstract TablePotential getProbability() throws
+//            IncompatibleEvidenceException,
+//            UnexpectedInferenceException;
+//
+//    public abstract HashMap<Variable, TablePotential> getPosteriorValues()
+//            throws IncompatibleEvidenceException, UnexpectedInferenceException;
+//
 
-    /**
-     * @return The global expected utility of the influence diagram. It is a potential
-     * defined over the conditioning variables.
-     */
-    public abstract TablePotential getProbability() throws
-            IncompatibleEvidenceException,
-            UnexpectedInferenceException;
-
-    public abstract HashMap<Variable, TablePotential> getPosteriorValues()
-            throws IncompatibleEvidenceException, UnexpectedInferenceException;
-
-    public abstract Potential getOptimizedPolicy(Variable decisionVariable)
-            throws IncompatibleEvidenceException, UnexpectedInferenceException;
 
     public abstract boolean checkNetworkConsistency() throws NotEvaluableNetworkException;
     public abstract boolean checkEvidenceConsistency();

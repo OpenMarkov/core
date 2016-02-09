@@ -1,9 +1,18 @@
+/*
+ * Copyright 2015 CISIAD, UNED, Spain Licensed under the European Union Public
+ * Licence, version 1.1 (EUPL) Unless required by applicable law, this code is
+ * distributed on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
+
 package org.openmarkov.core.inference.tasks;
 
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.NoMixedParents;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
+import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MIDType;
@@ -13,25 +22,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Jorge on 13/07/2015.
+ * @author jorgepmartin
+ * @author artasom
  */
-public abstract class CEPSA extends Task {
+public abstract class OptimalIntervention extends Task {
+
     /**
      * @param probNet The network used in the inference
      * @throws NotEvaluableNetworkException
      */
-    public CEPSA(ProbNet probNet) throws NotEvaluableNetworkException {
+    public OptimalIntervention(ProbNet probNet) throws NotEvaluableNetworkException {
         super(probNet);
     }
 
     public boolean checkNetworkConsistency() throws NotEvaluableNetworkException {
         if (!isEvaluable(probNet)) {
-            throw new NotEvaluableNetworkException("Not evaluable (CE)");
+            throw new NotEvaluableNetworkException("Not evaluable (Optimal Strategy)");
         } else {
             return true;
         }
     }
 
+    //TODO: check consistency of pre-resolution evidence
     public boolean checkEvidenceConsistency() {
         return true;
     }
@@ -103,4 +115,10 @@ public abstract class CEPSA extends Task {
             }
         }
     }
+
+    /**
+     * @return The optimal intervention
+     */
+    public abstract Intervention getOptimalIntervention() throws IncompatibleEvidenceException, UnexpectedInferenceException;
+
 }

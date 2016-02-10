@@ -843,17 +843,23 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
             }
         }
         // find in such nodes the potential to remove
+        boolean wasFound = false;
         for (Node node : candidateNodes) {
             if (node != null) {
                 List<Potential> potentialsNode = node.getPotentials();
                 for (Potential potentialNode : potentialsNode) {
                     if (potentialNode == potential) {
                         if (node.removePotential(potentialNode)) {
+                            wasFound = true;
                             return node;
                         }
                     }
                 }
             }
+        }
+
+        if(!wasFound){
+            constantPotentials.remove(potential);
         }
         return null;
     }
@@ -1067,8 +1073,8 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
     }
 
     /**
-     * @param potential. <code>Potential</code>
-     * @param originalProbNet. To get information from nodes when using this method to build a <code>ProbNet</code> 
+     * @param potential <code>Potential</code>
+     * @param originalProbNet To get information from nodes when using this method to build a <code>ProbNet</code>
      * 	from another one.
      * @return The <code>Node</code> in which the <code>potential</code>
      *         received has been added.

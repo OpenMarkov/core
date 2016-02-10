@@ -1721,9 +1721,9 @@ public final class DiscretePotentialOperations {
      * @param potentials set of TablePotentials
      * @return The maximization of a list of potentials defined over the same variables
      */
-    public static TablePotential maximize(Set<TablePotential> potentials){
+    public static TablePotential maximize(Collection<TablePotential> potentials){
     	TablePotential result;
-    	Set<TablePotential> setPot;
+        Collection<TablePotential> setPot;
     	
     	if (potentials == null){
     		result = null;

@@ -1,0 +1,463 @@
+package org.openmarkov.core.model.network;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openmarkov.core.exception.CostEffectivenessException;
+import org.openmarkov.core.model.network.potential.Intervention;
+
+/**
+ * A CEP is a set of <b>n</b> intervals, each one with a cost, an effectiveness and possibly, an intervention.
+ * Intervals are separated by <b>n-1</b> thresholds. The whole partition is delimited by the minimum and the maximum 
+ * threshold.
+ * @author Manuel Arias
+ */
+public class CEP {
+
+	// Attributes
+	private double[] costs;
+
+	private double[] effectivities;
+
+	/** An intervention is a potential. If it is a decision, its value is a <code>DeltaPotential</code>, otherwise, 
+	 * a <code>TreeADDPotential</code> */
+	private Intervention[] interventions;
+
+	/** Divisions between intervals. */
+	private double[] thresholds;
+
+	private double minThreshold;
+	
+	private final double defaultMinimalThreshold = 0.0;
+
+	private double maxThreshold;
+	
+	private final double defaultMaximalThreshold = Double.POSITIVE_INFINITY;
+
+	/** When true, this partition must not be taken in consideration. */
+	private boolean zeroProbability;
+
+	/** Used to save memory and time in case of partitions corresponding to configurations with zero probability. */
+	private static CEP zeroPartition;
+
+	// Constructors
+	/** 
+	 * @param interventions. <code>Intervention[]</code>
+	 * @param costs. <code>double[]</code>
+	 * @param effectivities. <code>double[]</code>
+	 * @param thresholds. <code>double[]</code>
+	 * @throws CostEffectivenessException 
+	 */
+	public CEP(
+			Intervention[] interventions, 
+			double[] costs, 
+			double[] effectivities, 
+			double[] thresholds) 
+					throws CostEffectivenessException {
+		
+		if (costs.length == effectivities.length && costs.length == interventions.length) {
+			if (costs.length == 1 && thresholds == null) {
+				this.thresholds = new double[0];
+			} else {
+				if (thresholds.length != (costs.length - 1)) {
+					throw new CostEffectivenessException("Number of thresholds must be minor in 1 than number of " + 
+							"costs, effectivities and interventions.\nNumber of thresholds = " + thresholds.length + 
+							"\nNumber of costs, effectivities and interventions = " + costs.length);
+				}
+				this.thresholds = thresholds;
+			}
+			this.costs = costs;
+			this.effectivities = effectivities;
+			this.interventions = interventions;
+		} else {
+			throw new CostEffectivenessException("Number of cost, effectivities and interventions must be equal.\n" + 
+					"Number of cost = " + costs.length + "\nNumber of effectivities = " + effectivities.length + 
+					"\nNumber of interventions = " + interventions.length);
+		}
+		minThreshold = defaultMinimalThreshold;
+		maxThreshold = defaultMaximalThreshold;
+	}
+
+	/**
+	 * Creates a partition with only one interval
+	 * @param intervention. <code>Potential</code>
+	 * @param cost. <code>double</code>
+	 * @param effectiveness. <code>double</code>
+	 * @param minThreshold. <code>double</code>
+	 * @param maxThreshold. <code>double</code>
+	 * @throws CostEffectivenessException
+	 */
+	public CEP(
+			Intervention intervention, 
+			double cost, 
+			double effectiveness, 
+			double minThreshold, 
+			double maxThreshold) 
+					throws CostEffectivenessException {
+		
+		costs = new double[]{cost};
+		effectivities = new double[]{effectiveness};
+		thresholds = new double[0];
+		if (intervention != null) {
+			this.interventions = new Intervention[]{intervention};
+		}
+		this.minThreshold = minThreshold;
+		this.maxThreshold = maxThreshold;
+	}
+
+	/**
+	 * @param interventions. <code>Potential[]</code>
+	 * @param costs. <code>double[]</code>
+	 * @param effectivities. <code>double[]</code>
+	 * @param thresholds. <code>double[]</code>
+	 * @param minThreshold. <code>double</code>
+	 * @param maxThreshold. <code>double</code>
+	 * @throws CostEffectivenessException
+	 */
+	public CEP(
+			Intervention[] interventions, 
+			double[] costs, 
+			double[] effectivities, 
+			double[] thresholds,
+			double minThreshold, 
+			double maxThreshold) 
+					throws CostEffectivenessException {
+		
+		this(interventions, costs, effectivities, thresholds);
+		this.minThreshold = minThreshold;
+		this.maxThreshold = maxThreshold;
+	}
+
+	/** Creates a CEPartition with zero probability */
+	private CEP() {
+		zeroProbability = true;
+	}
+
+	// Methods
+	/** Singleton for partitions with probability zero
+	 * @return CEPartition
+	 */
+	public static CEP getZeroPartition() {
+		if (zeroPartition == null) {
+			zeroPartition = new CEP();
+		}
+		return zeroPartition;
+	}
+
+	/**
+	 * @param lambda. <code>double</code>
+	 * @return Interval index corresponding to lambda. <code>int</code>
+	 */
+	public int index(double lambda) {
+		int numThresholds = costs.length - 1;
+		int i = 0;
+		while (i < numThresholds && lambda > thresholds[i]) i++;
+		return i;
+	}
+
+	/** 
+	 * Multiplies costs and effectivities per factor.
+	 * @param factor. <code>double</code>
+	 */
+	public void multiply(double factor) {
+		if (!zeroProbability) {
+			for (int i = 0; i < costs.length; i++) {
+				costs[i] *= factor;
+				effectivities[i] *= factor;
+			}
+		}
+	}
+
+	/** 
+	 * Divides costs and effectivities per factor.
+	 * @param factor. <code>double</code>
+	 */
+	public void divide(double factor) {
+		if (!zeroProbability) {
+			for (int i = 0; i < costs.length; i++) {
+				costs[i] /= factor;
+				effectivities[i] /= factor;
+			}
+		}
+	}
+
+	/** 
+	 * Change the indentation in <code>toString()</code>. Used for nested interventions.
+	 * @param indentLevel. <code>int</code>
+	 */
+	public void setIndentLevel(int indentLevel) {
+		this.indentLevel = indentLevel;
+		if (indentLevel == 0) {
+			indent = "";
+		} else {
+			indent = " ";
+			for (int i = 1; i < indentLevel; i++) indent = indent + " ";
+		}
+	}
+
+	/**
+	 * @return The intervention corresponding to this CEP with a discretized continuous variable on root called lambda
+	 */
+	public Intervention getIntervention() {
+		Variable lambda = getLambda();
+		return new Intervention(lambda, getListOfStates(lambda), getListOfInterventions());
+	}
+	
+	public int getNumIntervals() {
+		return interventions.length;
+	}
+
+	/**
+	 * @param lambda. <code>double</code>
+	 * @return Cost corresponding to lambda. <code>double</code>
+	 */
+	public double getCost(double lambda) {
+		return costs[index(lambda)];
+	}
+
+	/**
+	 * @param lambda. <code>double</code>
+	 * @return Cost corresponding to interval. <code>double</code>
+	 */
+	public double getCost(int interval) {
+		return costs[interval];
+	}
+
+	/**
+	 * @param lambda. <code>double</code>
+	 * @return Effectiveness corresponding to lambda. <code>double</code>
+	 */
+	public double getEffectiveness(double lambda) {
+		return effectivities[index(lambda)];
+	}
+
+	/**
+	 * @param lambda. <code>double</code>
+	 * @return Effectiveness corresponding to interval. <code>double</code>
+	 */
+	public double getEffectiveness(int interval) {
+		return effectivities[interval];
+	}
+
+	/**
+	 * @param lambda. <code>double</code>
+	 * @return TreeADDPotential corresponding to lambda. <code>TreeADDPotential</code>
+	 */
+	public Intervention getIntervention(double lambda) {
+		return interventions[index(lambda)];
+	}
+
+	/**
+	 * @param interval. <code>int</code>
+	 * @return TreeADDPotential corresponding to interval. <code>TreeADDPotential</code>
+	 */
+	public Intervention getIntervention(int interval) {
+		return interventions[interval];
+	}
+
+	/**
+	 * @return All the interventions. <code>Intervention[]</code>
+	 */
+	public Intervention[] getInterventions() {
+		return interventions;
+	}
+
+	/**
+	 * @return <code>boolean</code>
+	 */
+	public boolean isZero() {
+		return zeroProbability;
+	}
+
+	public void setZero() {
+		zeroProbability = true;
+	}
+
+	/**
+	 * @param lambda. <code>double</code>
+	 * @return threshold between interval and interval + 1. <code>double</code>
+	 */
+	public double getThreshold(int interval) {
+		return thresholds[interval];
+	}
+
+	/**
+	 * @return. <code>double[]</code>
+	 */
+	public double[] getThresholds() {
+		return thresholds;
+	}
+
+	/**
+	 * @param cost. <code>double</code>
+	 * @param interval. <code>int</code>
+	 */
+	public void setCost(double cost, int interval) {
+		costs[interval] = cost;
+	}
+
+	/**
+	 * @param eff. <code>double</code>
+	 * @param interval. <code>int</code>
+	 */
+	public void setEffectiveness(double eff, int interval) {
+		effectivities[interval] = eff;
+	}
+
+	/**
+	 * @return minThreshold. <code>double</code>
+	 */
+	public double getMinThreshold() {
+		return minThreshold;
+	}
+
+	/**
+	 * @return maxThreshold. <code>double</code>
+	 */
+	public double getMaxThreshold() {
+		return maxThreshold;
+	}
+
+	/**
+	 * @return effectivities. <code>double[]</code>
+	 */
+	public double[] getEffectivities() {
+		return effectivities;
+	}
+
+	/**
+	 * @return costs. <code>double[]</code>
+	 */
+	public double[] getCosts() {
+		return costs;
+	}
+	
+	private List<Intervention> getListOfInterventions() {
+		List<Intervention> listOfInterventions = new ArrayList<Intervention>(interventions.length);
+		for (int i = 0; i < interventions.length; i++) {
+			listOfInterventions.add(interventions[i]);
+		}
+		return listOfInterventions;
+	}
+
+	private List<State> getListOfStates(Variable variable) {
+		State[] statesVariable = variable.getStates();
+		int numStates = statesVariable.length;
+		List<State> listOfStates = new ArrayList<State>(numStates);
+		for (int i = 0; i < numStates; i++) {
+			listOfStates.add(statesVariable[i]);
+		}
+		return listOfStates;
+	}
+
+	private Variable getLambda() {
+		State[] states = new State[interventions.length];
+		double[] limits = new double[interventions.length + 1];
+		limits[0] = minThreshold;
+		boolean[] belongsToLeftSide = new boolean[interventions.length + 2];
+		belongsToLeftSide[belongsToLeftSide.length - 1] = false;
+		belongsToLeftSide[0] = true;
+		// build state names: state[i] = lambda in (min, max)
+		for (int i = 0; i < states.length; i++) {
+			if (i < thresholds.length) {
+				limits[i + 1] = thresholds[i];
+			}
+			belongsToLeftSide[i + 1] = true;
+			String stateName = new String("\u03BB in [");
+			if (i == 0) {
+				stateName = stateName + minThreshold;
+			} else {
+				stateName = stateName + thresholds[i - 1];
+			}
+			stateName = stateName + " , ";
+			if (i == states.length - 1) {
+				stateName = stateName + maxThreshold;
+			} else {
+				stateName = stateName + thresholds[i];
+			}
+			stateName = stateName + ") Cost = " + costs[i] + " Effectiveness = " + effectivities[i];
+			states[i] = new State(stateName);
+		}
+		limits[limits.length - 1] = maxThreshold;
+		return new Variable("lambda", states, new PartitionedInterval(limits, belongsToLeftSide), 0.1);
+	}
+
+	// From this point: set of attributes and methods related with method toString()
+	private String indent = "";
+
+	private int indentLevel; // TODO Remove?
+
+	DecimalFormat decimalFormat3afterComa = new DecimalFormat("#.###");
+	DecimalFormat decimalFormat2afterComa = new DecimalFormat("#.##");
+	DecimalFormat decimalFormat1afterComa = new DecimalFormat("#.#");
+	DecimalFormat decimalFormatNoDecimalsAfterComa = new DecimalFormat("#");
+
+	public String toString() {
+		StringBuilder strBuffer = new StringBuilder();
+		if (zeroProbability) {
+			strBuffer.append(indent);
+			strBuffer.append("CEP with probability zero.\n");
+		} else {
+			strBuffer.append(indent);
+			strBuffer.append("Number of intervals: ");
+			strBuffer.append(thresholds.length + 1);
+			for (int i = 0; i < thresholds.length + 1; i++) {
+				strBuffer.append("\nInterval ");
+				strBuffer.append(i);
+				strBuffer.append(":\n");
+				strBuffer.append(indent);
+				strBuffer.append("lambda in (");
+				if (i == 0) {
+					appendNumberToStrBuffer(strBuffer, minThreshold);
+				} else {
+					appendNumberToStrBuffer(strBuffer, thresholds[i - 1]);
+				}
+				strBuffer.append(" and ");
+				if (i == thresholds.length) {
+					if (maxThreshold == Double.POSITIVE_INFINITY || maxThreshold > 1E300) {
+						strBuffer.append("+");
+						strBuffer.append("Infinity");
+					} else {
+						strBuffer.append(maxThreshold);
+					}
+				} else {
+					appendNumberToStrBuffer(strBuffer, thresholds[i]);
+				}
+				strBuffer.append(")");
+				strBuffer.append(" Cost: ");
+				appendNumberToStrBuffer(strBuffer, costs[i]);
+				strBuffer.append("  ");
+
+				strBuffer.append(" Eff: ");
+				appendNumberToStrBuffer(strBuffer, effectivities[i]);
+				strBuffer.append("\n");
+
+				strBuffer.append(indent);
+				strBuffer.append("optimal intervention:");
+				if (interventions[i] != null) {
+					interventions[i].setIndentLevel(indentLevel + 2);
+					strBuffer.append("\n");
+				}
+				else {
+					strBuffer.append(" ");
+				}
+				strBuffer.append(interventions[i]);
+			}
+		}
+		return strBuffer.toString();
+	}
+
+	private void appendNumberToStrBuffer(StringBuilder strBuffer, double number) {
+		if (Math.abs(number) < 10.0) {
+			strBuffer.append(decimalFormat3afterComa.format(number));
+		} else if (Math.abs(number) < 100.0) {
+			strBuffer.append(decimalFormat2afterComa.format(number));
+		} else	if (Math.abs(number) < 1000.0) {
+			strBuffer.append(decimalFormat1afterComa.format(number));
+		} else {
+			strBuffer.append(decimalFormatNoDecimalsAfterComa.format(number));
+		}		
+	}
+
+}

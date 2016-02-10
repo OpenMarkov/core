@@ -127,13 +127,13 @@ public class Choice {
 	public String toString() {
 		StringBuilder buffer = new StringBuilder(variable.getName());
 		if (numValues == 1) {
-			buffer.append("=" + values[0]);
+			buffer.append("=" + variable.getStateName(values[0]));
 		} else {
 			buffer.append("={");
 			for (int i = 0; i < numValues - 1; i++) {
-				buffer.append(values[i] + ",");
+				buffer.append(variable.getStateName(values[i]) + ",");
 			}
-			buffer.append(values[numValues - 1] + "}");
+			buffer.append(variable.getStateName(values[numValues - 1]) + "}");
 		}
 		return buffer.toString();
 	}

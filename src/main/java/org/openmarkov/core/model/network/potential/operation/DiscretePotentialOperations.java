@@ -1803,6 +1803,9 @@ public final class DiscretePotentialOperations {
 
                 // build the marginal and conditional probabilities
                 TablePotential joinProb = multiply(probPotentials);
+    		if (joinProb==null){
+    			joinProb = new TablePotential(new ArrayList<Variable>(),PotentialRole.CONDITIONAL_PROBABILITY);
+    		}
                 TablePotential conditionalProb = divide(joinProb, marginalProb);
 
                 // initialize the output utility potential

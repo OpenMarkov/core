@@ -11,6 +11,10 @@ import java.util.Random;
 @ProbDensFunctionType(name="Exact", isValidForNumeric = true, parameters = {"nu"})
 public class ExactFunction extends ProbDensFunction
 {
+    public double getNu() {
+        return nu;
+    }
+
     private double nu;
 
     public ExactFunction ()
@@ -76,7 +80,7 @@ public class ExactFunction extends ProbDensFunction
 
 	@Override
 	public double getMinimum() {
-		return 0;
+		return nu;
 	}
 
 	@Override

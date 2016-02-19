@@ -7,7 +7,7 @@ public class TemporalOptions implements Cloneable {
 	private TransitionTime transition;
 	
 	public TemporalOptions(){
-		numberOfSlices = 20;
+		numberOfSlices = 20; // TODO Explain why
 		transition = TransitionTime.BEGINNING;
 	}
 

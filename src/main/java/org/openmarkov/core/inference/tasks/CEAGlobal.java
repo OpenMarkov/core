@@ -26,14 +26,6 @@ public abstract class CEAGlobal extends Task {
         super(probNet);
     }
 
-    public boolean checkNetworkConsistency() throws NotEvaluableNetworkException {
-        if (!isEvaluable(probNet)) {
-            throw new NotEvaluableNetworkException("Not evaluable (CE)");
-        } else {
-            return true;
-        }
-    }
-
     public boolean checkEvidenceConsistency() {
         return true;
     }

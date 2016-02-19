@@ -35,22 +35,7 @@ public abstract class OptimalIntervention extends Task {
         super(probNet);
     }
 
-    public boolean checkNetworkConsistency() throws NotEvaluableNetworkException {
-        if (!isEvaluable(probNet)) {
-            throw new NotEvaluableNetworkException("Not evaluable (Optimal Strategy)");
-        } else {
-            return true;
-        }
-    }
-
     //TODO: check consistency of pre-resolution evidence
-    public boolean checkEvidenceConsistency() {
-        return true;
-    }
-
-    public boolean checkPoliciesConsistency() {
-        return true;
-    }
 
     /**
      * @return A new <code>ArrayList</code> of <code>PNConstraint</code>.

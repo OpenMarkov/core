@@ -1,13 +1,8 @@
 package org.openmarkov.core.inference.tasks;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainParameter;
-import org.openmarkov.core.model.network.potential.Intervention;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.HashMap;

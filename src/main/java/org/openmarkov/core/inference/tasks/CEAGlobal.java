@@ -6,7 +6,6 @@ import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.NoMixedParents;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
-import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MIDType;

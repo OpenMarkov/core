@@ -9,13 +9,11 @@ import org.openmarkov.core.inference.heuristic.HeuristicFactory;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Intervention;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TablePotential;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
+/** This class represents a user action related to inference. */
 public abstract class Task {
 
     /** This is a copy of the <code>ProbNet</code> received. */
@@ -58,15 +56,16 @@ public abstract class Task {
 
     /**
      * @param probNet The network used in the inference
+     * @throws UnexpectedInferenceException 
      * @throws NotEvaluableNetworkException
      */
-    public Task (ProbNet probNet)
-            throws NotEvaluableNetworkException {
+    public Task (ProbNet probNet) throws NotEvaluableNetworkException {
         this.probNet = probNet.copy();
         preResolutionEvidence = new EvidenceCase();
         postResolutionEvidence = new EvidenceCase();
+        //checkEvaluability(probNet);
         if (!isEvaluable (probNet)) {
-            throw new NotEvaluableNetworkException (probNet.toString ());
+            throw new NotEvaluableNetworkException(probNet.toString());
         }
     }
 
@@ -78,10 +77,15 @@ public abstract class Task {
     }
 
     /**
-     * @param postResolutionEvidence
+     * If <code>postResolutionEvidence == null</code>, creates an empty one.
+     * @param postResolutionEvidence. <code>EvidenceCase</code>
      */
     public void setPostResolutionEvidence(EvidenceCase postResolutionEvidence) {
-        this.postResolutionEvidence = postResolutionEvidence;
+    	if (postResolutionEvidence != null) {
+    		this.postResolutionEvidence = postResolutionEvidence;
+    	} else {
+    		this.postResolutionEvidence = new EvidenceCase();
+    	}
     }
 
     /**
@@ -92,10 +96,15 @@ public abstract class Task {
     }
 
     /**
-     * @param preResolutionEvidence The pre-resolution evidence to set
+     * If <code>preResolutionEvidence == null</code>, creates an empty one.
+     * @param preResolutionEvidence The pre-resolution evidence to set. <code>EvidenceCase</code>
      */
     public void setPreResolutionEvidence(EvidenceCase preResolutionEvidence) {
-        this.preResolutionEvidence = preResolutionEvidence;
+    	if (preResolutionEvidence != null) {
+    		this.preResolutionEvidence = preResolutionEvidence;
+    	} else {
+    		this.preResolutionEvidence = new EvidenceCase();
+    	}
     }
 
     public EvidenceCase getJoinResolutionEvidence() throws IncompatibleEvidenceException {
@@ -119,7 +128,11 @@ public abstract class Task {
      * @param conditioningVariables The conditioning variables to set
      */
     public void setConditioningVariables(List<Variable> conditioningVariables) {
-        this.conditioningVariables = conditioningVariables;
+    	if (conditioningVariables != null) {
+    		this.conditioningVariables = conditioningVariables;
+    	} else {
+    		this.conditioningVariables = new ArrayList<Variable>();
+    	}
     }
 
     /**
@@ -184,8 +197,19 @@ public abstract class Task {
 //            throws IncompatibleEvidenceException, UnexpectedInferenceException;
 //
 
+    public boolean checkNetworkConsistency() throws NotEvaluableNetworkException {
+        if (!isEvaluable(probNet)) {
+            throw new NotEvaluableNetworkException("Not evaluable (Resolution)");
+        } else {
+            return true;
+        }
+    }
 
-    public abstract boolean checkNetworkConsistency() throws NotEvaluableNetworkException;
-    public abstract boolean checkEvidenceConsistency();
-    public abstract boolean checkPoliciesConsistency();
+    public boolean checkEvidenceConsistency() {
+    	return true;
+    }
+    
+    public boolean checkPoliciesConsistency() {
+    	return true;
+    }
 }

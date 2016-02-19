@@ -18,6 +18,7 @@ import java.util.List;
  * Created by Jorge on 13/07/2015.
  */
 public abstract class CE_PSA extends Task {
+	
     /**
      * @param probNet The network used in the inference
      * @throws NotEvaluableNetworkException
@@ -65,6 +66,10 @@ public abstract class CE_PSA extends Task {
     }
 
     //TODO: refactor and use maybe from network consistency?
+    /**
+     * @param probNet
+     * @throws NotEvaluableNetworkException
+     */
     public static void checkEvaluability(ProbNet probNet) throws NotEvaluableNetworkException {
         boolean isApplicable;
 

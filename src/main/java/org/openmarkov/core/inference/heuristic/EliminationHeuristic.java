@@ -31,7 +31,7 @@ import org.openmarkov.core.model.network.Variable;
 public abstract class EliminationHeuristic implements PNUndoableEditListener {
 
 	// Attributes
-	/** A pointer to the received <code>Graph</code>. */
+	/** A pointer to the received <code>ProbNet</code>. */
 	protected ProbNet probNet;
 
 	/** A set of nodes that points to variables that are nor query variables nor

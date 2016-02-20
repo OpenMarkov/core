@@ -8,13 +8,9 @@
  */
 package org.openmarkov.core.model.network.potential;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.List;
 import java.util.Map;
-
-import net.sourceforge.jeval.EvaluationException;
-import net.sourceforge.jeval.Evaluator;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -26,26 +22,54 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-@PotentialType(name = "Exponential", family = "GLM")
-public class BinomialPotential extends GLMPotential {
+//UNCLEAR I think this potential does not belong to the GLM Family
+@PotentialType(name = "Binomial")
 
-	public BinomialPotential(List<Variable> variables, PotentialRole role) {
-		super(variables, role);
+public class BinomialPotential extends Potential {
+	
+	//Number of cases
+	private int N;
+	//Probability of success
+	private double theta;
+	
+	//UNCLEAR What role should I use--> Suppose CONDITIONAL_PROBABILITY 
+	public BinomialPotential(List<Variable> variables, PotentialRole role, int NValue, double thetaValue)
+    {
+	        this(variables, role);
+	 //UNCLEAR --> Where do I control N is integer and p is between 0 and 1?       
+	        this.N= NValue;
+	        this.theta=thetaValue;
 	}
+	 
+	/* 
+	 * From core.model.network.VariableType
+	 * FINITE_STATES(0, "finiteStates"), NUMERIC(1, "numeric"),DISCRETIZED(2, "discretized");
+	 */
+	
+	/* UNCLEAR-->Where do I have to control that the variable is numeric, the probability is between 0 and 1 
+	 * and the number of cases is a positive integer? 
+	 */
+	public BinomialPotential(List<Variable> variables, PotentialRole role)
+	    {
+	        super(variables, role);
+	        this.N=1;
+	        this.theta=0.5;
+          	                
+	    }   
+	        
 
-	public BinomialPotential(Variable utilityVariable, List<Variable> variables) {
-		this(variables, PotentialRole.UTILITY);
-		this.utilityVariable = utilityVariable;
-	}
+	 public BinomialPotential(BinomialPotential potential)
+	    {
+	        super(potential);
+	        this.N = potential.getN();
+	        this.theta = potential.gettheta();
+	        
+	    }
 
-	public BinomialPotential(List<Variable> variables, PotentialRole role, String[] covariates,
-			double[] coefficients) {
-		super(variables, role, covariates, coefficients);
-	}
-
-	public BinomialPotential(BinomialPotential potential) {
-		super(potential);
-	}
+	 public int getN() {return N;}
+	 public void setN(int NValue){this.N=NValue;}
+	 public double gettheta() {return theta;}
+	 public void settheta(double thetaValue){this.theta=thetaValue;}
 
 	/**
 	 * Returns if an instance of a certain Potential type makes sense given the
@@ -59,64 +83,34 @@ public class BinomialPotential extends GLMPotential {
 	 *            . <code>PotentialRole</code>.
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-		return role == PotentialRole.UTILITY
-				|| (!variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC);
+		return role == PotentialRole.CONDITIONAL_PROBABILITY
+				&& (!variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC);
 	}
 
+	
+	
 	@Override
+	public List<TablePotential> tableProject(EvidenceCase evidenceCase,
+            InferenceOptions inferenceOptions,
+            List<TablePotential> alreadyProjectedPotentials)
+            throws NonProjectablePotentialException, WrongCriterionException
+	{
+		throw new NonProjectablePotentialException("Cannot convert numeric variable to a table");
+	}
+	
+	
 	protected List<TablePotential> tableProject(EvidenceCase evidenceCase,
 			InferenceOptions inferenceOptions, double[] coefficients, String[] covariates,
             List<Variable> evidencelessVariables,
             Map<String, String> variableValues)
 			throws NonProjectablePotentialException, WrongCriterionException {
-		// Fill arrays numericValues and evidencelessVariables
-		int constantIndex = getConstantIndex(covariates);
-
-		List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
-		TablePotential projectedPotential = null; 
-		if (isUtility()) {
-			projectedPotential = new TablePotential(utilityVariable, projectedPotentialVariables);
-		}else
-		{
-			projectedPotentialVariables.add(0, variables.get(0));
-			projectedPotential = new TablePotential(projectedPotentialVariables, role);
-		}
-		Variable conditionedVariable = getConditionedVariable();
-		int numStates = conditionedVariable.getNumStates();
-		int parentFirstIndex = (conditionedVariable == projectedPotentialVariables.get(0)) ? 1 : 0;
-		int[] offsets = projectedPotential.getOffsets();
-		int[] dimensions = projectedPotential.getDimensions();
-		Evaluator evaluator = new Evaluator();
-		for (int i = 0; i < projectedPotential.values.length; i += numStates) {
-			// Set the values of variables without evidence
-			for (int j = parentFirstIndex; j < projectedPotentialVariables.size(); ++j) {
-				Variable variable = projectedPotentialVariables.get(j);
-				int index = (i / offsets[j]) % dimensions[j];
-				double value = index;
-				try {
-					value = Double.parseDouble(variable.getStates()[index] .getName());
-				} catch (NumberFormatException e) {
-					// ignore
-				}
-				variableValues.put("v"+j, String.valueOf(value));
-			}
-			evaluator.setVariables(variableValues);
-			double regression = coefficients[constantIndex];
-			for (int j = 0; j < coefficients.length; ++j) {
-				double covariateValue = 0.0;
-				if (j != constantIndex) {
-					try {
-						covariateValue = Double.parseDouble(evaluator.evaluate(covariates[j]));
-					} catch (NumberFormatException | EvaluationException e) {
-						throw new NonProjectablePotentialException(e.getMessage());
-					}
-					regression += covariateValue * coefficients[j];
-				}
-			}
-			projectedPotential.values[i] = Math.exp(regression);
-		}
-		return Arrays.asList(projectedPotential);
+		
+		throw new NonProjectablePotentialException("Cannot convert numeric variable to a table");
+		
+		
 	}
+	
+	
 
 	@Override
 	public Potential copy() {
@@ -125,22 +119,48 @@ public class BinomialPotential extends GLMPotential {
 
 	@Override
 	public String toString() {
-		return super.toString() + " = Exponential";
+		return super.toString() + " = Binomial";
 	}
 
 	@Override
+	//UNCLEAR--> What is this
 	public void scalePotential(double scale) {
-		/*
-		 * Add ln(scale) to the first coefficient (constant covariate) is the same as
-		 * multiply all the exponential potential by the scale 
-		 */
-		coefficients[0] += Math.log(scale);
+		
+		throw new UnsupportedOperationException();
 		
 	}
-
-	@Override
-	public Potential deepCopy(ProbNet copyNet) {
-		return super.deepCopy(copyNet);
-	}
 	
+	/* UNCLEAR What is this? 
+	@Override
+	 // From Delta
+	 
+	    public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
+	            throws IncompatibleEvidenceException, WrongCriterionException {
+	        Finding inducedFinding = null;
+	        if(getConditionedVariable().getVariableType() == VariableType.NUMERIC)
+	        {
+	            inducedFinding = new Finding(getConditionedVariable(), state);
+	        }else
+	        {
+	            inducedFinding = new Finding(getConditionedVariable(), numericValue);
+	        }
+	        return Arrays.asList(inducedFinding);
+	    }   
+	     
+	*/
+   @Override
+	    public boolean isUncertain() {
+	        return false;
+	    }
+	
+   @Override
+	public Potential deepCopy(ProbNet copyNet) {
+        BinomialPotential potential = (BinomialPotential) super.deepCopy(copyNet);
+
+        potential.N = this.N;
+        potential.theta = this.theta;
+
+        return potential;
+
+    }
 }

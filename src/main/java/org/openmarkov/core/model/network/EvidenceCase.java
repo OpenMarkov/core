@@ -74,7 +74,11 @@ public class EvidenceCase {
      * @param evidenceCase
      */
     public EvidenceCase(EvidenceCase evidenceCase) {
-        findings = new HashMap<>(evidenceCase.findings);
+    	if (evidenceCase == null) {
+            findings = new HashMap<>();
+    	} else {
+    		findings = new HashMap<>(evidenceCase.findings);
+    	}
     }
 
     // Methods

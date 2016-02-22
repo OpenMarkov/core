@@ -78,14 +78,10 @@ public abstract class Task {
 
     /**
      * If <code>postResolutionEvidence == null</code>, creates an empty one.
-     * @param postResolutionEvidence. <code>EvidenceCase</code>
+     * @param postResolutionEvidence <code>EvidenceCase</code>
      */
     public void setPostResolutionEvidence(EvidenceCase postResolutionEvidence) {
-    	if (postResolutionEvidence != null) {
-    		this.postResolutionEvidence = postResolutionEvidence;
-    	} else {
-    		this.postResolutionEvidence = new EvidenceCase();
-    	}
+        this.postResolutionEvidence = new EvidenceCase(postResolutionEvidence);
     }
 
     /**
@@ -100,11 +96,7 @@ public abstract class Task {
      * @param preResolutionEvidence The pre-resolution evidence to set. <code>EvidenceCase</code>
      */
     public void setPreResolutionEvidence(EvidenceCase preResolutionEvidence) {
-    	if (preResolutionEvidence != null) {
-    		this.preResolutionEvidence = preResolutionEvidence;
-    	} else {
-    		this.preResolutionEvidence = new EvidenceCase();
-    	}
+        this.preResolutionEvidence = new EvidenceCase(preResolutionEvidence);
     }
 
     public EvidenceCase getJoinResolutionEvidence() throws IncompatibleEvidenceException {

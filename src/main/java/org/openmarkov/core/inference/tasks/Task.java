@@ -9,6 +9,8 @@ import org.openmarkov.core.inference.heuristic.HeuristicFactory;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.PNConstraint;
+import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,10 +65,10 @@ public abstract class Task {
         this.probNet = probNet.copy();
         preResolutionEvidence = new EvidenceCase();
         postResolutionEvidence = new EvidenceCase();
-        //checkEvaluability(probNet);
-        if (!isEvaluable (probNet)) {
-            throw new NotEvaluableNetworkException(probNet.toString());
-        }
+//        //checkEvaluability(probNet);
+//        if (!isEvaluable (probNet)) {
+//            throw new NotEvaluableNetworkException(probNet.toString());
+//        }
     }
 
     /**
@@ -123,7 +125,7 @@ public abstract class Task {
     	if (conditioningVariables != null) {
     		this.conditioningVariables = conditioningVariables;
     	} else {
-    		this.conditioningVariables = new ArrayList<Variable>();
+    		this.conditioningVariables = new ArrayList<>();
     	}
     }
 
@@ -134,74 +136,42 @@ public abstract class Task {
 		return imposedPolicies;
 	}*/
 
-    /**
-     * @param probNet
-     * @return True if the network can be evaluated.
-     */
-    public boolean isEvaluable (ProbNet probNet){
-        boolean isEvaluable;
-
-        isEvaluable = true;
-
-        try {
-            checkEvaluability(probNet);
-        } catch (NotEvaluableNetworkException e) {
-            isEvaluable = false;
-        }
-        return isEvaluable;
-
-    }
-
-
     public void setHeuristicFactory(HeuristicFactory heuristicFactory) {
         this.heuristicFactory = heuristicFactory;
     }
 
+    public void checkNetworkConsistency (ProbNet probNet) throws NotEvaluableNetworkException {
+        boolean isApplicable;
 
-    protected static void checkEvaluability (ProbNet probNet)
-            throws NotEvaluableNetworkException
-    {
-    }
+        List<NetworkType> networkTypes = initializeNetworkTypesApplicable();
 
+        isApplicable = false;
+        NetworkType networkType = probNet.getNetworkType();
+        // Check that there is a network type applicable equal to type of probNet
+        for (int i = 0; (i < networkTypes.size()) && !isApplicable; i++) {
+            isApplicable = networkType == networkTypes.get(i);
+        }
 
-
-//    /**
-//     * @return The global expected utility of the influence diagram. It is a potential
-//     * defined over the conditioning variables.
-//     */
-//    public abstract TablePotential getUtility() throws
-//            IncompatibleEvidenceException,
-//            UnexpectedInferenceException;
-//
-//    public abstract TablePotential getGlobalUtility() throws
-//            IncompatibleEvidenceException,
-//            UnexpectedInferenceException;
-//
-//    /**
-//     * @return The global expected utility of the influence diagram. It is a potential
-//     * defined over the conditioning variables.
-//     */
-//    public abstract TablePotential getProbability() throws
-//            IncompatibleEvidenceException,
-//            UnexpectedInferenceException;
-//
-//    public abstract HashMap<Variable, TablePotential> getPosteriorValues()
-//            throws IncompatibleEvidenceException, UnexpectedInferenceException;
-//
-
-    public boolean checkNetworkConsistency() throws NotEvaluableNetworkException {
-        if (!isEvaluable(probNet)) {
-            throw new NotEvaluableNetworkException("Not evaluable (Resolution)");
+        if (!isApplicable) {
+            throw new NotEvaluableNetworkException("Network type " + networkType.toString() + "is not evaluable.");
         } else {
-            return true;
+            // Check that the probNet satisfies the specific constraints of the algorithm
+            List<PNConstraint> additionalConstraints = initializeAdditionalConstraints();
+
+            for (PNConstraint pnConstraint : additionalConstraints) {
+                if (!pnConstraint.checkProbNet(probNet)) {
+                    throw new NotEvaluableNetworkException("Constraint " + pnConstraint.toString()
+                            + " is not satisfied by the network.");
+                }
+            }
         }
     }
 
-    public boolean checkEvidenceConsistency() {
-    	return true;
-    }
+    protected abstract List<PNConstraint> initializeAdditionalConstraints();
+
+    protected abstract List<NetworkType> initializeNetworkTypesApplicable();
+
+    public boolean checkEvidenceConsistency() {return true;}
     
-    public boolean checkPoliciesConsistency() {
-    	return true;
-    }
+    public boolean checkPoliciesConsistency() {return true;}
 }

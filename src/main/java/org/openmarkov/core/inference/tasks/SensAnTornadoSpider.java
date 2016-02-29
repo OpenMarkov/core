@@ -8,7 +8,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import java.util.HashMap;
 
 /**
- * Created by Jorge on 28/09/2015.
+ * @author jperez-martin
  */
 public abstract class SensAnTornadoSpider extends Task {
     /**
@@ -19,21 +19,5 @@ public abstract class SensAnTornadoSpider extends Task {
         super(probNet);
     }
 
-
     public abstract HashMap<UncertainParameter, TablePotential> getUncertainParametersPotentials();
-
-    @Override
-    public boolean checkNetworkConsistency() throws NotEvaluableNetworkException {
-        return false;
-    }
-
-    @Override
-    public boolean checkEvidenceConsistency() {
-        return false;
-    }
-
-    @Override
-    public boolean checkPoliciesConsistency() {
-        return false;
-    }
 }

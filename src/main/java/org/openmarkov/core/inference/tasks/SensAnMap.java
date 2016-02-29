@@ -8,7 +8,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import java.util.HashMap;
 
 /**
- * Created by Jorge on 19/01/2016.
+ * @author jperez-martin
  */
 public abstract class SensAnMap extends Task {
     /**
@@ -18,22 +18,6 @@ public abstract class SensAnMap extends Task {
     public SensAnMap(ProbNet probNet) throws NotEvaluableNetworkException {
         super(probNet);
     }
-
-    @Override
-    public boolean checkNetworkConsistency() throws NotEvaluableNetworkException {
-        return false;
-    }
-
-    @Override
-    public boolean checkEvidenceConsistency() {
-        return false;
-    }
-
-    @Override
-    public boolean checkPoliciesConsistency() {
-        return false;
-    }
-
 
     public abstract HashMap<UncertainParameter, TablePotential> getUncertainParametersPotentials();
 }

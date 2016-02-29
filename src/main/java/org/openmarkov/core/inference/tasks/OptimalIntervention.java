@@ -11,6 +11,7 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.NoMixedParents;
+import org.openmarkov.core.model.network.constraint.NoSuperValueNode;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
@@ -43,6 +44,7 @@ public abstract class OptimalIntervention extends Task {
     protected static List<PNConstraint> initializeAdditionalConstraints() {
         List<PNConstraint> constraints = new ArrayList<>();
         constraints.add(new NoMixedParents());
+        constraints.add(new NoSuperValueNode());
         return constraints;
     }
 

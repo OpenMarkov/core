@@ -9,6 +9,7 @@ import org.openmarkov.core.inference.heuristic.HeuristicFactory;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.NoSuperValueNode;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.type.NetworkType;
 
@@ -153,16 +154,29 @@ public abstract class Task {
         }
 
         if (!isApplicable) {
-            throw new NotEvaluableNetworkException("Network type " + networkType.toString() + "is not evaluable.");
+            throw new NotEvaluableNetworkException("This algorithm cannot evaluate this network because" +
+                    "the network is of type " + networkType.toString() + ".");
         } else {
             // Check that the probNet satisfies the specific constraints of the algorithm
             List<PNConstraint> additionalConstraints = initializeAdditionalConstraints();
 
+            List<PNConstraint> notEvaluableConstraints = new ArrayList<>();
             for (PNConstraint pnConstraint : additionalConstraints) {
                 if (!pnConstraint.checkProbNet(probNet)) {
-                    throw new NotEvaluableNetworkException("Constraint " + pnConstraint.toString()
-                            + " is not satisfied by the network.");
+                    if (pnConstraint.getClass().equals(NoSuperValueNode.class)) {
+                        throw new NotEvaluableNetworkException("Evaluation of supervalue nodes is temporarily disabled.");
+                    }
+                    notEvaluableConstraints.add(pnConstraint);
                 }
+            }
+
+            if (notEvaluableConstraints.size() != 0) {
+                String notEvaluableMessage = "This algorithm cannot evaluate this network because the network does " +
+                        "not satisfy the following constraints:\n";
+                for(PNConstraint pnConstraint : notEvaluableConstraints) {
+                    notEvaluableMessage += pnConstraint.toString() + "\n";
+                }
+                throw new NotEvaluableNetworkException(notEvaluableMessage);
             }
         }
     }

@@ -167,8 +167,8 @@ public final class DiscretePotentialOperations {
         }
         return new TablePotential(resultVariables, role, resultValues);
     }
-    
-   
+
+
     /**
      * @param tablePotentials <code>List</code> of <code>TablePotential</code>s.
      * @return <code>TablePotential</code>
@@ -204,7 +204,7 @@ public final class DiscretePotentialOperations {
 			if (iConstantPotentialInterventions != null) {
             	Intervention onlyInterventionIConstantPotential = iConstantPotentialInterventions[0];
             	constantPotentialsIntervention = (constantPotentialsIntervention == null)?onlyInterventionIConstantPotential:
-            		constantPotentialsIntervention.concatenate(onlyInterventionIConstantPotential);            	
+            		constantPotentialsIntervention.concatenate(onlyInterventionIConstantPotential);
             }
         }
 
@@ -301,10 +301,10 @@ public final class DiscretePotentialOperations {
 						resultIntervention = (resultIntervention == null) ? auxIIntervention
 								: resultIntervention.concatenate(auxIIntervention);
 					}
-                    
+
                     // update the current position in each potential table
                     potentialPositions[iPotential] += accumulatedOffsets[iPotential][incrementedVariable];
-                }                
+                }
                 resultValues[resultPosition] = sum;
                 if (thereAreInterventions) {
                 	resultInterventions[resultPosition] = resultIntervention;
@@ -342,17 +342,17 @@ public final class DiscretePotentialOperations {
 	private static Criterion getCommonDecisionCriterion(List<? extends Potential> potentials) {
 		Criterion criteron, lastCriterion = null;
 		int numPotentials = potentials.size();
-		boolean existsSameCriterion = (numPotentials > 0) ? 
-				((potentials.get(0).getUtilityVariable() != null) ? 
-					(lastCriterion = potentials.get(0).getUtilityVariable().getDecisionCriterion()) != null 
-					: 
-					false)    
-				: 
+		boolean existsSameCriterion = (numPotentials > 0) ?
+				((potentials.get(0).getUtilityVariable() != null) ?
+					(lastCriterion = potentials.get(0).getUtilityVariable().getDecisionCriterion()) != null
+					:
+					false)
+				:
 				false;
 		for (int i = 1; i < numPotentials && existsSameCriterion; i++) {
 			Potential potential = potentials.get(i);
-			existsSameCriterion = 
-					potential.isUtility() && 
+			existsSameCriterion =
+					potential.isUtility() &&
 					potential.getUtilityVariable().getDecisionCriterion() == lastCriterion;
 		}
 		return existsSameCriterion ? lastCriterion : null;
@@ -365,8 +365,8 @@ public final class DiscretePotentialOperations {
         }
 		return resultCoordinates;
 	}
-    
-	/** Given a collection of variables, creates a new variable whose name is the concatenation 
+
+	/** Given a collection of variables, creates a new variable whose name is the concatenation
      * of the names of the other variables. If there is only one, returns that one. If the collection is empty,
      * returns a new variable with name "U"
      * @param variables collection of variables
@@ -398,7 +398,7 @@ public final class DiscretePotentialOperations {
 		}
 		return finalVariable;
     }
-    
+
 	/**
 	 * @param tablePotentials Collection of TablePotentials
 	 * @return A new variable whose name is the concatenation of the names of the utility variables.
@@ -446,7 +446,7 @@ public final class DiscretePotentialOperations {
 //        for (int i = 0; i < numPotentials; i++) {
 //            interventionTables[i] = potentials.get(i).interventions;
 //        }
-//        
+//
 //        List<Variable> resultVariables = result.getVariables();
 //
 //        // Gets dimensions
@@ -455,7 +455,7 @@ public final class DiscretePotentialOperations {
 //        // Gets accumulated offsets
 //        int[][] accumulatedOffsets = DiscretePotentialOperations.getAccumulatedOffsets(potentials,
 //                resultVariables);
-//        
+//
 //        int numVariables = resultVariables.size();
 //
 //        // Gets coordinate
@@ -516,17 +516,17 @@ public final class DiscretePotentialOperations {
 //                    // sum the numbers
 //                	Intervention intervention = interventionTables[iPotential][potentialPositions[iPotential]];
 //                	if (sum == null) {
-//                		sum = intervention; 
+//                		sum = intervention;
 //                	} else {
 //                		sum.concatenate(intervention);
 //                	}
 //                    // update the current position in each potential table
 //                    potentialPositions[iPotential] += accumulatedOffsets[iPotential][incrementedVariable];
-//                }                
+//                }
 //                resultInterventions[resultPosition] = sum;
 //            }
 //        }
-//		
+//
 //		return result;
 //	}
 
@@ -685,7 +685,7 @@ public final class DiscretePotentialOperations {
                 // increased variable
             	increasedVariable = findNextConfigurationAndIndexIncreasedVariable(unionDimensions,
             			unionCoordinate,increasedVariable);
-                
+
                 // update the positions of the potentials we are multiplying
                 for (int i = 0; i < numNonConstantPotentials; i++) {
                     currentPositions[i] += accumulatedOffsets[i][increasedVariable];
@@ -697,6 +697,115 @@ public final class DiscretePotentialOperations {
         } // end of outer iteration
 
         return new TablePotential(variablesToKeep, getRole(tablePotentials), resultValues);
+    }
+
+    /**
+     * @param probPotential
+     *            probability potential
+     * @param utilityPotential
+     *            utility potential
+     * @param variableToEliminate
+     *            The set of variables eliminated by marginalization (in
+     *            general, by summing out or maximizing)
+     * @argCondition variablesToKeep and variablesToEliminate are a partition of
+     *               the union of the variables of the potential
+     * @return A <code>TablePotential</code> result of multiply and marginalize.
+     */
+    public static TablePotential multiplyAndMarginalize(TablePotential probPotential,
+                                                        TablePotential utilityPotential,
+                                                        Variable variableToEliminate) {
+        // when the probability potential is a constant
+        if (probPotential.getVariables().isEmpty()) {
+            double prob = probPotential.values[0];
+            if (prob == 1) {
+                return utilityPotential;
+            } else {
+                TablePotential result = (TablePotential) utilityPotential.copy();
+                for (int i = 0; i < result.values.length; i++) {
+                    result.values[i] *= prob;
+                }
+                return result;
+            }
+        }
+
+        List<Variable> allVariables = probPotential.getVariables();
+        for (Variable variable : utilityPotential.getVariables()) {
+            if (!allVariables.contains(variable)) {
+                allVariables.add(variable);
+            }
+        }
+        List<Variable> variablesToKeep = new ArrayList<>(allVariables);
+        variablesToKeep.remove(variableToEliminate);
+
+        TablePotential resultPotential = new TablePotential(variablesToKeep, PotentialRole.UTILITY);
+        boolean thereAreInterventions = (utilityPotential.interventions != null);
+        if (thereAreInterventions) {
+            resultPotential.interventions = new Intervention[resultPotential.values.length];
+        }
+
+        // current coordinate in the product potential
+        int[] coordinates = new int[allVariables.size()];
+        int[] dimensions = TablePotential.calculateDimensions(allVariables);
+
+        int currentPositionProb = 0;
+        int[] accumulatedOffsetsProb = TablePotential.getAccumulatedOffsets(allVariables, probPotential.getVariables());
+
+        int currentPositionUtil = 0;
+        int[] accumulatedOffsetsUtil = TablePotential.getAccumulatedOffsets(allVariables, utilityPotential.getVariables());
+
+        // Auxiliary variables for the nested loops
+        double accumulator;
+        int increasedVariable = 0;
+        double[] probValues = probPotential.values;
+        double[] utilValues = utilityPotential.values;
+        double[] probs = new double[variableToEliminate.getNumStates()];
+
+        Intervention[] interventions = new Intervention[variableToEliminate.getNumStates()];
+
+        // each outer iteration corresponds to one configuration of the variables to keep
+        for (int outerIteration = 0; outerIteration < resultPotential.values.length; outerIteration++) {
+            accumulator = 0;
+
+            for (int stateIndex = 0; stateIndex < variableToEliminate.getNumStates(); stateIndex++) {
+                if (stateIndex != 0) {
+                    // find the next configuration and the index of the
+                    // increased variable
+                    increasedVariable = findNextConfigurationAndIndexIncreasedVariable(dimensions,
+                            coordinates,increasedVariable);
+
+                    currentPositionProb += accumulatedOffsetsProb[increasedVariable];
+                    currentPositionUtil += accumulatedOffsetsUtil[increasedVariable];
+                }
+
+                accumulator += probValues[currentPositionProb] * utilValues[currentPositionUtil];
+
+                probs[stateIndex] = probValues[currentPositionProb];
+
+                if (thereAreInterventions) {
+                    interventions[stateIndex] = utilityPotential.interventions[currentPositionUtil];
+                }
+            }
+
+            resultPotential.values[outerIteration] = accumulator;
+
+            if (thereAreInterventions) {
+                resultPotential.interventions[outerIteration] =
+                        Intervention.averageOfInterventions(variableToEliminate, probs, interventions);
+            }
+
+            // when eliminationSize == 0 there is a multiplication without
+            // marginalization but we must find the next configuration
+            if (outerIteration < resultPotential.values.length - 1) {
+                // find the next configuration and the index of the
+                // increased variable
+                increasedVariable = findNextConfigurationAndIndexIncreasedVariable(dimensions,
+                        coordinates,increasedVariable);
+
+                currentPositionProb += accumulatedOffsetsProb[increasedVariable];
+                currentPositionUtil += accumulatedOffsetsUtil[increasedVariable];
+            }
+        }
+        return resultPotential;
     }
 
     /**
@@ -2189,10 +2298,8 @@ public final class DiscretePotentialOperations {
      * @param b <code>double</double>
      * @return <code>true</code> when a and b are close.
      */
-    private static boolean almostEqual(double a, double b) {
-    	double aux = b - a;
-    	return (aux >= 0.0 && aux <= maxRoundErrorAllowed) || 
-    			(aux <= 0.0 && aux >= -maxRoundErrorAllowed);
+    public static boolean almostEqual(double a, double b) {
+        return (Math.abs(b - a) <= maxRoundErrorAllowed * Math.abs(a));
     }
 
 }

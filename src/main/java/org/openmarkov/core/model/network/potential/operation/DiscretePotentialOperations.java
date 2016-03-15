@@ -1892,7 +1892,7 @@ public final class DiscretePotentialOperations {
      * marginal probability and new utility in this order.
      */
     // TODO Documentar sdagInterventions.
-    public static List<TablePotential> sumOutVariable(Variable chanceVariable, 
+    public static List<TablePotential> sumOutVariable(Variable chanceVariable,
     		Collection<TablePotential> potentials, boolean sdagInterventions) {
     	// Get probability and utility potentials
     	List<TablePotential> probPotentials = new ArrayList<>();
@@ -2219,8 +2219,8 @@ public final class DiscretePotentialOperations {
     	// initialize the output potential
     	List<Variable> projectedPotentialVariables = inputPotential.getVariables();
     	projectedPotentialVariables.remove(variable);
-    	PotentialRole projectedPotentialRole = inputPotential.getPotentialRole() == 
-    			PotentialRole.CONDITIONAL_PROBABILITY ? PotentialRole.JOINT_PROBABILITY : 
+    	PotentialRole projectedPotentialRole = inputPotential.getPotentialRole() ==
+    			PotentialRole.CONDITIONAL_PROBABILITY ? PotentialRole.JOINT_PROBABILITY :
     				inputPotential.getPotentialRole();
     	TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, projectedPotentialRole);
 
@@ -2231,11 +2231,11 @@ public final class DiscretePotentialOperations {
 
     	// constants for the iterations
     	int variableSize = variable.getNumStates();
-    	int[] allVariablesDimensions = TablePotential.calculateDimensions(allVariables); 
+    	int[] allVariablesDimensions = TablePotential.calculateDimensions(allVariables);
     	int[] accOffsetsInputPotential = TablePotential.getAccumulatedOffsets(
     			allVariables, inputPotentialVariables);
     	int[] accOffsetsProjectedPotential = TablePotential.getAccumulatedOffsets(
-    			allVariables, projectedPotentialVariables); 
+    			allVariables, projectedPotentialVariables);
 
     	// auxiliary variables that may change in every iteration
     	int[] allVariablesCoordinate = new int[numInputVariables];
@@ -2271,8 +2271,8 @@ public final class DiscretePotentialOperations {
     }
 
 
-    /** 
-     * Classifies potential from the first list between probability and utility and stores them 
+    /**
+     * Classifies potential from the first list between probability and utility and stores them
      * in the second and third list
      * @param potentials <code>List</code> of <code>TablePotential</code>
      * @param probPotentials <code>List</code> of <code>TablePotential</code>
@@ -2292,7 +2292,7 @@ public final class DiscretePotentialOperations {
     }
 
 
-    /** 
+    /**
      * Compares two numbers
      * @param a <code>double</double>
      * @param b <code>double</double>

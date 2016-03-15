@@ -41,7 +41,6 @@ public class DecisionCriteriaEdit extends SimplePNEdit
     public void doEdit ()
         throws DoEditException
     {
-        // StringsWithProperties agents = probNet.getAgents();
         List<Criterion> criteria = probNet.getDecisionCriteria ();
         switch (stateAction)
         {
@@ -77,33 +76,11 @@ public class DecisionCriteriaEdit extends SimplePNEdit
             case RENAME :
             	String oldName = modifiedCriterion.getCriterionName();
             	modifiedCriterion.setCriterionName(newName);
-//            	criterionIndex = criteria.indexOf(criterionBeforeRename);
-//            	criteria.set(criterionIndex, modifiedCriterion);
-            	
-                // We substitute the new name in the nodes they had that criterion
-                for(Node node : probNet.getNodes()){
-                	// Only Utility nodes have criterion
-                	if(node.getNodeType() == NodeType.UTILITY &&
-                			// we get the utility nodes with no empty criterion
-                			node.getVariable().getDecisionCriterion()!= null && 
-                			// we get the nodes with the same criterion as criterionName
-                			node.getVariable().getDecisionCriterion().getCriterionName().equals(oldName)){
-                		
-                			// We change the name of the criterion in those nodes
-                			node.getVariable().setDecisionCriterion(modifiedCriterion);
-                		
-                	}
-                }
-
-                
-                //probNet.setDecisionCriteria (newCriteriasRename);
                 break;
 		default:
 			break;
         }
     }
-    
-    
 
     public String getNewName() {
 		return newName;
@@ -116,10 +93,6 @@ public class DecisionCriteriaEdit extends SimplePNEdit
 
 	public List<Criterion> getLastCriteria() {
 		return lastCriteria;
-	}
-
-	public void setLastCriteria(List<Criterion> lastCriteria) {
-		this.lastCriteria = lastCriteria;
 	}
 
 	@Override

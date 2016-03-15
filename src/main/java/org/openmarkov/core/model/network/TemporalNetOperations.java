@@ -98,6 +98,10 @@ public class TemporalNetOperations {
 		return classifiedNodes;
 	}
 	
+	/**
+	 * @param probNet
+	 * @return Expanded probNet
+	 */
 	public static ProbNet expandNetwork(ProbNet probNet) {
 		ProbNet expandedNet = probNet.copy(); 
 		List<List<Node>> classifiedNodes = compactNetwork(expandedNet);
@@ -108,6 +112,13 @@ public class TemporalNetOperations {
 	}
 	
 	
+	/**
+	 * @param expandedNetwork
+	 * @param inferenceAlgorithm
+	 * @param variableOfInterest
+	 * @return
+	 * @throws ImposedPoliciesException
+	 */
 	public static Map<Variable, TablePotential> traceTemporalEvolution(ProbNet expandedNetwork, 
 			InferenceAlgorithm inferenceAlgorithm,
 			Variable variableOfInterest)

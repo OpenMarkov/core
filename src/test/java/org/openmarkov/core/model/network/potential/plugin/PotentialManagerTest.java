@@ -96,6 +96,9 @@ public class PotentialManagerTest {
     	
     	for(String potentialType : potentialNames)
     	{
+			if (potentialType.equals("CycleLengthShift")){
+				continue;
+			}
 	    	Potential potential =  manager.getByName(potentialType, variableU, variables);
 	    	Assert.assertNotNull(potential);
 	    	Assert.assertEquals(PotentialRole.UTILITY, potential.getPotentialRole());

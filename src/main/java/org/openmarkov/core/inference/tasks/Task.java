@@ -9,13 +9,14 @@ import org.openmarkov.core.inference.heuristic.HeuristicFactory;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Intervention;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.constraint.NoSuperValueNode;
+import org.openmarkov.core.model.network.constraint.PNConstraint;
+import org.openmarkov.core.model.network.type.NetworkType;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
+/** This class represents a user action related to inference. */
 public abstract class Task {
 
     /** This is a copy of the <code>ProbNet</code> received. */
@@ -58,16 +59,17 @@ public abstract class Task {
 
     /**
      * @param probNet The network used in the inference
+     * @throws UnexpectedInferenceException 
      * @throws NotEvaluableNetworkException
      */
-    public Task (ProbNet probNet)
-            throws NotEvaluableNetworkException {
+    public Task (ProbNet probNet) throws NotEvaluableNetworkException {
         this.probNet = probNet.copy();
         preResolutionEvidence = new EvidenceCase();
         postResolutionEvidence = new EvidenceCase();
-        if (!isEvaluable (probNet)) {
-            throw new NotEvaluableNetworkException (probNet.toString ());
-        }
+//        //checkEvaluability(probNet);
+//        if (!isEvaluable (probNet)) {
+//            throw new NotEvaluableNetworkException(probNet.toString());
+//        }
     }
 
     /**
@@ -78,10 +80,11 @@ public abstract class Task {
     }
 
     /**
-     * @param postResolutionEvidence
+     * If <code>postResolutionEvidence == null</code>, creates an empty one.
+     * @param postResolutionEvidence <code>EvidenceCase</code>
      */
     public void setPostResolutionEvidence(EvidenceCase postResolutionEvidence) {
-        this.postResolutionEvidence = postResolutionEvidence;
+        this.postResolutionEvidence = new EvidenceCase(postResolutionEvidence);
     }
 
     /**
@@ -92,10 +95,11 @@ public abstract class Task {
     }
 
     /**
-     * @param preResolutionEvidence The pre-resolution evidence to set
+     * If <code>preResolutionEvidence == null</code>, creates an empty one.
+     * @param preResolutionEvidence The pre-resolution evidence to set. <code>EvidenceCase</code>
      */
     public void setPreResolutionEvidence(EvidenceCase preResolutionEvidence) {
-        this.preResolutionEvidence = preResolutionEvidence;
+        this.preResolutionEvidence = new EvidenceCase(preResolutionEvidence);
     }
 
     public EvidenceCase getJoinResolutionEvidence() throws IncompatibleEvidenceException {
@@ -119,7 +123,11 @@ public abstract class Task {
      * @param conditioningVariables The conditioning variables to set
      */
     public void setConditioningVariables(List<Variable> conditioningVariables) {
-        this.conditioningVariables = conditioningVariables;
+    	if (conditioningVariables != null) {
+    		this.conditioningVariables = conditioningVariables;
+    	} else {
+    		this.conditioningVariables = new ArrayList<>();
+    	}
     }
 
     /**
@@ -129,63 +137,55 @@ public abstract class Task {
 		return imposedPolicies;
 	}*/
 
-    /**
-     * @param probNet
-     * @return True if the network can be evaluated.
-     */
-    public boolean isEvaluable (ProbNet probNet){
-        boolean isEvaluable;
-
-        isEvaluable = true;
-
-        try {
-            checkEvaluability(probNet);
-        } catch (NotEvaluableNetworkException e) {
-            isEvaluable = false;
-        }
-        return isEvaluable;
-
-    }
-
-
     public void setHeuristicFactory(HeuristicFactory heuristicFactory) {
         this.heuristicFactory = heuristicFactory;
     }
 
+    public void checkNetworkConsistency (ProbNet probNet) throws NotEvaluableNetworkException {
+        boolean isApplicable;
 
-    protected static void checkEvaluability (ProbNet probNet)
-            throws NotEvaluableNetworkException
-    {
+        List<NetworkType> networkTypes = initializeNetworkTypesApplicable();
+
+        isApplicable = false;
+        NetworkType networkType = probNet.getNetworkType();
+        // Check that there is a network type applicable equal to type of probNet
+        for (int i = 0; (i < networkTypes.size()) && !isApplicable; i++) {
+            isApplicable = networkType == networkTypes.get(i);
+        }
+
+        if (!isApplicable) {
+            throw new NotEvaluableNetworkException("This algorithm cannot evaluate this network because" +
+                    "the network is of type " + networkType.toString() + ".");
+        } else {
+            // Check that the probNet satisfies the specific constraints of the algorithm
+            List<PNConstraint> additionalConstraints = initializeAdditionalConstraints();
+
+            List<PNConstraint> notEvaluableConstraints = new ArrayList<>();
+            for (PNConstraint pnConstraint : additionalConstraints) {
+                if (!pnConstraint.checkProbNet(probNet)) {
+                    if (pnConstraint.getClass().equals(NoSuperValueNode.class)) {
+                        throw new NotEvaluableNetworkException("Evaluation of supervalue nodes is temporarily disabled.");
+                    }
+                    notEvaluableConstraints.add(pnConstraint);
+                }
+            }
+
+            if (notEvaluableConstraints.size() != 0) {
+                String notEvaluableMessage = "This algorithm cannot evaluate this network because the network does " +
+                        "not satisfy the following constraints:\n";
+                for(PNConstraint pnConstraint : notEvaluableConstraints) {
+                    notEvaluableMessage += pnConstraint.toString() + "\n";
+                }
+                throw new NotEvaluableNetworkException(notEvaluableMessage);
+            }
+        }
     }
 
+    protected abstract List<PNConstraint> initializeAdditionalConstraints();
 
+    protected abstract List<NetworkType> initializeNetworkTypesApplicable();
 
-//    /**
-//     * @return The global expected utility of the influence diagram. It is a potential
-//     * defined over the conditioning variables.
-//     */
-//    public abstract TablePotential getUtility() throws
-//            IncompatibleEvidenceException,
-//            UnexpectedInferenceException;
-//
-//    public abstract TablePotential getGlobalUtility() throws
-//            IncompatibleEvidenceException,
-//            UnexpectedInferenceException;
-//
-//    /**
-//     * @return The global expected utility of the influence diagram. It is a potential
-//     * defined over the conditioning variables.
-//     */
-//    public abstract TablePotential getProbability() throws
-//            IncompatibleEvidenceException,
-//            UnexpectedInferenceException;
-//
-//    public abstract HashMap<Variable, TablePotential> getPosteriorValues()
-//            throws IncompatibleEvidenceException, UnexpectedInferenceException;
-//
-
-
-    public abstract boolean checkNetworkConsistency() throws NotEvaluableNetworkException;
-    public abstract boolean checkEvidenceConsistency();
-    public abstract boolean checkPoliciesConsistency();
+    public boolean checkEvidenceConsistency() {return true;}
+    
+    public boolean checkPoliciesConsistency() {return true;}
 }

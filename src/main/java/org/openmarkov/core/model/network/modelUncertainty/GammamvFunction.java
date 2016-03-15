@@ -6,7 +6,7 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
-@ProbDensFunctionType(name="Gamma-mv", isValidForProbabilities = false, parameters = {"mean", "standard error"})
+@ProbDensFunctionType(name="Gamma-mv", isValidForProbabilities = false, parameters = {"mean", "standard deviation"})
 public class GammamvFunction extends GammaAbstract
 {
     private double mu;

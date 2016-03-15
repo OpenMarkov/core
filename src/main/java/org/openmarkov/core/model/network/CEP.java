@@ -28,7 +28,7 @@ public class CEP {
 	private double[] thresholds;
 
 	private double minThreshold;
-	
+
 	private final double defaultMinimalThreshold = 0.0;
 
 	private double maxThreshold;
@@ -43,10 +43,10 @@ public class CEP {
 
 	// Constructors
 	/** 
-	 * @param interventions. <code>Intervention[]</code>
-	 * @param costs. <code>double[]</code>
-	 * @param effectivities. <code>double[]</code>
-	 * @param thresholds. <code>double[]</code>
+	 * @param interventions <code>Intervention[]</code>
+	 * @param costs <code>double[]</code>
+	 * @param effectivities <code>double[]</code>
+	 * @param thresholds <code>double[]</code>
 	 * @throws CostEffectivenessException 
 	 */
 	public CEP(
@@ -81,11 +81,11 @@ public class CEP {
 
 	/**
 	 * Creates a partition with only one interval
-	 * @param intervention. <code>Potential</code>
-	 * @param cost. <code>double</code>
-	 * @param effectiveness. <code>double</code>
-	 * @param minThreshold. <code>double</code>
-	 * @param maxThreshold. <code>double</code>
+	 * @param intervention <code>Potential</code>
+	 * @param cost <code>double</code>
+	 * @param effectiveness <code>double</code>
+	 * @param minThreshold <code>double</code>
+	 * @param maxThreshold <code>double</code>
 	 * @throws CostEffectivenessException
 	 */
 	public CEP(
@@ -107,12 +107,12 @@ public class CEP {
 	}
 
 	/**
-	 * @param interventions. <code>Potential[]</code>
-	 * @param costs. <code>double[]</code>
-	 * @param effectivities. <code>double[]</code>
-	 * @param thresholds. <code>double[]</code>
-	 * @param minThreshold. <code>double</code>
-	 * @param maxThreshold. <code>double</code>
+	 * @param interventions <code>Potential[]</code>
+	 * @param costs <code>double[]</code>
+	 * @param effectivities <code>double[]</code>
+	 * @param thresholds <code>double[]</code>
+	 * @param minThreshold <code>double</code>
+	 * @param maxThreshold <code>double</code>
 	 * @throws CostEffectivenessException
 	 */
 	public CEP(
@@ -146,7 +146,7 @@ public class CEP {
 	}
 
 	/**
-	 * @param lambda. <code>double</code>
+	 * @param lambda <code>double</code>
 	 * @return Interval index corresponding to lambda. <code>int</code>
 	 */
 	public int index(double lambda) {
@@ -158,7 +158,7 @@ public class CEP {
 
 	/** 
 	 * Multiplies costs and effectivities per factor.
-	 * @param factor. <code>double</code>
+	 * @param factor <code>double</code>
 	 */
 	public void multiply(double factor) {
 		if (!zeroProbability) {
@@ -171,7 +171,7 @@ public class CEP {
 
 	/** 
 	 * Divides costs and effectivities per factor.
-	 * @param factor. <code>double</code>
+	 * @param factor <code>double</code>
 	 */
 	public void divide(double factor) {
 		if (!zeroProbability) {
@@ -184,7 +184,7 @@ public class CEP {
 
 	/** 
 	 * Change the indentation in <code>toString()</code>. Used for nested interventions.
-	 * @param indentLevel. <code>int</code>
+	 * @param indentLevel <code>int</code>
 	 */
 	public void setIndentLevel(int indentLevel) {
 		this.indentLevel = indentLevel;
@@ -209,7 +209,7 @@ public class CEP {
 	}
 
 	/**
-	 * @param lambda. <code>double</code>
+	 * @param lambda <code>double</code>
 	 * @return Cost corresponding to lambda. <code>double</code>
 	 */
 	public double getCost(double lambda) {
@@ -217,7 +217,7 @@ public class CEP {
 	}
 
 	/**
-	 * @param lambda. <code>double</code>
+	 * @param interval <code>int</code>
 	 * @return Cost corresponding to interval. <code>double</code>
 	 */
 	public double getCost(int interval) {
@@ -225,7 +225,7 @@ public class CEP {
 	}
 
 	/**
-	 * @param lambda. <code>double</code>
+	 * @param lambda <code>double</code>
 	 * @return Effectiveness corresponding to lambda. <code>double</code>
 	 */
 	public double getEffectiveness(double lambda) {
@@ -233,7 +233,7 @@ public class CEP {
 	}
 
 	/**
-	 * @param lambda. <code>double</code>
+	 * @param interval <code>int</code>
 	 * @return Effectiveness corresponding to interval. <code>double</code>
 	 */
 	public double getEffectiveness(int interval) {
@@ -241,7 +241,7 @@ public class CEP {
 	}
 
 	/**
-	 * @param lambda. <code>double</code>
+	 * @param lambda <code>double</code>
 	 * @return TreeADDPotential corresponding to lambda. <code>TreeADDPotential</code>
 	 */
 	public Intervention getIntervention(double lambda) {
@@ -249,7 +249,7 @@ public class CEP {
 	}
 
 	/**
-	 * @param interval. <code>int</code>
+	 * @param interval <code>int</code>
 	 * @return TreeADDPotential corresponding to interval. <code>TreeADDPotential</code>
 	 */
 	public Intervention getIntervention(int interval) {
@@ -275,7 +275,7 @@ public class CEP {
 	}
 
 	/**
-	 * @param lambda. <code>double</code>
+	 * @param interval <code>int</code>
 	 * @return threshold between interval and interval + 1. <code>double</code>
 	 */
 	public double getThreshold(int interval) {
@@ -290,16 +290,16 @@ public class CEP {
 	}
 
 	/**
-	 * @param cost. <code>double</code>
-	 * @param interval. <code>int</code>
+	 * @param cost <code>double</code>
+	 * @param interval <code>int</code>
 	 */
 	public void setCost(double cost, int interval) {
 		costs[interval] = cost;
 	}
 
 	/**
-	 * @param eff. <code>double</code>
-	 * @param interval. <code>int</code>
+	 * @param eff <code>double</code>
+	 * @param interval <code>int</code>
 	 */
 	public void setEffectiveness(double eff, int interval) {
 		effectivities[interval] = eff;
@@ -458,6 +458,15 @@ public class CEP {
 		} else {
 			strBuffer.append(decimalFormatNoDecimalsAfterComa.format(number));
 		}		
+	}
+
+	/**
+	 * Calculate net monetary benefit given the willigness to pay (lambda)
+	 * @param lambda <code>double</code>
+	 * @return net monetary benefit given lambda
+     */
+	public double getNetMonetaryBenefit(double lambda) {
+		return getEffectiveness(lambda) * lambda - getCost(lambda);
 	}
 
 }

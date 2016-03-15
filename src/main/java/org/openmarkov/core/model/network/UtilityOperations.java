@@ -26,10 +26,18 @@ public class UtilityOperations {
 			if (utilityNode.getVariable().getDecisionCriterion() != null) {
 				// Get the actual criterion scale
 				double scale = utilityNode.getVariable().getDecisionCriterion().getUnicriteriaScale();
-				// Transform the potential with the scale
-				Potential potential = utilityNode.getPotentials().get(0).deepCopy(probNet);
-				potential.scalePotential(scale);
-				utilityNode.setPotential(potential);
+				if (scale != 0) {
+					// Transform the potential with the scale
+					Potential potential = utilityNode.getPotentials().get(0).deepCopy(probNet);
+					potential.scalePotential(scale);
+					utilityNode.setPotential(potential);
+				} else {
+					// Remove the potential and the node
+					probNet.removePotentials(utilityNode.getPotentials());
+					probNet.removeNode(utilityNode);
+
+				}
+
 			}
 		}
 	}
@@ -43,10 +51,16 @@ public class UtilityOperations {
 			if (utilityNode.getVariable().getDecisionCriterion() != null) {
 				// Save the actual criterion scale
 				double scale = utilityNode.getVariable().getDecisionCriterion().getCeScale();
-				// Transform the potential with the scale
-				Potential potential = utilityNode.getPotentials().get(0).deepCopy(probNet);
-				potential.scalePotential(scale);
-				utilityNode.setPotential(potential);
+				if (scale != 0) {
+					// Transform the potential with the scale
+					Potential potential = utilityNode.getPotentials().get(0).deepCopy(probNet);
+					potential.scalePotential(scale);
+					utilityNode.setPotential(potential);
+				} else {
+					// Remove the potential and the node
+					probNet.removePotentials(utilityNode.getPotentials());
+					probNet.removeNode(utilityNode);
+				}
 			}
 		}
 	}

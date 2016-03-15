@@ -66,7 +66,7 @@ public class VariableTypeEditTest {
 			int i = 0;
 
 			for (State state : defaultStates) {
-				assertTrue(state == numericNode.getVariable().getStates()[i++]);
+				assertTrue(state.toString().equals(numericNode.getVariable().getStates()[i++].toString()));
 			}
 		}
 
@@ -114,7 +114,7 @@ public class VariableTypeEditTest {
 			int i = 0;
 
 			for (State state : defaultStates) {
-				assertTrue(state == numericNode.getVariable().getStates()[i++]);
+				assertTrue(state.toString().equals(numericNode.getVariable().getStates()[i++].toString()));
 			}
 		}
 

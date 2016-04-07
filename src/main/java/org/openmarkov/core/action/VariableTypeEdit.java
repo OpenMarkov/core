@@ -194,7 +194,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 
 		newListPotentials.add(uniformPotential);
 
-		if (node.getNodeType() == NodeType.UTILITY && role == PotentialRole.UTILITY) {
+		if (node.getNodeType() == NodeType.UTILITY) {
 			// tablePotential.getVariables().remove(0);
 			uniformPotential.setUtilityVariable(thisVariable);
 		}

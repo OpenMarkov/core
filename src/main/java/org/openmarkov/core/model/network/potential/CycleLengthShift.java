@@ -103,8 +103,7 @@ public class CycleLengthShift extends Potential {
 			// Build projected potential based on parent's potential
 			TablePotential projectedParentPotential = findPotentialByVariable(
 					conditioningVariable, projectedPotentials);
-			List<Variable> projectedVariables = projectedParentPotential
-					.getVariables();
+			List<Variable> projectedVariables = projectedParentPotential.getVariables();
 			if (role != PotentialRole.UTILITY) {
 				// replace parent variable with child variable in the list of
 				// variables of the projected potential

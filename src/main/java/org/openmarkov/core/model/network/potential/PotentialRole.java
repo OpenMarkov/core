@@ -20,7 +20,7 @@ public enum PotentialRole {
 //	DECISION(1, "decision"),
 	JOINT_PROBABILITY(2, "joinProbability"),
 	POLICY(3, "policy"),
-	UTILITY(4, "utility"),
+//	UTILITY(4, "utility"),
 	LINK_RESTRICTION(5,"linkRestriction"),
 	UNSPECIFIED(6,"unspecified"), // TODO Remove 
 	INTERVENTION(7,"intervention");

@@ -303,7 +303,7 @@ public class DecisionTreeBuilder
             {
                 leafVariables.add (leafNode.getVariable ());
             }
-            svNode.addPotential (new SumPotential (leafVariables, PotentialRole.UTILITY));
+            svNode.addPotential (new SumPotential (leafVariables, PotentialRole.UNSPECIFIED));
             for (Node leaf : leaves)
             {
                 probNet.addLink (leaf, svNode, true);

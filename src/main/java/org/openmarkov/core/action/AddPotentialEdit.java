@@ -47,9 +47,6 @@ public class AddPotentialEdit extends SimplePNEdit {
 		StringBuilder buffer = new StringBuilder("AddPotentialEdit: ");
 		if (potential != null) {
 			buffer.append(potential.getVariables());
-			if (potential.isUtility()) {
-				buffer.append("-Utility");
-			}
 		} else {
 			buffer.append("null !!!!");
 		}

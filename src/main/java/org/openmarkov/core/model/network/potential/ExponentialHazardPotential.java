@@ -73,7 +73,6 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
         return !variables.isEmpty() 
-        		&& role != PotentialRole.UTILITY
                 && variables.get(0).getVariableType() == VariableType.FINITE_STATES
                 && variables.get(0).getNumStates() == 2;
     }

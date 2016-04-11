@@ -33,14 +33,14 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 public class SumPotential extends Potential {
 
 	// Constructor
-	/**
-	 * 
-	 * @param variables
-	 * @param utilityVariable
-	 */
-	public SumPotential(Variable utilityVariable, List<Variable> variables) {
-		super(utilityVariable, variables);
-	}	
+//	/**
+//	 *
+//	 * @param variables
+//	 * @param utilityVariable
+//	 */
+//	public SumPotential(Variable utilityVariable, List<Variable> variables) {
+//		super(utilityVariable, variables);
+//	}
 	/**
 	 * @param variables
 	 * @param role
@@ -63,7 +63,7 @@ public class SumPotential extends Potential {
 		boolean suitable = (role == PotentialRole.CONDITIONAL_PROBABILITY
 				|| role == PotentialRole.POLICY) && variables.get(0).getVariableType() == VariableType.NUMERIC;
 				
-        return suitable || (role == PotentialRole.UTILITY && node.isSuperValueNode());
+        return suitable || (role == PotentialRole.UNSPECIFIED && node.isSuperValueNode());
     }
     
 	@Override
@@ -86,7 +86,6 @@ public class SumPotential extends Potential {
 			parentPotentials.add(findPotentialByVariable(parentVariable, projectedPotentials));
 		}
 		TablePotential sumPotential = DiscretePotentialOperations.sum(parentPotentials);
-		sumPotential.utilityVariable = utilityVariable;
 		return Arrays.asList(sumPotential);
 	}
 

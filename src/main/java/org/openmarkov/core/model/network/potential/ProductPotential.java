@@ -41,9 +41,9 @@ public class ProductPotential extends Potential {
 		super(variables, role);
 	}
 
-	public ProductPotential(Variable utilityVariable, List<Variable> variables) {
-		super(utilityVariable, variables);
-	}
+//	public ProductPotential(Variable utilityVariable, List<Variable> variables) {
+//		super(utilityVariable, variables);
+//	}
 	
     public ProductPotential(ProductPotential potential) {
         super(potential);
@@ -60,7 +60,7 @@ public class ProductPotential extends Potential {
 		boolean suitable = (role == PotentialRole.CONDITIONAL_PROBABILITY
 				|| role == PotentialRole.POLICY) && variables.get(0).getVariableType() == VariableType.NUMERIC;
 				
-        return suitable || (role == PotentialRole.UTILITY && node.isSuperValueNode());
+        return suitable || (role == PotentialRole.UNSPECIFIED && node.isSuperValueNode());
     }        
     
 
@@ -83,7 +83,6 @@ public class ProductPotential extends Potential {
 			parentPotentials.add(findPotentialByVariable(parentVariable, projectedPotentials));
 		}
 		TablePotential productPotential = DiscretePotentialOperations.multiply(parentPotentials);
-		productPotential.utilityVariable = utilityVariable;
 		return Arrays.asList(productPotential);	}
 
     @Override

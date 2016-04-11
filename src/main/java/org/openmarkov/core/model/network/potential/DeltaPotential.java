@@ -66,11 +66,11 @@ public class DeltaPotential extends Potential{
         }
     }
 
-    public DeltaPotential(Variable utilityVariable, List<Variable> variables)
-    {
-    	this(variables, PotentialRole.UTILITY);
-    	this.utilityVariable = utilityVariable;
-    }
+//    public DeltaPotential(Variable utilityVariable, List<Variable> variables)
+//    {
+//    	this(variables, PotentialRole.UTILITY);
+//    	this.utilityVariable = utilityVariable;
+//    }
     
     public DeltaPotential(DeltaPotential potential)
     {
@@ -114,8 +114,8 @@ public class DeltaPotential extends Potential{
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
         return ((variables.size() <= 1 || role == PotentialRole.POLICY) ||
-                (variables.size() > 1 && role == PotentialRole.CONDITIONAL_PROBABILITY && node.getVariable().getVariableType() == VariableType.NUMERIC)) &&
-                role != PotentialRole.UTILITY;
+                (variables.size() > 1 && role == PotentialRole.CONDITIONAL_PROBABILITY &&
+                        node.getVariable().getVariableType() == VariableType.NUMERIC));
     }
 
     @Override

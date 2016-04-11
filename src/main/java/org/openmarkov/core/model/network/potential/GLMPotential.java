@@ -158,7 +158,7 @@ public abstract class GLMPotential extends Potential {
                 : this.sampledCoefficients;
         List<Variable> evidencelessVariables = new ArrayList<>();
 		Map<String, String> variableValues = new HashMap<>();
-		int firstParentVariableIndex = isUtility()? 0 : 1;
+		int firstParentVariableIndex = 1;
 		for (int i = firstParentVariableIndex; i < variables.size(); ++i) {
 			Variable variable = variables.get(i);
 			if (evidenceCase == null || !evidenceCase.contains(variable)) {
@@ -350,7 +350,7 @@ public abstract class GLMPotential extends Potential {
     }
     
     protected static String[] getDefaultCovariates(List<Variable> variables, PotentialRole role, String[] mandatoryCovariates) {
-        int firstParentIndex = (role == PotentialRole.UTILITY)? 0 : 1;
+        int firstParentIndex = 1;
         String[] covariates = new String[mandatoryCovariates.length + variables.size()-firstParentIndex];
         
         int j = 0;

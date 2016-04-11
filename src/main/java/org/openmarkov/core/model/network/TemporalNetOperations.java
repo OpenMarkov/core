@@ -1,33 +1,16 @@
 package org.openmarkov.core.model.network;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.ImposedPoliciesException;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.inference.BasicOperations;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.TransitionTime;
-import org.openmarkov.core.model.network.Criterion.CECriterion;
-import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+
+import java.util.*;
 
 public class TemporalNetOperations {
 
@@ -99,8 +82,8 @@ public class TemporalNetOperations {
 	}
 	
 	/**
-	 * @param probNet
-	 * @return Expanded probNet
+	 * @param probNet Original network
+	 * @return expanded network
 	 */
 	public static ProbNet expandNetwork(ProbNet probNet) {
 		ProbNet expandedNet = probNet.copy(); 
@@ -113,10 +96,10 @@ public class TemporalNetOperations {
 	
 	
 	/**
-	 * @param expandedNetwork
-	 * @param inferenceAlgorithm
-	 * @param variableOfInterest
-	 * @return
+	 * @param expandedNetwork Expanded network
+	 * @param inferenceAlgorithm Inference algorithm
+	 * @param variableOfInterest Variable of interest
+	 * @return Temporal evolution of the variable of interest
 	 * @throws ImposedPoliciesException
 	 */
 	public static Map<Variable, TablePotential> traceTemporalEvolution(ProbNet expandedNetwork, 
@@ -222,7 +205,7 @@ public class TemporalNetOperations {
 	private static void expandPotentialAndLinks(ProbNet probNet, Node oldNode, Node newNode, int timeDifference)
 			throws NodeNotFoundException {
 		Potential oldPotential = oldNode.getPotentials().get(0);
-		Potential newPotential = null;
+		Potential newPotential;
 		if (oldPotential instanceof CycleLengthShift) {
 			newPotential = new CycleLengthShift(oldPotential.getShiftedVariables(probNet,
 					timeDifference), probNet.getCycleLength());
@@ -250,7 +233,7 @@ public class TemporalNetOperations {
 
 	/**
 	 * Method that receives a node and retrieves all the nodes related to it that belong to other time slices
-	 * @param node
+	 * @param node Node of reference
 	 * @return a list with the nodes that belong to other time slices. Null if there no nodes related to other
 	 * time slices or if the received node is not 'temporal'
 	 */
@@ -339,7 +322,6 @@ public class TemporalNetOperations {
 							TablePotential currentCyclePotential = (TablePotential) currentCyclePotentials.get(i);
 							TablePotential previousCyclePotential = (TablePotential) previousCyclePotentials.get(i);
 							TablePotential sumPotential = DiscretePotentialOperations.sum(Arrays.asList(currentCyclePotential, previousCyclePotential));
-							sumPotential.setUtilityVariable(utilityNode.getVariable());
 							for(int j=0; j<sumPotential.values.length;++j)
 								sumPotential.values[j] /= 2;
 							newPotentials.add(sumPotential);

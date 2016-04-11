@@ -91,7 +91,6 @@ public class AddLinkEdit extends BaseLinkEdit {
     				}
     				Potential newPotential = new SumPotential (variables,
     						oldPotential.getPotentialRole ());
-    				newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
     				newPotentials.add (newPotential);
         		}
         	} else {

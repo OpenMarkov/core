@@ -38,7 +38,7 @@ public class UtilityNodes extends PNConstraint {
 		    List<Potential> potentials = probNet.getPotentials();
 			int numUtilityPontentials = 0;
 			for (Potential potential : potentials) {
-				if (potential.isUtility()) {
+				if (potential.getVariable(0).getDecisionCriterion() != null) {
 					numUtilityPontentials++;
 				}
 			}

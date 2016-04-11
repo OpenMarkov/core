@@ -9,21 +9,15 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.CycleLength;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Potential identical to another but moved to another temporal slice.
@@ -84,7 +78,7 @@ public class CycleLengthShift extends Potential {
 			throws NonProjectablePotentialException {
 		Variable conditionedVariable = getConditionedVariable();
 		Variable conditioningVariable = variables.get((conditionedVariable == variables.get(0)) ? 1 : 0);
-		TablePotential projectedPotential = null;
+		TablePotential projectedPotential;
 		if (conditionedVariable.getVariableType() == VariableType.NUMERIC) {
 			for (Variable variable : variables) {
 				if (!variable.equals(conditionedVariable)
@@ -104,17 +98,12 @@ public class CycleLengthShift extends Potential {
 			TablePotential projectedParentPotential = findPotentialByVariable(
 					conditioningVariable, projectedPotentials);
 			List<Variable> projectedVariables = projectedParentPotential.getVariables();
-			if (role != PotentialRole.UTILITY) {
-				// replace parent variable with child variable in the list of
-				// variables of the projected potential
-				projectedVariables.remove(conditioningVariable);
-				projectedVariables.add(0, conditionedVariable);
-				projectedPotential = new TablePotential(projectedVariables,
-						role);
-			} else {
-				projectedPotential = new TablePotential(conditionedVariable,
-						projectedVariables);
-			}
+			// replace parent variable with child variable in the list of
+			// variables of the projected potential
+			projectedVariables.remove(conditioningVariable);
+			projectedVariables.add(0, conditionedVariable);
+			projectedPotential = new TablePotential(projectedVariables,role);
+
 
 			int numStates = conditionedVariable.getNumStates();
 			int numStatesParent = conditioningVariable.getNumStates();
@@ -130,7 +119,7 @@ public class CycleLengthShift extends Potential {
 				configurationIndex++;
 			}
 		}
-		return Arrays.asList(projectedPotential);
+		return Collections.singletonList(projectedPotential);
 	}
 
 	@Override

@@ -135,7 +135,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 	/****
 	 * This method resets the link restriction of the links of the node
 	 * 
-	 * @param node
+	 * @param node Node
 	 */
 	private void resetLink(Node node) {
 
@@ -164,15 +164,12 @@ public class VariableTypeEdit extends SimplePNEdit {
 		List<Potential> potentials = node.getPotentials();
 		PotentialRole role = potentials.get(0).getPotentialRole();
 		// first, this variable. The potentials is not null
-		if (node.getNodeType() == NodeType.UTILITY)
-			thisVariable = potentials.get(0).getUtilityVariable();
-		else {
-			thisVariable = potentials.get(0).getVariable(0);
-			variables.add(thisVariable);
-		}
+		thisVariable = potentials.get(0).getVariable(0);
+		variables.add(thisVariable);
+
 
 		int numOfCellsInTable = thisVariable.getNumStates();
-		double initialValue = Util.round(1 / (new Double(numOfCellsInTable)), "0.01");
+		double initialValue = Util.round(1 / ((double) numOfCellsInTable), "0.01");
 		// add now all the parents
 
 		for (Node parent : node.getParents()) {
@@ -194,10 +191,6 @@ public class VariableTypeEdit extends SimplePNEdit {
 
 		newListPotentials.add(uniformPotential);
 
-		if (node.getNodeType() == NodeType.UTILITY) {
-			// tablePotential.getVariables().remove(0);
-			uniformPotential.setUtilityVariable(thisVariable);
-		}
 		node.setPotentials(newListPotentials);
 
 	}
@@ -218,7 +211,6 @@ public class VariableTypeEdit extends SimplePNEdit {
 						// Update potential
 						Potential newPotential = new SumPotential(oldPotential.getVariables(),
 								oldPotential.getPotentialRole());
-						newPotential.setUtilityVariable(oldPotential.getUtilityVariable());
 						newPotentials.add(newPotential);
 					}
 				} else if (!child.onlyNumericalParents()) {// mixture of
@@ -231,7 +223,6 @@ public class VariableTypeEdit extends SimplePNEdit {
 						// Update potential
 						Potential newPotential = new UniformPotential(oldPotential.getVariables(),
 								oldPotential.getPotentialRole());
-						newPotential.setUtilityVariable(oldPotential.getUtilityVariable());
 						newPotentials.add(newPotential);
 					}
 				}

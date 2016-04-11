@@ -49,18 +49,18 @@ public class UniformPotential extends Potential
         }
     }
 
-    /**
-     * @param variables <code>ArrayList</code> of <code>Variable</code>
-     * @param utilityVariable <code>Variable</code>
-     */
-    public UniformPotential (Variable utilityVariable, List<Variable> variables)
-    {
-        super (utilityVariable, variables);
-        if (allVariablesAreDiscrete (variables))
-        {
-            discreteValue = calculateDiscreteValue (variables);
-        }
-    }
+//    /**
+//     * @param variables <code>ArrayList</code> of <code>Variable</code>
+//     * @param utilityVariable <code>Variable</code>
+//     */
+//    public UniformPotential (Variable utilityVariable, List<Variable> variables)
+//    {
+//        super (utilityVariable, variables);
+//        if (allVariablesAreDiscrete (variables))
+//        {
+//            discreteValue = calculateDiscreteValue (variables);
+//        }
+//    }
 
     /**
      * @param role <code>PotentialRole</code>
@@ -163,16 +163,6 @@ public class UniformPotential extends Potential
                 }
                 newProjectedPotentials.add (projectedPotential);
                 break;
-            // In case of utility potentials, return an empty potential
-            case UTILITY :
-                ArrayList<Variable> potentialVariables = new ArrayList<>(variables);
-                if (evidenceCase != null)
-                {
-                    potentialVariables.removeAll (evidenceCase.getVariables ());
-                }
-                projectedPotential = new TablePotential (potentialVariables, PotentialRole.UTILITY);
-                newProjectedPotentials.add (projectedPotential);
-                break;
             default :
                 break;
         } // end of switch/case statement
@@ -230,7 +220,7 @@ public class UniformPotential extends Potential
 
     public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)
     {
-        return isUtility()? 0 : 1.0 / variables.get (0).getNumStates ();
+        return 1.0 / variables.get (0).getNumStates ();
     }
 
     @Override

@@ -34,10 +34,10 @@ public class LinearCombinationPotential extends GLMPotential {
         super(variables, role, getDefaultCovariates(variables, role), new double[variables.size()]);
     }
     
-    public LinearCombinationPotential(Variable utilityVariable, List<Variable> variables) {
-        super(variables, PotentialRole.UTILITY, getDefaultCovariates(variables, PotentialRole.UTILITY), new double[variables.size()+1]);
-        this.utilityVariable = utilityVariable;
-    }      
+//    public LinearCombinationPotential(Variable utilityVariable, List<Variable> variables) {
+//        super(variables, PotentialRole.UTILITY, getDefaultCovariates(variables, PotentialRole.UTILITY), new double[variables.size()+1]);
+//        this.utilityVariable = utilityVariable;
+//    }
 
     public LinearCombinationPotential(List<Variable> variables, PotentialRole role,
             String[] covariates, double[] coefficients) {
@@ -60,7 +60,7 @@ public class LinearCombinationPotential extends GLMPotential {
      *            . <code>PotentialRole</code>.
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        return role == PotentialRole.UTILITY || (!variables.isEmpty() 
+        return role == PotentialRole.UNSPECIFIED || (!variables.isEmpty()
         		&& variables.get(0).getVariableType() == VariableType.NUMERIC);
     }    
 
@@ -81,17 +81,12 @@ public class LinearCombinationPotential extends GLMPotential {
 
         List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
         TablePotential projectedPotential = null;
-        if(isUtility())
-        {
-        	projectedPotential = new TablePotential(utilityVariable, projectedPotentialVariables);
-        }else
-        {
-        	projectedPotentialVariables.add(0, variables.get(0));
-        	projectedPotential = new TablePotential(projectedPotentialVariables, role);
-        }
+		projectedPotentialVariables.add(0, variables.get(0));
+		projectedPotential = new TablePotential(projectedPotentialVariables, role);
+
         int[] offsets = projectedPotential.getOffsets();
         int[] dimensions = projectedPotential.getDimensions();
-        int firstParentIndex = isUtility()? 0 : 1;
+        int firstParentIndex = 1;
         for (int i = 0; i < projectedPotential.values.length; i += numStates) {
             // Set the values of variables without evidence
             for (int j = firstParentIndex; j < projectedPotentialVariables.size(); ++j) {

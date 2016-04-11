@@ -83,51 +83,19 @@ public class SetPotentialEdit extends SimplePNEdit {
 	// funcion
 	@Override
 	public void doEdit() throws DoEditException {
-		List<Variable> variables = new ArrayList<>();
-		//Node node = probNet.getNode(variable);
+		List<Variable> variables;
 		PotentialRole role;
-		// si es un nodo de decision y la politica es optima se asume un cambio
-		// de politica optima a probabilista (de momento no se tiene en cuenta
-		// la politica determinista)
-	/*	if ((node.getNodeType() == NodeType.DECISION && node
-				.getPolicyType() == PolicyType.OPTIMAL)) {// no tiene potencial
-															// hay que crear uno
-															// uniforme en
-															// funcion de los
-															// predecesores
-															// informativos
-			role = PotentialRole.POLICY;
-			variables.add(variable);
-			for (Node node : node.getNode().getParents()) {// cambiando el
-																// getParents
-																// por
-																// predecesores
-																// informativos,
-																// quitar
-																// el for y
-																// llamar al
-																// metodo de
-																// Manolo que me
-																// devuelve las
-																// variables
-				variables.add(((Node) node.getObject()).getVariable());
-			}
-		} else {*/
-			variables = lastPotential.getVariables();
-			role = lastPotential.getPotentialRole();
-	//	}
+		variables = lastPotential.getVariables();
+		role = lastPotential.getPotentialRole();
+
 		List<Potential> potentials = new ArrayList<>();
 		if (newPotential == null) {
 			PotentialManager relationTypeManager = new PotentialManager();
-			if (lastPotential.isUtility()) {
-				newPotential = relationTypeManager.getByName(newPotentialType, lastPotential.getUtilityVariable(), variables);
-			} else {
-				if(newPotentialType.equals(relationTypeManager.getPotentialName(CycleLengthShift.class))){
-					newPotential =  relationTypeManager.getByName(newPotentialType, variables, role, probNet.getCycleLength());
-    			}else{
-    				newPotential = relationTypeManager.getByName(newPotentialType, variables, role);
-    			}
-//			newPotential = relationTypeManager.getByName(newPotentialType, variables, role);
+
+			if(newPotentialType.equals(PotentialManager.getPotentialName(CycleLengthShift.class))){
+				newPotential =  relationTypeManager.getByName(newPotentialType, variables, role, probNet.getCycleLength());
+			}else{
+				newPotential = relationTypeManager.getByName(newPotentialType, variables, role);
 			}
 		}
 
@@ -142,7 +110,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 		node.setPotentials(potentials);
 		// update potential with link restriction
 		if (newPotential instanceof TablePotential && node.getNodeType() != NodeType.DECISION ) {
-			newPotential = (TablePotential) LinkRestrictionPotentialOperations
+			newPotential = LinkRestrictionPotentialOperations
 					.updatePotentialByLinkRestrictions(node);
 			potentials = new ArrayList<>();
 			potentials.add(newPotential);

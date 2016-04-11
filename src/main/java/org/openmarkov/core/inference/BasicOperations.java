@@ -6,27 +6,16 @@
 
 package org.openmarkov.core.inference;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Stack;
-
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
+
+import java.util.*;
 
 public class BasicOperations {
     /**
@@ -55,7 +44,6 @@ public class BasicOperations {
             } else {
                 newPotential = DiscretePotentialOperations.multiply(potentials);
             }
-            newPotential.setUtilityVariable(utilityNode.getVariable());
         }
         return newPotential;
     }

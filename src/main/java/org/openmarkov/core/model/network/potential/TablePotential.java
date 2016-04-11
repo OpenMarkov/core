@@ -115,16 +115,16 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         }
     }
 
-    /**
-     * For role utility
-     * 
-     * @param variables
-     * @param utilityVariable
-     */
-    public TablePotential(Variable utilityVariable, List<Variable> variables) {
-        this(variables, PotentialRole.UTILITY);
-        this.utilityVariable = utilityVariable;
-    }
+//    /**
+//     * For role utility
+//     *
+//     * @param variables
+//     * @param utilityVariable
+//     */
+//    public TablePotential(Variable utilityVariable, List<Variable> variables) {
+//        this(variables, PotentialRole.UTILITY);
+//        this.utilityVariable = utilityVariable;
+//    }
 
     /**
      * @param variables
@@ -321,23 +321,9 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
                 }
             }
             // Common final part for constant and not constant potentials
-            projectedPotential.setUtilityVariable(this.utilityVariable);
             projectedPotential.setUncertainTableToNullIfNullValues();
         }
-        // discounts utilities
-        if (role == PotentialRole.UTILITY
-                && inferenceOptions != null
-                && inferenceOptions.discountRate != 1.0
-                && utilityVariable.isTemporal()) {
-            int timeSlice = utilityVariable.getTimeSlice();
-            double discount = Math.pow(inferenceOptions.discountRate, timeSlice);
-            for (int i = 0; i < projectedPotential.values.length; i++) {
-                projectedPotential.values[i] *= discount;
-            }
-        }
-        if (role == PotentialRole.UTILITY) {
-            projectedPotential.setUtilityVariable(utilityVariable);
-        }
+
         newProjectedPotentials.add(projectedPotential);
         return newProjectedPotentials;
     }
@@ -753,19 +739,13 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         int[] coordinates;
         int sizeCoordinates;
         int pos;
-        boolean isChanceVariable;
         int sizeEvi = configuration.getFindings().size();
-        isChanceVariable = !(this.isUtility());
-        sizeCoordinates = sizeEvi + (isChanceVariable ? 1 : 0);
+        sizeCoordinates = sizeEvi + 1;
         coordinates = new int[sizeCoordinates];
         List<Variable> varsTable = this.getVariables();
         int startLoop;
-        if (isChanceVariable) {
-            coordinates[0] = 0;
-            startLoop = 1;
-        } else {
-            startLoop = 0;
-        }
+        coordinates[0] = 0;
+        startLoop = 1;
         for (int i = startLoop; i < sizeCoordinates; i++) {
             coordinates[i] = configuration.getFinding(varsTable.get(i)).getStateIndex();
         }
@@ -786,19 +766,13 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         int[] coordinates;
         int sizeCoordinates;
         int pos;
-        boolean isChanceVariable;
-        isChanceVariable = !(this.isUtility());
         int sizeEvi = configuration.getFindings().size();
-        sizeCoordinates = sizeEvi + (isChanceVariable ? 1 : 0);
+        sizeCoordinates = sizeEvi + 1;
         coordinates = new int[sizeCoordinates];
         List<Variable> varsTable = this.getVariables();
         int startLoop;
-        if (isChanceVariable) {
-            coordinates[0] = 0;
-            startLoop = 1;
-        } else {
-            startLoop = 0;
-        }
+        coordinates[0] = 0;
+        startLoop = 1;
         for (int i = startLoop; i < sizeCoordinates; i++) {
             coordinates[i] = configuration.getFinding(varsTable.get(i)).getStateIndex();
         }
@@ -1087,7 +1061,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
                     && ((role == PotentialRole.CONDITIONAL_PROBABILITY)
                             || (role == PotentialRole.POLICY)
                             || (role == PotentialRole.JOINT_PROBABILITY)
-                            || (role == PotentialRole.UTILITY) || (role == PotentialRole.LINK_RESTRICTION))) {
+                            || (role == PotentialRole.LINK_RESTRICTION))) {
                 setValue = true;
                 value = 0.0;
                 switch (role) {
@@ -1145,7 +1119,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
             if (variables.size() > 0) {
                 buffer.append(" = {");
             } else {
-                buffer.append((role == PotentialRole.UTILITY) ? " = " : " ");
+                buffer.append(" ");
             }
         }
         while ((buffer.length() < STRING_MAX_LENGTH) && (valuesPosition < values.length)) {
@@ -1277,7 +1251,6 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         List<Variable> newVariables = new ArrayList<>(variables);
         newVariables.add(newVariable);
         TablePotential newPotential = new TablePotential(newVariables, role);
-        newPotential.setUtilityVariable(utilityVariable);
         // assigns the values of the new potential
         int newVariableNumStates = newVariable.getNumStates();
         for (int i = 0; i < newVariableNumStates; i++) {

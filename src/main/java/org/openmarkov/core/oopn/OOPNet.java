@@ -550,11 +550,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 									{
 										newPotential.replaceVariable(variable, getVariable(instanceName + "." + variable.getName()));
 									}
-				                    if(newPotential.isUtility())
-				                    {
-				                        Variable utilityVariable = newPotential.getUtilityVariable();
-			                            newPotential.replaceVariable (utilityVariable, getVariable(instanceName + "." + utilityVariable.getName()));
-				                    }									
+
 									newEdit = new SetPotentialEdit(node, newPotential);
 								}else
 								{
@@ -578,12 +574,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener
 								{
 									newPotential.replaceVariable(variable, getVariable(instanceName + "." + variable.getName()));
 								}
-                                if(newPotential.isUtility())
-                                {
-                                    Variable utilityVariable = newPotential.getUtilityVariable();
-                                    newPotential.replaceVariable (utilityVariable, getVariable(instanceName + "." + utilityVariable.getName()));
-                                }                                   
-								
+
 								newEdit = new PotentialChangeEdit(this, oldPotential, newPotential);
 							} catch (NodeNotFoundException e1) {
 								e1.printStackTrace();

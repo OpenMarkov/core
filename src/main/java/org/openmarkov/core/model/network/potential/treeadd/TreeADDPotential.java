@@ -124,69 +124,69 @@ public class TreeADDPotential extends Potential {
 		}
 	}
 
-	/**
-	 * For role Utility
-	 * 
-	 * @param variables
-	 * @param topVariable
-	 * @param utilityVariable
-	 */
-	public TreeADDPotential(Variable utilityVariable, List<Variable> variables, Variable topVariable) {
-		this(utilityVariable, variables, topVariable, topVariable.getStates(), topVariable.getPartitionedInterval());
-	}
+//	/**
+//	 * For role Utility
+//	 *
+//	 * @param variables
+//	 * @param topVariable
+//	 * @param utilityVariable
+//	 */
+//	public TreeADDPotential(Variable utilityVariable, List<Variable> variables, Variable topVariable) {
+//		this(utilityVariable, variables, topVariable, topVariable.getStates(), topVariable.getPartitionedInterval());
+//	}
 
-	/**
-	 * For role Utility
-	 *
-	 * @param variables
-	 * @param topVariable
-	 * @param branchingStates
-	 * @param utilityVariable
-	 */
-	public TreeADDPotential(Variable utilityVariable, List<Variable> variables, Variable topVariable, State[] branchingStates, PartitionedInterval interval) {
-		super(utilityVariable, variables);
-		// setUtilityVariable(utilityVariable);
-		this.topVariable = topVariable;
-		VariableType variableType = topVariable.getVariableType();
-		List<Variable> potentialVariables;
-		// if topVariable is finite states or discretized, it creates a branch
-		// for each state
-		if (variableType == VariableType.FINITE_STATES || variableType == VariableType.DISCRETIZED) {
-			for (int i = 0; i < branchingStates.length; i++) {
-				// if the role of the treeADD is utility, it assigns a uniform
-				// potential
-				if (role == PotentialRole.UTILITY) {
-					potentialVariables = new ArrayList<>();
-					Potential potential = new UniformPotential(utilityVariable, potentialVariables);
-					// potential.setUtilityVariable(utilityVariable);
-					List<State> branchStates = new ArrayList<>();
-					branchStates.add(branchingStates[i]);
-					branches.add(new TreeADDBranch(branchStates, topVariable, potential, variables));
-				}
-			}
-		}
-		// if topVariable is numeric, it creates a branch whose thresholds are
-		// the
-		// same as those defined for the variable
-		if (variableType == VariableType.NUMERIC) {
-			Threshold minimum = new Threshold(interval.getMin(), !interval.isLeftClosed());
-			Threshold maximum = new Threshold(interval.getMax(), interval.isRightClosed());
-			potentialVariables = new ArrayList<>();
-			// it is an utility potential for sure so it is not necessary to add
-			// variable 0 to potential variables
-			Potential potential = new UniformPotential(utilityVariable, potentialVariables);
-			// potential.setUtilityVariable(utilityVariable);
-			branches.add(new TreeADDBranch(minimum, maximum, topVariable, potential, variables));
-		}
-	}
+//	/**
+//	 * For role Utility
+//	 *
+//	 * @param variables
+//	 * @param topVariable
+//	 * @param branchingStates
+//	 * @param utilityVariable
+//	 */
+//	public TreeADDPotential(Variable utilityVariable, List<Variable> variables, Variable topVariable, State[] branchingStates, PartitionedInterval interval) {
+//		super(utilityVariable, variables);
+//		// setUtilityVariable(utilityVariable);
+//		this.topVariable = topVariable;
+//		VariableType variableType = topVariable.getVariableType();
+//		List<Variable> potentialVariables;
+//		// if topVariable is finite states or discretized, it creates a branch
+//		// for each state
+//		if (variableType == VariableType.FINITE_STATES || variableType == VariableType.DISCRETIZED) {
+//			for (int i = 0; i < branchingStates.length; i++) {
+//				// if the role of the treeADD is utility, it assigns a uniform
+//				// potential
+//				if (role == PotentialRole.UTILITY) {
+//					potentialVariables = new ArrayList<>();
+//					Potential potential = new UniformPotential(utilityVariable, potentialVariables);
+//					// potential.setUtilityVariable(utilityVariable);
+//					List<State> branchStates = new ArrayList<>();
+//					branchStates.add(branchingStates[i]);
+//					branches.add(new TreeADDBranch(branchStates, topVariable, potential, variables));
+//				}
+//			}
+//		}
+//		// if topVariable is numeric, it creates a branch whose thresholds are
+//		// the
+//		// same as those defined for the variable
+//		if (variableType == VariableType.NUMERIC) {
+//			Threshold minimum = new Threshold(interval.getMin(), !interval.isLeftClosed());
+//			Threshold maximum = new Threshold(interval.getMax(), interval.isRightClosed());
+//			potentialVariables = new ArrayList<>();
+//			// it is an utility potential for sure so it is not necessary to add
+//			// variable 0 to potential variables
+//			Potential potential = new UniformPotential(utilityVariable, potentialVariables);
+//			// potential.setUtilityVariable(utilityVariable);
+//			branches.add(new TreeADDBranch(minimum, maximum, topVariable, potential, variables));
+//		}
+//	}
 
 	public TreeADDPotential(List<Variable> variables, PotentialRole role) {
-		this(variables, (role == PotentialRole.UTILITY) ? variables.get(0) : variables.get(1), role);
+		this(variables, variables.get(1), role);
 	}
 
-	public TreeADDPotential(Variable utilityVariable, List<Variable> variables) {
-		this(utilityVariable, variables, variables.get(0));
-	}
+//	public TreeADDPotential(Variable utilityVariable, List<Variable> variables) {
+//		this(utilityVariable, variables, variables.get(0));
+//	}
 
 	/**
 	 * Constructor for the parser
@@ -375,9 +375,7 @@ public class TreeADDPotential extends Potential {
 		 * projected = DiscretePotentialOperations.reorder (projected,
 		 * correctOrder); } else { projected.setVariables (correctOrder); } }
 		 */
-		if (role == PotentialRole.UTILITY) {
-			projected.setUtilityVariable(utilityVariable);
-		}
+
 		return Arrays.asList(projected);
 	}
 
@@ -423,7 +421,7 @@ public class TreeADDPotential extends Potential {
 		// Fixing issue #216
 		// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/216/treeadd-as-possible-type-of-potential-for
 		// [...] and the node cannot be a super value node
-		if (role == PotentialRole.UTILITY) {
+		if (role == PotentialRole.UNSPECIFIED) {
 			if (!node.isSuperValueNode()) {
 				// in variables there is not utility variable
 				if (variables.size() >= 1) {
@@ -506,15 +504,15 @@ public class TreeADDPotential extends Potential {
 		}
 	}
 
-	@Override
-	public void setUtilityVariable(Variable utilityVariable) {
-		super.setUtilityVariable(utilityVariable);
-		for (TreeADDBranch branch : branches) {
-			if (branch.getPotential() != null && branch.getPotential().getUtilityVariable() == null) {
-				branch.getPotential().setUtilityVariable(utilityVariable);
-			}
-		}
-	}
+//	@Override
+//	public void setUtilityVariable(Variable utilityVariable) {
+//		super.setUtilityVariable(utilityVariable);
+//		for (TreeADDBranch branch : branches) {
+//			if (branch.getPotential() != null && branch.getPotential().getUtilityVariable() == null) {
+//				branch.getPotential().setUtilityVariable(utilityVariable);
+//			}
+//		}
+//	}
 
 	@Override
 	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
@@ -561,7 +559,7 @@ public class TreeADDPotential extends Potential {
 		
 		// Make sure conditioned variable is in first position
 		int conditionedVarIndex = resultVariables.indexOf(getConditionedVariable());
-		if(!isUtility() && conditionedVarIndex>0)
+		if(conditionedVarIndex>0)
 		{
 			Variable otherVariable = resultVariables.get(0);
 			resultVariables.set(0, getConditionedVariable());

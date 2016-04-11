@@ -45,16 +45,16 @@ public class ConditionalGaussianPotential extends Potential{
     public static boolean validate (Node node, List<Variable> variables, PotentialRole role)
     {
     	// not a utility potential, only discrete or discretized conditioned variables
-    	return role != PotentialRole.UTILITY && !variables.isEmpty() 
+    	return role != PotentialRole.UNSPECIFIED && !variables.isEmpty()
         		&& variables.get(0).getVariableType() != VariableType.NUMERIC;
     }
     
-	public ConditionalGaussianPotential(Variable utilityVariable,
-			List<Variable> variables) {
-		super(utilityVariable, variables);
-		mean = getDefaultMeanPotential();
-		variance = getDefaultVariancePotential();
-	}
+//	public ConditionalGaussianPotential(Variable utilityVariable,
+//			List<Variable> variables) {
+//		super(utilityVariable, variables);
+//		mean = getDefaultMeanPotential();
+//		variance = getDefaultVariancePotential();
+//	}
 
 	public ConditionalGaussianPotential(Potential potential) {
 		super(potential);

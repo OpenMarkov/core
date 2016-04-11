@@ -769,7 +769,8 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         for (Node node : allNodes) {
             List<Potential> potentialsNode = node.getPotentials();
             for (Potential potential : potentialsNode) {
-                if ((potential.getVariables().contains(variable)) && !potential.isUtility()) {
+                if ((potential.getVariables().contains(variable)) &&
+                        potential.getVariable(0).getDecisionCriterion() == null) {
                     potentialsVariable.add(potential);
                 }
             }
@@ -798,8 +799,8 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
             List<Potential> potentialsNode = node.getPotentials();
             for (Potential potential : potentialsNode) {
                 List<Variable> variables = potential.getVariables();
-                if ((variables.size() == 0 || variables.contains(variable))
-                        && potential.isUtility()) {
+                if (variables.contains(variable)
+                        && potential.getVariable(0).getDecisionCriterion() != null) {
                     potentialsVariable.add(potential);
                 }
             }
@@ -817,32 +818,18 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         List<Variable> variables = potential.getVariables();
         List<Node> candidateNodes = new ArrayList<>();
         // gets nodes that could contain the potential
-        if (!potential.isUtility()) { // chance potential
-                                      // find nodes corresponding to variables
+        if (variables.size() == 0) {// Constant potentials can be in any
+            // node
+            candidateNodes = this.getNodes();
+        } else {
             for (Variable variable : variables) {
                 Node node = getNode(variable);
                 if (node != null) {
                     candidateNodes.add(getNode(variable));
                 }
             }
-        } else { // utility potential.
-            if (variables.size() == 0) {// Constant potentials can be in any
-                                        // node
-                candidateNodes = this.getNodes();
-            } else {
-                List<Node> utilityNodes = getNodes(NodeType.UTILITY);
-                candidateNodes.addAll(utilityNodes);
-                Node firstNode = getNode(variables.get(0));
-                candidateNodes.add(firstNode);
-                Variable utilityVariable = potential.getUtilityVariable();
-                if (utilityVariable != null) {
-                	Node utilityNode = getNode(utilityVariable);
-                	if ((utilityNode != null) && (!candidateNodes.contains(utilityNode))) {
-                		candidateNodes.add(utilityNode);
-                	}
-                }
-            }
         }
+
         // find in such nodes the potential to remove
         boolean wasFound = false;
         for (Node node : candidateNodes) {
@@ -1107,17 +1094,13 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         }
 
         // add the potential
-        if (potential.isUtility() && this.getNode(potential.getUtilityVariable()) != null ){
-            // assign the potential to the utility node
-            this.getNode(potential.getUtilityVariable()).addPotential(potential);
+        if (potential.getVariables().size() == 0) {
+            // TODO - Change constant potentials (Potential vs TablePotential)
+            this.constantPotentials.add((TablePotential) potential);
         } else {
-            if (potential.getVariables().size() == 0) {
-                // TODO - Change constant potentials (Potential vs TablePotential)
-                this.constantPotentials.add((TablePotential) potential);
-            } else {
-                this.getNode(potential.getVariable(0)).addPotential(potential);
-            }
+            this.getNode(potential.getVariable(0)).addPotential(potential);
         }
+
 
         // draw links between the variables
         boolean isDirected = !containsConstraint(OnlyUndirectedLinks.class);

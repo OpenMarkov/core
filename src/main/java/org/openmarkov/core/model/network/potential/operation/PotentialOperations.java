@@ -302,15 +302,12 @@ public class PotentialOperations {
 		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
 		if (auxNodeType == NodeType.UTILITY) {
 			variables.remove(0);
-			role = PotentialRole.UTILITY;
+			role = PotentialRole.UNSPECIFIED;
 		}else if (auxNodeType == NodeType.DECISION) {
 //			role = PotentialRole.DECISION;
 			role = PotentialRole.POLICY;
 		}
 		UniformPotential uniformPotential = new UniformPotential(variables, role);
-		if ( auxNodeType == NodeType.UTILITY ){
-			uniformPotential.setUtilityVariable(variable);
-		}
 		return uniformPotential;
 	}
 	

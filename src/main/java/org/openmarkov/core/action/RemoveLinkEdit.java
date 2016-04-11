@@ -95,7 +95,6 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 						variables.remove (node1.getVariable ());
 						Potential newPotential = new SumPotential (variables,
 						oldPotential.getPotentialRole ());
-						newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
 						newPotentials.add (newPotential);
 					}
 				}else if (!node2.onlyNumericalParents()) {//mixture of finite states and numerical Uniform
@@ -106,7 +105,6 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 						variables.remove (node1.getVariable ());
 						Potential newPotential = new UniformPotential (variables,
 								oldPotential.getPotentialRole ());
-						newPotential.setUtilityVariable (oldPotential.getUtilityVariable ());
 						newPotentials.add (newPotential);
 					}
 				}
@@ -154,8 +152,8 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 
     /** Method to compare two RemoveLinkEdits comparing the names of
      * the source and destination variable alphabetically.
-     * @param obj
-     * @return
+     * @param obj RemoveLinkEdit to be compared
+     * @return Result of comparison
      */
     public int compareTo(RemoveLinkEdit obj){
         int result;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -43,9 +44,9 @@ public abstract class Sampler {
 		}
 	  
 	  /**
-	     * @param uncertainValues
-	     * @param types
-	     * @return
+	     * @param uncertainValues List of uncertaing values
+	     * @param types Probability density function types
+	     * @return indexes of uncertain values NOT of classes
 	     */
 	    protected static int[] getIndexesUncertainValuesNotOfClasses(List<UncertainValue> uncertainValues,
 	            List<Class<? extends ProbDensFunction>> types) {
@@ -109,18 +110,15 @@ public abstract class Sampler {
 		return sampledConfigurationValues;
 	}
 	
-	
 	public static int numElementsInColumn(Potential potential){
 		int numStates;
-	 if (!potential.isUtility ())
-     {// Probability potential
-         numStates = potential.getVariables().get(0).getNumStates ();
-     }
-     else
-     {// Utility potential
-         numStates = 1;
-     }
-	 return numStates;
+     	// Probability potential
+		if(potential.getVariables().get(0).getVariableType().equals(VariableType.NUMERIC)){
+			numStates = 1;
+		} else {
+			numStates = potential.getVariables().get(0).getNumStates ();
+		}
+     return numStates;
 	}
 	
 	protected static List<UncertainValue> getUncertainValuesChance(
@@ -133,16 +131,14 @@ public abstract class Sampler {
 		return uv;
 	}
 
-	
 	protected abstract double[] getSample(FamilyDistribution family,Random randomGenerator);
 	    
 	protected abstract Random createRandomGenerator();
 
-
 		/**
-	     * @param uncertainValues
-	     * @param types
-	     * @return
+	     * @param uncertainValues Uncertain values
+	     * @param types Probability density function types
+	     * @return indexes of uncertain values of classes
 	     */
 	    private static int[] getIndexesUncertainValuesOfClasses(List<UncertainValue> uncertainValues,
 	            List<Class<? extends ProbDensFunction>> types) {

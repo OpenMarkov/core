@@ -153,10 +153,6 @@ public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
                         Variable variable = oopNet.getVariable (instanceName + "."  + variableName);
                         potential.replaceVariable (i, variable);
                     }
-                    if(potential.getPotentialRole() == PotentialRole.UTILITY)
-                    {
-                    	potential.setUtilityVariable (oopNet.getVariable (instanceName + "."  + potential.getUtilityVariable ().getName ()));
-                    }
                     newPotentials.add (potential);
                 }
                 newNode.setPotentials (newPotentials);

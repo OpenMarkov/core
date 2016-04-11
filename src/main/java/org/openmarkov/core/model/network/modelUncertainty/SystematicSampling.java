@@ -1,15 +1,10 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
@@ -55,7 +50,7 @@ public class SystematicSampling extends Sampler {
 	}
 	
 	/**
-	 * @param net
+	 * @param net Network
 	 * @return The UncertainParameters built from "net"
 	 */
 	public static List<UncertainParameter> getUncertainParameters(ProbNet net){
@@ -71,7 +66,7 @@ public class SystematicSampling extends Sampler {
 	}
 
 	/**
-	 * @param pot
+	 * @param pot Potential
 	 * @return A set of UncertainParameters built from the uncertain values appearing in "pot"
 	 */
 	private static Set<UncertainParameter> getUncertainParameters(Potential pot) {
@@ -87,7 +82,7 @@ public class SystematicSampling extends Sampler {
 	}
 
 	/**
-	 * @param pot
+	 * @param pot Potential
 	 * @return A hash table with the uncertain values appearing in pot, and for each one the hash value is the subpotential where appearing
 	 */
 	private static Hashtable<UncertainValue, SubPotentialAndPosition> getUncertainValues(Potential pot) {
@@ -126,9 +121,9 @@ public class SystematicSampling extends Sampler {
 	}
 		
 	/**
-	 * @param uncertainValuesHash
-	 * @param auxUncertain
-	 * @param subPotentialAndPosition
+	 * @param uncertainValuesHash Hastable of uncertainvalues and subpotential and position elements
+	 * @param auxUncertain Auxiliary uncertain value
+	 * @param subPotentialAndPosition Subpotential and position of the auxiliary uncertain value
 	 * Adds the key, value pair (auxUncertain, tablePotential) to "uncertainValuesHash" if "auxUncertain" does not belong to the key set
 	 */
 	private static void addIfNonExisting(Hashtable<UncertainValue, SubPotentialAndPosition> uncertainValuesHash,
@@ -141,8 +136,8 @@ public class SystematicSampling extends Sampler {
 		
 	
 	/**
-	 * @param pot
-	 * @param newVariable
+	 * @param pot Potential
+	 * @param newVariable New variable
 	 * @return Adds a variable to the end of the list variables of "pot", and replicates the original values and uncertainValues
 	 */
 	private static TablePotential addVariableReplicatingValuesAndUncertainValues(TablePotential pot,
@@ -151,7 +146,6 @@ public class SystematicSampling extends Sampler {
 		List<Variable> newVariables = new ArrayList<>(pot.getVariables());
 		newVariables.add(newVariable);
 		TablePotential newPotential = new TablePotential(newVariables, pot.getPotentialRole());
-		newPotential.setUtilityVariable(pot.getUtilityVariable());
 		// assigns the values of the new potential
 		int newVariableNumStates = newVariable.getNumStates();
 		double[] values = pot.getValues();
@@ -180,7 +174,6 @@ public class SystematicSampling extends Sampler {
 	private static ProbNet sampleNetwork(ProbNet originalNet,
 			List<ParameterAnalysisInformation> parameters, int numIntervals) {
 		ProbNet net = originalNet.copy();
-		int posBeginColumn;
 
 		UncertainParameter uncertainParameter;
 		int numPoints = numIntervals + 1;
@@ -260,7 +253,7 @@ public class SystematicSampling extends Sampler {
 	private static int calculatePositionUncertainInColumn(
 			TablePotential pot, int position) {
 		int posInCol;
-		if (pot.isUtility()){
+		if (pot.getVariable(0).getVariableType().equals(VariableType.NUMERIC)){
 			posInCol = 0;
 		}
 		else{//Probability potential
@@ -272,19 +265,19 @@ public class SystematicSampling extends Sampler {
 
 	
 	/**
-	 * @param originalNet
-	 * @param uncertainParameter
-	 * @param min
-	 * @param max
-	 * @param numIntervals
-	 * @param iterationVariableName
+	 * @param originalNet Original network
+	 * @param uncertainParameter Uncertain parameter
+	 * @param min Min
+	 * @param max Max
+	 * @param numIntervals Number of intervals
+	 * @param iterationVariableName Conditioned variable
 	 * @return The original network "net" where the sub potential table where "parameterName" appears has been conditioned in the variable
 	 * "interationVariable" name, and for state of this variable the cell of the parameter has been assigned one of the equally distant
 	 * points between min and max.
 	 */
 	public static ProbNet sampleNetwork(ProbNet originalNet, UncertainParameter uncertainParameter, double min, double max,
 	 int numIntervals, String iterationVariableName){
-		List<ParameterAnalysisInformation> parameters = Arrays.asList(new ParameterAnalysisInformation(uncertainParameter,min,max,iterationVariableName));
+		List<ParameterAnalysisInformation> parameters = Collections.singletonList(new ParameterAnalysisInformation(uncertainParameter, min, max, iterationVariableName));
 		return SystematicSampling.sampleNetwork(originalNet, parameters, numIntervals);
 	}
 	
@@ -304,12 +297,11 @@ public class SystematicSampling extends Sampler {
 
 		List<TreeADDBranch> branches = potential.getBranches();
 		if (branches!=null)
-		for (int i = 0; i < branches.size(); i++) {
-			TreeADDBranch treeADDBranch = branches.get(i);
-			if (treeADDBranch!=null){
-				replace(treeADDBranch,subPotToReplace,newSubPot);
+			for (TreeADDBranch treeADDBranch : branches) {
+				if (treeADDBranch != null) {
+					replace(treeADDBranch, subPotToReplace, newSubPot);
+				}
 			}
-		}		
 	}
 
 	private static void replace(TreeADDBranch treeADDBranch,
@@ -357,14 +349,12 @@ public class SystematicSampling extends Sampler {
 	public static UncertainParameter getUncertainParameter(ProbNet net,
 			String parameterName) {
 		List<UncertainParameter> uncertainParameters = SystematicSampling.getUncertainParameters(net);
-		
-		UncertainParameter uncertain = getUncertainParameter(uncertainParameters,parameterName);
-		return uncertain;
+		return getUncertainParameter(uncertainParameters,parameterName);
 	}
 
 	/**
-	 * @param pot
-	 * @param uncertainValue
+	 * @param pot Potential
+	 * @param uncertainValue Uncertain value
 	 * @return The position in the uncertain values table of "pot" where "uncertainValue" is placed
 	 */
 	private static int getPosition(TablePotential pot, UncertainValue uncertainValue) {
@@ -382,8 +372,8 @@ public class SystematicSampling extends Sampler {
 	
 	
 	/**
-	 * @param uncertainParameters
-	 * @param parameterName
+	 * @param uncertainParameters List of uncertain parameters
+	 * @param parameterName Parameter name
 	 * @return The UncertainParameter that corresponds to "parameterName"
 	 */
 	private static UncertainParameter getUncertainParameter(List<UncertainParameter> uncertainParameters,

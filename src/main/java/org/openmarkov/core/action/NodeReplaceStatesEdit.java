@@ -101,8 +101,6 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 					UniformPotential newPotential = new UniformPotential(
 							lastPotential.get(0).getVariables(), lastPotential.get(
 									0).getPotentialRole());
-					newPotential.setUtilityVariable(lastPotential.get(0)
-							.getUtilityVariable());
 					newPotentials.add(newPotential);
 					node.setPotentials(newPotentials);
 				}
@@ -118,8 +116,6 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 								.getPotentials().get(0).getVariables(), child
 								.getPotentials().get(0).getPotentialRole());
 						// child.setUniformPotential();
-						childLastPotential.setUtilityVariable(child.getPotentials()
-								.get(0).getUtilityVariable());
 						container.add(childLastPotential);
 						child.setPotentials(container);
 					}
@@ -145,6 +141,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void undo() {
 		super.undo();
 		if (lastStates != null) {
@@ -194,7 +191,7 @@ public class NodeReplaceStatesEdit extends SimplePNEdit {
 	 * This method resets the link restrictions and revelation conditions of the
 	 * links of the node
 	 * 
-	 * @param node
+	 * @param node Node
 	 */
 	private void resetLink(Node node) {
 

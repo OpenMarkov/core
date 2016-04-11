@@ -35,16 +35,16 @@ public class SameAsPrevious extends Potential
         super (variables, PotentialRole.CONDITIONAL_PROBABILITY);
     }
     
-    /**
-     * Utility constructor
-     * @param variable
-     * @throws NodeNotFoundException
-     * @throws NodeNotFoundException
-     */
-    public SameAsPrevious (Variable variable)
-     {
-         super (variable, new ArrayList<Variable>());
-     }    
+//    /**
+//     * Utility constructor
+//     * @param variable
+//     * @throws NodeNotFoundException
+//     * @throws NodeNotFoundException
+//     */
+//    public SameAsPrevious (Variable variable)
+//     {
+//         super (variable, new ArrayList<Variable>());
+//     }
 
     
     /**

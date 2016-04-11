@@ -33,10 +33,10 @@ public class ExponentialPotential extends GLMPotential {
 		super(variables, role);
 	}
 
-	public ExponentialPotential(Variable utilityVariable, List<Variable> variables) {
-		this(variables, PotentialRole.UTILITY);
-		this.utilityVariable = utilityVariable;
-	}
+//	public ExponentialPotential(Variable utilityVariable, List<Variable> variables) {
+//		this(variables, PotentialRole.UTILITY);
+//		this.utilityVariable = utilityVariable;
+//	}
 
 	public ExponentialPotential(List<Variable> variables, PotentialRole role, String[] covariates,
 			double[] coefficients) {
@@ -59,7 +59,7 @@ public class ExponentialPotential extends GLMPotential {
 	 *            . <code>PotentialRole</code>.
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-		return role == PotentialRole.UTILITY
+		return role == PotentialRole.UNSPECIFIED
 				|| (!variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC);
 	}
 
@@ -74,13 +74,8 @@ public class ExponentialPotential extends GLMPotential {
 
 		List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
 		TablePotential projectedPotential = null; 
-		if (isUtility()) {
-			projectedPotential = new TablePotential(utilityVariable, projectedPotentialVariables);
-		}else
-		{
-			projectedPotentialVariables.add(0, variables.get(0));
-			projectedPotential = new TablePotential(projectedPotentialVariables, role);
-		}
+		projectedPotentialVariables.add(0, variables.get(0));
+		projectedPotential = new TablePotential(projectedPotentialVariables, role);
 		Variable conditionedVariable = getConditionedVariable();
 		int numStates = conditionedVariable.getNumStates();
 		int parentFirstIndex = (conditionedVariable == projectedPotentialVariables.get(0)) ? 1 : 0;

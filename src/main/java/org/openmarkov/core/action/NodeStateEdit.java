@@ -9,26 +9,18 @@
 
 package org.openmarkov.core.action;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.openmarkov.core.action.SimplePNEdit;
-import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <code>NodeStateEdit</code> is a simple edit that allow modify the states of
@@ -98,7 +90,6 @@ public class NodeStateEdit extends SimplePNEdit {
     
     private String              newName;
     private String              oldName;
-    private String 				defaultState;
 
     /**
      * Creates a new <code>NodeStateEdit</code> to carry out the specified
@@ -136,13 +127,12 @@ public class NodeStateEdit extends SimplePNEdit {
     	for(Node nodeNeighbour : probNet.getNeighbors(node)){
     		this.listOldPotentials.put(nodeNeighbour.getVariable(), probNet.getPotentials(nodeNeighbour.getVariable())); 
     	}
-    	this.defaultState = defaultState;
     }
 
     @Override
     public void doEdit()
             throws DoEditException {
-        State[] newStates = null;
+        State[] newStates;
         Variable variable = node.getVariable();
         List<Node> children = node.getChildren();
         
@@ -151,9 +141,7 @@ public class NodeStateEdit extends SimplePNEdit {
             // assume that the new state is added in last position
             newStates = new State[variable.getNumStates() + 1];
             newStates[variable.getNumStates()] = newState;
-            for (int i = 0; i < oldStates.length; i++) {
-                newStates[i] = oldStates[i];
-            }
+            System.arraycopy(oldStates, 0, newStates, 0, oldStates.length);
 
             variable.setStates(newStates);
 
@@ -174,7 +162,7 @@ public class NodeStateEdit extends SimplePNEdit {
             int i1 = 0;
             boolean found = false;
             for (State states : variable.getStates()) {
-                if (i1 != selectedStateIndex || found == true) {
+                if (i1 != selectedStateIndex || found) {
                     newStates[i1] = states;
                     i1++;
                 } else
@@ -352,10 +340,10 @@ public class NodeStateEdit extends SimplePNEdit {
 		
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     public void undo() {
         super.undo();
-        List<Node> nodes;
         switch (stateAction) {
         case RENAME:
             oldState.setName(oldName);
@@ -524,7 +512,7 @@ public class NodeStateEdit extends SimplePNEdit {
      * This method resets the link restriction and revelation conditions of the
      * links of the node
      * 
-     * @param node
+     * @param node Node
      */
     private void resetLink(Node node) {
 

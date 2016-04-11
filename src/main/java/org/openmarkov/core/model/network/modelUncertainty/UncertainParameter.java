@@ -42,7 +42,7 @@ public class UncertainParameter {
 	 * @return True if the parameter is of kind probability, and False if it is of kind utility.
 	 */
 	public boolean isProbabilityParameter(){
-		return this.potential.getPotentialRole() != PotentialRole.UTILITY;
+		return this.potential.getPotentialRole() != PotentialRole.UNSPECIFIED;
 	}
 	
 	/**

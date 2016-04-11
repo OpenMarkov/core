@@ -77,21 +77,20 @@ public abstract class Potential
         {
             this.variables = new ArrayList<>();
         }
-        utilityVariable = null;
         properties = new HashMap<>();
         this.role = role;
     }
     
-    /**
-     * @param variables <code>List</code> of <code>Variable</code>s.
-     * @param utilityVariable
-     */
-    public Potential (Variable utilityVariable, List<Variable> variables)
-    {
-        this(variables, PotentialRole.UTILITY);
-        this.utilityVariable = utilityVariable;
-    }
-    
+//    /**
+//     * @param variables <code>List</code> of <code>Variable</code>s.
+//     * @param utilityVariable
+//     */
+//    public Potential (Variable utilityVariable, List<Variable> variables)
+//    {
+//        this(variables, PotentialRole.UTILITY);
+//        this.utilityVariable = utilityVariable;
+//    }
+
     /**
      * TODO - Remove this constructor, replace with a copy method
      * Copy constructor for potential
@@ -100,10 +99,6 @@ public abstract class Potential
     public Potential (Potential potential)
     {
         this(potential.getVariables(), potential.getPotentialRole());
-        if(potential.getPotentialRole() == PotentialRole.UTILITY)
-        {
-            this.utilityVariable = potential.getUtilityVariable(); 
-        }
         this.comment = potential.getComment();
     }
     
@@ -391,9 +386,6 @@ public abstract class Potential
         { // Constant potential
             switch (role)
             {
-                case UTILITY :
-                    buffer.append (utilityVariable == null? "unspecified" : utilityVariable.getName ());
-                    break;
                 case CONDITIONAL_PROBABILITY :
                     break;
                 case JOINT_PROBABILITY :
@@ -413,15 +405,6 @@ public abstract class Potential
                         buffer.append (" | ");
                         printVariables (buffer, 1);
                     }
-                    buffer.append (")");
-                    break;
-                case UTILITY :
-                    buffer.append ("U(" + utilityVariable);
-                    if (numVariables > 0)
-                    {
-                        buffer.append (" | ");
-                    }
-                    printVariables (buffer, 0);
                     buffer.append (")");
                     break;
                 case JOINT_PROBABILITY :
@@ -518,7 +501,6 @@ public abstract class Potential
 			variables.add (variable);
 		}
     	Potential newPotential = new UniformPotential (variables, role);
-    	newPotential.setUtilityVariable(utilityVariable);
     	return newPotential;
     }
 
@@ -529,19 +511,11 @@ public abstract class Potential
     {
     	variables.remove (variable);
     	Potential newPotential = new UniformPotential (variables, role);
-    	newPotential.setUtilityVariable(utilityVariable);
     	return newPotential;
     }
 
     public double getProbability (HashMap<Variable, Integer> sampledStateIndexes)
     {
-        return 0;
-    }
-
-    public double getUtility (HashMap<Variable, Integer> sampledStateIndexes,
-                              HashMap<Variable, Double> utilities)
-    {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -626,14 +600,6 @@ public abstract class Potential
         potential.setVariables(newReferences);
         potential.setPotentialRole(this.getPotentialRole());
         potential.setComment(new String(this.comment));
-
-        if(utilityVariable != null) {
-            try {
-                potential.setUtilityVariable(copyNet.getVariable(this.getUtilityVariable().getName()));
-            } catch (NodeNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
 
         return potential;
     }

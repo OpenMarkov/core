@@ -1,16 +1,12 @@
 
 package org.openmarkov.core.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.jmx.Agent;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Criterion;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.StringWithProperties;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class DecisionCriteriaEdit extends SimplePNEdit

@@ -359,12 +359,9 @@ public class Node {
 		List<Variable> variables = new ArrayList<>();
 		Variable thisVariable;
         // first, this variable. The potentials is not null
-		if (getNodeType() == NodeType.UTILITY)
-			thisVariable = potentials.get( 0 ).getUtilityVariable();
-		else{
-			thisVariable = potentials.get( 0 ).getVariable( 0 );
-			variables.add(thisVariable);
-		}
+		thisVariable = potentials.get( 0 ).getVariable( 0 );
+		variables.add(thisVariable);
+
 		
 		int numOfCellsInTable = thisVariable.getNumStates();
 		double initialValue = Util.round( 1 / (new Double(numOfCellsInTable)), 
@@ -390,11 +387,7 @@ public class Node {
 		TablePotential tablePotential =	new TablePotential(
 				variables, PotentialRole.CONDITIONAL_PROBABILITY, table);
 		newListPotentials.add( tablePotential );
-		
-		if (getNodeType() == NodeType.UTILITY){
-			//tablePotential.getVariables().remove(0);
-			tablePotential.setUtilityVariable(thisVariable);
-		}
+
 		potentials = newListPotentials;
 		
 	}

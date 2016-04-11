@@ -96,19 +96,19 @@ public abstract class Evaluation {
     NonProjectablePotentialException, WrongCriterionException {
 		return null;
 	}
-	
+
     /** @return maxExpectedUtility. <code>TablePotential</code> without
      *  variables, that has a table with one scalar;
-     *  by default, its value is 0.0 
-     * @throws WrongGraphStructureException 
-     * @throws WrongCriterionException 
+     *  by default, its value is 0.0
+     * @throws WrongGraphStructureException
+     * @throws WrongCriterionException
      * @throws NonProjectablePotentialException */
-	public TablePotential getMaxExpectedUtility() 
-	throws WrongGraphStructureException, 
+	public TablePotential getMaxExpectedUtility()
+	throws WrongGraphStructureException,
 	ConstraintViolationException, CanNotDoEditException,
 	DoEditException, NonProjectablePotentialException, WrongCriterionException {
 		return new TablePotential(
-				null, PotentialRole.UTILITY, new double[]{0.0});
+				null, PotentialRole.UNSPECIFIED, new double[]{0.0});
 	}
 
 	/** This method calculates the probabilities for all the variables in

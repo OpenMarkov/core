@@ -1072,16 +1072,6 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 
         List<Variable> variables = potential.getVariables();
 
-        if (potential.isUtility() && (this.networkType != MarkovNetworkType.getUniqueInstance())){
-            // the potential must be added to a utility node
-            Variable utilityVariable = potential.getUtilityVariable();
-            if (getNode(utilityVariable) == null) {
-                // create a utility node
-                addNode(utilityVariable, NodeType.UTILITY);
-            }
-        }
-
-        // add the variables (other than the utility variable) if necessary
         for (Variable variable : variables) {
             // add the variables that are not yet in the network
             if (getNode(variable) == null) {
@@ -1111,24 +1101,14 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
             }
 
             Node conditionedNode;
-            // TODO - CHECK DUPLICATED CODE
-            if(potential.getUtilityVariable() != null && potential.isUtility()) {
-                conditionedNode = getNode(potential.getUtilityVariable());
-                for (int i = 0; i < variables.size(); i++) {
-                    Node conditioningNode = getNode(variables.get(i));
-                    if (!isParent(conditioningNode, conditionedNode)) {
-                        addLink(conditioningNode, conditionedNode, true);
-                    }
-                }
-            } else {
-                conditionedNode = getNode(variables.get(0));
-                for (int i = 1; i < variables.size(); i++) {
-                    Node conditioningNode = getNode(variables.get(i));
-                    if (!isParent(conditioningNode, conditionedNode)) {
-                        addLink(conditioningNode, conditionedNode, true);
-                    }
+            conditionedNode = getNode(variables.get(0));
+            for (int i = 1; i < variables.size(); i++) {
+                Node conditioningNode = getNode(variables.get(i));
+                if (!isParent(conditioningNode, conditionedNode)) {
+                    addLink(conditioningNode, conditionedNode, true);
                 }
             }
+
         } else {
             int potentialSize = variables.size();
             for (int i = 0; i < potentialSize - 1; i++) {

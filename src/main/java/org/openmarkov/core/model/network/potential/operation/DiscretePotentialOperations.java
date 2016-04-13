@@ -327,36 +327,36 @@ public final class DiscretePotentialOperations {
         TablePotential result = new TablePotential(resultVariables, getRole(tablePotentials), resultValues);
         result.interventions = resultInterventions;
 
-        if (result.isUtility()) {
-        	Variable newUtilityVariable = getNewUtilityVariable(tablePotentials);
-        	result.setUtilityVariable(newUtilityVariable);
-        	newUtilityVariable.setDecisionCriterion(getCommonDecisionCriterion(tablePotentials));
-        }
+//        if (result.isUtility()) {
+//        	Variable newUtilityVariable = getNewUtilityVariable(tablePotentials);
+//        	result.setUtilityVariable(newUtilityVariable);
+//        	newUtilityVariable.setDecisionCriterion(getCommonDecisionCriterion(tablePotentials));
+//        }
         return result;
     }
 
-	/**
-	 * @param potentials List of potentials with their criteria
-	 * @return if all the potentials have the same criterion, that criterion; otherwise, <code>null</code>.
-	 */
-	private static Criterion getCommonDecisionCriterion(List<? extends Potential> potentials) {
-		Criterion criteron, lastCriterion = null;
-		int numPotentials = potentials.size();
-		boolean existsSameCriterion = (numPotentials > 0) ?
-				((potentials.get(0).getUtilityVariable() != null) ?
-					(lastCriterion = potentials.get(0).getUtilityVariable().getDecisionCriterion()) != null
-					:
-					false)
-				:
-				false;
-		for (int i = 1; i < numPotentials && existsSameCriterion; i++) {
-			Potential potential = potentials.get(i);
-			existsSameCriterion =
-					potential.isUtility() &&
-					potential.getUtilityVariable().getDecisionCriterion() == lastCriterion;
-		}
-		return existsSameCriterion ? lastCriterion : null;
-	}
+//	/**
+//	 * @param potentials List of potentials with their criteria
+//	 * @return if all the potentials have the same criterion, that criterion; otherwise, <code>null</code>.
+//	 */
+//	private static Criterion getCommonDecisionCriterion(List<? extends Potential> potentials) {
+//		Criterion criteron, lastCriterion = null;
+//		int numPotentials = potentials.size();
+//		boolean existsSameCriterion = (numPotentials > 0) ?
+//				((potentials.get(0).getUtilityVariable() != null) ?
+//					(lastCriterion = potentials.get(0).getUtilityVariable().getDecisionCriterion()) != null
+//					:
+//					false)
+//				:
+//				false;
+//		for (int i = 1; i < numPotentials && existsSameCriterion; i++) {
+//			Potential potential = potentials.get(i);
+//			existsSameCriterion =
+//					potential.isUtility() &&
+//					potential.getUtilityVariable().getDecisionCriterion() == lastCriterion;
+//		}
+//		return existsSameCriterion ? lastCriterion : null;
+//	}
 
 	private static int[] initializeCoordinates(int numVariables) {
 		int[] resultCoordinates = new int[Math.max(1,numVariables)];
@@ -399,22 +399,22 @@ public final class DiscretePotentialOperations {
 		return finalVariable;
     }
 
-	/**
-	 * @param tablePotentials Collection of TablePotentials
-	 * @return A new variable whose name is the concatenation of the names of the utility variables.
-	 */
-	private static Variable getNewUtilityVariable(Collection<TablePotential> tablePotentials) {
-		Set<Variable> utilityVariables = new HashSet<>();
-		for (TablePotential potential : tablePotentials) {
-			if (potential.isUtility()) {
-				Variable utilityVariable = potential.getUtilityVariable();
-				if (utilityVariable != null) {
-					utilityVariables.add(utilityVariable);
-				}
-			}
-		}
-		return composeVariable(utilityVariables);
-	}
+//	/**
+//	 * @param tablePotentials Collection of TablePotentials
+//	 * @return A new variable whose name is the concatenation of the names of the utility variables.
+//	 */
+//	private static Variable getNewUtilityVariable(Collection<TablePotential> tablePotentials) {
+//		Set<Variable> utilityVariables = new HashSet<>();
+//		for (TablePotential potential : tablePotentials) {
+//			if (potential.isUtility()) {
+//				Variable utilityVariable = potential.getUtilityVariable();
+//				if (utilityVariable != null) {
+//					utilityVariables.add(utilityVariable);
+//				}
+//			}
+//		}
+//		return composeVariable(utilityVariables);
+//	}
 
 //	/**
 //     * @param potentials. <code>TablePotential</code>
@@ -545,10 +545,10 @@ public final class DiscretePotentialOperations {
     public static PotentialRole getRole(Collection<? extends Potential> potentials) {
         boolean atLeastOneUtility = false;
         for (Potential potential : potentials) {
-            atLeastOneUtility = atLeastOneUtility || potential.isUtility();
+            atLeastOneUtility = atLeastOneUtility || potential.hasCriterion();
         }
         if (atLeastOneUtility) {
-            return PotentialRole.UTILITY;
+            return PotentialRole.UNSPECIFIED;
         }
         boolean atLeastOneJoinProb = false;
         for (Potential potential : potentials) {
@@ -737,7 +737,7 @@ public final class DiscretePotentialOperations {
         List<Variable> variablesToKeep = new ArrayList<>(allVariables);
         variablesToKeep.remove(variableToEliminate);
 
-        TablePotential resultPotential = new TablePotential(variablesToKeep, PotentialRole.UTILITY);
+        TablePotential resultPotential = new TablePotential(variablesToKeep, PotentialRole.UNSPECIFIED);
         boolean thereAreInterventions = (utilityPotential.interventions != null);
         if (thereAreInterventions) {
             resultPotential.interventions = new Intervention[resultPotential.values.length];
@@ -1265,9 +1265,9 @@ public final class DiscretePotentialOperations {
         PotentialRole role = getRole(tablePotentials);
 
         TablePotential resultingPotential = new TablePotential(variablesToKeep, role);
-        if (role == PotentialRole.UTILITY) {
-        	resultingPotential.setUtilityVariable(composeVariable(fSVariablesToKeep));
-        }
+//        if (role == PotentialRole.UTILITY) {
+//        	resultingPotential.setUtilityVariable(composeVariable(fSVariablesToKeep));
+//        }
 
         GTablePotential gResult = new GTablePotential(variablesToKeep, role);
         int numStates = ((Variable) fSVariableToMaximize).getNumStates();
@@ -1412,7 +1412,7 @@ public final class DiscretePotentialOperations {
     public static boolean isThereAUtilityPotential(List<TablePotential> arrayListPotentials) {
         boolean isThere = false;
         for (int i = 0; (i < arrayListPotentials.size()) && !isThere; i++) {
-            isThere = arrayListPotentials.get(i).getPotentialRole() == PotentialRole.UTILITY;
+//            isThere = arrayListPotentials.get(i).getPotentialRole() == PotentialRole.UTILITY;
         }
         return isThere;
     }
@@ -1437,7 +1437,7 @@ public final class DiscretePotentialOperations {
             Variable variableToMaximize) {
         List<TablePotential> potentials = tablePotentials;
 
-        PotentialRole roleResult = (isThereAUtilityPotential(tablePotentials)) ? PotentialRole.UTILITY
+        PotentialRole roleResult = (isThereAUtilityPotential(tablePotentials)) ? PotentialRole.UNSPECIFIED
                 : PotentialRole.CONDITIONAL_PROBABILITY;
 
         TablePotential resultingPotential = new TablePotential(variablesToKeep, roleResult);
@@ -1756,8 +1756,8 @@ public final class DiscretePotentialOperations {
         if (hasInterventions){
         	intervNewPotential[copyTablePosition] = intervOrigPotential[i];
         }
-        if (potential.isUtility()) {
-            newPotential.setUtilityVariable(potential.getUtilityVariable());
+        if (potential.hasCriterion()) {
+            newPotential.setCriterion(potential.getCriterion());
         }
         newPotential.properties = potential.properties;
         return newPotential;
@@ -1818,8 +1818,8 @@ public final class DiscretePotentialOperations {
                 copyUncertainValues[newIndex] = uncertainValues[i];
             }
         }
-        if (potential.isUtility()) {
-            copyPotential.setUtilityVariable(potential.getUtilityVariable());
+        if (potential.hasCriterion()) {
+            copyPotential.setCriterion(potential.getCriterion());
         }
         copyPotential.properties = potential.properties;
         return copyPotential;
@@ -1866,8 +1866,8 @@ public final class DiscretePotentialOperations {
 	    		}
 				
 				result = new TablePotential(variablesFirst,potFirst.getPotentialRole(),newValues);
-				if (result.getPotentialRole()==PotentialRole.UTILITY){
-					result.setUtilityVariable(potFirst.getUtilityVariable());
+				if (result.hasCriterion()){
+					result.setCriterion(potFirst.getCriterion());
 				}
     		}
     	}
@@ -1925,9 +1925,9 @@ public final class DiscretePotentialOperations {
                         outputUtilityVariables.add(variable);
                     }
                 }
-                TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables, PotentialRole.UTILITY);
+                TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables, PotentialRole.UNSPECIFIED);
                 // TODO Check whether the next line can be removed
-                outputUtilityPotential.setUtilityVariable(inputUtilityPotential.getUtilityVariable());
+                outputUtilityPotential.setCriterion(inputUtilityPotential.getCriterion());
                 if (thereAreInterventions) {
                     int outputValuesLength = outputUtilityPotential.values.length;
                     outputUtilityPotential.interventions = new Intervention[outputValuesLength];
@@ -1997,8 +1997,8 @@ public final class DiscretePotentialOperations {
                 if (thereAreInterventions || thereAreRelevantUtilities(outputUtilityPotential)) {
                     boolean criteriaFound = false;
                     for (int i = 0; i < outputPotentials.size(); i++) {
-                        if (outputPotentials.get(i).getUtilityVariable().getDecisionCriterion() ==
-                                outputUtilityPotential.getUtilityVariable().getDecisionCriterion()) {
+                        if (outputPotentials.get(i).getCriterion() ==
+                                outputUtilityPotential.getCriterion()) {
                             outputPotentials.set(i,DiscretePotentialOperations.sum(outputPotentials.get(i), outputUtilityPotential));
                             criteriaFound = true;
                             break;
@@ -2081,11 +2081,11 @@ public final class DiscretePotentialOperations {
     	// initialize the output utility potential
     	List<Variable> outputUtilityVariables = inputUtilityPotential.getVariables();
     	outputUtilityVariables.remove(decisionVariable);
-    	TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables, PotentialRole.UTILITY);
+    	TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables, PotentialRole.UNSPECIFIED);
     	outputUtilityPotential.interventions = new Intervention[outputUtilityPotential.values.length];
 
     	// TODO Check whether the next line can be removed
-    	outputUtilityPotential.setUtilityVariable(inputUtilityPotential.getUtilityVariable());
+    	outputUtilityPotential.setCriterion(inputUtilityPotential.getCriterion());
 
     	// in allVariables, the first variable is decisionVariable
     	List<Variable> allVariables = new ArrayList<>(outputUtilityVariables.size() + 1);
@@ -2286,7 +2286,7 @@ public final class DiscretePotentialOperations {
     		Collection<TablePotential> probPotentials,
     		Collection<TablePotential> utilityPotentials) {
     	for (Potential potential : potentials) {
-    		if (potential.getPotentialRole() == PotentialRole.UTILITY) {
+    		if (potential.hasCriterion()) {
     			utilityPotentials.add((TablePotential)potential);
     		} else {
     			probPotentials.add((TablePotential)potential);

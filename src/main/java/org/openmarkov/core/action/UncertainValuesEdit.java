@@ -75,7 +75,7 @@ public class UncertainValuesEdit extends SimplePNEdit
         newUncertainColumn = uncertainColumn;
         newValuesColumn = valuesColumn;
         this.basePosition = basePosition;
-        UncertainValue[] oldUncertainValues = getPotential ().getUncertaintyTable ();
+        UncertainValue[] oldUncertainValues = getPotential ().getUncertainValues();
         wasNullOldUncertainValues = oldUncertainValues == null;
         oldUncertainColumn = wasNullOldUncertainValues ? null : getColumn (oldUncertainValues,
                                                                            variable, basePosition);
@@ -177,7 +177,7 @@ public class UncertainValuesEdit extends SimplePNEdit
                                       Variable var,
                                       int basePosition)
     {
-        UncertainValue[] table = (potential.getUncertaintyTable ());
+        UncertainValue[] table = (potential.getUncertainValues());
         for (int i = 0; i < var.getNumStates (); i++)
         {
             table[i + basePosition] = (column != null) ? column.get (i) : null;

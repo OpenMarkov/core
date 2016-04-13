@@ -474,9 +474,9 @@ public class TemporalNetOperations {
 //        {
 //            TablePotential tablePotential = ((TablePotential)potential);
 //            double[] potentialValues = tablePotential.getValues();
-//            if(tablePotential.getUncertaintyTable() != null)
+//            if(tablePotential.getUncertainValues() != null)
 //            {
-//                UncertainValue[] uncertaintyTable = tablePotential.getUncertaintyTable();
+//                UncertainValue[] uncertaintyTable = tablePotential.getUncertainValues();
 //                for(int j=0; j < uncertaintyTable.length; ++j)
 //                {
 //                    if(uncertaintyTable[j] != null)

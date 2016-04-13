@@ -39,16 +39,16 @@ public class TablePotentialSampler extends Sampler
         List<UncertainValue> uncertainValues = null;
         double[] sampledConfigurationValues;
         int numStates;
-        UncertainValue[] uTable = inputTablePotential.getUncertaintyTable ();
+        UncertainValue[] uTable = inputTablePotential.getUncertainValues();
         double[] originalValues = inputTablePotential.getValues ();
-        if (!(inputTablePotential.getUncertaintyTable () == null))
+        if (!(inputTablePotential.getUncertainValues() == null))
         {
             List<Variable> inputPotentialVariables = inputTablePotential.getVariables ();
             List<Variable> sampledPotentialVariables = new ArrayList<>(inputPotentialVariables);
             sampledTablePotential = new TablePotential (sampledPotentialVariables,
                                                         inputTablePotential.getPotentialRole ());
             double[] sampledValues = sampledTablePotential.values;
-            sampledTablePotential.setUncertainValues(inputTablePotential.getUncertaintyTable());
+            sampledTablePotential.setUncertainValues(inputTablePotential.getUncertainValues());
             numStates = numElementsInColumn(inputTablePotential);
             sampledConfigurationValues = new double[numStates];
             // Number of configurations of the conditioning variables

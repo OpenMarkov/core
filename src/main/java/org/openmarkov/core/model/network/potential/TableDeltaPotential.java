@@ -18,13 +18,19 @@ public class TableDeltaPotential extends Potential {
 
     public TableDeltaPotential(List<Variable> variables, PotentialRole role, double[] table) {
         super(variables, role);
+        if(this.role == null) {
+            this.role = PotentialRole.CONDITIONAL_PROBABILITY;
+        }
         childVariable = variables.remove(0);
-        tablePotential = new TablePotential(variables, role, table);
+        tablePotential = new TablePotential(variables, PotentialRole.UNSPECIFIED, table);
     }
 
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
-        return null;
+        tablePotential.setCriterion(childVariable.getDecisionCriterion());
+        tablePotential.setPotentialRole(PotentialRole.UTIL_2);
+        List<TablePotential> projectedPotentials = tablePotential.tableProject(evidenceCase, inferenceOptions, alreadyProjectedPotentials);
+        return projectedPotentials;
     }
 
     @Override
@@ -60,5 +66,13 @@ public class TableDeltaPotential extends Potential {
 
     public void setUncertainValues(UncertainValue[] uncertainValues) {
         tablePotential.setUncertainValues(uncertainValues);
+    }
+
+    public UncertainValue[] getUncertainValues () {
+        return tablePotential.getUncertainValues();
+    }
+
+    public double[] getValues() {
+        return tablePotential.getValues();
     }
 }

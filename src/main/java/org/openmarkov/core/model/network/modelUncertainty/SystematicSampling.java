@@ -90,7 +90,7 @@ public class SystematicSampling extends Sampler {
 
 		if (pot instanceof TablePotential) {
 			TablePotential tablePotential = (TablePotential) pot;
-			UncertainValue[] uncertainValuesPot = tablePotential.getUncertaintyTable();
+			UncertainValue[] uncertainValuesPot = tablePotential.getUncertainValues();
 			if (uncertainValuesPot != null) {
 				int i = 0;
 				for (UncertainValue auxUncertain : uncertainValuesPot) {
@@ -149,7 +149,7 @@ public class SystematicSampling extends Sampler {
 		// assigns the values of the new potential
 		int newVariableNumStates = newVariable.getNumStates();
 		double[] values = pot.getValues();
-		UncertainValue[] uncertainValues = pot.getUncertaintyTable();
+		UncertainValue[] uncertainValues = pot.getUncertainValues();
 		boolean hasUncertainty = (uncertainValues!=null)&&(uncertainValues.length>0);
 		if (hasUncertainty){
 			newPotential.uncertainValues = new UncertainValue[newPotential.getTableSize()];
@@ -206,7 +206,7 @@ public class SystematicSampling extends Sampler {
 				newSubPotential.setVariables(newTablePot.getVariables());
 				newSubPotential.setValues(newTablePot.getValues());
 				newSubPotential.setUncertainValues(newTablePot
-						.getUncertaintyTable());
+						.getUncertainValues());
 				double min = parameter.min;
 				double pointsDistance = (parameter.max - min) / numIntervals;
 				int numStates = numElementsInColumn(originalSubPotential);
@@ -360,7 +360,7 @@ public class SystematicSampling extends Sampler {
 	private static int getPosition(TablePotential pot, UncertainValue uncertainValue) {
 		int pos = -1;
 		boolean found = false;
-		UncertainValue[] uncertainValues = pot.getUncertaintyTable();
+		UncertainValue[] uncertainValues = pot.getUncertainValues();
 		for (int i=0;i<uncertainValues.length&&!found;i++){
 			found = uncertainValues[i] == uncertainValue;
 			if (found){

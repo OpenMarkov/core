@@ -898,7 +898,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      * 
      * @return
      */
-    public UncertainValue[] getUncertaintyTable() {
+    public UncertainValue[] getUncertainValues() {
         return uncertainValues;
     }
 

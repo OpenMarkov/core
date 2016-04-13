@@ -128,7 +128,7 @@ public class UncertainValuesEdit extends SimplePNEdit
         TablePotential potential = getPotential ();
         if (wasNullOldUncertainValues)
         {
-            potential.setUncertaintyTable (new UncertainValue[potential.getTableSize ()]);
+            potential.setUncertainValues(new UncertainValue[potential.getTableSize ()]);
         }
         placeNewUncertainColumn (potential);
         placeNewValuesColumn (potential);
@@ -190,7 +190,7 @@ public class UncertainValuesEdit extends SimplePNEdit
         TablePotential potential = getPotential ();
         if (wasNullOldUncertainValues)
         {
-            potential.setUncertaintyTable (null);
+            potential.setUncertainValues(null);
         }
         else
         {

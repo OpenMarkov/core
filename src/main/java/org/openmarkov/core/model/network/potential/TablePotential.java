@@ -265,7 +265,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
             projectedPotential = new TablePotential(unobservedVariables, role);
             int length = projectedPotential.values.length;
             if (hasUncertainTable) {
-                projectedPotential.setUncertaintyTable(new UncertainValue[length]);
+                projectedPotential.setUncertainValues(new UncertainValue[length]);
             }
             // position (in this potential) of the first value
             // of the projected potential
@@ -1163,17 +1163,17 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
     }
 
     /**
-     * @param uncertainTable
+     * @param uncertainValues
      */
-    public void setUncertaintyTable(UncertainValue[] uncertainTable) {
-        this.uncertainValues = uncertainTable;
+    public void setUncertainValues(UncertainValue[] uncertainValues) {
+        this.uncertainValues = uncertainValues;
     }
 
     /**
-     * @param uncertainTable
+     * @param uncertainValues
      * @return true if the uncertain values are correct
      */
-    public static boolean checkUncertainTable(List<UncertainValue> uncertainTable) {
+    public static boolean checkUncertainTable(List<UncertainValue> uncertainValues) {
         return true;
     }
 

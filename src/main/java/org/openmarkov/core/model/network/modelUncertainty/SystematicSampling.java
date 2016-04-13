@@ -205,7 +205,7 @@ public class SystematicSampling extends Sampler {
 						originalSubPotential, iterVariable);
 				newSubPotential.setVariables(newTablePot.getVariables());
 				newSubPotential.setValues(newTablePot.getValues());
-				newSubPotential.setUncertaintyTable(newTablePot
+				newSubPotential.setUncertainValues(newTablePot
 						.getUncertaintyTable());
 				double min = parameter.min;
 				double pointsDistance = (parameter.max - min) / numIntervals;

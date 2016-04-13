@@ -5,6 +5,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.List;
@@ -15,8 +16,10 @@ public class TableDeltaPotential extends Potential {
 
     private Variable childVariable;
 
-    public TableDeltaPotential(Potential potential) {
-        super(potential);
+    public TableDeltaPotential(List<Variable> variables, PotentialRole role, double[] table) {
+        super(variables, role);
+        childVariable = variables.remove(0);
+        tablePotential = new TablePotential(variables, role, table);
     }
 
     @Override
@@ -53,5 +56,9 @@ public class TableDeltaPotential extends Potential {
 
     public void setChildVariable(Variable childVariable) {
         this.childVariable = childVariable;
+    }
+
+    public void setUncertainValues(UncertainValue[] uncertainValues) {
+        tablePotential.setUncertainValues(uncertainValues);
     }
 }

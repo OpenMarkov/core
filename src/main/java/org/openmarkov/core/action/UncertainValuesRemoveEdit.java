@@ -101,7 +101,7 @@ public class UncertainValuesRemoveEdit extends SimplePNEdit {
 		}
 		//If all the elements are null then the uncertain value object is set to null
 		if (!hasUncertainValues(potential.getUncertaintyTable())){
-			potential.setUncertaintyTable(null);
+			potential.setUncertainValues(null);
 		}
 		        
 	}

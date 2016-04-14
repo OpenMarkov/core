@@ -75,4 +75,10 @@ public class TableDeltaPotential extends Potential {
     public double[] getValues() {
         return tablePotential.getValues();
     }
+
+    @Override
+    public void setComment(String comment) {
+        super.setComment(comment);
+        this.tablePotential.setComment(comment);
+    }
 }

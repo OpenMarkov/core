@@ -65,4 +65,10 @@ public class TreeADDDeltaPotential extends Potential {
     public void setChildVariable(Variable childVariable) {
         this.childVariable = childVariable;
     }
+
+    @Override
+    public void setComment(String comment) {
+        super.setComment(comment);
+        this.treeADDPotential.setComment(comment);
+    }
 }

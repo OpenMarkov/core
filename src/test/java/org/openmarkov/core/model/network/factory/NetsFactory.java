@@ -10,15 +10,13 @@
 package org.openmarkov.core.model.network.factory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.SumPotential;
-import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.*;
 
 /**
  * @author manolo
@@ -147,6 +145,18 @@ protected static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity,
 		
 		return new TablePotential(createVariableList(variables), role, values);
 	}
+
+	/**
+	 * @param role Role of the potential
+	 * @param values Values of the potential
+	 * @param variables Variables
+	 * @return A TablePotential
+	 */
+	protected static TableDeltaPotential createTableDeltaPotential(PotentialRole role,
+																   double[] values, Variable... variables) {
+
+		return new TableDeltaPotential(createVariableList(variables), role, values);
+	}
 	
 	/**
 	 * Create utility potential
@@ -155,8 +165,9 @@ protected static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity,
 	 * @return A TablePotential
 	 */
 	protected static SumPotential createSumPotential(Variable varSV,Variable... parents) {
-		
-		return new SumPotential(varSV, createVariableList(parents));
+		List<Variable> variables = Arrays.asList(varSV);
+		variables.addAll(createVariableList(parents));
+		return new SumPotential(variables, PotentialRole.CONDITIONAL_PROBABILITY);
 	}
 	
 	/**

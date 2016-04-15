@@ -16,6 +16,19 @@ public class TableDeltaPotential extends Potential {
 
     private Variable childVariable;
 
+    public TableDeltaPotential(List<Variable> variables, PotentialRole role) {
+        super(variables, role);
+        if(this.role == null) {
+            this.role = PotentialRole.CONDITIONAL_PROBABILITY;
+        }
+        childVariable = variables.remove(0);
+        tablePotential = new TablePotential(variables, PotentialRole.UNSPECIFIED);
+    }
+
+    public TableDeltaPotential(List<Variable> variables) {
+        this(variables, PotentialRole.CONDITIONAL_PROBABILITY);
+    }
+
     public TableDeltaPotential(List<Variable> variables, PotentialRole role, double[] table) {
         super(variables, role);
         if(this.role == null) {

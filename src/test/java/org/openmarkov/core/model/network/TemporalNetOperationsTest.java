@@ -84,7 +84,7 @@ public class TemporalNetOperationsTest {
 			} catch (NodeNotFoundException e) {
 				e.printStackTrace();
 			}
-			TablePotential expectedPotential = new TablePotential(variablesUtil, PotentialRole.UTILITY);
+			TablePotential expectedPotential = new TablePotential(variablesUtil, PotentialRole.CONDITIONAL_PROBABILITY);
 			// TODO We should consider here the order of the states of
 			// DecisionCriteria variable
 			double values[] = { costTreat, costNoTreat, sumQoLTreatTerms, sumQoLNoTreatTerms };
@@ -133,7 +133,7 @@ public class TemporalNetOperationsTest {
 			//Check utility potentials starting in slice 1
 			double ratio = 1.0 / (1.0 + discount);
 			for (TablePotential auxPot:tablePotentials){
-				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot,PotentialRole.UTILITY)){
+				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot,PotentialRole.CONDITIONAL_PROBABILITY)){
 					int slice = auxPot.getUtilityVariable().getTimeSlice();
 					checkUtilityPotentialQoLMIDWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
 				}

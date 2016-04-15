@@ -304,7 +304,7 @@ public class ProbNetOperationsTest {
 		pBA.values[2] = 0.9; pBA.values[3] = 0.1; 
 		pU = new TablePotential(
 				adVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-		pU.setUtilityVariable(U);
+//		pU.setUtilityVariable(U);
 		pU.values[0] = 1; pU.values[1] = 2;
 		pU.values[2] = 3; pU.values[3] = 4;
 		simpleProbNet = new ProbNet();
@@ -877,8 +877,11 @@ public class ProbNetOperationsTest {
 		Variable ageVar = new Variable ("Age", "4.4");
 		List<Variable> originalVariables = Arrays.asList(varTherapy, varStateA, varStateB, ageVar);
 		List<Variable> projectedPotentialVariables = Arrays.asList(varTherapy, varStateA, varStateB);
-		TablePotential originalPotential = new TablePotential(costVar, originalVariables);
-		TablePotential projectedPotential = new TablePotential(costVar, projectedPotentialVariables);
+		TablePotential originalPotential = new TablePotential(
+				UtilTestMethods.getListOfVariables(costVar, originalVariables), PotentialRole.CONDITIONAL_PROBABILITY);
+		TablePotential projectedPotential = new TablePotential(
+				UtilTestMethods.getListOfVariables(costVar, projectedPotentialVariables), 
+				PotentialRole.CONDITIONAL_PROBABILITY);
 		projectedPotential.values =  new double [] {19.969, 19.542, 18.858, 18.455, 20.161, 19.731, 19.04, 18.633};
 		EvidenceCase configuration = new EvidenceCase();
 		configuration.addFinding(new Finding(ageVar, 0));

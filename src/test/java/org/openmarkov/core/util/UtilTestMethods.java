@@ -165,4 +165,15 @@ public class UtilTestMethods {
     	probNet.addLink(variable1, variable2, directed);
     }
 
+    /**
+     * @param variable. <code>Variable</code>
+     * @param variables. <code>Array</code> of <code>Variable</code> 
+     * @return <code>Array</code> of <code>Variable</code>
+     */
+    public static List<Variable> getListOfVariables(Variable variable, List<Variable> variables) {
+    	List<Variable> listOfVariables = new ArrayList<Variable>(1 + variables.size());
+    	listOfVariables.add(variable);
+    	listOfVariables.addAll(variables);
+    	return listOfVariables;
+    }
 }

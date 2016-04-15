@@ -810,7 +810,6 @@ public class DiscretePotentialOperationsTest {
 		Variable X = new Variable("X", "a", "b");
 		Variable Y = new Variable("Y", "c", "d");
 		Variable decisionVariable = new Variable("D", "opt 1", "opt 2");
-		Variable U = new Variable("U");
 		// Potential P(X)
 		List<Variable> pXvariables = new ArrayList<>(1);
 		pXvariables.add(X);
@@ -826,8 +825,8 @@ public class DiscretePotentialOperationsTest {
 		List<Variable> decXDVariables = new ArrayList<>(2);
 		decXDVariables.add(X);
 		decXDVariables.add(decisionVariable);
-		TablePotential pU = new TablePotential(decXDVariables, PotentialRole.UTILITY, new double[]{20, 30, 10, 40});
-		pU.setUtilityVariable(U);
+		TablePotential pU = new TablePotential(decXDVariables, 
+				PotentialRole.CONDITIONAL_PROBABILITY, new double[]{20, 30, 10, 40});
 		// List of potentials
 		List<TablePotential> potentials = new ArrayList<>(3);
 		potentials.add(pX);

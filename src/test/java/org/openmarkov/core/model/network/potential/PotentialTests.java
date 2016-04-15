@@ -13,7 +13,7 @@ import org.openmarkov.core.model.network.potential.treeADD.TreeAddTests;
 	OperationsTests.class,
 	PluginTests.class,
 	TreeAddTests.class,
-	ConditionalGaussianPotentialTest.class,
+//	ConditionalGaussianPotentialTest.class,
 	InterventionTest.class,
 	LinearRegressionPotentialTest.class,
 	PotentialTest.class,

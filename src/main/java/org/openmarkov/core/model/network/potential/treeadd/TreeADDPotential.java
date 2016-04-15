@@ -87,7 +87,8 @@ public class TreeADDPotential extends Potential {
 	 * @param branchingStates
 	 * @param role
 	 */
-	public TreeADDPotential(List<Variable> variables, Variable topVariable, State[] branchingStates, PartitionedInterval interval, PotentialRole role) {
+	public TreeADDPotential(List<Variable> variables, Variable topVariable, 
+			State[] branchingStates, PartitionedInterval interval, PotentialRole role) {
 		super(variables, role);
 		this.topVariable = topVariable;
 		VariableType variableType = topVariable.getVariableType();

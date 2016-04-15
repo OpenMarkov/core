@@ -10,6 +10,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.util.UtilTestMethods;
 
 /**
  * @author manuel
@@ -32,15 +33,17 @@ public class IDFactory {
 		
 		// Create health state variable and potential
 		noKnowledge.addNode(healthState, NodeType.UTILITY);
-		TablePotential healthStatePotential = 
-				new TablePotential(healthState, getVariablesList(therapy, disease));
+		TablePotential healthStatePotential = new TablePotential(
+				UtilTestMethods.getListOfVariables(healthState, getVariablesList(therapy, disease)), 
+				PotentialRole.CONDITIONAL_PROBABILITY);
 		healthStatePotential.values = new double[]{10.0, 9.0, 3.0, 8.0};
 		noKnowledge.addPotential(healthStatePotential);
 
 		// Create cost of therapy variable and potential
 		noKnowledge.addNode(costOfTherapy, NodeType.UTILITY);
-		TablePotential costOfTherapyPotential = 
-				new TablePotential(costOfTherapy, getVariablesList(therapy));
+		TablePotential costOfTherapyPotential = new TablePotential(
+				UtilTestMethods.getListOfVariables(costOfTherapy, getVariablesList(therapy)), 
+				PotentialRole.CONDITIONAL_PROBABILITY);
 		costOfTherapyPotential.values = new double[]{0.0, -0.25};
 		noKnowledge.addPotential(costOfTherapyPotential);
 
@@ -73,16 +76,19 @@ public class IDFactory {
 			e.printStackTrace();
 			System.err.println("Variable not found");
 		}
-		TablePotential costOfTherapyPotential = 
-				new TablePotential(costOfTherapy, getVariablesList(resultOfTest));
+		TablePotential costOfTherapyPotential = new TablePotential(
+				UtilTestMethods.getListOfVariables(costOfTherapy,getVariablesList(resultOfTest)), 
+				PotentialRole.CONDITIONAL_PROBABILITY);
 		costOfTherapyPotential.values = new double[]{0.0, 20000.0, 70000.0};
 		testDecision.addPotential(costOfTherapyPotential);
-		TablePotential costOfTestPotential = 
-				new TablePotential(costOfTest, getVariablesList(doTest));
+		TablePotential costOfTestPotential = new TablePotential(
+				UtilTestMethods.getListOfVariables(costOfTest,getVariablesList(doTest)), 
+				PotentialRole.CONDITIONAL_PROBABILITY);
 		costOfTestPotential.values = new double[]{0.0, -0.2};
 		testDecision.addPotential(costOfTherapyPotential);
-		TablePotential resultOfTestPotential = 
-				new TablePotential(resultOfTest, getVariablesList(resultOfTest, doTest, disease));
+		TablePotential resultOfTestPotential = new TablePotential(
+				UtilTestMethods.getListOfVariables(resultOfTest,getVariablesList(resultOfTest, doTest, disease)), 
+				PotentialRole.CONDITIONAL_PROBABILITY);
 		resultOfTestPotential.values = new double[]{0.0, 0.0, 1.0, 0.03, 0.97, 0.0, 0.91, 0.09, 0.0};
 		testDecision.addPotential(resultOfTestPotential);
 		return testDecision;

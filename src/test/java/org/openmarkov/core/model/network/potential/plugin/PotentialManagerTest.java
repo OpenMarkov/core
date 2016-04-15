@@ -1,5 +1,6 @@
 package org.openmarkov.core.model.network.potential.plugin;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -50,7 +51,9 @@ public class PotentialManagerTest {
 		probNet.addLink(variableC, variableU, true);
 		probNet.addLink(variableA, variableU, true);
 		
-		Potential potentialU = new UniformPotential(variableU, Arrays.asList(variableA, variableB, variableC));
+		List<Variable> potentialUVariables = new ArrayList<Variable>();
+		potentialUVariables.addAll(Arrays.asList(variableU, variableA, variableB, variableC));
+		Potential potentialU = new UniformPotential(potentialUVariables, PotentialRole.CONDITIONAL_PROBABILITY);
 		nodeU.setPotential(potentialU);
     }
     
@@ -101,7 +104,7 @@ public class PotentialManagerTest {
 			}
 	    	Potential potential =  manager.getByName(potentialType, variableU, variables);
 	    	Assert.assertNotNull(potential);
-	    	Assert.assertEquals(PotentialRole.UTILITY, potential.getPotentialRole());
+	    	Assert.assertEquals(PotentialRole.CONDITIONAL_PROBABILITY, potential.getPotentialRole());
 	    	Assert.assertEquals(potentialType, PotentialManager.getPotentialName(potential.getClass()));
     	}
     }      

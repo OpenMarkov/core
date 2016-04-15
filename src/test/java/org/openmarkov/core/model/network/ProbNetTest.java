@@ -186,7 +186,7 @@ public class ProbNetTest {
 		pBA.values[2] = 0.9; pBA.values[3] = 0.1; 
 		pU = new TablePotential(
 				adVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-		pU.setUtilityVariable(U);
+//		pU.setUtilityVariable(U);
 		pU.values[0] = 1; pU.values[1] = 2;
 		pU.values[2] = 3; pU.values[3] = 4;
 		simpleProbNet = new ProbNet();
@@ -606,7 +606,7 @@ public class ProbNetTest {
 		assertEquals(3, projectedPotentials.size());
 		boolean constantPotentialFound = false;
 		boolean bPotentialFound = false;
-		boolean utilityPotentialFound = false;
+//		boolean utilityPotentialFound = false;
 		for (Potential potential : projectedPotentials) {
 		    List<Variable> potentialVariables = potential.getVariables();
 			constantPotentialFound =  constantPotentialFound || 
@@ -614,16 +614,16 @@ public class ProbNetTest {
 			bPotentialFound = bPotentialFound || 
 			    (potentialVariables.contains(B) && 
 			     potentialVariables.size() == 1);
-			utilityPotentialFound = utilityPotentialFound ||
-				(potential.getUtilityVariable() != null &&
-						potential.getUtilityVariable().equals(U) && 
-						potentialVariables.size() == 1 
-						&& potential.isUtility()
-				&& potentialVariables.contains(D));
+//			utilityPotentialFound = utilityPotentialFound ||
+//				(potential.getUtilityVariable() != null &&
+//						potential.getUtilityVariable().equals(U) && 
+//						potentialVariables.size() == 1 
+//						&& potential.isUtility()
+//				&& potentialVariables.contains(D));
 		}
 		assertTrue(constantPotentialFound);
 		assertTrue(bPotentialFound);
-		assertTrue(utilityPotentialFound);
+//		assertTrue(utilityPotentialFound);
 	}
 
 	@Test
@@ -782,7 +782,6 @@ public class ProbNetTest {
 		assertEquals(1, utilityVariables.size());
 		Node utilityNode = 
 			simpleProbNet.getNode(utilityVariables.get(0));
-		assertTrue(utilityNode.getPotentials().get(0).isUtility());
 		
 		// test chance variables
 		List<Variable> chanceVariables = 

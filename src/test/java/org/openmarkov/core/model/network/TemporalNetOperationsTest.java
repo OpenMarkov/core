@@ -67,7 +67,8 @@ public class TemporalNetOperationsTest {
 			
             ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(network);
 			
-			List<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
+			List<TablePotential> tablePotentials = 
+					extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
 
 			TablePotential globalPotential = DiscretePotentialOperations.sum(tablePotentials);
 			
@@ -132,9 +133,9 @@ public class TemporalNetOperationsTest {
 			List<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
 			//Check utility potentials starting in slice 1
 			double ratio = 1.0 / (1.0 + discount);
-			for (TablePotential auxPot:tablePotentials){
-				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot,PotentialRole.CONDITIONAL_PROBABILITY)){
-					int slice = auxPot.getUtilityVariable().getTimeSlice();
+			for (TablePotential auxPot:tablePotentials) {
+				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot,PotentialRole.CONDITIONAL_PROBABILITY)) {
+					int slice = auxPot.getTimeSlice();
 					checkUtilityPotentialQoLMIDWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
 				}
 			}
@@ -186,14 +187,15 @@ public class TemporalNetOperationsTest {
 	}*/
 
 
-	public void checkUtilityPotentialQoLMIDWithState(ProbNet expandedNetwork, TablePotential auxPot, double qoLTreat, double qoLNoTreat, double ratio, int slice) {
+	public void checkUtilityPotentialQoLMIDWithState(
+			ProbNet expandedNetwork, TablePotential auxPot, double qoLTreat, double qoLNoTreat, double ratio, int slice) {
 	
 		
 		ArrayList<Variable> variablesUtil = new ArrayList<>();
 		try {
 			variablesUtil.add(expandedNetwork.getVariable("Treatment"));
 			variablesUtil.add(expandedNetwork.getVariable("Decision criteria"));
-			variablesUtil.add(expandedNetwork.getVariable(nameStateVariable(auxPot.getUtilityVariable())));
+//			variablesUtil.add(expandedNetwork.getVariable(nameStateVariable(auxPot.getUtilityVariable())));
 
 		} catch (NodeNotFoundException e1) {
 			e1.printStackTrace();
@@ -203,7 +205,7 @@ public class TemporalNetOperationsTest {
 		double termQoLNoTreat = termGeometricProgression(qoLNoTreat,ratio,slice);
 		
 		double expectedValues[] = {0.0,0.0,0.0,0.0,0.0,0.0,termQoLTreat,termQoLNoTreat};
-		TablePotential expectedPotential = new TablePotential(variablesUtil, PotentialRole.UTILITY);
+		TablePotential expectedPotential = new TablePotential(variablesUtil, PotentialRole.CONDITIONAL_PROBABILITY);
 		expectedPotential.setValues(expectedValues);
 		//Compare the global utility potential of the expanded network with the expected results
 		TablePotentialTest.checkEqualPotentials(auxPot, expectedPotential, maxError);
@@ -230,9 +232,6 @@ public class TemporalNetOperationsTest {
 			case CONDITIONAL_PROBABILITY:
 					varToAnalyze = auxPot.getVariables().get(0);
 					break;
-			case UTILITY:
-					varToAnalyze = auxPot.getUtilityVariable();
-					break;
 			default:
 				break;
 			
@@ -244,33 +243,33 @@ public class TemporalNetOperationsTest {
 	}
 
 
-	private List<TablePotential> extractUtilityPotentialsProjecToTablesAndCheckVariables(
-			ProbNet expandedNetwork) {
-		InferenceOptions inferenceOptions;
-		List<Potential> utilityPotentials = expandedNetwork
-				.getPotentialsByRole(PotentialRole.UTILITY);
-		
-		
-		inferenceOptions = new InferenceOptions(expandedNetwork, null);
-
-		List<TablePotential> tablePotentials;
-		tablePotentials = new ArrayList<>();
-		for (Potential auxPotential : utilityPotentials) {
-			assertNotNull(auxPotential.getUtilityVariable());
-			try {
-				List<TablePotential> tableProject = auxPotential.tableProject(null, inferenceOptions);
-				//Check utilityVariables are not null
-				for (TablePotential auxTable:tableProject){
-					assertNotNull(auxTable.getUtilityVariable());
-				}
-				tablePotentials.addAll(tableProject);
-			} catch (NonProjectablePotentialException
-					| WrongCriterionException e) {
-				e.printStackTrace();
-			}
-		}
-		return tablePotentials;
-	}
+//	private List<TablePotential> extractUtilityPotentialsProjecToTablesAndCheckVariables(
+//			ProbNet expandedNetwork) {
+//		InferenceOptions inferenceOptions;
+//		List<Potential> utilityPotentials = expandedNetwork
+//				.getPotentialsByRole(PotentialRole.CONDITIONAL_PROBABILITY);
+//		
+//		
+//		inferenceOptions = new InferenceOptions(expandedNetwork, null);
+//
+//		List<TablePotential> tablePotentials;
+//		tablePotentials = new ArrayList<>();
+//		for (Potential auxPotential : utilityPotentials) {
+//			assertNotNull(auxPotential.getUtilityVariable());
+//			try {
+//				List<TablePotential> tableProject = auxPotential.tableProject(null, inferenceOptions);
+//				//Check utilityVariables are not null
+//				for (TablePotential auxTable:tableProject){
+//					assertNotNull(auxTable.getUtilityVariable());
+//				}
+//				tablePotentials.addAll(tableProject);
+//			} catch (NonProjectablePotentialException
+//					| WrongCriterionException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return tablePotentials;
+//	}
 	
 	/**
 	 * @param firstTerm

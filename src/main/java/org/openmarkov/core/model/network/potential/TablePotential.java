@@ -1310,6 +1310,19 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
 
 
         return potential;
-
     }
+    
+    /**
+     * @return The maximum time slice of the variables referenced by this potential
+     */
+    public int getTimeSlice() {
+    	int maxTimeSlice = Integer.MIN_VALUE;
+    	int variableTimeSlice;
+    	for (Variable variable : variables) {
+    		maxTimeSlice = ((variableTimeSlice = variable.getTimeSlice()) > maxTimeSlice) ? variableTimeSlice : maxTimeSlice; 
+    	}
+    	return maxTimeSlice;
+    	
+    }
+    
 }

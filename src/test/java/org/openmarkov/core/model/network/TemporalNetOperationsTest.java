@@ -43,60 +43,60 @@ public class TemporalNetOperationsTest {
 	 * It performs a battery of tests: for numSlices = 1, numSlices = 2, ..., numSlices = 100
 	 */
 	//@Test
-	public void testExpansionMIDWithoutStateVariable() {
-		double qoLTreat;
-		double qoLNoTreat;
-		double costTreat;
-		double costNoTreat;
-		int maximumNumSlices;
-
-		maximumNumSlices = 2;
-		int startNumSlices = 1;
-
-		qoLTreat = 0.9;
-		qoLNoTreat = 1.0;
-		costTreat = 40000;
-		costNoTreat = 0;
-
-		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
-			
-			//Create the MID and expand it
-			ProbNet network = MIDFactory.createMIDWithoutStateVariable(qoLTreat, qoLNoTreat,
-					costTreat, costNoTreat);
-			double discount = 0.01;
-			
-            ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(network);
-			
-			List<TablePotential> tablePotentials = 
-					extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
-
-			TablePotential globalPotential = DiscretePotentialOperations.sum(tablePotentials);
-			
-			//Create a potential with the expected results
-			double ratio = 1.0 / (1.0 + discount);
-			double sumQoLTreatTerms = sumTermsGeometricProgression(qoLTreat, ratio, numSlices);
-			double sumQoLNoTreatTerms = sumTermsGeometricProgression(qoLNoTreat, ratio, numSlices);
-			ArrayList<Variable> variablesUtil;
-
-			variablesUtil = new ArrayList<>();
-			try {
-				variablesUtil.add(expandedNetwork.getVariable("Treatment"));
-				variablesUtil.add(expandedNetwork.getVariable("Decision criteria"));
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-			}
-			TablePotential expectedPotential = new TablePotential(variablesUtil, PotentialRole.CONDITIONAL_PROBABILITY);
-			// TODO We should consider here the order of the states of
-			// DecisionCriteria variable
-			double values[] = { costTreat, costNoTreat, sumQoLTreatTerms, sumQoLNoTreatTerms };
-			expectedPotential.setValues(values);
-			
-			//Compare the global utility potential of the expanded network with the expected results
-			TablePotentialTest.checkEqualPotentials(globalPotential, expectedPotential, maxError);
-			
-		}
-
-	}
+//	public void testExpansionMIDWithoutStateVariable() {
+//		double qoLTreat;
+//		double qoLNoTreat;
+//		double costTreat;
+//		double costNoTreat;
+//		int maximumNumSlices;
+//
+//		maximumNumSlices = 2;
+//		int startNumSlices = 1;
+//
+//		qoLTreat = 0.9;
+//		qoLNoTreat = 1.0;
+//		costTreat = 40000;
+//		costNoTreat = 0;
+//
+//		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
+//			
+//			//Create the MID and expand it
+//			ProbNet network = MIDFactory.createMIDWithoutStateVariable(qoLTreat, qoLNoTreat,
+//					costTreat, costNoTreat);
+//			double discount = 0.01;
+//			
+//            ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(network);
+//			
+//			List<TablePotential> tablePotentials = 
+//					extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
+//
+//			TablePotential globalPotential = DiscretePotentialOperations.sum(tablePotentials);
+//			
+//			//Create a potential with the expected results
+//			double ratio = 1.0 / (1.0 + discount);
+//			double sumQoLTreatTerms = sumTermsGeometricProgression(qoLTreat, ratio, numSlices);
+//			double sumQoLNoTreatTerms = sumTermsGeometricProgression(qoLNoTreat, ratio, numSlices);
+//			ArrayList<Variable> variablesUtil;
+//
+//			variablesUtil = new ArrayList<>();
+//			try {
+//				variablesUtil.add(expandedNetwork.getVariable("Treatment"));
+//				variablesUtil.add(expandedNetwork.getVariable("Decision criteria"));
+//			} catch (NodeNotFoundException e) {
+//				e.printStackTrace();
+//			}
+//			TablePotential expectedPotential = new TablePotential(variablesUtil, PotentialRole.CONDITIONAL_PROBABILITY);
+//			// TODO We should consider here the order of the states of
+//			// DecisionCriteria variable
+//			double values[] = { costTreat, costNoTreat, sumQoLTreatTerms, sumQoLNoTreatTerms };
+//			expectedPotential.setValues(values);
+//			
+//			//Compare the global utility potential of the expanded network with the expected results
+//			TablePotentialTest.checkEqualPotentials(globalPotential, expectedPotential, maxError);
+//			
+//		}
+//
+//	}
 
 
 		
@@ -105,55 +105,55 @@ public class TemporalNetOperationsTest {
 	 * It performs a battery of tests: for numSlices = 1, numSlices = 2, ..., numSlices = 100
 	 */
 	//@Test
-	public void testExpansionMIDWithStateVariable() {
-		double qoLTreat;
-		double qoLNoTreat;
-		double costTreat;
-		double costNoTreat;
-		int maximumNumSlices;
-
-		maximumNumSlices = 5;
-		int startNumSlices = 1;
-
-		qoLTreat = 0.9;
-		qoLNoTreat = 1.0;
-		costTreat = 40000;
-		costNoTreat = 0;
-
-		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
-			
-			//Create the MID and expand it
-			ProbNet network = MIDFactory.createMIDWithStateVariable(qoLTreat, qoLNoTreat,
-					costTreat, costNoTreat,0.7,0.5);
-			double discount = 0.01;
-
-			ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(network);
-			
-		
-			List<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
-			//Check utility potentials starting in slice 1
-			double ratio = 1.0 / (1.0 + discount);
-			for (TablePotential auxPot:tablePotentials) {
-				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot,PotentialRole.CONDITIONAL_PROBABILITY)) {
-					int slice = auxPot.getTimeSlice();
-					checkUtilityPotentialQoLMIDWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
-				}
-			}
-			
-			/*//Check probability potentials starting in slice 1
-			for (TablePotential auxPot:tablePotentials){
-				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot)){
-					int slice = auxPot.getUtilityVariable().getTimeSlice();
-				
-					checkUtilityPotentialQoLMIDWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
-				}
-			}
-	*/
-					
-		}
-		
-		
-	}
+//	public void testExpansionMIDWithStateVariable() {
+//		double qoLTreat;
+//		double qoLNoTreat;
+//		double costTreat;
+//		double costNoTreat;
+//		int maximumNumSlices;
+//
+//		maximumNumSlices = 5;
+//		int startNumSlices = 1;
+//
+//		qoLTreat = 0.9;
+//		qoLNoTreat = 1.0;
+//		costTreat = 40000;
+//		costNoTreat = 0;
+//
+//		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
+//			
+//			//Create the MID and expand it
+//			ProbNet network = MIDFactory.createMIDWithStateVariable(qoLTreat, qoLNoTreat,
+//					costTreat, costNoTreat,0.7,0.5);
+//			double discount = 0.01;
+//
+//			ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(network);
+//			
+//		
+//			List<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
+//			//Check utility potentials starting in slice 1
+//			double ratio = 1.0 / (1.0 + discount);
+//			for (TablePotential auxPot:tablePotentials) {
+//				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot,PotentialRole.CONDITIONAL_PROBABILITY)) {
+//					int slice = auxPot.getTimeSlice();
+//					checkUtilityPotentialQoLMIDWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
+//				}
+//			}
+//			
+//			/*//Check probability potentials starting in slice 1
+//			for (TablePotential auxPot:tablePotentials){
+//				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot)){
+//					int slice = auxPot.getUtilityVariable().getTimeSlice();
+//				
+//					checkUtilityPotentialQoLMIDWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
+//				}
+//			}
+//	*/
+//					
+//		}
+//		
+//		
+//	}
 
 //	@Test
 	/*public public void testSemimarkovExpansion() {

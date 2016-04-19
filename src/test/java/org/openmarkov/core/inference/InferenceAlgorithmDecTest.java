@@ -248,7 +248,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 	variables = new ArrayList<>();
 	variables.add(variableT);
 			
-	pot = new TablePotential(variables,PotentialRole.UTILITY);
+	pot = new TablePotential(variables,PotentialRole.CONDITIONAL_PROBABILITY);
 	double values[]={96.006,95.1};
 	pot.setValues(values);
 	return pot;
@@ -268,7 +268,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
 		variables.add(variableY);
 		variables.add(variableD);
 				
-		pot = new TablePotential(variables,PotentialRole.UTILITY);
+		pot = new TablePotential(variables,PotentialRole.CONDITIONAL_PROBABILITY);
 		double values[]={81.04585153,0.0,87.93064729,0.0,-2.0,89.3,49.3209607,0.0,97.51453104,0.0,-2.0,95.1};
 		pot.setValues(values);
 		return pot;

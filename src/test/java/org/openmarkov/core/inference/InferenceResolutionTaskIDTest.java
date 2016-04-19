@@ -394,7 +394,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 			
 			Variable X = network.getVariable("Disease");
 			
-			TablePotential expectedPotential = new TablePotential(Arrays.asList(X,D), PotentialRole.UTILITY);
+			TablePotential expectedPotential = new TablePotential(Arrays.asList(X,D), PotentialRole.CONDITIONAL_PROBABILITY);
 			double [] values = {10.0,3.0,9.0,8.0};
 			expectedPotential.setValues(values);
 			

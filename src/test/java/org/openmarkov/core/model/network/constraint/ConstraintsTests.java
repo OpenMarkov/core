@@ -120,8 +120,8 @@ public class ConstraintsTests {
 			influenceDiagram.addNode(vD, NodeType.DECISION);
 			influenceDiagram.addNode(vU, NodeType.UTILITY);
 			TablePotential utilityPotential = 
-				new TablePotential(variables, PotentialRole.UTILITY);
-			utilityPotential.setUtilityVariable(vU);
+				new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY);
+//			utilityPotential.setUtilityVariable(vU);
 			influenceDiagram.addPotential(utilityPotential);
 			influenceDiagram.addLink(vA, vD, true);
 			influenceDiagram.makeLinksExplicit(true);
@@ -183,8 +183,8 @@ public class ConstraintsTests {
 			influenceDiagram.addNode(vD, NodeType.DECISION);
 			influenceDiagram.addNode(vU, NodeType.UTILITY);
 			TablePotential utilityPotential = 
-				new TablePotential(variables, PotentialRole.UTILITY);
-			utilityPotential.setUtilityVariable(vU);
+				new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY);
+//			utilityPotential.setUtilityVariable(vU);
 			influenceDiagram.addPotential(utilityPotential);
 			influenceDiagram.addLink(vA, vD, true);
 			influenceDiagram.makeLinksExplicit(true);
@@ -215,8 +215,8 @@ public class ConstraintsTests {
 			influenceDiagram.addNode(vD, NodeType.DECISION);
 			influenceDiagram.addNode(vU, NodeType.UTILITY);
 			TablePotential utilityPotential = 
-				new TablePotential(variables, PotentialRole.UTILITY);
-			utilityPotential.setUtilityVariable(vU);
+				new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY);
+//			utilityPotential.setUtilityVariable(vU);
 			influenceDiagram.addPotential(utilityPotential);
 			influenceDiagram.addLink(vA, vD, true);
 			influenceDiagram.makeLinksExplicit(true);

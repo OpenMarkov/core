@@ -11,6 +11,7 @@ import org.openmarkov.core.inference.MulticriteriaOptions.Type;
 import org.openmarkov.core.model.network.Criterion.CECriterion;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.SumPotential;
+import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.util.UtilTestMethods;
@@ -104,16 +105,12 @@ public class UtilityOperationsTest {
 		  potResult_of_test.values = new double[]{1, 0, 0, 0, 0.97, 0.03, 1, 0, 0, 0, 0.09, 0.91};
 		  nodeResult_of_test.setPotential(potResult_of_test);
 
-		  TablePotential potHealth_state = new TablePotential(
-				  UtilTestMethods.getListOfVariables(varHealth_state,Arrays.asList(varDisease, varTherapy)), 
-				  PotentialRole.CONDITIONAL_PROBABILITY);
-		  potHealth_state.values = new double[]{10, 3, 9, 8};
+		  TableDeltaPotential potHealth_state = new TableDeltaPotential(Arrays.asList(varHealth_state,varDisease, varTherapy));
+		  potHealth_state.setValues(new double[]{10, 3, 9, 8});
 		  nodeHealth_state.setPotential(potHealth_state);
 
-		  TablePotential potCost_of_test = new TablePotential(
-				  UtilTestMethods.getListOfVariables(varCost_of_test,Arrays.asList(varDo_test_)), 
-				  PotentialRole.CONDITIONAL_PROBABILITY);
-		  potCost_of_test.values = new double[]{0, -0.2};
+		TableDeltaPotential potCost_of_test = new TableDeltaPotential(Arrays.asList(varCost_of_test,varDo_test_));
+		  potCost_of_test.setValues(new double[]{0, -0.2});
 		  nodeCost_of_test.setPotential(potCost_of_test);
 
 

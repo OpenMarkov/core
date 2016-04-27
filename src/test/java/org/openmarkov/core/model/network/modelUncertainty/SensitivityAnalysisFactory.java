@@ -15,6 +15,7 @@ import org.openmarkov.core.model.network.modelUncertainty.LogNormalFunction;
 import org.openmarkov.core.model.network.modelUncertainty.TriangularFunction;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.util.UtilTestMethods;
@@ -62,25 +63,19 @@ public class SensitivityAnalysisFactory extends IDFactory {
 		  potResult_of_test.uncertainValues = new UncertainValue[]{null, null, null, new UncertainValue(new ExactFunction(0),""), new UncertainValue(new BetaFunction(97, 3),"specificity"), new UncertainValue(new ComplementFunction(1),""), null, null, null, new UncertainValue(new ExactFunction(0),""), new UncertainValue(new ComplementFunction(1),""), new UncertainValue(new BetaFunction(91, 9),"sensitivity")};
 		  nodeResult_of_test.setPotential(potResult_of_test);
 
-		  TablePotential potHealth_state = new TablePotential(
-				  UtilTestMethods.getListOfVariables(varHealth_state,Arrays.asList(varDisease, varTherapy)), 
-				  PotentialRole.CONDITIONAL_PROBABILITY);
-		  potHealth_state.values = new double[]{10, 4.94616381, 9, 8};
-		  potHealth_state.uncertainValues = new UncertainValue[]{null, new UncertainValue(new LogNormalFunction(1.09861229, 1),"utility non-treated disease"), new UncertainValue(new TriangularFunction(8.5, 9.5, 9),"utility not treated"), new UncertainValue(new TriangularFunction(7.5, 8.5, 8),"utility treated disease")};
+		  TableDeltaPotential potHealth_state = new TableDeltaPotential(Arrays.asList(varHealth_state,varDisease, varTherapy));
+		  potHealth_state.setValues(new double[]{10, 4.94616381, 9, 8});
+		  potHealth_state.setUncertainValues(new UncertainValue[]{null, new UncertainValue(new LogNormalFunction(1.09861229, 1),"utility non-treated disease"), new UncertainValue(new TriangularFunction(8.5, 9.5, 9),"utility not treated"), new UncertainValue(new TriangularFunction(7.5, 8.5, 8),"utility treated disease")});
 		  nodeHealth_state.setPotential(potHealth_state);
 
-		  TablePotential potCost_of_test = new TablePotential(
-				  UtilTestMethods.getListOfVariables(varCost_of_test,Arrays.asList(varDo_test_)), 
-				  PotentialRole.CONDITIONAL_PROBABILITY);
-		  potCost_of_test.values = new double[]{0, -0.2};
-		  potCost_of_test.uncertainValues = new UncertainValue[]{null, new UncertainValue(new TriangularFunction(-0.25, -0.15, -0.2),"")};
+		  TableDeltaPotential potCost_of_test = new TableDeltaPotential(Arrays.asList(varCost_of_test,varDo_test_));
+		  potCost_of_test.setValues(new double[]{0, -0.2});
+		  potCost_of_test.setUncertainValues(new UncertainValue[]{null, new UncertainValue(new TriangularFunction(-0.25, -0.15, -0.2),"")});
 		  nodeCost_of_test.setPotential(potCost_of_test);
 
-		  TablePotential potCost_of_therapy = new TablePotential(
-				  UtilTestMethods.getListOfVariables(varCost_of_therapy,Arrays.asList(varTherapy)), 
-				  PotentialRole.CONDITIONAL_PROBABILITY);
-		  potCost_of_therapy.values = new double[]{0, -0.2};
-		  potCost_of_therapy.uncertainValues = new UncertainValue[]{null, new UncertainValue(new TriangularFunction(-0.3, -0.1, -0.2),"")};
+		  TableDeltaPotential potCost_of_therapy = new TableDeltaPotential(Arrays.asList(varCost_of_therapy,varTherapy));
+		  potCost_of_therapy.setValues(new double[]{0, -0.2});
+		  potCost_of_therapy.setUncertainValues(new UncertainValue[]{null, new UncertainValue(new TriangularFunction(-0.3, -0.1, -0.2),"")});
 		  nodeCost_of_therapy.setPotential(potCost_of_therapy);
 
 		  // Link restrictions and revealing states
@@ -123,10 +118,8 @@ public class SensitivityAnalysisFactory extends IDFactory {
 	  potAlive.uncertainValues = new UncertainValue[]{new UncertainValue(prevalenceProbFunction,"prevalence"),new UncertainValue(new ComplementFunction(1),"")};
 	  nodeAlive.setPotential(potAlive);
 
-	  TablePotential potHealth_state = new TablePotential(
-			  UtilTestMethods.getListOfVariables(variableU,Arrays.asList(variableX)), 
-			  PotentialRole.CONDITIONAL_PROBABILITY);
-	  potHealth_state.values = new double[]{0, 1};
+	  TableDeltaPotential potHealth_state = new TableDeltaPotential(Arrays.asList(variableU,variableX));
+	  potHealth_state.setValues(new double[]{0, 1});
 	  nodeHealth_state.setPotential(potHealth_state);
 
 	  // Link restrictions and revealing states
@@ -164,10 +157,8 @@ public class SensitivityAnalysisFactory extends IDFactory {
 			  new UncertainValue(new ComplementFunction(2),"")};
 	  nodeAlive.setPotential(potAlive);
 
-	  TablePotential potHealth_state = new TablePotential(
-			  UtilTestMethods.getListOfVariables(variableU,Arrays.asList(variableX)), 
-			  PotentialRole.CONDITIONAL_PROBABILITY);
-	  potHealth_state.values = new double[]{0, 0.1,0.4,1};
+	  TableDeltaPotential potHealth_state = new TableDeltaPotential(Arrays.asList(variableU,variableX));
+	  potHealth_state.setValues(new double[]{0, 0.1,0.4,1});
 	  nodeHealth_state.setPotential(potHealth_state);
 
 	  // Link restrictions and revealing states
@@ -202,10 +193,8 @@ public class SensitivityAnalysisFactory extends IDFactory {
 	  potAlive.uncertainValues = new UncertainValue[]{new UncertainValue(new BetaFunction(14, 86),"prevalence"),new UncertainValue(new ComplementFunction(1),"")};
 	  nodeAlive.setPotential(potAlive);
 
-	  TablePotential potHealth_state = new TablePotential(
-			  UtilTestMethods.getListOfVariables(variableU,Arrays.asList(variableX)), 
-			  PotentialRole.CONDITIONAL_PROBABILITY);
-	  potHealth_state.values = new double[]{0, 1};
+	  TableDeltaPotential potHealth_state = new TableDeltaPotential(Arrays.asList(variableU,variableX));
+	  potHealth_state.setValues(new double[]{0, 1});
 	  nodeHealth_state.setPotential(potHealth_state);
 
 	  // Link restrictions and revealing states

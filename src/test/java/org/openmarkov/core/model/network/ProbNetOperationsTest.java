@@ -29,14 +29,7 @@ import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.factory.BNFactory;
 import org.openmarkov.core.model.network.factory.DANFactory;
 import org.openmarkov.core.model.network.factory.IDFactory;
-import org.openmarkov.core.model.network.potential.CycleLengthShift;
-import org.openmarkov.core.model.network.potential.DeltaPotential;
-import org.openmarkov.core.model.network.potential.LinearCombinationPotential;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
-import org.openmarkov.core.model.network.potential.WeibullHazardPotential;
+import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
@@ -875,22 +868,18 @@ public class ProbNetOperationsTest {
 		Variable varStateA = new Variable ("State A", "no", "yes");
 		Variable varStateB = new Variable ("State B", "no", "yes");
 		Variable ageVar = new Variable ("Age", "4.4");
-		List<Variable> originalVariables = Arrays.asList(varTherapy, varStateA, varStateB, ageVar);
-		List<Variable> projectedPotentialVariables = Arrays.asList(varTherapy, varStateA, varStateB);
-		TablePotential originalPotential = new TablePotential(
-				UtilTestMethods.getListOfVariables(costVar, originalVariables), PotentialRole.CONDITIONAL_PROBABILITY);
-		TablePotential projectedPotential = new TablePotential(
-				UtilTestMethods.getListOfVariables(costVar, projectedPotentialVariables), 
-				PotentialRole.CONDITIONAL_PROBABILITY);
-		projectedPotential.values =  new double [] {19.969, 19.542, 18.858, 18.455, 20.161, 19.731, 19.04, 18.633};
+
+		TableDeltaPotential originalPotential = new TableDeltaPotential(Arrays.asList(costVar, varTherapy, varStateA, varStateB, ageVar));
+		TableDeltaPotential projectedPotential = new TableDeltaPotential(Arrays.asList(costVar, varTherapy, varStateA, varStateB));
+		projectedPotential.setValues(new double [] {19.969, 19.542, 18.858, 18.455, 20.161, 19.731, 19.04, 18.633});
 		EvidenceCase configuration = new EvidenceCase();
 		configuration.addFinding(new Finding(ageVar, 0));
-		
-		ProbNetOperations.sumProjectedPotential(originalPotential, projectedPotential, configuration);
+
+		ProbNetOperations.sumProjectedPotential(originalPotential.getTablePotential(), projectedPotential.getTablePotential(), configuration);
 		
 		double[] expectedValues = new double[] {19.969, 19.542, 18.858, 18.455, 20.161, 19.731, 19.04, 18.633};
 		
-		Assert.assertArrayEquals(expectedValues, originalPotential.values, 0.001);
+		Assert.assertArrayEquals(expectedValues, originalPotential.getValues(), 0.001);
 	}	
 		
 

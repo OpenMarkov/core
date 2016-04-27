@@ -39,6 +39,14 @@ public class TableDeltaPotential extends Potential {
     }
 
     @Override
+    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions) throws NonProjectablePotentialException, WrongCriterionException {
+        tablePotential.setCriterion(childVariable.getDecisionCriterion());
+        tablePotential.setPotentialRole(PotentialRole.UTIL_2);
+        List<TablePotential> projectedPotentials = tablePotential.tableProject(evidenceCase, inferenceOptions);
+        return projectedPotentials;
+    }
+
+    @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
         tablePotential.setCriterion(childVariable.getDecisionCriterion());
         tablePotential.setPotentialRole(PotentialRole.UTIL_2);
@@ -83,6 +91,10 @@ public class TableDeltaPotential extends Potential {
 
     public UncertainValue[] getUncertainValues () {
         return tablePotential.getUncertainValues();
+    }
+
+    public void setValues (double[] values) {
+        this.tablePotential.values = values;
     }
 
     public double[] getValues() {

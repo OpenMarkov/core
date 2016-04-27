@@ -91,8 +91,7 @@ public class AddNodeEdit extends SimplePNEdit
         // Decision node has no potential when is created
         if (nodeType != NodeType.DECISION)
         {
-           probNet.addPotential (PotentialOperations.getUniformPotential (probNet, variable,
-                                                                           nodeType));
+           probNet.addPotential (PotentialOperations.getUniformPotential (probNet, variable, nodeType));
            newNode = probNet.getNode(variable);
         }
         else

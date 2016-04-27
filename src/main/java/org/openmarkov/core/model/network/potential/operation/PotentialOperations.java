@@ -300,10 +300,7 @@ public class PotentialOperations {
 			variables.add(node.getVariable());
 		}
 		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-		if (auxNodeType == NodeType.UTILITY) {
-			variables.remove(0);
-			role = PotentialRole.UNSPECIFIED;
-		}else if (auxNodeType == NodeType.DECISION) {
+		if (auxNodeType == NodeType.DECISION) {
 //			role = PotentialRole.DECISION;
 			role = PotentialRole.POLICY;
 		}

@@ -20,8 +20,10 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 @Constraint(name = "DistinctLinks", defaultBehavior = ConstraintBehavior.YES)
 /****
- * This class implements the DistinctLinks constraint, which establishes that the network can not have two equal links.
+ * This class implements the DistinctLinks constraint, which establishes that the network 
+ * can not have two equal links.
  * @author ckonig
+ * @author manuel arias
  *
  */
 public class DistinctLinks extends PNConstraint
@@ -100,27 +102,13 @@ public class DistinctLinks extends PNConstraint
      */
     private boolean checkLink (ProbNet graph, Node node1, Node node2, boolean directed)
     {
-        if (directed)
-        {
-            if ((graph.getLink (node1, node2, true) != null))
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if ((graph.getLink (node1, node2, false) != null)
-                || (graph.getLink (node2, node1, false) != null))
-            {
-                return false;
-            }
-        }
-        return true;
+        return  !((graph.getLink (node1, node2, directed) != null) || 
+        		(!directed && graph.getLink (node2, node1, directed) != null));
     }
 
     @Override
     protected String getMessage ()
     {
-        return " no equal links allowed.";
+        return "No equal links allowed.";
     }
 }

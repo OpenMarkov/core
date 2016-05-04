@@ -12,6 +12,7 @@ import java.util.List;
 
 @PotentialType(name = "TableDelta")
 public class TableDeltaPotential extends Potential {
+	
     private TablePotential tablePotential;
 
     private Variable childVariable;

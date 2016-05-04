@@ -147,34 +147,30 @@ public class DistinctLinksTest {
 		}
 		assertTrue(exceptionLaunched);
 		
-		
 		// do legal invert link: create undirected link between U and D
-				InvertLinkEdit legalInvertLinkEdit = new InvertLinkEdit(
-						influenceDiagram, vU, vD, false);
-				try {
-					pNESupport.announceEdit(legalInvertLinkEdit);
-					legalInvertLinkEdit.doEdit();
-				} catch (Exception cve) {
-					fail(cve.getMessage());
-				}
-				
-				
-				exceptionLaunched = false;
-				// do ilegal LinkEdit. Add an undirected link between U and D
-				AddLinkEdit ilegalLinkEdit = new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("U"), influenceDiagram.getVariable("D"),
-						false);
-				try {
-					pNESupport.announceEdit(ilegalLinkEdit);
-					ilegalLinkEdit.doEdit();
-				} catch (ConstraintViolationException e) {
-					exceptionLaunched = true;
-				} catch (Exception e) {
-					fail("AddLink failed");
-				}
-				assertTrue(exceptionLaunched);
+		InvertLinkEdit legalInvertLinkEdit = new InvertLinkEdit(
+				influenceDiagram, vU, vD, false);
+		try {
+			pNESupport.announceEdit(legalInvertLinkEdit);
+			legalInvertLinkEdit.doEdit();
+		} catch (Exception cve) {
+			fail(cve.getMessage());
+		}
+
+		exceptionLaunched = false;
+		// do ilegal LinkEdit. Add an undirected link between U and D
+		AddLinkEdit ilegalLinkEdit = new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("U"), influenceDiagram.getVariable("D"),
+				false);
+		try {
+			pNESupport.announceEdit(ilegalLinkEdit);
+			ilegalLinkEdit.doEdit();
+		} catch (ConstraintViolationException e) {
+			exceptionLaunched = true;
+		} catch (Exception e) {
+			fail("AddLink failed");
+		}
+		assertTrue(exceptionLaunched);
 
 	}
 	
-	
-
 }

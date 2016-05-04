@@ -17,6 +17,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.DynamicBayesianNetwork;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
@@ -113,14 +114,15 @@ public class ConstraintsTests {
 		Variable vD = new Variable("D", 2);
 		Variable vU = new Variable("U");
 		ArrayList<Variable> variables = new ArrayList<>();
+		variables.add(vU);
 		variables.add(vA);
 		variables.add(vD);
 		try {
 			influenceDiagram.addNode(vA, NodeType.CHANCE);
 			influenceDiagram.addNode(vD, NodeType.DECISION);
 			influenceDiagram.addNode(vU, NodeType.UTILITY);
-			TablePotential utilityPotential = 
-				new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY);
+			TableDeltaPotential utilityPotential = 
+				new TableDeltaPotential(variables, PotentialRole.CONDITIONAL_PROBABILITY);
 //			utilityPotential.setUtilityVariable(vU);
 			influenceDiagram.addPotential(utilityPotential);
 			influenceDiagram.addLink(vA, vD, true);

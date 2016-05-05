@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,10 +36,7 @@ import org.openmarkov.core.model.network.constraint.MaxNumParents;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.PotentialTest;
-import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
 
@@ -147,7 +145,7 @@ public class ProbNetTest {
 	
 	private TablePotential pBA;
 	
-	private TablePotential pU;
+	private TableDeltaPotential pU;
 	
 	private EvidenceCase simpleEvidence;
 	
@@ -184,17 +182,21 @@ public class ProbNetTest {
 				abVariables, PotentialRole.CONDITIONAL_PROBABILITY);
 		pBA.values[0] = 0.2; pBA.values[1] = 0.8; 
 		pBA.values[2] = 0.9; pBA.values[3] = 0.1; 
-		pU = new TablePotential(
-				adVariables, PotentialRole.CONDITIONAL_PROBABILITY);
+		pU = new TableDeltaPotential(Arrays.asList(U, A, B), PotentialRole.CONDITIONAL_PROBABILITY);
 //		pU.setUtilityVariable(U);
-		pU.values[0] = 1; pU.values[1] = 2;
-		pU.values[2] = 3; pU.values[3] = 4;
+		double[] utilityValues = new double[4];
+		utilityValues[0] = 1;
+		utilityValues[1] = 2;
+		utilityValues[2] = 3;
+		utilityValues[3] = 4;
+		pU.setValues(utilityValues);
 		simpleProbNet = new ProbNet();
 		simpleProbNet.addConstraint(new NoCycle(), true);
 		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);
 		// add potentials and variables
 		simpleProbNet.addPotential(pA); // add variable and potential
 		simpleProbNet.addNode(D, NodeType.DECISION);
+		simpleProbNet.addNode(U, NodeType.UTILITY);
 		simpleProbNet.addPotential(pU);
 		simpleProbNet.addPotential(pBA);
 		simpleProbNet.addLink(B, D, true);

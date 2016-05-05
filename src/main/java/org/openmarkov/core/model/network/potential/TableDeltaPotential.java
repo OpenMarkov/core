@@ -8,6 +8,8 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @PotentialType(name = "TableDelta")
@@ -100,6 +102,14 @@ public class TableDeltaPotential extends Potential {
 
     public double[] getValues() {
         return tablePotential.getValues();
+    }
+
+    @Override
+    public List<Variable> getVariables() {
+        ArrayList<Variable> allVariables = new ArrayList();
+        allVariables.add(childVariable);
+        allVariables.addAll(tablePotential.getVariables());
+        return allVariables;
     }
 
     @Override

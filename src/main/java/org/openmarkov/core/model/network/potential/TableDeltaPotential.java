@@ -22,7 +22,7 @@ public class TableDeltaPotential extends Potential {
         if(this.role == null) {
             this.role = PotentialRole.CONDITIONAL_PROBABILITY;
         }
-        childVariable = variables.remove(0);
+        childVariable = this.variables.remove(0);
         tablePotential = new TablePotential(variables, PotentialRole.UNSPECIFIED);
     }
 

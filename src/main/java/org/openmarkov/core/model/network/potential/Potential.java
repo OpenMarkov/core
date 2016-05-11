@@ -314,8 +314,8 @@ public abstract class Potential
     }
 
     /**
-     * Subclasses of Potential must override this
-     * method.
+     * Shifts the potential in time as indicated by <code>timeDifference</code>.<p>
+     * Subclasses of Potential must override this method.
      * @return <code>Potential</code>
      * @param timeDifference <code>int</code>
      * @param probNet This parameter is necessary because the shifted variables

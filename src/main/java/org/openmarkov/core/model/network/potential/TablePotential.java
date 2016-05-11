@@ -78,11 +78,6 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      * <code>TablePotential</code> is a projection.
      */
     protected int                    tableSize;
-    /**
-     * This object has a function that returns the available memory. Used in the
-     * constructor before creating the <code>table</code>
-     */
-    protected static Runtime         runtime         = Runtime.getRuntime();
 
     // Constructors
     /**
@@ -114,17 +109,6 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         	interventions = new Intervention[tableSize];
         }
     }
-
-//    /**
-//     * For role utility
-//     *
-//     * @param variables
-//     * @param utilityVariable
-//     */
-//    public TablePotential(Variable utilityVariable, List<Variable> variables) {
-//        this(variables, PotentialRole.UTILITY);
-//        this.utilityVariable = utilityVariable;
-//    }
 
     /**
      * @param variables

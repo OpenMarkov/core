@@ -12,7 +12,6 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
-import org.openmarkov.core.util.UtilTestMethods;
 
 /**
  * @author manuel
@@ -35,13 +34,15 @@ public class IDFactory {
 		
 		// Create health state variable and potential
 		noKnowledge.addNode(healthState, NodeType.UTILITY);
-		TableDeltaPotential healthStatePotential = new TableDeltaPotential(Arrays.asList(healthState, therapy, disease));
+		TableDeltaPotential healthStatePotential = new TableDeltaPotential(
+				Arrays.asList(healthState, therapy, disease), PotentialRole.UNSPECIFIED);
 		healthStatePotential.setValues(new double[]{10.0, 9.0, 3.0, 8.0});
 		noKnowledge.addPotential(healthStatePotential);
 
 		// Create cost of therapy variable and potential
 		noKnowledge.addNode(costOfTherapy, NodeType.UTILITY);
-		TableDeltaPotential costOfTherapyPotential = new TableDeltaPotential(Arrays.asList(costOfTherapy, therapy));
+		TableDeltaPotential costOfTherapyPotential = new TableDeltaPotential(
+				Arrays.asList(costOfTherapy, therapy), PotentialRole.UNSPECIFIED);
 		costOfTherapyPotential.setValues(new double[]{0.0, -0.25});
 		noKnowledge.addPotential(costOfTherapyPotential);
 

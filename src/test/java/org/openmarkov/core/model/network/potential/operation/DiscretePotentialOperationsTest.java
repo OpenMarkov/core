@@ -37,6 +37,7 @@ import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.util.UtilTestMethods;
@@ -792,7 +793,8 @@ public class DiscretePotentialOperationsTest {
 		}
 		List<Potential> networkPotentials = perfectKnowledge.getPotentials(disease);
 		List<TablePotential> networkTablePotentials = getTablePotentials(networkPotentials);
-		List<TablePotential> resultingPotentials = DiscretePotentialOperations.sumOutVariable(disease, networkTablePotentials);
+		List<TablePotential> resultingPotentials = 
+				DiscretePotentialOperations.sumOutVariable(disease, networkTablePotentials);
 		// Asserts
 		assertEquals(1, resultingPotentials.size());
 		TablePotential utility = resultingPotentials.get(0);
@@ -845,11 +847,15 @@ public class DiscretePotentialOperationsTest {
 	 * @return
 	 */
 	private List<TablePotential> getTablePotentials(List<Potential> potentials) {
-		List<TablePotential> tablePotentials = new ArrayList<>(potentials.size());
+		List<TablePotential> tableDeltaPotentials = new ArrayList<>(potentials.size());
 		for (Potential potential : potentials) {
-			tablePotentials.add((TablePotential)potential);
+			try {
+				tableDeltaPotentials.add((TablePotential)potential.getCPT());
+			} catch (NonProjectablePotentialException | WrongCriterionException e) {
+				fail("Can not get TablePotential from TableDeltaPotential. Potential: " + potential);
+			}
 		}
-		return tablePotentials;
+		return tableDeltaPotentials;
 	}
 
 	@Test
@@ -866,7 +872,7 @@ public class DiscretePotentialOperationsTest {
 			fail("Variable not found");
 		}
 		List<Potential> potentials = perfectKnowledge.getPotentials(therapy);
-		List<TablePotential> tablePotentials = getTablePotentials(potentials);
+		List<TablePotential> tablePotentials = projectToTable(potentials); 
 		List<TablePotential> newPotentials = DiscretePotentialOperations.
 				maxOutVariable(therapy, tablePotentials);
 
@@ -899,6 +905,26 @@ public class DiscretePotentialOperationsTest {
 		assertEquals(0, therapy.getStateIndex(noState));
 	}
 	
+	private List<TablePotential> projectToTable(List<Potential> potentials) {
+		List<TablePotential> tablePotentials = new ArrayList<TablePotential>(potentials.size());
+		for (Potential potential : potentials) {
+			try {
+				TablePotential tablePotential = potential.getCPT();
+				if (potential.hasCriterion()) {
+					tablePotential.setCriterion(potential.getCriterion());
+				}
+				tablePotentials.add(tablePotential);
+			} catch (NonProjectablePotentialException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (WrongCriterionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return tablePotentials;
+	}
+
 	@Test
 	public void joinTestMaxOutAndSumOut() throws NodeNotFoundException {
 		ProbNet testDecision = org.openmarkov.core.model.network.factory.IDFactory.buildIDDecideTest();

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -708,10 +709,14 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         Node node = getNode(variable);
         // potentials associated to this node
         if (node != null) { // Variable exists in this ProbNet
-            potentials.addAll(node.getPotentials());
             // potentials in neighbors that contains variable
-            List<Node> neighbors = getNeighbors(node);
-            for (Node neighbor : neighbors) {
+            Set<Node> semiNeighbors = new LinkedHashSet<Node>(getNeighbors(node));
+            semiNeighbors.add(node);
+            List<Node> children = getChildren(node);
+            for (Node child : children) {
+            	semiNeighbors.addAll(child.getParents());
+            }
+            for (Node neighbor : semiNeighbors) {
                 List<Potential> nodePotentials = neighbor.getPotentials();
                 for (Potential potential : nodePotentials) {
                     if (potential.contains(variable)) {

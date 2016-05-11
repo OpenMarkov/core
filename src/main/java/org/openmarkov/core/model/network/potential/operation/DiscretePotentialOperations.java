@@ -16,16 +16,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.openmarkov.core.exception.DivideByZeroException;
 import org.openmarkov.core.exception.IllegalArgumentTypeException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
-import org.openmarkov.core.exception.PotentialOperationException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.Choice;
-import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;

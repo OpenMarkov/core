@@ -8,6 +8,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
+@ProbDensFunctionType(name="Normal", isValidForProbabilities = false, parameters = {"mu", "sigma"})
 public class NormalFunction extends ProbDensFunction {
     private double                 mu;
     private double                 sigma;

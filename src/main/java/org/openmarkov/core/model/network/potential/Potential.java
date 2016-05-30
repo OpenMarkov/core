@@ -60,8 +60,8 @@ public abstract class Potential
      * that does not have a direct connection with the attributes stored in the
      * <code>Potential</code> object.
      */
-    public HashMap<String, Object> properties;
-    protected String               comment         = "";
+    public Map<String, Object> properties;
+    protected String comment = "";
 
     // Constructor
     /**
@@ -327,25 +327,24 @@ public abstract class Potential
     }
 
     /**
-     * Creates links between the variables of a potential
+     * Creates links between the first variable of a potential and the rest of the variables.
      * @argCondition The role of the potential must be utility of conditional
      *               probability
      * @argCondition The network must contain all the variables of the potential
      */
-    public void createDirectedLinks (ProbNet probNet)
-    {
-        Variable childVariable = variables.get (0);
-        for (int parentIndex = 1; parentIndex < variables.size (); parentIndex++)
-        {
-            try
-            {
-                probNet.addLink (variables.get (parentIndex), childVariable, true);
-            }
-            catch (NodeNotFoundException e)
-            {
-                // Unreachable code
-            }
-        }
+    public void createDirectedLinks (ProbNet probNet) {
+    	int numVariables = variables.size();
+    	if (numVariables > 1) {
+            Variable childVariable = variables.get(0);
+    		for (int i = 1; i < numVariables; i++) {
+                try {
+                    probNet.addLink (variables.get(i), childVariable, true);
+                } catch (NodeNotFoundException e) {
+                    // Unreachable code
+                	System.err.println("Reached unreachable code in Potential.createDirectedLinks: " + e.getMessage());
+                }
+    		}
+    	}
     }
 
     /**
@@ -355,26 +354,24 @@ public abstract class Potential
      * @argCondition The network must contain the shifted variables.
      */
     public List<Variable> getShiftedVariables(ProbNet probNet, int timeDifference)
-            throws NodeNotFoundException    {
-        List<Variable> shiftedVariables = new ArrayList<>();
+            throws NodeNotFoundException {
+        List<Variable> shiftedVariables = new ArrayList<Variable>(variables.size());
+        
         // also shift variables within the tree
-        for (Variable variable : getVariables ())
-        {
-            if (variable.isTemporal ())
-            {
-                shiftedVariables.add (probNet.getShiftedVariable (variable, timeDifference));
+        for (Variable variable : variables) {
+            if (variable.isTemporal()) {
+                shiftedVariables.add(probNet.getShiftedVariable(variable, timeDifference));
             }
-            else
-            {
-                shiftedVariables.add (variable);
+            else {
+                shiftedVariables.add(variable);
             }
         }
+        
         return shiftedVariables;
     }
 
     /** Overrides <code>toString</code> method. Mainly for test purposes */
-    public String toString ()
-    {
+    public String toString () {
         return toShortString ();
     }
 
@@ -438,8 +435,7 @@ public abstract class Potential
     private StringBuilder printVariables (StringBuilder buffer, int firstVariable)
     {
         // Print variables
-        for (int i = firstVariable; i < variables.size() - 1; i++)
-        {
+        for (int i = firstVariable; i < variables.size() - 1; i++) {
             buffer.append (variables.get (i) + ", ");
         }
         buffer.append (variables.get (variables.size() - 1));

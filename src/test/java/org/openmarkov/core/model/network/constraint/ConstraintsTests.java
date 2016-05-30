@@ -114,7 +114,6 @@ public class ConstraintsTests {
 		Variable vD = new Variable("D", 2);
 		Variable vU = new Variable("U");
 		ArrayList<Variable> variables = new ArrayList<>();
-		variables.add(vU);
 		variables.add(vA);
 		variables.add(vD);
 		try {

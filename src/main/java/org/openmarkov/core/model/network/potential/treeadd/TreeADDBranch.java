@@ -91,8 +91,8 @@ public class TreeADDBranch {
     /**
      * Constructor for discretized and finite states variables
      * @param branchStates
-     * @param potential
      * @param topVariable
+     * @param potential
      * @param parentVariables
      */
     public TreeADDBranch(List<State> branchStates, Variable topVariable, Potential potential,

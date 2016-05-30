@@ -20,6 +20,7 @@ import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
+// TODO Documentar la clase
 public class Intervention extends TreeADDPotential {
 
 	// Constructors
@@ -51,7 +52,7 @@ public class Intervention extends TreeADDPotential {
 			Intervention distinctIntervention = null;
 			State correspondingState = null;
 			
-			// See if there is any intervention equal to "intervention" in "distinctInterventions"
+			// Check if there is any intervention equal to "intervention" in "distinctInterventions"
 			for (int j = 0; j < numDistinctInterventions && noMatch; j++) {
 				distinctIntervention = distinctInterventions.get(j);
 				noMatch &= !(distinctIntervention == intervention || distinctIntervention.equals(intervention));
@@ -71,7 +72,7 @@ public class Intervention extends TreeADDPotential {
 		
 		// Create branches
 		for (Intervention intervention : distinctInterventions) {
-			ArrayList<State> statesOfIntervention = new ArrayList<>(correspondingStates.get(intervention));
+			List<State> statesOfIntervention = new ArrayList<>(correspondingStates.get(intervention));
 			if (intervention != null) {
 				addBranch(new TreeADDBranch(statesOfIntervention, topVariable, intervention, null));
 			}
@@ -164,18 +165,17 @@ public class Intervention extends TreeADDPotential {
 			}
 		}
 		
+		int numSelectedInterventions = selectedInterventions.size();
 		Intervention intervention;
-		if (selectedInterventions.size() == 0) { // All probabilities == 0.0
+		if (numSelectedInterventions == 0) { // All probabilities == 0.0
 			intervention = null;
 		} else {
-			if (selectedInterventions.size() == 1) { // Only one intervention with probability != 0.0
+			if (numSelectedInterventions == 1) { // Only one intervention with probability != 0.0
 				intervention = selectedInterventions.get(0);
 			} else { // More than one intervention with probability != 0.0
-				if (equalInterventions(selectedInterventions.toArray(new Intervention[selectedInterventions.size()]))) {
+				if (equalInterventions(selectedInterventions.toArray(new Intervention[numSelectedInterventions]))) {
 					intervention = selectedInterventions.get(0); // All interventions are equals
 				} else {
-					// TODO Arreglar esto. No puede haber una referencia a SDAGInterventions desde Intervention. 
-					// TODO SDAGIntervention no se sabe que es. No está documentado.
 					// TODO coalescedInterventions no está documentado.
 					//					intervention = (!coalescedInterventions)?
 					//							new Intervention(chanceVariable, selectedStates, selectedInterventions):
@@ -474,37 +474,38 @@ public class Intervention extends TreeADDPotential {
      */
     public boolean equals(Intervention intervention) {
     	int numBranches = branches.size();
-        boolean areEqual =
+        boolean stillEqual =
                     intervention!= null && 
                     intervention.topVariable == topVariable &&
-                    intervention.getBranches().size() == numBranches;
-        if (areEqual) {
+                    intervention.branches.size() == numBranches;
+        if (stillEqual) {
             // Compare each branch
-            for (int i = 0; i < numBranches && areEqual; i++) {
+            for (int i = 0; i < numBranches && stillEqual; i++) {
                 TreeADDBranch branch = branches.get(i);
                 // Get the corresponding branch to "this.branches.get(i)" in the other "intervention"
                 List<State> states = branch.getStates();
                 // A branch always has at least one state
                 TreeADDBranch interventionBranch = intervention.getBranch(states.get(0)); 
-                areEqual &= interventionBranch != null;
+                stillEqual &= interventionBranch != null;
                 // Compare states
-                if (areEqual) {
+                if (stillEqual) {
                 	List<State> interventionBranchStates = interventionBranch.getStates(); 
-                	areEqual &= interventionBranchStates.size() == states.size() &&
+                	stillEqual &= interventionBranchStates.size() == states.size() &&
                 			interventionBranchStates.containsAll(states);
                 }
                 // Compare potentials
-                if (areEqual) {
+                if (stillEqual) {
                     Intervention interventionBranchPotential = (Intervention)interventionBranch.getPotential();
                     Intervention branchPotential = (Intervention)branch.getPotential();
-                    areEqual &= !((interventionBranchPotential == null && branchPotential != null) ||
+                    stillEqual &= !((interventionBranchPotential == null && branchPotential != null) ||
                             (interventionBranchPotential != null && branchPotential == null));
-                    // Recursive part
-                    areEqual &= interventionBranchPotential != null ? interventionBranchPotential.equals(branchPotential) : true;
+                    // Recursive part (it won't be evaluated when already false)
+                   	stillEqual &= interventionBranchPotential != null ? 
+                   			interventionBranchPotential.equals(branchPotential) : true;
                 }
             }
         }
-        return areEqual;
+        return stillEqual;
     }	
     
 	/**
@@ -524,10 +525,6 @@ public class Intervention extends TreeADDPotential {
 		return equalInterventions;
 	}
 	
-	/*protected static boolean equalInterventions(Intervention[] interventions) {
-		return false;
-	}*/
-
     /**
      * @return List of interventions contained in branches if they are not null.
      */
@@ -643,34 +640,25 @@ public class Intervention extends TreeADDPotential {
 		content = content + "}\n";
 		return content;
 	}
-	
-	
 
 	/**
 	 * @return The Interventions that are the leaves of the tree rooted at 'this'
 	 */
 	private Set<Intervention> getInterventionsLeaves() {
 
-		Set<Intervention> auxSet;
+		Set<Intervention> auxSet = new HashSet<>();
 
-		auxSet = new HashSet<>();
-
-		if (branches != null) {
-			if (branches.size() > 0) {
-				for (int i = 0; i < branches.size(); i++) {
-					TreeADDBranch auxBranch = branches.get(i);
-					Intervention auxInterventionBranch = getInterventionBranch(auxBranch);
-					if (auxInterventionBranch != null) {
-						auxSet.addAll(auxInterventionBranch.getInterventionsLeaves());
-					} else {
-						auxSet.add(this);
-					}
-				}
-			} else {
-				auxSet.add(this);
-			}
-		} else {
+		if (branches.size() == 0) {
 			auxSet.add(this);
+		} else {
+			for (TreeADDBranch auxBranch : branches) {
+				Intervention auxInterventionBranch = getInterventionBranch(auxBranch);
+				if (auxInterventionBranch != null) {
+					auxSet.addAll(auxInterventionBranch.getInterventionsLeaves());
+				} else {
+					auxSet.add(this);
+				}
+			}
 		}
 
 		return auxSet;

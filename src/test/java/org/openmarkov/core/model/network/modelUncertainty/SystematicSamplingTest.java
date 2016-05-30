@@ -2,7 +2,6 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -77,7 +76,8 @@ public class SystematicSamplingTest {
 			if (uncert.hasName()){
 				sampledNet = sampleNetworkProbParam(net, uncert, numIntervals,min,max);
 				try {
-					pot = (TablePotential) sampledNet.getPotentials(sampledNet.getVariable(NetsFactory.diseaseName)).get(0);
+					pot = (TablePotential)sampledNet.getPotentials(
+							sampledNet.getVariable(NetsFactory.diseaseName)).get(0);
 				} catch (NodeNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -86,8 +86,10 @@ public class SystematicSamplingTest {
 		}		
 	}
 	
-	public static ProbNet sampleNetworkProbParam(ProbNet originalNet, UncertainParameter uncertainParameter, int numIntervals,double min,double max){
-		return SystematicSampling.sampleNetwork(originalNet, uncertainParameter, min,max,numIntervals,iterationVariableName);
+	public static ProbNet sampleNetworkProbParam(
+			ProbNet originalNet, UncertainParameter uncertainParameter, int numIntervals,double min,double max) {
+		return SystematicSampling.sampleNetwork(
+			originalNet, uncertainParameter, min,max,numIntervals,iterationVariableName);
 	}
 
 }

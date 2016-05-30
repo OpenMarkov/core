@@ -32,32 +32,24 @@ public class NoMixedParents extends PNConstraint
 {
 
     @Override
-    public boolean checkProbNet (ProbNet probNet)
-    {
+    public boolean checkProbNet (ProbNet probNet) {
         List<Node> utilityNodes = probNet.getNodes (NodeType.UTILITY);
-        for (Node utilNode : utilityNodes)
-        {
-            boolean utilityParent = false;
-            boolean chanceOrDecisionParent = false;
-            List<Node> parents = probNet.getParents (utilNode);
-            for (Node parent : parents)
-            {
-                if (parent.getNodeType () == NodeType.UTILITY)
-                {
-                    utilityParent = true;
-                }
-                if (parent.getNodeType () == NodeType.CHANCE
-                    || parent.getNodeType () == NodeType.DECISION)
-                {
-                    chanceOrDecisionParent = true;
-                }
-                if (utilityParent && chanceOrDecisionParent)
-                {
-                    return false;
-                }
+    	boolean metCondition = true;
+    	int i = 0;
+    	int numUtilityNodes = utilityNodes.size();
+    	while (i < numUtilityNodes && metCondition) {
+            List<Node> parents = probNet.getParents(utilityNodes.get(i++));
+            int numParents = parents.size();
+        	boolean utilityParent = false;
+        	boolean chanceOrDecisionParent = false;
+            for (int j = 0; j < numParents && metCondition; j++) {
+            	NodeType parentNodeType = parents.get(j).getNodeType();
+                utilityParent |= parentNodeType == NodeType.UTILITY;
+                chanceOrDecisionParent |= parentNodeType == NodeType.CHANCE || parentNodeType == NodeType.DECISION;
+                metCondition = !(utilityParent && chanceOrDecisionParent);
             }
-        }
-        return true;
+    	}
+        return metCondition;
     }
 
     @Override

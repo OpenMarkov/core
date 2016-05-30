@@ -361,39 +361,39 @@ public final class DiscretePotentialOperations {
 		return resultCoordinates;
 	}
 
-	/** Given a collection of variables, creates a new variable whose name is the concatenation
-     * of the names of the other variables. If there is only one, returns that one. If the collection is empty,
-     * returns a new variable with name "U"
-     * @param variables collection of variables
-     * @return <code>Variable</code>
-     */
-    private static Variable composeVariable(Collection<Variable> variables) {
-    	Variable finalVariable = null;
-		String name = "";
-		if (variables.isEmpty()) {
-			name = "U";
-			finalVariable = new Variable(name);
-		} else {
-			if (variables.size() > 1) {
-				int i = 0;
-				int size = variables.size();
-				for (Variable variable : variables) {
-					i++;
-					name = name + variable.getName();
-					if (i < size) {
-						name = name + "-";
-					}
-				}
-				finalVariable = new Variable(name);
-			} else {
-				for (Variable variable : variables) {
-					finalVariable = variable;
-				}
-			}
-		}
-		return finalVariable;
-    }
-
+//	/** Given a collection of variables, creates a new variable whose name is the concatenation
+//     * of the names of the other variables. If there is only one, returns that one. If the collection is empty,
+//     * returns a new variable with name "U"
+//     * @param variables collection of variables
+//     * @return <code>Variable</code>
+//     */
+//    private static Variable composeVariable(Collection<Variable> variables) {
+//    	Variable finalVariable = null;
+//		String name = "";
+//		if (variables.isEmpty()) {
+//			name = "U";
+//			finalVariable = new Variable(name);
+//		} else {
+//			if (variables.size() > 1) {
+//				int i = 0;
+//				int size = variables.size();
+//				for (Variable variable : variables) {
+//					i++;
+//					name = name + variable.getName();
+//					if (i < size) {
+//						name = name + "-";
+//					}
+//				}
+//				finalVariable = new Variable(name);
+//			} else {
+//				for (Variable variable : variables) {
+//					finalVariable = variable;
+//				}
+//			}
+//		}
+//		return finalVariable;
+//    }
+//
 //	/**
 //	 * @param tablePotentials Collection of TablePotentials
 //	 * @return A new variable whose name is the concatenation of the names of the utility variables.
@@ -1264,7 +1264,7 @@ public final class DiscretePotentialOperations {
 //        	resultingPotential.setUtilityVariable(composeVariable(fSVariablesToKeep));
 //        }
 
-        GTablePotential gResult = new GTablePotential(variablesToKeep, role);
+        GTablePotential<Choice> gResult = new GTablePotential<>(variablesToKeep, role);
         int numStates = ((Variable) fSVariableToMaximize).getNumStates();
         int[] statesChoosed;
         Choice choice;
@@ -2089,10 +2089,6 @@ public final class DiscretePotentialOperations {
     	int numVariables = allVariables.size();
     	int[] allVariablesDimensions = TablePotential.calculateDimensions(allVariables); 
 
-    	// initialize the policy 
-    	TablePotential policyPotential = new TablePotential(allVariables, PotentialRole.POLICY);
-    	double[] policyValues = policyPotential.values;
-
     	// constants for the iterations
     	int decisionVariableSize = decisionVariable.getNumStates();
     	int[] accOffsetsInputUtilityPotential = TablePotential.getAccumulatedOffsets(
@@ -2110,6 +2106,8 @@ public final class DiscretePotentialOperations {
     	double[] utilities = new double[decisionVariableSize];
     	Intervention[] interventions = new Intervention[decisionVariableSize];
 
+    	TablePotential policyPotential = null;
+    	
     	// outer iterations correspond to the variables to in the outputUtilityPotential
     	for (int outerIteration = 0; 
     			outerIteration < TablePotential.computeTableSize(outputUtilityVariables); 
@@ -2149,6 +2147,10 @@ public final class DiscretePotentialOperations {
     				Intervention.optimalInterventionTakingAllOptimal(
     						decisionVariable, utilities, interventions, sdagInterventions);
 
+        	// initialize the policy 
+        	policyPotential = new TablePotential(allVariables, PotentialRole.POLICY);
+        	double[] policyValues = policyPotential.values;
+
     		// set the values of policyPotential
     		int policyPotentialPosition = outputUtilityPotentialPosition * decisionVariableSize;
 			double probForOptimalStates = 1.0 / optimalStatesIndices.size();
@@ -2168,7 +2170,9 @@ public final class DiscretePotentialOperations {
 			outputPotentials.add(outputUtilityPotential);
 		}
 
-    	outputPotentials.add(policyPotential);
+		if (policyPotential != null) {
+			outputPotentials.add(policyPotential);
+		}
 
     	return outputPotentials;
     }

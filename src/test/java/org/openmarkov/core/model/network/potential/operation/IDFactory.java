@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -31,9 +32,11 @@ public class IDFactory {
 
 		// Decision variable
 		noKnowledge.addNode(therapy, NodeType.DECISION);
+		therapy.setDecisionCriterion(new Criterion());
 		
 		// Create health state variable and potential
 		noKnowledge.addNode(healthState, NodeType.UTILITY);
+		healthState.setDecisionCriterion(new Criterion());
 		TableDeltaPotential healthStatePotential = new TableDeltaPotential(
 				Arrays.asList(healthState, therapy, disease), PotentialRole.UNSPECIFIED);
 		healthStatePotential.setValues(new double[]{10.0, 9.0, 3.0, 8.0});
@@ -41,6 +44,7 @@ public class IDFactory {
 
 		// Create cost of therapy variable and potential
 		noKnowledge.addNode(costOfTherapy, NodeType.UTILITY);
+		costOfTherapy.setDecisionCriterion(new Criterion());
 		TableDeltaPotential costOfTherapyPotential = new TableDeltaPotential(
 				Arrays.asList(costOfTherapy, therapy), PotentialRole.UNSPECIFIED);
 		costOfTherapyPotential.setValues(new double[]{0.0, -0.25});

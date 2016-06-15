@@ -1161,7 +1161,11 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
 
         // TODO - Remove return in this method
         try {
-            return this.getNode(variables.get(0));
+            if (potential.isUtility() && (this.networkType != MarkovNetworkType.getUniqueInstance())) {
+                return this.getNode(potential.getUtilityVariable());
+            } else {
+                return this.getNode(variables.get(0));
+            }
         } catch (Exception e) {
             e.getStackTrace();
             return null;

@@ -165,6 +165,7 @@ public class ProbNetTest {
 		B = new Variable("B", 2); 
 		D = new Variable("D", 2);
 		U = new Variable("U");
+		U.setDecisionCriterion(new Criterion());
 		// create Arrays of variables used in potentials
 		aVariables = new ArrayList<>(1);
 		aVariables.add(A);
@@ -182,7 +183,7 @@ public class ProbNetTest {
 				abVariables, PotentialRole.CONDITIONAL_PROBABILITY);
 		pBA.values[0] = 0.2; pBA.values[1] = 0.8; 
 		pBA.values[2] = 0.9; pBA.values[3] = 0.1; 
-		pU = new TableDeltaPotential(Arrays.asList(U, A, B), PotentialRole.CONDITIONAL_PROBABILITY);
+		pU = new TableDeltaPotential(Arrays.asList(U, A, D), PotentialRole.CONDITIONAL_PROBABILITY);
 //		pU.setUtilityVariable(U);
 		double[] utilityValues = new double[4];
 		utilityValues[0] = 1;

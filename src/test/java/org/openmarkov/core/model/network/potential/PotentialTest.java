@@ -108,18 +108,18 @@ public class PotentialTest {
 
             switch (node.getVariable().getName()) {
                 case "TreeAddUtility":
-                    TreeADDBranch b1 = ((TreeADDPotential) node.getPotentials().get(0)).getBranches().get(0);
+                    TreeADDBranch b1 = ((TreeADDDeltaPotential) node.getPotentials().get(0)).getBranches().get(0);
                     double[] expectedBranch1Values = {2.5};
                     Assert.assertArrayEquals(expectedBranch1Values, ((TablePotential) b1.getPotential()).getValues(), 0.001);
 
-                    TreeADDBranch b2 = ((TreeADDPotential) node.getPotentials().get(0)).getBranches().get(1);
+                    TreeADDBranch b2 = ((TreeADDDeltaPotential) node.getPotentials().get(0)).getBranches().get(1);
                     double[] expectedBranch2Values = {2.5};
                     Assert.assertArrayEquals(expectedBranch2Values, ((LinearCombinationPotential) b2.getPotential()).getCoefficients(), 0.001);
 
                     break;
                 case "TableUtility":
                     double[] expectedTableValues = {5.0, 4.5};
-                    Assert.assertArrayEquals(expectedTableValues, ((TablePotential) node.getPotentials().get(0)).getValues(), 0.001);
+                    Assert.assertArrayEquals(expectedTableValues, ((TableDeltaPotential) node.getPotentials().get(0)).getValues(), 0.001);
                     break;
                 case "LCUtility":
                     double[] expectedLCValues = {1.5, 2.5, 4.5};

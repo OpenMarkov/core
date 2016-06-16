@@ -4,12 +4,15 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.PartitionedInterval;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
+import java.nio.file.Paths;
 import java.util.List;
 
 @PotentialType(name = "Tree/ADDDelta", family = "Tree")
@@ -29,6 +32,23 @@ public class TreeADDDeltaPotential extends Potential {
         this.treeADDPotential = new TreeADDPotential(variables, topVariable, role, branches);
     }
 
+    public TreeADDDeltaPotential(List<Variable> variables, PotentialRole role) {
+        this(variables, variables.get(1), role);
+    }
+
+    public TreeADDDeltaPotential(List<Variable> variables, Variable topVariable, PotentialRole role) {
+        this(variables, topVariable, topVariable.getStates(), topVariable.getPartitionedInterval(), role);
+    }
+
+    public TreeADDDeltaPotential(List<Variable> variables, Variable topVariable,
+                            State[] branchingStates, PartitionedInterval interval, PotentialRole role) {
+        super(variables, role);
+        if(this.role == null) {
+            this.role = PotentialRole.CONDITIONAL_PROBABILITY;
+        }
+        childVariable = this.variables.get(0);
+        treeADDPotential = new TreeADDPotential(variables.subList(1, variables.size()), topVariable, branchingStates, interval, role);
+    }
 
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
@@ -47,7 +67,7 @@ public class TreeADDDeltaPotential extends Potential {
 
     @Override
     public void scalePotential(double scale) {
-
+        treeADDPotential.scalePotential(scale);
     }
 
     public TreeADDPotential getTreeADDPotential() {
@@ -70,5 +90,9 @@ public class TreeADDDeltaPotential extends Potential {
     public void setComment(String comment) {
         super.setComment(comment);
         this.treeADDPotential.setComment(comment);
+    }
+
+    public List<TreeADDBranch> getBranches() {
+        return treeADDPotential.getBranches();
     }
 }

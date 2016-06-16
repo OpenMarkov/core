@@ -25,6 +25,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDDeltaPotential;
 import org.openmarkov.core.util.UtilTestMethods;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableTest;
@@ -478,17 +479,20 @@ public class PotentialTest {
         UniformPotential potC = new UniformPotential(Arrays.asList(varC), PotentialRole.CONDITIONAL_PROBABILITY);
         nodeC.setPotential(potC);
 
-        TreeADDPotential potTreeAddUtility = new TreeADDPotential(Arrays.asList(varA), PotentialRole.CONDITIONAL_PROBABILITY);
-
-        List<Variable> variables0 = potTreeAddUtility.getBranches().get(0).getParentVariables();
-        variables0.add(0, potTreeAddUtility.getBranches().get(0).getRootVariable());
-        TableDeltaPotential tablePotentialBranch1 = new TableDeltaPotential(variables0);
-        tablePotentialBranch1.setValues(new double[]{5});
+        TreeADDDeltaPotential potTreeAddUtility = new TreeADDDeltaPotential(Arrays.asList(varTreeAddUtility,varA), PotentialRole.CONDITIONAL_PROBABILITY);
+        TablePotential tablePotentialBranch1 = new TablePotential(
+                UtilTestMethods.getListOfVariables(
+                        potTreeAddUtility.getBranches().get(0).getRootVariable(),
+                        potTreeAddUtility.getBranches().get(0).getParentVariables()),
+                PotentialRole.CONDITIONAL_PROBABILITY);
+        tablePotentialBranch1.values = new double[]{5};
         potTreeAddUtility.getBranches().get(0).setPotential(tablePotentialBranch1);
 
-        List<Variable> variables1 = potTreeAddUtility.getBranches().get(1).getParentVariables();
-        variables1.add(0, potTreeAddUtility.getBranches().get(1).getRootVariable());
-        LinearCombinationPotential lcPotentialBranch2 = new LinearCombinationPotential(variables1, PotentialRole.CONDITIONAL_PROBABILITY);
+        LinearCombinationPotential lcPotentialBranch2 = new LinearCombinationPotential(
+                UtilTestMethods.getListOfVariables(
+                potTreeAddUtility.getBranches().get(1).getRootVariable(),
+                potTreeAddUtility.getBranches().get(1).getParentVariables())
+                , PotentialRole.CONDITIONAL_PROBABILITY);
         double[] coefficientsLCBranch2 = {5};
         lcPotentialBranch2.setCoefficients(coefficientsLCBranch2);
         potTreeAddUtility.getBranches().get(1).setPotential(lcPotentialBranch2);

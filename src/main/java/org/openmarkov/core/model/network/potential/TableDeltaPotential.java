@@ -24,8 +24,8 @@ public class TableDeltaPotential extends Potential {
         if(this.role == null) {
             this.role = PotentialRole.CONDITIONAL_PROBABILITY;
         }
-        childVariable = this.variables.remove(0);
-        tablePotential = new TablePotential(variables, PotentialRole.UNSPECIFIED);
+        childVariable = this.variables.get(0);
+        tablePotential = new TablePotential(variables.subList(1, variables.size()), PotentialRole.UNSPECIFIED);
     }
 
     public TableDeltaPotential(List<Variable> variables) {
@@ -33,12 +33,8 @@ public class TableDeltaPotential extends Potential {
     }
 
     public TableDeltaPotential(List<Variable> variables, PotentialRole role, double[] table) {
-        super(variables, role);
-        if(this.role == null) {
-            this.role = PotentialRole.CONDITIONAL_PROBABILITY;
-        }
-        childVariable = variables.remove(0);
-        tablePotential = new TablePotential(variables, PotentialRole.UNSPECIFIED, table);
+        this(variables, role);
+        this.tablePotential.setValues(table);
     }
 
     @Override
@@ -69,7 +65,7 @@ public class TableDeltaPotential extends Potential {
 
     @Override
     public void scalePotential(double scale) {
-
+        this.tablePotential.scalePotential(scale);
     }
 
     public TablePotential getTablePotential() {

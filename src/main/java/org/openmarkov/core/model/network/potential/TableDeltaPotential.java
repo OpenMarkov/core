@@ -37,6 +37,12 @@ public class TableDeltaPotential extends Potential {
         this.tablePotential.setValues(table);
     }
 
+    public TableDeltaPotential(TableDeltaPotential potential) {
+        super(potential);
+        this.childVariable = potential.getChildVariable();
+        this.tablePotential = new TablePotential(potential.getTablePotential());
+    }
+
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions) throws NonProjectablePotentialException, WrongCriterionException {
         tablePotential.setCriterion(childVariable.getDecisionCriterion());

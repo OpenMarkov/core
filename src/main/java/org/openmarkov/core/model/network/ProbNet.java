@@ -775,7 +775,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
             List<Potential> potentialsNode = node.getPotentials();
             for (Potential potential : potentialsNode) {
                 if ((potential.getVariables().contains(variable)) &&
-                        potential.getVariable(0).getDecisionCriterion() == null) {
+                        potential.getVariable(0).getDecisionCriterion() == null && potential.getCriterion() == null) {
                     potentialsVariable.add(potential);
                 }
             }
@@ -805,7 +805,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
             for (Potential potential : potentialsNode) {
                 List<Variable> variables = potential.getVariables();
                 if (variables.contains(variable)
-                        && potential.getVariable(0).getDecisionCriterion() != null) {
+                        && (potential.getVariable(0).getDecisionCriterion() != null || potential.getCriterion() != null)) {
                     potentialsVariable.add(potential);
                 }
             }

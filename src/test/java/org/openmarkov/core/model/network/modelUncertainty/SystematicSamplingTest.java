@@ -14,6 +14,8 @@ import org.openmarkov.core.model.network.modelUncertainty.SystematicSampling;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainParameter;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.modelUncertainty.SensitivityAnalysisFactory;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.inference.InferenceAlgorithmBNTest;
 
@@ -76,8 +78,13 @@ public class SystematicSamplingTest {
 			if (uncert.hasName()){
 				sampledNet = sampleNetworkProbParam(net, uncert, numIntervals,min,max);
 				try {
-					pot = (TablePotential)sampledNet.getPotentials(
+					Potential potential = sampledNet.getPotentials(
 							sampledNet.getVariable(NetsFactory.diseaseName)).get(0);
+					if (potential instanceof TableDeltaPotential) {
+						pot = ((TableDeltaPotential) potential).getTablePotential();
+					} else {
+						pot = (TablePotential) potential;
+					}
 				} catch (NodeNotFoundException e) {
 					e.printStackTrace();
 				}

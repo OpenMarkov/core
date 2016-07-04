@@ -482,10 +482,15 @@ public class Node {
 			Potential firstPotential = potentials.get(0);
 			if (!isSuperValueNode()) {
 				double[] values = null;
-				try {
-					values = firstPotential.tableProject(null, null).get(0).values;
-				} catch (WrongCriterionException e) {
-					e.printStackTrace();
+				// Should the node have any numerical parent, the maximum and minimum cannot be calculated without the evidence
+				if (!hasNumericalParents()) {
+					try {
+						values = firstPotential.tableProject(null, null).get(0).values;
+					} catch (WrongCriterionException e) {
+						e.printStackTrace();
+					}
+				} else {
+					values = new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY};
 				}
 				result = computeMax ? Tools.max(values) : Tools.min(values);
 			} else {
@@ -635,7 +640,20 @@ public class Node {
 		}
 		return  !numericalParents.isEmpty() && finiteStatesOrDiscretizedParents.isEmpty();
 	 }
-	
+
+	/**
+	 *
+	 * @return true if the node has at least one parent that is numerical
+	 */
+	private boolean hasNumericalParents() {
+		for (Node parent : getParents()){
+			if (parent.getVariable().getVariableType() == VariableType.NUMERIC ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
     /**
      * Returns the isInput.
      * @return the isInput.

@@ -244,5 +244,26 @@ public class ConditionalGaussianPotential extends Potential{
 		mean.replaceVariable(oldVariable, variable);
 		variance.replaceVariable(oldVariable, variable);
 	}
-	
+
+	@Override
+	public void replaceNumericVariable(Variable convertedParentVariable) {
+		replaceNumericVariablePotentialVariableSet(convertedParentVariable, variables);
+		replaceNumericVariablePotentialVariableSet(convertedParentVariable, mean.variables);
+		replaceNumericVariablePotentialVariableSet(convertedParentVariable, variance.variables);
+	}
+
+	private void replaceNumericVariablePotentialVariableSet(Variable convertedParentVariable, List<Variable> potentialVariables) {
+		int varIndex = -1;
+		for(int i=0; i<potentialVariables.size();++i)
+		{
+			if(potentialVariables.get(i).getName().equals(convertedParentVariable.getName()))
+			{
+				varIndex = i;
+			}
+		}
+		if(varIndex != -1)
+		{
+			potentialVariables.set(varIndex, convertedParentVariable);
+		}
+	}
 }

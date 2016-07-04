@@ -33,8 +33,13 @@ public class BasicOperations {
         Hashtable<Node, TablePotential> hashtable = new Hashtable<>();
         if (!isSuperValueNode(utilityNode)) {
             try {
-                newPotential = utilityNode.getPotentials().get(0).tableProject(evidence, null)
-                        .get(0);
+                // We need to control the scenario where a numeric variable is father of a utility node
+                // In this situation, we must use the evidence to project the table
+                if (!utilityNode.hasNumericalParents()) {
+                    newPotential = utilityNode.getPotentials().get(0).tableProject(null, null).get(0);
+                } else {
+                    newPotential = utilityNode.getPotentials().get(0).tableProject(evidence, null).get(0);
+                }
             } catch (NonProjectablePotentialException | WrongCriterionException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

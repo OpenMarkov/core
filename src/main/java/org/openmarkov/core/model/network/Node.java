@@ -645,7 +645,7 @@ public class Node {
 	 *
 	 * @return true if the node has at least one parent that is numerical
 	 */
-	private boolean hasNumericalParents() {
+	public boolean hasNumericalParents() {
 		for (Node parent : getParents()){
 			if (parent.getVariable().getVariableType() == VariableType.NUMERIC ) {
 				return true;

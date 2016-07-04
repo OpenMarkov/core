@@ -11,6 +11,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.NoSuperValueNode;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
+import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.ArrayList;
@@ -154,6 +155,9 @@ public abstract class Task {
         }
 
         if (!isApplicable) {
+            if (networkType.equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
+                throw new NotEvaluableNetworkException("Evaluation of Decision Analysis Networks is temporarily disabled in this version of the software. Please try to open and evaluate the network with OpenMarkov 0.1.6.");
+            }
             throw new NotEvaluableNetworkException("This algorithm cannot evaluate this network because" +
                     "the network is of type " + networkType.toString() + ".");
         } else {
@@ -164,7 +168,7 @@ public abstract class Task {
             for (PNConstraint pnConstraint : additionalConstraints) {
                 if (!pnConstraint.checkProbNet(probNet)) {
                     if (pnConstraint.getClass().equals(NoSuperValueNode.class)) {
-                        throw new NotEvaluableNetworkException("Evaluation of supervalue nodes is temporarily disabled.");
+                        throw new NotEvaluableNetworkException("Evaluation of supervalue nodes is temporarily disabled in this version of the software. Please try to open and evaluate the network with OpenMarkov 0.1.6.");
                     }
                     notEvaluableConstraints.add(pnConstraint);
                 }

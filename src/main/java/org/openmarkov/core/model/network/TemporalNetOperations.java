@@ -24,7 +24,7 @@ public class TemporalNetOperations {
 	/**
 	 * When invoking this method, probNet is a copy of the concise net. We add
 	 * new nodes, links, and potentials to make it a compact net.
-	 * If some of the slices of the concise net miss a node present in previous slices,
+	 * If some of the slices of the concise net misses a node present in previous slices,
 	 *  adds the node to that slice
 	 */
 	public static List<List<Node>> compactNetwork(ProbNet probNet) {
@@ -43,8 +43,7 @@ public class TemporalNetOperations {
 					generatingNodes.add(generatingNode);
 					generatedNodes.add(newNode);
 					generatedNodesInThisSlice.add(newNode);
-				}else
-				{
+				} else {
 					// Replace all SameAsPrevious potentials
 					try {
 						Variable variable = probNet.getShiftedVariable(generatingNode.getVariable(), 1);

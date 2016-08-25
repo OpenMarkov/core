@@ -13,6 +13,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 @PotentialType(name = "Tree/ADDDelta", family = "Tree")
@@ -21,6 +22,17 @@ public class TreeADDDeltaPotential extends Potential {
     private TreeADDPotential treeADDPotential;
 
     private Variable childVariable;
+
+    /**
+     * Copy constructor
+     *
+     * @param treeADDDelta
+     */
+    public TreeADDDeltaPotential(TreeADDDeltaPotential treeADDDelta) {
+        super(treeADDDelta);
+        this.treeADDPotential = new TreeADDPotential(treeADDDelta.getTreeADDPotential());
+        this.childVariable = treeADDDelta.getChildVariable();
+    }
 
     /**
      * Constructor for the parser
@@ -57,7 +69,7 @@ public class TreeADDDeltaPotential extends Potential {
 
     @Override
     public Potential copy() {
-        return null;
+        return new TreeADDDeltaPotential(this);
     }
 
     @Override

@@ -63,7 +63,7 @@ public class TableDeltaPotential extends Potential {
 
     @Override
     public Potential copy() {
-        return null;
+        return new TableDeltaPotential(this);
     }
 
     @Override

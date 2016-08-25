@@ -321,6 +321,9 @@ public final class DiscretePotentialOperations {
         }
         TablePotential result = new TablePotential(resultVariables, getRole(tablePotentials), resultValues);
         result.interventions = resultInterventions;
+        if(!potentials.isEmpty()) {
+            result.setCriterion(potentials.get(0).getCriterion());
+        }
 
 //        if (result.isUtility()) {
 //        	Variable newUtilityVariable = getNewUtilityVariable(tablePotentials);

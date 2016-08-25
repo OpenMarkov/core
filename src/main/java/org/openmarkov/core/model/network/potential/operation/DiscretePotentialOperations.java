@@ -2076,7 +2076,7 @@ public final class DiscretePotentialOperations {
     	// initialize the output utility potential
     	List<Variable> outputUtilityVariables = inputUtilityPotential.getVariables();
     	outputUtilityVariables.remove(decisionVariable);
-    	TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables, PotentialRole.UNSPECIFIED);
+    	TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables, PotentialRole.UTIL_2);
     	outputUtilityPotential.interventions = new Intervention[outputUtilityPotential.values.length];
 
     	// TODO Check whether the next line can be removed

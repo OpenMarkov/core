@@ -64,7 +64,10 @@ public class TreeADDDeltaPotential extends Potential {
 
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
-        return null;
+        List<TablePotential> projectedPotentials = this.treeADDPotential.tableProject(evidenceCase, inferenceOptions, alreadyProjectedPotentials);
+        projectedPotentials.get(0).setCriterion(childVariable.getDecisionCriterion());
+        projectedPotentials.get(0).setPotentialRole(PotentialRole.UTIL_2);
+        return projectedPotentials;
     }
 
     @Override

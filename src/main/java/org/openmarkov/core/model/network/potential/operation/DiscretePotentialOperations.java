@@ -2079,7 +2079,7 @@ public final class DiscretePotentialOperations {
     	TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables, PotentialRole.UTIL_2);
     	outputUtilityPotential.interventions = new Intervention[outputUtilityPotential.values.length];
 
-    	// TODO Check whether the next line can be removed
+
     	outputUtilityPotential.setCriterion(inputUtilityPotential.getCriterion());
 
     	// in allVariables, the first variable is decisionVariable
@@ -2106,9 +2106,11 @@ public final class DiscretePotentialOperations {
     	double[] utilities = new double[decisionVariableSize];
     	Intervention[] interventions = new Intervention[decisionVariableSize];
 
-    	TablePotential policyPotential = null;
-    	
-    	// outer iterations correspond to the variables to in the outputUtilityPotential
+        // initialize the policy
+    	TablePotential policyPotential = new TablePotential(allVariables, PotentialRole.POLICY);
+        double[] policyValues = policyPotential.values;
+
+        // outer iterations correspond to the variables to in the outputUtilityPotential
     	for (int outerIteration = 0; 
     			outerIteration < TablePotential.computeTableSize(outputUtilityVariables); 
     			outerIteration++) {
@@ -2146,10 +2148,6 @@ public final class DiscretePotentialOperations {
     		outputUtilityPotential.interventions[outputUtilityPotentialPosition] = 
     				Intervention.optimalInterventionTakingAllOptimal(
     						decisionVariable, utilities, interventions, sdagInterventions);
-
-        	// initialize the policy 
-        	policyPotential = new TablePotential(allVariables, PotentialRole.POLICY);
-        	double[] policyValues = policyPotential.values;
 
     		// set the values of policyPotential
     		int policyPotentialPosition = outputUtilityPotentialPosition * decisionVariableSize;

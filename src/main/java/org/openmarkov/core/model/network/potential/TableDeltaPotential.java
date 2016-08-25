@@ -45,17 +45,19 @@ public class TableDeltaPotential extends Potential {
 
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions) throws NonProjectablePotentialException, WrongCriterionException {
-        tablePotential.setCriterion(childVariable.getDecisionCriterion());
-        tablePotential.setPotentialRole(PotentialRole.UTIL_2);
+        // get the projected TablePotential, which will be returned inside a list
         List<TablePotential> projectedPotentials = tablePotential.tableProject(evidenceCase, inferenceOptions);
+        projectedPotentials.get(0).setCriterion(childVariable.getDecisionCriterion());
+        projectedPotentials.get(0).setPotentialRole(PotentialRole.UTIL_2);
         return projectedPotentials;
     }
 
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
-        tablePotential.setCriterion(childVariable.getDecisionCriterion());
-        tablePotential.setPotentialRole(PotentialRole.UTIL_2);
+        // get the projected TablePotential, which will be returned inside a list
         List<TablePotential> projectedPotentials = tablePotential.tableProject(evidenceCase, inferenceOptions, alreadyProjectedPotentials);
+        projectedPotentials.get(0).setCriterion(childVariable.getDecisionCriterion());
+        projectedPotentials.get(0).setPotentialRole(PotentialRole.UTIL_2);
         return projectedPotentials;
     }
 

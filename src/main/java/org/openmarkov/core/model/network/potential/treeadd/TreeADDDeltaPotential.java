@@ -102,6 +102,18 @@ public class TreeADDDeltaPotential extends Potential {
     }
 
     @Override
+    public void replaceVariable(int position, Variable variable) {
+        super.replaceVariable(position, variable);
+        treeADDPotential.replaceVariable(position, variable);
+    }
+
+    @Override
+    public void replaceNumericVariable(Variable convertedParentVariable) {
+        super.replaceNumericVariable(convertedParentVariable);
+        treeADDPotential.replaceNumericVariable(convertedParentVariable);
+    }
+
+    @Override
     public void setComment(String comment) {
         super.setComment(comment);
         this.treeADDPotential.setComment(comment);

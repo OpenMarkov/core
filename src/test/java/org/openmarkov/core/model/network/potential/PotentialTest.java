@@ -19,18 +19,16 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDDeltaPotential;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.core.util.UtilTestMethods;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableTest;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
 /**
@@ -108,11 +106,11 @@ public class PotentialTest {
 
             switch (node.getVariable().getName()) {
                 case "TreeAddUtility":
-                    TreeADDBranch b1 = ((TreeADDDeltaPotential) node.getPotentials().get(0)).getBranches().get(0);
+                    TreeADDBranch b1 = ((TreeADDPotential) node.getPotentials().get(0)).getBranches().get(0);
                     double[] expectedBranch1Values = {2.5};
                     Assert.assertArrayEquals(expectedBranch1Values, ((TablePotential) b1.getPotential()).getValues(), 0.001);
 
-                    TreeADDBranch b2 = ((TreeADDDeltaPotential) node.getPotentials().get(0)).getBranches().get(1);
+                    TreeADDBranch b2 = ((TreeADDPotential) node.getPotentials().get(0)).getBranches().get(1);
                     double[] expectedBranch2Values = {2.5};
                     Assert.assertArrayEquals(expectedBranch2Values, ((LinearCombinationPotential) b2.getPotential()).getCoefficients(), 0.001);
 
@@ -479,7 +477,7 @@ public class PotentialTest {
         UniformPotential potC = new UniformPotential(Arrays.asList(varC), PotentialRole.CONDITIONAL_PROBABILITY);
         nodeC.setPotential(potC);
 
-        TreeADDDeltaPotential potTreeAddUtility = new TreeADDDeltaPotential(Arrays.asList(varTreeAddUtility,varA), PotentialRole.CONDITIONAL_PROBABILITY);
+        TreeADDPotential potTreeAddUtility = new TreeADDPotential(Arrays.asList(varTreeAddUtility,varA), PotentialRole.CONDITIONAL_PROBABILITY);
         TablePotential tablePotentialBranch1 = new TablePotential(
                 UtilTestMethods.getListOfVariables(
                         potTreeAddUtility.getBranches().get(0).getRootVariable(),

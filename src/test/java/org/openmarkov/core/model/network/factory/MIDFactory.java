@@ -9,12 +9,10 @@ import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDDeltaPotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.core.model.network.type.MIDType;
 
@@ -301,7 +299,7 @@ public class MIDFactory extends NetsFactory {
         List<Variable> treeADDVariablesCost = new ArrayList<>();
         treeADDVariablesCost.add(variableCost);
         treeADDVariablesCost.addAll(variablesCost);
-        TreeADDDeltaPotential potentialCost = new TreeADDDeltaPotential(treeADDVariablesCost, variableTreatment, PotentialRole.CONDITIONAL_PROBABILITY, costBranches);
+        TreeADDPotential potentialCost = new TreeADDPotential(treeADDVariablesCost, variableTreatment, PotentialRole.CONDITIONAL_PROBABILITY, costBranches);
 
         //potential Qol [0]
         ArrayList<Variable> variablesQoL = new ArrayList<>();
@@ -326,7 +324,7 @@ public class MIDFactory extends NetsFactory {
         List<Variable> treeADDVariablesQoL = new ArrayList<>();
         treeADDVariablesQoL.add(variableQoL);
         treeADDVariablesQoL.addAll(variablesQoL);
-        TreeADDDeltaPotential potentialQoL = new TreeADDDeltaPotential(treeADDVariablesQoL, variableTreatment, PotentialRole.CONDITIONAL_PROBABILITY, qolBranches);
+        TreeADDPotential potentialQoL = new TreeADDPotential(treeADDVariablesQoL, variableTreatment, PotentialRole.CONDITIONAL_PROBABILITY, qolBranches);
 
         //links
         try {

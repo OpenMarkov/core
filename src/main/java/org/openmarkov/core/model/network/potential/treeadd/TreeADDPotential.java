@@ -16,14 +16,7 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -546,7 +539,13 @@ public class TreeADDPotential extends Potential {
 		// branchStateIndex contains in it's i-th position the index of the
 		// potential in potentials that is relevant for topVariable's i-th state
 		int[] branchStateIndex = new int[topVariable.getNumStates()];
+		Criterion criterion = null;
 		for (TreeADDBranch branch : branchPotentials.keySet()) {
+
+			// Get the criterion
+			if(branchPotentials.get(branch).hasCriterion()) {
+				criterion = branchPotentials.get(branch).getCriterion();
+			}
 			potentials.add(branchPotentials.get(branch));
 			for (State branchState : branch.getBranchStates()) {
 				branchStateIndex[topVariable.getStateIndex(branchState)] = potentials.size() - 1;
@@ -583,6 +582,7 @@ public class TreeADDPotential extends Potential {
 		}
 		
 		TablePotential resultPotential = new TablePotential(resultVariables, potentials.get(0).getPotentialRole());
+		resultPotential.setCriterion(criterion);
 		// Number of variables
 		int numVariables = resultVariables.size();
 

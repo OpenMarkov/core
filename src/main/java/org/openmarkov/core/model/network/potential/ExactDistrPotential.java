@@ -16,14 +16,11 @@ public class ExactDistrPotential extends Potential {
 	
     private TablePotential tablePotential;
 
-    private Variable childVariable;
-
     public ExactDistrPotential(List<Variable> variables, PotentialRole role) {
         super(variables, role);
         if(this.role == null) {
             this.role = PotentialRole.CONDITIONAL_PROBABILITY;
         }
-        childVariable = this.variables.get(0);
         tablePotential = new TablePotential(variables.subList(1, variables.size()), PotentialRole.UNSPECIFIED);
     }
 
@@ -38,7 +35,6 @@ public class ExactDistrPotential extends Potential {
 
     public ExactDistrPotential(ExactDistrPotential potential) {
         super(potential);
-        this.childVariable = potential.getChildVariable();
         this.tablePotential = new TablePotential(potential.getTablePotential());
     }
 
@@ -46,7 +42,7 @@ public class ExactDistrPotential extends Potential {
     public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions) throws NonProjectablePotentialException, WrongCriterionException {
         // get the projected TablePotential, which will be returned inside a list
         List<TablePotential> projectedPotentials = tablePotential.tableProject(evidenceCase, inferenceOptions);
-        projectedPotentials.get(0).setCriterion(childVariable.getDecisionCriterion());
+        projectedPotentials.get(0).setCriterion(getChildVariable().getDecisionCriterion());
         projectedPotentials.get(0).setPotentialRole(PotentialRole.UTIL_2);
         return projectedPotentials;
     }
@@ -55,7 +51,7 @@ public class ExactDistrPotential extends Potential {
     public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
         // get the projected TablePotential, which will be returned inside a list
         List<TablePotential> projectedPotentials = tablePotential.tableProject(evidenceCase, inferenceOptions, alreadyProjectedPotentials);
-        projectedPotentials.get(0).setCriterion(childVariable.getDecisionCriterion());
+        projectedPotentials.get(0).setCriterion(getChildVariable().getDecisionCriterion());
         projectedPotentials.get(0).setPotentialRole(PotentialRole.UTIL_2);
         return projectedPotentials;
     }
@@ -84,11 +80,11 @@ public class ExactDistrPotential extends Potential {
     }
 
     public Variable getChildVariable() {
-        return childVariable;
+        return this.getVariable(0);
     }
 
     public void setChildVariable(Variable childVariable) {
-        this.childVariable = childVariable;
+        this.getVariables().set(0, childVariable);
     }
 
     public void setUncertainValues(UncertainValue[] uncertainValues) {
@@ -109,10 +105,7 @@ public class ExactDistrPotential extends Potential {
 
     @Override
     public List<Variable> getVariables() {
-        ArrayList<Variable> allVariables = new ArrayList();
-        allVariables.add(childVariable);
-        allVariables.addAll(tablePotential.getVariables());
-        return allVariables;
+        return variables;
     }
 
     @Override

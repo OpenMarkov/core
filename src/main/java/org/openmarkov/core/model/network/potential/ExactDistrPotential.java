@@ -113,4 +113,10 @@ public class ExactDistrPotential extends Potential {
         super.setComment(comment);
         this.tablePotential.setComment(comment);
     }
+
+    @Override
+    public void setVariables(List<Variable> variables) {
+        super.setVariables(variables);
+        this.tablePotential.setVariables(variables.subList(1, variables.size()));
+    }
 }

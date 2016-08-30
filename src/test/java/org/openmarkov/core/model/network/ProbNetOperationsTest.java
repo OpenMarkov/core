@@ -869,8 +869,8 @@ public class ProbNetOperationsTest {
 		Variable varStateB = new Variable ("State B", "no", "yes");
 		Variable ageVar = new Variable ("Age", "4.4");
 
-		TableDeltaPotential originalPotential = new TableDeltaPotential(Arrays.asList(costVar, varTherapy, varStateA, varStateB, ageVar));
-		TableDeltaPotential projectedPotential = new TableDeltaPotential(Arrays.asList(costVar, varTherapy, varStateA, varStateB));
+		ExactDistrPotential originalPotential = new ExactDistrPotential(Arrays.asList(costVar, varTherapy, varStateA, varStateB, ageVar));
+		ExactDistrPotential projectedPotential = new ExactDistrPotential(Arrays.asList(costVar, varTherapy, varStateA, varStateB));
 		projectedPotential.setValues(new double [] {19.969, 19.542, 18.858, 18.455, 20.161, 19.731, 19.04, 18.633});
 		EvidenceCase configuration = new EvidenceCase();
 		configuration.addFinding(new Finding(ageVar, 0));

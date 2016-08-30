@@ -37,7 +37,7 @@ import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TableDeltaPotential;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.util.UtilTestMethods;
@@ -850,13 +850,13 @@ public class DiscretePotentialOperationsTest {
 		List<TablePotential> tablePotentials = new ArrayList<>(potentials.size());
 		for (Potential potential : potentials) {
 			try {
-				if(potential instanceof TableDeltaPotential) {
-					tablePotentials.add(((TableDeltaPotential) potential).getTablePotential());
+				if(potential instanceof ExactDistrPotential) {
+					tablePotentials.add(((ExactDistrPotential) potential).getTablePotential());
 				} else {
 					tablePotentials.add((TablePotential) potential.getCPT());
 				}
 			} catch (NonProjectablePotentialException | WrongCriterionException e) {
-				fail("Can not get TablePotential from TableDeltaPotential. Potential: " + potential);
+				fail("Can not get TablePotential from ExactDistrPotential. Potential: " + potential);
 			}
 		}
 		return tablePotentials;

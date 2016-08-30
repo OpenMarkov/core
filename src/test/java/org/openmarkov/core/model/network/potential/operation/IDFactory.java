@@ -9,8 +9,8 @@ import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
@@ -37,7 +37,7 @@ public class IDFactory {
 		// Create health state variable and potential
 		noKnowledge.addNode(healthState, NodeType.UTILITY);
 		healthState.setDecisionCriterion(new Criterion());
-		TableDeltaPotential healthStatePotential = new TableDeltaPotential(
+		ExactDistrPotential healthStatePotential = new ExactDistrPotential(
 				Arrays.asList(healthState, therapy, disease), PotentialRole.UNSPECIFIED);
 		healthStatePotential.setValues(new double[]{10.0, 9.0, 3.0, 8.0});
 		noKnowledge.addPotential(healthStatePotential);
@@ -45,7 +45,7 @@ public class IDFactory {
 		// Create cost of therapy variable and potential
 		noKnowledge.addNode(costOfTherapy, NodeType.UTILITY);
 		costOfTherapy.setDecisionCriterion(new Criterion());
-		TableDeltaPotential costOfTherapyPotential = new TableDeltaPotential(
+		ExactDistrPotential costOfTherapyPotential = new ExactDistrPotential(
 				Arrays.asList(costOfTherapy, therapy), PotentialRole.UNSPECIFIED);
 		costOfTherapyPotential.setValues(new double[]{0.0, -0.25});
 		noKnowledge.addPotential(costOfTherapyPotential);
@@ -79,13 +79,13 @@ public class IDFactory {
 			e.printStackTrace();
 			System.err.println("Variable not found");
 		}
-		TableDeltaPotential costOfTherapyPotential = new TableDeltaPotential(Arrays.asList(costOfTherapy,resultOfTest));
+		ExactDistrPotential costOfTherapyPotential = new ExactDistrPotential(Arrays.asList(costOfTherapy,resultOfTest));
 		costOfTherapyPotential.setValues(new double[]{0.0, 20000.0, 70000.0});
 		testDecision.addPotential(costOfTherapyPotential);
-		TableDeltaPotential costOfTestPotential = new TableDeltaPotential(Arrays.asList(costOfTest, doTest));
+		ExactDistrPotential costOfTestPotential = new ExactDistrPotential(Arrays.asList(costOfTest, doTest));
 		costOfTestPotential.setValues(new double[]{0.0, -0.2});
 		testDecision.addPotential(costOfTherapyPotential);
-		TableDeltaPotential resultOfTestPotential = new TableDeltaPotential(Arrays.asList(resultOfTest,resultOfTest, doTest, disease));
+		ExactDistrPotential resultOfTestPotential = new ExactDistrPotential(Arrays.asList(resultOfTest,resultOfTest, doTest, disease));
 		resultOfTestPotential.setValues(new double[]{0.0, 0.0, 1.0, 0.03, 0.97, 0.0, 0.91, 0.09, 0.0});
 		testDecision.addPotential(resultOfTestPotential);
 		return testDecision;

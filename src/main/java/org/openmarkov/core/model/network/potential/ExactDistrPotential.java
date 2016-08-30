@@ -9,17 +9,16 @@ import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-@PotentialType(name = "TableDelta")
-public class TableDeltaPotential extends Potential {
+@PotentialType(name = "Exact33")
+public class ExactDistrPotential extends Potential {
 	
     private TablePotential tablePotential;
 
     private Variable childVariable;
 
-    public TableDeltaPotential(List<Variable> variables, PotentialRole role) {
+    public ExactDistrPotential(List<Variable> variables, PotentialRole role) {
         super(variables, role);
         if(this.role == null) {
             this.role = PotentialRole.CONDITIONAL_PROBABILITY;
@@ -28,16 +27,16 @@ public class TableDeltaPotential extends Potential {
         tablePotential = new TablePotential(variables.subList(1, variables.size()), PotentialRole.UNSPECIFIED);
     }
 
-    public TableDeltaPotential(List<Variable> variables) {
+    public ExactDistrPotential(List<Variable> variables) {
         this(variables, PotentialRole.CONDITIONAL_PROBABILITY);
     }
 
-    public TableDeltaPotential(List<Variable> variables, PotentialRole role, double[] table) {
+    public ExactDistrPotential(List<Variable> variables, PotentialRole role, double[] table) {
         this(variables, role);
         this.tablePotential.setValues(table);
     }
 
-    public TableDeltaPotential(TableDeltaPotential potential) {
+    public ExactDistrPotential(ExactDistrPotential potential) {
         super(potential);
         this.childVariable = potential.getChildVariable();
         this.tablePotential = new TablePotential(potential.getTablePotential());
@@ -63,7 +62,7 @@ public class TableDeltaPotential extends Potential {
 
     @Override
     public Potential copy() {
-        return new TableDeltaPotential(this);
+        return new ExactDistrPotential(this);
     }
 
     @Override

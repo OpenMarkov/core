@@ -145,7 +145,7 @@ public class ProbNetTest {
 	
 	private TablePotential pBA;
 	
-	private TableDeltaPotential pU;
+	private ExactDistrPotential pU;
 	
 	private EvidenceCase simpleEvidence;
 	
@@ -183,7 +183,7 @@ public class ProbNetTest {
 				abVariables, PotentialRole.CONDITIONAL_PROBABILITY);
 		pBA.values[0] = 0.2; pBA.values[1] = 0.8; 
 		pBA.values[2] = 0.9; pBA.values[3] = 0.1; 
-		pU = new TableDeltaPotential(Arrays.asList(U, A, D), PotentialRole.CONDITIONAL_PROBABILITY);
+		pU = new ExactDistrPotential(Arrays.asList(U, A, D), PotentialRole.CONDITIONAL_PROBABILITY);
 //		pU.setUtilityVariable(U);
 		double[] utilityValues = new double[4];
 		utilityValues[0] = 1;

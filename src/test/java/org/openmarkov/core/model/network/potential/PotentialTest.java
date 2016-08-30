@@ -117,7 +117,7 @@ public class PotentialTest {
                     break;
                 case "TableUtility":
                     double[] expectedTableValues = {5.0, 4.5};
-                    Assert.assertArrayEquals(expectedTableValues, ((TableDeltaPotential) node.getPotentials().get(0)).getValues(), 0.001);
+                    Assert.assertArrayEquals(expectedTableValues, ((ExactDistrPotential) node.getPotentials().get(0)).getValues(), 0.001);
                     break;
                 case "LCUtility":
                     double[] expectedLCValues = {1.5, 2.5, 4.5};
@@ -497,7 +497,7 @@ public class PotentialTest {
 
         nodeTreeAddUtility.setPotential(potTreeAddUtility);
 
-        TableDeltaPotential potTableUtility = new TableDeltaPotential(Arrays.asList(varTableUtility, varA));
+        ExactDistrPotential potTableUtility = new ExactDistrPotential(Arrays.asList(varTableUtility, varA));
         potTableUtility.setValues(new double[]{10, 9});
         nodeTableUtility.setPotential(potTableUtility);
 

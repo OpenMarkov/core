@@ -16,8 +16,8 @@ import org.junit.runners.Suite;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.DynamicBayesianNetwork;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
@@ -121,8 +121,8 @@ public class ConstraintsTests {
 			influenceDiagram.addNode(vA, NodeType.CHANCE);
 			influenceDiagram.addNode(vD, NodeType.DECISION);
 			influenceDiagram.addNode(vU, NodeType.UTILITY);
-			TableDeltaPotential utilityPotential = 
-				new TableDeltaPotential(variables, PotentialRole.CONDITIONAL_PROBABILITY);
+			ExactDistrPotential utilityPotential =
+				new ExactDistrPotential(variables, PotentialRole.CONDITIONAL_PROBABILITY);
 //			utilityPotential.setUtilityVariable(vU);
 			influenceDiagram.addPotential(utilityPotential);
 			influenceDiagram.addLink(vA, vD, true);

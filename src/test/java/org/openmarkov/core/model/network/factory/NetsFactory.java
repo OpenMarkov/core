@@ -152,10 +152,10 @@ protected static double[] valuesCPTResultTestDecisionTestYXT(double sensitivity,
 	 * @param variables Variables
 	 * @return A TablePotential
 	 */
-	protected static TableDeltaPotential createTableDeltaPotential(PotentialRole role,
+	protected static ExactDistrPotential createExactDistrPotential(PotentialRole role,
 																   double[] values, Variable... variables) {
 
-		return new TableDeltaPotential(createVariableList(variables), role, values);
+		return new ExactDistrPotential(createVariableList(variables), role, values);
 	}
 	
 	/**

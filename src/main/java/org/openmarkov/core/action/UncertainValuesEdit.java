@@ -12,7 +12,7 @@ import java.util.List;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.potential.TableDeltaPotential;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
@@ -119,8 +119,8 @@ public class UncertainValuesEdit extends SimplePNEdit
     		return (TablePotential) (node.getPotentials ().get (0));
     	}
     	else 
-    		if (node.getPotentials ().get (0) instanceof TableDeltaPotential) {
-    			return ((TableDeltaPotential) (node.getPotentials ().get (0))).getTablePotential();
+    		if (node.getPotentials ().get (0) instanceof ExactDistrPotential) {
+    			return ((ExactDistrPotential) (node.getPotentials ().get (0))).getTablePotential();
     	}
     	else {
     		return null;

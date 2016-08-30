@@ -9,13 +9,8 @@ import org.junit.Test;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.factory.NetsFactory;
-import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
-import org.openmarkov.core.model.network.modelUncertainty.SystematicSampling;
-import org.openmarkov.core.model.network.modelUncertainty.UncertainParameter;
-import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.modelUncertainty.SensitivityAnalysisFactory;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.inference.InferenceAlgorithmBNTest;
 
@@ -80,8 +75,8 @@ public class SystematicSamplingTest {
 				try {
 					Potential potential = sampledNet.getPotentials(
 							sampledNet.getVariable(NetsFactory.diseaseName)).get(0);
-					if (potential instanceof TableDeltaPotential) {
-						pot = ((TableDeltaPotential) potential).getTablePotential();
+					if (potential instanceof ExactDistrPotential) {
+						pot = ((ExactDistrPotential) potential).getTablePotential();
 					} else {
 						pot = (TablePotential) potential;
 					}

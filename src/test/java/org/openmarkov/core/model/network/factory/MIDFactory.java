@@ -26,8 +26,8 @@ public class MIDFactory extends NetsFactory {
 
 
     public static ProbNet createMIDWithStateVariable(double qoLTreat, double qoLNoTreat, double costTreat, double costNoTreat, double probAliveIfTreat, double probAliveIfNoTreat) {
-        TableDeltaPotential potentialQoL;
-        TableDeltaPotential potentialCostOfTreatment;
+        ExactDistrPotential potentialQoL;
+        ExactDistrPotential potentialCostOfTreatment;
         double[] tableQoL = {0.0, qoLTreat, 0.0, qoLNoTreat};
         double[] tableCostOfTreatment = {costTreat, costNoTreat};
         String[] statesStateVariable = {"dead", "alive"};
@@ -71,10 +71,10 @@ public class MIDFactory extends NetsFactory {
         TablePotential potentialState1 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY, probabilitiesState1, variableState1, variableState0, variableTreatment);
 
         //Potential Treatment
-        potentialCostOfTreatment = createTableDeltaPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableCostOfTreatment, variableCostOfTreatment, variableTreatment);
+        potentialCostOfTreatment = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableCostOfTreatment, variableCostOfTreatment, variableTreatment);
 
         //Potential QoL
-        potentialQoL = createTableDeltaPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableQoL, variableQoL, variableState0, variableTreatment);
+        potentialQoL = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableQoL, variableQoL, variableState0, variableTreatment);
 
         //Links throws NodeNotFoundException
         try {
@@ -284,10 +284,10 @@ public class MIDFactory extends NetsFactory {
 
         //cost no treatment
         double costNoTreat[] = {0.0};
-        TableDeltaPotential costNoTreatment = createTableDeltaPotential(PotentialRole.CONDITIONAL_PROBABILITY, costNoTreat, variableCost);
+        ExactDistrPotential costNoTreatment = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, costNoTreat, variableCost);
         //cost treatment
         double costTreat[] = {3000.0, 0.0};
-        TableDeltaPotential costTreatment = createTableDeltaPotential(PotentialRole.CONDITIONAL_PROBABILITY, costTreat, variableCost, state0);
+        ExactDistrPotential costTreatment = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, costTreat, variableCost, state0);
 
         ArrayList<TreeADDBranch> costBranches = new ArrayList<>();
         ArrayList<Variable> variablesBranchCost = new ArrayList<>();
@@ -309,10 +309,10 @@ public class MIDFactory extends NetsFactory {
 
         //cost no treatment
         double qolNoTreat[] = {0.0};
-        TableDeltaPotential qolNoTreatment = createTableDeltaPotential(PotentialRole.CONDITIONAL_PROBABILITY, qolNoTreat, variableQoL);
+        ExactDistrPotential qolNoTreatment = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, qolNoTreat, variableQoL);
         //cost treatment
         double qolTreat[] = {1500.0, 0.0};
-        TableDeltaPotential qolTreatment = createTableDeltaPotential(PotentialRole.CONDITIONAL_PROBABILITY, qolTreat, variableQoL, state0);
+        ExactDistrPotential qolTreatment = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, qolTreat, variableQoL, state0);
 
         List<TreeADDBranch> qolBranches = new ArrayList<>();
         List<Variable> variablesBranchQoL = new ArrayList<>();
@@ -364,8 +364,8 @@ public class MIDFactory extends NetsFactory {
 
     public static ProbNet createMIDWithoutStateVariable(double qoLTreat, double qoLNoTreat, double costTreat, double costNoTreat) {
         // Define the variables
-        TableDeltaPotential potentialQoL;
-        TableDeltaPotential potentialCostOfTreatment;
+        ExactDistrPotential potentialQoL;
+        ExactDistrPotential potentialCostOfTreatment;
         double[] tableQoL = {qoLTreat, qoLNoTreat};
         double[] tableCostOfTreatment = {costTreat, costNoTreat};
 
@@ -397,10 +397,10 @@ public class MIDFactory extends NetsFactory {
         setAdditionalProperties(relevance, value, variableTreatment, variableQoL, variableCostOfTreatment);
 
         //Potential QoL
-        potentialQoL = createTableDeltaPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableQoL, variableQoL, variableTreatment);
+        potentialQoL = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableQoL, variableQoL, variableTreatment);
 
         //Potential Treatment
-        potentialCostOfTreatment = createTableDeltaPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableCostOfTreatment, variableCostOfTreatment, variableTreatment);
+        potentialCostOfTreatment = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableCostOfTreatment, variableCostOfTreatment, variableTreatment);
 
         //Links throws NodeNotFoundException
         try {

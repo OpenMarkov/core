@@ -24,41 +24,47 @@ public class Strategy {
 
     public class Policy {
 
-        GTablePotential potential;
+        GTablePotential policyPotential;
 
-        @SuppressWarnings("unchecked")
-        public Policy(Variable dec, TablePotential utilities) {
+        /**
+         * @param decisionVariable
+         * @param utilities
+         */
+        public Policy(Variable decisionVariable, TablePotential utilities) {
             this();
-            potential = (GTablePotential) DiscretePotentialOperations.maximize(utilities,
-                    dec)[1];
+            policyPotential = (GTablePotential) 
+            		DiscretePotentialOperations.maximize(utilities,
+                    decisionVariable)[1];
         }
 
         public Policy() {
-            // TODO Auto-generated constructor stub
+        	policyPotential = null;
         }
 
+        /**
+         * @return Potential that describes the policy. <code>GTablePotential</code>
+         */
         public GTablePotential getPotential() {
-
-            return potential;
+            return policyPotential;
         }
 
+        /**
+         * @return List of policy variables
+         */
         public List<Variable> getDomain() {
-            return potential.getVariables();
+            return policyPotential.getVariables();
         }
 
     }
 
-    public List<Variable> getDomainOfPolicy(Variable varDecision) {
-        return getPolicy(varDecision).getDomain();
-    }
-
-    public Policy getPolicy(Variable varDecision) {
-        return strategy.get(varDecision);
+    // Constructors
+    public Strategy() {
+        strategy = new Hashtable<>();
     }
 
     /**
+     * Constructs a strategy by maximizing over the utility tables
      * @param stratUtil
-     *            constructs a strategy by maximizing over the utility tables
      */
     public Strategy(StrategyUtilities stratUtil) {
         this();
@@ -70,13 +76,30 @@ public class Strategy {
 
     }
 
-    private void setPolicy(Variable dec, Policy policy) {
-        strategy.put(dec, policy);
+    // Methods
+    /**
+     * @param decisionVariable
+     * @param policy
+     */
+    private void setPolicy(Variable decisionVariable, Policy policy) {
+        strategy.put(decisionVariable, policy);
 
     }
 
-    public Strategy() {
-        strategy = new Hashtable<>();
+    /**
+     * @param varDecision
+     * @return List of policy variables
+     */
+    public List<Variable> getDomainOfPolicy(Variable varDecision) {
+        return getPolicy(varDecision).getDomain();
+    }
+
+    /**
+     * @param varDecision
+     * @return <code>Policy</code>
+     */
+    public Policy getPolicy(Variable varDecision) {
+        return strategy.get(varDecision);
     }
 
 }

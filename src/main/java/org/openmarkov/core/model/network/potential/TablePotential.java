@@ -724,12 +724,21 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         int sizeCoordinates;
         int pos;
         int sizeEvi = configuration.getFindings().size();
-        sizeCoordinates = sizeEvi + 1;
-        coordinates = new int[sizeCoordinates];
         List<Variable> varsTable = this.getVariables();
-        int startLoop;
-        coordinates[0] = 0;
-        startLoop = 1;
+        int startLoop = 0;
+
+        // If we have a variable without evidence, we are in the case of P(c|a,b). In this case
+        // coordinate for "c" would be '0'. Else we are in the case P(a,b) (or U(a,b))
+        if (varsTable.size() != sizeEvi) {
+            sizeCoordinates = sizeEvi + 1;
+            startLoop = 1;
+            coordinates = new int[sizeCoordinates];
+            coordinates[0] = 0;
+        } else {
+            sizeCoordinates = sizeEvi;
+            coordinates = new int[sizeCoordinates];
+        }
+
         for (int i = startLoop; i < sizeCoordinates; i++) {
             coordinates[i] = configuration.getFinding(varsTable.get(i)).getStateIndex();
         }

@@ -6,7 +6,6 @@ import org.openmarkov.core.action.ActionTests;
 import org.openmarkov.core.dt.DtTests;
 import org.openmarkov.core.model.graph.GraphsTests;
 import org.openmarkov.core.model.network.NetworkTests;
-import org.openmarkov.core.util.UtilTestMethods;
 
 
 @RunWith(Suite.class)

@@ -27,17 +27,13 @@ import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
-public class DecisionTreeBuilder
-{
-    public static DecisionTreeElement buildDecisionTree (ProbNet probNet)
-    {
+public class DecisionTreeBuilder {
+    public static DecisionTreeElement buildDecisionTree (ProbNet probNet) {
         DecisionTreeElement root = null;
-        if (probNet.getNetworkType () instanceof InfluenceDiagramType)
-        {
+        if (probNet.getNetworkType () instanceof InfluenceDiagramType) {
             root = buildDecisionTreeFromID (probNet);
         }
-        else if (probNet.getNetworkType () instanceof DecisionAnalysisNetworkType)
-        {
+        else if (probNet.getNetworkType () instanceof DecisionAnalysisNetworkType) {
             root =  new DecisionTreeBranch (probNet);
             ((DecisionTreeBranch)root).setChild((DecisionTreeNode)buildDecisionTreeFromDAN (probNet, probNet));
         }
@@ -50,20 +46,17 @@ public class DecisionTreeBuilder
      * @param originalProbNet original probNet
      * @return decision tree
      */    
-    private static DecisionTreeElement buildDecisionTreeFromDAN (ProbNet originalProbNet, ProbNet probNet)
-    {
+    private static DecisionTreeElement buildDecisionTreeFromDAN (ProbNet originalProbNet, ProbNet probNet) {
         DecisionTreeElement root = null;
-        try{
+        try {
             List<Node> alwaysObservedVariables = getAlwaysObservedVariablesWithoutObservableParents(probNet);
-            if(!alwaysObservedVariables.isEmpty ()) // Always observed variables 
-            {
+            if(!alwaysObservedVariables.isEmpty ()) {// Always observed variables 
                 // Get first node in the list
                 Node alwaysObservedNode = alwaysObservedVariables.get (0); 
                 Variable alwaysObservedVariable = alwaysObservedNode.getVariable ();
                 
                 DecisionTreeNode treeNode = new DecisionTreeNode (alwaysObservedNode);
-                for (State state : alwaysObservedVariable.getStates ())
-                {
+                for (State state : alwaysObservedVariable.getStates ()) {
                     DecisionTreeBranch treeBranch = new DecisionTreeBranch (originalProbNet,
                                                                             originalProbNet.getVariable (alwaysObservedVariable.getName ()), 
                                                                             state);

@@ -30,8 +30,7 @@ public class DecisionTreeNode implements DecisionTreeElement
     private double                    utility             = Double.NEGATIVE_INFINITY;
     private double                    scenarioProbability = Double.NEGATIVE_INFINITY;
 
-    public DecisionTreeNode (Node node)
-    {
+    public DecisionTreeNode (Node node) {
         this.variable = node.getVariable();
         this.nodeType = node.getNodeType();
         List<Potential> potentials = node.getPotentials();
@@ -40,22 +39,16 @@ public class DecisionTreeNode implements DecisionTreeElement
         children = new ArrayList<> ();
     }
 
-    /**
-     * Returns the variable.
-     * @return the Variable.
-     */
-    public Variable getVariable ()
-    {
+    /** @return The node variable. */
+    public Variable getVariable () {
         return variable;
     }
     
-    public NodeType getNodeType()
-    {
+    public NodeType getNodeType() {
     	return nodeType;
     }
 
     /**
-     * Returns the children.
      * @return the children.
      */
     public List<DecisionTreeElement> getChildren ()
@@ -117,8 +110,7 @@ public class DecisionTreeNode implements DecisionTreeElement
         return utility;
     }
 
-    public EvidenceCase getBranchStates ()
-    {
+    public EvidenceCase getBranchStates() {
         return (parent != null)? parent.getBranchStates () : new EvidenceCase();
     } 
 
@@ -166,11 +158,11 @@ public class DecisionTreeNode implements DecisionTreeElement
     public String toString ()
     {
         StringBuilder builder = new StringBuilder ();
-        builder.append ("DecisionTreeNode [variable=");
-        builder.append (variable.getName ());
-        builder.append (", children=").append (children);
-        builder.append ("]");
-        return builder.toString ();
+        builder.append("DecisionTreeNode [variable=");
+        builder.append(variable.getName());
+        builder.append(", children=").append(children);
+        builder.append("]");
+        return builder.toString();
     }
 
     @Override

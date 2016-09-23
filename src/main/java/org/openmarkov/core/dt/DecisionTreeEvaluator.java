@@ -85,6 +85,7 @@ public class DecisionTreeEvaluator {
 	   DecisionTreeNode root = resolve(danNet, danNet, null);
 	   return root.getUtility();
    }
+   
    private DecisionTreeNode resolve (ProbNet probNet, ProbNet originalProbNet, DecisionTreeNode parentNode)
     {
 	   DecisionTreeNode root = null;

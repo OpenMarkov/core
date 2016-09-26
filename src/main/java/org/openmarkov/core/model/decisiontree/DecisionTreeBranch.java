@@ -12,6 +12,10 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 
+/**
+ * @author Manuel Arias
+ *
+ */
 public class DecisionTreeBranch extends DecisionTreeElement {
 
 	// Attributes
@@ -54,9 +58,12 @@ public class DecisionTreeBranch extends DecisionTreeElement {
         return utility;
     }
 	
+    /**
+     * @return double
+     */
     public double getBranchProbability() {
     	double parentScenarioProb = parent.getScenarioProbability();
-    	return (parentScenarioProb != 0) ? getScenarioProbability() / parentScenarioProb : 0;
+    	return (parentScenarioProb != 0) ? getScenarioProbability() / parentScenarioProb : 0.0;
     }   
     
 	@Override

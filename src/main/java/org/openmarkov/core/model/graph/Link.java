@@ -33,7 +33,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * @see Node
  * @see Graph
  */
-public class Link <T>{
+public class Link <T> {
 
 	// Attributes
 	/** The first node. If the link is directed, this node is the parent. */
@@ -45,18 +45,18 @@ public class Link <T>{
 	/** If true, the link is directed. Otherwise, it is an undirected link. */
 	private boolean directed;
 
-	/****
+	/**
 	 * Potential that contains the value of compatibility for the combinations
 	 * of the variables of node1 and node2
 	 */
 	private TablePotential restrictionsPotential;
 
-	/*****
+	/**
 	 * List of revealing values of type state
 	 */
 	private List<State> revealingStates;
 
-	/*****
+	/**
 	 * List of revealing values of type interval
 	 */
 	private List<PartitionedInterval> revealingIntervals;
@@ -122,17 +122,17 @@ public class Link <T>{
 		return directed;
 	}
 
-	/******
-	 * @return<code>true</code> if the link has a linkRestriction
-	 *                          associates,false otherwise
+	/**
+	 * @return <code>true</code> if the link has a linkRestriction
+	 *                          associated, <code>false</code> otherwise
 	 * @consultation
 	 */
 	public boolean hasRestrictions() {
 		return restrictionsPotential != null;
 	}
 
-	/****
-	 * @return<code>true</code> if a value of the first variable makes all
+	/**
+	 * @return <code>true</code> if a value of the first variable makes all
 	 *                          values of the second variable impossible.
 	 * 
 	 */
@@ -161,12 +161,9 @@ public class Link <T>{
 		}
 
 		return totalRestriction;
-
 	}
 	
-	
-	
-	/****
+	/**
 	 * @return<code>true</code> if a value of the first variable makes all
 	 *                          values of the second variable impossible.
 	 * 

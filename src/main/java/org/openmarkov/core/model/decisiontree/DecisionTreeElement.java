@@ -6,7 +6,10 @@ import java.util.List;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
 
-/** Common class for decision trees, that can be either a node or a branch. */
+/** 
+ * Common class for decision trees, that can be either a node or a branch.
+ * @author Manuel Arias
+ */
 public abstract class DecisionTreeElement {
 
 	// Constants
@@ -60,9 +63,19 @@ public abstract class DecisionTreeElement {
 		return child;
 	}
 
-    /** 
-     * @param parent. <code>DecisionTreeElement</code>
+    public void addChild(DecisionTreeElement child) {
+    	children.add(child);
+    }
+    
+    /**
+     * Sets the received DecisionTreeElement as the only child.
+     * @param child
      */
+    public void setChild(DecisionTreeElement child) {
+    	children.clear();
+    	addChild(child);
+    }
+    
     public void setParent(DecisionTreeElement parent) {
         this.parent = parent;
     }

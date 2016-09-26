@@ -12,6 +12,9 @@ import org.openmarkov.core.model.network.potential.ProductPotential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
+/**
+ * @author Manuel Arias
+ */
 public class DecisionTreeNode extends DecisionTreeElement {
 
 	// Attributes
@@ -43,7 +46,7 @@ public class DecisionTreeNode extends DecisionTreeElement {
     
 	/**
 	 * Calculates the utility depending on <code>NodeType</code> (CHANCE, DECISION and UTILITY).
-	 * In UTILITY nodes, takes into account the potential type.
+	 * In UTILITY nodes, the method takes into account the potential type.
 	 * Store the utility in the internal variable <code>utility</code>.
 	 * @return utility. <code>double</code>
 	 */

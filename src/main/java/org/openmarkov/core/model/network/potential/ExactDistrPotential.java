@@ -11,7 +11,7 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.ArrayList;
 import java.util.List;
 
-@PotentialType(name = "Exact33")
+@PotentialType(name = "Exact")
 public class ExactDistrPotential extends Potential {
 	
     private TablePotential tablePotential;

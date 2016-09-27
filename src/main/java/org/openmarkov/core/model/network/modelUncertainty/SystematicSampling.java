@@ -56,8 +56,8 @@ public class SystematicSampling extends Sampler {
 	public static List<UncertainParameter> getUncertainParameters(ProbNet net){
 		List<Potential> potentials = net.getPotentials();
 		List<UncertainParameter> uncertainParams = new ArrayList<>();
-		for (Potential pot : potentials){
-			Set<UncertainParameter> auxUncertainParameters = getUncertainParameters(pot);
+		for (Potential potential : potentials){
+			Set<UncertainParameter> auxUncertainParameters = getUncertainParameters(potential);
 			if (auxUncertainParameters != null){
 				uncertainParams.addAll(auxUncertainParameters);
 			}			
@@ -66,34 +66,34 @@ public class SystematicSampling extends Sampler {
 	}
 
 	/**
-	 * @param pot Potential
-	 * @return A set of UncertainParameters built from the uncertain values appearing in "pot"
+	 * @param potential Potential
+	 * @return A set of UncertainParameters built from the uncertain values appearing in "potential"
 	 */
-	private static Set<UncertainParameter> getUncertainParameters(Potential pot) {
+	private static Set<UncertainParameter> getUncertainParameters(Potential potential) {
 		Set<UncertainParameter> uncertainParams = new HashSet<>();
 		
-		Hashtable<UncertainValue,SubPotentialAndPosition> uncertainValues = getUncertainValues(pot);
+		Hashtable<UncertainValue,SubPotentialAndPosition> uncertainValues = getUncertainValues(potential);
 		
 		for (UncertainValue auxUncertainValue:uncertainValues.keySet()){
 			SubPotentialAndPosition subPotentialAndPosition = uncertainValues.get(auxUncertainValue);
-			uncertainParams.add(new UncertainParameter(pot,auxUncertainValue,subPotentialAndPosition.getSubPotential(),subPotentialAndPosition.getPosition()));
+			uncertainParams.add(new UncertainParameter(potential,auxUncertainValue,subPotentialAndPosition.getSubPotential(),subPotentialAndPosition.getPosition()));
 		}
 		return uncertainParams;
 	}
 
 	/**
-	 * @param pot Potential
-	 * @return A hash table with the uncertain values appearing in pot, and for each one the hash value is the subpotential where appearing
+	 * @param potential Potential
+	 * @return A hash table with the uncertain values appearing in potential, and for each one the hash value is the subpotential where appearing
 	 */
-	private static Hashtable<UncertainValue, SubPotentialAndPosition> getUncertainValues(Potential pot) {
+	private static Hashtable<UncertainValue, SubPotentialAndPosition> getUncertainValues(Potential potential) {
 		Hashtable<UncertainValue, SubPotentialAndPosition> uncertainValuesHash = new Hashtable<>();
 
-		if (pot instanceof TablePotential) {
-			TablePotential tablePotential = (TablePotential) pot;
-			UncertainValue[] uncertainValuesPot = tablePotential.getUncertainValues();
-			if (uncertainValuesPot != null) {
+		if (potential instanceof TablePotential) {
+			TablePotential tablePotential = (TablePotential) potential;
+			UncertainValue[] uncertainValuesPotential = tablePotential.getUncertainValues();
+			if (uncertainValuesPotential != null) {
 				int i = 0;
-				for (UncertainValue auxUncertain : uncertainValuesPot) {
+				for (UncertainValue auxUncertain : uncertainValuesPotential) {
 					if (auxUncertain != null) {
 						addIfNonExisting(uncertainValuesHash, auxUncertain, new SystematicSampling.SubPotentialAndPosition(tablePotential,i));
 					}
@@ -101,8 +101,8 @@ public class SystematicSampling extends Sampler {
 				}
 			}
 		} else {
-			if (pot instanceof TreeADDPotential) {
-				for (TreeADDBranch branch : ((TreeADDPotential) pot).getBranches()) {
+			if (potential instanceof TreeADDPotential) {
+				for (TreeADDBranch branch : ((TreeADDPotential) potential).getBranches()) {
 					if (branch != null) {
 						Potential branchPotential = branch.getPotential();
 						if (branchPotential != null) {
@@ -136,20 +136,20 @@ public class SystematicSampling extends Sampler {
 		
 	
 	/**
-	 * @param pot Potential
+	 * @param potential Potential
 	 * @param newVariable New variable
-	 * @return Adds a variable to the end of the list variables of "pot", and replicates the original values and uncertainValues
+	 * @return Adds a variable to the end of the list variables of "potential", and replicates the original values and uncertainValues
 	 */
-	private static TablePotential addVariableReplicatingValuesAndUncertainValues(TablePotential pot,
+	private static TablePotential addVariableReplicatingValuesAndUncertainValues(TablePotential potential,
 			Variable newVariable) {
 		// creates the new potential
-		List<Variable> newVariables = new ArrayList<>(pot.getVariables());
+		List<Variable> newVariables = new ArrayList<>(potential.getVariables());
 		newVariables.add(newVariable);
-		TablePotential newPotential = new TablePotential(newVariables, pot.getPotentialRole());
+		TablePotential newPotential = new TablePotential(newVariables, potential.getPotentialRole());
 		// assigns the values of the new potential
 		int newVariableNumStates = newVariable.getNumStates();
-		double[] values = pot.getValues();
-		UncertainValue[] uncertainValues = pot.getUncertainValues();
+		double[] values = potential.getValues();
+		UncertainValue[] uncertainValues = potential.getUncertainValues();
 		boolean hasUncertainty = (uncertainValues!=null)&&(uncertainValues.length>0);
 		if (hasUncertainty){
 			newPotential.uncertainValues = new UncertainValue[newPotential.getTableSize()];
@@ -201,11 +201,11 @@ public class SystematicSampling extends Sampler {
 						uncertainParameter.uncertainValue);
 				int posUncertainInColumn = calculatePositionUncertainInColumn(originalSubPotential,position);
 				int originalValuesLength = originalSubPotential.getTableSize();
-				TablePotential newTablePot = addVariableReplicatingValuesAndUncertainValues(
+				TablePotential newTablePotential = addVariableReplicatingValuesAndUncertainValues(
 						originalSubPotential, iterVariable);
-				newSubPotential.setVariables(newTablePot.getVariables());
-				newSubPotential.setValues(newTablePot.getValues());
-				newSubPotential.setUncertainValues(newTablePot
+				newSubPotential.setVariables(newTablePotential.getVariables());
+				newSubPotential.setValues(newTablePotential.getValues());
+				newSubPotential.setUncertainValues(newTablePotential
 						.getUncertainValues());
 				double min = parameter.min;
 				double pointsDistance = (parameter.max - min) / numIntervals;
@@ -251,13 +251,13 @@ public class SystematicSampling extends Sampler {
 	}
 
 	private static int calculatePositionUncertainInColumn(
-			TablePotential pot, int position) {
+			TablePotential potential, int position) {
 		int posInCol;
-		if (pot.getVariable(0).getVariableType().equals(VariableType.NUMERIC)){
+		if (potential.getVariable(0).getVariableType().equals(VariableType.NUMERIC)){
 			posInCol = 0;
 		}
 		else{//Probability potential
-			Variable var = pot.getVariable(0);
+			Variable var = potential.getVariable(0);
 			posInCol = position % var.getNumStates();
 		}
 		return posInCol;
@@ -353,14 +353,14 @@ public class SystematicSampling extends Sampler {
 	}
 
 	/**
-	 * @param pot Potential
+	 * @param potential Potential
 	 * @param uncertainValue Uncertain value
-	 * @return The position in the uncertain values table of "pot" where "uncertainValue" is placed
+	 * @return The position in the uncertain values table of "potential" where "uncertainValue" is placed
 	 */
-	private static int getPosition(TablePotential pot, UncertainValue uncertainValue) {
+	private static int getPosition(TablePotential potential, UncertainValue uncertainValue) {
 		int pos = -1;
 		boolean found = false;
-		UncertainValue[] uncertainValues = pot.getUncertainValues();
+		UncertainValue[] uncertainValues = potential.getUncertainValues();
 		for (int i=0;i<uncertainValues.length&&!found;i++){
 			found = uncertainValues[i] == uncertainValue;
 			if (found){

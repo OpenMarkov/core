@@ -26,13 +26,12 @@ public abstract class DecisionTreeElement {
 	
     protected double utility;
 	
-	// Constructors
+	// Constructor
 	/**
 	 * @param variable
 	 */
 	public DecisionTreeElement(Variable variable) {
 		this.elementVariable = variable;
-		
 		this.parent = null;
 		this.children = new ArrayList<>();
 	}
@@ -42,13 +41,8 @@ public abstract class DecisionTreeElement {
 	 * @return The elements below <code>this</code>.
 	 */
 	public List<DecisionTreeElement> getChildren() {
-		List<DecisionTreeElement> childrenClone;
-		if (children.size() > 0) {
-			childrenClone = new ArrayList<>(children.size());
-			childrenClone.addAll(children);
-		} else {
-			childrenClone = new ArrayList<>();
-		}
+		List<DecisionTreeElement> childrenClone = new ArrayList<>(children.size());
+		childrenClone.addAll(children);
 		return childrenClone;
 	}
 	
@@ -56,38 +50,47 @@ public abstract class DecisionTreeElement {
 	 * @return The (supposedly) unique element below <code>this</code>.
 	 */
 	public DecisionTreeElement getChild() {
-		DecisionTreeElement child = null;
-		if (children.size() > 0) {
-			child = children.get(0);
-		}
-		return child;
+		return children.size() > 0 ? children.get(0) : null;
 	}
 
+    /**
+     * @param child. <code>DecisionTreeElement</code> 
+     */
     public void addChild(DecisionTreeElement child) {
     	children.add(child);
     }
     
     /**
-     * Sets the received DecisionTreeElement as the only child.
+     * Sets the received <code>DecisionTreeElement</code> as the only child.
      * @param child
      */
     public void setChild(DecisionTreeElement child) {
     	children.clear();
-    	addChild(child);
+    	children.add(child);
     }
     
+    /**
+     * @param parent. <code>DecisionTreeElement</code>
+     */
     public void setParent(DecisionTreeElement parent) {
         this.parent = parent;
     }
     
+    /**
+     * @return parent. <code>DecisionTreeElement</code>
+     */
     public DecisionTreeElement getParent() {
         return parent;
     }
     
+    /**
+     * @return variable
+     */
     public Variable getVariable() {
     	return elementVariable;
     }
 
+    // Abstract methods to be implemented
 	public abstract double getUtility();
 
 	public abstract EvidenceCase getBranchStates();

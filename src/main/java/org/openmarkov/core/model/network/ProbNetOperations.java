@@ -950,22 +950,20 @@ public class ProbNetOperations {
         for (Node parent : probNet.getNodes (NodeType.DECISION))
         {
             boolean hasParentDecisions = false;
-            Stack<Node> parentNodes = new Stack<> ();
+            Stack<Node> parentNodes = new Stack<>();
             parentNodes.push (parent);
-            while (!hasParentDecisions && !parentNodes.isEmpty ())
+            while (!hasParentDecisions && !parentNodes.isEmpty())
             {
-                Node node = parentNodes.pop ();
-                List<Node> parents = node.getParents ();
+                Node node = parentNodes.pop();
+                List<Node> parents = node.getParents();
                 int i=0;
-                while (i < parents.size() && !hasParentDecisions)
-                {
+                while (i < parents.size() && !hasParentDecisions) {
                     Node parentNode = (Node) parents.get(i++);
                     hasParentDecisions |= parentNode.getNodeType () == NodeType.DECISION;
                     parentNodes.push (parentNode);
                 }
             }
-            if (!hasParentDecisions)
-            {
+            if (!hasParentDecisions) {
                 parentlessDecisions.add (parent);
             }
         }
@@ -977,13 +975,10 @@ public class ProbNetOperations {
      * @param probNet
      * @return
      */
-    public static List<Node> getAlwaysObservedVariables (ProbNet probNet)
-    {
-        List<Node> alwaysObservedVariables = new ArrayList<> ();
-        for (Node node : probNet.getNodes ())
-        {
-            if (node.isAlwaysObserved ())
-            {
+    public static List<Node> getAlwaysObservedVariables (ProbNet probNet) {
+        List<Node> alwaysObservedVariables = new ArrayList<>();
+        for (Node node : probNet.getNodes ()) {
+            if (node.isAlwaysObserved ()) {
                 alwaysObservedVariables.add (node);
             }
         }

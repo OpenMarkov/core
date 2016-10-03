@@ -80,8 +80,7 @@ public class DecisionTreeEvaluator {
 		
 	}
 
-   public double getMEU(ProbNet danNet)
-   {
+   public double getMEU(ProbNet danNet) {
 	   DecisionTreeNode root = resolve(danNet, danNet, null);
 	   return root.getUtility();
    }

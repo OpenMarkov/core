@@ -8,7 +8,6 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @PotentialType(name = "Exact")
@@ -130,9 +129,10 @@ public class ExactDistrPotential extends Potential {
             buffer.append (" | ");
             // Print variables
             for (int i = 1; i < variables.size() - 1; i++) {
-                buffer.append (variables.get (i) + ", ");
+                buffer.append(variables.get (i));
+                buffer.append(", ");
             }
-            buffer.append (variables.get (variables.size() - 1));;
+            buffer.append (variables.get (variables.size() - 1));
             buffer.append (" = ");
         }
 

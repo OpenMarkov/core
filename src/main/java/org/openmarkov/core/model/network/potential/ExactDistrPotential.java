@@ -119,4 +119,35 @@ public class ExactDistrPotential extends Potential {
         super.setVariables(variables);
         this.tablePotential.setVariables(variables.subList(1, variables.size()));
     }
+
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder ();
+        buffer.append(variables.get(0).getName());
+        if (variables.size() == 1 ) {
+            buffer.append (" = ");
+        } else if (variables.size() > 1) {
+            buffer.append (" | ");
+            // Print variables
+            for (int i = 1; i < variables.size() - 1; i++) {
+                buffer.append (variables.get (i) + ", ");
+            }
+            buffer.append (variables.get (variables.size() - 1));;
+            buffer.append (" = ");
+        }
+
+        if (tablePotential.values.length == 1) {
+            buffer.append(tablePotential.values[0]);
+        } else if (tablePotential.values.length > 1) {
+            buffer.append("{");
+            for (int i = 0; i < tablePotential.values.length; i++) {
+                buffer.append(tablePotential.values[i]);
+                if (i != tablePotential.values.length - 1) {
+                    buffer.append(",");
+                }
+            }
+            buffer.append("}");
+        }
+        return buffer.toString ();
+    }
 }

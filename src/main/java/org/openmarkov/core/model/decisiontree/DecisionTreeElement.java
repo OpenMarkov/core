@@ -46,6 +46,10 @@ public abstract class DecisionTreeElement {
 		return childrenClone;
 	}
 	
+	public int getNumChildren() {
+		return children.size();
+	}
+	
 	/**
 	 * @return The (supposedly) unique element below <code>this</code>.
 	 */

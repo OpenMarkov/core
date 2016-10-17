@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 
+// TODO Descomentar o reprogramar la clase
 public abstract class OptimalStrategyTaskIDTest extends OptimalStrategyTaskDecTest {
 
 /*	protected void testOptimalStrategy(ProbNet net,Intervention expectedStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException{

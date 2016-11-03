@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.openmarkov.core.io.database.CaseDatabaseReader;
 import org.openmarkov.core.io.database.CaseDatabaseWriter;
-import org.openmarkov.core.io.format.annotation.FormatType;
 import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 import org.openmarkov.plugin.service.PluginLoaderIF;

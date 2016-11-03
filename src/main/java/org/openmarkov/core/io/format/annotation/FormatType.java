@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target (ElementType.TYPE)
-public @interface FormatTypeProbModelXML {
+public @interface FormatType {
     /**
      * Gets the name of the class
      * @return The name of the format

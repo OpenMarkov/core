@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
 /**
  * This class is the manager of the format annotations. Detects the plugins with FormatType 
  * annotations.
- * @see FormatTypeProbModelXML
+ * @see FormatType
  * @author mpalacios
  * @author carmenyago -adapted the manager to different versions of ProbModelXML
  *
@@ -86,7 +86,7 @@ public class FormatManager
         
 		for(Class<?> plugin : findAllFormatPlugins ())
 		{
-		    FormatTypeProbModelXML lAnnotation = plugin.getAnnotation (FormatTypeProbModelXML.class);
+		    FormatType lAnnotation = plugin.getAnnotation (FormatType.class);
 		   
             if(lAnnotation.role().equals(roleReader))
             {
@@ -155,7 +155,7 @@ public class FormatManager
 	    PluginLoader pluginsLoader = new PluginLoader ();
 		try
 		{
-			FilterIF filter = org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy (FormatTypeProbModelXML.class);
+			FilterIF filter = org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy (FormatType.class);
 			return pluginsLoader.loadAllPlugins (filter);          
 		}
 		catch (Exception e) {}
@@ -336,7 +336,7 @@ public class FormatManager
 		HashMap<String, String> writers = new HashMap<>();
 		for (String extension : writerClasses.keySet ()) {
 	       	for (String version: writerClasses.get(extension).keySet()) {
-        		FormatTypeProbModelXML lAnnotation = writerClasses.get(extension).get(version).getAnnotation (FormatTypeProbModelXML.class);
+        		FormatType lAnnotation = writerClasses.get(extension).get(version).getAnnotation (FormatType.class);
         		writers.put (lAnnotation.description(), lAnnotation.extension());
         	}
 		}
@@ -376,8 +376,8 @@ public class FormatManager
         HashMap<String, String> readers = new HashMap<>();
         for (String extension : readerClasses.keySet ()) {
         	for (String version: readerClasses.get(extension).keySet()) {
-        		FormatTypeProbModelXML lAnnotation = readerClasses.get(extension).get
-        				(version).getAnnotation (FormatTypeProbModelXML.class);
+        		FormatType lAnnotation = readerClasses.get(extension).get
+        				(version).getAnnotation (FormatType.class);
         		String description=lAnnotation.description();
         		int indexDot;
         		if ((indexDot=description.indexOf('.'))>-1){

@@ -23,6 +23,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * @author marias
@@ -251,6 +252,10 @@ public abstract class Potential
             InferenceOptions inferenceOptions)
             throws NonProjectablePotentialException, WrongCriterionException {
         return tableProject(evidenceCase, inferenceOptions, new ArrayList<TablePotential>());
+    }
+
+    public Potential project(EvidenceCase evidenceCase) throws WrongCriterionException, NonProjectablePotentialException {
+        throw new NotImplementedException();
     }
 
 //    /** @return isUtility <code>boolean</code> */

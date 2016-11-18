@@ -7,7 +7,9 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @PotentialType(name = "Exact")
@@ -44,6 +46,17 @@ public class ExactDistrPotential extends Potential {
         projectedPotentials.get(0).setCriterion(getChildVariable().getDecisionCriterion());
         projectedPotentials.get(0).setPotentialRole(PotentialRole.UTIL_2);
         return projectedPotentials;
+    }
+
+    @Override
+    public ExactDistrPotential project(EvidenceCase evidenceCase) throws WrongCriterionException, NonProjectablePotentialException {
+        List<TablePotential> projectedPotentials = tablePotential.tableProject(evidenceCase, null);;
+        List<Variable> newVariables = new ArrayList<>();
+        newVariables.add(variables.get(0));
+        newVariables.addAll(projectedPotentials.get(0).getVariables());
+        ExactDistrPotential exactDistrPotential = new ExactDistrPotential(newVariables, PotentialRole.UNSPECIFIED);
+        exactDistrPotential.setTablePotential(projectedPotentials.get(0));
+        return exactDistrPotential;
     }
 
     @Override

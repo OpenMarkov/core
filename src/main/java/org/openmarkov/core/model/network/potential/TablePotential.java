@@ -312,6 +312,11 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         return newProjectedPotentials;
     }
 
+    @Override
+    public TablePotential project(EvidenceCase evidenceCase) throws NonProjectablePotentialException, WrongCriterionException {
+        return tableProject(evidenceCase, null).get(0);
+    }
+
     private void setUncertainTableToNullIfNullValues() {
         boolean allNull;
         if (uncertainValues != null) {

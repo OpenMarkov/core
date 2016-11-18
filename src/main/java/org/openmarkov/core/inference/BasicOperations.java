@@ -14,6 +14,8 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
+import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
+import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.*;
 
@@ -280,23 +282,10 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
         List<List<Variable>> partialOrder;
 
         // Get decisions (only) in elimination order
-        int numDecisions = idCopy.getNumNodes(NodeType.DECISION);
-        Stack<Variable> decisions = new Stack<>();
-        do {
-            List<Node> nodes = idCopy.getNodes();
-            for (Node node : nodes) {
-                if (idCopy.getNumChildren(node) == 0) {
-                    if (node.getNodeType() == NodeType.DECISION) {
-                        decisions.push(node.getVariable());
-                        numDecisions--;
-                    }
-                    idCopy.removeNode(node);
-                }
-            }
-        } while (numDecisions > 0);
+        Stack<Variable> decisions = getSequenceOfDecisions(idCopy);
 
         // Create elimination order adding chance nodes
-        partialOrder = new ArrayList<>(numDecisions * 2 + 1);
+        partialOrder = new ArrayList<>();
         List<Node> chanceNodes = probNet.getNodes(NodeType.CHANCE);
         HashSet<Variable> chanceVariables = new HashSet<>();
         for (Node chanceNode : chanceNodes) {
@@ -307,7 +296,16 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
             Node decisionNode = probNet.getNode(decision);
             // Get nodes of the decision parents
             List<Node> parentDecisionNodes = new ArrayList<>();
-            for (Node parent : probNet.getParents(decisionNode)) {
+            List<Node> parentsCandidates;
+            if (probNet.getNetworkType()!=DecisionAnalysisNetworkType.getUniqueInstance()){
+            	parentsCandidates = probNet.getParents(decisionNode);            	
+            }
+            else{
+            	//TODO Manolo> We are going to infer the set of candidates by using DAN semantics, as it different to influence diagrams
+            	parentsCandidates = probNet.getParents(decisionNode);
+            	
+            }            
+			for (Node parent : parentsCandidates) {
                 if (parent.getNodeType() != NodeType.DECISION) {
                     if (chanceVariables.contains(parent.getVariable())) {
                         parentDecisionNodes.add(parent);
@@ -336,6 +334,24 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
         }
         return partialOrder;
     }
+
+	private static Stack<Variable> getSequenceOfDecisions(ProbNet idCopy) {
+		int numDecisions = idCopy.getNumNodes(NodeType.DECISION);
+        Stack<Variable> decisions = new Stack<>();
+        do {
+            List<Node> nodes = idCopy.getNodes();
+            for (Node node : nodes) {
+                if (idCopy.getNumChildren(node) == 0) {
+                    if (node.getNodeType() == NodeType.DECISION) {
+                        decisions.push(node.getVariable());
+                        numDecisions--;
+                    }
+                    idCopy.removeNode(node);
+                }
+            }
+        } while (numDecisions > 0);
+		return decisions;
+	}
 
 
     public static List<Variable> getAnAdmissibleOrderOfDecisions(ProbNet probNet){

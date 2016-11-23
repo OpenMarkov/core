@@ -23,6 +23,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * @author marias
@@ -30,8 +31,7 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
  * @version 1.0
  * @since OpenMarkov 1.0
  */
-public abstract class Potential
-{
+public abstract class Potential {
     // Constants
     /** Maximum size of a String used in toString() */
     protected static final int            STRING_MAX_LENGTH = 150;
@@ -76,16 +76,6 @@ public abstract class Potential
         this.role = role;
     }
     
-//    /**
-//     * @param variables <code>List</code> of <code>Variable</code>s.
-//     * @param utilityVariable
-//     */
-//    public Potential (Variable utilityVariable, List<Variable> variables)
-//    {
-//        this(variables, PotentialRole.UTILITY);
-//        this.utilityVariable = utilityVariable;
-//    }
-
     /**
      * TODO - Remove this constructor, replace with a copy method
      * Copy constructor for potential
@@ -248,15 +238,10 @@ public abstract class Potential
         return tableProject(evidenceCase, inferenceOptions, new ArrayList<TablePotential>());
     }
 
-    public Potential project(EvidenceCase evidenceCase) throws WrongCriterionException, NonProjectablePotentialException {
+    public Potential project(EvidenceCase evidenceCase) 
+    		throws WrongCriterionException, NonProjectablePotentialException {
         throw new NotImplementedException();
     }
-
-//    /** @return isUtility <code>boolean</code> */
-//    public boolean isUtility ()
-//    {
-//        return role == PotentialRole.UTILITY;
-//    }
 
     /** @return hasCriterion <code>boolean</code>
      * Whether the potential has a criterion. Only the potentials that are in a Markov network

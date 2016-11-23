@@ -23,7 +23,6 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * @author marias
@@ -42,11 +41,6 @@ public abstract class Potential
      * @frozen
      */
     protected List<Variable>       variables;
-//    /**
-//     * Utility variable associated to the <code>Node</code> that contains
-//     * this potential.
-//     */
-//    protected Variable             utilityVariable;
 
     /**
      * Decision criterion. It is used only during inference. In edition,

@@ -9,13 +9,13 @@ package org.openmarkov.core.inference;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
-import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.*;
 
@@ -291,8 +291,11 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
         for (Node chanceNode : chanceNodes) {
             chanceVariables.add(chanceNode.getVariable());
         }
-        while (!decisions.empty()) {
-            Variable decision = decisions.pop();
+        List<Variable> decisionsList = new ArrayList<>(decisions);
+        Collections.reverse(decisionsList);
+        
+        for (int i=0; i<decisionsList.size(); i++) {
+            Variable decision = decisionsList.get(i);
             Node decisionNode = probNet.getNode(decision);
             // Get nodes of the decision parents
             List<Node> parentDecisionNodes = new ArrayList<>();
@@ -301,9 +304,8 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
             	parentsCandidates = probNet.getParents(decisionNode);            	
             }
             else{
-            	//TODO Manolo> We are going to infer the set of candidates by using DAN semantics, as it different to influence diagrams
-            	parentsCandidates = probNet.getParents(decisionNode);
-            	
+            	parentsCandidates = (i==0)? ProbNetOperations.getAlwaysObservedVariables(probNet):
+            		getVariablesRevealedByDecision(decisionsList.get(i-1),probNet);            	         	
             }            
 			for (Node parent : parentsCandidates) {
                 if (parent.getNodeType() != NodeType.DECISION) {
@@ -334,6 +336,25 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
         }
         return partialOrder;
     }
+
+	/**
+	 * @param variable
+	 * @param probNet
+	 * @return The list of variables revealed by a decision in a DAN, but not revealed by any previous decision
+	 */
+	private static List<Node> getVariablesRevealedByDecision(Variable variable,
+			ProbNet probNet) {
+		Node decNode = probNet.getNode(variable);
+		List<Node> revealed = new ArrayList<>();
+		List<Node> children = probNet.getChildren(decNode);		
+		for (Node child:children){
+			Link<Node> link = probNet.getLink(decNode,child,true);
+			if (link.getRevealingStates().toArray().length == variable.getStates().length){
+				revealed.add(child);
+			}			
+		}
+		return revealed;
+	}
 
 	private static Stack<Variable> getSequenceOfDecisions(ProbNet idCopy) {
 		int numDecisions = idCopy.getNumNodes(NodeType.DECISION);

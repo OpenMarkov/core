@@ -15,9 +15,10 @@ import java.io.InputStream;
 
 public interface ProbNetReader {
 
-	/** @param netName = path + network name + extension. <code>String</code>
-	 * @return A <code>ProbNetInfo</code> or <code>null</code> */
-	ProbNetInfo loadProbNet(String netName) throws ParserException;
-
-	ProbNetInfo loadProbNet(InputStream file, String netName) throws ParserException;
+	/** 
+	 * @param netName = path + network name + extension. <code>String</code>
+	 * @param inputStream. <code>java.io#InputStream</code>
+	 * @return A <code>ProbNetInfo</code> or <code>null</code> 
+	 * */
+    public ProbNetInfo loadProbNetInfo(String netName, InputStream ...inputStream) throws ParserException;
 }

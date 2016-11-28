@@ -14,6 +14,10 @@ import java.util.List;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 
+/**
+ * This class is a container of a <code>ProbNet</code> and a list of <code>EvidenceCase</code>.
+ * @author Manuel Arias
+ */
 public class ProbNetInfo {
     private ProbNet probNet;
     private List<EvidenceCase> evidence;

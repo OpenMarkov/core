@@ -518,10 +518,6 @@ public class ProbNetOperationsTest {
 		// Call method
 		ProbNet pruned = ProbNetOperations.getPruned(probNetAsia, variablesOfInterest, evidence);
 
-		// Test
-//		for(Variable variable : pruned.getVariables()) {
-//			System.out.println(variable);
-//		}
 		assertNotNull(pruned.getVariable(strTuberculosis));
 	}
 	
@@ -583,8 +579,7 @@ public class ProbNetOperationsTest {
 		//Repeat the test, because the behaviour of method getPruned is non-deterministic
 	for (int i=1;i<100;i++){
 		network = BNFactory.createBN_Asia();
-		System.out.println("Iteration " + i);
-		
+
 		Variable variableD = InferenceAlgorithmBNTest.getVariableAndAssertNotNull(network,"D"); 
 		Variable variableTOrC = InferenceAlgorithmBNTest.getVariableAndAssertNotNull(network,"TOrC");
 		Variable variableT = InferenceAlgorithmBNTest.getVariableAndAssertNotNull(network,"T");
@@ -593,16 +588,7 @@ public class ProbNetOperationsTest {
 		variablesOfEvidence = new HashSet<>();
 		variablesOfEvidence.add(variableTOrC);
 		variablesOfEvidence.add(variableT);
-		System.out.print("Variables of interest: ");
-		for (Variable variable : variablesOfInterest) {
-			System.out.print(variable);
-		}
-		System.out.println();
-		System.out.print("Evidence: ");
-		for (Variable variable : variablesOfEvidence) {
-			System.out.print(variable);
-		}
-		System.out.println();
+
 		intermediate = ProbNetOperations.removeBarrenNodes(network,variablesOfInterest,variablesOfEvidence);
 		//Nodes shouldn't appear
 		assertTrue(intermediate.containsVariable("A"));
@@ -615,16 +601,6 @@ public class ProbNetOperationsTest {
 		assertTrue(intermediate.containsVariable("B"));
 		assertTrue(intermediate.containsVariable("D"));
 
-		System.out.print("Variables of interest: ");
-		for (Variable variable : variablesOfInterest) {
-			System.out.print(variable);
-		}
-		System.out.println();
-		System.out.print("Evidence: ");
-		for (Variable variable : variablesOfEvidence) {
-			System.out.print(variable);
-		}
-		System.out.println();
 		outputNetwork = ProbNetOperations.removeUnreachableNodes(intermediate,variablesOfInterest,variablesOfEvidence);
 		
 		//Nodes shouldn't appear

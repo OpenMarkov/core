@@ -16,9 +16,6 @@ build/*
 release.properties
 
 #Eclipse
-.settings/*.**
-.classpath
-.project
 
 #IntellIJ IDEA
 *.iml

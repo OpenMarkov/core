@@ -54,7 +54,12 @@ public class UtilityOperationsTest {
 		double trapezoidalRule = UtilityOperations.applyTrapezoidalRule(values, 1);
 
 		Assert.assertEquals((leftRiemannSum+rightRiemannSum)/2.0, trapezoidalRule, Math.pow(10,-3));
-
+		double asd = 0;
+		try {
+			asd = UtilityOperations.applyCompositeSimpsonsOneThirdRule(values, 1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static ProbNet getProbNet4Test () {

@@ -120,5 +120,26 @@ public class UtilityOperations {
 		return summatory;
 	}
 
+	/**
+	 * Half-cycle correction: Composite Simpson’s 1/3rd Rule defined in Elbasha 2016 (is the same than the life-table method)
+	 * This correction requires that the total number of subintervals or time horizon to be even.
+	 * @param values Array of values where each value represents the value of the cycle defined by the index in the array
+	 * @param lenghtOfCycle Number of cycles in a year (For example, with monthly cycles, n = 12)
+	 * @return result of applying the Composite Simpson’s 1/3rd Rule
+	 */
+	public static double applyCompositeSimpsonsOneThirdRule (double [] values, int lenghtOfCycle) throws Exception {
+		if ((values.length*lenghtOfCycle)%2 == 0 && (values.length*lenghtOfCycle) > 1) {
+			throw new Exception("The total number of subintervals or time horizon is not even.");
+		}
+		double[] newValues = new double[values.length];
+		double summatory = 0;
+		int numberOfCycles = values.length/lenghtOfCycle;
+		for (int k = 1; k < numberOfCycles; k += 2) {
+			newValues[k] = (1.0/(3*lenghtOfCycle))*(values[k-1]+4*values[k]+values[k+1]);
+			summatory += newValues[k];
+		}
+		return summatory;
+	}
+
 
 }

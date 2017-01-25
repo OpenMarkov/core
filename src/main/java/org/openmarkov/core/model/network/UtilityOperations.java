@@ -64,4 +64,61 @@ public class UtilityOperations {
 			}
 		}
 	}
+
+	/**
+	 * Left Riemann sum defined in Elbasha 2016
+	 * @param values Array of values where each value represents the value of the cycle defined by the index in the array
+	 * @param lenghtOfCycle Number of cycles in a year (For example, with monthly cycles, n = 12)
+	 * @return result of applying the Left Riemann sum
+	 */
+	public static double applyLeftRiemannSum (double [] values, int lenghtOfCycle) {
+		double[] newValues = new double[values.length];
+		double summatory = 0;
+		int numberOfCycles = values.length/lenghtOfCycle;
+		for (int k = 1; k < numberOfCycles; k++) {
+			newValues[k] = values[k-1];
+			summatory += newValues[k];
+		}
+
+		summatory = (1.0/lenghtOfCycle)*summatory;
+		return summatory;
+	}
+
+	/**
+	 * Right Riemann sum defined in Elbasha 2016
+	 * @param values Array of values where each value represents the value of the cycle defined by the index in the array
+	 * @param lenghtOfCycle Number of cycles in a year (For example, with monthly cycles, n = 12)
+	 * @return result of applying the Right Riemann sum
+	 */
+	public static double applyRightRiemannSum (double [] values, int lenghtOfCycle) {
+		double[] newValues = new double[values.length];
+		double summatory = 0;
+		int numberOfCycles = values.length/lenghtOfCycle;
+		for (int k = 1; k < numberOfCycles; k++) {
+			newValues[k] = values[k];
+			summatory += values[k];
+		}
+
+		summatory = (1.0/lenghtOfCycle)*summatory;
+		return summatory;
+	}
+
+	/**
+	 * Half-cycle correction: Trapezoidal rule defined in Elbasha 2016 (is the same than the life-table method)
+	 * @param values Array of values where each value represents the value of the cycle defined by the index in the array
+	 * @param lenghtOfCycle Number of cycles in a year (For example, with monthly cycles, n = 12)
+	 * @return result of applying the trapezoidal rule
+	 */
+	public static double applyTrapezoidalRule (double [] values, int lenghtOfCycle) {
+		double[] newValues = new double[values.length];
+		double summatory = 0;
+		int numberOfCycles = values.length/lenghtOfCycle;
+		for (int k = 1; k < numberOfCycles; k++) {
+			newValues[k] = (1.0/(2*lenghtOfCycle))*(values[k-1]+values[k]);
+			summatory += newValues[k];
+		}
+		return summatory;
+	}
+
+
 }

@@ -5,7 +5,10 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
+import junit.framework.Assert;
+import org.junit.Test;
 import org.openmarkov.core.inference.MulticriteriaOptions.Type;
 import org.openmarkov.core.model.network.Criterion.CECriterion;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
@@ -41,6 +44,18 @@ public class UtilityOperationsTest {
 		}
 		
 	}*/
+
+	@Test
+	public void applyRiemannSumAndTrapezoidalRuleTest () {
+		Random r = new Random();
+		double [] values = new double[] {r.nextDouble(),r.nextDouble(),r.nextDouble(),r.nextDouble(),r.nextDouble(),r.nextDouble(),r.nextDouble()};
+		double leftRiemannSum = UtilityOperations.applyLeftRiemannSum(values,1 );
+		double rightRiemannSum = UtilityOperations.applyRightRiemannSum(values,1 );
+		double trapezoidalRule = UtilityOperations.applyTrapezoidalRule(values, 1);
+
+		Assert.assertEquals((leftRiemannSum+rightRiemannSum)/2.0, trapezoidalRule, Math.pow(10,-3));
+
+	}
 	
 	public static ProbNet getProbNet4Test () {
 		  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());

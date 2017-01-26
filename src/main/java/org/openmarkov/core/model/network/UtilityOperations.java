@@ -121,14 +121,14 @@ public class UtilityOperations {
 	}
 
 	/**
-	 * Half-cycle correction: Composite Simpson’s 1/3rd Rule defined in Elbasha 2016 (is the same than the life-table method)
+	 * Half-cycle correction: Composite Simpson’s 1/3rd Rule defined in Elbasha 2016
 	 * This correction requires that the total number of subintervals or time horizon to be even.
 	 * @param values Array of values where each value represents the value of the cycle defined by the index in the array
 	 * @param lenghtOfCycle Number of cycles in a year (For example, with monthly cycles, n = 12)
 	 * @return result of applying the Composite Simpson’s 1/3rd Rule
 	 */
 	public static double applyCompositeSimpsonsOneThirdRule (double [] values, int lenghtOfCycle) throws Exception {
-		if ((values.length*lenghtOfCycle)%2 == 0 && (values.length*lenghtOfCycle) > 1) {
+		if ((values.length*lenghtOfCycle)%2 == 0 || (values.length*lenghtOfCycle) <= 1) {
 			throw new Exception("The total number of subintervals or time horizon is not even.");
 		}
 		double[] newValues = new double[values.length];
@@ -141,5 +141,25 @@ public class UtilityOperations {
 		return summatory;
 	}
 
+	/**
+	 * Half-cycle correction: Composite Simpson’s 3/8th Rule defined in Elbasha 2016
+	 * This correction requires that the total number of subintervals is multiple of three.
+	 * @param values Array of values where each value represents the value of the cycle defined by the index in the array
+	 * @param lenghtOfCycle Number of cycles in a year (For example, with monthly cycles, n = 12)
+	 * @return result of applying the Composite Simpson’s 3/8th Rule
+	 */
+	public static double applyCompositeSimpsonsThreeEighthsRule (double [] values, int lenghtOfCycle) throws Exception {
+		if ((values.length*lenghtOfCycle -1)%3 != 0) {
+			throw new Exception("The total number of subintervals or time horizon is not multiple of three.");
+		}
+		double[] newValues = new double[values.length];
+		double summatory = 0;
+		int numberOfCycles = values.length/lenghtOfCycle;
+		for (int k = 0; k < numberOfCycles-3; k += 3) {
+			newValues[k] = (3.0/(8*lenghtOfCycle))*(values[k]+3*values[k+1]+3*values[k+2]+values[k+3]);
+			summatory += newValues[k];
+		}
+		return summatory;
+	}
 
 }

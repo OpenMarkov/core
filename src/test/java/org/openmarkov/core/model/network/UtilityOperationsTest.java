@@ -61,6 +61,52 @@ public class UtilityOperationsTest {
 			e.printStackTrace();
 		}
 	}
+
+	@Test
+	/**
+	 * Test passed with other calculators: f(x) = (1/18)(x+5)(x+1)(x-4); a = 0; b = 50; n = 50.
+	 * Web for Riemann's Summs, Trapezoidal Rule and Simpson's One Third Rule: https://www.desmos.com/calculator/gdn6ldu1mw
+	 * Web for Simpson's Rules (both): http://www.atozmath.com/CONM/NumeInte.aspx
+	 */
+	public void applyRiemannsTrapezoidalAndSimpsonsRulesTest () {
+		double delta = Math.pow(10, -6);
+		int numberOfCycles = 54;
+		int numberOfSubintervalsPerCycle = 1;
+		int numberOfTotalSubintervals = numberOfCycles*numberOfSubintervalsPerCycle;
+		// We add one more subinterval for the 0 slice
+		double [] values = new double[numberOfTotalSubintervals+1];
+		for (int i = 0; i <= numberOfTotalSubintervals; i++) {
+			int cycleNumber = i/numberOfSubintervalsPerCycle;
+			int subInterval = i%numberOfSubintervalsPerCycle;
+			double x = i/numberOfSubintervalsPerCycle;
+			values[i] = (1.0/18.0)*(x+5)*(x+1)*(x-4);
+		}
+		double leftRiemannSum = UtilityOperations.applyLeftRiemannSum(values, numberOfSubintervalsPerCycle);
+		Assert.assertEquals(leftRiemannSum, 117865, delta);
+		double rightRiemannSum = UtilityOperations.applyRightRiemannSum(values, numberOfSubintervalsPerCycle);
+		Assert.assertEquals(rightRiemannSum, 126880, delta);
+		double trapezoidalRule = UtilityOperations.applyTrapezoidalRule(values, numberOfSubintervalsPerCycle);
+		Assert.assertEquals(trapezoidalRule, 122372.5, delta);
+		double compositeSimpsonsOneThirdRule = 0;
+		try {
+			compositeSimpsonsOneThirdRule = UtilityOperations.applyCompositeSimpsonsOneThirdRule(values, numberOfSubintervalsPerCycle);
+			Assert.assertEquals(compositeSimpsonsOneThirdRule, 122331, delta);
+		} catch (Exception e) {
+			Assert.assertFalse(true);
+		}
+		double compositeSimpsonsThreeEighthsRule = 0;
+		try {
+			compositeSimpsonsThreeEighthsRule = UtilityOperations.applyCompositeSimpsonsThreeEighthsRule(values, numberOfSubintervalsPerCycle);
+			Assert.assertEquals(compositeSimpsonsThreeEighthsRule, 122331, delta);
+		} catch (ArrayIndexOutOfBoundsException ex) {
+			System.out.println(ex);
+			Assert.assertFalse(true);
+		} catch (Exception e) {
+			System.out.println(e);
+			Assert.assertFalse(true);
+		}
+		double a = compositeSimpsonsOneThirdRule + compositeSimpsonsThreeEighthsRule;
+	}
 	
 	public static ProbNet getProbNet4Test () {
 		  ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());

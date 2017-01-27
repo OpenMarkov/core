@@ -10,7 +10,6 @@
 package org.openmarkov.core.io.format.annotation;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.plugin.PluginLoader;
@@ -308,23 +306,23 @@ public class FormatManager
         return reader;
 	} 
 	
-	/**
-	 * Gets the extension of the file given by fileName
-	 * @param fileName 
-	 * 			- the name of the file
-	 * @return the extension of fileName
-	 */
-	private static String getFileExtension(String fileName) {
-
-		String fileExtension = null;
-		int i = fileName.lastIndexOf('.');
-		if ((i > 0) && (i < (fileName.length() - 1))) {
-			fileExtension = fileName.substring(i + 1).toLowerCase();
-		}
-
-		return fileExtension;
-
-	}
+//	/**
+//	 * Gets the extension of the file given by fileName
+//	 * @param fileName 
+//	 * 			- the name of the file
+//	 * @return the extension of fileName
+//	 */
+//	private static String getFileExtension(String fileName) {
+//
+//		String fileExtension = null;
+//		int i = fileName.lastIndexOf('.');
+//		if ((i > 0) && (i < (fileName.length() - 1))) {
+//			fileExtension = fileName.substring(i + 1).toLowerCase();
+//		}
+//
+//		return fileExtension;
+//
+//	}
 	
 //CMI
 	/**

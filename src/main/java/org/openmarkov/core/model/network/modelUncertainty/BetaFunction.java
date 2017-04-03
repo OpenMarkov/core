@@ -36,6 +36,24 @@ public class BetaFunction extends ProbDensFunction {
         	this.dirichletForSampling = betaFunction.dirichletForSampling;
         }
     }
+    
+    
+
+    //CMI
+    //For Univariate
+    /**
+     * @param parameters
+     *           - parameters[1]= alpha and parameters[0] = beta
+     * @throws IllegalArgumentException
+     *              - thrown if the alpha or beta <0
+     */
+    @Override
+    public  void verifyParameters(double[] parameters){
+    	if (!((parameters[0]>0) && (parameters[1]>0))){
+    		throw new IllegalArgumentException("Wrong parameters" + this.getClass().getName());
+    	}
+    }
+    //CMF
 
     @Override
     public void setParameters(double[] params) {

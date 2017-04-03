@@ -38,6 +38,22 @@ public class NormalFunction extends ProbDensFunction {
         mu = args[0];
         sigma = args[1];
     }
+    
+  //CMI
+    //For Univariate
+    /**
+     * @param parameters
+     *           - parameters[1]= mu and parameters[0] = sigma^2
+     * @throws IllegalArgumentException
+     *              - thrown if sigma<0
+     */
+    @Override
+    public  void verifyParameters(double[] parameters){
+    	if (!(parameters[0]>0)){
+    		throw new IllegalArgumentException("Wrong parameters" + this.getClass().getName());
+    	}
+    }
+    //CMF
 
     @Override
     public boolean verifyParametersDomain(boolean isChanceVariable) {

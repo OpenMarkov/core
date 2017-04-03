@@ -20,7 +20,8 @@ public class ExactFunction extends ProbDensFunction
     public ExactFunction ()
     {
     }
-
+    
+    
     public ExactFunction (double nu)
     {
         this.nu = nu;
@@ -37,6 +38,13 @@ public class ExactFunction extends ProbDensFunction
         nu = params[0];
     }
 
+    //CMI
+    //For Univariate
+    @Override
+    public void verifyParameters (double[] parameters) throws IllegalArgumentException{
+    	//Parameters are always ok 
+    }
+    //CMF
     @Override
     public boolean verifyParametersDomain (boolean isChanceVariable)
     {

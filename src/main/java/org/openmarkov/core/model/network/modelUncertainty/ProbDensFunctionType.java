@@ -18,6 +18,10 @@ import java.lang.annotation.Target;
 @Target (ElementType.TYPE)
 public @interface ProbDensFunctionType {
     String name ();
+    //CMI
+    //For Univariate
+    String univariateName() default "default";
+    //CMF
     boolean isValidForProbabilities () default true;
     boolean isValidForNumeric () default true;
     String[] parameters ();

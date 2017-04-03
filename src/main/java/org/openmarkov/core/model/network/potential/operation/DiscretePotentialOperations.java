@@ -29,6 +29,7 @@ import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 
 /**
  * This class defines a set of common operations over discrete potentials (
@@ -1761,6 +1762,64 @@ public final class DiscretePotentialOperations {
         return newPotential;
     }
 
+
+    //CMI
+    //For Univariate
+    /**
+     * Copy the UnivariateDistrPotential received to another UnivariateDistrPotential with the same variables
+     * but with the order received in <code>otherVariables</code>
+     * 
+     * @param potential
+     *            <code>UnivariateDistrPotential</code>
+     * @param orderVariables
+     *            <code>ArrayList</code> of <code>Variable</code>
+     * @return The <code>UnivariateDistrPotential</code> generated
+     * @argCondition <code>otherVariables</code> are the same variables than the
+     *               variables of <code>potential</code>
+     */
+    public static UnivariateDistrPotential reorder(UnivariateDistrPotential potential, List<Variable> orderVariables) {
+    	UnivariateDistrPotential  newPotential= new UnivariateDistrPotential(orderVariables, potential.getProbDensFunctionClass(),
+                potential.getPotentialRole());
+    	TablePotential p =potential.getDistributionTable();
+    	List<Variable> ov=orderVariables.subList(1, orderVariables.size());
+    	ov.add(0, p.getVariable(0));
+    	List<Variable> v = newPotential.getDistributionTable().getVariables();
+    	TablePotential newDistributionTable= reorder(potential.getDistributionTable(),ov);
+    	newPotential.setDistributionTable(newDistributionTable);
+    	return newPotential;
+    }
+    //CMF
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /**
      * Copy the potential received to another potential with the same variables
      * but with changes in the order of states in one of the variables

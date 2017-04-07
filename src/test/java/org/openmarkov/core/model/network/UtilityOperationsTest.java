@@ -64,7 +64,7 @@ public class UtilityOperationsTest {
 
 	@Test
 	/**
-	 * Test passed with other calculators: f(x) = (1/18)(x+5)(x+1)(x-4); a = 0; b = 50; n = 50.
+	 * Test passed with other calculators: f(x) = (1/18)(x+5)(x+1)(x-4); a = 0; b = 54; n = 54.
 	 * Web for Riemann's Summs, Trapezoidal Rule and Simpson's One Third Rule: https://www.desmos.com/calculator/gdn6ldu1mw
 	 * Web for Simpson's Rules (both): http://www.atozmath.com/CONM/NumeInte.aspx
 	 */

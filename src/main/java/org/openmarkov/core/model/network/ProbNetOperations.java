@@ -45,8 +45,9 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * @author marias
  */
 public class ProbNetOperations {
-
-    // Methods
+	
+	
+	    // Methods
     /**
      * Performs prune operation in these steps:
      * <ol>
@@ -813,47 +814,51 @@ public class ProbNetOperations {
      * @param probNet
      * @return
      */
-    public static boolean hasOrderAsymmetry(ProbNet probNet)
-    {
-        List<Node> parentlessDecisions = getParentlessDecisions(probNet);
-        if(parentlessDecisions.size() == 1)
-        {
-            List<Node> decisionNodes = probNet.getNodes (NodeType.DECISION);
-            while(parentlessDecisions.size() == 1)
-            {
-                decisionNodes.remove(parentlessDecisions.get(0));
-                parentlessDecisions.clear();
-                for (Node decisionNode : decisionNodes)
-                {
-                    boolean hasParentDecisions = false;
-                    Stack<Node> parentNodes = new Stack<> ();
-                    parentNodes.push (decisionNode);
-                    while (!hasParentDecisions && !parentNodes.isEmpty ())
-                    {
-                        Node node = parentNodes.pop ();
-                        List<Node> parents = node.getParents ();
-                        int i=0;
-                        while (i < parents.size() && !hasParentDecisions)
-                        {
-                            Node parentNode = parents.get(i++);
-                            boolean isDecision = parentNode.getNodeType () == NodeType.DECISION;
-                            if(!isDecision || decisionNodes.contains(parentNode))
-                            {
-                                hasParentDecisions |= isDecision;
-                                parentNodes.push (parentNode);
-                            }
-                        }
-                    }
-                    if (!hasParentDecisions)
-                    {
-                        parentlessDecisions.add (decisionNode);
-                    }
-                }
-            }
-        }
-        return parentlessDecisions.size() > 1;
-    }
+	public static boolean hasOrderAsymmetry(ProbNet probNet) {
+		return hasOrderAsymmetry(probNet, null);
+	}
 
+	public static boolean hasOrderAsymmetry(ProbNet probNet,List<Variable> evidentialNodes) {
+		List<Node> parentlessDecisions = getParentlessDecisions(probNet);
+		if (parentlessDecisions.size() == 1) {
+			List<Node> decisionNodes = probNet.getNodes(NodeType.DECISION);
+			while (parentlessDecisions.size() == 1) {
+				decisionNodes.remove(parentlessDecisions.get(0));
+				parentlessDecisions.clear();
+				for (Node decisionNode : decisionNodes) {
+					boolean hasParentDecisions = false;
+					Stack<Node> parentNodes = new Stack<>();
+					parentNodes.push(decisionNode);
+					while (!hasParentDecisions && !parentNodes.isEmpty()) {
+						Node node = parentNodes.pop();
+						List<Node> parents = node.getParents();
+						int i = 0;
+						while (i < parents.size() && !hasParentDecisions) {
+							Node parentNode = parents.get(i++);
+							boolean isDecision = parentNode.getNodeType() == NodeType.DECISION;
+							if (!isDecision
+									|| decisionNodes.contains(parentNode)) {
+								hasParentDecisions |= isDecision;
+								parentNodes.push(parentNode);
+							}
+						}
+					}
+					if (!hasParentDecisions) {
+						parentlessDecisions.add(decisionNode);
+					}
+				}
+			}
+		}
+		if (evidentialNodes != null) {
+			for (Variable variable : evidentialNodes) {
+				parentlessDecisions.remove(probNet.getNode(variable));
+			}
+		}
+
+		return parentlessDecisions.size() > 1;
+	}
+	
+	
     public static List<Node> getNeverObservedVariables (ProbNet probNet)
     {
         List<Node> neverObservedVariables = new ArrayList<> ();

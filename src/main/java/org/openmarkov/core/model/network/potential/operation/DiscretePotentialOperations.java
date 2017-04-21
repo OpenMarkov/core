@@ -2112,7 +2112,13 @@ public final class DiscretePotentialOperations {
     * @param decisionVariable <code>Variable</code>
     * @param potentials <code>List</code> of <code>TablePotential</code>
     * @param sdagInterventions
-    * @return A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
+    * @return A <code>List</code> of <code>TablePotential</code>, with these, some of them optional, potentials:
+    * <ol>
+    * <li>if there are probability potentials in <code>potentials</code>, a join probability potential.
+    * <li>if there are interventions or the utility is different than 0 in the sum of the utility potentials of 
+    * <code>potentials</code>, that sum of utility potentials.
+    * <li>a policy potential.
+    * </ol>
     */
     public static List<TablePotential> maxOutVariable(Variable decisionVariable, 
     		Collection<TablePotential> potentials, boolean sdagInterventions) {

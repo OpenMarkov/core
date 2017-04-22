@@ -613,7 +613,9 @@ public class Intervention extends TreeADDPotential {
 				}
 
 				content = content + i + " [label=\"" + strNodes + "\",shape="
-						+ toStringShapeForGraphviz(net, skNode.topVariable) + "];\n";
+						+ toStringShapeForGraphviz(net, skNode.topVariable) + ",fillcolor="+
+						toStringColorShapeForGraphviz(net, skNode.topVariable)+
+						",style=filled];\n";
 			}
 			i = i + 1;
 		}
@@ -721,6 +723,41 @@ public class Intervention extends TreeADDPotential {
 			}
 		} else {
 			string = "decision";
+		}
+			
+		return string;
+	}
+	
+	
+	private String toStringColorShapeForGraphviz(ProbNet net,Variable topVariable) {
+		String string = null;
+		String colorDecision = "lightblue";
+		String colorChance = "yellow";
+		
+		if (net != null) {
+			Node node;
+			try {
+				node = net.getNode(topVariable.getName());
+			} catch (NodeNotFoundException e) {
+				node = null;
+			}
+			if (node != null) {
+				switch (node.getNodeType()) {
+				case DECISION:
+					string = colorDecision;
+					break;
+				case CHANCE:
+					string = colorChance;
+					break;
+				default:
+					break;
+				}
+			}
+			else {
+				string = colorDecision;
+			}
+		} else {
+			string = colorDecision;
 		}
 			
 		return string;

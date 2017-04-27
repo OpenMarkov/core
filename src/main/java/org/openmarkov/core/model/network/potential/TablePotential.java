@@ -220,6 +220,17 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         }
         return newPotential;
     }
+    
+    
+    private void copyValuesInterventionsAndUncertainValues(int position,TablePotential fromPotential,int fromPotentialPosition,boolean hasUncertainTable){
+    	values[position] = fromPotential.values[fromPotentialPosition];
+        if ((interventions!=null)&&(fromPotential.interventions!=null)){
+        	interventions[position] = fromPotential.interventions[fromPotentialPosition];
+        }
+        if (hasUncertainTable) {
+            uncertainValues[position] = fromPotential.uncertainValues[fromPotentialPosition];
+        }
+    }
 
     /**
      * @param evidenceCase
@@ -265,10 +276,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
                 }
             }
             if (numUnobservedVariables == 0) {// Projection = constant potential
-                projectedPotential.values[0] = values[firstPosition];
-                if (hasUncertainTable) {
-                    projectedPotential.uncertainValues[0] = uncertainValues[firstPosition];
-                }
+            	projectedPotential.copyValuesInterventionsAndUncertainValues(0,this,firstPosition,hasUncertainTable);
             } else { // Create projected potential
                      // Go trough this potential using accumulatedOffests
                 int[] accumulatedOffsets = projectedPotential.getAccumulatedOffsets(variables);
@@ -280,10 +288,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
                 }
                 // Copy configurations using the accumulated offsets algorithm
                 for (int projectedPosition = 0; projectedPosition < length - 1; projectedPosition++) {
-                    projectedPotential.values[projectedPosition] = values[firstPosition];
-                    if (hasUncertainTable) {
-                        projectedPotential.uncertainValues[projectedPosition] = uncertainValues[firstPosition];
-                    }
+                	projectedPotential.copyValuesInterventionsAndUncertainValues(projectedPosition,this,firstPosition,hasUncertainTable);
                     // find the next configuration and the index of the
                     // increased variable
                     int increasedVariable = 0;
@@ -299,10 +304,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
                     firstPosition += accumulatedOffsets[increasedVariable];
                 }
                 int lastPositionProjected = length - 1;
-                projectedPotential.values[lastPositionProjected] = values[firstPosition];
-                if (hasUncertainTable) {
-                    projectedPotential.uncertainValues[lastPositionProjected] = uncertainValues[firstPosition];
-                }
+                projectedPotential.copyValuesInterventionsAndUncertainValues(lastPositionProjected,this,firstPosition,hasUncertainTable);
             }
             // Common final part for constant and not constant potentials
             projectedPotential.setUncertainTableToNullIfNullValues();
@@ -311,6 +313,9 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         newProjectedPotentials.add(projectedPotential);
         return newProjectedPotentials;
     }
+    
+    
+    
 
     @Override
     public TablePotential project(EvidenceCase evidenceCase) throws NonProjectablePotentialException, WrongCriterionException {

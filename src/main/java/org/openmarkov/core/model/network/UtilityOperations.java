@@ -23,21 +23,21 @@ public class UtilityOperations {
 	 */
 	public static void transformToUnicriterion(ProbNet probNet) {
 		for (Node utilityNode : probNet.getNodes(NodeType.UTILITY)) {
-			if (utilityNode.getVariable().getDecisionCriterion() != null) {
+			Criterion decisionCriterion = utilityNode.getVariable().getDecisionCriterion();
+			if (decisionCriterion != null) {
 				// Get the actual criterion scale
-				double scale = utilityNode.getVariable().getDecisionCriterion().getUnicriteriaScale();
-				if (scale != 0) {
+				double scale = decisionCriterion.getUnicriteriaScale();
+				List<Potential> utilityPotentials = utilityNode.getPotentials();
+				if (!utilityPotentials.isEmpty() && scale != 0) {
 					// Transform the potential with the scale
-					Potential potential = utilityNode.getPotentials().get(0).deepCopy(probNet);
+					Potential potential = utilityPotentials.get(0).deepCopy(probNet);
 					potential.scalePotential(scale);
 					utilityNode.setPotential(potential);
 				} else {
 					// Remove the potential and the node
-					probNet.removePotentials(utilityNode.getPotentials());
+					probNet.removePotentials(utilityPotentials);
 					probNet.removeNode(utilityNode);
-
 				}
-
 			}
 		}
 	}

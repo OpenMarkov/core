@@ -22,6 +22,11 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 // TODO Documentar la clase
 public class Intervention extends TreeADDPotential {
+	
+	public Intervention(List<Variable> variables, Variable topVariable){
+		super(variables,topVariable,PotentialRole.UTIL_2);
+		//super(variables,topVariable,PotentialRole.INTERVENTION);
+	}
 
 	// Constructors
 	/**
@@ -29,7 +34,7 @@ public class Intervention extends TreeADDPotential {
 	 * @param topVariable
 	 */
 	public Intervention(Variable topVariable) {
-		super(null, topVariable, PotentialRole.INTERVENTION);
+		this(null, topVariable);		
 	}
 	
 	/**
@@ -41,7 +46,7 @@ public class Intervention extends TreeADDPotential {
 	 *  <code>List</code> of <code>Intervention</code>
 	 */
 	public Intervention(Variable topVariable, List<State> states, List<Intervention> interventions) {
-		super(null, topVariable, PotentialRole.INTERVENTION);
+		this(null, topVariable);
 		List<Intervention> distinctInterventions = new ArrayList<>();
 		Map<Intervention, Set<State>> correspondingStates = new HashMap<>();
 		int numInterventions = interventions.size();
@@ -85,7 +90,7 @@ public class Intervention extends TreeADDPotential {
 	 * @param states
 	 */
 	public Intervention(Variable topVariable, State... states) {
-		super(null, topVariable, PotentialRole.INTERVENTION);
+		this(null, topVariable);
 		List<State> branchStates = Arrays.asList(states);
 		addBranch(new TreeADDBranch(branchStates, topVariable, null));
 	}
@@ -96,7 +101,7 @@ public class Intervention extends TreeADDPotential {
 	 * @param states
 	 */
 	public Intervention(Variable topVariable, List<State> states) {
-		super(null, topVariable, PotentialRole.INTERVENTION);
+		this(null, topVariable);
 		List<State> branchStates = new ArrayList<>(states.size());
 		branchStates.addAll(states);
 		addBranch(new TreeADDBranch(branchStates, topVariable, null));
@@ -109,7 +114,7 @@ public class Intervention extends TreeADDPotential {
 	 * @param intervention
 	 */
 	public Intervention(Variable topVariable, List<State> states, Intervention intervention) {
-		super(null, topVariable, PotentialRole.INTERVENTION);
+		this(null, topVariable);
 		List<State> branchStates = new ArrayList<>(states.size());
 		branchStates.addAll(states);
 		addBranch(new TreeADDBranch(branchStates, topVariable, intervention, null));
@@ -122,7 +127,7 @@ public class Intervention extends TreeADDPotential {
 	 * @param interventions
 	 */
 	public Intervention(Variable topVariable, PartitionedInterval partitionedInterval, List<Intervention> interventions) {
-		super(null, topVariable, PotentialRole.INTERVENTION);
+		this(null, topVariable);
 		double[] limits = partitionedInterval.getLimits();
 		for (int i = 0; i < limits.length - 1; i++) {
 			addBranch(new TreeADDBranch(
@@ -685,7 +690,7 @@ public class Intervention extends TreeADDPotential {
 		return str;
 	}
 
-	private List<Intervention> getInterventionsChildren() {
+	public List<Intervention> getInterventionsChildren() {
 		
 		List<Intervention> list = new ArrayList<>();
 		if (branches!=null){

@@ -105,9 +105,9 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
             values = new double[tableSize];
             offsets = new int[0];
         }
-        if (role == PotentialRole.INTERVENTION) {
+        /*if (role == PotentialRole.INTERVENTION) {
         	interventions = new Intervention[tableSize];
-        }
+        }*/
     }
 
     /**

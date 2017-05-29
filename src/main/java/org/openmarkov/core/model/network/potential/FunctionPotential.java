@@ -27,7 +27,7 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
  * This class implements a function potential consisting of a GLMPotential 
  * with only one covariate with coefficient=1
  * @author carmenyago
- *
+ * @version 1.0 2016
  */
 @PotentialType(name = "Function")
 public class FunctionPotential extends GLMPotential {
@@ -38,6 +38,8 @@ public class FunctionPotential extends GLMPotential {
 	 */
 	public static final String DEFAULT_FUNCTION = "0";
 	
+ 
+		
 	/**
 	 * The coefficient
 	 */
@@ -53,19 +55,23 @@ public class FunctionPotential extends GLMPotential {
 	 * 			- list with the node variable and their parents
 	 * @param role
 	 */
-    public FunctionPotential(List<Variable> variables, PotentialRole role) {
+    public FunctionPotential( List<Variable> variables, PotentialRole role ) {
     	super(variables, role, new String[]{DEFAULT_FUNCTION}, new double[]{COEFFICIENT});
     }
+    
+    
     
     /**
 	 * Creates a Function potential with the function given by {@code function}
 	 * @param variables 
 	 * 			- list with the node variable and their parents
+	 * @param role
+	 *         - the role of the potential
 	 * @param function
-	 *          - potential function 
+	 *         - A string representing the function  
 	 * @param role
 	 */    
-        public FunctionPotential(List<Variable> variables, PotentialRole role, String function) {
+    public FunctionPotential( List<Variable> variables, PotentialRole role, String function ) {
     	super(variables, role, new String[]{function}, new double[]{COEFFICIENT});    
     }
     
@@ -75,13 +81,14 @@ public class FunctionPotential extends GLMPotential {
 	 *          - potential copied 
 	 * 
 	 */    
-    public FunctionPotential(FunctionPotential potential) {
+    public FunctionPotential( FunctionPotential potential ) {
         super(potential);
     }
     
      /**
      * Returns if an instance of a certain Potential type makes sense given the
      * variables and the potential role.
+     * UNCLEAR--> Should the parents be numeric
      * 
      * @param node
      *            . <code>Node</code>
@@ -91,8 +98,8 @@ public class FunctionPotential extends GLMPotential {
      *            . <code>PotentialRole</code>.
      */
    
-    public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        return role == PotentialRole.UNSPECIFIED || (!variables.isEmpty()
+    public static boolean validate( Node node, List<Variable> variables, PotentialRole role ) {
+        return  (!variables.isEmpty()
         		&& variables.get(0).getVariableType() == VariableType.NUMERIC);
     } 
     

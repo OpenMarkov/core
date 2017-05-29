@@ -71,7 +71,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      * Indicates the first configuration. In a new potential it is 0. In a
      * projected potential it may be different from 0.
      */
-    private int                      initialPosition = 0;
+    protected int                      initialPosition = 0;
     /**
      * Indicates the number of configurations in this potentials. Note that this
      * number can be less than <code>table.length</code> when the

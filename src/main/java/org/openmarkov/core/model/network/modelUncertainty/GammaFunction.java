@@ -47,6 +47,18 @@ public class GammaFunction extends GammaAbstract
         this.thetaAbstract = theta;
     }
 
+    /**
+     * 
+     */
+    public  void verifyParameters(double[] parameters) throws IllegalArgumentException {
+        if (!((parameters[0]>0) && (parameters[1]>0))){
+            throw new IllegalArgumentException("Parameters should be positive " + this.getClass().getName());
+        }
+    }
+    
+    
+    
+    
     @Override
     public boolean verifyParametersDomain (boolean isChanceVariable)
     {

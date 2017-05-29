@@ -7,6 +7,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -44,7 +45,11 @@ public class AugmentedTablePotential extends Potential{
 		this.augmentedTable = new AugmentedTable(augmentedTablePotential.getAugmentedTable());
 	}
 
-
+	public static boolean validate (Node node, List<Variable> variables, PotentialRole role)
+    {
+	    return(node.getVariable().getVariableType()==VariableType.FINITE_STATES);
+	           	        
+    }
 	public AugmentedTable getAugmentedTable() {
 		return augmentedTable;
 	}

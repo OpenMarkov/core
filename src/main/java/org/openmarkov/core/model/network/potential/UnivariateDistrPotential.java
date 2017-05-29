@@ -22,7 +22,23 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 @PotentialType(name = "UnivariateDistr")
 public class UnivariateDistrPotential extends Potential{
-	   protected TablePotential distributionTable;
+	   
+    
+    
+        protected AugmentedTable distributionTable;
+        
+        private static String INITIALIZATION_VALUE="1";
+        
+        /**
+         * finiteStateVariables contains the node variable (Numeric) and the finite-states parents
+         */
+        protected List<Variable> finiteStatesVariables;
+        
+        /**
+         * parameterStateVariables contains the numeric  parents
+         */        
+        protected List<Variable> parameterVariables; 
+        
 	    /** 
 	     * Represents the probability distribution of the values of the table. It is internally described as a finite-states
 	     * variable whose states are given by the parameters of the distribution
@@ -39,35 +55,45 @@ public class UnivariateDistrPotential extends Potential{
 	    
 	    /**
 	     * 
-	     * @param potentialVariables
+	     * @param variables
 	     * @param role
 	     */
 
-	    public UnivariateDistrPotential(List<Variable> potentialVariables, PotentialRole role ) {
-	        super(potentialVariables, role);
+	    public UnivariateDistrPotential(List<Variable> variables, PotentialRole role ) {
+	        super(variables, role);
 	        if(this.role == null) {
 	            this.role = PotentialRole.CONDITIONAL_PROBABILITY;
 	        }
+	        finiteStatesVariables =new ArrayList<Variable>();
+	        parameterVariables =new ArrayList<Variable>();
+	        	        
+	        for (Variable variable:variables.subList(1, variables.size())){
+	            if ( (variable.getVariableType()==VariableType.FINITE_STATES) ||
+	                (variable.getVariableType()==VariableType.DISCRETIZED)) 
+	            {
+	                finiteStatesVariables.add(variable);
+	            } else{
+	                parameterVariables.add(variable);
+	            }
+	        }
+        
 	        setProbDensFunctionClass(ExactFunction.class);
-	        setDistributionTable(potentialVariables, role);
+	        setDistributionTable();
 	        
 	    }
 
 	    /** 
 	     * Now I still do not use parameterization
-	     * @param potentialVariables
+	     * @param variables
 	     * @param name
 	     * @param parametrization
 	     * @param role
 	     */
-	    public UnivariateDistrPotential(List<Variable> potentialVariables, String name, String parametrization,  PotentialRole role ) throws InstantiationException {
-	        super(potentialVariables, role);
-	        if(this.role == null) {
-	            this.role = PotentialRole.CONDITIONAL_PROBABILITY;
-	        }
+	    public UnivariateDistrPotential(List<Variable> variables, String name, String parametrization,  PotentialRole role ) throws InstantiationException {
 	        
+	        this(variables, role );
 	        setProbDensFunctionClass(getProbDensFunction(name, parametrization));
-	        setDistributionTable(potentialVariables, role);
+	        setDistributionTable();
 	    }
 	    
 	    /**
@@ -76,13 +102,10 @@ public class UnivariateDistrPotential extends Potential{
 	     * @param probDensFunctionClass
 	     * @param role
 	     */
-	    public UnivariateDistrPotential(List<Variable> potentialVariables, Class<? extends ProbDensFunction> probDensFunctionClass, PotentialRole role ) {
-	        super(potentialVariables, role);
-	        if(this.role == null) {
-	            this.role = PotentialRole.CONDITIONAL_PROBABILITY;
-	        }
+	    public UnivariateDistrPotential(List<Variable> variables, Class<? extends ProbDensFunction> probDensFunctionClass, PotentialRole role ) {
+	        this(variables, role );
 	        setProbDensFunctionClass(probDensFunctionClass);
-	        setDistributionTable(potentialVariables, role);
+	        setDistributionTable();
 	    }
 
 	    /**
@@ -92,8 +115,11 @@ public class UnivariateDistrPotential extends Potential{
 	    public UnivariateDistrPotential(UnivariateDistrPotential potential) {
 	    	
 	    	super(potential);
+	    	finiteStatesVariables = potential.getFiniteStatesVariables();
+	    	parameterVariables= potential.getParameterVariables();
+	            
 	    	setProbDensFunctionClass(potential.getProbDensFunctionClass());
-	    	setDistributionTable((TablePotential)potential.getDistributionTable().copy());
+	    	setDistributionTable((AugmentedTable)(potential.getDistributionTable()).copy());
 	    	
 	    
 	    }  
@@ -212,6 +238,38 @@ public class UnivariateDistrPotential extends Potential{
 		}
 
 		/**
+         * @return the finiteStatesVariables
+         */
+        public List<Variable> getFiniteStatesVariables()
+        {
+            return finiteStatesVariables;
+        }
+
+        /**
+         * @param finiteStatesVariables the finiteStatesVariables to set
+         */
+        public void setFiniteStatesVariables( List<Variable> finiteStatesVariables )
+        {
+            this.finiteStatesVariables = finiteStatesVariables;
+        }
+
+        /**
+         * @return the parameterVariables
+         */
+        public List<Variable> getParameterVariables()
+        {
+            return parameterVariables;
+        }
+
+        /**
+         * @param parameterVariables the parameterVariables to set
+         */
+        public void setParameterVariables( List<Variable> parameterVariables )
+        {
+            this.parameterVariables = parameterVariables;
+        }
+
+        /**
 	     * 
 	     */
 	    protected void translateDistributionIntoPseudoVariable(String[] probDensFunctionParametersName){
@@ -232,22 +290,31 @@ public class UnivariateDistrPotential extends Potential{
 			this.pseudoVariableDistribution = pseudoVariableDistribution;
 		}
 
-		
-	    public TablePotential getDistributionTable() {
+		public AugmentedTable getAugmentedTable() {
+	        return distributionTable;
+	    }
+
+	    public AugmentedTable getDistributionTable() {
 			return distributionTable;
 		}
 
-		public void setDistributionTable(TablePotential tableDistr) {
+		public void setDistributionTable(AugmentedTable tableDistr) {
 			this.distributionTable = tableDistr;
 		}
 		
-		public void setDistributionTable(List<Variable> potentialVariables, PotentialRole role) {
-			List<Variable> vDistributionTable= new ArrayList<Variable>(potentialVariables);
-			if (variables.get(0).getVariableType()==VariableType.NUMERIC){
-				vDistributionTable.remove(0);
-			}       	          
-			vDistributionTable.add(0,pseudoVariableDistribution);
-			setDistributionTable(new TablePotential(vDistributionTable, role));
+		
+		public void setDistributionTable() {
+		    List<Variable> vDistributionTable= new ArrayList<Variable>(finiteStatesVariables);
+            vDistributionTable.add(0,pseudoVariableDistribution);
+            setDistributionTable(new AugmentedTable(vDistributionTable, role));
+            initializeAugmentedTable();
+		}
+		
+		protected void initializeAugmentedTable(){
+		    String[] functionValues= distributionTable.getFunctionValues();
+		    for (int i=0; i<functionValues.length; i++){
+		        functionValues[i]=INITIALIZATION_VALUE;
+		    }
 		}
 		
 		public void checkDistributionValues(double[] values) throws IllegalArgumentException{
@@ -275,18 +342,8 @@ public class UnivariateDistrPotential extends Potential{
 	     *            . <code>PotentialRole</code>.
 	     */
 	    public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-	        boolean suitable = true;
-	        if (!(node.getVariable().getVariableType()==VariableType.NUMERIC)){
-	        	suitable=false;
-	        }
+	        return(node.getVariable().getVariableType()==VariableType.NUMERIC);
 	       
-	        int i = 1;
-	        while (suitable && i < variables.size()) {
-	            suitable &= variables.get(i).getVariableType() == VariableType.FINITE_STATES
-	                    || variables.get(i).getVariableType() == VariableType.DISCRETIZED;
-	            ++i;
-	        }
-	        return suitable;
 	    }
 	    
 
@@ -351,15 +408,7 @@ public class UnivariateDistrPotential extends Potential{
 	        return getDistributionTable().getValues();
 	    }
 
-	   
-
-	    @Override
-	    public void setComment(String comment) {
-	        super.setComment(comment);
-	        this.getDistributionTable().setComment(comment);
-	    }
-
-	  
+	    	  
 	    @Override
 	    public String toString() {
 	        StringBuilder buffer = new StringBuilder ();

@@ -24,6 +24,8 @@ import org.openmarkov.core.inference.Choice;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.potential.AugmentedTable;
+import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -1778,17 +1780,94 @@ public final class DiscretePotentialOperations {
      *               variables of <code>potential</code>
      */
     public static UnivariateDistrPotential reorder(UnivariateDistrPotential potential, List<Variable> orderVariables) {
-    	UnivariateDistrPotential  newPotential= new UnivariateDistrPotential(orderVariables, potential.getProbDensFunctionClass(),
+        int size = orderVariables.size();
+    	//orderVariables has the order of the parents of the augmentedTable, so parameterVariables should be added
+        for (Variable parameterVariable:potential.getParameterVariables()){
+            orderVariables.add( parameterVariable);
+        }
+        UnivariateDistrPotential  newPotential= new UnivariateDistrPotential(orderVariables, potential.getProbDensFunctionClass(),
                 potential.getPotentialRole());
-    	TablePotential p =potential.getDistributionTable();
-    	List<Variable> ov=orderVariables.subList(1, orderVariables.size());
-    	ov.add(0, p.getVariable(0));
-    	List<Variable> v = newPotential.getDistributionTable().getVariables();
-    	TablePotential newDistributionTable= reorder(potential.getDistributionTable(),ov);
+    	orderVariables.remove( 0 );
+    	// I do use getVariable(0) for be compliant with the comparison in int[] accOffsets = potential.getAccumulatedOffsets(orderVariables);
+    	orderVariables.add( 0, potential.getAugmentedTable().getVariable( 0 ));
+    	AugmentedTable newDistributionTable= reorder(potential.getAugmentedTable(), orderVariables.subList( 0, size));
     	newPotential.setDistributionTable(newDistributionTable);
     	return newPotential;
     }
-    //CMF
+    
+
+    //For AugmentedTable
+    /**
+     * Copy the UnivariateDistrPotential received to another UnivariateDistrPotential with the same variables
+     * but with the order received in <code>otherVariables</code>
+     * 
+     * @param potential
+     *            <code>UnivariateDistrPotential</code>
+     * @param orderVariables
+     *            <code>ArrayList</code> of <code>Variable</code>
+     * @return The <code>UnivariateDistrPotential</code> generated
+     * @argCondition <code>otherVariables</code> are the same variables than the
+     *               variables of <code>potential</code>
+     */
+    public static AugmentedTablePotential reorder(AugmentedTablePotential potential, List<Variable> orderVariables) {
+        int size = orderVariables.size();
+        //orderVariables has the order of the parents of the augmentedTable, so parameterVariables should be added
+        for (Variable parameterVariable:potential.getParameterVariables()){
+            orderVariables.add( parameterVariable);
+        }
+        AugmentedTablePotential  newPotential= new AugmentedTablePotential(orderVariables, potential.getPotentialRole());
+        AugmentedTable newDistributionTable= reorder(potential.getAugmentedTable(),orderVariables.subList( 0, size));
+        newPotential.setAugmentedTable(newDistributionTable);
+        return newPotential;
+    }
+   
+    
+    
+    
+    /**
+     * Copy the potential received to another potential with the same variables
+     * but with the order received in <code>otherVariables</code>
+     * 
+     * @param potential
+     *            <code>TablePotential</code>
+     * @param orderVariables
+     *            <code>ArrayList</code> of <code>Variable</code>
+     * @return The <code>TablePotential</code> generated
+     * @argCondition <code>otherVariables</code> are the same variables than the
+     *               variables of <code>potential</code>
+     */
+    public static AugmentedTable reorder(AugmentedTable potential, List<Variable> orderVariables) {
+        boolean hasInterventions = false;
+        AugmentedTable newPotential = new AugmentedTable(orderVariables,  potential.getPotentialRole());
+        int[] accOffsets = potential.getAccumulatedOffsets(orderVariables);
+        int[] potentialPositions = new int[potential.getNumVariables()];
+        int[] potentialDimensions = potential.getDimensions();
+        String[] valuesOrigPotential = potential.getFunctionValues();
+        String[] valuesNewPotential = newPotential.getFunctionValues();
+
+        int copyTablePosition = 0;
+        int numVariables = orderVariables.size();
+        int incrementedVariable, i;
+        for (i = 0; i < valuesOrigPotential.length - 1; i++) {
+            valuesNewPotential[copyTablePosition] = valuesOrigPotential[i];
+
+            for (incrementedVariable = 0; incrementedVariable < numVariables; incrementedVariable++) {
+                potentialPositions[incrementedVariable]++;
+                if (potentialPositions[incrementedVariable] == potentialDimensions[incrementedVariable]) {
+                    potentialPositions[incrementedVariable] = 0;
+                } else {
+                    break;
+                }
+            }
+            copyTablePosition += accOffsets[incrementedVariable];
+        }
+        valuesNewPotential[copyTablePosition] = valuesOrigPotential[i];
+        newPotential.properties = potential.properties;
+        return newPotential;
+    }
+    
+    
+  //CMF
     
     
     
@@ -1798,25 +1877,7 @@ public final class DiscretePotentialOperations {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+     
     
     
     

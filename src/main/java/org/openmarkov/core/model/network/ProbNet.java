@@ -376,6 +376,31 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
         }
         return true;
     }
+    
+    /**
+     * @return <code>int</code>
+     */
+    public int getNumCriteria() {
+    	List<String> criterionNames = new ArrayList<String>(2);
+    	int numDistinctCriteria = 0;
+    	for (Potential potential : getPotentials()) {
+    		Criterion criterion = potential.getCriterion();
+    		if (criterion != null) {
+    			String potentialCriterionName = criterion.getCriterionName();
+    			int criteriaCount;
+    			// Looks for a criterion in the list of criteria
+    			for (criteriaCount = 0; criteriaCount < numDistinctCriteria &&  
+    							        potentialCriterionName != null &&  
+    							        !potentialCriterionName.equalsIgnoreCase(criterionNames.get(criteriaCount)); 
+    					criteriaCount++);
+    			if (criteriaCount == numDistinctCriteria) {
+    				criterionNames.add(potentialCriterionName);
+    				numDistinctCriteria++;
+    			}
+    		}
+    	}
+    	return numDistinctCriteria;
+    }
 
     public boolean thereAreTemporalNodes() {
         boolean thereAreTemporalNodes = false;

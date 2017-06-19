@@ -183,6 +183,7 @@ public abstract class Task {
 
     protected abstract List<PNConstraint> initializeAdditionalConstraints();
 
+    /** @return An <code>ArrayList</code> of <code>NetworkType</code> where the algorithm can be applied. */
     protected abstract List<NetworkType> initializeNetworkTypesApplicable();
 
     public boolean checkEvidenceConsistency() {return true;}

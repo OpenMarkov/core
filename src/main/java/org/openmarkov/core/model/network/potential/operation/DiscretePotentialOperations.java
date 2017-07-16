@@ -2080,11 +2080,14 @@ public final class DiscretePotentialOperations {
                     double sum = 0;
                     // inner iterations correspond to the chance variable to eliminate
                     for (int innerIteration = 0; innerIteration < chanceVariableSize; innerIteration++) {
-                        sum += conditionalProb.values[conditionalProbPotentialPosition]
-                                * inputUtilityPotential.values[inputUtilityPotentialPosition];
+                        double auxProb = conditionalProb.values[conditionalProbPotentialPosition];
+                        //This "if" is to ensure 0*(-Infinity) = 0
+                        if (auxProb>0){
+                        	sum += auxProb * inputUtilityPotential.values[inputUtilityPotentialPosition];
+                        }                    
                         if (thereAreInterventions) {
                             probabilities[innerIteration] =
-                                    conditionalProb.values[conditionalProbPotentialPosition];
+                                    auxProb;
                             interventions[innerIteration] =
                                     inputUtilityPotential.interventions[inputUtilityPotentialPosition];
                         }
@@ -2412,7 +2415,8 @@ public final class DiscretePotentialOperations {
     		Collection<TablePotential> probPotentials,
     		Collection<TablePotential> utilityPotentials) {
     	for (Potential potential : potentials) {
-    		if (potential.hasCriterion()) {
+    		if (potential.hasCriterion()||potential.getPotentialRole()==PotentialRole.UTIL_2) {
+    		//if (potential.hasCriterion()) {
     			utilityPotentials.add((TablePotential)potential);
     		} else {
     			probPotentials.add((TablePotential)potential);

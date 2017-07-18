@@ -544,7 +544,7 @@ public class TreeADDPotential extends Potential {
 		for (TreeADDBranch branch : branchPotentials.keySet()) {
 
 			// Get the criterion
-			if(branchPotentials.get(branch).hasCriterion()) {
+			if(branchPotentials.get(branch).isAdditive()) {
 				criterion = branchPotentials.get(branch).getCriterion();
 			}
 			potentials.add(branchPotentials.get(branch));

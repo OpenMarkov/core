@@ -574,7 +574,7 @@ public final class DiscretePotentialOperations {
     public static PotentialRole getRole(Collection<? extends Potential> potentials) {
         boolean atLeastOneUtility = false;
         for (Potential potential : potentials) {
-            atLeastOneUtility = atLeastOneUtility || potential.hasCriterion();
+            atLeastOneUtility = atLeastOneUtility || potential.isAdditive();
         }
         if (atLeastOneUtility) {
             return PotentialRole.UNSPECIFIED;
@@ -1785,7 +1785,7 @@ public final class DiscretePotentialOperations {
         if (hasInterventions){
         	intervNewPotential[copyTablePosition] = intervOrigPotential[i];
         }
-        if (potential.hasCriterion()) {
+        if (potential.isAdditive()) {
             newPotential.setCriterion(potential.getCriterion());
         }
         newPotential.properties = potential.properties;
@@ -1964,7 +1964,7 @@ public final class DiscretePotentialOperations {
                 copyUncertainValues[newIndex] = uncertainValues[i];
             }
         }
-        if (potential.hasCriterion()) {
+        if (potential.isAdditive()) {
             copyPotential.setCriterion(potential.getCriterion());
         }
         copyPotential.properties = potential.properties;
@@ -2012,7 +2012,7 @@ public final class DiscretePotentialOperations {
 	    		}
 				
 				result = new TablePotential(variablesFirst,potFirst.getPotentialRole(),newValues);
-				if (result.hasCriterion()){
+				if (result.isAdditive()){
 					result.setCriterion(potFirst.getCriterion());
 				}
     		}
@@ -2443,8 +2443,8 @@ public final class DiscretePotentialOperations {
     		Collection<TablePotential> probPotentials,
     		Collection<TablePotential> utilityPotentials) {
     	for (Potential potential : potentials) {
-    		if (potential.hasCriterion()||potential.getPotentialRole()==PotentialRole.UTIL_2) {
-    		//if (potential.hasCriterion()) {
+    		if (potential.isAdditive()||potential.getPotentialRole()==PotentialRole.UTIL_2) {
+    		//if (potential.isAdditive()) {
     			utilityPotentials.add((TablePotential)potential);
     		} else {
     			probPotentials.add((TablePotential)potential);

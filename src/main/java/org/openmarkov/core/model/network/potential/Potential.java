@@ -264,11 +264,11 @@ public abstract class Potential
 //        return role == PotentialRole.UTILITY;
 //    }
 
-    /** @return hasCriterion <code>boolean</code>
-     * Whether the potential has a criterion. Only the potentials that are in a Markov network
-     * and were associated to a utility node/variable in the original network have a criterion.
+    /** @return isAdditive <code>boolean</code>
+     * Whether the potential is additive in the inference. Only the potentials that are in a Markov network
+     * and were associated to a utility node/variable in the original network have a criterion and we must maximize them.
      * This characterization of "utility potentials" is relevant only during inference. */
-    public boolean hasCriterion()
+    public boolean isAdditive()
     {
         return criterion != null;
     }

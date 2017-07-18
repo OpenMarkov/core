@@ -9,18 +9,13 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.openmarkov.core.exception.DivideByZeroException;
 import org.openmarkov.core.exception.IllegalArgumentTypeException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.inference.Choice;
+import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
@@ -165,7 +160,6 @@ public final class DiscretePotentialOperations {
         }
         return new TablePotential(resultVariables, role, resultValues);
     }
-
 
     /**
      * @param tablePotentials <code>List</code> of <code>TablePotential</code>s.
@@ -334,6 +328,40 @@ public final class DiscretePotentialOperations {
 //        	newUtilityVariable.setDecisionCriterion(getCommonDecisionCriterion(tablePotentials));
 //        }
         return result;
+    }
+
+    /**
+     *
+     * @param utilityPotentials <code>List</code> of <code>TablePotential</code>s.
+     * @return A TablePotential for each different criterion
+     */
+    public static List<TablePotential> sumByCriterion(List<TablePotential> utilityPotentials) {
+        // create the set of criteria
+        Set<Criterion> criteria = new HashSet<>();
+        for (TablePotential potential : utilityPotentials) {
+            criteria.add(potential.getCriterion());
+        }
+
+        // create an empty list for each criterion
+        Map<Criterion, List<TablePotential>> potentialsByCriterion = new HashMap<>();
+        for (Criterion criterion : criteria) {
+            List<TablePotential> criterionList = new ArrayList<>();
+            potentialsByCriterion.put(criterion, criterionList);
+        }
+
+        // put each potential in its list
+        for (TablePotential potential : utilityPotentials) {
+            potentialsByCriterion.get(potential.getCriterion()).add(potential);
+        }
+
+        // sum the potentials for each criterion
+        List<TablePotential> utilityPotentialsByCriterion = new ArrayList<>(criteria.size());
+        for (Criterion criterion : criteria) {
+            TablePotential outputUtilityPotentialByCriterion = DiscretePotentialOperations.sum(potentialsByCriterion.get(criterion));
+            outputUtilityPotentialByCriterion.setCriterion(criterion);
+            utilityPotentialsByCriterion.add(outputUtilityPotentialByCriterion);
+        }
+        return utilityPotentialsByCriterion;
     }
 
 //	/**

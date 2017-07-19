@@ -783,6 +783,31 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
     }
 
     /**
+     * Get all the additive potentials
+     * @return All additive potentials. <code>List</code> of <code>Potential</code>
+     */
+    public List<Potential> getAdditivePotentials() {
+    	List<Node> nodes = getNodes();
+    	List<Potential> potentials = new ArrayList<>();
+    	for (Node node : nodes) {
+    		List<Potential> potentialsNode = node.getPotentials();
+    		for (Potential potential : potentialsNode) {
+    			if (null != potential && potential.isAdditive()) {
+    				potentials.add(potential);
+    			}
+    		}
+    	}
+    	if (constantPotentials != null) {
+    		for (Potential potential : constantPotentials) {
+    			if (null != potential && potential.isAdditive()) {
+    				potentials.add(potential);
+    			}
+    		}
+    	}
+    	return potentials;
+    }
+
+    /**
      * Gets all the probability potentials that contain the
      * <code>Variable</code> received. The potentials that can contain that
      * variable are in the node associated to the variable and its neighbors.

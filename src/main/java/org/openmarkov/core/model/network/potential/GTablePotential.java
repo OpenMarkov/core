@@ -28,9 +28,24 @@ public class GTablePotential<E> extends TablePotential {
     // Constructors
     /**
      * @param variables
+     */
+    public GTablePotential(List<Variable> variables)  {
+        super(variables, null); // <- Don't create a table of doubles
+        int numVariables = (variables != null)? variables.size () : 0; 
+        if (numVariables != 0) {
+            int sizeTable = dimensions[numVariables - 1] * 
+                offsets[numVariables - 1];
+                elementTable = new ArrayList<E>(sizeTable);
+        } else {// In this case the potential is a constant
+            elementTable =  new ArrayList<E>(1);
+        }
+    }
+    
+    /**
+     * @param variables
      * @param role
      */
-    public GTablePotential(List<Variable> variables, PotentialRole role)  {
+    public GTablePotential(List<Variable> variables, PotentialRole role)  {// TODO Remove this method
         super(variables, null); // <- Don't create a table of doubles
         int numVariables = (variables != null)? variables.size () : 0; 
         if (numVariables != 0) {

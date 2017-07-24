@@ -2236,7 +2236,7 @@ public final class DiscretePotentialOperations {
     	// initialize the output utility potential
     	List<Variable> outputUtilityVariables = inputUtilityPotential.getVariables();
     	outputUtilityVariables.remove(decisionVariable);
-    	TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables, PotentialRole.UTIL_2);
+    	TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables, PotentialRole.UNSPECIFIED);
     	outputUtilityPotential.interventions = new Intervention[outputUtilityPotential.values.length];
 
 
@@ -2443,8 +2443,7 @@ public final class DiscretePotentialOperations {
     		Collection<TablePotential> probPotentials,
     		Collection<TablePotential> utilityPotentials) {
     	for (Potential potential : potentials) {
-    		if (potential.isAdditive()||potential.getPotentialRole()==PotentialRole.UTIL_2) {
-    		//if (potential.isAdditive()) {
+    		if (potential.isAdditive()) {
     			utilityPotentials.add((TablePotential)potential);
     		} else {
     			probPotentials.add((TablePotential)potential);

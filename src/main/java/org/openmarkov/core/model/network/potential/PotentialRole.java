@@ -24,7 +24,8 @@ public enum PotentialRole {
 	LINK_RESTRICTION(5,"linkRestriction"),
 	UNSPECIFIED(6,"unspecified"), // TODO Remove 
 //	INTERVENTION(7,"intervention"),
-	UTIL_2(8,"utility_on_inference" );
+	//UTIL_2(8,"utility_on_inference" )
+	;
 	
 	private int type;
 	

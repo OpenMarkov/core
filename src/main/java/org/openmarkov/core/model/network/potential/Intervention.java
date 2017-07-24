@@ -24,7 +24,7 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 public class Intervention extends TreeADDPotential {
 	
 	public Intervention(List<Variable> variables, Variable topVariable){
-		super(variables,topVariable,PotentialRole.UTIL_2);
+		super(variables,topVariable,PotentialRole.UNSPECIFIED);
 		//super(variables,topVariable,PotentialRole.INTERVENTION);
 	}
 

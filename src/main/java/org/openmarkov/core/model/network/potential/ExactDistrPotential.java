@@ -44,7 +44,7 @@ public class ExactDistrPotential extends Potential {
         // get the projected TablePotential, which will be returned inside a list
         List<TablePotential> projectedPotentials = tablePotential.tableProject(evidenceCase, inferenceOptions);
         projectedPotentials.get(0).setCriterion(getChildVariable().getDecisionCriterion());
-        projectedPotentials.get(0).setPotentialRole(PotentialRole.UTIL_2);
+        projectedPotentials.get(0).setPotentialRole(PotentialRole.UNSPECIFIED);
         return projectedPotentials;
     }
 
@@ -64,7 +64,7 @@ public class ExactDistrPotential extends Potential {
         // get the projected TablePotential, which will be returned inside a list
         List<TablePotential> projectedPotentials = tablePotential.tableProject(evidenceCase, inferenceOptions, alreadyProjectedPotentials);
         projectedPotentials.get(0).setCriterion(getChildVariable().getDecisionCriterion());
-        projectedPotentials.get(0).setPotentialRole(PotentialRole.UTIL_2);
+        projectedPotentials.get(0).setPotentialRole(PotentialRole.UNSPECIFIED);
         return projectedPotentials;
     }
 

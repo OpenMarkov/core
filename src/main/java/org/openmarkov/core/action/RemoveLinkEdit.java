@@ -101,7 +101,8 @@ public class RemoveLinkEdit extends BaseLinkEdit {
 					for (Potential oldPotential : oldPotentials)
 					{
 						// Update potential
-						List<Variable> variables = oldPotential.getVariables ();
+						List<Variable> variables = new ArrayList<>();
+						variables.addAll(oldPotential.getVariables ());
 						variables.remove (node1.getVariable ());
 						Potential newPotential = new UniformPotential (variables,
 								oldPotential.getPotentialRole ());

@@ -3,8 +3,6 @@ package org.openmarkov.core.model.network.potential.operation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +14,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.NoLinkRestriction;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;;
 
 public class LinkRestrictionPotentialOperations {
 
@@ -60,7 +59,16 @@ public class LinkRestrictionPotentialOperations {
 
     public static List<int[]> getStateCombinationsWithLinkRestriction (Node node)
     {
-        TablePotential potential = (TablePotential) node.getPotentials ().get (0);
+        //CMI Issue #162
+        Potential p = node.getPotentials().get(0);
+        TablePotential potential;
+        if ( p instanceof ExactDistrPotential ) {
+            potential = (TablePotential) ((ExactDistrPotential)p).getTablePotential();
+        } else {
+            potential = (TablePotential) node.getPotentials ().get (0);
+        }
+        //TablePotential potential = (TablePotential) node.getPotentials ().get (0);
+        //CMF
         List<Variable> nodeVariables = potential.getVariables ();
         List<int[]> stateList = new ArrayList<>();
         List<Link<Node>> links = getParentLinksWithRestriction (node);

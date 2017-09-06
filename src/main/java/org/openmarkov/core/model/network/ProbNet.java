@@ -33,6 +33,7 @@ import org.openmarkov.core.model.network.constraint.OnlyOneAgent;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -855,7 +856,10 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
             for (Potential potential : potentialsNode) {
                 List<Variable> variables = potential.getVariables();
                 if (variables.contains(variable)
-                        && potential.getCriterion() != null) {
+                        // getUtilityPotentials in the inference / markov network
+                        && (potential.getCriterion() != null ||
+                        // getUtilityPotentials in the edition of the network
+                        (node.nodeType.equals(NodeType.UTILITY) && node.getVariable().getDecisionCriterion() != null))) {
                     potentialsVariable.add(potential);
                 }
             }

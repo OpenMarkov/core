@@ -1242,7 +1242,7 @@ public class ProbNet  extends Graph<Node> implements Cloneable{
      * @return variables corresponding to the received nodes.
      *         <code>List</code> of <code>Variable</code>
      */
-    public static List<Variable> getVariables(List<Node> nodes) {
+    public static List<Variable> getVariables(Collection<Node> nodes) {
         List<Variable> variables = null;
         if (nodes != null) {
         	variables = new ArrayList<>(nodes.size());

@@ -2,14 +2,19 @@ package org.openmarkov.core.dt;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Variable;
 
 public class DANDecisionTreeNode extends DecisionTreeNode {
 	
 	protected ProbNet dan;	
 
-	public DANDecisionTreeNode(Node node) {
+	public DANDecisionTreeNode(Node node,ProbNet network) {
 		super(node);
-		// TODO Auto-generated constructor stub
+		dan = network;
+	}
+	
+	public DANDecisionTreeNode(Variable variable,ProbNet network) {
+		this(network.getNode(variable),network);
 	}
 
 }

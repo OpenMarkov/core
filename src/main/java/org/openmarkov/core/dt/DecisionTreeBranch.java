@@ -146,7 +146,7 @@ public class DecisionTreeBranch implements DecisionTreeElement
      * Sets the child.
      * @param child the child to set.
      */
-    protected void setChild (DecisionTreeNode child)
+    public void setChild (DecisionTreeNode child)
     {
         this.child = child;
         child.setParent (this);

@@ -27,6 +27,7 @@ import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
+
 public class DecisionTreeBuilder
 {
     public static DecisionTreeElement buildDecisionTree (ProbNet probNet)
@@ -43,14 +44,22 @@ public class DecisionTreeBuilder
         }
         return root;
     }
+    
+    private static DecisionTreeElement buildDecisionTreeFromDAN (ProbNet originalProbNet, ProbNet probNet){
+    	DecisionTreeElement root = null;
+    	//TODO Uncomment next line when it is possible to invoke the constructor of DANDecisionTreeEvaluation from here.
+    	//root = new DANDecisionTreeEvaluation(probNet).getDecisionTree();
+    	return root;
+	}
 
     /**
+     * This is the method implemented by ibermejo
      * Builds a decision tree from a decision analysis network
      * @param probNet probNet
      * @param originalProbNet original probNet
      * @return decision tree
      */    
-    private static DecisionTreeElement buildDecisionTreeFromDAN (ProbNet originalProbNet, ProbNet probNet)
+    private static DecisionTreeElement oldBuildDecisionTreeFromDAN (ProbNet originalProbNet, ProbNet probNet)
     {
         DecisionTreeElement root = null;
         try{
@@ -288,7 +297,7 @@ public class DecisionTreeBuilder
      * @param probNet network
      * @return supervalue node
      */
-    private static Node getSuperValueNode (ProbNet probNet)
+    public static Node getSuperValueNode (ProbNet probNet)
     {
         Node svNode = null;
         // Look for leaves
@@ -352,7 +361,7 @@ public class DecisionTreeBuilder
      * Adds a utility tree at the tip of each leaf
      * @param svNode A super value node
      */
-    private static DecisionTreeNode addUtilityNodes (Node svNode)
+    public static DecisionTreeNode addUtilityNodes (Node svNode)
     {
         // Add utility nodes
         DecisionTreeNode svTreeNode = new DecisionTreeNode (svNode);
@@ -376,6 +385,8 @@ public class DecisionTreeBuilder
         return svTreeNode;
    }
     
+    
+       
     private static ProbNet instantiate(ProbNet probNet, Node node, State state, ProbNet originalProbNet)
     {
         ProbNet instantiatedNet = probNet.copy ();

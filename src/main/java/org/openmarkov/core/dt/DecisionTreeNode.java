@@ -28,9 +28,17 @@ public class DecisionTreeNode implements DecisionTreeElement
     private List<DecisionTreeElement> children            = null;
     private DecisionTreeElement       parent              = null;
     private double                    utility             = Double.NEGATIVE_INFINITY;
-    private double                    scenarioProbability = Double.NEGATIVE_INFINITY;
+    public void setUtility(double utility) {
+		this.utility = utility;
+	}
 
-    public DecisionTreeNode (Node node)
+	private double                    scenarioProbability = Double.NEGATIVE_INFINITY;
+
+    public void setScenarioProbability(double scenarioProbability) {
+		this.scenarioProbability = scenarioProbability;
+	}
+
+	public DecisionTreeNode (Node node)
     {
         this.variable = node.getVariable();
         this.nodeType = node.getNodeType();

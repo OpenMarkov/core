@@ -28,6 +28,7 @@ import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
 
+
 public class DecisionTreeBuilder
 {
     public static DecisionTreeElement buildDecisionTree (ProbNet probNet)
@@ -228,7 +229,7 @@ public class DecisionTreeBuilder
      * @param probNet influence diagram
      * @return decision tree
      */
-    private static DecisionTreeElement buildDecisionTreeFromID (ProbNet probNet)
+    public static DecisionTreeElement buildDecisionTreeFromID (ProbNet probNet)
     {
         ProbNet dtProbNet = probNet.copy ();
         Node svNode = getSuperValueNode (dtProbNet);

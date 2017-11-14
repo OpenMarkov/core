@@ -6,6 +6,16 @@ import org.openmarkov.core.model.network.Variable;
 
 public class DANDecisionTreeNode extends DecisionTreeNode {
 	
+	@Override
+	public double getUtility() {
+		return utility;
+	}
+
+	@Override
+	public double getScenarioProbability() {
+		return scenarioProbability;
+	}
+
 	protected ProbNet dan;	
 
 	public DANDecisionTreeNode(Node node,ProbNet network) {

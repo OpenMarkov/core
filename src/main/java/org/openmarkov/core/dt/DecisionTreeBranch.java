@@ -30,8 +30,16 @@ public class DecisionTreeBranch implements DecisionTreeElement
     private DecisionTreeNode parent;
     private DecisionTreeNode child;
     private ProbNet			 probNet;
-    private double           utility = Double.NEGATIVE_INFINITY; 
-    private double           scenarioProbability = Double.NEGATIVE_INFINITY; 
+    public void setUtility(double utility) {
+		this.utility = utility;
+	}
+
+	public void setScenarioProbability(double scenarioProbability) {
+		this.scenarioProbability = scenarioProbability;
+	}
+
+	protected double           utility = Double.NEGATIVE_INFINITY; 
+    protected double           scenarioProbability = Double.NEGATIVE_INFINITY; 
     private EvidenceCase     scenarioEvidence = null;
 
     public DecisionTreeBranch (ProbNet probNet,
@@ -57,16 +65,19 @@ public class DecisionTreeBranch implements DecisionTreeElement
     
     public double getUtility ()
     {
-        if(utility == Double.NEGATIVE_INFINITY)
+    	//TODO Manolo> I'm testing that utility is not calculated in the GUI, but it is taken from the evaluation
+        /*if(utility == Double.NEGATIVE_INFINITY)
         {
             utility = (child != null)? child.getUtility () : 0;
             if(parent != null && ((DecisionTreeNode)parent).getNodeType () == NodeType.CHANCE)
             {
                 utility *= getBranchProbability ();
             }
-        }
+        }*/
         return utility;
-    } 
+    }
+    
+    
     
     public double getBranchProbability ()
     {

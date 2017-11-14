@@ -27,12 +27,12 @@ public class DecisionTreeNode implements DecisionTreeElement
     private Potential                 potential            = null;
     private List<DecisionTreeElement> children            = null;
     private DecisionTreeElement       parent              = null;
-    private double                    utility             = Double.NEGATIVE_INFINITY;
+    protected double                    utility             = Double.NEGATIVE_INFINITY;
     public void setUtility(double utility) {
 		this.utility = utility;
 	}
 
-	private double                    scenarioProbability = Double.NEGATIVE_INFINITY;
+	protected double                    scenarioProbability = Double.NEGATIVE_INFINITY;
 
     public void setScenarioProbability(double scenarioProbability) {
 		this.scenarioProbability = scenarioProbability;
@@ -72,8 +72,8 @@ public class DecisionTreeNode implements DecisionTreeElement
     }
 
     public double getUtility ()
-    {
-        if(utility == Double.NEGATIVE_INFINITY)
+    {//TODO Manolo> I'm testing that utility is not calculated in the GUI, but it is taken from the evaluation
+     /*   if(utility == Double.NEGATIVE_INFINITY)
         {
             utility = 0;
             if (nodeType == NodeType.DECISION)
@@ -121,7 +121,7 @@ public class DecisionTreeNode implements DecisionTreeElement
                     utility = ((TablePotential)potential).getValue (getBranchStates());
                 }
             }
-        }
+        }*/
         return utility;
     }
 
@@ -147,7 +147,8 @@ public class DecisionTreeNode implements DecisionTreeElement
 
     public double getScenarioProbability()
     {
-        if(scenarioProbability == Double.NEGATIVE_INFINITY)
+    	//TODO Manolo> I'm testing that utility is not calculated in the GUI, but it is taken from the evaluation
+       /* if(scenarioProbability == Double.NEGATIVE_INFINITY)
         {
         	scenarioProbability = 0;
         	if(nodeType == NodeType.CHANCE)
@@ -160,7 +161,7 @@ public class DecisionTreeNode implements DecisionTreeElement
         	{
         		scenarioProbability = children.get(0).getScenarioProbability();
         	}
-        }
+        }*/
     	return scenarioProbability;
     }
     

@@ -24,7 +24,6 @@ public class DecisionTreeNode implements DecisionTreeElement
 {
     private Variable                  variable            = null;
     private NodeType                  nodeType            = null;
-    private Potential                 potential            = null;
     private List<DecisionTreeElement> children            = null;
     private DecisionTreeElement       parent              = null;
     protected double                    utility             = Double.NEGATIVE_INFINITY;
@@ -43,8 +42,6 @@ public class DecisionTreeNode implements DecisionTreeElement
         this.variable = node.getVariable();
         this.nodeType = node.getNodeType();
         List<Potential> potentials = node.getPotentials();
-        if(potentials != null && !potentials.isEmpty())
-        	this.potential = potentials.get(0);
         children = new ArrayList<> ();
     }
 

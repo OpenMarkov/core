@@ -30,8 +30,8 @@ public class DecisionTreeBranch implements DecisionTreeElement
     private DecisionTreeNode parent;
     private DecisionTreeNode child;
     private ProbNet			 probNet;
-    public void setUtility(double utility) {
-		this.utility = utility;
+    public void setUtility(double utilityParam) {
+		this.utility = utilityParam;
 	}
 
 	public void setScenarioProbability(double scenarioProbability) {

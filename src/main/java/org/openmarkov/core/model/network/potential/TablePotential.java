@@ -309,7 +309,6 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
             // Common final part for constant and not constant potentials
             projectedPotential.setUncertainTableToNullIfNullValues();
         }
-
         newProjectedPotentials.add(projectedPotential);
         return newProjectedPotentials;
     }

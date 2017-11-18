@@ -161,6 +161,8 @@ public class ExactDistrPotential extends Potential {
             }
             buffer.append("}");
         }
+        buffer.append("\n Role: "+this.getPotentialRole());
+        buffer.append("\n Criterion: "+((criterion==null)?"null":criterion.toString()));
         return buffer.toString ();
     }
 }

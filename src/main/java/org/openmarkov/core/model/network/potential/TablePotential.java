@@ -1117,9 +1117,11 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         StringBuilder buffer = new StringBuilder(super.toString());
         // Print configurations
         int valuesPosition = 0;
+        boolean openBrace = false;
         if (buffer.length() < STRING_MAX_LENGTH) {
             if (variables.size() > 0) {
                 buffer.append(" = {");
+                openBrace = true;
             } else {
                 buffer.append(" ");
             }
@@ -1133,9 +1135,13 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         if (values.length != 1) {
             if (valuesPosition != values.length || variables.size() == 0) {
                 buffer.append("...");
-            }
-            buffer.append("}");
+            }            
+        }    
+        if (openBrace){
+        	buffer.append("}");
         }
+        buffer.append("\n Role: "+this.getPotentialRole());
+        buffer.append("\n Criterion: "+((criterion==null)?"null":criterion.toString()));
         return buffer.toString();
     }
 

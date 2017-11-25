@@ -33,7 +33,7 @@ public class SumOutVariable extends Marginalization {
 		// Get probability and utility potentials
 		List<TablePotential> probPotentials = new ArrayList<>();
 		List<TablePotential> utilityPotentials = new ArrayList<>();
-		DiscretePotentialOperations.classifyProbAndUtilityPotentials(potentials, probPotentials, utilityPotentials);
+		classifyProbAndUtilityPotentials(potentials, probPotentials, utilityPotentials);
 		boolean thereIsUtility = utilityPotentials.size() != 0;
 		List<TablePotential> outputPotentials = new ArrayList<>();
 		TablePotential marginalProb;

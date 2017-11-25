@@ -300,7 +300,7 @@ public class Intervention extends TreeADDPotential {
 	 * @return Optimal intervention
 	 */
 	public static Intervention optimalInterventionTakingAllOptimal(Variable decisionVariable, 
-			double[] utilities, Intervention[] interventions, boolean coalescedInterventions) {
+			double[] utilities, Intervention[] interventions) {
 		State[] states = decisionVariable.getStates();
 		List<State> optimalStates = new ArrayList<>();
 		List<Intervention> optimalInterventions = new ArrayList<>();
@@ -320,17 +320,12 @@ public class Intervention extends TreeADDPotential {
 		}
 		
 		if (!areNullOptimalInterventions(optimalInterventions)){
-			intervention = (!coalescedInterventions)? new Intervention(decisionVariable, optimalStates,
-					optimalInterventions): new SDAGIntervention(decisionVariable,
-					optimalStates, optimalInterventions);
+			intervention = new Intervention(decisionVariable, optimalStates,optimalInterventions);
 		}
 		else{
-			intervention = (!coalescedInterventions)? new Intervention(decisionVariable, optimalStates): 
-				new SDAGIntervention(decisionVariable,optimalStates);
-			
+			intervention = new Intervention(decisionVariable, optimalStates);			
 		}
-    	return intervention;
-		
+    	return intervention;		
 	}
 	
 	private static boolean areNullOptimalInterventions(List<Intervention> interventions){

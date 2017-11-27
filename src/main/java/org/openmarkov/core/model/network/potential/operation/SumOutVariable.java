@@ -11,17 +11,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 public class SumOutVariable extends Marginalization {
 	
-	   /**
-     * @param chanceVariable <code>Variable</code>
-     * @param potentials <code>List</code> of <code>TablePotential</code>
-     * @return A <code>List</code> with two <code>TablePotential</code>,
-     * marginal probability and new utility in this order.
-     */
-    public SumOutVariable(Variable chanceVariable, 
-    		Collection<TablePotential> potentials) {
-    	this(chanceVariable,potentials,false);
-    }
-    
+	
     /**
      * @param chanceVariable <code>Variable</code>
      * @param potentials <code>List</code> of <code>TablePotential</code>
@@ -29,7 +19,7 @@ public class SumOutVariable extends Marginalization {
      * marginal probability and new utility in this order.
      */
     // TODO Documentar sdagInterventions o simplemente quitar parámetro si ya no se usan los SDAGs.
-    public SumOutVariable(Variable chanceVariable, Collection<TablePotential> potentials, boolean sdagInterventions) {
+    public SumOutVariable(Variable chanceVariable, Collection<TablePotential> potentials) {
 		// Get probability and utility potentials
 		List<TablePotential> probPotentials = new ArrayList<>();
 		List<TablePotential> utilityPotentials = new ArrayList<>();
@@ -124,8 +114,7 @@ public class SumOutVariable extends Marginalization {
 					outputUtilityPotential.values[outputUtilityPotentialPosition] = sum;
 					if (thereAreInterventions) {
 						outputUtilityPotential.interventions[outputUtilityPotentialPosition] = Intervention
-								.averageOfInterventions(chanceVariable, probabilities, interventions,
-										sdagInterventions);
+								.averageOfInterventions(chanceVariable, probabilities, interventions);
 					}
 
 					outputUtilityPotentialPosition++;

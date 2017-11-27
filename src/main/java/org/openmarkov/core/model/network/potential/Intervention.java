@@ -136,31 +136,25 @@ public class Intervention extends TreeADDPotential {
 		}
 	}
 	
-	/**
-	 * Creates an intervention from a set of interventions and probabilities.
-	 * @param chanceVariable <code>Variable</code>
-	 * @param probabilities <code>double[]</code>
-	 * @param interventions <code>Intervention[]</code>
-	 * @return A Intervention. <code>Intervention</code>
-	 */
-	public static Intervention averageOfInterventions(Variable chanceVariable, 
-			double[] probabilities, Intervention[] interventions) {
-		return Intervention.averageOfInterventions(chanceVariable, probabilities, interventions,false);
-	}
+	
 
 	/**
 	 * Creates an intervention from a set of interventions and probabilities.
-	 * @param chanceVariable <code>Variable</code>
-	 * @param probabilities <code>double[]</code>
-	 * @param interventions <code>Intervention[]</code>
-	 * @param coalescedInterventions <code>boolean</code>
+	 * 
+	 * @param chanceVariable
+	 *            <code>Variable</code>
+	 * @param probabilities
+	 *            <code>double[]</code>
+	 * @param interventions
+	 *            <code>Intervention[]</code>
 	 * @return A Intervention. <code>Intervention</code>
 	 */
-	public static Intervention averageOfInterventions(Variable chanceVariable, 
-			double[] probabilities, Intervention[] interventions, boolean coalescedInterventions) {
+	public static Intervention averageOfInterventions(Variable chanceVariable, double[] probabilities,
+			Intervention[] interventions) {
 		State[] states = chanceVariable.getStates();
-		
-		// Select interventions and states whose probability is greater than 0.0.
+
+		// Select interventions and states whose probability is greater than
+		// 0.0.
 		List<Intervention> selectedInterventions = new ArrayList<>();
 		List<State> selectedStates = new ArrayList<>();
 		for (int i = 0; i < probabilities.length; i++) {
@@ -169,31 +163,26 @@ public class Intervention extends TreeADDPotential {
 				selectedStates.add(states[i]);
 			}
 		}
-		
 		int numSelectedInterventions = selectedInterventions.size();
 		Intervention intervention;
 		if (numSelectedInterventions == 0) { // All probabilities == 0.0
 			intervention = null;
 		} else {
-			if (numSelectedInterventions == 1) { // Only one intervention with probability != 0.0
+			if (numSelectedInterventions == 1) { // Only one intervention with
+													// probability != 0.0
 				intervention = selectedInterventions.get(0);
 			} else { // More than one intervention with probability != 0.0
 				if (equalInterventions(selectedInterventions.toArray(new Intervention[numSelectedInterventions]))) {
-					intervention = selectedInterventions.get(0); // All interventions are equals
+					// All interventions are equals
+					intervention = selectedInterventions.get(0);
 				} else {
-					// TODO coalescedInterventions no está documentado.
-					//					intervention = (!coalescedInterventions)?
-					//							new Intervention(chanceVariable, selectedStates, selectedInterventions):
-					//								new SDAGIntervention(chanceVariable, selectedStates, selectedInterventions);
 					intervention = new Intervention(chanceVariable, selectedStates, selectedInterventions);
-
 				}
 			}
 		}
-		
 		return intervention;
 	}
-	
+
 	/**
 	 * Creates an intervention 
 	 * @param decisionVariable

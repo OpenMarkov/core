@@ -75,6 +75,7 @@ public final class DiscretePotentialOperations {
      * @param reorder Sorts or not the potentials prior to multiplication.
      *            <code>boolean</code>.
      * @return A <code>TablePotential</code> as result.
+     //TODO 
      */
     public static TablePotential multiply(List<TablePotential> tablePotentials, boolean reorder) {
         int numPotentials = tablePotentials.size();
@@ -86,6 +87,12 @@ public final class DiscretePotentialOperations {
                 return null;
             }
         }
+        //Find out if some potential has criterion. In that case, set that criterion in the resulting potential
+        
+		Criterion criterion = null;
+		for (int i = 0; i < tablePotentials.size() && criterion == null; i++) {
+			criterion = tablePotentials.get(i).getCriterion();
+		}      
 
         List<TablePotential> potentials = new ArrayList<>(tablePotentials);
 
@@ -173,7 +180,12 @@ public final class DiscretePotentialOperations {
 
             resultValues[resultPosition] = mulResult;
         }
-        return new TablePotential(resultVariables, role, resultValues);
+        
+		TablePotential resultPotential = new TablePotential(resultVariables, role, resultValues);
+		if (criterion != null) {
+			resultPotential.setCriterion(criterion);
+		}
+		return resultPotential;
     }
 
     /**

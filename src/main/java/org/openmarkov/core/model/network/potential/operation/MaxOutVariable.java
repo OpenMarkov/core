@@ -285,6 +285,9 @@ public class MaxOutVariable  {
 				// Store output utility potential
 				utility = outputUtility;
 			}
+			else {
+				utility = DiscretePotentialOperations.createZeroUtilityPotential(null);
+			}
 			
 			utility.setCriterion(inputUtility.getCriterion());
 

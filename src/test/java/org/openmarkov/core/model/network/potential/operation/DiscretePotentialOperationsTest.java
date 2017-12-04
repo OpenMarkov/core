@@ -884,7 +884,7 @@ public class DiscretePotentialOperationsTest {
 		}
 		List<Potential> potentials = perfectKnowledge.getPotentials(therapy);
 		List<TablePotential> tablePotentials = projectToTable(potentials, perfectKnowledge);
-		TablePotential utility = (new MaxOutVariable(therapy, tablePotentials)).getUtility();
+		TablePotential utility = (new MaxOutVariable(therapy, null, tablePotentials)).getUtility();
 
 		// Asserts
 		// Test utility potential

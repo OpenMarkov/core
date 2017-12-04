@@ -18,8 +18,7 @@ public class SumOutVariable extends Marginalization {
      * @return A <code>List</code> with two <code>TablePotential</code>,
      * marginal probability and new utility in this order.
      */
-    // TODO Documentar sdagInterventions o simplemente quitar parámetro si ya no se usan los SDAGs.
-    public SumOutVariable(Variable chanceVariable, Collection<TablePotential> potentials) {
+     public SumOutVariable(Variable chanceVariable, Collection<TablePotential> potentials) {
 		// Get probability and utility potentials
 		List<TablePotential> probPotentials = new ArrayList<>();
 		List<TablePotential> utilityPotentials = new ArrayList<>();

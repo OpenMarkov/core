@@ -16,6 +16,7 @@ import org.openmarkov.core.exception.IllegalArgumentTypeException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.inference.Choice;
 import org.openmarkov.core.model.network.Criterion;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
@@ -52,6 +53,20 @@ public final class DiscretePotentialOperations {
      */
     public static TablePotential multiply(List<TablePotential> tablePotentials) {
         return multiply(tablePotentials, true);
+    }
+    
+    /**
+     * @param tablePotentials
+     *            <code>ArrayList</code> of extends <code>Potential</code>.
+     * @return A <code>TablePotential</code> as result.
+     */
+    public static TablePotential multiply(TablePotential ...potentials) {
+    	List<TablePotential> potentialsToMultiply;
+    	potentialsToMultiply = new ArrayList<>();
+    	for (TablePotential potential:potentials) {
+    		potentialsToMultiply.add(potential);
+    	}
+        return multiply(potentialsToMultiply);
     }
 
     /**
@@ -333,7 +348,7 @@ public final class DiscretePotentialOperations {
     /**
      *
      * @param utilityPotentials <code>List</code> of <code>TablePotential</code>s.
-     * @return A TablePotential for each different criterion
+     * @return A TablePotential for each criterion
      */
     public static List<TablePotential> sumByCriterion(List<TablePotential> utilityPotentials) {
         // create the set of criteria
@@ -834,6 +849,7 @@ public final class DiscretePotentialOperations {
                 currentPositionUtil += accumulatedOffsetsUtil[increasedVariable];
             }
         }
+        resultPotential.setCriterion(utilityPotential.getCriterion());
         return resultPotential;
     }
 
@@ -2067,66 +2083,72 @@ public final class DiscretePotentialOperations {
      * @param inputPotential <code>TablePotential</code>
      * @return. A <code>TablePotential</code>
      */
-    public static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential) {
-    	List<Variable> inputPotentialVariables = inputPotential.getVariables();
-    	int numInputVariables = inputPotentialVariables.size();
+	public static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential) {
+		List<Variable> inputPotentialVariables = inputPotential.getVariables();
+		int numInputVariables = inputPotentialVariables.size();
+		TablePotential projectedPotential;
 
-    	// initialize the output potential
-    	List<Variable> projectedPotentialVariables = inputPotential.getVariables();
-    	projectedPotentialVariables.remove(variable);
-    	PotentialRole projectedPotentialRole = inputPotential.getPotentialRole() == 
-    			PotentialRole.CONDITIONAL_PROBABILITY ? PotentialRole.JOINT_PROBABILITY : 
-    				inputPotential.getPotentialRole();
-    	TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, projectedPotentialRole);
+		if (inputPotentialVariables.contains(variable)) {
 
-    	// in allVariables, the first variable is variable
-    	List<Variable> allVariables = new ArrayList<>(projectedPotentialVariables.size() + 1);
-    	allVariables.add(variable);
-    	allVariables.addAll(projectedPotentialVariables);
+			// initialize the output potential
+			List<Variable> projectedPotentialVariables = inputPotentialVariables;
+			projectedPotentialVariables.remove(variable);
+			projectedPotential = new TablePotential(projectedPotentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
 
-    	// constants for the iterations
-    	int variableSize = variable.getNumStates();
-    	int[] allVariablesDimensions = TablePotential.calculateDimensions(allVariables); 
-    	int[] accOffsetsInputPotential = TablePotential.getAccumulatedOffsets(
-    			allVariables, inputPotentialVariables);
-    	int[] accOffsetsProjectedPotential = TablePotential.getAccumulatedOffsets(
-    			allVariables, projectedPotentialVariables); 
+			// in allVariables, the first variable is variable
+			List<Variable> allVariables = new ArrayList<>();
+			allVariables.add(variable);
+			allVariables.addAll(projectedPotentialVariables);
 
-    	// auxiliary variables that may change in every iteration
-    	int[] allVariablesCoordinate = new int[numInputVariables];
-    	int inputPotentialPosition = 0;
-    	int projectedPotentialPosition = 0;
-    	int increasedVariable = 0;
+			// constants for the iterations
+			int variableSize = variable.getNumStates();
+			int[] allVariablesDimensions = TablePotential.calculateDimensions(allVariables);
+			int[] accOffsetsInputPotential = TablePotential.getAccumulatedOffsets(allVariables,
+					inputPotentialVariables);
+			int[] accOffsetsProjectedPotential = TablePotential.getAccumulatedOffsets(allVariables,
+					projectedPotentialVariables);
 
-    	// outer iterations correspond to the variables in the output potential
-    	int numOuterIterations = TablePotential.computeTableSize(projectedPotentialVariables);
-    	for (int outerIteration = 0; outerIteration < numOuterIterations; outerIteration++) {
-    		// inner iterations correspond to the variable to eliminate
-    		for (int innerIteration = 0; innerIteration < variableSize; innerIteration++) {
-    			projectedPotential.values[projectedPotentialPosition] = inputPotential.values[inputPotentialPosition];
+			// auxiliary variables that may change in every iteration
+			int[] allVariablesCoordinate = new int[numInputVariables];
+			int inputPotentialPosition = 0;
+			int projectedPotentialPosition = 0;
+			int increasedVariable = 0;
 
-    			if (!(outerIteration == numOuterIterations - 1 && innerIteration == variableSize - 1)) {
-    				// find the next configuration and the index of the increased variable
-    				increasedVariable = findNextConfigurationAndIndexIncreasedVariable(allVariablesDimensions,
-    						allVariablesCoordinate,increasedVariable);
+			// outer iterations correspond to the variables in the output
+			// potential
+			int numOuterIterations = TablePotential.computeTableSize(projectedPotentialVariables);
+			for (int outerIteration = 0; outerIteration < numOuterIterations; outerIteration++) {
+				// inner iterations correspond to the variable to eliminate
+				for (int innerIteration = 0; innerIteration < variableSize; innerIteration++) {
+					projectedPotential.values[projectedPotentialPosition] = inputPotential.values[inputPotentialPosition];
 
-    				// Update coordinates
-    				inputPotentialPosition +=
-    						accOffsetsInputPotential[increasedVariable];
-    				projectedPotentialPosition +=
-    						accOffsetsProjectedPotential[increasedVariable];
-    			}
-    		}
-    	} // end of the outer loop
+					if (!(outerIteration == numOuterIterations - 1 && innerIteration == variableSize - 1)) {
+						// find the next configuration and the index of the increased variable
+						increasedVariable = findNextConfigurationAndIndexIncreasedVariable(allVariablesDimensions,
+								allVariablesCoordinate, increasedVariable);
 
-    	// Do not return the probability potential if it depends on no variables and its value is 1
-    	boolean thereAreRelevantProbabilities = projectedPotential.getNumVariables() > 0 || !almostEqual(projectedPotential.values[0], 1.0);
+						// Update coordinates
+						inputPotentialPosition += accOffsetsInputPotential[increasedVariable];
+						projectedPotentialPosition += accOffsetsProjectedPotential[increasedVariable];
+					}
+				}
+			} // end of the outer loop
+		} else {
+			projectedPotential = (TablePotential) inputPotential.copy();
+		}
+		// TODO Manolo. Hacer que siempre devuelva un potencial, aunque sea la
+		// unidad
+		// TODO Este método está aún en pruebas tras la última refactorización. Ante cualquier duda, preguntar a Manolo.		
 
-    	return thereAreRelevantProbabilities ? projectedPotential : null;
-    }
-
-
-    
+		// Do not return the probability potential if it depends on no variables
+		// and its value is 1
+		/*
+		 * if (projectedPotential.getNumVariables() == 0 &&
+		 * almostEqual(projectedPotential.values[0], 1.0)) { projectedPotential
+		 * = DiscretePotentialOperations.createUnityProbabilityPotential(); }
+		 */
+		return projectedPotential;
+	}
 
 
     /** 
@@ -2138,5 +2160,26 @@ public final class DiscretePotentialOperations {
     public static boolean almostEqual(double a, double b) {
         return (Math.abs(b - a) <= maxRoundErrorAllowed * Math.abs(a));
     }
+
+	public static TablePotential createZeroUtilityPotential(ProbNet dan) {
+		TablePotential newPotential = createOneValuePotential(PotentialRole.UNSPECIFIED,0.0);
+		if (dan!=null){
+			newPotential.setCriterion(dan.getDecisionCriteria().get(0));
+		}
+		return newPotential;
+	}
+	
+	public static TablePotential createUnityProbabilityPotential() {
+		return createOneValuePotential(PotentialRole.CONDITIONAL_PROBABILITY,1.0);
+	}
+	
+	public static TablePotential createOneValuePotential(PotentialRole role,double value) {
+		TablePotential newUtilityPotential;
+		newUtilityPotential = new TablePotential(role);
+		double values[] = new double[1];
+		values[0] = value;
+		newUtilityPotential.setValues(values);
+		return newUtilityPotential;
+	}
 
 }

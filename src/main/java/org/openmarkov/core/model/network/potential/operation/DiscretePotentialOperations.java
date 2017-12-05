@@ -79,6 +79,7 @@ public final class DiscretePotentialOperations {
      */
     public static TablePotential multiply(List<TablePotential> tablePotentials, boolean reorder) {
         int numPotentials = tablePotentials.size();
+        
         // Special cases: one or zero potentials
         if (numPotentials < 2) {
             if (numPotentials == 1) {
@@ -87,12 +88,11 @@ public final class DiscretePotentialOperations {
                 return null;
             }
         }
-        //Find out if some potential has criterion. In that case, set that criterion in the resulting potential
-        
+        //Find out if some potential has criterion. In that case, set that criterion in the resulting potential        
 		Criterion criterion = null;
 		for (int i = 0; i < tablePotentials.size() && criterion == null; i++) {
 			criterion = tablePotentials.get(i).getCriterion();
-		}      
+		}			
 
         List<TablePotential> potentials = new ArrayList<>(tablePotentials);
 
@@ -143,14 +143,31 @@ public final class DiscretePotentialOperations {
 
         // Multiply
         int incrementedVariable = 0;
-        double mulResult;
+        
         int[] dimensions = TablePotential.calculateDimensions(resultVariables);
         int[] offsets = TablePotential.calculateOffsets(dimensions);
         int tableSize = numVariables > 0 ? dimensions[numVariables - 1] * offsets[numVariables - 1] : 1;
         double[] resultValues = new double[tableSize];
-
+        
+        TablePotential potentialWithInterventions = findPotentialWithInterventions(tablePotentials);
+		boolean thereAreInterventions = (potentialWithInterventions != null);
+		Intervention[] resultInterventions = null;	        
+        Intervention intervention = null;
+		Intervention[] inputInterventions = null;
+		if (thereAreInterventions) {
+			inputInterventions =  potentialWithInterventions.interventions;
+			resultInterventions = new Intervention[tableSize];
+			if (potentialWithInterventions.getVariables().size() == 0) {
+				// The interventions are in a constant potential
+				intervention = inputInterventions[0];
+			}
+		}
+        
+        int indexPotentialWithInterventions = potentials.indexOf(potentialWithInterventions);
+        
         for (int resultPosition = 0; resultPosition < tableSize; resultPosition++) {
-            mulResult = constantFactor;
+        	double mulResult = constantFactor;
+        	
 
             //increment the result coordinate and find out which variable is to be incremented
             for (int iVariable = 0; iVariable < resultCoordinate.length; iVariable++) {
@@ -169,24 +186,51 @@ public final class DiscretePotentialOperations {
                  */
                 resultCoordinate[iVariable] = 0;
             }
-
+            
+            
             // multiply
             for (int iPotential = 0; iPotential < numPotentials; iPotential++) {
                 // multiply the numbers
                 mulResult = mulResult * tables[iPotential][potentialsPositions[iPotential]];
+                //Obtain the intervention
+                if (thereAreInterventions && indexPotentialWithInterventions == iPotential) {
+                	intervention = inputInterventions[potentialsPositions[iPotential]];
+                }
                 // update the current position in each potential table
                 potentialsPositions[iPotential] += offsetAccumulate[iPotential][incrementedVariable];
             }
 
             resultValues[resultPosition] = mulResult;
+            if (thereAreInterventions) {
+            	resultInterventions[resultPosition] = intervention;
+            }
+            
         }
         
 		TablePotential resultPotential = new TablePotential(resultVariables, role, resultValues);
 		if (criterion != null) {
 			resultPotential.setCriterion(criterion);
 		}
+		if (thereAreInterventions) {
+			resultPotential.interventions = resultInterventions;
+		}
 		return resultPotential;
     }
+
+	private static TablePotential findPotentialWithInterventions(List<TablePotential> tablePotentials) {
+		TablePotential potentialWithInterventions = null;
+
+		// Find the potential with interventions
+		boolean found = false;
+		for (int i = 0; i < tablePotentials.size() && !found; i++) {
+			TablePotential auxPotential = tablePotentials.get(i);
+			if (auxPotential.interventions != null) {
+				potentialWithInterventions = auxPotential;
+				found = true;
+			}
+		}
+		return potentialWithInterventions;
+	}
 
     /**
      * @param tablePotentials <code>List</code> of <code>TablePotential</code>s.
@@ -241,10 +285,8 @@ public final class DiscretePotentialOperations {
         }
 
         // Gets the interventions if necessary
-        boolean thereAreInterventions = false;
-        for (int i = 0; i < numPotentials && !thereAreInterventions; i++) {
-        	thereAreInterventions = (potentials.get(i).interventions != null);
-        }
+        boolean thereAreInterventions = areThereInterventions(potentials);
+        
         Intervention[][] interventions = null;
         if (thereAreInterventions) {
         	interventions = new Intervention[numPotentials][];
@@ -356,6 +398,11 @@ public final class DiscretePotentialOperations {
 //        }
         return result;
     }
+    
+    private static boolean areThereInterventions(List<TablePotential> potentials) {    	
+    	return findPotentialWithInterventions(potentials)!=null;    	
+    }
+
 
     /**
      *

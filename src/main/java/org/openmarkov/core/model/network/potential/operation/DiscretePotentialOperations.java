@@ -13,9 +13,15 @@ import java.util.*;
 
 import org.openmarkov.core.exception.DivideByZeroException;
 import org.openmarkov.core.exception.IllegalArgumentTypeException;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.Choice;
 import org.openmarkov.core.model.network.Criterion;
+import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
@@ -2134,15 +2140,40 @@ public final class DiscretePotentialOperations {
     	return thereAreRelevantUtilities;
     }
 
-  
-
+    
     /** This method is used to remove a decision variable from a probability potential
      * that in fact does not depend on the decision variable
      * @param variable <code>Variable</code>
      * @param inputPotential <code>TablePotential</code>
      * @return. A <code>TablePotential</code>
      */
-	public static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential) {
+    public static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential) {
+    	TablePotential output = null;
+    	EvidenceCase evi = new EvidenceCase();
+    	try {
+			evi.addFinding(new Finding(variable,variable.getStates()[0]));
+		} catch (InvalidStateException | IncompatibleEvidenceException e) {
+			e.printStackTrace();
+		}
+    	try {
+			output = inputPotential.tableProject(evi,null).get(0);
+		} catch (NonProjectablePotentialException | WrongCriterionException e) {
+			e.printStackTrace();
+		}
+    	return output;
+    }
+    
+    
+    
+  
+/*
+    *//** This method is used to remove a decision variable from a probability potential
+     * that in fact does not depend on the decision variable
+     * @param variable <code>Variable</code>
+     * @param inputPotential <code>TablePotential</code>
+     * @return. A <code>TablePotential</code>
+     *//*
+	public static TablePotential oldProjectOutVariable(Variable variable, TablePotential inputPotential) {
 		List<Variable> inputPotentialVariables = inputPotential.getVariables();
 		int numInputVariables = inputPotentialVariables.size();
 		TablePotential projectedPotential;
@@ -2201,14 +2232,14 @@ public final class DiscretePotentialOperations {
 
 		// Do not return the probability potential if it depends on no variables
 		// and its value is 1
-		/*
+		
 		 * if (projectedPotential.getNumVariables() == 0 &&
 		 * almostEqual(projectedPotential.values[0], 1.0)) { projectedPotential
 		 * = DiscretePotentialOperations.createUnityProbabilityPotential(); }
-		 */
+		 
 		return projectedPotential;
 	}
-
+*/
 
     /** 
      * Compares two numbers
@@ -2240,5 +2271,34 @@ public final class DiscretePotentialOperations {
 		newUtilityPotential.setValues(values);
 		return newUtilityPotential;
 	}
+
+	public static double sum(double[] values) {
+		double result = 0.0;
+		for (int i=0;i<values.length;i++) {
+			result += values[i];
+		}
+		return result;
+	}
+	
+	
+	 /**
+	 * @return A potential that results from multiplying the product of probability potentials and the sum of utility potentials
+	 */
+	public static TablePotential matrixPotential(List<Potential> potentials) {
+		List<TablePotential> probs = new ArrayList<>();
+		List<TablePotential> utils = new ArrayList<>();
+		for (Potential potential : potentials) {
+			if (potential.isAdditive()) {
+				utils.add((TablePotential) potential);
+			} else {
+				probs.add((TablePotential) potential);
+			}
+		}
+		return multiply(
+				probs.size() > 0 ? multiply(probs) : DiscretePotentialOperations.createUnityProbabilityPotential(),
+				sum(utils));
+	}
+			
+			
 
 }

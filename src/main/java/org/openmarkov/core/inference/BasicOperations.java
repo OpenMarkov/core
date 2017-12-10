@@ -305,7 +305,7 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
             }
             else{
             	parentsCandidates = (i==0)? ProbNetOperations.getAlwaysObservedVariables(probNet):
-            		getVariablesRevealedByDecision(decisionsList.get(i-1),probNet);            	         	
+            		getVariablesRevealedTransitivelyByVariable(decisionsList.get(i-1),probNet);            	         	
             }            
 			for (Node parent : parentsCandidates) {
                 if (parent.getNodeType() != NodeType.DECISION) {
@@ -337,24 +337,31 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
         return partialOrder;
     }
 
+	
 	/**
 	 * @param variable
 	 * @param probNet
-	 * @return The list of variables revealed by a decision in a DAN, but not revealed by any previous decision
+	 * @return The list of variables revealed by a variable in a DAN or by a chance variable revealed by that variable,
+	 * and so on...
 	 */
-	private static List<Node> getVariablesRevealedByDecision(Variable variable,
-			ProbNet probNet) {
-		Node decNode = probNet.getNode(variable);
+	private static List<Node> getVariablesRevealedTransitivelyByVariable(Variable variable, ProbNet probNet) {
+		Node variableNode = probNet.getNode(variable);
 		List<Node> revealed = new ArrayList<>();
-		List<Node> children = probNet.getChildren(decNode);		
-		for (Node child:children){
-			Link<Node> link = probNet.getLink(decNode,child,true);
-			if (link.getRevealingStates().toArray().length == variable.getStates().length){
+		List<Node> children = probNet.getChildren(variableNode);
+		for (Node child : children) {
+			Link<Node> link = probNet.getLink(variableNode, child, true);
+			if (link.getRevealingStates().toArray().length == variable.getStates().length) {
 				revealed.add(child);
-			}			
+				for (Node auxRevealed : getVariablesRevealedTransitivelyByVariable(child.getVariable(), probNet)) {
+					if (!revealed.contains(auxRevealed)) {
+						revealed.add(auxRevealed);
+					}
+				}
+			}
 		}
 		return revealed;
 	}
+
 
 	private static Stack<Variable> getSequenceOfDecisions(ProbNet idCopy) {
 		int numDecisions = idCopy.getNumNodes(NodeType.DECISION);

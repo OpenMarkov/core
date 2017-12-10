@@ -30,6 +30,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.TablePotentialSampler;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 /**
@@ -1142,6 +1143,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         }
         buffer.append("\n Role: "+this.getPotentialRole());
         buffer.append("\n Criterion: "+((criterion==null)?"null":criterion.toString()));
+        buffer.append("\n Sum of values: "+DiscretePotentialOperations.sum(this.values));
         return buffer.toString();
     }
 
@@ -1331,6 +1333,13 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
     	}
     	return maxTimeSlice;
     	
+    }
+    
+    /**
+     * @return The first value of attribute 'values' (that at 0-th position)
+     */
+    public double getFirstValue() {
+    	return values[0];
     }
     
 }

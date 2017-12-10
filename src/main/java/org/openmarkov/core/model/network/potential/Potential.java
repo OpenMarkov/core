@@ -35,7 +35,7 @@ public abstract class Potential
 {
     // Constants
     /** Maximum size of a String used in toString() */
-    protected static final int            STRING_MAX_LENGTH = 150;
+    protected static final int            STRING_MAX_LENGTH = 300;
     // Attributes
     /**
      * <code>List</code> of <code>Variable</code>s.

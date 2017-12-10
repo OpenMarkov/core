@@ -16,9 +16,6 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.ProductPotential;
-import org.openmarkov.core.model.network.potential.SumPotential;
-import org.openmarkov.core.model.network.potential.TablePotential;
 
 public class DecisionTreeNode implements DecisionTreeElement
 {
@@ -183,7 +180,7 @@ public class DecisionTreeNode implements DecisionTreeElement
     public void setParent (DecisionTreeElement parent)
     {
         this.parent = parent;
-    }
-    
+    }    
+
     
 }

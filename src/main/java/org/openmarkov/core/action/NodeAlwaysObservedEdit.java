@@ -21,30 +21,59 @@ import org.openmarkov.core.model.network.Node;
 public class NodeAlwaysObservedEdit extends SimplePNEdit {
 
 	/**
-	 * The node edited
+	 * The last 'alwaysObserved' before the edition
+	 */
+	private boolean lastAlwaysObserved;
+	/**
+	 * The new 'alwaysObserved' after the edition
+	 */
+	private boolean newAlwaysObserved;
+	/**
+	 * The edited node
 	 */
 	private Node node = null;
 
-	private boolean previousValue;
+	
 
-	private boolean newValue;
-
-	public NodeAlwaysObservedEdit(Node node, boolean alwaysObserved) {
+	/**
+	 * Creates a new <code>AlwaysObservedEdit</code> with the node and new 'alwaysObserved'
+	 * specified.
+	 * @param node the node that will be edited
+	 * @param newAlwaysObserved the new alwaysObserved
+	 */
+	public NodeAlwaysObservedEdit (Node node, boolean newAlwaysObserved){
 		super(node.getProbNet());
+		this.lastAlwaysObserved = node.isAlwaysObserved();
+		this.newAlwaysObserved = newAlwaysObserved;
 		this.node = node;
-		this.previousValue = node.isAlwaysObserved();
-		this.newValue = alwaysObserved;
-	}
-
+	}	
+	
 	@Override
 	public void doEdit() throws DoEditException {
-		node.setAlwaysObserved(newValue);
-
+		node.setAlwaysObserved(newAlwaysObserved);
 	}
-	
+	@Override
 	public void undo() {
 		super.undo();
-		node.setAlwaysObserved(previousValue);
+		node.setAlwaysObserved(lastAlwaysObserved);
+	}
+	/**
+	 * Gets the new alwaysObserved after the edition
+	 * @return the new alwaysObserved
+	 */
+	public boolean getNewAlwaysObserved(){
+		return newAlwaysObserved;
+	}
+	/**
+	 * Gets the new alwaysObserved before the edition
+	 * @return the last alwaysObserved
+	 */
+	public boolean getLastAlwaysObserved(){
+		return lastAlwaysObserved;
+	}
+	
+	public Node getNode() {
+		return node;
 	}
 
 }

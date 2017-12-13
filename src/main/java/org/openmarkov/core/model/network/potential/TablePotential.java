@@ -1342,4 +1342,20 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
     	return values[0];
     }
     
+    /**
+     * @return true iff the table potential has interventions
+     */
+    public boolean hasInterventions() {
+    	return interventions != null && interventions.length > 0 && interventions[0] != null;
+    }
+    
+    
+    /**
+     * @param decision
+     * @return true iff it has interventions that contains 'decision'
+     */
+    public boolean hasInterventionForDecision(Variable decision) {
+    	return hasInterventions() && interventions[0].hasInterventionForDecision(decision);    	
+    }
+    
 }

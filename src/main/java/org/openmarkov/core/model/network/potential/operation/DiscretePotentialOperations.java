@@ -2298,7 +2298,66 @@ public final class DiscretePotentialOperations {
 				probs.size() > 0 ? multiply(probs) : DiscretePotentialOperations.createUnityProbabilityPotential(),
 				sum(utils));
 	}
-			
+	
+	/**
+	 * @param inputPotentialsList
+	 * @param decisionsTotallyOrdered
+	 * @return an order list of the potentials in 'inputPotentialsList', where the potentials are ordered according to the
+	 * total order in 'decisionsTotallyOrdered'
+	 */
+	public static List<TablePotential> orderPotentialsByTotalOrder(List<TablePotential> inputPotentialsList,
+			List<Variable> decisionsTotallyOrdered) {
+		List<TablePotential> orderedListOfPotentials = new ArrayList<>();
+		Set<TablePotential> inputPotentialsSet = new HashSet<>();
+
+		if (decisionsTotallyOrdered != null) {
+			for (TablePotential auxPot : inputPotentialsList) {
+				inputPotentialsSet.add(auxPot);
+			}
+
+			Set<TablePotential> potentialsWithoutIntervention = new HashSet<>();
+			// Remove from inputPotentials the potentials without Interventions
+			// and
+			// place them in withoutInterv
+			for (TablePotential auxPot : inputPotentialsSet) {
+				if (!auxPot.hasInterventions()) {
+					potentialsWithoutIntervention.add(auxPot);
+				}
+			}
+
+			for (Variable dec : decisionsTotallyOrdered) {
+				Set<TablePotential> potentialsWithDecisionInIntervention;
+				potentialsWithDecisionInIntervention = getPotentialsWithDecisionInIntervention(dec, inputPotentialsSet);
+				inputPotentialsSet.removeAll(potentialsWithDecisionInIntervention);
+				orderedListOfPotentials.addAll(potentialsWithDecisionInIntervention);
+			}
+
+			inputPotentialsSet.removeAll(potentialsWithoutIntervention);
+			orderedListOfPotentials.addAll(potentialsWithoutIntervention);
+			// TODO Manolo> I am not sure if in this point inputPotentials is
+			// empty.
+			orderedListOfPotentials.addAll(inputPotentialsList);
+		} else {
+			orderedListOfPotentials.addAll(inputPotentialsList);
+		}
+		return orderedListOfPotentials;
+	}
+
+	/**
+	 * @param decision
+	 * @param inputPotentials
+	 * @return
+	 */
+	private static Set<TablePotential> getPotentialsWithDecisionInIntervention(Variable decision,
+			Set<TablePotential> inputPotentials) {
+		Set<TablePotential> potsWithDecInIntervention = new HashSet<>();
+		for (TablePotential auxPot : inputPotentials) {
+			if (auxPot.hasInterventionForDecision(decision)) {
+				potsWithDecInIntervention.add(auxPot);
+			}
+		}
+		return potsWithDecInIntervention;
+	}	
 			
 
 }

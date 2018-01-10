@@ -3,6 +3,7 @@ package org.openmarkov.core.dt;
 import junit.framework.Assert;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -26,28 +27,28 @@ public class DecisionTreeTest {
 		Assert.assertEquals(9.3929, decisionTree.getUtility(), 0.0001);
 	}
 
-	@Test
+	@Ignore @Test
 	public void testDecideTestDAN() throws NodeNotFoundException {
 		ProbNet decideTestDAN = DANFactory.buildDecideTestDAN();
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(decideTestDAN);
 		Assert.assertEquals(9.3929, decisionTree.getUtility(), 0.0001);
 	}
 	
-	@Test
+	@Ignore @Test
 	public void testDatingDAN() throws NodeNotFoundException {
 		ProbNet datingDAN = DANFactory.buildDatingDAN();
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(datingDAN);
 		Assert.assertEquals(9.4076, decisionTree.getUtility(), 0.0001);
 	}
 	
-	@Test
+	@Ignore @Test
 	public void testReactorDAN() throws NodeNotFoundException {
 		ProbNet reactorDAN = DANFactory.buildReactorDAN();
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(reactorDAN);
 		Assert.assertEquals(10.0627, decisionTree.getUtility(), 0.0001);
 	}		
 
-	@Test
+	@Ignore @Test
 	public void testDiabetesDAN() throws NodeNotFoundException {
 		ProbNet diabetesDAN = DANFactory.buildDiabetesDAN();
 		long startTime = System.nanoTime();
@@ -57,14 +58,14 @@ public class DecisionTreeTest {
 		System.out.println(" Execution time =" +ellapsedTime);
 	}		
 	
-	@Test
+	@Ignore @Test
 	public void testTwoTestsDAN() throws NodeNotFoundException {
 		ProbNet diabetesDAN = DANFactory.buildTwoTestDAN();
 		DecisionTreeElement decisionTree = DecisionTreeBuilder.buildDecisionTree(diabetesDAN);
 		Assert.assertEquals(9.3324, decisionTree.getUtility(), 0.0001);
 	}			
 	
-	@Test
+	@Ignore @Test
 	public void testNtests() throws NodeNotFoundException, IncompatibleEvidenceException,
 			UnexpectedInferenceException, NotEvaluableNetworkException {
 

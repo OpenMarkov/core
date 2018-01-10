@@ -9,17 +9,6 @@
 
 package org.openmarkov.core.model.graph;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	NodeTest.class,
-	GraphTest.class,
-	LinkTest.class
-})
-
 /** Auxiliary class that create a graph for test. */
 public class GraphsTests {
 	

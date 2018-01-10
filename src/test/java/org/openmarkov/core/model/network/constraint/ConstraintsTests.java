@@ -23,26 +23,7 @@ import org.openmarkov.core.model.network.type.DynamicBayesianNetwork;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	AtLeastOneUtilityPotentialTest.class,
-	DistinctLinksTest.class,
-	MaxNumParentsTest.class,
-	NoClosedPathTest.class,
-	NoCyclesTest.class,
-	NoLoopsTest.class,
-	NoMixedParentsTest.class,
-	NoMultipleLinksTest.class,
-	NoUtilityParentTest.class,
-	OnlyAtemporalVariablesTest.class,
-	OnlyChanceNodesTest.class,
-	OnlyDirectedLinksTest.class,
-	OnlyFiniteStateVariablesTest.class,
-	OnlyNumericVariablesTest.class,
-	OnlyTemporalVariablesTest.class
-})
-
-/** Test constraints applied to networks. 
+/** Test constraints applied to networks.
  * Supplies methods to create different types of <code>ProbNet</code> */
 public class ConstraintsTests {
 

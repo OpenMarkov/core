@@ -18,14 +18,7 @@ import java.util.List;
 /**
  * @author jperez-martin
  */
-public abstract class CEAGlobal extends Task {
-    /**
-     * @param probNet The network used in the inference
-     * @throws NotEvaluableNetworkException
-     */
-    public CEAGlobal(ProbNet probNet) throws NotEvaluableNetworkException {
-        super(probNet);
-    }
+public interface CEAGlobal extends Task {
 
     public abstract CEP getCEP() throws UnexpectedInferenceException;
 }

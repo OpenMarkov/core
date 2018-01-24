@@ -18,15 +18,7 @@ import java.util.List;
 /**
  * @author jperez-martin
  */
-public abstract class CE_PSA extends Task {
+public interface CE_PSA extends Task {
 	
-    /**
-     * @param probNet The network used in the inference
-     * @throws NotEvaluableNetworkException
-     */
-    public CE_PSA(ProbNet probNet) throws NotEvaluableNetworkException {
-        super(probNet);
-    }
-
     public abstract Collection<GTablePotential> getCEPPotential();
 }

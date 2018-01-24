@@ -22,15 +22,7 @@ import java.util.List;
  * @author jperez-martin
  * @author artasom
  */
-public abstract class TemporalEvolution extends Task {
-
-    /**
-     * @param probNet The network used in the inference
-     * @throws NotEvaluableNetworkException
-     */
-    public TemporalEvolution(ProbNet probNet) throws NotEvaluableNetworkException {
-        super(probNet);
-    }
+public interface TemporalEvolution extends Task {
 
     public abstract HashMap<Variable, TablePotential> getPosteriorValues() throws IncompatibleEvidenceException, UnexpectedInferenceException;
 

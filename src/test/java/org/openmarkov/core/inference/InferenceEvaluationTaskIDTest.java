@@ -9,7 +9,7 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.inference.tasks.Resolution;
+import org.openmarkov.core.inference.tasks.Evaluation;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
@@ -37,14 +37,14 @@ import static org.openmarkov.core.model.network.factory.IDFactory.therapyName;
 import static org.openmarkov.core.model.network.factory.NetsFactory.diseaseName;
 import static org.openmarkov.core.model.network.factory.NetsFactory.testResultName;
 
-public abstract class InferenceResolutionTaskIDTest extends InferenceResolutionTaskDecTest {
+public abstract class InferenceEvaluationTaskIDTest extends InferenceResolutionTaskDecTest {
 
 	//protected ProbNet iD_DiagnosisProblem;
 	protected ProbNet iD_UniformDiagnosisProblem;
 	protected ProbNet iD_DecisionTestProblemWithoutSV;
 	protected ProbNet iD_DecisionTestProblemWithSV;
 
-	public InferenceResolutionTaskIDTest() {
+	public InferenceEvaluationTaskIDTest() {
 	/*iD_DiagnosisProblem = NetsFactory
 	.createInfluenceDiagramDiagnosisProblem();*/
 /*iD_UniformDiagnosisProblem = IDFactory
@@ -58,7 +58,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 	}
 
 	protected void testMEU(ProbNet net, double expectedMEU, Intervention expectedStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException{
-		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(net);
+		Evaluation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(net);
 		Double meuEvaluation = algorithm.getUtility().values[0];
 		assertEquals(expectedMEU,meuEvaluation, maxError);
 	}
@@ -87,7 +87,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 		Variable variableU1 = null;
 		Variable variableU2 = null;
 
-		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
+		Evaluation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
 
 		try {
 			// test max expected utility
@@ -201,7 +201,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 	protected void testMEU(ProbNet diagram,double expectedMeu) throws IncompatibleEvidenceException, UnexpectedInferenceException{
 
-		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
+		Evaluation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
 
 
 		// test max expected utility
@@ -337,7 +337,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 		
 		network = IDFactory.buildIDPerfectKnowledge();
 
-		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network);
+		Evaluation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network);
 		
 		try {
 			// Test optimal policy
@@ -381,7 +381,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 		
 		network = IDFactory.buildIDPerfectKnowledge();
 
-		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network);
+		Evaluation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network);
 
 		try {
 			// Test optimal policy
@@ -458,10 +458,10 @@ iD_DecisionTestProblemWithSV = IDFactory
 	 * @throws UnexpectedInferenceException
 	 * @throws IncompatibleEvidenceException
 	 */
-	protected Resolution buildInferenceTaskAndSkipTestIfNotEvaluable(
+	protected Evaluation buildInferenceTaskAndSkipTestIfNotEvaluable(
 			ProbNet network) throws IncompatibleEvidenceException, UnexpectedInferenceException {
 		boolean isEvaluable;
-		Resolution task = null;
+		Evaluation task = null;
 
 		//If the network is not evaluable then the test is skipped
 		isEvaluable = true;
@@ -499,7 +499,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 		diagram = iD_UniformDiagnosisProblem;
 
-		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
+		Evaluation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
 		try {
 			// test max expected utility
 			Double meuEvaluation = algorithm.getUtility().values[0];
@@ -545,7 +545,7 @@ iD_DecisionTestProblemWithSV = IDFactory
 
 		diagram = buildIDTestAlways();
 
-		Resolution algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
+		Evaluation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
 
 		Variable variableX = diagram.getVariable(diseaseName);
 		assertNotNull(variableX);

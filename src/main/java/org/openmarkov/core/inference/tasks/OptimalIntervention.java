@@ -26,19 +26,11 @@ import java.util.List;
  * @author jperez-martin
  * @author artasom
  */
-public abstract class OptimalIntervention extends Task {
-
-    /**
-     * @param probNet The network used in the inference
-     * @throws NotEvaluableNetworkException
-     */
-    public OptimalIntervention(ProbNet probNet) throws NotEvaluableNetworkException {
-        super(probNet);
-    }
+public interface OptimalIntervention extends Task {
 
     /**
      * @return The optimal intervention
      */
-    public abstract Intervention getOptimalIntervention() throws IncompatibleEvidenceException, UnexpectedInferenceException;
+    public abstract Intervention getOptimalIntervention() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
 
 }

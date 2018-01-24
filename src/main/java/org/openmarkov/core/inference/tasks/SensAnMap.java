@@ -10,14 +10,7 @@ import java.util.HashMap;
 /**
  * @author jperez-martin
  */
-public abstract class SensAnMap extends Task {
-    /**
-     * @param probNet The network used in the inference
-     * @throws NotEvaluableNetworkException
-     */
-    public SensAnMap(ProbNet probNet) throws NotEvaluableNetworkException {
-        super(probNet);
-    }
+public interface SensAnMap extends Task {
 
     public abstract HashMap<UncertainParameter, TablePotential> getUncertainParametersPotentials();
 }

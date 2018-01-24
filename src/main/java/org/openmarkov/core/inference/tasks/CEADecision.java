@@ -8,14 +8,7 @@ import org.openmarkov.core.model.network.potential.GTablePotential;
 /**
  * @author jperez-martin
  */
-public abstract class CEADecision extends Task {
-    /**
-     * @param probNet The network used in the inference
-     * @throws NotEvaluableNetworkException
-     */
-    public CEADecision(ProbNet probNet) throws NotEvaluableNetworkException {
-        super(probNet);
-    }
+public interface CEADecision extends Task {
 
     public abstract GTablePotential getCEPPotential() throws UnexpectedInferenceException;
 }

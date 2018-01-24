@@ -28,15 +28,7 @@ import java.util.List;
  * @author jorgepmartin
  * @author artasom
  */
-public abstract class Propagation extends Task {
-
-    /**
-     * @param probNet The network used in the inference
-     * @throws NotEvaluableNetworkException
-     */
-    public Propagation(ProbNet probNet) throws NotEvaluableNetworkException {
-        super(probNet);
-    }
+public interface Propagation extends Task {
 
     public abstract HashMap<Variable, TablePotential> getPosteriorValues() throws IncompatibleEvidenceException, UnexpectedInferenceException;
 

@@ -6,6 +6,7 @@
 
 package org.openmarkov.core.inference.tasks;
 
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.ProbNet;
@@ -25,16 +26,8 @@ import java.util.List;
  * @author jperez-martin
  * @author artasom
  */
-public abstract class ExpectedUtilityDecision extends Task {
+public interface ExpectedUtilityDecision extends Task {
 
-    /**
-     * @param probNet The network used in the inference
-     * @throws NotEvaluableNetworkException
-     */
-    public ExpectedUtilityDecision(ProbNet probNet) throws NotEvaluableNetworkException {
-        super(probNet);
-    }
-
-    public abstract TablePotential getExpectedUtility() throws UnexpectedInferenceException;
+    public abstract TablePotential getExpectedUtility() throws UnexpectedInferenceException, NotEvaluableNetworkException, IncompatibleEvidenceException;
 
 }

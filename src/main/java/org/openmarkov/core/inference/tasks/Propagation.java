@@ -9,6 +9,7 @@ package org.openmarkov.core.inference.tasks;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.NoMixedParents;
@@ -30,6 +31,11 @@ import java.util.List;
  */
 public interface Propagation extends Task {
 
-    public abstract HashMap<Variable, TablePotential> getPosteriorValues() throws IncompatibleEvidenceException, UnexpectedInferenceException;
+    public HashMap<Variable, TablePotential> getPosteriorValues()
+            throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
+
+    public void setPostResolutionEvidence (EvidenceCase postResolutionEvidence);
+
+    public void setVariablesOfInterest (List<Variable> variablesOfInterest);
 
 }

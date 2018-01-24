@@ -60,7 +60,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      */
     public volatile double[]         values;
     
-    public volatile Intervention[] interventions; 
+    public volatile StrategyTree[] strategyTrees;
     
     /**
      * Table storing the values of the potential for the sensitivity analysis.
@@ -172,7 +172,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         tableSize = potential.tableSize;
         values = potential.values.clone();
         uncertainValues = potential.uncertainValues;
-        interventions = potential.interventions;
+        strategyTrees = potential.strategyTrees;
     }
 
     // Methods
@@ -225,8 +225,8 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
     
     private void copyValuesInterventionsAndUncertainValues(int position,TablePotential fromPotential,int fromPotentialPosition,boolean hasUncertainTable){
     	values[position] = fromPotential.values[fromPotentialPosition];
-        if ((interventions!=null)&&(fromPotential.interventions!=null)){
-        	interventions[position] = fromPotential.interventions[fromPotentialPosition];
+        if ((strategyTrees !=null)&&(fromPotential.strategyTrees !=null)){
+        	strategyTrees[position] = fromPotential.strategyTrees[fromPotentialPosition];
         }
         if (hasUncertainTable) {
             uncertainValues[position] = fromPotential.uncertainValues[fromPotentialPosition];
@@ -1296,11 +1296,11 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         
         potential.initialPosition = this.initialPosition;
 
-        if(this.interventions != null){
-        	potential.interventions = new Intervention[this.interventions.length];
+        if(this.strategyTrees != null){
+        	potential.strategyTrees = new StrategyTree[this.strategyTrees.length];
 
-	        for (int interventionIndex = 0; interventionIndex < this.interventions.length; interventionIndex++) {
-	            potential.interventions[interventionIndex] = (Intervention) this.interventions[interventionIndex].deepCopy(copyNet);
+	        for (int interventionIndex = 0; interventionIndex < this.strategyTrees.length; interventionIndex++) {
+	            potential.strategyTrees[interventionIndex] = (StrategyTree) this.strategyTrees[interventionIndex].deepCopy(copyNet);
 	        }
         }
 
@@ -1346,7 +1346,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      * @return true iff the table potential has interventions
      */
     public boolean hasInterventions() {
-    	return interventions != null && interventions.length > 0 && interventions[0] != null;
+    	return strategyTrees != null && strategyTrees.length > 0 && strategyTrees[0] != null;
     }
     
     
@@ -1355,7 +1355,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      * @return true iff it has interventions that contains 'decision'
      */
     public boolean hasInterventionForDecision(Variable decision) {
-    	return hasInterventions() && interventions[0].hasInterventionForDecision(decision);    	
+    	return hasInterventions() && strategyTrees[0].hasInterventionForDecision(decision);
     }
     
 }

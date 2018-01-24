@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Intervention;
+import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -34,7 +34,7 @@ public class SumOutVariable extends Marginalization {
 		if (thereIsUtility) {
 			for (TablePotential inputUtilityPotential : utilityPotentials) {
 				List<Variable> inputUtilityVariables = inputUtilityPotential.getVariables();
-				boolean thereAreInterventions = inputUtilityPotential.interventions != null;
+				boolean thereAreInterventions = inputUtilityPotential.strategyTrees != null;
 
 				// build the marginal and conditional probabilities
 				TablePotential joinProb = DiscretePotentialOperations.multiply(probPotentials);
@@ -56,7 +56,7 @@ public class SumOutVariable extends Marginalization {
 				outputUtilityPotential.setCriterion(inputUtilityPotential.getCriterion());
 				if (thereAreInterventions) {
 					int outputValuesLength = outputUtilityPotential.values.length;
-					outputUtilityPotential.interventions = new Intervention[outputValuesLength];
+					outputUtilityPotential.strategyTrees = new StrategyTree[outputValuesLength];
 				}
 
 				List<Variable> allVariables = new ArrayList<>(outputUtilityVariables.size() + 1);
@@ -80,7 +80,7 @@ public class SumOutVariable extends Marginalization {
 				int increasedVariable = 0;
 
 				double[] probabilities = new double[chanceVariableSize];
-				Intervention[] interventions = new Intervention[chanceVariableSize];
+				StrategyTree[] strategyTrees = new StrategyTree[chanceVariableSize];
 
 				// outer iterations correspond to the variables to in the
 				// outputUtilityPotential
@@ -97,7 +97,7 @@ public class SumOutVariable extends Marginalization {
 						}
 						if (thereAreInterventions) {
 							probabilities[innerIteration] = auxProb;
-							interventions[innerIteration] = inputUtilityPotential.interventions[inputUtilityPotentialPosition];
+							strategyTrees[innerIteration] = inputUtilityPotential.strategyTrees[inputUtilityPotentialPosition];
 						}
 
 						// find the next configuration and the index of the
@@ -112,8 +112,8 @@ public class SumOutVariable extends Marginalization {
 
 					outputUtilityPotential.values[outputUtilityPotentialPosition] = sum;
 					if (thereAreInterventions) {
-						outputUtilityPotential.interventions[outputUtilityPotentialPosition] = Intervention
-								.averageOfInterventions(chanceVariable, probabilities, interventions);
+						outputUtilityPotential.strategyTrees[outputUtilityPotentialPosition] = StrategyTree
+								.averageOfInterventions(chanceVariable, probabilities, strategyTrees);
 					}
 
 					outputUtilityPotentialPosition++;

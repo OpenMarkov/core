@@ -137,7 +137,8 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 
 	protected void checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(
 			Propagation algorithm, ProbNet diagram, double t, double y1, double y2, double d,
-			double x, double  uHealthState,  double uCostOfTherapy, double uCostOfTest) {
+			double x, double  uHealthState,  double uCostOfTherapy, double uCostOfTest)
+			throws NotEvaluableNetworkException {
 
 		Variable variableX = null;
 		Variable variableY = null;

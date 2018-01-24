@@ -9,7 +9,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.Intervention;
+import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.potential.Potential;
 
 /**
@@ -372,7 +372,7 @@ public class TreeADDBranch {
             	}
             }
         }
-        if (parentVariables != null && parentVariables.size() > 0 && !(potential instanceof Intervention)) {
+        if (parentVariables != null && parentVariables.size() > 0 && !(potential instanceof StrategyTree)) {
 //			builder.append("\n");
 			builder.append(indent);
         	builder.append("ParentVariables = ");
@@ -388,8 +388,8 @@ public class TreeADDBranch {
         	builder.append(")");
         }
 		//builder.append("\n");
-		if (potential != null && potential.getClass() == Intervention.class) {
-			List<TreeADDBranch> branches = ((Intervention)potential).getBranches();
+		if (potential != null && potential.getClass() == StrategyTree.class) {
+			List<TreeADDBranch> branches = ((StrategyTree)potential).getBranches();
 			for (TreeADDBranch branch : branches) {
 				branch.setIndent(indent + "    ");
                 if(branches.size() > 1){

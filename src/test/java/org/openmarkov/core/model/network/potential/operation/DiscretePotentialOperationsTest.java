@@ -35,7 +35,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GTablePotential;
-import org.openmarkov.core.model.network.potential.Intervention;
+import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
@@ -807,7 +807,7 @@ public class DiscretePotentialOperationsTest {
 		// Asserts
 		TablePotential utility = marginalization.getUtility();
 		assertNotNull(utility);
-		assertNull(utility.interventions);
+		assertNull(utility.strategyTrees);
 		List<Variable> utilityVariables = utility.getVariables();
 		assertEquals(1, utilityVariables.size());
 		assertTrue(utilityVariables.contains(therapy));
@@ -902,11 +902,11 @@ public class DiscretePotentialOperationsTest {
 		assertEquals(7.75, utility.values[1], maxError);
 		
 		 // Test utility interventions
-		assertNotNull(utility.interventions);
-		assertEquals(2, utility.interventions.length);
-		Intervention interventionNo = utility.interventions[0];
-		assertEquals(therapy, interventionNo.getRootVariable());
-		List<TreeADDBranch> branches = interventionNo.getBranches();
+		assertNotNull(utility.strategyTrees);
+		assertEquals(2, utility.strategyTrees.length);
+		StrategyTree strategyTreeNo = utility.strategyTrees[0];
+		assertEquals(therapy, strategyTreeNo.getRootVariable());
+		List<TreeADDBranch> branches = strategyTreeNo.getBranches();
 		assertEquals(1, branches.size());
 		TreeADDBranch branch = branches.get(0);
 		List<State> states = branch.getBranchStates();

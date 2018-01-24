@@ -168,9 +168,9 @@ public class PotentialTest {
         compareBasicCopiedAttributesPotential(potential, potentialCopy);
         assertTrue(potential.getValues() != potentialCopy.getValues());
 
-        if (potential.interventions != null) {
-            for (int i = 0; i < potential.interventions.length; i++) {
-                assertTrue(potential.interventions[i] != potentialCopy.interventions[i]);
+        if (potential.strategyTrees != null) {
+            for (int i = 0; i < potential.strategyTrees.length; i++) {
+                assertTrue(potential.strategyTrees[i] != potentialCopy.strategyTrees[i]);
             }
         }
     }

@@ -18,7 +18,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.potential.Intervention;
+import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -589,10 +589,10 @@ public class TreeADDPotential extends Potential {
 
 		// Gets the tables of each TablePotential
 		double[][] tables = new double[numPotentials][];
-		Intervention[][] interventionsTables = new Intervention[numPotentials][];
+		StrategyTree[][] interventionsTables = new StrategyTree[numPotentials][];
 		for (int i = 0; i < numPotentials; i++) {
 			tables[i] = potentials.get(i).values;
-			interventionsTables[i] = potentials.get(i).interventions;
+			interventionsTables[i] = potentials.get(i).strategyTrees;
 		}
 		
 		// Gets the uncertain tables of each TablePotential
@@ -602,7 +602,7 @@ public class TreeADDPotential extends Potential {
 		for (int i = 0; i < numPotentials; i++) {
 			uncertaintyTables[i] = potentials.get(i).uncertainValues;
 			containsUncertainty |= uncertaintyTables[i] !=null;
-			containsInterventions |= potentials.get(i).interventions != null;
+			containsInterventions |= potentials.get(i).strategyTrees != null;
 		}
 		if(containsUncertainty)
 		{
@@ -610,7 +610,7 @@ public class TreeADDPotential extends Potential {
 		}
 		if(containsInterventions)
 		{
-			resultPotential.interventions = new Intervention[resultPotential.getTableSize()];
+			resultPotential.strategyTrees = new StrategyTree[resultPotential.getTableSize()];
 		}
 
 		// Gets dimensions
@@ -638,7 +638,7 @@ public class TreeADDPotential extends Potential {
 		int incrementedVariable = 0;
 		int tableSize = resultPotential.getTableSize();
 		double[] resultValues = resultPotential.values;
-		Intervention[] resultInterventions = resultPotential.interventions;
+		StrategyTree[] resultStrategyTrees = resultPotential.strategyTrees;
 		UncertainValue[] uncertainValues = resultPotential.uncertainValues;
 		int topVariableStateIndex = (topVariableEvidenceStateIndex != -1)? topVariableEvidenceStateIndex : resultCoordinates[topVariableIndex];
 		int potentialIndex = branchStateIndex[topVariableStateIndex];
@@ -673,9 +673,9 @@ public class TreeADDPotential extends Potential {
 				// Copy the value of the relevant potential onto the result potential
 				int i = potentialPositions[potentialIndex];
 				resultValues[resultPosition] =  tables[potentialIndex][i];
-				Intervention[] interventionsTablesPotentialIndex = interventionsTables[potentialIndex];
-				if (interventionsTablesPotentialIndex!=null){
-					resultInterventions[resultPosition] = interventionsTablesPotentialIndex[i];
+				StrategyTree[] interventionsTablesPotentialIndices = interventionsTables[potentialIndex];
+				if (interventionsTablesPotentialIndices !=null){
+					resultStrategyTrees[resultPosition] = interventionsTablesPotentialIndices[i];
 				}				
 				UncertainValue[] uncertainValuesPotentialIndex = uncertaintyTables[potentialIndex];
 				if(uncertainValuesPotentialIndex!=null)	{

@@ -24,6 +24,6 @@ import java.util.List;
  */
 public interface TemporalEvolution extends Task {
 
-    public abstract HashMap<Variable, TablePotential> getPosteriorValues() throws IncompatibleEvidenceException, UnexpectedInferenceException;
+    public  HashMap<Variable, TablePotential> getTemporalEvolution() throws IncompatibleEvidenceException, UnexpectedInferenceException;
 
 }

@@ -49,11 +49,11 @@ public abstract class InferenceAlgorithm implements Task {
 	protected List<Variable> conditioningVariables;
 
 	/**
-	 * @param probNet The network used in the inference
+	 * @param network The network used in the inference
 	 * @throws NotEvaluableNetworkException
 	 */
-	public InferenceAlgorithm(ProbNet probNet) throws NotEvaluableNetworkException {
-		this.probNet = probNet.copy();
+	public InferenceAlgorithm(ProbNet network) throws NotEvaluableNetworkException {
+		this.probNet = network.copy();
 		this.preResolutionEvidence = new EvidenceCase();
 		this.conditioningVariables = new ArrayList<>();
 		checkEvaluability();
@@ -172,7 +172,9 @@ public abstract class InferenceAlgorithm implements Task {
 	 * @param preResolutionEvidence The pre-resolution evidence to set
 	 */
 	public void setPreResolutionEvidence(EvidenceCase preResolutionEvidence) {
-		this.preResolutionEvidence = new EvidenceCase(preResolutionEvidence);
+		if (preResolutionEvidence != null) {
+			this.preResolutionEvidence = new EvidenceCase(preResolutionEvidence);
+		}
 	}
 
 	/**
@@ -186,37 +188,8 @@ public abstract class InferenceAlgorithm implements Task {
 	 * @param conditioningVariables The conditioning variables to set
 	 */
 	public void setConditioningVariables(List<Variable> conditioningVariables) {
-		this.conditioningVariables = conditioningVariables;
+		if (conditioningVariables != null) {
+			this.conditioningVariables = conditioningVariables;
+		}
 	}
-
-	/**
-	 * @param decision
-	 * @return The imposed policy of the decision
-	 */
-	//	protected Potential getImposedPolicy(Variable decision) {
-	//		Potential policy = null;
-	//
-	//		Node decisionNode = probNet.getNode(decision);
-	//		if (decisionNode == null){
-	//			policy = null;
-	//		}
-	//		else{
-	//		    List<Potential> potentials = decisionNode.getPotentials();
-	//			if ((potentials == null)||(potentials.size()==0)){
-	//				policy = null;
-	//			}
-	//			else{
-	//				policy = potentials.get(0);
-	//			}
-	//		}
-	//		return policy;
-	//	}
-	/**
-	 * @param decision
-	 * @return True if the decision has an imposed policy.
-	 */
-	//    public boolean hasImposedPolicy(Variable decision){
-	//    	return (getImposedPolicy(decision)!=null);
-	//    }
-
 }

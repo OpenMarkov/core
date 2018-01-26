@@ -30,7 +30,7 @@ import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.AugmentedTable;
 import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
 import org.openmarkov.core.model.network.potential.GTablePotential;
-import org.openmarkov.core.model.network.potential.Intervention;
+import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -158,15 +158,15 @@ public final class DiscretePotentialOperations {
         
         TablePotential potentialWithInterventions = findFirstPotentialWithInterventions(tablePotentials);
 		boolean thereAreInterventions = (potentialWithInterventions != null);
-		Intervention[] resultInterventions = null;	        
-        Intervention intervention = null;
-		Intervention[] inputInterventions = null;
+		StrategyTree[] resultStrategyTrees = null;
+        StrategyTree strategyTree = null;
+		StrategyTree[] inputStrategyTrees = null;
 		if (thereAreInterventions) {
-			inputInterventions =  potentialWithInterventions.interventions;
-			resultInterventions = new Intervention[tableSize];
+			inputStrategyTrees =  potentialWithInterventions.strategyTrees;
+			resultStrategyTrees = new StrategyTree[tableSize];
 			if (potentialWithInterventions.getVariables().size() == 0) {
 				// The interventions are in a constant potential
-				intervention = inputInterventions[0];
+				strategyTree = inputStrategyTrees[0];
 			}
 		}
         
@@ -201,7 +201,7 @@ public final class DiscretePotentialOperations {
                 mulResult = mulResult * tables[iPotential][potentialsPositions[iPotential]];
                 //Obtain the intervention
                 if (thereAreInterventions && indexPotentialWithInterventions == iPotential) {
-                	intervention = inputInterventions[potentialsPositions[iPotential]];
+                	strategyTree = inputStrategyTrees[potentialsPositions[iPotential]];
                 }
                 // update the current position in each potential table
                 potentialsPositions[iPotential] += offsetAccumulate[iPotential][incrementedVariable];
@@ -209,7 +209,7 @@ public final class DiscretePotentialOperations {
 
             resultValues[resultPosition] = mulResult;
             if (thereAreInterventions) {
-            	resultInterventions[resultPosition] = intervention;
+            	resultStrategyTrees[resultPosition] = strategyTree;
             }
             
         }
@@ -219,7 +219,7 @@ public final class DiscretePotentialOperations {
 			resultPotential.setCriterion(criterion);
 		}
 		if (thereAreInterventions) {
-			resultPotential.interventions = resultInterventions;
+			resultPotential.strategyTrees = resultStrategyTrees;
 		}
 		return resultPotential;
     }
@@ -231,7 +231,7 @@ public final class DiscretePotentialOperations {
 		boolean found = false;
 		for (int i = 0; i < tablePotentials.size() && !found; i++) {
 			TablePotential auxPotential = tablePotentials.get(i);
-			if (auxPotential.interventions != null) {
+			if (auxPotential.strategyTrees != null) {
 				potentialWithInterventions = auxPotential;
 				found = true;
 			}
@@ -266,15 +266,16 @@ public final class DiscretePotentialOperations {
 
         // Calculate the sum of constant potentials
         double sumConstantPotentials = 0.0;
-        Intervention constantPotentialsIntervention = null;
+        StrategyTree constantPotentialsStrategyTree = null;
         int numConstantPotentials = constantPotentials.size();
         for (int i = 0; i < numConstantPotentials; i++) {
             sumConstantPotentials += constantPotentials.get(i).values[0];
-            Intervention[] iConstantPotentialInterventions = constantPotentials.get(i).interventions;
-			if (iConstantPotentialInterventions != null) {
-            	Intervention onlyInterventionIConstantPotential = iConstantPotentialInterventions[0];
-            	constantPotentialsIntervention = (constantPotentialsIntervention == null)?onlyInterventionIConstantPotential:
-            		constantPotentialsIntervention.concatenate(onlyInterventionIConstantPotential);
+            StrategyTree[] iConstantPotentialStrategyTrees = constantPotentials.get(i).strategyTrees;
+			if (iConstantPotentialStrategyTrees != null) {
+            	StrategyTree onlyStrategyTreeIConstantPotential = iConstantPotentialStrategyTrees[0];
+            	constantPotentialsStrategyTree = (constantPotentialsStrategyTree == null)?
+						onlyStrategyTreeIConstantPotential :
+            		constantPotentialsStrategyTree.concatenate(onlyStrategyTreeIConstantPotential);
             }
         }
 
@@ -294,11 +295,11 @@ public final class DiscretePotentialOperations {
         // Gets the interventions if necessary
         boolean thereAreInterventions = areThereInterventions(potentials);
         
-        Intervention[][] interventions = null;
+        StrategyTree[][] strategyTrees = null;
         if (thereAreInterventions) {
-        	interventions = new Intervention[numPotentials][];
+        	strategyTrees = new StrategyTree[numPotentials][];
         	for (int i = 0; i < numPotentials; i++) {
-        		interventions[i] = potentials.get(i).interventions;
+        		strategyTrees[i] = potentials.get(i).strategyTrees;
         	}
         }
 
@@ -330,7 +331,8 @@ public final class DiscretePotentialOperations {
             tableSize = dimensions[numVariables - 1] * offsets[numVariables - 1];
         }
         double[] resultValues = new double[tableSize];
-		Intervention[] resultInterventions = (thereAreInterventions || constantPotentialsIntervention != null) ? new Intervention[tableSize]
+		StrategyTree[] resultStrategyTrees = (thereAreInterventions || constantPotentialsStrategyTree
+				!= null) ? new StrategyTree[tableSize]
 				: null;
 
         if (potentials.size() > 0) {
@@ -360,14 +362,14 @@ public final class DiscretePotentialOperations {
 
                 // sum
                 sum = 0;
-                Intervention resultIntervention = null;
+                StrategyTree resultStrategyTree = null;
                 for (int iPotential = 0; iPotential < numPotentials; iPotential++) {
                     // sum the numbers
                     sum = sum + tables[iPotential][potentialPositions[iPotential]];
-					if (thereAreInterventions && interventions[iPotential] != null) {
-						Intervention auxIIntervention = interventions[iPotential][potentialPositions[iPotential]];
-						resultIntervention = (resultIntervention == null) ? auxIIntervention
-								: resultIntervention.concatenate(auxIIntervention);
+					if (thereAreInterventions && strategyTrees[iPotential] != null) {
+						StrategyTree auxIStrategyTree = strategyTrees[iPotential][potentialPositions[iPotential]];
+						resultStrategyTree = (resultStrategyTree == null) ? auxIStrategyTree
+								: resultStrategyTree.concatenate(auxIStrategyTree);
 					}
 
                     // update the current position in each potential table
@@ -375,25 +377,25 @@ public final class DiscretePotentialOperations {
                 }
                 resultValues[resultPosition] = sum;
                 if (thereAreInterventions) {
-                	resultInterventions[resultPosition] = resultIntervention;
+                	resultStrategyTrees[resultPosition] = resultStrategyTree;
                 }
             }
         }
         // Sum constant potentials to the result
-        if ((numConstantPotentials > 0) && (sumConstantPotentials != 0.0 || constantPotentialsIntervention != null)) {
+        if ((numConstantPotentials > 0) && (sumConstantPotentials != 0.0 || constantPotentialsStrategyTree != null)) {
             for (int i = 0; i < resultValues.length; i++) {
                 resultValues[i] = resultValues[i] + sumConstantPotentials;
-                if (constantPotentialsIntervention != null) {
-                	if (resultInterventions[i] == null) {
-                		resultInterventions[i] = constantPotentialsIntervention;
+                if (constantPotentialsStrategyTree != null) {
+                	if (resultStrategyTrees[i] == null) {
+                		resultStrategyTrees[i] = constantPotentialsStrategyTree;
                 	} else {
-                		resultInterventions[i].concatenate(constantPotentialsIntervention);
+                		resultStrategyTrees[i].concatenate(constantPotentialsStrategyTree);
                 	}
                 }
             }
         }
         TablePotential result = new TablePotential(resultVariables, getRole(tablePotentials), resultValues);
-        result.interventions = resultInterventions;
+        result.strategyTrees = resultStrategyTrees;
         if(!potentials.isEmpty()) {
             result.setCriterion(potentials.get(0).getCriterion());
         }
@@ -848,9 +850,9 @@ public final class DiscretePotentialOperations {
         variablesToKeep.remove(variableToEliminate);
 
         TablePotential resultPotential = new TablePotential(variablesToKeep, PotentialRole.UNSPECIFIED);
-        boolean thereAreInterventions = (utilityPotential.interventions != null);
+        boolean thereAreInterventions = (utilityPotential.strategyTrees != null);
         if (thereAreInterventions) {
-            resultPotential.interventions = new Intervention[resultPotential.values.length];
+            resultPotential.strategyTrees = new StrategyTree[resultPotential.values.length];
         }
 
         // current coordinate in the product potential
@@ -870,7 +872,7 @@ public final class DiscretePotentialOperations {
         double[] utilValues = utilityPotential.values;
         double[] probs = new double[variableToEliminate.getNumStates()];
 
-        Intervention[] interventions = new Intervention[variableToEliminate.getNumStates()];
+        StrategyTree[] strategyTrees = new StrategyTree[variableToEliminate.getNumStates()];
 
         // each outer iteration corresponds to one configuration of the variables to keep
         for (int outerIteration = 0; outerIteration < resultPotential.values.length; outerIteration++) {
@@ -892,15 +894,15 @@ public final class DiscretePotentialOperations {
                 probs[stateIndex] = probValues[currentPositionProb];
 
                 if (thereAreInterventions) {
-                    interventions[stateIndex] = utilityPotential.interventions[currentPositionUtil];
+                    strategyTrees[stateIndex] = utilityPotential.strategyTrees[currentPositionUtil];
                 }
             }
 
             resultPotential.values[outerIteration] = accumulator;
 
             if (thereAreInterventions) {
-                resultPotential.interventions[outerIteration] =
-                        Intervention.averageOfInterventions(variableToEliminate, probs, interventions);
+                resultPotential.strategyTrees[outerIteration] =
+                        StrategyTree.averageOfInterventions(variableToEliminate, probs, strategyTrees);
             }
 
             // when eliminationSize == 0 there is a multiplication without
@@ -1159,9 +1161,9 @@ public final class DiscretePotentialOperations {
             }
         }
         
-        if(potential.interventions !=null && potential.interventions.length > 0)
+        if(potential.strategyTrees !=null && potential.strategyTrees.length > 0)
         {
-        	tablePotential.interventions = potential.interventions.clone();
+        	tablePotential.strategyTrees = potential.strategyTrees.clone();
         }
         return tablePotential;
     }
@@ -1822,8 +1824,8 @@ public final class DiscretePotentialOperations {
         int[] potentialDimensions = potential.getDimensions();
         double[] valuesOrigPotential = potential.values;
         double[] valuesNewPotential = newPotential.values;
-        Intervention[] intervOrigPotential = potential.interventions;
-        Intervention[] intervNewPotential = null;
+        StrategyTree[] intervOrigPotential = potential.strategyTrees;
+        StrategyTree[] intervNewPotential = null;
         UncertainValue[] uncertainValues = null;
         UncertainValue[] copyUncertainValues = null;
         if (potential.isUncertain()) {
@@ -1833,9 +1835,9 @@ public final class DiscretePotentialOperations {
         }
         hasInterventions = intervOrigPotential!=null && intervOrigPotential.length > 0;
         if (hasInterventions){
-        	int newInterventionsLength = potential.interventions.length;
-        	newPotential.interventions = new Intervention[newInterventionsLength];
-        	intervNewPotential = newPotential.interventions;
+        	int newInterventionsLength = potential.strategyTrees.length;
+        	newPotential.strategyTrees = new StrategyTree[newInterventionsLength];
+        	intervNewPotential = newPotential.strategyTrees;
         }
 
         int copyTablePosition = 0;

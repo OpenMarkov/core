@@ -9,6 +9,7 @@ package org.openmarkov.core.inference.tasks;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.NoMixedParents;
@@ -28,16 +29,13 @@ import java.util.List;
  * @author jorgepmartin
  * @author artasom
  */
-public abstract class Propagation extends Task {
+public interface Propagation extends Task {
 
-    /**
-     * @param probNet The network used in the inference
-     * @throws NotEvaluableNetworkException
-     */
-    public Propagation(ProbNet probNet) throws NotEvaluableNetworkException {
-        super(probNet);
-    }
+    HashMap<Variable, TablePotential> getPosteriorValues()
+            throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
 
-    public abstract HashMap<Variable, TablePotential> getPosteriorValues() throws IncompatibleEvidenceException, UnexpectedInferenceException;
+    void setPostResolutionEvidence(EvidenceCase postResolutionEvidence);
+
+    void setVariablesOfInterest(List<Variable> variablesOfInterest);
 
 }

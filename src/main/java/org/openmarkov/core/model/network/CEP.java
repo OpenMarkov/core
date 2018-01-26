@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.CostEffectivenessException;
-import org.openmarkov.core.model.network.potential.Intervention;
+import org.openmarkov.core.model.network.potential.StrategyTree;
 
 /**
  * A CEP is a set of <b>n</b> intervals, each one with a cost, an effectiveness and possibly, an intervention.
@@ -22,7 +22,7 @@ public class CEP {
 
 	/** An intervention is a potential. If it is a decision, its value is a <code>DeltaPotential</code>, otherwise, 
 	 * a <code>TreeADDPotential</code> */
-	private Intervention[] interventions;
+	private StrategyTree[] strategyTrees;
 
 	/** Divisions between intervals. */
 	private double[] thresholds;
@@ -43,20 +43,20 @@ public class CEP {
 
 	// Constructors
 	/** 
-	 * @param interventions <code>Intervention[]</code>
+	 * @param strategyTrees <code>Intervention[]</code>
 	 * @param costs <code>double[]</code>
 	 * @param effectivities <code>double[]</code>
 	 * @param thresholds <code>double[]</code>
 	 * @throws CostEffectivenessException 
 	 */
 	public CEP(
-			Intervention[] interventions, 
+			StrategyTree[] strategyTrees,
 			double[] costs, 
 			double[] effectivities, 
 			double[] thresholds) 
 					throws CostEffectivenessException {
 		
-		if (costs.length == effectivities.length && costs.length == interventions.length) {
+		if (costs.length == effectivities.length && costs.length == strategyTrees.length) {
 			if (costs.length == 1 && thresholds == null) {
 				this.thresholds = new double[0];
 			} else {
@@ -69,11 +69,11 @@ public class CEP {
 			}
 			this.costs = costs;
 			this.effectivities = effectivities;
-			this.interventions = interventions;
+			this.strategyTrees = strategyTrees;
 		} else {
 			throw new CostEffectivenessException("Number of cost, effectivities and interventions must be equal.\n" + 
 					"Number of cost = " + costs.length + "\nNumber of effectivities = " + effectivities.length + 
-					"\nNumber of interventions = " + interventions.length);
+					"\nNumber of interventions = " + strategyTrees.length);
 		}
 		minThreshold = defaultMinimalThreshold;
 		maxThreshold = defaultMaximalThreshold;
@@ -81,7 +81,7 @@ public class CEP {
 
 	/**
 	 * Creates a partition with only one interval
-	 * @param intervention <code>Potential</code>
+	 * @param strategyTree <code>Potential</code>
 	 * @param cost <code>double</code>
 	 * @param effectiveness <code>double</code>
 	 * @param minThreshold <code>double</code>
@@ -89,7 +89,7 @@ public class CEP {
 	 * @throws CostEffectivenessException
 	 */
 	public CEP(
-			Intervention intervention, 
+			StrategyTree strategyTree,
 			double cost, 
 			double effectiveness, 
 			double minThreshold, 
@@ -99,15 +99,15 @@ public class CEP {
 		costs = new double[]{cost};
 		effectivities = new double[]{effectiveness};
 		thresholds = new double[0];
-		if (intervention != null) {
-			this.interventions = new Intervention[]{intervention};
+		if (strategyTree != null) {
+			this.strategyTrees = new StrategyTree[]{ strategyTree };
 		}
 		this.minThreshold = minThreshold;
 		this.maxThreshold = maxThreshold;
 	}
 
 	/**
-	 * @param interventions <code>Potential[]</code>
+	 * @param strategyTrees <code>Potential[]</code>
 	 * @param costs <code>double[]</code>
 	 * @param effectivities <code>double[]</code>
 	 * @param thresholds <code>double[]</code>
@@ -116,7 +116,7 @@ public class CEP {
 	 * @throws CostEffectivenessException
 	 */
 	public CEP(
-			Intervention[] interventions, 
+			StrategyTree[] strategyTrees,
 			double[] costs, 
 			double[] effectivities, 
 			double[] thresholds,
@@ -124,7 +124,7 @@ public class CEP {
 			double maxThreshold) 
 					throws CostEffectivenessException {
 		
-		this(interventions, costs, effectivities, thresholds);
+		this(strategyTrees, costs, effectivities, thresholds);
 		this.minThreshold = minThreshold;
 		this.maxThreshold = maxThreshold;
 	}
@@ -199,13 +199,13 @@ public class CEP {
 	/**
 	 * @return The intervention corresponding to this CEP with a discretized continuous variable on root called lambda
 	 */
-	public Intervention getIntervention() {
+	public StrategyTree getIntervention() {
 		Variable lambda = getLambda();
-		return new Intervention(lambda, getListOfStates(lambda), getListOfInterventions());
+		return new StrategyTree(lambda, getListOfStates(lambda), getListOfInterventions());
 	}
 	
 	public int getNumIntervals() {
-		return interventions.length;
+		return strategyTrees.length;
 	}
 
 	/**
@@ -244,23 +244,23 @@ public class CEP {
 	 * @param lambda <code>double</code>
 	 * @return TreeADDPotential corresponding to lambda. <code>TreeADDPotential</code>
 	 */
-	public Intervention getIntervention(double lambda) {
-		return interventions[index(lambda)];
+	public StrategyTree getIntervention(double lambda) {
+		return strategyTrees[index(lambda)];
 	}
 
 	/**
 	 * @param interval <code>int</code>
 	 * @return TreeADDPotential corresponding to interval. <code>TreeADDPotential</code>
 	 */
-	public Intervention getIntervention(int interval) {
-		return interventions[interval];
+	public StrategyTree getIntervention(int interval) {
+		return strategyTrees[interval];
 	}
 
 	/**
 	 * @return All the interventions. <code>Intervention[]</code>
 	 */
-	public Intervention[] getInterventions() {
-		return interventions;
+	public StrategyTree[] getStrategyTrees() {
+		return strategyTrees;
 	}
 
 	/**
@@ -333,12 +333,12 @@ public class CEP {
 		return costs;
 	}
 	
-	private List<Intervention> getListOfInterventions() {
-		List<Intervention> listOfInterventions = new ArrayList<Intervention>(interventions.length);
-		for (int i = 0; i < interventions.length; i++) {
-			listOfInterventions.add(interventions[i]);
+	private List<StrategyTree> getListOfInterventions() {
+		List<StrategyTree> listOfStrategyTrees = new ArrayList<StrategyTree>(strategyTrees.length);
+		for (int i = 0; i < strategyTrees.length; i++) {
+			listOfStrategyTrees.add(strategyTrees[i]);
 		}
-		return listOfInterventions;
+		return listOfStrategyTrees;
 	}
 
 	private List<State> getListOfStates(Variable variable) {
@@ -352,10 +352,10 @@ public class CEP {
 	}
 
 	private Variable getLambda() {
-		State[] states = new State[interventions.length];
-		double[] limits = new double[interventions.length + 1];
+		State[] states = new State[strategyTrees.length];
+		double[] limits = new double[strategyTrees.length + 1];
 		limits[0] = minThreshold;
-		boolean[] belongsToLeftSide = new boolean[interventions.length + 2];
+		boolean[] belongsToLeftSide = new boolean[strategyTrees.length + 2];
 		belongsToLeftSide[belongsToLeftSide.length - 1] = false;
 		belongsToLeftSide[0] = true;
 		// build state names: state[i] = lambda in (min, max)
@@ -435,14 +435,14 @@ public class CEP {
 
 				strBuffer.append(indent);
 				strBuffer.append("optimal intervention:");
-				if (interventions[i] != null) {
-					interventions[i].setIndentLevel(indentLevel + 2);
+				if (strategyTrees[i] != null) {
+					strategyTrees[i].setIndentLevel(indentLevel + 2);
 					strBuffer.append("\n");
 				}
 				else {
 					strBuffer.append(" ");
 				}
-				strBuffer.append(interventions[i]);
+				strBuffer.append(strategyTrees[i]);
 			}
 		}
 		return strBuffer.toString();

@@ -15,15 +15,15 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.sdag.SDAGIntervention;
+import org.openmarkov.core.model.network.potential.sdag.SDAGStrategyTree;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 // TODO Documentar la clase
-public class Intervention extends TreeADDPotential {
+public class StrategyTree extends TreeADDPotential {
 	
-	public Intervention(List<Variable> variables, Variable topVariable){
+	public StrategyTree(List<Variable> variables, Variable topVariable){
 		super(variables,topVariable,PotentialRole.UNSPECIFIED);
 		//super(variables,topVariable,PotentialRole.INTERVENTION);
 	}
@@ -33,7 +33,7 @@ public class Intervention extends TreeADDPotential {
 	 * Creates an intervention without branches. 
 	 * @param topVariable
 	 */
-	public Intervention(Variable topVariable) {
+	public StrategyTree(Variable topVariable) {
 		this(null, topVariable);		
 	}
 	
@@ -42,44 +42,44 @@ public class Intervention extends TreeADDPotential {
 	 * The number of states and interventions must be the same.
 	 * @param topVariable <code>Variable</code>
 	 * @param states One state for each intervention in the list. <code>List</code> of <code>State</code>
-	 * @param interventions It is possible that this list contains some equal interventions.
+	 * @param strategyTrees It is possible that this list contains some equal interventions.
 	 *  <code>List</code> of <code>Intervention</code>
 	 */
-	public Intervention(Variable topVariable, List<State> states, List<Intervention> interventions) {
+	public StrategyTree(Variable topVariable, List<State> states, List<StrategyTree> strategyTrees) {
 		this(null, topVariable);
-		List<Intervention> distinctInterventions = new ArrayList<>();
-		Map<Intervention, Set<State>> correspondingStates = new HashMap<>();
-		int numInterventions = interventions.size();
+		List<StrategyTree> distinctStrategyTrees = new ArrayList<>();
+		Map<StrategyTree, Set<State>> correspondingStates = new HashMap<>();
+		int numInterventions = strategyTrees.size();
 		for (int i = 0; i < numInterventions; i++) {
-			Intervention intervention = interventions.get(i);
-			int numDistinctInterventions = distinctInterventions.size();
+			StrategyTree strategyTree = strategyTrees.get(i);
+			int numDistinctInterventions = distinctStrategyTrees.size();
 			boolean noMatch = true;
-			Intervention distinctIntervention = null;
+			StrategyTree distinctStrategyTree = null;
 			State correspondingState = null;
 			
 			// Check if there is any intervention equal to "intervention" in "distinctInterventions"
 			for (int j = 0; j < numDistinctInterventions && noMatch; j++) {
-				distinctIntervention = distinctInterventions.get(j);
-				noMatch &= !(distinctIntervention == intervention || distinctIntervention.equals(intervention));
+				distinctStrategyTree = distinctStrategyTrees.get(j);
+				noMatch &= !(distinctStrategyTree == strategyTree || distinctStrategyTree.equals(strategyTree));
 				correspondingState = (!noMatch) ? states.get(i) : correspondingState;
 			}
 			if (noMatch) { // If no, add it to distinctInterventions and create a set of states in corresponding states
-				distinctInterventions.add(intervention);
+				distinctStrategyTrees.add(strategyTree);
 				Set<State> statesIntervention = new HashSet<>();
 				statesIntervention.add(states.get(i));
-				correspondingStates.put(intervention, statesIntervention);
+				correspondingStates.put(strategyTree, statesIntervention);
 			} else { // Intervention is equal to a previous intervention. Add the state to the corresponding states set
-				if (distinctIntervention != null) {
-					correspondingStates.get(distinctIntervention).add(correspondingState);
+				if (distinctStrategyTree != null) {
+					correspondingStates.get(distinctStrategyTree).add(correspondingState);
 				}
 			}
 		}
 		
 		// Create branches
-		for (Intervention intervention : distinctInterventions) {
-			List<State> statesOfIntervention = new ArrayList<>(correspondingStates.get(intervention));
-			if (intervention != null) {
-				addBranch(new TreeADDBranch(statesOfIntervention, topVariable, intervention, null));
+		for (StrategyTree strategyTree : distinctStrategyTrees) {
+			List<State> statesOfIntervention = new ArrayList<>(correspondingStates.get(strategyTree));
+			if (strategyTree != null) {
+				addBranch(new TreeADDBranch(statesOfIntervention, topVariable, strategyTree, null));
 			}
 		}
 	}
@@ -89,7 +89,7 @@ public class Intervention extends TreeADDPotential {
 	 * @param topVariable
 	 * @param states
 	 */
-	public Intervention(Variable topVariable, State... states) {
+	public StrategyTree(Variable topVariable, State... states) {
 		this(null, topVariable);
 		List<State> branchStates = Arrays.asList(states);
 		addBranch(new TreeADDBranch(branchStates, topVariable, null));
@@ -100,7 +100,7 @@ public class Intervention extends TreeADDPotential {
 	 * @param topVariable
 	 * @param states
 	 */
-	public Intervention(Variable topVariable, List<State> states) {
+	public StrategyTree(Variable topVariable, List<State> states) {
 		this(null, topVariable);
 		List<State> branchStates = new ArrayList<>(states.size());
 		branchStates.addAll(states);
@@ -111,28 +111,28 @@ public class Intervention extends TreeADDPotential {
 	 * Creates an intervention with only one branch. 
 	 * @param topVariable
 	 * @param states
-	 * @param intervention
+	 * @param strategyTree
 	 */
-	public Intervention(Variable topVariable, List<State> states, Intervention intervention) {
+	public StrategyTree(Variable topVariable, List<State> states, StrategyTree strategyTree) {
 		this(null, topVariable);
 		List<State> branchStates = new ArrayList<>(states.size());
 		branchStates.addAll(states);
-		addBranch(new TreeADDBranch(branchStates, topVariable, intervention, null));
+		addBranch(new TreeADDBranch(branchStates, topVariable, strategyTree, null));
 	}
 	
 	/**
 	 * Creates an intervention with a continuous variable with a partitioned interval.
 	 * The partitioned interval must have the same number of sub-intervals than interventions.
 	 * @param topVariable
-	 * @param interventions
+	 * @param strategyTrees
 	 */
-	public Intervention(Variable topVariable, PartitionedInterval partitionedInterval, List<Intervention> interventions) {
+	public StrategyTree(Variable topVariable, PartitionedInterval partitionedInterval, List<StrategyTree> strategyTrees) {
 		this(null, topVariable);
 		double[] limits = partitionedInterval.getLimits();
 		for (int i = 0; i < limits.length - 1; i++) {
 			addBranch(new TreeADDBranch(
 					new Threshold(limits[i], false), new Threshold(limits[i + 1], true), 
-					topVariable, interventions.get(i), null));
+					topVariable, strategyTrees.get(i), null));
 		}
 	}
 	
@@ -145,95 +145,95 @@ public class Intervention extends TreeADDPotential {
 	 *            <code>Variable</code>
 	 * @param probabilities
 	 *            <code>double[]</code>
-	 * @param interventions
+	 * @param strategyTrees
 	 *            <code>Intervention[]</code>
 	 * @return A Intervention. <code>Intervention</code>
 	 */
-	public static Intervention averageOfInterventions(Variable chanceVariable, double[] probabilities,
-			Intervention[] interventions) {
+	public static StrategyTree averageOfInterventions(Variable chanceVariable, double[] probabilities,
+			StrategyTree[] strategyTrees) {
 		State[] states = chanceVariable.getStates();
 
 		// Select interventions and states whose probability is greater than
 		// 0.0.
-		List<Intervention> selectedInterventions = new ArrayList<>();
+		List<StrategyTree> selectedStrategyTrees = new ArrayList<>();
 		List<State> selectedStates = new ArrayList<>();
 		for (int i = 0; i < probabilities.length; i++) {
 			if (probabilities[i] > 0.0) {
-				selectedInterventions.add(interventions[i]);
+				selectedStrategyTrees.add(strategyTrees[i]);
 				selectedStates.add(states[i]);
 			}
 		}
-		int numSelectedInterventions = selectedInterventions.size();
-		Intervention intervention;
+		int numSelectedInterventions = selectedStrategyTrees.size();
+		StrategyTree strategyTree;
 		if (numSelectedInterventions == 0) { // All probabilities == 0.0
-			intervention = null;
+			strategyTree = null;
 		} else {
 			if (numSelectedInterventions == 1) { // Only one intervention with
 													// probability != 0.0
-				intervention = selectedInterventions.get(0);
+				strategyTree = selectedStrategyTrees.get(0);
 			} else { // More than one intervention with probability != 0.0
-				if (equalInterventions(selectedInterventions.toArray(new Intervention[numSelectedInterventions]))) {
+				if (equalInterventions(selectedStrategyTrees.toArray(new StrategyTree[numSelectedInterventions]))) {
 					// All interventions are equals
-					intervention = selectedInterventions.get(0);
+					strategyTree = selectedStrategyTrees.get(0);
 				} else {
-					intervention = new Intervention(chanceVariable, selectedStates, selectedInterventions);
+					strategyTree = new StrategyTree(chanceVariable, selectedStates, selectedStrategyTrees);
 				}
 			}
 		}
-		return intervention;
+		return strategyTree;
 	}
 
 	/**
 	 * Creates an intervention 
 	 * @param decisionVariable
 	 * @param utilities
-	 * @param interventions
+	 * @param strategyTrees
 	 * @param coalescedInterventions 
 	 * @return Optimal intervention
 	 */
-	public static Intervention optimalIntervention(Variable decisionVariable, 
-			double[] utilities, Intervention[] interventions, boolean coalescedInterventions) {
+	public static StrategyTree optimalIntervention(Variable decisionVariable,
+			double[] utilities, StrategyTree[] strategyTrees, boolean coalescedInterventions) {
 		State[] states = decisionVariable.getStates();
 		List<State> optimalStates = new ArrayList<>();
-		List<Intervention> optimalInterventions = new ArrayList<>();
+		List<StrategyTree> optimalStrategyTrees = new ArrayList<>();
 		double max = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < states.length; i++) {
-			Intervention interventionI = interventions[i];
+			StrategyTree strategyTreeI = strategyTrees[i];
 			double utilityI = utilities[i];
 			if (utilityI > max) {
 				max = utilityI;
 				optimalStates.clear();
 				optimalStates.add(states[i]);
-				optimalInterventions.clear();
-				optimalInterventions.add(interventionI);
+				optimalStrategyTrees.clear();
+				optimalStrategyTrees.add(strategyTreeI);
 			} else if (utilityI == max) {  // there is a tie
 				optimalStates.add(states[i]);
-				if (interventionI != null) {
+				if (strategyTreeI != null) {
 					boolean isInOptimalInterventions = false;
-					for (int j = 0; j < optimalInterventions.size() && !isInOptimalInterventions ; j++){
-						isInOptimalInterventions = optimalInterventions.get(j).equals(interventionI);
+					for (int j = 0; j < optimalStrategyTrees.size() && !isInOptimalInterventions ; j++){
+						isInOptimalInterventions = optimalStrategyTrees.get(j).equals(strategyTreeI);
 					}
 					if (!isInOptimalInterventions) {
-						optimalInterventions.add(interventionI);
+						optimalStrategyTrees.add(strategyTreeI);
 					}
 				}
 			}
 		}
 		
-		Intervention intervention = null;
-		boolean severalOptimalInterventions = optimalInterventions.size() > 1;
+		StrategyTree strategyTree = null;
+		boolean severalOptimalInterventions = optimalStrategyTrees.size() > 1;
 		if (!coalescedInterventions) {
-			intervention = severalOptimalInterventions ? new Intervention(decisionVariable, optimalStates,
-					optimalInterventions) : new Intervention(decisionVariable, optimalStates,
-					optimalInterventions.get(0));
+			strategyTree = severalOptimalInterventions ? new StrategyTree(decisionVariable, optimalStates,
+					optimalStrategyTrees) : new StrategyTree(decisionVariable, optimalStates,
+					optimalStrategyTrees.get(0));
 		} else {
-			intervention = severalOptimalInterventions ? new SDAGIntervention(decisionVariable,
-					optimalStates, optimalInterventions) : new SDAGIntervention(decisionVariable,
-					optimalStates, optimalInterventions.get(0));
+			strategyTree = severalOptimalInterventions ? new SDAGStrategyTree(decisionVariable,
+					optimalStates, optimalStrategyTrees) : new SDAGStrategyTree(decisionVariable,
+					optimalStates, optimalStrategyTrees.get(0));
 
 		}
 		
-    	return intervention;
+    	return strategyTree;
 		
 	}
 	
@@ -243,39 +243,39 @@ public class Intervention extends TreeADDPotential {
 	 * Creates an intervention 
 	 * @param decisionVariable
 	 * @param utilities
-	 * @param interventions
+	 * @param strategyTrees
 	 * @param coalescedInterventions 
 	 * @return Optimal intervention
 	 */
-	public static Intervention optimalInterventionTakingOneOptimal(Variable decisionVariable, 
-			double[] utilities, Intervention[] interventions, boolean coalescedInterventions) {
+	public static StrategyTree optimalInterventionTakingOneOptimal(Variable decisionVariable,
+			double[] utilities, StrategyTree[] strategyTrees, boolean coalescedInterventions) {
 		State[] states = decisionVariable.getStates();
 		List<State> optimalStates = new ArrayList<>();
 		State optimalState = null;
-		Intervention optimalIntervention = null;
+		StrategyTree optimalStrategyTree = null;
 		double max = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < states.length; i++) {
-			Intervention interventionI = interventions[i];
+			StrategyTree strategyTreeI = strategyTrees[i];
 			double utilityI = utilities[i];
 			if (utilityI > max) {
 				max = utilityI;
 				optimalState = states[i];
-				optimalIntervention = interventionI;
+				optimalStrategyTree = strategyTreeI;
 			}
 		}
 		optimalStates.add(optimalState);
-		Intervention intervention = null;
-		if (optimalIntervention!=null){
-			intervention = (!coalescedInterventions)? new Intervention(decisionVariable, optimalStates,
-					optimalIntervention): new SDAGIntervention(decisionVariable,
-					optimalStates, optimalIntervention);
+		StrategyTree strategyTree = null;
+		if (optimalStrategyTree !=null){
+			strategyTree = (!coalescedInterventions)? new StrategyTree(decisionVariable, optimalStates,
+					optimalStrategyTree): new SDAGStrategyTree(decisionVariable,
+					optimalStates, optimalStrategyTree);
 		}
 		else{
-			intervention = (!coalescedInterventions)? new Intervention(decisionVariable, optimalStates): 
-				new SDAGIntervention(decisionVariable,optimalStates);
+			strategyTree = (!coalescedInterventions)? new StrategyTree(decisionVariable, optimalStates):
+				new SDAGStrategyTree(decisionVariable,optimalStates);
 			
 		}
-    	return intervention;
+    	return strategyTree;
 		
 	}
 	
@@ -284,16 +284,16 @@ public class Intervention extends TreeADDPotential {
 	 * Creates an intervention 
 	 * @param decisionVariable
 	 * @param utilities
-	 * @param interventions
+	 * @param strategyTrees
 	 * @param coalescedInterventions 
 	 * @return Optimal intervention
 	 */
-	public static Intervention optimalInterventionTakingAllOptimal(Variable decisionVariable, 
-			double[] utilities, Intervention[] interventions) {
+	public static StrategyTree optimalInterventionTakingAllOptimal(Variable decisionVariable,
+			double[] utilities, StrategyTree[] strategyTrees) {
 		State[] states = decisionVariable.getStates();
 		List<State> optimalStates = new ArrayList<>();
-		List<Intervention> optimalInterventions = new ArrayList<>();
-		Intervention intervention;
+		List<StrategyTree> optimalStrategyTrees = new ArrayList<>();
+		StrategyTree strategyTree;
 		double max = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < states.length; i++) {
 			double utilityI = utilities[i];
@@ -301,56 +301,56 @@ public class Intervention extends TreeADDPotential {
 				if (utilityI > max) {
 					max = utilityI;
 					optimalStates = new ArrayList<>();
-					optimalInterventions = new ArrayList<>();
+					optimalStrategyTrees = new ArrayList<>();
 				}
 				optimalStates.add(states[i]);
-				optimalInterventions.add(interventions[i]);
+				optimalStrategyTrees.add(strategyTrees[i]);
 			}
 		}
 		
-		if (!areNullOptimalInterventions(optimalInterventions)){
-			intervention = new Intervention(decisionVariable, optimalStates,optimalInterventions);
+		if (!areNullOptimalInterventions(optimalStrategyTrees)){
+			strategyTree = new StrategyTree(decisionVariable, optimalStates, optimalStrategyTrees);
 		}
 		else{
-			intervention = new Intervention(decisionVariable, optimalStates);			
+			strategyTree = new StrategyTree(decisionVariable, optimalStates);
 		}
-    	return intervention;		
+    	return strategyTree;
 	}
 	
-	private static boolean areNullOptimalInterventions(List<Intervention> interventions){
-		return (interventions.isEmpty() || interventions.get(0)==null);
+	private static boolean areNullOptimalInterventions(List<StrategyTree> strategyTrees){
+		return (strategyTrees.isEmpty() || strategyTrees.get(0)==null);
 	}
 	
 	/**
 	 * Creates an intervention 
 	 * @param decisionVariable
 	 * @param utilities
-	 * @param interventions
+	 * @param strategyTrees
 	 * @param coalescedInterventions 
 	 * @return Optimal intervention
 	 */
-	public static Intervention optimalInterventionTakingOptimalMinimalDepth(Variable decisionVariable, 
-			double[] utilities, Intervention[] interventions, boolean coalescedInterventions) {
+	public static StrategyTree optimalInterventionTakingOptimalMinimalDepth(Variable decisionVariable,
+			double[] utilities, StrategyTree[] strategyTrees, boolean coalescedInterventions) {
 		State[] states = decisionVariable.getStates();
 		List<State> optimalStates = new ArrayList<>();
 		State optimalState = null;
-		Intervention optimalIntervention = null;
+		StrategyTree optimalStrategyTree = null;
 		int depthOfOptimalInterv = Integer.MAX_VALUE;
 		double max = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < states.length; i++) {
-			Intervention interventionI = interventions[i];
+			StrategyTree strategyTreeI = strategyTrees[i];
 			double utilityI = utilities[i];
 			if (utilityI > max) {
 				max = utilityI;
 				optimalState = states[i];
-				optimalIntervention = interventionI;
+				optimalStrategyTree = strategyTreeI;
 			}
 			if (utilityI == max){
-				if (interventionI != null){
-				int auxDepth = interventionI.getDepth();
+				if (strategyTreeI != null){
+				int auxDepth = strategyTreeI.getDepth();
 				if (auxDepth<depthOfOptimalInterv){
 					optimalState = states[i];
-					optimalIntervention = interventionI;
+					optimalStrategyTree = strategyTreeI;
 					depthOfOptimalInterv = auxDepth;
 				}
 				}
@@ -358,18 +358,18 @@ public class Intervention extends TreeADDPotential {
 			}
 		}
 		optimalStates.add(optimalState);
-		Intervention intervention = null;
-		if (optimalIntervention!=null){
-			intervention = (!coalescedInterventions)? new Intervention(decisionVariable, optimalStates,
-					optimalIntervention): new SDAGIntervention(decisionVariable,
-					optimalStates, optimalIntervention);
+		StrategyTree strategyTree = null;
+		if (optimalStrategyTree !=null){
+			strategyTree = (!coalescedInterventions)? new StrategyTree(decisionVariable, optimalStates,
+					optimalStrategyTree): new SDAGStrategyTree(decisionVariable,
+					optimalStates, optimalStrategyTree);
 		}
 		else{
-			intervention = (!coalescedInterventions)? new Intervention(decisionVariable, optimalStates): 
-				new SDAGIntervention(decisionVariable,optimalStates);
+			strategyTree = (!coalescedInterventions)? new StrategyTree(decisionVariable, optimalStates):
+				new SDAGStrategyTree(decisionVariable,optimalStates);
 			
 		}
-    	return intervention;
+    	return strategyTree;
 		
 	}
 	
@@ -383,9 +383,9 @@ public class Intervention extends TreeADDPotential {
 				int auxDepth = 0;
 				for (int i = 0; i < branches.size(); i++) {
 					TreeADDBranch auxBranch = branches.get(i);
-					Intervention auxInterventionBranch = getInterventionBranch(auxBranch);
-					if (auxInterventionBranch != null) {
-						auxDepth = Math.max(auxDepth,auxInterventionBranch.getDepth());
+					StrategyTree auxStrategyTreeBranch = getInterventionBranch(auxBranch);
+					if (auxStrategyTreeBranch != null) {
+						auxDepth = Math.max(auxDepth, auxStrategyTreeBranch.getDepth());
 					}
 				}
 				depth = 1 + auxDepth;
@@ -397,20 +397,20 @@ public class Intervention extends TreeADDPotential {
 
 	/** 
 	 * Add <code>Intervention</code> to edges of this intervention
-	 * @param intervention
+	 * @param strategyTree
 	 * @return 
 	 * @throws Exception 
 	 */
-	public Intervention concatenate(Intervention intervention) {
+	public StrategyTree concatenate(StrategyTree strategyTree) {
 		//  
-		Intervention oldIntervention;
+		StrategyTree oldStrategyTree;
 		for (TreeADDBranch branch : branches) {
-			oldIntervention = (Intervention)branch.getPotential();
-			if (oldIntervention == null) {
-				branch.setPotential(intervention);
+			oldStrategyTree = (StrategyTree)branch.getPotential();
+			if (oldStrategyTree == null) {
+				branch.setPotential(strategyTree);
 			} else {
-				Intervention branchIntervention = (Intervention)branch.getPotential();
-				branchIntervention = branchIntervention.concatenate(intervention);
+				StrategyTree branchStrategyTree = (StrategyTree)branch.getPotential();
+				branchStrategyTree = branchStrategyTree.concatenate(strategyTree);
 			}
 		}
 		return this;
@@ -425,9 +425,9 @@ public class Intervention extends TreeADDPotential {
 		for (int i=0;(i<branches.size()&&!hasCycle);i++){
 			TreeADDBranch branch = branches.get(i);	
 			if (branch != null){
-			Intervention interventionBranch = (Intervention)branch.getPotential();
-			if (interventionBranch != null){
-				hasCycle = interventionBranch.isReachable(this);
+			StrategyTree strategyTreeBranch = (StrategyTree)branch.getPotential();
+			if (strategyTreeBranch != null){
+				hasCycle = strategyTreeBranch.isReachable(this);
 			}
 			}
 			
@@ -438,19 +438,19 @@ public class Intervention extends TreeADDPotential {
 	}
 	
 	 /**
-	 * @param intervention
+	 * @param strategyTree
 	 * @return True iff 'intervention' can be reached from 'this'
 	 */
-	private boolean isReachable(Intervention intervention) {
+	private boolean isReachable(StrategyTree strategyTree) {
 		 boolean isReachable = false;
 		 if (branches != null)
 		 for (int i=0;(i<branches.size()&&!isReachable);i++){
 				TreeADDBranch branch = branches.get(i);		
 				if (branch != null){
-				Intervention auxBranchIntervention = (Intervention)branch.getPotential();
-				if (auxBranchIntervention != null){
-				isReachable = auxBranchIntervention == intervention;
-				isReachable = isReachable || auxBranchIntervention.isReachable(intervention);
+				StrategyTree auxBranchStrategyTree = (StrategyTree)branch.getPotential();
+				if (auxBranchStrategyTree != null){
+				isReachable = auxBranchStrategyTree == strategyTree;
+				isReachable = isReachable || auxBranchStrategyTree.isReachable(strategyTree);
 				}
 				}
 		 }
@@ -458,15 +458,15 @@ public class Intervention extends TreeADDPotential {
 	}
 
 	/**
-     * @param intervention <code>Intervention</code>
+     * @param strategyTree <code>Intervention</code>
      * @return True when <code>this</code> and <code>intervention</code> are equals.
      */
-    public boolean equals(Intervention intervention) {
+    public boolean equals(StrategyTree strategyTree) {
     	int numBranches = branches.size();
         boolean stillEqual =
-                    intervention!= null && 
-                    intervention.topVariable == topVariable &&
-                    intervention.branches.size() == numBranches;
+                    strategyTree != null &&
+                    strategyTree.topVariable == topVariable &&
+                    strategyTree.branches.size() == numBranches;
         if (stillEqual) {
             // Compare each branch
             for (int i = 0; i < numBranches && stillEqual; i++) {
@@ -474,7 +474,7 @@ public class Intervention extends TreeADDPotential {
                 // Get the corresponding branch to "this.branches.get(i)" in the other "intervention"
                 List<State> states = branch.getStates();
                 // A branch always has at least one state
-                TreeADDBranch interventionBranch = intervention.getBranch(states.get(0)); 
+                TreeADDBranch interventionBranch = strategyTree.getBranch(states.get(0));
                 stillEqual &= interventionBranch != null;
                 // Compare states
                 if (stillEqual) {
@@ -484,13 +484,13 @@ public class Intervention extends TreeADDPotential {
                 }
                 // Compare potentials
                 if (stillEqual) {
-                    Intervention interventionBranchPotential = (Intervention)interventionBranch.getPotential();
-                    Intervention branchPotential = (Intervention)branch.getPotential();
-                    stillEqual &= !((interventionBranchPotential == null && branchPotential != null) ||
-                            (interventionBranchPotential != null && branchPotential == null));
+                    StrategyTree strategyTreeBranchPotential = (StrategyTree)interventionBranch.getPotential();
+                    StrategyTree branchPotential = (StrategyTree)branch.getPotential();
+                    stillEqual &= !((strategyTreeBranchPotential == null && branchPotential != null) ||
+                            (strategyTreeBranchPotential != null && branchPotential == null));
                     // Recursive part (it won't be evaluated when already false)
-                   	stillEqual &= interventionBranchPotential != null ? 
-                   			interventionBranchPotential.equals(branchPotential) : true;
+                   	stillEqual &= strategyTreeBranchPotential != null ?
+                   			strategyTreeBranchPotential.equals(branchPotential) : true;
                 }
             }
         }
@@ -498,17 +498,17 @@ public class Intervention extends TreeADDPotential {
     }	
     
 	/**
-	 * @param interventions
+	 * @param strategyTrees
 	 * @return <code>true</code> when all the interventions are equal.
 	 */
-	protected static boolean equalInterventions(Intervention[] interventions) {
+	protected static boolean equalInterventions(StrategyTree[] strategyTrees) {
 		boolean equalInterventions = true;
-		int numInterventions = interventions.length;
-		if (interventions != null && numInterventions > 1) {
-			Intervention firstIntervention = interventions[0];
+		int numInterventions = strategyTrees.length;
+		if (strategyTrees != null && numInterventions > 1) {
+			StrategyTree firstStrategyTree = strategyTrees[0];
 			for (int i = 1; i < numInterventions && equalInterventions; i++) {
-				equalInterventions &= (firstIntervention == null) ? interventions[i] == null
-						: firstIntervention.equals(interventions[i]);
+				equalInterventions &= (firstStrategyTree == null) ? strategyTrees[i] == null
+						: firstStrategyTree.equals(strategyTrees[i]);
 			}
 		}
 		return equalInterventions;
@@ -517,15 +517,15 @@ public class Intervention extends TreeADDPotential {
     /**
      * @return List of interventions contained in branches if they are not null.
      */
-    public List<Intervention> getNextInterventions() {
-    	List<Intervention> nextInterventions = new ArrayList<>();
+    public List<StrategyTree> getNextInterventions() {
+    	List<StrategyTree> nextStrategyTrees = new ArrayList<>();
     	for (TreeADDBranch branch : branches) { // branches is never null according to TreeADDPotential code
     		Potential branchPotential = branch.getPotential();
     		if (branchPotential != null) {
-    			nextInterventions.add((Intervention)branchPotential);
+    			nextStrategyTrees.add((StrategyTree)branchPotential);
     		}
     	}
-    	return nextInterventions;
+    	return nextStrategyTrees;
     }
 	
     /**
@@ -543,8 +543,8 @@ public class Intervention extends TreeADDPotential {
 	 * @param branch
 	 * @return The intervention corresponding to 'branch'
 	 */
-	public static Intervention getInterventionBranch(TreeADDBranch branch) {
-		return (Intervention) (branch.getPotential());
+	public static StrategyTree getInterventionBranch(TreeADDBranch branch) {
+		return (StrategyTree) (branch.getPotential());
 	}
 	
 	/** 
@@ -582,13 +582,13 @@ public class Intervention extends TreeADDPotential {
 
 		content = "digraph G {\n";
 
-		Map<Intervention, Integer> idNode = new Hashtable<>();
+		Map<StrategyTree, Integer> idNode = new Hashtable<>();
 
-		Set<Intervention> nodes = this.getInterventions();
-		Set<Intervention> leaves = this.getInterventionsLeaves();
+		Set<StrategyTree> nodes = this.getInterventions();
+		Set<StrategyTree> leaves = this.getInterventionsLeaves();
 		
 		int i = 0;
-		for (Intervention skNode : nodes) {
+		for (StrategyTree skNode : nodes) {
 			idNode.put(skNode, i);
 			String strNodes;
 
@@ -609,14 +609,14 @@ public class Intervention extends TreeADDPotential {
 			i = i + 1;
 		}
 
-		for (Intervention node : nodes) {
+		for (StrategyTree node : nodes) {
 			int nodeIdNode = idNode.get(node);
 			if (node.branches != null) {
-				List<Intervention> nodeInterv = node.getInterventionsChildren();
+				List<StrategyTree> nodeInterv = node.getInterventionsChildren();
 
 				for (int j = 0; j < node.branches.size(); j++) {
 
-					Intervention child = nodeInterv.get(j);
+					StrategyTree child = nodeInterv.get(j);
 					if (child != null) {
 
 						List<State> states = node.branches.get(j).getBranchStates();
@@ -635,17 +635,17 @@ public class Intervention extends TreeADDPotential {
 	/**
 	 * @return The Interventions that are the leaves of the tree rooted at 'this'
 	 */
-	private Set<Intervention> getInterventionsLeaves() {
+	private Set<StrategyTree> getInterventionsLeaves() {
 
-		Set<Intervention> auxSet = new HashSet<>();
+		Set<StrategyTree> auxSet = new HashSet<>();
 
 		if (branches.size() == 0) {
 			auxSet.add(this);
 		} else {
 			for (TreeADDBranch auxBranch : branches) {
-				Intervention auxInterventionBranch = getInterventionBranch(auxBranch);
-				if (auxInterventionBranch != null) {
-					auxSet.addAll(auxInterventionBranch.getInterventionsLeaves());
+				StrategyTree auxStrategyTreeBranch = getInterventionBranch(auxBranch);
+				if (auxStrategyTreeBranch != null) {
+					auxSet.addAll(auxStrategyTreeBranch.getInterventionsLeaves());
 				} else {
 					auxSet.add(this);
 				}
@@ -674,9 +674,9 @@ public class Intervention extends TreeADDPotential {
 		return str;
 	}
 
-	public List<Intervention> getInterventionsChildren() {
+	public List<StrategyTree> getInterventionsChildren() {
 		
-		List<Intervention> list = new ArrayList<>();
+		List<StrategyTree> list = new ArrayList<>();
 		if (branches!=null){
 			for (TreeADDBranch branch:branches){
 				list.add(getInterventionBranch(branch));
@@ -752,12 +752,12 @@ public class Intervention extends TreeADDPotential {
 		return string;
 	}
 
-	private Set<Intervention> getInterventions() {
+	private Set<StrategyTree> getInterventions() {
 		return this.auxGetInterventions();
 	}
 
-	private Set<Intervention> auxGetInterventions() {
-		Set<Intervention> auxSet;
+	private Set<StrategyTree> auxGetInterventions() {
+		Set<StrategyTree> auxSet;
 		
 		auxSet = new HashSet<>();
 		auxSet.add(this);
@@ -766,9 +766,9 @@ public class Intervention extends TreeADDPotential {
 			
 			for (int i = 0; i < branches.size(); i++) {
 				TreeADDBranch auxBranch = branches.get(i);
-				Intervention auxInterventionBranch = getInterventionBranch(auxBranch);
-				if (auxInterventionBranch!=null){
-					auxSet.addAll(auxInterventionBranch.auxGetInterventions());
+				StrategyTree auxStrategyTreeBranch = getInterventionBranch(auxBranch);
+				if (auxStrategyTreeBranch !=null){
+					auxSet.addAll(auxStrategyTreeBranch.auxGetInterventions());
 				}
 			}
 		}
@@ -786,7 +786,7 @@ public class Intervention extends TreeADDPotential {
 			if (branches != null) {
 				for (int i = 0; i < branches.size() && !hasInterv; i++) {
 					TreeADDBranch branch = branches.get(i);
-					Intervention branchInterv = getInterventionBranch(branch);
+					StrategyTree branchInterv = getInterventionBranch(branch);
 					if (branchInterv != null) {
 						hasInterv = branchInterv.hasInterventionForDecision(decision);
 					}
@@ -798,8 +798,8 @@ public class Intervention extends TreeADDPotential {
 	
 	@Override
 	public Potential deepCopy(ProbNet copyNet) {
-		Intervention intervention = (Intervention) super.deepCopy(copyNet);
-		return intervention;
+		StrategyTree strategyTree = (StrategyTree) super.deepCopy(copyNet);
+		return strategyTree;
 	}
 	
 }

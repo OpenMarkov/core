@@ -92,37 +92,6 @@ public class TemporalNetOperations {
 		}
 		return expandedNet;
 	}
-	
-	
-	/**
-	 * @param expandedNetwork Expanded network
-	 * @param inferenceAlgorithm Inference algorithm
-	 * @param variableOfInterest Variable of interest
-	 * @return Temporal evolution of the variable of interest
-	 * @throws ImposedPoliciesException
-	 */
-	public static Map<Variable, TablePotential> traceTemporalEvolution(ProbNet expandedNetwork, 
-			InferenceAlgorithm inferenceAlgorithm,
-			Variable variableOfInterest)
-			throws ImposedPoliciesException {
-
-		Map<Variable, TablePotential> probsAndUtilities = null;
-		String baseName = variableOfInterest.getBaseName();
-		List<Variable> variablesOfInterest = new ArrayList<>();
-		List<Node> expandedProbNetNodes = expandedNetwork.getNodes();
-		for (Node node : expandedProbNetNodes) {
-			if (node.getVariable().getBaseName().equals(baseName)) {
-				variablesOfInterest.add(node.getVariable());
-			}
-		}
-
-		try {
-			probsAndUtilities = inferenceAlgorithm.getProbsAndUtilities(variablesOfInterest);
-		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
-			e.printStackTrace();
-		}
-		return probsAndUtilities;
-	}	
 
 	/**
 	 * Assigns nodes to slices in a collection of slices. Each slice is a

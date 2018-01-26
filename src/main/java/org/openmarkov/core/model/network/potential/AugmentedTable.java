@@ -103,7 +103,7 @@ public class AugmentedTable extends TablePotential{
         setFunctionValues(potential.getFunctionValues().clone());
         
         //UNCLEAR???
-        interventions = potential.interventions;
+        strategyTrees = potential.strategyTrees;
     }
 	
 

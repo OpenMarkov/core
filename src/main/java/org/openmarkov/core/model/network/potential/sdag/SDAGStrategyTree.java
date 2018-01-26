@@ -18,14 +18,14 @@ import java.util.Set;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Intervention;
+import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 
 // TODO Documentar
-public class SDAGIntervention extends Intervention {
+public class SDAGStrategyTree extends StrategyTree {
 	
-	public SDAGIntervention(Variable topVariable) {
+	public SDAGStrategyTree(Variable topVariable) {
 		super(topVariable);
 		initializeParents();
 	}
@@ -33,7 +33,7 @@ public class SDAGIntervention extends Intervention {
 	private void updateParentsBranches(){
 		if (branches != null){
 			for (TreeADDBranch branch:branches){
-				SDAGIntervention branchInterv = (SDAGIntervention) branch.getPotential();
+				SDAGStrategyTree branchInterv = (SDAGStrategyTree) branch.getPotential();
 				if (branchInterv != null){
 					branchInterv.addParent(branch);
 				}
@@ -46,21 +46,21 @@ public class SDAGIntervention extends Intervention {
 		
 	}
 
-	public SDAGIntervention(Variable decisionVariable, List<State> optimalStates,
-			List<Intervention> optimalInterventions) {
-		super(decisionVariable,optimalStates,optimalInterventions);
+	public SDAGStrategyTree(Variable decisionVariable, List<State> optimalStates,
+			List<StrategyTree> optimalStrategyTrees) {
+		super(decisionVariable,optimalStates, optimalStrategyTrees);
 		initializeParents();
 		updateParentsBranches();
 	}
 
-	public SDAGIntervention(Variable decisionVariable, List<State> optimalStates,
-			Intervention intervention) {
-		super(decisionVariable,optimalStates,intervention);
+	public SDAGStrategyTree(Variable decisionVariable, List<State> optimalStates,
+			StrategyTree strategyTree) {
+		super(decisionVariable,optimalStates, strategyTree);
 		initializeParents();
 		updateParentsBranches();
 	}
 
-	public SDAGIntervention(Variable decisionVariable, List<State> optimalStates) {
+	public SDAGStrategyTree(Variable decisionVariable, List<State> optimalStates) {
 		super(decisionVariable,optimalStates);
 		initializeParents();
 		updateParentsBranches();
@@ -70,14 +70,14 @@ public class SDAGIntervention extends Intervention {
 
 	/** 
 	 * Add <code>Intervention</code> to edges of this intervention
-	 * @param intervention
+	 * @param strategyTree
 	 * @throws Exception 
 	 * It concatenates taking care of the coalescence
 	 */
 	@Override
-	public Intervention concatenate(Intervention intervention) {
+	public StrategyTree concatenate(StrategyTree strategyTree) {
 	
-		return concatenate(null,(SDAGIntervention)intervention);
+		return concatenate(null,(SDAGStrategyTree) strategyTree);
 		
 	}
 	
@@ -86,9 +86,9 @@ public class SDAGIntervention extends Intervention {
 	 * @param intervention
 	 * @return It concatenates taking care of the coalescence
 	 */
-	public Intervention concatenate(TreeADDBranch branchParent, SDAGIntervention intervention) {
+	public StrategyTree concatenate(TreeADDBranch branchParent, SDAGStrategyTree intervention) {
 
-		SDAGIntervention result;
+		SDAGStrategyTree result;
 		Set<TreeADDBranch> auxParents = new HashSet<>();
 
 		auxParents.addAll(parents);
@@ -103,7 +103,7 @@ public class SDAGIntervention extends Intervention {
 			result = copy().carefreeConcatenate(intervention);
 		} else {
 			for (TreeADDBranch branch : branches) {
-				SDAGIntervention branchIntervention = getCoalescedInterventionBranch(branch);
+				SDAGStrategyTree branchIntervention = getCoalescedInterventionBranch(branch);
 				if (branchIntervention == null) {
 					branch.setPotential(intervention);
 					intervention.parents.add(branch);
@@ -121,10 +121,10 @@ public class SDAGIntervention extends Intervention {
 	 * @param intervention
 	 * @return It concatenates not taking care of the coalescence, because the receiving object is a copy
 	 */
-	private SDAGIntervention carefreeConcatenate(SDAGIntervention intervention) {
+	private SDAGStrategyTree carefreeConcatenate(SDAGStrategyTree intervention) {
 
 		for (TreeADDBranch branch : branches) {
-			SDAGIntervention branchIntervention = getCoalescedInterventionBranch(branch);
+			SDAGStrategyTree branchIntervention = getCoalescedInterventionBranch(branch);
 			if (branchIntervention == null) {
 				branch.setPotential(intervention);
 				intervention.parents.add(branch);
@@ -136,16 +136,16 @@ public class SDAGIntervention extends Intervention {
 	}
 
 	@Override
-	public SDAGIntervention copy() {
-		SDAGIntervention newInt = new SDAGIntervention(this.getRootVariable());
+	public SDAGStrategyTree copy() {
+		SDAGStrategyTree newInt = new SDAGStrategyTree(this.getRootVariable());
 
 		if (this.getBranches() != null) {
 			// Create branches
 			for (TreeADDBranch branch : getBranches()) {
 				List<State> newStates = new ArrayList<>();
 				newStates.addAll(branch.getStates());
-				SDAGIntervention interv = getCoalescedInterventionBranch(branch);
-				SDAGIntervention intervCopy;
+				SDAGStrategyTree interv = getCoalescedInterventionBranch(branch);
+				SDAGStrategyTree intervCopy;
 				if (interv != null) {
 					 intervCopy = interv.copy();
 				}
@@ -163,19 +163,19 @@ public class SDAGIntervention extends Intervention {
 
 	}
 	
-	public SDAGIntervention getCoalescedInterventionBranch(TreeADDBranch branch){
-		return (SDAGIntervention)getInterventionBranch(branch);
+	public SDAGStrategyTree getCoalescedInterventionBranch(TreeADDBranch branch){
+		return (SDAGStrategyTree)getInterventionBranch(branch);
 	}
 	
 	
 	
-	public static Intervention buildIntervention(List<Intervention> optimalInterventions,Variable decisionVariable,
+	public static StrategyTree buildIntervention(List<StrategyTree> optimalStrategyTrees,Variable decisionVariable,
 			List<State> optimalStates){
-		Intervention intervention = (optimalInterventions.size() > 1)? 
-				new SDAGIntervention(decisionVariable, optimalStates, optimalInterventions):
-					new SDAGIntervention(decisionVariable, optimalStates, optimalInterventions.get(0));
+		StrategyTree strategyTree = (optimalStrategyTrees.size() > 1)?
+				new SDAGStrategyTree(decisionVariable, optimalStates, optimalStrategyTrees):
+					new SDAGStrategyTree(decisionVariable, optimalStates, optimalStrategyTrees.get(0));
 		
-    	return intervention;
+    	return strategyTree;
 	}
 
 
@@ -186,7 +186,7 @@ public class SDAGIntervention extends Intervention {
 	
 	@Override
 	public Potential deepCopy(ProbNet copyNet) {
-		SDAGIntervention potential = (SDAGIntervention) super.deepCopy(copyNet);
+		SDAGStrategyTree potential = (SDAGStrategyTree) super.deepCopy(copyNet);
 		Set<TreeADDBranch> newParents = new HashSet<>();
 		Iterator<TreeADDBranch> iterator = this.parents.iterator();
 

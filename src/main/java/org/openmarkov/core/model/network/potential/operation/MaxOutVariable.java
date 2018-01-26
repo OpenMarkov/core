@@ -1,11 +1,10 @@
 package org.openmarkov.core.model.network.potential.operation;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Intervention;
+import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -196,7 +195,7 @@ public class MaxOutVariable  {
 			List<Variable> outputUtilityVariables = inputUtilityToMaximize.getVariables();
 			outputUtilityVariables.remove(decisionVariable);
 			TablePotential outputUtility = new TablePotential(outputUtilityVariables, PotentialRole.UNSPECIFIED);
-			outputUtility.interventions = new Intervention[outputUtility.values.length];
+			outputUtility.strategyTrees = new StrategyTree[outputUtility.values.length];
 			outputUtility.setCriterion(inputUtilityToMaximize.getCriterion());
 
 			// in allVariables, the first variable is decisionVariable
@@ -221,7 +220,7 @@ public class MaxOutVariable  {
 			ArrayList<Integer> optimalStatesIndices = new ArrayList<>(decisionVariableSize);
 
 			double[] utilities = new double[decisionVariableSize];
-			Intervention[] interventions = new Intervention[decisionVariableSize];
+			StrategyTree[] strategyTrees = new StrategyTree[decisionVariableSize];
 
 			// initialize the policy
 			TablePotential policyPotential = new TablePotential(allVariables, PotentialRole.POLICY);
@@ -245,8 +244,8 @@ public class MaxOutVariable  {
 						optimalStatesIndices.add(innerIteration);
 					}
 					utilities[innerIteration] = auxInputUtilityPotentialValue;
-					if (inputUtilityToMaximize.interventions != null) {
-						interventions[innerIteration] = inputUtilityToMaximize.interventions[inputUtilityPotentialPosition];
+					if (inputUtilityToMaximize.strategyTrees != null) {
+						strategyTrees[innerIteration] = inputUtilityToMaximize.strategyTrees[inputUtilityPotentialPosition];
 					}
 
 					// find the next configuration and the index of the increased variable
@@ -260,8 +259,8 @@ public class MaxOutVariable  {
 				outputUtility.values[outputUtilityPotentialPosition] = max;
 				// TODO In testing phase it is easier to assume that there are no
 				// ties between interventions
-				outputUtility.interventions[outputUtilityPotentialPosition] = Intervention
-						.optimalInterventionTakingAllOptimal(decisionVariable, utilities, interventions);
+				outputUtility.strategyTrees[outputUtilityPotentialPosition] = StrategyTree
+						.optimalInterventionTakingAllOptimal(decisionVariable, utilities, strategyTrees);
 
 				// set the values of policyPotential
 				int policyPotentialPosition = outputUtilityPotentialPosition * decisionVariableSize;
@@ -304,7 +303,7 @@ public class MaxOutVariable  {
 
     	boolean thereAreInterventions = false;
     	for (int i = 0; i < outputUtilityPotential.values.length; i++) {
-    		if (outputUtilityPotential.interventions[i] != null) {
+    		if (outputUtilityPotential.strategyTrees[i] != null) {
     			thereAreInterventions = true;
     			break;
     		}

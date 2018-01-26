@@ -24,9 +24,9 @@ import java.util.List;
  */
 public interface TemporalEvolution extends Task {
 
-    public  HashMap<Variable, TablePotential> getTemporalEvolution() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
+    HashMap<Variable, TablePotential> getTemporalEvolution() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
 
     void setDecisionVariable(Variable decisionSelected);
 
-    public ProbNet getExpandedNetwork();
+    ProbNet getExpandedNetwork();
 }

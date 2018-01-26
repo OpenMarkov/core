@@ -12,5 +12,5 @@ import java.util.HashMap;
  */
 public interface SensAnMap extends Task {
 
-    public abstract HashMap<UncertainParameter, TablePotential> getUncertainParametersPotentials();
+    HashMap<UncertainParameter, TablePotential> getUncertainParametersPotentials();
 }

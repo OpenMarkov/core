@@ -13,8 +13,8 @@ import java.util.List;
 /** This class represents a user action related to inference. */
 public interface Task {
 
-    public void setPreResolutionEvidence(EvidenceCase preresolutionEvidence);
+    void setPreResolutionEvidence(EvidenceCase preresolutionEvidence);
 
-    public void setConditioningVariables (List<Variable> conditioningVariables);
+    void setConditioningVariables(List<Variable> conditioningVariables);
     
 }

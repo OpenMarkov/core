@@ -31,11 +31,11 @@ import java.util.List;
  */
 public interface Propagation extends Task {
 
-    public HashMap<Variable, TablePotential> getPosteriorValues()
+    HashMap<Variable, TablePotential> getPosteriorValues()
             throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
 
-    public void setPostResolutionEvidence (EvidenceCase postResolutionEvidence);
+    void setPostResolutionEvidence(EvidenceCase postResolutionEvidence);
 
-    public void setVariablesOfInterest (List<Variable> variablesOfInterest);
+    void setVariablesOfInterest(List<Variable> variablesOfInterest);
 
 }

@@ -20,5 +20,5 @@ import java.util.List;
  */
 public interface CE_PSA extends Task {
 	
-    public abstract Collection<GTablePotential> getCEPPotential();
+    public Collection<GTablePotential> getCEPPotential();
 }

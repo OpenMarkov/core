@@ -14,9 +14,9 @@ import java.util.HashMap;
  */
 public interface OptimalPolicies extends Task {
 
-    public HashMap<Variable, Potential> getOptimalPolicies()
+    HashMap<Variable, Potential> getOptimalPolicies()
             throws UnexpectedInferenceException, NotEvaluableNetworkException, IncompatibleEvidenceException;
 
-    public Potential getOptimalPolicy(Variable decision) throws UnexpectedInferenceException, NotEvaluableNetworkException, IncompatibleEvidenceException;
+    Potential getOptimalPolicy(Variable decision) throws UnexpectedInferenceException, NotEvaluableNetworkException, IncompatibleEvidenceException;
 
 }

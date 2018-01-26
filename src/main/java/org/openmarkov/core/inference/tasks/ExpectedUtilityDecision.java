@@ -28,6 +28,6 @@ import java.util.List;
  */
 public interface ExpectedUtilityDecision extends Task {
 
-    public abstract TablePotential getExpectedUtility() throws UnexpectedInferenceException, NotEvaluableNetworkException, IncompatibleEvidenceException;
+    TablePotential getExpectedUtility() throws UnexpectedInferenceException, NotEvaluableNetworkException, IncompatibleEvidenceException;
 
 }

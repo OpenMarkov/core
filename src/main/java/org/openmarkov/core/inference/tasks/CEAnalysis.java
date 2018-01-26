@@ -12,7 +12,7 @@ import org.openmarkov.core.model.network.potential.GTablePotential;
  */
 public interface CEAnalysis extends Task {
 
-    public abstract GTablePotential getGTablePotential() throws UnexpectedInferenceException, NotEvaluableNetworkException, IncompatibleEvidenceException;
+    public GTablePotential getGTablePotential() throws UnexpectedInferenceException, NotEvaluableNetworkException, IncompatibleEvidenceException;
 
     void setDecisionVariable(Variable decisionVariable);
 }

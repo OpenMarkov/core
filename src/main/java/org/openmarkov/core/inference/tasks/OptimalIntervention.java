@@ -20,6 +20,6 @@ public interface OptimalIntervention extends Task {
     /**
      * @return The optimal intervention
      */
-    public abstract StrategyTree getOptimalIntervention() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
+    StrategyTree getOptimalIntervention() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
 
 }

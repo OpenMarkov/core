@@ -12,6 +12,6 @@ import java.util.HashMap;
  */
 public interface SensAnPlot extends Task {
 
-    public abstract HashMap<UncertainParameter, TablePotential> getUncertainParametersPotentials();
+    HashMap<UncertainParameter, TablePotential> getUncertainParametersPotentials();
 
 }

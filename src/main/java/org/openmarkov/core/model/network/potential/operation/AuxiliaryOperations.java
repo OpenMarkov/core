@@ -12,6 +12,7 @@ package org.openmarkov.core.model.network.potential.operation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -81,7 +82,7 @@ public class AuxiliaryOperations {
 	 * @return <code>ArrayList</code> of <code>Variable</code>s. */
 	public static List<Variable> getUnionVariables(Collection<? extends Potential> potentials) {
 		
-		Set<Variable> variables = new HashSet<>();
+		Set<Variable> variables = new LinkedHashSet<>();
 		for (Potential potential : potentials) {
 			variables.addAll(potential.getVariables());
 		}

@@ -34,6 +34,7 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -847,6 +848,32 @@ public class DiscretePotentialOperationsTest {
 		Marginalization marginalization = new SumOutVariable(X, potentials);
 		
 		// TODO Finish
+	}
+	
+	@Test
+	public void testMerge() {
+		Variable decisionA = new Variable("DecA", 3);
+		Variable X = new Variable("X", "Xa", "Xb");
+		Variable Y = new Variable("Y", "Ya", "Yb", "Yc");
+		Intervention interventionX1 = new Intervention(X);
+		Intervention interventionX2 = new Intervention(X);
+		Intervention interventionXY1 = new Intervention(Y);
+		Intervention interventionXY2 = new Intervention(Y);
+		Intervention interventionXY3 = new Intervention(Y);
+		Intervention interventionXY4 = new Intervention(Y);
+		Intervention interventionXY5 = new Intervention(Y);
+		Intervention interventionXY6 = new Intervention(Y);
+		UncertainValue uncertainValue1 = new UncertainValue(1.0);
+		UncertainValue uncertainValue2 = new UncertainValue(2.0);
+		UncertainValue uncertainValue3 = new UncertainValue(3.0);
+		UncertainValue uncertainValue4 = new UncertainValue(4.0);
+		UncertainValue uncertainValue5 = new UncertainValue(5.0);
+		UncertainValue uncertainValue6 = new UncertainValue(6.0);
+		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
+		TablePotential x1P = new TablePotential(Arrays.asList(X), role);
+		TablePotential xyP = new TablePotential(Arrays.asList(X,Y), role);
+		TablePotential x2P = new TablePotential(Arrays.asList(X), role);
+		// TODO Finish this method
 	}
 	
 	/**

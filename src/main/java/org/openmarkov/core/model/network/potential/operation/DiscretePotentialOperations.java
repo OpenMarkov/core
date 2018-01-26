@@ -17,6 +17,7 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
+import org.openmarkov.core.exception.PotentialOperationException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.Choice;
 import org.openmarkov.core.model.network.Criterion;
@@ -155,7 +156,7 @@ public final class DiscretePotentialOperations {
         int tableSize = numVariables > 0 ? dimensions[numVariables - 1] * offsets[numVariables - 1] : 1;
         double[] resultValues = new double[tableSize];
         
-        TablePotential potentialWithInterventions = findPotentialWithInterventions(tablePotentials);
+        TablePotential potentialWithInterventions = findFirstPotentialWithInterventions(tablePotentials);
 		boolean thereAreInterventions = (potentialWithInterventions != null);
 		Intervention[] resultInterventions = null;	        
         Intervention intervention = null;
@@ -223,7 +224,7 @@ public final class DiscretePotentialOperations {
 		return resultPotential;
     }
 
-	private static TablePotential findPotentialWithInterventions(List<TablePotential> tablePotentials) {
+	private static TablePotential findFirstPotentialWithInterventions(List<TablePotential> tablePotentials) {
 		TablePotential potentialWithInterventions = null;
 
 		// Find the potential with interventions
@@ -406,7 +407,7 @@ public final class DiscretePotentialOperations {
     }
     
     private static boolean areThereInterventions(List<TablePotential> potentials) {    	
-    	return findPotentialWithInterventions(potentials)!=null;    	
+    	return findFirstPotentialWithInterventions(potentials)!=null;    	
     }
 
 
@@ -2341,6 +2342,231 @@ public final class DiscretePotentialOperations {
 			orderedListOfPotentials.addAll(inputPotentialsList);
 		}
 		return orderedListOfPotentials;
+	}
+	
+	/**
+	 * @argCondition The number of states of decision must be equal to the number of potentials.
+	 * @param decision
+	 * @param potentials
+	 * @return TablePotential with decision as the first variable and the union of the variables of the potentials.
+	 * @throws PotentialOperationException 
+	 */
+	public static TablePotential merge(Variable decision, List<TablePotential> potentials) throws PotentialOperationException {
+        throwExceptionIfNecessaryInMergeOperation(decision, potentials);
+		// --------------
+		// Initialization
+		// --------------
+		// Gets merged potential variables as decision variable plus the union of the variables of the potentials
+        List<Variable> potentialsVariables = AuxiliaryOperations.getUnionVariables(potentials);
+        List<Variable> mergedVariables = new ArrayList<Variable>(potentialsVariables.size() + 1);
+        mergedVariables.add(decision);
+        mergedVariables.addAll(potentialsVariables);
+
+        int numMergedVariables = mergedVariables.size();
+
+        // Gets dimension of the merged potential
+        int[] mergedDimension = TablePotential.calculateDimensions(mergedVariables);
+
+        // Gets offset accumulate
+        int[][] offsetAccumulate = DiscretePotentialOperations.getAccumulatedOffsets(potentials, mergedVariables);
+
+        int[] offsets = TablePotential.calculateOffsets(mergedDimension);
+        int tableSize = numMergedVariables > 0 ? mergedDimension[numMergedVariables - 1] * offsets[numMergedVariables - 1] : 1;
+        double[] mergedValues = new double[tableSize];
+        
+        int numPotentials = potentials.size();
+
+        // Checks the existence of interventions in at least one of the potentials, in that case create an array of interventions in the merged potential.
+		boolean thereArePotentialsWithInterventions = thereArePotentialsWithInterventions(potentials);
+		Intervention[] mergedInterventions = thereArePotentialsWithInterventions ? new Intervention[tableSize] : null;
+		boolean[] potentialsHaveInterventions = thereArePotentialsWithInterventions ? getPotentialsHaveInterventions(potentials) : null;
+		Intervention[][] potentialsInterventions = thereArePotentialsWithInterventions ? new Intervention[numPotentials][] : null;
+		
+        // Checks the existence of uncertain values in at least one of the potentials, in that case create an array of uncertain values in the merged potential.
+		boolean thereArePotentialsWithUncertainValues = thereArePotentialsWithUncertainValues(potentials);
+		UncertainValue[] mergedUncertainValues = thereArePotentialsWithUncertainValues ? new UncertainValue[tableSize] : null;
+		boolean[] potentialsHaveUncertainValues = thereArePotentialsWithUncertainValues ? getPotentialsHaveUncertainValues(potentials) : null;
+		UncertainValue[][] potentialsUncertainValues = thereArePotentialsWithUncertainValues ? new UncertainValue[numPotentials][] : null;
+
+        // Gets the tables, interventions and uncertain values of each potential
+        double[][] tables = new double[numPotentials][];
+        for (int indexPotential = 0; indexPotential < numPotentials; indexPotential++) {
+        	TablePotential potential = potentials.get(indexPotential);
+            tables[indexPotential] = potential.values;
+            if (thereArePotentialsWithInterventions) {
+            	potentialsInterventions[indexPotential] = potential.interventions;
+            }
+            if (thereArePotentialsWithUncertainValues) {
+            	potentialsUncertainValues[indexPotential] = potential.uncertainValues;
+            }
+        }
+        // Gets coordinate
+        int[] mergedCoordinate = initializeCoordinates(numMergedVariables);
+        
+        // Position in each table potential
+        int[] potentialsPositions = new int[numPotentials];
+        for (int i = 0; i < numPotentials; i++) {
+            potentialsPositions[i] = 0;
+        }
+
+		// -----------
+        // Method body
+		// -----------
+        int indexIncrementedVariable = 0;
+        
+        for (int mergedPosition = 0; mergedPosition < tableSize; mergedPosition++) {
+        	// Set values
+        	int indexActualPotential = mergedCoordinate[0]; // Potential corresponding to state=numPotential of the decision variable
+        	int indexInTableOfActualPotential = potentialsPositions[indexActualPotential]; // Position in actual potential
+        	mergedValues[mergedPosition] = tables[indexActualPotential][indexInTableOfActualPotential];
+        	// Set interventions
+        	if (thereArePotentialsWithInterventions) {
+            	mergedInterventions[mergedPosition] = potentialsHaveInterventions[indexActualPotential] ? 
+            			potentialsInterventions[indexActualPotential][indexInTableOfActualPotential] : null;
+        	}
+        	// Set uncertain values
+        	if (thereArePotentialsWithUncertainValues) {
+        		mergedUncertainValues[mergedPosition] = potentialsHaveUncertainValues[indexActualPotential] ? 
+        				potentialsUncertainValues[indexActualPotential][indexInTableOfActualPotential] : null;
+        	}
+
+            //increment the merged coordinate and find out which variable is to be incremented
+            for (int indexVariable = 0; indexVariable < mergedCoordinate.length; indexVariable++) {
+                // try by incrementing the current variable (given by iVariable)
+                mergedCoordinate[indexVariable]++;
+                if (mergedCoordinate[indexVariable] != mergedDimension[indexVariable]) {
+                    // we have incremented the right variable
+                    indexIncrementedVariable = indexVariable;
+                    // do not increment other variables;
+                    break;
+                }
+                /*
+                 * this variable could not be incremented; we set it to 0 in
+                 * mergedCoordinate (the next iteration of the for-loop will
+                 * increment the next variable)
+                 */
+                mergedCoordinate[indexVariable] = 0;
+            }
+            
+            // update the current position in each potential table
+            for (int indexPotential = 0; indexPotential < numPotentials; indexPotential++) {
+                potentialsPositions[indexPotential] += offsetAccumulate[indexPotential][indexIncrementedVariable];
+            }
+        }
+        
+        // Create merged potential with previous values
+        PotentialRole role = potentials.get(0).getPotentialRole();
+		TablePotential mergedPotential = new TablePotential(mergedVariables, role, mergedValues);
+		mergedPotential.interventions = thereArePotentialsWithInterventions ? mergedInterventions : null;
+		mergedPotential.uncertainValues = thereArePotentialsWithUncertainValues ? mergedUncertainValues : null;  
+		return mergedPotential;
+	}
+
+	// Strings that represent possible causes of exception launch in merge operation
+	private final static String nullVariable = "decision variable = null";
+	private final static String nullPotentials = "potentials = null";
+	private final static String noPotentials = "zero potentials";
+	
+	/**
+	 * Method used in merge operation, that launches a <code>PotentialOperationException</code> in this cases:
+	 * <ul>
+	 * <li>The variable is <code>null</code>.
+	 * <li>The potentials are <code>null</code>.
+	 * <li>The number of potentials is zero.
+	 * <li>The number of states of the variable is different than the number of potentials.
+	 * </ul>
+	 * The message may consist of one or two causes at most.
+	 * @param decision
+	 * @param potentials
+	 * @throws PotentialOperationException
+	 */
+	private static void throwExceptionIfNecessaryInMergeOperation(Variable decision, Collection<TablePotential> potentials)
+			throws PotentialOperationException {
+		String message = null;
+		if (decision == null) {
+			message = nullVariable;
+		}
+		if (potentials == null) {
+			if (message != null) {
+				message +=  " and " + nullPotentials;
+			} else {
+				message = nullPotentials;
+			}
+		} else {
+			int numPotentials = potentials.size();
+			if (numPotentials == 0) {
+				if (message != null) {
+					message +=  " and " + noPotentials;
+				} else {
+					message = noPotentials;
+				}
+			} else {
+				if (decision != null) {
+					int numStates = decision.getNumStates();
+					if (numStates != numPotentials) {
+						message = "the number of states of the decision variable " + decision.getName() + 
+								" is " + numStates + ",\nthe number of potentials is " + numPotentials + 
+								" and they must be the same";
+					}
+				}
+			}
+		}
+		if (message != null) {
+			message = message.substring(0, 1).toUpperCase() + message.substring(1) + " in merge operation.";
+			throw new PotentialOperationException(message);
+		}
+	}
+
+	/**
+	 * @param potentials
+	 * @return array of booleans, the i-th boolean is true if the i-th potential has interventions. 
+	 */
+	private static boolean[] getPotentialsHaveInterventions(List<TablePotential> potentials) {
+		boolean[] potentialsHaveInterventions = new boolean[potentials.size()];
+		int numPotential = 0;
+		for (TablePotential potential : potentials) {
+			potentialsHaveInterventions[numPotential++] = potential.interventions != null;
+		}
+		return potentialsHaveInterventions;
+	}
+
+	/**
+	 * @param potentials
+	 * @return array of booleans, the i-th boolean is true if the i-th potential has uncertain values. 
+	 */
+	private static boolean[] getPotentialsHaveUncertainValues(List<TablePotential> potentials) {
+		boolean[] potentialsHaveUncertainValues = new boolean[potentials.size()];
+		int numPotential = 0;
+		for (TablePotential potential : potentials) {
+			potentialsHaveUncertainValues[numPotential++] = potential.uncertainValues != null;
+		}
+		return potentialsHaveUncertainValues;
+	}
+
+	/**
+	 * @param potentials
+	 * @return boolean
+	 */
+	private static boolean thereArePotentialsWithUncertainValues(Collection<TablePotential> potentials) {
+		for (TablePotential potential : potentials) {
+			if (potential.uncertainValues != null) {
+				return true;
+			}
+		}
+		return false;
+	}	
+
+	/**
+	 * @param potentials
+	 * @return boolean
+	 */
+	private static boolean thereArePotentialsWithInterventions(Collection<TablePotential> potentials) {
+		for (TablePotential potential : potentials) {
+			if (potential.interventions != null) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

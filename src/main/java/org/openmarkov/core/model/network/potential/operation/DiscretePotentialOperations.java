@@ -63,7 +63,7 @@ public final class DiscretePotentialOperations {
     }
     
     /**
-     * @param tablePotentials
+     * @param potentials
      *            <code>ArrayList</code> of extends <code>Potential</code>.
      * @return A <code>TablePotential</code> as result.
      */
@@ -2380,9 +2380,9 @@ public final class DiscretePotentialOperations {
 
         // Checks the existence of interventions in at least one of the potentials, in that case create an array of interventions in the merged potential.
 		boolean thereArePotentialsWithInterventions = thereArePotentialsWithInterventions(potentials);
-		Intervention[] mergedInterventions = thereArePotentialsWithInterventions ? new Intervention[tableSize] : null;
+		StrategyTree[] mergedInterventions = thereArePotentialsWithInterventions ? new StrategyTree[tableSize] : null;
 		boolean[] potentialsHaveInterventions = thereArePotentialsWithInterventions ? getPotentialsHaveInterventions(potentials) : null;
-		Intervention[][] potentialsInterventions = thereArePotentialsWithInterventions ? new Intervention[numPotentials][] : null;
+        StrategyTree[][] potentialsInterventions = thereArePotentialsWithInterventions ? new StrategyTree[numPotentials][] : null;
 		
         // Checks the existence of uncertain values in at least one of the potentials, in that case create an array of uncertain values in the merged potential.
 		boolean thereArePotentialsWithUncertainValues = thereArePotentialsWithUncertainValues(potentials);
@@ -2396,7 +2396,7 @@ public final class DiscretePotentialOperations {
         	TablePotential potential = potentials.get(indexPotential);
             tables[indexPotential] = potential.values;
             if (thereArePotentialsWithInterventions) {
-            	potentialsInterventions[indexPotential] = potential.interventions;
+            	potentialsInterventions[indexPotential] = potential.strategyTrees;
             }
             if (thereArePotentialsWithUncertainValues) {
             	potentialsUncertainValues[indexPotential] = potential.uncertainValues;
@@ -2459,7 +2459,7 @@ public final class DiscretePotentialOperations {
         // Create merged potential with previous values
         PotentialRole role = potentials.get(0).getPotentialRole();
 		TablePotential mergedPotential = new TablePotential(mergedVariables, role, mergedValues);
-		mergedPotential.interventions = thereArePotentialsWithInterventions ? mergedInterventions : null;
+		mergedPotential.strategyTrees = thereArePotentialsWithInterventions ? mergedInterventions : null;
 		mergedPotential.uncertainValues = thereArePotentialsWithUncertainValues ? mergedUncertainValues : null;  
 		return mergedPotential;
 	}
@@ -2527,7 +2527,7 @@ public final class DiscretePotentialOperations {
 		boolean[] potentialsHaveInterventions = new boolean[potentials.size()];
 		int numPotential = 0;
 		for (TablePotential potential : potentials) {
-			potentialsHaveInterventions[numPotential++] = potential.interventions != null;
+			potentialsHaveInterventions[numPotential++] = potential.strategyTrees != null;
 		}
 		return potentialsHaveInterventions;
 	}
@@ -2564,7 +2564,7 @@ public final class DiscretePotentialOperations {
 	 */
 	private static boolean thereArePotentialsWithInterventions(Collection<TablePotential> potentials) {
 		for (TablePotential potential : potentials) {
-			if (potential.interventions != null) {
+			if (potential.strategyTrees != null) {
 				return true;
 			}
 		}

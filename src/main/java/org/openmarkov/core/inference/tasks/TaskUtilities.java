@@ -65,9 +65,9 @@ public class TaskUtilities {
     }
 
     //TODO: the imposed policies are already added, aren't they? The nodes must be transformed to chance nodes. And the policies into conditional probabilities?
-    public static ProbNet addPoliciesImposedByUser(ProbNet probNet) {
+    public static ProbNet imposePolicies(ProbNet probNet) {
         if (!hasOnlyChanceNodes(probNet) && hasDecisions(probNet)) {
-            replaceDecisionsByChanceNodesWithPolicies(probNet, null);
+            replaceDecisionsWithPoliciesByChanceNodes(probNet, null);
         }
         return probNet;
     }
@@ -118,7 +118,7 @@ public class TaskUtilities {
 
     public static ProbNet addPoliciesFromResolution(ProbNet probNet) {
         if (!hasOnlyChanceNodes(probNet) && hasDecisions(probNet)) {
-            replaceDecisionsByChanceNodesWithPolicies(probNet, null);
+            replaceDecisionsWithPoliciesByChanceNodes(probNet, null);
         }
         return probNet;
     }
@@ -162,7 +162,7 @@ public class TaskUtilities {
      *            'informationalPredecessors' are not changed.
      * @param informationalPredecessors
      */
-    private static void replaceDecisionsByChanceNodesWithPolicies(ProbNet probNet, List<Variable> informationalPredecessors) {
+    private static void replaceDecisionsWithPoliciesByChanceNodes(ProbNet probNet, List<Variable> informationalPredecessors) {
         // Change decision nodes by chance nodes whose probability potential
         // is given by the corresponding policy
         List<Node> decisions = probNet.getNodes(NodeType.DECISION);

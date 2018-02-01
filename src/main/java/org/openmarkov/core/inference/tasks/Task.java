@@ -2,6 +2,7 @@ package org.openmarkov.core.inference.tasks;
 
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.inference.heuristic.HeuristicFactory;
+import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -16,5 +17,4 @@ public interface Task {
     void setPreResolutionEvidence(EvidenceCase preresolutionEvidence);
 
     void setConditioningVariables(List<Variable> conditioningVariables);
-    
 }

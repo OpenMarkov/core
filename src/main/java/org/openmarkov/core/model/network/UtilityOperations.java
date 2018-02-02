@@ -1,16 +1,8 @@
 package org.openmarkov.core.model.network;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.inference.BasicOperations;
-import org.openmarkov.core.model.network.Criterion.CECriterion;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TablePotential;
+
+import java.util.List;
 
 public class UtilityOperations {
 
@@ -28,12 +20,14 @@ public class UtilityOperations {
 				// Get the actual criterion scale
 				double scale = decisionCriterion.getUnicriteriaScale();
 				List<Potential> utilityPotentials = utilityNode.getPotentials();
+
 				if (!utilityPotentials.isEmpty() && scale != 0) {
 					// Transform the potential with the scale
 					Potential potential = utilityPotentials.get(0).deepCopy(probNet);
 					potential.scalePotential(scale);
 					utilityNode.setPotential(potential);
 				} else {
+                    // TODO - Check if we must remove the potential and node
 					// Remove the potential and the node
 					probNet.removePotentials(utilityPotentials);
 					probNet.removeNode(utilityNode);

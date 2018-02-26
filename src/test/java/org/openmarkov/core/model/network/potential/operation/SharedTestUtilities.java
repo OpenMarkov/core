@@ -83,24 +83,17 @@ public class SharedTestUtilities {
 
 	// Arrays of variables used in the TablePotential constructor
 	/** Contains zero variables */
-	public ArrayList<Variable> variablesT1;
+	public ArrayList<Variable> variablesEmpty;
+
+	/** Contains 1 variables: <code>a</code>. */
+	public ArrayList<Variable> variablesA;
 
 	/** Contains 2 variables: <code>a</code> and <code>b</code>. */
-	public ArrayList<Variable> variablesT2;
+	public ArrayList<Variable> variablesAB;
 
-	/** Contains zero variables */
-	public ArrayList<Variable> variablesT3;
-
-	/** Contains 3 variables: <code>c</code>, <code>a</code>  and 
+	/** Contains 3 variables: <code>c</code>, <code>a</code>  and
 	 * <code>d</code>. */
-	public ArrayList<Variable> variablesT4;
-	
-	/** Contains 4 variables: <code>a</code>, <code>b</code>, <code>c</code> and
-	 * <code>d</code>. */
-	public ArrayList<Variable> totalVariables;
-	
-	/** Contains 1 variables: <code>a</code>. */
-	public ArrayList<Variable> arrayVariablesA;	
+	public ArrayList<Variable> variablesCAD;
 	
 	/** Contains 3 variables: <code>a</code>, <code>b</code> and <code>c</code>.
 	  */
@@ -109,7 +102,11 @@ public class SharedTestUtilities {
 	/** Contains 3 variables: <code>b</code>, <code>d</code> and <code>d</code>.
 	 */
 	public ArrayList<Variable> arrayVariablesBCD;
-	
+
+	/** Contains 4 variables: <code>a</code>, <code>b</code>, <code>c</code> and
+	 * <code>d</code>. */
+	public ArrayList<Variable> variablesABCD;
+
 	// Array of TablePotentials
 	/** Potentials: <code>tpConstant07, tpAB, tpConstant05</code> and <code>tpCAB</code> */
 	public ArrayList<TablePotential> potentials;
@@ -138,22 +135,21 @@ public class SharedTestUtilities {
 		d = new Variable("D", statesD);
 		
 		// Create ArrayList's for the TablePotential's constructors
-		variablesT1 = new ArrayList<>(); // 0 variables. A constant.
-		variablesT2 = new ArrayList<>(); // 2 variables
-		variablesT2.add(a);
-		variablesT2.add(b);
-		variablesT3 = new ArrayList<>(); // 0 variables. A constant.
-		variablesT4 = new ArrayList<>(); // 3 variables
-		variablesT4.add(c);
-		variablesT4.add(a);
-		variablesT4.add(d);
-		totalVariables = new ArrayList<>();
-		totalVariables.add(a);
-		totalVariables.add(b);
-		totalVariables.add(c);
-		totalVariables.add(d);
-		arrayVariablesA = new ArrayList<>();
-		arrayVariablesA.add(a);
+		variablesAB = new ArrayList<>(); // 2 variables
+		variablesAB.add(a);
+		variablesAB.add(b);
+		variablesEmpty = new ArrayList<>(); // 0 variables. A constant.
+		variablesCAD = new ArrayList<>(); // 3 variables
+		variablesCAD.add(c);
+		variablesCAD.add(a);
+		variablesCAD.add(d);
+		variablesABCD = new ArrayList<>();
+		variablesABCD.add(a);
+		variablesABCD.add(b);
+		variablesABCD.add(c);
+		variablesABCD.add(d);
+		variablesA = new ArrayList<>();
+		variablesA.add(a);
 		arrayVariablesABC = new ArrayList<>();
 		arrayVariablesABC.add(a);
 		arrayVariablesABC.add(b);
@@ -165,15 +161,15 @@ public class SharedTestUtilities {
 		
 		// Create TablePotential's
 		tpConstant07 = new TablePotential(
-				variablesT1, PotentialRole.CONDITIONAL_PROBABILITY);
+				variablesEmpty, PotentialRole.CONDITIONAL_PROBABILITY);
 		tpAB = new TablePotential(
-				variablesT2, PotentialRole.CONDITIONAL_PROBABILITY);
+				variablesAB, PotentialRole.CONDITIONAL_PROBABILITY);
 		tpConstant05 = new TablePotential(
-				variablesT3, PotentialRole.CONDITIONAL_PROBABILITY);
+				variablesEmpty, PotentialRole.CONDITIONAL_PROBABILITY);
 		tpCAB = new TablePotential(
-				variablesT4, PotentialRole.CONDITIONAL_PROBABILITY);
+				variablesCAD, PotentialRole.CONDITIONAL_PROBABILITY);
 		tpA = new TablePotential(
-				arrayVariablesA, PotentialRole.CONDITIONAL_PROBABILITY);
+				variablesA, PotentialRole.CONDITIONAL_PROBABILITY);
 		// Initialize not constant potentials tables
 		tpAB.values[0] = 0.1;
 		tpAB.values[1] = 0.2;

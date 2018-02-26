@@ -164,26 +164,26 @@ public class DiscretePotentialOperationsTest {
 		assertTrue(variables.contains(commonVariables.d));
 		assertEquals(36, multiplication.values.length);
 		int[] coordinate = { 0, 0, 0, 0 }; // test configuration a=0,b=0,c=0,d=0
-		double value = getConfiguration(commonVariables.totalVariables,
+		double value = getConfiguration(commonVariables.variablesABCD,
 				coordinate, multiplication);
 		assertEquals(0.007, value, maxError);
 		coordinate[0] = 1; // test configuration a=1,b=0,c=0,d=0
-		value = getConfiguration(commonVariables.totalVariables, coordinate,
+		value = getConfiguration(commonVariables.variablesABCD, coordinate,
 				multiplication);
 		assertEquals(0.007, value, maxError);
 		coordinate[0] = 0;
 		coordinate[1] = 1; // test configuration a=0,b=1,c=0,d=0
-		value = getConfiguration(commonVariables.totalVariables, coordinate,
+		value = getConfiguration(commonVariables.variablesABCD, coordinate,
 				multiplication);
 		assertEquals(0.014, value, maxError);
 		coordinate[1] = 0;
 		coordinate[2] = 1; // test configuration a=0,b=0,c=1,d=0
-		value = getConfiguration(commonVariables.totalVariables, coordinate,
+		value = getConfiguration(commonVariables.variablesABCD, coordinate,
 				multiplication);
 		assertEquals(0.028, value, maxError);
 		coordinate[2] = 0;
 		coordinate[3] = 1; // test configuration a=0,b=0,c=0,d=1
-		value = getConfiguration(commonVariables.totalVariables, coordinate,
+		value = getConfiguration(commonVariables.variablesABCD, coordinate,
 				multiplication);
 		assertEquals(0.014, value, maxError);
 	}
@@ -594,26 +594,26 @@ public class DiscretePotentialOperationsTest {
 
 		int[] coordinate = {0,0,0,0};
 		double value = getConfiguration(
-			commonVariables.totalVariables, coordinate, division);
+			commonVariables.variablesABCD, coordinate, division);
 		assertEquals(0.5, value, maxError);
 		coordinate[2] = 1; // {0,0,1,0}
 		value = getConfiguration(
-			commonVariables.totalVariables, coordinate, division);
+			commonVariables.variablesABCD, coordinate, division);
 		assertEquals(0.125, value, maxError);
 		coordinate[2] = 0;
 		coordinate[0] = 1; // {1,0,0,0}
 		value = getConfiguration(
-				commonVariables.totalVariables, coordinate, division);
+				commonVariables.variablesABCD, coordinate, division);
 		assertEquals(2, value, maxError);
 		coordinate[0] = 0;
 		coordinate[1] = 1; // {0,1,0,0}
 		value = getConfiguration(
-				commonVariables.totalVariables, coordinate, division);
+				commonVariables.variablesABCD, coordinate, division);
 		assertEquals(1, value, maxError);
 		coordinate[1] = 0;
 		coordinate[3] = 1; // {0,0,0,1}
 		value = getConfiguration(
-				commonVariables.totalVariables, coordinate, division);
+				commonVariables.variablesABCD, coordinate, division);
 		assertEquals(0.25, value, maxError);
 	}
 

@@ -18,12 +18,12 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 /** Auxiliary class for <code>DiscretePotentialOperationsTest</code>. Creates
  * four  <code>TablePotential</code>s and puts them in an <code>ArrayList</code>
  * of <code>TablePotential</code>s:<p>
- * <code>t1</code>: 0 variables (constant potential). table[0] = 0.7<p>
- * <code>t2</code>: 2 variables. <code>a</code> (3 states) and <code>b</code>
+ * <code>tpConstant07</code>: 0 variables (constant potential). table[0] = 0.7<p>
+ * <code>tpAB</code>: 2 variables. <code>a</code> (3 states) and <code>b</code>
  * (3 states)<p> table = {0.1, 0.2, 0.7, 0.2, 0.5, 0.3, 0.6, 0.3, 0.1}.
  * table.length = 9.<p>
- * <code>t3</code>: 0 variables (constant potential). table[0] = 0.5<p>
- * <code>t4</code>: 3 variables. <code>c</code> (2 states), <code>a</code> 
+ * <code>tpConstant05</code>: 0 variables (constant potential). table[0] = 0.5<p>
+ * <code>tpCAB</code>: 3 variables. <code>c</code> (2 states), <code>a</code>
  * (3 states) and <code>d</code> (2 states)<p> 
  * table = {0.2, 0.8, 0.1, 0.9, 0.3, 0.7, 0.4, 0.6, 0.9, 0.1, 0.8, 0.2}.
  * table.length = 12.<p> */
@@ -38,26 +38,26 @@ public class SharedTestUtilities {
 	// Attributes
 	// TablePotential used for potential operations
 	/** 0 variables (constant potential). table[0] = 0.7. */
-	public TablePotential t1;
+	public TablePotential tpConstant07;
 
 	/** 2 variables. <code>a</code> (3 states) and <code>b</code> (3 states)<p>
      * table = {0.1, 0.2, 0.7, 0.2, 0.5, 0.3, 0.6, 0.3, 0.1}.<p>
      * table.length = 9. */
-	public TablePotential t2;
+	public TablePotential tpAB;
 
 	/** 0 variables (constant potential). table[0] = 0.5. */
-	public TablePotential t3;
+	public TablePotential tpConstant05;
 
 	/** 3 variables. <code>c</code> (2 states), <code>a</code> (3 states) and 
 	 * <code>d</code> (2 states)<p> 
 	 * table = {0.2, 0.8, 0.1, 0.9, 0.3, 0.7, 0.4, 0.6, 0.9, 0.1, 0.8, 0.2}<p>
 	 * table.length = 12.*/
-	public TablePotential t4;
+	public TablePotential tpCAB;
 	
 	/** 1 variable. <code>a</code> (3 states)<p>
      * table = {0.5, 0.4, 0.1}.<p>
      * table.length = 3. */
-	public TablePotential t5;
+	public TablePotential tpA;
 	
 	// Variables used to create the preceding TablePotentials
 	/** <code>Variable</code> with 3 states */
@@ -111,7 +111,7 @@ public class SharedTestUtilities {
 	public ArrayList<Variable> arrayVariablesBCD;
 	
 	// Array of TablePotentials
-	/** Potentials: <code>t1, t2, t3</code> and <code>t4</code> */
+	/** Potentials: <code>tpConstant07, tpAB, tpConstant05</code> and <code>tpCAB</code> */
 	public ArrayList<TablePotential> potentials;
 	
 	public SharedTestUtilities() throws Exception {
@@ -164,56 +164,56 @@ public class SharedTestUtilities {
 		arrayVariablesBCD.add(d);
 		
 		// Create TablePotential's
-		t1 = new TablePotential(
+		tpConstant07 = new TablePotential(
 				variablesT1, PotentialRole.CONDITIONAL_PROBABILITY);
-		t2 = new TablePotential(
+		tpAB = new TablePotential(
 				variablesT2, PotentialRole.CONDITIONAL_PROBABILITY);
-		t3 = new TablePotential(
+		tpConstant05 = new TablePotential(
 				variablesT3, PotentialRole.CONDITIONAL_PROBABILITY);
-		t4 = new TablePotential(
+		tpCAB = new TablePotential(
 				variablesT4, PotentialRole.CONDITIONAL_PROBABILITY);
-		t5 = new TablePotential(
+		tpA = new TablePotential(
 				arrayVariablesA, PotentialRole.CONDITIONAL_PROBABILITY);
 		// Initialize not constant potentials tables
-		t2.values[0] = 0.1;
-		t2.values[1] = 0.2;
-		t2.values[2] = 0.7;
-		t2.values[3] = 0.2;
-		t2.values[4] = 0.5;
-		t2.values[5] = 0.3;
-		t2.values[6] = 0.6;
-		t2.values[7] = 0.3;
-		t2.values[8] = 0.1;
+		tpAB.values[0] = 0.1;
+		tpAB.values[1] = 0.2;
+		tpAB.values[2] = 0.7;
+		tpAB.values[3] = 0.2;
+		tpAB.values[4] = 0.5;
+		tpAB.values[5] = 0.3;
+		tpAB.values[6] = 0.6;
+		tpAB.values[7] = 0.3;
+		tpAB.values[8] = 0.1;
 		
-		t4.values[0] = 0.2;
-		t4.values[1] = 0.8;
-		t4.values[2] = 0.1;
-		t4.values[3] = 0.9;
-		t4.values[4] = 0.3;
-		t4.values[5] = 0.7;
-		t4.values[6] = 0.4;
-		t4.values[7] = 0.6;
-		t4.values[8] = 0.9;			
-		t4.values[9] = 0.1;
-		t4.values[10] = 0.8;
-		t4.values[11] = 0.2;
+		tpCAB.values[0] = 0.2;
+		tpCAB.values[1] = 0.8;
+		tpCAB.values[2] = 0.1;
+		tpCAB.values[3] = 0.9;
+		tpCAB.values[4] = 0.3;
+		tpCAB.values[5] = 0.7;
+		tpCAB.values[6] = 0.4;
+		tpCAB.values[7] = 0.6;
+		tpCAB.values[8] = 0.9;
+		tpCAB.values[9] = 0.1;
+		tpCAB.values[10] = 0.8;
+		tpCAB.values[11] = 0.2;
 		
-		t5.values[0] = 0.5;
-		t5.values[1] = 0.4;
-		t5.values[2] = 0.1;
+		tpA.values[0] = 0.5;
+		tpA.values[1] = 0.4;
+		tpA.values[2] = 0.1;
 		
 		// Create array of potentials
 		potentials = new ArrayList<>();
 		
 		// Initialize array with potentials
-		potentials.add(t1);
-		potentials.add(t2);
-		potentials.add(t3);
-		potentials.add(t4);
+		potentials.add(tpConstant07);
+		potentials.add(tpAB);
+		potentials.add(tpConstant05);
+		potentials.add(tpCAB);
 		
 		// Initialize the constant potentials
-		t1.values[0] = 0.7;
-		t3.values[0] = 0.5;
+		tpConstant07.values[0] = 0.7;
+		tpConstant05.values[0] = 0.5;
 	}
 
 	/** Generates sets of variables and potentials. 

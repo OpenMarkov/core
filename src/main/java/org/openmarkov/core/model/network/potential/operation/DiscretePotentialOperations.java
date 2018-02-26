@@ -222,7 +222,11 @@ public final class DiscretePotentialOperations {
 		return resultPotential;
     }
 
-	private static TablePotential findFirstPotentialWithInterventions(List<TablePotential> tablePotentials) {
+    /**
+     * @param tablePotentials List of TablePotential
+     * @return First potential with interventions; if any, null
+     */
+    private static TablePotential findFirstPotentialWithInterventions(List<TablePotential> tablePotentials) {
 		TablePotential potentialWithInterventions = null;
 
 		// Find the potential with interventions
@@ -246,7 +250,7 @@ public final class DiscretePotentialOperations {
     		return new TablePotential(null, PotentialRole.CONDITIONAL_PROBABILITY, new double[]{0.0});
     	}
         if (tablePotentials.size() == 1) {
-            return (TablePotential) tablePotentials.get(0);
+            return tablePotentials.get(0);
         }
 
         // list of non-constant potentials
@@ -398,18 +402,16 @@ public final class DiscretePotentialOperations {
             result.setCriterion(potentials.get(0).getCriterion());
         }
 
-//        if (result.isUtility()) {
-//        	Variable newUtilityVariable = getNewUtilityVariable(tablePotentials);
-//        	result.setUtilityVariable(newUtilityVariable);
-//        	newUtilityVariable.setDecisionCriterion(getCommonDecisionCriterion(tablePotentials));
-//        }
         return result;
     }
-    
+
+    /**
+     * @param potentials
+     * @return if there is at least one potential with interventions.
+     */
     private static boolean areThereInterventions(List<TablePotential> potentials) {    	
     	return findFirstPotentialWithInterventions(potentials)!=null;    	
     }
-
 
     /**
      *
@@ -704,8 +706,7 @@ public final class DiscretePotentialOperations {
         int numNonConstantPotentials = nonConstantPotentials.size();
 
         if (numNonConstantPotentials == 0) {
-            TablePotential resultingPotential = new TablePotential(variablesToKeep,
-                    getRole(tablePotentials));
+            TablePotential resultingPotential = new TablePotential(variablesToKeep, getRole(tablePotentials));
             resultingPotential.values[0] = constantFactor;
             return resultingPotential;
         }

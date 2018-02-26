@@ -18,11 +18,10 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 public class SumOutVariable extends Marginalization {
 	
-	
     /**
      * @param chanceVariable <code>Variable</code>
      * @param potentials <code>List</code> of <code>TablePotential</code>
-     * @return A <code>List</code> with two <code>TablePotential</code>,
+     * @return A <code>Collection</code> with two <code>TablePotential</code>,
      * marginal probability and new utility in this order.
      */
      public SumOutVariable(Variable chanceVariable, Collection<TablePotential> potentials) {
@@ -154,8 +153,6 @@ public class SumOutVariable extends Marginalization {
 			setProbability(marginalProb);
 		}
 		setUtility(DiscretePotentialOperations.sum(outputPotentials));
-
-		// return outputPotentials;
 	}
 
 }

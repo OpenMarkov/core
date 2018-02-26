@@ -106,8 +106,8 @@ public class DiscretePotentialOperationsTest {
 	@Test
 	public void testSum() {
 		List<TablePotential> potentials = new ArrayList<>();
-		potentials.add(commonVariables.t2);
-		potentials.add(commonVariables.t4);
+		potentials.add(commonVariables.tpAB);
+		potentials.add(commonVariables.tpCAB);
 		// Call method under test
 		TablePotential sum = DiscretePotentialOperations.sum(potentials);
 		// test variables
@@ -502,12 +502,12 @@ public class DiscretePotentialOperationsTest {
 	}
 	
 	@Test
-	/** Multiplies and maximizes two potentials: <code>t2(a,b)</code> and 
-	 * <code>t4(c,a,d)</code> that share a variable: <code>a</code>. */
+	/** Multiplies and maximizes two potentials: <code>tpAB(a,b)</code> and
+	 * <code>tpCAB(c,a,d)</code> that share a variable: <code>a</code>. */
 	public void testMultiplyAndMaximize() {
 		ArrayList<Potential> potentialsVariable = new ArrayList<>();
-		potentialsVariable.add(commonVariables.t2);
-		potentialsVariable.add(commonVariables.t4);
+		potentialsVariable.add(commonVariables.tpAB);
+		potentialsVariable.add(commonVariables.tpCAB);
 		Variable variableToMaximize = commonVariables.a; // The common variable
 		Object[] potentials = DiscretePotentialOperations.multiplyAndMaximize(
 				potentialsVariable, variableToMaximize);
@@ -541,8 +541,8 @@ public class DiscretePotentialOperationsTest {
 		// Call method under test
 		List<TablePotential> properPotentials = AuxiliaryOperations.getNonConstantPotentials(commonVariables.potentials);
 		assertEquals(2, properPotentials.size());
-		assertTrue(properPotentials.contains(commonVariables.t2));
-		assertTrue(properPotentials.contains(commonVariables.t4));
+		assertTrue(properPotentials.contains(commonVariables.tpAB));
+		assertTrue(properPotentials.contains(commonVariables.tpCAB));
 	}
 
 	@Test
@@ -578,14 +578,14 @@ public class DiscretePotentialOperationsTest {
 	public void testDivide() throws DivideByZeroException {
 		// Call method under test
 		TablePotential division = (TablePotential) DiscretePotentialOperations
-			.divide(commonVariables.t1, commonVariables.t2);
+			.divide(commonVariables.tpConstant07, commonVariables.tpAB);
 		assertEquals(2, division.getVariables().size());
 		assertTrue(division.contains(commonVariables.a));
 		assertTrue(division.contains(commonVariables.b));
 		assertEquals(7, division.values[0], maxError);
 		
 		division = (TablePotential)DiscretePotentialOperations
-			.divide(commonVariables.t2, commonVariables.t4);
+			.divide(commonVariables.tpAB, commonVariables.tpCAB);
 		assertEquals(4, division.getVariables().size());
 		assertTrue(division.contains(commonVariables.a));
 		assertTrue(division.contains(commonVariables.b));
@@ -622,7 +622,7 @@ public class DiscretePotentialOperationsTest {
 	public void testMaximize() {
 		// Call method under test
 		Object[] potentials = DiscretePotentialOperations.maximize(
-				commonVariables.t2, commonVariables.a);
+				commonVariables.tpAB, commonVariables.a);
 		TablePotential maximizedPotential = (TablePotential) potentials[0];
 		GTablePotential choicesPotential = (GTablePotential) potentials[1];
 		// Test maximized potential
@@ -694,8 +694,8 @@ public class DiscretePotentialOperationsTest {
 	
     @Test
     public void testReorder2() {
-		// Original TablePotential: commonVariables.t4. Variables: C,A,D
-	    List<Variable> variablesBeforeReorder = commonVariables.t4.getVariables();
+		// Original TablePotential: commonVariables.tpCAB. Variables: C,A,D
+	    List<Variable> variablesBeforeReorder = commonVariables.tpCAB.getVariables();
 	    List<Variable> variablesAfterReorder = new ArrayList<>(variablesBeforeReorder);
 		Collections.reverse(variablesAfterReorder); // reorder the variables
 		assertEquals(
@@ -704,7 +704,7 @@ public class DiscretePotentialOperationsTest {
 				variablesAfterReorder.get(0), variablesBeforeReorder.get(2));
 			TablePotential tablePotentialAfterReorder =
 				DiscretePotentialOperations.reorder(
-						commonVariables.t4, variablesAfterReorder);
+						commonVariables.tpCAB, variablesAfterReorder);
 			// Test variables:
 			// 1. Test numVariables
 			List<Variable> variablesReorderedPotential = 
@@ -717,7 +717,7 @@ public class DiscretePotentialOperationsTest {
 						variablesReorderedPotential.get(i));
 			}
 			// Test table of TablePotential
-			assertEquals(commonVariables.t4.values.length, 
+			assertEquals(commonVariables.tpCAB.values.length,
 					tablePotentialAfterReorder.values.length);
 			double[] reorderedTable =
 				{0.2, 0.4, 0.1, 0.9, 0.3, 0.8, 0.8, 0.6, 0.9, 0.1, 0.7, 0.2};
@@ -731,14 +731,14 @@ public class DiscretePotentialOperationsTest {
 	public void testReorder3() {
 		// another reorder
 	    List<Variable> variablesBeforeReorder = 
-			commonVariables.t4.getVariables();
+			commonVariables.tpCAB.getVariables();
 	    List<Variable> variablesAfterReorder = new ArrayList<>(variablesBeforeReorder);
 		variablesAfterReorder.remove( 0 );
 		Collections.reverse(variablesAfterReorder); // reorder the variables
 		variablesAfterReorder.add( 0, variablesBeforeReorder.get(0 ));
 		// Ordination: (0, 1, 2) -> (0, 2, 1)
 		TablePotential tablePotentialAfterReorder = DiscretePotentialOperations
-				.reorder(commonVariables.t4, variablesAfterReorder);
+				.reorder(commonVariables.tpCAB, variablesAfterReorder);
 		// Test variables:
 		// 1. Test numVariables
 		List<Variable> variablesReorderedPotential = tablePotentialAfterReorder
@@ -751,7 +751,7 @@ public class DiscretePotentialOperationsTest {
 					variablesReorderedPotential.get(i));
 		}
 		// Test table of TablePotential
-		assertEquals(commonVariables.t4.values.length,
+		assertEquals(commonVariables.tpCAB.values.length,
 				tablePotentialAfterReorder.values.length);
 		double[] reorderedTable = { 0.2, 0.8, 0.4, 0.6, 0.1, 0.9, 0.9, 0.1,
 				0.3, 0.7, 0.8, 0.2 };
@@ -767,8 +767,6 @@ public class DiscretePotentialOperationsTest {
 	@Test
 	/** Test without utilities */
 	public void testSumOutVariable1() {
-		//List<TablePotential> resultingPotentials =	DiscretePotentialOperations.sumOutVariable(commonVariables.a, commonVariables.potentials);
-		
 		Marginalization marginalization = new SumOutVariable(commonVariables.a, commonVariables.potentials);
 		TablePotential utility = marginalization.getUtility();
 		assertTrue(utility==null || (utility.values.length==1 && utility.values[0]==0.0)); // No utility
@@ -847,8 +845,25 @@ public class DiscretePotentialOperationsTest {
 		
 		// TODO Finish
 	}
-	
-	@Test
+
+    @Test
+    public void testSumOutVariable4() {
+        Marginalization marginalization = new SumOutVariable(commonVariables.a, commonVariables.potentials);
+        TablePotential utility = marginalization.getUtility();
+        assertTrue(utility==null || (utility.values.length==1 && utility.values[0]==0.0)); // No utility
+        TablePotential probability = marginalization.getProbability();
+        assertNotNull(probability);
+        TablePotential tablePotential = marginalization.getProbability();
+        assertEquals(tablePotential.getPotentialRole(), PotentialRole.JOINT_PROBABILITY);
+        List<Variable> variables = tablePotential.getVariables();
+        assertEquals(3, variables.size());
+        assertTrue(variables.contains(commonVariables.b));
+        assertTrue(variables.contains(commonVariables.c));
+        assertTrue(variables.contains(commonVariables.d));
+        assertEquals(12, tablePotential.values.length);
+    }
+
+    @Test
 	public void testMerge() {
 		Variable decisionA = new Variable("DecA", 3);
 		Variable X = new Variable("X", "Xa", "Xb");

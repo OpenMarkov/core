@@ -14,13 +14,16 @@ import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GTablePotential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
  * @author jperez-martin
  */
 public interface CEAnalysis extends Task {
 
-    GTablePotential getGTablePotential() throws UnexpectedInferenceException, NotEvaluableNetworkException, IncompatibleEvidenceException;
+    GTablePotential getUtility() throws UnexpectedInferenceException, NotEvaluableNetworkException, IncompatibleEvidenceException;
+
+    TablePotential getProbability() throws UnexpectedInferenceException, NotEvaluableNetworkException, IncompatibleEvidenceException;
 
     void setDecisionVariable(Variable decisionVariable);
 

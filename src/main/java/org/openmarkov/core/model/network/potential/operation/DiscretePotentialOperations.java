@@ -2646,6 +2646,11 @@ public final class DiscretePotentialOperations {
 		}
 		return potsWithDecInIntervention;
 	}	
-			
+	
+	public static TablePotential createZeroProbabilityPotential() {
+		return DiscretePotentialOperations.createOneValuePotential(PotentialRole.CONDITIONAL_PROBABILITY,0.0);
+	}
+
+					
 
 }

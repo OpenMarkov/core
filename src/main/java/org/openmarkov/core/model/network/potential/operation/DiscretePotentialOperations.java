@@ -33,6 +33,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
+import org.openmarkov.core.model.network.CEP;
 
 /**
  * This class defines a set of common operations over discrete potentials (
@@ -40,7 +41,7 @@ import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
  * s). The method are invoked from <code>PotentialOperations</code> after
  * checking that the parameters are discrete.
  * 
- * @author marias
+ * @author Manuel Arias
  */
 public final class DiscretePotentialOperations {
 
@@ -2389,6 +2390,22 @@ public final class DiscretePotentialOperations {
 		boolean[] potentialsHaveUncertainValues = thereArePotentialsWithUncertainValues ? getPotentialsHaveUncertainValues(potentials) : null;
 		UncertainValue[][] potentialsUncertainValues = thereArePotentialsWithUncertainValues ? new UncertainValue[numPotentials][] : null;
 
+		// Checks the known subtypes of TablePotential
+        boolean thereAreGTablePotentials = thereAreGTablePotentials(potentials);
+        List<CEP> mergedElementsTable = thereAreGTablePotentials ? new ArrayList<CEP>(tableSize) : null;
+        if (thereAreGTablePotentials) { // Fill the list with something to use the method List.set(index) without problems.
+            for (int i = 0; i < tableSize; i++) {
+                mergedElementsTable.add(null);
+            }
+        }
+        boolean[] potentialsAreGTablePotentials = thereAreGTablePotentials ? getBooleanArrayOfPotentialsThatAreGTablePotentials(potentials, numPotentials) : null;
+        List<List<CEP>> elementsTables = thereAreGTablePotentials ? new ArrayList<List<CEP>>(numPotentials) : null;
+        if (thereAreGTablePotentials) { // same as before
+            for (int i = 0; i < numPotentials; i++) {
+                elementsTables.add(null);
+            }
+        }
+
         // Gets the tables, interventions and uncertain values of each potential
         double[][] tables = new double[numPotentials][];
         for (int indexPotential = 0; indexPotential < numPotentials; indexPotential++) {
@@ -2399,6 +2416,9 @@ public final class DiscretePotentialOperations {
             }
             if (thereArePotentialsWithUncertainValues) {
             	potentialsUncertainValues[indexPotential] = potential.uncertainValues;
+            }
+            if (thereAreGTablePotentials && potentialsAreGTablePotentials[indexPotential]) {
+                elementsTables.set(indexPotential, ((GTablePotential<CEP>)potential).elementTable);
             }
         }
         // Gets coordinate
@@ -2430,6 +2450,12 @@ public final class DiscretePotentialOperations {
         		mergedUncertainValues[mergedPosition] = potentialsHaveUncertainValues[indexActualPotential] ? 
         				potentialsUncertainValues[indexActualPotential][indexInTableOfActualPotential] : null;
         	}
+        	// Set elementTable in the case there are GTablePotentials
+            if (thereAreGTablePotentials) {
+        	    CEP auxCEP = potentialsAreGTablePotentials[indexActualPotential] ?
+                        elementsTables.get(indexActualPotential).get(indexInTableOfActualPotential) : null;
+                mergedElementsTable.set(mergedPosition, auxCEP);
+            }
 
             //increment the merged coordinate and find out which variable is to be incremented
             for (int indexVariable = 0; indexVariable < mergedCoordinate.length; indexVariable++) {
@@ -2457,7 +2483,12 @@ public final class DiscretePotentialOperations {
         
         // Create merged potential with previous values
         PotentialRole role = potentials.get(0).getPotentialRole();
-		TablePotential mergedPotential = new TablePotential(mergedVariables, role, mergedValues);
+        TablePotential mergedPotential = null;
+        if (thereAreGTablePotentials) {
+            mergedPotential = new GTablePotential<CEP>(mergedVariables, role, mergedElementsTable);
+        } else {
+            mergedPotential = new TablePotential(mergedVariables, role, mergedValues);
+        }
 		mergedPotential.strategyTrees = thereArePotentialsWithInterventions ? mergedInterventions : null;
 		mergedPotential.uncertainValues = thereArePotentialsWithUncertainValues ? mergedUncertainValues : null;  
 		return mergedPotential;
@@ -2518,7 +2549,37 @@ public final class DiscretePotentialOperations {
 		}
 	}
 
-	/**
+    /**
+     * Returns true if there is at least one GTablePotential.
+     */
+    private static boolean thereAreGTablePotentials(Collection<? extends Potential> potentials) {
+        return findFirstGTablePotential(potentials) != null;
+    }
+
+    private static Potential findFirstGTablePotential(Collection<? extends Potential> potentials) {
+        for (Potential potential : potentials) {
+            if (potential instanceof GTablePotential) {
+                return potential;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param potentials
+     * @param numPotentials
+     * @return array of booleans, the i-th boolean is true if the i-th potential has uncertain values.
+     */
+    private static boolean[] getBooleanArrayOfPotentialsThatAreGTablePotentials(List<TablePotential> potentials, int numPotentials) {
+        boolean[] potentialsThatAreGTablePotentials = new boolean[numPotentials];
+        int numPotential = 0;
+        for (TablePotential potential : potentials) {
+            potentialsThatAreGTablePotentials[numPotential++] = potential instanceof GTablePotential;
+        }
+        return potentialsThatAreGTablePotentials;
+    }
+
+    /**
 	 * @param potentials
 	 * @return array of booleans, the i-th boolean is true if the i-th potential has interventions. 
 	 */

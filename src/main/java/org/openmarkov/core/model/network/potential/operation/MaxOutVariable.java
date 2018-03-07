@@ -35,7 +35,7 @@ public class MaxOutVariable  {
 	
 	
     
-   /**
+   /*
     * @param decisionVariable <code>Variable</code>
     * @param potentials <code>List</code> of <code>TablePotential</code>
     * @param sdagInterventions

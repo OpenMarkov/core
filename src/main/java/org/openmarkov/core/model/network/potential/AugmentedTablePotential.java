@@ -98,7 +98,8 @@ public class AugmentedTablePotential extends Potential{
 
     /**
      * Creates a functionPotential whose parents are the Numeric variables
-     * @param functionPotentialString
+	 * @param numericVariables
+     * @param functionString
      * @return
      */
 	public FunctionPotential createFunctionPotential( List<Variable> numericVariables, String functionString ){	    

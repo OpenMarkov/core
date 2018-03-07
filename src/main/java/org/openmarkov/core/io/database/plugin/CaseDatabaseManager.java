@@ -18,7 +18,7 @@ import org.openmarkov.plugin.service.PluginLoaderIF;
 /**
  * This class is the manager of the case database formats. Detects the class anotated as CaseDatabaseFormat 
  * annotations.
- * @see FormatType
+ * @see org.openmarkov.core.io.format.annotation.FormatType
  * @author ibermejo
  *
  */

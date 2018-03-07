@@ -228,7 +228,7 @@ public class UnivariateDistrPotential extends Potential{
 		
 		
 		/**
-		 * @param probDensUnivariateParameters the probDensUnivariateParameters to set
+		 * @param probDensFunctionParametersName the probDensUnivariateParameters to set
 		 */
 		public void setProbDensFunctionParametersName(String[] probDensFunctionParametersName) {
 			this.probDensFunctionParametersName = probDensFunctionParametersName;

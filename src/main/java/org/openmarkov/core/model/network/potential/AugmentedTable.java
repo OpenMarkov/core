@@ -125,7 +125,7 @@ public class AugmentedTable extends TablePotential{
      *            . <code>ArrayList</code> of <code>Variable</code>
      * @param statesIndexes
      *            . <code>int[]</code>
-     * @param value
+     * @param function value to be assigned
      */
     public void setValue(List<Variable> variables, int[] statesIndexes, String function) {
         int position = 0;

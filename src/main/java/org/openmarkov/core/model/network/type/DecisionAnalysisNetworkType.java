@@ -12,16 +12,14 @@ import org.openmarkov.core.model.network.constraint.NoLinkRestriction;
 import org.openmarkov.core.model.network.constraint.NoRevelationArc;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
-@ProbNetType(name="DAN")
-public class DecisionAnalysisNetworkType extends NetworkType {
+@ProbNetType(name = "DAN") public class DecisionAnalysisNetworkType extends NetworkType {
 	private static DecisionAnalysisNetworkType instance = null;
 
 	// Constructor
 	private DecisionAnalysisNetworkType() {
 		super();
 		overrideConstraintBehavior(NoRevelationArc.class, ConstraintBehavior.NO);
-		overrideConstraintBehavior(NoLinkRestriction.class,
-				ConstraintBehavior.NO);
+		overrideConstraintBehavior(NoLinkRestriction.class, ConstraintBehavior.NO);
 	}
 
 	// Methods
@@ -32,7 +30,9 @@ public class DecisionAnalysisNetworkType extends NetworkType {
 		return instance;
 	}
 
-	/** @return String "DecisionAnalysisNetwork". */
+	/**
+	 * @return String "DecisionAnalysisNetwork".
+	 */
 	public String toString() {
 		return "DAN";
 	}

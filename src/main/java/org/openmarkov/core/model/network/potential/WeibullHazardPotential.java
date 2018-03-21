@@ -7,14 +7,8 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
-
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -27,48 +21,51 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-@PotentialType(name = "Hazard (Weibull)", family = "GLM")
-public class WeibullHazardPotential extends GLMPotential {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+@PotentialType(name = "Hazard (Weibull)", family = "GLM") public class WeibullHazardPotential extends GLMPotential {
 
 	protected static final String GAMMA = "Gamma";
 	protected static final String[] MANDATORY_COVARIATES = new String[] { GAMMA, CONSTANT };
 
-    /**
-     * Determines whether it represents a log hazard 
-     */
-    protected boolean log = false;
+	/**
+	 * Determines whether it represents a log hazard
+	 */
+	protected boolean log = false;
 
 	/**
 	 * Time variable
 	 */
 	private Variable timeVariable = null;
 
-	public WeibullHazardPotential(List<Variable> variables, PotentialRole role,
-			String[] covariates, double[] coefficients) {
+	public WeibullHazardPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+			double[] coefficients) {
 		super(variables, role, covariates, coefficients);
 	}
 
-	public WeibullHazardPotential(List<Variable> variables, PotentialRole role,
-			String[] covariates, double[] coefficients, double[] covarianceMatrix) {
+	public WeibullHazardPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+			double[] coefficients, double[] covarianceMatrix) {
 		super(variables, role, covariates, coefficients, covarianceMatrix);
 	}
 
-	public WeibullHazardPotential(List<Variable> variables, PotentialRole role,
-			double[] coefficients, double[] covarianceMatrix) {
-		super(variables, role, getDefaultCovariates(variables, role, MANDATORY_COVARIATES),
-				coefficients, covarianceMatrix);
+	public WeibullHazardPotential(List<Variable> variables, PotentialRole role, double[] coefficients,
+			double[] covarianceMatrix) {
+		super(variables, role, getDefaultCovariates(variables, role, MANDATORY_COVARIATES), coefficients,
+				covarianceMatrix);
 	}
 
-	public WeibullHazardPotential(List<Variable> variables, PotentialRole role,
-			String[] covariates, double[] coefficients, double[] uncertaintyMatrix,
-			MatrixType matrixType) {
+	public WeibullHazardPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+			double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
 		super(variables, role, covariates, coefficients, uncertaintyMatrix, matrixType);
 	}
 
-	public WeibullHazardPotential(List<Variable> variables, PotentialRole role,
-			double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
-		super(variables, role, getDefaultCovariates(variables, role, MANDATORY_COVARIATES),
-				coefficients, uncertaintyMatrix, matrixType);
+	public WeibullHazardPotential(List<Variable> variables, PotentialRole role, double[] coefficients,
+			double[] uncertaintyMatrix, MatrixType matrixType) {
+		super(variables, role, getDefaultCovariates(variables, role, MANDATORY_COVARIATES), coefficients,
+				uncertaintyMatrix, matrixType);
 	}
 
 	public WeibullHazardPotential(List<Variable> variables, PotentialRole role) {
@@ -85,42 +82,36 @@ public class WeibullHazardPotential extends GLMPotential {
 	/**
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role.
-	 * 
-	 * @param node
-	 *            . <code>Node</code>
-	 * @param variables
-	 *            . <code>List</code> of <code>Variable</code>.
-	 * @param role
-	 *            . <code>PotentialRole</code>.
+	 *
+	 * @param node      . <code>Node</code>
+	 * @param variables . <code>List</code> of <code>Variable</code>.
+	 * @param role      . <code>PotentialRole</code>.
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-		return !variables.isEmpty() 
-        		&& variables.get(0).isTemporal()
+		return !variables.isEmpty() && variables.get(0).isTemporal()
 				&& variables.get(0).getVariableType() == VariableType.FINITE_STATES
 				&& variables.get(0).getNumStates() == 2;
 	}
 
-    public double getGamma() {
-        return coefficients[getGammaIndex(processedCovariates)];
-    }
+	public double getGamma() {
+		return coefficients[getGammaIndex(processedCovariates)];
+	}
 
-    public void setGamma(double gamma) {
-        this.coefficients[getGammaIndex(processedCovariates)] = gamma;
-    }	
-	@Override
-	public List<TablePotential> tableProject(EvidenceCase evidenceCase,
-			InferenceOptions inferenceOptions, double[] coefficients, String[] covariates,
-            List<Variable> evidencelessVariables,
-            Map<String, String> variableValues)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	public void setGamma(double gamma) {
+		this.coefficients[getGammaIndex(processedCovariates)] = gamma;
+	}
+
+	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
+			Map<String, String> variableValues) throws NonProjectablePotentialException, WrongCriterionException {
 		Variable conditionedVariable = getConditionedVariable();
 		// Fill arrays numericValues and evidencelessVariables
-		
+
 		int gammaIndex = getGammaIndex(covariates);
 		int constantIndex = getConstantIndex(covariates);
-		
+
 		evidencelessVariables.remove(timeVariable);
-		
+
 		int numConfigurations = 1;
 		for (Variable evidencelessVariable : evidencelessVariables) {
 			numConfigurations *= evidencelessVariable.getNumStates();
@@ -128,8 +119,8 @@ public class WeibullHazardPotential extends GLMPotential {
 
 		List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
 		projectedPotentialVariables.add(0, variables.get(0));
-		if (timeVariable != null && timeVariable.getVariableType() != VariableType.NUMERIC
-				&& !evidenceCase.contains(timeVariable)) {
+		if (timeVariable != null && timeVariable.getVariableType() != VariableType.NUMERIC && !evidenceCase
+				.contains(timeVariable)) {
 			projectedPotentialVariables.add(timeVariable);
 		}
 		TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, role);
@@ -139,22 +130,19 @@ public class WeibullHazardPotential extends GLMPotential {
 		double[] ts = null;
 		if (timeVariable != null && timeVariable.getVariableType() != VariableType.NUMERIC) {
 			ts = new double[timeVariable.getNumStates()];
-			double timeDifference = conditionedVariable.getTimeSlice()
-					- timeVariable.getTimeSlice();
+			double timeDifference = conditionedVariable.getTimeSlice() - timeVariable.getTimeSlice();
 			for (int i = 0; i < ts.length; ++i) {
 				ts[i] = Double.parseDouble(timeVariable.getStates()[i].getName()) + timeDifference;
 			}
 		} else {
 			ts = new double[1];
-			double t = (conditionedVariable.getTimeSlice() >= 0)? conditionedVariable.getTimeSlice() : 1;
+			double t = (conditionedVariable.getTimeSlice() >= 0) ? conditionedVariable.getTimeSlice() : 1;
 			if (timeVariable != null) {
 				if (!evidenceCase.contains(timeVariable)) {
 					throw new NonProjectablePotentialException(
-							"Can not project potential without evidence on timeVariable "
-									+ timeVariable.getName());
+							"Can not project potential without evidence on timeVariable " + timeVariable.getName());
 				}
-				double timeDifference = conditionedVariable.getTimeSlice()
-						- timeVariable.getTimeSlice();
+				double timeDifference = conditionedVariable.getTimeSlice() - timeVariable.getTimeSlice();
 				t = evidenceCase.getFinding(timeVariable).getNumericalValue() + timeDifference;
 			}
 			ts[0] = t;
@@ -176,7 +164,7 @@ public class WeibullHazardPotential extends GLMPotential {
 					} catch (NumberFormatException e) {
 						// ignore
 					}
-					variableValues.put("v"+variables.indexOf(variable), String.valueOf(value));
+					variableValues.put("v" + variables.indexOf(variable), String.valueOf(value));
 				}
 				evaluator.setVariables(variableValues);
 				double lambda = coefficients[constantIndex];
@@ -191,13 +179,11 @@ public class WeibullHazardPotential extends GLMPotential {
 						lambda += covariateValue * coefficients[j];
 					}
 				}
-				if(log)
-				{
+				if (log) {
 					lambda = Math.exp(lambda);
 				}
 				double probability = 0;
-				if(t > 0)
-				{
+				if (t > 0) {
 					double diff = Math.pow(t - 1, shape) - Math.pow(t, shape);
 					probability = 1 - Math.exp(lambda * diff);
 				}
@@ -211,8 +197,7 @@ public class WeibullHazardPotential extends GLMPotential {
 		return Arrays.asList(projectedPotential);
 	}
 
-	@Override
-	public Potential copy() {
+	@Override public Potential copy() {
 		return new WeibullHazardPotential(this);
 	}
 
@@ -224,45 +209,37 @@ public class WeibullHazardPotential extends GLMPotential {
 		this.timeVariable = timeVariable;
 	}
 
-	@Override
-	public String toString() {
+	@Override public String toString() {
 		return super.toString() + " = Hazard (Weibull)";
 	}
 
-	@Override
-	public void shift(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
+	@Override public void shift(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
 		super.shift(probNet, timeDifference);
 		if (timeVariable != null) {
 			timeVariable = probNet.getShiftedVariable(timeVariable, timeDifference);
 		}
 	}
 
-	@Override
-	public void replaceNumericVariable(Variable convertedParentVariable) {
+	@Override public void replaceNumericVariable(Variable convertedParentVariable) {
 		super.replaceNumericVariable(convertedParentVariable);
-		if (timeVariable != null
-				&& convertedParentVariable.getName().equals(timeVariable.getName())) {
+		if (timeVariable != null && convertedParentVariable.getName().equals(timeVariable.getName())) {
 			setTimeVariable(convertedParentVariable);
 		}
 	}
-	
-	protected int getGammaIndex(String[] covariates)
-    {
-    	int gammaIndex = -1;
-    	int i=0;
-        while(i < covariates.length && gammaIndex == -1)
-        {
-            if(covariates[i].equals(GAMMA))
-            {
-                gammaIndex = i;
-            }
-            ++i;
-        }
-        return gammaIndex;
-    }
-	
-    
-    public boolean isLog() {
+
+	protected int getGammaIndex(String[] covariates) {
+		int gammaIndex = -1;
+		int i = 0;
+		while (i < covariates.length && gammaIndex == -1) {
+			if (covariates[i].equals(GAMMA)) {
+				gammaIndex = i;
+			}
+			++i;
+		}
+		return gammaIndex;
+	}
+
+	public boolean isLog() {
 		return log;
 	}
 
@@ -270,19 +247,17 @@ public class WeibullHazardPotential extends GLMPotential {
 		this.log = log;
 	}
 
-	@Override
-	public void scalePotential(double scale) throws UnsupportedOperationException {
+	@Override public void scalePotential(double scale) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
-		
+
 	}
-	
-	@Override
-	public Potential deepCopy(ProbNet copyNet) {
+
+	@Override public Potential deepCopy(ProbNet copyNet) {
 		WeibullHazardPotential potential = (WeibullHazardPotential) super.deepCopy(copyNet);
 
 		potential.setLog(this.log);
 
-		if(timeVariable != null) {
+		if (timeVariable != null) {
 			try {
 				potential.setTimeVariable(copyNet.getVariable(this.getTimeVariable().getName()));
 			} catch (NodeNotFoundException e) {

@@ -12,35 +12,32 @@ import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
-@ProbNetType(name="DynamicLIMID")
-public class DynamicLimidType extends NetworkType
-{
-    private static DynamicLimidType instance = null;
+@ProbNetType(name = "DynamicLIMID") public class DynamicLimidType extends NetworkType {
+	private static DynamicLimidType instance = null;
 
-    // Constructor
-    private DynamicLimidType ()
-    {
-        super();
-        
-        overrideConstraintBehavior (OnlyAtemporalVariables.class, ConstraintBehavior.NO);
-        overrideConstraintBehavior (OnlyTemporalVariables.class, ConstraintBehavior.YES);
-    }
+	// Constructor
+	private DynamicLimidType() {
+		super();
 
-    // Methods
-    public static DynamicLimidType getUniqueInstance ()
-    {
-        if (instance == null)
-        {
-            instance = new DynamicLimidType ();
-        }
-        return instance;
-    }
-    
-    /** @return String "DynamicLIMID" */
-    public String toString() {
-    	return "DYN_LIMID";
-    }
-    
+		overrideConstraintBehavior(OnlyAtemporalVariables.class, ConstraintBehavior.NO);
+		overrideConstraintBehavior(OnlyTemporalVariables.class, ConstraintBehavior.YES);
+	}
+
+	// Methods
+	public static DynamicLimidType getUniqueInstance() {
+		if (instance == null) {
+			instance = new DynamicLimidType();
+		}
+		return instance;
+	}
+
+	/**
+	 * @return String "DynamicLIMID"
+	 */
+	public String toString() {
+		return "DYN_LIMID";
+	}
+
 }
 
 

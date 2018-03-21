@@ -12,36 +12,31 @@ import org.junit.Test;
 
 public class AtLeastOneUtilityPotentialTest {
 
-	@Before
-	public void setUp() throws Exception {
+	@Before public void setUp() throws Exception {
 	}
 
-	@Test
-	public void testAtLeastOneUtilityNode() {
+	@Test public void testAtLeastOneUtilityNode() {
 		// TODO
 		//fail("Not yet implemented");
-		assert(true);
+		assert (true);
 	}
 
-	@Test
-	public void testUndoableEditWillHappen() {
+	@Test public void testUndoableEditWillHappen() {
 		// TODO
 		//fail("Not yet implemented");
-		assert(true);
+		assert (true);
 	}
 
-	@Test
-	public void testUndoableEditHappened() {
+	@Test public void testUndoableEditHappened() {
 		// TODO
 		//fail("Not yet implemented");
-		assert(true);
+		assert (true);
 	}
 
-	@Test
-	public void testSatisfyConstraint() {
+	@Test public void testSatisfyConstraint() {
 		// TODO
 		//fail("Not yet implemented");
-		assert(true);
+		assert (true);
 	}
 
 }

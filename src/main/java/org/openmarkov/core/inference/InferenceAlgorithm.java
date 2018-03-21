@@ -7,9 +7,6 @@
 
 package org.openmarkov.core.inference;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.inference.tasks.Task;
@@ -19,6 +16,9 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.NoSuperValueNode;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.type.NetworkType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author mluque
@@ -36,18 +36,16 @@ public abstract class InferenceAlgorithm implements Task {
 	 * TODO - Check if this is necessary
 	 */
 	protected PNESupport pNESupport;
-
-	/**
-	 * Evidence introduced before the network is resolved.
-	 * In influence diagrams this is Ezawa's evidence.
-	 */
-	private EvidenceCase preResolutionEvidence;
-
 	/**
 	 * Variables that will not be eliminated during the inference, and therefore all the results
 	 * contain these variables in the domain.
 	 */
 	protected List<Variable> conditioningVariables;
+	/**
+	 * Evidence introduced before the network is resolved.
+	 * In influence diagrams this is Ezawa's evidence.
+	 */
+	private EvidenceCase preResolutionEvidence;
 
 	/**
 	 * @param network The network used in the inference
@@ -63,6 +61,7 @@ public abstract class InferenceAlgorithm implements Task {
 
 	/**
 	 * Checks the network and constraints applicability
+	 *
 	 * @throws NotEvaluableNetworkException
 	 */
 	public void checkEvaluability() throws NotEvaluableNetworkException {
@@ -72,6 +71,7 @@ public abstract class InferenceAlgorithm implements Task {
 
 	/**
 	 * Checks the network and evidence consistency
+	 *
 	 * @throws NotEvaluableNetworkException
 	 */
 	private void checkConsistency() throws NotEvaluableNetworkException {
@@ -81,8 +81,8 @@ public abstract class InferenceAlgorithm implements Task {
 
 	/**
 	 * Checks network consistency
-	 * @throws NotEvaluableNetworkException
-	 * TODO - Implement that method
+	 *
+	 * @throws NotEvaluableNetworkException TODO - Implement that method
 	 */
 	private void checkNetworkConsistency() throws NotEvaluableNetworkException {
 
@@ -90,8 +90,8 @@ public abstract class InferenceAlgorithm implements Task {
 
 	/**
 	 * Checks evidence consistency
-	 * @throws NotEvaluableNetworkException
-	 * TODO - Implement that method
+	 *
+	 * @throws NotEvaluableNetworkException TODO - Implement that method
 	 */
 	private void checkEvidenceConsistency() throws NotEvaluableNetworkException {
 
@@ -99,6 +99,7 @@ public abstract class InferenceAlgorithm implements Task {
 
 	/**
 	 * Check if the network type can be evaluated by the algorithm
+	 *
 	 * @throws NotEvaluableNetworkException
 	 */
 	private void checkNetworkApplicability() throws NotEvaluableNetworkException {
@@ -122,14 +123,15 @@ public abstract class InferenceAlgorithm implements Task {
 
 	/**
 	 * List of networks that the algorithm can evaluate
+	 *
 	 * @return
 	 */
 	protected abstract List<NetworkType> getPossibleNetworkTypes();
 
 	/**
 	 * Check if the network satisfies all the constraints that requires the algorithm
-	 * @throws NotEvaluableNetworkException
-	 * TODO - Remove additional constraints
+	 *
+	 * @throws NotEvaluableNetworkException TODO - Remove additional constraints
 	 */
 	private void checkConstraintsApplicability() throws NotEvaluableNetworkException {
 		// Check that the probNet satisfies the specific constraints of the algorithm
@@ -153,11 +155,12 @@ public abstract class InferenceAlgorithm implements Task {
 			}
 			throw new NotEvaluableNetworkException(notEvaluableMessage);
 		}
-	
+
 	}
 
 	/**
 	 * List of additional constraints that network must satisfy in order to be evaluated by the algorithm
+	 *
 	 * @return
 	 */
 	protected abstract List<PNConstraint> getAdditionalConstraints();

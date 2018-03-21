@@ -7,13 +7,13 @@
 
 package org.openmarkov.core.model.network;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 // TODO  mantener la consistencia entre name y baseName cuando se cambian
 
@@ -21,78 +21,73 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * A variable (for instance, a random variable or a decision). Each
  * <code>Node</code> in a <code>ProbNet</code>work represents a
  * <code>Variable</code>
- * 
+ *
  * @author marias
  * @author fjdiez
+ * @version 1.0
  * @see org.openmarkov.core.model.network.Node
  * @see org.openmarkov.core.model.network.ProbNet
- * @version 1.0
  */
 public class Variable implements Cloneable, Comparable<Variable> {
 
 	// Constant
-	/** Time slice value when the variable is not temporal. */
+	/**
+	 * Time slice value when the variable is not temporal.
+	 */
 	public final static int noTemporalTimeSlice = Integer.MIN_VALUE;
 
 	// Attributes
-	/** The time Slice of the node. The default value is no temporal. */
-	private int timeSlice = noTemporalTimeSlice;
-
+	private final String STATE_BASE_NAME = "state";
 	/**
 	 * A string (usually in English) that identifies this variable.
 	 */
 	protected String name;
-
-	// Name without the time slice index. For example, if the name is "X [0]",
-	// the baseName is "X"
-	private String baseName;
-
-	private StringWithProperties unit = new StringWithProperties("");
-
 	/**
 	 * List of states that this variable can take on. Each state will be a
 	 * <code>String</code>.
-	 * 
+	 *
 	 * @invariant The number of states does not change.
 	 */
 	protected State[] states;
-
-	/** Variable role: discrete, continuous, discretized, ... */
+	/**
+	 * Variable role: discrete, continuous, discretized, ...
+	 */
 	protected VariableType variableType;
-
 	/**
 	 * Interval sets where this variable is defined in the case of continuous or
 	 * discretized variable type.
 	 */
 	protected PartitionedInterval partitionedInterval;
-
-	/** Max error. */
-	private double precision = 0.01;
-
 	protected HashMap<String, String> additionalProperties;
-
 	protected HashMap<String, HashMap<String, String>> statesAdditionalProperties;
-
+	/**
+	 * The time Slice of the node. The default value is no temporal.
+	 */
+	private int timeSlice = noTemporalTimeSlice;
+	// Name without the time slice index. For example, if the name is "X [0]",
+	// the baseName is "X"
+	private String baseName;
+	private StringWithProperties unit = new StringWithProperties("");
+	/**
+	 * Max error.
+	 */
+	private double precision = 0.01;
 	/**
 	 * Agent for decision nodes
 	 */
 	private StringWithProperties agent;
-
 	/**
 	 * Decision criterion for utility nodes
 	 */
 	private Criterion decisionCriterion;
-	
-	private final String STATE_BASE_NAME = "state";
 
 	// Constructors
+
 	/**
 	 * Constructor for discrete variables.
-	 * 
-	 * @param name
-	 *            <code>String</code>
-	 * @param states
-	 *            <code>String[]</code>
+	 *
+	 * @param name   <code>String</code>
+	 * @param states <code>String[]</code>
 	 * @argCondition All the states must be different
 	 */
 	public Variable(String name, State[] states) {
@@ -111,12 +106,10 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * <p>
 	 * Creates a <code>FSVariable</code> whose states are given by the names
 	 * <code>namesStates</code> states.
-	 * 
-	 * @param nameVariable
-	 *            a <code>String</code>
-	 * @param stateNames
-	 *            a sequence of <code>String</code> by using the facilities of
-	 *            Java 5.
+	 *
+	 * @param nameVariable a <code>String</code>
+	 * @param stateNames   a sequence of <code>String</code> by using the facilities of
+	 *                     Java 5.
 	 */
 	public Variable(String nameVariable, String... stateNames) {
 
@@ -137,11 +130,9 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * <p>
 	 * Creates a <code>FSVariable</code> with <code>numStates</code> states. The
 	 * i-th state is named as "i".
-	 * 
-	 * @param name
-	 *            a <code>String</code>
-	 * @param numStates
-	 *            <code>int</code>
+	 *
+	 * @param name      a <code>String</code>
+	 * @param numStates <code>int</code>
 	 */
 	public Variable(String name, int numStates) {
 
@@ -157,7 +148,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 
 	/**
 	 * Copy constructor for Variable.
-	 * 
+	 *
 	 * @param variable
 	 */
 	public Variable(Variable variable) {
@@ -165,8 +156,9 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		this.name = new String(variable.getName());
 		this.states = variable.states.clone();
 		this.variableType = variable.getVariableType();
-		this.partitionedInterval = (variable.getPartitionedInterval() != null) ? (PartitionedInterval) variable
-				.getPartitionedInterval().clone() : null;
+		this.partitionedInterval = (variable.getPartitionedInterval() != null) ?
+				(PartitionedInterval) variable.getPartitionedInterval().clone() :
+				null;
 		this.precision = variable.getPrecision();
 		this.unit = variable.unit.copy();
 		setTimeSlice(getTimeSlice(variable.getName()));
@@ -177,14 +169,13 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * <p>
 	 * A continuous variable is defined in an interval. In this case the
 	 * interval is (-infinity, +infinity)
-	 * 
-	 * @param name
-	 *            <code>String</code>
+	 *
+	 * @param name <code>String</code>
 	 */
 	public Variable(String name) {
 
-		this(name, new State[] { new State("0") }, new PartitionedInterval(false,
-				Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false), 0.0);
+		this(name, new State[] { new State("0") },
+				new PartitionedInterval(false, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false), 0.0);
 		this.variableType = VariableType.NUMERIC;
 	}
 
@@ -192,25 +183,18 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * Constructor for continuous variables.
 	 * <p>
 	 * A continuous variable is defined in an interval.
-	 * 
-	 * @param name
-	 *            . <code>String</code>
-	 * @param leftClosed
-	 *            . <code>boolean</code>
-	 * @param min
-	 *            . <code>double</code>
-	 * @param max
-	 *            . <code>double</code>
-	 * @param rightClosed
-	 *            . <code>boolean</code>
-	 * @param precision
-	 *            . <code>double</code>
+	 *
+	 * @param name        . <code>String</code>
+	 * @param leftClosed  . <code>boolean</code>
+	 * @param min         . <code>double</code>
+	 * @param max         . <code>double</code>
+	 * @param rightClosed . <code>boolean</code>
+	 * @param precision   . <code>double</code>
 	 */
-	public Variable(String name, boolean leftClosed, double min, double max, boolean rightClosed,
-			double precision) {
+	public Variable(String name, boolean leftClosed, double min, double max, boolean rightClosed, double precision) {
 
-		this(name, new State[] { new State("Only one state") }, new PartitionedInterval(leftClosed,
-				min, max, rightClosed), precision);
+		this(name, new State[] { new State("Only one state") },
+				new PartitionedInterval(leftClosed, min, max, rightClosed), precision);
 		this.variableType = VariableType.NUMERIC;
 	}
 
@@ -219,19 +203,14 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * <p>
 	 * The interval in with is defined the continuous variable is the addition
 	 * of the set of intervals.
-	 * 
+	 *
+	 * @param name                . <code>String</code>
+	 * @param states              . <code>String[]</code>
+	 * @param partitionedInterval . <code>PartitionedInterval</code>
+	 * @param precision           . <code>double</code>
 	 * @argCondition states.length = partitionedInterval.getNumSubintervals()
-	 * @param name
-	 *            . <code>String</code>
-	 * @param states
-	 *            . <code>String[]</code>
-	 * @param partitionedInterval
-	 *            . <code>PartitionedInterval</code>
-	 * @param precision
-	 *            . <code>double</code>
 	 */
-	public Variable(String name, State[] states, PartitionedInterval partitionedInterval,
-			double precision) {
+	public Variable(String name, State[] states, PartitionedInterval partitionedInterval, double precision) {
 
 		this(name, states);
 		this.partitionedInterval = partitionedInterval;
@@ -252,10 +231,10 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	// Methods
+
 	/**
-	 * @param additionalProperties
-	 *            . <code>HashMap</code> with key = <code>String</code> and
-	 *            value = <code>String</code>
+	 * @param additionalProperties . <code>HashMap</code> with key = <code>String</code> and
+	 *                             value = <code>String</code>
 	 */
 	public void setAdditionalProperties(HashMap<String, String> additionalProperties) {
 		this.additionalProperties = additionalProperties;
@@ -264,7 +243,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	/**
 	 * @param propertyName
 	 * @return property value if exists, otherwise <code>null</code>
-	 *         <code>String</code> and value = <code>String</code>
+	 * <code>String</code> and value = <code>String</code>
 	 */
 	public String getAdditionalProperty(String propertyName) {
 		String property = null;
@@ -275,8 +254,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @param propertyName
-	 *            . <code>
+	 * @param propertyName . <code>
 	 */
 	public void setAdditionalProperty(String propertyName, String propertyValue) {
 		if (additionalProperties == null) {
@@ -285,8 +263,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		additionalProperties.put(propertyName, propertyValue);
 	}
 
-	public void setStateAdditionalProperties(String stateName,
-			HashMap<String, String> stateAdditionalProperties) {
+	public void setStateAdditionalProperties(String stateName, HashMap<String, String> stateAdditionalProperties) {
 		if (statesAdditionalProperties == null) {
 			statesAdditionalProperties = new HashMap<>();
 		}
@@ -306,8 +283,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		return timeSlice != Integer.MIN_VALUE;
 	}
 
-	public void setStateAdditionalProperty(String stateName, String propertyName,
-			String propertyValue) {
+	public void setStateAdditionalProperty(String stateName, String propertyName, String propertyValue) {
 		if (statesAdditionalProperties == null) {
 			statesAdditionalProperties = new HashMap<>();
 		}
@@ -332,11 +308,9 @@ public class Variable implements Cloneable, Comparable<Variable> {
 
 	/**
 	 * Changes the name of one state.
-	 * 
-	 * @param oldName
-	 *            . <code>String</code>.
-	 * @param newName
-	 *            . <code>String</code>.
+	 *
+	 * @param oldName . <code>String</code>.
+	 * @param newName . <code>String</code>.
 	 * @throws Exception
 	 */
 	public void renameState(String oldName, String newName) throws Exception {
@@ -348,16 +322,15 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		}
 		int index = getStateIndex(oldName);
 		if (index == -1) {
-			throw new Exception("Try to change the state name " + oldName
-					+ " that does not exists in variable " + name);
+			throw new Exception(
+					"Try to change the state name " + oldName + " that does not exists in variable " + name);
 		}
 		states[getStateIndex(oldName)].setName(newName);
 
 		// Change key of additional additionalProperties of this state if they
 		// exists
 		if (statesAdditionalProperties != null) {
-			HashMap<String, String> additionalPropertiesOldName = statesAdditionalProperties
-					.get(oldName);
+			HashMap<String, String> additionalPropertiesOldName = statesAdditionalProperties.get(oldName);
 			if (additionalPropertiesOldName != null) {
 				statesAdditionalProperties.remove(oldName);
 				statesAdditionalProperties.put(newName, additionalPropertiesOldName);
@@ -366,12 +339,11 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @consultation
-	 * @param stateName
-	 *            . <code>String</code>
+	 * @param stateName . <code>String</code>
 	 * @return The index of <code>state</code> or -1 if it does not exists.
-	 *         <code>int</code>
+	 * <code>int</code>
 	 * @throws InvalidStateException
+	 * @consultation
 	 */
 	public int getStateIndex(String stateName) throws InvalidStateException {
 
@@ -384,11 +356,9 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @param state
-	 *            . <code>State</code>
+	 * @param state . <code>State</code>
 	 * @return stateIndex of state. <code>int</code>
-	 * @throws Error
-	 *             if state does not exist
+	 * @throws Error if state does not exist
 	 */
 	public int getStateIndex(State state) {
 		for (int i = 0; i < states.length; i++) {
@@ -400,36 +370,33 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @param value
-	 *            . <code>double</code>
+	 * @param value . <code>double</code>
 	 * @return The state index corresponding to value. <code>int</code>
-	 * @throws InvalidStateException
-	 *             exception when variable is discrete.
+	 * @throws InvalidStateException exception when variable is discrete.
 	 */
 	public int getStateIndex(double value) throws InvalidStateException {
 
-	    int state = -1;	    
+		int state = -1;
 		if (variableType == VariableType.FINITE_STATES) {
-            state = getStateIndex(String.valueOf(round(value)));
-            if (state == -1) {
-    			throw new InvalidStateException("Can not use "
-    					+ "Variable.getStateIndex(double) in the discrete variable." + name);
-            }
-		} else
-		{
-    		state = partitionedInterval.indexOfSubinterval(value);
-    		if (state == -1) {
-    			throw new InvalidStateException(value + " is not in any interval "
-    					+ "of the discretized variable " + name + " (intervals are "
-    					+ partitionedInterval.toString() + ").");
-    		}
+			state = getStateIndex(String.valueOf(round(value)));
+			if (state == -1) {
+				throw new InvalidStateException(
+						"Can not use " + "Variable.getStateIndex(double) in the discrete variable." + name);
+			}
+		} else {
+			state = partitionedInterval.indexOfSubinterval(value);
+			if (state == -1) {
+				throw new InvalidStateException(
+						value + " is not in any interval " + "of the discretized variable " + name + " (intervals are "
+								+ partitionedInterval.toString() + ").");
+			}
 		}
 		return state;
 	}
 
 	/**
-	 * @consultation
 	 * @return variableType. <code>VariableType</code>
+	 * @consultation
 	 */
 	public VariableType getVariableType() {
 
@@ -437,142 +404,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @consultation
-	 * @return name. <code>String</code>
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @consultation
-	 * @return name. <code>String</code>
-	 * @consultation
-	 */
-	public String getBaseName() {
-		if (baseName == null) {
-			return name;
-		}
-		return baseName;
-	}
-
-	/**
-	 * @consultation
-	 * @return Number of states.
-	 */
-	public int getNumStates() {
-
-		return states.length;
-	}
-
-	/**
-	 * @consultation
-	 * @return states. <code>String[]</code>
-	 */
-	public State[] getStates() {
-		return states;
-	}
-
-	/**
-	 * @consultation
-	 * @argCondition index must be a number between 0 and (number-of-states -
-	 *               1).
-	 * @param index
-	 *            . <code>int</code>
-	 * @return Name of states[index]. <code>String</code>.
-	 */
-	public String getStateName(int index) {
-
-		return states[index].getName();
-	}
-	
-	
-	/**
-	 * @param name
-	 * @return The state whose name is 'name'
-	 * @throws InvalidStateException
-	 */
-	public State getState(String name) throws InvalidStateException{
-		return states[getStateIndex(name)];
-	}
-
-	/** @return partitionedInterval. <code>PartitionedInterval</code> */
-	public PartitionedInterval getPartitionedInterval() {
-
-		return partitionedInterval;
-	}
-
-	/** @return precision. <code>double</code> */
-	public double getPrecision() {
-
-		return precision;
-	}
-
-	/**
-	 * @param newName
-	 *            . <code>String</code>
-	 */
-	public void setName(String newName) {
-		name = newName;// new String(newName);
-		timeSlice = getTimeSlice(name);
-	}
-
-	/**
-	 * @param newBaseName
-	 *            . <code>String</code>
-	 */
-	public void setBaseName(String newBaseName) {
-		this.baseName = newBaseName;
-		this.name = this.baseName + ((timeSlice >= 0)? " [" + timeSlice + "]" : "");
-	}
-
-	/**
-	 * @param states
-	 *            the states to set
-	 */
-	public void setStates(State[] states) {
-
-		this.states = states;
-	}
-
-	public TablePotential deltaTablePotential(String stateName) throws InvalidStateException {
-		List<Variable> potentialVariables = new ArrayList<>();
-		potentialVariables.add(this);
-		TablePotential potential = new TablePotential(potentialVariables,
-				PotentialRole.CONDITIONAL_PROBABILITY);
-
-		for (int i = 0; i < potential.values.length; i++) {
-			potential.values[i] = 0.0;
-		}
-		potential.values[getStateIndex(stateName)] = 1.0;
-		return potential;
-	}
-
-	public TablePotential deltaTablePotential(State state) {
-		List<Variable> potentialVariables = new ArrayList<>();
-		potentialVariables.add(this);
-		TablePotential potential = new TablePotential(potentialVariables,
-				PotentialRole.CONDITIONAL_PROBABILITY);
-
-		for (int i = 0; i < potential.values.length; i++) {
-			potential.values[i] = 0.0;
-		}
-		potential.values[getStateIndex(state)] = 1.0;
-		return potential;
-	}
-
-	public TablePotential createDeltaTablePotential(int stateIndex) throws InvalidStateException {
-		List<Variable> potentialVariables = new ArrayList<>();
-		potentialVariables.add(this);
-		TablePotential potential = new TablePotential(potentialVariables,
-				PotentialRole.CONDITIONAL_PROBABILITY);
-		potential.values[stateIndex] = 1.0;
-		return potential;
-	}
-
-	/**
-	 * @param variableType
-	 *            the variableType to set
+	 * @param variableType the variableType to set
 	 */
 	public void setVariableType(VariableType variableType) {
 
@@ -584,17 +416,162 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		switch (variableType) {
 		case NUMERIC:
 			this.setStates(new State[] { new State("") });
-			setPartitionedInterval(new PartitionedInterval(getDefaultInterval(1),
-					getDefaultBelongs(1)));
+			setPartitionedInterval(new PartitionedInterval(getDefaultInterval(1), getDefaultBelongs(1)));
 			break;
 		case DISCRETIZED:
-			setPartitionedInterval(new PartitionedInterval(getDefaultInterval(getNumStates()),
-					getDefaultBelongs(getNumStates())));
+			setPartitionedInterval(
+					new PartitionedInterval(getDefaultInterval(getNumStates()), getDefaultBelongs(getNumStates())));
 			break;
-        default:
-            break;
+		default:
+			break;
 		}
 
+	}
+
+	/**
+	 * @return name. <code>String</code>
+	 * @consultation
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param newName . <code>String</code>
+	 */
+	public void setName(String newName) {
+		name = newName;// new String(newName);
+		timeSlice = getTimeSlice(name);
+	}
+
+	/**
+	 * @return name. <code>String</code>
+	 * @consultation
+	 * @consultation
+	 */
+	public String getBaseName() {
+		if (baseName == null) {
+			return name;
+		}
+		return baseName;
+	}
+
+	/**
+	 * @param newBaseName . <code>String</code>
+	 */
+	public void setBaseName(String newBaseName) {
+		this.baseName = newBaseName;
+		this.name = this.baseName + ((timeSlice >= 0) ? " [" + timeSlice + "]" : "");
+	}
+
+	/**
+	 * @return Number of states.
+	 * @consultation
+	 */
+	public int getNumStates() {
+
+		return states.length;
+	}
+
+	/**
+	 * @return states. <code>String[]</code>
+	 * @consultation
+	 */
+	public State[] getStates() {
+		return states;
+	}
+
+	/**
+	 * @param states the states to set
+	 */
+	public void setStates(State[] states) {
+
+		this.states = states;
+	}
+
+	/**
+	 * @param index . <code>int</code>
+	 * @return Name of states[index]. <code>String</code>.
+	 * @consultation
+	 * @argCondition index must be a number between 0 and (number-of-states -
+	 * 1).
+	 */
+	public String getStateName(int index) {
+
+		return states[index].getName();
+	}
+
+	/**
+	 * @param name
+	 * @return The state whose name is 'name'
+	 * @throws InvalidStateException
+	 */
+	public State getState(String name) throws InvalidStateException {
+		return states[getStateIndex(name)];
+	}
+
+	/**
+	 * @return partitionedInterval. <code>PartitionedInterval</code>
+	 */
+	public PartitionedInterval getPartitionedInterval() {
+
+		return partitionedInterval;
+	}
+
+	/**
+	 * @param partitionedInterval the partitionedInterval to set
+	 */
+	public void setPartitionedInterval(PartitionedInterval partitionedInterval) {
+
+		this.partitionedInterval = partitionedInterval;
+	}
+
+	/**
+	 * @return precision. <code>double</code>
+	 */
+	public double getPrecision() {
+
+		return precision;
+	}
+
+	/**
+	 * @param precision the precision to set
+	 */
+	public void setPrecision(double precision) {
+
+		this.precision = precision;
+	}
+
+	public TablePotential deltaTablePotential(String stateName) throws InvalidStateException {
+		List<Variable> potentialVariables = new ArrayList<>();
+		potentialVariables.add(this);
+		TablePotential potential = new TablePotential(potentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
+
+		for (int i = 0; i < potential.values.length; i++) {
+			potential.values[i] = 0.0;
+		}
+		potential.values[getStateIndex(stateName)] = 1.0;
+		return potential;
+	}
+
+	public TablePotential deltaTablePotential(State state) {
+		List<Variable> potentialVariables = new ArrayList<>();
+		potentialVariables.add(this);
+		TablePotential potential = new TablePotential(potentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
+
+		for (int i = 0; i < potential.values.length; i++) {
+			potential.values[i] = 0.0;
+		}
+		potential.values[getStateIndex(state)] = 1.0;
+		return potential;
+	}
+
+	public TablePotential createDeltaTablePotential(int stateIndex) throws InvalidStateException {
+		List<Variable> potentialVariables = new ArrayList<>();
+		potentialVariables.add(this);
+		TablePotential potential = new TablePotential(potentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
+		potential.values[stateIndex] = 1.0;
+		return potential;
 	}
 
 	public double[] getDefaultInterval(int numStates) {
@@ -625,24 +602,8 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @param partitionedInterval
-	 *            the partitionedInterval to set
+	 * Overrides <code>toString</code> method. Mainly for test purposes
 	 */
-	public void setPartitionedInterval(PartitionedInterval partitionedInterval) {
-
-		this.partitionedInterval = partitionedInterval;
-	}
-
-	/**
-	 * @param precision
-	 *            the precision to set
-	 */
-	public void setPrecision(double precision) {
-
-		this.precision = precision;
-	}
-
-	/** Overrides <code>toString</code> method. Mainly for test purposes */
 	public String toString() {
 
 		return name;
@@ -658,16 +619,18 @@ public class Variable implements Cloneable, Comparable<Variable> {
 			if (lastClosedBracket > lastOpenBracket) {
 				int firstNumber = lastOpenBracket + 2;
 				try {
-					timeSlice = Integer.valueOf((String) variableName.subSequence(firstNumber,
-							lastClosedBracket));
+					timeSlice = Integer.valueOf((String) variableName.subSequence(firstNumber, lastClosedBracket));
 				} catch (NumberFormatException e) {
 					// There is not a number between brackets
 				}
 			}
-		}else
-		{
-		    baseName = variableName;
+		} else {
+			baseName = variableName;
 		}
+		return timeSlice;
+	}
+
+	public int getTimeSlice() {
 		return timeSlice;
 	}
 
@@ -675,9 +638,8 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * Changes or sets for the first time the time slice. Modifies the variable
 	 * name adding or changing [timeSlice]. If the variable is not temporal
 	 * change to temporal.
-	 * 
-	 * @param timeSlice
-	 *            . <code>int</code>
+	 *
+	 * @param timeSlice . <code>int</code>
 	 */
 	public void setTimeSlice(int timeSlice) {
 		if (timeSlice != Integer.MIN_VALUE) {
@@ -690,23 +652,18 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		this.timeSlice = timeSlice;
 	}
 
-	public int getTimeSlice() {
-		return timeSlice;
-	}
-
-	/**
-	 * @param unit
-	 *            the unit to set
-	 */
-	public void setUnit(StringWithProperties unit) {
-		this.unit = unit;
-	}
-
 	/**
 	 * @return the unit
 	 */
 	public StringWithProperties getUnit() {
 		return unit;
+	}
+
+	/**
+	 * @param unit the unit to set
+	 */
+	public void setUnit(StringWithProperties unit) {
+		this.unit = unit;
 	}
 
 	public StringWithProperties getAgent() {
@@ -725,57 +682,58 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		this.decisionCriterion = decisionCriterion;
 	}
 
-    public double round(double value) {
-        return Math.round(value/precision)*precision;
-    }
+	public double round(double value) {
+		return Math.round(value / precision) * precision;
+	}
 
-	@Override
-	public int compareTo(Variable o) {
+	@Override public int compareTo(Variable o) {
 		int othersHashCode = o.hashCode();
 		int thisHashCode = hashCode();
 		int result = 0;
-		if(othersHashCode > thisHashCode)
+		if (othersHashCode > thisHashCode)
 			result = -1;
 		else if (othersHashCode < thisHashCode)
 			result = 0;
 		return result;
 	}
-	
+
 	/**
 	 * This methods checks if a string may be a valid state name
+	 *
 	 * @param newState
 	 * @return
 	 */
-	public boolean chekNewStateName(String newState){
-		for(State state : states){
-			if(state.getName().equals(newState)){
+	public boolean chekNewStateName(String newState) {
+		for (State state : states) {
+			if (state.getName().equals(newState)) {
 				return false;
 			}
 		}
 		return true;
 	}
-	
+
 	/**
-	 * This method returns a valid status name based on the current 
+	 * This method returns a valid status name based on the current
 	 * states and a based prefix defined as a constant in this class
+	 *
 	 * @return a new valid name for a state
 	 */
-	public String getNewValidName(){
+	public String getNewValidName() {
 		String newValidName = null;
 		int actualState = 0;
 		boolean validName;
-		do{
+		do {
 			validName = true;
 			newValidName = STATE_BASE_NAME + actualState;
-			for(State state : states){
-				if(state.getName().equals(newValidName)){
+			for (State state : states) {
+				if (state.getName().equals(newValidName)) {
 					validName = false;
 					break;
 				}
 			}
 			actualState++;
-		}while(!validName);
-		
+		} while (!validName);
+
 		return newValidName;
 	}
 

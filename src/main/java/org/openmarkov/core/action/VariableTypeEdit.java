@@ -7,14 +7,11 @@
 
 package org.openmarkov.core.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -24,8 +21,10 @@ import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.Util;
 
-@SuppressWarnings("serial")
-public class VariableTypeEdit extends SimplePNEdit {
+import java.util.ArrayList;
+import java.util.List;
+
+@SuppressWarnings("serial") public class VariableTypeEdit extends SimplePNEdit {
 	// private ProbNet probNet;
 	private Node node;
 	private VariableType newType;
@@ -40,13 +39,12 @@ public class VariableTypeEdit extends SimplePNEdit {
 
 	}
 
-	@Override
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException {
 		// We save the current states
 		currentStates = node.getVariable().getStates();
-		
+
 		node.getVariable().setVariableType(newType);
-		
+
 		// We restore the current states
 		if (currentStates.length == 1) {
 			node.getVariable().setStates(node.getProbNet().getDefaultStates());
@@ -83,9 +81,9 @@ public class VariableTypeEdit extends SimplePNEdit {
 					// If we only have one interval we need to set up at least
 					// the default intervals for the states
 					if (node.getVariable().getPartitionedInterval().getNumSubintervals() == 1) {
-						PartitionedInterval interval = new PartitionedInterval(node.getVariable().getDefaultInterval(
-								node.getVariable().getNumStates()), node.getVariable().getDefaultBelongs(
-								node.getVariable().getNumStates()));
+						PartitionedInterval interval = new PartitionedInterval(
+								node.getVariable().getDefaultInterval(node.getVariable().getNumStates()),
+								node.getVariable().getDefaultBelongs(node.getVariable().getNumStates()));
 						node.getVariable().setPartitionedInterval(interval);
 					}
 
@@ -98,8 +96,8 @@ public class VariableTypeEdit extends SimplePNEdit {
 				for (Node parent : probNet.getParents(node)) {
 					variables.add(parent.getVariable());
 				}
-				UniformPotential uniformPotential = new UniformPotential(variables, node.getPotentials().get(0)
-						.getPotentialRole());
+				UniformPotential uniformPotential = new UniformPotential(variables,
+						node.getPotentials().get(0).getPotentialRole());
 				List<Potential> potentials = new ArrayList<>(1);
 				potentials.add(uniformPotential);
 				node.setPotentials(potentials);
@@ -115,8 +113,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 
 	}
 
-	@Override
-	public void undo() {
+	@Override public void undo() {
 		node.getVariable().setVariableType(currentType);
 		node.getVariable().setStates(currentStates);
 	}
@@ -132,7 +129,7 @@ public class VariableTypeEdit extends SimplePNEdit {
 
 	/****
 	 * This method resets the link restriction of the links of the node
-	 * 
+	 *
 	 * @param node Node
 	 */
 	private void resetLink(Node node) {
@@ -164,7 +161,6 @@ public class VariableTypeEdit extends SimplePNEdit {
 		// first, this variable. The potentials is not null
 		thisVariable = potentials.get(0).getVariable(0);
 		variables.add(thisVariable);
-
 
 		int numOfCellsInTable = thisVariable.getNumStates();
 		double initialValue = Util.round(1 / ((double) numOfCellsInTable), "0.01");
@@ -203,8 +199,8 @@ public class VariableTypeEdit extends SimplePNEdit {
 			if (child.getNodeType() == NodeType.UTILITY) {
 				List<Potential> newPotentials = new ArrayList<>();
 				if (child.onlyNumericalParents()) {// utility and
-													// numerical parents
-													// sum
+					// numerical parents
+					// sum
 					for (Potential oldPotential : child.getPotentials()) {
 						// Update potential
 						Potential newPotential = new SumPotential(oldPotential.getVariables(),
@@ -212,11 +208,11 @@ public class VariableTypeEdit extends SimplePNEdit {
 						newPotentials.add(newPotential);
 					}
 				} else if (!child.onlyNumericalParents()) {// mixture of
-															// finite
-															// states
-															// and
-															// numerical
-															// Uniform
+					// finite
+					// states
+					// and
+					// numerical
+					// Uniform
 					for (Potential oldPotential : child.getPotentials()) {
 						// Update potential
 						Potential newPotential = new UniformPotential(oldPotential.getVariables(),

@@ -9,10 +9,8 @@ package org.openmarkov.core.io.database.exception;
 
 /**
  * Thrown when opening the DB throws an exception
- * @author Inigo
  *
+ * @author Inigo
  */
-@SuppressWarnings("serial")
-public class UnableToOpenDBException extends Exception
-{
+@SuppressWarnings("serial") public class UnableToOpenDBException extends Exception {
 }

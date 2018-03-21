@@ -7,51 +7,50 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import java.util.Collection;
-
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+
+import java.util.Collection;
 
 public abstract class Marginalization {
 
 	private TablePotential utility;
 
-    private TablePotential probability;
+	private TablePotential probability;
 
 	/**
-     * Classifies potential from the first list between probability and utility and stores them 
-     * in the second and third list
-     * @param potentials <code>List</code> of <code>TablePotential</code>
-     * @param probPotentials <code>List</code> of <code>TablePotential</code>
-     * @param utilityPotentials <code>List</code> of <code>TablePotential</code>
-     */
-    protected void classifyProbAndUtilityPotentials(
-			Collection<? extends Potential> potentials,
-			Collection<TablePotential> probPotentials,
-			Collection<TablePotential> utilityPotentials) {
-    	for (Potential potential : potentials) {
-    		if (potential.isAdditive()) {
-    			utilityPotentials.add((TablePotential)potential);
-    		} else {
-    			probPotentials.add((TablePotential)potential);
-    		}
-    	}
-    }
+	 * Classifies potential from the first list between probability and utility and stores them
+	 * in the second and third list
+	 *
+	 * @param potentials        <code>List</code> of <code>TablePotential</code>
+	 * @param probPotentials    <code>List</code> of <code>TablePotential</code>
+	 * @param utilityPotentials <code>List</code> of <code>TablePotential</code>
+	 */
+	protected void classifyProbAndUtilityPotentials(Collection<? extends Potential> potentials,
+			Collection<TablePotential> probPotentials, Collection<TablePotential> utilityPotentials) {
+		for (Potential potential : potentials) {
+			if (potential.isAdditive()) {
+				utilityPotentials.add((TablePotential) potential);
+			} else {
+				probPotentials.add((TablePotential) potential);
+			}
+		}
+	}
 
-    protected void setUtility(TablePotential utility) {
-        this.utility = utility;
-    }
+	public TablePotential getUtility() {
+		return utility;
+	}
 
-    protected void setProbability(TablePotential probability) {
-        this.probability = probability;
-    }
+	protected void setUtility(TablePotential utility) {
+		this.utility = utility;
+	}
 
-    public TablePotential getUtility() {
-        return utility;
-    }
+	public TablePotential getProbability() {
+		return probability;
+	}
 
-    public TablePotential getProbability() {
-        return probability;
-    }
+	protected void setProbability(TablePotential probability) {
+		this.probability = probability;
+	}
 
 }

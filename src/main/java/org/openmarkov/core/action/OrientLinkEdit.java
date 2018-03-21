@@ -12,15 +12,15 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
-@SuppressWarnings("serial")
-public class OrientLinkEdit extends BaseLinkEdit{
-	
-	/** @param probNet <code>ProbNet</code>
-	 * @param variable1 <code>Variable</code>
-	 * @param variable2 <code>Variable</code>
-	 * @param isDirected <code>boolean</code> */
-	public OrientLinkEdit(ProbNet probNet, Variable variable1, 
-			Variable variable2, boolean isDirected) {
+@SuppressWarnings("serial") public class OrientLinkEdit extends BaseLinkEdit {
+
+	/**
+	 * @param probNet    <code>ProbNet</code>
+	 * @param variable1  <code>Variable</code>
+	 * @param variable2  <code>Variable</code>
+	 * @param isDirected <code>boolean</code>
+	 */
+	public OrientLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {
 		super(probNet, variable1, variable2, isDirected);
 	}
 
@@ -28,8 +28,7 @@ public class OrientLinkEdit extends BaseLinkEdit{
 	@Override
 	/** Do the edition by removing the existing link and adding
 	 * a new directed link between the same two variables. 
-	 * @throws exception <code>DoEditException</code> */
-	public void doEdit() throws DoEditException {
+	 * @throws exception <code>DoEditException</code> */ public void doEdit() throws DoEditException {
 		try {
 			probNet.removeLink(variable1, variable2, false);
 			probNet.addLink(variable1, variable2, true);
@@ -38,8 +37,10 @@ public class OrientLinkEdit extends BaseLinkEdit{
 		}
 	}
 
-	/** Undo the edition by removing the existing link and adding
-	 * a new undirected link between the same two variables. */ 
+	/**
+	 * Undo the edition by removing the existing link and adding
+	 * a new undirected link between the same two variables.
+	 */
 	public void undo() {
 		super.undo();
 		try {
@@ -50,31 +51,33 @@ public class OrientLinkEdit extends BaseLinkEdit{
 			e.printStackTrace(System.err);
 		}
 	}
-   
-    /** Method to compare two directLinkEdits comparing the names of
-     * the source and destination variables alphabetically.
-     */
-    public int compareTo(OrientLinkEdit obj){
-        int result;
 
-        if (( result = variable1.getName().compareTo(obj.getVariable1().
-                getName())) != 0)
-            return result;
-        if (( result = variable2.getName().compareTo(obj.getVariable2().
-                getName())) != 0)
-            return result;
-        else
-            return 0;
-    }
+	/**
+	 * Method to compare two directLinkEdits comparing the names of
+	 * the source and destination variables alphabetically.
+	 */
+	public int compareTo(OrientLinkEdit obj) {
+		int result;
 
-	@Override
-	public String getOperationName() {
+		if ((
+				result = variable1.getName().compareTo(obj.getVariable1().
+						getName())
+		) != 0)
+			return result;
+		if ((
+				result = variable2.getName().compareTo(obj.getVariable2().
+						getName())
+		) != 0)
+			return result;
+		else
+			return 0;
+	}
+
+	@Override public String getOperationName() {
 		return "Orient link";
 	}
 
-    @Override
-    public BaseLinkEdit getUndoEdit ()
-    {
-        return this;
-    }
+	@Override public BaseLinkEdit getUndoEdit() {
+		return this;
+	}
 }

@@ -10,10 +10,6 @@ package org.openmarkov.core.inference;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
-
 public abstract class OptimalStrategyTaskIDTest extends OptimalStrategyTaskDecTest {
 
 /*	protected void testOptimalStrategy(ProbNet net,Intervention expectedStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException{

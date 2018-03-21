@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import java.util.List;
-
 import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -18,28 +16,28 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
-@Constraint(name = "NoValidStateName", defaultBehavior = ConstraintBehavior.YES)
-public class ValidStateName extends PNConstraint {
+import java.util.List;
 
-	// Flag of the error
-	private int type_error;
+@Constraint(name = "NoValidStateName", defaultBehavior = ConstraintBehavior.YES) public class ValidStateName
+		extends PNConstraint {
+
 	// Constants for possible errors
 	private final int IS_EMPTY_NAME = 0;
 	private final int IS_NAME_ALREADY_EXIST = 1;
+	// Flag of the error
+	private int type_error;
 
-	@Override
-	public boolean checkEdit(ProbNet probNet, PNEdit edit)
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
 			throws NonProjectablePotentialException, WrongCriterionException {
 		// NodeStateEdit
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit,
-				NodeStateEdit.class);
+		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, NodeStateEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			String name = ((NodeStateEdit) simpleEdit).getNewState().getName();
 
 			// Get the trim and lowerCase state
 			name = name.trim();
 			name = name.toLowerCase();
-			
+
 			switch (((NodeStateEdit) simpleEdit).getStateAction()) {
 			case ADD:
 			case RENAME:
@@ -47,8 +45,7 @@ public class ValidStateName extends PNConstraint {
 					type_error = IS_EMPTY_NAME;
 					return false;
 				}
-				if (!((NodeStateEdit) simpleEdit).getNode().getVariable()
-						.chekNewStateName(name)) {
+				if (!((NodeStateEdit) simpleEdit).getNode().getVariable().chekNewStateName(name)) {
 					type_error = IS_NAME_ALREADY_EXIST;
 					return false;
 				}
@@ -58,8 +55,7 @@ public class ValidStateName extends PNConstraint {
 		return true;
 	}
 
-	@Override
-	public boolean checkProbNet(ProbNet probNet) {
+	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Variable> variables = probNet.getVariables();
 		for (Variable variable : variables) {
 			State[] states = variable.getStates();
@@ -78,8 +74,7 @@ public class ValidStateName extends PNConstraint {
 		return true;
 	}
 
-	@Override
-	protected String getMessage() {
+	@Override protected String getMessage() {
 		switch (type_error) {
 		case IS_EMPTY_NAME:
 			return "there should be no empty names";

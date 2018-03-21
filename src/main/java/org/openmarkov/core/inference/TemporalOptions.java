@@ -8,12 +8,12 @@
 package org.openmarkov.core.inference;
 
 public class TemporalOptions implements Cloneable {
-	
+
 	private int numberOfSlices;
-	
+
 	private TransitionTime transition;
-	
-	public TemporalOptions(){
+
+	public TemporalOptions() {
 		numberOfSlices = 20; // TODO Explain why
 		transition = TransitionTime.BEGINNING;
 	}
@@ -42,7 +42,5 @@ public class TemporalOptions implements Cloneable {
 	public TemporalOptions clone() {
 		return new TemporalOptions(this);
 	}
-	
-	
 
 }

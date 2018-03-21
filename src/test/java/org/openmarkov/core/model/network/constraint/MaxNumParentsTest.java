@@ -7,12 +7,6 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.awt.geom.Point2D;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
@@ -23,18 +17,20 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
+import java.awt.geom.Point2D;
+
+import static org.junit.Assert.*;
+
 public class MaxNumParentsTest {
 
 	private ProbNet net;
 
-	@Before
-	public void setUp() throws Exception {
+	@Before public void setUp() throws Exception {
 		net = ConstraintsTests.getTestProbNetDirected();
 
 	}
 
-	@Test
-	public void testCheckProbNet() {
+	@Test public void testCheckProbNet() {
 
 		boolean exceptionLaunched = false;
 		MaxNumParents constraint = new MaxNumParents();
@@ -62,8 +58,7 @@ public class MaxNumParentsTest {
 		assertTrue(exceptionLaunched);
 	}
 
-	@Test
-	public void testUndoableEditWillHappen() throws Exception {
+	@Test public void testUndoableEditWillHappen() throws Exception {
 
 		PNESupport pNESupport = new PNESupport(false);
 		MaxNumParents constraint = new MaxNumParents();
@@ -75,8 +70,7 @@ public class MaxNumParentsTest {
 		Variable vB = net.getVariable("B");
 		try {
 
-			new AddNodeEdit(net, new Variable("D"), NodeType.CHANCE, new Point2D.Double())
-					.doEdit();
+			new AddNodeEdit(net, new Variable("D"), NodeType.CHANCE, new Point2D.Double()).doEdit();
 			Variable vD = net.getVariable("D");
 
 			// creates a link from D -> B
@@ -91,8 +85,7 @@ public class MaxNumParentsTest {
 		boolean exceptionLaunched = false;
 		try {
 
-			new AddNodeEdit(net, new Variable("E"), NodeType.CHANCE, new Point2D.Double())
-					.doEdit();
+			new AddNodeEdit(net, new Variable("E"), NodeType.CHANCE, new Point2D.Double()).doEdit();
 			Variable vE = net.getVariable("E");
 
 			// creates a link from E -> B

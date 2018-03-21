@@ -13,12 +13,11 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 
 /*******
- * 
+ *
  * A simple edit which allows to add or remove a revealing state of a link.
- * 
+ *
  */
-@SuppressWarnings("serial")
-public class RevelationStateEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class RevelationStateEdit extends SimplePNEdit {
 
 	private Link<Node> link;
 
@@ -34,8 +33,7 @@ public class RevelationStateEdit extends SimplePNEdit {
 
 	}
 
-	@Override
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException {
 		if (selected) {
 			link.addRevealingState(newState);
 		} else {

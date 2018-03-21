@@ -9,101 +9,86 @@ package org.openmarkov.core.model.network;
 
 /**
  * A criterion has a name and the units of measure
- * @author jperez
  *
+ * @author jperez
  */
 public class Criterion implements Cloneable {
 
 	/**
-	 * Emum with the values of Cost and Effectiveness for the CE Analysis
-	 *
+	 * Constant with the default criterion of a ProbNet
 	 */
-	public enum CECriterion {
-		Cost,
-	    Effectiveness
-	}
-	
+	private final static String defaultCriterion = "---";
+	/**
+	 * Constant with the default unit of a criterion
+	 */
+	private final static String defaultUnit = "---";
 	/**
 	 * Name of the criterion
 	 */
 	private String criterionName;
-	
 	/**
 	 * Units of measure
 	 */
 	private String criterionUnit;
-	
-    /**
-     * Constant with the default criterion of a ProbNet
-     */
-    private final static String defaultCriterion = "---";
-    
-    /**
-     * Constant with the default unit of a criterion
-     */
-    private final static String defaultUnit = "---";
-    
-    /**
-     * In the unicriteria analysis, the scale of this criterion above the main criterion choosed
-     */
-    private double unicriteriaScale;
-    
-    /**
-     * In the cost-effectiveness analysis, the scale of this criterion
-     */
-    private double ceScale;
-    
-    /**
-     * In the cost-effectiveness, specifies if the criterion acts as a cost or as effectiveness 
-     */
-    private CECriterion ceCriterion;
-    
-    /**
-     * In temporal evolution analysis, the rate of discount of the criterion
-     */
-    private double discount;
-    
-    /**
-     * In temporal evolution analysis, the measure units for the discount of the criterion
-     */
-    private CycleLength.DiscountUnit discountUnit;
-    
+	/**
+	 * In the unicriteria analysis, the scale of this criterion above the main criterion choosed
+	 */
+	private double unicriteriaScale;
+	/**
+	 * In the cost-effectiveness analysis, the scale of this criterion
+	 */
+	private double ceScale;
+	/**
+	 * In the cost-effectiveness, specifies if the criterion acts as a cost or as effectiveness
+	 */
+	private CECriterion ceCriterion;
+	/**
+	 * In temporal evolution analysis, the rate of discount of the criterion
+	 */
+	private double discount;
+	/**
+	 * In temporal evolution analysis, the measure units for the discount of the criterion
+	 */
+	private CycleLength.DiscountUnit discountUnit;
+
 	/**
 	 * Constructor with parameters
+	 *
 	 * @param criterionName Name of the criterion
 	 * @param criterionUnit Units of measure
 	 */
-	public Criterion (String criterionName, String criterionUnit){
+	public Criterion(String criterionName, String criterionUnit) {
 		this.criterionName = criterionName;
 		this.criterionUnit = criterionUnit;
 		this.discount = 0;
 		this.unicriteriaScale = 1;
 		this.ceScale = 1;
 		this.discountUnit = CycleLength.DiscountUnit.YEAR;
-		this.ceCriterion = CECriterion.Cost; // Default. 
+		this.ceCriterion = CECriterion.Cost; // Default.
 		for (CECriterion ceCriterion : CECriterion.values()) {
 			if (ceCriterion.toString().toLowerCase().contentEquals(criterionName.toLowerCase())) {
 				this.ceCriterion = ceCriterion;
 			}
 		}
 	}
-	
+
 	/**
 	 * Constructor with only one parameter
+	 *
 	 * @param criterionName Name of the criterion
 	 */
-	public Criterion (String criterionName){
+	public Criterion(String criterionName) {
 		this(criterionName, defaultUnit);
 	}
-	
+
 	/**
 	 * Empty constructor, this creates the default criterion
 	 */
-	public Criterion(){
+	public Criterion() {
 		this(defaultCriterion, defaultUnit);
 	}
-	
-	public Criterion(Criterion criterion){
+
+	public Criterion(Criterion criterion) {
 		this.criterionName = criterion.criterionName;
 		this.criterionUnit = criterion.criterionUnit;
 		this.discount = criterion.discount;
@@ -132,7 +117,7 @@ public class Criterion implements Cloneable {
 	public String getDefaultCriterion() {
 		return defaultCriterion;
 	}
-	
+
 	public double getUnicriteriaScale() {
 		return unicriteriaScale;
 	}
@@ -172,17 +157,14 @@ public class Criterion implements Cloneable {
 	public void setDiscountUnit(CycleLength.DiscountUnit discountUnit) {
 		this.discountUnit = discountUnit;
 	}
-	
-	
-	
-	@Override
-	public String toString() {
+
+	@Override public String toString() {
 		return criterionName + " " + criterionUnit;
 	}
 
-
 	/**
 	 * Gets a copy of the criterion in a new object
+	 *
 	 * @return copied criterion
 	 */
 	public Criterion clone() {
@@ -197,6 +179,7 @@ public class Criterion implements Cloneable {
 
 	/**
 	 * Copy the attributes of the new criterion in the current object
+	 *
 	 * @param newCriterion Criterion to be copied
 	 */
 	public void copy(Criterion newCriterion) {
@@ -209,11 +192,11 @@ public class Criterion implements Cloneable {
 		this.ceScale = newCriterion.getCeScale();
 	}
 
-	
-	
+	/**
+	 * Emum with the values of Cost and Effectiveness for the CE Analysis
+	 */
+	public enum CECriterion {
+		Cost, Effectiveness
+	}
 
-	
-	
-	
-	
 }

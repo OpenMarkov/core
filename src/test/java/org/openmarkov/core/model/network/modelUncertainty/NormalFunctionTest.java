@@ -8,19 +8,16 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 /**
  * @author manolo
- * 
  */
 public class NormalFunctionTest extends ProbDensFunctionTest {
 
-    @Override
-    public ProbDensFunction newProbDensFunctionInstance() {
-        return new NormalFunction();
-    }
-    
-    @Override
-    public double[] initializeParams() {
-        double[] params = { 73.0, 10.0 };
-        return params;
-    }
+	@Override public ProbDensFunction newProbDensFunctionInstance() {
+		return new NormalFunction();
+	}
+
+	@Override public double[] initializeParams() {
+		double[] params = { 73.0, 10.0 };
+		return params;
+	}
 
 }

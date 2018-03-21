@@ -6,15 +6,17 @@
  */
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial")
-public class UnexpectedInferenceException extends Exception {
-	
+@SuppressWarnings("serial") public class UnexpectedInferenceException extends Exception {
+
 	// Constructor
-	/** @param message */
+
+	/**
+	 * @param message
+	 */
 	public UnexpectedInferenceException(String message) {
 		super(message);
 	}
-	
+
 	/**
 	 * @param message
 	 * @param cause

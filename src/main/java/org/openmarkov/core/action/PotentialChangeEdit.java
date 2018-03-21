@@ -11,9 +11,10 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.Potential;
 
-/** Changes an old potential for a new potential */
-@SuppressWarnings("serial")
-public class PotentialChangeEdit extends SimplePNEdit {
+/**
+ * Changes an old potential for a new potential
+ */
+@SuppressWarnings("serial") public class PotentialChangeEdit extends SimplePNEdit {
 
 	// Attribute
 	private Potential newPotential;
@@ -21,32 +22,34 @@ public class PotentialChangeEdit extends SimplePNEdit {
 	private Potential oldPotential;
 
 	// Constructor
-	/** @param probNet <code>ProbNet</code>
+
+	/**
+	 * @param probNet      <code>ProbNet</code>
 	 * @param oldPotential <code>Potential</code>
-	 * @param newPotential <code>Potential</code> */
-	public PotentialChangeEdit(ProbNet probNet, Potential oldPotential, 
-			Potential newPotential) {
+	 * @param newPotential <code>Potential</code>
+	 */
+	public PotentialChangeEdit(ProbNet probNet, Potential oldPotential, Potential newPotential) {
 		super(probNet);
 		this.newPotential = newPotential;
 		this.oldPotential = oldPotential;
 	}
-	
-	@Override
-	public void doEdit() throws DoEditException {
+
+	@Override public void doEdit() throws DoEditException {
 		if (probNet.removePotential(oldPotential) == null) {
-			throw new DoEditException("Can not remove potential: "
-					+ oldPotential.toString());
+			throw new DoEditException("Can not remove potential: " + oldPotential.toString());
 		}
 		probNet.addPotential(newPotential);
 	}
-	
+
 	public void undo() {
 		super.undo();
 		probNet.removePotential(newPotential);
 		probNet.addPotential(oldPotential);
 	}
 
-	/** @return A <code>String</code> with the variables of both potentials. */
+	/**
+	 * @return A <code>String</code> with the variables of both potentials.
+	 */
 	public String toString() {
 		return "ChangePotentialEdit: " + oldPotential.getVariables() + " --> " + newPotential.getVariables();
 	}

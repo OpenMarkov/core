@@ -9,10 +9,8 @@ package org.openmarkov.core.io.database.exception;
 
 /**
  * Thrown when network type is unknown
- * @author Inigo
  *
+ * @author Inigo
  */
-@SuppressWarnings("serial")
-public class UnknownNetworkTypeException extends Exception
-{
+@SuppressWarnings("serial") public class UnknownNetworkTypeException extends Exception {
 }

@@ -5,12 +5,13 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-
 package org.openmarkov.core.model.network.constraint;
 
 import java.io.Serializable;
 
-/** @author manuel */
+/**
+ * @author manuel
+ */
 public enum ConstraintBehavior implements Serializable {
-    YES, NO, OPTIONAL
+	YES, NO, OPTIONAL
 }

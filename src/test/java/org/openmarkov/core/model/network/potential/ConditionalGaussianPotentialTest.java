@@ -7,13 +7,9 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -22,40 +18,44 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Variable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.util.Arrays.asList;
 
 public class ConditionalGaussianPotentialTest {
 
 	private ConditionalGaussianPotential gaussianPotential;
 	private Variable predictedAudiometry;
-    private Variable micAge;
+	private Variable micAge;
 
-    @Before
-	public void setUp()
-	{
+	@Before public void setUp() {
 		Variable meanVariable = new Variable("Mean");
 		Variable varianceVariable = new Variable("Variance");
 		predictedAudiometry = new Variable("Predicted audiometry", "off/off", "off", "on");
-        Variable processorTypeChanged = new Variable("Processor type changed", "no", "yes");
+		Variable processorTypeChanged = new Variable("Processor type changed", "no", "yes");
 		micAge = new Variable("Mic age", "<=30", ">30 and <=90", ">90 and <= 365", ">365");
-        Variable electrodeChanged = new Variable("Electrode changed", "0", "1", "2", "3+");
-        Variable audiometry = new Variable("Audiometry", "off/off", "off", "on");
+		Variable electrodeChanged = new Variable("Electrode changed", "0", "1", "2", "3+");
+		Variable audiometry = new Variable("Audiometry", "off/off", "off", "on");
 		List<Variable> parentVariables = asList(predictedAudiometry, processorTypeChanged, micAge, electrodeChanged);
-		List<Variable> meanPotentialVariables = asList(meanVariable, predictedAudiometry, processorTypeChanged, micAge, electrodeChanged);
+		List<Variable> meanPotentialVariables = asList(meanVariable, predictedAudiometry, processorTypeChanged, micAge,
+				electrodeChanged);
 		List<Variable> potentialVariables = new ArrayList<>(parentVariables);
 		potentialVariables.add(0, audiometry);
-		LinearCombinationPotential meanPotential = new LinearCombinationPotential(meanPotentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-		meanPotential.setCoefficients(new double[] {0, 1, 0.1, -0.2, 0.05});
-        List<Variable> variancePotentialVariables = asList(varianceVariable, predictedAudiometry, processorTypeChanged, micAge, electrodeChanged);
-        LinearCombinationPotential variancePotential = new LinearCombinationPotential(variancePotentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-		variancePotential.setCoefficients(new double[] {1, 0, 0.2, 0.2, 0.1});
+		LinearCombinationPotential meanPotential = new LinearCombinationPotential(meanPotentialVariables,
+				PotentialRole.CONDITIONAL_PROBABILITY);
+		meanPotential.setCoefficients(new double[] { 0, 1, 0.1, -0.2, 0.05 });
+		List<Variable> variancePotentialVariables = asList(varianceVariable, predictedAudiometry, processorTypeChanged,
+				micAge, electrodeChanged);
+		LinearCombinationPotential variancePotential = new LinearCombinationPotential(variancePotentialVariables,
+				PotentialRole.CONDITIONAL_PROBABILITY);
+		variancePotential.setCoefficients(new double[] { 1, 0, 0.2, 0.2, 0.1 });
 		gaussianPotential = new ConditionalGaussianPotential(potentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
 		gaussianPotential.setMean(meanPotential);
 		gaussianPotential.setVariance(variancePotential);
 	}
 
-	@Test
-    public void testTableProject() throws NonProjectablePotentialException, WrongCriterionException {
+	@Test public void testTableProject() throws NonProjectablePotentialException, WrongCriterionException {
 
 		TablePotential projectedPotential = gaussianPotential.tableProject(new EvidenceCase(), null).get(0);
 
@@ -74,8 +74,9 @@ public class ConditionalGaussianPotentialTest {
 		Assert.assertEquals(0.1216, projectedPotential.values[11], 10E-4);
 	}
 
-	@Test
-    public void testTableProjectWithEvidence() throws NonProjectablePotentialException, WrongCriterionException, InvalidStateException, IncompatibleEvidenceException {
+	@Test public void testTableProjectWithEvidence()
+			throws NonProjectablePotentialException, WrongCriterionException, InvalidStateException,
+			IncompatibleEvidenceException {
 
 		EvidenceCase evidence = new EvidenceCase();
 		evidence.addFinding(new Finding(predictedAudiometry, 2)); // on

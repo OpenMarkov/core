@@ -7,32 +7,30 @@
 
 package org.openmarkov.core.action;
 
-import javax.swing.undo.UndoableEdit;
-
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 
+import javax.swing.undo.UndoableEdit;
 
-/** An edition is one action defined over a Probabilistic Network. */
+/**
+ * An edition is one action defined over a Probabilistic Network.
+ */
 public interface PNEdit extends UndoableEdit {
 
-    /**
-     * Puts into effect the edition.
-     * @throws WrongCriterionException
-     * @throws NonProjectablePotentialException
-     * @throws UnexpectedInferenceException 
-     */
-    void doEdit()
-        throws DoEditException,
-        NonProjectablePotentialException,
-        WrongCriterionException;
+	/**
+	 * Puts into effect the edition.
+	 *
+	 * @throws WrongCriterionException
+	 * @throws NonProjectablePotentialException
+	 * @throws UnexpectedInferenceException
+	 */
+	void doEdit() throws DoEditException, NonProjectablePotentialException, WrongCriterionException;
 
-    void setSignificant(boolean significant);
-    
-    ProbNet getProbNet();
-	
-	
+	void setSignificant(boolean significant);
+
+	ProbNet getProbNet();
+
 }

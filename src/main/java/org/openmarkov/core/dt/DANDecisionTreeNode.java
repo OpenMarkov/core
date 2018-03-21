@@ -12,26 +12,24 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
 public class DANDecisionTreeNode extends DecisionTreeNode {
-	
-	@Override
-	public double getUtility() {
-		return utility;
-	}
 
-	@Override
-	public double getScenarioProbability() {
-		return scenarioProbability;
-	}
+	protected ProbNet dan;
 
-	protected ProbNet dan;	
-
-	public DANDecisionTreeNode(Node node,ProbNet network) {
+	public DANDecisionTreeNode(Node node, ProbNet network) {
 		super(node);
 		dan = network;
 	}
-	
-	public DANDecisionTreeNode(Variable variable,ProbNet network) {
-		this(network.getNode(variable),network);
+
+	public DANDecisionTreeNode(Variable variable, ProbNet network) {
+		this(network.getNode(variable), network);
+	}
+
+	@Override public double getUtility() {
+		return utility;
+	}
+
+	@Override public double getScenarioProbability() {
+		return scenarioProbability;
 	}
 
 }

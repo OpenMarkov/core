@@ -11,33 +11,52 @@ import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.inference.heuristic.EliminationHeuristic;
 import org.openmarkov.core.inference.heuristic.HeuristicFactory;
-import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Variable;
+
 import java.util.List;
 
 /**
  * @author mluque
  * @author marias
  * @author fjdiez
- *
  */
-public abstract class InferenceAlgorithmScheme
-{
-	/** This is a copy of the <code>ProbNet</code> received. */
+public abstract class InferenceAlgorithmScheme {
+	public EvidenceCase evidence;
+	public List<Variable> variablesToEliminate;
+	/**
+	 * This is a copy of the <code>ProbNet</code> received.
+	 */
 	protected ProbNet probNet;
-	/** For undo/redo operations. */
+	/**
+	 * For undo/redo operations.
+	 */
 	protected PNESupport pNESupport;
+	/**
+	 * Elimination heuristic factory
+	 **/
+	protected HeuristicFactory heuristicFactory;
 
-    /** Elimination heuristic factory **/
-    protected HeuristicFactory heuristicFactory;
-
+	/**
+	 * Policies set by the user. The optimal policy would only be calculated for the decisions
+	 * without imposed policies.
+	 * Each policy is stochastic, which implies it is a probability potential whose domain
+	 * contains the decision.
+	 */
+	// TODO: remove???
+	// private List<TablePotential> imposedPolicies;
+	/**
+	 * Variables that will not be eliminated during the inference, and therefore all the results
+	 * contain these variables in the domain.
+	 */
+	protected List<Variable> conditioningVariables;
+	protected EliminationHeuristic heuristic;
 	/**
 	 * Evidence introduced before the network is resolved.
 	 * In influence diagrams this is Ezawa's evidence.
 	 */
 	private EvidenceCase preResolutionEvidence;
-
 	/**
 	 * Evidence when the network has been resolved.
 	 * In influence diagrams this is Luque and Diez's evidence.
@@ -45,35 +64,15 @@ public abstract class InferenceAlgorithmScheme
 	private EvidenceCase postResolutionEvidence;
 
 	/**
-     * Policies set by the user. The optimal policy would only be calculated for the decisions
-     * without imposed policies.
-     * Each policy is stochastic, which implies it is a probability potential whose domain
-     * contains the decision.
-     */
-	// TODO: remove???
-   // private List<TablePotential> imposedPolicies;
+	 * @param probNet The network used in the inference
+	 * @throws NotEvaluableNetworkException
+	 */
+	public InferenceAlgorithmScheme(ProbNet probNet) {
+		this.probNet = probNet.copy();
+		preResolutionEvidence = new EvidenceCase();
+		postResolutionEvidence = new EvidenceCase();
+	}
 
-    /**
-     * Variables that will not be eliminated during the inference, and therefore all the results
-     * contain these variables in the domain.
-     */
-    protected List<Variable> conditioningVariables;
-	protected EliminationHeuristic heuristic;
-	public EvidenceCase evidence;
-	public List<Variable> variablesToEliminate;
-
-
-	/**
-     * @param probNet The network used in the inference
-     * @throws NotEvaluableNetworkException
-     */
-    public InferenceAlgorithmScheme(ProbNet probNet) {
-        this.probNet = probNet.copy();
-        preResolutionEvidence = new EvidenceCase();
-        postResolutionEvidence = new EvidenceCase();
-    }
-
-    
 	/**
 	 * @return The post-resolution evidence.
 	 */
@@ -88,10 +87,10 @@ public abstract class InferenceAlgorithmScheme
 		this.postResolutionEvidence = postResolutionEvidence;
 	}
 
-    /**
-     * @return The pre-resolution evidence
-     */
-    public EvidenceCase getPreResolutionEvidence() {
+	/**
+	 * @return The pre-resolution evidence
+	 */
+	public EvidenceCase getPreResolutionEvidence() {
 		return preResolutionEvidence;
 	}
 

@@ -11,47 +11,47 @@ import java.util.List;
 
 public class ComplementFamily extends FamilyDistribution {
 
-    /**
-     * Probability mass for this family
-     */
-    private double probMass;
+	/**
+	 * Probability mass for this family
+	 */
+	private double probMass;
 
-    public double getProbMass() {
-        return probMass;
-    }
+	public ComplementFamily(List<UncertainValue> uncertainValues) {
+		super(filterByFunction(ComplementFunction.class, uncertainValues));
+	}
 
-    public void setProbMass(double probMass) {
-        this.probMass = probMass;
-    }
+	public ComplementFamily() {
+		// super(TypeProbDensityFunction.COMPLEMENT);
+	}
 
-    public ComplementFamily(List<UncertainValue> uncertainValues) {
-        super(filterByFunction(ComplementFunction.class, uncertainValues));
-    }
+	public double getProbMass() {
+		return probMass;
+	}
 
-    public ComplementFamily() {
-        // super(TypeProbDensityFunction.COMPLEMENT);
-    }
+	public void setProbMass(double probMass) {
+		this.probMass = probMass;
+	}
 
-    public double[] getMean() {
+	public double[] getMean() {
 
-        int sizeFamily = family.size();
-        double[] nu = new double[sizeFamily];
+		int sizeFamily = family.size();
+		double[] nu = new double[sizeFamily];
 
-        for (int i = 0; i < sizeFamily; i++) {
-            nu[i] = ((ComplementFunction) (family.get(i).getProbDensFunction())).getNu();
-        }
-        return Tools.normalize(nu, probMass);
-    }
+		for (int i = 0; i < sizeFamily; i++) {
+			nu[i] = ((ComplementFunction) (family.get(i).getProbDensFunction())).getNu();
+		}
+		return Tools.normalize(nu, probMass);
+	}
 
-    public double[] getSample() {
+	public double[] getSample() {
 
-        int sizeFamily = family.size();
-        double[] nu = new double[sizeFamily];
+		int sizeFamily = family.size();
+		double[] nu = new double[sizeFamily];
 
-        for (int i = 0; i < sizeFamily; i++) {
-            nu[i] = ((ComplementFunction) (family.get(i).getProbDensFunction())).getNu();
-        }
-        return Tools.normalize(nu, probMass);
-    }
+		for (int i = 0; i < sizeFamily; i++) {
+			nu[i] = ((ComplementFunction) (family.get(i).getProbDensFunction())).getNu();
+		}
+		return Tools.normalize(nu, probMass);
+	}
 
 }

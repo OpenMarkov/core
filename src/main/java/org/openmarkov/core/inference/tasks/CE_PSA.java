@@ -20,7 +20,8 @@ import java.util.Collection;
  */
 public interface CE_PSA extends Task {
 
-    Collection<GTablePotential> getCEPPotentials() throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException;
+	Collection<GTablePotential> getCEPPotentials()
+			throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException;
 
-    void setDecisionVariable(Variable decisionSelected);
+	void setDecisionVariable(Variable decisionSelected);
 }

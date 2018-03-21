@@ -6,12 +6,11 @@
  */
 
 package org.openmarkov.core.io.database.exception;
+
 /**
  * Thrown when creating the file throws an exception
- * @author Inigo
  *
+ * @author Inigo
  */
-@SuppressWarnings("serial")
-public class UnableToCreateFile extends Exception
-{
+@SuppressWarnings("serial") public class UnableToCreateFile extends Exception {
 }

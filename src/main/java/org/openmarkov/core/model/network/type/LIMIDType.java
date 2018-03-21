@@ -9,30 +9,27 @@ package org.openmarkov.core.model.network.type;
 
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
-@ProbNetType(name="LIMID")
-public class LIMIDType extends NetworkType
-{
-    private static LIMIDType instance = null;
+@ProbNetType(name = "LIMID") public class LIMIDType extends NetworkType {
+	private static LIMIDType instance = null;
 
-    // Constructor
-    private LIMIDType ()
-    {
-        super();
-    }
+	// Constructor
+	private LIMIDType() {
+		super();
+	}
 
-    // Methods
-    public static LIMIDType getUniqueInstance ()
-    {
-        if (instance == null)
-        {
-            instance = new LIMIDType ();
-        }
-        return instance;
-    }
+	// Methods
+	public static LIMIDType getUniqueInstance() {
+		if (instance == null) {
+			instance = new LIMIDType();
+		}
+		return instance;
+	}
 
-    /** @return String "LIMID" */
-    public String toString() {
-    	return "LIMID";
-    }
-    
+	/**
+	 * @return String "LIMID"
+	 */
+	public String toString() {
+		return "LIMID";
+	}
+
 }

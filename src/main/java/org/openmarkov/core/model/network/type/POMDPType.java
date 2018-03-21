@@ -12,33 +12,30 @@ import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
-@ProbNetType(name="POMDP")
-public class POMDPType extends NetworkType
-{
-    private static POMDPType instance = null;
+@ProbNetType(name = "POMDP") public class POMDPType extends NetworkType {
+	private static POMDPType instance = null;
 
-    // Constructor
-    protected POMDPType ()
-    {
-        super ();
-        overrideConstraintBehavior (OnlyAtemporalVariables.class, ConstraintBehavior.NO);
-        overrideConstraintBehavior (OnlyTemporalVariables.class, ConstraintBehavior.YES);
-    }
+	// Constructor
+	protected POMDPType() {
+		super();
+		overrideConstraintBehavior(OnlyAtemporalVariables.class, ConstraintBehavior.NO);
+		overrideConstraintBehavior(OnlyTemporalVariables.class, ConstraintBehavior.YES);
+	}
 
-    // Methods
-    public static POMDPType getUniqueInstance ()
-    {
-        if (instance == null)
-        {
-            instance = new POMDPType ();
-        }
-        return instance;
-    }
+	// Methods
+	public static POMDPType getUniqueInstance() {
+		if (instance == null) {
+			instance = new POMDPType();
+		}
+		return instance;
+	}
 
-    /** @return String "POMDP" */
-    public String toString() {
-    	return "POMDP";
-    }
-    
+	/**
+	 * @return String "POMDP"
+	 */
+	public String toString() {
+		return "POMDP";
+	}
+
 }
 

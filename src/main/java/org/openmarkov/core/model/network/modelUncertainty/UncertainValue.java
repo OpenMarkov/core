@@ -12,7 +12,7 @@ import java.util.Random;
 /**
  * An <code>UncertainValue</code> is a value of a table of potentials which is
  * used for sensitivity analysis.
- * 
+ *
  * @author Manuel Luque
  * @author Elena Almaraz
  * @author Javier Diez
@@ -21,9 +21,13 @@ import java.util.Random;
  */
 public class UncertainValue {
 	// Attributes
-	/** Probability density function. */
+	/**
+	 * Probability density function.
+	 */
 	protected ProbDensFunction probDensFunction;
-	/** Name of the parameter. */
+	/**
+	 * Name of the parameter.
+	 */
 	protected String name;
 
 	public UncertainValue(double value) {
@@ -31,26 +35,26 @@ public class UncertainValue {
 		probDensFunction = new ExactFunction(value);
 	}
 
-    public UncertainValue(ProbDensFunction probDensFunction, String name) {
-        this.name = name;
-        this.probDensFunction = probDensFunction;
-    }
-    
-    public UncertainValue(ProbDensFunction probDensFunction) {
-        this(probDensFunction, null);
-    }   
-    
+	public UncertainValue(ProbDensFunction probDensFunction, String name) {
+		this.name = name;
+		this.probDensFunction = probDensFunction;
+	}
+
+	public UncertainValue(ProbDensFunction probDensFunction) {
+		this(probDensFunction, null);
+	}
+
 	public UncertainValue(UncertainValue uncertainValue) {
 		super();
-		if(uncertainValue.name != null){
+		if (uncertainValue.name != null) {
 			this.name = new String(uncertainValue.name);
 		}
-		
-		if(uncertainValue.probDensFunction != null){
+
+		if (uncertainValue.probDensFunction != null) {
 			this.probDensFunction = uncertainValue.probDensFunction.copy();
 		}
 	}
-    
+
 	public String getName() {
 		return name;
 	}
@@ -64,32 +68,29 @@ public class UncertainValue {
 	}
 
 	public boolean verifyParametersDomain(boolean isChanceVariable) {
-        return probDensFunction.verifyParametersDomain(isChanceVariable);
+		return probDensFunction.verifyParametersDomain(isChanceVariable);
 	}
 
 	public double getSample(Random randomGenerator) {
 		return probDensFunction.getSample(randomGenerator);
 	}
 
-	@Override
-	public String toString() {
+	@Override public String toString() {
 		StringBuilder sb = new StringBuilder();
-		if(name != null && name.isEmpty())
-		{
+		if (name != null && name.isEmpty()) {
 			sb.append(name);
 			sb.append(": ");
 		}
 		sb.append(probDensFunction.toString());
 		return sb.toString();
 	}
-	
+
 	public boolean hasName() {
-		return name!= null && name.length()>0;
+		return name != null && name.length() > 0;
 	}
-	
-	public UncertainValue copy(){
+
+	public UncertainValue copy() {
 		return new UncertainValue(this);
 	}
-	
-	
+
 }

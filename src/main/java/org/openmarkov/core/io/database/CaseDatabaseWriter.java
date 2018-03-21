@@ -9,7 +9,6 @@ package org.openmarkov.core.io.database;
 
 import java.io.IOException;
 
-public interface CaseDatabaseWriter
-{
-    void save(String filename, CaseDatabase database) throws IOException;
+public interface CaseDatabaseWriter {
+	void save(String filename, CaseDatabase database) throws IOException;
 }

@@ -7,10 +7,10 @@
 
 package org.openmarkov.core.inference.heuristic;
 
-import java.util.List;
-
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+
+import java.util.List;
 
 public interface HeuristicFactory {
 

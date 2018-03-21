@@ -7,11 +7,13 @@
 
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial")
-public class CanNotDoEditException extends Exception {
+@SuppressWarnings("serial") public class CanNotDoEditException extends Exception {
 
 	// Constructor
-	/** @param message message of the exception */
+
+	/**
+	 * @param message message of the exception
+	 */
 	public CanNotDoEditException(String message) {
 		super(message);
 	}

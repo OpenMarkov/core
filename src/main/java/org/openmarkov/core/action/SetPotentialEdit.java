@@ -7,24 +7,23 @@
 
 package org.openmarkov.core.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
-import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-@SuppressWarnings("serial")
-public class SetPotentialEdit extends SimplePNEdit {
+import java.util.ArrayList;
+import java.util.List;
+
+@SuppressWarnings("serial") public class SetPotentialEdit extends SimplePNEdit {
 	// unused - private PotentialType lastPotentialType;
 	private Potential lastPotential;
 	private String newPotentialType;
@@ -36,20 +35,18 @@ public class SetPotentialEdit extends SimplePNEdit {
 	/**
 	 * Creates a new SetPotentialEdit object that sets the a new potential with
 	 * the type specified for the node object.
-	 * 
-	 * @param node
-	 *            The node that contains the potential to modify
-	 * @param newPotentialType
-	 *            The potential type of the new potential to be created
+	 *
+	 * @param node             The node that contains the potential to modify
+	 * @param newPotentialType The potential type of the new potential to be created
 	 */
 	public SetPotentialEdit(Node node, String newPotentialType) {
 		super(node.getProbNet());
 		this.node = node;
 		this.variable = node.getVariable();
 		//if (!(node.getNodeType() == NodeType.DECISION && node
-			//	.getPolicyType() == PolicyType.OPTIMAL)) {
-			lastPotential = node.getPotentials().get(0);
-	//	}
+		//	.getPolicyType() == PolicyType.OPTIMAL)) {
+		lastPotential = node.getPotentials().get(0);
+		//	}
 
 		this.newPotentialType = newPotentialType;
 
@@ -58,11 +55,9 @@ public class SetPotentialEdit extends SimplePNEdit {
 	/**
 	 * SetPotentialEdit object that changes the last Potential with the
 	 * potential specified for the node object.
-	 * 
-	 * @param node
-	 *            The node that contains the potential to set.
-	 * @param potential
-	 *            The new potential object
+	 *
+	 * @param node      The node that contains the potential to set.
+	 * @param potential The new potential object
 	 */
 	public SetPotentialEdit(Node node, Potential potential) {
 		super(node.getProbNet());
@@ -71,7 +66,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 		if (node.getPotentials().size() != 0) {// if node is a decision node it could not have a potential assigned yet
 			lastPotential = node.getPotentials().get(0);
 		}
-		
+
 		newPotential = potential;
 		this.newPotentialType = newPotential.getClass().getAnnotation(PotentialType.class).name();
 	}
@@ -79,8 +74,7 @@ public class SetPotentialEdit extends SimplePNEdit {
 	// TODO al asignar un potencial tener en cuenta a los padres y a los
 	// predecesores informativos que me los va a dar Manolo invocando a una
 	// funcion
-	@Override
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException {
 		List<Variable> variables;
 		PotentialRole role;
 		variables = lastPotential.getVariables();
@@ -90,16 +84,18 @@ public class SetPotentialEdit extends SimplePNEdit {
 		if (newPotential == null) {
 			PotentialManager relationTypeManager = new PotentialManager();
 
-			if(newPotentialType.equals(PotentialManager.getPotentialName(CycleLengthShift.class))){
-				newPotential =  relationTypeManager.getByName(newPotentialType, variables, role, probNet.getCycleLength());
-			}else{
+			if (newPotentialType.equals(PotentialManager.getPotentialName(CycleLengthShift.class))) {
+				newPotential = relationTypeManager
+						.getByName(newPotentialType, variables, role, probNet.getCycleLength());
+			} else {
 				newPotential = relationTypeManager.getByName(newPotentialType, variables, role);
 			}
 		}
 
-		if (!(node.getNodeType() == NodeType.DECISION && node
-				.getPolicyType() == PolicyType.OPTIMAL)) {
-		//	probNet.getNode(variable).setPolicyType(PolicyType.PROBABILISTIC);
+		if (!(
+				node.getNodeType() == NodeType.DECISION && node.getPolicyType() == PolicyType.OPTIMAL
+		)) {
+			//	probNet.getNode(variable).setPolicyType(PolicyType.PROBABILISTIC);
 			node.setPolicyType(PolicyType.PROBABILISTIC);
 		}
 
@@ -107,9 +103,8 @@ public class SetPotentialEdit extends SimplePNEdit {
 		//probNet.getNode(variable).setPotentials(potentials);
 		node.setPotentials(potentials);
 		// update potential with link restriction
-		if (newPotential instanceof TablePotential && node.getNodeType() != NodeType.DECISION ) {
-			newPotential = LinkRestrictionPotentialOperations
-					.updatePotentialByLinkRestrictions(node);
+		if (newPotential instanceof TablePotential && node.getNodeType() != NodeType.DECISION) {
+			newPotential = LinkRestrictionPotentialOperations.updatePotentialByLinkRestrictions(node);
 			potentials = new ArrayList<>();
 			potentials.add(newPotential);
 			node.setPotentials(potentials);

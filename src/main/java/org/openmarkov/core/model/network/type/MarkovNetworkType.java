@@ -13,34 +13,31 @@ import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
-@ProbNetType(name="MarkovNetwork")
-public class MarkovNetworkType extends NetworkType
-{
-    private static MarkovNetworkType instance = null;
+@ProbNetType(name = "MarkovNetwork") public class MarkovNetworkType extends NetworkType {
+	private static MarkovNetworkType instance = null;
 
-    // Constructor
-    private MarkovNetworkType ()
-    {
-        super();
-        overrideConstraintBehavior (OnlyChanceNodes.class, ConstraintBehavior.YES);
-        overrideConstraintBehavior (OnlyDirectedLinks.class, ConstraintBehavior.NO);
-        overrideConstraintBehavior (OnlyUndirectedLinks.class, ConstraintBehavior.YES);        
-    }
+	// Constructor
+	private MarkovNetworkType() {
+		super();
+		overrideConstraintBehavior(OnlyChanceNodes.class, ConstraintBehavior.YES);
+		overrideConstraintBehavior(OnlyDirectedLinks.class, ConstraintBehavior.NO);
+		overrideConstraintBehavior(OnlyUndirectedLinks.class, ConstraintBehavior.YES);
+	}
 
-    // Methods
-    public static MarkovNetworkType getUniqueInstance ()
-    {
-        if (instance == null)
-        {
-            instance = new MarkovNetworkType ();
-        }
-        return instance;
-    }
+	// Methods
+	public static MarkovNetworkType getUniqueInstance() {
+		if (instance == null) {
+			instance = new MarkovNetworkType();
+		}
+		return instance;
+	}
 
-    /** @return String "MarkovNetwork" */
-    public String toString() {
-    	return "MARKOV_NET";
-    }
-    
+	/**
+	 * @return String "MarkovNetwork"
+	 */
+	public String toString() {
+		return "MARKOV_NET";
+	}
+
 }
 

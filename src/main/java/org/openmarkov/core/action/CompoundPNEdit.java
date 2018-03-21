@@ -7,99 +7,81 @@
 
 package org.openmarkov.core.action;
 
-import java.util.Vector;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.network.ProbNet;
 
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoableEdit;
-
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.network.ProbNet;
+import java.util.Vector;
 
 /**
  * A compound edit is a complex edition composed of several editions. This is an
  * abstract class.
  */
-@SuppressWarnings("serial")
-public abstract class CompoundPNEdit extends CompoundEdit
-    implements
-        PNEdit
-{
-    // Attribute
-    protected ProbNet probNet;
-    private boolean   generatedEdits;
-    // All simple edits are significant
-    private boolean   significant = true;
+@SuppressWarnings("serial") public abstract class CompoundPNEdit extends CompoundEdit implements PNEdit {
+	// Attribute
+	protected ProbNet probNet;
+	private boolean generatedEdits;
+	// All simple edits are significant
+	private boolean significant = true;
 
-    // Constructor
-    /** @param probNet <tt>ProbNet</tt> */
-    public CompoundPNEdit (ProbNet probNet)
-    {
-        this.probNet = probNet;
-        generatedEdits = false;
-    }
+	// Constructor
 
-    // Methods
-    /**
-     * Generate edits and does them
-     * @throws DoEditException
-     * @throws WrongCriterionException
-     * @throws NonProjectablePotentialException
-     */
-    public void doEdit ()
-        throws DoEditException,
-        NonProjectablePotentialException,
-        WrongCriterionException
-    {
-        if (!generatedEdits)
-        {
-            generateEdits ();
-            generatedEdits = true;
-        }
-        for (UndoableEdit edit : edits)
-        {
-            ((PNEdit) edit).doEdit ();
-        }
-        super.end ();
-    }
+	/**
+	 * @param probNet <tt>ProbNet</tt>
+	 */
+	public CompoundPNEdit(ProbNet probNet) {
+		this.probNet = probNet;
+		generatedEdits = false;
+	}
 
-    public abstract void generateEdits ()
-        throws NonProjectablePotentialException,
-        WrongCriterionException;
+	// Methods
 
-    /**
-     * @return <code>Vector</code> of <code>UndoableEdit</code>s
-     * @throws WrongCriterionException
-     * @throws NonProjectablePotentialException
-     */
-    public Vector<UndoableEdit> getEdits ()
-        throws NonProjectablePotentialException,
-        WrongCriterionException
-    {
-        if (!generatedEdits)
-        {
-            generateEdits ();
-            generatedEdits = true;
-        }
-        return edits;
-    }
+	/**
+	 * Generate edits and does them
+	 *
+	 * @throws DoEditException
+	 * @throws WrongCriterionException
+	 * @throws NonProjectablePotentialException
+	 */
+	public void doEdit() throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
+		if (!generatedEdits) {
+			generateEdits();
+			generatedEdits = true;
+		}
+		for (UndoableEdit edit : edits) {
+			((PNEdit) edit).doEdit();
+		}
+		super.end();
+	}
 
-    public void setSignificant (boolean significant)
-    {
-        this.significant = significant;
-    }
+	public abstract void generateEdits() throws NonProjectablePotentialException, WrongCriterionException;
 
-    public boolean isSignificant ()
-    {
-        return significant;
-    }
+	/**
+	 * @return <code>Vector</code> of <code>UndoableEdit</code>s
+	 * @throws WrongCriterionException
+	 * @throws NonProjectablePotentialException
+	 */
+	public Vector<UndoableEdit> getEdits() throws NonProjectablePotentialException, WrongCriterionException {
+		if (!generatedEdits) {
+			generateEdits();
+			generatedEdits = true;
+		}
+		return edits;
+	}
 
-    @Override
-    public ProbNet getProbNet ()
-    {
-        return probNet;
-    }
-    
+	public boolean isSignificant() {
+		return significant;
+	}
+
+	public void setSignificant(boolean significant) {
+		this.significant = significant;
+	}
+
+	@Override public ProbNet getProbNet() {
+		return probNet;
+	}
+
 }

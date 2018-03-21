@@ -7,12 +7,6 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddNodeEdit;
@@ -22,38 +16,41 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class OnlyChanceNodesTest {
 
 	// Attributes
 	private ProbNet influenceDiagram;
-	
+
 	private ProbNet probNetDirected;
-	
+
 	// Methods
-	@Before
-	public void setUp() throws Exception {
+	@Before public void setUp() throws Exception {
 		influenceDiagram = ConstraintsTests.getInfuenceDiagram();
-		probNetDirected =  ConstraintsTests.getTestProbNetDirected();
+		probNetDirected = ConstraintsTests.getTestProbNetDirected();
 	}
 
-	/** Checks or not all the <code>probNet</code> in different situations in
-	 * <code>OnlyDirectedLinks</code> constructor. */
-	@Test 
-	public void testCheckProbNet() throws ConstraintViolationException {
+	/**
+	 * Checks or not all the <code>probNet</code> in different situations in
+	 * <code>OnlyDirectedLinks</code> constructor.
+	 */
+	@Test public void testCheckProbNet() throws ConstraintViolationException {
 		// test only directed links insertions without checking.
 		assertFalse(new OnlyChanceNodes().checkProbNet(influenceDiagram));
 	}
 
-	/** Checks veto */
-	@Test
-	public void testUndoableEditWillHappen() 
-	        throws Exception {
-		
+	/**
+	 * Checks veto
+	 */
+	@Test public void testUndoableEditWillHappen() throws Exception {
+
 		// Add constraints as listeners.
 		PNESupport pNESupport = new PNESupport(false);
-        probNetDirected.addConstraint (new OnlyChanceNodes (), true);
-        List<PNConstraint> constraints = probNetDirected.getConstraints();
+		probNetDirected.addConstraint(new OnlyChanceNodes(), true);
+		List<PNConstraint> constraints = probNetDirected.getConstraints();
 		for (PNConstraint constraint : constraints) { // sets listeners
 			pNESupport.addUndoableEditListener(constraint);
 		}
@@ -62,18 +59,16 @@ public class OnlyChanceNodesTest {
 		Variable ve = new Variable("E", 0);
 
 		// test no exception in legal edit
-		AddNodeEdit legalEdit = new AddNodeEdit(probNetDirected, ve, 
-			NodeType.CHANCE);
+		AddNodeEdit legalEdit = new AddNodeEdit(probNetDirected, ve, NodeType.CHANCE);
 		try {
 			pNESupport.announceEdit(legalEdit);
 			legalEdit.doEdit();
 		} catch (Exception cve) {
 			fail(cve.getMessage());
 		}
-		
+
 		// test exception in no legal edit
-		AddNodeEdit ilegalEdit = new AddNodeEdit(probNetDirected, vd, 
-				NodeType.DECISION);
+		AddNodeEdit ilegalEdit = new AddNodeEdit(probNetDirected, vd, NodeType.DECISION);
 		boolean exceptionLaunched = false;
 		try {
 			pNESupport.announceEdit(ilegalEdit);
@@ -82,6 +77,5 @@ public class OnlyChanceNodesTest {
 		}
 		assertTrue(exceptionLaunched); // pNESupport must launch an exception.
 	}
-
 
 }

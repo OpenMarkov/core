@@ -5,8 +5,7 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 package org.openmarkov.core.inference;
+
 public enum TransitionTime {
-    BEGINNING,
-    HALF,
-    END
+	BEGINNING, HALF, END
 }

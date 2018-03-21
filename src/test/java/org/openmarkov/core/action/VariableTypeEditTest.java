@@ -7,10 +7,6 @@
 
 package org.openmarkov.core.action;
 
-import static org.junit.Assert.*;
-
-import java.util.Arrays;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -26,9 +22,12 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
+
+import java.util.Arrays;
+
+import static org.junit.Assert.assertTrue;
 
 public class VariableTypeEditTest {
 
@@ -37,16 +36,50 @@ public class VariableTypeEditTest {
 	private Node numericNode;
 	private ProbNet probNet;
 
-	@Before
-	public void setUp() throws Exception {
+	private static ProbNet getProbNet4Test() {
+		ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
+		// Variables
+		Variable varA = new Variable("A", "absent", "mild", "moderate", "severe");
+		Variable varB = new Variable("B", "yes", "its possible", "maybe not", "no");
+		Variable varC = new Variable("C");
+
+		// Nodes
+		Node nodeA = probNet.addNode(varA, NodeType.CHANCE);
+		Node nodeB = probNet.addNode(varB, NodeType.CHANCE);
+		Node nodeC = probNet.addNode(varC, NodeType.CHANCE);
+
+		nodeB.getVariable().setPartitionedInterval(new PartitionedInterval(nodeB.getVariable().getDefaultInterval(4),
+				nodeB.getVariable().getDefaultBelongs(4)));
+
+		// Links
+		probNet.makeLinksExplicit(false);
+		probNet.addLink(nodeA, nodeB, true);
+		probNet.addLink(nodeA, nodeC, true);
+
+		// Potentials
+		UniformPotential potA = new UniformPotential(Arrays.asList(varA), PotentialRole.CONDITIONAL_PROBABILITY);
+		nodeA.setPotential(potA);
+
+		UniformPotential potB = new UniformPotential(Arrays.asList(varB, varA), PotentialRole.CONDITIONAL_PROBABILITY);
+		nodeB.setPotential(potB);
+
+		UniformPotential potC = new UniformPotential(Arrays.asList(varC, varA), PotentialRole.CONDITIONAL_PROBABILITY);
+		nodeC.setPotential(potC);
+
+		// Link restrictions and revealing states
+		// Always observed nodes
+
+		return probNet;
+	}
+
+	@Before public void setUp() throws Exception {
 		probNet = getProbNet4Test();
 		finiteStatesNode = probNet.getNode("A");
 		discretizedNode = probNet.getNode("B");
 		numericNode = probNet.getNode("C");
 	}
 
-	@Test
-	public void testNumeric2Discretized() {
+	@Test public void testNumeric2Discretized() {
 		State[] defaultStates = numericNode.getProbNet().getDefaultStates();
 		State[] states = numericNode.getVariable().getStates().clone();
 		PartitionedInterval currentInterval = (PartitionedInterval) numericNode.getVariable().getPartitionedInterval()
@@ -56,8 +89,7 @@ public class VariableTypeEditTest {
 			probNet.getPNESupport().withUndo = true;
 			probNet.doEdit(edit);
 
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException
-				| WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 
@@ -93,8 +125,7 @@ public class VariableTypeEditTest {
 
 	}
 
-	@Test
-	public void testNumeric2FiniteStates() {
+	@Test public void testNumeric2FiniteStates() {
 		State[] defaultStates = numericNode.getProbNet().getDefaultStates();
 		State[] states = numericNode.getVariable().getStates().clone();
 		PartitionedInterval currentInterval = (PartitionedInterval) numericNode.getVariable().getPartitionedInterval()
@@ -104,8 +135,7 @@ public class VariableTypeEditTest {
 			probNet.getPNESupport().withUndo = true;
 			probNet.doEdit(edit);
 
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException
-				| WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 
@@ -140,8 +170,7 @@ public class VariableTypeEditTest {
 		}
 	}
 
-	@Test
-	public void testFiniteStates2Discretized() {
+	@Test public void testFiniteStates2Discretized() {
 		State[] defaultStates = finiteStatesNode.getProbNet().getDefaultStates();
 		State[] states = finiteStatesNode.getVariable().getStates().clone();
 
@@ -150,8 +179,7 @@ public class VariableTypeEditTest {
 			probNet.getPNESupport().withUndo = true;
 			probNet.doEdit(edit);
 
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException
-				| WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 
@@ -179,8 +207,7 @@ public class VariableTypeEditTest {
 		probNet.getPNESupport().undo();
 	}
 
-	@Test
-	public void testFiniteStates2Numeric() {
+	@Test public void testFiniteStates2Numeric() {
 		State[] defaultStates = finiteStatesNode.getProbNet().getDefaultStates();
 		State[] states = finiteStatesNode.getVariable().getStates().clone();
 
@@ -189,8 +216,7 @@ public class VariableTypeEditTest {
 			probNet.getPNESupport().withUndo = true;
 			probNet.doEdit(edit);
 
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException
-				| WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 
@@ -215,8 +241,7 @@ public class VariableTypeEditTest {
 		probNet.getPNESupport().undo();
 	}
 
-	@Test
-	public void testDiscretized2FiniteStates() {
+	@Test public void testDiscretized2FiniteStates() {
 		State[] states = discretizedNode.getVariable().getStates().clone();
 		PartitionedInterval currentInterval = (PartitionedInterval) discretizedNode.getVariable()
 				.getPartitionedInterval().clone();
@@ -225,8 +250,7 @@ public class VariableTypeEditTest {
 			probNet.getPNESupport().withUndo = true;
 			probNet.doEdit(edit);
 
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException
-				| WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 
@@ -253,8 +277,7 @@ public class VariableTypeEditTest {
 		}
 	}
 
-	@Test
-	public void testDiscretized2Numeric() {
+	@Test public void testDiscretized2Numeric() {
 		State[] states = discretizedNode.getVariable().getStates().clone();
 		PartitionedInterval currentInterval = (PartitionedInterval) discretizedNode.getVariable()
 				.getPartitionedInterval().clone();
@@ -263,8 +286,7 @@ public class VariableTypeEditTest {
 			probNet.getPNESupport().withUndo = true;
 			probNet.doEdit(edit);
 
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException
-				| WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 
@@ -289,40 +311,5 @@ public class VariableTypeEditTest {
 		for (int i = 0; i < undoedInterval.getNumSubintervals(); i++) {
 			assertTrue(undoedInterval.getLimit(i) == currentInterval.getLimit(i));
 		}
-	}
-
-	private static ProbNet getProbNet4Test() {
-		ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-		// Variables
-		Variable varA = new Variable("A", "absent", "mild", "moderate", "severe");
-		Variable varB = new Variable("B", "yes", "its possible", "maybe not", "no");
-		Variable varC = new Variable("C");
-
-		// Nodes
-		Node nodeA = probNet.addNode(varA, NodeType.CHANCE);
-		Node nodeB = probNet.addNode(varB, NodeType.CHANCE);
-		Node nodeC = probNet.addNode(varC, NodeType.CHANCE);
-
-		nodeB.getVariable().setPartitionedInterval(new PartitionedInterval(nodeB.getVariable().getDefaultInterval(4), nodeB.getVariable().getDefaultBelongs(4)));
-
-		// Links
-		probNet.makeLinksExplicit(false);
-		probNet.addLink(nodeA, nodeB, true);
-		probNet.addLink(nodeA, nodeC, true);
-
-		// Potentials
-		UniformPotential potA = new UniformPotential(Arrays.asList(varA), PotentialRole.CONDITIONAL_PROBABILITY);
-		nodeA.setPotential(potA);
-
-		UniformPotential potB = new UniformPotential(Arrays.asList(varB, varA), PotentialRole.CONDITIONAL_PROBABILITY);
-		nodeB.setPotential(potB);
-
-		UniformPotential potC = new UniformPotential(Arrays.asList(varC, varA), PotentialRole.CONDITIONAL_PROBABILITY);
-		nodeC.setPotential(potC);
-
-		// Link restrictions and revealing states
-		// Always observed nodes
-
-		return probNet;
 	}
 }

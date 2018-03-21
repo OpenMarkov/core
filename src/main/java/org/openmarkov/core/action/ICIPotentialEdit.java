@@ -7,15 +7,14 @@
 
 package org.openmarkov.core.action;
 
-import javax.swing.undo.CannotUndoException;
-
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 
-@SuppressWarnings("serial")
-public class ICIPotentialEdit extends SimplePNEdit {
+import javax.swing.undo.CannotUndoException;
+
+@SuppressWarnings("serial") public class ICIPotentialEdit extends SimplePNEdit {
 
 	private ICIPotential potential = null;
 	private Variable variable = null;
@@ -24,7 +23,7 @@ public class ICIPotentialEdit extends SimplePNEdit {
 	private double[] leakyParameters = null;
 	private double[] oldLeakyParameters = null;
 	private boolean isNoisyParameter;
-	
+
 	public ICIPotentialEdit(ProbNet probNet, ICIPotential potential, Variable variable, double[] noisyParameters) {
 		super(probNet);
 		this.potential = potential;
@@ -33,34 +32,28 @@ public class ICIPotentialEdit extends SimplePNEdit {
 		this.noisyParameters = noisyParameters;
 		this.isNoisyParameter = true;
 	}
-	
+
 	public ICIPotentialEdit(ProbNet probNet, ICIPotential potential, double[] leakyParameters) {
 		super(probNet);
 		this.potential = potential;
 		this.oldLeakyParameters = potential.getLeakyParameters();
 		this.leakyParameters = leakyParameters;
 		this.isNoisyParameter = false;
-	}	
+	}
 
-	@Override
-	public void doEdit() throws DoEditException {
-		if(isNoisyParameter)
-		{
+	@Override public void doEdit() throws DoEditException {
+		if (isNoisyParameter) {
 			potential.setNoisyParameters(variable, noisyParameters);
-		}else
-		{
+		} else {
 			potential.setLeakyParameters(leakyParameters);
 		}
 	}
 
-	@Override
-	public void undo() throws CannotUndoException {
+	@Override public void undo() throws CannotUndoException {
 		super.undo();
-		if(isNoisyParameter)
-		{
+		if (isNoisyParameter) {
 			potential.setNoisyParameters(variable, oldNoisyParameters);
-		}else
-		{
+		} else {
 			potential.setLeakyParameters(oldLeakyParameters);
 		}
 	}
@@ -84,6 +77,5 @@ public class ICIPotentialEdit extends SimplePNEdit {
 	public boolean isNoisyParameter() {
 		return isNoisyParameter;
 	}
-	
-	
+
 }

@@ -7,27 +7,23 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import java.util.List;
-
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
-@Constraint (name = "NoLoops", defaultBehavior = ConstraintBehavior.OPTIONAL)
-public class NoLoops extends PNConstraint {
+import java.util.List;
 
-	@Override
-    public boolean checkEdit (ProbNet probNet, PNEdit edit)
-        throws NonProjectablePotentialException,
-        WrongCriterionException{
-	    List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit,
-				AddLinkEdit.class);
-	
+@Constraint(name = "NoLoops", defaultBehavior = ConstraintBehavior.OPTIONAL) public class NoLoops extends PNConstraint {
+
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
+			throws NonProjectablePotentialException, WrongCriterionException {
+		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
+
 		for (PNEdit simpleEdit : edits) {
 			Variable variable1 = ((AddLinkEdit) simpleEdit).getVariable1();
 			Node node1 = probNet.getNode(variable1);
@@ -40,8 +36,7 @@ public class NoLoops extends PNConstraint {
 		return true;
 	}
 
-	@Override
-	public boolean checkProbNet(ProbNet probNet) {
+	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Node> nodesGraph = probNet.getNodes();
 		boolean probNetOK = true;
 		boolean directed;
@@ -69,10 +64,8 @@ public class NoLoops extends PNConstraint {
 		return probNetOK;
 	}
 
-    @Override
-    protected String getMessage ()
-    {
-        return "no loops allowed";
-    }
+	@Override protected String getMessage() {
+		return "no loops allowed";
+	}
 
 }

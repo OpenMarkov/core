@@ -9,54 +9,48 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
-public abstract class ProbDensFunction
-{
-    public abstract double[] getParameters ();
+public abstract class ProbDensFunction {
+	public abstract double[] getParameters();
 
-    public abstract void setParameters (double[] args);
-    
-    //CMI
-    //For Univariate
-    public void verifyParameters (double[] parameters) throws IllegalArgumentException{
-    	throw new IllegalArgumentException("verifyParameters not implemented in " + this.getClass().getName());
-    }
-    //CMF
+	public abstract void setParameters(double[] args);
 
-    public abstract boolean verifyParametersDomain (boolean isChanceVariable);
+	//CMI
+	//For Univariate
+	public void verifyParameters(double[] parameters) throws IllegalArgumentException {
+		throw new IllegalArgumentException("verifyParameters not implemented in " + this.getClass().getName());
+	}
+	//CMF
 
-    public abstract double getMean ();
+	public abstract boolean verifyParametersDomain(boolean isChanceVariable);
 
-    public final double getStandardDeviation ()
-    {
-        return Math.sqrt (getVariance ());
-    }
+	public abstract double getMean();
 
-    public abstract double getVariance ();
+	public final double getStandardDeviation() {
+		return Math.sqrt(getVariance());
+	}
 
-    public abstract double getMaximum ();
-    
-    public abstract double getMinimum ();
+	public abstract double getVariance();
 
-    public abstract double getSample (Random randomGenerator);
-    
-	@Override
-	public String toString() {
+	public abstract double getMaximum();
+
+	public abstract double getMinimum();
+
+	public abstract double getSample(Random randomGenerator);
+
+	@Override public String toString() {
 		StringBuilder sb = new StringBuilder();
 		ProbDensFunctionType probDensAnnotation = getClass().getAnnotation(ProbDensFunctionType.class);
-		if(probDensAnnotation != null)
-		{
+		if (probDensAnnotation != null) {
 			sb.append(probDensAnnotation.name());
 			sb.append(" :");
 		}
-		for(double parameter : getParameters())
-		{
+		for (double parameter : getParameters()) {
 			sb.append(parameter + " ");
 		}
 		return sb.toString();
 	}
-	
-	
+
 	public abstract DomainInterval getInterval(double p);
-	
+
 	public abstract ProbDensFunction copy();
 }

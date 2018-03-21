@@ -7,10 +7,6 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddNodeEdit;
@@ -20,17 +16,17 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
+import static org.junit.Assert.*;
+
 public class OnlyAtemporalVariablesTest {
 
 	private ProbNet influenceDiagram;
 
-	@Before
-	public void setUp() throws Exception {
+	@Before public void setUp() throws Exception {
 		influenceDiagram = ConstraintsTests.getInfuenceDiagram();
 	}
 
-	@Test
-	public void testCheckProbNet() {
+	@Test public void testCheckProbNet() {
 
 		boolean exceptionLaunched = false;
 		try {
@@ -52,40 +48,36 @@ public class OnlyAtemporalVariablesTest {
 		}
 		assertTrue(exceptionLaunched);
 	}
-	
-	
-	@Test
-	public void testUndoableEditWillHappen() 
-	        throws Exception {
+
+	@Test public void testUndoableEditWillHappen() throws Exception {
 		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new OnlyAtemporalVariables();
 
 		influenceDiagram.addConstraint(constraint, true);
 		pNESupport.addUndoableEditListener(constraint);
-		
+
 		boolean exceptionLaunched = false;
-		Variable var= new Variable("F");
-		AddNodeEdit legalEdit= new AddNodeEdit(influenceDiagram,var,NodeType.CHANCE); 
+		Variable var = new Variable("F");
+		AddNodeEdit legalEdit = new AddNodeEdit(influenceDiagram, var, NodeType.CHANCE);
 		// add the variable
-				try {
-					pNESupport.announceEdit(legalEdit);
-					legalEdit.doEdit();
-				} catch (Exception cve) {
-					fail(cve.getMessage());
-				}
+		try {
+			pNESupport.announceEdit(legalEdit);
+			legalEdit.doEdit();
+		} catch (Exception cve) {
+			fail(cve.getMessage());
+		}
 
-		Variable var1= new Variable(" [11]","Y","N");
-		AddNodeEdit ilegalEdit= new AddNodeEdit(influenceDiagram,var1,NodeType.CHANCE); 
+		Variable var1 = new Variable(" [11]", "Y", "N");
+		AddNodeEdit ilegalEdit = new AddNodeEdit(influenceDiagram, var1, NodeType.CHANCE);
 		// add the variable
-				try {
-					pNESupport.announceEdit(ilegalEdit);
-					ilegalEdit.doEdit();
-				} catch (Exception cve) {
-					exceptionLaunched=true;
-				}
-				assertTrue(exceptionLaunched);
+		try {
+			pNESupport.announceEdit(ilegalEdit);
+			ilegalEdit.doEdit();
+		} catch (Exception cve) {
+			exceptionLaunched = true;
+		}
+		assertTrue(exceptionLaunched);
 
-		
 	}
 
 }

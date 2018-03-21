@@ -11,38 +11,39 @@ import org.openmarkov.core.exception.DoEditException;
 
 @SuppressWarnings("serial")
 /** @author Manuel Arias
- * @see openmarkov.networks.edit.CloseParenthesisEdit */
-public class OpenParenthesisEdit extends SimplePNEdit {
+ * @see openmarkov.networks.edit.CloseParenthesisEdit */ public class OpenParenthesisEdit extends SimplePNEdit {
 
 	// Constant
 	public static final String description = "(";
-	
+
 	// Constructor
-	/** Singleton pattern */
+
+	/**
+	 * Singleton pattern
+	 */
 	public OpenParenthesisEdit() {
-	    super(null);
+		super(null);
 	}
 
 	// Methods
-	@Override
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException {
 		//super.addEdit(this);
 	}
-	
+
 	public void undo() {
 		super.undo();
 	}
-	
+
 	public String getUndoPresentationName() {
 		return description + " " + getPresentationName();
 	}
-	
+
 	public String getRedoPresentationName() {
 		return description + " " + getPresentationName();
 	}
-	
+
 	public String toString() {
 		return description;
 	}
-	
+
 }

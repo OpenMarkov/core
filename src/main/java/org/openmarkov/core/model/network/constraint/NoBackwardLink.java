@@ -19,24 +19,22 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 import java.util.List;
 
-@Constraint (name = "NoBackwardLinks", defaultBehavior = ConstraintBehavior.YES)
-public class NoBackwardLink extends PNConstraint {
+@Constraint(name = "NoBackwardLinks", defaultBehavior = ConstraintBehavior.YES) public class NoBackwardLink
+		extends PNConstraint {
 
-	@Override
-	public boolean checkProbNet(ProbNet probNet) {
+	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Node> probNetNodes = probNet.getNodes();
 		int nodeTimeSlice;
 		try {
-			for (Node node : probNetNodes)
-			{
+			for (Node node : probNetNodes) {
 				// If the node is temporal
 				if (probNet.getVariable(node.getName()).isTemporal()) {
 					// We retrieve its children
-					List<Node> children = probNet.getChildren (node);
+					List<Node> children = probNet.getChildren(node);
 					// and we iterate over them
 					for (Node child : children) {
 						// checking if there is any not allowed link
-						if (!allowedLink(probNet.getVariable(node.getName()),probNet.getVariable(child.getName()))) {
+						if (!allowedLink(probNet.getVariable(node.getName()), probNet.getVariable(child.getName()))) {
 							return false;
 						}
 					}
@@ -50,40 +48,32 @@ public class NoBackwardLink extends PNConstraint {
 		return true;
 	}
 
-	@Override
-	public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException,
-			WrongCriterionException {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
+			throws NonProjectablePotentialException, WrongCriterionException {
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
-		for (PNEdit simpleEdit : edits)
-		{
-			if (!allowedLink(((AddLinkEdit) simpleEdit).getVariable1(),
-					((AddLinkEdit) simpleEdit).getVariable2())) {
+		for (PNEdit simpleEdit : edits) {
+			if (!allowedLink(((AddLinkEdit) simpleEdit).getVariable1(), ((AddLinkEdit) simpleEdit).getVariable2())) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	private boolean allowedLink (Variable variable1, Variable variable2) {
+	private boolean allowedLink(Variable variable1, Variable variable2) {
 		boolean allowed = true;
 		// If both variables are temporal, the second must not belong to a previous time slices
 		// And the first is temporal and the second is not, the former must belong to the zeroth slice
-		if ((variable1.isTemporal() &&
-				variable2.isTemporal() &&
-				variable2.getTimeSlice() <
-						variable1.getTimeSlice()) ||
-				(variable1.isTemporal() &&
-						!variable2.isTemporal() &&
-						variable1.getTimeSlice() != 0)) {
+		if ((
+				variable1.isTemporal() && variable2.isTemporal() && variable2.getTimeSlice() < variable1.getTimeSlice()
+		) || (
+				variable1.isTemporal() && !variable2.isTemporal() && variable1.getTimeSlice() != 0
+		)) {
 			allowed = false;
 		}
 		return allowed;
 	}
 
-	@Override
-	protected String getMessage ()
-	{
+	@Override protected String getMessage() {
 		// TODO Auto-generated method stub
 		return "Links can only be drawn to future slices or from nodes in slice 0 towards atemporal nodes";
 	}

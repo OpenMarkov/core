@@ -12,15 +12,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target (ElementType.TYPE)
-public @interface ProbDensFunctionType {
-    String name ();
-    //CMI
-    //For Univariate
-    String univariateName() default "default";
-    //CMF
-    boolean isValidForProbabilities () default true;
-    boolean isValidForNumeric () default true;
-    String[] parameters ();
+@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface ProbDensFunctionType {
+	String name();
+
+	//CMI
+	//For Univariate
+	String univariateName() default "default";
+
+	//CMF
+	boolean isValidForProbabilities() default true;
+
+	boolean isValidForNumeric() default true;
+
+	String[] parameters();
 }

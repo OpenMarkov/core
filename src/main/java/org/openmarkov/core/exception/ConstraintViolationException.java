@@ -7,14 +7,19 @@
 
 package org.openmarkov.core.exception;
 
-/** Thrown when trying to do an edit that violates one of the 
+/**
+ * Thrown when trying to do an edit that violates one of the
  * <code>PNConstraints</code> of the <code>ProbNet</code>
- * @see org.openmarkov.core.model.graph.Link#Link(Object, Object, boolean)  */
-@SuppressWarnings("serial")
-public class ConstraintViolationException extends Exception {
+ *
+ * @see org.openmarkov.core.model.graph.Link#Link(Object, Object, boolean)
+ */
+@SuppressWarnings("serial") public class ConstraintViolationException extends Exception {
 
 	// Constructor
-	/** @param message <code>String</code> */
+
+	/**
+	 * @param message <code>String</code>
+	 */
 	public ConstraintViolationException(String message) {
 		super(message);
 	}

@@ -10,13 +10,11 @@ package org.openmarkov.core.action;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
+
 /**
- * 
  * @author myebra
- *
  */
-@SuppressWarnings("serial")
-public class TimeSliceEdit extends SimplePNEdit{
+@SuppressWarnings("serial") public class TimeSliceEdit extends SimplePNEdit {
 	/**
 	 * The last time slice before the edition
 	 */
@@ -37,26 +35,24 @@ public class TimeSliceEdit extends SimplePNEdit{
 	 * The last variable name
 	 */
 	private String lastName;
-	
+
 	private Variable variable;
 
-/**
- * 
- * @param node
- * @param timeSlice
- */
+	/**
+	 * @param node
+	 * @param timeSlice
+	 */
 	public TimeSliceEdit(Node node, int timeSlice) {
 		super(node.getProbNet());
 		variable = node.getVariable();
 		this.lastTimeSlice = variable.getTimeSlice();
 		this.newTimeSlice = timeSlice;
-		this.lastBaseName =  variable.getBaseName();
-		this.lastName =  variable.getName();
+		this.lastBaseName = variable.getBaseName();
+		this.lastName = variable.getName();
 		this.node = node;
 	}
 
-	@Override
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException {
 		//onlyTemporal && not only atemporal
 		variable.setTimeSlice(newTimeSlice);
 		if (newTimeSlice == Integer.MIN_VALUE && lastTimeSlice != Integer.MIN_VALUE && lastBaseName != null) {
@@ -70,12 +66,12 @@ public class TimeSliceEdit extends SimplePNEdit{
 		}
 		//not only temporaL && not only atemporal but also set name and base name
 		if (lastTimeSlice == Integer.MIN_VALUE) {
-			variable.setBaseName(lastBaseName);	
-			variable.setName(lastName+ " " + "["+ String.valueOf(newTimeSlice)+"]");
+			variable.setBaseName(lastBaseName);
+			variable.setName(lastName + " " + "[" + String.valueOf(newTimeSlice) + "]");
 		}
 	}
-	@Override
-	public void undo() {
+
+	@Override public void undo() {
 		super.undo();
 		//onlyTemporal
 		variable.setTimeSlice(lastTimeSlice);
@@ -86,23 +82,21 @@ public class TimeSliceEdit extends SimplePNEdit{
 		}
 	}
 
-    /**
-     * Gets the new name of the node
-     *
-     * @return
-     * 		the new name of the node
-     */
-    public String getNewName(){
-        return lastBaseName+ " " + "["+ String.valueOf(newTimeSlice)+"]";
-    }
+	/**
+	 * Gets the new name of the node
+	 *
+	 * @return the new name of the node
+	 */
+	public String getNewName() {
+		return lastBaseName + " " + "[" + String.valueOf(newTimeSlice) + "]";
+	}
 
-    /**
-     * Gets the previous name of the node
-     *
-     * @return
-     * 		the previous name of the node
-     */
-    public String getPreviousName(){
-        return lastBaseName+ " " + "["+ String.valueOf(lastTimeSlice)+"]";
-    }
+	/**
+	 * Gets the previous name of the node
+	 *
+	 * @return the previous name of the node
+	 */
+	public String getPreviousName() {
+		return lastBaseName + " " + "[" + String.valueOf(lastTimeSlice) + "]";
+	}
 }

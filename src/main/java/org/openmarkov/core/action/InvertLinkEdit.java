@@ -7,9 +7,6 @@
 
 package org.openmarkov.core.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
@@ -18,54 +15,54 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 
-/** Inverts an existing link. */
-@SuppressWarnings("serial")
-public class InvertLinkEdit extends BaseLinkEdit {
+import java.util.ArrayList;
+import java.util.List;
 
-    /**
-     * parent node
-     */
-    protected Node node1;
-    /**
-     * child node
-     */
-    protected Node node2;
-    
-    /**
-     * Parent node's old potentials
-     */
-    protected List<Potential> parentsOldPotentials;    
-    /**
-     * Child node's old potentials
-     */
-    protected List<Potential> childsOldPotentials;    
-    
-    
+/**
+ * Inverts an existing link.
+ */
+@SuppressWarnings("serial") public class InvertLinkEdit extends BaseLinkEdit {
+
+	/**
+	 * parent node
+	 */
+	protected Node node1;
+	/**
+	 * child node
+	 */
+	protected Node node2;
+
+	/**
+	 * Parent node's old potentials
+	 */
+	protected List<Potential> parentsOldPotentials;
+	/**
+	 * Child node's old potentials
+	 */
+	protected List<Potential> childsOldPotentials;
+
 	// Constructor
-	/** @param probNet <code>ProbNet</code>
-	 * @param variable1 <code>Variable</code>
-	 * @param variable2 <code>Variable</code>
-	 * @param isDirected <code>boolean</code> */
-    public InvertLinkEdit (ProbNet probNet,
-                           Variable variable1,
-                           Variable variable2,
-                           boolean isDirected)
-    {
-        super (probNet, variable1, variable2, isDirected);
-        try {
-            node1 = probNet.getNode (variable1.getName());
-            node2 = probNet.getNode (variable2.getName());
-        }
-        catch (NodeNotFoundException e) {
+
+	/**
+	 * @param probNet    <code>ProbNet</code>
+	 * @param variable1  <code>Variable</code>
+	 * @param variable2  <code>Variable</code>
+	 * @param isDirected <code>boolean</code>
+	 */
+	public InvertLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {
+		super(probNet, variable1, variable2, isDirected);
+		try {
+			node1 = probNet.getNode(variable1.getName());
+			node2 = probNet.getNode(variable2.getName());
+		} catch (NodeNotFoundException e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace(System.err);
-        }      
-    }
+		}
+	}
 
 	// Methods
 	@Override
-	/** @throws exception <code>Exception</code> */
-	public void doEdit() throws DoEditException {
+	/** @throws exception <code>Exception</code> */ public void doEdit() throws DoEditException {
 		// Remove links first
 		probNet.removeLink(node1, node2, isDirected);
 		if (node2.getNodeType() != NodeType.DECISION) {
@@ -98,49 +95,54 @@ public class InvertLinkEdit extends BaseLinkEdit {
 		try {
 			probNet.removeLink(variable2, variable1, isDirected);
 			probNet.addLink(variable1, variable2, isDirected);
-            node1.setPotentials(parentsOldPotentials);
-            node2.setPotentials(childsOldPotentials);
-		} catch (Exception e){
+			node1.setPotentials(parentsOldPotentials);
+			node2.setPotentials(childsOldPotentials);
+		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace(System.err);
 		}
 	}
-		
-    /** Method to compare two InvertLinkEdits comparing the names of
-     * the source and destination variable alphabetically.
-     * @param obj
-     * @return
-     */
-    public int compareTo(InvertLinkEdit obj){
-        int result;
 
-        if (( result = variable1.getName().compareTo(obj.getVariable1().
-                getName())) != 0)
-            return result;
-        if (( result = variable2.getName().compareTo(obj.getVariable2().
-                getName())) != 0)
-            return result;
-        else
-            return 0;
-    }
+	/**
+	 * Method to compare two InvertLinkEdits comparing the names of
+	 * the source and destination variable alphabetically.
+	 *
+	 * @param obj
+	 * @return
+	 */
+	public int compareTo(InvertLinkEdit obj) {
+		int result;
 
-	@Override
-	public String getOperationName() {
+		if ((
+				result = variable1.getName().compareTo(obj.getVariable1().
+						getName())
+		) != 0)
+			return result;
+		if ((
+				result = variable2.getName().compareTo(obj.getVariable2().
+						getName())
+		) != 0)
+			return result;
+		else
+			return 0;
+	}
+
+	@Override public String getOperationName() {
 		return "Invert link";
 	}
-	
-	/** This method assumes that the link is directed, otherwise has no sense.
-	 * @return <code>String</code> */
+
+	/**
+	 * This method assumes that the link is directed, otherwise has no sense.
+	 *
+	 * @return <code>String</code>
+	 */
 	public String toString() {
-		return new StringBuilder(getOperationName()).append(": ").append(variable1).append("-->")
-				.append(variable2).append(" ==> ").append(variable2).append("-->")
-				.append(variable1).toString();
+		return new StringBuilder(getOperationName()).append(": ").append(variable1).append("-->").append(variable2)
+				.append(" ==> ").append(variable2).append("-->").append(variable1).toString();
 	}
 
-    @Override
-    public BaseLinkEdit getUndoEdit ()
-    {
-        return new InvertLinkEdit (getProbNet (), getVariable2 (), getVariable1 (), isDirected ());
-    }
+	@Override public BaseLinkEdit getUndoEdit() {
+		return new InvertLinkEdit(getProbNet(), getVariable2(), getVariable1(), isDirected());
+	}
 
 }

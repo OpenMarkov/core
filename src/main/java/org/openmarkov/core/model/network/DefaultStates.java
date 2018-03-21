@@ -7,17 +7,13 @@
 
 package org.openmarkov.core.model.network;
 
-
 import java.util.ArrayList;
-
-
 
 /**
  * This class is used to encapsulate the default states of the nodes and their
  * dependent-language strings.
- * 
+ *
  * @author jmendoza
- * @version 1.0
  * @version 1.1 jlgozalo - fix javadoc and initial values for fields
  */
 public class DefaultStates {
@@ -67,16 +63,14 @@ public class DefaultStates {
 		}
 	}
 
-
 	/**
 	 * This method returns an array containing the default states of an element
 	 * of the list. If the index is out of range (index < 0 || index > list
 	 * size) the null is returned.
-	 * 
-	 * @param index
-	 *            element of the list of default states.
+	 *
+	 * @param index element of the list of default states.
 	 * @return an array that contains the default states of an element of the
-	 *         list of default states.
+	 * list of default states.
 	 */
 	public static String[] getByIndex(int index) {
 
@@ -90,7 +84,7 @@ public class DefaultStates {
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		}
-		return defaultStates.toArray(new String [defaultStates.size()]);
+		return defaultStates.toArray(new String[defaultStates.size()]);
 	}
 
 	/**
@@ -100,9 +94,8 @@ public class DefaultStates {
 	 * are the names of the states, not the language-dependent strings. If the
 	 * parameter doesn't match any element of the list, then the last index is
 	 * returned.
-	 * 
-	 * @param states
-	 *            array that contains the names of the states.
+	 *
+	 * @param states array that contains the names of the states.
 	 * @return the index in the list of the states set
 	 */
 	public static int getIndex(State[] states) {
@@ -128,20 +121,16 @@ public class DefaultStates {
 		return (found) ? i : l - 1;
 	}
 
-
 	/**
 	 * Returns the default states that correspond to a type of node. A default
 	 * set of states is given for the chance nodes. A prefixed set of states
 	 * (yes, no) corresponds to the decision nodes. Utility nodes hasn't states.
-	 * 
-	 * @param type
-	 *            type of the node.
-	 * @param networkDefaultStates
-	 *            default set of states.
+	 *
+	 * @param type                 type of the node.
+	 * @param networkDefaultStates default set of states.
 	 * @return a set of states corresponding to the type of the node.
 	 */
-	public static State[] getStatesNodeType(NodeType type,
-												State[] networkDefaultStates) {
+	public static State[] getStatesNodeType(NodeType type, State[] networkDefaultStates) {
 
 		ArrayList<String> elements = null;
 
@@ -154,13 +143,13 @@ public class DefaultStates {
 		}
 		case DECISION: {
 			elements = list.get(1);
-			String [] statesAux = elements.toArray(new String [elements.size()]);
-			State [] states = new State[elements.size()];
-			int i=0;
-			for (String stateSingle:statesAux){
-				states[i] = new State (stateSingle);
+			String[] statesAux = elements.toArray(new String[elements.size()]);
+			State[] states = new State[elements.size()];
+			int i = 0;
+			for (String stateSingle : statesAux) {
+				states[i] = new State(stateSingle);
 				i++;
-				
+
 			}
 			return states;
 		}

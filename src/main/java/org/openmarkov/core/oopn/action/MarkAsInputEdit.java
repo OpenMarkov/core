@@ -7,22 +7,21 @@
 
 package org.openmarkov.core.oopn.action;
 
-import javax.swing.undo.CannotUndoException;
-
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oopn.Instance;
 
-@SuppressWarnings("serial")
-public class MarkAsInputEdit extends SimplePNEdit{
+import javax.swing.undo.CannotUndoException;
+
+@SuppressWarnings("serial") public class MarkAsInputEdit extends SimplePNEdit {
 
 	private Node node = null;
 	private Instance instance = null;
 	private boolean isInput = false;
 	private boolean wasInput = false;
-	
+
 	public MarkAsInputEdit(ProbNet probNet, boolean isInput, Node node) {
 		super(probNet);
 		this.isInput = isInput;
@@ -35,31 +34,25 @@ public class MarkAsInputEdit extends SimplePNEdit{
 		this.instance = instance;
 	}
 
-	@Override
-	public void doEdit() throws DoEditException {
-		if(node != null)
-		{
+	@Override public void doEdit() throws DoEditException {
+		if (node != null) {
 			node.setInput(isInput);
 			wasInput = node.isInput();
 		}
-		if(instance != null)
-		{
+		if (instance != null) {
 			instance.setInput(isInput);
 			wasInput = instance.isInput();
 		}
 	}
 
-	@Override
-	public void undo() throws CannotUndoException {
+	@Override public void undo() throws CannotUndoException {
 		super.undo();
-		if(node != null)
-		{
+		if (node != null) {
 			node.setInput(wasInput);
 		}
-		if(instance != null)
-		{
+		if (instance != null) {
 			instance.setInput(wasInput);
 		}
 	}
-	
+
 }

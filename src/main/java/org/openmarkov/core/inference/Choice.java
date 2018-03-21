@@ -7,42 +7,54 @@
 
 package org.openmarkov.core.inference;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 
-/** A choice is a value assignment to a decision variable. It is possible that
- * one variable can have more than one assignment in case of draw. */
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * A choice is a value assignment to a decision variable. It is possible that
+ * one variable can have more than one assignment in case of draw.
+ */
 public class Choice {
 
 	// Attributes
 	private Variable variable;
 
-	/** Value(s) assignment; if there is no draws only the first one.
-	 * @invariant value[i] != value[j] when i != j and i < numValues 
-	 *   and j < numValues
-	 * (<code>int[]</code>). */
+	/**
+	 * Value(s) assignment; if there is no draws only the first one.
+	 *
+	 * @invariant value[i] != value[j] when i != j and i < numValues
+	 * and j < numValues
+	 * (<code>int[]</code>).
+	 */
 	private int[] values;
-	
-	/** Number of assignments to <code>Variable</code>. */
+
+	/**
+	 * Number of assignments to <code>Variable</code>.
+	 */
 	private int numValues;
-	
+
 	private boolean initialized = false;
-	
+
 	// Constructors
-	/** @param variable <code>Variable</code>
-	 * @param values <code>int[]</code>. Most times only one value; in case of
-	 *   draws more than one value. */
+
+	/**
+	 * @param variable <code>Variable</code>
+	 * @param values   <code>int[]</code>. Most times only one value; in case of
+	 *                 draws more than one value.
+	 */
 	public Choice(Variable variable, int[] values) {
 		this.variable = variable;
 		this.values = values;
 		numValues = values.length;
 	}
-	
-	/** @param variable <code>Variable</code>
-	 * @param value <code>int</code>. Only one value (no draws) */
+
+	/**
+	 * @param variable <code>Variable</code>
+	 * @param value    <code>int</code>. Only one value (no draws)
+	 */
 	public Choice(Variable variable, int value) {
 		values = new int[1];
 		values[0] = value;
@@ -50,13 +62,25 @@ public class Choice {
 		numValues = 1;
 		initialized = true;
 	}
-	
+
 	// Methods
-	/** @return values <code>int[]</code>. */
+
+	/**
+	 * @return values <code>int[]</code>.
+	 */
 	public int[] getValues() {
 		return values;
 	}
-	
+
+	/**
+	 * @param values <code>int[]</code>.
+	 */
+	public void setValues(int[] values) {
+		this.values = values;
+		numValues = values.length;
+		initialized = true;
+	}
+
 	public List<State> getStates() {
 		List<State> states = new ArrayList<>(numValues);
 		State[] variableStates = variable.getStates();
@@ -65,9 +89,12 @@ public class Choice {
 		}
 		return states;
 	}
-	
-	/** Used in case of draw.
-	 * @param value <code>int</code>. */
+
+	/**
+	 * Used in case of draw.
+	 *
+	 * @param value <code>int</code>.
+	 */
 	public void addValue(int value) {
 		if (!initialized) {
 			if (numValues > values.length) {
@@ -85,33 +112,34 @@ public class Choice {
 			values[0] = value;
 		}
 	}
-	
-	/** @param value <code>int</code>. */
+
+	/**
+	 * @param value <code>int</code>.
+	 */
 	public void setValue(int value) {
 		numValues = 1;
 		values = new int[numValues];
 		values[0] = value;
 		initialized = true;
 	}
-	
-	/** @param values <code>int[]</code>. */
-	public void setValues(int[] values) {
-		this.values = values;
-		numValues = values.length;
-		initialized = true;
-	}
-	
-	/** @return numValues <code>int</code>. */
+
+	/**
+	 * @return numValues <code>int</code>.
+	 */
 	public int getNumValues() {
 		return numValues;
 	}
 
-	/** @return variable <code>Variable</code>. */
+	/**
+	 * @return variable <code>Variable</code>.
+	 */
 	public Variable getVariable() {
 		return variable;
 	}
-	
-	/** @return A deep copy of this object. <code>Choice</code> */
+
+	/**
+	 * @return A deep copy of this object. <code>Choice</code>
+	 */
 	public Choice copy() {
 		int[] copyValues = new int[numValues];
 		for (int i = 0; i < numValues; i++) {
@@ -119,9 +147,12 @@ public class Choice {
 		}
 		return new Choice(variable, copyValues);
 	}
-	
-	/** Overrides <code>toString</code> method. Mainly for test purposes.
-	 * @return String */
+
+	/**
+	 * Overrides <code>toString</code> method. Mainly for test purposes.
+	 *
+	 * @return String
+	 */
 	public String toString() {
 		StringBuilder buffer = new StringBuilder(variable.getName());
 		if (numValues == 1) {
@@ -135,14 +166,17 @@ public class Choice {
 		}
 		return buffer.toString();
 	}
-	
-	/** Overrides <code>equals</code> method. Mainly for test purposes.
-	 * @argCondition <code>object</code> must be of type <code>Choice</code>
+
+	/**
+	 * Overrides <code>equals</code> method. Mainly for test purposes.
+	 *
 	 * @param object <code>Object</code>
-	 * @return <code>true</code> if the object received has the same variable 
-	 *   and the same option (or options set) */
+	 * @return <code>true</code> if the object received has the same variable
+	 * and the same option (or options set)
+	 * @argCondition <code>object</code> must be of type <code>Choice</code>
+	 */
 	public boolean sameInformation(Object object) {
-		Choice choice = (Choice)object;
+		Choice choice = (Choice) object;
 		if (choice.variable.getName().equals(this.variable.getName())) {
 			if (choice.getNumValues() != numValues) {
 				return false;
@@ -158,5 +192,5 @@ public class Choice {
 		}
 		return true;
 	}
-	
+
 }

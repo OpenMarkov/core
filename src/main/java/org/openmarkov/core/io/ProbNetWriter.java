@@ -7,25 +7,23 @@
 
 package org.openmarkov.core.io;
 
-import java.util.List;
-
 import org.openmarkov.core.exception.WriterException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 
+import java.util.List;
+
 public interface ProbNetWriter {
 
-    /**
-     * @param netName = path + network name + extension.
-     * @param probNet <code>ProbNet</code> <code>String</code>
-     */
-    void writeProbNet(String netName, ProbNet probNet)
-        throws WriterException;
+	/**
+	 * @param netName = path + network name + extension.
+	 * @param probNet <code>ProbNet</code> <code>String</code>
+	 */
+	void writeProbNet(String netName, ProbNet probNet) throws WriterException;
 
-    /**
-     * @param netName = path + network name + extension.
-     * @param probNet <code>ProbNet</code> <code>String</code>
-     */
-    void writeProbNet(String netName, ProbNet probNet, List<EvidenceCase> evidence)
-        throws WriterException;	
+	/**
+	 * @param netName = path + network name + extension.
+	 * @param probNet <code>ProbNet</code> <code>String</code>
+	 */
+	void writeProbNet(String netName, ProbNet probNet, List<EvidenceCase> evidence) throws WriterException;
 }

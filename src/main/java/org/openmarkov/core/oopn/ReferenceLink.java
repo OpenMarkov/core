@@ -8,5 +8,4 @@ package org.openmarkov.core.oopn;
 
 public class ReferenceLink {
 
-
 }

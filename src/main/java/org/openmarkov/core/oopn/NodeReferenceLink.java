@@ -9,7 +9,7 @@ package org.openmarkov.core.oopn;
 
 import org.openmarkov.core.model.network.Node;
 
-public class NodeReferenceLink extends ReferenceLink{
+public class NodeReferenceLink extends ReferenceLink {
 
 	private Node sourceNode;
 	private Node destinationNode;

@@ -7,90 +7,77 @@
 
 package org.openmarkov.core.action;
 
-import java.util.ArrayList;
-
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.type.NetworkType;
 
+import java.util.ArrayList;
+
 /**
- * <code>ChangeNetworkTypeEdit</code> is a edit that allow to change the 
+ * <code>ChangeNetworkTypeEdit</code> is a edit that allow to change the
  * <code>NetworkTypeConstraint</code> object to one network.
- * 
- *  
- * @version 1.0 21/12/10
+ *
  * @author mpalacios
- * 
+ * @version 1.0 21/12/10
  */
 //TODO verify the performance when undo is executed.  
-@SuppressWarnings("serial")
-public class ChangeNetworkTypeEdit extends SimplePNEdit {
-	
+@SuppressWarnings("serial") public class ChangeNetworkTypeEdit extends SimplePNEdit {
+
 	/**
 	 * The current NetworkTypeConstraint associated with the network
 	 */
 	private NetworkType currentNetworkType;
-	
+
 	/**
 	 * The new NetworkTypeConstraint associated with the network
 	 */
 	private NetworkType newNetworkType;
 
-	
 	/**
-	 * Creates a new <code>ChangeNetworkTypeEdit</code> that allow to change the 
-	 *<code>NetworkTypeConstraint</code> object in the network.
-	 * @param probNet the network that will be edited.
+	 * Creates a new <code>ChangeNetworkTypeEdit</code> that allow to change the
+	 * <code>NetworkTypeConstraint</code> object in the network.
+	 *
+	 * @param probNet                  the network that will be edited.
 	 * @param newNetworkTypeConstraint the new <code>NetworkTypeConstraint</code>
-	 * object
-	 *      
+	 *                                 object
 	 */
-    public ChangeNetworkTypeEdit (ProbNet probNet,
-                                  NetworkType newNetworkTypeConstraint)
-    {
-        super (probNet);
-        this.currentNetworkType = probNet.getNetworkType ();
-        this.newNetworkType = newNetworkTypeConstraint;
-    }
+	public ChangeNetworkTypeEdit(ProbNet probNet, NetworkType newNetworkTypeConstraint) {
+		super(probNet);
+		this.currentNetworkType = probNet.getNetworkType();
+		this.newNetworkType = newNetworkTypeConstraint;
+	}
 
 	// Methods
-	@Override
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException {
 		if (newNetworkType != null) {
-			try
-            {
-                probNet.setNetworkType(newNetworkType);
-                if (probNet.isMultiagent()) {
-                	ArrayList<StringWithProperties> agents = new ArrayList<>();
-        			agents.add(new StringWithProperties(" Agent 1"));
-        			agents.add(new StringWithProperties(" Agent 2"));
-        			probNet.setAgents(agents);
-                }
-            }
-            catch (ConstraintViolationException e)
-            {
-                throw new DoEditException(e.getMessage ());
-            }
+			try {
+				probNet.setNetworkType(newNetworkType);
+				if (probNet.isMultiagent()) {
+					ArrayList<StringWithProperties> agents = new ArrayList<>();
+					agents.add(new StringWithProperties(" Agent 1"));
+					agents.add(new StringWithProperties(" Agent 2"));
+					probNet.setAgents(agents);
+				}
+			} catch (ConstraintViolationException e) {
+				throw new DoEditException(e.getMessage());
+			}
 		}
 	}
 
 	public void undo() {
 		super.undo();
 		if (newNetworkType != null) {
-			try
-            {
-                probNet.setNetworkType(currentNetworkType);
-                if (!probNet.isMultiagent()) {
-                	probNet.setAgents(null);
-                }
-            }
-            catch (ConstraintViolationException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+			try {
+				probNet.setNetworkType(currentNetworkType);
+				if (!probNet.isMultiagent()) {
+					probNet.setAgents(null);
+				}
+			} catch (ConstraintViolationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }

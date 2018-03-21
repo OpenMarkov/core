@@ -7,58 +7,49 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
-@ProbDensFunctionType(name = "NormalMuStandardFunction", univariateName = "Normal", isValidForProbabilities =false, isValidForNumeric=false, parameters = { "mu", "standard" })
-public class NormalMuStandard extends NormalFunction{
-    private double mu;
-    private double standard;
-        
-    public NormalMuStandard() {
-        super();
-        setMu(0);
-        setStandard(1);
-    }
+@ProbDensFunctionType(name = "NormalMuStandardFunction", univariateName = "Normal", isValidForProbabilities = false, isValidForNumeric = false, parameters = {
+		"mu", "standard" }) public class NormalMuStandard extends NormalFunction {
+	private double mu;
+	private double standard;
 
-    public NormalMuStandard(double mu, double standard) {
-        super(mu,standard*standard);
-        this.setMu(mu);
-        this.setStandard(standard);
-    }
+	public NormalMuStandard() {
+		super();
+		setMu(0);
+		setStandard(1);
+	}
 
-        
-    public NormalMuStandard(NormalMuStandard normalMuStandardFunction) {
-    	   this(normalMuStandardFunction.getMu(), normalMuStandardFunction.getStandard());
-    }
-    
+	public NormalMuStandard(double mu, double standard) {
+		super(mu, standard * standard);
+		this.setMu(mu);
+		this.setStandard(standard);
+	}
 
-  //CMI
-    //For Univariate
-    /**
-     * @param parameters
-     *           - parameters[1]= mu and parameters[0] = standard deviation
-     * @throws IllegalArgumentException
-     *              - thrown if standard<0
-     */
-    @Override
-    public  void verifyParameters(double[] parameters){
-    	if (!(parameters[0]>0)){
-    		throw new IllegalArgumentException("Wrong parameters" + this.getClass().getName());
-    	}
-    }
-    //CMF
+	public NormalMuStandard(NormalMuStandard normalMuStandardFunction) {
+		this(normalMuStandardFunction.getMu(), normalMuStandardFunction.getStandard());
+	}
 
-    
-    @Override
-    public double[] getParameters() {
-        double[] a = new double[2];
-        a[0] = getMu();
-        a[1] = getStandard();
-        return a;
-    }
+	//CMI
+	//For Univariate
 
-    
+	/**
+	 * @param parameters - parameters[1]= mu and parameters[0] = standard deviation
+	 * @throws IllegalArgumentException - thrown if standard<0
+	 */
+	@Override public void verifyParameters(double[] parameters) {
+		if (!(parameters[0] > 0)) {
+			throw new IllegalArgumentException("Wrong parameters" + this.getClass().getName());
+		}
+	}
+	//CMF
 
-	
-    public double getMu() {
+	@Override public double[] getParameters() {
+		double[] a = new double[2];
+		a[0] = getMu();
+		a[1] = getStandard();
+		return a;
+	}
+
+	public double getMu() {
 		return mu;
 	}
 
@@ -74,10 +65,8 @@ public class NormalMuStandard extends NormalFunction{
 		this.standard = standard;
 	}
 
-	@Override
-    public ProbDensFunction copy() {
-        return new NormalMuStandard(this);
-    }
-
+	@Override public ProbDensFunction copy() {
+		return new NormalMuStandard(this);
+	}
 
 }

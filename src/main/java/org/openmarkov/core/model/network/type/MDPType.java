@@ -15,37 +15,33 @@ import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.UtilityNodes;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
-@ProbNetType(name="MDP")
-public class MDPType extends NetworkType
-{
-    private static MDPType instance = null;
+@ProbNetType(name = "MDP") public class MDPType extends NetworkType {
+	private static MDPType instance = null;
 
-    // Constructor
-    private MDPType ()
-    {
-        super ();
-        overrideConstraintBehavior (NoCycle.class, ConstraintBehavior.YES);
-        overrideConstraintBehavior (AllChanceVariablesHaveChancePotentials.class,
-                         ConstraintBehavior.YES);
-        overrideConstraintBehavior (NoSelfLoop.class, ConstraintBehavior.YES);
-        overrideConstraintBehavior (OnlyDirectedLinks.class, ConstraintBehavior.YES);
-        overrideConstraintBehavior (UtilityNodes.class, ConstraintBehavior.YES);
-    }
+	// Constructor
+	private MDPType() {
+		super();
+		overrideConstraintBehavior(NoCycle.class, ConstraintBehavior.YES);
+		overrideConstraintBehavior(AllChanceVariablesHaveChancePotentials.class, ConstraintBehavior.YES);
+		overrideConstraintBehavior(NoSelfLoop.class, ConstraintBehavior.YES);
+		overrideConstraintBehavior(OnlyDirectedLinks.class, ConstraintBehavior.YES);
+		overrideConstraintBehavior(UtilityNodes.class, ConstraintBehavior.YES);
+	}
 
-    // Methods
-    public static MDPType getUniqueInstance ()
-    {
-        if (instance == null)
-        {
-            instance = new MDPType ();
-        }
-        return instance;
-    }
-    
-    /** @return String "MDP" */
-    public String toString() {
-    	return "MARKOV_DECISION_PROCESS";
-    }
-    
+	// Methods
+	public static MDPType getUniqueInstance() {
+		if (instance == null) {
+			instance = new MDPType();
+		}
+		return instance;
+	}
+
+	/**
+	 * @return String "MDP"
+	 */
+	public String toString() {
+		return "MARKOV_DECISION_PROCESS";
+	}
+
 }
 

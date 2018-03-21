@@ -8,13 +8,14 @@
 package org.openmarkov.core.oopn;
 
 public class InstanceReferenceLink extends ReferenceLink {
-	
+
 	private Instance sourceInstance;
 	private Instance destInstance;
 	private Instance destSubInstance;
-	
+
 	/**
 	 * Constructor
+	 *
 	 * @param sourceInstance
 	 * @param destInstance
 	 */
@@ -24,7 +25,7 @@ public class InstanceReferenceLink extends ReferenceLink {
 		this.destInstance = destInstance;
 		this.destSubInstance = destSubInstance;
 	}
-	
+
 	/**
 	 * @return the sourceInstance
 	 */
@@ -44,7 +45,6 @@ public class InstanceReferenceLink extends ReferenceLink {
 	 */
 	public Instance getDestSubInstance() {
 		return destSubInstance;
-	}	
-	
-	
+	}
+
 }

@@ -7,10 +7,6 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
@@ -20,17 +16,17 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
+import static org.junit.Assert.*;
+
 public class NoMultipleLinksTest {
 
 	private ProbNet influenceDiagram;
 
-	@Before
-	public void setUp() throws Exception {
+	@Before public void setUp() throws Exception {
 		influenceDiagram = ConstraintsTests.getInfuenceDiagram();
 	}
 
-	@Test
-	public void testCheckProbNet() {
+	@Test public void testCheckProbNet() {
 
 		boolean exceptionLaunched = false;
 		try {
@@ -72,8 +68,7 @@ public class NoMultipleLinksTest {
 
 	}
 
-	@Test
-	public void testUndoableEditWillHappen() throws Exception {
+	@Test public void testUndoableEditWillHappen() throws Exception {
 		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new NoMultipleLinks();
 
@@ -104,13 +99,11 @@ public class NoMultipleLinksTest {
 			fail("AddLink failed");
 		}
 		assertTrue(exceptionLaunched);
-		
-		
-		
+
 		exceptionLaunched = false;
 		// do ilegal LinkEdit. Add an undirected link between U and A
-		AddLinkEdit ilegalLinkEdit = new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("U"), influenceDiagram.getVariable("A"),
-				false);
+		AddLinkEdit ilegalLinkEdit = new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("U"),
+				influenceDiagram.getVariable("A"), false);
 		try {
 			pNESupport.announceEdit(ilegalLinkEdit);
 			ilegalLinkEdit.doEdit();
@@ -121,23 +114,18 @@ public class NoMultipleLinksTest {
 		}
 		assertTrue(exceptionLaunched);
 
-
 		// do legal invert link
-		InvertLinkEdit legalInvertLinkEdit = new InvertLinkEdit(
-				influenceDiagram, vU, vA, true);
+		InvertLinkEdit legalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vA, true);
 		try {
 			pNESupport.announceEdit(legalInvertLinkEdit);
 			legalInvertLinkEdit.doEdit();
 		} catch (Exception cve) {
 			fail(cve.getMessage());
 		}
-		
-		
-		
+
 		exceptionLaunched = false;
 		// do ilegal InvertLink. Add an directed link between U and A
-		InvertLinkEdit ilegalInvertLinkEdit = new InvertLinkEdit(
-				influenceDiagram, vU, vA, false);
+		InvertLinkEdit ilegalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vA, false);
 		try {
 			pNESupport.announceEdit(ilegalInvertLinkEdit);
 			ilegalInvertLinkEdit.doEdit();

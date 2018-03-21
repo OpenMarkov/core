@@ -7,33 +7,29 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+
+import static org.junit.Assert.*;
 
 public class OnlyNumericVariablesTest {
 
 	private ProbNet influenceDiagram;
 
-	@Before
-	public void setUp() throws Exception {
+	@Before public void setUp() throws Exception {
 		influenceDiagram = ConstraintsTests.getNumericInfluenceDiagram();
 	}
 
-	@Test
-	public void testCheckProbNet() {
+	@Test public void testCheckProbNet() {
 		boolean exceptionLaunched = false;
 		try {
 			influenceDiagram.removeConstraint(new OnlyNumericVariables());
@@ -55,8 +51,7 @@ public class OnlyNumericVariablesTest {
 
 	}
 
-	@Test
-	public void testUndoableEditWillHappen() throws Exception {
+	@Test public void testUndoableEditWillHappen() throws Exception {
 
 		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new OnlyNumericVariables();
@@ -66,8 +61,7 @@ public class OnlyNumericVariablesTest {
 		boolean exceptionLaunched = false;
 		Variable vc1 = new Variable("E");
 		// test no exception in legal edit
-		AddNodeEdit legalAdd = new AddNodeEdit(influenceDiagram, vc1,
-				NodeType.DECISION);
+		AddNodeEdit legalAdd = new AddNodeEdit(influenceDiagram, vc1, NodeType.DECISION);
 		// add the node E (decision + numeric)
 		try {
 			pNESupport.announceEdit(legalAdd);
@@ -78,8 +72,7 @@ public class OnlyNumericVariablesTest {
 
 		Variable vc2 = new Variable("F", 3);
 		// test exception in ilegal edit
-		AddNodeEdit ilegalAdd = new AddNodeEdit(influenceDiagram, vc2,
-				NodeType.DECISION);
+		AddNodeEdit ilegalAdd = new AddNodeEdit(influenceDiagram, vc2, NodeType.DECISION);
 		// add the node F (decision + finite state)
 		try {
 			pNESupport.announceEdit(ilegalAdd);
@@ -93,8 +86,7 @@ public class OnlyNumericVariablesTest {
 
 		exceptionLaunched = false;
 		Node node = influenceDiagram.getNode(vc1);
-		VariableTypeEdit ilegalEdit = new VariableTypeEdit(node,
-				VariableType.DISCRETIZED);
+		VariableTypeEdit ilegalEdit = new VariableTypeEdit(node, VariableType.DISCRETIZED);
 		// add the node F (decision + finite state)
 		try {
 			pNESupport.announceEdit(ilegalEdit);

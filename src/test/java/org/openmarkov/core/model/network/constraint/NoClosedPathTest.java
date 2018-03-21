@@ -7,12 +7,6 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.awt.geom.Point2D;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
@@ -23,19 +17,21 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
+import java.awt.geom.Point2D;
+
+import static org.junit.Assert.*;
+
 public class NoClosedPathTest {
 
 	private ProbNet directedNet;
 	private ProbNet undirectedNet;
 
-	@Before
-	public void setUp() throws Exception {
+	@Before public void setUp() throws Exception {
 		directedNet = ConstraintsTests.getTestProbNetDirected();
 		undirectedNet = ConstraintsTests.getTestProbNetUndirected();
 	}
 
-	@Test
-	public void testCheckProbNet() {
+	@Test public void testCheckProbNet() {
 
 		boolean exceptionLaunched = false;
 		try {
@@ -84,8 +80,7 @@ public class NoClosedPathTest {
 
 	}
 
-	@Test
-	public void testUndoableEditWillHappen() throws Exception {
+	@Test public void testUndoableEditWillHappen() throws Exception {
 
 		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new NoClosedPath();
@@ -97,19 +92,17 @@ public class NoClosedPathTest {
 		Variable vC = undirectedNet.getVariable("C");
 		try {
 
-			new AddNodeEdit(undirectedNet, new Variable("D"), NodeType.UTILITY,
-					new Point2D.Double()).doEdit();
+			new AddNodeEdit(undirectedNet, new Variable("D"), NodeType.UTILITY, new Point2D.Double()).doEdit();
 			Variable vD = undirectedNet.getVariable("D");
 
 			// creates a link from C - D
-			AddLinkEdit legalEdit = new AddLinkEdit(undirectedNet, vC, vD,
-					false);
+			AddLinkEdit legalEdit = new AddLinkEdit(undirectedNet, vC, vD, false);
 			pNESupport.announceEdit(legalEdit);
 			legalEdit.doEdit();
 		} catch (ConstraintViolationException e) {
 			fail(e.getMessage());
 		}
-		
+
 		boolean exceptionLaunched = false;
 		Variable vA = undirectedNet.getVariable("C");
 		// creates a link from A-C

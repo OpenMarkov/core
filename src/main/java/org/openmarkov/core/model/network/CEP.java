@@ -7,70 +7,76 @@
 
 package org.openmarkov.core.model.network;
 
+import org.openmarkov.core.exception.CostEffectivenessException;
+import org.openmarkov.core.model.network.potential.StrategyTree;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmarkov.core.exception.CostEffectivenessException;
-import org.openmarkov.core.model.network.potential.StrategyTree;
-
 /**
  * A CEP is a set of <b>n</b> intervals, each one with a cost, an effectiveness and possibly, an intervention.
- * Intervals are separated by <b>n-1</b> thresholds. The whole partition is delimited by the minimum and the maximum 
+ * Intervals are separated by <b>n-1</b> thresholds. The whole partition is delimited by the minimum and the maximum
  * threshold.
+ *
  * @author Manuel Arias
  */
 public class CEP {
 
+	/**
+	 * Used to save memory and time in case of partitions corresponding to configurations with zero probability.
+	 */
+	private static CEP zeroPartition;
+	private final double defaultMinimalThreshold = 0.0;
+	private final double defaultMaximalThreshold = Double.POSITIVE_INFINITY;
+	DecimalFormat decimalFormat3afterComa = new DecimalFormat("#.###");
+	DecimalFormat decimalFormat2afterComa = new DecimalFormat("#.##");
+	DecimalFormat decimalFormat1afterComa = new DecimalFormat("#.#");
+	DecimalFormat decimalFormatNoDecimalsAfterComa = new DecimalFormat("#");
 	// Attributes
 	private double[] costs;
-
 	private double[] effectivities;
-
-	/** An intervention is a potential. If it is a decision, its value is a <code>DeltaPotential</code>, otherwise, 
-	 * a <code>TreeADDPotential</code> */
+	/**
+	 * An intervention is a potential. If it is a decision, its value is a <code>DeltaPotential</code>, otherwise,
+	 * a <code>TreeADDPotential</code>
+	 */
 	private StrategyTree[] strategyTrees;
 
-	/** Divisions between intervals. */
+	// Constructors
+	/**
+	 * Divisions between intervals.
+	 */
 	private double[] thresholds;
-
 	private double minThreshold;
-
-	private final double defaultMinimalThreshold = 0.0;
-
 	private double maxThreshold;
-	
-	private final double defaultMaximalThreshold = Double.POSITIVE_INFINITY;
-
-	/** When true, this partition must not be taken in consideration. */
+	/**
+	 * When true, this partition must not be taken in consideration.
+	 */
 	private boolean zeroProbability;
 
-	/** Used to save memory and time in case of partitions corresponding to configurations with zero probability. */
-	private static CEP zeroPartition;
+	// Methods
+	// From this point: set of attributes and methods related with method toString()
+	private String indent = "";
+	private int indentLevel; // TODO Remove?
 
-	// Constructors
-	/** 
+	/**
 	 * @param strategyTrees <code>Intervention[]</code>
-	 * @param costs <code>double[]</code>
+	 * @param costs         <code>double[]</code>
 	 * @param effectivities <code>double[]</code>
-	 * @param thresholds <code>double[]</code>
-	 * @throws CostEffectivenessException 
+	 * @param thresholds    <code>double[]</code>
+	 * @throws CostEffectivenessException
 	 */
-	public CEP(
-			StrategyTree[] strategyTrees,
-			double[] costs, 
-			double[] effectivities, 
-			double[] thresholds) 
-					throws CostEffectivenessException {
-		
+	public CEP(StrategyTree[] strategyTrees, double[] costs, double[] effectivities, double[] thresholds)
+			throws CostEffectivenessException {
+
 		if (costs.length == effectivities.length && costs.length == strategyTrees.length) {
 			if (costs.length == 1 && thresholds == null) {
 				this.thresholds = new double[0];
 			} else {
 				if (thresholds.length != (costs.length - 1)) {
-					throw new CostEffectivenessException("Number of thresholds must be minor in 1 than number of " + 
-							"costs, effectivities and interventions.\nNumber of thresholds = " + thresholds.length + 
-							"\nNumber of costs, effectivities and interventions = " + costs.length);
+					throw new CostEffectivenessException("Number of thresholds must be minor in 1 than number of "
+							+ "costs, effectivities and interventions.\nNumber of thresholds = " + thresholds.length
+							+ "\nNumber of costs, effectivities and interventions = " + costs.length);
 				}
 				this.thresholds = thresholds;
 			}
@@ -78,9 +84,10 @@ public class CEP {
 			this.effectivities = effectivities;
 			this.strategyTrees = strategyTrees;
 		} else {
-			throw new CostEffectivenessException("Number of cost, effectivities and interventions must be equal.\n" + 
-					"Number of cost = " + costs.length + "\nNumber of effectivities = " + effectivities.length + 
-					"\nNumber of interventions = " + strategyTrees.length);
+			throw new CostEffectivenessException(
+					"Number of cost, effectivities and interventions must be equal.\n" + "Number of cost = "
+							+ costs.length + "\nNumber of effectivities = " + effectivities.length
+							+ "\nNumber of interventions = " + strategyTrees.length);
 		}
 		minThreshold = defaultMinimalThreshold;
 		maxThreshold = defaultMaximalThreshold;
@@ -88,26 +95,22 @@ public class CEP {
 
 	/**
 	 * Creates a partition with only one interval
-	 * @param strategyTree <code>Potential</code>
-	 * @param cost <code>double</code>
+	 *
+	 * @param strategyTree  <code>Potential</code>
+	 * @param cost          <code>double</code>
 	 * @param effectiveness <code>double</code>
-	 * @param minThreshold <code>double</code>
-	 * @param maxThreshold <code>double</code>
+	 * @param minThreshold  <code>double</code>
+	 * @param maxThreshold  <code>double</code>
 	 * @throws CostEffectivenessException
 	 */
-	public CEP(
-			StrategyTree strategyTree,
-			double cost, 
-			double effectiveness, 
-			double minThreshold, 
-			double maxThreshold) 
-					throws CostEffectivenessException {
-		
-		costs = new double[]{cost};
-		effectivities = new double[]{effectiveness};
+	public CEP(StrategyTree strategyTree, double cost, double effectiveness, double minThreshold, double maxThreshold)
+			throws CostEffectivenessException {
+
+		costs = new double[] { cost };
+		effectivities = new double[] { effectiveness };
 		thresholds = new double[0];
 		if (strategyTree != null) {
-			this.strategyTrees = new StrategyTree[]{ strategyTree };
+			this.strategyTrees = new StrategyTree[] { strategyTree };
 		}
 		this.minThreshold = minThreshold;
 		this.maxThreshold = maxThreshold;
@@ -115,34 +118,31 @@ public class CEP {
 
 	/**
 	 * @param strategyTrees <code>Potential[]</code>
-	 * @param costs <code>double[]</code>
+	 * @param costs         <code>double[]</code>
 	 * @param effectivities <code>double[]</code>
-	 * @param thresholds <code>double[]</code>
-	 * @param minThreshold <code>double</code>
-	 * @param maxThreshold <code>double</code>
+	 * @param thresholds    <code>double[]</code>
+	 * @param minThreshold  <code>double</code>
+	 * @param maxThreshold  <code>double</code>
 	 * @throws CostEffectivenessException
 	 */
-	public CEP(
-			StrategyTree[] strategyTrees,
-			double[] costs, 
-			double[] effectivities, 
-			double[] thresholds,
-			double minThreshold, 
-			double maxThreshold) 
-					throws CostEffectivenessException {
-		
+	public CEP(StrategyTree[] strategyTrees, double[] costs, double[] effectivities, double[] thresholds,
+			double minThreshold, double maxThreshold) throws CostEffectivenessException {
+
 		this(strategyTrees, costs, effectivities, thresholds);
 		this.minThreshold = minThreshold;
 		this.maxThreshold = maxThreshold;
 	}
 
-	/** Creates a CEPartition with zero probability */
+	/**
+	 * Creates a CEPartition with zero probability
+	 */
 	private CEP() {
 		zeroProbability = true;
 	}
 
-	// Methods
-	/** Singleton for partitions with probability zero
+	/**
+	 * Singleton for partitions with probability zero
+	 *
 	 * @return CEPartition
 	 */
 	public static CEP getZeroPartition() {
@@ -159,12 +159,14 @@ public class CEP {
 	public int index(double lambda) {
 		int numThresholds = costs.length - 1;
 		int i = 0;
-		while (i < numThresholds && lambda > thresholds[i]) i++;
+		while (i < numThresholds && lambda > thresholds[i])
+			i++;
 		return i;
 	}
 
-	/** 
+	/**
 	 * Multiplies costs and effectivities per factor.
+	 *
 	 * @param factor <code>double</code>
 	 */
 	public void multiply(double factor) {
@@ -176,8 +178,9 @@ public class CEP {
 		}
 	}
 
-	/** 
+	/**
 	 * Divides costs and effectivities per factor.
+	 *
 	 * @param factor <code>double</code>
 	 */
 	public void divide(double factor) {
@@ -189,8 +192,9 @@ public class CEP {
 		}
 	}
 
-	/** 
+	/**
 	 * Change the indentation in <code>toString()</code>. Used for nested interventions.
+	 *
 	 * @param indentLevel <code>int</code>
 	 */
 	public void setIndentLevel(int indentLevel) {
@@ -199,7 +203,8 @@ public class CEP {
 			indent = "";
 		} else {
 			indent = " ";
-			for (int i = 1; i < indentLevel; i++) indent = indent + " ";
+			for (int i = 1; i < indentLevel; i++)
+				indent = indent + " ";
 		}
 	}
 
@@ -210,7 +215,7 @@ public class CEP {
 		Variable lambda = getLambda();
 		return new StrategyTree(lambda, getListOfStates(lambda), getListOfInterventions());
 	}
-	
+
 	public int getNumIntervals() {
 		return strategyTrees.length;
 	}
@@ -297,7 +302,7 @@ public class CEP {
 	}
 
 	/**
-	 * @param cost <code>double</code>
+	 * @param cost     <code>double</code>
 	 * @param interval <code>int</code>
 	 */
 	public void setCost(double cost, int interval) {
@@ -305,7 +310,7 @@ public class CEP {
 	}
 
 	/**
-	 * @param eff <code>double</code>
+	 * @param eff      <code>double</code>
 	 * @param interval <code>int</code>
 	 */
 	public void setEffectiveness(double eff, int interval) {
@@ -339,7 +344,7 @@ public class CEP {
 	public double[] getCosts() {
 		return costs;
 	}
-	
+
 	private List<StrategyTree> getListOfInterventions() {
 		List<StrategyTree> listOfStrategyTrees = new ArrayList<StrategyTree>(strategyTrees.length);
 		for (int i = 0; i < strategyTrees.length; i++) {
@@ -390,16 +395,6 @@ public class CEP {
 		return new Variable("lambda", states, new PartitionedInterval(limits, belongsToLeftSide), 0.1);
 	}
 
-	// From this point: set of attributes and methods related with method toString()
-	private String indent = "";
-
-	private int indentLevel; // TODO Remove?
-
-	DecimalFormat decimalFormat3afterComa = new DecimalFormat("#.###");
-	DecimalFormat decimalFormat2afterComa = new DecimalFormat("#.##");
-	DecimalFormat decimalFormat1afterComa = new DecimalFormat("#.#");
-	DecimalFormat decimalFormatNoDecimalsAfterComa = new DecimalFormat("#");
-
 	public String toString() {
 		StringBuilder strBuffer = new StringBuilder();
 		if (zeroProbability) {
@@ -445,8 +440,7 @@ public class CEP {
 				if (strategyTrees[i] != null) {
 					strategyTrees[i].setIndentLevel(indentLevel + 2);
 					strBuffer.append("\n");
-				}
-				else {
+				} else {
 					strBuffer.append(" ");
 				}
 				strBuffer.append(strategyTrees[i]);
@@ -460,18 +454,19 @@ public class CEP {
 			strBuffer.append(decimalFormat3afterComa.format(number));
 		} else if (Math.abs(number) < 100.0) {
 			strBuffer.append(decimalFormat2afterComa.format(number));
-		} else	if (Math.abs(number) < 1000.0) {
+		} else if (Math.abs(number) < 1000.0) {
 			strBuffer.append(decimalFormat1afterComa.format(number));
 		} else {
 			strBuffer.append(decimalFormatNoDecimalsAfterComa.format(number));
-		}		
+		}
 	}
 
 	/**
 	 * Calculate net monetary benefit given the willigness to pay (lambda)
+	 *
 	 * @param lambda <code>double</code>
 	 * @return net monetary benefit given lambda
-     */
+	 */
 	public double getNetMonetaryBenefit(double lambda) {
 		return getEffectiveness(lambda) * lambda - getCost(lambda);
 	}

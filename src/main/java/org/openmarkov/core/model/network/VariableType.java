@@ -9,14 +9,14 @@ package org.openmarkov.core.model.network;
 
 import java.io.Serializable;
 
-/** @author manuel */
+/**
+ * @author manuel
+ */
 public enum VariableType implements Serializable {
-	FINITE_STATES(0, "finiteStates"),
-	NUMERIC(1, "numeric"),
-    DISCRETIZED(2, "discretized");
+	FINITE_STATES(0, "finiteStates"), NUMERIC(1, "numeric"), DISCRETIZED(2, "discretized");
 
 	private int value;
-	
+
 	private String name;
 
 	VariableType(int value, String name) {
@@ -24,12 +24,12 @@ public enum VariableType implements Serializable {
 		this.name = name;
 	}
 
-    public int value() { 
-    	return value; 
-    }
-    
-    public String toString() {
-    	return name;
-    }
-    
+	public int value() {
+		return value;
+	}
+
+	public String toString() {
+		return name;
+	}
+
 }

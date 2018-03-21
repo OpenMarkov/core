@@ -7,41 +7,38 @@
 
 package org.openmarkov.core.action;
 
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.model.network.CycleLength;
+import org.openmarkov.core.model.network.ProbNet;
+
 import javax.swing.undo.CannotUndoException;
 
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.CycleLength;
-
-public class CycleLengthEdit extends SimplePNEdit{
+public class CycleLengthEdit extends SimplePNEdit {
 
 	/**
 	 * Default serial UID
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private CycleLength oldTemporalUnit;
 	private CycleLength newTemporalUnit;
-	
+
 	public CycleLengthEdit(ProbNet probNet, CycleLength newTemporalUnit) {
 		super(probNet);
 		this.oldTemporalUnit = probNet.getCycleLength().clone();
 		this.newTemporalUnit = newTemporalUnit;
 	}
 
-	@Override
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException {
 		probNet.setCycleLength(this.newTemporalUnit);
 	}
 
-	@Override
-	public void undo() throws CannotUndoException {
+	@Override public void undo() throws CannotUndoException {
 		super.undo();
 		probNet.setCycleLength(this.oldTemporalUnit);
 	}
 
-	@Override
-	public void redo() {
+	@Override public void redo() {
 		super.redo();
 		try {
 			doEdit();

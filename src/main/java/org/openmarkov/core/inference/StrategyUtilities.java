@@ -7,17 +7,17 @@
 
 package org.openmarkov.core.inference;
 
-import java.util.Hashtable;
-
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
+import java.util.Hashtable;
+
 public class StrategyUtilities {
-	
-	Hashtable<Variable,TablePotential> utilities;
+
+	Hashtable<Variable, TablePotential> utilities;
 
 	/**
-	 * 
+	 *
 	 */
 	public StrategyUtilities() {
 		super();
@@ -37,7 +37,7 @@ public class StrategyUtilities {
 	public void setUtilities(Hashtable<Variable, TablePotential> utilities) {
 		this.utilities = utilities;
 	}
-	
+
 	/**
 	 * @return the utilities
 	 */
@@ -45,10 +45,9 @@ public class StrategyUtilities {
 		return utilities.get(decision);
 	}
 
-	public void assignUtilityTable(Variable decision,
-			TablePotential globalUtilityTable) {
+	public void assignUtilityTable(Variable decision, TablePotential globalUtilityTable) {
 		utilities.put(decision, globalUtilityTable);
-		
+
 	}
-	
+
 }

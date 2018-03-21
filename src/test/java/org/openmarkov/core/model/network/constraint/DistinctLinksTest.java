@@ -7,10 +7,6 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
@@ -20,17 +16,17 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
+import static org.junit.Assert.*;
+
 public class DistinctLinksTest {
 
 	private ProbNet influenceDiagram;
 
-	@Before
-	public void setUp() throws Exception {
+	@Before public void setUp() throws Exception {
 		influenceDiagram = ConstraintsTests.getInfuenceDiagram();
 	}
 
-	@Test
-	public void testCheckProbNet() {
+	@Test public void testCheckProbNet() {
 		boolean exceptionLaunched = false;
 		Variable vu = null;
 		Variable va = null;
@@ -56,11 +52,7 @@ public class DistinctLinksTest {
 			fail("AddLink failed");
 		}
 		assertFalse(exceptionLaunched);
-		
-		
-		
-		
-		
+
 		// add directed link between U and D
 		exceptionLaunched = false;
 		try {
@@ -75,7 +67,7 @@ public class DistinctLinksTest {
 		}
 		assertFalse(exceptionLaunched);
 
-			// add directed link between A and U
+		// add directed link between A and U
 		exceptionLaunched = false;
 		try {
 			influenceDiagram.removeConstraint(new DistinctLinks());
@@ -90,7 +82,6 @@ public class DistinctLinksTest {
 		}
 		assertTrue(exceptionLaunched);
 
-		
 		// add undirected link between A and U
 		exceptionLaunched = false;
 		try {
@@ -105,9 +96,8 @@ public class DistinctLinksTest {
 		assertTrue(exceptionLaunched);
 
 	}
-	
-	@Test
-	public void testUndoableEditWillHappen() throws Exception {
+
+	@Test public void testUndoableEditWillHappen() throws Exception {
 		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new DistinctLinks();
 
@@ -137,13 +127,12 @@ public class DistinctLinksTest {
 		} catch (Exception e) {
 			fail("AddLink failed");
 		}
-		assertTrue(exceptionLaunched);	
-		
+		assertTrue(exceptionLaunched);
+
 		exceptionLaunched = false;
 		Variable vD = influenceDiagram.getVariable("D");
 		// do ilegal InvertLink. Add an directed link between D and U
-		InvertLinkEdit ilegalInvertLinkEdit = new InvertLinkEdit(
-				influenceDiagram, vU, vD, true);
+		InvertLinkEdit ilegalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vD, true);
 		try {
 			pNESupport.announceEdit(ilegalInvertLinkEdit);
 			ilegalInvertLinkEdit.doEdit();
@@ -153,10 +142,9 @@ public class DistinctLinksTest {
 			fail("AddLink failed");
 		}
 		assertTrue(exceptionLaunched);
-		
+
 		// do legal invert link: create undirected link between U and D
-		InvertLinkEdit legalInvertLinkEdit = new InvertLinkEdit(
-				influenceDiagram, vU, vD, false);
+		InvertLinkEdit legalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vD, false);
 		try {
 			pNESupport.announceEdit(legalInvertLinkEdit);
 			legalInvertLinkEdit.doEdit();
@@ -166,8 +154,8 @@ public class DistinctLinksTest {
 
 		exceptionLaunched = false;
 		// do ilegal LinkEdit. Add an undirected link between U and D
-		AddLinkEdit ilegalLinkEdit = new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("U"), influenceDiagram.getVariable("D"),
-				false);
+		AddLinkEdit ilegalLinkEdit = new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("U"),
+				influenceDiagram.getVariable("D"), false);
 		try {
 			pNESupport.announceEdit(ilegalLinkEdit);
 			ilegalLinkEdit.doEdit();
@@ -179,5 +167,5 @@ public class DistinctLinksTest {
 		assertTrue(exceptionLaunched);
 
 	}
-	
+
 }

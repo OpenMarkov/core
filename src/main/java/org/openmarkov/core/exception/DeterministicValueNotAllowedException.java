@@ -7,11 +7,13 @@
 
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial")
-public class DeterministicValueNotAllowedException extends Exception {
+@SuppressWarnings("serial") public class DeterministicValueNotAllowedException extends Exception {
 
 	// Constructor
-	/** @param message <code>String</code> */
+
+	/**
+	 * @param message <code>String</code>
+	 */
 	public DeterministicValueNotAllowedException(String message) {
 		super(message);
 	}

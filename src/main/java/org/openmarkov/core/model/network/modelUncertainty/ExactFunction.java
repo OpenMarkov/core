@@ -9,96 +9,77 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
-@ProbDensFunctionType(name="Exact", isValidForNumeric = true, parameters = {"nu"})
-public class ExactFunction extends ProbDensFunction
-{
-    public double getNu() {
-        return nu;
-    }
+@ProbDensFunctionType(name = "Exact", isValidForNumeric = true, parameters = { "nu" }) public class ExactFunction
+		extends ProbDensFunction {
+	private double nu;
 
-    private double nu;
+	public ExactFunction() {
+	}
 
-    public ExactFunction ()
-    {
-    }
-    
-    
-    public ExactFunction (double nu)
-    {
-        this.nu = nu;
-    }
-    
-    public ExactFunction(ExactFunction exactFunction){
-        super();
-        this.nu = exactFunction.nu;
-    }
-    
-    @Override
-    public void setParameters (double[] params)
-    {
-        nu = params[0];
-    }
+	public ExactFunction(double nu) {
+		this.nu = nu;
+	}
 
-    //CMI
-    //For Univariate
-    @Override
-    public void verifyParameters (double[] parameters) throws IllegalArgumentException{
-    	//Parameters are always ok 
-    }
-    //CMF
-    @Override
-    public boolean verifyParametersDomain (boolean isChanceVariable)
-    {
-        return ((!isChanceVariable) || ((0 <= nu) && (nu <= 1)));
-    }
+	public ExactFunction(ExactFunction exactFunction) {
+		super();
+		this.nu = exactFunction.nu;
+	}
 
-    /**
-     * Some subclasses can override this method.
-     * @return
-     */
-    public double getMean ()
-    {
-        return nu;
-    }
-
-    @Override
-    public double[] getParameters ()
-    {
-        double[] a = new double[1];
-        a[0] = nu;
-        return a;
-    }
-
-    @Override
-    public double getMaximum ()
-    {
-        return nu;
-    }
-
-    @Override
-    public double getSample (Random randomGenerator)
-    {
-        return nu;
-    }
-
-    @Override
-    public double getVariance ()
-    {
-        return 0;
-    }
-
-	@Override
-	public double getMinimum() {
+	public double getNu() {
 		return nu;
 	}
 
-	@Override
-	public DomainInterval getInterval(double p) {
-		return new DomainInterval(nu,nu);
+	//CMI
+	//For Univariate
+	@Override public void verifyParameters(double[] parameters) throws IllegalArgumentException {
+		//Parameters are always ok
 	}
-	
-    @Override
-    public ProbDensFunction copy() {
-        return new ExactFunction(this);
-    }
+
+	//CMF
+	@Override public boolean verifyParametersDomain(boolean isChanceVariable) {
+		return ((!isChanceVariable) || ((0 <= nu) && (nu <= 1)));
+	}
+
+	/**
+	 * Some subclasses can override this method.
+	 *
+	 * @return
+	 */
+	public double getMean() {
+		return nu;
+	}
+
+	@Override public double[] getParameters() {
+		double[] a = new double[1];
+		a[0] = nu;
+		return a;
+	}
+
+	@Override public void setParameters(double[] params) {
+		nu = params[0];
+	}
+
+	@Override public double getMaximum() {
+		return nu;
+	}
+
+	@Override public double getSample(Random randomGenerator) {
+		return nu;
+	}
+
+	@Override public double getVariance() {
+		return 0;
+	}
+
+	@Override public double getMinimum() {
+		return nu;
+	}
+
+	@Override public DomainInterval getInterval(double p) {
+		return new DomainInterval(nu, nu);
+	}
+
+	@Override public ProbDensFunction copy() {
+		return new ExactFunction(this);
+	}
 }

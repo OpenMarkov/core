@@ -19,32 +19,32 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  */
 public interface Evaluation extends Task {
 
-    /**
-     * @return The global expected utility
-     * @throws UnexpectedInferenceException
-     * @throws IncompatibleEvidenceException
-     * @throws NotEvaluableNetworkException
-     * defined over the conditioning variables.
-     */
-    TablePotential getProbability() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
+	/**
+	 * @return The global expected utility
+	 * @throws UnexpectedInferenceException
+	 * @throws IncompatibleEvidenceException
+	 * @throws NotEvaluableNetworkException  defined over the conditioning variables.
+	 */
+	TablePotential getProbability()
+			throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
 
-    /**
-     * @return The global expected utility
-     * defined over the conditioning variables.
-     * @throws UnexpectedInferenceException
-     * @throws IncompatibleEvidenceException
-     * @throws NotEvaluableNetworkException
-     */
-    TablePotential getUtility() throws UnexpectedInferenceException, IncompatibleEvidenceException, NotEvaluableNetworkException;
+	/**
+	 * @return The global expected utility
+	 * defined over the conditioning variables.
+	 * @throws UnexpectedInferenceException
+	 * @throws IncompatibleEvidenceException
+	 * @throws NotEvaluableNetworkException
+	 */
+	TablePotential getUtility()
+			throws UnexpectedInferenceException, IncompatibleEvidenceException, NotEvaluableNetworkException;
 
-    /**
-     *
-     * @return The optimal strategy tree
-     * @throws UnexpectedInferenceException
-     * @throws IncompatibleEvidenceException
-     * @throws NotEvaluableNetworkException
-     */
-    StrategyTree getOptimalStrategyTree() throws UnexpectedInferenceException, IncompatibleEvidenceException, NotEvaluableNetworkException;
-
+	/**
+	 * @return The optimal strategy tree
+	 * @throws UnexpectedInferenceException
+	 * @throws IncompatibleEvidenceException
+	 * @throws NotEvaluableNetworkException
+	 */
+	StrategyTree getOptimalStrategyTree()
+			throws UnexpectedInferenceException, IncompatibleEvidenceException, NotEvaluableNetworkException;
 
 }

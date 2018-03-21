@@ -7,19 +7,20 @@
 
 package org.openmarkov.core.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.log4j.Logger;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 
-/** Removes a node performing this steps:<ol>
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Removes a node performing this steps:<ol>
  * <li>Collect all potentials with this node variable
  * <li>Multiply and eliminates the variable
  * <li>Removes the collected potentials
@@ -27,30 +28,33 @@ import org.openmarkov.core.model.network.potential.operation.PotentialOperations
  * <li>Adds links between the node siblings
  * <li>Remove links between the node and its children, parents and siblings
  * <li>Removes the node
- * </ol> */
-@SuppressWarnings("serial")
-public class CompoundRemoveNodeEdit extends CompoundPNEdit {
+ * </ol>
+ */
+@SuppressWarnings("serial") public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 
 	// Attributes
 	protected Variable variable;
-	
+
 	protected NodeType nodeType;
-	
+
 	protected List<Node> parents;
 
 	protected List<Node> children;
 
 	protected List<Node> siblings;
-	
+
 	protected List<Potential> marginalizedPotentials;
 
 	protected List<Potential> allPotentials;
 
 	private Logger logger;
-	
+
 	// Constructor
-	/** @param probNet </code>ProbNet</code>
-	 * @param variable <code>Variable</code> */
+
+	/**
+	 * @param probNet  </code>ProbNet</code>
+	 * @param variable <code>Variable</code>
+	 */
 	public CompoundRemoveNodeEdit(ProbNet probNet, Variable variable) {
 		super(probNet);
 		this.variable = variable;
@@ -65,23 +69,22 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 		parents = probNet.getParents(node);
 		children = probNet.getChildren(node);
 		siblings = probNet.getSiblings(node);
-		
+
 		// collect potentials of this node ...
 		List<TablePotential> potentialsVariable = new ArrayList<>();
-		
-		for (Potential pot : probNet.getPotentials(variable)){
-			potentialsVariable.add((TablePotential)pot);
+
+		for (Potential pot : probNet.getPotentials(variable)) {
+			potentialsVariable.add((TablePotential) pot);
 		}
-		
+
 		Potential newPotential = null;
 		try {
 			// ... multiply and eliminate the variable
-			newPotential = PotentialOperations.multiplyAndEliminate(
-				potentialsVariable, variable);
+			newPotential = PotentialOperations.multiplyAndEliminate(potentialsVariable, variable);
 		} catch (Exception e) {
-			logger.fatal (e);
+			logger.fatal(e);
 		}
-		
+
 		List<Variable> variablesNewPotential = newPotential.getVariables();
 		if (variablesNewPotential != null && variablesNewPotential.size() > 0) {
 			edits.add(new AddPotentialEdit(probNet, newPotential));
@@ -98,13 +101,13 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 				}
 			}
 		}
-		
+
 		// remove links between node and its parents, children and siblings
 		for (Node parent : parents) {
 			addEdit(new RemoveLinkEdit(probNet, parent.getVariable(), node.getVariable(), true));
 		}
 		for (Node child : children) {
-			addEdit(new RemoveLinkEdit(probNet,	node.getVariable(), child.getVariable(), true));
+			addEdit(new RemoveLinkEdit(probNet, node.getVariable(), child.getVariable(), true));
 		}
 		for (Node sibling : siblings) {
 			addEdit(new RemoveLinkEdit(probNet, sibling.getVariable(), node.getVariable(), false));
@@ -113,19 +116,23 @@ public class CompoundRemoveNodeEdit extends CompoundPNEdit {
 		// generate edit related to remove the variable
 		addEdit(new RemoveNodeEdit(probNet, variable));
 	}
-	
+
 	public void undo() {
 		super.undo();
 	}
 
-	/** @return variable <code>Variable</code> */
+	/**
+	 * @return variable <code>Variable</code>
+	 */
 	public Variable getVariable() {
 		return variable;
 	}
 
-	/** @return <code>String</code> */
+	/**
+	 * @return <code>String</code>
+	 */
 	public String toString() {
-		return new String("CompoundRemoveNodeEdit: " +	variable);
+		return new String("CompoundRemoveNodeEdit: " + variable);
 	}
 
 }

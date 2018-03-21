@@ -9,24 +9,22 @@ package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
 
-@SuppressWarnings("serial")
-public class CloseParenthesisEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class CloseParenthesisEdit extends SimplePNEdit {
 
 	// Constant
 	public static final String description = ")";
-	
+
 	// The open parenthesis of the close parenthesis
 	private OpenParenthesisEdit openParenthesisEdit;
-	
+
 	// Constructor
 	public CloseParenthesisEdit(OpenParenthesisEdit openParenthesisEdit) {
-        super(null);
-        this.openParenthesisEdit = openParenthesisEdit;
+		super(null);
+		this.openParenthesisEdit = openParenthesisEdit;
 	}
 
 	// Methods
-	@Override
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException {
 		//super.addEdit(this);
 	}
 
@@ -37,11 +35,11 @@ public class CloseParenthesisEdit extends SimplePNEdit {
 	public String getUndoPresentationName() {
 		return description + " " + getPresentationName();
 	}
-	
+
 	public String getRedoPresentationName() {
 		return description + " " + getPresentationName();
 	}
-	
+
 	public String toString() {
 		return description;
 	}
@@ -49,8 +47,5 @@ public class CloseParenthesisEdit extends SimplePNEdit {
 	public OpenParenthesisEdit getOpenParenthesisEdit() {
 		return openParenthesisEdit;
 	}
-	
-	
-	
 
 }

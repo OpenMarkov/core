@@ -7,13 +7,8 @@
 
 package org.openmarkov.core.model.graph;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -21,26 +16,37 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * This class implements explicit links.
- * 
+ *
  * @author manuel
  * @author fjdiez
  * @version 1.0
- * @since OpenMarkov 1.0
  * @see Node
  * @see Graph
+ * @since OpenMarkov 1.0
  */
-public class Link <T>{
+public class Link<T> {
 
 	// Attributes
-	/** The first node. If the link is directed, this node is the parent. */
+	/**
+	 * The first node. If the link is directed, this node is the parent.
+	 */
 	private T node1;
 
-	/** The first node. If the link is directed, this node is the parent. */
+	/**
+	 * The first node. If the link is directed, this node is the parent.
+	 */
 	private T node2;
 
-	/** If true, the link is directed. Otherwise, it is an undirected link. */
+	/**
+	 * If true, the link is directed. Otherwise, it is an undirected link.
+	 */
 	private boolean directed;
 
 	/****
@@ -60,17 +66,15 @@ public class Link <T>{
 	private List<PartitionedInterval> revealingIntervals;
 
 	// Constructors
+
 	/**
 	 * Creates an unlabelled link and sets the cross references in the nodes.
 	 * This constructor should be called only from the <code>addLink</code>
 	 * function in the class Graph.
-	 * 
-	 * @param node1
-	 *            <code>Node</code>.
-	 * @param node2
-	 *            <code>Node</code>.
-	 * @param directed
-	 *            <code>boolean</code>.
+	 *
+	 * @param node1    <code>Node</code>.
+	 * @param node2    <code>Node</code>.
+	 * @param directed <code>boolean</code>.
 	 * @argCondition Both nodes must belong to the same graph.
 	 */
 	public Link(T node1, T node2, boolean directed) {
@@ -83,9 +87,10 @@ public class Link <T>{
 	}
 
 	// Methods
+
 	/**
 	 * @return The parent (if the link is directed) or the first node (if the
-	 *         link is undirected).
+	 * link is undirected).
 	 * @consultation
 	 */
 	public T getNode1() {
@@ -94,7 +99,7 @@ public class Link <T>{
 
 	/**
 	 * @return The child (if the link is directed) or the second node (if the
-	 *         link is undirected).
+	 * link is undirected).
 	 * @consultation
 	 */
 	public T getNode2() {
@@ -102,8 +107,7 @@ public class Link <T>{
 	}
 
 	/**
-	 * @param node
-	 *            <code>Node</code>.
+	 * @param node <code>Node</code>.
 	 * @return <code>true</code> if the link contains <code>node</code>.
 	 * @consultation
 	 */
@@ -113,7 +117,7 @@ public class Link <T>{
 
 	/**
 	 * @return <code>true</code> if the link is directed, false if it is
-	 *         undirected
+	 * undirected
 	 * @consultation
 	 */
 	public boolean isDirected() {
@@ -132,13 +136,12 @@ public class Link <T>{
 	/****
 	 * @return<code>true</code> if a value of the first variable makes all
 	 *                          values of the second variable impossible.
-	 * 
+	 *
 	 */
 	public boolean hasTotalRestriction() {
 		boolean totalRestriction = false;
 		if (hasRestrictions()) {
-			int numStates = restrictionsPotential.getVariables().get(0)
-					.getNumStates();
+			int numStates = restrictionsPotential.getVariables().get(0).getNumStates();
 			int valuesSize = restrictionsPotential.getValues().length;
 
 			for (int index = 0; index < numStates && !totalRestriction; index++) {
@@ -161,25 +164,22 @@ public class Link <T>{
 		return totalRestriction;
 
 	}
-	
-	
-	
+
 	/****
 	 * @return<code>true</code> if a value of the first variable makes all
 	 *                          values of the second variable impossible.
-	 * 
+	 *
 	 */
 	public Set<State> getStatesRestrictTotally() {
-		
+
 		Set<State> statesRestrictTotally = new HashSet<>();
-		
+
 		if (hasRestrictions()) {
 			Variable parentVariable = restrictionsPotential.getVariables().get(0);
-			int numStates = parentVariable
-					.getNumStates();
+			int numStates = parentVariable.getNumStates();
 			int valuesSize = restrictionsPotential.getValues().length;
 
-			for (int index = 0; index < numStates ; index++) {
+			for (int index = 0; index < numStates; index++) {
 				boolean totalRestriction = true;
 				int i = index;
 				while (i < valuesSize && totalRestriction) {
@@ -200,14 +200,12 @@ public class Link <T>{
 	/**
 	 * Initializes a TablePotential for the variable associated to node1 and
 	 * node2, whose values are all 1.
-	 * 
 	 */
 	public void initializesRestrictionsPotential() {
 		List<Variable> variables = new ArrayList<>();
 		variables.add(((Node) node1).getVariable());
 		variables.add(((Node) node2).getVariable());
-		restrictionsPotential = new TablePotential(variables,
-				PotentialRole.LINK_RESTRICTION);
+		restrictionsPotential = new TablePotential(variables, PotentialRole.LINK_RESTRICTION);
 		for (int i = 0; i < restrictionsPotential.getValues().length; i++) {
 			restrictionsPotential.getValues()[i] = 1;
 		}
@@ -217,7 +215,7 @@ public class Link <T>{
 	/*****
 	 * Assigns a null value to the restrictionsPotential if the restrictions
 	 * potential does not contain restrictions
-	 * 
+	 *
 	 */
 	public void resetRestrictionsPotential() {
 		boolean hasRestriction = false;
@@ -236,7 +234,7 @@ public class Link <T>{
 	/*****
 	 * Assigns the value of the parameter compatibility to the combination of
 	 * the variables state1 and state2.
-	 * 
+	 *
 	 * @param state1
 	 *            state of the variable of node1
 	 * @param state2
@@ -244,8 +242,7 @@ public class Link <T>{
 	 * @param compatibility
 	 *            value of compatibility
 	 */
-	public void setCompatibilityValue(State state1, State state2,
-			int compatibility) {
+	public void setCompatibilityValue(State state1, State state2, int compatibility) {
 		if (this.restrictionsPotential == null) {
 			this.initializesRestrictionsPotential();
 		}
@@ -258,7 +255,7 @@ public class Link <T>{
 
 	/******
 	 * Returns the compatibility value of the combination of state1 and state2.
-	 * 
+	 *
 	 * @param state1
 	 *            state of the variable of node1.
 	 * @param state2
@@ -280,7 +277,7 @@ public class Link <T>{
 	}
 
 	/****
-	 * 
+	 *
 	 * @return the potential of the the link restriction.
 	 */
 	public Potential getRestrictionsPotential() {
@@ -289,7 +286,7 @@ public class Link <T>{
 
 	/****
 	 * Assigns the potential to the restrictionPotential of the link
-	 * 
+	 *
 	 * @param potential
 	 */
 
@@ -297,7 +294,9 @@ public class Link <T>{
 		this.restrictionsPotential = (TablePotential) potential;
 	}
 
-	/** @return String */
+	/**
+	 * @return String
+	 */
 	public String toString() {
 		StringBuilder buffer = new StringBuilder(node1.toString());
 		if (!directed) {
@@ -312,14 +311,13 @@ public class Link <T>{
 	/*****
 	 * This method indicates whether there are revealing conditions for the
 	 * link.
-	 * 
+	 *
 	 * @return <code>true</code> if there exist revealing conditions.
 	 */
 	public boolean hasRevealingConditions() {
 
-		VariableType varType = ((Node) node1).getVariable()
-				.getVariableType();
-				
+		VariableType varType = ((Node) node1).getVariable().getVariableType();
+
 		if (varType.equals(VariableType.NUMERIC)) {
 			return !revealingIntervals.isEmpty();
 		} else {
@@ -335,8 +333,7 @@ public class Link <T>{
 	}
 
 	/**
-	 * @param revealingStates
-	 *            the revealingStates to set
+	 * @param revealingStates the revealingStates to set
 	 */
 	public void setRevealingStates(List<State> revealingStates) {
 		this.revealingStates = revealingStates;
@@ -350,17 +347,15 @@ public class Link <T>{
 	}
 
 	/**
-	 * @param revealingIntervals
-	 *            the revealingIntervals to set
+	 * @param revealingIntervals the revealingIntervals to set
 	 */
-	public void setRevealingIntervals(
-			List<PartitionedInterval> revealingIntervals) {
+	public void setRevealingIntervals(List<PartitionedInterval> revealingIntervals) {
 		this.revealingIntervals = revealingIntervals;
 	}
 
 	/*****
 	 * Adds the state to the revealing condition list.
-	 * 
+	 *
 	 * @param state
 	 */
 	public void addRevealingState(State state) {
@@ -370,7 +365,7 @@ public class Link <T>{
 
 	/*****
 	 * Removes the revealing state from the revealing condition list.
-	 * 
+	 *
 	 * @param state
 	 */
 	public void removeRevealingState(State state) {
@@ -380,7 +375,7 @@ public class Link <T>{
 
 	/*****
 	 * Adds the interval to the revealing condition list.
-	 * 
+	 *
 	 * @param interval
 	 */
 	public void addRevealingInterval(PartitionedInterval interval) {
@@ -389,7 +384,7 @@ public class Link <T>{
 
 	/********
 	 * Removes the interval from the revealing condition list.
-	 * 
+	 *
 	 * @param interval
 	 */
 	public void removeRevealingInterval(PartitionedInterval interval) {

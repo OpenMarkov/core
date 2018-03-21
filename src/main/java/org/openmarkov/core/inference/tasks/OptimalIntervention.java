@@ -18,9 +18,10 @@ import org.openmarkov.core.model.network.potential.StrategyTree;
  */
 public interface OptimalIntervention extends Task {
 
-    /**
-     * @return The optimal intervention
-     */
-    StrategyTree getOptimalIntervention() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
+	/**
+	 * @return The optimal intervention
+	 */
+	StrategyTree getOptimalIntervention()
+			throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
 
 }

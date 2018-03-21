@@ -7,27 +7,19 @@
 
 package org.openmarkov.core.inference;
 
-public class MulticriteriaOptions implements Cloneable{
+public class MulticriteriaOptions implements Cloneable {
 
-	public enum Type {
-	    UNICRITERION,
-	    COST_EFFECTIVENESS
-	}
-	
 	private Type multicriteriaType;
-	
 	private String mainUnit;
-
 	private boolean unicriterionOptionsShowed = false;
-
 	private boolean ceOptionsShowed = false;
 
 	public MulticriteriaOptions() {
 		this.mainUnit = " ";
 		this.multicriteriaType = Type.UNICRITERION;
 	}
-	
-	public MulticriteriaOptions(Type multicriteriaType, String mainUnit){
+
+	public MulticriteriaOptions(Type multicriteriaType, String mainUnit) {
 		this.multicriteriaType = multicriteriaType;
 		this.mainUnit = mainUnit;
 	}
@@ -52,8 +44,8 @@ public class MulticriteriaOptions implements Cloneable{
 	public void setMainUnit(String mainUnit) {
 		this.mainUnit = mainUnit;
 	}
-	
-	public MulticriteriaOptions clone(){
+
+	public MulticriteriaOptions clone() {
 		return new MulticriteriaOptions(this);
 	}
 
@@ -71,5 +63,9 @@ public class MulticriteriaOptions implements Cloneable{
 
 	public void setCeOptionsShowed(boolean ceOptionsShowed) {
 		this.ceOptionsShowed = ceOptionsShowed;
+	}
+
+	public enum Type {
+		UNICRITERION, COST_EFFECTIVENESS
 	}
 }

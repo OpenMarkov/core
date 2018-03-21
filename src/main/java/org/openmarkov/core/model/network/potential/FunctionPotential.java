@@ -6,11 +6,6 @@
  */
 package org.openmarkov.core.model.network.potential;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -21,229 +16,188 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
- * This class implements a function potential consisting of a GLMPotential 
+ * This class implements a function potential consisting of a GLMPotential
  * with only one covariate with coefficient=1
+ *
  * @author carmenyago
  * @version 1.0 2016
  */
-@PotentialType(name = "Function")
-public class FunctionPotential extends GLMPotential {
-	
-	
+@PotentialType(name = "Function") public class FunctionPotential extends GLMPotential {
+
 	/**
 	 * The default function
 	 */
 	public static final String DEFAULT_FUNCTION = "0";
-	
- 
-		
+
 	/**
 	 * The coefficient
 	 */
 	protected static final double COEFFICIENT = 1;
-	
-	
-	
 
-	
 	/**
-	 * Creates a Function potential with the function by default 
-	 * @param variables 
-	 * 			- list with the node variable and their parents
+	 * Creates a Function potential with the function by default
+	 *
+	 * @param variables - list with the node variable and their parents
 	 * @param role
 	 */
-    public FunctionPotential( List<Variable> variables, PotentialRole role ) {
-    	super(variables, role, new String[]{DEFAULT_FUNCTION}, new double[]{COEFFICIENT});
-    }
-    
-    
-    
-    /**
+	public FunctionPotential(List<Variable> variables, PotentialRole role) {
+		super(variables, role, new String[] { DEFAULT_FUNCTION }, new double[] { COEFFICIENT });
+	}
+
+	/**
 	 * Creates a Function potential with the function given by {@code function}
-	 * @param variables 
-	 * 			- list with the node variable and their parents
+	 *
+	 * @param variables - list with the node variable and their parents
+	 * @param role      - the role of the potential
+	 * @param function  - A string representing the function
 	 * @param role
-	 *         - the role of the potential
-	 * @param function
-	 *         - A string representing the function  
-	 * @param role
-	 */    
-    public FunctionPotential( List<Variable> variables, PotentialRole role, String function ) {
-    	super(variables, role, new String[]{function}, new double[]{COEFFICIENT});    
-    }
-    
-    /**
+	 */
+	public FunctionPotential(List<Variable> variables, PotentialRole role, String function) {
+		super(variables, role, new String[] { function }, new double[] { COEFFICIENT });
+	}
+
+	/**
 	 * Creates a Function potential equal to {@code potential}
-	 * @param potential
-	 *          - potential copied 
-	 * 
-	 */    
-    public FunctionPotential( FunctionPotential potential ) {
-        super(potential);
-    }
-    
-     /**
-     * Returns if an instance of a certain Potential type makes sense given the
-     * variables and the potential role.
-     * UNCLEAR--> Should the parents be numeric
-     * 
-     * @param node
-     *            . <code>Node</code>
-     * @param variables
-     *            . <code>ArrayList</code> of <code>Variable</code>.
-     * @param role
-     *            . <code>PotentialRole</code>.
-     */
-   
-    public static boolean validate( Node node, List<Variable> variables, PotentialRole role ) {
-        return  (!variables.isEmpty()
-        		&& variables.get(0).getVariableType() == VariableType.NUMERIC);
-    } 
-    
-    
-    /**
-     * Gets the unprocessed function of FunctionPotential
-     * @return the function contained in the FunctionPotential
-     */
-    public String getFunction() {
- 		return unprocessCovariates(variables, processedCovariates)[0];
- 	}
+	 *
+	 * @param potential - potential copied
+	 */
+	public FunctionPotential(FunctionPotential potential) {
+		super(potential);
+	}
 
-    /**
-     * Process and sets  {@codefunction}
-     * @param function
-     * 				- The function (unprocessed) to be set
-     */
+	/**
+	 * Returns if an instance of a certain Potential type makes sense given the
+	 * variables and the potential role.
+	 * UNCLEAR--> Should the parents be numeric
+	 *
+	 * @param node      . <code>Node</code>
+	 * @param variables . <code>ArrayList</code> of <code>Variable</code>.
+	 * @param role      . <code>PotentialRole</code>.
+	 */
 
- 	public void setFunction(String function) {
- 		setCovariates(new String[]{function});
- 	}
+	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+		return (
+				!variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC
+		);
+	}
 
+	/**
+	 * Gets the unprocessed function of FunctionPotential
+	 *
+	 * @return the function contained in the FunctionPotential
+	 */
+	public String getFunction() {
+		return unprocessCovariates(variables, processedCovariates)[0];
+	}
 
- 	 /**
-     * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
-     * @throws NonProjectablePotentialException
-     * @throws WrongCriterionException
-     */
-     @Override
-     public List<TablePotential> tableProject(EvidenceCase evidenceCase,
-             InferenceOptions inferenceOptions,
-             List<TablePotential> projectedPotentials)
-             throws NonProjectablePotentialException, WrongCriterionException {
-    	 throw new NonProjectablePotentialException("Function potential cannot be projected to a table");
-     }
+	/**
+	 * Process and sets  {@codefunction}
+	 *
+	 * @param function - The function (unprocessed) to be set
+	 */
 
-     /**
-      * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
-      * @throws NonProjectablePotentialException
-      * @throws WrongCriterionException
-      */
-     @Override
-     protected List<TablePotential> tableProject(EvidenceCase evidenceCase,
-             InferenceOptions inferenceOptions,
-             double[] coefficients,
-             String[] covariates,
-             List<Variable> evidencelessVariables,
-             Map<String, String> variableValues)
-             throws NonProjectablePotentialException, WrongCriterionException {
-    	 throw new NonProjectablePotentialException("Function potential cannot be projected to a table");
-         
-     } 
+	public void setFunction(String function) {
+		setCovariates(new String[] { function });
+	}
 
-	@Override
-    public Potential copy() {
-        return new FunctionPotential(this);
-    }
+	/**
+	 * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
+	 *
+	 * @throws NonProjectablePotentialException
+	 * @throws WrongCriterionException
+	 */
+	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
+		throw new NonProjectablePotentialException("Function potential cannot be projected to a table");
+	}
+
+	/**
+	 * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
+	 *
+	 * @throws NonProjectablePotentialException
+	 * @throws WrongCriterionException
+	 */
+	@Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
+			Map<String, String> variableValues) throws NonProjectablePotentialException, WrongCriterionException {
+		throw new NonProjectablePotentialException("Function potential cannot be projected to a table");
+
+	}
+
+	@Override public Potential copy() {
+		return new FunctionPotential(this);
+	}
 
 	/**
 	 * Multiplies function by {@code scale}
-	 * @param scale
-	 * 			- the scale factor
+	 *
+	 * @param scale - the scale factor
 	 */
-	@Override 
-	public void scalePotential(double scale) {
-		String scaleString= new Double(scale).toString();
-		String function=scaleString.concat("*").concat(processedCovariates[0]);
+	@Override public void scalePotential(double scale) {
+		String scaleString = new Double(scale).toString();
+		String function = scaleString.concat("*").concat(processedCovariates[0]);
 		processedCovariates[0] = function;
 	}
-	
 
-
-	
 	/**
 	 * Adds the variable to the new potential. The function does not change
-	 * @param variable
-	 * 		- the variable to be added
-	 * @returns a FunctionPotential with the new variabla 
-	 * 
+	 *
+	 * @param variable - the variable to be added
+	 * @returns a FunctionPotential with the new variabla
 	 */
-	@Override
-	public Potential addVariable(Variable variable) {
+	@Override public Potential addVariable(Variable variable) {
 		FunctionPotential newPotential = null;
-		if(!variables.contains (variable))
-		{
+		if (!variables.contains(variable)) {
 			List<Variable> newVariables = new ArrayList<>(variables);
-			newVariables.add (variable);
+			newVariables.add(variable);
 			newPotential = new FunctionPotential(newVariables, this.role);
 			newPotential.setCovariates(processedCovariates);
-			newPotential.setCoefficients(new double[]{1});
-		}else
-		{
-			newPotential = new FunctionPotential(this); 
+			newPotential.setCoefficients(new double[] { 1 });
+		} else {
+			newPotential = new FunctionPotential(this);
 		}
 		return newPotential;
 	}
 
-	
-	
-
-	
 	/**
-	 * Removes a variable from FunctionPotential. If the function does not use the variable, 
+	 * Removes a variable from FunctionPotential. If the function does not use the variable,
 	 * the function does not change, otherwise the function is set to its default value
-	 * @param variable
-	 * 			- the variable to be removed
-	 * @returns a FunctionPotential without the variable 
+	 *
+	 * @param variable - the variable to be removed
+	 * @returns a FunctionPotential without the variable
 	 */
-	@Override
-	public Potential removeVariable(Variable variable) {
-		if(variables.contains (variable))
-		{
+	@Override public Potential removeVariable(Variable variable) {
+		if (variables.contains(variable)) {
 			List<Variable> newVariables = new ArrayList<>(variables);
-			newVariables.remove (variable);
-	    	int index = variables.indexOf(variable);
-	    	String variableToRemove = "#{v"+index+"}";
-	    	if (processedCovariates[0].contains(variableToRemove)){
-	    		return new FunctionPotential(newVariables, this.role);
-	    	}     		
+			newVariables.remove(variable);
+			int index = variables.indexOf(variable);
+			String variableToRemove = "#{v" + index + "}";
+			if (processedCovariates[0].contains(variableToRemove)) {
+				return new FunctionPotential(newVariables, this.role);
+			}
 		}
-    	return new FunctionPotential(this);	
+		return new FunctionPotential(this);
 	}
-	
-	
-	
-	@Override
-    public Potential deepCopy(ProbNet copyNet) {
-        return super.deepCopy(copyNet);
-    }
-    
-	@Override
-	public String toString() {
+
+	@Override public Potential deepCopy(ProbNet copyNet) {
+		return super.deepCopy(copyNet);
+	}
+
+	@Override public String toString() {
 		return unprocessCovariates(variables, processedCovariates)[0];
 	}
 
-
-	
 	/**
 	 * Always returns false because there is no uncertainty
 	 */
 
-	@Override
-	public boolean isUncertain() {
+	@Override public boolean isUncertain() {
 		return false;
 	}
-    
-    
 
 }

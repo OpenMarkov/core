@@ -7,35 +7,36 @@
 
 package org.openmarkov.core.model.network.potential.operation.concurrent;
 
-import java.util.List;
-
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
+import java.util.List;
 
 public class DiscretePotentialOperations {
 
 	// Attributes
-	/** Number of logical processors, bear in mind that logical processors are
-	 *   not always the physical ones. If the processors have a n 
-	 *   hyper threading then logical processors = n * physical processors. */
-	public static int numLogicalProcessors = 
-		java.lang.Runtime.getRuntime().availableProcessors();
-	
+	/**
+	 * Number of logical processors, bear in mind that logical processors are
+	 * not always the physical ones. If the processors have a n
+	 * hyper threading then logical processors = n * physical processors.
+	 */
+	public static int numLogicalProcessors = java.lang.Runtime.getRuntime().availableProcessors();
+
 	// Constructor. Don't let anyone instantiate this class because in contains 
 	// only static methods.
 	private DiscretePotentialOperations() {
 	}
 
 	// Methods
-	/** @param potentials <code>ArrayList</code> of 
-	 *   <code>? extends Potential</code>
-	  * @return The multiplied potentials <code>TablePotential</code>
-	 * @throws Exception <code>Exception</code> */
-    public static TablePotential multiply (List<TablePotential> potentials)
-        throws Exception
-    {
+
+	/**
+	 * @param potentials <code>ArrayList</code> of
+	 *                   <code>? extends Potential</code>
+	 * @return The multiplied potentials <code>TablePotential</code>
+	 * @throws Exception <code>Exception</code>
+	 */
+	public static TablePotential multiply(List<TablePotential> potentials) throws Exception {
 		// Sequential part
 		SharedDataMultiply sdm = new SharedDataMultiply(potentials);
 		sdm.initialize();
@@ -43,8 +44,7 @@ public class DiscretePotentialOperations {
 		// Concurrent part
 		// Starts concurrency
 		Thread[] multipliers = new Thread[numLogicalProcessors];
-		DiscreteMultiply[] cdm = 
-			new DiscreteMultiply[numLogicalProcessors];
+		DiscreteMultiply[] cdm = new DiscreteMultiply[numLogicalProcessors];
 		for (int i = 0; i < numLogicalProcessors; i++) {
 			cdm[i] = new DiscreteMultiply(sdm, i);
 			multipliers[i] = new Thread(cdm[i]);
@@ -64,23 +64,19 @@ public class DiscretePotentialOperations {
 
 		return sdm.result;
 	}
-	
-    public static TablePotential multiplyAndMarginalize (List<TablePotential> tablePotentials,
-                                                         List<Variable> fSVariablesToKeep,
-                                                         List<Variable> fSVariablesToEliminate)
-    		throws Exception {
+
+	public static TablePotential multiplyAndMarginalize(List<TablePotential> tablePotentials,
+			List<Variable> fSVariablesToKeep, List<Variable> fSVariablesToEliminate) throws Exception {
 
 		// Sequential part
-		SharedDataMultiplyAndMarginalize sdm = 
-			new SharedDataMultiplyAndMarginalize(tablePotentials, 
-			fSVariablesToKeep, fSVariablesToEliminate);
+		SharedDataMultiplyAndMarginalize sdm = new SharedDataMultiplyAndMarginalize(tablePotentials, fSVariablesToKeep,
+				fSVariablesToEliminate);
 		sdm.initializeMultiplyAndMarginalize();
 
 		// Concurrent part
 		// Starts concurrency
 		Thread[] multipliers = new Thread[numLogicalProcessors];
-		DiscreteMultiplyAndMarginalize[] cdm = 
-			new DiscreteMultiplyAndMarginalize[numLogicalProcessors];
+		DiscreteMultiplyAndMarginalize[] cdm = new DiscreteMultiplyAndMarginalize[numLogicalProcessors];
 		for (int i = 0; i < numLogicalProcessors; i++) {
 			cdm[i] = new DiscreteMultiplyAndMarginalize(sdm, i);
 			multipliers[i] = new Thread(cdm[i]);
@@ -100,23 +96,22 @@ public class DiscretePotentialOperations {
 		return sdm.result;
 	}
 
-	/** @param numeratorPotential <code>Potential</code>
+	/**
+	 * @param numeratorPotential   <code>Potential</code>
 	 * @param denominatorPotential <code>Potential</code>
-	  * @return numeratorPotential / denominatorPotential 
-	  *   <code>TablePotential</code> 
-	 * @throws Exception <code>Exception</code> */
-	public static TablePotential divide(Potential numeratorPotential, 
-			Potential denominatorPotential) throws Exception {
+	 * @return numeratorPotential / denominatorPotential
+	 * <code>TablePotential</code>
+	 * @throws Exception <code>Exception</code>
+	 */
+	public static TablePotential divide(Potential numeratorPotential, Potential denominatorPotential) throws Exception {
 		// Sequential part
-		SharedDataDivide sdd = new SharedDataDivide(numeratorPotential,
-			denominatorPotential);
+		SharedDataDivide sdd = new SharedDataDivide(numeratorPotential, denominatorPotential);
 		sdd.initialize();
 
 		// Concurrent part
 		// Starts concurrency
 		Thread[] multipliers = new Thread[numLogicalProcessors];
-		DiscreteDivide[] cdd = 
-			new DiscreteDivide[numLogicalProcessors];
+		DiscreteDivide[] cdd = new DiscreteDivide[numLogicalProcessors];
 		for (int i = 0; i < numLogicalProcessors; i++) {
 			cdd[i] = new DiscreteDivide(sdd, i);
 			multipliers[i] = new Thread(cdd[i]);
@@ -135,14 +130,15 @@ public class DiscretePotentialOperations {
 
 		return sdd.result;
 	}
-	
-	/** Calculates potentialPositions for each interval */
-	static void splitOperatorsPotentials(List<TablePotential> potentials,
-			TablePotential result, int[][] resultIntervals, 
-			int[][] potentialsPositions) {
-		
+
+	/**
+	 * Calculates potentialPositions for each interval
+	 */
+	static void splitOperatorsPotentials(List<TablePotential> potentials, TablePotential result,
+			int[][] resultIntervals, int[][] potentialsPositions) {
+
 		List<Variable> resultVariables = result.getVariables();
-		
+
 		int aux;
 		int numIntervals = org.openmarkov.core.model.network.potential.operation.concurrent.DiscretePotentialOperations.numLogicalProcessors;
 
@@ -150,10 +146,9 @@ public class DiscretePotentialOperations {
 			for (int j = 0; j < potentials.size(); j++) {
 				TablePotential potential = potentials.get(j);
 				int[] offsetsPotential = potential.getOffsets();
-				List<Variable> potentialVariables = 
-					potential.getVariables();
+				List<Variable> potentialVariables = potential.getVariables();
 				aux = 0;
-				
+
 				// This is different for each operation (marginalization, etc)
 				for (int k = 0; k < potentialVariables.size(); k++) {
 					Variable variable = potentialVariables.get(k);
@@ -163,55 +158,54 @@ public class DiscretePotentialOperations {
 					int valueResult = resultIntervals[i][indexResult];
 					aux += offsetsPotential[k] * valueResult;
 				}
-				potentialsPositions[i][j] = aux;	
+				potentialsPositions[i][j] = aux;
 			}
 		}
 	}
 
-	/** Divides an operation in <code>numLogicalProcessors</code> parts by 
-	 *   computing the following arrays <code>resultIntervals</code>, 
-	 *   <code>lengthResultIntervals</code> and 
-	 *   <code>variableToIncrement</code>. */
-	static void splitResultPotential(
-			TablePotential result, int[][] resultIntervals,
-			int[] lengthResultIntervals, int[] resultPositionIntervals) {
+	/**
+	 * Divides an operation in <code>numLogicalProcessors</code> parts by
+	 * computing the following arrays <code>resultIntervals</code>,
+	 * <code>lengthResultIntervals</code> and
+	 * <code>variableToIncrement</code>.
+	 */
+	static void splitResultPotential(TablePotential result, int[][] resultIntervals, int[] lengthResultIntervals,
+			int[] resultPositionIntervals) {
 		int[] offsetsResult = result.getOffsets();
 		int[] dimensions = result.getDimensions();
 		int numIntervals = org.openmarkov.core.model.network.potential.operation.concurrent.DiscretePotentialOperations.numLogicalProcessors;
 		int numResultVariables = offsetsResult.length;
 		int lastVariable = numResultVariables - 1;
-		int resultSize = 
-			offsetsResult[lastVariable] * dimensions[lastVariable];
-		
+		int resultSize = offsetsResult[lastVariable] * dimensions[lastVariable];
+
 		int intervalLength = resultSize / numIntervals;
-		
+
 		int remainderConfigurations = resultSize % numIntervals;
-		
+
 		// Calculate length of each interval
-		resultPositionIntervals[0] = 0; 
+		resultPositionIntervals[0] = 0;
 		for (int i = 0; i < numIntervals; i++) {
 			lengthResultIntervals[i] = intervalLength;
 			if (i < remainderConfigurations) {
 				lengthResultIntervals[i]++;
 			}
 			if (i > 0) {
-				resultPositionIntervals[i] = resultPositionIntervals[i - 1] +
-					lengthResultIntervals[i];
+				resultPositionIntervals[i] = resultPositionIntervals[i - 1] + lengthResultIntervals[i];
 			}
 		}
-		
+
 		int actualPosition = 0;
 		// Calculate intervals
 		// First configuration starts with (0,0,...,0).  
 		int i;
-		for (i = 1; i <numIntervals; i++) {
-			actualPosition += lengthResultIntervals[i-1];
+		for (i = 1; i < numIntervals; i++) {
+			actualPosition += lengthResultIntervals[i - 1];
 			int remainder = actualPosition;
-			for (int j = lastVariable; j >=0; j--) {
+			for (int j = lastVariable; j >= 0; j--) {
 				resultIntervals[i][j] = remainder / offsetsResult[j];
 				remainder = remainder % offsetsResult[j];
 			}
 		}
 	}
-	
+
 }

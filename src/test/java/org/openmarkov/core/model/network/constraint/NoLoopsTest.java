@@ -7,12 +7,6 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.awt.geom.Point2D;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
@@ -24,19 +18,21 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
+import java.awt.geom.Point2D;
+
+import static org.junit.Assert.*;
+
 public class NoLoopsTest {
 
 	private ProbNet directedNet;
 	private ProbNet undirectedNet;
 
-	@Before
-	public void setUp() throws Exception {
+	@Before public void setUp() throws Exception {
 		directedNet = ConstraintsTests.getTestProbNetDirected();
 		undirectedNet = ConstraintsTests.getTestProbNetUndirected();
 	}
 
-	@Test
-	public void testCheckProbNet() throws NodeNotFoundException {
+	@Test public void testCheckProbNet() throws NodeNotFoundException {
 
 		boolean exceptionLaunched = false;
 		try {
@@ -59,8 +55,7 @@ public class NoLoopsTest {
 			fail(e.getMessage());
 		}
 		assertTrue(exceptionLaunched);
-		 
-		
+
 		//Test undirected net
 		exceptionLaunched = false;
 		try {
@@ -70,8 +65,6 @@ public class NoLoopsTest {
 			exceptionLaunched = true;
 		}
 		assertFalse(exceptionLaunched);
-
-
 
 		Variable varA = undirectedNet.getVariable("A");
 		Variable varB = undirectedNet.getVariable("B");
@@ -85,7 +78,7 @@ public class NoLoopsTest {
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
-		
+
 		try {
 			undirectedNet.removeConstraint(new NoLoops());
 			undirectedNet.removeLink(varA, varC, false);
@@ -100,8 +93,7 @@ public class NoLoopsTest {
 		}
 		assertTrue(exceptionLaunched);
 
-
-		try{
+		try {
 			undirectedNet.removeConstraint(new NoLoops());
 			undirectedNet.removeLink(varA, varB, false);
 			undirectedNet.addLink(varA, varB, true);
@@ -113,10 +105,8 @@ public class NoLoopsTest {
 		}
 		assertTrue(exceptionLaunched);
 	}
-	
-	
-	@Test
-	public void testUndoableEditWillHappen() throws Exception {
+
+	@Test public void testUndoableEditWillHappen() throws Exception {
 
 		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new NoClosedPath();
@@ -128,19 +118,17 @@ public class NoLoopsTest {
 		Variable vC = undirectedNet.getVariable("C");
 		try {
 
-			new AddNodeEdit(undirectedNet, new Variable("D"), NodeType.UTILITY,
-					new Point2D.Double()).doEdit();
+			new AddNodeEdit(undirectedNet, new Variable("D"), NodeType.UTILITY, new Point2D.Double()).doEdit();
 			Variable vD = undirectedNet.getVariable("D");
 
 			// creates a link from C - D
-			AddLinkEdit legalEdit = new AddLinkEdit(undirectedNet, vC, vD,
-					false);
+			AddLinkEdit legalEdit = new AddLinkEdit(undirectedNet, vC, vD, false);
 			pNESupport.announceEdit(legalEdit);
 			legalEdit.doEdit();
 		} catch (ConstraintViolationException e) {
 			fail(e.getMessage());
 		}
-		
+
 		boolean exceptionLaunched = false;
 		Variable vA = undirectedNet.getVariable("C");
 		// creates a link from A-C

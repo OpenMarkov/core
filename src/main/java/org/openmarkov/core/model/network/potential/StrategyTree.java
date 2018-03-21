@@ -7,15 +7,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
@@ -27,30 +18,42 @@ import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 // TODO Documentar la clase
 public class StrategyTree extends TreeADDPotential {
-	
-	public StrategyTree(List<Variable> variables, Variable topVariable){
-		super(variables,topVariable,PotentialRole.UNSPECIFIED);
+
+	public StrategyTree(List<Variable> variables, Variable topVariable) {
+		super(variables, topVariable, PotentialRole.UNSPECIFIED);
 		//super(variables,topVariable,PotentialRole.INTERVENTION);
 	}
 
 	// Constructors
+
 	/**
-	 * Creates an intervention without branches. 
+	 * Creates an intervention without branches.
+	 *
 	 * @param topVariable
 	 */
 	public StrategyTree(Variable topVariable) {
-		this(null, topVariable);		
+		this(null, topVariable);
 	}
-	
+
 	/**
-	 * Creates an intervention having as much states in each branch as equal interventions. 
+	 * Creates an intervention having as much states in each branch as equal interventions.
 	 * The number of states and interventions must be the same.
-	 * @param topVariable <code>Variable</code>
-	 * @param states One state for each intervention in the list. <code>List</code> of <code>State</code>
+	 *
+	 * @param topVariable   <code>Variable</code>
+	 * @param states        One state for each intervention in the list. <code>List</code> of <code>State</code>
 	 * @param strategyTrees It is possible that this list contains some equal interventions.
-	 *  <code>List</code> of <code>Intervention</code>
+	 *                      <code>List</code> of <code>Intervention</code>
 	 */
 	public StrategyTree(Variable topVariable, List<State> states, List<StrategyTree> strategyTrees) {
 		this(null, topVariable);
@@ -63,7 +66,7 @@ public class StrategyTree extends TreeADDPotential {
 			boolean noMatch = true;
 			StrategyTree distinctStrategyTree = null;
 			State correspondingState = null;
-			
+
 			// Check if there is any intervention equal to "intervention" in "distinctInterventions"
 			for (int j = 0; j < numDistinctInterventions && noMatch; j++) {
 				distinctStrategyTree = distinctStrategyTrees.get(j);
@@ -81,7 +84,7 @@ public class StrategyTree extends TreeADDPotential {
 				}
 			}
 		}
-		
+
 		// Create branches
 		for (StrategyTree strategyTree : distinctStrategyTrees) {
 			List<State> statesOfIntervention = new ArrayList<>(correspondingStates.get(strategyTree));
@@ -90,9 +93,10 @@ public class StrategyTree extends TreeADDPotential {
 			}
 		}
 	}
-	
+
 	/**
 	 * Creates an intervention with only one branch containing several states.
+	 *
 	 * @param topVariable
 	 * @param states
 	 */
@@ -101,9 +105,10 @@ public class StrategyTree extends TreeADDPotential {
 		List<State> branchStates = Arrays.asList(states);
 		addBranch(new TreeADDBranch(branchStates, topVariable, null));
 	}
-	
+
 	/**
-	 * Creates an intervention with only one branch containing several states. 
+	 * Creates an intervention with only one branch containing several states.
+	 *
 	 * @param topVariable
 	 * @param states
 	 */
@@ -113,9 +118,10 @@ public class StrategyTree extends TreeADDPotential {
 		branchStates.addAll(states);
 		addBranch(new TreeADDBranch(branchStates, topVariable, null));
 	}
-	
+
 	/**
-	 * Creates an intervention with only one branch. 
+	 * Creates an intervention with only one branch.
+	 *
 	 * @param topVariable
 	 * @param states
 	 * @param strategyTree
@@ -126,34 +132,31 @@ public class StrategyTree extends TreeADDPotential {
 		branchStates.addAll(states);
 		addBranch(new TreeADDBranch(branchStates, topVariable, strategyTree, null));
 	}
-	
+
 	/**
 	 * Creates an intervention with a continuous variable with a partitioned interval.
 	 * The partitioned interval must have the same number of sub-intervals than interventions.
+	 *
 	 * @param topVariable
 	 * @param strategyTrees
 	 */
-	public StrategyTree(Variable topVariable, PartitionedInterval partitionedInterval, List<StrategyTree> strategyTrees) {
+	public StrategyTree(Variable topVariable, PartitionedInterval partitionedInterval,
+			List<StrategyTree> strategyTrees) {
 		this(null, topVariable);
 		double[] limits = partitionedInterval.getLimits();
 		for (int i = 0; i < limits.length - 1; i++) {
-			addBranch(new TreeADDBranch(
-					new Threshold(limits[i], false), new Threshold(limits[i + 1], true), 
-					topVariable, strategyTrees.get(i), null));
+			addBranch(
+					new TreeADDBranch(new Threshold(limits[i], false), new Threshold(limits[i + 1], true), topVariable,
+							strategyTrees.get(i), null));
 		}
 	}
-	
-	
 
 	/**
 	 * Creates an intervention from a set of interventions and probabilities.
-	 * 
-	 * @param chanceVariable
-	 *            <code>Variable</code>
-	 * @param probabilities
-	 *            <code>double[]</code>
-	 * @param strategyTrees
-	 *            <code>Intervention[]</code>
+	 *
+	 * @param chanceVariable <code>Variable</code>
+	 * @param probabilities  <code>double[]</code>
+	 * @param strategyTrees  <code>Intervention[]</code>
 	 * @return A Intervention. <code>Intervention</code>
 	 */
 	public static StrategyTree averageOfInterventions(Variable chanceVariable, double[] probabilities,
@@ -176,7 +179,7 @@ public class StrategyTree extends TreeADDPotential {
 			strategyTree = null;
 		} else {
 			if (numSelectedInterventions == 1) { // Only one intervention with
-													// probability != 0.0
+				// probability != 0.0
 				strategyTree = selectedStrategyTrees.get(0);
 			} else { // More than one intervention with probability != 0.0
 				if (equalInterventions(selectedStrategyTrees.toArray(new StrategyTree[numSelectedInterventions]))) {
@@ -191,15 +194,16 @@ public class StrategyTree extends TreeADDPotential {
 	}
 
 	/**
-	 * Creates an intervention 
+	 * Creates an intervention
+	 *
 	 * @param decisionVariable
 	 * @param utilities
 	 * @param strategyTrees
-	 * @param coalescedInterventions 
+	 * @param coalescedInterventions
 	 * @return Optimal intervention
 	 */
-	public static StrategyTree optimalIntervention(Variable decisionVariable,
-			double[] utilities, StrategyTree[] strategyTrees, boolean coalescedInterventions) {
+	public static StrategyTree optimalIntervention(Variable decisionVariable, double[] utilities,
+			StrategyTree[] strategyTrees, boolean coalescedInterventions) {
 		State[] states = decisionVariable.getStates();
 		List<State> optimalStates = new ArrayList<>();
 		List<StrategyTree> optimalStrategyTrees = new ArrayList<>();
@@ -217,7 +221,7 @@ public class StrategyTree extends TreeADDPotential {
 				optimalStates.add(states[i]);
 				if (strategyTreeI != null) {
 					boolean isInOptimalInterventions = false;
-					for (int j = 0; j < optimalStrategyTrees.size() && !isInOptimalInterventions ; j++){
+					for (int j = 0; j < optimalStrategyTrees.size() && !isInOptimalInterventions; j++) {
 						isInOptimalInterventions = optimalStrategyTrees.get(j).equals(strategyTreeI);
 					}
 					if (!isInOptimalInterventions) {
@@ -226,36 +230,35 @@ public class StrategyTree extends TreeADDPotential {
 				}
 			}
 		}
-		
+
 		StrategyTree strategyTree = null;
 		boolean severalOptimalInterventions = optimalStrategyTrees.size() > 1;
 		if (!coalescedInterventions) {
-			strategyTree = severalOptimalInterventions ? new StrategyTree(decisionVariable, optimalStates,
-					optimalStrategyTrees) : new StrategyTree(decisionVariable, optimalStates,
-					optimalStrategyTrees.get(0));
+			strategyTree = severalOptimalInterventions ?
+					new StrategyTree(decisionVariable, optimalStates, optimalStrategyTrees) :
+					new StrategyTree(decisionVariable, optimalStates, optimalStrategyTrees.get(0));
 		} else {
-			strategyTree = severalOptimalInterventions ? new SDAGStrategyTree(decisionVariable,
-					optimalStates, optimalStrategyTrees) : new SDAGStrategyTree(decisionVariable,
-					optimalStates, optimalStrategyTrees.get(0));
+			strategyTree = severalOptimalInterventions ?
+					new SDAGStrategyTree(decisionVariable, optimalStates, optimalStrategyTrees) :
+					new SDAGStrategyTree(decisionVariable, optimalStates, optimalStrategyTrees.get(0));
 
 		}
-		
-    	return strategyTree;
-		
+
+		return strategyTree;
+
 	}
-	
-	
-	
+
 	/**
-	 * Creates an intervention 
+	 * Creates an intervention
+	 *
 	 * @param decisionVariable
 	 * @param utilities
 	 * @param strategyTrees
-	 * @param coalescedInterventions 
+	 * @param coalescedInterventions
 	 * @return Optimal intervention
 	 */
-	public static StrategyTree optimalInterventionTakingOneOptimal(Variable decisionVariable,
-			double[] utilities, StrategyTree[] strategyTrees, boolean coalescedInterventions) {
+	public static StrategyTree optimalInterventionTakingOneOptimal(Variable decisionVariable, double[] utilities,
+			StrategyTree[] strategyTrees, boolean coalescedInterventions) {
 		State[] states = decisionVariable.getStates();
 		List<State> optimalStates = new ArrayList<>();
 		State optimalState = null;
@@ -272,30 +275,30 @@ public class StrategyTree extends TreeADDPotential {
 		}
 		optimalStates.add(optimalState);
 		StrategyTree strategyTree = null;
-		if (optimalStrategyTree !=null){
-			strategyTree = (!coalescedInterventions)? new StrategyTree(decisionVariable, optimalStates,
-					optimalStrategyTree): new SDAGStrategyTree(decisionVariable,
-					optimalStates, optimalStrategyTree);
+		if (optimalStrategyTree != null) {
+			strategyTree = (!coalescedInterventions) ?
+					new StrategyTree(decisionVariable, optimalStates, optimalStrategyTree) :
+					new SDAGStrategyTree(decisionVariable, optimalStates, optimalStrategyTree);
+		} else {
+			strategyTree = (!coalescedInterventions) ?
+					new StrategyTree(decisionVariable, optimalStates) :
+					new SDAGStrategyTree(decisionVariable, optimalStates);
+
 		}
-		else{
-			strategyTree = (!coalescedInterventions)? new StrategyTree(decisionVariable, optimalStates):
-				new SDAGStrategyTree(decisionVariable,optimalStates);
-			
-		}
-    	return strategyTree;
-		
+		return strategyTree;
+
 	}
-	
 
 	/**
-	 * Creates an intervention 
+	 * Creates an intervention
+	 *
 	 * @param decisionVariable
 	 * @param utilities
 	 * @param strategyTrees
 	 * @return Optimal intervention
 	 */
-	public static StrategyTree optimalInterventionTakingAllOptimal(Variable decisionVariable,
-			double[] utilities, StrategyTree[] strategyTrees) {
+	public static StrategyTree optimalInterventionTakingAllOptimal(Variable decisionVariable, double[] utilities,
+			StrategyTree[] strategyTrees) {
 		State[] states = decisionVariable.getStates();
 		List<State> optimalStates = new ArrayList<>();
 		List<StrategyTree> optimalStrategyTrees = new ArrayList<>();
@@ -313,26 +316,26 @@ public class StrategyTree extends TreeADDPotential {
 				optimalStrategyTrees.add(strategyTrees[i]);
 			}
 		}
-		
-		if (!areNullOptimalInterventions(optimalStrategyTrees)){
+
+		if (!areNullOptimalInterventions(optimalStrategyTrees)) {
 			strategyTree = new StrategyTree(decisionVariable, optimalStates, optimalStrategyTrees);
-		}
-		else{
+		} else {
 			strategyTree = new StrategyTree(decisionVariable, optimalStates);
 		}
-    	return strategyTree;
+		return strategyTree;
 	}
-	
-	private static boolean areNullOptimalInterventions(List<StrategyTree> strategyTrees){
-		return (strategyTrees.isEmpty() || strategyTrees.get(0)==null);
+
+	private static boolean areNullOptimalInterventions(List<StrategyTree> strategyTrees) {
+		return (strategyTrees.isEmpty() || strategyTrees.get(0) == null);
 	}
-	
+
 	/**
-	 * Creates an intervention 
+	 * Creates an intervention
+	 *
 	 * @param decisionVariable
 	 * @param utilities
 	 * @param strategyTrees
-	 * @param coalescedInterventions 
+	 * @param coalescedInterventions
 	 * @return Optimal intervention
 	 */
 	public static StrategyTree optimalInterventionTakingOptimalMinimalDepth(Variable decisionVariable,
@@ -351,35 +354,59 @@ public class StrategyTree extends TreeADDPotential {
 				optimalState = states[i];
 				optimalStrategyTree = strategyTreeI;
 			}
-			if (utilityI == max){
-				if (strategyTreeI != null){
-				int auxDepth = strategyTreeI.getDepth();
-				if (auxDepth<depthOfOptimalInterv){
-					optimalState = states[i];
-					optimalStrategyTree = strategyTreeI;
-					depthOfOptimalInterv = auxDepth;
+			if (utilityI == max) {
+				if (strategyTreeI != null) {
+					int auxDepth = strategyTreeI.getDepth();
+					if (auxDepth < depthOfOptimalInterv) {
+						optimalState = states[i];
+						optimalStrategyTree = strategyTreeI;
+						depthOfOptimalInterv = auxDepth;
+					}
 				}
-				}
-				
+
 			}
 		}
 		optimalStates.add(optimalState);
 		StrategyTree strategyTree = null;
-		if (optimalStrategyTree !=null){
-			strategyTree = (!coalescedInterventions)? new StrategyTree(decisionVariable, optimalStates,
-					optimalStrategyTree): new SDAGStrategyTree(decisionVariable,
-					optimalStates, optimalStrategyTree);
+		if (optimalStrategyTree != null) {
+			strategyTree = (!coalescedInterventions) ?
+					new StrategyTree(decisionVariable, optimalStates, optimalStrategyTree) :
+					new SDAGStrategyTree(decisionVariable, optimalStates, optimalStrategyTree);
+		} else {
+			strategyTree = (!coalescedInterventions) ?
+					new StrategyTree(decisionVariable, optimalStates) :
+					new SDAGStrategyTree(decisionVariable, optimalStates);
+
 		}
-		else{
-			strategyTree = (!coalescedInterventions)? new StrategyTree(decisionVariable, optimalStates):
-				new SDAGStrategyTree(decisionVariable,optimalStates);
-			
-		}
-    	return strategyTree;
-		
+		return strategyTree;
+
 	}
-	
-	
+
+	/**
+	 * @param strategyTrees
+	 * @return <code>true</code> when all the interventions are equal.
+	 */
+	protected static boolean equalInterventions(StrategyTree[] strategyTrees) {
+		boolean equalInterventions = true;
+		int numInterventions = strategyTrees.length;
+		if (strategyTrees != null && numInterventions > 1) {
+			StrategyTree firstStrategyTree = strategyTrees[0];
+			for (int i = 1; i < numInterventions && equalInterventions; i++) {
+				equalInterventions &= (firstStrategyTree == null) ?
+						strategyTrees[i] == null :
+						firstStrategyTree.equals(strategyTrees[i]);
+			}
+		}
+		return equalInterventions;
+	}
+
+	/**
+	 * @param branch
+	 * @return The intervention corresponding to 'branch'
+	 */
+	public static StrategyTree getInterventionBranch(TreeADDBranch branch) {
+		return (StrategyTree) (branch.getPotential());
+	}
 
 	private int getDepth() {
 		int depth = 0;
@@ -396,164 +423,140 @@ public class StrategyTree extends TreeADDPotential {
 				}
 				depth = 1 + auxDepth;
 			}
-		} 
+		}
 
 		return depth;
 	}
 
-	/** 
+	/**
 	 * Add <code>Intervention</code> to edges of this intervention
+	 *
 	 * @param strategyTree
-	 * @return 
-	 * @throws Exception 
+	 * @return
+	 * @throws Exception
 	 */
 	public StrategyTree concatenate(StrategyTree strategyTree) {
-		//  
+		//
 		StrategyTree oldStrategyTree;
 		for (TreeADDBranch branch : branches) {
-			oldStrategyTree = (StrategyTree)branch.getPotential();
+			oldStrategyTree = (StrategyTree) branch.getPotential();
 			if (oldStrategyTree == null) {
 				branch.setPotential(strategyTree);
 			} else {
-				StrategyTree branchStrategyTree = (StrategyTree)branch.getPotential();
+				StrategyTree branchStrategyTree = (StrategyTree) branch.getPotential();
 				branchStrategyTree = branchStrategyTree.concatenate(strategyTree);
 			}
 		}
 		return this;
 	}
-	
-	
-	
-	public boolean hasCycle(){
+
+	public boolean hasCycle() {
 		boolean hasCycle;
 		hasCycle = false;
-		if (branches!=null){
-		for (int i=0;(i<branches.size()&&!hasCycle);i++){
-			TreeADDBranch branch = branches.get(i);	
-			if (branch != null){
-			StrategyTree strategyTreeBranch = (StrategyTree)branch.getPotential();
-			if (strategyTreeBranch != null){
-				hasCycle = strategyTreeBranch.isReachable(this);
+		if (branches != null) {
+			for (int i = 0; (i < branches.size() && !hasCycle); i++) {
+				TreeADDBranch branch = branches.get(i);
+				if (branch != null) {
+					StrategyTree strategyTreeBranch = (StrategyTree) branch.getPotential();
+					if (strategyTreeBranch != null) {
+						hasCycle = strategyTreeBranch.isReachable(this);
+					}
+				}
+
 			}
-			}
-			
 		}
-		}
-	return hasCycle;
-		
+		return hasCycle;
+
 	}
-	
-	 /**
+
+	/**
 	 * @param strategyTree
 	 * @return True iff 'intervention' can be reached from 'this'
 	 */
 	private boolean isReachable(StrategyTree strategyTree) {
-		 boolean isReachable = false;
-		 if (branches != null)
-		 for (int i=0;(i<branches.size()&&!isReachable);i++){
-				TreeADDBranch branch = branches.get(i);		
-				if (branch != null){
-				StrategyTree auxBranchStrategyTree = (StrategyTree)branch.getPotential();
-				if (auxBranchStrategyTree != null){
-				isReachable = auxBranchStrategyTree == strategyTree;
-				isReachable = isReachable || auxBranchStrategyTree.isReachable(strategyTree);
+		boolean isReachable = false;
+		if (branches != null)
+			for (int i = 0; (i < branches.size() && !isReachable); i++) {
+				TreeADDBranch branch = branches.get(i);
+				if (branch != null) {
+					StrategyTree auxBranchStrategyTree = (StrategyTree) branch.getPotential();
+					if (auxBranchStrategyTree != null) {
+						isReachable = auxBranchStrategyTree == strategyTree;
+						isReachable = isReachable || auxBranchStrategyTree.isReachable(strategyTree);
+					}
 				}
-				}
-		 }
-		 return isReachable;
+			}
+		return isReachable;
 	}
 
 	/**
-     * @param strategyTree <code>Intervention</code>
-     * @return True when <code>this</code> and <code>intervention</code> are equals.
-     */
-    public boolean equals(StrategyTree strategyTree) {
-    	int numBranches = branches.size();
-        boolean stillEqual =
-                    strategyTree != null &&
-                    strategyTree.topVariable == topVariable &&
-                    strategyTree.branches.size() == numBranches;
-        if (stillEqual) {
-            // Compare each branch
-            for (int i = 0; i < numBranches && stillEqual; i++) {
-                TreeADDBranch branch = branches.get(i);
-                // Get the corresponding branch to "this.branches.get(i)" in the other "intervention"
-                List<State> states = branch.getStates();
-                // A branch always has at least one state
-                TreeADDBranch interventionBranch = strategyTree.getBranch(states.get(0));
-                stillEqual &= interventionBranch != null;
-                // Compare states
-                if (stillEqual) {
-                	List<State> interventionBranchStates = interventionBranch.getStates(); 
-                	stillEqual &= interventionBranchStates.size() == states.size() &&
-                			interventionBranchStates.containsAll(states);
-                }
-                // Compare potentials
-                if (stillEqual) {
-                    StrategyTree strategyTreeBranchPotential = (StrategyTree)interventionBranch.getPotential();
-                    StrategyTree branchPotential = (StrategyTree)branch.getPotential();
-                    stillEqual &= !((strategyTreeBranchPotential == null && branchPotential != null) ||
-                            (strategyTreeBranchPotential != null && branchPotential == null));
-                    // Recursive part (it won't be evaluated when already false)
-                   	stillEqual &= strategyTreeBranchPotential != null ?
-                   			strategyTreeBranchPotential.equals(branchPotential) : true;
-                }
-            }
-        }
-        return stillEqual;
-    }	
-    
-	/**
-	 * @param strategyTrees
-	 * @return <code>true</code> when all the interventions are equal.
+	 * @param strategyTree <code>Intervention</code>
+	 * @return True when <code>this</code> and <code>intervention</code> are equals.
 	 */
-	protected static boolean equalInterventions(StrategyTree[] strategyTrees) {
-		boolean equalInterventions = true;
-		int numInterventions = strategyTrees.length;
-		if (strategyTrees != null && numInterventions > 1) {
-			StrategyTree firstStrategyTree = strategyTrees[0];
-			for (int i = 1; i < numInterventions && equalInterventions; i++) {
-				equalInterventions &= (firstStrategyTree == null) ? strategyTrees[i] == null
-						: firstStrategyTree.equals(strategyTrees[i]);
+	public boolean equals(StrategyTree strategyTree) {
+		int numBranches = branches.size();
+		boolean stillEqual = strategyTree != null && strategyTree.topVariable == topVariable
+				&& strategyTree.branches.size() == numBranches;
+		if (stillEqual) {
+			// Compare each branch
+			for (int i = 0; i < numBranches && stillEqual; i++) {
+				TreeADDBranch branch = branches.get(i);
+				// Get the corresponding branch to "this.branches.get(i)" in the other "intervention"
+				List<State> states = branch.getStates();
+				// A branch always has at least one state
+				TreeADDBranch interventionBranch = strategyTree.getBranch(states.get(0));
+				stillEqual &= interventionBranch != null;
+				// Compare states
+				if (stillEqual) {
+					List<State> interventionBranchStates = interventionBranch.getStates();
+					stillEqual &= interventionBranchStates.size() == states.size() && interventionBranchStates
+							.containsAll(states);
+				}
+				// Compare potentials
+				if (stillEqual) {
+					StrategyTree strategyTreeBranchPotential = (StrategyTree) interventionBranch.getPotential();
+					StrategyTree branchPotential = (StrategyTree) branch.getPotential();
+					stillEqual &= !(
+							(strategyTreeBranchPotential == null && branchPotential != null) || (
+									strategyTreeBranchPotential != null && branchPotential == null
+							)
+					);
+					// Recursive part (it won't be evaluated when already false)
+					stillEqual &= strategyTreeBranchPotential != null ?
+							strategyTreeBranchPotential.equals(branchPotential) :
+							true;
+				}
 			}
 		}
-		return equalInterventions;
+		return stillEqual;
 	}
-	
-    /**
-     * @return List of interventions contained in branches if they are not null.
-     */
-    public List<StrategyTree> getNextInterventions() {
-    	List<StrategyTree> nextStrategyTrees = new ArrayList<>();
-    	for (TreeADDBranch branch : branches) { // branches is never null according to TreeADDPotential code
-    		Potential branchPotential = branch.getPotential();
-    		if (branchPotential != null) {
-    			nextStrategyTrees.add((StrategyTree)branchPotential);
-    		}
-    	}
-    	return nextStrategyTrees;
-    }
-	
-    /**
-     * @return <code>List</code> of <code>State</code>
-     */
-    public List<State> getNonZeroProbabilityStates() {
-    	List<State> states = new ArrayList<>();
-    	for (TreeADDBranch branch : branches) {
-    		states.addAll(branch.getStates());
-    	}
-    	return states;
-    }
-    
+
 	/**
-	 * @param branch
-	 * @return The intervention corresponding to 'branch'
+	 * @return List of interventions contained in branches if they are not null.
 	 */
-	public static StrategyTree getInterventionBranch(TreeADDBranch branch) {
-		return (StrategyTree) (branch.getPotential());
+	public List<StrategyTree> getNextInterventions() {
+		List<StrategyTree> nextStrategyTrees = new ArrayList<>();
+		for (TreeADDBranch branch : branches) { // branches is never null according to TreeADDPotential code
+			Potential branchPotential = branch.getPotential();
+			if (branchPotential != null) {
+				nextStrategyTrees.add((StrategyTree) branchPotential);
+			}
+		}
+		return nextStrategyTrees;
 	}
-	
-	/** 
+
+	/**
+	 * @return <code>List</code> of <code>State</code>
+	 */
+	public List<State> getNonZeroProbabilityStates() {
+		List<State> states = new ArrayList<>();
+		for (TreeADDBranch branch : branches) {
+			states.addAll(branch.getStates());
+		}
+		return states;
+	}
+
+	/**
 	 * @param state
 	 * @return branch that contains state or null
 	 */
@@ -565,11 +568,11 @@ public class StrategyTree extends TreeADDPotential {
 		}
 		return null;
 	}
-	
+
 	public String toString() {
 		StringBuilder strBuffer = new StringBuilder();
-//		strBuffer.append(indent);
-//		strBuffer.append(topVariable.getName());
+		//		strBuffer.append(indent);
+		//		strBuffer.append(topVariable.getName());
 		// Print variables
 		if (branches != null && branches.size() > 0) {
 			//strBuffer.append("\n");
@@ -581,7 +584,6 @@ public class StrategyTree extends TreeADDPotential {
 		return strBuffer.toString();
 	}
 
-	
 	public String toStringForGraphviz(ProbNet net) {
 
 		String content = null;
@@ -592,7 +594,7 @@ public class StrategyTree extends TreeADDPotential {
 
 		Set<StrategyTree> nodes = this.getInterventions();
 		Set<StrategyTree> leaves = this.getInterventionsLeaves();
-		
+
 		int i = 0;
 		for (StrategyTree skNode : nodes) {
 			idNode.put(skNode, i);
@@ -602,15 +604,14 @@ public class StrategyTree extends TreeADDPotential {
 				strNodes = skNode.topVariable.getName();
 				if (leaves.contains(skNode)) {
 					List<TreeADDBranch> skNodeBranches = skNode.getBranches();
-					if ((skNodeBranches != null)&&(skNodeBranches.size()>0)){
+					if ((skNodeBranches != null) && (skNodeBranches.size() > 0)) {
 						strNodes = strNodes + "=" + skNodeBranches.get(0).getStates().toString();
 					}
 				}
 
-				content = content + i + " [label=\"" + strNodes + "\",shape="
-						+ toStringShapeForGraphviz(net, skNode.topVariable) + ",fillcolor="+
-						toStringColorShapeForGraphviz(net, skNode.topVariable)+
-						",style=filled];\n";
+				content = content + i + " [label=\"" + strNodes + "\",shape=" + toStringShapeForGraphviz(net,
+						skNode.topVariable) + ",fillcolor=" + toStringColorShapeForGraphviz(net, skNode.topVariable)
+						+ ",style=filled];\n";
 			}
 			i = i + 1;
 		}
@@ -627,8 +628,7 @@ public class StrategyTree extends TreeADDPotential {
 
 						List<State> states = node.branches.get(j).getBranchStates();
 						String strStates = getStringStates(states);
-						content = content + nodeIdNode + "->" + idNode.get(child) + "[label=\"" + strStates
-								+ "\"];\n";
+						content = content + nodeIdNode + "->" + idNode.get(child) + "[label=\"" + strStates + "\"];\n";
 					}
 				}
 			}
@@ -663,37 +663,37 @@ public class StrategyTree extends TreeADDPotential {
 
 	private String getStringStates(List<State> states) {
 		String str = "";
-		
-		if (states!=null){
+
+		if (states != null) {
 			int size = states.size();
-			if (size>0){
+			if (size > 0) {
 				str = states.get(0).toString();
-				for (int i=1;i<size;i++){
+				for (int i = 1; i < size; i++) {
 					str = str + states.get(i).toString();
-					if (i<size-1){
+					if (i < size - 1) {
 						str = str + ", ";
 					}
 				}
-			}			
+			}
 		}
-		
+
 		return str;
 	}
 
 	public List<StrategyTree> getInterventionsChildren() {
-		
+
 		List<StrategyTree> list = new ArrayList<>();
-		if (branches!=null){
-			for (TreeADDBranch branch:branches){
+		if (branches != null) {
+			for (TreeADDBranch branch : branches) {
 				list.add(getInterventionBranch(branch));
 			}
 		}
 		return list;
 	}
 
-	private String toStringShapeForGraphviz(ProbNet net,Variable topVariable) {
+	private String toStringShapeForGraphviz(ProbNet net, Variable topVariable) {
 		String string = null;
-		
+
 		if (net != null) {
 			Node node;
 			try {
@@ -712,23 +712,21 @@ public class StrategyTree extends TreeADDPotential {
 				default:
 					break;
 				}
-			}
-			else {
+			} else {
 				string = "decision";
 			}
 		} else {
 			string = "decision";
 		}
-			
+
 		return string;
 	}
-	
-	
-	private String toStringColorShapeForGraphviz(ProbNet net,Variable topVariable) {
+
+	private String toStringColorShapeForGraphviz(ProbNet net, Variable topVariable) {
 		String string = null;
 		String colorDecision = "lightblue";
 		String colorChance = "yellow";
-		
+
 		if (net != null) {
 			Node node;
 			try {
@@ -747,14 +745,13 @@ public class StrategyTree extends TreeADDPotential {
 				default:
 					break;
 				}
-			}
-			else {
+			} else {
 				string = colorDecision;
 			}
 		} else {
 			string = colorDecision;
 		}
-			
+
 		return string;
 	}
 
@@ -764,25 +761,24 @@ public class StrategyTree extends TreeADDPotential {
 
 	private Set<StrategyTree> auxGetInterventions() {
 		Set<StrategyTree> auxSet;
-		
+
 		auxSet = new HashSet<>();
 		auxSet.add(this);
-		
-		if (branches!=null){
-			
+
+		if (branches != null) {
+
 			for (int i = 0; i < branches.size(); i++) {
 				TreeADDBranch auxBranch = branches.get(i);
 				StrategyTree auxStrategyTreeBranch = getInterventionBranch(auxBranch);
-				if (auxStrategyTreeBranch !=null){
+				if (auxStrategyTreeBranch != null) {
 					auxSet.addAll(auxStrategyTreeBranch.auxGetInterventions());
 				}
 			}
 		}
-		
+
 		return auxSet;
 	}
-	
-	
+
 	public boolean hasInterventionForDecision(Variable decision) {
 		boolean hasInterv = false;
 
@@ -801,11 +797,10 @@ public class StrategyTree extends TreeADDPotential {
 		}
 		return hasInterv;
 	}
-	
-	@Override
-	public Potential deepCopy(ProbNet copyNet) {
+
+	@Override public Potential deepCopy(ProbNet copyNet) {
 		StrategyTree strategyTree = (StrategyTree) super.deepCopy(copyNet);
 		return strategyTree;
 	}
-	
+
 }

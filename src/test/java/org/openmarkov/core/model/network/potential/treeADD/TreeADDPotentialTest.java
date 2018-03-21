@@ -7,15 +7,12 @@
 
 package org.openmarkov.core.model.network.potential.treeADD;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.model.graph.LabelledLink;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
@@ -26,126 +23,124 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.core.model.network.type.MIDType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TreeADDPotentialTest {
 
 	private ProbNet probNet;
-	
+
 	private PNConstraint networkConstraint;
-	
+
 	private Variable variableA;
-	
+
 	private Variable variableB;
-	
+
 	private State absent;
-	
+
 	private State present;
-	
+
 	private PotentialRole role;
-	
+
 	private NodeType nodeType;
-	
+
 	private TablePotential potentialvaluesA;
-	
+
 	private TablePotential potentialBA;
-	
+
 	private TablePotential potentialBA0;
-	
+
 	private TablePotential potentialBA1;
-	
+
 	private TreeADDPotential treeADD;
-	
+
 	private List<Variable> listA;
-	
+
 	private List<Variable> listB;
-	
+
 	private List<Variable> listBA;
-	
+
 	private List<Variable> variablesBA;
-	
+
 	private List<Potential> leaves;
-	
+
 	private Variable startVariable;
-	
+
 	private Node startNode;
-	
+
 	private TreeADDBranch branchData0;
-	
+
 	private TreeADDBranch branchData1;
-	
+
 	private Node branchNode0;
-		
+
 	private Node branchNode1;
-	
+
 	private LabelledLink<Node> labelledlink0;
-	
+
 	private LabelledLink<Node> labelledlink1;
-	
-	@Before
-    public void setUp() throws Exception {
-		
-		
-		 // create variables
+
+	@Before public void setUp() throws Exception {
+
+		// create variables
 		variableA = new Variable("A", 2);
-		variableB = new Variable("B", 2); 
-		
+		variableB = new Variable("B", 2);
+
 		// set variable states
 		absent = new State("absent");
 		present = new State("present");
-		State [] states= {absent, present};
-				
+		State[] states = { absent, present };
+
 		variableA.setStates(states);
 		variableB.setStates(states);
-		
+
 		// create table potential P(a)
 		listA = new ArrayList<>(1);
-		double [] tableA ={0.9, 0.1};
+		double[] tableA = { 0.9, 0.1 };
 		listA.add(variableA);
 		role = PotentialRole.CONDITIONAL_PROBABILITY;
 		potentialvaluesA = new TablePotential(listA, role, tableA);
-		
+
 		// create subpotentials (leaves of the treeADD)
 		listB = new ArrayList<>(1);
-		double [] tableBA0 ={1.0, 0.0};
-		double [] tableBA1 ={0.9, 0.1};
+		double[] tableBA0 = { 1.0, 0.0 };
+		double[] tableBA1 = { 0.9, 0.1 };
 		listB.add(variableB);
-		potentialBA0= new TablePotential(listB, role, tableBA0);// leaf potential
-		potentialBA1= new TablePotential(listB, role, tableBA1);// leaf potential
-		
-				
+		potentialBA0 = new TablePotential(listB, role, tableBA0);// leaf potential
+		potentialBA1 = new TablePotential(listB, role, tableBA1);// leaf potential
+
 		// create treeADD potential P(b|a)
 		listBA = new ArrayList<>(2);
 		listBA.add(variableB);
 		listBA.add(variableA);
-		
+
 		//create branches
 		startVariable = variableA;
 		List<State> absentState = new ArrayList<>();
 		List<State> presentState = new ArrayList<>();
 		absentState.add(absent);
 		presentState.add(present);
-		branchData0= new TreeADDBranch(absentState, startVariable, potentialBA0, listBA);
-		branchData1= new TreeADDBranch(presentState, startVariable, potentialBA1, listBA);
-		
-		
+		branchData0 = new TreeADDBranch(absentState, startVariable, potentialBA0, listBA);
+		branchData1 = new TreeADDBranch(presentState, startVariable, potentialBA1, listBA);
+
 		// Append the new 'states' branch to the tree
 		labelledlink0 = new LabelledLink<>(startNode, branchNode0, true, branchData0);
 		labelledlink1 = new LabelledLink<>(startNode, branchNode1, true, branchData1);
-		
+
 		// create treeADD
-		treeADD = new TreeADDPotential(listBA, startVariable, PotentialRole.CONDITIONAL_PROBABILITY) ;
-	
+		treeADD = new TreeADDPotential(listBA, startVariable, PotentialRole.CONDITIONAL_PROBABILITY);
+
 		//MID Markov influence diagram
 		probNet = new ProbNet(MIDType.getUniqueInstance());
-		
+
 		nodeType = NodeType.CHANCE;
-		
+
 		probNet.addNode(variableA, nodeType);
 		probNet.addNode(variableB, nodeType);
 		probNet.addLink(variableA, variableB, true);
 		probNet.addPotential(potentialvaluesA);
 		probNet.addPotential(treeADD);
-		
-		
+
 		List<Potential> potentials = probNet.getPotentials();
 		for (Potential potential : potentials) {
 			if (potential instanceof TreeADDPotential) {
@@ -193,13 +188,11 @@ public class TreeADDPotentialTest {
 		assertEquals(0.1, tablePotential.values[1]);
 	}*/
 
-	@Test
-	public void testShift() {
+	@Test public void testShift() {
 		// TODO
 	}
 
-	@Test
-	public void testGetInducedFindings() {
+	@Test public void testGetInducedFindings() {
 		// TODO
 	}
 

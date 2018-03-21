@@ -14,11 +14,10 @@ import org.openmarkov.core.model.network.Node;
 /**
  * <code>PurposeEdit</code> is a simple edit that allows modify
  * the node purpose property. 
- *    
+ *
  * @version 1.0 21/12/10
  * @author Miguel Palacios
- */
-public class PrecisionEdit extends SimplePNEdit {
+ */ public class PrecisionEdit extends SimplePNEdit {
 	/**
 	 * The last purpose before the edition
 	 */
@@ -31,39 +30,44 @@ public class PrecisionEdit extends SimplePNEdit {
 	 * The edited node
 	 */
 	private Node node = null;
+
 	/**
 	 * Creates a new <code>PurposeEdit</code> with the node and its new purpose.
-	 * @param node the edited node
+	 *
+	 * @param node         the edited node
 	 * @param newPrecision the new precision
 	 */
-	public PrecisionEdit (Node node, double newPrecision){
+	public PrecisionEdit(Node node, double newPrecision) {
 		super(node.getProbNet());
 		this.lastPrecision = node.getVariable().getPrecision();
 		this.newPrecision = newPrecision;
 		this.node = node;
-	}	
-	
-	@Override
-	public void doEdit() throws DoEditException {
+	}
+
+	@Override public void doEdit() throws DoEditException {
 		node.getVariable().setPrecision(newPrecision);
 	}
-	@Override
-	public void undo() {
+
+	@Override public void undo() {
 		super.undo();
 		node.getVariable().setPrecision(lastPrecision);
 	}
+
 	/**
 	 * Gets the new purpose after the edition
+	 *
 	 * @return the new purpose
 	 */
-	public Double getNewPrecision(){
+	public Double getNewPrecision() {
 		return newPrecision;
 	}
+
 	/**
 	 * Gets the last purpose before the edition
+	 *
 	 * @return the last purpose
 	 */
-	public Double getLastPrecision(){
+	public Double getLastPrecision() {
 		return lastPrecision;
 	}
 }

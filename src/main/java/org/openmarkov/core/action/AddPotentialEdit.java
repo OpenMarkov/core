@@ -10,23 +10,23 @@ package org.openmarkov.core.action;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.Potential;
 
-@SuppressWarnings("serial")
-public class AddPotentialEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class AddPotentialEdit extends SimplePNEdit {
 
 	protected Potential potential;
-	
+
 	// Constructor
-	/** @param probNet <code>ProbNet</code>
-	 * @param potential <code>Potential</code> */
-	public AddPotentialEdit(
-			ProbNet probNet, Potential potential) {
+
+	/**
+	 * @param probNet   <code>ProbNet</code>
+	 * @param potential <code>Potential</code>
+	 */
+	public AddPotentialEdit(ProbNet probNet, Potential potential) {
 		super(probNet);
 		this.potential = potential;
 	}
 
 	// Methods
-	@Override
-	public void doEdit() {
+	@Override public void doEdit() {
 		probNet.addPotential(potential);
 	}
 
@@ -35,12 +35,16 @@ public class AddPotentialEdit extends SimplePNEdit {
 		probNet.removePotential(potential);
 	}
 
-	/** @return potential <code>Potential</code> */
+	/**
+	 * @return potential <code>Potential</code>
+	 */
 	public Potential getPotential() {
 		return potential;
 	}
 
-	/** @return A <code>String</code> with the potential variables. */
+	/**
+	 * @return A <code>String</code> with the potential variables.
+	 */
 	public String toString() {
 		StringBuilder buffer = new StringBuilder("AddPotentialEdit: ");
 		if (potential != null) {

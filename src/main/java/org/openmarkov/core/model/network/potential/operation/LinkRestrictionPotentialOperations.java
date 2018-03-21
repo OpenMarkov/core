@@ -7,21 +7,23 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
+import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.NoLinkRestriction;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.constraint.NoLinkRestriction;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.ExactDistrPotential;;
+;
 
 public class LinkRestrictionPotentialOperations {
 
@@ -34,7 +36,7 @@ public class LinkRestrictionPotentialOperations {
 
 	/****
 	 * Analyzes if the node has any parent link with a link restriction
-	 * 
+	 *
 	 * @param node
 	 * @return <code>true</code> if the node has a link restriction
 	 */
@@ -47,14 +49,14 @@ public class LinkRestrictionPotentialOperations {
 
 	/*****
 	 * Retrieves the parent links of a node which have a link restriction.
-	 * 
+	 *
 	 * @param node
 	 * @return a collection of links which have a link restriction.
 	 */
 	public static List<Link<Node>> getParentLinksWithRestriction(Node node) {
 		List<Link<Node>> links = node.getLinks();
-	    List<Link<Node>> linksWithRestriction = new ArrayList<>();
-	    List<Node> parents = node.getParents();
+		List<Link<Node>> linksWithRestriction = new ArrayList<>();
+		List<Node> parents = node.getParents();
 
 		for (Link<Node> link : links) {
 			if (parents.contains(link.getNode1()) && link.hasRestrictions()) {
@@ -64,71 +66,55 @@ public class LinkRestrictionPotentialOperations {
 		return linksWithRestriction;
 	}
 
-    public static List<int[]> getStateCombinationsWithLinkRestriction (Node node)
-    {
-        //CMI Issue #162
-        Potential p = node.getPotentials().get(0);
-        TablePotential potential;
-        if ( p instanceof ExactDistrPotential ) {
-            potential = (TablePotential) ((ExactDistrPotential)p).getTablePotential();
-        } else {
-            potential = (TablePotential) node.getPotentials ().get (0);
-        }
-        //TablePotential potential = (TablePotential) node.getPotentials ().get (0);
-        //CMF
-        List<Variable> nodeVariables = potential.getVariables ();
-        List<int[]> stateList = new ArrayList<>();
-        List<Link<Node>> links = getParentLinksWithRestriction (node);
-        for (Link<Node> link : links)
-        {
-            Variable var1 = link.getNode1 ().getVariable ();
-            State[] var1States = var1.getStates ();
-            Variable var2 = link.getNode2 ().getVariable ();
-            State[] var2States = var2.getStates ();
-            Map<Integer, Integer> independentVariables = new HashMap<>();
-            int var1Index = 0, var2Index = 0;
-            for (int i = 0; i < nodeVariables.size (); i++)
-            {
-                Variable var = nodeVariables.get (i);
-                if (var.equals (var1))
-                {
-                    var1Index = i;
-                }
-                else
-                {
-                    if (var.equals (var2))
-                    {
-                        var2Index = i;
-                    }
-                    else
-                    {
-                        independentVariables.put (i, var.getNumStates ());
-                    }
-                }
-            }
-            for (int i = 0; i < var1States.length; i++)
-            {
-                for (int j = 0; j < var2States.length; j++)
-                {
-                    if (link.areCompatible (var1States[i], var2States[j]) == 0)
-                    {
-                        stateList.addAll (LinkRestrictionPotentialOperations.getStateCombinations (independentVariables,
-                                                                                                   nodeVariables,
-                                                                                                   i,
-                                                                                                   var1Index,
-                                                                                                   j,
-                                                                                                   var2Index));
-                    }
-                }
-            }
-        }
-        return stateList;
-    }
+	public static List<int[]> getStateCombinationsWithLinkRestriction(Node node) {
+		//CMI Issue #162
+		Potential p = node.getPotentials().get(0);
+		TablePotential potential;
+		if (p instanceof ExactDistrPotential) {
+			potential = (TablePotential) ((ExactDistrPotential) p).getTablePotential();
+		} else {
+			potential = (TablePotential) node.getPotentials().get(0);
+		}
+		//TablePotential potential = (TablePotential) node.getPotentials ().get (0);
+		//CMF
+		List<Variable> nodeVariables = potential.getVariables();
+		List<int[]> stateList = new ArrayList<>();
+		List<Link<Node>> links = getParentLinksWithRestriction(node);
+		for (Link<Node> link : links) {
+			Variable var1 = link.getNode1().getVariable();
+			State[] var1States = var1.getStates();
+			Variable var2 = link.getNode2().getVariable();
+			State[] var2States = var2.getStates();
+			Map<Integer, Integer> independentVariables = new HashMap<>();
+			int var1Index = 0, var2Index = 0;
+			for (int i = 0; i < nodeVariables.size(); i++) {
+				Variable var = nodeVariables.get(i);
+				if (var.equals(var1)) {
+					var1Index = i;
+				} else {
+					if (var.equals(var2)) {
+						var2Index = i;
+					} else {
+						independentVariables.put(i, var.getNumStates());
+					}
+				}
+			}
+			for (int i = 0; i < var1States.length; i++) {
+				for (int j = 0; j < var2States.length; j++) {
+					if (link.areCompatible(var1States[i], var2States[j]) == 0) {
+						stateList.addAll(LinkRestrictionPotentialOperations
+								.getStateCombinations(independentVariables, nodeVariables, i, var1Index, j, var2Index));
+					}
+				}
+			}
+		}
+		return stateList;
+	}
 
 	/****
 	 * Checks whether a combination of states of the node is influenced by a
 	 * link restriction
-	 * 
+	 *
 	 * @param combination
 	 *            - combination of states of the variables of the potential
 	 * @param links
@@ -142,26 +128,20 @@ public class LinkRestrictionPotentialOperations {
 	 * @return <code>true</code> if the combination of states is not influences
 	 *         by a link restriction
 	 */
-    private static boolean hasRestriction (int[] combination,
-                                           Collection<Link<Node>> links,
-                                           Node node,
-                                           List<Variable> nodeVariables,
-                                           int nodeStateIndex)
-    {
-        State[] nodeStates = node.getVariable ().getStates ();
-        for (Link<Node> link : links)
-        {
-            Variable var1 = link.getNode1 ().getVariable ();
-            State[] var1States = var1.getStates ();
-            int var1Index = nodeVariables.indexOf (var1);
-            int var1StateIndex = combination[var1Index];
-            if (link.areCompatible (var1States[var1StateIndex], nodeStates[nodeStateIndex]) == 0)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+	private static boolean hasRestriction(int[] combination, Collection<Link<Node>> links, Node node,
+			List<Variable> nodeVariables, int nodeStateIndex) {
+		State[] nodeStates = node.getVariable().getStates();
+		for (Link<Node> link : links) {
+			Variable var1 = link.getNode1().getVariable();
+			State[] var1States = var1.getStates();
+			int var1Index = nodeVariables.indexOf(var1);
+			int var1StateIndex = combination[var1Index];
+			if (link.areCompatible(var1States[var1StateIndex], nodeStates[nodeStateIndex]) == 0) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/******
 	 * Recalculates the probability of the potential for the variable so that
@@ -169,19 +149,18 @@ public class LinkRestrictionPotentialOperations {
 	 * combinations of the variable given the state of the parent variables.
 	 * This methods only assigns probabilities to state combinations, which are
 	 * not influenced by a link restriction.
-	 * 
+	 *
 	 * @param node
 	 *            - the probability node
 	 * @param potential
 	 *            - the probability potential
 	 * @param stateCombination
 	 *            - the combination of states of the potential.
-	 * 
+	 *
 	 * @return the potential with the updated probabilities.
 	 */
-	public static Potential redistributeProbabilities(Node node,
-			TablePotential potential, int[] stateCombination) {
-	    List<Variable> nodeVariables = potential.getVariables();
+	public static Potential redistributeProbabilities(Node node, TablePotential potential, int[] stateCombination) {
+		List<Variable> nodeVariables = potential.getVariables();
 		int varIndex = nodeVariables.indexOf(node.getVariable());
 		Variable var = nodeVariables.get(varIndex);
 		List<Link<Node>> parentLinks = getParentLinksWithRestriction(node);
@@ -193,8 +172,7 @@ public class LinkRestrictionPotentialOperations {
 			for (int i = 0; i < states; i++) {
 
 				singleState[varIndex] = i;
-				if (!hasRestriction(singleState, parentLinks, node,
-						nodeVariables, i)) {
+				if (!hasRestriction(singleState, parentLinks, node, nodeVariables, i)) {
 					modifiableStateList.add(i);
 					sum += potential.getValue(nodeVariables, singleState);
 				}
@@ -204,10 +182,8 @@ public class LinkRestrictionPotentialOperations {
 				for (int i = 0; i < states; i++) {
 					singleState[varIndex] = i;
 					if (modifiableStateList.contains(i)) {
-						double oldValue = potential.getValue(nodeVariables,
-								singleState);
-						potential.setValue(nodeVariables, singleState, oldValue
-								/ sum);
+						double oldValue = potential.getValue(nodeVariables, singleState);
+						potential.setValue(nodeVariables, singleState, oldValue / sum);
 					}
 				}
 			} else {
@@ -231,7 +207,7 @@ public class LinkRestrictionPotentialOperations {
 	 * Updates the probability potential according to the new link restriction
 	 * added. The link restriction belongs to the combination of the variables
 	 * of the link as specified by var1StateIndex and var2StateIndex.
-	 * 
+	 *
 	 * @param node
 	 *            - The child node of the link.
 	 * @param linkRestriction
@@ -243,11 +219,10 @@ public class LinkRestrictionPotentialOperations {
 	 * @return the probability potential of the node updated properly.
 
 	 */
-	public static Potential updatePotentialByAddLinkRestriction(Node node,
-			TablePotential linkRestriction, int var1StateIndex,
-			int var2StateIndex) {
+	public static Potential updatePotentialByAddLinkRestriction(Node node, TablePotential linkRestriction,
+			int var1StateIndex, int var2StateIndex) {
 
-	    List<Variable> linkVariables = linkRestriction.getVariables();
+		List<Variable> linkVariables = linkRestriction.getVariables();
 		Variable var1 = linkVariables.get(0);
 		Variable var2 = linkVariables.get(1);
 		Potential potential = node.getPotentials().get(0);
@@ -268,15 +243,12 @@ public class LinkRestrictionPotentialOperations {
 			}
 		}
 
-		List<int[]> stateCombinations = getStateCombinations(
-				independentVarMap, nodeVariables, var1StateIndex, var1Index,
-				var2StateIndex, var2Index);
+		List<int[]> stateCombinations = getStateCombinations(independentVarMap, nodeVariables, var1StateIndex,
+				var1Index, var2StateIndex, var2Index);
 		for (int[] configuration : stateCombinations) {
-			((TablePotential) potential).setValue(nodeVariables, configuration,
-					0);
+			((TablePotential) potential).setValue(nodeVariables, configuration, 0);
 			if (node.getNodeType() == NodeType.CHANCE) {
-				redistributeProbabilities(node, (TablePotential) potential,
-						configuration);
+				redistributeProbabilities(node, (TablePotential) potential, configuration);
 			}
 
 		}
@@ -287,7 +259,7 @@ public class LinkRestrictionPotentialOperations {
 	/*********
 	 * Updates the probability potential of the node considering the link
 	 * restrictions of any parent link.
-	 * 
+	 *
 	 * @param node
 	 * @return the probability potential of the node updated according to the
 	 *         link restrictions.
@@ -297,9 +269,8 @@ public class LinkRestrictionPotentialOperations {
 		List<Link<Node>> parentLinks = getParentLinksWithRestriction(node);
 
 		for (Link<Node> link : parentLinks) {
-			potential = (TablePotential) updatePotentialByLinkRestriction(
-					link.getNode2(), (TablePotential) link.getRestrictionsPotential(),
-					potential);
+			potential = (TablePotential) updatePotentialByLinkRestriction(link.getNode2(),
+					(TablePotential) link.getRestrictionsPotential(), potential);
 		}
 		return potential;
 	}
@@ -307,7 +278,7 @@ public class LinkRestrictionPotentialOperations {
 	/*****
 	 * Updates the probability potential of the node according to the link
 	 * restriction.
-	 * 
+	 *
 	 * @param node
 	 *            - the node having the potential
 	 * @param linkRestriction
@@ -317,10 +288,10 @@ public class LinkRestrictionPotentialOperations {
 	 * @return the probability potential updated according to the link
 	 *         restriction.
 	 */
-	public static Potential updatePotentialByLinkRestriction(Node node,
-			TablePotential linkRestriction, Potential potential) {
+	public static Potential updatePotentialByLinkRestriction(Node node, TablePotential linkRestriction,
+			Potential potential) {
 
-	    List<Variable> linkVariables = linkRestriction.getVariables();
+		List<Variable> linkVariables = linkRestriction.getVariables();
 		Variable var1 = linkVariables.get(0);
 		Variable var2 = linkVariables.get(1);
 		State[] state1 = linkVariables.get(0).getStates();
@@ -346,15 +317,12 @@ public class LinkRestrictionPotentialOperations {
 			for (int var2State = 0; var2State < state2.length; var2State++) {
 				int[] statesIndices = new int[] { var1State, var2State };
 				if (linkRestriction.getValue(linkVariables, statesIndices) == 0) {
-				    List<int[]> stateCombinations = getStateCombinations(
-							independentVarMap, nodeVariables, var1State,
+					List<int[]> stateCombinations = getStateCombinations(independentVarMap, nodeVariables, var1State,
 							var1Index, var2State, var2Index);
 					for (int[] configuration : stateCombinations) {
-						((TablePotential) potential).setValue(nodeVariables,
-								configuration, 0);
+						((TablePotential) potential).setValue(nodeVariables, configuration, 0);
 						if (node.getNodeType() == NodeType.CHANCE) {
-							redistributeProbabilities(node,
-									(TablePotential) potential, configuration);
+							redistributeProbabilities(node, (TablePotential) potential, configuration);
 						}
 					}
 				}
@@ -415,11 +383,11 @@ public class LinkRestrictionPotentialOperations {
 		}
 		return combinationList;
 	}*/
-	
+
 	/*****
 	 * Generates the state combinations for a set of variables having variable 1
 	 * and variable 2 a given value.
-	 * 
+	 *
 	 * @param independentVariables
 	 *            - Set of independent variables
 	 * @param variables
@@ -436,11 +404,9 @@ public class LinkRestrictionPotentialOperations {
 	 *            list.
 	 * @return an List containing the generated state combinations.
 	 */
-	private static List<int[]> getStateCombinations(
-			Map<Integer, Integer> independentVariables,
-			List<Variable> variables, int var1Value, int var1Index,
-			int var2Value, int var2Index) {
-	    List<int[]> combinationList = new ArrayList<>();
+	private static List<int[]> getStateCombinations(Map<Integer, Integer> independentVariables,
+			List<Variable> variables, int var1Value, int var1Index, int var2Value, int var2Index) {
+		List<int[]> combinationList = new ArrayList<>();
 
 		int[] combination = new int[independentVariables.size() + 2];
 		combination[var1Index] = var1Value;
@@ -449,7 +415,7 @@ public class LinkRestrictionPotentialOperations {
 		combinationList.add(combination.clone());
 
 		// We generate the combinations for the two main variables (var1 and var2)
-		generateCombinationNew(independentVariables,combination, combinationList);
+		generateCombinationNew(independentVariables, combination, combinationList);
 		return combinationList;
 	}
 	
@@ -487,51 +453,52 @@ public class LinkRestrictionPotentialOperations {
 		}
 		rightLifo.addLast(variableIndex);
 	}*/
-	
+
 	/**
-	 * Generates all the possible states of the independents variables 
+	 * Generates all the possible states of the independents variables
 	 * (the current combination sets the immutable states defined by the nodes with the link restriction.
-	 * @param independentVariables Variables for that we need to generate combinations 
-	 * @param currentCombination Predefined combination with the values of the nodes with the link restriction
-	 * @param combinationsList List of all posibles combinations
+	 *
+	 * @param independentVariables Variables for that we need to generate combinations
+	 * @param currentCombination   Predefined combination with the values of the nodes with the link restriction
+	 * @param combinationsList     List of all posibles combinations
 	 */
-	private static void generateCombinationNew(Map<Integer, Integer> independentVariables,
-			int[] currentCombination, List<int[]> combinationsList) {
-		
+	private static void generateCombinationNew(Map<Integer, Integer> independentVariables, int[] currentCombination,
+			List<int[]> combinationsList) {
+
 		// Calculate the number of possible combinations of the current combination
 		int numCombinations = 1;
 		int[] independentVariablesKeys = new int[independentVariables.size()];
 		int temporalIndex = 0;
-		for(Integer key : independentVariables.keySet()){
+		for (Integer key : independentVariables.keySet()) {
 			numCombinations = numCombinations * independentVariables.get(key);
 			independentVariablesKeys[temporalIndex] = key;
 			temporalIndex++;
 		}
-		
+
 		// Constructs the combinations repetitions array. 
 		//This array sets the number of occurrences of the same value for each state (to do the combinatory task)
 		int temporal = numCombinations;
 		int[] combinationsRepetitions = new int[independentVariables.size()];
-		for(int i = 0; i < independentVariables.size(); i++){
-			combinationsRepetitions[i] = temporal/independentVariables.get(independentVariablesKeys[i]);
+		for (int i = 0; i < independentVariables.size(); i++) {
+			combinationsRepetitions[i] = temporal / independentVariables.get(independentVariablesKeys[i]);
 			temporal = combinationsRepetitions[i];
 		}
-		
+
 		// We start at the second combination because the first combination is formed with zeros 
 		// (and it was inserted before the call to this method)
 		int[] newCombination;
-		for(int i = 1; i < numCombinations; i++){
+		for (int i = 1; i < numCombinations; i++) {
 			newCombination = currentCombination.clone();
 			// For each combination we set the states of each independent variable
 			int coordinate = 0;
 			int temporalRest = i;
-			for(Integer key : independentVariables.keySet()){
-				newCombination[key] = temporalRest/combinationsRepetitions[coordinate];
-				temporalRest = temporalRest%combinationsRepetitions[coordinate];
+			for (Integer key : independentVariables.keySet()) {
+				newCombination[key] = temporalRest / combinationsRepetitions[coordinate];
+				temporalRest = temporalRest % combinationsRepetitions[coordinate];
 				coordinate++;
 			}
-			combinationsList.add(newCombination);			
+			combinationsList.add(newCombination);
 		}
-		
+
 	}
 }

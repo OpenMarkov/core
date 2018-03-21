@@ -7,33 +7,30 @@
 
 package org.openmarkov.core.action;
 
-import java.util.Vector;
-
-import javax.swing.undo.UndoableEdit;
-
 import org.openmarkov.core.model.network.ProbNet;
 
-@SuppressWarnings("serial")
-public class COrientLinksEdit extends CompoundPNEdit {
-	
+import javax.swing.undo.UndoableEdit;
+import java.util.Vector;
+
+@SuppressWarnings("serial") public class COrientLinksEdit extends CompoundPNEdit {
+
 	public COrientLinksEdit(ProbNet probNet, Vector<UndoableEdit> edits) {
 		super(probNet);
 		this.edits = edits;
 	}
 
 	// Methods
-	@Override
-	public void generateEdits() {
-	}	
-		
+	@Override public void generateEdits() {
+	}
+
 	public String toString() {
 		StringBuilder buffer = new StringBuilder("Orient links: ");
-		for (UndoableEdit edit : edits){
-			OrientLinkEdit orientLinkEdit = (OrientLinkEdit)edit;
+		for (UndoableEdit edit : edits) {
+			OrientLinkEdit orientLinkEdit = (OrientLinkEdit) edit;
 			buffer.append(orientLinkEdit.getVariable1().getName());
 			if (orientLinkEdit.isDirected()) {
 				buffer.append(" --> ");
-			} else {			
+			} else {
 				buffer.append(" --- ");
 			}
 			buffer.append(orientLinkEdit.getVariable2().getName());
@@ -43,21 +40,19 @@ public class COrientLinksEdit extends CompoundPNEdit {
 		return buffer.toString();
 	}
 
-	@Override
-	public boolean equals(Object arg0)
-	{
+	@Override public boolean equals(Object arg0) {
 		boolean sameInformation = true;
 
 		if (arg0 instanceof COrientLinksEdit) {
-			COrientLinksEdit editToCompare = (COrientLinksEdit)arg0;
+			COrientLinksEdit editToCompare = (COrientLinksEdit) arg0;
 
-			for(UndoableEdit edit : editToCompare.edits) {
+			for (UndoableEdit edit : editToCompare.edits) {
 				sameInformation &= edits.contains(edit);
 			}
 
-			for(UndoableEdit edit : edits) {
+			for (UndoableEdit edit : edits) {
 				sameInformation &= editToCompare.edits.contains(edit);
-			}            
+			}
 		} else {
 			sameInformation = false;
 		}
@@ -65,5 +60,4 @@ public class COrientLinksEdit extends CompoundPNEdit {
 		return sameInformation;
 	}
 
-	
 }

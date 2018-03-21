@@ -12,13 +12,12 @@ import org.openmarkov.core.model.network.Node;
 
 /**
  * <code>RelevanceEdit</code> is a simple edit that allows modify
- * the node relevance property. 
- *    
- * @version 1.0 21/12/10
+ * the node relevance property.
+ *
  * @author Miguel Palacios
+ * @version 1.0 21/12/10
  */
-@SuppressWarnings("serial")
-public class RelevanceEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class RelevanceEdit extends SimplePNEdit {
 	/**
 	 * The last relevance before the edition
 	 */
@@ -31,40 +30,45 @@ public class RelevanceEdit extends SimplePNEdit {
 	 * The edited node
 	 */
 	private Node node = null;
+
 	/**
 	 * Creates a new <code>RelevanceEdit</code> with the node and new relevance
 	 * specified.
-	 * @param node the node that will be edited
+	 *
+	 * @param node         the node that will be edited
 	 * @param newRelevance the new relevance
 	 */
-	public RelevanceEdit (Node node, double newRelevance){
+	public RelevanceEdit(Node node, double newRelevance) {
 		super(node.getProbNet());
 		this.lastRelevance = node.getRelevance();
 		this.newRelevance = newRelevance;
 		this.node = node;
-	}	
-	
-	@Override
-	public void doEdit() throws DoEditException {
+	}
+
+	@Override public void doEdit() throws DoEditException {
 		node.setRelevance(newRelevance);
 	}
-	@Override
-	public void undo() {
+
+	@Override public void undo() {
 		super.undo();
 		node.setRelevance(lastRelevance);
 	}
+
 	/**
 	 * Gets the new relevance after the edition
+	 *
 	 * @return the new relevance
 	 */
-	public double getNewRelevance(){
+	public double getNewRelevance() {
 		return newRelevance;
 	}
+
 	/**
 	 * Gets the new relevance before the edition
+	 *
 	 * @return the last relevance
 	 */
-	public double getLastRelevance(){
+	public double getLastRelevance() {
 		return lastRelevance;
 	}
 }

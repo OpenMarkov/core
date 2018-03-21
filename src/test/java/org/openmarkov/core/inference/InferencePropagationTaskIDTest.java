@@ -7,17 +7,6 @@
 
 package org.openmarkov.core.inference;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assume.assumeTrue;
-import static org.openmarkov.core.model.network.factory.IDFactory.*;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -34,7 +23,16 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.factory.IDFactory;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-public abstract class InferencePropagationTaskIDTest  extends InferencePropagationTaskDecTest {
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
+import static org.junit.Assume.assumeTrue;
+import static org.openmarkov.core.model.network.factory.IDFactory.*;
+
+public abstract class InferencePropagationTaskIDTest extends InferencePropagationTaskDecTest {
 
 	protected ProbNet iD_DecisionTestProblemWithSV;
 
@@ -50,33 +48,30 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 	 * @throws UnexpectedInferenceException
 	 * @throws IncompatibleEvidenceException
 	 */
-	@Ignore("Old tests with an AssertionError") @Test
-	public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
-			throws IOException, ParserException, NodeNotFoundException,
-			ConstraintViolationException, NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
+	@Ignore("Old tests with an AssertionError") @Test public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
+			throws IOException, ParserException, NodeNotFoundException, ConstraintViolationException,
+			NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
 		ProbNet network = buildIDDecideTest();
 
 		Propagation algorithm;
 		EvidenceCase preResolutionEvidence;
 		EvidenceCase postResolutionEvidence;
 
-
-		List<Variable> variablesOfInterest = Arrays.asList(network.getVariable(decTestName),
-				network.getVariable(therapyName),
-				network.getVariable(diseaseName),
-				network.getVariable(testResultName),
-				network.getVariable(healthStateName),
-				network.getVariable(therapyCostName),
-				network.getVariable(testCostName));
+		List<Variable> variablesOfInterest = Arrays
+				.asList(network.getVariable(decTestName), network.getVariable(therapyName),
+						network.getVariable(diseaseName), network.getVariable(testResultName),
+						network.getVariable(healthStateName), network.getVariable(therapyCostName),
+						network.getVariable(testCostName));
 
 		preResolutionEvidence = new EvidenceCase();
 
 		//Without post-resolution evidence
 		postResolutionEvidence = new EvidenceCase();
 
-		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network,variablesOfInterest,preResolutionEvidence,postResolutionEvidence);
+		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network, variablesOfInterest, preResolutionEvidence,
+				postResolutionEvidence);
 
-		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm,network, 1.0, 0.1532, 0.8468, 0.1532, 0.14,
+		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm, network, 1.0, 0.1532, 0.8468, 0.1532, 0.14,
 				9.6312, -0.0383, -0.2);
 
 		// Post-resolution evidence: therapy = no
@@ -87,9 +82,10 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 			e.printStackTrace();
 		}
 
-		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network,variablesOfInterest,preResolutionEvidence,postResolutionEvidence);
+		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network, variablesOfInterest, preResolutionEvidence,
+				postResolutionEvidence);
 
-		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm,network, 1.0, 0.0, 1.0, 0.0, 0.014879546528105,
+		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm, network, 1.0, 0.0, 1.0, 0.0, 0.014879546528105,
 				9.895843174303259, 0.0, -0.2);
 
 		// Post-resolution evidence: result of test = negative
@@ -100,10 +96,10 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 			e.printStackTrace();
 		}
 
-		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network,
-				variablesOfInterest,preResolutionEvidence,postResolutionEvidence);
+		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network, variablesOfInterest, preResolutionEvidence,
+				postResolutionEvidence);
 
-		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm,network, 1.0, 0.0, 1.0, 0.0, 0.014879546528105,
+		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm, network, 1.0, 0.0, 1.0, 0.0, 0.014879546528105,
 				9.895843174303259, 0.0, -0.2);
 
 		// Post-resolution evidence: do test? = yes
@@ -114,11 +110,11 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 			e.printStackTrace();
 		}
 
-		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network,variablesOfInterest,
-				preResolutionEvidence,postResolutionEvidence);
+		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network, variablesOfInterest, preResolutionEvidence,
+				postResolutionEvidence);
 
-		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm,network, 1.0, 0.1532, 0.8468, 0.1532, 0.14, 9.6312,
-				-0.0383,-0.2);
+		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm, network, 1.0, 0.1532, 0.8468, 0.1532, 0.14,
+				9.6312, -0.0383, -0.2);
 
 		// Post-resolution evidence: do test? = yes & result of test = positive
 		postResolutionEvidence = new EvidenceCase();
@@ -129,10 +125,11 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 			e.printStackTrace();
 		}
 
-		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network,variablesOfInterest,
-				preResolutionEvidence,postResolutionEvidence);
+		algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(network, variablesOfInterest, preResolutionEvidence,
+				postResolutionEvidence);
 
-		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm, network, 1.0, 1.0, 0.0, 1.0, 0.8316, 8.1684, -0.25,-0.2);
+		checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(algorithm, network, 1.0, 1.0, 0.0, 1.0, 0.8316, 8.1684,
+				-0.25, -0.2);
 
 		try {
 			postResolutionEvidence.addFinding(network, IDFactory.diseaseName, "present");
@@ -142,9 +139,8 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 
 	}
 
-	protected void checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(
-			Propagation algorithm, ProbNet diagram, double t, double y1, double y2, double d,
-			double x, double  uHealthState,  double uCostOfTherapy, double uCostOfTest)
+	protected void checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(Propagation algorithm, ProbNet diagram, double t,
+			double y1, double y2, double d, double x, double uHealthState, double uCostOfTherapy, double uCostOfTest)
 			throws NotEvaluableNetworkException {
 
 		Variable variableX = null;
@@ -177,8 +173,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 			}
 
 			checkProbabilityPotential(aPosterioriProbabilities, variableX, x);
-			checkProbabilityPotential(aPosterioriProbabilities, variableY, y1,
-					y2);
+			checkProbabilityPotential(aPosterioriProbabilities, variableY, y1, y2);
 			checkProbabilityPotential(aPosterioriProbabilities, variableD, d);
 			checkProbabilityPotential(aPosterioriProbabilities, variableT, t);
 			checkUtilityPotential(aPosterioriProbabilities, variableU1, uHealthState);
@@ -193,10 +188,11 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 	//@Test
 	//TODO Review the minor error in test
 	//TODO: has this test sense here
-	public void testPreAndPostResolutionEvidenceIDDecisionTestProblem() throws NotEvaluableNetworkException, UnexpectedInferenceException, IncompatibleEvidenceException {
+	public void testPreAndPostResolutionEvidenceIDDecisionTestProblem()
+			throws NotEvaluableNetworkException, UnexpectedInferenceException, IncompatibleEvidenceException {
 		ProbNet diagram = iD_DecisionTestProblemWithSV;
 
-		Propagation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram,null,null,null);
+		Propagation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram, null, null, null);
 
 		//TODO Test combination of pre and post resolution findings.
 		try {
@@ -204,7 +200,7 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 			//Variable variableD = diagram.getVariable("D");
 
 			EvidenceCase preResolutionEvidence = new EvidenceCase();
-			preResolutionEvidence.addFinding(diagram, diseaseName,"present");
+			preResolutionEvidence.addFinding(diagram, diseaseName, "present");
 			algorithm.setPreResolutionEvidence(preResolutionEvidence);
 
 			// Test optimal policy
@@ -258,10 +254,6 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 		}
 	}
 
-
-
-
-
 	/**
 	 * @param network
 	 * @return A Task for 'network'. If the network is not evaluable
@@ -269,9 +261,8 @@ public abstract class InferencePropagationTaskIDTest  extends InferencePropagati
 	 * @throws UnexpectedInferenceException
 	 * @throws IncompatibleEvidenceException
 	 */
-	protected Propagation buildInferenceTaskAndSkipTestIfNotEvaluable(ProbNet network, List<Variable>  variablesOfInterest,
-															   EvidenceCase preResolutionEvidence,
-															   EvidenceCase postResolutionEvidence)
+	protected Propagation buildInferenceTaskAndSkipTestIfNotEvaluable(ProbNet network,
+			List<Variable> variablesOfInterest, EvidenceCase preResolutionEvidence, EvidenceCase postResolutionEvidence)
 			throws IncompatibleEvidenceException, UnexpectedInferenceException {
 		boolean isEvaluable;
 		Propagation task = null;

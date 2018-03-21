@@ -7,30 +7,27 @@
 
 package org.openmarkov.core.model.graph;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
-
-/** Uses <code>GraphsTests</code> to create a simple <code>Graph</code>. 
- * Test elementary methods in <code>Graph</code> class. */
+/**
+ * Uses <code>GraphsTests</code> to create a simple <code>Graph</code>.
+ * Test elementary methods in <code>Graph</code> class.
+ */
 public class GraphTest {
 
 	private Graph<String> graph;
-	
+
 	private String nodeA, nodeB, nodeC, nodeD;
-	
+
 	private List<String> nodes;
-	
-	@Before
-	public void setUp() throws Exception {
+
+	@Before public void setUp() throws Exception {
 		graph = GraphsTests.createTestGraph();
 		nodes = graph.getNodes();
 		nodeA = nodes.get(0);
@@ -39,9 +36,8 @@ public class GraphTest {
 		nodeD = nodes.get(3);
 	}
 
-	@Test
-	public void testMakeLinksExplicit() {
-		
+	@Test public void testMakeLinksExplicit() {
+
 		// Test that the number of links does not change after making them explicit
 		int numLinksBefore = countLinks(graph);
 		graph.makeLinksExplicit(false);
@@ -58,7 +54,7 @@ public class GraphTest {
 		assertTrue(linkABinA.isDirected());
 		assertEquals(linkABinA.getNode1(), nodeA);
 		assertEquals(linkABinA.getNode2(), nodeB);
-		
+
 		// test all the links involving node B
 		List<Link<String>> linksOfB = graph.getLinks(nodeB);
 		assertEquals(3, linksOfB.size());
@@ -81,13 +77,13 @@ public class GraphTest {
 				existsLinkBDinB = true;
 				assertTrue(link.contains(nodeB));
 				assertTrue(link.contains(nodeD));
-				assertTrue(!link.isDirected());				
+				assertTrue(!link.isDirected());
 			}
 		}
 		assertTrue(existsLinkABinB);
 		assertTrue(existsLinkBCinB);
 		assertTrue(existsLinkBDinB);
-		
+
 		// Part 3: test that links created after Graph.makeLinksExplicit()  
 		// are created properly.
 		// Creates an undirected link between A and C
@@ -108,30 +104,28 @@ public class GraphTest {
 				}
 			}
 		}
-		
+
 		// test the implicit links
 		assertTrue(graph.isSibling(nodeA, nodeC));
 		assertTrue(graph.isSibling(nodeC, nodeA));
 	}
 
-	@Test
-	public void testRemoveExplicitLink() {
+	@Test public void testRemoveExplicitLink() {
 		graph.makeLinksExplicit(false);
-		
+
 		Link<String> linkABinA = graph.getLinks(nodeA).get(0);
 		graph.removeLink(linkABinA);
-		
+
 		// check that there is no implicit link between A and B
 		assertEquals(0, graph.getChildren(nodeA).size());
 		assertEquals(0, graph.getParents(nodeB).size());
-		
+
 		// test that there is no explicit link between A and B
 		assertEquals(0, graph.getLinks(nodeA).size());
 		assertEquals(2, graph.getLinks(nodeB).size());
 	}
 
-	@Test
-	public void testRemoveImplicitLink() {
+	@Test public void testRemoveImplicitLink() {
 		graph.removeLink(nodeB, nodeC, true);
 		// check that there is no implicit link between B and C
 		List<String> childrenOfB = graph.getChildren(nodeB);
@@ -140,8 +134,7 @@ public class GraphTest {
 		assertEquals(0, parentsOfC.size());
 	}
 
-	@Test
-	public void testRemoveNode() {
+	@Test public void testRemoveNode() {
 		// check the number of nodes and links after removing node A
 		graph.removeNode(nodeA);
 		assertEquals(2, countLinks(graph));
@@ -152,8 +145,7 @@ public class GraphTest {
 		assertEquals(2, graph.getNumNodes());
 	}
 
-	@Test
-	public void testGetLink() {
+	@Test public void testGetLink() {
 		graph.makeLinksExplicit(false);
 		// check  that link A->B is directed
 		assertNull(graph.getLink(nodeA, nodeB, false));
@@ -168,8 +160,7 @@ public class GraphTest {
 		assertTrue(link.contains(nodeB));
 	}
 
-	@Test
-	public void testGetLinks() {
+	@Test public void testGetLinks() {
 		// check all the links in the graph directed and undirected ones invoking getLinks()
 		int numLinks = countLinks(graph);
 		List<Link<String>> links = graph.getLinks();
@@ -188,16 +179,14 @@ public class GraphTest {
 		}
 	}
 
-	@Test
-	public void testExistsPath() {
+	@Test public void testExistsPath() {
 		assertTrue(graph.existsPath(nodeC, nodeA, false));
 		assertFalse(graph.existsPath(nodeC, nodeA, true));
 		assertFalse(graph.existsPath(nodeA, nodeD, true));
 		assertTrue(graph.existsPath(nodeD, nodeA, false));
 	}
 
-	@Test
-	public void testMarry() {
+	@Test public void testMarry() {
 		// Marry 2 nodes
 		List<String> nodesToMarry = new ArrayList<>();
 		nodesToMarry.add(nodeA);
@@ -210,11 +199,11 @@ public class GraphTest {
 		assertTrue(graph.getSiblings(nodeA).contains(nodeB));
 		assertTrue(graph.getSiblings(nodeB).contains(nodeA));
 		assertEquals(2, graph.getNumSiblings(nodeB));
-		
+
 		// Marry 3 nodes. It exists 2 undirected links and it must create only 1
 		nodesToMarry.add(nodeD);
 		numLinks = countLinks(graph);
-		graph.marry(nodesToMarry);		
+		graph.marry(nodesToMarry);
 		assertEquals(numLinks + 1, countLinks(graph));
 		assertEquals(2, graph.getNumSiblings(nodeA));
 		assertEquals(2, graph.getNumSiblings(nodeB));
@@ -222,7 +211,9 @@ public class GraphTest {
 		assertTrue(graph.getSiblings(nodeA).contains(nodeD));
 	}
 
-	/** @return Number of links of the graph */
+	/**
+	 * @return Number of links of the graph
+	 */
 	private int countLinks(Graph<String> graph) {
 		List<String> nodes = graph.getNodes();
 		int numLinks = 0;
@@ -232,8 +223,7 @@ public class GraphTest {
 			}
 		} else {
 			for (String node : nodes) {
-				numLinks += graph.getNumChildren(node) + graph.getNumParents(node) 
-				    + graph.getNumSiblings(node);
+				numLinks += graph.getNumChildren(node) + graph.getNumParents(node) + graph.getNumSiblings(node);
 			}
 		}
 		numLinks /= 2;

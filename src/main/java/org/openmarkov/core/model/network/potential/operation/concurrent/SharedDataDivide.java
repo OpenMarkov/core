@@ -7,60 +7,58 @@
 
 package org.openmarkov.core.model.network.potential.operation.concurrent;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
+import java.util.ArrayList;
+import java.util.List;
 
-
-/** Contains shared data used concurrently by a set of threads computing an 
- * operation. This class is not synchronized because the set of threads 
- * accomplish the three conditions of Bernstein 
+/**
+ * Contains shared data used concurrently by a set of threads computing an
+ * operation. This class is not synchronized because the set of threads
+ * accomplish the three conditions of Bernstein
  * All data have package access because they will be used outside this class,
- * only in this package and the access must be efficient (there is not getX or 
- * setX) */
+ * only in this package and the access must be efficient (there is not getX or
+ * setX)
+ */
 public class SharedDataDivide {
-	
+
 	TablePotential numerator;
 
 	TablePotential denominator;
-	
+
 	int numVariables;
-	
+
 	double[][] tables;
-	
+
 	int[] quotientDimension;
-	
+
 	int[] quotientCoordinate;
-	
+
 	int[][] offsetAccumulate;
-	
+
 	int[][] potentialPositions;
-	
+
 	int tamTable;
-	
+
 	TablePotential result;
-	
+
 	public SharedDataDivide(Potential numerator, Potential denominator) {
-		this.numerator = (TablePotential)numerator;
-		this.denominator = (TablePotential)denominator;
+		this.numerator = (TablePotential) numerator;
+		this.denominator = (TablePotential) denominator;
 	}
-	
+
 	public void initialize() {
 		List<Variable> quotientVariables = numerator.getVariables();
 		TablePotential quotient = null;
 		try {
-			quotient = new TablePotential(
-					quotientVariables, PotentialRole.JOINT_PROBABILITY);
+			quotient = new TablePotential(quotientVariables, PotentialRole.JOINT_PROBABILITY);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 
 		int numVariables = quotient.getVariables().size();
 
@@ -76,8 +74,7 @@ public class SharedDataDivide {
 		ArrayList<TablePotential> potentials = new ArrayList<>();
 		potentials.add(numerator);
 		potentials.add(denominator);
-		offsetAccumulate = DiscretePotentialOperations
-			.getAccumulatedOffsets(potentials, quotient);
+		offsetAccumulate = DiscretePotentialOperations.getAccumulatedOffsets(potentials, quotient);
 
 		// Gets coordinate
 		if (numVariables != 0) {

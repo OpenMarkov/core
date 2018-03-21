@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.model.network.factory;
 
-import java.util.List;
-
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -17,8 +15,9 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
+import java.util.List;
+
 public class BNFactory extends NetsFactory {
-	
 
 	/**
 	 * @return a Bayesian network with one node node (Disease)
@@ -27,162 +26,154 @@ public class BNFactory extends NetsFactory {
 	public static ProbNet createBN_X(double prevalence) throws Exception {
 		ProbNet probNet;
 		double[] valuesX;
-				
+
 		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-					
+
 		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-		
+
 		// Define the variables
-		Variable variableX = new Variable(diseaseName,diseaseStates);
-			
-		addVariables(probNet,NodeType.CHANCE,variableX);
+		Variable variableX = new Variable(diseaseName, diseaseStates);
+
+		addVariables(probNet, NodeType.CHANCE, variableX);
 
 		valuesX = valuesAPrioriDisease(prevalence);
-		TablePotential potentialX = createTablePotential(role,valuesX,variableX);
-		
-		addPotentials(probNet,potentialX);
-		
+		TablePotential potentialX = createTablePotential(role, valuesX, variableX);
+
+		addPotentials(probNet, potentialX);
+
 		return probNet;
-}
-	
-	
-	
+	}
+
 	/**
 	 * @return a Bayesian network with two nodes (X and Y) and a link X -> Y
 	 * @throws Exception
 	 */
-	public static ProbNet createBN_XY(double prevalence,double sensitivity,double specificity) throws Exception {
-		return createBN_XY("X","Y",prevalence,sensitivity,specificity);
-}
-	
-	
-	
+	public static ProbNet createBN_XY(double prevalence, double sensitivity, double specificity) throws Exception {
+		return createBN_XY("X", "Y", prevalence, sensitivity, specificity);
+	}
+
 	/**
 	 * @return a Bayesian network with two nodes (X and Y) and a link X -> Y
 	 * @throws Exception
 	 */
-	public static ProbNet createBN_XY(String nameX, String nameY, double prevalence,double sensitivity,double specificity) throws Exception {
+	public static ProbNet createBN_XY(String nameX, String nameY, double prevalence, double sensitivity,
+			double specificity) throws Exception {
 		ProbNet probNet;
 		double[] valuesX;
-		double [] valuesYX;
-				
+		double[] valuesYX;
+
 		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-					
+
 		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-		
+
 		// Define the variables
-		Variable variableX = new Variable(nameX,diseaseStates);
-		Variable variableY = new Variable(nameY,testResultStates);
-			
-		addVariables(probNet,NodeType.CHANCE,variableX,variableY);
-		
-		probNet.addLink(variableX,variableY, true);		
+		Variable variableX = new Variable(nameX, diseaseStates);
+		Variable variableY = new Variable(nameY, testResultStates);
+
+		addVariables(probNet, NodeType.CHANCE, variableX, variableY);
+
+		probNet.addLink(variableX, variableY, true);
 
 		valuesX = valuesAPrioriDisease(prevalence);
-		TablePotential potentialX = createTablePotential(role,valuesX,variableX);
-		
-		valuesYX = valuesCPTResultTest(sensitivity,specificity);
+		TablePotential potentialX = createTablePotential(role, valuesX, variableX);
+
+		valuesYX = valuesCPTResultTest(sensitivity, specificity);
 		TablePotential potentialYX = createTablePotential(role, valuesYX, variableY, variableX);
-		
-		addPotentials(probNet,potentialX,potentialYX);
-		
+
+		addPotentials(probNet, potentialX, potentialYX);
+
 		return probNet;
-}
-	
+	}
+
 	/**
 	 * @return a Bayesian network with three nodes (X, Y and Z) and two links X -> Y, and Y -> Z
 	 * @throws Exception
 	 */
-	public static ProbNet createBN_XYZ(double prevalence,double sensitivityY,double specificityY,
-			double sensitivityZ, double specificityZ) throws Exception {
+	public static ProbNet createBN_XYZ(double prevalence, double sensitivityY, double specificityY, double sensitivityZ,
+			double specificityZ) throws Exception {
 		ProbNet probNet;
 		double[] valuesX;
-		double [] valuesYX;
-		double [] valuesZY;
-				
-		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-					
-		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-		
-		// Define the variables
-		Variable variableX = new Variable("X",diseaseStates);
-		Variable variableY = new Variable("Y",testResultStates);
-		Variable variableZ = new Variable("Z",testResultStates);
-			
-		addVariables(probNet,NodeType.CHANCE,variableX,variableY,variableZ);
+		double[] valuesYX;
+		double[] valuesZY;
 
-		probNet.addLink(variableX,variableY, true);		
+		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
+
+		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
+
+		// Define the variables
+		Variable variableX = new Variable("X", diseaseStates);
+		Variable variableY = new Variable("Y", testResultStates);
+		Variable variableZ = new Variable("Z", testResultStates);
+
+		addVariables(probNet, NodeType.CHANCE, variableX, variableY, variableZ);
+
+		probNet.addLink(variableX, variableY, true);
 
 		valuesX = valuesAPrioriDisease(prevalence);
-		TablePotential potentialX = createTablePotential(role,valuesX,variableX);
-		
-		valuesYX = valuesCPTResultTest(sensitivityY,specificityY);
-		TablePotential potentialYX = createTablePotential(role, valuesYX, variableY, variableX);
-		
-		valuesZY = valuesCPTResultTest(sensitivityZ,specificityZ);
-		TablePotential potentialZY = createTablePotential(role, valuesZY, variableZ, variableY);
-		
-		addPotentials(probNet,potentialX,potentialYX,potentialZY);
-		
-		return probNet;
-}
-	
-	
-	
+		TablePotential potentialX = createTablePotential(role, valuesX, variableX);
 
+		valuesYX = valuesCPTResultTest(sensitivityY, specificityY);
+		TablePotential potentialYX = createTablePotential(role, valuesYX, variableY, variableX);
+
+		valuesZY = valuesCPTResultTest(sensitivityZ, specificityZ);
+		TablePotential potentialZY = createTablePotential(role, valuesZY, variableZ, variableY);
+
+		addPotentials(probNet, potentialX, potentialYX, potentialZY);
+
+		return probNet;
+	}
 
 	/**
 	 * @return A Bayesian network with three nodes (A, B and C) and two links A -> B, and A -> C.
 	 * This network was stored in file "peque.elv"
 	 */
-	public static ProbNet createBN_ABC(){
+	public static ProbNet createBN_ABC() {
 		Variable variableA;
 		Variable variableB;
 		Variable variableC;
-		double [] tableA;
-		double [] tableBA;
-		
+		double[] tableA;
+		double[] tableBA;
+
 		ProbNet peque = new ProbNet();
-		
-		String nameStates[]=diseaseStates;
+
+		String nameStates[] = diseaseStates;
 		//Finite States variables}
-		variableA = new Variable("A",nameStates);
-		variableB = new Variable("B",nameStates);
-		variableC = new Variable("C",nameStates);
-			
-				
+		variableA = new Variable("A", nameStates);
+		variableB = new Variable("B", nameStates);
+		variableC = new Variable("C", nameStates);
+
 		//additional properties
 		String relevance = new String("Relevance");
 		String value = new String("7.0");
-		
-		setAdditionalProperties(relevance,value,variableA);
-			
-		variableA.setAdditionalProperty(relevance,value);
-		variableB.setAdditionalProperty(relevance,value);
-		variableC.setAdditionalProperty(relevance,value);
-		
-		addVariables(peque,NodeType.CHANCE,variableA,variableB, variableC);
-				
+
+		setAdditionalProperties(relevance, value, variableA);
+
+		variableA.setAdditionalProperty(relevance, value);
+		variableB.setAdditionalProperty(relevance, value);
+		variableC.setAdditionalProperty(relevance, value);
+
+		addVariables(peque, NodeType.CHANCE, variableA, variableB, variableC);
+
 		//Potentials
 		//PotentialType type = PotentialType.TABLE;
 		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-		
+
 		//Potential A
 		tableA = valuesAPrioriDisease(0.8);
-		TablePotential potentialA = createTablePotential(role,tableA,variableA);
-		
+		TablePotential potentialA = createTablePotential(role, tableA, variableA);
+
 		//Potential BA
-		tableBA = valuesCPTResultTest(0.1,0.7);
-		TablePotential potentialBA = createTablePotential(role,tableBA,variableB,variableA);
-		
+		tableBA = valuesCPTResultTest(0.1, 0.7);
+		TablePotential potentialBA = createTablePotential(role, tableBA, variableB, variableA);
+
 		//potencial CAB
-		double [] tableCAB = {0.02, 0.98, 0.71, 0.29, 0.16, 0.84, 0.85, 0.15};
-		TablePotential potentialCAB = createTablePotential(role,tableCAB,variableC,variableA,variableB);
-		
+		double[] tableCAB = { 0.02, 0.98, 0.71, 0.29, 0.16, 0.84, 0.85, 0.15 };
+		TablePotential potentialCAB = createTablePotential(role, tableCAB, variableC, variableA, variableB);
+
 		NodeType nodeType = NodeType.CHANCE;
-		
-		addVariables(peque,nodeType,variableA,variableB,variableC);
-		
+
+		addVariables(peque, nodeType, variableA, variableB, variableC);
+
 		//Links throws NodeNotFoundException
 		try {
 			peque.addLink(variableA, variableB, true);
@@ -199,19 +190,17 @@ public class BNFactory extends NetsFactory {
 		} catch (NodeNotFoundException e) {
 			e.printStackTrace();
 		}
-				
-		addPotentials(peque,potentialA,potentialBA,potentialCAB);
-	
-	
-	return peque;
-}
-	
-	
+
+		addPotentials(peque, potentialA, potentialBA, potentialCAB);
+
+		return peque;
+	}
+
 	/**
 	 * @return A Bayesian network with three nodes (A, B and C) and two links A -> B, and A -> C.
 	 * This network was stored in file "peque.elv"
 	 */
-	public static ProbNet createBN_Asia(){
+	public static ProbNet createBN_Asia() {
 		Variable variableA;
 		Variable variableB;
 		Variable variableT;
@@ -220,77 +209,77 @@ public class BNFactory extends NetsFactory {
 		Variable variableX;
 		Variable variableD;
 		Variable variableS;
-		
+
 		ProbNet network = new ProbNet();
-		
+
 		//Finite States variables
 		//"Visit to Asia"
-		variableA = new Variable("A",yesNoStates);
+		variableA = new Variable("A", yesNoStates);
 		//"Smoker"
-		variableS = new Variable("S",yesNoStates);
+		variableS = new Variable("S", yesNoStates);
 		//"Tuberculosis"
-		variableT = new Variable("T",diseaseStates);
+		variableT = new Variable("T", diseaseStates);
 		//"Lung Cancer"
-		variableL = new Variable("L",diseaseStates);
+		variableL = new Variable("L", diseaseStates);
 		//"Bronchitis"
-		variableB = new Variable("B",diseaseStates);
+		variableB = new Variable("B", diseaseStates);
 		//"Tuberculosis or Cancer"
-		variableTOrC = new Variable("TOrC",yesNoStates);
+		variableTOrC = new Variable("TOrC", yesNoStates);
 		//"Positive X-ray"
-		variableX = new Variable("X",yesNoStates);
+		variableX = new Variable("X", yesNoStates);
 		//"Dyspnea"
-		variableD = new Variable("D",yesNoStates);
-				
+		variableD = new Variable("D", yesNoStates);
+
 		//additional properties
 		String relevance = new String("Relevance");
 		String value = new String("7.0");
-		
-		addVariables(network,NodeType.CHANCE,variableA,variableS,variableT,
-				variableL,variableB,variableTOrC,variableX,variableD);
-		
+
+		addVariables(network, NodeType.CHANCE, variableA, variableS, variableT, variableL, variableB, variableTOrC,
+				variableX, variableD);
+
 		List<Variable> variables2 = network.getVariables();
-		setAdditionalProperties(relevance,value,(Variable[]) variables2.toArray(new Variable[variables2.size()]));
-				
+		setAdditionalProperties(relevance, value, (Variable[]) variables2.toArray(new Variable[variables2.size()]));
+
 		//Potentials
 		//PotentialType type = PotentialType.TABLE;
 		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-		
+
 		//Potential A
-		double [] tableA = {0.01, 0.99};
-		TablePotential potentialA = createTablePotential(role,tableA,variableA);
-				
+		double[] tableA = { 0.01, 0.99 };
+		TablePotential potentialA = createTablePotential(role, tableA, variableA);
+
 		//Potential S
-		double [] tableS = {0.5, 0.5};
-		TablePotential potentialS = createTablePotential(role,tableS,variableS);
-		
+		double[] tableS = { 0.5, 0.5 };
+		TablePotential potentialS = createTablePotential(role, tableS, variableS);
+
 		//Potential T
-		double [] tableT = {0.05, 0.95, 0.01, 0.99};
-		TablePotential potentialT = createTablePotential(role,tableT,variableT,variableA);
-		
+		double[] tableT = { 0.05, 0.95, 0.01, 0.99 };
+		TablePotential potentialT = createTablePotential(role, tableT, variableT, variableA);
+
 		//Potential L
-		double [] tableL = {0.1, 0.9, 0.01, 0.99};
-		TablePotential potentialL = createTablePotential(role,tableL,variableL,variableS);
-		
+		double[] tableL = { 0.1, 0.9, 0.01, 0.99 };
+		TablePotential potentialL = createTablePotential(role, tableL, variableL, variableS);
+
 		//Potential B
-		double [] tableB = {0.6, 0.4, 0.3, 0.7};
-		TablePotential potentialB = createTablePotential(role,tableB,variableB,variableS);
-				
+		double[] tableB = { 0.6, 0.4, 0.3, 0.7 };
+		TablePotential potentialB = createTablePotential(role, tableB, variableB, variableS);
+
 		//Potential TOrC
-		double [] tableTOrC = {1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0};
-		TablePotential potentialTOrC = createTablePotential(role,tableTOrC,variableTOrC,variableL,variableT);
-		
+		double[] tableTOrC = { 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0 };
+		TablePotential potentialTOrC = createTablePotential(role, tableTOrC, variableTOrC, variableL, variableT);
+
 		//Potential X
-		double [] tableX = {0.98, 0.02, 0.05, 0.95};
-		TablePotential potentialX = createTablePotential(role,tableX,variableX,variableTOrC);
-		
+		double[] tableX = { 0.98, 0.02, 0.05, 0.95 };
+		TablePotential potentialX = createTablePotential(role, tableX, variableX, variableTOrC);
+
 		//Potential D
-		double [] tableD = {0.9, 0.1, 0.7, 0.3, 0.8, 0.2, 0.1, 0.9};
-		TablePotential potentialD = createTablePotential(role,tableD,variableD,variableTOrC,variableB);
-		
-		addPotentials(network,potentialA,potentialS,potentialT,potentialL,potentialB,potentialTOrC,potentialX,potentialD);
-	
-	
-	return network;
-}
+		double[] tableD = { 0.9, 0.1, 0.7, 0.3, 0.8, 0.2, 0.1, 0.9 };
+		TablePotential potentialD = createTablePotential(role, tableD, variableD, variableTOrC, variableB);
+
+		addPotentials(network, potentialA, potentialS, potentialT, potentialL, potentialB, potentialTOrC, potentialX,
+				potentialD);
+
+		return network;
+	}
 
 }

@@ -9,84 +9,64 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
-@ProbDensFunctionType(name="Complement", isValidForNumeric = false, parameters = {"nu"})
-public class ComplementFunction extends ProbDensFunction
-{
-    private double nu;
+@ProbDensFunctionType(name = "Complement", isValidForNumeric = false, parameters = {
+		"nu" }) public class ComplementFunction extends ProbDensFunction {
+	private double nu;
 
-    public ComplementFunction ()
-    {
-        this.nu = 0;
-    }
+	public ComplementFunction() {
+		this.nu = 0;
+	}
 
-    public ComplementFunction (double nu)
-    {
-        this.nu = nu;
-    }
-    
-    public ComplementFunction(ComplementFunction complementFunction) {
-        super();
-        this.nu = complementFunction.getNu();
-    }
+	public ComplementFunction(double nu) {
+		this.nu = nu;
+	}
 
-    public double getNu ()
-    {
-        return nu;
-    }
-    
-    @Override
-    public void setParameters (double[] params)
-    {
-        nu = params[0];
-    }
+	public ComplementFunction(ComplementFunction complementFunction) {
+		super();
+		this.nu = complementFunction.getNu();
+	}
 
-    @Override
-    public boolean verifyParametersDomain (boolean isChanceVariable)
-    {
-        return (nu > 0);
-    }
+	public double getNu() {
+		return nu;
+	}
 
-    @Override
-    public double[] getParameters ()
-    {
-        return new double[]{nu};
-    }
+	@Override public boolean verifyParametersDomain(boolean isChanceVariable) {
+		return (nu > 0);
+	}
 
-    @Override
-    public double getMaximum ()
-    {
-        return 1;
-    }
+	@Override public double[] getParameters() {
+		return new double[] { nu };
+	}
 
-    @Override
-    public double getMean ()
-    {
-        return nu;
-    }
+	@Override public void setParameters(double[] params) {
+		nu = params[0];
+	}
 
-    @Override
-    public double getSample (Random randomGenerator)
-    {
-        return nu;
-    }
+	@Override public double getMaximum() {
+		return 1;
+	}
 
-    @Override
-    public double getVariance (){
-        return 0;
-    }
+	@Override public double getMean() {
+		return nu;
+	}
 
-	@Override
-	public double getMinimum() {
+	@Override public double getSample(Random randomGenerator) {
+		return nu;
+	}
+
+	@Override public double getVariance() {
 		return 0;
 	}
 
-	@Override
-	public DomainInterval getInterval(double p) {
-		return new DomainInterval(nu,nu);
+	@Override public double getMinimum() {
+		return 0;
 	}
-	
-    @Override
-    public ProbDensFunction copy() {
-        return new ComplementFunction(this);
-    }
+
+	@Override public DomainInterval getInterval(double p) {
+		return new DomainInterval(nu, nu);
+	}
+
+	@Override public ProbDensFunction copy() {
+		return new ComplementFunction(this);
+	}
 }

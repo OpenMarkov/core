@@ -6,26 +6,24 @@
  */
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author manolo
- * 
  */
-@Ignore
-public abstract class FamilyDistributionTest {
+@Ignore public abstract class FamilyDistributionTest {
 
-    private FamilyDistribution family;
+	private FamilyDistribution family;
 
-    private double             maxErrorMean        = 0.001;
-    private double             maxErrorStDeviation = 0.01;
+	private double maxErrorMean = 0.001;
+	private double maxErrorStDeviation = 0.01;
 
 	//@Test
 	public void testMeanAndVariance() {
@@ -42,15 +40,14 @@ public abstract class FamilyDistributionTest {
 		testMean(samples);
 		testStandardDeviation(samples);
 	}
-    
-	@Test
-	public void repeatTestMeanAndVariance() {
+
+	@Test public void repeatTestMeanAndVariance() {
 		boolean debug = false;
-		int numRepetitions = debug?10:1;
+		int numRepetitions = debug ? 10 : 1;
 
 		for (int iRepetition = 0; iRepetition < numRepetitions; iRepetition++) {
 			testMeanAndVariance();
-			if (debug){
+			if (debug) {
 				System.out.println("iRepetition= " + iRepetition);
 			}
 		}
@@ -58,60 +55,60 @@ public abstract class FamilyDistributionTest {
 
 	public abstract FamilyDistribution newFamilyDistribution(List<UncertainValue> list);
 
-    /**
-     * @return
-     */
+	/**
+	 * @return
+	 */
 	public abstract List<UncertainValue> initializeListUncertainValues();
 
-    /**
-     * @param samples
-     */
-    protected void testMean(List<double[]> samples) {
+	/**
+	 * @param samples
+	 */
+	protected void testMean(List<double[]> samples) {
 
-        int numChildrenFam = samples.get(0).length;
-        double[] auxSamples;
-        double[] meanSample;
-        meanSample = new double[numChildrenFam];
-        for (int i = 0; i < numChildrenFam; i++) {
-            auxSamples = new double[samples.size()];
-            for (int j = 0; j < samples.size(); j++) {
-                auxSamples[j] = samples.get(j)[i];
-            }
-            meanSample[i] = Tools.meanSample(auxSamples);
-        }
+		int numChildrenFam = samples.get(0).length;
+		double[] auxSamples;
+		double[] meanSample;
+		meanSample = new double[numChildrenFam];
+		for (int i = 0; i < numChildrenFam; i++) {
+			auxSamples = new double[samples.size()];
+			for (int j = 0; j < samples.size(); j++) {
+				auxSamples[j] = samples.get(j)[i];
+			}
+			meanSample[i] = Tools.meanSample(auxSamples);
+		}
 
-        assertMeanTest(meanSample, family.getMean(), maxErrorMean);
+		assertMeanTest(meanSample, family.getMean(), maxErrorMean);
 
-    }
+	}
 
-    /**
-     * @param samples
-     */
-    protected void testStandardDeviation(List<double[]> samples) {
-        int numChildrenFam = samples.get(0).length;
-        double[] auxSamples;
-        double[] stDSample;
-        stDSample = new double[numChildrenFam];
-        for (int i = 0; i < numChildrenFam; i++) {
-            auxSamples = new double[samples.size()];
-            for (int j = 0; j < samples.size(); j++) {
-                auxSamples[j] = samples.get(j)[i];
-            }
-            stDSample[i] = Math.sqrt(Tools.varianceSample(auxSamples));
-        }
-        assertMeanTest(stDSample, family.getStandardDeviation(), maxErrorStDeviation);
+	/**
+	 * @param samples
+	 */
+	protected void testStandardDeviation(List<double[]> samples) {
+		int numChildrenFam = samples.get(0).length;
+		double[] auxSamples;
+		double[] stDSample;
+		stDSample = new double[numChildrenFam];
+		for (int i = 0; i < numChildrenFam; i++) {
+			auxSamples = new double[samples.size()];
+			for (int j = 0; j < samples.size(); j++) {
+				auxSamples[j] = samples.get(j)[i];
+			}
+			stDSample[i] = Math.sqrt(Tools.varianceSample(auxSamples));
+		}
+		assertMeanTest(stDSample, family.getStandardDeviation(), maxErrorStDeviation);
 
-    }
+	}
 
-    /**
-     * @param meanSample
-     * @param meanFamily
-     * @param maxErrorMean2
-     */
-    protected void assertMeanTest(double[] meanSample, double[] meanFamily, double maxErrorMean2) {
+	/**
+	 * @param meanSample
+	 * @param meanFamily
+	 * @param maxErrorMean2
+	 */
+	protected void assertMeanTest(double[] meanSample, double[] meanFamily, double maxErrorMean2) {
 
-        for (int i = 0; i < meanSample.length; i++) {
-            assertEquals(meanSample[i], meanFamily[i], maxErrorMean2);
-        }
-    }
+		for (int i = 0; i < meanSample.length; i++) {
+			assertEquals(meanSample[i], meanFamily[i], maxErrorMean2);
+		}
+	}
 }

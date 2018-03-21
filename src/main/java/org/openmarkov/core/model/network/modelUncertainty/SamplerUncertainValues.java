@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class SamplerUncertainValues {
-	
+
 	int[] indexesComplement;
 	int[] indexesDirichlet;
 	int[] indexesOther;
@@ -19,38 +19,30 @@ class SamplerUncertainValues {
 	DirichletFamily dirFamily;
 	FamilyDistribution otherFamily;
 
-	public SamplerUncertainValues(List<UncertainValue> uncertainValues, List<Class<? extends ProbDensFunction>> functionTypes){
-		
-		
-		FamilyDistribution family = new FamilyDistribution (uncertainValues);
-	     List<UncertainValue> familyList = family.family;
-	     // calculates the indexes of the uncertain values for each
-	     // group: Other, Dirichlet and Complement
-	     indexesComplement = Sampler.getIndexesUncertainValuesOfClass (familyList,
-	                                                          ComplementFunction.class);
-	     indexesDirichlet = Sampler.getIndexesUncertainValuesOfClass (familyList,
-	                                                         DirichletFunction.class);
-	     indexesOther = Sampler.getIndexesUncertainValuesNotOfClasses (familyList, functionTypes);
-	     // Create the families of distributions
-	     List<UncertainValue> complements = constructListFromIndexes (familyList,
-	                                                                  indexesComplement);
-	     List<UncertainValue> dirichlets = constructListFromIndexes (familyList,
-	                                                                 indexesDirichlet);
-	     List<UncertainValue> others = constructListFromIndexes (familyList,
-	                                                             indexesOther);
-	     complementFamily = new ComplementFamily (complements);
-	     dirFamily = new DirichletFamily (dirichlets);
-	     otherFamily = new FamilyDistribution (others);
-	     
-	}	
-	
-	List<UncertainValue> constructListFromIndexes (List<UncertainValue> arrayFamily,
-			int[] indComp)
-	{
+	public SamplerUncertainValues(List<UncertainValue> uncertainValues,
+			List<Class<? extends ProbDensFunction>> functionTypes) {
+
+		FamilyDistribution family = new FamilyDistribution(uncertainValues);
+		List<UncertainValue> familyList = family.family;
+		// calculates the indexes of the uncertain values for each
+		// group: Other, Dirichlet and Complement
+		indexesComplement = Sampler.getIndexesUncertainValuesOfClass(familyList, ComplementFunction.class);
+		indexesDirichlet = Sampler.getIndexesUncertainValuesOfClass(familyList, DirichletFunction.class);
+		indexesOther = Sampler.getIndexesUncertainValuesNotOfClasses(familyList, functionTypes);
+		// Create the families of distributions
+		List<UncertainValue> complements = constructListFromIndexes(familyList, indexesComplement);
+		List<UncertainValue> dirichlets = constructListFromIndexes(familyList, indexesDirichlet);
+		List<UncertainValue> others = constructListFromIndexes(familyList, indexesOther);
+		complementFamily = new ComplementFamily(complements);
+		dirFamily = new DirichletFamily(dirichlets);
+		otherFamily = new FamilyDistribution(others);
+
+	}
+
+	List<UncertainValue> constructListFromIndexes(List<UncertainValue> arrayFamily, int[] indComp) {
 		List<UncertainValue> array = new ArrayList<>();
-		for (int i : indComp)
-		{
-			array.add (arrayFamily.get (i));
+		for (int i : indComp) {
+			array.add(arrayFamily.get(i));
 		}
 		return array;
 	}

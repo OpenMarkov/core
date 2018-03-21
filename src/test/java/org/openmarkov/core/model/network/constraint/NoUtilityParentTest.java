@@ -7,10 +7,6 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
@@ -20,52 +16,49 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
+import static org.junit.Assert.*;
+
 public class NoUtilityParentTest {
 
-	private ProbNet probNetImproperUtilityChildren; 
-	private ProbNet probNetProperUtilityChildren; 
-	private ProbNet influenceDiagram; 
-	
-	@Before
-	public void setUp() throws Exception {
+	private ProbNet probNetImproperUtilityChildren;
+	private ProbNet probNetProperUtilityChildren;
+	private ProbNet influenceDiagram;
+
+	@Before public void setUp() throws Exception {
 		probNetImproperUtilityChildren = ConstraintsTests.getNotOnlyUtilityChildrenInfluenceDiagram();
 		probNetProperUtilityChildren = ConstraintsTests.getOnlyUtilityChildrenInfluenceDiagram();
-		influenceDiagram= ConstraintsTests.getInfuenceDiagram();
-	}
-	
-	
-
-	@Test
-	public void testOnlyUtilityChilren() {
-		assertFalse(probNetImproperUtilityChildren.checkProbNet ());
-		
-		 //test only utility children
-        PNConstraint constraint = new NoUtilityParent();
-        assertTrue (constraint.checkProbNet (probNetProperUtilityChildren));
+		influenceDiagram = ConstraintsTests.getInfuenceDiagram();
 	}
 
-	@Test
-	public void testUndoableEditWillHappen() throws Exception {
+	@Test public void testOnlyUtilityChilren() {
+		assertFalse(probNetImproperUtilityChildren.checkProbNet());
+
+		//test only utility children
+		PNConstraint constraint = new NoUtilityParent();
+		assertTrue(constraint.checkProbNet(probNetProperUtilityChildren));
+	}
+
+	@Test public void testUndoableEditWillHappen() throws Exception {
 		// Add constraints as listeners.
-		PNESupport pNESupport = influenceDiagram.getPNESupport ();
+		PNESupport pNESupport = influenceDiagram.getPNESupport();
 		influenceDiagram.addConstraint(new NoUtilityParent(), true);
 		// Create edits
-		Variable vu=influenceDiagram.getVariable("U");
+		Variable vu = influenceDiagram.getVariable("U");
 		Variable vc1 = new Variable("C1", 0);
 		Variable vc2 = new Variable("C2", 0);
 
 		// test no exception in legal edit
-		AddNodeEdit legalAddC1 = new AddNodeEdit (influenceDiagram, vc1, NodeType.UTILITY);
-		
+		AddNodeEdit legalAddC1 = new AddNodeEdit(influenceDiagram, vc1, NodeType.UTILITY);
+
 		//add the node C1
-		try{
+		try {
 			influenceDiagram.doEdit(legalAddC1);
-		} catch(Exception cve){
+		} catch (Exception cve) {
 			fail(cve.getMessage());
 		}
-		
+
 		//link U->C1
-        AddLinkEdit legalLink = new AddLinkEdit(influenceDiagram,vu,vc1,true);
+		AddLinkEdit legalLink = new AddLinkEdit(influenceDiagram, vu, vc1, true);
 		try {
 			pNESupport.announceEdit(legalLink);
 			legalLink.doEdit();
@@ -74,19 +67,18 @@ public class NoUtilityParentTest {
 		}
 
 		// test exception in no legal edit
-		AddNodeEdit legalAddC2 = new AddNodeEdit (influenceDiagram, vc2, NodeType.DECISION);
-		
+		AddNodeEdit legalAddC2 = new AddNodeEdit(influenceDiagram, vc2, NodeType.DECISION);
+
 		//add the node C2
-		try{
+		try {
 			pNESupport.announceEdit(legalAddC2);
 			legalAddC2.doEdit();
-		} catch(Exception cve){
+		} catch (Exception cve) {
 			fail(cve.getMessage());
 		}
-		
-		
+
 		boolean exceptionLaunched = false;
-        AddLinkEdit ilegalLink = new AddLinkEdit(influenceDiagram,vu,vc2,true);
+		AddLinkEdit ilegalLink = new AddLinkEdit(influenceDiagram, vu, vc2, true);
 		try {
 			pNESupport.announceEdit(ilegalLink);
 		} catch (Exception cve) {
@@ -95,7 +87,4 @@ public class NoUtilityParentTest {
 		assertTrue(exceptionLaunched); // pNESupport must launch an exception.
 	}
 
-
-	
-	
 }

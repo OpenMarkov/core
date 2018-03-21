@@ -6,65 +6,53 @@
  */
 package org.openmarkov.core.dt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 
-public class DecisionTreeNode implements DecisionTreeElement
-{
-    private Variable                  variable            = null;
-    private NodeType                  nodeType            = null;
-    private List<DecisionTreeElement> children            = null;
-    private DecisionTreeElement       parent              = null;
-    protected double                    utility             = Double.NEGATIVE_INFINITY;
-    public void setUtility(double utility) {
-		this.utility = utility;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DecisionTreeNode implements DecisionTreeElement {
+	protected double utility = Double.NEGATIVE_INFINITY;
+	protected double scenarioProbability = Double.NEGATIVE_INFINITY;
+	private Variable variable = null;
+	private NodeType nodeType = null;
+	private List<DecisionTreeElement> children = null;
+	private DecisionTreeElement parent = null;
+
+	public DecisionTreeNode(Node node) {
+		this.variable = node.getVariable();
+		this.nodeType = node.getNodeType();
+		List<Potential> potentials = node.getPotentials();
+		children = new ArrayList<>();
 	}
 
-	protected double                    scenarioProbability = Double.NEGATIVE_INFINITY;
-
-    public void setScenarioProbability(double scenarioProbability) {
-		this.scenarioProbability = scenarioProbability;
+	/**
+	 * Returns the variable.
+	 *
+	 * @return the Variable.
+	 */
+	public Variable getVariable() {
+		return variable;
 	}
 
-	public DecisionTreeNode (Node node)
-    {
-        this.variable = node.getVariable();
-        this.nodeType = node.getNodeType();
-        List<Potential> potentials = node.getPotentials();
-        children = new ArrayList<> ();
-    }
+	public NodeType getNodeType() {
+		return nodeType;
+	}
 
-    /**
-     * Returns the variable.
-     * @return the Variable.
-     */
-    public Variable getVariable ()
-    {
-        return variable;
-    }
-    
-    public NodeType getNodeType()
-    {
-    	return nodeType;
-    }
+	/**
+	 * Returns the children.
+	 *
+	 * @return the children.
+	 */
+	public List<DecisionTreeElement> getChildren() {
+		return children;
+	}
 
-    /**
-     * Returns the children.
-     * @return the children.
-     */
-    public List<DecisionTreeElement> getChildren ()
-    {
-        return children;
-    }
-
-    public double getUtility ()
-    {//TODO Manolo> I'm testing that utility is not calculated in the GUI, but it is taken from the evaluation
+	public double getUtility() {//TODO Manolo> I'm testing that utility is not calculated in the GUI, but it is taken from the evaluation
      /*   if(utility == Double.NEGATIVE_INFINITY)
         {
             utility = 0;
@@ -107,39 +95,38 @@ public class DecisionTreeNode implements DecisionTreeElement
                         productUtility *= child.getUtility ();
                     }
                     utility = productUtility;
-                    
+
                 }else if(potential instanceof TablePotential)
                 {
                     utility = ((TablePotential)potential).getValue (getBranchStates());
                 }
             }
         }*/
-        return utility;
-    }
+		return utility;
+	}
 
-    public EvidenceCase getBranchStates ()
-    {
-        return (parent != null)? parent.getBranchStates () : new EvidenceCase();
-    } 
+	public void setUtility(double utility) {
+		this.utility = utility;
+	}
 
-    public boolean isBestDecision (DecisionTreeElement branch)
-    {
-        boolean isBestDecision = false;
-        if (nodeType == NodeType.DECISION)
-        {
-            isBestDecision = true;
-            double thisUtility = branch.getUtility ();
-            for (DecisionTreeElement otherBranch : children)
-            {
-                isBestDecision &= thisUtility >= otherBranch.getUtility ();
-            }
-        }        
-        return isBestDecision;
-    }
+	public EvidenceCase getBranchStates() {
+		return (parent != null) ? parent.getBranchStates() : new EvidenceCase();
+	}
 
-    public double getScenarioProbability()
-    {
-    	//TODO Manolo> I'm testing that utility is not calculated in the GUI, but it is taken from the evaluation
+	public boolean isBestDecision(DecisionTreeElement branch) {
+		boolean isBestDecision = false;
+		if (nodeType == NodeType.DECISION) {
+			isBestDecision = true;
+			double thisUtility = branch.getUtility();
+			for (DecisionTreeElement otherBranch : children) {
+				isBestDecision &= thisUtility >= otherBranch.getUtility();
+			}
+		}
+		return isBestDecision;
+	}
+
+	public double getScenarioProbability() {
+		//TODO Manolo> I'm testing that utility is not calculated in the GUI, but it is taken from the evaluation
        /* if(scenarioProbability == Double.NEGATIVE_INFINITY)
         {
         	scenarioProbability = 0;
@@ -154,31 +141,29 @@ public class DecisionTreeNode implements DecisionTreeElement
         		scenarioProbability = children.get(0).getScenarioProbability();
         	}
         }*/
-    	return scenarioProbability;
-    }
-    
-    public void addChild(DecisionTreeElement child)
-    {
-        child.setParent (this);
-        children.add (child);
-    }
+		return scenarioProbability;
+	}
 
-    @Override
-    public String toString ()
-    {
-        StringBuilder builder = new StringBuilder ();
-        builder.append ("DecisionTreeNode [variable=");
-        builder.append (variable.getName ());
-        builder.append (", children=").append (children);
-        builder.append ("]");
-        return builder.toString ();
-    }
+	public void setScenarioProbability(double scenarioProbability) {
+		this.scenarioProbability = scenarioProbability;
+	}
 
-    @Override
-    public void setParent (DecisionTreeElement parent)
-    {
-        this.parent = parent;
-    }    
+	public void addChild(DecisionTreeElement child) {
+		child.setParent(this);
+		children.add(child);
+	}
 
-    
+	@Override public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("DecisionTreeNode [variable=");
+		builder.append(variable.getName());
+		builder.append(", children=").append(children);
+		builder.append("]");
+		return builder.toString();
+	}
+
+	@Override public void setParent(DecisionTreeElement parent) {
+		this.parent = parent;
+	}
+
 }

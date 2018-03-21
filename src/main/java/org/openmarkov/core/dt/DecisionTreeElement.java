@@ -7,19 +7,18 @@
 
 package org.openmarkov.core.dt;
 
-import java.util.List;
-
 import org.openmarkov.core.model.network.EvidenceCase;
 
-public interface DecisionTreeElement
-{
-    List<DecisionTreeElement> getChildren();
-    
-    double getUtility();
-    
-    EvidenceCase getBranchStates();
-    
-    double getScenarioProbability();
-    
-    void setParent(DecisionTreeElement parent);
+import java.util.List;
+
+public interface DecisionTreeElement {
+	List<DecisionTreeElement> getChildren();
+
+	double getUtility();
+
+	EvidenceCase getBranchStates();
+
+	double getScenarioProbability();
+
+	void setParent(DecisionTreeElement parent);
 }

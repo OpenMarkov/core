@@ -12,39 +12,55 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 
-/** Stores attributes for use in <code>SimpleMarkovEvaluation</code> */
+/**
+ * Stores attributes for use in <code>SimpleMarkovEvaluation</code>
+ */
 public class InferenceOptions {
-	
+
 	// Attributes
-	
+
 	/** */
 	public Variable simulationIndexVariable;
-	
+
 	/** */
 	public double discountRate = 1.0;
 
 	public ProbNet probNet;
-	
+
 	private MulticriteriaOptions multiCriteriaOptions;
-	
+
 	private TemporalOptions temporalOptions;
-	
+
 	// Constructor
 	public InferenceOptions(ProbNet probNet, Variable simulationIndexVariable) {
 		this.probNet = probNet;
 		this.simulationIndexVariable = simulationIndexVariable;
 	}
-	
-	public InferenceOptions(){
+
+	public InferenceOptions() {
 		this.multiCriteriaOptions = new MulticriteriaOptions();
 		this.temporalOptions = new TemporalOptions();
 	}
 
-	public InferenceOptions(InferenceOptions inferenceOptions){
+	public InferenceOptions(InferenceOptions inferenceOptions) {
 		this.multiCriteriaOptions = new MulticriteriaOptions(inferenceOptions.getMultiCriteriaOptions());
 		this.temporalOptions = new TemporalOptions(inferenceOptions.getTemporalOptions());
 	}
-	
+
+	/**
+	 * Sets the attribute simulationIndexVariable and returns the variable.
+	 * If numSimulations = 0, it returns null.
+	 */
+	public static Variable setNumSimulations(int numSimulations) {
+		Variable newVariable;
+		if (numSimulations == 0) {
+			newVariable = null;
+		} else {
+			newVariable = new Variable("###SimulationIndexes###", numSimulations);
+		}
+		return newVariable;
+	}
+
 	public MulticriteriaOptions getMultiCriteriaOptions() {
 		return multiCriteriaOptions;
 	}
@@ -52,19 +68,20 @@ public class InferenceOptions {
 	public void setMultiCriteriaOptions(MulticriteriaOptions multiCriteriaOptions) {
 		this.multiCriteriaOptions = multiCriteriaOptions;
 	}
-	
-	
 
 	public TemporalOptions getTemporalOptions() {
 		return temporalOptions;
 	}
 
+	// Methods
+
 	public void setTemporalOptions(TemporalOptions temporalOptions) {
 		this.temporalOptions = temporalOptions;
 	}
 
-	// Methods
-	/** Prints decision criteria, simulation indices and discount rate */
+	/**
+	 * Prints decision criteria, simulation indices and discount rate
+	 */
 	public String toString() {
 		StringBuilder buffer = new StringBuilder();
 		if (simulationIndexVariable != null) {
@@ -76,8 +93,10 @@ public class InferenceOptions {
 		buffer.append("Discount rate = " + discountRate);
 		return buffer.toString();
 	}
-	
-	/** Inserts in buffer the name and states of the received variable */
+
+	/**
+	 * Inserts in buffer the name and states of the received variable
+	 */
 	private void printVariable(StringBuilder buffer, Variable variable) {
 		buffer.append(variable.getName());
 		if (variable.getVariableType() != VariableType.NUMERIC) {
@@ -92,17 +111,4 @@ public class InferenceOptions {
 		}
 	}
 
-	/** Sets the attribute simulationIndexVariable and returns the variable. 
-	 * If numSimulations = 0, it returns null. */
-	public static Variable setNumSimulations(int numSimulations) {
-		Variable newVariable;
-		if (numSimulations == 0) {
-			newVariable =  null;
-		} else {
-			newVariable = new Variable("###SimulationIndexes###", numSimulations);
-		}
-		return newVariable;
-	}
-	
-	
 }

@@ -7,11 +7,13 @@
 
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial")
-public class CanNotAccessFileException extends Exception {
+@SuppressWarnings("serial") public class CanNotAccessFileException extends Exception {
 
 	// Constructor
-	/** @param fileName string with the filename */
+
+	/**
+	 * @param fileName string with the filename
+	 */
 	public CanNotAccessFileException(String fileName) {
 		super("It is not possible to access file: " + fileName);
 	}

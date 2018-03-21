@@ -7,22 +7,21 @@
 
 package org.openmarkov.core.action;
 
-import javax.swing.undo.CannotUndoException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.inference.TemporalOptions;
 import org.openmarkov.core.model.network.ProbNet;
 
-public class TemporalOptionsEdit extends SimplePNEdit{
+import javax.swing.undo.CannotUndoException;
 
+public class TemporalOptionsEdit extends SimplePNEdit {
 
 	/**
 	 * Serial Version UID
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private TemporalOptions oldTemporalOptions;
 	private TemporalOptions newTemporalOptions;
-	
 
 	public TemporalOptionsEdit(ProbNet probNet, TemporalOptions options) {
 		super(probNet);
@@ -30,20 +29,17 @@ public class TemporalOptionsEdit extends SimplePNEdit{
 		this.newTemporalOptions = options;
 	}
 
-	@Override
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException {
 		probNet.getInferenceOptions().setTemporalOptions(this.newTemporalOptions);
-		
+
 	}
 
-	@Override
-	public void undo() throws CannotUndoException {
+	@Override public void undo() throws CannotUndoException {
 		super.undo();
 		probNet.getInferenceOptions().setTemporalOptions(this.oldTemporalOptions);
 	}
 
-	@Override
-	public void redo() {
+	@Override public void redo() {
 		super.redo();
 		try {
 			doEdit();
@@ -51,8 +47,5 @@ public class TemporalOptionsEdit extends SimplePNEdit{
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
-	
+
 }

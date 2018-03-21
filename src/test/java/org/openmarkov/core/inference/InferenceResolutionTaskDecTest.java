@@ -23,48 +23,43 @@ import java.io.IOException;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author manolo
  * Tests class for models that contain decisions. Different subclasses share that they have to test the MEU and the strategy
- *
  */
 public abstract class InferenceResolutionTaskDecTest extends InferenceTaskTest {
 
 	/**
 	 * @param probNet
 	 * @return
-	 * @throws NotEvaluableNetworkException
-	 * Builds an InferenceAlgorithm object with 'probNet'.
-	 * This method must be implemented by each inference test class.
+	 * @throws NotEvaluableNetworkException  Builds an InferenceAlgorithm object with 'probNet'.
+	 *                                       This method must be implemented by each inference test class.
 	 * @throws UnexpectedInferenceException
 	 * @throws IncompatibleEvidenceException
 	 */
-	public abstract Evaluation buildInferenceTask(ProbNet probNet) throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException;
+	public abstract Evaluation buildInferenceTask(ProbNet probNet)
+			throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException;
 
 	/**
 	 * @param x
-	 * @param v
-	 * Checks if the values of the potential 'x' are equal to 'v' and if the number
-	 * of values in 'x' is 1.
+	 * @param v Checks if the values of the potential 'x' are equal to 'v' and if the number
+	 *          of values in 'x' is 1.
 	 */
 	protected void checkUtility(TablePotential x, double v) {
 		assertEquals(1, x.getTableSize());
 		assertEquals(v, x.values[0], maxError);
 	}
 
-	public void checkUtilityPotential(
-			Map<Variable, TablePotential> aPrioriProbabilities,
-			Variable variableU, double u) {
+	public void checkUtilityPotential(Map<Variable, TablePotential> aPrioriProbabilities, Variable variableU,
+			double u) {
 		TablePotential U = (TablePotential) aPrioriProbabilities.get(variableU);
 		checkUtility(U, u);
 	}
-	
+
 	/**
 	 * Test for diagnosis problem
-	 * 
+	 *
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
@@ -117,6 +112,5 @@ public abstract class InferenceResolutionTaskDecTest extends InferenceTaskTest {
 		}
 	}
 */
-	
 
 }

@@ -10,7 +10,6 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ProbDensFunctionParameter {
-    String name ();
+@Retention(RetentionPolicy.RUNTIME) public @interface ProbDensFunctionParameter {
+	String name();
 }

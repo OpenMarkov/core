@@ -27,54 +27,45 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author manolo
  * Tests class for models that contain decisions. Different subclasses share that they have to test the MEU and the strategy
- *
  */
 public abstract class InferencePropagationTaskDecTest extends InferenceTaskTest {
 
 	public abstract Propagation buildInferenceTask(ProbNet probNet, List<Variable> variablesOfInterest,
-								   EvidenceCase preResolutionEvidence, EvidenceCase postResolutionEvidence)
+			EvidenceCase preResolutionEvidence, EvidenceCase postResolutionEvidence)
 			throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException;
 
-
-	public void checkUtilityPotential(
-			Map<Variable, TablePotential> aPrioriProbabilities,
-			Variable variableU, double u) {
+	public void checkUtilityPotential(Map<Variable, TablePotential> aPrioriProbabilities, Variable variableU,
+			double u) {
 		TablePotential U = aPrioriProbabilities.get(variableU);
 		checkUtility(U, u);
 
 	}
+
 	/**
 	 * @param aPosterioriUtils
 	 * @param variables
-	 * @param expectedUtils
-	 * Checks the posterior utilities of a list of utility nodes.
-	 * The utilities are ordered according the order in 'variables'.
-	 * */
-	protected void checkUtilities(
-			HashMap<Variable, TablePotential> aPosterioriUtils,
-			ArrayList<Variable> variables, double[] expectedUtils) {
+	 * @param expectedUtils    Checks the posterior utilities of a list of utility nodes.
+	 *                         The utilities are ordered according the order in 'variables'.
+	 */
+	protected void checkUtilities(HashMap<Variable, TablePotential> aPosterioriUtils, ArrayList<Variable> variables,
+			double[] expectedUtils) {
 
 		int size = variables.size();
 
-		for (int i=0;i<size;i++){
-			checkUtilityPotential(aPosterioriUtils,variables.get(i),expectedUtils[i]);
+		for (int i = 0; i < size; i++) {
+			checkUtilityPotential(aPosterioriUtils, variables.get(i), expectedUtils[i]);
 		}
 
 	}
 
-
-
 	/**
 	 * @param x
-	 * @param v
-	 * Checks if the values of the potential 'x' are equal to 'v' and if the number
-	 * of values in 'x' is 1.
+	 * @param v Checks if the values of the potential 'x' are equal to 'v' and if the number
+	 *          of values in 'x' is 1.
 	 */
 	protected void checkUtility(TablePotential x, double v) {
 
@@ -85,7 +76,7 @@ public abstract class InferencePropagationTaskDecTest extends InferenceTaskTest 
 
 	/**
 	 * Test for diagnosis problem
-	 * 
+	 *
 	 * @throws ParserException
 	 * @throws IOException
 	 * @throws FileNotFoundException
@@ -138,7 +129,5 @@ public abstract class InferencePropagationTaskDecTest extends InferenceTaskTest 
 		}
 	}
 */
-
-
 
 }

@@ -7,74 +7,71 @@
 
 package org.openmarkov.core.inference;
 
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Set;
-
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
+
 public class Strategy {
 
-    Hashtable<Variable, Policy> strategy;
+	Hashtable<Variable, Policy> strategy;
 
-    public class Policy {
+	/**
+	 * @param stratUtil constructs a strategy by maximizing over the utility tables
+	 */
+	public Strategy(StrategyUtilities stratUtil) {
+		this();
+		Set<Variable> decisions = stratUtil.getUtilities().keySet();
 
-        GTablePotential potential;
+		for (Variable dec : decisions) {
+			setPolicy(dec, new Policy(dec, stratUtil.getUtilities(dec)));
+		}
 
-        @SuppressWarnings("unchecked")
-        public Policy(Variable dec, TablePotential utilities) {
-            this();
-            potential = (GTablePotential) DiscretePotentialOperations.maximize(utilities,
-                    dec)[1];
-        }
+	}
 
-        public Policy() {
-            // TODO Auto-generated constructor stub
-        }
+	public Strategy() {
+		strategy = new Hashtable<>();
+	}
 
-        public GTablePotential getPotential() {
+	public List<Variable> getDomainOfPolicy(Variable varDecision) {
+		return getPolicy(varDecision).getDomain();
+	}
 
-            return potential;
-        }
+	public Policy getPolicy(Variable varDecision) {
+		return strategy.get(varDecision);
+	}
 
-        public List<Variable> getDomain() {
-            return potential.getVariables();
-        }
+	private void setPolicy(Variable dec, Policy policy) {
+		strategy.put(dec, policy);
 
-    }
+	}
 
-    public List<Variable> getDomainOfPolicy(Variable varDecision) {
-        return getPolicy(varDecision).getDomain();
-    }
+	public class Policy {
 
-    public Policy getPolicy(Variable varDecision) {
-        return strategy.get(varDecision);
-    }
+		GTablePotential potential;
 
-    /**
-     * @param stratUtil
-     *            constructs a strategy by maximizing over the utility tables
-     */
-    public Strategy(StrategyUtilities stratUtil) {
-        this();
-        Set<Variable> decisions = stratUtil.getUtilities().keySet();
+		@SuppressWarnings("unchecked") public Policy(Variable dec, TablePotential utilities) {
+			this();
+			potential = (GTablePotential) DiscretePotentialOperations.maximize(utilities, dec)[1];
+		}
 
-        for (Variable dec : decisions) {
-            setPolicy(dec, new Policy(dec, stratUtil.getUtilities(dec)));
-        }
+		public Policy() {
+			// TODO Auto-generated constructor stub
+		}
 
-    }
+		public GTablePotential getPotential() {
 
-    private void setPolicy(Variable dec, Policy policy) {
-        strategy.put(dec, policy);
+			return potential;
+		}
 
-    }
+		public List<Variable> getDomain() {
+			return potential.getVariables();
+		}
 
-    public Strategy() {
-        strategy = new Hashtable<>();
-    }
+	}
 
 }

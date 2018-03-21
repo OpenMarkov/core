@@ -7,53 +7,61 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
+import org.apache.log4j.Logger;
+
+import javax.security.auth.login.Configuration;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.util.Stack;
 
-import javax.security.auth.login.Configuration;
-
-import org.apache.log4j.Logger;
-
-/** @author manuel
-  * @author fjdiez
-  * @version 1.0
-  * @since OpenMarkov 1.0
-  * In this class we have put all the methods that are not very well classified
-  * in the rest of this application */
+/**
+ * @author manuel
+ * @author fjdiez
+ * @version 1.0
+ * @since OpenMarkov 1.0
+ * In this class we have put all the methods that are not very well classified
+ * in the rest of this application
+ */
 public class Util {
 
 	// Attributes
 	public static Configuration openMarkovConfiguration = null;
 	private static Logger logger = Logger.getLogger(Util.class);
-	
-    /** @return <code>true</code> if the <code>object</code> is a instance
-      * of a class with the name <code>className</code>
-      * @param className <code>String</code>
-      * @param object <code>Object</code>. */
-    public static boolean instanceOf(String className, Object object) {
-        try {
-            return Class.forName(className).isInstance(object);
-        } catch(Exception e) {
-        	logger.fatal(e);
-        }
-        return false;
-    }
 
-    /** @param condition <code>boolean</code> it it's true there is no mistake
-     * @param message The string that is show to the user if condition
-     *  is false */ // Quitar ???
-    public static void argumentCondition(boolean condition, String message) {
-        if (!condition) {
-        	logger.info(message);
-        }
-    }
-    
-	/** Returns a <code>String</code> with a integer with commas.<p>
+	/**
+	 * @param className <code>String</code>
+	 * @param object    <code>Object</code>.
+	 * @return <code>true</code> if the <code>object</code> is a instance
+	 * of a class with the name <code>className</code>
+	 */
+	public static boolean instanceOf(String className, Object object) {
+		try {
+			return Class.forName(className).isInstance(object);
+		} catch (Exception e) {
+			logger.fatal(e);
+		}
+		return false;
+	}
+
+	/**
+	 * @param condition <code>boolean</code> it it's true there is no mistake
+	 * @param message   The string that is show to the user if condition
+	 *                  is false
+	 */ // Quitar ???
+	public static void argumentCondition(boolean condition, String message) {
+		if (!condition) {
+			logger.info(message);
+		}
+	}
+
+	/**
+	 * Returns a <code>String</code> with a integer with commas.<p>
 	 * Example: <code>printInteger(1510000)</code> returns 1,510,000
+	 *
 	 * @param number <code>long</code>
-	 * @return The string with commas */
+	 * @return The string with commas
+	 */
 	public static String printInteger(long number) {
 		String numberString = new String();
 		Stack<String> stack = new Stack<>();
@@ -75,15 +83,17 @@ public class Util {
 			}
 			stack.push(stackElement);
 		} while (number > 0);
-		
+
 		while (!stack.isEmpty()) {
 			numberString = numberString + stack.pop();
 		}
 		return numberString;
 	}
-	
-	/** @param arrayInts <code>int[]</code>
-	 * @return String with ''[num 1, num 2, ... num n]'' */
+
+	/**
+	 * @param arrayInts <code>int[]</code>
+	 * @return String with ''[num 1, num 2, ... num n]''
+	 */
 	public static String printArrayOfIntegers(int[] arrayInts) {
 		String arrayStr = new String("[" + arrayInts[0]);
 		for (int i = 1; i < arrayInts.length; i++) {
@@ -93,8 +103,10 @@ public class Util {
 		return arrayStr;
 	}
 
-	/** @param msg <code>String</code> to the user
-	 * @return readed <code>int</code> */
+	/**
+	 * @param msg <code>String</code> to the user
+	 * @return readed <code>int</code>
+	 */
 	public static String readStringFromKeyboard(String msg) {
 		String cadena = null;
 		InputStreamReader isr = new InputStreamReader(System.in);
@@ -107,42 +119,48 @@ public class Util {
 		}
 		return cadena;
 	}
-	
-	/** Translates a <code>String</code> from windows style to UNIX (change \\ 
+
+	/**
+	 * Translates a <code>String</code> from windows style to UNIX (change \\
 	 * for /)
+	 *
 	 * @param windowsString <code>String</code>
-	 * @return String */
+	 * @return String
+	 */
 	public static String platformDependentPath(String windowsString) {
 		return windowsString.replace("\\", File.separator);
 	}
-	
-	/** Replaces <code>path</code> for a new path with bars type / in unix 
-	 * case */
+
+	/**
+	 * Replaces <code>path</code> for a new path with bars type / in unix
+	 * case
+	 */
 	public static String getOSPath(String path) {
 		return platformDependentPath(path);
 	}
 
-    
-    /**
+	/**
 	 * Returns the the value rounded to the precision
-	 * @param value the value to be rounded
-	 * @param precisionString a <code>String</code> like "10", "1", "0.1", 
-	 * "0.001"
-	 * @return	the rounded value
+	 *
+	 * @param value           the value to be rounded
+	 * @param precisionString a <code>String</code> like "10", "1", "0.1",
+	 *                        "0.001"
+	 * @return the rounded value
 	 */
 	public static double round(double value, String precisionString) {
 		double precision = Double.valueOf(precisionString);
 		value = Math.round(value / precision) * precision;
 		return value;
 	}
-	
+
 	/**
 	 * Returns a <code>String</code> of the value rounded to the precision and
 	 * with the exact number of decimals (3.4 with precision 0.001 is "3.400")
-	 * @param value	the value to be rounded
-	 * @param precisionString a <code>String</code> like "10", "1", "0.1", 
-	 * "0.001"
-	 * @return	rounded value string
+	 *
+	 * @param value           the value to be rounded
+	 * @param precisionString a <code>String</code> like "10", "1", "0.1",
+	 *                        "0.001"
+	 * @return rounded value string
 	 */
 	public static String roundedString(double value, String precisionString) {
 		// place of decimal point in precisionString
@@ -152,8 +170,7 @@ public class Util {
 		// number of decimals in precisionString
 		int numDecimals;
 		if (precisionStringDecimalPlace != -1) {
-			numDecimals = precisionString.length()
-					- precisionStringDecimalPlace - 1;
+			numDecimals = precisionString.length() - precisionStringDecimalPlace - 1;
 		} else {
 			numDecimals = -1;
 		}

@@ -7,9 +7,6 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.NodeAlwaysObservedEdit;
 import org.openmarkov.core.action.PNEdit;
@@ -21,16 +18,17 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
-@Constraint(name = "NoAlwaysObservedDescendantOfDecision", defaultBehavior = ConstraintBehavior.YES)
-public class NoAlwaysObservedDescendantOfDecision extends PNConstraint {
+import java.util.ArrayList;
+import java.util.List;
 
-	@Override
-	protected String getMessage() {
+@Constraint(name = "NoAlwaysObservedDescendantOfDecision", defaultBehavior = ConstraintBehavior.YES) public class NoAlwaysObservedDescendantOfDecision
+		extends PNConstraint {
+
+	@Override protected String getMessage() {
 		return "an always-observed variable cannot be a descendant of a decision node";
 	}
 
-	@Override
-	public boolean checkProbNet(ProbNet probNet) {
+	@Override public boolean checkProbNet(ProbNet probNet) {
 		boolean checkNetwork = true;
 		List<Node> decisionNodes = getDecisionNodes(probNet);
 		List<Node> alwaysObservedNodes = getAlwaysObservedNodes(probNet);
@@ -44,7 +42,7 @@ public class NoAlwaysObservedDescendantOfDecision extends PNConstraint {
 	 * @param node
 	 * @param nodes
 	 * @return true if 'node' has some ancestor in 'nodes' (considering
-	 *         direction of the links)
+	 * direction of the links)
 	 */
 	private boolean itHasSomeAncestorInList(ProbNet network, Node node, List<Node> nodes) {
 		boolean itHasAncestor = false;
@@ -64,8 +62,7 @@ public class NoAlwaysObservedDescendantOfDecision extends PNConstraint {
 		return alwaysObservedNodes;
 	}
 
-	@Override
-	public boolean checkEdit(ProbNet probNet, PNEdit edit)
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
 			throws NonProjectablePotentialException, WrongCriterionException {
 		boolean checkEdit = true;
 
@@ -81,8 +78,10 @@ public class NoAlwaysObservedDescendantOfDecision extends PNConstraint {
 				Node node1 = probNet.getNode(variable1);
 				Variable variable2 = addLinkEdit.getVariable2();
 				Node node2 = probNet.getNode(variable2);
-				checkEdit = !(itHasSomeAncestorInList(probNet, node1, decisionNodes)
-						&& itHasSomeDescendantInList(probNet, node2, alwaysObservedNodes));
+				checkEdit = !(
+						itHasSomeAncestorInList(probNet, node1, decisionNodes) && itHasSomeDescendantInList(probNet,
+								node2, alwaysObservedNodes)
+				);
 			}
 		}
 
@@ -91,8 +90,10 @@ public class NoAlwaysObservedDescendantOfDecision extends PNConstraint {
 			for (int i = 0; i < edits2.size() && checkEdit; i++) {
 				PNEdit simpleEdit = edits2.get(i);
 				NodeAlwaysObservedEdit nodeAlwaysObservedEdit = (NodeAlwaysObservedEdit) simpleEdit;
-				checkEdit = !(nodeAlwaysObservedEdit.getNewAlwaysObserved()
-						&& itHasSomeAncestorInList(probNet, nodeAlwaysObservedEdit.getNode(), decisionNodes));
+				checkEdit = !(
+						nodeAlwaysObservedEdit.getNewAlwaysObserved() && itHasSomeAncestorInList(probNet,
+								nodeAlwaysObservedEdit.getNode(), decisionNodes)
+				);
 			}
 		}
 		return checkEdit;

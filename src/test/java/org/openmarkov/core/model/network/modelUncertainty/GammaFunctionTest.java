@@ -8,18 +8,15 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 /**
  * @author manolo
- * 
  */
 public class GammaFunctionTest extends ProbDensFunctionTest {
 
-    @Override
-    public ProbDensFunction newProbDensFunctionInstance() {
-        return new GammaFunction();
-    }
-    
-    @Override
-    public double[] initializeParams() {
-        double[] params = { 4.2, 3.0 };
-        return params;
-    }
+	@Override public ProbDensFunction newProbDensFunctionInstance() {
+		return new GammaFunction();
+	}
+
+	@Override public double[] initializeParams() {
+		double[] params = { 4.2, 3.0 };
+		return params;
+	}
 }

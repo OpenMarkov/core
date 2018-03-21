@@ -9,7 +9,6 @@ package org.openmarkov.core.io.database;
 
 import java.io.IOException;
 
-public interface CaseDatabaseReader
-{
-    CaseDatabase load(String filename) throws IOException;
+public interface CaseDatabaseReader {
+	CaseDatabase load(String filename) throws IOException;
 }

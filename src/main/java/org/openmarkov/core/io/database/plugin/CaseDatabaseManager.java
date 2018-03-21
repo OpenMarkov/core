@@ -7,6 +7,7 @@
 package org.openmarkov.core.io.database.plugin;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.openmarkov.core.io.database.CaseDatabaseReader;
@@ -44,8 +45,8 @@ public class CaseDatabaseManager
     {
         super ();
         this.pluginsLoader = new PluginLoader ();
-        this.readerPlugins = new HashMap<> ();
-        this.writerPlugins = new HashMap<> ();
+        this.readerPlugins = new LinkedHashMap<>();
+        this.writerPlugins = new LinkedHashMap<> ();
         
         for(Class<?> plugin : findAllFormatPlugins ())
         {

@@ -292,7 +292,6 @@ public class StrategyTree extends TreeADDPotential {
 	 * @param decisionVariable
 	 * @param utilities
 	 * @param strategyTrees
-	 * @param coalescedInterventions 
 	 * @return Optimal intervention
 	 */
 	public static StrategyTree optimalInterventionTakingAllOptimal(Variable decisionVariable,

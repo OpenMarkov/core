@@ -9,6 +9,7 @@ package org.openmarkov.core.io.format.annotation;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,10 +76,10 @@ public class FormatManager
 		super ();
 		
 	
-		this.readerClasses = new HashMap<> ();
-		this.writerClasses = new HashMap<> ();
-        this.readerInstances = new HashMap<> ();
-        this.writerInstances = new HashMap<> ();
+		this.readerClasses = new LinkedHashMap<>();
+		this.writerClasses = new LinkedHashMap<> ();
+        this.readerInstances = new LinkedHashMap<> ();
+        this.writerInstances = new LinkedHashMap<> ();
         
 		for(Class<?> plugin : findAllFormatPlugins ())
 		{
@@ -98,7 +99,7 @@ public class FormatManager
             	try{
             		readerClasses.get(extension).put(version, plugin);
                 } catch (NullPointerException e){
-                	Map<String, Class<?>> versionsHash =new HashMap<>();
+                	Map<String, Class<?>> versionsHash =new LinkedHashMap<>();
                 	versionsHash.put(version, plugin);
                     readerClasses.put(extension, versionsHash);    
                 }
@@ -120,7 +121,7 @@ public class FormatManager
             	try{
             		writerClasses.get(extension).put(version, plugin);
                 } catch (NullPointerException e){
-                	Map<String, Class<?>> versionsHash =new HashMap<>();
+                	Map<String, Class<?>> versionsHash =new LinkedHashMap<>();
                 	versionsHash.put(version, plugin);
                     writerClasses.put(extension, versionsHash);    
                 }
@@ -283,10 +284,9 @@ public class FormatManager
 	/**
 	 * Gets the plugin corresponding to the "Reader" role, the extension and the version
 	 * 
-	 * @param extension the extension required
-	 * @param version the version of the ProbModel required
+	 * @param fileName
 	 * @throws Exception when an exception is raised is thrown to be caught by the gui
-	 * @return a probNetReader object
+	 * @return a ProbNetReader object
 	 */
 	public ProbNetReader getProbNetReader(String fileName) throws Exception
 	{

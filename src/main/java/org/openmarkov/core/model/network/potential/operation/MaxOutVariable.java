@@ -168,29 +168,24 @@ public class MaxOutVariable  {
 	
 	
     */
-	
+
+	/**
+	 *
+	 * @param decisionVariable
+	 * @param probability
+	 * @param inputUtilities
+	 */
 	public MaxOutVariable(Variable decisionVariable, TablePotential probability,List<TablePotential> inputUtilities) {
 		this(decisionVariable,probability,DiscretePotentialOperations.sum(inputUtilities));		
 	}
-	   /**
-	    * @param decisionVariable <code>Variable</code>
-	    * @param potentials <code>List</code> of <code>TablePotential</code>
-	    * @param sdagInterventions
-	    * @return A <code>List</code> of <code>TablePotential</code>, with these, some of them optional, potentials:
-	    * <ol>
-	    * <li>if there are probability potentials in <code>potentials</code>, a join probability potential.
-	    * <li>if there are interventions or the utility is different than 0 in the sum of the utility potentials of 
-	    * <code>potentials</code>, that sum of utility potentials.
-	    * <li>a policy potential.
-	    * 
-	    * OJO: Había otro método maxOutVariable que llamaba a éste, y con Javadoc:
-	    * 
-	    * @param decisionVariable <code>Variable</code>
-	    * @param potentials <code>List</code> of <code>TablePotential</code>
-	    * @return A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
-	    * </ol>
-	    */
-		public MaxOutVariable(Variable decisionVariable, TablePotential probability,TablePotential inputUtility) {
+
+	/**
+	 *
+	 * @param decisionVariable
+	 * @param probability
+	 * @param inputUtility
+	 */
+	public MaxOutVariable(Variable decisionVariable, TablePotential probability,TablePotential inputUtility) {
 			
 			TablePotential inputUtilityToMaximize = DiscretePotentialOperations.multiply(probability,inputUtility);			
 			

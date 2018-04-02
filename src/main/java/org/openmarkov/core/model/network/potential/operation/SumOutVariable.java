@@ -19,6 +19,8 @@ import java.util.List;
 public class SumOutVariable extends Marginalization {
 
 	/**
+	 * Classify the potentials into probability and utility, if there are probabilities, produces a new probability potential;
+	 * if there are utility potentials, produces a new utility potential. Both without the
 	 * @param chanceVariable <code>Variable</code>
 	 * @param potentials     <code>List</code> of <code>TablePotential</code>
 	 * @return A <code>Collection</code> with two <code>TablePotential</code>,
@@ -127,33 +129,33 @@ public class SumOutVariable extends Marginalization {
 
 				} // end of outer loop
 
+				setUtility(outputUtilityPotential);
 				// Return the utility potential if some of its values is
 				// different from 0.0
 				// or if there are interventions
-				if (thereAreInterventions || DiscretePotentialOperations
-						.thereAreRelevantUtilities(outputUtilityPotential)) {
-					boolean criteriaFound = false;
-					for (int i = 0; i < outputPotentials.size(); i++) {
-						if (outputPotentials.get(i).getCriterion() == outputUtilityPotential.getCriterion()) {
-							outputPotentials.set(i,
-									DiscretePotentialOperations.sum(outputPotentials.get(i), outputUtilityPotential));
-							criteriaFound = true;
-							break;
-						}
-					}
-					if (!criteriaFound) {
-						outputPotentials.add(outputUtilityPotential);
-					}
+//				if (thereAreInterventions || DiscretePotentialOperations
+//						.thereAreRelevantUtilities(outputUtilityPotential)) {
+//					boolean criteriaFound = false;
+//					for (int i = 0; i < outputPotentials.size(); i++) {
+//						if (outputPotentials.get(i).getCriterion() == outputUtilityPotential.getCriterion()) {
+//							outputPotentials.set(i,
+//									DiscretePotentialOperations.sum(outputPotentials.get(i), outputUtilityPotential));
+//							criteriaFound = true;
+//							break;
+//						}
+//					}
+//					if (!criteriaFound) {
+//						outputPotentials.add(outputUtilityPotential);
+//					}
 				}
 			}
 		} // end of if (!thereIsUtility)
 
-		if (marginalProb.getNumVariables() > 0 || !DiscretePotentialOperations
-				.almostEqual(marginalProb.values[0], 1.0)) {
-			marginalProb.setPotentialRole(PotentialRole.JOINT_PROBABILITY);
-			setProbability(marginalProb);
-		}
-		setUtility(DiscretePotentialOperations.sum(outputPotentials));
+//		if (marginalProb.getNumVariables() > 0 || !DiscretePotentialOperations
+//				.almostEqual(marginalProb.values[0], 1.0)) {
+//			marginalProb.setPotentialRole(PotentialRole.JOINT_PROBABILITY);
+//			setProbability(marginalProb);
+//		}
+//		setUtility(DiscretePotentialOperations.sum(outputPotentials));
 	}
 
-}

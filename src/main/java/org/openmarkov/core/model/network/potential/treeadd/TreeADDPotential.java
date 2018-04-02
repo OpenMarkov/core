@@ -5,9 +5,6 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-/**
- *
- */
 package org.openmarkov.core.model.network.potential.treeadd;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -50,10 +47,11 @@ import java.util.Stack;
  *
  * @author myebra
  */
-@PotentialType(name = "Tree/ADD", family = "Tree") public class TreeADDPotential extends Potential {
+@PotentialType(name = "Tree/ADD", family = "Tree")
+public class TreeADDPotential extends Potential {
 
 	// Attributes used in toString()
-	protected static String DEFAULT_INDENT_STRING = "";
+	private static String DEFAULT_INDENT_STRING = "";
 	protected static int indentIncrement = 4;
 	/**
 	 * topVariable is the variable at the root of the tree
@@ -63,14 +61,14 @@ import java.util.Stack;
 	 * This List stores the branches created in the TreeADDPotential constructor
 	 */
 	protected List<TreeADDBranch> branches = new ArrayList<>();
-	protected String indent = DEFAULT_INDENT_STRING;
-	protected int indentLevel;
+	private String indent = DEFAULT_INDENT_STRING;
+	private int indentLevel;
 
-	/**
-	 * label is incompatible with reference and reference is incompatible with
-	 * potential This HashMap stores those potentials that have been labeled
-	 * within the branches in a TreeADDPotential
-	 */
+//	/**
+//	 * label is incompatible with reference and reference is incompatible with
+//	 * potential This HashMap stores those potentials that have been labeled
+//	 * within the branches in a TreeADDPotential
+//	 */
 	// private HashMap<String, Potential> potentialsLabeled;
 
 	/**

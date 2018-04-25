@@ -195,7 +195,7 @@ import java.util.Random;
 		return new UniformPotential(this);
 	}
 
-	@Override public int sample(Random randomGenerator, Map<Variable, Integer> parentStateIndexes) {
+	@Override public int sampleConditionedVariable(Random randomGenerator, Map<Variable, Integer> parentStateIndexes) {
 		return randomGenerator.nextInt(variables.get(0).getNumStates());
 	}
 

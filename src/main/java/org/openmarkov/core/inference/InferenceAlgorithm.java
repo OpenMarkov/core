@@ -138,22 +138,27 @@ public abstract class InferenceAlgorithm implements Task {
 		List<PNConstraint> additionalConstraints = getAdditionalConstraints();
 
 		List<PNConstraint> notEvaluableConstraints = new ArrayList<>();
-		for (PNConstraint pnConstraint : additionalConstraints) {
-			if (!pnConstraint.checkProbNet(probNet)) {
-				if (pnConstraint.getClass().equals(NoSuperValueNode.class)) {
-					throw new NotEvaluableNetworkException("Evaluation of supervalue nodes is temporarily disabled.");
-				}
-				notEvaluableConstraints.add(pnConstraint);
-			}
-		}
 
-		if (notEvaluableConstraints.size() != 0) {
-			String notEvaluableMessage = "This algorithm cannot evaluate this network because the network does "
-					+ "not satisfy the following constraints:\n";
-			for (PNConstraint pnConstraint : notEvaluableConstraints) {
-				notEvaluableMessage += pnConstraint.toString() + "\n";
+		/// [Iago] If there is no constraints, don't execute the next chunk of code.
+        /// Without the if, HuginPropagation breaks with a NullPointerException
+		if (additionalConstraints != null) {
+			for (PNConstraint pnConstraint : additionalConstraints) {
+				if (!pnConstraint.checkProbNet(probNet)) {
+					if (pnConstraint.getClass().equals(NoSuperValueNode.class)) {
+						throw new NotEvaluableNetworkException("Evaluation of supervalue nodes is temporarily disabled.");
+					}
+					notEvaluableConstraints.add(pnConstraint);
+				}
 			}
-			throw new NotEvaluableNetworkException(notEvaluableMessage);
+
+			if (notEvaluableConstraints.size() != 0) {
+				String notEvaluableMessage = "This algorithm cannot evaluate this network because the network does "
+						+ "not satisfy the following constraints:\n";
+				for (PNConstraint pnConstraint : notEvaluableConstraints) {
+					notEvaluableMessage += pnConstraint.toString() + "\n";
+				}
+				throw new NotEvaluableNetworkException(notEvaluableMessage);
+			}
 		}
 
 	}

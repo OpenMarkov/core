@@ -35,7 +35,7 @@ public class EvidenceCase {
 
 	// Attribute
 	/**
-	 * List of findings <code>HashMap</code> of key=<code>String</code> and
+	 * List of findings <code>HashMap</code> of key=<code>Variable</code> and
 	 * value=<code>Finding</code>.
 	 */
 	protected HashMap<Variable, Finding> findings;
@@ -43,9 +43,10 @@ public class EvidenceCase {
 	// Constructors
 
 	/**
-	 * @param findings <code>HashMap</code> of key=<code>String</code> and value=
+	 * @param findings <code>HashMap</code> of key=<code>Variable</code> and value=
 	 *                 <code>Finding</code>.
 	 */
+	// TODO Javadoc: this is a constructor.
 	public EvidenceCase(HashMap<Variable, Finding> findings) {
 		this.findings = findings;
 	}

@@ -463,6 +463,7 @@ public abstract class Potential {
 
 	/**
 	 * @returns a sampled potential. By default, itself, i.e., not sampled.
+	 * TODO This method must be commented further
 	 */
 	public Potential sample() {
 		return this; // By default
@@ -477,7 +478,18 @@ public abstract class Potential {
 		}
 	}
 
-	public int sample(Random randomGenerator, Map<Variable, Integer> sampledParents) {
+	/**
+	 * When this potential represents a conditional probability, this method returns a value for the first variable,
+	 * sampled with the probability distribution. If this variable is finite-states, it returns the index of
+	 * the sampled state. If the variable is numeric, it returns the value sampled.
+	 * @param randomGenerator
+	 * @param sampledParents
+	 * @return
+	 */
+	// TODO replace int with double
+	// TODO make this method abstract and implement it in all the subclasses of Potential
+	public int sampleConditionedVariable(Random randomGenerator, Map<Variable, Integer> sampledParents) {
+		// dummy code. TODO remove when making this method abstract.
 		return Integer.MAX_VALUE;
 	}
 

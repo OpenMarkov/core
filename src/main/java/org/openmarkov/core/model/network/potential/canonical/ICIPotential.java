@@ -408,7 +408,7 @@ public abstract class ICIPotential extends Potential {
 		return new Variable("z_" + parent.getName() + "_" + child.getName(), child.getStates());
 	}
 
-	@Override public int sample(Random randomGenerator, Map<Variable, Integer> sampledParents) {
+	@Override public int sampleConditionedVariable(Random randomGenerator, Map<Variable, Integer> sampledParents) {
 		int[] iciSampledStates = new int[noisyParameters.length + 1];
 		int childNumStates = variables.get(0).getNumStates();
 

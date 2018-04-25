@@ -1189,7 +1189,7 @@ import java.util.Random;
 		return new TablePotential(this);
 	}
 
-	@Override public int sample(Random randomGenerator, Map<Variable, Integer> sampledParents) {
+	@Override public int sampleConditionedVariable(Random randomGenerator, Map<Variable, Integer> sampledParents) {
 		int index = 0;
 		int sampleIndex = 0;
 		// find index of first position for the given configuration

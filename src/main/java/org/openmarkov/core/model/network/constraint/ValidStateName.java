@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
@@ -27,28 +28,36 @@ import java.util.List;
 	// Flag of the error
 	private int type_error;
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
+	@Override
+	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 			throws NonProjectablePotentialException, WrongCriterionException {
 		// NodeStateEdit
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, NodeStateEdit.class);
+		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit,
+				NodeStateEdit.class);
 		for (PNEdit simpleEdit : edits) {
-			String name = ((NodeStateEdit) simpleEdit).getNewState().getName();
+			NodeStateEdit nodeStateEdit = (NodeStateEdit) simpleEdit;
+			StateAction stateAction = nodeStateEdit.getStateAction();
+			String name = (stateAction != StateAction.RENAME) ? nodeStateEdit
+					.getNewState().getName() : nodeStateEdit.getNewName();
 
 			// Get the trim and lowerCase state
 			name = name.trim();
 			name = name.toLowerCase();
 
-			switch (((NodeStateEdit) simpleEdit).getStateAction()) {
+			switch (stateAction) {
 			case ADD:
 			case RENAME:
 				if ((name == null) || (name.contentEquals(""))) {
 					type_error = IS_EMPTY_NAME;
 					return false;
 				}
-				if (!((NodeStateEdit) simpleEdit).getNode().getVariable().chekNewStateName(name)) {
+				if (!nodeStateEdit.getNode().getVariable()
+						.chekNewStateName(name)) {
 					type_error = IS_NAME_ALREADY_EXIST;
 					return false;
 				}
+				break;
+			default:
 				break;
 			}
 		}

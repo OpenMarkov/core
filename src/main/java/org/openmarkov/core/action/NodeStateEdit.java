@@ -90,7 +90,8 @@ public class NodeStateEdit extends SimplePNEdit {
 	 */
 	private int indexState;
 
-	private String newName;
+	private String newName;	
+
 	private String oldName;
 
 	/**
@@ -106,24 +107,29 @@ public class NodeStateEdit extends SimplePNEdit {
 		super(node.getProbNet());
 		this.node = node;
 		this.newName = newName;
-		this.newState = new State(newName);
 		this.indexState = stateIndex;
-		this.selectedStateIndex = node.getVariable().getNumStates() - (stateIndex + 1);
+		Variable variable = node.getVariable();
+		this.selectedStateIndex = variable.getNumStates() - (stateIndex + 1);
+		State[] states = variable.getStates();
+		State selectedState = states[selectedStateIndex];
+		this.newState = (stateAction != StateAction.RENAME) ? new State(newName)
+				: selectedState;
 		if (stateAction != StateAction.ADD) {
-			this.oldState = node.getVariable().getStates()[selectedStateIndex];
-			this.oldName = node.getVariable().getStateName(selectedStateIndex);
+			this.oldState = selectedState;
+			this.oldName = variable.getStateName(selectedStateIndex);
 		}
 		this.stateAction = stateAction;
-		this.currentPartitionedInterval = node.getVariable().getPartitionedInterval();
-		this.oldStates = node.getVariable().getStates();
+		this.currentPartitionedInterval = variable.getPartitionedInterval();
+		this.oldStates = states;
 		this.linkRestrictionMap = new HashMap<>();
 		this.revelationConditionMap = new HashMap<>();
 
 		// Save the potentials of the node and its neighbours
-		this.oldPotentials = probNet.getPotentials(node.getVariable());
+		this.oldPotentials = probNet.getPotentials(variable);
 		this.listOldPotentials = new HashMap<>();
 		for (Node nodeNeighbour : probNet.getNeighbors(node)) {
-			this.listOldPotentials.put(nodeNeighbour.getVariable(), probNet.getPotentials(nodeNeighbour.getVariable()));
+			this.listOldPotentials.put(nodeNeighbour.getVariable(),
+					probNet.getPotentials(nodeNeighbour.getVariable()));
 		}
 	}
 
@@ -272,25 +278,7 @@ public class NodeStateEdit extends SimplePNEdit {
 			break;
 		case RENAME:
 			if (selectedStateIndex >= 0 && selectedStateIndex < variable.getNumStates()) {
-
-				newState = oldState;
-				oldState.setName(newName);
-            	/* Obsolete code? 2014/10/15
-					// if there is any child with a tree potential the correspondent
-					// branch must change
-					State state = variable.getStates()[selectedStateIndex];
-					String oldName = variable.getStates()[selectedStateIndex].getName();
-					for (Node child : children) {
-						//oldPotentials = new ArrayList<Potential>();
-	
-						if (child.getPotentials().get(0) instanceof TreeADDPotential) {
-							renameBranchesStates((TreeADDPotential) child.getPotentials().get(0),
-									oldName, newName);
-						}
-					}
-					state.setName(newName);
-				*/
-
+				newState.setName(newName);
 			}
 			break;
 		}
@@ -521,6 +509,10 @@ public class NodeStateEdit extends SimplePNEdit {
 
 	public int getIndexState() {
 		return indexState;
+	}
+	
+	public String getNewName() {
+		return newName;
 	}
 
 }

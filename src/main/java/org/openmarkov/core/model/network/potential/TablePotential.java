@@ -1140,9 +1140,6 @@ import java.util.Random;
 		if (openBrace) {
 			buffer.append("}");
 		}
-		buffer.append("\n Role: " + this.getPotentialRole());
-		buffer.append("\n Criterion: " + ((criterion == null) ? "null" : criterion.toString()));
-		buffer.append("\n Sum of values: " + DiscretePotentialOperations.sum(this.values));
 		return buffer.toString();
 	}
 

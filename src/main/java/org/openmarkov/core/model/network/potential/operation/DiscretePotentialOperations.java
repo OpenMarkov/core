@@ -661,21 +661,21 @@ public final class DiscretePotentialOperations {
 	 * @return The potential role
 	 */
 	public static PotentialRole getRole(Collection<? extends Potential> potentials) {
+		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY; // Default value
 		boolean atLeastOneUtility = false;
-		for (Potential potential : potentials) {
-			atLeastOneUtility = atLeastOneUtility || potential.isAdditive();
-		}
-		if (atLeastOneUtility) {
-			return PotentialRole.UNSPECIFIED;
-		}
 		boolean atLeastOneJoinProb = false;
 		for (Potential potential : potentials) {
+			atLeastOneUtility = atLeastOneUtility || potential.isAdditive();
 			atLeastOneJoinProb = atLeastOneJoinProb || potential.getPotentialRole() == PotentialRole.JOINT_PROBABILITY;
 		}
-		if (atLeastOneJoinProb) {
-			return PotentialRole.JOINT_PROBABILITY;
+		if (atLeastOneUtility) {
+			role = PotentialRole.UNSPECIFIED;
+		} else {
+			if (atLeastOneJoinProb) {
+				role = PotentialRole.JOINT_PROBABILITY;
+			}
 		}
-		return PotentialRole.CONDITIONAL_PROBABILITY;
+		return role;
 	}
 
 	/**

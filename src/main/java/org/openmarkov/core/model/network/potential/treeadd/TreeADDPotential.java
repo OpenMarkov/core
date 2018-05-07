@@ -40,19 +40,16 @@ import java.util.Map;
 import java.util.Stack;
 
 /**
- * A TreeADDPotential is a type of Potential that implies several advantages
- * instead of using tables when the potential has a substructure that repeats
- * itself several times. Each TreeADDPotential is defined by a top variable and
- * its branches
+ * A TreeADDPotential is a potential defined by a top variable and its branches.
+ * It implies several advantages instead of using tables when the potential has a substructure that repeats
+ * information several times.
  *
  * @author myebra
  */
 @PotentialType(name = "Tree/ADD", family = "Tree")
 public class TreeADDPotential extends Potential {
 
-	// Attributes used in toString()
-	private static String DEFAULT_INDENT_STRING = "";
-	protected static int indentIncrement = 4;
+	// Attributes
 	/**
 	 * topVariable is the variable at the root of the tree
 	 */
@@ -61,15 +58,6 @@ public class TreeADDPotential extends Potential {
 	 * This List stores the branches created in the TreeADDPotential constructor
 	 */
 	protected List<TreeADDBranch> branches = new ArrayList<>();
-	private String indent = DEFAULT_INDENT_STRING;
-	private int indentLevel;
-
-//	/**
-//	 * label is incompatible with reference and reference is incompatible with
-//	 * potential This HashMap stores those potentials that have been labeled
-//	 * within the branches in a TreeADDPotential
-//	 */
-	// private HashMap<String, Potential> potentialsLabeled;
 
 	/**
 	 * For role conditional. Call to the complex constructor
@@ -725,6 +713,44 @@ public class TreeADDPotential extends Potential {
 		}
 	}
 
+	@Override public void scalePotential(double scale) {
+		// Scale all the potentials of the branches
+		for (TreeADDBranch branch : branches) {
+			branch.getPotential().scalePotential(scale);
+		}
+
+	}
+
+	@Override public Potential deepCopy(ProbNet copyNet) {
+		TreeADDPotential treeADDPotential = (TreeADDPotential) super.deepCopy(copyNet);
+		List<TreeADDBranch> treeADDBranches = new ArrayList<>();
+		for (TreeADDBranch branch : this.branches) {
+			treeADDBranches.add(branch.deepCopy(copyNet));
+		}
+
+		treeADDPotential.setBranches(treeADDBranches);
+
+		treeADDPotential.indent = new String(this.indent);
+		treeADDPotential.indentLevel = this.indentLevel;
+
+		if (this.topVariable != null) {
+			try {
+				treeADDPotential.topVariable = copyNet.getVariable(this.topVariable.getName());
+			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return treeADDPotential;
+	}
+
+	// Attributes used in toString()
+	private static String DEFAULT_INDENT_STRING = "";
+	protected static int indentIncrement = 4;
+	private String indent = DEFAULT_INDENT_STRING;
+	private int indentLevel;
+
+	// Methods used in toString()
 	public void setIndentLevel(int indentLevel) {
 		this.indentLevel = indentLevel;
 		indent = "";
@@ -768,42 +794,6 @@ public class TreeADDPotential extends Potential {
 			strBuffer.append(")\n");
 		}
 		return strBuffer.toString();
-	}
-
-	@Override public void scalePotential(double scale) {
-		// Scale all the potentials of the branches
-		for (TreeADDBranch branch : branches) {
-			branch.getPotential().scalePotential(scale);
-		}
-
-	}
-
-	@Override public Potential deepCopy(ProbNet copyNet) {
-		TreeADDPotential treeADDPotential = (TreeADDPotential) super.deepCopy(copyNet);
-		List<TreeADDBranch> treeADDBranches = new ArrayList<>();
-		for (TreeADDBranch branch : this.branches) {
-			treeADDBranches.add(branch.deepCopy(copyNet));
-		}
-
-		treeADDPotential.setBranches(treeADDBranches);
-
-		//		treeADDPotential.defaultIndentString = new String(this.defaultIndentString);
-
-		treeADDPotential.indent = new String(this.indent);
-
-		//		treeADDPotential.indentIncrement = this.indentIncrement;
-
-		treeADDPotential.indentLevel = this.indentLevel;
-
-		if (this.topVariable != null) {
-			try {
-				treeADDPotential.topVariable = copyNet.getVariable(this.topVariable.getName());
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return treeADDPotential;
 	}
 
 }

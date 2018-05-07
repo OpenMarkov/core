@@ -13,6 +13,18 @@ import org.openmarkov.core.model.network.ProbNet;
 
 import java.util.List;
 
+/** Interface that must be implemented to write a ProbNet.<p>
+ * Every writer that implements this interface must be annotated with descriptive information, that will be used by OpenMarkov
+ * to manage the set of different writers.<p>
+ * Annotation: <b>FormatType</b>
+ * <ul>
+ *   <li>name, for example: "PGMXWriter"</li>
+ *   <li>version, for example: "0.2"</li>
+ *   <li>extension, for example: "pgmx"</li>
+ *   <li>description</li>
+ *   <li>role, it can be either "Writer" or "Reader"</li>
+ * </ul>
+ */
 public interface ProbNetWriter {
 
 	/**

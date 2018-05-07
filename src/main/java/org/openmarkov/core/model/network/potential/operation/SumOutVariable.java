@@ -19,66 +19,65 @@ import java.util.List;
 public class SumOutVariable extends Marginalization {
 
 	/**
-	 * Classify the potentials into probability and utility, if there are probabilities, produces a new probability potential;
-	 * if there are utility potentials, produces a new utility potential. Both without the
-	 * @param chanceVariable <code>Variable</code>
+	 * Classify the potentials into probability and additive, if there are probabilities, produces a new probability potential;
+	 * if there are additive potentials, produces a new additive potential. Both without the received variable
+	 *
+	 * @param variable <code>Variable</code>
 	 * @param potentials     <code>List</code> of <code>TablePotential</code>
 	 * @return A <code>Collection</code> with two <code>TablePotential</code>,
 	 * marginal probability and new utility in this order.
 	 */
-	public SumOutVariable(Variable chanceVariable, Collection<TablePotential> potentials) {
+	public SumOutVariable(Variable variable, Collection<TablePotential> potentials) {
 		// Get probability and utility potentials
 		List<TablePotential> probPotentials = new ArrayList<>();
-		List<TablePotential> utilityPotentials = new ArrayList<>();
-		classifyProbAndUtilityPotentials(potentials, probPotentials, utilityPotentials);
-		boolean thereIsUtility = utilityPotentials.size() != 0;
+		List<TablePotential> additivePotentials = new ArrayList<>();
+		classifyProbAndUtilityPotentials(potentials, probPotentials, additivePotentials);
 		List<TablePotential> outputPotentials = new ArrayList<>();
-		TablePotential marginalProb;
-
-		marginalProb = DiscretePotentialOperations.multiplyAndMarginalize(probPotentials, chanceVariable);
+		TablePotential marginalProb = DiscretePotentialOperations.multiplyAndMarginalize(probPotentials, variable);
 		// Do not return the probability potential if it depends on no variables
 		// and its value is 1
 
-		if (thereIsUtility) {
-			for (TablePotential inputUtilityPotential : utilityPotentials) {
-				List<Variable> inputUtilityVariables = inputUtilityPotential.getVariables();
-				boolean thereAreInterventions = inputUtilityPotential.strategyTrees != null;
+		boolean thereAreAdditivePotentials = additivePotentials.size() != 0;
+		if (thereAreAdditivePotentials) {
+			// build the marginal and conditional probabilities
+			TablePotential joinProb = DiscretePotentialOperations.multiply(probPotentials);
+			if (joinProb == null) {
+				joinProb = new TablePotential(new ArrayList<Variable>(), PotentialRole.CONDITIONAL_PROBABILITY);
+			}
+			TablePotential conditionalProb = DiscretePotentialOperations.divide(joinProb, marginalProb);
 
-				// build the marginal and conditional probabilities
-				TablePotential joinProb = DiscretePotentialOperations.multiply(probPotentials);
-				if (joinProb == null) {
-					joinProb = new TablePotential(new ArrayList<Variable>(), PotentialRole.CONDITIONAL_PROBABILITY);
-				}
-				TablePotential conditionalProb = DiscretePotentialOperations.divide(joinProb, marginalProb);
+			for (TablePotential additivePotential : additivePotentials) {
+				List<Variable> additiveVariables = additivePotential.getVariables();
+				boolean thereAreInterventions = additivePotential.strategyTrees != null;
 
-				// initialize the output utility potential
-				List<Variable> outputUtilityVariables = marginalProb.getVariables();
-				for (Variable variable : inputUtilityPotential.getVariables()) {
-					if (variable != chanceVariable && !outputUtilityVariables.contains(variable)) {
-						outputUtilityVariables.add(variable);
+				// Initialize the output utility potential.
+
+				// Set of variables = marginalProb variables + additiveVariables not already included
+				List<Variable> outputAdditiveVariables = marginalProb.getVariables();
+				for (Variable additiveVariable : additivePotential.getVariables()) {
+					if (additiveVariable != variable && !outputAdditiveVariables.contains(additiveVariable)) {
+						outputAdditiveVariables.add(additiveVariable);
 					}
 				}
-				TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables,
-						PotentialRole.UNSPECIFIED);
-				// TODO Check whether the next line can be removed
-				outputUtilityPotential.setCriterion(inputUtilityPotential.getCriterion());
+				// Create potential
+				TablePotential outputAdditivePotential = new TablePotential(outputAdditiveVariables, PotentialRole.UNSPECIFIED);
+				outputAdditivePotential.setCriterion(additivePotential.getCriterion());
 				if (thereAreInterventions) {
-					int outputValuesLength = outputUtilityPotential.values.length;
-					outputUtilityPotential.strategyTrees = new StrategyTree[outputValuesLength];
+					outputAdditivePotential.strategyTrees = new StrategyTree[outputAdditivePotential.values.length];
 				}
 
-				List<Variable> allVariables = new ArrayList<>(outputUtilityVariables.size() + 1);
-				allVariables.add(chanceVariable);
-				allVariables.addAll(outputUtilityVariables);
+				List<Variable> allVariables = new ArrayList<>(outputAdditiveVariables.size() + 1);
+				allVariables.add(variable);
+				allVariables.addAll(outputAdditiveVariables);
 				int numVariables = allVariables.size();
 				int[] allVariablesDimensions = TablePotential.calculateDimensions(allVariables);
 
 				// constants for the iterations
-				int chanceVariableSize = chanceVariable.getNumStates();
+				int chanceVariableSize = variable.getNumStates();
 				int[] accOffsetsConditionalProbPotential = TablePotential
 						.getAccumulatedOffsets(allVariables, conditionalProb.getVariables());
 				int[] accOffsetsInputUtilityPotential = TablePotential
-						.getAccumulatedOffsets(allVariables, inputUtilityVariables);
+						.getAccumulatedOffsets(allVariables, additiveVariables);
 
 				// auxiliary variables that may change in every iteration
 				int[] allVariablesCoordinate = new int[numVariables];
@@ -91,9 +90,9 @@ public class SumOutVariable extends Marginalization {
 				StrategyTree[] strategyTrees = new StrategyTree[chanceVariableSize];
 
 				// outer iterations correspond to the variables to in the
-				// outputUtilityPotential
+				// outputAdditivePotential
 				for (int outerIteration = 0;
-					 outerIteration < TablePotential.computeTableSize(outputUtilityVariables); outerIteration++) {
+					 outerIteration < TablePotential.computeTableSize(outputAdditiveVariables); outerIteration++) {
 					double sum = 0;
 					// inner iterations correspond to the chance variable to
 					// eliminate
@@ -101,11 +100,11 @@ public class SumOutVariable extends Marginalization {
 						double auxProb = conditionalProb.values[conditionalProbPotentialPosition];
 						// This "if" is to ensure 0*(-Infinity) = 0
 						if (auxProb > 0) {
-							sum += auxProb * inputUtilityPotential.values[inputUtilityPotentialPosition];
+							sum += auxProb * additivePotential.values[inputUtilityPotentialPosition];
 						}
 						if (thereAreInterventions) {
 							probabilities[innerIteration] = auxProb;
-							strategyTrees[innerIteration] = inputUtilityPotential.strategyTrees[inputUtilityPotentialPosition];
+							strategyTrees[innerIteration] = additivePotential.strategyTrees[inputUtilityPotentialPosition];
 						}
 
 						// find the next configuration and the index of the
@@ -119,43 +118,43 @@ public class SumOutVariable extends Marginalization {
 						inputUtilityPotentialPosition += accOffsetsInputUtilityPotential[increasedVariable];
 					}
 
-					outputUtilityPotential.values[outputUtilityPotentialPosition] = sum;
+					outputAdditivePotential.values[outputUtilityPotentialPosition] = sum;
 					if (thereAreInterventions) {
-						outputUtilityPotential.strategyTrees[outputUtilityPotentialPosition] = StrategyTree
-								.averageOfInterventions(chanceVariable, probabilities, strategyTrees);
+						outputAdditivePotential.strategyTrees[outputUtilityPotentialPosition] = StrategyTree
+								.averageOfInterventions(variable, probabilities, strategyTrees);
 					}
 
 					outputUtilityPotentialPosition++;
 
 				} // end of outer loop
 
-				setUtility(outputUtilityPotential);
-				// Return the utility potential if some of its values is
-				// different from 0.0
-				// or if there are interventions
-//				if (thereAreInterventions || DiscretePotentialOperations
-//						.thereAreRelevantUtilities(outputUtilityPotential)) {
-//					boolean criteriaFound = false;
-//					for (int i = 0; i < outputPotentials.size(); i++) {
-//						if (outputPotentials.get(i).getCriterion() == outputUtilityPotential.getCriterion()) {
-//							outputPotentials.set(i,
-//									DiscretePotentialOperations.sum(outputPotentials.get(i), outputUtilityPotential));
-//							criteriaFound = true;
-//							break;
-//						}
-//					}
-//					if (!criteriaFound) {
-//						outputPotentials.add(outputUtilityPotential);
-//					}
+				// Return the additive potential if there are interventions or
+				// if any of its values is different from 0.0
+				if (thereAreInterventions || DiscretePotentialOperations
+						.thereAreRelevantUtilities(outputAdditivePotential)) {
+					boolean criteriaFound = false;
+					for (int i = 0; i < outputPotentials.size(); i++) {
+						if (outputPotentials.get(i).getCriterion() == outputAdditivePotential.getCriterion()) {
+							outputPotentials.set(i,
+									DiscretePotentialOperations.sum(outputPotentials.get(i), outputAdditivePotential));
+							criteriaFound = true;
+							break;
+						}
+					}
+					if (!criteriaFound) {
+						outputPotentials.add(outputAdditivePotential);
+					}
 				}
-			}
-		} // end of if (!thereIsUtility)
 
-//		if (marginalProb.getNumVariables() > 0 || !DiscretePotentialOperations
-//				.almostEqual(marginalProb.values[0], 1.0)) {
-//			marginalProb.setPotentialRole(PotentialRole.JOINT_PROBABILITY);
-//			setProbability(marginalProb);
-//		}
-//		setUtility(DiscretePotentialOperations.sum(outputPotentials));
+			} // end of additivePotentials loop
+		} // end of if (!thereAreAdditivePotentials)
+
+		if (marginalProb.getNumVariables() > 0 ||
+				!DiscretePotentialOperations.almostEqual(marginalProb.values[0], 1.0)) {
+			marginalProb.setPotentialRole(PotentialRole.JOINT_PROBABILITY);
+			setProbability(marginalProb);
+		}
+		setUtility(DiscretePotentialOperations.sum(outputPotentials));
 	}
+}
 

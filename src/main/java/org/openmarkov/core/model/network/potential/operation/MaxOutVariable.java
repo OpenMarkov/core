@@ -15,6 +15,12 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * From a probability and one or more additive potentials, that contains a given variable,
+ * this class builds a new potential, first adding the additive potential into only one, then
+ * by multiplying the probability and the additive potential and finally, maximizing
+ * the resulting potential according to the variable.
+ */
 public class MaxOutVariable {
 
 	private TablePotential utility;
@@ -22,45 +28,43 @@ public class MaxOutVariable {
 	private TablePotential policy;
 
 	/**
+	 * Adds the additive potentials in order to have only one utility, then uses the next constructor.
 	 * @param decisionVariable
 	 * @param probability
-	 * @param inputUtilities
+	 * @param inputAdditivePotentials
 	 */
-	public MaxOutVariable(Variable decisionVariable, TablePotential probability, List<TablePotential> inputUtilities) {
-		this(decisionVariable, probability, DiscretePotentialOperations.sum(inputUtilities));
+	public MaxOutVariable(Variable decisionVariable, TablePotential probability, List<TablePotential> inputAdditivePotentials) {
+		this(decisionVariable, probability, DiscretePotentialOperations.sum(inputAdditivePotentials));
 	}
 
 	/**
+	 * Calculates the new utility and the policy
 	 * @param decisionVariable
 	 * @param probability
-	 * @param inputUtility
+	 * @param inputAdditivePotential
 	 */
-	public MaxOutVariable(Variable decisionVariable, TablePotential probability, TablePotential inputUtility) {
-
-		TablePotential inputUtilityToMaximize = DiscretePotentialOperations.multiply(probability, inputUtility);
-
-		List<Variable> inputUtilityToMaximizeVariables = inputUtilityToMaximize.getVariables();
-
-		//TODO Multiplicar la probability y la inputUtility
+	public MaxOutVariable(Variable decisionVariable, TablePotential probability, TablePotential inputAdditivePotential) {
+		TablePotential additivePotentialToMaximize = DiscretePotentialOperations.multiply(probability, inputAdditivePotential);
+		List<Variable> additivePotentialToMaximizeVariables = additivePotentialToMaximize.getVariables();
 
 		// initialize the output utility potential
-		List<Variable> outputUtilityVariables = inputUtilityToMaximize.getVariables();
-		outputUtilityVariables.remove(decisionVariable);
-		TablePotential outputUtility = new TablePotential(outputUtilityVariables, PotentialRole.UNSPECIFIED);
+		List<Variable> outputVariables = additivePotentialToMaximize.getVariables();
+		outputVariables.remove(decisionVariable);
+		TablePotential outputUtility = new TablePotential(outputVariables, PotentialRole.UNSPECIFIED);
 		outputUtility.strategyTrees = new StrategyTree[outputUtility.values.length];
-		outputUtility.setCriterion(inputUtilityToMaximize.getCriterion());
+		outputUtility.setCriterion(additivePotentialToMaximize.getCriterion());
 
-		// in allVariables, the first variable is decisionVariable
-		List<Variable> allVariables = new ArrayList<>(outputUtilityVariables.size() + 1);
+		// Accumulated offsets algorithm
+		List<Variable> allVariables = new ArrayList<>(outputVariables.size() + 1);
 		allVariables.add(decisionVariable);
-		allVariables.addAll(outputUtilityVariables);
+		allVariables.addAll(outputVariables); // All variables = (decision) variable to maximize + outputVariables
 		int numVariables = allVariables.size();
 		int[] allVariablesDimensions = TablePotential.calculateDimensions(allVariables);
 
 		// constants for the iterations
 		int decisionVariableSize = decisionVariable.getNumStates();
 		int[] accOffsetsInputUtilityPotential = TablePotential
-				.getAccumulatedOffsets(allVariables, inputUtilityToMaximizeVariables);
+				.getAccumulatedOffsets(allVariables, additivePotentialToMaximizeVariables);
 
 		// auxiliary variables that may change in every iteration
 		int[] allVariablesCoordinate = new int[numVariables];
@@ -69,7 +73,7 @@ public class MaxOutVariable {
 		int increasedVariable = 0;
 
 		double max;
-		ArrayList<Integer> optimalStatesIndices = new ArrayList<>(decisionVariableSize);
+		ArrayList<Integer> optimalStatesIndexes = new ArrayList<>(decisionVariableSize);
 
 		double[] utilities = new double[decisionVariableSize];
 		StrategyTree[] strategyTrees = new StrategyTree[decisionVariableSize];
@@ -80,24 +84,24 @@ public class MaxOutVariable {
 
 		// outer iterations correspond to the variables to in the
 		// outputUtilityPotential
-		for (int outerIteration = 0;
-			 outerIteration < TablePotential.computeTableSize(outputUtilityVariables); outerIteration++) {
+		int outputPotentialSize = TablePotential.computeTableSize(outputVariables);
+		for (int outerIteration = 0; outerIteration < outputPotentialSize; outerIteration++) {
 			// reset auxiliary variables before entering the loop
 			max = Double.NEGATIVE_INFINITY;
-			optimalStatesIndices.clear();
+			optimalStatesIndexes.clear();
 			// inner iterations correspond to the decision variable to eliminate
 			for (int innerIteration = 0; innerIteration < decisionVariableSize; innerIteration++) {
-				double auxInputUtilityPotentialValue = inputUtilityToMaximize.values[inputUtilityPotentialPosition];
+				double auxInputUtilityPotentialValue = additivePotentialToMaximize.values[inputUtilityPotentialPosition];
 				if (auxInputUtilityPotentialValue >= max) {
 					if (auxInputUtilityPotentialValue > max) {
 						max = auxInputUtilityPotentialValue;
-						optimalStatesIndices.clear();
+						optimalStatesIndexes.clear();
 					}
-					optimalStatesIndices.add(innerIteration);
+					optimalStatesIndexes.add(innerIteration);
 				}
 				utilities[innerIteration] = auxInputUtilityPotentialValue;
-				if (inputUtilityToMaximize.strategyTrees != null) {
-					strategyTrees[innerIteration] = inputUtilityToMaximize.strategyTrees[inputUtilityPotentialPosition];
+				if (additivePotentialToMaximize.strategyTrees != null) {
+					strategyTrees[innerIteration] = additivePotentialToMaximize.strategyTrees[inputUtilityPotentialPosition];
 				}
 
 				// find the next configuration and the index of the increased variable
@@ -117,9 +121,9 @@ public class MaxOutVariable {
 
 			// set the values of policyPotential
 			int policyPotentialPosition = outputUtilityPotentialPosition * decisionVariableSize;
-			double probForOptimalStates = 1.0 / optimalStatesIndices.size();
+			double probForOptimalStates = 1.0 / optimalStatesIndexes.size();
 			for (int i = 0; i < decisionVariableSize; i++) {
-				policyValues[policyPotentialPosition + i] = (optimalStatesIndices.contains(i)) ?
+				policyValues[policyPotentialPosition + i] = (optimalStatesIndexes.contains(i)) ?
 						probForOptimalStates :
 						0.0;
 			}
@@ -133,31 +137,29 @@ public class MaxOutVariable {
 		// TODO Manolo> Deberíamos considerar devolver siempre algo en el
 		// atributo utility. Por ejemplo, al siguiente "if"
 		// podríamos añadir un "else" y guardar un potencial 0.
-		if (thereAreInterventionsInOutputUtilityPotential(outputUtility) || DiscretePotentialOperations
-				.thereAreRelevantUtilities(outputUtility)) {
-			// Store output utility potential
+		if (thereAreInterventionsInOutputUtilityPotential(outputUtility) ||
+				DiscretePotentialOperations.thereAreRelevantUtilities(outputUtility)) {
 			utility = outputUtility;
 		} else {
 			utility = DiscretePotentialOperations.createZeroUtilityPotential(null);
 		}
 
-		utility.setCriterion(inputUtility.getCriterion());
+		utility.setCriterion(inputAdditivePotential.getCriterion());
 
 		// Store output policy
-		setPolicy(policyPotential);
+		policy = policyPotential;  // policy potential contains (decision) variable to remove + additivePotential variables
 	}
 
 	/**
+	 * It is true when there is at least one strategy tree
 	 * @param outputUtilityPotential
 	 * @return boolean
 	 */
 	private static boolean thereAreInterventionsInOutputUtilityPotential(TablePotential outputUtilityPotential) {
-
 		boolean thereAreInterventions = false;
-		for (int i = 0; i < outputUtilityPotential.values.length; i++) {
-			if (outputUtilityPotential.strategyTrees[i] != null) {
-				thereAreInterventions = true;
-				break;
+		if (outputUtilityPotential.strategyTrees != null) {
+			for (int i = 0; i < outputUtilityPotential.strategyTrees.length && !thereAreInterventions; i++) {
+				thereAreInterventions = outputUtilityPotential.strategyTrees[i] != null;
 			}
 		}
 		return thereAreInterventions;

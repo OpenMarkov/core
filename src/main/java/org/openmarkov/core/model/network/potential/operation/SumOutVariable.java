@@ -32,12 +32,13 @@ public class SumOutVariable extends Marginalization {
 		List<TablePotential> probPotentials = new ArrayList<>();
 		List<TablePotential> additivePotentials = new ArrayList<>();
 		classifyProbAndUtilityPotentials(potentials, probPotentials, additivePotentials);
-		List<TablePotential> outputPotentials = new ArrayList<>();
+		int numAdditivePotentials = additivePotentials.size();
+		List<TablePotential> intermediateAdditivePotentials = new ArrayList<>(numAdditivePotentials);
 		TablePotential marginalProb = DiscretePotentialOperations.multiplyAndMarginalize(probPotentials, variable);
 		// Do not return the probability potential if it depends on no variables
 		// and its value is 1
 
-		boolean thereAreAdditivePotentials = additivePotentials.size() != 0;
+		boolean thereAreAdditivePotentials = numAdditivePotentials > 0;
 		if (thereAreAdditivePotentials) {
 			// build the marginal and conditional probabilities
 			TablePotential joinProb = DiscretePotentialOperations.multiply(probPotentials);
@@ -89,13 +90,11 @@ public class SumOutVariable extends Marginalization {
 				double[] probabilities = new double[chanceVariableSize];
 				StrategyTree[] strategyTrees = new StrategyTree[chanceVariableSize];
 
-				// outer iterations correspond to the variables to in the
-				// outputAdditivePotential
-				for (int outerIteration = 0;
-					 outerIteration < TablePotential.computeTableSize(outputAdditiveVariables); outerIteration++) {
+				// outer iterations correspond to the variables in the outputAdditivePotential
+				int tableSize = TablePotential.computeTableSize(outputAdditiveVariables);
+				for (int outerIteration = 0; outerIteration < tableSize; outerIteration++) {
 					double sum = 0;
-					// inner iterations correspond to the chance variable to
-					// eliminate
+					// inner iterations correspond to the chance variable to eliminate
 					for (int innerIteration = 0; innerIteration < chanceVariableSize; innerIteration++) {
 						double auxProb = conditionalProb.values[conditionalProbPotentialPosition];
 						// This "if" is to ensure 0*(-Infinity) = 0
@@ -133,16 +132,16 @@ public class SumOutVariable extends Marginalization {
 				if (thereAreInterventions || DiscretePotentialOperations
 						.thereAreRelevantUtilities(outputAdditivePotential)) {
 					boolean criteriaFound = false;
-					for (int i = 0; i < outputPotentials.size(); i++) {
-						if (outputPotentials.get(i).getCriterion() == outputAdditivePotential.getCriterion()) {
-							outputPotentials.set(i,
-									DiscretePotentialOperations.sum(outputPotentials.get(i), outputAdditivePotential));
+					for (int i = 0; i < intermediateAdditivePotentials.size(); i++) {
+						if (intermediateAdditivePotentials.get(i).getCriterion() == outputAdditivePotential.getCriterion()) {
+							intermediateAdditivePotentials.set(i,
+									DiscretePotentialOperations.sum(intermediateAdditivePotentials.get(i), outputAdditivePotential));
 							criteriaFound = true;
 							break;
 						}
 					}
 					if (!criteriaFound) {
-						outputPotentials.add(outputAdditivePotential);
+						intermediateAdditivePotentials.add(outputAdditivePotential);
 					}
 				}
 
@@ -154,7 +153,7 @@ public class SumOutVariable extends Marginalization {
 			marginalProb.setPotentialRole(PotentialRole.JOINT_PROBABILITY);
 			setProbability(marginalProb);
 		}
-		setUtility(DiscretePotentialOperations.sum(outputPotentials));
+		setUtility(DiscretePotentialOperations.sum(intermediateAdditivePotentials));
 	}
 }
 

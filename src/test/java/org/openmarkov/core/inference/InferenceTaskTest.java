@@ -17,7 +17,6 @@ import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,7 +150,7 @@ import static org.junit.Assert.*;
 	 * @param e
 	 */
 	@SuppressWarnings("restriction") protected void printExceptionAndFailIfImplemented(Exception e) {
-		if (e.getClass() != NotImplementedException.class) {
+		if (e.getClass() != UnsupportedOperationException.class) {
 			e.printStackTrace();
 			fail();
 		}

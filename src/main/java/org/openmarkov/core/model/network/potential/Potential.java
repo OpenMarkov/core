@@ -21,7 +21,6 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -265,7 +264,7 @@ public abstract class Potential {
 
 	public Potential project(EvidenceCase evidenceCase)
 			throws WrongCriterionException, NonProjectablePotentialException {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 
 	/**

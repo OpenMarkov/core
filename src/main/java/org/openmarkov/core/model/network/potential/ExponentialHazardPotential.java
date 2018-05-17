@@ -19,8 +19,8 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.List;
 import java.util.Map;
 
-@PotentialType(name = "Hazard (Exponential)", family = "GLM") public class ExponentialHazardPotential
-		extends WeibullHazardPotential {
+@PotentialType(name = "Hazard (Exponential)", family = "GLM")
+public class ExponentialHazardPotential extends WeibullHazardPotential {
 
 	protected static final String[] MANDATORY_COVARIATES = new String[] { CONSTANT };
 

@@ -44,6 +44,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Object Oriented Probabilistic Network.
+ */
 public class OOPNet extends ProbNet implements PNUndoableEditListener {
 	private LinkedHashMap<String, ProbNet> classes = new LinkedHashMap<>();
 	private Map<String, Instance> instances = new HashMap<>();

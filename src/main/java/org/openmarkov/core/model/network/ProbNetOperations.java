@@ -365,8 +365,6 @@ public class ProbNetOperations {
 	public static List<Variable> sortTopologically(ProbNet probNet, List<Variable> variablesToSort) {
 		List<Node> sortedNodes = sortTopologically(probNet);
 		List<Variable> sortedVariables = new ArrayList<>(sortedNodes.size());
-		// fill sortedVariables list with filtering the l list with the list of
-		// variables to sort
 		for (Node node : sortedNodes) {
 			if (variablesToSort.contains(node.getVariable())) {
 				sortedVariables.add(node.getVariable());
@@ -384,19 +382,19 @@ public class ProbNetOperations {
 		ProbNet graph = probNet.copy();
 
 		// Empty list that will contain the sorted elements
-		Stack<Node> s = new Stack<>();
+		Stack<Node> stack = new Stack<>();
 		// Set of all nodes with no incoming edges
 		List<Node> l = new ArrayList<>();
 		// Look for variables/nodes with no parents
 		for (Node node : graph.getNodes()) {
 			if (node.getParents().size() == 0) {
-				s.push(node);
+				stack.push(node);
 			}
 		}
 		// while S is non-empty do
-		while (!s.isEmpty()) {
+		while (!stack.isEmpty()) {
 			// remove a node n from S
-			Node n = s.pop();
+			Node n = stack.pop();
 			// insert n into L
 			l.add(n);
 			// for each node m with an edge e from n to m do
@@ -405,7 +403,7 @@ public class ProbNetOperations {
 				graph.removeLink(n, m, true);
 				// if m has no other incoming edges then insert m into S
 				if (m.getParents().isEmpty()) {
-					s.push(m);
+					stack.push(m);
 				}
 			}
 		}

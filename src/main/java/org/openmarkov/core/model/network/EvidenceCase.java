@@ -388,7 +388,7 @@ public class EvidenceCase {
 	}
 
 	/**
-	 * Fuse this EvidenceCase with the input parameter one
+	 * Fuse this EvidenceCase with the input parameter
 	 *
 	 * @param evidenceCaseToFuse
 	 * @param overwrite          if true the findings in the parameter will overwrite those in

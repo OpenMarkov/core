@@ -40,7 +40,7 @@ public class Link<T> {
 	private T node1;
 
 	/**
-	 * The first node. If the link is directed, this node is the parent.
+	 * The second node. If the link is directed, this node is the child.
 	 */
 	private T node2;
 

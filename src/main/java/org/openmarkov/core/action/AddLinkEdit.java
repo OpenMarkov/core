@@ -76,6 +76,7 @@ import java.util.List;
 		this.link = probNet.getLink(node1, node2, isDirected);
 		if (updatePotentials) {
 			this.oldPotentials = node2.getPotentials();
+			// TODO Check if this UTILITY label is outdated
 			if (node2.getNodeType() == NodeType.UTILITY && node2.onlyNumericalParents()) {
 				// Add a default Sum potential to utility supervalue nodes
 				for (Potential oldPotential : oldPotentials) {

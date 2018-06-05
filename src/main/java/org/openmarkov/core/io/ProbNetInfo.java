@@ -12,6 +12,9 @@ import org.openmarkov.core.model.network.ProbNet;
 
 import java.util.List;
 
+/**
+ * Contains a ProbNet and a list of Evidence Cases
+ */
 public class ProbNetInfo {
 	private ProbNet probNet;
 	private List<EvidenceCase> evidence;
@@ -35,24 +38,30 @@ public class ProbNetInfo {
 	}
 
 	public boolean equals(Object other) {
+		boolean result = false;
 		if (other instanceof ProbNetInfo) {
 			ProbNetInfo otherProbNetInfo = (ProbNetInfo) other;
-			return (
-					(
-							this.probNet == otherProbNetInfo.probNet || (
-									this.probNet != null && otherProbNetInfo.probNet != null && this.probNet
-											.equals(otherProbNetInfo.probNet)
-							)
-					) && (
-							this.evidence == otherProbNetInfo.evidence || (
-									this.evidence != null && otherProbNetInfo.evidence != null && this.evidence
-											.equals(otherProbNetInfo.evidence)
+			result =(this.probNet == otherProbNetInfo.probNet
+							||
+							(this.probNet != null
+									&&
+									otherProbNetInfo.probNet != null
+									&&
+									this.probNet.equals(otherProbNetInfo.probNet)
 							)
 					)
-			);
+					&&
+					(this.evidence == otherProbNetInfo.evidence
+							||
+							(this.evidence != null
+									&&
+									otherProbNetInfo.evidence != null
+									&&
+									this.evidence.equals(otherProbNetInfo.evidence))
+					);
 		}
 
-		return false;
+		return result;
 	}
 
 	public String toString() {

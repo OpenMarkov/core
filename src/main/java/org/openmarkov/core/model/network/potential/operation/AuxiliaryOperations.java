@@ -94,10 +94,12 @@ public class AuxiliaryOperations {
 
 		Set<Variable> variables = new LinkedHashSet<>();
 		// Make sure that the first variables in the result potential are the first from each factor.
-		// TODO Check this again
-		for (Potential potential : potentials) {
-			variables.add(potential.getVariable(0));
-			}
+		// TODO Awaiting approval
+//		for (Potential potential : potentials) {
+//			if (potential.getNumVariables() > 0) {
+//				variables.add(potential.getVariable(0));
+//			}
+//		}
 		for (Potential potential : potentials) {
 			variables.addAll(potential.getVariables());
 		}

@@ -8,6 +8,8 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -17,7 +19,9 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author artasom
@@ -126,21 +130,53 @@ import java.util.List;
 		parentsOldPotentials = x.getPotentials();
 		childsOldPotentials = y.getPotentials();
 
+		// TODO Potentials should be converted if necessary
+		// potential.tableProject(new EvidenceCase(), new InferenceOptions());
+
 		// 3. 	Calculate P(x, y|a, b, c) through P(x, y|a, b, c) = P(x|a, b) · P(y|x, b, c)
 		// Meaning: P(x, y|a, b, c) = pot(x) · pot(y)
 
 		// pot(x) are added to xyPotentials
 		for (Potential parentsOldPotential : parentsOldPotentials) {
-			xyPotentials.add((TablePotential) parentsOldPotential);
+
+			try {
+				xyPotentials.add(parentsOldPotential.getCPT());
+			} catch (NonProjectablePotentialException | WrongCriterionException e) {
+				e.printStackTrace();
+				throw new DoEditException("Parent");
+			}
 		}
 
 		// pot(y) are added to xyPotentials
 		for (Potential childsOldPotential : childsOldPotentials) {
-			xyPotentials.add((TablePotential) childsOldPotential);
+			try {
+				xyPotentials.add(childsOldPotential.getCPT());
+			} catch (NonProjectablePotentialException | WrongCriterionException e) {
+				e.printStackTrace();
+				throw new DoEditException("Child");
+			}
 		}
+
+		// Correct order of variables
+		Set<Variable> variables = new LinkedHashSet<>();
+		// The first variable from each factor should go before the others
+		for (Potential potential: xyPotentials) {
+			if (potential.getNumVariables() > 0) {
+				variables.add(potential.getVariable(0));
+			}
+		}
+		for (Potential potential : xyPotentials) {
+			variables.addAll(potential.getVariables());
+		}
+		List<Variable> orderedVariables = new ArrayList<>(variables);
 
 		// xyPotentials are multiplied
 		TablePotential xyPotentialMultiplied = DiscretePotentialOperations.multiply(xyPotentials);
+
+		// Apply the correction of the order of the variables: Σ(x) P(x, y|a, b, c) = P(a|b, y, c) to Σ(x) P(x, y|a, b, c) = P(y|a, b, c)
+		xyPotentialMultiplied = DiscretePotentialOperations.reorder(xyPotentialMultiplied,
+				new ArrayList<>(orderedVariables));
+		System.out.println(orderedVariables);
 		System.out.println((xyPotentialMultiplied));
 
 		// 4. Calculate P(y|a, b, c) through P(y|a, b, c) = Σ(x) P(x, y|a, b, c) and assign to node Y this probability.

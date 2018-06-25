@@ -17,7 +17,7 @@ import java.util.Set;
 public class StringsWithProperties {
 
 	// Attributes
-	private LinkedHashMap<String, AdditionalProperties> stringsWithProperties;
+	private LinkedHashMap<String, Properties> stringsWithProperties;
 
 	// Constructors
 	public StringsWithProperties() {
@@ -40,10 +40,10 @@ public class StringsWithProperties {
 	 * Constructor based in a previous LinkedHashMap
 	 *
 	 * @param stringsWithProperties <code>LinkedHashMap with key type = <code>String</code> and
-	 *                              value type = <code>AdditionalProperties</code>
+	 *                              value type = <code>Properties</code>
 	 */
-	public StringsWithProperties(LinkedHashMap<String, AdditionalProperties> stringsWithProperties) {
-		LinkedHashMap<String, AdditionalProperties> stringsWithPropertiesCopied = new LinkedHashMap<>();
+	public StringsWithProperties(LinkedHashMap<String, Properties> stringsWithProperties) {
+		LinkedHashMap<String, Properties> stringsWithPropertiesCopied = new LinkedHashMap<>();
 		Set<String> keys = stringsWithProperties.keySet();
 		for (String key : keys) {
 			stringsWithPropertiesCopied.put(key, stringsWithProperties.get(key));
@@ -58,7 +58,7 @@ public class StringsWithProperties {
 	 */
 	public Object get(String string, String propertyName) {
 		Object propertyValue = null;
-		AdditionalProperties properties = stringsWithProperties.get(string);
+		Properties properties = stringsWithProperties.get(string);
 		if (properties != null) {
 			propertyValue = properties.get(propertyName);
 		}
@@ -75,9 +75,9 @@ public class StringsWithProperties {
 	/**
 	 * @param string <code>String</code>
 	 * @return All the properties of a given <code>String</code>, or <code>null</code>
-	 * if the string does not exists. <code>AdditionalProperties</code>.
+	 * if the string does not exists. <code>Properties</code>.
 	 */
-	public AdditionalProperties getProperties(String string) {
+	public Properties getProperties(String string) {
 		return stringsWithProperties.get(string);
 	}
 
@@ -85,9 +85,9 @@ public class StringsWithProperties {
 	 * @param key <code>String</code>
 	 */
 	public void put(String key) {
-		AdditionalProperties properties = stringsWithProperties.get(key);
+		Properties properties = stringsWithProperties.get(key);
 		if (properties == null) {
-			properties = new AdditionalProperties();
+			properties = new Properties();
 			stringsWithProperties.put(key, null);// ¿? (key, properties)
 			//added ¿?
 		} else {
@@ -102,9 +102,9 @@ public class StringsWithProperties {
 	 * @param propertyValue <code>String</code>
 	 */
 	public void put(String key, String propertyName, String propertyValue) {
-		AdditionalProperties properties = stringsWithProperties.get(key);
+		Properties properties = stringsWithProperties.get(key);
 		if (properties == null) {
-			properties = new AdditionalProperties();
+			properties = new Properties();
 			stringsWithProperties.put(key, properties);
 		}
 		properties.put(propertyName, propertyValue);
@@ -112,11 +112,11 @@ public class StringsWithProperties {
 
 	/**
 	 * @param key        <code>String</code>
-	 * @param properties <code>AdditionalProperties</code>
+	 * @param properties <code>Properties</code>
 	 */
-	public void put(String key, AdditionalProperties properties) {
+	public void put(String key, Properties properties) {
 		if (properties == null) {
-			properties = new AdditionalProperties();
+			properties = new Properties();
 			stringsWithProperties.put(key, properties);
 		} else {
 			stringsWithProperties.put(key, properties);
@@ -132,7 +132,7 @@ public class StringsWithProperties {
 	 */
 	public void remove(String key) {
 		stringsWithProperties.remove(key);
-		/*AdditionalProperties properties = stringsWithProperties.get(key);
+		/*Properties properties = stringsWithProperties.get(key);
 		if (properties != null) {
 			stringsWithProperties.remove(key);
 		}*/
@@ -146,7 +146,7 @@ public class StringsWithProperties {
 	 */
 	public Object remove(String key, String propertyName) {
 		Object removedObject = null;
-		AdditionalProperties properties = stringsWithProperties.get(key);
+		Properties properties = stringsWithProperties.get(key);
 		if (properties != null) {
 			removedObject = properties.remove(propertyName);
 		}
@@ -160,7 +160,7 @@ public class StringsWithProperties {
 	 * @param newKey <code>String</code>
 	 */
 	public void rename(String key, String newKey) {
-		AdditionalProperties properties = stringsWithProperties.get(key);
+		Properties properties = stringsWithProperties.get(key);
 		stringsWithProperties.remove(key);
 		if (properties == null) {
 			stringsWithProperties.put(newKey, null);
@@ -192,7 +192,7 @@ public class StringsWithProperties {
 		Set<String> strings = stringsWithProperties.keySet();
 		for (String stringWithProperties : strings) {
 			outString.append(stringWithProperties);
-			AdditionalProperties properties = stringsWithProperties.get(stringWithProperties);
+			Properties properties = stringsWithProperties.get(stringWithProperties);
 			if (properties != null && properties.size() > 0) {
 				outString.append(":\n");
 				Set<String> keysProperties = properties.getKeySet();

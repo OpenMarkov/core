@@ -1743,18 +1743,18 @@ public final class DiscretePotentialOperations {
 
 	/**
 	 * Copy the potential received to another potential with the same variables
-	 * but with the order received in <code>otherVariables</code>
+	 * but with the order received in <code>otherOrderVariables</code>
 	 *
 	 * @param potential      <code>TablePotential</code>
-	 * @param orderVariables <code>ArrayList</code> of <code>Variable</code>
+	 * @param otherOrderVariables <code>ArrayList</code> of <code>Variable</code>
 	 * @return The <code>TablePotential</code> generated
 	 * @argCondition <code>otherVariables</code> are the same variables than the
 	 * variables of <code>potential</code>
 	 */
-	public static TablePotential reorder(TablePotential potential, List<Variable> orderVariables) {
+	public static TablePotential reorder(TablePotential potential, List<Variable> otherOrderVariables) {
 		boolean hasInterventions = false;
-		TablePotential newPotential = new TablePotential(orderVariables, potential.getPotentialRole());
-		int[] accOffsets = potential.getAccumulatedOffsets(orderVariables);
+		TablePotential newPotential = new TablePotential(otherOrderVariables, potential.getPotentialRole());
+		int[] accOffsets = potential.getAccumulatedOffsets(otherOrderVariables);
 		int[] potentialPositions = new int[potential.getNumVariables()];
 		int[] potentialDimensions = potential.getDimensions();
 		double[] valuesOrigPotential = potential.values;
@@ -1776,7 +1776,7 @@ public final class DiscretePotentialOperations {
 		}
 
 		int copyTablePosition = 0;
-		int numVariables = orderVariables.size();
+		int numVariables = otherOrderVariables.size();
 		int incrementedVariable, i;
 		for (i = 0; i < valuesOrigPotential.length - 1; i++) {
 			valuesNewPotential[copyTablePosition] = valuesOrigPotential[i];

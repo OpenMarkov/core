@@ -8,14 +8,15 @@
 package org.openmarkov.core.model.network;
 
 /**
- * @author marias
+ * This class contains a string and its properties, those properties are stored in a HashMap(key=string, value=string)
+ * @author Manuel Arias
  */
 public class StringWithProperties {
 
 	// Attributes
 	public String string;
 
-	private AdditionalProperties additionalProperties;
+	private Properties properties;
 
 	// Constructor
 
@@ -24,7 +25,7 @@ public class StringWithProperties {
 	 */
 	public StringWithProperties(String string) {
 		this.string = string;
-		additionalProperties = new AdditionalProperties();
+		properties = new Properties();
 	}
 
 	// Methods
@@ -34,7 +35,7 @@ public class StringWithProperties {
 	 * it does not exists. <code>Object</code>
 	 */
 	public Object get(String key) {
-		return additionalProperties.get(string);
+		return properties.get(string);
 	}
 
 	/**
@@ -42,14 +43,14 @@ public class StringWithProperties {
 	 * @param value <code>Object</code>
 	 */
 	public void put(String key, String value) {
-		additionalProperties.put(key, value);
+		properties.put(key, value);
 	}
 
 	/**
-	 * @param properties <code>AdditionalProperties</code>
+	 * @param properties <code>Properties</code>
 	 */
-	public void put(AdditionalProperties properties) {
-		additionalProperties = properties;
+	public void put(Properties properties) {
+		this.properties = properties;
 	}
 
 	/**
@@ -58,20 +59,20 @@ public class StringWithProperties {
 	 * it does not exists. <code>Object</code>
 	 */
 	public Object remove(String key) {
-		return additionalProperties.remove(key);
+		return properties.remove(key);
 	}
 
 	public String getString() {
 		return string;
 	}
 
-	public AdditionalProperties getAdditionalProperties() {
-		return additionalProperties;
+	public Properties getAdditionalProperties() {
+		return properties;
 	}
 
 	public StringWithProperties copy() {
 		StringWithProperties copiedStringWithProperties = new StringWithProperties(string);
-		copiedStringWithProperties.put(additionalProperties);
+		copiedStringWithProperties.put(properties);
 		return copiedStringWithProperties;
 	}
 }

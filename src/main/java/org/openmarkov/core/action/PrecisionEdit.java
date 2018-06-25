@@ -12,12 +12,12 @@ import org.openmarkov.core.model.network.Node;
 
 @SuppressWarnings("serial")
 /**
- * <code>PurposeEdit</code> is a simple edit that allows modify
- * the node purpose property. 
+ * This is a simple edit that allows modify the node precision property.
  *
  * @version 1.0 21/12/10
  * @author Miguel Palacios
- */ public class PrecisionEdit extends SimplePNEdit {
+ */
+public class PrecisionEdit extends SimplePNEdit {
 	/**
 	 * The last purpose before the edition
 	 */
@@ -53,22 +53,5 @@ import org.openmarkov.core.model.network.Node;
 		node.getVariable().setPrecision(lastPrecision);
 	}
 
-	/**
-	 * Gets the new purpose after the edition
-	 *
-	 * @return the new purpose
-	 */
-	public Double getNewPrecision() {
-		return newPrecision;
-	}
-
-	/**
-	 * Gets the last purpose before the edition
-	 *
-	 * @return the last purpose
-	 */
-	public Double getLastPrecision() {
-		return lastPrecision;
-	}
 }
 

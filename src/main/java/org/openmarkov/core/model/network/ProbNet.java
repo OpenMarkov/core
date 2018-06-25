@@ -79,7 +79,6 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	/**
 	 * Set of agents, defined by a name. Each one may have several properties.
 	 */
-	// private StringsWithProperties agents;
 	private List<StringWithProperties> agents;
 	/**
 	 * Set of criterion for decision, defined by a name. Each one may have

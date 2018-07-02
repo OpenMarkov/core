@@ -7,9 +7,15 @@
 
 package org.openmarkov.core.exception;
 
-/**
- * Thrown when propagation is attempted on an Influence Diagram.
- */
-@SuppressWarnings("serial") public class NoPropagationOnInfluenceDiagramsException extends OpenMarkovException {
+public class OpenMarkovException extends Exception {
 
+	public OpenMarkovException() { }
+
+	public OpenMarkovException(String message) {
+		super(message);
+	}
+
+	public OpenMarkovException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

@@ -13,7 +13,7 @@ package org.openmarkov.core.exception;
  *
  * @see org.openmarkov.core.model.graph.Link#Link(Object, Object, boolean)
  */
-@SuppressWarnings("serial") public class ConstraintViolationException extends Exception {
+@SuppressWarnings("serial") public class ConstraintViolationException extends OpenMarkovException {
 
 	// Constructor
 

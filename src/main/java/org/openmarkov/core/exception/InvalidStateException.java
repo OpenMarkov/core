@@ -10,7 +10,7 @@ package org.openmarkov.core.exception;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 
-@SuppressWarnings("serial") public class InvalidStateException extends Exception {
+@SuppressWarnings("serial") public class InvalidStateException extends OpenMarkovException {
 
 	// Constructor
 

@@ -7,7 +7,7 @@
 
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial") public class SummaNotEqualToOneException extends Exception {
+@SuppressWarnings("serial") public class SummaNotEqualToOneException extends OpenMarkovException {
 
 	// Constructor
 

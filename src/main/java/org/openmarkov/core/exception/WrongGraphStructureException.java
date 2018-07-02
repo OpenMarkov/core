@@ -7,7 +7,7 @@
 
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial") public class WrongGraphStructureException extends Exception {
+@SuppressWarnings("serial") public class WrongGraphStructureException extends OpenMarkovException {
 
 	// Constructor
 

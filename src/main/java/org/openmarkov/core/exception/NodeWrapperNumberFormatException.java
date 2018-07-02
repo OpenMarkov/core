@@ -7,7 +7,7 @@
 
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial") public class NodeWrapperNumberFormatException extends Exception {
+@SuppressWarnings("serial") public class NodeWrapperNumberFormatException extends OpenMarkovException {
 
 	public NodeWrapperNumberFormatException(int i) {
 		super("NodeWrapper.convertStatesToPartitionedInterval" + " in row " + i

@@ -6,6 +6,8 @@
  */
 package org.openmarkov.core.oopn.exception;
 
-@SuppressWarnings("serial") public class InstanceAlreadyExistsException extends Exception {
+import org.openmarkov.core.exception.OpenMarkovException;
+
+@SuppressWarnings("serial") public class InstanceAlreadyExistsException extends OpenMarkovException {
 
 }

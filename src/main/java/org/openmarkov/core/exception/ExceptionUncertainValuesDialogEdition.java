@@ -9,7 +9,7 @@ package org.openmarkov.core.exception;
 
 import javax.swing.*;
 
-public class ExceptionUncertainValuesDialogEdition extends Exception {
+public class ExceptionUncertainValuesDialogEdition extends OpenMarkovException {
 
 	/**
 	 *

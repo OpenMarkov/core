@@ -15,7 +15,7 @@ package org.openmarkov.core.exception;
  * @author jlgozalo
  * @version 1.0 - jlgozalo - initial version 9 May 2010
  */
-@SuppressWarnings("serial") public class CanNotWriteNetworkToFileException extends Exception {
+@SuppressWarnings("serial") public class CanNotWriteNetworkToFileException extends OpenMarkovException {
 
 	// Constructor
 

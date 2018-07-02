@@ -7,10 +7,12 @@
 
 package org.openmarkov.core.io.database.exception;
 
+import org.openmarkov.core.exception.OpenMarkovException;
+
 /**
  * Thrown when opening the model net throws an exception
  *
  * @author Inigo
  */
-@SuppressWarnings("serial") public class UnableToOpenModelNet extends Exception {
+@SuppressWarnings("serial") public class UnableToOpenModelNet extends OpenMarkovException {
 }

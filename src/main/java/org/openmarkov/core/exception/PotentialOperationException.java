@@ -7,7 +7,8 @@
 
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial") public class PotentialOperationException extends OpenMarkovException {
+@OpenMarkovException(name = "PotentialOperationException")
+@SuppressWarnings("serial") public class PotentialOperationException extends Exception {
 
 	// Constructor
 

@@ -6,7 +6,8 @@
  */
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial") public class UnexpectedInferenceException extends OpenMarkovException {
+@OpenMarkovException(name = "UnexpectedInferenceException")
+@SuppressWarnings("serial") public class UnexpectedInferenceException extends Exception {
 
 	// Constructor
 

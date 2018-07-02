@@ -7,15 +7,11 @@
 
 package org.openmarkov.core.exception;
 
-public class OpenMarkovException extends Exception {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-	public OpenMarkovException() { }
-
-	public OpenMarkovException(String message) {
-		super(message);
-	}
-
-	public OpenMarkovException(String message, Throwable cause) {
-		super(message, cause);
-	}
+@Retention(RetentionPolicy.RUNTIME) public @interface OpenMarkovException {
+	String name();
 }

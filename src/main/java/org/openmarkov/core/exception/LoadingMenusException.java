@@ -7,7 +7,8 @@
 
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial") public class LoadingMenusException extends OpenMarkovException {
+@OpenMarkovException(name = "LoadingMenusException")
+@SuppressWarnings("serial") public class LoadingMenusException extends Exception {
 
 	// Constructor
 

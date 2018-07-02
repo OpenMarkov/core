@@ -7,7 +7,8 @@
 
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial") public class ProbabilisticValueNotAllowedException extends OpenMarkovException {
+@OpenMarkovException(name = "ProbabilisticValueNotAllowedException")
+@SuppressWarnings("serial") public class ProbabilisticValueNotAllowedException extends Exception {
 
 	// Constructor
 

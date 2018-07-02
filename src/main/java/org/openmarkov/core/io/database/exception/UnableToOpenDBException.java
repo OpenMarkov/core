@@ -14,5 +14,6 @@ import org.openmarkov.core.exception.OpenMarkovException;
  *
  * @author Inigo
  */
-@SuppressWarnings("serial") public class UnableToOpenDBException extends OpenMarkovException {
+@OpenMarkovException(name = "UnableToOpenDBException")
+@SuppressWarnings("serial") public class UnableToOpenDBException extends Exception {
 }

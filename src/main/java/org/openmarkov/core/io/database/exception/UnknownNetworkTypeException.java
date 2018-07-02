@@ -14,5 +14,6 @@ import org.openmarkov.core.exception.OpenMarkovException;
  *
  * @author Inigo
  */
-@SuppressWarnings("serial") public class UnknownNetworkTypeException extends OpenMarkovException {
+@OpenMarkovException(name = "UnknownNetworkTypeException")
+@SuppressWarnings("serial") public class UnknownNetworkTypeException extends Exception {
 }

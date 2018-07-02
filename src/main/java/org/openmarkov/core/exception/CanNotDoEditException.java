@@ -6,8 +6,8 @@
  */
 
 package org.openmarkov.core.exception;
-
-@SuppressWarnings("serial") public class CanNotDoEditException extends OpenMarkovException {
+@OpenMarkovException(name = "CanNotDoEditException")
+@SuppressWarnings("serial") public class CanNotDoEditException extends Exception {
 
 	// Constructor
 

@@ -7,7 +7,8 @@
 
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial") public class ConflictNameException extends OpenMarkovException {
+@OpenMarkovException(name = "ConflictNameException")
+@SuppressWarnings("serial") public class ConflictNameException extends Exception {
 
 	public ConflictNameException(String msg) {
 		super(msg);

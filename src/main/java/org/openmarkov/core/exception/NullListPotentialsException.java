@@ -6,8 +6,8 @@
  */
 
 package org.openmarkov.core.exception;
-
-@SuppressWarnings("serial") public class NullListPotentialsException extends OpenMarkovException {
+@OpenMarkovException(name = "NullListPotentialsException")
+@SuppressWarnings("serial") public class NullListPotentialsException extends Exception {
 
 	// Constructor
 

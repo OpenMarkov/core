@@ -6,8 +6,8 @@
  */
 
 package org.openmarkov.core.exception;
-
-@SuppressWarnings("serial") public class DivideByZeroException extends OpenMarkovException {
+@OpenMarkovException(name = "DivideByZeroException")
+@SuppressWarnings("serial") public class DivideByZeroException extends Exception {
 
 	// Constructor
 

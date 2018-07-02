@@ -14,5 +14,6 @@ import org.openmarkov.core.exception.OpenMarkovException;
  *
  * @author Inigo
  */
-@SuppressWarnings("serial") public class UnableToOpenModelNet extends OpenMarkovException {
+@OpenMarkovException(name = "UnableToOpenModelNet")
+@SuppressWarnings("serial") public class UnableToOpenModelNet extends Exception {
 }

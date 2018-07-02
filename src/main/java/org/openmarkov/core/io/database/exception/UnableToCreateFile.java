@@ -14,5 +14,6 @@ import org.openmarkov.core.exception.OpenMarkovException;
  *
  * @author Inigo
  */
-@SuppressWarnings("serial") public class UnableToCreateFile extends OpenMarkovException {
+@OpenMarkovException(name = "UnableToCreateFile")
+@SuppressWarnings("serial") public class UnableToCreateFile extends Exception {
 }

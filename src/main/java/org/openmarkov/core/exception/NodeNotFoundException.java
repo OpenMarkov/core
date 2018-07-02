@@ -11,7 +11,8 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
-@SuppressWarnings("serial") public class NodeNotFoundException extends OpenMarkovException {
+@OpenMarkovException(name = "NodeNotFoundException")
+@SuppressWarnings("serial") public class NodeNotFoundException extends Exception {
 
 	// Constructor
 

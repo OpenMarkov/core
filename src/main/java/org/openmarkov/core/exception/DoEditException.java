@@ -7,7 +7,8 @@
 
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial") public class DoEditException extends OpenMarkovException {
+@OpenMarkovException(name = "DoEditException")
+@SuppressWarnings("serial") public class DoEditException extends Exception {
 	/**
 	 * @param msg . <code>String</code>
 	 */

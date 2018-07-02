@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * Thrown when propagation cannot be done.
  */
+@OpenMarkovException(name = "NoPropagationCanBeDoneException")
 @SuppressWarnings("serial") public class NoPropagationCanBeDoneException extends Exception {
 
 	private List<PNConstraint> constraints;

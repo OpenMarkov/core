@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.exception;
 
+@OpenMarkovException(name = "ConstraintException")
 @SuppressWarnings("serial") public class ConstraintException extends Exception {
 
 	public ConstraintException(String className, String message) {

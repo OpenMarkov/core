@@ -7,10 +7,13 @@
 
 package org.openmarkov.core.io.database.exception;
 
+import org.openmarkov.core.exception.OpenMarkovException;
+
 /**
  * Thrown when opening the DB throws an exception
  *
  * @author Inigo
  */
+@OpenMarkovException(name = "UnableToOpenDBException")
 @SuppressWarnings("serial") public class UnableToOpenDBException extends Exception {
 }

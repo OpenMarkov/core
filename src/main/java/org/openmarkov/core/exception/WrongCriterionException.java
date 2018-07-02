@@ -9,6 +9,7 @@ package org.openmarkov.core.exception;
 
 import org.openmarkov.core.model.network.Variable;
 
+@OpenMarkovException(name = "WrongCriterionException")
 @SuppressWarnings("serial") public class WrongCriterionException extends Exception {
 
 	public WrongCriterionException(Variable utilityVariable, String criterion, Variable decisionCriteria) {

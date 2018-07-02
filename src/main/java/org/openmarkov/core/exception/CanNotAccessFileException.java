@@ -6,7 +6,7 @@
  */
 
 package org.openmarkov.core.exception;
-
+@OpenMarkovException(name = "CanNotAccessFileException")
 @SuppressWarnings("serial") public class CanNotAccessFileException extends Exception {
 
 	// Constructor

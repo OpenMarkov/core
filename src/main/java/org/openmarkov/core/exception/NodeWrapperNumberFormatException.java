@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.exception;
 
+@OpenMarkovException(name = "NodeWrapperNumberFormatException")
 @SuppressWarnings("serial") public class NodeWrapperNumberFormatException extends Exception {
 
 	public NodeWrapperNumberFormatException(int i) {

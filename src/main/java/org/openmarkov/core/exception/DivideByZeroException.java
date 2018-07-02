@@ -6,7 +6,7 @@
  */
 
 package org.openmarkov.core.exception;
-
+@OpenMarkovException(name = "DivideByZeroException")
 @SuppressWarnings("serial") public class DivideByZeroException extends Exception {
 
 	// Constructor

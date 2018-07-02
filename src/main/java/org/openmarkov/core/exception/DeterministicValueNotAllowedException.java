@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.exception;
 
+@OpenMarkovException(name = "DeterministicValueNotAllowedException")
 @SuppressWarnings("serial") public class DeterministicValueNotAllowedException extends Exception {
 
 	// Constructor

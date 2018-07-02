@@ -7,10 +7,11 @@
 
 package org.openmarkov.core.exception;
 
-/**
- * Thrown when propagation is attempted on an Influence Diagram.
- */
-@OpenMarkovException(name = "NoPropagationOnInfluenceDiagramsException")
-@SuppressWarnings("serial") public class NoPropagationOnInfluenceDiagramsException extends Exception {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
+@Retention(RetentionPolicy.RUNTIME) public @interface OpenMarkovException {
+	String name();
 }

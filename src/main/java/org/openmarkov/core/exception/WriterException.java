@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.exception;
 
+@OpenMarkovException(name = "WriterException")
 @SuppressWarnings("serial") public class WriterException extends Exception {
 
 	// Constructor

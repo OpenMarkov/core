@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.exception;
 
+@OpenMarkovException(name = "NormalizeNullVectorException")
 @SuppressWarnings("serial") public class NormalizeNullVectorException extends Exception {
 
 	public NormalizeNullVectorException(String string) {

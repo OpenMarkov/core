@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.action;
 
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -92,7 +91,7 @@ public class PNESupport extends UndoableEditSupport {
 	 *                                                   modifications in others listeners such as heuristics, GUI, ...
 	 */
 	public void announceEdit(PNEdit edit)
-			throws ConstraintViolationException, CanNotDoEditException, NonProjectablePotentialException,
+			throws ConstraintViolationException, NonProjectablePotentialException,
 			WrongCriterionException {
 		UndoableEditEvent event = new UndoableEditEvent(this, edit);
 		for (UndoableEditListener listener : listeners) {

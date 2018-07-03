@@ -11,8 +11,7 @@ package org.openmarkov.core.exception;
  * @author marias
  * @version 1.0
  */
-@OpenMarkovException(name = "IncompatibleEvidenceException")
-@SuppressWarnings("serial") public class IncompatibleEvidenceException extends Exception {
+@SuppressWarnings("serial") public class IncompatibleEvidenceException extends OpenMarkovException {
 
 	// Constructor
 

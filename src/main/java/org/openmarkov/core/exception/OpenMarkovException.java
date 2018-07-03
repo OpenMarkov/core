@@ -7,11 +7,46 @@
 
 package org.openmarkov.core.exception;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.ArrayList;
+import java.util.List;
 
-@Retention(RetentionPolicy.RUNTIME) public @interface OpenMarkovException {
-	String name();
+public class OpenMarkovException extends Exception {
+	/**
+	 * This token must correspond which one of the exception constants defined in <code>{@link OpenMarkovException}</code>
+	 */
+	private String token;
+
+	/**
+	 * List of attributes that should pass to the GUI in order to display extra information (f.e. a network name, a number,...).
+	 */
+	private List<String> attributes;
+
+
+	public OpenMarkovException() {
+		super();
+	}
+	public OpenMarkovException(String message) {
+		super(message);
+	}
+
+	public OpenMarkovException(String token, String... attributes) {
+		this.token = token;
+		this.attributes = new ArrayList();
+		for(String attribute : attributes) {
+			this.attributes.add(attribute);
+		}
+	}
+
+	public OpenMarkovException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+
+	public String getToken() {
+		return this.token;
+	}
+
+	public String[] getAttributes () {
+		return attributes.toArray(new String[0]);
+	}
 }

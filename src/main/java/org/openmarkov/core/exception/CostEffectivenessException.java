@@ -7,8 +7,7 @@
 
 package org.openmarkov.core.exception;
 
-@OpenMarkovException(name = "CostEffectivenessException")
-@SuppressWarnings("serial") public class CostEffectivenessException extends Exception {
+@SuppressWarnings("serial") public class CostEffectivenessException extends OpenMarkovException {
 
 	// Constructor
 	public CostEffectivenessException(String message) {

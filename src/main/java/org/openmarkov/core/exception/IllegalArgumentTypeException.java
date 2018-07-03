@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.exception;
 
-@OpenMarkovException(name = "IllegalArgumentTypeException")
 @SuppressWarnings("serial") public class IllegalArgumentTypeException extends PotentialOperationException {
 
 	// Constructor

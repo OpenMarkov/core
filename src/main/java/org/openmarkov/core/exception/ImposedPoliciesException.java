@@ -7,8 +7,7 @@
 
 package org.openmarkov.core.exception;
 
-@OpenMarkovException(name = "ImposedPoliciesException")
-@SuppressWarnings("serial") public class ImposedPoliciesException extends Exception {
+@SuppressWarnings("serial") public class ImposedPoliciesException extends OpenMarkovException {
 
 	// Constructor
 

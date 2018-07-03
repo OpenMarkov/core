@@ -9,7 +9,6 @@ package org.openmarkov.core.oopn.action;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -80,7 +79,7 @@ import java.util.List;
 			try {
 				oopNet.doEdit(edit);
 				++doneEditCounter;
-			} catch (ConstraintViolationException | CanNotDoEditException e) {
+			} catch (ConstraintViolationException e) {
 				this.undo();
 				throw new DoEditException(e);
 			}
@@ -108,7 +107,7 @@ import java.util.List;
 					oopNet.doEdit(linkEdit);
 					++doneEditCounter;
 					pastedLinks.add(linkEdit.getLink());
-				} catch (ConstraintViolationException | CanNotDoEditException e) {
+				} catch (ConstraintViolationException e) {
 					this.undo();
 					throw new DoEditException(e);
 				}

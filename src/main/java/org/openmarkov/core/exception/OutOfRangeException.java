@@ -7,8 +7,7 @@
 
 package org.openmarkov.core.exception;
 
-@OpenMarkovException(name = "OutOfRangeException")
-public class OutOfRangeException extends Exception {
+public class OutOfRangeException extends OpenMarkovException {
 
 	private static final long serialVersionUID = -8762555388778443002L;
 

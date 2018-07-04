@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.action;
 
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -24,7 +23,7 @@ public interface PNUndoableEditListener extends UndoableEditListener {
 	 * @throws NonProjectablePotentialException
 	 */
 	void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException, NonProjectablePotentialException,
+			throws ConstraintViolationException, NonProjectablePotentialException,
 			WrongCriterionException;
 
 	void undoEditHappened(UndoableEditEvent event);

@@ -9,7 +9,6 @@ package org.openmarkov.core.action;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -89,7 +88,7 @@ public class VariableTypeEditTest {
 			probNet.getPNESupport().withUndo = true;
 			probNet.doEdit(edit);
 
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 
@@ -135,7 +134,7 @@ public class VariableTypeEditTest {
 			probNet.getPNESupport().withUndo = true;
 			probNet.doEdit(edit);
 
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 
@@ -179,7 +178,7 @@ public class VariableTypeEditTest {
 			probNet.getPNESupport().withUndo = true;
 			probNet.doEdit(edit);
 
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 
@@ -216,7 +215,7 @@ public class VariableTypeEditTest {
 			probNet.getPNESupport().withUndo = true;
 			probNet.doEdit(edit);
 
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 
@@ -250,7 +249,7 @@ public class VariableTypeEditTest {
 			probNet.getPNESupport().withUndo = true;
 			probNet.doEdit(edit);
 
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 
@@ -286,7 +285,7 @@ public class VariableTypeEditTest {
 			probNet.getPNESupport().withUndo = true;
 			probNet.doEdit(edit);
 
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 

@@ -10,7 +10,6 @@ package org.openmarkov.core.model.network.type;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.openmarkov.core.action.AddNodeEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -71,7 +70,7 @@ public class NetworkTypeTest {
 	}
 
 	@Test(expected = ConstraintViolationException.class) public void testImpossibleNetworkTypeConversion()
-			throws ConstraintViolationException, CanNotDoEditException, NonProjectablePotentialException,
+			throws ConstraintViolationException, NonProjectablePotentialException,
 			WrongCriterionException, DoEditException {
 		ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
 		AddNodeEdit addVariableEdit = new AddNodeEdit(probNet, new Variable("a"), NodeType.DECISION);

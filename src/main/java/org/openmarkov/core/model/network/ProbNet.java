@@ -9,7 +9,6 @@ package org.openmarkov.core.model.network;
 
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -189,13 +188,12 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 *
 	 * @param edit edit to be applied
 	 * @throws ConstraintViolationException
-	 * @throws CanNotDoEditException
 	 * @throws NonProjectablePotentialException
 	 * @throws WrongCriterionException
 	 * @throws DoEditException
 	 */
 	public void doEdit(PNEdit edit)
-			throws ConstraintViolationException, CanNotDoEditException, NonProjectablePotentialException,
+			throws ConstraintViolationException, NonProjectablePotentialException,
 			WrongCriterionException, DoEditException {
 		pNESupport.announceEdit(edit);
 		pNESupport.doEdit(edit);

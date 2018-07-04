@@ -20,7 +20,6 @@ import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.action.RemoveNodeEdit;
 import org.openmarkov.core.action.SetPotentialEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -525,7 +524,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 						if (newEdit != null) {
 							try {
 								doEdit(newEdit);
-							} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
+							} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
 								e1.printStackTrace();
 							}
 						}
@@ -537,7 +536,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 	}
 
 	@Override public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException, NonProjectablePotentialException,
+			throws ConstraintViolationException, NonProjectablePotentialException,
 			WrongCriterionException {
 		// Do nothing
 

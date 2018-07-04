@@ -7,8 +7,7 @@
 
 package org.openmarkov.core.exception;
 
-@OpenMarkovException(name = "NotEvaluableNetworkException")
-public class NotEvaluableNetworkException extends Exception {
+public class NotEvaluableNetworkException extends OpenMarkovException {
 
 	private static final long serialVersionUID = -6555375975623328551L;
 

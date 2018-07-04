@@ -7,7 +7,8 @@
 
 package org.openmarkov.core.action;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -62,7 +63,7 @@ import java.util.List;
 
 		this.updatePotentials = updatePotentials;
 		this.link = null;
-		this.logger = Logger.getLogger(RemoveLinkEdit.class);
+		this.logger = LogManager.getLogger(RemoveLinkEdit.class);
 	}
 
 	public RemoveLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {

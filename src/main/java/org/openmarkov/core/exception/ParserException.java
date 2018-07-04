@@ -8,8 +8,7 @@
 package org.openmarkov.core.exception;
 
 
-@OpenMarkovException(name = "ParserException")
-@SuppressWarnings("serial") public class ParserException extends Exception {
+@SuppressWarnings("serial") public class ParserException extends OpenMarkovException {
 
 	// Constructor
 

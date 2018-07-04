@@ -9,7 +9,6 @@ package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -37,13 +36,12 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
 	 * <code>probNet</code> continues complying with this constraint.
 	 *
 	 * @param event <code>UndoableEditEvent</code>
-	 * @throws CanNotDoEditException
 	 * @throws ConstraintViolationException
 	 * @throws WrongCriterionException
 	 * @throws NonProjectablePotentialException
 	 */
 	@Override public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException, NonProjectablePotentialException,
+			throws ConstraintViolationException, NonProjectablePotentialException,
 			WrongCriterionException {
 		PNEdit edit = (PNEdit) event.getEdit();
 		if (!checkEdit(edit.getProbNet(), edit)) {

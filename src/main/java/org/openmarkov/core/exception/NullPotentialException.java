@@ -8,8 +8,7 @@
 package org.openmarkov.core.exception;
 
 @SuppressWarnings("serial")
-@OpenMarkovException(name = "NullPotentialException")
-public class NullPotentialException extends Exception {
+public class NullPotentialException extends OpenMarkovException {
 
 	public NullPotentialException(String string) {
 		super(string);

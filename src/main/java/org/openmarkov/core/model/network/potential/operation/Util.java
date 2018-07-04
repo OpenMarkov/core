@@ -7,7 +7,8 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.security.auth.login.Configuration;
 import java.io.BufferedReader;
@@ -27,7 +28,7 @@ public class Util {
 
 	// Attributes
 	public static Configuration openMarkovConfiguration = null;
-	private static Logger logger = Logger.getLogger(Util.class);
+	private static Logger logger = LogManager.getLogger(Util.class);
 
 	/**
 	 * @param className <code>String</code>

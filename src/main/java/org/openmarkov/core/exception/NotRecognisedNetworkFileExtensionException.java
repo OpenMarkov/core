@@ -15,8 +15,7 @@ package org.openmarkov.core.exception;
  * @author jlgozalo
  * @version 1.0 - jlgozalo - initial version 9 May 2010
  */
-@OpenMarkovException(name = "NotRecognisedNetworkFileExtensionException")
-@SuppressWarnings("serial") public class NotRecognisedNetworkFileExtensionException extends Exception {
+@SuppressWarnings("serial") public class NotRecognisedNetworkFileExtensionException extends OpenMarkovException {
 
 	// Constructor
 

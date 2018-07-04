@@ -7,7 +7,8 @@
 
 package org.openmarkov.core.action;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -59,7 +60,7 @@ import java.util.List;
 		super(probNet);
 		this.variable = variable;
 		this.nodeType = probNet.getNode(variable).getNodeType();
-		this.logger = Logger.getLogger(CompoundPNEdit.class);
+		this.logger = LogManager.getLogger(CompoundPNEdit.class);
 	}
 
 	public void generateEdits() {

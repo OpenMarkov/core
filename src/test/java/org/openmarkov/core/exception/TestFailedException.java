@@ -7,8 +7,7 @@
 
 package org.openmarkov.core.exception;
 
-@OpenMarkovException(name = "TestFailedException")
-@SuppressWarnings("serial") public class TestFailedException extends Exception {
+@SuppressWarnings("serial") public class TestFailedException extends OpenMarkovException {
 
 	public TestFailedException(Exception e) {
 		System.err.println(e.getMessage());

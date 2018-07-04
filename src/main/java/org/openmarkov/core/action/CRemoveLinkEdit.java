@@ -7,7 +7,8 @@
 
 package org.openmarkov.core.action;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -41,7 +42,7 @@ import java.util.List;
 		this.variable1 = variable1;
 		this.variable2 = variable2;
 		this.isDirected = isDirected;
-		this.logger = Logger.getLogger(CRemoveLinkEdit.class);
+		this.logger = LogManager.getLogger(CRemoveLinkEdit.class);
 	}
 
 	// Methods

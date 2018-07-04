@@ -7,7 +7,8 @@
 
 package org.openmarkov.core.action;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 
@@ -39,7 +40,7 @@ import javax.swing.undo.AbstractUndoableEdit;
 	 */
 	public SimplePNEdit(ProbNet probNet) {
 		this.probNet = probNet;
-		this.logger = Logger.getLogger(SimplePNEdit.class);
+		this.logger = LogManager.getLogger(SimplePNEdit.class);
 	}
 
 	// Methods

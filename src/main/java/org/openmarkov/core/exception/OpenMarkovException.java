@@ -19,22 +19,17 @@ public class OpenMarkovException extends Exception {
 	/**
 	 * List of attributes that should pass to the GUI in order to display extra information (f.e. a network name, a number,...).
 	 */
-	private List<String> attributes;
+	private String[] attributes;
 
 
 	public OpenMarkovException() {
 		super();
 	}
-	public OpenMarkovException(String message) {
-		super(message);
-	}
+
 
 	public OpenMarkovException(String token, String... attributes) {
 		this.token = token;
-		this.attributes = new ArrayList();
-		for(String attribute : attributes) {
-			this.attributes.add(attribute);
-		}
+		this.attributes = attributes;
 	}
 
 	public OpenMarkovException(String message, Throwable cause) {
@@ -47,6 +42,6 @@ public class OpenMarkovException extends Exception {
 	}
 
 	public String[] getAttributes () {
-		return attributes.toArray(new String[0]);
+		return attributes;
 	}
 }

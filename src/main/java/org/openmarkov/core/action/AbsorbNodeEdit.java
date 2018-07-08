@@ -17,33 +17,34 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("serial") public class PruneNodeEdit extends SimplePNEdit{
+@SuppressWarnings("serial") public class AbsorbNodeEdit extends SimplePNEdit{
 
-    private Variable prunedVariable;
+    // Both node and variable attributes are created for convenience but one could be extracted from the other
+    private Variable absorbedVariable;
 
-    private Node prunedNode;
+    private Node absorbedNode;
 
-    private List<Link<Node>> prunedLinks;
+    /* Undo attributes */
+    private List<Link<Node>> linksDeleted;
 
     private List<Link<Node>> newParentLinks;
 
     private List<Potential> oldUtilityPotentials;
 
+    /* Redo attributes */
     private List<Potential> newPotentials;
-
-    private boolean isParentOfUtility;
 
     // Constructor
 
     /**
      * @param probNet    <code>ProbNet</code>
-     * @param prunedVariable  <code>Variable</code>
+     * @param absorbedVariable  <code>Variable</code>
      */
-    public PruneNodeEdit(ProbNet probNet, Variable prunedVariable) {
+    public AbsorbNodeEdit(ProbNet probNet, Variable absorbedVariable) {
         super(probNet);
-        this.prunedVariable = prunedVariable;
-        this.prunedNode = probNet.getNode(prunedVariable);
-        this.prunedLinks = new ArrayList<>();
+        this.absorbedVariable = absorbedVariable;
+        this.absorbedNode = probNet.getNode(absorbedVariable);
+        this.linksDeleted = new ArrayList<>();
         this.newParentLinks = new ArrayList<>();
     }
 
@@ -51,24 +52,20 @@ import java.util.List;
     public void doEdit() throws DoEditException {
 
 
-        // If there is a child, it is an utility child.
-        isParentOfUtility = (prunedNode.getChildren().size() == 1);
-
-        if (isParentOfUtility) {
             // Update the utility potential
-            Node child = prunedNode.getChildren().get(0);
+            Node child = absorbedNode.getChildren().get(0);
             oldUtilityPotentials = child.getPotentials();
             newPotentials = new ArrayList<>();
 
             /* Chance parent */
-            if (prunedNode.getNodeType() == NodeType.CHANCE) {
+            if (absorbedNode.getNodeType() == NodeType.CHANCE) {
                 for (Potential potential : oldUtilityPotentials) {
 
                     // Potentials to multiply
                     List<TablePotential> utilityAndChance = new ArrayList<>();
                     try {
                         utilityAndChance.add(potential.getCPT()); //Utility
-                        utilityAndChance.add(prunedNode.getPotentials().get(0).getCPT()); //Chance
+                        utilityAndChance.add(absorbedNode.getPotentials().get(0).getCPT()); //Chance
 
                     } catch (NonProjectablePotentialException | WrongCriterionException e) {
                         throw new DoEditException("Potential not convertible to table or wrong criterion");
@@ -80,10 +77,10 @@ import java.util.List;
                     List<Variable> unionVariables = AuxiliaryOperations.getUnionVariables(utilityAndChance);
 
                     List<Variable> variablesToKeep = new ArrayList<>(unionVariables);
-                    variablesToKeep.remove(prunedVariable);
+                    variablesToKeep.remove(absorbedVariable);
 
                     List<Variable> variablesToEliminate = new ArrayList<>();
-                    variablesToEliminate.add(prunedVariable);
+                    variablesToEliminate.add(absorbedVariable);
 
                     // Discrete operation is valid because all parents are discrete
                     TablePotential marginalizedPotential = DiscretePotentialOperations.
@@ -97,7 +94,7 @@ import java.util.List;
                 }
 
                 // Parents of chance node are now parents of utility node
-                for (Node parent : prunedNode.getParents() ) {
+                for (Node parent : absorbedNode.getParents() ) {
                     Link<Node> link = probNet.getLink(parent, child, true);
                     if (link == null) {
                         // creating the Link saves it in the graph
@@ -107,7 +104,7 @@ import java.util.List;
                 }
 
             /* Decision parent */
-            } else if (prunedNode.getNodeType() == NodeType.DECISION) {
+            } else if (absorbedNode.getNodeType() == NodeType.DECISION) {
                 for (Potential potential : oldUtilityPotentials) {
                     TablePotential utilityPotential;
 
@@ -115,15 +112,17 @@ import java.util.List;
                         utilityPotential = potential.getCPT();
                     } catch (NonProjectablePotentialException | WrongCriterionException e) {
                         throw new DoEditException("Potential not convertible to table or wrong criterion");
+                        // TODO Make compatible with the new Exception frame
                     }
 
                     // Discrete operation is valid because all parents are discrete
                     TablePotential maximizedPotential = (TablePotential) DiscretePotentialOperations.
-                            maximize(utilityPotential, prunedVariable)[0];
+                            maximize(utilityPotential, absorbedVariable)[0];
 
                     List<Variable> newVariables = new ArrayList<>(potential.getVariables());
-                    newVariables.remove(prunedVariable);
+                    newVariables.remove(absorbedVariable);
 
+                    // Convert to utility potential
                     ExactDistrPotential exactDistrPotential = new ExactDistrPotential(newVariables);
                     exactDistrPotential.setValues(maximizedPotential.values);
 
@@ -132,48 +131,47 @@ import java.util.List;
                 // Parents of decision node don't turn into parents of utility node
             }
             child.setPotentials(newPotentials);
-        }
+
 
         // Links saved for the undo()
-        prunedLinks = getLinksWithNode(prunedNode);
-        probNet.removeNode(prunedNode);
+        linksDeleted = getLinksWithNode(absorbedNode);
+        probNet.removeNode(absorbedNode);
     }
 
     public void undo() {
         super.undo();
-        probNet.addNode(prunedNode);
-        // Restore pruned links
-        if (prunedLinks.size() != 0) {
-            for (Link<Node> link : prunedLinks) {
+        probNet.addNode(absorbedNode);
+        // Restore deleted links
+        if (linksDeleted.size() != 0) {
+            for (Link<Node> link : linksDeleted) {
                 probNet.addLink(link.getNode1(), link.getNode2(), true);
             }
         }
-        if (isParentOfUtility) {
-            prunedNode.getChildren().get(0).setPotentials(oldUtilityPotentials);
+
+            absorbedNode.getChildren().get(0).setPotentials(oldUtilityPotentials);
             // Destroy created utility links
             if (newParentLinks.size() != 0) {
                 for (Link<Node> link : newParentLinks) {
                     probNet.removeLink(link.getNode1(), link.getNode2(), true);
                 }
             }
-        }
+
 
     }
 
     public void redo() {
         super.redo();
-        isParentOfUtility = (prunedNode.getChildren().size() == 1);
-        if (isParentOfUtility) {
+
             // Re-create utility links
             if (newParentLinks.size() != 0) {
                 for (Link<Node> link : newParentLinks) {
                     probNet.addLink(link.getNode1(), link.getNode2(), true);
                 }
             }
-            prunedNode.getChildren().get(0).setPotentials(newPotentials);
-        }
+            absorbedNode.getChildren().get(0).setPotentials(newPotentials);
 
-        probNet.removeNode(prunedNode);
+
+        probNet.removeNode(absorbedNode);
 
 
     }

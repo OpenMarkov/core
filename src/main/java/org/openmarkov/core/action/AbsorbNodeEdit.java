@@ -136,6 +136,7 @@ import java.util.List;
         // Links saved for the undo()
         linksDeleted = getLinksWithNode(absorbedNode);
         probNet.removeNode(absorbedNode);
+        System.out.println("I'm messing with you");
     }
 
     public void undo() {
@@ -159,10 +160,12 @@ import java.util.List;
 
     }
 
+    // TODO
     public void redo() {
         super.redo();
-
-            // Re-create utility links
+        /* The super already does the doEdit
+        Node child = absorbedNode.getChildren().get(0);
+        // Re-create utility links
             if (newParentLinks.size() != 0) {
                 for (Link<Node> link : newParentLinks) {
                     probNet.addLink(link.getNode1(), link.getNode2(), true);
@@ -172,8 +175,7 @@ import java.util.List;
 
 
         probNet.removeNode(absorbedNode);
-
-
+        */
     }
 
     /*

@@ -216,8 +216,11 @@ import java.util.Set;
 		}
 	}
 
+
     public void redo() {
         super.redo();
+        // TODO See if redos are really necessary
+        /*
         try {
             // Re-remove link X -> Y
             probNet.addLink(variable1, variable2, isDirected);
@@ -234,6 +237,7 @@ import java.util.Set;
         } catch (Exception exc) {
             exc.printStackTrace();
         }
+        */
     }
 
 	/**

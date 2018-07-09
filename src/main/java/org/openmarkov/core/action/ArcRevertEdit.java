@@ -58,6 +58,10 @@ import java.util.Set;
 	private List<Potential> parentsOldPotentials;
 	// Child node's old potentials
 	private List<Potential> childsOldPotentials;
+    // Parent node's new potentials
+    private TablePotential xNewPotential;
+    // Child node's new potentials
+    private TablePotential yNewPotential;
 
 	// Constructor
 
@@ -180,16 +184,12 @@ import java.util.Set;
 		System.out.println((xyPotentialMultiplied));
 
 		// 4. Calculate P(y|a, b, c) through P(y|a, b, c) = Σ(x) P(x, y|a, b, c) and assign to node Y this probability.
-		TablePotential yNewPotential = DiscretePotentialOperations.marginalize(xyPotentialMultiplied, x.getVariable());
+		yNewPotential = DiscretePotentialOperations.marginalize(xyPotentialMultiplied, x.getVariable());
 		y.setPotential(yNewPotential);
-		System.out.println(yNewPotential);
-		yNewPotential.getVariables();
 
 		// 5. Calculate P(x|a, b, c, y) through P(x|a, b, c, y) = P(x, y|a, b, c) / P(y|a, b, c) and assign to node X this probability.
-		TablePotential xNewPotential = null;
 		xNewPotential = DiscretePotentialOperations.divide(xyPotentialMultiplied, yNewPotential);
 		x.setPotential(xNewPotential);
-		System.out.println(xNewPotential);
 
 		for (Link link : undoLinks) {
 			probNet.addLink((Node) link.getNode1(), (Node) link.getNode2(), true);
@@ -215,6 +215,30 @@ import java.util.Set;
 			exc.printStackTrace();
 		}
 	}
+
+
+    public void redo() {
+        super.redo();
+        // TODO See if redos are really necessary
+        /*
+        try {
+            // Re-remove link X -> Y
+            probNet.addLink(variable1, variable2, isDirected);
+            // Recreate link Y -> X
+            probNet.addLink(variable2, variable1, isDirected);
+            // Re-created the links of shared fathers
+            for (Link<Node> undoLink : undoLinks) {
+                probNet.addLink(undoLink.getNode1(), undoLink.getNode2(), true);
+            }
+            // The potentials of X are restored to the original ones
+            x.setPotential(xNewPotential);
+            // The potentials of Y are restored to the original ones
+            y.setPotential(yNewPotential);
+        } catch (Exception exc) {
+            exc.printStackTrace();
+        }
+        */
+    }
 
 	/**
 	 * Method to compare two InvertLinkEdits comparing the names of

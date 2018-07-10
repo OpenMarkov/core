@@ -212,6 +212,7 @@ import java.util.Set;
 			x.setPotentials(parentsOldPotentials);
 			// The potentials of Y are restored to the original ones
 			y.setPotentials(childsOldPotentials);
+            System.out.println("I'm here" + parentsOldPotentials + childsOldPotentials);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -223,17 +224,24 @@ import java.util.Set;
         super.redo();
         try {
             // Re-remove link X -> Y
-            probNet.addLink(variable1, variable2, isDirected);
+            probNet.removeLink(variable1, variable2, isDirected);
             // Recreate link Y -> X
             probNet.addLink(variable2, variable1, isDirected);
             // Re-created the links of shared fathers
             for (Link<Node> linkToRedo : linksToUndo) {
                 probNet.addLink(linkToRedo.getNode1(), linkToRedo.getNode2(), true);
             }
-            // The potentials of X are restored to the original ones
-            x.setPotential(xNewPotential);
+            // The potentials of X are restored to the original ones. I convert the only potential to a list of one
+            // element to use the same method in undo() and redo(). Using setPotential() (withous s) will modify the
+            // parentsOldPotentials and childOldPotential objects, making the next undo()'s useless.
+            List<Potential> xNewPotentials= new ArrayList<>();
+            xNewPotentials.add(xNewPotential);
+            x.setPotentials(xNewPotentials);
             // The potentials of Y are restored to the original ones
-            y.setPotential(yNewPotential);
+            List<Potential> yNewPotentials= new ArrayList<>();
+            xNewPotentials.add(yNewPotential);
+            y.setPotentials(yNewPotentials);
+
         } catch (Exception exc) {
             exc.printStackTrace();
         }

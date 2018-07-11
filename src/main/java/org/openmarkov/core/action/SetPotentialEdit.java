@@ -92,9 +92,7 @@ import java.util.List;
 			}
 		}
 
-		if (!(
-				node.getNodeType() == NodeType.DECISION && node.getPolicyType() == PolicyType.OPTIMAL
-		)) {
+		if (!(node.getNodeType() == NodeType.DECISION && node.getPolicyType() == PolicyType.OPTIMAL)) {
 			//	probNet.getNode(variable).setPolicyType(PolicyType.PROBABILISTIC);
 			node.setPolicyType(PolicyType.PROBABILISTIC);
 		}

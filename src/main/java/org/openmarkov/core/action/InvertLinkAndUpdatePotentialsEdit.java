@@ -25,6 +25,7 @@ import java.util.Set;
 
 /**
  * @author artasom
+ * @author iagoparis
  * <p>
  * Inverts the arc between two nodes.
  * <p>
@@ -46,14 +47,14 @@ import java.util.Set;
  * <p>
  * 5. Calculate P(x|a, b, c, y) through P(x|a, b, c, y) = P(x, y|a, b, c) / P(y|a, b, c) and assign to node X this probability.
  */
-@SuppressWarnings("serial") public class ArcRevertEdit extends BaseLinkEdit {
+@SuppressWarnings("serial") public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 
 	// x (parent) node
 	private final Node x;
 	// y (child) node
 	private final Node y;
 	// In case of undo, this list will keep the links created so they can be deleted
-	private final List<Link> undoLinks = new ArrayList<>();
+	private final List<Link> linksToUndo = new ArrayList<>();
 	// Parent node's old potentials
 	private List<Potential> parentsOldPotentials;
 	// Child node's old potentials
@@ -71,7 +72,7 @@ import java.util.Set;
 	 * @param variable2 <code>Variable</code>
 	 */
 	//* @param isDirected <code>boolean</code>
-	public ArcRevertEdit(ProbNet probNet, Variable variable1, Variable variable2)
+	public InvertLinkAndUpdatePotentialsEdit(ProbNet probNet, Variable variable1, Variable variable2)
 	//boolean isDirected)
 	{
 		// It will always be directed
@@ -100,7 +101,7 @@ import java.util.Set;
 
 		// 2. Share parents between the nodes.
 		// The list of created links is emptied
-		undoLinks.clear();
+		linksToUndo.clear();
 		// {C(x) \ C(y)} must be parents of y
 		// The new parents of y will be those nodes that are parents of x,
 		newParents = xParents;
@@ -110,7 +111,7 @@ import java.util.Set;
 		// The new links are created
 		for (Node newParent : newParents) {
 			// creating the Link is creating a Link in the node and thus in the graph
-			undoLinks.add(new Link(newParent, y, true));
+			linksToUndo.add(new Link(newParent, y, true));
 			//probNet.addLink(probNet.getNode(newParent), y, true);
 		}
 
@@ -125,7 +126,7 @@ import java.util.Set;
 		// The new links are created
 		for (Node newParent : newParents) {
 			// creating the Link is creating a Link in the node and thus in the graph
-			undoLinks.add(new Link(newParent, x, true));
+			linksToUndo.add(new Link(newParent, x, true));
 			//probNet.addLink(probNet.getNode(newParent), x, true);
 		}
 
@@ -191,7 +192,7 @@ import java.util.Set;
 		xNewPotential = DiscretePotentialOperations.divide(xyPotentialMultiplied, yNewPotential);
 		x.setPotential(xNewPotential);
 
-		for (Link link : undoLinks) {
+		for (Link link : linksToUndo) {
 			probNet.addLink((Node) link.getNode1(), (Node) link.getNode2(), true);
 		}
 	}
@@ -204,13 +205,14 @@ import java.util.Set;
 			// Re-create link X -> Y
 			probNet.addLink(variable1, variable2, isDirected);
 			// Delete the links created when the nodes shared their fathers
-			for (Link<Node> undoLink : undoLinks) {
+			for (Link<Node> undoLink : linksToUndo) {
 				probNet.removeLink(undoLink.getNode1(), undoLink.getNode2(), true);
 			}
 			// The potentials of X are restored to the original ones
 			x.setPotentials(parentsOldPotentials);
 			// The potentials of Y are restored to the original ones
 			y.setPotentials(childsOldPotentials);
+            System.out.println("I'm here" + parentsOldPotentials + childsOldPotentials);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -218,26 +220,31 @@ import java.util.Set;
 
 
     public void redo() {
+	    setTypicalRedo(false);
         super.redo();
-        // TODO See if redos are really necessary
-        /*
         try {
             // Re-remove link X -> Y
-            probNet.addLink(variable1, variable2, isDirected);
+            probNet.removeLink(variable1, variable2, isDirected);
             // Recreate link Y -> X
             probNet.addLink(variable2, variable1, isDirected);
             // Re-created the links of shared fathers
-            for (Link<Node> undoLink : undoLinks) {
-                probNet.addLink(undoLink.getNode1(), undoLink.getNode2(), true);
+            for (Link<Node> linkToRedo : linksToUndo) {
+                probNet.addLink(linkToRedo.getNode1(), linkToRedo.getNode2(), true);
             }
-            // The potentials of X are restored to the original ones
-            x.setPotential(xNewPotential);
+            // The potentials of X are restored to the original ones. I convert the only potential to a list of one
+            // element to use the same method in undo() and redo(). Using setPotential() (withous s) will modify the
+            // parentsOldPotentials and childOldPotential objects, making the next undo()'s useless.
+            List<Potential> xNewPotentials= new ArrayList<>();
+            xNewPotentials.add(xNewPotential);
+            x.setPotentials(xNewPotentials);
             // The potentials of Y are restored to the original ones
-            y.setPotential(yNewPotential);
+            List<Potential> yNewPotentials= new ArrayList<>();
+            xNewPotentials.add(yNewPotential);
+            y.setPotentials(yNewPotentials);
+
         } catch (Exception exc) {
             exc.printStackTrace();
         }
-        */
     }
 
 	/**
@@ -247,7 +254,7 @@ import java.util.Set;
 	 * @param obj
 	 * @return
 	 */
-	public int compareTo(ArcRevertEdit obj) {
+	public int compareTo(InvertLinkAndUpdatePotentialsEdit obj) {
 		int result;
 
 		if ((
@@ -278,7 +285,7 @@ import java.util.Set;
 	}
 
 	@Override public BaseLinkEdit getUndoEdit() {
-		return new ArcRevertEdit(getProbNet(), getVariable2(),
+		return new InvertLinkAndUpdatePotentialsEdit(getProbNet(), getVariable2(),
 				getVariable1()); //, isDirected () is always true in this case
 	}
 

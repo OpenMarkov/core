@@ -13,11 +13,17 @@ import java.util.Random;
 
 	private long seed = System.nanoTime();
 
+
 	public XORShiftRandom() {
 	}
 
-	protected int next(int nbits) {
-		// N.B. Not thread-safe!
+    @Override
+    public void setSeed(long seed) {
+        this.seed = seed;
+    }
+
+    protected int next(int nbits) {
+		// TODO N.B. Not thread-safe!
 		long x = this.seed;
 		x ^= (x << 21);
 		x ^= (x >>> 35);

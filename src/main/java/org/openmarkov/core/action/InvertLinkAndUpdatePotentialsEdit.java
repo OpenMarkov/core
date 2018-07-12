@@ -181,8 +181,6 @@ import java.util.Set;
 		// Apply the correction of the order of the variables: Σ(x) P(x, y|a, b, c) = P(a|b, y, c) to Σ(x) P(x, y|a, b, c) = P(y|a, b, c)
 		xyPotentialMultiplied = DiscretePotentialOperations.reorder(xyPotentialMultiplied,
 				new ArrayList<>(orderedVariables));
-		System.out.println(orderedVariables);
-		System.out.println((xyPotentialMultiplied));
 
 		// 4. Calculate P(y|a, b, c) through P(y|a, b, c) = Σ(x) P(x, y|a, b, c) and assign to node Y this probability.
 		yNewPotential = DiscretePotentialOperations.marginalize(xyPotentialMultiplied, x.getVariable());
@@ -212,7 +210,6 @@ import java.util.Set;
 			x.setPotentials(parentsOldPotentials);
 			// The potentials of Y are restored to the original ones
 			y.setPotentials(childsOldPotentials);
-            System.out.println("I'm here" + parentsOldPotentials + childsOldPotentials);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}

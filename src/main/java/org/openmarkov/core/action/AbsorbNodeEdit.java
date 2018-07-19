@@ -97,6 +97,7 @@ import java.util.Set;
                     utilityAndChance.add(absorbedNode.getPotentials().get(0).getCPT()); //Chance
 
                 } catch (NonProjectablePotentialException | WrongCriterionException e) {
+                    e.printStackTrace();
                     throw new DoEditException("Potential not convertible to table or wrong criterion");
                     // TODO Make compatible with the new Exception frame
                 }

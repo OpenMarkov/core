@@ -135,8 +135,6 @@ import java.util.Set;
 		parentsOldPotentials = x.getPotentials();
 		childsOldPotentials = y.getPotentials();
 
-		// TODO Potentials should be converted if necessary
-		// potential.tableProject(new EvidenceCase(), new InferenceOptions());
 
 		// 3. 	Calculate P(x, y|a, b, c) through P(x, y|a, b, c) = P(x|a, b) · P(y|x, b, c)
 		// Meaning: P(x, y|a, b, c) = pot(x) · pot(y)

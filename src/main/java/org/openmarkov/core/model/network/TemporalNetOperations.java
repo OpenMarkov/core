@@ -186,17 +186,23 @@ public class TemporalNetOperations {
 	 */
 	private static void expandPotentialAndLinks(ProbNet probNet, Node oldNode, Node newNode, int timeDifference)
 			throws NodeNotFoundException {
-		Potential oldPotential = oldNode.getPotentials().get(0);
-		Potential newPotential;
-		if (oldPotential instanceof CycleLengthShift) {
-			newPotential = new CycleLengthShift(oldPotential.getShiftedVariables(probNet, timeDifference),
-					probNet.getCycleLength());
-		} else {
-			newPotential = oldPotential.copy();
-			newPotential.shift(probNet, timeDifference);
+
+		Potential oldPotential = null;
+		// If there is a node that not have any potential, skip
+		if (oldNode.getPotentials() != null && !oldNode.getPotentials().isEmpty()) {
+			oldPotential = oldNode.getPotentials().get(0);
+
+			Potential newPotential;
+			if (oldPotential instanceof CycleLengthShift) {
+				newPotential = new CycleLengthShift(oldPotential.getShiftedVariables(probNet, timeDifference),
+						probNet.getCycleLength());
+			} else {
+				newPotential = oldPotential.copy();
+				newPotential.shift(probNet, timeDifference);
+			}
+			newNode.addPotential(newPotential);
+			newPotential.createDirectedLinks(probNet);
 		}
-		newNode.addPotential(newPotential);
-		newPotential.createDirectedLinks(probNet);
 	}
 
 	private static double getSliceWidth(List<Node> nodes) {

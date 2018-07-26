@@ -77,7 +77,9 @@ public class NetworkTypeManager {
 				networkTypeClasses.put(lAnnotation.name(), (Class<? extends NetworkType>) networkTypeClass);
 				String[] alternativeNames = lAnnotation.alternativeNames();
 				for (int i = 0; i < alternativeNames.length; ++i) {
-					networkTypeClasses.put(alternativeNames[i], (Class<? extends NetworkType>) networkTypeClass);
+					if (!alternativeNames[i].isEmpty()) {
+						networkTypeClasses.put(alternativeNames[i], (Class<? extends NetworkType>) networkTypeClass);
+					}
 				}
 			}
 		}

@@ -12,7 +12,7 @@ import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
-@ProbNetType(name = "MID", alternativeNames = { "MPAD", "Markov influence diagram" }) public class MIDType
+@ProbNetType(name = "MID", alternativeNames = { "MPAD"}) public class MIDType
 		extends NetworkType {
 	// Attributes
 	private static MIDType instance = null;

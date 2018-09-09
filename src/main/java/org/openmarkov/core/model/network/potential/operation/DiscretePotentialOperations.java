@@ -2558,4 +2558,31 @@ public final class DiscretePotentialOperations {
 		return DiscretePotentialOperations.createOneValuePotential(PotentialRole.CONDITIONAL_PROBABILITY, 0.0);
 	}
 
+	public static TablePotential imposeOtherDistributionWhenDistributionIsZero(TablePotential xNewPotential) {
+		List<Variable> variables = xNewPotential.getVariables();
+		if (variables == null || variables.size() == 0 || xNewPotential.values == null || xNewPotential.values.length <=1) {
+			return xNewPotential;
+		}
+		Variable firstVariable = variables.get(0);
+		int numStatesFirstVariable = firstVariable.getNumStates();
+		int numOuterIterations = xNewPotential.values.length / numStatesFirstVariable;
+		int numConfiguration = 0;
+		for (int i = 0; i < numOuterIterations; i++) {
+			boolean allZeros = true;
+			// Check whether all configurations are zero
+			int startConfiguration = numConfiguration;
+			for (int j = 0; j < numStatesFirstVariable; j++) {
+				allZeros &= almostEqual(0.0, xNewPotential.values[startConfiguration++]);
+			}
+			if (allZeros) {
+				startConfiguration = numConfiguration;
+				xNewPotential.values[startConfiguration++] = 1.0;
+				for (int j = 1; j < numStatesFirstVariable; j++) {
+					xNewPotential.values[startConfiguration++] = 0.0;
+				}
+			}
+			numConfiguration += numStatesFirstVariable;
+		}
+		return xNewPotential;
+	}
 }

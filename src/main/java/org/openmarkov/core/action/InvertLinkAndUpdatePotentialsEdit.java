@@ -47,7 +47,8 @@ import java.util.Set;
  * <p>
  * 5. Calculate P(x|a, b, c, y) through P(x|a, b, c, y) = P(x, y|a, b, c) / P(y|a, b, c) and assign to node X this probability.
  */
-@SuppressWarnings("serial") public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
+@SuppressWarnings("serial")
+public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 
 	// x (parent) node
 	private final Node x;
@@ -186,6 +187,7 @@ import java.util.Set;
 
 		// 5. Calculate P(x|a, b, c, y) through P(x|a, b, c, y) = P(x, y|a, b, c) / P(y|a, b, c) and assign to node X this probability.
 		xNewPotential = DiscretePotentialOperations.divide(xyPotentialMultiplied, yNewPotential);
+        xNewPotential = DiscretePotentialOperations.imposeOtherDistributionWhenDistributionIsZero(xNewPotential);
 		x.setPotential(xNewPotential);
 
 		for (Link link : linksToUndo) {

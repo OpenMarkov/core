@@ -189,6 +189,7 @@ public class TemporalNetOperations {
 
 		Potential oldPotential = null;
 		// If there is a node that not have any potential, skip
+		// TODO This code is skipping decision nodes as they have no potentials
 		if (oldNode.getPotentials() != null && !oldNode.getPotentials().isEmpty()) {
 			oldPotential = oldNode.getPotentials().get(0);
 

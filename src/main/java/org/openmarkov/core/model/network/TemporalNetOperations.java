@@ -99,7 +99,7 @@ public class TemporalNetOperations {
 	public static ProbNet expandNetwork(ProbNet probNet) {
 		ProbNet expandedNet = probNet.copy();
 		List<List<Node>> classifiedNodes = compactNetwork(expandedNet);
-		while (classifiedNodes.size() <= probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices()) {
+		while (classifiedNodes.size() <= probNet.getInferenceOptions().getTemporalOptions().getHorizon()) {
 			generateNextSlice(expandedNet, classifiedNodes);
 		}
 		return expandedNet;
@@ -285,7 +285,7 @@ public class TemporalNetOperations {
 	 * @param network Network to be transformed
 	 */
 	public static void applyTransitionTime(ProbNet network) {
-		int numSlices = network.getInferenceOptions().getTemporalOptions().getNumberOfSlices();
+		int numSlices = network.getInferenceOptions().getTemporalOptions().getHorizon();
 		List<Node> utilityNodes = network.getNodes(NodeType.UTILITY);
 		TransitionTime transitionTime = network.getInferenceOptions().getTemporalOptions().getTransition();
 		List<Node> nodesToRemove = new ArrayList<>();

@@ -9,26 +9,27 @@ package org.openmarkov.core.inference;
 
 public class TemporalOptions implements Cloneable {
 
-	private int numberOfSlices;
+	private int horizon;
 
 	private TransitionTime transition;
 
 	public TemporalOptions() {
-		numberOfSlices = 20; // TODO Explain why
+		// Number of slices now in the net
+		horizon = 0; // TODO Explain why
 		transition = TransitionTime.BEGINNING;
 	}
 
 	public TemporalOptions(TemporalOptions temporalOptions) {
-		this.setNumberOfSlices(temporalOptions.numberOfSlices);
+		this.setHorizon(temporalOptions.horizon);
 		this.setTransition(temporalOptions.getTransition());
 	}
 
-	public int getNumberOfSlices() {
-		return numberOfSlices;
+	public int getHorizon() {
+		return horizon;
 	}
 
-	public void setNumberOfSlices(int numberOfSlices) {
-		this.numberOfSlices = numberOfSlices;
+	public void setHorizon(int horizon) {
+		this.horizon = horizon;
 	}
 
 	public TransitionTime getTransition() {

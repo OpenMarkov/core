@@ -75,13 +75,13 @@ public class TemporalOptionsEditTest {
 	@Test public void temporalOptionsTest() {
 
 		TemporalOptions temporalOptions = new TemporalOptions();
-		temporalOptions.setNumberOfSlices(50);
+		temporalOptions.setHorizon(50);
 		temporalOptions.setTransition(TransitionTime.END);
 		TemporalOptionsEdit edit = new TemporalOptionsEdit(probNet, temporalOptions);
 
 		try {
 			probNet.getPNESupport().doEdit(edit);
-			assertTrue(probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices() == 50);
+			assertTrue(probNet.getInferenceOptions().getTemporalOptions().getHorizon() == 50);
 			assertTrue(probNet.getInferenceOptions().getTemporalOptions().getTransition().toString()
 					.equals(TransitionTime.END.toString()));
 		} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
@@ -90,13 +90,13 @@ public class TemporalOptionsEditTest {
 		}
 
 		TemporalOptions temporalOptions2 = new TemporalOptions();
-		temporalOptions2.setNumberOfSlices(10);
+		temporalOptions2.setHorizon(10);
 		temporalOptions2.setTransition(TransitionTime.HALF);
 		TemporalOptionsEdit edit2 = new TemporalOptionsEdit(probNet, temporalOptions2);
 
 		try {
 			probNet.getPNESupport().doEdit(edit2);
-			assertTrue(probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices() == 10);
+			assertTrue(probNet.getInferenceOptions().getTemporalOptions().getHorizon() == 10);
 			assertTrue(probNet.getInferenceOptions().getTemporalOptions().getTransition().toString()
 					.equals(TransitionTime.HALF.toString()));
 		} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
@@ -106,7 +106,7 @@ public class TemporalOptionsEditTest {
 
 		probNet.getPNESupport().undo();
 
-		assertTrue(probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices() == 50);
+		assertTrue(probNet.getInferenceOptions().getTemporalOptions().getHorizon() == 50);
 		assertTrue(probNet.getInferenceOptions().getTemporalOptions().getTransition().toString()
 				.equals(TransitionTime.END.toString()));
 

@@ -10,10 +10,7 @@ package org.openmarkov.core.model.network;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.inference.TransitionTime;
-import org.openmarkov.core.model.network.potential.CycleLengthShift;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.SameAsPrevious;
-import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
@@ -203,7 +200,20 @@ public class TemporalNetOperations {
 			}
 			newNode.addPotential(newPotential);
 			newPotential.createDirectedLinks(probNet);
-		}
+		} else if (oldNode.getPotentials().isEmpty() && oldNode.getNodeType() == NodeType.DECISION) {
+		    // Create a blueprint potential
+            List<Variable> variables = new ArrayList<>();
+            variables.add(oldNode.getVariable());
+            for (Node parent : oldNode.getParents()) {
+                variables.add(parent.getVariable());
+            }
+            TablePotential blueprint = new TablePotential(variables, PotentialRole.POLICY);
+            blueprint.shift(probNet, timeDifference);
+
+            // Use the blueprint to create the new links
+            blueprint.createDirectedLinks(probNet);
+            System.out.println("End of decision links copied");
+        }
 	}
 
 	private static double getSliceWidth(List<Node> nodes) {

@@ -15,7 +15,7 @@ public class TemporalOptions implements Cloneable {
 
 	public TemporalOptions() {
 		// Number of slices now in the net
-		horizon = 0; // TODO Explain why
+		horizon = 0; // Because a newly created net has 0 slices
 		transition = TransitionTime.BEGINNING;
 	}
 

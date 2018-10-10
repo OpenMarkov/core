@@ -62,7 +62,8 @@ import java.util.List;
 
 	// Methods
 	@Override
-	/** @throws exception <code>Exception</code> */ public void doEdit() throws DoEditException {
+	/** @throws exception <code>Exception</code> */
+	public void doEdit() throws DoEditException {
 		// Remove links first
 		probNet.removeLink(node1, node2, isDirected);
 		if (node2.getNodeType() != NodeType.DECISION) {

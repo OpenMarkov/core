@@ -7,7 +7,10 @@
 
 package org.openmarkov.core.action;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
@@ -25,7 +28,7 @@ import java.util.Set;
 
 /**
  * @author artasom
- * @author iagoparis
+ * @author iagoparis - summer 2018
  * <p>
  * Inverts the arc between two nodes.
  * <p>
@@ -50,6 +53,9 @@ import java.util.Set;
 @SuppressWarnings("serial")
 public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 
+    // Logger
+    protected Logger logger;
+
 	// x (parent) node
 	private final Node x;
 	// y (child) node
@@ -72,14 +78,13 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	 * @param variable1 <code>Variable</code>
 	 * @param variable2 <code>Variable</code>
 	 */
-	//* @param isDirected <code>boolean</code>
-	public InvertLinkAndUpdatePotentialsEdit(ProbNet probNet, Variable variable1, Variable variable2)
-	//boolean isDirected)
-	{
-		// It will always be directed
+	public InvertLinkAndUpdatePotentialsEdit(ProbNet probNet, Variable variable1, Variable variable2) {
+
 		super(probNet, variable1, variable2, true);
 		x = probNet.getNode(variable1);
 		y = probNet.getNode(variable2);
+
+		logger = LogManager.getLogger(InvertLinkAndUpdatePotentialsEdit.class.getName());
 
 	}
 
@@ -146,16 +151,18 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 			try {
 				xyPotentials.add(parentsOldPotential.getCPT());
 			} catch (NonProjectablePotentialException | WrongCriterionException e) {
+			    logger.error("Potential not convertible to table or wrong criterion on the old parent of the inverted link");
 				e.printStackTrace();
 				throw new DoEditException("Parent");
 			}
 		}
 
 		// pot(y) are added to xyPotentials
-		for (Potential childsOldPotential : childsOldPotentials) {
+		for (Potential childOldPotential : childsOldPotentials) {
 			try {
-				xyPotentials.add(childsOldPotential.getCPT());
+				xyPotentials.add(childOldPotential.getCPT());
 			} catch (NonProjectablePotentialException | WrongCriterionException e) {
+			    logger.error("Potential not convertible to table or wrong criterion on the old child of the inverted link");
 				e.printStackTrace();
 				throw new DoEditException("Child");
 			}
@@ -210,8 +217,9 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 			x.setPotentials(parentsOldPotentials);
 			// The potentials of Y are restored to the original ones
 			y.setPotentials(childsOldPotentials);
-		} catch (Exception exc) {
-			exc.printStackTrace();
+		} catch (NodeNotFoundException e) {
+			logger.error("Node not found in link from " + variable1.getName() + " to " + variable2.getName());
+			e.printStackTrace();
 		}
 	}
 
@@ -239,8 +247,9 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
             xNewPotentials.add(yNewPotential);
             y.setPotentials(yNewPotentials);
 
-        } catch (Exception exc) {
-            exc.printStackTrace();
+        } catch (NodeNotFoundException e) {
+            logger.error("Node not found in link from " + variable2.getName() + " to " + variable1.getName());
+            e.printStackTrace();
         }
     }
 
@@ -269,21 +278,16 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	}
 
 	@Override public String getOperationName() {
-		return "Revert arc";
+		return "Invert link and update potentials";
 	}
 
-	/**
-	 * This method assumes that the link is directed, otherwise has no sense.
-	 *
-	 * @return <code>String</code>
-	 */
 	public String toString() {
-		return "Reverse arc: " + variable1 + "-->" + variable2 + " ==> " + variable1 + "<--" + variable2;
+		return "Invert link and update potentials: " + variable1 + "-->" + variable2 + " ==> " + variable1 + "<--" + variable2;
 	}
 
 	@Override public BaseLinkEdit getUndoEdit() {
 		return new InvertLinkAndUpdatePotentialsEdit(getProbNet(), getVariable2(),
-				getVariable1()); //, isDirected () is always true in this case
+				getVariable1());
 	}
 
 }

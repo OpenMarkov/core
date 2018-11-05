@@ -36,7 +36,7 @@ public class BasicOperations {
 	 * The source probNet
 	 */
 	// private static ProbNet sourceProbNet;
-	private static TablePotential getUtilityFunction(Node utilityNode, EvidenceCase evidence) {
+	private static TablePotential getUtilityFunction(Node utilityNode, EvidenceCase evidence) 
 		TablePotential newPotential = null;
 		Hashtable<Node, TablePotential> hashtable = new Hashtable<>();
 		if (!isSuperValueNode(utilityNode)) {

@@ -36,7 +36,7 @@ public class BasicOperations {
 	 * The source probNet
 	 */
 	// private static ProbNet sourceProbNet;
-	private static TablePotential getUtilityFunction(Node utilityNode, EvidenceCase evidence) 
+	private static TablePotential getUtilityFunction(Node utilityNode, EvidenceCase evidence) {
 		TablePotential newPotential = null;
 		Hashtable<Node, TablePotential> hashtable = new Hashtable<>();
 		if (!isSuperValueNode(utilityNode)) {
@@ -44,7 +44,7 @@ public class BasicOperations {
 				newPotential = utilityNode.getPotentials().get(0).tableProject(evidence, null).get(0);
 			} catch (NonProjectablePotentialException | WrongCriterionException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e.printStackTrace()
 			}
 		} else {
 			for (Node node : utilityNode.getParents()) {

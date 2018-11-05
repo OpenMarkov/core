@@ -47,7 +47,7 @@ public class BasicOperations {
 				e.printStackTrace();
 			}
 		} else {
-			for (Node node : utilityNode.getParents()) 
+			for (Node node : utilityNode.getParents()) {
 				hashtable.put(node, getUtilityFunction(node, evidence));
 			}
 			List<TablePotential> potentials = new ArrayList<>(hashtable.values());

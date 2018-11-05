@@ -1,5 +1,7 @@
 package org.openmarkov.core.action;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -15,6 +17,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,12 +25,16 @@ import java.util.Set;
 
 /**
  * This edit makes the net absorb a node, merging all the utility children into one and updating its potential.
- * @author iagoparis
+ * @author iagoparis - summer 2018
  * @version 1.0
  * @since OpenMarkov 0.3
  */
 
 @SuppressWarnings("serial") public class AbsorbNodeEdit extends SimplePNEdit{
+
+    // Logger
+    protected Logger logger;
+
 
     // Both node and variable attributes are created for convenience but one could be extracted from the other
     private Variable absorbedVariable;
@@ -68,6 +75,8 @@ import java.util.Set;
         this.absorbedNode = probNet.getNode(absorbedVariable);
         this.linksDeleted = new ArrayList<>();
         this.newParentLinks = new ArrayList<>();
+
+        this.logger = LogManager.getLogger(AbsorbNodeEdit.class.getName());
     }
 
     @Override
@@ -98,8 +107,9 @@ import java.util.Set;
 
                 } catch (NonProjectablePotentialException | WrongCriterionException e) {
                     e.printStackTrace();
+                    logger.error("Potential not convertible to table or wrong criterion");
                     throw new DoEditException("Potential not convertible to table or wrong criterion");
-                    // TODO Make compatible with the new Exception frame
+
                 }
 
                 /* Obtain parameters to invoke multiplyAndMarginalize */
@@ -141,8 +151,8 @@ import java.util.Set;
                 try {
                     utilityPotential = potential.getCPT();
                 } catch (NonProjectablePotentialException | WrongCriterionException e) {
+                    logger.error("Potential not convertible to table or wrong criterion");
                     throw new DoEditException("Potential not convertible to table or wrong criterion");
-                    // TODO Make compatible with the new Exception frame
                 }
 
                 // Discrete operation is valid because all parents are discrete
@@ -231,9 +241,9 @@ import java.util.Set;
                 utilityChildrenPotentials.add(child.getPotentials().get(0).getCPT());
             }
         } catch (NonProjectablePotentialException | WrongCriterionException e) {
-            e.printStackTrace(); // TODO The message from the previous exception is lost. Test
+            logger.error("Potential not convertible to table or wrong criterion.");
+            e.printStackTrace();
             throw new DoEditException(e.getLocalizedMessage());
-            // TODO Ask about exception handling
         }
 
         TablePotential sumPotential = DiscretePotentialOperations.sum(utilityChildrenPotentials);

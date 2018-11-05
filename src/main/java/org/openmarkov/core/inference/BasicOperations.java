@@ -44,10 +44,10 @@ public class BasicOperations {
 				newPotential = utilityNode.getPotentials().get(0).tableProject(evidence, null).get(0);
 			} catch (NonProjectablePotentialException | WrongCriterionException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace()
+				e.printStackTrace();
 			}
 		} else {
-			for (Node node : utilityNode.getParents()) {
+			for (Node node : utilityNode.getParents()) 
 				hashtable.put(node, getUtilityFunction(node, evidence));
 			}
 			List<TablePotential> potentials = new ArrayList<>(hashtable.values());

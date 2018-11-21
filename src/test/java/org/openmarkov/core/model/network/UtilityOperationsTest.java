@@ -160,7 +160,7 @@ public class UtilityOperationsTest {
 		for (int i = 0; i <= numberOfTotalSubintervals; i++) {
 			int cycleNumber = i / numberOfSubintervalsPerCycle;
 			int subInterval = i % numberOfSubintervalsPerCycle;
-			double x = i / numberOfSubintervalsPerCycle;
+			double x =  ((double) i) / numberOfSubintervalsPerCycle;
 			values[i] = (1.0 / 18.0) * (x + 5) * (x + 1) * (x - 4);
 		}
 		double leftRiemannSum = UtilityOperations.applyLeftRiemannSum(values, numberOfSubintervalsPerCycle);

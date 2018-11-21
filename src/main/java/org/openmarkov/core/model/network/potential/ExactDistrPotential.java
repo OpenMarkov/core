@@ -56,8 +56,7 @@ import java.util.List;
 	@Override public ExactDistrPotential project(EvidenceCase evidenceCase)
 			throws WrongCriterionException, NonProjectablePotentialException {
 		List<TablePotential> projectedPotentials = tablePotential.tableProject(evidenceCase, null);
-		;
-		List<Variable> newVariables = new ArrayList<>();
+        List<Variable> newVariables = new ArrayList<>();
 		newVariables.add(variables.get(0));
 		newVariables.addAll(projectedPotentials.get(0).getVariables());
 		ExactDistrPotential exactDistrPotential = new ExactDistrPotential(newVariables, PotentialRole.UNSPECIFIED);

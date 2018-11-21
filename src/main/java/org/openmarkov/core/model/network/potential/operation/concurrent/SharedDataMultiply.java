@@ -81,7 +81,11 @@ public class SharedDataMultiply {
 		constantFactor = org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations
 				.getConstantFactor(potentials);
 
-		potentials = AuxiliaryOperations.getNonConstantPotentials(potentials);
+		//nonConstantPotentials may be redundant, but since potentials may be modified by other threads,
+		// separating declaration and assignment avoids that other threads mess with "potentials" while this
+		// thread is updating it.
+		List<TablePotential> nonConstantPotentials = AuxiliaryOperations.getNonConstantPotentials(potentials);
+		potentials = nonConstantPotentials;
 
 		numPotentials = potentials.size();
 

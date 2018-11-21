@@ -666,7 +666,7 @@ public class IDFactory extends NetsFactory {
 		Variable varRealizar_Biopsia_Sinovial = new Variable("Realizar Biopsia Sinovial", "no", "si");
 		Variable varTratar_Infeccion_PTR = new Variable("Tratar Infeccion PTR", "no", "si");
 		Variable varEVAC_Implante = new Variable("EVAC Implante");
-		Variable varMolestias_Gammagrafía = new Variable("Molestias Gammagrafía");
+		Variable varMolestias_Gammagrafia = new Variable("Molestias Gammagrafía");
 		Variable varMolestias_Biopsia_Sinovial = new Variable("Molestias Biopsia Sinovial");
 		Variable varEVAC_Total = new Variable("EVAC Total");
 		Variable varCoste_Implante = new Variable("Coste Implante");
@@ -696,7 +696,7 @@ public class IDFactory extends NetsFactory {
 		Node nodeRealizar_Biopsia_Sinovial = probNet.addNode(varRealizar_Biopsia_Sinovial, NodeType.DECISION);
 		Node nodeTratar_Infeccion_PTR = probNet.addNode(varTratar_Infeccion_PTR, NodeType.DECISION);
 		Node nodeEVAC_Implante = probNet.addNode(varEVAC_Implante, NodeType.UTILITY);
-		Node nodeMolestias_Gammagrafía = probNet.addNode(varMolestias_Gammagrafía, NodeType.UTILITY);
+		Node nodeMolestias_Gammagrafia = probNet.addNode(varMolestias_Gammagrafia, NodeType.UTILITY);
 		Node nodeMolestias_Biopsia_Sinovial = probNet.addNode(varMolestias_Biopsia_Sinovial, NodeType.UTILITY);
 		Node nodeEVAC_Total = probNet.addNode(varEVAC_Total, NodeType.UTILITY);
 		Node nodeCoste_Implante = probNet.addNode(varCoste_Implante, NodeType.UTILITY);
@@ -740,14 +740,14 @@ public class IDFactory extends NetsFactory {
 		probNet.addLink(nodeRealizar_Implante, nodeIsquemia, true);
 		probNet.addLink(nodeRealizar_Gammagrafias, nodeCoste_Gammagrafia, true);
 		probNet.addLink(nodeRealizar_Gammagrafias, nodeGa67_Tc99, true);
-		probNet.addLink(nodeRealizar_Gammagrafias, nodeMolestias_Gammagrafía, true);
+		probNet.addLink(nodeRealizar_Gammagrafias, nodeMolestias_Gammagrafia, true);
 		probNet.addLink(nodeRealizar_Biopsia_Sinovial, nodeCortes_Congelados, true);
 		probNet.addLink(nodeRealizar_Biopsia_Sinovial, nodeCoste_Biopsia_Sinovial, true);
 		probNet.addLink(nodeRealizar_Biopsia_Sinovial, nodeMolestias_Biopsia_Sinovial, true);
 		probNet.addLink(nodeTratar_Infeccion_PTR, nodeCoste_Tratamiento, true);
 		probNet.addLink(nodeTratar_Infeccion_PTR, nodeMejora_Tratamiento, true);
 		probNet.addLink(nodeEVAC_Implante, nodeEVAC_Total, true);
-		probNet.addLink(nodeMolestias_Gammagrafía, nodeEVAC_Total, true);
+		probNet.addLink(nodeMolestias_Gammagrafia, nodeEVAC_Total, true);
 		probNet.addLink(nodeMolestias_Biopsia_Sinovial, nodeEVAC_Total, true);
 		probNet.addLink(nodeEVAC_Total, nodeBeneficio_neto, true);
 		probNet.addLink(nodeCoste_Implante, nodeCoste_total, true);
@@ -834,10 +834,10 @@ public class IDFactory extends NetsFactory {
 		potEVAC_Implante.getTablePotential().values = new double[] { 0, 4.64 };
 		nodeEVAC_Implante.setPotential(potEVAC_Implante);
 
-		ExactDistrPotential potMolestias_Gammagrafía = new ExactDistrPotential(
-				Arrays.asList(varMolestias_Gammagrafía, varRealizar_Gammagrafias));
-		potMolestias_Gammagrafía.getTablePotential().values = new double[] { 0, 0 };
-		nodeMolestias_Gammagrafía.setPotential(potMolestias_Gammagrafía);
+		ExactDistrPotential potMolestias_Gammagrafia = new ExactDistrPotential(
+				Arrays.asList(varMolestias_Gammagrafia, varRealizar_Gammagrafias));
+		potMolestias_Gammagrafia.getTablePotential().values = new double[] { 0, 0 };
+		nodeMolestias_Gammagrafia.setPotential(potMolestias_Gammagrafia);
 
 		ExactDistrPotential potMolestias_Biopsia_Sinovial = new ExactDistrPotential(
 				Arrays.asList(varMolestias_Biopsia_Sinovial, varRealizar_Biopsia_Sinovial));
@@ -845,7 +845,7 @@ public class IDFactory extends NetsFactory {
 		nodeMolestias_Biopsia_Sinovial.setPotential(potMolestias_Biopsia_Sinovial);
 
 		SumPotential potEVAC_Total = new SumPotential(
-				Arrays.asList(varEVAC_Total, varEVAC_Implante, varMolestias_Gammagrafía, varMolestias_Biopsia_Sinovial,
+				Arrays.asList(varEVAC_Total, varEVAC_Implante, varMolestias_Gammagrafia, varMolestias_Biopsia_Sinovial,
 						varMejora_Tratamiento), PotentialRole.CONDITIONAL_PROBABILITY);
 		nodeEVAC_Total.setPotential(potEVAC_Total);
 

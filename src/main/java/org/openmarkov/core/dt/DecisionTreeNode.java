@@ -9,6 +9,7 @@ package org.openmarkov.core.dt;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 
@@ -22,12 +23,24 @@ public class DecisionTreeNode implements DecisionTreeElement {
 	private NodeType nodeType = null;
 	private List<DecisionTreeElement> children = null;
 	private DecisionTreeElement parent = null;
+	private ProbNet network;
 
+	
 	public DecisionTreeNode(Node node) {
 		this.variable = node.getVariable();
 		this.nodeType = node.getNodeType();
 		List<Potential> potentials = node.getPotentials();
 		children = new ArrayList<>();
+	}
+	
+	
+	public DecisionTreeNode(Node node, ProbNet network) {
+		this(node);
+		this.network = network;
+	}
+
+	public DecisionTreeNode(Variable variable, ProbNet probNet) {
+		this(probNet.getNode(variable), probNet);
 	}
 
 	/**
@@ -52,57 +65,8 @@ public class DecisionTreeNode implements DecisionTreeElement {
 		return children;
 	}
 
-	public double getUtility() {//TODO Manolo> I'm testing that utility is not calculated in the GUI, but it is taken from the evaluation
-     /*   if(utility == Double.NEGATIVE_INFINITY)
-        {
-            utility = 0;
-            if (nodeType == NodeType.DECISION)
-            {
-                double maxUtility = Double.NEGATIVE_INFINITY;
-                for (DecisionTreeElement branch : children)
-                {
-                    double branchUtility = branch.getUtility ();
-                    if (branchUtility > maxUtility)
-                    {
-                        maxUtility = branchUtility;
-                    }
-                }
-                utility = maxUtility;
-            }
-            else if (nodeType == NodeType.CHANCE)
-            {
-                double sumUtility = 0;
-                for (DecisionTreeElement child : children)
-                {
-                    sumUtility += child.getUtility ();
-                }
-                utility = sumUtility;
-            }else if (nodeType == NodeType.UTILITY)
-            {
-                if(potential instanceof SumPotential)
-                {
-                    double sumUtility = 0;
-                    for (DecisionTreeElement child : children)
-                    {
-                        sumUtility += child.getUtility ();
-                    }
-                    utility = sumUtility;
-                }else if(potential instanceof ProductPotential)
-                {
-                    double productUtility = 1;
-                    for (DecisionTreeElement child : children)
-                    {
-                        productUtility *= child.getUtility ();
-                    }
-                    utility = productUtility;
-
-                }else if(potential instanceof TablePotential)
-                {
-                    utility = ((TablePotential)potential).getValue (getBranchStates());
-                }
-            }
-        }*/
-		return utility;
+	public double getUtility() {
+ 		return utility;
 	}
 
 	public void setUtility(double utility) {
@@ -126,21 +90,6 @@ public class DecisionTreeNode implements DecisionTreeElement {
 	}
 
 	public double getScenarioProbability() {
-		//TODO Manolo> I'm testing that utility is not calculated in the GUI, but it is taken from the evaluation
-       /* if(scenarioProbability == Double.NEGATIVE_INFINITY)
-        {
-        	scenarioProbability = 0;
-        	if(nodeType == NodeType.CHANCE)
-        	{
-    	    	for(DecisionTreeElement child : children)
-    	    	{
-    	    		scenarioProbability +=child.getScenarioProbability();
-    	    	}
-        	}else if(nodeType == NodeType.DECISION)
-        	{
-        		scenarioProbability = children.get(0).getScenarioProbability();
-        	}
-        }*/
 		return scenarioProbability;
 	}
 
@@ -165,5 +114,21 @@ public class DecisionTreeNode implements DecisionTreeElement {
 	@Override public void setParent(DecisionTreeElement parent) {
 		this.parent = parent;
 	}
+	
+	public ProbNet getNetwork() {
+		return network;
+	}
+	
+	public void copy(DecisionTreeNode node) {
+		utility = node.utility;
+		scenarioProbability = node.scenarioProbability;
+		variable = node.variable;
+		nodeType = node.nodeType;
+		children = node.children;
+		parent = node.parent;
+		network = node.network;
+	}
+
+
 
 }

@@ -38,6 +38,7 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 	public DecisionTreeBranch(ProbNet probNet) {
 		this(probNet, null, null);
 	}
+	
 
 	public List<DecisionTreeElement> getChildren() {
 		List<DecisionTreeElement> children = new LinkedList<>();
@@ -46,15 +47,6 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 	}
 
 	public double getUtility() {
-		//TODO Manolo> I'm testing that utility is not calculated in the GUI, but it is taken from the evaluation
-        /*if(utility == Double.NEGATIVE_INFINITY)
-        {
-            utility = (child != null)? child.getUtility () : 0;
-            if(parent != null && ((DecisionTreeNode)parent).getNodeType () == NodeType.CHANCE)
-            {
-                utility *= getBranchProbability ();
-            }
-        }*/
 		return utility;
 	}
 
@@ -100,7 +92,8 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 	}
 
 	public double getScenarioProbability() {
-		if (scenarioProbability == Double.NEGATIVE_INFINITY) {
+		//TODO Manolo> I'm testing if everything is calculated correctly by inference modules
+		/*if (scenarioProbability == Double.NEGATIVE_INFINITY) {
 			scenarioProbability = 1;
 			if (child.getNodeType() == NodeType.UTILITY) {
 				EvidenceCase evidenceCase = getBranchStates();
@@ -114,7 +107,7 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 			} else {
 				scenarioProbability = child.getScenarioProbability();
 			}
-		}
+		}*/
 		return scenarioProbability;
 	}
 

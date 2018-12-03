@@ -370,7 +370,7 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
 		return revealed;
 	}
 
-	private static Stack<Variable> getSequenceOfDecisions(ProbNet idCopy) {
+	public static Stack<Variable> getSequenceOfDecisions(ProbNet idCopy) {
 		int numDecisions = idCopy.getNumNodes(NodeType.DECISION);
 		Stack<Variable> decisions = new Stack<>();
 		do {
@@ -642,4 +642,5 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
 		}
 		return partialOrder;
 	}
+
 }

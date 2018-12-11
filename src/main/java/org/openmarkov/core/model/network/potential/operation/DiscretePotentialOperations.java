@@ -1105,7 +1105,7 @@ public final class DiscretePotentialOperations {
 		if (p == tablePotential.values.length) {
 			// All elements in tablePotential.table == 0
 			throw new NormalizeNullVectorException(
-					"NormalizeNullVectorException: " + "All elements in the TablePotential " + tablePotential
+					"NormalizeNullVectorException: All elements in the TablePotential " + tablePotential
 							.getVariables() + " table are equal to 0.0");
 		}
 		List<Variable> variables = tablePotential.getVariables();

@@ -8,6 +8,7 @@
 package org.openmarkov.core.inference;
 
 import org.openmarkov.core.action.PNESupport;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.inference.tasks.Task;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -180,7 +181,7 @@ public abstract class InferenceAlgorithm implements Task {
 	/**
 	 * @param preResolutionEvidence The pre-resolution evidence to set
 	 */
-	public void setPreResolutionEvidence(EvidenceCase preResolutionEvidence) {
+	public void setPreResolutionEvidence(EvidenceCase preResolutionEvidence) throws IncompatibleEvidenceException {
 		if (preResolutionEvidence != null) {
 			this.preResolutionEvidence = new EvidenceCase(preResolutionEvidence);
 		}

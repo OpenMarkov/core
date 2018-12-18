@@ -109,8 +109,16 @@ public class NodeStateEdit extends SimplePNEdit {
 		this.newName = newName;
 		this.indexState = stateIndex;
 		Variable variable = node.getVariable();
-		this.selectedStateIndex = variable.getNumStates() - (stateIndex + 1);
+        int numStates=variable.getNumStates();
+
+        //When adding a new state selectedStateIndex is not used
+        this.selectedStateIndex =0;
+        if  (stateAction != StateAction.ADD) {
+            this.selectedStateIndex = variable.getNumStates() - (stateIndex + 1);
+        }
+
 		State[] states = variable.getStates();
+		// For RENAME, MOVE and and DELETE
 		State selectedState = states[selectedStateIndex];
 		this.newState = (stateAction != StateAction.RENAME) ? new State(newName)
 				: selectedState;

@@ -399,6 +399,27 @@ public class TreeADDPotential extends Potential {
 		return Arrays.asList(projected);
 	}
 
+	/**
+	 * Eliminates the nodes whose variable name is equal to the parameter 'variableName'
+	 * and grafts the daughter branches of that node in the parent node..
+	 * @param variableName
+	 */
+	public void graftNode(String variableName) {
+		List<TreeADDBranch> branchesToAdd = new ArrayList<>();
+		List<TreeADDBranch> branchesToRemove = new ArrayList<>();
+		for (TreeADDBranch branch : branches) {
+			Potential potential = branch.getPotential();
+			if (TreeADDPotential.class.isAssignableFrom(potential.getClass()) &&
+					((TreeADDPotential)potential).getRootVariable().getName().toUpperCase().matches(variableName.toUpperCase())) {
+				branchesToRemove.add(branch); // This branch contains the variable whose name is 'variableName' and will be removed.
+				((TreeADDPotential)potential).graftNode(variableName); // Recursive part.
+				branchesToAdd.addAll(((TreeADDPotential) potential).getBranches()); // Children of the node that will be removed
+			}
+		}
+		branches.removeAll(branchesToRemove);
+		branches.addAll(branchesToAdd);
+	}
+
 	@Override public void shift(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
 		super.shift(probNet, timeDifference);
 		List<Variable> copiedTreeVariables = new ArrayList<>();

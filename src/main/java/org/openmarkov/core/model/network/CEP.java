@@ -1,5 +1,5 @@
 /*
- * Copyright (c) CISIAD, UNED, Spain,  2018. Licensed under the GPLv3 licence
+ * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
  * Unless required by applicable law or agreed to in writing,
  * this code is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OF ANY KIND.
@@ -12,6 +12,7 @@ import org.openmarkov.core.model.network.potential.StrategyTree;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -471,4 +472,14 @@ public class CEP {
 		return getEffectiveness(lambda) * lambda - getCost(lambda);
 	}
 
+	public boolean equals(CEP cep) {
+		if (cep != null) {
+			boolean areEquals = true;
+			areEquals = Arrays.equals(this.thresholds, cep.thresholds) && Arrays.equals(this.costs, cep.costs) && Arrays
+					.equals(this.effectivities, cep.effectivities);
+			return areEquals;
+		} else {
+			return false;
+		}
+	}
 }

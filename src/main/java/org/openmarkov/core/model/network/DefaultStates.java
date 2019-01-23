@@ -1,5 +1,5 @@
 /*
- * Copyright (c) CISIAD, UNED, Spain,  2018. Licensed under the GPLv3 licence
+ * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
  * Unless required by applicable law or agreed to in writing,
  * this code is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OF ANY KIND.
@@ -124,7 +124,7 @@ public class DefaultStates {
 	/**
 	 * Returns the default states that correspond to a type of node. A default
 	 * set of states is given for the chance nodes. A prefixed set of states
-	 * (yes, no) corresponds to the decision nodes. Utility and Event nodes haven't states.
+	 * (yes, no) corresponds to the decision nodes. Utility nodes hasn't states.
 	 *
 	 * @param type                 type of the node.
 	 * @param networkDefaultStates default set of states.
@@ -153,19 +153,11 @@ public class DefaultStates {
 			}
 			return states;
 		}
-// Behaviour moved to default:
-//		case UTILITY: {
-//			return new State[] { new State("Default") };
-//		}
-
-
-		default: {
-		// Formerly set to null. Changed to State Default due there are more than one node type without default states
-		// to and this method is only
-		// used in	NodeEditionMode.mousePressed(MouseEvent, Double, Graphics2D)
-		// where null raises a NullPointerException
-//			return null;
+		case UTILITY: {
 			return new State[] { new State("Default") };
+		}
+		default: {
+			return null;
 		}
 		}
 	}

@@ -153,11 +153,12 @@ public class DefaultStates {
 			}
 			return states;
 		}
-		case UTILITY: {
-			return new State[] { new State("Default") };
-		}
+
+//		case UTILITY: {
+//			return new State[] { new State("Default") };
+//		}
 		default: {
-			return null;
+			return new State[] { new State("Default") };
 		}
 		}
 	}

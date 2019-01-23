@@ -368,6 +368,12 @@ public class Util {
 			name = getNextDecisionNodeName(existingNames);
 			break;
 		}
+// Event naming added
+		case EVENT: {
+				name = getNextEventNodeName(existingNames);
+				break;
+		}
+
 		case UTILITY: {
 			name = getNextUtilityNodeName(existingNames);
 			break;
@@ -404,7 +410,8 @@ public class Util {
 					found = true;
 				} else {
 					letter++;
-					if ((letter == 'D') || (letter == 'U')) {
+//Events added
+					if ((letter == 'D') || (letter == 'U') || (letter == 'E')) {
 						letter++;
 					}
 				}
@@ -413,6 +420,7 @@ public class Util {
 		}
 		return name;
 	}
+
 
 	/**
 	 * This method returns the name of the next decision node. If exists the
@@ -425,6 +433,21 @@ public class Util {
 	private static String getNextDecisionNodeName(HashSet<String> existingNames) {
 
 		return getNextNodeWithLetter(existingNames, 'D');
+	}
+
+
+
+	/**
+	 * This method returns the name of the next event node. If exists the
+	 * node 'E', then checks if exists the node 'E1'. If this node exists, the
+	 * checks the node 'E2', and so on.
+	 *
+	 * @param existingNames names of the nodes that exist.
+	 * @return the name of the next decision node.
+	 */
+	private static String getNextEventNodeName(HashSet<String> existingNames) {
+
+		return getNextNodeWithLetter(existingNames, 'E');
 	}
 
 	/**

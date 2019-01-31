@@ -15,6 +15,7 @@ import java.util.ArrayList;
  *
  * @author jmendoza
  * @version 1.1 jlgozalo - fix javadoc and initial values for fields
+ * @version  1.2 cyago - 31/01/2019 - added event nodes
  */
 public class DefaultStates {
 
@@ -57,6 +58,12 @@ public class DefaultStates {
 			defaultStates.add("medium");
 			defaultStates.add("high");
 			list.add(defaultStates);
+			//For event nodes
+			defaultStates = new ArrayList<>();
+			defaultStates.add("not happened");
+			defaultStates.add("happened");
+			list.add(defaultStates);
+
 			//defaultStates = new ArrayList<String>();
 			//defaultStates.add("nonamed");
 			//list.add(defaultStates);
@@ -125,6 +132,7 @@ public class DefaultStates {
 	 * Returns the default states that correspond to a type of node. A default
 	 * set of states is given for the chance nodes. A prefixed set of states
 	 * (yes, no) corresponds to the decision nodes. Utility nodes hasn't states.
+	 * Null is returned When the node type has not a state by default .
 	 *
 	 * @param type                 type of the node.
 	 * @param networkDefaultStates default set of states.
@@ -154,11 +162,27 @@ public class DefaultStates {
 			return states;
 		}
 
-//		case UTILITY: {
-//			return new State[] { new State("Default") };
-//		}
-		default: {
+		case UTILITY: {
 			return new State[] { new State("Default") };
+		}
+		case EVENT: {
+				//Made as DECISION nodes. I would change the way to put/recover elements in list
+				// to prevent errors in case more states were added
+				elements = list.get(5);
+				String[] statesAux = elements.toArray(new String[elements.size()]);
+				State[] states = new State[elements.size()];
+				int i = 0;
+				for (String stateSingle : statesAux) {
+					states[i] = new State(stateSingle);
+					i++;
+
+				}
+				return states;
+			}
+
+
+		default: {
+			return null;
 		}
 		}
 	}

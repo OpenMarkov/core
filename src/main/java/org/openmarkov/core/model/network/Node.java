@@ -32,6 +32,7 @@ import java.util.Map;
  * @author marias
  * @author fjdiez
  * @version 1.0
+ * @version 1.1 - cyago - 24/01/2019 - added event nodes
  * @see Node
  * @see org.openmarkov.core.model.network.ProbNet
  * @since OpenMarkov 1.0
@@ -102,7 +103,7 @@ public class Node {
 	public Node(ProbNet probNet, Variable variable, NodeType nodeType) {
 		this.probNet = probNet;
 		this.variable = variable;
-		if (nodeType == NodeType.UTILITY) {
+		if ( (nodeType == NodeType.UTILITY)) {
 			this.variable.setVariableType(VariableType.NUMERIC);
 		}
 		this.nodeType = nodeType;
@@ -321,6 +322,9 @@ public class Node {
 		case DECISION:
 			out.append("Decision");
 			break;
+		case EVENT:
+				out.append("Event");
+				break;
 		case UTILITY:
 			out.append("Utility");
 			break;

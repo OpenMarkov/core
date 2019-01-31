@@ -21,9 +21,13 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 	// Constructor
 	private DESNetworkType() {
 		super();
-		overrideConstraintBehavior(NoLinkRestriction.class, ConstraintBehavior.NO);
+		overrideConstraintBehavior(OnlyAtemporalVariables.class, ConstraintBehavior.NO);
+		overrideConstraintBehavior(OnlyTemporalVariables.class, ConstraintBehavior.NO);
 		overrideConstraintBehavior(NoCycle.class, ConstraintBehavior.NO);
 		overrideConstraintBehavior(NoEventNodes.class, ConstraintBehavior.NO);
+		overrideConstraintBehavior(NoBackwardLink.class, ConstraintBehavior.NO);
+		overrideConstraintBehavior(NoLoops.class, ConstraintBehavior.NO);
+
 
 	}
 

@@ -17,6 +17,7 @@ import java.io.Serializable;
  * <li>UTILITY
  * <li>SV_SUM
  * <li>SV_PRODUCT
+ * <li>EVENT
  * <li>COST
  * <li>EFFECTIVENESS
  * <li>CE (Cost-Effectiveness)
@@ -24,6 +25,7 @@ import java.io.Serializable;
  *
  * @author manuel
  * @author fjdiez
+ * @version 1.1 - cyago -Added event nodes
  */
 public enum NodeType implements Serializable {
 	CHANCE(0, "chance"), DECISION(1, "decision"), UTILITY(2, "utility"), SV_SUM(3, "svSum"), SV_PRODUCT(4, "svProduct"),

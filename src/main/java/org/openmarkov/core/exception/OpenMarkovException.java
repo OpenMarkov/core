@@ -34,6 +34,13 @@ public class OpenMarkovException extends Exception {
 
 	public OpenMarkovException(String message, Throwable cause) {
 		super(message, cause);
+		this.token = message;
+	}
+
+	public OpenMarkovException(String message, Throwable cause, String... attributes) {
+		super(message, cause);
+		this.token = message;
+		this.attributes = attributes;
 	}
 
 

@@ -24,15 +24,17 @@ public class UtilityOperations {
 		for (Node utilityNode : probNet.getNodes(NodeType.UTILITY)) {
 			Criterion decisionCriterion = utilityNode.getVariable().getDecisionCriterion();
 			if (decisionCriterion != null) {
-				// Get the actual criterion scale
 				double scale = decisionCriterion.getUnicriteriaScale();
+				// Get the actual criterion scale
 				List<Potential> utilityPotentials = utilityNode.getPotentials();
 
-				if (!utilityPotentials.isEmpty() && scale != 0) {
-					// Transform the potential with the scale
-					Potential potential = utilityPotentials.get(0).deepCopy(probNet);
-					potential.scalePotential(scale);
-					utilityNode.setPotential(potential);
+				if (!utilityPotentials.isEmpty()) {
+					for (Potential potential : utilityPotentials) {
+						if (scale != 0.0 && scale != 1.0) {
+							Potential scaledPotential = potential.deepCopy(probNet);
+							scaledPotential.scalePotential(scale);
+						}
+					}
 				} else {
 					// TODO - Check if we must remove the potential and node
 					// Remove the potential and the node

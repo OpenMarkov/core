@@ -27,6 +27,7 @@ import java.util.List;
  * @version 1.0
  * @see org.openmarkov.core.model.network.Node
  * @see org.openmarkov.core.model.network.ProbNet
+ * @version 1.1 - cyago - 12/02/2019  - added type "event"
  */
 public class Variable implements Cloneable, Comparable<Variable> {
 
@@ -421,6 +422,9 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		case DISCRETIZED:
 			setPartitionedInterval(
 					new PartitionedInterval(getDefaultInterval(getNumStates()), getDefaultBelongs(getNumStates())));
+			break;
+		case EVENT:
+//TODO
 			break;
 		default:
 			break;

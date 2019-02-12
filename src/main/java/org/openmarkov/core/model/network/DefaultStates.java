@@ -162,23 +162,11 @@ public class DefaultStates {
 			return states;
 		}
 
-		case UTILITY: {
+		case UTILITY:
+		case EVENT:
+		{
 			return new State[] { new State("Default") };
 		}
-		case EVENT: {
-				//Made as DECISION nodes. I would change the way to put/recover elements in list
-				// to prevent errors in case more states were added
-				elements = list.get(5);
-				String[] statesAux = elements.toArray(new String[elements.size()]);
-				State[] states = new State[elements.size()];
-				int i = 0;
-				for (String stateSingle : statesAux) {
-					states[i] = new State(stateSingle);
-					i++;
-
-				}
-				return states;
-			}
 
 
 		default: {

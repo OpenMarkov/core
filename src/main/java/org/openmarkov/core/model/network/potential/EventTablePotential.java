@@ -1,42 +1,218 @@
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.InferenceOptions;
+import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
+import java.util.ArrayList;
 import java.util.List;
 
-//@PotentialType(name = "EventTable")
-public class EventTablePotential extends TablePotential {
+@PotentialType(name = "EventTable")
+public class EventTablePotential extends Potential {
 
+    private Node node;
+    private TablePotential tablePotential;
 
-    public EventTablePotential(List<Variable> variables, PotentialRole role) {
+    private Variable eventAsStates;
+
+    public EventTablePotential(Node node, List<Variable> variables, PotentialRole role) {
         super(variables, role);
+        this.node = node;
+        setEventAsStates(node);
+        ArrayList<Variable> eventTableVariables=new ArrayList<>();
+        eventTableVariables.add(eventAsStates);
+        eventTableVariables.addAll(variables);
+        tablePotential = new TablePotential(eventTableVariables,role);
     }
 
+//    public EventTablePotential(List<Variable> variables, PotentialRole role, double[] table) {
+//        this(variables, role);
+//        this.tablePotential.setValues(table);
+//    }
+
+    //TODO
+    public EventTablePotential(EventTablePotential potential) {
+        super(potential);
+        this.tablePotential = new TablePotential(potential.getTablePotential());
+    }
+
+
+
     /**
-     * Returns if certain Potential type makes sense given the
+     * Returns true  if certain Potential type makes sense given the
      * variables and the potential role.
-     * In this case the potential makes sense when at least one of the parents is an Event and the rest are
-     *  FINITE_STATES or DISCRETIZED
+     * This potential makes sense when at least one of the parents
+     * is an event and no event parents have Finite States or Discretized variables
      *
-     * @param node      . <code>Node</code>
+     * @param node      . <code>Node</code> where the potential is set
      * @param variables . <code>List</code> of <code>Variable</code>.
      * @param role      . <code>PotentialRole</code>.
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+
         boolean eventSuitable = false;
-        boolean finiteSuitable = true;
-        int i = 0;
-        while (finiteSuitable && i < variables.size()) {
-            eventSuitable |= node.getNodeType() == NodeType.EVENT;
-            finiteSuitable &= variables.get(i).getVariableType() == VariableType.FINITE_STATES
-                    || variables.get(i).getVariableType() == VariableType.DISCRETIZED;
-            ++i;
+        boolean variableSuitable= true;
+        //I'm supposing variable(0) always contains the node variable.
+        for (Variable variable:variables.subList(1,variables.size())) {
+            boolean isEvent= node.getProbNet().getNode(variable).getNodeType() == NodeType.EVENT;
+            if (isEvent) {
+                eventSuitable= true;
+            } else {
+                variableSuitable &= variable.getVariableType() == VariableType.FINITE_STATES
+                        || variable.getVariableType() == VariableType.DISCRETIZED;
+            }
         }
-        return (finiteSuitable && eventSuitable);
+        return (variableSuitable && eventSuitable);
     }
 
+
+    public Variable getEventAsStates() {
+        return eventAsStates;
+    }
+
+    public void setEventAsStates(Variable eventAsStates) {
+        this.eventAsStates = eventAsStates;
+    }
+
+    /**
+     * Extract the event parents and fill the states of eventAsStates with its names. For example,
+     * if node A has as parents events E1, E2 and E3 eventAsStates will be a Finite-States variable with
+     * three states: E1, E2, E3
+     * @param node - the node where the potential is assigned
+     */
+    public void setEventAsStates(Node node) {
+        List<Node> parents = node.getParents();
+        ArrayList<State> states = new ArrayList<>();
+        int i=0;
+        for (Node parent:parents) {
+            if (parent.getNodeType()==NodeType.EVENT) {
+                states.add(new State(parent.getName()));
+            }
+        }
+
+        eventAsStates = new Variable("Events",states.toArray(new State[0]));
+    }
+
+
+
+
+    //TODO
+    @Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
+            throws NonProjectablePotentialException, WrongCriterionException {
+        throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
+    }
+
+    //TODO
+    @Override public EventTablePotential project(EvidenceCase evidenceCase)
+            throws WrongCriterionException, NonProjectablePotentialException {
+        throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
+    }
+
+    //TODO
+    @Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+                                                       List<TablePotential> alreadyProjectedPotentials)
+            throws NonProjectablePotentialException, WrongCriterionException {
+        // get the projected TablePotential, which will be returned inside a list
+        throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
+    }
+
+    //TODO
+    @Override public Potential copy() {
+        return new EventTablePotential(this);
+    }
+
+    //TODO
+    @Override public boolean isUncertain() {
+        return false;
+    }
+
+    //TODO
+    @Override public void scalePotential(double scale) {
+        this.tablePotential.scalePotential(scale);
+    }
+
+    public TablePotential getTablePotential() {
+        return tablePotential;
+    }
+
+    public void setTablePotential(TablePotential tablePotential) {
+        this.tablePotential = tablePotential;
+    }
+
+    public Variable getChildVariable() {
+        return this.getVariable(0);
+    }
+
+    public void setChildVariable(Variable childVariable) {
+        this.getVariables().set(0, childVariable);
+    }
+
+    public UncertainValue[] getUncertainValues() {
+        return tablePotential.getUncertainValues();
+    }
+
+    public void setUncertainValues(UncertainValue[] uncertainValues) {
+        tablePotential.setUncertainValues(uncertainValues);
+    }
+
+    public double[] getValues() {
+        return tablePotential.getValues();
+    }
+
+    public void setValues(double[] values) {
+        this.tablePotential.values = values;
+    }
+
+    @Override public List<Variable> getVariables() {
+        return variables;
+    }
+
+    //TODO
+    @Override public void setVariables(List<Variable> variables) {
+        super.setVariables(variables);
+        this.tablePotential.setVariables(variables.subList(1, variables.size()));
+    }
+    //TODO
+    @Override public void setComment(String comment) {
+        super.setComment(comment);
+        this.tablePotential.setComment(comment);
+    }
+
+    //TODO
+    @Override public String toString() {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append(variables.get(0).getName());
+        if (variables.size() == 1) {
+            buffer.append(" = ");
+        } else if (variables.size() > 1) {
+            buffer.append(" | ");
+            // Print variables
+            for (int i = 1; i < variables.size() - 1; i++) {
+                buffer.append(variables.get(i));
+                buffer.append(", ");
+            }
+            buffer.append(variables.get(variables.size() - 1));
+            buffer.append(" = ");
+        }
+
+        if (tablePotential.values.length == 1) {
+            buffer.append(tablePotential.values[0]);
+        } else if (tablePotential.values.length > 1) {
+            buffer.append("{");
+            for (int i = 0; i < tablePotential.values.length; i++) {
+                buffer.append(tablePotential.values[i]);
+                if (i != tablePotential.values.length - 1) {
+                    buffer.append(",");
+                }
+            }
+            buffer.append("}");
+        }
+        buffer.append("\n Role: " + this.getPotentialRole());
+        buffer.append("\n Criterion: " + ((criterion == null) ? "null" : criterion.toString()));
+        return buffer.toString();
+    }
 }
+

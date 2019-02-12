@@ -704,7 +704,7 @@ public class StrategyTree extends TreeADDPotential {
 			if (node != null) {
 				switch (node.getNodeType()) {
 				case DECISION:
-					string = "decision";
+					string = "box";
 					break;
 				case CHANCE:
 					string = "ellipse";
@@ -713,10 +713,10 @@ public class StrategyTree extends TreeADDPotential {
 					break;
 				}
 			} else {
-				string = "decision";
+				string = "box";
 			}
 		} else {
-			string = "decision";
+			string = "box";
 		}
 
 		return string;

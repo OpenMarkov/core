@@ -401,23 +401,26 @@ public class TreeADDPotential extends Potential {
 
 	/**
 	 * Eliminates the nodes whose variable name is equal to the parameter 'variableName'
-	 * and grafts the daughter branches of that node in the parent node..
+	 * and grafts the daughter branches of that node in the parent node.
+	 * The variable must have only one child.
 	 * @param variableName
 	 */
-	public void graftNode(String variableName) {
-		List<TreeADDBranch> branchesToAdd = new ArrayList<>();
-		List<TreeADDBranch> branchesToRemove = new ArrayList<>();
+	public void pruneAndGraftNode(String variableName) {
 		for (TreeADDBranch branch : branches) {
 			Potential potential = branch.getPotential();
-			if (TreeADDPotential.class.isAssignableFrom(potential.getClass()) &&
-					((TreeADDPotential)potential).getRootVariable().getName().toUpperCase().matches(variableName.toUpperCase())) {
-				branchesToRemove.add(branch); // This branch contains the variable whose name is 'variableName' and will be removed.
-				((TreeADDPotential)potential).graftNode(variableName); // Recursive part.
-				branchesToAdd.addAll(((TreeADDPotential) potential).getBranches()); // Children of the node that will be removed
+			if (potential != null && TreeADDPotential.class.isAssignableFrom(potential.getClass())) {
+				TreeADDPotential treeADDPotential = (TreeADDPotential)potential;
+				String variableNamePotential = treeADDPotential.getRootVariable().getName().toUpperCase();
+				if (variableNamePotential.matches(variableName.toUpperCase())) {
+					List<TreeADDBranch> potentialBranches = treeADDPotential.getBranches();
+					if (potentialBranches != null && potentialBranches.size() > 0) {
+						TreeADDPotential newPotential = (TreeADDPotential)potentialBranches.get(0).getPotential();
+						branch.setPotential(newPotential);
+					}
+				}
+				treeADDPotential.pruneAndGraftNode(variableName);
 			}
 		}
-		branches.removeAll(branchesToRemove);
-		branches.addAll(branchesToAdd);
 	}
 
 	@Override public void shift(ProbNet probNet, int timeDifference) throws NodeNotFoundException {

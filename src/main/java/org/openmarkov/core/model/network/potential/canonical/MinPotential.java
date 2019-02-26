@@ -66,7 +66,8 @@ import java.util.List;
 
 	@Override
 	/** @returns A <code>TablePotential</code> with two variables: 
-	 *  <code>conditionedVariable</code> and <code>pseudoVariable</code>. */ public TablePotential getDeltaPotential() {
+	 *  <code>conditionedVariable</code> and <code>pseudoVariable</code>. */
+	public TablePotential getDeltaPotential() {
 		Variable conditionedVariable = variables.get(0);
 		ArrayList<Variable> deltaVariables = new ArrayList<>();
 		deltaVariables.add(pseudoVariable);
@@ -100,7 +101,8 @@ import java.util.List;
 	 *  the subPotential is P(y|x) then the accrued potential is P(Y>=y|x).
 	 * @reference Efficient computation for the Noisy MAX
 	 * @argCondition subPotential is a probability table of one variable
-	 *  or a probability table of one variable given another variable. */ protected TablePotential getAccruedPotential(
+	 *  or a probability table of one variable given another variable. */
+	protected TablePotential getAccruedPotential(
 			TablePotential subPotential) {
 		// TODO Revisar este metodo para el caso de un potential proyectado
 		List<Variable> subPotentialVariables = subPotential.getVariables();

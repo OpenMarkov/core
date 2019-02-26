@@ -107,7 +107,8 @@ import java.util.Random;
 	 * In all cases, the argument <code>evidenceCase</code> is irrelevant.
 	 * @param evidenceCase. <code>evidenceCase</code>
 	 * @throws NonProjectablePotentialException when this is a conditional
-	 * probability potential and the conditioned variable is numeric. */ public List<TablePotential> tableProject(
+	 * probability potential and the conditioned variable is numeric. */
+	public List<TablePotential> tableProject(
 			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials)
 			throws NonProjectablePotentialException {
 		List<TablePotential> newProjectedPotentials = new ArrayList<>();

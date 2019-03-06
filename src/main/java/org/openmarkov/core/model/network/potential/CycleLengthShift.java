@@ -53,6 +53,10 @@ import java.util.List;
 
 	}
 
+	public CycleLength getCycleLength() {
+		return cycleLength;
+	}
+
 	/**
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role

@@ -13,19 +13,23 @@ import java.util.List;
 @PotentialType(name = "EventTable")
 public class EventTablePotential extends Potential {
 
-    private Node node;
     private TablePotential tablePotential;
 
     private Variable eventAsStates;
 
-    public EventTablePotential(Node node, List<Variable> variables, PotentialRole role) {
+    public EventTablePotential(List<Variable> variables, PotentialRole role) {
         super(variables, role);
-        this.node = node;
-        setEventAsStates(node);
+        setEventAsStates(variables);
         ArrayList<Variable> eventTableVariables=new ArrayList<>();
+
+
+        for (Variable variable:variables) {
+            if (variable.getVariableType()!= VariableType.EVENT)
+                    eventTableVariables.add(variable);
+        }
         eventTableVariables.add(eventAsStates);
-        eventTableVariables.addAll(variables);
-        tablePotential = new TablePotential(eventTableVariables,role);
+        setTablePotential(new TablePotential(eventTableVariables,role));
+
     }
 
 //    public EventTablePotential(List<Variable> variables, PotentialRole role, double[] table) {
@@ -36,7 +40,7 @@ public class EventTablePotential extends Potential {
     //TODO
     public EventTablePotential(EventTablePotential potential) {
         super(potential);
-        this.tablePotential = new TablePotential(potential.getTablePotential());
+        this.setTablePotential(new TablePotential(potential.getTablePotential()));
     }
 
 
@@ -83,13 +87,12 @@ public class EventTablePotential extends Potential {
      * three states: E1, E2, E3
      * @param node - the node where the potential is assigned
      */
-    public void setEventAsStates(Node node) {
-        List<Node> parents = node.getParents();
+    public void setEventAsStates(List<Variable> variables) {
         ArrayList<State> states = new ArrayList<>();
         int i=0;
-        for (Node parent:parents) {
-            if (parent.getNodeType()==NodeType.EVENT) {
-                states.add(new State(parent.getName()));
+        for (Variable variable:variables) {
+            if (variable.getVariableType()==VariableType.EVENT) {
+                states.add(new State(variable.getName()));
             }
         }
 
@@ -131,7 +134,7 @@ public class EventTablePotential extends Potential {
 
     //TODO
     @Override public void scalePotential(double scale) {
-        this.tablePotential.scalePotential(scale);
+        this.getTablePotential().scalePotential(scale);
     }
 
     public TablePotential getTablePotential() {
@@ -151,19 +154,19 @@ public class EventTablePotential extends Potential {
     }
 
     public UncertainValue[] getUncertainValues() {
-        return tablePotential.getUncertainValues();
+        return getTablePotential().getUncertainValues();
     }
 
     public void setUncertainValues(UncertainValue[] uncertainValues) {
-        tablePotential.setUncertainValues(uncertainValues);
+        getTablePotential().setUncertainValues(uncertainValues);
     }
 
     public double[] getValues() {
-        return tablePotential.getValues();
+        return getTablePotential().getValues();
     }
 
     public void setValues(double[] values) {
-        this.tablePotential.values = values;
+        this.getTablePotential().values = values;
     }
 
     @Override public List<Variable> getVariables() {
@@ -173,12 +176,12 @@ public class EventTablePotential extends Potential {
     //TODO
     @Override public void setVariables(List<Variable> variables) {
         super.setVariables(variables);
-        this.tablePotential.setVariables(variables.subList(1, variables.size()));
+        this.getTablePotential().setVariables(variables.subList(1, variables.size()));
     }
     //TODO
     @Override public void setComment(String comment) {
         super.setComment(comment);
-        this.tablePotential.setComment(comment);
+        this.getTablePotential().setComment(comment);
     }
 
     //TODO
@@ -198,13 +201,13 @@ public class EventTablePotential extends Potential {
             buffer.append(" = ");
         }
 
-        if (tablePotential.values.length == 1) {
-            buffer.append(tablePotential.values[0]);
-        } else if (tablePotential.values.length > 1) {
+        if (getTablePotential().values.length == 1) {
+            buffer.append(getTablePotential().values[0]);
+        } else if (getTablePotential().values.length > 1) {
             buffer.append("{");
-            for (int i = 0; i < tablePotential.values.length; i++) {
-                buffer.append(tablePotential.values[i]);
-                if (i != tablePotential.values.length - 1) {
+            for (int i = 0; i < getTablePotential().values.length; i++) {
+                buffer.append(getTablePotential().values[i]);
+                if (i != getTablePotential().values.length - 1) {
                     buffer.append(",");
                 }
             }

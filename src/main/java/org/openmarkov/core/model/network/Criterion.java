@@ -31,9 +31,9 @@ public class Criterion implements Cloneable {
 	 */
 	private String criterionUnit;
 	/**
-	 * In the unicriteria analysis, the scale of this criterion above the main criterion choosed
+     * In the unicriteria analysis, the scale used for unicriterization
 	 */
-	private double unicriteriaScale;
+    private double unicriterizationScale;
 	/**
 	 * In the cost-effectiveness analysis, the scale of this criterion
 	 */
@@ -51,6 +51,10 @@ public class Criterion implements Cloneable {
 	 */
 	private CycleLength.DiscountUnit discountUnit;
 
+    /**
+     * String that conforms the global criterion obtained during the unicriterization process
+     */
+    public static final String C_GLOBALCRITERION = "***Global utility***";
 	/**
 	 * Constructor with parameters
 	 *
@@ -61,7 +65,7 @@ public class Criterion implements Cloneable {
 		this.criterionName = criterionName;
 		this.criterionUnit = criterionUnit;
 		this.discount = 0;
-		this.unicriteriaScale = 1;
+        this.unicriterizationScale = 1;
 		this.ceScale = 1;
 		this.discountUnit = CycleLength.DiscountUnit.YEAR;
 		this.ceCriterion = CECriterion.Cost; // Default.
@@ -92,7 +96,7 @@ public class Criterion implements Cloneable {
 		this.criterionName = criterion.criterionName;
 		this.criterionUnit = criterion.criterionUnit;
 		this.discount = criterion.discount;
-		this.unicriteriaScale = criterion.unicriteriaScale;
+        this.unicriterizationScale = criterion.unicriterizationScale;
 		this.ceScale = criterion.ceScale;
 		this.discountUnit = criterion.discountUnit;
 		this.ceCriterion = criterion.ceCriterion;
@@ -116,14 +120,14 @@ public class Criterion implements Cloneable {
 
 	public String getDefaultCriterion() {
 		return defaultCriterion;
-	}
+    }
 
-	public double getUnicriteriaScale() {
-		return unicriteriaScale;
-	}
+    public double getUnicriterizationScale() {
+        return unicriterizationScale;
+    }
 
-	public void setUnicriteriaScale(double scale) {
-		this.unicriteriaScale = scale;
+    public void setUnicriterizationScale(double scale) {
+        this.unicriterizationScale = scale;
 	}
 
 	public double getCeScale() {
@@ -171,7 +175,7 @@ public class Criterion implements Cloneable {
 		Criterion criterion = new Criterion(this.criterionName, this.criterionUnit);
 		criterion.setCECriterion(this.getCECriterion());
 		criterion.setDiscount(this.getDiscount());
-		criterion.setUnicriteriaScale(this.getUnicriteriaScale());
+        criterion.setUnicriterizationScale(this.getUnicriterizationScale());
 		criterion.setCeScale(this.getCeScale());
 		criterion.setDiscountUnit(this.getDiscountUnit());
 		return criterion;
@@ -188,7 +192,7 @@ public class Criterion implements Cloneable {
 		this.criterionUnit = newCriterion.getCriterionUnit();
 		this.discount = newCriterion.getDiscount();
 		this.discountUnit = newCriterion.getDiscountUnit();
-		this.unicriteriaScale = newCriterion.getUnicriteriaScale();
+        this.unicriterizationScale = newCriterion.getUnicriterizationScale();
 		this.ceScale = newCriterion.getCeScale();
 	}
 

@@ -6,6 +6,7 @@
  */
 package org.openmarkov.core.dt;
 
+import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class DecisionTreeNode implements DecisionTreeElement {
 	protected double utility = Double.NEGATIVE_INFINITY;
+	protected CEP cep = null;
 	protected double scenarioProbability = Double.NEGATIVE_INFINITY;
 	private Variable variable = null;
 	private NodeType nodeType = null;

@@ -21,4 +21,5 @@ public interface Task {
 	void setPreResolutionEvidence(EvidenceCase preresolutionEvidence) throws IncompatibleEvidenceException;
 
 	void setConditioningVariables(List<Variable> conditioningVariables);
+
 }

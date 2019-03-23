@@ -61,4 +61,7 @@ public class Properties {
 		return information.keySet();
 	}
 
+	public HashMap<String, String> getInformation() {
+		return information;
+	}
 }

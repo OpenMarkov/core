@@ -317,20 +317,16 @@ public class PartitionedInterval implements Cloneable {
 		PartitionedInterval otherInterval;
 
 		boolean result = true;
-		if (obj instanceof PartitionedInterval) {
+		if (obj != null && obj instanceof PartitionedInterval) {
 			otherInterval = (PartitionedInterval) obj;
 			if ((numSubintervals == otherInterval.numSubintervals) && (
 					this.belongsToLeftSide.length == otherInterval.belongsToLeftSide.length
 			) && (this.limits.length == otherInterval.limits.length)) {
-				for (int i = 0; result & (i < this.belongsToLeftSide.length); i++) {
-					result = (
-							this.belongsToLeftSide[i] == otherInterval.belongsToLeftSide[i]
-					);
+				for (int i = 0; result && (i < this.belongsToLeftSide.length); i++) {
+					result = this.belongsToLeftSide[i] == otherInterval.belongsToLeftSide[i];
 				}
-				for (int i = 0; result & (i < this.limits.length); i++) {
-					result = (
-							this.limits[i] == otherInterval.limits[i]
-					);
+				for (int i = 0; result && (i < this.limits.length); i++) {
+					result = this.limits[i] == otherInterval.limits[i];
 				}
 			} else {
 				result = false;

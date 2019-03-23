@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network;
 
 import org.openmarkov.core.model.network.potential.Potential;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UtilityOperations {
@@ -21,26 +22,31 @@ public class UtilityOperations {
 	 * @param probNet
 	 */
 	public static void transformToUnicriterion(ProbNet probNet) {
+//		Criterion globalCriterion = new Criterion(Criterion.C_GLOBALCRITERION);
+
 		for (Node utilityNode : probNet.getNodes(NodeType.UTILITY)) {
 			Criterion decisionCriterion = utilityNode.getVariable().getDecisionCriterion();
 			if (decisionCriterion != null) {
-				double scale = decisionCriterion.getUnicriteriaScale();
+                double scale = decisionCriterion.getUnicriterizationScale();
 				// Get the actual criterion scale
 				List<Potential> utilityPotentials = utilityNode.getPotentials();
 
 				if (!utilityPotentials.isEmpty()) {
+                    List<Potential> scaledPotentials = new ArrayList<>();
 					for (Potential potential : utilityPotentials) {
-						if (scale != 0.0 && scale != 1.0) {
 							Potential scaledPotential = potential.deepCopy(probNet);
 							scaledPotential.scalePotential(scale);
-						}
+                        scaledPotentials.add(scaledPotential);
 					}
+                    utilityNode.setPotentials(scaledPotentials);
+
 				} else {
 					// TODO - Check if we must remove the potential and node
 					// Remove the potential and the node
 					probNet.removePotentials(utilityPotentials);
 					probNet.removeNode(utilityNode);
 				}
+//				utilityNode.getVariable().setDecisionCriterion(globalCriterion);
 			}
 		}
 	}

@@ -9,9 +9,12 @@ package org.openmarkov.core.model.network;
 
 import junit.framework.Assert;
 import org.junit.Test;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.MulticriteriaOptions.Type;
 import org.openmarkov.core.model.network.Criterion.CECriterion;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
@@ -21,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class UtilityOperationsTest {
 
@@ -39,12 +42,12 @@ public class UtilityOperationsTest {
 		List<Criterion> decisionCriteria = new ArrayList<>();
 
 		Criterion criHealth_state = new Criterion("Effectiveness", "QALY");
-		criHealth_state.setUnicriteriaScale(0.8);
+        criHealth_state.setUnicriterizationScale(0.8);
 		criHealth_state.setCECriterion(CECriterion.Effectiveness);
 		decisionCriteria.add(criHealth_state);
 
 		Criterion criCost_of_test = new Criterion("Cost", "€");
-		criCost_of_test.setUnicriteriaScale(1);
+        criCost_of_test.setUnicriterizationScale(1);
 		criCost_of_test.setCECriterion(CECriterion.Cost);
 		decisionCriteria.add(criCost_of_test);
 
@@ -115,15 +118,36 @@ public class UtilityOperationsTest {
 		
 	}*/
 
-	//@Test
+    @Test
 	public void transformToUnicriterionTest() {
 		ProbNet probNet = getProbNet4Test();
+        ProbNet unicriterizationNet = probNet.copy();
 
-		UtilityOperations.transformToUnicriterion(probNet);
+        UtilityOperations.transformToUnicriterion(unicriterizationNet);
 
 		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
 		for (Node node : utilityNodes) {
-			assertTrue(node.getVariable().getDecisionCriterion().getCriterionName().equals("GlobalUtility"));
+
+            Node unicriterizatedNode = unicriterizationNet.getNode(node.getVariable());
+            assertEquals(node.getPotentials().size(), unicriterizatedNode.getPotentials().size());
+            assertNotSame(node.getPotentials(), unicriterizatedNode.getPotentials());
+            double scale = node.getVariable().getDecisionCriterion().getUnicriterizationScale();
+            for (int i = 0; i < node.getPotentials().size(); i++) {
+                ExactDistrPotential potential = (ExactDistrPotential) node.getPotentials().get(i);
+                ExactDistrPotential unicriterizatedPotential = (ExactDistrPotential) unicriterizatedNode.getPotentials().get(i);
+                Assert.assertNotSame(potential, unicriterizatedPotential);
+                Assert.assertEquals(potential.getVariables(), unicriterizatedPotential.getVariables());
+                double[] values = new double[potential.getTablePotential().getValues().length];
+
+                for (int j = 0; j < values.length; j++) {
+                    values[j] = scale * potential.getTablePotential().getValues()[j];
+                }
+                assertArrayEquals(values, unicriterizatedPotential.getTablePotential().getValues(), Math.pow(10, -7));
+
+            }
+//			assertTrue(node.getVariable().getDecisionCriterion().getCriterionName().equals(Criterion.C_GLOBALCRITERION));
+
+
 		}
 
 	}

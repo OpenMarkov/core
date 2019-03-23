@@ -20,14 +20,7 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public abstract class ICIPotential extends Potential {
 
@@ -72,7 +65,7 @@ public abstract class ICIPotential extends Potential {
 		this.family = modelType.getFamily();
 		this.noisyParameters = getDefaultNoisyParameters();
 		this.leakyParameters = getDefaultLeakyParameters(conditionedVariable.getNumStates());
-		zVariables = new HashMap<>();
+		zVariables = new LinkedHashMap<>();
 		for (int i = 1; i < variables.size(); ++i) {
 			zVariables.put(variables.get(i), createZVariable(variables.get(i), conditionedVariable));
 		}
@@ -87,7 +80,7 @@ public abstract class ICIPotential extends Potential {
 		this.noisyParameters = getDefaultNoisyParameters();
 		Variable conditionedVariable = getConditionedVariable();
 		this.leakyParameters = getDefaultLeakyParameters(conditionedVariable.getNumStates());
-		zVariables = new HashMap<>();
+		zVariables = new LinkedHashMap<>();
 		for (int i = 1; i < variables.size(); ++i) {
 			zVariables.put(variables.get(i), createZVariable(variables.get(i), conditionedVariable));
 		}

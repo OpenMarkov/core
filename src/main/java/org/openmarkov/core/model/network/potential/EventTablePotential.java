@@ -10,25 +10,39 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.ArrayList;
 import java.util.List;
 
-@PotentialType(name = "EventTable")
+/**
+ * A <code>EventTablePotential</code> is a type of relation with a list of
+ * probabilistic nodes.
+ *  Transition class to be merged with the new structure of tables
+ * There have to be at least one Event variable
+ * @version 1.0 -24/03/2019- -cyago -
+ * @since OpenMarkov 3.0
+*/
+
+
+@PotentialType(family ="Event", name = "EventTable")
 public class EventTablePotential extends Potential {
 
-    private TablePotential tablePotential;
+    protected TablePotential tablePotential;
 
-    private Variable eventAsStates;
+    protected Variable eventAsStates;
 
     public EventTablePotential(List<Variable> variables, PotentialRole role) {
         super(variables, role);
-        setEventAsStates(variables);
-        ArrayList<Variable> eventTableVariables=new ArrayList<>();
+        List<Variable> parents = variables.subList(1,variables.size());
 
+        setEventAsStates(parents);
+        ArrayList<Variable> tablePotentialVariables=new ArrayList<>();
+        tablePotentialVariables.add(variables.get(0));
 
-        for (Variable variable:variables) {
+        for (Variable variable:parents) {
             if (variable.getVariableType()!= VariableType.EVENT)
-                    eventTableVariables.add(variable);
+                    tablePotentialVariables.add(variable);
         }
-        eventTableVariables.add(eventAsStates);
-        setTablePotential(new TablePotential(eventTableVariables,role));
+        if (eventAsStates !=null) {
+            tablePotentialVariables.add(eventAsStates);
+        }
+        setTablePotential(new TablePotential(tablePotentialVariables,role));
 
     }
 
@@ -58,7 +72,7 @@ public class EventTablePotential extends Potential {
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 
         boolean eventSuitable = false;
-        boolean variableSuitable= true;
+        boolean variableSuitable= variables.get(0).getVariableType()==VariableType.FINITE_STATES;
         //I'm supposing variable(0) always contains the node variable.
         for (Variable variable:variables.subList(1,variables.size())) {
             boolean isEvent= node.getProbNet().getNode(variable).getNodeType() == NodeType.EVENT;
@@ -85,7 +99,7 @@ public class EventTablePotential extends Potential {
      * Extract the event parents and fill the states of eventAsStates with its names. For example,
      * if node A has as parents events E1, E2 and E3 eventAsStates will be a Finite-States variable with
      * three states: E1, E2, E3
-     * @param node - the node where the potential is assigned
+     * @param variables
      */
     public void setEventAsStates(List<Variable> variables) {
         ArrayList<State> states = new ArrayList<>();
@@ -95,8 +109,10 @@ public class EventTablePotential extends Potential {
                 states.add(new State(variable.getName()));
             }
         }
-
-        eventAsStates = new Variable("Events",states.toArray(new State[0]));
+        eventAsStates = null;
+        if (!states.isEmpty()) {
+            eventAsStates = new Variable("Events", states.toArray(new State[0]));
+        }
     }
 
 

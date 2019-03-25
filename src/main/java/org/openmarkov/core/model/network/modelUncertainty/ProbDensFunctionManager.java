@@ -142,6 +142,15 @@ public class ProbDensFunctionManager {
 	}
 
 	//CMF
+   // Test hardcoded TODO Change
+	public List<String> getValidProbDensFunctionsTime() {
+		List<String> validFunctions = new ArrayList<>();
+		validFunctions.add("Triangular");
+		validFunctions.add("Exponential");
+		return validFunctions;
+	}
+
+	//Test
 
 	public List<String> getValidProbDensFunctions(boolean isChance) {
 		List<String> validFunctions = new ArrayList<>();

@@ -7,6 +7,9 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+@ProbDensFunctionType(name = "Exponential", isValidForProbabilities = false, parameters = { "mu",
+		"sigma" })
+
 public class ExponentialFunction extends ProbDensFunctionWithKnownInverseCDF {
 	private double lambda;
 

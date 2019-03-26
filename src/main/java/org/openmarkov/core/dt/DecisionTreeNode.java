@@ -6,28 +6,44 @@
  */
 package org.openmarkov.core.dt;
 
-import org.openmarkov.core.model.network.CEP;
+
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DecisionTreeNode implements DecisionTreeElement {
-	protected double utility = Double.NEGATIVE_INFINITY;
-	protected CEP cep = null;
+public abstract class DecisionTreeNode<T> implements DecisionTreeElement {
+
 	protected double scenarioProbability = Double.NEGATIVE_INFINITY;
 	private Variable variable = null;
-	private NodeType nodeType = null;
-	private List<DecisionTreeElement> children = null;
+	protected NodeType nodeType = null;
+	protected List<DecisionTreeElement> children = null;
 	private DecisionTreeElement parent = null;
 	private ProbNet network;
+	/**
+	 * This is attribute represents what in the past was the utility for uni-criteria decision trees, but now it is generalized
+	 * to use the same decision tree structure in the case of cost-effectiveness analysis decision trees.
+	 */
+	protected T valuation;
 
 	
+	public void setValuation(T valuation) {
+		this.valuation = valuation;
+	}
+
+
+	
+	public T getValuation() {
+		return valuation;
+	}
+
+
 	public DecisionTreeNode(Node node) {
 		this.variable = node.getVariable();
 		this.nodeType = node.getNodeType();
@@ -67,30 +83,13 @@ public class DecisionTreeNode implements DecisionTreeElement {
 		return children;
 	}
 
-	public double getUtility() {
- 		return utility;
-	}
 
-	public void setUtility(double utility) {
-		this.utility = utility;
-	}
 
 	public EvidenceCase getBranchStates() {
 		return (parent != null) ? parent.getBranchStates() : new EvidenceCase();
 	}
 
-	public boolean isBestDecision(DecisionTreeElement branch) {
-		boolean isBestDecision = false;
-		if (nodeType == NodeType.DECISION) {
-			isBestDecision = true;
-			double thisUtility = branch.getUtility();
-			for (DecisionTreeElement otherBranch : children) {
-				isBestDecision &= thisUtility >= otherBranch.getUtility();
-			}
-		}
-		return isBestDecision;
-	}
-
+	
 	public double getScenarioProbability() {
 		return scenarioProbability;
 	}
@@ -121,8 +120,8 @@ public class DecisionTreeNode implements DecisionTreeElement {
 		return network;
 	}
 	
-	public void copy(DecisionTreeNode node) {
-		utility = node.utility;
+	public void copy(DecisionTreeNode<T> node) {
+		valuation = node.valuation;
 		scenarioProbability = node.scenarioProbability;
 		variable = node.variable;
 		nodeType = node.nodeType;
@@ -130,6 +129,11 @@ public class DecisionTreeNode implements DecisionTreeElement {
 		parent = node.parent;
 		network = node.network;
 	}
+
+
+	public abstract boolean isBestDecision(DecisionTreeBranch treeBranch);
+	
+	public abstract void setOnlyValueForValuation(TablePotential tablePotential);
 
 
 

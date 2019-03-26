@@ -14,11 +14,13 @@ import java.util.List;
 public interface DecisionTreeElement {
 	List<DecisionTreeElement> getChildren();
 
-	double getUtility();
+	//double getUtility();
 
 	EvidenceCase getBranchStates();
 
 	double getScenarioProbability();
 
 	void setParent(DecisionTreeElement parent);
+		
+	
 }

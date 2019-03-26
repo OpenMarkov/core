@@ -15,14 +15,14 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Potential;
+
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class DecisionTreeBranch implements DecisionTreeElement {
 
-	protected double utility = Double.NEGATIVE_INFINITY;
+
 	protected double scenarioProbability = Double.NEGATIVE_INFINITY;
 	private Variable branchVariable;
 	private State branchState;
@@ -30,6 +30,8 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 	private DecisionTreeNode child;
 	private ProbNet probNet;
 	private EvidenceCase scenarioEvidence = null;
+	
+	
 	public DecisionTreeBranch(ProbNet probNet, Variable branchVariable, State branchState) {
 		this.probNet = probNet;
 		this.branchState = branchState;
@@ -46,13 +48,7 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 		return children;
 	}
 
-	public double getUtility() {
-		return utility;
-	}
 
-	public void setUtility(double utilityParam) {
-		this.utility = utilityParam;
-	}
 
 	public double getBranchProbability() {
 		double parentScenarioProb = parent.getScenarioProbability();
@@ -143,4 +139,10 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 	@Override public void setParent(DecisionTreeElement parent) {
 		this.parent = (DecisionTreeNode) parent;
 	}
+	
+	public Object getValuation() {
+		return child.getValuation();
+	}
+	
+	
 }

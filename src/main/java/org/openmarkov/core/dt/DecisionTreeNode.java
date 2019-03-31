@@ -15,6 +15,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,6 +135,8 @@ public abstract class DecisionTreeNode<T> implements DecisionTreeElement {
 	public abstract boolean isBestDecision(DecisionTreeBranch treeBranch);
 	
 	public abstract void setOnlyValueForValuation(TablePotential tablePotential);
+	
+	public abstract String formatValuation(DecimalFormat df);
 
 
 

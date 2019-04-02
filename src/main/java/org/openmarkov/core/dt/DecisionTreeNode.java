@@ -136,8 +136,7 @@ public abstract class DecisionTreeNode<T> implements DecisionTreeElement {
 	
 	public abstract void setOnlyValueForValuation(TablePotential tablePotential);
 	
-	public abstract String formatValuation(DecimalFormat df);
-
-
+	public abstract String formatValuation(DecimalFormat df, boolean addSlashPrefixIfItAddsContent);
+	
 
 }

@@ -31,17 +31,17 @@ public abstract class DecisionTreeNode<T> implements DecisionTreeElement {
 	 * This is attribute represents what in the past was the utility for uni-criteria decision trees, but now it is generalized
 	 * to use the same decision tree structure in the case of cost-effectiveness analysis decision trees.
 	 */
-	protected T valuation;
+	protected T utility;
 
 	
-	public void setValuation(T valuation) {
-		this.valuation = valuation;
+	public void setUtility(T utility) {
+		this.utility = utility;
 	}
 
 
 	
-	public T getValuation() {
-		return valuation;
+	public T getUtility() {
+		return utility;
 	}
 
 
@@ -122,7 +122,7 @@ public abstract class DecisionTreeNode<T> implements DecisionTreeElement {
 	}
 	
 	public void copy(DecisionTreeNode<T> node) {
-		valuation = node.valuation;
+		utility = node.utility;
 		scenarioProbability = node.scenarioProbability;
 		variable = node.variable;
 		nodeType = node.nodeType;
@@ -134,9 +134,9 @@ public abstract class DecisionTreeNode<T> implements DecisionTreeElement {
 
 	public abstract boolean isBestDecision(DecisionTreeBranch treeBranch);
 	
-	public abstract void setOnlyValueForValuation(TablePotential tablePotential);
+	public abstract void setOnlyValueForUtility(TablePotential tablePotential);
 	
-	public abstract String formatValuation(DecimalFormat df, boolean addSlashPrefixIfItAddsContent);
+	public abstract String formatUtility(DecimalFormat df, boolean addSlashPrefixIfItAddsContent);
 	
 
 }

@@ -140,8 +140,8 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 		this.parent = (DecisionTreeNode) parent;
 	}
 	
-	public Object getValuation() {
-		return child.getValuation();
+	public Object getUtility() {
+		return child.getUtility();
 	}
 	
 	

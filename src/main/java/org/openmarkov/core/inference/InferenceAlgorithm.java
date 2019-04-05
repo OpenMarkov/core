@@ -145,9 +145,11 @@ public abstract class InferenceAlgorithm implements Task {
 		if (additionalConstraints != null) {
 			for (PNConstraint pnConstraint : additionalConstraints) {
 				if (!pnConstraint.checkProbNet(probNet)) {
-					if (pnConstraint.getClass().equals(NoSuperValueNode.class)) {
-						throw new NotEvaluableNetworkException("Evaluation of supervalue nodes is temporarily disabled.");
-					}
+					/*
+					 * if (pnConstraint.getClass().equals(NoSuperValueNode.class)) { throw new
+					 * NotEvaluableNetworkException("Evaluation of supervalue nodes is temporarily disabled."
+					 * ); }
+					 */
 					notEvaluableConstraints.add(pnConstraint);
 				}
 			}

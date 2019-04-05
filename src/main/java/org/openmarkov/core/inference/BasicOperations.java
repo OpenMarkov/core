@@ -17,6 +17,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNetOperations;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -36,29 +37,40 @@ public class BasicOperations {
 	 * The source probNet
 	 */
 	// private static ProbNet sourceProbNet;
-	private static TablePotential getUtilityFunction(Node utilityNode, EvidenceCase evidence) {
-		TablePotential newPotential = null;
-		Hashtable<Node, TablePotential> hashtable = new Hashtable<>();
+	private static ExactDistrPotential getUtilityFunction(Node utilityNode, EvidenceCase evidence) {
+		Potential newPotential = null;
+		Hashtable<Node, ExactDistrPotential> hashtable = new Hashtable<>();
 		if (!isSuperValueNode(utilityNode)) {
 			try {
 				newPotential = utilityNode.getPotentials().get(0).tableProject(evidence, null).get(0);
 			} catch (NonProjectablePotentialException | WrongCriterionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else {
-			for (Node node : utilityNode.getParents()) {
-				hashtable.put(node, getUtilityFunction(node, evidence));
-			}
-			List<TablePotential> potentials = new ArrayList<>(hashtable.values());
+			utilityNode.getParents().forEach(node -> hashtable.put(node, getUtilityFunction(node, evidence)));
+			List<ExactDistrPotential> potentials = new ArrayList<>(hashtable.values());
 			Potential utilityPotential = utilityNode.getPotentials().get(0);
+			List<TablePotential> tablePotentials = new ArrayList<>();
+			potentials.forEach(x -> tablePotentials.add(x.getTablePotential()));
 			if (utilityPotential instanceof SumPotential) {
-				newPotential = DiscretePotentialOperations.sum(potentials);
+				newPotential = DiscretePotentialOperations.sum(tablePotentials);
 			} else {
-				newPotential = DiscretePotentialOperations.multiply(potentials);
-			}
+				newPotential = DiscretePotentialOperations.multiply(tablePotentials);
+			}			
 		}
-		return newPotential;
+		return buildExactDistrPotentialUtility(utilityNode.getVariable(),(TablePotential) newPotential);
+	}
+	
+	
+	
+	
+	private static ExactDistrPotential buildExactDistrPotentialUtility(Variable variable, TablePotential pot) {
+		List<Variable> variables = new ArrayList<>();
+		variables.add(variable);
+		variables.addAll(pot.getVariables());
+		ExactDistrPotential exact = new ExactDistrPotential(variables);
+		exact.setTablePotential(pot);
+		return exact;
 	}
 
 	private static boolean isSumSuperValueNode(ProbNet network, Variable utilityVariable) {
@@ -116,19 +128,14 @@ public class BasicOperations {
 	 * @param keepComponents        keep (or not) components
 	 * @param leaveImplicitSum      leave (or not) the implicit sum
 	 * @param utilityVariableToKeep utility variable to keep
-	 * @return A copy of the probNet by removing super-value nodes. When
-	 * keepComponents is false the output network is equivalent to
-	 * 'sourceProbNet'. However, when keepComponents is true the output
-	 * network has a utility node without children corresponding to each
-	 * utility node in 'sourceProbNet', and the utility function is
-	 * given explicitly in terms of the ancestors chance and decision
-	 * nodes. Parameter 'leaveImplicitSum' only applies when
-	 * 'keepComponents' is false. When 'leaveImplicitSum' is true then
-	 * the output is in the form of influence diagrams with an implicit
-	 * sum like those processed by Jensen's variable elimination
-	 * algorithm; otherwise the structure of super-value nodes is
-	 * reduced into an only utility node. If 'utilityVariableToKeep' is
-	 * different from null then it is the only potential to keep.
+	 * @return A copy of the probNet by removing super-value nodes.
+	 * When keepComponents is false the output network is equivalent to 'sourceProbNet'. However, when keepComponents is true the output
+	 * network has a utility node without children corresponding to each utility node in 'sourceProbNet', and the utility function is
+	 * given explicitly in terms of the ancestors chance and decision nodes.
+	 * Parameter 'leaveImplicitSum' only applies when 'keepComponents' is false. When 'leaveImplicitSum' is true then the output is in the form 
+	 * of influence diagrams with an implicit sum like those processed by Jensen's variable elimination algorithm; otherwise the structure of super-value nodes is
+	 * reduced into an only utility node.
+	 * If 'utilityVariableToKeep' is different from null then it is the only potential to keep.
 	 * Otherwise all the variables are considered.
 	 */
 	public static ProbNet removeSuperValueNodes(ProbNet sourceProbNet, EvidenceCase evidence, boolean keepComponents,
@@ -139,7 +146,7 @@ public class BasicOperations {
 			Variable utilityVariable = utilityNode.getVariable();
 			if ((isSuperValueNode(utilityNode) && utilityVariableToKeep == null)
 					|| utilityVariable == utilityVariableToKeep) {
-				TablePotential potential = getUtilityFunction(utilityNode, evidence);
+				ExactDistrPotential potential = getUtilityFunction(utilityNode, evidence);
 				List<Node> parents = network.getParents(utilityNode);
 				// remove links between supervalue nodes and their utility
 				// parents
@@ -150,10 +157,12 @@ public class BasicOperations {
 				}
 				// add links between of new potential of supervalue nodes
 				for (Variable variable : potential.getVariables()) {
-					try {
-						network.addLink(variable, utilityVariable, true);
-					} catch (NodeNotFoundException e) {
-						e.printStackTrace();
+					if (variable != utilityVariable) {
+						try {
+							network.addLink(variable, utilityVariable, true);
+						} catch (NodeNotFoundException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 				// sets the new potential

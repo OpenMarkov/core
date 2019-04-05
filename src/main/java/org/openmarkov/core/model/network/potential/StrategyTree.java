@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.openmarkov.core.exception.ConfigurationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
@@ -18,14 +19,7 @@ import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 // TODO Documentar la clase
 public class StrategyTree extends TreeADDPotential {
@@ -802,5 +796,86 @@ public class StrategyTree extends TreeADDPotential {
 		StrategyTree strategyTree = (StrategyTree) super.deepCopy(copyNet);
 		return strategyTree;
 	}
+/*
+    public TablePotential tableProject() {
+        TablePotential projection = new TablePotential(this.variables, PotentialRole.POLICY);
+        // TODO
+        for (LeafIterator leafIterator = new LeafIterator(this); leafIterator.hasNext();) {
+            List<Variable> allVariables = new ArrayList<Variable>(this.variables);
+            TreeADDBranch leaf = leafIterator.next();
+            List<Variable> pastVariables = getPast(leaf);
+            List<Variable> remainingVariables = allVariables.removeAll(pastVariables);
+            for (ConfigurationIterator configurationIterator = new ConfigurationIterator(allVariables, pastVariables, remainingVariables); configurationIterator.hasNext();) {
+                int position = configurationIterator.getNext();
+                projection.values[position] = 1.0;
+            }
+        }
+        return  projection;
+    }
 
+    private class Configuration {
+		public List<Variable> variables;
+		public List<Integer> values;
+	}
+
+	public TablePotential getStrategyTable() {
+		TablePotential strategyTable = variables.size() == 0 ? null : new TablePotential(variables, PotentialRole.POLICY);
+        if (strategyTable != null) {
+            List<Variable> pathVariables = new ArrayList<>();
+            pathVariables.add(topVariable);
+            List<State> pathStates = new ArrayList<>();
+            List<TreeADDBranch> branches = getBranches();
+            branches.add(null);
+            for (TreeADDBranch branch : branches) {
+                List<State> statesBranch = branch.getBranchStates();
+                for (State state : statesBranch) {
+                    pathStates.set(0, state);
+                    fillStrategyPotential(strategyTable, pathVariables, pathStates, branch.getPotential());
+                }
+            }
+        }
+		return strategyTable;
+	}
+
+    private void fillStrategyPotential(TablePotential strategyTable, List<Variable> pathVariables, List<State> pathStates, Potential potential) {
+	    // TODO
+	    if (potential == null) {
+	        //fillCompatibleConfigurations(strategyTable, pathVariables, pathStates);
+        } else {
+
+        }
+    }
+
+    private class LeafIterator {
+
+        private final StrategyTree strategyTree;
+        private int nextLeave;
+		private int numLeaves;
+		private List<Configuration> configurations;
+
+		public LeafIterator(StrategyTree strategyTree) {
+			this.strategyTree = strategyTree;
+			nextLeave = 0;
+			numLeaves = strategyTree.getNumLeaves();
+			configurations = getConfigurations();
+		}
+
+		private List<Configuration> getConfigurations() {
+		    configurations = new ArrayList<Configuration>(numLeaves);
+		    for (int i = 0; i < numLeaves; i++) {
+		        Configuration configuration = new Configuration();
+                configuration.variables.add(strategyTree.getRootVariable());
+
+            }
+            return configurations;
+		}
+
+		public boolean hasNext() {
+			return (nextLeave < numLeaves);
+		}
+
+		public Configuration next() {
+			return configurations.get(nextLeave++);
+		}
+	}*/
 }

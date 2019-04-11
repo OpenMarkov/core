@@ -796,6 +796,7 @@ public class StrategyTree extends TreeADDPotential {
 		StrategyTree strategyTree = (StrategyTree) super.deepCopy(copyNet);
 		return strategyTree;
 	}
+
 /*
     public TablePotential tableProject() {
         TablePotential projection = new TablePotential(this.variables, PotentialRole.POLICY);
@@ -817,6 +818,40 @@ public class StrategyTree extends TreeADDPotential {
 		public List<Variable> variables;
 		public List<Integer> values;
 	}
+
+	private class LeafIterator {
+
+		private final StrategyTree strategyTree;
+		private int nextLeave;
+		private int numLeaves;
+		private List<Configuration> configurations;
+
+		public LeafIterator(StrategyTree strategyTree) {
+			this.strategyTree = strategyTree;
+			nextLeave = 0;
+			numLeaves = strategyTree.getNumLeaves();
+			configurations = getConfigurations();
+		}
+
+		private List<Configuration> getConfigurations() {
+			configurations = new ArrayList<Configuration>(numLeaves);
+			for (int i = 0; i < numLeaves; i++) {
+				Configuration configuration = new Configuration();
+				configuration.variables.add(strategyTree.getRootVariable());
+
+			}
+			return configurations;
+		}
+
+		public boolean hasNext() {
+			return (nextLeave < numLeaves);
+		}
+
+		public Configuration next() {
+			return configurations.get(nextLeave++);
+		}
+	}
+*/
 
 	public TablePotential getStrategyTable() {
 		TablePotential strategyTable = variables.size() == 0 ? null : new TablePotential(variables, PotentialRole.POLICY);
@@ -846,36 +881,4 @@ public class StrategyTree extends TreeADDPotential {
         }
     }
 
-    private class LeafIterator {
-
-        private final StrategyTree strategyTree;
-        private int nextLeave;
-		private int numLeaves;
-		private List<Configuration> configurations;
-
-		public LeafIterator(StrategyTree strategyTree) {
-			this.strategyTree = strategyTree;
-			nextLeave = 0;
-			numLeaves = strategyTree.getNumLeaves();
-			configurations = getConfigurations();
-		}
-
-		private List<Configuration> getConfigurations() {
-		    configurations = new ArrayList<Configuration>(numLeaves);
-		    for (int i = 0; i < numLeaves; i++) {
-		        Configuration configuration = new Configuration();
-                configuration.variables.add(strategyTree.getRootVariable());
-
-            }
-            return configurations;
-		}
-
-		public boolean hasNext() {
-			return (nextLeave < numLeaves);
-		}
-
-		public Configuration next() {
-			return configurations.get(nextLeave++);
-		}
-	}*/
 }

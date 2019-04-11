@@ -406,19 +406,25 @@ public class TreeADDPotential extends Potential {
 	 * @param variableName
 	 */
 	public void pruneAndGraftNode(String variableName) {
+		if (getRootVariable().getName().toUpperCase().matches(variableName.toUpperCase()) &&
+				branches.size() == 1 && TreeADDPotential.class.isAssignableFrom(branches.get(0).getPotential().getClass())) {
+			TreeADDPotential treeADDPotential = (TreeADDPotential)branches.get(0).getPotential();
+			setRootVariable(treeADDPotential.getRootVariable());
+			branches = treeADDPotential.branches;
+			indentLevel = treeADDPotential.indentLevel;
+		}
 		for (TreeADDBranch branch : branches) {
 			Potential potential = branch.getPotential();
 			if (potential != null && TreeADDPotential.class.isAssignableFrom(potential.getClass())) {
-				TreeADDPotential treeADDPotential = (TreeADDPotential)potential;
-				String variableNamePotential = treeADDPotential.getRootVariable().getName().toUpperCase();
-				if (variableNamePotential.matches(variableName.toUpperCase())) {
-					List<TreeADDBranch> potentialBranches = treeADDPotential.getBranches();
-					if (potentialBranches != null && potentialBranches.size() > 0) {
-						TreeADDPotential newPotential = (TreeADDPotential)potentialBranches.get(0).getPotential();
-						branch.setPotential(newPotential);
+				TreeADDPotential childTreeADDPotential = (TreeADDPotential)potential;
+				String childVariableName = childTreeADDPotential.getRootVariable().getName().toUpperCase();
+				if (childVariableName.matches(variableName.toUpperCase())) {
+					List<TreeADDBranch> potentialBranches = childTreeADDPotential.getBranches();
+					if (potentialBranches.size() > 0) {
+						branch.setPotential(potentialBranches.get(0).getPotential());
 					}
 				}
-				treeADDPotential.pruneAndGraftNode(variableName);
+				childTreeADDPotential.pruneAndGraftNode(variableName);
 			}
 		}
 	}

@@ -361,10 +361,7 @@ import java.util.Random;
 	 * @return array of <code>int[]</code> with the dimension of each variable.
 	 */
 	public static int[] calculateDimensions(List<Variable> fsVariables) {
-		int numVariables = 0;
-		if (fsVariables != null) {
-			numVariables = fsVariables.size();
-		}
+		int numVariables = fsVariables == null ? 0 : fsVariables.size();
 		int[] dimensions = new int[numVariables];
 		for (int i = 0; i < numVariables; i++) {
 			dimensions[i] = fsVariables.get(i).getNumStates();
@@ -380,11 +377,9 @@ import java.util.Random;
 	 * @return array of <code>int[]</code> with the offset of each variable.
 	 */
 	public static int[] calculateOffsets(int[] dimensions) {
-		int[] offsets;
-		int numVariables = dimensions.length;
-		offsets = new int[numVariables];
+		int[] offsets = new int[dimensions.length];
 		offsets[0] = 1;
-		for (int i = 1; i < numVariables; i++) {
+		for (int i = 1; i < dimensions.length; i++) {
 			offsets[i] = dimensions[i - 1] * offsets[i - 1];
 		}
 		return offsets;

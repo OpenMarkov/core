@@ -8,12 +8,10 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.ConfigurationException;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.sdag.SDAGStrategyTree;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
@@ -797,88 +795,46 @@ public class StrategyTree extends TreeADDPotential {
 		return strategyTree;
 	}
 
-/*
     public TablePotential tableProject() {
-        TablePotential projection = new TablePotential(this.variables, PotentialRole.POLICY);
-        // TODO
-        for (LeafIterator leafIterator = new LeafIterator(this); leafIterator.hasNext();) {
-            List<Variable> allVariables = new ArrayList<Variable>(this.variables);
-            TreeADDBranch leaf = leafIterator.next();
-            List<Variable> pastVariables = getPast(leaf);
-            List<Variable> remainingVariables = allVariables.removeAll(pastVariables);
-            for (ConfigurationIterator configurationIterator = new ConfigurationIterator(allVariables, pastVariables, remainingVariables); configurationIterator.hasNext();) {
-                int position = configurationIterator.getNext();
-                projection.values[position] = 1.0;
-            }
-        }
-        return  projection;
-    }
-
-    private class Configuration {
-		public List<Variable> variables;
-		public List<Integer> values;
+		TablePotential projection = new TablePotential(variables, role);
+		fillPotential(projection, new EvidenceCase(), this);
+		return projection;
 	}
 
-	private class LeafIterator {
-
-		private final StrategyTree strategyTree;
-		private int nextLeave;
-		private int numLeaves;
-		private List<Configuration> configurations;
-
-		public LeafIterator(StrategyTree strategyTree) {
-			this.strategyTree = strategyTree;
-			nextLeave = 0;
-			numLeaves = strategyTree.getNumLeaves();
-			configurations = getConfigurations();
-		}
-
-		private List<Configuration> getConfigurations() {
-			configurations = new ArrayList<Configuration>(numLeaves);
-			for (int i = 0; i < numLeaves; i++) {
-				Configuration configuration = new Configuration();
-				configuration.variables.add(strategyTree.getRootVariable());
-
+	private void fillPotential(TablePotential tablePotential, EvidenceCase evidenceCase, Potential potential) {
+		if (potential == null || !potential.getClass().isAssignableFrom(TreeADDPotential.class)) { // leave
+			fillCompatibleConfigurations(tablePotential, evidenceCase);
+		} else {
+			for (TreeADDBranch branch : branches) {
+				for (State state : branch.getStates()) {
+					try {
+						evidenceCase.changeFinding(new Finding(topVariable, state));
+						fillPotential(tablePotential, evidenceCase, branch.getPotential());
+					} catch (InvalidStateException | IncompatibleEvidenceException e) {
+						e.printStackTrace();
+					}
+				}
 			}
-			return configurations;
-		}
-
-		public boolean hasNext() {
-			return (nextLeave < numLeaves);
-		}
-
-		public Configuration next() {
-			return configurations.get(nextLeave++);
 		}
 	}
-*/
 
-	public TablePotential getStrategyTable() {
-		TablePotential strategyTable = variables.size() == 0 ? null : new TablePotential(variables, PotentialRole.POLICY);
-        if (strategyTable != null) {
-            List<Variable> pathVariables = new ArrayList<>();
-            pathVariables.add(topVariable);
-            List<State> pathStates = new ArrayList<>();
-            List<TreeADDBranch> branches = getBranches();
-            branches.add(null);
-            for (TreeADDBranch branch : branches) {
-                List<State> statesBranch = branch.getBranchStates();
-                for (State state : statesBranch) {
-                    pathStates.set(0, state);
-                    fillStrategyPotential(strategyTable, pathVariables, pathStates, branch.getPotential());
-                }
-            }
-        }
-		return strategyTable;
+	private void fillCompatibleConfigurations(TablePotential tablePotential, EvidenceCase evidenceCase) {
+		if (tablePotential.getNumVariables() == evidenceCase.getNumberOfFindings()) {
+			tablePotential.values[tablePotential.getPosition(evidenceCase)] = 1.0;
+		} else {
+			List<Variable> variables = tablePotential.getVariables();
+			variables.removeAll(evidenceCase.getVariables());
+			Variable variable = variables.get(0);
+			int numStates = variable.getNumStates();
+			for (int i = 0; i < numStates; i++) {
+				try {
+					evidenceCase.changeFinding(new Finding(variable, i));
+					fillCompatibleConfigurations(tablePotential, evidenceCase);
+				} catch (InvalidStateException | IncompatibleEvidenceException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
-
-    private void fillStrategyPotential(TablePotential strategyTable, List<Variable> pathVariables, List<State> pathStates, Potential potential) {
-	    // TODO
-	    if (potential == null) {
-	        //fillCompatibleConfigurations(strategyTable, pathVariables, pathStates);
-        } else {
-
-        }
-    }
 
 }

@@ -26,6 +26,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.AugmentedTable;
 import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
+import org.openmarkov.core.model.network.potential.FunctionPotential;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -2584,5 +2585,12 @@ public final class DiscretePotentialOperations {
 			numConfiguration += numStatesFirstVariable;
 		}
 		return xNewPotential;
+	}
+
+	public static Potential evaluateFunctionPotential(Potential utilityPotential,
+			List<TablePotential> tablePotentials) {
+		FunctionPotential functionPot = (FunctionPotential) utilityPotential;
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

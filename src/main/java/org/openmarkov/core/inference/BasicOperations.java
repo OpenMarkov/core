@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.ProbNetOperations;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.ProductPotential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -54,9 +55,11 @@ public class BasicOperations {
 			potentials.forEach(x -> tablePotentials.add(x.getTablePotential()));
 			if (utilityPotential instanceof SumPotential) {
 				newPotential = DiscretePotentialOperations.sum(tablePotentials);
-			} else {
+			} else if (utilityPotential instanceof ProductPotential) {
 				newPotential = DiscretePotentialOperations.multiply(tablePotentials);
-			}			
+			} else { // FunctionPontential
+				newPotential = DiscretePotentialOperations.evaluateFunctionPotential(utilityPotential, tablePotentials);
+			}
 		}
 		return buildExactDistrPotentialUtility(utilityNode.getVariable(),(TablePotential) newPotential);
 	}

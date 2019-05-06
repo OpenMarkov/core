@@ -16,6 +16,9 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
+import net.sourceforge.jeval.EvaluationException;
+import net.sourceforge.jeval.Evaluator;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -198,6 +201,18 @@ import java.util.Map;
 
 	@Override public boolean isUncertain() {
 		return false;
+	}
+	
+	
+	/**
+	 * @param values
+	 * @return The value obtained by evaluation the function for the assignment of variables given by 'values'
+	 * @throws EvaluationException
+	 */
+	public String getValue(Map<String,String> values) throws EvaluationException {
+		Evaluator evaluator = new Evaluator();
+		evaluator.setVariables(values);
+		return evaluator.evaluate(getFunction());		
 	}
 
 }

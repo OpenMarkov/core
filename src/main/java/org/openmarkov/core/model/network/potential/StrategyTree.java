@@ -22,12 +22,11 @@ import java.util.*;
 // TODO Documentar la clase
 public class StrategyTree extends TreeADDPotential {
 
+	// Constructors
 	public StrategyTree(List<Variable> variables, Variable topVariable) {
 		super(variables, topVariable, PotentialRole.UNSPECIFIED);
-		//super(variables,topVariable,PotentialRole.INTERVENTION);
+		ensureThatAllVariablesAreIncluded();
 	}
-
-	// Constructors
 
 	/**
 	 * Creates an intervention without branches.
@@ -36,6 +35,7 @@ public class StrategyTree extends TreeADDPotential {
 	 */
 	public StrategyTree(Variable topVariable) {
 		this(null, topVariable);
+		ensureThatAllVariablesAreIncluded();
 	}
 
 	/**
@@ -84,6 +84,7 @@ public class StrategyTree extends TreeADDPotential {
 				addBranch(new TreeADDBranch(statesOfIntervention, topVariable, strategyTree, null));
 			}
 		}
+		ensureThatAllVariablesAreIncluded();
 	}
 
 	/**
@@ -96,6 +97,7 @@ public class StrategyTree extends TreeADDPotential {
 		this(null, topVariable);
 		List<State> branchStates = Arrays.asList(states);
 		addBranch(new TreeADDBranch(branchStates, topVariable, null));
+		ensureThatAllVariablesAreIncluded();
 	}
 
 	/**
@@ -109,6 +111,7 @@ public class StrategyTree extends TreeADDPotential {
 		List<State> branchStates = new ArrayList<>(states.size());
 		branchStates.addAll(states);
 		addBranch(new TreeADDBranch(branchStates, topVariable, null));
+		ensureThatAllVariablesAreIncluded();
 	}
 
 	/**
@@ -123,6 +126,7 @@ public class StrategyTree extends TreeADDPotential {
 		List<State> branchStates = new ArrayList<>(states.size());
 		branchStates.addAll(states);
 		addBranch(new TreeADDBranch(branchStates, topVariable, strategyTree, null));
+		ensureThatAllVariablesAreIncluded();
 	}
 
 	/**
@@ -140,6 +144,23 @@ public class StrategyTree extends TreeADDPotential {
 			addBranch(
 					new TreeADDBranch(new Threshold(limits[i], false), new Threshold(limits[i + 1], true), topVariable,
 							strategyTrees.get(i), null));
+		}
+		ensureThatAllVariablesAreIncluded();
+	}
+
+	/** Ensures that the variables that exists in rootVariable, branches and sub-potentials
+	 * are also included in the list of variables. */
+	private void ensureThatAllVariablesAreIncluded() {
+		LinkedHashSet<Variable> variables = new LinkedHashSet<>();
+		variables.add(getRootVariable());
+		for (TreeADDBranch branch : branches) {
+			Potential potential = branch.getPotential();
+			if (potential != null) {
+				variables.addAll(potential.getVariables());
+			}
+		}
+		if (!this.variables.containsAll(variables)) {
+			this.variables = new ArrayList<>(variables);
 		}
 	}
 
@@ -237,7 +258,6 @@ public class StrategyTree extends TreeADDPotential {
 		}
 
 		return strategyTree;
-
 	}
 
 	/**

@@ -990,14 +990,6 @@ import java.util.Random;
 	}
 
 	/**
-	 * @return <code>List</code> of <code>Variable</code>s.
-	 * @consultation
-	 */
-	public List<Variable> getVariables() {
-		return (variables != null) ? new ArrayList<>(variables) : variables;
-	}
-
-	/**
 	 * @return tableSize <code>int</code>
 	 */
 	public int getTableSize() {

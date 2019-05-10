@@ -211,8 +211,8 @@ import java.util.Map;
 	 */
 	public String getValue(Map<String,String> values) throws EvaluationException {
 		Evaluator evaluator = new Evaluator();
-		evaluator.setVariables(values);
-		return evaluator.evaluate(getFunction());		
+		evaluator.setVariables(values);		
+		return evaluator.evaluate(this.processedCovariates[0]);
 	}
 
 }

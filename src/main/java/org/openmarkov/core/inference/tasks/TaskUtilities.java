@@ -63,7 +63,8 @@ public class TaskUtilities {
 		return probNet;
 	}
 
-	//TODO: the imposed policies are already added, aren't they? The nodes must be transformed to chance nodes. And the policies into conditional probabilities?
+	// TODO: the imposed policies are already added, aren't they? The nodes must be
+	// transformed to chance nodes. And the policies into conditional probabilities?
 	public static ProbNet imposePolicies(ProbNet probNet) {
 		if (!hasOnlyChanceNodes(probNet) && hasDecisions(probNet)) {
 			replaceDecisionsWithPoliciesByChanceNodes(probNet, null);
@@ -86,30 +87,32 @@ public class TaskUtilities {
 	}
 
 	public static ProbNet scaleUtilitiesUnicriterion(ProbNet probNet) {
-		//if (probNet.getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType().
-		//        equals(MulticriteriaOptions.Type.UNICRITERION)) {
+		// if
+		// (probNet.getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType().
+		// equals(MulticriteriaOptions.Type.UNICRITERION)) {
 		UtilityOperations.transformToUnicriterion(probNet);
-		//}
+		// }
 		return probNet;
 	}
 
 	public static ProbNet scaleUtilitiesCostEffectiveness(ProbNet probNet) {
-		//if (probNet.getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType().
-		//        equals(MulticriteriaOptions.Type.COST_EFFECTIVENESS)) {
+		// if
+		// (probNet.getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType().
+		// equals(MulticriteriaOptions.Type.COST_EFFECTIVENESS)) {
 		UtilityOperations.applyCEUtilityScaling(probNet);
-		//}
+		// }
 		return probNet;
 	}
 
-	//    public static ProbNet unscaleUtilitiesUnicriterion(ProbNet probNet) {
-	//        UtilityOperations.unicriterionUtilityUnscaling(probNet);
-	//        return probNet;
-	//    }
+	// public static ProbNet unscaleUtilitiesUnicriterion(ProbNet probNet) {
+	// UtilityOperations.unicriterionUtilityUnscaling(probNet);
+	// return probNet;
+	// }
 	//
-	//    public static ProbNet unscaleUtilitiesCostEffectiveness(ProbNet probNet) {
-	//        UtilityOperations.ceUtilityUnscaling(probNet);
-	//        return probNet;
-	//    }
+	// public static ProbNet unscaleUtilitiesCostEffectiveness(ProbNet probNet) {
+	// UtilityOperations.ceUtilityUnscaling(probNet);
+	// return probNet;
+	// }
 
 	public static ProbNet discretizeNonObservedNumericVariables(ProbNet probNet, EvidenceCase preResolutionEvidence) {
 		return ProbNetOperations.convertNumericalVariablesToFS(probNet, preResolutionEvidence);
@@ -122,17 +125,30 @@ public class TaskUtilities {
 		return probNet;
 	}
 
+	//TODO Do not delete next commented code as we are still debugging the transition from super-value nodes' concepts to numeric concepts
 	/**
 	 * @param probNet
 	 * @param evidenceCase
 	 * @return Remove super value nodes from probNet
+	 *//*
+		 * public static ProbNet removeSuperValueNodes(ProbNet probNet, EvidenceCase
+		 * evidenceCase) { ProbNet probNetWithoutSV = probNet; if
+		 * (!hasOnlyChanceNodes(probNetWithoutSV)) { probNetWithoutSV =
+		 * BasicOperations.removeSuperValueNodes(probNet, evidenceCase, false, false,
+		 * null); } return probNetWithoutSV; }
+		 */
+
+	/**
+	 * @param probNet
+	 * @param evidenceCase
+	 * @return Remove intermediate numeric nodes from probNet
 	 */
-	public static ProbNet removeSuperValueNodes(ProbNet probNet, EvidenceCase evidenceCase) {
-		ProbNet probNetWithoutSV = probNet;
-		if (!hasOnlyChanceNodes(probNetWithoutSV)) {
-			probNetWithoutSV = BasicOperations.removeSuperValueNodes(probNet, evidenceCase, false, false, null);
+	public static ProbNet absorbAllIntermediateNumericNodes(ProbNet probNet, EvidenceCase evidenceCase) {
+		ProbNet resultNetwork = null;
+		if (!hasOnlyChanceNodes(probNet)) {
+			resultNetwork = BasicOperations.absorbAllIntermediateNumericNodes(probNet, evidenceCase);
 		}
-		return probNetWithoutSV;
+		return resultNetwork;
 	}
 
 	/**
@@ -153,10 +169,12 @@ public class TaskUtilities {
 	}
 
 	/**
-	 * @param probNet                   Replaces decision nodes in 'probNet' by chance nodes by using
-	 *                                  the corresponding policies. In PRERESOLUTION phase only
-	 *                                  imposed policies are used. In POSTRESOLUTION phase both
-	 *                                  imposed and calculated policies are used. Decision nodes in
+	 * @param probNet                   Replaces decision nodes in 'probNet' by
+	 *                                  chance nodes by using the corresponding
+	 *                                  policies. In PRERESOLUTION phase only
+	 *                                  imposed policies are used. In POSTRESOLUTION
+	 *                                  phase both imposed and calculated policies
+	 *                                  are used. Decision nodes in
 	 *                                  'informationalPredecessors' are not changed.
 	 * @param informationalPredecessors
 	 */

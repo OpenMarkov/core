@@ -34,12 +34,15 @@ import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 
+import net.sourceforge.jeval.EvaluationException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -105,10 +108,7 @@ public final class DiscretePotentialOperations {
 			}
 		}
 		//Find out if some potential has criterion. In that case, set that criterion in the resulting potential
-		Criterion criterion = null;
-		for (int i = 0; i < tablePotentials.size() && criterion == null; i++) {
-			criterion = tablePotentials.get(i).getCriterion();
-		}
+		Criterion criterion = findFirstNonNullCriterion(tablePotentials);
 
 		List<TablePotential> potentials = new ArrayList<>(tablePotentials);
 
@@ -125,9 +125,7 @@ public final class DiscretePotentialOperations {
 
 		potentials = AuxiliaryOperations.getNonConstantPotentials(potentials);
 		if (potentials.size() == 0) {
-			TablePotential constantTablePotential = new TablePotential(null, role);
-			constantTablePotential.values[0] = constantFactor;
-			return constantTablePotential;
+			return buildConstantPotential(constantFactor, role);
 		}
 
 		// Gets the union
@@ -137,10 +135,7 @@ public final class DiscretePotentialOperations {
 
 		// Gets the tables of each TablePotential
 		numPotentials = potentials.size();
-		double[][] tables = new double[numPotentials][];
-		for (int i = 0; i < numPotentials; i++) {
-			tables[i] = potentials.get(i).values;
-		}
+		double[][] tables = initializeFromValues(potentials);
 
 		// Gets dimension
 		int[] resultDimension = TablePotential.calculateDimensions(resultVariables);
@@ -152,10 +147,7 @@ public final class DiscretePotentialOperations {
 		int[] resultCoordinate = initializeCoordinates(numVariables);
 
 		// Position in each table potential
-		int[] potentialsPositions = new int[numPotentials];
-		for (int i = 0; i < numPotentials; i++) {
-			potentialsPositions[i] = 0;
-		}
+		int[] potentialsPositions = initializeToZero(numPotentials);
 
 		// Multiply
 		int incrementedVariable = 0;
@@ -221,14 +213,25 @@ public final class DiscretePotentialOperations {
 
 		}
 
-		TablePotential resultPotential = new TablePotential(resultVariables, role, resultValues);
-		if (criterion != null) {
-			resultPotential.setCriterion(criterion);
-		}
-		if (thereAreInterventions) {
-			resultPotential.strategyTrees = resultStrategyTrees;
-		}
+		TablePotential resultPotential = buildResultPotential(criterion, role, resultVariables, resultValues,
+				thereAreInterventions, resultStrategyTrees);
 		return resultPotential;
+	}
+
+	private static Criterion findFirstNonNullCriterion(List<TablePotential> tablePotentials) {
+		Criterion criterion = null;
+		for (int i = 0; i < tablePotentials.size() && criterion == null; i++) {
+			criterion = tablePotentials.get(i).getCriterion();
+		}
+		return criterion;
+	}
+
+	private static int[] initializeToZero(int numPotentials) {
+		int[] potentialsPositions = new int[numPotentials];
+		for (int i = 0; i < numPotentials; i++) {
+			potentialsPositions[i] = 0;
+		}
+		return potentialsPositions;
 	}
 
 	/**
@@ -320,37 +323,24 @@ public final class DiscretePotentialOperations {
 		List<Variable> resultVariables = AuxiliaryOperations.getUnionVariables(potentials);
 		int numVariables = resultVariables.size();
 
-		// Gets the tables of each TablePotential
-		double[][] tables = new double[numPotentials][];
-		for (int i = 0; i < numPotentials; i++) {
-			tables[i] = potentials.get(i).values;
-		}
+		double[][] tables = initializeFromValues(potentials);
 
 		// Gets the interventions if necessary
 		boolean thereAreInterventions = areThereInterventions(potentials);
 
-		StrategyTree[][] strategyTrees = null;
-		if (thereAreInterventions) {
-			strategyTrees = new StrategyTree[numPotentials][];
-			for (int i = 0; i < numPotentials; i++) {
-				strategyTrees[i] = potentials.get(i).strategyTrees;
-			}
-		}
+		StrategyTree[][] strategyTrees = initializeFromStrategyTrees(potentials, thereAreInterventions);
 
 		// Gets the dimensions
 		int[] resultDimensions = TablePotential.calculateDimensions(resultVariables);
 
 		// Gets the accumulated offsets
-		int[][] accumulatedOffsets = DiscretePotentialOperations.getAccumulatedOffsets(potentials, resultVariables);
+		int[][] accumulatedOffsets = getAccumulatedOffsets(potentials, resultVariables);
 
 		// Gets the coordinates
 		int[] resultCoordinates = initializeCoordinates(numVariables);
 
 		// Position in each table potential
-		int[] potentialPositions = new int[numPotentials];
-		for (int i = 0; i < numPotentials; i++) {
-			potentialPositions[i] = 0;
-		}
+		int[] potentialsPositions = initializeToZero(numPotentials);
 
 		// Sum
 		int incrementedVariable = 0;
@@ -396,16 +386,16 @@ public final class DiscretePotentialOperations {
 				StrategyTree resultStrategyTree = null;
 				for (int iPotential = 0; iPotential < numPotentials; iPotential++) {
 					// sum the numbers
-					sum = sum + tables[iPotential][potentialPositions[iPotential]];
+					sum = sum + tables[iPotential][potentialsPositions[iPotential]];
 					if (thereAreInterventions && strategyTrees[iPotential] != null) {
-						StrategyTree auxIStrategyTree = strategyTrees[iPotential][potentialPositions[iPotential]];
+						StrategyTree auxIStrategyTree = strategyTrees[iPotential][potentialsPositions[iPotential]];
 						resultStrategyTree = (resultStrategyTree == null) ?
 								auxIStrategyTree :
 								resultStrategyTree.concatenate(auxIStrategyTree);
 					}
 
 					// update the current position in each potential table
-					potentialPositions[iPotential] += accumulatedOffsets[iPotential][incrementedVariable];
+					potentialsPositions[iPotential] += accumulatedOffsets[iPotential][incrementedVariable];
 				}
 				resultValues[resultPosition] = sum;
 				if (thereAreInterventions) {
@@ -433,6 +423,19 @@ public final class DiscretePotentialOperations {
 		}
 
 		return result;
+	}
+
+	private static StrategyTree[][] initializeFromStrategyTrees(List<TablePotential> potentials, 
+			boolean thereAreInterventions) {
+		int numPotentials = potentials.size();
+		StrategyTree[][] strategyTrees = null;
+		if (thereAreInterventions) {
+			strategyTrees = new StrategyTree[numPotentials][];
+			for (int i = 0; i < numPotentials; i++) {
+				strategyTrees[i] = potentials.get(i).strategyTrees;
+			}
+		}
+		return strategyTrees;
 	}
 
 	//	/** Given a collection of variables, creates a new variable whose name is the concatenation
@@ -2587,10 +2590,121 @@ public final class DiscretePotentialOperations {
 		return xNewPotential;
 	}
 
-	public static Potential evaluateFunctionPotential(Potential utilityPotential,
-			List<TablePotential> tablePotentials) {
-		FunctionPotential functionPot = (FunctionPotential) utilityPotential;
-		// TODO Auto-generated method stub
-		return null;
+	public static TablePotential evaluateFunctionPotential(FunctionPotential utilityPotential,
+			List<TablePotential> potentials, List<Variable> utilityVariables) throws NumberFormatException, EvaluationException {
+		int numPotentials = potentials.size();
+		
+		Criterion criterion = findFirstNonNullCriterion(potentials);		
+		PotentialRole role = getRole(potentials);
+		List<Variable> resultVariables = AuxiliaryOperations.getUnionVariables(potentials);
+		int numVariables = resultVariables.size();
+		boolean thereAreVariables = numVariables > 0;
+		double[][] tables = initializeFromValues(potentials);
+		int[] resultDimension = thereAreVariables ? TablePotential.calculateDimensions(resultVariables) : null;
+		int[][] offsetAccumulate = DiscretePotentialOperations.getAccumulatedOffsets(potentials, resultVariables);
+		int[] resultCoordinate = initializeCoordinates(numVariables);
+		int[] potentialsPositions = initializeToZero(numPotentials);
+
+		// Multiply
+		int incrementedVariable = 0;
+
+		int[] dimensions = TablePotential.calculateDimensions(resultVariables);
+		
+		
+		int[] offsets = thereAreVariables ? TablePotential.calculateOffsets(dimensions):null;
+		int tableSize = thereAreVariables ? dimensions[numVariables - 1] * offsets[numVariables - 1] : 1;
+		double[] resultValues = new double[tableSize];
+
+		TablePotential potentialWithInterventions = findFirstPotentialWithInterventions(potentials);
+		boolean thereAreInterventions = (potentialWithInterventions != null);
+		StrategyTree[] resultStrategyTrees = null;
+		StrategyTree strategyTree = null;
+		StrategyTree[] inputStrategyTrees = null;
+		if (thereAreInterventions) {
+			inputStrategyTrees = potentialWithInterventions.strategyTrees;
+			resultStrategyTrees = new StrategyTree[tableSize];
+			if (potentialWithInterventions.getVariables().size() == 0) {
+				// The interventions are in a constant potential
+				strategyTree = inputStrategyTrees[0];
+			}
+		}
+
+		int indexPotentialWithInterventions = potentials.indexOf(potentialWithInterventions);
+
+		List<String> utilityVariablesNames = new ArrayList<>();
+		utilityVariables.forEach(x -> utilityVariablesNames.add(x.getName()));
+		
+		//utilityPotential.
+		
+		for (int resultPosition = 0; resultPosition < tableSize; resultPosition++) {
+			// increment the result coordinate and find out which variable is to be
+			// incremented
+			for (int iVariable = 0; iVariable < resultCoordinate.length; iVariable++) {
+				// try by incrementing the current variable (given by iVariable)
+				resultCoordinate[iVariable]++;
+				if (resultDimension!=null && resultCoordinate[iVariable] != resultDimension[iVariable]) {
+					// we have incremented the right variable
+					incrementedVariable = iVariable;
+					// do not increment other variables;
+					break;
+				}
+				resultCoordinate[iVariable] = 0;
+			}
+
+			Map<String, String> assignment = new Hashtable<>();
+			// multiply
+			for (int iPotential = 0; iPotential < numPotentials; iPotential++) {
+				int potentialsPositionIPotential = potentialsPositions[iPotential];
+				String varNameInExpressionToEvaluate = "v" + (iPotential+1);
+				//String varNameInExpressionToEvaluate = utilityVariablesNames.get(iPotential);
+				assignment.put(varNameInExpressionToEvaluate,
+						"" + tables[iPotential][potentialsPositionIPotential]);
+				// Obtain the intervention
+				if (thereAreInterventions && indexPotentialWithInterventions == iPotential) {
+					strategyTree = inputStrategyTrees[potentialsPositionIPotential];
+				}
+				// update the current position in each potential table
+				if (thereAreVariables) {
+					potentialsPositions[iPotential] += offsetAccumulate[iPotential][incrementedVariable];
+				}
+			}
+			resultValues[resultPosition] = Double.parseDouble(utilityPotential.getValue(assignment));
+			if (thereAreInterventions) {
+				resultStrategyTrees[resultPosition] = strategyTree;
+			}
+
+		}
+
+		TablePotential resultPotential = buildResultPotential(criterion, role, resultVariables, resultValues,
+				thereAreInterventions, resultStrategyTrees);
+		return resultPotential;
+	}
+
+	private static double[][] initializeFromValues(List<TablePotential> potentials) {
+		int numPotentials = potentials.size();
+		double[][] tables = new double[numPotentials][];
+		for (int i = 0; i < numPotentials; i++) {
+			tables[i] = potentials.get(i).values;
+		}
+		return tables;
+	}
+
+	private static TablePotential buildConstantPotential(double constantFactor, PotentialRole role) {
+		TablePotential constantTablePotential = new TablePotential(null, role);
+		constantTablePotential.values[0] = constantFactor;
+		return constantTablePotential;
+	}
+
+	private static TablePotential buildResultPotential(Criterion criterion, PotentialRole role,
+			List<Variable> resultVariables, double[] resultValues, boolean thereAreInterventions,
+			StrategyTree[] resultStrategyTrees) {
+		TablePotential resultPotential = new TablePotential(resultVariables, role, resultValues);
+		if (criterion != null) {
+			resultPotential.setCriterion(criterion);
+		}
+		if (thereAreInterventions) {
+			resultPotential.strategyTrees = resultStrategyTrees;
+		}
+		return resultPotential;
 	}
 }

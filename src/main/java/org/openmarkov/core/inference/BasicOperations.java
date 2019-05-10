@@ -17,7 +17,9 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNetOperations;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
+import org.openmarkov.core.model.network.potential.FunctionPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.ProductPotential;
 import org.openmarkov.core.model.network.potential.SumPotential;
@@ -25,48 +27,60 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 
+import net.sourceforge.jeval.EvaluationException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 public class BasicOperations {
 	/**
 	 * The source probNet
+	 * @param evidence 
+	 * 
+	 * @throws EvaluationException
+	 * @throws NumberFormatException
 	 */
 	// private static ProbNet sourceProbNet;
-	private static ExactDistrPotential getUtilityFunction(Node utilityNode, EvidenceCase evidence) {
+	private static Potential buildPotentialByAbsorbingParents(Node node, EvidenceCase evidence) {
 		Potential newPotential = null;
-		Hashtable<Node, ExactDistrPotential> hashtable = new Hashtable<>();
-		if (!isSuperValueNode(utilityNode)) {
+		
+		List<TablePotential> tablePotentials = new ArrayList<>();
+		List<Variable> parentVariable = new ArrayList<>();
+		for (Node parent:node.getParents()) {
+			TablePotential auxTablePot = null;
 			try {
-				newPotential = utilityNode.getPotentials().get(0).tableProject(evidence, null).get(0);
+				auxTablePot = parent.getPotentials().get(0).tableProject(evidence, null).get(0);
 			} catch (NonProjectablePotentialException | WrongCriterionException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} else {
-			utilityNode.getParents().forEach(node -> hashtable.put(node, getUtilityFunction(node, evidence)));
-			List<ExactDistrPotential> potentials = new ArrayList<>(hashtable.values());
-			Potential utilityPotential = utilityNode.getPotentials().get(0);
-			List<TablePotential> tablePotentials = new ArrayList<>();
-			potentials.forEach(x -> tablePotentials.add(x.getTablePotential()));
-			if (utilityPotential instanceof SumPotential) {
-				newPotential = DiscretePotentialOperations.sum(tablePotentials);
-			} else if (utilityPotential instanceof ProductPotential) {
-				newPotential = DiscretePotentialOperations.multiply(tablePotentials);
-			} else { // FunctionPontential
-				newPotential = DiscretePotentialOperations.evaluateFunctionPotential(utilityPotential, tablePotentials);
+			tablePotentials.add(auxTablePot);
+			parentVariable.add(parent.getVariable());
+		}
+		Potential nodePotential = node.getPotentials().get(0);
+		if (nodePotential instanceof SumPotential) {
+			newPotential = DiscretePotentialOperations.sum(tablePotentials);
+		} else if (nodePotential instanceof ProductPotential) {
+			newPotential = DiscretePotentialOperations.multiply(tablePotentials);
+		} else { // FunctionPotential
+			try {
+				newPotential = DiscretePotentialOperations.evaluateFunctionPotential(
+						(FunctionPotential) nodePotential, tablePotentials, parentVariable);
+			} catch (NumberFormatException | EvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-		return buildExactDistrPotentialUtility(utilityNode.getVariable(),(TablePotential) newPotential);
+		// }
+		return buildExactDistrPotentialUtility(node.getVariable(), (TablePotential) newPotential);
 	}
-	
-	
-	
-	
+
 	private static ExactDistrPotential buildExactDistrPotentialUtility(Variable variable, TablePotential pot) {
 		List<Variable> variables = new ArrayList<>();
 		variables.add(variable);
@@ -97,117 +111,110 @@ public class BasicOperations {
 		return terminalUtilityNodes;
 	}
 
+	static boolean isNumeric(Variable v) {
+		return v.getVariableType() == VariableType.NUMERIC;
+	}
+
+	/**
+	 * @param network Network from which we extract terminal numeric variables
+	 * @return A list of utility nodes that have no children
+	 */
+	public static List<Variable> getNumericVariablesWithoutNumericChildren(ProbNet network) {
+		return network.getVariables().stream().filter(v -> (isNumeric(v) && !hasNumericChildren(network, v)))
+				.collect(Collectors.toList());
+	}
+
+	private static boolean hasNumericChildren(ProbNet network, Variable v) {
+		List<Node> children = network.getChildren(network.getNode(v));
+		return children.stream().anyMatch(x -> isNumeric(x.getVariable()));
+	}
+
 	/**
 	 * @param network Network from which we extract terminal utility nodes
 	 * @return A list of utility nodes that have no children
-	 */
-	public static List<Node> getTerminalUtilityNodes(ProbNet network) {
-		List<Node> utilityNodes = network.getNodes(NodeType.UTILITY);
-		List<Node> terminalUtilityNodes = new ArrayList<>();
-		for (Node utilityNode : utilityNodes) {
-			if (network.getNumChildren(utilityNode) == 0) {
-				terminalUtilityNodes.add(utilityNode);
-			}
-		}
-		return terminalUtilityNodes;
-	}
-
+	 *//*
+		 * public static List<Node> getTerminalUtilityNodes(ProbNet network) {
+		 * List<Node> utilityNodes = network.getNodes(NodeType.UTILITY); List<Node>
+		 * terminalUtilityNodes = new ArrayList<>(); for (Node utilityNode :
+		 * utilityNodes) { if (network.getNumChildren(utilityNode) == 0) {
+		 * terminalUtilityNodes.add(utilityNode); } } return terminalUtilityNodes; }
+		 */
 	/**
 	 * @param sourceProbNet Network from which we remove utility nodes
 	 * @return A copy of the probNet after removing utility nodes.
 	 */
-	public static ProbNet removeUtilityNodes(ProbNet sourceProbNet) {
-		ProbNet network = sourceProbNet.copy();
-		for (Variable utilityVariable : network.getVariables(NodeType.UTILITY)) {
-			Node node = network.getNode(utilityVariable);
-			network.removeNode(node);
-		}
-		return network;
-	}
-
-	/**
-	 * @param sourceProbNet         Network from which we remove super value nodes
-	 * @param evidence              Evidence of the nerwork
-	 * @param keepComponents        keep (or not) components
-	 * @param leaveImplicitSum      leave (or not) the implicit sum
-	 * @param utilityVariableToKeep utility variable to keep
-	 * @return A copy of the probNet by removing super-value nodes.
-	 * When keepComponents is false the output network is equivalent to 'sourceProbNet'. However, when keepComponents is true the output
-	 * network has a utility node without children corresponding to each utility node in 'sourceProbNet', and the utility function is
-	 * given explicitly in terms of the ancestors chance and decision nodes.
-	 * Parameter 'leaveImplicitSum' only applies when 'keepComponents' is false. When 'leaveImplicitSum' is true then the output is in the form 
-	 * of influence diagrams with an implicit sum like those processed by Jensen's variable elimination algorithm; otherwise the structure of super-value nodes is
-	 * reduced into an only utility node.
-	 * If 'utilityVariableToKeep' is different from null then it is the only potential to keep.
-	 * Otherwise all the variables are considered.
+	/*
+	 * public static ProbNet removeUtilityNodes(ProbNet sourceProbNet) { ProbNet
+	 * network = sourceProbNet.copy(); for (Variable utilityVariable :
+	 * network.getVariables(NodeType.UTILITY)) { Node node =
+	 * network.getNode(utilityVariable); network.removeNode(node); } return network;
+	 * }
 	 */
-	public static ProbNet removeSuperValueNodes(ProbNet sourceProbNet, EvidenceCase evidence, boolean keepComponents,
-			boolean leaveImplicitSum, Variable utilityVariableToKeep) {
+
+	public static ProbNet absorbAllIntermediateNumericNodes(ProbNet sourceProbNet, EvidenceCase evidence) {
 		ProbNet network = sourceProbNet.copy();
-		List<Node> utilityNodes = network.getNodes(NodeType.UTILITY);
-		for (Node utilityNode : utilityNodes) {
-			Variable utilityVariable = utilityNode.getVariable();
-			if ((isSuperValueNode(utilityNode) && utilityVariableToKeep == null)
-					|| utilityVariable == utilityVariableToKeep) {
-				ExactDistrPotential potential = getUtilityFunction(utilityNode, evidence);
-				List<Node> parents = network.getParents(utilityNode);
-				// remove links between supervalue nodes and their utility
-				// parents
-				for (Node parent : parents) {
-					if (parent.getNodeType() == NodeType.UTILITY) {
-						network.removeLink(parent.getVariable(), utilityVariable, true);
-					}
-				}
-				// add links between of new potential of supervalue nodes
-				for (Variable variable : potential.getVariables()) {
-					if (variable != utilityVariable) {
-						try {
-							network.addLink(variable, utilityVariable, true);
-						} catch (NodeNotFoundException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-				// sets the new potential
-				List<Potential> newPotentials = new ArrayList<>();
-				newPotentials.add(potential);
-				network.getNode(utilityVariable).setPotentials(newPotentials);
-			}
-		}
-		if (!keepComponents) {
-			List<Variable> nodesToKeep;
-			if (utilityVariableToKeep == null) {
-				if (leaveImplicitSum) {
-					// Get the nodes such as there is an implicit sum
-					// between them
-					nodesToKeep = getUtilityNodesToKeepImplicitSum(sourceProbNet);
-				} else {
-					nodesToKeep = getTerminalUtilityVariables(sourceProbNet);
-				}
-			} else {
-				nodesToKeep = new ArrayList<>();
-				nodesToKeep.add(utilityVariableToKeep);
-			}
-			for (Node utilityNode : utilityNodes) {
-				if (!nodesToKeep.contains(utilityNode.getVariable())) {
-					network.removeNode(utilityNode);
-				}
-			}
-		}
+		
+		// Get numerical variables without numerical children to start the recursion
+		List<Variable> terminalNumericVariables = getNumericVariablesWithoutNumericChildren(network);
+		Set<Variable> processed = new HashSet<>();
+		terminalNumericVariables.forEach(v -> absorbAllIntermediateNumericNodes(network,v,evidence,processed));
 		return network;
+		
+	}
+	
+	private static void absorbAllIntermediateNumericNodes(ProbNet network, Variable variable, EvidenceCase evidence,
+			Set<Variable> processed) {
+	
+		Node node = network.getNode(variable);
+		List<Node> parents = node.getParents();
+		for (Node parent : parents) {
+			Variable parentVariable = parent.getVariable();
+			if (!processed.contains(parentVariable) && isNumeric(parentVariable)) {
+				absorbAllIntermediateNumericNodes(network, parentVariable, evidence, processed);
+			}
+		}
+		if (!parents.isEmpty() && areAllItsParentsAbsorbable(node)) {
+			absorbParents(network, node, evidence);
+		}
+		processed.add(variable);	
 	}
 
-	public static ProbNet removeSuperValueNodes(ProbNet sourceProbNet, EvidenceCase evidence) {
-		return removeSuperValueNodes(sourceProbNet, evidence, false, false, null);
+	
+
+	private static void absorbParents(ProbNet network, Node node, EvidenceCase evidence) {
+		List<Node> parents = network.getParents(node);
+		
+		Variable nodeVariable = node.getVariable();
+		Potential potential = buildPotentialByAbsorbingParents(node, evidence);
+
+		for (Node parent : parents) {
+			network.removeLink(parent.getVariable(), nodeVariable, true);
+		}
+		for (Variable variable : potential.getVariables()) {
+			if (variable != nodeVariable) {
+				try {
+					network.addLink(variable, nodeVariable, true);
+				} catch (NodeNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		// sets the new potential
+		List<Potential> newPotentials = new ArrayList<>();
+		newPotentials.add(potential);
+		network.getNode(nodeVariable).setPotentials(newPotentials);
+		parents.forEach(x -> network.removeNode(x));
 	}
+
+
 
 	/**
-	 * Assumes the structure of super value verifies that there are no more than
-	 * one path between two utility nodes.
+	 * Assumes the structure of super value verifies that there are no more than one
+	 * path between two utility nodes.
 	 *
 	 * @param sourceProbNet Network from which we extract the utility nodes
-	 * @return A list of utility nodes that must be kept when we want to have a
-	 * set of utility nodes with an implicit sum
+	 * @return A list of utility nodes that must be kept when we want to have a set
+	 *         of utility nodes with an implicit sum
 	 */
 	private static List<Variable> getUtilityNodesToKeepImplicitSum(ProbNet sourceProbNet) {
 		List<Variable> nodesToKeep = getTerminalUtilityVariables(sourceProbNet);
@@ -233,8 +240,8 @@ public class BasicOperations {
 
 	/**
 	 * @param sourceProbNet source network
-	 * @param nodesToKeep   list of variables of the nodes to keep
-	 *                      Removes a sum node of the list and add its parents to the list
+	 * @param nodesToKeep   list of variables of the nodes to keep Removes a sum
+	 *                      node of the list and add its parents to the list
 	 */
 	private static void removeASumNode(ProbNet sourceProbNet, List<Variable> nodesToKeep) {
 		boolean removed = false;
@@ -250,35 +257,61 @@ public class BasicOperations {
 	}
 
 	/**
-	 * Returns whether the node <code>utilityNode</code> is a supervalue node
-	 *
-	 * @param utilityNode the node to test
-	 * @return true if the node is a supervalue node, false otherwise
+	 * 
+	 * @param node the node to test
+	 * @return true if all the parents of a node can be absorbed. It must be fulfill
+	 *         three conditions: 1) It is a numeric node 2) Its parents are all
+	 *         numeric 3) Its grandparents are all discrete
 	 */
-	public static boolean isSuperValueNode(Node utilityNode) {
-		boolean found = false;
-		int i = 0;
-		List<Node> parents = utilityNode.getParents();
-		while (i < parents.size() && !found) {
-			found = parents.get(i).getNodeType() == NodeType.UTILITY;
-			++i;
+	public static boolean areAllItsParentsAbsorbable(Node node) {
+		boolean areAbsorbable = true;
+
+		// Verify condition 1)
+		areAbsorbable = getVariableType(node) == VariableType.NUMERIC;
+
+		if (areAbsorbable) {
+			// Verify condition 2)
+			List<Node> parents = node.getParents();
+			areAbsorbable = areAllVariablesOfType(parents, VariableType.NUMERIC);
+
+			if (areAbsorbable) {
+				// Verify condition 3)
+				Set<Node> grandParents = new HashSet<>();
+				parents.forEach(x -> grandParents.addAll(x.getParents()));
+				List<Node> grandParentsList = new ArrayList<>();
+				grandParentsList.addAll(grandParents);
+				areAbsorbable = areAllVariablesOfType(grandParentsList, VariableType.FINITE_STATES);
+			}
 		}
-		return found;
+
+		return areAbsorbable;
 	}
 
-    /*
-*************************
-*************************
-*************************
-*************************
-// TODO: check this...
-PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
-*************************
-*************************
-*************************
-*************************
+	private static boolean areAllVariablesOfType(List<Node> nodes, VariableType type) {
+		boolean areAll = true;
 
- */
+		for (int i = 0; i < nodes.size() && areAll; i++) {
+			areAll = getVariableType(nodes.get(i)) == type;
+		}
+		return areAll;
+	}
+
+	private static VariableType getVariableType(Node node) {
+		return node.getVariable().getVariableType();
+	}
+
+	/*
+	 *************************
+	 *************************
+	 *************************
+	 *************************
+	 * // TODO: check this... PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
+	 *************************
+	 *************************
+	 *************************
+	 *************************
+	 * 
+	 */
 
 	/**
 	 * @return <code>List</code> of <code>List</code> of <code>Variable</code>s
@@ -292,9 +325,10 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
 	}
 
 	/**
-	 * @param probNet A probabilistic network of which the partial order will be calculated
+	 * @param probNet A probabilistic network of which the partial order will be
+	 *                calculated
 	 * @return <code>ArrayList</code> of <code>ArrayList</code> of
-	 * <code>Variables</code> with the partial order of the received probNet
+	 *         <code>Variables</code> with the partial order of the received probNet
 	 */
 	public static List<List<Variable>> calculatePartialOrder(ProbNet probNet) {
 		ProbNet idCopy = probNet.copy(); // Copy influence diagram
@@ -324,9 +358,8 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
 			if (probNet.getNetworkType() != DecisionAnalysisNetworkType.getUniqueInstance()) {
 				parentsCandidates = probNet.getParents(decisionNode);
 			} else {
-				parentsCandidates = (i == 0) ?
-						ProbNetOperations.getAlwaysObservedVariables(probNet) :
-						getVariablesRevealedTransitivelyByVariable(decisionsList.get(i - 1), probNet);
+				parentsCandidates = (i == 0) ? ProbNetOperations.getAlwaysObservedVariables(probNet)
+						: getVariablesRevealedTransitivelyByVariable(decisionsList.get(i - 1), probNet);
 			}
 			for (Node parent : parentsCandidates) {
 				if (parent.getNodeType() != NodeType.DECISION) {
@@ -361,8 +394,8 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
 	/**
 	 * @param variable
 	 * @param probNet
-	 * @return The list of variables revealed by a variable in a DAN or by a chance variable revealed by that variable,
-	 * and so on...
+	 * @return The list of variables revealed by a variable in a DAN or by a chance
+	 *         variable revealed by that variable, and so on...
 	 */
 	private static List<Node> getVariablesRevealedTransitivelyByVariable(Variable variable, ProbNet probNet) {
 		Node variableNode = probNet.getNode(variable);
@@ -427,8 +460,9 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
 	 * @param evidenceVariables     List<Variable>
 	 * @param conditioningVariables List<Variable>
 	 * @param variablesToEliminate  List<Variable>
-	 * @return An order that has been pruned by eliminating the variables that
-	 * are in queryVariables or in evidenceVariables or in conditioningVariables or not in variablesToEliminate
+	 * @return An order that has been pruned by eliminating the variables that are
+	 *         in queryVariables or in evidenceVariables or in conditioningVariables
+	 *         or not in variablesToEliminate
 	 */
 	public static List<List<Variable>> projectPartialOrder(ProbNet probNet, List<Variable> queryVariables,
 			List<Variable> evidenceVariables, List<Variable> conditioningVariables,
@@ -441,8 +475,8 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
 			List<Variable> cloneAuxArray;
 			cloneAuxArray = new ArrayList<>(auxArray);
 			for (Variable auxVar : auxArray) {
-				if (queryVariables.contains(auxVar) || evidenceVariables.contains(auxVar) || conditioningVariables
-						.contains(auxVar) || !variablesToEliminate.contains(auxVar)) {
+				if (queryVariables.contains(auxVar) || evidenceVariables.contains(auxVar)
+						|| conditioningVariables.contains(auxVar) || !variablesToEliminate.contains(auxVar)) {
 					cloneAuxArray.remove(auxVar);
 				}
 			}
@@ -515,7 +549,7 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
 		List<List<Variable>> variablesOrder = new ArrayList<>();
 		variablesOrder.add(variables);
 		partialOrder = new ArrayList<>(variablesOrder);
-		//partialOrder.setOrder(variablesOrder);
+		// partialOrder.setOrder(variablesOrder);
 		return partialOrder;
 	}
 
@@ -523,8 +557,9 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
 	 * @param evidenceVariables     List<Variable>
 	 * @param conditioningVariables List<Variable>
 	 * @param variablesToEliminate  List<Variable>
-	 * @return An order that has been pruned by eliminating the variables that
-	 * are in queryVariables or in evidenceVariables or in conditioningVariables or not in variablesToEliminate
+	 * @return An order that has been pruned by eliminating the variables that are
+	 *         in queryVariables or in evidenceVariables or in conditioningVariables
+	 *         or not in variablesToEliminate
 	 */
 	public static List<List<Variable>> projectPartialOrder2(ProbNet probNet, List<Variable> queryVariables,
 			List<Variable> evidenceVariables, List<Variable> conditioningVariables,
@@ -557,9 +592,10 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
 	}
 
 	/**
-	 * @param probNet A probabilistic network of which the partial order will be calculated
+	 * @param probNet A probabilistic network of which the partial order will be
+	 *                calculated
 	 * @return <code>ArrayList</code> of <code>ArrayList</code> of
-	 * <code>Variables</code> with the partial order of the received probNet
+	 *         <code>Variables</code> with the partial order of the received probNet
 	 */
 	public static List<List<Variable>> calculatePartialOrder2(ProbNet probNet) {
 		ProbNet idCopy = probNet.copy(); // Copy influence diagram
@@ -586,7 +622,8 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
 							newGenNodes.addAll(idCopy.getChildren(node));
 							idCopy.removeNode(node);
 						} else {
-							// If there are chance nodes remove them first (add Decision to the next generation of removed nodes)
+							// If there are chance nodes remove them first (add Decision to the next
+							// generation of removed nodes)
 							newGenNodes.add(node);
 						}
 					} else {
@@ -605,7 +642,7 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
 			}
 
 			if (numberOfDecisions > 1) {
-				//                throw new NotEvaluableNetworkException("There are more than one decision");
+				// throw new NotEvaluableNetworkException("There are more than one decision");
 				System.out.println("BAD NET");
 			}
 
@@ -654,5 +691,66 @@ PARTIAL ORDER OPERATIONS. SOME OF THEM TO BE REMOVED
 		}
 		return partialOrder;
 	}
+	
+	public static ProbNet removeSuperValueNodes(ProbNet sourceProbNet, EvidenceCase evidence) {
+		return removeSuperValueNodes(sourceProbNet, evidence, false, false, null);
+	}
+	
+	/**
+	 * @param sourceProbNet         Network from which we remove super value nodes
+	 * @param evidence              Evidence of the network
+	 * @param keepComponents        keep (or not) components
+	 * @param leaveImplicitSum      leave (or not) the implicit sum
+	 * @param utilityVariableToKeep utility variable to keep
+	 * @return A copy of the probNet by removing super-value nodes. When
+	 *         keepComponents is false the output network is equivalent to
+	 *         'sourceProbNet'. However, when keepComponents is true the output
+	 *         network has a utility node without children corresponding to each
+	 *         utility node in 'sourceProbNet', and the utility function is given
+	 *         explicitly in terms of the ancestors chance and decision nodes.
+	 *         Parameter 'leaveImplicitSum' only applies when 'keepComponents' is
+	 *         false. When 'leaveImplicitSum' is true then the output is in the form
+	 *         of influence diagrams with an implicit sum like those processed by
+	 *         Jensen's variable elimination algorithm; otherwise the structure of
+	 *         super-value nodes is reduced into an only utility node. If
+	 *         'utilityVariableToKeep' is different from null then it is the only
+	 *         potential to keep. Otherwise all the variables are considered.
+	 */
+	//TODO This method should never be used as we are moving from the UTILITY / SUPER-VALUE nodes ideas to the DISCRETE / NUMERIC ones.
+	
+	public static ProbNet removeSuperValueNodes(ProbNet sourceProbNet, EvidenceCase evidence, boolean keepComponents,
+			boolean leaveImplicitSum, Variable utilityVariableToKeep) {
+		ProbNet network = sourceProbNet.copy();
+		List<Node> utilityNodes = network.getNodes(NodeType.UTILITY);
+		for (Node utilityNode : utilityNodes) {
+			Variable utilityVariable = utilityNode.getVariable();
+			if ((areAllItsParentsAbsorbable(utilityNode) && utilityVariableToKeep == null)
+					|| utilityVariable == utilityVariableToKeep) {
+				//absorbIntermediateParentNode(network, utilityNode, evidence);
+			}
+		}
+		if (!keepComponents) {
+			List<Variable> nodesToKeep;
+			if (utilityVariableToKeep == null) {
+				if (leaveImplicitSum) {
+					// Get the nodes such as there is an implicit sum
+					// between them
+					nodesToKeep = getUtilityNodesToKeepImplicitSum(sourceProbNet);
+				} else {
+					nodesToKeep = getTerminalUtilityVariables(sourceProbNet);
+				}
+			} else {
+				nodesToKeep = new ArrayList<>();
+				nodesToKeep.add(utilityVariableToKeep);
+			}
+			for (Node utilityNode : utilityNodes) {
+				if (!nodesToKeep.contains(utilityNode.getVariable())) {
+					network.removeNode(utilityNode);
+				}
+			}
+		}
+		return network;
+	}
+
 
 }

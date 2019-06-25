@@ -147,6 +147,8 @@ public class TaskUtilities {
 		ProbNet resultNetwork = null;
 		if (!hasOnlyChanceNodes(probNet)) {
 			resultNetwork = BasicOperations.absorbAllIntermediateNumericNodes(probNet, evidenceCase);
+		} else {
+			return probNet;
 		}
 		return resultNetwork;
 	}

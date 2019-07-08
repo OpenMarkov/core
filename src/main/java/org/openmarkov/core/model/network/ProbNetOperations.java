@@ -382,34 +382,33 @@ public class ProbNetOperations {
 		ProbNet graph = probNet.copy();
 
 		// Empty list that will contain the sorted elements
-		Stack<Node> stack = new Stack<>();
+		Stack<Node> stackOrderedNodes = new Stack<>();
 		// Set of all nodes with no incoming edges
-		List<Node> l = new ArrayList<>();
+		List<Node> noEdgesListOfNodes = new ArrayList<>();
 		// Look for variables/nodes with no parents
 		for (Node node : graph.getNodes()) {
 			if (node.getParents().size() == 0) {
-				stack.push(node);
+				stackOrderedNodes.push(node);
 			}
 		}
-		// while S is non-empty do
-		while (!stack.isEmpty()) {
-			// remove a node n from S
-			Node n = stack.pop();
-			// insert n into L
-			l.add(n);
-			// for each node m with an edge e from n to m do
-			for (Node m : n.getChildren()) {
-				// remove edge e from the graph
-				graph.removeLink(n, m, true);
-				// if m has no other incoming edges then insert m into S
-				if (m.getParents().isEmpty()) {
-					stack.push(m);
+		while (!stackOrderedNodes.isEmpty()) {
+			// remove a node from stack
+			Node nodeOrdered = stackOrderedNodes.pop();
+			// insert int into no edges list of nodes
+			noEdgesListOfNodes.add(nodeOrdered);
+			// for each node  with an edge e from n to m do
+			for (Node childOfOrdered : nodeOrdered.getChildren()) {
+				// remove edges from childOfOrdered to its children
+				graph.removeLink(nodeOrdered, childOfOrdered, true);
+				// if the node has no other incoming edges then insert it into the stack of ordered nodes
+				if (childOfOrdered.getParents().isEmpty()) {
+					stackOrderedNodes.push(childOfOrdered);
 				}
 			}
 		}
 
 		List<Node> sortedNodes = new ArrayList<>();
-		for (Node node : l)
+		for (Node node : noEdgesListOfNodes)
 			sortedNodes.add(probNet.getNode(node.getVariable()));
 		return sortedNodes;
 	}

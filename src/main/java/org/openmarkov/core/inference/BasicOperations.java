@@ -47,7 +47,7 @@ public class BasicOperations {
 	 * @throws NumberFormatException
 	 */
 	// private static ProbNet sourceProbNet;
-	private static Potential buildPotentialByAbsorbingParents(Node node, EvidenceCase evidence) {
+	public static Potential buildPotentialByAbsorbingParents(Node node, EvidenceCase evidence) {
 		Potential newPotential = null;
 		
 		List<TablePotential> tablePotentials = new ArrayList<>();
@@ -173,15 +173,24 @@ public class BasicOperations {
 				absorbAllIntermediateNumericNodes(network, parentVariable, evidence, processed);
 			}
 		}
-		if (!parents.isEmpty() && areAllItsParentsAbsorbable(node)) {
+		if (haveParentsAndAreAllAbsorbable(node)) {
 			absorbParents(network, node, evidence);
 		}
 		processed.add(variable);	
 	}
+	
+	
+	/**
+	 * @param node
+	 * @return true iff the node has parents and are all observable
+	 */
+	public static boolean haveParentsAndAreAllAbsorbable(Node node) {
+		return !node.getParents().isEmpty() && areAllItsParentsAbsorbable(node);
+	}
 
 	
 
-	private static void absorbParents(ProbNet network, Node node, EvidenceCase evidence) {
+	public static void absorbParents(ProbNet network, Node node, EvidenceCase evidence) {
 		List<Node> parents = network.getParents(node);
 		
 		Variable nodeVariable = node.getVariable();

@@ -7,7 +7,7 @@
 
 package org.openmarkov.core.exception;
 
-public class ExceptionConstants {
+public class OpenMarkovExceptionConstants {
 	public static final String CanNotAccessFileException = "CanNotAccessFileException";
 
 	/**
@@ -16,4 +16,9 @@ public class ExceptionConstants {
 	public static final String CanNotDoEditException = "CanNotDoEditException";
 
 	public static final String CanNotWriteNetworkToFileException = "CanNotWriteNetworkToFileException";
+
+	public static final String InvalidStateNameDuplicatedException = "InvalidStateNameDuplicatedException";
+
+	public static final String InvalidStateNameEmptyException = "InvalidStateNameEmptyException";
+
 }

@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import com.sun.org.apache.bcel.internal.ExceptionConstants;
 import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.StateAction;

@@ -11,6 +11,8 @@ import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovException;
+import org.openmarkov.core.exception.OpenMarkovExceptionConstants;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
@@ -41,18 +43,32 @@ import java.util.List;
 					.getNewState().getName() : nodeStateEdit.getNewName();
 
 			// Get the trim and lowerCase state
-			name = name.trim();
-			name = name.toLowerCase();
+
 
 			switch (stateAction) {
 			case ADD:
-			case RENAME:
-				if ((name == null) || (name.contentEquals(""))) {
+				String trimmedLowerName;
+				trimmedLowerName = name.trim();
+				trimmedLowerName = name.toLowerCase();
+
+				if ((trimmedLowerName == null) || (trimmedLowerName.contentEquals(""))) {
 					type_error = IS_EMPTY_NAME;
 					return false;
 				}
-				if (!nodeStateEdit.getNode().getVariable()
-						.chekNewStateName(name)) {
+				if (!nodeStateEdit.getNode().getVariable().chekNewStateName(trimmedLowerName)) {
+					type_error = IS_NAME_ALREADY_EXIST;
+					return false;
+				}
+				break;
+			case RENAME:
+				String trimmedName;
+				trimmedName = name.trim();
+
+				if ((trimmedName == null) || (trimmedName.contentEquals(""))) {
+					type_error = IS_EMPTY_NAME;
+					return false;
+				}
+				if (!nodeStateEdit.getNode().getVariable().chekNewStateName(trimmedName)) {
 					type_error = IS_NAME_ALREADY_EXIST;
 					return false;
 				}
@@ -86,9 +102,9 @@ import java.util.List;
 	@Override protected String getMessage() {
 		switch (type_error) {
 		case IS_EMPTY_NAME:
-			return "there should be no empty names";
+			return OpenMarkovExceptionConstants.InvalidStateNameEmptyException;
 		case IS_NAME_ALREADY_EXIST:
-			return "There is already a state with that name in the variable.";
+			return OpenMarkovExceptionConstants.InvalidStateNameDuplicatedException;
 		default:
 			return "Unknown problem";
 

@@ -9,6 +9,9 @@ package org.openmarkov.core.action;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.PotentialOperationException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -18,9 +21,11 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("serial") public class RemoveLinkEdit extends BaseLinkEdit {
@@ -104,6 +109,22 @@ import java.util.List;
 				this.oldPotentials = node2.getPotentials();
 				for (Potential oldPotential : oldPotentials) {
 					Potential newPotential = oldPotential.removeVariable(node1.getVariable());
+					// TODO - Implements validate for all potential types, at this moment it always return true.
+					/*
+					if (!newPotential.validate(node2, newPotential.getVariables(), newPotential.getPotentialRole())){
+						newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
+					};
+					 */
+
+					// Temporal patch to be removed when the above TO-DO is implemented
+					try {
+						if (Arrays.stream(newPotential.getCPT().values).sum() == 0){
+							newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
+						}
+					} catch (NonProjectablePotentialException | WrongCriterionException e) {
+						e.printStackTrace();
+					}
+
 					newPotentials.add(newPotential);
 				}
 				node2.setPotentials(newPotentials);

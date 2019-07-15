@@ -8,6 +8,9 @@
 package org.openmarkov.core.exception;
 
 public class OpenMarkovExceptionConstants {
+
+	public static final String GenericException = "GenericException";
+
 	public static final String CanNotAccessFileException = "CanNotAccessFileException";
 
 	/**
@@ -17,8 +20,14 @@ public class OpenMarkovExceptionConstants {
 
 	public static final String CanNotWriteNetworkToFileException = "CanNotWriteNetworkToFileException";
 
+	/**
+	 * Invalid State name
+	 */
 	public static final String InvalidStateNameDuplicatedException = "InvalidStateNameDuplicatedException";
-
 	public static final String InvalidStateNameEmptyException = "InvalidStateNameEmptyException";
-
+	/**
+	 * Invalid Variable name
+	 */
+	public static final String InvalidVariableNameExistingException = "InvalidVariableNameExistingException";
+	public static final String InvalidVariableNameExistingTimeSliceException = "InvalidVariableNameExistingTimeSliceException";
 }

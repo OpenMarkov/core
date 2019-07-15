@@ -106,7 +106,7 @@ import java.util.List;
 		case IS_NAME_ALREADY_EXIST:
 			return OpenMarkovExceptionConstants.InvalidStateNameDuplicatedException;
 		default:
-			return "Unknown problem";
+			return OpenMarkovExceptionConstants.GenericException;
 
 		}
 	}

@@ -18,10 +18,13 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Wrapper for TablePotential */
 @PotentialType(name = "Exact") public class ExactDistrPotential extends Potential {
 
+	// Attributes
 	private TablePotential tablePotential;
 
+	// Constructors
 	public ExactDistrPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role);
 		if (this.role == null) {
@@ -44,6 +47,7 @@ import java.util.List;
 		this.tablePotential = new TablePotential(potential.getTablePotential());
 	}
 
+	// Methods
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
 			throws NonProjectablePotentialException, WrongCriterionException {
 		// get the projected TablePotential, which will be returned inside a list

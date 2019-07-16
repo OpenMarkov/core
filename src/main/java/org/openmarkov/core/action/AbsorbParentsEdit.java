@@ -9,10 +9,10 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 
-public class AbsorbIntermediateNodeEdit extends CompoundPNEdit {
+public class AbsorbParentsEdit extends CompoundPNEdit {
 	Node node;	
 
-	public AbsorbIntermediateNodeEdit(ProbNet probNet, Node node) {
+	public AbsorbParentsEdit(ProbNet probNet, Node node) {
 		super(probNet);
 		this.node = node;
 	}

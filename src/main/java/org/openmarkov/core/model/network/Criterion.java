@@ -163,7 +163,7 @@ public class Criterion implements Cloneable {
 	}
 
 	@Override public String toString() {
-		return criterionName + " " + criterionUnit;
+		return criterionName + " (" + criterionUnit + ")";
 	}
 
 	/**

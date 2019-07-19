@@ -565,7 +565,7 @@ public class ProbNetOperations {
 					}
 					node.setPotential(newPotential);
 				}
-			} else if (!node.getPotentials().isEmpty() && potentialContainsConvertedNodes(node.getPotentials().get(0),
+			} else if (!node.getPotentials().isEmpty() && doesPotentialContainAnyConvertedNode(node.getPotentials().get(0),
 					convertedVariables.keySet())) {
 				// Node is not numeric but contains numeric parents
 				// Adapt potential to numeric finite states variables
@@ -702,14 +702,8 @@ public class ProbNetOperations {
 		return convertedParentVariables;
 	}
 
-	private static boolean potentialContainsConvertedNodes(Potential potential, Set<Variable> convertedVariables) {
-		boolean contains = false;
-		List<Variable> variables = potential.getVariables();
-		int i = 0;
-		while (i < variables.size() && !contains) {
-			contains = convertedVariables.contains(variables.get(i++));
-		}
-		return contains;
+	private static boolean doesPotentialContainAnyConvertedNode(Potential potential, Set<Variable> convertedVariables) {
+		return potential.getVariables().stream().anyMatch(x -> convertedVariables.contains(x));
 	}
 
 	public static List<State> getUnrestrictedStates(Link<Node> link, State[] restrictedVariableStates, State state) {

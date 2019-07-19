@@ -161,6 +161,15 @@ public class TaskUtilities {
 		List<Node> decisionNodes = network.getNodes(NodeType.DECISION);
 		return (decisionNodes != null && !decisionNodes.isEmpty());
 	}
+	
+	
+	public static boolean hasDecisionsWithoutImposedPolicy(ProbNet network) {
+		boolean hasDecWithoutImposedPolicy;
+		List<Node> decisionNodes = network.getNodes(NodeType.DECISION);
+		hasDecWithoutImposedPolicy = (decisionNodes != null && !decisionNodes.isEmpty());
+		hasDecWithoutImposedPolicy &= decisionNodes.stream().anyMatch(x -> !hasImposedPolicy(network, x.getVariable()));
+		return hasDecWithoutImposedPolicy;
+	}
 
 	/**
 	 * @param network A probabilistic network
@@ -240,7 +249,7 @@ public class TaskUtilities {
 	 * @param decision
 	 * @return True if the decision has an imposed policy.
 	 */
-	protected static boolean hasImposedPolicy(ProbNet probNet, Variable decision) {
+	public static boolean hasImposedPolicy(ProbNet probNet, Variable decision) {
 		return (getPolicy(probNet, decision) != null);
 	}
 

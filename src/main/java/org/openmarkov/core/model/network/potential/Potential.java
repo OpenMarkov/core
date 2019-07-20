@@ -79,11 +79,7 @@ public abstract class Potential {
 	 * @param role      <code>PotentialRole</code>
 	 */
 	public Potential(List<Variable> variables, PotentialRole role) {
-		if (variables != null) {
-			this.variables = new ArrayList<>(variables);
-		} else {
-			this.variables = new ArrayList<>();
-		}
+		this.variables = variables != null ? new ArrayList<>(variables) : new ArrayList<>();
 		properties = new HashMap<>();
 		this.role = role;
 	}

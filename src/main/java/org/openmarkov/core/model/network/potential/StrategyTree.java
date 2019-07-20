@@ -7,35 +7,26 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.openmarkov.core.exception.ConfigurationException;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.sdag.SDAGStrategyTree;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 // TODO Documentar la clase
 public class StrategyTree extends TreeADDPotential {
 
+	// Constructors
 	public StrategyTree(List<Variable> variables, Variable topVariable) {
 		super(variables, topVariable, PotentialRole.UNSPECIFIED);
-		//super(variables,topVariable,PotentialRole.INTERVENTION);
+		ensureThatAllVariablesAreIncluded();
 	}
-
-	// Constructors
 
 	/**
 	 * Creates an intervention without branches.
@@ -44,6 +35,7 @@ public class StrategyTree extends TreeADDPotential {
 	 */
 	public StrategyTree(Variable topVariable) {
 		this(null, topVariable);
+		ensureThatAllVariablesAreIncluded();
 	}
 
 	/**
@@ -92,6 +84,7 @@ public class StrategyTree extends TreeADDPotential {
 				addBranch(new TreeADDBranch(statesOfIntervention, topVariable, strategyTree, null));
 			}
 		}
+		ensureThatAllVariablesAreIncluded();
 	}
 
 	/**
@@ -104,6 +97,7 @@ public class StrategyTree extends TreeADDPotential {
 		this(null, topVariable);
 		List<State> branchStates = Arrays.asList(states);
 		addBranch(new TreeADDBranch(branchStates, topVariable, null));
+		ensureThatAllVariablesAreIncluded();
 	}
 
 	/**
@@ -117,6 +111,7 @@ public class StrategyTree extends TreeADDPotential {
 		List<State> branchStates = new ArrayList<>(states.size());
 		branchStates.addAll(states);
 		addBranch(new TreeADDBranch(branchStates, topVariable, null));
+		ensureThatAllVariablesAreIncluded();
 	}
 
 	/**
@@ -131,6 +126,7 @@ public class StrategyTree extends TreeADDPotential {
 		List<State> branchStates = new ArrayList<>(states.size());
 		branchStates.addAll(states);
 		addBranch(new TreeADDBranch(branchStates, topVariable, strategyTree, null));
+		ensureThatAllVariablesAreIncluded();
 	}
 
 	/**
@@ -148,6 +144,23 @@ public class StrategyTree extends TreeADDPotential {
 			addBranch(
 					new TreeADDBranch(new Threshold(limits[i], false), new Threshold(limits[i + 1], true), topVariable,
 							strategyTrees.get(i), null));
+		}
+		ensureThatAllVariablesAreIncluded();
+	}
+
+	/** Ensures that the variables that exists in rootVariable, branches and sub-potentials
+	 * are also included in the list of variables. */
+	private void ensureThatAllVariablesAreIncluded() {
+		LinkedHashSet<Variable> variables = new LinkedHashSet<>();
+		variables.add(getRootVariable());
+		for (TreeADDBranch branch : branches) {
+			Potential potential = branch.getPotential();
+			if (potential != null) {
+				variables.addAll(potential.getVariables());
+			}
+		}
+		if (!this.variables.containsAll(variables)) {
+			this.variables = new ArrayList<>(variables);
 		}
 	}
 
@@ -245,7 +258,6 @@ public class StrategyTree extends TreeADDPotential {
 		}
 
 		return strategyTree;
-
 	}
 
 	/**
@@ -801,6 +813,48 @@ public class StrategyTree extends TreeADDPotential {
 	@Override public Potential deepCopy(ProbNet copyNet) {
 		StrategyTree strategyTree = (StrategyTree) super.deepCopy(copyNet);
 		return strategyTree;
+	}
+
+    public TablePotential tableProject() {
+		TablePotential projection = new TablePotential(variables, role);
+		fillPotential(projection, new EvidenceCase(), this);
+		return projection;
+	}
+
+	private void fillPotential(TablePotential tablePotential, EvidenceCase evidenceCase, Potential potential) {
+		if (potential == null || !potential.getClass().isAssignableFrom(TreeADDPotential.class)) { // leave
+			fillCompatibleConfigurations(tablePotential, evidenceCase);
+		} else {
+			for (TreeADDBranch branch : branches) {
+				for (State state : branch.getStates()) {
+					try {
+						evidenceCase.changeFinding(new Finding(topVariable, state));
+						fillPotential(tablePotential, evidenceCase, branch.getPotential());
+					} catch (InvalidStateException | IncompatibleEvidenceException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
+	private void fillCompatibleConfigurations(TablePotential tablePotential, EvidenceCase evidenceCase) {
+		if (tablePotential.getNumVariables() == evidenceCase.getNumberOfFindings()) {
+			tablePotential.values[tablePotential.getPosition(evidenceCase)] = 1.0;
+		} else {
+			List<Variable> variables = tablePotential.getVariables();
+			variables.removeAll(evidenceCase.getVariables());
+			Variable variable = variables.get(0);
+			int numStates = variable.getNumStates();
+			for (int i = 0; i < numStates; i++) {
+				try {
+					evidenceCase.changeFinding(new Finding(variable, i));
+					fillCompatibleConfigurations(tablePotential, evidenceCase);
+				} catch (InvalidStateException | IncompatibleEvidenceException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 }

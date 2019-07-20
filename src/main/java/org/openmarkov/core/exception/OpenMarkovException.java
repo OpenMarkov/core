@@ -7,9 +7,6 @@
 
 package org.openmarkov.core.exception;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class OpenMarkovException extends Exception {
 	/**
 	 * This token must correspond which one of the exception constants defined in <code>{@link OpenMarkovException}</code>
@@ -24,6 +21,11 @@ public class OpenMarkovException extends Exception {
 
 	public OpenMarkovException() {
 		super();
+	}
+
+	public OpenMarkovException(String token) {
+		super();
+		this.token = token;
 	}
 
 

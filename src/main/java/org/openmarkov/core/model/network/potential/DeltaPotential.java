@@ -177,8 +177,8 @@ import java.util.List;
 	}
 
 	@Override public void scalePotential(double scale) throws UnsupportedOperationException {
-		// this.numericValue *= scale;
-		throw new UnsupportedOperationException();
+		this.numericValue *= scale;
+//		throw new UnsupportedOperationException();
 	}
 
 	@Override public Potential deepCopy(ProbNet copyNet) {

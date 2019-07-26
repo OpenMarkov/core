@@ -13,6 +13,8 @@ import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.type.MIDType;
+import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -297,27 +299,33 @@ public class EvidenceCase {
 	 */
 	public void extendEvidence(ProbNet probNet)
 			throws IncompatibleEvidenceException, InvalidStateException, WrongCriterionException {
-		for (Potential potential : probNet.getPotentials()) {
-			List<Finding> newFindings = (List<Finding>) potential.getInducedFindings(this);
-			for (Finding newFinding : newFindings) {
-				findings.put(newFinding.getVariable(), newFinding);
-			}
-		}
-		Queue<Finding> pendingFindings = new LinkedList<>(findings.values());
-		while (!pendingFindings.isEmpty()) {
-			Finding oldFinding = pendingFindings.poll();
-			Variable oldVariable = oldFinding.getVariable();
-			List<Potential> potentials = probNet.getPotentials(oldVariable);
-			for (Potential potential : potentials) {
+
+		if (probNet.getNetworkType() == MIDType.getUniqueInstance()) {
+
+			for (Potential potential : probNet.getPotentials()) {
 				List<Finding> newFindings = (List<Finding>) potential.getInducedFindings(this);
 				for (Finding newFinding : newFindings) {
-					if (!findings.containsKey(newFinding.getVariable())) {
-						findings.put(newFinding.getVariable(), newFinding);
-						pendingFindings.add(newFinding);
+					findings.put(newFinding.getVariable(), newFinding);
+				}
+			}
+
+			Queue<Finding> pendingFindings = new LinkedList<>(findings.values());
+			while (!pendingFindings.isEmpty()) {
+				Finding oldFinding = pendingFindings.poll();
+				Variable oldVariable = oldFinding.getVariable();
+				List<Potential> potentials = probNet.getPotentials(oldVariable);
+				for (Potential potential : potentials) {
+					List<Finding> newFindings = (List<Finding>) potential.getInducedFindings(this);
+					for (Finding newFinding : newFindings) {
+						if (!findings.containsKey(newFinding.getVariable())) {
+							findings.put(newFinding.getVariable(), newFinding);
+							pendingFindings.add(newFinding);
+						}
 					}
 				}
 			}
 		}
+
 	}
 
 	/**

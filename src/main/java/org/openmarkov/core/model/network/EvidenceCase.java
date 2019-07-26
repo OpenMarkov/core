@@ -14,7 +14,6 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.type.MIDType;
-import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.ArrayList;
 import java.util.Collection;

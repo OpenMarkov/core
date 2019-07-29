@@ -308,23 +308,19 @@ public class TreeADDBranch {
 
 	@Override public String toString() {
 		StringBuilder builder = new StringBuilder();
-		//        builder.append(indent);
-		//        builder.append("branch (");
-
 		builder.append(rootVariable);
-		//        builder.append(")");
 		builder.append(" = ");
 
 		if (states != null) {
-			for (State state : states) {
-				builder.append(state);
-			}
+			states.forEach(x -> builder.append(x));
 		}
 
 		if (potential != null) {
 			builder.append(" -> ");
 		}
-		if (potential != null) {
+		boolean isNullPotential = potential == null;
+		boolean isStrategyTree = !isNullPotential && potential.getClass() == StrategyTree.class;
+		if (!isNullPotential && !isStrategyTree) {
 			List<Variable> potentialVariables = potential.getVariables();
 			if (potentialVariables != null && potentialVariables.size() > 0) {
 				builder.append(" ");
@@ -332,15 +328,11 @@ public class TreeADDBranch {
 				builder.append(" variables(");
 				for (int i = 0; i < potentialVariables.size(); i++) {
 					builder.append(potentialVariables.get(i));
-					if (i < potentialVariables.size() - 1) {
-						builder.append(", ");
-					} else {
-						builder.append("); ");
-					}
+					builder.append((i < potentialVariables.size() - 1) ? ", " : "); ");
 				}
 			}
 		}
-		if (parentVariables != null && parentVariables.size() > 0 && !(potential instanceof StrategyTree)) {
+		if (parentVariables != null && parentVariables.size() > 0 && !isStrategyTree) {
 			//			builder.append("\n");
 			builder.append(indent);
 			builder.append("ParentVariables = ");
@@ -355,8 +347,8 @@ public class TreeADDBranch {
 			builder.append(upperBound);
 			builder.append(")");
 		}
-		//builder.append("\n");
-		if (potential != null && potential.getClass() == StrategyTree.class) {
+		//builder.append("\n");		
+		if (isStrategyTree) {
 			List<TreeADDBranch> branches = ((StrategyTree) potential).getBranches();
 			for (TreeADDBranch branch : branches) {
 				branch.setIndent(indent + "    ");

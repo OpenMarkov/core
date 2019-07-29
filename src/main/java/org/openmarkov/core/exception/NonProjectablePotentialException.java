@@ -13,6 +13,10 @@ package org.openmarkov.core.exception;
  */
 @SuppressWarnings("serial") public class NonProjectablePotentialException extends OpenMarkovException {
 
+	public NonProjectablePotentialException(String token, String... attributes) {
+		super(token, attributes);
+	}
+
 	public NonProjectablePotentialException(String string) {
 		super(string);
 	}

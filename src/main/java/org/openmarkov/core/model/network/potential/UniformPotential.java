@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovExceptionConstants;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -131,9 +132,8 @@ import java.util.Random;
 				// the conditioned variable does not make part of the
 				// evidence
 				if (conditionedVariable.getVariableType() == VariableType.NUMERIC) {
-					throw new NonProjectablePotentialException(
-							"Numeric variable " + conditionedVariable.getName() + " makes it impossible "
-									+ "to project this uniform potential into a table.");
+					throw new NonProjectablePotentialException(OpenMarkovExceptionConstants.NonProjectablePotentialException_UniformNumeric, conditionedVariable.getName());
+
 				} else {
 					// returns a uniform potential
 					List<Variable> potentialVariables = new ArrayList<>(variables);

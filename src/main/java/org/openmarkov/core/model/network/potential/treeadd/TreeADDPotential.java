@@ -406,13 +406,30 @@ public class TreeADDPotential extends Potential {
 	 * @param variableName
 	 */
 	public void pruneAndGraftNode(String variableName) {
-		if (getRootVariable().getName().toUpperCase().matches(variableName.toUpperCase()) &&
-				branches.size() == 1 && TreeADDPotential.class.isAssignableFrom(branches.get(0).getPotential().getClass())) {
-			TreeADDPotential treeADDPotential = (TreeADDPotential)branches.get(0).getPotential();
-			setRootVariable(treeADDPotential.getRootVariable());
-			branches = treeADDPotential.branches;
-			indentLevel = treeADDPotential.indentLevel;
+		if (getRootVariable().getName().toUpperCase().matches(variableName.toUpperCase())) {
+			int numBranches = branches.size();
+			if (numBranches == 1 && TreeADDPotential.class.isAssignableFrom(branches.get(0).getPotential().getClass())) {
+				TreeADDPotential treeADDPotential = (TreeADDPotential)branches.get(0).getPotential();
+				setRootVariable(treeADDPotential.getRootVariable());
+				branches = treeADDPotential.branches;
+				indentLevel = treeADDPotential.indentLevel;
+			} else {
+				if (numBranches > 1) { // Tie. Choose randomly one branch (the first branch) whose child is a TreeADDPotential. Otherwise, do nothing.
+					boolean assignableBranchFound = false;
+					for (int i = 0; i < numBranches && !assignableBranchFound; i++) {
+						TreeADDBranch branch = branches.get(i);
+						assignableBranchFound = TreeADDPotential.class.isAssignableFrom(branch.getPotential().getClass());
+						if (assignableBranchFound) {
+							TreeADDPotential treeADDPotential = (TreeADDPotential)branch.getPotential();
+							setRootVariable(treeADDPotential.getRootVariable());
+							branches = treeADDPotential.branches;
+							indentLevel = treeADDPotential.indentLevel;
+						}
+					}
+				}
+			}
 		}
+
 		for (TreeADDBranch branch : branches) {
 			Potential potential = branch.getPotential();
 			if (potential != null && TreeADDPotential.class.isAssignableFrom(potential.getClass())) {

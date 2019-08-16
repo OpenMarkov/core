@@ -666,6 +666,27 @@ public class Node {
 		return !numericalParents.isEmpty() && finiteStatesOrDiscretizedParents.isEmpty();
 	}
 
+
+	/**
+	 * This method is used to
+	 *
+	 * @return a list with event parents
+	 */
+	public List<Node> getEventParents() {
+		List<Node> eventParents = new ArrayList<>();
+		for (Node parent : getParents()) {
+			if (parent.getNodeType() == NodeType.EVENT) {
+				eventParents.add(parent);
+			}
+		}
+		return eventParents;
+	}
+
+
+
+
+
+
 	/**
 	 * Returns the isInput.
 	 *

@@ -31,6 +31,10 @@ public class InferenceOptions {
 
 	private TemporalOptions temporalOptions;
 
+	//CMI 22/08/2019
+	private MonteCarloOptions monteCarloOptions;
+	//CMF
+
 	// Constructor
 	public InferenceOptions(ProbNet probNet, Variable simulationIndexVariable) {
 		this.probNet = probNet;
@@ -40,11 +44,17 @@ public class InferenceOptions {
 	public InferenceOptions() {
 		this.multiCriteriaOptions = new MulticriteriaOptions();
 		this.temporalOptions = new TemporalOptions();
+		//CMI
+		this.monteCarloOptions = new MonteCarloOptions();
+		//CMF
 	}
 
 	public InferenceOptions(InferenceOptions inferenceOptions) {
 		this.multiCriteriaOptions = new MulticriteriaOptions(inferenceOptions.getMultiCriteriaOptions());
 		this.temporalOptions = new TemporalOptions(inferenceOptions.getTemporalOptions());
+		//CMI
+		this.setMonteCarloOptions(new MonteCarloOptions(inferenceOptions.getMonteCarloOptions()));
+		//CMF
 	}
 
 	/**
@@ -111,4 +121,11 @@ public class InferenceOptions {
 		}
 	}
 
+	public MonteCarloOptions getMonteCarloOptions() {
+		return monteCarloOptions;
+	}
+
+	public void setMonteCarloOptions(MonteCarloOptions monteCarloOptions) {
+		this.monteCarloOptions = monteCarloOptions;
+	}
 }

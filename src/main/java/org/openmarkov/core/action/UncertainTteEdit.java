@@ -10,8 +10,7 @@ package org.openmarkov.core.action;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.potential.EventTablePotential;
-import org.openmarkov.core.model.network.potential.ExactDistrPotential;
+import org.openmarkov.core.model.network.potential.TransitionTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
@@ -115,7 +114,7 @@ import java.util.List;
 	}
 
 	private TablePotential getPotential() {
-		return ((EventTablePotential) (node.getPotentials().get(0))).getTablePotential();
+		return ((TransitionTablePotential) (node.getPotentials().get(0))).getTablePotential();
 
 	}
 

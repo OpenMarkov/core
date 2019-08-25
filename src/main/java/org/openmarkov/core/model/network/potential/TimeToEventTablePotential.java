@@ -1,10 +1,10 @@
 package org.openmarkov.core.model.network.potential;
 
+import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
@@ -20,21 +20,27 @@ import java.util.List;
 */
 
 
-@PotentialType(family ="Event", name = "EventTimeTable")
-public class EventTimeTablePotential extends EventTablePotential {
+@PotentialType(family ="Event", name = "TimeToEventTable")
+public class TimeToEventTablePotential extends TransitionTablePotential implements TimeToEventPotentialInterface {
 
     protected TablePotential tablePotential;
 
     protected Variable eventAsStates;
 
-    public EventTimeTablePotential(List<Variable> variables, PotentialRole role) {
-        super(variables, role);
+    /**
+     * Configurations of parents when this event cannot occur
+     */
+    List<EvidenceCase> impossibleConfigurations;
 
+
+    public TimeToEventTablePotential(List<Variable> variables, PotentialRole role) {
+        super(variables, role);
+        impossibleConfigurations = new ArrayList<EvidenceCase>();
     }
 
 
     //TODO
-    public EventTimeTablePotential(EventTimeTablePotential potential) {
+    public TimeToEventTablePotential(TimeToEventTablePotential potential) {
         super(potential);
         this.setTablePotential(new TablePotential(potential.getTablePotential()));
     }
@@ -65,7 +71,28 @@ public class EventTimeTablePotential extends EventTablePotential {
         return (variableSuitable && eventSuitable);
     }
 
+    /**
+     * Returns true is this event can happen with the current configuration (stateValue, previous event)
+     * @return true if the event is possible with the stateValue and the event w
+     */
+    public boolean eventPossible(Variable stateVariable, State stateValue, String event){
+        Finding findingState = new Finding(stateVariable,stateValue);
+        Finding findingEvent;
+        try {
+            findingEvent = new Finding(this.eventAsStates, eventAsStates.getState(event));
+        } catch (InvalidStateException e) {
+            e.printStackTrace();
+        }
 
+        return true;
+    }
+
+    @Override
+    public double getTimeToEvent(Variable stateVariable, State stateValue, String event) {
+        Finding finding = new Finding(stateVariable,stateValue);
+
+        return 0;
+    }
 
 
     //TODO
@@ -75,7 +102,7 @@ public class EventTimeTablePotential extends EventTablePotential {
     }
 
     //TODO
-    @Override public EventTimeTablePotential project(EvidenceCase evidenceCase)
+    @Override public TimeToEventTablePotential project(EvidenceCase evidenceCase)
             throws WrongCriterionException, NonProjectablePotentialException {
         throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
     }
@@ -90,7 +117,7 @@ public class EventTimeTablePotential extends EventTablePotential {
 
     //TODO
     @Override public Potential copy() {
-        return new EventTimeTablePotential(this);
+        return new TimeToEventTablePotential(this);
     }
 
     //TODO
@@ -102,6 +129,7 @@ public class EventTimeTablePotential extends EventTablePotential {
     @Override public void scalePotential(double scale) {
         this.getTablePotential().scalePotential(scale);
     }
+
 
 }
 

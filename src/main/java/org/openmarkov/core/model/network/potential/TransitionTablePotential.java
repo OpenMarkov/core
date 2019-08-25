@@ -11,23 +11,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A <code>EventTablePotential</code> is a type of relation with a list of
+ * A <code>TransitionTablePotential</code> is a type of relation with a list of
  * probabilistic nodes.
  *  Transition class to be merged with the new structure of tables
  * There have to be at least one Event variable
  * @version 1.0 -24/03/2019- -cyago -
+ * @version 1.1 -24/08/2019 - renamed to TransitionTable and added the possibility of incompatible combinations
  * @since OpenMarkov 3.0
 */
 
 
-@PotentialType(family ="Event", name = "EventTable")
-public class EventTablePotential extends Potential {
+@PotentialType(family ="Event", name = "TransitionTable")
+public class TransitionTablePotential extends Potential {
 
     protected TablePotential tablePotential;
 
     protected Variable eventAsStates;
+    /**
+     * Combination of state_value and events that cannot be possible
+     */
+    private ArrayList<EvidenceCase> incompatibleConfigurations;
 
-    public EventTablePotential(List<Variable> variables, PotentialRole role) {
+    public TransitionTablePotential(List<Variable> variables, PotentialRole role) {
         super(variables, role);
         List<Variable> parents = variables.subList(1,variables.size());
 
@@ -44,6 +49,7 @@ public class EventTablePotential extends Potential {
         }
         setTablePotential(new TablePotential(tablePotentialVariables,role));
 
+
     }
 
 //    public EventTablePotential(List<Variable> variables, PotentialRole role, double[] table) {
@@ -52,7 +58,7 @@ public class EventTablePotential extends Potential {
 //    }
 
     //TODO
-    public EventTablePotential(EventTablePotential potential) {
+    public TransitionTablePotential(TransitionTablePotential potential) {
         super(potential);
         this.setTablePotential(new TablePotential(potential.getTablePotential()));
     }
@@ -116,6 +122,22 @@ public class EventTablePotential extends Potential {
     }
 
 
+    /**
+      * Combination of state_value and events that cannot be possible
+     */
+    public ArrayList<EvidenceCase> getIncompatibleConfigurations() {
+        return incompatibleConfigurations;
+    }
+
+    public void setIncompatibleConfigurations(ArrayList<EvidenceCase> incompatibleConfigurations) {
+        this.incompatibleConfigurations = incompatibleConfigurations;
+
+    }
+
+    public void addIncompatibleConfiguration(){
+    }
+
+
 
 
     //TODO
@@ -125,7 +147,7 @@ public class EventTablePotential extends Potential {
     }
 
     //TODO
-    @Override public EventTablePotential project(EvidenceCase evidenceCase)
+    @Override public TransitionTablePotential project(EvidenceCase evidenceCase)
             throws WrongCriterionException, NonProjectablePotentialException {
         throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
     }
@@ -140,7 +162,7 @@ public class EventTablePotential extends Potential {
 
     //TODO
     @Override public Potential copy() {
-        return new EventTablePotential(this);
+        return new TransitionTablePotential(this);
     }
 
     //TODO
@@ -233,5 +255,7 @@ public class EventTablePotential extends Potential {
         buffer.append("\n Criterion: " + ((criterion == null) ? "null" : criterion.toString()));
         return buffer.toString();
     }
+
+
 }
 

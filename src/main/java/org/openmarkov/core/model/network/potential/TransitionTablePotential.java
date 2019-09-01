@@ -22,20 +22,27 @@ import java.util.List;
 
 
 @PotentialType(family ="Event", name = "TransitionTable")
-public class TransitionTablePotential extends Potential {
+public class TransitionTablePotential extends Potential  {
 
     protected TablePotential tablePotential;
 
     protected Variable eventAsStates;
-    /**
-     * Combination of state_value and events that cannot be possible
-     */
-    private ArrayList<EvidenceCase> incompatibleConfigurations;
 
+    //Imcompatible configurations. Looking the better way of representing them.
+    private boolean hasImpossibleConfigurations;
+    private ArrayList<ImpossibleConfiguration> impossibleConfigurations;
+
+
+
+    /**
+     *
+     * @param variables
+     * @param role
+     */
     public TransitionTablePotential(List<Variable> variables, PotentialRole role) {
+
         super(variables, role);
         List<Variable> parents = variables.subList(1,variables.size());
-
         setEventAsStates(parents);
         ArrayList<Variable> tablePotentialVariables=new ArrayList<>();
         tablePotentialVariables.add(variables.get(0));
@@ -48,7 +55,7 @@ public class TransitionTablePotential extends Potential {
             tablePotentialVariables.add(eventAsStates);
         }
         setTablePotential(new TablePotential(tablePotentialVariables,role));
-
+        impossibleConfigurations = new ArrayList<>();
 
     }
 
@@ -121,23 +128,18 @@ public class TransitionTablePotential extends Potential {
         }
     }
 
-
-    /**
-      * Combination of state_value and events that cannot be possible
-     */
-    public ArrayList<EvidenceCase> getIncompatibleConfigurations() {
-        return incompatibleConfigurations;
-    }
-
-    public void setIncompatibleConfigurations(ArrayList<EvidenceCase> incompatibleConfigurations) {
-        this.incompatibleConfigurations = incompatibleConfigurations;
-
-    }
-
-    public void addIncompatibleConfiguration(){
+    public void addImpossibleConfiguration(EvidenceCase eCiC){
+        ImpossibleConfiguration iC = new ImpossibleConfiguration(eCiC);
+        getImpossibleConfigurations().add(iC);
     }
 
 
+    public boolean isImpossibleConfiguration(EvidenceCase evidenceCase) {
+
+        ImpossibleConfiguration iC = new ImpossibleConfiguration(evidenceCase);
+        boolean isThere = getImpossibleConfigurations().contains(iC);
+        return isThere;
+    }
 
 
     //TODO
@@ -257,5 +259,15 @@ public class TransitionTablePotential extends Potential {
     }
 
 
+    /**
+     * Combination of state_value and events that cannot be possible
+     */
+    public ArrayList<ImpossibleConfiguration> getImpossibleConfigurations() {
+        return impossibleConfigurations;
+    }
+
+    public void setImpossibleConfigurations(ArrayList<ImpossibleConfiguration> impossibleConfigurations) {
+        this.impossibleConfigurations = impossibleConfigurations;
+    }
 }
 

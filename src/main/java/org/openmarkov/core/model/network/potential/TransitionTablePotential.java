@@ -1,13 +1,8 @@
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,15 +17,7 @@ import java.util.List;
 
 
 @PotentialType(family ="Event", name = "TransitionTable")
-public class TransitionTablePotential extends Potential  {
-
-    protected TablePotential tablePotential;
-
-    protected Variable eventAsStates;
-
-    //Imcompatible configurations. Looking the better way of representing them.
-    private boolean hasImpossibleConfigurations;
-    private ArrayList<ImpossibleConfiguration> impossibleConfigurations;
+public class TransitionTablePotential extends TableWithEventsPotential  {
 
 
 
@@ -42,32 +29,13 @@ public class TransitionTablePotential extends Potential  {
     public TransitionTablePotential(List<Variable> variables, PotentialRole role) {
 
         super(variables, role);
-        List<Variable> parents = variables.subList(1,variables.size());
-        setEventAsStates(parents);
-        ArrayList<Variable> tablePotentialVariables=new ArrayList<>();
-        tablePotentialVariables.add(variables.get(0));
-
-        for (Variable variable:parents) {
-            if (variable.getVariableType()!= VariableType.EVENT)
-                    tablePotentialVariables.add(variable);
-        }
-        if (eventAsStates !=null) {
-            tablePotentialVariables.add(eventAsStates);
-        }
-        setTablePotential(new TablePotential(tablePotentialVariables,role));
-        impossibleConfigurations = new ArrayList<>();
 
     }
 
-//    public EventTablePotential(List<Variable> variables, PotentialRole role, double[] table) {
-//        this(variables, role);
-//        this.tablePotential.setValues(table);
-//    }
 
     //TODO
     public TransitionTablePotential(TransitionTablePotential potential) {
         super(potential);
-        this.setTablePotential(new TablePotential(potential.getTablePotential()));
     }
 
 
@@ -96,178 +64,9 @@ public class TransitionTablePotential extends Potential  {
                         || variable.getVariableType() == VariableType.DISCRETIZED;
             }
         }
-        return (variableSuitable && eventSuitable);
+        //return (variableSuitable && eventSuitable);
+        return variableSuitable;
     }
 
-
-    public Variable getEventAsStates() {
-        return eventAsStates;
-    }
-
-    public void setEventAsStates(Variable eventAsStates) {
-        this.eventAsStates = eventAsStates;
-    }
-
-    /**
-     * Extract the event parents and fill the states of eventAsStates with its names. For example,
-     * if node A has as parents events E1, E2 and E3 eventAsStates will be a Finite-States variable with
-     * three states: E1, E2, E3
-     * @param variables
-     */
-    public void setEventAsStates(List<Variable> variables) {
-        ArrayList<State> states = new ArrayList<>();
-        int i=0;
-        for (Variable variable:variables) {
-            if (variable.getVariableType()==VariableType.EVENT) {
-                states.add(new State(variable.getName()));
-            }
-        }
-        eventAsStates = null;
-        if (!states.isEmpty()) {
-            eventAsStates = new Variable("Events", states.toArray(new State[0]));
-        }
-    }
-
-    public void addImpossibleConfiguration(EvidenceCase eCiC){
-        ImpossibleConfiguration iC = new ImpossibleConfiguration(eCiC);
-        getImpossibleConfigurations().add(iC);
-    }
-
-
-    public boolean isImpossibleConfiguration(EvidenceCase evidenceCase) {
-
-        ImpossibleConfiguration iC = new ImpossibleConfiguration(evidenceCase);
-        boolean isThere = getImpossibleConfigurations().contains(iC);
-        return isThere;
-    }
-
-
-    //TODO
-    @Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
-            throws NonProjectablePotentialException, WrongCriterionException {
-        throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
-    }
-
-    //TODO
-    @Override public TransitionTablePotential project(EvidenceCase evidenceCase)
-            throws WrongCriterionException, NonProjectablePotentialException {
-        throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
-    }
-
-    //TODO
-    @Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                       List<TablePotential> alreadyProjectedPotentials)
-            throws NonProjectablePotentialException, WrongCriterionException {
-        // get the projected TablePotential, which will be returned inside a list
-        throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
-    }
-
-    //TODO
-    @Override public Potential copy() {
-        return new TransitionTablePotential(this);
-    }
-
-    //TODO
-    @Override public boolean isUncertain() {
-        return false;
-    }
-
-    //TODO
-    @Override public void scalePotential(double scale) {
-        this.getTablePotential().scalePotential(scale);
-    }
-
-    public TablePotential getTablePotential() {
-        return tablePotential;
-    }
-
-    public void setTablePotential(TablePotential tablePotential) {
-        this.tablePotential = tablePotential;
-    }
-
-    public Variable getChildVariable() {
-        return this.getVariable(0);
-    }
-
-    public void setChildVariable(Variable childVariable) {
-        this.getVariables().set(0, childVariable);
-    }
-
-    public UncertainValue[] getUncertainValues() {
-        return getTablePotential().getUncertainValues();
-    }
-
-    public void setUncertainValues(UncertainValue[] uncertainValues) {
-        getTablePotential().setUncertainValues(uncertainValues);
-    }
-
-    public double[] getValues() {
-        return getTablePotential().getValues();
-    }
-
-    public void setValues(double[] values) {
-        this.getTablePotential().values = values;
-    }
-
-    @Override public List<Variable> getVariables() {
-        return variables;
-    }
-
-    //TODO
-    @Override public void setVariables(List<Variable> variables) {
-        super.setVariables(variables);
-        this.getTablePotential().setVariables(variables.subList(1, variables.size()));
-    }
-    //TODO
-    @Override public void setComment(String comment) {
-        super.setComment(comment);
-        this.getTablePotential().setComment(comment);
-    }
-
-    //TODO
-    @Override public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append(variables.get(0).getName());
-        if (variables.size() == 1) {
-            buffer.append(" = ");
-        } else if (variables.size() > 1) {
-            buffer.append(" | ");
-            // Print variables
-            for (int i = 1; i < variables.size() - 1; i++) {
-                buffer.append(variables.get(i));
-                buffer.append(", ");
-            }
-            buffer.append(variables.get(variables.size() - 1));
-            buffer.append(" = ");
-        }
-
-        if (getTablePotential().values.length == 1) {
-            buffer.append(getTablePotential().values[0]);
-        } else if (getTablePotential().values.length > 1) {
-            buffer.append("{");
-            for (int i = 0; i < getTablePotential().values.length; i++) {
-                buffer.append(getTablePotential().values[i]);
-                if (i != getTablePotential().values.length - 1) {
-                    buffer.append(",");
-                }
-            }
-            buffer.append("}");
-        }
-        buffer.append("\n Role: " + this.getPotentialRole());
-        buffer.append("\n Criterion: " + ((criterion == null) ? "null" : criterion.toString()));
-        return buffer.toString();
-    }
-
-
-    /**
-     * Combination of state_value and events that cannot be possible
-     */
-    public ArrayList<ImpossibleConfiguration> getImpossibleConfigurations() {
-        return impossibleConfigurations;
-    }
-
-    public void setImpossibleConfigurations(ArrayList<ImpossibleConfiguration> impossibleConfigurations) {
-        this.impossibleConfigurations = impossibleConfigurations;
-    }
 }
 

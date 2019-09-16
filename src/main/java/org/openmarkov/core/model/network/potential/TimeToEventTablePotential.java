@@ -1,5 +1,9 @@
 package org.openmarkov.core.model.network.potential;
 
+import org.apache.commons.math3.random.RandomGenerator;
+import org.apache.commons.math3.random.RandomGeneratorFactory;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -10,6 +14,7 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A <code>EventTablePotential</code> is a type of relation with a list of
@@ -25,10 +30,10 @@ import java.util.List;
 @PotentialType(family ="Event", name = "TimeToEventTable")
 public class TimeToEventTablePotential extends Potential implements ImpossibleConfiguration, TimeToEvent {
 
-    private ProbDensFunction distribution;
     private String distributionName;
+    private String[] distributionParameters;
     private Variable distributionVariable;
-    private TransitionTablePotential tableWithEvents;
+    private TableWithEventsPotential tableWithEvents;
 
     public TimeToEventTablePotential(List<Variable> variables, PotentialRole role){
         this(variables,role, "Exact");
@@ -39,17 +44,10 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
     public TimeToEventTablePotential(List<Variable> variables, PotentialRole role, String distributionName){
         super(variables,role);
         this.setDistributionName(distributionName);
-        try {
-          distribution =  ProbDensFunctionManager.getUniqueInstance().getProbDensFunctionClass(distributionName).newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        String[] s=  ProbDensFunctionManager.getUniqueInstance().getParameters(distributionName);
-        State[] states = new State[s.length];
-        for (int i=0; i< s.length;i++){
-            states[i] = new State(s[i]);
+        distributionParameters=  ProbDensFunctionManager.getUniqueInstance().getParameters(distributionName);
+        State[] states = new State[distributionParameters.length];
+        for (int i=0; i< distributionParameters.length;i++){
+            states[i] = new State(distributionParameters[i]);
         }
         distributionVariable = new Variable("distributionVariable",states);
         List<Variable> v= new ArrayList<Variable>();
@@ -94,13 +92,6 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
 
     public void changeDistribution(String distributionName){
         this.distributionName= distributionName;
-        try {
-            distribution =  ProbDensFunctionManager.getUniqueInstance().getProbDensFunctionClass(distributionName).newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
         String[] s=  ProbDensFunctionManager.getUniqueInstance().getParameters(distributionName);
         State[] states = new State[s.length];
         for (int i=0; i< s.length;i++){
@@ -126,12 +117,34 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
      */
     @Override
     public double getTimeToEvent(Configuration configuration) {
-         return 0;
+        return getTimeToEvent(configuration.convertToEvidenceCase());
     }
 
     @Override
     public double getTimeToEvent(EvidenceCase ev) {
-        return 0;
+        ProbDensFunction distribution=null;
+        int i=0;
+        double[] paramValues = new double[distributionParameters.length];
+         try {
+                for (State sParam: distributionVariable.getStates())
+                {  Finding f = new Finding(distributionVariable,sParam);
+                    ev.addFinding(f);
+                    paramValues[i++] = tableWithEvents.getTablePotential().getValue(ev);
+                }
+
+            distribution = ProbDensFunctionManager.getUniqueInstance().getProbDensFunctionClass(distributionName).newInstance();
+            distribution.setParameters(paramValues);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }    catch (InvalidStateException e) {
+            e.printStackTrace();
+        } catch (IncompatibleEvidenceException e) {
+            e.printStackTrace();
+        }
+
+        return distribution.getSample(new Random());
     }
 
     public TableWithEventsPotential getTableWithEvents() {

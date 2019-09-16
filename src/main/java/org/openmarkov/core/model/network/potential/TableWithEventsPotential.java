@@ -1,9 +1,6 @@
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
@@ -153,66 +150,9 @@ public class TableWithEventsPotential extends Potential implements ImpossibleCon
         return isThere;
     }
 
-    /**
-     * Returns the state after an event has happened
-     * version 1.0 - this version only considers Event nodes and State[0] as parents
-     * TODO
-     */
-    public State newState(Configuration configuration, State currentState){
-        State eState = null;
-        Configuration eventAdaptedConfiguration = new Configuration();
-        for (Finding f:configuration.getConfiguration()){
-            if (f.getVariable().getVariableType() == VariableType.EVENT){
-                try {
-                    State eventState = events.getState(f.getVariable().getName());
-                    eventAdaptedConfiguration.add(new Finding(events,eventState));
-                } catch (InvalidStateException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                eventAdaptedConfiguration.add(f);
-            }
-
-        }
-        if (isImpossibleConfiguration(eventAdaptedConfiguration)){
-        }
-        eState=sample(eventAdaptedConfiguration.convertToEvidenceCase());
-
-        return eState;
-    }
 
 
-    /**
-     * Get a sample for a column given by ev
-     * TODO This initial state may have parents
-     * @param ev - configuration of the column
-     *
-     * @return A State sample of the potential in base of its parents
-     */
-    public State sample(EvidenceCase ev) {
-        double r = Math.random();
-        double countWeight = 0;
-        List<Variable> lV = new ArrayList<>();
-        Variable cVariable = getConditionedVariable();
-        State[] columnStates  = cVariable.getStates();
-        if (ev==null) ev = new EvidenceCase();
 
-        for (int i = 0; i < columnStates.length; i++) {
-            Finding f = new Finding(cVariable,columnStates[i]);
-            try {
-                ev.addFinding(f);
-            } catch (InvalidStateException e) {
-                e.printStackTrace();
-            } catch (IncompatibleEvidenceException e) {
-                e.printStackTrace();
-            }
-            countWeight +=tablePotential.getValue(ev);
-            if (r < countWeight) {
-                return columnStates[i] ;
-            }
-        }
-        return null;
-    }
 
 
     //TODO

@@ -1,8 +1,12 @@
 package org.openmarkov.core.model.network.potential;
 
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -67,6 +71,62 @@ public class TransitionTablePotential extends TableWithEventsPotential  {
         //return (variableSuitable && eventSuitable);
         return variableSuitable;
     }
+    /**
+     * Get a sample for a column given by ev
+     * TODO This initial state may have parents
+     * @param ev - configuration of the column
+     *
+     * @return A State sample of the potential in base of its parents
+     */
+    public State sample(EvidenceCase ev) {
+        double r = Math.random();
+        double countWeight = 0;
+        List<Variable> lV = new ArrayList<>();
+        Variable cVariable = getConditionedVariable();
+        State[] columnStates  = cVariable.getStates();
+        if (ev==null) ev = new EvidenceCase();
 
+        for (int i = 0; i < columnStates.length; i++) {
+            Finding f = new Finding(cVariable,columnStates[i]);
+            try {
+                ev.addFinding(f);
+                countWeight +=tablePotential.getValue(ev);
+                if (r < countWeight) {
+                    return columnStates[i] ;
+                }
+                ev.removeFinding(cVariable);
+            } catch (InvalidStateException | IncompatibleEvidenceException | NoFindingException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+    /**
+     * Returns the state after an event has happened
+     * version 1.0 - this version only considers Event nodes and State[0] as parents
+     * TODO
+     */
+    public State newState(Configuration configuration, State currentState){
+        State eState = null;
+        Configuration eventAdaptedConfiguration = new Configuration();
+        for (Finding f:configuration.getConfiguration()){
+            if (f.getVariable().getVariableType() == VariableType.EVENT){
+                try {
+                    State eventState = events.getState(f.getVariable().getName());
+                    eventAdaptedConfiguration.add(new Finding(events,eventState));
+                } catch (InvalidStateException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                eventAdaptedConfiguration.add(f);
+            }
+
+        }
+        if (isImpossibleConfiguration(eventAdaptedConfiguration)){
+        }
+        eState=sample(eventAdaptedConfiguration.convertToEvidenceCase());
+
+        return eState;
+    }
 }
 

@@ -25,10 +25,7 @@ import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This edit makes the net absorb a node, merging all the utility children into one and updating its potential.
@@ -69,6 +66,7 @@ import java.util.Set;
     private Node mergedUtility;
 
     private Set<Node> mergedParents;
+    private TablePotential maximizedPotential2;
 
     // Constructor
 
@@ -89,7 +87,7 @@ import java.util.Set;
     @Override
     public void doEdit() throws DoEditException {
 
-        // Get one node from every utility children
+        // If there are more than one utility children, merge them into one node
         if (absorbedNode.getChildren().size() > 1) {
             mergeUtilityChildren();
             utilityNodesMerged = true;
@@ -97,7 +95,6 @@ import java.util.Set;
             utilityNodesMerged = false;
         }
 
-        // Update the utility potential
         Node child = absorbedNode.getChildren().get(0);
         oldUtilityPotentials = child.getPotentials();
         newPotentials = new ArrayList<>();
@@ -165,9 +162,9 @@ import java.util.Set;
                 // Discrete operation is valid because all parents are discrete
                 TablePotential maximizedPotential = (TablePotential) DiscretePotentialOperations.
                         maximize(utilityPotential, absorbedVariable)[0];
-
                 List<Variable> newVariables = new ArrayList<>(potential.getVariables());
                 newVariables.remove(absorbedVariable);
+
 
                 // Convert to utility potential
                 ExactDistrPotential exactDistrPotential = new ExactDistrPotential(newVariables);
@@ -195,14 +192,15 @@ import java.util.Set;
         }
 
         /* Create the merged node */
-        // Get the name
+        // Create the name
         StringBuilder mergedName = new StringBuilder();
         for (Node child : oldUtilityChildren) {
             mergedName.append(child.getName());
             mergedName.append(" + ");
         }
+
         int lastPlus = mergedName.lastIndexOf(" + ");
-        mergedName.delete(lastPlus, lastPlus + 3);
+        mergedName.delete(lastPlus, lastPlus + 3); // Delete the extra plus added at the end
 
         // Get the position for the new node, the gravity center of children (which is the average by coordinate).
         double x = 0;
@@ -211,18 +209,19 @@ import java.util.Set;
             x += child.getCoordinateX();
             y += child.getCoordinateY();
         }
-        // Division by 0 is tested in the Validator class.
-        x /= oldUtilityChildren.size();
+
+        x /= oldUtilityChildren.size(); // Division by 0 is tested in the Validator class.
         y /= oldUtilityChildren.size();
 
-        // List all other parents
+        // Gather all parents of every component node merged
         mergedParents = new HashSet<>();
         for (Node child : oldUtilityChildren) {
             mergedParents.addAll(child.getParents());
         }
 
         // Create the node
-        mergedUtility = new Node(probNet, new Variable(mergedName.toString()), NodeType.UTILITY);
+        Variable mergedVariable = new Variable(mergedName.toString());
+        mergedUtility = new Node(probNet, mergedVariable, NodeType.UTILITY);
         mergedUtility.setCoordinateX(x);
         mergedUtility.setCoordinateY(y);
         probNet.addNode(mergedUtility);
@@ -234,18 +233,15 @@ import java.util.Set;
 
         /* Create the potential */
 
-        // Get the potential variables
-        List<Variable> mergedPotentialVariables = new ArrayList<>();
-        mergedPotentialVariables.add(mergedUtility.getVariable());
-        for (Node parent : mergedParents) {
-            mergedPotentialVariables.add(parent.getVariable());
-        }
-
-        // Get the potential table
+        // Get the potential table of every component child
         List<TablePotential> utilityChildrenPotentials = new ArrayList<>();
         try {
             for (Node child : oldUtilityChildren) {
-                utilityChildrenPotentials.add(child.getPotentials().get(0).getCPT());
+                // Change the variable of the component potentials to the merged variable
+                TablePotential componentPotential = child.getPotentials().get(0).getCPT();
+                componentPotential.replaceVariable(componentPotential.getVariable(0), mergedVariable);
+                // Add the potential to the list to be summed
+                utilityChildrenPotentials.add(componentPotential);
             }
         } catch (NonProjectablePotentialException | WrongCriterionException e) {
             logger.error("Potential not convertible to table or wrong criterion.");
@@ -253,15 +249,9 @@ import java.util.Set;
             throw new DoEditException(e.getLocalizedMessage());
         }
 
+        // Sum the component potentials
         TablePotential sumPotential = DiscretePotentialOperations.sum(utilityChildrenPotentials);
-        ExactDistrPotential mergedPotential = new ExactDistrPotential(mergedPotentialVariables,
-                PotentialRole.CONDITIONAL_PROBABILITY, sumPotential.getValues());
-        System.out.println(mergedPotentialVariables.toString());
-        System.out.println(sumPotential.toString());
-        System.out.println(mergedPotential.toString());
-
-        // Set the potential
-        mergedUtility.setPotential(mergedPotential);
+        mergedUtility.setPotential(sumPotential); // Set the potential to the node
 
         // Remove the children that merged into the new utility node
         for (Node child : oldUtilityChildren) {
@@ -288,6 +278,9 @@ import java.util.Set;
             }
         }
 
+        // If utility children were merged, oldUtilityPotentials contains the potential of the merged utility children
+        // and not its component potentials, however, restoring the component nodes will restore their respective
+        // potentials ignoring the merged one.
         if (utilityNodesMerged) {
             probNet.removeNode(absorbedNode.getChildren().get(0));
             // Restore merged nodes

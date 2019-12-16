@@ -24,11 +24,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class implements a function potential consisting of a GLMPotential
- * with only one covariate with coefficient=1
+ * This class implements a potential which is function of the values provided by the parents.
+ * TODO Which parents???
+ * Has they to be numeric or may we have "finites states" which have one value associated? For example male=1, female=0
  *
- * @author carmenyago
- * @version 1.0 2016
+ * @author cyago
+ * @version 1.1 06/12/2019
  */
 @PotentialType(name = "Function") public class FunctionPotential extends GLMPotential {
 
@@ -82,7 +83,6 @@ import java.util.Map;
 	 * @param variables . <code>ArrayList</code> of <code>Variable</code>.
 	 * @param role      . <code>PotentialRole</code>.
 	 */
-
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		return (
 				!variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC

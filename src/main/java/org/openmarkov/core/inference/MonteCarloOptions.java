@@ -15,30 +15,38 @@ package org.openmarkov.core.inference;
  */
 public class MonteCarloOptions implements Cloneable {
 
+    //Simulation Options
+	private int numSimulations = 1;
+	private int numTrialSets =1;
 
-	private int numSimulations;
-	private int numTrialSets;
 
+	//Log options
+	private boolean onlySummary = true;
 	private boolean stateLog =false;
 	private boolean eventLog =false;
 	private boolean scheduledEventLog =false;
 
-
+	//Result options
+    private boolean mean = true;
+    private boolean trimmedMean = true;
+    private boolean median = false;
+	private boolean sum = false;
 
 
 	public MonteCarloOptions() {
-		// Number of simulations that will be carried out per serie
-		numSimulations = 1; // Because a newly created net has 0 slices
-		// Number of series
-		numTrialSets = 1;
 	}
 
 	public MonteCarloOptions(MonteCarloOptions monteCarloOptions) {
 		this.setNumSimulations(monteCarloOptions.numSimulations);
 		this.setNumTrialSets(monteCarloOptions.numTrialSets);
+		this.setOnlySummary(monteCarloOptions.isOnlySummary());
 		this.stateLog = monteCarloOptions.isStateLog();
 		this.eventLog = monteCarloOptions.isEventLog();
 		this.scheduledEventLog = monteCarloOptions.isScheduledEventLog();
+		this.mean= monteCarloOptions.isMean();
+		this.trimmedMean = monteCarloOptions.isTrimmedMean();
+		this.median = monteCarloOptions.isMedian();
+
 	}
 
 	public int getNumSimulations() {
@@ -85,7 +93,54 @@ public class MonteCarloOptions implements Cloneable {
 	public void setScheduledEventLog(boolean scheduledEventLog) {
 		this.scheduledEventLog = scheduledEventLog;
 	}
-	
-	
-	
+
+	/**
+	 * This method returns true if any of the one-simulation level log options is set
+	 * @return
+	 */
+	public boolean isOneSimulationLevelLog(){
+		return (stateLog|| eventLog || scheduledEventLog);
+	}
+
+	public boolean isOnlySummary() {
+		return onlySummary;
+	}
+
+	public void setOnlySummary(boolean onlySummary) {
+		this.onlySummary = onlySummary;
+	}
+
+    public boolean isMean() {
+        return mean;
+    }
+
+    public void setMean(boolean mean) {
+        this.mean = mean;
+    }
+
+    public boolean isTrimmedMean() {
+        return trimmedMean;
+    }
+
+    public void setTrimmedMean(boolean trimmedMean) {
+        this.trimmedMean = trimmedMean;
+    }
+
+    public boolean isMedian() {
+        return median;
+    }
+
+    public void setMedian(boolean median) {
+        this.median = median;
+    }
+	public boolean isSum() { return sum;}
+    public void setSum(boolean sum) {
+        this.sum = sum;
+    }
+
+    public boolean getSum() {
+		return sum;
+    }
+
+
 }

@@ -52,7 +52,7 @@ public class InferenceOptions {
 	public InferenceOptions(InferenceOptions inferenceOptions) {
 		this.multiCriteriaOptions = new MulticriteriaOptions(inferenceOptions.getMultiCriteriaOptions());
 		this.temporalOptions = new TemporalOptions(inferenceOptions.getTemporalOptions());
-		//CMI 22/08/2019
+		//CMI 22/08/2019 - added log options
 		this.setMonteCarloOptions(new MonteCarloOptions(inferenceOptions.getMonteCarloOptions()));
 		//CMF
 	}

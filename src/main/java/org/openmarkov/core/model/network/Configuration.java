@@ -15,11 +15,11 @@ import java.util.List;
 
 public class Configuration {
 
-    private ArrayList<Finding> configuration;
+    private ArrayList<Finding> findings;
 
 
-    public Configuration(List<Finding> configuration) {
-        this.configuration = new ArrayList<>(configuration);
+    public Configuration(List<Finding> findings) {
+        this.findings = new ArrayList<>(findings);
         sort();
 
     }
@@ -33,16 +33,21 @@ public class Configuration {
 
 
     public Configuration(Finding... findings){
-        this.configuration = new ArrayList<Finding>();
+        this.findings = new ArrayList<Finding>();
         for (Finding finding: findings){
-            configuration.add(finding);
+            if (finding !=null)
+            this.findings.add(finding);
         }
         sort();
     }
 
+    public Configuration(Configuration configuration) {
+       this(configuration.getFindings());
+    }
+
 
     private void  sort(){
-        configuration.sort((finding1, finding2) ->
+        findings.sort((finding1, finding2) ->
                 finding1.getVariable().getName().compareTo(finding2.getVariable().getName())
         );
     }
@@ -50,7 +55,7 @@ public class Configuration {
 
     public EvidenceCase convertToEvidenceCase(){
         EvidenceCase ec = new EvidenceCase();
-        for (Finding finding:configuration){
+        for (Finding finding: findings){
             try {
                 ec.addFinding(finding);
             } catch (InvalidStateException e) {
@@ -72,12 +77,12 @@ public class Configuration {
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof Configuration))return false;
         Configuration objIC =(Configuration) obj;
-        ArrayList<Finding> configurationObjIC = objIC.getConfiguration();
-        if (configuration.size() != configurationObjIC.size()) return false;
-        for (int i=0; i<configuration.size();i++){
+        ArrayList<Finding> configurationObjIC = objIC.getFindings();
+        if (findings.size() != configurationObjIC.size()) return false;
+        for (int i = 0; i< findings.size(); i++){
             if (!
-                    ( (configuration.get(i).getVariable().getBaseName().compareTo(configurationObjIC.get(i).getVariable().getBaseName()) ==0)
-                && (configuration.get(i).getState().compareTo(configurationObjIC.get(i).getState()) ==0) )
+                    ( (findings.get(i).getVariable().getBaseName().compareTo(configurationObjIC.get(i).getVariable().getBaseName()) ==0)
+                && (findings.get(i).getState().compareTo(configurationObjIC.get(i).getState()) ==0) )
                 ) {
                 return false;
             }
@@ -85,12 +90,12 @@ public class Configuration {
         return true;
     }
 
-    public ArrayList<Finding> getConfiguration() {
-        return configuration;
+    public ArrayList<Finding> getFindings() {
+        return findings;
     }
 
-    public void setConfiguration(ArrayList<Finding> configuration) {
-        this.configuration = configuration;
+    public void setFindings(ArrayList<Finding> findings) {
+        this.findings = findings;
     }
 
     /**
@@ -98,13 +103,13 @@ public class Configuration {
      * @param variable the Variable whose Finding is removed
      */
     public void remove(Variable variable) {
-        configuration.removeIf( f -> f.getVariable().getName().equals(variable.getName()) );
+        findings.removeIf(f -> f.getVariable().getName().equals(variable.getName()) );
     }
 
     /**
      * Adds a Finding to configuration
      */
     public void add (Finding f){
-        configuration.add(f);
+        findings.add(f);
     }
 }

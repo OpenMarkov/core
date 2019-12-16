@@ -21,7 +21,7 @@ import java.util.List;
 
 
 @PotentialType(family ="Event", name = "TransitionTable")
-public class TransitionTablePotential extends TableWithEventsPotential  {
+public class TransitionTablePotential extends TableWithEvents {
 
 
 
@@ -109,7 +109,7 @@ public class TransitionTablePotential extends TableWithEventsPotential  {
     public State newState(Configuration configuration, State currentState){
         State eState = null;
         Configuration eventAdaptedConfiguration = new Configuration();
-        for (Finding f:configuration.getConfiguration()){
+        for (Finding f:configuration.getFindings()){
             if (f.getVariable().getVariableType() == VariableType.EVENT){
                 try {
                     State eventState = events.getState(f.getVariable().getName());

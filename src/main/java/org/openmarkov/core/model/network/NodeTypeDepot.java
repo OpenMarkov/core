@@ -62,9 +62,8 @@ public class NodeTypeDepot {
 	}
 
 	/**
-	 * @param nodeType
+	 * @param nodeType Node type
 	 * @return All the nodes of certain kind
-	 * @consultation
 	 */
 	public List<Node> getNodes(NodeType nodeType) {
 		return new ArrayList<>(nodesHashMaps.get(nodeType).values());
@@ -115,7 +114,6 @@ public class NodeTypeDepot {
 	 * @param nodeType       <code>NodeType</code>
 	 * @return The node with <code>nameOfVariable</code> and
 	 * <code>kindOfNode</code> if exists otherwhise null
-	 * @throws NodeNotFoundException
 	 */
 	public Node getNode(String nameOfVariable, NodeType nodeType) {
 		for (Node node : nodesHashMaps.get(nodeType).values()) {

@@ -127,8 +127,6 @@ public class StringsWithProperties {
 	 * Removes they key and all its properties.
 	 *
 	 * @param key <code>String</code>
-	 * @return The object stored with <code>key</code> or <code>null</code> if
-	 * it does not exists.
 	 */
 	public void remove(String key) {
 		stringsWithProperties.remove(key);

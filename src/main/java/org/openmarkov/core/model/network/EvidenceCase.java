@@ -55,7 +55,7 @@ public class EvidenceCase {
 	/**
 	 * Constructor
 	 *
-	 * @param findings
+	 * @param findings Findings
 	 */
 	public EvidenceCase(List<Finding> findings) {
 		this.findings = new HashMap<>();
@@ -71,7 +71,7 @@ public class EvidenceCase {
 	/**
 	 * Copy constructor
 	 *
-	 * @param evidenceCase
+	 * @param evidenceCase Evidence case
 	 */
 	public EvidenceCase(EvidenceCase evidenceCase) {
 		if (evidenceCase == null) {
@@ -84,19 +84,19 @@ public class EvidenceCase {
 	// Methods
 
 	/**
+	 * Condition: There is a finding for this variable in the evidence
 	 * @return The state assigned to the variable. <code>int</code>.
-	 * @throws NoFindingException
-	 * @argCondition There is a finding for this variable in the evidence
+	 * @param variable Variable
 	 */
 	public int getState(Variable variable) {
 		return getFinding(variable).getStateIndex();
 	}
 
 	/**
+	 * Condition: There is a finding for this variable in the evidence
 	 * @param variable <code>Variable</code>.
 	 * @return The value of a evidence for a continuous or hybrid variable if it
 	 * exists: <code>double</code>.
-	 * @argCondition There is a finding for this variable in the evidence
 	 */
 	public double getNumericalValue(Variable variable) {
 		return getFinding(variable).getNumericalValue();
@@ -104,8 +104,8 @@ public class EvidenceCase {
 
 	/**
 	 * @param finding . <code>Finding</code>.
-	 * @throws InvalidStateException
-	 * @throws IncompatibleEvidenceException
+	 * @throws InvalidStateException InvalidStateException
+	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
 	public void addFinding(Finding finding) throws InvalidStateException, IncompatibleEvidenceException {
 		if (isCompatible(finding)) {
@@ -121,8 +121,8 @@ public class EvidenceCase {
 
 	/**
 	 * @param finding . <code>Finding</code>.
-	 * @throws InvalidStateException
-	 * @throws IncompatibleEvidenceException
+	 * @throws InvalidStateException InvalidStateException
+	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
 	public void changeFinding(Finding finding) throws InvalidStateException, IncompatibleEvidenceException {
 		findings.remove(finding.getVariable());
@@ -131,8 +131,8 @@ public class EvidenceCase {
 
 	/**
 	 * @param findings . <code>Collection</code> of <code>Finding</code>s.
-	 * @throws InvalidStateException
-	 * @throws IncompatibleEvidenceException
+	 * @throws InvalidStateException InvalidStateException
+	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
 	public void addFindings(Collection<Finding> findings) throws InvalidStateException, IncompatibleEvidenceException {
 		for (Finding finding : findings) {
@@ -141,12 +141,12 @@ public class EvidenceCase {
 	}
 
 	/**
-	 * @param probNet
-	 * @param variableName
+	 * @param probNet Network
+	 * @param variableName Variable name
 	 * @param stateName    <code>Finding</code>.
-	 * @throws InvalidStateException
-	 * @throws IncompatibleEvidenceException
-	 * @throws NodeNotFoundException
+	 * @throws InvalidStateException InvalidStateException
+	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
+	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
 	public void addFinding(ProbNet probNet, String variableName, String stateName)
 			throws NodeNotFoundException, InvalidStateException, IncompatibleEvidenceException {
@@ -156,11 +156,12 @@ public class EvidenceCase {
 	}
 
 	/**
-	 * @param probNet
-	 * @param variableName
+	 * @param probNet Network
+	 * @param variableName Variable name
 	 * @param value        <code>Finding</code>.
-	 * @throws IncompatibleEvidenceException
-	 * @throws NodeNotFoundException
+	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
+	 * @throws NodeNotFoundException NodeNotFoundException
+	 * @throws InvalidStateException InvalidStateException
 	 */
 	public void addFinding(ProbNet probNet, String variableName, double value)
 			throws NodeNotFoundException, InvalidStateException, IncompatibleEvidenceException {
@@ -171,7 +172,7 @@ public class EvidenceCase {
 
 	/**
 	 * @param variable <code>Variable</code>.
-	 * @throws NoFindingException
+	 * @throws NoFindingException NoFindingException
 	 */
 	public Finding removeFinding(Variable variable) throws NoFindingException {
 		Finding finding = getFinding(variable);
@@ -183,7 +184,7 @@ public class EvidenceCase {
 
 	/**
 	 * @param variableName <code>String</code>.
-	 * @throws NoFindingException
+	 * @throws NoFindingException NoFindingException
 	 */
 	public void removeFinding(String variableName) throws NoFindingException {
 		ArrayList<Variable> findingsVariables = new ArrayList<>(findings.keySet());
@@ -208,9 +209,9 @@ public class EvidenceCase {
 	}
 
 	/**
+	 * Condition: There is a finding for this variable in the evidence
 	 * @param variable <code>String</code>.
 	 * @return finding <code>Finding</code>.
-	 * @argCondition There is a finding for this variable in the evidence
 	 */
 	public Finding getFinding(Variable variable) {
 		return findings.get(variable);
@@ -236,7 +237,6 @@ public class EvidenceCase {
 	/**
 	 * @param variables . <code>ArrayList</code> of <code>Variable</code>s.
 	 * @return <code>boolean</code>.
-	 * @throws NoFindingException
 	 */
 	public boolean existsEvidence(List<Variable> variables) {
 		for (Variable variable : variables) {
@@ -293,8 +293,8 @@ public class EvidenceCase {
 	 * Extends an evidence case by taking into account that the deterministic
 	 * potentials of a <code>ProbNet</code> may induce new findings
 	 *
-	 * @throws InvalidStateException
-	 * @throws WrongCriterionException
+	 * @throws InvalidStateException InvalidStateException
+	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	public void extendEvidence(ProbNet probNet)
 			throws IncompatibleEvidenceException, InvalidStateException, WrongCriterionException {
@@ -333,7 +333,7 @@ public class EvidenceCase {
 	 *
 	 * @param newFinding . <code>Finding</code>
 	 * @return <code>boolean</code>
-	 * @throws InvalidStateException
+	 * @throws InvalidStateException InvalidStateException
 	 */
 	public boolean isCompatible(Finding newFinding) throws InvalidStateException {
 		Variable variable = newFinding.getVariable();
@@ -397,10 +397,10 @@ public class EvidenceCase {
 	/**
 	 * Fuse this EvidenceCase with the input parameter
 	 *
-	 * @param evidenceCaseToFuse
+	 * @param evidenceCaseToFuse Evidence case to fuse
 	 * @param overwrite          if true the findings in the parameter will overwrite those in
 	 *                           this EvidenceCase
-	 * @throws IncompatibleEvidenceException
+	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
 	public void fuse(EvidenceCase evidenceCaseToFuse, boolean overwrite) throws IncompatibleEvidenceException {
 		if (evidenceCaseToFuse != null) {

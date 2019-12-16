@@ -65,7 +65,7 @@ public class CEP {
 	 * @param costs         <code>double[]</code>
 	 * @param effectivities <code>double[]</code>
 	 * @param thresholds    <code>double[]</code>
-	 * @throws CostEffectivenessException
+	 * @throws CostEffectivenessException CostEffectivenessException
 	 */
 	public CEP(StrategyTree[] strategyTrees, double[] costs, double[] effectivities, double[] thresholds)
 			throws CostEffectivenessException {
@@ -102,7 +102,7 @@ public class CEP {
 	 * @param effectiveness <code>double</code>
 	 * @param minThreshold  <code>double</code>
 	 * @param maxThreshold  <code>double</code>
-	 * @throws CostEffectivenessException
+	 * @throws CostEffectivenessException CostEffectivenessException
 	 */
 	public CEP(StrategyTree strategyTree, double cost, double effectiveness, double minThreshold, double maxThreshold)
 			throws CostEffectivenessException {
@@ -124,7 +124,7 @@ public class CEP {
 	 * @param thresholds    <code>double[]</code>
 	 * @param minThreshold  <code>double</code>
 	 * @param maxThreshold  <code>double</code>
-	 * @throws CostEffectivenessException
+	 * @throws CostEffectivenessException CostEffectivenessException
 	 */
 	public CEP(StrategyTree[] strategyTrees, double[] costs, double[] effectivities, double[] thresholds,
 			double minThreshold, double maxThreshold) throws CostEffectivenessException {
@@ -296,7 +296,7 @@ public class CEP {
 	}
 
 	/**
-	 * @return. <code>double[]</code>
+	 * @return <code>double[]</code>
 	 */
 	public double[] getThresholds() {
 		return thresholds;

@@ -135,8 +135,8 @@ public class ProbNetOperations {
 	 * <li>Have no children or all its children are barren nodes.
 	 * </ol>
 	 *
-	 * @param variablesOfEvidence
-	 * @param variablesOfInterest
+	 * @param variablesOfEvidence Variables of evidence
+	 * @param variablesOfInterest Variables of interest
 	 * @param prunedProbNet       . <code>ProbNet</code>
 	 * @return <code>ProbNet</code> without barren nodes.
 	 */
@@ -359,8 +359,8 @@ public class ProbNetOperations {
 	/**
 	 * Uses the algorithm by Kahn (1962)
 	 *
-	 * @param probNet
-	 * @param variablesToSort
+	 * @param probNet Network
+	 * @param variablesToSort Variables to sort	 *
 	 */
 	public static List<Variable> sortTopologically(ProbNet probNet, List<Variable> variablesToSort) {
 		List<Node> sortedNodes = sortTopologically(probNet);
@@ -376,7 +376,7 @@ public class ProbNetOperations {
 	/**
 	 * Uses the algorithm by Kahn (1962)
 	 *
-	 * @param probNet
+	 * @param probNet Network
 	 */
 	public static List<Node> sortTopologically(ProbNet probNet) {
 		ProbNet graph = probNet.copy();
@@ -419,9 +419,9 @@ public class ProbNetOperations {
 	 * parents into finite state variables. It also adapts the potentials
 	 * affected by these conversions.
 	 *
-	 * @param probNet
-	 * @param evidence
-	 * @return
+	 * @param probNet Network
+	 * @param evidence Evidence
+	 * @return Network with numerical variables transformed into FS
 	 */
 	public static ProbNet convertNumericalVariablesToFS(ProbNet probNet, EvidenceCase evidence) {
 		ProbNet convertedNet = probNet.copy();
@@ -603,8 +603,8 @@ public class ProbNetOperations {
 	}
 
 	/**
-	 * @param potential
-	 * @param projectedPotential
+	 * @param potential Potential
+	 * @param projectedPotential Projected potential
 	 * @param configuration      - configuration of projected variables
 	 */
 	public static void sumProjectedPotential(TablePotential potential, TablePotential projectedPotential,
@@ -748,8 +748,8 @@ public class ProbNetOperations {
 	 * if and only if there is no directed path that goes through all the
 	 * decision nodes
 	 *
-	 * @param probNet
-	 * @return
+	 * @param probNet Network
+	 * @return True if the network has order asymmetry
 	 */
 	public static boolean hasOrderAsymmetry(ProbNet probNet) {
 		return hasOrderAsymmetry(probNet, null);
@@ -817,11 +817,10 @@ public class ProbNetOperations {
 	 * @return A list of chance variables that are observable; this list includes always observed variables and
 	 * those variables that can be reached from an always observed variable or from a decision, always following
 	 * a path formed exclusively by revelation links.
-	 * @throws NodeNotFoundException
-	 * @throws NodeNotFoundException
+	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
 	public static Set<Node> getObservableVariables(ProbNet probNet)
-			throws NodeNotFoundException, NodeNotFoundException {
+			throws NodeNotFoundException {
 		Set<Node> observable;
 		Set<Variable> visitedDecisions;
 		ConcurrentLinkedQueue<Variable> variablesToProcess = new ConcurrentLinkedQueue<>();
@@ -875,8 +874,8 @@ public class ProbNetOperations {
 	/**
 	 * Generates a list of decision nodes that don't have parent decisions
 	 *
-	 * @param probNet
-	 * @return
+	 * @param probNet Network
+	 * @return Parentless decisions
 	 */
 	public static List<Node> getParentlessDecisions(ProbNet probNet) {
 		List<Node> parentlessDecisions = new ArrayList<>();
@@ -904,8 +903,8 @@ public class ProbNetOperations {
 	/**
 	 * Gets the list of always-observed-variables in the DAN
 	 *
-	 * @param probNet
-	 * @return
+	 * @param probNet Network
+	 * @return list of always-observed-variables
 	 */
 	public static List<Node> getAlwaysObservedVariables(ProbNet probNet) {
 		List<Node> alwaysObservedVariables = new ArrayList<>();
@@ -920,9 +919,9 @@ public class ProbNetOperations {
 	/**
 	 * Returns whether the node has a predecessor decision
 	 *
-	 * @param node
-	 * @param probNet
-	 * @return
+	 * @param node Node
+	 * @param probNet Network
+	 * @return True if the node has a predecessor decision
 	 */
 	public static boolean hasPredecessorDecision(Node node, ProbNet probNet) {
 		Stack<Node> predecessors = new Stack<>();
@@ -941,9 +940,9 @@ public class ProbNetOperations {
 	/**
 	 * Returns the list of predecessor decisions of node decisionNode
 	 *
-	 * @param node
-	 * @param probNet
-	 * @return
+	 * @param node Node
+	 * @param probNet Network
+	 * @return Predecessors of the decision node
 	 */
 	public static List<Node> getPredecessorDecisions(Node node, ProbNet probNet) {
 		List<Node> predecessorDecisions = new ArrayList<>();

@@ -186,8 +186,8 @@ public class Util {
 	}
 
 	/**
-	 * @param value
-	 * @param precision
+	 * @param value Value
+	 * @param precision Precision
 	 * @return rounded value with the given precision
 	 * @author maryebra
 	 */

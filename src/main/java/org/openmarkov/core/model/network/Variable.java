@@ -46,7 +46,6 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * List of states that this variable can take on. Each state will be a
 	 * <code>String</code>.
 	 *
-	 * @invariant The number of states does not change.
 	 */
 	protected State[] states;
 	/**
@@ -88,7 +87,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 *
 	 * @param name   <code>String</code>
 	 * @param states <code>String[]</code>
-	 * @argCondition All the states must be different
+	 * Condition: All the states must be different
 	 */
 	public Variable(String name, State[] states) {
 
@@ -149,7 +148,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	/**
 	 * Copy constructor for Variable.
 	 *
-	 * @param variable
+	 * @param variable Variable
 	 */
 	public Variable(Variable variable) {
 
@@ -208,7 +207,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * @param states              . <code>String[]</code>
 	 * @param partitionedInterval . <code>PartitionedInterval</code>
 	 * @param precision           . <code>double</code>
-	 * @argCondition states.length = partitionedInterval.getNumSubintervals()
+	 * Condition: states.length = partitionedInterval.getNumSubintervals()
 	 */
 	public Variable(String name, State[] states, PartitionedInterval partitionedInterval, double precision) {
 
@@ -241,7 +240,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @param propertyName
+	 * @param propertyName Property name
 	 * @return property value if exists, otherwise <code>null</code>
 	 * <code>String</code> and value = <code>String</code>
 	 */
@@ -311,7 +310,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 *
 	 * @param oldName . <code>String</code>.
 	 * @param newName . <code>String</code>.
-	 * @throws Exception
+	 * @throws Exception Exception
 	 */
 	public void renameState(String oldName, String newName) throws Exception {
 
@@ -342,8 +341,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * @param stateName . <code>String</code>
 	 * @return The index of <code>state</code> or -1 if it does not exists.
 	 * <code>int</code>
-	 * @throws InvalidStateException
-	 * @consultation
+	 * @throws InvalidStateException InvalidStateException
 	 */
 	public int getStateIndex(String stateName) throws InvalidStateException {
 
@@ -396,7 +394,6 @@ public class Variable implements Cloneable, Comparable<Variable> {
 
 	/**
 	 * @return variableType. <code>VariableType</code>
-	 * @consultation
 	 */
 	public VariableType getVariableType() {
 
@@ -430,7 +427,6 @@ public class Variable implements Cloneable, Comparable<Variable> {
 
 	/**
 	 * @return name. <code>String</code>
-	 * @consultation
 	 */
 	public String getName() {
 		return name;
@@ -446,8 +442,6 @@ public class Variable implements Cloneable, Comparable<Variable> {
 
 	/**
 	 * @return name. <code>String</code>
-	 * @consultation
-	 * @consultation
 	 */
 	public String getBaseName() {
 		if (baseName == null) {
@@ -466,7 +460,6 @@ public class Variable implements Cloneable, Comparable<Variable> {
 
 	/**
 	 * @return Number of states.
-	 * @consultation
 	 */
 	public int getNumStates() {
 
@@ -475,7 +468,6 @@ public class Variable implements Cloneable, Comparable<Variable> {
 
 	/**
 	 * @return states. <code>String[]</code>
-	 * @consultation
 	 */
 	public State[] getStates() {
 		return states;
@@ -492,8 +484,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	/**
 	 * @param index . <code>int</code>
 	 * @return Name of states[index]. <code>String</code>.
-	 * @consultation
-	 * @argCondition index must be a number between 0 and (number-of-states -
+	 * Condition: index must be a number between 0 and (number-of-states -
 	 * 1).
 	 */
 	public String getStateName(int index) {
@@ -502,9 +493,9 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @param name
+	 * @param name Name
 	 * @return The state whose name is 'name'
-	 * @throws InvalidStateException
+	 * @throws InvalidStateException InvalidStateException
 	 */
 	public State getState(String name) throws InvalidStateException {
 		return states[getStateIndex(name)];
@@ -700,8 +691,8 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	/**
 	 * This methods checks if a string may be a valid state name
 	 *
-	 * @param newState
-	 * @return
+	 * @param newState New state
+	 * @return True if a string may be a valid state name
 	 */
 	public boolean chekNewStateName(String newState) {
 		for (State state : states) {

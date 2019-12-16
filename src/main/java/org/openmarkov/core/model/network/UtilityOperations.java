@@ -19,7 +19,7 @@ public class UtilityOperations {
 	 * potentials are adjusted according to the scales defined in their
 	 * criteria.
 	 *
-	 * @param probNet
+	 * @param probNet Network
 	 */
 	public static void transformToUnicriterion(ProbNet probNet) {
 //		Criterion globalCriterion = new Criterion(Criterion.C_GLOBALCRITERION);

@@ -164,7 +164,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 * @param projectedTablePotentials <code>ArrayList</code> of <code>Potential</code>s
 	 * @return A Markov Network in witch potentials are used to create cliques.
 	 * (<code>ProbNet</code>).
-	 * @argCondition At least one potential depends on at least one variable
+	 * Condition: At least one potential depends on at least one variable
 	 * (otherwise the network would have no node, and it would be
 	 * impossible to assign constant potentials)
 	 */
@@ -188,10 +188,10 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 * Applies edit to the probNet
 	 *
 	 * @param edit edit to be applied
-	 * @throws ConstraintViolationException
-	 * @throws NonProjectablePotentialException
-	 * @throws WrongCriterionException
-	 * @throws DoEditException
+	 * @throws ConstraintViolationException ConstraintViolationException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
+	 * @throws DoEditException DoEditException
 	 */
 	public void doEdit(PNEdit edit)
 			throws ConstraintViolationException, NonProjectablePotentialException,
@@ -206,7 +206,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 *                   constraints list without testing. Otherwise,
 	 *                   <code>constraint</code> is added only when it is full-filled.
 	 *                   <code>boolean</code>
-	 * @throws ConstraintViolationException
+	 * @throws ConstraintViolationException ConstraintViolationException
 	 */
 	public void addConstraint(PNConstraint constraint, boolean check) throws ConstraintViolationException {
 		if (!this.networkType.isApplicableConstraint(constraint)) {
@@ -231,7 +231,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 *                    constraints list without testing. Otherwise,
 	 *                    <code>constraint</code> is added only when it is full-filled.
 	 *                    <code>boolean</code>
-	 * @throws ConstraintViolationException
+	 * @throws ConstraintViolationException ConstraintViolationException
 	 */
 	public void addConstraints(List<PNConstraint> constraints, boolean check) throws ConstraintViolationException {
 		for (PNConstraint constraint : constraints) {
@@ -314,7 +314,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 * Sets Network type
 	 *
 	 * @param networkType <code>NetworkType</code>
-	 * @throws ConstraintViolationException
+	 * @throws ConstraintViolationException ConstraintViolationException
 	 */
 	public void setNetworkType(NetworkType networkType) throws ConstraintViolationException {
 		NetworkType oldNetworkType = this.networkType;
@@ -626,8 +626,8 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	/**
 	 * @param evidenceCase Evidence in that the potentials will be projected
 	 * @return The potentials of the network projected on the evidence
-	 * @throws NonProjectablePotentialException
-	 * @throws WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	public List<TablePotential> tableProjectPotentials(EvidenceCase evidenceCase)
 			throws NonProjectablePotentialException, WrongCriterionException {
@@ -967,7 +967,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 * @param nodeType . <code>NodeType</code>
 	 * @return The <code>node</code> that points to <code>variable</code> in
 	 * <code>this</code> network.
-	 * @argCondition the variable must not be in the ProbNet.
+	 * Condition: the variable must not be in the ProbNet.
 	 */
 	public Node addNode(Variable variable, NodeType nodeType) {
 		Node node = nodeDepot.getNode(nodeType, variable);
@@ -980,7 +980,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 
 	/**
 	 * @param node . <code>Node</code>
-	 * @argCondition the variable must not be in the ProbNet. This method is
+	 * Condition: the variable must not be in the ProbNet. This method is
 	 * used to redo the <code>AddVariableEdit</code>, i.e., to
 	 * reinsert a Node that has been removed.
 	 */
@@ -993,7 +993,6 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 * @param nameOfVariable <code>String</code>
 	 * @return The <code>Node</code> that matches the
 	 * <code>nameOfVariable</code>
-	 * @consultation
 	 */
 	public Node getNode(String nameOfVariable) throws NodeNotFoundException {
 		Node node = nodeDepot.getNode(nameOfVariable);
@@ -1008,8 +1007,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 * @param nodeType       <code>NodeType</code>
 	 * @return The node with <code>nameOfVariable</code> and
 	 * <code>kindOfNode</code> if exists otherwise null
-	 * @throws NodeNotFoundException
-	 * @consultation
+	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
 	public Node getNode(String nameOfVariable, NodeType nodeType) throws NodeNotFoundException {
 		Node node = nodeDepot.getNode(nameOfVariable, nodeType);
@@ -1022,7 +1020,6 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	/**
 	 * @param variable <code>Variable</code>
 	 * @return The <code>Node</code> that matches the <code>Variable</code>
-	 * @consultation
 	 */
 	public Node getNode(Variable variable) {
 		return nodeDepot.getNode(variable);
@@ -1033,7 +1030,6 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 *                     . <code>String</code>
 	 * @return variable that matches <code>variableName</code> if exists,
 	 * otherwise <code>null</code>. <code>Variable</code>
-	 * @consultation
 	 */
 	public Variable getVariable(String variableName) throws NodeNotFoundException {
 		Node node = getNode(variableName);
@@ -1046,7 +1042,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 * @param baseName  base name of the variable
 	 * @param timeSlice time slice of the variable
 	 * @return return variable with that basename and time slice
-	 * @throws NodeNotFoundException
+	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
 	public Variable getVariable(String baseName, int timeSlice) throws NodeNotFoundException {
 		return getVariable(baseName + " [" + timeSlice + "]");
@@ -1057,9 +1053,8 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 * @param timeDifference time slice diference
 	 * @return a new variable having the same base name as the first argument
 	 * but in the time slice indicated by the second argument
-	 * @throws NodeNotFoundException
-	 * @argCondition variable must be in the network and must be temporal
-	 * @consultation
+	 * @throws NodeNotFoundException NodeNotFoundException
+	 * Condition: variable must be in the network and must be temporal
 	 */
 	public Variable getShiftedVariable(Variable variable, int timeDifference) throws NodeNotFoundException {
 		return getVariable(variable.getBaseName(), variable.getTimeSlice() + timeDifference);
@@ -1102,10 +1097,10 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 * @param potential . <code>Potential</code>
 	 * @return The <code>Node</code> in which the <code>potential</code>
 	 * received has been added.
-	 * @preCondition network contains at least one chance variable
-	 * @argCondition potential type must correspond with the roles (discrete or
+	 * Condition: network contains at least one chance variable
+	 * Condition: potential type must correspond with the roles (discrete or
 	 * continuous) of the variables in the network
-	 * @argCondition If A is the first variable in the potential and
+	 * Condition: If A is the first variable in the potential and
 	 * B<sub>0</sub> ... B<sub>n</sub> the remainders, there must
 	 * be a directed link B<sub>i</sub> -> A for every variable
 	 * B<sub>i</sub> in the potential (other than A)
@@ -1352,7 +1347,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @argCondition oldNode belongs to this probNet
+	 * Condition: oldNode belongs to this probNet
 	 */
 	public Node addShiftedNode(Node oldNode, int timeDifference, double coordinateXOffset, double coordinateYOffset) {
 		Variable oldVariable = oldNode.getVariable();

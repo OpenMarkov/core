@@ -146,7 +146,7 @@ public class TemporalNetOperations {
 	}
 
 	/**
-	 * @precondition extendedNet in this class must be a compact net
+	 * Condition: extendedNet in this class must be a compact net
 	 */
 	private static void generateNextSlice(ProbNet probNet, List<List<Node>> classifiedNodes) {
 		List<Node> lastSliceNodes = classifiedNodes.get(classifiedNodes.size() - 1);
@@ -179,7 +179,7 @@ public class TemporalNetOperations {
 	 * TODO document: oldNode is a node in the last slice of the compact net
 	 * TODO We are assuming that there is only one potential per node. Revise
 	 *
-	 * @throws NodeNotFoundException
+	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
 	private static void expandPotentialAndLinks(ProbNet probNet, Node oldNode, Node newNode, int timeDifference)
 			throws NodeNotFoundException {

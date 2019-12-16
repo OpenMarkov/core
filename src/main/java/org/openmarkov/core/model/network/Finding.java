@@ -78,7 +78,6 @@ public class Finding {
 	 *
 	 * @param variable       <code>Variable</code>
 	 * @param numericalValue <code>double</code>
-	 * @throws InvalidStateException
 	 */
 	public Finding(Variable variable, double numericalValue) {
 		// TODO Throw exception if numerical values is outside the domain of variable
@@ -136,7 +135,7 @@ public class Finding {
 
 	/**
 	 * @return numericalValue. <code>double</code>
-	 * @precondition This finding stores a hybrid or continuous variable
+	 * Condition: This finding stores a hybrid or continuous variable
 	 */
 	public double getNumericalValue() {
 		return Double.isNaN(numericalValue) ? stateIndex : numericalValue;
@@ -144,7 +143,7 @@ public class Finding {
 
 	/**
 	 * @param numericalValue <code>double</code>
-	 * @throws InvalidStateException
+	 * @throws InvalidStateException InvalidStateException
 	 */
 	public void setNumericalValue(double numericalValue) throws InvalidStateException {
 		this.numericalValue = numericalValue;

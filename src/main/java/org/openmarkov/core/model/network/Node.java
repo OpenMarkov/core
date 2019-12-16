@@ -49,12 +49,12 @@ public class Node {
 
 	// Attributes/
 	/**
-	 * @frozen
+	 * Node type
 	 */
 	protected NodeType nodeType;
 
 	/**
-	 * @frozen
+	 * Network
 	 */
 	protected ProbNet probNet;
 
@@ -114,7 +114,7 @@ public class Node {
 	/**
 	 * Copy Constructor for the GUI
 	 *
-	 * @param node
+	 * @param node Node
 	 */
 	public Node(Node node) {
 		this.probNet = node.getProbNet();
@@ -131,7 +131,6 @@ public class Node {
 	/**
 	 * @return The <code>Variable</code> associated to this
 	 * <code>node</code>.
-	 * @consultation
 	 */
 	public Variable getVariable() {
 		return variable;
@@ -140,7 +139,7 @@ public class Node {
 	/**
 	 * Sets a new variable and updates the reference in ProbNet
 	 *
-	 * @param newVariable
+	 * @param newVariable New variable
 	 */
 	public void setVariable(Variable newVariable) {
 		Variable oldVariable = this.variable;
@@ -181,7 +180,6 @@ public class Node {
 
 	/**
 	 * @return <code>NodeType</code>
-	 * @consultation
 	 */
 	public NodeType getNodeType() {
 		return nodeType;
@@ -509,7 +507,7 @@ public class Node {
 	 * of parent nodes. If 'computeMax' is true then it computes the maximum; otherwise it computes the minimum.
 	 * For an exact computation of the maximum or the minimum of the utility function then it is required to use
 	 * method 'getUtilityFunction' and computes the maximum or the minimum over the resulting potential.
-	 * @throws NonProjectablePotentialException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	private double getApproximateMaxOrMinUtilityFunction(boolean computeMax) throws NonProjectablePotentialException {
 		double result;
@@ -552,7 +550,7 @@ public class Node {
 	 * @return Approximates the maximum of the utility function of the Node. It is computed recursively by using the utility function
 	 * of parent nodes. For an exact computation of the maximum of the utility function then it is required to use
 	 * method 'getUtilityFunction' and computes the maximum over the resulting potential.
-	 * @throws NonProjectablePotentialException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public double getApproximateMaximumUtilityFunction() throws NonProjectablePotentialException {
 
@@ -563,7 +561,7 @@ public class Node {
 	 * @return Approximates the maximum of the utility function of the Node. It is computed recursively by using the utility function
 	 * of parent nodes. For an exact computation of the maximum of the utility function then it is required to use
 	 * method 'getUtilityFunction' and computes the maximum over the resulting potential.
-	 * @throws NonProjectablePotentialException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public double getApproximateMinimumUtilityFunction() throws NonProjectablePotentialException {
 
@@ -573,7 +571,7 @@ public class Node {
 	/**
 	 * @return The utility function of a utility variable. If it is a super-value node
 	 * then it operates their parent's utility functions recursively.
-	 * @throws NonProjectablePotentialException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public TablePotential getUtilityFunction() throws NonProjectablePotentialException, WrongCriterionException {
 		TablePotential result;
@@ -645,7 +643,7 @@ public class Node {
 	}
 
 	/**
-	 * @return
+	 * @return True if the node has only numerical parents
 	 */
 	public boolean onlyNumericalParents() {
 		List<Node> numericalParents = new ArrayList<>();

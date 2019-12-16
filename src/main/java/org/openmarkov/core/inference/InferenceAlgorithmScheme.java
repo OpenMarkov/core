@@ -65,7 +65,6 @@ public abstract class InferenceAlgorithmScheme {
 
 	/**
 	 * @param probNet The network used in the inference
-	 * @throws NotEvaluableNetworkException
 	 */
 	public InferenceAlgorithmScheme(ProbNet probNet) {
 		this.probNet = probNet.copy();
@@ -81,7 +80,7 @@ public abstract class InferenceAlgorithmScheme {
 	}
 
 	/**
-	 * @param postResolutionEvidence
+	 * @param postResolutionEvidence Post-resolution evidence
 	 */
 	public void setPostResolutionEvidence(EvidenceCase postResolutionEvidence) {
 		this.postResolutionEvidence = postResolutionEvidence;

@@ -42,7 +42,7 @@ import java.util.List;
 	 * new node will be added and basic information about it.
 	 *
 	 * @param node          the new node
-	 * @param configuration
+	 * @param configuration Configuration
 	 */
 	public UncertainValuesRemoveEdit(Node node, EvidenceCase configuration) {
 		super(node.getProbNet());

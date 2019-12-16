@@ -41,12 +41,9 @@ import java.util.stream.Collectors;
 public class BasicOperations {
 	/**
 	 * The source probNet
-	 * @param evidence 
-	 * 
-	 * @throws EvaluationException
-	 * @throws NumberFormatException
+	 * @param evidence Evidence
+	 * @param node Node
 	 */
-	// private static ProbNet sourceProbNet;
 	public static Potential buildPotentialByAbsorbingParents(Node node, EvidenceCase evidence) {
 		Potential newPotential = null;
 		
@@ -181,7 +178,7 @@ public class BasicOperations {
 	
 	
 	/**
-	 * @param node
+	 * @param node Node
 	 * @return true iff the node has parents and are all observable
 	 */
 	public static boolean haveParentsAndAreAllAbsorbable(Node node) {
@@ -401,8 +398,8 @@ public class BasicOperations {
 	}
 
 	/**
-	 * @param variable
-	 * @param probNet
+	 * @param variable Variable
+	 * @param probNet Network
 	 * @return The list of variables revealed by a variable in a DAN or by a chance
 	 *         variable revealed by that variable, and so on...
 	 */

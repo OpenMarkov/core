@@ -31,7 +31,7 @@ import java.util.Stack;
  * @author fjdiez
  * @author ibermejo
  * @version 1.1
- * @invariant Two different nodes can not represent the same object
+ * invariant Two different nodes can not represent the same object
  * @see org.openmarkov.core.model.network.Node
  * @see Link
  * @since OpenMarkov 1.0
@@ -102,9 +102,9 @@ public class Graph<T> {
 	/**
 	 * Returns if node1 is child of node2
 	 *
-	 * @param node1
-	 * @param node2
-	 * @return
+	 * @param node1 First node
+	 * @param node2 Second node
+	 * @return True if node1 is child of node2
 	 */
 	public boolean isChild(T node1, T node2) {
 		return nodeChildren.containsKey(node2) && nodeChildren.get(node2).contains(node1);
@@ -113,9 +113,9 @@ public class Graph<T> {
 	/**
 	 * Returns if node1 is parent of node2
 	 *
-	 * @param node1
-	 * @param node2
-	 * @return
+	 * @param node1 First node
+	 * @param node2 Second node
+	 * @return True if node1 is parent of node2
 	 */
 	public boolean isParent(T node1, T node2) {
 		return nodeParents.containsKey(node2) && nodeParents.get(node2).contains(node1);
@@ -124,9 +124,9 @@ public class Graph<T> {
 	/**
 	 * Returns whether node1 and node2 are siblings
 	 *
-	 * @param node1
-	 * @param node2
-	 * @return
+	 * @param node1 First node
+	 * @param node2 Second node
+	 * @return True if node1 and node2 are siblings
 	 */
 	public boolean isSibling(T node1, T node2) {
 		return nodeSiblings.containsKey(node2) && nodeSiblings.get(node2).contains(node1);
@@ -135,9 +135,9 @@ public class Graph<T> {
 	/**
 	 * Returns whether node1 and node2 are neighbors
 	 *
-	 * @param node1
-	 * @param node2
-	 * @return
+	 * @param node1 First node
+	 * @param node2 Second node
+	 * @return True if node1 and node2 are neighbors
 	 */
 	public boolean isNeighbor(T node1, T node2) {
 		return isParent(node1, node2) || isChild(node1, node2) || isSibling(node1, node2);
@@ -152,7 +152,6 @@ public class Graph<T> {
 
 	/**
 	 * @return Number of nodes in the graph
-	 * @consultation
 	 */
 	public int getNumNodes() {
 		return getNodes().size();
@@ -164,12 +163,11 @@ public class Graph<T> {
 	}
 
 	/**
-	 * Inserts a link between <code>node1</code> and <code>node2</code>.
+	 * Inserts a link between <code>node1</code> and <code>node2</code>. <code>node1</code> and <code>node2</code> belongs to this
 	 *
 	 * @param node1    <code>Node</code>
 	 * @param node2    <code>Node</code>
 	 * @param directed <code>boolean</code>
-	 * @argCondition <code>node1</code> and <code>node2</code> belongs to this
 	 * <code>graph</code>
 	 */
 	public Link<T> addLink(T node1, T node2, boolean directed) {
@@ -202,10 +200,9 @@ public class Graph<T> {
 	}
 
 	/**
-	 * Removes an explicit link.
+	 * Removes an explicit link. Links must be explicit.
 	 *
 	 * @param link <code>Link<T></code>.
-	 * @precondition Links must be explicit.
 	 */
 	public void removeLink(Link<T> link) {
 		T node1 = link.getNode1();
@@ -223,7 +220,6 @@ public class Graph<T> {
 	 * @param directed <code>boolean</code>
 	 * @return The link between node1 and node2, if it exists, otherwise
 	 * returns <code>null</code>
-	 * @consultation
 	 */
 	public Link<T> getLink(T node1, T node2, boolean directed) {
 		makeLinksExplicit(false);
@@ -363,6 +359,7 @@ public class Graph<T> {
 	}
 
 	/**
+	 * <code>node1</code> and <code>node2</code> belongs to this graph. Otherwise this method always returns <code>false</code>.
 	 * @param node1    <code>Node</code>.
 	 * @param node2    <code>Node</code>.
 	 * @param directed <code>boolean</code>. If this parameter is true, this
@@ -370,8 +367,6 @@ public class Graph<T> {
 	 *                 otherwise, this method returns <code>true</code> if there is any path.
 	 * @return <code>true</code> if it exists a path between node1 and node2
 	 * with a criterion to go from a node to another.
-	 * @precondition <code>node1</code> and <code>node2</code> belongs to this
-	 * graph. Otherwise this method always returns <code>false</code>.
 	 */
 	public boolean existsPath(T node1, T node2, boolean directed) {
 		if ((node1 == null) || (node2 == null)) {
@@ -411,11 +406,9 @@ public class Graph<T> {
 
 	/**
 	 * Adds an undirected link between each pair of nodes in
-	 * <code>nodeList</code> if it did not exist.
+	 * <code>nodeList</code> if it did not exist. All nodes in <code>nodeList</code> belongs to <code>this</code>.
 	 *
 	 * @param nodeList <code>ArrayList</code> of <code>? extends Node</code>.
-	 * @precondition All nodes in <code>nodeList</code> belongs to
-	 * <code>this</code>.
 	 */
 	public void marry(Collection<T> nodeList) {
 		int size = nodeList.size();
@@ -440,12 +433,12 @@ public class Graph<T> {
 	}
 
 	/**
-	 * Adds an implicit link by setting cross references between the two nodes.
+	 * Adds an implicit link by setting cross references between the two nodes. Both nodes must belong to the same graph.
 	 *
 	 * @param node1    <code>Node</code>
 	 * @param node2    <code>Node</code>
 	 * @param directed <code>boolean</code>
-	 * @argCondition Both nodes must belong to the same graph.
+	 *
 	 */
 	private void addImplicitLink(T node1, T node2, boolean directed) {
 		if (directed) {
@@ -473,12 +466,11 @@ public class Graph<T> {
 
 	/**
 	 * Removes an implicit link by deleting cross references between the two
-	 * nodes.
+	 * nodes. The two nodes must belong to the same graph
 	 *
 	 * @param node1    <code>Node</code>
 	 * @param node2    <code>Node</code>
 	 * @param directed <code>boolean</code>
-	 * @argCondition The two nodes must belong to the same graph
 	 */
 	private void removeImplicitLink(T node1, T node2, boolean directed) {
 		if (directed) {

@@ -12,7 +12,7 @@ public class PrerencesException extends OpenMarkovException {
     // Constructor
 
     /**
-     * @param message
+     * @param message Message
      */
     public PrerencesException(String message) {
         super(message);

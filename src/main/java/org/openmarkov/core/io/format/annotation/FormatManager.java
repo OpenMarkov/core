@@ -180,8 +180,8 @@ public class FormatManager {
 	 * @param extension  - the extension corresponding to the enconding of the file (elv, pgmx)
 	 * @param fileFormat - format and version of the file
 	 * @return the ProbNetWriter corresponding to the selected extension and format of the file
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
+	 * @throws InstantiationException InstantiationException
+	 * @throws IllegalAccessException IllegalAccessException
 	 */
 	public ProbNetWriter getProbNetWriter(String extension, String fileFormat)
 			throws IllegalAccessException, InstantiationException {
@@ -260,7 +260,7 @@ public class FormatManager {
 	/**
 	 * Gets the plugin corresponding to the "Reader" role, the extension and the version
 	 *
-	 * @param fileName
+	 * @param fileName File name
 	 * @return a ProbNetReader object
 	 * @throws Exception when an exception is raised is thrown to be caught by the gui
 	 */

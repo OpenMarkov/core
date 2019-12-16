@@ -257,8 +257,8 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	 * Method to compare two InvertLinkEdits comparing the names of
 	 * the source and destination variable alphabetically.
 	 *
-	 * @param obj
-	 * @return
+	 * @param obj InvertLinkAndUpdatePotentialsEdit
+	 * @return result of the comparison
 	 */
 	public int compareTo(InvertLinkAndUpdatePotentialsEdit obj) {
 		int result;

@@ -11,7 +11,7 @@ public class ConfigurationException extends OpenMarkovException {
 
     // Constructor
     /**
-     * @param message
+     * @param message message
      */
 	public ConfigurationException(String message) {
         super(message);

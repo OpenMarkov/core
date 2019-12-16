@@ -48,7 +48,7 @@ import javax.swing.undo.AbstractUndoableEdit;
 	/**
 	 * Abstract method to be defined in derived classes
 	 *
-	 * @throws
+	 * @throws DoEditException DoEditException
 	 */
 	public abstract void doEdit() throws DoEditException;
 

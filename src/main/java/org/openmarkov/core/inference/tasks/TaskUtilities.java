@@ -139,8 +139,8 @@ public class TaskUtilities {
 		 */
 
 	/**
-	 * @param probNet
-	 * @param evidenceCase
+	 * @param probNet Network
+	 * @param evidenceCase Evidence case
 	 * @return Remove intermediate numeric nodes from probNet
 	 */
 	public static ProbNet absorbAllIntermediateNumericNodes(ProbNet probNet, EvidenceCase evidenceCase) {
@@ -154,7 +154,7 @@ public class TaskUtilities {
 	}
 
 	/**
-	 * @param network
+	 * @param network Network
 	 * @return boolean
 	 */
 	public static boolean hasDecisions(ProbNet network) {
@@ -187,7 +187,7 @@ public class TaskUtilities {
 	 *                                  phase both imposed and calculated policies
 	 *                                  are used. Decision nodes in
 	 *                                  'informationalPredecessors' are not changed.
-	 * @param informationalPredecessors
+	 * @param informationalPredecessors Informational predecessors
 	 */
 	private static void replaceDecisionsWithPoliciesByChanceNodes(ProbNet probNet,
 			List<Variable> informationalPredecessors) {
@@ -246,7 +246,7 @@ public class TaskUtilities {
 	}
 
 	/**
-	 * @param decision
+	 * @param decision Decision variable
 	 * @return True if the decision has an imposed policy.
 	 */
 	public static boolean hasImposedPolicy(ProbNet probNet, Variable decision) {
@@ -276,10 +276,10 @@ public class TaskUtilities {
 	}
 
 	/**
-	 * @param network
-	 * @param evidence
-	 * @return
-	 * @throws IncompatibleEvidenceException
+	 * @param network Network
+	 * @param evidence Evidence
+	 * @return Projected network
+	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
 	public static ProbNet projectTablesAndBuildMarkovDecisionNetwork(ProbNet network, EvidenceCase evidence)
 			throws IncompatibleEvidenceException {

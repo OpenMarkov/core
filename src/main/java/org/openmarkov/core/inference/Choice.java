@@ -25,7 +25,7 @@ public class Choice {
 	/**
 	 * Value(s) assignment; if there is no draws only the first one.
 	 *
-	 * @invariant value[i] != value[j] when i != j and i < numValues
+	 * invariant value[i] != value[j] when i != j and i < numValues
 	 * and j < numValues
 	 * (<code>int[]</code>).
 	 */
@@ -170,10 +170,9 @@ public class Choice {
 	/**
 	 * Overrides <code>equals</code> method. Mainly for test purposes.
 	 *
-	 * @param object <code>Object</code>
+	 * @param object <code>Object</code>. <code>Object</code> must be of type <code>Choice</code>
 	 * @return <code>true</code> if the object received has the same variable
 	 * and the same option (or options set)
-	 * @argCondition <code>object</code> must be of type <code>Choice</code>
 	 */
 	public boolean sameInformation(Object object) {
 		Choice choice = (Choice) object;

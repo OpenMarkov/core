@@ -27,7 +27,7 @@ public class RemovePolicyEdit extends SimplePNEdit {
 	private PolicyType lastPolicyType;
 
 	/**
-	 * @param node
+	 * @param node Node
 	 */
 	public RemovePolicyEdit(Node node) {
 		super(node.getProbNet());

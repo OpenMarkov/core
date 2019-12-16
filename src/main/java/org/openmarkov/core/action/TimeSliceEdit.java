@@ -39,8 +39,8 @@ import org.openmarkov.core.model.network.Variable;
 	private Variable variable;
 
 	/**
-	 * @param node
-	 * @param timeSlice
+	 * @param node Node
+	 * @param timeSlice Time slice
 	 */
 	public TimeSliceEdit(Node node, int timeSlice) {
 		super(node.getProbNet());

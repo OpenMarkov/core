@@ -44,7 +44,6 @@ public class LabelledLink<T> extends Link<T> {
 	 * Gets the label value
 	 *
 	 * @return label <code>Object</code>
-	 * @consultation
 	 */
 	public Object getLabel() {
 		return label;

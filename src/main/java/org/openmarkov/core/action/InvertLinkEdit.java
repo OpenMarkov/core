@@ -108,8 +108,8 @@ import java.util.List;
 	 * Method to compare two InvertLinkEdits comparing the names of
 	 * the source and destination variable alphabetically.
 	 *
-	 * @param obj
-	 * @return
+	 * @param obj InvertLinkEdit
+	 * @return Result of the comparison
 	 */
 	public int compareTo(InvertLinkEdit obj) {
 		int result;

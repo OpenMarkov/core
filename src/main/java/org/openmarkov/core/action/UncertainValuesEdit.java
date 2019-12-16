@@ -42,11 +42,11 @@ import java.util.List;
 	 * new node will be added and basic information about it.
 	 *
 	 * @param node             the new node
-	 * @param uncertainColumn
-	 * @param valuesColumn
-	 * @param basePosition
-	 * @param selectedColumn
-	 * @param isChanceVariable
+	 * @param uncertainColumn Uncertain column
+	 * @param valuesColumn Values column
+	 * @param basePosition Base position
+	 * @param selectedColumn Selected column
+	 * @param isChanceVariable Is chance variable?
 	 */
 	public UncertainValuesEdit(Node node, List<UncertainValue> uncertainColumn, List<Double> valuesColumn,
 			int basePosition, int selectedColumn, boolean isChanceVariable) {
@@ -68,10 +68,10 @@ import java.util.List;
 	 * It replaces a column in the uncertain values table. If parameter 'column'
 	 * is null then all the replaced cells are set to null.
 	 *
-	 * @param potential
-	 * @param column
-	 * @param var
-	 * @param basePosition
+	 * @param potential Potential
+	 * @param column Column
+	 * @param var Variable
+	 * @param basePosition Base position
 	 */
 	static void placeUncertainColumn(TablePotential potential, List<UncertainValue> column, Variable var,
 			int basePosition) {

@@ -83,12 +83,10 @@ public class PNESupport extends UndoableEditSupport {
 	 * First part: Announce to the listeners than an edition can happen
 	 *
 	 * @param edit <code>PNEdit</code>.
-	 * @throws WrongCriterionException
-	 * @throws NonProjectablePotentialException
-	 * @throws <code>ConstraintViolationException</code> in case of illegal
+	 * @throws WrongCriterionException WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @throws ConstraintViolationException in case of illegal
 	 *                                                   <code>probNet</code> modification.
-	 * @throws <code>CanNotDoEditException</code>        in case of illegal
-	 *                                                   modifications in others listeners such as heuristics, GUI, ...
 	 */
 	public void announceEdit(PNEdit edit)
 			throws ConstraintViolationException, NonProjectablePotentialException,
@@ -103,10 +101,9 @@ public class PNESupport extends UndoableEditSupport {
 	 * Second part: It does the edition and inform to the listeners
 	 *
 	 * @param edit <code>PNEdit</code>.
-	 * @throws DoEditException
-	 * @throws WrongCriterionException
-	 * @throws NonProjectablePotentialException
-	 * @throws UnexpectedInferenceException
+	 * @throws DoEditException DoEditException
+	 * @throws WrongCriterionException WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public void doEdit(PNEdit edit) throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
 		// Inform the listeners that an edition will happen

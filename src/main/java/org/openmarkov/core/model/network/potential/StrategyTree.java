@@ -462,7 +462,7 @@ public class StrategyTree extends TreeADDPotential {
 		return this;
 	}
 
-	public boolean hasCycle() {
+	public boolean cehasCycle() {
 		boolean hasCycle;
 		hasCycle = false;
 		if (branches != null) {
@@ -482,7 +482,7 @@ public class StrategyTree extends TreeADDPotential {
 	}
 
 	/**
-	 * @param strategyTree
+	 * @param strategyTree StrategyTree
 	 * @return True iff 'intervention' can be reached from 'this'
 	 */
 	private boolean isReachable(StrategyTree strategyTree) {

@@ -12,7 +12,7 @@ package org.openmarkov.core.model.network;
  *
  * @author jperez
  */
-public class Criterion implements Cloneable {
+public class Criterion implements Cloneable, Comparable<Criterion> {
 
 	/**
 	 * Constant with the default criterion of a ProbNet
@@ -194,6 +194,11 @@ public class Criterion implements Cloneable {
 		this.discountUnit = newCriterion.getDiscountUnit();
         this.unicriterizationScale = newCriterion.getUnicriterizationScale();
 		this.ceScale = newCriterion.getCeScale();
+	}
+
+	@Override
+	public int compareTo(Criterion o) {
+		return (o.getCriterionName().compareTo(this.getCriterionName()));
 	}
 
 	/**

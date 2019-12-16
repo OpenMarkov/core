@@ -12,45 +12,57 @@ import java.util.List;
 /**
  * Implement a table with Events in the configuration of parents
  * @version 1.0 -14/00/2019- -cyago -
- *
+ * TODO Check if this has to extend Potential
  * @since OpenMarkov 3.0
 */
 
 
 @PotentialType(family ="Event", name = "TableWithEvents")
-public class TableWithEventsPotential extends Potential implements ImpossibleConfiguration {
+public class TableWithEvents extends Potential implements ImpossibleConfiguration {
 
-    protected TablePotential tablePotential;
+    protected TablePotential tablePotential = null;
 
-    protected Variable events;
+    protected TableWithFunctions tableWithFunctions = null;
+
+    protected Variable events = null;
+
+    private List<Variable> tableVariables = null;
 
     //Imcompatible configurations. Looking the better way of representing them.
     protected boolean hasImpossibleConfigurations;
     protected ArrayList<Configuration> impossibleConfigurations;
 
 
-
+    public TableWithEvents(List<Variable> variables, PotentialRole role) {
+        this(variables,role,false);
+    }
     /**
      *
      * @param variables
      * @param role
      */
-    public TableWithEventsPotential(List<Variable> variables, PotentialRole role) {
+    public TableWithEvents(List<Variable> variables, PotentialRole role, boolean useTableWithFunctions) {
 
         super(variables, role);
         List<Variable> parents = variables.subList(1,variables.size());
         setEventAsStates(parents);
-        ArrayList<Variable> tablePotentialVariables=new ArrayList<>();
-        tablePotentialVariables.add(variables.get(0));
+        tableVariables =new ArrayList<>();
+        tableVariables.add(variables.get(0));
 
         for (Variable variable:parents) {
             if (variable.getVariableType()!= VariableType.EVENT)
-                    tablePotentialVariables.add(variable);
+                    tableVariables.add(variable);
         }
         if (events !=null) {
-            tablePotentialVariables.add(events);
+            tableVariables.add(events);
         }
-        setTablePotential(new TablePotential(tablePotentialVariables,role));
+        //At the moment there is always a TablePotential
+        setTablePotential(new TablePotential(tableVariables, role));
+        //TablePotential when there is no numeric parents, TableWithFuncions when there are numeric parents
+        if (useTableWithFunctions){
+            tableWithFunctions= new TableWithFunctions(tableVariables,role);
+
+        }
         impossibleConfigurations = new ArrayList<>();
 
     }
@@ -61,7 +73,7 @@ public class TableWithEventsPotential extends Potential implements ImpossibleCon
 //    }
 
     //TODO
-    public TableWithEventsPotential(TableWithEventsPotential potential) {
+    public TableWithEvents(TableWithEvents potential) {
         super(potential);
         this.setTablePotential(new TablePotential(potential.getTablePotential()));
     }
@@ -84,13 +96,6 @@ public class TableWithEventsPotential extends Potential implements ImpossibleCon
     }
 
 
-    public Variable getEvents() {
-        return events;
-    }
-
-    public void setEvents(Variable events) {
-        this.events = events;
-    }
 
     /**
      * Extract the event parents and fill the states of eventAsStates with its names. For example,
@@ -111,6 +116,14 @@ public class TableWithEventsPotential extends Potential implements ImpossibleCon
             events = new Variable("Events", states.toArray(new State[0]));
         }
     }
+
+
+
+
+
+
+
+
 
     @Override
     public void addImpossibleConfiguration(EvidenceCase eCiC){
@@ -152,50 +165,38 @@ public class TableWithEventsPotential extends Potential implements ImpossibleCon
 
 
 
-
-
-
-    //TODO
-    @Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
-            throws NonProjectablePotentialException, WrongCriterionException {
-        throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
+    public Variable getEvents() {
+        return events;
     }
 
-    //TODO
-    @Override public TableWithEventsPotential project(EvidenceCase evidenceCase)
-            throws WrongCriterionException, NonProjectablePotentialException {
-        throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
+    public void setEvents(Variable events) {
+        this.events = events;
     }
-
-    //TODO
-    @Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                       List<TablePotential> alreadyProjectedPotentials)
-            throws NonProjectablePotentialException, WrongCriterionException {
-        // get the projected TablePotential, which will be returned inside a list
-        throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
-    }
-
-    //TODO
-    @Override public Potential copy() {
-        return new TableWithEventsPotential(this);
-    }
-
-    //TODO
-    @Override public boolean isUncertain() {
-        return false;
-    }
-
-    //TODO
-    @Override public void scalePotential(double scale) {
-        this.getTablePotential().scalePotential(scale);
-    }
-
     public TablePotential getTablePotential() {
         return tablePotential;
     }
 
     public void setTablePotential(TablePotential tablePotential) {
         this.tablePotential = tablePotential;
+    }
+
+    public TableWithFunctions getTableWithFunctions() {
+        return tableWithFunctions;
+    }
+
+    public void setTableWithFunctions(TableWithFunctions tableWithFunctions) {
+        this.tableWithFunctions = tableWithFunctions;
+    }
+
+    /**
+     * The list of variables of tablePotential and tableWithFunctions
+     */
+    public List<Variable> getTableVariables() {
+        return tableVariables;
+    }
+
+    public void setTableVariables(List<Variable> tableVariables) {
+        this.tableVariables = tableVariables;
     }
 
     public Variable getChildVariable() {
@@ -219,18 +220,33 @@ public class TableWithEventsPotential extends Potential implements ImpossibleCon
     }
 
     public void setValues(double[] values) {
-        this.getTablePotential().values = values;
+        tablePotential.values = values;
+        if (tableWithFunctions ==null){
+            //TODO
+        }
     }
 
     @Override public List<Variable> getVariables() {
         return variables;
     }
 
-    //TODO
+
     @Override public void setVariables(List<Variable> variables) {
         super.setVariables(variables);
         this.getTablePotential().setVariables(variables.subList(1, variables.size()));
     }
+
+    /**
+     * Combination of state_value and events that cannot be possible
+     */
+    public ArrayList<Configuration> getImpossibleConfigurations() {
+        return impossibleConfigurations;
+    }
+
+    public void setImpossibleConfigurations(ArrayList<Configuration> impossibleConfigurations) {
+        this.impossibleConfigurations = impossibleConfigurations;
+    }
+
     //TODO
     @Override public void setComment(String comment) {
         super.setComment(comment);
@@ -272,17 +288,41 @@ public class TableWithEventsPotential extends Potential implements ImpossibleCon
     }
 
 
-    /**
-     * Combination of state_value and events that cannot be possible
-     */
-    public ArrayList<Configuration> getImpossibleConfigurations() {
-        return impossibleConfigurations;
+
+    //TODO
+    @Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
+            throws NonProjectablePotentialException, WrongCriterionException {
+        throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
     }
 
-    public void setImpossibleConfigurations(ArrayList<Configuration> impossibleConfigurations) {
-        this.impossibleConfigurations = impossibleConfigurations;
+    //TODO
+    @Override public TableWithEvents project(EvidenceCase evidenceCase)
+            throws WrongCriterionException, NonProjectablePotentialException {
+        throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
     }
 
+    //TODO
+    @Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+                                                       List<TablePotential> alreadyProjectedPotentials)
+            throws NonProjectablePotentialException, WrongCriterionException {
+        // get the projected TablePotential, which will be returned inside a list
+        throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
+    }
+
+    //TODO
+    @Override public Potential copy() {
+        return new TableWithEvents(this);
+    }
+
+    //TODO
+    @Override public boolean isUncertain() {
+        return false;
+    }
+
+    //TODO
+    @Override public void scalePotential(double scale) {
+        this.getTablePotential().scalePotential(scale);
+    }
 
 }
 

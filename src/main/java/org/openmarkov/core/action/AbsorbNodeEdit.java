@@ -71,8 +71,8 @@ import java.util.*;
     // Constructor
 
     /**
-     * @param probNet    <code>ProbNet</code>
-     * @param absorbedVariable  <code>Variable</code>
+     * @param probNet    {@code ProbNet}
+     * @param absorbedVariable  {@code Variable}
      */
     public AbsorbNodeEdit(ProbNet probNet, Variable absorbedVariable) {
         super(probNet);

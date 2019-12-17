@@ -29,12 +29,11 @@ public class DiscretePotentialOperations {
 	}
 
 	// Methods
-
 	/**
-	 * @param potentials <code>ArrayList</code> of
-	 *                   <code>? extends Potential</code>
-	 * @return The multiplied potentials <code>TablePotential</code>
-	 * @throws Exception <code>Exception</code>
+	 *
+	 * @param potentials ArrayList of Potentials
+	 * @return The multiplied potentials
+	 * @throws Exception Exception
 	 */
 	public static TablePotential multiply(List<TablePotential> potentials) throws Exception {
 		// Sequential part
@@ -97,13 +96,11 @@ public class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param numeratorPotential   <code>Potential</code>
-	 * @param denominatorPotential <code>Potential</code>
-	 * @return numeratorPotential / denominatorPotential
-	 * <code>TablePotential</code>
-	 * @throws Exception <code>Exception</code>
+	 * @param numeratorPotential   {@code Potential}
+	 * @param denominatorPotential {@code Potential}
+	 * @return numeratorPotential / denominatorPotential {@code TablePotential}
 	 */
-	public static TablePotential divide(Potential numeratorPotential, Potential denominatorPotential) throws Exception {
+	public static TablePotential divide(Potential numeratorPotential, Potential denominatorPotential) {
 		// Sequential part
 		SharedDataDivide sdd = new SharedDataDivide(numeratorPotential, denominatorPotential);
 		sdd.initialize();
@@ -164,10 +161,10 @@ public class DiscretePotentialOperations {
 	}
 
 	/**
-	 * Divides an operation in <code>numLogicalProcessors</code> parts by
-	 * computing the following arrays <code>resultIntervals</code>,
-	 * <code>lengthResultIntervals</code> and
-	 * <code>variableToIncrement</code>.
+	 * Divides an operation in {@code numLogicalProcessors} parts by
+	 * computing the following arrays {@code resultIntervals},
+	 * {@code lengthResultIntervals} and
+	 * {@code variableToIncrement}.
 	 */
 	static void splitResultPotential(TablePotential result, int[][] resultIntervals, int[] lengthResultIntervals,
 			int[] resultPositionIntervals) {

@@ -18,9 +18,9 @@ import javax.swing.event.UndoableEditEvent;
 
 /**
  * A constraint is a condition that a model must fulfill.<p>
- * This class implements <code>PNUndoableEditListener</code> because like
+ * This class implements {@code PNUndoableEditListener} because like
  * that all the classes that implement this interface will be able to receive
- * the same messages than <code>UndoableEditListener</code> and they will be
+ * the same messages than {@code UndoableEditListener} and they will be
  * able to be referenced with same identifier.
  */
 public abstract class PNConstraint implements PNUndoableEditListener, Checkable {
@@ -30,12 +30,12 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
 	}
 
 	/**
-	 * Given a <code>probNet</code> that complies with this constraint, this
-	 * method checks that after the application of the <code>edit</code>
-	 * contained in the <code>event</code> received, the
-	 * <code>probNet</code> continues complying with this constraint.
+	 * Given a {@code probNet} that complies with this constraint, this
+	 * method checks that after the application of the {@code edit}
+	 * contained in the {@code event} received, the
+	 * {@code probNet} continues complying with this constraint.
 	 *
-	 * @param event <code>UndoableEditEvent</code>
+	 * @param event {@code UndoableEditEvent}
 	 * @throws ConstraintViolationException ConstraintViolationException
 	 * @throws WrongCriterionException WrongCriterionException
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
@@ -57,8 +57,8 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
 	}
 
 	/**
-	 * @param probNet <code>ProbNet</code>
-	 * @return <code>true</code> if the <code>probNet</code> fulfills the
+	 * @param probNet {@code ProbNet}
+	 * @return {@code true} if the {@code probNet} fulfills the
 	 * constraint.
 	 */
 	public abstract boolean checkProbNet(ProbNet probNet);
@@ -66,11 +66,11 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
 	/**
 	 * Make sure all editions of the event do not violate restrictions.
 	 *
-	 * @param probNet <code>ProbNet</code>
-	 * @param edit    <code>PNEdit</code>
-	 * @return <code>true</code> if the <code>ProbNet</code> will fulfill the
-	 * constraint after applying the <code>event</code> in a
-	 * <code>ProbNet</code> that previously fulfilled the constraint.
+	 * @param probNet {@code ProbNet}
+	 * @param edit    {@code PNEdit}
+	 * @return {@code true} if the {@code ProbNet} will fulfill the
+	 * constraint after applying the {@code event} in a
+	 * {@code ProbNet} that previously fulfilled the constraint.
 	 * @throws WrongCriterionException WrongCriterionException
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */

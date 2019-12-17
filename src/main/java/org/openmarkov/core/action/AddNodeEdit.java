@@ -17,8 +17,8 @@ import org.openmarkov.core.model.network.potential.operation.PotentialOperations
 import java.awt.geom.Point2D;
 
 /**
- * <code>AddNodeEdit</code> is a edit that allow add a node to
- * <code>ProbNet</code> object.
+ * {@code AddNodeEdit} is a edit that allow add a node to
+ * {@code ProbNet} object.
  *
  * @author mpalacios
  * @version 1 21/12/10
@@ -47,10 +47,10 @@ import java.awt.geom.Point2D;
 	protected Node newNode;
 
 	/**
-	 * Creates a new <code>AddNodeEdit</code> with the network where the new
+	 * Creates a new {@code AddNodeEdit} with the network where the new
 	 * new node will be added and basic information about it.
 	 *
-	 * @param probNet        the <code>ProbNet</code> where the new node will be added.
+	 * @param probNet        the {@code ProbNet} where the new node will be added.
 	 * @param variable       the variable contained in the new node
 	 * @param nodeType       The new node type.
 	 * @param cursorPosition the position (coordinates X,Y) of the node.
@@ -64,10 +64,10 @@ import java.awt.geom.Point2D;
 	}
 
 	/**
-	 * Creates a new <code>AddNodeEdit</code> with the network where the new
+	 * Creates a new {@code AddNodeEdit} with the network where the new
 	 * new node will be added and basic information about it.
 	 *
-	 * @param probNet  the <code>ProbNet</code> where the new node will be added.
+	 * @param probNet  the {@code ProbNet} where the new node will be added.
 	 * @param variable the variable contained in the new node
 	 * @param nodeType The new node type.
 	 */
@@ -98,7 +98,7 @@ import java.awt.geom.Point2D;
 	}
 
 	/**
-	 * @return newNode the new <code>Node</code> added
+	 * @return newNode the new {@code Node} added
 	 */
 	public Node getNode() {
 		return newNode;

@@ -53,8 +53,8 @@ public abstract class ICIPotential extends Potential {
 	// Constructor
 
 	/**
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>
-	 * @param modelType <code>ICIModel</code>
+	 * @param variables {@code ArrayList} of {@code Variable}
+	 * @param modelType {@code ICIModel}
 	 */
 	public ICIPotential(ICIModelType modelType, List<Variable> variables) {
 		// In principle, role will be "conditional probability"
@@ -96,6 +96,7 @@ public abstract class ICIPotential extends Potential {
 	 * @param node Node
 	 * @param variables List of variables
 	 * @param role Potential role
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		return variables.size() > 1;
@@ -113,7 +114,7 @@ public abstract class ICIPotential extends Potential {
 
 	/**
 	 * Initializes noisy parameters values
-	 *
+	 * @param conditionedVariable Conditioned variable
 	 * @param parent Parent variable
 	 * @return Array of noisy parameters values
 	 */
@@ -139,8 +140,11 @@ public abstract class ICIPotential extends Potential {
 	public abstract TablePotential getFFunctionPotential();
 
 	/**
-	 * @param evidenceCase <code>EvidenceCase</code>
-	 * @return <code>ArrayList</code> of <code>Potential</code>
+	 * @param inferenceOptions Inference options
+	 * @param evidenceCase {@code EvidenceCase}
+	 * @return {@code ArrayList} of {@code Potential}
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	// TODO This is the actual valid tableProject that should be used once the
 	// bug in projectEvidence (assuming tableProject always returns a
@@ -216,7 +220,7 @@ public abstract class ICIPotential extends Potential {
 	/**
 	 * There will be a potential for each link, plus the leak potential and the f function
 	 *
-	 * @return <code>ArrayList</code> of <code>TablePotential</code>.
+	 * @return {@code ArrayList} of {@code TablePotential}.
 	 */
 	public List<TablePotential> getSubpotentials() {
 		List<TablePotential> subpotentials = new ArrayList<>();
@@ -239,7 +243,7 @@ public abstract class ICIPotential extends Potential {
 	/**
 	 * There will be a potential for each link, plus the leak potential
 	 *
-	 * @return <code>ArrayList</code> of <code>TablePotential</code>.
+	 * @return {@code ArrayList} of {@code TablePotential}.
 	 */
 	public List<TablePotential> getNoisyPotentials() {
 		List<TablePotential> noisyPotentials = new ArrayList<>();
@@ -262,7 +266,7 @@ public abstract class ICIPotential extends Potential {
 	}
 
 	/**
-	 * @return Leak potential. <code>TablePotential</code>
+	 * @return Leak potential. {@code TablePotential}
 	 */
 	public double[] getLeakyParameters() {
 		return leakyParameters;
@@ -310,14 +314,14 @@ public abstract class ICIPotential extends Potential {
 	}
 
 	/**
-	 * @return model. <code>ICIModel</code>
+	 * @return model. {@code ICIModel}
 	 */
 	public ICIModelType getModelType() {
 		return modelType;
 	}
 
 	/**
-	 * @return model. <code>ICIModel</code>
+	 * @return model. {@code ICIModel}
 	 */
 	public ICIFamily getFamily() {
 		return modelType.getFamily();

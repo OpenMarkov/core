@@ -28,10 +28,10 @@ public class LabelledLink<T> extends Link<T> {
 	/**
 	 * Creates a labelled link and sets the cross references in the nodes.
 	 *
-	 * @param node1    <code>Node</code>
-	 * @param node2    <code>Node</code>
-	 * @param directed <code>boolean</code>
-	 * @param label    <code>Object</code>
+	 * @param node1    {@code Node}
+	 * @param node2    {@code Node}
+	 * @param directed {@code boolean}
+	 * @param label    {@code Object}
 	 */
 	public LabelledLink(T node1, T node2, boolean directed, Object label) {
 		super(node1, node2, directed);
@@ -43,7 +43,7 @@ public class LabelledLink<T> extends Link<T> {
 	/**
 	 * Gets the label value
 	 *
-	 * @return label <code>Object</code>
+	 * @return label {@code Object}
 	 */
 	public Object getLabel() {
 		return label;
@@ -52,7 +52,7 @@ public class LabelledLink<T> extends Link<T> {
 	/**
 	 * Sets the label value
 	 *
-	 * @param label <code>Object</code>
+	 * @param label {@code Object}
 	 */
 	public void setLabel(Object label) {
 		this.label = label;

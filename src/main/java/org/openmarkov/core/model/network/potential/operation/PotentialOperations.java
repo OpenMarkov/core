@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The class <code>PotentialOperations</code> contains method for performing
+ * The class {@code PotentialOperations} contains method for performing
  * basic operations in bayesian networks such as matrix multiplication,
  * marginalization, etc.
  *
@@ -50,6 +50,7 @@ public class PotentialOperations {
 	 * @param potential Potential
 	 * @param variablesOfInterest List of the variables of interest
 	 * @throws PotentialOperationException PotentialOperationException
+	 * @return Marginalized potential
 	 */
 	public static Potential marginalize(Potential potential, List<Variable> variablesOfInterest)
 			throws PotentialOperationException {
@@ -93,6 +94,7 @@ public class PotentialOperations {
 	 * Condition: variablesToKeep + variablesToEliminate =
 	 * potential.getVariables()
 	 * Condition: variablesToKeep
+	 * @return Marginalized potential
 	 */
 	public static Potential marginalize(Potential potential, List<Variable> variablesToKeep,
 			List<Variable> variablesToEliminate) throws PotentialOperationException {
@@ -117,6 +119,7 @@ public class PotentialOperations {
 	 * @param potentials List of table potentials
 	 * @param variablesToEliminate List of the variables to eliminate
 	 * @throws PotentialOperationException PotentialOperationException
+	 * @return Processed potential
 	 */
 	public static Potential multiplyAndEliminate(List<TablePotential> potentials, List<Variable> variablesToEliminate)
 			throws PotentialOperationException {
@@ -138,6 +141,7 @@ public class PotentialOperations {
 	 * @param potentials List of table potentials
 	 * @param variableToEliminate Variable to eliminate
 	 * @throws PotentialOperationException PotentialOperationException
+	 * @return Processed potential
 	 */
 	public static Potential multiplyAndEliminate(List<TablePotential> potentials, Variable variableToEliminate)
 			throws PotentialOperationException {
@@ -164,7 +168,7 @@ public class PotentialOperations {
 	 * @param potentials          potentials array to multiply
 	 * @param variablesOfInterest Set of variables that must be kept (although
 	 *                            this set may contain some variables that are not in any potential)
-	 *                            <code>potentials</code>
+	 *                            {@code potentials}
 	 * @return The multiplied potentials
 	 * @throws PotentialOperationException PotentialOperationException
 	 */
@@ -203,12 +207,12 @@ public class PotentialOperations {
 
 	/**
 	 * Multiplies several potentials and maximizes the result removing
-	 * variables that does not belong to <code>variablesOfInterest</code>
+	 * variables that does not belong to {@code variablesOfInterest}
 	 *
 	 * @param potentials          potentials array to multiply
 	 * @param variablesOfInterest Set of variables that must be kept (although
 	 *                            this set may contain some variables that are not in any potential)
-	 *                            <code>potentials</code>
+	 *                            {@code potentials}
 	 * @return The multiplied potentials
 	 * @throws PotentialOperationException PotentialOperationException
 	 */
@@ -277,10 +281,10 @@ public class PotentialOperations {
 	}
 
 	/**
-	 * Gets a uniform <code>Potential</code> object for the variable specified.
+	 * Gets a uniform {@code Potential} object for the variable specified.
 	 *
-	 * @param probNet     the <code>probNet</code> object that contains the variable
-	 * @param variable    the <code>Variable</code> object.
+	 * @param probNet     the {@code probNet} object that contains the variable
+	 * @param variable    the {@code Variable} object.
 	 * @param auxNodeType the nodeType of the node that match the variable.
 	 * @return a new UniformPotential.
 	 */

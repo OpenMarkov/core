@@ -20,12 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <code>TreeADDBranch</code> represents branch of a treeADD. If the top variable of the
+ * {@code TreeADDBranch} represents branch of a treeADD. If the top variable of the
  * treeADD is numeric a branch is defined by two thresholds: a minimum and a
  * maximum. If top variable is finite states, then each branch is defined
  * by its states. In both cases each branch has a potential assigned. If the
  * branch is a leaf, its potential is any kind of potential except a
- * <code>TreeADDPotential</code>
+ * {@code TreeADDPotential}
  *
  * @author myebra
  */

@@ -44,7 +44,7 @@ import java.util.Random;
 
 	/**
 	 * @param parameters - parameters[1]= alpha and parameters[0] = beta
-	 * @throws IllegalArgumentException - thrown if the alpha or beta <0
+	 * @throws IllegalArgumentException - thrown if the alpha or beta &#60;0
 	 */
 	@Override public void verifyParameters(double[] parameters) {
 		if (!((parameters[0] > 0) && (parameters[1] > 0))) {

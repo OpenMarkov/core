@@ -64,13 +64,14 @@ public abstract class MinMaxPotential extends ICIPotential {
 	// Methods
 
 	/**
-	 * @return Delta<sub>Y</sub> potential. <code>TablePotential</code>
+	 * @return Delta<sub>Y</sub> potential. {@code TablePotential}
 	 */
 	protected abstract TablePotential getDeltaPotential();
 
 	/**
+	 * @param potential Potential
 	 * @return C<sub>y</sub><sup>x<sub>i</sub></sup> potential.
-	 * <code>TablePotential</code>
+	 * {@code TablePotential}
 	 */
 	protected abstract TablePotential getAccruedPotential(TablePotential potential);
 
@@ -83,10 +84,10 @@ public abstract class MinMaxPotential extends ICIPotential {
 	}
 
 	/**
-	 * @return Given a model in witch A->D and B->D, this method returns:
+	 * @return Given a model in witch A-&#62;D and B-&#62;D, this method returns:
 	 * delta<sub>D,D'</sub>, C<sub>D'</sub><sup>A</sup>,
 	 * C<sub>D'</sub><sup>B</sup>, C<sub>D</sub><sup>*</sup>.
-	 * <code>ArrayList</code> of <code>TablePotential</code>
+	 * {@code ArrayList} of {@code TablePotential}
 	 */
 	public List<TablePotential> getTablePotentials() {
 		List<TablePotential> iCIPotentials = new ArrayList<>();
@@ -130,7 +131,7 @@ public abstract class MinMaxPotential extends ICIPotential {
 	/**
 	 * There will be a potential for each link, plus the leak potential
 	 *
-	 * @return <code>ArrayList</code> of <code>TablePotential</code>.
+	 * @return {@code ArrayList} of {@code TablePotential}.
 	 */
 	protected List<TablePotential> buildSubpotentialList() {
 		List<TablePotential> subpotentials = new ArrayList<>();

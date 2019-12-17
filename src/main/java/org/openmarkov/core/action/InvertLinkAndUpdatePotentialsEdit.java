@@ -29,25 +29,25 @@ import java.util.Set;
 /**
  * @author artasom
  * @author iagoparis - summer 2018
- * <p>
+ *
  * Inverts the arc between two nodes.
- * <p>
- * Being X -> Y the link that is going to be inverted and being:
+ *
+ * Being X -&#62; Y the link that is going to be inverted and being:
  * A: the group of nodes that are parents of X and are not parents of Y,
  * C: the group of nodes that are parents of Y (except X) and are not parents of X, and
  * B the group of parents that X and Y share,
- * <p>
+ *
  * The process takes five steps:
- * <p>
+ *
  * 1. Invert the arc.
- * <p>
+ *
  * 2. Share parents between the nodes.
- * <p>
+ *
  * 3. 	Calculate P(x, y|a, b, c) through P(x, y|a, b, c) = P(x|a, b) · P(y|x, b, c)
  * Meaning: P(x, y|a, b, c) = pot(x) · pot(y)
- * <p>
+ *
  * 4. Calculate P(y|a, b, c) through P(y|a, b, c) = Σ(x) P(x, y|a, b, c) and assign to node Y this probability.
- * <p>
+ *
  * 5. Calculate P(x|a, b, c, y) through P(x|a, b, c, y) = P(x, y|a, b, c) / P(y|a, b, c) and assign to node X this probability.
  */
 @SuppressWarnings("serial")
@@ -74,9 +74,9 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	// Constructor
 
 	/**
-	 * @param probNet   <code>ProbNet</code>
-	 * @param variable1 <code>Variable</code>
-	 * @param variable2 <code>Variable</code>
+	 * @param probNet   {@code ProbNet}
+	 * @param variable1 {@code Variable}
+	 * @param variable2 {@code Variable}
 	 */
 	public InvertLinkAndUpdatePotentialsEdit(ProbNet probNet, Variable variable1, Variable variable2) {
 

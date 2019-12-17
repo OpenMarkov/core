@@ -61,6 +61,7 @@ public class ConstraintManager {
 	 * constraint list given the network type and the Constraints annotated as
 	 * such.
 	 *
+	 * @param includeOptionals If include optional constraints
 	 * @param type of the network the list is being generated for.
 	 * @return a minimal list of constraint.
 	 */

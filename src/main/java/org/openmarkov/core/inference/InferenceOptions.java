@@ -13,7 +13,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 
 /**
- * Stores attributes for use in <code>SimpleMarkovEvaluation</code>
+ * Stores attributes for use in {@code SimpleMarkovEvaluation}
  */
 public class InferenceOptions {
 
@@ -50,6 +50,8 @@ public class InferenceOptions {
 	/**
 	 * Sets the attribute simulationIndexVariable and returns the variable.
 	 * If numSimulations = 0, it returns null.
+	 * @param numSimulations Number of simulations
+	 * @return Variable
 	 */
 	public static Variable setNumSimulations(int numSimulations) {
 		Variable newVariable;

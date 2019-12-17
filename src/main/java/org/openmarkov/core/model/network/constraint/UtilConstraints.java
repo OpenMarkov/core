@@ -23,11 +23,11 @@ import java.util.Vector;
 public class UtilConstraints {
 
 	/**
-	 * @param edit     <code>UndoableEditEvent</code>
-	 * @param typeEdit <code>Class</code>
-	 * @return An <code>ArrayList</code> of <code>PNEdit</code>s of type
-	 * <code>typeEdit</code> that are contained in the
-	 * <code>event</code> received (if there is any)
+	 * @param edit     {@code UndoableEditEvent}
+	 * @param typeEdit {@code Class}
+	 * @return An {@code ArrayList} of {@code PNEdit}s of type
+	 * {@code typeEdit} that are contained in the
+	 * {@code event} received (if there is any)
 	 * @throws WrongCriterionException WrongCriterionException
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */

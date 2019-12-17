@@ -44,10 +44,10 @@ import java.util.List;
 	// Constructor
 
 	/**
-	 * @param probNet    <code>ProbNet</code>
-	 * @param variable1  <code>Variable</code>
-	 * @param variable2  <code>Variable</code>
-	 * @param isDirected <code>boolean</code>
+	 * @param probNet    {@code ProbNet}
+	 * @param variable1  {@code Variable}
+	 * @param variable2  {@code Variable}
+	 * @param isDirected {@code boolean}
 	 */
 	public InvertLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {
 		super(probNet, variable1, variable2, isDirected);
@@ -139,7 +139,7 @@ import java.util.List;
 	/**
 	 * This method assumes that the link is directed, otherwise has no sense.
 	 *
-	 * @return <code>String</code>
+	 * @return {@code String}
 	 */
 	public String toString() {
 		return new StringBuilder(getOperationName()).append(": ").append(variable1).append("-->").append(variable2)

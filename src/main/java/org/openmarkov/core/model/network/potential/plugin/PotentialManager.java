@@ -64,6 +64,9 @@ public class PotentialManager {
 	 * Returns a potential by name.
 	 *
 	 * @param name the potential's name.
+	 * @param variables List of variables
+	 * @param role Potential role
+	 * @param cycleLength Cycle lenghts
 	 * @return a new Potential instance given the parameters.
 	 */
 	public final Potential getByName(String name, List<Variable> variables, PotentialRole role,
@@ -133,7 +136,7 @@ public class PotentialManager {
 
 	/**
 	 * Returns all potentials' names applicable to the given variable list and potential role.
-	 *
+	 * @param node Node
 	 * @return a list of potentials' names.
 	 */
 	public final List<String> getFilteredPotentials(Node node) {

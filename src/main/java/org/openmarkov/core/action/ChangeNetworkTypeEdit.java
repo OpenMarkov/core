@@ -16,8 +16,8 @@ import org.openmarkov.core.model.network.type.NetworkType;
 import java.util.ArrayList;
 
 /**
- * <code>ChangeNetworkTypeEdit</code> is a edit that allow to change the
- * <code>NetworkTypeConstraint</code> object to one network.
+ * {@code ChangeNetworkTypeEdit} is a edit that allow to change the
+ * {@code NetworkTypeConstraint} object to one network.
  *
  * @author mpalacios
  * @version 1.0 21/12/10
@@ -36,11 +36,11 @@ import java.util.ArrayList;
 	private NetworkType newNetworkType;
 
 	/**
-	 * Creates a new <code>ChangeNetworkTypeEdit</code> that allow to change the
-	 * <code>NetworkTypeConstraint</code> object in the network.
+	 * Creates a new {@code ChangeNetworkTypeEdit} that allow to change the
+	 * {@code NetworkTypeConstraint} object in the network.
 	 *
 	 * @param probNet                  the network that will be edited.
-	 * @param newNetworkTypeConstraint the new <code>NetworkTypeConstraint</code>
+	 * @param newNetworkTypeConstraint the new {@code NetworkTypeConstraint}
 	 *                                 object
 	 */
 	public ChangeNetworkTypeEdit(ProbNet probNet, NetworkType newNetworkTypeConstraint) {

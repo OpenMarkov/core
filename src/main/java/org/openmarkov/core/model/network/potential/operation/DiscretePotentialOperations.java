@@ -50,8 +50,8 @@ import java.util.Set;
 
 /**
  * This class defines a set of common operations over discrete potentials (
- * <code>TablePotential</code>s) and discrete variables (<code>Variable</code>
- * s). The method are invoked from <code>PotentialOperations</code> after
+ * {@code TablePotential}s) and discrete variables ({@code Variable}
+ * s). The method are invoked from {@code PotentialOperations} after
  * checking that the parameters are discrete.
  *
  * @author Manuel Arias
@@ -64,21 +64,21 @@ public final class DiscretePotentialOperations {
 	private final static String noPotentials = "zero potentials";
 	/**
 	 * Round error used to compare two numbers. If they differ in less than
-	 * <code>maxRoundErrorAllowed</code> they will be considered equals.
+	 * {@code maxRoundErrorAllowed} they will be considered equals.
 	 */
 	public static double maxRoundErrorAllowed = 1E-8;
 
 	/**
-	 * @param tablePotentials <code>ArrayList</code> of extends <code>Potential</code>.
-	 * @return A <code>TablePotential</code> as result.
+	 * @param tablePotentials {@code ArrayList} of extends {@code Potential}.
+	 * @return A {@code TablePotential} as result.
 	 */
 	public static TablePotential multiply(List<TablePotential> tablePotentials) {
 		return multiply(tablePotentials, true);
 	}
 
 	/**
-	 * @param potentials <code>ArrayList</code> of extends <code>Potential</code>.
-	 * @return A <code>TablePotential</code> as result.
+	 * @param potentials {@code ArrayList} of extends {@code Potential}.
+	 * @return A {@code TablePotential} as result.
 	 */
 	public static TablePotential multiply(TablePotential... potentials) {
 		List<TablePotential> potentialsToMultiply;
@@ -90,10 +90,10 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param tablePotentials <code>ArrayList</code> of extends <code>Potential</code>.
+	 * @param tablePotentials {@code ArrayList} of extends {@code Potential}.
 	 * @param reorder         Sorts or not the potentials prior to multiplication.
-	 *                        <code>boolean</code>.
-	 * @return A <code>TablePotential</code> as result.
+	 *                        {@code boolean}.
+	 * @return A {@code TablePotential} as result.
 	 * //TODO
 	 */
 	public static TablePotential multiply(List<TablePotential> tablePotentials, boolean reorder) {
@@ -277,8 +277,8 @@ public final class DiscretePotentialOperations {
 	//	}
 
 	/**
-	 * @param tablePotentials <code>List</code> of <code>TablePotential</code>s.
-	 * @return <code>TablePotential</code>
+	 * @param tablePotentials {@code List} of {@code TablePotential}s.
+	 * @return {@code TablePotential}
 	 */
 	public static TablePotential sum(List<TablePotential> tablePotentials) {
 		if (tablePotentials == null || tablePotentials.size() == 0) {
@@ -611,7 +611,7 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param utilityPotentials <code>List</code> of <code>TablePotential</code>s.
+	 * @param utilityPotentials {@code List} of {@code TablePotential}s.
 	 * @return A TablePotential for each criterion
 	 */
 	public static List<TablePotential> sumByCriterion(List<TablePotential> utilityPotentials) {
@@ -688,7 +688,7 @@ public final class DiscretePotentialOperations {
 	 *                             potential
 	 * @param variablesToEliminate The set of variables eliminated by marginalization (in
 	 *                             general, by summing out or maximizing)
-	 * @return A <code>TablePotential</code> result of multiply and marginalize.
+	 * @return A {@code TablePotential} result of multiply and marginalize.
 	 * Condition: variablesToKeep and variablesToEliminate are a partition of
 	 * the union of the variables of the potential
 	 */
@@ -820,7 +820,7 @@ public final class DiscretePotentialOperations {
 	 * @param utilityPotential    utility potential
 	 * @param variableToEliminate The set of variables eliminated by marginalization (in
 	 *                            general, by summing out or maximizing)
-	 * @return A <code>TablePotential</code> result of multiply and marginalize.
+	 * @return A {@code TablePotential} result of multiply and marginalize.
 	 * Condition: variablesToKeep and variablesToEliminate are a partition of
 	 * the union of the variables of the potential
 	 */
@@ -926,7 +926,7 @@ public final class DiscretePotentialOperations {
 	 * @param potentials          potentials array to multiply
 	 * @param variablesOfInterest Set of variables that must be kept (although this set may
 	 *                            contain some variables that are not in any potential)
-	 *                            <code>potentials</code>
+	 *                            {@code potentials}
 	 * @return The multiplied potentials
 	 */
 	public static TablePotential multiplyAndMarginalize(List<TablePotential> potentials,
@@ -951,10 +951,10 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param potentials          <code>ArrayList</code> of <code>Potential</code>s to multiply.
-	 * @param variableToEliminate <code>Variable</code>.
-	 * @return result <code>Potential</code> multiplied without
-	 * <code>variableToEliminate</code>
+	 * @param potentials          {@code ArrayList} of {@code Potential}s to multiply.
+	 * @param variableToEliminate {@code Variable}.
+	 * @return result {@code Potential} multiplied without
+	 * {@code variableToEliminate}
 	 */
 	public static TablePotential multiplyAndMarginalize(List<TablePotential> potentials, Variable variableToEliminate) {
 		List<Variable> variablesToKeep = AuxiliaryOperations.getUnionVariables(potentials);
@@ -963,8 +963,8 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param potential           <code>Potential</code> to marginalize
-	 * @param variableToEliminate <code>Variable</code>
+	 * @param potential           {@code Potential} to marginalize
+	 * @param variableToEliminate {@code Variable}
 	 * @return Marginalized potential
 	 */
 	public static TablePotential marginalize(TablePotential potential, Variable variableToEliminate) {
@@ -980,6 +980,7 @@ public final class DiscretePotentialOperations {
 	/**
 	 * @param potential           potential
 	 * @param variablesOfInterest list of variables of interest
+	 * @return Marginalized potential
 	 */
 	public static TablePotential marginalize(TablePotential potential, List<Variable> variablesOfInterest) {
 		// Obtain parameters to invoke multiplyAndMarginalize
@@ -1010,6 +1011,7 @@ public final class DiscretePotentialOperations {
 	 * Condition: variablesToKeep + variablesToEliminate =
 	 * potential.getVariables()
 	 * Condition: variablesToKeep
+	 * @return Marginalized potential
 	 */
 	public static Potential marginalize(TablePotential potential, List<Variable> variablesToKeep,
 			List<Variable> variablesToEliminate) {
@@ -1019,7 +1021,7 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param potentials An array of ordered <code>TablePotential</code>s
+	 * @param potentials An array of ordered {@code TablePotential}s
 	 * @return constantFactor: The product of the constant potentials (the first
 	 * <i>k</i> because the array is ordered by size)
 	 * @see org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations#getNonConstantPotentials(Collection)
@@ -1035,12 +1037,12 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * Compute the accumulated offsets of a <code>Potential</code>s array with
-	 * the order imposed by <code>potentialResult</code>
+	 * Compute the accumulated offsets of a {@code Potential}s array with
+	 * the order imposed by {@code potentialResult}
 	 *
-	 * @param potentials      <code>ArrayList</code> of <code>Potential</code>s.
-	 * @param potentialResult <code>TablePotential</code>.
-	 * @return An array of arrays of integers (<code>int[][]</code>).
+	 * @param potentials      {@code ArrayList} of {@code Potential}s.
+	 * @param potentialResult {@code TablePotential}.
+	 * @return An array of arrays of integers ({@code int[][]}).
 	 */
 	public static int[][] getAccumulatedOffsets(List<TablePotential> potentials, TablePotential potentialResult) {
 
@@ -1057,12 +1059,12 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * Compute the accumulated offsets of a <code>Potential</code>s array with
-	 * the order imposed by <code>variables</code>
+	 * Compute the accumulated offsets of a {@code Potential}s array with
+	 * the order imposed by {@code variables}
 	 *
-	 * @param potentials <code>ArrayList</code> of <code>Potential</code>s.
+	 * @param potentials {@code ArrayList} of {@code Potential}s.
 	 * @param variables  list of variables
-	 * @return An array of arrays of integers (<code>int[][]</code>).
+	 * @return An array of arrays of integers ({@code int[][]}).
 	 */
 	public static int[][] getAccumulatedOffsets(List<TablePotential> potentials, List<Variable> variables) {
 
@@ -1094,8 +1096,9 @@ public final class DiscretePotentialOperations {
 	// TODO Eliminar este método si no es usado por otros
 
 	/**
-	 * @param potential a <code>TablePotential</code>
-	 * @return The <code>potential</code> normalized
+	 * @param potential a {@code TablePotential}
+	 * @return The {@code potential} normalized
+	 * @throws NormalizeNullVectorException NormalizeNullVectorException
 	 */
 	public static TablePotential normalize(TablePotential potential) throws NormalizeNullVectorException {
 		TablePotential tablePotential = (TablePotential) potential;
@@ -1144,12 +1147,12 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * Divides two <code>TablePotential</code>s using the accumulated offsets
+	 * Divides two {@code TablePotential}s using the accumulated offsets
 	 * algorithm.
 	 *
-	 * @param numerator   <code>Potential</code>.
-	 * @param denominator <code>Potential</code>.
-	 * @return The quotient: A <code>TablePotential</code> with the union of the
+	 * @param numerator   {@code Potential}.
+	 * @param denominator {@code Potential}.
+	 * @return The quotient: A {@code TablePotential} with the union of the
 	 * variables of numerator and denominator.
 	 * Condition: numerator and denominator have the same domain (variables)
 	 */
@@ -1246,12 +1249,12 @@ public final class DiscretePotentialOperations {
 	/**
 	 * Divide two potentials when one of them has any variable
 	 *
-	 * @param numerator               <code>TablePotential</code>
-	 * @param denominator             <code>TablePotential</code>
-	 * @param quotient                <code>TablePotential</code>
-	 * @param numNumeratorVariables   <code>int</code>
-	 * @param numDenominatorVariables <code>int</code>
-	 * @return quotient The <code>TablePotential</code> received with its table.
+	 * @param numerator               {@code TablePotential}
+	 * @param denominator             {@code TablePotential}
+	 * @param quotient                {@code TablePotential}
+	 * @param numNumeratorVariables   {@code int}
+	 * @param numDenominatorVariables {@code int}
+	 * @return quotient The {@code TablePotential} received with its table.
 	 */
 	private static TablePotential divide(TablePotential numerator, TablePotential denominator, TablePotential quotient,
 			int numNumeratorVariables, int numDenominatorVariables) {
@@ -1306,15 +1309,15 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param tablePotentials      <code>ArrayList</code> of <code>TablePotential</code>s.
-	 * @param fSVariablesToKeep    <code>ArrayList</code> of <code>Variable</code>s.
-	 * @param fSVariableToMaximize <code>Variable</code>.
-	 * @return Two potentials: 1) a <code>Potential</code> resulting of
+	 * @param tablePotentials      {@code ArrayList} of {@code TablePotential}s.
+	 * @param fSVariablesToKeep    {@code ArrayList} of {@code Variable}s.
+	 * @param fSVariableToMaximize {@code Variable}.
+	 * @return Two potentials: 1) a {@code Potential} resulting of
 	 * multiplication and maximization of
-	 * <code>variableToMaximize</code> and 2) a
-	 * <code>GTablePotential</code> of <code>Choice</code> (same
+	 * {@code variableToMaximize} and 2) a
+	 * {@code GTablePotential} of {@code Choice} (same
 	 * variables as preceding) with the value choosed for
-	 * <code>variableToMaximize</code> in each configuration.
+	 * {@code variableToMaximize} in each configuration.
 	 */
 	@SuppressWarnings("unchecked") public static Object[] multiplyAndMaximize(List<? extends Potential> tablePotentials,
 			List<Variable> fSVariablesToKeep, Variable fSVariableToMaximize) {
@@ -1481,15 +1484,15 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param tablePotentials    <code>ArrayList</code> of <code>TablePotential</code>s.
-	 * @param variablesToKeep    <code>ArrayList</code> of <code>Variable</code>s.
-	 * @param variableToMaximize <code>Variable</code>.
-	 * @return Two potentials: 1) a <code>Potential</code> resulting of
+	 * @param tablePotentials    {@code ArrayList} of {@code TablePotential}s.
+	 * @param variablesToKeep    {@code ArrayList} of {@code Variable}s.
+	 * @param variableToMaximize {@code Variable}.
+	 * @return Two potentials: 1) a {@code Potential} resulting of
 	 * multiplication and maximization of
-	 * <code>variableToMaximize</code> and 2) a
-	 * <code>TablePotential</code> with the mass probability 1.0
+	 * {@code variableToMaximize} and 2) a
+	 * {@code TablePotential} with the mass probability 1.0
 	 * uniformly distributed among the maximizing states of
-	 * <code>variableToMaximize</code> in each configuration; this is
+	 * {@code variableToMaximize} in each configuration; this is
 	 * typically a policy of a decision.
 	 */
 	public static TablePotential[] multiplyAndMaximizeUniformly(List<TablePotential> tablePotentials,
@@ -1676,14 +1679,14 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param potentialsVariable <code>ArrayList</code> of <code>Potential</code>s to multiply.
-	 * @param variableToMaximize <code>Variable</code>.
-	 * @return Two potentials: 1) a <code>Potential</code> resulting of
+	 * @param potentialsVariable {@code ArrayList} of {@code Potential}s to multiply.
+	 * @param variableToMaximize {@code Variable}.
+	 * @return Two potentials: 1) a {@code Potential} resulting of
 	 * multiplication and maximization of
-	 * <code>variableToMaximize</code> and 2) a
-	 * <code>GTablePotential</code> of <code>Choice</code> (same
+	 * {@code variableToMaximize} and 2) a
+	 * {@code GTablePotential} of {@code Choice} (same
 	 * variables as preceding) with the value chosen for
-	 * <code>variableToMaximize</code> in each configuration.
+	 * {@code variableToMaximize} in each configuration.
 	 */
 	public static Object[] multiplyAndMaximize(List<? extends Potential> potentialsVariable,
 			Variable variableToMaximize) {
@@ -1702,14 +1705,14 @@ public final class DiscretePotentialOperations {
 	//For Univariate
 
 	/**
-	 * @param potentialsVariable <code>ArrayList</code> of <code>Potential</code>s.
-	 * @param variableToMaximize <code>Variable</code>.
-	 * @return Two potentials: 1) a <code>Potential</code> resulting of
+	 * @param potentialsVariable {@code ArrayList} of {@code Potential}s.
+	 * @param variableToMaximize {@code Variable}.
+	 * @return Two potentials: 1) a {@code Potential} resulting of
 	 * multiplication and maximization of
-	 * <code>variableToMaximize</code> and 2) a
-	 * <code>TablePotential</code> with the mass probability 1.0
+	 * {@code variableToMaximize} and 2) a
+	 * {@code TablePotential} with the mass probability 1.0
 	 * uniformly distributed among the maximizing states of
-	 * <code>variableToMaximize</code> in each configuration; this is
+	 * {@code variableToMaximize} in each configuration; this is
 	 * typically a policy of a decision.
 	 */
 	public static TablePotential[] multiplyAndMaximizeUniformly(List<TablePotential> potentialsVariable,
@@ -1728,14 +1731,14 @@ public final class DiscretePotentialOperations {
 	//For AugmentedTable
 
 	/**
-	 * @param potential          one <code>TablePotential</code>.
-	 * @param variableToMaximize <code>Variable</code>.
-	 * @return Two potentials: 1) a <code>Potential</code> resulting of
+	 * @param potential          one {@code TablePotential}.
+	 * @param variableToMaximize {@code Variable}.
+	 * @return Two potentials: 1) a {@code Potential} resulting of
 	 * multiplication and maximization of
-	 * <code>variableToMaximize</code> and 2) a
-	 * <code>GTablePotential</code> of <code>Choice</code> (same
+	 * {@code variableToMaximize} and 2) a
+	 * {@code GTablePotential} of {@code Choice} (same
 	 * variables as preceding) with the value chosen for
-	 * <code>variableToMaximize</code> in each configuration.
+	 * {@code variableToMaximize} in each configuration.
 	 */
 	public static Object[] maximize(Potential potential, Variable variableToMaximize) {
 		List<Potential> potentialsVariable = new ArrayList<>();
@@ -1747,13 +1750,13 @@ public final class DiscretePotentialOperations {
 
 	/**
 	 * Copy the potential received to another potential with the same variables
-	 * but with the order received in <code>otherOrderVariables</code>
+	 * but with the order received in {@code otherOrderVariables}
 	 *
-	 * @param potential      <code>TablePotential</code>
-	 * @param otherOrderVariables <code>ArrayList</code> of <code>Variable</code>
-	 * @return The <code>TablePotential</code> generated
-	 * Condition: <code>otherVariables</code> are the same variables than the
-	 * variables of <code>potential</code>
+	 * @param potential      {@code TablePotential}
+	 * @param otherOrderVariables {@code ArrayList} of {@code Variable}
+	 * @return The {@code TablePotential} generated
+	 * Condition: {@code otherVariables} are the same variables than the
+	 * variables of {@code potential}
 	 */
 	public static TablePotential reorder(TablePotential potential, List<Variable> otherOrderVariables) {
 		boolean hasInterventions = false;
@@ -1819,13 +1822,13 @@ public final class DiscretePotentialOperations {
 
 	/**
 	 * Copy the UnivariateDistrPotential received to another UnivariateDistrPotential with the same variables
-	 * but with the order received in <code>otherVariables</code>
+	 * but with the order received in {@code otherVariables}
 	 *
-	 * @param potential      <code>UnivariateDistrPotential</code>
-	 * @param orderVariables <code>ArrayList</code> of <code>Variable</code>
-	 * @return The <code>UnivariateDistrPotential</code> generated
-	 * Condition: <code>otherVariables</code> are the same variables than the
-	 * variables of <code>potential</code>
+	 * @param potential      {@code UnivariateDistrPotential}
+	 * @param orderVariables {@code ArrayList} of {@code Variable}
+	 * @return The {@code UnivariateDistrPotential} generated
+	 * Condition: {@code otherVariables} are the same variables than the
+	 * variables of {@code potential}
 	 */
 	public static UnivariateDistrPotential reorder(UnivariateDistrPotential potential, List<Variable> orderVariables) {
 		int size = orderVariables.size();
@@ -1845,13 +1848,13 @@ public final class DiscretePotentialOperations {
 
 	/**
 	 * Copy the UnivariateDistrPotential received to another UnivariateDistrPotential with the same variables
-	 * but with the order received in <code>otherVariables</code>
+	 * but with the order received in {@code otherVariables}
 	 *
-	 * @param potential      <code>UnivariateDistrPotential</code>
-	 * @param orderVariables <code>ArrayList</code> of <code>Variable</code>
-	 * @return The <code>UnivariateDistrPotential</code> generated
-	 * Condition: <code>otherVariables</code> are the same variables than the
-	 * variables of <code>potential</code>
+	 * @param potential      {@code UnivariateDistrPotential}
+	 * @param orderVariables {@code ArrayList} of {@code Variable}
+	 * @return The {@code UnivariateDistrPotential} generated
+	 * Condition: {@code otherVariables} are the same variables than the
+	 * variables of {@code potential}
 	 */
 	public static AugmentedTablePotential reorder(AugmentedTablePotential potential, List<Variable> orderVariables) {
 		int size = orderVariables.size();
@@ -1868,13 +1871,13 @@ public final class DiscretePotentialOperations {
 
 	/**
 	 * Copy the potential received to another potential with the same variables
-	 * but with the order received in <code>otherVariables</code>
+	 * but with the order received in {@code otherVariables}
 	 *
-	 * @param potential      <code>TablePotential</code>
-	 * @param orderVariables <code>ArrayList</code> of <code>Variable</code>
-	 * @return The <code>TablePotential</code> generated
-	 * Condition: <code>otherVariables</code> are the same variables than the
-	 * variables of <code>potential</code>
+	 * @param potential      {@code TablePotential}
+	 * @param orderVariables {@code ArrayList} of {@code Variable}
+	 * @return The {@code TablePotential} generated
+	 * Condition: {@code otherVariables} are the same variables than the
+	 * variables of {@code potential}
 	 */
 	public static AugmentedTable reorder(AugmentedTable potential, List<Variable> orderVariables) {
 		boolean hasInterventions = false;
@@ -1910,10 +1913,10 @@ public final class DiscretePotentialOperations {
 	 * Copy the potential received to another potential with the same variables
 	 * but with changes in the order of states in one of the variables
 	 *
-	 * @param potential <code>TablePotential</code>
-	 * @param variable  <code>VariableList</code> whose order of states has changed
-	 * @param newOrder  array of <code>State</code>s in the new order
-	 * @return The <code>TablePotential</code> generated
+	 * @param potential {@code TablePotential}
+	 * @param variable  {@code VariableList} whose order of states has changed
+	 * @param newOrder  array of {@code State}s in the new order
+	 * @return The {@code TablePotential} generated
 	 */
 	public static TablePotential reorder(TablePotential potential, Variable variable, State[] newOrder) {
 		TablePotential copyPotential = (TablePotential) potential.copy();
@@ -2120,9 +2123,9 @@ public final class DiscretePotentialOperations {
 	 * This method is used to remove a decision variable from a probability potential
 	 * that in fact does not depend on the decision variable
 	 *
-	 * @param variable       <code>Variable</code>
-	 * @param inputPotential <code>TablePotential</code>
-	 * @return A <code>TablePotential</code>
+	 * @param variable       {@code Variable}
+	 * @param inputPotential {@code TablePotential}
+	 * @return A {@code TablePotential}
 	 */
 	public static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential) {
 		TablePotential output = null;
@@ -2143,9 +2146,9 @@ public final class DiscretePotentialOperations {
 	/**
 	 * Compares two numbers
 	 *
-	 * @param a <code>double</double>
-	 * @param b <code>double</double>
-	 * @return <code>true</code> when a and b are close.
+	 * @param a {@code double}
+	 * @param b {@code double}
+	 * @return {@code true} when a and b are close.
 	 */
 	public static boolean almostEqual(double a, double b) {
 		return (Math.abs(b - a) <= maxRoundErrorAllowed * Math.abs(a));
@@ -2181,6 +2184,7 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
+	 * @param potentials List of potentials
 	 * @return A potential that results from multiplying the product of probability potentials and the sum of utility potentials
 	 */
 	public static TablePotential matrixPotential(List<Potential> potentials) {
@@ -2409,10 +2413,10 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * Method used in merge operation, that launches a <code>PotentialOperationException</code> in this cases:
+	 * Method used in merge operation, that launches a {@code PotentialOperationException} in this cases:
 	 * <ul>
-	 * <li>The variable is <code>null</code>.
-	 * <li>The potentials are <code>null</code>.
+	 * <li>The variable is {@code null}.
+	 * <li>The potentials are {@code null}.
 	 * <li>The number of potentials is zero.
 	 * <li>The number of states of the variable is different than the number of potentials.
 	 * </ul>

@@ -65,7 +65,7 @@ public class DefaultStates {
 
 	/**
 	 * This method returns an array containing the default states of an element
-	 * of the list. If the index is out of range (index < 0 || index > list
+	 * of the list. If the index is out of range (index &#60; 0 || index &#62; list
 	 * size) the null is returned.
 	 *
 	 * @param index element of the list of default states.

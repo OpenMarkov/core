@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * Here we define the skeleton (an abstract class) of a heuristic algorithm
- * that eliminates variables from a <code>MarkovNet</code>
+ * that eliminates variables from a {@code MarkovNet}
  *
  * @author manuel
  * @author fjdiez
@@ -32,7 +32,7 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 
 	// Attributes
 	/**
-	 * A pointer to the received <code>ProbNet</code>.
+	 * A pointer to the received {@code ProbNet}.
 	 */
 	protected ProbNet probNet;
 
@@ -49,7 +49,7 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	protected List<List<Node>> nodesToEliminate;
 
 	/**
-	 * <code>Variable</code> that the heuristic propose to eliminate.
+	 * {@code Variable} that the heuristic propose to eliminate.
 	 */
 	protected Variable variableProposed;
 
@@ -58,8 +58,8 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	/**
 	 * Variables will be eliminated from the last array to the first.
 	 *
-	 * @param probNet              <code>probNet</code> it's a network that can contain decisions. <code>ProbNet</code>
-	 * @param variablesToEliminate <code>ArrayList</code> of <code>ArrayList</code> of <code>Variable</code>
+	 * @param probNet              {@code probNet} it's a network that can contain decisions. {@code ProbNet}
+	 * @param variablesToEliminate {@code ArrayList} of {@code ArrayList} of {@code Variable}
 	 */
 	public EliminationHeuristic(ProbNet probNet, List<List<Variable>> variablesToEliminate) {
 		// TODO Revisar todas las heuristicas que suponian que trabajaban con una copia
@@ -99,7 +99,7 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	// Methods
 
 	/**
-	 * @return The <code>Variable</code> the heuristic suggests to
+	 * @return The {@code Variable} the heuristic suggests to
 	 * eliminate.
 	 */
 	public abstract Variable getVariableToDelete();
@@ -131,9 +131,9 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	}
 
 	/**
-	 * @param event <code>UndoableEditEvent</code>
-	 * @return node (<code>Node</code>) in the heuristic
-	 * <code>ProbNet</code> that will be removed
+	 * @param event {@code UndoableEditEvent}
+	 * @return node ({@code Node}) in the heuristic
+	 * {@code ProbNet} that will be removed
 	 */
 	protected Variable getEventVariable(UndoableEditEvent event) {
 		Variable variable = null;

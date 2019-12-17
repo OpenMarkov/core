@@ -36,9 +36,9 @@ import java.util.List;
 
 	/**
 	 * Check edit
-	 * @param edit <code>PNEdit</code>
+	 * @param edit {@code PNEdit}
 	 * @param probNet Network
-	 * @return <code>true</code> if <code>event</code> comply with this constraint
+	 * @return {@code true} if {@code event} comply with this constraint
 	 */
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit)

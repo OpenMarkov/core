@@ -184,8 +184,8 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 	}
 
 	/**
-	 * Returns the equivalent node in <code>sourceInstance</code> to the
-	 * <code>Node</code> in <code>destinationInstance</code>
+	 * Returns the equivalent node in {@code sourceInstance} to the
+	 * {@code Node} in {@code destinationInstance}
 	 *
 	 * @param sourceInstance Source instance
 	 * @param destInstance destination instance

@@ -31,10 +31,10 @@ public class Util {
 	private static Logger logger = LogManager.getLogger(Util.class);
 
 	/**
-	 * @param className <code>String</code>
-	 * @param object    <code>Object</code>.
-	 * @return <code>true</code> if the <code>object</code> is a instance
-	 * of a class with the name <code>className</code>
+	 * @param className {@code String}
+	 * @param object    {@code Object}.
+	 * @return {@code true} if the {@code object} is a instance
+	 * of a class with the name {@code className}
 	 */
 	public static boolean instanceOf(String className, Object object) {
 		try {
@@ -46,7 +46,7 @@ public class Util {
 	}
 
 	/**
-	 * @param condition <code>boolean</code> it it's true there is no mistake
+	 * @param condition {@code boolean} it it's true there is no mistake
 	 * @param message   The string that is show to the user if condition
 	 *                  is false
 	 */ // Quitar ???
@@ -57,10 +57,10 @@ public class Util {
 	}
 
 	/**
-	 * Returns a <code>String</code> with a integer with commas.<p>
-	 * Example: <code>printInteger(1510000)</code> returns 1,510,000
+	 * Returns a {@code String} with a integer with commas.<p>
+	 * Example: {@code printInteger(1510000)} returns 1,510,000
 	 *
-	 * @param number <code>long</code>
+	 * @param number {@code long}
 	 * @return The string with commas
 	 */
 	public static String printInteger(long number) {
@@ -92,7 +92,7 @@ public class Util {
 	}
 
 	/**
-	 * @param arrayInts <code>int[]</code>
+	 * @param arrayInts {@code int[]}
 	 * @return String with ''[num 1, num 2, ... num n]''
 	 */
 	public static String printArrayOfIntegers(int[] arrayInts) {
@@ -105,8 +105,8 @@ public class Util {
 	}
 
 	/**
-	 * @param msg <code>String</code> to the user
-	 * @return readed <code>int</code>
+	 * @param msg {@code String} to the user
+	 * @return readed {@code int}
 	 */
 	public static String readStringFromKeyboard(String msg) {
 		String cadena = null;
@@ -122,10 +122,10 @@ public class Util {
 	}
 
 	/**
-	 * Translates a <code>String</code> from windows style to UNIX (change \\
+	 * Translates a {@code String} from windows style to UNIX (change \\
 	 * for /)
 	 *
-	 * @param windowsString <code>String</code>
+	 * @param windowsString {@code String}
 	 * @return String
 	 */
 	public static String platformDependentPath(String windowsString) {
@@ -133,8 +133,10 @@ public class Util {
 	}
 
 	/**
-	 * Replaces <code>path</code> for a new path with bars type / in unix
+	 * Replaces {@code path} for a new path with bars type / in unix
 	 * case
+	 * @param path Path
+	 * @return New path
 	 */
 	public static String getOSPath(String path) {
 		return platformDependentPath(path);
@@ -144,7 +146,7 @@ public class Util {
 	 * Returns the the value rounded to the precision
 	 *
 	 * @param value           the value to be rounded
-	 * @param precisionString a <code>String</code> like "10", "1", "0.1",
+	 * @param precisionString a {@code String} like "10", "1", "0.1",
 	 *                        "0.001"
 	 * @return the rounded value
 	 */
@@ -155,11 +157,11 @@ public class Util {
 	}
 
 	/**
-	 * Returns a <code>String</code> of the value rounded to the precision and
+	 * Returns a {@code String} of the value rounded to the precision and
 	 * with the exact number of decimals (3.4 with precision 0.001 is "3.400")
 	 *
 	 * @param value           the value to be rounded
-	 * @param precisionString a <code>String</code> like "10", "1", "0.1",
+	 * @param precisionString a {@code String} like "10", "1", "0.1",
 	 *                        "0.001"
 	 * @return rounded value string
 	 */

@@ -64,9 +64,10 @@ import java.util.List;
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role.
 	 *
-	 * @param node      <code>Node</code>
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>.
-	 * @param role      <code>PotentialRole</code>.
+	 * @param node      {@code Node}
+	 * @param variables {@code ArrayList} of {@code Variable}.
+	 * @param role      {@code PotentialRole}.
+	 * @return True if valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		// not a utility potential, only discrete or discretized conditioned variables

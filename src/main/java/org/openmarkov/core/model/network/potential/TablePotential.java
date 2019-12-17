@@ -35,10 +35,10 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * A <code>TablePotential</code> is a type of relation with a list of
+ * A {@code TablePotential} is a type of relation with a list of
  * probabilistic nodes. All variables will be discrete in this class.
  * <p>
- * Attributes <code>dimensions</code> and <code>offsets</code> only make sense
+ * Attributes {@code dimensions} and {@code offsets} only make sense
  * when the number of variables is greater than 0. Please be careful to check it
  * when necessary.
  *
@@ -77,17 +77,17 @@ import java.util.Random;
 	protected int initialPosition = 0;
 	/**
 	 * Indicates the number of configurations in this potentials. Note that this
-	 * number can be less than <code>table.length</code> when the
-	 * <code>TablePotential</code> is a projection.
+	 * number can be less than {@code table.length} when the
+	 * {@code TablePotential} is a projection.
 	 */
 	protected int tableSize;
 
 	// Constructors
 
 	/**
-	 * @param variables . <code>List</code> of <code>Variable</code> used to build the
-	 *                  <code>TablePotential</code>.
-	 * @param role      . <code>PotentialRole</code>
+	 * @param variables . {@code List} of {@code Variable} used to build the
+	 *                  {@code TablePotential}.
+	 * @param role      . {@code PotentialRole}
 	 */
 	public TablePotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role);
@@ -113,9 +113,9 @@ import java.util.Random;
 	}
 
 	/**
-	 * @param variables . <code>ArrayList</code> of <code>Variable</code>
-	 * @param role      . <code>PotentialRole</code>
-	 * @param table     . <code>double[]</code>
+	 * @param variables . {@code ArrayList} of {@code Variable}
+	 * @param role      . {@code PotentialRole}
+	 * @param table     . {@code double[]}
 	 * Condition: All variables must be discrete.
 	 */
 	public TablePotential(List<Variable> variables, PotentialRole role, double[] table) {
@@ -124,8 +124,8 @@ import java.util.Random;
 	}
 
 	/**
-	 * @param role      . <code>PotentialRole</code>
-	 * @param variables . <code>ArrayList</code> of <code>Variable</code>
+	 * @param role      . {@code PotentialRole}
+	 * @param variables . {@code ArrayList} of {@code Variable}
 	 * Condition: All variables must be discrete.
 	 */
 	public TablePotential(PotentialRole role, Variable... variables) {
@@ -135,13 +135,13 @@ import java.util.Random;
 	/**
 	 * Internal constructor used to create a projected potential.
 	 *
-	 * @param variables       . <code>ArrayList</code> of <code>Variable</code>
-	 * @param role            . <code>PotentialRole</code>
-	 * @param table           . <code>double[]</code>
-	 * @param initialPosition First position in <code>table</code> (used in projected
+	 * @param variables       . {@code ArrayList} of {@code Variable}
+	 * @param role            . {@code PotentialRole}
+	 * @param table           . {@code double[]}
+	 * @param initialPosition First position in {@code table} (used in projected
 	 *                        potentials).
-	 * @param offsets         of variables. <code>int[]</code>
-	 * @param dimensions      . Number of states of each variable. <code>int[]</code>
+	 * @param offsets         of variables. {@code int[]}
+	 * @param dimensions      . Number of states of each variable. {@code int[]}
 	 */
 	private TablePotential(List<Variable> variables, PotentialRole role, double[] table, int initialPosition,
 			int[] offsets, int[] dimensions) {
@@ -171,9 +171,10 @@ import java.util.Random;
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role.
 	 *
-	 * @param node      . <code>Node</code>
-	 * @param variables . <code>List</code> of <code>Variable</code>.
-	 * @param role      . <code>PotentialRole</code>.
+	 * @param node      . {@code Node}
+	 * @param variables . {@code List} of {@code Variable}.
+	 * @param role      . {@code PotentialRole}.
+	 * @return True   if an instance of a certain Potential type makes sense given the variables and the potential role.
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean suitable = true;
@@ -190,105 +191,106 @@ import java.util.Random;
 	 * The accumulated offset represents the increment (positive or negative) in
 	 * the corresponding position of the table when a variable is incremented
 	 * given an ordering of the variables of other potential.
-	 * <p>
+	 *
 	 * <big><b> Accumulated Offsets example
-	 * <p>
+	 *
 	 * </b></big> We have two potentials: Potential <b>Y</b> (b, d, a, c) and
 	 * Potential <b>X</b> (a, b, c). All variables are binary for simplicity.
-	 * <p>
-	 * <p>
+	 *
 	 * <table border="2">
-	 * <caption ALIGN="top"> </caption>
+	 * <caption> Table</caption>
 	 * <tr>
-	 * <td><b><center>Y</center></b></td>
+	 * <td><b>Y</b></td>
 	 * <td><b>pos<sub>y</sub>(Y)</b></td>
-	 * <td><b><center>Y<sup>X</sup></center></b></td>
+	 * <td><b>Y<sup>X</sup></b></td>
 	 * <td><b>pos<sub>X</sub>(Y<sup>X</sup>)</b></td>
 	 * <td><b>varToIncr(Y)</b></td>
 	 * <td><b>accOffset</b></td>
 	 * </tr>
 	 * <tr>
 	 * </tr>
+	 * <tr>
 	 * <td>[b<sub>0</sub>,d<sub>0</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>0</center></td>
+	 * <td>0</td>
 	 * <td>[a<sub>0</sub>,b<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>0</center></td>
-	 * <td><center>0(B)</center></td>
-	 * <td><center>+2</center></td>
-	 * <tr>
+	 * <td>0</td>
+	 * <td>0(B)</td>
+	 * <td>+2</td>
 	 * </tr>
+	 * <tr>
 	 * <td>[b<sub>1</sub>,d<sub>0</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>1</center></td>
+	 * <td>1</td>
 	 * <td>[a<sub>0</sub>,b<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>2</center></td>
-	 * <td><center>1(D)</center></td>
-	 * <td><center>-2</center></td>
-	 * <tr>
+	 * <td>2</td>
+	 * <td>1(D)</td>
+	 * <td>-2</td>
 	 * </tr>
+	 * <tr>
 	 * <td>[b<sub>0</sub>,d<sub>1</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>2</center></td>
+	 * <td>2</td>
 	 * <td>[a<sub>0</sub>,b<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>0</center></td>
-	 * <td><center>0(B)</center></td>
-	 * <td><center>+2</center></td>
-	 * <tr>
+	 * <td>0</td>
+	 * <td>0(B)</td>
+	 * <td>+2</td>
 	 * </tr>
+	 * <tr>
 	 * <td>[b<sub>1</sub>,d<sub>1</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>3</center></td>
+	 * <td>3</td>
 	 * <td>[a<sub>0</sub>,b<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>2</center></td>
-	 * <td><center>2(A)</center></td>
-	 * <td><center>-1</center></td>
-	 * <tr>
+	 * <td>2</td>
+	 * <td>2(A)</td>
+	 * <td>-1</td>
 	 * </tr>
+	 * <tr>
 	 * <td>[b<sub>0</sub>,d<sub>0</sub>,a<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>4</center></td>
+	 * <td>4</td>
 	 * <td>[a<sub>1</sub>,b<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>1</center></td>
-	 * <td><center>0(B)</center></td>
-	 * <td><center>+2</center></td>
-	 * <tr>
+	 * <td>1</td>
+	 * <td>0(B)</td>
+	 * <td>+2</td>
 	 * </tr>
+	 * <tr>
 	 * <td>[b<sub>1</sub>,d<sub>0</sub>,a<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>5</center></td>
+	 * <td>5</td>
 	 * <td>[a<sub>1</sub>,b<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>3</center></td>
-	 * <td><center>1(D)</center></td>
-	 * <td><center>-2</center></td>
-	 * <tr>
+	 * <td>3</td>
+	 * <td>1(D)</td>
+	 * <td>-2</td>
 	 * </tr>
+	 * <tr>
 	 * <td>[b<sub>0</sub>,d<sub>1</sub>,a<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>6</center></td>
+	 * <td>6</td>
 	 * <td>[a<sub>1</sub>,b<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>1</center></td>
-	 * <td><center>0(B)</center></td>
-	 * <td><center>+2</center></td>
-	 * <tr>
+	 * <td>1</td>
+	 * <td>0(B)</td>
+	 * <td>+2</td>
 	 * </tr>
+	 * <tr>
 	 * <td>[b<sub>1</sub>,d<sub>1</sub>,a<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>7</center></td>
+	 * <td>7</td>
 	 * <td>[a<sub>1</sub>,b<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>3</center></td>
-	 * <td><center>3(C)</center></td>
-	 * <td><center>+1</center></td>
-	 * <tr>
+	 * <td>3</td>
+	 * <td>3(C)</td>
+	 * <td>+1</td>
 	 * </tr>
-	 * <td><center>...</center></td>
-	 * <td><center>...</center></td>
-	 * <td><center>...</center></td>
-	 * <td><center>...</center></td>
-	 * <td><center>...</center></td>
-	 * <td><center>...</center></td>
+	 * <tr>
+	 * <td>...</td>
+	 * <td>...</td>
+	 * <td>...</td>
+	 * <td>...</td>
+	 * <td>...</td>
+	 * <td>...</td>
+	 * </tr>
 	 * </table>
-	 * <p>
-	 * The order is imposed by the variables of <b>this</b> potential (<b>Y</b>)
-	 * <p>
 	 *
-	 * @param otherVariables <code>ArrayList</code> of <code>Variable</code>s of another
+	 * The order is imposed by the variables of <b>this</b> potential (<b>Y</b>)
+	 *
+	 * @param variables List of variables
+	 * @param otherVariables {@code ArrayList} of {@code Variable}s of another
 	 *                       potential (in this example: <b>Y<sup>X</sup></b> = [a, b, c])
 	 * @return The accumulated offsets in an array of integers. In this example
 	 * Accumulated offsets returns: [+2,-2,-1,+1]. Size = this
-	 * <code>TablePotential</code> number of variables.
+	 * {@code TablePotential} number of variables.
 	 */
 	public static int[] getAccumulatedOffsets(List<Variable> variables, List<Variable> otherVariables) {
 		int otherSize = otherVariables.size();
@@ -352,13 +354,13 @@ import java.util.Random;
 	}
 
 	/**
-	 * This method is <code>static</code> because sometimes it can be used
-	 * without creating the <code>TablePotential</code>; for instance, to
+	 * This method is {@code static} because sometimes it can be used
+	 * without creating the {@code TablePotential}; for instance, to
 	 * estimate the amount of memory that would be necessary to actually create
 	 * the PotentialTable.
 	 *
-	 * @param fsVariables <code>ArrayList</code> of <code>Variable</code>s.
-	 * @return array of <code>int[]</code> with the dimension of each variable.
+	 * @param fsVariables {@code ArrayList} of {@code Variable}s.
+	 * @return array of {@code int[]} with the dimension of each variable.
 	 */
 	public static int[] calculateDimensions(List<Variable> fsVariables) {
 		int numVariables = fsVariables == null ? 0 : fsVariables.size();
@@ -370,11 +372,11 @@ import java.util.Random;
 	}
 
 	/**
-	 * This method is <code>static</code> because sometimes can be used outside
-	 * of a <code>TablePotential</code>.
+	 * This method is {@code static} because sometimes can be used outside
+	 * of a {@code TablePotential}.
 	 *
-	 * @param dimensions of variables. Array of <code>int[]</code>.
-	 * @return array of <code>int[]</code> with the offset of each variable.
+	 * @param dimensions of variables. Array of {@code int[]}.
+	 * @return array of {@code int[]} with the offset of each variable.
 	 */
 	public static int[] calculateOffsets(int[] dimensions) {
 		int[] offsets = new int[dimensions.length];
@@ -386,9 +388,11 @@ import java.util.Random;
 	}
 
 	/**
-	 * Calculates <code>tableSize</code> = product of dimensions of variables.
-	 * In projected potentials <code>tableSize</code> can be distinct that
-	 * <code>table.length</code>.
+	 * Calculates {@code tableSize} = product of dimensions of variables.
+	 * In projected potentials {@code tableSize} can be distinct that
+	 * {@code table.length}.
+	 * @param variables List of variables
+	 * @return table size
 	 */
 	public static int computeTableSize(List<Variable> variables) {
 		int tableSize = 1;
@@ -441,9 +445,9 @@ import java.util.Random;
 	}
 
 	/**
-	 * @param evidenceCase <code>EvidenceCase</code>
-	 * @return A <code>List</code> of <code>TablePotential</code>s containing
-	 * only one element, which is a <code>ProjectedPotential</code>
+	 * @param evidenceCase {@code EvidenceCase}
+	 * @return A {@code List} of {@code TablePotential}s containing
+	 * only one element, which is a {@code ProjectedPotential}
 	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
@@ -541,105 +545,107 @@ import java.util.Random;
 	 * The accumulated offset represents the increment (positive or negative) in
 	 * the corresponding position of the table when a variable is incremented
 	 * given an ordering of the variables of other potential.
-	 * <p>
+	 * 
 	 * <big><b> Accumulated Offsets example
-	 * <p>
+	 * 
 	 * </b></big> We have two potentials: Potential <b>Y</b> (b, d, a, c) and
 	 * Potential <b>X</b> (a, b, c). All variables are binary for simplicity.
-	 * <p>
-	 * <p>
+	 * 
 	 * <table border="2">
-	 * <caption ALIGN="top"> </caption>
+	 * <caption>Table</caption>
 	 * <tr>
-	 * <td><b><center>Y</center></b></td>
+	 * <td><b>Y</b></td>
 	 * <td><b>pos<sub>y</sub>(Y)</b></td>
-	 * <td><b><center>Y<sup>X</sup></center></b></td>
+	 * <td><b>Y<sup>X</sup></b></td>
 	 * <td><b>pos<sub>X</sub>(Y<sup>X</sup>)</b></td>
 	 * <td><b>varToIncr(Y)</b></td>
 	 * <td><b>accOffset</b></td>
 	 * </tr>
+	 * 
 	 * <tr>
-	 * </tr>
 	 * <td>[b<sub>0</sub>,d<sub>0</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>0</center></td>
+	 * <td>0</td>
 	 * <td>[a<sub>0</sub>,b<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>0</center></td>
-	 * <td><center>0(B)</center></td>
-	 * <td><center>+2</center></td>
-	 * <tr>
+	 * <td>0</td>
+	 * <td>0(B)</td>
+	 * <td>+2</td>
 	 * </tr>
+	 *
+	 * <tr>
 	 * <td>[b<sub>1</sub>,d<sub>0</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>1</center></td>
+	 * <td>1</td>
 	 * <td>[a<sub>0</sub>,b<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>2</center></td>
-	 * <td><center>1(D)</center></td>
-	 * <td><center>-2</center></td>
-	 * <tr>
+	 * <td>2</td>
+	 * <td>1(D)</td>
+	 * <td>-2</td>
 	 * </tr>
+	 * 
+	 * <tr>
 	 * <td>[b<sub>0</sub>,d<sub>1</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>2</center></td>
+	 * <td>2</td>
 	 * <td>[a<sub>0</sub>,b<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>0</center></td>
-	 * <td><center>0(B)</center></td>
-	 * <td><center>+2</center></td>
-	 * <tr>
+	 * <td>0</td>
+	 * <td>0(B)</td>
+	 * <td>+2</td>
 	 * </tr>
+	 * <tr>
 	 * <td>[b<sub>1</sub>,d<sub>1</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>3</center></td>
+	 * <td>3</td>
 	 * <td>[a<sub>0</sub>,b<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>2</center></td>
-	 * <td><center>2(A)</center></td>
-	 * <td><center>-1</center></td>
-	 * <tr>
+	 * <td>2</td>
+	 * <td>2(A)</td>
+	 * <td>-1</td>
 	 * </tr>
+	 * <tr>
 	 * <td>[b<sub>0</sub>,d<sub>0</sub>,a<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>4</center></td>
+	 * <td>4</td>
 	 * <td>[a<sub>1</sub>,b<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>1</center></td>
-	 * <td><center>0(B)</center></td>
-	 * <td><center>+2</center></td>
-	 * <tr>
+	 * <td>1</td>
+	 * <td>0(B)</td>
+	 * <td>+2</td>
 	 * </tr>
+	 * <tr>
 	 * <td>[b<sub>1</sub>,d<sub>0</sub>,a<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>5</center></td>
+	 * <td>5</td>
 	 * <td>[a<sub>1</sub>,b<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>3</center></td>
-	 * <td><center>1(D)</center></td>
-	 * <td><center>-2</center></td>
-	 * <tr>
+	 * <td>3</td>
+	 * <td>1(D)</td>
+	 * <td>-2</td>
 	 * </tr>
+	 * <tr>
 	 * <td>[b<sub>0</sub>,d<sub>1</sub>,a<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>6</center></td>
+	 * <td>6</td>
 	 * <td>[a<sub>1</sub>,b<sub>0</sub>,c<sub>0</sub>]</td>
-	 * <td><center>1</center></td>
-	 * <td><center>0(B)</center></td>
-	 * <td><center>+2</center></td>
-	 * <tr>
+	 * <td>1</td>
+	 * <td>0(B)</td>
+	 * <td>+2</td>
 	 * </tr>
+	 * <tr>
 	 * <td>[b<sub>1</sub>,d<sub>1</sub>,a<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>7</center></td>
+	 * <td>7</td>
 	 * <td>[a<sub>1</sub>,b<sub>1</sub>,c<sub>0</sub>]</td>
-	 * <td><center>3</center></td>
-	 * <td><center>3(C)</center></td>
-	 * <td><center>+1</center></td>
-	 * <tr>
+	 * <td>3</td>
+	 * <td>3(C)</td>
+	 * <td>+1</td>
 	 * </tr>
-	 * <td><center>...</center></td>
-	 * <td><center>...</center></td>
-	 * <td><center>...</center></td>
-	 * <td><center>...</center></td>
-	 * <td><center>...</center></td>
-	 * <td><center>...</center></td>
+	 * <tr>
+	 * <td>...</td>
+	 * <td>...</td>
+	 * <td>...</td>
+	 * <td>...</td>
+	 * <td>...</td>
+	 * <td>...</td>
+	 * </tr>
 	 * </table>
 	 * <p>
 	 * The order is imposed by the variables of <b>this</b> potential (<b>Y</b>)
 	 * <p>
 	 *
-	 * @param otherVariables <code>ArrayList</code> of <code>Variable</code>s of another
+	 * @param otherVariables {@code ArrayList} of {@code Variable}s of another
 	 *                       potential (in this example: <b>Y<sup>X</sup></b> = [a, b, c])
 	 * @return The accumulated offsets in an array of integers. In this example
 	 * Accumulated offsets returns: [+2,-2,-1,+1]. Size = this
-	 * <code>TablePotential</code> number of variables.
+	 * {@code TablePotential} number of variables.
 	 */
 	public int[] getAccumulatedOffsets(List<Variable> otherVariables) {
 		int otherSize = otherVariables.size();
@@ -684,9 +690,9 @@ import java.util.Random;
 	 * Get accumulated offsets of a projected potential.
 	 *
 	 * @param otherVariables    . Actual set of variables in a projected potential.
-	 *                          <code>ArrayList</code> of <code>Variable</code>
+	 *                          {@code ArrayList} of {@code Variable}
 	 * @param originalVariables . Complete set of variables in a projected potential.
-	 *                          <code>ArrayList</code> of <code>Variable</code>
+	 *                          {@code ArrayList} of {@code Variable}
 	 * @return The accumulated offsets in an array of integers.
 	 * Condition: otherVariables is contained in originalVariables.
 	 * Condition: otherVariables and originalVariables have the same order.
@@ -714,8 +720,8 @@ import java.util.Random;
 	 * <strong>Example</strong>: A potential <strong>T</strong> with two binary
 	 * variables: <strong>a</strong> and <strong>b</strong> has this possible
 	 * configurations and position in the table:
-	 * <p>
-	 * <TABLE BORDER=1 ALIGN=CENTER>
+	 * <table style="text-align:center;boder:1px solid black:">
+	 *     <caption>Table</caption>
 	 * <tr>
 	 * <td><strong>a b position</strong></td>
 	 * </tr>
@@ -731,17 +737,14 @@ import java.util.Random;
 	 * <tr>
 	 * <td>1 1 3</td>
 	 * </tr>
-	 * </TABLE>
-	 * <p>
-	 * <p>
-	 *
+	 * </table>
+	 * @param coordinates Coordinates
 	 * @return The position in the table of the value corresponding to the given
 	 * coordinates of the variables.
-	 * <p>
-	 * In the above example <code>T.getPosition([0,1])</code> will
+	 * In the above example {@code T.getPosition([0,1])} will
 	 * return: <strong>2</strong>
 	 * Condition: coordinates.length = numVariables
-	 * Condition: coordinates[i] >= 0 and coordinates[i] < dimensions[i].
+	 * Condition: coordinates[i] &#62;= 0 and coordinates[i] &#60; dimensions[i].
 	 */
 	public int getPosition(int[] coordinates) {
 		int position = 0;
@@ -758,6 +761,7 @@ import java.util.Random;
 	 * that the variables in the potential
 	 *
 	 * @param configuration Evidence case
+	 * @return position
 	 */
 	public int getPosition(EvidenceCase configuration) {
 		int[] coordinates;
@@ -814,9 +818,9 @@ import java.util.Random;
 	}
 
 	/**
-	 * @param position in the table. <code>int</code>
-	 * @return The configuration corresponding to <code>position</code>
-	 * <code>double</code>
+	 * @param position in the table. {@code int}
+	 * @return The configuration corresponding to {@code position}
+	 * {@code double}
 	 */
 	public int[] getConfiguration(int position) {
 		int[] coordinate = new int[offsets.length];
@@ -831,9 +835,9 @@ import java.util.Random;
 	 * Given a set of variables and a set of corresponding states indices, gets
 	 * the corresponding value in the table.
 	 *
-	 * @param variables     . <code>ArrayList</code> of <code>Variable</code>
-	 * @param statesIndices . <code>int[]</code>
-	 * @return <code>double</code>
+	 * @param variables     . {@code ArrayList} of {@code Variable}
+	 * @param statesIndices . {@code int[]}
+	 * @return {@code double}
 	 * Condition: All the variables in this potentials are included into the
 	 * received variables.
 	 */
@@ -852,8 +856,8 @@ import java.util.Random;
 	/**
 	 * Given a set an EvidenceCase, gets the corresponding value in the table.
 	 *
-	 * @param configuration . <code>EvidenceCase</code>
-	 * @return <code>double</code>
+	 * @param configuration . {@code EvidenceCase}
+	 * @return {@code double}
 	 * Condition: All the variables in this potentials are included into the
 	 * variables field of the evidence case (configuration).
 	 */
@@ -876,9 +880,9 @@ import java.util.Random;
 	 * and the corresponding state indices.
 	 *
 	 * @param variables
-	 *            . <code>ArrayList</code> of <code>Variable</code>
+	 *            . {@code ArrayList} of {@code Variable}
 	 * @param statesIndexes
-	 *            . <code>int[]</code>
+	 *            . {@code int[]}
 	 * @param value Value
 	 */
 	public void setValue(List<Variable> variables, int[] statesIndexes, double value) {
@@ -894,7 +898,7 @@ import java.util.Random;
 	}
 
 	/**
-	 * @return <code>int[]</code>: The offsets of the variables in the table of
+	 * @return {@code int[]}: The offsets of the variables in the table of
 	 * values.
 	 */
 	public int[] getOffsets() {
@@ -902,7 +906,7 @@ import java.util.Random;
 	}
 
 	/**
-	 * @return <code>double[]</code>: Table containing the values of the
+	 * @return {@code double[]}: Table containing the values of the
 	 * potential.
 	 */
 	public double[] getValues() {
@@ -911,6 +915,7 @@ import java.util.Random;
 
 	/**
 	 * Set the values of the table. The dimensions of the new table have to be same that the current table
+	 * @param table Table
 	 */
 	public void setValues(double[] table) {
 		this.values = table;
@@ -933,32 +938,32 @@ import java.util.Random;
 	}
 
 	/**
-	 * @return dimensions of the variables in an array of <code>int[]</code>.
+	 * @return dimensions of the variables in an array of {@code int[]}.
 	 */
 	public int[] getDimensions() {
 		return dimensions;
 	}
 
 	/**
-	 * @return <code>initialPosition int</code>.
+	 * @return {@code initialPosition int}.
 	 */
 	public int getInitialPosition() {
 		return initialPosition;
 	}
 
 	/**
-	 * Compares two <code>TablePotential</code>s using <code>tableSize</code> as
+	 * Compares two {@code TablePotential}s using {@code tableSize} as
 	 * a criterion.
 	 *
-	 * @param other <code>Object</code>.
-	 * @return <code>int</code>:
-	 * <p>
-	 * <0 if <code>this</code> table size is minor than the received
+	 * @param other {@code Object}.
+	 * @return {@code int}:
+
+	 * &#60;0 if {@code this} table size is minor than the received
 	 * potential
-	 * <p>=
+	 * =
 	 * 0 if tables size is equal
-	 * <p>>
-	 * 0 if <code>this</code> table size is greater than the table size
+	 * &#62;
+	 * 0 if {@code this} table size is greater than the table size
 	 * of received potential.
 	 */
 	public int compareTo(TablePotential other) {
@@ -983,7 +988,7 @@ import java.util.Random;
 	}
 
 	/**
-	 * @return tableSize <code>int</code>
+	 * @return tableSize {@code int}
 	 */
 	public int getTableSize() {
 		return tableSize;
@@ -1089,7 +1094,7 @@ import java.util.Random;
 	}
 
 	/**
-	 * Overrides <code>toString</code> method. Mainly for test purposes
+	 * Overrides {@code toString} method. Mainly for test purposes
 	 */
 	public String toString() {
 		DecimalFormat formatter = new DecimalFormat("0.###", new DecimalFormatSymbols(Locale.US));

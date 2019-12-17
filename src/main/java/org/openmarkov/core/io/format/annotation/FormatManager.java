@@ -125,6 +125,7 @@ public class FormatManager {
 
 	/**
 	 * Gets a FormatManager instance
+	 * @return FormatManager instance
 	 */
 	public static FormatManager getInstance() {
 		if (instance == null) {
@@ -300,9 +301,9 @@ public class FormatManager {
 	//CMI
 
 	/**
-	 * Gets the <extension, description> of all the writers
+	 * Gets the extension, description of all the writers
 	 *
-	 * @return a HashMap with a pair <extension, description> for each writer
+	 * @return a HashMap with a pair (extension, description) for each writer
 	 */
 	public HashMap<String, String> getWriters() {
 		HashMap<String, String> writers = new HashMap<>();
@@ -338,7 +339,7 @@ public class FormatManager {
 	//     */
 
 	/**
-	 * Gets the <extension, description> of the readers
+	 * Gets the (extension, description) of the readers
 	 *
 	 * @return a Map with all the extensions found
 	 */

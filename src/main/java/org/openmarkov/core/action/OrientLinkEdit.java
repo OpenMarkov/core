@@ -15,10 +15,10 @@ import org.openmarkov.core.model.network.Variable;
 @SuppressWarnings("serial") public class OrientLinkEdit extends BaseLinkEdit {
 
 	/**
-	 * @param probNet    <code>ProbNet</code>
-	 * @param variable1  <code>Variable</code>
-	 * @param variable2  <code>Variable</code>
-	 * @param isDirected <code>boolean</code>
+	 * @param probNet    {@code ProbNet}
+	 * @param variable1  {@code Variable}
+	 * @param variable2  {@code Variable}
+	 * @param isDirected {@code boolean}
 	 */
 	public OrientLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {
 		super(probNet, variable1, variable2, isDirected);
@@ -57,6 +57,8 @@ import org.openmarkov.core.model.network.Variable;
 	/**
 	 * Method to compare two directLinkEdits comparing the names of
 	 * the source and destination variables alphabetically.
+	 * @param obj Edit
+	 * @return result of the comparison
 	 */
 	public int compareTo(OrientLinkEdit obj) {
 		int result;

@@ -26,7 +26,7 @@ public abstract class InferenceAlgorithmScheme {
 	public EvidenceCase evidence;
 	public List<Variable> variablesToEliminate;
 	/**
-	 * This is a copy of the <code>ProbNet</code> received.
+	 * This is a copy of the {@code ProbNet} received.
 	 */
 	protected ProbNet probNet;
 	/**

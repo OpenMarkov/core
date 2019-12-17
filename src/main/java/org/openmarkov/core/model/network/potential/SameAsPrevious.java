@@ -56,9 +56,10 @@ import java.util.List;
 	/**
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role
-	 *
+	 * @param node Node
 	 * @param variables List of variables
 	 * @param role Potential role
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		return node.getVariable().isTemporal() && node.getVariable().getTimeSlice() > 0;

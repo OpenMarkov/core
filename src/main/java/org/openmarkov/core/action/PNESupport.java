@@ -22,11 +22,11 @@ import java.util.Stack;
 import java.util.Vector;
 
 /**
- * This class is used over a <code>openmarkov.inference.ProbNet</code> where
+ * This class is used over a {@code openmarkov.inference.ProbNet} where
  * changes can be undone and redone. One edition has two parts:
  * <ol>
  * <li>Inform the listeners and
- * <li>If the action is not vetoed (with a <code>Exception</code>) for a
+ * <li>If the action is not vetoed (with a {@code Exception}) for a
  * listener it does the edition.
  * </ol>
  *
@@ -35,8 +35,8 @@ import java.util.Vector;
 public class PNESupport extends UndoableEditSupport {
 
 	/**
-	 * If <code>true</code> stores editions in
-	 * <code>openmarkov.undo#UndoManager</code> for undo/redo.
+	 * If {@code true} stores editions in
+	 * {@code openmarkov.undo#UndoManager} for undo/redo.
 	 */
 	protected boolean withUndo;
 	/**
@@ -61,7 +61,7 @@ public class PNESupport extends UndoableEditSupport {
 	// Constructor
 
 	/**
-	 * @param withUndo <code>boolean</code>
+	 * @param withUndo {@code boolean}
 	 */
 	public PNESupport(boolean withUndo) {
 		super();
@@ -82,11 +82,11 @@ public class PNESupport extends UndoableEditSupport {
 	/**
 	 * First part: Announce to the listeners than an edition can happen
 	 *
-	 * @param edit <code>PNEdit</code>.
+	 * @param edit {@code PNEdit}.
 	 * @throws WrongCriterionException WrongCriterionException
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 * @throws ConstraintViolationException in case of illegal
-	 *                                                   <code>probNet</code> modification.
+	 *                                                   {@code probNet} modification.
 	 */
 	public void announceEdit(PNEdit edit)
 			throws ConstraintViolationException, NonProjectablePotentialException,
@@ -100,7 +100,7 @@ public class PNESupport extends UndoableEditSupport {
 	/**
 	 * Second part: It does the edition and inform to the listeners
 	 *
-	 * @param edit <code>PNEdit</code>.
+	 * @param edit {@code PNEdit}.
 	 * @throws DoEditException DoEditException
 	 * @throws WrongCriterionException WrongCriterionException
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
@@ -179,8 +179,8 @@ public class PNESupport extends UndoableEditSupport {
 	}
 
 	/**
-	 * Add a <code>OpenParenthesisEdit</code> edit instance to
-	 * <code>undoManager</code> and increases the parenthesis deph.
+	 * Add a {@code OpenParenthesisEdit} edit instance to
+	 * {@code undoManager} and increases the parenthesis deph.
 	 */
 	public void openParenthesis() {
 		if (withUndo) {
@@ -202,8 +202,8 @@ public class PNESupport extends UndoableEditSupport {
 	}
 
 	/**
-	 * Add a <code>CloseParenthesisEdit</code> edit instance to
-	 * <code>undoManager</code> and decreases the parenthesis deph.
+	 * Add a {@code CloseParenthesisEdit} edit instance to
+	 * {@code undoManager} and decreases the parenthesis deph.
 	 */
 	public void closeParenthesis() {
 		if (withUndo) {
@@ -226,21 +226,21 @@ public class PNESupport extends UndoableEditSupport {
 	}
 
 	/**
-	 * @return withUndo <code>boolean</code>.
+	 * @return withUndo {@code boolean}.
 	 */
 	public boolean isWithUndo() {
 		return withUndo;
 	}
 
 	/**
-	 * @param withUndo <code>boolean</code>.
+	 * @param withUndo {@code boolean}.
 	 */
 	public void setWithUndo(boolean withUndo) {
 		this.withUndo = withUndo;
 	}
 
 	/**
-	 * @return probNet <code>ProbNet</code>.
+	 * @return probNet {@code ProbNet}.
 	 */
 	/*
 	 * public ProbNet getProbNet() { return (ProbNet)realSource; }

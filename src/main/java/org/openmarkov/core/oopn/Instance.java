@@ -97,6 +97,7 @@ public class Instance {
 
 	/**
 	 * sets the instance name
+	 * @param name New name
 	 */
 	public void setName(String name) {
 		this.name = name;

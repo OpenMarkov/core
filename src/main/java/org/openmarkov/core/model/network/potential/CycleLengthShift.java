@@ -63,6 +63,7 @@ import java.util.List;
 	 *
 	 * @param variables List of variables
 	 * @param role      PotentialRole
+	 * @return True if it is valid
 	 */
 	public static boolean validate(List<Variable> variables, PotentialRole role) {
 		return role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size() == 2

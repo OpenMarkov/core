@@ -12,7 +12,7 @@ import org.openmarkov.core.exception.InvalidStateException;
 /**
  * A finding is a variable and the value associated to it. The variable can be
  * discrete, continuous or hybrid
- * (<code>DiscretizedVariable</code>).
+ * ({@code DiscretizedVariable}).
  *
  * @author Manuel
  * @author fjdiez
@@ -44,20 +44,20 @@ public class Finding {
 	// Constructors
 
 	/**
-	 * Creates a <code>Finding</code> associated to a discrete variable
+	 * Creates a {@code Finding} associated to a discrete variable
 	 *
-	 * @param fsVariable <code>Variable</code>
-	 * @param state      <code>int</code>
+	 * @param fsVariable {@code Variable}
+	 * @param state      {@code int}
 	 */
 	public Finding(Variable fsVariable, State state) {
 		this(fsVariable, fsVariable.getStateIndex(state));
 	}
 
 	/**
-	 * Creates a <code>Finding</code> associated to a discrete variable
+	 * Creates a {@code Finding} associated to a discrete variable
 	 *
-	 * @param fsVariable <code>Variable</code>
-	 * @param state      <code>int</code>
+	 * @param fsVariable {@code Variable}
+	 * @param state      {@code int}
 	 */
 	public Finding(Variable fsVariable, int state) {
 		variable = fsVariable;
@@ -73,11 +73,11 @@ public class Finding {
 	}
 
 	/**
-	 * Creates a <code>Finding</code> associated to a numerical or discretized
+	 * Creates a {@code Finding} associated to a numerical or discretized
 	 * variable.
 	 *
-	 * @param variable       <code>Variable</code>
-	 * @param numericalValue <code>double</code>
+	 * @param variable       {@code Variable}
+	 * @param numericalValue {@code double}
 	 */
 	public Finding(Variable variable, double numericalValue) {
 		// TODO Throw exception if numerical values is outside the domain of variable
@@ -97,44 +97,44 @@ public class Finding {
 	// Methods
 
 	/**
-	 * @param name <code>String</code>
-	 * @return <code>true</code> if the parameter name is equal to the internal
-	 * variable name. <code>boolean</code>
+	 * @param name {@code String}
+	 * @return {@code true} if the parameter name is equal to the internal
+	 * variable name. {@code boolean}
 	 */
 	public boolean match(String name) {
 		return variable.getName().matches(name);
 	}
 
 	/**
-	 * @return variable. <code>Variable</code>
+	 * @return variable. {@code Variable}
 	 */
 	public Variable getVariable() {
 		return variable;
 	}
 
 	/**
-	 * @return stateIndex. <code>int</code>
+	 * @return stateIndex. {@code int}
 	 */
 	public int getStateIndex() {
 		return stateIndex;
 	}
 
 	/**
-	 * @param stateIndex <code>int</code>
+	 * @param stateIndex {@code int}
 	 */
 	public void setStateIndex(int stateIndex) {
 		this.stateIndex = stateIndex;
 	}
 
 	/**
-	 * @return state name. <code>String</code>
+	 * @return state name. {@code String}
 	 */
 	public String getState() {
 		return variable.getStateName(stateIndex);
 	}
 
 	/**
-	 * @return numericalValue. <code>double</code>
+	 * @return numericalValue. {@code double}
 	 * Condition: This finding stores a hybrid or continuous variable
 	 */
 	public double getNumericalValue() {
@@ -142,7 +142,7 @@ public class Finding {
 	}
 
 	/**
-	 * @param numericalValue <code>double</code>
+	 * @param numericalValue {@code double}
 	 * @throws InvalidStateException InvalidStateException
 	 */
 	public void setNumericalValue(double numericalValue) throws InvalidStateException {
@@ -151,7 +151,7 @@ public class Finding {
 	}
 
 	/**
-	 * Overrides <code>toString</code> method. Mainly for test purposes.
+	 * Overrides {@code toString} method. Mainly for test purposes.
 	 */
 	public String toString() {
 		String string = new String(variable.getName() + ":");

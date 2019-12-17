@@ -15,7 +15,7 @@ import org.openmarkov.core.model.network.Variable;
 	// Constructor
 
 	/**
-	 * @param msg <code>String</code>
+	 * @param msg {@code String}
 	 */
 	public InvalidStateException(String msg) {
 		super(msg);
@@ -25,8 +25,9 @@ import org.openmarkov.core.model.network.Variable;
 	 * Generate a message for this exception given a variable and a missing
 	 * state
 	 *
-	 * @param variable     <code>Variable</code>
-	 * @param missingState <code>String</code>
+	 * @param variable     {@code Variable}
+	 * @param missingState {@code String}
+	 * @return A message for this exception given a variable and a missing state
 	 */
 	public static String generateMsg(Variable variable, String missingState) {
 		String msg = "InvalidStateException trying access state " + missingState + " in variable: " + variable.getName()

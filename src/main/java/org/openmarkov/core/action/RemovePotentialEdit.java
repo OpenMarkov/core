@@ -18,8 +18,8 @@ import org.openmarkov.core.model.network.potential.Potential;
 	// Constructor
 
 	/**
-	 * @param probNet   <code>ProbNet</code>
-	 * @param potential <code>Potential</code>
+	 * @param probNet   {@code ProbNet}
+	 * @param potential {@code Potential}
 	 */
 	public RemovePotentialEdit(ProbNet probNet, Potential potential) {
 		super(probNet);

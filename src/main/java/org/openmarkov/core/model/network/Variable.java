@@ -19,8 +19,8 @@ import java.util.List;
 
 /**
  * A variable (for instance, a random variable or a decision). Each
- * <code>Node</code> in a <code>ProbNet</code>work represents a
- * <code>Variable</code>
+ * {@code Node} in a {@code ProbNet}work represents a
+ * {@code Variable}
  *
  * @author marias
  * @author fjdiez
@@ -44,7 +44,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	protected String name;
 	/**
 	 * List of states that this variable can take on. Each state will be a
-	 * <code>String</code>.
+	 * {@code String}.
 	 *
 	 */
 	protected State[] states;
@@ -85,8 +85,8 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	/**
 	 * Constructor for discrete variables.
 	 *
-	 * @param name   <code>String</code>
-	 * @param states <code>String[]</code>
+	 * @param name   {@code String}
+	 * @param states {@code String[]}
 	 * Condition: All the states must be different
 	 */
 	public Variable(String name, State[] states) {
@@ -103,11 +103,11 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * variable-length argument lists of Java 5 in order to accept the names of
 	 * the states.
 	 * <p>
-	 * Creates a <code>FSVariable</code> whose states are given by the names
-	 * <code>namesStates</code> states.
+	 * Creates a {@code FSVariable} whose states are given by the names
+	 * {@code namesStates} states.
 	 *
-	 * @param nameVariable a <code>String</code>
-	 * @param stateNames   a sequence of <code>String</code> by using the facilities of
+	 * @param nameVariable a {@code String}
+	 * @param stateNames   a sequence of {@code String} by using the facilities of
 	 *                     Java 5.
 	 */
 	public Variable(String nameVariable, String... stateNames) {
@@ -127,11 +127,11 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	/**
 	 * Constructor for discrete variables.
 	 * <p>
-	 * Creates a <code>FSVariable</code> with <code>numStates</code> states. The
+	 * Creates a {@code FSVariable} with {@code numStates} states. The
 	 * i-th state is named as "i".
 	 *
-	 * @param name      a <code>String</code>
-	 * @param numStates <code>int</code>
+	 * @param name      a {@code String}
+	 * @param numStates {@code int}
 	 */
 	public Variable(String name, int numStates) {
 
@@ -169,7 +169,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * A continuous variable is defined in an interval. In this case the
 	 * interval is (-infinity, +infinity)
 	 *
-	 * @param name <code>String</code>
+	 * @param name {@code String}
 	 */
 	public Variable(String name) {
 
@@ -183,12 +183,12 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * <p>
 	 * A continuous variable is defined in an interval.
 	 *
-	 * @param name        . <code>String</code>
-	 * @param leftClosed  . <code>boolean</code>
-	 * @param min         . <code>double</code>
-	 * @param max         . <code>double</code>
-	 * @param rightClosed . <code>boolean</code>
-	 * @param precision   . <code>double</code>
+	 * @param name        . {@code String}
+	 * @param leftClosed  . {@code boolean}
+	 * @param min         . {@code double}
+	 * @param max         . {@code double}
+	 * @param rightClosed . {@code boolean}
+	 * @param precision   . {@code double}
 	 */
 	public Variable(String name, boolean leftClosed, double min, double max, boolean rightClosed, double precision) {
 
@@ -203,10 +203,10 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * The interval in with is defined the continuous variable is the addition
 	 * of the set of intervals.
 	 *
-	 * @param name                . <code>String</code>
-	 * @param states              . <code>String[]</code>
-	 * @param partitionedInterval . <code>PartitionedInterval</code>
-	 * @param precision           . <code>double</code>
+	 * @param name                . {@code String}
+	 * @param states              . {@code String[]}
+	 * @param partitionedInterval . {@code PartitionedInterval}
+	 * @param precision           . {@code double}
 	 * Condition: states.length = partitionedInterval.getNumSubintervals()
 	 */
 	public Variable(String name, State[] states, PartitionedInterval partitionedInterval, double precision) {
@@ -232,8 +232,8 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	// Methods
 
 	/**
-	 * @param additionalProperties . <code>HashMap</code> with key = <code>String</code> and
-	 *                             value = <code>String</code>
+	 * @param additionalProperties . {@code HashMap} with key = {@code String} and
+	 *                             value = {@code String}
 	 */
 	public void setAdditionalProperties(HashMap<String, String> additionalProperties) {
 		this.additionalProperties = additionalProperties;
@@ -241,8 +241,8 @@ public class Variable implements Cloneable, Comparable<Variable> {
 
 	/**
 	 * @param propertyName Property name
-	 * @return property value if exists, otherwise <code>null</code>
-	 * <code>String</code> and value = <code>String</code>
+	 * @return property value if exists, otherwise {@code null}
+	 * {@code String} and value = {@code String}
 	 */
 	public String getAdditionalProperty(String propertyName) {
 		String property = null;
@@ -253,7 +253,8 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @param propertyName . <code>
+	 * @param propertyValue Property value
+	 * @param propertyName Property name
 	 */
 	public void setAdditionalProperty(String propertyName, String propertyValue) {
 		if (additionalProperties == null) {
@@ -308,8 +309,8 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	/**
 	 * Changes the name of one state.
 	 *
-	 * @param oldName . <code>String</code>.
-	 * @param newName . <code>String</code>.
+	 * @param oldName . {@code String}.
+	 * @param newName . {@code String}.
 	 * @throws Exception Exception
 	 */
 	public void renameState(String oldName, String newName) throws Exception {
@@ -338,9 +339,9 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @param stateName . <code>String</code>
-	 * @return The index of <code>state</code> or -1 if it does not exists.
-	 * <code>int</code>
+	 * @param stateName . {@code String}
+	 * @return The index of {@code state} or -1 if it does not exists.
+	 * {@code int}
 	 * @throws InvalidStateException InvalidStateException
 	 */
 	public int getStateIndex(String stateName) throws InvalidStateException {
@@ -354,8 +355,8 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @param state . <code>State</code>
-	 * @return stateIndex of state. <code>int</code>
+	 * @param state . {@code State}
+	 * @return stateIndex of state. {@code int}
 	 * @throws Error if state does not exist
 	 */
 	public int getStateIndex(State state) {
@@ -368,8 +369,8 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @param value . <code>double</code>
-	 * @return The state index corresponding to value. <code>int</code>
+	 * @param value . {@code double}
+	 * @return The state index corresponding to value. {@code int}
 	 * @throws InvalidStateException exception when variable is discrete.
 	 */
 	public int getStateIndex(double value) throws InvalidStateException {
@@ -393,7 +394,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @return variableType. <code>VariableType</code>
+	 * @return variableType. {@code VariableType}
 	 */
 	public VariableType getVariableType() {
 
@@ -426,14 +427,14 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @return name. <code>String</code>
+	 * @return name. {@code String}
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param newName . <code>String</code>
+	 * @param newName . {@code String}
 	 */
 	public void setName(String newName) {
 		name = newName;// new String(newName);
@@ -441,7 +442,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @return name. <code>String</code>
+	 * @return name. {@code String}
 	 */
 	public String getBaseName() {
 		if (baseName == null) {
@@ -451,7 +452,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @param newBaseName . <code>String</code>
+	 * @param newBaseName . {@code String}
 	 */
 	public void setBaseName(String newBaseName) {
 		this.baseName = newBaseName;
@@ -467,7 +468,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @return states. <code>String[]</code>
+	 * @return states. {@code String[]}
 	 */
 	public State[] getStates() {
 		return states;
@@ -482,8 +483,8 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @param index . <code>int</code>
-	 * @return Name of states[index]. <code>String</code>.
+	 * @param index . {@code int}
+	 * @return Name of states[index]. {@code String}.
 	 * Condition: index must be a number between 0 and (number-of-states -
 	 * 1).
 	 */
@@ -502,7 +503,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @return partitionedInterval. <code>PartitionedInterval</code>
+	 * @return partitionedInterval. {@code PartitionedInterval}
 	 */
 	public PartitionedInterval getPartitionedInterval() {
 
@@ -518,7 +519,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * @return precision. <code>double</code>
+	 * @return precision. {@code double}
 	 */
 	public double getPrecision() {
 
@@ -593,7 +594,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	/**
-	 * Overrides <code>toString</code> method. Mainly for test purposes
+	 * Overrides {@code toString} method. Mainly for test purposes
 	 */
 	public String toString() {
 
@@ -630,7 +631,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * name adding or changing [timeSlice]. If the variable is not temporal
 	 * change to temporal.
 	 *
-	 * @param timeSlice . <code>int</code>
+	 * @param timeSlice . {@code int}
 	 */
 	public void setTimeSlice(int timeSlice) {
 		if (timeSlice != Integer.MIN_VALUE) {

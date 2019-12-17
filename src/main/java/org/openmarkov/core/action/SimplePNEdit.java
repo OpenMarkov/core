@@ -15,14 +15,14 @@ import org.openmarkov.core.model.network.ProbNet;
 import javax.swing.undo.AbstractUndoableEdit;
 
 /**
- * Abstract class that defines the basic attribute (a <code>ProbNet</code>)
+ * Abstract class that defines the basic attribute (a {@code ProbNet})
  * and operations of editions.
  */
 @SuppressWarnings("serial") public abstract class SimplePNEdit extends AbstractUndoableEdit implements PNEdit {
 
 	// Attributes
 	/**
-	 * <code>ProbNet</code> over witch the operations are defined.
+	 * {@code ProbNet} over witch the operations are defined.
 	 */
 	protected ProbNet probNet;
 
@@ -36,7 +36,7 @@ import javax.swing.undo.AbstractUndoableEdit;
 	// Constructor
 
 	/**
-	 * @param probNet <code>ProbNet</code>
+	 * @param probNet {@code ProbNet}
 	 */
 	public SimplePNEdit(ProbNet probNet) {
 		this.probNet = probNet;
@@ -53,7 +53,7 @@ import javax.swing.undo.AbstractUndoableEdit;
 	public abstract void doEdit() throws DoEditException;
 
 	/**
-	 * @return probNet. <code>ProbNet</code>
+	 * @return probNet. {@code ProbNet}
 	 */
 	@Override public ProbNet getProbNet() {
 		return probNet;

@@ -39,8 +39,8 @@ import java.util.Random;
 	// Constructors
 
 	/**
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>
-	 * @param role      <code>PotentialRole</code>
+	 * @param variables {@code ArrayList} of {@code Variable}
+	 * @param role      {@code PotentialRole}
 	 */
 	public UniformPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role);
@@ -63,8 +63,8 @@ import java.util.Random;
 	//    }
 
 	/**
-	 * @param role      <code>PotentialRole</code>
-	 * @param variables <code>Variable</code>
+	 * @param role      {@code PotentialRole}
+	 * @param variables {@code Variable}
 	 */
 	public UniformPotential(PotentialRole role, Variable... variables) {
 		this(toList(variables), role);
@@ -88,9 +88,10 @@ import java.util.Random;
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role
 	 *
-	 * @param node      <code>Node</code>
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>
-	 * @param role      <code>PotentialRole</code>
+	 * @param node      {@code Node}
+	 * @param variables {@code ArrayList} of {@code Variable}
+	 * @param role      {@code PotentialRole}
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		// TODO
@@ -99,16 +100,16 @@ import java.util.Random;
 
 	// Methods
 	/**
-	 * @param evidenceCase <code>evidenceCase</code>
+	 * @param evidenceCase {@code evidenceCase}
 	 * @param projectedPotentials List of projected potentials
 	 *
 	 * @return If this is a utility potential, it represents the case in
 	 * which all the utilities are zero; therefore, it suffices to return
 	 * an empty list. If this is a conditional probability P(Y|X1,...,Xn), it
-	 * returns a <code>TablePotential<code> that is uniform potential P(y).
+	 * returns a TablePotential that is uniform potential P(y).
 	 * If this is a joint probability, P(X1,...,Xn), it returns a
-	 * <code>TablePotential<code> that is equal to this potential.
-	 * In all cases, the argument <code>evidenceCase</code> is irrelevant.
+	 * TablePotential that is equal to this potential.
+	 * In all cases, the argument evidenceCase is irrelevant.
 	 *
 	 * @throws NonProjectablePotentialException when this is a conditional probability potential and the conditioned variable is numeric.
 	 */
@@ -156,8 +157,8 @@ import java.util.Random;
 	}
 
 	/**
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>
-	 * @return <code>true</code> if all the variables are FINITE_STATES.
+	 * @param variables {@code ArrayList} of {@code Variable}
+	 * @return {@code true} if all the variables are FINITE_STATES.
 	 */
 	private boolean allVariablesAreDiscrete(List<Variable> variables) {
 		for (Variable variable : variables) {
@@ -169,7 +170,7 @@ import java.util.Random;
 	}
 
 	/**
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>
+	 * @param variables {@code ArrayList} of {@code Variable}
 	 * @return 1 / multiplication of the number of states of conditioning
 	 * variables.
 	 */
@@ -182,7 +183,7 @@ import java.util.Random;
 	}
 
 	/**
-	 * @return discreteValue. <code>double</code>
+	 * @return discreteValue. {@code double}
 	 */
 	public double getDiscreteValue() {
 		return discreteValue;
@@ -191,6 +192,7 @@ import java.util.Random;
 	/**
 	 * Used to apply discount rates in cost effectiveness analysis for utility
 	 * variables has no sense in chance nodes
+	 * @param discreteValue Discrete value
 	 */
 	public void setDiscreteValue(double discreteValue) {
 		this.discreteValue = discreteValue;

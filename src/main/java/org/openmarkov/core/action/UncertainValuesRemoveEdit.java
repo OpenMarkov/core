@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <code>UncertainValuesRemoveEdit</code> is an edit that allow us to removes the uncertain values
+ * {@code UncertainValuesRemoveEdit} is an edit that allow us to removes the uncertain values
  * column for a certain configuration.
  * If all the values in the uncertain values are null after the removal then the uncertain value is set to null.
  *
@@ -38,7 +38,7 @@ import java.util.List;
 	private boolean wasNullOldUncertainColumn;
 
 	/**
-	 * Creates a new <code>AddNodeEdit</code> with the network where the new
+	 * Creates a new {@code AddNodeEdit} with the network where the new
 	 * new node will be added and basic information about it.
 	 *
 	 * @param node          the new node

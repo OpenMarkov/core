@@ -85,6 +85,7 @@ import java.util.List;
 	 * @param name Name
 	 * @param parametrization Parametrization
 	 * @param role Potential role
+	 * @throws InstantiationException InstantiationException
 	 */
 	public UnivariateDistrPotential(List<Variable> variables, String name, String parametrization, PotentialRole role)
 			throws InstantiationException {
@@ -136,9 +137,10 @@ import java.util.List;
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role.
 	 *
-	 * @param node      . <code>Node</code>
-	 * @param variables . <code>List</code> of <code>Variable</code>.
-	 * @param role      . <code>PotentialRole</code>.
+	 * @param node      . {@code Node}
+	 * @param variables . {@code List} of {@code Variable}.
+	 * @param role      . {@code PotentialRole}.
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		return (node.getVariable().getVariableType() == VariableType.NUMERIC);
@@ -274,7 +276,7 @@ import java.util.List;
 	}
 
 	/**
-	 *
+	 * @param probDensFunctionParametersName Probability function parameters name
 	 */
 	protected void translateDistributionIntoPseudoVariable(String[] probDensFunctionParametersName) {
 		pseudoVariableDistribution = new Variable(PSEUDO_VARIABLE, probDensFunctionParametersName);
@@ -355,7 +357,7 @@ import java.util.List;
 	}
 
 	/**
-	 * UNCLEAR --> Makes sense??
+	 * UNCLEAR -- Makes sense??
 	 */
 
 	@Override public void scalePotential(double scale) {

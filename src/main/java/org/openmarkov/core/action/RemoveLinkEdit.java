@@ -35,7 +35,7 @@ import java.util.List;
 	 */
 	protected Link<Node> link;
 	/**
-	 * The last <code>Potential</code> of the second node before the edition
+	 * The last {@code Potential} of the second node before the edition
 	 * /**
 	 * parent node
 	 */
@@ -45,7 +45,7 @@ import java.util.List;
 	 */
 	protected Node node2;
 	/**
-	 * The new <code>Potential</code> of the second node
+	 * The new {@code Potential} of the second node
 	 */
 	protected List<Potential> newPotentials = new ArrayList<>();
 	protected List<Potential> oldPotentials;
@@ -54,10 +54,11 @@ import java.util.List;
 	// Constructor
 
 	/**
-	 * @param probNet    <code>ProbNet</code>
-	 * @param variable1  <code>Variable</code>
-	 * @param variable2  <code>Variable</code>
-	 * @param isDirected <code>boolean</code>
+	 * @param probNet    {@code ProbNet}
+	 * @param variable1  {@code Variable}
+	 * @param variable2  {@code Variable}
+	 * @param isDirected {@code boolean}
+	 * @param updatePotentials {@code boolean}
 	 */
 	public RemoveLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected,
 			boolean updatePotentials) {

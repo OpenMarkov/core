@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <code>AddNodeEdit</code> is a edit that allow add a node to
- * <code>ProbNet</code> object.
+ * {@code AddNodeEdit} is a edit that allow add a node to
+ * {@code ProbNet} object.
  *
  * @author mluque
  * @version 1 23/06/11
@@ -38,7 +38,7 @@ import java.util.List;
 	private int selectedColumn;
 
 	/**
-	 * Creates a new <code>AddNodeEdit</code> with the network where the new
+	 * Creates a new {@code AddNodeEdit} with the network where the new
 	 * new node will be added and basic information about it.
 	 *
 	 * @param node             the new node

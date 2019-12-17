@@ -12,11 +12,11 @@ import org.openmarkov.core.model.network.Node;
 
 @SuppressWarnings("serial")
 
-/**
- * <code>PurposeEdit</code> is a simple edit that allows modify
- * the node purpose property.
- *
- * @version 1.0 21/12/10
+/*
+  {@code PurposeEdit} is a simple edit that allows modify
+  the node purpose property.
+
+  @version 1.0 21/12/10
  * @author Miguel Palacios
  */
 public class PurposeEdit extends SimplePNEdit {
@@ -34,7 +34,7 @@ public class PurposeEdit extends SimplePNEdit {
 	private Node node = null;
 
 	/**
-	 * Creates a new <code>PurposeEdit</code> with the node and its new purpose.
+	 * Creates a new {@code PurposeEdit} with the node and its new purpose.
 	 *
 	 * @param node       the edited node
 	 * @param newPurpose the new purpose

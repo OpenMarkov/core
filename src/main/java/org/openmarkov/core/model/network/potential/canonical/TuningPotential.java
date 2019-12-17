@@ -57,6 +57,7 @@ import java.util.List;
 	 * @param node Node
 	 * @param variables List of variables
 	 * @param role Potential role
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean valid = ICIPotential.validate(node, variables, role) && role

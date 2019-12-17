@@ -30,10 +30,10 @@ import org.openmarkov.core.model.network.Variable;
 	// Constructor
 
 	/**
-	 * @param probNet    <code>ProbNet</code>
-	 * @param variable1  <code>Variable</code>
-	 * @param variable2  <code>Variable</code>
-	 * @param isDirected <code>boolean</code>
+	 * @param probNet    {@code ProbNet}
+	 * @param variable1  {@code Variable}
+	 * @param variable2  {@code Variable}
+	 * @param isDirected {@code boolean}
 	 */
 	public BaseLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {
 
@@ -44,14 +44,14 @@ import org.openmarkov.core.model.network.Variable;
 	}
 
 	/**
-	 * @return variable1 <code>Variable</code>
+	 * @return variable1 {@code Variable}
 	 */
 	public Variable getVariable1() {
 		return variable1;
 	}
 
 	/**
-	 * @return variable2 <code>Variable</code>
+	 * @return variable2 {@code Variable}
 	 */
 	public Variable getVariable2() {
 		return variable2;
@@ -78,8 +78,8 @@ import org.openmarkov.core.model.network.Variable;
 	}
 
 	/**
-	 * @return A <code>String</code> with the type of link and the names of
-	 * <code>variable1</code> and <code>variable2</code>.
+	 * @return A {@code String} with the type of link and the names of
+	 * {@code variable1} and {@code variable2}.
 	 */
 	@Override public String toString() {
 		StringBuilder buffer = new StringBuilder(getOperationName() + ": ");

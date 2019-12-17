@@ -60,7 +60,7 @@ import java.util.Vector;
 	public abstract void generateEdits() throws NonProjectablePotentialException, WrongCriterionException;
 
 	/**
-	 * @return <code>Vector</code> of <code>UndoableEdit</code>s
+	 * @return {@code Vector} of {@code UndoableEdit}s
 	 * @throws WrongCriterionException WrongCriterionException
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */

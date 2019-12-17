@@ -39,7 +39,7 @@ public abstract class NetworkType {
 
 	/**
 	 * @return An identifier that can be used in exception messages or text
-	 * files. <code>String</code>
+	 * files. {@code String}
 	 */
 	public abstract String toString();
 

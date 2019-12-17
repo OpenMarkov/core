@@ -42,10 +42,10 @@ public class StrategyTree extends TreeADDPotential {
 	 * Creates an intervention having as much states in each branch as equal interventions.
 	 * The number of states and interventions must be the same.
 	 *
-	 * @param topVariable   <code>Variable</code>
-	 * @param states        One state for each intervention in the list. <code>List</code> of <code>State</code>
+	 * @param topVariable   {@code Variable}
+	 * @param states        One state for each intervention in the list. {@code List} of {@code State}
 	 * @param strategyTrees It is possible that this list contains some equal interventions.
-	 *                      <code>List</code> of <code>Intervention</code>
+	 *                      {@code List} of {@code Intervention}
 	 */
 	public StrategyTree(Variable topVariable, List<State> states, List<StrategyTree> strategyTrees) {
 		this(null, topVariable);
@@ -133,6 +133,7 @@ public class StrategyTree extends TreeADDPotential {
 	 * Creates an intervention with a continuous variable with a partitioned interval.
 	 * The partitioned interval must have the same number of sub-intervals than interventions.
 	 *
+	 * @param partitionedInterval Partitioned interval
 	 * @param topVariable Top variable
 	 * @param strategyTrees List of strategy trees
 	 */
@@ -167,10 +168,10 @@ public class StrategyTree extends TreeADDPotential {
 	/**
 	 * Creates an intervention from a set of interventions and probabilities.
 	 *
-	 * @param chanceVariable <code>Variable</code>
-	 * @param probabilities  <code>double[]</code>
-	 * @param strategyTrees  <code>Intervention[]</code>
-	 * @return A Intervention. <code>Intervention</code>
+	 * @param chanceVariable {@code Variable}
+	 * @param probabilities  {@code double[]}
+	 * @param strategyTrees  {@code Intervention[]}
+	 * @return A Intervention. {@code Intervention}
 	 */
 	public static StrategyTree averageOfInterventions(Variable chanceVariable, double[] probabilities,
 			StrategyTree[] strategyTrees) {
@@ -396,7 +397,7 @@ public class StrategyTree extends TreeADDPotential {
 
 	/**
 	 * @param strategyTrees Array of strategy trees
-	 * @return <code>true</code> when all the interventions are equal.
+	 * @return {@code true} when all the interventions are equal.
 	 */
 	protected static boolean equalInterventions(StrategyTree[] strategyTrees) {
 		boolean equalInterventions = true;
@@ -441,7 +442,7 @@ public class StrategyTree extends TreeADDPotential {
 	}
 
 	/**
-	 * Add <code>Intervention</code> to edges of this intervention
+	 * Add {@code Intervention} to edges of this intervention
 	 *
 	 * @param strategyTree Strategy tree
 	 * @return A concatenated Strategy tree
@@ -501,8 +502,8 @@ public class StrategyTree extends TreeADDPotential {
 	}
 
 	/**
-	 * @param strategyTree <code>Intervention</code>
-	 * @return True when <code>this</code> and <code>intervention</code> are equals.
+	 * @param strategyTree {@code Intervention}
+	 * @return True when {@code this} and {@code intervention} are equals.
 	 */
 	public boolean equals(StrategyTree strategyTree) {
 		int numBranches = branches.size();
@@ -557,7 +558,7 @@ public class StrategyTree extends TreeADDPotential {
 	}
 
 	/**
-	 * @return <code>List</code> of <code>State</code>
+	 * @return {@code List} of {@code State}
 	 */
 	public List<State> getNonZeroProbabilityStates() {
 		List<State> states = new ArrayList<>();

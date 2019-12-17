@@ -84,7 +84,7 @@ public class NoMixedParents extends PNConstraint {
 	 * Checks if a node has mixed parents.
 	 * @param parentNode the parent node
 	 * @param childNode the child node
-	 * @return <code>true</code> if the <code>childNode</code> has mixedParents
+	 * @return {@code true} if the {@code childNode} has mixedParents
 	 */
 	private boolean hasMixedParents(ProbNet probNet, Node parentNode, Node childNode) {
 		boolean utilityParent = parentNode.getNodeType() == NodeType.UTILITY;

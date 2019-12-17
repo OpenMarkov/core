@@ -36,7 +36,7 @@ public class LinkRestrictionPotentialOperations {
 	 * Analyzes if the node has any parent link with a link restriction
 	 *
 	 * @param node Noded
-	 * @return <code>true</code> if the node has a link restriction
+	 * @return {@code true} if the node has a link restriction
 	 */
 	public static boolean hasLinkRestriction(Node node) {
 		if (!node.getProbNet().hasConstraint(NoLinkRestriction.class)) {
@@ -123,7 +123,7 @@ public class LinkRestrictionPotentialOperations {
 	 *            - the variables of the potential of the node
 	 * @param nodeStateIndex
 	 *            - the index of the state of the node
-	 * @return <code>true</code> if the combination of states is not influences
+	 * @return {@code true} if the combination of states is not influences
 	 *         by a link restriction
 	 */
 	private static boolean hasRestriction(int[] combination, Collection<Link<Node>> links, Node node,

@@ -25,7 +25,7 @@ import java.util.List;
  * <li>Collect all potentials with this node variable
  * <li>Multiply and eliminates the variable
  * <li>Removes the collected potentials
- * <li>Adds to the <code>probNet</code> the new potential
+ * <li>Adds to the {@code probNet} the new potential
  * <li>Adds links between the node siblings
  * <li>Remove links between the node and its children, parents and siblings
  * <li>Removes the node
@@ -53,8 +53,8 @@ import java.util.List;
 	// Constructor
 
 	/**
-	 * @param probNet  </code>ProbNet</code>
-	 * @param variable <code>Variable</code>
+	 * @param probNet  {@code ProbNet}
+	 * @param variable {@code Variable}
 	 */
 	public CompoundRemoveNodeEdit(ProbNet probNet, Variable variable) {
 		super(probNet);
@@ -123,14 +123,14 @@ import java.util.List;
 	}
 
 	/**
-	 * @return variable <code>Variable</code>
+	 * @return variable {@code Variable}
 	 */
 	public Variable getVariable() {
 		return variable;
 	}
 
 	/**
-	 * @return <code>String</code>
+	 * @return {@code String}
 	 */
 	public String toString() {
 		return new String("CompoundRemoveNodeEdit: " + variable);

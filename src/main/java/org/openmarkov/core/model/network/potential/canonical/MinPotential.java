@@ -22,8 +22,8 @@ import java.util.List;
 @PotentialType(name = "AND / MIN", family = "ICI") public class MinPotential extends MinMaxPotential {
 
 	/**
-	 * @param modelType <code>ICIModel</code>.
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>.
+	 * @param modelType {@code ICIModel}.
+	 * @param variables {@code ArrayList} of {@code Variable}.
 	 */
 	public MinPotential(ICIModelType modelType, List<Variable> variables) {
 		super(modelType, variables);
@@ -46,9 +46,10 @@ import java.util.List;
 	 * Returns if an instance of a certain Potential type makes sense given
 	 * the variables and the potential role.
 	 *
-	 * @param node      <code>Node</code>
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>.
-	 * @param role      <code>PotentialRole</code>.
+	 * @param node      {@code Node}
+	 * @param variables {@code ArrayList} of {@code Variable}.
+	 * @param role      {@code PotentialRole}.
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean valid = ICIPotential.validate(node, variables, role) && (
@@ -65,7 +66,7 @@ import java.util.List;
 	}
 
 	/**
-	 * @return A <code>TablePotential</code> with two variables: <code>conditionedVariable</code> and <code>pseudoVariable</code>.
+	 * @return A {@code TablePotential} with two variables: {@code conditionedVariable} and {@code pseudoVariable}.
 	 */
 	@Override
 	public TablePotential getDeltaPotential() {
@@ -93,14 +94,14 @@ import java.util.List;
 	}
 
 	/**
-	 * @param subPotential <code>TablePotential</code>
+	 * @param subPotential {@code TablePotential}
 	 * In general it will be the conditional probability associated with
 	 * a link of the ICI model (i.e., a conditional probability of the child
 	 * node given the parent node) or the leak probability.
 	 *
-	 * @return The accrued potential. <code>TablePotential</code>. I.e., if
-	 * subPotential is P(y) then the accrued potential is P(Y>=y), and if
-	 * the subPotential is P(y|x) then the accrued potential is P(Y>=y|x).
+	 * @return The accrued potential. {@code TablePotential}. I.e., if
+	 * subPotential is P(y) then the accrued potential is P(Y&#62;=y), and if
+	 * the subPotential is P(y|x) then the accrued potential is P(Y&#62;=y|x).
 	 *
 	 * reference Efficient computation for the Noisy MAX
 	 *

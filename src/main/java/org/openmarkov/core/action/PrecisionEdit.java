@@ -12,9 +12,9 @@ import org.openmarkov.core.model.network.Node;
 
 @SuppressWarnings("serial")
 
-/**
- * This is a simple edit that allows modify the node precision property.
- * @version 1.0 21/12/10
+/*
+  This is a simple edit that allows modify the node precision property.
+  @version 1.0 21/12/10
  * @author Miguel Palacios
  */
 public class PrecisionEdit extends SimplePNEdit {
@@ -32,7 +32,7 @@ public class PrecisionEdit extends SimplePNEdit {
 	private Node node = null;
 
 	/**
-	 * Creates a new <code>PurposeEdit</code> with the node and its new purpose.
+	 * Creates a new {@code PurposeEdit} with the node and its new purpose.
 	 *
 	 * @param node         the edited node
 	 * @param newPrecision the new precision

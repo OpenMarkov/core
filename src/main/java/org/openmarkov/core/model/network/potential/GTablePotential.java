@@ -13,15 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A generalized <code>TablePotential</code> that contains an
- * <code>Objects</code> table of the same type: <code>Element</code>.
+ * A generalized {@code TablePotential} that contains an
+ * {@code Objects} table of the same type: {@code Element}.
  */
 public class GTablePotential<E> extends TablePotential {
 
 	// Attributes
 	/**
 	 * The array buffer into which the elements of the
-	 * <code>GeneralizedTablePotential</code> are stored. This attribute is
+	 * {@code GeneralizedTablePotential} are stored. This attribute is
 	 * public for the sake of efficiency.
 	 */
 	public List<E> elementTable;
@@ -73,7 +73,7 @@ public class GTablePotential<E> extends TablePotential {
 	}
 
 	/**
-	 * Overrides <code>toString</code> method. Mainly for test purposes
+	 * Overrides {@code toString} method. Mainly for test purposes
 	 */
 	public String toString() {
 		StringBuilder buffer = new StringBuilder();

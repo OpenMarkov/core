@@ -9,7 +9,7 @@ package org.openmarkov.core.exception;
 
 /**
  * Thrown when trying to do an edit that violates one of the
- * <code>PNConstraints</code> of the <code>ProbNet</code>
+ * {@code PNConstraints} of the {@code ProbNet}
  *
  * @see org.openmarkov.core.model.graph.Link#Link(Object, Object, boolean)
  */
@@ -18,7 +18,7 @@ package org.openmarkov.core.exception;
 	// Constructor
 
 	/**
-	 * @param message <code>String</code>
+	 * @param message {@code String}
 	 */
 	public ConstraintViolationException(String message) {
 		super(message);

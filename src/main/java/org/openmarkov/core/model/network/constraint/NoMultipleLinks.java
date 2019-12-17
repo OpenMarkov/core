@@ -73,14 +73,14 @@ public class NoMultipleLinks extends PNConstraint {
 	}
 
 	/*****
-	 * Checks if a link between <code>node1</code> and <code>node2</code>
+	 * Checks if a link between node1 and node2
 	 * satisfies the restriction of noMultipleLinks
 	 * @param probNet Network
 	 * @param node1 First node
 	 * @param node2 Second node
 	 * @param directed - true if the link is directed
-	 * @return code>true</code> if the link between <code>node1</code> and
-	 *         <code>node2</code>has no multipleLinks
+	 * @return True if the link between node1 and
+	 *         node1 has no multipleLinks
 	 */
 	private boolean checkLink(ProbNet probNet, Node node1, Node node2, boolean directed) {
 		if (directed) {
@@ -91,13 +91,13 @@ public class NoMultipleLinks extends PNConstraint {
 	}
 
 	/*********
-	 * Checks if a directed link between <code>node1</code> and
-	 * <code>node2</code> satisfies the restriction of noMultipleLinks
+	 * Checks if a directed link between {@code node1} and
+	 * {@code node2} satisfies the restriction of noMultipleLinks
 	 * @param probNet Network
 	 * @param node1 First node
 	 * @param node2 Second node
-	 * @return <code>true</code> if the link between <code>node1</code> and
-	 *         <code>node2</code>has no multipleLinks
+	 * @return {@code true} if the link between {@code node1} and
+	 *         {@code node2}has no multipleLinks
 	 */
 	private boolean checkDirectedLink(ProbNet probNet, Node node1, Node node2) {
 		if (probNet.getLink(node1, node2, false) != null) {
@@ -107,13 +107,13 @@ public class NoMultipleLinks extends PNConstraint {
 	}
 
 	/*****
-	 * Checks if a undirected link between <code>node1</code> and
-	 * <code>node2</code> satisfies the restriction of noMultipleLinks
+	 * Checks if a undirected link between {@code node1} and
+	 * {@code node2} satisfies the restriction of noMultipleLinks
 	 * @param probNet Network
 	 * @param node1 First node
 	 * @param node2 Second node
-	 * @return <code>true</code> if the link between <code>node1</code> and
-	 *         <code>node2</code>has no multipleLinks
+	 * @return {@code true} if the link between {@code node1} and
+	 *         {@code node2}has no multipleLinks
 	 */
 	private boolean checkUndirectedLink(ProbNet probNet, Node node1, Node node2) {
 		// neither a directed link from node1 -> node2 nor node2 ->

@@ -20,18 +20,19 @@ import java.util.List;
 public class EvidencePotentials {
 
 	/**
-	 * For each <code>variableOfInterest</code> contained in
-	 * <code>evidence</code>, this method generates an evidence potential. This
+	 * For each {@code variableOfInterest} contained in
+	 * {@code evidence}, this method generates an evidence potential. This
 	 * potential contains only one variable and all the values of the potential
 	 * are 0.0 except the value corresponding to the finding.<p>
 	 * Finally the method inserts the new potential in
-	 * <code>individualProbabilities</code>.
+	 * {@code individualProbabilities}.
 	 *
-	 * @param individualProbabilities <code>HashMap</code> of key = String
+	 * @param individualProbabilities {@code HashMap} of key = String
 	 *                                with variable name and value = Potential.
-	 * @param variablesOfInterest     <code>ArrayList</code> of
-	 *                                <code>Variable</code>
-	 * @param evidence                <code>EvidenceCase</code>
+	 * @param variablesOfInterest     {@code ArrayList} of
+	 *                                {@code Variable}
+	 * @param evidence                {@code EvidenceCase}
+	 * @return Evidence potentials
 	 */
 	public static HashMap<Variable, TablePotential> addEvidencePotentials(
 			HashMap<Variable, TablePotential> individualProbabilities, List<Variable> variablesOfInterest,

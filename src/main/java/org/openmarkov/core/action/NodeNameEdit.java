@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <code>NodeNameEdit</code> is a simple edit that allow modify the node
+ * {@code NodeNameEdit} is a simple edit that allow modify the node
  * name.
  *
  * @author Miguel Palacios
@@ -36,7 +36,7 @@ import java.util.List;
 	private List<Variable> variables = null;
 
 	/**
-	 * Creates a new <code>NodeNameEdit</code> with the node and new name
+	 * Creates a new {@code NodeNameEdit} with the node and new name
 	 * specified.
 	 *
 	 * @param node    the node that will be modified

@@ -49,9 +49,10 @@ import java.util.Map;
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role.
 	 *
-	 * @param node      . <code>Node</code>
-	 * @param variables . <code>ArrayList</code> of <code>Variable</code>.
-	 * @param role      . <code>PotentialRole</code>.
+	 * @param node      . {@code Node}
+	 * @param variables . {@code ArrayList} of {@code Variable}.
+	 * @param role      . {@code PotentialRole}.
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		return role == PotentialRole.UNSPECIFIED || (

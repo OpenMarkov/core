@@ -82,14 +82,14 @@ public class DistinctLinks extends PNConstraint {
 	}
 
 	/*******
-	 * Checks if a link between <code>node1</code> and <code>node2</code>
+	 * Checks if a link between {@code node1} and {@code node2}
 	 * satisfies the restriction of distinctLinks
 	 * @param graph Network
 	 * @param node1 First node
 	 * @param node2 Second node
 	 * @param directed True if the link is directed
-	 * @return code>true</code> if the link between <code>node1</code> and
-	 *         <code>node2</code>has distinctLinks
+	 * @return True if the link between {@code node1} and
+	 *         {@code node2}has distinctLinks
 	 */
 	private boolean checkLink(ProbNet graph, Node node1, Node node2, boolean directed) {
 		return !(

@@ -80,7 +80,7 @@ public class Util {
 
 	/**
 	 * This method checks if exists the specified node.
-	 *
+	 * @param probNet Network
 	 * @param name name of the node to search.
 	 * @return true if the node exists; otherwise, false.
 	 */
@@ -98,10 +98,10 @@ public class Util {
 	}
 
 	/**
-	 * Traslates a <code>String</code> from windows style to UNIX (change \\
+	 * Traslates a {@code String} from windows style to UNIX (change \\
 	 * for /)
 	 *
-	 * @param windowsString <code>String</code>
+	 * @param windowsString {@code String}
 	 * @return String
 	 */
 	public static String windows2unixPath(String windowsString) {
@@ -121,12 +121,12 @@ public class Util {
 	}
 
 	/**
-	 * Returns a <code>String</code> of the value rounded to the precision and
+	 * Returns a {@code String} of the value rounded to the precision and
 	 * with the exact number of decimals; for example, 3.4 with precision 0.001
 	 * is "3.400".
 	 *
 	 * @param value           the value to be rounded
-	 * @param precisionString a <code>String</code>, such as "10", "1", "0.25", or "0.001".
+	 * @param precisionString a {@code String}, such as "10", "1", "0.25", or "0.001".
 	 * @return rounded value string
 	 */
 
@@ -298,7 +298,11 @@ public class Util {
 	/**
 	 * It rounds 'x' with 'numDecimals' exact decimals.
 	 * If the rounded number has got some zeros at the end,
-	 * this function removes them (E.g.: 0.234000 -> 0.234)
+	 * this function removes them (E.g.: 0.234000 &#62; 0.234)
+	 * @param x X
+	 * @param epsilon Epsilon
+	 * @param numDecimals Number of decimals
+	 * @return rounded double
 	 */
 
 	public static double roundAndReduce(double x, double epsilon, int numDecimals) {
@@ -328,6 +332,9 @@ public class Util {
 
 	/**
 	 * It rounds 'x' with 'numDecimals' exact decimals
+	 * @param x X
+	 * @param numDecimals Number of decimals
+	 * @return rounded double
 	 */
 
 	public static double roundWithPrecision(double x, int numDecimals) {

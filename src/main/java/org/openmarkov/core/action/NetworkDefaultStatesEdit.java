@@ -11,7 +11,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 
 /**
- * <code>NetworkDefaultStatesEdit</code> is a simple edit that allows modify
+ * {@code NetworkDefaultStatesEdit} is a simple edit that allows modify
  * the default states of the network
  *
  * @author Miguel Palacios
@@ -30,7 +30,7 @@ import org.openmarkov.core.model.network.State;
 	private State[] newDefaultStates;
 
 	/**
-	 * Creates a <code>NetworkDefaultStatesEdit</code> with the network and new
+	 * Creates a {@code NetworkDefaultStatesEdit} with the network and new
 	 * default states specified.
 	 *
 	 * @param probNet       the network that will be modified.

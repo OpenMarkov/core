@@ -14,7 +14,7 @@ public class NotEvaluableNetworkException extends OpenMarkovException {
 	// Constructor
 
 	/**
-	 * @param e <code>Exception</code>
+	 * @param e {@code Exception}
 	 */
 	public NotEvaluableNetworkException(Exception e) {
 		super(e.getMessage());

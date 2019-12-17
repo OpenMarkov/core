@@ -38,8 +38,8 @@ public class CEP {
 	private double[] costs;
 	private double[] effectivities;
 	/**
-	 * An intervention is a potential. If it is a decision, its value is a <code>DeltaPotential</code>, otherwise,
-	 * a <code>TreeADDPotential</code>
+	 * An intervention is a potential. If it is a decision, its value is a {@code DeltaPotential}, otherwise,
+	 * a {@code TreeADDPotential}
 	 */
 	private StrategyTree[] strategyTrees;
 
@@ -61,10 +61,10 @@ public class CEP {
 	private int indentLevel; // TODO Remove?
 
 	/**
-	 * @param strategyTrees <code>Intervention[]</code>
-	 * @param costs         <code>double[]</code>
-	 * @param effectivities <code>double[]</code>
-	 * @param thresholds    <code>double[]</code>
+	 * @param strategyTrees {@code Intervention[]}
+	 * @param costs         {@code double[]}
+	 * @param effectivities {@code double[]}
+	 * @param thresholds    {@code double[]}
 	 * @throws CostEffectivenessException CostEffectivenessException
 	 */
 	public CEP(StrategyTree[] strategyTrees, double[] costs, double[] effectivities, double[] thresholds)
@@ -97,11 +97,11 @@ public class CEP {
 	/**
 	 * Creates a partition with only one interval
 	 *
-	 * @param strategyTree  <code>Potential</code>
-	 * @param cost          <code>double</code>
-	 * @param effectiveness <code>double</code>
-	 * @param minThreshold  <code>double</code>
-	 * @param maxThreshold  <code>double</code>
+	 * @param strategyTree  {@code Potential}
+	 * @param cost          {@code double}
+	 * @param effectiveness {@code double}
+	 * @param minThreshold  {@code double}
+	 * @param maxThreshold  {@code double}
 	 * @throws CostEffectivenessException CostEffectivenessException
 	 */
 	public CEP(StrategyTree strategyTree, double cost, double effectiveness, double minThreshold, double maxThreshold)
@@ -118,12 +118,12 @@ public class CEP {
 	}
 
 	/**
-	 * @param strategyTrees <code>Potential[]</code>
-	 * @param costs         <code>double[]</code>
-	 * @param effectivities <code>double[]</code>
-	 * @param thresholds    <code>double[]</code>
-	 * @param minThreshold  <code>double</code>
-	 * @param maxThreshold  <code>double</code>
+	 * @param strategyTrees {@code Potential[]}
+	 * @param costs         {@code double[]}
+	 * @param effectivities {@code double[]}
+	 * @param thresholds    {@code double[]}
+	 * @param minThreshold  {@code double}
+	 * @param maxThreshold  {@code double}
 	 * @throws CostEffectivenessException CostEffectivenessException
 	 */
 	public CEP(StrategyTree[] strategyTrees, double[] costs, double[] effectivities, double[] thresholds,
@@ -154,8 +154,8 @@ public class CEP {
 	}
 
 	/**
-	 * @param lambda <code>double</code>
-	 * @return Interval index corresponding to lambda. <code>int</code>
+	 * @param lambda {@code double}
+	 * @return Interval index corresponding to lambda. {@code int}
 	 */
 	public int index(double lambda) {
 		int numThresholds = costs.length - 1;
@@ -168,7 +168,7 @@ public class CEP {
 	/**
 	 * Multiplies costs and effectivities per factor.
 	 *
-	 * @param factor <code>double</code>
+	 * @param factor {@code double}
 	 */
 	public void multiply(double factor) {
 		if (!zeroProbability) {
@@ -182,7 +182,7 @@ public class CEP {
 	/**
 	 * Divides costs and effectivities per factor.
 	 *
-	 * @param factor <code>double</code>
+	 * @param factor {@code double}
 	 */
 	public void divide(double factor) {
 		if (!zeroProbability) {
@@ -194,9 +194,9 @@ public class CEP {
 	}
 
 	/**
-	 * Change the indentation in <code>toString()</code>. Used for nested interventions.
+	 * Change the indentation in {@code toString()}. Used for nested interventions.
 	 *
-	 * @param indentLevel <code>int</code>
+	 * @param indentLevel {@code int}
 	 */
 	public void setIndentLevel(int indentLevel) {
 		this.indentLevel = indentLevel;
@@ -222,62 +222,62 @@ public class CEP {
 	}
 
 	/**
-	 * @param lambda <code>double</code>
-	 * @return Cost corresponding to lambda. <code>double</code>
+	 * @param lambda {@code double}
+	 * @return Cost corresponding to lambda. {@code double}
 	 */
 	public double getCost(double lambda) {
 		return costs[index(lambda)];
 	}
 
 	/**
-	 * @param interval <code>int</code>
-	 * @return Cost corresponding to interval. <code>double</code>
+	 * @param interval {@code int}
+	 * @return Cost corresponding to interval. {@code double}
 	 */
 	public double getCost(int interval) {
 		return costs[interval];
 	}
 
 	/**
-	 * @param lambda <code>double</code>
-	 * @return Effectiveness corresponding to lambda. <code>double</code>
+	 * @param lambda {@code double}
+	 * @return Effectiveness corresponding to lambda. {@code double}
 	 */
 	public double getEffectiveness(double lambda) {
 		return effectivities[index(lambda)];
 	}
 
 	/**
-	 * @param interval <code>int</code>
-	 * @return Effectiveness corresponding to interval. <code>double</code>
+	 * @param interval {@code int}
+	 * @return Effectiveness corresponding to interval. {@code double}
 	 */
 	public double getEffectiveness(int interval) {
 		return effectivities[interval];
 	}
 
 	/**
-	 * @param lambda <code>double</code>
-	 * @return TreeADDPotential corresponding to lambda. <code>TreeADDPotential</code>
+	 * @param lambda {@code double}
+	 * @return TreeADDPotential corresponding to lambda. {@code TreeADDPotential}
 	 */
 	public StrategyTree getIntervention(double lambda) {
 		return strategyTrees[index(lambda)];
 	}
 
 	/**
-	 * @param interval <code>int</code>
-	 * @return TreeADDPotential corresponding to interval. <code>TreeADDPotential</code>
+	 * @param interval {@code int}
+	 * @return TreeADDPotential corresponding to interval. {@code TreeADDPotential}
 	 */
 	public StrategyTree getIntervention(int interval) {
 		return strategyTrees[interval];
 	}
 
 	/**
-	 * @return All the interventions. <code>Intervention[]</code>
+	 * @return All the interventions. {@code Intervention[]}
 	 */
 	public StrategyTree[] getStrategyTrees() {
 		return strategyTrees;
 	}
 
 	/**
-	 * @return <code>boolean</code>
+	 * @return {@code boolean}
 	 */
 	public boolean isZero() {
 		return zeroProbability;
@@ -288,59 +288,59 @@ public class CEP {
 	}
 
 	/**
-	 * @param interval <code>int</code>
-	 * @return threshold between interval and interval + 1. <code>double</code>
+	 * @param interval {@code int}
+	 * @return threshold between interval and interval + 1. {@code double}
 	 */
 	public double getThreshold(int interval) {
 		return thresholds[interval];
 	}
 
 	/**
-	 * @return <code>double[]</code>
+	 * @return {@code double[]}
 	 */
 	public double[] getThresholds() {
 		return thresholds;
 	}
 
 	/**
-	 * @param cost     <code>double</code>
-	 * @param interval <code>int</code>
+	 * @param cost     {@code double}
+	 * @param interval {@code int}
 	 */
 	public void setCost(double cost, int interval) {
 		costs[interval] = cost;
 	}
 
 	/**
-	 * @param eff      <code>double</code>
-	 * @param interval <code>int</code>
+	 * @param eff      {@code double}
+	 * @param interval {@code int}
 	 */
 	public void setEffectiveness(double eff, int interval) {
 		effectivities[interval] = eff;
 	}
 
 	/**
-	 * @return minThreshold. <code>double</code>
+	 * @return minThreshold. {@code double}
 	 */
 	public double getMinThreshold() {
 		return minThreshold;
 	}
 
 	/**
-	 * @return maxThreshold. <code>double</code>
+	 * @return maxThreshold. {@code double}
 	 */
 	public double getMaxThreshold() {
 		return maxThreshold;
 	}
 
 	/**
-	 * @return effectivities. <code>double[]</code>
+	 * @return effectivities. {@code double[]}
 	 */
 	public double[] getEffectivities() {
 		return effectivities;
 	}
 
 	/**
-	 * @return costs. <code>double[]</code>
+	 * @return costs. {@code double[]}
 	 */
 	public double[] getCosts() {
 		return costs;
@@ -465,7 +465,7 @@ public class CEP {
 	/**
 	 * Calculate net monetary benefit given the willigness to pay (lambda)
 	 *
-	 * @param lambda <code>double</code>
+	 * @param lambda {@code double}
 	 * @return net monetary benefit given lambda
 	 */
 	public double getNetMonetaryBenefit(double lambda) {

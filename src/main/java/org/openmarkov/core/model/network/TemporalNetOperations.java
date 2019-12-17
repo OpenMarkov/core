@@ -38,6 +38,8 @@ public class TemporalNetOperations {
 	 * new nodes, links, and potentials to make it a compact net.
 	 * If some of the slices of the concise net misses a node present in previous slices,
 	 * adds the node to that slice
+	 * @param probNet Network
+	 * @return Compact network
 	 */
 	public static List<List<Node>> compactNetwork(ProbNet probNet) {
 		List<List<Node>> classifiedNodes = classifyNodesbySlices(probNet, probNet.getVariables());
@@ -109,7 +111,7 @@ public class TemporalNetOperations {
 	 * Assigns nodes to slices in a collection of slices. Each slice is a
 	 * collection of nodes.
 	 *
-	 * @return <code>List</code> of <code>List</code> of <code>Node</code>
+	 * @return {@code List} of {@code List} of {@code Node}
 	 */
 	private static List<List<Node>> classifyNodesbySlices(ProbNet probNet, List<Variable> variables) {
 		List<List<Node>> classifiedNodes;

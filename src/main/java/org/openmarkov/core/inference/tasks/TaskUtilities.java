@@ -246,6 +246,7 @@ public class TaskUtilities {
 	}
 
 	/**
+	 * @param probNet Network
 	 * @param decision Decision variable
 	 * @return True if the decision has an imposed policy.
 	 */

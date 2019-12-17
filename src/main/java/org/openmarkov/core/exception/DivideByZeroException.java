@@ -11,7 +11,7 @@ package org.openmarkov.core.exception;
 	// Constructor
 
 	/**
-	 * @param message <code>String</code>
+	 * @param message {@code String}
 	 */
 	public DivideByZeroException(String message) {
 		super(message);

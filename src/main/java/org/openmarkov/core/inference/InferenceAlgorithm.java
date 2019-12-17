@@ -29,7 +29,7 @@ import java.util.List;
 public abstract class InferenceAlgorithm implements Task {
 
 	/**
-	 * This is a copy of the <code>ProbNet</code> received.
+	 * This is a copy of the {@code ProbNet} received.
 	 */
 	protected ProbNet probNet;
 	/**

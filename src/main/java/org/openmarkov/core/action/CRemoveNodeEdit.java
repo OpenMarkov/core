@@ -17,8 +17,8 @@ import org.openmarkov.core.model.network.potential.Potential;
 import java.util.List;
 
 /**
- * <code>CRemoveNodeEdit</code> is an compound edit that removes a node
- * performing this steps:<ol>
+ * {@code CRemoveNodeEdit} is an compound edit that removes a node
+ * performing this steps:
  * <ol>
  * <li>Remove links between the node and its children
  * <li> Remove links between the node and its children
@@ -46,8 +46,8 @@ import java.util.List;
 	// Constructor
 
 	/**
-	 * @param probNet </code>ProbNet</code>
-	 * @param node    <code>Node</code>
+	 * @param probNet {@code ProbNet}
+	 * @param node    {@code Node}
 	 */
 	public CRemoveNodeEdit(ProbNet probNet, Node node) {
 		super(probNet);
@@ -93,14 +93,14 @@ import java.util.List;
 	}
 
 	/**
-	 * @return variable <code>Variable</code>
+	 * @return variable {@code Variable}
 	 */
 	public Variable getVariable() {
 		return node.getVariable();
 	}
 
 	/**
-	 * @return <code>String</code>
+	 * @return {@code String}
 	 */
 	public String toString() {
 		return new String("CompoundRemoveNodeEdit: " + node.getName());

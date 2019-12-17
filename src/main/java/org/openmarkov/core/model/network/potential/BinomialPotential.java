@@ -63,9 +63,11 @@ public class BinomialPotential extends Potential {
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role.
 	 *
-	 * @param node      . <code>Node</code>
-	 * @param variables . <code>List</code> of <code>Variable</code>.
-	 * @param role      . <code>PotentialRole</code>.
+	 * @param node      . {@code Node}
+	 * @param variables . {@code List} of {@code Variable}.
+	 * @param role      . {@code PotentialRole}.
+	 * @return if an instance of a certain Potential type makes sense given the
+	 * 	 variables and the potential role.
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		return role == PotentialRole.CONDITIONAL_PROBABILITY && (!variables.isEmpty()

@@ -75,7 +75,7 @@ public class SDAGStrategyTree extends StrategyTree {
 	}
 
 	/**
-	 * Add <code>Intervention</code> to edges of this intervention
+	 * Add {@code Intervention} to edges of this intervention
 	 *
 	 * @param strategyTree Strategy tree
 	 */

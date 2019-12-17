@@ -56,9 +56,10 @@ import java.util.List;
 	 * Returns if an instance of a certain Potential type makes sense given
 	 * the variables and the potential role.
 	 *
-	 * @param node      <code>Node</code>
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>.
-	 * @param role      <code>PotentialRole</code>.
+	 * @param node      {@code Node}
+	 * @param variables {@code ArrayList} of {@code Variable}.
+	 * @param role      {@code PotentialRole}.
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean suitable = (
@@ -71,7 +72,7 @@ import java.util.List;
 	// Methods
 	/**
 	 * Project the potential and return a list of projected table potentials
-	 * @param evidenceCase               <code>EvidenceCase</code>
+	 * @param evidenceCase               {@code EvidenceCase}
 	 * @param inferenceOptions Inference options
 	 * @param projectedPotentials Projected potentials
 	 * @return a list of projected table potentials

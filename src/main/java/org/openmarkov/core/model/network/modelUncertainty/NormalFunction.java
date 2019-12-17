@@ -36,7 +36,7 @@ import java.util.Random;
 
 	/**
 	 * @param parameters - parameters[1]= mu and parameters[0] = sigma^2
-	 * @throws IllegalArgumentException - thrown if sigma<0
+	 * @throws IllegalArgumentException - thrown if sigma&#60;0
 	 */
 	@Override public void verifyParameters(double[] parameters) {
 		if (!(parameters[0] > 0)) {

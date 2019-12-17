@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <code>NodeReplaceStatesEdit</code> is a simple edit that allows modify the
+ * {@code NodeReplaceStatesEdit} is a simple edit that allows modify the
  * states of node
  *
  * @author Miguel Palacios
@@ -60,7 +60,7 @@ import java.util.Map;
 	private Map<Link<Node>, List> revelationConditionMap;
 
 	/**
-	 * Creates a <code>NodeReplaceStatesEdit</code> with the node and new states
+	 * Creates a {@code NodeReplaceStatesEdit} with the node and new states
 	 * specified for replace.
 	 *
 	 * @param node      the node that will be modified.

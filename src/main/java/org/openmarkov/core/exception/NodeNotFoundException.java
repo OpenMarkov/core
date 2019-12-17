@@ -16,7 +16,7 @@ import org.openmarkov.core.model.network.Variable;
 	// Constructor
 
 	/**
-	 * @param message <code>String</code>
+	 * @param message {@code String}
 	 */
 	public NodeNotFoundException(String message) {
 		super(message);

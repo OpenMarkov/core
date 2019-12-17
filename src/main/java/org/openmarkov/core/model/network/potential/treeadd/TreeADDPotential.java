@@ -76,6 +76,7 @@ public class TreeADDPotential extends Potential {
 	 * @param variables List of variables
 	 * @param topVariable Top variable
 	 * @param branchingStates Array of branching states
+	 * @param interval Interval
 	 * @param role            {@link org.openmarkov.core.model.network.potential.PotentialRole}
 	 */
 	public TreeADDPotential(List<Variable> variables, Variable topVariable, State[] branchingStates,
@@ -182,6 +183,11 @@ public class TreeADDPotential extends Potential {
 
 	/**
 	 * Constructor for the parser
+	 * @param variables List of variables
+	 * @param topVariable Top variable
+	 * @param role Potential role
+	 * @param branches Branches
+	 *
 	 */
 	public TreeADDPotential(List<Variable> variables, Variable topVariable, PotentialRole role,
 			List<TreeADDBranch> branches) {
@@ -214,8 +220,10 @@ public class TreeADDPotential extends Potential {
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role
 	 *
+	 * @param node Node
 	 * @param variables List of variables
 	 * @param role Potential role
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean validate = false;
@@ -243,7 +251,7 @@ public class TreeADDPotential extends Potential {
 	 * If the intervention is a decision the number of branches is 1, otherwise,
 	 * it is the number of states of the chance variable with probability greater than 0.
 	 *
-	 * @return <code>int</code>
+	 * @return {@code int}
 	 */
 	protected int getNumBranches() {
 		return branches.size();
@@ -252,7 +260,7 @@ public class TreeADDPotential extends Potential {
 	/**
 	 * Recursively goes through the interventions tree adding the number of leaves.
 	 *
-	 * @return <code>int</code>
+	 * @return {@code int}
 	 */
 	protected int getNumLeaves() {
 		int numLeaves = 0;
@@ -268,7 +276,7 @@ public class TreeADDPotential extends Potential {
 	}
 
 	/**
-	 * @return <code>False</code> when this intervention is a leaf.
+	 * @return {@code False} when this intervention is a leaf.
 	 */
 	public boolean hasAnySubIntervention() {
 		return branches.size() != 0;

@@ -39,6 +39,7 @@ public class StrategyUtilities {
 	}
 
 	/**
+	 * @param decision Decision variable
 	 * @return the utilities
 	 */
 	public TablePotential getUtilities(Variable decision) {

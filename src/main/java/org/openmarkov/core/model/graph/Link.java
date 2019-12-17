@@ -69,12 +69,12 @@ public class Link<T> {
 
 	/**
 	 * Creates an unlabelled link and sets the cross references in the nodes.
-	 * This constructor should be called only from the <code>addLink</code>
+	 * This constructor should be called only from the {@code addLink}
 	 * function in the class Graph. Both nodes must belong to the same graph.
 	 *
-	 * @param node1    <code>Node</code>.
-	 * @param node2    <code>Node</code>.
-	 * @param directed <code>boolean</code>.
+	 * @param node1    {@code Node}.
+	 * @param node2    {@code Node}.
+	 * @param directed {@code boolean}.
 	 *
 	 */
 	public Link(T node1, T node2, boolean directed) {
@@ -105,15 +105,15 @@ public class Link<T> {
 	}
 
 	/**
-	 * @param node <code>Node</code>.
-	 * @return <code>true</code> if the link contains <code>node</code>.
+	 * @param node {@code Node}.
+	 * @return {@code true} if the link contains {@code node}.
 	 */
 	public boolean contains(T node) {
 		return ((node1 == node) || (node2 == node));
 	}
 
 	/**
-	 * @return <code>true</code> if the link is directed, false if it is
+	 * @return {@code true} if the link is directed, false if it is
 	 * undirected
 	 */
 	public boolean isDirected() {
@@ -121,7 +121,7 @@ public class Link<T> {
 	}
 
 	/******
-	 * @return <code>true</code> if the link has a linkRestriction
+	 * @return {@code true} if the link has a linkRestriction
 	 *                          associates,false otherwise
 	 */
 	public boolean hasRestrictions() {
@@ -129,7 +129,7 @@ public class Link<T> {
 	}
 
 	/****
-	 * @return <code>true</code> if a value of the first variable makes all
+	 * @return {@code true} if a value of the first variable makes all
 	 *                          values of the second variable impossible.
 	 *
 	 */
@@ -161,7 +161,7 @@ public class Link<T> {
 	}
 
 	/****
-	 * @return <code>true</code> if a value of the first variable makes all
+	 * @return {@code true} if a value of the first variable makes all
 	 *                          values of the second variable impossible.
 	 *
 	 */
@@ -307,7 +307,7 @@ public class Link<T> {
 	 * This method indicates whether there are revealing conditions for the
 	 * link.
 	 *
-	 * @return <code>true</code> if there exist revealing conditions.
+	 * @return {@code true} if there exist revealing conditions.
 	 */
 	public boolean hasRevealingConditions() {
 

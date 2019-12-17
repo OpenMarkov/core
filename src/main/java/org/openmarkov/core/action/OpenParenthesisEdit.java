@@ -11,8 +11,8 @@ import org.openmarkov.core.exception.DoEditException;
 
 @SuppressWarnings("serial")
 
-/**
- * @author Manuel Arias
+/*
+  @author Manuel Arias
  * @see openmarkov.networks.edit.CloseParenthesisEdit
  */
 public class OpenParenthesisEdit extends SimplePNEdit {

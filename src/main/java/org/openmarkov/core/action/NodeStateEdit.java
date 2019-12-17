@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <code>NodeStateEdit</code> is a simple edit that allow modify the states of
+ * {@code NodeStateEdit} is a simple edit that allow modify the states of
  * one node.
  *
  * @author Miguel Palacios
@@ -95,7 +95,7 @@ public class NodeStateEdit extends SimplePNEdit {
 	private String oldName;
 
 	/**
-	 * Creates a new <code>NodeStateEdit</code> to carry out the specified
+	 * Creates a new {@code NodeStateEdit} to carry out the specified
 	 * action on the specified state.
 	 *
 	 * @param node        the node that will be edited.

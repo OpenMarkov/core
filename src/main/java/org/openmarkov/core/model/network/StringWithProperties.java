@@ -21,7 +21,7 @@ public class StringWithProperties {
 	// Constructor
 
 	/**
-	 * @param string <code>String</code>
+	 * @param string {@code String}
 	 */
 	public StringWithProperties(String string) {
 		this.string = string;
@@ -31,32 +31,33 @@ public class StringWithProperties {
 	// Methods
 
 	/**
-	 * @return The object stored with <code>key</code> or <code>null</code> if
-	 * it does not exists. <code>Object</code>
+	 * @param key Key
+	 * @return The object stored with {@code key} or {@code null} if
+	 * it does not exists. {@code Object}
 	 */
 	public Object get(String key) {
 		return properties.get(string);
 	}
 
 	/**
-	 * @param key   <code>String</code>
-	 * @param value <code>Object</code>
+	 * @param key   {@code String}
+	 * @param value {@code Object}
 	 */
 	public void put(String key, String value) {
 		properties.put(key, value);
 	}
 
 	/**
-	 * @param properties <code>Properties</code>
+	 * @param properties {@code Properties}
 	 */
 	public void put(Properties properties) {
 		this.properties = properties;
 	}
 
 	/**
-	 * @param key <code>String</code>
-	 * @return The object stored with <code>key</code> or <code>null</code> if
-	 * it does not exists. <code>Object</code>
+	 * @param key {@code String}
+	 * @return The object stored with {@code key} or {@code null} if
+	 * it does not exists. {@code Object}
 	 */
 	public Object remove(String key) {
 		return properties.remove(key);

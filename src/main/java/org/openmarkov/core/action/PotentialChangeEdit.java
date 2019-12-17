@@ -24,9 +24,9 @@ import org.openmarkov.core.model.network.potential.Potential;
 	// Constructor
 
 	/**
-	 * @param probNet      <code>ProbNet</code>
-	 * @param oldPotential <code>Potential</code>
-	 * @param newPotential <code>Potential</code>
+	 * @param probNet      {@code ProbNet}
+	 * @param oldPotential {@code Potential}
+	 * @param newPotential {@code Potential}
 	 */
 	public PotentialChangeEdit(ProbNet probNet, Potential oldPotential, Potential newPotential) {
 		super(probNet);
@@ -48,7 +48,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 	}
 
 	/**
-	 * @return A <code>String</code> with the variables of both potentials.
+	 * @return A {@code String} with the variables of both potentials.
 	 */
 	public String toString() {
 		return "ChangePotentialEdit: " + oldPotential.getVariables() + " --> " + newPotential.getVariables();

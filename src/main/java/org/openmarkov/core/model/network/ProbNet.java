@@ -41,9 +41,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A <code>ProbNet</code> stores <code>Node</code>s in a efficient manner.
- * It has the operations to manage <code>Variables, nodes</code> and <code>
- * Potentials</code>.
+ * A {@code ProbNet} stores {@code Node}s in a efficient manner.
+ * It has the operations to manage {@code Variables, nodes} and {@code
+ * Potentials}.
  *
  * @author marias
  * @author fjdiez
@@ -58,21 +58,21 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	/**
 	 * This object contains all the information that the parser reads from disk
 	 * that does not have a direct connection with the attributes stored in the
-	 * <code>ProbNet</code> object.
+	 * {@code ProbNet} object.
 	 */
 	public HashMap<String, String> additionalProperties = new HashMap<>();
 	/**
 	 * Nodes are stored in several HashMaps to accelerate the access. The type
-	 * of node determines the <code>HashMap</code> in which the node is stored.
+	 * of node determines the {@code HashMap} in which the node is stored.
 	 */
 	protected NodeTypeDepot nodeDepot;
 	/**
-	 * Network type of this <code>ProbNet</code>.
+	 * Network type of this {@code ProbNet}.
 	 */
 	private NetworkType networkType;
 	/**
-	 * <code>ArrayList</code> of <code>Constraints</code> that defines this
-	 * <code>ProbNet</code>. This attribute is not frozen to allow conversions
+	 * {@code ArrayList} of {@code Constraints} that defines this
+	 * {@code ProbNet}. This attribute is not frozen to allow conversions
 	 */
 	private List<PNConstraint> constraints;
 	/**
@@ -140,9 +140,9 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param nodes list of <code>Node</code>s
+	 * @param nodes list of {@code Node}s
 	 * @return variables corresponding to the received nodes.
-	 * <code>List</code> of <code>Variable</code>
+	 * {@code List} of {@code Variable}
 	 */
 	public static List<Variable> getVariables(Collection<Node> nodes) {
 		List<Variable> variables = null;
@@ -156,14 +156,14 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * Adds the variables in the received <code>Potential</code> to this
-	 * <code>MarkovNet</code>, creates links between those variables creating
-	 * cliques and assigns the <code>potential</code> to the conditioned
+	 * Adds the variables in the received {@code Potential} to this
+	 * {@code MarkovNet}, creates links between those variables creating
+	 * cliques and assigns the {@code potential} to the conditioned
 	 * variable (the first one).
 	 *
-	 * @param projectedTablePotentials <code>ArrayList</code> of <code>Potential</code>s
+	 * @param projectedTablePotentials {@code ArrayList} of {@code Potential}s
 	 * @return A Markov Network in witch potentials are used to create cliques.
-	 * (<code>ProbNet</code>).
+	 * ({@code ProbNet}).
 	 * Condition: At least one potential depends on at least one variable
 	 * (otherwise the network would have no node, and it would be
 	 * impossible to assign constant potentials)
@@ -201,11 +201,11 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param constraint <code>PNConstraint</code>
-	 * @param check      . when <code>false</code>, constraint is added to the
+	 * @param constraint {@code PNConstraint}
+	 * @param check      . when {@code false}, constraint is added to the
 	 *                   constraints list without testing. Otherwise,
-	 *                   <code>constraint</code> is added only when it is full-filled.
-	 *                   <code>boolean</code>
+	 *                   {@code constraint} is added only when it is full-filled.
+	 *                   {@code boolean}
 	 * @throws ConstraintViolationException ConstraintViolationException
 	 */
 	public void addConstraint(PNConstraint constraint, boolean check) throws ConstraintViolationException {
@@ -226,11 +226,11 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param constraints <code>ArrayList<PNConstraint></code>
-	 * @param check       . when <code>false</code>, constraint is added to the
+	 * @param constraints ArrayList of PNConstraint
+	 * @param check       . when {@code false}, constraint is added to the
 	 *                    constraints list without testing. Otherwise,
-	 *                    <code>constraint</code> is added only when it is full-filled.
-	 *                    <code>boolean</code>
+	 *                    {@code constraint} is added only when it is full-filled.
+	 *                    {@code boolean}
 	 * @throws ConstraintViolationException ConstraintViolationException
 	 */
 	public void addConstraints(List<PNConstraint> constraints, boolean check) throws ConstraintViolationException {
@@ -240,7 +240,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param constraint <code>PNConstraint</code>
+	 * @param constraint {@code PNConstraint}
 	 */
 	public void removeConstraint(PNConstraint constraint) {
 		if (constraints.contains(constraint)) {
@@ -250,7 +250,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param constraints <code>ArrayList<PNConstraint></code>
+	 * @param constraints ArrayList of PNConstraint
 	 */
 	public void removeConstraints(List<PNConstraint> constraints) {
 		for (PNConstraint constraint : constraints) {
@@ -261,7 +261,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	/**
 	 * Remove all the constraints in the network
 	 *
-	 * @param constraintClass <code>Class</code>
+	 * @param constraintClass {@code Class}
 	 */
 	public void removeAllConstraints(Class<PNConstraint> constraintClass) {
 		List<PNConstraint> constraintsToRemove = new ArrayList<>();
@@ -274,14 +274,14 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @return <code>ArrayList</code> of <code>PNConstraint</code>s
+	 * @return {@code ArrayList} of {@code PNConstraint}s
 	 */
 	public List<PNConstraint> getConstraints() {
 		return new ArrayList<>(constraints);
 	}
 
 	/**
-	 * @return <code>ArrayList</code> of <code>PNConstraint</code>s
+	 * @return {@code ArrayList} of {@code PNConstraint}s
 	 */
 	public List<PNConstraint> getAdditionalConstraints() {
 		List<PNConstraint> additionalConstraints = new ArrayList<>(constraints);
@@ -304,7 +304,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 * Gets Network type constraint. There is only one and it is stored in first
 	 * position.
 	 *
-	 * @return constraint. <code>NetworkType
+	 * @return constraint. NetworkType
 	 */
 	public NetworkType getNetworkType() {
 		return networkType;
@@ -313,7 +313,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	/**
 	 * Sets Network type
 	 *
-	 * @param networkType <code>NetworkType</code>
+	 * @param networkType {@code NetworkType}
 	 * @throws ConstraintViolationException ConstraintViolationException
 	 */
 	public void setNetworkType(NetworkType networkType) throws ConstraintViolationException {
@@ -341,10 +341,10 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * Checks all the constraints applied to this <code>probNet</code>.
+	 * Checks all the constraints applied to this {@code probNet}.
 	 *
-	 * @return <code>true</code> when all the constraints are full filled,
-	 * otherwise <code>false</code>.
+	 * @return {@code true} when all the constraints are full filled,
+	 * otherwise {@code false}.
 	 */
 	public boolean checkProbNet() {
 		for (PNConstraint constraint : constraints) {
@@ -356,10 +356,10 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * Checks whether this <code>probNet</code> is temporal or not.
+	 * Checks whether this {@code probNet} is temporal or not.
 	 *
-	 * @return <code>true</code> when this network has not associated
-	 * OnlyAtemporalVariables constraint, otherwise <code>false</code>.
+	 * @return {@code true} when this network has not associated
+	 * OnlyAtemporalVariables constraint, otherwise {@code false}.
 	 */
 	public boolean variablesCouldBeTemporal() {
 		for (PNConstraint constraint : constraints) {
@@ -371,10 +371,10 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * Checks whether this <code>probNet</code> is multiagent or not.
+	 * Checks whether this {@code probNet} is multiagent or not.
 	 *
-	 * @return <code>true</code> when this network has not associated
-	 * OnlyOneAgent constraint, otherwise <code>false</code>.
+	 * @return {@code true} when this network has not associated
+	 * OnlyOneAgent constraint, otherwise {@code false}.
 	 */
 	public boolean isMultiagent() {
 		for (PNConstraint constraint : constraints) {
@@ -386,7 +386,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @return <code>int</code>
+	 * @return {@code int}
 	 */
 	public int getNumCriteria() {
 		List<String> criterionNames = new ArrayList<String>(2);
@@ -422,10 +422,10 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * Checks whether this <code>probNet</code> is temporal or not.
+	 * Checks whether this {@code probNet} is temporal or not.
 	 *
-	 * @return <code>true</code> when this network has not associated
-	 * OnlyAtemporalVariables constraint, otherwise <code>false</code>.
+	 * @return {@code true} when this network has not associated
+	 * OnlyAtemporalVariables constraint, otherwise {@code false}.
 	 */
 	public boolean onlyTemporal() {
 		for (PNConstraint constraint : constraints) {
@@ -437,10 +437,10 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * Checks whether this <code>probNet</code> has only chance node or not.
+	 * Checks whether this {@code probNet} has only chance node or not.
 	 *
-	 * @return <code>true</code> when this network has not associated
-	 * OnlyChanceNodes constraint, otherwise <code>false</code>.
+	 * @return {@code true} when this network has not associated
+	 * OnlyChanceNodes constraint, otherwise {@code false}.
 	 */
 	public boolean onlyChanceNodes() {
 		for (PNConstraint constraint : constraints) {
@@ -452,11 +452,11 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * Creates a low deep copy of <code>this ProbNet</code>: copy the
-	 * <code>graph</code> and the <code>nodes</code> but do not copy nor
+	 * Creates a low deep copy of {@code this ProbNet}: copy the
+	 * {@code graph} and the {@code nodes} but do not copy nor
 	 * variables nor potentials.
 	 *
-	 * @return <code>this probNet</code> copied.
+	 * @return {@code this probNet} copied.
 	 */
 	public ProbNet copy() {
 		ProbNet copyNet = new ProbNet(this.networkType);
@@ -464,11 +464,11 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * Auxiliary method for copy, which creates a low deep copy of <code>this ProbNet</code>: copy the
-	 * <code>graph</code> and the <code>nodes</code> but do not copy nor
+	 * Auxiliary method for copy, which creates a low deep copy of {@code this ProbNet}: copy the
+	 * {@code graph} and the {@code nodes} but do not copy nor
 	 * variables nor potentials.
-	 *
-	 * @return <code>this probNet</code> copied.
+	 * @param copyNet Network
+	 * @return {@code this probNet} copied.
 	 */
 	protected ProbNet auxCopy(ProbNet copyNet) {
 		//ProbNet copyNet = new ProbNet(this.networkType);
@@ -555,16 +555,16 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * Inserts a link (<code>directed = true</code> or <code>false</code>)
-	 * between the nodes associated to <code>variable1</code> and
-	 * <code>variable2</code> in <code>this</code> graph.
+	 * Inserts a link ({@code directed = true} or {@code false})
+	 * between the nodes associated to {@code variable1} and
+	 * {@code variable2} in {@code this} graph.
 	 *
-	 * @param variable1 <code>Variable</code>
-	 * @param variable2 <code>Variable</code>
-	 * @param directed  <code>boolean</code>
+	 * @param variable1 {@code Variable}
+	 * @param variable2 {@code Variable}
+	 * @param directed  {@code boolean}
 	 * @throws NodeNotFoundException exception when the addition of this link is not consistent
 	 *                               with the restrictions applied to the graph or when one or
-	 *                               both variables does not belong to <code>this</code> graph.
+	 *                               both variables does not belong to {@code this} graph.
 	 */
 	public void addLink(Variable variable1, Variable variable2, boolean directed) throws NodeNotFoundException {
 		// Get nodes
@@ -580,16 +580,17 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * Inverts the link (<code>directed = true</code> or <code>false</code>)
-	 * that goes from the nodes associated to <code>variable1</code> and
-	 * <code>variable2</code> in <code>this</code> graph.
+	 * Inverts the link ({@code directed = true} or {@code false})
+	 * that goes from the nodes associated to {@code variable1} and
+	 * {@code variable2} in {@code this} graph.
 	 *
-	 * @param variable1 <code>Variable</code>
-	 * @param variable2 <code>Variable</code>
-	 * @param directed  <code>boolean</code>
+	 * @param variable1 {@code Variable}
+	 * @param variable2 {@code Variable}
+	 * @param directed  {@code boolean}
 	 *                  exception when the inversion of this link is not consistent
 	 *                  with the restrictions applied to the graph or when one or
-	 *                  both variables does not belong to <code>this</code> graph.
+	 *                  both variables does not belong to {@code this} graph.
+	 * @throws Exception Exception
 	 */
 	public void invertLink(Variable variable1, Variable variable2, boolean directed) throws Exception {
 		removeLink(variable1, variable2, true);
@@ -608,16 +609,16 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @return Number of nodes in <code>probNet</code>. <code>int</code>
+	 * @return Number of nodes in {@code probNet}. {@code int}
 	 */
 	public int getNumNodes() {
 		return nodeDepot.getNumNodes();
 	}
 
 	/**
-	 * @param nodeType - <code>NodeType</code>
-	 * @return Number of nodes with <code>NodeType = nodeType</code>.
-	 * <code>int</code>
+	 * @param nodeType - {@code NodeType}
+	 * @return Number of nodes with {@code NodeType = nodeType}.
+	 * {@code int}
 	 */
 	public int getNumNodes(NodeType nodeType) {
 		return nodeDepot.getNumNodes(nodeType);
@@ -646,8 +647,8 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	/**
 	 * Get all the potentials in the network (constant or nodes potentials)
 	 *
-	 * @return All the potentials of this network. <code>List</code> of
-	 * <code>Potential</code>s.
+	 * @return All the potentials of this network. {@code List} of
+	 * {@code Potential}s.
 	 */
 	public List<Potential> getPotentials() {
 		List<Node> nodes = getNodes();
@@ -672,7 +673,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 
 	/**
 	 * @return All the potentials of this network sorted topologically.
-	 * <code>List</code> of <code>Potential</code>s.
+	 * {@code List} of {@code Potential}s.
 	 */
 	public List<Potential> getSortedPotentials() {
 		List<Node> nodes = ProbNetOperations.sortTopologically(this);
@@ -684,9 +685,9 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>
+	 * @param variables {@code ArrayList} of {@code Variable}
 	 * @return All the nodes corresponding to variables in same order.
-	 * <code>ArrayList</code> of <code>Node</code>
+	 * {@code ArrayList} of {@code Node}
 	 */
 	public List<Node> getNodes(List<Variable> variables) {
 		List<Node> nodes = new ArrayList<>(variables.size());
@@ -723,15 +724,15 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * The potentials that contain <code>variable</code> are stored in the node
-	 * associated to the <code>variable</code> or in the neighbors of that node.
+	 * The potentials that contain {@code variable} are stored in the node
+	 * associated to the {@code variable} or in the neighbors of that node.
 	 * This method returns as well the constant potentials (i.e., the potentials
 	 * that do not depend on any variable) stored in the node associated to
-	 * <code>variable</code>.
+	 * {@code variable}.
 	 *
-	 * @param variable <code>Variable</code>.
-	 * @return <code>ArrayList</code> of all the <code>Potential</code>s in this
-	 * network that contains <code>variable</code>
+	 * @param variable {@code Variable}.
+	 * @return {@code ArrayList} of all the {@code Potential}s in this
+	 * network that contains {@code variable}
 	 */
 	public List<Potential> getPotentials(Variable variable) {
 		List<Potential> potentials = new ArrayList<>();
@@ -791,7 +792,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	/**
 	 * Get all the additive potentials
 	 *
-	 * @return All additive potentials. <code>List</code> of <code>Potential</code>
+	 * @return All additive potentials. {@code List} of {@code Potential}
 	 */
 	public List<Potential> getAdditivePotentials() {
 		List<Node> nodes = getNodes();
@@ -816,12 +817,12 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 
 	/**
 	 * Gets all the probability potentials that contain the
-	 * <code>Variable</code> received. The potentials that can contain that
+	 * {@code Variable} received. The potentials that can contain that
 	 * variable are in the node associated to the variable and its neighbors.
 	 *
-	 * @param variable variable that belongs to this <code>ProbNet</code>
-	 * @return <code>ArrayList</code> of potentials containing
-	 * <code>variable</code>.
+	 * @param variable variable that belongs to this {@code ProbNet}
+	 * @return {@code ArrayList} of potentials containing
+	 * {@code variable}.
 	 */
 	public List<Potential> getProbPotentials(Variable variable) {
 		Node nodeVariable = getNode(variable);
@@ -842,16 +843,16 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * Gets all the utility potentials that contain the <code>variable</code>
+	 * Gets all the utility potentials that contain the {@code variable}
 	 * received. Constant utility potentials are also returned by this method.
 	 * <p>
 	 * The potentials that can contain that variable are in the node associated
 	 * to the variable and its neighbors.
 	 *
-	 * @param variable that belongs to this <code>ProbNet</code>
-	 *                 <code>Variable</code>.
-	 * @return <code>ArrayList</code> of potentials containing
-	 * <code>variable</code>.
+	 * @param variable that belongs to this {@code ProbNet}
+	 *                 {@code Variable}.
+	 * @return {@code ArrayList} of potentials containing
+	 * {@code variable}.
 	 */
 	public List<Potential> getUtilityPotentials(Variable variable) {
 		Node nodeVariable = getNode(variable);
@@ -880,10 +881,12 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * Removes <code>potential</code> from this <code>ProbNet</code>
+	 * Removes {@code potential} from this {@code ProbNet}
 	 *
-	 * @return The node where the potential was located or <code>null</code> if
+	 * @param potential Potential
+	 * @return The node where the potential was located or {@code null} if
 	 * it did not exists
+	 *
 	 */
 	public Node removePotential(Potential potential) {
 		List<Variable> variables = potential.getVariables();
@@ -924,10 +927,10 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * Removes all the potentials that contains the <code>variable</code>
-	 * associated to <code>node</code>
+	 * Removes all the potentials that contains the {@code variable}
+	 * associated to {@code node}
 	 *
-	 * @param node <code>Node</code>
+	 * @param node {@code Node}
 	 */
 	public void removePotentials(Node node) {
 		// get the nodes that contains potentials associated to the variable
@@ -951,7 +954,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	/**
 	 * Removes all the potentials in the array of potentials received.
 	 *
-	 * @param toRemovePotentials <code>ArrayList</code> of <code>Potential</code>
+	 * @param toRemovePotentials {@code ArrayList} of {@code Potential}
 	 */
 	public void removePotentials(List<Potential> toRemovePotentials) {
 		if (toRemovePotentials != null) {
@@ -963,10 +966,10 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 
 	/**
 	 * @param variable that not belongs
-	 *                 . <code>Variable</code>
-	 * @param nodeType . <code>NodeType</code>
-	 * @return The <code>node</code> that points to <code>variable</code> in
-	 * <code>this</code> network.
+	 *                 . {@code Variable}
+	 * @param nodeType . {@code NodeType}
+	 * @return The {@code node} that points to {@code variable} in
+	 * {@code this} network.
 	 * Condition: the variable must not be in the ProbNet.
 	 */
 	public Node addNode(Variable variable, NodeType nodeType) {
@@ -979,9 +982,9 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param node . <code>Node</code>
+	 * @param node . {@code Node}
 	 * Condition: the variable must not be in the ProbNet. This method is
-	 * used to redo the <code>AddVariableEdit</code>, i.e., to
+	 * used to redo the {@code AddVariableEdit}, i.e., to
 	 * reinsert a Node that has been removed.
 	 */
 	@Override public void addNode(Node node) {
@@ -990,9 +993,11 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param nameOfVariable <code>String</code>
-	 * @return The <code>Node</code> that matches the
-	 * <code>nameOfVariable</code>
+	 *
+	 * @param nameOfVariable {@code String}
+	 * @throws NodeNotFoundException NodeNotFoundException
+	 * @return The {@code Node} that matches the
+	 * {@code nameOfVariable}
 	 */
 	public Node getNode(String nameOfVariable) throws NodeNotFoundException {
 		Node node = nodeDepot.getNode(nameOfVariable);
@@ -1003,10 +1008,10 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param nameOfVariable <code>String</code>
-	 * @param nodeType       <code>NodeType</code>
-	 * @return The node with <code>nameOfVariable</code> and
-	 * <code>kindOfNode</code> if exists otherwise null
+	 * @param nameOfVariable {@code String}
+	 * @param nodeType       {@code NodeType}
+	 * @return The node with {@code nameOfVariable} and
+	 * {@code kindOfNode} if exists otherwise null
 	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
 	public Node getNode(String nameOfVariable, NodeType nodeType) throws NodeNotFoundException {
@@ -1018,8 +1023,8 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param variable <code>Variable</code>
-	 * @return The <code>Node</code> that matches the <code>Variable</code>
+	 * @param variable {@code Variable}
+	 * @return The {@code Node} that matches the {@code Variable}
 	 */
 	public Node getNode(Variable variable) {
 		return nodeDepot.getNode(variable);
@@ -1027,9 +1032,10 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 
 	/**
 	 * @param variableName name of the variable
-	 *                     . <code>String</code>
-	 * @return variable that matches <code>variableName</code> if exists,
-	 * otherwise <code>null</code>. <code>Variable</code>
+	 *                     . {@code String}
+	 * @throws NodeNotFoundException NodeNotFoundException
+	 * @return variable that matches {@code variableName} if exists,
+	 * otherwise {@code null}. {@code Variable}
 	 */
 	public Variable getVariable(String variableName) throws NodeNotFoundException {
 		Node node = getNode(variableName);
@@ -1049,7 +1055,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param variable       . a <code>Variable</code>
+	 * @param variable       . a {@code Variable}
 	 * @param timeDifference time slice diference
 	 * @return a new variable having the same base name as the first argument
 	 * but in the time slice indicated by the second argument
@@ -1094,15 +1100,15 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 * Adds the received potential to the list of potentials of the conditioned
 	 * variable (the first one).
 	 *
-	 * @param potential . <code>Potential</code>
-	 * @return The <code>Node</code> in which the <code>potential</code>
+	 * @param potential . {@code Potential}
+	 * @return The {@code Node} in which the {@code potential}
 	 * received has been added.
 	 * Condition: network contains at least one chance variable
 	 * Condition: potential type must correspond with the roles (discrete or
 	 * continuous) of the variables in the network
 	 * Condition: If A is the first variable in the potential and
 	 * B<sub>0</sub> ... B<sub>n</sub> the remainders, there must
-	 * be a directed link B<sub>i</sub> -> A for every variable
+	 * be a directed link B<sub>i</sub> -&#82; A for every variable
 	 * B<sub>i</sub> in the potential (other than A)
 	 */
 	public Node addPotential(Potential potential) {
@@ -1110,10 +1116,10 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param potential       <code>Potential</code>
-	 * @param originalProbNet To get information from nodes when using this method to build a <code>ProbNet</code>
+	 * @param potential       {@code Potential}
+	 * @param originalProbNet To get information from nodes when using this method to build a {@code ProbNet}
 	 *                        from another one.
-	 * @return The <code>Node</code> in which the <code>potential</code>
+	 * @return The {@code Node} in which the {@code potential}
 	 * received has been added.
 	 * @see org.openmarkov.core.model.network.ProbNet#addPotential(Potential)
 	 */
@@ -1180,8 +1186,8 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param constraint <code>Class</code>
-	 * @return <code>true</code> if this probabilistic network contains the
+	 * @param constraint {@code Class}
+	 * @return {@code true} if this probabilistic network contains the
 	 * received constraint type.
 	 */
 	public boolean hasConstraint(Class<?> constraint) {
@@ -1194,8 +1200,8 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @return All <code>Variable</code>s except utility nodes variables.
-	 * <code>ArrayList</code> of <code>Variable</code>.
+	 * @return All {@code Variable}s except utility nodes variables.
+	 * {@code ArrayList} of {@code Variable}.
 	 */
 	public List<Variable> getChanceAndDecisionVariables() {
 		List<Variable> variables = new ArrayList<>();
@@ -1209,9 +1215,9 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param nodeType <code>NodeType</code>
+	 * @param nodeType {@code NodeType}
 	 * @return Variables corresponding to the node type received.
-	 * <code>ArrayList</code> of <code>Variable</code>
+	 * {@code ArrayList} of {@code Variable}
 	 */
 	public List<Variable> getVariables(NodeType nodeType) {
 		List<Variable> variablesType = new ArrayList<>();
@@ -1223,8 +1229,8 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @return All the variables. <code>ArrayList</code> of
-	 * <code>Variable</code>
+	 * @return All the variables. {@code ArrayList} of
+	 * {@code Variable}
 	 */
 	public List<Variable> getVariables() {
 		List<Variable> variables = new ArrayList<>();
@@ -1235,11 +1241,11 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * Removes <code>node</code> from <code>this ProbNet</code> and removes
-	 * also the associated <code>node</code> from the associated
-	 * <code>Graph</code>.
+	 * Removes {@code node} from {@code this ProbNet} and removes
+	 * also the associated {@code node} from the associated
+	 * {@code Graph}.
 	 *
-	 * @param node <code>Node</code>
+	 * @param node {@code Node}
 	 */
 	public void removeNode(Node node) {
 		super.removeNode(node);
@@ -1247,9 +1253,9 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @param variable1 <code>Variable</code>
-	 * @param variable2 <code>Variable</code>
-	 * @param directed  <code>boolean</code>
+	 * @param variable1 {@code Variable}
+	 * @param variable2 {@code Variable}
+	 * @param directed  {@code boolean}
 	 */
 	public void removeLink(Variable variable1, Variable variable2, boolean directed) {
 		Node node1 = getNode(variable1);
@@ -1258,7 +1264,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @return Number of potentials. <code>int</code>
+	 * @return Number of potentials. {@code int}
 	 */
 	public int getNumPotentials() {
 		return nodeDepot.getNumPotentials();
@@ -1348,6 +1354,11 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 
 	/**
 	 * Condition: oldNode belongs to this probNet
+	 * @param coordinateXOffset Coordinate X offset
+	 * @param coordinateYOffset Coordinate Y offset
+	 * @param oldNode Old node
+	 * @param timeDifference Time difference
+	 * @return Node
 	 */
 	public Node addShiftedNode(Node oldNode, int timeDifference, double coordinateXOffset, double coordinateYOffset) {
 		Variable oldVariable = oldNode.getVariable();
@@ -1365,28 +1376,28 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	}
 
 	/**
-	 * @return <code>ArrayList</code> of <code>StringsWithProperties</code>
+	 * @return {@code ArrayList} of {@code StringsWithProperties}
 	 */
 	public List<StringWithProperties> getAgents() {
 		return agents;
 	}
 
 	/**
-	 * @param agents . <code>StringsWithProperties</code>
+	 * @param agents . {@code StringsWithProperties}
 	 */
 	public void setAgents(List<StringWithProperties> agents) {
 		this.agents = agents;
 	}
 
 	/**
-	 * @return <code>StringsWithProperties</code>
+	 * @return {@code StringsWithProperties}
 	 */
 	public List<Criterion> getDecisionCriteria() {
 		return decisionCriteria;
 	}
 
 	/**
-	 * @param decisionCriteria . <code>StringsWithProperties</code>
+	 * @param decisionCriteria . {@code StringsWithProperties}
 	 */
 	public void setDecisionCriteria(List<Criterion> decisionCriteria) {
 		this.decisionCriteria = decisionCriteria;

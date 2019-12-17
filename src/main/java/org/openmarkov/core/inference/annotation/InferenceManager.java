@@ -179,6 +179,7 @@ public class InferenceManager {
 	 *
 	 * @param probNet Network
 	 * @return an instance of the default algorithm
+	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
 	public InferenceAlgorithm getDefaultInferenceAlgorithm(ProbNet probNet) throws NotEvaluableNetworkException {
 		InferenceAlgorithm defaultAlgorithm = null;

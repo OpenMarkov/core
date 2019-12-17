@@ -10,7 +10,7 @@ package org.openmarkov.core.action;
 import org.openmarkov.core.model.network.ProbNet;
 
 /**
- * <code>NetworkCommentEdit</code> is a simple edit that allow modify a network
+ * {@code NetworkCommentEdit} is a simple edit that allow modify a network
  * comment.
  *
  * @author Miguel Palacios
@@ -32,11 +32,12 @@ import org.openmarkov.core.model.network.ProbNet;
 	private boolean showCommentWhenOpening;
 
 	/**
-	 * Creates a new <code>NetworkCommentEdit</code> with the network and new
+	 * Creates a new {@code NetworkCommentEdit} with the network and new
 	 * comment specified.
 	 *
 	 * @param probNet    the network that will be edited.
 	 * @param newComment the new comment
+	 * @param showCommentWhenOpening {@code boolean}
 	 */
 	public NetworkCommentEdit(ProbNet probNet, String newComment, boolean showCommentWhenOpening) {
 		super(probNet);

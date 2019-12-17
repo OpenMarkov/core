@@ -122,8 +122,8 @@ public class ProbDensFunctionManager {
 	}
 
 	/**
-	 * @param functionName
-	 * @return
+	 * @param functionName Name of the function
+	 * @return The class for that function name
 	 */
 	@SuppressWarnings("unchecked") public Class<? extends ProbDensFunction> getProbDensFunctionClass(
 			String functionName) {

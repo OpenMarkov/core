@@ -24,7 +24,6 @@ public class SumOutVariable extends Marginalization {
 	 *
 	 * @param variable <code>Variable</code>
 	 * @param potentials     <code>List</code> of <code>TablePotential</code>
-	 * @return A <code>Collection</code> with two <code>TablePotential</code>,
 	 * marginal probability and new utility in this order.
 	 */
 	public SumOutVariable(Variable variable, Collection<TablePotential> potentials) {

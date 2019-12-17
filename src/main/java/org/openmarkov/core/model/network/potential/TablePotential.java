@@ -116,7 +116,7 @@ import java.util.Random;
 	 * @param variables . <code>ArrayList</code> of <code>Variable</code>
 	 * @param role      . <code>PotentialRole</code>
 	 * @param table     . <code>double[]</code>
-	 * @argCondition All variables must be discrete.
+	 * Condition: All variables must be discrete.
 	 */
 	public TablePotential(List<Variable> variables, PotentialRole role, double[] table) {
 		this(variables, role);
@@ -126,7 +126,7 @@ import java.util.Random;
 	/**
 	 * @param role      . <code>PotentialRole</code>
 	 * @param variables . <code>ArrayList</code> of <code>Variable</code>
-	 * @argCondition All variables must be discrete.
+	 * Condition: All variables must be discrete.
 	 */
 	public TablePotential(PotentialRole role, Variable... variables) {
 		this(toList(variables), role);
@@ -333,10 +333,10 @@ import java.util.Random;
 	 * Use accumulated offsets to calculate the next position in a potential.
 	 * The content of actualPosition will be modified
 	 *
-	 * @param actualPosition
-	 * @param actualCoordinate
-	 * @param dimensions
-	 * @param accOffsets
+	 * @param actualPosition Actual position
+	 * @param actualCoordinate Array of actual coordinates
+	 * @param dimensions Array of dimensions
+	 * @param accOffsets Array of accumulated offsets
 	 * @return Next position or -1 if it reach the end of the potential
 	 */
 	public static int getNextPosition(int actualPosition, int[] actualCoordinate, int[] dimensions, int[] accOffsets) {
@@ -399,7 +399,7 @@ import java.util.Random;
 	}
 
 	/**
-	 * @param uncertainValues
+	 * @param uncertainValues List of uncertain values
 	 * @return true if the uncertain values are correct
 	 */
 	public static boolean checkUncertainTable(List<UncertainValue> uncertainValues) {
@@ -407,7 +407,9 @@ import java.util.Random;
 	}
 
 	/**
-	 * @throws WrongCriterionException
+	 * Remove a variable of the potential
+	 * @param variable Variable to be removed
+	 * @return Potential without the removed variable
 	 */
 	public Potential removeVariable(Variable variable) {
 		Potential newPotential = this;
@@ -442,8 +444,7 @@ import java.util.Random;
 	 * @param evidenceCase <code>EvidenceCase</code>
 	 * @return A <code>List</code> of <code>TablePotential</code>s containing
 	 * only one element, which is a <code>ProjectedPotential</code>
-	 * @throws WrongCriterionException
-	 * @throws NoFindingException
+	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			List<TablePotential> projectedPotentials) throws WrongCriterionException {
@@ -687,8 +688,8 @@ import java.util.Random;
 	 * @param originalVariables . Complete set of variables in a projected potential.
 	 *                          <code>ArrayList</code> of <code>Variable</code>
 	 * @return The accumulated offsets in an array of integers.
-	 * @argCondigion otherVariables is contained in originalVariables.
-	 * @argCondigion otherVariables and originalVariables have the same order.
+	 * Condition: otherVariables is contained in originalVariables.
+	 * Condition: otherVariables and originalVariables have the same order.
 	 */
 	public int[] getProjectedAccumulatedOffsets(List<Variable> otherVariables, List<Variable> originalVariables) {
 		if (otherVariables == originalVariables) { // Not projected potential
@@ -739,8 +740,8 @@ import java.util.Random;
 	 * <p>
 	 * In the above example <code>T.getPosition([0,1])</code> will
 	 * return: <strong>2</strong>
-	 * @argCondition coordinates.length = numVariables
-	 * @argCondition coordinates[i] >= 0 and coordinates[i] < dimensions[i].
+	 * Condition: coordinates.length = numVariables
+	 * Condition: coordinates[i] >= 0 and coordinates[i] < dimensions[i].
 	 */
 	public int getPosition(int[] coordinates) {
 		int position = 0;
@@ -756,7 +757,7 @@ import java.util.Random;
 	 * a configuration of variables which are not necessarily in the same order
 	 * that the variables in the potential
 	 *
-	 * @param configuration
+	 * @param configuration Evidence case
 	 */
 	public int getPosition(EvidenceCase configuration) {
 		int[] coordinates;
@@ -791,8 +792,8 @@ import java.util.Random;
 	 * assumes that configuration is a complete instantiation of the parents of
 	 * the variable associated to the table.
 	 *
-	 * @param configuration
-	 * @return
+	 * @param configuration Evidence case
+	 * @return first position in the table of the consecutive cells where all the values corresponding to a certain configuration are stored
 	 */
 	public int getBasePosition(EvidenceCase configuration) {
 		int[] coordinates;
@@ -833,7 +834,7 @@ import java.util.Random;
 	 * @param variables     . <code>ArrayList</code> of <code>Variable</code>
 	 * @param statesIndices . <code>int[]</code>
 	 * @return <code>double</code>
-	 * @argCondition All the variables in this potentials are included into the
+	 * Condition: All the variables in this potentials are included into the
 	 * received variables.
 	 */
 	public double getValue(List<Variable> variables, int[] statesIndices) {
@@ -853,7 +854,7 @@ import java.util.Random;
 	 *
 	 * @param configuration . <code>EvidenceCase</code>
 	 * @return <code>double</code>
-	 * @argCondition All the variables in this potentials are included into the
+	 * Condition: All the variables in this potentials are included into the
 	 * variables field of the evidence case (configuration).
 	 */
 	public double getValue(EvidenceCase configuration) {
@@ -878,7 +879,7 @@ import java.util.Random;
 	 *            . <code>ArrayList</code> of <code>Variable</code>
 	 * @param statesIndexes
 	 *            . <code>int[]</code>
-	 * @param value
+	 * @param value Value
 	 */
 	public void setValue(List<Variable> variables, int[] statesIndexes, double value) {
 		int position = 0;
@@ -895,7 +896,6 @@ import java.util.Random;
 	/**
 	 * @return <code>int[]</code>: The offsets of the variables in the table of
 	 * values.
-	 * @consultation
 	 */
 	public int[] getOffsets() {
 		return offsets;
@@ -904,18 +904,13 @@ import java.util.Random;
 	/**
 	 * @return <code>double[]</code>: Table containing the values of the
 	 * potential.
-	 * @consultation
 	 */
 	public double[] getValues() {
 		return values;
 	}
 
 	/**
-	 * The dimensions of the new table have to be same that the current table
-	 *
-	 * @return <code>double[]</code>: Table containing the values of the
-	 * potential.
-	 * @consultation
+	 * Set the values of the table. The dimensions of the new table have to be same that the current table
 	 */
 	public void setValues(double[] table) {
 		this.values = table;
@@ -924,14 +919,14 @@ import java.util.Random;
 	/**
 	 * Uncertain Table
 	 *
-	 * @return
+	 * @return Array of uncertain values
 	 */
 	public UncertainValue[] getUncertainValues() {
 		return uncertainValues;
 	}
 
 	/**
-	 * @param uncertainValues
+	 * @param uncertainValues Array of uncertain values
 	 */
 	public void setUncertainValues(UncertainValue[] uncertainValues) {
 		this.uncertainValues = uncertainValues;
@@ -939,7 +934,6 @@ import java.util.Random;
 
 	/**
 	 * @return dimensions of the variables in an array of <code>int[]</code>.
-	 * @consultation
 	 */
 	public int[] getDimensions() {
 		return dimensions;
@@ -947,7 +941,6 @@ import java.util.Random;
 
 	/**
 	 * @return <code>initialPosition int</code>.
-	 * @consultation
 	 */
 	public int getInitialPosition() {
 		return initialPosition;
@@ -973,7 +966,7 @@ import java.util.Random;
 	}
 
 	/**
-	 * @param configuration
+	 * @param configuration Evidence case
 	 * @return true if and only if the potential contains uncertainty values for
 	 * a certain configuration
 	 */
@@ -1299,7 +1292,7 @@ import java.util.Random;
 	}
 
 	/**
-	 * @param decision
+	 * @param decision Decision variable
 	 * @return true iff it has interventions that contains 'decision'
 	 */
 	public boolean hasInterventionForDecision(Variable decision) {

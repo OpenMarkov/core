@@ -40,8 +40,6 @@ public abstract class MinMaxPotential extends ICIPotential {
 	 * The pseudoVariable is used in the factorization
 	 * of the noisy MAX/MIN proposed by D&iacute;ez and
 	 * Gal&aacute;n (2003).
-	 *
-	 * @frozen
 	 */
 	protected Variable pseudoVariable;
 
@@ -103,7 +101,7 @@ public abstract class MinMaxPotential extends ICIPotential {
 	/**
 	 * @return The accrued potentials plus the Delta potential,
 	 * all of them projected onto the evidence
-	 * @throws WrongCriterionException
+	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	@Override public List<TablePotential> tableProject(EvidenceCase evidence, InferenceOptions inferenceOptions,
 			List<TablePotential> projectedPotentials) throws WrongCriterionException {

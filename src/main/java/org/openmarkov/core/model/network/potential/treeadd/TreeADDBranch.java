@@ -85,9 +85,9 @@ public class TreeADDBranch {
 	/**
 	 * Constructor for discretized and finite states variables
 	 *
-	 * @param branchStates
-	 * @param topVariable
-	 * @param parentVariables
+	 * @param branchStates List of the branch states
+	 * @param topVariable Top variable
+	 * @param parentVariables List of the parent variables
 	 */
 	public TreeADDBranch(List<State> branchStates, Variable topVariable, List<Variable> parentVariables) {
 		this.states = branchStates;
@@ -101,10 +101,10 @@ public class TreeADDBranch {
 	/**
 	 * Constructor for discretized and finite states variables
 	 *
-	 * @param branchStates
-	 * @param topVariable
-	 * @param potential
-	 * @param parentVariables
+	 * @param branchStates List of the branch states
+	 * @param topVariable Top variable
+	 * @param potential Potential
+	 * @param parentVariables List of the parent variables
 	 */
 	public TreeADDBranch(List<State> branchStates, Variable topVariable, Potential potential,
 			List<Variable> parentVariables) {
@@ -117,11 +117,11 @@ public class TreeADDBranch {
 	/**
 	 * Constructor for numeric variables
 	 *
-	 * @param lowerBound
-	 * @param upperBound
-	 * @param topVariable
-	 * @param potential
-	 * @param parentVariables
+	 * @param lowerBound Lower bound threshold
+	 * @param upperBound Upper bound threshold
+	 * @param topVariable Top variable
+	 * @param potential Potential
+	 * @param parentVariables List of parent variables
 	 */
 	public TreeADDBranch(Threshold lowerBound, Threshold upperBound, Variable topVariable, Potential potential,
 			List<Variable> parentVariables) {
@@ -136,11 +136,10 @@ public class TreeADDBranch {
 
 	/**
 	 * Constructor for discretized and finite states variables with reference
-	 *
-	 * @param branchStates
-	 * @param topVariable
-	 * @param reference
-	 * @param parentVariables
+	 * @param branchStates List of the branch states
+	 * @param topVariable Top variable
+	 * @param reference Reference
+	 * @param parentVariables List of the parent variables
 	 */
 	public TreeADDBranch(List<State> branchStates, Variable topVariable, String reference,
 			List<Variable> parentVariables) {
@@ -154,12 +153,11 @@ public class TreeADDBranch {
 
 	/**
 	 * Constructor for numeric variables with reference
-	 *
-	 * @param lowerBound
-	 * @param upperBound
-	 * @param reference
-	 * @param topVariable
-	 * @param parentVariables
+	 * @param lowerBound Lower bound threshold
+	 * @param upperBound Upper bound threshold
+	 * @param topVariable Top variable
+	 * @param reference Reference
+	 * @param parentVariables List of parent variables
 	 */
 	public TreeADDBranch(Threshold lowerBound, Threshold upperBound, Variable topVariable, String reference,
 			List<Variable> parentVariables) {

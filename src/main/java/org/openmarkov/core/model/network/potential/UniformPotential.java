@@ -73,7 +73,7 @@ import java.util.Random;
 	/**
 	 * Copy constructor for UniformPotential
 	 *
-	 * @param potential
+	 * @param potential Uniform potential
 	 */
 	public UniformPotential(UniformPotential potential) {
 		super(potential);
@@ -98,17 +98,21 @@ import java.util.Random;
 	}
 
 	// Methods
-	@Override
-	/** @return If this is a utility potential, it represents the case in
+	/**
+	 * @param evidenceCase <code>evidenceCase</code>
+	 * @param projectedPotentials List of projected potentials
+	 *
+	 * @return If this is a utility potential, it represents the case in
 	 * which all the utilities are zero; therefore, it suffices to return
 	 * an empty list. If this is a conditional probability P(Y|X1,...,Xn), it
 	 * returns a <code>TablePotential<code> that is uniform potential P(y).
 	 * If this is a joint probability, P(X1,...,Xn), it returns a
 	 * <code>TablePotential<code> that is equal to this potential.
 	 * In all cases, the argument <code>evidenceCase</code> is irrelevant.
-	 * @param evidenceCase. <code>evidenceCase</code>
-	 * @throws NonProjectablePotentialException when this is a conditional
-	 * probability potential and the conditioned variable is numeric. */
+	 *
+	 * @throws NonProjectablePotentialException when this is a conditional probability potential and the conditioned variable is numeric.
+	 */
+	@Override
 	public List<TablePotential> tableProject(
 			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials)
 			throws NonProjectablePotentialException {

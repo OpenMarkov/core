@@ -11,9 +11,9 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 
 @SuppressWarnings("serial")
+
 /**
  * This is a simple edit that allows modify the node precision property.
- *
  * @version 1.0 21/12/10
  * @author Miguel Palacios
  */

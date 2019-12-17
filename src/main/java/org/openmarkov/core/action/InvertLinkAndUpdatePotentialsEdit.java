@@ -89,8 +89,12 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	}
 
 	// Methods
-	@Override
-	/** @throws exception <code>Exception</code> */ public void doEdit() throws DoEditException {
+
+	/**
+	 *
+	 * @throws DoEditException DoEditException
+	 */
+	@Override public void doEdit() throws DoEditException {
 
 		// The parents of x are retrieved
 		List<Node> xParents = x.getParents();

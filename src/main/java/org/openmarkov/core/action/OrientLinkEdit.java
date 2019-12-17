@@ -25,10 +25,12 @@ import org.openmarkov.core.model.network.Variable;
 	}
 
 	// Methods
+	/**
+	 * Do the edition by removing the existing link and adding a new directed link between the same two variables.
+	 * @throws DoEditException DoEditException
+	 */
 	@Override
-	/** Do the edition by removing the existing link and adding
-	 * a new directed link between the same two variables. 
-	 * @throws exception <code>DoEditException</code> */ public void doEdit() throws DoEditException {
+	public void doEdit() throws DoEditException {
 		try {
 			probNet.removeLink(variable1, variable2, false);
 			probNet.addLink(variable1, variable2, true);

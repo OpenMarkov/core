@@ -39,8 +39,8 @@ import java.util.List;
 	}
 
 	/**
-	 * @param node
-	 * @param nodes
+	 * @param node Node
+	 * @param nodes Nodes
 	 * @return true if 'node' has some ancestor in 'nodes' (considering
 	 * direction of the links)
 	 */

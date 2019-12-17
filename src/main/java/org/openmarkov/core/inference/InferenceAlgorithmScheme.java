@@ -38,7 +38,7 @@ public abstract class InferenceAlgorithmScheme {
 	 **/
 	protected HeuristicFactory heuristicFactory;
 
-	/**
+	/*
 	 * Policies set by the user. The optimal policy would only be calculated for the decisions
 	 * without imposed policies.
 	 * Each policy is stochastic, which implies it is a probability potential whose domain

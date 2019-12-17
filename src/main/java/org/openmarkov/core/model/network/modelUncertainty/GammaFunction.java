@@ -13,8 +13,8 @@ package org.openmarkov.core.model.network.modelUncertainty;
 	private double theta;
 
 	/**
-	 * @param k
-	 * @param theta
+	 * @param k k
+	 * @param theta theta
 	 */
 	public GammaFunction(double k, double theta) {
 		this.k = k;

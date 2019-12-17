@@ -29,8 +29,8 @@ public interface Checkable {
 	 * @return <code>true</code> if the <code>ProbNet</code> will fulfill certain
 	 * condition after applying the <code>edit</code> in a
 	 * <code>ProbNet</code> that previously fulfilled the constraint.
-	 * @throws WrongCriterionException
-	 * @throws NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	boolean checkEdit(ProbNet probNet, PNEdit edit) throws NonProjectablePotentialException, WrongCriterionException;
 

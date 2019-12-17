@@ -16,8 +16,9 @@ public class InstanceReferenceLink extends ReferenceLink {
 	/**
 	 * Constructor
 	 *
-	 * @param sourceInstance
-	 * @param destInstance
+	 * @param sourceInstance Source instance
+	 * @param destInstance Destination instance
+	 * @param destSubInstance Destination sub-instance
 	 */
 	public InstanceReferenceLink(Instance sourceInstance, Instance destInstance, Instance destSubInstance) {
 		super();

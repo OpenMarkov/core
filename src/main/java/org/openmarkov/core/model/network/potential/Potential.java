@@ -55,20 +55,14 @@ public abstract class Potential {
 	//     * this potential.
 	//     */
 	//    protected Variable             utilityVariable;
-	/**
-	 * <code>List</code> of <code>Variable</code>s.
-	 *
-	 * @frozen
-	 */
+
 	protected List<Variable> variables;
 	/**
 	 * Decision criterion. It is used only during inference. In edition,
 	 * the node/variable has a criterion, but the potential does not.
 	 */
 	protected Criterion criterion;
-	/**
-	 * @frozen
-	 */
+
 	protected PotentialRole role;
 	protected String comment = "";
 
@@ -98,7 +92,7 @@ public abstract class Potential {
 	 * TODO - Remove this constructor, replace with a copy method
 	 * Copy constructor for potential
 	 *
-	 * @param potential
+	 * @param potential Potential
 	 */
 	public Potential(Potential potential) {
 		this(potential.getVariables(), potential.getPotentialRole());
@@ -144,8 +138,8 @@ public abstract class Potential {
 	 * @param evidenceCase <code>EvidenceCase</code>
 	 * @return The conditional probability table of this potential given the
 	 * evidence
-	 * @throws WrongCriterionException
-	 * @throws NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public TablePotential getCPT(EvidenceCase evidenceCase)
 			throws NonProjectablePotentialException, WrongCriterionException {
@@ -164,8 +158,8 @@ public abstract class Potential {
 	 * The conditional probability table given by this potential
 	 *
 	 * @return <code>TablePotential</code>
-	 * @throws NonProjectablePotentialException
-	 * @throws WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	public TablePotential getCPT() throws NonProjectablePotentialException, WrongCriterionException {
 		return getCPT(new EvidenceCase());
@@ -190,7 +184,6 @@ public abstract class Potential {
 
 	/**
 	 * @return A <code>List</code> of <code>Variable</code>s
-	 * @consultation
 	 */
 	public List<Variable> getVariables() {
 		return new ArrayList<>(variables);
@@ -202,7 +195,6 @@ public abstract class Potential {
 
 	/**
 	 * @return The variable in the place <code>position</code>
-	 * @consultation
 	 */
 	public Variable getVariable(int position) {
 		return variables.get(position);
@@ -238,10 +230,10 @@ public abstract class Potential {
 
 	/**
 	 * @param evidenceCase               <code>EvidenceCase</code>
-	 * @param inferenceOptions
+	 * @param inferenceOptions Inference options
 	 * @param alreadyProjectedPotentials <code>List</code> of already projected potentials
-	 * @throws WrongCriterionException
-	 * @throws NoFindingException
+	 * @throws WrongCriterionException WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public abstract List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			List<TablePotential> alreadyProjectedPotentials)
@@ -291,8 +283,8 @@ public abstract class Potential {
 	 *
 	 * @param evidenceCase <code>EvidenceCase</code>
 	 * @return <code>Collection</code> of <code>Finding</code>s
-	 * @throws IncompatibleEvidenceException
-	 * @throws WrongCriterionException
+	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
+	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
 			throws IncompatibleEvidenceException, WrongCriterionException {
@@ -338,8 +330,7 @@ public abstract class Potential {
 	 * @param timeDifference <code>int</code>
 	 * @param probNet        This parameter is necessary because the shifted variables
 	 *                       are taken from the network. <code>ProbNet</code>
-	 * @return <code>Potential</code>
-	 * @throws NodeNotFoundException
+	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
 	public void shift(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
 		setVariables(getShiftedVariables(probNet, timeDifference));
@@ -348,9 +339,9 @@ public abstract class Potential {
 	/**
 	 * Creates links between the first variable of a potential and the rest of the variables.
 	 *
-	 * @argCondition The role of the potential must be utility of conditional
+	 * Condition: The role of the potential must be utility of conditional
 	 * probability
-	 * @argCondition The network must contain all the variables of the potential
+	 * Condition: The network must contain all the variables of the potential
 	 */
 	public void createDirectedLinks(ProbNet probNet) {
 		int numVariables = variables.size();
@@ -371,8 +362,8 @@ public abstract class Potential {
 	 * Returns a list with the same variables as this potential, including the
 	 * utility variable but shifted in time as indicated by timeDifference
 	 *
-	 * @throws NodeNotFoundException
-	 * @argCondition The network must contain the shifted variables.
+	 * @throws NodeNotFoundException NodeNotFoundException
+	 * Condition: The network must contain the shifted variables.
 	 */
 	public List<Variable> getShiftedVariables(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
 		List<Variable> shiftedVariables = new ArrayList<Variable>(variables.size());
@@ -457,7 +448,7 @@ public abstract class Potential {
 	}
 
 	/**
-	 * @returns a sampled potential. By default, itself, i.e., not sampled.
+	 * @return A sampled potential. By default, itself, i.e., not sampled.
 	 * TODO This method must be commented further
 	 */
 	public Potential sample() {
@@ -477,9 +468,9 @@ public abstract class Potential {
 	 * When this potential represents a conditional probability, this method returns a value for the first variable,
 	 * sampled with the probability distribution. If this variable is finite-states, it returns the index of
 	 * the sampled state. If the variable is numeric, it returns the value sampled.
-	 * @param randomGenerator
-	 * @param sampledParents
-	 * @return
+	 * @param randomGenerator Random generator
+	 * @param sampledParents Sampled parents
+	 * @return a value for the first variable, sampled with the probability distribution.
 	 */
 	// TODO replace int with double
 	// TODO make this method abstract and implement it in all the subclasses of Potential
@@ -549,15 +540,15 @@ public abstract class Potential {
 	/**
 	 * Multiply the potential by a scale. If the Potential is not scalable it must throw UnsupportedOperationException
 	 *
-	 * @param scale
+	 * @param scale Scale
 	 */
 	public abstract void scalePotential(double scale);
 
 	/**
 	 * Copy this potential attributes to the newPotential potential of the copyNet
 	 *
-	 * @param copyNet
-	 * @return
+	 * @param copyNet Network
+	 * @return A deep copy of the potential
 	 */
 	public Potential deepCopy(ProbNet copyNet) {
 		Potential potential = newInstance();

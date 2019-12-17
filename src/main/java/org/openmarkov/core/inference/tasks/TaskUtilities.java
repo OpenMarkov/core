@@ -126,7 +126,7 @@ public class TaskUtilities {
 	}
 
 	//TODO Do not delete next commented code as we are still debugging the transition from super-value nodes' concepts to numeric concepts
-	/**
+	/*
 	 * @param probNet
 	 * @param evidenceCase
 	 * @return Remove super value nodes from probNet

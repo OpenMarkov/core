@@ -29,7 +29,7 @@ public class GTablePotential<E> extends TablePotential {
 	// Constructors
 
 	/**
-	 * @param variables
+	 * @param variables List of variables
 	 */
 	public GTablePotential(List<Variable> variables) {
 		super(variables, null); // <- Don't create a table of doubles
@@ -43,8 +43,8 @@ public class GTablePotential<E> extends TablePotential {
 	}
 
 	/**
-	 * @param variables
-	 * @param role
+	 * @param variables Listof variables
+	 * @param role Potential role
 	 */
 	public GTablePotential(List<Variable> variables, PotentialRole role) {// TODO Remove this method
 		super(variables, null); // <- Don't create a table of doubles
@@ -58,9 +58,9 @@ public class GTablePotential<E> extends TablePotential {
 	}
 
 	/**
-	 * @param variables
-	 * @param role
-	 * @param elementTable
+	 * @param variables List of variables
+	 * @param role Potential role
+	 * @param elementTable List of elements
 	 */
 	public GTablePotential(List<Variable> variables, PotentialRole role, List<E> elementTable) {
 		this(variables, role);

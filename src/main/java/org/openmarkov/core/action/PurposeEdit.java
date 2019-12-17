@@ -11,13 +11,15 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 
 @SuppressWarnings("serial")
+
 /**
  * <code>PurposeEdit</code> is a simple edit that allows modify
- * the node purpose property. 
+ * the node purpose property.
  *
  * @version 1.0 21/12/10
  * @author Miguel Palacios
- */ public class PurposeEdit extends SimplePNEdit {
+ */
+public class PurposeEdit extends SimplePNEdit {
 	/**
 	 * The last purpose before the edition
 	 */

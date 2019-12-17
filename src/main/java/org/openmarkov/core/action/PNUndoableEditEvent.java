@@ -13,9 +13,13 @@ import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoableEdit;
 
 @SuppressWarnings("serial")
-/** The different between <code>PNUndoableEditEvent</code> and 
- *  <code>UndoableEditEvent</code> is that a <code>PNUndoableEditEvent</code>
- *  use a <code>ProbNet</code>. */ public class PNUndoableEditEvent extends UndoableEditEvent {
+
+/**
+ * The different between <code>PNUndoableEditEvent</code> and
+ * <code>UndoableEditEvent</code> is that a <code>PNUndoableEditEvent</code>
+ * use a <code>ProbNet</code>.
+ */
+public class PNUndoableEditEvent extends UndoableEditEvent {
 
 	// Attributes
 	private ProbNet probNet;

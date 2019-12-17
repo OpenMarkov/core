@@ -50,8 +50,9 @@ import java.util.List;
 	private ProbDensFunctionManager probDensFunctionManager;
 
 	/**
-	 * @param variables
-	 * @param role
+	 * Constructor
+	 * @param variables List of variables
+	 * @param role Potential role
 	 */
 
 	public UnivariateDistrPotential(List<Variable> variables, PotentialRole role) {
@@ -78,12 +79,12 @@ import java.util.List;
 	}
 
 	/**
-	 * Now I still do not use parameterization
+	 * Constructor
 	 *
-	 * @param variables
-	 * @param name
-	 * @param parametrization
-	 * @param role
+	 * @param variables List of variables
+	 * @param name Name
+	 * @param parametrization Parametrization
+	 * @param role Potential role
 	 */
 	public UnivariateDistrPotential(List<Variable> variables, String name, String parametrization, PotentialRole role)
 			throws InstantiationException {
@@ -94,9 +95,11 @@ import java.util.List;
 	}
 
 	/**
-	 * @param variables
-	 * @param probDensFunctionClass
-	 * @param role
+	 * Constructor
+	 *
+	 * @param variables List of variables
+	 * @param probDensFunctionClass Class of the probability density function
+	 * @param role Potential role
 	 */
 	public UnivariateDistrPotential(List<Variable> variables, Class<? extends ProbDensFunction> probDensFunctionClass,
 			PotentialRole role) {
@@ -106,7 +109,8 @@ import java.util.List;
 	}
 
 	/**
-	 * @param potential
+	 * Constructor
+	 * @param potential Univariate distribution potential
 	 */
 	public UnivariateDistrPotential(UnivariateDistrPotential potential) {
 
@@ -120,7 +124,8 @@ import java.util.List;
 	}
 
 	/**
-	 * @param variables
+	 * Constructor
+	 * @param variables List of variables
 	 */
 	public UnivariateDistrPotential(List<Variable> variables) {
 		this(variables, PotentialRole.CONDITIONAL_PROBABILITY);

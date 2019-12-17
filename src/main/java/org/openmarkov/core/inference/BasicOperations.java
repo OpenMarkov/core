@@ -126,7 +126,7 @@ public class BasicOperations {
 		return children.stream().anyMatch(x -> isNumeric(x.getVariable()));
 	}
 
-	/**
+	/*
 	 * @param network Network from which we extract terminal utility nodes
 	 * @return A list of utility nodes that have no children
 	 *//*
@@ -339,7 +339,7 @@ public class BasicOperations {
 	public static List<List<Variable>> calculatePartialOrder(ProbNet probNet) {
 		ProbNet idCopy = probNet.copy(); // Copy influence diagram
 
-		/** A partial order is a list of lists of variables. */
+		/* A partial order is a list of lists of variables. */
 		List<List<Variable>> partialOrder;
 
 		// Get decisions (only) in elimination order
@@ -606,7 +606,7 @@ public class BasicOperations {
 	public static List<List<Variable>> calculatePartialOrder2(ProbNet probNet) {
 		ProbNet idCopy = probNet.copy(); // Copy influence diagram
 
-		/** A partial order is a list of lists of variables. */
+		/* A partial order is a list of lists of variables. */
 		List<List<Variable>> partialOrder;
 
 		// Get decisions (only) in elimination order

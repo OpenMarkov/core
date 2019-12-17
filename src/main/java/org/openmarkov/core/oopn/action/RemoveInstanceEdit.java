@@ -36,7 +36,7 @@ import java.util.HashSet;
 	private HashSet<ReferenceLink> instanceLinksToRemove;
 
 	/**
-	 * @param probNet
+	 * @param probNet Network
 	 */
 	public RemoveInstanceEdit(ProbNet probNet, String instanceName) {
 		super(probNet);

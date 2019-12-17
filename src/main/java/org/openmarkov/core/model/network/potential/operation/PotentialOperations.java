@@ -47,9 +47,9 @@ public class PotentialOperations {
 	}
 
 	/**
-	 * @param potential
-	 * @param variablesOfInterest
-	 * @throws PotentialOperationException
+	 * @param potential Potential
+	 * @param variablesOfInterest List of the variables of interest
+	 * @throws PotentialOperationException PotentialOperationException
 	 */
 	public static Potential marginalize(Potential potential, List<Variable> variablesOfInterest)
 			throws PotentialOperationException {
@@ -87,12 +87,12 @@ public class PotentialOperations {
 
 	/**
 	 * @param potential            that will be marginalized
-	 * @param variablesToKeep
-	 * @param variablesToEliminate
-	 * @throws PotentialOperationException
-	 * @precondition variablesToKeep + variablesToEliminate =
+	 * @param variablesToKeep List of variables to keep
+	 * @param variablesToEliminate Listt of the variables to eliminate
+	 * @throws PotentialOperationException PotentialOperationException
+	 * Condition: variablesToKeep + variablesToEliminate =
 	 * potential.getVariables()
-	 * @precondition variablesToKeep
+	 * Condition: variablesToKeep
 	 */
 	public static Potential marginalize(Potential potential, List<Variable> variablesToKeep,
 			List<Variable> variablesToEliminate) throws PotentialOperationException {
@@ -114,9 +114,9 @@ public class PotentialOperations {
 	}
 
 	/**
-	 * @param potentials
-	 * @param variablesToEliminate
-	 * @throws PotentialOperationException
+	 * @param potentials List of table potentials
+	 * @param variablesToEliminate List of the variables to eliminate
+	 * @throws PotentialOperationException PotentialOperationException
 	 */
 	public static Potential multiplyAndEliminate(List<TablePotential> potentials, List<Variable> variablesToEliminate)
 			throws PotentialOperationException {
@@ -135,9 +135,9 @@ public class PotentialOperations {
 	}
 
 	/**
-	 * @param potentials
-	 * @param variableToEliminate
-	 * @throws PotentialOperationException
+	 * @param potentials List of table potentials
+	 * @param variableToEliminate Variable to eliminate
+	 * @throws PotentialOperationException PotentialOperationException
 	 */
 	public static Potential multiplyAndEliminate(List<TablePotential> potentials, Variable variableToEliminate)
 			throws PotentialOperationException {
@@ -147,7 +147,7 @@ public class PotentialOperations {
 	/**
 	 * @param potentials potentials array to multiply
 	 * @return The multiplied potentials
-	 * @throws PotentialOperationException
+	 * @throws PotentialOperationException PotentialOperationException
 	 */
 	@SuppressWarnings("unchecked") public static Potential multiply(List<? extends Potential> potentials)
 			throws PotentialOperationException {
@@ -166,7 +166,7 @@ public class PotentialOperations {
 	 *                            this set may contain some variables that are not in any potential)
 	 *                            <code>potentials</code>
 	 * @return The multiplied potentials
-	 * @throws PotentialOperationException
+	 * @throws PotentialOperationException PotentialOperationException
 	 */
 	public static Potential multiplyAndMarginalize(List<TablePotential> potentials, List<Variable> variablesOfInterest)
 			throws PotentialOperationException {
@@ -210,7 +210,7 @@ public class PotentialOperations {
 	 *                            this set may contain some variables that are not in any potential)
 	 *                            <code>potentials</code>
 	 * @return The multiplied potentials
-	 * @throws PotentialOperationException
+	 * @throws PotentialOperationException PotentialOperationException
 	 */
 	public static Object[] multiplyAndMaximize(List<Potential> potentials, List<Variable> variablesOfInterest)
 			throws PotentialOperationException {
@@ -254,8 +254,8 @@ public class PotentialOperations {
 	 * @param variablesToEliminate The set of variables eliminated by
 	 *                             marginalization (in general, by summing out or maximizing)
 	 * @return result the multiplied potentials
-	 * @throws PotentialOperationException
-	 * @argCondition variablesToKeep and variablesToEliminate are a partition of
+	 * @throws PotentialOperationException PotentialOperationException
+	 * Condition: variablesToKeep and variablesToEliminate are a partition of
 	 * the union of the variables of the potentials
 	 */
 	public static Potential multiplyAndMarginalize(List<TablePotential> potentials, List<Variable> variablesToKeep,

@@ -20,15 +20,15 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 import java.util.List;
 
-@Constraint(name = "NoMixedParents", defaultBehavior = ConstraintBehavior.OPTIONAL)
-/******
+/**
  * This class implements the NoMixedParents constraint, which establishes that all the parents
- * of a utility node belong to only one of these two sets of parents: 
- * - chance and decision nodes
- * - utility nodes
- * @author ckonig
- *
- */ public class NoMixedParents extends PNConstraint {
+ *  of a utility node belong to only one of these two sets of parents:
+ *  - chance and decision nodes
+ *  - utility nodes
+ *  @author ckonig
+ */
+@Constraint(name = "NoMixedParents", defaultBehavior = ConstraintBehavior.OPTIONAL)
+public class NoMixedParents extends PNConstraint {
 
 	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);

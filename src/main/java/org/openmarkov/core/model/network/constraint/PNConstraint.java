@@ -36,9 +36,9 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
 	 * <code>probNet</code> continues complying with this constraint.
 	 *
 	 * @param event <code>UndoableEditEvent</code>
-	 * @throws ConstraintViolationException
-	 * @throws WrongCriterionException
-	 * @throws NonProjectablePotentialException
+	 * @throws ConstraintViolationException ConstraintViolationException
+	 * @throws WrongCriterionException WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	@Override public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, NonProjectablePotentialException,
@@ -71,8 +71,8 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
 	 * @return <code>true</code> if the <code>ProbNet</code> will fulfill the
 	 * constraint after applying the <code>event</code> in a
 	 * <code>ProbNet</code> that previously fulfilled the constraint.
-	 * @throws WrongCriterionException
-	 * @throws NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public abstract boolean checkEdit(ProbNet probNet, PNEdit edit)
 			throws NonProjectablePotentialException, WrongCriterionException;

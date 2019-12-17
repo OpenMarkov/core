@@ -69,12 +69,17 @@ import java.util.List;
 	}
 
 	// Methods
+	/**
+	 * Project the potential and return a list of projected table potentials
+	 * @param evidenceCase               <code>EvidenceCase</code>
+	 * @param inferenceOptions Inference options
+	 * @param projectedPotentials Projected potentials
+	 * @return a list of projected table potentials
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
+	 */
 	@Override
-	/** @return If none of the potential variables are included in the 
-	 * <code>evidenceCase</code> variables returns itself, in other case, 
-	 * returns a uniform potential with the potential variables minus the 
-	 * <code>evidenceCase</code> variables.
-	 * @param evidenceCase. <code>evidenceCase</code> */ public List<TablePotential> tableProject(
+	public List<TablePotential> tableProject(
 			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials)
 			throws NonProjectablePotentialException, WrongCriterionException {
 		List<Variable> parentVariables = new ArrayList<>(variables);

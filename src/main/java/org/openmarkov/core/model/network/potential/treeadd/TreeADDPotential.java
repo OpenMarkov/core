@@ -62,9 +62,9 @@ public class TreeADDPotential extends Potential {
 	/**
 	 * For role conditional. Call to the complex constructor
 	 *
-	 * @param variables
-	 * @param topVariable
-	 * @param role
+	 * @param variables List of variables
+	 * @param topVariable Top variable
+	 * @param role Potential role
 	 */
 	public TreeADDPotential(List<Variable> variables, Variable topVariable, PotentialRole role) {
 		this(variables, topVariable, topVariable.getStates(), topVariable.getPartitionedInterval(), role);
@@ -73,9 +73,9 @@ public class TreeADDPotential extends Potential {
 	/**
 	 * For role conditional
 	 *
-	 * @param variables
-	 * @param topVariable
-	 * @param branchingStates
+	 * @param variables List of variables
+	 * @param topVariable Top variable
+	 * @param branchingStates Array of branching states
 	 * @param role            {@link org.openmarkov.core.model.network.potential.PotentialRole}
 	 */
 	public TreeADDPotential(List<Variable> variables, Variable topVariable, State[] branchingStates,
@@ -197,7 +197,7 @@ public class TreeADDPotential extends Potential {
 	/**
 	 * Copy constructor
 	 *
-	 * @param treeADD
+	 * @param treeADD Tree ADD potential
 	 */
 	public TreeADDPotential(TreeADDPotential treeADD) {
 		super(treeADD);
@@ -214,8 +214,8 @@ public class TreeADDPotential extends Potential {
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role
 	 *
-	 * @param variables
-	 * @param role
+	 * @param variables List of variables
+	 * @param role Potential role
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean validate = false;
@@ -275,7 +275,8 @@ public class TreeADDPotential extends Potential {
 	}
 
 	/**
-	 * @param branch
+	 * Add a new branch
+	 * @param branch Branch
 	 */
 	public void addBranch(TreeADDBranch branch) {
 		branches.add(branch);
@@ -403,7 +404,7 @@ public class TreeADDPotential extends Potential {
 	 * Eliminates the nodes whose variable name is equal to the parameter 'variableName'
 	 * and grafts the daughter branches of that node in the parent node.
 	 * The variable must have only one child.
-	 * @param variableName
+	 * @param variableName Name of the variable
 	 */
 	public void pruneAndGraftNode(String variableName) {
 		if (getRootVariable().getName().toUpperCase().matches(variableName.toUpperCase())) {
@@ -511,7 +512,8 @@ public class TreeADDPotential extends Potential {
 	}
 
 	/**
-	 * @param labeledBranches
+	 * Update references
+	 * @param labeledBranches Labeled branches
 	 */
 	public void updateReferences(Map<String, TreeADDBranch> labeledBranches) {
 		Stack<TreeADDPotential> subtrees = new Stack<>();

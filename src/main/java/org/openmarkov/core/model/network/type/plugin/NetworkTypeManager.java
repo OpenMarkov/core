@@ -43,7 +43,7 @@ public class NetworkTypeManager {
 	/**
 	 * Gets the set of all defined network types
 	 *
-	 * @return
+	 * @return The set of all defined network types
 	 */
 	public Set<String> getNetworkTypeNames() {
 		if (networkTypeClasses == null) {
@@ -55,8 +55,8 @@ public class NetworkTypeManager {
 	/**
 	 * Returns the name of the given network type
 	 *
-	 * @param networkType
-	 * @return
+	 * @param networkType Network type
+	 * @return The name of the given network type
 	 */
 	public String getName(NetworkType networkType) {
 		return networkType.getClass().getAnnotation(ProbNetType.class).name();
@@ -65,7 +65,7 @@ public class NetworkTypeManager {
 	/**
 	 * Builds the network type map looking for classes annotated as ProbNetType
 	 *
-	 * @return
+	 * @return The network type map
 	 */
 	@SuppressWarnings("unchecked") private Map<String, Class<? extends NetworkType>> getNetworkTypesMap() {
 		List<Class<?>> networkTypes = findAllNetworkTypes();

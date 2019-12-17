@@ -35,7 +35,7 @@ public class LinkRestrictionPotentialOperations {
 	/****
 	 * Analyzes if the node has any parent link with a link restriction
 	 *
-	 * @param node
+	 * @param node Noded
 	 * @return <code>true</code> if the node has a link restriction
 	 */
 	public static boolean hasLinkRestriction(Node node) {
@@ -48,7 +48,7 @@ public class LinkRestrictionPotentialOperations {
 	/*****
 	 * Retrieves the parent links of a node which have a link restriction.
 	 *
-	 * @param node
+	 * @param node Node
 	 * @return a collection of links which have a link restriction.
 	 */
 	public static List<Link<Node>> getParentLinksWithRestriction(Node node) {
@@ -258,7 +258,7 @@ public class LinkRestrictionPotentialOperations {
 	 * Updates the probability potential of the node considering the link
 	 * restrictions of any parent link.
 	 *
-	 * @param node
+	 * @param node Node
 	 * @return the probability potential of the node updated according to the
 	 *         link restrictions.
 	 */

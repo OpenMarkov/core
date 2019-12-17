@@ -7,18 +7,16 @@
 
 package org.openmarkov.core.io.format.annotation;
 
-/**
- * This class sets the labels for the annotations format
- *
- * @author mpalacios
- * @author carmenyago -- added the annotation type element <code>version</code>
- */
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * This class sets the labels for the annotations format
+ * @author mpalacios
+ * @author carmenyago -- added the annotation type element <code>version</code>
+ */
 @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface FormatType {
 	/**
 	 * Gets the name of the class

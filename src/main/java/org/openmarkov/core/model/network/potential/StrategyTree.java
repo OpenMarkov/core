@@ -31,7 +31,7 @@ public class StrategyTree extends TreeADDPotential {
 	/**
 	 * Creates an intervention without branches.
 	 *
-	 * @param topVariable
+	 * @param topVariable Top variable
 	 */
 	public StrategyTree(Variable topVariable) {
 		this(null, topVariable);
@@ -90,8 +90,8 @@ public class StrategyTree extends TreeADDPotential {
 	/**
 	 * Creates an intervention with only one branch containing several states.
 	 *
-	 * @param topVariable
-	 * @param states
+	 * @param topVariable Top variable
+	 * @param states States
 	 */
 	public StrategyTree(Variable topVariable, State... states) {
 		this(null, topVariable);
@@ -103,8 +103,8 @@ public class StrategyTree extends TreeADDPotential {
 	/**
 	 * Creates an intervention with only one branch containing several states.
 	 *
-	 * @param topVariable
-	 * @param states
+	 * @param topVariable Top variable
+	 * @param states List of states
 	 */
 	public StrategyTree(Variable topVariable, List<State> states) {
 		this(null, topVariable);
@@ -117,9 +117,9 @@ public class StrategyTree extends TreeADDPotential {
 	/**
 	 * Creates an intervention with only one branch.
 	 *
-	 * @param topVariable
-	 * @param states
-	 * @param strategyTree
+	 * @param topVariable Top variable
+	 * @param states List of states
+	 * @param strategyTree Strategy tree
 	 */
 	public StrategyTree(Variable topVariable, List<State> states, StrategyTree strategyTree) {
 		this(null, topVariable);
@@ -133,8 +133,8 @@ public class StrategyTree extends TreeADDPotential {
 	 * Creates an intervention with a continuous variable with a partitioned interval.
 	 * The partitioned interval must have the same number of sub-intervals than interventions.
 	 *
-	 * @param topVariable
-	 * @param strategyTrees
+	 * @param topVariable Top variable
+	 * @param strategyTrees List of strategy trees
 	 */
 	public StrategyTree(Variable topVariable, PartitionedInterval partitionedInterval,
 			List<StrategyTree> strategyTrees) {
@@ -209,10 +209,10 @@ public class StrategyTree extends TreeADDPotential {
 	/**
 	 * Creates an intervention
 	 *
-	 * @param decisionVariable
-	 * @param utilities
-	 * @param strategyTrees
-	 * @param coalescedInterventions
+	 * @param decisionVariable Decision variable
+	 * @param utilities Array of utilities
+	 * @param strategyTrees Array of strategy trees
+	 * @param coalescedInterventions Coalesced interventions
 	 * @return Optimal intervention
 	 */
 	public static StrategyTree optimalIntervention(Variable decisionVariable, double[] utilities,
@@ -263,10 +263,10 @@ public class StrategyTree extends TreeADDPotential {
 	/**
 	 * Creates an intervention
 	 *
-	 * @param decisionVariable
-	 * @param utilities
-	 * @param strategyTrees
-	 * @param coalescedInterventions
+	 * @param decisionVariable Decision Variable
+	 * @param utilities Array of utilities
+	 * @param strategyTrees Array of strategy trees
+	 * @param coalescedInterventions Coalesced Interventions
 	 * @return Optimal intervention
 	 */
 	public static StrategyTree optimalInterventionTakingOneOptimal(Variable decisionVariable, double[] utilities,
@@ -304,9 +304,9 @@ public class StrategyTree extends TreeADDPotential {
 	/**
 	 * Creates an intervention
 	 *
-	 * @param decisionVariable
-	 * @param utilities
-	 * @param strategyTrees
+	 * @param decisionVariable Decision variable
+	 * @param utilities Array of utilities
+	 * @param strategyTrees Array of strategy trees
 	 * @return Optimal intervention
 	 */
 	public static StrategyTree optimalInterventionTakingAllOptimal(Variable decisionVariable, double[] utilities,
@@ -344,10 +344,10 @@ public class StrategyTree extends TreeADDPotential {
 	/**
 	 * Creates an intervention
 	 *
-	 * @param decisionVariable
-	 * @param utilities
-	 * @param strategyTrees
-	 * @param coalescedInterventions
+	 * @param decisionVariable Decision variable
+	 * @param utilities Array of utilities
+	 * @param strategyTrees Array of strategy trees
+	 * @param coalescedInterventions Coalesced interventions
 	 * @return Optimal intervention
 	 */
 	public static StrategyTree optimalInterventionTakingOptimalMinimalDepth(Variable decisionVariable,
@@ -395,7 +395,7 @@ public class StrategyTree extends TreeADDPotential {
 	}
 
 	/**
-	 * @param strategyTrees
+	 * @param strategyTrees Array of strategy trees
 	 * @return <code>true</code> when all the interventions are equal.
 	 */
 	protected static boolean equalInterventions(StrategyTree[] strategyTrees) {
@@ -413,7 +413,7 @@ public class StrategyTree extends TreeADDPotential {
 	}
 
 	/**
-	 * @param branch
+	 * @param branch TreeADDBranch
 	 * @return The intervention corresponding to 'branch'
 	 */
 	public static StrategyTree getInterventionBranch(TreeADDBranch branch) {
@@ -443,9 +443,8 @@ public class StrategyTree extends TreeADDPotential {
 	/**
 	 * Add <code>Intervention</code> to edges of this intervention
 	 *
-	 * @param strategyTree
-	 * @return
-	 * @throws Exception
+	 * @param strategyTree Strategy tree
+	 * @return A concatenated Strategy tree
 	 */
 	public StrategyTree concatenate(StrategyTree strategyTree) {
 		//
@@ -569,7 +568,7 @@ public class StrategyTree extends TreeADDPotential {
 	}
 
 	/**
-	 * @param state
+	 * @param state State
 	 * @return branch that contains state or null
 	 */
 	public TreeADDBranch getBranch(State state) {

@@ -25,8 +25,8 @@ import javax.swing.undo.CannotUndoException;
 	/**
 	 * Constructor
 	 *
-	 * @param probNet
-	 * @param referenceLink
+	 * @param probNet Network
+	 * @param referenceLink Reference link
 	 */
 	public RemoveReferenceLinkEdit(ProbNet probNet, ReferenceLink referenceLink) {
 		super(probNet);

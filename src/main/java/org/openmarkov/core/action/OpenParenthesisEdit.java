@@ -10,8 +10,12 @@ package org.openmarkov.core.action;
 import org.openmarkov.core.exception.DoEditException;
 
 @SuppressWarnings("serial")
-/** @author Manuel Arias
- * @see openmarkov.networks.edit.CloseParenthesisEdit */ public class OpenParenthesisEdit extends SimplePNEdit {
+
+/**
+ * @author Manuel Arias
+ * @see openmarkov.networks.edit.CloseParenthesisEdit
+ */
+public class OpenParenthesisEdit extends SimplePNEdit {
 
 	// Constant
 	public static final String description = "(";

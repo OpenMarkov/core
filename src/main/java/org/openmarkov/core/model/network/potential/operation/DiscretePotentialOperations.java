@@ -603,7 +603,7 @@ public final class DiscretePotentialOperations {
 	//	}
 
 	/**
-	 * @param potentials
+	 * @param potentials List of table potentials
 	 * @return if there is at least one potential with interventions.
 	 */
 	private static boolean areThereInterventions(List<TablePotential> potentials) {
@@ -689,7 +689,7 @@ public final class DiscretePotentialOperations {
 	 * @param variablesToEliminate The set of variables eliminated by marginalization (in
 	 *                             general, by summing out or maximizing)
 	 * @return A <code>TablePotential</code> result of multiply and marginalize.
-	 * @argCondition variablesToKeep and variablesToEliminate are a partition of
+	 * Condition: variablesToKeep and variablesToEliminate are a partition of
 	 * the union of the variables of the potential
 	 */
 	public static TablePotential multiplyAndMarginalize(Collection<TablePotential> tablePotentials,
@@ -821,7 +821,7 @@ public final class DiscretePotentialOperations {
 	 * @param variableToEliminate The set of variables eliminated by marginalization (in
 	 *                            general, by summing out or maximizing)
 	 * @return A <code>TablePotential</code> result of multiply and marginalize.
-	 * @argCondition variablesToKeep and variablesToEliminate are a partition of
+	 * Condition: variablesToKeep and variablesToEliminate are a partition of
 	 * the union of the variables of the potential
 	 */
 	public static TablePotential multiplyAndMarginalize(TablePotential probPotential, TablePotential utilityPotential,
@@ -1007,9 +1007,9 @@ public final class DiscretePotentialOperations {
 	 * @param potential            that will be marginalized
 	 * @param variablesToKeep      variables to keep
 	 * @param variablesToEliminate variable to eliminate
-	 * @precondition variablesToKeep + variablesToEliminate =
+	 * Condition: variablesToKeep + variablesToEliminate =
 	 * potential.getVariables()
-	 * @precondition variablesToKeep
+	 * Condition: variablesToKeep
 	 */
 	public static Potential marginalize(TablePotential potential, List<Variable> variablesToKeep,
 			List<Variable> variablesToEliminate) {
@@ -1151,7 +1151,7 @@ public final class DiscretePotentialOperations {
 	 * @param denominator <code>Potential</code>.
 	 * @return The quotient: A <code>TablePotential</code> with the union of the
 	 * variables of numerator and denominator.
-	 * @argCondition numerator and denominator have the same domain (variables)
+	 * Condition: numerator and denominator have the same domain (variables)
 	 */
 	public static TablePotential divide(Potential numerator, Potential denominator) {
 		// Get variables and create quotient potential.
@@ -1277,7 +1277,7 @@ public final class DiscretePotentialOperations {
 	 * @return The quotient
 	 * @throws IllegalArgumentTypeException <tt>IllegalArgumentTypeException</tt> if numerator of denominator
 	 *                                      are not <tt>TablePotential</tt>
-	 * @throws DivideByZeroException
+	 * @throws DivideByZeroException DivideByZeroException
 	 */
 	public static Potential dividePotentials(Potential numerator, Potential denominator)
 			throws IllegalArgumentTypeException, DivideByZeroException {
@@ -1752,7 +1752,7 @@ public final class DiscretePotentialOperations {
 	 * @param potential      <code>TablePotential</code>
 	 * @param otherOrderVariables <code>ArrayList</code> of <code>Variable</code>
 	 * @return The <code>TablePotential</code> generated
-	 * @argCondition <code>otherVariables</code> are the same variables than the
+	 * Condition: <code>otherVariables</code> are the same variables than the
 	 * variables of <code>potential</code>
 	 */
 	public static TablePotential reorder(TablePotential potential, List<Variable> otherOrderVariables) {
@@ -1824,7 +1824,7 @@ public final class DiscretePotentialOperations {
 	 * @param potential      <code>UnivariateDistrPotential</code>
 	 * @param orderVariables <code>ArrayList</code> of <code>Variable</code>
 	 * @return The <code>UnivariateDistrPotential</code> generated
-	 * @argCondition <code>otherVariables</code> are the same variables than the
+	 * Condition: <code>otherVariables</code> are the same variables than the
 	 * variables of <code>potential</code>
 	 */
 	public static UnivariateDistrPotential reorder(UnivariateDistrPotential potential, List<Variable> orderVariables) {
@@ -1850,7 +1850,7 @@ public final class DiscretePotentialOperations {
 	 * @param potential      <code>UnivariateDistrPotential</code>
 	 * @param orderVariables <code>ArrayList</code> of <code>Variable</code>
 	 * @return The <code>UnivariateDistrPotential</code> generated
-	 * @argCondition <code>otherVariables</code> are the same variables than the
+	 * Condition: <code>otherVariables</code> are the same variables than the
 	 * variables of <code>potential</code>
 	 */
 	public static AugmentedTablePotential reorder(AugmentedTablePotential potential, List<Variable> orderVariables) {
@@ -1873,7 +1873,7 @@ public final class DiscretePotentialOperations {
 	 * @param potential      <code>TablePotential</code>
 	 * @param orderVariables <code>ArrayList</code> of <code>Variable</code>
 	 * @return The <code>TablePotential</code> generated
-	 * @argCondition <code>otherVariables</code> are the same variables than the
+	 * Condition: <code>otherVariables</code> are the same variables than the
 	 * variables of <code>potential</code>
 	 */
 	public static AugmentedTable reorder(AugmentedTable potential, List<Variable> orderVariables) {
@@ -2006,7 +2006,7 @@ public final class DiscretePotentialOperations {
 
 
 	/*
-	 *//** This method is used to remove a decision variable from a probability potential
+	 *//* This method is used to remove a decision variable from a probability potential
 	 * that in fact does not depend on the decision variable
 	 * @param variable <code>Variable</code>
 	 * @param inputPotential <code>TablePotential</code>
@@ -2102,8 +2102,8 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param outputUtilityPotential
-	 * @return boolean
+	 * @param outputUtilityPotential Output utility potential
+	 * @return True if there are relevant utilities
 	 */
 	static boolean thereAreRelevantUtilities(TablePotential outputUtilityPotential) {
 		boolean thereAreRelevantUtilities = false;
@@ -2122,7 +2122,7 @@ public final class DiscretePotentialOperations {
 	 *
 	 * @param variable       <code>Variable</code>
 	 * @param inputPotential <code>TablePotential</code>
-	 * @return. A <code>TablePotential</code>
+	 * @return A <code>TablePotential</code>
 	 */
 	public static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential) {
 		TablePotential output = null;
@@ -2199,8 +2199,8 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param inputPotentialsList
-	 * @param decisionsTotallyOrdered
+	 * @param inputPotentialsList List of table potentials
+	 * @param decisionsTotallyOrdered List of decision totally ordered
 	 * @return an order list of the potentials in 'inputPotentialsList', where the potentials are ordered according to the
 	 * total order in 'decisionsTotallyOrdered'
 	 */
@@ -2243,11 +2243,11 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param decision
-	 * @param potentials
+	 * @param decision Decision variable
+	 * @param potentials List of table potentials
 	 * @return TablePotential with decision as the first variable and the union of the variables of the potentials.
-	 * @throws PotentialOperationException
-	 * @argCondition The number of states of decision must be equal to the number of potentials.
+	 * @throws PotentialOperationException PotentialOperationException
+	 * Condition: The number of states of decision must be equal to the number of potentials.
 	 */
 	public static TablePotential merge(Variable decision, List<TablePotential> potentials)
 			throws PotentialOperationException {
@@ -2418,9 +2418,9 @@ public final class DiscretePotentialOperations {
 	 * </ul>
 	 * The message may consist of one or two causes at most.
 	 *
-	 * @param decision
-	 * @param potentials
-	 * @throws PotentialOperationException
+	 * @param decision Decision variabl
+	 * @param potentials Collection of potentials
+	 * @throws PotentialOperationException PotentialOperationException
 	 */
 	private static void throwExceptionIfNecessaryInMergeOperation(Variable decision,
 			Collection<TablePotential> potentials) throws PotentialOperationException {
@@ -2476,8 +2476,8 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param potentials
-	 * @param numPotentials
+	 * @param potentials List of table potentials
+	 * @param numPotentials Number of potentials
 	 * @return array of booleans, the i-th boolean is true if the i-th potential has uncertain values.
 	 */
 	private static boolean[] getBooleanArrayOfPotentialsThatAreGTablePotentials(List<TablePotential> potentials,
@@ -2491,7 +2491,7 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param potentials
+	 * @param potentials List of table potentials
 	 * @return array of booleans, the i-th boolean is true if the i-th potential has interventions.
 	 */
 	private static boolean[] getPotentialsHaveInterventions(List<TablePotential> potentials) {
@@ -2504,7 +2504,7 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param potentials
+	 * @param potentials List of table potentials
 	 * @return array of booleans, the i-th boolean is true if the i-th potential has uncertain values.
 	 */
 	private static boolean[] getPotentialsHaveUncertainValues(List<TablePotential> potentials) {
@@ -2517,8 +2517,8 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param potentials
-	 * @return boolean
+	 * @param potentials Collection of table potentials
+	 * @return True if there are potentials with uncertain values
 	 */
 	private static boolean thereArePotentialsWithUncertainValues(Collection<TablePotential> potentials) {
 		for (TablePotential potential : potentials) {
@@ -2530,7 +2530,7 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param potentials
+	 * @param potentials Collection of table potentials
 	 * @return boolean
 	 */
 	private static boolean thereArePotentialsWithInterventions(Collection<TablePotential> potentials) {
@@ -2543,9 +2543,9 @@ public final class DiscretePotentialOperations {
 	}
 
 	/**
-	 * @param decision
-	 * @param inputPotentials
-	 * @return
+	 * @param decision Decision variable
+	 * @param inputPotentials Set of table potentials
+	 * @return Set of potentials with a decision
 	 */
 	private static Set<TablePotential> getPotentialsWithDecisionInIntervention(Variable decision,
 			Set<TablePotential> inputPotentials) {

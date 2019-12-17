@@ -20,13 +20,14 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 import java.util.List;
 
-@Constraint(name = "NoMultipleLinks", defaultBehavior = ConstraintBehavior.YES)
-/*****
+/**
  * This class implements the NoMultipleLinks constraint, which establishes the following rules:
- * - The undirected link between A and B is both incompatible with any directed link between A and B.
- * - The directed link between A and B is compatible with the directed link between B and A 
- *@author ckonig
- */ public class NoMultipleLinks extends PNConstraint {
+ *  - The undirected link between A and B is both incompatible with any directed link between A and B.
+ *  - The directed link between A and B is compatible with the directed link between B and A
+ *  @author ckonig
+ */
+@Constraint(name = "NoMultipleLinks", defaultBehavior = ConstraintBehavior.YES)
+public class NoMultipleLinks extends PNConstraint {
 
 	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Node> nodesGraph = probNet.getNodes();
@@ -74,9 +75,9 @@ import java.util.List;
 	/*****
 	 * Checks if a link between <code>node1</code> and <code>node2</code>
 	 * satisfies the restriction of noMultipleLinks
-	 * @param probNet
-	 * @param node1
-	 * @param node2
+	 * @param probNet Network
+	 * @param node1 First node
+	 * @param node2 Second node
 	 * @param directed - true if the link is directed
 	 * @return code>true</code> if the link between <code>node1</code> and
 	 *         <code>node2</code>has no multipleLinks
@@ -92,9 +93,9 @@ import java.util.List;
 	/*********
 	 * Checks if a directed link between <code>node1</code> and
 	 * <code>node2</code> satisfies the restriction of noMultipleLinks
-	 * @param probNet
-	 * @param node1
-	 * @param node2
+	 * @param probNet Network
+	 * @param node1 First node
+	 * @param node2 Second node
 	 * @return <code>true</code> if the link between <code>node1</code> and
 	 *         <code>node2</code>has no multipleLinks
 	 */
@@ -108,9 +109,9 @@ import java.util.List;
 	/*****
 	 * Checks if a undirected link between <code>node1</code> and
 	 * <code>node2</code> satisfies the restriction of noMultipleLinks
-	 * @param probNet
-	 * @param node1
-	 * @param node2
+	 * @param probNet Network
+	 * @param node1 First node
+	 * @param node2 Second node
 	 * @return <code>true</code> if the link between <code>node1</code> and
 	 *         <code>node2</code>has no multipleLinks
 	 */

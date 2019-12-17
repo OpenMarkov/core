@@ -99,10 +99,10 @@ public class PotentialManager {
 	/**
 	 * For utility potentials
 	 *
-	 * @param name
-	 * @param variables
-	 * @param utilityVariable
-	 * @return
+	 * @param name Name
+	 * @param utilityVariable Variable
+	 * @param variables List of variables
+	 * @return a potential by name
 	 */
 	public final Potential getByName(String name, Variable utilityVariable, List<Variable> variables) {
 		Potential instance = null;
@@ -158,7 +158,7 @@ public class PotentialManager {
 	/**
 	 * Returns the family of the given potential type
 	 *
-	 * @param name
+	 * @param name Name of the potentials family
 	 * @return the family of the given potential type
 	 */
 	public String getPotentialsFamily(String name) {

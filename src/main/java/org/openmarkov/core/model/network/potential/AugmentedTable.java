@@ -153,7 +153,7 @@ public class AugmentedTable extends TablePotential {
 	 * @param stateVariables . <code>ArrayList</code> of <code>Variable</code>
 	 * @param statesIndices  . <code>int[]</code>
 	 * @return <code>double</code>
-	 * @argCondition All the variables in this potentials are included into the
+	 * Condition: All the variables in this potentials are included into the
 	 * received variables.
 	 */
 	public String getFunctionValue(List<Variable> stateVariables, int[] statesIndices) {
@@ -171,7 +171,6 @@ public class AugmentedTable extends TablePotential {
 	/**
 	 * @return : Table containing the values of the
 	 * potential.
-	 * @consultation
 	 */
 	public String[] getFunctionValues() {
 		return functionValues;

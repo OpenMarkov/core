@@ -43,8 +43,8 @@ import java.util.List;
 	//	}
 
 	/**
-	 * @param variables
-	 * @param role
+	 * @param variables List of variables
+	 * @param role Potential role
 	 */
 	public SumPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role);
@@ -73,11 +73,7 @@ import java.util.List;
 	}
 
 	@Override
-	/** @return If none of the potential variables are included in the 
-	 * <code>evidenceCase</code> variables returns itself, in other case, 
-	 * returns a uniform potential with the potential variables minus the 
-	 * <code>evidenceCase</code> variables.
-	 * @param evidenceCase. <code>evidenceCase</code> */ public List<TablePotential> tableProject(
+	public List<TablePotential> tableProject(
 			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials)
 			throws NonProjectablePotentialException, WrongCriterionException {
 		List<Variable> parentVariables = new ArrayList<>(variables);

@@ -13,7 +13,11 @@ import org.openmarkov.core.model.network.potential.Potential;
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
-/** Removes several potentials */ public class RemoveSeveralPotentialsEdit extends SimplePNEdit {
+
+/**
+ * Removes several potentials
+ */
+public class RemoveSeveralPotentialsEdit extends SimplePNEdit {
 
 	private ArrayList<Potential> potentialsToDelete;
 

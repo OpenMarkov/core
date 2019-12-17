@@ -46,7 +46,7 @@ import java.util.Map;
 	 * Creates a Function potential with the function by default
 	 *
 	 * @param variables - list with the node variable and their parents
-	 * @param role
+	 * @param role Potential role
 	 */
 	public FunctionPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role, new String[] { DEFAULT_FUNCTION }, new double[] { COEFFICIENT });
@@ -58,7 +58,6 @@ import java.util.Map;
 	 * @param variables - list with the node variable and their parents
 	 * @param role      - the role of the potential
 	 * @param function  - A string representing the function
-	 * @param role
 	 */
 	public FunctionPotential(List<Variable> variables, PotentialRole role, String function) {
 		super(variables, role, new String[] { function }, new double[] { COEFFICIENT });
@@ -99,7 +98,7 @@ import java.util.Map;
 	}
 
 	/**
-	 * Process and sets  {@codefunction}
+	 * Process and sets  {codefunction}
 	 *
 	 * @param function - The function (unprocessed) to be set
 	 */
@@ -111,8 +110,8 @@ import java.util.Map;
 	/**
 	 * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
 	 *
-	 * @throws NonProjectablePotentialException
-	 * @throws WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
@@ -122,8 +121,8 @@ import java.util.Map;
 	/**
 	 * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
 	 *
-	 * @throws NonProjectablePotentialException
-	 * @throws WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	@Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
@@ -151,7 +150,7 @@ import java.util.Map;
 	 * Adds the variable to the new potential. The function does not change
 	 *
 	 * @param variable - the variable to be added
-	 * @returns a FunctionPotential with the new variabla
+	 * @return a FunctionPotential with the new variabla
 	 */
 	@Override public Potential addVariable(Variable variable) {
 		FunctionPotential newPotential = null;
@@ -172,7 +171,7 @@ import java.util.Map;
 	 * the function does not change, otherwise the function is set to its default value
 	 *
 	 * @param variable - the variable to be removed
-	 * @returns a FunctionPotential without the variable
+	 * @return a FunctionPotential without the variable
 	 */
 	@Override public Potential removeVariable(Variable variable) {
 		if (variables.contains(variable)) {
@@ -205,9 +204,9 @@ import java.util.Map;
 	
 	
 	/**
-	 * @param values
+	 * @param values Values
 	 * @return The value obtained by evaluation the function for the assignment of variables given by 'values'
-	 * @throws EvaluationException
+	 * @throws EvaluationException EvaluationException
 	 */
 	public String getValue(Map<String,String> values) throws EvaluationException {
 		Evaluator evaluator = new Evaluator();

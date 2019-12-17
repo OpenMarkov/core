@@ -33,7 +33,7 @@ import java.util.List;
 	/**
 	 * Constructor for TuningModelPotential.
 	 *
-	 * @param variables
+	 * @param variables List of variables
 	 */
 	public TuningPotential(List<Variable> variables) {
 		super(ICIModelType.TUNING, variables);
@@ -42,7 +42,7 @@ import java.util.List;
 	/**
 	 * Copy constructor
 	 *
-	 * @param tuningPotential
+	 * @param tuningPotential Tuning potential
 	 */
 	public TuningPotential(TuningPotential tuningPotential) {
 		super(tuningPotential);
@@ -54,9 +54,9 @@ import java.util.List;
 
 	/**
 	 * Returns if an instance of a certain Potential type makes sense given the variables and the potential role
-	 *
-	 * @param variables
-	 * @param role
+	 * @param node Node
+	 * @param variables List of variables
+	 * @param role Potential role
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean valid = ICIPotential.validate(node, variables, role) && role
@@ -70,7 +70,7 @@ import java.util.List;
 	/**
 	 * Adds a parent to the family with its corresponding parameters
 	 *
-	 * @param parent
+	 * @param parent Parent variable
 	 * @param parameters the four parameters that define the link in the
 	 *                   following order: c<sub><i>i</i></sub><sup>++</sup>,
 	 *                   c<sub><i>i</i></sub><sup>+-</sup>,

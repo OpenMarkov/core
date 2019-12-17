@@ -77,8 +77,7 @@ public class SDAGStrategyTree extends StrategyTree {
 	/**
 	 * Add <code>Intervention</code> to edges of this intervention
 	 *
-	 * @param strategyTree
-	 * @throws Exception It concatenates taking care of the coalescence
+	 * @param strategyTree Strategy tree
 	 */
 	@Override public StrategyTree concatenate(StrategyTree strategyTree) {
 
@@ -87,8 +86,8 @@ public class SDAGStrategyTree extends StrategyTree {
 	}
 
 	/**
-	 * @param branchParent
-	 * @param intervention
+	 * @param branchParent Parent branch
+	 * @param intervention Intervention
 	 * @return It concatenates taking care of the coalescence
 	 */
 	public StrategyTree concatenate(TreeADDBranch branchParent, SDAGStrategyTree intervention) {
@@ -122,7 +121,7 @@ public class SDAGStrategyTree extends StrategyTree {
 	}
 
 	/**
-	 * @param intervention
+	 * @param intervention Intervention
 	 * @return It concatenates not taking care of the coalescence, because the receiving object is a copy
 	 */
 	private SDAGStrategyTree carefreeConcatenate(SDAGStrategyTree intervention) {

@@ -7,11 +7,14 @@
 
 package org.openmarkov.core.inference;
 
+import java.io.File;
+
 /**
  * This class contains the parameter for doing Monte Carlo simulations
  * @author cyago
  * @version 1.0 25/08/2019
  * @version 1.1 25/09/2019 -added log options
+ * @version 1.2 16/12/2019 -added calculation and file options
  */
 public class MonteCarloOptions implements Cloneable {
 
@@ -31,6 +34,11 @@ public class MonteCarloOptions implements Cloneable {
     private boolean trimmedMean = true;
     private boolean median = false;
 	private boolean sum = false;
+
+
+	//File options
+	private String inputFileName = "";
+	private File inputFile;
 
 
 	public MonteCarloOptions() {
@@ -141,6 +149,25 @@ public class MonteCarloOptions implements Cloneable {
     public boolean getSum() {
 		return sum;
     }
+
+    //Input File Options
+
+	public File getInputFile() {
+		return inputFile;
+	}
+
+	/**
+	 * Sets the File which will be used for inference and its filename
+	 * @param inputFile
+	 */
+	public void setInputFile(File inputFile) {
+		this.inputFile = inputFile;
+		this.inputFileName = inputFile.getAbsolutePath();
+	}
+
+	public String getInputFileName() {
+		return inputFileName;
+	}
 
 
 }

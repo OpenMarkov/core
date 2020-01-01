@@ -160,6 +160,9 @@ public class Graph<T> {
 
 	private void addLink(Link<T> link) {
 		nodeLinks.get(link.getNode1()).add(link);
+		//CMI 31/12/2019 - allowing self-loops. It has been added the following check to avoid adding to the probNet the link duplicated when having a self-loop
+		if (!link.getNode1().equals(link.getNode2()) )
+		//CMF
 		nodeLinks.get(link.getNode2()).add(link);
 	}
 

@@ -14,6 +14,8 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 /**
  * PGM network to implement Discrete Event Simulation (DES) Models
  * @author cyago - 10/01/2019
+ * @version 1.0 - 10/01/2019
+ * @version 1.1 - 31/21/2019 -constrains changed to allow self loops in event nodes
  */
 @ProbNetType(name = "DESNet") public class DESNetworkType extends NetworkType {
 	private static DESNetworkType instance = null;
@@ -24,10 +26,12 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 		overrideConstraintBehavior(OnlyAtemporalVariables.class, ConstraintBehavior.NO);
 		overrideConstraintBehavior(OnlyTemporalVariables.class, ConstraintBehavior.NO);
 		overrideConstraintBehavior(NoCycle.class, ConstraintBehavior.NO);
+		overrideConstraintBehavior(NoSelfLoop.class, ConstraintBehavior.NO);
 		overrideConstraintBehavior(NoEventNodes.class, ConstraintBehavior.NO);
 		overrideConstraintBehavior(NoBackwardLink.class, ConstraintBehavior.NO);
 		overrideConstraintBehavior(NoLoops.class, ConstraintBehavior.NO);
-
+		overrideConstraintBehavior(OnlySelfLoopsWithEventNodes.class, ConstraintBehavior.YES);
+		//overrideConstraintBehavior(DistinctLinks.class, ConstraintBehavior.NO);
 
 	}
 

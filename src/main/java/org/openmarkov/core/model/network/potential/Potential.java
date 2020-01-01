@@ -506,9 +506,16 @@ public abstract class Potential {
 	 * Adds variable to a potential implemented in each child class
 	 */
 	public Potential addVariable(Variable variable) {
+
 		if (!variables.contains(variable)) {
 			variables.add(variable);
 		}
+		//CMI 01/01/2020 When having self-loops in DESNets it is necessary to have the same variable twice in the potential as the node variable and one of the parents
+		else if (variable.getVariableType() == VariableType.EVENT){
+			variables.add(variable);
+		}
+		//CMF
+
 		Potential newPotential = new UniformPotential(variables, role);
 		return newPotential;
 	}

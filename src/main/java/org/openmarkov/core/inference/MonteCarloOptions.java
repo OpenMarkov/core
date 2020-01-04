@@ -10,7 +10,9 @@ package org.openmarkov.core.inference;
 import java.io.File;
 
 /**
- * This class contains the parameter for doing Monte Carlo simulations
+ * This class contains the parameter for doing Monte Carlo simulations.
+ * There are three types or parameters: Those which establish how the simulation is carried out and what is calculated,
+ * those which determine the simulation log and the input files
  * @author cyago
  * @version 1.0 25/08/2019
  * @version 1.1 25/09/2019 -added log options
@@ -24,26 +26,66 @@ public class MonteCarloOptions implements Cloneable {
 
 
 	//Log options
+	/**
+	 * When true, only a summary of the simulations is recorded
+	 */
 	private boolean onlySummary = true;
+
+	/**
+	 * When true, every change in the state nodes is logged
+	 */
 	private boolean stateLog =false;
+	/**
+	 *  When true, every event happening in the simulation is logged
+	 */
 	private boolean eventLog =false;
+
+	/**
+	 * When true, the events queue is logged each time an event happens
+	 */
 	private boolean scheduledEventLog =false;
 
+
+
 	//Result options
+	/**
+	 * When true, the mean and standard deviation are calculated
+	 */
     private boolean mean = true;
-    private boolean trimmedMean = true;
+	/**
+	 * When true, a trimmedMean is calculated (TODO: decide how to do the trimming)
+	 */
+	private boolean trimmedMean = true;
+
+	/**
+	 * When true, the median is calculated
+	 */
     private boolean median = false;
+
+	/**
+	 * When true, the sum of all the simulations of a serie is calculated
+	 */
 	private boolean sum = false;
 
-
-	//File options
+	/**
+	 * Name of the input file with values for the variables
+	 */
 	private String inputFileName = "";
+	/**
+	 * input file with simulation values for some of the variables
+	 */
 	private File inputFile;
 
-
+	/**
+	 * Creates a new monteCarloOptions object
+	 */
 	public MonteCarloOptions() {
 	}
 
+	/**
+	 * Creates a new monteCarloOptions object with the values of montecarloOptions
+	 * @param monteCarloOptions
+	 */
 	public MonteCarloOptions(MonteCarloOptions monteCarloOptions) {
 		this.setNumSimulations(monteCarloOptions.numSimulations);
 		this.setNumTrialSets(monteCarloOptions.numTrialSets);
@@ -57,107 +99,179 @@ public class MonteCarloOptions implements Cloneable {
 
 	}
 
+	/**
+	 * This method returns the number of simulations per serie
+	 * @return the number of simulations per serie
+	 */
 	public int getNumSimulations() {
 		return numSimulations;
 	}
 
+	/**
+	 * This method sets the number of simulations per serie
+	 */
 	public void setNumSimulations(int numSimulations) {
 		this.numSimulations = numSimulations;
 	}
 
-	public MonteCarloOptions clone() {
-		return new MonteCarloOptions(this);
-	}
 
+	/**
+	 * This method returns the number of series of simulations
+	 * @returnthe number of series of simulations
+	 */
 	public int getNumTrialSets() {
 		return numTrialSets;
 	}
 
+	/**
+	 * This method sets the number of series of simulations
+	 */
 	public void setNumTrialSets(int numTrialSets) {
 		this.numTrialSets = numTrialSets;
 	}
 
-
+	/**
+	 * This method returns if the states are logged or not
+	 * @return true if the states are logged, false otherwise
+	 */
 	public boolean isStateLog() {
 		return stateLog;
 	}
 
+	/**
+	 * This method sets if the states are logged
+	 * @param stateLog - true if the states are logged, false otherwise
+	 */
 	public void setStateLog(boolean stateLog) {
 		this.stateLog = stateLog;
 	}
 
+	/**
+	 * This method shows if the events happening in the simulation are logged or not.
+	 * @return  - true if the events are logged, false otherwise
+	 */
 	public boolean isEventLog() {
 		return eventLog;
 	}
 
+	/**
+	 * This method sets if the events happening in the simulation are logged or not
+	 * @param eventLog - true if the events are logged, false otherwise
+	 */
 	public void setEventLog(boolean eventLog) {
 		this.eventLog = eventLog;
 	}
 
+
+	/**
+	 * This method sets if when an event happens, the event queue is logged or not
+	 * @return - true if the events queue is logged, false otherwise
+	 */
 	public boolean isScheduledEventLog() {
 		return scheduledEventLog;
 	}
 
+
+	/**
+	 * This method sets if when an event happens, the event queue is logged or not
+	 * @param scheduledEventLog - true  if the events queue is logged, false otherwise
+	 */
 	public void setScheduledEventLog(boolean scheduledEventLog) {
 		this.scheduledEventLog = scheduledEventLog;
 	}
 
-	/**
-	 * This method returns true if any of the one-simulation level log options is set
-	 * @return
-	 */
-	public boolean isOneSimulationLevelLog(){
-		return (stateLog|| eventLog || scheduledEventLog);
-	}
 
+	/**
+	 * This method returns true if only a summary of the simulations is shown
+	 * @return - true if only a summary of the simulations is shown
+	 */
 	public boolean isOnlySummary() {
 		return onlySummary;
 	}
 
+	/**
+	 * This method set  if only a summary of the simulations is shown
+	 * @param onlySummary  - true  if only a summary of the simulations is shown
+	 */
 	public void setOnlySummary(boolean onlySummary) {
 		this.onlySummary = onlySummary;
 	}
 
+	/**
+	 * This method says is the mean of the simulations is calculated
+	 * @return true if the mean of the simulations is calculated
+	 */
     public boolean isMean() {
         return mean;
     }
 
-    public void setMean(boolean mean) {
+	/**
+	 * This method sets if the mean of the simulations is calculated
+	 * @param mean - true if the mean of the simulations is calculated
+	 */
+	public void setMean(boolean mean) {
         this.mean = mean;
     }
 
-    public boolean isTrimmedMean() {
+	/**
+	 * This method says if the trimmed mean of the simulations is calculated
+	 * @return - true if the trimmed mean of the simulations is calculated
+	 */
+	public boolean isTrimmedMean() {
         return trimmedMean;
     }
 
-    public void setTrimmedMean(boolean trimmedMean) {
+	/**
+	 * This method sets if the trimmed mean of the simulations is calculated
+	 * @param trimmedMean - true if the trimmed mean of the simulations is calculated
+	 */
+	public void setTrimmedMean(boolean trimmedMean) {
         this.trimmedMean = trimmedMean;
     }
 
-    public boolean isMedian() {
+	/**
+	 * This method says if the median of the simulations is calculated
+	 * @return - true if the median of the simulations is calculated
+	 */
+	public boolean isMedian() {
         return median;
     }
 
-    public void setMedian(boolean median) {
+	/**
+	 * This method sets if the median of the simulations is calculated
+	 * @param median - true if the median of the simulations is calculated
+	 */
+	public void setMedian(boolean median) {
         this.median = median;
     }
+
+	/**
+	 * This method says if the sum of the simulations is calculated
+	 * @return - true if the sum of the simulations is calculated
+	 */
 	public boolean isSum() { return sum;}
+
+	/**
+	 * This method sets if the sum of the simulations is calculated
+	 * @param sum true if the sum of the simulations is calculated
+	 */
     public void setSum(boolean sum) {
         this.sum = sum;
     }
 
-    public boolean getSum() {
-		return sum;
-    }
 
     //Input File Options
 
+	/**
+	 * This method returns the File with the input values for simulation
+	 * @return the File with the input values
+	 */
 	public File getInputFile() {
 		return inputFile;
 	}
 
 	/**
-	 * Sets the File which will be used for inference and its filename
+	 * Sets the File which will be used for simulation inputs
 	 * @param inputFile
 	 */
 	public void setInputFile(File inputFile) {
@@ -165,8 +279,20 @@ public class MonteCarloOptions implements Cloneable {
 		this.inputFileName = inputFile.getAbsolutePath();
 	}
 
+	/**
+	 * This method returns the name of the file with the input values for simulation
+	 * @return the name of the file with the input values for simulation
+	 */
 	public String getInputFileName() {
 		return inputFileName;
+	}
+
+	/*
+	 * This method clones this monteCarloOptions object
+	 * @return a clon of this monteCarloOptions object
+	 */
+	public MonteCarloOptions clone() {
+		return new MonteCarloOptions(this);
 	}
 
 

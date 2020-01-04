@@ -322,9 +322,11 @@ public class Node {
 		case DECISION:
 			out.append("Decision");
 			break;
+		//CMI 2019 added event nodes
 		case EVENT:
 				out.append("Event");
 				break;
+		//CMF
 		case UTILITY:
 			out.append("Utility");
 			break;
@@ -666,7 +668,7 @@ public class Node {
 		return !numericalParents.isEmpty() && finiteStatesOrDiscretizedParents.isEmpty();
 	}
 
-
+	//CMI 2019 -- methods for event nodes
 	/**
 	 * This method returns a list with the parents of a node which NodeType is EVENT
 	 *
@@ -694,7 +696,7 @@ public class Node {
 		return eventChildren;
 	}
 
-
+	//CMF
 
 
 	/**

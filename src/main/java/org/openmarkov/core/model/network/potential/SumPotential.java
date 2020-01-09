@@ -49,6 +49,13 @@ import java.util.List;
 	public SumPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role);
 	}
+	
+	/**
+	 * @param variables List of variables
+	 */
+	public SumPotential(List<Variable> variables) {
+		this(variables, PotentialRole.CONDITIONAL_PROBABILITY);
+	}
 
 	public SumPotential(SumPotential potential) {
 		super(potential);

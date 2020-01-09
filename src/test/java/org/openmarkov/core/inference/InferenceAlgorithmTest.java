@@ -94,9 +94,6 @@ import static org.junit.Assume.assumeTrue;
 	}
 
 	/**
-	 * @param probNet
-	 * @return
-	 * @throws NotEvaluableNetworkException
 	 * Builds an InferenceAlgorithm object with 'probNet'.
 	 * This method must be implemented by each inference test class.
 	 */

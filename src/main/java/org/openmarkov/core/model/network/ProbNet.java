@@ -864,15 +864,8 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 			for (Potential potential : potentialsNode) {
 				List<Variable> variables = potential.getVariables();
 				if (variables.contains(variable)
-						// getUtilityPotentials in the inference / markov network
-						&& (
-						potential.getCriterion() != null ||
-								// getUtilityPotentials in the edition of the network
-								(
-										node.nodeType.equals(NodeType.UTILITY)
-												&& node.getVariable().getDecisionCriterion() != null
-								)
-				)) {
+						&& (potential.getCriterion() != null || (node.nodeType.equals(NodeType.UTILITY)
+								&& node.getVariable().getDecisionCriterion() != null))) {
 					potentialsVariable.add(potential);
 				}
 			}

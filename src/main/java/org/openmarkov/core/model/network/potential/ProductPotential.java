@@ -42,15 +42,16 @@ import java.util.List;
 		super(variables, role);
 	}
 
-	//	public ProductPotential(Variable utilityVariable, List<Variable> variables) {
-	//		super(utilityVariable, variables);
-	//	}
-
 	public ProductPotential(ProductPotential potential) {
 		super(potential);
 	}
 
-	// Methods
+	/**
+	 * @param variables variables
+	 */
+	public ProductPotential(List<Variable> variables) {
+		this(variables, PotentialRole.CONDITIONAL_PROBABILITY);
+	}
 
 	/**
 	 * Returns if an instance of a certain Potential type makes sense given

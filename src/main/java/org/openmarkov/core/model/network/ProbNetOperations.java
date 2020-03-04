@@ -987,7 +987,7 @@ public class ProbNetOperations {
 
 	/**
 	 * Method to add non-forgetting arcs.
-	 * The assumption of “no forgetting” is made explicit by arcs
+	 * The assumption of "no forgetting" is made explicit by arcs
 	 * from predecessors of decision nodes
 	 * @param probNet Network
 	 */

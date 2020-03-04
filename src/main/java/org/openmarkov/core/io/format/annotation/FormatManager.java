@@ -44,25 +44,25 @@ public class FormatManager {
 
 	/**
 	 * Reader classes
-	 * It is a Map<extension, <version, readerClass>>
+	 * It is a Map&lt;extension, &lt;version, readerClass&gt;&gt;
 	 */
 	private Map<String, Map<String, Class<?>>> readerClasses;
 
 	/**
 	 * Writer classes
-	 * It is a Map<extension, <version, writerClass>>
+	 * It is a Map&lt;extension, &lt;version, writerClass&gt;&gt;
 	 */
 	private Map<String, Map<String, Class<?>>> writerClasses;
 
 	/**
 	 * Reader instances
-	 * It is a Map<extension, <version, readerInstance>>
+	 * It is a Map&lt;extension, &lt;version, readerInstance&gt;&gt;
 	 */
 	private Map<String, Map<String, ProbNetReader>> readerInstances;
 
 	/**
 	 * Writer instances
-	 * It is a Map<extension, <version, writerInstance>>
+	 * It is a Map&lt;extension, &lt;version, writerInstance&gt;&gt;
 	 */
 	private Map<String, Map<String, ProbNetWriter>> writerInstances;
 

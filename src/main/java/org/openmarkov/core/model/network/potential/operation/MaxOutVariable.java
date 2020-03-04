@@ -177,13 +177,13 @@ public class MaxOutVariable {
 	 * <li>if there are interventions or the utility is different than 0 in the sum of the utility potentials of
 	 * <code>potentials</code>, that sum of utility potentials.
 	 * <li>a policy potential.
-	 *
+	 * </ol>
 	 * OJO: Había otro método maxOutVariable que llamaba a éste, y con Javadoc:
 	 *
 	 * @param decisionVariable <code>Variable</code>
 	 * @param potentials <code>List</code> of <code>TablePotential</code>
 	 * @return A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
-	 * </ol>
+	 *
 	 */
 	/*public MaxOutVariable(Variable decisionVariable, Collection<TablePotential> potentials) {
 		// Get probability and utility potentials

@@ -25,8 +25,8 @@ public class Choice {
 	/**
 	 * Value(s) assignment; if there is no draws only the first one.
 	 *
-	 * invariant value[i] != value[j] when i != j and i < numValues
-	 * and j < numValues
+	 * invariant value[i] != value[j] when i != j and i &lt; numValues
+	 * and j &lt; numValues
 	 * ({@code int[]}).
 	 */
 	private int[] values;

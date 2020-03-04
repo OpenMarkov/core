@@ -29,10 +29,10 @@ public class BinomialPotential extends Potential {
 	//Probability of success
 	private double theta;
 
-	//UNCLEAR What role should I use--> Suppose CONDITIONAL_PROBABILITY 
+	//UNCLEAR What role should I use--&gt; Suppose CONDITIONAL_PROBABILITY
 	public BinomialPotential(List<Variable> variables, PotentialRole role, int NValue, double thetaValue) {
 		this(variables, role);
-		//UNCLEAR --> Where do I control N is integer and p is between 0 and 1?
+		//UNCLEAR --&gt; Where do I control N is integer and p is between 0 and 1?
 		this.N = NValue;
 		this.theta = thetaValue;
 	}
@@ -42,7 +42,7 @@ public class BinomialPotential extends Potential {
 	 * FINITE_STATES(0, "finiteStates"), NUMERIC(1, "numeric"),DISCRETIZED(2, "discretized");
 	 */
 
-	/* UNCLEAR-->Where do I have to control that the variable is numeric, the probability is between 0 and 1
+	/* UNCLEAR--&gt;Where do I have to control that the variable is numeric, the probability is between 0 and 1
 	 * and the number of cases is a positive integer?
 	 */
 	public BinomialPotential(List<Variable> variables, PotentialRole role) {
@@ -115,7 +115,7 @@ public class BinomialPotential extends Potential {
 	}
 
 	@Override
-	//UNCLEAR--> What is this
+	//UNCLEAR--&gt; What is this
 	public void scalePotential(double scale) {
 
 		throw new UnsupportedOperationException();

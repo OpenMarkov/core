@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
  * <li><code>testGetProperPotentials()
  * </code>
  * <li><code>testGetUnionVariables()</code>
- * </ul
+ * </ul>
  */
 public class AuxiliaryOperationsTest {
 

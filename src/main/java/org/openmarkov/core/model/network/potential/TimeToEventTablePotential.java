@@ -1,10 +1,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import cern.jet.random.engine.RandomEngine;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
@@ -15,86 +12,104 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static org.openmarkov.core.model.network.NodeType.EVENT;
+import static org.openmarkov.core.model.network.VariableType.FINITE_STATES;
+
 /**
- * A <code>EventTablePotential</code> is a type of relation with a list of
- * probabilistic nodes.
- *  Transition class to be merged with the new structure of tables
- * There have to be at least one Event variable
- * @version 1.0 -24/03/2019- -cyago -
+ * Potential when the parameters of the probabilistic distribution which describe the TTE in an Event variable may vary in base of the Configuration of the parents.
+ * This potential is described by the probabilistic distribution chosen and a Table where there are the values of the distribution parameters.
+ * The rows of the Table represent the distribution parameters of the distribution, and may be indicated by a number or a Funcion of the parents with Numeric Variables.
+ * Each configuration of the parents are formed by a state of every Chance Variable and a Event parent. There have to be at least one Event variable.
+ * Parents with Numeric Variables are treated as "Function Parameters", and may be used to configure the values of the distribution parameters.
+ * This potential may have impossible configuration of parents
+ * TODO Rephrase.
+ * @version 1.0 -24/03/2019- -cyago
  * @version 1.1 -13/09/2019  -cyago- inheritance from TransitionTablePotential changed for assotiation
  * @version 1.2 -14/12/2019 -cyago- using nodes with continuous variables as parameterVariable
- * @since OpenMarkov 3.0
+ * @version 1.3 -05/01/2019 -cyago- adapted to Configuration version 1.1
+ *
 */
-
 
 @PotentialType(family ="Event", name = "TimeToEventTable")
 public class TimeToEventTablePotential extends Potential implements ImpossibleConfiguration, TimeToEvent {
 
+    /**
+     * Probabilistic distribution for computing TTE of every configuration
+     */
     private String distributionName;
+
+    /**
+     * Name of the parameters of the probabilistic distribution for computing TTE of every configuration
+     */
     private String[] distributionParameters;
 
-    //Variable in which each state is one parameter of the distribution
+    /**
+     * Variable in which each state is one parameter of the distribution
+     */
     private Variable distributionVariable;
 
-    //Array of parents with continuous variables. Empty if there is not continuous variables
+    /**
+     * ArrayList of parents with continuous variables. Empty if there is not continuous variables
+     */
     private ArrayList<Variable> functionVariables;
 
-
+    /**
+     * TableWithEvents which stores the values of the distribution parameters
+     */
     private TableWithEvents tableWithEvents;
-    RandomEngine random= RandomEngine.makeDefault();
 
+
+    /**
+     * Constructor of a TimeToEventTablePotential with probabilistic distribution "Exact"
+     * @param variables List of Variable whose first element is the node Variable and the rest are the Variable of the parents
+     * @param role role assumed by the potential
+     */
     public TimeToEventTablePotential(List<Variable> variables, PotentialRole role){
             this(variables,role, "Exact");
 
     }
 
     /**
-     *
-     * @param variables
-     * @param role
-     * @param distributionName
+     * Constructor of TimeToEventTablePotential with probabilistic distribution given by distributionName
+     * @param variables List of Variable whose first element is the node Variable and the rest are the Variable of the parents
+     * @param role role assumed by the potential
+     * @param distributionName name of the probabilistic distribution used to compute TTE of the node
      */
     public TimeToEventTablePotential(List<Variable> variables, PotentialRole role, String distributionName){
         super(variables,role);
         changeDistribution(distributionName);
     }
 
-    //TODO
+    /**
+     * Constructor of TimeToEventTablePotential which creates an object with the same values as potential.
+     * @param potential TimeToEventTablePotential whose values are used to create the new object
+     */
     public TimeToEventTablePotential(TimeToEventTablePotential potential) {
-        super(potential);
-
+       this(potential.getVariables(),potential.getPotentialRole(), potential.getDistributionName());
+        this.setTableWithEvents(potential.getTableWithEvents());
     }
 
 
 
-
     /**
-     * Returns true  if certain Potential type makes sense given the
-     * variables and the potential role.
+     * Returns true if the node has type Event and one of its parents is an event
      * This potential makes sense when at least one of the parents
-     * is an event and no event parents have Finite States or Discretized variables
+     * is an event.
      *
      * @param node      . <code>Node</code> where the potential is set
      * @param variables . <code>List</code> of <code>Variable</code>.
      * @param role      . <code>PotentialRole</code>.
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-
-        boolean eventSuitable = variables.get(0).getVariableType() == VariableType.EVENT;
-        boolean variableSuitable= true;
-
-        //I'm supposing variable(0) always contains the node variable.
-        for (Variable variable:variables.subList(1,variables.size())) {
-            boolean isEvent= node.getProbNet().getNode(variable).getNodeType() == NodeType.EVENT;
-            variableSuitable &= variable.getVariableType() == VariableType.FINITE_STATES
-                    || variable.getVariableType() == VariableType.DISCRETIZED ||  variable.getVariableType() == VariableType.EVENT;
-        }
-        // Using continuous variables as parameters
-        //return (variableSuitable && eventSuitable);
-        return eventSuitable;
+        boolean hasEventParent = node.getParents().stream().anyMatch(parent -> parent.getNodeType()==EVENT);
+        return ((node.getNodeType()== EVENT) && hasEventParent);
     }
 
 
+    /**
+     * Changes the probabilistic distribution contained is this potential. The values of the distribution parameters are se to default.
+     * @param distributionName name of the new probabilistic distribution
+     */
     public void changeDistribution(String distributionName){
         this.distributionName= distributionName;
         distributionParameters=  ProbDensFunctionManager.getUniqueInstance().getParameters(distributionName);
@@ -115,82 +130,124 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
     }
 
     /**
-     * True if this instance of TimeToEventTablePotential values may have functions as a value in a cell
-     * @return
+     * Returns true if this instance of TimeToEventTablePotential values may have functions as a value in a cell
+     * @return true if this instance of TimeToEventTablePotential values may have functions as a value in a cell. False otherwise
      */
     public boolean hasFunctionValues(){
         return !(functionVariables.isEmpty());
     }
 
+    /**
+     * Returns the TableWithEvents object where the distribution parameters are stored
+     * @return the TableWithEvents object where the distribution parameters are stored
+     */
+    public TableWithEvents getTableWithEvents() {
+        return tableWithEvents;
+    }
 
-    @Override
-    public double getTimeToEvent(Variable stateVariable, State stateValue, String event) {
-        return 0;
+    /**
+     * Sets a TableWithEvents with the values for the distribution parameters
+     * TODO Throw an Exception if the table is not compatible with the probabilistic distribution
+     * @param tableWithEvents the tableWithEvents to be stored
+     */
+    public void setTableWithEvents(TableWithEvents tableWithEvents) {
+        this.tableWithEvents = tableWithEvents;
+    }
+
+    /**
+     * Returns a String object with the name of the probabilistic distribution used for computing TTE
+     * @return String with the name of the probabilistic distribution used for computing TTE
+     */
+    public String getDistributionName() {
+        return distributionName;
+    }
+
+    /**
+     * Sets the probabilistic distribution used for computing TTE to distributionName
+     * @param distributionName String with the name of the distribution to be set
+     */
+    public void setDistributionName(String distributionName) {
+        this.distributionName = distributionName;
+    }
+
+    /**
+     * Returns a Variable object with the distribution parameters as states.
+     * @return Variable with the distribution parameters as states
+     */
+    public Variable getDistributionVariable() {
+        return distributionVariable;
+    }
+
+    /**
+     * Sets a Variable object with the distribution parameters as states.
+     * @param distributionVariable Variable to be set
+     */
+    public void setDistributionVariable(Variable distributionVariable) {
+        this.distributionVariable = distributionVariable;
+    }
+
+    /**
+     * List of Variable with the Numeric Parent Variables which can be used as function parameters
+     * @return List of Variable with the Numeric Parent Variables which can be used as function parameters
+     */
+    public ArrayList<Variable> getFunctionVariables() {
+        return functionVariables;
+    }
+
+    /**
+     * Sets List of Variable with the Numeric Parent Variables which can be used as function parameters.
+     * @param functionVariables
+     */
+    public void setFunctionVariables(ArrayList<Variable> functionVariables) {
+        this.functionVariables = functionVariables;
     }
 
 
-    @Override
-    public double getTimeToEvent(Configuration eC, Random random) {
-        return getTimeToEvent(eC.convertToEvidenceCase(), random);
-    }
 
-    public double getTimeToEvent(EvidenceCase ev, Random random) {
+
+    //TimeToEvent interface
+    @Override
+    public double getTimeToEvent(Configuration configuration, Random random) {
         ProbDensFunction distribution=null;
         int i=0;
         double[] paramValues = new double[distributionParameters.length];
         try {
             for (State sParam: getDistributionVariable().getStates())
             {  Finding f = new Finding(getDistributionVariable(),sParam);
-                ev.addFinding(f);
-                paramValues[i++] = tableWithEvents.getTablePotential().getValue(ev);
+                configuration.addFinding(f);
+                paramValues[i++] = tableWithEvents.getTablePotential().getValue(configuration);
             }
 
             distribution = ProbDensFunctionManager.getUniqueInstance().getProbDensFunctionClass(distributionName).newInstance();
             distribution.setParameters(paramValues);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }    catch (InvalidStateException e) {
-            e.printStackTrace();
-        } catch (IncompatibleEvidenceException e) {
+        } catch (InstantiationException | IllegalAccessException | InvalidStateException | IncompatibleEvidenceException e) {
             e.printStackTrace();
         }
-
         return distribution.getSample(random);
     }
 
-
-
-
-
-
-
-
-
-    public TableWithEvents getTableWithEvents() {
-        return tableWithEvents;
-    }
-
-    public void setTableWithEvents(TransitionTablePotential tableWithEvents) {
-        this.tableWithEvents = tableWithEvents;
-    }
-
+    /**
+     * Generates a TTE since the event is "triggered" by initial event, another event or change in state
+     * *  The event will happend at triggering_time + TTE
+     *
+     * @param findings one or more findings to create the Configuration for extracting TTE
+     * @param random
+     * @return
+     */
     @Override
-    public void addImpossibleConfiguration(EvidenceCase configuration) {
-            addImpossibleConfiguration(new Configuration(configuration));
+    public double getTimeToEvent(List<Finding> findings, Random random) {
+
+        return getTimeToEvent(tableWithEvents.convert(findings),random);
     }
+
+
+    //ImpossibleConfiguration interface
 
     @Override
     public void addImpossibleConfiguration(Configuration configuration) {
         tableWithEvents.addImpossibleConfiguration(configuration);
     }
 
-    @Override
-    public void removeImpossibleConfiguration(EvidenceCase configuration) {
-        removeImpossibleConfiguration(new Configuration(configuration));
-
-    }
 
     @Override
     public void removeImpossibleConfiguration(Configuration configuration) {
@@ -203,13 +260,38 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
     }
 
     @Override
-    public boolean isImpossibleConfiguration(EvidenceCase configuration) {
+    public boolean isImpossibleConfiguration(Configuration configuration) {
         return tableWithEvents.isImpossibleConfiguration(configuration);
     }
 
+    /**
+     * Returns true if the list of findings form an impossible configuration
+     * Useful when having events treated internally in a TableWithEvents. Events are joined together in a TableWithEvents whereas treated as different variables in other cases
+     *
+     * @param findings - set of findings
+     * @return
+     */
     @Override
-    public boolean isImpossibleConfiguration(Configuration configuration) {
-        return tableWithEvents.isImpossibleConfiguration(configuration);
+    public boolean isImpossibleConfiguration(List<Finding> findings) {
+        return tableWithEvents.isImpossibleConfiguration(findings);
+    }
+
+    /**
+     * Returns true if there is a possible configuration with finding
+     *
+     * @param finding finding to check a possible configuration with it
+     * @return true if there is a possible configuration with finding
+     */
+    @Override
+    public boolean hasCompatiblePossibleConfiguration(Finding finding) throws NoFindingException {
+        Variable variable = finding.getVariable();
+        if (variable.getVariableType() == VariableType.EVENT){
+
+        } else{
+            throw new NoFindingException("Only implemented with Event Variables");
+        }
+
+        return false;
     }
 
     @Override
@@ -223,21 +305,30 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
     }
 
 
+    @Override
+    public Potential copy() {
+        return new TimeToEventTablePotential(this);
+    }
+
+//Scale potential
+ //TODO
+    @Override public void scalePotential(double scale) {
+    }
 
 
-    //TODO
+//Table projects
     @Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
             throws NonProjectablePotentialException, WrongCriterionException {
         throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
     }
 
-    //TODO
+
     @Override public TimeToEventTablePotential project(EvidenceCase evidenceCase)
             throws WrongCriterionException, NonProjectablePotentialException {
         throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
     }
 
-    //TODO
+
     @Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
                                                        List<TablePotential> alreadyProjectedPotentials)
             throws NonProjectablePotentialException, WrongCriterionException {
@@ -245,43 +336,13 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
         throw new NonProjectablePotentialException("EventTablePotential cannot be projected");
     }
 
-    //TODO
-    @Override public Potential copy() {
-        return new TimeToEventTablePotential(this);
-    }
 
-    //TODO
+//Is uncertaing
     @Override public boolean isUncertain() {
         return false;
     }
 
-    //TODO
-    @Override public void scalePotential(double scale) {
-    }
 
 
-    public String getDistributionName() {
-        return distributionName;
-    }
-
-    public void setDistributionName(String distributionName) {
-        this.distributionName = distributionName;
-    }
-
-    public Variable getDistributionVariable() {
-        return distributionVariable;
-    }
-
-    public void setDistributionVariable(Variable distributionVariable) {
-        this.distributionVariable = distributionVariable;
-    }
-
-    public ArrayList<Variable> getFunctionVariables() {
-        return functionVariables;
-    }
-
-    public void setFunctionVariables(ArrayList<Variable> functionVariables) {
-        this.functionVariables = functionVariables;
-    }
 }
 

@@ -72,61 +72,64 @@ public class TransitionTablePotential extends TableWithEvents {
         return variableSuitable;
     }
     /**
-     * Get a sample for a column given by ev
+     * Get a sample for a column given by configuration
      * TODO This initial state may have parents
-     * @param ev - configuration of the column
+     * @param configuration - configuration of the column
      *
      * @return A State sample of the potential in base of its parents
      */
-    public State sample(EvidenceCase ev) {
+    public State sample(Configuration configuration) {
         double r = Math.random();
         double countWeight = 0;
         List<Variable> lV = new ArrayList<>();
         Variable cVariable = getConditionedVariable();
         State[] columnStates  = cVariable.getStates();
-        if (ev==null) ev = new EvidenceCase();
+        if (configuration==null) configuration = new Configuration();
 
         for (int i = 0; i < columnStates.length; i++) {
             Finding f = new Finding(cVariable,columnStates[i]);
             try {
-                ev.addFinding(f);
-                countWeight +=tablePotential.getValue(ev);
+                configuration.addFinding(f);
+                countWeight +=tablePotential.getValue(configuration);
                 if (r < countWeight) {
                     return columnStates[i] ;
                 }
-                ev.removeFinding(cVariable);
+                configuration.removeFinding(cVariable);
             } catch (InvalidStateException | IncompatibleEvidenceException | NoFindingException e) {
                 e.printStackTrace();
             }
         }
         return null;
     }
-    /**
-     * Returns the state after an event has happened
-     * version 1.0 - this version only considers Event nodes and State[0] as parents
-     * TODO
-     */
-    public State newState(Configuration configuration, State currentState){
-        State eState = null;
-        Configuration eventAdaptedConfiguration = new Configuration();
-        for (Finding f:configuration.getFindings()){
-            if (f.getVariable().getVariableType() == VariableType.EVENT){
-                try {
-                    State eventState = events.getState(f.getVariable().getName());
-                    eventAdaptedConfiguration.add(new Finding(events,eventState));
-                } catch (InvalidStateException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                eventAdaptedConfiguration.add(f);
-            }
 
+
+    /**
+     * Returns the state after an event has happened. Change in state is driven by an event
+     * if the event happened is a parent of the state this may change state.
+     * version 1.0 - this version only considers Event nodes and State[0] as parents
+     * TODO manage states, I don't like the way it is done
+     */
+    public State newState(Configuration configuration) throws IncompatibleEvidenceException, InvalidStateException {
+        State eState = null;
+        Configuration parentsConfiguration = new Configuration();
+        //Firstly, we select from configuration the Findings whose Variables belong to parent nodes  of the node owner of this potential
+        for (Finding finding:configuration.getFindings()){
+            if (contains(finding.getVariable())){
+                    parentsConfiguration.addFinding(finding);
+            }
         }
-        if (isImpossibleConfiguration(eventAdaptedConfiguration)){
+
+        if (isImpossibleConfiguration(parentsConfiguration)){
+
+            throw new IncompatibleEvidenceException("Impossible Configuration");
         }
-        eState=sample(eventAdaptedConfiguration.convertToEvidenceCase());
+        eState=sample(convert(parentsConfiguration));
 
         return eState;
     }
+
+
+
+
 }
 

@@ -108,7 +108,23 @@ import java.util.List;
 				// Update potentials
 				this.oldPotentials = node2.getPotentials();
 				for (Potential oldPotential : oldPotentials) {
-					Potential newPotential = oldPotential.removeVariable(node1.getVariable());
+					//CMI 10/01/2020 for removing a self-cycle
+
+					Potential newPotential;
+					if (node1.equals(node2)){
+						int lastIndexofVariable = oldPotential.getVariables().lastIndexOf(node2.getVariable());
+						newPotential = oldPotential.removeVariable(oldPotential.getVariables().remove(lastIndexofVariable));
+					} else {
+
+						 newPotential = oldPotential.removeVariable(node1.getVariable());
+						//CMI 10/01/2020 for removing a self-cycle end of "if condition"
+					}
+
+					//Before having selfloops it was only this line
+//					Potential newPotential = oldPotential.removeVariable(node1.getVariable());
+					//CMF
+
+
 					// TODO - Implements validate for all potential types, at this moment it always return true.
 					/*
 					if (!newPotential.validate(node2, newPotential.getVariables(), newPotential.getPotentialRole())){

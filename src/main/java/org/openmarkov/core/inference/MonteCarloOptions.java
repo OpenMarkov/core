@@ -17,12 +17,13 @@ import java.io.File;
  * @version 1.0 25/08/2019
  * @version 1.1 25/09/2019 -added log options
  * @version 1.2 16/12/2019 -added calculation and file options
+ * @version 1.3 21/02/2020 -changed textual log options having only one check for "detailedTextualLog"
  */
 public class MonteCarloOptions implements Cloneable {
 
     //Simulation Options
 	private int numSimulations = 1;
-	private int numTrialSets =1;
+	private int numSeries =1;
 
 
 	//Log options
@@ -31,6 +32,7 @@ public class MonteCarloOptions implements Cloneable {
 	 */
 	private boolean onlySummary = true;
 
+//TO BE removed
 	/**
 	 * When true, every change in the state nodes is logged
 	 */
@@ -45,6 +47,13 @@ public class MonteCarloOptions implements Cloneable {
 	 */
 	private boolean scheduledEventLog =false;
 
+//TO BE removed
+
+	/**
+	 * When true, a text log with any event and the assotiated changes is created
+	 */
+
+	private boolean textualLog = false;
 
 
 	//Result options
@@ -88,7 +97,7 @@ public class MonteCarloOptions implements Cloneable {
 	 */
 	public MonteCarloOptions(MonteCarloOptions monteCarloOptions) {
 		this.setNumSimulations(monteCarloOptions.numSimulations);
-		this.setNumTrialSets(monteCarloOptions.numTrialSets);
+		this.setNumSeries(monteCarloOptions.numSeries);
 		this.setOnlySummary(monteCarloOptions.isOnlySummary());
 		this.stateLog = monteCarloOptions.isStateLog();
 		this.eventLog = monteCarloOptions.isEventLog();
@@ -119,15 +128,15 @@ public class MonteCarloOptions implements Cloneable {
 	 * This method returns the number of series of simulations
 	 * @returnthe number of series of simulations
 	 */
-	public int getNumTrialSets() {
-		return numTrialSets;
+	public int getNumSeries() {
+		return numSeries;
 	}
 
 	/**
 	 * This method sets the number of series of simulations
 	 */
-	public void setNumTrialSets(int numTrialSets) {
-		this.numTrialSets = numTrialSets;
+	public void setNumSeries(int numSeries) {
+		this.numSeries = numSeries;
 	}
 
 	/**
@@ -155,7 +164,7 @@ public class MonteCarloOptions implements Cloneable {
 	}
 
 	/**
-	 * This method sets if the events happening in the simulation are logged or not
+	 * Sets if the events happening in the simulation are logged or not
 	 * @param eventLog - true if the events are logged, false otherwise
 	 */
 	public void setEventLog(boolean eventLog) {
@@ -164,7 +173,7 @@ public class MonteCarloOptions implements Cloneable {
 
 
 	/**
-	 * This method sets if when an event happens, the event queue is logged or not
+	 * Sets if when an event happens, the event queue is logged or not
 	 * @return - true if the events queue is logged, false otherwise
 	 */
 	public boolean isScheduledEventLog() {
@@ -173,12 +182,31 @@ public class MonteCarloOptions implements Cloneable {
 
 
 	/**
-	 * This method sets if when an event happens, the event queue is logged or not
+	 * Sets if when an event happens, the event queue is logged or not
 	 * @param scheduledEventLog - true  if the events queue is logged, false otherwise
 	 */
 	public void setScheduledEventLog(boolean scheduledEventLog) {
 		this.scheduledEventLog = scheduledEventLog;
 	}
+
+
+	/**
+	 * When true, a text log with any event and the assotiated changes is created
+	 */
+	public boolean isTextualLog() {
+//		return false;
+		return textualLog;
+	}
+
+	/**
+	 * Sets the detailedTextLog option. When true the detailed text log is created.
+	 * @param textualLog - true if the detailed text log is created, false otherwise
+	 */
+	public void setTextualLog(boolean textualLog) {
+		this.textualLog = textualLog;
+	}
+
+
 
 
 	/**
@@ -294,6 +322,7 @@ public class MonteCarloOptions implements Cloneable {
 	public MonteCarloOptions clone() {
 		return new MonteCarloOptions(this);
 	}
+
 
 
 }

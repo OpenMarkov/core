@@ -12,7 +12,7 @@ package org.openmarkov.core.model.network;
  *
  * @author jperez
  */
-public class Criterion implements Cloneable, Comparable<Criterion> {
+public class Criterion implements Cloneable {
 
 	/**
 	 * Constant with the default criterion of a ProbNet
@@ -196,10 +196,6 @@ public class Criterion implements Cloneable, Comparable<Criterion> {
 		this.ceScale = newCriterion.getCeScale();
 	}
 
-	@Override
-	public int compareTo(Criterion o) {
-		return (o.getCriterionName().compareTo(this.getCriterionName()));
-	}
 
 	/**
 	 * Emum with the values of Cost and Effectiveness for the CE Analysis

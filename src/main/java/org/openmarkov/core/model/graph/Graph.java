@@ -31,6 +31,7 @@ import java.util.Stack;
  * @author fjdiez
  * @author ibermejo
  * @version 1.1
+ * @version 1.2 - cyago 06/01/2020
  * @invariant Two different nodes can not represent the same object
  * @see org.openmarkov.core.model.network.Node
  * @see Link
@@ -232,15 +233,27 @@ public class Graph<T> {
 		makeLinksExplicit(false);
 		List<Link<T>> linksNode1 = nodeLinks.get(node1);
 		if (linksNode1 != null) {
+
 			for (Link<T> link : linksNode1) {
-				if (directed && link.isDirected() && link.getNode2().equals(node2) || !directed && !link.isDirected()
+				if (directed && link.isDirected() &&
+
+			//CMI 06/01/2020 - when directed links
+			// the previous code, took ALL the links of node1 (incoming or outgoing  ) and afterwards looks for links ending in node2.
+			// This does not work when self-loops, because it may take any link ending in node2. Therefore another check for Node1 has been added
+						link.getNode1().equals(node1) &&
+			//CMF
+						link.getNode2().equals(node2) || !directed && !link.isDirected()
 						&& link.contains(node2)) {
 					return link;
 				}
 			}
+
 		}
 		return null;
+
 	}
+
+
 
 	/**
 	 * Creates the explicit links (based on the implicit links).<p> When

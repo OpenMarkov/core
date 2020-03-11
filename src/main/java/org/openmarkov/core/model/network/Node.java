@@ -668,36 +668,6 @@ public class Node {
 		return !numericalParents.isEmpty() && finiteStatesOrDiscretizedParents.isEmpty();
 	}
 
-	//CMI 2019 -- methods for event nodes
-	/**
-	 * This method returns a list with the parents of a node which NodeType is EVENT
-	 *
-	 * @return the list of parents which NodeType is EVENT
-	 */
-	public List<Node> getEventParents() {
-		List<Node> eventParents = new ArrayList<>();
-		for (Node parent : getParents()) {
-			if (parent.getNodeType() == NodeType.EVENT) {
-				eventParents.add(parent);
-			}
-		}
-		return eventParents;
-	}
-
-
-	/**
-	 *  This method returns a list with the children of a node which NodeType is EVENT
-	 *
-	 * @return the list of children which NodeType is EVENT
-	 */
-	public List<Node> getEventChildren(){
-		List<Node>  eventChildren= this.getChildren();
-		eventChildren.removeIf(node -> node.getNodeType() != NodeType.EVENT );
-		return eventChildren;
-	}
-
-	//CMF
-
 
 	/**
 	 * Returns the isInput.

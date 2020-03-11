@@ -117,39 +117,28 @@ public class TableWithEvents extends Potential implements ImpossibleConfiguratio
         }
     }
 
+//    /**
+//     *
+//     * @param configuration of parents given
+//     * @return a double with the numeric value of the table position given by configuration
+//     */
+//    public double getValue(Configuration configuration){
+//
+//        tablePotential.getValue(convert(configuration.getFindings()));
+//    }
 
-
-
-
-
-
-
-
-    @Override
-    public void addImpossibleConfiguration(EvidenceCase eCiC){
-        addImpossibleConfiguration(new Configuration(eCiC));
-    }
 
     @Override
     public void addImpossibleConfiguration(Configuration configuration) {
         getImpossibleConfigurations().add(configuration);
     }
 
-    @Override
-    public void removeImpossibleConfiguration(EvidenceCase configuration) {
-        removeImpossibleConfiguration(new Configuration(configuration));
-    }
 
     @Override
     public void removeImpossibleConfiguration(Configuration configuration) {
         impossibleConfigurations.removeIf(configuration1 ->configuration1.equals(configuration));
     }
 
-    @Override
-    public boolean isImpossibleConfiguration(EvidenceCase configuration) {
-
-        return  isImpossibleConfiguration( new Configuration(configuration));
-    }
 
     @Override
     public boolean hasImpossibleConfiguration(){
@@ -163,6 +152,66 @@ public class TableWithEvents extends Potential implements ImpossibleConfiguratio
         return isThere;
     }
 
+    /**
+     * Converts a List of Finding with event Findings to the Configuration structure of a TableWithEvents
+     * @param findings list of findings to be converted to TableWithEvents Configuration format
+     * @return a Configuration object where its Finding object are traslated to be used in a TableWithEvents
+     */
+    public Configuration convert(List<Finding> findings){
+        Configuration tteConfiguration = new Configuration();
+        for (Finding finding:findings) {
+            try  {
+                switch (finding.getVariable().getVariableType()){
+                    case EVENT:
+                        tteConfiguration.addFinding(new Finding(events, events.getState(finding.getVariable().getName())));
+                        break;
+                    case FINITE_STATES:
+                        tteConfiguration.addFinding(finding);
+                        break;
+                    default:
+                        break;
+                }
+            } catch (InvalidStateException |IncompatibleEvidenceException e) {
+                e.printStackTrace();
+            }
+        }
+        return tteConfiguration;
+    }
+
+
+    /**
+     * Converts a Configuration of variables to the Configuration structure of a TableWithEvents
+     * @param configuration configuration to be converted
+     * @return a Configuration of variables with Configuration structure of a TableWithEvents
+     */
+    public Configuration convert(EvidenceCase configuration){
+        return convert(configuration.getFindings());
+    }
+
+    /**
+     * Returns true if the list of findings form an impossible configuration
+     * Useful when having events treated internally in a TableWithEvents. Events are joined together in a TableWithEvents whereas treated as different variables in other cases
+     *
+     * @param findings - set of findings
+     * @return
+     */
+    @Override
+    public boolean isImpossibleConfiguration(List<Finding> findings) {
+        return isImpossibleConfiguration(convert(findings));
+    }
+
+
+    /**
+     * Returns true if there is a possible configuration with finding
+     *
+     * @param finding finding to check a possible configuration with it
+     * @return true if there is a possible configuration with finding
+     * @throws NoFindingException
+     */
+    @Override
+    public boolean hasCompatiblePossibleConfiguration(Finding finding) throws NoFindingException {
+        return false;
+    }
 
 
     public Variable getEvents() {

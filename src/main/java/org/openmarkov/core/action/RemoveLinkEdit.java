@@ -108,12 +108,21 @@ import java.util.List;
 				// Update potentials
 				this.oldPotentials = node2.getPotentials();
 				for (Potential oldPotential : oldPotentials) {
-					//CMI 10/01/2020 for removing a self-cycle
+					//CMI 10/01/2020 for removing a self-cycle, 19/03/2020 fixed bug; when using removePotential with self-loops, it removed the first ocurrence of the variable, removing node variable
 
 					Potential newPotential;
 					if (node1.equals(node2)){
-						int lastIndexofVariable = oldPotential.getVariables().lastIndexOf(node2.getVariable());
-						newPotential = oldPotential.removeVariable(oldPotential.getVariables().remove(lastIndexofVariable));
+
+						/* Potential#removeVariable(Variable variable) removes variable when it if first encountered,
+						does not take into account self loops, then creates a new Uniform potential.
+						When removing self-loops Variable appears twice: in potential.variables(0) and potential.variables(k) so it is necessary
+						to remove potential.variables(k) instead of potential.variables(0).
+						Therefore I replicate the behaviour of removeVariable but removing the last ocurrence
+						but removing the last occurrence of Variable because if not */
+						List<Variable> variables = oldPotential.getVariables();
+						variables.remove(oldPotential.getVariables().lastIndexOf(node2.getVariable()));
+						newPotential = new UniformPotential(variables, oldPotential.getPotentialRole());
+
 					} else {
 
 						 newPotential = oldPotential.removeVariable(node1.getVariable());

@@ -15,11 +15,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface ProbDensFunctionType {
 	String name();
 
-	//CMI
+	//CMI To be removed
 	//For Univariate
 	String univariateName() default "default";
-
 	//CMF
+
+	//CMI 14/03/2020
+	//Distributions may be used to calculate TTE in a DesNET
+	boolean isValidForTTE() default false;
+	//
 	boolean isValidForProbabilities() default true;
 
 	boolean isValidForNumeric() default true;

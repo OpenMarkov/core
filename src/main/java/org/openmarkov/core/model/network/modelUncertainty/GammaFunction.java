@@ -7,8 +7,12 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
-@ProbDensFunctionType(name = "Gamma", isValidForProbabilities = false, parameters = { "k",
-		"theta" }) public class GammaFunction extends GammaAbstract {
+//CMI 14/03/2020
+//@ProbDensFunctionType(name = "Gamma", isValidForProbabilities = false, parameters = { "k",
+//		"theta" })
+@ProbDensFunctionType(name = "Gamma", isValidForProbabilities = false, parameters = { "k","theta" }, isValidForTTE = true)
+//CMF
+public class GammaFunction extends GammaAbstract {
 	private double k;
 	private double theta;
 

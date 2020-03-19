@@ -9,9 +9,15 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 //@ProbDensFunctionType(name = "Exponential", isValidForProbabilities = false, parameters = { "mu",
 //		"sigma" })
-@ProbDensFunctionType(name = "Exponential", isValidForProbabilities = false, parameters = { "lambda"})
+//CMI 14/03/2020
+//@ProbDensFunctionType(name = "Exponential", isValidForProbabilities = false, parameters = { "lambda"})
+@ProbDensFunctionType(name = "Exponential", isValidForProbabilities = false, parameters = { "lambda"}, isValidForTTE = true)
+//CMF
 public class ExponentialFunction extends ProbDensFunctionWithKnownInverseCDF {
 	private double lambda;
+
+
+
 
 	public ExponentialFunction() {
 		this(0.0);

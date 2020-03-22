@@ -45,7 +45,7 @@ public class OnlyOneOrphanInitialEvent extends PNConstraint {
 			if (purposeEdit.getNewPurpose().equals(PurposeType.INITIAL_EVENT.getName())){
 				List<Node> eventNodes= probNet.getNodes(NodeType.EVENT);
 				if ( eventNodes.stream().anyMatch(node->node.getPurpose().equals(PurposeType.INITIAL_EVENT.getName()))){
-					JOptionPane.showMessageDialog(null, getMessage(),getErrorTitle() ,JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, getMessage(),"checkEdit purposeEdit" +getErrorTitle() ,JOptionPane.ERROR_MESSAGE);
 					return false;
 				}
 			}
@@ -57,7 +57,7 @@ public class OnlyOneOrphanInitialEvent extends PNConstraint {
 			if ((destinationNode.getPurpose().equals(PurposeType.INITIAL_EVENT.getName()))) {
 				//When double clicking in a node an AddLinkEdit  with every no Uitily node is generated, therefore if will be several error messages when double clicking the initial node
 				//Until this is fixed no messages are shown
-				JOptionPane.showMessageDialog(null, getMessage(),getErrorTitle() ,JOptionPane.ERROR_MESSAGE);
+//				JOptionPane.showMessageDialog(null, "checkEdit addlinkedit" + addLinkEdit.getVariable1().getName() + getMessage(),getErrorTitle() ,JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 
@@ -77,7 +77,8 @@ public class OnlyOneOrphanInitialEvent extends PNConstraint {
 		List<Node> initialEventList = eventNodes.stream().filter(node->node.getPurpose().equals(PurposeType.INITIAL_EVENT.getName())).collect(Collectors.toList());
 		if ((initialEventList.size()>1)
 			|| ((initialEventList.size()==1) && initialEventList.get(0).getNumParents()>0)) {
-			JOptionPane.showMessageDialog(null, this, getMessage(), JOptionPane.ERROR_MESSAGE);
+//			JOptionPane.showMessageDialog(null, this, getMessage(), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, this, "checkProbNet" +getMessage(), JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 

@@ -79,11 +79,11 @@ public class MonteCarloOptions implements Cloneable {
 	/**
 	 * Name of the input file with values for the variables
 	 */
-	private String inputFileName = "";
+	private String inputFileName = null;
 	/**
 	 * input file with simulation values for some of the variables
 	 */
-	private File inputFile;
+	private File inputFile = null;
 
 	/**
 	 * Creates a new monteCarloOptions object
@@ -300,12 +300,14 @@ public class MonteCarloOptions implements Cloneable {
 
 	/**
 	 * Sets the File which will be used for simulation inputs
-	 * @param inputFile
+	 * @param inputFile - File which will be used for simulation inputs
 	 */
 	public void setInputFile(File inputFile) {
 		this.inputFile = inputFile;
 		this.inputFileName = inputFile.getAbsolutePath();
 	}
+
+
 
 	/**
 	 * This method returns the name of the file with the input values for simulation
@@ -314,6 +316,16 @@ public class MonteCarloOptions implements Cloneable {
 	public String getInputFileName() {
 		return inputFileName;
 	}
+
+	/**
+	 * Returns true if there is an input tile with simulation data, false otherwise
+	 * @return true if there is an input tile with simulation data
+	 */
+	public boolean isInputFile(){
+		return (inputFile != null);
+	}
+
+
 
 	/*
 	 * This method clones this monteCarloOptions object

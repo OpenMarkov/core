@@ -28,26 +28,17 @@ public class MonteCarloOptions implements Cloneable {
 
 	//Log options
 	/**
+	 *
+	 */
+	public static final String DESNET_RESULTS_DIRECTORY= ".\\DESNetFiles\\";
+	public static final String EXCEL_DIRECTORY="ExcelLog\\";
+	public static final String TEXTUAL_LOG_DIRECTORY="TextualLog\\";
+
+
+	/**
 	 * When true, only a summary of the simulations is recorded
 	 */
-	private boolean onlySummary = true;
-
-//TO BE removed
-	/**
-	 * When true, every change in the state nodes is logged
-	 */
-	private boolean stateLog =false;
-	/**
-	 *  When true, every event happening in the simulation is logged
-	 */
-	private boolean eventLog =false;
-
-	/**
-	 * When true, the events queue is logged each time an event happens
-	 */
-	private boolean scheduledEventLog =false;
-
-//TO BE removed
+	private boolean excelResutlsPerSeries = false;
 
 	/**
 	 * When true, a text log with any event and the assotiated changes is created
@@ -76,6 +67,7 @@ public class MonteCarloOptions implements Cloneable {
 	 */
 	private boolean sum = false;
 
+
 	/**
 	 * Name of the input file with values for the variables
 	 */
@@ -98,10 +90,7 @@ public class MonteCarloOptions implements Cloneable {
 	public MonteCarloOptions(MonteCarloOptions monteCarloOptions) {
 		this.setNumSimulations(monteCarloOptions.numSimulations);
 		this.setNumSeries(monteCarloOptions.numSeries);
-		this.setOnlySummary(monteCarloOptions.isOnlySummary());
-		this.stateLog = monteCarloOptions.isStateLog();
-		this.eventLog = monteCarloOptions.isEventLog();
-		this.scheduledEventLog = monteCarloOptions.isScheduledEventLog();
+		this.setExcelResutlsPerSeries(monteCarloOptions.isExcelResutlsPerSeries());
 		this.mean= monteCarloOptions.isMean();
 		this.trimmedMean = monteCarloOptions.isTrimmedMean();
 		this.median = monteCarloOptions.isMedian();
@@ -139,56 +128,6 @@ public class MonteCarloOptions implements Cloneable {
 		this.numSeries = numSeries;
 	}
 
-	/**
-	 * This method returns if the states are logged or not
-	 * @return true if the states are logged, false otherwise
-	 */
-	public boolean isStateLog() {
-		return stateLog;
-	}
-
-	/**
-	 * This method sets if the states are logged
-	 * @param stateLog - true if the states are logged, false otherwise
-	 */
-	public void setStateLog(boolean stateLog) {
-		this.stateLog = stateLog;
-	}
-
-	/**
-	 * This method shows if the events happening in the simulation are logged or not.
-	 * @return  - true if the events are logged, false otherwise
-	 */
-	public boolean isEventLog() {
-		return eventLog;
-	}
-
-	/**
-	 * Sets if the events happening in the simulation are logged or not
-	 * @param eventLog - true if the events are logged, false otherwise
-	 */
-	public void setEventLog(boolean eventLog) {
-		this.eventLog = eventLog;
-	}
-
-
-	/**
-	 * Sets if when an event happens, the event queue is logged or not
-	 * @return - true if the events queue is logged, false otherwise
-	 */
-	public boolean isScheduledEventLog() {
-		return scheduledEventLog;
-	}
-
-
-	/**
-	 * Sets if when an event happens, the event queue is logged or not
-	 * @param scheduledEventLog - true  if the events queue is logged, false otherwise
-	 */
-	public void setScheduledEventLog(boolean scheduledEventLog) {
-		this.scheduledEventLog = scheduledEventLog;
-	}
-
 
 	/**
 	 * When true, a text log with any event and the assotiated changes is created
@@ -207,22 +146,20 @@ public class MonteCarloOptions implements Cloneable {
 	}
 
 
-
-
-	/**
+/**
 	 * This method returns true if only a summary of the simulations is shown
 	 * @return - true if only a summary of the simulations is shown
 	 */
-	public boolean isOnlySummary() {
-		return onlySummary;
+	public boolean isExcelResutlsPerSeries() {
+		return excelResutlsPerSeries;
 	}
 
 	/**
 	 * This method set  if only a summary of the simulations is shown
-	 * @param onlySummary  - true  if only a summary of the simulations is shown
+	 * @param excelResutlsPerSeries  - true  if only a summary of the simulations is shown
 	 */
-	public void setOnlySummary(boolean onlySummary) {
-		this.onlySummary = onlySummary;
+	public void setExcelResutlsPerSeries(boolean excelResutlsPerSeries) {
+		this.excelResutlsPerSeries = excelResutlsPerSeries;
 	}
 
 	/**

@@ -23,12 +23,14 @@ import java.util.List;
 /**
  * This constrain only allows self loops in event nodes. Self loop is a directed edge which the same origin and destination
  * @author cyago - cyago adapted it from NoSelfLoop - 31/12/2019 - this constraint is only used in DESNets
+ * @version 1.0 - self-loops only in Event nodes
+ * @version 1.1 - self-loops in Chance and Event nodes - 05/04/2020
  */
-@Constraint(name = "OnySelfLoopsWithEventNodes", defaultBehavior = ConstraintBehavior.NO) public class OnlySelfLoopsWithEventNodes
-		extends PNConstraint {
+@Constraint(name = "OnySelfLoopsWithEventAndChanceNodes", defaultBehavior = ConstraintBehavior.NO)
+public class OnlySelfLoopsWithEventAndChanceNodes extends PNConstraint {
 
 	/**
-	 * This method checks if edit satisfies the constrain of no self-loops excepting in event nodes
+	 * This method checks if edit satisfies the constrain of no self-loops excepting in Event nodes and Chance nodes
 	 * @param probNet <code>ProbNet</code> the probNet to be checked
 	 * @param edit    <code>PNEdit</code>
 	 * @return true if satisfies the constrain, false otherwise
@@ -37,12 +39,13 @@ import java.util.List;
 	 */
 	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
 			throws NonProjectablePotentialException, WrongCriterionException {
+		//Should be checked when changing a link
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			Variable originVariable = ((AddLinkEdit) simpleEdit).getVariable1();
 			Variable destinationVariable = ((AddLinkEdit) simpleEdit).getVariable2();
-			if ((originVariable.equals(destinationVariable)) && (probNet.getNode(originVariable).getNodeType() != NodeType.EVENT)) {
-				JOptionPane.showMessageDialog(null, null, getMessage(),JOptionPane.ERROR_MESSAGE);
+			if ((originVariable.equals(destinationVariable)) && ( (probNet.getNode(originVariable).getNodeType() != NodeType.EVENT) && (probNet.getNode(originVariable).getNodeType() != NodeType.CHANCE ) )){
+				JOptionPane.showMessageDialog(null, getMessage(), "Constrain violation",JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 		}
@@ -50,14 +53,13 @@ import java.util.List;
 	}
 
 	/**
-	 *  This method checks if probNet satisfies the constrain of no self-loops excepting in event nodes
+	 * This method checks if probNet satisfies the constrain of no self-loops excepting in Event and Chance nodes
 	 * @param probNet <code>ProbNet</code> probNet to be checked
 	 * @return true if if satisfies the constrain, false otherwise
 	 */
 	@Override public boolean checkProbNet(ProbNet probNet) {
 		for (Node node : probNet.getNodes()) {
-			//TODO Sibling?? --> I think this can avoid dubplicate links which is good
-			if ((probNet.isChild(node, node) &&  node.getNodeType() == NodeType.EVENT ) || probNet.isSibling(node, node)) {
+			if ( probNet.isChild(node, node) &&  !((node.getNodeType() == NodeType.EVENT ) ||(node.getNodeType() == NodeType.CHANCE ) )) {
 				JOptionPane.showMessageDialog(null, this, getMessage(),JOptionPane.ERROR_MESSAGE);
 				return false;
 			}

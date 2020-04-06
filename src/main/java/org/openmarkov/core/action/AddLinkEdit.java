@@ -94,7 +94,7 @@ import java.util.List;
 				// Previous code is supposing there is no self loops so methods consider there is no duplicated variables
 				// method Potential#addVariable only adds the variable if the variable is not there.
 				//To avoid regressions, and keep the changes in previous classes to a minumun, the Uniform Potential is created here.
-				//Because of this previous assumption I always check the constrain until I could be ckecked if it is safe not doing it
+				//Because of this previous assumption I am also checking the constrain.
 				//Currently networks with OnlySelfLoopsWithEventAndChanceNodes only have one potential
 			} else if ((node1 == node2 ) && ( (node1.getNodeType() ==NodeType.EVENT) || (node1.getNodeType() ==NodeType.CHANCE))
 					&& node1.getProbNet().getNetworkType().isApplicableConstraint(new OnlySelfLoopsWithEventAndChanceNodes())){

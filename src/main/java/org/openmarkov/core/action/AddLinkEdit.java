@@ -14,8 +14,10 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.OnlySelfLoopsWithEventAndChanceNodes;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
+import org.openmarkov.core.model.network.potential.UniformPotential;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +90,23 @@ import java.util.List;
 					Potential newPotential = new SumPotential(variables, oldPotential.getPotentialRole());
 					newPotentials.add(newPotential);
 				}
+			//CMI 05/04/2020 - There may be self-loops in DESNets for EVENT and CHANCE nodes.
+				// Previous code is supposing there is no self loops so methods consider there is no duplicated variables
+				// method Potential#addVariable only adds the variable if the variable is not there.
+				//To avoid regressions, and keep the changes in previous classes to a minumun, the Uniform Potential is created here.
+				//Because of this previous assumption I always check the constrain until I could be ckecked if it is safe not doing it
+				//Currently networks with OnlySelfLoopsWithEventAndChanceNodes only have one potential
+			} else if ((node1 == node2 ) && ( (node1.getNodeType() ==NodeType.EVENT) || (node1.getNodeType() ==NodeType.CHANCE))
+					&& node1.getProbNet().getNetworkType().isApplicableConstraint(new OnlySelfLoopsWithEventAndChanceNodes())){
+
+				for (Potential oldPotential : oldPotentials) {
+					// Update potential
+					List<Variable> variables = oldPotential.getVariables();
+					variables.add(node1.getVariable());
+					Potential newPotential = new UniformPotential(variables, oldPotential.getPotentialRole());
+					newPotentials.add(newPotential);
+				}
+			//CMF
 			} else {
 				for (Potential oldPotential : oldPotentials) {
 					// Update potential

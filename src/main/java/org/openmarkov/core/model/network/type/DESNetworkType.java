@@ -30,7 +30,7 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 		overrideConstraintBehavior(NoEventNodes.class, ConstraintBehavior.NO);
 		overrideConstraintBehavior(NoBackwardLink.class, ConstraintBehavior.NO);
 		overrideConstraintBehavior(NoLoops.class, ConstraintBehavior.NO);
-		overrideConstraintBehavior(OnlySelfLoopsWithEventNodes.class, ConstraintBehavior.YES);
+		overrideConstraintBehavior(OnlySelfLoopsWithEventAndChanceNodes.class, ConstraintBehavior.YES);
 		overrideConstraintBehavior(OnlyOneOrphanInitialEvent.class, ConstraintBehavior.YES);
 		//overrideConstraintBehavior(DistinctLinks.class, ConstraintBehavior.NO);
 

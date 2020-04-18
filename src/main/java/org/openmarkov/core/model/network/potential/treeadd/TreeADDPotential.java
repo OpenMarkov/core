@@ -86,8 +86,10 @@ public class TreeADDPotential extends Potential {
 		List<Variable> potentialVariables;
 		// if topVariable is finite states or discretized, it creates a branch
 		// for each state
-		if (variableType == VariableType.FINITE_STATES || variableType == VariableType.DISCRETIZED) {
-
+		//CMI
+//		if (variableType == VariableType.FINITE_STATES || variableType == VariableType.DISCRETIZED) {
+		if (variableType == VariableType.FINITE_STATES || variableType == VariableType.DISCRETIZED || variableType==VariableType.EVENT) {
+		//CMF
 			for (int i = branchingStates.length - 1; i >= 0; i--) {
 				// if potential role of the treeADD is a conditional probability
 				// it is assigned an uniform potential
@@ -104,6 +106,8 @@ public class TreeADDPotential extends Potential {
 				}
 			}
 		}
+
+
 		// if topVariable is numeric, it creates a branch whose thresholds are
 		// the same as those defined for the variable
 		if (variableType == VariableType.NUMERIC) {

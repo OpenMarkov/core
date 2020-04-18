@@ -180,7 +180,11 @@ public class TreeADDBranch {
 		TreeADDBranch branch = null;
 		if (potential != null) {
 			if (this.rootVariable.getVariableType() == VariableType.FINITE_STATES
-					|| this.rootVariable.getVariableType() == VariableType.DISCRETIZED) {
+					|| this.rootVariable.getVariableType() == VariableType.DISCRETIZED
+			//CMI 18/04/2020 - added support for VariableType.EVENT. Used in TreeWithEventsPotential
+			|| this.rootVariable.getVariableType() == VariableType.EVENT
+			//CMF
+			) {
 				branch = new TreeADDBranch(new ArrayList<>(getBranchStates()), this.getRootVariable(),
 						this.getPotential().copy(), this.getParentVariables());
 

@@ -423,9 +423,12 @@ public class Variable implements Cloneable, Comparable<Variable> {
 			setPartitionedInterval(
 					new PartitionedInterval(getDefaultInterval(getNumStates()), getDefaultBelongs(getNumStates())));
 			break;
+		//CMI 2019 - created type Event - 11/04/2020 added a state named event
 		case EVENT:
-//TODO
+		//TODO - resource file
+		this.setStates(new State[] { new State("event") });
 			break;
+		//CMF
 		default:
 			break;
 		}

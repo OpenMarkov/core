@@ -4,9 +4,7 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Configuration of States and Events representing an configuration of Findings in a potential used in a DESNet
@@ -14,6 +12,7 @@ import java.util.List;
  * @author cyago
  * @version 1.0 - 01/09/2019
  * @version 1.1 - 04/01/2020 - inherits from EvidenceCase due to we need evidence cases for tables - to be changed with the new version of tables. Inheritance it done because Configuration comparation is needed and EvidenceCase does not have an equal method
+ * @version 1.2 - 11/04/2020 - adds methods to use with the sampling methods defined in org.openmarkov.core.model.network.potential.Potential
  */
 public class Configuration extends EvidenceCase{
 
@@ -63,6 +62,36 @@ public class Configuration extends EvidenceCase{
         sortedFindings.sort((f1,f2) -> f1.getVariable().getName().compareTo(f2.getVariable().getName()));
         return sortedFindings;
     }
+
+
+    /**
+     * Converts the configuration to Map<Variable, Integer> where Variable represent the Variables of the Configuratiobn
+     * and Integer represents the number of the selected State. It is only valid for Finite States Variables.
+     * This is to be used with Potential#sampleCondigionedVariable(Map<Variable, Integer>)
+     * @return this Configuraton converted to Map<Variable, Integer>
+     */
+    public Map<Variable, Integer> convert() throws InvalidStateException{
+// TODO :When org.openmarkov.core.model.network.potential.Potential#sampleCondigionedVariable will be changed to sampleCondigionedVariable(Map<Variable, Double>), this method will be changed too.
+        List<Finding> findings = getFindings();
+        Map<Variable, Integer> map = new HashMap<>();
+        for (Finding finding:findings){
+
+            Variable variable =finding.getVariable();
+            if (variable.getVariableType() != VariableType.FINITE_STATES)
+                throw new InvalidStateException("Variable" + variable.getName() +"hasn't finite states type");
+            Integer integer = finding.getStateIndex();
+            map.put(variable, new Integer(integer));
+
+        }
+        return map;
+    }
+
+
+
+
+
+
+
 
 
     /**

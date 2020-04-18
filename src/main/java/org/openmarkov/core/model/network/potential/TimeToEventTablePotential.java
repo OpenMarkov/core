@@ -101,8 +101,10 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
      * @param role      . <code>PotentialRole</code>.
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        boolean hasEventParent = node.getParents().stream().anyMatch(parent -> parent.getNodeType()==EVENT);
-        return ((node.getNodeType()== EVENT) && hasEventParent);
+//        boolean hasEventParent = node.getParents().stream().anyMatch(parent -> parent.getNodeType()==EVENT);
+//        return ((node.getNodeType()== EVENT) && hasEventParent);
+//When used in TreeWithEventsPotential it do not have and event parent.
+        return (node.getNodeType()== EVENT);
     }
 
 

@@ -15,11 +15,11 @@ public interface TimeToEvent {
     /**
      * Generates a TTE since the event is "triggered" by initial event, another event or change in state
      *  The event will happend at triggering_time + TTE
-     * @param configuration configuration for which TTE is computed
      * @param random Random engine for computing
+     * @param configuration configuration for which TTE is computed
      * @return the time to event since the event is triggered
      */
-    double getTimeToEvent(Configuration configuration, Random random);
+    double getTimeToEvent(Random random, Configuration configuration);
 
     /**
      * Generates a TTE since the event is "triggered" by initial event, another event or change in state

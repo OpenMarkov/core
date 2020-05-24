@@ -7,12 +7,9 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 
 import java.util.List;
 
@@ -26,7 +23,6 @@ public class TableWithFunctions extends TablePotential {
 	 * The default function
 	 */
 	private static final String DEFAULT_FUNCTION = "1";
-//	private static final String COMPLEMENT_FUNCTION = "Complement";
 
 	private String[] functionValues;
 
@@ -152,26 +148,67 @@ public class TableWithFunctions extends TablePotential {
 	}
 
 	/**
-	 * Given a set of variables and a set of corresponding states indices, gets
-	 * the corresponding value in the table.
-	 *
-	 * @param stateVariables . <code>ArrayList</code> of <code>Variable</code>
-	 * @param statesIndices  . <code>int[]</code>
-	 * @return <code>double</code>
-	 * @argCondition All the variables in this potentials are included into the
-	 * received variables.
+	 * Returns a String with the function stored in the position given by configuration
+	 * @param configuration Configuration which determines the position in the table. This configuration is a valid configuration of TableWithEvents
+	 * @return a String with the function stored in the position given by configuration
 	 */
-	public String getFunctionValue(List<Variable> stateVariables, int[] statesIndices) {
-		int position = 0;
-		for (int i = 0; i < stateVariables.size(); i++) {
-			Variable variable = stateVariables.get(i);
-			int indexVariable = this.variables.indexOf(variable);
+	public String getFunctionValue(Configuration configuration){
+		Configuration stateConfiguration = new Configuration(configuration);
+		int position =0;
+		for (Variable stateVariable:stateConfiguration.getVariables()){
+			int indexVariable = this.variables.indexOf(stateVariable);
 			if (indexVariable != -1) {
-				position += offsets[indexVariable] * statesIndices[i];
+				position += offsets[indexVariable] * configuration.getFinding(stateVariable).getStateIndex();
 			}
 		}
-		return getFunctionValues()[position];
+		return functionValues[position];
 	}
+
+	/**
+	 * Returns the value of the functions with the function stored in the position given by configuration and with the
+	 * values of numericConfiguration
+	 * @param configuration Configuration that determine the position in the Table by its VariableType.FINITE_STATES variables
+	 * , and the values of the variables of the Function by its VariableType.NUMERIC variables.
+	 *  This configuration is a valid configuration of TableWithEvents
+	 * @param numericConfiguration variables of the selected function
+	 * @return the value of the functions with the function stored in the position given by configuration and with the
+	 * values of numericConfiguration
+	 */
+	public double getEvaluatedFunctionValue(Configuration configuration, Configuration numericConfiguration){
+		String functionValue= getFunctionValue(configuration);
+		FunctionPotential functionPotential =new FunctionPotential(numericConfiguration.getVariables(),getPotentialRole(),functionValue );
+        double result= 0;
+        try {
+            result = functionPotential.sampleConditionedVariable(null, numericConfiguration);
+        } catch (OpenMarkovException e) {
+            e.printStackTrace();
+        }
+        return result;
+
+	}
+
+
+//	/**
+//	 * Given a set of variables and a set of corresponding states indices, gets
+//	 * the corresponding value in the table.
+//	 *
+//	 * @param stateVariables . <code>ArrayList</code> of <code>Variable</code>
+//	 * @param statesIndices  . <code>int[]</code>
+//	 * @return <code>double</code>
+//	 * @argCondition All the variables in this potentials are included into the
+//	 * received variables.
+//	 */
+//	public String getFunctionValue(List<Variable> stateVariables, int[] statesIndices) {
+//		int position = 0;
+//		for (int i = 0; i < stateVariables.size(); i++) {
+//			Variable variable = stateVariables.get(i);
+//			int indexVariable = this.variables.indexOf(variable);
+//			if (indexVariable != -1) {
+//				position += offsets[indexVariable] * statesIndices[i];
+//			}
+//		}
+//		return getFunctionValues()[position];
+//	}
 
 	/**
 	 * @return : Table containing the values of the

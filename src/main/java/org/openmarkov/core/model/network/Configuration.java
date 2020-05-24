@@ -53,6 +53,15 @@ public class Configuration extends EvidenceCase{
         this(Arrays.asList(findings));
     }
 
+
+    /**
+     * Creates a Configuration object with the same Finding objects as evidenceCase
+     * @param evidenceCase object from which the Configuration is created
+     */
+    public Configuration(EvidenceCase evidenceCase) {
+        this(evidenceCase.getFindings());
+    }
+
     /**
      * Returns a List of Finding sorted alphabetically by its Variable name
      * @return a List of Finding sorted alphabetically by its Variable name
@@ -70,7 +79,7 @@ public class Configuration extends EvidenceCase{
      * This is to be used with Potential#sampleCondigionedVariable(Map<Variable, Integer>)
      * @return this Configuraton converted to Map<Variable, Integer>
      */
-    public Map<Variable, Integer> convert() throws InvalidStateException{
+    public Map<Variable, Integer> convertToMap() throws InvalidStateException{
 // TODO :When org.openmarkov.core.model.network.potential.Potential#sampleCondigionedVariable will be changed to sampleCondigionedVariable(Map<Variable, Double>), this method will be changed too.
         List<Finding> findings = getFindings();
         Map<Variable, Integer> map = new HashMap<>();
@@ -122,12 +131,38 @@ public class Configuration extends EvidenceCase{
      * @param variable to be added to this Configuration
      * @throws NoFindingException exception thrown when the type of variable is not EVEN
      */
-    public void addFinding(Variable variable) throws NoFindingException{
-        Finding eventFinding =new Finding(variable,0);
+    public void addEventFinding(Variable variable) throws NoFindingException{
+        if (variable.getVariableType() != VariableType.EVENT) throw new NoFindingException(variable.getName() + " has no type EVENT");
+        addFinding(variable,0);
+    }
+
+    /**
+     * Adds the Finding given by (variable,value) to the configuration if VariableType is FINITE_STATES, NUMERIC or EVENT.
+     * Otherwise nothing is done. If it is type EVENT field value is ignored
+     * @param variable
+     * @param value
+     */
+    public void addFinding(Variable variable, double value){
+        Finding finding = null;
         try {
-            this.addFinding(eventFinding);
-        } catch (InvalidStateException |IncompatibleEvidenceException e) {
+        switch (variable.getVariableType()){
+            case FINITE_STATES:
+                addFinding(new Finding(variable, (int)value));
+                break;
+            case NUMERIC:
+                addFinding(new Finding(variable, value));
+                break;
+            case EVENT:
+                addFinding(new Finding(variable, 0));
+                break;
+            default:
+                return;
+        }
+
+        } catch (InvalidStateException| IncompatibleEvidenceException e) {
             e.printStackTrace();
         }
     }
+
+
 }

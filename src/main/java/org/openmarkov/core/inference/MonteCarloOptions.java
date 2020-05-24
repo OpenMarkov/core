@@ -90,7 +90,7 @@ public class MonteCarloOptions implements Cloneable {
 	public MonteCarloOptions(MonteCarloOptions monteCarloOptions) {
 		this.setNumSimulations(monteCarloOptions.numSimulations);
 		this.setNumSeries(monteCarloOptions.numSeries);
-		this.setExcelResutlsPerSeries(monteCarloOptions.isExcelResutlsPerSeries());
+		this.setExcelResultsPerSeries(monteCarloOptions.isExcelResultsPerSeries());
 		this.mean= monteCarloOptions.isMean();
 		this.trimmedMean = monteCarloOptions.isTrimmedMean();
 		this.median = monteCarloOptions.isMedian();
@@ -130,7 +130,7 @@ public class MonteCarloOptions implements Cloneable {
 
 
 	/**
-	 * When true, a text log with any event and the assotiated changes is created
+	 * When true, a text log with any event and the associated changes is created
 	 */
 	public boolean isTextualLog() {
 //		return false;
@@ -150,16 +150,19 @@ public class MonteCarloOptions implements Cloneable {
 	 * This method returns true if only a summary of the simulations is shown
 	 * @return - true if only a summary of the simulations is shown
 	 */
-	public boolean isExcelResutlsPerSeries() {
-		return excelResutlsPerSeries;
+	public boolean isExcelResultsPerSeries() {
+// For testing
+//		return excelResutlsPerSeries;
+		return false;
+
 	}
 
 	/**
 	 * This method set  if only a summary of the simulations is shown
-	 * @param excelResutlsPerSeries  - true  if only a summary of the simulations is shown
+	 * @param excelResultsPerSeries  - true  if only a summary of the simulations is shown
 	 */
-	public void setExcelResutlsPerSeries(boolean excelResutlsPerSeries) {
-		this.excelResutlsPerSeries = excelResutlsPerSeries;
+	public void setExcelResultsPerSeries(boolean excelResultsPerSeries) {
+		this.excelResutlsPerSeries = excelResultsPerSeries;
 	}
 
 	/**

@@ -8,11 +8,13 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Potential which represents an increment in the value taken by a numeric variable.
@@ -69,6 +71,18 @@ import java.util.*;
 		return (variables.get(0).getVariableType() == VariableType.NUMERIC);
 //				&& (variables.stream().filter(v -> v.equals(node.getVariable())).count()==2);//Check this use of equals
 	}
+
+	@Override
+	public double sampleConditionedVariable(Random randomGenerator, EvidenceCase parents) throws OpenMarkovException {
+//This is done until TreeWithEvents is completed
+		List<Variable> events = parents.getVariables().stream().filter(v ->v.getVariableType()==VariableType.EVENT).collect(Collectors.toList());
+		if (events.size()!=1) throw new OpenMarkovException("More than one event");
+		if (events.get(0).getName().equalsIgnoreCase("Initial Event")){
+			return 0;
+		}
+		return parents.getNumericalValue(getConditionedVariable())+1;
+	}
+
 
 	// Methods
 	@Override

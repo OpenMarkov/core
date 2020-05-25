@@ -7,6 +7,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -19,9 +20,7 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class implements a potential which is function of the values provided by the parents.
@@ -84,9 +83,15 @@ import java.util.Map;
 	 * @param role      . <code>PotentialRole</code>.
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+//CMI 26/04/2020 - used with events
+//		return (
+//				!variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC
+//		);
 		return (
-				!variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC
+				!variables.isEmpty() && (variables.get(0).getVariableType() == VariableType.NUMERIC
+						|| variables.get(0).getVariableType() == VariableType.EVENT)
 		);
+//CMF
 	}
 
 	/**
@@ -214,5 +219,31 @@ import java.util.Map;
 		evaluator.setVariables(values);		
 		return evaluator.evaluate(this.processedCovariates[0]);
 	}
+
+//CMI 26/04/2020
+	@Override
+	public double sampleConditionedVariable(Random random, EvidenceCase parents) throws OpenMarkovException {
+		List<Variable> parentVariables = parents.getVariables();
+
+		Map<String, String> variablesMap = new HashMap();
+		double result =0;
+
+		for (Variable parentVariable:parentVariables){
+			int index = variables.indexOf(parentVariable);
+			String variableToAdd = "v" + index;
+			variablesMap.put(variableToAdd, ""+parents.getFinding(parentVariable).getNumericalValue());
+		}
+		try {
+			result = new Double(getValue(variablesMap)).doubleValue();
+		} catch (EvaluationException e) {
+			e.printStackTrace();
+		}
+		return  result;
+	}
+
+
+
+//CMF
+
 
 }

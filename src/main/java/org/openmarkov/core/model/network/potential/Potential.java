@@ -7,11 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -487,6 +483,35 @@ public abstract class Potential {
 		// dummy code. TODO remove when making this method abstract.
 		return Integer.MAX_VALUE;
 	}
+
+
+
+	//CMI 11/04/2020
+	/**
+	 * When this potential represents a conditional probability, this method returns a value for the first variable,
+	 * sampled with the probability distribution. If this variable is finite-states, it returns the index of
+	 * the sampled state. If the variable is numeric, it returns the value sampled.
+	 * TODO make abstract. Currently It is not made abstract because it is a provisional version.
+	 * @param randomGenerator
+	 * @param parents
+	 * @return
+	 */
+	public double sampleConditionedVariable(Random randomGenerator, EvidenceCase parents) throws OpenMarkovException {
+		//TODO merge with previous method (sampleConditionedVariable(Random randomGenerator, Map<Variable, Integer> sampledParents), when it will be replaced and this class made abstrac
+
+		return Double.MAX_VALUE;
+
+	}
+
+
+
+//CMF
+
+
+
+
+
+
 
 	/**
 	 * Return a copy instance of the potential

@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -17,6 +18,7 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /** Wrapper for TablePotential */
 @PotentialType(name = "Exact") public class ExactDistrPotential extends Potential {
@@ -122,6 +124,13 @@ import java.util.List;
 	public void setValues(double[] values) {
 		this.tablePotential.values = values;
 	}
+
+	//CMI 27/04/2020 - Returns the table value given its parents. For DES simulations
+	public double sampleConditionedVariable(Random randomGenerator, EvidenceCase parents) throws OpenMarkovException {
+		return tablePotential.getValue(parents);
+	}
+	//CMF
+
 
 	@Override public List<Variable> getVariables() {
 		return variables;

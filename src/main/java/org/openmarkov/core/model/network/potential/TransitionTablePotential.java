@@ -1,13 +1,13 @@
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NoFindingException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * A <code>TransitionTablePotential</code> is a type of relation with a list of
@@ -16,6 +16,7 @@ import java.util.List;
  * There have to be at least one Event variable
  * @version 1.0 -24/03/2019- -cyago -
  * @version 1.1 -24/08/2019 - renamed to TransitionTable and added the possibility of incompatible combinations
+ * @version 1.2 -25/04/2020 - changed sampling method
  * @since OpenMarkov 3.0
 */
 
@@ -71,64 +72,22 @@ public class TransitionTablePotential extends TableWithEvents {
         //return (variableSuitable && eventSuitable);
         return variableSuitable;
     }
-    /**
-     * Get a sample for a column given by configuration
-     * TODO This initial state may have parents
-     * @param configuration - configuration of the column
-     *
-     * @return A State sample of the potential in base of its parents
-     */
-    public State sample(Configuration configuration) {
-        double r = Math.random();
-        double countWeight = 0;
-        List<Variable> lV = new ArrayList<>();
-        Variable cVariable = getConditionedVariable();
-        State[] columnStates  = cVariable.getStates();
-        if (configuration==null) configuration = new Configuration();
 
-        for (int i = 0; i < columnStates.length; i++) {
-            Finding f = new Finding(cVariable,columnStates[i]);
-            try {
-                configuration.addFinding(f);
-                countWeight +=tablePotential.getValue(configuration);
-                if (r < countWeight) {
-                    return columnStates[i] ;
-                }
-                configuration.removeFinding(cVariable);
-            } catch (InvalidStateException | IncompatibleEvidenceException | NoFindingException e) {
-                e.printStackTrace();
-            }
+
+    @Override
+    public double sampleConditionedVariable(Random random, EvidenceCase parents) throws OpenMarkovException {
+        double sample=0;
+        Configuration parentsConfiguration = new Configuration(parents);
+        Configuration convertedConfiguration = convert(parentsConfiguration);
+
+        try {
+            Map<Variable,Integer> map = convertedConfiguration.convertToMap();
+             sample = tablePotential.sampleConditionedVariable(random,map);
+        } catch (InvalidStateException e) {
+            e.printStackTrace();
         }
-        return null;
+        return sample;
     }
-
-
-    /**
-     * Returns the state after an event has happened. Change in state is driven by an event
-     * if the event happened is a parent of the state this may change state.
-     * version 1.0 - this version only considers Event nodes and State[0] as parents
-     * TODO manage states, I don't like the way it is done
-     */
-    public State newState(Configuration configuration) throws IncompatibleEvidenceException, InvalidStateException {
-        State eState = null;
-        Configuration parentsConfiguration = new Configuration();
-        //Firstly, we select from configuration the Findings whose Variables belong to parent nodes  of the node owner of this potential
-        for (Finding finding:configuration.getFindings()){
-            if (contains(finding.getVariable())){
-                    parentsConfiguration.addFinding(finding);
-            }
-        }
-
-        if (isImpossibleConfiguration(parentsConfiguration)){
-
-            throw new IncompatibleEvidenceException("Impossible Configuration");
-        }
-        eState=sample(convert(parentsConfiguration));
-
-        return eState;
-    }
-
-
 
 
 }

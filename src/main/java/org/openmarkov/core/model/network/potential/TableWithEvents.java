@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Implement a table with Events in the configuration of parents
- * @version 1.0 -14/00/2019- -cyago -
+ * @version 1.0 -14/00/2019- -cyago - 1.2 30/04/2020 - changed TableWithFunctions
  * TODO Check if this has to extend Potential
  * @since OpenMarkov 3.0
 */
@@ -22,6 +22,10 @@ public class TableWithEvents extends Potential implements ImpossibleConfiguratio
 
     protected TablePotential tablePotential = null;
 
+    /**
+     * True if a tableWithFunctions is used
+     */
+    private boolean useTableWithFunctions = false;
     protected TableWithFunctions tableWithFunctions = null;
 
     protected Variable events = null;
@@ -36,10 +40,13 @@ public class TableWithEvents extends Potential implements ImpossibleConfiguratio
     public TableWithEvents(List<Variable> variables, PotentialRole role) {
         this(variables,role,false);
     }
+
+
     /**
      *
      * @param variables
      * @param role
+     * @param useTableWithFunctions true if the node containing this potential has parents with variables with VariableType.NUMERIC
      */
     public TableWithEvents(List<Variable> variables, PotentialRole role, boolean useTableWithFunctions) {
 
@@ -58,7 +65,8 @@ public class TableWithEvents extends Potential implements ImpossibleConfiguratio
         }
         //At the moment there is always a TablePotential
         setTablePotential(new TablePotential(tableVariables, role));
-        //TablePotential when there is no numeric parents, TableWithFuncions when there are numeric parents
+        //TablePotential when there is no numeric parents, TableWithFunctions when there are numeric parents
+        this.useTableWithFunctions = useTableWithFunctions;
         if (useTableWithFunctions){
             tableWithFunctions= new TableWithFunctions(tableVariables,role);
 
@@ -373,5 +381,15 @@ public class TableWithEvents extends Potential implements ImpossibleConfiguratio
         this.getTablePotential().scalePotential(scale);
     }
 
+    /**
+     * True if a tableWithFunctions is used
+     */
+    public boolean isUseTableWithFunctions() {
+        return useTableWithFunctions;
+    }
+
+    public void setUseTableWithFunctions(boolean useTableWithFunctions) {
+        this.useTableWithFunctions = useTableWithFunctions;
+    }
 }
 

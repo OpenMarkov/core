@@ -1,6 +1,5 @@
 package org.openmarkov.core.model.network.potential;
 
-import cern.jet.random.engine.RandomEngine;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Random;
 
 import static org.openmarkov.core.model.network.NodeType.EVENT;
-import static org.openmarkov.core.model.network.VariableType.FINITE_STATES;
 
 /**
  * Potential when the parameters of the probabilistic distribution which describe the TTE in an Event variable may vary in base of the Configuration of the parents.
@@ -31,7 +29,7 @@ import static org.openmarkov.core.model.network.VariableType.FINITE_STATES;
 */
 
 @PotentialType(family ="Event", name = "TimeToEventTable")
-public class TimeToEventTablePotential extends Potential implements ImpossibleConfiguration, TimeToEvent {
+public class TimeToEventTablePotential extends Potential implements ImpossibleConfiguration {
 
     /**
      * Probabilistic distribution for computing TTE of every configuration
@@ -51,7 +49,7 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
     /**
      * ArrayList of parents with continuous variables. Empty if there is not continuous variables
      */
-    private ArrayList<Variable> functionVariables;
+    private ArrayList<Variable> numericVariables;
 
     /**
      * TableWithEvents which stores the values of the distribution parameters
@@ -124,10 +122,10 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
         tableParents.add(getDistributionVariable());
         tableParents.addAll(variables.subList(1,variables.size()));
         tableParents.removeIf(v ->v.getVariableType() == VariableType.NUMERIC );
-        functionVariables = new ArrayList<>();
-        functionVariables.addAll(variables);
-        functionVariables.removeIf(v ->v.getVariableType() != VariableType.NUMERIC );
-        this.tableWithEvents = new TableWithEvents(tableParents,role, (functionVariables.size()>0) );
+        numericVariables = new ArrayList<>();
+        numericVariables.addAll(variables);
+        numericVariables.removeIf(v ->v.getVariableType() != VariableType.NUMERIC );
+        this.tableWithEvents = new TableWithEvents(tableParents,role, (numericVariables.size()>0) );
 
     }
 
@@ -136,7 +134,7 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
      * @return true if this instance of TimeToEventTablePotential values may have functions as a value in a cell. False otherwise
      */
     public boolean hasFunctionValues(){
-        return !(functionVariables.isEmpty());
+        return !(numericVariables.isEmpty());
     }
 
     /**
@@ -192,55 +190,79 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
      * List of Variable with the Numeric Parent Variables which can be used as function parameters
      * @return List of Variable with the Numeric Parent Variables which can be used as function parameters
      */
-    public ArrayList<Variable> getFunctionVariables() {
-        return functionVariables;
+    public ArrayList<Variable> getNumericVariables() {
+        return numericVariables;
     }
 
     /**
      * Sets List of Variable with the Numeric Parent Variables which can be used as function parameters.
-     * @param functionVariables
+     * @param numericVariables
      */
-    public void setFunctionVariables(ArrayList<Variable> functionVariables) {
-        this.functionVariables = functionVariables;
+    public void setNumericVariables(ArrayList<Variable> numericVariables) {
+        this.numericVariables = numericVariables;
+    }
+
+    @Override
+    public double sampleConditionedVariable(Random randomGenerator, EvidenceCase parents) throws OpenMarkovException {
+        return getTimeToEvent(randomGenerator,new Configuration(parents));
     }
 
 
-
-
     //TimeToEvent interface
-    @Override
-    public double getTimeToEvent(Configuration configuration, Random random) {
+    public double getTimeToEvent(Random random, Configuration configuration) {
+        //Extract FINITE_STATES and EVENT Variables and convert to the format of a TableWithEvents to find the position in the table
+        Configuration stateConfiguration = tableWithEvents.convert( configuration);
+        //Extract Numeric Variables which are the Function Variables
+        Configuration numericConfiguration= null;
+        if (tableWithEvents.isUseTableWithFunctions()) {
+            numericConfiguration = new Configuration();
+            for (Variable numericVariable : numericVariables) {
+                try {
+                    Finding finding = configuration.getFinding(numericVariable);
+                    numericConfiguration.addFinding(finding);
+                } catch (OpenMarkovException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        //Extract parameters from the table
         ProbDensFunction distribution=null;
         int i=0;
         double[] paramValues = new double[distributionParameters.length];
         try {
-            for (State sParam: getDistributionVariable().getStates())
-            {  Finding f = new Finding(getDistributionVariable(),sParam);
-                configuration.addFinding(f);
-                paramValues[i++] = tableWithEvents.getTablePotential().getValue(configuration);
+            for (State sParam: distributionVariable.getStates())
+            {  Finding f = new Finding(distributionVariable,sParam);
+
+                stateConfiguration.addFinding(f);
+
+                if (tableWithEvents.isUseTableWithFunctions()){
+                     paramValues[i++] = tableWithEvents.getTableWithFunctions().getEvaluatedFunctionValue(stateConfiguration, numericConfiguration);
+                }else {
+                    paramValues[i++] = tableWithEvents.getTablePotential().getValue(stateConfiguration);
+                }
+                stateConfiguration.removeFinding(distributionVariable);
             }
 
             distribution = ProbDensFunctionManager.getUniqueInstance().getProbDensFunctionClass(distributionName).newInstance();
             distribution.setParameters(paramValues);
-        } catch (InstantiationException | IllegalAccessException | InvalidStateException | IncompatibleEvidenceException e) {
+        } catch (InstantiationException | IllegalAccessException | InvalidStateException | IncompatibleEvidenceException | NoFindingException e) {
             e.printStackTrace();
         }
         return distribution.getSample(random);
     }
 
-    /**
-     * Generates a TTE since the event is "triggered" by initial event, another event or change in state
-     * *  The event will happend at triggering_time + TTE
-     *
-     * @param findings one or more findings to create the Configuration for extracting TTE
-     * @param random
-     * @return
-     */
-    @Override
-    public double getTimeToEvent(List<Finding> findings, Random random) {
-
-        return getTimeToEvent(tableWithEvents.convert(findings),random);
-    }
+//    /**
+//     * Generates a TTE since the event is "triggered" by initial event, another event or change in state
+//     * *  The event will happend at triggering_time + TTE
+//     *
+//     * @param findings one or more findings to create the Configuration for extracting TTE
+//     * @param random
+//     * @return
+//     */
+//    public double getTimeToEvent(List<Finding> findings, Random random) {
+//
+//        return getTimeToEvent(random, tableWithEvents.convert(findings));
+//    }
 
 
     //ImpossibleConfiguration interface

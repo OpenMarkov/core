@@ -7,20 +7,9 @@
 
 package org.openmarkov.core.model.network.potential.treeadd;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.Criterion;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -31,13 +20,7 @@ import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * A TreeADDPotential is a potential defined by a top variable and its branches.
@@ -467,6 +450,42 @@ public class TreeADDPotential extends Potential {
 		}
 		return hasUncertainty;
 	}
+
+	//CMI - 03/05/2020 for sampling an TreeWithEvents - Check if this is applicable to other network types
+	/**
+	 * When this potential represents a conditional probability, this method returns a value for the first variable,
+	 * sampled with the probability distribution. If this variable is finite-states, it returns the index of
+	 * the sampled state. If the variable is numeric, it returns the value sampled.
+	 * TODO make abstract. Currently It is not made abstract because it is a provisional version.
+	 *
+	 * @param randomGenerator
+	 * @param parents
+	 * @return
+	 */
+	@Override
+	public double sampleConditionedVariable(Random randomGenerator, EvidenceCase parents) throws OpenMarkovException {
+		//It may be several states in a branch
+		State stateBranch=  topVariable.getState(parents.getFinding(topVariable).getState());
+
+		double result=0;
+		for (TreeADDBranch branch: branches){
+			List<State> states = branch.getBranchStates();
+			if (states.contains(stateBranch)){
+				parents.removeFinding(topVariable);
+				result = branch.getPotential().sampleConditionedVariable(randomGenerator,parents);
+				//sampleConditionedVariable(random, configuration) is not defined
+				if (result == Double.MAX_VALUE) {
+					Map<Variable, Integer> hashMap =(new Configuration( parents)).convertToMap();
+					result = branch.getPotential().sampleConditionedVariable(randomGenerator, hashMap);
+				}
+				return result;
+			}
+
+		}
+		return result;
+	}
+	//CMF
+
 
 	/**
 	 * Generates a sampled potential

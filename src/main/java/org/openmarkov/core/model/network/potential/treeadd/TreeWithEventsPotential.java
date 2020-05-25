@@ -7,18 +7,11 @@
 
 package org.openmarkov.core.model.network.potential.treeadd;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.*;
-import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
-import sun.reflect.generics.tree.Tree;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -142,6 +135,28 @@ public class TreeWithEventsPotential extends Potential {
 	 */
 	public List<Variable> getEvents() {
 		return events;
+	}
+
+
+	@Override
+	public double sampleConditionedVariable(Random randomGenerator, EvidenceCase parents) throws OpenMarkovException {
+
+		List<Variable> eventVariables = parents.getVariables().stream().filter(variable ->variable.getVariableType() ==VariableType.EVENT).collect(Collectors.toList());
+		//It is supposed the tree has a different potential for each event, so this method return a sampled value when an event has happened
+		if (eventVariables.size()!=1) throw new OpenMarkovException("Only one Event in the parents configuration");
+
+		TreeADDPotential eventTree= getTree(eventVariables.get(0));
+		double result =0;
+		try
+		{
+			result = eventTree.sampleConditionedVariable(randomGenerator, parents);
+
+		} catch(Exception e) {
+			//when completed this method coding this catch will be removed
+			e.printStackTrace();
+			throw new OpenMarkovException("Getting sample exception");
+		}
+		return result;
 	}
 
 

@@ -7,11 +7,13 @@ import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import static org.openmarkov.core.model.network.NodeType.EVENT;
+
 
 /**
  * Potential when the parameters of the probabilistic distribution which describe the TTE in an Event variable may vary in base of the Configuration of the parents.

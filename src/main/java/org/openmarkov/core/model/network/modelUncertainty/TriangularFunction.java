@@ -7,14 +7,8 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
-//CMI 19/03/2020
-//@ProbDensFunctionType(name = "Triangular", parameters = { "minimum", "maximum",
-//		"mode" })
-@ProbDensFunctionType(name = "Triangular", parameters = { "minimum", "maximum",
-		"mode" }, isValidForTTE = true)
 
-//CMF
-
+@ProbDensFunctionType(name = "Triangular", parameters = { "minimum", "maximum", "mode" })
 public class TriangularFunction extends ProbDensFunctionWithKnownInverseCDF {
 	/**
 	 * Minimum

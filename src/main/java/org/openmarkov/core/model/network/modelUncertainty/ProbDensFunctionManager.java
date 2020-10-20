@@ -144,27 +144,6 @@ public class ProbDensFunctionManager {
 	//CMF
 
 
-	//CMI 14/03/2020
-
-	/**
-	 * Returs a list with the name of the probablistic functions suitable for calculating TTE
-	 * @return a list with the name of the probablistic functions suitable for calculating TTE
-	 */
-	public List<String> getValidForTTEProbDensFunctions() {
-		List<String> validFunctions = new ArrayList<>();
-		for (String functionName : probDensFunctions.keySet()) {
-			Class<?> functionClass = probDensFunctions.get(functionName);
-			ProbDensFunctionType annotation = functionClass.getAnnotation(ProbDensFunctionType.class);
-			if (annotation.isValidForTTE()) {
-				validFunctions.add(functionName);
-			}
-		}
-		return validFunctions;
-	}
-
-
-	//CMF
-
 
 	//Test
 

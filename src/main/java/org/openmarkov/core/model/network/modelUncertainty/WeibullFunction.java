@@ -17,7 +17,7 @@ import org.apache.commons.math3.util.FastMath;
  * @version 1.0 - 19/03/2020 Adapted from ExponentialFunction
  * @author  cyago
  */
-@ProbDensFunctionType(name = "Weibull", isValidForProbabilities = false, parameters = {"lambda", "k"}, isValidForTTE = true)
+@ProbDensFunctionType(name = "Weibull", isValidForProbabilities = false, parameters = {"lambda", "k"})
 public class WeibullFunction extends ProbDensFunctionWithKnownInverseCDF {
 	/**
 	 * Scale

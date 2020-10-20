@@ -8,10 +8,8 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
-//CMI 14/03/2020
-//@ProbDensFunctionType(name = "Exact", isValidForNumeric = true, parameters = { "nu" })
-@ProbDensFunctionType(name = "Exact", isValidForNumeric = true, parameters = { "nu" }, isValidForTTE =true )
-//CMF
+
+@ProbDensFunctionType(name = "Exact", isValidForNumeric = true, parameters = { "nu" })
 public class ExactFunction
 		extends ProbDensFunction {
 	private double nu;

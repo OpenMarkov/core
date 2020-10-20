@@ -20,9 +20,6 @@ import java.lang.annotation.Target;
 	String univariateName() default "default";
 	//CMF
 
-	//CMI 14/03/2020
-	//Distributions may be used to calculate TTE in a DesNET
-	boolean isValidForTTE() default false;
 	//
 	boolean isValidForProbabilities() default true;
 

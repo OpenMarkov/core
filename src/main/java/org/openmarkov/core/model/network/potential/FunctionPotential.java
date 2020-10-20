@@ -83,14 +83,14 @@ import java.util.*;
 	 * @param role      . <code>PotentialRole</code>.
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-//CMI 26/04/2020 - used with events
-//		return (
-//				!variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC
-//		);
+//CMI 17/10/2020
 		return (
-				!variables.isEmpty() && (variables.get(0).getVariableType() == VariableType.NUMERIC
-						|| variables.get(0).getVariableType() == VariableType.EVENT)
+				!variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC
 		);
+//		return (
+//				!variables.isEmpty() && (variables.get(0).getVariableType() == VariableType.NUMERIC
+//						|| variables.get(0).getVariableType() == VariableType.EVENT)
+//		);
 //CMF
 	}
 

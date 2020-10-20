@@ -13,6 +13,7 @@ import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -154,7 +155,8 @@ public class TreeWithEventsPotential extends Potential {
 		} catch(Exception e) {
 			//when completed this method coding this catch will be removed
 			e.printStackTrace();
-			throw new OpenMarkovException("Getting sample exception");
+			JOptionPane.showMessageDialog(null,"Getting sample exception" +eventVariables.get(0).getName());
+			throw new OpenMarkovException("Getting sample exception" +eventVariables.get(0).getName());
 		}
 		return result;
 	}

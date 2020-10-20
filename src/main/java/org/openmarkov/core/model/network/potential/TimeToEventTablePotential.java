@@ -4,7 +4,7 @@ import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
-import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
+import org.openmarkov.core.model.network.modelUncertainty.ParametrizedFunction.ParametrizedFunctionManager;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 
@@ -27,16 +27,23 @@ import static org.openmarkov.core.model.network.NodeType.EVENT;
  * @version 1.1 -13/09/2019  -cyago- inheritance from TransitionTablePotential changed for assotiation
  * @version 1.2 -14/12/2019 -cyago- using nodes with continuous variables as parameterVariable
  * @version 1.3 -05/01/2019 -cyago- adapted to Configuration version 1.1
+ * @version 1.4 -07/10/2020 -cyago- added parametrizations
  *
 */
 
 @PotentialType(family ="Event", name = "TimeToEventTable")
 public class TimeToEventTablePotential extends Potential implements ImpossibleConfiguration {
 
+
     /**
      * Probabilistic distribution for computing TTE of every configuration
      */
     private String distributionName;
+
+    /**
+     * Parametrization of distributionName
+     */
+    private String parametrizationName;
 
     /**
      * Name of the parameters of the probabilistic distribution for computing TTE of every configuration
@@ -65,7 +72,7 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
      * @param role role assumed by the potential
      */
     public TimeToEventTablePotential(List<Variable> variables, PotentialRole role){
-            this(variables,role, "Exact");
+            this(variables,role,"Exact", "Nu");
 
     }
 
@@ -75,17 +82,22 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
      * @param role role assumed by the potential
      * @param distributionName name of the probabilistic distribution used to compute TTE of the node
      */
-    public TimeToEventTablePotential(List<Variable> variables, PotentialRole role, String distributionName){
+    public TimeToEventTablePotential(List<Variable> variables, PotentialRole role, String distributionName, String parametrizationName){
         super(variables,role);
-        changeDistribution(distributionName);
+        changeDistribution(distributionName, parametrizationName);
     }
+
+
+
+
+
 
     /**
      * Constructor of TimeToEventTablePotential which creates an object with the same values as potential.
      * @param potential TimeToEventTablePotential whose values are used to create the new object
      */
     public TimeToEventTablePotential(TimeToEventTablePotential potential) {
-       this(potential.getVariables(),potential.getPotentialRole(), potential.getDistributionName());
+       this(potential.getVariables(),potential.getPotentialRole(), potential.getDistributionName(), potential.getParametrizationName());
         this.setTableWithEvents(potential.getTableWithEvents());
     }
 
@@ -110,25 +122,32 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
 
     /**
      * Changes the probabilistic distribution contained is this potential. The values of the distribution parameters are se to default.
-     * @param distributionName name of the new probabilistic distribution
+     * @param distributionName
+     * @param distributionParametrization name of the new probabilistic distribution
      */
-    public void changeDistribution(String distributionName){
-        this.distributionName= distributionName;
-        distributionParameters=  ProbDensFunctionManager.getUniqueInstance().getParameters(distributionName);
-        State[] states = new State[distributionParameters.length];
-        for (int i=0; i< distributionParameters.length;i++){
-            states[i] = new State(distributionParameters[i]);
-        }
-        setDistributionVariable(new Variable("distributionVariable",states));
-        List<Variable> tableParents= new ArrayList<Variable>();
-        tableParents.add(getDistributionVariable());
-        tableParents.addAll(variables.subList(1,variables.size()));
-        tableParents.removeIf(v ->v.getVariableType() == VariableType.NUMERIC );
-        numericVariables = new ArrayList<>();
-        numericVariables.addAll(variables);
-        numericVariables.removeIf(v ->v.getVariableType() != VariableType.NUMERIC );
-        this.tableWithEvents = new TableWithEvents(tableParents,role, (numericVariables.size()>0) );
+    public void changeDistribution(String distributionName, String distributionParametrization){
+        try {
+            this.distributionName = distributionName;
+            this.parametrizationName = distributionParametrization;
+            List<String> distributionParametersList = (List<String>) ParametrizedFunctionManager.getUniqueInstance().getParameters(distributionName, distributionParametrization );
+            distributionParameters = distributionParametersList.toArray(new String[distributionParametersList.size()]);
 
+            State[] states = new State[distributionParameters.length];
+            for (int i = 0; i < distributionParameters.length; i++) {
+                states[i] = new State(distributionParameters[i]);
+            }
+            setDistributionVariable(new Variable("distributionVariable", states));
+            List<Variable> tableParents = new ArrayList<Variable>();
+            tableParents.add(getDistributionVariable());
+            tableParents.addAll(variables.subList(1, variables.size()));
+            tableParents.removeIf(v -> v.getVariableType() == VariableType.NUMERIC);
+            numericVariables = new ArrayList<>();
+            numericVariables.addAll(variables);
+            numericVariables.removeIf(v -> v.getVariableType() != VariableType.NUMERIC);
+            this.tableWithEvents = new TableWithEvents(tableParents, role, (numericVariables.size() > 0));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -245,7 +264,7 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
                 stateConfiguration.removeFinding(distributionVariable);
             }
 
-            distribution = ProbDensFunctionManager.getUniqueInstance().getProbDensFunctionClass(distributionName).newInstance();
+            distribution = ParametrizedFunctionManager.getUniqueInstance().getParametrizedClass(distributionName,parametrizationName).newInstance();
             distribution.setParameters(paramValues);
         } catch (InstantiationException | IllegalAccessException | InvalidStateException | IncompatibleEvidenceException | NoFindingException e) {
             e.printStackTrace();
@@ -369,6 +388,15 @@ public class TimeToEventTablePotential extends Potential implements ImpossibleCo
     }
 
 
+    /**
+     * Parametrization of distributionName
+     */
+    public String getParametrizationName() {
+        return parametrizationName;
+    }
 
+    public void setParametrizationName(String parametrizationName) {
+        this.parametrizationName = parametrizationName;
+    }
 }
 

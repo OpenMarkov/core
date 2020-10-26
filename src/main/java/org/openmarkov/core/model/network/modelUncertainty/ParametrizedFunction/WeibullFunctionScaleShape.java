@@ -24,16 +24,15 @@ public class WeibullFunctionScaleShape extends WeibullFunction {
 	}
 
 
-	/**
-	 * Sets the parameters of the probability function. There are two parameters lambda and k.
-	 *
-	 * @param params - parameters of the probability function [lambda,k].
-	 */
-	@Override
-	public void setParameters(double[] params) {
-		params[1] = -Math.pow(params[1], params[0]);
-		super.setParameters(params);
-	}
+//	/**
+//	 * Sets the parameters of the probability function. There are two parameters lambda and k.
+//	 *
+//	 * @param params - parameters of the probability function [lambda,k].
+//	 */
+//	@Override
+//	public void setParameters(double[] params) {
+//		super.setParameters(params);
+//	}
 
 
 

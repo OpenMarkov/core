@@ -19,6 +19,18 @@ public class Tools {
 		}
 		return sum;
 	}
+	
+	/**
+	 * @param aa Array of real numbers
+	 * @return The sum of an array of real numbers
+	 */
+	public static int sum(int[] aa) {
+		int sum = 0;
+		for (int i = 0; i < aa.length; i++) {
+			sum = sum + aa[i];
+		}
+		return sum;
+	}
 
 	/**
 	 * @param numbers Numbers

@@ -15,7 +15,7 @@ import org.openmarkov.core.model.network.modelUncertainty.WeibullFunction;
  * @version 1 20/10/2020 - only implemented the methods currently needed
  */
 
-@ParametrizedFunctionType(distributionName = "Weibull", parametrizationName = "Scale(b)/ Shape", parameters = { "k", "b"}, isValidForTTE = true)
+@ParametrizedFunctionType(distributionName = "Weibull", parametrizationName = "Scale(b)/ Shape", parameters = { "b", "k"}, isValidForTTE = true)
 public class WeibullFunctionBShape extends WeibullFunction {
 
 	/**
@@ -33,7 +33,7 @@ public class WeibullFunctionBShape extends WeibullFunction {
 	 */
 	@Override
 	public void setParameters(double[] params) {
-		params[1] = -Math.pow(params[1], params[0]);
+		params[0] = Math.pow(1/params[0], 1/params[1]);
 		super.setParameters(params);
 	}
 

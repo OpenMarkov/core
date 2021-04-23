@@ -53,7 +53,7 @@ import org.openmarkov.core.model.network.Node;
 	}
 
 	/**
-	 * Undo the alwaysAppend change
+	 * Undoes the alwaysAppend change
 	 */
 	@Override public void undo() {
 		super.undo();

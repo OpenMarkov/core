@@ -172,25 +172,31 @@ import java.util.*;
 		return newPotential;
 	}
 
-	/**
-	 * Removes a variable from FunctionPotential. If the function does not use the variable,
-	 * the function does not change, otherwise the function is set to its default value
-	 *
-	 * @param variable - the variable to be removed
-	 * @returns a FunctionPotential without the variable
-	 */
-	@Override public Potential removeVariable(Variable variable) {
-		if (variables.contains(variable)) {
-			List<Variable> newVariables = new ArrayList<>(variables);
-			newVariables.remove(variable);
-			int index = variables.indexOf(variable);
-			String variableToRemove = "#{v" + index + "}";
-			if (processedCovariates[0].contains(variableToRemove)) {
-				return new FunctionPotential(newVariables, this.role);
-			}
-		}
-		return new FunctionPotential(this);
-	}
+
+/*
+Potential#removeVariable changes the potential to Uniform and org.openmarkov.core.action.RemoveLinkEdit.doEdit then checks
+if the potential is projectable. If the potential is not, does not remove the link properly. I do not know the reason, so I do not change it.
+As FunctionPotential is not projectable I leave the default behaviour
+ */
+//	/**
+//	 * Removes a variable from FunctionPotential. If the function does not use the variable,
+//	 * the function does not change, otherwise the function is set to its default value
+//	 *
+//	 * @param variable - the variable to be removed
+//	 * @returns a FunctionPotential without the variable
+//	 */
+//	@Override public Potential removeVariable(Variable variable) {
+//		if (variables.contains(variable)) {
+//			List<Variable> newVariables = new ArrayList<>(variables);
+//			newVariables.remove(variable);
+//			int index = variables.indexOf(variable);
+//			String variableToRemove = "#{v" + index + "}";
+//			if (processedCovariates[0].contains(variableToRemove)) {
+//				return new FunctionPotential(newVariables, this.role);
+//			}
+//		}
+//		return new FunctionPotential(this);
+//	}
 
 	@Override public Potential deepCopy(ProbNet copyNet) {
 		return super.deepCopy(copyNet);

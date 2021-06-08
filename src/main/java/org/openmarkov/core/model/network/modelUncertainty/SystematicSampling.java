@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
@@ -69,8 +70,9 @@ public class SystematicSampling extends Sampler {
 	private static Hashtable<UncertainValue, SubPotentialAndPosition> getUncertainValues(Potential potential) {
 		Hashtable<UncertainValue, SubPotentialAndPosition> uncertainValuesHash = new Hashtable<>();
 
-		if (potential instanceof TablePotential) {
-			TablePotential tablePotential = (TablePotential) potential;
+		boolean isExactDistrPotential = potential instanceof ExactDistrPotential;
+		if (potential instanceof TablePotential || isExactDistrPotential) {
+			TablePotential tablePotential = (TablePotential)(!isExactDistrPotential? potential:((ExactDistrPotential)potential).getTablePotential());
 			UncertainValue[] uncertainValuesPotential = tablePotential.getUncertainValues();
 			if (uncertainValuesPotential != null) {
 				int i = 0;

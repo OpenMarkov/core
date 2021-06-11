@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -272,6 +273,29 @@ public class FormatManager {
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 			Document doc = docBuilder.parse(new File(fileName));
+			fileVersion = doc.getDocumentElement().getAttribute("formatVersion");
+			//Removing the last index of the version
+			fileVersion = fileVersion.substring(0, fileVersion.lastIndexOf('.'));
+		}
+		ProbNetReader reader = getProbNetReader(fileExtension, fileVersion);
+		return reader;
+	}
+
+	/**
+	 * Gets the plugin corresponding to the "Reader" role, given the URL of network
+	 *
+	 * @param url URL of the resource
+	 * @return a ProbNetReader object
+	 * @throws Exception when an exception is raised is thrown to be caught by the gui
+	 */
+	public ProbNetReader getProbNetReader(URL url) throws Exception {
+		String fileName = url.getFile();
+		String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+		String fileVersion = "";
+		if (!fileExtension.equals("elv")) {
+			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+			Document doc = docBuilder.parse(url.openStream());
 			fileVersion = doc.getDocumentElement().getAttribute("formatVersion");
 			//Removing the last index of the version
 			fileVersion = fileVersion.substring(0, fileVersion.lastIndexOf('.'));

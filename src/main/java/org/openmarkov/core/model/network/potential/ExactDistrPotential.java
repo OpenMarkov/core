@@ -21,6 +21,8 @@ import java.util.List;
 /** Wrapper for TablePotential */
 @PotentialType(name = "Exact") public class ExactDistrPotential extends Potential {
 
+
+
 	// Attributes
 	private TablePotential tablePotential;
 
@@ -77,6 +79,11 @@ import java.util.List;
 		projectedPotentials.get(0).setCriterion(getChildVariable().getDecisionCriterion());
 		projectedPotentials.get(0).setPotentialRole(PotentialRole.UNSPECIFIED);
 		return projectedPotentials;
+	}
+
+	@Override public Potential sample() {
+		this.tablePotential = (TablePotential) this.tablePotential.sample();
+		return this;
 	}
 
 	@Override public Potential copy() {

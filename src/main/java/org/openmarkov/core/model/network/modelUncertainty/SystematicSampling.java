@@ -177,7 +177,7 @@ public class SystematicSampling extends Sampler {
 					newSubPotential = (TablePotential) newPotential;
 				}
 				int position = getPosition(originalSubPotential, uncertainParameter.uncertainValue);
-				int posUncertainInColumn = calculatePositionUncertainInColumn(originalSubPotential, position);
+				int posUncertainInColumn = calculatePositionUncertainInColumn(originalSubPotential, position, originalPotential instanceof ExactDistrPotential);
 				int originalValuesLength = originalSubPotential.getTableSize();
 				TablePotential newTablePotential = addVariableReplicatingValuesAndUncertainValues(originalSubPotential,
 						iterVariable);
@@ -234,9 +234,10 @@ public class SystematicSampling extends Sampler {
 		placeInArray(samples, sampler.samplerUncertainValues.indexesComplement, newComplementSamples);
 	}
 
-	private static int calculatePositionUncertainInColumn(TablePotential potential, int position) {
+	private static int calculatePositionUncertainInColumn(TablePotential potential, int position, boolean isOriginalPotentialAnExactDistrPotential) {
 		int posInCol;
-		if (potential.getVariable(0).getVariableType().equals(VariableType.NUMERIC)) {
+		//if (potential.getVariable(0).getVariableType().equals(VariableType.NUMERIC)) {
+		if (isOriginalPotentialAnExactDistrPotential) {
 			posInCol = 0;
 		} else {//Probability potential
 			Variable var = potential.getVariable(0);

@@ -186,7 +186,7 @@ public class SystematicSampling extends Sampler {
 				newSubPotential.setUncertainValues(newTablePotential.getUncertainValues());
 				double min = parameter.min;
 				double pointsDistance = (parameter.max - min) / numIntervals;
-				int numStates = numElementsInColumn(originalSubPotential);
+				int numStates = numElementsInColumn(originalPotential, originalSubPotential);
 				int configurationBasePositionInitColumn = position - posUncertainInColumn;
 				List<UncertainValue> columnUncertainValues = getUncertainValuesChance(
 						originalSubPotential.uncertainValues, configurationBasePositionInitColumn, numStates);
@@ -209,7 +209,12 @@ public class SystematicSampling extends Sampler {
 					auxValueToAssign += pointsDistance;
 				}
 				if (originalPotential != originalSubPotential) {
-					replace((TreeADDPotential) newPotential, originalSubPotential, newSubPotential);
+					if (newPotential instanceof TreeADDPotential) {
+						replace((TreeADDPotential) newPotential, originalSubPotential, newSubPotential);
+					}
+					else {// newPotential is an ExactDistrPotential
+						((ExactDistrPotential)newPotential).setTablePotential(newSubPotential);						
+					}
 				}
 				net.removePotential(originalPotential);
 				net.addPotential(newPotential);

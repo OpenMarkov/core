@@ -8,7 +8,9 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +42,7 @@ public abstract class Sampler {
 	}
 
 	/**
-	 * @param uncertainValues List of uncertaing values
+	 * @param uncertainValues List of uncertain values
 	 * @param types           Probability density function types
 	 * @return indexes of uncertain values NOT of classes
 	 */
@@ -74,13 +76,14 @@ public abstract class Sampler {
 
 	}
 
-	public static int numElementsInColumn(Potential potential) {
+	public static int numElementsInColumn(Potential originalPotential, Potential originalSubpotential) {
 		int numStates;
 		// Probability potential
-		if (potential.getVariables().get(0).getVariableType().equals(VariableType.NUMERIC)) {
+		if (originalSubpotential.getVariables().get(0).getVariableType().equals(VariableType.NUMERIC) 
+				|| originalPotential instanceof ExactDistrPotential) {
 			numStates = 1;
 		} else {
-			numStates = potential.getVariables().get(0).getNumStates();
+			numStates = originalSubpotential.getVariables().get(0).getNumStates();
 		}
 		return numStates;
 	}

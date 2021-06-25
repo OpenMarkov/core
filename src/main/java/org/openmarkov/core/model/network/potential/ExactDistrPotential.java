@@ -91,7 +91,7 @@ import java.util.List;
 	}
 
 	@Override public boolean isUncertain() {
-		return false;
+		return this.tablePotential.isUncertain();
 	}
 
 	@Override public void scalePotential(double scale) {

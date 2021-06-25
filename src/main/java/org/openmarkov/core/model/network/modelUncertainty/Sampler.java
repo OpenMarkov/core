@@ -76,11 +76,12 @@ public abstract class Sampler {
 
 	}
 
-	public static int numElementsInColumn(Potential originalPotential, Potential originalSubpotential) {
+	public static int numElementsInColumn(Potential originalSubpotential) {
 		int numStates;
 		// Probability potential
-		if (originalSubpotential.getVariables().get(0).getVariableType().equals(VariableType.NUMERIC) 
-				|| originalPotential instanceof ExactDistrPotential) {
+		//if (originalSubpotential.getVariables().get(0).getVariableType().equals(VariableType.NUMERIC) 
+			//	|| originalPotential instanceof ExactDistrPotential) {
+		if (originalSubpotential instanceof ExactDistrPotential) {
 			numStates = 1;
 		} else {
 			numStates = originalSubpotential.getVariables().get(0).getNumStates();

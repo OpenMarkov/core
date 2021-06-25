@@ -15,9 +15,12 @@ public class UncertainParameter {
 
 	UncertainValue uncertainValue;
 	Potential potential;
-	TablePotential subPotential;
+	//TablePotential subPotential;
+	//Manolo> This changes may affect a lot the stability of the sensitivity analysis.
+	//I've decided not only store in subPotential TablePotentials but also ExactDistrPotentials.
+	Potential subPotential;
 	int configuration;
-	public UncertainParameter(Potential potential, UncertainValue uncertainValue, TablePotential subPotential,
+	public UncertainParameter(Potential potential, UncertainValue uncertainValue, Potential subPotential,
 			int configuration) {
 		this.uncertainValue = uncertainValue;
 		this.potential = potential;

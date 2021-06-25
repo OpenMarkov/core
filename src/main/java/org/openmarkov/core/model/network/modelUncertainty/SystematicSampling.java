@@ -168,7 +168,6 @@ public class SystematicSampling extends Sampler {
 		for (ParameterAnalysisInformation parameter : parameters) {
 			uncertainParameter = parameter.uncertainParameter;
 			if (uncertainParameter != null) {
-
 				String iterationVariableName = parameter.iterationVariableName;
 				Variable iterVariable = new Variable(iterationVariableName, numPoints);
 				Potential originalPotential = uncertainParameter.potential;
@@ -179,11 +178,7 @@ public class SystematicSampling extends Sampler {
 				originalSubPotentialTable = getPotentialTable(originalSubPotential);
 				Potential newSubPotential;
 				boolean isOriginalPotentialATreeADD = originalPotential instanceof TreeADDPotential;
-				if (isOriginalPotentialATreeADD) {					
-					newSubPotential = originalSubPotential.copy();
-				} else {
-					newSubPotential = newPotential;
-				}
+				newSubPotential = isOriginalPotentialATreeADD? originalSubPotential.copy(): newPotential;
 				int position = getPosition(originalSubPotentialTable, uncertainParameter.uncertainValue);
 				int posUncertainInColumn = calculatePositionUncertainInColumn(originalSubPotentialTable, position, isSubPotentialExactDistrPotential);
 				int originalValuesLength = originalSubPotentialTable.getTableSize();
@@ -196,12 +191,10 @@ public class SystematicSampling extends Sampler {
 				}
 				newSubPotentialVariables.addAll(newTablePotentialVariables);
 				newSubPotential.setVariables(newSubPotentialVariables);
-				TablePotential newSubPotentialTable = getPotentialTable(newSubPotential);
+				TablePotential newSubPotentialTable = newTablePotential;
 				if (newSubPotentialTable != newSubPotential) {
 					newSubPotentialTable.setVariables(newTablePotentialVariables);
 				}
-				newSubPotentialTable.setValues(newTablePotential.getValues());
-				newSubPotentialTable.setUncertainValues(newTablePotential.getUncertainValues());
 				double min = parameter.min;
 				double pointsDistance = (parameter.max - min) / numIntervals;
 				int numStates = numElementsInColumn(originalSubPotential);
@@ -209,14 +202,12 @@ public class SystematicSampling extends Sampler {
 				List<UncertainValue> columnUncertainValues = getUncertainValuesChance(
 						originalSubPotentialTable.uncertainValues, configurationBasePositionInitColumn, numStates);
 				Sampler sampler = new SystematicSampling();
-				double[] sampledConfigurationValues = sampler
-						.generateSample(columnUncertainValues, numStates, functionTypes);
-
+				double[] sampledConfigurationValues = sampler.generateSample(columnUncertainValues, numStates, functionTypes);
 				double[] auxSampledConfigurationValues = new double[numStates];
 				double auxValueToAssign = min;
+				double[] newSubpotentialTableValues = newSubPotentialTable.values;
 				for (int i = 0; i < numPoints; i++) {
 					System.arraycopy(sampledConfigurationValues, 0, auxSampledConfigurationValues, 0, numStates);
-					double[] newSubpotentialTableValues = newSubPotentialTable.values;
 					replaceValueAndRedistributeComplements(auxSampledConfigurationValues, sampler, posUncertainInColumn,
 							auxValueToAssign);
 					copyInArray(newSubpotentialTableValues, configurationBasePositionInitColumn + i * originalValuesLength,
@@ -226,15 +217,16 @@ public class SystematicSampling extends Sampler {
 							+ i * pointsDistance;*/
 					auxValueToAssign += pointsDistance;
 				}
+				TablePotential auxTablePotential;
+				auxTablePotential = getPotentialTable(newSubPotential);
+				auxTablePotential.setValues(newSubpotentialTableValues);
+				/*TODO When we sample a potential value, the uncertain values of the resulting potential is set to empty. In the future we could just set to the empty
+				the sampled parameter, and keep the rest of uncertain values parameters.
+				*/
+				auxTablePotential.setUncertainValues(new UncertainValue[newSubpotentialTableValues.length]);
 				if (isOriginalPotentialATreeADD) {
 					newPotential.addVariable(iterVariable);
-					//if (newPotential instanceof TreeADDPotential) {
-						replace((TreeADDPotential) newPotential, originalSubPotential, newSubPotential);
-					//}
-					/*
-					 * else {// newPotential is an ExactDistrPotential
-					 * ((ExactDistrPotential)newPotential).setTablePotential(newSubPotential); }
-					 */
+					replace((TreeADDPotential)originalPotential, (TreeADDPotential) newPotential, originalSubPotential, newSubPotential);
 				}
 				net.removePotential(originalPotential);
 				net.addPotential(newPotential);
@@ -293,24 +285,25 @@ public class SystematicSampling extends Sampler {
 		return SystematicSampling.sampleNetwork(originalNet, parameters, numIntervals);
 	}
 
-	private static void replace(TreeADDPotential potential, Potential subPotToReplace, Potential newSubPot) {
+	private static void replace(TreeADDPotential originalPotential, TreeADDPotential newPotential, Potential subPotToReplace, Potential newSubPot) {
 
-		List<TreeADDBranch> branches = potential.getBranches();
+		List<TreeADDBranch> branches = originalPotential.getBranches();
 		if (branches != null)
-			for (TreeADDBranch treeADDBranch : branches) {
+			for (int i=0;i<branches.size();i++) {
+				TreeADDBranch treeADDBranch = branches.get(i);
 				if (treeADDBranch != null) {
-					replace(treeADDBranch, subPotToReplace, newSubPot);
+					replace(treeADDBranch, newPotential.getBranches().get(i), subPotToReplace, newSubPot);
 				}
 			}
 	}
 
-	private static void replace(TreeADDBranch treeADDBranch, Potential subPotToReplace, Potential newSubPot) {
-		Potential potential = treeADDBranch.getPotential();
+	private static void replace(TreeADDBranch treeADDBranchOrig, TreeADDBranch treeADDBranchNew, Potential subPotToReplace, Potential newSubPot) {
+		Potential potential = treeADDBranchOrig.getPotential();
 		if (potential == subPotToReplace) {
-			treeADDBranch.setPotential(newSubPot);
+			treeADDBranchNew.setPotential(newSubPot);
 		} else {
 			if (potential != null && potential instanceof TreeADDPotential) {
-				replace((TreeADDPotential) potential, subPotToReplace, newSubPot);
+				replace((TreeADDPotential) potential, (TreeADDPotential) treeADDBranchNew.getPotential(), subPotToReplace, newSubPot);
 			}
 		}
 	}

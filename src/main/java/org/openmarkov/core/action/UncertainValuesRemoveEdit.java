@@ -13,6 +13,8 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
@@ -49,7 +51,7 @@ import java.util.List;
 
 		this.node = node;
 
-		TablePotential potential = getPotential();
+		Potential potential = getPotential();
 
 		TablePotential auxProjected = null;
 		try {
@@ -69,13 +71,49 @@ import java.util.List;
 		for (UncertainValue aux : oldUncertainColumnArray) {
 			oldUncertainColumn.add(aux);
 		}
-
-		this.basePosition = potential.getBasePosition(configuration);
+		TablePotential auxPotential = getTablePotential(potential);
+		this.basePosition = getBasePosition(auxPotential,configuration,potential instanceof ExactDistrPotential);
 
 	}
+	
+	
+	/**
+	 * It returns the first position in the table of the consecutive cells where all the values corresponding to a certain configuration are stored. It
+	 * assumes that configuration is a complete instantiation of the parents of the variable associated to the table.
+	 *
+	 * @param configuration Evidence case
+	 * @return first position in the table of the consecutive cells where all the values corresponding to a certain configuration are stored
+	 */
+	public int getBasePosition(TablePotential potential, EvidenceCase configuration, boolean isInAnExactDistrPotential) {
+		int[] coordinates;
+		int sizeCoordinates;
+		int pos;
+		int sizeEvi = configuration.getFindings().size();
+		sizeCoordinates = sizeEvi+(isInAnExactDistrPotential?0:1);
+		coordinates = new int[sizeCoordinates];
+		List<Variable> varsTable = potential.getVariables();
+		int startLoop;
+		startLoop = isInAnExactDistrPotential?0:1;
+		if (!isInAnExactDistrPotential) {
+			// It is a typical probability potential of a chance variable
+			coordinates[0] = 0;
+		}
+		for (int i = startLoop; i < sizeCoordinates; i++) {
+			coordinates[i] = configuration.getFinding(varsTable.get(i)).getStateIndex();
+		}
+		pos = potential.getPosition(coordinates);
+		return pos;
+	}
+	
+	
+	
+	
+	TablePotential getTablePotential(Potential potential) {
+		return (potential instanceof TablePotential)?(TablePotential)potential:((ExactDistrPotential)potential).getTablePotential();
+	}
 
-	private TablePotential getPotential() {
-		return (TablePotential) (node.getPotentials().get(0));
+	private Potential getPotential() {
+		return node.getPotentials().get(0);
 	}
 
 	public Variable getVariable() {
@@ -84,23 +122,28 @@ import java.util.List;
 
 	@Override public void doEdit() {
 
-		TablePotential potential = getPotential();
+		TablePotential tablePotential = getTablePotential();
+		
 
 		//Remove the column of uncertain values
 		if (!wasNullOldUncertainColumn) {
-			UncertainValuesEdit.placeUncertainColumn(potential, null, getVariable(), basePosition);
+			UncertainValuesEdit.placeUncertainColumn(tablePotential, null, getVariable(), basePosition);
 		}
 		//If all the elements are null then the uncertain value object is set to null
-		if (!hasUncertainValues(potential.getUncertainValues())) {
-			potential.setUncertainValues(null);
+		if (!hasUncertainValues(tablePotential.getUncertainValues())) {
+			tablePotential.setUncertainValues(null);
 		}
 
 	}
 
+	public TablePotential getTablePotential() {
+		return getTablePotential(getPotential());
+	}
+	
 	public void undo() {
 		super.undo();
 
-		TablePotential potential = getPotential();
+		TablePotential potential = getTablePotential();
 
 		UncertainValue[] table = potential.getUncertainValues();
 		//Create uncertain values table if it is null

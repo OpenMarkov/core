@@ -790,32 +790,7 @@ import java.util.Random;
 		return pos;
 	}
 
-	/**
-	 * It returns the first position in the table of the consecutive cells where
-	 * all the values corresponding to a certain configuration are stored. It
-	 * assumes that configuration is a complete instantiation of the parents of
-	 * the variable associated to the table.
-	 *
-	 * @param configuration Evidence case
-	 * @return first position in the table of the consecutive cells where all the values corresponding to a certain configuration are stored
-	 */
-	public int getBasePosition(EvidenceCase configuration) {
-		int[] coordinates;
-		int sizeCoordinates;
-		int pos;
-		int sizeEvi = configuration.getFindings().size();
-		sizeCoordinates = sizeEvi + 1;
-		coordinates = new int[sizeCoordinates];
-		List<Variable> varsTable = this.getVariables();
-		int startLoop;
-		coordinates[0] = 0;
-		startLoop = 1;
-		for (int i = startLoop; i < sizeCoordinates; i++) {
-			coordinates[i] = configuration.getFinding(varsTable.get(i)).getStateIndex();
-		}
-		pos = this.getPosition(coordinates);
-		return pos;
-	}
+	
 
 	/**
 	 * @param position in the table. {@code int}

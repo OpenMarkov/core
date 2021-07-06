@@ -13,6 +13,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
@@ -181,7 +182,11 @@ import java.util.List;
 			newICIPotential.setNoisyParameters(newVariables.get(i), noisyParameters);
 		}
 		newICIPotential.setLeakyParameters(getLeakyParameters());
-		return newICIPotential;
+		if (newVariables.size() == 1) {
+			return new UniformPotential(newVariables, newICIPotential.role);
+		} else {
+			return newICIPotential;
+		}
 	}
 
 	@Override protected int computeFFunction(int[] parentStates) {

@@ -26,6 +26,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.AugmentedTable;
 import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.FunctionPotential;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -1746,6 +1747,28 @@ public final class DiscretePotentialOperations {
 		List<Variable> variablesToKeep = new ArrayList<>(potential.getVariables());
 		variablesToKeep.remove(variableToMaximize);
 		return multiplyAndMaximize(potentialsVariable, variablesToKeep, variableToMaximize);
+	}
+	
+
+	/**
+	 * Copy the potential received to another potential with the same variables
+	 * but with the order received in {@code otherOrderVariables}
+	 *
+	 * @param potential      {@code ExactDistrPotential}
+	 * @param otherOrderVariables {@code ArrayList} of {@code Variable}
+	 * @return The {@code ExactDistrPotential} generated
+	 * Condition: {@code otherVariables} are the same variables than the
+	 * variables of {@code potential}
+	 */
+	public static ExactDistrPotential reorder(ExactDistrPotential nodeExactDistrPotential, List<Variable> otherOrderVariables) {
+		TablePotential auxPotential = DiscretePotentialOperations.reorder((TablePotential) nodeExactDistrPotential.getTablePotential(),
+				otherOrderVariables);
+		List<Variable> newPotentialVariables = new ArrayList<>();
+		newPotentialVariables.add(nodeExactDistrPotential.getVariables().get(0));
+		newPotentialVariables.addAll(otherOrderVariables);
+		ExactDistrPotential potential = new ExactDistrPotential(newPotentialVariables, nodeExactDistrPotential.getPotentialRole());
+		((ExactDistrPotential)potential).setTablePotential(auxPotential);
+		return potential;	
 	}
 
 	/**

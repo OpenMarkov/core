@@ -27,7 +27,7 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotUndoException;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @SuppressWarnings("serial") public class AddInstanceEdit extends AbstractUndoableEdit implements PNEdit {
@@ -134,7 +134,7 @@ import java.util.List;
 				newNode.setComment(originalNode.getComment());
 				newNode.setRelevance(originalNode.getRelevance());
 				newNode.setPurpose(originalNode.getPurpose());
-				newNode.additionalProperties = new HashMap<>(originalNode.additionalProperties);
+				newNode.additionalProperties = new LinkedHashMap<>(originalNode.additionalProperties);
 				newNode.setInput(originalNode.isInput());
 				instanceNodes.add(newNode);
 			} catch (Exception e) {

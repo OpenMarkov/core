@@ -34,7 +34,7 @@ import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -60,7 +60,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	 * that does not have a direct connection with the attributes stored in the
 	 * {@code ProbNet} object.
 	 */
-	public HashMap<String, String> additionalProperties = new HashMap<>();
+	public LinkedHashMap<String, String> additionalProperties = new LinkedHashMap<>();
 	/**
 	 * Nodes are stored in several HashMaps to accelerate the access. The type
 	 * of node determines the {@code HashMap} in which the node is stored.
@@ -531,7 +531,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 		copyNet.getPNESupport().setListeners(pNESupport.getListeners());
 		// Copy additionalProperties
 		Set<String> keys = additionalProperties.keySet();
-		HashMap<String, String> copyProperties = new HashMap<>();
+		LinkedHashMap<String, String> copyProperties = new LinkedHashMap<>();
 		for (String key : keys) {
 			copyProperties.put(key, additionalProperties.get(key));
 		}
@@ -1553,7 +1553,7 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 		copyNet.getPNESupport().setListeners(pNESupport.getListeners());
 		// Copy additionalProperties
 		Set<String> keys = additionalProperties.keySet();
-		HashMap<String, String> copyProperties = new HashMap<>();
+		LinkedHashMap<String, String> copyProperties = new LinkedHashMap<>();
 		for (String key : keys) {
 			copyProperties.put(key, additionalProperties.get(key));
 		}
@@ -1569,5 +1569,25 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 	public void setConstantPotentials(Set<TablePotential> constantPotentials) {
 		this.constantPotentials = constantPotentials;
 	}
-
+	
+	
+	/**
+	 * Gets network's additional properties (other properties). 
+	 *
+	 * @return additionalProperties
+	 */
+	public LinkedHashMap<String, String> getOtherProperties() {
+		return additionalProperties;
+	}
+	
+	
+	/**
+	 * Sets additional properties (other properties)
+	 *
+	 * @param additionalProperties {@code LinkedHashMap<String, String>}
+	 * @throws ConstraintViolationException ConstraintViolationException
+	 */
+	public void setOtherProperties(LinkedHashMap<String, String>  additionalProperties) {
+		this.additionalProperties = additionalProperties;
+	}
 }

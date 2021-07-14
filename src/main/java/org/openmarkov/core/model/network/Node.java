@@ -20,9 +20,8 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 import org.openmarkov.core.model.network.potential.operation.Util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A probabilistic node has a set of conditional probabilities, one variable,
@@ -45,7 +44,8 @@ public class Node {
 	 * disk that does not have a direct connection with the attributes stored
 	 * in the {@code Node} object.
 	 */
-	public Map<String, String> additionalProperties;
+	public LinkedHashMap<String, String> additionalProperties;	// changed by agoni
+	// public Map<String, String> additionalProperties;
 
 	// Attributes/
 	/**
@@ -107,7 +107,7 @@ public class Node {
 		}
 		this.nodeType = nodeType;
 		potentials = new ArrayList<>();
-		additionalProperties = new HashMap<>();
+		additionalProperties = new LinkedHashMap<>();
 		hashCode = 31 * variable.hashCode() + 17 * nodeType.hashCode();
 	}
 
@@ -121,7 +121,7 @@ public class Node {
 		this.variable = node.getVariable();
 		this.nodeType = node.getNodeType();
 		potentials = new ArrayList<>(node.getPotentials());
-		additionalProperties = new HashMap<>(node.additionalProperties);
+		additionalProperties = new LinkedHashMap<>(node.additionalProperties);
 		alwaysObserved = node.isAlwaysObserved();
 		hashCode = 31 * variable.hashCode() + 17 * nodeType.hashCode();
 	}
@@ -145,6 +145,15 @@ public class Node {
 		Variable oldVariable = this.variable;
 		this.variable = newVariable;
 		this.probNet.updateVariable(oldVariable);
+	}
+	
+	/**
+	 * Sets the additional properties
+	 *
+	 * @param additionalProperties New additional properties
+	 */
+	public void setOtherProperties(LinkedHashMap<String, String> additionalProperties) {
+		this.additionalProperties = additionalProperties;
 	}
 
 	/**
@@ -216,6 +225,13 @@ public class Node {
 		return potentials.size();
 	}
 
+	/**
+	 * @return additionalProperties. {@code LinkedHashMap<String, String>}
+	 */
+	public LinkedHashMap<String, String> getOtherProperties() {
+		return additionalProperties;
+	}
+	
 	/**
 	 * @return probNet. {@code ProbNet}
 	 */

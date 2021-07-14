@@ -130,7 +130,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 
 		// Copy additionalProperties
 		Set<String> keys = probNet.additionalProperties.keySet();
-		HashMap<String, String> copyProperties = new HashMap<>();
+		LinkedHashMap<String, String> copyProperties = new LinkedHashMap<>();
 		for (String key : keys) {
 			copyProperties.put(key, probNet.additionalProperties.get(key));
 		}

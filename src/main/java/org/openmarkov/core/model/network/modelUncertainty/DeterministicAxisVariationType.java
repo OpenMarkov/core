@@ -17,36 +17,44 @@ public enum DeterministicAxisVariationType {
 	/**
 	 * Percentage of the parameter probability
 	 */
-	POPP("SensitivityAnalysis.Axis.Variation.POPP"),
+	POPP("POPP"),
 
 	/**
 	 * Same variation as the X axis
 	 */
-	PREV("SensitivityAnalysis.Axis.Variation.PREV"),
+	PREV("PREV"),
 
 	/**
 	 * Percentage over reference value
 	 */
-	PORV("SensitivityAnalysis.Axis.Variation.PORV"),
+	PORV("PORV"),
 
 	/**
 	 * Ratio over reference value
 	 */
-	RORV("SensitivityAnalysis.Axis.Variation.RORV"),
+	RORV("RORV"),
 
 	/**
 	 * User defined interval between 0 and 1
 	 */
-	UDIN("SensitivityAnalysis.Axis.Variation.UDIN");
+	UDIN("UDIN");
 
 	private final String display;
-
-	DeterministicAxisVariationType(String display) {
-		this.display = display;
+	
+	private final String displaySpiderLegend;
+	
+	DeterministicAxisVariationType(String suffix) {
+		String prefix = "SensitivityAnalysis.Axis.";
+		this.display = prefix + "Variation." +suffix;
+		this.displaySpiderLegend = prefix + "VariationSpiderLegend." + suffix;
 	}
 
 	@Override public String toString() {
 		return display;
+	}
+	
+	public String toStringSpiderLegend() {
+		return displaySpiderLegend;
 	}
 }
 

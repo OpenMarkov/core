@@ -1118,13 +1118,17 @@ import java.util.Random;
 	/**
 	 * Generates a sampled potential
 	 */
-	public Potential sample() {
+	public Potential sample(boolean isInsideOfExactDistrPotential) {
 		Potential sampledPotential = this;
 		if (uncertainValues != null) {
 			TablePotentialSampler samplePotentialTable = new TablePotentialSampler();
-			sampledPotential = samplePotentialTable.sample(this);
+			sampledPotential = samplePotentialTable.sample(this, isInsideOfExactDistrPotential);
 		}
 		return sampledPotential;
+	}
+	
+	public Potential sample() {
+		return sample(false);
 	}
 
 	@Override public boolean equals(Object arg0) {

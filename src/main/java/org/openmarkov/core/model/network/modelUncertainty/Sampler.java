@@ -7,10 +7,10 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,17 +76,27 @@ public abstract class Sampler {
 
 	}
 
-	public static int numElementsInColumn(Potential originalSubpotential) {
+	public static int numElementsInColumn(Potential originalSubpotential, boolean isInsideOfExactDistrPotential) {
 		int numStates;
-		// Probability potential
-		//if (originalSubpotential.getVariables().get(0).getVariableType().equals(VariableType.NUMERIC) 
-			//	|| originalPotential instanceof ExactDistrPotential) {
-		if (originalSubpotential instanceof ExactDistrPotential) {
+
+		List<Variable> variables = originalSubpotential.getVariables();
+		if (variables.size() == 0 || originalSubpotential instanceof ExactDistrPotential || isInsideOfExactDistrPotential) {
 			numStates = 1;
-		} else {
-			numStates = originalSubpotential.getVariables().get(0).getNumStates();
+		}
+		else {
+			Variable firstVariable = variables.get(0);
+			if (firstVariable.getVariableType().equals(VariableType.NUMERIC)) {
+				numStates = 1;
+			}
+			else {
+				numStates = firstVariable.getNumStates();
+			}
 		}
 		return numStates;
+	}
+	
+	public static int numElementsInColumn(Potential originalSubpotential) {
+		return numElementsInColumn(originalSubpotential, false);
 	}
 
 	protected static List<UncertainValue> getUncertainValuesChance(UncertainValue[] uTable, int basePos,

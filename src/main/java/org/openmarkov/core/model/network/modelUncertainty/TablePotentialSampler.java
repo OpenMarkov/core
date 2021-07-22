@@ -29,12 +29,12 @@ public class TablePotentialSampler extends Sampler {
 	}
 
 	/**
-	 * @param inputTablePotential Variable indexing the number of
-	 *                            simulation. The number of simulations performed is the number
-	 *                            of states of this variable
+	 * @param inputTablePotential Variable indexing the number of simulation. The
+	 *                            number of simulations performed is the number of
+	 *                            states of this variable
 	 * @return A sampled potential table
 	 */
-	public TablePotential sample(TablePotential inputTablePotential) {
+	public TablePotential sample(TablePotential inputTablePotential, boolean isInsideOfExactDistrPotential) {
 		TablePotential sampledTablePotential = null;
 		int inputTableSize;
 		List<Class<? extends ProbDensFunction>> functionTypes = initializeTypeFunctions();
@@ -50,7 +50,7 @@ public class TablePotentialSampler extends Sampler {
 					inputTablePotential.getPotentialRole());
 			double[] sampledValues = sampledTablePotential.values;
 			sampledTablePotential.setUncertainValues(inputTablePotential.getUncertainValues());
-			numStates = numElementsInColumn(inputTablePotential);
+			numStates = numElementsInColumn(inputTablePotential, isInsideOfExactDistrPotential);
 			sampledConfigurationValues = new double[numStates];
 			// Number of configurations of the conditioning variables
 			inputTableSize = inputTablePotential.getTableSize();
@@ -81,11 +81,14 @@ public class TablePotentialSampler extends Sampler {
 		return sampledTablePotential;
 	}
 
-	@Override protected Random createRandomGenerator() {
+
+	@Override
+	protected Random createRandomGenerator() {
 		return new XORShiftRandom();
 	}
 
-	@Override protected double[] getSample(FamilyDistribution family, Random randomGenerator) {
+	@Override
+	protected double[] getSample(FamilyDistribution family, Random randomGenerator) {
 		return family.getSample(randomGenerator);
 	}
 

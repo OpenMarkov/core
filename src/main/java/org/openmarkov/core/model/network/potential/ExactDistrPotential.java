@@ -85,8 +85,9 @@ import java.util.List;
 	}
 
 	@Override public Potential sample() {
-		this.tablePotential = (TablePotential) this.tablePotential.sample();
-		return this;
+		ExactDistrPotential sampled = (ExactDistrPotential) copy();
+		sampled.tablePotential = (TablePotential) tablePotential.sample(true);
+		return sampled;
 	}
 
 	@Override public Potential copy() {

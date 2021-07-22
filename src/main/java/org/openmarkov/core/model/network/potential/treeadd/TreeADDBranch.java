@@ -13,6 +13,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 
@@ -227,6 +228,10 @@ public class TreeADDBranch {
 	public List<Variable> getAddableVariables() {
 		List<Variable> addableVariables = new ArrayList<>(parentVariables);
 		addableVariables.removeAll(potential.getVariables());
+		if (potential instanceof ExactDistrPotential) {
+			addableVariables.remove(potential.getVariable(0));
+		}
+		addableVariables.remove(rootVariable);
 		return addableVariables;
 	}
 

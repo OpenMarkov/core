@@ -145,10 +145,11 @@ public class PotentialManager {
 		for (String potentialName : potentials.keySet()) {
 			Method validateMethod = null;
 			try {
-				validateMethod = potentials.get(potentialName)
-						.getMethod("validate", Node.class, List.class, PotentialRole.class);
-				if ((Boolean) validateMethod.invoke(null, node, node.getPotentials().get(0).getVariables(),
-						node.getPotentials().get(0).getPotentialRole())) {
+				Class<? extends Potential> potentialClass = potentials.get(potentialName);
+				validateMethod = potentialClass.getMethod("validate", Node.class, List.class, PotentialRole.class);
+				Potential potential = node.getPotentials().get(0);
+				if ((Boolean) validateMethod.invoke(null, node, potential.getVariables(),
+						potential.getPotentialRole())) {
 					filteredPotentials.add(potentialName);
 				}
 			} catch (Exception e) {

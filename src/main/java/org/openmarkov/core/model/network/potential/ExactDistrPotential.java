@@ -11,7 +11,10 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
@@ -176,4 +179,19 @@ import java.util.List;
 		buffer.append("\n Criterion: " + ((criterion == null) ? "null" : criterion.toString()));
 		return buffer.toString();
 	}
+	
+	/**
+	 * Returns if an instance of a certain Potential type makes sense given
+	 * the variables and the potential role.
+	 *
+	 * @param node      {@code Node}
+	 * @param variables {@code ArrayList} of {@code Variable}.
+	 * @param role      {@code PotentialRole}.
+	 * @return True if it is valid
+	 */
+	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+		List<Variable> parents = variables.subList(1, variables.size()-1);
+		return node.getNodeType()!=NodeType.CHANCE || parents.stream().anyMatch(parent -> parent.getVariableType()==VariableType.NUMERIC);
+	}
+
 }

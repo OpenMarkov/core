@@ -192,7 +192,8 @@ import java.util.List;
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		List<Variable> parents = variables.subList(1, variables.size()-1);
-		return node.getNodeType()!=NodeType.CHANCE || parents.stream().anyMatch(parent -> parent.getVariableType()==VariableType.NUMERIC);
+		boolean isValid = node.getNodeType()!=NodeType.CHANCE || node.getVariable().getVariableType() == VariableType.NUMERIC || parents.stream().anyMatch(parent -> parent.getVariableType()==VariableType.NUMERIC);
+		return isValid;
 	}
 
 }

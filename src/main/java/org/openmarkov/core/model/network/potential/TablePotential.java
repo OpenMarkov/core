@@ -17,6 +17,7 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.TablePotentialSampler;
@@ -1281,6 +1282,113 @@ import java.util.Random;
 	 */
 	public boolean hasInterventionForDecision(Variable decision) {
 		return hasInterventions() && strategyTrees[0].hasInterventionForDecision(decision);
+	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+			boolean hasInterventions = false;
+			TablePotential newPotential = new TablePotential(newOrderOfVariables, getPotentialRole());
+			int[] accOffsets = getAccumulatedOffsets(newOrderOfVariables);
+			int[] potentialPositions = new int[getNumVariables()];
+			int[] potentialDimensions = getDimensions();
+			double[] valuesOrigPotential = values;
+			double[] valuesNewPotential = newPotential.values;
+			StrategyTree[] intervOrigPotential = strategyTrees;
+			StrategyTree[] intervNewPotential = null;
+			UncertainValue[] uncertainValues = null;
+			UncertainValue[] copyUncertainValues = null;
+			if (isUncertain()) {
+				uncertainValues = this.uncertainValues;
+				newPotential.uncertainValues = new UncertainValue[this.uncertainValues.length];
+				copyUncertainValues = newPotential.uncertainValues;
+			}
+			hasInterventions = intervOrigPotential != null && intervOrigPotential.length > 0;
+			if (hasInterventions) {
+				int newInterventionsLength = strategyTrees.length;
+				newPotential.strategyTrees = new StrategyTree[newInterventionsLength];
+				intervNewPotential = newPotential.strategyTrees;
+			}
+
+			int copyTablePosition = 0;
+			int numVariables = newOrderOfVariables.size();
+			int incrementedVariable, i;
+			for (i = 0; i < valuesOrigPotential.length - 1; i++) {
+				valuesNewPotential[copyTablePosition] = valuesOrigPotential[i];
+				if (isUncertain()) {
+					copyUncertainValues[copyTablePosition] = uncertainValues[i];
+				}
+				if (hasInterventions) {
+					intervNewPotential[copyTablePosition] = intervOrigPotential[i];
+				}
+
+				for (incrementedVariable = 0; incrementedVariable < numVariables; incrementedVariable++) {
+					potentialPositions[incrementedVariable]++;
+					if (potentialPositions[incrementedVariable] == potentialDimensions[incrementedVariable]) {
+						potentialPositions[incrementedVariable] = 0;
+					} else {
+						break;
+					}
+				}
+				copyTablePosition += accOffsets[incrementedVariable];
+			}
+			valuesNewPotential[copyTablePosition] = valuesOrigPotential[i];
+			if (isUncertain()) {
+				copyUncertainValues[copyTablePosition] = uncertainValues[i];
+			}
+			if (hasInterventions) {
+				intervNewPotential[copyTablePosition] = intervOrigPotential[i];
+			}
+			if (isAdditive()) {
+				newPotential.setCriterion(getCriterion());
+			}
+			newPotential.properties = properties;
+			return newPotential;
+		}
+	
+	@Override
+	public TablePotential reorder(Variable variable, State[] newOrder) {
+		TablePotential copyPotential = (TablePotential) copy();
+		double[] tablePotential = values;
+		double[] tableCopyPotential = copyPotential.values;
+		UncertainValue[] uncertainValues = null;
+		UncertainValue[] copyUncertainValues = null;
+		int[] displacements = new int[newOrder.length];
+		List<Variable> variables = copyPotential.getVariables();
+		int variableIndex = variables.indexOf(variable);
+		int offset = copyPotential.getOffsets()[variableIndex];
+		State[] oldOrder = variable.getStates();
+		for (int i = 0; i < newOrder.length; ++i) {
+			displacements[i] = -1;
+			int j = 0;
+			boolean found = false;
+			while (!found) {
+				if (oldOrder[i] == newOrder[j]) {
+					displacements[i] = j - i;
+					found = true;
+				}
+				++j;
+			}
+		}
+
+		if (isUncertain()) {
+			uncertainValues = this.uncertainValues;
+			copyPotential.uncertainValues = new UncertainValue[this.uncertainValues.length];
+			copyUncertainValues = copyPotential.uncertainValues;
+		}
+
+		for (int i = 0; i < tablePotential.length; i++) {
+			int indexOfState = (i / offset) % variable.getNumStates();
+			int newIndex = i + (displacements[indexOfState % variable.getNumStates()] * offset);
+			tableCopyPotential[newIndex] = tablePotential[i];
+			if (isUncertain()) {
+				copyUncertainValues[newIndex] = uncertainValues[i];
+			}
+		}
+		if (isAdditive()) {
+			copyPotential.setCriterion(getCriterion());
+		}
+		copyPotential.properties = properties;
+		return copyPotential;
 	}
 
 }

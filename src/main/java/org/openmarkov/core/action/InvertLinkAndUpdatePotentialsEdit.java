@@ -189,8 +189,7 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 		TablePotential xyPotentialMultiplied = DiscretePotentialOperations.multiply(xyPotentials);
 
 		// Apply the correction of the order of the variables: Σ(x) P(x, y|a, b, c) = P(a|b, y, c) to Σ(x) P(x, y|a, b, c) = P(y|a, b, c)
-		xyPotentialMultiplied = DiscretePotentialOperations.reorder(xyPotentialMultiplied,
-				new ArrayList<>(orderedVariables));
+		xyPotentialMultiplied = (TablePotential) xyPotentialMultiplied.reorder(new ArrayList<>(orderedVariables));
 
 		// 4. Calculate P(y|a, b, c) through P(y|a, b, c) = Σ(x) P(x, y|a, b, c) and assign to node Y this probability.
 		yNewPotential = DiscretePotentialOperations.marginalize(xyPotentialMultiplied, x.getVariable());

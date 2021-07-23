@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network.potential.canonical;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -238,6 +239,18 @@ import java.util.List;
 
 	@Override public Potential deepCopy(ProbNet copyNet) {
 		return (MinPotential) super.deepCopy(copyNet);
+	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

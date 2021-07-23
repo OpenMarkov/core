@@ -268,4 +268,16 @@ import java.util.Map;
 
 		return potential;
 	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

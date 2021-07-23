@@ -12,6 +12,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -116,6 +117,26 @@ import java.util.List;
 	@Override public void scalePotential(double scale) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		int size = newOrderOfVariables.size();
+		//orderVariables has the order of the parents of the augmentedTable, so parameterVariables should be added
+		for (Variable parameterVariable : getParameterVariables()) {
+			newOrderOfVariables.add(parameterVariable);
+		}
+		AugmentedTablePotential newPotential = new AugmentedTablePotential(newOrderOfVariables,
+				getPotentialRole());
+		AugmentedTable newDistributionTable = (AugmentedTable) getAugmentedTable().reorder(newOrderOfVariables.subList(0, size));
+		newPotential.setAugmentedTable(newDistributionTable);
+		return newPotential;
+	}
+	
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -13,6 +13,7 @@ import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -158,6 +159,18 @@ import java.util.List;
 		CycleLengthShift potential = (CycleLengthShift) super.deepCopy(copyNet);
 		potential.cycleLength = this.cycleLength.clone();
 		return potential;
+	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

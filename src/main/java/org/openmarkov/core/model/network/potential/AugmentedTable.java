@@ -17,6 +17,8 @@ import org.openmarkov.core.model.network.VariableType;
 import java.util.List;
 
 public class AugmentedTable extends TablePotential {
+	
+
 	/**
 	 * The default function
 	 */
@@ -216,5 +218,37 @@ public class AugmentedTable extends TablePotential {
 	@Override public void scalePotential(double scale) {
 		//TODO
 	}
+	
+	
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+			AugmentedTable newPotential = new AugmentedTable(newOrderOfVariables, getPotentialRole());
+			int[] accOffsets = getAccumulatedOffsets(newOrderOfVariables);
+			int[] potentialPositions = new int[getNumVariables()];
+			int[] potentialDimensions = getDimensions();
+			String[] valuesOrigPotential = getFunctionValues();
+			String[] valuesNewPotential = newPotential.getFunctionValues();
+
+			int copyTablePosition = 0;
+			int numVariables = newOrderOfVariables.size();
+			int incrementedVariable, i;
+			for (i = 0; i < valuesOrigPotential.length - 1; i++) {
+				valuesNewPotential[copyTablePosition] = valuesOrigPotential[i];
+
+				for (incrementedVariable = 0; incrementedVariable < numVariables; incrementedVariable++) {
+					potentialPositions[incrementedVariable]++;
+					if (potentialPositions[incrementedVariable] == potentialDimensions[incrementedVariable]) {
+						potentialPositions[incrementedVariable] = 0;
+					} else {
+						break;
+					}
+				}
+				copyTablePosition += accOffsets[incrementedVariable];
+			}
+			valuesNewPotential[copyTablePosition] = valuesOrigPotential[i];
+			newPotential.properties = properties;
+			return newPotential;
+	}
+	
 
 }

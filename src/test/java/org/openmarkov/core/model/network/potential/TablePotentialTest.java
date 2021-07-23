@@ -469,7 +469,7 @@ public class TablePotentialTest {
 		// Test multiply projected potentials
 		projectedPotentials.add(projectedPotentialB);
 		TablePotential multiplication = DiscretePotentialOperations.multiply(projectedPotentials);
-		multiplication = DiscretePotentialOperations.reorder(multiplication, Arrays.asList(B, C));
+		multiplication = (TablePotential) multiplication.reorder(Arrays.asList(B, C));
 		// Test variables
 		List<Variable> variables = multiplication.getVariables();
 		assertEquals(2, variables.size());

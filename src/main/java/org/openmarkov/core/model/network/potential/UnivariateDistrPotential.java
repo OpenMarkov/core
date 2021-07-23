@@ -12,6 +12,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.ExactFunction;
@@ -419,6 +420,32 @@ import java.util.List;
 			buffer.append("}");
 		}
 		return buffer.toString();
+	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		int size = newOrderOfVariables.size();
+		// orderVariables has the order of the parents of the augmentedTable, so
+		// parameterVariables should be added
+		for (Variable parameterVariable : getParameterVariables()) {
+			newOrderOfVariables.add(parameterVariable);
+		}
+		UnivariateDistrPotential newPotential = new UnivariateDistrPotential(newOrderOfVariables,
+				getProbDensFunctionClass(), getPotentialRole());
+		newOrderOfVariables.remove(0);
+		// I do use getVariable(0) for be compliant with the comparison in int[]
+		// accOffsets = potential.getAccumulatedOffsets(orderVariables);
+		newOrderOfVariables.add(0, getAugmentedTable().getVariable(0));
+		AugmentedTable newDistributionTable = (AugmentedTable) getAugmentedTable()
+				.reorder(newOrderOfVariables.subList(0, size));
+		newPotential.setDistributionTable(newDistributionTable);
+		return newPotential;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

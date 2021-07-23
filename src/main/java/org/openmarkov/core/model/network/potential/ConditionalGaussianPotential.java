@@ -13,6 +13,7 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -241,6 +242,18 @@ import java.util.List;
 		super.replaceVariable(position, variable);
 		mean.replaceVariable(oldVariable, variable);
 		variance.replaceVariable(oldVariable, variable);
+	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

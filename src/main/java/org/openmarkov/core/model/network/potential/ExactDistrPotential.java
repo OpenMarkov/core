@@ -13,9 +13,11 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
@@ -194,6 +196,25 @@ import java.util.List;
 		List<Variable> parents = variables.subList(1, variables.size());
 		boolean isValid = node.getNodeType()!=NodeType.CHANCE || node.getVariable().getVariableType() == VariableType.NUMERIC || parents.stream().anyMatch(parent -> parent.getVariableType()==VariableType.NUMERIC);
 		return isValid;
+	}
+
+	
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		TablePotential auxPotential = (TablePotential) getTablePotential().reorder(newOrderOfVariables);
+		List<Variable> newPotentialVariables = new ArrayList<>();
+		newPotentialVariables.add(getVariables().get(0));
+		newPotentialVariables.addAll(newOrderOfVariables);
+		ExactDistrPotential potential = new ExactDistrPotential(newPotentialVariables, getPotentialRole());
+		((ExactDistrPotential) potential).setTablePotential(auxPotential);
+		return potential;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		ExactDistrPotential copyPotential = (ExactDistrPotential) copy();
+		copyPotential.setTablePotential(copyPotential.tablePotential.reorder(variable, newOrder));
+		return copyPotential;
 	}
 
 }

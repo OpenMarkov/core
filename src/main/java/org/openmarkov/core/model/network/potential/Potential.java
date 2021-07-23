@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -597,4 +598,25 @@ public abstract class Potential {
 	public void setCriterion(Criterion criterion) {
 		this.criterion = criterion;
 	}
+	
+	
+	/**
+	 * Copy this potential to another potential with the same variables but
+	 * with the order received in {@code newOrderOfVariables}
+	 * 
+	 * @param newOrderOfVariables {@code ArrayList} of {@code Variable}
+	 * @return The {@code Potential} generated Condition:
+	 *         {@code newOrderOfVariables} are the same variables than the variables of this potential
+	 */
+	public abstract Potential reorder(List<Variable> newOrderOfVariables);
+	
+	/**
+	 * Copy this potential to another potential with the same variables but
+	 * with changes in the order of states in one of the variables
+	 *
+	 * @param variable  {@code VariableList} whose order of states has changed
+	 * @param newOrder  array of {@code State}s in the new order
+	 * @return The {@code Potential} generated
+	 */
+	public abstract Potential reorder(Variable variable, State[] newOrder) ;
 }

@@ -125,36 +125,35 @@ import java.util.Random;
 		case POLICY:
 			TablePotential projectedPotential = null;
 			Variable conditionedVariable = variables.get(0);
+			boolean isNumeric = conditionedVariable.getVariableType() == VariableType.NUMERIC;
 			if (evidenceCase != null && evidenceCase.contains(conditionedVariable)) {
-				if (conditionedVariable.getVariableType() == VariableType.NUMERIC) {
-					// returns an empty list of potentials
-					return new ArrayList<>();
-				} else {
+				if (!isNumeric) {
 					// returns a constant
 					projectedPotential = new TablePotential(new ArrayList<Variable>(), role);
 					projectedPotential.values[0] = 1.0 / conditionedVariable.getNumStates();
 				}
-			} else {
-				// the conditioned variable does not make part of the
-				// evidence
-				if (conditionedVariable.getVariableType() == VariableType.NUMERIC) {
-					throw new NonProjectablePotentialException(OpenMarkovExceptionConstants.NonProjectablePotentialException_UniformNumeric, conditionedVariable.getName());
-
-				} else {
-					// returns a uniform potential
-					List<Variable> potentialVariables = new ArrayList<>(variables);
-					if (evidenceCase != null) {
-						potentialVariables.removeAll(evidenceCase.getVariables());
-					}
-					projectedPotential = new TablePotential(potentialVariables, getPotentialRole());
-				}
+			} else {				
+				if (!isNumeric) {
+					projectedPotential = createUniformTablePotential(evidenceCase, variables);	
+				}						
 			}
-			newProjectedPotentials.add(projectedPotential);
+			if (projectedPotential!=null) {
+				newProjectedPotentials.add(projectedPotential);
+			}
 			break;
 		default:
 			break;
 		} // end of switch/case statement
 		return newProjectedPotentials;
+	}
+	
+	private TablePotential createUniformTablePotential(EvidenceCase evidenceCase, List<Variable> vars) {
+		List<Variable> potentialVariables = new ArrayList<>(vars);
+		// the conditioned variable does not make part of the evidence
+		if (evidenceCase != null) {
+			potentialVariables.removeAll(evidenceCase.getVariables());
+		}
+		return new TablePotential(potentialVariables, getPotentialRole());
 	}
 
 	/**

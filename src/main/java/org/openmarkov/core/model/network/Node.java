@@ -534,7 +534,8 @@ public class Node {
 			if (!isSuperValueNode()) {
 				double[] values = null;
 				try {
-					values = firstPotential.tableProject(null, null).get(0).values;
+					List<TablePotential> tableProject = firstPotential.tableProject(null, null);
+					values = tableProject.size() > 0 ? tableProject.get(0).values : new double[1];
 				} catch (WrongCriterionException e) {
 					e.printStackTrace();
 				}

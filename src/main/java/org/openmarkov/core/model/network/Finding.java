@@ -67,8 +67,7 @@ public class Finding {
 					variable.getPartitionedInterval().getLimit(state) + variable.getPartitionedInterval()
 							.getLimit(state + 1)
 			) / 2;
-		} //CMI
-		//CMF
+		}
 		else {
 			numericalValue = Double.NaN; // Default value
 		}

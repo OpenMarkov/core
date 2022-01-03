@@ -15,7 +15,7 @@ import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
  * @author cyago
  * @version 1 20/10/2020 - only implemented the methods currently needed
  */
-@ParametrizedFunctionType(distributionName = "Exponential", parametrizationName = "Probability", parameters = { "probability"}, isValidForTTE = true)
+@ParametrizedFunctionType(distributionName = "Exponential", parametrizationName = "Probability per time unit", parameters = { "probability"}, isValidForTTE = true)
 public class ExponentialFunctionProbability extends ExponentialFunction {
 
 	/**

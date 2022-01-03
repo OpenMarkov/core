@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.modelUncertainty.ParametrizedFunction;
 
 import org.openmarkov.core.model.network.modelUncertainty.NormalFunction;
+import org.openmarkov.core.model.network.modelUncertainty.TruncatedNormalFunction;
 import org.openmarkov.core.model.network.modelUncertainty.WeibullFunction;
 
 import java.util.Random;
@@ -17,8 +18,8 @@ import java.util.Random;
  * @author cyago
  * @version 1 20/10/2020 - only implemented the methods currently needed
  */
-@ParametrizedFunctionType(distributionName = "Normal", parametrizationName = "Truncated (not recommended) Mean / Sd", parameters = { "mu", "sigma"}, isValidForTTE = true)
-public class TruncNormalFunctionMeanSd extends NormalFunction {
+@ParametrizedFunctionType(distributionName = "Truncated Normal", parametrizationName = "Mean / Sd", parameters = { "mu", "sigma"}, isValidForTTE = true)
+public class TruncNormalFunctionMeanSd extends TruncatedNormalFunction {
 
 	/**
 	 * Default constructor
@@ -28,10 +29,6 @@ public class TruncNormalFunctionMeanSd extends NormalFunction {
 	}
 
 
-	@Override public double getSample(Random randomGenerator) {
-		double value = super.getSample(randomGenerator);
-		return (value>0)? value: 0;
-	}
 
 
 //	/**

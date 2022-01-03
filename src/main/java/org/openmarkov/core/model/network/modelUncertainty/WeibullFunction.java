@@ -14,6 +14,7 @@ import org.apache.commons.math3.util.FastMath;
 
 /**
  * This class represents a Weibull distribution
+ * TODO introduce what we understand for lamda and k and describe the distribution
  * @version 1.0 - 19/03/2020 Adapted from ExponentialFunction
  * @author  cyago
  */
@@ -38,7 +39,7 @@ public class WeibullFunction extends ProbDensFunctionWithKnownInverseCDF {
 	}
 
 	/**
-	 * Creates a WeibullFuncion object with scale lambda and shape k
+	 * Creates a WeibullFunction object with scale lambda and shape k
 	 * @param lambda - scale parameter
 	 * @param k - shape parameter
 	 */

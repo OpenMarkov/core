@@ -56,15 +56,13 @@ public class TransitionTablePotential extends TableWithEvents {
      * @param role      . <code>PotentialRole</code>.
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-
-        boolean eventSuitable = false;
-        boolean variableSuitable= variables.get(0).getVariableType()==VariableType.FINITE_STATES;
+//For using it with utility nodes
+//        boolean variableSuitable= variables.get(0).getVariableType()==VariableType.FINITE_STATES;
+        boolean variableSuitable= true;
         //I'm supposing variable(0) always contains the node variable.
         for (Variable variable:variables.subList(1,variables.size())) {
             boolean isEvent= node.getProbNet().getNode(variable).getNodeType() == NodeType.EVENT;
-            if (isEvent) {
-                eventSuitable= true;
-            } else {
+            if (!isEvent) {
                 variableSuitable &= variable.getVariableType() == VariableType.FINITE_STATES
                         || variable.getVariableType() == VariableType.DISCRETIZED;
             }
@@ -76,6 +74,7 @@ public class TransitionTablePotential extends TableWithEvents {
 
     @Override
     public double sampleConditionedVariable(Random random, EvidenceCase parents) throws OpenMarkovException {
+
         double sample=0;
         Configuration parentsConfiguration = new Configuration(parents);
         Configuration convertedConfiguration = convert(parentsConfiguration);

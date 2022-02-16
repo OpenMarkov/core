@@ -215,7 +215,11 @@ public class Node {
 	 * @param potentials {@code Potential}
 	 */
 	public void setPotentials(List<Potential> potentials) {
-		this.potentials = potentials;
+		if (potentials != null) {
+			this.potentials = potentials;
+		} else {
+			this.potentials.clear();
+		}
 	}
 
 	/**

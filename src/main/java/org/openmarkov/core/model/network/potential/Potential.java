@@ -507,21 +507,31 @@ public abstract class Potential {
 	 * @return Uniform potential
 	 */
 	public Potential addVariable(Variable variable) {
+		Potential newPotential;
 		if (!variables.contains(variable)) {
-			variables.add(variable);
+			List<Variable> newVariables = new ArrayList<Variable>(variables);
+			newVariables.add(variable);
+			newPotential = new UniformPotential(newVariables, role);
+		} else {
+			newPotential = this;
 		}
-		Potential newPotential = new UniformPotential(variables, role);
 		return newPotential;
 	}
 
 	/**
-	 * Removes variable to a potential implemented in each child class
+	 * Creates a new uniform potential removing the received variable from the variables list of this potential.
 	 * @param variable Variable
 	 * @return Uniform potential
 	 */
 	public Potential removeVariable(Variable variable) {
-		variables.remove(variable);
-		Potential newPotential = new UniformPotential(variables, role);
+		Potential newPotential;
+		if (variables.contains(variable)) {
+			List<Variable> newVariables = new ArrayList<Variable>(variables);
+			newVariables.remove(variable);
+			newPotential = new UniformPotential(newVariables, role);
+		} else {
+			newPotential = this;
+		}
 		return newPotential;
 	}
 

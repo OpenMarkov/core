@@ -13,6 +13,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.ArrayList;
@@ -35,11 +36,11 @@ import java.util.List;
 	/**
 	 * Parent node's old potentials
 	 */
-	protected List<Potential> parentsOldPotentials;
+	protected List<Potential> parentOldPotentials;
 	/**
 	 * Child node's old potentials
 	 */
-	protected List<Potential> childsOldPotentials;
+	protected List<Potential> childOldPotentials;
 
 	// Constructor
 
@@ -73,8 +74,8 @@ import java.util.List;
 		if (node2.getNodeType() != NodeType.DECISION) {
 			// Update potentials
 			List<Potential> newPotentials = new ArrayList<>();
-			this.childsOldPotentials = node2.getPotentials();
-			for (Potential oldPotential : childsOldPotentials) {
+			this.childOldPotentials = node2.getPotentials();
+			for (Potential oldPotential : childOldPotentials) {
 				Potential newPotential = oldPotential.removeVariable(node1.getVariable());
 				newPotentials.add(newPotential);
 			}
@@ -84,14 +85,34 @@ import java.util.List;
 		// Add inverse link
 		probNet.addLink(node2, node1, isDirected);
 		if (node2.getNodeType() != NodeType.DECISION) {
-			this.parentsOldPotentials = node1.getPotentials();
+			this.parentOldPotentials = node1.getPotentials();
 			List<Potential> newPotentials = new ArrayList<>();
-			for (Potential oldPotential : parentsOldPotentials) {
+			for (Potential oldPotential : parentOldPotentials) {
 				// Update potential
 				Potential newPotential = oldPotential.addVariable(node2.getVariable());
 				newPotentials.add(newPotential);
 			}
 			node1.setPotentials(newPotentials);
+		}
+
+		// Checks that the inversion is legal, i.e. it does not produce cycles.
+		if (!probNet.checkProbNet()) {
+			// Build problem explanation for the user.
+			StringBuilder message = new StringBuilder("Link inversion is not possible in the case of ");
+			message.append(node1.getName()); message.append(" -> "); message.append(node2.getName());
+			message.append(" because:\n");
+			List<PNConstraint> unsatisfiedConstraintList = probNet.getUnsatisfiedConstraints();
+			for (PNConstraint constraint : unsatisfiedConstraintList) {
+				message.append("    ");
+				message.append(constraint.toString());
+				message.append("\n");
+			}
+
+			// TODO This is not the place to do this, redesign. The Exceptions are in general catched and ignored!
+			message.append("Undoing operation.\n");
+			undo();
+
+			throw new DoEditException(message.toString());
 		}
 	}
 
@@ -99,9 +120,10 @@ import java.util.List;
 		super.undo();
 		try {
 			probNet.removeLink(variable2, variable1, isDirected);
+
 			probNet.addLink(variable1, variable2, isDirected);
-			node1.setPotentials(parentsOldPotentials);
-			node2.setPotentials(childsOldPotentials);
+			node1.setPotentials(parentOldPotentials);
+			node2.setPotentials(childOldPotentials);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace(System.err);

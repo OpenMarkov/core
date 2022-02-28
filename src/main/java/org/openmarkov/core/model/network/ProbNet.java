@@ -355,6 +355,16 @@ public class ProbNet extends Graph<Node> implements Cloneable {
 		return true;
 	}
 
+	public List<PNConstraint> getUnsatisfiedConstraints() {
+		List<PNConstraint> constraints = new ArrayList<PNConstraint>();
+		for (PNConstraint constraint : constraints) {
+			if ((constraint != null) && (!constraint.checkProbNet(this))) {
+				constraints.add(constraint);
+			}
+		}
+		return constraints;
+	}
+
 	/**
 	 * Checks whether this {@code probNet} is temporal or not.
 	 *

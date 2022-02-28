@@ -166,16 +166,26 @@ public class Node {
 	/**
 	 * @param potential {@code Potential}
 	 */
-	public void addPotential(Potential potential) {
-		this.potentials.add(potential);
+	public void setPotential(Potential potential) {
+		this.potentials.clear();
+		addPotential(potential);
 	}
 
 	/**
 	 * @param potential {@code Potential}
 	 */
-	public void setPotential(Potential potential) {
+	public void addPotential(Potential potential) {
+		this.potentials.add(potential);
+	}
+
+	/**
+	 * @param potentials {@code Potential}
+	 */
+	public void setPotentials(List<Potential> potentials) {
 		this.potentials.clear();
-		addPotential(potential);
+		if (potentials != null) {
+			this.potentials.addAll(potentials);
+		}
 	}
 
 	/**
@@ -209,17 +219,6 @@ public class Node {
 	 */
 	public List<Potential> getPotentials() {
 		return new ArrayList<>(potentials);
-	}
-
-	/**
-	 * @param potentials {@code Potential}
-	 */
-	public void setPotentials(List<Potential> potentials) {
-		if (potentials != null) {
-			this.potentials = potentials;
-		} else {
-			this.potentials.clear();
-		}
 	}
 
 	/**

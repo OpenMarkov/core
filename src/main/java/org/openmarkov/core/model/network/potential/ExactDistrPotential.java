@@ -178,8 +178,12 @@ import java.util.List;
 			}
 			buffer.append("}");
 		}
+		// Comment these lines to fix issue 477: Wrong text in Tree/ADD potentials
+		/*
 		buffer.append("\n Role: " + this.getPotentialRole());
-		buffer.append("\n Criterion: " + ((criterion == null) ? "null" : criterion.toString()));
+		if (criterion != null) {
+			buffer.append("\n Criterion: " + criterion.toString());
+		}*/
 		return buffer.toString();
 	}
 	

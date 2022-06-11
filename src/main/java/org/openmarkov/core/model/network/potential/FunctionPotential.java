@@ -42,8 +42,11 @@ import java.util.*;
 	 * The coefficient
 	 */
 	protected static final double COEFFICIENT = 1;
-
-	final Evaluator evaluator = new Evaluator();
+	/**
+	 * Evaluates the fuction.
+	 * Takes long if made static
+	 */
+	 final Evaluator evaluator = new Evaluator();
 
 	/**
 	 * Creates a Function potential with the function by default

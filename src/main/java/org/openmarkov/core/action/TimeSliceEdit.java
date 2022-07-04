@@ -15,22 +15,28 @@ import org.openmarkov.core.model.network.Variable;
  * @author myebra
  */
 @SuppressWarnings("serial") public class TimeSliceEdit extends SimplePNEdit {
+
 	/**
 	 * The last time slice before the edition
 	 */
 	private int lastTimeSlice;
+	
 	/**
 	 * The new time slice after the edition
 	 */
 	private int newTimeSlice;
+	
+	// TODO node is not used, check why
 	/**
 	 * The edited node
 	 */
-	private Node node = null;
+	//private Node node = null;
+	
 	/**
 	 * the last base name of the temporal variable
 	 */
 	private String lastBaseName;
+	
 	/**
 	 * The last variable name
 	 */
@@ -49,7 +55,7 @@ import org.openmarkov.core.model.network.Variable;
 		this.newTimeSlice = timeSlice;
 		this.lastBaseName = variable.getBaseName();
 		this.lastName = variable.getName();
-		this.node = node;
+		//this.node = node;
 	}
 
 	@Override public void doEdit() throws DoEditException {

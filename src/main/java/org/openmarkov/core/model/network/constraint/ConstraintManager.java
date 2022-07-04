@@ -73,7 +73,7 @@ public class ConstraintManager {
 					includeOptionals && getDefaultBehavior(constraintClass).equals(ConstraintBehavior.OPTIONAL)
 			)) {
 				try {
-					constraints.add(constraintClass.newInstance());
+					constraints.add(constraintClass.getDeclaredConstructor().newInstance());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -86,7 +86,7 @@ public class ConstraintManager {
 		for (Class<? extends PNConstraint> constraintClass : overwrittenConstraints.keySet()) {
 			if (overwrittenConstraints.get(constraintClass) == ConstraintBehavior.YES) {
 				try {
-					constraints.add(constraintClass.newInstance());
+					constraints.add(constraintClass.getDeclaredConstructor().newInstance());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

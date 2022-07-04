@@ -165,7 +165,8 @@ import java.util.List;
 	}
 
 	private Potential getDefaultMeanPotential() {
-		Variable meanVariable = new Variable("Mean");
+		// TODO use next line for something or remove it
+		// Variable meanVariable = new Variable("Mean");
 		List<Variable> meanPotentialVariables = new ArrayList<>(variables);
 		// Remove conditioned variable
 		// meanPotentialVariables.remove(0);
@@ -177,7 +178,8 @@ import java.util.List;
 	}
 
 	private Potential getDefaultVariancePotential() {
-		Variable varianceVariable = new Variable("Variance");
+		// TODO use next line for something or remove it
+		// Variable varianceVariable = new Variable("Variance");
 		List<Variable> variancePotentialVariables = new ArrayList<>(variables);
 		// Remove conditioned variable
 		//variancePotentialVariables.remove(0);

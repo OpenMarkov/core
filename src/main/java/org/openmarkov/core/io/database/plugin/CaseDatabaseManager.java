@@ -81,7 +81,7 @@ public class CaseDatabaseManager {
 
 		CaseDatabaseWriter instance = null;
 		try {
-			instance = (CaseDatabaseWriter) writerPlugins.get(extension).newInstance();
+			instance = (CaseDatabaseWriter) writerPlugins.get(extension).getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
 		}
 
@@ -96,7 +96,7 @@ public class CaseDatabaseManager {
 
 		CaseDatabaseReader instance = null;
 		try {
-			instance = (CaseDatabaseReader) readerPlugins.get(extension).newInstance();
+			instance = (CaseDatabaseReader) readerPlugins.get(extension).getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
 		}
 

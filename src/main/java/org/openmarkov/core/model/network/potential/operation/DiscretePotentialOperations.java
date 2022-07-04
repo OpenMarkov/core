@@ -21,19 +21,14 @@ import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.potential.AugmentedTable;
-import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
-import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.FunctionPotential;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 
 import net.sourceforge.jeval.EvaluationException;
 
@@ -2049,6 +2044,7 @@ public final class DiscretePotentialOperations {
 	 *                                     The number of states of decision must be
 	 *                                     equal to the number of potentials.
 	 */
+	@SuppressWarnings("unchecked")
 	public static TablePotential merge(Variable decision, List<TablePotential> potentials)
 			throws PotentialOperationException {
 		throwExceptionIfNecessaryInMergeOperation(decision, potentials);
@@ -2114,8 +2110,10 @@ public final class DiscretePotentialOperations {
 				? getBooleanArrayOfPotentialsThatAreGTablePotentials(potentials, numPotentials)
 				: null;
 		List<List<CEP>> elementsTables = thereAreGTablePotentials ? new ArrayList<List<CEP>>(numPotentials) : null;
-		if (thereAreGTablePotentials) { // same as before
-			for (int i = 0; i < numPotentials; i++) {
+		if (thereAreGTablePotentials) { 
+			// initialize the list to ensure that it contains "numPotentials" elements, 
+			// hence the methods "set(i,value)" and "get(i)" can be used without exceptions.
+			for (int i = 0; i < numPotentials; i++) { 
 				elementsTables.add(null);
 			}
 		}

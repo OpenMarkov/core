@@ -16,9 +16,9 @@ import org.openmarkov.core.model.network.VariableType;
 
 import java.util.List;
 
+// TODO Add documentation
 public class AugmentedTable extends TablePotential {
 	
-
 	/**
 	 * The default function
 	 */
@@ -35,10 +35,11 @@ public class AugmentedTable extends TablePotential {
 		if (numVariables != 0) {
 			// Number of states of each variable
 			dimensions = calculateDimensions(stateVariables);
-			int cellsInRow = 1;
+			// TODO Remove the comment or use it.
+/*			int cellsInRow = 1;
 			for (int i = 1; i < dimensions.length; i++) {
 				cellsInRow *= dimensions[i];
-			}
+			}*/
 			offsets = calculateOffsets(dimensions);
 			tableSize = computeTableSize(stateVariables);
 			try {
@@ -202,7 +203,6 @@ public class AugmentedTable extends TablePotential {
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			List<TablePotential> alreadyProjectedPotentials) throws WrongCriterionException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -211,12 +211,10 @@ public class AugmentedTable extends TablePotential {
 	}
 
 	@Override public boolean isUncertain() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public void scalePotential(double scale) {
-		//TODO
 	}
 	
 	

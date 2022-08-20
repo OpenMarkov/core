@@ -9,23 +9,11 @@ package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.Criterion;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author marias
@@ -486,24 +474,20 @@ public abstract class Potential {
 
 
 
-	//CMI 11/04/2020
+	//CMI 11/04/2020; 14/08/2022 sampleConditionedVariable(Random randomGenerator, EvidenceCase parents) refactored to  sampleConditionedVariable(double randomNumber, EvidenceCase parents)  for dealing with nuisance variance
 	/**
-	 * When this potential represents a conditional probability, this method returns a value for the first variable,
-	 * sampled with the probability distribution. If this variable is finite-states, it returns the index of
+	 * Gets a sample of this potential conditioned by its parents the using inverse cumulative distribution method. If this variable is finite-states, it returns the index of
 	 * the sampled state. If the variable is numeric, it returns the value sampled.
-	 * TODO make abstract. Currently It is not made abstract because it is a provisional version.
-	 * @param randomGenerator
-	 * @param parents
-	 * @return
+	 * @param randomNumber number before 0 an 1 from which inverse cumulative value is computed
+	 * @param parents parents configuration with their values
+	 * @return  a sample of the potential when exists; Double.MAX_VALUE otherwise
 	 */
-	public double sampleConditionedVariable(Random randomGenerator, EvidenceCase parents) throws OpenMarkovException {
+	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
 		//TODO merge with previous method (sampleConditionedVariable(Random randomGenerator, Map<Variable, Integer> sampledParents), when it will be replaced and this class made abstrac
 
 		return Double.MAX_VALUE;
 
 	}
-
-
 
 //CMF
 

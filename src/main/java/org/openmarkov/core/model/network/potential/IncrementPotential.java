@@ -23,6 +23,10 @@ import java.util.stream.Collectors;
  * @version 1.0 10/04/2020 - Adapted from Uniform
  */
 @PotentialType(name = "Increment") public class IncrementPotential extends Potential {
+	/**
+	 * Number of increments
+	 */
+	private int incrementedValue=0;
 
 	// Constructors
 
@@ -73,14 +77,10 @@ import java.util.stream.Collectors;
 	}
 
 	@Override
-	public double sampleConditionedVariable(Random randomGenerator, EvidenceCase parents) throws OpenMarkovException {
-//This is done until TreeWithEvents is completed
-		List<Variable> events = parents.getVariables().stream().filter(v ->v.getVariableType()==VariableType.EVENT).collect(Collectors.toList());
-		if (events.size()!=1) throw new OpenMarkovException("More than one event");
-		if (events.get(0).getName().equalsIgnoreCase("Initial Event")){
-			return 0;
-		}
-		return parents.getNumericalValue(getConditionedVariable())+1;
+	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents) {
+	//14/08/2022 refactored for nuisance variable. Changed for starting in 0;
+		//14/08/2022 Check; currently value is stored here and in DES record
+		return +incrementedValue;
 	}
 
 
@@ -98,12 +98,6 @@ import java.util.stream.Collectors;
 	@Override public Potential copy() {
 		return new IncrementPotential(this);
 	}
-
-	@Override public int sampleConditionedVariable(Random randomGenerator, Map<Variable, Integer> parentStateIndexes) {
-
-		return 1;
-	}
-
 
 	@Override public boolean isUncertain() {
 		return false;

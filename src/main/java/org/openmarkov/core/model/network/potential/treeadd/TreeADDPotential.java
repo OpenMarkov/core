@@ -11,11 +11,7 @@ import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.StrategyTree;
-import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -452,32 +448,37 @@ public class TreeADDPotential extends Potential {
 	}
 
 	//CMI - 03/05/2020 for sampling an TreeWithEvents - Check if this is applicable to other network types
+	//14/08/2022 refactored for avoiding nuisance variance
 	/**
 	 * When this potential represents a conditional probability, this method returns a value for the first variable,
 	 * sampled with the probability distribution. If this variable is finite-states, it returns the index of
 	 * the sampled state. If the variable is numeric, it returns the value sampled.
-	 * TODO make abstract. Currently It is not made abstract because it is a provisional version.
 	 *
-	 * @param randomGenerator
+	 *
+	 * @param randomNumber
 	 * @param parents
 	 * @return
 	 */
 	@Override
-	public double sampleConditionedVariable(Random randomGenerator, EvidenceCase parents) throws OpenMarkovException {
+	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
 		//It may be several states in a branch
-		State stateBranch=  topVariable.getState(parents.getFinding(topVariable).getState());
+		State stateBranch= null;
+		try {
+			stateBranch = topVariable.getState(parents.getFinding(topVariable).getState());
+		} catch (InvalidStateException e) {
+			e.printStackTrace();
+		}
 
 		double result=0;
 		for (TreeADDBranch branch: branches){
 			List<State> states = branch.getBranchStates();
 			if (states.contains(stateBranch)){
-				parents.removeFinding(topVariable);
-				result = branch.getPotential().sampleConditionedVariable(randomGenerator,parents);
-				//sampleConditionedVariable(random, configuration) is not defined
-				if (result == Double.MAX_VALUE) {
-					Map<Variable, Integer> hashMap =(new Configuration( parents)).convertToMap();
-					result = branch.getPotential().sampleConditionedVariable(randomGenerator, hashMap);
+				try {
+					parents.removeFinding(topVariable);
+				} catch (NoFindingException e) {
+					e.printStackTrace();
 				}
+				result = branch.getPotential().sampleConditionedVariable(randomNumber,parents);
 				return result;
 			}
 

@@ -152,8 +152,8 @@ public class TableWithFunctions extends TablePotential {
 	 * @param configuration Configuration which determines the position in the table. This configuration is a valid configuration of TableWithEvents
 	 * @return a String with the function stored in the position given by configuration
 	 */
-	public String getFunctionValue(Configuration configuration){
-		Configuration stateConfiguration = new Configuration(configuration);
+	public String getFunctionValue(EvidenceCase configuration){
+		EvidenceCase stateConfiguration = new EvidenceCase(configuration);
 		int position =0;
 		for (Variable stateVariable:stateConfiguration.getVariables()){
 			int indexVariable = this.variables.indexOf(stateVariable);
@@ -174,17 +174,10 @@ public class TableWithFunctions extends TablePotential {
 	 * @return the value of the functions with the function stored in the position given by configuration and with the
 	 * values of numericConfiguration
 	 */
-	public double getEvaluatedFunctionValue(Configuration configuration, Configuration numericConfiguration){
+	public double getEvaluatedFunctionValue(EvidenceCase configuration, EvidenceCase numericConfiguration){
 		String functionValue= getFunctionValue(configuration);
 		FunctionPotential functionPotential =new FunctionPotential(numericConfiguration.getVariables(),getPotentialRole(),functionValue );
-        double result= 0;
-        try {
-            result = functionPotential.sampleConditionedVariable(null, numericConfiguration);
-        } catch (OpenMarkovException e) {
-            e.printStackTrace();
-        }
-        return result;
-
+        return functionPotential.sampleConditionedVariable(0, numericConfiguration);
 	}
 
 

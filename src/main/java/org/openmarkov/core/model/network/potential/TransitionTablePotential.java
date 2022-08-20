@@ -7,7 +7,6 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * A <code>TransitionTablePotential</code> is a type of relation with a list of
@@ -73,19 +72,8 @@ public class TransitionTablePotential extends TableWithEvents {
 
 
     @Override
-    public double sampleConditionedVariable(Random random, EvidenceCase parents) throws OpenMarkovException {
-
-        double sample=0;
-        Configuration parentsConfiguration = new Configuration(parents);
-        Configuration convertedConfiguration = convert(parentsConfiguration);
-
-        try {
-            Map<Variable,Integer> map = convertedConfiguration.convertToMap();
-             sample = tablePotential.sampleConditionedVariable(random,map);
-        } catch (InvalidStateException e) {
-            e.printStackTrace();
-        }
-        return sample;
+    public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
+        return tablePotential.sampleConditionedVariable(randomNumber,convert(parents));
     }
 
 

@@ -6,21 +6,18 @@
  */
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.OpenMarkovException;
-import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.plugin.PotentialType;
-
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.InferenceOptions;
+import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class implements a potential which is function of the values provided by the parents.
@@ -29,7 +26,7 @@ import java.util.*;
  *
  * @author cyago
  * @version 1.1 06/12/2019
- * @version 1.2 11/06/2022 - set Evaluator to final and parsing in constructor for efficiency reasons (simulation ten times faster)
+ * @version 2 19/08/2022 - changed to paliate nuisance variance and speed simulation creating only once the evaluator and the signature of sampling
  */
 @PotentialType(name = "Function") public class FunctionPotential extends GLMPotential {
 
@@ -42,11 +39,11 @@ import java.util.*;
 	 * The coefficient
 	 */
 	protected static final double COEFFICIENT = 1;
+
 	/**
-	 * Evaluates the fuction.
-	 * Takes long if made static
+	 * Evaluates the function 19/08/2022 - changed to final field to speed the simulation
 	 */
-	 final Evaluator evaluator = new Evaluator();
+	private final Evaluator evaluator = new Evaluator();
 
 	/**
 	 * Creates a Function potential with the function by default
@@ -55,7 +52,7 @@ import java.util.*;
 	 * @param role
 	 */
 	public FunctionPotential(List<Variable> variables, PotentialRole role) {
-		this(variables, role, DEFAULT_FUNCTION);
+		super(variables, role, new String[] { DEFAULT_FUNCTION }, new double[] { COEFFICIENT });
 	}
 
 	/**
@@ -68,11 +65,6 @@ import java.util.*;
 	 */
 	public FunctionPotential(List<Variable> variables, PotentialRole role, String function) {
 		super(variables, role, new String[] { function }, new double[] { COEFFICIENT });
-//		try {
-//			evaluator.parse(this.processedCovariates[0]);
-//		} catch (EvaluationException e) {
-//			throw new RuntimeException(e);
-//		}
 	}
 
 	/**
@@ -82,7 +74,6 @@ import java.util.*;
 	 */
 	public FunctionPotential(FunctionPotential potential) {
 		super(potential);
-
 	}
 
 	/**
@@ -123,12 +114,6 @@ import java.util.*;
 
 	public void setFunction(String function) {
 		setCovariates(new String[] { function });
-		try {
-			evaluator.parse(this.processedCovariates[0]);
-		} catch (EvaluationException e) {
-			throw new RuntimeException(e);
-		}
-
 	}
 
 	/**
@@ -190,6 +175,32 @@ import java.util.*;
 		return newPotential;
 	}
 
+
+/*
+Potential#removeVariable changes the potential to Uniform and org.openmarkov.core.action.RemoveLinkEdit.doEdit then checks
+if the potential is projectable. If the potential is not, does not remove the link properly. I do not know the reason, so I do not change it.
+As FunctionPotential is not projectable I leave the default behaviour
+ */
+//	/**
+//	 * Removes a variable from FunctionPotential. If the function does not use the variable,
+//	 * the function does not change, otherwise the function is set to its default value
+//	 *
+//	 * @param variable - the variable to be removed
+//	 * @returns a FunctionPotential without the variable
+//	 */
+//	@Override public Potential removeVariable(Variable variable) {
+//		if (variables.contains(variable)) {
+//			List<Variable> newVariables = new ArrayList<>(variables);
+//			newVariables.remove(variable);
+//			int index = variables.indexOf(variable);
+//			String variableToRemove = "#{v" + index + "}";
+//			if (processedCovariates[0].contains(variableToRemove)) {
+//				return new FunctionPotential(newVariables, this.role);
+//			}
+//		}
+//		return new FunctionPotential(this);
+//	}
+
 	@Override public Potential deepCopy(ProbNet copyNet) {
 		return super.deepCopy(copyNet);
 	}
@@ -205,27 +216,21 @@ import java.util.*;
 	@Override public boolean isUncertain() {
 		return false;
 	}
-	
-	
+
+//CMI 19/08/2022 - used double instead of Random and evaluator object only create once
 	/**
 	 * @param values
 	 * @return The value obtained by evaluation the function for the assignment of variables given by 'values'
 	 * @throws EvaluationException
 	 */
 	public String getValue(Map<String,String> values) throws EvaluationException {
-
 		evaluator.setVariables(values);
-		// For TSD15; 10^6 21.424 sec
 		return evaluator.evaluate(this.processedCovariates[0]);
-		// For TSD15; 10^6 22.175 sec
-		//		return evaluator.evaluate();
-		// For TSD15; 10^6 16.392 sec
-		//		return "12";
 	}
 
-//CMI 26/04/2020
+
 	@Override
-	public double sampleConditionedVariable(Random random, EvidenceCase parents) throws OpenMarkovException {
+	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
 		List<Variable> parentVariables = parents.getVariables();
 
 		Map<String, String> variablesMap = new HashMap();
@@ -238,10 +243,9 @@ import java.util.*;
 		}
 		try {
 			result = new Double(getValue(variablesMap)).doubleValue();
-		} catch (Exception e) {
+		} catch (EvaluationException e) {
 			e.printStackTrace();
 		}
-
 		return  result;
 	}
 

@@ -7,14 +7,21 @@
 
 package org.openmarkov.core.model.network.potential.treeadd;
 
-import org.openmarkov.core.exception.*;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.potential.*;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -138,25 +145,28 @@ public class TreeWithEventsPotential extends Potential {
 		return events;
 	}
 
-
+	//14/08/2022 refactored for avoiding nuisance variance
 	@Override
-	public double sampleConditionedVariable(Random randomGenerator, EvidenceCase parents) throws OpenMarkovException {
+	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
 
 		List<Variable> eventVariables = parents.getVariables().stream().filter(variable ->variable.getVariableType() ==VariableType.EVENT).collect(Collectors.toList());
 		//It is supposed the tree has a different potential for each event, so this method return a sampled value when an event has happened
-		if (eventVariables.size()!=1) throw new OpenMarkovException("Only one Event in the parents configuration");
 
-		TreeADDPotential eventTree= getTree(eventVariables.get(0));
+		TreeADDPotential eventTree= null;
+		try {
+			eventTree = getTree(eventVariables.get(0));
+		} catch (IncompatibleEvidenceException e) {
+			e.printStackTrace();
+		}
 		double result =0;
 		try
 		{
-			result = eventTree.sampleConditionedVariable(randomGenerator, parents);
+			result = eventTree.sampleConditionedVariable(randomNumber, parents);
 
 		} catch(Exception e) {
-			//when completed this method coding this catch will be removed
+			//FIXME when completed this method coding this catch will be removed
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,"Getting sample exception" +eventVariables.get(0).getName());
-			throw new OpenMarkovException("Getting sample exception" +eventVariables.get(0).getName());
 		}
 		return result;
 	}

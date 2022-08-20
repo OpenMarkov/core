@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network.modelUncertainty.ParametrizedFunction;
 import javafx.util.Pair;
 import org.apache.commons.collections4.map.MultiKeyMap;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
+import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionWithKnownInverseCDF;
 import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 import org.openmarkov.plugin.service.PluginLoaderIF;
@@ -97,13 +98,15 @@ public class ParametrizedFunctionManager {
 
 
 	/**
+	 * 14/08/2022 --> Changed from ProbDensFunction to ProbDensFunctionWithKnownInverseCDF for using getInverseCumulativeDistributionFunction
 	 * Returns the class correspondent which these distributionName and parametrizationName
 	 * @param distributionName -name of the distribution
 	 * @param parametrizationName - name of the parametrized function
 	 * @return the class correspondent which these distributionName and parametrizationName
+	 *
 	 */
-	public Class<ProbDensFunction> getParametrizedClass(String distributionName, String parametrizationName){
-		return (Class<ProbDensFunction>) parametrizedClasses.get(distributionName,parametrizationName);
+	public Class<ProbDensFunctionWithKnownInverseCDF> getParametrizedClass(String distributionName, String parametrizationName){
+		return (Class<ProbDensFunctionWithKnownInverseCDF>) parametrizedClasses.get(distributionName,parametrizationName);
 	}
 
 	/**

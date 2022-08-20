@@ -6,21 +6,18 @@
  */
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.OpenMarkovException;
-import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.plugin.PotentialType;
-
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.InferenceOptions;
+import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class implements a potential which is function of the values provided by the parents.
@@ -29,6 +26,7 @@ import java.util.*;
  *
  * @author cyago
  * @version 1.1 06/12/2019
+ * @version 2 19/08/2022 - changed to paliate nuisance variance and speed simulation creating only once the evaluator and the signature of sampling
  */
 @PotentialType(name = "Function") public class FunctionPotential extends GLMPotential {
 
@@ -41,6 +39,11 @@ import java.util.*;
 	 * The coefficient
 	 */
 	protected static final double COEFFICIENT = 1;
+
+	/**
+	 * Evaluates the function 19/08/2022 - changed to final field to speed the simulation
+	 */
+	private final Evaluator evaluator = new Evaluator();
 
 	/**
 	 * Creates a Function potential with the function by default
@@ -213,22 +216,21 @@ As FunctionPotential is not projectable I leave the default behaviour
 	@Override public boolean isUncertain() {
 		return false;
 	}
-	
-	
+
+//CMI 19/08/2022 - used double instead of Random and evaluator object only create once
 	/**
 	 * @param values
 	 * @return The value obtained by evaluation the function for the assignment of variables given by 'values'
 	 * @throws EvaluationException
 	 */
 	public String getValue(Map<String,String> values) throws EvaluationException {
-		Evaluator evaluator = new Evaluator();
-		evaluator.setVariables(values);		
+		evaluator.setVariables(values);
 		return evaluator.evaluate(this.processedCovariates[0]);
 	}
 
-//CMI 26/04/2020
+
 	@Override
-	public double sampleConditionedVariable(Random random, EvidenceCase parents) throws OpenMarkovException {
+	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
 		List<Variable> parentVariables = parents.getVariables();
 
 		Map<String, String> variablesMap = new HashMap();

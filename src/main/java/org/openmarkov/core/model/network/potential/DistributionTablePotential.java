@@ -3,14 +3,12 @@ package org.openmarkov.core.model.network.potential;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ParametrizedFunction.ParametrizedFunctionManager;
+import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionWithKnownInverseCDF;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
-
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 
 /**
@@ -31,7 +29,9 @@ import java.util.Random;
 */
 
 @PotentialType(family ="Event", name = "DistributionTable")
-public class DistributionTablePotential extends Potential implements ImpossibleConfiguration {
+public class DistributionTablePotential extends Potential{
+    //14/08/2022 ImpossibleConfiguration removed
+//        implements ImpossibleConfiguration {
 
 
     /**
@@ -85,9 +85,6 @@ public class DistributionTablePotential extends Potential implements ImpossibleC
         super(variables,role);
         changeDistribution(distributionName, parametrizationName);
     }
-
-
-
 
 
 
@@ -228,31 +225,28 @@ public class DistributionTablePotential extends Potential implements ImpossibleC
         this.numericVariables = numericVariables;
     }
 
+    //14/08/2022 changed for nuisance variable
+    //14/08/2022 FIXME revise functions use
     @Override
-    public double sampleConditionedVariable(Random randomGenerator, EvidenceCase parents) throws OpenMarkovException {
-        return sampleVariable(randomGenerator,new Configuration(parents));
-    }
-
-
-    //TimeToEvent interface
-    private double sampleVariable(Random random, Configuration configuration) {
+    public double sampleConditionedVariable(double randomNumber, EvidenceCase parents) {
         //Extract FINITE_STATES and EVENT Variables and convert to the format of a TableWithEvents to find the position in the table
-        Configuration stateConfiguration = tableWithEvents.convert( configuration);
+        EvidenceCase stateConfiguration = tableWithEvents.convert( parents);
         //Extract Numeric Variables which are the Function Variables
-        Configuration numericConfiguration= null;
+        EvidenceCase numericConfiguration= null;
         if (tableWithEvents.isUseTableWithFunctions()) {
             numericConfiguration = new Configuration();
             for (Variable numericVariable : numericVariables) {
+                    Finding finding = parents.getFinding(numericVariable);
                 try {
-                    Finding finding = configuration.getFinding(numericVariable);
                     numericConfiguration.addFinding(finding);
-                } catch (OpenMarkovException e) {
+                } catch (InvalidStateException|IncompatibleEvidenceException e) {
                     e.printStackTrace();
+
                 }
             }
         }
         //Extract parameters from the table
-        ProbDensFunction distribution=null;
+        ProbDensFunctionWithKnownInverseCDF distribution=null;
         int i=0;
         double[] paramValues = new double[distributionParameters.length];
         try {
@@ -274,8 +268,20 @@ public class DistributionTablePotential extends Potential implements ImpossibleC
         } catch (InstantiationException | IllegalAccessException | InvalidStateException | IncompatibleEvidenceException | NoFindingException e) {
             e.printStackTrace();
         }
-        return distribution.getSample(random);
+        return distribution.getInverseCumulativeDistributionFunction(randomNumber);
     }
+
+    /**
+     * Parametrization of distributionName
+     */
+    public String getParametrizationName() {
+        return parametrizationName;
+    }
+
+    public void setParametrizationName(String parametrizationName) {
+        this.parametrizationName = parametrizationName;
+    }
+
 
 //    /**
 //     * Generates a TTE since the event is "triggered" by initial event, another event or change in state
@@ -291,68 +297,6 @@ public class DistributionTablePotential extends Potential implements ImpossibleC
 //    }
 
 
-    //ImpossibleConfiguration interface
-
-    @Override
-    public void addImpossibleConfiguration(Configuration configuration) {
-        tableWithEvents.addImpossibleConfiguration(configuration);
-    }
-
-
-    @Override
-    public void removeImpossibleConfiguration(Configuration configuration) {
-        tableWithEvents.removeImpossibleConfiguration(configuration);
-    }
-
-    @Override
-    public boolean hasImpossibleConfiguration() {
-        return  tableWithEvents.hasImpossibleConfiguration();
-    }
-
-    @Override
-    public boolean isImpossibleConfiguration(Configuration configuration) {
-        return tableWithEvents.isImpossibleConfiguration(configuration);
-    }
-
-    /**
-     * Returns true if the list of findings form an impossible configuration
-     * Useful when having events treated internally in a TableWithEvents. Events are joined together in a TableWithEvents whereas treated as different variables in other cases
-     *
-     * @param findings - set of findings
-     * @return
-     */
-    @Override
-    public boolean isImpossibleConfiguration(List<Finding> findings) {
-        return tableWithEvents.isImpossibleConfiguration(findings);
-    }
-
-    /**
-     * Returns true if there is a possible configuration with finding
-     *
-     * @param finding finding to check a possible configuration with it
-     * @return true if there is a possible configuration with finding
-     */
-    @Override
-    public boolean hasCompatiblePossibleConfiguration(Finding finding) throws NoFindingException {
-        Variable variable = finding.getVariable();
-        if (variable.getVariableType() == VariableType.EVENT){
-
-        } else{
-            throw new NoFindingException("Only implemented with Event Variables");
-        }
-
-        return false;
-    }
-
-    @Override
-    public ArrayList<Configuration> getImpossibleConfigurations() {
-        return tableWithEvents.getImpossibleConfigurations();
-    }
-
-    @Override
-    public void setImpossibleConfigurations(ArrayList<Configuration> impossibleConfigurations) {
-        tableWithEvents.setImpossibleConfigurations(impossibleConfigurations);
-    }
 
 
     @Override
@@ -364,6 +308,11 @@ public class DistributionTablePotential extends Potential implements ImpossibleC
  //TODO
     @Override public void scalePotential(double scale) {
     }
+
+//ImpossibleConfiguration interface
+
+
+
 
 
 //Table projects
@@ -393,15 +342,5 @@ public class DistributionTablePotential extends Potential implements ImpossibleC
     }
 
 
-    /**
-     * Parametrization of distributionName
-     */
-    public String getParametrizationName() {
-        return parametrizationName;
-    }
-
-    public void setParametrizationName(String parametrizationName) {
-        this.parametrizationName = parametrizationName;
-    }
 }
 

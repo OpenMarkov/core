@@ -7,32 +7,16 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.TablePotentialSampler;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * A <code>TablePotential</code> is a type of relation with a list of
@@ -1191,6 +1175,30 @@ import java.util.Random;
 		}
 		return sampleIndex;
 	}
+
+	//CMI 14/08/2022 - sampleConditionedVariable refactored for dealing with nuisance variance
+	@Override
+	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents) {
+
+		int index = 0;
+		int sampleIndex = 0;
+		// find index of first position for the given configuration
+		for (int i = 1; i < variables.size(); ++i) {
+			index += parents.getState(variables.get(i)) * offsets[i];
+		}
+		double accumulatedProbability = values[index + sampleIndex];
+		while (randomNumber > accumulatedProbability
+				// Make sure we don't go out of bounds even if the sum of probabilities
+				// is smaller than one.
+				&& sampleIndex < variables.get(0).getNumStates() - 1) {
+			++sampleIndex;
+			accumulatedProbability += values[index + sampleIndex];
+		}
+		return sampleIndex;
+	}
+
+	//CMF
+
 
 	@Override public double getProbability(HashMap<Variable, Integer> sampledStateIndexes) {
 		int index = 0;

@@ -314,7 +314,7 @@ public class TemporalNetOperations {
 						for (int i = 0; i < utilityNode.getNumPotentials(); ++i) {
 
 //
-//12/09/2022 - cast to ExactDistrPotential but not every utility potential is ExactDistrPotential
+//12/09/2022 - issue #479 ; cast to ExactDistrPotential but not every utility potential is ExactDistrPotential
 //							TablePotential currentCyclePotential = (TablePotential) currentCyclePotentials.get(i);
 //							TablePotential previousCyclePotential = (TablePotential) previousCyclePotentials.get(i);
 							TablePotential currentCyclePotential =  ((ExactDistrPotential)currentCyclePotentials.get(i)).getTablePotential();

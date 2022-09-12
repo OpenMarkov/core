@@ -314,11 +314,11 @@ public class TemporalNetOperations {
 						for (int i = 0; i < utilityNode.getNumPotentials(); ++i) {
 
 //
-//(01/01/2019) utility potentials are ExactDistrPotential
+//12/09/2022 - cast to ExactDistrPotential but not every utility potential is ExactDistrPotential
 //							TablePotential currentCyclePotential = (TablePotential) currentCyclePotentials.get(i);
 //							TablePotential previousCyclePotential = (TablePotential) previousCyclePotentials.get(i);
-							TablePotential currentCyclePotential = (TablePotential) ((ExactDistrPotential)currentCyclePotentials.get(i)).getTablePotential();
-							TablePotential previousCyclePotential = (TablePotential) ((ExactDistrPotential)previousCyclePotentials.get(i)).getTablePotential();
+							TablePotential currentCyclePotential =  ((ExactDistrPotential)currentCyclePotentials.get(i)).getTablePotential();
+							TablePotential previousCyclePotential = ((ExactDistrPotential)previousCyclePotentials.get(i)).getTablePotential();
 
 							TablePotential sumPotential = DiscretePotentialOperations
 									.sum(Arrays.asList(currentCyclePotential, previousCyclePotential));

@@ -312,16 +312,14 @@ public class TemporalNetOperations {
 						List<Potential> previousCyclePotentials = previousCycleNode.getPotentials();
 						List<Potential> newPotentials = new ArrayList<>();
 						for (int i = 0; i < utilityNode.getNumPotentials(); ++i) {
-// CMI
-// Supposing potentials of utility nodes are "tables";
-// currently (01/01/2019) "tables" in these nodes are coded using ExactDistrPotential but this will be changed soon
-// TODO update this method (applyTransitionTime) when the new TablePotential is finished
 
+//
+//(01/01/2019) utility potentials are ExactDistrPotential
 //							TablePotential currentCyclePotential = (TablePotential) currentCyclePotentials.get(i);
 //							TablePotential previousCyclePotential = (TablePotential) previousCyclePotentials.get(i);
 							TablePotential currentCyclePotential = (TablePotential) ((ExactDistrPotential)currentCyclePotentials.get(i)).getTablePotential();
 							TablePotential previousCyclePotential = (TablePotential) ((ExactDistrPotential)previousCyclePotentials.get(i)).getTablePotential();
-// CMF
+
 							TablePotential sumPotential = DiscretePotentialOperations
 									.sum(Arrays.asList(currentCyclePotential, previousCyclePotential));
 							for (int j = 0; j < sumPotential.values.length; ++j)

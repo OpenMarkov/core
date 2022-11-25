@@ -10,6 +10,7 @@ package org.openmarkov.core.inference.tasks;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -19,17 +20,18 @@ import java.util.HashMap;
 /**
  * @author jperez-martin
  * @author artasom
- * @version 1.1 cmyago 03/11/2022; added method getTemporalEvolutionWithDiscount
+ * @version 2 cmyago 03/11/2022; added methods getTemporalEvolutionWithDiscount, getTemporalEvolutionWithDiscount(Criterion) and getAtemporalUtility()
  */
 public interface TemporalEvolution extends Task {
 
     HashMap<Variable, TablePotential> getTemporalEvolution()
             throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
-    //04/11/2022
+
 
     /**
      * Returns the temporal evolution of a node or a set of utility nodes where discounting is applied.
      * If there is no discounting non-discounted temporal evolution is returned
+     * To be used with one variable or for CE
      *
      * @return temporal evolution of a node or a set of utility nodes where discounting is applied
      * @throws IncompatibleEvidenceException
@@ -40,7 +42,27 @@ public interface TemporalEvolution extends Task {
             throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
         return getTemporalEvolution();
     }
-//end 04/11/2022
+
+    /**
+     * Returns the temporal evolution of a node or a set of utility nodes where discounting given by <code>criterion</code> is applied.
+     * To be used with one variable or for CE
+     *
+     * @param criterion @link{Criterion} used to compute discount
+     * @return temporal evolution of a node or a set of utility nodes where discounting is applied
+     */
+    default HashMap<Variable, TablePotential> getTemporalEvolutionWithDiscount(Criterion criterion) {
+        return null;
+    }
+
+    /**
+     * Returns timeless results  after evaluating the network. Discounting is not applied here.
+     *
+     * @return @link{TablePotential} with timeless results
+     */
+    default TablePotential getAtemporalUtility() {
+        return null;
+    }
+
 
     void setDecisionVariable(Variable decisionSelected);
 

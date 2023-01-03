@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <code>AddNodeEdit</code> is a edit that allow add a node to
- * <code>ProbNet</code> object.
+ * {@code AddNodeEdit} is a edit that allow add a node to
+ * {@code ProbNet} object.
  *
  * @author mluque
  * @version 1 23/06/11
@@ -38,15 +38,15 @@ import java.util.List;
 	private int selectedColumn;
 
 	/**
-	 * Creates a new <code>AddNodeEdit</code> with the network where the new
+	 * Creates a new {@code AddNodeEdit} with the network where the new
 	 * new node will be added and basic information about it.
 	 *
 	 * @param node             the new node
-	 * @param uncertainColumn
-	 * @param valuesColumn
-	 * @param basePosition
-	 * @param selectedColumn
-	 * @param isChanceVariable
+	 * @param uncertainColumn Uncertain column
+	 * @param valuesColumn Values column
+	 * @param basePosition Base position
+	 * @param selectedColumn Selected column
+	 * @param isChanceVariable Is chance variable?
 	 */
 	public UncertainValuesEdit(Node node, List<UncertainValue> uncertainColumn, List<Double> valuesColumn,
 			int basePosition, int selectedColumn, boolean isChanceVariable) {
@@ -68,10 +68,10 @@ import java.util.List;
 	 * It replaces a column in the uncertain values table. If parameter 'column'
 	 * is null then all the replaced cells are set to null.
 	 *
-	 * @param potential
-	 * @param column
-	 * @param var
-	 * @param basePosition
+	 * @param potential Potential
+	 * @param column Column
+	 * @param var Variable
+	 * @param basePosition Base position
 	 */
 	static void placeUncertainColumn(TablePotential potential, List<UncertainValue> column, Variable var,
 			int basePosition) {

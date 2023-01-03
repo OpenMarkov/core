@@ -69,13 +69,13 @@ public class Link<T> {
 
 	/**
 	 * Creates an unlabelled link and sets the cross references in the nodes.
-	 * This constructor should be called only from the <code>addLink</code>
-	 * function in the class Graph.
+	 * This constructor should be called only from the {@code addLink}
+	 * function in the class Graph. Both nodes must belong to the same graph.
 	 *
-	 * @param node1    <code>Node</code>.
-	 * @param node2    <code>Node</code>.
-	 * @param directed <code>boolean</code>.
-	 * @argCondition Both nodes must belong to the same graph.
+	 * @param node1    {@code Node}.
+	 * @param node2    {@code Node}.
+	 * @param directed {@code boolean}.
+	 *
 	 */
 	public Link(T node1, T node2, boolean directed) {
 		this.node1 = node1;
@@ -91,7 +91,6 @@ public class Link<T> {
 	/**
 	 * @return The parent (if the link is directed) or the first node (if the
 	 * link is undirected).
-	 * @consultation
 	 */
 	public T getNode1() {
 		return node1;
@@ -100,41 +99,37 @@ public class Link<T> {
 	/**
 	 * @return The child (if the link is directed) or the second node (if the
 	 * link is undirected).
-	 * @consultation
 	 */
 	public T getNode2() {
 		return node2;
 	}
 
 	/**
-	 * @param node <code>Node</code>.
-	 * @return <code>true</code> if the link contains <code>node</code>.
-	 * @consultation
+	 * @param node {@code Node}.
+	 * @return {@code true} if the link contains {@code node}.
 	 */
 	public boolean contains(T node) {
 		return ((node1 == node) || (node2 == node));
 	}
 
 	/**
-	 * @return <code>true</code> if the link is directed, false if it is
+	 * @return {@code true} if the link is directed, false if it is
 	 * undirected
-	 * @consultation
 	 */
 	public boolean isDirected() {
 		return directed;
 	}
 
 	/******
-	 * @return<code>true</code> if the link has a linkRestriction
+	 * @return {@code true} if the link has a linkRestriction
 	 *                          associates,false otherwise
-	 * @consultation
 	 */
 	public boolean hasRestrictions() {
 		return restrictionsPotential != null;
 	}
 
 	/****
-	 * @return<code>true</code> if a value of the first variable makes all
+	 * @return {@code true} if a value of the first variable makes all
 	 *                          values of the second variable impossible.
 	 *
 	 */
@@ -166,7 +161,7 @@ public class Link<T> {
 	}
 
 	/****
-	 * @return<code>true</code> if a value of the first variable makes all
+	 * @return {@code true} if a value of the first variable makes all
 	 *                          values of the second variable impossible.
 	 *
 	 */
@@ -287,7 +282,7 @@ public class Link<T> {
 	/****
 	 * Assigns the potential to the restrictionPotential of the link
 	 *
-	 * @param potential
+	 * @param potential Potential
 	 */
 
 	public void setRestrictionsPotential(Potential potential) {
@@ -312,7 +307,7 @@ public class Link<T> {
 	 * This method indicates whether there are revealing conditions for the
 	 * link.
 	 *
-	 * @return <code>true</code> if there exist revealing conditions.
+	 * @return {@code true} if there exist revealing conditions.
 	 */
 	public boolean hasRevealingConditions() {
 
@@ -356,7 +351,7 @@ public class Link<T> {
 	/*****
 	 * Adds the state to the revealing condition list.
 	 *
-	 * @param state
+	 * @param state State
 	 */
 	public void addRevealingState(State state) {
 
@@ -366,7 +361,7 @@ public class Link<T> {
 	/*****
 	 * Removes the revealing state from the revealing condition list.
 	 *
-	 * @param state
+	 * @param state State
 	 */
 	public void removeRevealingState(State state) {
 		revealingStates.remove(state);
@@ -376,7 +371,7 @@ public class Link<T> {
 	/*****
 	 * Adds the interval to the revealing condition list.
 	 *
-	 * @param interval
+	 * @param interval Interval
 	 */
 	public void addRevealingInterval(PartitionedInterval interval) {
 		this.revealingIntervals.add(interval);
@@ -385,7 +380,7 @@ public class Link<T> {
 	/********
 	 * Removes the interval from the revealing condition list.
 	 *
-	 * @param interval
+	 * @param interval Interval
 	 */
 	public void removeRevealingInterval(PartitionedInterval interval) {
 		this.revealingIntervals.remove(interval);

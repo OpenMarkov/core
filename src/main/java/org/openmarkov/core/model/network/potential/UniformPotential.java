@@ -8,10 +8,12 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovExceptionConstants;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -38,8 +40,8 @@ import java.util.Random;
 	// Constructors
 
 	/**
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>
-	 * @param role      <code>PotentialRole</code>
+	 * @param variables {@code ArrayList} of {@code Variable}
+	 * @param role      {@code PotentialRole}
 	 */
 	public UniformPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role);
@@ -62,8 +64,8 @@ import java.util.Random;
 	//    }
 
 	/**
-	 * @param role      <code>PotentialRole</code>
-	 * @param variables <code>Variable</code>
+	 * @param role      {@code PotentialRole}
+	 * @param variables {@code Variable}
 	 */
 	public UniformPotential(PotentialRole role, Variable... variables) {
 		this(toList(variables), role);
@@ -72,7 +74,7 @@ import java.util.Random;
 	/**
 	 * Copy constructor for UniformPotential
 	 *
-	 * @param potential
+	 * @param potential Uniform potential
 	 */
 	public UniformPotential(UniformPotential potential) {
 		super(potential);
@@ -87,9 +89,10 @@ import java.util.Random;
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role
 	 *
-	 * @param node      <code>Node</code>
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>
-	 * @param role      <code>PotentialRole</code>
+	 * @param node      {@code Node}
+	 * @param variables {@code ArrayList} of {@code Variable}
+	 * @param role      {@code PotentialRole}
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		// TODO
@@ -97,17 +100,21 @@ import java.util.Random;
 	}
 
 	// Methods
-	@Override
-	/** @return If this is a utility potential, it represents the case in
+	/**
+	 * @param evidenceCase {@code evidenceCase}
+	 * @param projectedPotentials List of projected potentials
+	 *
+	 * @return If this is a utility potential, it represents the case in
 	 * which all the utilities are zero; therefore, it suffices to return
 	 * an empty list. If this is a conditional probability P(Y|X1,...,Xn), it
-	 * returns a <code>TablePotential<code> that is uniform potential P(y).
+	 * returns a TablePotential that is uniform potential P(y).
 	 * If this is a joint probability, P(X1,...,Xn), it returns a
-	 * <code>TablePotential<code> that is equal to this potential.
-	 * In all cases, the argument <code>evidenceCase</code> is irrelevant.
-	 * @param evidenceCase. <code>evidenceCase</code>
-	 * @throws NonProjectablePotentialException when this is a conditional
-	 * probability potential and the conditioned variable is numeric. */
+	 * TablePotential that is equal to this potential.
+	 * In all cases, the argument evidenceCase is irrelevant.
+	 *
+	 * @throws NonProjectablePotentialException when this is a conditional probability potential and the conditioned variable is numeric.
+	 */
+	@Override
 	public List<TablePotential> tableProject(
 			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials)
 			throws NonProjectablePotentialException {
@@ -118,42 +125,40 @@ import java.util.Random;
 		case POLICY:
 			TablePotential projectedPotential = null;
 			Variable conditionedVariable = variables.get(0);
+			boolean isNumeric = conditionedVariable.getVariableType() == VariableType.NUMERIC;
 			if (evidenceCase != null && evidenceCase.contains(conditionedVariable)) {
-				if (conditionedVariable.getVariableType() == VariableType.NUMERIC) {
-					// returns an empty list of potentials
-					return new ArrayList<>();
-				} else {
+				if (!isNumeric) {
 					// returns a constant
 					projectedPotential = new TablePotential(new ArrayList<Variable>(), role);
 					projectedPotential.values[0] = 1.0 / conditionedVariable.getNumStates();
 				}
-			} else {
-				// the conditioned variable does not make part of the
-				// evidence
-				if (conditionedVariable.getVariableType() == VariableType.NUMERIC) {
-					throw new NonProjectablePotentialException(
-							"Numeric variable " + conditionedVariable.getName() + " makes it impossible "
-									+ "to project this uniform potential into a table.");
-				} else {
-					// returns a uniform potential
-					List<Variable> potentialVariables = new ArrayList<>(variables);
-					if (evidenceCase != null) {
-						potentialVariables.removeAll(evidenceCase.getVariables());
-					}
-					projectedPotential = new TablePotential(potentialVariables, getPotentialRole());
-				}
+			} else {				
+				if (!isNumeric) {
+					projectedPotential = createUniformTablePotential(evidenceCase, variables);	
+				}						
 			}
-			newProjectedPotentials.add(projectedPotential);
+			if (projectedPotential!=null) {
+				newProjectedPotentials.add(projectedPotential);
+			}
 			break;
 		default:
 			break;
 		} // end of switch/case statement
 		return newProjectedPotentials;
 	}
+	
+	private TablePotential createUniformTablePotential(EvidenceCase evidenceCase, List<Variable> vars) {
+		List<Variable> potentialVariables = new ArrayList<>(vars);
+		// the conditioned variable does not make part of the evidence
+		if (evidenceCase != null) {
+			potentialVariables.removeAll(evidenceCase.getVariables());
+		}
+		return new TablePotential(potentialVariables, getPotentialRole());
+	}
 
 	/**
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>
-	 * @return <code>true</code> if all the variables are FINITE_STATES.
+	 * @param variables {@code ArrayList} of {@code Variable}
+	 * @return {@code true} if all the variables are FINITE_STATES.
 	 */
 	private boolean allVariablesAreDiscrete(List<Variable> variables) {
 		for (Variable variable : variables) {
@@ -165,7 +170,7 @@ import java.util.Random;
 	}
 
 	/**
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>
+	 * @param variables {@code ArrayList} of {@code Variable}
 	 * @return 1 / multiplication of the number of states of conditioning
 	 * variables.
 	 */
@@ -178,7 +183,7 @@ import java.util.Random;
 	}
 
 	/**
-	 * @return discreteValue. <code>double</code>
+	 * @return discreteValue. {@code double}
 	 */
 	public double getDiscreteValue() {
 		return discreteValue;
@@ -187,6 +192,7 @@ import java.util.Random;
 	/**
 	 * Used to apply discount rates in cost effectiveness analysis for utility
 	 * variables has no sense in chance nodes
+	 * @param discreteValue Discrete value
 	 */
 	public void setDiscreteValue(double discreteValue) {
 		this.discreteValue = discreteValue;
@@ -222,5 +228,17 @@ import java.util.Random;
 		potential.setDiscreteValue(this.getDiscreteValue());
 		return potential;
 
+	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

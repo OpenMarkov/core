@@ -11,7 +11,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 
 /**
- * <code>RelevanceEdit</code> is a simple edit that allows modify
+ * {@code RelevanceEdit} is a simple edit that allows modify
  * the node relevance property.
  *
  * @author Miguel Palacios
@@ -32,7 +32,7 @@ import org.openmarkov.core.model.network.Node;
 	private Node node = null;
 
 	/**
-	 * Creates a new <code>RelevanceEdit</code> with the node and new relevance
+	 * Creates a new {@code RelevanceEdit} with the node and new relevance
 	 * specified.
 	 *
 	 * @param node         the node that will be edited

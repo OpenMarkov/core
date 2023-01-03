@@ -11,6 +11,7 @@ import org.openmarkov.plugin.service.FilterIF;
 import org.openmarkov.plugin.service.PluginLoaderIF;
 
 import java.lang.annotation.AnnotationFormatError;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,8 +123,8 @@ public class ProbDensFunctionManager {
 	}
 
 	/**
-	 * @param functionName
-	 * @return
+	 * @param functionName Name of the function
+	 * @return The class for that function name
 	 */
 	@SuppressWarnings("unchecked") public Class<? extends ProbDensFunction> getProbDensFunctionClass(
 			String functionName) {
@@ -169,9 +170,9 @@ public class ProbDensFunctionManager {
 		Class<?> probDensFunctionClass = probDensFunctions.get(functionName);
 		ProbDensFunction newInstance = null;
 		try {
-			newInstance = (ProbDensFunction) probDensFunctionClass.newInstance();
+			newInstance = (ProbDensFunction) probDensFunctionClass.getDeclaredConstructor().newInstance();
 			newInstance.setParameters(parameters);
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 		}
 		return newInstance;

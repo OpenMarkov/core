@@ -20,9 +20,8 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 import org.openmarkov.core.model.network.potential.operation.Util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A probabilistic node has a set of conditional probabilities, one variable,
@@ -45,23 +44,24 @@ public class Node {
 	/**
 	 * This object contains all the information that the parser reads from
 	 * disk that does not have a direct connection with the attributes stored
-	 * in the <code>Node</code> object.
+	 * in the {@code Node} object.
 	 */
-	public Map<String, String> additionalProperties;
+	public LinkedHashMap<String, String> additionalProperties;	// changed by agoni
+	// public Map<String, String> additionalProperties;
 
 	// Attributes/
 	/**
-	 * @frozen
+	 * Node type
 	 */
 	protected NodeType nodeType;
 
 	/**
-	 * @frozen
+	 * Network
 	 */
 	protected ProbNet probNet;
 
 	/**
-	 * Each <code>Node</code> has a list of potentials
+	 * Each {@code Node} has a list of potentials
 	 */
 	protected List<Potential> potentials;
 
@@ -109,9 +109,9 @@ public class Node {
 	// Constructor
 
 	/**
-	 * @param probNet  <code>ProbNet</code>
-	 * @param variable <code>Variable</code>
-	 * @param nodeType <code>NodeType</code>
+	 * @param probNet  {@code ProbNet}
+	 * @param variable {@code Variable}
+	 * @param nodeType {@code NodeType}
 	 */
 	public Node(ProbNet probNet, Variable variable, NodeType nodeType) {
 		this.probNet = probNet;
@@ -121,21 +121,21 @@ public class Node {
 		}
 		this.nodeType = nodeType;
 		potentials = new ArrayList<>();
-		additionalProperties = new HashMap<>();
+		additionalProperties = new LinkedHashMap<>();
 		hashCode = 31 * variable.hashCode() + 17 * nodeType.hashCode();
 	}
 
 	/**
 	 * Copy Constructor for the GUI
 	 *
-	 * @param node
+	 * @param node Node
 	 */
 	public Node(Node node) {
 		this.probNet = node.getProbNet();
 		this.variable = node.getVariable();
 		this.nodeType = node.getNodeType();
 		potentials = new ArrayList<>(node.getPotentials());
-		additionalProperties = new HashMap<>(node.additionalProperties);
+		additionalProperties = new LinkedHashMap<>(node.additionalProperties);
 		alwaysObserved = node.isAlwaysObserved();
 		hashCode = 31 * variable.hashCode() + 17 * nodeType.hashCode();
 	}
@@ -143,9 +143,8 @@ public class Node {
 	//Methods
 
 	/**
-	 * @return The <code>Variable</code> associated to this
-	 * <code>node</code>.
-	 * @consultation
+	 * @return The {@code Variable} associated to this
+	 * {@code node}.
 	 */
 	public Variable getVariable() {
 		return variable;
@@ -154,30 +153,32 @@ public class Node {
 	/**
 	 * Sets a new variable and updates the reference in ProbNet
 	 *
-	 * @param newVariable
+	 * @param newVariable New variable
 	 */
 	public void setVariable(Variable newVariable) {
 		Variable oldVariable = this.variable;
 		this.variable = newVariable;
 		this.probNet.updateVariable(oldVariable);
 	}
+	
+	/**
+	 * Sets the additional properties
+	 *
+	 * @param additionalProperties New additional properties
+	 */
+	public void setOtherProperties(LinkedHashMap<String, String> additionalProperties) {
+		this.additionalProperties = additionalProperties;
+	}
 
 	/**
-	 * @return Variable name. <code>String</code>
+	 * @return Variable name. {@code String}
 	 */
 	public String getName() {
 		return getVariable().getName();
 	}
 
 	/**
-	 * @param potential <code>Potential</code>
-	 */
-	public void addPotential(Potential potential) {
-		this.potentials.add(potential);
-	}
-
-	/**
-	 * @param potential <code>Potential</code>
+	 * @param potential {@code Potential}
 	 */
 	public void setPotential(Potential potential) {
 		this.potentials.clear();
@@ -185,17 +186,33 @@ public class Node {
 	}
 
 	/**
-	 * @param potential <code>Potential</code>
-	 * @return <code>true</code> if <code>potentialList</code> contained the
-	 * specified element; otherwise <code>false</code>.
+	 * @param potential {@code Potential}
+	 */
+	public void addPotential(Potential potential) {
+		this.potentials.add(potential);
+	}
+
+	/**
+	 * @param potentials {@code Potential}
+	 */
+	public void setPotentials(List<Potential> potentials) {
+		this.potentials.clear();
+		if (potentials != null) {
+			this.potentials.addAll(potentials);
+		}
+	}
+
+	/**
+	 * @param potential {@code Potential}
+	 * @return {@code true} if {@code potentialList} contained the
+	 * specified element; otherwise {@code false}.
 	 */
 	public boolean removePotential(Potential potential) {
 		return potentials.remove(potential);
 	}
 
 	/**
-	 * @return <code>NodeType</code>
-	 * @consultation
+	 * @return {@code NodeType}
 	 */
 	public NodeType getNodeType() {
 		return nodeType;
@@ -211,29 +228,29 @@ public class Node {
 	}
 
 	/**
-	 * @return An <code>ArrayList</code> cloned with all the potentials
-	 * associated to this <code>Node</code>
+	 * @return An {@code ArrayList} cloned with all the potentials
+	 * associated to this {@code Node}
 	 */
 	public List<Potential> getPotentials() {
 		return new ArrayList<>(potentials);
 	}
 
 	/**
-	 * @param potentials <code>Potential</code>
-	 */
-	public void setPotentials(List<Potential> potentials) {
-		this.potentials = potentials;
-	}
-
-	/**
-	 * @return Number of potentials. <code>int</code>
+	 * @return Number of potentials. {@code int}
 	 */
 	public int getNumPotentials() {
 		return potentials.size();
 	}
 
 	/**
-	 * @return probNet. <code>ProbNet</code>
+	 * @return additionalProperties. {@code LinkedHashMap<String, String>}
+	 */
+	public LinkedHashMap<String, String> getOtherProperties() {
+		return additionalProperties;
+	}
+	
+	/**
+	 * @return probNet. {@code ProbNet}
 	 */
 	public ProbNet getProbNet() {
 		return probNet;
@@ -276,32 +293,32 @@ public class Node {
 	}
 
 	/**
-	 * @param node <code>Node</code>
-	 * @return True if <code>node</code> is parent of <code>this</code> node
+	 * @param node {@code Node}
+	 * @return True if {@code node} is parent of {@code this} node
 	 */
 	public boolean isParent(Node node) {
 		return probNet.isParent(node, this);
 	}
 
 	/**
-	 * @param node <code>Node</code>
-	 * @return True if <code>node</code> is child of <code>this</code> node
+	 * @param node {@code Node}
+	 * @return True if {@code node} is child of {@code this} node
 	 */
 	public boolean isChild(Node node) {
 		return probNet.isChild(node, this);
 	}
 
 	/**
-	 * @param node <code>Node</code>
-	 * @return True if <code>node</code> and <code>this</code> are siblings
+	 * @param node {@code Node}
+	 * @return True if {@code node} and {@code this} are siblings
 	 */
 	public boolean isSibling(Node node) {
 		return probNet.isSibling(node, this);
 	}
 
 	/**
-	 * @param node <code>Node</code>
-	 * @return True if <code>node</code> and <code>this</code> are neighbors
+	 * @param node {@code Node}
+	 * @return True if {@code node} and {@code this} are neighbors
 	 */
 	public boolean isNeighbor(Node node) {
 		return probNet.isNeighbor(node, this);
@@ -453,64 +470,64 @@ public class Node {
 	}
 
 	/**
-	 * @return <code>String</code>
+	 * @return {@code String}
 	 */
 	public String getPurpose() {
 		return purpose;
 	}
 
 	/**
-	 * @param purpose <code>String</code>
+	 * @param purpose {@code String}
 	 */
 	public void setPurpose(String purpose) {
 		this.purpose = purpose;
 	}
 
 	/**
-	 * @return <code>double</code>
+	 * @return {@code double}
 	 */
 	public double getRelevance() {
 		return relevance;
 	}
 
 	/**
-	 * @param relevance <code>double</code>
+	 * @param relevance {@code double}
 	 */
 	public void setRelevance(double relevance) {
 		this.relevance = relevance;
 	}
 
 	/**
-	 * @return the comment. <code>String</code>
+	 * @return the comment. {@code String}
 	 */
 	public String getComment() {
 		return comment;
 	}
 
 	/**
-	 * @param comment the comment to set. <code>String</code>
+	 * @param comment the comment to set. {@code String}
 	 */
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
 
 	/**
-	 * @return the modelType. <code>PolicyType</code>
+	 * @return the modelType. {@code PolicyType}
 	 */
 	public PolicyType getPolicyType() {
 		return policyType;
 	}
 
 	/**
-	 * @param policyType the modelType to set. <code>PolicyType</code>
+	 * @param policyType the modelType to set. {@code PolicyType}
 	 */
 	public void setPolicyType(PolicyType policyType) {
 		this.policyType = policyType;
 	}
 
 	/**
-	 * @return <code>true</code> if it is a decision node with a non uniform potential.
-	 * <code>boolean</code>
+	 * @return {@code true} if it is a decision node with a non uniform potential.
+	 * {@code boolean}
 	 */
 	public boolean hasPolicy() {
 		return nodeType == NodeType.DECISION && potentials.size() != 0;
@@ -528,7 +545,7 @@ public class Node {
 	 * of parent nodes. If 'computeMax' is true then it computes the maximum; otherwise it computes the minimum.
 	 * For an exact computation of the maximum or the minimum of the utility function then it is required to use
 	 * method 'getUtilityFunction' and computes the maximum or the minimum over the resulting potential.
-	 * @throws NonProjectablePotentialException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	private double getApproximateMaxOrMinUtilityFunction(boolean computeMax) throws NonProjectablePotentialException {
 		double result;
@@ -539,7 +556,8 @@ public class Node {
 			if (!isSuperValueNode()) {
 				double[] values = null;
 				try {
-					values = firstPotential.tableProject(null, null).get(0).values;
+					List<TablePotential> tableProject = firstPotential.tableProject(null, null);
+					values = tableProject.size() > 0 ? tableProject.get(0).values : new double[1];
 				} catch (WrongCriterionException e) {
 					e.printStackTrace();
 				}
@@ -571,7 +589,7 @@ public class Node {
 	 * @return Approximates the maximum of the utility function of the Node. It is computed recursively by using the utility function
 	 * of parent nodes. For an exact computation of the maximum of the utility function then it is required to use
 	 * method 'getUtilityFunction' and computes the maximum over the resulting potential.
-	 * @throws NonProjectablePotentialException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public double getApproximateMaximumUtilityFunction() throws NonProjectablePotentialException {
 
@@ -582,7 +600,7 @@ public class Node {
 	 * @return Approximates the maximum of the utility function of the Node. It is computed recursively by using the utility function
 	 * of parent nodes. For an exact computation of the maximum of the utility function then it is required to use
 	 * method 'getUtilityFunction' and computes the maximum over the resulting potential.
-	 * @throws NonProjectablePotentialException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public double getApproximateMinimumUtilityFunction() throws NonProjectablePotentialException {
 
@@ -592,7 +610,8 @@ public class Node {
 	/**
 	 * @return The utility function of a utility variable. If it is a super-value node
 	 * then it operates their parent's utility functions recursively.
-	 * @throws NonProjectablePotentialException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	public TablePotential getUtilityFunction() throws NonProjectablePotentialException, WrongCriterionException {
 		TablePotential result;
@@ -664,7 +683,7 @@ public class Node {
 	}
 
 	/**
-	 * @return
+	 * @return True if the node has only numerical parents
 	 */
 	public boolean onlyNumericalParents() {
 		List<Node> numericalParents = new ArrayList<>();

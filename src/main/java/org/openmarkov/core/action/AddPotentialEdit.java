@@ -17,8 +17,8 @@ import org.openmarkov.core.model.network.potential.Potential;
 	// Constructor
 
 	/**
-	 * @param probNet   <code>ProbNet</code>
-	 * @param potential <code>Potential</code>
+	 * @param probNet   {@code ProbNet}
+	 * @param potential {@code Potential}
 	 */
 	public AddPotentialEdit(ProbNet probNet, Potential potential) {
 		super(probNet);
@@ -36,14 +36,14 @@ import org.openmarkov.core.model.network.potential.Potential;
 	}
 
 	/**
-	 * @return potential <code>Potential</code>
+	 * @return potential {@code Potential}
 	 */
 	public Potential getPotential() {
 		return potential;
 	}
 
 	/**
-	 * @return A <code>String</code> with the potential variables.
+	 * @return A {@code String} with the potential variables.
 	 */
 	public String toString() {
 		StringBuilder buffer = new StringBuilder("AddPotentialEdit: ");

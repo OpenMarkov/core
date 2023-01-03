@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,25 +45,25 @@ public class FormatManager {
 
 	/**
 	 * Reader classes
-	 * It is a Map<extension, <version, readerClass>>
+	 * It is a Map&lt;extension, &lt;version, readerClass&gt;&gt;
 	 */
 	private Map<String, Map<String, Class<?>>> readerClasses;
 
 	/**
 	 * Writer classes
-	 * It is a Map<extension, <version, writerClass>>
+	 * It is a Map&lt;extension, &lt;version, writerClass&gt;&gt;
 	 */
 	private Map<String, Map<String, Class<?>>> writerClasses;
 
 	/**
 	 * Reader instances
-	 * It is a Map<extension, <version, readerInstance>>
+	 * It is a Map&lt;extension, &lt;version, readerInstance&gt;&gt;
 	 */
 	private Map<String, Map<String, ProbNetReader>> readerInstances;
 
 	/**
 	 * Writer instances
-	 * It is a Map<extension, <version, writerInstance>>
+	 * It is a Map&lt;extension, &lt;version, writerInstance&gt;&gt;
 	 */
 	private Map<String, Map<String, ProbNetWriter>> writerInstances;
 
@@ -125,6 +126,7 @@ public class FormatManager {
 
 	/**
 	 * Gets a FormatManager instance
+	 * @return FormatManager instance
 	 */
 	public static FormatManager getInstance() {
 		if (instance == null) {
@@ -180,8 +182,8 @@ public class FormatManager {
 	 * @param extension  - the extension corresponding to the enconding of the file (elv, pgmx)
 	 * @param fileFormat - format and version of the file
 	 * @return the ProbNetWriter corresponding to the selected extension and format of the file
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
+	 * @throws InstantiationException InstantiationException
+	 * @throws IllegalAccessException IllegalAccessException
 	 */
 	public ProbNetWriter getProbNetWriter(String extension, String fileFormat)
 			throws IllegalAccessException, InstantiationException {
@@ -260,7 +262,7 @@ public class FormatManager {
 	/**
 	 * Gets the plugin corresponding to the "Reader" role, the extension and the version
 	 *
-	 * @param fileName
+	 * @param fileName File name
 	 * @return a ProbNetReader object
 	 * @throws Exception when an exception is raised is thrown to be caught by the gui
 	 */
@@ -271,6 +273,29 @@ public class FormatManager {
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 			Document doc = docBuilder.parse(new File(fileName));
+			fileVersion = doc.getDocumentElement().getAttribute("formatVersion");
+			//Removing the last index of the version
+			fileVersion = fileVersion.substring(0, fileVersion.lastIndexOf('.'));
+		}
+		ProbNetReader reader = getProbNetReader(fileExtension, fileVersion);
+		return reader;
+	}
+
+	/**
+	 * Gets the plugin corresponding to the "Reader" role, given the URL of network
+	 *
+	 * @param url URL of the resource
+	 * @return a ProbNetReader object
+	 * @throws Exception when an exception is raised is thrown to be caught by the gui
+	 */
+	public ProbNetReader getProbNetReader(URL url) throws Exception {
+		String fileName = url.getFile();
+		String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+		String fileVersion = "";
+		if (!fileExtension.equals("elv")) {
+			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+			Document doc = docBuilder.parse(url.openStream());
 			fileVersion = doc.getDocumentElement().getAttribute("formatVersion");
 			//Removing the last index of the version
 			fileVersion = fileVersion.substring(0, fileVersion.lastIndexOf('.'));
@@ -300,9 +325,9 @@ public class FormatManager {
 	//CMI
 
 	/**
-	 * Gets the <extension, description> of all the writers
+	 * Gets the extension, description of all the writers
 	 *
-	 * @return a HashMap with a pair <extension, description> for each writer
+	 * @return a HashMap with a pair (extension, description) for each writer
 	 */
 	public HashMap<String, String> getWriters() {
 		HashMap<String, String> writers = new HashMap<>();
@@ -338,7 +363,7 @@ public class FormatManager {
 	//     */
 
 	/**
-	 * Gets the <extension, description> of the readers
+	 * Gets the (extension, description) of the readers
 	 *
 	 * @return a Map with all the extensions found
 	 */

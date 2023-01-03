@@ -18,8 +18,8 @@ import java.util.List;
 
 /**
  * @author mluque It is the type of 'nodesHashMaps'. It contains a
- * <code>LinkedHashMap</code> from <code>NodeType</code> to
- * <code>NodesHashMapType</code>.
+ * {@code LinkedHashMap} from {@code NodeType} to
+ * {@code NodesHashMapType}.
  */
 public class NodeTypeDepot {
 	private LinkedHashMap<NodeType, NodesHashMap> nodesHashMaps;
@@ -62,9 +62,8 @@ public class NodeTypeDepot {
 	}
 
 	/**
-	 * @param nodeType
+	 * @param nodeType Node type
 	 * @return All the nodes of certain kind
-	 * @consultation
 	 */
 	public List<Node> getNodes(NodeType nodeType) {
 		return new ArrayList<>(nodesHashMaps.get(nodeType).values());
@@ -111,11 +110,10 @@ public class NodeTypeDepot {
 	}
 
 	/**
-	 * @param nameOfVariable <code>String</code>
-	 * @param nodeType       <code>NodeType</code>
-	 * @return The node with <code>nameOfVariable</code> and
-	 * <code>kindOfNode</code> if exists otherwhise null
-	 * @throws NodeNotFoundException
+	 * @param nameOfVariable {@code String}
+	 * @param nodeType       {@code NodeType}
+	 * @return The node with {@code nameOfVariable} and
+	 * {@code kindOfNode} if exists otherwhise null
 	 */
 	public Node getNode(String nameOfVariable, NodeType nodeType) {
 		for (Node node : nodesHashMaps.get(nodeType).values()) {
@@ -157,8 +155,8 @@ public class NodeTypeDepot {
 	}
 
 	/**
-	 * @author mluque Contains a <code>LinkedHashMap</code> from
-	 * <code>Variable</code> to <code>Node</code>.
+	 * @author mluque Contains a {@code LinkedHashMap} from
+	 * {@code Variable} to {@code Node}.
 	 */
 	private class NodesHashMap {
 		LinkedHashMap<Variable, Node> nodesHashMap;

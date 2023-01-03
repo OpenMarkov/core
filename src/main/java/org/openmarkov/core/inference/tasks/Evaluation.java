@@ -21,8 +21,8 @@ public interface Evaluation extends Task {
 
 	/**
 	 * @return The global expected utility
-	 * @throws UnexpectedInferenceException
-	 * @throws IncompatibleEvidenceException
+	 * @throws UnexpectedInferenceException UnexpectedInferenceException
+	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 * @throws NotEvaluableNetworkException  defined over the conditioning variables.
 	 */
 	TablePotential getProbability()
@@ -31,18 +31,18 @@ public interface Evaluation extends Task {
 	/**
 	 * @return The global expected utility
 	 * defined over the conditioning variables.
-	 * @throws UnexpectedInferenceException
-	 * @throws IncompatibleEvidenceException
-	 * @throws NotEvaluableNetworkException
+	 * @throws UnexpectedInferenceException UnexpectedInferenceException
+	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
+	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
 	TablePotential getUtility()
 			throws UnexpectedInferenceException, IncompatibleEvidenceException, NotEvaluableNetworkException;
 
 	/**
 	 * @return The optimal strategy tree
-	 * @throws UnexpectedInferenceException
-	 * @throws IncompatibleEvidenceException
-	 * @throws NotEvaluableNetworkException
+	 * @throws UnexpectedInferenceException UnexpectedInferenceException
+	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
+	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
 	StrategyTree getOptimalStrategyTree()
 			throws UnexpectedInferenceException, IncompatibleEvidenceException, NotEvaluableNetworkException;

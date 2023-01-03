@@ -68,10 +68,8 @@ public class InferenceManager {
 	 * Returns the list of the names of the algorithms that can evaluate the
 	 * given instance of ProbNet
 	 *
-	 * @param probNet
-	 * @return
-	 * @throws SecurityException
-	 * @throws NoSuchMethodException
+	 * @param probNet Network
+	 * @return the list of the names of the algorithms that can evaluate the network
 	 */
 	public List<String> getInferenceAlgorithmNames(ProbNet probNet) {
 		List<String> inferenceAlgorithmNames = new ArrayList<>();
@@ -100,10 +98,8 @@ public class InferenceManager {
 	 * Returns the list of the names of the algorithms that can evaluate the
 	 * given instance of ProbNet
 	 *
-	 * @param probNet
-	 * @return
-	 * @throws SecurityException
-	 * @throws NoSuchMethodException
+	 * @param probNet Network
+	 * @return the list of the names of the algorithms that can evaluate the network
 	 */
 	public List<InferenceAlgorithm> getInferenceAlgorithms(ProbNet probNet) {
 		List<InferenceAlgorithm> inferenceAlgorithms = new ArrayList<>();
@@ -140,11 +136,11 @@ public class InferenceManager {
 	 * Returns an instance of the algorithm whose names we receive as a
 	 * parameter, given the ProbNet
 	 *
-	 * @param algorithmName
-	 * @param probNet
-	 * @return
-	 * @throws NotEvaluableNetworkException
-	 * @throws NoSuchMethodException
+	 * @param algorithmName Algorithm name
+	 * @param probNet Network
+	 * @return an instance of the algorithm whose names we receive as a parameter
+	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
+	 * @throws NoSuchMethodException NoSuchMethodException
 	 */
 	public InferenceAlgorithm getInferenceAlgorithmByName(String algorithmName, ProbNet probNet)
 			throws NotEvaluableNetworkException, NoSuchMethodException {
@@ -181,8 +177,9 @@ public class InferenceManager {
 	/**
 	 * Returns an instance of the default algorithm given the ProbNet
 	 *
-	 * @param probNet
-	 * @return
+	 * @param probNet Network
+	 * @return an instance of the default algorithm
+	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
 	public InferenceAlgorithm getDefaultInferenceAlgorithm(ProbNet probNet) throws NotEvaluableNetworkException {
 		InferenceAlgorithm defaultAlgorithm = null;
@@ -215,9 +212,9 @@ public class InferenceManager {
 	 * Returns an instance of the default approximate algorithm given the
 	 * ProbNet
 	 *
-	 * @param probNet
-	 * @return
-	 * @throws NotEvaluableNetworkException
+	 * @param probNet Network
+	 * @return An instance of the default approximate algorithm
+	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
 	public InferenceAlgorithm getDefaultApproximateAlgorithm(ProbNet probNet) throws NotEvaluableNetworkException {
 		InferenceAlgorithm defaultAlgorithm = null;

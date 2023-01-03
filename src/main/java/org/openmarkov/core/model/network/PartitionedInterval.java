@@ -13,7 +13,7 @@ package org.openmarkov.core.model.network;
  * @author fjdiez
  * @author manuel
  * @version 1.2 jlgozalo add method equals()
- * @invariant belongsToLeftSide.length = limits.length
+ * invariant belongsToLeftSide.length = limits.length
  * @since OpenMarkov 1.0
  */
 public class PartitionedInterval implements Cloneable {
@@ -27,17 +27,19 @@ public class PartitionedInterval implements Cloneable {
 	protected boolean[] belongsToLeftSide;
 
 	/**
-	 * @frozen
+	 * Number of sub-intervals
 	 */
 	protected int numSubintervals;
 
 	// Constructors
 
 	/**
-	 * @argCondition limits.size() == belongsToLeftSide.size()
-	 * @argCondition limits[i] <= limits[i+1]
-	 * @argCondition if limits[i] == limits[i+1] then belongsToLeftSide[i] =
+	 * Condition: limits.size() == belongsToLeftSide.size()
+	 * Condition: limits[i] &#60;= limits[i+1]
+	 * Condition: if limits[i] == limits[i+1] then belongsToLeftSide[i] =
 	 * false and belongsToLeftSide[i+1] = true
+	 * @param belongsToLeftSide Array pointing If belongs to left side
+	 * @param limits Array of limits
 	 */
 	public PartitionedInterval(double[] limits, boolean[] belongsToLeftSide) {
 		this.limits = limits.clone();
@@ -46,7 +48,11 @@ public class PartitionedInterval implements Cloneable {
 	}
 
 	/**
-	 * Creates a <code>PartitionedInterval</code> with only one Subinterval
+	 * Creates a {@code PartitionedInterval} with only one Subinterval
+	 * @param leftClosed If left closed
+	 * @param min Minimum
+	 * @param max Maximum
+	 * @param rightClosed If right closed
 	 */
 	public PartitionedInterval(boolean leftClosed, double min, double max, boolean rightClosed) {
 		limits = new double[] { min, max };
@@ -55,7 +61,8 @@ public class PartitionedInterval implements Cloneable {
 	}
 
 	/**
-	 * Creates a <code>PartitionedInterval</code> from an Object[][] table
+	 * Creates a {@code PartitionedInterval} from an Object[][] table
+	 * @param values Values
 	 */
 	public PartitionedInterval(Object[][] values) {
 		int numSubIntervals = 0;
@@ -95,8 +102,8 @@ public class PartitionedInterval implements Cloneable {
 	// Methods
 
 	/**
+	 * @param number Number
 	 * @return true if the value is included between the outside limits
-	 * @consultation
 	 */
 	public boolean contains(double number) {
 		return (
@@ -109,10 +116,9 @@ public class PartitionedInterval implements Cloneable {
 	}
 
 	/**
-	 * @param number <code>double</code>
+	 * @param number {@code double}
 	 * @return The number of subinterval where is located the number (0, 1, ...)
 	 * or -1 if it is outside
-	 * @consultation
 	 */
 	public int indexOfSubinterval(double number) {
 		for (int i = 0; i < limits.length - 1; i++) {
@@ -127,8 +133,7 @@ public class PartitionedInterval implements Cloneable {
 	/**
 	 * This method remove the index-th subinterval.
 	 *
-	 * @param index <code>int</code>
-	 * @consultation
+	 * @param index {@code int}
 	 */
 	public void removeSubinterval(int index) {
 		double[] newLimits = new double[limits.length - 1];
@@ -149,48 +154,45 @@ public class PartitionedInterval implements Cloneable {
 	}
 
 	/**
-	 * @return numSubintervals. <code>int</code>
-	 * @consultation
+	 * @return numSubintervals. {@code int}
 	 */
 	public int getNumSubintervals() {
 		return numSubintervals = limits.length - 1;
 	}
 
 	/**
-	 * @return limits. <code>double[]</code>
-	 * @consultation
+	 * @return limits. {@code double[]}
 	 */
 	public double[] getLimits() {
 		return limits;
 	}
 
 	/**
-	 * @return limit. <code>double</code>
-	 * @consultation
+	 * @param index Index
+	 * @return limit. {@code double}
 	 */
 	public double getLimit(int index) {
 		return limits[index];
 	}
 
 	/**
-	 * @return belongsToLeftSide. <code>boolean[]</code>
-	 * @consultation
+	 * @return belongsToLeftSide. {@code boolean[]}
 	 */
 	public boolean[] getBelongsToLeftSide() {
 		return belongsToLeftSide;
 	}
 
 	/**
-	 * @param index <code>int</code>
-	 * @return belongsToLeftSide. <code>boolean</code>
+	 * @param index {@code int}
+	 * @return belongsToLeftSide. {@code boolean}
 	 */
 	public boolean getBelongsToLeftSide(int index) {
 		return belongsToLeftSide[index];
 	}
 
 	/**
-	 * @param index <code>int</code>
-	 * @return belongsTo. <code>String</code>
+	 * @param index {@code int}
+	 * @return belongsTo. {@code String}
 	 */
 	public String getBelongsTo(int index) {
 		if (belongsToLeftSide[index] == true)
@@ -200,8 +202,7 @@ public class PartitionedInterval implements Cloneable {
 	}
 
 	/**
-	 * @return min. <code>
-	 * @consultation
+	 * @return min
 	 */
 	public double getMin() {
 		return limits[0];
@@ -209,7 +210,6 @@ public class PartitionedInterval implements Cloneable {
 
 	/**
 	 * @return max
-	 * @consultation
 	 */
 	public double getMax() {
 		return limits[getNumSubintervals()];
@@ -217,7 +217,6 @@ public class PartitionedInterval implements Cloneable {
 
 	/**
 	 * @return leftClosed
-	 * @consultation
 	 */
 	public boolean isLeftClosed() {
 		return !belongsToLeftSide[0];
@@ -225,23 +224,22 @@ public class PartitionedInterval implements Cloneable {
 
 	/**
 	 * @return rightClosed
-	 * @consultation
 	 */
 	public boolean isRightClosed() {
 		return belongsToLeftSide[getNumSubintervals()];
 	}
 
 	/**
-	 * @param indexOfLimit
-	 * @param newLimit
-	 * @param newBelongsToLeftSide
-	 * @argCondition newLimit < limit[indexOfLimit+1] && newLimit >
+	 * @param indexOfLimit Index of limit
+	 * @param newLimit New limit
+	 * @param newBelongsToLeftSide If new limit belongs to left side
+	 * Condition: newLimit &#60; limit[indexOfLimit+1] &#x26;&#x26; newLimit &#62;
 	 * limit[indexOfLimit-1]
-	 * @argCondition if limit[indexOfLimit-1] = newLimit then
-	 * belongsToLeftSide[indexOfLimit] = true &&
+	 * Condition: if limit[indexOfLimit-1] = newLimit then
+	 * belongsToLeftSide[indexOfLimit] = true &#x26;&#x26;
 	 * belongsToLeftSide[indexOfLimit-1] = false
-	 * @argCondition if limit[indexOfLimit+1] = newLimit then
-	 * belongsToLeftSide[indexOfLimit] = false &&
+	 * Condition: if limit[indexOfLimit+1] = newLimit then
+	 * belongsToLeftSide[indexOfLimit] = false &#x26;&#x26;
 	 * belongsToLeftSide[indexOfLimit+1] = true
 	 */
 	public void changeLimit(int indexOfLimit, double newLimit, boolean newBelongsToLeftSide) {

@@ -12,7 +12,7 @@ import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
 
 /**
- * <code>DecisionCriterionUnitEdit</code> is a simple edit that allow modify the unit
+ * {@code DecisionCriterionUnitEdit} is a simple edit that allow modify the unit
  * of a criterion
  *
  * @author Jorge

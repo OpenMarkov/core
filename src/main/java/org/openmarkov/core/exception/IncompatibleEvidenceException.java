@@ -16,7 +16,7 @@ package org.openmarkov.core.exception;
 	// Constructor
 
 	/**
-	 * @param message
+	 * @param message message
 	 */
 	public IncompatibleEvidenceException(String message) {
 		super(message);

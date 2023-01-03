@@ -20,7 +20,7 @@ package org.openmarkov.core.exception;
 	// Constructor
 
 	/**
-	 * @param fileName
+	 * @param fileName File name
 	 */
 	public NotRecognisedNetworkFileExtensionException(String fileName) {
 		super("Not recognised network filename extension: " + fileName);

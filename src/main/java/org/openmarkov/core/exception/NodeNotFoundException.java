@@ -16,15 +16,15 @@ import org.openmarkov.core.model.network.Variable;
 	// Constructor
 
 	/**
-	 * @param message <code>String</code>
+	 * @param message {@code String}
 	 */
 	public NodeNotFoundException(String message) {
 		super(message);
 	}
 
 	/**
-	 * @param network      TODO
-	 * @param variableName
+	 * @param network      Network
+	 * @param variableName Name of the variable
 	 */
 	public NodeNotFoundException(ProbNet network, String variableName) {
 		super("Variable: " + variableName + " not found in network " + network.getName() + ".");

@@ -13,6 +13,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 
@@ -20,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <code>TreeADDBranch</code> represents branch of a treeADD. If the top variable of the
+ * {@code TreeADDBranch} represents branch of a treeADD. If the top variable of the
  * treeADD is numeric a branch is defined by two thresholds: a minimum and a
  * maximum. If top variable is finite states, then each branch is defined
  * by its states. In both cases each branch has a potential assigned. If the
  * branch is a leaf, its potential is any kind of potential except a
- * <code>TreeADDPotential</code>
+ * {@code TreeADDPotential}
  *
  * @author myebra
  */
@@ -85,9 +86,9 @@ public class TreeADDBranch {
 	/**
 	 * Constructor for discretized and finite states variables
 	 *
-	 * @param branchStates
-	 * @param topVariable
-	 * @param parentVariables
+	 * @param branchStates List of the branch states
+	 * @param topVariable Top variable
+	 * @param parentVariables List of the parent variables
 	 */
 	public TreeADDBranch(List<State> branchStates, Variable topVariable, List<Variable> parentVariables) {
 		this.states = branchStates;
@@ -101,10 +102,10 @@ public class TreeADDBranch {
 	/**
 	 * Constructor for discretized and finite states variables
 	 *
-	 * @param branchStates
-	 * @param topVariable
-	 * @param potential
-	 * @param parentVariables
+	 * @param branchStates List of the branch states
+	 * @param topVariable Top variable
+	 * @param potential Potential
+	 * @param parentVariables List of the parent variables
 	 */
 	public TreeADDBranch(List<State> branchStates, Variable topVariable, Potential potential,
 			List<Variable> parentVariables) {
@@ -117,11 +118,11 @@ public class TreeADDBranch {
 	/**
 	 * Constructor for numeric variables
 	 *
-	 * @param lowerBound
-	 * @param upperBound
-	 * @param topVariable
-	 * @param potential
-	 * @param parentVariables
+	 * @param lowerBound Lower bound threshold
+	 * @param upperBound Upper bound threshold
+	 * @param topVariable Top variable
+	 * @param potential Potential
+	 * @param parentVariables List of parent variables
 	 */
 	public TreeADDBranch(Threshold lowerBound, Threshold upperBound, Variable topVariable, Potential potential,
 			List<Variable> parentVariables) {
@@ -136,11 +137,10 @@ public class TreeADDBranch {
 
 	/**
 	 * Constructor for discretized and finite states variables with reference
-	 *
-	 * @param branchStates
-	 * @param topVariable
-	 * @param reference
-	 * @param parentVariables
+	 * @param branchStates List of the branch states
+	 * @param topVariable Top variable
+	 * @param reference Reference
+	 * @param parentVariables List of the parent variables
 	 */
 	public TreeADDBranch(List<State> branchStates, Variable topVariable, String reference,
 			List<Variable> parentVariables) {
@@ -154,12 +154,11 @@ public class TreeADDBranch {
 
 	/**
 	 * Constructor for numeric variables with reference
-	 *
-	 * @param lowerBound
-	 * @param upperBound
-	 * @param reference
-	 * @param topVariable
-	 * @param parentVariables
+	 * @param lowerBound Lower bound threshold
+	 * @param upperBound Upper bound threshold
+	 * @param topVariable Top variable
+	 * @param reference Reference
+	 * @param parentVariables List of parent variables
 	 */
 	public TreeADDBranch(Threshold lowerBound, Threshold upperBound, Variable topVariable, String reference,
 			List<Variable> parentVariables) {
@@ -233,6 +232,10 @@ public class TreeADDBranch {
 	public List<Variable> getAddableVariables() {
 		List<Variable> addableVariables = new ArrayList<>(parentVariables);
 		addableVariables.removeAll(potential.getVariables());
+		if (potential instanceof ExactDistrPotential) {
+			addableVariables.remove(potential.getVariable(0));
+		}
+		addableVariables.remove(rootVariable);
 		return addableVariables;
 	}
 
@@ -312,23 +315,19 @@ public class TreeADDBranch {
 
 	@Override public String toString() {
 		StringBuilder builder = new StringBuilder();
-		//        builder.append(indent);
-		//        builder.append("branch (");
-
 		builder.append(rootVariable);
-		//        builder.append(")");
 		builder.append(" = ");
 
 		if (states != null) {
-			for (State state : states) {
-				builder.append(state);
-			}
+			states.forEach(x -> builder.append(x));
 		}
 
 		if (potential != null) {
 			builder.append(" -> ");
 		}
-		if (potential != null) {
+		boolean isNullPotential = potential == null;
+		boolean isStrategyTree = !isNullPotential && potential.getClass() == StrategyTree.class;
+		if (!isNullPotential && !isStrategyTree) {
 			List<Variable> potentialVariables = potential.getVariables();
 			if (potentialVariables != null && potentialVariables.size() > 0) {
 				builder.append(" ");
@@ -336,15 +335,11 @@ public class TreeADDBranch {
 				builder.append(" variables(");
 				for (int i = 0; i < potentialVariables.size(); i++) {
 					builder.append(potentialVariables.get(i));
-					if (i < potentialVariables.size() - 1) {
-						builder.append(", ");
-					} else {
-						builder.append("); ");
-					}
+					builder.append((i < potentialVariables.size() - 1) ? ", " : "); ");
 				}
 			}
 		}
-		if (parentVariables != null && parentVariables.size() > 0 && !(potential instanceof StrategyTree)) {
+		if (parentVariables != null && parentVariables.size() > 0 && !isStrategyTree) {
 			//			builder.append("\n");
 			builder.append(indent);
 			builder.append("ParentVariables = ");
@@ -360,7 +355,7 @@ public class TreeADDBranch {
 			builder.append(")");
 		}
 		//builder.append("\n");
-		if (potential != null && potential.getClass() == StrategyTree.class) {
+		if (isStrategyTree) {
 			List<TreeADDBranch> branches = ((StrategyTree) potential).getBranches();
 			for (TreeADDBranch branch : branches) {
 				branch.setIndent(indent + "    ");

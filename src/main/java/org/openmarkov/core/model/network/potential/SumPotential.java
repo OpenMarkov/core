@@ -13,6 +13,7 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -43,11 +44,18 @@ import java.util.List;
 	//	}
 
 	/**
-	 * @param variables
-	 * @param role
+	 * @param variables List of variables
+	 * @param role Potential role
 	 */
 	public SumPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role);
+	}
+	
+	/**
+	 * @param variables List of variables
+	 */
+	public SumPotential(List<Variable> variables) {
+		this(variables, PotentialRole.CONDITIONAL_PROBABILITY);
 	}
 
 	public SumPotential(SumPotential potential) {
@@ -60,9 +68,10 @@ import java.util.List;
 	 * Returns if an instance of a certain Potential type makes sense given
 	 * the variables and the potential role.
 	 *
-	 * @param node      <code>Node</code>
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>.
-	 * @param role      <code>PotentialRole</code>.
+	 * @param node      {@code Node}
+	 * @param variables {@code ArrayList} of {@code Variable}.
+	 * @param role      {@code PotentialRole}.
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean suitable = (
@@ -73,11 +82,7 @@ import java.util.List;
 	}
 
 	@Override
-	/** @return If none of the potential variables are included in the 
-	 * <code>evidenceCase</code> variables returns itself, in other case, 
-	 * returns a uniform potential with the potential variables minus the 
-	 * <code>evidenceCase</code> variables.
-	 * @param evidenceCase. <code>evidenceCase</code> */ public List<TablePotential> tableProject(
+	public List<TablePotential> tableProject(
 			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials)
 			throws NonProjectablePotentialException, WrongCriterionException {
 		List<Variable> parentVariables = new ArrayList<>(variables);
@@ -125,6 +130,18 @@ import java.util.List;
 
 	@Override public Potential deepCopy(ProbNet copyNet) {
 		return (SumPotential) super.deepCopy(copyNet);
+	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

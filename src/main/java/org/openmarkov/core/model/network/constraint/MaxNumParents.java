@@ -53,7 +53,7 @@ import java.util.List;
 			}
 		}
 
-		/**edits = UtilConstraints.getEditsType(edit, RemoveLinkEdit.class);
+		/*edits = UtilConstraints.getEditsType(edit, RemoveLinkEdit.class);
 		 for (PNEdit simpleEdit : edits) {
 		 if (((RemoveLinkEdit)simpleEdit).isDirected()) {
 		 Node node2 = ((RemoveLinkEdit)simpleEdit).getNode2().getNode();
@@ -62,7 +62,7 @@ import java.util.List;
 		 return false;
 		 }
 		 }
-		 }**/
+		 }*/
 		return true;
 
 	}

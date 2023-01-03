@@ -39,7 +39,7 @@ import java.util.List;
 	 * This method creates a new VariableTypeConstraintEdit
 	 *
 	 * @param probNet                   the network that will be edited
-	 *                                  <code>ProbNet</code>
+	 *                                  {@code ProbNet}
 	 * @param newVariableTypeConstraint the new constraint. If null, the network
 	 *                                  will do not have constraint about variables, i.e, works with continuous
 	 *                                  and discrete variables.

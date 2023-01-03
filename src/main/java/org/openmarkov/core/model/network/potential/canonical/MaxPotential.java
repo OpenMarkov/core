@@ -9,11 +9,13 @@ package org.openmarkov.core.model.network.potential.canonical;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
@@ -22,8 +24,8 @@ import java.util.List;
 @PotentialType(name = "OR / MAX", family = "ICI") public class MaxPotential extends MinMaxPotential {
 
 	/**
-	 * @param model     <code>ICIModel</code>.
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>.
+	 * @param model     {@code ICIModel}.
+	 * @param variables {@code ArrayList} of {@code Variable}.
 	 */
 	public MaxPotential(ICIModelType model, List<Variable> variables) {
 		super(model, variables);
@@ -32,7 +34,7 @@ import java.util.List;
 	/**
 	 * Constructor for MaxPotential that assumes the ICIModelType is GENERAL_MAX
 	 *
-	 * @param variables
+	 * @param variables List of variables
 	 */
 	public MaxPotential(List<Variable> variables) {
 		this(ICIModelType.GENERAL_MAX, variables);
@@ -46,9 +48,10 @@ import java.util.List;
 	 * Returns if an instance of a certain Potential type makes sense given
 	 * the variables and the potential role.
 	 *
-	 * @param node      <code>Node</code>
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>.
-	 * @param role      <code>PotentialRole</code>.
+	 * @param node      {@code Node}
+	 * @param variables {@code ArrayList} of {@code Variable}.
+	 * @param role      {@code PotentialRole}.
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean valid = ICIPotential.validate(node, variables, role) && (
@@ -77,9 +80,11 @@ import java.util.List;
 		return tablePotential;
 	}
 
+	/**
+	 * @return A {@code TablePotential} with two variables: {@code conditionedVariable} and {@code pseudoVariable}.
+	 */
 	@Override
-	/** @returns A <code>TablePotential</code> with two variables: 
-	 *  <code>conditionedVariable</code> and <code>pseudoVariable</code>. */ public TablePotential getDeltaPotential() {
+	public TablePotential getDeltaPotential() {
 		Variable conditionedVariable = variables.get(0);
 		List<Variable> deltaVariables = new ArrayList<>();
 		deltaVariables.add(pseudoVariable);
@@ -103,17 +108,22 @@ import java.util.List;
 		return deltaPotential;
 	}
 
+	/**
+	 * @param subPotential {@code TablePotential}
+	 * In general it will be the conditional probability associated with
+	 * a link of the ICI model (i.e., a conditional probability of the child
+	 * node given the parent node) or the leak probability.
+	 *
+	 * @return The accrued potential. {@code TablePotential}. I.e., if
+	 * subPotential is P(y) then the accrued potential is P(Y&#62;=y), and if
+	 * the subPotential is P(y|x) then the accrued potential is P(Y&#62;=y|x).
+	 *
+	 * Efficient computation for the Noisy MAX
+	 * ConditionC subPotential is a probability table of one variable
+	 * or a probability table of one variable given another variable.
+	 */
 	@Override
-	/** @param subPotential. <code>TablePotential</code> 
-	 *  In general it will be the conditional probability associated with 
-	 *  a link of the ICI model (i.e., a conditional probability of the child 
-	 *  node given the parent node) or the leak probability.
-	 * @return The accrued potential. <code>TablePotential</code>. I.e., if 
-	 *  subPotential is P(y) then the accrued potential is P(Y>=y), and if
-	 *  the subPotential is P(y|x) then the accrued potential is P(Y>=y|x).
-	 * @reference Efficient computation for the Noisy MAX
-	 * @argCondition subPotential is a probability table of one variable
-	 *  or a probability table of one variable given another variable. */ public TablePotential getAccruedPotential(
+	public TablePotential getAccruedPotential(
 			TablePotential subPotential) {
 		// TODO Revisar este metodo para el caso de un potential proyectado
 		List<Variable> subPotentialVariables = subPotential.getVariables();
@@ -185,7 +195,11 @@ import java.util.List;
 			newICIPotential.setNoisyParameters(newVariables.get(i), noisyParameters);
 		}
 		newICIPotential.setLeakyParameters(getLeakyParameters());
-		return newICIPotential;
+		if (newVariables.size() == 1) {
+			return new UniformPotential(newVariables, newICIPotential.role);
+		} else {
+			return newICIPotential;
+		}
 	}
 
 	@Override protected int computeFFunction(int[] parentStates) {
@@ -234,5 +248,17 @@ import java.util.List;
 
 	@Override public Potential deepCopy(ProbNet copyNet) {
 		return (MaxPotential) super.deepCopy(copyNet);
+	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

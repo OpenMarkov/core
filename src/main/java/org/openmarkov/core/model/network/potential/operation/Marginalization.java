@@ -22,9 +22,9 @@ public abstract class Marginalization {
 	 * Classifies potential from the first list between probability and utility and stores them
 	 * in the second and third list
 	 *
-	 * @param potentials        <code>List</code> of <code>TablePotential</code>
-	 * @param probPotentials    <code>List</code> of <code>TablePotential</code>
-	 * @param utilityPotentials <code>List</code> of <code>TablePotential</code>
+	 * @param potentials        {@code List} of {@code TablePotential}
+	 * @param probPotentials    {@code List} of {@code TablePotential}
+	 * @param utilityPotentials {@code List} of {@code TablePotential}
 	 */
 	protected void classifyProbAndUtilityPotentials(Collection<? extends Potential> potentials,
 			Collection<TablePotential> probPotentials, Collection<TablePotential> utilityPotentials) {

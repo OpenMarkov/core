@@ -22,8 +22,8 @@ public class ProbNetInfo {
 	/**
 	 * Constructor for ProbNetInfo.
 	 *
-	 * @param probNet
-	 * @param evidence
+	 * @param probNet Network
+	 * @param evidence Evidence
 	 */
 	public ProbNetInfo(ProbNet probNet, List<EvidenceCase> evidence) {
 		this.probNet = probNet;

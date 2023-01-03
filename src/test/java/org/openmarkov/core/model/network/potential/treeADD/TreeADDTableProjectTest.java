@@ -118,8 +118,7 @@ public class TreeADDTableProjectTest {
 				PotentialRole.CONDITIONAL_PROBABILITY);
 		expectedTablePotential.values = new double[] { 0.7, 0.3, 0.8, 0.2, 0.7, 0.3, 0.8, 0.2, 0.7, 0.3, 0.1, 0.9, 0.6,
 				0.4, 0.6, 0.4 };
-		expectedTablePotential = DiscretePotentialOperations
-				.reorder(expectedTablePotential, tablePotential.getVariables());
+		expectedTablePotential = (TablePotential) expectedTablePotential.reorder(tablePotential.getVariables());
 
 		Assert.assertArrayEquals(expectedTablePotential.values, tablePotential.values, 0.001);
 	}

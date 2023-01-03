@@ -13,7 +13,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import java.util.List;
 
 /**
- * <code>NetworkCommentEdit</code> is a simple edit that allow modify a network
+ * {@code NetworkCommentEdit} is a simple edit that allow modify a network
  * comment.
  *
  * @author Miguel Palacios
@@ -39,8 +39,11 @@ import java.util.List;
 	private Node node;
 
 	/**
-	 * Creates a <code>NodeCommentEdit</code> with the node, new comment and
+	 * Creates a {@code NodeCommentEdit} with the node, new comment and
 	 * type of comment specified.
+	 * @param node Node
+	 * @param newComment New comment
+	 * @param typeComment Type of comment
 	 */
 	public NodeCommentEdit(Node node, String newComment, String typeComment) {
 		super(node.getProbNet());

@@ -33,10 +33,15 @@ import java.util.List;
 		return true;
 	}
 
+
+	/**
+	 * Check edit
+	 * @param edit {@code PNEdit}
+	 * @param probNet Network
+	 * @return {@code true} if {@code event} comply with this constraint
+	 */
 	@Override
-	/** @param event <code>UndoableEditEvent</code>
-	 * @return <code>true</code> if <code>event</code> comply with this 
-	 *   constraint */ public boolean checkEdit(ProbNet probNet, PNEdit edit)
+	public boolean checkEdit(ProbNet probNet, PNEdit edit)
 			throws NonProjectablePotentialException, WrongCriterionException {
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
 		//int u=0;

@@ -12,6 +12,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.ExactFunction;
@@ -50,8 +51,9 @@ import java.util.List;
 	private ProbDensFunctionManager probDensFunctionManager;
 
 	/**
-	 * @param variables
-	 * @param role
+	 * Constructor
+	 * @param variables List of variables
+	 * @param role Potential role
 	 */
 
 	public UnivariateDistrPotential(List<Variable> variables, PotentialRole role) {
@@ -78,12 +80,13 @@ import java.util.List;
 	}
 
 	/**
-	 * Now I still do not use parameterization
+	 * Constructor
 	 *
-	 * @param variables
-	 * @param name
-	 * @param parametrization
-	 * @param role
+	 * @param variables List of variables
+	 * @param name Name
+	 * @param parametrization Parametrization
+	 * @param role Potential role
+	 * @throws InstantiationException InstantiationException
 	 */
 	public UnivariateDistrPotential(List<Variable> variables, String name, String parametrization, PotentialRole role)
 			throws InstantiationException {
@@ -94,9 +97,11 @@ import java.util.List;
 	}
 
 	/**
-	 * @param variables
-	 * @param probDensFunctionClass
-	 * @param role
+	 * Constructor
+	 *
+	 * @param variables List of variables
+	 * @param probDensFunctionClass Class of the probability density function
+	 * @param role Potential role
 	 */
 	public UnivariateDistrPotential(List<Variable> variables, Class<? extends ProbDensFunction> probDensFunctionClass,
 			PotentialRole role) {
@@ -106,7 +111,8 @@ import java.util.List;
 	}
 
 	/**
-	 * @param potential
+	 * Constructor
+	 * @param potential Univariate distribution potential
 	 */
 	public UnivariateDistrPotential(UnivariateDistrPotential potential) {
 
@@ -120,7 +126,8 @@ import java.util.List;
 	}
 
 	/**
-	 * @param variables
+	 * Constructor
+	 * @param variables List of variables
 	 */
 	public UnivariateDistrPotential(List<Variable> variables) {
 		this(variables, PotentialRole.CONDITIONAL_PROBABILITY);
@@ -131,9 +138,10 @@ import java.util.List;
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role.
 	 *
-	 * @param node      . <code>Node</code>
-	 * @param variables . <code>List</code> of <code>Variable</code>.
-	 * @param role      . <code>PotentialRole</code>.
+	 * @param node      . {@code Node}
+	 * @param variables . {@code List} of {@code Variable}.
+	 * @param role      . {@code PotentialRole}.
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		return (node.getVariable().getVariableType() == VariableType.NUMERIC);
@@ -269,7 +277,7 @@ import java.util.List;
 	}
 
 	/**
-	 *
+	 * @param probDensFunctionParametersName Probability function parameters name
 	 */
 	protected void translateDistributionIntoPseudoVariable(String[] probDensFunctionParametersName) {
 		pseudoVariableDistribution = new Variable(PSEUDO_VARIABLE, probDensFunctionParametersName);
@@ -350,7 +358,7 @@ import java.util.List;
 	}
 
 	/**
-	 * UNCLEAR --> Makes sense??
+	 * UNCLEAR -- Makes sense??
 	 */
 
 	@Override public void scalePotential(double scale) {
@@ -412,6 +420,32 @@ import java.util.List;
 			buffer.append("}");
 		}
 		return buffer.toString();
+	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		int size = newOrderOfVariables.size();
+		// orderVariables has the order of the parents of the augmentedTable, so
+		// parameterVariables should be added
+		for (Variable parameterVariable : getParameterVariables()) {
+			newOrderOfVariables.add(parameterVariable);
+		}
+		UnivariateDistrPotential newPotential = new UnivariateDistrPotential(newOrderOfVariables,
+				getProbDensFunctionClass(), getPotentialRole());
+		newOrderOfVariables.remove(0);
+		// I do use getVariable(0) for be compliant with the comparison in int[]
+		// accOffsets = potential.getAccumulatedOffsets(orderVariables);
+		newOrderOfVariables.add(0, getAugmentedTable().getVariable(0));
+		AugmentedTable newDistributionTable = (AugmentedTable) getAugmentedTable()
+				.reorder(newOrderOfVariables.subList(0, size));
+		newPotential.setDistributionTable(newDistributionTable);
+		return newPotential;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

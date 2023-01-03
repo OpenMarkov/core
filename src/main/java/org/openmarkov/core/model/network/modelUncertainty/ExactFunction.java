@@ -44,7 +44,7 @@ public class ExactFunction
 	/**
 	 * Some subclasses can override this method.
 	 *
-	 * @return
+	 * @return the mean
 	 */
 	public double getMean() {
 		return nu;

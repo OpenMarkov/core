@@ -79,7 +79,7 @@ public class CaseDatabase {
 
 	/**
 	 * Returns the cases for a given variable.
-	 *
+	 * @param variable Variable
 	 * @return the cases for a given variable.
 	 */
 	public int[] getCases(Variable variable) {

@@ -9,16 +9,16 @@ package org.openmarkov.core.exception;
 
 @SuppressWarnings("serial") public class DoEditException extends OpenMarkovException {
 	/**
-	 * @param msg . <code>String</code>
+	 * @param msg . {@code String}
 	 */
 	public DoEditException(String msg) {
 		super(msg);
 	}
 
 	/**
-	 * Writes the <code>exception</code> message and its stack trace.
+	 * Writes the {@code exception} message and its stack trace.
 	 *
-	 * @param exception . <code>Exception</code>
+	 * @param exception . {@code Exception}
 	 */
 	public DoEditException(Exception exception) {
 		super(exception.getMessage());

@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The class <code>PotentialOperations</code> contains method for performing
+ * The class {@code PotentialOperations} contains method for performing
  * basic operations in bayesian networks such as matrix multiplication,
  * marginalization, etc.
  *
@@ -47,9 +47,10 @@ public class PotentialOperations {
 	}
 
 	/**
-	 * @param potential
-	 * @param variablesOfInterest
-	 * @throws PotentialOperationException
+	 * @param potential Potential
+	 * @param variablesOfInterest List of the variables of interest
+	 * @throws PotentialOperationException PotentialOperationException
+	 * @return Marginalized potential
 	 */
 	public static Potential marginalize(Potential potential, List<Variable> variablesOfInterest)
 			throws PotentialOperationException {
@@ -87,12 +88,13 @@ public class PotentialOperations {
 
 	/**
 	 * @param potential            that will be marginalized
-	 * @param variablesToKeep
-	 * @param variablesToEliminate
-	 * @throws PotentialOperationException
-	 * @precondition variablesToKeep + variablesToEliminate =
+	 * @param variablesToKeep List of variables to keep
+	 * @param variablesToEliminate Listt of the variables to eliminate
+	 * @throws PotentialOperationException PotentialOperationException
+	 * Condition: variablesToKeep + variablesToEliminate =
 	 * potential.getVariables()
-	 * @precondition variablesToKeep
+	 * Condition: variablesToKeep
+	 * @return Marginalized potential
 	 */
 	public static Potential marginalize(Potential potential, List<Variable> variablesToKeep,
 			List<Variable> variablesToEliminate) throws PotentialOperationException {
@@ -114,9 +116,10 @@ public class PotentialOperations {
 	}
 
 	/**
-	 * @param potentials
-	 * @param variablesToEliminate
-	 * @throws PotentialOperationException
+	 * @param potentials List of table potentials
+	 * @param variablesToEliminate List of the variables to eliminate
+	 * @throws PotentialOperationException PotentialOperationException
+	 * @return Processed potential
 	 */
 	public static Potential multiplyAndEliminate(List<TablePotential> potentials, List<Variable> variablesToEliminate)
 			throws PotentialOperationException {
@@ -135,9 +138,10 @@ public class PotentialOperations {
 	}
 
 	/**
-	 * @param potentials
-	 * @param variableToEliminate
-	 * @throws PotentialOperationException
+	 * @param potentials List of table potentials
+	 * @param variableToEliminate Variable to eliminate
+	 * @throws PotentialOperationException PotentialOperationException
+	 * @return Processed potential
 	 */
 	public static Potential multiplyAndEliminate(List<TablePotential> potentials, Variable variableToEliminate)
 			throws PotentialOperationException {
@@ -147,7 +151,7 @@ public class PotentialOperations {
 	/**
 	 * @param potentials potentials array to multiply
 	 * @return The multiplied potentials
-	 * @throws PotentialOperationException
+	 * @throws PotentialOperationException PotentialOperationException
 	 */
 	@SuppressWarnings("unchecked") public static Potential multiply(List<? extends Potential> potentials)
 			throws PotentialOperationException {
@@ -164,9 +168,9 @@ public class PotentialOperations {
 	 * @param potentials          potentials array to multiply
 	 * @param variablesOfInterest Set of variables that must be kept (although
 	 *                            this set may contain some variables that are not in any potential)
-	 *                            <code>potentials</code>
+	 *                            {@code potentials}
 	 * @return The multiplied potentials
-	 * @throws PotentialOperationException
+	 * @throws PotentialOperationException PotentialOperationException
 	 */
 	public static Potential multiplyAndMarginalize(List<TablePotential> potentials, List<Variable> variablesOfInterest)
 			throws PotentialOperationException {
@@ -203,14 +207,14 @@ public class PotentialOperations {
 
 	/**
 	 * Multiplies several potentials and maximizes the result removing
-	 * variables that does not belong to <code>variablesOfInterest</code>
+	 * variables that does not belong to {@code variablesOfInterest}
 	 *
 	 * @param potentials          potentials array to multiply
 	 * @param variablesOfInterest Set of variables that must be kept (although
 	 *                            this set may contain some variables that are not in any potential)
-	 *                            <code>potentials</code>
+	 *                            {@code potentials}
 	 * @return The multiplied potentials
-	 * @throws PotentialOperationException
+	 * @throws PotentialOperationException PotentialOperationException
 	 */
 	public static Object[] multiplyAndMaximize(List<Potential> potentials, List<Variable> variablesOfInterest)
 			throws PotentialOperationException {
@@ -254,8 +258,8 @@ public class PotentialOperations {
 	 * @param variablesToEliminate The set of variables eliminated by
 	 *                             marginalization (in general, by summing out or maximizing)
 	 * @return result the multiplied potentials
-	 * @throws PotentialOperationException
-	 * @argCondition variablesToKeep and variablesToEliminate are a partition of
+	 * @throws PotentialOperationException PotentialOperationException
+	 * Condition: variablesToKeep and variablesToEliminate are a partition of
 	 * the union of the variables of the potentials
 	 */
 	public static Potential multiplyAndMarginalize(List<TablePotential> potentials, List<Variable> variablesToKeep,
@@ -277,10 +281,10 @@ public class PotentialOperations {
 	}
 
 	/**
-	 * Gets a uniform <code>Potential</code> object for the variable specified.
+	 * Gets a uniform {@code Potential} object for the variable specified.
 	 *
-	 * @param probNet     the <code>probNet</code> object that contains the variable
-	 * @param variable    the <code>Variable</code> object.
+	 * @param probNet     the {@code probNet} object that contains the variable
+	 * @param variable    the {@code Variable} object.
 	 * @param auxNodeType the nodeType of the node that match the variable.
 	 * @return a new UniformPotential.
 	 */

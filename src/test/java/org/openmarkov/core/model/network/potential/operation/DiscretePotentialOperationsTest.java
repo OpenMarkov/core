@@ -591,7 +591,7 @@ public class DiscretePotentialOperationsTest {
 		variablesBA.add(variablesAB.get(0));
 
 		// Call method DiscretePotentialOperations.reorder
-		TablePotential reorderedBA = DiscretePotentialOperations.reorder(orderedAB, variablesBA);
+		TablePotential reorderedBA = (TablePotential) orderedAB.reorder(variablesBA);
 
 		// Test
 		// 1. Test variables
@@ -614,8 +614,7 @@ public class DiscretePotentialOperationsTest {
 		assertEquals(variablesAfterReorder.size(), variablesBeforeReorder.size());
 		assertEquals( // Test Collections.reverse
 				variablesAfterReorder.get(0), variablesBeforeReorder.get(2));
-		TablePotential tablePotentialAfterReorder = DiscretePotentialOperations
-				.reorder(commonVariables.tpCAB, variablesAfterReorder);
+		TablePotential tablePotentialAfterReorder = (TablePotential) commonVariables.tpCAB.reorder(variablesAfterReorder);
 		// Test variables:
 		// 1. Test numVariables
 		List<Variable> variablesReorderedPotential = tablePotentialAfterReorder.getVariables();
@@ -641,8 +640,7 @@ public class DiscretePotentialOperationsTest {
 		Collections.reverse(variablesAfterReorder); // reorder the variables
 		variablesAfterReorder.add(0, variablesBeforeReorder.get(0));
 		// Ordination: (0, 1, 2) -> (0, 2, 1)
-		TablePotential tablePotentialAfterReorder = DiscretePotentialOperations
-				.reorder(commonVariables.tpCAB, variablesAfterReorder);
+		TablePotential tablePotentialAfterReorder = (TablePotential) commonVariables.tpCAB.reorder(variablesAfterReorder);
 		// Test variables:
 		// 1. Test numVariables
 		List<Variable> variablesReorderedPotential = tablePotentialAfterReorder.getVariables();

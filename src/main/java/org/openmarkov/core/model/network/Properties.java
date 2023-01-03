@@ -27,7 +27,8 @@ public class Properties {
 	// Methods
 
 	/**
-	 * @return The object stored with <code>key</code> or <code>null</code> if
+	 * @param key Key
+	 * @return The object stored with {@code key} or {@code null} if
 	 * it does not exists.
 	 */
 	public Object get(String key) {
@@ -35,15 +36,16 @@ public class Properties {
 	}
 
 	/**
-	 * @param key   <code>String</code>
-	 * @param value <code>Object</code>
+	 * @param key   {@code String}
+	 * @param value {@code Object}
 	 */
 	public void put(String key, String value) {
 		information.put(key, value);
 	}
 
 	/**
-	 * @return The object stored with <code>key</code> or <code>null</code> if
+	 * @param key Key to be removed
+	 * @return The object stored with {@code key} or {@code null} if
 	 * it does not exists.
 	 */
 	public Object remove(String key) {
@@ -55,7 +57,7 @@ public class Properties {
 	}
 
 	/**
-	 * @return The set of keys. <code>Set</code> of <code>String</code>
+	 * @return The set of keys. {@code Set} of {@code String}
 	 */
 	public Set<String> getKeySet() {
 		return information.keySet();

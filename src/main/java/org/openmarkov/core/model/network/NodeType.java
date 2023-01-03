@@ -39,8 +39,8 @@ public enum NodeType implements Serializable {
 	private String name;
 
 	/**
-	 * @param type <code>type</code> An integer: CHANCE(0), DECISION(1), ...
-	 * @argCondition value >= 0 and value < NodeType.values().length
+	 * @param type {@code type} An integer: CHANCE(0), DECISION(1), ...
+	 * Condition: value &gt;= than 0 and value &lt; NodeType.values().length
 	 */
 	NodeType(int type, String name) {
 		this.type = type;
@@ -48,15 +48,15 @@ public enum NodeType implements Serializable {
 	}
 
 	/**
-	 * @param nodeType
-	 * @return nodeType.value. <code>int</code>
+	 * @param nodeType Node type
+	 * @return nodeType.value. {@code int}
 	 */
 	public static int type(NodeType nodeType) {
 		return nodeType.type();
 	}
 
 	/**
-	 * @return <code>type</code>
+	 * @return {@code type}
 	 */
 	public int type() {
 		return type;

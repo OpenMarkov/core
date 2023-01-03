@@ -61,7 +61,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 	/**
 	 * Constructor for OOPNet.
 	 *
-	 * @param networkType
+	 * @param networkType Network type
 	 */
 	public OOPNet(NetworkType networkType) {
 		super(networkType);
@@ -70,7 +70,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 	/**
 	 * Constructor for OOPNet.
 	 *
-	 * @param probNet
+	 * @param probNet Network
 	 */
 	public OOPNet(ProbNet probNet) {
 		super();
@@ -130,7 +130,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 
 		// Copy additionalProperties
 		Set<String> keys = probNet.additionalProperties.keySet();
-		HashMap<String, String> copyProperties = new HashMap<>();
+		LinkedHashMap<String, String> copyProperties = new LinkedHashMap<>();
 		for (String key : keys) {
 			copyProperties.put(key, probNet.additionalProperties.get(key));
 		}
@@ -139,8 +139,8 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 	}
 
 	/**
-	 * @param instance
-	 * @throws InstanceAlreadyExistsException
+	 * @param instance Instance
+	 * @throws InstanceAlreadyExistsException InstanceAlreadyExistsException
 	 */
 	public void addInstance(Instance instance) throws InstanceAlreadyExistsException {
 		if (instances.containsKey(instance.getName())) {
@@ -161,7 +161,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 	/**
 	 * Add an instance link
 	 *
-	 * @param link
+	 * @param link Reference link
 	 */
 	public void addReferenceLink(ReferenceLink link) {
 		referenceLinks.add(link);
@@ -177,20 +177,20 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 	/**
 	 * Removes an instance Link
 	 *
-	 * @param link
+	 * @param link Reference link
 	 */
 	public void removeReferenceLink(ReferenceLink link) {
 		referenceLinks.remove(link);
 	}
 
 	/**
-	 * Returns the equivalent node in <code>sourceInstance</code> to the
-	 * <code>Node</code> in <code>destinationInstance</code>
+	 * Returns the equivalent node in {@code sourceInstance} to the
+	 * {@code Node} in {@code destinationInstance}
 	 *
-	 * @param sourceInstance
-	 * @param destInstance
-	 * @param node
-	 * @return
+	 * @param sourceInstance Source instance
+	 * @param destInstance destination instance
+	 * @param node Node
+	 * @return The equivalent node in source instance to the node in the destination instance
 	 */
 	private Node getEquivalentNode(Instance sourceInstance, Instance destInstance, Node node) {
 		Node equivalentNode = null;
@@ -211,7 +211,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 	/**
 	 * Unrolls instances and returns a plain probabilistic network
 	 *
-	 * @return
+	 * @return Plain probabilistic network
 	 */
 	public ProbNet getPlainProbNet() {
 		ProbNet probNet = copy();
@@ -315,9 +315,9 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 	}
 
 	/**
-	 * @param probNet
-	 * @param formalNode
-	 * @param paramNode
+	 * @param probNet Network
+	 * @param formalNode Formal node
+	 * @param paramNode Param node
 	 */
 	private void replaceNode(ProbNet probNet, Node formalNode, Node paramNode) {
 		// Update potentials

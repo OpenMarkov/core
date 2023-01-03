@@ -64,6 +64,9 @@ public class PotentialManager {
 	 * Returns a potential by name.
 	 *
 	 * @param name the potential's name.
+	 * @param variables List of variables
+	 * @param role Potential role
+	 * @param cycleLength Cycle lenghts
 	 * @return a new Potential instance given the parameters.
 	 */
 	public final Potential getByName(String name, List<Variable> variables, PotentialRole role,
@@ -99,10 +102,10 @@ public class PotentialManager {
 	/**
 	 * For utility potentials
 	 *
-	 * @param name
-	 * @param variables
-	 * @param utilityVariable
-	 * @return
+	 * @param name Name
+	 * @param utilityVariable Variable
+	 * @param variables List of variables
+	 * @return a potential by name
 	 */
 	public final Potential getByName(String name, Variable utilityVariable, List<Variable> variables) {
 		Potential instance = null;
@@ -133,19 +136,21 @@ public class PotentialManager {
 
 	/**
 	 * Returns all potentials' names applicable to the given variable list and potential role.
-	 *
+	 * @param node Node
 	 * @return a list of potentials' names.
 	 */
 	public final List<String> getFilteredPotentials(Node node) {
 		List<String> filteredPotentials = new ArrayList<>();
 
+		Potential potential = node.getPotentials().get(0);
+		List<Variable> variables = potential.getVariables();
+		PotentialRole potentialRole = potential.getPotentialRole();
 		for (String potentialName : potentials.keySet()) {
 			Method validateMethod = null;
 			try {
-				validateMethod = potentials.get(potentialName)
-						.getMethod("validate", Node.class, List.class, PotentialRole.class);
-				if ((Boolean) validateMethod.invoke(null, node, node.getPotentials().get(0).getVariables(),
-						node.getPotentials().get(0).getPotentialRole())) {
+				Class<? extends Potential> potentialClass = potentials.get(potentialName);
+				validateMethod = potentialClass.getMethod("validate", Node.class, List.class, PotentialRole.class);
+				if ((Boolean) validateMethod.invoke(null, node, variables, potentialRole)) {
 					filteredPotentials.add(potentialName);
 				}
 			} catch (Exception e) {
@@ -158,7 +163,7 @@ public class PotentialManager {
 	/**
 	 * Returns the family of the given potential type
 	 *
-	 * @param name
+	 * @param name Name of the potentials family
 	 * @return the family of the given potential type
 	 */
 	public String getPotentialsFamily(String name) {

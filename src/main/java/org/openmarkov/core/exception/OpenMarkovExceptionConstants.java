@@ -30,4 +30,9 @@ public class OpenMarkovExceptionConstants {
 	 */
 	public static final String InvalidVariableNameExistingException = "InvalidVariableNameExistingException";
 	public static final String InvalidVariableNameExistingTimeSliceException = "InvalidVariableNameExistingTimeSliceException";
+	/**
+	 * NonProjectableUniformPotential
+	 */
+	public static final String NonProjectablePotentialException_UniformNumeric = "NonProjectablePotentialException.UniformNumeric";
+
 }

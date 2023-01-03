@@ -38,6 +38,8 @@ public class TemporalNetOperations {
 	 * new nodes, links, and potentials to make it a compact net.
 	 * If some of the slices of the concise net misses a node present in previous slices,
 	 * adds the node to that slice
+	 * @param probNet Network
+	 * @return Compact network
 	 */
 	public static List<List<Node>> compactNetwork(ProbNet probNet) {
 		List<List<Node>> classifiedNodes = classifyNodesbySlices(probNet, probNet.getVariables());
@@ -109,7 +111,7 @@ public class TemporalNetOperations {
 	 * Assigns nodes to slices in a collection of slices. Each slice is a
 	 * collection of nodes.
 	 *
-	 * @return <code>List</code> of <code>List</code> of <code>Node</code>
+	 * @return {@code List} of {@code List} of {@code Node}
 	 */
 	private static List<List<Node>> classifyNodesbySlices(ProbNet probNet, List<Variable> variables) {
 		List<List<Node>> classifiedNodes;
@@ -146,7 +148,7 @@ public class TemporalNetOperations {
 	}
 
 	/**
-	 * @precondition extendedNet in this class must be a compact net
+	 * Condition: extendedNet in this class must be a compact net
 	 */
 	private static void generateNextSlice(ProbNet probNet, List<List<Node>> classifiedNodes) {
 		List<Node> lastSliceNodes = classifiedNodes.get(classifiedNodes.size() - 1);
@@ -179,7 +181,7 @@ public class TemporalNetOperations {
 	 * TODO document: oldNode is a node in the last slice of the compact net
 	 * TODO We are assuming that there is only one potential per node. Revise
 	 *
-	 * @throws NodeNotFoundException
+	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
 	private static void expandPotentialAndLinks(ProbNet probNet, Node oldNode, Node newNode, int timeDifference)
 			throws NodeNotFoundException {
@@ -310,16 +312,14 @@ public class TemporalNetOperations {
 						List<Potential> previousCyclePotentials = previousCycleNode.getPotentials();
 						List<Potential> newPotentials = new ArrayList<>();
 						for (int i = 0; i < utilityNode.getNumPotentials(); ++i) {
-// CMI
-// Supposing potentials of utility nodes are "tables";
-// currently (01/01/2019) "tables" in these nodes are coded using ExactDistrPotential but this will be changed soon
-// TODO update this method (applyTransitionTime) when the new TablePotential is finished
 
+//
+//12/09/2022 - issue #479 ; cast to ExactDistrPotential but not every utility potential is ExactDistrPotential
 //							TablePotential currentCyclePotential = (TablePotential) currentCyclePotentials.get(i);
 //							TablePotential previousCyclePotential = (TablePotential) previousCyclePotentials.get(i);
-							TablePotential currentCyclePotential = (TablePotential) ((ExactDistrPotential)currentCyclePotentials.get(i)).getTablePotential();
-							TablePotential previousCyclePotential = (TablePotential) ((ExactDistrPotential)previousCyclePotentials.get(i)).getTablePotential();
-// CMF
+							TablePotential currentCyclePotential =  ((ExactDistrPotential)currentCyclePotentials.get(i)).getTablePotential();
+							TablePotential previousCyclePotential = ((ExactDistrPotential)previousCyclePotentials.get(i)).getTablePotential();
+
 							TablePotential sumPotential = DiscretePotentialOperations
 									.sum(Arrays.asList(currentCyclePotential, previousCyclePotential));
 							for (int j = 0; j < sumPotential.values.length; ++j)

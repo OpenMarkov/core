@@ -41,7 +41,7 @@ public class SharedDataMultiplyAndMarginalize extends SharedDataMultiply {
 	/**
 	 * Does some previous not parallel operations
 	 *
-	 * @throws Exception
+	 * @throws Exception Exception
 	 */
 	public void initializeMultiplyAndMarginalize() throws Exception {
 		super.initialize();

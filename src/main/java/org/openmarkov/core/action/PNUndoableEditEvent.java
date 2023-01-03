@@ -13,9 +13,13 @@ import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoableEdit;
 
 @SuppressWarnings("serial")
-/** The different between <code>PNUndoableEditEvent</code> and 
- *  <code>UndoableEditEvent</code> is that a <code>PNUndoableEditEvent</code>
- *  use a <code>ProbNet</code>. */ public class PNUndoableEditEvent extends UndoableEditEvent {
+
+/*
+  The different between {@code PNUndoableEditEvent} and
+  {@code UndoableEditEvent} is that a <code>PNUndoableEditEvent</code>
+  use a {@code ProbNet}.
+ */
+public class PNUndoableEditEvent extends UndoableEditEvent {
 
 	// Attributes
 	private ProbNet probNet;
@@ -23,9 +27,9 @@ import javax.swing.undo.UndoableEdit;
 	// Constructor
 
 	/**
-	 * @param source  The <code>Object</code> that originated the event.
-	 * @param edit    An <code>UndoableEdit</code> object.
-	 * @param probNet The <code>ProbNet</code> on witch the event will operate
+	 * @param source  The {@code Object} that originated the event.
+	 * @param edit    An {@code UndoableEdit} object.
+	 * @param probNet The {@code ProbNet} on witch the event will operate
 	 */
 	public PNUndoableEditEvent(Object source, UndoableEdit edit, ProbNet probNet) {
 		super(source, edit);
@@ -35,7 +39,7 @@ import javax.swing.undo.UndoableEdit;
 	// Methods
 
 	/**
-	 * @return probNet. <code>ProbNet</code>
+	 * @return probNet. {@code ProbNet}
 	 */
 	public ProbNet getProbNet() {
 		return probNet;

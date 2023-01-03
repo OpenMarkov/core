@@ -9,7 +9,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 public class Tools {
 	/**
-	 * @param aa
+	 * @param aa Array of real numbers
 	 * @return The sum of an array of real numbers
 	 */
 	public static double sum(double[] aa) {
@@ -19,9 +19,21 @@ public class Tools {
 		}
 		return sum;
 	}
+	
+	/**
+	 * @param aa Array of real numbers
+	 * @return The sum of an array of real numbers
+	 */
+	public static int sum(int[] aa) {
+		int sum = 0;
+		for (int i = 0; i < aa.length; i++) {
+			sum = sum + aa[i];
+		}
+		return sum;
+	}
 
 	/**
-	 * @param numbers
+	 * @param numbers Numbers
 	 * @return The product of an array of real numbers
 	 */
 	public static double multiply(double[] numbers) {
@@ -81,7 +93,7 @@ public class Tools {
 	}
 
 	/**
-	 * @param x
+	 * @param x Array of real numbers
 	 * @return An estimation of the mean of an array of real numbers sampled
 	 */
 	public static double meanSample(double[] x) {
@@ -92,7 +104,7 @@ public class Tools {
 	}
 
 	/**
-	 * @param x
+	 * @param x Array of real numbers
 	 * @return An estimation of the variance of an array of real numbers
 	 * sampled. It uses the equation of the quasi-variance
 	 */

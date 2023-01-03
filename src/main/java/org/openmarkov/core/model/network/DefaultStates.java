@@ -15,7 +15,7 @@ import java.util.ArrayList;
  *
  * @author jmendoza
  * @version 1.1 jlgozalo - fix javadoc and initial values for fields
- * @version  1.2 cyago - 31/01/2019 - added event nodes
+ * @version 1.2 cmyago - 31/01/2019 - added event nodes
  */
 public class DefaultStates {
 
@@ -72,7 +72,7 @@ public class DefaultStates {
 
 	/**
 	 * This method returns an array containing the default states of an element
-	 * of the list. If the index is out of range (index < 0 || index > list
+	 * of the list. If the index is out of range (index &#60; 0 || index &#62; list
 	 * size) the null is returned.
 	 *
 	 * @param index element of the list of default states.

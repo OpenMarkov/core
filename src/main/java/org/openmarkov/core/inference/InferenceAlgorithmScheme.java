@@ -26,7 +26,7 @@ public abstract class InferenceAlgorithmScheme {
 	public EvidenceCase evidence;
 	public List<Variable> variablesToEliminate;
 	/**
-	 * This is a copy of the <code>ProbNet</code> received.
+	 * This is a copy of the {@code ProbNet} received.
 	 */
 	protected ProbNet probNet;
 	/**
@@ -38,7 +38,7 @@ public abstract class InferenceAlgorithmScheme {
 	 **/
 	protected HeuristicFactory heuristicFactory;
 
-	/**
+	/*
 	 * Policies set by the user. The optimal policy would only be calculated for the decisions
 	 * without imposed policies.
 	 * Each policy is stochastic, which implies it is a probability potential whose domain
@@ -65,7 +65,6 @@ public abstract class InferenceAlgorithmScheme {
 
 	/**
 	 * @param probNet The network used in the inference
-	 * @throws NotEvaluableNetworkException
 	 */
 	public InferenceAlgorithmScheme(ProbNet probNet) {
 		this.probNet = probNet.copy();
@@ -81,7 +80,7 @@ public abstract class InferenceAlgorithmScheme {
 	}
 
 	/**
-	 * @param postResolutionEvidence
+	 * @param postResolutionEvidence Post-resolution evidence
 	 */
 	public void setPostResolutionEvidence(EvidenceCase postResolutionEvidence) {
 		this.postResolutionEvidence = postResolutionEvidence;

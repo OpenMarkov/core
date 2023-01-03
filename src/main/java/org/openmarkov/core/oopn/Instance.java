@@ -25,10 +25,10 @@ public class Instance {
 	/**
 	 * Constructor
 	 *
-	 * @param name
-	 * @param classNet
-	 * @param instanceNodes
-	 * @param isInput
+	 * @param name Name
+	 * @param classNet Network
+	 * @param instanceNodes List of instance nodes
+	 * @param isInput Is input?
 	 */
 	public Instance(String name, ProbNet classNet, List<Node> instanceNodes, boolean isInput) {
 		super();
@@ -66,9 +66,9 @@ public class Instance {
 	/**
 	 * Constructor
 	 *
-	 * @param name
-	 * @param classNet
-	 * @param instanceNodes
+	 * @param name Name
+	 * @param classNet Network
+	 * @param instanceNodes List of instance nodes
 	 */
 	public Instance(String name, ProbNet classNet, List<Node> instanceNodes) {
 		this(name, classNet, instanceNodes, false);
@@ -97,6 +97,7 @@ public class Instance {
 
 	/**
 	 * sets the instance name
+	 * @param name New name
 	 */
 	public void setName(String name) {
 		this.name = name;

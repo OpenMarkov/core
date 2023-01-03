@@ -8,10 +8,14 @@
 package org.openmarkov.core.exception;
 
 /**
- * Thrown when the <code>Potential</code> cannot be projected into a set of
- * <code>TablePotential</code>s given the evidence supplied.
+ * Thrown when the {@code Potential} cannot be projected into a set of
+ * {@code TablePotential}s given the evidence supplied.
  */
 @SuppressWarnings("serial") public class NonProjectablePotentialException extends OpenMarkovException {
+
+	public NonProjectablePotentialException(String token, String... attributes) {
+		super(token, attributes);
+	}
 
 	public NonProjectablePotentialException(String string) {
 		super(string);

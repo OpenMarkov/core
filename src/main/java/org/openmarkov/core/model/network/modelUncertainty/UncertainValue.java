@@ -10,7 +10,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import java.util.Random;
 
 /**
- * An <code>UncertainValue</code> is a value of a table of potentials which is
+ * An {@code UncertainValue} is a value of a table of potentials which is
  * used for sensitivity analysis.
  *
  * @author Manuel Luque

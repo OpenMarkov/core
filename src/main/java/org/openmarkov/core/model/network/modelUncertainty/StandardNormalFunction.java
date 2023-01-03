@@ -60,8 +60,8 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF 
 	 * approximation for the inverse of the cumulative distribution function of
 	 * the standard normal.
 	 *
-	 * @param beta
-	 * @return
+	 * @param beta beta
+	 * @return Inverse cumulative distribution function of the standard normal
 	 */
 	@Override public double getInverseCumulativeDistributionFunction(double beta) {
 		double inverse;

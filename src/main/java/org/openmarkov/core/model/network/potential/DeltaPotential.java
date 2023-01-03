@@ -77,9 +77,10 @@ import java.util.List;
 	 * Returns whether this type of Potential is suitable for the list of
 	 * variables and the potential role given.
 	 *
-	 * @param node      . <code>Node</code>
-	 * @param variables . <code>List</code> of <code>Variable</code>.
-	 * @param role      . <code>PotentialRole</code>.
+	 * @param node      . {@code Node}
+	 * @param variables . {@code List} of {@code Variable}.
+	 * @param role      . {@code PotentialRole}.
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		return (
@@ -177,8 +178,8 @@ import java.util.List;
 	}
 
 	@Override public void scalePotential(double scale) throws UnsupportedOperationException {
-		// this.numericValue *= scale;
-		throw new UnsupportedOperationException();
+		this.numericValue *= scale;
+//		throw new UnsupportedOperationException();
 	}
 
 	@Override public Potential deepCopy(ProbNet copyNet) {
@@ -193,6 +194,18 @@ import java.util.List;
 
 		return potential;
 
+	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

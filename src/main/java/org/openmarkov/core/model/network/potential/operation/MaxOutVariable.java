@@ -29,9 +29,9 @@ public class MaxOutVariable {
 
 	/**
 	 * Adds the additive potentials in order to have only one utility, then uses the next constructor.
-	 * @param decisionVariable
-	 * @param probability
-	 * @param inputAdditivePotentials
+	 * @param decisionVariable Decision variable
+	 * @param probability Table potential
+	 * @param inputAdditivePotentials Input additive potentials
 	 */
 	public MaxOutVariable(Variable decisionVariable, TablePotential probability, List<TablePotential> inputAdditivePotentials) {
 		this(decisionVariable, probability, DiscretePotentialOperations.sum(inputAdditivePotentials));
@@ -39,9 +39,9 @@ public class MaxOutVariable {
 
 	/**
 	 * Calculates the new utility and the policy
-	 * @param decisionVariable
-	 * @param probability
-	 * @param inputAdditivePotential
+	 * @param decisionVariable Decision variable
+	 * @param probability Table potential
+	 * @param inputAdditivePotential Input additive potential
 	 */
 	public MaxOutVariable(Variable decisionVariable, TablePotential probability, TablePotential inputAdditivePotential) {
 		TablePotential additivePotentialToMaximize = DiscretePotentialOperations.multiply(probability, inputAdditivePotential);
@@ -152,8 +152,8 @@ public class MaxOutVariable {
 
 	/**
 	 * It is true when there is at least one strategy tree
-	 * @param outputUtilityPotential
-	 * @return boolean
+	 * @param outputUtilityPotential Output utility potential
+	 * @return True if there are interventions in the output utility potential
 	 */
 	private static boolean thereAreInterventionsInOutputUtilityPotential(TablePotential outputUtilityPotential) {
 		boolean thereAreInterventions = false;
@@ -177,13 +177,13 @@ public class MaxOutVariable {
 	 * <li>if there are interventions or the utility is different than 0 in the sum of the utility potentials of
 	 * <code>potentials</code>, that sum of utility potentials.
 	 * <li>a policy potential.
-	 *
+	 * </ol>
 	 * OJO: Había otro método maxOutVariable que llamaba a éste, y con Javadoc:
 	 *
 	 * @param decisionVariable <code>Variable</code>
 	 * @param potentials <code>List</code> of <code>TablePotential</code>
 	 * @return A <code>List</code> with two <code>TablePotential</code>, marginal probability and new utility in this order.
-	 * </ol>
+	 *
 	 */
 	/*public MaxOutVariable(Variable decisionVariable, Collection<TablePotential> potentials) {
 		// Get probability and utility potentials

@@ -11,15 +11,15 @@ package org.openmarkov.core.exception;
 	// Constructor
 
 	/**
-	 * @param message
+	 * @param message Message
 	 */
 	public UnexpectedInferenceException(String message) {
 		super(message);
 	}
 
 	/**
-	 * @param message
-	 * @param cause
+	 * @param message Message
+	 * @param cause Cause
 	 */
 	public UnexpectedInferenceException(String message, Throwable cause) {
 		super(message, cause);

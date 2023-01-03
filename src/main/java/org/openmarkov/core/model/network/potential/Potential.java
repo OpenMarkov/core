@@ -31,7 +31,7 @@ public abstract class Potential {
 	/**
 	 * This object contains all the information that the parser reads from disk
 	 * that does not have a direct connection with the attributes stored in the
-	 * <code>Potential</code> object.
+	 * {@code Potential} object.
 	 */
 	public Map<String, Object> properties;
 	//    /**
@@ -39,28 +39,22 @@ public abstract class Potential {
 	//     * this potential.
 	//     */
 	//    protected Variable             utilityVariable;
-	/**
-	 * <code>List</code> of <code>Variable</code>s.
-	 *
-	 * @frozen
-	 */
+
 	protected List<Variable> variables;
 	/**
 	 * Decision criterion. It is used only during inference. In edition,
 	 * the node/variable has a criterion, but the potential does not.
 	 */
 	protected Criterion criterion;
-	/**
-	 * @frozen
-	 */
+
 	protected PotentialRole role;
 	protected String comment = "";
 
 	// Constructor
 
 	/**
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>.
-	 * @param role      <code>PotentialRole</code>
+	 * @param variables {@code ArrayList} of {@code Variable}.
+	 * @param role      {@code PotentialRole}
 	 */
 	public Potential(List<Variable> variables, PotentialRole role) {
 		this.variables = variables != null ? new ArrayList<>(variables) : new ArrayList<>();
@@ -82,7 +76,7 @@ public abstract class Potential {
 	 * TODO - Remove this constructor, replace with a copy method
 	 * Copy constructor for potential
 	 *
-	 * @param potential
+	 * @param potential Potential
 	 */
 	public Potential(Potential potential) {
 		this(potential.getVariables(), potential.getPotentialRole());
@@ -95,9 +89,10 @@ public abstract class Potential {
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role.
 	 *
-	 * @param node      <code>Node</code>
-	 * @param variables <code>ArrayList</code> of <code>Variable</code>.
-	 * @param role      <code>PotentialRole</code>.
+	 * @param node      {@code Node}
+	 * @param variables {@code ArrayList} of {@code Variable}.
+	 * @param role      {@code PotentialRole}.
+	 * @return if an instance of a certain Potential type makes sense given the variables and the potential role.
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		// Default implementation: always return true
@@ -125,11 +120,11 @@ public abstract class Potential {
 	}
 
 	/**
-	 * @param evidenceCase <code>EvidenceCase</code>
+	 * @param evidenceCase {@code EvidenceCase}
 	 * @return The conditional probability table of this potential given the
 	 * evidence
-	 * @throws WrongCriterionException
-	 * @throws NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public TablePotential getCPT(EvidenceCase evidenceCase)
 			throws NonProjectablePotentialException, WrongCriterionException {
@@ -147,9 +142,9 @@ public abstract class Potential {
 	/**
 	 * The conditional probability table given by this potential
 	 *
-	 * @return <code>TablePotential</code>
-	 * @throws NonProjectablePotentialException
-	 * @throws WrongCriterionException
+	 * @return {@code TablePotential}
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	public TablePotential getCPT() throws NonProjectablePotentialException, WrongCriterionException {
 		return getCPT(new EvidenceCase());
@@ -159,7 +154,7 @@ public abstract class Potential {
 	 * Checks if all the variables belongs to the type received. The utility
 	 * variable is not considered.
 	 *
-	 * @return <code>boolean</code>
+	 * @return {@code boolean}
 	 */
 	protected boolean noNumericVariables() {
 		if (variables != null) {
@@ -173,8 +168,7 @@ public abstract class Potential {
 	}
 
 	/**
-	 * @return A <code>List</code> of <code>Variable</code>s
-	 * @consultation
+	 * @return A {@code List} of {@code Variable}s
 	 */
 	public List<Variable> getVariables() {
 		return new ArrayList<>(variables);
@@ -185,8 +179,8 @@ public abstract class Potential {
 	}
 
 	/**
-	 * @return The variable in the place <code>position</code>
-	 * @consultation
+	 * @param position Position
+	 * @return The variable in the place {@code position}
 	 */
 	public Variable getVariable(int position) {
 		return variables.get(position);
@@ -213,19 +207,20 @@ public abstract class Potential {
 	}
 
 	/**
-	 * @param variable <code>Variable</code>
-	 * @return <code>true</code> if contains the received <code>Variable</code>.
+	 * @param variable {@code Variable}
+	 * @return {@code true} if contains the received {@code Variable}.
 	 */
 	public boolean contains(Variable variable) {
 		return variables.contains(variable);
 	}
 
 	/**
-	 * @param evidenceCase               <code>EvidenceCase</code>
-	 * @param inferenceOptions
-	 * @param alreadyProjectedPotentials <code>List</code> of already projected potentials
-	 * @throws WrongCriterionException
-	 * @throws NoFindingException
+	 * @param evidenceCase               {@code EvidenceCase}
+	 * @param inferenceOptions Inference options
+	 * @param alreadyProjectedPotentials {@code List} of already projected potentials
+	 * @throws WrongCriterionException WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @return List of potentials resulting from the projection
 	 */
 	public abstract List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			List<TablePotential> alreadyProjectedPotentials)
@@ -248,7 +243,7 @@ public abstract class Potential {
 	}
 
 	/**
-	 * @return isAdditive <code>boolean</code>
+	 * @return isAdditive {@code boolean}
 	 * Whether the potential is additive in the inference. Only the potentials that are in a Markov network
 	 * and were associated to a utility node/variable in the original network have a criterion and we must maximize them.
 	 * This characterization of "utility potentials" is relevant only during inference.
@@ -258,7 +253,7 @@ public abstract class Potential {
 	}
 
 	/**
-	 * @return number of variables: <code>int</code>
+	 * @return number of variables: {@code int}
 	 */
 	public int getNumVariables() {
 		return variables.size();
@@ -269,14 +264,14 @@ public abstract class Potential {
 	}
 
 	/**
-	 * Generates new <code>Finding</code>s generated by an
-	 * <code>EvidenceCase</code>. In principle this method does not generate any
+	 * Generates new {@code Finding}s generated by an
+	 * {@code EvidenceCase}. In principle this method does not generate any
 	 * new finding, but it is overridden in some of its subclasses.
 	 *
-	 * @param evidenceCase <code>EvidenceCase</code>
-	 * @return <code>Collection</code> of <code>Finding</code>s
-	 * @throws IncompatibleEvidenceException
-	 * @throws WrongCriterionException
+	 * @param evidenceCase {@code EvidenceCase}
+	 * @return {@code Collection} of {@code Finding}s
+	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
+	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
 			throws IncompatibleEvidenceException, WrongCriterionException {
@@ -284,7 +279,7 @@ public abstract class Potential {
 	}
 
 	/**
-	 * @return role. <code>PotentialRole</code>
+	 * @return role. {@code PotentialRole}
 	 */
 	public PotentialRole getPotentialRole() {
 		return role;
@@ -295,35 +290,34 @@ public abstract class Potential {
 	 * problems with legacy code in DiscretePotentialOperations class and it
 	 * does not be used except in very special cases.
 	 *
-	 * @param role <code>PotentialRole</code>
+	 * @param role {@code PotentialRole}
 	 */
 	public void setPotentialRole(PotentialRole role) {
 		this.role = role;
 	}
 
 	/**
-	 * @return comment. <code>String</code>
+	 * @return comment. {@code String}
 	 */
 	public String getComment() {
 		return comment;
 	}
 
 	/**
-	 * @param comment <code>String</code>
+	 * @param comment {@code String}
 	 */
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
 
 	/**
-	 * Shifts the potential in time as indicated by <code>timeDifference</code>.<p>
+	 * Shifts the potential in time as indicated by {@code timeDifference}.<p>
 	 * Subclasses of Potential must override this method.
 	 *
-	 * @param timeDifference <code>int</code>
+	 * @param timeDifference {@code int}
 	 * @param probNet        This parameter is necessary because the shifted variables
-	 *                       are taken from the network. <code>ProbNet</code>
-	 * @return <code>Potential</code>
-	 * @throws NodeNotFoundException
+	 *                       are taken from the network. {@code ProbNet}
+	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
 	public void shift(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
 		setVariables(getShiftedVariables(probNet, timeDifference));
@@ -332,9 +326,10 @@ public abstract class Potential {
 	/**
 	 * Creates links between the first variable of a potential and the rest of the variables.
 	 *
-	 * @argCondition The role of the potential must be utility of conditional
+	 * Condition: The role of the potential must be utility of conditional
 	 * probability
-	 * @argCondition The network must contain all the variables of the potential
+	 * Condition: The network must contain all the variables of the potential
+	 * @param probNet Network
 	 */
 	public void createDirectedLinks(ProbNet probNet) {
 		int numVariables = variables.size();
@@ -354,9 +349,12 @@ public abstract class Potential {
 	/**
 	 * Returns a list with the same variables as this potential, including the
 	 * utility variable but shifted in time as indicated by timeDifference
-	 *
-	 * @throws NodeNotFoundException
-	 * @argCondition The network must contain the shifted variables.
+	 * @param probNet Network
+	 * @param timeDifference Time difference
+	 * @throws NodeNotFoundException NodeNotFoundException
+	 * @return a list with the same variables as this potential, including the
+	 * 	 utility variable but shifted in time as indicated by timeDifference
+	 * Condition: The network must contain the shifted variables.
 	 */
 	public List<Variable> getShiftedVariables(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
 		List<Variable> shiftedVariables = new ArrayList<Variable>(variables.size());
@@ -374,7 +372,7 @@ public abstract class Potential {
 	}
 
 	/**
-	 * Overrides <code>toString</code> method. Mainly for test purposes
+	 * Overrides {@code toString} method. Mainly for test purposes
 	 */
 	public String toString() {
 		return toShortString();
@@ -441,7 +439,7 @@ public abstract class Potential {
 	}
 
 	/**
-	 * @returns a sampled potential. By default, itself, i.e., not sampled.
+	 * @return A sampled potential. By default, itself, i.e., not sampled.
 	 * TODO This method must be commented further
 	 */
 	public Potential sample() {
@@ -461,9 +459,9 @@ public abstract class Potential {
 	 * When this potential represents a conditional probability, this method returns a value for the first variable,
 	 * sampled with the probability distribution. If this variable is finite-states, it returns the index of
 	 * the sampled state. If the variable is numeric, it returns the value sampled.
-	 * @param randomGenerator
-	 * @param sampledParents
-	 * @return
+	 * @param randomGenerator Random generator
+	 * @param sampledParents Sampled parents
+	 * @return a value for the first variable, sampled with the probability distribution.
 	 */
 	// TODO replace int with double
 	// TODO make this method abstract and implement it in all the subclasses of Potential
@@ -513,23 +511,35 @@ public abstract class Potential {
 
 	/**
 	 * Adds variable to a potential implemented in each child class
+	 * @param variable Variable
+	 * @return Uniform potential
 	 */
 	public Potential addVariable(Variable variable) {
-
+		Potential newPotential;
 		if (!variables.contains(variable)) {
-			variables.add(variable);
+			List<Variable> newVariables = new ArrayList<Variable>(variables);
+			newVariables.add(variable);
+			newPotential = new UniformPotential(newVariables, role);
+		} else {
+			newPotential = this;
 		}
-
-		Potential newPotential = new UniformPotential(variables, role);
 		return newPotential;
 	}
 
 	/**
-	 * Removes variable to a potential implemented in each child class
+	 * Creates a new uniform potential removing the received variable from the variables list of this potential.
+	 * @param variable Variable
+	 * @return Uniform potential
 	 */
 	public Potential removeVariable(Variable variable) {
-		variables.remove(variable);
-		Potential newPotential = new UniformPotential(variables, role);
+		Potential newPotential;
+		if (variables.contains(variable)) {
+			List<Variable> newVariables = new ArrayList<Variable>(variables);
+			newVariables.remove(variable);
+			newPotential = new UniformPotential(newVariables, role);
+		} else {
+			newPotential = this;
+		}
 		return newPotential;
 	}
 
@@ -560,15 +570,15 @@ public abstract class Potential {
 	/**
 	 * Multiply the potential by a scale. If the Potential is not scalable it must throw UnsupportedOperationException
 	 *
-	 * @param scale
+	 * @param scale Scale
 	 */
 	public abstract void scalePotential(double scale);
 
 	/**
 	 * Copy this potential attributes to the newPotential potential of the copyNet
 	 *
-	 * @param copyNet
-	 * @return
+	 * @param copyNet Network
+	 * @return A deep copy of the potential
 	 */
 	public Potential deepCopy(ProbNet copyNet) {
 		Potential potential = newInstance();
@@ -606,4 +616,25 @@ public abstract class Potential {
 	public void setCriterion(Criterion criterion) {
 		this.criterion = criterion;
 	}
+
+
+	/**
+	 * Copy this potential to another potential with the same variables but
+	 * with the order received in {@code newOrderOfVariables}
+	 *
+	 * @param newOrderOfVariables {@code ArrayList} of {@code Variable}
+	 * @return The {@code Potential} generated Condition:
+	 *         {@code newOrderOfVariables} are the same variables than the variables of this potential
+	 */
+	public abstract Potential reorder(List<Variable> newOrderOfVariables);
+
+	/**
+	 * Copy this potential to another potential with the same variables but
+	 * with changes in the order of states in one of the variables
+	 *
+	 * @param variable  {@code VariableList} whose order of states has changed
+	 * @param newOrder  array of {@code State}s in the new order
+	 * @return The {@code Potential} generated
+	 */
+	public abstract Potential reorder(Variable variable, State[] newOrder) ;
 }

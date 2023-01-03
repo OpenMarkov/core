@@ -9,7 +9,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
@@ -51,10 +51,10 @@ public class SystematicSampling extends Sampler {
 	private static Set<UncertainParameter> getUncertainParameters(Potential potential) {
 		Set<UncertainParameter> uncertainParams = new HashSet<>();
 
-		Hashtable<UncertainValue, SubPotentialAndPosition> uncertainValues = getUncertainValues(potential);
+		Hashtable<UncertainValue, SubPotentialAndPositionInTablePotential> uncertainValues = getUncertainValues(potential);
 
 		for (UncertainValue auxUncertainValue : uncertainValues.keySet()) {
-			SubPotentialAndPosition subPotentialAndPosition = uncertainValues.get(auxUncertainValue);
+			SubPotentialAndPositionInTablePotential subPotentialAndPosition = uncertainValues.get(auxUncertainValue);
 			uncertainParams
 					.add(new UncertainParameter(potential, auxUncertainValue, subPotentialAndPosition.getSubPotential(),
 							subPotentialAndPosition.getPosition()));
@@ -66,18 +66,19 @@ public class SystematicSampling extends Sampler {
 	 * @param potential Potential
 	 * @return A hash table with the uncertain values appearing in potential, and for each one the hash value is the subpotential where appearing
 	 */
-	private static Hashtable<UncertainValue, SubPotentialAndPosition> getUncertainValues(Potential potential) {
-		Hashtable<UncertainValue, SubPotentialAndPosition> uncertainValuesHash = new Hashtable<>();
+	private static Hashtable<UncertainValue, SubPotentialAndPositionInTablePotential> getUncertainValues(Potential potential) {
+		Hashtable<UncertainValue, SubPotentialAndPositionInTablePotential> uncertainValuesHash = new Hashtable<>();
 
-		if (potential instanceof TablePotential) {
-			TablePotential tablePotential = (TablePotential) potential;
+		boolean isExactDistrPotential = potential instanceof ExactDistrPotential;
+		if (potential instanceof TablePotential || isExactDistrPotential) {
+			TablePotential tablePotential = (TablePotential)(!isExactDistrPotential? potential:((ExactDistrPotential)potential).getTablePotential());
 			UncertainValue[] uncertainValuesPotential = tablePotential.getUncertainValues();
 			if (uncertainValuesPotential != null) {
 				int i = 0;
 				for (UncertainValue auxUncertain : uncertainValuesPotential) {
 					if (auxUncertain != null) {
 						addIfNonExisting(uncertainValuesHash, auxUncertain,
-								new SystematicSampling.SubPotentialAndPosition(tablePotential, i));
+								new SystematicSampling.SubPotentialAndPositionInTablePotential(potential, i));
 					}
 					i = i + 1;
 				}
@@ -88,7 +89,7 @@ public class SystematicSampling extends Sampler {
 					if (branch != null) {
 						Potential branchPotential = branch.getPotential();
 						if (branchPotential != null) {
-							Hashtable<UncertainValue, SubPotentialAndPosition> auxUncertainValues = getUncertainValues(
+							Hashtable<UncertainValue, SubPotentialAndPositionInTablePotential> auxUncertainValues = getUncertainValues(
 									branchPotential);
 							for (UncertainValue auxUncertain : auxUncertainValues.keySet()) {
 								addIfNonExisting(uncertainValuesHash, auxUncertain,
@@ -109,8 +110,8 @@ public class SystematicSampling extends Sampler {
 	 * @param subPotentialAndPosition Subpotential and position of the auxiliary uncertain value
 	 *                                Adds the key, value pair (auxUncertain, tablePotential) to "uncertainValuesHash" if "auxUncertain" does not belong to the key set
 	 */
-	private static void addIfNonExisting(Hashtable<UncertainValue, SubPotentialAndPosition> uncertainValuesHash,
-			UncertainValue auxUncertain, SubPotentialAndPosition subPotentialAndPosition) {
+	private static void addIfNonExisting(Hashtable<UncertainValue, SubPotentialAndPositionInTablePotential> uncertainValuesHash,
+			UncertainValue auxUncertain, SubPotentialAndPositionInTablePotential subPotentialAndPosition) {
 		if (!uncertainValuesHash.containsKey(auxUncertain)) {
 			uncertainValuesHash.put(auxUncertain, subPotentialAndPosition);
 		}
@@ -149,6 +150,11 @@ public class SystematicSampling extends Sampler {
 		}
 		return newPotential;
 	}
+	
+	private static TablePotential getPotentialTable(Potential pot) {
+		boolean isExactDistrPotential = pot instanceof ExactDistrPotential;
+		return (!isExactDistrPotential)?(TablePotential)pot:((ExactDistrPotential)pot).getTablePotential();
+	}
 
 	private static ProbNet sampleNetwork(ProbNet originalNet, List<ParameterAnalysisInformation> parameters,
 			int numIntervals) {
@@ -161,53 +167,65 @@ public class SystematicSampling extends Sampler {
 		for (ParameterAnalysisInformation parameter : parameters) {
 			uncertainParameter = parameter.uncertainParameter;
 			if (uncertainParameter != null) {
-
 				String iterationVariableName = parameter.iterationVariableName;
 				Variable iterVariable = new Variable(iterationVariableName, numPoints);
 				Potential originalPotential = uncertainParameter.potential;
 				Potential newPotential = originalPotential.copy();
-				TablePotential originalSubPotential = uncertainParameter.subPotential;
-				TablePotential newSubPotential;
-				if (originalPotential != originalSubPotential) {
-					newPotential.addVariable(iterVariable);
-					newSubPotential = (TablePotential) originalSubPotential.copy();
-				} else {
-					newSubPotential = (TablePotential) newPotential;
-				}
-				int position = getPosition(originalSubPotential, uncertainParameter.uncertainValue);
-				int posUncertainInColumn = calculatePositionUncertainInColumn(originalSubPotential, position);
-				int originalValuesLength = originalSubPotential.getTableSize();
-				TablePotential newTablePotential = addVariableReplicatingValuesAndUncertainValues(originalSubPotential,
+				Potential originalSubPotential = uncertainParameter.subPotential;
+				TablePotential originalSubPotentialTable;
+				boolean isSubPotentialExactDistrPotential = originalSubPotential instanceof ExactDistrPotential;
+				originalSubPotentialTable = getPotentialTable(originalSubPotential);
+				Potential newSubPotential;
+				boolean isOriginalPotentialATreeADD = originalPotential instanceof TreeADDPotential;
+				newSubPotential = isOriginalPotentialATreeADD? originalSubPotential.copy(): newPotential;
+				int position = getPosition(originalSubPotentialTable, uncertainParameter.uncertainValue);
+				int posUncertainInColumn = calculatePositionUncertainInColumn(originalSubPotentialTable, position, isSubPotentialExactDistrPotential);
+				int originalValuesLength = originalSubPotentialTable.getTableSize();
+				TablePotential newTablePotential = addVariableReplicatingValuesAndUncertainValues(originalSubPotentialTable,
 						iterVariable);
-				newSubPotential.setVariables(newTablePotential.getVariables());
-				newSubPotential.setValues(newTablePotential.getValues());
-				newSubPotential.setUncertainValues(newTablePotential.getUncertainValues());
+				List<Variable> newTablePotentialVariables = newTablePotential.getVariables();
+				List<Variable> newSubPotentialVariables = new ArrayList<>();
+				if (isSubPotentialExactDistrPotential) {
+					newSubPotentialVariables.add(originalSubPotential.getVariable(0));
+				}
+				newSubPotentialVariables.addAll(newTablePotentialVariables);
+				newSubPotential.setVariables(newSubPotentialVariables);
+				TablePotential newSubPotentialTable = newTablePotential;
+				if (newSubPotentialTable != newSubPotential) {
+					newSubPotentialTable.setVariables(newTablePotentialVariables);
+				}
 				double min = parameter.min;
 				double pointsDistance = (parameter.max - min) / numIntervals;
 				int numStates = numElementsInColumn(originalSubPotential);
 				int configurationBasePositionInitColumn = position - posUncertainInColumn;
 				List<UncertainValue> columnUncertainValues = getUncertainValuesChance(
-						originalSubPotential.uncertainValues, configurationBasePositionInitColumn, numStates);
+						originalSubPotentialTable.uncertainValues, configurationBasePositionInitColumn, numStates);
 				Sampler sampler = new SystematicSampling();
-				double[] sampledConfigurationValues = sampler
-						.generateSample(columnUncertainValues, numStates, functionTypes);
-
+				double[] sampledConfigurationValues = sampler.generateSample(columnUncertainValues, numStates, functionTypes);
 				double[] auxSampledConfigurationValues = new double[numStates];
 				double auxValueToAssign = min;
+				double[] newSubpotentialTableValues = newSubPotentialTable.values;
 				for (int i = 0; i < numPoints; i++) {
 					System.arraycopy(sampledConfigurationValues, 0, auxSampledConfigurationValues, 0, numStates);
-					double[] newSubpotentialValues = newSubPotential.values;
 					replaceValueAndRedistributeComplements(auxSampledConfigurationValues, sampler, posUncertainInColumn,
 							auxValueToAssign);
-					copyInArray(newSubpotentialValues, configurationBasePositionInitColumn + i * originalValuesLength,
+					copyInArray(newSubpotentialTableValues, configurationBasePositionInitColumn + i * originalValuesLength,
 							auxSampledConfigurationValues);
 					//TODO Distribute the probability mass when changing one value
 					/*newSubPotential.values[position + i * originalValuesLength] = min
 							+ i * pointsDistance;*/
 					auxValueToAssign += pointsDistance;
 				}
-				if (originalPotential != originalSubPotential) {
-					replace((TreeADDPotential) newPotential, originalSubPotential, newSubPotential);
+				TablePotential auxTablePotential;
+				auxTablePotential = getPotentialTable(newSubPotential);
+				auxTablePotential.setValues(newSubpotentialTableValues);
+				/*TODO When we sample a potential value, the uncertain values of the resulting potential is set to empty. In the future we could just set to the empty
+				the sampled parameter, and keep the rest of uncertain values parameters.
+				*/
+				auxTablePotential.setUncertainValues(new UncertainValue[newSubpotentialTableValues.length]);
+				if (isOriginalPotentialATreeADD) {
+					newPotential.addVariable(iterVariable);
+					replace((TreeADDPotential)originalPotential, (TreeADDPotential) newPotential, originalSubPotential, newSubPotential);
 				}
 				net.removePotential(originalPotential);
 				net.addPotential(newPotential);
@@ -227,9 +245,10 @@ public class SystematicSampling extends Sampler {
 		placeInArray(samples, sampler.samplerUncertainValues.indexesComplement, newComplementSamples);
 	}
 
-	private static int calculatePositionUncertainInColumn(TablePotential potential, int position) {
+	private static int calculatePositionUncertainInColumn(TablePotential potential, int position, boolean isOriginalPotentialAnExactDistrPotential) {
 		int posInCol;
-		if (potential.getVariable(0).getVariableType().equals(VariableType.NUMERIC)) {
+		//if (potential.getVariable(0).getVariableType().equals(VariableType.NUMERIC)) {
+		if (isOriginalPotentialAnExactDistrPotential) {
 			posInCol = 0;
 		} else {//Probability potential
 			Variable var = potential.getVariable(0);
@@ -265,24 +284,25 @@ public class SystematicSampling extends Sampler {
 		return SystematicSampling.sampleNetwork(originalNet, parameters, numIntervals);
 	}
 
-	private static void replace(TreeADDPotential potential, TablePotential subPotToReplace, TablePotential newSubPot) {
+	private static void replace(TreeADDPotential originalPotential, TreeADDPotential newPotential, Potential subPotToReplace, Potential newSubPot) {
 
-		List<TreeADDBranch> branches = potential.getBranches();
+		List<TreeADDBranch> branches = originalPotential.getBranches();
 		if (branches != null)
-			for (TreeADDBranch treeADDBranch : branches) {
+			for (int i=0;i<branches.size();i++) {
+				TreeADDBranch treeADDBranch = branches.get(i);
 				if (treeADDBranch != null) {
-					replace(treeADDBranch, subPotToReplace, newSubPot);
+					replace(treeADDBranch, newPotential.getBranches().get(i), subPotToReplace, newSubPot);
 				}
 			}
 	}
 
-	private static void replace(TreeADDBranch treeADDBranch, TablePotential subPotToReplace, TablePotential newSubPot) {
-		Potential potential = treeADDBranch.getPotential();
+	private static void replace(TreeADDBranch treeADDBranchOrig, TreeADDBranch treeADDBranchNew, Potential subPotToReplace, Potential newSubPot) {
+		Potential potential = treeADDBranchOrig.getPotential();
 		if (potential == subPotToReplace) {
-			treeADDBranch.setPotential(newSubPot);
+			treeADDBranchNew.setPotential(newSubPot);
 		} else {
 			if (potential != null && potential instanceof TreeADDPotential) {
-				replace((TreeADDPotential) potential, subPotToReplace, newSubPot);
+				replace((TreeADDPotential) potential, (TreeADDPotential) treeADDBranchNew.getPotential(), subPotToReplace, newSubPot);
 			}
 		}
 	}
@@ -367,17 +387,17 @@ public class SystematicSampling extends Sampler {
 		return null;
 	}
 
-	private static class SubPotentialAndPosition {
+	private static class SubPotentialAndPositionInTablePotential {
 
-		private TablePotential subPotential;
+		private Potential subPotential;
 		private int position;
 
-		public SubPotentialAndPosition(TablePotential subPotential, int position) {
+		public SubPotentialAndPositionInTablePotential(Potential subPotential, int position) {
 			this.subPotential = subPotential;
 			this.position = position;
 		}
 
-		public TablePotential getSubPotential() {
+		public Potential getSubPotential() {
 			return subPotential;
 		}
 

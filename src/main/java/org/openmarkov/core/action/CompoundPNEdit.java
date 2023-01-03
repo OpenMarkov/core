@@ -42,9 +42,9 @@ import java.util.Vector;
 	/**
 	 * Generate edits and does them
 	 *
-	 * @throws DoEditException
-	 * @throws WrongCriterionException
-	 * @throws NonProjectablePotentialException
+	 * @throws DoEditException DoEditException
+	 * @throws WrongCriterionException WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public void doEdit() throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
 		if (!generatedEdits) {
@@ -60,9 +60,9 @@ import java.util.Vector;
 	public abstract void generateEdits() throws NonProjectablePotentialException, WrongCriterionException;
 
 	/**
-	 * @return <code>Vector</code> of <code>UndoableEdit</code>s
-	 * @throws WrongCriterionException
-	 * @throws NonProjectablePotentialException
+	 * @return {@code Vector} of {@code UndoableEdit}s
+	 * @throws WrongCriterionException WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public Vector<UndoableEdit> getEdits() throws NonProjectablePotentialException, WrongCriterionException {
 		if (!generatedEdits) {

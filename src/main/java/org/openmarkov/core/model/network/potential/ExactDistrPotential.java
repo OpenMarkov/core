@@ -11,8 +11,13 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
@@ -20,6 +25,8 @@ import java.util.List;
 
 /** Wrapper for TablePotential */
 @PotentialType(name = "Exact") public class ExactDistrPotential extends Potential {
+
+
 
 	// Attributes
 	private TablePotential tablePotential;
@@ -79,12 +86,18 @@ import java.util.List;
 		return projectedPotentials;
 	}
 
+	@Override public Potential sample() {
+		ExactDistrPotential sampled = (ExactDistrPotential) copy();
+		sampled.tablePotential = (TablePotential) tablePotential.sample(true);
+		return sampled;
+	}
+
 	@Override public Potential copy() {
 		return new ExactDistrPotential(this);
 	}
 
 	@Override public boolean isUncertain() {
-		return false;
+		return this.tablePotential.isUncertain();
 	}
 
 	@Override public void scalePotential(double scale) {
@@ -172,8 +185,47 @@ import java.util.List;
 			}
 			buffer.append("}");
 		}
+		// Comment these lines to fix issue 477: Wrong text in Tree/ADD potentials
+		/*
 		buffer.append("\n Role: " + this.getPotentialRole());
-		buffer.append("\n Criterion: " + ((criterion == null) ? "null" : criterion.toString()));
+		if (criterion != null) {
+			buffer.append("\n Criterion: " + criterion.toString());
+		}*/
 		return buffer.toString();
 	}
+
+	/**
+	 * Returns if an instance of a certain Potential type makes sense given
+	 * the variables and the potential role.
+	 *
+	 * @param node      {@code Node}
+	 * @param variables {@code ArrayList} of {@code Variable}.
+	 * @param role      {@code PotentialRole}.
+	 * @return True if it is valid
+	 */
+	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+		List<Variable> parents = variables.subList(1, variables.size());
+		boolean isValid = node.getNodeType()!=NodeType.CHANCE || node.getVariable().getVariableType() == VariableType.NUMERIC || parents.stream().anyMatch(parent -> parent.getVariableType()==VariableType.NUMERIC);
+		return isValid;
+	}
+
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		TablePotential auxPotential = (TablePotential) getTablePotential().reorder(newOrderOfVariables);
+		List<Variable> newPotentialVariables = new ArrayList<>();
+		newPotentialVariables.add(getVariables().get(0));
+		newPotentialVariables.addAll(newOrderOfVariables);
+		ExactDistrPotential potential = new ExactDistrPotential(newPotentialVariables, getPotentialRole());
+		((ExactDistrPotential) potential).setTablePotential(auxPotential);
+		return potential;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		ExactDistrPotential copyPotential = (ExactDistrPotential) copy();
+		copyPotential.setTablePotential(copyPotential.tablePotential.reorder(variable, newOrder));
+		return copyPotential;
+	}
+
 }

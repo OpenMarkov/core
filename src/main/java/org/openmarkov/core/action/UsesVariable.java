@@ -10,13 +10,13 @@ package org.openmarkov.core.action;
 import org.openmarkov.core.model.network.Variable;
 
 /**
- * Declares a method <code>getVariable</code> used in edits that manages one
+ * Declares a method {@code getVariable} used in edits that manages one
  * single variable.
  */
 public interface UsesVariable {
 
 	/**
-	 * @return A <code>Variable</code>
+	 * @return A {@code Variable}
 	 */
 	Variable getVariable();
 

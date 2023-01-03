@@ -29,13 +29,16 @@ public interface ProbNetWriter {
 
 	/**
 	 * @param netName = path + network name + extension.
-	 * @param probNet <code>ProbNet</code> <code>String</code>
+	 * @param probNet {@code ProbNet} {@code String}
+	 * @throws WriterException WriterException
 	 */
 	void writeProbNet(String netName, ProbNet probNet) throws WriterException;
 
 	/**
 	 * @param netName = path + network name + extension.
-	 * @param probNet <code>ProbNet</code> <code>String</code>
+	 * @param probNet {@code ProbNet} {@code String}
+	 * @param evidence Evidence
+	 * @throws WriterException WriterException
 	 */
 	void writeProbNet(String netName, ProbNet probNet, List<EvidenceCase> evidence) throws WriterException;
 }

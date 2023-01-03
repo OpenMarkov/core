@@ -33,7 +33,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	int limit;
 
 	/**
-	 * Creates a new <code>UndoManager</code>.
+	 * Creates a new {@code UndoManager}.
 	 */
 	public UndoManagerSupport() {
 		super();
@@ -56,10 +56,10 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	}
 
 	/**
-	 * Sets the maximum number of edits this <code>UndoManager</code>
+	 * Sets the maximum number of edits this {@code UndoManager}
 	 * holds. A value less than 0 indicates the number of edits is not
 	 * limited. If edits need to be discarded to shrink the limit,
-	 * <code>die</code> will be invoked on them in the reverse
+	 * {@code die} will be invoked on them in the reverse
 	 * order they were added.  The default is 100.
 	 *
 	 * @param l the new limit
@@ -79,7 +79,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	}
 
 	/**
-	 * Empties the undo manager sending each edit a <code>die</code> message
+	 * Empties the undo manager sending each edit a {@code die} message
 	 * in the process.
 	 *
 	 * @see AbstractUndoableEdit#die
@@ -147,9 +147,9 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	/**
 	 * Removes edits in the specified range.
 	 * All edits in the given range (inclusive, and in reverse order)
-	 * will have <code>die</code> invoked on them and are removed from
+	 * will have {@code die} invoked on them and are removed from
 	 * the list of edits. This has no effect if
-	 * <code>from</code> &gt; <code>to</code>.
+	 * {@code from} &gt; {@code to}.
 	 *
 	 * @param from the minimum index to remove
 	 * @param to   the maximum index to remove
@@ -181,8 +181,8 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	}
 
 	/**
-	 * Returns the the next significant edit to be undone if <code>undo</code>
-	 * is invoked. This returns <code>null</code> if there are no edits
+	 * Returns the the next significant edit to be undone if {@code undo}
+	 * is invoked. This returns {@code null} if there are no edits
 	 * to be undone.
 	 *
 	 * @return the next significant edit to be undone
@@ -200,8 +200,8 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	}
 
 	/**
-	 * Returns the the next significant edit to be redone if <code>redo</code>
-	 * is invoked. This returns <code>null</code> if there are no edits
+	 * Returns the the next significant edit to be redone if {@code redo}
+	 * is invoked. This returns {@code null} if there are no edits
 	 * to be redone.
 	 *
 	 * @return the next significant edit to be redone
@@ -230,10 +230,10 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 
 	/**
 	 * Undoes all changes from the index of the next edit to
-	 * <code>edit</code>, updating the index of the next edit appropriately.
-	 *
+	 * {@code edit}, updating the index of the next edit appropriately.
+	 * @param edit Edit
 	 * @throws CannotUndoException if one of the edits throws
-	 *                             <code>CannotUndoException</code>
+	 *                             {@code CannotUndoException}
 	 */
 	protected void undoTo(UndoableEdit edit) throws CannotUndoException {
 		boolean done = false;
@@ -246,10 +246,10 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 
 	/**
 	 * Redoes all changes from the index of the next edit to
-	 * <code>edit</code>, updating the index of the next edit appropriately.
-	 *
+	 * {@code edit}, updating the index of the next edit appropriately.
+	 * @param edit Edit
 	 * @throws CannotRedoException if one of the edits throws
-	 *                             <code>CannotRedoException</code>
+	 *                             {@code CannotRedoException}
 	 */
 	protected void redoTo(UndoableEdit edit) throws CannotRedoException {
 		boolean done = false;
@@ -267,15 +267,15 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	}
 
 	/**
-	 * Convenience method that invokes one of <code>undo</code> or
-	 * <code>redo</code>. If any edits have been undone (the index of
+	 * Convenience method that invokes one of {@code undo} or
+	 * {@code redo}. If any edits have been undone (the index of
 	 * the next edit is less than the length of the edits list) this
-	 * invokes <code>redo</code>, otherwise it invokes <code>undo</code>.
+	 * invokes {@code redo}, otherwise it invokes {@code undo}.
 	 *
 	 * @throws CannotUndoException if one of the edits throws
-	 *                             <code>CannotUndoException</code>
+	 *                             {@code CannotUndoException}
 	 * @throws CannotRedoException if one of the edits throws
-	 *                             <code>CannotRedoException</code>
+	 *                             {@code CannotRedoException}
 	 * @see #canUndoOrRedo
 	 * @see #getUndoOrRedoPresentationName
 	 */
@@ -288,10 +288,10 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	}
 
 	/**
-	 * Returns true if it is possible to invoke <code>undo</code> or
-	 * <code>redo</code>.
+	 * Returns true if it is possible to invoke {@code undo} or
+	 * {@code redo}.
 	 *
-	 * @return true if invoking <code>canUndoOrRedo</code> is valid
+	 * @return true if invoking {@code canUndoOrRedo} is valid
 	 * @see #undoOrRedo
 	 */
 	public synchronized boolean canUndoOrRedo() {
@@ -303,14 +303,14 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	}
 
 	/**
-	 * Undoes the appropriate edits.  If <code>end</code> has been
+	 * Undoes the appropriate edits.  If {@code end} has been
 	 * invoked this calls through to the superclass, otherwise
-	 * this invokes <code>undo</code> on all edits between the
+	 * this invokes {@code undo} on all edits between the
 	 * index of the next edit and the last significant edit, updating
 	 * the index of the next edit appropriately.
 	 *
 	 * @throws CannotUndoException if one of the edits throws
-	 *                             <code>CannotUndoException</code> or there are no edits
+	 *                             {@code CannotUndoException} or there are no edits
 	 *                             to be undone
 	 * @see CompoundEdit#end
 	 * @see #canUndo
@@ -329,10 +329,10 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	}
 
 	/**
-	 * Returns true if edits may be undone.  If <code>end</code> has
+	 * Returns true if edits may be undone.  If {@code end} has
 	 * been invoked, this returns the value from super.  Otherwise
 	 * this returns true if there are any edits to be undone
-	 * (<code>editToBeUndone</code> returns non-<code>null</code>).
+	 * ({@code editToBeUndone} returns non-{@code null}).
 	 *
 	 * @return true if there are edits to be undone
 	 * @see CompoundEdit#canUndo
@@ -348,14 +348,14 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	}
 
 	/**
-	 * Redoes the appropriate edits.  If <code>end</code> has been
+	 * Redoes the appropriate edits.  If {@code end} has been
 	 * invoked this calls through to the superclass.  Otherwise
-	 * this invokes <code>redo</code> on all edits between the
+	 * this invokes {@code redo} on all edits between the
 	 * index of the next edit and the next significant edit, updating
 	 * the index of the next edit appropriately.
 	 *
 	 * @throws CannotRedoException if one of the edits throws
-	 *                             <code>CannotRedoException</code> or there are no edits
+	 *                             {@code CannotRedoException} or there are no edits
 	 *                             to be redone
 	 * @see CompoundEdit#end
 	 * @see #canRedo
@@ -374,10 +374,10 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	}
 
 	/**
-	 * Returns true if edits may be redone.  If <code>end</code> has
+	 * Returns true if edits may be redone.  If {@code end} has
 	 * been invoked, this returns the value from super.  Otherwise,
 	 * this returns true if there are any edits to be redone
-	 * (<code>editToBeRedone</code> returns non-<code>null</code>).
+	 * ({@code editToBeRedone} returns non-{@code null}).
 	 *
 	 * @return true if there are edits to be redone
 	 * @see CompoundEdit#canRedo
@@ -393,15 +393,15 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	}
 
 	/**
-	 * Adds an <code>UndoableEdit</code> to this
-	 * <code>UndoManager</code>, if it's possible.  This removes all
+	 * Adds an {@code UndoableEdit} to this
+	 * {@code UndoManager}, if it's possible.  This removes all
 	 * edits from the index of the next edit to the end of the edits
-	 * list.  If <code>end</code> has been invoked the edit is not added
-	 * and <code>false</code> is returned.  If <code>end</code> hasn't
-	 * been invoked this returns <code>true</code>.
+	 * list.  If {@code end} has been invoked the edit is not added
+	 * and {@code false} is returned.  If {@code end} hasn't
+	 * been invoked this returns {@code true}.
 	 *
 	 * @param anEdit the edit to be added
-	 * @return true if <code>anEdit</code> can be incorporated into this
+	 * @return true if {@code anEdit} can be incorporated into this
 	 * edit
 	 * @see CompoundEdit#end
 	 * @see CompoundEdit#addEdit
@@ -431,8 +431,8 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	}
 
 	/**
-	 * Turns this <code>UndoManager</code> into a normal
-	 * <code>CompoundEdit</code>.  This removes all edits that have
+	 * Turns this {@code UndoManager} into a normal
+	 * {@code CompoundEdit}.  This removes all edits that have
 	 * been undone.
 	 *
 	 * @see CompoundEdit#end
@@ -444,11 +444,11 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 
 	/**
 	 * Convenience method that returns either
-	 * <code>getUndoPresentationName</code> or
-	 * <code>getRedoPresentationName</code>.  If the index of the next
+	 * {@code getUndoPresentationName} or
+	 * {@code getRedoPresentationName}.  If the index of the next
 	 * edit equals the size of the edits list,
-	 * <code>getUndoPresentationName</code> is returned, otherwise
-	 * <code>getRedoPresentationName</code> is returned.
+	 * {@code getUndoPresentationName} is returned, otherwise
+	 * {@code getRedoPresentationName} is returned.
 	 *
 	 * @return undo or redo name
 	 */
@@ -462,11 +462,11 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 
 	/**
 	 * Returns a description of the undoable form of this edit.
-	 * If <code>end</code> has been invoked this calls into super.
+	 * If {@code end} has been invoked this calls into super.
 	 * Otherwise if there are edits to be undone, this returns
 	 * the value from the next significant edit that will be undone.
-	 * If there are no edits to be undone and <code>end</code> has not
-	 * been invoked this returns the value from the <code>UIManager</code>
+	 * If there are no edits to be undone and {@code end} has not
+	 * been invoked this returns the value from the {@code UIManager}
 	 * property "AbstractUndoableEdit.undoText".
 	 *
 	 * @return a description of the undoable form of this edit
@@ -487,11 +487,11 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 
 	/**
 	 * Returns a description of the redoable form of this edit.
-	 * If <code>end</code> has been invoked this calls into super.
+	 * If {@code end} has been invoked this calls into super.
 	 * Otherwise if there are edits to be redone, this returns
 	 * the value from the next significant edit that will be redone.
-	 * If there are no edits to be redone and <code>end</code> has not
-	 * been invoked this returns the value from the <code>UIManager</code>
+	 * If there are no edits to be redone and {@code end} has not
+	 * been invoked this returns the value from the {@code UIManager}
 	 * property "AbstractUndoableEdit.redoText".
 	 *
 	 * @return a description of the redoable form of this edit
@@ -511,11 +511,11 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	}
 
 	/**
-	 * An <code>UndoableEditListener</code> method. This invokes
-	 * <code>addEdit</code> with <code>e.getEdit()</code>.
+	 * An {@code UndoableEditListener} method. This invokes
+	 * {@code addEdit} with {@code e.getEdit()}.
 	 *
-	 * @param e the <code>UndoableEditEvent</code> the
-	 *          <code>UndoableEditEvent</code> will be added from
+	 * @param e the {@code UndoableEditEvent} the
+	 *          {@code UndoableEditEvent} will be added from
 	 * @see #addEdit
 	 */
 	public void undoableEditHappened(UndoableEditEvent e) {

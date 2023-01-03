@@ -41,9 +41,9 @@ public class TreeADDPotential extends Potential {
 	/**
 	 * For role conditional. Call to the complex constructor
 	 *
-	 * @param variables
-	 * @param topVariable
-	 * @param role
+	 * @param variables List of variables
+	 * @param topVariable Top variable
+	 * @param role Potential role
 	 */
 	public TreeADDPotential(List<Variable> variables, Variable topVariable, PotentialRole role) {
 		this(variables, topVariable, topVariable.getStates(), topVariable.getPartitionedInterval(), role);
@@ -52,9 +52,10 @@ public class TreeADDPotential extends Potential {
 	/**
 	 * For role conditional
 	 *
-	 * @param variables
-	 * @param topVariable
-	 * @param branchingStates
+	 * @param variables List of variables
+	 * @param topVariable Top variable
+	 * @param branchingStates Array of branching states
+	 * @param interval Interval
 	 * @param role            {@link org.openmarkov.core.model.network.potential.PotentialRole}
 	 */
 	public TreeADDPotential(List<Variable> variables, Variable topVariable, State[] branchingStates,
@@ -165,6 +166,11 @@ public class TreeADDPotential extends Potential {
 
 	/**
 	 * Constructor for the parser
+	 * @param variables List of variables
+	 * @param topVariable Top variable
+	 * @param role Potential role
+	 * @param branches Branches
+	 *
 	 */
 	public TreeADDPotential(List<Variable> variables, Variable topVariable, PotentialRole role,
 			List<TreeADDBranch> branches) {
@@ -180,7 +186,7 @@ public class TreeADDPotential extends Potential {
 	/**
 	 * Copy constructor
 	 *
-	 * @param treeADD
+	 * @param treeADD Tree ADD potential
 	 */
 	public TreeADDPotential(TreeADDPotential treeADD) {
 		super(treeADD);
@@ -197,8 +203,10 @@ public class TreeADDPotential extends Potential {
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role
 	 *
-	 * @param variables
-	 * @param role
+	 * @param node Node
+	 * @param variables List of variables
+	 * @param role Potential role
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean validate = false;
@@ -226,7 +234,7 @@ public class TreeADDPotential extends Potential {
 	 * If the intervention is a decision the number of branches is 1, otherwise,
 	 * it is the number of states of the chance variable with probability greater than 0.
 	 *
-	 * @return <code>int</code>
+	 * @return {@code int}
 	 */
 	protected int getNumBranches() {
 		return branches.size();
@@ -235,7 +243,7 @@ public class TreeADDPotential extends Potential {
 	/**
 	 * Recursively goes through the interventions tree adding the number of leaves.
 	 *
-	 * @return <code>int</code>
+	 * @return {@code int}
 	 */
 	protected int getNumLeaves() {
 		int numLeaves = 0;
@@ -251,14 +259,15 @@ public class TreeADDPotential extends Potential {
 	}
 
 	/**
-	 * @return <code>False</code> when this intervention is a leaf.
+	 * @return {@code False} when this intervention is a leaf.
 	 */
 	public boolean hasAnySubIntervention() {
 		return branches.size() != 0;
 	}
 
 	/**
-	 * @param branch
+	 * Add a new branch
+	 * @param branch Branch
 	 */
 	public void addBranch(TreeADDBranch branch) {
 		branches.add(branch);
@@ -386,16 +395,33 @@ public class TreeADDPotential extends Potential {
 	 * Eliminates the nodes whose variable name is equal to the parameter 'variableName'
 	 * and grafts the daughter branches of that node in the parent node.
 	 * The variable must have only one child.
-	 * @param variableName
+	 * @param variableName Name of the variable
 	 */
 	public void pruneAndGraftNode(String variableName) {
-		if (getRootVariable().getName().toUpperCase().matches(variableName.toUpperCase()) &&
-				branches.size() == 1 && TreeADDPotential.class.isAssignableFrom(branches.get(0).getPotential().getClass())) {
-			TreeADDPotential treeADDPotential = (TreeADDPotential)branches.get(0).getPotential();
-			setRootVariable(treeADDPotential.getRootVariable());
-			branches = treeADDPotential.branches;
-			indentLevel = treeADDPotential.indentLevel;
+		if (getRootVariable().getName().toUpperCase().matches(variableName.toUpperCase())) {
+			int numBranches = branches.size();
+			if (numBranches == 1 && TreeADDPotential.class.isAssignableFrom(branches.get(0).getPotential().getClass())) {
+				TreeADDPotential treeADDPotential = (TreeADDPotential)branches.get(0).getPotential();
+				setRootVariable(treeADDPotential.getRootVariable());
+				branches = treeADDPotential.branches;
+				indentLevel = treeADDPotential.indentLevel;
+			} else {
+				if (numBranches > 1) { // Tie. Choose randomly one branch (the first branch) whose child is a TreeADDPotential. Otherwise, do nothing.
+					boolean assignableBranchFound = false;
+					for (int i = 0; i < numBranches && !assignableBranchFound; i++) {
+						TreeADDBranch branch = branches.get(i);
+						assignableBranchFound = TreeADDPotential.class.isAssignableFrom(branch.getPotential().getClass());
+						if (assignableBranchFound) {
+							TreeADDPotential treeADDPotential = (TreeADDPotential)branch.getPotential();
+							setRootVariable(treeADDPotential.getRootVariable());
+							branches = treeADDPotential.branches;
+							indentLevel = treeADDPotential.indentLevel;
+						}
+					}
+				}
+			}
 		}
+
 		for (TreeADDBranch branch : branches) {
 			Potential potential = branch.getPotential();
 			if (potential != null && TreeADDPotential.class.isAssignableFrom(potential.getClass())) {
@@ -518,7 +544,8 @@ public class TreeADDPotential extends Potential {
 	}
 
 	/**
-	 * @param labeledBranches
+	 * Update references
+	 * @param labeledBranches Labeled branches
 	 */
 	public void updateReferences(Map<String, TreeADDBranch> labeledBranches) {
 		Stack<TreeADDPotential> subtrees = new Stack<>();
@@ -848,6 +875,18 @@ public class TreeADDPotential extends Potential {
 			strBuffer.append(")\n");
 		}
 		return strBuffer.toString();
+	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

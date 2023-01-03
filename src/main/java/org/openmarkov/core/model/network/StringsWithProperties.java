@@ -27,7 +27,7 @@ public class StringsWithProperties {
 	/**
 	 * Constructor that receives a collection of strings (without properties)
 	 *
-	 * @param strings <code>Collection</code> of <code>String</code>s
+	 * @param strings {@code Collection} of {@code String}s
 	 */
 	public StringsWithProperties(Collection<String> strings) {
 		stringsWithProperties = new LinkedHashMap<>();
@@ -39,8 +39,8 @@ public class StringsWithProperties {
 	/**
 	 * Constructor based in a previous LinkedHashMap
 	 *
-	 * @param stringsWithProperties <code>LinkedHashMap with key type = <code>String</code> and
-	 *                              value type = <code>Properties</code>
+	 * @param stringsWithProperties LinkedHashMap with key type = String and
+	 *                              value type = Properties
 	 */
 	public StringsWithProperties(LinkedHashMap<String, Properties> stringsWithProperties) {
 		LinkedHashMap<String, Properties> stringsWithPropertiesCopied = new LinkedHashMap<>();
@@ -54,7 +54,9 @@ public class StringsWithProperties {
 	// Methods
 
 	/**
-	 * @return A string property if it exists or <code>null</code> otherwise.
+	 * @param propertyName Property name
+	 * @param string String property
+	 * @return A string property if it exists or {@code null} otherwise.
 	 */
 	public Object get(String string, String propertyName) {
 		Object propertyValue = null;
@@ -66,23 +68,23 @@ public class StringsWithProperties {
 	}
 
 	/**
-	 * @return All the strings in a <code>Set</code> of <code>String</code>.
+	 * @return All the strings in a {@code Set} of {@code String}.
 	 */
 	public Set<String> getNames() {
 		return stringsWithProperties.keySet();
 	}
 
 	/**
-	 * @param string <code>String</code>
-	 * @return All the properties of a given <code>String</code>, or <code>null</code>
-	 * if the string does not exists. <code>Properties</code>.
+	 * @param string {@code String}
+	 * @return All the properties of a given {@code String}, or {@code null}
+	 * if the string does not exists. {@code Properties}.
 	 */
 	public Properties getProperties(String string) {
 		return stringsWithProperties.get(string);
 	}
 
 	/**
-	 * @param key <code>String</code>
+	 * @param key {@code String}
 	 */
 	public void put(String key) {
 		Properties properties = stringsWithProperties.get(key);
@@ -97,9 +99,9 @@ public class StringsWithProperties {
 	}
 
 	/**
-	 * @param key           <code>String</code>
-	 * @param propertyName  <code>String</code>
-	 * @param propertyValue <code>String</code>
+	 * @param key           {@code String}
+	 * @param propertyName  {@code String}
+	 * @param propertyValue {@code String}
 	 */
 	public void put(String key, String propertyName, String propertyValue) {
 		Properties properties = stringsWithProperties.get(key);
@@ -111,8 +113,8 @@ public class StringsWithProperties {
 	}
 
 	/**
-	 * @param key        <code>String</code>
-	 * @param properties <code>Properties</code>
+	 * @param key        {@code String}
+	 * @param properties {@code Properties}
 	 */
 	public void put(String key, Properties properties) {
 		if (properties == null) {
@@ -126,9 +128,7 @@ public class StringsWithProperties {
 	/**
 	 * Removes they key and all its properties.
 	 *
-	 * @param key <code>String</code>
-	 * @return The object stored with <code>key</code> or <code>null</code> if
-	 * it does not exists.
+	 * @param key {@code String}
 	 */
 	public void remove(String key) {
 		stringsWithProperties.remove(key);
@@ -139,9 +139,9 @@ public class StringsWithProperties {
 	}
 
 	/**
-	 * @param key          <code>String</code>
-	 * @param propertyName <code>String</code>
-	 * @return The object stored with <code>key</code> or <code>null</code> if
+	 * @param key          {@code String}
+	 * @param propertyName {@code String}
+	 * @return The object stored with {@code key} or {@code null} if
 	 * it does not exists.
 	 */
 	public Object remove(String key, String propertyName) {
@@ -156,8 +156,8 @@ public class StringsWithProperties {
 	/**
 	 * Renames the key entry
 	 *
-	 * @param key    <code>String</code>
-	 * @param newKey <code>String</code>
+	 * @param key    {@code String}
+	 * @param newKey {@code String}
 	 */
 	public void rename(String key, String newKey) {
 		Properties properties = stringsWithProperties.get(key);
@@ -171,21 +171,21 @@ public class StringsWithProperties {
 	}
 
 	/**
-	 * @return <code>boolean</code>
+	 * @return {@code boolean}
 	 */
 	public boolean isEmpty() {
 		return stringsWithProperties.isEmpty();
 	}
 
 	/**
-	 * @return <code>StringsWithProperties</code>
+	 * @return {@code StringsWithProperties}
 	 */
 	public StringsWithProperties copy() {
 		return new StringsWithProperties(stringsWithProperties);
 	}
 
 	/**
-	 * @return <code>String</code>
+	 * @return {@code String}
 	 */
 	public String toString() {
 		StringBuilder outString = new StringBuilder();

@@ -46,7 +46,7 @@ public class AxisVariation {
 	}
 
 	/**
-	 * Returns the upper value in the variation interval for a <UncertainParameter> according to the analysis type
+	 * Returns the upper value in the variation interval for a UncertainParameter according to the analysis type
 	 *
 	 * @param uncertainParameter Parameter to calculate the interval for
 	 * @return Upper value in the variation interval
@@ -82,7 +82,7 @@ public class AxisVariation {
 	}
 
 	/**
-	 * Returns the lower value in the variation interval for a <UncertainParameter> according to the analysis type
+	 * Returns the lower value in the variation interval for a UncertainParameter according to the analysis type
 	 *
 	 * @param uncertainParameter Parameter to calculate the interval for
 	 * @return Lower value in the variation interval

@@ -9,10 +9,12 @@ package org.openmarkov.core.model.network.potential.canonical;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ import java.util.List;
 	/**
 	 * Constructor for TuningModelPotential.
 	 *
-	 * @param variables
+	 * @param variables List of variables
 	 */
 	public TuningPotential(List<Variable> variables) {
 		super(ICIModelType.TUNING, variables);
@@ -42,7 +44,7 @@ import java.util.List;
 	/**
 	 * Copy constructor
 	 *
-	 * @param tuningPotential
+	 * @param tuningPotential Tuning potential
 	 */
 	public TuningPotential(TuningPotential tuningPotential) {
 		super(tuningPotential);
@@ -54,9 +56,10 @@ import java.util.List;
 
 	/**
 	 * Returns if an instance of a certain Potential type makes sense given the variables and the potential role
-	 *
-	 * @param variables
-	 * @param role
+	 * @param node Node
+	 * @param variables List of variables
+	 * @param role Potential role
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean valid = ICIPotential.validate(node, variables, role) && role
@@ -70,7 +73,7 @@ import java.util.List;
 	/**
 	 * Adds a parent to the family with its corresponding parameters
 	 *
-	 * @param parent
+	 * @param parent Parent variable
 	 * @param parameters the four parameters that define the link in the
 	 *                   following order: c<sub><i>i</i></sub><sup>++</sup>,
 	 *                   c<sub><i>i</i></sub><sup>+-</sup>,
@@ -180,7 +183,11 @@ import java.util.List;
 			newICIPotential.setNoisyParameters(newVariables.get(i), noisyParameters);
 		}
 		newICIPotential.setLeakyParameters(getLeakyParameters());
-		return newICIPotential;
+		if (newVariables.size() == 1) {
+			return new UniformPotential(newVariables, newICIPotential.role);
+		} else {
+			return newICIPotential;
+		}
 	}
 
 	@Override protected int computeFFunction(int[] parentStates) {
@@ -209,5 +216,17 @@ import java.util.List;
 
 	@Override public Potential deepCopy(ProbNet copyNet) {
 		return (TuningPotential) super.deepCopy(copyNet);
+	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -24,7 +24,6 @@ import java.util.List;
 
 	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Node> probNetNodes = probNet.getNodes();
-		int nodeTimeSlice;
 		try {
 			for (Node node : probNetNodes) {
 				// If the node is temporal

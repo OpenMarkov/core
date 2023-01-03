@@ -41,12 +41,10 @@ import java.util.stream.Collectors;
 public class BasicOperations {
 	/**
 	 * The source probNet
-	 * @param evidence 
-	 * 
-	 * @throws EvaluationException
-	 * @throws NumberFormatException
+	 * @param evidence Evidence
+	 * @param node Node
+	 * @return potential
 	 */
-	// private static ProbNet sourceProbNet;
 	public static Potential buildPotentialByAbsorbingParents(Node node, EvidenceCase evidence) {
 		Potential newPotential = null;
 		
@@ -129,7 +127,7 @@ public class BasicOperations {
 		return children.stream().anyMatch(x -> isNumeric(x.getVariable()));
 	}
 
-	/**
+	/*
 	 * @param network Network from which we extract terminal utility nodes
 	 * @return A list of utility nodes that have no children
 	 *//*
@@ -139,7 +137,7 @@ public class BasicOperations {
 		 * utilityNodes) { if (network.getNumChildren(utilityNode) == 0) {
 		 * terminalUtilityNodes.add(utilityNode); } } return terminalUtilityNodes; }
 		 */
-	/**
+	/*
 	 * @param sourceProbNet Network from which we remove utility nodes
 	 * @return A copy of the probNet after removing utility nodes.
 	 */
@@ -181,7 +179,7 @@ public class BasicOperations {
 	
 	
 	/**
-	 * @param node
+	 * @param node Node
 	 * @return true iff the node has parents and are all observable
 	 */
 	public static boolean haveParentsAndAreAllAbsorbable(Node node) {
@@ -323,7 +321,8 @@ public class BasicOperations {
 	 */
 
 	/**
-	 * @return <code>List</code> of <code>List</code> of <code>Variable</code>s
+	 * @param probNet Network
+	 * @return {@code List} of {@code List} of {@code Variable}s
 	 */
 	public static List<List<Variable>> getOrder(ProbNet probNet) {
 		List<List<Variable>> copyOfOrder = new ArrayList<>();
@@ -336,13 +335,13 @@ public class BasicOperations {
 	/**
 	 * @param probNet A probabilistic network of which the partial order will be
 	 *                calculated
-	 * @return <code>ArrayList</code> of <code>ArrayList</code> of
-	 *         <code>Variables</code> with the partial order of the received probNet
+	 * @return {@code ArrayList} of {@code ArrayList} of
+	 *         {@code Variables} with the partial order of the received probNet
 	 */
 	public static List<List<Variable>> calculatePartialOrder(ProbNet probNet) {
 		ProbNet idCopy = probNet.copy(); // Copy influence diagram
 
-		/** A partial order is a list of lists of variables. */
+		/* A partial order is a list of lists of variables. */
 		List<List<Variable>> partialOrder;
 
 		// Get decisions (only) in elimination order
@@ -401,8 +400,8 @@ public class BasicOperations {
 	}
 
 	/**
-	 * @param variable
-	 * @param probNet
+	 * @param variable Variable
+	 * @param probNet Network
 	 * @return The list of variables revealed by a variable in a DAN or by a chance
 	 *         variable revealed by that variable, and so on...
 	 */
@@ -465,10 +464,11 @@ public class BasicOperations {
 	}
 
 	/**
-	 * @param queryVariables        List<Variable>
-	 * @param evidenceVariables     List<Variable>
-	 * @param conditioningVariables List<Variable>
-	 * @param variablesToEliminate  List<Variable>
+	 * @param probNet Network
+	 * @param queryVariables        List of variables
+	 * @param evidenceVariables     List of variables
+	 * @param conditioningVariables List of variables
+	 * @param variablesToEliminate  List of variables
 	 * @return An order that has been pruned by eliminating the variables that are
 	 *         in queryVariables or in evidenceVariables or in conditioningVariables
 	 *         or not in variablesToEliminate
@@ -504,7 +504,8 @@ public class BasicOperations {
 	}
 
 	/**
-	 * @return A <code>String</code> with an array of arrays.
+	 * @param probNet Network
+	 * @return A {@code String} with an array of arrays.
 	 */
 	public static String toStringPartialOrder(ProbNet probNet) {
 
@@ -563,9 +564,11 @@ public class BasicOperations {
 	}
 
 	/**
-	 * @param evidenceVariables     List<Variable>
-	 * @param conditioningVariables List<Variable>
-	 * @param variablesToEliminate  List<Variable>
+	 * @param probNet Netowk
+	 * @param evidenceVariables     {@code List&#60;Variable&#62;}
+	 * @param conditioningVariables {@code List&#60;Variable&#62;}
+	 * @param variablesToEliminate  {@code List&#60;Variable&#62;}
+	 * @param queryVariables  		{@code List&#60;Variable&#62;}
 	 * @return An order that has been pruned by eliminating the variables that are
 	 *         in queryVariables or in evidenceVariables or in conditioningVariables
 	 *         or not in variablesToEliminate
@@ -603,13 +606,13 @@ public class BasicOperations {
 	/**
 	 * @param probNet A probabilistic network of which the partial order will be
 	 *                calculated
-	 * @return <code>ArrayList</code> of <code>ArrayList</code> of
-	 *         <code>Variables</code> with the partial order of the received probNet
+	 * @return {@code ArrayList} of {@code ArrayList} of
+	 *         {@code Variables} with the partial order of the received probNet
 	 */
 	public static List<List<Variable>> calculatePartialOrder2(ProbNet probNet) {
 		ProbNet idCopy = probNet.copy(); // Copy influence diagram
 
-		/** A partial order is a list of lists of variables. */
+		/* A partial order is a list of lists of variables. */
 		List<List<Variable>> partialOrder;
 
 		// Get decisions (only) in elimination order

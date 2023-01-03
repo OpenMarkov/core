@@ -12,7 +12,7 @@ package org.openmarkov.core.exception;
 	// Constructor
 
 	/**
-	 * @param message <code>String</code>
+	 * @param message {@code String}
 	 */
 	public DeterministicValueNotAllowedException(String message) {
 		super(message);

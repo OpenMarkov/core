@@ -10,7 +10,6 @@ package org.openmarkov.core.action;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.PotentialOperationException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
@@ -21,7 +20,6 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
-import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 
 import java.util.ArrayList;
@@ -35,7 +33,7 @@ import java.util.List;
 	 */
 	protected Link<Node> link;
 	/**
-	 * The last <code>Potential</code> of the second node before the edition
+	 * The last {@code Potential} of the second node before the edition
 	 * /**
 	 * parent node
 	 */
@@ -45,7 +43,7 @@ import java.util.List;
 	 */
 	protected Node node2;
 	/**
-	 * The new <code>Potential</code> of the second node
+	 * The new {@code Potential} of the second node
 	 */
 	protected List<Potential> newPotentials = new ArrayList<>();
 	protected List<Potential> oldPotentials;
@@ -54,10 +52,11 @@ import java.util.List;
 	// Constructor
 
 	/**
-	 * @param probNet    <code>ProbNet</code>
-	 * @param variable1  <code>Variable</code>
-	 * @param variable2  <code>Variable</code>
-	 * @param isDirected <code>boolean</code>
+	 * @param probNet    {@code ProbNet}
+	 * @param variable1  {@code Variable}
+	 * @param variable2  {@code Variable}
+	 * @param isDirected {@code boolean}
+	 * @param updatePotentials {@code boolean}
 	 */
 	public RemoveLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected,
 			boolean updatePotentials) {

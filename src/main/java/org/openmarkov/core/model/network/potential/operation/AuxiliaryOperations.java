@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Auxiliary methods for <code>DiscretePotentialOperations</code> and
- * <code>PotentialOperations</code> classes
+ * Auxiliary methods for {@code DiscretePotentialOperations} and
+ * {@code PotentialOperations} classes
  *
  * @author Manuel Arias
  */
@@ -40,9 +40,9 @@ public class AuxiliaryOperations {
 	 * A proper potential is a potential that is not a constant; as consequence
 	 * it has a not empty set of variables and a table with more than one value.
 	 *
-	 * @param potentials An <code>ArrayList</code> of
-	 *                   <code>TablePotential</code>s
-	 * @return An <code>ArrayList</code> of <code>TablePotential</code>s without
+	 * @param potentials An {@code ArrayList} of
+	 *                   {@code TablePotential}s
+	 * @return An {@code ArrayList} of {@code TablePotential}s without
 	 * the constant potentials.
 	 */
 	public static List<TablePotential> getNonConstantPotentials(Collection<TablePotential> potentials) {
@@ -56,11 +56,11 @@ public class AuxiliaryOperations {
 	}
 
 	/**
-	 * @param collection  A generic <code>Collection</code>
-	 * @param classObject Class object (i.e. <code>TablePotential.class</code>)
-	 * @return <code>true</code> if all the objects in the parameter
-	 * <code>collection</code> belongs to the parameter type
-	 * <code>classObject</code>.
+	 * @param collection  A generic {@code Collection}
+	 * @param classObject Class object (i.e. {@code TablePotential.class})
+	 * @return {@code true} if all the objects in the parameter
+	 * {@code collection} belongs to the parameter type
+	 * {@code classObject}.
 	 */
 	public static boolean checkObjectsCollectionType(Collection<?> collection, Class<?> classObject) {
 		for (Object object : collection) {
@@ -72,10 +72,10 @@ public class AuxiliaryOperations {
 	}
 
 	/**
-	 * @param collection   A <code>Collection</code> of <code>Variable</code>
-	 * @param variableType <code>VariableType</code>)
-	 * @return <code>true</code> if all the variables in the parameter
-	 * <code>collection</code> belongs to <code>variableType</code>.
+	 * @param collection   A {@code Collection} of {@code Variable}
+	 * @param variableType {@code VariableType})
+	 * @return {@code true} if all the variables in the parameter
+	 * {@code collection} belongs to {@code variableType}.
 	 */
 	public static boolean checkVariablesCollectionType(Collection<Variable> collection, VariableType variableType) {
 		for (Variable variable : collection) {
@@ -87,8 +87,8 @@ public class AuxiliaryOperations {
 	}
 
 	/**
-	 * @param potentials <code>Collection</code> of <code>Potential</code>s
-	 * @return <code>ArrayList</code> of <code>Variable</code>s.
+	 * @param potentials {@code Collection} of {@code Potential}s
+	 * @return {@code ArrayList} of {@code Variable}s.
 	 */
 	public static List<Variable> getUnionVariables(Collection<? extends Potential> potentials) {
 
@@ -101,12 +101,12 @@ public class AuxiliaryOperations {
 	}
 
 	/**
-	 * @param allVariables   <code>ArrayList</code> of <code>Variable</code>s
-	 * @param variablesNames <code>String[]</code>s
-	 * @return an <code>ArrayList</code> of <code>Variable</code>s with the
-	 * variables in <code>allVariables</code> whose names are contained in
-	 * <code>selectedVariables</code>, in the same order they are stored in
-	 * <code>variablesNames</code>
+	 * @param allVariables   {@code ArrayList} of {@code Variable}s
+	 * @param variablesNames {@code String[]}s
+	 * @return an {@code ArrayList} of {@code Variable}s with the
+	 * variables in {@code allVariables} whose names are contained in
+	 * {@code selectedVariables}, in the same order they are stored in
+	 * {@code variablesNames}
 	 */
 	public static List<Variable> getVariables(List<Variable> allVariables, String[] variablesNames) {
 		List<Variable> variables = new ArrayList<>();

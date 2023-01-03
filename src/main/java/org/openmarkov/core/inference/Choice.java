@@ -25,14 +25,14 @@ public class Choice {
 	/**
 	 * Value(s) assignment; if there is no draws only the first one.
 	 *
-	 * @invariant value[i] != value[j] when i != j and i < numValues
-	 * and j < numValues
-	 * (<code>int[]</code>).
+	 * invariant value[i] != value[j] when i != j and i &lt; numValues
+	 * and j &lt; numValues
+	 * ({@code int[]}).
 	 */
 	private int[] values;
 
 	/**
-	 * Number of assignments to <code>Variable</code>.
+	 * Number of assignments to {@code Variable}.
 	 */
 	private int numValues;
 
@@ -41,8 +41,8 @@ public class Choice {
 	// Constructors
 
 	/**
-	 * @param variable <code>Variable</code>
-	 * @param values   <code>int[]</code>. Most times only one value; in case of
+	 * @param variable {@code Variable}
+	 * @param values   {@code int[]}. Most times only one value; in case of
 	 *                 draws more than one value.
 	 */
 	public Choice(Variable variable, int[] values) {
@@ -52,8 +52,8 @@ public class Choice {
 	}
 
 	/**
-	 * @param variable <code>Variable</code>
-	 * @param value    <code>int</code>. Only one value (no draws)
+	 * @param variable {@code Variable}
+	 * @param value    {@code int}. Only one value (no draws)
 	 */
 	public Choice(Variable variable, int value) {
 		values = new int[1];
@@ -66,14 +66,14 @@ public class Choice {
 	// Methods
 
 	/**
-	 * @return values <code>int[]</code>.
+	 * @return values {@code int[]}.
 	 */
 	public int[] getValues() {
 		return values;
 	}
 
 	/**
-	 * @param values <code>int[]</code>.
+	 * @param values {@code int[]}.
 	 */
 	public void setValues(int[] values) {
 		this.values = values;
@@ -93,7 +93,7 @@ public class Choice {
 	/**
 	 * Used in case of draw.
 	 *
-	 * @param value <code>int</code>.
+	 * @param value {@code int}.
 	 */
 	public void addValue(int value) {
 		if (!initialized) {
@@ -114,7 +114,7 @@ public class Choice {
 	}
 
 	/**
-	 * @param value <code>int</code>.
+	 * @param value {@code int}.
 	 */
 	public void setValue(int value) {
 		numValues = 1;
@@ -124,21 +124,21 @@ public class Choice {
 	}
 
 	/**
-	 * @return numValues <code>int</code>.
+	 * @return numValues {@code int}.
 	 */
 	public int getNumValues() {
 		return numValues;
 	}
 
 	/**
-	 * @return variable <code>Variable</code>.
+	 * @return variable {@code Variable}.
 	 */
 	public Variable getVariable() {
 		return variable;
 	}
 
 	/**
-	 * @return A deep copy of this object. <code>Choice</code>
+	 * @return A deep copy of this object. {@code Choice}
 	 */
 	public Choice copy() {
 		int[] copyValues = new int[numValues];
@@ -149,7 +149,7 @@ public class Choice {
 	}
 
 	/**
-	 * Overrides <code>toString</code> method. Mainly for test purposes.
+	 * Overrides {@code toString} method. Mainly for test purposes.
 	 *
 	 * @return String
 	 */
@@ -168,12 +168,11 @@ public class Choice {
 	}
 
 	/**
-	 * Overrides <code>equals</code> method. Mainly for test purposes.
+	 * Overrides {@code equals} method. Mainly for test purposes.
 	 *
-	 * @param object <code>Object</code>
-	 * @return <code>true</code> if the object received has the same variable
+	 * @param object {@code Object}. {@code Object} must be of type {@code Choice}
+	 * @return {@code true} if the object received has the same variable
 	 * and the same option (or options set)
-	 * @argCondition <code>object</code> must be of type <code>Choice</code>
 	 */
 	public boolean sameInformation(Object object) {
 		Choice choice = (Choice) object;

@@ -33,7 +33,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 	/**
 	 * @param parameters - parameters[1]= mu and parameters[0] = standard deviation
-	 * @throws IllegalArgumentException - thrown if standard<0
+	 * @throws IllegalArgumentException - thrown if standard&#60;0
 	 */
 	@Override public void verifyParameters(double[] parameters) {
 		if (!(parameters[0] > 0)) {

@@ -22,9 +22,8 @@ public class SumOutVariable extends Marginalization {
 	 * Classify the potentials into probability and additive, if there are probabilities, produces a new probability potential;
 	 * if there are additive potentials, produces a new additive potential. Both without the received variable
 	 *
-	 * @param variable <code>Variable</code>
-	 * @param potentials     <code>List</code> of <code>TablePotential</code>
-	 * @return A <code>Collection</code> with two <code>TablePotential</code>,
+	 * @param variable {@code Variable}
+	 * @param potentials     {@code List} of {@code TablePotential}
 	 * marginal probability and new utility in this order.
 	 */
 	public SumOutVariable(Variable variable, Collection<TablePotential> potentials) {

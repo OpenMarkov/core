@@ -29,7 +29,7 @@ import java.util.List;
 public abstract class InferenceAlgorithm implements Task {
 
 	/**
-	 * This is a copy of the <code>ProbNet</code> received.
+	 * This is a copy of the {@code ProbNet} received.
 	 */
 	protected ProbNet probNet;
 	/**
@@ -50,7 +50,7 @@ public abstract class InferenceAlgorithm implements Task {
 
 	/**
 	 * @param network The network used in the inference
-	 * @throws NotEvaluableNetworkException
+	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
 	public InferenceAlgorithm(ProbNet network) throws NotEvaluableNetworkException {
 		this.probNet = network.copy();
@@ -63,7 +63,7 @@ public abstract class InferenceAlgorithm implements Task {
 	/**
 	 * Checks the network and constraints applicability
 	 *
-	 * @throws NotEvaluableNetworkException
+	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
 	public void checkEvaluability() throws NotEvaluableNetworkException {
 		checkNetworkApplicability();
@@ -73,7 +73,7 @@ public abstract class InferenceAlgorithm implements Task {
 	/**
 	 * Checks the network and evidence consistency
 	 *
-	 * @throws NotEvaluableNetworkException
+	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
 	private void checkConsistency() throws NotEvaluableNetworkException {
 		checkNetworkConsistency();
@@ -101,7 +101,7 @@ public abstract class InferenceAlgorithm implements Task {
 	/**
 	 * Check if the network type can be evaluated by the algorithm
 	 *
-	 * @throws NotEvaluableNetworkException
+	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
 	private void checkNetworkApplicability() throws NotEvaluableNetworkException {
 		boolean isApplicable;
@@ -125,7 +125,7 @@ public abstract class InferenceAlgorithm implements Task {
 	/**
 	 * List of networks that the algorithm can evaluate
 	 *
-	 * @return
+	 * @return List of evaluable networks
 	 */
 	protected abstract List<NetworkType> getPossibleNetworkTypes();
 
@@ -169,7 +169,7 @@ public abstract class InferenceAlgorithm implements Task {
 	/**
 	 * List of additional constraints that network must satisfy in order to be evaluated by the algorithm
 	 *
-	 * @return
+	 * @return List of additional constraints
 	 */
 	protected abstract List<PNConstraint> getAdditionalConstraints();
 

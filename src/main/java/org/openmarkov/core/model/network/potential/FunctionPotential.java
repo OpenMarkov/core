@@ -49,7 +49,7 @@ import java.util.Map;
 	 * Creates a Function potential with the function by default
 	 *
 	 * @param variables - list with the node variable and their parents
-	 * @param role
+	 * @param role Potential role
 	 */
 	public FunctionPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role, new String[] { DEFAULT_FUNCTION }, new double[] { COEFFICIENT });
@@ -61,7 +61,6 @@ import java.util.Map;
 	 * @param variables - list with the node variable and their parents
 	 * @param role      - the role of the potential
 	 * @param function  - A string representing the function
-	 * @param role
 	 */
 	public FunctionPotential(List<Variable> variables, PotentialRole role, String function) {
 		super(variables, role, new String[] { function }, new double[] { COEFFICIENT });
@@ -79,11 +78,12 @@ import java.util.Map;
 	/**
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role.
-	 * UNCLEAR--> Should the parents be numeric
+	 * UNCLEAR--&#62; Should the parents be numeric
 	 *
-	 * @param node      . <code>Node</code>
-	 * @param variables . <code>ArrayList</code> of <code>Variable</code>.
-	 * @param role      . <code>PotentialRole</code>.
+	 * @param node      . {@code Node}
+	 * @param variables . {@code ArrayList} of {@code Variable}.
+	 * @param role      . {@code PotentialRole}.
+	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 //CMI 17/10/2020
@@ -107,7 +107,7 @@ import java.util.Map;
 	}
 
 	/**
-	 * Process and sets  {@codefunction}
+	 * Process and sets  {codefunction}
 	 *
 	 * @param function - The function (unprocessed) to be set
 	 */
@@ -119,8 +119,8 @@ import java.util.Map;
 	/**
 	 * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
 	 *
-	 * @throws NonProjectablePotentialException
-	 * @throws WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
@@ -130,8 +130,8 @@ import java.util.Map;
 	/**
 	 * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
 	 *
-	 * @throws NonProjectablePotentialException
-	 * @throws WrongCriterionException
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	@Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
@@ -159,7 +159,7 @@ import java.util.Map;
 	 * Adds the variable to the new potential. The function does not change
 	 *
 	 * @param variable - the variable to be added
-	 * @returns a FunctionPotential with the new variabla
+	 * @return a FunctionPotential with the new variabla
 	 */
 	@Override public Potential addVariable(Variable variable) {
 		FunctionPotential newPotential = null;
@@ -174,8 +174,6 @@ import java.util.Map;
 		}
 		return newPotential;
 	}
-
-
 /*
 Potential#removeVariable changes the potential to Uniform and org.openmarkov.core.action.RemoveLinkEdit.doEdit then checks
 if the potential is projectable. If the potential is not, does not remove the link properly. I do not know the reason, so I do not change it.
@@ -201,6 +199,26 @@ As FunctionPotential is not projectable I leave the default behaviour
 //		return new FunctionPotential(this);
 //	}
 
+	/**
+	 * Removes a variable from FunctionPotential. If the function does not use the variable,
+	 * the function does not change, otherwise the function is set to its default value
+	 *
+	 * @param variable - the variable to be removed
+	 * @returns a FunctionPotential without the variable
+	 */
+	@Override public Potential removeVariable(Variable variable) {
+		if (variables.contains(variable)) {
+			List<Variable> newVariables = new ArrayList<>(variables);
+			newVariables.remove(variable);
+			int index = variables.indexOf(variable);
+			String variableToRemove = "#{v" + index + "}";
+			if (processedCovariates[0].contains(variableToRemove)) {
+				return new FunctionPotential(newVariables, this.role);
+			}
+		}
+		return new FunctionPotential(this);
+	}
+
 	@Override public Potential deepCopy(ProbNet copyNet) {
 		return super.deepCopy(copyNet);
 	}
@@ -219,16 +237,14 @@ As FunctionPotential is not projectable I leave the default behaviour
 
 //CMI 19/08/2022 - used double instead of Random and evaluator object only create once
 	/**
-	 * @param values
+	 * @param values Values
 	 * @return The value obtained by evaluation the function for the assignment of variables given by 'values'
-	 * @throws EvaluationException
+	 * @throws EvaluationException EvaluationException
 	 */
 	public String getValue(Map<String,String> values) throws EvaluationException {
 		evaluator.setVariables(values);
 		return evaluator.evaluate(this.processedCovariates[0]);
 	}
-
-
 	@Override
 	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
 		List<Variable> parentVariables = parents.getVariables();
@@ -253,5 +269,16 @@ As FunctionPotential is not projectable I leave the default behaviour
 
 //CMF
 
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

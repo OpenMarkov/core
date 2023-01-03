@@ -16,7 +16,9 @@ import org.openmarkov.core.model.network.VariableType;
 
 import java.util.List;
 
+// TODO Add documentation
 public class AugmentedTable extends TablePotential {
+	
 	/**
 	 * The default function
 	 */
@@ -33,10 +35,11 @@ public class AugmentedTable extends TablePotential {
 		if (numVariables != 0) {
 			// Number of states of each variable
 			dimensions = calculateDimensions(stateVariables);
-			int cellsInRow = 1;
+			// TODO Remove the comment or use it.
+/*			int cellsInRow = 1;
 			for (int i = 1; i < dimensions.length; i++) {
 				cellsInRow *= dimensions[i];
-			}
+			}*/
 			offsets = calculateOffsets(dimensions);
 			tableSize = computeTableSize(stateVariables);
 			try {
@@ -68,13 +71,13 @@ public class AugmentedTable extends TablePotential {
 	/**
 	 * Internal constructor used to create a projected potential.
 	 *
-	 * @param stateVariables  . <code>ArrayList</code> of <code>Variable</code>
-	 * @param role            . <code>PotentialRole</code>
-	 * @param table           . <code>double[]</code>
-	 * @param initialPosition First position in <code>table</code> (used in projected
+	 * @param stateVariables  . {@code ArrayList} of {@code Variable}
+	 * @param role            . {@code PotentialRole}
+	 * @param table           . {@code double[]}
+	 * @param initialPosition First position in {@code table} (used in projected
 	 *                        potentials).
-	 * @param offsets         of variables. <code>int[]</code>
-	 * @param dimensions      . Number of states of each variable. <code>int[]</code>
+	 * @param offsets         of variables. {@code int[]}
+	 * @param dimensions      . Number of states of each variable. {@code int[]}
 	 */
 	private AugmentedTable(List<Variable> stateVariables, PotentialRole role, String[] table, int initialPosition,
 			int[] offsets, int[] dimensions) {
@@ -105,9 +108,10 @@ public class AugmentedTable extends TablePotential {
 	 * variables and the potential role.
 	 * Firstly I suppose we have only discrete variables and at least one parent is NUMERIC
 	 *
-	 * @param node      . <code>Node</code>
-	 * @param variables . <code>List</code> of <code>Variable</code>.
-	 * @param role      . <code>PotentialRole</code>.
+	 * @param node      . {@code Node}
+	 * @param variables . {@code List} of {@code Variable}.
+	 * @param role      . {@code PotentialRole}.
+	 * @return True if an instance of a certain Potential type makes sense given the variables and the potential role.
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		boolean suitable = false;
@@ -129,9 +133,9 @@ public class AugmentedTable extends TablePotential {
 	 * and the corresponding state indices.
 	 *
 	 * @param variables
-	 *            . <code>ArrayList</code> of <code>Variable</code>
+	 *            . {@code ArrayList} of {@code Variable}
 	 * @param statesIndexes
-	 *            . <code>int[]</code>
+	 *            . {@code int[]}
 	 * @param function value to be assigned
 	 */
 	public void setValue(List<Variable> variables, int[] statesIndexes, String function) {
@@ -150,10 +154,10 @@ public class AugmentedTable extends TablePotential {
 	 * Given a set of variables and a set of corresponding states indices, gets
 	 * the corresponding value in the table.
 	 *
-	 * @param stateVariables . <code>ArrayList</code> of <code>Variable</code>
-	 * @param statesIndices  . <code>int[]</code>
-	 * @return <code>double</code>
-	 * @argCondition All the variables in this potentials are included into the
+	 * @param stateVariables . {@code ArrayList} of {@code Variable}
+	 * @param statesIndices  . {@code int[]}
+	 * @return {@code double}
+	 * Condition: All the variables in this potentials are included into the
 	 * received variables.
 	 */
 	public String getFunctionValue(List<Variable> stateVariables, int[] statesIndices) {
@@ -171,7 +175,6 @@ public class AugmentedTable extends TablePotential {
 	/**
 	 * @return : Table containing the values of the
 	 * potential.
-	 * @consultation
 	 */
 	public String[] getFunctionValues() {
 		return functionValues;
@@ -200,7 +203,6 @@ public class AugmentedTable extends TablePotential {
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			List<TablePotential> alreadyProjectedPotentials) throws WrongCriterionException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -209,12 +211,42 @@ public class AugmentedTable extends TablePotential {
 	}
 
 	@Override public boolean isUncertain() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public void scalePotential(double scale) {
-		//TODO
 	}
+	
+	
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+			AugmentedTable newPotential = new AugmentedTable(newOrderOfVariables, getPotentialRole());
+			int[] accOffsets = getAccumulatedOffsets(newOrderOfVariables);
+			int[] potentialPositions = new int[getNumVariables()];
+			int[] potentialDimensions = getDimensions();
+			String[] valuesOrigPotential = getFunctionValues();
+			String[] valuesNewPotential = newPotential.getFunctionValues();
+
+			int copyTablePosition = 0;
+			int numVariables = newOrderOfVariables.size();
+			int incrementedVariable, i;
+			for (i = 0; i < valuesOrigPotential.length - 1; i++) {
+				valuesNewPotential[copyTablePosition] = valuesOrigPotential[i];
+
+				for (incrementedVariable = 0; incrementedVariable < numVariables; incrementedVariable++) {
+					potentialPositions[incrementedVariable]++;
+					if (potentialPositions[incrementedVariable] == potentialDimensions[incrementedVariable]) {
+						potentialPositions[incrementedVariable] = 0;
+					} else {
+						break;
+					}
+				}
+				copyTablePosition += accOffsets[incrementedVariable];
+			}
+			valuesNewPotential[copyTablePosition] = valuesOrigPotential[i];
+			newPotential.properties = properties;
+			return newPotential;
+	}
+	
 
 }

@@ -38,7 +38,7 @@ import java.util.Stack;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * This class performs prune on <code>ProbNet</code>
+ * This class performs prune on {@code ProbNet}
  *
  * @author marias
  */
@@ -48,14 +48,18 @@ public class ProbNetOperations {
 
 	/**
 	 * Performs prune operation in these steps:
+	 *
 	 * <ol>
-	 * <li>Copy the received <code>ProbNet</code>.
-	 * <li>Remove barren nodes from the copied <code>ProbNet</code>.
-	 * <li>Remove unreachable nodes from <code>variablesOfInterest</code> given
-	 * the <code>variablesOfEvidence</code>.
+	 * <li>Copy the received {@code ProbNet}.
+	 * <li>Remove barren nodes from the copied {@code ProbNet}.
+	 * <li>Remove unreachable nodes from {@code variablesOfInterest} given
+	 * the {@code variablesOfEvidence}.
 	 * </ol>
 	 *
-	 * @return <code>ProbNet</code>. Evidence variables are removed in serial
+	 * @param probNet Network
+	 * @param evidence Evidence
+	 * @param variablesOfInterest Collection of the variables of interest
+	 * @return {@code ProbNet}. Evidence variables are removed in serial
 	 * connections
 	 */
 	public static ProbNet getPruned(ProbNet probNet, Collection<Variable> variablesOfInterest, EvidenceCase evidence) {
@@ -68,11 +72,11 @@ public class ProbNetOperations {
 	}
 
 	/**
-	 * Projects the evidence in the <code>probNet</code> potentials and remove
+	 * Projects the evidence in the {@code probNet} potentials and remove
 	 * evidence variables
 	 *
-	 * @param probNet  . <code>ProbNet</code>
-	 * @param evidence . <code>EvidenceCase</code>
+	 * @param probNet  . {@code ProbNet}
+	 * @param evidence . {@code EvidenceCase}
 	 */
 	public static void projectEvidence(ProbNet probNet, EvidenceCase evidence) {
 		List<Variable> variables = evidence.getVariables();
@@ -103,10 +107,11 @@ public class ProbNetOperations {
 	}
 
 	/**
-	 * @param node  <code>Node</code>
-	 * @param nodes <code>Collection</code> of <code>Node</code>
-	 * @return <code>true</code> if <code>node</code> has at least a neighbor
-	 * other than those in <code>nodeList</code>
+	 * @param probNet Network
+	 * @param node  {@code Node}
+	 * @param nodes {@code Collection} of {@code Node}
+	 * @return {@code true} if {@code node} has at least a neighbor
+	 * other than those in {@code nodeList}
 	 */
 	public static boolean hasNeighborsOutside(ProbNet probNet, Node node, Collection<Node> nodes) {
 		boolean hasNeighborsOutside = false;
@@ -130,15 +135,15 @@ public class ProbNetOperations {
 	/**
 	 * Remove nodes that:
 	 * <ol>
-	 * <li>Are not included in <code>variablesOfInterest</code>
-	 * <li>Are not included in <code>variablesOfEvidence</code>
+	 * <li>Are not included in {@code variablesOfInterest}
+	 * <li>Are not included in {@code variablesOfEvidence}
 	 * <li>Have no children or all its children are barren nodes.
 	 * </ol>
 	 *
-	 * @param variablesOfEvidence
-	 * @param variablesOfInterest
-	 * @param prunedProbNet       . <code>ProbNet</code>
-	 * @return <code>ProbNet</code> without barren nodes.
+	 * @param variablesOfEvidence Variables of evidence
+	 * @param variablesOfInterest Variables of interest
+	 * @param prunedProbNet       . {@code ProbNet}
+	 * @return {@code ProbNet} without barren nodes.
 	 */
 	public static ProbNet removeBarrenNodes(ProbNet prunedProbNet, Collection<Variable> variablesOfInterest,
 			HashSet<Variable> variablesOfEvidence) {
@@ -196,10 +201,10 @@ public class ProbNetOperations {
 	 * Removes the nodes that are not connected to the variables of interest by
 	 * any path
 	 *
-	 * @param probNet             . <code>ProbNet</code>
-	 * @param variablesOfInterest . <code>Collection</code> of <code>Variable</code>
-	 * @param variablesOfEvidence . <code>HashSet</code> of <code>Variable</code>
-	 * @return <code>ProbNet</code>
+	 * @param probNet             . {@code ProbNet}
+	 * @param variablesOfInterest . {@code Collection} of {@code Variable}
+	 * @param variablesOfEvidence . {@code HashSet} of {@code Variable}
+	 * @return {@code ProbNet}
 	 */
 	public static ProbNet removeUnreachableNodes(ProbNet probNet, Collection<Variable> variablesOfInterest,
 			HashSet<Variable> variablesOfEvidence) {
@@ -308,9 +313,9 @@ public class ProbNetOperations {
 	}
 
 	/**
-	 * @param node           . <code>Node</code>
-	 * @param nodesToExplore . <code>UniqueStack</code> of <code>Node</code>
-	 * @param nodesToKeep    . <code>HashSet</code> of <code>Node</code>
+	 * @param node           . {@code Node}
+	 * @param nodesToExplore . {@code UniqueStack} of {@code Node}
+	 * @param nodesToKeep    . {@code HashSet} of {@code Node}
 	 */
 	private static void pushInExploreAndAddToKeep(Node node, UniqueStack<Node> nodesToExplore, Set<Node> nodesToKeep) {
 		nodesToExplore.push(node);
@@ -318,9 +323,9 @@ public class ProbNetOperations {
 	}
 
 	/**
-	 * @param probNet             . <code>ProbNet</code>
-	 * @param variablesOfEvidence . <code>Collection</code> of <code>Variable</code>
-	 * @return <code>HashSet</code> of <code>Node</code>
+	 * @param probNet             . {@code ProbNet}
+	 * @param variablesOfEvidence . {@code Collection} of {@code Variable}
+	 * @return {@code HashSet} of {@code Node}
 	 */
 	private static Set<Node> getEvidenceNodes(ProbNet probNet, Collection<Variable> variablesOfEvidence) {
 		Set<Node> hashEvidenceNodes = new HashSet<>();
@@ -334,9 +339,9 @@ public class ProbNetOperations {
 	}
 
 	/**
-	 * @param nodes . <code>ArrayList</code> of <code>Node</code>.
-	 * @return <code>nodes</code> and its ancestors. <code>ArrayList</code> of
-	 * <code>Node</code>.
+	 * @param nodes . {@code ArrayList} of {@code Node}.
+	 * @return {@code nodes} and its ancestors. {@code ArrayList} of
+	 * {@code Node}.
 	 */
 	private static Set<Node> getNodesAndAncestors(Collection<Node> nodes) {
 		Set<Node> ancestors = new HashSet<>(nodes);
@@ -359,8 +364,9 @@ public class ProbNetOperations {
 	/**
 	 * Uses the algorithm by Kahn (1962)
 	 *
-	 * @param probNet
-	 * @param variablesToSort
+	 * @param probNet Network
+	 * @param variablesToSort Variables to sort	 *
+	 * @return List of variables sorted topologically
 	 */
 	public static List<Variable> sortTopologically(ProbNet probNet, List<Variable> variablesToSort) {
 		List<Node> sortedNodes = sortTopologically(probNet);
@@ -376,7 +382,8 @@ public class ProbNetOperations {
 	/**
 	 * Uses the algorithm by Kahn (1962)
 	 *
-	 * @param probNet
+	 * @param probNet Network
+	 * @return List of variables sorted topologically
 	 */
 	public static List<Node> sortTopologically(ProbNet probNet) {
 		ProbNet graph = probNet.copy();
@@ -419,9 +426,9 @@ public class ProbNetOperations {
 	 * parents into finite state variables. It also adapts the potentials
 	 * affected by these conversions.
 	 *
-	 * @param probNet
-	 * @param evidence
-	 * @return
+	 * @param probNet Network
+	 * @param evidence Evidence
+	 * @return Network with numerical variables transformed into FS
 	 */
 	public static ProbNet convertNumericalVariablesToFS(ProbNet probNet, EvidenceCase evidence) {
 		ProbNet convertedNet = probNet.copy();
@@ -603,8 +610,8 @@ public class ProbNetOperations {
 	}
 
 	/**
-	 * @param potential
-	 * @param projectedPotential
+	 * @param potential Potential
+	 * @param projectedPotential Projected potential
 	 * @param configuration      - configuration of projected variables
 	 */
 	public static void sumProjectedPotential(TablePotential potential, TablePotential projectedPotential,
@@ -748,8 +755,8 @@ public class ProbNetOperations {
 	 * if and only if there is no directed path that goes through all the
 	 * decision nodes
 	 *
-	 * @param probNet
-	 * @return
+	 * @param probNet Network
+	 * @return True if the network has order asymmetry
 	 */
 	public static boolean hasOrderAsymmetry(ProbNet probNet) {
 		return hasOrderAsymmetry(probNet, null);
@@ -817,11 +824,10 @@ public class ProbNetOperations {
 	 * @return A list of chance variables that are observable; this list includes always observed variables and
 	 * those variables that can be reached from an always observed variable or from a decision, always following
 	 * a path formed exclusively by revelation links.
-	 * @throws NodeNotFoundException
-	 * @throws NodeNotFoundException
+	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
 	public static Set<Node> getObservableVariables(ProbNet probNet)
-			throws NodeNotFoundException, NodeNotFoundException {
+			throws NodeNotFoundException {
 		Set<Node> observable;
 		Set<Variable> visitedDecisions;
 		ConcurrentLinkedQueue<Variable> variablesToProcess = new ConcurrentLinkedQueue<>();
@@ -875,8 +881,8 @@ public class ProbNetOperations {
 	/**
 	 * Generates a list of decision nodes that don't have parent decisions
 	 *
-	 * @param probNet
-	 * @return
+	 * @param probNet Network
+	 * @return Parentless decisions
 	 */
 	public static List<Node> getParentlessDecisions(ProbNet probNet) {
 		List<Node> parentlessDecisions = new ArrayList<>();
@@ -904,8 +910,8 @@ public class ProbNetOperations {
 	/**
 	 * Gets the list of always-observed-variables in the DAN
 	 *
-	 * @param probNet
-	 * @return
+	 * @param probNet Network
+	 * @return list of always-observed-variables
 	 */
 	public static List<Node> getAlwaysObservedVariables(ProbNet probNet) {
 		List<Node> alwaysObservedVariables = new ArrayList<>();
@@ -920,9 +926,9 @@ public class ProbNetOperations {
 	/**
 	 * Returns whether the node has a predecessor decision
 	 *
-	 * @param node
-	 * @param probNet
-	 * @return
+	 * @param node Node
+	 * @param probNet Network
+	 * @return True if the node has a predecessor decision
 	 */
 	public static boolean hasPredecessorDecision(Node node, ProbNet probNet) {
 		Stack<Node> predecessors = new Stack<>();
@@ -941,9 +947,9 @@ public class ProbNetOperations {
 	/**
 	 * Returns the list of predecessor decisions of node decisionNode
 	 *
-	 * @param node
-	 * @param probNet
-	 * @return
+	 * @param node Node
+	 * @param probNet Network
+	 * @return Predecessors of the decision node
 	 */
 	public static List<Node> getPredecessorDecisions(Node node, ProbNet probNet) {
 		List<Node> predecessorDecisions = new ArrayList<>();
@@ -981,8 +987,9 @@ public class ProbNetOperations {
 
 	/**
 	 * Method to add non-forgetting arcs.
-	 * The assumption of “no forgetting” is made explicit by arcs
+	 * The assumption of "no forgetting" is made explicit by arcs
 	 * from predecessors of decision nodes
+	 * @param probNet Network
 	 */
 	public static void addNoForgettingArcs(ProbNet probNet) {
 		// First, we retrieve the decision variables from the network
@@ -1061,9 +1068,9 @@ public class ProbNetOperations {
 	}
 
 	/**
-	 * @param node <code>Node</code>.
-	 * @return <code>node</code> and its ancestors. <code>Set</code> of
-	 * <code>Node</code>.
+	 * @param node {@code Node}.
+	 * @return {@code node} and its ancestors. {@code Set} of
+	 * {@code Node}.
 	 */
 	public static Set<Node> getNodeAncestors(Node node) {
 		Set<Node> ancestors = new HashSet<>();

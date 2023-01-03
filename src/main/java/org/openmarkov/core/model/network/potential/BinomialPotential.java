@@ -12,6 +12,7 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -29,10 +30,10 @@ public class BinomialPotential extends Potential {
 	//Probability of success
 	private double theta;
 
-	//UNCLEAR What role should I use--> Suppose CONDITIONAL_PROBABILITY 
+	//UNCLEAR What role should I use--&gt; Suppose CONDITIONAL_PROBABILITY
 	public BinomialPotential(List<Variable> variables, PotentialRole role, int NValue, double thetaValue) {
 		this(variables, role);
-		//UNCLEAR --> Where do I control N is integer and p is between 0 and 1?
+		//UNCLEAR --&gt; Where do I control N is integer and p is between 0 and 1?
 		this.N = NValue;
 		this.theta = thetaValue;
 	}
@@ -42,7 +43,7 @@ public class BinomialPotential extends Potential {
 	 * FINITE_STATES(0, "finiteStates"), NUMERIC(1, "numeric"),DISCRETIZED(2, "discretized");
 	 */
 
-	/* UNCLEAR-->Where do I have to control that the variable is numeric, the probability is between 0 and 1
+	/* UNCLEAR--&gt;Where do I have to control that the variable is numeric, the probability is between 0 and 1
 	 * and the number of cases is a positive integer?
 	 */
 	public BinomialPotential(List<Variable> variables, PotentialRole role) {
@@ -63,9 +64,11 @@ public class BinomialPotential extends Potential {
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role.
 	 *
-	 * @param node      . <code>Node</code>
-	 * @param variables . <code>List</code> of <code>Variable</code>.
-	 * @param role      . <code>PotentialRole</code>.
+	 * @param node      . {@code Node}
+	 * @param variables . {@code List} of {@code Variable}.
+	 * @param role      . {@code PotentialRole}.
+	 * @return if an instance of a certain Potential type makes sense given the
+	 * 	 variables and the potential role.
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		return role == PotentialRole.CONDITIONAL_PROBABILITY && (!variables.isEmpty()
@@ -113,7 +116,7 @@ public class BinomialPotential extends Potential {
 	}
 
 	@Override
-	//UNCLEAR--> What is this
+	//UNCLEAR--&gt; What is this
 	public void scalePotential(double scale) {
 
 		throw new UnsupportedOperationException();
@@ -150,5 +153,17 @@ public class BinomialPotential extends Potential {
 
 		return potential;
 
+	}
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

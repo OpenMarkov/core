@@ -10,7 +10,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 
 /**
- * <code>NodeAlwaysObservedEdit</code> is a simple edit that allow modify the always observed property of a variable
+ * {@code NodeAlwaysObservedEdit} is a simple edit that allow modify the always observed property of a variable
  * name.
  */
 
@@ -30,7 +30,7 @@ import org.openmarkov.core.model.network.Node;
 	private Node node = null;
 
 	/**
-	 * Creates a new <code>AlwaysObservedEdit</code> with the node and new 'alwaysObserved'
+	 * Creates a new {@code AlwaysObservedEdit} with the node and new 'alwaysObserved'
 	 * specified.
 	 *
 	 * @param node              the node that will be edited

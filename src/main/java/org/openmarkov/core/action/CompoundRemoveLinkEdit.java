@@ -32,10 +32,10 @@ import java.util.List;
 	// Constructor
 
 	/**
-	 * @param probNet    <code>ProbNet</code>
-	 * @param variable1  <code>Variable</code>
-	 * @param variable2  <code>Variable</code>
-	 * @param isDirected <code>boolean</code>
+	 * @param probNet    {@code ProbNet}
+	 * @param variable1  {@code Variable}
+	 * @param variable2  {@code Variable}
+	 * @param isDirected {@code boolean}
 	 */
 	public CompoundRemoveLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {
 		super(probNet);

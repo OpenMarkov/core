@@ -19,14 +19,15 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 import java.util.List;
 
-@Constraint(name = "DistinctLinks", defaultBehavior = ConstraintBehavior.YES)
-/****
- * This class implements the DistinctLinks constraint, which establishes that the network 
+/**
+ * This class implements the DistinctLinks constraint, which establishes that the network
  * can not have two equal links.
  * @author ckonig
  * @author manuel arias
  *
- */ public class DistinctLinks extends PNConstraint {
+ */
+@Constraint(name = "DistinctLinks", defaultBehavior = ConstraintBehavior.YES)
+public class DistinctLinks extends PNConstraint {
 
 	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Node> nodes = probNet.getNodes();
@@ -54,7 +55,7 @@ import java.util.List;
 				return false;
 			}
 		}
-		/**List<PNEdit> edits2 = UtilConstraints.getEditsType (edit, LinkEdit.class);
+		/*List<PNEdit> edits2 = UtilConstraints.getEditsType (edit, LinkEdit.class);
 		 for (PNEdit simpleEdit : edits2)
 		 {
 		 LinkEdit linkEdit = (LinkEdit) simpleEdit;
@@ -65,7 +66,7 @@ import java.util.List;
 		 {
 		 return false;
 		 }
-		 }**/
+		 }*/
 		List<PNEdit> edits3 = UtilConstraints.getSimpleEditsByType(edit, InvertLinkEdit.class);
 		for (PNEdit simpleEdit : edits3) {
 			Variable variable1 = ((InvertLinkEdit) simpleEdit).getVariable1();
@@ -81,14 +82,14 @@ import java.util.List;
 	}
 
 	/*******
-	 * Checks if a link between <code>node1</code> and <code>node2</code>
+	 * Checks if a link between {@code node1} and {@code node2}
 	 * satisfies the restriction of distinctLinks
-	 * @param graph
-	 * @param node1
-	 * @param node2
-	 * @param directed
-	 * @return code>true</code> if the link between <code>node1</code> and
-	 *         <code>node2</code>has distinctLinks
+	 * @param graph Network
+	 * @param node1 First node
+	 * @param node2 Second node
+	 * @param directed True if the link is directed
+	 * @return True if the link between {@code node1} and
+	 *         {@code node2}has distinctLinks
 	 */
 	private boolean checkLink(ProbNet graph, Node node1, Node node2, boolean directed) {
 		return !(

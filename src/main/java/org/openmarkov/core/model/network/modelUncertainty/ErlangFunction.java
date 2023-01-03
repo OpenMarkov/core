@@ -15,8 +15,8 @@ public class ErlangFunction extends ProbDensFunction {
 	private ExponentialFunction exponentialFunction;
 
 	/**
-	 * @param k
-	 * @param lambda
+	 * @param k k
+	 * @param lambda Lambda
 	 */
 	public ErlangFunction(int k, double lambda) {
 		this.k = k;

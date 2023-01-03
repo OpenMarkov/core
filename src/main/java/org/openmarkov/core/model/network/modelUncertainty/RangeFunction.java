@@ -17,8 +17,8 @@ package org.openmarkov.core.model.network.modelUncertainty;
 	}
 
 	/**
-	 * @param lowerBound
-	 * @param upperBound
+	 * @param lowerBound Lower bound
+	 * @param upperBound Upper bound
 	 */
 	public RangeFunction(double lowerBound, double upperBound) {
 		this.lowerBound = lowerBound;

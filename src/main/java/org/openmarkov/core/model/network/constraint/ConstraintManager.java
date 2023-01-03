@@ -61,6 +61,7 @@ public class ConstraintManager {
 	 * constraint list given the network type and the Constraints annotated as
 	 * such.
 	 *
+	 * @param includeOptionals If include optional constraints
 	 * @param type of the network the list is being generated for.
 	 * @return a minimal list of constraint.
 	 */
@@ -72,7 +73,7 @@ public class ConstraintManager {
 					includeOptionals && getDefaultBehavior(constraintClass).equals(ConstraintBehavior.OPTIONAL)
 			)) {
 				try {
-					constraints.add(constraintClass.newInstance());
+					constraints.add(constraintClass.getDeclaredConstructor().newInstance());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -85,7 +86,7 @@ public class ConstraintManager {
 		for (Class<? extends PNConstraint> constraintClass : overwrittenConstraints.keySet()) {
 			if (overwrittenConstraints.get(constraintClass) == ConstraintBehavior.YES) {
 				try {
-					constraints.add(constraintClass.newInstance());
+					constraints.add(constraintClass.getDeclaredConstructor().newInstance());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

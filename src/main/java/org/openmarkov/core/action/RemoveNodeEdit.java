@@ -25,8 +25,8 @@ import org.openmarkov.core.model.network.Variable;
 	// Constructor
 
 	/**
-	 * @param probNet <code>ProbNet</code>
-	 * @param node    <code>Node</code>
+	 * @param probNet {@code ProbNet}
+	 * @param node    {@code Node}
 	 */
 	public RemoveNodeEdit(ProbNet probNet, Node node) {
 		super(probNet);
@@ -55,14 +55,14 @@ import org.openmarkov.core.model.network.Variable;
 	}
 
 	/**
-	 * @return nodeType <code>NodeType</code>
+	 * @return nodeType {@code NodeType}
 	 */
 	public NodeType getNodeType() {
 		return node.getNodeType();
 	}
 
 	/**
-	 * @return variable <code>Variable</code>
+	 * @return variable {@code Variable}
 	 */
 	public Variable getVariable() {
 		return variable;

@@ -25,7 +25,7 @@ import java.io.Serializable;
  *
  * @author manuel
  * @author fjdiez
- * @version 1.1 - cyago -Added event nodes
+ * @version 1.1 - 31/01/2019- cmyago -Added event nodes
  */
 public enum NodeType implements Serializable {
 	CHANCE(0, "chance"), DECISION(1, "decision"), UTILITY(2, "utility"), SV_SUM(3, "svSum"), SV_PRODUCT(4, "svProduct"),

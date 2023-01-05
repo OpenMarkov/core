@@ -1,17 +1,17 @@
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.Configuration;
+import org.openmarkov.core.model.network.Finding;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Interface for implementing the management of parent configurations which cannot be possible for a node in a model
- * TODO Throw exception when configurations does not exist??
- * @author cyago
+ * FIXME Throw exception when configurations does not exist??
+ * FIXME Keep or not?
+ * @author cmyago
  * @version 1.0 - 2019
  */
 public interface ImpossibleConfiguration {

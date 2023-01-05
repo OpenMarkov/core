@@ -229,6 +229,16 @@ public class TreeWithEventsPotential extends Potential {
 		//TODO
 			return null;
 	}
+	//03/01/2023; added after merge because it was added to Potential as an abstract method
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		return null;
+	}
+	//03/01/2023; added after merge because it was added to Potential as an abstract method
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		return null;
+	}
 
 
 	// Methods for toString()

@@ -4,12 +4,15 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Configuration of States and Events representing an configuration of Findings in a potential used in a DESNet
  * TODO rename, How describe it?
- * @author cyago
+ * @author cmyago
  * @version 1.0 - 01/09/2019
  * @version 1.1 - 04/01/2020 - inherits from EvidenceCase due to we need evidence cases for tables - to be changed with the new version of tables. Inheritance it done because Configuration comparation is needed and EvidenceCase does not have an equal method
  * @version 1.2 - 11/04/2020 - adds methods to use with the sampling methods defined in org.openmarkov.core.model.network.potential.Potential

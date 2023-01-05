@@ -1,17 +1,11 @@
-/*
- * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
- * Unless required by applicable law or agreed to in writing,
- * this code is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OF ANY KIND.
- */
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 
 /**
- * Simple edit that allow modify the always append property of an event variable
- * @author cyago
+ * Simple edit that allow to modify the always append property of an event variable
+ * @author cmyago
  * @version 1.0 25/10/2020
  */
 

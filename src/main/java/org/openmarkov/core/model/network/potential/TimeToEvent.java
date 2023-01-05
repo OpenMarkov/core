@@ -1,15 +1,17 @@
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.Configuration;
+import org.openmarkov.core.model.network.Finding;
 
 import java.util.List;
 import java.util.Random;
 
 /**
  * Interface implemented by Potentials used in DES models to represent and  calculate Time To Event
- * @author cyago
+ * @author cmyago
  * @version 1.0 2019
- * @version 1.1 05/01/2020
+ * @version 1.1 cnyago - 05/01/2020
+ * 04/10/2023 FIXME Keep it or not?
  */
 public interface TimeToEvent {
     /**

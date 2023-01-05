@@ -1,10 +1,3 @@
-/*
- * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
- * Unless required by applicable law or agreed to in writing,
- * this code is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OF ANY KIND.
- */
-
 package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.AddLinkEdit;
@@ -22,7 +15,8 @@ import java.util.List;
 
 /**
  * This constrain only allows self loops in event nodes. Self loop is a directed edge which the same origin and destination
- * @author cyago - cyago adapted it from NoSelfLoop - 31/12/2019 - this constraint is only used in DESNets
+ * @author cmyago - cmyago adapted it from NoSelfLoop - 31/12/2019 - this constraint is only used in DESNets.
+ * 04/10/2023 FI
  * @version 1.0 - self-loops only in Event nodes
  * @version 1.1 - self-loops in Chance and Event nodes - 05/04/2020
  */

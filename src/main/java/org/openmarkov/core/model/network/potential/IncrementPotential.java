@@ -1,26 +1,18 @@
-/*
- * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
- * Unless required by applicable law or agreed to in writing,
- * this code is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OF ANY KIND.
- */
-
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 /**
  * Potential which represents an increment in the value taken by a numeric variable.
  * TODO It does not represent a probability distribucion --???
- * @author cyago
+ * @author cmyago
  * @version 1.0 10/04/2020 - Adapted from Uniform
+ * 04/01/2023 - FIXME merge with CycleLengthShift?
  */
 @PotentialType(name = "Increment") public class IncrementPotential extends Potential {
 	/**
@@ -115,5 +107,15 @@ import java.util.stream.Collectors;
 		IncrementPotential potential = (IncrementPotential) super.deepCopy(copyNet);
 		return potential;
 
+	}
+	//03/01/2023; added after merge because it was added to Potential as an abstract method
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		return null;
+	}
+	//03/01/2023; added after merge because it was added to Potential as an abstract method
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		return null;
 	}
 }

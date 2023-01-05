@@ -1,10 +1,3 @@
-/*
- * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
- * Unless required by applicable law or agreed to in writing,
- * this code is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OF ANY KIND.
- */
-
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
@@ -14,8 +7,9 @@ import org.openmarkov.core.model.network.ProbNet;
 import javax.swing.undo.CannotUndoException;
 
 /**
- * This class contains the information for doEdit() of MonteCarloOptions
- * @author cyago
+ * This class contains the information for doEdit() of MonteCarloOptions.
+ * 04/10/2023 FIXME check if it complies with OM wiki
+ * @author cmyago
  * @version 1.0 25/08/2019
  */
 public class MonteCarloOptionsEdit extends SimplePNEdit {

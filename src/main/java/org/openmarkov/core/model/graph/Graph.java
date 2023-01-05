@@ -7,13 +7,7 @@
 
 package org.openmarkov.core.model.graph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * This class implements the minimal set of methods for creating
@@ -31,7 +25,7 @@ import java.util.Stack;
  * @author fjdiez
  * @author ibermejo
  * @version 1.1
- * @version 1.2 - cyago 06/01/2020
+ * @version 1.2 - cmyago 06/01/2020 - allowing self-loops because DESnets support them.
  * invariant Two different nodes can not represent the same object
  * @see org.openmarkov.core.model.network.Node
  * @see Link

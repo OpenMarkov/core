@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 /**
  * @author manuel
- * @version 1.1 - cyago - 12/02/2019  - added type "event"
+ * @version 1.1 - cmyago - 12/02/2019  - added type "event"
  */
 public enum VariableType implements Serializable {
 //	FINITE_STATES(0, "finiteStates"), NUMERIC(1, "numeric"), DISCRETIZED(2, "discretized");

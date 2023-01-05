@@ -1,6 +1,9 @@
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.*;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
@@ -11,7 +14,7 @@ import java.util.List;
 
 /**
  * Implement a table with Events in the configuration of parents
- * @author cyago
+ * @author cmyago
  * @version 1.0 -14/00/2019
  * @version 1.2 30/04/2020 - changed TableWithFunctions
  * @version 2.0 -14/08/2022 - changed for rework sampling  for avoiding nuisance variance
@@ -403,6 +406,17 @@ public class TableWithEvents extends Potential {
     //TODO
     @Override public void scalePotential(double scale) {
         this.getTablePotential().scalePotential(scale);
+    }
+
+    //03/01/2023; added after merge because it was added to Potential as an abstract method
+    @Override
+    public Potential reorder(List<Variable> newOrderOfVariables) {
+        return null;
+    }
+    //03/01/2023; added after merge because it was added to Potential as an abstract method
+    @Override
+    public Potential reorder(Variable variable, State[] newOrder) {
+        return null;
     }
 
 }

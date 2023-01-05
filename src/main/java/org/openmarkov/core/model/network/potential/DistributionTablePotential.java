@@ -317,6 +317,18 @@ public class DistributionTablePotential extends Potential {
     public void scalePotential(double scale) {
     }
 
+
+    //03/01/2023; added after merge because it was added to Potential as an abstract method
+    @Override
+    public Potential reorder(List<Variable> newOrderOfVariables) {
+        return null;
+    }
+    //03/01/2023; added after merge because it was added to Potential as an abstract method
+    @Override
+    public Potential reorder(Variable variable, State[] newOrder) {
+        return null;
+    }
+
 //ImpossibleConfiguration interface
 
 

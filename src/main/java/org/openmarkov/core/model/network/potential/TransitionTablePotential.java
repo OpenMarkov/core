@@ -1,22 +1,19 @@
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * A <code>TransitionTablePotential</code> is a type of relation with a list of
  * probabilistic nodes.
  *  Transition class to be merged with the new structure of tables
  * There have to be at least one Event variable
- * @version 1.0 -24/03/2019- -cyago -
+ * @author cmyago
+ * @version 1.0 -24/03/2019- -cmyago -
  * @version 1.1 -24/08/2019 - renamed to TransitionTable and added the possibility of incompatible combinations
  * @version 1.2 -25/04/2020 - changed sampling method
- * @since OpenMarkov 3.0
 */
 
 

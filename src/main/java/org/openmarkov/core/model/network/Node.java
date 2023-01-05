@@ -11,11 +11,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.ProductPotential;
-import org.openmarkov.core.model.network.potential.SumPotential;
-import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.Util;
 
@@ -31,8 +27,8 @@ import java.util.List;
  * @author marias
  * @author fjdiez
  * @version 1.0
- * @version 1.1 - cyago - 24/01/2019 - added event nodes
- * @version 1.1.1 - cyago - 24/10/2020 - added event scheduling behaviour
+ * @version 1.1 - cmyago - 24/01/2019 - added event nodes
+ * @version 1.1.1 - cmyago - 24/10/2020 - added event scheduling behaviour
  * @see Node
  * @see org.openmarkov.core.model.network.ProbNet
  * @since OpenMarkov 1.0

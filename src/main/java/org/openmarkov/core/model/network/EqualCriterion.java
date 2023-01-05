@@ -1,9 +1,4 @@
-/*
- * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
- * Unless required by applicable law or agreed to in writing,
- * this code is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OF ANY KIND.
- */
+
 
 package org.openmarkov.core.model.network;
 
@@ -12,9 +7,10 @@ package org.openmarkov.core.model.network;
  * A criterion has a name and the units of measure, subclass equal due to I don't know how equality should be treated in other netorks
  * TODO Implement equal method in Criterion or change the name of this class
  *
- * @author cyago
+ * @author cmyago
  * @version 1.0 implemented comparable
  * @version 2.0 25/04/2020 implements equal method. I need compare equality no order. Refactored from ComparableCriterion
+ * 04/01/2023 FIXME to be merged with Criterion
  */
 public class EqualCriterion extends Criterion {
 

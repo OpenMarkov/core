@@ -1,9 +1,9 @@
-/*
- * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
- * Unless required by applicable law or agreed to in writing,
- * this code is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OF ANY KIND.
- */
+///*
+// * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
+// * Unless required by applicable law or agreed to in writing,
+// * this code is distributed on an "AS IS" basis,
+// * WITHOUT WARRANTIES OF ANY KIND.
+// */
 package org.openmarkov.core.model.network.potential;
 
 import net.sourceforge.jeval.EvaluationException;
@@ -24,9 +24,10 @@ import java.util.Map;
  * TODO Which parents???
  * Has they to be numeric or may we have "finites states" which have one value associated? For example male=1, female=0
  *
- * @author cyago
+ * @author cmyago
  * @version 1.1 06/12/2019
- * @version 2 19/08/2022 - changed to paliate nuisance variance and speed simulation creating only once the evaluator and the signature of sampling
+ * @version 2 19/08/2022 - changed to mitigate nuisance variance and speed simulation creating only once the evaluator and the signature of sampling
+ * 04/10/2023 FIXME Check license
  */
 @PotentialType(name = "Function") public class FunctionPotential extends GLMPotential {
 

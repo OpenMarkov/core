@@ -1,10 +1,3 @@
-/*
- * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
- * Unless required by applicable law or agreed to in writing,
- * this code is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OF ANY KIND.
- */
-
 package org.openmarkov.core.inference;
 
 import java.io.File;
@@ -13,7 +6,8 @@ import java.io.File;
  * This class contains the parameter for doing Monte Carlo simulations.
  * There are three types or parameters: Those which establish how the simulation is carried out and what is calculated,
  * those which determine the simulation log and the input files
- * @author cyago
+ * @author cmyago
+ * 04/10/2023 FIXME Merge with inference options
  * @version 1.0 25/08/2019
  * @version 1.1 25/09/2019 -added log options
  * @version 1.2 16/12/2019 -added calculation and file options
@@ -53,7 +47,7 @@ public class MonteCarloOptions implements Cloneable {
 	 */
     private boolean mean = true;
 	/**
-	 * When true, a trimmedMean is calculated (TODO: decide how to do the trimming)
+	 * When true, a trimmedMean is calculated (FIXME: decide how to do the trimming)
 	 */
 	private boolean trimmedMean = true;
 

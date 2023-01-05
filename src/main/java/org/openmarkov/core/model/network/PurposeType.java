@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 /**
  * Purpose types
- * @author cyago
- * @version 1.0 - cyago - previously thu where stored in org.openmarkov.gui.util.Purpose. Now the types or purpose are in the core and its representation in the gui. Adapted from NodeType. This version intends to make minor changes in the code
+ * @author cmyago
+ * @version 1.0 - 11/03/2020 - previously thu where stored in org.openmarkov.gui.util.Purpose. Now the types or purpose are in the core and its representation in the gui. Adapted from NodeType. This version intends to make minor changes in the code
  * TODO set Purpose in the node as an instance or PurposeType
  */
 public enum PurposeType {

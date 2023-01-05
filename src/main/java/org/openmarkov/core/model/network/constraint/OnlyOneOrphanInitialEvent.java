@@ -1,10 +1,3 @@
-/*
- * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
- * Unless required by applicable law or agreed to in writing,
- * this code is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OF ANY KIND.
- */
-
 package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.AddLinkEdit;
@@ -12,7 +5,10 @@ import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PurposeEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.PurposeType;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 import javax.swing.*;
@@ -20,8 +16,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This constrain  checks that there is only one initial and has no parents
- * @author cyago - cyago adapted it from NoSelfLoop - 26/01/2020 - this constraint is only used in DESNets
+ * This constrain  checks that there is only one initial node with no parents
+ * @author cmyago - cmyago adapted it from NoSelfLoop - 26/01/2020 - this constraint is only used in DESNets
+ * 04/10/2023 FIXME check if code is follows OM rules
+ * @version 1
  */
 @Constraint(name = "InitialNodeConstrain", defaultBehavior = ConstraintBehavior.NO)
 public class OnlyOneOrphanInitialEvent extends PNConstraint {

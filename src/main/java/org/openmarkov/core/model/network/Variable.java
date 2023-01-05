@@ -27,7 +27,7 @@ import java.util.List;
  * @version 1.0
  * @see org.openmarkov.core.model.network.Node
  * @see org.openmarkov.core.model.network.ProbNet
- * @version 1.1 - cyago - 12/02/2019  - added type "event"
+ * @version 1.1 - cmyago - 12/02/2019  - added type "event"
  */
 public class Variable implements Cloneable, Comparable<Variable> {
 

@@ -12,14 +12,7 @@ import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
@@ -88,6 +81,9 @@ import java.util.List;
 						variables.size() > 1 && role == PotentialRole.CONDITIONAL_PROBABILITY
 								&& node.getVariable().getVariableType() == VariableType.NUMERIC
 				)
+				//CMI 07/01/2023 - DESnets
+				|| (variables.get(0).getVariableType() == VariableType.EVENT)
+				//CMF
 		);
 	}
 
@@ -207,5 +203,12 @@ import java.util.List;
 		// TODO Auto-generated method stub
 		return null;
 	}
+	//CMI 07/01/2023 --added sampling behaviour. DeltaPotential is deterministic.
+	@Override
+	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
+		if (getConditionedVariable().getVariableType()==VariableType.FINITE_STATES) return stateIndex;
+		else return numericValue;
+	}
+	//CMF
 
 }

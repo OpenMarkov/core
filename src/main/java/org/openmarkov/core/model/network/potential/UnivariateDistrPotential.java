@@ -10,17 +10,10 @@ package org.openmarkov.core.model.network.potential;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.modelUncertainty.ExactFunction;
-import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
-import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
-import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionType;
-import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.modelUncertainty.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,6 +137,10 @@ import java.util.List;
 	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+
+		//CMI 08/01/2023 added DESnet behaviour
+		if (node.getProbNet().getNetworkType() instanceof DESNetworkType) return false;
+		//CMF
 		return (node.getVariable().getVariableType() == VariableType.NUMERIC);
 
 	}

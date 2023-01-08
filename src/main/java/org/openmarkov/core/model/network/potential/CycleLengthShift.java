@@ -9,14 +9,9 @@ package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.CycleLength;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +23,7 @@ import java.util.List;
  *
  * @author marias
  * @version 1.0
+ * @version 1.1 cmyago 08/01/2023 - added Node parameter and DESnet behavirour to validate method.
  */
 @PotentialType(name = "CycleLengthShift", family = "Temporal") public class CycleLengthShift extends Potential {
 
@@ -58,6 +54,25 @@ import java.util.List;
 		return cycleLength;
 	}
 
+
+	//CMI 08/01/2023 - added DESnets provisional behaviour and added node parameter.
+	// 	/**
+//	 * Returns if an instance of a certain Potential type makes sense given the
+//	 * variables and the potential role
+//	 *
+//	 * @param variables List of variables
+//	 * @param role      PotentialRole
+//	 * @return True if it is valid
+//	 */
+//	public static boolean validate(List<Variable> variables, PotentialRole role) {
+//		return role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size() == 2
+//				// child = variables.get (0)
+//				// parent = variables.get (1)
+//				&& variables.get(0).isTemporal() && variables.get(1).isTemporal() && variables.get(0).getBaseName()
+//				.equals(variables.get(1).getBaseName())
+//				&& variables.get(0).getTimeSlice() == variables.get(1).getTimeSlice() + 1;
+//	}
+
 	/**
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role
@@ -66,7 +81,9 @@ import java.util.List;
 	 * @param role      PotentialRole
 	 * @return True if it is valid
 	 */
-	public static boolean validate(List<Variable> variables, PotentialRole role) {
+	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+		if (node.getProbNet().getNetworkType() instanceof DESNetworkType) return false;
+		//This is copied from validate(List<Variable>, PotentialRole) above. FIXME remove validate(List<Variable>, PotentialRole)
 		return role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size() == 2
 				// child = variables.get (0)
 				// parent = variables.get (1)
@@ -74,6 +91,7 @@ import java.util.List;
 				.equals(variables.get(1).getBaseName())
 				&& variables.get(0).getTimeSlice() == variables.get(1).getTimeSlice() + 1;
 	}
+//CMF
 
 	// Methods
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,

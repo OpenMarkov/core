@@ -15,6 +15,7 @@ import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.*;
 
@@ -209,6 +210,10 @@ public class TreeADDPotential extends Potential {
 	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+
+		//CMI 08/01/2023 added DESnet behaviour
+		if (node.getProbNet().getNetworkType() instanceof DESNetworkType) return false;
+		//CMF
 		boolean validate = false;
 		// node must have at least one parent node
 		// @12/11/2014

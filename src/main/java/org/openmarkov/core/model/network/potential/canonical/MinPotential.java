@@ -7,16 +7,13 @@
 
 package org.openmarkov.core.model.network.potential.canonical;
 
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +51,10 @@ import java.util.List;
 	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+
+		//CMI 08/01/2023 added DESnet behaviour
+		if (node.getProbNet().getNetworkType() instanceof DESNetworkType) return false;
+		//CMF
 		boolean valid = ICIPotential.validate(node, variables, role) && (
 				(role == PotentialRole.CONDITIONAL_PROBABILITY) || (role == PotentialRole.POLICY)
 		);

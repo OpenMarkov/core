@@ -56,23 +56,6 @@ import java.util.List;
 
 
 	//CMI 08/01/2023 - added DESnets provisional behaviour and added node parameter.
-	// 	/**
-//	 * Returns if an instance of a certain Potential type makes sense given the
-//	 * variables and the potential role
-//	 *
-//	 * @param variables List of variables
-//	 * @param role      PotentialRole
-//	 * @return True if it is valid
-//	 */
-//	public static boolean validate(List<Variable> variables, PotentialRole role) {
-//		return role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size() == 2
-//				// child = variables.get (0)
-//				// parent = variables.get (1)
-//				&& variables.get(0).isTemporal() && variables.get(1).isTemporal() && variables.get(0).getBaseName()
-//				.equals(variables.get(1).getBaseName())
-//				&& variables.get(0).getTimeSlice() == variables.get(1).getTimeSlice() + 1;
-//	}
-
 	/**
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role

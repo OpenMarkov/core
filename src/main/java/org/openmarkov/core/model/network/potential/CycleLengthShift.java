@@ -67,8 +67,9 @@ import java.util.List;
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		// 10/01/2023 Issue #483. Signature changed.
 		//public static boolean validate(List<Variable> variables, PotentialRole role) {
+		//CMI 08/01/2023 - for DESnets
 		if (node.getProbNet().getNetworkType() instanceof DESNetworkType) return false;
-		//This is copied from validate(List<Variable>, PotentialRole) above. FIXME remove validate(List<Variable>, PotentialRole)
+		//CMF
 		return role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size() == 2
 				// child = variables.get (0)
 				// parent = variables.get (1)

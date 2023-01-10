@@ -65,6 +65,8 @@ import java.util.List;
 	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+		// 10/01/2023 Issue #483. Signature changed.
+		//public static boolean validate(List<Variable> variables, PotentialRole role) {
 		if (node.getProbNet().getNetworkType() instanceof DESNetworkType) return false;
 		//This is copied from validate(List<Variable>, PotentialRole) above. FIXME remove validate(List<Variable>, PotentialRole)
 		return role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size() == 2

@@ -9,13 +9,7 @@ package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.CycleLength;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
@@ -66,7 +60,9 @@ import java.util.List;
 	 * @param role      PotentialRole
 	 * @return True if it is valid
 	 */
-	public static boolean validate(List<Variable> variables, PotentialRole role) {
+	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+		// 10/01/2023 Issue #483. Signature changed.
+		//public static boolean validate(List<Variable> variables, PotentialRole role) {
 		return role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size() == 2
 				// child = variables.get (0)
 				// parent = variables.get (1)

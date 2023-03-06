@@ -7,18 +7,22 @@
 
 package org.openmarkov.core.model.network;
 
+import org.apache.logging.log4j.LogManager;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.inference.TransitionTime;
+import org.openmarkov.core.inference.tasks.TaskUtilities;
 import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.model.network.type.MIDType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TemporalNetOperations {
 
@@ -106,6 +110,8 @@ public class TemporalNetOperations {
 		}
 		return expandedNet;
 	}
+
+
 
 	/**
 	 * Assigns nodes to slices in a collection of slices. Each slice is a
@@ -441,21 +447,65 @@ public class TemporalNetOperations {
 	//		return expandedNetwork;
 	//	}
 
-	public static void transformToID(ProbNet expandedNetwork) {
-		for (Node node : expandedNetwork.getNodes()) {
-			Variable variable = node.getVariable();
-			if (variable.isTemporal()) {
-				variable.setName(variable.getBaseName() + " |" + variable.getTimeSlice() + "|");
-				variable.setTimeSlice(Variable.noTemporalTimeSlice);
-			}
-		}
-		try {
-			expandedNetwork.setNetworkType(InfluenceDiagramType.getUniqueInstance());
-		} catch (ConstraintViolationException e) {
-			e.printStackTrace();
-		}
-
+	/**
+	 * @param probNet               MID to be expanded
+	 * @param preResolutionEvidence evidence associated to probNet
+	 * @param networkName MID to be expanded
+	 * @return expanded network as an influence diagram with the associated evidence extended, the evidence generated from constant potentials,and the non-observed variables discretized
+	 * @throws ConstraintViolationException  - when the transformation is not compatible with influence diagram constraints
+	 * @throws UnsupportedOperationException - when probNet is not an MID, the network cannot be expanded.
+	 */
+	public static ProbNet expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence, String networkName) throws  ConstraintViolationException, UnsupportedOperationException{
+		//FIXME hardcoded
+		if (!(probNet.getNetworkType() instanceof MIDType)) throw new UnsupportedOperationException("Network has to be an MID");
+//		LogManager.getLogger().debug("Expanding");
+		ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet.deepCopy());
+		expandedNetwork.setName(networkName);
+//		LogManager.getLogger().debug("Extending pre-resolution evidence");
+		// Extend pre-resolution evidence
+		expandedNetwork = TaskUtilities.extendPreResolutionEvidence(expandedNetwork, preResolutionEvidence);
+//		LogManager.getLogger().debug("Applying discounts");
+		// Apply discounts
+		expandedNetwork = TaskUtilities.applyDiscounts(expandedNetwork, true);
+//		LogManager.getLogger().debug("Discretizing non-observerd numeric variables");
+		// Discretize non-observed numeric variables
+		expandedNetwork = TaskUtilities.discretizeNonObservedNumericVariables(expandedNetwork, preResolutionEvidence);
+		transformToID(expandedNetwork);
+		return expandedNetwork;
 	}
+
+//
+//	public static void transformToID(ProbNet expandedNetwork) {
+//		for (Node node : expandedNetwork.getNodes()) {
+//			Variable variable = node.getVariable();
+//			if (variable.isTemporal()) {
+//				variable.setName(variable.getBaseName() + " |" + variable.getTimeSlice() + "|");
+//				variable.setTimeSlice(Variable.noTemporalTimeSlice);
+//			}
+//		}
+//		try {
+//			expandedNetwork.setNetworkType(InfluenceDiagramType.getUniqueInstance());
+//		} catch (ConstraintViolationException e) {
+//			e.printStackTrace();
+//		}
+//
+//	}
+
+	/**
+	 * Transforms an expanded MID into an influence diagram by changing the ProbNet type and
+	 * setting the node variables as no temporary and changing its name by adding "|" previousTimeSlice "|"
+	 * @param expandedNetwork an expanded MID
+	 * @throws ConstraintViolationException when the transformation violates any constraint of expandedNetowrk
+	 */
+	public static void transformToID(ProbNet expandedNetwork) throws  ConstraintViolationException{
+		List<Node>  temporalNodes = expandedNetwork.getNodes().stream().filter(node -> node.getVariable().isTemporal()).collect(Collectors.toList());
+		//Variables are considered temporal when their timeSlice is Variable.noTemporalTimeSlice=Integer.MIN_VALUE
+		temporalNodes.forEach(node -> {
+			node.getVariable().setName(node.getVariable().getBaseName() + " |" + node.getVariable().getTimeSlice() + "|");
+			node.getVariable().setTimeSlice(Variable.noTemporalTimeSlice);});
+		expandedNetwork.setNetworkType(InfluenceDiagramType.getUniqueInstance());
+	}
+
 
 	//	 TODO - ¿Unused method?
 	//	/**

@@ -82,7 +82,6 @@ public class FormatManager {
 			FormatType lAnnotation = plugin.getAnnotation(FormatType.class);
 
 			if (lAnnotation.role().equals(roleReader)) {
-				//CMI
             	/*
             	readerClasses.put (lAnnotation.extension (), plugin);
             	*/
@@ -98,11 +97,9 @@ public class FormatManager {
 					versionsHash.put(version, plugin);
 					readerClasses.put(extension, versionsHash);
 				}
-				//CMF
 
 			}
 			if (lAnnotation.role().equals(roleWriter)) {
-				//CMI
             	/*
             	writerClasses.put (lAnnotation.extension (), plugin);
             	*/
@@ -119,7 +116,6 @@ public class FormatManager {
 					versionsHash.put(version, plugin);
 					writerClasses.put(extension, versionsHash);
 				}
-				//CMF
 			}
 		}
 	}
@@ -149,7 +145,6 @@ public class FormatManager {
 		}
 		return null;
 	}
-	//CMI
 	//	/**
 	//	 * Gets the plugin with the "Writer" role and the extension
 	//	 * @param extension the extension required
@@ -207,9 +202,7 @@ public class FormatManager {
 
 	}
 
-	//CMF
 
-	// CMI
 	//	/**
 	//	 * Gets the plugin with the "Reader" role and the extension
 	//	 * @param extension the extension required
@@ -322,7 +315,6 @@ public class FormatManager {
 	//
 	//	}
 
-	//CMI
 
 	/**
 	 * Gets the extension, description of all the writers
@@ -340,8 +332,6 @@ public class FormatManager {
 
 		return writers;
 	}
-	//CMF
-	//CMI
 	//	/**
 	//     * Gets the all the reader plugins
 	//     * @return all the reader plugins found

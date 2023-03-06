@@ -23,10 +23,8 @@ public class ProbDensFunctionManager {
 	private PluginLoaderIF pluginLoader;
 	private Map<String, Class<?>> probDensFunctions;
 
-	//CMI
 	//For Univariate
 	private Map<String, List<String[]>> probDensParametrizations;
-	//CMF
 
 	/**
 	 * Constructor for ProbDensFunctionManager.
@@ -35,17 +33,14 @@ public class ProbDensFunctionManager {
 		super();
 		this.pluginLoader = new PluginLoader();
 		this.probDensFunctions = new HashMap<>();
-		//CMI
 		//For Univariate
 		this.probDensParametrizations = new HashMap<>();
-		//CMF
 
 		List<Class<?>> plugins = findAllProbDensFunctions();
 		for (Class<?> plugin : plugins) {
 			ProbDensFunctionType annotation = plugin.getAnnotation(ProbDensFunctionType.class);
 			if (ProbDensFunction.class.isAssignableFrom(plugin)) {
 				probDensFunctions.put(annotation.name(), plugin);
-				//CMI
 				//For Univariate
 				String univariateName = annotation.univariateName();
 				String name = annotation.name();
@@ -65,7 +60,6 @@ public class ProbDensFunctionManager {
 					parametersList.add(parametrizationData);
 					probDensParametrizations.put(univariateName, parametersList);
 				}
-				//CMF
 			} else {
 				throw new AnnotationFormatError(
 						"ProbDensFunctionType annotation must be in a class that extends ProbDensFunction");
@@ -87,7 +81,6 @@ public class ProbDensFunctionManager {
 		return instance;
 	}
 
-	//CMI
 	//For Univariate
 	public List<String> getValidProbDensFunctions() {
 		List<String> validFunctions = new ArrayList<>();
@@ -142,7 +135,6 @@ public class ProbDensFunctionManager {
 		return getProbDensFunctionClass(getDistributionName(univariateName, parametrization));
 	}
 
-	//CMF
 
 	public List<String> getValidProbDensFunctions(boolean isChance) {
 		List<String> validFunctions = new ArrayList<>();

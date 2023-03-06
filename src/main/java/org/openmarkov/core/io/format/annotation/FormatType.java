@@ -24,7 +24,6 @@ import java.lang.annotation.Target;
 	 */
 	String name();
 
-	//CMI
 
 	/**
 	 * Gets the version of the class. Sometimes as in the case of the PGMXReader/Writer
@@ -33,7 +32,6 @@ import java.lang.annotation.Target;
 	 * @return The version of the format
 	 */
 	String version();
-	//CMF
 
 	/**
 	 * Gets the file extension that write/read the class

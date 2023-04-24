@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 

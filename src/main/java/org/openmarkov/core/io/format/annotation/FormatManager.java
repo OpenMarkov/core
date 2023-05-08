@@ -7,15 +7,27 @@
 
 package org.openmarkov.core.io.format.annotation;
 
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -260,6 +272,9 @@ public class FormatManager {
 	 * @throws Exception when an exception is raised is thrown to be caught by the gui
 	 */
 	public ProbNetReader getProbNetReader(String fileName) throws Exception {
+
+		version(fileName);
+
 		String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
 		String fileVersion = "";
 		if (!fileExtension.equals("elv")) {
@@ -374,5 +389,32 @@ public class FormatManager {
 		}
 
 		return readers;
+	}
+	public void version(String name) throws SAXException, IOException, ParserConfigurationException, OpenMarkovException {
+		File xsd;
+		try {
+			xsd = new File (getClass().getClassLoader().getResource("version.xsd").toURI());
+
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+
+		DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		org.w3c.dom.Document document = parser.parse(new File(name));
+
+		SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+		Source schemaFile = new StreamSource(xsd);
+		Schema schema = factory.newSchema(schemaFile);
+
+		Validator validator = schema.newValidator();
+
+		try {
+			validator.validate(new DOMSource(document));
+		} catch (SAXException e) {
+			OpenMarkovException openMarkovException = new OpenMarkovException("Incorrect format version",e.getMessage());
+
+			throw openMarkovException;
+		}
 	}
 }

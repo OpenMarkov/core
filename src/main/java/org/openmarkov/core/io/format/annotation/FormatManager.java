@@ -27,6 +27,7 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
@@ -391,13 +392,9 @@ public class FormatManager {
 		return readers;
 	}
 	public void version(String name) throws SAXException, IOException, ParserConfigurationException, OpenMarkovException {
-		File xsd;
-		try {
-			xsd = new File (getClass().getClassLoader().getResource("version.xsd").toURI());
 
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(e);
-		}
+		InputStream xsd;
+		xsd = getClass().getClassLoader().getResourceAsStream("version.xsd");
 
 		DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		org.w3c.dom.Document document = parser.parse(new File(name));

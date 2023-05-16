@@ -274,7 +274,7 @@ public class FormatManager {
 	 */
 	public ProbNetReader getProbNetReader(String fileName) throws Exception {
 
-		version(fileName);
+		checkVersion(fileName);
 
 		String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
 		String fileVersion = "";
@@ -391,7 +391,7 @@ public class FormatManager {
 
 		return readers;
 	}
-	public void version(String name) throws SAXException, IOException, ParserConfigurationException, OpenMarkovException {
+	public void checkVersion(String name) throws SAXException, IOException, ParserConfigurationException, OpenMarkovException {
 
 		InputStream xsd;
 		xsd = getClass().getClassLoader().getResourceAsStream("version.xsd");

@@ -14,7 +14,6 @@ import org.openmarkov.core.inference.tasks.Task;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.constraint.NoSuperValueNode;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.type.NetworkType;
 

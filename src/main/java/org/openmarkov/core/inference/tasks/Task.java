@@ -13,8 +13,10 @@ import org.openmarkov.core.model.network.Variable;
 
 import java.util.List;
 
+//TODO Write a real documentation
 /**
- * This class represents a user action related to inference.
+ * 
+ * This interface represents a user action related to inference.
  */
 public interface Task {
 

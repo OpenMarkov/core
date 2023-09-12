@@ -7,12 +7,15 @@
 
 package org.openmarkov.core.io.format.annotation;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -414,4 +417,30 @@ public class FormatManager {
 			throw openMarkovException;
 		}
 	}
+
+	public void checkVersion(Document document) throws SAXException, IOException, OpenMarkovException {
+
+		InputStream xsd;
+		xsd = getClass().getClassLoader().getResourceAsStream("version.xsd");
+
+		SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+		Source schemaFile = new StreamSource(xsd);
+		Schema schema = factory.newSchema(schemaFile);
+
+		Validator validator = schema.newValidator();
+
+		try {
+			validator.validate(new DOMSource(document));
+		} catch (SAXException e) {
+			OpenMarkovException openMarkovException = new OpenMarkovException("Incorrect format version",e.getMessage());
+
+			throw openMarkovException;
+		}
+	}
+
+
+
+
+
 }

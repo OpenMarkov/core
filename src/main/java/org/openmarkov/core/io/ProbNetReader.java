@@ -20,7 +20,10 @@ public interface ProbNetReader {
 	 * @throws ParserException ParserException
 	 * @return A {@code ProbNetInfo} or {@code null}
 	 */
-	ProbNetInfo loadProbNetInfo(String netName, InputStream... file) throws ParserException;
+	ProbNetInfo loadProbNetInfo(String netName, InputStream file) throws ParserException;
+
+	ProbNetInfo loadProbNetInfo(String netName) throws ParserException;
+
 
 	/**
 	 * @param file File
@@ -28,6 +31,9 @@ public interface ProbNetReader {
 	 * @throws ParserException ParserException
 	 * @return A {@code ProbNet} or {@code null}
 	 */
-	ProbNet loadProbNet(String netName, InputStream... file) throws ParserException;
+	ProbNet loadProbNet(String netName, InputStream file) throws ParserException;
+
+	ProbNet loadProbNet(String netName) throws ParserException;
+
 
 }

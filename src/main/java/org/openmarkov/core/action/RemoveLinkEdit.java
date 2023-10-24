@@ -12,15 +12,11 @@ import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -125,12 +121,12 @@ import java.util.List;
 					} else {
 
 						 newPotential = oldPotential.removeVariable(node1.getVariable());
-						//CMI 10/01/2020 for removing a self-cycle end of "if condition"
+						// 10/01/2020 for removing a self-cycle end of "if condition"
 					}
 
 					//Before having selfloops it was only this line
 //					Potential newPotential = oldPotential.removeVariable(node1.getVariable());
-					//CMF
+					//
 
 
 					// TODO - Implements validate for all potential types, at this moment it always return true.
@@ -146,7 +142,18 @@ import java.util.List;
 							newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
 						}
 					} catch (NonProjectablePotentialException | WrongCriterionException e) {
-						e.printStackTrace();
+						//CMI 15/01/2023; temporal fix for DESnet nodes in DESnet evaluation OM version; In this version every potential has its own validate.
+						//This is done here in order to be as little invasive as possible. FIXME merge with code or remove when TO-DO is implemented
+						if (node1.getProbNet().getNetworkType() instanceof DESNetworkType) {
+							if (!newPotential.validate(node2, newPotential.getVariables(), newPotential.getPotentialRole())) {
+								newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
+							}
+
+						} else {
+							e.printStackTrace();
+						}
+//						e.printStackTrace();
+						//CMF
 					}
 
 					newPotentials.add(newPotential);

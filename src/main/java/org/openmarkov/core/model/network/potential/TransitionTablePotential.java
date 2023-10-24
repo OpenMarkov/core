@@ -2,6 +2,7 @@ package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
 
 
 @PotentialType(family ="Event", name = "TransitionTable")
-public class TransitionTablePotential extends TableWithEvents {
+public class TransitionTablePotential extends TableWithEvents implements DESSimulablePotential {
 
 
 
@@ -39,6 +40,9 @@ public class TransitionTablePotential extends TableWithEvents {
         super(potential);
     }
 
+    public TransitionTablePotential(List<Variable> variables) {
+        this(variables,PotentialRole.CONDITIONAL_PROBABILITY);
+    }
 
 
     /**
@@ -54,15 +58,11 @@ public class TransitionTablePotential extends TableWithEvents {
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 //For using it with utility nodes
 //        boolean variableSuitable= variables.get(0).getVariableType()==VariableType.FINITE_STATES;
-        boolean variableSuitable= true;
-        //I'm supposing variable(0) always contains the node variable.
-        for (Variable variable:variables.subList(1,variables.size())) {
-            boolean isEvent= node.getProbNet().getNode(variable).getNodeType() == NodeType.EVENT;
-            if (!isEvent) {
-                variableSuitable &= variable.getVariableType() == VariableType.FINITE_STATES
-                        || variable.getVariableType() == VariableType.DISCRETIZED;
-            }
-        }
+        //10/01/2023 FIXME Provisional; Potential for DESnets
+        if (!(node.getProbNet().getNetworkType() instanceof DESNetworkType)) return false;
+        //TransitionTablePotential is only for CHANCE nodes
+        boolean variableSuitable= ( (node.getNodeType() == NodeType.CHANCE) && (variables.get(0).getVariableType() == VariableType.FINITE_STATES)
+        &&  variables.subList(1,variables.size()).stream().anyMatch(variable -> variable.getVariableType() ==VariableType.EVENT));
         //return (variableSuitable && eventSuitable);
         return variableSuitable;
     }

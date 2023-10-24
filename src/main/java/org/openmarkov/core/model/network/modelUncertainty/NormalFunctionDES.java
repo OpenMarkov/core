@@ -7,8 +7,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
  * @version 1.0 - 11/12/2022 copied from NormalFunction for testing nuisance variance in DESnets
  * FIXME merge with use NormalFunction; Problem: I need to control random number sequence in order to avoid nuisance variance
  */
-@ProbDensFunctionType(name = "NormalDES", isValidForProbabilities = false, parameters = {"mu",
-        "sigma"})
+
 public class NormalFunctionDES extends ProbDensFunctionWithKnownInverseCDF {
     private double mu;
     private double sigma;

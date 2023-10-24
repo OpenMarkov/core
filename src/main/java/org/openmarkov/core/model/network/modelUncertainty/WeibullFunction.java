@@ -6,17 +6,19 @@ import org.apache.commons.math3.util.FastMath;
 
 /**
  * This class represents a Weibull distribution
- * TODO introduce what we understand for lamda and k and describe the distribution
- *
+ * The parametrization is given by https://mathworld.wolfram.com/WeibullDistribution.html eq (1) and (2) where alpha=k and beta=lambda
+ * Where f(x)= shape*scale^(-shape)*x^(shape-1)*exp(-(x/scale)^shape) and F(x)=1-exp(-(x/scale)^shape)
+ * This class is based on https://commons.apache.org/proper/commons-math/javadocs/api-3.6.1/org/apache/commons/math3/distribution/WeibullDistribution.html
+ * 16/01/2023 FIXME Use WeibullDistribution from Apache Commons; currently it is not used for homogeneity
  * @author cmyago
  * @version 1.0 - 19/03/2020 Adapted from ExponentialFunction
  */
-@ProbDensFunctionType(name = "Weibull", isValidForProbabilities = false, parameters = {"lambda", "k"})
 public class WeibullFunction extends ProbDensFunctionWithKnownInverseCDF {
     /**
      * Scale
      */
     private double lambda;
+
 
     /**
      * Shape
@@ -148,8 +150,8 @@ public class WeibullFunction extends ProbDensFunctionWithKnownInverseCDF {
     @Override
     public double getMean() {
 		/*Why not use Gamma.Gamma?
-		In rg.apache.commons.math3.distribution.WeibullDistribution.java is calculated like that
-		and I have replicated the code but I don't understand why they do not use Gammma.gamma
+		In org.apache.commons.math3.distribution.WeibullDistribution.java is calculated like that
+		I suppose for efficiency reasons.
 		*/
         return lambda * FastMath.exp(Gamma.logGamma(1 + (1 / k)));
     }

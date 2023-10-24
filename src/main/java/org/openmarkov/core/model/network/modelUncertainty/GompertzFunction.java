@@ -8,9 +8,6 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.apache.commons.math3.exception.OutOfRangeException;
-import org.apache.commons.math3.special.Gamma;
-import org.apache.commons.math3.util.FastMath;
-import org.openmarkov.core.exception.OpenMarkovException;
 
 /**
  * Represents the basic Gompertz distribution with shape parameter a, and rate parameter b.
@@ -47,9 +44,8 @@ import org.openmarkov.core.exception.OpenMarkovException;
  * called the shape in flexurv (https://rdrr.io/cran/flexsurv/man/Gompertz.html accesed 22/10/2021)
  *
  * @version 1.0 - 25/10/2021 Adapted from WeibullFunction
- * @author  cyago
+ * @author  cmyago
  */
-@ProbDensFunctionType(name = "Gompertz", isValidForProbabilities = false, parameters = {"a", "b"})
 public class GompertzFunction extends ProbDensFunctionWithKnownInverseCDF {
 	/**
 	 * Shape a

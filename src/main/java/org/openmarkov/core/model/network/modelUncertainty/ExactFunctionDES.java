@@ -5,7 +5,6 @@ package org.openmarkov.core.model.network.modelUncertainty;
  * @version 1.0 - 15/08/2022 copied from ExactFunction for testing nuisance variance in DESnets
  * FIXME merge with ExactFunction. Problem: I need to control random number sequence in order to avoid nuisance variance
  */
-@ProbDensFunctionType(name = "ExactDES", isValidForNumeric = true, parameters = {"nu"})
 public class ExactFunctionDES extends ProbDensFunctionWithKnownInverseCDF {
     private double nu;
 

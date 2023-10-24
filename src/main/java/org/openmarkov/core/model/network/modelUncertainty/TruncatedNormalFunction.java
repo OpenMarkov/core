@@ -6,8 +6,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
  *
  * @author cmyago
  */
-@ProbDensFunctionType(name = "Truncated Normal", isValidForProbabilities = false, parameters = {"mu",
-        "sigma"})
+
 public class TruncatedNormalFunction extends NormalFunctionDES {
 
 

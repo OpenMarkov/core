@@ -7,16 +7,18 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.*;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 
 import java.util.List;
 
 /**
  * Adapted class from Augmented Table, to be used with Table With Events
  * It allows to use a table with functions instead of numeric values
- * TODO It will be adapted to the new tables structure
  */
 public class TableWithFunctions extends TablePotential {
 	/**

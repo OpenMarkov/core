@@ -24,7 +24,7 @@ import java.util.List;
 
 
 @PotentialType(family ="Event", name = "TableWithEvents")
-public class TableWithEvents extends Potential {
+public class TableWithEvents extends Potential implements DESSimulablePotential {
  //14/08/2022  ImpossibleConfiguration removed
     //implements ImpossibleConfiguration {
 
@@ -154,6 +154,7 @@ public class TableWithEvents extends Potential {
                     }
                 } catch (InvalidStateException |IncompatibleEvidenceException e) {
                     e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
             return tteConfiguration;

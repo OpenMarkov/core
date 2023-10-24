@@ -2,12 +2,9 @@ package org.openmarkov.core.model.network;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NoFindingException;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Configuration of States and Events representing an configuration of Findings in a potential used in a DESNet
@@ -16,6 +13,7 @@ import java.util.Map;
  * @version 1.0 - 01/09/2019
  * @version 1.1 - 04/01/2020 - inherits from EvidenceCase due to we need evidence cases for tables - to be changed with the new version of tables. Inheritance it done because Configuration comparation is needed and EvidenceCase does not have an equal method
  * @version 1.2 - 11/04/2020 - adds methods to use with the sampling methods defined in org.openmarkov.core.model.network.potential.Potential
+ * @version 1.3 - 24/10/2023 - removed addEventFinding; this class is to be removed; check about equals and move addFinding() to superclass
  */
 public class Configuration extends EvidenceCase{
 
@@ -75,30 +73,28 @@ public class Configuration extends EvidenceCase{
         return sortedFindings;
     }
 
-
-    /**
-     * Converts the configuration to Map<Variable, Integer> where Variable represent the Variables of the Configuratiobn
-     * and Integer represents the number of the selected State. It is only valid for Finite States Variables.
-     * This is to be used with Potential#sampleCondigionedVariable(Map<Variable, Integer>)
-     * @return this Configuraton converted to Map<Variable, Integer>
-     */
-    public Map<Variable, Integer> convertToMap() throws InvalidStateException{
-// TODO :When org.openmarkov.core.model.network.potential.Potential#sampleCondigionedVariable will be changed to sampleCondigionedVariable(Map<Variable, Double>), this method will be changed too.
-        List<Finding> findings = getFindings();
-        Map<Variable, Integer> map = new HashMap<>();
-        for (Finding finding:findings){
-
-            Variable variable =finding.getVariable();
-            if (variable.getVariableType() != VariableType.FINITE_STATES)
-                throw new InvalidStateException("Variable" + variable.getName() +"hasn't finite states type");
-            Integer integer = finding.getStateIndex();
-            map.put(variable, new Integer(integer));
-
-        }
-        return map;
-    }
-
-
+//24/10/2023; not necessary for DESSimulable
+//    /**
+//     * Converts the configuration to Map<Variable, Integer> where Variable represent the Variables of the Configuratiobn
+//     * and Integer represents the number of the selected State. It is only valid for Finite States Variables.
+//     * This is to be used with Potential#sampleCondigionedVariable(Map<Variable, Integer>)
+//     * @return this Configuraton converted to Map<Variable, Integer>
+//     */
+//    public Map<Variable, Integer> convertToMap() throws InvalidStateException{
+//// TODO :When org.openmarkov.core.model.network.potential.Potential#sampleCondigionedVariable will be changed to sampleCondigionedVariable(Map<Variable, Double>), this method will be changed too.
+//        List<Finding> findings = getFindings();
+//        Map<Variable, Integer> map = new HashMap<>();
+//        for (Finding finding:findings){
+//
+//            Variable variable =finding.getVariable();
+//            if (variable.getVariableType() != VariableType.FINITE_STATES)
+//                throw new InvalidStateException("Variable" + variable.getName() +"hasn't finite states type");
+//            Integer integer = finding.getStateIndex();
+//            map.put(variable, new Integer(integer));
+//
+//        }
+//        return map;
+//    }
 
 
 
@@ -106,38 +102,40 @@ public class Configuration extends EvidenceCase{
 
 
 
-    /**
-     * Indicates whether some other object is "equal to" this one. Two Configuration objects are considered equal if they have the same Finding objects.
-     * @param obj  the reference object with which to compare
-     * @return
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if ((obj == null) || !(obj instanceof Configuration))return false;
-        Configuration objAsConfiguration =(Configuration) obj;
-        List<Finding> objAsConfigurationSortedFindings = objAsConfiguration.getSortedFindings();
-        List<Finding> thisSortedFindings = this.getSortedFindings();
-        if (thisSortedFindings.size() != objAsConfigurationSortedFindings.size()) return false;
-        for (int i = 0; i< thisSortedFindings.size(); i++){
-            if (!
-                    ( (thisSortedFindings.get(i).getVariable().getBaseName().compareTo(objAsConfigurationSortedFindings.get(i).getVariable().getBaseName()) ==0)
-                && (thisSortedFindings.get(i).getState().compareTo(objAsConfigurationSortedFindings.get(i).getState()) ==0) )
-                ) {
-                return false;
-            }
-        }
-        return true;
-    }
 
-    /**
-     * Adds a new finding with the event Variable variable
-     * @param variable to be added to this Configuration
-     * @throws NoFindingException exception thrown when the type of variable is not EVEN
-     */
-    public void addEventFinding(Variable variable) throws NoFindingException{
-        if (variable.getVariableType() != VariableType.EVENT) throw new NoFindingException(variable.getName() + " has no type EVENT");
-        addFinding(variable,0);
-    }
+
+//    /**
+//     * Indicates whether some other object is "equal to" this one. Two Configuration objects are considered equal if they have the same Finding objects.
+//     * @param obj  the reference object with which to compare
+//     * @return
+//     */
+//    @Override
+//    public boolean equals(Object obj) {
+//        if ((obj == null) || !(obj instanceof Configuration))return false;
+//        Configuration objAsConfiguration =(Configuration) obj;
+//        List<Finding> objAsConfigurationSortedFindings = objAsConfiguration.getSortedFindings();
+//        List<Finding> thisSortedFindings = this.getSortedFindings();
+//        if (thisSortedFindings.size() != objAsConfigurationSortedFindings.size()) return false;
+//        for (int i = 0; i< thisSortedFindings.size(); i++){
+//            if (!
+//                    ( (thisSortedFindings.get(i).getVariable().getBaseName().compareTo(objAsConfigurationSortedFindings.get(i).getVariable().getBaseName()) ==0)
+//                && (thisSortedFindings.get(i).getState().compareTo(objAsConfigurationSortedFindings.get(i).getState()) ==0) )
+//                ) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+
+//    /**
+//     * Adds a new finding with the event Variable variable
+//     * @param variable to be added to this Configuration
+//     * @throws NoFindingException exception thrown when the type of variable is not EVENT
+//     */
+//    public void addEventFinding(Variable variable) throws NoFindingException{
+//        if (variable.getVariableType() != VariableType.EVENT) throw new NoFindingException(variable.getName() + " has no type EVENT");
+//        addFinding(variable,0);
+//    }
 
     /**
      * Adds the Finding given by (variable,value) to the configuration if VariableType is FINITE_STATES, NUMERIC or EVENT.
@@ -164,6 +162,7 @@ public class Configuration extends EvidenceCase{
 
         } catch (InvalidStateException| IncompatibleEvidenceException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

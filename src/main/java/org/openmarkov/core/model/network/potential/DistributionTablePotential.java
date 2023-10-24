@@ -6,6 +6,7 @@ import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ParametrizedFunction.ParametrizedFunctionManager;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionWithKnownInverseCDF;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 
 @PotentialType(family = "Event", name = "DistributionTable")
-public class DistributionTablePotential extends Potential {
+public class DistributionTablePotential extends Potential implements DESSimulablePotential {
     //14/08/2022 ImpossibleConfiguration removed
 //        implements ImpossibleConfiguration {
 
@@ -95,6 +96,10 @@ public class DistributionTablePotential extends Potential {
         this.setTableWithEvents(potential.getTableWithEvents());
     }
 
+    public DistributionTablePotential(List<Variable> variables) {
+        this(variables, PotentialRole.CONDITIONAL_PROBABILITY);
+    }
+
 
     /**
      * Returns true if the node has type Event and one of its parents is an event
@@ -109,8 +114,9 @@ public class DistributionTablePotential extends Potential {
 //        boolean hasEventParent = node.getParents().stream().anyMatch(parent -> parent.getNodeType()==EVENT);
 //        return ((node.getNodeType()== EVENT) && hasEventParent);
 //When used in TreeWithEventsPotential it do not have and event parent.
-
-//18/05/2022. To be used with numeric variables
+        //11/01/2023 FIXME Provisional; Potential for DESnets
+        if (!(node.getProbNet().getNetworkType() instanceof DESNetworkType)) return false;
+//18/05/2022. For event and numeric variables.
         //       return (node.getNodeType()== EVENT);
         VariableType variableType = variables.get(0).getVariableType();
         return ((variableType == VariableType.EVENT) || (variableType == VariableType.NUMERIC));

@@ -14,13 +14,14 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-@PotentialType(name = "Delta") public class DeltaPotential extends Potential {
+@PotentialType(name = "Delta") public class DeltaPotential extends Potential implements DESSimulablePotential {
 
 	// state and stateIndex are used for finite states variables
 	private State state = null;
@@ -76,14 +77,15 @@ import java.util.List;
 	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+		//15/01/2023
+		//I have tried to add DeltaPotential to the DESnet set of potentials; haphazardly OM returned Uniform and Sum potentials whereas in the GUI appears Delta potentials
+		if ((node.getProbNet().getNetworkType() instanceof DESNetworkType)) return true;
+		//
 		return (
 				(variables.size() <= 1 || role == PotentialRole.POLICY) || (
 						variables.size() > 1 && role == PotentialRole.CONDITIONAL_PROBABILITY
 								&& node.getVariable().getVariableType() == VariableType.NUMERIC
 				)
-				//CMI 07/01/2023 - DESnets
-				|| (variables.get(0).getVariableType() == VariableType.EVENT)
-				//CMF
 		);
 	}
 
@@ -203,12 +205,19 @@ import java.util.List;
 		// TODO Auto-generated method stub
 		return null;
 	}
-	//CMI 07/01/2023 --added sampling behaviour. DeltaPotential is deterministic.
+
+	//28/08/2023 - making it DESSimulablePotential
 	@Override
 	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
-		if (getConditionedVariable().getVariableType()==VariableType.FINITE_STATES) return stateIndex;
-		else return numericValue;
+		switch (getConditionedVariable().getVariableType()) {
+			case FINITE_STATES:
+				return stateIndex;
+			case NUMERIC:
+			case EVENT:
+				return numericValue;
+		}
+		return Double.NaN;
 	}
-	//CMF
+	//
 
 }

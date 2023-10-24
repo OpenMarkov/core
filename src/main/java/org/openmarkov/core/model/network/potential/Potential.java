@@ -7,7 +7,10 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.*;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -471,30 +474,6 @@ public abstract class Potential {
 	}
 
 
-
-	//CMI 11/04/2020; 14/08/2022 sampleConditionedVariable(Random randomGenerator, EvidenceCase parents) refactored to  sampleConditionedVariable(double randomNumber, EvidenceCase parents)  for dealing with nuisance variance
-	/**
-	 * Gets a sample of this potential conditioned by its parents the using inverse cumulative distribution method. If this variable is finite-states, it returns the index of
-	 * the sampled state. If the variable is numeric, it returns the value sampled.
-	 * @param randomNumber number before 0 an 1 from which inverse cumulative value is computed
-	 * @param parents parents configuration with their values
-	 * @return  a sample of the potential when exists; Double.MAX_VALUE otherwise
-	 */
-	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
-		//TODO merge with previous method (sampleConditionedVariable(Random randomGenerator, Map<Variable, Integer> sampledParents), when it will be replaced and this class made abstrac
-
-		return Double.MAX_VALUE;
-
-	}
-
-//CMF
-
-
-
-
-
-
-
 	/**
 	 * Return a copy instance of the potential
 	 *
@@ -516,13 +495,21 @@ public abstract class Potential {
 	 */
 	public Potential addVariable(Variable variable) {
 		Potential newPotential;
+
 		if (!variables.contains(variable)) {
 			List<Variable> newVariables = new ArrayList<Variable>(variables);
 			newVariables.add(variable);
 			newPotential = new UniformPotential(newVariables, role);
 		} else {
+			//DESnets - 18/03/2023 - due to self-loop, the conditioned variable can be repeated - FIXME
+			if (variable.equals(variables.get(0))){
+				List<Variable> newVariables = new ArrayList<Variable>(variables);
+				newVariables.add(variable);
+				newPotential = new UniformPotential(newVariables, role);
+			} else
+			//
 			newPotential = this;
-		}
+			}
 		return newPotential;
 	}
 

@@ -15,7 +15,6 @@ import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
-import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.*;
 
@@ -27,7 +26,10 @@ import java.util.*;
  * @author myebra
  */
 @PotentialType(name = "Tree/ADD", family = "Tree")
-public class TreeADDPotential extends Potential {
+//CMI 15/01/2023 - Potentials to be simulated in DESnets implements DESSimulablePotential
+//public class TreeADDPotential extends Potential {
+	public class TreeADDPotential extends Potential implements DESSimulablePotential {
+//CMF
 
 	// Attributes
 	/**
@@ -211,9 +213,6 @@ public class TreeADDPotential extends Potential {
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 
-		//CMI 08/01/2023 added DESnet behaviour
-		if (node.getProbNet().getNetworkType() instanceof DESNetworkType) return false;
-		//CMF
 		boolean validate = false;
 		// node must have at least one parent node
 		// @12/11/2014
@@ -509,12 +508,20 @@ public class TreeADDPotential extends Potential {
 				} catch (NoFindingException e) {
 					e.printStackTrace();
 				}
-				result = branch.getPotential().sampleConditionedVariable(randomNumber,parents);
+				//03/2023
+				result = ((DESSimulablePotential)branch.getPotential()).sampleConditionedVariable(randomNumber,parents);
 				return result;
 			}
 
 		}
 		return result;
+	}
+	//15/01/2023 resetSimulation override
+	@Override
+	public void resetSimulation(){
+		for (TreeADDBranch branch: branches){
+			((DESSimulablePotential)branch.getPotential()).resetSimulation();
+		}
 	}
 	//CMF
 

@@ -231,7 +231,18 @@ public class TreeADDBranch {
 
 	public List<Variable> getAddableVariables() {
 		List<Variable> addableVariables = new ArrayList<>(parentVariables);
+		//CMI -- 08/03/2023 FIXME - recode this workaround when TreeADD added to DESnets; this workaround has the purpose of being no invasive
+		// problem with self-loop in DESnets because the conditioned variable is removed; self-loops weren't considered until DESnets
+		boolean selfLoop = false;
+		if (addableVariables.contains(potential.getConditionedVariable())){
+			selfLoop = true;
+		}
+		//CMF
 		addableVariables.removeAll(potential.getVariables());
+		//CMI -- 08/03/2023 FIXME - recode this workaround when TreeADD added to DESnets; this workaround has the purpose of being no invasive
+		// problem with self-loop in DESnets because the conditioned variable is removed; self-loops weren't considered until DESnets
+		if (selfLoop) addableVariables.add(potential.getConditionedVariable());
+		//CMF
 		if (potential instanceof ExactDistrPotential) {
 			addableVariables.remove(potential.getVariable(0));
 		}

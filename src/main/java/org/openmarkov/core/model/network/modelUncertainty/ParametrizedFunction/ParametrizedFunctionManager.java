@@ -1,6 +1,6 @@
 package org.openmarkov.core.model.network.modelUncertainty.ParametrizedFunction;
 
-import javafx.util.Pair;
+
 import org.apache.commons.collections4.map.MultiKeyMap;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionWithKnownInverseCDF;
@@ -162,14 +162,7 @@ public class ParametrizedFunctionManager {
     }
 
 
-    /**
-     * Returns the map associating ParametrizedFuncitons with its parameters
-     *
-     * @return Map associating ParametrizedFuncitons with its parameters
-     */
-    public Map<Pair<String, String>, List<String>> getParametrizationParameters() {
-        return parametrizationParameters;
-    }
+
 
 
 }

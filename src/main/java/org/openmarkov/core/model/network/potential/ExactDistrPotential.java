@@ -10,22 +10,21 @@ package org.openmarkov.core.model.network.potential;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /** Wrapper for TablePotential */
-@PotentialType(name = "Exact") public class ExactDistrPotential extends Potential {
 
+//15/01/2023 - Potentials to be simulated in DESnets implements DESSimulablePotential
+//@PotentialType(name = "Exact") public class ExactDistrPotential extends Potential {
+
+	@PotentialType(name = "Exact") public class ExactDistrPotential extends Potential implements DESSimulablePotential {
+//
 
 
 	// Attributes
@@ -136,11 +135,12 @@ import java.util.List;
 		this.tablePotential.values = values;
 	}
 
-	//CMI 27/04/2020 - Returns the table value given its parents. For DES simulations - 14/08/2022 refactored for avoiding nuisance variance
+	//27/04/2020 - Returns the table value given its parents. For DES simulations - 14/08/2022 refactored for avoiding nuisance variance
+	@Override
 	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents) {
 		return tablePotential.getValue(parents);
 	}
-	//CMF
+	//
 
 
 	@Override public List<Variable> getVariables() {
@@ -204,6 +204,13 @@ import java.util.List;
 	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+		//11/01/2023
+		//11/01/2023 FIXME Provisional; validate for DESnets
+		if ((node.getProbNet().getNetworkType() instanceof DESNetworkType)){
+			return !variables.stream().anyMatch(variable -> variable.getVariableType()==VariableType.EVENT) && node.getVariable().getVariableType() == VariableType.NUMERIC;
+		}
+		//CMF
+
 		List<Variable> parents = variables.subList(1, variables.size());
 		boolean isValid = node.getNodeType()!=NodeType.CHANCE || node.getVariable().getVariableType() == VariableType.NUMERIC || parents.stream().anyMatch(parent -> parent.getVariableType()==VariableType.NUMERIC);
 		return isValid;

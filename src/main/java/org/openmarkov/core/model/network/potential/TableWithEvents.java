@@ -139,7 +139,7 @@ public class TableWithEvents extends Potential implements DESSimulablePotential 
      * @return a Configuration of variables with Configuration structure of a TableWithEvents
      */
     public EvidenceCase convert(EvidenceCase configuration){
-            Configuration tteConfiguration = new Configuration();
+            EvidenceCase tteConfiguration = new EvidenceCase();
             for (Finding finding:configuration.getFindings()) {
                 try  {
                     switch (finding.getVariable().getVariableType()){

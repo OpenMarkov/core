@@ -12,10 +12,12 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.potential.DESSimulablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ import java.util.stream.Collectors;
  * The variables of each TreADDPotential are the Event Variable (which is the root Variable) and the other variables whose type is not Event
  */
 @PotentialType(name = "Tree with Events", family = "Tree")
-public class TreeWithEventsPotential extends Potential {
+public class TreeWithEventsPotential extends Potential implements DESSimulablePotential {
 
 	// Attributes
 	/**
@@ -90,10 +92,11 @@ public class TreeWithEventsPotential extends Potential {
 	 * @param role
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-		boolean validate = false;
-		validate = ( ((node.getNodeType() == NodeType.EVENT) || (node.getNodeType() == NodeType.CHANCE)) &&
-				(variables.stream().anyMatch(variable -> variable.getVariableType() ==VariableType.EVENT)));
-		return true;
+		// 10/01/2023 FIXME Provisional
+		if (!(node.getProbNet().getNetworkType() instanceof DESNetworkType)) return false;
+		boolean validate = variables.subList(1,variables.size()).stream().anyMatch(variable -> variable.getVariableType() ==VariableType.EVENT);
+		return validate;
+
 	}
 
 
@@ -121,7 +124,7 @@ public class TreeWithEventsPotential extends Potential {
 	 * @throws IncompatibleEvidenceException exception thrown when eventVariable has not VariableType.EVENT. TODO Exception type may not be correct
 	 */
 	public TreeADDPotential getTree(Variable eventVariable) throws IncompatibleEvidenceException {
-		if (eventVariable.getVariableType() != VariableType.EVENT) throw new IncompatibleEvidenceException("Not Event Variable");
+		if (eventVariable.getVariableType() != VariableType.EVENT) throw new IncompatibleEvidenceException("No Event Variable");
 		return trees.get(eventVariable);
 	}
 
@@ -149,7 +152,11 @@ public class TreeWithEventsPotential extends Potential {
 	@Override
 	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
 
+
 		List<Variable> eventVariables = parents.getVariables().stream().filter(variable ->variable.getVariableType() ==VariableType.EVENT).collect(Collectors.toList());
+		//19/03/2023 - only one event in parents - FIXME throw exception without changing method signature; consider to add exception
+		if ( eventVariables.size()!=1) throw new RuntimeException("TreeWithEventsPotential#sampleConditionedVariable: There must be exactly one event in parents configuration");
+		//
 		//It is supposed the tree has a different potential for each event, so this method return a sampled value when an event has happened
 
 		TreeADDPotential eventTree= null;
@@ -161,16 +168,21 @@ public class TreeWithEventsPotential extends Potential {
 		double result =0;
 		try
 		{
+			//19/03/2023 the event is not part of the branch potential
 			result = eventTree.sampleConditionedVariable(randomNumber, parents);
 
 		} catch(Exception e) {
 			//FIXME when completed this method coding this catch will be removed
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,"Getting sample exception" +eventVariables.get(0).getName());
+			JOptionPane.showMessageDialog(null,"TreeWithEventsPotential: Getting sample exception: " +eventVariables.get(0).getName());
 		}
 		return result;
 	}
+	@Override
+	public void resetSimulation()  {
 
+		trees.values().forEach(DESSimulablePotential::resetSimulation);
+	}
 
 
 	@Override public Potential copy() {

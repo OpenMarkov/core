@@ -7,7 +7,10 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.*;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.TablePotentialSampler;
@@ -31,7 +34,10 @@ import java.util.*;
  * @version 1.0
  * @since OpenMarkov 1.0
  */
-@PotentialType(name = "Table") public class TablePotential extends Potential implements Comparable<TablePotential> {
+//@PotentialType(name = "Table") public class TablePotential extends Potential implements Comparable<TablePotential> {
+//15/01/2023 - Potentials to be simulated in DESnets implements DESSimulablePotential
+@PotentialType(name = "Table") public class TablePotential extends Potential implements Comparable<TablePotential>, DESSimulablePotential {
+//
 	// Attributes
 	/**
 	 * Table storing the numerical values of the potential. This attribute is

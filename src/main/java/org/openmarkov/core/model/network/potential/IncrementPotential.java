@@ -4,6 +4,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * @version 1.0 10/04/2020 - Adapted from Uniform
  * 04/01/2023 - FIXME merge with CycleLengthShift?
  */
-@PotentialType(name = "Increment") public class IncrementPotential extends Potential {
+@PotentialType(name = "Increment") public class IncrementPotential extends Potential implements DESSimulablePotential {
 	/**
 	 * Number of increments
 	 */
@@ -64,7 +65,8 @@ import java.util.List;
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		//Currently 10/04/2020 it makes sense when the node variable is numeric and there is a self-loop
-		return (variables.get(0).getVariableType() == VariableType.NUMERIC);
+		//10/01/2023 FIXME Provisional; only for DESnets
+		return (node.getProbNet().getNetworkType() instanceof DESNetworkType) && (variables.get(0).getVariableType() == VariableType.NUMERIC);
 //				&& (variables.stream().filter(v -> v.equals(node.getVariable())).count()==2);//Check this use of equals
 	}
 
@@ -72,13 +74,16 @@ import java.util.List;
 	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents) {
 	//14/08/2022 refactored for nuisance variable. Changed for starting in 0;
 		//14/08/2022 Check; currently value is stored here and in DES record
-		return +incrementedValue;
+		return ++incrementedValue;
 	}
 
+    @Override
+	public void resetSimulation(){
 
+		incrementedValue =0;
+	}
 	// Methods
 	@Override
-
 	public List<TablePotential> tableProject(
 			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials)
 			throws NonProjectablePotentialException {

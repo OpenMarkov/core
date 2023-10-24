@@ -29,7 +29,7 @@ import java.util.Map;
  * @version 2 19/08/2022 - changed to mitigate nuisance variance and speed simulation creating only once the evaluator and the signature of sampling
  * 04/10/2023 FIXME Check license
  */
-@PotentialType(name = "Function") public class FunctionPotential extends GLMPotential {
+@PotentialType(name = "Function") public class FunctionPotential extends GLMPotential implements DESSimulablePotential {
 
 	/**
 	 * The default function
@@ -125,7 +125,9 @@ import java.util.Map;
 	 */
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
+	//15/01/2023 This method is called when removing a node with this potential;
 		throw new NonProjectablePotentialException("Function potential cannot be projected to a table");
+
 	}
 
 	/**
@@ -151,7 +153,10 @@ import java.util.Map;
 	 * @param scale - the scale factor
 	 */
 	@Override public void scalePotential(double scale) {
-		String scaleString = new Double(scale).toString();
+// 24/10/2023 'Double(double)' is deprecated and marked for removal
+//		String scaleString = new Double(scale).toString();
+//
+		String scaleString = Double.toString(scale);
 		String function = scaleString.concat("*").concat(processedCovariates[0]);
 		processedCovariates[0] = function;
 	}
@@ -164,7 +169,9 @@ import java.util.Map;
 	 */
 	@Override public Potential addVariable(Variable variable) {
 		FunctionPotential newPotential = null;
-		if (!variables.contains(variable)) {
+		//18/03/2023 -- for self-loop in DESnets; added check with conditioned variable; FIXME this can happen when it is not a DESnet?
+		if  (!(variables.subList(1,variables.size()).contains(variable)))  {
+		//
 			List<Variable> newVariables = new ArrayList<>(variables);
 			newVariables.add(variable);
 			newPotential = new FunctionPotential(newVariables, this.role);
@@ -236,7 +243,7 @@ As FunctionPotential is not projectable I leave the default behaviour
 		return false;
 	}
 
-//CMI 19/08/2022 - used double instead of Random and evaluator object only create once
+// 19/08/2022 - used double instead of Random and evaluator object only create once
 	/**
 	 * @param values Values
 	 * @return The value obtained by evaluation the function for the assignment of variables given by 'values'
@@ -259,16 +266,19 @@ As FunctionPotential is not projectable I leave the default behaviour
 			variablesMap.put(variableToAdd, ""+parents.getFinding(parentVariable).getNumericalValue());
 		}
 		try {
-			result = new Double(getValue(variablesMap)).doubleValue();
+//			'Double(double)' is deprecated and marked for removal
+//			result = new Double(getValue(variablesMap)).doubleValue();
+			result = Double.parseDouble(getValue(variablesMap));
 		} catch (EvaluationException e) {
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return  result;
 	}
 
 
 
-//CMF
+//
 
 	@Override
 	public Potential reorder(List<Variable> newOrderOfVariables) {

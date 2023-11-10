@@ -140,6 +140,7 @@ public class Configuration extends EvidenceCase{
     /**
      * Adds the Finding given by (variable,value) to the configuration if VariableType is FINITE_STATES, NUMERIC or EVENT.
      * Otherwise nothing is done. If it is type EVENT field value is ignored
+     * //26/10/2023 EVENT and NUMERIC have the same behaviour
      * @param variable
      * @param value
      */
@@ -151,10 +152,8 @@ public class Configuration extends EvidenceCase{
                 addFinding(new Finding(variable, (int)value));
                 break;
             case NUMERIC:
-                addFinding(new Finding(variable, value));
-                break;
             case EVENT:
-                addFinding(new Finding(variable, 0));
+                addFinding(new Finding(variable, value));
                 break;
             default:
                 return;

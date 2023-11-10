@@ -6,8 +6,10 @@ import org.apache.commons.math3.util.FastMath;
 
 /**
  * This class represents a Weibull distribution
- * The parametrization is given by https://mathworld.wolfram.com/WeibullDistribution.html eq (1) and (2) where alpha=k and beta=lambda
- * Where f(x)= shape*scale^(-shape)*x^(shape-1)*exp(-(x/scale)^shape) and F(x)=1-exp(-(x/scale)^shape)
+ * The parametrization is given by https://mathworld.wolfram.com/WeibullDistribution.html eq (1) and (2) where alpha=k and beta=lambda.
+ * Here scale = lambda = beta, and shape = k = alpha
+ * Where f(x)= shape*scale^(-shape)*x^(shape-1)*exp(-(x/scale)^shape), F(x)=1-exp(-(x/scale)^shape), and S(x) = exp(-(x/scale)^shape)
+ * That is f(x)= k*lambda^(-k)*x^(k-1)*exp(-(x/lambda)^k), F(x)=1-exp(-(x/lambda)^k), and S(x) = exp(-(x/lambda)^k)
  * This class is based on https://commons.apache.org/proper/commons-math/javadocs/api-3.6.1/org/apache/commons/math3/distribution/WeibullDistribution.html
  * 16/01/2023 FIXME Use WeibullDistribution from Apache Commons; currently it is not used for homogeneity
  * @author cmyago
@@ -76,7 +78,6 @@ public class WeibullFunction extends ProbDensFunctionWithKnownInverseCDF {
 
 
     /**
-     * Returns the shape parameter (k) of this WeibullFuncion
      * Returns the shape parameter (k) of this WeibullFuncion
      */
     public double getK() {

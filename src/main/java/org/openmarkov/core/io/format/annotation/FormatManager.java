@@ -278,6 +278,7 @@ public class FormatManager {
 	public ProbNetReader getProbNetReader(String fileName) throws Exception {
 
 		checkVersion(fileName);
+		checkStructure(fileName);
 
 		String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
 		String fileVersion = "";
@@ -301,6 +302,10 @@ public class FormatManager {
 	 * @throws Exception when an exception is raised is thrown to be caught by the gui
 	 */
 	public ProbNetReader getProbNetReader(URL url) throws Exception {
+
+		checkVersion(url);
+		checkStructure(url);
+
 		String fileName = url.getFile();
 		String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
 		String fileVersion = "";
@@ -418,10 +423,45 @@ public class FormatManager {
 		}
 	}
 
-	public void checkVersion(Document document) throws SAXException, IOException, OpenMarkovException {
+	public void checkVersion(URL url) throws SAXException, IOException, OpenMarkovException {
 
 		InputStream xsd;
 		xsd = getClass().getClassLoader().getResourceAsStream("version.xsd");
+
+		SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+		Source schemaFile = new StreamSource(xsd);
+		Schema schema = factory.newSchema(schemaFile);
+
+		Validator validator = schema.newValidator();
+
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = null;
+		try {
+			db = dbf.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+		Document document = db.parse(url.openStream());
+
+
+		try {
+			validator.validate(new DOMSource(document));
+		} catch (SAXException e) {
+			OpenMarkovException openMarkovException = new OpenMarkovException("Incorrect format version",e.getMessage());
+
+			throw openMarkovException;
+		}
+	}
+
+
+	public void checkStructure(String name) throws SAXException, IOException, ParserConfigurationException, OpenMarkovException {
+
+		InputStream xsd;
+		xsd = getClass().getClassLoader().getResourceAsStream("val_v4.xsd");
+
+		DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		org.w3c.dom.Document document = parser.parse(new File(name));
 
 		SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
@@ -438,9 +478,34 @@ public class FormatManager {
 			throw openMarkovException;
 		}
 	}
+	public void checkStructure(URL url) throws SAXException, IOException, OpenMarkovException {
 
+		InputStream xsd;
+		xsd = getClass().getClassLoader().getResourceAsStream("val_v4.xsd");
 
+		SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
+		Source schemaFile = new StreamSource(xsd);
+		Schema schema = factory.newSchema(schemaFile);
 
+		Validator validator = schema.newValidator();
+
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = null;
+		try {
+			db = dbf.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+		Document document = db.parse(url.openStream());
+
+		try {
+			validator.validate(new DOMSource(document));
+		} catch (SAXException e) {
+			OpenMarkovException openMarkovException = new OpenMarkovException("Incorrect format version",e.getMessage());
+
+			throw openMarkovException;
+		}
+	}
 
 }

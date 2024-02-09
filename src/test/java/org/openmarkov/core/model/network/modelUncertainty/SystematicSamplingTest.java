@@ -1,15 +1,15 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Hashtable;
 import java.util.List;
 
-import org.junit.Ignore;
-import org.junit.Test;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.factory.NetsFactory;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;

@@ -7,8 +7,12 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -16,14 +20,12 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class NoCyclesTest {
 
 	private ProbNet probNetDirected;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		probNetDirected = ConstraintsTests.getTestProbNetDirected();
 	}
 

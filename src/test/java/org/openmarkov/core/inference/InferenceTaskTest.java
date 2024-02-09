@@ -7,7 +7,15 @@
 
 package org.openmarkov.core.inference;
 
-import org.junit.Ignore;
+
+import org.junit.jupiter.api.Disabled;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
+
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -22,14 +30,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+
 
 /**
  * @author mluque
  */
 
 /** @author ibermejo */
-@Ignore public abstract class InferenceTaskTest {
+@Disabled public abstract class InferenceTaskTest {
 
 	/**
 	 * Maximum error allowed in tests. It could be modified by subclasses

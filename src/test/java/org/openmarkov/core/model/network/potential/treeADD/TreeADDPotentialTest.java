@@ -7,8 +7,10 @@
 
 package org.openmarkov.core.model.network.potential.treeADD;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.model.graph.LabelledLink;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -80,7 +82,7 @@ public class TreeADDPotentialTest {
 
 	private LabelledLink<Node> labelledlink1;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 
 		// create variables
 		variableA = new Variable("A", 2);

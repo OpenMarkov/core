@@ -7,9 +7,9 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
@@ -97,7 +97,7 @@ public class LinkRestrictionPotentialOperationsTest {
 		return probNet;
 	}
 
-	@Before public void setUp() throws NodeNotFoundException {
+	@BeforeAll public void setUp() throws NodeNotFoundException {
 
 		stateA = new State[] { new State("A1"), new State("A2"), new State("A3") };
 		stateB = new State[] { new State("B1"), new State("B2") };
@@ -141,15 +141,15 @@ public class LinkRestrictionPotentialOperationsTest {
 	}
 
 	@Test public void testHasLinkRestriction() throws NodeNotFoundException {
-		Assert.assertTrue(LinkRestrictionPotentialOperations.hasLinkRestriction(this.net.getNode("B")));
-		Assert.assertFalse(LinkRestrictionPotentialOperations.hasLinkRestriction(this.net.getNode("A")));
+		Assertions.assertTrue(LinkRestrictionPotentialOperations.hasLinkRestriction(this.net.getNode("B")));
+		Assertions.assertFalse(LinkRestrictionPotentialOperations.hasLinkRestriction(this.net.getNode("A")));
 
 	}
 
 	@Test public void testGetParentLinksWithRestriction() throws NodeNotFoundException {
-		Assert.assertEquals(1,
+		Assertions.assertEquals(1,
 				LinkRestrictionPotentialOperations.getParentLinksWithRestriction(net.getNode("B")).size());
-		Assert.assertEquals(0,
+		Assertions.assertEquals(0,
 				LinkRestrictionPotentialOperations.getParentLinksWithRestriction(net.getNode("A")).size());
 	}
 
@@ -159,27 +159,27 @@ public class LinkRestrictionPotentialOperationsTest {
 				.updatePotentialByAddLinkRestriction(net.getNode("B"), (TablePotential) link.getRestrictionsPotential(),
 						0, 0);
 		int[] statesIndices = new int[] { 0, 0, 0 };
-		Assert.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
+		Assertions.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
 		statesIndices = new int[] { 0, 0, 1 };
-		Assert.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
+		Assertions.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
 
 		statesIndices = new int[] { 1, 0, 0 };
-		Assert.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 1);
+		Assertions.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 1);
 
 		statesIndices = new int[] { 0, 1, 0 };
-		Assert.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0.5);
+		Assertions.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0.5);
 
 		statesIndices = new int[] { 0, 2, 0 };
-		Assert.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0.5);
+		Assertions.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0.5);
 
 		probabilityPotential = (TablePotential) LinkRestrictionPotentialOperations
 				.updatePotentialByAddLinkRestriction(net.getNode("B"), (TablePotential) link.getRestrictionsPotential(),
 						1, 1);
 
 		statesIndices = new int[] { 1, 1, 0 };
-		Assert.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
+		Assertions.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
 		statesIndices = new int[] { 1, 1, 1 };
-		Assert.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
+		Assertions.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
 
 	}
 
@@ -191,22 +191,22 @@ public class LinkRestrictionPotentialOperationsTest {
 		TablePotential probabilityPotential = (TablePotential) LinkRestrictionPotentialOperations
 				.updatePotentialByLinkRestrictions(net.getNode("B"));
 		int[] statesIndices = new int[] { 0, 0, 0 };
-		Assert.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
+		Assertions.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
 
 		statesIndices = new int[] { 0, 0, 1 };
-		Assert.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
+		Assertions.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
 
 		statesIndices = new int[] { 0, 1, 0 };
-		Assert.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
+		Assertions.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
 
 		statesIndices = new int[] { 0, 2, 0 };
-		Assert.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
+		Assertions.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 0);
 
 		statesIndices = new int[] { 1, 0, 0 };
-		Assert.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 1.0);
+		Assertions.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 1.0);
 
 		statesIndices = new int[] { 1, 0, 1 };
-		Assert.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 1.0);
+		Assertions.assertTrue(probabilityPotential.getValue(probabilityPotential.getVariables(), statesIndices) == 1.0);
 
 	}
 
@@ -216,7 +216,7 @@ public class LinkRestrictionPotentialOperationsTest {
 		link2.setCompatibilityValue(stateC[0], stateB[0], 0);
 		List<int[]> states = LinkRestrictionPotentialOperations
 				.getStateCombinationsWithLinkRestriction(net.getNode("B"));
-		Assert.assertEquals(5, states.size());
+		Assertions.assertEquals(5, states.size());
 	}
 
 	@Test public void testGetStateCombinationsWithLinkRestrictionBig() throws NodeNotFoundException {
@@ -224,7 +224,7 @@ public class LinkRestrictionPotentialOperationsTest {
 
 		List<int[]> states = LinkRestrictionPotentialOperations
 				.getStateCombinationsWithLinkRestriction(probNet.getNode("E"));
-		Assert.assertEquals(64, states.size());
+		Assertions.assertEquals(64, states.size());
 	}
 
 }

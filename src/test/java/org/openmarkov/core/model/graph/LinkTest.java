@@ -7,9 +7,9 @@
 
 package org.openmarkov.core.model.graph;
 
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -25,7 +25,7 @@ public class LinkTest {
 	private Node nodeA, nodeB;
 	private Link<Node> link;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		stateA = new State[] { new State("A1"), new State("A2"), new State("A3") };
 		stateB = new State[] { new State("B1"), new State("B2") };
 		varA = new Variable("A", stateA);
@@ -38,49 +38,49 @@ public class LinkTest {
 	}
 
 	@Test public void testRestrictionsPotential() {
-		Assert.assertTrue(link.hasRestrictions());
-		Assert.assertFalse(link.hasTotalRestriction());
+		Assertions.assertTrue(link.hasRestrictions());
+		Assertions.assertFalse(link.hasTotalRestriction());
 
 		for (int i = 0; i < stateA.length; i++) {
 			for (int j = 0; j < stateB.length; j++) {
-				Assert.assertEquals(1, link.areCompatible(stateA[i], stateB[j]));
+				Assertions.assertEquals(1, link.areCompatible(stateA[i], stateB[j]));
 			}
 		}
 
 		link.setCompatibilityValue(stateA[0], stateB[0], 0);
-		Assert.assertEquals(0, link.areCompatible(stateA[0], stateB[0]));
-		Assert.assertFalse(link.hasTotalRestriction());
+		Assertions.assertEquals(0, link.areCompatible(stateA[0], stateB[0]));
+		Assertions.assertFalse(link.hasTotalRestriction());
 		link.setCompatibilityValue(stateA[0], stateB[0], 1);
-		Assert.assertEquals(1, link.areCompatible(stateA[0], stateB[1]));
+		Assertions.assertEquals(1, link.areCompatible(stateA[0], stateB[1]));
 		link.setCompatibilityValue(stateA[0], stateB[0], 0);
 		link.setCompatibilityValue(stateA[0], stateB[1], 0);
-		Assert.assertTrue(link.hasTotalRestriction());
+		Assertions.assertTrue(link.hasTotalRestriction());
 
 		Set<State> statesRestrictTotally = link.getStatesRestrictTotally();
 		Set<State> expectedStates = new HashSet<>();
 		expectedStates.add(stateA[0]);
-		Assert.assertTrue(statesRestrictTotally.equals(expectedStates));
+		Assertions.assertTrue(statesRestrictTotally.equals(expectedStates));
 		link.setCompatibilityValue(stateA[2], stateB[0], 0);
 		statesRestrictTotally = link.getStatesRestrictTotally();
-		Assert.assertTrue(statesRestrictTotally.equals(expectedStates));
+		Assertions.assertTrue(statesRestrictTotally.equals(expectedStates));
 		link.setCompatibilityValue(stateA[1], stateB[0], 0);
 		statesRestrictTotally = link.getStatesRestrictTotally();
-		Assert.assertTrue(statesRestrictTotally.equals(expectedStates));
+		Assertions.assertTrue(statesRestrictTotally.equals(expectedStates));
 		link.setCompatibilityValue(stateA[2], stateB[1], 0);
 		statesRestrictTotally = link.getStatesRestrictTotally();
 		expectedStates.add(stateA[2]);
-		Assert.assertTrue(statesRestrictTotally.equals(expectedStates));
+		Assertions.assertTrue(statesRestrictTotally.equals(expectedStates));
 
 	}
 
 	@Test public void testRevelationArc() {
-		Assert.assertFalse(link.hasRevealingConditions());
+		Assertions.assertFalse(link.hasRevealingConditions());
 		link.addRevealingState(stateA[0]);
-		Assert.assertEquals(1, link.getRevealingStates().size());
-		Assert.assertTrue(link.getRevealingStates().contains(stateA[0]));
+		Assertions.assertEquals(1, link.getRevealingStates().size());
+		Assertions.assertTrue(link.getRevealingStates().contains(stateA[0]));
 		link.removeRevealingState(stateA[0]);
-		Assert.assertFalse(link.getRevealingStates().contains(stateA[0]));
-		Assert.assertEquals(0, link.getRevealingIntervals().size());
+		Assertions.assertFalse(link.getRevealingStates().contains(stateA[0]));
+		Assertions.assertEquals(0, link.getRevealingIntervals().size());
 	}
 
 }

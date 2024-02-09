@@ -7,16 +7,20 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Unit test of:
@@ -41,7 +45,7 @@ public class AuxiliaryOperationsTest {
 
 	private List<TablePotential> normalPotentials;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		emptyPotentialsList = new ArrayList<>();
 
 		try {

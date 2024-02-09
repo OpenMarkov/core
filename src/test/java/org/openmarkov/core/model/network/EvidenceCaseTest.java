@@ -7,8 +7,10 @@
 
 package org.openmarkov.core.model.network;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -18,11 +20,13 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+
 
 public class EvidenceCaseTest {
 
@@ -47,7 +51,7 @@ public class EvidenceCaseTest {
 
 	//private NetworkTypeConstraint networkTypeConstraint = null;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		//Variables
 		String a = new String("A");
 		String b = new String("B");

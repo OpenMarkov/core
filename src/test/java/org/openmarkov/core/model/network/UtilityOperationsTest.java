@@ -7,8 +7,9 @@
 
 package org.openmarkov.core.model.network;
 
-import junit.framework.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.MulticriteriaOptions.Type;
@@ -19,12 +20,15 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.*;
 
 public class UtilityOperationsTest {
 
@@ -135,8 +139,8 @@ public class UtilityOperationsTest {
             for (int i = 0; i < node.getPotentials().size(); i++) {
                 ExactDistrPotential potential = (ExactDistrPotential) node.getPotentials().get(i);
                 ExactDistrPotential unicriterizatedPotential = (ExactDistrPotential) unicriterizatedNode.getPotentials().get(i);
-                Assert.assertNotSame(potential, unicriterizatedPotential);
-                Assert.assertEquals(potential.getVariables(), unicriterizatedPotential.getVariables());
+                Assertions.assertNotSame(potential, unicriterizatedPotential);
+                Assertions.assertEquals(potential.getVariables(), unicriterizatedPotential.getVariables());
                 double[] values = new double[potential.getTablePotential().getValues().length];
 
                 for (int j = 0; j < values.length; j++) {
@@ -160,7 +164,7 @@ public class UtilityOperationsTest {
 		double rightRiemannSum = UtilityOperations.applyRightRiemannSum(values, 1);
 		double trapezoidalRule = UtilityOperations.applyTrapezoidalRule(values, 1);
 
-		Assert.assertEquals((leftRiemannSum + rightRiemannSum) / 2.0, trapezoidalRule, Math.pow(10, -3));
+		Assertions.assertEquals((leftRiemannSum + rightRiemannSum) / 2.0, trapezoidalRule, Math.pow(10, -3));
 		double asd = 0;
 		try {
 			asd = UtilityOperations.applyCompositeSimpsonsOneThirdRule(values, 1);
@@ -188,30 +192,30 @@ public class UtilityOperationsTest {
 			values[i] = (1.0 / 18.0) * (x + 5) * (x + 1) * (x - 4);
 		}
 		double leftRiemannSum = UtilityOperations.applyLeftRiemannSum(values, numberOfSubintervalsPerCycle);
-		Assert.assertEquals(leftRiemannSum, 117865, delta);
+		Assertions.assertEquals(leftRiemannSum, 117865, delta);
 		double rightRiemannSum = UtilityOperations.applyRightRiemannSum(values, numberOfSubintervalsPerCycle);
-		Assert.assertEquals(rightRiemannSum, 126880, delta);
+		Assertions.assertEquals(rightRiemannSum, 126880, delta);
 		double trapezoidalRule = UtilityOperations.applyTrapezoidalRule(values, numberOfSubintervalsPerCycle);
-		Assert.assertEquals(trapezoidalRule, 122372.5, delta);
+		Assertions.assertEquals(trapezoidalRule, 122372.5, delta);
 		double compositeSimpsonsOneThirdRule = 0;
 		try {
 			compositeSimpsonsOneThirdRule = UtilityOperations
 					.applyCompositeSimpsonsOneThirdRule(values, numberOfSubintervalsPerCycle);
-			Assert.assertEquals(compositeSimpsonsOneThirdRule, 122331, delta);
+			Assertions.assertEquals(compositeSimpsonsOneThirdRule, 122331, delta);
 		} catch (Exception e) {
-			Assert.assertFalse(true);
+			Assertions.assertFalse(true);
 		}
 		double compositeSimpsonsThreeEighthsRule = 0;
 		try {
 			compositeSimpsonsThreeEighthsRule = UtilityOperations
 					.applyCompositeSimpsonsThreeEighthsRule(values, numberOfSubintervalsPerCycle);
-			Assert.assertEquals(compositeSimpsonsThreeEighthsRule, 122331, delta);
+			Assertions.assertEquals(compositeSimpsonsThreeEighthsRule, 122331, delta);
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			System.out.println(ex);
-			Assert.assertFalse(true);
+			Assertions.assertFalse(true);
 		} catch (Exception e) {
 			System.out.println(e);
-			Assert.assertFalse(true);
+			Assertions.assertFalse(true);
 		}
 		double a = compositeSimpsonsOneThirdRule + compositeSimpsonsThreeEighthsRule;
 	}

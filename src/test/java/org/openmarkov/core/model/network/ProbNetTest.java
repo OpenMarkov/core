@@ -11,8 +11,10 @@ package org.openmarkov.core.model.network;
  * @author marias
  */
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -32,12 +34,18 @@ import org.openmarkov.core.model.network.potential.PotentialTest;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.*;
 
 public class ProbNetTest {
 
@@ -224,7 +232,7 @@ public class ProbNetTest {
 		}
 	}
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		emptyProbNet = new ProbNet();
 
 		// create simpleProbNet

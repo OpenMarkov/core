@@ -7,8 +7,12 @@
 
 package org.openmarkov.core.inference;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
+import org.junit.jupiter.api.Disabled;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -29,7 +33,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openmarkov.core.model.network.factory.IDFactory.*;
 
 public abstract class InferencePropagationTaskIDTest extends InferencePropagationTaskDecTest {
@@ -48,7 +52,8 @@ public abstract class InferencePropagationTaskIDTest extends InferencePropagatio
 	 * @throws UnexpectedInferenceException
 	 * @throws IncompatibleEvidenceException
 	 */
-	@Ignore("Old tests with an AssertionError") @Test public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
+	@Disabled("Old tests with an AssertionError")
+	@Test public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
 			throws IOException, ParserException, NodeNotFoundException, ConstraintViolationException,
 			NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException {
 		ProbNet network = buildIDDecideTest();

@@ -7,7 +7,11 @@
 
 package org.openmarkov.core.inference;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
@@ -18,19 +22,22 @@ import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
 
 /**
  * @author mluque
  */
 
 /** @author ibermejo */
-@Ignore public abstract class InferenceAlgorithmTest {
+@Disabled public abstract class InferenceAlgorithmTest {
 
 	/**
 	 * Maximum error allowed in tests. It could be modified by subclasses

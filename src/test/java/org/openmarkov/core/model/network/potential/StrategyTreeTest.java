@@ -7,18 +7,24 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
 
 public class StrategyTreeTest {
 
@@ -30,7 +36,7 @@ public class StrategyTreeTest {
 	private List<StrategyTree> strategyTrees;
 	private List<State> chanceStates;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		chanceVar0 = new Variable("chance", "chance0", "chance1", "chance2");
 		chanceVar1 = new Variable("chance", "chance0", "chance1", "chance2");
 		chanceVar2 = new Variable("chance", "chance0", "chance1", "chance2");

@@ -7,8 +7,10 @@
 
 package org.openmarkov.core.action;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -24,9 +26,10 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Arrays;
 
-import static org.junit.Assert.assertTrue;
 
 public class VariableTypeEditTest {
 
@@ -71,7 +74,7 @@ public class VariableTypeEditTest {
 		return probNet;
 	}
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		probNet = getProbNet4Test();
 		finiteStatesNode = probNet.getNode("A");
 		discretizedNode = probNet.getNode("B");

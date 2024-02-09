@@ -7,8 +7,10 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -20,12 +22,12 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author manuel
@@ -146,7 +148,7 @@ public class TablePotentialTest {
 		return var;
 	}
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		states1 = new State[] { new State("S1V1"), new State("S2V1") };
 		states2 = new State[] { new State("S1V2"), new State("S2V2") };
 		states3 = new State[] { new State("S1V3"), new State("S2V3") };

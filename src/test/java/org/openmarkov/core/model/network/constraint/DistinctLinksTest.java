@@ -7,8 +7,13 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNESupport;
@@ -16,13 +21,12 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
-import static org.junit.Assert.*;
 
 public class DistinctLinksTest {
 
 	private ProbNet influenceDiagram;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		influenceDiagram = ConstraintsTests.getInfuenceDiagram();
 	}
 

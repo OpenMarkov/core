@@ -7,10 +7,12 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 
 /**
  * @author carla
@@ -20,7 +22,7 @@ public class UtilTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 	}
 
 	/**

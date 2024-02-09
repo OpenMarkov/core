@@ -7,8 +7,9 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -25,7 +26,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test of <code>Potential</code> class. As this class is abstract we use the
@@ -178,28 +181,28 @@ public class PotentialTest {
 			case "TreeAddUtility":
 				TreeADDBranch b1 = ((TreeADDPotential) node.getPotentials().get(0)).getBranches().get(0);
 				double[] expectedBranch1Values = { 2.5 };
-				Assert.assertArrayEquals(expectedBranch1Values, ((TablePotential) b1.getPotential()).getValues(),
+				Assertions.assertArrayEquals(expectedBranch1Values, ((TablePotential) b1.getPotential()).getValues(),
 						0.001);
 
 				TreeADDBranch b2 = ((TreeADDPotential) node.getPotentials().get(0)).getBranches().get(1);
 				double[] expectedBranch2Values = { 2.5 };
-				Assert.assertArrayEquals(expectedBranch2Values,
+				Assertions.assertArrayEquals(expectedBranch2Values,
 						((LinearCombinationPotential) b2.getPotential()).getCoefficients(), 0.001);
 
 				break;
 			case "TableUtility":
 				double[] expectedTableValues = { 5.0, 4.5 };
-				Assert.assertArrayEquals(expectedTableValues,
+				Assertions.assertArrayEquals(expectedTableValues,
 						((ExactDistrPotential) node.getPotentials().get(0)).getValues(), 0.001);
 				break;
 			case "LCUtility":
 				double[] expectedLCValues = { 1.5, 2.5, 4.5 };
-				Assert.assertArrayEquals(expectedLCValues,
+				Assertions.assertArrayEquals(expectedLCValues,
 						((LinearCombinationPotential) node.getPotentials().get(0)).getCoefficients(), 0.001);
 				break;
 			case "ExponentialUtility":
 				double[] expectedExponentialValues = { 2.30685281944005, 7 };
-				Assert.assertArrayEquals(expectedExponentialValues,
+				Assertions.assertArrayEquals(expectedExponentialValues,
 						((ExponentialPotential) node.getPotentials().get(0)).getCoefficients(), 0.001);
 				break;
 

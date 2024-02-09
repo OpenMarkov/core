@@ -6,7 +6,9 @@
  */
 package org.openmarkov.core.inference;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
+
 import org.openmarkov.core.exception.NodeNotFoundException;
 
 /**

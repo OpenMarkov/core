@@ -7,8 +7,8 @@
 
 package org.openmarkov.core.action;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -23,11 +23,13 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+
 
 public class MulticriteriaEditTest {
 
@@ -69,7 +71,7 @@ public class MulticriteriaEditTest {
 		return probNet;
 	}
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		this.probNet = getProbNet4Test();
 		probNet.getPNESupport().setWithUndo(true);
 	}

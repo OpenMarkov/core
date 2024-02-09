@@ -7,9 +7,9 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -25,7 +25,7 @@ public class LinearRegressionPotentialTest {
 	private Variable timeInStateVar = null;
 	private Variable ageVar = null;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 
 		// Revision Risk
 		ageAtStateEntryVar = new Variable("Age at state entry", "3.4", "4.4");
@@ -49,12 +49,12 @@ public class LinearRegressionPotentialTest {
 			e.printStackTrace();
 		}
 
-		Assert.assertEquals(1, projectedPotentials.size());
+		Assertions.assertEquals(1, projectedPotentials.size());
 
 		TablePotential projectedPotential = projectedPotentials.get(0);
 
 		double[] expectedValues = new double[] { 0, 1, 1, 0 };
-		Assert.assertArrayEquals(expectedValues, projectedPotential.values, 0.00001);
+		Assertions.assertArrayEquals(expectedValues, projectedPotential.values, 0.00001);
 	}
 
 }

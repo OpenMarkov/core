@@ -7,21 +7,12 @@
 
 package org.openmarkov.core.dt;
 
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.factory.DANFactory;
-import org.openmarkov.core.model.network.factory.IDFactory;
+
+import org.junit.jupiter.api.BeforeAll;
 
 public class DecisionTreeTest {
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 	}
 
 	/*

@@ -7,9 +7,9 @@
 
 package org.openmarkov.core.model.network.potential.treeADD;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.State;
@@ -36,7 +36,7 @@ public class TreeADDTableProjectTest {
 	private State severe;
 	private TreeADDPotential treeADD;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		// create variables
 		variableA = new Variable("A", 4);
 		variableB = new Variable("B", 2);
@@ -111,8 +111,8 @@ public class TreeADDTableProjectTest {
 	@Test public void testTableProject() throws NonProjectablePotentialException, WrongCriterionException {
 		TablePotential tablePotential = treeADD.tableProject(null, null).get(0);
 		List<Variable> variables = tablePotential.getVariables();
-		Assert.assertEquals(3, variables.size());
-		Assert.assertEquals(16, tablePotential.values.length);
+		Assertions.assertEquals(3, variables.size());
+		Assertions.assertEquals(16, tablePotential.values.length);
 		List<Variable> expectedVariables = Arrays.asList(variableC, variableB, variableA);
 		TablePotential expectedTablePotential = new TablePotential(expectedVariables,
 				PotentialRole.CONDITIONAL_PROBABILITY);
@@ -120,6 +120,6 @@ public class TreeADDTableProjectTest {
 				0.4, 0.6, 0.4 };
 		expectedTablePotential = (TablePotential) expectedTablePotential.reorder(tablePotential.getVariables());
 
-		Assert.assertArrayEquals(expectedTablePotential.values, tablePotential.values, 0.001);
+		Assertions.assertArrayEquals(expectedTablePotential.values, tablePotential.values, 0.001);
 	}
 }

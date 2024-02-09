@@ -7,9 +7,11 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
 import org.openmarkov.core.exception.DivideByZeroException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -40,7 +42,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DiscretePotentialOperationsTest {
 
@@ -62,7 +69,7 @@ public class DiscretePotentialOperationsTest {
 	/**
 	 * This method creates the variables used in the tests
 	 */
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		constantPotentials = new ArrayList<>();
 		normalPotentials = new ArrayList<>();
 		allPotentials = new ArrayList<>();
@@ -803,7 +810,8 @@ public class DiscretePotentialOperationsTest {
 		return tablePotentials;
 	}
 
-	@Ignore("Ignored because a NullPointerException") @Test public void testMaxOutVariable() {
+	@Disabled("Ignored because a NullPointerException")
+	@Test public void testMaxOutVariable() {
 		// Method invocation
 		ProbNet perfectKnowledge = IDFactory.createPerfectKnowledge();
 		Variable disease = null;

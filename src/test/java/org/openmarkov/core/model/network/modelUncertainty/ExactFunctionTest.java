@@ -6,7 +6,7 @@
  */
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author manolo

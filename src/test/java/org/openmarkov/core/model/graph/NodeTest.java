@@ -7,13 +7,14 @@
 
 package org.openmarkov.core.model.graph;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Uses <code>GraphsTests</code> to create a simple <code>Graph</code>.
@@ -27,7 +28,7 @@ public class NodeTest {
 
 	private String nodeA, nodeB, nodeC, nodeD;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		graph = GraphsTests.createTestGraph();
 		nodes = graph.getNodes();
 		nodeA = nodes.get(0);

@@ -7,11 +7,12 @@
 
 package org.openmarkov.core.model.network;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.model.network.CycleLength.DiscountUnit;
 import org.openmarkov.core.model.network.CycleLength.Unit;
 
-import static org.junit.Assert.assertTrue;
 
 public class TemporalUnitTest {
 

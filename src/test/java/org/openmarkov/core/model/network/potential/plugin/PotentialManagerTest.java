@@ -7,9 +7,9 @@
 
 package org.openmarkov.core.model.network.potential.plugin;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -37,7 +37,7 @@ public class PotentialManagerTest {
 	ProbNet probNet;
 	Node nodeU;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		manager = new PotentialManager();
 
 		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
@@ -65,8 +65,8 @@ public class PotentialManagerTest {
 
 	@Test public void testGetAllPotentialsNames() {
 		Set<String> potentialNames = manager.getAllPotentialsNames();
-		Assert.assertNotNull(potentialNames);
-		Assert.assertFalse(potentialNames.isEmpty());
+		Assertions.assertNotNull(potentialNames);
+		Assertions.assertFalse(potentialNames.isEmpty());
 	}
 
 	@Test public void testGetByName() {
@@ -90,8 +90,8 @@ public class PotentialManagerTest {
 					potential = manager.getByName(potentialType, variables, role);
 				}
 
-				Assert.assertNotNull(potential);
-				Assert.assertEquals(potentialType, PotentialManager.getPotentialName(potential.getClass()));
+				Assertions.assertNotNull(potential);
+				Assertions.assertEquals(potentialType, PotentialManager.getPotentialName(potential.getClass()));
 			}
 		}
 	}
@@ -108,9 +108,9 @@ public class PotentialManagerTest {
 			}
 
 			Potential potential = manager.getByName(potentialType, variableU, variables);
-			Assert.assertNotNull(potential);
-			Assert.assertEquals(PotentialRole.CONDITIONAL_PROBABILITY, potential.getPotentialRole());
-			Assert.assertEquals(potentialType, PotentialManager.getPotentialName(potential.getClass()));
+			Assertions.assertNotNull(potential);
+			Assertions.assertEquals(PotentialRole.CONDITIONAL_PROBABILITY, potential.getPotentialRole());
+			Assertions.assertEquals(potentialType, PotentialManager.getPotentialName(potential.getClass()));
 		}
 	}
 }

@@ -6,18 +6,25 @@
  */
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
 
 /**
  * @author manolo
  */
-@Ignore public abstract class ProbDensFunctionTest {
+@Disabled public abstract class ProbDensFunctionTest {
 
 	protected double maxErrorMean = 0.01;
 	ProbDensFunction pdf;

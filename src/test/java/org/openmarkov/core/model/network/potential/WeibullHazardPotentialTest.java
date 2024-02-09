@@ -7,9 +7,9 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -29,7 +29,7 @@ public class WeibullHazardPotentialTest {
 	private Variable ageVar = null;
 	private Variable prosthesisTypeVar = null;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 
 		// Revision Risk
 		rrVar = new Variable("Revision Risk", "no", "yes");
@@ -62,13 +62,13 @@ public class WeibullHazardPotentialTest {
 			e.printStackTrace();
 		}
 
-		Assert.assertEquals(1, projectedPotentials.size());
+		Assertions.assertEquals(1, projectedPotentials.size());
 
 		TablePotential projectedPotential = projectedPotentials.get(0);
 
 		double[] expectedValues = new double[] { 0.99891, 0.00109, 0.99765, 0.00235, 0.99972, 2.84367E-4, 0.99939,
 				6.13169E-4 };
-		Assert.assertArrayEquals(expectedValues, projectedPotential.values, 0.00001);
+		Assertions.assertArrayEquals(expectedValues, projectedPotential.values, 0.00001);
 	}
 
 	@Test public void testCholeskyDecomposition() {
@@ -76,7 +76,7 @@ public class WeibullHazardPotentialTest {
 		double[] expectedCholesky = new double[] { 0.0474, -0.1199, 0.1698, 5.901E-07, -0.00461, 0.00242, 0.0001074,
 				-0.0426, -0.0673, 0.07451, 0.005458, 0.00007454, -0.0455, -0.03864, 0.3778 };
 
-		Assert.assertArrayEquals(expectedCholesky, cholesky, 0.0001);
+		Assertions.assertArrayEquals(expectedCholesky, cholesky, 0.0001);
 	}
 
 }

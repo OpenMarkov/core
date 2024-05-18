@@ -1,0 +1,298 @@
+///*
+// * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
+// * Unless required by applicable law or agreed to in writing,
+// * this code is distributed on an "AS IS" basis,
+// * WITHOUT WARRANTIES OF ANY KIND.
+// */
+package org.openmarkov.core.model.network.potential;
+
+import net.sourceforge.jeval.EvaluationException;
+import net.sourceforge.jeval.Evaluator;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.InferenceOptions;
+import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * This class implements a potential which is function of the values provided by the parents.
+ * TODO Which parents???
+ * Has they to be numeric or may we have "finites states" which have one value associated? For example male=1, female=0
+ *
+ * @author cmyago
+ * @version 1.1 06/12/2019
+ * @version 2 19/08/2022 - changed to mitigate nuisance variance and speed simulation creating only once the evaluator and the signature of sampling
+ * 04/10/2023 FIXME Check license
+ */
+@PotentialType(name = "FunctionOld") public class FunctionPotentialOld extends GLMPotential implements DESSimulablePotential {
+
+	/**
+	 * The default function
+	 */
+	public static final String DEFAULT_FUNCTION = "0";
+
+	/**
+	 * The coefficient
+	 */
+	protected static final double COEFFICIENT = 1;
+
+	/**
+	 * Evaluates the function 19/08/2022 - changed to final field to speed the simulation
+	 */
+	private final Evaluator evaluator = new Evaluator();
+
+	/**
+	 * Creates a Function potential with the function by default
+	 *
+	 * @param variables - list with the node variable and their parents
+	 * @param role Potential role
+	 */
+	public FunctionPotentialOld(List<Variable> variables, PotentialRole role) {
+		super(variables, role, new String[] { DEFAULT_FUNCTION }, new double[] { COEFFICIENT });
+	}
+
+	/**
+	 * Creates a Function potential with the function given by {@code function}
+	 *
+	 * @param variables - list with the node variable and their parents
+	 * @param role      - the role of the potential
+	 * @param function  - A string representing the function
+	 */
+	public FunctionPotentialOld(List<Variable> variables, PotentialRole role, String function) {
+		super(variables, role, new String[] { function }, new double[] { COEFFICIENT });
+	}
+
+	/**
+	 * Creates a Function potential equal to {@code potential}
+	 *
+	 * @param potential - potential copied
+	 */
+	public FunctionPotentialOld(FunctionPotentialOld potential) {
+		super(potential);
+	}
+
+	/**
+	 * Returns if an instance of a certain Potential type makes sense given the
+	 * variables and the potential role.
+	 * UNCLEAR--&#62; Should the parents be numeric
+	 *
+	 * @param node      . {@code Node}
+	 * @param variables . {@code ArrayList} of {@code Variable}.
+	 * @param role      . {@code PotentialRole}.
+	 * @return True if it is valid
+	 */
+	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+//CMI 17/10/2020
+//		return (
+//				!variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC
+//		);
+		//FIXME check whether FunctionPotentialOld is necessary
+		return false;
+//		return (
+//				!variables.isEmpty() && (variables.get(0).getVariableType() == VariableType.NUMERIC
+//						|| variables.get(0).getVariableType() == VariableType.EVENT)
+//		);
+//CMF
+	}
+
+	/**
+	 * Gets the unprocessed function of FunctionPotential
+	 *
+	 * @return the function contained in the FunctionPotential
+	 */
+	public String getFunction() {
+		return unprocessCovariates(variables, processedCovariates)[0];
+	}
+
+	/**
+	 * Process and sets  {codefunction}
+	 *
+	 * @param function - The function (unprocessed) to be set
+	 */
+
+	public void setFunction(String function) {
+		setCovariates(new String[] { function });
+	}
+
+	/**
+	 * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
+	 *
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
+	 */
+	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
+	//15/01/2023 This method is called when removing a node with this potential;
+		throw new NonProjectablePotentialException("Function potential cannot be projected to a table");
+
+	}
+
+	/**
+	 * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
+	 *
+	 * @throws NonProjectablePotentialException NonProjectablePotentialException
+	 * @throws WrongCriterionException WrongCriterionException
+	 */
+	@Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
+			Map<String, String> variableValues) throws NonProjectablePotentialException, WrongCriterionException {
+		throw new NonProjectablePotentialException("Function potential cannot be projected to a table");
+
+	}
+
+	@Override public Potential copy() {
+		return new FunctionPotentialOld(this);
+	}
+
+	/**
+	 * Multiplies function by {@code scale}
+	 *
+	 * @param scale - the scale factor
+	 */
+	@Override public void scalePotential(double scale) {
+// 24/10/2023 'Double(double)' is deprecated and marked for removal
+//		String scaleString = new Double(scale).toString();
+//
+		String scaleString = Double.toString(scale);
+		String function = scaleString.concat("*").concat(processedCovariates[0]);
+		processedCovariates[0] = function;
+	}
+
+	/**
+	 * Adds the variable to the new potential. The function does not change
+	 *
+	 * @param variable - the variable to be added
+	 * @return a FunctionPotential with the new variabla
+	 */
+	@Override public Potential addVariable(Variable variable) {
+		FunctionPotentialOld newPotential = null;
+		//18/03/2023 -- for self-loop in DESnets; added check with conditioned variable; FIXME this can happen when it is not a DESnet?
+		if  (!(variables.subList(1,variables.size()).contains(variable)))  {
+		//
+			List<Variable> newVariables = new ArrayList<>(variables);
+			newVariables.add(variable);
+			newPotential = new FunctionPotentialOld(newVariables, this.role);
+			newPotential.setCovariates(processedCovariates);
+			newPotential.setCoefficients(new double[] { 1 });
+		} else {
+			newPotential = new FunctionPotentialOld(this);
+		}
+		return newPotential;
+	}
+/*
+Potential#removeVariable changes the potential to Uniform and org.openmarkov.core.action.RemoveLinkEdit.doEdit then checks
+if the potential is projectable. If the potential is not, does not remove the link properly. I do not know the reason, so I do not change it.
+As FunctionPotential is not projectable I leave the default behaviour
+ */
+//	/**
+//	 * Removes a variable from FunctionPotential. If the function does not use the variable,
+//	 * the function does not change, otherwise the function is set to its default value
+//	 *
+//	 * @param variable - the variable to be removed
+//	 * @returns a FunctionPotential without the variable
+//	 */
+//	@Override public Potential removeVariable(Variable variable) {
+//		if (variables.contains(variable)) {
+//			List<Variable> newVariables = new ArrayList<>(variables);
+//			newVariables.remove(variable);
+//			int index = variables.indexOf(variable);
+//			String variableToRemove = "#{v" + index + "}";
+//			if (processedCovariates[0].contains(variableToRemove)) {
+//				return new FunctionPotential(newVariables, this.role);
+//			}
+//		}
+//		return new FunctionPotential(this);
+//	}
+
+	/**
+	 * Removes a variable from FunctionPotential. If the function does not use the variable,
+	 * the function does not change, otherwise the function is set to its default value
+	 *
+	 * @param variable - the variable to be removed
+	 * @returns a FunctionPotential without the variable
+	 */
+	@Override public Potential removeVariable(Variable variable) {
+		if (variables.contains(variable)) {
+			List<Variable> newVariables = new ArrayList<>(variables);
+			newVariables.remove(variable);
+			int index = variables.indexOf(variable);
+			String variableToRemove = "#{v" + index + "}";
+			if (processedCovariates[0].contains(variableToRemove)) {
+				return new FunctionPotentialOld(newVariables, this.role);
+			}
+		}
+		return new FunctionPotentialOld(this);
+	}
+
+	@Override public Potential deepCopy(ProbNet copyNet) {
+		return super.deepCopy(copyNet);
+	}
+
+	@Override public String toString() {
+		return unprocessCovariates(variables, processedCovariates)[0];
+	}
+
+	/**
+	 * Always returns false because there is no uncertainty
+	 */
+
+	@Override public boolean isUncertain() {
+		return false;
+	}
+
+// 19/08/2022 - used double instead of Random and evaluator object only create once
+	/**
+	 * @param values Values
+	 * @return The value obtained by evaluation the function for the assignment of variables given by 'values'
+	 * @throws EvaluationException EvaluationException
+	 */
+	public String getValue(Map<String,String> values) throws EvaluationException {
+		evaluator.setVariables(values);
+		return evaluator.evaluate(this.processedCovariates[0]);
+	}
+	@Override
+	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
+		List<Variable> parentVariables = parents.getVariables();
+
+		Map<String, String> variablesMap = new HashMap();
+		double result =0;
+
+		for (Variable parentVariable:parentVariables){
+			int index = variables.indexOf(parentVariable);
+			String variableToAdd = "v" + index;
+			variablesMap.put(variableToAdd, ""+parents.getFinding(parentVariable).getNumericalValue());
+		}
+		try {
+//			'Double(double)' is deprecated and marked for removal
+//			result = new Double(getValue(variablesMap)).doubleValue();
+			result = Double.parseDouble(getValue(variablesMap));
+		} catch (EvaluationException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		return  result;
+	}
+
+
+
+//
+
+	@Override
+	public Potential reorder(List<Variable> newOrderOfVariables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Potential reorder(Variable variable, State[] newOrder) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

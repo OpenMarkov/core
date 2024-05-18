@@ -9,12 +9,12 @@ package org.openmarkov.core.model.network.potential;
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,14 +27,15 @@ import java.util.Map;
  * @author cmyago
  * @version 1.1 06/12/2019
  * @version 2 19/08/2022 - changed to mitigate nuisance variance and speed simulation creating only once the evaluator and the signature of sampling
+ * @version 3 21/11/2023 - simplifying potential
  * 04/10/2023 FIXME Check license
  */
-@PotentialType(name = "Function") public class FunctionPotential extends GLMPotential implements DESSimulablePotential {
+@PotentialType(name = "Function") public class FunctionPotential extends Potential implements DESSimulablePotential {
 
 	/**
 	 * The default function
 	 */
-	public static final String DEFAULT_FUNCTION = "0";
+	public static final String DEFAULT_FUNCTION = "1";
 
 	/**
 	 * The coefficient
@@ -46,6 +47,12 @@ import java.util.Map;
 	 */
 	private final Evaluator evaluator = new Evaluator();
 
+	private String function = DEFAULT_FUNCTION;
+
+	private String processedFunction = DEFAULT_FUNCTION;
+
+
+
 	/**
 	 * Creates a Function potential with the function by default
 	 *
@@ -53,7 +60,7 @@ import java.util.Map;
 	 * @param role Potential role
 	 */
 	public FunctionPotential(List<Variable> variables, PotentialRole role) {
-		super(variables, role, new String[] { DEFAULT_FUNCTION }, new double[] { COEFFICIENT });
+		super(variables, role);
 	}
 
 	/**
@@ -64,7 +71,10 @@ import java.util.Map;
 	 * @param function  - A string representing the function
 	 */
 	public FunctionPotential(List<Variable> variables, PotentialRole role, String function) {
-		super(variables, role, new String[] { function }, new double[] { COEFFICIENT });
+		this(variables,role);
+		this.function = function;
+		this.processedFunction = processFunction(function);
+
 	}
 
 	/**
@@ -74,6 +84,8 @@ import java.util.Map;
 	 */
 	public FunctionPotential(FunctionPotential potential) {
 		super(potential);
+		this.function = potential.getFunction();
+		this.processedFunction = processFunction(potential.getFunction());
 	}
 
 	/**
@@ -104,7 +116,7 @@ import java.util.Map;
 	 * @return the function contained in the FunctionPotential
 	 */
 	public String getFunction() {
-		return unprocessCovariates(variables, processedCovariates)[0];
+		return function;
 	}
 
 	/**
@@ -114,8 +126,10 @@ import java.util.Map;
 	 */
 
 	public void setFunction(String function) {
-		setCovariates(new String[] { function });
+		this.function = function;
+		this.processedFunction = processFunction(function);
 	}
+
 
 	/**
 	 * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
@@ -130,18 +144,6 @@ import java.util.Map;
 
 	}
 
-	/**
-	 * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
-	 *
-	 * @throws NonProjectablePotentialException NonProjectablePotentialException
-	 * @throws WrongCriterionException WrongCriterionException
-	 */
-	@Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-			Map<String, String> variableValues) throws NonProjectablePotentialException, WrongCriterionException {
-		throw new NonProjectablePotentialException("Function potential cannot be projected to a table");
-
-	}
 
 	@Override public Potential copy() {
 		return new FunctionPotential(this);
@@ -157,82 +159,18 @@ import java.util.Map;
 //		String scaleString = new Double(scale).toString();
 //
 		String scaleString = Double.toString(scale);
-		String function = scaleString.concat("*").concat(processedCovariates[0]);
-		processedCovariates[0] = function;
+		function = scaleString.concat("*").concat(function);
+		processedFunction = scaleString.concat("*").concat(processedFunction);
+
 	}
 
-	/**
-	 * Adds the variable to the new potential. The function does not change
-	 *
-	 * @param variable - the variable to be added
-	 * @return a FunctionPotential with the new variabla
-	 */
-	@Override public Potential addVariable(Variable variable) {
-		FunctionPotential newPotential = null;
-		//18/03/2023 -- for self-loop in DESnets; added check with conditioned variable; FIXME this can happen when it is not a DESnet?
-		if  (!(variables.subList(1,variables.size()).contains(variable)))  {
-		//
-			List<Variable> newVariables = new ArrayList<>(variables);
-			newVariables.add(variable);
-			newPotential = new FunctionPotential(newVariables, this.role);
-			newPotential.setCovariates(processedCovariates);
-			newPotential.setCoefficients(new double[] { 1 });
-		} else {
-			newPotential = new FunctionPotential(this);
-		}
-		return newPotential;
-	}
-/*
-Potential#removeVariable changes the potential to Uniform and org.openmarkov.core.action.RemoveLinkEdit.doEdit then checks
-if the potential is projectable. If the potential is not, does not remove the link properly. I do not know the reason, so I do not change it.
-As FunctionPotential is not projectable I leave the default behaviour
- */
-//	/**
-//	 * Removes a variable from FunctionPotential. If the function does not use the variable,
-//	 * the function does not change, otherwise the function is set to its default value
-//	 *
-//	 * @param variable - the variable to be removed
-//	 * @returns a FunctionPotential without the variable
-//	 */
-//	@Override public Potential removeVariable(Variable variable) {
-//		if (variables.contains(variable)) {
-//			List<Variable> newVariables = new ArrayList<>(variables);
-//			newVariables.remove(variable);
-//			int index = variables.indexOf(variable);
-//			String variableToRemove = "#{v" + index + "}";
-//			if (processedCovariates[0].contains(variableToRemove)) {
-//				return new FunctionPotential(newVariables, this.role);
-//			}
-//		}
-//		return new FunctionPotential(this);
-//	}
-
-	/**
-	 * Removes a variable from FunctionPotential. If the function does not use the variable,
-	 * the function does not change, otherwise the function is set to its default value
-	 *
-	 * @param variable - the variable to be removed
-	 * @returns a FunctionPotential without the variable
-	 */
-	@Override public Potential removeVariable(Variable variable) {
-		if (variables.contains(variable)) {
-			List<Variable> newVariables = new ArrayList<>(variables);
-			newVariables.remove(variable);
-			int index = variables.indexOf(variable);
-			String variableToRemove = "#{v" + index + "}";
-			if (processedCovariates[0].contains(variableToRemove)) {
-				return new FunctionPotential(newVariables, this.role);
-			}
-		}
-		return new FunctionPotential(this);
-	}
-
+	//FIXME --> revise
 	@Override public Potential deepCopy(ProbNet copyNet) {
 		return super.deepCopy(copyNet);
 	}
 
 	@Override public String toString() {
-		return unprocessCovariates(variables, processedCovariates)[0];
+		return function;
 	}
 
 	/**
@@ -251,18 +189,19 @@ As FunctionPotential is not projectable I leave the default behaviour
 	 */
 	public String getValue(Map<String,String> values) throws EvaluationException {
 		evaluator.setVariables(values);
-		return evaluator.evaluate(this.processedCovariates[0]);
+		return evaluator.evaluate(processedFunction);
+	}
+
+	private String processFunction(String function) {
+		return function.replaceAll("\\{","#{");
 	}
 	@Override
-	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
+	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
 		List<Variable> parentVariables = parents.getVariables();
-
 		Map<String, String> variablesMap = new HashMap();
 		double result =0;
-
 		for (Variable parentVariable:parentVariables){
-			int index = variables.indexOf(parentVariable);
-			String variableToAdd = "v" + index;
+			String variableToAdd = parentVariable.getName();
 			variablesMap.put(variableToAdd, ""+parents.getFinding(parentVariable).getNumericalValue());
 		}
 		try {
@@ -292,4 +231,11 @@ As FunctionPotential is not projectable I leave the default behaviour
 		return null;
 	}
 
+	public String getProcessedFunction() {
+		return processedFunction;
+	}
+
+	public void setProcessedFunction(String processedFunction) {
+		this.processedFunction = processedFunction;
+	}
 }

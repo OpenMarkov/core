@@ -179,8 +179,12 @@ public class TableWithFunctions extends TablePotential {
 	public double getEvaluatedFunctionValue(EvidenceCase configuration, EvidenceCase numericConfiguration){
 		String functionValue= getFunctionValue(configuration);
 		FunctionPotential functionPotential =new FunctionPotential(numericConfiguration.getVariables(),getPotentialRole(),functionValue );
-        return functionPotential.sampleConditionedVariable(0, numericConfiguration);
-	}
+        try {
+            return functionPotential.sampleConditionedVariable(new double[]{0}, numericConfiguration);
+        } catch (org.openmarkov.core.exception.OpenMarkovException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 //	/**

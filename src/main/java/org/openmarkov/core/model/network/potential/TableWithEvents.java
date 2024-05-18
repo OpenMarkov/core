@@ -37,7 +37,7 @@ public class TableWithEvents extends Potential implements DESSimulablePotential 
 
     private List<Variable> tableVariables = null;
 
-    //Imcompatible configurations. Looking the better way of representing them.
+    //Incompatible configurations. Looking the better way of representing them.
     protected boolean hasImpossibleConfigurations;
     protected ArrayList<Configuration> impossibleConfigurations;
 
@@ -295,7 +295,7 @@ public class TableWithEvents extends Potential implements DESSimulablePotential 
 //    /**
 //     * Converts a List of Finding with event Findings to the Configuration structure of a TableWithEvents
 //     * @param findings list of findings to be converted to TableWithEvents Configuration format
-//     * @return a Configuration object where its Finding object are traslated to be used in a TableWithEvents
+//     * @return a Configuration object where its Finding object are translated to be used in a TableWithEvents
 //     */
 //    public Configuration convert(List<Finding> findings){
 //        Configuration tteConfiguration = new Configuration();

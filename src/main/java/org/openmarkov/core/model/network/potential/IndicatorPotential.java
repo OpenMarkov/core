@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.OutOfRangeException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -59,9 +60,17 @@ public class IndicatorPotential extends Potential implements DESSimulablePotenti
 	}
 
 	@Override
-	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents) {
-		if (randomNumber <= pOccurrence) return tte;
-		else return Double.NaN;
+	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
+
+		if (randomNumbers[0] <= pOccurrence) {
+
+			return tte;
+		}
+
+		else {
+
+			return Double.NaN;
+		}
 	}
 
 	@Override
@@ -89,7 +98,7 @@ public class IndicatorPotential extends Potential implements DESSimulablePotenti
 	}
 
 	@Override public String toString()  {
-		return variables.get(0) + "; probability = " + pOccurrence + "TTE = "+ tte;
+		return variables.get(0) + "; probability = " + pOccurrence + "; TTE = "+ tte;
 	}
 
 	@Override public Potential deepCopy(ProbNet copyNet) {

@@ -1,6 +1,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -71,7 +72,7 @@ import java.util.List;
 	}
 
 	@Override
-	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents) {
+	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
 	//14/08/2022 refactored for nuisance variable. Changed for starting in 0;
 		//14/08/2022 Check; currently value is stored here and in DES record
 		return ++incrementedValue;

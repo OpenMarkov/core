@@ -1,6 +1,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -113,5 +114,10 @@ import java.util.List;
 	@Override
 	public Potential reorder(Variable variable, State[] newOrder) {
 		return null;
+	}
+
+	@Override
+	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
+		return Double.MAX_VALUE;
 	}
 }

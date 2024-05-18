@@ -1,5 +1,6 @@
 package org.openmarkov.core.model.network.potential;
 
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.model.network.EvidenceCase;
 
 /**
@@ -20,7 +21,7 @@ public interface DESSimulablePotential {
 //     * the sampled state. If the variable is numeric, it returns the value sampled.
 //     *
 //     * @param randomNumber number before 0 an 1 from which inverse cumulative value is computed
-//     * @param parents      parents configuration with their values
+//     * @param parents  configuration of parents with their values
 //     * @return a sample of the potential when exists; Double.MAX_VALUE otherwise
 //     */
 //    default double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
@@ -42,7 +43,7 @@ public interface DESSimulablePotential {
      * @param parents parents configuration with their values
      * @return  a sample of the potential when exists; Double.MAX_VALUE otherwise
      */
-    double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents);
+    double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException;
 //    {
 //        return Double.MAX_VALUE;
 //    }

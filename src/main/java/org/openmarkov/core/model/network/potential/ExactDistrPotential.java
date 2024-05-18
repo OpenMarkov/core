@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
@@ -137,7 +138,7 @@ import java.util.List;
 
 	//27/04/2020 - Returns the table value given its parents. For DES simulations - 14/08/2022 refactored for avoiding nuisance variance
 	@Override
-	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents) {
+	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
 		return tablePotential.getValue(parents);
 	}
 	//

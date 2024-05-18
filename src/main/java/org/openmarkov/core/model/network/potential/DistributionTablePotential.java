@@ -8,6 +8,7 @@ import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionWithKn
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.core.model.network.type.DESNetworkType;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -241,7 +242,8 @@ public class DistributionTablePotential extends Potential implements DESSimulabl
     //14/08/2022 changed for nuisance variable
     //14/08/2022 FIXME revise functions use
     @Override
-    public double sampleConditionedVariable(double randomNumber, EvidenceCase parents) {
+    public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
+
         //Extract FINITE_STATES and EVENT Variables and convert to the format of a TableWithEvents to find the position in the table
         EvidenceCase stateConfiguration = tableWithEvents.convert(parents);
         //Extract Numeric Variables which are the Function Variables
@@ -275,15 +277,20 @@ public class DistributionTablePotential extends Potential implements DESSimulabl
                 }
                 stateConfiguration.removeFinding(distributionVariable);
             }
-
-            distribution = ParametrizedFunctionManager.getUniqueInstance().getParametrizedClass(distributionName, parametrizationName).newInstance();
+            //24/10/2023 clazz.newInstance deprecated since Java 9
+            distribution = ParametrizedFunctionManager.getUniqueInstance().getParametrizedClass(distributionName, parametrizationName).getDeclaredConstructor().newInstance();
+//            distribution = ParametrizedFunctionManager.getUniqueInstance().getParametrizedClass(distributionName, parametrizationName).newInstance();
             distribution.setParameters(paramValues);
         } catch (InstantiationException | IllegalAccessException | InvalidStateException |
                  IncompatibleEvidenceException | NoFindingException e) {
             e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
         //11/12/2022 I need to control the randomNumber sequence in order to avoid nuisance variance
-        return distribution.getInverseCumulativeDistributionFunction(randomNumber);
+        return distribution.getInverseCumulativeDistributionFunction(randomNumbers[0]);
     }
 
     /**

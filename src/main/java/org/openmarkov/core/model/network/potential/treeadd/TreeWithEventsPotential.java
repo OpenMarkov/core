@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network.potential.treeadd;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
@@ -150,7 +151,7 @@ public class TreeWithEventsPotential extends Potential implements DESSimulablePo
 
 	//14/08/2022 refactored for avoiding nuisance variance
 	@Override
-	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
+	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
 
 
 		List<Variable> eventVariables = parents.getVariables().stream().filter(variable ->variable.getVariableType() ==VariableType.EVENT).collect(Collectors.toList());
@@ -169,12 +170,13 @@ public class TreeWithEventsPotential extends Potential implements DESSimulablePo
 		try
 		{
 			//19/03/2023 the event is not part of the branch potential
-			result = eventTree.sampleConditionedVariable(randomNumber, parents);
+			result = eventTree.sampleConditionedVariable(randomNumbers, parents);
 
 		} catch(Exception e) {
 			//FIXME when completed this method coding this catch will be removed
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,"TreeWithEventsPotential: Getting sample exception: " +eventVariables.get(0).getName());
+			throw new RuntimeException(e);
 		}
 		return result;
 	}

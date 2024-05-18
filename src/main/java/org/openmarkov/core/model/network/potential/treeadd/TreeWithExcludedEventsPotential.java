@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network.potential.treeadd;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
@@ -101,7 +102,7 @@ public class TreeWithExcludedEventsPotential extends Potential implements DESSim
 
 	//14/08/2022 refactored for avoiding nuisance variance
 	@Override
-	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
+	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
 
 		double result =0;
 		List<Variable> eventVariables = parents.getVariables().stream().filter(variable ->variable.getVariableType() ==VariableType.EVENT).collect(Collectors.toList());
@@ -111,7 +112,7 @@ public class TreeWithExcludedEventsPotential extends Potential implements DESSim
 		try
 		{
 			parents.removeFinding(eventVariables.get(0));
-			result = noEventTree.sampleConditionedVariable(randomNumber, parents);
+			result = noEventTree.sampleConditionedVariable(randomNumbers, parents);
 
 		} catch(Exception e) {
 			//FIXME when completed this method coding this catch will be removed
@@ -126,6 +127,10 @@ public class TreeWithExcludedEventsPotential extends Potential implements DESSim
 		noEventTree.resetSimulation();
 	}
 
+	@Override
+	public int numRandomNumbersNeeded() {
+		return noEventTree.numRandomNumbersNeeded();
+	}
 
 	@Override public Potential copy() {
 		return new TreeWithExcludedEventsPotential(this);

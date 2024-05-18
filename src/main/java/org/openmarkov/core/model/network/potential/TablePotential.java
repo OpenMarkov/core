@@ -7,10 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.TablePotentialSampler;
@@ -1161,7 +1158,7 @@ import java.util.*;
 
 	//CMI 14/08/2022 - sampleConditionedVariable refactored for dealing with nuisance variance
 	@Override
-	public double sampleConditionedVariable(double randomNumber, EvidenceCase parents) {
+	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
 
 		int index = 0;
 		int sampleIndex = 0;
@@ -1170,7 +1167,8 @@ import java.util.*;
 			index += parents.getState(variables.get(i)) * offsets[i];
 		}
 		double accumulatedProbability = values[index + sampleIndex];
-		while (randomNumber > accumulatedProbability
+		//24/10/2023; adapted to indeterminate number of random numbers to sample potentials
+		while (randomNumbers[0] > accumulatedProbability
 				// Make sure we don't go out of bounds even if the sum of probabilities
 				// is smaller than one.
 				&& sampleIndex < variables.get(0).getNumStates() - 1) {

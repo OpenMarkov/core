@@ -1,5 +1,6 @@
 package org.openmarkov.core.model.network.potential;
 
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.core.model.network.type.DESNetworkType;
@@ -69,8 +70,8 @@ public class TransitionTablePotential extends TableWithEvents implements DESSimu
 
 
     @Override
-    public double sampleConditionedVariable(double randomNumber, EvidenceCase parents)  {
-        return tablePotential.sampleConditionedVariable(randomNumber,convert(parents));
+    public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
+        return tablePotential.sampleConditionedVariable(randomNumbers,convert(parents));
     }
 
 

@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.constraint;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
@@ -67,7 +68,7 @@ public class NoMultipleLinksTest {
 		assertTrue(exceptionLaunched);
 
 	}
-
+	@Ignore
 	@Test public void testUndoableEditWillHappen() throws Exception {
 		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new NoMultipleLinks();

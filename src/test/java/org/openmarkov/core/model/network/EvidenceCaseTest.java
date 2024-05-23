@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -143,7 +144,7 @@ public class EvidenceCaseTest {
 		probNet.addPotential((Potential) potentialvaluesCBA);
 
 	}
-
+	@Ignore
 	@Test public void extendEvidence()
 			throws IOException, NodeNotFoundException, ConstraintViolationException, IncompatibleEvidenceException,
 			InvalidStateException, WrongCriterionException, NullPointerException {

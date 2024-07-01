@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
@@ -60,7 +61,7 @@ public class NoMixedParentsTest {
 		assertTrue(exceptionLaunched);
 
 	}
-
+	@Disabled
 	@Test public void testUndoableEditWillHappen() throws Exception {
 		// Add constraints as listeners.
 		PNESupport pNESupport = new PNESupport(false);

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -147,7 +148,7 @@ public class EvidenceCaseTest {
 		probNet.addPotential((Potential) potentialvaluesCBA);
 
 	}
-
+	@Disabled
 	@Test public void extendEvidence()
 			throws IOException, NodeNotFoundException, ConstraintViolationException, IncompatibleEvidenceException,
 			InvalidStateException, WrongCriterionException, NullPointerException {

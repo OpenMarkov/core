@@ -12,8 +12,18 @@ import org.openmarkov.core.model.network.Variable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The CaseDatabase class represents a database of cases for a set of variables.
+ * Each case is a specific instance or sample of the variables, and the database
+ * consists of multiple such cases.
+ */
 public class CaseDatabase {
 	private List<Variable> variables;
+
+	/**
+	 * Cases in the database. First argument: case number. Second argument: variable.
+	 * The content is the state of the variable.
+	 */
 	private int[][] cases;
 
 	/**

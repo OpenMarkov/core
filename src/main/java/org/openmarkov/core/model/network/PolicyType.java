@@ -23,6 +23,7 @@ public enum PolicyType {
 	}
 
 	public int getType() {
+
 		return type;
 	}
 

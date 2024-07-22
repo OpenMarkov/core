@@ -130,6 +130,7 @@ import java.util.Random;
 	 * Condition: All variables must be discrete.
 	 */
 	public TablePotential(PotentialRole role, Variable... variables) {
+
 		this(toList(variables), role);
 	}
 

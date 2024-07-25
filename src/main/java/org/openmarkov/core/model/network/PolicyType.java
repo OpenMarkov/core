@@ -8,10 +8,12 @@
 package org.openmarkov.core.model.network;
 
 public enum PolicyType {
-	OPTIMAL("Optimal"), DETERMINISTIC("Deterministic"), PROBABILISTIC("Probabilistic");
+	OPTIMAL("Optimal"),
+	DETERMINISTIC("Deterministic"),
+	PROBABILISTIC("Probabilistic");
 
-	String name;
-	int type;
+	private final String name;
+	private final int type;
 
 	PolicyType(String name) {
 		this.type = this.ordinal();

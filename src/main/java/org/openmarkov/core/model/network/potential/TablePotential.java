@@ -9,7 +9,6 @@ package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -22,18 +21,11 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.TablePotentialSampler;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * A {@code TablePotential} is a type of relation with a list of
@@ -169,6 +161,7 @@ import java.util.Random;
 
 	// Methods
 
+	// TODO This method is not used and the parameters node and role are not used. Remove the method or the parameters.
 	/**
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role.
@@ -179,14 +172,13 @@ import java.util.Random;
 	 * @return True   if an instance of a certain Potential type makes sense given the variables and the potential role.
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-		boolean suitable = true;
-		int i = 0;
-		while (suitable && i < variables.size()) {
-			suitable &= variables.get(i).getVariableType() == VariableType.FINITE_STATES
-					|| variables.get(i).getVariableType() == VariableType.DISCRETIZED;
-			++i;
+		for (Variable variable : variables) {
+			VariableType type = variable.getVariableType();
+			if (type != VariableType.FINITE_STATES && type != VariableType.DISCRETIZED) {
+				return false;
+			}
 		}
-		return suitable;
+		return true;
 	}
 
 	/**
@@ -327,12 +319,13 @@ import java.util.Random;
 			} else {
 				offsetXY[j] = offsetX[ordering_j];
 			}
-			int numStatesYj_1 = ((Variable) variables.get(j - 1)).getNumStates();
+			int numStatesYj_1 = variables.get(j - 1).getNumStates();
 			accOffsetXY[j] = accOffsetXY[j - 1] + offsetXY[j] - (numStatesYj_1 * offsetXY[j - 1]);
 		}
 		return accOffsetXY;
 	}
 
+	// TODO This method is not used. Remove it.
 	/**
 	 * Use accumulated offsets to calculate the next position in a potential.
 	 * The content of actualPosition will be modified
@@ -404,6 +397,7 @@ import java.util.Random;
 		return tableSize;
 	}
 
+	// TODO This method is not used. undertainValues is not used. Remove the method or the parameter.
 	/**
 	 * @param uncertainValues List of uncertain values
 	 * @return true if the uncertain values are correct
@@ -429,8 +423,6 @@ import java.util.Random;
 				// Unreachable code
 				e.printStackTrace();
 			}
-		} else {
-			newPotential = this;
 		}
 		return newPotential;
 	}
@@ -682,12 +674,13 @@ import java.util.Random;
 			} else {
 				offsetXY[j] = offsetX[ordering_j];
 			}
-			int numStatesYj_1 = ((Variable) variables.get(j - 1)).getNumStates();
-			accOffsetXY[j] = accOffsetXY[j - 1] + offsetXY[j] - (numStatesYj_1 * offsetXY[j - 1]);
+			int numStatesYj_1 = variables.get(j - 1).getNumStates();
+            accOffsetXY[j] = (accOffsetXY[j - 1] + offsetXY[j]) - (numStatesYj_1 * offsetXY[j - 1]);
 		}
 		return accOffsetXY;
 	}
 
+	// TODO Move this method to TablePotentialOperations
 	/**
 	 * Get accumulated offsets of a projected potential.
 	 *
@@ -973,7 +966,7 @@ import java.util.Random;
 
 	// TODO revisar para que no use tableProject(...)
 	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
-			throws IncompatibleEvidenceException, WrongCriterionException {
+			throws WrongCriterionException {
 		Collection<Finding> inducedFindings = new ArrayList<>();
 		if (role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.POLICY) {
 			// Iterates over the list of parents. If some parent is not in the
@@ -987,8 +980,8 @@ import java.util.Random;
 			// Checks if the projected potentials are deterministic
 			try {
 				TablePotential projectedPotential = tableProject(evidenceCase, null).get(0);
-				if ((projectedPotential.getNumVariables() == 1) && (projectedPotential instanceof TablePotential)) {
-					double[] table = ((TablePotential) projectedPotential).values;
+				if (projectedPotential.getNumVariables() == 1) {
+					double[] table = projectedPotential.values;
 					int zeros = 0;
 					int position = 0;
 					for (int i = 0; i < table.length; i++) {
@@ -1016,14 +1009,12 @@ import java.util.Random;
 	public void setUniform() {
 		int numVariables;
 		boolean setValue = false;
-		Double value = 0.0;
+		double value = 0.0;
 		if (variables != null) {
 			numVariables = variables.size();
-			if ((numVariables > 0) && noNumericVariables() && (
-					(role == PotentialRole.CONDITIONAL_PROBABILITY) || (role == PotentialRole.POLICY) || (
-							role == PotentialRole.JOINT_PROBABILITY
-					) || (role == PotentialRole.LINK_RESTRICTION)
-			)) {
+			if (numVariables > 0 && noNumericVariables() && (
+					role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.POLICY ||
+					role == PotentialRole.JOINT_PROBABILITY || role == PotentialRole.LINK_RESTRICTION)) {
 				setValue = true;
 				value = 0.0;
 				switch (role) {
@@ -1051,9 +1042,7 @@ import java.util.Random;
 					// Do nothing
 					break;
 				} // When role = UTILITY -> value = 0.0 (default)
-				for (int i = 0; i < values.length; i++) {
-					values[i] = value;
-				}
+				Arrays.fill(values, value);
 			} else if (numVariables == 0) {
 				setValue = true;
 				if (role == PotentialRole.JOINT_PROBABILITY) {
@@ -1062,11 +1051,7 @@ import java.util.Random;
 					value = 0.0;
 				}
 			}
-			if (setValue) {
-				for (int i = 0; i < values.length; i++) {
-					values[i] = value;
-				}
-			}
+			if (setValue) Arrays.fill(values, value);
 		}
 	}
 
@@ -1081,7 +1066,7 @@ import java.util.Random;
 		int valuesPosition = 0;
 		boolean openBrace = false;
 		if (buffer.length() < STRING_MAX_LENGTH) {
-			if (variables.size() > 0) {
+			if (!variables.isEmpty()) {
 				buffer.append(" = {");
 				openBrace = true;
 			} else {
@@ -1095,7 +1080,7 @@ import java.util.Random;
 			}
 		}
 		if (values.length != 1) {
-			if (valuesPosition != values.length || variables.size() == 0) {
+			if (valuesPosition != values.length || variables.isEmpty()) {
 				buffer.append("...");
 			}
 		}
@@ -1287,7 +1272,7 @@ import java.util.Random;
 
 	@Override
 	public Potential reorder(List<Variable> newOrderOfVariables) {
-			boolean hasInterventions = false;
+			boolean hasInterventions;
 			TablePotential newPotential = new TablePotential(newOrderOfVariables, getPotentialRole());
 			int[] accOffsets = getAccumulatedOffsets(newOrderOfVariables);
 			int[] potentialPositions = new int[getNumVariables()];

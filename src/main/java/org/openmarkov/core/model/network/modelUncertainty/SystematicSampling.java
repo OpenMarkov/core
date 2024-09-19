@@ -233,6 +233,84 @@ public class SystematicSampling extends Sampler {
 		}
 		return net;
 	}
+	
+	/**
+	 *  Method used in by the CESpiderDialog class in "sensitivityanalysis" repo
+	 */
+	private static ProbNet networkSample(ProbNet originalNet, List<ParameterAnalysisInformation> parameters, int numIntervals, int interval) {
+		
+		ProbNet net = originalNet.copy();
+
+		UncertainParameter uncertainParameter;
+		int numPoints = numIntervals + 1;
+		List<Class<? extends ProbDensFunction>> functionTypes = initializeTypeFunctions();
+
+		for (ParameterAnalysisInformation parameter : parameters) {
+			uncertainParameter = parameter.uncertainParameter;
+			if (uncertainParameter != null) {
+				String iterationVariableName = parameter.iterationVariableName;
+				Variable iterVariable = new Variable(iterationVariableName, numPoints);
+				Potential originalPotential = uncertainParameter.potential;
+				Potential newPotential = originalPotential.copy();
+				Potential originalSubPotential = uncertainParameter.subPotential;
+				TablePotential originalSubPotentialTable;
+				boolean isSubPotentialExactDistrPotential = originalSubPotential instanceof ExactDistrPotential;
+				originalSubPotentialTable = getPotentialTable(originalSubPotential);
+				Potential newSubPotential;
+				boolean isOriginalPotentialATreeADD = originalPotential instanceof TreeADDPotential;
+				newSubPotential = isOriginalPotentialATreeADD? originalSubPotential.copy(): newPotential;
+				int position = getPosition(originalSubPotentialTable, uncertainParameter.uncertainValue);
+				int posUncertainInColumn = calculatePositionUncertainInColumn(originalSubPotentialTable, position, isSubPotentialExactDistrPotential);
+				
+				List<Variable> newTablePotentialVariables = originalSubPotentialTable.getVariables();
+				List<Variable> newSubPotentialVariables = new ArrayList<>();
+				if (isSubPotentialExactDistrPotential) {
+					newSubPotentialVariables.add(originalSubPotential.getVariable(0));
+				}
+				newSubPotentialVariables.addAll(newTablePotentialVariables);
+				newSubPotential.setVariables(newSubPotentialVariables);
+				TablePotential newSubPotentialTable = originalSubPotentialTable;
+				if (newSubPotentialTable != newSubPotential) {
+					newSubPotentialTable.setVariables(newTablePotentialVariables);
+				}
+				double min = parameter.min;
+				double pointsDistance = (parameter.max - min) / numIntervals;
+				int numStates = numElementsInColumn(originalSubPotential);
+				int configurationBasePositionInitColumn = position - posUncertainInColumn;
+				List<UncertainValue> columnUncertainValues = getUncertainValuesChance(
+						originalSubPotentialTable.uncertainValues, configurationBasePositionInitColumn, numStates);
+				Sampler sampler = new SystematicSampling();
+				double[] sampledConfigurationValues = sampler.generateSample(columnUncertainValues, numStates, functionTypes);
+				double[] auxSampledConfigurationValues = new double[numStates];
+				double auxValueToAssign = min+(pointsDistance*interval);
+				//Returns the net to its original potentials (after giving the last net with the last intervals potentials)
+				//for the next uncertainParameter. This is necessary because even if you operate on a copy of the original network
+				//with "net.copy()", the changes are transferred to the original network. 
+				if(interval > numIntervals) {
+					auxValueToAssign = uncertainParameter.getBaseLineValue();
+				}
+				double[] newSubpotentialTableValues = newSubPotentialTable.values;
+								
+				System.arraycopy(sampledConfigurationValues, 0, auxSampledConfigurationValues, 0, numStates);
+				replaceValueAndRedistributeComplements(auxSampledConfigurationValues, sampler, posUncertainInColumn,
+							auxValueToAssign);					
+				copyInArray(newSubpotentialTableValues, configurationBasePositionInitColumn,
+							auxSampledConfigurationValues);	
+									
+				TablePotential auxTablePotential;
+				auxTablePotential = getPotentialTable(newSubPotential);
+				auxTablePotential.setValues(newSubpotentialTableValues);
+				auxTablePotential.setUncertainValues(new UncertainValue[newSubpotentialTableValues.length]);
+				
+				if (isOriginalPotentialATreeADD) {
+					newPotential.addVariable(iterVariable);
+					replace((TreeADDPotential)originalPotential, (TreeADDPotential) newPotential, originalSubPotential, newSubPotential);
+				}				
+			}
+		}
+		return net;
+	}
+	
 
 	private static void replaceValueAndRedistributeComplements(double[] samples, Sampler sampler, int posToReplace,
 			double newValue) {
@@ -282,6 +360,21 @@ public class SystematicSampling extends Sampler {
 				.asList(new ParameterAnalysisInformation(uncertainParameter1, min1, max1, iterationVariableName1),
 						new ParameterAnalysisInformation(uncertainParameter2, min2, max2, iterationVariableName2));
 		return SystematicSampling.sampleNetwork(originalNet, parameters, numIntervals);
+	}	
+	
+	/**
+	 * Returns the original network with the sub-potential table where "parameterName" appears has been 
+	 * conditioned in the variable "iterationVariable" name, replaced by the potential in the interval
+	 * of uncertainty corresponding to the point indicated by pointOfInterval.
+	 * The uncertainty interval is divided into as many equally distant intervals between 'min' and 'max'
+	 * as the number of iterations 
+	 */
+	
+	public static ProbNet networkSample(ProbNet originalNet, UncertainParameter uncertainParameter, double min,
+			double max, int numIntervals, String iterationVariableName, int interval) {
+		List<ParameterAnalysisInformation> parameters = Collections
+				.singletonList(new ParameterAnalysisInformation(uncertainParameter, min, max, iterationVariableName));
+		return SystematicSampling.networkSample(originalNet, parameters, numIntervals, interval);
 	}
 
 	private static void replace(TreeADDPotential originalPotential, TreeADDPotential newPotential, Potential subPotToReplace, Potential newSubPot) {

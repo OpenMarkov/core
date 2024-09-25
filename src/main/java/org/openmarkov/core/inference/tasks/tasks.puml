@@ -1,3 +1,5 @@
+// @author Manuel Arias
+
 @startuml
     class TaskUtilities {
         +{static} expandNetwork(probNet, isTemporal): ProbNet
@@ -21,6 +23,7 @@
     }
 
 package "Analysis" {
+	together {
     interface CE_PSA {
         getCEPPotentials(): Collection<GTablePotential>
         setDecisionVariable(decisionSelected): void
@@ -39,9 +42,11 @@ package "Analysis" {
     interface ExpectedUtilityDecision {
         getExpectedUtility(): TablePotential
     }
+    }
 }
 
 package "DecisionMaking" {
+	together {
     interface GenerateDecisionTree {
         getDecisionTree(): DecisionTreeNode
     }
@@ -52,17 +57,22 @@ package "DecisionMaking" {
         getOptimalPolicies(): HashMap<Variable, Potential>
         getOptimalPolicy(decision: Variable): Potential
     }
+	}
 }
 
+
 package "Propagation" {
+	together {
     interface Propagation {
         getPosteriorValues(): HashMap<Variable, TablePotential>
         setPostResolutionEvidence(postResolutionEvidence): void
         setVariablesOfInterest(variablesOfInterest): void
     }
+    }
 }
 
 package "SensitivityAnalysis" {
+	together {
     interface SensAnMap {
         getUncertainParametersPotentials(): HashMap<UncertainParameter, TablePotential>
     }
@@ -72,9 +82,11 @@ package "SensitivityAnalysis" {
     interface SensAnTornadoSpider {
         getUncertainParametersPotentials(): HashMap<UncertainParameter, TablePotential>
     }
+    }
 }
 
 package "Temporal" {
+    together {
     interface TemporalEvolution {
         getTemporalEvolution(): HashMap<Variable, TablePotential>
         getTemporalEvolutionWithDiscount(): HashMap<Variable, TablePotential>
@@ -83,18 +95,18 @@ package "Temporal" {
         setDecisionVariable(decisionSelected): void
         getExpandedNetwork(): ProbNet
     }
+    }
 }
 
-Task <|-- TemporalEvolution
-Task <|--- SensAnTornadoSpider
-Task <|--- SensAnPlot
-Task <|--- SensAnMap
-Task <|-- Propagation
-Task <|-- OptimalPolicies
-Task <|-- GenerateDecisionTree
-Task <|--- ExpectedUtilityDecision
-Task <|--- Evaluation
-Task <|--- CEAnalysis
-Task <|--- CE_PSA
-Task <|-- OptimalIntervention
+interface Task {
+setPreResolutionEvidence(EvidenceCase preresolutionEvidence):void
+setConditioningVariables(List<Variable> conditioningVariables):void
+}
+
+Task <|-- DecisionMaking
+Task <|-- SensitivityAnalysis
+Analysis --|> Task
+Temporal -left-|> Task
+Propagation -right-|> Task
+
 @enduml

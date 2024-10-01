@@ -139,18 +139,16 @@ public class TaskUtilities {
 		 */
 
 	/**
+	 * Remove intermediate numeric nodes from probNet
+	 *
 	 * @param probNet Network
 	 * @param evidenceCase Evidence case
-	 * @return Remove intermediate numeric nodes from probNet
+	 * @return ProbNet without intermediate numeric nodes
 	 */
 	public static ProbNet absorbAllIntermediateNumericNodes(ProbNet probNet, EvidenceCase evidenceCase) {
-		ProbNet resultNetwork = null;
-		if (!hasOnlyChanceNodes(probNet)) {
-			resultNetwork = BasicOperations.absorbAllIntermediateNumericNodes(probNet, evidenceCase);
-		} else {
-			return probNet;
-		}
-		return resultNetwork;
+
+		return !hasOnlyChanceNodes(probNet) ? BasicOperations.absorbAllIntermediateNumericNodes(probNet, evidenceCase)
+				: probNet;
 	}
 
 	/**
@@ -158,17 +156,16 @@ public class TaskUtilities {
 	 * @return boolean
 	 */
 	public static boolean hasDecisions(ProbNet network) {
-		List<Node> decisionNodes = network.getNodes(NodeType.DECISION);
-		return (decisionNodes != null && !decisionNodes.isEmpty());
+
+		return !network.getNodes(NodeType.DECISION).isEmpty();
 	}
 	
 	
 	public static boolean hasDecisionsWithoutImposedPolicy(ProbNet network) {
-		boolean hasDecWithoutImposedPolicy;
+
 		List<Node> decisionNodes = network.getNodes(NodeType.DECISION);
-		hasDecWithoutImposedPolicy = (decisionNodes != null && !decisionNodes.isEmpty());
-		hasDecWithoutImposedPolicy &= decisionNodes.stream().anyMatch(x -> !hasImposedPolicy(network, x.getVariable()));
-		return hasDecWithoutImposedPolicy;
+		return  (decisionNodes != null && !decisionNodes.isEmpty()) &&
+				decisionNodes.stream().anyMatch(x -> !hasImposedPolicy(network, x.getVariable()));
 	}
 
 	/**
@@ -176,6 +173,7 @@ public class TaskUtilities {
 	 * @return True if the network has only chance nodes.
 	 */
 	public static boolean hasOnlyChanceNodes(ProbNet network) {
+
 		return network.hasConstraint(OnlyChanceNodes.class);
 	}
 

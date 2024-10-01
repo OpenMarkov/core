@@ -26,7 +26,11 @@ import java.io.Serializable;
  * @author fjdiez
  */
 public enum NodeType implements Serializable {
-	CHANCE(0, "chance"), DECISION(1, "decision"), UTILITY(2, "utility"), SV_SUM(3, "svSum"), SV_PRODUCT(4, "svProduct");
+	CHANCE(0, "chance"),
+	DECISION(1, "decision"),
+	UTILITY(2, "utility"),
+	SV_SUM(3, "svSum"),
+	SV_PRODUCT(4, "svProduct");
 
 	/**
 	 * Existing types: CHANCE(0), DECISION(1), UTILITY(2), ...
@@ -49,6 +53,7 @@ public enum NodeType implements Serializable {
 	 * @return nodeType.value. {@code int}
 	 */
 	public static int type(NodeType nodeType) {
+
 		return nodeType.type();
 	}
 
@@ -56,6 +61,7 @@ public enum NodeType implements Serializable {
 	 * @return {@code type}
 	 */
 	public int type() {
+
 		return type;
 	}
 

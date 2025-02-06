@@ -216,6 +216,9 @@ public class PNESupport extends UndoableEditSupport {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			if (undoManagerSupport.getEditsSize()<=2){
+				undoManagerSupport.deleteEdits(undoManagerSupport.getEditsSize());
+			}
 
         	/*
             openParenthesis = false;

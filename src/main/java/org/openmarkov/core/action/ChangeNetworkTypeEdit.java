@@ -61,7 +61,7 @@ import java.util.ArrayList;
 					probNet.setAgents(agents);
 				}
 			} catch (ConstraintViolationException e) {
-				throw new DoEditException(e.getMessage());
+				throw new DoEditException(e);
 			}
 		}
 	}

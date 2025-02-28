@@ -9,7 +9,7 @@ package org.openmarkov.core.exception;
 
 public class OpenMarkovException extends Exception {
 	/**
-	 * This token must correspond which one of the exception constants defined in <code>{@link OpenMarkovException}</code>
+	 * This token must correspond which one of the exception constants defined in <code>{@link OpenMarkovExceptionConstants}</code>
 	 */
 	private String token;
 

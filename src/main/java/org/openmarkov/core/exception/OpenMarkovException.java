@@ -13,6 +13,8 @@ public class OpenMarkovException extends Exception {
 	 */
 	private String token;
 
+	private String message;
+
 	/**
 	 * List of attributes that should pass to the GUI in order to display extra information (f.e. a network name, a number,...).
 	 */
@@ -26,6 +28,11 @@ public class OpenMarkovException extends Exception {
 	public OpenMarkovException(String token) {
 		super();
 		this.token = token;
+	}
+
+	public OpenMarkovException(Exception exception){
+		this.token = ((OpenMarkovException) exception).getToken();
+		this.message = exception.getMessage();
 	}
 
 

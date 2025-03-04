@@ -21,7 +21,7 @@ package org.openmarkov.core.exception;
 	 * @param exception . {@code Exception}
 	 */
 	public DoEditException(Exception exception) {
-		super(exception.getMessage());
+		super(exception);
 	}
 
 }

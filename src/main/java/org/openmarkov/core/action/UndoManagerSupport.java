@@ -541,4 +541,8 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 
 	}
 
+	public int getEditsSize(){
+		return edits.size();
+	}
+
 }

@@ -7,10 +7,7 @@
 
 package org.openmarkov.core.action;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -30,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
-
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class VariableTypeEditTest {
 
 	private Node finiteStatesNode;
@@ -74,7 +71,7 @@ public class VariableTypeEditTest {
 		return probNet;
 	}
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		probNet = getProbNet4Test();
 		finiteStatesNode = probNet.getNode("A");
 		discretizedNode = probNet.getNode("B");

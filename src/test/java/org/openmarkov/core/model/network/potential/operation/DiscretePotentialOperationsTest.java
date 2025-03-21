@@ -7,11 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.DivideByZeroException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -49,6 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class DiscretePotentialOperationsTest {
 
 	/*  Public scope for use in all tests. */
@@ -69,7 +66,7 @@ public class DiscretePotentialOperationsTest {
 	/**
 	 * This method creates the variables used in the tests
 	 */
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		constantPotentials = new ArrayList<>();
 		normalPotentials = new ArrayList<>();
 		allPotentials = new ArrayList<>();

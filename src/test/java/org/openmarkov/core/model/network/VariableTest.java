@@ -10,13 +10,10 @@ package org.openmarkov.core.model.network;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.InvalidStateException;
 
-
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class VariableTest {
 
 	private final int numStates = 3;
@@ -59,7 +56,7 @@ public class VariableTest {
 		return equals;
 	}
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		variable = new Variable(x, numStates);
 	}
 

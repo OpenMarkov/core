@@ -11,10 +11,7 @@ package org.openmarkov.core.model.network;
  * @author marias
  */
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -46,7 +43,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class ProbNetTest {
 
 	private ProbNet emptyProbNet;
@@ -232,7 +229,7 @@ public class ProbNetTest {
 		}
 	}
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		emptyProbNet = new ProbNet();
 
 		// create simpleProbNet

@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
@@ -26,13 +24,13 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.awt.geom.Point2D;
 
 
-
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class NoLoopsTest {
 
 	private ProbNet directedNet;
 	private ProbNet undirectedNet;
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		directedNet = ConstraintsTests.getTestProbNetDirected();
 		undirectedNet = ConstraintsTests.getTestProbNetUndirected();
 	}

@@ -7,8 +7,9 @@
 
 package org.openmarkov.core.model.graph;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,6 +21,7 @@ import java.util.List;
  * Uses <code>GraphsTests</code> to create a simple <code>Graph</code>.
  * Test elementary methods in <code>Node</code> class.
  */
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class NodeTest {
 
 	private Graph<String> graph;
@@ -28,7 +30,7 @@ public class NodeTest {
 
 	private String nodeA, nodeB, nodeC, nodeD;
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		graph = GraphsTests.createTestGraph();
 		nodes = graph.getNodes();
 		nodeA = nodes.get(0);

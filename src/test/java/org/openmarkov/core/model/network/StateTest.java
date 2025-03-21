@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network;
 
+import org.openmarkov.core.model.network.State;
+
 public class StateTest {
 
 	// TODO Sobrecargar equals y poner en el comentario que 

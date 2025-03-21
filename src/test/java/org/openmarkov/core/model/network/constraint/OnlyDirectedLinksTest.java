@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.model.network.ProbNet;
@@ -21,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
-
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class OnlyDirectedLinksTest {
 
 	private ProbNet probNetMixed;
@@ -30,7 +28,7 @@ public class OnlyDirectedLinksTest {
 
 	private ProbNet probNetDirected;
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		probNetMixed = ConstraintsTests.getTestProbNetMixed();
 		probNetUndirected = ConstraintsTests.getTestProbNetUndirected();
 		probNetDirected = ConstraintsTests.getTestProbNetDirected();

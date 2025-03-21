@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -23,13 +21,14 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class ConditionalGaussianPotentialTest {
 
 	private ConditionalGaussianPotential gaussianPotential;
 	private Variable predictedAudiometry;
 	private Variable micAge;
 
-	@BeforeAll public void setUp() {
+	@BeforeEach public void setUp() {
 		Variable meanVariable = new Variable("Mean");
 		Variable varianceVariable = new Variable("Variance");
 		predictedAudiometry = new Variable("Predicted audiometry", "off/off", "off", "on");

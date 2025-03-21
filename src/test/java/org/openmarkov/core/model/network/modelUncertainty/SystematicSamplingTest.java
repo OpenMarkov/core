@@ -114,7 +114,7 @@ public class SystematicSamplingTest {
 	}
 
 	public static ProbNet sampleNetworkProbParam(
-			ProbNet originalNet, UncertainParameter uncertainParameter, int numIntervals,double min,double max) {
+			ProbNet originalNet, UncertainParameter uncertainParameter, int numIntervals, double min, double max) {
 		return SystematicSampling.sampleNetwork(
 			originalNet, uncertainParameter, min,max,numIntervals,iterationVariableName);
 	}

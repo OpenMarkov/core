@@ -7,8 +7,9 @@
 
 package org.openmarkov.core.action;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -29,8 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
-
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class MulticriteriaEditTest {
 
 	private ProbNet probNet;
@@ -71,7 +71,7 @@ public class MulticriteriaEditTest {
 		return probNet;
 	}
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		this.probNet = getProbNet4Test();
 		probNet.getPNESupport().setWithUndo(true);
 	}

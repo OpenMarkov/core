@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -18,6 +16,7 @@ import org.openmarkov.core.model.network.Variable;
 import java.util.Arrays;
 import java.util.List;
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class LinearRegressionPotentialTest {
 
 	private LinearCombinationPotential potential = null;
@@ -25,7 +24,7 @@ public class LinearRegressionPotentialTest {
 	private Variable timeInStateVar = null;
 	private Variable ageVar = null;
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 
 		// Revision Risk
 		ageAtStateEntryVar = new Variable("Age at state entry", "3.4", "4.4");

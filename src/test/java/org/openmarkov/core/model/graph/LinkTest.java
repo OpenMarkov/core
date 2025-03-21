@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.model.graph;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -19,13 +17,14 @@ import org.openmarkov.core.model.network.Variable;
 import java.util.HashSet;
 import java.util.Set;
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class LinkTest {
 	private State[] stateA, stateB;
 	private Variable varA, varB;
 	private Node nodeA, nodeB;
 	private Link<Node> link;
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		stateA = new State[] { new State("A1"), new State("A2"), new State("A3") };
 		stateB = new State[] { new State("B1"), new State("B2") };
 		varA = new Variable("A", stateA);

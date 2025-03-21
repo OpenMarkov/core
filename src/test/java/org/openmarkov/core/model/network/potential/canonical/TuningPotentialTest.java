@@ -6,20 +6,19 @@
  */
 package org.openmarkov.core.model.network.potential.canonical;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.canonical.TuningPotential;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class TuningPotentialTest {
 
 	private double admissibleError = 0.000000001;
@@ -27,8 +26,7 @@ public class TuningPotentialTest {
 	private TuningPotential tuningModelPotential;
 
 	// Initialization
-	@BeforeAll public void setUp() throws Exception {
-
+	@BeforeEach public void setUp() throws Exception {
 		// Define the variables
 		Variable dT = new Variable("dT", "down", "st.quo", "up");
 		Variable dM = new Variable("dM", "down", "st.quo", "up");

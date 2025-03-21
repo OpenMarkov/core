@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -23,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
-
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class OnlyChanceNodesTest {
 
 	// Attributes
@@ -32,7 +30,7 @@ public class OnlyChanceNodesTest {
 	private ProbNet probNetDirected;
 
 	// Methods
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		influenceDiagram = ConstraintsTests.getInfuenceDiagram();
 		probNetDirected = ConstraintsTests.getTestProbNetDirected();
 	}

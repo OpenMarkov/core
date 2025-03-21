@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -30,6 +28,7 @@ import java.util.List;
  * <li><code>testGetUnionVariables()</code>
  * </ul>
  */
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class AuxiliaryOperationsTest {
 
 	private final int NUM_POTENTIALS_ARRAY = 10;
@@ -45,7 +44,7 @@ public class AuxiliaryOperationsTest {
 
 	private List<TablePotential> normalPotentials;
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		emptyPotentialsList = new ArrayList<>();
 
 		try {

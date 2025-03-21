@@ -7,25 +7,24 @@
 
 package org.openmarkov.core.model.network.potential.canonical;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.canonical.MinPotential;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 
-
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class MinPotentialTest {
 
 	private final double admissibleError = 0.000000001;
 	// Attributes
 	private MinPotential minPotential;
-
+	
 	// Initialization
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 
 		// Define the variables
 		Variable variableA = new Variable("A", "A0", "A1", "A2");

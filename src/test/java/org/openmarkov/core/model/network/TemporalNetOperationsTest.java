@@ -180,7 +180,7 @@ public class TemporalNetOperationsTest {
 		}
 	}*/
 	public void checkUtilityPotentialQoLMIDWithState(ProbNet expandedNetwork, TablePotential auxPot, double qoLTreat,
-			double qoLNoTreat, double ratio, int slice) {
+													 double qoLNoTreat, double ratio, int slice) {
 
 		ArrayList<Variable> variablesUtil = new ArrayList<>();
 		try {

@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -17,10 +15,12 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.WeibullHazardPotential;
 
 import java.util.Arrays;
 import java.util.List;
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class WeibullHazardPotentialTest {
 
 	private WeibullHazardPotential potential = null;
@@ -29,7 +29,7 @@ public class WeibullHazardPotentialTest {
 	private Variable ageVar = null;
 	private Variable prosthesisTypeVar = null;
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 
 		// Revision Risk
 		rrVar = new Variable("Revision Risk", "no", "yes");

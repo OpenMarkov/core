@@ -7,6 +7,9 @@
 
 package org.openmarkov.core.model.graph;
 
+
+import org.openmarkov.core.model.graph.Graph;
+
 /**
  * Auxiliary class that create a graph for test.
  */

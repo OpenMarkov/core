@@ -7,13 +7,12 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class AtLeastOneUtilityPotentialTest {
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 	}
 
 	@Test public void testAtLeastOneUtilityNode() {

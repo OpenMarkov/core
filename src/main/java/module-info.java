@@ -5,7 +5,7 @@ module org.openmarkov.core {
 	requires jeval;
 	requires colt;
 	requires org.apache.logging.log4j;
-		
+	
 	exports org.openmarkov.core.action;
 	exports org.openmarkov.core.dt;
 	exports org.openmarkov.core.exception;
@@ -34,7 +34,4 @@ module org.openmarkov.core {
 	exports org.openmarkov.core.oopn;
 	exports org.openmarkov.core.oopn.action;
 	exports org.openmarkov.core.oopn.exception;
-	
-	
-
 }

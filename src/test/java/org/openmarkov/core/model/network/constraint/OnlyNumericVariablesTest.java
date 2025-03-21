@@ -11,9 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.VariableTypeEdit;
@@ -24,11 +22,12 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class OnlyNumericVariablesTest {
 
 	private ProbNet influenceDiagram;
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		influenceDiagram = ConstraintsTests.getNumericInfluenceDiagram();
 	}
 

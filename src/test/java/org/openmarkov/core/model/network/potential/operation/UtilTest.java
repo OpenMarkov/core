@@ -9,20 +9,19 @@ package org.openmarkov.core.model.network.potential.operation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 
 /**
  * @author carla
  */
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class UtilTest {
 
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 	}
 
 	/**

@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.treeADD;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.State;
@@ -24,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class TreeADDTableProjectTest {
 
 	private Variable variableA;
@@ -36,7 +35,7 @@ public class TreeADDTableProjectTest {
 	private State severe;
 	private TreeADDPotential treeADD;
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		// create variables
 		variableA = new Variable("A", 4);
 		variableB = new Variable("B", 2);

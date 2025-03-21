@@ -7,10 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.treeADD;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -31,12 +28,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class NumericalTreeADDTableProjectTest {
 	private TreeADDPotential tree;
 	private Variable age;
-
-	@BeforeAll public void setUp() throws Exception {
+	
+	@BeforeEach public void setUp() throws Exception {
 		State dead = new State("dead");
 		State alive = new State("alive");
 		State[] states = { dead, alive };
@@ -51,7 +48,7 @@ public class NumericalTreeADDTableProjectTest {
 		treeVariables.add(previousState);
 		treeVariables.add(age);
 
-		//subtree 
+		//subtree
 		//branch 1
 		Threshold min1 = new Threshold(0, false);
 		Threshold max1 = new Threshold(5, true);

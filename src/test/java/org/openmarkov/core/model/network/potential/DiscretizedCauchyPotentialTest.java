@@ -7,10 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -18,11 +15,13 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.DiscretizedCauchyPotential;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class DiscretizedCauchyPotentialTest {
 
 	private DiscretizedCauchyPotential discretizedPotential;
@@ -32,7 +31,7 @@ public class DiscretizedCauchyPotentialTest {
 	private Variable electrodeChanged;
 	private Variable audiometry;
 
-	@BeforeAll public void setUp() {
+	@BeforeEach public void setUp() {
 		Variable medianVariable = new Variable("Median");
 		Variable scaleVariable = new Variable("Scale");
 		predictedAudiometry = new Variable("Predicted audiometry", "off/off", "off", "on");

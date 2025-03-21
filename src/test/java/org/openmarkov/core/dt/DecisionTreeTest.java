@@ -9,10 +9,11 @@ package org.openmarkov.core.dt;
 
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 public class DecisionTreeTest {
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 	}
 
 	/*

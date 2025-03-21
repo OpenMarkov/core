@@ -7,10 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -20,6 +17,7 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,6 +31,7 @@ import java.util.List;
  * @author manuel
  * @author fjdiez
  */
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class TablePotentialTest {
 
 	/*  Public scope for use in all tests. */
@@ -148,7 +147,7 @@ public class TablePotentialTest {
 		return var;
 	}
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		states1 = new State[] { new State("S1V1"), new State("S2V1") };
 		states2 = new State[] { new State("S1V2"), new State("S2V2") };
 		states3 = new State[] { new State("S1V3"), new State("S2V3") };

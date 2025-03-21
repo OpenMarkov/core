@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.action;
 
+import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.model.network.ProbNet;
 
 public class NullEdit extends SimplePNEdit {

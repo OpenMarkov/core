@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.plugin;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -20,6 +18,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class PotentialManagerTest {
 
 	PotentialManager manager = null;
@@ -37,7 +37,7 @@ public class PotentialManagerTest {
 	ProbNet probNet;
 	Node nodeU;
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		manager = new PotentialManager();
 
 		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());

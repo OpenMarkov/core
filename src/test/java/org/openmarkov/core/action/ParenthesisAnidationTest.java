@@ -7,10 +7,7 @@
 
 package org.openmarkov.core.action;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -27,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
-
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class ParenthesisAnidationTest {
 
 	private int numberOfParenthesis;
@@ -70,7 +67,7 @@ public class ParenthesisAnidationTest {
 		return probNet;
 	}
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		numberOfParenthesis = 0;
 		this.probNet = getProbNet4Test();
 	}
@@ -169,7 +166,6 @@ public class ParenthesisAnidationTest {
 	}
 
 	@Test public void undoManagerTestEmptyParenthesis() {
-
 		probNet.getPNESupport().setWithUndo(true);
 		int numEdit = 0;
 		numEdit = doNullEdit(numEdit);

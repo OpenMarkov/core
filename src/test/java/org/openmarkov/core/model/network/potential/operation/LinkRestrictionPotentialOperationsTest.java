@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
@@ -26,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class LinkRestrictionPotentialOperationsTest {
 	private ProbNet net;
 	private Variable varA, varB, varC;
@@ -97,7 +96,7 @@ public class LinkRestrictionPotentialOperationsTest {
 		return probNet;
 	}
 
-	@BeforeAll public void setUp() throws NodeNotFoundException {
+	@BeforeEach public void setUp() throws NodeNotFoundException {
 
 		stateA = new State[] { new State("A1"), new State("A2"), new State("A3") };
 		stateB = new State[] { new State("B1"), new State("B2") };

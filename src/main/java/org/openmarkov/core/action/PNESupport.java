@@ -110,17 +110,18 @@ public class PNESupport extends UndoableEditSupport {
 
 		edit.doEdit();
 		if (withUndo) {
-			//edit.setSignificant(significantEdits);
-			//editCount++;
-            /*
-            if (openParenthesis) {
-                significantEdits = false;// from now, only no significant edits
-                editsExecuted = true; // at least one edit was executed
-            }*/
-
 			undoManagerSupport.addEdit(edit);
 		}
 		postEdit(edit);// Inform the listeners that an edition has happened
+	}
+
+	/**
+	 * Method used to make changes and do not show the network as modified
+	 */
+	public void innerEdit(PNEdit edit) throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
+
+		edit.doEdit();
+
 	}
 
 	/**
@@ -130,6 +131,7 @@ public class PNESupport extends UndoableEditSupport {
 	public void undo() {
 		if (withUndo && undoManagerSupport.canUndo()) {
 
+			//Undo all between the parenthesis loop
 			UndoableEditEvent event = new UndoableEditEvent(this, undoManagerSupport.editToBeUndone());
 			if (event.getEdit().getClass() == CloseParenthesisEdit.class) {
 				UndoableEditEvent event2;
@@ -137,13 +139,14 @@ public class PNESupport extends UndoableEditSupport {
 				do {
 					undoManagerSupport.undo();
 					event2 = new UndoableEditEvent(this, undoManagerSupport.editToBeUndone());
-					if (event2.getEdit().getClass() == OpenParenthesisEdit.class
-							&& event2.getEdit() == ((CloseParenthesisEdit) event.getEdit()).getOpenParenthesisEdit()) {
+					if (event2.getEdit().getClass() == OpenParenthesisEdit.class && event2.getEdit() == ((CloseParenthesisEdit) event.getEdit()).getOpenParenthesisEdit()) {
 						openParenthesisFound = true;
 					}
 
 				} while (!openParenthesisFound);
 			}
+			//
+
 			undoManagerSupport.undo();
 			for (UndoableEditListener listener : listeners) {
 				((PNUndoableEditListener) listener).undoEditHappened(event);

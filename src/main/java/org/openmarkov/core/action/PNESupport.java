@@ -280,9 +280,8 @@ public class PNESupport extends UndoableEditSupport {
 	public void undoAndDelete() {
 		if (withUndo && undoManagerSupport.canUndo()) {
 
-			// Same as the undo method but counting the number of edits between parenthesis
 			if (withUndo && undoManagerSupport.canUndo()) {
-
+				// Same as the undo method but counting the number of edits between parenthesis
 				UndoableEditEvent event = new UndoableEditEvent(this, undoManagerSupport.editToBeUndone());
 				int numberOfEditsToBeDeleted = 0;
 				if (event.getEdit().getClass() == CloseParenthesisEdit.class) {
@@ -292,30 +291,27 @@ public class PNESupport extends UndoableEditSupport {
 						undoManagerSupport.undo();
 						numberOfEditsToBeDeleted++;
 						event2 = new UndoableEditEvent(this, undoManagerSupport.editToBeUndone());
-						if (event2.getEdit().getClass() == OpenParenthesisEdit.class
-								&& event2.getEdit() == ((CloseParenthesisEdit) event.getEdit())
-								.getOpenParenthesisEdit()) {
+						if (event2.getEdit().getClass() == OpenParenthesisEdit.class && event2.getEdit() == ((CloseParenthesisEdit) event.getEdit()).getOpenParenthesisEdit()) {
 							openParenthesisFound = true;
 						}
 
 					} while (!openParenthesisFound);
 				}
+				//
+
 				undoManagerSupport.undo();
 				numberOfEditsToBeDeleted++;
 
 				UndoableEditEvent eventDeleted = new UndoableEditEvent(this, null);
+
+				undoManagerSupport.deleteEdits(numberOfEditsToBeDeleted);
+
+
 				for (UndoableEditListener listener : listeners) {
 					((PNUndoableEditListener) listener).undoEditHappened(eventDeleted);
 				}
 
-				undoManagerSupport.deleteEdits(numberOfEditsToBeDeleted);
 			}
-        	
-            /*undoManagerSupport.deleteEdits(editCount);
-        	UndoableEditEvent event = new UndoableEditEvent(this, null);
-            for (UndoableEditListener listener : listeners) {
-                ((PNUndoableEditListener) listener).undoEditHappened(event);
-            }*/
 
 		}
 

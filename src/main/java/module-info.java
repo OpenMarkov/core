@@ -1,12 +1,14 @@
 module org.openmarkov.core {
-	requires org.openmarkov.plugin;
     requires commons.math3;
 	requires jeval;
 	requires colt;
 	requires org.apache.logging.log4j;
     requires org.jetbrains.annotations;
     requires java.desktop;
-    
+	
+	requires java.instrument;
+	requires io.github.classgraph;
+	
     exports org.openmarkov.core.action;
 	exports org.openmarkov.core.dt;
 	exports org.openmarkov.core.exception;
@@ -36,4 +38,6 @@ module org.openmarkov.core {
 	exports org.openmarkov.core.oopn.action;
 	exports org.openmarkov.core.oopn.exception;
     exports org.openmarkov.core.stringformat;
+    exports org.openmarkov.plugin.service;
+    exports org.openmarkov.plugin;
 }

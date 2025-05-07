@@ -12,7 +12,7 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -33,38 +33,23 @@ public class NoMixedParentsTest {
 		influenceDiagram = ConstraintsTests.getOnlyUtilityChildrenInfluenceDiagram();
 	}
 
-	@Test public void testCheckProbNet() {
-
-		boolean exceptionLaunched = false;
-		try {
-			influenceDiagram.removeConstraint(new NoMixedParents());
-			influenceDiagram.addConstraint(new NoMixedParents(), true);
-		} catch (Exception e1) {
-			exceptionLaunched = true;
-		}
-		assertFalse(exceptionLaunched);
-
-		try {
-			influenceDiagram.removeConstraint(new NoMixedParents());
-			Variable vc = influenceDiagram.getVariable("C");
-			Variable ve = new Variable("E", 2);
-			influenceDiagram.addNode(ve, NodeType.DECISION);
-			influenceDiagram.addLink(ve, vc, true);
-			influenceDiagram.addConstraint(new NoMixedParents(), true);
-		} catch (ConstraintViolationException e) {
-			exceptionLaunched = true;
-		} catch (Exception e) {
-			fail("AddLink failed");
-		}
-		assertTrue(exceptionLaunched);
-
+	@Test public void testCheckProbNet() throws NodeNotFoundException {
+		NoMixedParents testedConstraint = new NoMixedParents();
+		influenceDiagram.addConstraint(testedConstraint);
+		assertTrue(testedConstraint.checkProbNet(influenceDiagram));
+		
+		Variable vc = influenceDiagram.getVariable("C");
+		Variable ve = new Variable("E", 2);
+		influenceDiagram.addNode(ve, NodeType.DECISION);
+		influenceDiagram.addLink(ve, vc, true);
+		assertFalse(testedConstraint.checkProbNet(influenceDiagram));
 	}
 	@Disabled
 	@Test public void testUndoableEditWillHappen() throws Exception {
 		// Add constraints as listeners.
 		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new NoMixedParents();
-		influenceDiagram.addConstraint(new NoMixedParents(), true);
+		influenceDiagram.addConstraint(new NoMixedParents());
 		pNESupport.addUndoableEditListener(constraint);
 
 		//do legal AddLink: add link from utility node E to utility node C

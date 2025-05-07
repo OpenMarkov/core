@@ -76,18 +76,14 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 		super();
 		try {
 			setNetworkType(probNet.getNetworkType());
-		} catch (ConstraintViolationException e1) {
-			e1.printStackTrace();
+		} catch (org.openmarkov.core.exception.InvalidNetworkTypeException e) {
+			throw new RuntimeException(e);
 		}
 		// copy constraints
 		int numConstraints = probNet.getConstraints().size();
 		for (int i = 1; i < numConstraints; i++) {
-			try {
-				addConstraint(probNet.getConstraints().get(i), false);
-			} catch (ConstraintViolationException e) {
-				// Unreachable code because constraints are not tested in copy
-			}
-		}
+            addConstraint(probNet.getConstraints().get(i));
+        }
 		List<Node> nodes = probNet.getNodes();
 		// Adds variables and create corresponding nodes. Also add potentials
 		for (Node node : nodes) {

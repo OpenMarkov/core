@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.network.type;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -57,16 +56,24 @@ public class NetworkTypeTest {
 
 	@Test public void testConvertingBayesianIntoMarkov() throws ConstraintViolationException {
 		ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-		probNet.setNetworkType(MarkovNetworkType.getUniqueInstance());
-		List<PNConstraint> constraints = probNet.getConstraints();
+        try {
+            probNet.setNetworkType(MarkovNetworkType.getUniqueInstance());
+        } catch (org.openmarkov.core.exception.InvalidNetworkTypeException e) {
+            throw new RuntimeException(e);
+        }
+        List<PNConstraint> constraints = probNet.getConstraints();
 		Assertions.assertFalse(constraints.contains(new OnlyDirectedLinks()));
 		Assertions.assertTrue(constraints.contains(new OnlyUndirectedLinks()));
 	}
 
 	@Test public void testRemovingConstraintsNoLongerApplicable() throws ConstraintViolationException {
 		ProbNet probNet = new ProbNet();
-		probNet.setNetworkType(InfluenceDiagramType.getUniqueInstance());
-		List<PNConstraint> constraints = probNet.getConstraints();
+        try {
+            probNet.setNetworkType(InfluenceDiagramType.getUniqueInstance());
+        } catch (org.openmarkov.core.exception.InvalidNetworkTypeException e) {
+            throw new RuntimeException(e);
+        }
+        List<PNConstraint> constraints = probNet.getConstraints();
 		Assertions.assertFalse(constraints.contains(new OnlyChanceNodes()));
 	}
 
@@ -78,11 +85,19 @@ public class NetworkTypeTest {
 			WrongCriterionException, DoEditException {
 		ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
 		AddNodeEdit addVariableEdit = new AddNodeEdit(probNet, new Variable("a"), NodeType.DECISION);
-		probNet.setNetworkType(InfluenceDiagramType.getUniqueInstance());
-
-		probNet.doEdit(addVariableEdit);
-		probNet.setNetworkType(BayesianNetworkType.getUniqueInstance());
-	}
+        try {
+            probNet.setNetworkType(InfluenceDiagramType.getUniqueInstance());
+        } catch (org.openmarkov.core.exception.InvalidNetworkTypeException e) {
+            throw new RuntimeException(e);
+        }
+        
+        probNet.doEdit(addVariableEdit);
+        try {
+            probNet.setNetworkType(BayesianNetworkType.getUniqueInstance());
+        } catch (org.openmarkov.core.exception.InvalidNetworkTypeException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	// TODO Adapt this test to check the exception (migrating from JUnit 4 to JUnit 5)
 	//@Test

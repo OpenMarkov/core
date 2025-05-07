@@ -7,9 +7,6 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import org.junit.jupiter.api.*;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
@@ -18,6 +15,8 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class OnlyFiniteStateVariablesTest {
@@ -47,26 +46,19 @@ public class OnlyFiniteStateVariablesTest {
 	}
 
 	@Test public void testCheckProbNet() {
-		boolean exceptionLaunched = false;
-		try {
-			influenceDiagram.addConstraint(new OnlyFiniteStatesVariables(), true);
-		} catch (Exception e1) {
-			exceptionLaunched = true;
-		}
-		assertTrue(!exceptionLaunched);
-		try {
-			mixedVariableInfluenceDiagram.addConstraint(new OnlyFiniteStatesVariables(), true);
-		} catch (Exception e1) {
-			exceptionLaunched = true;
-		}
-		assertTrue(exceptionLaunched);
+		OnlyFiniteStatesVariables testedConstraint = new OnlyFiniteStatesVariables();
+		influenceDiagram.addConstraint(testedConstraint);
+		mixedVariableInfluenceDiagram.addConstraint(testedConstraint);
+		
+		assertTrue(testedConstraint.checkProbNet(influenceDiagram));
+		assertFalse(testedConstraint.checkProbNet(mixedVariableInfluenceDiagram));
 	}
 
 	@Test public void testUndoableEditWillHappen() throws Exception {
 
 		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new OnlyFiniteStatesVariables();
-		influenceDiagram.addConstraint(constraint, true);
+		influenceDiagram.addConstraint(constraint);
 
 		pNESupport.addUndoableEditListener(constraint);
 

@@ -43,7 +43,7 @@ public class OnlyDirectedLinksTest {
 		PNConstraint constraint = new OnlyDirectedLinks();
 		boolean exceptionLaunched = false;
 		try {
-			probNetMixed.addConstraint(constraint, true);
+			probNetMixed.addConstraint(constraint);
 		} catch (Exception e1) {
 			exceptionLaunched = true;
 		}
@@ -64,7 +64,7 @@ public class OnlyDirectedLinksTest {
 
 		// Add constraints as listeners.
 		PNESupport pNESupport = new PNESupport(false);
-		probNetDirected.addConstraint(new OnlyDirectedLinks(), true);
+		probNetDirected.addConstraint(new OnlyDirectedLinks());
 		List<PNConstraint> constraints = probNetDirected.getConstraints();
 		for (PNConstraint constraint : constraints) { // sets listeners
 			pNESupport.addUndoableEditListener(constraint);

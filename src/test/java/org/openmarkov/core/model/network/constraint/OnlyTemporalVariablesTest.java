@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.*;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -29,31 +28,18 @@ public class OnlyTemporalVariablesTest {
 	}
 
 	@Test public void testCheckProbNet() {
-
-		boolean exceptionLaunched = false;
-		try {
-			network.removeConstraint(new OnlyTemporalVariables());
-			network.addConstraint(new OnlyTemporalVariables(), true);
-		} catch (Exception e1) {
-			exceptionLaunched = true;
-		}
-		assertFalse(exceptionLaunched);
-
-		try {
-			network.removeConstraint(new OnlyTemporalVariables());
-			Variable var = new Variable("A");
-			network.addNode(var, NodeType.CHANCE);
-			network.addConstraint(new OnlyTemporalVariables(), true);
-		} catch (ConstraintViolationException e1) {
-			exceptionLaunched = true;
-		}
-		assertTrue(exceptionLaunched);
+		OnlyTemporalVariables testedConstraint = new OnlyTemporalVariables();
+		network.addConstraint(testedConstraint);
+		assertTrue(testedConstraint.checkProbNet(network));
+        
+        network.addNode(new Variable("A"), NodeType.CHANCE);
+		assertFalse(testedConstraint.checkProbNet(network));
 	}
 
 	@Test public void testUndoableEditWillHappen() throws Exception {
 		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new OnlyTemporalVariables();
-		network.addConstraint(constraint, true);
+		network.addConstraint(constraint);
 		pNESupport.addUndoableEditListener(constraint);
 
 		boolean exceptionLaunched = false;

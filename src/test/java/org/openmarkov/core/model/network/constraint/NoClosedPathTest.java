@@ -12,6 +12,7 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -33,52 +34,24 @@ public class NoClosedPathTest {
 		undirectedNet = ConstraintsTests.getTestProbNetUndirected();
 	}
 
-	@Test public void testCheckProbNet() {
-
-		boolean exceptionLaunched = false;
-		try {
-			directedNet.removeConstraint(new NoClosedPath());
-			directedNet.addConstraint(new NoClosedPath(), true);
-		} catch (Exception e1) {
-			exceptionLaunched = true;
-		}
-		assertFalse(exceptionLaunched);
-
-		try {
-			directedNet.removeConstraint(new NoClosedPath());
-			Variable varA = directedNet.getVariable("A");
-			Variable varC = directedNet.getVariable("C");
-			directedNet.addLink(varA, varC, true);
-			directedNet.addConstraint(new NoClosedPath(), true);
-		} catch (ConstraintViolationException e1) {
-			exceptionLaunched = true;
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-
-		assertTrue(exceptionLaunched);
-
-		exceptionLaunched = false;
-		try {
-			undirectedNet.removeConstraint(new NoClosedPath());
-			undirectedNet.addConstraint(new NoClosedPath(), true);
-		} catch (Exception e1) {
-			exceptionLaunched = true;
-		}
-		assertFalse(exceptionLaunched);
-
-		try {
-			undirectedNet.removeConstraint(new NoClosedPath());
-			Variable varA = undirectedNet.getVariable("A");
-			Variable varC = undirectedNet.getVariable("C");
-			undirectedNet.addLink(varA, varC, false);
-			undirectedNet.addConstraint(new NoClosedPath(), true);
-		} catch (ConstraintViolationException e1) {
-			exceptionLaunched = true;
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-		assertTrue(exceptionLaunched);
+	@Test public void testCheckProbNet() throws NodeNotFoundException {
+		NoClosedPath testedConstraint = new NoClosedPath();
+		directedNet.addConstraint(testedConstraint);
+		assertTrue(testedConstraint.checkProbNet(directedNet));
+		
+		Variable varA = directedNet.getVariable("A");
+		Variable varC = directedNet.getVariable("C");
+		directedNet.addLink(varA, varC, true);
+		assertFalse(testedConstraint.checkProbNet(directedNet));
+		
+		
+		undirectedNet.addConstraint(testedConstraint);
+		assertTrue(testedConstraint.checkProbNet(undirectedNet));
+		
+		varA = undirectedNet.getVariable("A");
+		varC = undirectedNet.getVariable("C");
+		undirectedNet.addLink(varA, varC, false);
+		assertFalse(testedConstraint.checkProbNet(undirectedNet));
 
 	}
 
@@ -87,7 +60,7 @@ public class NoClosedPathTest {
 		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new NoClosedPath();
 
-		undirectedNet.addConstraint(constraint, true);
+		undirectedNet.addConstraint(constraint);
 		pNESupport.addUndoableEditListener(constraint);
 
 		// do legal add

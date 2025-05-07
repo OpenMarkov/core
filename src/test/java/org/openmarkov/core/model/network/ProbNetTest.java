@@ -12,7 +12,6 @@ package org.openmarkov.core.model.network;
  */
 
 import org.junit.jupiter.api.*;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -266,8 +265,8 @@ public class ProbNetTest {
 		utilityValues[3] = 4;
 		pU.setValues(utilityValues);
 		simpleProbNet = new ProbNet();
-		simpleProbNet.addConstraint(new NoCycle(), true);
-		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);
+		simpleProbNet.addConstraint(new NoCycle());
+		simpleProbNet.addConstraint(new OnlyDirectedLinks());
 		// add potentials and variables
 		simpleProbNet.addPotential(pA); // add variable and potential
 		simpleProbNet.addNode(D, NodeType.DECISION);
@@ -545,12 +544,8 @@ public class ProbNetTest {
 		int numBNConstraints = ConstraintManager.getUniqueInstance().
 				buildConstraintList(BayesianNetworkType.getUniqueInstance()).
 				size();
-		try {
-			emptyProbNet.addConstraint(new MaxNumParents(), true);
-		} catch (ConstraintViolationException e) {
-			fail("Fail in testAddConstraint()");
-		}
-		List<PNConstraint> constraints = emptyProbNet.getConstraints();
+        emptyProbNet.addConstraint(new MaxNumParents());
+        List<PNConstraint> constraints = emptyProbNet.getConstraints();
 		assertEquals(numBNConstraints + 1, constraints.size());
 	}
 
@@ -560,12 +555,8 @@ public class ProbNetTest {
 		int numBNConstraints = ConstraintManager.getUniqueInstance().
 				buildConstraintList(BayesianNetworkType.getUniqueInstance()).
 				size();
-		try {
-			emptyProbNet.addConstraint(constraint, true);
-		} catch (ConstraintViolationException e) {
-			fail("Fail in testRemoveConstraint()");
-		}
-		emptyProbNet.removeConstraint(constraint);
+        emptyProbNet.addConstraint(constraint);
+        emptyProbNet.removeConstraint(constraint);
 		List<PNConstraint> constraints = emptyProbNet.getConstraints();
 		assertEquals(numBNConstraints, constraints.size());
 	}
@@ -877,12 +868,8 @@ public class ProbNetTest {
 	@Test public void testGetAdditionalConstraints() {
 		ProbNet bnProbNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
 		PNConstraint maxNumParents = new MaxNumParents();
-		try {
-			bnProbNet.addConstraint(maxNumParents);
-		} catch (ConstraintViolationException e) {
-			fail("Unreachable code.");
-		}
-		List<PNConstraint> additionalConstraints = bnProbNet.getAdditionalConstraints();
+        bnProbNet.addConstraint(maxNumParents);
+        List<PNConstraint> additionalConstraints = bnProbNet.getAdditionalConstraints();
 		assertEquals(1, additionalConstraints.size());
 		assertTrue(additionalConstraints.contains(maxNumParents));
 	}

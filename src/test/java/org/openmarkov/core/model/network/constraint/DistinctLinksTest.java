@@ -16,6 +16,7 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
@@ -28,82 +29,41 @@ public class DistinctLinksTest {
 		influenceDiagram = ConstraintsTests.getInfuenceDiagram();
 	}
 
-	@Test public void testCheckProbNet() {
-		boolean exceptionLaunched = false;
-		Variable vu = null;
-		Variable va = null;
-		try {
-			vu = influenceDiagram.getVariable("U");
-			va = influenceDiagram.getVariable("A");
-			influenceDiagram.removeConstraint(new DistinctLinks());
-			influenceDiagram.addConstraint(new DistinctLinks(), true);
-		} catch (Exception e1) {
-			exceptionLaunched = true;
-		}
-		assertFalse(exceptionLaunched);
-
-		// add undirected link between A and U
-		exceptionLaunched = false;
-		try {
-			influenceDiagram.removeConstraint(new DistinctLinks());
-			influenceDiagram.addLink(va, vu, false);
-			influenceDiagram.addConstraint(new DistinctLinks(), true);
-		} catch (ConstraintViolationException e) {
-			exceptionLaunched = true;
-		} catch (Exception e) {
-			fail("AddLink failed");
-		}
-		assertFalse(exceptionLaunched);
-
-		// add directed link between U and D
-		exceptionLaunched = false;
-		try {
-			Variable vd = influenceDiagram.getVariable("D");
-			influenceDiagram.removeConstraint(new DistinctLinks());
-			influenceDiagram.addLink(vu, vd, true);
-			influenceDiagram.addConstraint(new DistinctLinks(), true);
-		} catch (ConstraintViolationException e) {
-			exceptionLaunched = true;
-		} catch (Exception e) {
-			fail("AddLink failed");
-		}
-		assertFalse(exceptionLaunched);
-
-		// add directed link between A and U
-		exceptionLaunched = false;
-		try {
-			influenceDiagram.removeConstraint(new DistinctLinks());
-
-			influenceDiagram.addLink(va, vu, true);
-			influenceDiagram.addConstraint(new DistinctLinks(), true);
-		} catch (ConstraintViolationException e) {
-			exceptionLaunched = true;
-			influenceDiagram.removeLink(va, vu, true);
-		} catch (Exception e) {
-			fail("AddLink failed");
-		}
-		assertTrue(exceptionLaunched);
-
-		// add undirected link between A and U
-		exceptionLaunched = false;
-		try {
-			influenceDiagram.removeConstraint(new DistinctLinks());
-			influenceDiagram.addLink(va, vu, false);
-			influenceDiagram.addConstraint(new DistinctLinks(), true);
-		} catch (ConstraintViolationException e) {
-			exceptionLaunched = true;
-		} catch (Exception e) {
-			fail("AddLink failed");
-		}
-		assertTrue(exceptionLaunched);
-
+	@Test public void testCheckProbNet() throws NodeNotFoundException {
+		DistinctLinks testedConstraint = new DistinctLinks();
+		influenceDiagram.addConstraint(testedConstraint);
+		Variable vu = influenceDiagram.getVariable("U");
+        Variable va = influenceDiagram.getVariable("A");
+		assertTrue(testedConstraint.checkProbNet(influenceDiagram));
+		
+		influenceDiagram.addLink(va, vu, false);
+		assertTrue(testedConstraint.checkProbNet(influenceDiagram));
+		
+		Variable vd = influenceDiagram.getVariable("D");
+		influenceDiagram.addLink(vu, vd, true);
+		influenceDiagram.addLink(vu, vd, true);
+		assertFalse(testedConstraint.checkProbNet(influenceDiagram));
+		
+		influenceDiagram.removeLink(vu, vd, true);
+		influenceDiagram.removeLink(vu, vd, true);
+		influenceDiagram.addLink(vu, vd, true);
+		assertTrue(testedConstraint.checkProbNet(influenceDiagram));
+		
+		influenceDiagram.addLink(va, vu, true);
+		assertFalse(testedConstraint.checkProbNet(influenceDiagram));
+		
+		influenceDiagram.removeLink(va, vu, true);
+		influenceDiagram.removeLink(va, vu, true);
+		influenceDiagram.removeLink(va, vu, false);
+		influenceDiagram.addLink(va, vu, false);
+		assertTrue(testedConstraint.checkProbNet(influenceDiagram));
 	}
 	@Disabled
 	@Test public void testUndoableEditWillHappen() throws Exception {
 		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new DistinctLinks();
 
-		influenceDiagram.addConstraint(constraint, true);
+		influenceDiagram.addConstraint(constraint);
 		pNESupport.addUndoableEditListener(constraint);
 
 		// do legal AddLink: add an directed link between U and A

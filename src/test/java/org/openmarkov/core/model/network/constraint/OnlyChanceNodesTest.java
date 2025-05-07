@@ -51,7 +51,7 @@ public class OnlyChanceNodesTest {
 
 		// Add constraints as listeners.
 		PNESupport pNESupport = new PNESupport(false);
-		probNetDirected.addConstraint(new OnlyChanceNodes(), true);
+		probNetDirected.addConstraint(new OnlyChanceNodes());
 		List<PNConstraint> constraints = probNetDirected.getConstraints();
 		for (PNConstraint constraint : constraints) { // sets listeners
 			pNESupport.addUndoableEditListener(constraint);

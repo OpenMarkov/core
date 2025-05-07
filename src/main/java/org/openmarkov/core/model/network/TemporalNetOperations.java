@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network;
 
-import org.apache.logging.log4j.LogManager;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.inference.TransitionTime;
@@ -503,8 +502,12 @@ public class TemporalNetOperations {
 		temporalNodes.forEach(node -> {
 			node.getVariable().setName(node.getVariable().getBaseName() + " |" + node.getVariable().getTimeSlice() + "|");
 			node.getVariable().setTimeSlice(Variable.noTemporalTimeSlice);});
-		expandedNetwork.setNetworkType(InfluenceDiagramType.getUniqueInstance());
-	}
+        try {
+            expandedNetwork.setNetworkType(InfluenceDiagramType.getUniqueInstance());
+        } catch (org.openmarkov.core.exception.InvalidNetworkTypeException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 	//	 TODO - ¿Unused method?

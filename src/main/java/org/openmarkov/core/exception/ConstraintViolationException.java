@@ -7,6 +7,10 @@
 
 package org.openmarkov.core.exception;
 
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.constraint.PNConstraint;
+import org.openmarkov.core.model.network.type.NetworkType;
+
 /**
  * Thrown when trying to do an edit that violates one of the
  * {@code PNConstraints} of the {@code ProbNet}

@@ -36,77 +36,29 @@ public class NoLoopsTest {
 	}
 
 	@Test public void testCheckProbNet() throws NodeNotFoundException {
-
-		boolean exceptionLaunched = false;
-		try {
-			directedNet.removeConstraint(new NoLoops());
-			directedNet.addConstraint(new NoLoops(), true);
-		} catch (Exception e1) {
-			exceptionLaunched = true;
-		}
-		assertFalse(exceptionLaunched);
-
-		try {
-			directedNet.removeConstraint(new NoLoops());
-			Variable varA = directedNet.getVariable("A");
-			Variable varC = directedNet.getVariable("C");
-			directedNet.addLink(varA, varC, true);
-			directedNet.addConstraint(new NoLoops(), true);
-		} catch (ConstraintViolationException e1) {
-			exceptionLaunched = true;
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-		assertTrue(exceptionLaunched);
-
-		//Test undirected net
-		exceptionLaunched = false;
-		try {
-			undirectedNet.removeConstraint(new NoLoops());
-			undirectedNet.addConstraint(new NoLoops(), true);
-		} catch (Exception e1) {
-			exceptionLaunched = true;
-		}
-		assertFalse(exceptionLaunched);
-
-		Variable varA = undirectedNet.getVariable("A");
+		NoLoops testedConstraints = new NoLoops();
+		directedNet.addConstraint(testedConstraints);
+		assertTrue(testedConstraints.checkProbNet(directedNet));
+		
+		Variable varA = directedNet.getVariable("A");
+		Variable varC = directedNet.getVariable("C");
+		directedNet.addLink(varA, varC, true);
+		
+		assertFalse(testedConstraints.checkProbNet(directedNet));
+		
+		varA = undirectedNet.getVariable("A");
 		Variable varB = undirectedNet.getVariable("B");
-		Variable varC = undirectedNet.getVariable("C");
-		try {
-			undirectedNet.removeConstraint(new NoLoops());
-			undirectedNet.addLink(varA, varC, false);
-			undirectedNet.addConstraint(new NoLoops(), true);
-		} catch (ConstraintViolationException e1) {
-			exceptionLaunched = true;
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-
-		try {
-			undirectedNet.removeConstraint(new NoLoops());
-			undirectedNet.removeLink(varA, varC, false);
-			undirectedNet.removeLink(varB, varC, false);
-			undirectedNet.addLink(varB, varC, true);
-			undirectedNet.addLink(varA, varC, true);
-			undirectedNet.addConstraint(new NoLoops(), true);
-		} catch (ConstraintViolationException e1) {
-			exceptionLaunched = true;
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-		assertTrue(exceptionLaunched);
-
-		try {
-			undirectedNet.removeConstraint(new NoLoops());
-			undirectedNet.removeLink(varA, varB, false);
-			undirectedNet.addLink(varA, varB, true);
-			undirectedNet.addConstraint(new NoLoops(), true);
-		} catch (ConstraintViolationException e1) {
-			exceptionLaunched = true;
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-		assertTrue(exceptionLaunched);
+		varC = undirectedNet.getVariable("C");
+		undirectedNet.addLink(varA, varC, false);
+		undirectedNet.removeLink(varA, varC, false);
+		undirectedNet.removeLink(varB, varC, false);
+		undirectedNet.addLink(varB, varC, true);
+		undirectedNet.addLink(varA, varC, true);
+		assertFalse(testedConstraints.checkProbNet(directedNet));
+		
+		undirectedNet.removeLink(varA, varB, false);
+		undirectedNet.addLink(varA, varB, true);
+		assertFalse(testedConstraints.checkProbNet(directedNet));
 	}
 
 	@Test public void testUndoableEditWillHappen() throws Exception {
@@ -114,7 +66,7 @@ public class NoLoopsTest {
 		PNESupport pNESupport = new PNESupport(false);
 		PNConstraint constraint = new NoClosedPath();
 
-		undirectedNet.addConstraint(constraint, true);
+		undirectedNet.addConstraint(constraint);
 		pNESupport.addUndoableEditListener(constraint);
 
 		// do legal add

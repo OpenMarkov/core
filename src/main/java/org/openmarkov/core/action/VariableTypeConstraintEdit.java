@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.action;
 
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.OnlyContinuousVariables;
 import org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables;
@@ -16,7 +15,8 @@ import org.openmarkov.core.model.network.constraint.PNConstraint;
 import java.util.List;
 
 /**
- * This class Edit changes the variable type constraint of a ProbNet object.
+ * Changes the constraints that determinate the types of variables (discrete, continuous, etc.) that the ProbNet
+ * accepts.
  *
  * @author mpalacios based
  * @version 1.0
@@ -65,12 +65,7 @@ import java.util.List;
 		}
 
 		if (newVariableTypeConstraint != null) {
-			try {
-				probNet.addConstraint(newVariableTypeConstraint, false);
-			} catch (ConstraintViolationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			probNet.addConstraint(newVariableTypeConstraint);
 		}
 
 	}
@@ -83,12 +78,7 @@ import java.util.List;
 		}
 
 		if (lastConstraint != null) {
-			try {
-				probNet.addConstraint(lastConstraint, false);
-			} catch (ConstraintViolationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			probNet.addConstraint(lastConstraint);
 		}
 
 	}

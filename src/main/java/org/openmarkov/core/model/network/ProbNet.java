@@ -179,14 +179,6 @@ public class ProbNet extends Graph<Node> implements Cloneable {
         pNESupport.announceEdit(edit);
         pNESupport.doEdit(edit);
     }
-    
-    public void innerEdit(PNEdit edit)
-            throws ConstraintViolationException, NonProjectablePotentialException,
-            WrongCriterionException, DoEditException {
-        pNESupport.announceEdit(edit);
-        pNESupport.innerEdit(edit);
-    }
-    
     /**
      * @param constraint {@code PNConstraint}
      */

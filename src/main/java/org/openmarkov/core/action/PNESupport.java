@@ -116,15 +116,6 @@ public class PNESupport extends UndoableEditSupport {
 	}
 
 	/**
-	 * Method used to make changes and do not show the network as modified
-	 */
-	public void innerEdit(PNEdit edit) throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
-
-		edit.doEdit();
-
-	}
-
-	/**
 	 * @see javax.swing.undo.UndoManager#canUndo()
 	 * @see javax.swing.undo.UndoManager#undo()
 	 */

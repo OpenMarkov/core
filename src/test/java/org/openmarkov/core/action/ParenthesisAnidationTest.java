@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.test.TestSpeed;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -100,7 +101,8 @@ public class ParenthesisAnidationTest {
 
 		assertTrue(probNet.getPNESupport().getOpenParenthesisStack().size() == numberOfParenthesis);
 	}
-
+	
+	@Tag(TestSpeed.SLOW)
 	@Test public void undoManagerTest1() {
 
 		probNet.getPNESupport().setWithUndo(true);

@@ -22,6 +22,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.core.test.TestSpeed;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -131,6 +132,7 @@ public class NumericalTreeADDTableProjectTest {
 
 	}
 
+	@Tag(TestSpeed.SLOW)
 	@Test public void testTablePorjectNumericalTop() throws NonProjectablePotentialException, WrongCriterionException {
 		//Evidence
 		ProbNet probNet = MIDFactory.createSemiMarkovOnlyChanceNet();

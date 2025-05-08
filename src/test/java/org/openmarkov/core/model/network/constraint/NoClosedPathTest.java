@@ -33,7 +33,7 @@ public class NoClosedPathTest {
 		directedNet = ConstraintsTests.getTestProbNetDirected();
 		undirectedNet = ConstraintsTests.getTestProbNetUndirected();
 	}
-
+	
 	@Test public void testCheckProbNet() throws NodeNotFoundException {
 		NoClosedPath testedConstraint = new NoClosedPath();
 		directedNet.addConstraint(testedConstraint);

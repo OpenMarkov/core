@@ -6,14 +6,12 @@
  */
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.core.model.network.modelUncertainty.DomainInterval;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.RangeFunction;
 import org.openmarkov.core.model.network.modelUncertainty.XORShiftRandom;
+import org.openmarkov.core.test.TestSpeed;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -52,7 +50,8 @@ import java.util.Random;
 		testStandardDeviation(samples);
 		testQuantileFunction(samples);
 	}
-
+	
+	@Tag(TestSpeed.SLOW)
 	@Test public void repeatTestMeanAndVariance() {
 		boolean debug = false;
 

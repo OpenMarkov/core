@@ -6,10 +6,8 @@
  */
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.openmarkov.core.test.TestSpeed;
 
 
 import java.util.ArrayList;
@@ -43,7 +41,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 		testMean(samples);
 		testStandardDeviation(samples);
 	}
-
+	
+	@Tag(TestSpeed.SLOW)
 	@Test public void repeatTestMeanAndVariance() {
 		boolean debug = false;
 		int numRepetitions = debug ? 10 : 1;

@@ -8,6 +8,7 @@
 package org.openmarkov.core.action;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.DoEditException;
@@ -75,7 +76,7 @@ public class MulticriteriaEditTest {
 		this.probNet = getProbNet4Test();
 		probNet.getPNESupport().setWithUndo(true);
 	}
-
+	
 	@Test public void multiCriteriaOptionsTest() {
 
 		MulticriteriaOptions multicriteriaOptions = new MulticriteriaOptions();

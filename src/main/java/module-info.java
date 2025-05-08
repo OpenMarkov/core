@@ -38,6 +38,7 @@ module org.openmarkov.core {
 	exports org.openmarkov.core.oopn.action;
 	exports org.openmarkov.core.oopn.exception;
     exports org.openmarkov.core.stringformat;
-    exports org.openmarkov.plugin.service;
+	exports org.openmarkov.core.test;
+	exports org.openmarkov.plugin.service;
     exports org.openmarkov.plugin;
 }

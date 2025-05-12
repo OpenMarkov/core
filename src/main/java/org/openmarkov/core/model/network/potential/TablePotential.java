@@ -1026,7 +1026,7 @@ import java.util.*;
                  */
 				case CONDITIONAL_PROBABILITY:
 				case POLICY:
-					value = 1.0 / new Double(variables.get(0).getNumStates());
+					value = 1.0 / variables.get(0).getNumStates();
 					break;
 				case JOINT_PROBABILITY:
 					value = 1.0;

@@ -24,7 +24,7 @@ public class PartialOrderDAN {
 
 	ProbNet order;
 
-	public PartialOrderDAN(ProbNet probNet) throws NodeNotFoundException, NodeNotFoundException {
+	public PartialOrderDAN(ProbNet probNet) throws NodeNotFoundException {
 
 		order = new ProbNet();
 

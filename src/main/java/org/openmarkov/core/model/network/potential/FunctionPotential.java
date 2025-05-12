@@ -143,7 +143,7 @@ import java.util.Map;
 	 * @param scale - the scale factor
 	 */
 	@Override public void scalePotential(double scale) {
-		String scaleString = new Double(scale).toString();
+		String scaleString = String.valueOf(scale);
 		String function = scaleString.concat("*").concat(processedCovariates[0]);
 		processedCovariates[0] = function;
 	}

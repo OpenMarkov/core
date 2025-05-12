@@ -28,6 +28,7 @@ import javax.xml.validation.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -193,7 +194,7 @@ public class FormatManager {
 	 * @throws IllegalAccessException IllegalAccessException
 	 */
 	public ProbNetWriter getProbNetWriter(String extension, String fileFormat)
-			throws IllegalAccessException, InstantiationException {
+            throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 		ProbNetWriter instance = null;
 		String version = "";
 		if (!(fileFormat.equals("Elvira"))) {
@@ -206,7 +207,7 @@ public class FormatManager {
 		} else {
 			if ((writerClasses.containsKey(extension)) && (writerClasses.get(extension).containsKey(version))) {
 				Map<String, Class<?>> versionsHash = writerClasses.get(extension);
-				instance = (ProbNetWriter) versionsHash.get(version).newInstance();
+				instance = (ProbNetWriter) versionsHash.get(version).getDeclaredConstructor().newInstance();
 
 			}
 		}
@@ -257,7 +258,7 @@ public class FormatManager {
 		} else {
 			if ((readerClasses.containsKey(extension)) && (readerClasses.get(extension).containsKey(version))) {
 				Map<String, Class<?>> versionsHash = readerClasses.get(extension);
-				instance = (ProbNetReader) versionsHash.get(version).newInstance();
+				instance = (ProbNetReader) versionsHash.get(version).getDeclaredConstructor().newInstance();
 
 			}
 		}

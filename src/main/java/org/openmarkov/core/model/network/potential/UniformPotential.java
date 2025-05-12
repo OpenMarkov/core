@@ -179,7 +179,7 @@ import java.util.Random;
 		for (int i = 1; i < variables.size(); i++) {
 			statesSpace *= variables.get(i).getNumStates();
 		}
-		return 1 / new Double(statesSpace);
+		return 1 / (double) statesSpace;
 	}
 
 	/**

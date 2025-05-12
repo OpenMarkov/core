@@ -424,7 +424,7 @@ public class Node {
 		variables.add(thisVariable);
 
 		int numOfCellsInTable = thisVariable.getNumStates();
-		double initialValue = Util.round(1 / (new Double(numOfCellsInTable)), "0.01");
+		double initialValue = Util.round(1 / ((double) numOfCellsInTable), "0.01");
 		// add now all the parents
 
 		for (Node parent : getParents()) {

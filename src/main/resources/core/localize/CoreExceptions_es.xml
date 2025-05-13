@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <InvalidNetworkTypeException>
+        <title value="Tipo de red inválida" />
+        <message value="La constraint {newConstraint} no es válida para el tipo de red {newNetworkType}, Esto ha sucedido convirtiendo la red {probNet} de tipo {oldNetworkType} a {newNetworkType}" />
+    </InvalidNetworkTypeException>
+</properties>

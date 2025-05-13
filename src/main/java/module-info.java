@@ -8,7 +8,9 @@ module org.openmarkov.core {
 	
 	requires java.instrument;
 	requires io.github.classgraph;
-	
+    requires org.openmarkov.annotation_processing;
+    requires org.jdom2;
+    
     exports org.openmarkov.core.action;
 	exports org.openmarkov.core.dt;
 	exports org.openmarkov.core.exception;
@@ -41,4 +43,6 @@ module org.openmarkov.core {
 	exports org.openmarkov.core.test;
 	exports org.openmarkov.plugin.service;
     exports org.openmarkov.plugin;
+	exports org.openmarkov.core.localize.spi;
+	exports org.openmarkov.core.localize;
 }

@@ -7,8 +7,6 @@ import java.time.Instant;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * @author jrico
  */
@@ -26,14 +24,13 @@ class StringFormatTest {
     /**
      * Tests the generated String is the same as {@link StringFormatTest#EXPECTED}.
      */
-    @Test
-    final void apply() {
-        Locale.setDefault(MESSAGE_LOCALE);
+    @Test final void apply() {
         Map<String, Object> values = Map.of(
                 "NetName", "MyNet",
                 "CreationDate", java.util.Date.from(Instant.parse("2023-06-03T10:15:30.00Z")),
                 "DesiredNetType", "Bayesian"
         );
+        Locale.setDefault(MESSAGE_LOCALE);
         String formatedMessage = StringFormat.apply(StringFormatTest.TEST_PATTERN, values);
         Assertions.assertEquals(StringFormatTest.EXPECTED, formatedMessage);
     }

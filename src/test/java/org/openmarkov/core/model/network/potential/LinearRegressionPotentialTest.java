@@ -7,7 +7,10 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -18,42 +21,35 @@ import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class LinearRegressionPotentialTest {
-
-	private LinearCombinationPotential potential = null;
-	private Variable ageAtStateEntryVar = null;
-	private Variable timeInStateVar = null;
-	private Variable ageVar = null;
-
-	@BeforeEach public void setUp() throws Exception {
-
-		// Revision Risk
-		ageAtStateEntryVar = new Variable("Age at state entry", "3.4", "4.4");
-		timeInStateVar = new Variable("Time in state", "0", "1");
-		ageVar = new Variable("Age", "4.4");
-
-		List<Variable> variables = Arrays.asList(ageAtStateEntryVar, ageVar, timeInStateVar);
-		double[] coefficients = new double[] { 0, 1, -1 };
-		String[] covariates = new String[] { "Constant", "Age", "Time in state" };
-
-		potential = new LinearCombinationPotential(variables, PotentialRole.CONDITIONAL_PROBABILITY, covariates,
-				coefficients);
-	}
-
-	@Test public void testTableProject() {
-		EvidenceCase evidence = new EvidenceCase();
-		List<TablePotential> projectedPotentials = null;
-		try {
-			projectedPotentials = potential.tableProject(evidence, null);
-		} catch (NonProjectablePotentialException | WrongCriterionException e) {
-			e.printStackTrace();
-		}
-
-		Assertions.assertEquals(1, projectedPotentials.size());
-
-		TablePotential projectedPotential = projectedPotentials.get(0);
-
-		double[] expectedValues = new double[] { 0, 1, 1, 0 };
-		Assertions.assertArrayEquals(expectedValues, projectedPotential.values, 0.00001);
-	}
-
+    
+    private LinearCombinationPotential potential = null;
+    private Variable ageAtStateEntryVar = null;
+    private Variable timeInStateVar = null;
+    private Variable ageVar = null;
+    
+    @BeforeEach public void setUp() {
+        
+        // Revision Risk
+        ageAtStateEntryVar = new Variable("Age at state entry", "3.4", "4.4");
+        timeInStateVar = new Variable("Time in state", "0", "1");
+        ageVar = new Variable("Age", "4.4");
+        
+        List<Variable> variables = Arrays.asList(ageAtStateEntryVar, ageVar, timeInStateVar);
+        double[] coefficients = new double[]{0, 1, -1};
+        String[] covariates = new String[]{"Constant", "Age", "Time in state"};
+        
+        potential = new LinearCombinationPotential(variables, PotentialRole.CONDITIONAL_PROBABILITY, covariates,
+                                                   coefficients);
+    }
+    
+    @Test public void testTableProject() throws NonProjectablePotentialException, WrongCriterionException {
+        EvidenceCase evidence = new EvidenceCase();
+        List<TablePotential> projectedPotentials = potential.tableProject(evidence, null);
+        Assertions.assertEquals(1, projectedPotentials.size());
+        
+        TablePotential projectedPotential = projectedPotentials.get(0);
+        double[] expectedValues = new double[]{0, 1, 1, 0};
+        Assertions.assertArrayEquals(expectedValues, projectedPotential.values, 0.00001);
+    }
+    
 }

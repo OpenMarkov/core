@@ -10,23 +10,19 @@ package org.openmarkov.core.model.network.modelUncertainty;
  * @author manolo
  */
 public class LogNormalFunctionTest extends ProbDensFunctionTest {
-
-	@Override public ProbDensFunction newProbDensFunctionInstance() {
-		return new LogNormalFunction();
-	}
-
-	@Override public double[] initializeParams() {
-		double[] params = { 1.5, 1.0 };
-		return params;
-	}
-
-	/**
-	 * @return
-	 */
-	protected double getFactorError() {
-		//return Math.max(1.0, pdf.getStandardDeviation());
-		// TODO MLUQUE : find out why the error is so big
-		return 1000;
-	}
-
+    
+    @Override public ProbDensFunction newProbDensFunctionInstance() {
+        return new LogNormalFunction();
+    }
+    
+    @Override public double[] initializeParams() {
+        return new double[]{1.5, 1.0};
+    }
+    
+    @Override protected double getFactorError() {
+        //return Math.max(1.0, pdf.getStandardDeviation());
+        // TODO MLUQUE : find out why the error is so big
+        return 1000;
+    }
+    
 }

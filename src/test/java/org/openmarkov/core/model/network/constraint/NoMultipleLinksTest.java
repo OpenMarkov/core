@@ -27,7 +27,7 @@ public class NoMultipleLinksTest {
     
     private ProbNet influenceDiagram;
     
-    @BeforeEach public void setUp() throws Exception {
+    @BeforeEach public void setUp() throws NodeNotFoundException {
         influenceDiagram = ConstraintsTests.getInfuenceDiagram();
     }
     
@@ -63,61 +63,39 @@ public class NoMultipleLinksTest {
         Variable vA = influenceDiagram.getVariable("A");
         // creates an undirected link from node A to D
         AddLinkEdit legalEdit = new AddLinkEdit(influenceDiagram, vU, vA, true);
-        try {
-            pNESupport.announceEdit(legalEdit);
-            legalEdit.doEdit();
-        } catch (Exception cve) {
-            fail(cve.getMessage());
-        }
+        pNESupport.announceEdit(legalEdit);
+        legalEdit.doEdit();
         
-        boolean exceptionLaunched = false;
         // do ilegal LinkAdd. Add an undirected link between U and A
         AddLinkEdit ilegalAdd = new AddLinkEdit(influenceDiagram, vU, vA, false);
         try {
             pNESupport.announceEdit(ilegalAdd);
             ilegalAdd.doEdit();
+            fail();
         } catch (ConstraintViolationException e) {
-            exceptionLaunched = true;
-        } catch (Exception e) {
-            fail("AddLink failed");
+            // the ilegal edit should have thrown the exception
         }
-        assertTrue(exceptionLaunched);
         
-        exceptionLaunched = false;
         // do ilegal LinkEdit. Add an undirected link between U and A
         AddLinkEdit ilegalLinkEdit = new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("U"),
                                                      influenceDiagram.getVariable("A"), false);
-        try {
-            pNESupport.announceEdit(ilegalLinkEdit);
-            ilegalLinkEdit.doEdit();
-        } catch (ConstraintViolationException e) {
-            exceptionLaunched = true;
-        } catch (Exception e) {
-            fail("AddLink failed");
-        }
-        assertTrue(exceptionLaunched);
+        pNESupport.announceEdit(ilegalLinkEdit);
+        ilegalLinkEdit.doEdit();
         
         // do legal invert link
         InvertLinkEdit legalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vA, true);
-        try {
-            pNESupport.announceEdit(legalInvertLinkEdit);
-            legalInvertLinkEdit.doEdit();
-        } catch (Exception cve) {
-            fail(cve.getMessage());
-        }
+        pNESupport.announceEdit(legalInvertLinkEdit);
+        legalInvertLinkEdit.doEdit();
         
-        exceptionLaunched = false;
         // do ilegal InvertLink. Add an directed link between U and A
         InvertLinkEdit ilegalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vA, false);
         try {
             pNESupport.announceEdit(ilegalInvertLinkEdit);
             ilegalInvertLinkEdit.doEdit();
+            fail();
         } catch (ConstraintViolationException e) {
-            exceptionLaunched = true;
-        } catch (Exception e) {
-            fail("AddLink failed");
+            // the ilegal edit should have thrown the exception
         }
-        assertTrue(exceptionLaunched);
     }
     
 }

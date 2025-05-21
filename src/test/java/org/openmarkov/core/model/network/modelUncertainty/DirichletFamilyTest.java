@@ -13,20 +13,19 @@ import java.util.List;
  * @author manolo
  */
 public class DirichletFamilyTest extends FamilyDistributionTest {
-
-	@Override public List<UncertainValue> initializeListUncertainValues() {
-
-		List<UncertainValue> list;
-		double[] alpha = { 1.0, 2.0, 3.0, 4.0 };
-		list = new ArrayList<>();
-		for (int i = 0; i < 4; i++) {
-			list.add(new UncertainValue(new DirichletFunction(alpha[i])));
-		}
-		return list;
-	}
-
-	@Override public FamilyDistribution newFamilyDistribution(List<UncertainValue> list) {
-		return new DirichletFamily(list);
-	}
-
+    
+    @Override public List<UncertainValue> initializeListUncertainValues() {
+        
+        double[] alpha = {1.0, 2.0, 3.0, 4.0};
+        List<UncertainValue> list = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            list.add(new UncertainValue(new DirichletFunction(alpha[i])));
+        }
+        return list;
+    }
+    
+    @Override public FamilyDistribution newFamilyDistribution(List<UncertainValue> list) {
+        return new DirichletFamily(list);
+    }
+    
 }

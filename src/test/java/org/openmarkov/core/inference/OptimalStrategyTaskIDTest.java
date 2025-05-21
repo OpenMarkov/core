@@ -7,53 +7,37 @@
 
 package org.openmarkov.core.inference;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
-
 public abstract class OptimalStrategyTaskIDTest extends OptimalStrategyTaskDecTest {
 
-/*	protected void testOptimalStrategy(ProbNet net,Intervention expectedStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException{
+    // TODO: Many of the code written in this test class reference code no longer existing
+    /*
+    
+	protected void testOptimalStrategy(ProbNet net,Intervention expectedStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		OptimalStrategy algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(net);
 		testScenariosIntervention(net,algorithm);
 	}
 
-	*//**
-	 * Checks that the Intervention (optimal strategy) obtained from the evaluation optimal is not null
-	 * and that it is consistent with the Cooper policy network (CPN) built using the policies obtained
-	 * from the method getOptimizedPolicies
-	 * @param net
-	 * @param algorithm
-	 * @throws IncompatibleEvidenceException
-	 * @throws UnexpectedInferenceException
-	 *//*
+
+	
+	// Checks that the Intervention (optimal strategy) obtained from the evaluation optimal is not null
+	// and that it is consistent with the Cooper policy network (CPN) built using the policies obtained
+	// from the method getOptimizedPolicies
+	
 	private void testScenariosIntervention(ProbNet net,
-										   OptimalStrategy algorithm) throws IncompatibleEvidenceException, UnexpectedInferenceException {
-		Intervention interv = null;
-		try {
-			interv = algorithm.getOptimalIntervention();
-		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
-			e.printStackTrace();
-		}
+										   OptimalStrategy algorithm) throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
+        Intervention interv = algorithm.getOptimalIntervention();
 		assertNotNull(interv);
 		testIntervention(algorithm, interv, new EvidenceCase());
-
-
 	}
 
-	*//**
-	 * Checks that the Intervention 'interv' rooted at the evidence scenario 'parentEvi' is consistent with the
-	 * Cooper policy network (CPN) that has been obtained by the inference algorithm 'algorithm'
-	 * The  method checks correctness and completeness:
-	 * - Correctness: Every scenario in the intervention has non-zero probability in the CPN
-	 * - Completeness: The Intervention covers all the non-zero probability states of the CPN
-	 * @param algorithm
-	 * @param interv
-	 * @param parentEvi
-	 * @throws IncompatibleEvidenceException
-	 * @throws UnexpectedInferenceException
-	 *//*
+	
+	// Checks that the Intervention 'interv' rooted at the evidence scenario 'parentEvi' is consistent with the
+	// Cooper policy network (CPN) that has been obtained by the inference algorithm 'algorithm'
+	// The  method checks correctness and completeness:
+	// - Correctness: Every scenario in the intervention has non-zero probability in the CPN
+	// - Completeness: The Intervention covers all the non-zero probability states of the CPN
 	private void testIntervention(OptimalStrategy algorithm, Intervention interv, EvidenceCase parentEvi)
-			throws IncompatibleEvidenceException, UnexpectedInferenceException {
+            throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 
 		if (interv != null) {
 			interv.getRootVariable();
@@ -76,13 +60,8 @@ public abstract class OptimalStrategyTaskIDTest extends OptimalStrategyTaskDecTe
 						// CPN
 						assertTrue(probs.values[rootVariable.getStateIndex(state)] > 0);
 						EvidenceCase newEvi = new EvidenceCase(parentEvi.getFindings());
-
 						Finding finding = new Finding(rootVariable, state);
-						try {
 							newEvi.addFinding(finding);
-						} catch (InvalidStateException e) {
-							e.printStackTrace();
-						}
 						testIntervention(algorithm, auxInterventionBranch, newEvi);
 					}
 				}
@@ -90,13 +69,11 @@ public abstract class OptimalStrategyTaskIDTest extends OptimalStrategyTaskDecTe
 		}
 	}
 
-	*//**
-	 * @param branches
-	 * @return The total number of states in 'branches'
-	 *//*
+	// @return The total number of states in 'branches'
+
 	private int getNumStatesBranches(List<TreeADDBranch> branches) {
 		int numStates = 0;
-		Set<State> states = new HashSet<State>();
+		Set<State> states = new HashSet<>();
 		if (branches != null){
 			for (int i = 0; i < branches.size(); i++) {
 				TreeADDBranch auxBranch = branches.get(i);
@@ -109,10 +86,7 @@ public abstract class OptimalStrategyTaskIDTest extends OptimalStrategyTaskDecTe
 		return numStates;
 	}
 
-	*//**
-	 * @param probs
-	 * @return The number of values in the potential that are greater than zero
-	 *//*
+	// @return The number of values in the potential that are greater than zero
 	private int getNumProbsNotZero(TablePotential probs) {
 		int numNotZero = 0;
 		double[] values = probs.values;
@@ -124,34 +98,19 @@ public abstract class OptimalStrategyTaskIDTest extends OptimalStrategyTaskDecTe
 		return numNotZero;
 	}
 
-	*//**
-	 * @param id
-	 * @param decision
-	 * @param state
-	 * @return An Intervention with the assignment 'decision = state'
-	 *//*
-	protected Intervention createSimpleIntervention(ProbNet id, String decision, String state) {
+	// @return An Intervention with the assignment 'decision = state'
+	protected Intervention createSimpleIntervention(ProbNet id, String decision, String state) throws NodeNotFoundException, InvalidStateException {
 		Intervention interv;
 		List<Variable> vars = new ArrayList<>();
 		List<State> states = new ArrayList<>();
 		Variable dec = null;
-		try {
 			dec = id.getVariable(decision);
-		} catch (NodeNotFoundException e1) {
-			e1.printStackTrace();
-		}
 		vars.add(dec);
-
 		interv = new Intervention(dec, states);
 		interv.setRootVariable(dec);
-		try {
 			states.add(dec.getState(state));
-		} catch (InvalidStateException e) {
-			e.printStackTrace();
-		}
 		TreeADDBranch branch = new TreeADDBranch(states, dec, vars);
 		interv.addBranch(branch);
-
 		return interv;
 	}
 
@@ -161,25 +120,20 @@ public abstract class OptimalStrategyTaskIDTest extends OptimalStrategyTaskDecTe
 													   String positiveResult,
 													   String negativeResult,
 													   String yesTherapy,
-													   String noTherapy) throws InvalidStateException{
+													   String noTherapy) throws InvalidStateException, NodeNotFoundException {
 		Intervention interv;
 		List<Variable> vars = new ArrayList<>();
 		List<State> states = new ArrayList<>();
-		Variable dec = null;
-		Variable resultTest = null;
-		String statesResultTestNames[] = new String[2];
+        String statesResultTestNames[] = new String[2];
 		String statesTherapyNames[]=new String[2];
 
 		statesResultTestNames[0]=positiveResult;
 		statesResultTestNames[1]=negativeResult;
 		statesTherapyNames[0]=yesTherapy;
 		statesTherapyNames[1]=noTherapy;
-		try {
-			dec = id.getVariable(decisionName);
-			resultTest = id.getVariable(resultTestName);
-		} catch (NodeNotFoundException e1) {
-			e1.printStackTrace();
-		}
+        Variable dec = id.getVariable(decisionName);
+        Variable resultTest = id.getVariable(resultTestName);
+
 		vars.add(dec);
 		vars.add(resultTest);
 		List<State> statesRoot = new ArrayList<>();
@@ -201,50 +155,39 @@ public abstract class OptimalStrategyTaskIDTest extends OptimalStrategyTaskDecTe
 	}
 
 	protected void testMEU(ProbNet diagram,double expectedMeu) throws IncompatibleEvidenceException, UnexpectedInferenceException{
-
 		OptimalStrategy algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
-
-
 		// test max expected utility
-		Double meuEvaluation = null;
-		try {
-			meuEvaluation = algorithm.getGlobalUtility().values[0];
-		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        Double meuEvaluation = algorithm.getGlobalUtility().values[0];
 		assertEquals(expectedMeu, meuEvaluation, maxError);
-
-
 	}
 
 	@Test
-	public void testIDOneDecision() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDOneDecision() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDOneDecision(), null);
 	}
 
 	@Test
-	public void testIDPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDPerfectKnowledge(), null);
 	}
 
 	@Test
-	public void testIDPerfectKnowledgeCostTherapy() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDPerfectKnowledgeCostTherapy() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDPerfectKnowledgeCostTherapy(), null);
 	}
 
 	@Test
-	public void testIDNoKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDNoKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDNoKnowledge(), null);
 	}
 
 	@Test
-	public void testIDTestAlways() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDTestAlways() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDTestAlways(), null);
 	}
 
 	@Test
-	public void testIDDecideTest() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDDecideTest() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(getIDDecideTest(), null);
 	}
 
@@ -253,91 +196,85 @@ public abstract class OptimalStrategyTaskIDTest extends OptimalStrategyTaskDecTe
 	}
 
 	@Test
-	public void testIDDecideTestSymptom() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDDecideTestSymptom() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDDecideTestSymptom(), null);
 	}
 
 	@Test
-	public void testIDQaleMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDQaleMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDQaleMediastinet(), null);
 	}
 
 	@Test
-	public void testIDMediastinetWithoutSV() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDMediastinetWithoutSV() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDMediastinetWithoutSV(), null);
 	}
 
 	@Test
-	public void testIDMediastinetWithoutMediastinoscopy() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDMediastinetWithoutMediastinoscopy() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDMediastinetWithoutMediastinoscopy(), null);
 	}
 
 	@Test
-	public void testIDMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDMediastinet(), null);
 	}
 
 	@Test
-	public void testIDArthronet() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDArthronet() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDArthronet(), null);
 	}
 
 	@Test
-	public void testIDRedundantChance() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDRedundantChance() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDRedundantChance(), null);
 	}
 
 	@Test
-	public void testIDTwoIndependentDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDTwoIndependentDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDTwoIndependentDecisions(), null);
 	}
 
 	@Test
-	public void testIDConcatenateOrderTwoDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDConcatenateOrderTwoDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDConcatenateOrderTwoDecisions(), null);
 	}
 
 	@Test
-	public void testIDThreeIndependentDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDThreeIndependentDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDThreeIndependentDecisions(), null);
 	}
 
 	@Test
-	public void testIDStatesTies() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDStatesTies() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDStatesTies(), null);
 	}
 
 	@Test
-	public void testIDStatesTiesPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDStatesTiesPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDStatesTiesPerfectKnowledge(), null);
 	}
 
 	@Test
-	public void testIDConsecutiveDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException{
+	public void testIDConsecutiveDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
 		testOptimalStrategy(IDFactory.buildIDConsecutiveDecisions(), null);
 	}
 
-	*//**
-	 * @param network
-	 * @return An InferenceAlgorithm for 'network'. If the network is not evaluable
-	 * with the algorithm then the test calling this method is skipped.
-	 * @throws UnexpectedInferenceException
-	 * @throws IncompatibleEvidenceException
-	 *//*
-	protected OptimalStrategy buildInferenceTaskAndSkipTestIfNotEvaluable(
-			ProbNet network) throws IncompatibleEvidenceException, UnexpectedInferenceException {
-		boolean isEvaluable;
-		OptimalStrategy task = null;
+	// @return An InferenceAlgorithm for 'network'. If the network is not evaluable
+	// with the algorithm then the test calling this method is skipped.
 
+	protected OptimalStrategy buildInferenceTaskAndSkipTestIfNotEvaluable(
+			ProbNet network) {
+        OptimalStrategy task;
 		//If the network is not evaluable then the test is skipped
-		isEvaluable = true;
+        boolean isEvaluable = true;
 		try {
 			task = buildInferenceTask(network, new EvidenceCase());
-		} catch (NotEvaluableNetworkException e1) {
+		} catch (NotEvaluableNetworkException | IncompatibleEvidenceException | UnexpectedInferenceException e1) {
 			isEvaluable = false;
 		}
 		assumeTrue(isEvaluable);
 		return task;
-	}*/
-
+	}
+    */
 }

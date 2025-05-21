@@ -8,9 +8,9 @@
 package org.openmarkov.core.exception;
 
 @SuppressWarnings("serial") public class TestFailedException extends OpenMarkovException {
-
-	public TestFailedException(Exception e) {
-		System.err.println(e.getMessage());
-	}
-
+    
+    public TestFailedException(Exception e) {
+        System.err.println(e.getMessage());
+    }
+    
 }

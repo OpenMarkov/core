@@ -7,62 +7,66 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.test.TestSpeed;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class OnlyTemporalVariablesTest {
-
-	private ProbNet network;
-
-	@BeforeEach public void setUp() throws Exception {
-		network = ConstraintsTests.getTemporalVarNet();
-	}
-
-	@Test public void testCheckProbNet() {
-		OnlyTemporalVariables testedConstraint = new OnlyTemporalVariables();
-		network.addConstraint(testedConstraint);
-		assertTrue(testedConstraint.checkProbNet(network));
+    
+    private ProbNet network;
+    
+    @BeforeEach public void setUp() throws NodeNotFoundException {
+        network = ConstraintsTests.getTemporalVarNet();
+    }
+    
+    @Test public void testCheckProbNet() {
+        OnlyTemporalVariables testedConstraint = new OnlyTemporalVariables();
+        network.addConstraint(testedConstraint);
+        assertTrue(testedConstraint.checkProbNet(network));
         
         network.addNode(new Variable("A"), NodeType.CHANCE);
-		assertFalse(testedConstraint.checkProbNet(network));
-	}
-
-	@Test public void testUndoableEditWillHappen() throws Exception {
-		PNESupport pNESupport = new PNESupport(false);
-		PNConstraint constraint = new OnlyTemporalVariables();
-		network.addConstraint(constraint);
-		pNESupport.addUndoableEditListener(constraint);
-
-		boolean exceptionLaunched = false;
-		Variable var = new Variable(" [11]", "Y", "N");
-		AddNodeEdit legalEdit = new AddNodeEdit(network, var, NodeType.CHANCE);
-		// add the variable
-		try {
-			pNESupport.announceEdit(legalEdit);
-			legalEdit.doEdit();
-		} catch (Exception cve) {
-			fail(cve.getMessage());
-		}
-
-		Variable var1 = new Variable("F");
-		AddNodeEdit ilegalEdit = new AddNodeEdit(network, var1, NodeType.CHANCE);
-		// add the variable
-		try {
-			pNESupport.announceEdit(ilegalEdit);
-			ilegalEdit.doEdit();
-		} catch (Exception cve) {
-			exceptionLaunched = true;
-		}
-		assertTrue(exceptionLaunched);
-	}
-
+        assertFalse(testedConstraint.checkProbNet(network));
+    }
+    
+    @Tag(TestSpeed.MEDIUM)
+    @Test
+    public void testUndoableEditWillHappen() throws NonProjectablePotentialException, ConstraintViolationException, WrongCriterionException {
+        PNESupport pNESupport = new PNESupport(false);
+        PNConstraint constraint = new OnlyTemporalVariables();
+        network.addConstraint(constraint);
+        pNESupport.addUndoableEditListener(constraint);
+        
+        boolean exceptionLaunched = false;
+        Variable var = new Variable(" [11]", "Y", "N");
+        AddNodeEdit legalEdit = new AddNodeEdit(network, var, NodeType.CHANCE);
+        // add the variable
+        pNESupport.announceEdit(legalEdit);
+        legalEdit.doEdit();
+        
+        Variable var1 = new Variable("F");
+        AddNodeEdit ilegalEdit = new AddNodeEdit(network, var1, NodeType.CHANCE);
+        // add the variable
+        try {
+            pNESupport.announceEdit(ilegalEdit);
+            ilegalEdit.doEdit();
+            fail();
+        } catch (Exception cve) {
+            // An exception should have been thrown
+        }
+    }
+    
 }

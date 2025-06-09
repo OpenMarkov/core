@@ -186,5 +186,17 @@ import java.util.List;
 	@Override public BaseLinkEdit getUndoEdit() {
 		return new AddLinkEdit(getProbNet(), getVariable1(), getVariable2(), isDirected());
 	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Remove link between " + variable1.getName());
+		if (isDirected) {
+			sb.append(" -> ");
+		} else {
+			sb.append(" -- ");
+		}
+		sb.append(variable2.getName());
+		return sb.toString();
+	}
 
 }

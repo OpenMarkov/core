@@ -15,6 +15,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RemovePolicyEdit extends SimplePNEdit {
 
@@ -25,6 +26,8 @@ public class RemovePolicyEdit extends SimplePNEdit {
 	private Potential lastPotential;
 	private Variable variable;
 	private PolicyType lastPolicyType;
+	private Node node;
+	private VisualDecisionNodePolicyChangeListener listener;
 
 	/**
 	 * @param node Node
@@ -39,21 +42,37 @@ public class RemovePolicyEdit extends SimplePNEdit {
 
 	}
 
+	public RemovePolicyEdit(Node node, VisualDecisionNodePolicyChangeListener listener){
+        super(node.getProbNet());
+		this.node = node;
+		this.listener = listener;
+		lastPotential = node.getPotentials().get(0);
+
+    }
+
 	@Override public void doEdit() throws DoEditException {
-		ArrayList<Potential> potentials = new ArrayList<>();
+		/*ArrayList<Potential> potentials = new ArrayList<>();
 		if (probNet.getNode(variable).getNodeType() == NodeType.DECISION && lastPolicyType != PolicyType.OPTIMAL) {
 			probNet.getNode(variable).setPolicyType(PolicyType.OPTIMAL);
 			probNet.getNode(variable).setPotentials(potentials);
-		}
+		}*/
+
+		List<Potential> noPolicy = new ArrayList<>();
+		node.setPotentials(noPolicy);
+		listener.removePolicy();
 	}
 
 	public void undo() {
 		super.undo();
-		ArrayList<Potential> potentials = new ArrayList<>();
+		/*ArrayList<Potential> potentials = new ArrayList<>();
 		if (probNet.getNode(variable).getNodeType() == NodeType.DECISION && lastPolicyType != PolicyType.OPTIMAL) {
 			potentials.add(lastPotential);
 			probNet.getNode(variable).setPotentials(potentials);
 			probNet.getNode(variable).setPolicyType(lastPolicyType);
-		}
+		}*/
+		List<Potential> potentials = new ArrayList<>();
+		listener.onNodeValueChanged();
+		potentials.add(lastPotential);
+		node.setPotentials(potentials);
 	}
 }

@@ -31,6 +31,8 @@ import java.util.List;
 	private Variable variable;
 	private Potential newPotential = null;
 	private Node node;
+	private VisualDecisionNodePolicyChangeListener listener;
+	private Boolean hasPolicy;
 
 	/**
 	 * Creates a new SetPotentialEdit object that sets the a new potential with
@@ -71,10 +73,32 @@ import java.util.List;
 		this.newPotentialType = newPotential.getClass().getAnnotation(PotentialType.class).name();
 	}
 
+	public SetPotentialEdit(Node node, String newPotentialType, Potential lastPotential,Boolean hasPolicy, VisualDecisionNodePolicyChangeListener listener) {
+		super(node.getProbNet());
+		this.node = node;
+		this.variable = node.getVariable();
+		this.lastPotential = lastPotential;
+		this.listener = listener;
+		this.hasPolicy = hasPolicy;
+
+		this.newPotentialType = newPotentialType;
+
+	}
+
 	// TODO al asignar un potencial tener en cuenta a los padres y a los
 	// predecesores informativos que me los va a dar Manolo invocando a una
 	// funcion
 	@Override public void doEdit() throws DoEditException {
+		setPotential();
+		if (node.getNodeType() == NodeType.DECISION && listener != null){
+
+			listener.onNodeValueChanged();
+
+		}
+
+	}
+
+	public void setPotential(){
 		List<Variable> variables;
 		PotentialRole role;
 		variables = lastPotential.getVariables();
@@ -97,6 +121,8 @@ import java.util.List;
 			node.setPolicyType(PolicyType.PROBABILISTIC);
 		}
 
+
+
 		potentials.add(newPotential);
 		//probNet.getNode(variable).setPotentials(potentials);
 		node.setPotentials(potentials);
@@ -116,11 +142,25 @@ import java.util.List;
 		List<Potential> potentials = new ArrayList<>();
 		if (lastPotential != null) {
 			potentials.add(lastPotential);
+			if (node.getNodeType() == NodeType.DECISION){
+				if (hasPolicy) {
+					listener.onNodeValueChanged();
+				}else {
+					listener.removePolicy();
+				}
+			}
+
 		} else if (node.getNodeType() == NodeType.DECISION) {
 			node.setPolicyType(PolicyType.OPTIMAL);
 
 		}
 		node.setPotentials(potentials);
+	}
+
+	@Override
+	public void redo() {
+		super.redo();
+
 	}
 
 	public Potential getNewPotential() {

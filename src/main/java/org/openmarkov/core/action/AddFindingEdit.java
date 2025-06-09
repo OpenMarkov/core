@@ -1,0 +1,77 @@
+package org.openmarkov.core.action;
+
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.NoFindingException;
+import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
+import org.openmarkov.core.model.network.Node;
+
+
+public class AddFindingEdit extends SimplePNEdit{
+
+    Node node;
+    EvidenceCase evidenceCase;
+    Boolean isInferenceMode;
+    VisualChanceNodeFindingChangeListener listener;
+    Finding finding;
+    Finding previousFinding;
+
+     /**
+     * @param node {@code Node}
+     */
+    public AddFindingEdit(Node node, EvidenceCase evidenceCase,Finding previousFinding, Finding finding, VisualChanceNodeFindingChangeListener listener) {
+        super(node.getProbNet());
+        this.node = node;
+        this.evidenceCase = evidenceCase;
+        this.listener = listener;
+        this.finding = finding;
+        this.previousFinding = previousFinding;
+    }
+
+    @Override
+    public void doEdit() throws DoEditException {
+        try {
+            evidenceCase.addFinding(finding);
+            listener.onNodeValueChanged();
+        } catch (InvalidStateException | IncompatibleEvidenceException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public void undo(){
+        super.undo();
+        if(previousFinding == null){
+            try {
+                evidenceCase.removeFinding(finding.getVariable());
+                listener.removeFinding();
+            } catch (NoFindingException e) {
+                throw new RuntimeException(e);
+            }
+        }else {
+            try {
+                evidenceCase.removeFinding(finding.getVariable());
+                evidenceCase.addFinding(previousFinding);
+            } catch (InvalidStateException | IncompatibleEvidenceException | NoFindingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+
+
+
+    @Override
+    public void redo() {
+        super.redo();
+
+
+    }
+
+
+
+}

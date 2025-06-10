@@ -273,13 +273,11 @@ public class FormatManager {
 	 * @throws Exception when an exception is raised is thrown to be caught by the gui
 	 */
 	public ProbNetReader getProbNetReader(String fileName) throws Exception {
-
-		checkVersion(fileName);
-		checkStructure(fileName);
-
 		String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
 		String fileVersion = "";
 		if (!fileExtension.equals("elv")) {
+			checkVersion(fileName);
+			checkStructure(fileName);
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 			Document doc = docBuilder.parse(new File(fileName));

@@ -7,13 +7,12 @@
 
 package org.openmarkov.core.localize;
 
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.localize.spi.LocalizeResourcesProvider;
 import org.openmarkov.plugin.Filter;
 import org.openmarkov.plugin.PluginLoader;
 
-import javax.swing.*;
 import javax.swing.event.EventListenerList;
-import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -24,11 +23,11 @@ import java.util.*;
  * @version 1.3. ibermejo challenge everything
  */
 public class StringDatabase {
-	
-	/**
-	 * Default language.
-	 */
-	private static final String DEFAULT_LANGUAGE = "en";
+    
+    /**
+     * Default language.
+     */
+    private static final String DEFAULT_LANGUAGE = "en";
 
 	/*
 	private static final String DEFAULT_LANGUAGE = OpenMarkovPreferences
@@ -39,121 +38,128 @@ public class StringDatabase {
 		OpenMarkovPreferences.OPENMARKOV_LANGUAGES);
 
 	 */
-	
-	/**
-	 * Unique instance of this class.
-	 */
-	private static StringDatabase instance = null;
-	/**
-	 * Language to use.
-	 */
-	private String language = DEFAULT_LANGUAGE;
-	/**
-	 * Locale to use
-	 */
-	private Locale locale = null;
-	/**
-	 * Map containing all the bundles
-	 */
-	private Map<String, StringBundle> bundles = null;
-	// Create the listener list
-	private EventListenerList listenerList = null;
-
-	/**
-	 * This constructor initializes the object with the language of the class.
-	 * Then creates all the resource bundles to check if the language is
-	 * available for all of them. If this language is not available for all, the
-	 * default one is used.
-	 */
-	private StringDatabase() {
-		setLocale(new Locale(language));
-		/* Set format locale to english (to format decimal point)*/
-		Locale.setDefault(Locale.Category.FORMAT, Locale.ENGLISH);
-		bundles = getAllBundles();
-		listenerList = new EventListenerList();
-		if (bundles.isEmpty()) {
-			setLanguage("en");
-		}
-	}
-
-	/**
-	 * Returns the unique instance of this class. If the instance doesn't exist,
-	 * then a new instance is initialized.
-	 *
-	 * @return the unique instance.
-	 */
-	public static StringDatabase getUniqueInstance() {
-		if (instance == null) {
-			instance = new StringDatabase();
-		}
-		return instance;
-	}
-
-	private Locale getLocaleByLanguage(String language) {
-		Locale locale = Locale.ENGLISH;
-		if (language.equals(Locale.ENGLISH.getLanguage())) {
-			locale = Locale.ENGLISH;
-		} else if (language.equals("es")) {
-			locale = new Locale("es");
-		} else {
-			// System.out.println("LocaleChangeEvent failure for locale "
-			// + locale.toString() + ": not defined");
-			// System.out.println("Setting english as default locale...");
-			locale = Locale.ENGLISH;
-		}
-		return locale;
-	}
-
-	/**
-	 * @return the language
-	 */
-	public String getLanguage() {
-		return language;
-	}
-
-	/**
-	 * Sets the language to a new one.
-	 *
-	 * @param newLanguage new language.
-	 */
-	public void setLanguage(String newLanguage) {
-		if (!newLanguage.equals(language)) {
-			language = (newLanguage.equals("es")) ? "es" : "en";
-			setLocale(getLocaleByLanguage(language));
-			/* Set format locale to english (to format decimal point)*/
-			Locale.setDefault(Locale.Category.FORMAT, Locale.ENGLISH);
-			resetBundles();
-			fireLocaleChangeEvent(new LocaleChangeEvent(this, newLanguage));
+    /**
+     * Unique instance of this class.
+     */
+    private static StringDatabase instance = null;
+    /**
+     * English instance of this class.
+     */
+    private static StringDatabase developerInstance = null;
+    /**
+     * Language to use.
+     */
+    private String language = DEFAULT_LANGUAGE;
+    /**
+     * Locale to use
+     */
+    private Locale locale = null;
+    /**
+     * Map containing all the bundles
+     */
+    private Map<String, StringBundle> bundles = null;
+    // Create the listener list
+    private EventListenerList listenerList = null;
+    
+    /**
+     * This constructor initializes the object with the language of the class.
+     * Then creates all the resource bundles to check if the language is
+     * available for all of them. If this language is not available for all, the
+     * default one is used.
+     */
+    private StringDatabase() {
+        setLocale(new Locale(language));
+        /* Set format locale to english (to format decimal point)*/
+        Locale.setDefault(Locale.Category.FORMAT, Locale.ENGLISH);
+        bundles = getAllBundles();
+        listenerList = new EventListenerList();
+        if (bundles.isEmpty()) {
+            setLanguage("en");
+        }
+    }
+    
+    /**
+     * Returns the unique instance of this class. If the instance doesn't exist,
+     * then a new instance is initialized.
+     *
+     * @return the unique instance.
+     */
+    public static StringDatabase getUniqueInstance() {
+        if (instance == null) {
+            instance = new StringDatabase();
+        }
+        return instance;
+    }
+    
+    /**
+     * Returns the developer instance of this class, which should be english.
+     *
+     * @return the unique instance.
+     */
+    public static StringDatabase getDeveloperInstance() {
+        if (developerInstance == null) {
+            developerInstance = new StringDatabase();
+        }
+        return developerInstance;
+    }
+    
+    public static String surrondAsUnknown(String string) {
+        return ">>> " + string + " <<<";
+    }
+    
+    private Locale getLocaleByLanguage(String language) {
+        if (language.equals("es")) {
+            return new Locale("es");
+        }
+        // System.out.println("LocaleChangeEvent failure for locale "
+        // + locale.toString() + ": not defined");
+        // System.out.println("Setting english as default locale...");
+        return Locale.ENGLISH;
+    }
+    
+    /**
+     * @return the language
+     */
+    public String getLanguage() {
+        return language;
+    }
+    
+    /**
+     * Sets the language to a new one.
+     *
+     * @param newLanguage new language.
+     */
+    public void setLanguage(String newLanguage) {
+        if (!newLanguage.equals(language)) {
+            language = (newLanguage.equals("es")) ? "es" : "en";
+            setLocale(getLocaleByLanguage(language));
+            /* Set format locale to english (to format decimal point)*/
+            Locale.setDefault(Locale.Category.FORMAT, Locale.ENGLISH);
+            resetBundles();
+            fireLocaleChangeEvent(new LocaleChangeEvent(this, newLanguage));
 			/*
 			OpenMarkovPreferences.set(OpenMarkovPreferences.PREFERENCE_LANGUAGE, newLanguage,
 					OpenMarkovPreferences.OPENMARKOV_LANGUAGES);
 			*/
-		}
-	}
-
-	/**
-	 * @return the locale
-	 */
-	public Locale getLocale() {
-		return locale;
-	}
-
-	/**
-	 * @param newLocale the locale to set
-	 */
-	public void setLocale(Locale newLocale) {
-		locale = newLocale;
-	}
-
-	/**
-	 * Returns a string resource linked to the file given as parameter. The
-	 * value of the 'language' variable is used. If it is null or empty, the
-	 * language of the system is taken into account. If the system's language
-	 * isn't available, the default language is English.
-	 *
-	 * @param resourceFile file that contains the resource strings.
-	 * @return a resource bundle linked to the file.
-	 */
+        }
+    }
+    
+    /**
+     * @return the locale
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+    
+    /*
+     * Returns a string resource linked to the file given as parameter. The
+     * value of the 'language' variable is used. If it is null or empty, the
+     * language of the system is taken into account. If the system's language
+     * isn't available, the default language is English.
+     *
+     * @param resourceFile file that contains the resource strings.
+     * @return a resource bundle linked to the file.
+     */
 	/*
 	public StringBundle getBundle(String resourceFile) {
 		StringBundle stringBundle = null;
@@ -204,28 +210,13 @@ public class StringDatabase {
 		return stringBundle;
 	}
 	*/
-	
-	public Map<String, StringBundle> getAllBundles() {
-		//Iterable<LocalizeResourcesProvider> providers = ServiceLoader.load(LocalizeResourcesProvider.class);
-		Iterable<LocalizeResourcesProvider> providers = new PluginLoader()
-				.loadAllPlugins(Filter.filter().toImplement(LocalizeResourcesProvider.class))
-				.stream()
-				.map(c-> {
-                    try {
-                        return (LocalizeResourcesProvider) c.getDeclaredConstructor().newInstance();
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                             NoSuchMethodException e) {
-						return null;
-                    }
-                })
-				.filter(Objects::nonNull)
-				.toList();
-		Map<String, StringBundle> bundlesMap = new LinkedHashMap<>();
-		for (LocalizeResourcesProvider provider: providers) {
-            bundlesMap.putAll(provider.getBundlesMap(this.locale));
-		}
-		return bundlesMap;
-	}
+    
+    /**
+     * @param newLocale the locale to set
+     */
+    public void setLocale(Locale newLocale) {
+        locale = newLocale;
+    }
 
 	/*
 	public Map<String, StringBundle> oldGetAllBundles() {
@@ -279,13 +270,35 @@ public class StringDatabase {
 		return bundleMap;
 	}
 	*/
-
-	/**
-	 * @param file
-	 * @param locale
-	 * @return An instance of ResourceBundle considering that properties files
-	 * are in XML format.
-	 */
+    
+    public Map<String, StringBundle> getAllBundles() {
+        //Iterable<LocalizeResourcesProvider> providers = ServiceLoader.load(LocalizeResourcesProvider.class);
+        Iterable<LocalizeResourcesProvider> providers = new PluginLoader()
+                .loadAllPlugins(Filter.filter().toImplement(LocalizeResourcesProvider.class))
+                .stream()
+                .map(c -> {
+                    try {
+                        return (LocalizeResourcesProvider) c.getDeclaredConstructor().newInstance();
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                             NoSuchMethodException e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toList();
+        Map<String, StringBundle> bundlesMap = new LinkedHashMap<>();
+        for (LocalizeResourcesProvider provider : providers) {
+            bundlesMap.putAll(provider.getBundlesMap(this.locale));
+        }
+        return bundlesMap;
+    }
+    
+    /**
+     * @param file
+     * @param locale
+     * @return An instance of ResourceBundle considering that properties files
+     * are in XML format.
+     */
 	/*
 	public ResourceBundle oldCreateXMLResourceBundle(String file, Locale locale) {
 		ResourceBundle bundle;
@@ -331,105 +344,114 @@ public class StringDatabase {
 		return bundle;
 	}
 	*/
-	
-	
-	public ResourceBundle createXMLResourceBundle(String file, Locale locale) {
-		ResourceBundle bundle;
-		bundle = ResourceBundle.getBundle(file, locale);
-		return bundle;
-		
-	}
-
-
-
-	// This methods allows classes to register for LocaleChangeEvent
-	public void addLocaleChangeListener(LocaleChangeListener listener) {
-		listenerList.add(LocaleChangeListener.class, listener);
-	}
-
-	// This methods allows classes to unregister for LocaleChangeEvent
-	public void removeLocaleChangeListener(LocaleChangeListener listener) {
-		listenerList.remove(LocaleChangeListener.class, listener);
-	}
-
-	/**
-	 * This private class is used to fire LocaleChangeEvent
-	 *
-	 * @param evt - event to manage for locale change
-	 */
-	protected void fireLocaleChangeEvent(LocaleChangeEvent evt) {
-		Object[] listeners = listenerList.getListenerList();
-		// Each listener occupies two elements - the first is the listener class
-		// and the second is the listener instance
-		for (int i = 0; i < listeners.length; i += 2) {
-			if (listeners[i] == LocaleChangeListener.class) {
-				((LocaleChangeListener) listeners[i + 1]).processLocaleChange(evt);
-			}
-		}
-	}
-
-	/**
-	 * reset the StringResource to null
-	 */
-	private void resetBundles() {
-		bundles.clear();
-		bundles = getAllBundles();
-	}
+    public ResourceBundle createXMLResourceBundle(String file, Locale locale) {
+        ResourceBundle bundle;
+        bundle = ResourceBundle.getBundle(file, locale);
+        return bundle;
+        
+    }
+    
+    // This methods allows classes to register for LocaleChangeEvent
+    public void addLocaleChangeListener(LocaleChangeListener listener) {
+        listenerList.add(LocaleChangeListener.class, listener);
+    }
+    
+    // This methods allows classes to unregister for LocaleChangeEvent
+    public void removeLocaleChangeListener(LocaleChangeListener listener) {
+        listenerList.remove(LocaleChangeListener.class, listener);
+    }
+    
+    /**
+     * This private class is used to fire LocaleChangeEvent
+     *
+     * @param evt - event to manage for locale change
+     */
+    protected void fireLocaleChangeEvent(LocaleChangeEvent evt) {
+        Object[] listeners = listenerList.getListenerList();
+        // Each listener occupies two elements - the first is the listener class
+        // and the second is the listener instance
+        for (int i = 0; i < listeners.length; i += 2) {
+            if (listeners[i] == LocaleChangeListener.class) {
+                ((LocaleChangeListener) listeners[i + 1]).processLocaleChange(evt);
+            }
+        }
+    }
+    
+    /**
+     * reset the StringResource to null
+     */
+    private void resetBundles() {
+        bundles.clear();
+        bundles = getAllBundles();
+    }
     
     public String getString(String key) {
+        String value = this.getNullableString(key);
+        return value != null ? value : StringDatabase.surrondAsUnknown(key);
+    }
+    
+    public @Nullable String getNullableString(String key) {
         for (StringBundle bundle : this.bundles.values()) {
             String value = bundle.getString(key);
             if (value != null)
                 return value;
         }
-        return ">>> " + key + " <<<";
+        return null;
     }
     
     
     public String getString(String bundle, String key) {
-        String value = this.bundles.get(bundle).getString(key);
-        return value != null ? value : ">>> " + key + " <<<";
+        String value = this.getNullableString(bundle, key);
+        return value != null ? value : StringDatabase.surrondAsUnknown(key);
     }
-
-	/**
-	 * This method returns the requested string resource, replacing each '~' by
-	 * an element of the array. The number of '~' replaced depends on the number
-	 * of elements of the array.
-	 *
-	 * @param key     the key of the desired string.
-	 * @param strings strings that will replace the '~'.
-	 * @return the string associated with the key. if the resource doesn't
-	 * exist, then a special string is returned.
-	 */
-	public String getFormattedString(String key, String... strings) {
-		String result = "";
-		String parameter = "";
-		boolean flag = true;
-		int i = 0;
-		int l = 0;
-		int index = 0;
-		final String diacritic = "~";
-		try {
-			result = getString(key);
-			if (strings != null) {
-				l = strings.length;
-				while (flag && (i < l)) {
-					if ((index = result.indexOf(diacritic, index)) >= 0) {
-						parameter = strings[i++];
-						if (parameter == null) {
-							parameter = "";
-						}
-						result = result.substring(0, index) + result.substring(index)
-								.replaceFirst(diacritic, parameter);
-						index += parameter.length();
-					} else {
-						flag = false;
-					}
-				}
-			}
-		} catch (MissingResourceException e1) {
-			result = ">>> " + key + " <<<";
-		}
-		return result;
-	}
+    
+    public @Nullable String getNullableString(String bundle, String key) {
+        StringBundle stringBundle = this.bundles.get(bundle);
+        if (stringBundle == null) {
+            return null;
+        }
+        return stringBundle.getString(key);
+    }
+    
+    /**
+     * This method returns the requested string resource, replacing each '~' by
+     * an element of the array. The number of '~' replaced depends on the number
+     * of elements of the array.
+     *
+     * @param key     the key of the desired string.
+     * @param strings strings that will replace the '~'.
+     * @return the string associated with the key. if the resource doesn't
+     * exist, then a special string is returned.
+     */
+    public String getFormattedString(String key, String... strings) {
+        String result = "";
+        String parameter = "";
+        boolean flag = true;
+        int i = 0;
+        int l = 0;
+        int index = 0;
+        final String diacritic = "~";
+        try {
+            result = getString(key);
+            if (strings != null) {
+                l = strings.length;
+                while (flag && (i < l)) {
+                    if ((index = result.indexOf(diacritic, index)) >= 0) {
+                        parameter = strings[i++];
+                        if (parameter == null) {
+                            parameter = "";
+                        }
+                        result = result.substring(0, index) + result.substring(index)
+                                                                    .replaceFirst(diacritic, parameter);
+                        index += parameter.length();
+                    } else {
+                        flag = false;
+                    }
+                }
+            }
+        } catch (MissingResourceException e1) {
+            result = StringDatabase.surrondAsUnknown(key);
+        }
+        return result;
+    }
 }

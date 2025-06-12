@@ -10,6 +10,7 @@ module org.openmarkov.core {
 	requires io.github.classgraph;
     requires org.openmarkov.annotation_processing;
     requires org.jdom2;
+    requires org.apache.commons.lang3;
     
     exports org.openmarkov.core.action;
 	exports org.openmarkov.core.dt;
@@ -45,4 +46,5 @@ module org.openmarkov.core {
     exports org.openmarkov.plugin;
 	exports org.openmarkov.core.localize.spi;
 	exports org.openmarkov.core.localize;
+	exports org.openmarkov.core.logging;
 }

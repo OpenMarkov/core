@@ -7,7 +7,7 @@
 
 package org.openmarkov.core.localize;
 
-import java.util.MissingResourceException;
+import java.util.*;
 
 /**
  * This class contains a ResourceBundle object and limits the access to this
@@ -24,7 +24,7 @@ public class StringBundle {
 	/**
 	 * Underlying resource.
 	 */
-	XMLResourceBundle resourceBundle = null;
+	private XMLResourceBundle resourceBundle = null;
 
 	/**
 	 * Default constructor. It saves the reference to a resource bundle.
@@ -32,9 +32,7 @@ public class StringBundle {
 	 * @param newResourceBundle underlying resource bundle.
 	 */
 	public StringBundle(XMLResourceBundle newResourceBundle) {
-
 		resourceBundle = newResourceBundle;
-
 	}
 
 	/**
@@ -47,7 +45,6 @@ public class StringBundle {
 	 * exist, then a special string is returned.
 	 */
 	public String getString(String key) {
-
 		String aString = null;
 		try {
 			aString = resourceBundle.getString(key);
@@ -55,7 +52,10 @@ public class StringBundle {
 			// ignore
 		}
 		return aString;
-
+	}
+	
+	public Set<String> getKeys(){
+		return this.resourceBundle.getStringKeys();
 	}
 
 	/**

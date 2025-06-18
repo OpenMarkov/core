@@ -11,6 +11,7 @@ module org.openmarkov.core {
     requires org.openmarkov.annotation_processing;
     requires org.jdom2;
     requires org.apache.commons.lang3;
+    requires org.apache.commons.collections4;
     
     exports org.openmarkov.core.action;
 	exports org.openmarkov.core.dt;

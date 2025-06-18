@@ -71,7 +71,7 @@ public class StringDatabase {
         setLocale(new Locale(language));
         /* Set format locale to english (to format decimal point)*/
         Locale.setDefault(Locale.Category.FORMAT, Locale.ENGLISH);
-        bundles = getAllBundles();
+        bundles = calculateAllBundles();
         listenerList = new EventListenerList();
         if (bundles.isEmpty()) {
             setLanguage("en");
@@ -271,7 +271,7 @@ public class StringDatabase {
 	}
 	*/
     
-    public Map<String, StringBundle> getAllBundles() {
+    private Map<String, StringBundle> calculateAllBundles() {
         //Iterable<LocalizeResourcesProvider> providers = ServiceLoader.load(LocalizeResourcesProvider.class);
         Iterable<LocalizeResourcesProvider> providers = new PluginLoader()
                 .loadAllPlugins(Filter.filter().toImplement(LocalizeResourcesProvider.class))
@@ -291,6 +291,10 @@ public class StringDatabase {
             bundlesMap.putAll(provider.getBundlesMap(this.locale));
         }
         return bundlesMap;
+    }
+    
+    public Map<String, StringBundle> getAllBundles(){
+        return this.bundles;
     }
     
     /**
@@ -382,7 +386,7 @@ public class StringDatabase {
      */
     private void resetBundles() {
         bundles.clear();
-        bundles = getAllBundles();
+        bundles = calculateAllBundles();
     }
     
     public String getString(String key) {

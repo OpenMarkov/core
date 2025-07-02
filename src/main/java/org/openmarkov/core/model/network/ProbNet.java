@@ -11,6 +11,7 @@ import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
+import org.openmarkov.core.localize.AutoLocalizable;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Criterion.CECriterion;
@@ -38,7 +39,50 @@ import java.util.*;
  * @see org.openmarkov.core.model.network.Node
  * @since OpenMarkov 1.0
  */
-public class ProbNet extends Graph<Node> implements Cloneable {
+public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
+    
+    
+    public String toString() {
+        StringBuilder out = new StringBuilder();
+        out.append("Type: ").append(networkType.toString()).append("\n");
+        List<Node> nodes = getNodes();
+        int numPotentials = getNumPotentials();
+        int numNodes = nodes.size();
+        if (numNodes == 0) {
+            out.append("No nodes.\n");
+        } else {
+            out.append("Nodes (").append(numNodes).append("): ");
+            for (Node node : nodes) {
+                out.append("\n  ").append(node.toString());
+            }
+            out.append("\n");
+        }
+        if (numPotentials == 0) {
+            out.append("No potentials.\n");
+        } else {
+            out.append("Number of potentials: ").append(numPotentials).append("\n");
+        }
+        if (constraints.size() == 0) {
+            out.append("No constraints\n");
+        } else {
+            out.append("Constraints: ");
+            for (int i = 0; i < constraints.size(); i++) {
+                String strConstraint = constraints.get(i).toString();
+                strConstraint = strConstraint.substring(strConstraint.lastIndexOf('.') + 1, strConstraint.length());
+                out.append(strConstraint);
+                if (i < constraints.size() - 1) {
+                    out.append(", ");
+                }
+            }
+            out.append("\n");
+        }
+        if (agents != null) {
+            out.append("\n");
+            out.append("Agents:\n").append(agents.toString());
+        }
+        return out.toString();
+    }
+    
     /**
      * This object contains all the information that the parser reads from disk
      * that does not have a direct connection with the attributes stored in the
@@ -265,21 +309,17 @@ public class ProbNet extends Graph<Node> implements Cloneable {
      * @throws ConstraintViolationException ConstraintViolationException
      */
     public void setNetworkType(NetworkType newNetworkType) throws InvalidNetworkTypeException {
-        NetworkType oldNetworkType = this.networkType;
-        this.networkType = newNetworkType;
+        // Build and check the new constraints
         List<PNConstraint> newConstraints = ConstraintManager.getUniqueInstance().buildConstraintList(newNetworkType);
-        // Add new constraints implied by the network type
-        newConstraints.removeIf(newConstraint -> this.constraints.contains(newConstraint));
         for (PNConstraint newConstraint : newConstraints) {
             if (!newConstraint.checkProbNet(this)) {
-                this.networkType = oldNetworkType;
-                throw new InvalidNetworkTypeException(this, oldNetworkType, newNetworkType, newConstraint);
+                throw new InvalidNetworkTypeException(this, newNetworkType, newConstraint);
             }
         }
-        for (PNConstraint newConstraint : newConstraints) {
-            addConstraint(newConstraint);
-        }
-        this.constraints.removeIf(constraint -> !newNetworkType.isApplicableConstraint(constraint));
+        
+        this.networkType = newNetworkType;
+        this.constraints.clear();
+        this.constraints.addAll(newConstraints);
     }
     
     /**
@@ -1213,50 +1253,6 @@ public class ProbNet extends Graph<Node> implements Cloneable {
     
     public PNESupport getPNESupport() {
         return pNESupport;
-    }
-    
-    /**
-     * @return String
-     */
-    public String toString() {
-        StringBuilder out = new StringBuilder();
-        out.append("Type: ").append(networkType.toString()).append("\n");
-        List<Node> nodes = getNodes();
-        int numPotentials = getNumPotentials();
-        int numNodes = nodes.size();
-        if (numNodes == 0) {
-            out.append("No nodes.\n");
-        } else {
-            out.append("Nodes (").append(numNodes).append("): ");
-            for (Node node : nodes) {
-                out.append("\n  ").append(node.toString());
-            }
-            out.append("\n");
-        }
-        if (numPotentials == 0) {
-            out.append("No potentials.\n");
-        } else {
-            out.append("Number of potentials: ").append(numPotentials).append("\n");
-        }
-        if (constraints.size() == 0) {
-            out.append("No constraints\n");
-        } else {
-            out.append("Constraints: ");
-            for (int i = 0; i < constraints.size(); i++) {
-                String strConstraint = constraints.get(i).toString();
-                strConstraint = strConstraint.substring(strConstraint.lastIndexOf('.') + 1, strConstraint.length());
-                out.append(strConstraint);
-                if (i < constraints.size() - 1) {
-                    out.append(", ");
-                }
-            }
-            out.append("\n");
-        }
-        if (agents != null) {
-            out.append("\n");
-            out.append("Agents:\n").append(agents.toString());
-        }
-        return out.toString();
     }
     
     /**

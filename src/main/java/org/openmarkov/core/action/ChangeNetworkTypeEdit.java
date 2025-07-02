@@ -9,6 +9,7 @@ package org.openmarkov.core.action;
 
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.InvalidNetworkTypeException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.type.NetworkType;
@@ -50,7 +51,12 @@ import java.util.ArrayList;
     
     // Methods
     @Override public void doEdit() throws DoEditException {
-        probNet.setNetworkType(newNetworkType);
+        try {
+            //TODO: DoEditException is hiding InvalidNetworkTypeException
+            probNet.setNetworkType(newNetworkType);
+        } catch (InvalidNetworkTypeException e) {
+            throw new DoEditException(e);
+        }
         if (probNet.isMultiagent()) {
             ArrayList<StringWithProperties> agents = new ArrayList<>();
             agents.add(new StringWithProperties(" Agent 1"));

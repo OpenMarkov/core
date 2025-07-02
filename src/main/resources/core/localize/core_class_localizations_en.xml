@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassLocalizations>
+    <Localization class="org.openmarkov.core.model.network.ProbNet"
+                  value="{networkType} network named {name} with {this.getNumPotentials} potentials, {this.getNodes.size} nodes, {this.constraints.size} constraints"
+                  short="{networkType} network named {name}"
+                  long="{networkType} network named {name} with {this.getNumPotentials} potentials, {this.getNodes.size} nodes, {this.constraints.size} constraints"
+                  verbose="{networkType} network named {name} with {this.getNumPotentials} potentials, nodes {this.getNodes}, constraints {this.constraints}, and agents {this.agents}"/>
+    <Localization class="org.openmarkov.core.model.network.type.BayesianNetworkType" value="Bayesian"/>
+    <Localization class="org.openmarkov.core.model.network.type.DECPOMDPType" value="Dec-POMDP"/>
+    <Localization class="org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType" value="Decision analysis"/>
+    <Localization class="org.openmarkov.core.model.network.type.DynamicBayesianNetwork" value="Dynamic Bayesian"/>
+    <Localization class="org.openmarkov.core.model.network.type.DynamicLimidType" value="Dynamic LIMID"/>
+    <Localization class="org.openmarkov.core.model.network.type.InfluenceDiagramType" value="Influence diagram"/>
+    <Localization class="org.openmarkov.core.model.network.type.LIMIDType" value="LIMID"/>
+    <Localization class="org.openmarkov.core.model.network.type.MDPType" value="MPAD"/>
+    <Localization class="org.openmarkov.core.model.network.type.MIDType" value="MID"/>
+    <Localization class="org.openmarkov.core.model.network.type.MarkovNetworkType" value="Markov"/>
+    <Localization class="org.openmarkov.core.model.network.type.POMDPType" value="POMDP"/>
+    <Localization class="org.openmarkov.core.model.network.type.TuningNetworkType" value="Tuning"/>
+    <Localization class="org.openmarkov.core.oopn.OOPNet" value="{networkType} network named {name} with {this.getNumPotentials} potentials, {this.getNodes.size} nodes, {this.constraints.size} constraints "/>
+</ClassLocalizations>

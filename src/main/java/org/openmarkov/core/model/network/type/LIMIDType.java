@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.type;
 
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.localize.Nls;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 @ProbNetType(name = "LIMID") public class LIMIDType extends NetworkType {
@@ -24,12 +26,5 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 		}
 		return instance;
 	}
-
-	/**
-	 * @return String "LIMID"
-	 */
-	public String toString() {
-		return "LIMID";
-	}
-
+	
 }

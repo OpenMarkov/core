@@ -4,8 +4,15 @@
         <title value="Error" />
         <message value="An unexpected error occurred. Please check the log for more information." />
     </GenericException>
+
     <InvalidNetworkTypeException>
-        <title value="Invalid network type" />
-        <message value="The constraint {newConstraint} is not valid for the network type {newNetworkType}, This happened when converting net {probNet} of type {oldNetworkType} to {newNetworkType}" />
+        <title value="Invalid Network Type"/>
+        <message value="The network {probNet}, which is of type {oldNetworkType}, cannot be converted into
+        {newNetworkType} because it does not accept the constraint {newConstraint}"/>
     </InvalidNetworkTypeException>
+
+    <UnlocalizedJavaException>
+        <title value="Internal error" />
+        <message value="An internal error has happened:" />
+    </UnlocalizedJavaException>
 </properties>

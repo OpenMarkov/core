@@ -7,13 +7,15 @@
 
 package org.openmarkov.core.model.network.type;
 
+import org.openmarkov.core.localize.AutoLocalizable;
+import org.openmarkov.core.localize.Localizable;
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.ConstraintManager;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 
 import java.util.HashMap;
 
-public abstract class NetworkType {
+public abstract class NetworkType implements AutoLocalizable {
 	protected HashMap<Class<? extends PNConstraint>, ConstraintBehavior> constraints;
 
 	public NetworkType() {
@@ -36,11 +38,9 @@ public abstract class NetworkType {
 	public HashMap<Class<? extends PNConstraint>, ConstraintBehavior> getOverwrittenConstraints() {
 		return constraints;
 	}
-
-	/**
-	 * @return An identifier that can be used in exception messages or text
-	 * files. {@code String}
-	 */
-	public abstract String toString();
+	
+	@Override public String toString() {
+		return this.localize();
+	}
 
 }

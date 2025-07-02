@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.type;
 
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.localize.Nls;
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
@@ -29,13 +31,6 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 		}
 		return instance;
 	}
-
-	/**
-	 * @return String "POMDP"
-	 */
-	public String toString() {
-		return "POMDP";
-	}
-
+	
 }
 

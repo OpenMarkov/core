@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.localize;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.localize.spi.LocalizeResourcesProvider;
 import org.openmarkov.plugin.Filter;
@@ -15,6 +16,7 @@ import org.openmarkov.plugin.PluginLoader;
 import javax.swing.event.EventListenerList;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * This class creates new string resources with the recorded language.
@@ -41,11 +43,11 @@ public class StringDatabase {
     /**
      * Unique instance of this class.
      */
-    private static StringDatabase instance = null;
+    private static StringDatabase USER_INSTANCE = null;
     /**
      * English instance of this class.
      */
-    private static StringDatabase developerInstance = null;
+    private static StringDatabase DEVELOPER_INSTANCE = null;
     /**
      * Language to use.
      */
@@ -85,22 +87,10 @@ public class StringDatabase {
      * @return the unique instance.
      */
     public static StringDatabase getUniqueInstance() {
-        if (instance == null) {
-            instance = new StringDatabase();
+        if (USER_INSTANCE == null) {
+            USER_INSTANCE = new StringDatabase();
         }
-        return instance;
-    }
-    
-    /**
-     * Returns the developer instance of this class, which should be english.
-     *
-     * @return the unique instance.
-     */
-    public static StringDatabase getDeveloperInstance() {
-        if (developerInstance == null) {
-            developerInstance = new StringDatabase();
-        }
-        return developerInstance;
+        return USER_INSTANCE;
     }
     
     public static String surrondAsUnknown(String string) {
@@ -132,6 +122,7 @@ public class StringDatabase {
     public void setLanguage(String newLanguage) {
         if (!newLanguage.equals(language)) {
             language = (newLanguage.equals("es")) ? "es" : "en";
+            language="en";
             setLocale(getLocaleByLanguage(language));
             /* Set format locale to english (to format decimal point)*/
             Locale.setDefault(Locale.Category.FORMAT, Locale.ENGLISH);
@@ -273,7 +264,17 @@ public class StringDatabase {
     
     private Map<String, StringBundle> calculateAllBundles() {
         //Iterable<LocalizeResourcesProvider> providers = ServiceLoader.load(LocalizeResourcesProvider.class);
-        Iterable<LocalizeResourcesProvider> providers = new PluginLoader()
+        Iterable<LocalizeResourcesProvider> providers = getBundleProviders()
+                .toList();
+        Map<String, StringBundle> bundlesMap = new LinkedHashMap<>();
+        for (LocalizeResourcesProvider provider : providers) {
+            bundlesMap.putAll(provider.getBundlesMap(this.locale));
+        }
+        return bundlesMap;
+    }
+    
+    public static @NotNull Stream<LocalizeResourcesProvider> getBundleProviders() {
+        return new PluginLoader()
                 .loadAllPlugins(Filter.filter().toImplement(LocalizeResourcesProvider.class))
                 .stream()
                 .map(c -> {
@@ -284,13 +285,7 @@ public class StringDatabase {
                         return null;
                     }
                 })
-                .filter(Objects::nonNull)
-                .toList();
-        Map<String, StringBundle> bundlesMap = new LinkedHashMap<>();
-        for (LocalizeResourcesProvider provider : providers) {
-            bundlesMap.putAll(provider.getBundlesMap(this.locale));
-        }
-        return bundlesMap;
+                .filter(Objects::nonNull);
     }
     
     public Map<String, StringBundle> getAllBundles(){
@@ -409,7 +404,7 @@ public class StringDatabase {
         return value != null ? value : StringDatabase.surrondAsUnknown(key);
     }
     
-    public @Nullable String getNullableString(String bundle, String key) {
+    public @Nullable String getNullableString(@Nullable String bundle, String key) {
         StringBundle stringBundle = this.bundles.get(bundle);
         if (stringBundle == null) {
             return null;

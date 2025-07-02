@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.type;
 
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.localize.Nls;
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
@@ -31,13 +33,6 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 		}
 		return instance;
 	}
-
-	/**
-	 * @return String "MarkovNetwork"
-	 */
-	public String toString() {
-		return "MARKOV_NET";
-	}
-
+	
 }
 

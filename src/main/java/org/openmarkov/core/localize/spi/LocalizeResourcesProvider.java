@@ -1,11 +1,17 @@
 package org.openmarkov.core.localize.spi;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.localize.StringBundle;
-import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.core.localize.XMLResourceBundle;
+import org.openmarkov.core.localize.*;
+import org.openmarkov.core.stringformat.LocalizationFormatter;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -53,7 +59,7 @@ import java.util.spi.ResourceBundleProvider;
  * }
  * }
  * </pre></blockquote><br>
- *
+ * <p>
  * And the {@code module-info.java} looks like this:
  *
  * <blockquote><pre>
@@ -75,13 +81,212 @@ public interface LocalizeResourcesProvider extends ResourceBundleProvider {
     String URL_PROTOCOL_FILE = "file:/";
     
     /**
+     * Executes {@code addBundleSource} over every file of {@code bundleFile} if it is a directory, or over it if it is
+     * a file.
+     * <p>
+     * Since {@code addBundleSource} is a function that processes how a Bundle is added, this means it adds every bundle
+     * source.
+     */
+    private static void addBundlesOfFile(@NotNull URL bundleFile, @NotNull Consumer<? super BundleSource> addBundleSource) {
+        File localizationFile;
+        try {
+            localizationFile = new File(bundleFile.toURI());
+        } catch (URISyntaxException ioException) {
+            throw new IllegalStateException("Sorcery happened, localization file " + bundleFile + " could not be located due to:" + System.lineSeparator() + ioException);
+        }
+        if (localizationFile.isFile()) {
+            addBundleSource.accept(new BundleSource.FileSource(localizationFile));
+        } else {
+            try (var files = Files.walk(localizationFile.toPath())) {
+                files.filter(file -> file.toFile().isFile())
+                     .map(file -> (BundleSource) new BundleSource.FileSource(file.toFile()))
+                     .forEach(addBundleSource);
+            } catch (IOException ioException) {
+                throw new IllegalStateException("Sorcery happened, localization file " + bundleFile
+                                                        + " could not be accesed, while it was previously used, this is due to:" + System.lineSeparator() + ioException);
+            }
+        }
+    }
+    
+    /**
+     * Executes {@code addBundleSource} over every file starting with the same name as the entry of {@code bundleFile}.
+     * <p>
+     * Since {@code addBundleSource} is a function that processes how a Bundle is added, this means it adds every bundle
+     * source.
+     */
+    private static void addBundlesOfJar(@NotNull URL bundleFile, @NotNull Consumer<? super BundleSource> addBundleSource) {
+        String fileName = bundleFile.toString().substring("jar:file:".length());
+        int entrySeparatorIndex = fileName.indexOf('!');
+        try (JarFile jarFile = new JarFile(fileName.substring(0, entrySeparatorIndex))) {
+            String askedEntries = fileName.substring(entrySeparatorIndex + 2);
+            Collections.list(jarFile.entries()).stream()
+                       .filter(entry -> !entry.isDirectory())
+                       .filter(entry -> entry.getName().startsWith(askedEntries))
+                       .map(entry -> new BundleSource.JarSource(jarFile, entry))
+                       .forEach(addBundleSource);
+        } catch (IOException ioException) {
+            throw new IllegalStateException("Sorcery happened, localization file in jar " + bundleFile
+                                                    + " could not be located due to:" + System.lineSeparator() + ioException);
+        }
+    }
+    
+    /**
+     * Processes a class localization file into a {@link StringBundle}.
+     *
+     * @param inputStream the input stream containing the XML fill.
+     * @return a {@link StringBundle} containing the extracted localizations.
+     */
+    private static @Nullable RawStringBundle classLocalizationsFileToBundle(@NotNull InputStream inputStream) {
+        try {
+            SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+            var keysAndLocalizations = new HashMap<String, String>();
+            parser.parse(inputStream, new DefaultHandler() {
+                @Override
+                public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                    if ("ClassLocalization".equalsIgnoreCase(qName) || "Localization".equalsIgnoreCase(qName)) {
+                        super.startElement(uri, localName, qName, attributes);
+                        String className = attributes.getValue("class");
+                        String defaultTranslation = attributes.getValue("value");
+                        var lengthsAndTranslations = Arrays.stream(LocalizationFormatter.LocalizationFormatterLength.values())
+                                                           .filter(length -> length != LocalizationFormatter.LocalizationFormatterLength.UNSPECIFIED)
+                                                           .map(length -> Pair.of(length, attributes.getValue(length.toString()
+                                                                                                                    .toLowerCase())))
+                                                           .filter(pair -> pair.getRight() != null)
+                                                           .toList();
+                        if (defaultTranslation == null) {
+                            var shortestLength = lengthsAndTranslations.stream().findFirst();
+                            if (shortestLength.isPresent()) {
+                                defaultTranslation = shortestLength.get().getRight();
+                            }
+                        }
+                        keysAndLocalizations.put(className, defaultTranslation);
+                        lengthsAndTranslations.forEach(
+                                pair -> keysAndLocalizations.put(className + "." + pair.getLeft()
+                                                                                       .toString()
+                                                                                       .toLowerCase(), pair.getRight()));
+                    }
+                }
+            });
+            return new RawStringBundle(keysAndLocalizations);
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            return null;
+        }
+        
+    }
+    
+    /**
+     * Retrieves the tag name of the first XML element found in the provided file's {@link InputStream}.
+     * <p>
+     * It returns null if the XML file isn't valid, or if the file isn't a XML.
+     *
+     * @param inputStream the input stream containing the XML data
+     * @return the tag name of the first XML element.
+     * @throws IOException if an I/O error occurs while processing the input stream.
+     */
+    static @Nullable String getFirstElementTagName(@NotNull InputStream inputStream) throws IOException {
+        try {
+            final String[] firstElement = new String[1];
+            SAXParserFactory.newInstance().newSAXParser().parse(inputStream, new DefaultHandler() {
+                private boolean firstElementFound = false;
+                
+                @Override
+                public void startElement(String uri, String localName, String qName, Attributes attributes) {
+                    if (!this.firstElementFound) {
+                        firstElement[0] = qName;
+                        this.firstElementFound = true;
+                    }
+                }
+            });
+            return firstElement[0];
+        } catch (SAXException | ParserConfigurationException e) {
+            return null;
+        }
+    }
+    
+    /**
+     * Gets the root of the individual resources' directory.
+     * <p>
+     * This is different from the root of {@code resources}, but rather a unique directory inside {@code resources},
+     * for example, inside {@code gui}, the unique resource directory is located at {@code src/main/resources/gui}, so
+     * its unique root is {@code /gui}.
+     * <p>
+     * The root should be indicated with {@code /} at its beginning to indicate the absolute path from the
+     * {@code src/main/resources} directory, this means returning {@code /gui} was valid, but returning {@code gui}
+     * shouldn't, as then the path will be relative from the class that implements this interface.
+     *
+     * @return root of the individual resources' directory.
+     */
+    @NotNull String getRootOfResources();
+    
+    // Override to avoid other implementors to just implementing returning null, as this method is never used nor was
+    // ever implemented.
+    @Override
+    default @Nullable ResourceBundle getBundle(String baseName, Locale locale) {
+        return null;
+    }
+    
+    /**
+     * Gets the localization bundles matching a certain locale.
+     * <p>
+     * This is done by reading the contents of {@code getRootOfResources()} + {@code /localize}, so in
+     * {@code org.openmarkov.gui}, whose {@code getRootOfResources()} is {@code /gui}, it searches for localization
+     * files in {@code src/main/resources/gui/localize}, meaning said directory should have XML files with localization
+     * contents.
+     * <p>
+     * The localization files are checked against the locale's code, so for example, if you use the
+     * {@link Locale#ENGLISH}, then this bundle will be filled just with those XML localization files that end with
+     * {@code _en.xml}, like {@code Dialogs_en.xml} or {@code Buttons_en.xml}, but not {@code Dialogs_es.xml}.
+     *
+     * @return localization bundles matching a certain locale.
+     */
+    default Map<String, StringBundle> getBundlesMap(Locale locale) {
+        Map<String, StringBundle> bundles = new LinkedHashMap<>();
+        URL localizationResourcesURL = this.getClass().getResource(this.getRootOfResources() + "/localize");
+        String localizationSuffix = "_" + locale.getLanguage() + ".xml";
+        if (localizationResourcesURL == null) {
+            System.err.println("There is no localize folder in the directory " + this.getRootOfResources() +
+                                       " of module " + this.getClass().getModule().getName());
+            return Map.of();
+        }
+        boolean isJarFile = localizationResourcesURL.toString()
+                                                    .startsWith(LocalizeResourcesProvider.URL_PROTOCOL_JAR_FILE);
+        boolean isFile = localizationResourcesURL.toString()
+                                                 .startsWith(LocalizeResourcesProvider.URL_PROTOCOL_FILE);
+        Consumer<BundleSource> addBundleSource = source -> {
+            if (!source.fileName().endsWith(localizationSuffix))
+                return;
+            try {
+                String firstElementTagName = LocalizeResourcesProvider.getFirstElementTagName(source.inputStream());
+                String baseName = source.fileName()
+                                        .substring(0, source.fileName().length() - localizationSuffix.length());
+                StringBundle stringBundle;
+                if ("ClassLocalizations".equalsIgnoreCase(firstElementTagName)) {
+                    stringBundle = LocalizeResourcesProvider.classLocalizationsFileToBundle(source.inputStream());
+                } else {
+                    stringBundle = new XMLStringBundle(new XMLResourceBundle(source.inputStream()));
+                }
+                if (stringBundle != null) {
+                    bundles.put(baseName, stringBundle);
+                }
+            } catch (IOException ignored) {
+            }
+        };
+        if (isJarFile) {
+            LocalizeResourcesProvider.addBundlesOfJar(localizationResourcesURL, addBundleSource);
+        } else if (isFile) {
+            LocalizeResourcesProvider.addBundlesOfFile(localizationResourcesURL, addBundleSource);
+        }
+        return bundles;
+    }
+    
+    /**
      * Represents different sources where a Bundle can come from, currently there are sources for:
      * <p>
      * - Raw files, represented by {@link FileSource}, these are mostly used when developing, as classes and resource
-     *       files are taken from the {@code target} directory.
+     * files are taken from the {@code target} directory.
      * - Jar files, represented by {@link JarSource}, only one of this is taken and only when generating the final .jar
-     *       that is created for production use; This .jar contains everything in the project, and this includes the XML
-     *       localization files we read here.
+     * that is created for production use; This .jar contains everything in the project, and this includes the XML
+     * localization files we read here.
      */
     sealed abstract class BundleSource permits BundleSource.FileSource, BundleSource.JarSource {
         
@@ -145,124 +350,6 @@ public interface LocalizeResourcesProvider extends ResourceBundleProvider {
                 var lastSeparatorIndex = this.jarEntry.getName().lastIndexOf('/');
                 return this.jarEntry.getName().substring(lastSeparatorIndex + 1);
             }
-        }
-    }
-    
-    /**
-     * Gets the root of the individual resources' directory.
-     * <p>
-     * This is different from the root of {@code resources}, but rather a unique directory inside {@code resources},
-     * for example, inside {@code gui}, the unique resource directory is located at {@code src/main/resources/gui}, so
-     * its unique root is {@code /gui}.
-     * <p>
-     * The root should be indicated with {@code /} at its beginning to indicate the absolute path from the
-     * {@code src/main/resources} directory, this means returning {@code /gui} was valid, but returning {@code gui}
-     * shouldn't, as then the path will be relative from the class that implements this interface.
-     *
-     * @return root of the individual resources' directory.
-     */
-    @NotNull String getRootOfResources();
-    
-    // Override to avoid other implementors to just implementing returning null, as this method is never used nor was
-    // ever implemented.
-    @Override
-    default @Nullable ResourceBundle getBundle(String baseName, Locale locale) {
-        return null;
-    }
-    
-    /**
-     * Gets the localization bundles matching a certain locale.
-     * <p>
-     * This is done by reading the contents of {@code getRootOfResources()} + {@code /localize}, so in
-     * {@code org.openmarkov.gui}, whose {@code getRootOfResources()} is {@code /gui}, it searches for localization
-     * files in {@code src/main/resources/gui/localize}, meaning said directory should have XML files with localization
-     * contents.
-     * <p>
-     * The localization files are checked against the locale's code, so for example, if you use the
-     * {@link Locale#ENGLISH}, then this bundle will be filled just with those XML localization files that end with
-     * {@code _en.xml}, like {@code Dialogs_en.xml} or {@code Buttons_en.xml}, but not {@code Dialogs_es.xml}.
-     *
-     * @return localization bundles matching a certain locale.
-     */
-    default Map<String, StringBundle> getBundlesMap(Locale locale) {
-        Map<String, StringBundle> bundles = new LinkedHashMap<>();
-        URL localizationResourcesURL = this.getClass().getResource(this.getRootOfResources() + "/localize");
-        String localizationSuffix = "_" + locale.getLanguage() + ".xml";
-        if (localizationResourcesURL == null) {
-            System.err.println("There is no localize folder in the directory " + this.getRootOfResources() +
-                                       " of module " + this.getClass().getModule().getName());
-            return Map.of();
-        }
-        boolean isJarFile = localizationResourcesURL.toString()
-                                                    .startsWith(LocalizeResourcesProvider.URL_PROTOCOL_JAR_FILE);
-        boolean isFile = localizationResourcesURL.toString()
-                                                 .startsWith(LocalizeResourcesProvider.URL_PROTOCOL_FILE);
-        Consumer<BundleSource> addBundleSource = source -> {
-            if (!source.fileName().endsWith(localizationSuffix))
-                return;
-            try {
-                StringBundle stringBundle = new StringBundle(new XMLResourceBundle(source.inputStream()));
-                String baseName = source.fileName()
-                                        .substring(0, source.fileName().length() - localizationSuffix.length());
-                bundles.put(baseName, stringBundle);
-            } catch (IOException ignored) {
-            }
-        };
-        if (isJarFile) {
-            LocalizeResourcesProvider.addBundlesOfJar(localizationResourcesURL, addBundleSource);
-        } else if (isFile) {
-            LocalizeResourcesProvider.addBundlesOfFile(localizationResourcesURL, addBundleSource);
-        }
-        return bundles;
-    }
-    
-    /**
-     * Executes {@code addBundleSource} over every file of {@code bundleFile} if it is a directory, or over it if it is
-     * a file.
-     * <p>
-     * Since {@code addBundleSource} is a function that processes how a Bundle is added, this means it adds every bundle
-     * source.
-     */
-    private static void addBundlesOfFile(@NotNull URL bundleFile, @NotNull Consumer<? super BundleSource> addBundleSource) {
-        File localizationFile;
-        try {
-            localizationFile = new File(bundleFile.toURI());
-        } catch (URISyntaxException ioException) {
-            throw new IllegalStateException("Sorcery happened, localization file " + bundleFile + " could not be located due to:"+System.lineSeparator()+ioException);
-        }
-        if (localizationFile.isFile()) {
-            addBundleSource.accept(new BundleSource.FileSource(localizationFile));
-        } else {
-            try (var files = Files.walk(localizationFile.toPath())) {
-                files.filter(file -> file.toFile().isFile())
-                     .map(file -> (BundleSource) new BundleSource.FileSource(file.toFile()))
-                     .forEach(addBundleSource);
-            } catch (IOException ioException) {
-                throw new IllegalStateException("Sorcery happened, localization file " + bundleFile
-                                                        + " could not be accesed, while it was previously used, this is due to:"+System.lineSeparator()+ioException);
-            }
-        }
-    }
-    
-    /**
-     * Executes {@code addBundleSource} over every file starting with the same name as the entry of {@code bundleFile}.
-     * <p>
-     * Since {@code addBundleSource} is a function that processes how a Bundle is added, this means it adds every bundle
-     * source.
-     */
-    private static void addBundlesOfJar(@NotNull URL bundleFile, @NotNull Consumer<? super BundleSource> addBundleSource) {
-        String fileName = bundleFile.toString().substring("jar:file:".length());
-        int entrySeparatorIndex = fileName.indexOf('!');
-        try (JarFile jarFile = new JarFile(fileName.substring(0, entrySeparatorIndex))) {
-            String askedEntries = fileName.substring(entrySeparatorIndex + 2);
-            Collections.list(jarFile.entries()).stream()
-                       .filter(entry -> !entry.isDirectory())
-                       .filter(entry -> entry.getName().startsWith(askedEntries))
-                       .map(entry -> new BundleSource.JarSource(jarFile, entry))
-                       .forEach(addBundleSource);
-        } catch (IOException ioException) {
-            throw new IllegalStateException("Sorcery happened, localization file in jar " + bundleFile
-                                                    + " could not be located due to:"+System.lineSeparator()+ioException);
         }
     }
     

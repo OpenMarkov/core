@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.type;
 
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.localize.Nls;
 import org.openmarkov.core.model.network.constraint.AllChanceVariablesHaveChancePotentials;
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.NoCycle;
@@ -35,13 +37,6 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 		}
 		return instance;
 	}
-
-	/**
-	 * @return String "MDP"
-	 */
-	public String toString() {
-		return "MARKOV_DECISION_PROCESS";
-	}
-
+	
 }
 

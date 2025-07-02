@@ -8,4 +8,9 @@
         <title value="Tipo de red inválida" />
         <message value="La constraint {newConstraint} no es válida para el tipo de red {newNetworkType}, Esto ha sucedido convirtiendo la red {probNet} de tipo {oldNetworkType} a {newNetworkType}" />
     </InvalidNetworkTypeException>
+
+    <UnlocalizedJavaException>
+        <title value="Error interno" />
+        <message value="Un error interno ha sucedido:" />
+    </UnlocalizedJavaException>
 </properties>

@@ -77,6 +77,11 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
 	public abstract boolean checkEdit(ProbNet probNet, PNEdit edit)
 			throws NonProjectablePotentialException, WrongCriterionException;
 
+	/*
+	//TODO: Extract and implement
+	public abstract String getName();
+	*/
+	
 	@Override public String toString() {
 		return this.getClass().getName();
 	}

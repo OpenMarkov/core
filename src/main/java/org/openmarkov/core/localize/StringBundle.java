@@ -7,34 +7,20 @@
 
 package org.openmarkov.core.localize;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 
 /**
- * This class contains a ResourceBundle object and limits the access to this
- * object.
+ * This interface represents an abstraction of {@link ResourceBundle} limiting it to two functions, one for getting
+ * all the possible keys in the bundle ({@link StringBundle#getKeys()}) and another to return the value of a key
+ * ({@link StringBundle#getString(String)}).
  *
- * @author jmendoza 1.0
- * @author jlgozalo 1.1
- * @author jlgozalo 1.2
- * @version 1.2 always return a String. If the key is not found, return a blank
- * string to avoid stopping OPENMARKOV
+ * @author jrico
  */
-public class StringBundle {
-
-	/**
-	 * Underlying resource.
-	 */
-	private XMLResourceBundle resourceBundle = null;
-
-	/**
-	 * Default constructor. It saves the reference to a resource bundle.
-	 *
-	 * @param newResourceBundle underlying resource bundle.
-	 */
-	public StringBundle(XMLResourceBundle newResourceBundle) {
-		resourceBundle = newResourceBundle;
-	}
-
+public interface StringBundle {
+	
 	/**
 	 * This method returns the requested string resource. If the key does not
 	 * exist then a "virtual" string resource is returned to avoid the program
@@ -44,32 +30,12 @@ public class StringBundle {
 	 * @return the string associated with the key. if the resource doesn't
 	 * exist, then a special string is returned.
 	 */
-	public String getString(String key) {
-		String aString = null;
-		try {
-			aString = resourceBundle.getString(key);
-		} catch (MissingResourceException | NullPointerException e1) {
-			// ignore
-		}
-		return aString;
-	}
+	@Nullable String getString(String key);
 	
-	public Set<String> getKeys(){
-		return this.resourceBundle.getStringKeys();
-	}
-
 	/**
-	 * Print the information of this object
-	 *
-	 * @return the information of the object
+	 * Returns all the keys of the bundle.
+	 * @return all the keys of the bundle.
 	 */
-	@Override public String toString() {
-
-		StringBuilder buf = new StringBuilder();
-		buf.append("[" + this.getClass().getName() + ":" + "\n");
-		buf.append("Resourcebundle =" + resourceBundle.toString());
-		buf.append("]");
-		return buf.toString();
-	}
-
+	@NotNull Set<String> getKeys();
+	
 }

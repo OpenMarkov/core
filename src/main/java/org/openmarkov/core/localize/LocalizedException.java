@@ -39,10 +39,8 @@ public class LocalizedException {
 			} catch (MissingFormatArgumentException exception) {
 				LogManager.getLogger(getClass()).warn("Invalid number of arguments in the formatter");
 			}
-			if (newTitle != null) {
-				this.localizedTitle = newTitle;
-			}
-			if (newMessage != null) {
+            this.localizedTitle = newTitle;
+            if (newMessage != null) {
 				this.localizedMessage = newMessage;
 			}
 		} else {

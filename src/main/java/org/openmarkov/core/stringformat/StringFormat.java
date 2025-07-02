@@ -1,10 +1,22 @@
 package org.openmarkov.core.stringformat;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.localize.Localizable;
+import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.core.logging.OpenMarkovLogger;
+
+import java.lang.reflect.InaccessibleObjectException;
+import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Allows creating messages using messages defined in a natural language way, being based on
@@ -34,14 +46,30 @@ import java.util.regex.Pattern;
  */
 @SuppressWarnings("UnnecessaryJavaDocLink")
 public class StringFormat {
+    /*
+        Pattern is:
+        (?x)
+            \s*
+            (?<functionOrAttributeMark>\.|\#)
+            \s*
+            (?<functionOrAttribute>\w+?)
+            \s*
+     */
+    private static final Pattern FUNCTION_AND_ATTRIBUTES_REGEX = Pattern.compile("(?x)\\s*(?<functionOrAttributeMark>\\.|\\#)\\s*(?<functionOrAttribute>\\w+)\\s*");
     
-    private static final Pattern NAMED_PARAMETER_REGEX = Pattern.compile("(?x)" +
-                                                                                 "\\{" +
-                                                                                 "\\s*(?<name>\\w+?)\\s*" +
-                                                                                 "(,\\s*(?<format>\\w+?)\\s*)?" +
-                                                                                 "(,\\s*(?<style>\\w+?)\\s*)?" +
-                                                                                 "(?<unused>,\\w*?)?" +
-                                                                                 "}");
+    /*
+        Pattern is:
+        (?x)
+        \{
+            (\s*(?<name>\w+?)\s*)
+            (?<functionAndAttributes>(?x)FUNCTION_AND_ATTRIBUTES_REGEX)*
+            (,\s*(?<format>\w+?)\s*)?
+            (,\s*(?<style>\w+?)\s*)?
+            (?<unused>,\w*?)?
+        }
+     */
+    private static final Pattern NAMED_PARAMETER_REGEX = Pattern.compile("(?x)\\{(\\s*(?<name>\\w+?)\\s*)(?x)(?<functionAndAttributes>(" + StringFormat.FUNCTION_AND_ATTRIBUTES_REGEX.pattern() + ")*)?(,\\s*(?<format>\\w+?)\\s*)?(,\\s*(?<style>\\w+?)\\s*)?(?<unused>,\\w*?)?}");
+    
     
     /**
      * Gets the {@code arguments} names of a {@code pattern} following the format of {@link StringFormat}.
@@ -59,6 +87,53 @@ public class StringFormat {
     }
     
     /**
+     * Checks whether the provided pattern uses the syntax defined in StringFormat.
+     *
+     * @param pattern Pattern to be checked for StringFormat syntax.
+     * @return whether the provided pattern uses the syntax defined in StringFormat.
+     */
+    public static boolean isStringFormatUsed(@NotNull CharSequence pattern) {
+        return StringFormat.NAMED_PARAMETER_REGEX.matcher(pattern).find();
+    }
+    
+    /**
+     * Gets all the formatting found in the pattern.
+     *
+     * @param pattern Pattern to be checked for StringFormat syntax.
+     * @return all the formatting found in the pattern.
+     */
+    public static Stream<Formatting> getAllFormattings(CharSequence pattern) {
+        return StringFormat.NAMED_PARAMETER_REGEX
+                .matcher(pattern)
+                .results()
+                .map(StringFormat::extractFormatting);
+    }
+    
+    /**
+     * Extracts a formatting from a {@link MatchResult} taken from {@link StringFormat#NAMED_PARAMETER_REGEX}.
+     *
+     * @param matchResult the match result containing the captured groups from the pattern.
+     * @return a formatting from a {@link MatchResult} taken from {@link StringFormat#NAMED_PARAMETER_REGEX}.
+     */
+    private static Formatting extractFormatting(MatchResult matchResult) {
+        var argName = matchResult.group(1);
+        var functionAndAttributesAsked = matchResult.group(3);
+        var format = matchResult.group(8);
+        var style = matchResult.group(10);
+        var pseudocode = StringFormat.FUNCTION_AND_ATTRIBUTES_REGEX
+                .matcher(functionAndAttributesAsked)
+                .results()
+                .map(functionAndAttributesMatchResult -> {
+                    var functionOrAttributeMark = functionAndAttributesMatchResult.group(1);
+                    var methodOrAttributeName = functionAndAttributesMatchResult.group(2);
+                    var marker = "#".equals(functionOrAttributeMark) ? PseudoCode.Marker.FIELD : PseudoCode.Marker.METHOD;
+                    return new PseudoCode(marker, methodOrAttributeName);
+                })
+                .toList();
+        return new Formatting(argName, format, style, pseudocode);
+    }
+    
+    /**
      * Applies the {@code arguments} to a {@code pattern} following the rules indicated at {@link StringFormat}
      *
      * @return Result of applying {@code arguments} to a {@code pattern}.
@@ -68,38 +143,262 @@ public class StringFormat {
         return StringFormat.NAMED_PARAMETER_REGEX
                 .matcher(pattern)
                 .replaceAll(matchResult -> {
-                    var argName = matchResult.group(1);
-                    var format = matchResult.group(3);
-                    var style = matchResult.group(5);
-                    if (!arguments.containsKey(argName)) {
-                        return ">>>" + argName + "<<<";
+                    var formatting = StringFormat.extractFormatting(matchResult);
+                    if (!arguments.containsKey(formatting.field)) {
+                        return StringDatabase.surrondAsUnknown(formatting.field);
                     }
-                    var argument = arguments.get(argName);
+                    var argument = arguments.get(formatting.field);
                     if (argument == null) {
-                        return ">>>" + argName + " is null<<<";
+                        return StringDatabase.surrondAsUnknown(formatting.field + " is null");
                     }
-                    if (style != null) {
-                        String formatting = "{0," + format + "," + style + "}";
-                        try {
-                            return MessageFormat.format(formatting, argument);
-                        } catch (IllegalArgumentException | NullPointerException e) {
-                            new Exception("Cannot use formatting and styling options " + formatting + " to format the "
-                                                  + argument.getClass().getName() + " argument " + argument, e)
-                                    .printStackTrace();
+                    
+                    String resolvingStep = formatting.field;
+                    for (var pseudocode : formatting.pseudocode) {
+                        resolvingStep += switch (pseudocode.marker) {
+                            case METHOD -> ".";
+                            case FIELD -> "#";
+                        };
+                        resolvingStep += pseudocode.methodOrAttributeName;
+                        var resolved = pseudocode.resolve(argument);
+                        if (resolved.found()) {
+                            argument = resolved.value();
+                            if (argument == null) {
+                                return StringDatabase.surrondAsUnknown(resolvingStep + " is null");
+                            }
+                        } else {
+                            return StringDatabase.surrondAsUnknown("Cannot resolve " + resolvingStep);
                         }
                     }
-                    if (format != null) {
-                        String formatting = "{0," + format + "}";
+                    
+                    boolean isOpenMarkovFormat = "om".equalsIgnoreCase(formatting.format) || "openmarkov".equalsIgnoreCase(formatting.format);
+                    if (argument instanceof Localizable localizable) {
+                        String localizationFormat = formatting.style == null || !isOpenMarkovFormat ? null : formatting.style;
+                        LocalizationFormatter formatter = LocalizationFormatter.of(localizationFormat);
+                        String localized = localizable.localize(formatter);
+                        return Matcher.quoteReplacement(localized);
+                    }
+                    if (formatting.style != null && !isOpenMarkovFormat) {
+                        String formatter = "{0," + formatting.format + "," + formatting.style + "}";
                         try {
-                            return MessageFormat.format(formatting, argument);
+                            return Matcher.quoteReplacement(MessageFormat.format(formatter, argument));
                         } catch (IllegalArgumentException | NullPointerException e) {
-                            new Exception("Cannot use formatting options " + formatting + " to format the "
-                                                  + argument.getClass().getName() + " argument " + argument, e)
-                                    .printStackTrace();
+                            OpenMarkovLogger.LOGGER.warn("Cannot use formatting and styling options " + formatter + " to format the "
+                                                                 + argument.getClass()
+                                                                           .getName() + " argument " + argument, e);
                         }
                     }
-                    return argument.toString();
+                    if (formatting.format != null && !isOpenMarkovFormat) {
+                        String formatter = "{0," + formatting.format + "}";
+                        try {
+                            return Matcher.quoteReplacement(MessageFormat.format(formatter, argument));
+                        } catch (IllegalArgumentException | NullPointerException e) {
+                            OpenMarkovLogger.LOGGER.warn("Cannot use formatting options " + formatter + " to format the "
+                                                                 + argument.getClass()
+                                                                           .getName() + " argument " + argument, e);
+                        }
+                    }
+                    return Matcher.quoteReplacement(argument.toString());
                 });
+    }
+    
+    /**
+     * Reflectively gets all the fields of an object over a HashMap.
+     * <p>
+     * In said HashMap the keys are the values that were reflectively discovered, and the value is the value of the field.
+     *
+     * @param object The object to extract its fields from
+     * @return all the fields of an object over a HashMap.
+     */
+    public static @NotNull HashMap<String, Object> extractFieldsToMap(@Nullable Object object) {
+        if (object == null) {
+            return new HashMap<>();
+        }
+        Class<?> sourceClass = object.getClass();
+        HashMap<String, Object> fields = new HashMap<>();
+        while (sourceClass != null) {
+            for (var field : sourceClass.getDeclaredFields()) {
+                if (fields.containsKey(field.getName()))
+                    continue;
+                try {
+                    field.setAccessible(true);
+                } catch (InaccessibleObjectException e) {
+                    OpenMarkovLogger.LOGGER.warn("Inaccessible field: " + field.getName() + " in class: " + sourceClass.getName(), e);
+                }
+                try {
+                    fields.put(field.getName(), field.get(object));
+                } catch (IllegalAccessException ignored) {
+                }
+            }
+            sourceClass = sourceClass.getSuperclass();
+        }
+        return fields;
+    }
+    
+    
+    /**
+     * Represents the outcome of an operation, indicating whether a value was found, or not.
+     *
+     * @param value The value associated with the found item, or {@code null} if no item was found.
+     * @param found A boolean indicating if the item is present or not.
+     * @param <T>   The type of the value.
+     */
+    public record FoundOrNot<T>(@Nullable T value, boolean found) {
+    }
+    
+    /**
+     * Represents a formatting configuration extracted from a string pattern.
+     *
+     * <p>
+     * Take this pattern as an example: {@code {networkHolder.getNetwork#name,om,short}}.
+     *
+     * @param field      The field.
+     *                   <br><br>
+     *                   In the example this is {@code networkHolder}.<br>
+     * @param format     The format that applies to the extracted field.
+     *                   <br><br>
+     *                   In the example this is {@code om}.<br>
+     * @param style      The style defined for the extracted formatting.
+     *                   <br><br>
+     *                   In the example this is {@code short}.<br>
+     * @param pseudocode A list of pseudo-code elements related to the field's formatting operations.
+     *                   <br><br>
+     *                   In the example this is {@code .getNetwork} and {@code #name}.<br>
+     */
+    public record Formatting(String field, String format, String style, List<PseudoCode> pseudocode) {
+    }
+    
+    /**
+     * Represents how to resolve pseudocode on the field side of {@link StringFormat#NAMED_PARAMETER_REGEX}.
+     * <p>
+     * The {@link Marker} tells whether what it is inteded to discover is a field or a method, and
+     * {@link PseudoCode#methodOrAttributeName} is the name of said field or method.
+     *
+     * @param marker                Specifies whether the target is a method or a field.
+     * @param methodOrAttributeName The name of the method or field to be resolved.
+     */
+    public record PseudoCode(Marker marker, String methodOrAttributeName) {
+        
+        /**
+         * Reflectively resolves the method or field (Depending on the {@link PseudoCode#marker}) on an object.
+         *
+         * @param argument The object instance from which the method or field should be resolved.
+         * @return A {@code FoundOrNot<Object>} instance indicating whether it could find and get the result of said
+         * field or method.
+         * <p>
+         * If said {@link FoundOrNot#found} is false, then it could not get the field or method through reflections.
+         */
+        public FoundOrNot<Object> resolve(Object argument) {
+            var discoveryOrder = switch (marker) {
+                case METHOD -> Stream.of(Marker.METHOD, Marker.FIELD);
+                case FIELD -> Stream.of(Marker.FIELD, Marker.METHOD);
+            };
+            return discoveryOrder.map(marker -> marker.resolve(argument, methodOrAttributeName))
+                                 .filter(FoundOrNot::found)
+                                 .findFirst()
+                                 .orElse(new FoundOrNot<>(null, false));
+        }
+        
+        /**
+         * Gets a list of classes that should be open for being able to resolve the method or field reflectively over a
+         * class.
+         *
+         * @param argument The class for which the resolution is discovered.
+         * @return A {@code FoundOrNot<List<Class<?>>} list of classes that should be open.
+         * <p>
+         * If {@link FoundOrNot#found} is false, then no field or method exists by indicated the name for the argument
+         * class.
+         */
+        public FoundOrNot<List<Class<?>>> resolveClassesThatShouldBeOpen(Class<?> argument) {
+            var discoveryOrder = switch (marker) {
+                case METHOD -> Stream.of(Marker.METHOD, Marker.FIELD);
+                case FIELD -> Stream.of(Marker.FIELD, Marker.METHOD);
+            };
+            return discoveryOrder.map(marker -> marker.resolveClassesThatShouldBeOpen(argument, methodOrAttributeName))
+                                 .filter(FoundOrNot::found)
+                                 .findFirst()
+                                 .orElse(new FoundOrNot<>(null, false));
+        }
+        
+        /**
+         * Represents whether a reflective operation is to resolve the value of a field or a method.
+         */
+        public enum Marker {
+            METHOD, FIELD;
+            
+            /**
+             * Reflectively resolves a method or field for the given object.
+             *
+             * @param argument The object from which the field or method is to be resolved.
+             * @param methodOrAttributeName The name of the method or field to resolve.
+             * @return A {@code FoundOrNot<Object>} containing the result of the resolution.
+             * <p>
+             * If {@link FoundOrNot#found} is false, then the value could not be resolved reflectively.
+             */
+            public @NotNull FoundOrNot<Object> resolve(Object argument, String methodOrAttributeName) {
+                var argumentClass = argument.getClass();
+                while (argumentClass != null) {
+                    switch (this) {
+                        case METHOD -> {
+                            try {
+                                var method = argumentClass.getDeclaredMethod(methodOrAttributeName);
+                                method.setAccessible(true);
+                                return new FoundOrNot<>(method.invoke(argument), true);
+                            } catch (InaccessibleObjectException | NoSuchMethodException | IllegalAccessException |
+                                     InvocationTargetException ignored) {
+                            }
+                        }
+                        case FIELD -> {
+                            try {
+                                var field = argumentClass.getDeclaredField(methodOrAttributeName);
+                                field.setAccessible(true);
+                                return new FoundOrNot<>(field.get(argument), true);
+                            } catch (InaccessibleObjectException | NoSuchFieldException |
+                                     IllegalAccessException ignored) {
+                            }
+                        }
+                    }
+                    argumentClass = argumentClass.getSuperclass();
+                }
+                return new FoundOrNot<>(null, false);
+            }
+            
+            /**
+             * Gets a list of classes that should be open for being able to resolve the named field or method
+             * reflectively over a class.
+             *
+             * @param argument The class for which the resolution is discovered.
+             * @param methodOrAttributeName The name of the field or method.
+             * @return A {@code FoundOrNot<List<Class<?>>} list of classes that should be open.
+             * <p>
+             * If {@link FoundOrNot#found} is false, then no field or method exists by indicated the name for the argument
+             * class.
+             */
+            public FoundOrNot<List<Class<?>>> resolveClassesThatShouldBeOpen(Class<?> argument, String methodOrAttributeName) {
+                var argumentClass = argument;
+                while (argumentClass != null) {
+                    switch (this) {
+                        case METHOD -> {
+                            try {
+                                var method = argumentClass.getDeclaredMethod(methodOrAttributeName);
+                                method.setAccessible(true);
+                                return new FoundOrNot<>(List.of(method.getDeclaringClass(), method.getReturnType()), true);
+                            } catch (InaccessibleObjectException | NoSuchMethodException ignored) {
+                            }
+                        }
+                        case FIELD -> {
+                            try {
+                                var field = argumentClass.getDeclaredField(methodOrAttributeName);
+                                field.setAccessible(true);
+                                return new FoundOrNot<>(List.of(field.getDeclaringClass(), field.getType()), true);
+                            } catch (InaccessibleObjectException | NoSuchFieldException ignored) {
+                            }
+                        }
+                    }
+                    argumentClass = argumentClass.getSuperclass();
+                }
+                return new FoundOrNot<>(null, false);
+            }
+        }
     }
     
 }

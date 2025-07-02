@@ -1,4 +1,4 @@
-module org.openmarkov.core {
+open module org.openmarkov.core {
     requires commons.math3;
 	requires jeval;
 	requires colt;

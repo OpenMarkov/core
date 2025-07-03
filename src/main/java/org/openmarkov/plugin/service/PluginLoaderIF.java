@@ -39,7 +39,7 @@ public interface PluginLoaderIF {
 	 * @param filter the plugins filter to select plugins.
 	 * @return all plugins from the system environment.
 	 */
-    List<Class<?>> loadAllPlugins(FilterIF filter) throws PluginException;
+    List<Class<?>> loadAllPlugins(FilterIF filter);
 
 	/**
 	 * Returns all plugins from the system environment.

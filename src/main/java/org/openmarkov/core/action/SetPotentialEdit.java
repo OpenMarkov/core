@@ -141,9 +141,9 @@ import java.util.List;
 		Node node = probNet.getNode(variable);
 		List<Potential> potentials = new ArrayList<>();
 		if (lastPotential != null) {
-			potentials.add(lastPotential);
 			if (node.getNodeType() == NodeType.DECISION){
 				if (hasPolicy) {
+					potentials.add(lastPotential);
 					listener.onNodeValueChanged();
 				}else {
 					listener.removePolicy();

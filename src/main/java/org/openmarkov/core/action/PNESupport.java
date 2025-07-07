@@ -112,7 +112,11 @@ public class PNESupport extends UndoableEditSupport {
 		if (withUndo) {
 			undoManagerSupport.addEdit(edit);
 		}
-		postEdit(edit);// Inform the listeners that an edition has happened
+
+		if (!(edit.getClass().equals(OpenParenthesisEdit.class) || edit.getClass().equals(CloseParenthesisEdit.class))){
+			postEdit(edit);// Inform the listeners that an edition has happened
+		}
+
 	}
 
 	/**
@@ -151,7 +155,20 @@ public class PNESupport extends UndoableEditSupport {
 	 */
 	public void redo() {
 		if (withUndo && undoManagerSupport.canRedo()) {
-			UndoableEditEvent event = new UndoableEditEvent(this, undoManagerSupport.editToBeRedone());
+			UndoableEditEvent event = new UndoableEditEvent(this, undoManagerSupport.getCurrentEdit());
+			if (event.getEdit().getClass () == OpenParenthesisEdit.class) {
+				UndoableEditEvent event2;
+				boolean closeParenthesisFound = false;
+				do {
+					undoManagerSupport.redo();
+					event2 = new UndoableEditEvent(this, undoManagerSupport.getCurrentEdit());
+					if (event2.getEdit().getClass() == CloseParenthesisEdit.class) {
+						closeParenthesisFound = true;
+					}
+
+				} while (!closeParenthesisFound);
+			}
+
 			undoManagerSupport.redo();
 			for (UndoableEditListener listener : listeners) {
 				((PNUndoableEditListener) listener).undoableEditHappened(event);

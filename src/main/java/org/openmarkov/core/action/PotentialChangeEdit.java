@@ -40,11 +40,16 @@ import org.openmarkov.core.model.network.potential.Potential;
 		}
 		probNet.addPotential(newPotential);
 	}
-
+	@Override
 	public void undo() {
 		super.undo();
-		probNet.removePotential(newPotential);
-		probNet.addPotential(oldPotential);
+		//probNet.removePotential(newPotential);
+		//probNet.addPotential(oldPotential);
+	}
+
+	@Override
+	public void redo() {
+		super.redo();
 	}
 
 	/**

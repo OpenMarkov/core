@@ -21,9 +21,8 @@ public class BNFactory extends NetsFactory {
 
 	/**
 	 * @return a Bayesian network with one node node (Disease)
-	 * @throws Exception
 	 */
-	public static ProbNet createBN_X(double prevalence) throws Exception {
+	public static ProbNet createBN_X(double prevalence) {
 		ProbNet probNet;
 		double[] valuesX;
 
@@ -57,7 +56,7 @@ public class BNFactory extends NetsFactory {
 	 * @throws Exception
 	 */
 	public static ProbNet createBN_XY(String nameX, String nameY, double prevalence, double sensitivity,
-			double specificity) throws Exception {
+			double specificity) throws NodeNotFoundException {
 		ProbNet probNet;
 		double[] valuesX;
 		double[] valuesYX;
@@ -90,7 +89,7 @@ public class BNFactory extends NetsFactory {
 	 * @throws Exception
 	 */
 	public static ProbNet createBN_XYZ(double prevalence, double sensitivityY, double specificityY, double sensitivityZ,
-			double specificityZ) throws Exception {
+			double specificityZ) throws NodeNotFoundException {
 		ProbNet probNet;
 		double[] valuesX;
 		double[] valuesYX;

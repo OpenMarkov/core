@@ -484,7 +484,7 @@ public class ProbNetOperations {
 							} else {
 								// TODO throw some exception
 							}
-						} catch (InvalidStateException | IncompatibleEvidenceException e) {
+						} catch (IncompatibleEvidenceException e) {
 							e.printStackTrace();
 						}
 					}
@@ -529,7 +529,7 @@ public class ProbNetOperations {
 									} else if (parentVariable.getVariableType() == VariableType.FINITE_STATES) {
 										configuration.changeFinding(new Finding(findingVariable, nextStateIndex));
 									}
-								} catch (InvalidStateException | IncompatibleEvidenceException e) {
+								} catch (IncompatibleEvidenceException e) {
 									e.printStackTrace();
 								}
 							} else {
@@ -605,7 +605,7 @@ public class ProbNetOperations {
 		return convertedNet;
 	}
 
-	public static ProbNet convertNumericalVariablesToFS(ProbNet probNet) throws NotEvaluableNetworkException {
+	public static ProbNet convertNumericalVariablesToFS(ProbNet probNet) {
 		return convertNumericalVariablesToFS(probNet, new EvidenceCase());
 	}
 
@@ -676,7 +676,7 @@ public class ProbNetOperations {
 		for (int i = 0; i < projectedVariables.size(); ++i) {
 			try {
 				configuration.addFinding(new Finding(projectedVariables.get(i), projectedIndices[i]));
-			} catch (InvalidStateException | IncompatibleEvidenceException e) {
+			} catch (IncompatibleEvidenceException e) {
 				e.printStackTrace();
 			}
 		}
@@ -728,7 +728,7 @@ public class ProbNetOperations {
 					nonRestrictedStates.add(restrictedVariableState);
 				}
 			}
-		} catch (InvalidStateException | IncompatibleEvidenceException e) {
+		} catch (IncompatibleEvidenceException e) {
 			// Not going to happen
 		}
 		return nonRestrictedStates;
@@ -804,13 +804,9 @@ public class ProbNetOperations {
 	public static List<Node> getNeverObservedVariables(ProbNet probNet) {
 		List<Node> neverObservedVariables = new ArrayList<>();
 		Set<Node> observableVariables = null;
-
-		try {
-			observableVariables = getObservableVariables(probNet);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
+		
+		observableVariables = getObservableVariables(probNet);
+		
 		for (Node node : probNet.getNodes(NodeType.CHANCE)) {
 			if (!observableVariables.contains(node)) {
 				neverObservedVariables.add(node);
@@ -824,10 +820,8 @@ public class ProbNetOperations {
 	 * @return A list of chance variables that are observable; this list includes always observed variables and
 	 * those variables that can be reached from an always observed variable or from a decision, always following
 	 * a path formed exclusively by revelation links.
-	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
-	public static Set<Node> getObservableVariables(ProbNet probNet)
-			throws NodeNotFoundException {
+	public static Set<Node> getObservableVariables(ProbNet probNet) {
 		Set<Node> observable;
 		Set<Variable> visitedDecisions;
 		ConcurrentLinkedQueue<Variable> variablesToProcess = new ConcurrentLinkedQueue<>();

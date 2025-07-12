@@ -76,8 +76,7 @@ import java.util.List;
 	}
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			List<TablePotential> alreadyProjectedPotentials)
-			throws NonProjectablePotentialException, WrongCriterionException {
+			List<TablePotential> alreadyProjectedPotentials) {
 		// get the projected TablePotential, which will be returned inside a list
 		List<TablePotential> projectedPotentials = tablePotential
 				.tableProject(evidenceCase, inferenceOptions, alreadyProjectedPotentials);

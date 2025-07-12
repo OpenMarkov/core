@@ -63,7 +63,7 @@ import java.util.Map;
 
 	@Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-			Map<String, String> variableValues) throws NonProjectablePotentialException, WrongCriterionException {
+			Map<String, String> variableValues) throws NonProjectablePotentialException {
 		Variable conditionedVariable = getConditionedVariable();
 		int numStates = conditionedVariable.getNumStates();
 		Evaluator evaluator = new Evaluator();

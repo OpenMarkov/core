@@ -24,7 +24,7 @@ import java.util.List;
 public interface Propagation extends Task {
 
 	HashMap<Variable, TablePotential> getPosteriorValues()
-			throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
+			throws IncompatibleEvidenceException, NotEvaluableNetworkException;
 
 	void setPostResolutionEvidence(EvidenceCase postResolutionEvidence);
 

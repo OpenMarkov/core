@@ -98,8 +98,7 @@ import java.util.List;
 	}
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			List<TablePotential> alreadyProjectedPotentials)
-			throws NonProjectablePotentialException, WrongCriterionException {
+			List<TablePotential> alreadyProjectedPotentials) {
 		// TODO Auto-generated method stub
 		return null;
 	}

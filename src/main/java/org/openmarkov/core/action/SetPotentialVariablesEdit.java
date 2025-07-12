@@ -27,11 +27,11 @@ import java.util.List;
 		this.newVariables = newVariables;
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		node.getPotentials().get(0).setVariables(newVariables);
 	}
 
-	public void undoEdit() throws DoEditException {
+	public void undoEdit() {
 		node.getPotentials().get(0).setVariables(oldVariables);
 	}
 }

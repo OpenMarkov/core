@@ -41,7 +41,7 @@ import javax.swing.undo.CannotUndoException;
 		this.isNoisyParameter = false;
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		if (isNoisyParameter) {
 			potential.setNoisyParameters(variable, noisyParameters);
 		} else {

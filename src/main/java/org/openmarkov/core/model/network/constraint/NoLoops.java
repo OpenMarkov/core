@@ -20,8 +20,7 @@ import java.util.List;
 
 @Constraint(name = "NoLoops", defaultBehavior = ConstraintBehavior.OPTIONAL) public class NoLoops extends PNConstraint {
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
 
 		for (PNEdit simpleEdit : edits) {

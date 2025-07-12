@@ -43,7 +43,7 @@ import static org.openmarkov.plugin.Filter.filter;
  * <br>1.1 - jrico:
  * <br>- Plugin loading is now done just once per program execution.
  * <br>- Functions are no longer recursive, but iterative.
- * <br>- {@link PluginLoader#loadAllPlugins(FilterIF)} no longer throws {@link PluginException} (It was never thrown)
+ * <br>- {@link PluginLoaderIF#loadAllPlugins(FilterIF)} no longer throws {@link PluginException} (It was never thrown)
  * <br>- Added nullability annotations.
  */
 public class PluginLoader implements PluginLoaderIF {

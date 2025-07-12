@@ -558,7 +558,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		return potential;
 	}
 
-	public TablePotential createDeltaTablePotential(int stateIndex) throws InvalidStateException {
+	public TablePotential createDeltaTablePotential(int stateIndex) {
 		List<Variable> potentialVariables = new ArrayList<>();
 		potentialVariables.add(this);
 		TablePotential potential = new TablePotential(potentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);

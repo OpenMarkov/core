@@ -46,5 +46,5 @@ public interface PluginLoaderIF {
 	 *
 	 * @return all plugins from the system environment.
 	 */
-    List<Class<?>> loadAllPlugins() throws PluginException;
+    List<Class<?>> loadAllPlugins();
 }

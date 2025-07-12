@@ -62,8 +62,7 @@ import java.util.List;
 		return alwaysObservedNodes;
 	}
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		boolean checkEdit = true;
 
 		List<Node> decisionNodes = getDecisionNodes(probNet);

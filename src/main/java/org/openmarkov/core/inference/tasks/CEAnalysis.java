@@ -21,12 +21,12 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 public interface CEAnalysis extends Task {
 
 	GTablePotential getUtility()
-			throws UnexpectedInferenceException, NotEvaluableNetworkException, IncompatibleEvidenceException;
+			throws UnexpectedInferenceException, IncompatibleEvidenceException;
 
 	TablePotential getProbability()
-			throws UnexpectedInferenceException, NotEvaluableNetworkException, IncompatibleEvidenceException;
+			throws UnexpectedInferenceException, IncompatibleEvidenceException;
 
 	void setDecisionVariable(Variable decisionVariable);
 
-	CEP getCEP() throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException;
+	CEP getCEP() throws IncompatibleEvidenceException, UnexpectedInferenceException;
 }

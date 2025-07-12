@@ -104,10 +104,9 @@ public class EvidenceCase {
 
 	/**
 	 * @param finding . {@code Finding}.
-	 * @throws InvalidStateException InvalidStateException
 	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
-	public void addFinding(Finding finding) throws InvalidStateException, IncompatibleEvidenceException {
+	public void addFinding(Finding finding) throws IncompatibleEvidenceException {
 		if (isCompatible(finding)) {
 			if (!findings.containsKey(finding.getVariable())) {
 				findings.put(finding.getVariable(), finding);
@@ -121,20 +120,18 @@ public class EvidenceCase {
 
 	/**
 	 * @param finding . {@code Finding}.
-	 * @throws InvalidStateException InvalidStateException
 	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
-	public void changeFinding(Finding finding) throws InvalidStateException, IncompatibleEvidenceException {
+	public void changeFinding(Finding finding) throws IncompatibleEvidenceException {
 		findings.remove(finding.getVariable());
 		addFinding(finding);
 	}
 
 	/**
 	 * @param findings . {@code Collection} of {@code Finding}s.
-	 * @throws InvalidStateException InvalidStateException
 	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
-	public void addFindings(Collection<Finding> findings) throws InvalidStateException, IncompatibleEvidenceException {
+	public void addFindings(Collection<Finding> findings) throws IncompatibleEvidenceException {
 		for (Finding finding : findings) {
 			addFinding(finding);
 		}
@@ -161,10 +158,9 @@ public class EvidenceCase {
 	 * @param value        {@code Finding}.
 	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 * @throws NodeNotFoundException NodeNotFoundException
-	 * @throws InvalidStateException InvalidStateException
 	 */
 	public void addFinding(ProbNet probNet, String variableName, double value)
-			throws NodeNotFoundException, InvalidStateException, IncompatibleEvidenceException {
+			throws NodeNotFoundException, IncompatibleEvidenceException {
 		Variable variable = probNet.getVariable(variableName);
 		Finding finding = new Finding(variable, value);
 		addFinding(finding);
@@ -294,12 +290,11 @@ public class EvidenceCase {
 	 * Extends an evidence case by taking into account that the deterministic
 	 * potentials of a {@code ProbNet} may induce new findings
 	 * @param probNet Network
-	 * @throws InvalidStateException InvalidStateException
 	 * @throws WrongCriterionException WrongCriterionException
 	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
 	public void extendEvidence(ProbNet probNet)
-			throws IncompatibleEvidenceException, InvalidStateException, WrongCriterionException {
+			throws IncompatibleEvidenceException, WrongCriterionException {
 
 		if (probNet.getNetworkType() == MIDType.getUniqueInstance()) {
 
@@ -335,9 +330,8 @@ public class EvidenceCase {
 	 *
 	 * @param newFinding . {@code Finding}
 	 * @return {@code boolean}
-	 * @throws InvalidStateException InvalidStateException
 	 */
-	public boolean isCompatible(Finding newFinding) throws InvalidStateException {
+	public boolean isCompatible(Finding newFinding) {
 		Variable variable = newFinding.getVariable();
 		Finding existingFinding = findings.get(variable);
 		if (existingFinding == null) {
@@ -407,15 +401,12 @@ public class EvidenceCase {
 	public void fuse(EvidenceCase evidenceCaseToFuse, boolean overwrite) throws IncompatibleEvidenceException {
 		if (evidenceCaseToFuse != null) {
 			for (Finding finding : evidenceCaseToFuse.getFindings()) {
-				try {
-					if (this.contains(finding.getVariable())) {
-						if (overwrite) {
-							changeFinding(finding);
-						}
-					} else {
-						this.addFinding(finding);
+				if (this.contains(finding.getVariable())) {
+					if (overwrite) {
+						changeFinding(finding);
 					}
-				} catch (InvalidStateException ignore) {
+				} else {
+					this.addFinding(finding);
 				}
 			}
 		}

@@ -12,8 +12,6 @@ import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -47,7 +45,7 @@ import java.util.List;
 		edits = new ArrayList<>();
 	}
 
-	@Override public void doEdit() throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
+	@Override public void doEdit() throws DoEditException {
 		doneEditCounter = 0;
 
 		if (oopNet.getInstances().containsKey(instanceName)) {

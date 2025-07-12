@@ -28,8 +28,7 @@ import java.util.List;
 @Constraint(name = "OnlyContinuousVariables", defaultBehavior = ConstraintBehavior.OPTIONAL) public class OnlyContinuousVariables
 		extends PNConstraint {
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddNodeEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			Variable variable = ((AddNodeEdit) simpleEdit).getVariable();

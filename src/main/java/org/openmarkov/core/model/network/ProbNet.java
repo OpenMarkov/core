@@ -218,8 +218,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      * @throws DoEditException DoEditException
      */
     public void doEdit(PNEdit edit)
-            throws ConstraintViolationException, NonProjectablePotentialException,
-            WrongCriterionException, DoEditException {
+            throws ConstraintViolationException, DoEditException {
         pNESupport.announceEdit(edit);
         pNESupport.doEdit(edit);
     }
@@ -580,7 +579,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      *                  both variables does not belong to {@code this} graph.
      * @throws Exception Exception
      */
-    public void invertLink(Variable variable1, Variable variable2, boolean directed) throws Exception {
+    public void invertLink(Variable variable1, Variable variable2, boolean directed) throws NodeNotFoundException {
         removeLink(variable1, variable2, true);
         addLink(variable2, variable1, true);
     }

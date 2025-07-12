@@ -35,7 +35,7 @@ import javax.swing.undo.CannotUndoException;
 		referenceLink = new NodeReferenceLink(sourceNode, destinationNode);
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		((OOPNet) probNet).addReferenceLink(referenceLink);
 	}
 

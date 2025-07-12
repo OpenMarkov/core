@@ -71,9 +71,8 @@ public class SharedDataMultiply {
 	 * Initialize the attributes using the potentials and the number of logical
 	 * processors
 	 *
-	 * @throws Exception Exception
 	 */
-	public void initialize() throws Exception {
+	public void initialize() {
 		// Sort the potentials according to the table size
 		Collections.sort(potentials);
 

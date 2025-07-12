@@ -78,13 +78,10 @@ import java.util.List;
 	 * @param inferenceOptions Inference options
 	 * @param projectedPotentials Projected potentials
 	 * @return a list of projected table potentials
-	 * @throws NonProjectablePotentialException NonProjectablePotentialException
-	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	@Override
 	public List<TablePotential> tableProject(
-			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials)
-			throws NonProjectablePotentialException, WrongCriterionException {
+			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
 		List<Variable> parentVariables = new ArrayList<>(variables);
 		parentVariables.remove(getConditionedVariable());
 		List<TablePotential> parentPotentials = new ArrayList<>();

@@ -50,8 +50,7 @@ public class NoMixedParents extends PNConstraint {
 		return metCondition;
 	}
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			AddLinkEdit addLinkEdit = (AddLinkEdit) simpleEdit;

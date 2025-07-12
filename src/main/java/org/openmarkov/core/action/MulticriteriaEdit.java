@@ -40,7 +40,7 @@ public class MulticriteriaEdit extends SimplePNEdit {
 		this.newMulticriteriaOptions = options;
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		//probNet.setDecisionCriteria(this.newDecisionCriteria);
 		// Set the new data at the probNet criteria 
 		for (Criterion oldCriterion : probNet.getDecisionCriteria()) {
@@ -70,12 +70,8 @@ public class MulticriteriaEdit extends SimplePNEdit {
 
 	@Override public void redo() {
 		super.redo();
-		try {
-			doEdit();
-		} catch (DoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		doEdit();
+		
 	}
 
 }

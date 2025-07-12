@@ -33,7 +33,7 @@ import javax.swing.undo.CannotUndoException;
 		this.referenceLink = referenceLink;
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		((OOPNet) probNet).removeReferenceLink(referenceLink);
 	}
 

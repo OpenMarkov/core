@@ -202,7 +202,7 @@ public class AugmentedTable extends TablePotential {
 	}
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			List<TablePotential> alreadyProjectedPotentials) throws WrongCriterionException {
+			List<TablePotential> alreadyProjectedPotentials) {
 		return null;
 	}
 

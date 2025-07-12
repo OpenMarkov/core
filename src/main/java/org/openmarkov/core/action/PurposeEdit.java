@@ -46,7 +46,7 @@ public class PurposeEdit extends SimplePNEdit {
 		this.node = node;
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		node.setPurpose(newPurpose);
 	}
 

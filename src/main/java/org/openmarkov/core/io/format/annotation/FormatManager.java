@@ -10,6 +10,7 @@ package org.openmarkov.core.io.format.annotation;
 import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
+import org.openmarkov.plugin.Filter;
 import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 import org.w3c.dom.Document;
@@ -150,13 +151,7 @@ public class FormatManager {
 	 * @return a list with the plugins detected with FormatTypeProbModelXML annotations.
 	 */
 	private List<Class<?>> findAllFormatPlugins() {
-		PluginLoader pluginsLoader = new PluginLoader();
-		try {
-			FilterIF filter = org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy(FormatType.class);
-			return pluginsLoader.loadAllPlugins(filter);
-		} catch (Exception e) {
-		}
-		return null;
+        return new PluginLoader().loadAllPlugins(Filter.filter().toBeAnnotatedBy(FormatType.class));
 	}
 	//	/**
 	//	 * Gets the plugin with the "Writer" role and the extension
@@ -249,7 +244,7 @@ public class FormatManager {
 	 * @return a probNetReader object
 	 * @throws Exception when an exception is raised is thrown to be caught by the gui
 	 */
-	public ProbNetReader getProbNetReader(String extension, String version) throws Exception {
+	public ProbNetReader getProbNetReader(String extension, String version) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		ProbNetReader instance = null;
 
 		if ((readerInstances.containsKey(extension)) && (readerInstances.get(extension).containsKey(version))) {
@@ -272,7 +267,7 @@ public class FormatManager {
 	 * @return a ProbNetReader object
 	 * @throws Exception when an exception is raised is thrown to be caught by the gui
 	 */
-	public ProbNetReader getProbNetReader(String fileName) throws Exception {
+	public ProbNetReader getProbNetReader(String fileName) throws SAXException, IOException, ParserConfigurationException, OpenMarkovException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
 		String fileVersion = "";
 		if (!fileExtension.equals("elv")) {
@@ -296,7 +291,7 @@ public class FormatManager {
 	 * @return a ProbNetReader object
 	 * @throws Exception when an exception is raised is thrown to be caught by the gui
 	 */
-	public ProbNetReader getProbNetReader(URL url) throws Exception {
+	public ProbNetReader getProbNetReader(URL url) throws SAXException, IOException, OpenMarkovException, ParserConfigurationException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 
 		checkVersion(url);
 		checkStructure(url);

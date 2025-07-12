@@ -56,7 +56,7 @@ public class DecisionCriterionUnitEdit extends SimplePNEdit {
 		this.oldUnit = this.criterion.getCriterionUnit();
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		this.criterion.setCriterionUnit(newUnit);
 	}
 

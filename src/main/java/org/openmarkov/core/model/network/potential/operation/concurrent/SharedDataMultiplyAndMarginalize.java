@@ -41,9 +41,8 @@ public class SharedDataMultiplyAndMarginalize extends SharedDataMultiply {
 	/**
 	 * Does some previous not parallel operations
 	 *
-	 * @throws Exception Exception
 	 */
-	public void initializeMultiplyAndMarginalize() throws Exception {
+	public void initializeMultiplyAndMarginalize() {
 		super.initialize();
 		// variables in the resulting potential
 		List<Variable> unionVariables = new ArrayList<>(variablesToEliminate);

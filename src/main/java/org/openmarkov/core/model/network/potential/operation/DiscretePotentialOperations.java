@@ -1290,10 +1290,9 @@ public final class DiscretePotentialOperations {
 	 * @throws IllegalArgumentTypeException <tt>IllegalArgumentTypeException</tt> if
 	 *                                      numerator of denominator are not
 	 *                                      <tt>TablePotential</tt>
-	 * @throws DivideByZeroException        DivideByZeroException
 	 */
 	public static Potential dividePotentials(Potential numerator, Potential denominator)
-			throws IllegalArgumentTypeException, DivideByZeroException {
+			throws IllegalArgumentTypeException {
 		// parameter correct type verification before calling right method
 		if (!(numerator instanceof TablePotential) || !(denominator instanceof TablePotential)) {
 			String errMsg = new String("");
@@ -1919,7 +1918,7 @@ public final class DiscretePotentialOperations {
 		EvidenceCase evi = new EvidenceCase();
 		try {
 			evi.addFinding(new Finding(variable, variable.getStates()[0]));
-		} catch (InvalidStateException | IncompatibleEvidenceException e) {
+		} catch (IncompatibleEvidenceException e) {
 			e.printStackTrace();
 		}
 		try {

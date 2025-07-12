@@ -68,7 +68,7 @@ import java.util.List;
 
 	// Methods
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
+			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
 		throw new NonProjectablePotentialException("SameAsPrevious potentials cannot be projected");
 	}
 

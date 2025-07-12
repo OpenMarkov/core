@@ -30,8 +30,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 	}
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		return (noLoopsConstraint.checkEdit(probNet, edit) && noCycleConstraint.checkEdit(probNet, edit));
 
 	}

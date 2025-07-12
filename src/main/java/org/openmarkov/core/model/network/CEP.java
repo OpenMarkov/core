@@ -102,10 +102,8 @@ public class CEP {
 	 * @param effectiveness {@code double}
 	 * @param minThreshold  {@code double}
 	 * @param maxThreshold  {@code double}
-	 * @throws CostEffectivenessException CostEffectivenessException
 	 */
-	public CEP(StrategyTree strategyTree, double cost, double effectiveness, double minThreshold, double maxThreshold)
-			throws CostEffectivenessException {
+	public CEP(StrategyTree strategyTree, double cost, double effectiveness, double minThreshold, double maxThreshold) {
 
 		costs = new double[] { cost };
 		effectivities = new double[] { effectiveness };

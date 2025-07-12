@@ -28,11 +28,8 @@ public class UtilConstraints {
 	 * @return An {@code ArrayList} of {@code PNEdit}s of type
 	 * {@code typeEdit} that are contained in the
 	 * {@code event} received (if there is any)
-	 * @throws WrongCriterionException WrongCriterionException
-	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
-	public static List<PNEdit> getSimpleEditsByType(PNEdit edit, Class<?> typeEdit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	public static List<PNEdit> getSimpleEditsByType(PNEdit edit, Class<?> typeEdit) {
 		List<PNEdit> edits = new ArrayList<>();
 		if (edit.getClass() == typeEdit) {
 			edits.add((PNEdit) edit);

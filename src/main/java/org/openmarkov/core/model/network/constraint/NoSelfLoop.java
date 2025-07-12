@@ -21,8 +21,7 @@ import java.util.List;
 @Constraint(name = "NoSelfLoops", defaultBehavior = ConstraintBehavior.YES) public class NoSelfLoop
 		extends PNConstraint {
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			Variable variable1 = ((AddLinkEdit) simpleEdit).getVariable1();

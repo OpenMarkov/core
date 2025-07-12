@@ -25,7 +25,7 @@ import java.util.HashMap;
 public interface TemporalEvolution extends Task {
 
     HashMap<Variable, TablePotential> getTemporalEvolution()
-            throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException;
+            throws IncompatibleEvidenceException, NotEvaluableNetworkException;
 
 
     /**
@@ -35,11 +35,10 @@ public interface TemporalEvolution extends Task {
      *
      * @return temporal evolution of a node or a set of utility nodes where discounting is applied
      * @throws IncompatibleEvidenceException
-     * @throws UnexpectedInferenceException
      * @throws NotEvaluableNetworkException
      */
     default HashMap<Variable, TablePotential> getTemporalEvolutionWithDiscount()
-            throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+            throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         return getTemporalEvolution();
     }
 

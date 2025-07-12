@@ -34,7 +34,7 @@ import javax.swing.undo.CannotUndoException;
 		this.instance = instance;
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		if (node != null) {
 			node.setInput(isInput);
 			wasInput = node.isInput();

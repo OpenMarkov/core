@@ -30,7 +30,7 @@ import javax.swing.undo.CannotUndoException;
 		this.oldName = instance.getName();
 	}
 
-	@Override public void generateEdits() throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public void generateEdits() {
 		this.instance.setName(newName);
 		for (Node instanceNode : instance.getNodes()) {
 			String newNodeName = instanceNode.getName().replace(oldName, newName);

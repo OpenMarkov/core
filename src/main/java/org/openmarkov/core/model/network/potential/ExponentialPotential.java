@@ -61,7 +61,7 @@ import java.util.Map;
 
 	@Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-			Map<String, String> variableValues) throws NonProjectablePotentialException, WrongCriterionException {
+			Map<String, String> variableValues) throws NonProjectablePotentialException {
 		// Fill arrays numericValues and evidencelessVariables
 		int constantIndex = getConstantIndex(covariates);
 

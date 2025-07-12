@@ -23,8 +23,6 @@ import org.openmarkov.core.action.SetPotentialEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -360,14 +358,10 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 			PNEdit edit = (PNEdit) e.getEdit();
 			List<PNEdit> simpleEdits = new ArrayList<>();
 			if (edit instanceof CompoundPNEdit) {
-				try {
-					for (UndoableEdit undoableEdit : ((CompoundPNEdit) edit).getEdits()) {
-						simpleEdits.add((PNEdit) undoableEdit);
-					}
-				} catch (NonProjectablePotentialException | WrongCriterionException e1) {
-					e1.printStackTrace();
-				}
-			} else {
+                for (UndoableEdit undoableEdit : ((CompoundPNEdit) edit).getEdits()) {
+                    simpleEdits.add((PNEdit) undoableEdit);
+                }
+            } else {
 				simpleEdits.add((PNEdit) edit);
 			}
 
@@ -520,7 +514,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 						if (newEdit != null) {
 							try {
 								doEdit(newEdit);
-							} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
+							} catch (ConstraintViolationException | DoEditException e1) {
 								e1.printStackTrace();
 							}
 						}
@@ -531,9 +525,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 
 	}
 
-	@Override public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, NonProjectablePotentialException,
-			WrongCriterionException {
+	@Override public void undoableEditWillHappen(UndoableEditEvent event) {
 		// Do nothing
 
 	}

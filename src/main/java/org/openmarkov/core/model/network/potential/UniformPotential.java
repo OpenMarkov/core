@@ -112,12 +112,10 @@ import java.util.Random;
 	 * TablePotential that is equal to this potential.
 	 * In all cases, the argument evidenceCase is irrelevant.
 	 *
-	 * @throws NonProjectablePotentialException when this is a conditional probability potential and the conditioned variable is numeric.
 	 */
 	@Override
 	public List<TablePotential> tableProject(
-			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials)
-			throws NonProjectablePotentialException {
+			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
 		List<TablePotential> newProjectedPotentials = new ArrayList<>();
 		switch (role) {
 		case CONDITIONAL_PROBABILITY:

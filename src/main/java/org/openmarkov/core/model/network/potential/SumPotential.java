@@ -83,8 +83,7 @@ import java.util.List;
 
 	@Override
 	public List<TablePotential> tableProject(
-			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials)
-			throws NonProjectablePotentialException, WrongCriterionException {
+			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
 		List<Variable> parentVariables = new ArrayList<>(variables);
 		parentVariables.remove(getConditionedVariable());
 		List<TablePotential> parentPotentials = new ArrayList<>();

@@ -26,8 +26,7 @@ import java.util.List;
 	// Flag of the error
 	private int type_error;
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		// DecisionCriteriaEdit
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, DecisionCriteriaEdit.class);
 		for (PNEdit simpleEdit : edits) {

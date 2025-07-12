@@ -72,9 +72,8 @@ public abstract class InferenceAlgorithm implements Task {
 	/**
 	 * Checks the network and evidence consistency
 	 *
-	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
-	private void checkConsistency() throws NotEvaluableNetworkException {
+	private void checkConsistency() {
 		checkNetworkConsistency();
 		checkEvidenceConsistency();
 	}
@@ -82,18 +81,16 @@ public abstract class InferenceAlgorithm implements Task {
 	/**
 	 * Checks network consistency
 	 *
-	 * @throws NotEvaluableNetworkException TODO - Implement that method
 	 */
-	private void checkNetworkConsistency() throws NotEvaluableNetworkException {
+	private void checkNetworkConsistency() {
 
 	}
 
 	/**
 	 * Checks evidence consistency
 	 *
-	 * @throws NotEvaluableNetworkException TODO - Implement that method
 	 */
-	private void checkEvidenceConsistency() throws NotEvaluableNetworkException {
+	private void checkEvidenceConsistency() {
 
 	}
 

@@ -419,7 +419,7 @@ import java.util.*;
 			try {
 				evidenceCase.addFinding(finding);
 				newPotential = tableProject(evidenceCase, null).get(0);
-			} catch (InvalidStateException | WrongCriterionException | IncompatibleEvidenceException | NonProjectablePotentialException e) {
+			} catch (WrongCriterionException | IncompatibleEvidenceException | NonProjectablePotentialException e) {
 				// Unreachable code
 				e.printStackTrace();
 			}
@@ -442,10 +442,9 @@ import java.util.*;
 	 * @param evidenceCase {@code EvidenceCase}
 	 * @return A {@code List} of {@code TablePotential}s containing
 	 * only one element, which is a {@code ProjectedPotential}
-	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			List<TablePotential> projectedPotentials) throws WrongCriterionException {
+			List<TablePotential> projectedPotentials) {
 		// returned value
 		boolean hasUncertainTable = (uncertainValues != null);
 		List<TablePotential> newProjectedPotentials = new ArrayList<>(1);

@@ -54,7 +54,7 @@ import java.util.List;
 		this.newName = newName;
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		for (Variable variable : variables) {
 			variable.setBaseName(newName);
 		}

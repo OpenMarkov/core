@@ -52,7 +52,7 @@ public class DANFactory extends NetsFactory {
 		return oneChanceDAN;
 	}
 
-	public static ProbNet buildDANPerfectKnowledge() throws NodeNotFoundException {
+	public static ProbNet buildDANPerfectKnowledge() {
 		ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
 		// Variables
 		Variable varDisease = new Variable("Disease", "absent", "present");
@@ -88,7 +88,7 @@ public class DANFactory extends NetsFactory {
 
 	}
 
-	public static ProbNet buildDANNoKnowledge() throws NodeNotFoundException {
+	public static ProbNet buildDANNoKnowledge() {
 		ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
 		// Variables
 		Variable varDisease = new Variable("Disease", "absent", "present");
@@ -208,7 +208,7 @@ public class DANFactory extends NetsFactory {
 		return dan;
 	}
 
-	public static ProbNet buildDecideTestDAN() throws NodeNotFoundException {
+	public static ProbNet buildDecideTestDAN() {
 
 		ProbNet probNet = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
 		// Variables

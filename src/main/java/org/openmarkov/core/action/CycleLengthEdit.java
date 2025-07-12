@@ -29,7 +29,7 @@ public class CycleLengthEdit extends SimplePNEdit {
 		this.newTemporalUnit = newTemporalUnit;
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		probNet.setCycleLength(this.newTemporalUnit);
 	}
 
@@ -40,11 +40,7 @@ public class CycleLengthEdit extends SimplePNEdit {
 
 	@Override public void redo() {
 		super.redo();
-		try {
-			doEdit();
-		} catch (DoEditException e) {
-			e.printStackTrace();
-		}
+		doEdit();
 	}
 
 }

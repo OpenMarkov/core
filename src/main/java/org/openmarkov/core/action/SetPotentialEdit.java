@@ -88,7 +88,7 @@ import java.util.List;
 	// TODO al asignar un potencial tener en cuenta a los padres y a los
 	// predecesores informativos que me los va a dar Manolo invocando a una
 	// funcion
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		setPotential();
 		if (node.getNodeType() == NodeType.DECISION && listener != null){
 

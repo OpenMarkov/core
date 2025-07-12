@@ -26,7 +26,7 @@ public interface PNEdit extends UndoableEdit {
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 * @throws DoEditException DoEditException
 	 */
-	void doEdit() throws DoEditException, NonProjectablePotentialException, WrongCriterionException;
+	void doEdit() throws DoEditException;
 
 	void setSignificant(boolean significant);
 

@@ -18,7 +18,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 	}
 
 	@Override
-	public void generateEdits() throws NonProjectablePotentialException, WrongCriterionException {
+	public void generateEdits() {
 		// gets neighbors of this node
 		Variable nodeVariable = node.getVariable();
 		List<Node> parents = probNet.getParents(node);

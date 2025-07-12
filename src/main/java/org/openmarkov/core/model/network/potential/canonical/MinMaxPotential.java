@@ -102,10 +102,9 @@ public abstract class MinMaxPotential extends ICIPotential {
 	/**
 	 * @return The accrued potentials plus the Delta potential,
 	 * all of them projected onto the evidence
-	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	@Override public List<TablePotential> tableProject(EvidenceCase evidence, InferenceOptions inferenceOptions,
-			List<TablePotential> projectedPotentials) throws WrongCriterionException {
+			List<TablePotential> projectedPotentials) {
 		List<TablePotential> potentials = new ArrayList<>();
 		for (TablePotential subPotential : buildSubpotentialList()) {
 			potentials.addAll(subPotential.tableProject(evidence, null, projectedPotentials));

@@ -41,8 +41,7 @@ import java.util.List;
 	 * @return {@code true} if {@code event} comply with this constraint
 	 */
 	@Override
-	public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
 		//int u=0;
 		for (PNEdit simpleEdit : edits) {

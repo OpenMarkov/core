@@ -44,7 +44,7 @@ public class PrecisionEdit extends SimplePNEdit {
 		this.node = node;
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		node.getVariable().setPrecision(newPrecision);
 	}
 

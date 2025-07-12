@@ -24,7 +24,7 @@ public class PartialOrderDAN {
 
 	ProbNet order;
 
-	public PartialOrderDAN(ProbNet probNet) throws NodeNotFoundException {
+	public PartialOrderDAN(ProbNet probNet) {
 
 		order = new ProbNet();
 
@@ -78,7 +78,7 @@ public class PartialOrderDAN {
 		return order;
 	}
 
-	public String toStringForGraphviz() throws NodeNotFoundException {
+	public String toStringForGraphviz() {
 
 		String content = null;
 
@@ -114,7 +114,7 @@ public class PartialOrderDAN {
 
 	}
 
-	private String getNameWithQuotes(Node node) throws NodeNotFoundException {
+	private String getNameWithQuotes(Node node) {
 		return "\"" + node.getVariable().getName() + "\"";
 
 	}

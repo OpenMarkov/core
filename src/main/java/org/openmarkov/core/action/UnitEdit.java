@@ -29,7 +29,7 @@ import org.openmarkov.core.model.network.StringWithProperties;
 		this.newUnit = new StringWithProperties(newUnit);
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		node.getVariable().setUnit(newUnit);
 	}
 

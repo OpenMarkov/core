@@ -71,7 +71,7 @@ import java.util.List;
 	}
 
 	// Methods
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		probNet.addLink(node1, node2, isDirected);
 		this.link = probNet.getLink(node1, node2, isDirected);
 		if (updatePotentials) {

@@ -19,13 +19,10 @@ public interface PNUndoableEditListener extends UndoableEditListener {
 	/**
 	 * An undoable edit will happen
 	 * @param event Event
-	 * @throws WrongCriterionException WrongCriterionException
 	 * @throws ConstraintViolationException ConstraintViolationException
-	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, NonProjectablePotentialException,
-			WrongCriterionException;
+			throws ConstraintViolationException;
 
 	void undoEditHappened(UndoableEditEvent event);
 

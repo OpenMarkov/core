@@ -35,8 +35,8 @@ public class AddFindingEdit extends SimplePNEdit{
         try {
             evidenceCase.addFinding(finding);
             listener.onNodeValueChanged();
-        } catch (InvalidStateException | IncompatibleEvidenceException e) {
-            throw new RuntimeException(e);
+        } catch (IncompatibleEvidenceException e) {
+            throw new DoEditException(e);
         }
 
     }
@@ -55,7 +55,7 @@ public class AddFindingEdit extends SimplePNEdit{
             try {
                 evidenceCase.removeFinding(finding.getVariable());
                 evidenceCase.addFinding(previousFinding);
-            } catch (InvalidStateException | IncompatibleEvidenceException | NoFindingException e) {
+            } catch (IncompatibleEvidenceException | NoFindingException e) {
                 throw new RuntimeException(e);
             }
         }

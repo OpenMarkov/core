@@ -21,8 +21,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 		return true;
 	}
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		// TODO Auto-generated method stub
 		return true;
 	}

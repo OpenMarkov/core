@@ -34,7 +34,7 @@ import java.util.List;
 		this.lastCriteria = new ArrayList<>(probnet.getDecisionCriteria());
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		List<Criterion> criteria = probNet.getDecisionCriteria();
 		switch (stateAction) {
 		case ADD:

@@ -109,7 +109,7 @@ import java.util.List;
 	}
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
+			List<TablePotential> projectedPotentials) {
 		TablePotential projectedPotential;
 		if (state != null) {
 			// finite states variable
@@ -166,8 +166,7 @@ import java.util.List;
 		return variables.get(0) + " = " + (state != null ? state.getName() : numericValue);
 	}
 
-	@Override public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
-			throws IncompatibleEvidenceException, WrongCriterionException {
+	@Override public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
 		Finding inducedFinding = null;
 		if (getConditionedVariable().getVariableType() == VariableType.FINITE_STATES) {
 			inducedFinding = new Finding(getConditionedVariable(), state);

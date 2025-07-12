@@ -30,7 +30,7 @@ public class OpenParenthesisEdit extends SimplePNEdit {
 	}
 
 	// Methods
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		//super.addEdit(this);
 	}
 

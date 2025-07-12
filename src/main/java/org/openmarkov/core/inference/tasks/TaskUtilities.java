@@ -46,7 +46,7 @@ public class TaskUtilities {
 			if (preResolutionEvidence != null) {
 				preResolutionEvidence.extendEvidence(probNet);
 			}
-		} catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e) {
+		} catch (IncompatibleEvidenceException | WrongCriterionException e) {
 			e.printStackTrace();
 		}
 		return probNet;
@@ -57,7 +57,7 @@ public class TaskUtilities {
 			if (postResolutionEvidence != null) {
 				postResolutionEvidence.extendEvidence(probNet);
 			}
-		} catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e) {
+		} catch (IncompatibleEvidenceException | WrongCriterionException e) {
 			e.printStackTrace();
 		}
 		return probNet;

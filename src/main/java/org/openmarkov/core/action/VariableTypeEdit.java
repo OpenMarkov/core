@@ -39,7 +39,7 @@ import java.util.List;
 
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		// We save the current states
 		currentStates = node.getVariable().getStates();
 

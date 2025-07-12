@@ -45,7 +45,7 @@ import org.openmarkov.core.model.network.Node;
 		this.node = node;
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		node.setRelevance(newRelevance);
 	}
 

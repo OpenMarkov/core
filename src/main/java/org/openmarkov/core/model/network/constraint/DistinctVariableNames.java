@@ -30,8 +30,7 @@ import java.util.List;
 	// Flag of the error
 	private int typeError;
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddNodeEdit.class);
 		List<Variable> variablesProbNet = probNet.getVariables();
 		List<String> variablesProbNetNames = new ArrayList<>();

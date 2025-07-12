@@ -830,7 +830,7 @@ public class StrategyTree extends TreeADDPotential {
 					try {
 						evidenceCase.changeFinding(new Finding(topVariable, state));
 						fillPotential(tablePotential, evidenceCase, branch.getPotential());
-					} catch (InvalidStateException | IncompatibleEvidenceException e) {
+					} catch (IncompatibleEvidenceException e) {
 						e.printStackTrace();
 					}
 				}
@@ -850,7 +850,7 @@ public class StrategyTree extends TreeADDPotential {
 				try {
 					evidenceCase.changeFinding(new Finding(variable, i));
 					fillCompatibleConfigurations(tablePotential, evidenceCase);
-				} catch (InvalidStateException | IncompatibleEvidenceException e) {
+				} catch (IncompatibleEvidenceException e) {
 					e.printStackTrace();
 				}
 			}

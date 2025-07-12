@@ -29,7 +29,7 @@ public class TemporalOptionsEdit extends SimplePNEdit {
 		this.newTemporalOptions = options;
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		probNet.getInferenceOptions().setTemporalOptions(this.newTemporalOptions);
 
 	}
@@ -41,11 +41,7 @@ public class TemporalOptionsEdit extends SimplePNEdit {
 
 	@Override public void redo() {
 		super.redo();
-		try {
-			doEdit();
-		} catch (DoEditException e) {
-			e.printStackTrace();
-		}
+		doEdit();
 	}
 
 }

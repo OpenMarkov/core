@@ -86,10 +86,8 @@ import java.util.List;
 	 * @param name Name
 	 * @param parametrization Parametrization
 	 * @param role Potential role
-	 * @throws InstantiationException InstantiationException
 	 */
-	public UnivariateDistrPotential(List<Variable> variables, String name, String parametrization, PotentialRole role)
-			throws InstantiationException {
+	public UnivariateDistrPotential(List<Variable> variables, String name, String parametrization, PotentialRole role) {
 
 		this(variables, role);
 		setProbDensFunctionClass(getProbDensFunction(name, parametrization));
@@ -165,8 +163,7 @@ import java.util.List;
 		this.probDensFunctionManager = probDensFunctionManager;
 	}
 
-	public Class<? extends ProbDensFunction> getProbDensFunction(String univariateName, String parametrization)
-			throws InstantiationException {
+	public Class<? extends ProbDensFunction> getProbDensFunction(String univariateName, String parametrization) {
 
 		return getProbDensFunctionManager().getProbDensFunctionClass(univariateName, parametrization);
 	}
@@ -325,27 +322,20 @@ import java.util.List;
 
 	public void checkDistributionValues(double[] values) throws IllegalArgumentException {
 		ProbDensFunction p = getProbDensFunctionManager().newInstance(probDensFunctionName, values);
-		try {
-			p.verifyParameters(values);
-		} catch (IllegalArgumentException e) {
-			throw (e);
-		}
+        p.verifyParameters(values);
+        
+    }
 
-	}
-
-	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions) {
 		return null;
 	}
 
-	@Override public UnivariateDistrPotential project(EvidenceCase evidenceCase)
-			throws WrongCriterionException, NonProjectablePotentialException {
+	@Override public UnivariateDistrPotential project(EvidenceCase evidenceCase) {
 		return null;
 	}
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			List<TablePotential> alreadyProjectedPotentials)
-			throws NonProjectablePotentialException, WrongCriterionException {
+			List<TablePotential> alreadyProjectedPotentials) {
 		return null;
 	}
 

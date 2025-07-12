@@ -31,7 +31,7 @@ public class RemoveFindingEdit extends SimplePNEdit{
     }
 
     @Override
-    public void doEdit() throws DoEditException {
+    public void doEdit() {
         try {
             finding = evidenceCase.getFinding(variable);
             evidenceCase.removeFinding(variable);
@@ -48,7 +48,7 @@ public class RemoveFindingEdit extends SimplePNEdit{
         try {
             evidenceCase.addFinding(finding);
             listener.onNodeValueChanged();
-        } catch (InvalidStateException | IncompatibleEvidenceException e) {
+        } catch (IncompatibleEvidenceException e) {
             throw new RuntimeException(e);
         }
     }

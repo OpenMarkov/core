@@ -33,9 +33,8 @@ public class DiscretePotentialOperations {
 	 *
 	 * @param potentials ArrayList of Potentials
 	 * @return The multiplied potentials
-	 * @throws Exception Exception
 	 */
-	public static TablePotential multiply(List<TablePotential> potentials) throws Exception {
+	public static TablePotential multiply(List<TablePotential> potentials) {
 		// Sequential part
 		SharedDataMultiply sdm = new SharedDataMultiply(potentials);
 		sdm.initialize();
@@ -65,7 +64,7 @@ public class DiscretePotentialOperations {
 	}
 
 	public static TablePotential multiplyAndMarginalize(List<TablePotential> tablePotentials,
-			List<Variable> fSVariablesToKeep, List<Variable> fSVariablesToEliminate) throws Exception {
+			List<Variable> fSVariablesToKeep, List<Variable> fSVariablesToEliminate) {
 
 		// Sequential part
 		SharedDataMultiplyAndMarginalize sdm = new SharedDataMultiplyAndMarginalize(tablePotentials, fSVariablesToKeep,

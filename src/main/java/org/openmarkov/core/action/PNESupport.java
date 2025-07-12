@@ -82,14 +82,11 @@ public class PNESupport extends UndoableEditSupport {
 	 * First part: Announce to the listeners than an edition can happen
 	 *
 	 * @param edit {@code PNEdit}.
-	 * @throws WrongCriterionException WrongCriterionException
-	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 * @throws ConstraintViolationException in case of illegal
 	 *                                                   {@code probNet} modification.
 	 */
 	public void announceEdit(PNEdit edit)
-			throws ConstraintViolationException, NonProjectablePotentialException,
-			WrongCriterionException {
+			throws ConstraintViolationException {
 		UndoableEditEvent event = new UndoableEditEvent(this, edit);
 		for (UndoableEditListener listener : listeners) {
 			((PNUndoableEditListener) listener).undoableEditWillHappen(event);
@@ -104,7 +101,7 @@ public class PNESupport extends UndoableEditSupport {
 	 * @throws WrongCriterionException WrongCriterionException
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
-	public void doEdit(PNEdit edit) throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
+	public void doEdit(PNEdit edit) throws DoEditException {
 		// Inform the listeners that an edition will happen
 		// May return an exception
 
@@ -199,7 +196,7 @@ public class PNESupport extends UndoableEditSupport {
 			try {
 				this.doEdit(openParenthesisEdit);
 				openParenthesisStack.push(openParenthesisEdit);
-			} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+			} catch (DoEditException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -223,7 +220,7 @@ public class PNESupport extends UndoableEditSupport {
 
 			try {
 				this.doEdit(closeParenthesisEdit);
-			} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+			} catch (DoEditException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

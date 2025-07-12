@@ -21,8 +21,7 @@ import java.util.List;
 @Constraint(name = "NoEmptyName", defaultBehavior = ConstraintBehavior.YES) public class NoEmptyName
 		extends PNConstraint {
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		// AddVariableEdit
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddNodeEdit.class);
 		for (PNEdit simpleEdit : edits) {

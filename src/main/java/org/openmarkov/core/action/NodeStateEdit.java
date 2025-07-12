@@ -139,7 +139,7 @@ public class NodeStateEdit extends SimplePNEdit {
 	}
 
 	@Override
-	public void doEdit() throws DoEditException {
+	public void doEdit() {
 		State[] newStates;
 		Variable variable = node.getVariable();
 		List<Node> children = node.getChildren();

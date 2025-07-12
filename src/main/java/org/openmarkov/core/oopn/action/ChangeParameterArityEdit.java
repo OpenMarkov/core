@@ -28,7 +28,7 @@ import javax.swing.undo.CannotUndoException;
 		this.previousArity = instance.getArity();
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		instance.setArity(arity);
 	}
 

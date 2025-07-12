@@ -451,10 +451,9 @@ public class TemporalNetOperations {
 	 * @param preResolutionEvidence evidence associated to probNet
 	 * @param networkName MID to be expanded
 	 * @return expanded network as an influence diagram with the associated evidence extended, the evidence generated from constant potentials,and the non-observed variables discretized
-	 * @throws ConstraintViolationException  - when the transformation is not compatible with influence diagram constraints
 	 * @throws UnsupportedOperationException - when probNet is not an MID, the network cannot be expanded.
 	 */
-	public static ProbNet expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence, String networkName) throws  ConstraintViolationException, UnsupportedOperationException{
+	public static ProbNet expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence, String networkName) throws UnsupportedOperationException{
 		//FIXME hardcoded
 		if (!(probNet.getNetworkType() instanceof MIDType)) throw new UnsupportedOperationException("Network has to be an MID");
 //		LogManager.getLogger().debug("Expanding");
@@ -494,9 +493,8 @@ public class TemporalNetOperations {
 	 * Transforms an expanded MID into an influence diagram by changing the ProbNet type and
 	 * setting the node variables as no temporary and changing its name by adding "|" previousTimeSlice "|"
 	 * @param expandedNetwork an expanded MID
-	 * @throws ConstraintViolationException when the transformation violates any constraint of expandedNetowrk
 	 */
-	public static void transformToID(ProbNet expandedNetwork) throws  ConstraintViolationException{
+	public static void transformToID(ProbNet expandedNetwork) {
 		List<Node>  temporalNodes = expandedNetwork.getNodes().stream().filter(node -> node.getVariable().isTemporal()).collect(Collectors.toList());
 		//Variables are considered temporal when their timeSlice is Variable.noTemporalTimeSlice=Integer.MIN_VALUE
 		temporalNodes.forEach(node -> {

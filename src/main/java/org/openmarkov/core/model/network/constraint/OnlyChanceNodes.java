@@ -31,8 +31,7 @@ import java.util.List;
 		return true;
 	}
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddNodeEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			if (((AddNodeEdit) simpleEdit).getNodeType() != NodeType.CHANCE) {

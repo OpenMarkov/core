@@ -113,10 +113,9 @@ import java.util.Map;
 	 * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
 	 *
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
-	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
+			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
 		throw new NonProjectablePotentialException("Function potential cannot be projected to a table");
 	}
 
@@ -124,11 +123,10 @@ import java.util.Map;
 	 * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
 	 *
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
-	 * @throws WrongCriterionException WrongCriterionException
 	 */
 	@Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-			Map<String, String> variableValues) throws NonProjectablePotentialException, WrongCriterionException {
+			Map<String, String> variableValues) throws NonProjectablePotentialException {
 		throw new NonProjectablePotentialException("Function potential cannot be projected to a table");
 
 	}

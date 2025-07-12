@@ -63,7 +63,7 @@ import java.util.HashSet;
 		}
 	}
 
-	@Override public void generateEdits() throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public void generateEdits() {
 
 		for (Link<Node> link : linksToRemove) {
 			edits.add(new RemoveLinkEdit(probNet, link.getNode1().getVariable(), link.getNode2().getVariable(),
@@ -75,7 +75,7 @@ import java.util.HashSet;
 		}
 	}
 
-	@Override public void doEdit() throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
+	@Override public void doEdit() throws DoEditException {
 		super.doEdit();
 		((OOPNet) probNet).getInstances().remove(instance.getName());
 		for (ReferenceLink instanceLink : instanceLinksToRemove) {

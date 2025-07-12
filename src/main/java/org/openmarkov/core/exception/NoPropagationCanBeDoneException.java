@@ -16,7 +16,7 @@ import java.util.List;
  */
 @SuppressWarnings("serial") public class NoPropagationCanBeDoneException extends OpenMarkovException {
 
-	private List<PNConstraint> constraints;
+	private final List<PNConstraint> constraints;
 
 	public NoPropagationCanBeDoneException(List<PNConstraint> constraints) {
 		this.constraints = constraints;

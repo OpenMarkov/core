@@ -58,7 +58,7 @@ import org.openmarkov.core.model.network.Variable;
 		//this.node = node;
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		//onlyTemporal && not only atemporal
 		variable.setTimeSlice(newTimeSlice);
 		if (newTimeSlice == Integer.MIN_VALUE && lastTimeSlice != Integer.MIN_VALUE && lastBaseName != null) {

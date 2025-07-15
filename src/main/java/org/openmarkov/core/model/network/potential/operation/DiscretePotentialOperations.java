@@ -1179,7 +1179,7 @@ public final class DiscretePotentialOperations {
 		denominatorVariables.removeAll(numeratorVariables);
 		numeratorVariables.addAll(denominatorVariables);
 		List<Variable> quotientVariables = numeratorVariables;
-		TablePotential quotient = new TablePotential(quotientVariables, PotentialRole.JOINT_PROBABILITY);
+		TablePotential quotient = new TablePotential(quotientVariables, PotentialRole.CONDITIONAL_PROBABILITY);
 		if ((numNumeratorVariables == 0) || (numDenominatorVariables == 0)) {
 			return divide(tNumerator, tDenominator, quotient, numNumeratorVariables, numDenominatorVariables);
 		}
@@ -1280,6 +1280,7 @@ public final class DiscretePotentialOperations {
 				quotient.values[i] = numerator.values[i] / dDenominator;
 			}
 		}
+		quotient.setPotentialRole(PotentialRole.CONDITIONAL_PROBABILITY);
 		return quotient;
 	}
 

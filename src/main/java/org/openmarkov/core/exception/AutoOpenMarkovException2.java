@@ -30,8 +30,4 @@ public abstract class AutoOpenMarkovException2 extends OpenMarkovException2 impl
         return simpleName.replace("\\n", System.lineSeparator());
     }
     
-
-    @Override public String toString() {
-        return this.localize();
-    }
 }

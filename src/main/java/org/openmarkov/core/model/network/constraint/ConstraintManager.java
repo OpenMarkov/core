@@ -7,39 +7,28 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import org.openmarkov.core.model.network.type.NetworkType;
-import org.openmarkov.plugin.PluginLoader;
-import org.openmarkov.plugin.service.FilterIF;
-import org.openmarkov.plugin.service.PluginLoaderIF;
+import org.openmarkov.plugin.PluginSearch;
 
-import java.lang.annotation.AnnotationFormatError;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.stream.Stream;
 
 public class ConstraintManager {
     private static ConstraintManager instance;
-    private PluginLoaderIF pluginLoader;
-    private HashMap<Class<? extends PNConstraint>, ConstraintBehavior> defaultConstraintBehaviors;
+    private final HashMap<Class<? extends PNConstraint>, ConstraintBehavior> defaultConstraintBehaviors;
     
     /**
      * Constructor for ConstraintManager.
      */
     @SuppressWarnings("unchecked") private ConstraintManager() {
-        super();
-        this.pluginLoader = new PluginLoader();
         this.defaultConstraintBehaviors = new HashMap<>();
-        
-        List<Class<?>> plugins = findAllConstraints();
-        for (Class<?> plugin : plugins) {
+        this.findAllConstraints().forEach(plugin -> {
             Constraint lAnnotation = plugin.getAnnotation(Constraint.class);
-            if (PNConstraint.class.isAssignableFrom(plugin)) {
-                defaultConstraintBehaviors.put((Class<? extends PNConstraint>) plugin, lAnnotation.defaultBehavior());
-            } else {
-                throw new AnnotationFormatError("Constraint annotation must be in a class that extends PNConstraint");
-            }
-        }
+            this.defaultConstraintBehaviors.put(plugin, lAnnotation.defaultBehavior());
+        });
     }
     
     // Methods
@@ -110,7 +99,7 @@ public class ConstraintManager {
         return defaultConstraintBehaviors.get(constraintClass);
     }
     
-    public final List<Class<?>> findAllConstraints() {
-        return pluginLoader.loadAllPlugins(org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy(Constraint.class));
+    public final @NotNull Stream<Class<PNConstraint>> findAllConstraints() {
+        return PluginSearch.init().annotatedWith(Constraint.class).childrenOf(PNConstraint.class).stream();
     }
 }

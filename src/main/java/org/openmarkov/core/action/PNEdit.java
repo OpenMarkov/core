@@ -8,8 +8,6 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 
 import javax.swing.undo.UndoableEdit;
@@ -22,8 +20,6 @@ public interface PNEdit extends UndoableEdit {
 	/**
 	 * Puts into effect the edition.
 	 *
-	 * @throws WrongCriterionException WrongCriterionException
-	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 * @throws DoEditException DoEditException
 	 */
 	void doEdit() throws DoEditException;

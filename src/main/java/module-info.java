@@ -43,9 +43,9 @@ open module org.openmarkov.core {
 	exports org.openmarkov.core.oopn.exception;
     exports org.openmarkov.core.stringformat;
 	exports org.openmarkov.core.test;
-	exports org.openmarkov.plugin.service;
     exports org.openmarkov.plugin;
 	exports org.openmarkov.core.localize.spi;
 	exports org.openmarkov.core.localize;
 	exports org.openmarkov.core.logging;
+    exports org.openmarkov.core.annotation;
 }

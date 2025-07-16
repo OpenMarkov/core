@@ -9,8 +9,6 @@ package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 
 import javax.swing.event.UndoableEditEvent;
@@ -98,9 +96,7 @@ public class PNESupport extends UndoableEditSupport {
 	 *
 	 * @param edit {@code PNEdit}.
 	 * @throws DoEditException DoEditException
-	 * @throws WrongCriterionException WrongCriterionException
-	 * @throws NonProjectablePotentialException NonProjectablePotentialException
-	 */
+     */
 	public void doEdit(PNEdit edit) throws DoEditException {
 		// Inform the listeners that an edition will happen
 		// May return an exception

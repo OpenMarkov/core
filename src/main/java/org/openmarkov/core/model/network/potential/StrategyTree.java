@@ -7,10 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.ConfigurationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.sdag.SDAGStrategyTree;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
@@ -708,11 +705,7 @@ public class StrategyTree extends TreeADDPotential {
 
 		if (net != null) {
 			Node node;
-			try {
-				node = net.getNode(topVariable.getName());
-			} catch (NodeNotFoundException e) {
-				node = null;
-			}
+			node = net.getNode(topVariable.getName());
 			if (node != null) {
 				switch (node.getNodeType()) {
 				case DECISION:
@@ -741,11 +734,7 @@ public class StrategyTree extends TreeADDPotential {
 
 		if (net != null) {
 			Node node;
-			try {
-				node = net.getNode(topVariable.getName());
-			} catch (NodeNotFoundException e) {
-				node = null;
-			}
+			node = net.getNode(topVariable.getName());
 			if (node != null) {
 				switch (node.getNodeType()) {
 				case DECISION:

@@ -28,7 +28,7 @@ public class PotentialManagerTest {
     ProbNet probNet;
     Node nodeU;
     
-    @BeforeEach public void setUp() throws Exception {
+    @BeforeEach public void setUp() {
         manager = new PotentialManager();
         
         probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());

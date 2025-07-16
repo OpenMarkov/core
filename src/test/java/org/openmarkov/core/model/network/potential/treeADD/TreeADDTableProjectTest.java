@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -109,7 +108,7 @@ public class TreeADDTableProjectTest {
         treeADD = new TreeADDPotential(parentVariables, variableA, PotentialRole.CONDITIONAL_PROBABILITY, branches);
     }
     
-    @Test public void testTableProject() throws NonProjectablePotentialException, WrongCriterionException {
+    @Test public void testTableProject() throws NonProjectablePotentialException {
         TablePotential tablePotential = treeADD.tableProject(null, null).get(0);
         List<Variable> variables = tablePotential.getVariables();
         Assertions.assertEquals(3, variables.size());

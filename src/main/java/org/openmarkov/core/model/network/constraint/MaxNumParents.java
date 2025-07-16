@@ -9,8 +9,6 @@ package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -66,7 +64,7 @@ import java.util.List;
 
 	}
 
-	@Override protected String getMessage() {
+	@Override protected String constraintDescription() {
 		return "a node may not have more than " + maxNumParents + "parents.";
 	}
 

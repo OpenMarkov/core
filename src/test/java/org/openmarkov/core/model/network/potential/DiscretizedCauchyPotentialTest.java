@@ -9,9 +9,7 @@ package org.openmarkov.core.model.network.potential;
 
 import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Variable;
@@ -55,7 +53,7 @@ public class DiscretizedCauchyPotentialTest {
     }
     
     @Disabled
-    @Test public void testTableProject() throws NonProjectablePotentialException, WrongCriterionException {
+    @Test public void testTableProject() throws NonProjectablePotentialException {
         
         TablePotential projectedPotential = discretizedPotential.tableProject(new EvidenceCase(), null).get(0);
         
@@ -76,8 +74,7 @@ public class DiscretizedCauchyPotentialTest {
     
     @Disabled
     @Test public void testTableProjectWithEvidence()
-            throws NonProjectablePotentialException, WrongCriterionException, InvalidStateException,
-            IncompatibleEvidenceException {
+            throws IncompatibleEvidenceException, NonProjectablePotentialException {
         
         EvidenceCase evidence = new EvidenceCase();
         evidence.addFinding(new Finding(predictedAudiometry, 2)); // on
@@ -100,8 +97,7 @@ public class DiscretizedCauchyPotentialTest {
     
     @Disabled("Ignored because an ArrayIndexOutOfBoundsException")
     @Test public void testTableProjectWithFullEvidence()
-            throws NonProjectablePotentialException, WrongCriterionException, InvalidStateException,
-            IncompatibleEvidenceException {
+            throws IncompatibleEvidenceException, NonProjectablePotentialException {
         
         EvidenceCase evidence = new EvidenceCase();
         evidence.addFinding(new Finding(predictedAudiometry, 2)); // on

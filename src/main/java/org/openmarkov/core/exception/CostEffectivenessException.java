@@ -13,9 +13,5 @@ package org.openmarkov.core.exception;
 	public CostEffectivenessException(String message) {
 		super(message);
 	}
-
-	public CostEffectivenessException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
+	
 }

@@ -50,7 +50,8 @@ public class MinPotentialTest {
     }
     
     @Test public void testGetCPT() {
-        double[] cPTValues = minPotential.getCPT().values;
+        double[] cPTValues = null;
+        cPTValues = minPotential.getCPT().values;
         assertEquals(0.01, cPTValues[0], admissibleError);
         assertEquals(0.1, cPTValues[1], admissibleError);
         assertEquals(0.278, cPTValues[4], admissibleError);

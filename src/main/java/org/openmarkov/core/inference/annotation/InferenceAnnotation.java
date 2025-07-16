@@ -6,6 +6,11 @@
  */
 package org.openmarkov.core.inference.annotation;
 
+import org.openmarkov.core.annotation.Limits;
+import org.openmarkov.core.annotation.RequiredConstructors;
+import org.openmarkov.core.inference.InferenceAlgorithm;
+import org.openmarkov.core.model.network.ProbNet;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -16,6 +21,9 @@ import java.lang.annotation.Target;
  * @author myebra
  * @author mpalacios
  */
+
+@Limits(classesThatCanBeAnnotated = InferenceAlgorithm.class,
+		requiredConstructors = @RequiredConstructors(ProbNet.class))
 @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface InferenceAnnotation {
 	/**
 	 * Gets the name of the class

@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.action;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -63,23 +62,13 @@ import java.util.List;
 
 		for (Node parent : parents) {
 			String name = parent.getName();
-			try {
-				addEdit(new RemoveLinkEdit(node.getProbNet(), probNet.getVariable(name),
-						probNet.getVariable(node.getName()), true));
-			} catch (NodeNotFoundException e) {
-				System.err.println(e.getMessage());
-				e.printStackTrace(System.err);
-			}
-		}
+            addEdit(new RemoveLinkEdit(node.getProbNet(), probNet.getVariable(name),
+                    probNet.getVariable(node.getName()), true));
+        }
 		for (Node child : children) {
-			try {
-				addEdit(new RemoveLinkEdit(node.getProbNet(), probNet.getVariable(node.getName()),
-						probNet.getVariable(child.getName()), true));
-			} catch (NodeNotFoundException e) {
-				System.err.println(e.getMessage());
-				e.printStackTrace(System.err);
-			}
-		}
+            addEdit(new RemoveLinkEdit(node.getProbNet(), probNet.getVariable(node.getName()),
+                    probNet.getVariable(child.getName()), true));
+        }
 
 		// add edit to remove the variable
 		addEdit(new RemoveNodeEdit(probNet, node));

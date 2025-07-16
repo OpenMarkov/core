@@ -13,7 +13,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.VariableTypeEdit;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -29,12 +28,12 @@ public class OnlyFiniteStateVariablesTest {
     private ProbNet mixedVariableInfluenceDiagram;
     
     // Methods
-    @BeforeEach public void setUp() throws NodeNotFoundException {
+    @BeforeEach public void setUp() {
         influenceDiagram = ConstraintsTests.getInfuenceDiagram();
         mixedVariableInfluenceDiagram = getMixedVariableInfluenceDiagram();
     }
     
-    private ProbNet getMixedVariableInfluenceDiagram() throws NodeNotFoundException {
+    private ProbNet getMixedVariableInfluenceDiagram() {
         ProbNet net = ConstraintsTests.getInfuenceDiagram();
         Variable vC = new Variable("C");
         Variable vU = net.getVariable("U");

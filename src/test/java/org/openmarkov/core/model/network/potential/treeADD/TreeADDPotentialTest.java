@@ -78,7 +78,7 @@ public class TreeADDPotentialTest {
     
     private LabelledLink<Node> labelledlink1;
     
-    @BeforeEach public void setUp() throws Exception {
+    @BeforeEach public void setUp() {
         
         // create variables
         variableA = new Variable("A", 2);

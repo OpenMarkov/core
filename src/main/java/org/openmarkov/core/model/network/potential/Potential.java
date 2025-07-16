@@ -7,11 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -140,11 +136,10 @@ public abstract class Potential {
 	 * @param evidenceCase {@code EvidenceCase}
 	 * @return The conditional probability table of this potential given the
 	 * evidence
-	 * @throws WrongCriterionException WrongCriterionException
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public TablePotential getCPT(EvidenceCase evidenceCase)
-			throws NonProjectablePotentialException, WrongCriterionException {
+			throws NonProjectablePotentialException {
 		List<TablePotential> potentials = tableProject(evidenceCase, null);
 		HashSet<Variable> variablesToEliminate = new HashSet<>();
 		// Fill it with variables appearing in all potentials except this
@@ -161,9 +156,8 @@ public abstract class Potential {
 	 *
 	 * @return {@code TablePotential}
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
-	 * @throws WrongCriterionException WrongCriterionException
 	 */
-	public TablePotential getCPT() throws NonProjectablePotentialException, WrongCriterionException {
+	public TablePotential getCPT() throws NonProjectablePotentialException {
 		return getCPT(new EvidenceCase());
 	}
 
@@ -235,13 +229,12 @@ public abstract class Potential {
 	 * @param evidenceCase               {@code EvidenceCase}
 	 * @param inferenceOptions Inference options
 	 * @param alreadyProjectedPotentials {@code List} of already projected potentials
-	 * @throws WrongCriterionException WrongCriterionException
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 * @return List of potentials resulting from the projection
 	 */
 	public abstract List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			List<TablePotential> alreadyProjectedPotentials)
-			throws NonProjectablePotentialException, WrongCriterionException;
+			throws NonProjectablePotentialException;
 
 	//    /** @return isUtility <code>boolean</code> */
 	//    public boolean isUtility ()
@@ -250,12 +243,12 @@ public abstract class Potential {
 	//    }
 
 	public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
-			throws NonProjectablePotentialException, WrongCriterionException {
+			throws NonProjectablePotentialException {
 		return tableProject(evidenceCase, inferenceOptions, new ArrayList<TablePotential>());
 	}
 
 	public Potential project(EvidenceCase evidenceCase)
-			throws WrongCriterionException, NonProjectablePotentialException {
+			throws NonProjectablePotentialException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -287,11 +280,8 @@ public abstract class Potential {
 	 *
 	 * @param evidenceCase {@code EvidenceCase}
 	 * @return {@code Collection} of {@code Finding}s
-	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
-	 * @throws WrongCriterionException WrongCriterionException
 	 */
-	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
-			throws IncompatibleEvidenceException, WrongCriterionException {
+	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
 		return new ArrayList<>();
 	}
 
@@ -334,9 +324,8 @@ public abstract class Potential {
 	 * @param timeDifference {@code int}
 	 * @param probNet        This parameter is necessary because the shifted variables
 	 *                       are taken from the network. {@code ProbNet}
-	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
-	public void shift(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
+	public void shift(ProbNet probNet, int timeDifference) {
 		setVariables(getShiftedVariables(probNet, timeDifference));
 	}
 
@@ -353,12 +342,8 @@ public abstract class Potential {
 		if (numVariables > 1) {
 			Variable childVariable = variables.get(0);
 			for (int i = 1; i < numVariables; i++) {
-				try {
-					probNet.addLink(variables.get(i), childVariable, true);
-				} catch (NodeNotFoundException e) {
-					// Unreachable code
-					System.err.println("Reached unreachable code in Potential.createDirectedLinks: " + e.getMessage());
-				}
+				probNet.addLink(variables.get(i), childVariable, true);
+				
 			}
 		}
 	}
@@ -368,12 +353,11 @@ public abstract class Potential {
 	 * utility variable but shifted in time as indicated by timeDifference
 	 * @param probNet Network
 	 * @param timeDifference Time difference
-	 * @throws NodeNotFoundException NodeNotFoundException
 	 * @return a list with the same variables as this potential, including the
 	 * 	 utility variable but shifted in time as indicated by timeDifference
 	 * Condition: The network must contain the shifted variables.
 	 */
-	public List<Variable> getShiftedVariables(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
+	public List<Variable> getShiftedVariables(ProbNet probNet, int timeDifference) {
 		List<Variable> shiftedVariables = new ArrayList<Variable>(variables.size());
 
 		// also shift variables within the tree
@@ -577,11 +561,7 @@ public abstract class Potential {
 
 		List<Variable> newReferences = new ArrayList<>();
 		for (Variable variable : this.variables) {
-			try {
-				newReferences.add(copyNet.getVariable(variable.getName()));
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-			}
+			newReferences.add(copyNet.getVariable(variable.getName()));
 		}
 
 		potential.setVariables(newReferences);

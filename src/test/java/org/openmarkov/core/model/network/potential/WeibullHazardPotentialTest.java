@@ -12,9 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Variable;
@@ -51,7 +49,7 @@ public class WeibullHazardPotentialTest {
     }
     
     @Test
-    public void testTableProject() throws IncompatibleEvidenceException, InvalidStateException, NonProjectablePotentialException, WrongCriterionException {
+    public void testTableProject() throws IncompatibleEvidenceException, NonProjectablePotentialException {
         EvidenceCase evidence = new EvidenceCase();
         evidence.addFinding(new Finding(ageVar, 65.0));
         List<TablePotential> projectedPotentials = potential.tableProject(evidence, null);

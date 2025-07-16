@@ -10,8 +10,7 @@ package org.openmarkov.core.localize;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.localize.spi.LocalizeResourcesProvider;
-import org.openmarkov.plugin.Filter;
-import org.openmarkov.plugin.PluginLoader;
+import org.openmarkov.plugin.PluginSearch;
 
 import javax.swing.event.EventListenerList;
 import java.lang.reflect.InvocationTargetException;
@@ -122,7 +121,7 @@ public class StringDatabase {
     public void setLanguage(String newLanguage) {
         if (!newLanguage.equals(language)) {
             language = (newLanguage.equals("es")) ? "es" : "en";
-            language="en";
+            language = "en";
             setLocale(getLocaleByLanguage(language));
             /* Set format locale to english (to format decimal point)*/
             Locale.setDefault(Locale.Category.FORMAT, Locale.ENGLISH);
@@ -274,21 +273,21 @@ public class StringDatabase {
     }
     
     public static @NotNull Stream<LocalizeResourcesProvider> getBundleProviders() {
-        return new PluginLoader()
-                .loadAllPlugins(Filter.filter().toImplement(LocalizeResourcesProvider.class))
-                .stream()
-                .map(c -> {
-                    try {
-                        return (LocalizeResourcesProvider) c.getDeclaredConstructor().newInstance();
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                             NoSuchMethodException e) {
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull);
+        return PluginSearch.init()
+                    .childrenOf(LocalizeResourcesProvider.class)
+                    .stream()
+                    .map(c -> {
+                        try {
+                            return c.getDeclaredConstructor().newInstance();
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                                 NoSuchMethodException e) {
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull);
     }
     
-    public Map<String, StringBundle> getAllBundles(){
+    public Map<String, StringBundle> getAllBundles() {
         return this.bundles;
     }
     

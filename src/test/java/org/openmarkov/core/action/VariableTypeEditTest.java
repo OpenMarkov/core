@@ -12,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -67,7 +65,7 @@ public class VariableTypeEditTest {
         return probNet;
     }
     
-    @BeforeEach public void setUp() throws Exception {
+    @BeforeEach public void setUp() {
         probNet = getProbNet4Test();
         finiteStatesNode = probNet.getNode("A");
         discretizedNode = probNet.getNode("B");
@@ -75,7 +73,7 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testNumeric2Discretized() throws NonProjectablePotentialException, DoEditException, ConstraintViolationException, WrongCriterionException {
+    public void testNumeric2Discretized() throws DoEditException, ConstraintViolationException {
         State[] defaultStates = numericNode.getProbNet().getDefaultStates();
         State[] states = numericNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) numericNode.getVariable().getPartitionedInterval()
@@ -119,7 +117,7 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testNumeric2FiniteStates() throws NonProjectablePotentialException, DoEditException, ConstraintViolationException, WrongCriterionException {
+    public void testNumeric2FiniteStates() throws DoEditException, ConstraintViolationException {
         State[] defaultStates = numericNode.getProbNet().getDefaultStates();
         State[] states = numericNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) numericNode.getVariable().getPartitionedInterval()
@@ -162,7 +160,7 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testFiniteStates2Discretized() throws NonProjectablePotentialException, DoEditException, ConstraintViolationException, WrongCriterionException {
+    public void testFiniteStates2Discretized() throws DoEditException, ConstraintViolationException {
         State[] defaultStates = finiteStatesNode.getProbNet().getDefaultStates();
         State[] states = finiteStatesNode.getVariable().getStates().clone();
         
@@ -196,7 +194,7 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testFiniteStates2Numeric() throws NonProjectablePotentialException, DoEditException, ConstraintViolationException, WrongCriterionException {
+    public void testFiniteStates2Numeric() throws DoEditException, ConstraintViolationException {
         State[] defaultStates = finiteStatesNode.getProbNet().getDefaultStates();
         State[] states = finiteStatesNode.getVariable().getStates().clone();
         
@@ -228,7 +226,7 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testDiscretized2FiniteStates() throws NonProjectablePotentialException, DoEditException, ConstraintViolationException, WrongCriterionException {
+    public void testDiscretized2FiniteStates() throws DoEditException, ConstraintViolationException {
         State[] states = discretizedNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) discretizedNode.getVariable()
                                                                                    .getPartitionedInterval().clone();
@@ -262,7 +260,7 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testDiscretized2Numeric() throws NonProjectablePotentialException, DoEditException, ConstraintViolationException, WrongCriterionException {
+    public void testDiscretized2Numeric() throws DoEditException, ConstraintViolationException {
         State[] states = discretizedNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) discretizedNode.getVariable()
                                                                                    .getPartitionedInterval().clone();

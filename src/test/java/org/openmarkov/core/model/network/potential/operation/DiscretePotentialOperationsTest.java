@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.*;
+import org.openmarkov.core.exception.UnsupportedOperationException;
 import org.openmarkov.core.inference.Choice;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
@@ -133,33 +134,36 @@ public class DiscretePotentialOperationsTest {
         assertEquals(0.014, value, maxError);
     }
     
-    @SuppressWarnings("unchecked") @Test public void testNewMultiply() throws PotentialOperationException {
+    @SuppressWarnings("unchecked") @Test
+    public void testNewMultiply() throws UnsupportedOperationException {
         // Test constant multiplication
         List<TablePotential> potentials = allPotentials;
         
         // Only 1 potential so in this case the method does not do anything
         potentials.add(constantPotentials.get(1));
         aPotential = (TablePotential) PotentialOperations.multiply(potentials);
+        
         assertEquals(1, aPotential.values.length);
         assertEquals(2.0, aPotential.values[0], maxError);
         
         // Two constant potentials
         potentials.add(constantPotentials.get(1));
-        aPotential = (TablePotential) PotentialOperations.multiply(potentials);
+            aPotential = (TablePotential) PotentialOperations.multiply(potentials);
+
         assertEquals(4.0, aPotential.values[0], maxError);
         
         // Several constant potentials
         for (int i = 2; i < numConstantPotentials; i++) {
             potentials.add(constantPotentials.get(i));
         }
-        aPotential = (TablePotential) PotentialOperations.multiply(potentials);
+            aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         assertEquals(7257600.0, aPotential.values[0], maxError);
         
         // Test constant and binary potential multiplication
         // Only 1 potential so in this case the method does not do anything
         potentials.clear();
         potentials.add(normalPotentials.get(0));
-        aPotential = (TablePotential) PotentialOperations.multiply(potentials);
+            aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         
         // Check variables:
         // Same number of variables
@@ -176,7 +180,7 @@ public class DiscretePotentialOperationsTest {
         
         // Two normal potentials
         potentials.add(normalPotentials.get(1));
-        aPotential = (TablePotential) PotentialOperations.multiply(potentials);
+            aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         // check table size
         assertEquals(81 * 81, aPotential.values.length);
         // check table content
@@ -195,7 +199,7 @@ public class DiscretePotentialOperationsTest {
         potentials.clear();
         potentials.add(constantPotentials.get(1));
         potentials.add(normalPotentials.get(0));
-        aPotential = (TablePotential) PotentialOperations.multiply(potentials);
+            aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         assertEquals(81, aPotential.values.length);
         assertEquals(2.0, aPotential.values[0], maxError);
         int[] coordinate2 = {1, 0, 0, 0};
@@ -207,7 +211,7 @@ public class DiscretePotentialOperationsTest {
         potentials.clear();
         potentials.add(normalPotentials.get(0));
         potentials.add(constantPotentials.get(1));
-        aPotential = (TablePotential) PotentialOperations.multiply(potentials);
+            aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         assertEquals(81, aPotential.values.length);
         assertEquals(2.0, aPotential.values[0], maxError);
         variablesPotentials = (ArrayList<Variable>) ((Object) getUnionVariablesOrdered(potentials));
@@ -219,7 +223,7 @@ public class DiscretePotentialOperationsTest {
         potentials.add(constantPotentials.get(1));
         potentials.add(constantPotentials.get(2));
         potentials.add(normalPotentials.get(0));
-        aPotential = (TablePotential) PotentialOperations.multiply(potentials);
+            aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         assertEquals(81, aPotential.values.length);
         assertEquals(6.0, aPotential.values[0], maxError);
         variablesPotentials = (ArrayList<Variable>) ((Object) getUnionVariablesOrdered(potentials));
@@ -232,7 +236,7 @@ public class DiscretePotentialOperationsTest {
         potentials.add(constantPotentials.get(1));
         potentials.add(normalPotentials.get(0));
         potentials.add(constantPotentials.get(2));
-        aPotential = (TablePotential) PotentialOperations.multiply(potentials);
+            aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         assertEquals(81, aPotential.values.length);
         assertEquals(6.0, aPotential.values[0], maxError);
         variablesPotentials = (ArrayList<Variable>) ((Object) getUnionVariablesOrdered(potentials));
@@ -244,7 +248,7 @@ public class DiscretePotentialOperationsTest {
         potentials.add(normalPotentials.get(0));
         potentials.add(constantPotentials.get(1));
         potentials.add(constantPotentials.get(2));
-        aPotential = (TablePotential) PotentialOperations.multiply(potentials);
+            aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         assertEquals(81, aPotential.values.length);
         assertEquals(6.0, aPotential.values[0], maxError);
         variablesPotentials = (ArrayList<Variable>) ((Object) getUnionVariablesOrdered(potentials));
@@ -283,8 +287,8 @@ public class DiscretePotentialOperationsTest {
     }
     
     @Test
-    /** Multiplies and marginalize projected potentials */ public void testMultiplyAndMarginalizeProjected()
-            throws WrongCriterionException, NonProjectablePotentialException, IncompatibleEvidenceException, InvalidStateException {
+    /** Multiplies and marginalize projected potentials */
+    public void testMultiplyAndMarginalizeProjected() throws Exception {
         // Create data
         // Variables
         Variable A = new Variable("A", 2);
@@ -392,7 +396,7 @@ public class DiscretePotentialOperationsTest {
     @Test public void testGetAccumulatedOffsets() {
     }
     
-    @Test public void testNormalize() throws NormalizeNullVectorException {
+    @Test public void testNormalize() throws CannotNormalizeNullVectorException {
         TablePotential multiplication = DiscretePotentialOperations.multiply(commonVariables.potentials);
         //			TablePotential normalized;
         //				normalized = (TablePotential)
@@ -583,7 +587,7 @@ public class DiscretePotentialOperationsTest {
     
     @Test
     @Disabled("Manolo> Hay un problema con la forma en que el métoodo SumOutVariable particiona el conjunto de potenciales entre de probabilidad y de utilidad")
-    public void testSumOutVariable2() throws NodeNotFoundException, NonProjectablePotentialException, WrongCriterionException {
+    public void testSumOutVariable2() throws NonProjectablePotentialException {
         ProbNet perfectKnowledge = IDFactory.createNoKnowledge();
         Variable disease = perfectKnowledge.getVariable("Disease");
         Variable therapy = perfectKnowledge.getVariable("Therapy");
@@ -681,7 +685,7 @@ public class DiscretePotentialOperationsTest {
      * @param potentials
      * @return
      */
-    private List<TablePotential> getTablePotentials(List<Potential> potentials) throws NonProjectablePotentialException, WrongCriterionException {
+    private List<TablePotential> getTablePotentials(List<Potential> potentials) throws NonProjectablePotentialException {
         List<TablePotential> tablePotentials = new ArrayList<>(potentials.size());
         for (Potential potential : potentials) {
             if (potential instanceof ExactDistrPotential) {
@@ -695,7 +699,7 @@ public class DiscretePotentialOperationsTest {
     
     @Disabled("Ignored because a NullPointerException")
     @Test
-    public void testMaxOutVariable() throws NodeNotFoundException, NonProjectablePotentialException, WrongCriterionException {
+    public void testMaxOutVariable() throws NonProjectablePotentialException {
         // Method invocation
         ProbNet perfectKnowledge = IDFactory.createPerfectKnowledge();
         Variable disease = perfectKnowledge.getVariable("Disease");
@@ -732,7 +736,7 @@ public class DiscretePotentialOperationsTest {
         assertEquals(0, therapy.getStateIndex(noState));
     }
     
-    private List<TablePotential> projectToTable(List<Potential> potentials, ProbNet probNet) throws NonProjectablePotentialException, WrongCriterionException {
+    private List<TablePotential> projectToTable(List<Potential> potentials, ProbNet probNet) throws NonProjectablePotentialException {
         List<TablePotential> tablePotentials = new ArrayList<TablePotential>(potentials.size());
         for (Potential potential : potentials) {
             List<TablePotential> projectedPotentials = potential

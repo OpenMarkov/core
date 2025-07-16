@@ -15,7 +15,6 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -31,12 +30,12 @@ public class MaxNumParentsTest {
     
     private ProbNet net;
     
-    @BeforeEach public void setUp() throws NodeNotFoundException {
+    @BeforeEach public void setUp() {
         net = ConstraintsTests.getTestProbNetDirected();
     }
     
     @Tag(TestSpeed.SLOW)
-    @Test public void testCheckProbNet() throws NodeNotFoundException {
+    @Test public void testCheckProbNet() {
         MaxNumParents constraint = new MaxNumParents();
         constraint.setMaxNumParents(1);
         net.removeConstraint(constraint);

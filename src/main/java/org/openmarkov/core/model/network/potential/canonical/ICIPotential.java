@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.canonical;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -144,13 +142,12 @@ public abstract class ICIPotential extends Potential {
 	 * @param evidenceCase {@code EvidenceCase}
 	 * @return {@code ArrayList} of {@code Potential}
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
-	 * @throws WrongCriterionException WrongCriterionException
-	 */
+     */
 	// TODO This is the actual valid tableProject that should be used once the
 	// bug in projectEvidence (assuming tableProject always returns a
 	// one-element list of potentials) is solved
 	public List<TablePotential> internalTableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
-			throws NonProjectablePotentialException, WrongCriterionException {
+			throws NonProjectablePotentialException {
 		List<TablePotential> projectedPotentials = new ArrayList<>();
 		for (TablePotential subPotential : getSubpotentials()) {
 			projectedPotentials.add(subPotential.tableProject(evidenceCase, null).get(0));
@@ -161,7 +158,7 @@ public abstract class ICIPotential extends Potential {
 	@Override
 	public List<TablePotential> tableProject(
 			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials)
-			throws NonProjectablePotentialException, WrongCriterionException {
+            throws NonProjectablePotentialException {
 		List<TablePotential> potentials = internalTableProject(evidenceCase, inferenceOptions);
 		HashSet<Variable> variablesToEliminate = new HashSet<>();
 		// Fill it with variables appearing in all potentials except this
@@ -441,7 +438,7 @@ public abstract class ICIPotential extends Potential {
 		if (expandedPotential == null) {
 			try {
 				expandedPotential = getCPT();
-			} catch (NonProjectablePotentialException | WrongCriterionException e) {
+			} catch (NonProjectablePotentialException e) {
 				e.printStackTrace();
 			}
 		}
@@ -456,25 +453,17 @@ public abstract class ICIPotential extends Potential {
 		potential.leakyParameters = this.leakyParameters.clone();
 
 		if (this.leakyVariable != null) {
-			try {
-				potential.leakyVariable = copyNet.getVariable(this.leakyVariable.getName());
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
+            potential.leakyVariable = copyNet.getVariable(this.leakyVariable.getName());
+        }
 
 		potential.noisyParameters = this.noisyParameters.clone();
 
 		HashMap<Variable, Variable> newZVariables = new HashMap<>();
 		for (Variable keyVariable : this.zVariables.keySet()) {
-			try {
-				Variable newKeyVariable = copyNet.getVariable(keyVariable.getName());
-				Variable newValueVariable = copyNet.getVariable(this.zVariables.get(keyVariable).getName());
-				newZVariables.put(newKeyVariable, newValueVariable);
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
+            Variable newKeyVariable = copyNet.getVariable(keyVariable.getName());
+            Variable newValueVariable = copyNet.getVariable(this.zVariables.get(keyVariable).getName());
+            newZVariables.put(newKeyVariable, newValueVariable);
+        }
 		potential.zVariables = newZVariables;
 
 		return potential;

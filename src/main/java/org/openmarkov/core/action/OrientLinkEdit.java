@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.action;
 
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
@@ -27,17 +25,12 @@ import org.openmarkov.core.model.network.Variable;
 	// Methods
 	/**
 	 * Do the edition by removing the existing link and adding a new directed link between the same two variables.
-	 * @throws DoEditException DoEditException
 	 */
 	@Override
-	public void doEdit() throws DoEditException {
-		try {
-			probNet.removeLink(variable1, variable2, false);
-			probNet.addLink(variable1, variable2, true);
-		} catch (NodeNotFoundException e) {
-			throw new DoEditException(e);
-		}
-	}
+	public void doEdit() {
+        probNet.removeLink(variable1, variable2, false);
+        probNet.addLink(variable1, variable2, true);
+    }
 
 	/**
 	 * Undo the edition by removing the existing link and adding
@@ -45,14 +38,9 @@ import org.openmarkov.core.model.network.Variable;
 	 */
 	public void undo() {
 		super.undo();
-		try {
-			probNet.removeLink(variable1, variable2, true);
-			probNet.addLink(variable1, variable2, false);
-		} catch (NodeNotFoundException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace(System.err);
-		}
-	}
+        probNet.removeLink(variable1, variable2, true);
+        probNet.addLink(variable1, variable2, false);
+    }
 
 	/**
 	 * Method to compare two directLinkEdits comparing the names of

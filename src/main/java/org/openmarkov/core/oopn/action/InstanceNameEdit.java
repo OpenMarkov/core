@@ -9,8 +9,6 @@ package org.openmarkov.core.oopn.action;
 
 import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.NodeNameEdit;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oopn.Instance;

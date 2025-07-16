@@ -6,7 +6,6 @@
  */
 package org.openmarkov.core.inference;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;

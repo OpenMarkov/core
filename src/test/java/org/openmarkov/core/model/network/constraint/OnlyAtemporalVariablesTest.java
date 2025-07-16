@@ -13,9 +13,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -27,7 +24,7 @@ public class OnlyAtemporalVariablesTest {
     
     private ProbNet influenceDiagram;
     
-    @BeforeEach public void setUp() throws NodeNotFoundException {
+    @BeforeEach public void setUp() {
         influenceDiagram = ConstraintsTests.getInfuenceDiagram();
     }
     
@@ -42,7 +39,7 @@ public class OnlyAtemporalVariablesTest {
     }
     
     @Test
-    public void testUndoableEditWillHappen() throws NonProjectablePotentialException, ConstraintViolationException, WrongCriterionException {
+    public void testUndoableEditWillHappen() throws ConstraintViolationException {
         PNESupport pNESupport = new PNESupport(false);
         PNConstraint constraint = new OnlyAtemporalVariables();
         

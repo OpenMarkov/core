@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.action;
 
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -101,14 +99,10 @@ import java.util.List;
 
 	public void undo() {
 		super.undo();
-
-		try {
-			node2 = probNet.getNode(variable2.getName());
-		} catch (NodeNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (updatePotentials) {
+        
+        node2 = probNet.getNode(variable2.getName());
+        
+        if (updatePotentials) {
 			node2.setPotentials(oldPotentials);
 		}
 		probNet.removeLink(variable1, variable2, isDirected);

@@ -9,9 +9,7 @@ package org.openmarkov.core.model.network.potential;
 
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -104,7 +102,7 @@ import java.util.Map;
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-			Map<String, String> variableValues) throws NonProjectablePotentialException, WrongCriterionException {
+			Map<String, String> variableValues) throws NonProjectablePotentialException {
 		Variable conditionedVariable = getConditionedVariable();
 		// Fill arrays numericValues and evidencelessVariables
 
@@ -214,7 +212,7 @@ import java.util.Map;
 		return super.toString() + " = Hazard (Weibull)";
 	}
 
-	@Override public void shift(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
+	@Override public void shift(ProbNet probNet, int timeDifference) {
 		super.shift(probNet, timeDifference);
 		if (timeVariable != null) {
 			timeVariable = probNet.getShiftedVariable(timeVariable, timeDifference);
@@ -259,12 +257,8 @@ import java.util.Map;
 		potential.setLog(this.log);
 
 		if (timeVariable != null) {
-			try {
-				potential.setTimeVariable(copyNet.getVariable(this.getTimeVariable().getName()));
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
+            potential.setTimeVariable(copyNet.getVariable(this.getTimeVariable().getName()));
+        }
 
 		return potential;
 	}

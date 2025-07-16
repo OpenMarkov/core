@@ -10,7 +10,6 @@ package org.openmarkov.core.model.network.potential;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
@@ -257,7 +256,7 @@ public class PotentialTest {
     }
     
     @Test
-    public void conditionalGaussianPotentialDeepCopyTest() throws NodeNotFoundException {
+    public void conditionalGaussianPotentialDeepCopyTest() {
         Variable variable = new Variable("CycleLengthShiftVariable");
         List<Variable> variableList = new ArrayList<>();
         variableList.add(variable);

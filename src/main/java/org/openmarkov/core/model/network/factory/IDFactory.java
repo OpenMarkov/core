@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.factory;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -68,13 +67,9 @@ public class IDFactory extends NetsFactory {
 		potentialU = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableUX, variableU, variableX);
 
 		//Links throws NodeNotFoundException
-		try {
-			probNet.addLink(variableX, variableU, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		addPotentials(probNet, potentialX, potentialU);
+        probNet.addLink(variableX, variableU, true);
+        
+        addPotentials(probNet, potentialX, potentialU);
 
 		return probNet;
 	}
@@ -124,16 +119,12 @@ public class IDFactory extends NetsFactory {
 				variableD);
 
 		//Links throws NodeNotFoundException
-		try {
-			probNet.addLink(variableX, variableY, true);
-			probNet.addLink(variableY, variableD, true);
-			probNet.addLink(variableX, variableU, true);
-			probNet.addLink(variableD, variableU, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		addPotentials(probNet, potentialX, potentialY, potentialU);
+        probNet.addLink(variableX, variableY, true);
+        probNet.addLink(variableY, variableD, true);
+        probNet.addLink(variableX, variableU, true);
+        probNet.addLink(variableD, variableU, true);
+        
+        addPotentials(probNet, potentialX, potentialY, potentialU);
 
 		return probNet;
 	}
@@ -172,14 +163,10 @@ public class IDFactory extends NetsFactory {
 				variableD);
 
 		//Links throws NodeNotFoundException
-		try {
-			probNet.addLink(variableX, variableU, true);
-			probNet.addLink(variableD, variableU, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		addPotentials(probNet, potentialX, potentialU);
+        probNet.addLink(variableX, variableU, true);
+        probNet.addLink(variableD, variableU, true);
+        
+        addPotentials(probNet, potentialX, potentialU);
 
 		return probNet;
 	}
@@ -231,13 +218,9 @@ public class IDFactory extends NetsFactory {
 		potentialU = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableUD, variableU, variableD);
 
 		//Links throws NodeNotFoundException
-		try {
-			probNet.addLink(variableD, variableU, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		addPotentials(probNet, potentialU);
+        probNet.addLink(variableD, variableU, true);
+        
+        addPotentials(probNet, potentialU);
 
 		return probNet;
 	}
@@ -378,19 +361,15 @@ public class IDFactory extends NetsFactory {
 		potentialU3 = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableU3T, variableU3, variableT);
 
 		//Links throws NodeNotFoundException
-		try {
-			probNet.addLink(variableX, variableY, true);
-			probNet.addLink(variableT, variableY, true);
-			probNet.addLink(variableY, variableD, true);
-			probNet.addLink(variableX, variableU1, true);
-			probNet.addLink(variableD, variableU1, true);
-			probNet.addLink(variableD, variableU2, true);
-			probNet.addLink(variableT, variableU3, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		addPotentials(probNet, potentialX, potentialY, potentialU1, potentialU2, potentialU3);
+        probNet.addLink(variableX, variableY, true);
+        probNet.addLink(variableT, variableY, true);
+        probNet.addLink(variableY, variableD, true);
+        probNet.addLink(variableX, variableU1, true);
+        probNet.addLink(variableD, variableU1, true);
+        probNet.addLink(variableD, variableU2, true);
+        probNet.addLink(variableT, variableU3, true);
+        
+        addPotentials(probNet, potentialX, potentialY, potentialU1, potentialU2, potentialU3);
 
 		return probNet;
 	}
@@ -419,14 +398,10 @@ public class IDFactory extends NetsFactory {
 		SumPotential potentialU = createSumPotential(variableU, utilVariables);
 
 		// Links throws NodeNotFoundException
-		try {
-			for (Variable utilVar : utilVariables) {
-				probNet.addLink(utilVar, variableU, true);
-			}
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-		addPotentials(probNet, potentialU);
+        for (Variable utilVar : utilVariables) {
+            probNet.addLink(utilVar, variableU, true);
+        }
+        addPotentials(probNet, potentialU);
 
 		return probNet;
 	}
@@ -552,17 +527,13 @@ public class IDFactory extends NetsFactory {
 		potentialU2 = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableU2D, variableU2, variableD);
 
 		//Links throws NodeNotFoundException
-		try {
-			probNet.addLink(variableX, variableY, true);
-			probNet.addLink(variableY, variableD, true);
-			probNet.addLink(variableX, variableU1, true);
-			probNet.addLink(variableD, variableU1, true);
-			probNet.addLink(variableD, variableU2, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		addPotentials(probNet, potentialX, potentialY, potentialU1, potentialU2);
+        probNet.addLink(variableX, variableY, true);
+        probNet.addLink(variableY, variableD, true);
+        probNet.addLink(variableX, variableU1, true);
+        probNet.addLink(variableD, variableU1, true);
+        probNet.addLink(variableD, variableU2, true);
+        
+        addPotentials(probNet, potentialX, potentialY, potentialU1, potentialU2);
 
 		return probNet;
 	}

@@ -10,10 +10,7 @@ package org.openmarkov.core.model.network;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.inference.PartialOrderDAN;
 import org.openmarkov.core.model.graph.Link;
@@ -97,8 +94,6 @@ public class ProbNetOperations {
 						}
 					}
 				} catch (NonProjectablePotentialException e) {
-					e.printStackTrace(); // Unreachable code
-				} catch (WrongCriterionException e) {
 					e.printStackTrace(); // Unreachable code
 				}
 			}
@@ -501,7 +496,7 @@ public class ProbNetOperations {
 							scalarValue = oldPotential.tableProject(configuration, inferenceOptions).get(0).values[0];
 							scalarValue = oldVariable.round(scalarValue);
 							projectedValues[index++] = scalarValue;
-						} catch (NonProjectablePotentialException | WrongCriterionException e) {
+						} catch (NonProjectablePotentialException e) {
 							e.printStackTrace();
 						}
 						if (!newStates.contains(scalarValue)) {

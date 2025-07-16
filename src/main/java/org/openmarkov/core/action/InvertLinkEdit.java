@@ -8,7 +8,6 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -52,14 +51,9 @@ import java.util.List;
 	 */
 	public InvertLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {
 		super(probNet, variable1, variable2, isDirected);
-		try {
-			node1 = probNet.getNode(variable1.getName());
-			node2 = probNet.getNode(variable2.getName());
-		} catch (NodeNotFoundException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace(System.err);
-		}
-	}
+        node1 = probNet.getNode(variable1.getName());
+        node2 = probNet.getNode(variable2.getName());
+    }
 
 	// Methods
 

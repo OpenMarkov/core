@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.network.factory;
 
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -94,18 +93,13 @@ public class MIDFactory extends NetsFactory {
 				variableState0, variableTreatment);
 
 		//Links throws NodeNotFoundException
-		try {
-			probNet.addLink(variableTreatment, variableCostOfTreatment, true);
-			probNet.addLink(variableTreatment, variableQoL, true);
-			probNet.addLink(variableTreatment, variableState1, true);
-			probNet.addLink(variableState0, variableQoL, true);
-			probNet.addLink(variableState0, variableState1, true);
-
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		addPotentials(probNet, potentialQoL, potentialCostOfTreatment, potentialState0, potentialState1);
+        probNet.addLink(variableTreatment, variableCostOfTreatment, true);
+        probNet.addLink(variableTreatment, variableQoL, true);
+        probNet.addLink(variableTreatment, variableState1, true);
+        probNet.addLink(variableState0, variableQoL, true);
+        probNet.addLink(variableState0, variableState1, true);
+        
+        addPotentials(probNet, potentialQoL, potentialCostOfTreatment, potentialState0, potentialState1);
 
 		return probNet;
 	}
@@ -178,15 +172,11 @@ public class MIDFactory extends NetsFactory {
 		CycleLengthShift potetialDuration1 = new CycleLengthShift(variablesDuration1, probNet.getCycleLength());
 
 		//links
-		try {
-			probNet.addLink(state0, state1, true);
-			probNet.addLink(duration0, duration1, true);
-			probNet.addLink(duration0, state1, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		//adding potentials to network
+        probNet.addLink(state0, state1, true);
+        probNet.addLink(duration0, duration1, true);
+        probNet.addLink(duration0, state1, true);
+        
+        //adding potentials to network
 		addPotentials(probNet, potentialState0, potentialState1, potentialduration0, potetialDuration1);
 
 		return probNet;
@@ -356,21 +346,16 @@ public class MIDFactory extends NetsFactory {
 				PotentialRole.CONDITIONAL_PROBABILITY, qolBranches);
 
 		//links
-		try {
-			probNet.addLink(state0, state1, true);
-			probNet.addLink(duration0, duration1, true);
-			probNet.addLink(duration0, state1, true);
-			probNet.addLink(variableTreatment, state1, true);
-			probNet.addLink(variableTreatment, variableCost, true);
-			probNet.addLink(variableTreatment, variableQoL, true);
-			probNet.addLink(state0, variableQoL, true);
-			probNet.addLink(state0, variableCost, true);
-
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		//adding potentials to network
+        probNet.addLink(state0, state1, true);
+        probNet.addLink(duration0, duration1, true);
+        probNet.addLink(duration0, state1, true);
+        probNet.addLink(variableTreatment, state1, true);
+        probNet.addLink(variableTreatment, variableCost, true);
+        probNet.addLink(variableTreatment, variableQoL, true);
+        probNet.addLink(state0, variableQoL, true);
+        probNet.addLink(state0, variableCost, true);
+        
+        //adding potentials to network
 		addPotentials(probNet, potentialState0, potentialState1, potentialduration0, potetialDuration1, potentialCost,
 				potentialQoL);
 
@@ -432,14 +417,10 @@ public class MIDFactory extends NetsFactory {
 				tableCostOfTreatment, variableCostOfTreatment, variableTreatment);
 
 		//Links throws NodeNotFoundException
-		try {
-			probNet.addLink(variableTreatment, variableQoL, true);
-			probNet.addLink(variableTreatment, variableCostOfTreatment, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		addPotentials(probNet, potentialQoL, potentialCostOfTreatment);
+        probNet.addLink(variableTreatment, variableQoL, true);
+        probNet.addLink(variableTreatment, variableCostOfTreatment, true);
+        
+        addPotentials(probNet, potentialQoL, potentialCostOfTreatment);
 
 		return probNet;
 	}

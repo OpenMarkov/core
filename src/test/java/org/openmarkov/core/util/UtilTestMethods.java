@@ -8,7 +8,6 @@
 package org.openmarkov.core.util;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -170,11 +169,8 @@ public class UtilTestMethods {
      * @param variableName1
      * @param variableName2
      * @param directed
-     * @throws NodeNotFoundException
-     * @throws NodeNotFoundException
      */
-    public static void addLink(ProbNet probNet, String variableName1, String variableName2, boolean directed)
-            throws NodeNotFoundException {
+    public static void addLink(ProbNet probNet, String variableName1, String variableName2, boolean directed) {
         Variable variable1 = probNet.getVariable(variableName1);
         Variable variable2 = probNet.getVariable(variableName2);
         probNet.addLink(variable1, variable2, directed);

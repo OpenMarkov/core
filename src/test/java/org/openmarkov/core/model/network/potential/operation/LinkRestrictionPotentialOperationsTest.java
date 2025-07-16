@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -95,7 +94,7 @@ public class LinkRestrictionPotentialOperationsTest {
         return probNet;
     }
     
-    @BeforeEach public void setUp() throws NodeNotFoundException {
+    @BeforeEach public void setUp() {
         
         stateA = new State[]{new State("A1"), new State("A2"), new State("A3")};
         stateB = new State[]{new State("B1"), new State("B2")};
@@ -138,13 +137,13 @@ public class LinkRestrictionPotentialOperationsTest {
         link.initializesRestrictionsPotential();
     }
     
-    @Test public void testHasLinkRestriction() throws NodeNotFoundException {
+    @Test public void testHasLinkRestriction() {
         Assertions.assertTrue(LinkRestrictionPotentialOperations.hasLinkRestriction(this.net.getNode("B")));
         Assertions.assertFalse(LinkRestrictionPotentialOperations.hasLinkRestriction(this.net.getNode("A")));
         
     }
     
-    @Test public void testGetParentLinksWithRestriction() throws NodeNotFoundException {
+    @Test public void testGetParentLinksWithRestriction() {
         Assertions.assertEquals(1,
                                 LinkRestrictionPotentialOperations.getParentLinksWithRestriction(net.getNode("B"))
                                                                   .size());
@@ -153,7 +152,7 @@ public class LinkRestrictionPotentialOperationsTest {
                                                                   .size());
     }
     
-    @Test public void testUpdatePotentialByAddLinkRestriction() throws NodeNotFoundException {
+    @Test public void testUpdatePotentialByAddLinkRestriction() {
         
         TablePotential probabilityPotential = (TablePotential) LinkRestrictionPotentialOperations
                 .updatePotentialByAddLinkRestriction(net.getNode("B"), (TablePotential) link.getRestrictionsPotential(),
@@ -183,7 +182,7 @@ public class LinkRestrictionPotentialOperationsTest {
         
     }
     
-    @Test public void testUpdatePotentialByLinkRestrictions() throws NodeNotFoundException {
+    @Test public void testUpdatePotentialByLinkRestrictions() {
         link.setCompatibilityValue(stateA[0], stateB[0], 0);
         link2.initializesRestrictionsPotential();
         link2.setCompatibilityValue(stateC[0], stateB[0], 0);
@@ -210,7 +209,7 @@ public class LinkRestrictionPotentialOperationsTest {
         
     }
     
-    @Test public void testGetStateCombinationsWithLinkRestriction() throws NodeNotFoundException {
+    @Test public void testGetStateCombinationsWithLinkRestriction() {
         link.setCompatibilityValue(stateA[0], stateB[0], 0);
         link2.initializesRestrictionsPotential();
         link2.setCompatibilityValue(stateC[0], stateB[0], 0);
@@ -219,7 +218,7 @@ public class LinkRestrictionPotentialOperationsTest {
         Assertions.assertEquals(5, states.size());
     }
     
-    @Test public void testGetStateCombinationsWithLinkRestrictionBig() throws NodeNotFoundException {
+    @Test public void testGetStateCombinationsWithLinkRestrictionBig() {
         ProbNet probNet = buildDAN_error_res_5_parents_pgmx();
         
         List<int[]> states = LinkRestrictionPotentialOperations

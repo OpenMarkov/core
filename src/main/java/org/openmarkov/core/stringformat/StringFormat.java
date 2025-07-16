@@ -222,7 +222,9 @@ public class StringFormat {
                 try {
                     field.setAccessible(true);
                 } catch (InaccessibleObjectException e) {
-                    OpenMarkovLogger.LOGGER.warn("Inaccessible field: " + field.getName() + " in class: " + sourceClass.getName(), e);
+                    if (field.getType().getName().startsWith("org.openmarkov")){
+                        OpenMarkovLogger.LOGGER.warn("Inaccessible field: " + field.getName() + " in class: " + sourceClass.getName(), e);
+                    }
                 }
                 try {
                     fields.put(field.getName(), field.get(object));

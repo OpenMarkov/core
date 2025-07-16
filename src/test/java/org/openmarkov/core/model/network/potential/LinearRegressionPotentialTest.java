@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
 
@@ -42,7 +41,7 @@ public class LinearRegressionPotentialTest {
                                                    coefficients);
     }
     
-    @Test public void testTableProject() throws NonProjectablePotentialException, WrongCriterionException {
+    @Test public void testTableProject() throws NonProjectablePotentialException {
         EvidenceCase evidence = new EvidenceCase();
         List<TablePotential> projectedPotentials = potential.tableProject(evidence, null);
         Assertions.assertEquals(1, projectedPotentials.size());

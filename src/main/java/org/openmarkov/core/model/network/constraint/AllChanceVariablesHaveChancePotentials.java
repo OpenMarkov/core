@@ -40,7 +40,7 @@ import java.util.List;
 		return true;
 	}
 
-	@Override protected String getMessage() {
+	@Override protected String constraintDescription() {
 		return "chance variable without potential";
 	}
 

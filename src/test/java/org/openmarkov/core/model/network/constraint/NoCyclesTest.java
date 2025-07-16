@@ -12,8 +12,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -27,7 +25,7 @@ public class NoCyclesTest {
     
     private ProbNet probNetDirected;
     
-    @BeforeEach public void setUp() throws NodeNotFoundException {
+    @BeforeEach public void setUp() {
         probNetDirected = ConstraintsTests.getTestProbNetDirected();
     }
     
@@ -35,10 +33,9 @@ public class NoCyclesTest {
      * Checks or not all the <code>probNet</code> in different situations in
      * <code>OnlyDirectedLinks</code> constructor.
      *
-     * @throws NodeNotFoundException
      */
     @Tag(TestSpeed.SLOW)
-    @Test public void testCheckProbNet() throws NodeNotFoundException, DoEditException {
+    @Test public void testCheckProbNet() {
         NoCycle testedConstraint = new NoCycle();
         probNetDirected.addConstraint(testedConstraint);
         Variable va = probNetDirected.getNode("A", NodeType.CHANCE).getVariable();

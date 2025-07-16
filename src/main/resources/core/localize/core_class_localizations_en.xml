@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ClassLocalizations>
+    <Localization class="org.openmarkov.core.exception.CannotNormalizeNullVectorException" value="All variables are equal to 0.0\nVariables are: {variables}"/>
     <Localization class="org.openmarkov.core.model.network.ProbNet"
                   value="{networkType} network named {name} with {this.getNumPotentials} potentials, {this.getNodes.size} nodes, {this.constraints.size} constraints"
                   short="{networkType} network named {name}"

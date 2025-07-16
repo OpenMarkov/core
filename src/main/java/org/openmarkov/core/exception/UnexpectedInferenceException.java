@@ -16,13 +16,5 @@ package org.openmarkov.core.exception;
 	public UnexpectedInferenceException(String message) {
 		super(message);
 	}
-
-	/**
-	 * @param message Message
-	 * @param cause Cause
-	 */
-	public UnexpectedInferenceException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
+	
 }

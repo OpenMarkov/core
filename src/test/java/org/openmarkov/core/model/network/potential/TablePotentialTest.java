@@ -11,10 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.State;
@@ -212,7 +210,7 @@ public class TablePotentialTest {
     }
     
     @Test public void testGetAccumulateOffsets()
-            throws WrongCriterionException, NonProjectablePotentialException, IncompatibleEvidenceException, InvalidStateException {
+            throws Exception {
         // tablePotential1 contains B,D,A,C. Dimensions (2,2,2,2)
         // tablePotential2 contains A,B,C. Dimensions (2,2,2)
         int[] accOffsets = tablePotential1.getAccumulatedOffsets(tablePotential2.getVariables());
@@ -278,7 +276,7 @@ public class TablePotentialTest {
      */
     @Disabled
     @Test
-    public void testProject1() throws WrongCriterionException, NonProjectablePotentialException {
+    public void testProject1() throws NonProjectablePotentialException {
         // Projection
         List<TablePotential> projectedPotentials = tablePotential5.tableProject(evidenceCase, null); // fsVariable2
         // =
@@ -314,7 +312,7 @@ public class TablePotentialTest {
     /** tablePotential5 has two variables: fsVariable1 and fsVariable2, each one
      *  with 2 states.<p>
      *  evidenceCase: fsVariable2 = 1, fsVariable4 = 0. */ public void testProject2()
-            throws WrongCriterionException, NonProjectablePotentialException {
+            throws NonProjectablePotentialException {
         // Projection
         List<TablePotential> projectedPotentials = tablePotential5.tableProject(evidenceCase, null); // fsVariable2
         // =
@@ -417,7 +415,7 @@ public class TablePotentialTest {
     
     @Test
     /** Test multiplication of projected potentials. */ public void testMultiplicationProjected()
-            throws WrongCriterionException, NonProjectablePotentialException {
+            throws NonProjectablePotentialException {
         int dimA = 3;
         int dimB = 2;
         int dimC = 3;

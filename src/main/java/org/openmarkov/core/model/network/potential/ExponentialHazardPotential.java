@@ -7,7 +7,6 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -79,7 +78,7 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-			Map<String, String> variableValues) throws NonProjectablePotentialException, WrongCriterionException {
+			Map<String, String> variableValues) throws NonProjectablePotentialException {
 		double[] weibullCoeficients = new double[coefficients.length + 1];
 		String[] weibullCovariates = new String[covariates.length + 1];
 		// The exponential is a special case of Weibull where k=1 (gamma= ln(k));

@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -30,7 +29,7 @@ public class ConstraintsTests {
      *
      * @return <code>ProbNet</code>
      */
-    public static ProbNet getTestProbNetMixed() throws NodeNotFoundException {
+    public static ProbNet getTestProbNetMixed() {
         ProbNet probNet = new ProbNet();
         Variable va = new Variable("A", 2);
         Variable vb = new Variable("B", 2);
@@ -48,7 +47,7 @@ public class ConstraintsTests {
      *
      * @return <code>ProbNet</code>
      */
-    public static ProbNet getTestProbNetUndirected() throws NodeNotFoundException {
+    public static ProbNet getTestProbNetUndirected() {
         ProbNet probNet = new ProbNet();
         Variable va = new Variable("A", 2);
         Variable vb = new Variable("B", 2);
@@ -67,7 +66,7 @@ public class ConstraintsTests {
      *
      * @return <code>ProbNet</code>
      */
-    public static ProbNet getTestProbNetDirected() throws NodeNotFoundException {
+    public static ProbNet getTestProbNetDirected() {
         ProbNet probNet = new ProbNet();
         Variable va = new Variable("A", 2);
         Variable vb = new Variable("B", 2);
@@ -86,7 +85,7 @@ public class ConstraintsTests {
      *
      * @return <code>ProbNet</code>
      */
-    public static ProbNet getInfuenceDiagram() throws NodeNotFoundException {
+    public static ProbNet getInfuenceDiagram() {
         ProbNet influenceDiagram = new ProbNet(InfluenceDiagramType.getUniqueInstance());
         Variable vA = new Variable("A", 2);
         Variable vD = new Variable("D", 2);
@@ -113,7 +112,7 @@ public class ConstraintsTests {
      *
      * @return <code>ProbNet</code>
      */
-    public static ProbNet getNotOnlyUtilityChildrenInfluenceDiagram() throws NodeNotFoundException {
+    public static ProbNet getNotOnlyUtilityChildrenInfluenceDiagram() {
         ProbNet influenceDiagram = getInfuenceDiagram();
         Variable vC = new Variable("C", 2);
         Variable vU = influenceDiagram.getVariable("U");
@@ -128,7 +127,7 @@ public class ConstraintsTests {
      *
      * @return <code>ProbNet</code>
      */
-    public static ProbNet getOnlyUtilityChildrenInfluenceDiagram() throws NodeNotFoundException {
+    public static ProbNet getOnlyUtilityChildrenInfluenceDiagram() {
         ProbNet influenceDiagram = getInfuenceDiagram();
         Variable vC = new Variable("C", 2);
         Variable vU = influenceDiagram.getVariable("U");
@@ -143,7 +142,7 @@ public class ConstraintsTests {
      *
      * @return <code>ProbNet</code>
      */
-    public static ProbNet getNumericInfluenceDiagram() throws NodeNotFoundException {
+    public static ProbNet getNumericInfluenceDiagram() {
         ProbNet influenceDiagram = new ProbNet(InfluenceDiagramType.getUniqueInstance());
         Variable vA = new Variable("A");
         Variable vD = new Variable("D");
@@ -169,7 +168,7 @@ public class ConstraintsTests {
      *
      * @return <code>ProbNet</code>
      */
-    public static ProbNet getTemporalVarNet() throws NodeNotFoundException {
+    public static ProbNet getTemporalVarNet() {
         ProbNet influenceDiagram = new ProbNet(DynamicBayesianNetwork.getUniqueInstance());
         Variable vA = new Variable(" [12]", "YES", "NO");
         Variable vD = new Variable(" [14]", "YES", "NO");

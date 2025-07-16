@@ -1,8 +1,7 @@
 package org.openmarkov.core.action;
 
 import java.util.List;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
+
 import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;

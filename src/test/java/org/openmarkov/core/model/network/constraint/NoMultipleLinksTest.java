@@ -15,7 +15,6 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
@@ -27,11 +26,11 @@ public class NoMultipleLinksTest {
     
     private ProbNet influenceDiagram;
     
-    @BeforeEach public void setUp() throws NodeNotFoundException {
+    @BeforeEach public void setUp() {
         influenceDiagram = ConstraintsTests.getInfuenceDiagram();
     }
     
-    @Test public void testCheckProbNet() throws NodeNotFoundException {
+    @Test public void testCheckProbNet() {
         NoMultipleLinks testedConstraint = new NoMultipleLinks();
         influenceDiagram.addConstraint(testedConstraint);
         Variable vu = influenceDiagram.getVariable("U");

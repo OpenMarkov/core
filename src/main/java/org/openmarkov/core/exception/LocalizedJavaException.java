@@ -6,7 +6,8 @@ import org.openmarkov.core.localize.StringDatabase;
 /**
  * Adapts a Java's {@link Exception} to {@link OpenMarkovException2}.
  * <p>
- * You might get a {@link LocalizedJavaException} using {@link OpenMarkovException2#of(Exception)}.
+ * You might get a {@link LocalizedJavaException} using {@link OpenMarkovException2#of(Exception)} if said exception is
+ * written in an Exception Bundle.
  */
 public final class LocalizedJavaException extends OpenMarkovException2 {
     

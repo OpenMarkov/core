@@ -7,8 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.canonical;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
@@ -162,12 +161,8 @@ public abstract class MinMaxPotential extends ICIPotential {
 	@Override public Potential deepCopy(ProbNet copyNet) {
 		MinMaxPotential potential = (MinMaxPotential) super.deepCopy(copyNet);
 		if (this.pseudoVariable != null) {
-			try {
-				potential.pseudoVariable = copyNet.getVariable(this.pseudoVariable.getName());
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
+            potential.pseudoVariable = copyNet.getVariable(this.pseudoVariable.getName());
+        }
 
 		return potential;
 	}

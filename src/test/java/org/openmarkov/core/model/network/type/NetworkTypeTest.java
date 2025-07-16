@@ -57,8 +57,8 @@ public class NetworkTypeTest {
     //(expected = ConstraintViolationException.class)
     @Disabled
     @Test public void testImpossibleNetworkTypeConversion()
-            throws ConstraintViolationException, NonProjectablePotentialException,
-            WrongCriterionException, DoEditException, InvalidNetworkTypeException {
+            throws ConstraintViolationException,
+            DoEditException, InvalidNetworkTypeException {
         ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
         AddNodeEdit addVariableEdit = new AddNodeEdit(probNet, new Variable("a"), NodeType.DECISION);
         probNet.setNetworkType(InfluenceDiagramType.getUniqueInstance());

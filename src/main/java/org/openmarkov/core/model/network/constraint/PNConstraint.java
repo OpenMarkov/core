@@ -10,8 +10,6 @@ package org.openmarkov.core.model.network.constraint;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 
 import javax.swing.event.UndoableEditEvent;
@@ -24,70 +22,69 @@ import javax.swing.event.UndoableEditEvent;
  * able to be referenced with same identifier.
  */
 public abstract class PNConstraint implements PNUndoableEditListener, Checkable {
-
-	@Override public void undoableEditHappened(UndoableEditEvent e) {
-		// Do nothing
-	}
-
-	/**
-	 * Given a {@code probNet} that complies with this constraint, this
-	 * method checks that after the application of the {@code edit}
-	 * contained in the {@code event} received, the
-	 * {@code probNet} continues complying with this constraint.
-	 *
-	 * @param event {@code UndoableEditEvent}
-	 * @throws ConstraintViolationException ConstraintViolationException
-	 */
-	@Override public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException {
-		PNEdit edit = (PNEdit) event.getEdit();
-		if (!checkEdit(edit.getProbNet(), edit)) {
-			throw new ConstraintViolationException(getMessage());
-		}
-
-	}
-
-	protected abstract String getMessage();
-
-	@Override public void undoEditHappened(UndoableEditEvent event) {
-		// Do nothing
-	}
-
-	/**
-	 * @param probNet {@code ProbNet}
-	 * @return {@code true} if the {@code probNet} fulfills the
-	 * constraint.
-	 */
-	public abstract boolean checkProbNet(ProbNet probNet);
-
-	/**
-	 * Make sure all editions of the event do not violate restrictions.
-	 *
-	 * @param probNet {@code ProbNet}
-	 * @param edit    {@code PNEdit}
-	 * @return {@code true} if the {@code ProbNet} will fulfill the
-	 * constraint after applying the {@code event} in a
-	 * {@code ProbNet} that previously fulfilled the constraint.
-	 */
-	public abstract boolean checkEdit(ProbNet probNet, PNEdit edit)
-	;
+    
+    protected abstract String constraintDescription();
+    
+    @Override public void undoableEditHappened(UndoableEditEvent e) {
+        // Do nothing
+    }
+    
+    /**
+     * Given a {@code probNet} that complies with this constraint, this
+     * method checks that after the application of the {@code edit}
+     * contained in the {@code event} received, the
+     * {@code probNet} continues complying with this constraint.
+     *
+     * @param event {@code UndoableEditEvent}
+     * @throws ConstraintViolationException ConstraintViolationException
+     */
+    @Override public void undoableEditWillHappen(UndoableEditEvent event)
+            throws ConstraintViolationException {
+        PNEdit edit = (PNEdit) event.getEdit();
+        if (!checkEdit(edit.getProbNet(), edit)) {
+            throw new ConstraintViolationException(constraintDescription());
+        }
+        
+    }
+    
+    @Override public void undoEditHappened(UndoableEditEvent event) {
+        // Do nothing
+    }
+    
+    /**
+     * @param probNet {@code ProbNet}
+     * @return {@code true} if the {@code probNet} fulfills the
+     * constraint.
+     */
+    public abstract boolean checkProbNet(ProbNet probNet);
+    
+    /**
+     * Make sure all editions of the event do not violate restrictions.
+     *
+     * @param probNet {@code ProbNet}
+     * @param edit    {@code PNEdit}
+     * @return {@code true} if the {@code ProbNet} will fulfill the
+     * constraint after applying the {@code event} in a
+     * {@code ProbNet} that previously fulfilled the constraint.
+     */
+    public abstract boolean checkEdit(ProbNet probNet, PNEdit edit);
 
 	/*
 	//TODO: Extract and implement
 	public abstract String getName();
 	*/
-	
-	@Override public String toString() {
-		return this.getClass().getName();
-	}
-
-	@Override public boolean equals(Object paramObject) {
-		return (paramObject.getClass() == this.getClass());
-	}
-
-	@Override public int hashCode() {
-		int hashCode = 17 + this.getClass().hashCode();
-		return hashCode;
-	}
-
+    
+    @Override public String toString() {
+        return this.getClass().getName();
+    }
+    
+    @Override public boolean equals(Object paramObject) {
+        return (paramObject.getClass() == this.getClass());
+    }
+    
+    @Override public int hashCode() {
+        int hashCode = 17 + this.getClass().hashCode();
+        return hashCode;
+    }
+    
 }

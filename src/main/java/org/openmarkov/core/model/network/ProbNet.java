@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network;
 
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.*;
@@ -150,11 +151,11 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
         if (!hasConstraint(OnlyAtemporalVariables.class)) {
             this.cycleLength = new CycleLength();
         }
-        
         try {
             this.setNetworkType(networkType);
         } catch (InvalidNetworkTypeException e) {
-            throw new RuntimeException(e);
+            // This cannot happen
+            throw new UnreacheableException(e);
         }
     }
     
@@ -213,15 +214,14 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      *
      * @param edit edit to be applied
      * @throws ConstraintViolationException ConstraintViolationException
-     * @throws NonProjectablePotentialException NonProjectablePotentialException
-     * @throws WrongCriterionException WrongCriterionException
-     * @throws DoEditException DoEditException
+     * @throws DoEditException              DoEditException
      */
     public void doEdit(PNEdit edit)
             throws ConstraintViolationException, DoEditException {
         pNESupport.announceEdit(edit);
         pNESupport.doEdit(edit);
     }
+    
     /**
      * @param constraint {@code PNConstraint}
      */
@@ -305,7 +305,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      * Sets Network type
      *
      * @param newNetworkType {@code NetworkType}
-     * @throws ConstraintViolationException ConstraintViolationException
+     * @throws InvalidNetworkTypeException InvalidNetworkTypeException
      */
     public void setNetworkType(NetworkType newNetworkType) throws InvalidNetworkTypeException {
         // Build and check the new constraints
@@ -458,6 +458,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      * Auxiliary method for copy, which creates a low deep copy of {@code this ProbNet}: copy the
      * {@code graph} and the {@code nodes} but do not copy nor
      * variables nor potentials.
+     *
      * @param copyNet Network
      * @return {@code this probNet} copied.
      */
@@ -549,21 +550,14 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      * @param variable1 {@code Variable}
      * @param variable2 {@code Variable}
      * @param directed  {@code boolean}
-     * @throws NodeNotFoundException exception when the addition of this link is not consistent
-     *                               with the restrictions applied to the graph or when one or
-     *                               both variables does not belong to {@code this} graph.
      */
-    public void addLink(Variable variable1, Variable variable2, boolean directed) throws NodeNotFoundException {
+    public void addLink(Variable variable1, Variable variable2, boolean directed) {
         // Get nodes
         Node node1 = getNode(variable1);
         Node node2 = getNode(variable2);
-        if (node1 == null) {
-            throw new NodeNotFoundException(this, variable1);
+        if (node1 != null && node2 != null) {
+            addLink(node1, node2, directed);
         }
-        if (node2 == null) {
-            throw new NodeNotFoundException(this, variable2);
-        }
-        addLink(node1, node2, directed);
     }
     
     /**
@@ -573,13 +567,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      *
      * @param variable1 {@code Variable}
      * @param variable2 {@code Variable}
-     * @param directed  {@code boolean}
-     *                  exception when the inversion of this link is not consistent
-     *                  with the restrictions applied to the graph or when one or
-     *                  both variables does not belong to {@code this} graph.
-     * @throws Exception Exception
      */
-    public void invertLink(Variable variable1, Variable variable2, boolean directed) throws NodeNotFoundException {
+    public void invertLink(Variable variable1, Variable variable2) {
         removeLink(variable1, variable2, true);
         addLink(variable2, variable1, true);
     }
@@ -615,10 +604,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      * @param evidenceCase Evidence in that the potentials will be projected
      * @return The potentials of the network projected on the evidence
      * @throws NonProjectablePotentialException NonProjectablePotentialException
-     * @throws WrongCriterionException WrongCriterionException
      */
-    public List<TablePotential> tableProjectPotentials(EvidenceCase evidenceCase)
-            throws NonProjectablePotentialException, WrongCriterionException {
+    public List<TablePotential> tableProjectPotentials(EvidenceCase evidenceCase) throws NonProjectablePotentialException {
         List<Potential> originalPotentials = getSortedPotentials();
         List<TablePotential> projectedPotentials = new ArrayList<>();
         // each original potential may yield several projected potentials;
@@ -866,9 +853,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      * @param potential Potential
      * @return The node where the potential was located or {@code null} if
      * it did not exists
-     *
      */
-    public Node removePotential(Potential potential) {
+    public @Nullable Node removePotential(Potential potential) {
         List<Variable> variables = potential.getVariables();
         List<Node> candidateNodes = new ArrayList<>();
         // gets nodes that could contain the potential
@@ -963,9 +949,9 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
     
     /**
      * @param node . {@code Node}
-     * Condition: the variable must not be in the ProbNet. This method is
-     * used to redo the {@code AddVariableEdit}, i.e., to
-     * reinsert a Node that has been removed.
+     *             Condition: the variable must not be in the ProbNet. This method is
+     *             used to redo the {@code AddVariableEdit}, i.e., to
+     *             reinsert a Node that has been removed.
      */
     @Override public void addNode(Node node) {
         super.addNode(node);
@@ -973,18 +959,12 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
     }
     
     /**
-     *
      * @param nameOfVariable {@code String}
-     * @throws NodeNotFoundException NodeNotFoundException
      * @return The {@code Node} that matches the
      * {@code nameOfVariable}
      */
-    public Node getNode(String nameOfVariable) throws NodeNotFoundException {
-        Node node = nodeDepot.getNode(nameOfVariable);
-        if (node == null) {
-            throw new NodeNotFoundException(this, nameOfVariable);
-        }
-        return node;
+    public @Nullable Node getNode(String nameOfVariable) {
+        return nodeDepot.getNode(nameOfVariable);
     }
     
     /**
@@ -992,14 +972,9 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      * @param nodeType       {@code NodeType}
      * @return The node with {@code nameOfVariable} and
      * {@code kindOfNode} if exists otherwise null
-     * @throws NodeNotFoundException NodeNotFoundException
      */
-    public Node getNode(String nameOfVariable, NodeType nodeType) throws NodeNotFoundException {
-        Node node = nodeDepot.getNode(nameOfVariable, nodeType);
-        if (node == null) {
-            throw new NodeNotFoundException(this, nameOfVariable);
-        }
-        return node;
+    public Node getNode(String nameOfVariable, NodeType nodeType) {
+        return nodeDepot.getNode(nameOfVariable, nodeType);
     }
     
     /**
@@ -1013,13 +988,12 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
     /**
      * @param variableName name of the variable
      *                     . {@code String}
-     * @throws NodeNotFoundException NodeNotFoundException
      * @return variable that matches {@code variableName} if exists,
      * otherwise {@code null}. {@code Variable}
      */
-    public Variable getVariable(String variableName) throws NodeNotFoundException {
+    public @Nullable Variable getVariable(String variableName) {
         Node node = getNode(variableName);
-        return node.getVariable();
+        return node == null ? null : node.getVariable();
     }
     
     /**
@@ -1028,9 +1002,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      * @param baseName  base name of the variable
      * @param timeSlice time slice of the variable
      * @return return variable with that basename and time slice
-     * @throws NodeNotFoundException NodeNotFoundException
      */
-    public Variable getVariable(String baseName, int timeSlice) throws NodeNotFoundException {
+    public Variable getVariable(String baseName, int timeSlice) {
         return getVariable(baseName + " [" + timeSlice + "]");
     }
     
@@ -1039,10 +1012,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      * @param timeDifference time slice diference
      * @return a new variable having the same base name as the first argument
      * but in the time slice indicated by the second argument
-     * @throws NodeNotFoundException NodeNotFoundException
-     * Condition: variable must be in the network and must be temporal
      */
-    public Variable getShiftedVariable(Variable variable, int timeDifference) throws NodeNotFoundException {
+    public Variable getShiftedVariable(Variable variable, int timeDifference) {
         return getVariable(variable.getBaseName(), variable.getTimeSlice() + timeDifference);
     }
     
@@ -1050,13 +1021,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
     // varios lugares de invocar getVariable para ver si lanzaba una excepcion.
     // Revisar el uso de esa excepcion y evitarla en lo posible.
     public boolean containsVariable(String variableName) {
-        Node node;
-        try {
-            node = getNode(variableName);
-        } catch (NodeNotFoundException e) {
-            return false;
-        }
-        return (node != null);
+        return nodeDepot.getNode(variableName) != null;
     }
     
     public boolean containsVariable(Variable variable) {
@@ -1103,52 +1068,52 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      * received has been added.
      * @see org.openmarkov.core.model.network.ProbNet#addPotential(Potential)
      */
-    public Node addPotential(Potential potential, ProbNet originalProbNet) {
+    public @Nullable Node addPotential(Potential potential, ProbNet originalProbNet) {
         
         List<Variable> variables = potential.getVariables();
+        List<Node> nodes = new ArrayList<>();
         
         for (Variable variable : variables) {
             // add the variables that are not yet in the network
-            if (getNode(variable) == null) {
+            Node node = getNode(variable);
+            if (node == null) {
                 if (originalProbNet == null || originalProbNet.getNode(variable) == null) {
-                    addNode(variable, NodeType.CHANCE);
+                    node = addNode(variable, NodeType.CHANCE);
                 } else {
-                    addNode(variable, originalProbNet.getNode(variable).getNodeType());
+                    node = addNode(variable, originalProbNet.getNode(variable).getNodeType());
                 }
             }
+            nodes.add(node);
         }
         
         // add the potential
-        if (potential.getVariables().size() == 0) {
+        if (variables.isEmpty()) {
             // TODO - Change constant potentials (Potential vs TablePotential)
             this.constantPotentials.add((TablePotential) potential);
         } else {
-            this.getNode(potential.getVariable(0)).addPotential(potential);
+            nodes.get(0).addPotential(potential);
         }
         
         // draw links between the variables
         boolean isDirected = !containsConstraint(OnlyUndirectedLinks.class);
         if (isDirected) {
             // TODO - CHECK
-            if (variables.size() == 0) {
+            if (variables.isEmpty()) {
                 return null;
             }
-            
-            Node conditionedNode;
-            conditionedNode = getNode(variables.get(0));
-            for (int i = 1; i < variables.size(); i++) {
-                Node conditioningNode = getNode(variables.get(i));
+            Node conditionedNode = nodes.get(0);
+            for (int i = 1; i < nodes.size(); i++) {
+                Node conditioningNode = nodes.get(i);
                 if (!isParent(conditioningNode, conditionedNode)) {
                     addLink(conditioningNode, conditionedNode, true);
                 }
             }
-            
         } else {
-            int potentialSize = variables.size();
+            int potentialSize = nodes.size();
             for (int i = 0; i < potentialSize - 1; i++) {
-                Node node1 = getNode(variables.get(i));
+                Node node1 = nodes.get(i);
                 for (int j = i + 1; j < potentialSize; j++) {
-                    Node node2 = getNode(variables.get(j));
+                    Node node2 = nodes.get(j);
                     if (!isSibling(node1, node2)) {
                         addLink(node1, node2, false);
                     }
@@ -1156,13 +1121,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
             }
         }
         
-        // TODO - Remove return in this method
-        try {
-            return this.getNode(variables.get(0));
-        } catch (Exception e) {
-            e.getStackTrace();
-            return null;
-        }
+        return nodes.isEmpty() ? null : nodes.get(0);
     }
     
     /**
@@ -1290,10 +1249,11 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
     
     /**
      * Condition: oldNode belongs to this probNet
+     *
      * @param coordinateXOffset Coordinate X offset
      * @param coordinateYOffset Coordinate Y offset
-     * @param oldNode Old node
-     * @param timeDifference Time difference
+     * @param oldNode           Old node
+     * @param timeDifference    Time difference
      * @return Node
      */
     public Node addShiftedNode(Node oldNode, int timeDifference, double coordinateXOffset, double coordinateYOffset) {
@@ -1417,12 +1377,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
         for (Node node : nodes) {
             List<Node> neighbours = this.getNeighbors(node);
             for (Node neighbour : neighbours) {
-                try {
-                    // TODO - Problem?
-                    neighbour = copyNet.getNode(neighbour.getName());
-                } catch (NodeNotFoundException e) {
-                    e.printStackTrace();
-                }
+                // TODO - Problem?
+                neighbour = copyNet.getNode(neighbour.getName());
             }
             
             ArrayList<Potential> newPotentials = new ArrayList<>();
@@ -1430,11 +1386,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
                 newPotentials.add(potential.deepCopy(copyNet));
             }
             
-            try {
-                copyNet.getNode(node.getName()).setPotentials(newPotentials);
-            } catch (NodeNotFoundException e) {
-                e.printStackTrace();
-            }
+            copyNet.getNode(node.getName()).setPotentials(newPotentials);
         }
         
         // Adds links
@@ -1443,47 +1395,39 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
         if (hasExplicitLinks()) {
             copyNet.makeLinksExplicit(false);
             for (Link<Node> originalLink : getLinks()) {
-                try {
-                    
-                    Node copyNode1 = copyNet.getNode(originalLink.getNode1().getVariable().getName());
-                    Node copyNode2 = copyNet.getNode(originalLink.getNode2().getVariable().getName());
-                    
-                    Link<Node> copyLink = copyNet.addLink(copyNode1, copyNode2, originalLink.isDirected());
-                    if (originalLink.getRestrictionsPotential() != null) {
-                        copyLink.setRestrictionsPotential(originalLink.getRestrictionsPotential().deepCopy(copyNet));
-                    }
-                    
-                    List<PartitionedInterval> newRevealingIntervals = new ArrayList<>();
-                    for (PartitionedInterval interval : originalLink.getRevealingIntervals()) {
-                        PartitionedInterval newInterval = new PartitionedInterval(interval.limits.clone(),
-                                                                                  interval.belongsToLeftSide.clone());
-                        newRevealingIntervals.add(newInterval);
-                    }
-                    
-                    copyLink.setRevealingIntervals(newRevealingIntervals);
-                    copyLink.setRevealingStates(new ArrayList<>(originalLink.getRevealingStates()));
-                } catch (NodeNotFoundException e) {
-                    e.printStackTrace();
+                
+                Node copyNode1 = copyNet.getNode(originalLink.getNode1().getVariable().getName());
+                Node copyNode2 = copyNet.getNode(originalLink.getNode2().getVariable().getName());
+                
+                Link<Node> copyLink = copyNet.addLink(copyNode1, copyNode2, originalLink.isDirected());
+                if (originalLink.getRestrictionsPotential() != null) {
+                    copyLink.setRestrictionsPotential(originalLink.getRestrictionsPotential().deepCopy(copyNet));
                 }
+                
+                List<PartitionedInterval> newRevealingIntervals = new ArrayList<>();
+                for (PartitionedInterval interval : originalLink.getRevealingIntervals()) {
+                    PartitionedInterval newInterval = new PartitionedInterval(interval.limits.clone(),
+                                                                              interval.belongsToLeftSide.clone());
+                    newRevealingIntervals.add(newInterval);
+                }
+                
+                copyLink.setRevealingIntervals(newRevealingIntervals);
+                copyLink.setRevealingStates(new ArrayList<>(originalLink.getRevealingStates()));
             }
         } else {
             for (Node node : nodes) {
-                try {
-                    Node copyNode = copyNet.getNode(node.getVariable().getName());
-                    List<Node> siblings = getSiblings(node);
-                    for (Node sibling : siblings) {
-                        Node copySibling = copyNet.getNode(sibling.getVariable().getName());
-                        if (!copyNet.isSibling(copyNode, copySibling)) {
-                            copyNet.addLink(copyNode, copySibling, false);
-                        }
+                Node copyNode = copyNet.getNode(node.getVariable().getName());
+                List<Node> siblings = getSiblings(node);
+                for (Node sibling : siblings) {
+                    Node copySibling = copyNet.getNode(sibling.getVariable().getName());
+                    if (!copyNet.isSibling(copyNode, copySibling)) {
+                        copyNet.addLink(copyNode, copySibling, false);
                     }
-                    List<Node> children = getChildren(node);
-                    for (Node child : children) {
-                        Node copyChild = copyNet.getNode(child.getVariable().getName());
-                        copyNet.addLink(copyNode, copyChild, true);
-                    }
-                } catch (NodeNotFoundException e) {
-                    e.printStackTrace();
+                }
+                List<Node> children = getChildren(node);
+                for (Node child : children) {
+                    Node copyChild = copyNet.getNode(child.getVariable().getName());
+                    copyNet.addLink(copyNode, copyChild, true);
                 }
             }
             
@@ -1524,7 +1468,6 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      * Sets additional properties (other properties)
      *
      * @param additionalProperties {@code LinkedHashMap<String, String>}
-     * @throws ConstraintViolationException ConstraintViolationException
      */
     public void setOtherProperties(LinkedHashMap<String, String> additionalProperties) {
         this.additionalProperties = additionalProperties;

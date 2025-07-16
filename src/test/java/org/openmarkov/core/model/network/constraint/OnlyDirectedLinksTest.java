@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
@@ -31,7 +30,7 @@ public class OnlyDirectedLinksTest {
     
     private ProbNet probNetDirected;
     
-    @BeforeEach public void setUp() throws NodeNotFoundException {
+    @BeforeEach public void setUp() {
         probNetMixed = ConstraintsTests.getTestProbNetMixed();
         probNetUndirected = ConstraintsTests.getTestProbNetUndirected();
         probNetDirected = ConstraintsTests.getTestProbNetDirected();

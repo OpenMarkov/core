@@ -12,9 +12,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -49,7 +46,7 @@ public class EvidenceCaseTest {
     
     //private NetworkTypeConstraint networkTypeConstraint = null;
     
-    @BeforeEach public void setUp() throws Exception {
+    @BeforeEach public void setUp() {
         //Variables
         String a = new String("A");
         String b = new String("B");
@@ -131,9 +128,7 @@ public class EvidenceCaseTest {
     }
     
     @Disabled
-    @Test public void extendEvidence()
-            throws NodeNotFoundException, IncompatibleEvidenceException,
-            InvalidStateException, WrongCriterionException, NullPointerException {
+    @Test public void extendEvidence() {
         
         assertNotNull(probNet);
         EvidenceCase evidence = new EvidenceCase();

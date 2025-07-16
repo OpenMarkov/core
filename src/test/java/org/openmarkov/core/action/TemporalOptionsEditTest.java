@@ -11,8 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.TemporalOptions;
 import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.*;
@@ -71,7 +69,7 @@ public class TemporalOptionsEditTest {
     }
     
     @Test
-    public void temporalOptionsTest() throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
+    public void temporalOptionsTest() throws DoEditException {
         TemporalOptions temporalOptions = new TemporalOptions();
         temporalOptions.setHorizon(50);
         temporalOptions.setTransition(TransitionTime.END);

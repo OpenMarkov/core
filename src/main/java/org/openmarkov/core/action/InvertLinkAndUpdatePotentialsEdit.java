@@ -10,9 +10,7 @@ package org.openmarkov.core.action;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -154,7 +152,7 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 
 			try {
 				xyPotentials.add(parentsOldPotential.getCPT());
-			} catch (NonProjectablePotentialException | WrongCriterionException e) {
+			} catch (NonProjectablePotentialException e) {
 			    logger.error("Potential not convertible to table or wrong criterion on the old parent of the inverted link");
 				e.printStackTrace();
 				throw new DoEditException("Parent");
@@ -165,7 +163,7 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 		for (Potential childOldPotential : childsOldPotentials) {
 			try {
 				xyPotentials.add(childOldPotential.getCPT());
-			} catch (NonProjectablePotentialException | WrongCriterionException e) {
+			} catch (NonProjectablePotentialException e) {
 			    logger.error("Potential not convertible to table or wrong criterion on the old child of the inverted link");
 				e.printStackTrace();
 				throw new DoEditException("Child");
@@ -207,53 +205,43 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 
 	public void undo() {
 		super.undo();
-		try {
-			// Delete link Y -> X
-			probNet.removeLink(variable2, variable1, isDirected);
-			// Re-create link X -> Y
-			probNet.addLink(variable1, variable2, isDirected);
-			// Delete the links created when the nodes shared their fathers
-			for (Link<Node> undoLink : linksToUndo) {
-				probNet.removeLink(undoLink.getNode1(), undoLink.getNode2(), true);
-			}
-			// The potentials of X are restored to the original ones
-			x.setPotentials(parentsOldPotentials);
-			// The potentials of Y are restored to the original ones
-			y.setPotentials(childsOldPotentials);
-		} catch (NodeNotFoundException e) {
-			logger.error("Node not found in link from " + variable1.getName() + " to " + variable2.getName());
-			e.printStackTrace();
-		}
-	}
+        // Delete link Y -> X
+        probNet.removeLink(variable2, variable1, isDirected);
+        // Re-create link X -> Y
+        probNet.addLink(variable1, variable2, isDirected);
+        // Delete the links created when the nodes shared their fathers
+        for (Link<Node> undoLink : linksToUndo) {
+            probNet.removeLink(undoLink.getNode1(), undoLink.getNode2(), true);
+        }
+        // The potentials of X are restored to the original ones
+        x.setPotentials(parentsOldPotentials);
+        // The potentials of Y are restored to the original ones
+        y.setPotentials(childsOldPotentials);
+    }
 
 
     public void redo() {
 	    setTypicalRedo(false);
         super.redo();
-        try {
-            // Re-remove link X -> Y
-            probNet.removeLink(variable1, variable2, isDirected);
-            // Recreate link Y -> X
-            probNet.addLink(variable2, variable1, isDirected);
-            // Re-created the links of shared fathers
-            for (Link<Node> linkToRedo : linksToUndo) {
-                probNet.addLink(linkToRedo.getNode1(), linkToRedo.getNode2(), true);
-            }
-            // The potentials of X are restored to the original ones. I convert the only potential to a list of one
-            // element to use the same method in undo() and redo(). Using setPotential() (withous s) will modify the
-            // parentsOldPotentials and childOldPotential objects, making the next undo()'s useless.
-            List<Potential> xNewPotentials= new ArrayList<>();
-            xNewPotentials.add(xNewPotential);
-            x.setPotentials(xNewPotentials);
-            // The potentials of Y are restored to the original ones
-            List<Potential> yNewPotentials= new ArrayList<>();
-            xNewPotentials.add(yNewPotential);
-            y.setPotentials(yNewPotentials);
-
-        } catch (NodeNotFoundException e) {
-            logger.error("Node not found in link from " + variable2.getName() + " to " + variable1.getName());
-            e.printStackTrace();
+        // Re-remove link X -> Y
+        probNet.removeLink(variable1, variable2, isDirected);
+        // Recreate link Y -> X
+        probNet.addLink(variable2, variable1, isDirected);
+        // Re-created the links of shared fathers
+        for (Link<Node> linkToRedo : linksToUndo) {
+            probNet.addLink(linkToRedo.getNode1(), linkToRedo.getNode2(), true);
         }
+        // The potentials of X are restored to the original ones. I convert the only potential to a list of one
+        // element to use the same method in undo() and redo(). Using setPotential() (withous s) will modify the
+        // parentsOldPotentials and childOldPotential objects, making the next undo()'s useless.
+        List<Potential> xNewPotentials= new ArrayList<>();
+        xNewPotentials.add(xNewPotential);
+        x.setPotentials(xNewPotentials);
+        // The potentials of Y are restored to the original ones
+        List<Potential> yNewPotentials= new ArrayList<>();
+        xNewPotentials.add(yNewPotential);
+        y.setPotentials(yNewPotentials);
+        
     }
 
 	/**

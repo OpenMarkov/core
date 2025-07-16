@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.inference;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -54,7 +52,7 @@ public class BasicOperations {
 			TablePotential auxTablePot = null;
 			try {
 				auxTablePot = parent.getPotentials().get(0).tableProject(evidence, null).get(0);
-			} catch (NonProjectablePotentialException | WrongCriterionException e) {
+			} catch (NonProjectablePotentialException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -199,12 +197,8 @@ public class BasicOperations {
 		}
 		for (Variable variable : potential.getVariables()) {
 			if (variable != nodeVariable) {
-				try {
-					network.addLink(variable, nodeVariable, true);
-				} catch (NodeNotFoundException e) {
-					e.printStackTrace();
-				}
-			}
+                network.addLink(variable, nodeVariable, true);
+            }
 		}
 		// sets the new potential
 		List<Potential> newPotentials = new ArrayList<>();

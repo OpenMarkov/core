@@ -10,8 +10,6 @@ package org.openmarkov.core.model.network.constraint;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -123,7 +121,7 @@ public class NoMultipleLinks extends PNConstraint {
 		return true;
 	}
 
-	@Override protected String getMessage() {
+	@Override protected String constraintDescription() {
 		return " no multiple links allowed.";
 	}
 }

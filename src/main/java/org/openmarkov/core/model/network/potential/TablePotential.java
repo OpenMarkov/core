@@ -8,9 +8,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -419,7 +417,7 @@ import java.util.*;
 			try {
 				evidenceCase.addFinding(finding);
 				newPotential = tableProject(evidenceCase, null).get(0);
-			} catch (WrongCriterionException | IncompatibleEvidenceException | NonProjectablePotentialException e) {
+			} catch (IncompatibleEvidenceException | NonProjectablePotentialException e) {
 				// Unreachable code
 				e.printStackTrace();
 			}
@@ -517,7 +515,7 @@ import java.util.*;
 	}
 
 	@Override public TablePotential project(EvidenceCase evidenceCase)
-			throws NonProjectablePotentialException, WrongCriterionException {
+			throws NonProjectablePotentialException {
 		return tableProject(evidenceCase, null).get(0);
 	}
 
@@ -964,8 +962,7 @@ import java.util.*;
 	}
 
 	// TODO revisar para que no use tableProject(...)
-	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
-			throws WrongCriterionException {
+	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
 		Collection<Finding> inducedFindings = new ArrayList<>();
 		if (role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.POLICY) {
 			// Iterates over the list of parents. If some parent is not in the

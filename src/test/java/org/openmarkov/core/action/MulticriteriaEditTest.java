@@ -11,8 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -73,7 +71,7 @@ public class MulticriteriaEditTest {
     }
     
     @Test
-    public void multiCriteriaOptionsTest() throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
+    public void multiCriteriaOptionsTest() throws DoEditException {
         
         MulticriteriaOptions multicriteriaOptions = new MulticriteriaOptions();
         multicriteriaOptions.setMainUnit("Unit A");

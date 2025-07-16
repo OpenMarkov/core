@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.model.network;
 
-import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.inference.tasks.TaskUtilities;
 import org.openmarkov.core.model.network.potential.*;
@@ -61,21 +59,17 @@ public class TemporalNetOperations {
 					generatedNodesInThisSlice.add(newNode);
 				} else {
 					// Replace all SameAsPrevious potentials
-					try {
-						Variable variable = probNet.getShiftedVariable(generatingNode.getVariable(), 1);
-						Node node = probNet.getNode(variable);
-						if (!node.getPotentials().isEmpty() && node.getPotentials().get(0) instanceof SameAsPrevious) {
-							Potential newPotential = ((SameAsPrevious) node.getPotentials().get(0))
-									.getOriginalPotential(probNet).copy();
-							newPotential.shift(probNet,
-									variable.getTimeSlice() - newPotential.getConditionedVariable().getTimeSlice());
-							node.setPotential(newPotential);
-						}
-
-					} catch (NodeNotFoundException e) {
-						e.printStackTrace();
-					}
-				}
+                    Variable variable = probNet.getShiftedVariable(generatingNode.getVariable(), 1);
+                    Node node = probNet.getNode(variable);
+                    if (!node.getPotentials().isEmpty() && node.getPotentials().get(0) instanceof SameAsPrevious) {
+                        Potential newPotential = ((SameAsPrevious) node.getPotentials().get(0))
+                                .getOriginalPotential(probNet).copy();
+                        newPotential.shift(probNet,
+                                variable.getTimeSlice() - newPotential.getConditionedVariable().getTimeSlice());
+                        node.setPotential(newPotential);
+                    }
+                    
+                }
 			}
 			for (Node node : generatedNodesInThisSlice) {
 				classifiedNodes.get(node.getVariable().getTimeSlice()).add(node);
@@ -86,13 +80,8 @@ public class TemporalNetOperations {
 		for (int i = 0; i < generatedNodes.size(); i++) {
 			generatingNode = generatingNodes.get(i);
 			generatedNode = generatedNodes.get(i);
-			try {
-				expandPotentialAndLinks(probNet, generatingNode, generatedNode, 1);
-			} catch (NodeNotFoundException e) {
-				// If we get here is because we have not generated the nodes as
-				// we should
-				e.printStackTrace();
-			}
+			expandPotentialAndLinks(probNet, generatingNode, generatedNode, 1);
+			
 		}
 		return classifiedNodes;
 	}
@@ -171,13 +160,8 @@ public class TemporalNetOperations {
 		for (int i = 0; i < lastSliceNodes.size(); i++) {
 			generatingNode = lastSliceNodes.get(i);
 			generatedNode = newSliceNodes.get(i);
-			try {
-				expandPotentialAndLinks(probNet, generatingNode, generatedNode, 1);
-			} catch (NodeNotFoundException e) {
-				// If we get here is because we have not generated the nodes as
-				// we should
-				e.printStackTrace();
-			}
+			expandPotentialAndLinks(probNet, generatingNode, generatedNode, 1);
+			
 		}
 		classifiedNodes.add(newSliceNodes);
 	}
@@ -186,10 +170,8 @@ public class TemporalNetOperations {
 	 * TODO document: oldNode is a node in the last slice of the compact net
 	 * TODO We are assuming that there is only one potential per node. Revise
 	 *
-	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
-	private static void expandPotentialAndLinks(ProbNet probNet, Node oldNode, Node newNode, int timeDifference)
-			throws NodeNotFoundException {
+	private static void expandPotentialAndLinks(ProbNet probNet, Node oldNode, Node newNode, int timeDifference) {
 
 		Potential oldPotential = null;
 		// If there is a node that not have any potential, skip
@@ -247,37 +229,33 @@ public class TemporalNetOperations {
 	public static List<Node> getRelatedNodesOtherTimeSlices(Node node) {
 		// We define the list that will be returned
 		List<Variable> listOfRelatedVariables = null;
-		try {
-			// The node can have related variables only if its variable is temporal
-			if (node.getProbNet().getVariable(node.getName()).isTemporal()) {
-				// If so, we retrieve all the variables of the network as potentially
-				// all of the can be related to the node
-				listOfRelatedVariables = new ArrayList<>(node.getProbNet().getVariables());
-				// and we create a list to store all those variables that are not related to the node
-				List<Variable> listOfNotRelatedVariables = new ArrayList<>();
-				// we add to this list the variable of the node itself
-				listOfNotRelatedVariables.add(node.getVariable());
-				// we store the name of the node
-				String nodeName = node.getVariable().getBaseName();
-				// and then we go through all the potential variables
-				for (Variable variable : listOfRelatedVariables) {
-					// if the variable being studied is not temporal and does not share its base name with the node
-					if (!(variable.isTemporal() && variable.getBaseName().compareTo(nodeName) == 0)) {
-						// it is removed from the list of related variables
-						listOfNotRelatedVariables.add(variable);
-					}
-				}
-				// From the potential list we remove all the variables that are not related to the variable of the node
-				listOfRelatedVariables.removeAll(listOfNotRelatedVariables);
-				// if the list is empty, the node has no related variables and we reset the list as null
-				if (listOfRelatedVariables.size() == 0) {
-					listOfRelatedVariables = null;
-				}
-			}
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-		// The nodes of the variables remaining in the list are returned, if any
+        // The node can have related variables only if its variable is temporal
+        if (node.getProbNet().getVariable(node.getName()).isTemporal()) {
+            // If so, we retrieve all the variables of the network as potentially
+            // all of the can be related to the node
+            listOfRelatedVariables = new ArrayList<>(node.getProbNet().getVariables());
+            // and we create a list to store all those variables that are not related to the node
+            List<Variable> listOfNotRelatedVariables = new ArrayList<>();
+            // we add to this list the variable of the node itself
+            listOfNotRelatedVariables.add(node.getVariable());
+            // we store the name of the node
+            String nodeName = node.getVariable().getBaseName();
+            // and then we go through all the potential variables
+            for (Variable variable : listOfRelatedVariables) {
+                // if the variable being studied is not temporal and does not share its base name with the node
+                if (!(variable.isTemporal() && variable.getBaseName().compareTo(nodeName) == 0)) {
+                    // it is removed from the list of related variables
+                    listOfNotRelatedVariables.add(variable);
+                }
+            }
+            // From the potential list we remove all the variables that are not related to the variable of the node
+            listOfRelatedVariables.removeAll(listOfNotRelatedVariables);
+            // if the list is empty, the node has no related variables and we reset the list as null
+            if (listOfRelatedVariables.size() == 0) {
+                listOfRelatedVariables = null;
+            }
+        }
+        // The nodes of the variables remaining in the list are returned, if any
 		if (listOfRelatedVariables != null) {
 			return node.getProbNet().getNodes(listOfRelatedVariables);
 		} else {

@@ -9,9 +9,6 @@ package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -24,26 +21,22 @@ import java.util.List;
 
 	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Node> probNetNodes = probNet.getNodes();
-		try {
-			for (Node node : probNetNodes) {
-				// If the node is temporal
-				if (probNet.getVariable(node.getName()).isTemporal()) {
-					// We retrieve its children
-					List<Node> children = probNet.getChildren(node);
-					// and we iterate over them
-					for (Node child : children) {
-						// checking if there is any not allowed link
-						if (!allowedLink(probNet.getVariable(node.getName()), probNet.getVariable(child.getName()))) {
-							return false;
-						}
-					}
-				}
+        for (Node node : probNetNodes) {
+            // If the node is temporal
+            if (probNet.getVariable(node.getName()).isTemporal()) {
+                // We retrieve its children
+                List<Node> children = probNet.getChildren(node);
+                // and we iterate over them
+                for (Node child : children) {
+                    // checking if there is any not allowed link
+                    if (!allowedLink(probNet.getVariable(node.getName()), probNet.getVariable(child.getName()))) {
+                        return false;
+                    }
+                }
+            }
 
-			}
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-		// If we have reached this point, there is no forbidden backward link
+        }
+        // If we have reached this point, there is no forbidden backward link
 		return true;
 	}
 
@@ -71,7 +64,7 @@ import java.util.List;
 		return allowed;
 	}
 
-	@Override protected String getMessage() {
+	@Override protected String constraintDescription() {
 		// TODO Auto-generated method stub
 		return "Links can only be drawn to future slices or from nodes in slice 0 towards atemporal nodes";
 	}

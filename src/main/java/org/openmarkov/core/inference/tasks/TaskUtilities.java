@@ -8,10 +8,7 @@
 package org.openmarkov.core.inference.tasks;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -42,25 +39,17 @@ public class TaskUtilities {
 	}
 
 	public static ProbNet extendPreResolutionEvidence(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-		try {
-			if (preResolutionEvidence != null) {
-				preResolutionEvidence.extendEvidence(probNet);
-			}
-		} catch (IncompatibleEvidenceException | WrongCriterionException e) {
-			e.printStackTrace();
-		}
-		return probNet;
+        if (preResolutionEvidence != null) {
+            preResolutionEvidence.extendEvidence(probNet);
+        }
+        return probNet;
 	}
 
 	public static ProbNet extendPostResolutionEvidence(ProbNet probNet, EvidenceCase postResolutionEvidence) {
-		try {
-			if (postResolutionEvidence != null) {
-				postResolutionEvidence.extendEvidence(probNet);
-			}
-		} catch (IncompatibleEvidenceException | WrongCriterionException e) {
-			e.printStackTrace();
-		}
-		return probNet;
+        if (postResolutionEvidence != null) {
+            postResolutionEvidence.extendEvidence(probNet);
+        }
+        return probNet;
 	}
 
 	// TODO: the imposed policies are already added, aren't they? The nodes must be
@@ -210,24 +199,16 @@ public class TaskUtilities {
 					for (Node child : childrenOfDecision) {
 						NodeType type = child.getNodeType();
 						if (type == NodeType.CHANCE || type == NodeType.UTILITY) {
-							try {
-								probNet.addLink(varDecision, child.getVariable(), true);
-							} catch (NodeNotFoundException e) {
-								e.printStackTrace();
-							}
-						}
+                            probNet.addLink(varDecision, child.getVariable(), true);
+                        }
 					}
 
 					// Incoming Links for the variable
 					List<Variable> domainPolicy = policy.getVariables();
 					domainPolicy.remove(varDecision);
 					for (Variable varInDomain : domainPolicy) {
-						try {
-							probNet.addLink(varInDomain, varDecision, true);
-						} catch (NodeNotFoundException e) {
-							e.printStackTrace();
-						}
-					}
+                        probNet.addLink(varInDomain, varDecision, true);
+                    }
 
 					List<Potential> potentials = decisionNode.getPotentials();
 					if (potentials != null) {
@@ -287,7 +268,7 @@ public class TaskUtilities {
 
 		try {
 			returnedProjectedPotentials = network.tableProjectPotentials(evidence);
-		} catch (NonProjectablePotentialException | WrongCriterionException e1) {
+		} catch (NonProjectablePotentialException e1) {
 			throw new IncompatibleEvidenceException("Unexpected inference exception :" + e1.getMessage());
 		}
 		List<TablePotential> projectedPotentials = new ArrayList<>();

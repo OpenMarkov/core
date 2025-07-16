@@ -7,10 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.treeadd;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -338,7 +335,7 @@ public class TreeADDPotential extends Potential {
 	 */
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
+			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
 		TablePotential projected = null;
 		if (topVariable.getVariableType() != VariableType.NUMERIC) {
 			Map<TreeADDBranch, TablePotential> potentialsToBlend = new HashMap<>();
@@ -455,7 +452,7 @@ public class TreeADDPotential extends Potential {
 		}
 	}
 
-	@Override public void shift(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
+	@Override public void shift(ProbNet probNet, int timeDifference) {
 		super.shift(probNet, timeDifference);
 		List<Variable> copiedTreeVariables = new ArrayList<>();
 
@@ -551,8 +548,7 @@ public class TreeADDPotential extends Potential {
 	//		}
 	//	}
 
-	@Override public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase)
-			throws IncompatibleEvidenceException, WrongCriterionException {
+	@Override public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
 		List<Finding> newFindings = new ArrayList<>();
 		for (TreeADDBranch branch : branches) {
 			if (evidenceCase.contains(topVariable)) {
@@ -791,12 +787,8 @@ public class TreeADDPotential extends Potential {
 		treeADDPotential.indentLevel = this.indentLevel;
 
 		if (this.topVariable != null) {
-			try {
-				treeADDPotential.topVariable = copyNet.getVariable(this.topVariable.getName());
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
+            treeADDPotential.topVariable = copyNet.getVariable(this.topVariable.getName());
+        }
 
 		return treeADDPotential;
 	}

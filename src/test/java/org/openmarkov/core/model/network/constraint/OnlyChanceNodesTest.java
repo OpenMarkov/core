@@ -13,9 +13,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -34,7 +31,7 @@ public class OnlyChanceNodesTest {
     private ProbNet probNetDirected;
     
     // Methods
-    @BeforeEach public void setUp() throws NodeNotFoundException {
+    @BeforeEach public void setUp() {
         influenceDiagram = ConstraintsTests.getInfuenceDiagram();
         probNetDirected = ConstraintsTests.getTestProbNetDirected();
     }
@@ -52,7 +49,7 @@ public class OnlyChanceNodesTest {
      * Checks veto
      */
     @Test
-    public void testUndoableEditWillHappen() throws NonProjectablePotentialException, ConstraintViolationException, WrongCriterionException {
+    public void testUndoableEditWillHappen() throws ConstraintViolationException {
         
         // Add constraints as listeners.
         PNESupport pNESupport = new PNESupport(false);

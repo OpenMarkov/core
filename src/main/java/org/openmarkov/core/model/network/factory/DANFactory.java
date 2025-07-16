@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.factory;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -29,7 +28,7 @@ import java.util.List;
 
 public class DANFactory extends NetsFactory {
 
-	public static ProbNet buildOneChanceDAN() throws NodeNotFoundException {
+	public static ProbNet buildOneChanceDAN() {
 		ProbNet oneChanceDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
 		oneChanceDAN.setName(NamesNetworks.ONE_CHANCE_DAN.toString());
 		Variable variableX = new Variable("X", "absent", "present");
@@ -174,7 +173,7 @@ public class DANFactory extends NetsFactory {
 		return probNet;
 	}
 
-	public static ProbNet buildDecideTreatmentRestrictedDAN() throws NodeNotFoundException {
+	public static ProbNet buildDecideTreatmentRestrictedDAN() {
 		ProbNet dan = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
 		dan.setName(NamesNetworks.PERFECT_INFORMATION_TREATMENT_RESTRICTED_DAN.toString());
 		Variable variableX = new Variable("X", "absent", "present");
@@ -275,7 +274,7 @@ public class DANFactory extends NetsFactory {
 		return probNet;
 	}
 
-	public static ProbNet buildDatingDAN() throws NodeNotFoundException {
+	public static ProbNet buildDatingDAN() {
 		ProbNet datingDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
 		datingDAN.setName(NamesNetworks.DATING_DAN.toString());
 		Variable variableAsk = new Variable("Ask", "no", "yes");
@@ -475,7 +474,7 @@ public class DANFactory extends NetsFactory {
 		return datingDAN;
 	}
 
-	public static ProbNet buildDatingAcceptNoDAN() throws NodeNotFoundException {
+	public static ProbNet buildDatingAcceptNoDAN() {
 		ProbNet datingDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
 		datingDAN.setName(NamesNetworks.DATING_ACCEPT_NO_DAN.toString());
 		Variable variableNClub = new Variable("NClub", "no", "yes");
@@ -561,7 +560,7 @@ public class DANFactory extends NetsFactory {
 		return datingDAN;
 	}
 
-	public static ProbNet buildDatingTVBadDAN() throws NodeNotFoundException {
+	public static ProbNet buildDatingTVBadDAN() {
 		ProbNet datingDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
 		datingDAN.setName(NamesNetworks.DATING_TV_BAD_DAN.toString());
 		Variable variableAsk = new Variable("Ask", "no", "yes");
@@ -754,7 +753,7 @@ public class DANFactory extends NetsFactory {
 		return datingDAN;
 	}
 
-	public static ProbNet buildDatingBranchAcceptSimplifiedDAN() throws NodeNotFoundException {
+	public static ProbNet buildDatingBranchAcceptSimplifiedDAN() {
 		ProbNet datingDAN = new ProbNet(DecisionAnalysisNetworkType.getUniqueInstance());
 		datingDAN.setName(NamesNetworks.BRANCH_ACCEPT_DATING_SIMPLIFIED_DAN.toString());
 		Variable variableToDo = new Variable("ToDo", "restaurant", "movie");

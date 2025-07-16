@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.model.network;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
@@ -88,14 +86,10 @@ public class Util {
 	//called by nodeDefinitionPanel and nodePropertiesDialogListenerAssitent
 	//for static test (unused)
 	public static boolean existNode(ProbNet probNet, String name) {
-
-		try {
-			probNet.getNode(name);
-			return true;
-		} catch (NodeNotFoundException e) {
-			return false;
-		}
-	}
+        
+        probNet.getNode(name);
+        return true;
+    }
 
 	/**
 	 * Traslates a {@code String} from windows style to UNIX (change \\

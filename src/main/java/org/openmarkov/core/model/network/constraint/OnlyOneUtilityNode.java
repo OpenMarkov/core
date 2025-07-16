@@ -24,7 +24,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 		return true;
 	}
 
-	@Override protected String getMessage() {
+	@Override protected String constraintDescription() {
 		// TODO Auto-generated method stub
 		return null;
 	}

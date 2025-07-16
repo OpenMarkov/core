@@ -9,8 +9,6 @@ package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 
 import javax.swing.undo.UndoableEdit;
 import java.util.ArrayList;

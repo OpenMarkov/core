@@ -8,9 +8,7 @@
 package org.openmarkov.core.inference;
 
 import org.junit.jupiter.api.Disabled;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
@@ -42,10 +40,8 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
      * @param network
      * @param variableName
      * @return The variable in 'network' whose name is 'variableName'. It also checks whether the variable is not null.
-     * @throws NodeNotFoundException
      */
-    public static Variable getVariableAndAssertNotNull(ProbNet network, String variableName)
-            throws NodeNotFoundException {
+    public static Variable getVariableAndAssertNotNull(ProbNet network, String variableName) {
         
         Variable variable = network.getVariable(variableName);
         assertNotNull(variable);
@@ -126,7 +122,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
         
     }
     
-    protected TablePotential getTablePotential(Potential potential) throws NonProjectablePotentialException, WrongCriterionException {
+    protected TablePotential getTablePotential(Potential potential) throws NonProjectablePotentialException {
         return potential.tableProject(null, null).get(0);
     }
     

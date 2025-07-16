@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -17,7 +16,6 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
@@ -55,8 +53,7 @@ import java.util.List;
 	}
 
 	// Methods
-	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions) throws NonProjectablePotentialException {
 		// get the projected TablePotential, which will be returned inside a list
 		List<TablePotential> projectedPotentials = tablePotential.tableProject(evidenceCase, inferenceOptions);
 		projectedPotentials.get(0).setCriterion(getChildVariable().getDecisionCriterion());
@@ -65,7 +62,7 @@ import java.util.List;
 	}
 
 	@Override public ExactDistrPotential project(EvidenceCase evidenceCase)
-			throws WrongCriterionException, NonProjectablePotentialException {
+			throws NonProjectablePotentialException {
 		List<TablePotential> projectedPotentials = tablePotential.tableProject(evidenceCase, null);
         List<Variable> newVariables = new ArrayList<>();
 		newVariables.add(variables.get(0));

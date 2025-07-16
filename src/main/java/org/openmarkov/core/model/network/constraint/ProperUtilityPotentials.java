@@ -10,8 +10,6 @@ package org.openmarkov.core.model.network.constraint;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.RemoveNodeEdit;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -58,7 +56,7 @@ import java.util.List;
 		return this.getClass().getName();
 	}
 
-	@Override protected String getMessage() {
+	@Override protected String constraintDescription() {
 		return "there is at least one utility variable without "
 				+ "utility potential or there are no utility potentials";
 	}

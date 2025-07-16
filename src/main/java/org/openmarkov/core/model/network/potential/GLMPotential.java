@@ -6,9 +6,7 @@
  */
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -195,7 +193,7 @@ public abstract class GLMPotential extends Potential {
 	}
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException, WrongCriterionException {
+			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
 		double[] coefficients = (sampledCoefficients == null) ? this.coefficients : this.sampledCoefficients;
 		List<Variable> evidencelessVariables = new ArrayList<>();
 		Map<String, String> variableValues = new HashMap<>();
@@ -233,7 +231,7 @@ public abstract class GLMPotential extends Potential {
 
 	protected abstract List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-			Map<String, String> variableValues) throws NonProjectablePotentialException, WrongCriterionException;
+			Map<String, String> variableValues) throws NonProjectablePotentialException;
 
 	@Override public Potential sample() {
 		if (choleskyDecomposition != null) {
@@ -330,7 +328,7 @@ public abstract class GLMPotential extends Potential {
 		return constantIndex;
 	}
 
-	@Override public void shift(ProbNet probNet, int timeDifference) throws NodeNotFoundException {
+	@Override public void shift(ProbNet probNet, int timeDifference) {
 		super.shift(probNet, timeDifference);
 	}
 

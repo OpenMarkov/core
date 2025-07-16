@@ -8,7 +8,6 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
@@ -56,7 +55,7 @@ import java.util.List;
 		TablePotential auxProjected = null;
 		try {
 			auxProjected = potential.tableProject(configuration, null).get(0);
-		} catch (WrongCriterionException | NonProjectablePotentialException e) {
+		} catch (NonProjectablePotentialException e) {
 
 			e.printStackTrace();
 		}

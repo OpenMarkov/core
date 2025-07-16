@@ -6,17 +6,15 @@
  */
 package org.openmarkov.core.io.database.plugin;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
 import org.openmarkov.core.io.database.CaseDatabaseWriter;
-import org.openmarkov.plugin.Filter;
-import org.openmarkov.plugin.PluginLoader;
-import org.openmarkov.plugin.service.FilterIF;
-import org.openmarkov.plugin.service.PluginLoaderIF;
+import org.openmarkov.plugin.PluginSearch;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * This class is the manager of the case database formats. Detects the class anotated as CaseDatabaseFormat
@@ -26,10 +24,6 @@ import java.util.List;
  * @see org.openmarkov.core.io.format.annotation.FormatType
  */
 public class CaseDatabaseManager {
-    /**
-     * The plugin loader
-     */
-    private PluginLoaderIF pluginsLoader;
     /**
      * The list of case database reader plugins detected in the project
      */
@@ -43,29 +37,28 @@ public class CaseDatabaseManager {
      * Gets a FormatManager instance
      */
     public CaseDatabaseManager() {
-        super();
-        this.pluginsLoader = new PluginLoader();
         this.readerPlugins = new LinkedHashMap<>();
         this.writerPlugins = new LinkedHashMap<>();
-        
-        for (Class<?> plugin : findAllFormatPlugins()) {
-            CaseDatabaseFormat lAnnotation = plugin.getAnnotation(CaseDatabaseFormat.class);
-            if (CaseDatabaseReader.class.isAssignableFrom(plugin)) {
-                readerPlugins.put(lAnnotation.extension(), plugin);
-            }
-            if (CaseDatabaseWriter.class.isAssignableFrom(plugin)) {
-                writerPlugins.put(lAnnotation.extension(), plugin);
-            }
-        }
+        CaseDatabaseManager.findAllReaderPlugins().forEach(readerPlugin -> {
+            CaseDatabaseFormat lAnnotation = readerPlugin.getAnnotation(CaseDatabaseFormat.class);
+            readerPlugins.put(lAnnotation.extension(), readerPlugin);
+        });
+        CaseDatabaseManager.findAllWriterPlugins().forEach(writerPlugin -> {
+            CaseDatabaseFormat lAnnotation = writerPlugin.getAnnotation(CaseDatabaseFormat.class);
+            writerPlugins.put(lAnnotation.extension(), writerPlugin);
+        });
     }
     
-    /**
-     * This method gets all the plugins with CaseDatabaseFormat annotations
-     *
-     * @return a list with the plugins detected with CaseDatabaseFormat annotations.
-     */
-    private List<Class<?>> findAllFormatPlugins() {
-        return pluginsLoader.loadAllPlugins(Filter.filter().toBeAnnotatedBy(CaseDatabaseFormat.class));
+    private static @NotNull Stream<Class<CaseDatabaseReader>> findAllReaderPlugins() {
+        return PluginSearch.init().annotatedWith(CaseDatabaseFormat.class)
+                           .childrenOf(CaseDatabaseReader.class)
+                           .stream();
+    }
+    
+    private static @NotNull Stream<Class<CaseDatabaseWriter>> findAllWriterPlugins() {
+        return PluginSearch.init().annotatedWith(CaseDatabaseFormat.class)
+                .childrenOf(CaseDatabaseWriter.class)
+                .stream();
     }
     
     /**

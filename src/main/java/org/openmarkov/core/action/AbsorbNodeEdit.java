@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -107,7 +106,7 @@ import java.util.*;
                     utilityAndChance.add(potential.getCPT()); //Utility
                     utilityAndChance.add(absorbedNode.getPotentials().get(0).getCPT()); //Chance
 
-                } catch (NonProjectablePotentialException | WrongCriterionException e) {
+                } catch (NonProjectablePotentialException e) {
                     e.printStackTrace();
                     logger.error("Potential not convertible to table or wrong criterion");
                     throw new DoEditException("Potential not convertible to table or wrong criterion");
@@ -152,7 +151,7 @@ import java.util.*;
 
                 try {
                     utilityPotential = potential.getCPT();
-                } catch (NonProjectablePotentialException | WrongCriterionException e) {
+                } catch (NonProjectablePotentialException e) {
                     logger.error("Potential not convertible to table or wrong criterion");
                     throw new DoEditException("Potential not convertible to table or wrong criterion");
                 }
@@ -241,7 +240,7 @@ import java.util.*;
                 // Add the potential to the list to be summed
                 utilityChildrenPotentials.add(componentPotential);
             }
-        } catch (NonProjectablePotentialException | WrongCriterionException e) {
+        } catch (NonProjectablePotentialException e) {
             logger.error("Potential not convertible to table or wrong criterion.");
             e.printStackTrace();
             throw new DoEditException(e.getLocalizedMessage());

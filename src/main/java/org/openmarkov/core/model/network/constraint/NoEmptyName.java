@@ -10,8 +10,6 @@ package org.openmarkov.core.model.network.constraint;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.NodeNameEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
@@ -52,7 +50,7 @@ import java.util.List;
 		return true;
 	}
 
-	@Override protected String getMessage() {
+	@Override protected String constraintDescription() {
 		return "there should be no empty names";
 	}
 

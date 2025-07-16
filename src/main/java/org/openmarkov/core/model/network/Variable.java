@@ -386,7 +386,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 			state = partitionedInterval.indexOfSubinterval(value);
 			if (state == -1) {
 				throw new InvalidStateException(
-						value + " is not in any interval " + "of the discretized variable " + name + " (intervals are "
+						value + " is not in any interval of the discretized variable " + name + " (intervals are "
 								+ partitionedInterval.toString() + ").");
 			}
 		}

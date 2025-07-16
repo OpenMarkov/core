@@ -5,8 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
@@ -31,7 +29,7 @@ public class ProbNetOperationsTest {
     /*  Public scope for use in all tests. */
     public static final double maxError = 0.0001;
     
-    public static ProbNet createInfluenceForAddNoForgettingArcsTest() throws NodeNotFoundException {
+    public static ProbNet createInfluenceForAddNoForgettingArcsTest() {
         ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
         //Define the variables
         //Chance variables
@@ -94,8 +92,7 @@ public class ProbNetOperationsTest {
     
     //task approach(or remove them)
     
-    public static Variable getVariableAndAssertNotNull(ProbNet network, String variableName)
-            throws NodeNotFoundException {
+    public static Variable getVariableAndAssertNotNull(ProbNet network, String variableName) {
         Variable variable = network.getVariable(variableName);
         assertNotNull(variable);
         return variable;
@@ -106,7 +103,7 @@ public class ProbNetOperationsTest {
     }
     
     @Test
-    public void testPrune1() throws Exception {
+    public void testPrune1() {
         //probNet peque
         //Variables
         String aName = new String("A");
@@ -178,13 +175,9 @@ public class ProbNetOperationsTest {
                 getPruned(peque, variablesOfInterest, evidenceCase);
         ProbNetOperations.projectEvidence(pruned, evidenceCase);
         assertEquals(1, pruned.getNumNodes());
-        try {
-            pruned.getVariable("A");
-            pruned.getVariable("C");
-            fail();
-        } catch (NodeNotFoundException e) {
-            // That variables doesn't exist, so it is correct for the flow to pass here
-        }
+        assertNull(pruned.getVariable("A"));
+        assertNull(pruned.getVariable("C"));
+        
         assertNotNull(pruned.getVariable("B"));
         assertEquals(1, pruned.getNumPotentials());
         nodeB = pruned.getNode("B");
@@ -429,7 +422,7 @@ public class ProbNetOperationsTest {
         assertNotNull(pruned.getVariable(strTuberculosis));
     }
     
-    private EvidenceCase addEvidence(ProbNet probNet, EvidenceCase evidence, String variableName, int stateNumber) throws NodeNotFoundException, IncompatibleEvidenceException, InvalidStateException {
+    private EvidenceCase addEvidence(ProbNet probNet, EvidenceCase evidence, String variableName, int stateNumber) throws IncompatibleEvidenceException {
         if (evidence == null) {
             evidence = new EvidenceCase();
         }
@@ -461,12 +454,9 @@ public class ProbNetOperationsTest {
     }
     
     /**
-     * @throws NodeNotFoundException
-     * Tests the a priori probabilities obtained in the network bN_ABC
      */
     @Test
-    public void testGetPrunedMethodBN_Asia()
-            throws NodeNotFoundException {
+    public void testGetPrunedMethodBN_Asia() {
         ProbNet network;
         ProbNet outputNetwork;
         ProbNet intermediate;
@@ -510,7 +500,7 @@ public class ProbNetOperationsTest {
     
     @Disabled("Last check expects for the Potential to be a TablePotential, but it is WeibullHazardPotential")
     @Test
-    public final void testConvertNumericalVariablesToFS() throws Exception {
+    public final void testConvertNumericalVariablesToFS() {
         //Initialize network
         ProbNet probNet = new ProbNet(MIDType.getUniqueInstance());
         //Declare variables
@@ -729,7 +719,7 @@ public class ProbNetOperationsTest {
     }
     
     @Test
-    public void testHasStructuralAssymetry() throws NodeNotFoundException {
+    public void testHasStructuralAssymetry() {
         ProbNet decideTestDAN = DANFactory.buildDecideTestDAN();
         ProbNet decideTestID = IDFactory.buildIDDecideTest();
         ProbNet datingDAN = DANFactory.buildDatingDAN();
@@ -739,7 +729,7 @@ public class ProbNetOperationsTest {
     }
     
     @Test
-    public void testHasOrderAssymetry() throws NodeNotFoundException {
+    public void testHasOrderAssymetry() {
         ProbNet decideTestDAN = DANFactory.buildDecideTestDAN();
         ProbNet decideTestID = IDFactory.buildIDDecideTest();
         ProbNet datingDAN = DANFactory.buildDatingDAN();
@@ -753,7 +743,7 @@ public class ProbNetOperationsTest {
     }
     
     @Test
-    public void testGetObservableAndNonObservedVariables() throws NodeNotFoundException {
+    public void testGetObservableAndNonObservedVariables() {
         auxTestGetObservableAndNonObservedVariables(DANFactory.buildDecideTestDAN(), Arrays.asList("Result of test"), Arrays.asList("Disease"));
         auxTestGetObservableAndNonObservedVariables(DANFactory.buildDiabetesDAN(), Arrays.asList("Blood test result", "Urine test result", "Symptom"), Arrays.asList("Diabetes"));
         auxTestGetObservableAndNonObservedVariables(DANFactory.buildDatingDAN(),
@@ -762,7 +752,7 @@ public class ProbNetOperationsTest {
                                                     Arrays.asList("Advanced reactor reliability"));
     }
     
-    private void auxTestGetObservableAndNonObservedVariables(ProbNet probNet, List<String> observable, List<String> nonObservable) throws NodeNotFoundException {
+    private void auxTestGetObservableAndNonObservedVariables(ProbNet probNet, List<String> observable, List<String> nonObservable) {
         checkEqualVariables(ProbNetOperations.getObservableVariables(probNet), observable);
         checkEqualVariables(ProbNetOperations.getNeverObservedVariables(probNet), nonObservable);
     }
@@ -775,7 +765,7 @@ public class ProbNetOperationsTest {
     }
     
     @Test
-    public void testAddNoForgettingArcs() throws Exception {
+    public void testAddNoForgettingArcs() {
         Boolean shareAllLinks = false;
         //We create the influence diagram
         ProbNet influenceDiagram = createInfluenceForAddNoForgettingArcsTest();

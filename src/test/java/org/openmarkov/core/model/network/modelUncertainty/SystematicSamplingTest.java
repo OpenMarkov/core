@@ -1,7 +1,6 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.junit.jupiter.api.Test;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.inference.InferenceAlgorithmTest;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.factory.NetsFactory;
@@ -50,23 +49,23 @@ public class SystematicSamplingTest {
     
     
     @Test
-    public void testSimpleIDWithoutDecisionsSATriangular() throws NodeNotFoundException {
+    public void testSimpleIDWithoutDecisionsSATriangular() {
         testSampleNetwork(SensitivityAnalysisFactory.createSimpleIDWithoutDecisionsTriangular(), 5, 0.0, 1.0);
     }
     
     @Test
-    public void testSimpleIDWithoutDecisionsSABeta() throws NodeNotFoundException {
+    public void testSimpleIDWithoutDecisionsSABeta() {
         testSampleNetwork(SensitivityAnalysisFactory.createSimpleIDWithoutDecisionsBeta(), 5, 0.0, 1.0);
     }
     
     @Test
-    public void testSimpleIDWithoutDecisionsDiseaseFourStates() throws NodeNotFoundException {
+    public void testSimpleIDWithoutDecisionsDiseaseFourStates() {
         testSampleNetwork(SensitivityAnalysisFactory.createSimpleIDWithoutDecisionsDiseaseFourStates(), 4, 0.1, 0.5);
     }
     
     
     public void testSampleNetwork(ProbNet net, int numIntervals, double min,
-                                  double max) throws NodeNotFoundException {
+                                  double max) {
         
         ProbNet sampledNet;
         TablePotential pot;
@@ -89,7 +88,7 @@ public class SystematicSamplingTest {
         }
     }
     
-    Potential getPotentialFirstVariable(ProbNet probNet, String variableName) throws NodeNotFoundException {
+    Potential getPotentialFirstVariable(ProbNet probNet, String variableName) {
         List<Potential> potentials = probNet.getPotentials(probNet
                                                                    .getVariable(variableName));
         boolean found = false;

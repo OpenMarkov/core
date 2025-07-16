@@ -8,8 +8,6 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 
 import javax.swing.undo.CompoundEdit;
@@ -43,8 +41,6 @@ import java.util.Vector;
 	 * Generate edits and does them
 	 *
 	 * @throws DoEditException DoEditException
-	 * @throws WrongCriterionException WrongCriterionException
-	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public void doEdit() throws DoEditException {
 		if (!generatedEdits) {

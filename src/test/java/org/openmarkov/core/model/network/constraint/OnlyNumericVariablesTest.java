@@ -23,7 +23,7 @@ public class OnlyNumericVariablesTest {
     
     private ProbNet influenceDiagram;
     
-    @BeforeEach public void setUp() throws NodeNotFoundException {
+    @BeforeEach public void setUp() {
         influenceDiagram = ConstraintsTests.getNumericInfluenceDiagram();
     }
     
@@ -37,7 +37,7 @@ public class OnlyNumericVariablesTest {
     }
     
     @Test
-    public void testUndoableEditWillHappen() throws NonProjectablePotentialException, WrongCriterionException, DoEditException, ConstraintViolationException {
+    public void testUndoableEditWillHappen() throws ConstraintViolationException {
         
         PNESupport pNESupport = new PNESupport(false);
         PNConstraint constraint = new OnlyNumericVariables();

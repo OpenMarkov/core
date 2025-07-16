@@ -12,17 +12,9 @@ package org.openmarkov.core.exception;
  * {@code TablePotential}s given the evidence supplied.
  */
 @SuppressWarnings("serial") public class NonProjectablePotentialException extends OpenMarkovException {
-
-	public NonProjectablePotentialException(String token, String... attributes) {
-		super(token, attributes);
-	}
-
+	
 	public NonProjectablePotentialException(String string) {
 		super(string);
 	}
-
-	public NonProjectablePotentialException(String string, Throwable cause) {
-		super(string, cause);
-	}
-
+	
 }

@@ -7,8 +7,8 @@
 
 package org.openmarkov.core.model.network;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -61,7 +61,7 @@ public class Node {
 	/**
 	 * Each {@code Node} has a list of potentials
 	 */
-	protected List<Potential> potentials;
+	@NotNull protected List<Potential> potentials;
 
 	/**
 	 * The variable associated
@@ -536,12 +536,8 @@ public class Node {
 			Potential firstPotential = potentials.get(0);
 			if (!isSuperValueNode()) {
 				double[] values = null;
-				try {
-					List<TablePotential> tableProject = firstPotential.tableProject(null, null);
-					values = tableProject.size() > 0 ? tableProject.get(0).values : new double[1];
-				} catch (WrongCriterionException e) {
-					e.printStackTrace();
-				}
+				List<TablePotential> tableProject = firstPotential.tableProject(null, null);
+				values = tableProject.size() > 0 ? tableProject.get(0).values : new double[1];
 				result = computeMax ? Tools.max(values) : Tools.min(values);
 			} else {
 				double parentValues[];
@@ -592,9 +588,8 @@ public class Node {
 	 * @return The utility function of a utility variable. If it is a super-value node
 	 * then it operates their parent's utility functions recursively.
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
-	 * @throws WrongCriterionException WrongCriterionException
 	 */
-	public TablePotential getUtilityFunction() throws NonProjectablePotentialException, WrongCriterionException {
+	public TablePotential getUtilityFunction() throws NonProjectablePotentialException {
 		TablePotential result;
 		List<Potential> potentials = getPotentials();
 

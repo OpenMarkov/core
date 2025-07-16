@@ -16,7 +16,6 @@ import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -31,11 +30,11 @@ public class NoMixedParentsTest {
     
     private ProbNet influenceDiagram;
     
-    @BeforeEach public void setUp() throws NodeNotFoundException {
+    @BeforeEach public void setUp() {
         influenceDiagram = ConstraintsTests.getOnlyUtilityChildrenInfluenceDiagram();
     }
     
-    @Test public void testCheckProbNet() throws NodeNotFoundException {
+    @Test public void testCheckProbNet() {
         NoMixedParents testedConstraint = new NoMixedParents();
         influenceDiagram.addConstraint(testedConstraint);
         assertTrue(testedConstraint.checkProbNet(influenceDiagram));

@@ -8,7 +8,7 @@
 package org.openmarkov.core.exception;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.localize.Nls;
+
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.type.NetworkType;

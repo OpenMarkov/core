@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -69,13 +68,13 @@ public class IDFactory {
         return noKnowledge;
     }
     
-    public static ProbNet createPerfectKnowledge() throws NodeNotFoundException {
+    public static ProbNet createPerfectKnowledge() {
         ProbNet perfectKnowledge = createNoKnowledge();
         perfectKnowledge.addLink(disease, therapy, true);
         return perfectKnowledge;
     }
     
-    public static ProbNet createTestDecisionID() throws NodeNotFoundException {
+    public static ProbNet createTestDecisionID() {
         ProbNet testDecision = createNoKnowledge();
         testDecision.addNode(resultOfTest, NodeType.CHANCE);
         testDecision.addNode(doTest, NodeType.DECISION);

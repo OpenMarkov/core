@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.factory;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -45,18 +44,16 @@ public class BNFactory extends NetsFactory {
 
 	/**
 	 * @return a Bayesian network with two nodes (X and Y) and a link X -> Y
-	 * @throws Exception
 	 */
-	public static ProbNet createBN_XY(double prevalence, double sensitivity, double specificity) throws Exception {
+	public static ProbNet createBN_XY(double prevalence, double sensitivity, double specificity) {
 		return createBN_XY("X", "Y", prevalence, sensitivity, specificity);
 	}
 
 	/**
 	 * @return a Bayesian network with two nodes (X and Y) and a link X -> Y
-	 * @throws Exception
 	 */
 	public static ProbNet createBN_XY(String nameX, String nameY, double prevalence, double sensitivity,
-			double specificity) throws NodeNotFoundException {
+			double specificity) {
 		ProbNet probNet;
 		double[] valuesX;
 		double[] valuesYX;
@@ -86,10 +83,9 @@ public class BNFactory extends NetsFactory {
 
 	/**
 	 * @return a Bayesian network with three nodes (X, Y and Z) and two links X -> Y, and Y -> Z
-	 * @throws Exception
 	 */
 	public static ProbNet createBN_XYZ(double prevalence, double sensitivityY, double specificityY, double sensitivityZ,
-			double specificityZ) throws NodeNotFoundException {
+			double specificityZ) {
 		ProbNet probNet;
 		double[] valuesX;
 		double[] valuesYX;
@@ -174,23 +170,11 @@ public class BNFactory extends NetsFactory {
 		addVariables(peque, nodeType, variableA, variableB, variableC);
 
 		//Links throws NodeNotFoundException
-		try {
-			peque.addLink(variableA, variableB, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-		try {
-			peque.addLink(variableA, variableC, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-		try {
-			peque.addLink(variableB, variableC, true);
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		addPotentials(peque, potentialA, potentialBA, potentialCAB);
+        peque.addLink(variableA, variableB, true);
+        peque.addLink(variableA, variableC, true);
+        peque.addLink(variableB, variableC, true);
+        
+        addPotentials(peque, potentialA, potentialBA, potentialCAB);
 
 		return peque;
 	}

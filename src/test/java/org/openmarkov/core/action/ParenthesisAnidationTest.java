@@ -12,8 +12,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -104,7 +102,7 @@ public class ParenthesisAnidationTest {
     
     @Tag(TestSpeed.SLOW)
     @Test
-    public void undoManagerTest1() throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
+    public void undoManagerTest1() throws DoEditException {
         
         probNet.getPNESupport().setWithUndo(true);
         int numNullEdit = 0;
@@ -169,7 +167,7 @@ public class ParenthesisAnidationTest {
     }
     
     @Test
-    public void undoManagerTestEmptyParenthesis() throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
+    public void undoManagerTestEmptyParenthesis() throws DoEditException {
         probNet.getPNESupport().setWithUndo(true);
         int numEdit = 0;
         numEdit = doNullEdit(numEdit);
@@ -183,7 +181,7 @@ public class ParenthesisAnidationTest {
     }
     
     @Test
-    public void undoManagerWithUndoAndDelete() throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
+    public void undoManagerWithUndoAndDelete() throws DoEditException {
         
         probNet.getPNESupport().setWithUndo(true);
         int numNullEdit = 0;
@@ -249,7 +247,7 @@ public class ParenthesisAnidationTest {
         
     }
     
-    private int doNullEdit(int numNullEdit) throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
+    private int doNullEdit(int numNullEdit) throws DoEditException {
         NullEdit edit = new NullEdit(probNet, numNullEdit);
         probNet.getPNESupport().doEdit(edit);
         numNullEdit++;

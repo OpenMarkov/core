@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Variable;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class TuningPotentialTest {
         tuningModelPotential.setNoisyParameters(dG, new double[]{1.0, 0.0, 0.0, 1.0});
     }
     
-    @Test public void testGetCPT() throws NonProjectablePotentialException, WrongCriterionException {
+    @Test public void testGetCPT() throws NonProjectablePotentialException {
         double[] cPTValues = tuningModelPotential.getCPT().values;
         assertEquals(1.0, cPTValues[0], admissibleError);
         assertEquals(0.0, cPTValues[1], admissibleError);

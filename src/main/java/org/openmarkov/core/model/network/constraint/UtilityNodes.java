@@ -40,7 +40,7 @@ import java.util.List;
 		}
 	}
 
-	@Override protected String getMessage() {
+	@Override protected String constraintDescription() {
 		// TODO Auto-generated method stub
 		return "";
 	}

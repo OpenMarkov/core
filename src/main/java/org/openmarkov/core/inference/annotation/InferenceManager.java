@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.inference.annotation;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
@@ -14,18 +15,15 @@ import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.TuningNetworkType;
-import org.openmarkov.plugin.Filter;
-import org.openmarkov.plugin.PluginLoader;
-import org.openmarkov.plugin.service.FilterIF;
-import org.openmarkov.plugin.service.PluginLoaderIF;
+import org.openmarkov.plugin.PluginSearch;
 
-import java.lang.annotation.AnnotationFormatError;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * This class is the manager of the inference annotations. Detects the plugins
@@ -38,10 +36,6 @@ import java.util.List;
  */
 public class InferenceManager {
     /**
-     * The plugin loader
-     */
-    private PluginLoaderIF pluginsLoader;
-    /**
      * The list of plugins detected in the project
      */
     private HashMap<String, Class<? extends InferenceAlgorithm>> inferenceAlgorithms;
@@ -50,19 +44,11 @@ public class InferenceManager {
      * Constructor for InferenceManager.
      */
     @SuppressWarnings("unchecked") public InferenceManager() {
-        super();
-        this.pluginsLoader = new PluginLoader();
         this.inferenceAlgorithms = new HashMap<>();
-        for (Class<?> InferenceAlgorithmClass : findAllInferencePlugins()) {
-            InferenceAnnotation lAnnotation = InferenceAlgorithmClass.getAnnotation(InferenceAnnotation.class);
-            if (InferenceAlgorithm.class.isAssignableFrom(InferenceAlgorithmClass)) {
-                inferenceAlgorithms
-                        .put(lAnnotation.name(), (Class<? extends InferenceAlgorithm>) InferenceAlgorithmClass);
-            } else {
-                throw new AnnotationFormatError(
-                        "InferenceType annotation must be in a class that extends InferenceAlgorithm");
-            }
-        }
+        InferenceManager.findAllInferencePlugins().forEach(algorithmClass -> {
+            InferenceAnnotation lAnnotation = algorithmClass.getAnnotation(InferenceAnnotation.class);
+            this.inferenceAlgorithms.put(lAnnotation.name(), algorithmClass);
+        });
     }
     
     /**
@@ -233,7 +219,10 @@ public class InferenceManager {
      *
      * @return a list with the plugins detected with InferenceType annotations.
      */
-    private List<Class<?>> findAllInferencePlugins() {
-        return pluginsLoader.loadAllPlugins(Filter.filter().toBeAnnotatedBy(InferenceAnnotation.class));
+    private static @NotNull Stream<Class<InferenceAlgorithm>> findAllInferencePlugins() {
+        return PluginSearch.init()
+                           .annotatedWith(InferenceAnnotation.class)
+                           .childrenOf(InferenceAlgorithm.class)
+                           .stream();
     }
 }

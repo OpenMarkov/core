@@ -8,22 +8,20 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 
 public interface PNUndoableEditListener extends UndoableEditListener {
-
-	/**
-	 * An undoable edit will happen
-	 * @param event Event
-	 * @throws ConstraintViolationException ConstraintViolationException
-	 */
-	void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException;
-
-	void undoEditHappened(UndoableEditEvent event);
-
+    
+    /**
+     * An undoable edit will happen
+     *
+     * @param event Event
+     * @throws ConstraintViolationException ConstraintViolationException
+     */
+    void undoableEditWillHappen(UndoableEditEvent event) throws ConstraintViolationException;
+    
+    void undoEditHappened(UndoableEditEvent event);
+    
 }

@@ -32,15 +32,13 @@ public abstract class InferencePropagationTaskIDTest extends InferencePropagatio
     /**
      * Test for diagnosis problem
      *
-     * @throws NodeNotFoundException
      * @throws NotEvaluableNetworkException
-     * @throws UnexpectedInferenceException
      * @throws IncompatibleEvidenceException
      */
     @Disabled("Old tests with an AssertionError")
     @Test public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
-            throws NodeNotFoundException,
-            NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
+            throws
+            NotEvaluableNetworkException, IncompatibleEvidenceException, InvalidStateException {
         ProbNet network = buildIDDecideTest();
         
         List<Variable> variablesOfInterest = Arrays
@@ -111,7 +109,7 @@ public abstract class InferencePropagationTaskIDTest extends InferencePropagatio
     
     protected void checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(Propagation algorithm, ProbNet diagram, double t,
                                                                        double y1, double y2, double d, double x, double uHealthState, double uCostOfTherapy, double uCostOfTest)
-            throws NotEvaluableNetworkException, NodeNotFoundException, IncompatibleEvidenceException, UnexpectedInferenceException {
+            throws NotEvaluableNetworkException, IncompatibleEvidenceException {
         
         Variable variableT = diagram.getVariable(decTestName);
         Variable variableD = diagram.getVariable(therapyName);
@@ -138,7 +136,7 @@ public abstract class InferencePropagationTaskIDTest extends InferencePropagatio
     //TODO Review the minor error in test
     //TODO: has this test sense here
     @Test public void testPreAndPostResolutionEvidenceIDDecisionTestProblem()
-            throws IncompatibleEvidenceException, NodeNotFoundException, InvalidStateException {
+            throws IncompatibleEvidenceException, InvalidStateException {
         ProbNet diagram = iD_DecisionTestProblemWithSV;
         
         Propagation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram, null, null, null);

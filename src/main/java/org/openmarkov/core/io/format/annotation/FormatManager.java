@@ -10,9 +10,7 @@ package org.openmarkov.core.io.format.annotation;
 import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
-import org.openmarkov.plugin.Filter;
-import org.openmarkov.plugin.PluginLoader;
-import org.openmarkov.plugin.service.FilterIF;
+import org.openmarkov.plugin.PluginSearch;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -33,8 +31,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * This class is the manager of the format annotations. Detects the plugins with FormatType
@@ -91,10 +89,10 @@ public class FormatManager {
 		this.writerClasses = new LinkedHashMap<>();
 		this.readerInstances = new LinkedHashMap<>();
 		this.writerInstances = new LinkedHashMap<>();
-
-		for (Class<?> plugin : findAllFormatPlugins()) {
+		
+		findAllFormatPlugins().forEach(plugin -> {
 			FormatType lAnnotation = plugin.getAnnotation(FormatType.class);
-
+			
 			if (lAnnotation.role().equals(roleReader)) {
             	/*
             	readerClasses.put (lAnnotation.extension (), plugin);
@@ -111,13 +109,13 @@ public class FormatManager {
 					versionsHash.put(version, plugin);
 					readerClasses.put(extension, versionsHash);
 				}
-
+				
 			}
 			if (lAnnotation.role().equals(roleWriter)) {
             	/*
             	writerClasses.put (lAnnotation.extension (), plugin);
             	*/
-
+				
 				String extension = lAnnotation.extension();
 				String version = "";
 				if (!extension.equals("elv")) {
@@ -131,7 +129,7 @@ public class FormatManager {
 					writerClasses.put(extension, versionsHash);
 				}
 			}
-		}
+		});
 	}
 
 	/**
@@ -150,8 +148,8 @@ public class FormatManager {
 	 *
 	 * @return a list with the plugins detected with FormatTypeProbModelXML annotations.
 	 */
-	private List<Class<?>> findAllFormatPlugins() {
-        return new PluginLoader().loadAllPlugins(Filter.filter().toBeAnnotatedBy(FormatType.class));
+	private Stream<Class<Object>> findAllFormatPlugins() {
+        return PluginSearch.init().annotatedWith(FormatType.class).stream();
 	}
 	//	/**
 	//	 * Gets the plugin with the "Writer" role and the extension

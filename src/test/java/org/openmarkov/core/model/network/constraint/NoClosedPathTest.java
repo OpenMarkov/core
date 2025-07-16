@@ -14,7 +14,6 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -29,12 +28,12 @@ public class NoClosedPathTest {
     private ProbNet directedNet;
     private ProbNet undirectedNet;
     
-    @BeforeEach public void setUp() throws NodeNotFoundException {
+    @BeforeEach public void setUp() {
         directedNet = ConstraintsTests.getTestProbNetDirected();
         undirectedNet = ConstraintsTests.getTestProbNetUndirected();
     }
     
-    @Test public void testCheckProbNet() throws NodeNotFoundException {
+    @Test public void testCheckProbNet() {
         NoClosedPath testedConstraint = new NoClosedPath();
         directedNet.addConstraint(testedConstraint);
         assertTrue(testedConstraint.checkProbNet(directedNet));

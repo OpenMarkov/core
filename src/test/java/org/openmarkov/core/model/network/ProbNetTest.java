@@ -15,9 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.constraint.*;
 import org.openmarkov.core.model.network.potential.*;
@@ -144,7 +142,7 @@ public class ProbNetTest {
     /** Compares to probNets: number of nodes, variables, links and potentials.
      * @param probNet1 <code>ProbNet</code>
      * @param probNet2 <code>ProbNet</code> */
-    public static void compareNetworks(ProbNet probNet1, ProbNet probNet2) throws NodeNotFoundException, InvalidStateException {
+    public static void compareNetworks(ProbNet probNet1, ProbNet probNet2) throws InvalidStateException {
         // Compare network type restrictions
         assertEquals(probNet1.getNetworkType(), probNet2.getNetworkType());
         // Compare constraints
@@ -536,7 +534,7 @@ public class ProbNetTest {
         assertEquals(pBA, node.getPotentials().get(0));
     }
     
-    @Test public void testGetNodeString() throws NodeNotFoundException {
+    @Test public void testGetNodeString() {
         Node nodeA = simpleProbNet.getNode("A");
         assertNotNull(nodeA);
         Node nodeB = simpleProbNet.getNode("B");
@@ -545,7 +543,7 @@ public class ProbNetTest {
         assertNotNull(nodeD);
     }
     
-    @Test public void testAddLink() throws NodeNotFoundException {
+    @Test public void testAddLink() {
         Node nodeA = simpleProbNet.getNode("A");
         Node nodeB = simpleProbNet.getNode("B");
         List<Node> AChildren = nodeA.getChildren();
@@ -590,7 +588,7 @@ public class ProbNetTest {
     @Test
     /** Just make sure that the class <code>ProbNet</code> returns the correct
      *  number of potentials with the correct variables. */ public void testGetProjectedPotentials()
-            throws NonProjectablePotentialException, WrongCriterionException {
+            throws NonProjectablePotentialException {
         List<? extends Potential> projectedPotentials = simpleProbNet.tableProjectPotentials(simpleEvidence);
         assertEquals(3, projectedPotentials.size());
         boolean constantPotentialFound = false;
@@ -730,15 +728,14 @@ public class ProbNetTest {
         assertEquals(1, simpleProbNet.getNumPotentials());
     }
     
-    @Test public void testGetNode() throws NodeNotFoundException {
+    @Test public void testGetNode() {
         Node nodeD = simpleProbNet.getNode("D", NodeType.DECISION);
         assertNotNull(nodeD);
-        try {
+        {
             Node nodeB = simpleProbNet.getNode("B", NodeType.DECISION);
-            fail();
-        } catch (NodeNotFoundException ex) {
-            //Node B is not Decision, so it should get here
+            assertNull(nodeB);
         }
+        
         Node nodeB = simpleProbNet.getNode("B", NodeType.CHANCE);
         assertNotNull(nodeB);
     }

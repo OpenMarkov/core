@@ -8,7 +8,6 @@
 
 package org.openmarkov.core.model.network.potential.treeadd;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
@@ -384,20 +383,12 @@ public class TreeADDBranch {
 			newStates = new ArrayList<>(states);
 		}
 		Variable newRootVariable = null;
-		try {
-			newRootVariable = copyNet.getVariable(this.rootVariable.getName());
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		List<Variable> newParentVariables = new ArrayList<>();
+        newRootVariable = copyNet.getVariable(this.rootVariable.getName());
+        
+        List<Variable> newParentVariables = new ArrayList<>();
 		for (Variable variable : this.parentVariables) {
-			try {
-				newParentVariables.add(copyNet.getVariable(variable.getName()));
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
+            newParentVariables.add(copyNet.getVariable(variable.getName()));
+        }
 
 		TreeADDBranch branch = new TreeADDBranch(newStates, newRootVariable, newParentVariables);
 

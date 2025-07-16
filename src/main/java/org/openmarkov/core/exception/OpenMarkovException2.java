@@ -2,6 +2,7 @@ package org.openmarkov.core.exception;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.localize.AutoLocalizable;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.core.stringformat.StringFormat;
 
@@ -17,7 +18,7 @@ import static org.openmarkov.core.logging.OpenMarkovLogger.LOGGER;
  *
  * @author jrico
  */
-public abstract class OpenMarkovException2 extends Exception {
+public abstract class OpenMarkovException2 extends OpenMarkovException {
     
     /**
      * Gets a message for this exception, which might be null.
@@ -182,10 +183,16 @@ public abstract class OpenMarkovException2 extends Exception {
      * message, depending on nullability.
      */
     @SuppressWarnings({"ConstantValue", "GrazieInspection"})
-    @Override public final String toString() {
+    @Override public final @NotNull String toString() {
         String className = this.getClass().getName();
         String title = this.getExceptionTitle();
         String message = this.getExceptionMessage();
+        if(title!=null){
+            title=title.replace("\\n", System.lineSeparator());
+        }
+        if(message!=null){
+            message=message.replace("\\n", System.lineSeparator());
+        }
         //Title: Present, Message: Present
         if (title != null && message != null) {
             return className + ": " + title + System.lineSeparator() + message;

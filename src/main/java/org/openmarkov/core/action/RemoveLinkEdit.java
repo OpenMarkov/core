@@ -10,7 +10,6 @@ package org.openmarkov.core.action;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -120,7 +119,7 @@ import java.util.List;
 						if (Arrays.stream(newPotential.getCPT().values).sum() == 0){
 							newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
 						}
-					} catch (NonProjectablePotentialException | WrongCriterionException e) {
+					} catch (NonProjectablePotentialException e) {
 						e.printStackTrace();
 					}
 

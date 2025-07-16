@@ -10,8 +10,6 @@ package org.openmarkov.core.model.network;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.type.MIDType;
 
@@ -143,10 +141,9 @@ public class EvidenceCase {
 	 * @param stateName    {@code Finding}.
 	 * @throws InvalidStateException InvalidStateException
 	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
-	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
 	public void addFinding(ProbNet probNet, String variableName, String stateName)
-			throws NodeNotFoundException, InvalidStateException, IncompatibleEvidenceException {
+			throws InvalidStateException, IncompatibleEvidenceException {
 		Variable variable = probNet.getVariable(variableName);
 		int stateIndex = variable.getStateIndex(stateName);
 		addFinding(new Finding(variable, stateIndex));
@@ -157,10 +154,9 @@ public class EvidenceCase {
 	 * @param variableName Variable name
 	 * @param value        {@code Finding}.
 	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
-	 * @throws NodeNotFoundException NodeNotFoundException
 	 */
 	public void addFinding(ProbNet probNet, String variableName, double value)
-			throws NodeNotFoundException, IncompatibleEvidenceException {
+			throws IncompatibleEvidenceException {
 		Variable variable = probNet.getVariable(variableName);
 		Finding finding = new Finding(variable, value);
 		addFinding(finding);
@@ -290,11 +286,8 @@ public class EvidenceCase {
 	 * Extends an evidence case by taking into account that the deterministic
 	 * potentials of a {@code ProbNet} may induce new findings
 	 * @param probNet Network
-	 * @throws WrongCriterionException WrongCriterionException
-	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
-	 */
-	public void extendEvidence(ProbNet probNet)
-			throws IncompatibleEvidenceException, WrongCriterionException {
+     */
+	public void extendEvidence(ProbNet probNet) {
 
 		if (probNet.getNetworkType() == MIDType.getUniqueInstance()) {
 

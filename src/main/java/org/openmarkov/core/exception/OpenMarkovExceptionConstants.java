@@ -10,14 +10,7 @@ package org.openmarkov.core.exception;
 public class OpenMarkovExceptionConstants {
 
 	public static final String GenericException = "GenericException";
-
-	public static final String CanNotAccessFileException = "CanNotAccessFileException";
-
-	/**
-	 * Unused constant (derived from an unused exception)
-	 */
-	public static final String CanNotDoEditException = "CanNotDoEditException";
-
+	
 	public static final String CanNotWriteNetworkToFileException = "CanNotWriteNetworkToFileException";
 
 	/**
@@ -30,9 +23,5 @@ public class OpenMarkovExceptionConstants {
 	 */
 	public static final String InvalidVariableNameExistingException = "InvalidVariableNameExistingException";
 	public static final String InvalidVariableNameExistingTimeSliceException = "InvalidVariableNameExistingTimeSliceException";
-	/**
-	 * NonProjectableUniformPotential
-	 */
-	public static final String NonProjectablePotentialException_UniformNumeric = "NonProjectablePotentialException.UniformNumeric";
-
+	
 }

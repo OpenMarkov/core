@@ -11,9 +11,6 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.plugin.service.FilterIF;
-import org.openmarkov.plugin.service.PluginException;
-import org.openmarkov.plugin.service.PluginLoaderIF;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,8 +19,6 @@ import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import java.util.zip.ZipFile;
-
-import static org.openmarkov.plugin.Filter.filter;
 
 /*
  * Development Environment        :  Eclipse
@@ -46,30 +41,13 @@ import static org.openmarkov.plugin.Filter.filter;
  * <br>- {@link PluginLoaderIF#loadAllPlugins(FilterIF)} no longer throws {@link PluginException} (It was never thrown)
  * <br>- Added nullability annotations.
  */
-public class PluginLoader implements PluginLoaderIF {
+public class PluginLoader {
     
     private static final ClassLoader CLASS_LOADER = ClassLoader.getSystemClassLoader();
     private static final String CLASS_EXTENSION = ".class";
     private static final char PACKAGE_SEPARATOR = '.';
     
-    private static boolean CLASSES_ARE_LOADED = false;
-    private static final ArrayList<Class<?>> LOADED_CLASSES = new ArrayList<>(2000);
-    
-    /**
-     * Returns a plugin from the system environment.
-     *
-     * @param name The qualified name of the plugin class.
-     * @return a plugin from the system environment.
-     */
-    @Override
-    public final @NotNull Class<?> loadPlugin(String name) throws PluginException {
-        try {
-            return PluginLoader.CLASS_LOADER.loadClass(name);
-        } catch (ClassNotFoundException e) {
-            throw new PluginException("Unable to load plugin [" + name + ']', e);
-        }
-    }
-    
+    private static final ArrayList<Class<?>> LOADED_CLASSES = PluginLoader.loadAllClasses();
     
     //TODO: In the previous version, this method used to have a clause such as
     // 'throws PluginException', although it never threw said exception, in this
@@ -84,16 +62,12 @@ public class PluginLoader implements PluginLoaderIF {
      * @param filter the plugins filter to select plugins.
      * @return all plugins from the system environment.
      */
-    @Override
-    public final @NotNull List<Class<?>> loadAllPlugins(@Nullable FilterIF filter) {
-        PluginLoader.ensureClassesAreLoaded();
-        if (filter == null) {
-            filter = filter().end();
+    public final <PluginClass> @NotNull List<Class<PluginClass>> loadAllPlugins(@Nullable Filter<PluginClass> filter) {
+        Stream<Class<?>> classesStream = PluginLoader.LOADED_CLASSES.stream();
+        if (filter != null) {
+            classesStream = classesStream.filter(filter::checkPlugin);
         }
-        return PluginLoader.LOADED_CLASSES
-                .stream()
-                .filter(filter::checkPlugin)
-                .toList();
+        return classesStream.map(pluginClass -> (Class<PluginClass>) pluginClass).toList();
     }
     
     /**
@@ -105,24 +79,23 @@ public class PluginLoader implements PluginLoaderIF {
      * Although by default, the load is done at the
      * beginning of the program in a single-threaded enviroment, so this acts as prevention.
      */
-    private synchronized static void ensureClassesAreLoaded() {
-        if (PluginLoader.CLASSES_ARE_LOADED)
-            return;
+    private static ArrayList<Class<?>> loadAllClasses() {
         ScanResult scan = new ClassGraph().scan();
         var classPaths = scan.getClasspathURLs().stream().map(URL::getFile).toList();
         scan.close();
+        var loadedClasses = new ArrayList<Class<?>>();
         for (var classpath : classPaths) {
             for (var classQualifiedName : PluginLoader.getClassesQualifiedNames(classpath)) {
                 if (!classQualifiedName.startsWith("org.openmarkov"))
                     continue;
                 try {
                     Class<?> loadedClass = PluginLoader.CLASS_LOADER.loadClass(classQualifiedName);
-                    PluginLoader.LOADED_CLASSES.add(loadedClass);
+                    loadedClasses.add(loadedClass);
                 } catch (ClassNotFoundException | NoClassDefFoundError ignored) {
                 }
             }
         }
-        PluginLoader.CLASSES_ARE_LOADED = true;
+        return loadedClasses;
     }
     
     /**
@@ -130,9 +103,12 @@ public class PluginLoader implements PluginLoaderIF {
      *
      * @return all plugins from the system environment.
      */
-    @Override public final @NotNull List<Class<?>> loadAllPlugins() {
-        FilterIF filter = filter().end();
-        return this.loadAllPlugins(filter);
+    public final @NotNull List<Class<Object>> loadAllPlugins() {
+        return this.loadAllPlugins(null);
+    }
+    
+    static Stream<Class<?>> pluginsStream() {
+        return PluginLoader.LOADED_CLASSES.stream();
     }
     
     /**
@@ -223,7 +199,7 @@ public class PluginLoader implements PluginLoaderIF {
     /**
      * Creates an {@link Stream} out of a value that extends {@link Iterator}.
      *
-     * @param iterator The iterator to turn into a {@link Stream}.
+     * @param iterator        The iterator to turn into a {@link Stream}.
      * @param <IteratorValue> Value type of the {@link Iterator}.
      * @return A {@link Stream} with the elements of the {@link Iterator}.
      */

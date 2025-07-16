@@ -7,8 +7,6 @@
 
 package org.openmarkov.plugin;
 
-import org.openmarkov.plugin.service.PluginManagerIF;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +24,7 @@ import java.util.List;
  * Gigaesfera CO.
  * (#)PluginsManager.java 1.0    15/09/2011 19:08:10
  */
-public class PluginManager implements PluginManagerIF {
+public class PluginManager {
 	private List<Class<?>> plugins;
 
 	/**

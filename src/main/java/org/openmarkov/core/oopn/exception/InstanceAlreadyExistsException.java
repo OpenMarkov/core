@@ -6,8 +6,12 @@
  */
 package org.openmarkov.core.oopn.exception;
 
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.OpenMarkovException;
 
 @SuppressWarnings("serial") public class InstanceAlreadyExistsException extends OpenMarkovException {
-
+    
+    public InstanceAlreadyExistsException() {
+        super("InstanceAlreadyExistsException");
+    }
 }

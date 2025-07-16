@@ -55,7 +55,7 @@ import java.util.ArrayList;
             //TODO: DoEditException is hiding InvalidNetworkTypeException
             probNet.setNetworkType(newNetworkType);
         } catch (InvalidNetworkTypeException e) {
-            throw new DoEditException(e);
+            throw new DoEditException(e.getToken());
         }
         if (probNet.isMultiagent()) {
             ArrayList<StringWithProperties> agents = new ArrayList<>();

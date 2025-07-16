@@ -14,14 +14,4 @@ package org.openmarkov.core.exception;
 	public DoEditException(String msg) {
 		super(msg);
 	}
-
-	/**
-	 * Writes the {@code exception} message and its stack trace.
-	 *
-	 * @param exception . {@code Exception}
-	 */
-	public DoEditException(Exception exception) {
-		super(exception);
-	}
-
 }

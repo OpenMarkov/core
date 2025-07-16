@@ -19,7 +19,6 @@ open module org.openmarkov.core {
 	exports org.openmarkov.core.inference;
 	exports org.openmarkov.core.inference.heuristic;
 	exports org.openmarkov.core.inference.tasks;
-	exports org.openmarkov.core.io.database.exception;
 	exports org.openmarkov.core.model.graph;
 	exports org.openmarkov.core.model.network;
 	exports org.openmarkov.core.model.network.constraint;

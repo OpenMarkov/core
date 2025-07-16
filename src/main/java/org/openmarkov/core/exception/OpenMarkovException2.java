@@ -20,6 +20,14 @@ import static org.openmarkov.core.logging.OpenMarkovLogger.LOGGER;
  */
 public abstract class OpenMarkovException2 extends OpenMarkovException {
     
+    public OpenMarkovException2(){
+        super("OpenMarkovException2");
+    }
+    
+    @Override public @Nullable String getToken() {
+        return this.getClass().getSimpleName();
+    }
+    
     /**
      * Gets a message for this exception, which might be null.
      *
@@ -129,10 +137,7 @@ public abstract class OpenMarkovException2 extends OpenMarkovException {
      */
     private static @Nullable String localizeWithOpenMarkov(OpenMarkovException2 openMarkovException2, String suffixKey) {
         Class<? extends OpenMarkovException2> exceptionClass = openMarkovException2.getClass();
-        String preStringKey = exceptionClass.getName();
-        if (preStringKey.contains(".")) {
-            preStringKey = preStringKey.substring(preStringKey.lastIndexOf('.') + 1);
-        }
+        String preStringKey = exceptionClass.getSimpleName();
         preStringKey += suffixKey;
         String stringKey = preStringKey;
         

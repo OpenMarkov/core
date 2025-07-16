@@ -36,7 +36,7 @@ public class AddFindingEdit extends SimplePNEdit{
             evidenceCase.addFinding(finding);
             listener.onNodeValueChanged();
         } catch (IncompatibleEvidenceException e) {
-            throw new DoEditException(e);
+            throw new DoEditException(e.getToken());
         }
 
     }

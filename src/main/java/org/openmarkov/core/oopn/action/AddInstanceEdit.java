@@ -78,7 +78,7 @@ import java.util.List;
 				++doneEditCounter;
 			} catch (ConstraintViolationException e) {
 				this.undo();
-				throw new DoEditException(e);
+				throw new DoEditException(e.getToken());
 			}
 		}
 
@@ -103,7 +103,7 @@ import java.util.List;
 					pastedLinks.add(linkEdit.getLink());
 				} catch (ConstraintViolationException e) {
 					this.undo();
-					throw new DoEditException(e);
+					throw new DoEditException(e.getToken());
 				}
 			}
 		}

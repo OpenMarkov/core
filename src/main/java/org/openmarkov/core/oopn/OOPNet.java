@@ -22,6 +22,8 @@ import org.openmarkov.core.action.RemoveNodeEdit;
 import org.openmarkov.core.action.SetPotentialEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.InvalidNetworkTypeException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -73,8 +75,8 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 		super();
 		try {
 			setNetworkType(probNet.getNetworkType());
-		} catch (org.openmarkov.core.exception.InvalidNetworkTypeException e) {
-			throw new RuntimeException(e);
+		} catch (InvalidNetworkTypeException e) {
+			throw new UnreacheableException(e);
 		}
 		// copy constraints
 		int numConstraints = probNet.getConstraints().size();

@@ -1,9 +1,6 @@
 package org.openmarkov.core.action;
 
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NoFindingException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
@@ -49,14 +46,14 @@ public class AddFindingEdit extends SimplePNEdit{
                 evidenceCase.removeFinding(finding.getVariable());
                 listener.removeFinding();
             } catch (NoFindingException e) {
-                throw new RuntimeException(e);
+                throw new UnreacheableException(e);
             }
         }else {
             try {
                 evidenceCase.removeFinding(finding.getVariable());
                 evidenceCase.addFinding(previousFinding);
             } catch (IncompatibleEvidenceException | NoFindingException e) {
-                throw new RuntimeException(e);
+                throw new UnreacheableException(e);
             }
         }
 

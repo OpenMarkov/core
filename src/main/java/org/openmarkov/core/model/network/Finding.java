@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.model.network;
 
-import org.openmarkov.core.exception.InvalidStateException;
-
 /**
  * A finding is a variable and the value associated to it. The variable can be
  * discrete, continuous or hybrid
@@ -84,13 +82,7 @@ public class Finding {
 		this.variable = variable;
 		this.numericalValue = numericalValue;
 		if (variable.getVariableType() == VariableType.DISCRETIZED) {
-			try {
-				this.stateIndex = variable.getStateIndex(numericalValue);
-			} catch (InvalidStateException e) {
-				// Unreachable code because we have checked that the value is 
-				// inside the limits of the variable
-				e.printStackTrace();
-			}
+			this.stateIndex=Math.max(this.stateIndex, this.variable.getStateIndex(this.numericalValue));
 		}
 	}
 
@@ -143,9 +135,8 @@ public class Finding {
 
 	/**
 	 * @param numericalValue {@code double}
-	 * @throws InvalidStateException InvalidStateException
 	 */
-	public void setNumericalValue(double numericalValue) throws InvalidStateException {
+	public void setNumericalValue(double numericalValue) {
 		this.numericalValue = numericalValue;
 		stateIndex = variable.getStateIndex(numericalValue);
 	}

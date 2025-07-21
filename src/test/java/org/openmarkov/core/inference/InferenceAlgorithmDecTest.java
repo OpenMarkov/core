@@ -1,6 +1,5 @@
 package org.openmarkov.core.inference;
 
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
@@ -278,7 +277,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
     
     
     // @return An Intervention with the assignment 'decision = state'
-    protected StrategyTree createSimpleIntervention(ProbNet id, String decision, String state) throws InvalidStateException {
+    protected StrategyTree createSimpleIntervention(ProbNet id, String decision, String state) {
         List<Variable> vars = new ArrayList<>();
         List<State> states = new ArrayList<>();
         Variable dec = id.getVariable(decision);

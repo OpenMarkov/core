@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -103,7 +102,7 @@ public class TablePotentialTest {
      * @param actual
      * @param expected Checks if two potentials are equal
      */
-    public static void checkEqualPotentials(TablePotential actual, TablePotential expected, double maxError) throws InvalidStateException {
+    public static void checkEqualPotentials(TablePotential actual, TablePotential expected, double maxError) {
         
         int numConfigurationsActual = actual.getTableSize();
         assertEquals(numConfigurationsActual, expected.getTableSize());

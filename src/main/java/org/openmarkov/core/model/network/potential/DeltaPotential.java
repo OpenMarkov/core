@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -97,13 +95,9 @@ import java.util.List;
 	private void initNumeric(Variable conditionedVariable, double numericValue) {
 		this.numericValue = numericValue;
 		if (conditionedVariable.getVariableType() == VariableType.DISCRETIZED) {
-			try {
-				stateIndex = conditionedVariable.getStateIndex(numericValue);
-			} catch (InvalidStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+			int index = conditionedVariable.getStateIndex(numericValue);
+			this.stateIndex = Math.max(this.stateIndex, index);
+        }
 	}
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,

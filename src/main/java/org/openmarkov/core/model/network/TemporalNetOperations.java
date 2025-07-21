@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network;
 
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.inference.tasks.TaskUtilities;
 import org.openmarkov.core.model.network.potential.*;
@@ -481,7 +482,7 @@ public class TemporalNetOperations {
         try {
             expandedNetwork.setNetworkType(InfluenceDiagramType.getUniqueInstance());
         } catch (org.openmarkov.core.exception.InvalidNetworkTypeException e) {
-            throw new RuntimeException(e);
+            throw new UnreacheableException(e);
         }
     }
 

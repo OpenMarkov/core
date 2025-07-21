@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
@@ -48,7 +47,7 @@ public class StrategyTreeTest {
     
     @Tag(TestSpeed.MEDIUM)
     @Test
-    /** Test constructor with several interventions and states */ public void testIntervention1() throws InvalidStateException {
+    /** Test constructor with several interventions and states */ public void testIntervention1() {
         
         strategyTrees = Arrays.asList(strategyTree0, strategyTree1, strategyTree2);
         chanceStates = Arrays.asList(chanceVar0.getStates());
@@ -94,7 +93,7 @@ public class StrategyTreeTest {
     /**
      * Simple test for equals
      */
-    @Test public void testEquals1() throws InvalidStateException {
+    @Test public void testEquals1() {
         // Create several interventions with small differences. All of them are different
         StrategyTree[] testInterventions0 = new StrategyTree[5];
         testInterventions0[0] = new StrategyTree(chanceVar0);

@@ -44,7 +44,6 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
         if (!checkEdit(edit.getProbNet(), edit)) {
             throw new ConstraintViolationException(constraintDescription());
         }
-        
     }
     
     @Override public void undoEditHappened(UndoableEditEvent event) {

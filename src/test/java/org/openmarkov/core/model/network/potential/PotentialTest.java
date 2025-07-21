@@ -9,7 +9,6 @@ package org.openmarkov.core.model.network.potential;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
@@ -35,7 +34,7 @@ public class PotentialTest {
      * @param potential2 <code>Potential</code>
      * @return <code>true</code> if both potentials are equal.
      */
-    public static boolean equalPotentials(Potential potential1, Potential potential2) throws InvalidStateException {
+    public static boolean equalPotentials(Potential potential1, Potential potential2) {
         boolean equals = true;
         if (potential1.getPotentialRole() == potential2.getPotentialRole() && potential1.getClass() == potential2
                 .getClass() && potential1.getComment().contentEquals(potential2.getComment())

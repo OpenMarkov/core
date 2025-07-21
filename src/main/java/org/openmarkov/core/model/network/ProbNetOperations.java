@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.network;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -590,8 +589,10 @@ public class ProbNetOperations {
 					Variable convertedVariable = convertedVariables.get(originalVariable);
 					double numericalValue = convertedVariable.round(finding.getNumericalValue());
 					int stateIndex = convertedVariable.getStateIndex(String.valueOf(numericalValue));
-					evidence.addFinding(new Finding(convertedVariable, stateIndex));
-				} catch (NoFindingException | InvalidStateException | IncompatibleEvidenceException e) {
+					if(stateIndex!=-1){
+						evidence.addFinding(new Finding(convertedVariable, stateIndex));
+					}
+				} catch (NoFindingException | IncompatibleEvidenceException e) {
 					e.printStackTrace();
 				}
 			}

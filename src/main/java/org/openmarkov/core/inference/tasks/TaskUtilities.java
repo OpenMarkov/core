@@ -54,11 +54,10 @@ public class TaskUtilities {
 
 	// TODO: the imposed policies are already added, aren't they? The nodes must be
 	// transformed to chance nodes. And the policies into conditional probabilities?
-	public static ProbNet imposePolicies(ProbNet probNet) {
+	public static void imposePolicies(ProbNet probNet) {
 		if (!hasOnlyChanceNodes(probNet) && hasDecisions(probNet)) {
 			replaceDecisionsWithPoliciesByChanceNodes(probNet, null);
 		}
-		return probNet;
 	}
 
 	public static ProbNet applyTransitionTime(ProbNet probNet, boolean isTemporal) {

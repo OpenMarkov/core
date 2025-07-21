@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.factory;
 
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -237,14 +236,9 @@ public class MIDFactory extends NetsFactory {
 		TablePotential table1 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY, branch1, state1);
 
 		ArrayList<State> statesNo = new ArrayList<>();
-		try {
-			statesNo.add(variableTreatment.getStates()[variableTreatment.getStateIndex("no")]);
-		} catch (InvalidStateException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		TreeADDBranch branchNo = new TreeADDBranch(statesNo, variableTreatment, table1, variablesTree);
+        statesNo.add(variableTreatment.getStates()[variableTreatment.getStateIndex("no")]);
+        
+        TreeADDBranch branchNo = new TreeADDBranch(statesNo, variableTreatment, table1, variablesTree);
 		//table
 		double[] branch11 = { 0.5, 0.5, 0.0, 1.0 };
 		TablePotential table11 = createTablePotential(PotentialRole.CONDITIONAL_PROBABILITY, branch11, state1, state0);
@@ -262,14 +256,9 @@ public class MIDFactory extends NetsFactory {
 				PotentialRole.CONDITIONAL_PROBABILITY, branches);
 
 		ArrayList<State> statesYes = new ArrayList<>();
-		try {
-			statesYes.add(variableTreatment.getStates()[variableTreatment.getStateIndex("yes")]);
-		} catch (InvalidStateException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		TreeADDBranch branchYes = new TreeADDBranch(statesYes, variableTreatment, subPotentialState1, variablesTree);
+        statesYes.add(variableTreatment.getStates()[variableTreatment.getStateIndex("yes")]);
+        
+        TreeADDBranch branchYes = new TreeADDBranch(statesYes, variableTreatment, subPotentialState1, variablesTree);
 
 		ArrayList<TreeADDBranch> treeBranches = new ArrayList<>();
 		treeBranches.add(branchNo);

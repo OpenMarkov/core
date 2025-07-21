@@ -8,7 +8,6 @@ package org.openmarkov.core.model.network.potential;
 
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -104,19 +103,15 @@ import java.util.Map;
 					regression += covariateValue * coefficients[j];
 				}
 			}
-			try {
-				if (getConditionedVariable().getVariableType() == VariableType.NUMERIC) {
-					projectedPotential.values[i] = regression;
-				} else {
-					int stateIndex = getConditionedVariable().getStateIndex(regression);
-					for (int j = 0; j < numStates; ++j) {
-						projectedPotential.values[i + j] = (j == stateIndex) ? 1 : 0;
-					}
-				}
-			} catch (InvalidStateException e) {
-				e.printStackTrace();
-			}
-		}
+            if (getConditionedVariable().getVariableType() == VariableType.NUMERIC) {
+                projectedPotential.values[i] = regression;
+            } else {
+                int stateIndex = getConditionedVariable().getStateIndex(regression);
+                for (int j = 0; j < numStates; ++j) {
+                    projectedPotential.values[i + j] = (j == stateIndex) ? 1 : 0;
+                }
+            }
+        }
 		return Arrays.asList(projectedPotential);
 	}
 

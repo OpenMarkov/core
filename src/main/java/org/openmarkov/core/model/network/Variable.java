@@ -7,13 +7,14 @@
 
 package org.openmarkov.core.model.network;
 
-import org.openmarkov.core.exception.InvalidStateException;
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.IntStream;
 
 // TODO  mantener la consistencia entre name y baseName cuando se cambian
 
@@ -314,7 +315,6 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	 * @throws Exception Exception
 	 */
 	public void renameState(String oldName, String newName) throws Exception {
-
 		for (int i = 0; i < states.length; i++) {
 			if (states[i].getName().contentEquals(newName)) {
 				throw new Exception("Change state name to a name that already exists");
@@ -325,7 +325,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 			throw new Exception(
 					"Try to change the state name " + oldName + " that does not exists in variable " + name);
 		}
-		states[getStateIndex(oldName)].setName(newName);
+		states[index].setName(newName);
 
 		// Change key of additional additionalProperties of this state if they
 		// exists
@@ -337,23 +337,18 @@ public class Variable implements Cloneable, Comparable<Variable> {
 			}
 		}
 	}
-
-	/**
-	 * @param stateName . {@code String}
-	 * @return The index of {@code state} or -1 if it does not exists.
-	 * {@code int}
-	 * @throws InvalidStateException InvalidStateException
-	 */
-	public int getStateIndex(String stateName) throws InvalidStateException {
-
-		for (int i = 0; i < states.length; i++) {
-			if (states[i].getName().contentEquals(stateName)) {
-				return i;
-			}
-		}
-		throw new InvalidStateException(InvalidStateException.generateMsg(this, stateName));
+	
+	public int getStateIndex(String stateName) {
+		return IntStream.range(0, states.length)
+				 .filter(i -> states[i].getName().contentEquals(stateName))
+				 .findFirst()
+				.orElse(-1);
 	}
-
+	
+	public boolean containsState(String stateName) {
+		return getStateIndex(stateName) != -1;
+	}
+	
 	/**
 	 * @param state . {@code State}
 	 * @return stateIndex of state. {@code int}
@@ -371,27 +366,13 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	/**
 	 * @param value . {@code double}
 	 * @return The state index corresponding to value. {@code int}
-	 * @throws InvalidStateException exception when variable is discrete.
 	 */
-	public int getStateIndex(double value) throws InvalidStateException {
-
-		int state = -1;
+	public int getStateIndex(double value) {
 		if (variableType == VariableType.FINITE_STATES) {
-			state = getStateIndex(String.valueOf(round(value)));
-			if (state == -1) {
-				throw new InvalidStateException(
-						"Can not use " + "Variable.getStateIndex(double) in the discrete variable." + name);
-			}
-		} else {
-			state = partitionedInterval.indexOfSubinterval(value);
-			if (state == -1) {
-				throw new InvalidStateException(
-						value + " is not in any interval of the discretized variable " + name + " (intervals are "
-								+ partitionedInterval.toString() + ").");
-			}
+			return getStateIndex(String.valueOf(round(value)));
 		}
-		return state;
-	}
+        return partitionedInterval.indexOfSubinterval(value);
+    }
 
 	/**
 	 * @return variableType. {@code VariableType}
@@ -496,10 +477,13 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	/**
 	 * @param name Name
 	 * @return The state whose name is 'name'
-	 * @throws InvalidStateException InvalidStateException
 	 */
-	public State getState(String name) throws InvalidStateException {
-		return states[getStateIndex(name)];
+	public @Nullable State getState(String name) {
+		int index = getStateIndex(name);
+		if(index==-1){
+			return null;
+		}
+		return states[index];
 	}
 
 	/**
@@ -534,15 +518,14 @@ public class Variable implements Cloneable, Comparable<Variable> {
 		this.precision = precision;
 	}
 
-	public TablePotential deltaTablePotential(String stateName) throws InvalidStateException {
+	public TablePotential deltaTablePotential(String stateName) {
 		List<Variable> potentialVariables = new ArrayList<>();
 		potentialVariables.add(this);
 		TablePotential potential = new TablePotential(potentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-
 		for (int i = 0; i < potential.values.length; i++) {
 			potential.values[i] = 0.0;
 		}
-		potential.values[getStateIndex(stateName)] = 1.0;
+		potential.values[this.getStateIndex(stateName)] = 1.0;
 		return potential;
 	}
 

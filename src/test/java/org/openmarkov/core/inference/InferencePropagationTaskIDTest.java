@@ -38,7 +38,7 @@ public abstract class InferencePropagationTaskIDTest extends InferencePropagatio
     @Disabled("Old tests with an AssertionError")
     @Test public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
             throws
-            NotEvaluableNetworkException, IncompatibleEvidenceException, InvalidStateException {
+            NotEvaluableNetworkException, IncompatibleEvidenceException {
         ProbNet network = buildIDDecideTest();
         
         List<Variable> variablesOfInterest = Arrays
@@ -136,7 +136,7 @@ public abstract class InferencePropagationTaskIDTest extends InferencePropagatio
     //TODO Review the minor error in test
     //TODO: has this test sense here
     @Test public void testPreAndPostResolutionEvidenceIDDecisionTestProblem()
-            throws IncompatibleEvidenceException, InvalidStateException {
+            throws IncompatibleEvidenceException {
         ProbNet diagram = iD_DecisionTestProblemWithSV;
         
         Propagation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram, null, null, null);

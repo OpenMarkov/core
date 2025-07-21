@@ -10,7 +10,6 @@ package org.openmarkov.core.model.network;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.openmarkov.core.exception.InvalidStateException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -113,7 +112,7 @@ public class VariableTest {
     // equals ya NO consiste en comparar la dirección de memoria de dos objetos
     // TODO Cada tipo de variable tiene que tener un método equals y llamar al del padre
     
-    @Test public void testGetStateIndex() throws InvalidStateException {
+    @Test public void testGetStateIndex() {
         for (int i = 0; i < numStates; i++) {
             assertEquals(i, variable.getStateIndex(statesNames[i]));
         }

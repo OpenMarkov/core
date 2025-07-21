@@ -8,6 +8,7 @@
 package org.openmarkov.core.io.format.annotation;
 
 import org.openmarkov.core.exception.OpenMarkovException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.plugin.PluginSearch;
@@ -422,13 +423,12 @@ public class FormatManager {
 		Schema schema = factory.newSchema(schemaFile);
 
 		Validator validator = schema.newValidator();
-
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = null;
+        
+        DocumentBuilder db;
 		try {
-			db = dbf.newDocumentBuilder();
+			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			throw new RuntimeException(e);
+			throw new UnreacheableException(e);
 		}
 		Document document = db.parse(url.openStream());
 
@@ -477,13 +477,12 @@ public class FormatManager {
 		Schema schema = factory.newSchema(schemaFile);
 
 		Validator validator = schema.newValidator();
-
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = null;
+        
+        DocumentBuilder db;
 		try {
-			db = dbf.newDocumentBuilder();
+			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			throw new RuntimeException(e);
+			throw new UnreacheableException(e);
 		}
 		Document document = db.parse(url.openStream());
 

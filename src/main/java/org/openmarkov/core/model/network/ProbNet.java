@@ -338,7 +338,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
     
     public List<PNConstraint> getUnsatisfiedConstraints() {
         List<PNConstraint> constraints = new ArrayList<PNConstraint>();
-        for (PNConstraint constraint : constraints) {
+        for (PNConstraint constraint : this.constraints) {
             if ((constraint != null) && (!constraint.checkProbNet(this))) {
                 constraints.add(constraint);
             }

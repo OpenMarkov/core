@@ -7,11 +7,60 @@
 
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial") public class CostEffectivenessException extends OpenMarkovException {
+import org.apache.commons.lang3.ArrayUtils;
+import org.openmarkov.core.model.network.CEP;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.StrategyTree;
 
-	// Constructor
-	public CostEffectivenessException(String message) {
-		super(message);
-	}
+import java.util.Arrays;
+import java.util.List;
+
+@SuppressWarnings("serial") public abstract sealed class CostEffectivenessException extends AutoOpenMarkovException2 {
 	
+	//Cost should be one more than thresholds
+	public static final class WrongNumberOfThresholds extends CostEffectivenessException{
+		
+		public WrongNumberOfThresholds(double[] costs, double[] thresholds) {
+            this.costs = Arrays.asList(ArrayUtils.toObject(costs));
+            this.thresholds = Arrays.asList(ArrayUtils.toObject(thresholds));
+        }
+        
+        public final List<Double> costs;
+        public final List<Double> thresholds;
+    }
+	
+	//Their lengths should be the same
+	public static final class WrongNumberOfCostsEffectivitiesAndInterventions extends CostEffectivenessException {
+		public WrongNumberOfCostsEffectivitiesAndInterventions(double[] costs, double[] effectivities, StrategyTree[] strategyTrees) {
+            this.costs = Arrays.asList(ArrayUtils.toObject(costs));
+            this.effectivities = Arrays.asList(ArrayUtils.toObject(effectivities));
+            this.strategyTrees = List.of(strategyTrees);
+        }
+        
+        public final List<Double> costs;
+        public final List<Double> effectivities;
+        public final List<StrategyTree> strategyTrees;
+    }
+	
+	//Should have the same class
+	public static final class PotentialsMustBeOfSameType extends CostEffectivenessException {
+		public PotentialsMustBeOfSameType(Potential firstPotential, Potential secondPotential) {
+            this.firstPotential = firstPotential;
+            this.secondPotential = secondPotential;
+        }
+        
+        public final Potential firstPotential;
+        public final Potential secondPotential;
+    }
+	
+	//Should have the same
+	public static final class PartitionsAndProbabilitiesHaveDifferentSizes extends CostEffectivenessException {
+		public PartitionsAndProbabilitiesHaveDifferentSizes(List<CEP> partitions, double[] probabilities) {
+            this.partitions = partitions;
+            this.probabilities = Arrays.asList(ArrayUtils.toObject(probabilities));
+        }
+        
+        public final List<CEP> partitions;
+        public final List<Double> probabilities;
+    }
 }

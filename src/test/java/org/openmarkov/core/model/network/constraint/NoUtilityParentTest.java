@@ -40,7 +40,7 @@ public class NoUtilityParentTest {
         assertTrue(constraint.checkProbNet(probNetProperUtilityChildren));
     }
     
-    @Test public void testUndoableEditWillHappen() throws Exception {
+    @Test public void testUndoableEditWillHappen() throws org.openmarkov.core.exception.ConstraintViolationException, org.openmarkov.core.exception.DoEditException {
         // Add constraints as listeners.
         PNESupport pNESupport = influenceDiagram.getPNESupport();
         influenceDiagram.addConstraint(new NoUtilityParent());

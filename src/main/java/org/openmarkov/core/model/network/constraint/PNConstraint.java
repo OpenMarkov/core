@@ -42,7 +42,7 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
             throws ConstraintViolationException {
         PNEdit edit = (PNEdit) event.getEdit();
         if (!checkEdit(edit.getProbNet(), edit)) {
-            throw new ConstraintViolationException(constraintDescription());
+            throw new ConstraintViolationException(this);
         }
     }
     

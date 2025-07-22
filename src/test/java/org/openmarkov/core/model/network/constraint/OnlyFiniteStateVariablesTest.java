@@ -51,7 +51,7 @@ public class OnlyFiniteStateVariablesTest {
         assertFalse(testedConstraint.checkProbNet(mixedVariableInfluenceDiagram));
     }
     
-    @Test public void testUndoableEditWillHappen() throws Exception {
+    @Test public void testUndoableEditWillHappen() throws org.openmarkov.core.exception.ConstraintViolationException {
         
         PNESupport pNESupport = new PNESupport(false);
         PNConstraint constraint = new OnlyFiniteStatesVariables();

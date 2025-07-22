@@ -54,7 +54,7 @@ public class NoClosedPathTest {
         
     }
     
-    @Test public void testUndoableEditWillHappen() throws Exception {
+    @Test public void testUndoableEditWillHappen() throws ConstraintViolationException {
         
         PNESupport pNESupport = new PNESupport(false);
         PNConstraint constraint = new NoClosedPath();

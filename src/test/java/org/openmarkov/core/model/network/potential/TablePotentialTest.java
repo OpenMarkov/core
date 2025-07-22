@@ -141,7 +141,7 @@ public class TablePotentialTest {
         return var;
     }
     
-    @BeforeEach public void setUp() throws Exception {
+    @BeforeEach public void setUp() throws org.openmarkov.core.exception.IncompatibleEvidenceException {
         states1 = new State[]{new State("S1V1"), new State("S2V1")};
         states2 = new State[]{new State("S1V2"), new State("S2V2")};
         states3 = new State[]{new State("S1V3"), new State("S2V3")};
@@ -209,7 +209,7 @@ public class TablePotentialTest {
     }
     
     @Test public void testGetAccumulateOffsets()
-            throws Exception {
+            throws org.openmarkov.core.exception.IncompatibleEvidenceException, NonProjectablePotentialException {
         // tablePotential1 contains B,D,A,C. Dimensions (2,2,2,2)
         // tablePotential2 contains A,B,C. Dimensions (2,2,2)
         int[] accOffsets = tablePotential1.getAccumulatedOffsets(tablePotential2.getVariables());

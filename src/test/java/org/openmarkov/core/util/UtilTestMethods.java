@@ -110,7 +110,7 @@ public class UtilTestMethods {
      * @throws Exception A generic exception because the invoked method can
      *                   fail in unpredictable ways.
      */
-    public static Object invokePrivateMethod(Object test, String methodName, Object params[]) throws Exception {
+    public static Object invokePrivateMethod(Object test, String methodName, Object params[]) throws SecurityException, IllegalAccessException, IllegalArgumentException, java.lang.reflect.InvocationTargetException {
         Object ret = null;
         
         final Method[] methods = test.getClass().getDeclaredMethods();

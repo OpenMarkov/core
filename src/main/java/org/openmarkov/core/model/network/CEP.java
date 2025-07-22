@@ -68,16 +68,14 @@ public class CEP {
 	 * @throws CostEffectivenessException CostEffectivenessException
 	 */
 	public CEP(StrategyTree[] strategyTrees, double[] costs, double[] effectivities, double[] thresholds)
-			throws CostEffectivenessException {
+            throws CostEffectivenessException.WrongNumberOfThresholds, CostEffectivenessException.WrongNumberOfCostsEffectivitiesAndInterventions {
 
 		if (costs.length == effectivities.length && costs.length == strategyTrees.length) {
 			if (costs.length == 1 && thresholds == null) {
 				this.thresholds = new double[0];
 			} else {
 				if (thresholds.length != (costs.length - 1)) {
-					throw new CostEffectivenessException("Number of thresholds must be minor in 1 than number of "
-							+ "costs, effectivities and interventions.\nNumber of thresholds = " + thresholds.length
-							+ "\nNumber of costs, effectivities and interventions = " + costs.length);
+					throw new CostEffectivenessException.WrongNumberOfThresholds(costs,thresholds);
 				}
 				this.thresholds = thresholds;
 			}
@@ -85,10 +83,7 @@ public class CEP {
 			this.effectivities = effectivities;
 			this.strategyTrees = strategyTrees;
 		} else {
-			throw new CostEffectivenessException(
-					"Number of cost, effectivities and interventions must be equal.\n" + "Number of cost = "
-							+ costs.length + "\nNumber of effectivities = " + effectivities.length
-							+ "\nNumber of interventions = " + strategyTrees.length);
+			throw new CostEffectivenessException.WrongNumberOfCostsEffectivitiesAndInterventions(costs , effectivities, strategyTrees);
 		}
 		minThreshold = defaultMinimalThreshold;
 		maxThreshold = defaultMaximalThreshold;
@@ -125,8 +120,7 @@ public class CEP {
 	 * @throws CostEffectivenessException CostEffectivenessException
 	 */
 	public CEP(StrategyTree[] strategyTrees, double[] costs, double[] effectivities, double[] thresholds,
-			double minThreshold, double maxThreshold) throws CostEffectivenessException {
-
+			double minThreshold, double maxThreshold) throws CostEffectivenessException.WrongNumberOfThresholds, CostEffectivenessException.WrongNumberOfCostsEffectivitiesAndInterventions {
 		this(strategyTrees, costs, effectivities, thresholds);
 		this.minThreshold = minThreshold;
 		this.maxThreshold = maxThreshold;

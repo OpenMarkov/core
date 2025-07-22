@@ -51,7 +51,7 @@ public class OnlyDirectedLinksTest {
     /**
      * Checks veto
      */
-    @Test public void testUndoableEditWillHappen() throws Exception {
+    @Test public void testUndoableEditWillHappen() throws org.openmarkov.core.exception.ConstraintViolationException {
         
         // Add constraints as listeners.
         PNESupport pNESupport = new PNESupport(false);

@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.exception;
 
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
-import org.openmarkov.core.model.network.type.NetworkType;
 
 /**
  * Thrown when trying to do an edit that violates one of the
@@ -17,15 +15,12 @@ import org.openmarkov.core.model.network.type.NetworkType;
  *
  * @see org.openmarkov.core.model.graph.Link#Link(Object, Object, boolean)
  */
-@SuppressWarnings("serial") public class ConstraintViolationException extends OpenMarkovException {
-
-	// Constructor
-
-	/**
-	 * @param message {@code String}
-	 */
-	public ConstraintViolationException(String message) {
-		super(message);
-	}
-
+@SuppressWarnings("serial") public class ConstraintViolationException extends AutoOpenMarkovException2 {
+	
+	public final PNConstraint constraint;
+	
+	public ConstraintViolationException(PNConstraint constraint) {
+        this.constraint = constraint;
+    }
+	   
 }

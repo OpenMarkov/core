@@ -360,7 +360,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 				return i;
 			}
 		}
-		throw new Error("State " + state.getName() + " does" + " not exist in variable " + name);
+		return -1;
 	}
 
 	/**

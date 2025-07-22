@@ -198,7 +198,7 @@ public class ProbNetOperationsTest {
     @Test
     /** Test: prune barren nodes and prune parts of the network isolated due to
      *  evidence. */
-    public void testPrune2() throws Exception {
+    public void testPrune2() throws IncompatibleEvidenceException {
         /** ProbNet for test: Two chance nodes A --> B, one decision D, B --> D;
          * one utility U, A --> U, D --> U. */
         Variable variableA = new Variable("A", 2);
@@ -393,7 +393,7 @@ public class ProbNetOperationsTest {
     }
     
     @Test
-    public final void testPrune3() throws Exception {
+    public final void testPrune3() throws IncompatibleEvidenceException {
         //Create asia.Do not add potentials because they will not be used.
         String strAsia = "Asia";
         String strSmoker = "Smoker";
@@ -658,7 +658,7 @@ public class ProbNetOperationsTest {
     }
     
     @Test
-    public final void testSumProjectedPotential() throws Exception {
+    public final void testSumProjectedPotential() throws IncompatibleEvidenceException {
         Variable varA = new Variable("A", "a0", "a1", "a2");
         Variable varB = new Variable("B", "b0", "b1");
         Variable varC = new Variable("C", "c0", "c1", "c2", "c3");
@@ -702,7 +702,7 @@ public class ProbNetOperationsTest {
     }
     
     @Test
-    public final void testSumProjectedUtilityPotential() throws Exception {
+    public final void testSumProjectedUtilityPotential() throws IncompatibleEvidenceException {
         Variable costVar = new Variable("Cost", true, 0.0, Double.POSITIVE_INFINITY, false, 0.001);
         Variable varTherapy = new Variable("Therapy", "placebo", "drug");
         Variable varStateA = new Variable("State A", "no", "yes");

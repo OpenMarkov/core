@@ -206,7 +206,7 @@ public class ProbNetTest {
         }
     }
     
-    @BeforeEach public void setUp() throws Exception {
+    @BeforeEach public void setUp() throws org.openmarkov.core.exception.IncompatibleEvidenceException {
         emptyProbNet = new ProbNet();
         
         // create simpleProbNet

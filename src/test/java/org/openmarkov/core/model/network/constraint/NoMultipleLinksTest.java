@@ -50,7 +50,7 @@ public class NoMultipleLinksTest {
     }
     
     @Disabled
-    @Test public void testUndoableEditWillHappen() throws Exception {
+    @Test public void testUndoableEditWillHappen() throws ConstraintViolationException, org.openmarkov.core.exception.DoEditException {
         PNESupport pNESupport = new PNESupport(false);
         PNConstraint constraint = new NoMultipleLinks();
         

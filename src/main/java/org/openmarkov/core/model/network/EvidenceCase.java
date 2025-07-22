@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NoFindingException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.type.MIDType;
 
@@ -364,9 +365,9 @@ public class EvidenceCase {
                     shiftedEvidence.addFinding(finding);
                 }
             }
-        } catch (Exception e) {
+        } catch (IncompatibleEvidenceException e) {
             // Unreachable code
-            throw new Error("shifted finding");
+            throw new UnreacheableException("shifted finding");
         }
         return shiftedEvidence;
     }

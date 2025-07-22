@@ -288,7 +288,7 @@ public class DiscretePotentialOperationsTest {
     
     @Test
     /** Multiplies and marginalize projected potentials */
-    public void testMultiplyAndMarginalizeProjected() throws Exception {
+    public void testMultiplyAndMarginalizeProjected() throws IncompatibleEvidenceException, NonProjectablePotentialException {
         // Create data
         // Variables
         Variable A = new Variable("A", 2);

@@ -47,7 +47,7 @@ public class NoMixedParentsTest {
     }
     
     @Disabled
-    @Test public void testUndoableEditWillHappen() throws Exception {
+    @Test public void testUndoableEditWillHappen() throws ConstraintViolationException, org.openmarkov.core.exception.DoEditException {
         // Add constraints as listeners.
         PNESupport pNESupport = new PNESupport(false);
         PNConstraint constraint = new NoMixedParents();

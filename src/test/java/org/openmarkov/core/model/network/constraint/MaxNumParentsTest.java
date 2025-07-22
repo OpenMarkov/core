@@ -51,7 +51,7 @@ public class MaxNumParentsTest {
         assertFalse(constraint.checkProbNet(net)); //La prueba solo se cumple si no se cumplen las constraints.
     }
     
-    @Test public void testUndoableEditWillHappen() throws Exception {
+    @Test public void testUndoableEditWillHappen() throws ConstraintViolationException {
         
         PNESupport pNESupport = new PNESupport(false);
         MaxNumParents constraint = new MaxNumParents();

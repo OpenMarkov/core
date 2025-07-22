@@ -23,11 +23,11 @@ public class DirichletFamily extends FamilyDistribution {
 		}
 	}
 
-	public double[] getMean() {
+	@Override public double[] getMean() {
 		return Tools.normalize(super.getMean());
 	}
 
-	public double[] getSample(Random randomGenerator) {
+	@Override public double[] getSample(Random randomGenerator) {
 		return Tools.normalize(super.getSample(randomGenerator));
 	}
 

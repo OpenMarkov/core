@@ -104,7 +104,7 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	 */
 	public abstract Variable getVariableToDelete();
 
-	public void undoableEditHappened(UndoableEditEvent event) {
+	@Override public void undoableEditHappened(UndoableEditEvent event) {
 		Variable removedVariable = getEventVariable(event);
 
 		if (removedVariable != null) {

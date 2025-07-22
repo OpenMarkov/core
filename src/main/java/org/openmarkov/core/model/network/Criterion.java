@@ -171,7 +171,7 @@ public class Criterion implements Cloneable {
 	 *
 	 * @return copied criterion
 	 */
-	public Criterion clone() {
+	@Override public Criterion clone() {
 		Criterion criterion = new Criterion(this.criterionName, this.criterionUnit);
 		criterion.setCECriterion(this.getCECriterion());
 		criterion.setDiscount(this.getDiscount());

@@ -136,7 +136,7 @@ import java.util.List;
 		}
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 		Node node = probNet.getNode(variable);
 		List<Potential> potentials = new ArrayList<>();

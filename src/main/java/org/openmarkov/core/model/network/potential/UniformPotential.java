@@ -203,7 +203,7 @@ import java.util.Random;
 		return randomGenerator.nextInt(variables.get(0).getNumStates());
 	}
 
-	public double getProbability(HashMap<Variable, Integer> sampledStateIndexes) {
+	@Override public double getProbability(HashMap<Variable, Integer> sampledStateIndexes) {
 		return 1.0 / variables.get(0).getNumStates();
 	}
 

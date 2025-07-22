@@ -66,7 +66,7 @@ import java.util.ArrayList;
         }
     }
     
-    public void undo() {
+    @Override public void undo() {
         super.undo();
         try {
             probNet.setNetworkType(currentNetworkType);

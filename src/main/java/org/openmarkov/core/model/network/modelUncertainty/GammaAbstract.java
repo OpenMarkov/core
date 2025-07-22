@@ -16,7 +16,7 @@ public abstract class GammaAbstract extends ProbDensFunction {
 	protected double kAbstract;
 	protected double thetaAbstract;
 
-	public final double getMaximum() {
+	@Override public final double getMaximum() {
 		return Double.POSITIVE_INFINITY;
 	}
 

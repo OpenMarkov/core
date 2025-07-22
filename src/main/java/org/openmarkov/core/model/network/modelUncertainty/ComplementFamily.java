@@ -32,7 +32,7 @@ public class ComplementFamily extends FamilyDistribution {
 		this.probMass = probMass;
 	}
 
-	public double[] getMean() {
+	@Override public double[] getMean() {
 
 		int sizeFamily = family.size();
 		double[] nu = new double[sizeFamily];

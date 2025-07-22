@@ -318,7 +318,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	 * @see #canUndo
 	 * @see #editToBeUndone
 	 */
-	public synchronized void undo() throws CannotUndoException {
+	@Override public synchronized void undo() throws CannotUndoException {
 		if (isInProgress()) {
 			UndoableEdit edit = editToBeUndone();
 			if (edit == null) {
@@ -340,7 +340,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	 * @see CompoundEdit#canUndo
 	 * @see #editToBeUndone
 	 */
-	public synchronized boolean canUndo() {
+	@Override public synchronized boolean canUndo() {
 		if (isInProgress()) {
 			UndoableEdit edit = editToBeUndone();
 			return edit != null && edit.canUndo();
@@ -363,7 +363,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	 * @see #canRedo
 	 * @see #editToBeRedone
 	 */
-	public synchronized void redo() throws CannotRedoException {
+	@Override public synchronized void redo() throws CannotRedoException {
 		if (isInProgress()) {
 			UndoableEdit edit = editToBeRedone();
 			if (edit == null) {
@@ -385,7 +385,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	 * @see CompoundEdit#canRedo
 	 * @see #editToBeRedone
 	 */
-	public synchronized boolean canRedo() {
+	@Override public synchronized boolean canRedo() {
 		if (isInProgress()) {
 			UndoableEdit edit = editToBeRedone();
 			return edit != null && edit.canRedo();
@@ -408,7 +408,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	 * @see CompoundEdit#end
 	 * @see CompoundEdit#addEdit
 	 */
-	public synchronized boolean addEdit(UndoableEdit anEdit) {
+	@Override public synchronized boolean addEdit(UndoableEdit anEdit) {
 		boolean retVal;
 
 		// Trim from the indexOfNextAdd to the end, as we'll
@@ -439,7 +439,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	 *
 	 * @see CompoundEdit#end
 	 */
-	public synchronized void end() {
+	@Override public synchronized void end() {
 		super.end();
 		this.trimEdits(indexOfNextAdd, edits.size() - 1);
 	}
@@ -475,7 +475,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	 * @see #undo
 	 * @see CompoundEdit#getUndoPresentationName
 	 */
-	public synchronized String getUndoPresentationName() {
+	@Override public synchronized String getUndoPresentationName() {
 		if (isInProgress()) {
 			if (canUndo()) {
 				return editToBeUndone().getUndoPresentationName();
@@ -500,7 +500,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	 * @see #redo
 	 * @see CompoundEdit#getRedoPresentationName
 	 */
-	public synchronized String getRedoPresentationName() {
+	@Override public synchronized String getRedoPresentationName() {
 		if (isInProgress()) {
 			if (canRedo()) {
 				return editToBeRedone().getRedoPresentationName();
@@ -520,7 +520,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	 *          {@code UndoableEditEvent} will be added from
 	 * @see #addEdit
 	 */
-	public void undoableEditHappened(UndoableEditEvent e) {
+	@Override public void undoableEditHappened(UndoableEditEvent e) {
 		addEdit(e.getEdit());
 	}
 

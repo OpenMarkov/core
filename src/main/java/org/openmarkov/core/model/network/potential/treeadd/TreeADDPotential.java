@@ -310,7 +310,7 @@ public class TreeADDPotential extends Potential {
 	/**
 	 * Adds variable to a treeADD potential
 	 */
-	public Potential addVariable(Variable variable) {
+	@Override public Potential addVariable(Variable variable) {
 		variables.add(variable);
 		for (TreeADDBranch branch : getBranches()) {
 			branch.setParentVariables(variables);
@@ -324,7 +324,7 @@ public class TreeADDPotential extends Potential {
 	/**
 	 * Removes variable from a treeADD potential
 	 */
-	public Potential removeVariable(Variable variable) {
+	@Override public Potential removeVariable(Variable variable) {
 		List<Variable> newVariables = getVariables();
 		newVariables.remove(variable);
 		return new UniformPotential(newVariables, getPotentialRole());

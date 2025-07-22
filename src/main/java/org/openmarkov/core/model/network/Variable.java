@@ -219,7 +219,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
 	}
 
 	// Methods
-	public Object clone() {
+	@Override public Object clone() {
 		Object object = null;
 		try {
 			object = super.clone();

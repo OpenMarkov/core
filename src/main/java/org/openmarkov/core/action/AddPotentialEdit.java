@@ -30,7 +30,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 		probNet.addPotential(potential);
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 		probNet.removePotential(potential);
 	}

@@ -49,7 +49,7 @@ import org.openmarkov.core.model.network.State;
 		}
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 		if (currentDefaultStates != null) {
 			probNet.setDefaultStates(currentDefaultStates);

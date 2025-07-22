@@ -257,7 +257,7 @@ import java.util.*;
 
     }
 
-    public void undo() {
+    @Override public void undo() {
         super.undo();
         probNet.addNode(absorbedNode);
         // Restore deleted links
@@ -294,7 +294,7 @@ import java.util.*;
 
     }
 
-    public void redo() {
+    @Override public void redo() {
         setTypicalRedo(false);
         super.redo();
         if (utilityNodesMerged) {

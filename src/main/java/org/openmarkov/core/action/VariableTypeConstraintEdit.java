@@ -70,7 +70,7 @@ import java.util.List;
 
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 
 		if (newVariableTypeConstraint != null) {

@@ -45,7 +45,7 @@ public class MulticriteriaOptions implements Cloneable {
 		this.mainUnit = mainUnit;
 	}
 
-	public MulticriteriaOptions clone() {
+	@Override public MulticriteriaOptions clone() {
 		return new MulticriteriaOptions(this);
 	}
 

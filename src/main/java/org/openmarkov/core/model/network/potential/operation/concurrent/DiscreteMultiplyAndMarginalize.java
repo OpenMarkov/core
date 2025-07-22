@@ -29,7 +29,7 @@ public class DiscreteMultiplyAndMarginalize extends DiscreteMultiply implements 
 		unionDimensions = sdm.unionDimensions;
 	}
 
-	public void run() {
+	@Override public void run() {
 		// Auxiliary variables for the nested loops
 		double multiplicationResult; // product of the table values
 		double accumulator; // in general, the sum or the maximum

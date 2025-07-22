@@ -45,7 +45,7 @@ import java.util.Random;
 	 *
 	 * @return the mean
 	 */
-	public double getMean() {
+	@Override public double getMean() {
 		return nu;
 	}
 

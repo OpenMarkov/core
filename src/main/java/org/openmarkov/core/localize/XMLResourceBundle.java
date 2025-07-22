@@ -30,7 +30,7 @@ public class XMLResourceBundle extends ResourceBundle {
 		props.load(stream);
 	}
 
-	protected Object handleGetObject(String key) {
+	@Override protected Object handleGetObject(String key) {
 		return props.getProperty(key);
 	}
 	

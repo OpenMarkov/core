@@ -51,7 +51,7 @@ import org.openmarkov.core.model.network.ProbNet;
 		probNet.setShowCommentWhenOpening(showCommentWhenOpening);
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 		probNet.setComment(currentComment);
 

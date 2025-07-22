@@ -55,7 +55,7 @@ import java.util.List;
 		this.nodeType = node.getNodeType();
 	}
 
-	public void generateEdits() {
+	@Override public void generateEdits() {
 		// gets neighbors of this node
 		parents = probNet.getParents(node);
 		children = probNet.getChildren(node);
@@ -77,7 +77,7 @@ import java.util.List;
 		//edits.add(new AddPotentialEdit(probNet, newPotential));
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 	}
 

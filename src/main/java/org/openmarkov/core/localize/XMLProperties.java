@@ -44,7 +44,7 @@ import java.util.Properties;
 	 * @param reader the reader to read XML from
 	 * @throws IOException	when errors occur reading.
 	 */
-	public void load(Reader reader) throws IOException {
+	@Override public void load(Reader reader) throws IOException {
 
 		try {
 			// Load XML into JDOM Document
@@ -66,7 +66,7 @@ import java.util.Properties;
 	 * @param inputStream the input stream
 	 * @throws IOException	when errors occur reading.
 	 */
-	public void load(InputStream inputStream) throws IOException {
+	@Override public void load(InputStream inputStream) throws IOException {
 
 		load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 	}
@@ -130,7 +130,7 @@ import java.util.Properties;
 	 * a properties list is via the
 	 * method.
 	 */
-	public void save(OutputStream out, String header) {
+	@Override public void save(OutputStream out, String header) {
 		try {
 			store(out, header);
 		} catch (IOException ignored) {
@@ -146,7 +146,7 @@ import java.util.Properties;
 	 * @param header comment to add at top of file
 	 * @throws IOException	when writing errors occur.
 	 */
-	public void store(Writer writer, String header) throws IOException {
+	@Override public void store(Writer writer, String header) throws IOException {
 
 		// Create a new JDOM Document with a root element "properties"
 		Element root = new Element("properties");
@@ -179,7 +179,7 @@ import java.util.Properties;
 	 * @param header comment to add at top of file
 	 * @throws IOException	when writing errors occur.
 	 */
-	public void store(OutputStream out, String header) throws IOException {
+	@Override public void store(OutputStream out, String header) throws IOException {
 
 		store(new OutputStreamWriter(out), header);
 	}

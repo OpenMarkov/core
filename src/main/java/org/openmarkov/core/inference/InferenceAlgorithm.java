@@ -169,7 +169,7 @@ public abstract class InferenceAlgorithm implements Task {
 	/**
 	 * @param preResolutionEvidence The pre-resolution evidence to set
 	 */
-	public void setPreResolutionEvidence(EvidenceCase preResolutionEvidence) throws IncompatibleEvidenceException {
+	@Override public void setPreResolutionEvidence(EvidenceCase preResolutionEvidence) throws IncompatibleEvidenceException {
 		if (preResolutionEvidence != null) {
 			this.preResolutionEvidence = new EvidenceCase(preResolutionEvidence);
 		}
@@ -185,7 +185,7 @@ public abstract class InferenceAlgorithm implements Task {
 	/**
 	 * @param conditioningVariables The conditioning variables to set
 	 */
-	public void setConditioningVariables(List<Variable> conditioningVariables) {
+	@Override public void setConditioningVariables(List<Variable> conditioningVariables) {
 		if (conditioningVariables != null) {
 			this.conditioningVariables = conditioningVariables;
 		}

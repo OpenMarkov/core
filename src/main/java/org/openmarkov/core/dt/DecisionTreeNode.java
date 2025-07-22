@@ -80,18 +80,18 @@ public abstract class DecisionTreeNode<T> implements DecisionTreeElement {
 	 *
 	 * @return the children.
 	 */
-	public List<DecisionTreeElement> getChildren() {
+	@Override public List<DecisionTreeElement> getChildren() {
 		return children;
 	}
 
 
 
-	public EvidenceCase getBranchStates() {
+	@Override public EvidenceCase getBranchStates() {
 		return (parent != null) ? parent.getBranchStates() : new EvidenceCase();
 	}
 
 	
-	public double getScenarioProbability() {
+	@Override public double getScenarioProbability() {
 		return scenarioProbability;
 	}
 

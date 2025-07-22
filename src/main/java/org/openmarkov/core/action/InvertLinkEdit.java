@@ -110,7 +110,7 @@ import java.util.List;
 		}
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 		try {
 			probNet.removeLink(variable2, variable1, isDirected);

@@ -409,7 +409,7 @@ import java.util.*;
 	 * @param variable Variable to be removed
 	 * @return Potential without the removed variable
 	 */
-	public Potential removeVariable(Variable variable) {
+	@Override public Potential removeVariable(Variable variable) {
 		Potential newPotential = this;
 		if (variables.contains(variable)) {
 			Finding finding = new Finding(variable, 0);
@@ -441,8 +441,8 @@ import java.util.*;
 	 * @return A {@code List} of {@code TablePotential}s containing
 	 * only one element, which is a {@code ProjectedPotential}
 	 */
-	public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			List<TablePotential> projectedPotentials) {
+	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+                                                       List<TablePotential> projectedPotentials) {
 		// returned value
 		boolean hasUncertainTable = (uncertainValues != null);
 		List<TablePotential> newProjectedPotentials = new ArrayList<>(1);
@@ -933,7 +933,7 @@ import java.util.*;
 	 * 0 if {@code this} table size is greater than the table size
 	 * of received potential.
 	 */
-	public int compareTo(TablePotential other) {
+	@Override public int compareTo(TablePotential other) {
 		return this.tableSize - other.tableSize;
 	}
 
@@ -962,7 +962,7 @@ import java.util.*;
 	}
 
 	// TODO revisar para que no use tableProject(...)
-	public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
+	@Override public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
 		Collection<Finding> inducedFindings = new ArrayList<>();
 		if (role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.POLICY) {
 			// Iterates over the list of parents. If some parent is not in the
@@ -1086,7 +1086,7 @@ import java.util.*;
 		return buffer.toString();
 	}
 
-	public String treeADDString() {
+	@Override public String treeADDString() {
 		if (role == PotentialRole.CONDITIONAL_PROBABILITY && variables != null && variables.size() == 1) {
 			Variable firstVariable = variables.get(0);
 			for (int i = 0; i < firstVariable.getNumStates(); i++) {
@@ -1110,7 +1110,7 @@ import java.util.*;
 		return sampledPotential;
 	}
 	
-	public Potential sample() {
+	@Override public Potential sample() {
 		return sample(false);
 	}
 

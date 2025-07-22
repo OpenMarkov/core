@@ -55,7 +55,7 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
      * @return {@code true} if the {@code probNet} fulfills the
      * constraint.
      */
-    public abstract boolean checkProbNet(ProbNet probNet);
+    @Override public abstract boolean checkProbNet(ProbNet probNet);
     
     /**
      * Make sure all editions of the event do not violate restrictions.
@@ -66,7 +66,7 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable 
      * constraint after applying the {@code event} in a
      * {@code ProbNet} that previously fulfilled the constraint.
      */
-    public abstract boolean checkEdit(ProbNet probNet, PNEdit edit);
+    @Override public abstract boolean checkEdit(ProbNet probNet, PNEdit edit);
 
 	/*
 	//TODO: Extract and implement

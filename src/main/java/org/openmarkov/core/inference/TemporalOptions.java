@@ -40,7 +40,7 @@ public class TemporalOptions implements Cloneable {
 		this.transition = transition;
 	}
 
-	public TemporalOptions clone() {
+	@Override public TemporalOptions clone() {
 		return new TemporalOptions(this);
 	}
 

@@ -139,7 +139,7 @@ import java.util.List;
 		return getTablePotential(getPotential());
 	}
 	
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 
 		TablePotential potential = getTablePotential();

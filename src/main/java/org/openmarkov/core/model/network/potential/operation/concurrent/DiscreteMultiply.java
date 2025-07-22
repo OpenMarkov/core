@@ -42,7 +42,7 @@ public class DiscreteMultiply implements Runnable {
 		constantFactor = sdm.constantFactor;
 	}
 
-	public void run() {
+	@Override public void run() {
 		// Multiply
 		int incrementedVariable = 0;
 		double mulResult;

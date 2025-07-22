@@ -203,7 +203,7 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 		}
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
         // Delete link Y -> X
         probNet.removeLink(variable2, variable1, isDirected);
@@ -220,7 +220,7 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
     }
 
 
-    public void redo() {
+    @Override public void redo() {
 	    setTypicalRedo(false);
         super.redo();
         // Re-remove link X -> Y

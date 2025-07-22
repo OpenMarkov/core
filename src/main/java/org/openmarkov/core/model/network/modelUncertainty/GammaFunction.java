@@ -38,7 +38,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 	/**
 	 *
 	 */
-	public void verifyParameters(double[] parameters) throws IllegalArgumentException {
+	@Override public void verifyParameters(double[] parameters) throws IllegalArgumentException {
 		if (!((parameters[0] > 0) && (parameters[1] > 0))) {
 			throw new IllegalArgumentException("Parameters should be positive " + this.getClass().getName());
 		}

@@ -97,7 +97,7 @@ import java.util.List;
 		}
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
         
         node2 = probNet.getNode(variable2.getName());

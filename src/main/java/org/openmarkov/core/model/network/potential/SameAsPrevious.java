@@ -76,7 +76,7 @@ import java.util.List;
         return getOriginalPotential(probNet, getConditionedVariable());
     }
     
-    public Potential sample() {
+    @Override public Potential sample() {
         throw new IllegalArgumentException("SameAsPrevious potentials cannot be sampled.");
     }
     

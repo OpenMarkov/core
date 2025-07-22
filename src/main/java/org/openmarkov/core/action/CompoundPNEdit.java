@@ -42,7 +42,7 @@ import java.util.Vector;
 	 *
 	 * @throws DoEditException DoEditException
 	 */
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException {
 		if (!generatedEdits) {
 			generateEdits();
 			generatedEdits = true;
@@ -66,11 +66,11 @@ import java.util.Vector;
 		return edits;
 	}
 
-	public boolean isSignificant() {
+	@Override public boolean isSignificant() {
 		return significant;
 	}
 
-	public void setSignificant(boolean significant) {
+	@Override public void setSignificant(boolean significant) {
 		this.significant = significant;
 	}
 

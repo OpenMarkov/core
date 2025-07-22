@@ -105,7 +105,7 @@ import java.util.List;
 		return sum;
 	}
 
-	public Potential addVariable(Variable variable) {
+	@Override public Potential addVariable(Variable variable) {
 		variables.add(variable);
 		return this;
 	}
@@ -113,7 +113,7 @@ import java.util.List;
 	/**
 	 * Removes variable to a potential implemented in each child class
 	 */
-	public Potential removeVariable(Variable variable) {
+	@Override public Potential removeVariable(Variable variable) {
 		variables.remove(variable);
 		return this;
 	}

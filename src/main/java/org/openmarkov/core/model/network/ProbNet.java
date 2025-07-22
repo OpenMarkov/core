@@ -587,7 +587,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
     /**
      * @return Number of nodes in {@code probNet}. {@code int}
      */
-    public int getNumNodes() {
+    @Override public int getNumNodes() {
         return nodeDepot.getNumNodes();
     }
     
@@ -1186,7 +1186,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      *
      * @param node {@code Node}
      */
-    public void removeNode(Node node) {
+    @Override public void removeNode(Node node) {
         super.removeNode(node);
         nodeDepot.removeNode(node);
     }

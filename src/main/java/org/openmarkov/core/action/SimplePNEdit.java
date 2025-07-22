@@ -50,7 +50,7 @@ import javax.swing.undo.AbstractUndoableEdit;
 	 *
 	 * @throws DoEditException DoEditException
 	 */
-	public abstract void doEdit() throws DoEditException;
+	@Override public abstract void doEdit() throws DoEditException;
 
 	/**
 	 * @return probNet. {@code ProbNet}
@@ -63,7 +63,7 @@ import javax.swing.undo.AbstractUndoableEdit;
 		typicalRedo = redo;
 	}
 
-	public void redo() {
+	@Override public void redo() {
 		super.redo();
 		if (typicalRedo) {
 			try {
@@ -78,11 +78,11 @@ import javax.swing.undo.AbstractUndoableEdit;
 
 	}
 
-	public boolean isSignificant() {
+	@Override public boolean isSignificant() {
 		return significant;
 	}
 
-	public void setSignificant(boolean significant) {
+	@Override public void setSignificant(boolean significant) {
 		this.significant = significant;
 	}
 

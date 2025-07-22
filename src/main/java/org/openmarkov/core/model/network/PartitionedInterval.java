@@ -335,7 +335,7 @@ public class PartitionedInterval implements Cloneable {
 		return result;
 	}
 
-	public Object clone() {
+	@Override public Object clone() {
 		try {
 			return super.clone();
 		} catch (CloneNotSupportedException e) {

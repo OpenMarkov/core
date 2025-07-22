@@ -21,7 +21,7 @@ import java.util.List;
 @Constraint(name = "ProperUtilityPotentials", defaultBehavior = ConstraintBehavior.OPTIONAL) public class ProperUtilityPotentials
 		extends PNConstraint {
 
-	public boolean checkProbNet(ProbNet probNet) {
+	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
 		if (utilityNodes.size() == 0) {
 			return false;
@@ -35,7 +35,7 @@ import java.util.List;
 		return true;
 	}
 
-	public boolean checkEdit(ProbNet probNet, PNEdit edit) {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddNodeEdit.class);
 		int numUtilities = probNet.getNumNodes(NodeType.UTILITY);
 		for (PNEdit simpleEdit : edits) {

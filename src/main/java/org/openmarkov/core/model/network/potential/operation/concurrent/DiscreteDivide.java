@@ -31,7 +31,7 @@ public class DiscreteDivide implements Runnable {
 		this.quotient = sdd.result;
 	}
 
-	public void run() {
+	@Override public void run() {
 		int tamTable = 1; // If numVariables == 0 the potential is a constant
 		if (numVariables > 0) {
 			tamTable = dimension[numVariables - 1] * offset[numVariables - 1];

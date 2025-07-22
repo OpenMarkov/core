@@ -39,7 +39,7 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 	}
 	
 
-	public List<DecisionTreeElement> getChildren() {
+	@Override public List<DecisionTreeElement> getChildren() {
 		List<DecisionTreeElement> children = new LinkedList<>();
 		children.add(child);
 		return children;
@@ -52,7 +52,7 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 		return (parentScenarioProb != 0) ? getScenarioProbability() / parentScenarioProb : 0;
 	}
 
-	public EvidenceCase getBranchStates() {
+	@Override public EvidenceCase getBranchStates() {
 		if (scenarioEvidence == null) {
 			scenarioEvidence = (parent != null) ? new EvidenceCase(parent.getBranchStates()) : new EvidenceCase();
 			if (branchVariable != null) {
@@ -84,7 +84,7 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 		return branchState;
 	}
 
-	public double getScenarioProbability() {
+	@Override public double getScenarioProbability() {
 		//TODO Manolo> I'm testing if everything is calculated correctly by inference modules
 		/*if (scenarioProbability == Double.NEGATIVE_INFINITY) {
 			scenarioProbability = 1;

@@ -63,7 +63,7 @@ import java.util.List;
 		this.logger = LogManager.getLogger(CompoundPNEdit.class);
 	}
 
-	public void generateEdits() {
+	@Override public void generateEdits() {
 		Node node = probNet.getNode(variable);
 
 		// gets neighbors of this node
@@ -118,7 +118,7 @@ import java.util.List;
 		addEdit(new RemoveNodeEdit(probNet, variable));
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 	}
 

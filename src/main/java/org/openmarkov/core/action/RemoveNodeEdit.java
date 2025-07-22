@@ -49,7 +49,7 @@ import org.openmarkov.core.model.network.Variable;
 
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 		probNet.addNode(node);
 	}
@@ -64,7 +64,7 @@ import org.openmarkov.core.model.network.Variable;
 	/**
 	 * @return variable {@code Variable}
 	 */
-	public Variable getVariable() {
+	@Override public Variable getVariable() {
 		return variable;
 	}
 

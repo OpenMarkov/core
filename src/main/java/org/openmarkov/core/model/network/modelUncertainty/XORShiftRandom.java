@@ -22,7 +22,7 @@ import java.util.Random;
         this.seed = seed;
     }
 
-    protected int next(int nbits) {
+    @Override protected int next(int nbits) {
 		// TODO N.B. Not thread-safe!
 		long x = this.seed;
 		x ^= (x << 21);

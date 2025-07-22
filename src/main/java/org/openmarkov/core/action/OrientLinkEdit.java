@@ -36,7 +36,7 @@ import org.openmarkov.core.model.network.Variable;
 	 * Undo the edition by removing the existing link and adding
 	 * a new undirected link between the same two variables.
 	 */
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
         probNet.removeLink(variable1, variable2, true);
         probNet.addLink(variable1, variable2, false);

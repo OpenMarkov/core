@@ -79,7 +79,7 @@ public class CycleLength {
 		this.value = value;
 	}
 
-	public CycleLength clone() {
+	@Override public CycleLength clone() {
 		return new CycleLength(this);
 	}
 

@@ -62,7 +62,7 @@ public class RemovePolicyEdit extends SimplePNEdit {
 		listener.removePolicy();
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 		/*ArrayList<Potential> potentials = new ArrayList<>();
 		if (probNet.getNode(variable).getNodeType() == NodeType.DECISION && lastPolicyType != PolicyType.OPTIMAL) {

@@ -92,7 +92,7 @@ import java.awt.geom.Point2D;
 		newNode.setCoordinateY((int) cursorPosition.getY());
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 		probNet.removeNode(newNode);
 	}
@@ -116,19 +116,19 @@ import java.awt.geom.Point2D;
 		return cursorPosition;
 	}
 
-	public String getPresentationName() {
+	@Override public String getPresentationName() {
 		return "Edit.AddNodeEdit";
 	}
 
-	public String getUndoPresentationName() {
+	@Override public String getUndoPresentationName() {
 		return "Edit.AddNodeEdit.Undo";
 	}
 
-	public String getRedoPresentationName() {
+	@Override public String getRedoPresentationName() {
 		return "Edit.AddNodeEdit.Redo";
 	}
 
-	public void redo() {
+	@Override public void redo() {
 		setTypicalRedo(false);
 		super.redo();
 		probNet.addNode(newNode);

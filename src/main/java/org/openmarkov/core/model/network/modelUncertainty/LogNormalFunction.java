@@ -53,7 +53,7 @@ import java.util.Random;
 		normal = new NormalFunction(mu, sigma);
 	}
 
-	public double getMaximum() {
+	@Override public double getMaximum() {
 		return Double.POSITIVE_INFINITY;
 	}
 

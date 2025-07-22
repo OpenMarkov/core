@@ -116,7 +116,7 @@ public abstract class MinMaxPotential extends ICIPotential {
 	/**
 	 * @return The conditional probability table given by this potential
 	 */
-	public TablePotential getCPT() {
+	@Override public TablePotential getCPT() {
 		List<Variable> variablesToEliminate = Arrays.asList(pseudoVariable);
 		return DiscretePotentialOperations
 				.multiplyAndMarginalize(buildSubpotentialList(), variables, variablesToEliminate);

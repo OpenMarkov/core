@@ -124,7 +124,7 @@ import java.util.Map;
 		}
 	}
 
-	@SuppressWarnings("unchecked") public void undo() {
+	@Override @SuppressWarnings("unchecked") public void undo() {
 		super.undo();
 		if (lastStates != null) {
 			node.getVariable().setStates(lastStates);

@@ -28,15 +28,15 @@ import org.openmarkov.core.exception.DoEditException;
 		//super.addEdit(this);
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 	}
 
-	public String getUndoPresentationName() {
+	@Override public String getUndoPresentationName() {
 		return description + " " + getPresentationName();
 	}
 
-	public String getRedoPresentationName() {
+	@Override public String getRedoPresentationName() {
 		return description + " " + getPresentationName();
 	}
 

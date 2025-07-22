@@ -18,7 +18,7 @@ public abstract class ProbDensFunctionWithKnownInverseCDF extends ProbDensFuncti
 
 	public abstract double getInverseCumulativeDistributionFunction(double y);
 
-	public final double getSample(Random randomGenerator) {
+	@Override public final double getSample(Random randomGenerator) {
 		return getInverseCumulativeDistributionFunction(randomGenerator.nextDouble());
 	}
 

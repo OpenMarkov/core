@@ -43,7 +43,7 @@ import org.openmarkov.core.model.network.State;
 
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 		if (selected) {
 			link.removeRevealingState(newState);

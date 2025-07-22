@@ -80,7 +80,7 @@ import java.util.List;
 	 *                   c<sub><i>i</i></sub><sup>-+</sup>,
 	 *                   c<sub><i>i</i></sub><sup>--</sup>
 	 */
-	public void setNoisyParameters(Variable parent, double[] parameters) {
+	@Override public void setNoisyParameters(Variable parent, double[] parameters) {
 		double[] values = null;
 		if (parameters.length == 4) {
 			// Construct table given the parameters
@@ -109,7 +109,7 @@ import java.util.List;
 	 *
 	 * @return a TablePotential containing the probabilities of the tuning function
 	 */
-	public TablePotential getFFunctionPotential() {
+	@Override public TablePotential getFFunctionPotential() {
 		// Build the list of variables: child node first, z variables
 		List<Variable> tuningFunctionVariables = new ArrayList<>(getAuxiliaryVariables());
 		tuningFunctionVariables.add(0, variables.get(0));

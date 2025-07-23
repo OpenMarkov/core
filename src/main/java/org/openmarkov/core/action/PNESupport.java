@@ -90,6 +90,19 @@ public class PNESupport extends UndoableEditSupport {
 			((PNUndoableEditListener) listener).undoableEditWillHappen(event);
 		}
 	}
+	
+	public void announceEditWithConstraints(PNEdit edit, List<PNConstraint> constraints)
+			throws ConstraintViolationException {
+		UndoableEditEvent event = new UndoableEditEvent(this, edit);
+		for (UndoableEditListener listener : listeners) {
+			((PNUndoableEditListener) listener).undoableEditWillHappen(event);
+		}
+		if(constraints!=null){
+			for (PNConstraint pnConstraint : constraints) {
+				pnConstraint.undoableEditWillHappen(event);
+			}
+		}
+	}
 
 	/**
 	 * Second part: It does the edition and inform to the listeners

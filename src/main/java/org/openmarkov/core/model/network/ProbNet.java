@@ -218,7 +218,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      */
     public void doEdit(PNEdit edit)
             throws ConstraintViolationException, DoEditException {
-        pNESupport.announceEdit(edit);
+        pNESupport.announceEditWithConstraints(edit, this.constraints);
         pNESupport.doEdit(edit);
     }
     

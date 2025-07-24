@@ -39,7 +39,7 @@ public class Util {
 	public static boolean instanceOf(String className, Object object) {
 		try {
 			return Class.forName(className).isInstance(object);
-		} catch (Exception e) {
+		} catch (ClassNotFoundException e) {
 			logger.fatal(e);
 		}
 		return false;

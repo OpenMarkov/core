@@ -9,6 +9,7 @@ package org.openmarkov.core.inference.annotation;
 
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
@@ -61,22 +62,15 @@ public class InferenceManager {
     public List<String> getInferenceAlgorithmNames(ProbNet probNet) {
         List<String> inferenceAlgorithmNames = new ArrayList<>();
         for (String algorithmName : inferenceAlgorithms.keySet()) {
-            Constructor<? extends InferenceAlgorithm> constructor = null;
             try {
-                constructor = inferenceAlgorithms.get(algorithmName).getConstructor(ProbNet.class);
-            } catch (SecurityException e1) {
-                e1.printStackTrace();
-            } catch (NoSuchMethodException e1) {
-                e1.printStackTrace();
+                Constructor<? extends InferenceAlgorithm> constructor = inferenceAlgorithms.get(algorithmName)
+                                                                                           .getConstructor(ProbNet.class);
+                constructor.newInstance(probNet);
+                inferenceAlgorithmNames.add(algorithmName);
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                     InvocationTargetException ignored) {
             }
-            if (constructor != null) {
-                try {
-                    constructor.newInstance(probNet);
-                    inferenceAlgorithmNames.add(algorithmName);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            
         }
         return inferenceAlgorithmNames;
     }
@@ -104,16 +98,12 @@ public class InferenceManager {
                 } catch (InvocationTargetException e) {
                     isEvaluable = e.getTargetException().getClass() != NotEvaluableNetworkException.class;
                 }
-            } catch (SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException e1) {
-                e1.printStackTrace();
-            }
-            if (constructor != null && isEvaluable) {
-                try {
+                if (isEvaluable) {
                     InferenceAlgorithm inferenceAlgorithm = constructor.newInstance(probNet);
                     inferenceAlgorithms.add(inferenceAlgorithm);
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            
             }
         }
         return inferenceAlgorithms;

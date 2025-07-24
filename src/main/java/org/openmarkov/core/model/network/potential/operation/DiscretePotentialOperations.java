@@ -11,7 +11,7 @@ import org.openmarkov.core.exception.CannotNormalizeNullVectorException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.PotentialOperationException;
-import org.openmarkov.core.exception.UnsupportedOperationException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.Choice;
 import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.Criterion;
@@ -1289,7 +1289,7 @@ public final class DiscretePotentialOperations {
      *                                      <tt>TablePotential</tt>
      */
     public static Potential dividePotentials(Potential numerator, Potential denominator)
-            throws UnsupportedOperationException {
+            throws NotSupportedOperationException {
         // parameter correct type verification before calling right method
         if (!(numerator instanceof TablePotential) || !(denominator instanceof TablePotential)) {
             String errMsg = new String("");
@@ -1308,7 +1308,7 @@ public final class DiscretePotentialOperations {
                     errMsg = errMsg + "Denominator class is " + denominator.getClass().getName() + "\n";
                 }
             }
-            throw new UnsupportedOperationException(errMsg);
+            throw new NotSupportedOperationException(errMsg);
         }
         
         return DiscretePotentialOperations.divide(numerator, denominator);

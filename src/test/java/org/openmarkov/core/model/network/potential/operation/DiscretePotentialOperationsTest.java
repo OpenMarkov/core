@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.*;
-import org.openmarkov.core.exception.UnsupportedOperationException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.Choice;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
@@ -135,7 +135,7 @@ public class DiscretePotentialOperationsTest {
     }
     
     @SuppressWarnings("unchecked") @Test
-    public void testNewMultiply() throws UnsupportedOperationException {
+    public void testNewMultiply() throws NotSupportedOperationException {
         // Test constant multiplication
         List<TablePotential> potentials = allPotentials;
         

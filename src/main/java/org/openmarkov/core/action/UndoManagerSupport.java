@@ -7,8 +7,7 @@
 
 package org.openmarkov.core.action;
 
-import org.openmarkov.core.exception.UnreacheableException;
-import org.openmarkov.core.exception.UnsupportedOperationException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
@@ -66,16 +65,16 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	 * order they were added.  The default is 100.
 	 *
 	 * @param l the new limit
-	 * @throws UnsupportedOperationException if this {@code UndoManager} is not in
+	 * @throws NotSupportedOperationException if this {@code UndoManager} is not in
 	 * 							progress ({@code end} has been invoked)
 	 * @see #isInProgress
 	 * @see #end
 	 * @see #addEdit
 	 * @see #getLimit
 	 */
-	public synchronized void setLimit(int l) throws UnsupportedOperationException {
+	public synchronized void setLimit(int l) throws NotSupportedOperationException {
 		if (!isInProgress())
-			throw new UnsupportedOperationException("Attempt to call UndoManager.setLimit() after UndoManager.end() has been called");
+			throw new NotSupportedOperationException("Attempt to call UndoManager.setLimit() after UndoManager.end() has been called");
 		limit = l;
 		trimForLimit();
 	}

@@ -112,16 +112,10 @@ import java.util.List;
 
 	@Override public void undo() {
 		super.undo();
-		try {
 			probNet.removeLink(variable2, variable1, isDirected);
-
 			probNet.addLink(variable1, variable2, isDirected);
 			node1.setPotentials(parentOldPotentials);
 			node2.setPotentials(childOldPotentials);
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace(System.err);
-		}
 	}
 
 	/**

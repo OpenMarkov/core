@@ -7,6 +7,7 @@
 package org.openmarkov.core.model.network.potential.plugin;
 
 import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
@@ -15,6 +16,7 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.plugin.PluginSearch;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ public class PotentialManager {
     @SuppressWarnings("unchecked") public PotentialManager() {
         potentials = new HashMap<>();
         potentialFamilies = new HashMap<>();
-        findAllPotentials().forEach(plugin->{
+        findAllPotentials().forEach(plugin -> {
             PotentialType lAnnotation = plugin.getAnnotation(PotentialType.class);
             potentials.put(lAnnotation.name(), plugin);
             potentialFamilies.put(lAnnotation.name(), lAnnotation.family());
@@ -62,32 +64,25 @@ public class PotentialManager {
      */
     public final Potential getByName(String name, List<Variable> variables, PotentialRole role,
                                      CycleLength... cycleLength) {
-        Potential instance = null;
         try {
             Constructor<? extends Potential> constructor;
-            
             try {
                 if (cycleLength != null && cycleLength.length != 0) {
                     constructor = potentials.get(name).getConstructor(List.class, CycleLength.class);
-                    instance = (Potential) constructor.newInstance(variables, cycleLength[0]);
+                    return constructor.newInstance(variables, cycleLength[0]);
                 } else {
                     constructor = potentials.get(name).getConstructor(List.class, PotentialRole.class);
-                    instance = (Potential) constructor.newInstance(variables, role);
+                    return constructor.newInstance(variables, role);
                 }
-            } catch (NoSuchMethodException e) {
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                     InvocationTargetException e) {
                 constructor = potentials.get(name).getConstructor(List.class);
-                instance = constructor.newInstance(variables);
+                return constructor.newInstance(variables);
             }
-        } catch (NoSuchMethodException e) {
-            throw new InvalidParameterException(
-                    "\"" + name + "\" does not have a constructor" + " neither that receives a list of variables"
-                            + " a list of variables and a potential role.");
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
+            throw new UnreacheableException(e);
         }
-        if (instance == null)
-            throw new InvalidParameterException();
-        return instance;
     }
     
     /**
@@ -99,21 +94,14 @@ public class PotentialManager {
      * @return a potential by name
      */
     public final Potential getByName(String name, Variable utilityVariable, List<Variable> variables) {
-        Potential instance = null;
         try {
-            Constructor<? extends Potential> constructor;
-            
-            constructor = potentials.get(name).getConstructor(Variable.class, List.class);
-            instance = (Potential) constructor.newInstance(utilityVariable, variables);
-        } catch (NoSuchMethodException e) {
-            throw new InvalidParameterException("\"" + name + "\" does not have a constructor"
-                                                        + "that receives a tuility variable and a list of variables.");
-        } catch (Exception e) {
-            e.printStackTrace();
+            Constructor<? extends Potential> constructor = potentials.get(name)
+                                                                     .getConstructor(Variable.class, List.class);
+            return constructor.newInstance(utilityVariable, variables);
+        } catch (SecurityException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
+            throw new UnreacheableException(e);
         }
-        if (instance == null)
-            throw new InvalidParameterException();
-        return instance;
     }
     
     /**
@@ -137,16 +125,15 @@ public class PotentialManager {
         Potential potential = node.getPotentials().get(0);
         List<Variable> variables = potential.getVariables();
         PotentialRole potentialRole = potential.getPotentialRole();
-        for (String potentialName : potentials.keySet()) {
-            Method validateMethod = null;
+        for (Map.Entry<String, Class<Potential>> entry : potentials.entrySet()) {
             try {
-                Class<? extends Potential> potentialClass = potentials.get(potentialName);
-                validateMethod = potentialClass.getMethod("validate", Node.class, List.class, PotentialRole.class);
+                Class<? extends Potential> potentialClass = entry.getValue();
+                Method validateMethod = potentialClass.getMethod("validate", Node.class, List.class, PotentialRole.class);
                 if ((Boolean) validateMethod.invoke(null, node, variables, potentialRole)) {
-                    filteredPotentials.add(potentialName);
+                    filteredPotentials.add(entry.getKey());
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                throw new UnreacheableException(e);
             }
         }
         return filteredPotentials;

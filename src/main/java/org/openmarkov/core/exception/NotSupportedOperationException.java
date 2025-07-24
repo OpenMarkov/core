@@ -9,32 +9,32 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author jrico
  */
-public final class UnsupportedOperationException extends OpenMarkovException2 {
+public final class NotSupportedOperationException extends OpenMarkovException2 {
     
     private final StackTraceElement operation;
     private final @Nullable String reason;
     
     /**
-     * Creates an UnsupportedOperationException with a specific reason.
+     * Creates an NotSupportedOperationException with a specific reason.
      * <p>
      * The operation that isn't supported is automatically taken from the current stack trace. This means when you
-     * create this exception by calling {@code new UnsupportedOperationException("...")}, the method where said
+     * create this exception by calling {@code new NotSupportedOperationException("...")}, the method where said
      * {@code new} appears is the method/operation that is not supported.
      */
-    public UnsupportedOperationException(@Nullable String reason) {
+    public NotSupportedOperationException(@Nullable String reason) {
         var trace = Thread.currentThread().getStackTrace();
         this.operation = trace[2];
         this.reason = reason;
     }
     
     /**
-     * Creates an UnsupportedOperationException with a specific reason.
+     * Creates an NotSupportedOperationException with a specific reason.
      * <p>
      * The operation that isn't supported is automatically taken from the current stack trace. This means when you
-     * create this exception by calling {@code new UnsupportedOperationException()}, the method where said {@code new}
+     * create this exception by calling {@code new NotSupportedOperationException()}, the method where said {@code new}
      * appears is the method/operation that is not supported.
      */
-    public UnsupportedOperationException() {
+    public NotSupportedOperationException() {
         var trace = Thread.currentThread().getStackTrace();
         this.operation = trace[2];
         this.reason = null;

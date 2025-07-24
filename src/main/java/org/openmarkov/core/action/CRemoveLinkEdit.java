@@ -9,6 +9,7 @@ package org.openmarkov.core.action;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -69,7 +70,7 @@ import java.util.List;
 				try {
 					Potential marginalizedPotential = PotentialOperations.marginalize(potential, potentialVariables);
 					addEdit(new PotentialChangeEdit(probNet, marginalizedPotential, potential));
-				} catch (Exception e) {
+				} catch (NotSupportedOperationException e) {
 					logger.fatal(e);
 				}
 			}

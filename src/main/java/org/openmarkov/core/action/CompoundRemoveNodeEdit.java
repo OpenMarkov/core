@@ -9,6 +9,7 @@ package org.openmarkov.core.action;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -82,7 +83,7 @@ import java.util.List;
 		try {
 			// ... multiply and eliminate the variable
 			newPotential = PotentialOperations.multiplyAndEliminate(potentialsVariable, variable);
-		} catch (Exception e) {
+		} catch (NotSupportedOperationException e) {
 			logger.fatal(e);
 		}
 

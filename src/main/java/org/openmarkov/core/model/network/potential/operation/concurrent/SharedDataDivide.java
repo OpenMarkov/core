@@ -53,13 +53,8 @@ public class SharedDataDivide {
 
 	public void initialize() {
 		List<Variable> quotientVariables = numerator.getVariables();
-		TablePotential quotient = null;
-		try {
-			quotient = new TablePotential(quotientVariables, PotentialRole.JOINT_PROBABILITY);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+        TablePotential quotient = new TablePotential(quotientVariables, PotentialRole.JOINT_PROBABILITY);
+		
 		int numVariables = quotient.getVariables().size();
 
 		// Gets the tables of each TablePotential

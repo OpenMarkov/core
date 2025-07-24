@@ -544,7 +544,7 @@ public abstract class Potential {
 	}
 
 	/**
-	 * Multiply the potential by a scale. If the Potential is not scalable it must throw UnsupportedOperationException
+	 * Multiply the potential by a scale. If the Potential is not scalable it must throw NotSupportedOperationException
 	 *
 	 * @param scale Scale
 	 */

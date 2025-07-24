@@ -80,7 +80,7 @@ public class VariableTypeEditTest {
                                                                                .clone();
         VariableTypeEdit edit = new VariableTypeEdit(numericNode, VariableType.DISCRETIZED);
         
-        probNet.getPNESupport().withUndo = true;
+        probNet.getPNESupport().setWithUndo(true);
         probNet.doEdit(edit);
         
         
@@ -124,7 +124,7 @@ public class VariableTypeEditTest {
                                                                                .clone();
         VariableTypeEdit edit = new VariableTypeEdit(numericNode, VariableType.FINITE_STATES);
         
-        probNet.getPNESupport().withUndo = true;
+        probNet.getPNESupport().setWithUndo(true);
         probNet.doEdit(edit);
         
         
@@ -166,7 +166,7 @@ public class VariableTypeEditTest {
         
         VariableTypeEdit edit = new VariableTypeEdit(finiteStatesNode, VariableType.DISCRETIZED);
         
-        probNet.getPNESupport().withUndo = true;
+        probNet.getPNESupport().setWithUndo(true);
         probNet.doEdit(edit);
         
         // Check the states of the node (if there is one)
@@ -200,7 +200,7 @@ public class VariableTypeEditTest {
         
         VariableTypeEdit edit = new VariableTypeEdit(finiteStatesNode, VariableType.NUMERIC);
         
-        probNet.getPNESupport().withUndo = true;
+        probNet.getPNESupport().setWithUndo(true);
         probNet.doEdit(edit);
         
         
@@ -232,7 +232,7 @@ public class VariableTypeEditTest {
                                                                                    .getPartitionedInterval().clone();
         VariableTypeEdit edit = new VariableTypeEdit(discretizedNode, VariableType.FINITE_STATES);
         
-        probNet.getPNESupport().withUndo = true;
+        probNet.getPNESupport().setWithUndo(true);
         probNet.doEdit(edit);
         
         
@@ -265,7 +265,7 @@ public class VariableTypeEditTest {
         PartitionedInterval currentInterval = (PartitionedInterval) discretizedNode.getVariable()
                                                                                    .getPartitionedInterval().clone();
         VariableTypeEdit edit = new VariableTypeEdit(discretizedNode, VariableType.DISCRETIZED);
-        probNet.getPNESupport().withUndo = true;
+        probNet.getPNESupport().setWithUndo(true);
         probNet.doEdit(edit);
         
         // Check that the number of states must be different than one

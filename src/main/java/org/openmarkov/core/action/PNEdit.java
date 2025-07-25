@@ -24,8 +24,40 @@ public interface PNEdit extends UndoableEdit {
 	 */
 	void doEdit() throws DoEditException;
 
+	default void doEdit(ProbNet probNet) throws DoEditException{
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	void setSignificant(boolean significant);
 
 	ProbNet getProbNet();
 
+	void setProbNet(ProbNet probNet);
+	
+	
+	static void startEdit(PNEdit edit, ProbNet probNet) throws DoEditException.ConstraintViolated {
+		edit.setProbNet(probNet);
+		startEdit(edit);
+	}
+	
+	static void startEdit(PNEdit edit) throws DoEditException.ConstraintViolated {
+		ProbNet probNet = edit.getProbNet();
+		PNESupport pneSupport = probNet.getPNESupport();
+		pneSupport.announceEditWithConstraints(edit, probNet.getConstraints());
+	}
+	
+	static void endEdit(PNEdit edit) {
+		PNESupport pneSupport = edit.getProbNet().getPNESupport();
+		if (pneSupport.isWithUndo()) {
+			pneSupport.getUndoManager().addEdit(edit);
+		}
+		Class<? extends PNEdit> editClass = edit.getClass();
+		boolean isParenthesis = editClass == OpenParenthesisEdit.class || editClass == CloseParenthesisEdit.class;
+		if (!isParenthesis) {
+			pneSupport.postEdit(edit);
+		}
+	}
+	
 }

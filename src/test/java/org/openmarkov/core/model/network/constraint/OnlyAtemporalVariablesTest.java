@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -39,7 +39,7 @@ public class OnlyAtemporalVariablesTest {
     }
     
     @Test
-    public void testUndoableEditWillHappen() throws ConstraintViolationException {
+    public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated {
         PNESupport pNESupport = new PNESupport(false);
         PNConstraint constraint = new OnlyAtemporalVariables();
         
@@ -59,7 +59,7 @@ public class OnlyAtemporalVariablesTest {
             pNESupport.announceEdit(ilegalEdit);
             ilegalEdit.doEdit();
             fail();
-        } catch (Exception cve) {
+        } catch (DoEditException.ConstraintViolated cve) {
             // An exception should have been thrown
         }
         

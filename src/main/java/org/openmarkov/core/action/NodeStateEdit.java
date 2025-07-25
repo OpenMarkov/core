@@ -9,15 +9,9 @@ package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 
 import java.util.ArrayList;
@@ -138,8 +132,7 @@ public class NodeStateEdit extends SimplePNEdit {
 		}
 	}
 
-	@Override
-	public void doEdit() {
+	@Override public void doEdit() {
 		State[] newStates;
 		Variable variable = node.getVariable();
 		List<Node> children = node.getChildren();
@@ -251,7 +244,13 @@ public class NodeStateEdit extends SimplePNEdit {
 		}
 
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	private void setPotentialAfterReorderingFirstPotentialInNodeAndItsChildrenSetStatesAndResetLink(Variable variable, State[] newStates) {
 		setPotentialAfterReorderingFirstPotential(node, variable, newStates);
 		for (Node child : node.getChildren()) {

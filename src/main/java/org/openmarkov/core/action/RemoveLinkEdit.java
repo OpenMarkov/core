@@ -9,6 +9,7 @@ package org.openmarkov.core.action;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
@@ -130,8 +131,15 @@ import java.util.List;
         }
     }
     
+    @Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+        PNEdit.startEdit(this, probNet);
+        this.doEdit();
+        PNEdit.endEdit(this);
+    }
+    
     @Override public void undo() {
         super.undo();
+        
         if (updatePotentials) {
             node2.setPotentials(oldPotentials);
         }
@@ -147,7 +155,6 @@ import java.util.List;
                 newLink.setRevealingIntervals(revealingIntervals);
             }
         }
-        
     }
     
     /**

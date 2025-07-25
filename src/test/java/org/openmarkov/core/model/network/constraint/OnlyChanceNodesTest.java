@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -49,7 +49,7 @@ public class OnlyChanceNodesTest {
      * Checks veto
      */
     @Test
-    public void testUndoableEditWillHappen() throws ConstraintViolationException {
+    public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated {
         
         // Add constraints as listeners.
         PNESupport pNESupport = new PNESupport(false);
@@ -72,7 +72,7 @@ public class OnlyChanceNodesTest {
         try {
             pNESupport.announceEdit(ilegalEdit);
             fail();
-        } catch (Exception cve) {
+        } catch (DoEditException.ConstraintViolated cve) {
             // An exception should have been thrown.
         }
     }

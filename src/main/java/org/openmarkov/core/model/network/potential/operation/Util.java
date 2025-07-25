@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import javax.security.auth.login.Configuration;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Stack;
 
@@ -115,7 +116,7 @@ public class Util {
 		System.out.print(msg);
 		try {
 			cadena = br.readLine();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			logger.fatal(e);
 		}
 		return cadena;

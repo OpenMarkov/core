@@ -13,6 +13,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -40,7 +41,7 @@ public class NoUtilityParentTest {
         assertTrue(constraint.checkProbNet(probNetProperUtilityChildren));
     }
     
-    @Test public void testUndoableEditWillHappen() throws org.openmarkov.core.exception.ConstraintViolationException, org.openmarkov.core.exception.DoEditException {
+    @Test public void testUndoableEditWillHappen() throws org.openmarkov.core.exception.DoEditException.ConstraintViolated {
         // Add constraints as listeners.
         PNESupport pNESupport = influenceDiagram.getPNESupport();
         influenceDiagram.addConstraint(new NoUtilityParent());
@@ -53,7 +54,7 @@ public class NoUtilityParentTest {
         AddNodeEdit legalAddC1 = new AddNodeEdit(influenceDiagram, vc1, NodeType.UTILITY);
         
         //add the node C1
-        influenceDiagram.doEdit(legalAddC1);
+        legalAddC1.doEdit(influenceDiagram);
         
         //link U->C1
         AddLinkEdit legalLink = new AddLinkEdit(influenceDiagram, vu, vc1, true);
@@ -72,7 +73,7 @@ public class NoUtilityParentTest {
         try {
             pNESupport.announceEdit(ilegalLink);
             fail();
-        } catch (Exception cve) {
+        } catch (DoEditException.ConstraintViolated cve) {
             // An exception should have been thrown
         }
     }

@@ -54,6 +54,12 @@ public class MulticriteriaEdit extends SimplePNEdit {
 		probNet.getInferenceOptions().setMultiCriteriaOptions(this.newMulticriteriaOptions);
 
 	}
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
 
 	@Override public void undo() throws CannotUndoException {
 		super.undo();

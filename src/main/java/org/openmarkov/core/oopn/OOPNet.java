@@ -20,7 +20,6 @@ import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.action.RemoveNodeEdit;
 import org.openmarkov.core.action.SetPotentialEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.InvalidNetworkTypeException;
 import org.openmarkov.core.exception.UnreacheableException;
@@ -473,11 +472,10 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 								newEdit = new ICIPotentialEdit(this, potential, iciPotentialEdit.getLeakyParameters());
 							}
 						}
-
 						if (newEdit != null) {
 							try {
-								doEdit(newEdit);
-							} catch (ConstraintViolationException | DoEditException e1) {
+								newEdit.doEdit(this);
+							} catch (DoEditException e1) {
 								e1.printStackTrace();
 							}
 						}

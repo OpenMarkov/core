@@ -4,21 +4,22 @@ import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 
 
-public class AddFindingEdit extends SimplePNEdit{
-
+public class AddFindingEdit extends SimplePNEdit {
+    
     Node node;
     EvidenceCase evidenceCase;
     Boolean isInferenceMode;
     VisualChanceNodeFindingChangeListener listener;
     Finding finding;
     Finding previousFinding;
-
-     /**
+    
+    /**
      * @param node {@code Node}
      */
-    public AddFindingEdit(Node node, EvidenceCase evidenceCase,Finding previousFinding, Finding finding, VisualChanceNodeFindingChangeListener listener) {
+    public AddFindingEdit(Node node, EvidenceCase evidenceCase, Finding previousFinding, Finding finding, VisualChanceNodeFindingChangeListener listener) {
         super(node.getProbNet());
         this.node = node;
         this.evidenceCase = evidenceCase;
@@ -26,29 +27,34 @@ public class AddFindingEdit extends SimplePNEdit{
         this.finding = finding;
         this.previousFinding = previousFinding;
     }
-
+    
     @Override
-    public void doEdit() throws DoEditException {
+    public void doEdit() throws DoEditException.CannotDoEditException {
         try {
             evidenceCase.addFinding(finding);
             listener.onNodeValueChanged();
         } catch (IncompatibleEvidenceException e) {
-            throw new DoEditException(e.getToken());
+            throw DoEditException.of(e);
         }
-
     }
-
+    
+    @Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
+        PNEdit.startEdit(this, probNet);
+        this.doEdit();
+        PNEdit.endEdit(this);
+    }
+    
     @Override
-    public void undo(){
+    public void undo() {
         super.undo();
-        if(previousFinding == null){
+        if (previousFinding == null) {
             try {
                 evidenceCase.removeFinding(finding.getVariable());
                 listener.removeFinding();
             } catch (NoFindingException e) {
                 throw new UnreacheableException(e);
             }
-        }else {
+        } else {
             try {
                 evidenceCase.removeFinding(finding.getVariable());
                 evidenceCase.addFinding(previousFinding);
@@ -56,19 +62,16 @@ public class AddFindingEdit extends SimplePNEdit{
                 throw new UnreacheableException(e);
             }
         }
-
+        
     }
-
-
-
-
+    
+    
     @Override
     public void redo() {
         super.redo();
-
-
+        
+        
     }
-
-
-
+    
+    
 }

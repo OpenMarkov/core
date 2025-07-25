@@ -7,7 +7,9 @@
 
 package org.openmarkov.core.action;
 
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
@@ -137,7 +139,13 @@ import java.util.List;
 		placeNewUncertainColumn(potential);
 		placeNewValuesColumn(potential);
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	private void placeNewValuesColumn(TablePotential potential) {
 		placeValuesColumn(potential, newValuesColumn);
 	}

@@ -9,7 +9,6 @@ package org.openmarkov.core.oopn.action;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
@@ -48,7 +47,7 @@ import java.util.List;
         doneEditCounter = 0;
         
         if (oopNet.getInstances().containsKey(instanceName)) {
-            throw new DoEditException("An instance with name " + instanceName + " alreadyExists");
+            throw new DoEditException.InstanceAlreadyExists(instanceName);
         }
         // Calculate top left corner of net
         double topCorner = Double.POSITIVE_INFINITY;
@@ -73,13 +72,8 @@ import java.util.List;
         }
         // Apply node generation edits
         for (PNEdit edit : edits) {
-            try {
-                oopNet.doEdit(edit);
-                ++doneEditCounter;
-            } catch (ConstraintViolationException e) {
-                this.undo();
-                throw new DoEditException(e.getToken());
-            }
+            edit.doEdit(oopNet);
+            ++doneEditCounter;
         }
         
         // Add links to the probNet class
@@ -97,14 +91,9 @@ import java.util.List;
         for (PNEdit edit : edits) {
             if (edit instanceof AddLinkEdit) {
                 AddLinkEdit linkEdit = ((AddLinkEdit) edit);
-                try {
-                    oopNet.doEdit(linkEdit);
-                    ++doneEditCounter;
-                    pastedLinks.add(linkEdit.getLink());
-                } catch (ConstraintViolationException e) {
-                    this.undo();
-                    throw new DoEditException(e.getToken());
-                }
+                linkEdit.doEdit(this.oopNet);
+                ++doneEditCounter;
+                pastedLinks.add(linkEdit.getLink());
             }
         }
         
@@ -136,9 +125,15 @@ import java.util.List;
             Instance instance = new Instance(instanceName, classNet, instanceNodes);
             oopNet.addInstance(instance);
         } catch (InstanceAlreadyExistsException e) {
-            throw new DoEditException("An instance with name " + instanceName + "alreadyExists");
+            throw new DoEditException.InstanceAlreadyExists(instanceName);
         }
         
+    }
+    
+    @Override public void doEdit(ProbNet probNet) throws DoEditException {
+        PNEdit.startEdit(this, probNet);
+        this.doEdit();
+        PNEdit.endEdit(this);
     }
     
     @Override public void setSignificant(boolean significant) {
@@ -146,6 +141,9 @@ import java.util.List;
     
     @Override public ProbNet getProbNet() {
         return this.oopNet;
+    }
+    
+    @Override public void setProbNet(ProbNet probNet) {
     }
     
     @Override public void undo() throws CannotUndoException {

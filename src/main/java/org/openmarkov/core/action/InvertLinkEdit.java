@@ -12,7 +12,6 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.ArrayList;
@@ -61,8 +60,7 @@ import java.util.List;
 	 *
 	 * @throws DoEditException DoEditException
 	 */
-	@Override
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException.CannotInvertLink {
 		// Remove links first
 		probNet.removeLink(node1, node2, isDirected);
 		if (node2.getNodeType() != NodeType.DECISION) {
@@ -91,25 +89,17 @@ import java.util.List;
 
 		// Checks that the inversion is legal, i.e. it does not produce cycles.
 		if (!probNet.checkProbNet()) {
-			// Build problem explanation for the user.
-			StringBuilder message = new StringBuilder("Link inversion is not possible in the case of ");
-			message.append(node1.getName()); message.append(" -> "); message.append(node2.getName());
-			message.append(" because:\n");
-			List<PNConstraint> unsatisfiedConstraintList = probNet.getUnsatisfiedConstraints();
-			for (PNConstraint constraint : unsatisfiedConstraintList) {
-				message.append("    ");
-				message.append(constraint.toString());
-				message.append("\n");
-			}
-
-			// TODO This is not the place to do this, redesign. The Exceptions are in general catched and ignored!
-			message.append("Undoing operation.\n");
-			undo();
-
-			throw new DoEditException(message.toString());
+            undo();
+			throw new DoEditException.CannotInvertLink(node1, node2, probNet, probNet.getUnsatisfiedConstraints());
 		}
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotInvertLink {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	@Override public void undo() {
 		super.undo();
 			probNet.removeLink(variable2, variable1, isDirected);

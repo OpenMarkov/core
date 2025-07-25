@@ -7,6 +7,13 @@ import java.util.List;
 
 public abstract class AutoOpenMarkovException2 extends OpenMarkovException2 implements AutoLocalizable {
     
+    public AutoOpenMarkovException2() {
+    }
+    
+    public AutoOpenMarkovException2(Exception e) {
+        super(e);
+    }
+    
     @Override protected @Nullable String getExceptionMessage() {
         return this.localize();
     }

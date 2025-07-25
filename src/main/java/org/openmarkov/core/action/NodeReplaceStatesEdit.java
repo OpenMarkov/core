@@ -7,11 +7,9 @@
 
 package org.openmarkov.core.action;
 
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -123,7 +121,13 @@ import java.util.Map;
 			}
 		}
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	@Override @SuppressWarnings("unchecked") public void undo() {
 		super.undo();
 		if (lastStates != null) {

@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.action;
 
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -96,7 +97,13 @@ import java.util.List;
 			node2.setPotentials(newPotentials);
 		}
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	@Override public void undo() {
 		super.undo();
         

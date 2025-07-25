@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.action;
 
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
@@ -26,12 +27,17 @@ import org.openmarkov.core.model.network.Variable;
 	/**
 	 * Do the edition by removing the existing link and adding a new directed link between the same two variables.
 	 */
-	@Override
-	public void doEdit() {
+	@Override public void doEdit() {
         probNet.removeLink(variable1, variable2, false);
         probNet.addLink(variable1, variable2, true);
     }
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	/**
 	 * Undo the edition by removing the existing link and adding
 	 * a new undirected link between the same two variables.

@@ -15,56 +15,63 @@ import org.openmarkov.core.model.network.potential.Potential;
  * Changes an old potential for a new potential
  */
 @SuppressWarnings("serial") public class PotentialChangeEdit extends SimplePNEdit {
-
-	// Attribute
-	private Potential newPotential;
-
-	private Potential oldPotential;
-
-	// Constructor
-
-	/**
-	 * @param probNet      {@code ProbNet}
-	 * @param oldPotential {@code Potential}
-	 * @param newPotential {@code Potential}
-	 */
-	public PotentialChangeEdit(ProbNet probNet, Potential oldPotential, Potential newPotential) {
-		super(probNet);
-		this.newPotential = newPotential;
-		this.oldPotential = oldPotential;
-	}
-
-	@Override public void doEdit() throws DoEditException {
-		if (probNet.removePotential(oldPotential) == null) {
-			throw new DoEditException("Can not remove potential: " + oldPotential.toString());
-		}
-		probNet.addPotential(newPotential);
-	}
-	@Override
-	public void undo() {
-		super.undo();
-		//probNet.removePotential(newPotential);
-		//probNet.addPotential(oldPotential);
-	}
-
-	@Override
-	public void redo() {
-		super.redo();
-	}
-
-	/**
-	 * @return A {@code String} with the variables of both potentials.
-	 */
-	public String toString() {
-		return "ChangePotentialEdit: " + oldPotential.getVariables() + " --> " + newPotential.getVariables();
-	}
-
-	public Potential getNewPotential() {
-		return newPotential;
-	}
-
-	public Potential getOldPotential() {
-		return oldPotential;
-	}
-
+    
+    // Attribute
+    private Potential newPotential;
+    
+    private Potential oldPotential;
+    
+    // Constructor
+    
+    /**
+     * @param probNet      {@code ProbNet}
+     * @param oldPotential {@code Potential}
+     * @param newPotential {@code Potential}
+     */
+    public PotentialChangeEdit(ProbNet probNet, Potential oldPotential, Potential newPotential) {
+        super(probNet);
+        this.newPotential = newPotential;
+        this.oldPotential = oldPotential;
+    }
+    
+    @Override public void doEdit() throws DoEditException.CannotRemovePotential {
+        if (probNet.removePotential(oldPotential) == null) {
+            throw new DoEditException.CannotRemovePotential(probNet, oldPotential);
+        }
+        probNet.addPotential(newPotential);
+    }
+    
+    @Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotRemovePotential {
+        PNEdit.startEdit(this, probNet);
+        this.doEdit();
+        PNEdit.endEdit(this);
+    }
+    
+    @Override
+    public void undo() {
+        super.undo();
+        //probNet.removePotential(newPotential);
+        //probNet.addPotential(oldPotential);
+    }
+    
+    @Override
+    public void redo() {
+        super.redo();
+    }
+    
+    /**
+     * @return A {@code String} with the variables of both potentials.
+     */
+    public String toString() {
+        return "ChangePotentialEdit: " + oldPotential.getVariables() + " --> " + newPotential.getVariables();
+    }
+    
+    public Potential getNewPotential() {
+        return newPotential;
+    }
+    
+    public Potential getOldPotential() {
+        return oldPotential;
+    }
+    
 }

@@ -11,7 +11,9 @@ import org.junit.jupiter.api.*;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.OpenMarkovException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.test.TestSpeed;
@@ -59,7 +61,7 @@ public class DistinctLinksTest {
     }
     
     @Disabled
-    @Test public void testUndoableEditWillHappen() throws ConstraintViolationException, org.openmarkov.core.exception.DoEditException {
+    @Test public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated, org.openmarkov.core.exception.DoEditException.CannotInvertLink {
         PNESupport pNESupport = new PNESupport(false);
         PNConstraint constraint = new DistinctLinks();
         
@@ -80,7 +82,7 @@ public class DistinctLinksTest {
             pNESupport.announceEdit(ilegalAdd);
             ilegalAdd.doEdit();
             fail();
-        } catch (ConstraintViolationException e) {
+        } catch (DoEditException.ConstraintViolated e) {
             // The constraint should have faild
         }
         
@@ -90,8 +92,10 @@ public class DistinctLinksTest {
         try {
             pNESupport.announceEdit(ilegalInvertLinkEdit);
             ilegalInvertLinkEdit.doEdit();
-        } catch (ConstraintViolationException e) {
+        } catch (DoEditException.ConstraintViolated e) {
             // The constraint should have failed
+        } catch (DoEditException.CannotInvertLink e) {
+            throw new UnreacheableException(e);
         }
         
         // do legal invert link: create undirected link between U and D
@@ -107,7 +111,7 @@ public class DistinctLinksTest {
         try {
             pNESupport.announceEdit(ilegalLinkEdit);
             ilegalLinkEdit.doEdit();
-        } catch (ConstraintViolationException e) {
+        } catch (DoEditException.ConstraintViolated e) {
             // The constraint should have failed
         }
         

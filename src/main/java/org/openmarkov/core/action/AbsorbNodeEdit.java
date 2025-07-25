@@ -82,8 +82,7 @@ import java.util.*;
     }
 
     @Override
-    public void doEdit() throws DoEditException {
-
+    public void doEdit() throws DoEditException.CannotDoEditException {
         // If there are more than one utility children, merge them into one node
         if (absorbedNode.getChildren().size() > 1) {
             mergeUtilityChildren();
@@ -107,10 +106,7 @@ import java.util.*;
                     utilityAndChance.add(absorbedNode.getPotentials().get(0).getCPT()); //Chance
 
                 } catch (NonProjectablePotentialException e) {
-                    e.printStackTrace();
-                    logger.error("Potential not convertible to table or wrong criterion");
-                    throw new DoEditException("Potential not convertible to table or wrong criterion");
-
+                    throw DoEditException.of(e);
                 }
 
                 /* Obtain parameters to invoke multiplyAndMarginalize */
@@ -152,8 +148,7 @@ import java.util.*;
                 try {
                     utilityPotential = potential.getCPT();
                 } catch (NonProjectablePotentialException e) {
-                    logger.error("Potential not convertible to table or wrong criterion");
-                    throw new DoEditException("Potential not convertible to table or wrong criterion");
+                    throw DoEditException.of(e);
                 }
 
                 // Discrete operation is valid because all parents are discrete
@@ -172,14 +167,18 @@ import java.util.*;
             // Parents of decision node don't turn into parents of utility node
         }
         child.setPotentials(newPotentials);
-
-
         // Links saved for the undo()
         linksDeleted = getLinksWithNode(absorbedNode);
         probNet.removeNode(absorbedNode);
     }
-
-    private void mergeUtilityChildren() throws DoEditException {
+    
+    @Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
+        PNEdit.startEdit(this, probNet);
+        this.doEdit();
+        PNEdit.endEdit(this);
+    }
+    
+    private void mergeUtilityChildren() throws DoEditException.CannotDoEditException {
 
         // Save the old children for undoing
         oldUtilityChildren = absorbedNode.getChildren();
@@ -241,9 +240,7 @@ import java.util.*;
                 utilityChildrenPotentials.add(componentPotential);
             }
         } catch (NonProjectablePotentialException e) {
-            logger.error("Potential not convertible to table or wrong criterion.");
-            e.printStackTrace();
-            throw new DoEditException(e.getLocalizedMessage());
+            throw DoEditException.of(e);
         }
 
         // Sum the component potentials

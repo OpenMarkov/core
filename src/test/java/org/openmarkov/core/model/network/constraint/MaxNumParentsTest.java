@@ -14,7 +14,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -51,7 +52,7 @@ public class MaxNumParentsTest {
         assertFalse(constraint.checkProbNet(net)); //La prueba solo se cumple si no se cumplen las constraints.
     }
     
-    @Test public void testUndoableEditWillHappen() throws ConstraintViolationException {
+    @Test public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated {
         
         PNESupport pNESupport = new PNESupport(false);
         MaxNumParents constraint = new MaxNumParents();
@@ -81,7 +82,7 @@ public class MaxNumParentsTest {
             pNESupport.announceEdit(ilegalEdit);
             ilegalEdit.doEdit();
             fail();
-        } catch (ConstraintViolationException e) {
+        } catch (DoEditException.ConstraintViolated e) {
             // The constraint should have failed
         }
         
@@ -96,7 +97,7 @@ public class MaxNumParentsTest {
             pNESupport.announceEdit(ilegalLinkEdit);
             ilegalLinkEdit.doEdit();
             fail();
-        } catch (ConstraintViolationException e) {
+        } catch (DoEditException.ConstraintViolated e) {
             // The constraint should have failed
         }
         

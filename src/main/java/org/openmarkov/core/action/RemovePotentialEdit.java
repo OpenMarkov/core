@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.action;
 
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.Potential;
 
@@ -30,7 +31,13 @@ import org.openmarkov.core.model.network.potential.Potential;
 	@Override public void doEdit() {
 		probNet.removePotential(oldPotential);
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	@Override public void undo() {
 		super.undo();
 		probNet.addPotential(oldPotential);

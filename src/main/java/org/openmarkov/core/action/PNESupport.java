@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.action;
 
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 
@@ -36,6 +35,7 @@ public class PNESupport extends UndoableEditSupport {
 	 * {@code openmarkov.undo#UndoManager} for undo/redo.
 	 */
 	protected boolean withUndo;
+	
 	/**
 	 * List of undoable edits.
 	 *
@@ -84,7 +84,7 @@ public class PNESupport extends UndoableEditSupport {
 	 *                                                   {@code probNet} modification.
 	 */
 	public void announceEdit(PNEdit edit)
-			throws ConstraintViolationException {
+			throws DoEditException.ConstraintViolated {
 		UndoableEditEvent event = new UndoableEditEvent(this, edit);
 		for (UndoableEditListener listener : listeners) {
 			((PNUndoableEditListener) listener).undoableEditWillHappen(event);
@@ -92,7 +92,7 @@ public class PNESupport extends UndoableEditSupport {
 	}
 	
 	public void announceEditWithConstraints(PNEdit edit, List<PNConstraint> constraints)
-			throws ConstraintViolationException {
+			throws DoEditException.ConstraintViolated {
 		UndoableEditEvent event = new UndoableEditEvent(this, edit);
 		for (UndoableEditListener listener : listeners) {
 			((PNUndoableEditListener) listener).undoableEditWillHappen(event);
@@ -103,7 +103,7 @@ public class PNESupport extends UndoableEditSupport {
 			}
 		}
 	}
-
+	
 	/**
 	 * Second part: It does the edition and inform to the listeners
 	 *

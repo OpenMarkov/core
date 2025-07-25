@@ -14,7 +14,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
@@ -50,7 +51,7 @@ public class NoMultipleLinksTest {
     }
     
     @Disabled
-    @Test public void testUndoableEditWillHappen() throws ConstraintViolationException, org.openmarkov.core.exception.DoEditException {
+    @Test public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated, org.openmarkov.core.exception.DoEditException.CannotInvertLink {
         PNESupport pNESupport = new PNESupport(false);
         PNConstraint constraint = new NoMultipleLinks();
         
@@ -71,7 +72,7 @@ public class NoMultipleLinksTest {
             pNESupport.announceEdit(ilegalAdd);
             ilegalAdd.doEdit();
             fail();
-        } catch (ConstraintViolationException e) {
+        } catch (DoEditException.ConstraintViolated e) {
             // the ilegal edit should have thrown the exception
         }
         
@@ -92,7 +93,7 @@ public class NoMultipleLinksTest {
             pNESupport.announceEdit(ilegalInvertLinkEdit);
             ilegalInvertLinkEdit.doEdit();
             fail();
-        } catch (ConstraintViolationException e) {
+        } catch (DoEditException.ConstraintViolated | DoEditException.CannotInvertLink e) {
             // the ilegal edit should have thrown the exception
         }
     }

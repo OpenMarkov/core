@@ -41,12 +41,18 @@ import org.openmarkov.core.model.network.Variable;
 	}
 
 	// Methods
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException.NodeIsNull {
 		if (node == null) {
-			throw new DoEditException("Trying to access a null node");
+			throw new DoEditException.NodeIsNull(probNet);
 		}
 		probNet.removeNode(node);
 
+	}
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.NodeIsNull {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
 	}
 
 	@Override public void undo() {

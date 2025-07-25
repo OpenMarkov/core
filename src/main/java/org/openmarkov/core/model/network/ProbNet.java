@@ -9,7 +9,6 @@ package org.openmarkov.core.model.network;
 
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.localize.AutoLocalizable;
@@ -207,19 +206,6 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
         
         markovDecisionNetwork.setInferenceOptions(this.getInferenceOptions());
         return markovDecisionNetwork;
-    }
-    
-    /**
-     * Applies edit to the probNet
-     *
-     * @param edit edit to be applied
-     * @throws ConstraintViolationException ConstraintViolationException
-     * @throws DoEditException              DoEditException
-     */
-    public void doEdit(PNEdit edit)
-            throws ConstraintViolationException, DoEditException {
-        pNESupport.announceEditWithConstraints(edit, this.constraints);
-        pNESupport.doEdit(edit);
     }
     
     /**

@@ -9,6 +9,7 @@ package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 
 /**
  * {@code RelevanceEdit} is a simple edit that allows modify
@@ -48,7 +49,13 @@ import org.openmarkov.core.model.network.Node;
 	@Override public void doEdit() {
 		node.setRelevance(newRelevance);
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	@Override public void undo() {
 		super.undo();
 		node.setRelevance(lastRelevance);

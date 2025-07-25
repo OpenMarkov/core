@@ -52,6 +52,12 @@ import java.util.Vector;
 		}
 		super.end();
 	}
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
 
 	public abstract void generateEdits();
 
@@ -77,5 +83,8 @@ import java.util.Vector;
 	@Override public ProbNet getProbNet() {
 		return probNet;
 	}
-
+	
+	@Override public void setProbNet(ProbNet probNet) {
+		this.probNet = probNet;
+	}
 }

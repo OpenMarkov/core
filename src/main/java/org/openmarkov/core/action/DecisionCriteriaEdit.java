@@ -72,7 +72,13 @@ import java.util.List;
 			break;
 		}
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	public String getNewName() {
 		return newName;
 	}

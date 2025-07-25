@@ -51,12 +51,12 @@ import java.util.ArrayList;
     }
     
     // Methods
-    @Override public void doEdit() throws DoEditException {
+    @Override public void doEdit() throws DoEditException.CannotDoEditException {
         try {
             //TODO: DoEditException is hiding InvalidNetworkTypeException
             probNet.setNetworkType(newNetworkType);
         } catch (InvalidNetworkTypeException e) {
-            throw new DoEditException(e.getToken());
+            throw DoEditException.of(e);
         }
         if (probNet.isMultiagent()) {
             ArrayList<StringWithProperties> agents = new ArrayList<>();
@@ -64,6 +64,12 @@ import java.util.ArrayList;
             agents.add(new StringWithProperties(" Agent 2"));
             probNet.setAgents(agents);
         }
+    }
+    
+    @Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
+        PNEdit.startEdit(this, probNet);
+        this.doEdit();
+        PNEdit.endEdit(this);
     }
     
     @Override public void undo() {

@@ -10,6 +10,7 @@ package org.openmarkov.core.action;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.ProbNet;
 
 import javax.swing.undo.AbstractUndoableEdit;
@@ -19,71 +20,74 @@ import javax.swing.undo.AbstractUndoableEdit;
  * and operations of editions.
  */
 @SuppressWarnings("serial") public abstract class SimplePNEdit extends AbstractUndoableEdit implements PNEdit {
-
-	// Attributes
-	/**
-	 * {@code ProbNet} over witch the operations are defined.
-	 */
-	protected ProbNet probNet;
-
-	private boolean typicalRedo = true;
-
-	//All simple edits are significant  
-	private boolean significant = true;
-
-	private Logger logger;
-
-	// Constructor
-
-	/**
-	 * @param probNet {@code ProbNet}
-	 */
-	public SimplePNEdit(ProbNet probNet) {
-		this.probNet = probNet;
-		this.logger = LogManager.getLogger(SimplePNEdit.class);
-	}
-
-	// Methods
-
-	/**
-	 * Abstract method to be defined in derived classes
-	 *
-	 * @throws DoEditException DoEditException
-	 */
-	@Override public abstract void doEdit() throws DoEditException;
-
-	/**
-	 * @return probNet. {@code ProbNet}
-	 */
-	@Override public ProbNet getProbNet() {
-		return probNet;
-	}
-
-	protected void setTypicalRedo(boolean redo) {
-		typicalRedo = redo;
-	}
-
-	@Override public void redo() {
-		super.redo();
-		if (typicalRedo) {
-			try {
-				doEdit();
-
-			} catch (Exception e) {
-				logger.fatal(e);
-			}
-		} else {
-			typicalRedo = true;
-		}
-
-	}
-
-	@Override public boolean isSignificant() {
-		return significant;
-	}
-
-	@Override public void setSignificant(boolean significant) {
-		this.significant = significant;
-	}
-
+    
+    // Attributes
+    /**
+     * {@code ProbNet} over witch the operations are defined.
+     */
+    protected ProbNet probNet;
+    
+    private boolean typicalRedo = true;
+    
+    //All simple edits are significant
+    private boolean significant = true;
+    
+    private Logger logger;
+    
+    // Constructor
+    
+    /**
+     * @param probNet {@code ProbNet}
+     */
+    public SimplePNEdit(ProbNet probNet) {
+        this.probNet = probNet;
+        this.logger = LogManager.getLogger(SimplePNEdit.class);
+    }
+    
+    // Methods
+    
+    /**
+     * Abstract method to be defined in derived classes
+     *
+     * @throws DoEditException DoEditException
+     */
+    @Override public abstract void doEdit() throws DoEditException;
+    
+    /**
+     * @return probNet. {@code ProbNet}
+     */
+    @Override public ProbNet getProbNet() {
+        return probNet;
+    }
+    
+    @Override public void setProbNet(ProbNet probNet) {
+        this.probNet = probNet;
+    }
+    
+    protected void setTypicalRedo(boolean redo) {
+        typicalRedo = redo;
+    }
+    
+    @Override public void redo() {
+        super.redo();
+        if (typicalRedo) {
+            try {
+                doEdit();
+            } catch (DoEditException e) {
+                throw new UnreacheableException(e);
+            }
+        } else {
+            typicalRedo = true;
+        }
+        
+    }
+    
+    @Override public boolean isSignificant() {
+        return significant;
+    }
+    
+    @Override public void setSignificant(boolean significant) {
+        this.significant = significant;
+    }
+    
 }

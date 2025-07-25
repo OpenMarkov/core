@@ -24,6 +24,10 @@ public abstract class OpenMarkovException2 extends OpenMarkovException {
         super("OpenMarkovException2");
     }
     
+    public OpenMarkovException2(Exception e){
+        super(e);
+    }
+    
     @Override public @Nullable String getToken() {
         return this.getClass().getSimpleName();
     }

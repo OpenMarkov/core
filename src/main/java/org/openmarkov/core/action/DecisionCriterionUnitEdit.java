@@ -59,7 +59,13 @@ public class DecisionCriterionUnitEdit extends SimplePNEdit {
 	@Override public void doEdit() {
 		this.criterion.setCriterionUnit(newUnit);
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	@Override public void undo() {
 		super.undo();
 		this.criterion.setCriterionUnit(oldUnit);

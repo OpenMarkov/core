@@ -92,7 +92,7 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	 *
 	 * @throws DoEditException DoEditException
 	 */
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException.CannotDoEditException {
 
 		// The parents of x are retrieved
 		List<Node> xParents = x.getParents();
@@ -153,9 +153,7 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 			try {
 				xyPotentials.add(parentsOldPotential.getCPT());
 			} catch (NonProjectablePotentialException e) {
-			    logger.error("Potential not convertible to table or wrong criterion on the old parent of the inverted link");
-				e.printStackTrace();
-				throw new DoEditException("Parent");
+				throw DoEditException.of(e);
 			}
 		}
 
@@ -164,9 +162,7 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 			try {
 				xyPotentials.add(childOldPotential.getCPT());
 			} catch (NonProjectablePotentialException e) {
-			    logger.error("Potential not convertible to table or wrong criterion on the old child of the inverted link");
-				e.printStackTrace();
-				throw new DoEditException("Child");
+				throw DoEditException.of(e);
 			}
 		}
 
@@ -202,7 +198,13 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 			probNet.addLink((Node) link.getNode1(), (Node) link.getNode2(), true);
 		}
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	@Override public void undo() {
 		super.undo();
         // Delete link Y -> X

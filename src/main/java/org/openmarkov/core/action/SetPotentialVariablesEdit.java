@@ -9,6 +9,7 @@ package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
 import java.util.ArrayList;
@@ -26,7 +27,13 @@ import java.util.List;
 		this.oldVariables = new ArrayList<>(node.getPotentials().get(0).getVariables());
 		this.newVariables = newVariables;
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	@Override public void doEdit() {
 		node.getPotentials().get(0).setVariables(newVariables);
 	}

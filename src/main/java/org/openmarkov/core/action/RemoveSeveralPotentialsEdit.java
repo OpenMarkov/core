@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.action;
 
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.Potential;
 
@@ -54,6 +55,12 @@ public class RemoveSeveralPotentialsEdit extends SimplePNEdit {
 		for (Potential potential : potentialsToDelete) {
 			probNet.removePotential(potential);
 		}
+	}
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
 	}
 
 }

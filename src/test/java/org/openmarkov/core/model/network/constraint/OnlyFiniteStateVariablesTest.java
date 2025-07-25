@@ -13,6 +13,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.VariableTypeEdit;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -51,7 +52,7 @@ public class OnlyFiniteStateVariablesTest {
         assertFalse(testedConstraint.checkProbNet(mixedVariableInfluenceDiagram));
     }
     
-    @Test public void testUndoableEditWillHappen() throws org.openmarkov.core.exception.ConstraintViolationException {
+    @Test public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated {
         
         PNESupport pNESupport = new PNESupport(false);
         PNConstraint constraint = new OnlyFiniteStatesVariables();
@@ -88,7 +89,7 @@ public class OnlyFiniteStateVariablesTest {
         try {
             pNESupport.announceEdit(illegalAdd);
             fail();
-        } catch (Exception cve) {
+        } catch (DoEditException.ConstraintViolated cve) {
             //An exception should have been thrown
         }
         
@@ -100,7 +101,7 @@ public class OnlyFiniteStateVariablesTest {
         try {
             pNESupport.announceEdit(illegalAdd);
             fail();
-        } catch (Exception cve) {
+        } catch (DoEditException.ConstraintViolated cve) {
             //An exception should have been thrown
         }
         
@@ -124,7 +125,7 @@ public class OnlyFiniteStateVariablesTest {
         try {
             pNESupport.announceEdit(illegalEdit);
             fail();
-        } catch (Exception cve) {
+        } catch (DoEditException.ConstraintViolated cve) {
             //An exception should have been thrown
         }
     }

@@ -8,10 +8,7 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -97,7 +94,13 @@ import java.util.List;
 		}
 
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	public void setPotential(){
 		List<Variable> variables;
 		PotentialRole role;

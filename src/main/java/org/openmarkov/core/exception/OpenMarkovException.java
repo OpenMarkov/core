@@ -26,6 +26,12 @@ public class OpenMarkovException extends Exception {
         this.attributes = attributes;
     }
     
+    public OpenMarkovException(Exception e) {
+        super(e);
+        this.token = null;
+        this.attributes = null;
+    }
+    
     public @Nullable String getToken() {
         return this.token;
     }

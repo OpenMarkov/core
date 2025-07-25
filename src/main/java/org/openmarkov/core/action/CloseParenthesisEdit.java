@@ -8,6 +8,7 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.model.network.ProbNet;
 
 @SuppressWarnings("serial") public class CloseParenthesisEdit extends SimplePNEdit {
 
@@ -27,7 +28,13 @@ import org.openmarkov.core.exception.DoEditException;
 	@Override public void doEdit() {
 		//super.addEdit(this);
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	@Override public void undo() {
 		super.undo();
 	}

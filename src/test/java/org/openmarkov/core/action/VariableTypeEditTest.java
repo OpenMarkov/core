@@ -10,8 +10,6 @@ package org.openmarkov.core.action;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -73,7 +71,7 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testNumeric2Discretized() throws DoEditException, ConstraintViolationException {
+    public void testNumeric2Discretized() throws org.openmarkov.core.exception.DoEditException.ConstraintViolated {
         State[] defaultStates = numericNode.getProbNet().getDefaultStates();
         State[] states = numericNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) numericNode.getVariable().getPartitionedInterval()
@@ -81,7 +79,7 @@ public class VariableTypeEditTest {
         VariableTypeEdit edit = new VariableTypeEdit(numericNode, VariableType.DISCRETIZED);
         
         probNet.getPNESupport().setWithUndo(true);
-        probNet.doEdit(edit);
+        edit.doEdit(probNet);
         
         
         // Check the states of the node (if there is one)
@@ -117,7 +115,7 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testNumeric2FiniteStates() throws DoEditException, ConstraintViolationException {
+    public void testNumeric2FiniteStates() throws org.openmarkov.core.exception.DoEditException.ConstraintViolated {
         State[] defaultStates = numericNode.getProbNet().getDefaultStates();
         State[] states = numericNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) numericNode.getVariable().getPartitionedInterval()
@@ -125,7 +123,7 @@ public class VariableTypeEditTest {
         VariableTypeEdit edit = new VariableTypeEdit(numericNode, VariableType.FINITE_STATES);
         
         probNet.getPNESupport().setWithUndo(true);
-        probNet.doEdit(edit);
+        edit.doEdit(probNet);
         
         
         // Check the states of the node (if there is one)
@@ -160,14 +158,14 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testFiniteStates2Discretized() throws DoEditException, ConstraintViolationException {
+    public void testFiniteStates2Discretized() throws org.openmarkov.core.exception.DoEditException.ConstraintViolated {
         State[] defaultStates = finiteStatesNode.getProbNet().getDefaultStates();
         State[] states = finiteStatesNode.getVariable().getStates().clone();
         
         VariableTypeEdit edit = new VariableTypeEdit(finiteStatesNode, VariableType.DISCRETIZED);
         
         probNet.getPNESupport().setWithUndo(true);
-        probNet.doEdit(edit);
+        edit.doEdit(probNet);
         
         // Check the states of the node (if there is one)
         if (states.length != 1) {
@@ -194,14 +192,14 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testFiniteStates2Numeric() throws DoEditException, ConstraintViolationException {
+    public void testFiniteStates2Numeric() throws org.openmarkov.core.exception.DoEditException.ConstraintViolated {
         State[] defaultStates = finiteStatesNode.getProbNet().getDefaultStates();
         State[] states = finiteStatesNode.getVariable().getStates().clone();
         
         VariableTypeEdit edit = new VariableTypeEdit(finiteStatesNode, VariableType.NUMERIC);
         
         probNet.getPNESupport().setWithUndo(true);
-        probNet.doEdit(edit);
+        edit.doEdit(probNet);
         
         
         // Check the states of the node (if there is one)
@@ -226,14 +224,14 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testDiscretized2FiniteStates() throws DoEditException, ConstraintViolationException {
+    public void testDiscretized2FiniteStates() throws org.openmarkov.core.exception.DoEditException.ConstraintViolated {
         State[] states = discretizedNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) discretizedNode.getVariable()
                                                                                    .getPartitionedInterval().clone();
         VariableTypeEdit edit = new VariableTypeEdit(discretizedNode, VariableType.FINITE_STATES);
         
         probNet.getPNESupport().setWithUndo(true);
-        probNet.doEdit(edit);
+        edit.doEdit(probNet);
         
         
         // Check that the number of states must be different than one
@@ -260,13 +258,13 @@ public class VariableTypeEditTest {
     }
     
     @Test
-    public void testDiscretized2Numeric() throws DoEditException, ConstraintViolationException {
+    public void testDiscretized2Numeric() throws org.openmarkov.core.exception.DoEditException.ConstraintViolated {
         State[] states = discretizedNode.getVariable().getStates().clone();
         PartitionedInterval currentInterval = (PartitionedInterval) discretizedNode.getVariable()
                                                                                    .getPartitionedInterval().clone();
         VariableTypeEdit edit = new VariableTypeEdit(discretizedNode, VariableType.DISCRETIZED);
         probNet.getPNESupport().setWithUndo(true);
-        probNet.doEdit(edit);
+        edit.doEdit(probNet);
         
         // Check that the number of states must be different than one
         assertTrue(states.length != 1);

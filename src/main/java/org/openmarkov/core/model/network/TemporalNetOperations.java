@@ -462,7 +462,7 @@ public class TemporalNetOperations {
 //		}
 //		try {
 //			expandedNetwork.setNetworkType(InfluenceDiagramType.getUniqueInstance());
-//		} catch (ConstraintViolationException e) {
+//		} catch (ConstraintViolated e) {
 //			e.printStackTrace();
 //		}
 //

@@ -15,7 +15,8 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -47,7 +48,7 @@ public class NoMixedParentsTest {
     }
     
     @Disabled
-    @Test public void testUndoableEditWillHappen() throws ConstraintViolationException, org.openmarkov.core.exception.DoEditException {
+    @Test public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated, org.openmarkov.core.exception.DoEditException.CannotInvertLink {
         // Add constraints as listeners.
         PNESupport pNESupport = new PNESupport(false);
         PNConstraint constraint = new NoMixedParents();
@@ -86,7 +87,7 @@ public class NoMixedParentsTest {
             pNESupport.announceEdit(ilegalInvertLinkEdit);
             ilegalInvertLinkEdit.doEdit();
             fail();
-        } catch (ConstraintViolationException cve) {
+        } catch (DoEditException.ConstraintViolated | DoEditException.CannotInvertLink cve) {
             //The constraint should have failed
         }
         
@@ -101,7 +102,7 @@ public class NoMixedParentsTest {
             pNESupport.announceEdit(ilegalEdit);
             ilegalEdit.doEdit();
             fail();
-        } catch (ConstraintViolationException cve) {
+        } catch (DoEditException.ConstraintViolated cve) {
             //The constraint should have failed
         }
         
@@ -112,7 +113,7 @@ public class NoMixedParentsTest {
             pNESupport.announceEdit(ilegalLinkEdit);
             ilegalLinkEdit.doEdit();
             fail();
-        } catch (ConstraintViolationException cve) {
+        } catch (DoEditException.ConstraintViolated cve) {
             //The constraint should have failed
         }
         

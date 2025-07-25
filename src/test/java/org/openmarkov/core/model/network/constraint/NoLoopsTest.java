@@ -14,7 +14,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -64,7 +65,7 @@ public class NoLoopsTest {
     }
     
     @Tag(TestSpeed.MEDIUM)
-    @Test public void testUndoableEditWillHappen() throws ConstraintViolationException {
+    @Test public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated {
         
         PNESupport pNESupport = new PNESupport(false);
         PNConstraint constraint = new NoClosedPath();
@@ -90,7 +91,7 @@ public class NoLoopsTest {
             pNESupport.announceEdit(ilegalEdit);
             ilegalEdit.doEdit();
             fail();
-        } catch (ConstraintViolationException e) {
+        } catch (DoEditException.ConstraintViolated e) {
             // The constraint should have failed
         }
         
@@ -100,7 +101,7 @@ public class NoLoopsTest {
             pNESupport.announceEdit(ilegalEdit);
             ilegalEdit.doEdit();
             fail();
-        } catch (ConstraintViolationException e) {
+        } catch (DoEditException.ConstraintViolated e) {
             // The constraint should have failed
         }
     }

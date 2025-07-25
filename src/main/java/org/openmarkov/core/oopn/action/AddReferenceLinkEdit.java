@@ -6,6 +6,7 @@
  */
 package org.openmarkov.core.oopn.action;
 
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
@@ -38,7 +39,13 @@ import javax.swing.undo.CannotUndoException;
 	@Override public void doEdit() {
 		((OOPNet) probNet).addReferenceLink(referenceLink);
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	@Override public void undo() throws CannotUndoException {
 		// TODO Auto-generated method stub
 		((OOPNet) probNet).removeReferenceLink(referenceLink);

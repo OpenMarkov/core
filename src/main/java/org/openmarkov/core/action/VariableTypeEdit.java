@@ -9,12 +9,7 @@ package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.SumPotential;
@@ -111,6 +106,12 @@ import java.util.List;
 
 		resetLink(node);
 
+	}
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
 	}
 
 	@Override public void undo() {

@@ -54,20 +54,19 @@ public class NetworkTypeTest {
         Assertions.assertFalse(constraints.contains(new OnlyChanceNodes()));
     }
     
-    //(expected = ConstraintViolationException.class)
+    //(expected = ConstraintViolated.class)
     @Disabled
     @Test public void testImpossibleNetworkTypeConversion()
-            throws ConstraintViolationException,
-            DoEditException, InvalidNetworkTypeException {
+            throws InvalidNetworkTypeException, DoEditException.ConstraintViolated {
         ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
         AddNodeEdit addVariableEdit = new AddNodeEdit(probNet, new Variable("a"), NodeType.DECISION);
         probNet.setNetworkType(InfluenceDiagramType.getUniqueInstance());
         
-        probNet.doEdit(addVariableEdit);
+        addVariableEdit.doEdit(probNet);
         probNet.setNetworkType(BayesianNetworkType.getUniqueInstance());
     }
     
-    //(expected = ConstraintViolationException.class)
+    //(expected = ConstraintViolated.class)
     @Test public void testAddingNotApplicableConstraints() {
         ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
         probNet.addConstraint(new OnlyUndirectedLinks());

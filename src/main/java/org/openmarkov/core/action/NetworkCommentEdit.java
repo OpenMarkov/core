@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.action;
 
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 
 /**
@@ -50,7 +51,13 @@ import org.openmarkov.core.model.network.ProbNet;
 		probNet.setComment(newComment);
 		probNet.setShowCommentWhenOpening(showCommentWhenOpening);
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	@Override public void undo() {
 		super.undo();
 		probNet.setComment(currentComment);

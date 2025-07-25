@@ -202,7 +202,7 @@ public abstract class InferenceAlgorithmIDTest extends InferenceAlgorithmDecTest
     public void testEvaluationIDUniformDiagnosisProblem()
             throws
             IOException, ParserException, NodeNotFoundException,
-            ConstraintViolationException, NotEvaluableNetworkException, NonProjectablePotentialException, WrongCriterionException {
+            ConstraintViolated, NotEvaluableNetworkException, NonProjectablePotentialException, WrongCriterionException {
         
         ProbNet diagram = iD_UniformDiagnosisProblem;
         
@@ -328,7 +328,7 @@ public abstract class InferenceAlgorithmIDTest extends InferenceAlgorithmDecTest
     public void testExpectedUtilitiesIDPerfectKnowledge()
             throws
             IOException, ParserException, NodeNotFoundException,
-            ConstraintViolationException, NotEvaluableNetworkException, NonProjectablePotentialException, WrongCriterionException {
+            ConstraintViolated, NotEvaluableNetworkException, NonProjectablePotentialException, WrongCriterionException {
         
         ProbNet network = IDFactory.buildIDPerfectKnowledge();
         
@@ -359,7 +359,7 @@ public abstract class InferenceAlgorithmIDTest extends InferenceAlgorithmDecTest
     public void testAPrioriProbabilitiesIDTestAlways()
             throws
             IOException, ParserException, NodeNotFoundException,
-            ConstraintViolationException, NotEvaluableNetworkException {
+            ConstraintViolated, NotEvaluableNetworkException {
         
         ProbNet diagram = IDFactory.buildIDTestAlways();
         

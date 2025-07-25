@@ -37,7 +37,7 @@ public class OnlyNumericVariablesTest {
     }
     
     @Test
-    public void testUndoableEditWillHappen() throws ConstraintViolationException {
+    public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated {
         
         PNESupport pNESupport = new PNESupport(false);
         PNConstraint constraint = new OnlyNumericVariables();
@@ -60,7 +60,7 @@ public class OnlyNumericVariablesTest {
             pNESupport.announceEdit(ilegalAdd);
             ilegalAdd.doEdit();
             fail();
-        } catch (ConstraintViolationException e) {
+        } catch (DoEditException.ConstraintViolated e) {
             // An exception should have been thrown
         }
         
@@ -71,7 +71,7 @@ public class OnlyNumericVariablesTest {
             pNESupport.announceEdit(ilegalEdit);
             ilegalEdit.doEdit();
             fail();
-        } catch (ConstraintViolationException e) {
+        } catch (DoEditException.ConstraintViolated e) {
             // An exception should have been thrown
         }
         

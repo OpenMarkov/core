@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.oopn.action;
 
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
@@ -30,6 +31,12 @@ import javax.swing.undo.CannotUndoException;
 
 	@Override public void doEdit() {
 		instance.setArity(arity);
+	}
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
 	}
 
 	@Override public void undo() throws CannotUndoException {

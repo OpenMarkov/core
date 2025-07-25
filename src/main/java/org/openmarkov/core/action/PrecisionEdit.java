@@ -9,6 +9,7 @@ package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 
 @SuppressWarnings("serial")
 
@@ -47,7 +48,13 @@ public class PrecisionEdit extends SimplePNEdit {
 	@Override public void doEdit() {
 		node.getVariable().setPrecision(newPrecision);
 	}
-
+	
+	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
+	
 	@Override public void undo() {
 		super.undo();
 		node.getVariable().setPrecision(lastPrecision);

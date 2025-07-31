@@ -24,14 +24,9 @@ public class RemoveFindingEdit extends SimplePNEdit {
     }
     
     @Override public void doEdit() {
-        try {
-            finding = evidenceCase.getFinding(variable);
-            evidenceCase.removeFinding(variable);
-            listener.removeFinding();
-        } catch (NoFindingException e) {
-            throw new UnreacheableException(e);
-        }
-        
+        finding = evidenceCase.getFinding(variable);
+        evidenceCase.removeFinding(variable);
+        listener.removeFinding();
     }
     
     @Override public void undo() throws CannotUndoException {
@@ -39,7 +34,7 @@ public class RemoveFindingEdit extends SimplePNEdit {
         try {
             evidenceCase.addFinding(finding);
             listener.onNodeValueChanged();
-        } catch (IncompatibleEvidenceException e) {
+        } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
             throw new UnreacheableException(e);
         }
     }

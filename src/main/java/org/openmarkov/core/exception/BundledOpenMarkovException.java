@@ -1,18 +1,11 @@
 package org.openmarkov.core.exception;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.localize.AutoLocalizable;
+import org.openmarkov.core.localize.ClassLocalizable;
 
 import java.util.List;
 
-public abstract class AutoOpenMarkovException2 extends OpenMarkovException2 implements AutoLocalizable {
-    
-    public AutoOpenMarkovException2() {
-    }
-    
-    public AutoOpenMarkovException2(Exception e) {
-        super(e);
-    }
+public abstract class BundledOpenMarkovException extends OpenMarkovException implements ClassLocalizable {
     
     @Override protected @Nullable String getExceptionMessage() {
         return this.localize();

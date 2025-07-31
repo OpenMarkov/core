@@ -15,7 +15,7 @@ import org.openmarkov.core.model.network.potential.StrategyTree;
 import java.util.Arrays;
 import java.util.List;
 
-@SuppressWarnings("serial") public abstract sealed class CostEffectivenessException extends AutoOpenMarkovException2 {
+public abstract sealed class CostEffectivenessException extends BundledOpenMarkovException {
 	
 	//Cost should be one more than thresholds
 	public static final class WrongNumberOfThresholds extends CostEffectivenessException{

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.localize.AutoLocalizable;
+import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Criterion.CECriterion;
@@ -39,7 +39,7 @@ import java.util.*;
  * @see org.openmarkov.core.model.network.Node
  * @since OpenMarkov 1.0
  */
-public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
+public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable {
     
     
     public String toString() {
@@ -152,7 +152,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
         }
         try {
             this.setNetworkType(networkType);
-        } catch (InvalidNetworkTypeException e) {
+        } catch (InvalidNetworkTypeException.UnmetConstraints e) {
             // This cannot happen
             throw new UnreacheableException(e);
         }
@@ -291,14 +291,14 @@ public class ProbNet extends Graph<Node> implements Cloneable, AutoLocalizable {
      * Sets Network type
      *
      * @param newNetworkType {@code NetworkType}
-     * @throws InvalidNetworkTypeException InvalidNetworkTypeException
+     * @throws InvalidNetworkTypeException.UnmetConstraints UnmetConstraints
      */
-    public void setNetworkType(NetworkType newNetworkType) throws InvalidNetworkTypeException {
+    public void setNetworkType(NetworkType newNetworkType) throws InvalidNetworkTypeException.UnmetConstraints {
         // Build and check the new constraints
         List<PNConstraint> newConstraints = ConstraintManager.getUniqueInstance().buildConstraintList(newNetworkType);
         for (PNConstraint newConstraint : newConstraints) {
             if (!newConstraint.checkProbNet(this)) {
-                throw new InvalidNetworkTypeException(this, newNetworkType, newConstraint);
+                throw new InvalidNetworkTypeException.UnmetConstraints(this, newNetworkType, newConstraint);
             }
         }
         

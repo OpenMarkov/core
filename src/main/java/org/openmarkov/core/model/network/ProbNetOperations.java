@@ -7,8 +7,8 @@
 
 package org.openmarkov.core.model.network;
 
+import net.sourceforge.jeval.EvaluationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.inference.PartialOrderDAN;
@@ -440,9 +440,8 @@ public class ProbNetOperations {
 				if (configuration.contains(oldVariable)) {
 					// Convert numerical variables with evidence to one-state
 					// variables
-					Finding finding;
-					try {
-						finding = configuration.removeFinding(oldVariable);
+                    Finding finding = configuration.removeFinding(oldVariable);
+					if(finding!=null){
 						double value = finding.numericalValue;
 						Variable newVariable = new Variable(oldVariable.getName(), String.valueOf(value));
 						node.setVariable(newVariable);
@@ -450,13 +449,11 @@ public class ProbNetOperations {
 						convertedVariables.put(oldVariable, newVariable);
 						convertedNodes.add(node);
 						TablePotential potential = new TablePotential(Arrays.asList(newVariable),
-								oldPotential.getPotentialRole());
+																	  oldPotential.getPotentialRole());
 						potential.values[0] = 1;
 						node.setPotential(potential);
-					} catch (NoFindingException e) {
-						e.printStackTrace();
 					}
-				} else {
+                } else {
 					List<Double> newStates = new ArrayList<>();
 					// For each configuration x, add f(x) to the list (if it is
 					// not already in)
@@ -478,7 +475,7 @@ public class ProbNetOperations {
 							} else {
 								// TODO throw some exception
 							}
-						} catch (IncompatibleEvidenceException e) {
+						} catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
 							e.printStackTrace();
 						}
 					}
@@ -523,7 +520,7 @@ public class ProbNetOperations {
 									} else if (parentVariable.getVariableType() == VariableType.FINITE_STATES) {
 										configuration.changeFinding(new Finding(findingVariable, nextStateIndex));
 									}
-								} catch (IncompatibleEvidenceException e) {
+								} catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
 									e.printStackTrace();
 								}
 							} else {
@@ -592,7 +589,7 @@ public class ProbNetOperations {
 					if(stateIndex!=-1){
 						evidence.addFinding(new Finding(convertedVariable, stateIndex));
 					}
-				} catch (NoFindingException | IncompatibleEvidenceException e) {
+				} catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
 					e.printStackTrace();
 				}
 			}
@@ -672,7 +669,7 @@ public class ProbNetOperations {
 		for (int i = 0; i < projectedVariables.size(); ++i) {
 			try {
 				configuration.addFinding(new Finding(projectedVariables.get(i), projectedIndices[i]));
-			} catch (IncompatibleEvidenceException e) {
+			} catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
 				e.printStackTrace();
 			}
 		}
@@ -724,7 +721,7 @@ public class ProbNetOperations {
 					nonRestrictedStates.add(restrictedVariableState);
 				}
 			}
-		} catch (IncompatibleEvidenceException e) {
+		} catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
 			// Not going to happen
 		}
 		return nonRestrictedStates;

@@ -153,7 +153,6 @@ public class PotentialOperations {
         if (!AuxiliaryOperations.checkObjectsCollectionType(potentials, TablePotential.class)) {
             throw new NotSupportedOperationException("can only manage variables of type TablePotential");
         }
-        
         return DiscretePotentialOperations.multiply((List<TablePotential>) potentials);
     }
     

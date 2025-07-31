@@ -1913,7 +1913,7 @@ public final class DiscretePotentialOperations {
         EvidenceCase evi = new EvidenceCase();
         try {
             evi.addFinding(new Finding(variable, variable.getStates()[0]));
-        } catch (IncompatibleEvidenceException e) {
+        } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
             e.printStackTrace();
         }
         try {
@@ -2040,7 +2040,7 @@ public final class DiscretePotentialOperations {
      */
     @SuppressWarnings("unchecked")
     public static TablePotential merge(Variable decision, List<TablePotential> potentials)
-            throws PotentialOperationException {
+            throws PotentialOperationException.VariableIsNull, PotentialOperationException.DifferentSizesInPotentialsAndStates {
         throwExceptionIfNecessaryInMergeOperation(decision, potentials);
         // --------------
         // Initialization
@@ -2222,39 +2222,16 @@ public final class DiscretePotentialOperations {
      * @throws PotentialOperationException PotentialOperationException
      */
     private static void throwExceptionIfNecessaryInMergeOperation(Variable decision,
-                                                                  Collection<TablePotential> potentials) throws PotentialOperationException {
+                                                                  Collection<TablePotential> potentials) throws PotentialOperationException.VariableIsNull, PotentialOperationException.DifferentSizesInPotentialsAndStates {
         String message = null;
         if (decision == null) {
-            message = nullVariable;
+            throw new PotentialOperationException.VariableIsNull();
         }
         if (potentials == null) {
-            if (message != null) {
-                message += " and " + nullPotentials;
-            } else {
-                message = nullPotentials;
-            }
-        } else {
-            int numPotentials = potentials.size();
-            if (numPotentials == 0) {
-                if (message != null) {
-                    message += " and " + noPotentials;
-                } else {
-                    message = noPotentials;
-                }
-            } else {
-                if (decision != null) {
-                    int numStates = decision.getNumStates();
-                    if (numStates != numPotentials) {
-                        message = "the number of states of the decision variable " + decision.getName() + " is "
-                                + numStates + ",\nthe number of potentials is " + numPotentials
-                                + " and they must be the same";
-                    }
-                }
-            }
+            potentials = new ArrayList<>();
         }
-        if (message != null) {
-            message = message.substring(0, 1).toUpperCase() + message.substring(1) + " in merge operation.";
-            throw new PotentialOperationException(message);
+        if(decision.getStates().length!=potentials.size()) {
+            throw new PotentialOperationException.DifferentSizesInPotentialsAndStates(decision, potentials);
         }
     }
     
@@ -2395,7 +2372,7 @@ public final class DiscretePotentialOperations {
     
     public static TablePotential evaluateFunctionPotential(FunctionPotential utilityPotential,
                                                            List<TablePotential> potentials, List<Variable> utilityVariables)
-            throws NumberFormatException, EvaluationException {
+            throws org.openmarkov.core.exception.NonProjectablePotentialException.CannotEvaluate {
         int numPotentials = potentials.size();
         
         Criterion criterion = findFirstNonNullCriterion(potentials);

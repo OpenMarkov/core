@@ -114,8 +114,8 @@ import java.util.Map;
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
-		throw new NonProjectablePotentialException("Function potential cannot be projected to a table");
+			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
+		throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
 	}
 
 	/**
@@ -125,8 +125,8 @@ import java.util.Map;
 	 */
 	@Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-			Map<String, String> variableValues) throws NonProjectablePotentialException {
-		throw new NonProjectablePotentialException("Function potential cannot be projected to a table");
+			Map<String, String> variableValues) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
+		throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
 
 	}
 
@@ -207,11 +207,15 @@ import java.util.Map;
 	 * @return The value obtained by evaluation the function for the assignment of variables given by 'values'
 	 * @throws EvaluationException EvaluationException
 	 */
-	public String getValue(Map<String,String> values) throws EvaluationException {
+	public String getValue(Map<String,String> values) throws NonProjectablePotentialException.CannotEvaluate {
 		Evaluator evaluator = new Evaluator();
-		evaluator.setVariables(values);		
-		return evaluator.evaluate(this.processedCovariates[0]);
-	}
+		evaluator.setVariables(values);
+        try {
+            return evaluator.evaluate(this.processedCovariates[0]);
+        } catch (EvaluationException e) {
+            throw new NonProjectablePotentialException.CannotEvaluate(this.processedCovariates[0], e);
+        }
+    }
 
 	@Override
 	public Potential reorder(List<Variable> newOrderOfVariables) {

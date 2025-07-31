@@ -7,15 +7,23 @@
 
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial") public class PotentialOperationException extends OpenMarkovException {
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.TablePotential;
 
-	// Constructor
+import java.util.Collection;
 
-	/**
-	 * @param message {@code String}
-	 */
-	public PotentialOperationException(String message) {
-		super(message);
-	}
-
+public abstract sealed class PotentialOperationException extends BundledOpenMarkovException {
+    
+    public static final class VariableIsNull extends PotentialOperationException {
+    }
+    
+    public static final class DifferentSizesInPotentialsAndStates extends PotentialOperationException {
+        public DifferentSizesInPotentialsAndStates(Variable variable, Collection<TablePotential> potentials) {
+            this.variable = variable;
+            this.potentials = potentials;
+        }
+        
+        public final Variable variable;
+		public final Collection<TablePotential> potentials;
+    }
 }

@@ -14,25 +14,19 @@ import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.List;
 
-@SuppressWarnings("serial") public abstract sealed class DoEditException extends AutoOpenMarkovException2 {
+public abstract sealed class DoEditException extends BundledOpenMarkovException {
 	
-	private DoEditException() {
-		super();
-	}
-	
-	private DoEditException(Exception exception) {
-		super(exception);
-	}
-	
-	public static final CannotDoEditException of(OpenMarkovException exception) {
+	public static CannotDoEditException of(OpenMarkovException exception) {
 		return new CannotDoEditException(exception);
 	}
 	
-	public static final class CannotDoEditException extends DoEditException implements WrapperException {
-		public CannotDoEditException(OpenMarkovException exception) {
-			super(exception);
-		}
-	}
+	public static final class CannotDoEditException extends DoEditException {
+		public CannotDoEditException(OpenMarkovException originException) {
+            this.originException = originException;
+        }
+        
+        public final OpenMarkovException originException;
+    }
     
     public static final class ConstraintViolated extends DoEditException {
         public final PNConstraint constraint;

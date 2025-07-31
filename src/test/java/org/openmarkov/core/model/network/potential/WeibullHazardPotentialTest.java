@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import net.sourceforge.jeval.EvaluationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,7 @@ public class WeibullHazardPotentialTest {
     }
     
     @Test
-    public void testTableProject() throws IncompatibleEvidenceException, NonProjectablePotentialException {
+    public void testTableProject() throws NumberFormatException, NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         EvidenceCase evidence = new EvidenceCase();
         evidence.addFinding(new Finding(ageVar, 65.0));
         List<TablePotential> projectedPotentials = potential.tableProject(evidence, null);

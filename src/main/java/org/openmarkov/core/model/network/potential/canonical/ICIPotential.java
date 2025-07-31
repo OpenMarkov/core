@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.canonical;
 
+import net.sourceforge.jeval.EvaluationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -158,7 +159,7 @@ public abstract class ICIPotential extends Potential {
 	@Override
 	public List<TablePotential> tableProject(
 			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials)
-            throws NonProjectablePotentialException {
+			throws NonProjectablePotentialException {
 		List<TablePotential> potentials = internalTableProject(evidenceCase, inferenceOptions);
 		HashSet<Variable> variablesToEliminate = new HashSet<>();
 		// Fill it with variables appearing in all potentials except this

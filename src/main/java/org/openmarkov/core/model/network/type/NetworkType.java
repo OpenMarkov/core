@@ -7,15 +7,14 @@
 
 package org.openmarkov.core.model.network.type;
 
-import org.openmarkov.core.localize.AutoLocalizable;
-import org.openmarkov.core.localize.Localizable;
+import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.ConstraintManager;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 
 import java.util.HashMap;
 
-public abstract class NetworkType implements AutoLocalizable {
+public abstract class NetworkType implements ClassLocalizable {
 	protected HashMap<Class<? extends PNConstraint>, ConstraintBehavior> constraints;
 
 	public NetworkType() {

@@ -37,7 +37,7 @@ public class OnlyNumericVariablesTest {
     }
     
     @Test
-    public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated {
+    public void testUndoableEditWillHappen() {
         
         PNESupport pNESupport = new PNESupport(false);
         PNConstraint constraint = new OnlyNumericVariables();
@@ -48,7 +48,11 @@ public class OnlyNumericVariablesTest {
         // test no exception in legal edit
         AddNodeEdit legalAdd = new AddNodeEdit(influenceDiagram, vc1, NodeType.DECISION);
         // add the node E (decision + numeric)
-        pNESupport.announceEdit(legalAdd);
+        try {
+            pNESupport.announceEdit(legalAdd);
+        } catch (DoEditException.ConstraintViolated e) {
+            fail();
+        }
         legalAdd.doEdit();
         
         

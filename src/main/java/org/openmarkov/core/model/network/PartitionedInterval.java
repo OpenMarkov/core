@@ -80,7 +80,6 @@ public class PartitionedInterval implements Cloneable {
 				}
 				limits[i] = ((Double) values[i - 1][5]).doubleValue();
 				belongsToLeftSide[i] = (values[i - 1][6] == "]" ? true : false);
-
 			} catch (NumberFormatException ex) {
 				// TODO set the actions to capture this exception if happens
 			}

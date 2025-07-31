@@ -7,11 +7,11 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import net.sourceforge.jeval.EvaluationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -55,7 +55,7 @@ public class ConditionalGaussianPotentialTest {
         gaussianPotential.setVariance(variancePotential);
     }
     
-    @Test public void testTableProject() throws NonProjectablePotentialException {
+    @Test public void testTableProject() throws NumberFormatException, NonProjectablePotentialException {
         
         TablePotential projectedPotential = gaussianPotential.tableProject(new EvidenceCase(), null).get(0);
         
@@ -75,7 +75,7 @@ public class ConditionalGaussianPotentialTest {
     }
     
     @Test public void testTableProjectWithEvidence()
-            throws IncompatibleEvidenceException, NonProjectablePotentialException {
+            throws NonProjectablePotentialException, org.openmarkov.core.exception.IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         
         EvidenceCase evidence = new EvidenceCase();
         evidence.addFinding(new Finding(predictedAudiometry, 2)); // on

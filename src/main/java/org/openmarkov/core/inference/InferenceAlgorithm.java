@@ -51,7 +51,7 @@ public abstract class InferenceAlgorithm implements Task {
 	 * @param network The network used in the inference
 	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
-	public InferenceAlgorithm(ProbNet network) throws NotEvaluableNetworkException {
+	public InferenceAlgorithm(ProbNet network) throws NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints {
 		this.probNet = network.copy();
 		this.preResolutionEvidence = new EvidenceCase();
 		this.conditioningVariables = new ArrayList<>();
@@ -64,7 +64,7 @@ public abstract class InferenceAlgorithm implements Task {
 	 *
 	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
-	public void checkEvaluability() throws NotEvaluableNetworkException {
+	public void checkEvaluability() throws NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints {
 		checkNetworkApplicability();
 		checkConstraintsApplicability();
 	}
@@ -99,12 +99,11 @@ public abstract class InferenceAlgorithm implements Task {
 	 *
 	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
-	private void checkNetworkApplicability() throws NotEvaluableNetworkException {
+	private void checkNetworkApplicability() throws NotEvaluableNetworkException.NotApplicableNetwork {
 
 		NetworkType networkType = probNet.getNetworkType();
 		if (getPossibleNetworkTypes().stream().noneMatch(iNetwork -> iNetwork == networkType)) {
-			throw new NotEvaluableNetworkException(
-				"This algorithm cannot evaluate this network because the network is of type " + networkType + ".");
+			throw new NotEvaluableNetworkException.NotApplicableNetwork(probNet, getPossibleNetworkTypes());
 		}
 	}
 
@@ -120,7 +119,7 @@ public abstract class InferenceAlgorithm implements Task {
 	 *
 	 * @throws NotEvaluableNetworkException TODO - Remove additional constraints
 	 */
-	private void checkConstraintsApplicability() throws NotEvaluableNetworkException {
+	private void checkConstraintsApplicability() throws NotEvaluableNetworkException.UnsatisfiedContraints {
 		// Check that the probNet satisfies the specific constraints of the algorithm
 		List<PNConstraint> additionalConstraints = getAdditionalConstraints();
 
@@ -141,12 +140,7 @@ public abstract class InferenceAlgorithm implements Task {
 			}
 
 			if (notEvaluableConstraints.size() != 0) {
-				String notEvaluableMessage = "This algorithm cannot evaluate this network because the network does "
-						+ "not satisfy the following constraints:\n";
-				for (PNConstraint pnConstraint : notEvaluableConstraints) {
-					notEvaluableMessage += pnConstraint.toString() + "\n";
-				}
-				throw new NotEvaluableNetworkException(notEvaluableMessage);
+				throw new NotEvaluableNetworkException.UnsatisfiedContraints(probNet, notEvaluableConstraints);
 			}
 		}
 

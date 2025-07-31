@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import net.sourceforge.jeval.EvaluationException;
 import org.junit.jupiter.api.*;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -74,7 +75,7 @@ public class DiscretizedCauchyPotentialTest {
     
     @Disabled
     @Test public void testTableProjectWithEvidence()
-            throws IncompatibleEvidenceException, NonProjectablePotentialException {
+            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         
         EvidenceCase evidence = new EvidenceCase();
         evidence.addFinding(new Finding(predictedAudiometry, 2)); // on
@@ -97,7 +98,7 @@ public class DiscretizedCauchyPotentialTest {
     
     @Disabled("Ignored because an ArrayIndexOutOfBoundsException")
     @Test public void testTableProjectWithFullEvidence()
-            throws IncompatibleEvidenceException, NonProjectablePotentialException {
+            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         
         EvidenceCase evidence = new EvidenceCase();
         evidence.addFinding(new Finding(predictedAudiometry, 2)); // on

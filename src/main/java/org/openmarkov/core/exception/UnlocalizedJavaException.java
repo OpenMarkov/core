@@ -7,11 +7,11 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
- * Adapts a Java's {@link Exception} to {@link OpenMarkovException2}.
+ * Adapts a Java's {@link Exception} to {@link OpenMarkovException}.
  * <p>
- * You might get a {@link LocalizedJavaException} using {@link OpenMarkovException2#of(Exception)}.
+ * You might get a {@link LocalizedJavaException} using {@link OpenMarkovException#of(Exception)}.
  */
-public final class UnlocalizedJavaException extends OpenMarkovException2 {
+public final class UnlocalizedJavaException extends OpenMarkovException {
     
     /**
      * Represents the original {@link Exception}.
@@ -21,7 +21,7 @@ public final class UnlocalizedJavaException extends OpenMarkovException2 {
     /**
      * Constructs an instance of {@code UnlocalizedJavaException} with the provided {@link Exception}.
      *
-     * @param exception the original exception to be wrapped and adapted to {@code OpenMarkovException2}.
+     * @param exception the original exception to be wrapped and adapted to {@code OpenMarkovException}.
      */
     UnlocalizedJavaException(Exception exception) {
         this.exception = exception;

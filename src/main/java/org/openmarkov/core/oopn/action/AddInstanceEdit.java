@@ -17,7 +17,6 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.oopn.Instance;
 import org.openmarkov.core.oopn.OOPNet;
-import org.openmarkov.core.oopn.exception.InstanceAlreadyExistsException;
 
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotUndoException;
@@ -120,14 +119,8 @@ import java.util.List;
             newNode.setInput(originalNode.isInput());
             instanceNodes.add(newNode);
         }
-        
-        try {
-            Instance instance = new Instance(instanceName, classNet, instanceNodes);
-            oopNet.addInstance(instance);
-        } catch (InstanceAlreadyExistsException e) {
-            throw new DoEditException.InstanceAlreadyExists(instanceName);
-        }
-        
+        Instance instance = new Instance(instanceName, classNet, instanceNodes);
+        oopNet.addInstance(instance);
     }
     
     @Override public void doEdit(ProbNet probNet) throws DoEditException {

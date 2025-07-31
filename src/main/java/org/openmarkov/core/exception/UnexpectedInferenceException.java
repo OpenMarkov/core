@@ -6,15 +6,15 @@
  */
 package org.openmarkov.core.exception;
 
-@SuppressWarnings("serial") public class UnexpectedInferenceException extends OpenMarkovException {
+import org.openmarkov.core.model.network.potential.TablePotential;
 
-	// Constructor
-
-	/**
-	 * @param message Message
-	 */
-	public UnexpectedInferenceException(String message) {
-		super(message);
-	}
+public abstract sealed class UnexpectedInferenceException extends BundledOpenMarkovException {
 	
+	public static final class ThereIsMoreThanOneConditioningVariable extends UnexpectedInferenceException {
+		public ThereIsMoreThanOneConditioningVariable(TablePotential tablePotential) {
+            this.tablePotential = tablePotential;
+        }
+        
+        public final TablePotential tablePotential;
+    }
 }

@@ -11,6 +11,7 @@ import org.openmarkov.core.action.CRemoveNodeEdit;
 import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -18,7 +19,6 @@ import org.openmarkov.core.oopn.Instance;
 import org.openmarkov.core.oopn.InstanceReferenceLink;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.core.oopn.ReferenceLink;
-import org.openmarkov.core.oopn.exception.InstanceAlreadyExistsException;
 
 import javax.swing.undo.CannotUndoException;
 import java.util.HashSet;
@@ -86,8 +86,8 @@ import java.util.HashSet;
 		super.undo();
 		try {
 			((OOPNet) probNet).addInstance(instance);
-		} catch (InstanceAlreadyExistsException e) {
-			//Impossible to get here
+		} catch (DoEditException.InstanceAlreadyExists e) {
+			throw new UnreacheableException(e);
 		}
 		for (ReferenceLink instanceLink : instanceLinksToRemove) {
 			((OOPNet) probNet).getReferenceLinks().add(instanceLink);

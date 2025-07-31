@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network;
 
+import net.sourceforge.jeval.EvaluationException;
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.graph.Link;
@@ -552,7 +553,7 @@ public class Node {
 				} else if (firstPotential instanceof ProductPotential) {
 					result = Tools.multiply(parentValues);
 				} else {
-					throw new NonProjectablePotentialException("Super-value nodes must be sum or product.");
+					throw new NonProjectablePotentialException.SuperValueMustBeSumOrProduct(firstPotential);
 				}
 			}
 		} else {
@@ -569,7 +570,6 @@ public class Node {
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public double getApproximateMaximumUtilityFunction() throws NonProjectablePotentialException {
-
 		return getApproximateMaxOrMinUtilityFunction(true);
 	}
 
@@ -580,7 +580,6 @@ public class Node {
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException
 	 */
 	public double getApproximateMinimumUtilityFunction() throws NonProjectablePotentialException {
-
 		return getApproximateMaxOrMinUtilityFunction(false);
 	}
 
@@ -608,9 +607,8 @@ public class Node {
 				} else if (firstPotential instanceof ProductPotential) {
 					result = DiscretePotentialOperations.multiply(utilityFunctionsParents);
 				} else {
-					throw new NonProjectablePotentialException("Super-value nodes must be sum or product.");
+					throw new NonProjectablePotentialException.SuperValueMustBeSumOrProduct(firstPotential);
 				}
-
 			}
 		} else {
 			result = null;

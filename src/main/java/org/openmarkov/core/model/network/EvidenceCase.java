@@ -7,8 +7,8 @@
 
 package org.openmarkov.core.model.network;
 
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.type.MIDType;
@@ -106,15 +106,14 @@ public class EvidenceCase {
      * @param finding . {@code Finding}.
      * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
-    public void addFinding(Finding finding) throws IncompatibleEvidenceException {
+    public void addFinding(Finding finding) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         if (isCompatible(finding)) {
             if (!findings.containsKey(finding.getVariable())) {
                 findings.put(finding.getVariable(), finding);
             }
         } else {
-            throw new IncompatibleEvidenceException(
-                    "Error trying to add " + "evidence: " + finding.toString() + " having previously " + "evidence: "
-                            + findings.get(finding.getVariable()));
+            Finding alreadyExistingFinding = findings.get(finding.getVariable());
+            throw new IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther(finding, alreadyExistingFinding);
         }
     }
     
@@ -122,7 +121,7 @@ public class EvidenceCase {
      * @param finding . {@code Finding}.
      * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
-    public void changeFinding(Finding finding) throws IncompatibleEvidenceException {
+    public void changeFinding(Finding finding) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         findings.remove(finding.getVariable());
         addFinding(finding);
     }
@@ -131,7 +130,7 @@ public class EvidenceCase {
      * @param findings . {@code Collection} of {@code Finding}s.
      * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
-    public void addFindings(Collection<Finding> findings) throws IncompatibleEvidenceException {
+    public void addFindings(Collection<Finding> findings) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         for (Finding finding : findings) {
             addFinding(finding);
         }
@@ -143,7 +142,7 @@ public class EvidenceCase {
      * @param stateName    {@code Finding}.
      * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
-    public void addFinding(ProbNet probNet, String variableName, String stateName) throws IncompatibleEvidenceException {
+    public void addFinding(ProbNet probNet, String variableName, String stateName) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         Variable variable = probNet.getVariable(variableName);
         int stateIndex = variable.getStateIndex(stateName);
         addFinding(new Finding(variable, stateIndex));
@@ -156,7 +155,7 @@ public class EvidenceCase {
      * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void addFinding(ProbNet probNet, String variableName, double value)
-            throws IncompatibleEvidenceException {
+            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         Variable variable = probNet.getVariable(variableName);
         Finding finding = new Finding(variable, value);
         addFinding(finding);
@@ -167,19 +166,19 @@ public class EvidenceCase {
      * @return Finding
      * @throws NoFindingException NoFindingException
      */
-    public Finding removeFinding(Variable variable) throws NoFindingException {
+    public @Nullable Finding removeFinding(Variable variable) {
         Finding finding = getFinding(variable);
         if (finding == null) {
-            throw new NoFindingException(variable);
+            return null;
         }
         return findings.remove(finding.getVariable());
     }
     
     /**
      * @param variableName {@code String}.
-     * @throws NoFindingException NoFindingException
+     * @return
      */
-    public void removeFinding(String variableName) throws NoFindingException {
+    public @Nullable Finding removeFinding(String variableName) {
         ArrayList<Variable> findingsVariables = new ArrayList<>(findings.keySet());
         int i = 0, numVariables = findingsVariables.size();
         Variable variable = null;
@@ -187,10 +186,9 @@ public class EvidenceCase {
             variable = findingsVariables.get(i++);
         } while (i < numVariables && !variable.getName().contentEquals(variableName));
         if (variable == null) {
-            throw new NoFindingException(variableName);
-        } else {
-            findings.remove(variable);
+            return null;
         }
+        return findings.remove(variable);
     }
     
     /**
@@ -365,7 +363,7 @@ public class EvidenceCase {
                     shiftedEvidence.addFinding(finding);
                 }
             }
-        } catch (IncompatibleEvidenceException e) {
+        } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
             // Unreachable code
             throw new UnreacheableException("shifted finding");
         }
@@ -393,7 +391,7 @@ public class EvidenceCase {
      *                           this EvidenceCase
      * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
-    public void fuse(EvidenceCase evidenceCaseToFuse, boolean overwrite) throws IncompatibleEvidenceException {
+    public void fuse(EvidenceCase evidenceCaseToFuse, boolean overwrite) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         if (evidenceCaseToFuse != null) {
             for (Finding finding : evidenceCaseToFuse.getFindings()) {
                 if (this.contains(finding.getVariable())) {

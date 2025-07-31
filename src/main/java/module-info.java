@@ -39,7 +39,6 @@ open module org.openmarkov.core {
 	exports org.openmarkov.core.io.format.annotation;	
 	exports org.openmarkov.core.oopn;
 	exports org.openmarkov.core.oopn.action;
-	exports org.openmarkov.core.oopn.exception;
     exports org.openmarkov.core.stringformat;
 	exports org.openmarkov.core.test;
     exports org.openmarkov.plugin;
@@ -47,5 +46,4 @@ open module org.openmarkov.core {
 	exports org.openmarkov.core.localize;
 	exports org.openmarkov.core.logging;
     exports org.openmarkov.core.annotation;
-    exports org.openmarkov.core.exception.caseDatabaseReading;
 }

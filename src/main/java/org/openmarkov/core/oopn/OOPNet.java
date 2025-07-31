@@ -29,7 +29,6 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.type.NetworkType;
-import org.openmarkov.core.oopn.exception.InstanceAlreadyExistsException;
 
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoableEdit;
@@ -74,7 +73,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 		super();
 		try {
 			setNetworkType(probNet.getNetworkType());
-		} catch (InvalidNetworkTypeException e) {
+		} catch (InvalidNetworkTypeException.UnmetConstraints e) {
 			throw new UnreacheableException(e);
 		}
 		// copy constraints
@@ -136,9 +135,9 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
 	 * @param instance Instance
 	 * @throws InstanceAlreadyExistsException InstanceAlreadyExistsException
 	 */
-	public void addInstance(Instance instance) throws InstanceAlreadyExistsException {
+	public void addInstance(Instance instance) throws DoEditException.InstanceAlreadyExists {
 		if (instances.containsKey(instance.getName())) {
-			throw new InstanceAlreadyExistsException();
+			throw new DoEditException.InstanceAlreadyExists(instance.getName());
 		} else {
 			instance.getClassNet().getPNESupport().addUndoableEditListener(this);
 			instances.put(instance.getName(), instance);

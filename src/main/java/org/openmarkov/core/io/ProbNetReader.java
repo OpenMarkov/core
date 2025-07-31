@@ -10,6 +10,7 @@ package org.openmarkov.core.io;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.model.network.ProbNet;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 public interface ProbNetReader {
@@ -20,9 +21,9 @@ public interface ProbNetReader {
 	 * @throws ParserException ParserException
 	 * @return A {@code ProbNetInfo} or {@code null}
 	 */
-	ProbNetInfo loadProbNetInfo(String netName, InputStream file) throws ParserException;
+	ProbNetInfo loadProbNetInfo(String netName, InputStream file) throws IOException, ParserException;
 
-	ProbNetInfo loadProbNetInfo(String netName) throws ParserException;
+	ProbNetInfo loadProbNetInfo(String netName) throws IOException, ParserException;
 
 
 	/**
@@ -31,9 +32,9 @@ public interface ProbNetReader {
 	 * @throws ParserException ParserException
 	 * @return A {@code ProbNet} or {@code null}
 	 */
-	ProbNet loadProbNet(String netName, InputStream file) throws ParserException;
+	ProbNet loadProbNet(String netName, InputStream file) throws IOException, ParserException;
 
-	ProbNet loadProbNet(String netName) throws ParserException;
+	ProbNet loadProbNet(String netName) throws IOException, ParserException;
 
 
 }

@@ -5,14 +5,55 @@
     <Localization class="org.openmarkov.core.exception.CostEffectivenessException$PotentialsMustBeOfSameType" value="Potentials should be of the same type, while first potential is {firstPotential.getClass.getName} and the second if {secondPotential.getClass.getName}"/>
     <Localization class="org.openmarkov.core.exception.CostEffectivenessException$WrongNumberOfCostsEffectivitiesAndInterventions" value="There are {costs.size} costs, {effectivities.size} effectivities and {strategyTrees.size} interventions, while they should both be the same"/>
     <Localization class="org.openmarkov.core.exception.CostEffectivenessException$WrongNumberOfThresholds" value="There are {costs.size} costs and {thresholds.size} thresholds, while there should be one threshold less than costs"/>
+    <Localization class="org.openmarkov.core.exception.DoEditException$CannotDoEditException" value="{originException}"/>
     <Localization class="org.openmarkov.core.exception.DoEditException$CannotInvertLink" value="Cannot invert link from {from} to {to} of {probNet} due to {unsatisfiedConstraint}"/>
     <Localization class="org.openmarkov.core.exception.DoEditException$CannotRemovePotential" value="Can not remove potential: {oldPotential} of {probNet}"/>
     <Localization class="org.openmarkov.core.exception.DoEditException$ConstraintViolated" value="Could not met the constraint: {constraint.constraintDescription}"/>
     <Localization class="org.openmarkov.core.exception.DoEditException$InstanceAlreadyExists" value="Instance {instanceName} already exists"/>
     <Localization class="org.openmarkov.core.exception.DoEditException$NodeIsNull" value="No node is selected, try selecting a node from the {probNet}"/>
-    <Localization class="org.openmarkov.core.exception.caseDatabaseReading.CaseDatabaseReadingException$IODatabaseReadingException" value="An I/O error happened: {exception.getMessage}"/>
+    <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$EvidenceIsIncompatibleWithOther" value="The new evidence {newFinding} is not compatible with an old evidente: {oldFinding}"/>
+    <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$FindingVariableIsMissingAState" value="The variable {variable.getName} has no state {state}, so this finding cannot be translated."/>
+    <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$SamplesWeigthIsZero" value="Samples weigth is zero"/>
+    <Localization class="org.openmarkov.core.exception.InvalidNetworkTypeException$NotAllowedType" value="{probNet} is not of an allowed type: {allowedTypes}"/>
+    <Localization class="org.openmarkov.core.exception.InvalidNetworkTypeException$UnmetConstraints" value="{probNet} cannot be converted to {newNetworkType} as it would not satisfy constraint {unsatisfiedConstraint}"/>
+    <Localization class="org.openmarkov.core.exception.NetworkHasNoNodesException" value="{probNet} has no nodes."/>
+    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$CannotEvaluate" value="Cannot evaluate '{elementToEvaluate}' due to {evaluationException.getMessage}"/>
+    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$MissingEvidenceInVariable" value="There is required evidence to be present in variable {timeVariable}, but there is no evidence"/>
+    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$MissingVariableInEvidence" value="Variable {variable} cannot be found in evidence case {evidenceCase}"/>
+    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$PotentialCannotBeConvertedToATable" value="Potential {potential} cannot be converted to a table"/>
+    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$PotentialCannotBeConvertedToATableDueToVariable" value="Potential {potential} cannot be converted to a table due to variable {variable.getName()} being a {variable.getVariableType()} variable"/>
+    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$SuperValueMustBeSumOrProduct" value="Potential {potential} must be sum or product"/>
+    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$TopVariableNotInDomain" value="There was no top variable value was not within any domain (Domains: {branches})"/>
+    <Localization class="org.openmarkov.core.exception.NotEvaluableNetworkException$NotApplicableNetwork" value="This algorithm cannot evaluate {probNet}, as it can only evaluate networks of type: {possibleNetworkTypes}."/>
+    <Localization class="org.openmarkov.core.exception.NotEvaluableNetworkException$UnsatisfiedContraints" value="This algorithm cannot evaluate {probNet} because it does not satisfy the following constraints: {unsatisfiedConstraints}"/>
+    <Localization class="org.openmarkov.core.exception.NotEvaluableNetworkException$VariableIsNotTemporal" value="Variable {variable} is not temporal."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$CannotOpenFile" value="Cannot open file {filename}."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$CannotReadConstraint" value="Could not read a constraint."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$MismatchedToken" value="Expected token {expected}, but found {found}"/>
+    <Localization class="org.openmarkov.core.exception.ParserException$MissingPotential" value="Potential {potential} does not exist."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$MissingProbabilisticNetworkInformation" value="No ProbNet in ProbNetInfo."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$MissingPropertiesOfContiousVariable" value="Variable {variableName} is missing properties: {missingProperties}."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$MissingToken" value="Token {token} is missing;"/>
+    <Localization class="org.openmarkov.core.exception.ParserException$MissingVariable" value="Variable {variableName} is missing."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$MoreThanOneInputOpened" value="You have requested to open {amountOfInputsRequested} files, but only 1 is allowed."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$PGMXInvalid" value="Invalid PGMX Structure due to: {message}."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$ProbabilisticNetworkTypeMissing" value="Network type is missing."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$ProbabilisticNetworkTypeNotRecognized" value="Cannot recognize network type {networkType}."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$SomeSubpotentialsArentLinkedToAnICIPotential" value="There are {subPotentials.size} not linked no an ICIPotential ({subPotentials})."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$WrongNumberOfStates" value="There was expected to find {expectedLength} states in variable {variableName}, but {actualLength} were found."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$WrongVersion" value="Version {version} is not supported."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$XMLInvalid" value="Can not parse XML {netName} document due to: {originException.getMessage}."/>
+    <Localization class="org.openmarkov.core.exception.PotentialOperationException$DifferentSizesInPotentialsAndStates" value="Found {variable.getNumStates} states in variable {variable.getName}, but there are {potentials.size} instead of {variable.getNumStates}."/>
+    <Localization class="org.openmarkov.core.exception.PotentialOperationException$VariableIsNull" value="No variable found"/>
+    <Localization class="org.openmarkov.core.exception.UnexpectedInferenceException$ThereIsMoreThanOneConditioningVariable" value="There is more than one conditioning variables in the potential table ({tablePotential.getNumVariables} variables)."/>
+    <Localization class="org.openmarkov.core.exception.WriterException$CannotCreateFile" value="Can not create file {filename}."/>
+    <Localization class="org.openmarkov.core.exception.WriterException$ICIModelNotSupportedByElvira" value="ICI Model {modelType} is not supported by Elvira."/>
+    <Localization class="org.openmarkov.core.exception.WriterException$NonProjectablePotentialException" value="{originException}"/>
+    <Localization class="org.openmarkov.core.exception.WriterException$TryingToWriteANullProbNet" value="Tried to write a null Probabilistic Network"/>
+    <Localization class="org.openmarkov.core.exception.WriterException$TryingToWriteAProbNetWithoutName" value="There is no name for {probNet}."/>
+    <Localization class="org.openmarkov.core.exception.WriterException$UnknownNetworkType" value="Network type {networkType} is unknown, only it is allowed to use network types: {allowedTypes}."/>
     <Localization class="org.openmarkov.core.model.network.ProbNet"
-                  value="{networkType} network named {name} with {this.getNumPotentials} potentials, {this.getNodes.size} nodes, {this.constraints.size} constraints"
+                  value="{networkType} network named {name}"
                   short="{networkType} network named {name}"
                   long="{networkType} network named {name} with {this.getNumPotentials} potentials, {this.getNodes.size} nodes, {this.constraints.size} constraints"
                   verbose="{networkType} network named {name} with {this.getNumPotentials} potentials, nodes {this.getNodes}, constraints {this.constraints}, and agents {this.agents}"/>
@@ -29,4 +70,6 @@
     <Localization class="org.openmarkov.core.model.network.type.POMDPType" value="POMDP"/>
     <Localization class="org.openmarkov.core.model.network.type.TuningNetworkType" value="Tuning"/>
     <Localization class="org.openmarkov.core.oopn.OOPNet" value="{networkType} network named {name} with {this.getNumPotentials} potentials, {this.getNodes.size} nodes, {this.constraints.size} constraints "/>
+    <Localization class="org.openmarkov.learning.core.exception.EmptyModelNetException" value="There is no network selected to use as model, and one is required."/>
+    <Localization class="org.openmarkov.learning.core.exception.UnobservedVariablesException" value="Algorithm {algorithmType.name} does not support unobserved variables, which are: {unobservedVariables}"/>
 </ClassLocalizations>

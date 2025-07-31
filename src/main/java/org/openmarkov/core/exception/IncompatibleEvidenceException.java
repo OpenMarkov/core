@@ -7,19 +7,42 @@
 
 package org.openmarkov.core.exception;
 
+import org.openmarkov.core.model.network.Finding;
+import org.openmarkov.core.model.network.Variable;
+
 /**
  * @author marias
  * @version 1.0
  */
-@SuppressWarnings("serial") public class IncompatibleEvidenceException extends OpenMarkovException {
-
-	// Constructor
-
-	/**
-	 * @param message message
-	 */
-	public IncompatibleEvidenceException(String message) {
-		super(message);
-	}
-
+public abstract sealed class IncompatibleEvidenceException extends BundledOpenMarkovException {
+    
+    public static final class EvidenceIsIncompatibleWithOther extends IncompatibleEvidenceException {
+        public EvidenceIsIncompatibleWithOther(Finding newFinding, Finding oldFinding) {
+            this.newFinding = newFinding;
+            this.oldFinding = oldFinding;
+        }
+        
+        public final Finding newFinding;
+        public final Finding oldFinding;
+    }
+    
+    public static final class FindingVariableIsMissingAState extends IncompatibleEvidenceException {
+        public FindingVariableIsMissingAState(Finding finding, Variable variable, String state) {
+            this.finding = finding;
+            this.variable = variable;
+            this.state = state;
+        }
+        
+        public final Finding finding;
+        public final Variable variable;
+        public final String state;
+    }
+    
+    public static final class SamplesWeigthIsZero extends IncompatibleEvidenceException {
+        public SamplesWeigthIsZero(double[][] samples) {
+            this.samples = samples;
+        }
+        
+        public final double[][] samples;
+    }
 }

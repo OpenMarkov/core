@@ -13,26 +13,26 @@ import org.openmarkov.core.model.network.Node;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("serial") public class NodesMissingPoliciesException extends OpenMarkovException2 {
+public class NotAllNodesHavePoliciesException extends OpenMarkovException {
     
     private final Node conditioningDecision;
     private final List<Node> nodesWithoutPolicy;
     
-    public NodesMissingPoliciesException(Node conditioningDecision, List<Node> nodesWithoutPolicy) {
+    public NotAllNodesHavePoliciesException(Node conditioningDecision, List<Node> nodesWithoutPolicy) {
         this.conditioningDecision = conditioningDecision;
         this.nodesWithoutPolicy = nodesWithoutPolicy;
     }
     
     @Override protected @Nullable String getExceptionMessage() {
         var nodesNames = this.nodesWithoutPolicy.stream().map(Node::getName)
-                                                .map(name -> "\t-" + name)
+                                                .map(name -> "\t- " + name)
                                                 .collect(Collectors.joining("\n"));
-        
-        return "There are " + this.nodesWithoutPolicy.size() + " node(s) other than " + conditioningDecision.getName() + " without policy:" + nodesNames;
+        return "There are " + this.nodesWithoutPolicy.size() + " node(s) without policy other than " + conditioningDecision.getName()
+                + ":\n" + nodesNames;
     }
     
     @Override protected @Nullable String getExceptionTitle() {
         return "Not all nodes have policies";
     }
-    
 }
+

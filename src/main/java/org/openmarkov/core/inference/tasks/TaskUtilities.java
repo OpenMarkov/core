@@ -261,15 +261,10 @@ public class TaskUtilities {
 	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
 	public static ProbNet projectTablesAndBuildMarkovDecisionNetwork(ProbNet network, EvidenceCase evidence)
-			throws IncompatibleEvidenceException {
+			throws NonProjectablePotentialException {
 		ProbNet markovNetworkInference = null;
 		List<TablePotential> returnedProjectedPotentials;
-
-		try {
-			returnedProjectedPotentials = network.tableProjectPotentials(evidence);
-		} catch (NonProjectablePotentialException e1) {
-			throw new IncompatibleEvidenceException("Unexpected inference exception :" + e1.getMessage());
-		}
+		returnedProjectedPotentials = network.tableProjectPotentials(evidence);
 		List<TablePotential> projectedPotentials = new ArrayList<>();
 
 		for (TablePotential potential : returnedProjectedPotentials) {

@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.inference.tasks;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -24,7 +22,7 @@ import java.util.List;
 public interface Propagation extends Task {
 
 	HashMap<Variable, TablePotential> getPosteriorValues()
-			throws IncompatibleEvidenceException, NotEvaluableNetworkException;
+			throws CannotNormalizeNullVectorException, NonProjectablePotentialException, IncompatibleEvidenceException, NotEvaluableNetworkException;
 
 	void setPostResolutionEvidence(EvidenceCase postResolutionEvidence);
 

@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
+import net.sourceforge.jeval.EvaluationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -288,7 +289,7 @@ public class DiscretePotentialOperationsTest {
     
     @Test
     /** Multiplies and marginalize projected potentials */
-    public void testMultiplyAndMarginalizeProjected() throws IncompatibleEvidenceException, NonProjectablePotentialException {
+    public void testMultiplyAndMarginalizeProjected() throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         // Create data
         // Variables
         Variable A = new Variable("A", 2);

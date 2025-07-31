@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.inference.tasks;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -25,7 +23,7 @@ import java.util.HashMap;
 public interface TemporalEvolution extends Task {
 
     HashMap<Variable, TablePotential> getTemporalEvolution()
-            throws IncompatibleEvidenceException, NotEvaluableNetworkException;
+            throws CannotNormalizeNullVectorException, NonProjectablePotentialException, IncompatibleEvidenceException, NotEvaluableNetworkException;
 
 
     /**
@@ -38,7 +36,7 @@ public interface TemporalEvolution extends Task {
      * @throws NotEvaluableNetworkException
      */
     default HashMap<Variable, TablePotential> getTemporalEvolutionWithDiscount()
-            throws IncompatibleEvidenceException, NotEvaluableNetworkException {
+            throws CannotNormalizeNullVectorException, NonProjectablePotentialException, IncompatibleEvidenceException, NotEvaluableNetworkException {
         return getTemporalEvolution();
     }
 

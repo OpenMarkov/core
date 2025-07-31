@@ -7,11 +7,15 @@
 
 package org.openmarkov.core.io.format.annotation;
 
+import org.openmarkov.core.annotation.Limits;
+import org.openmarkov.core.annotation.RequiredConstructors;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+@Limits(requiredConstructors = @RequiredConstructors({}))
 /**
  * This class sets the labels for the annotations format
  * @author mpalacios

@@ -58,7 +58,7 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 			if (branchVariable != null) {
 				try {
 					scenarioEvidence.addFinding(new Finding(branchVariable, branchState));
-				} catch (IncompatibleEvidenceException e) {
+				} catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
 					e.printStackTrace();
 				}
 			}

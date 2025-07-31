@@ -23,12 +23,6 @@ public interface PNEdit extends UndoableEdit {
 	 * @throws DoEditException DoEditException
 	 */
 	void doEdit() throws DoEditException;
-
-	default void doEdit(ProbNet probNet) throws DoEditException{
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
 	
 	void setSignificant(boolean significant);
 
@@ -36,6 +30,11 @@ public interface PNEdit extends UndoableEdit {
 
 	void setProbNet(ProbNet probNet);
 	
+	default void doEdit(ProbNet probNet) throws DoEditException{
+		PNEdit.startEdit(this, probNet);
+		this.doEdit();
+		PNEdit.endEdit(this);
+	}
 	
 	static void startEdit(PNEdit edit, ProbNet probNet) throws DoEditException.ConstraintViolated {
 		edit.setProbNet(probNet);

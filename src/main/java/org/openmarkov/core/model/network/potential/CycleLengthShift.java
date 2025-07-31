@@ -73,15 +73,14 @@ import java.util.List;
 
 	// Methods
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
+			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.MissingVariableInEvidence {
 		Variable conditionedVariable = getConditionedVariable();
 		Variable conditioningVariable = variables.get((conditionedVariable == variables.get(0)) ? 1 : 0);
 		TablePotential projectedPotential;
 		if (conditionedVariable.getVariableType() == VariableType.NUMERIC) {
 			for (Variable variable : variables) {
 				if (!variable.equals(conditionedVariable) && !evidenceCase.contains(variable)) {
-					throw new NonProjectablePotentialException(
-							"Variable " + variable.getName() + " is not included in EvidenceCase.");
+					throw new NonProjectablePotentialException.MissingVariableInEvidence(variable, evidenceCase);
 				}
 			}
 			projectedPotential = new TablePotential(new ArrayList<Variable>(), role);

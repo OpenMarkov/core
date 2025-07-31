@@ -10,7 +10,6 @@ package org.openmarkov.core.model.network.constraint;
 import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.exception.OpenMarkovExceptionConstants;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
@@ -20,12 +19,12 @@ import java.util.List;
 
 @Constraint(name = "NoValidStateName", defaultBehavior = ConstraintBehavior.YES) public class ValidStateName
 		extends PNConstraint {
-
-	// Constants for possible errors
-	private final int IS_EMPTY_NAME = 0;
-	private final int IS_NAME_ALREADY_EXIST = 1;
-	// Flag of the error
-	private int type_error;
+	
+	enum TypeError {
+		IS_EMPTY_NAME, IS_NAME_ALREADY_EXIST;
+	}
+	
+	private TypeError typeError;
 
 	@Override
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) {
@@ -48,11 +47,11 @@ import java.util.List;
 				trimmedLowerName = name.toLowerCase();
 
 				if ((trimmedLowerName == null) || (trimmedLowerName.contentEquals(""))) {
-					type_error = IS_EMPTY_NAME;
+                    this.typeError = TypeError.IS_EMPTY_NAME;
 					return false;
 				}
 				if (!nodeStateEdit.getNode().getVariable().chekNewStateName(trimmedLowerName)) {
-					type_error = IS_NAME_ALREADY_EXIST;
+                    this.typeError = TypeError.IS_NAME_ALREADY_EXIST;
 					return false;
 				}
 				break;
@@ -61,11 +60,11 @@ import java.util.List;
 				trimmedName = name.trim();
 
 				if ((trimmedName == null) || (trimmedName.contentEquals(""))) {
-					type_error = IS_EMPTY_NAME;
+                    this.typeError = TypeError.IS_EMPTY_NAME;
 					return false;
 				}
 				if (!nodeStateEdit.getNode().getVariable().chekNewStateName(trimmedName)) {
-					type_error = IS_NAME_ALREADY_EXIST;
+                    this.typeError = TypeError.IS_NAME_ALREADY_EXIST;
 					return false;
 				}
 				break;
@@ -83,10 +82,10 @@ import java.util.List;
 			for (State state : states) {
 				String name = state.getName();
 				if ((name == null) || (name.contentEquals(""))) {
-					type_error = IS_EMPTY_NAME;
+                    this.typeError = TypeError.IS_EMPTY_NAME;
 					return false;
 				} else if (!variable.chekNewStateName(name)) {
-					type_error = IS_NAME_ALREADY_EXIST;
+                    this.typeError = TypeError.IS_NAME_ALREADY_EXIST;
 					return false;
 				}
 			}
@@ -96,15 +95,10 @@ import java.util.List;
 	}
 
 	@Override protected String constraintDescription() {
-		switch (type_error) {
-		case IS_EMPTY_NAME:
-			return OpenMarkovExceptionConstants.InvalidStateNameEmptyException;
-		case IS_NAME_ALREADY_EXIST:
-			return OpenMarkovExceptionConstants.InvalidStateNameDuplicatedException;
-		default:
-			return OpenMarkovExceptionConstants.GenericException;
-
-		}
+        return switch (this.typeError) {
+            case IS_EMPTY_NAME -> "InvalidStateNameEmptyException";
+            case IS_NAME_ALREADY_EXIST -> "InvalidStateNameDuplicatedException";
+        };
 	}
 
 }

@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.treeADD;
 
+import net.sourceforge.jeval.EvaluationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -108,7 +109,7 @@ public class TreeADDTableProjectTest {
         treeADD = new TreeADDPotential(parentVariables, variableA, PotentialRole.CONDITIONAL_PROBABILITY, branches);
     }
     
-    @Test public void testTableProject() throws NonProjectablePotentialException {
+    @Test public void testTableProject() throws NumberFormatException, NonProjectablePotentialException {
         TablePotential tablePotential = treeADD.tableProject(null, null).get(0);
         List<Variable> variables = tablePotential.getVariables();
         Assertions.assertEquals(3, variables.size());

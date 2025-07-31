@@ -53,9 +53,9 @@ import java.util.ArrayList;
     // Methods
     @Override public void doEdit() throws DoEditException.CannotDoEditException {
         try {
-            //TODO: DoEditException is hiding InvalidNetworkTypeException
+            //TODO: DoEditException is hiding UnmetConstraints
             probNet.setNetworkType(newNetworkType);
-        } catch (InvalidNetworkTypeException e) {
+        } catch (InvalidNetworkTypeException.UnmetConstraints e) {
             throw DoEditException.of(e);
         }
         if (probNet.isMultiagent()) {
@@ -79,7 +79,7 @@ import java.util.ArrayList;
             if (!probNet.isMultiagent()) {
                 probNet.setAgents(null);
             }
-        } catch (org.openmarkov.core.exception.InvalidNetworkTypeException e) {
+        } catch (InvalidNetworkTypeException.UnmetConstraints e) {
             throw new UnreacheableException(e);
         }
     }

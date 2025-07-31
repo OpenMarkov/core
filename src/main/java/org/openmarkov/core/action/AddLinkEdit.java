@@ -23,7 +23,7 @@ import java.util.List;
  * Creates a directed or undirected link between two nodes associated to two
  * variables in a <code>ProbNet</code>
  */
-@SuppressWarnings("serial") public class AddLinkEdit extends BaseLinkEdit {
+public class AddLinkEdit extends BaseLinkEdit {
 
 	/**
 	 * Resulting link of addition or removal.
@@ -69,7 +69,6 @@ import java.util.List;
 		this(probNet, variable1, variable2, isDirected, true);
 	}
 
-	// Methods
 	@Override public void doEdit() {
 		probNet.addLink(node1, node2, isDirected);
 		this.link = probNet.getLink(node1, node2, isDirected);

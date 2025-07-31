@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author jrico
  */
-public interface AutoLocalizable extends Localizable {
+public interface ClassLocalizable extends Localizable {
     
     /**
      * Returns the key/path of the localization key in the Bundle file.

@@ -4,12 +4,12 @@ import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.localize.StringDatabase;
 
 /**
- * Adapts a Java's {@link Exception} to {@link OpenMarkovException2}.
+ * Adapts a Java's {@link Exception} to {@link OpenMarkovException}.
  * <p>
- * You might get a {@link LocalizedJavaException} using {@link OpenMarkovException2#of(Exception)} if said exception is
+ * You might get a {@link LocalizedJavaException} using {@link OpenMarkovException#of(Exception)} if said exception is
  * written in an Exception Bundle.
  */
-public final class LocalizedJavaException extends OpenMarkovException2 {
+public final class LocalizedJavaException extends OpenMarkovException {
     
     /**
      * The name of the class associated with this exception.
@@ -34,7 +34,7 @@ public final class LocalizedJavaException extends OpenMarkovException2 {
      * from the {@link StringDatabase#getUniqueInstance()}.
      *
      * @return the localized title as a string, this might be null if the {@link LocalizedJavaException} was constructed
-     * manually rather than using {@link OpenMarkovException2#of(Exception)}.
+     * manually rather than using {@link OpenMarkovException#of(Exception)}.
      */
     @Override protected @Nullable String getExceptionTitle() {
         return StringDatabase.getUniqueInstance().getNullableString(this.className + ".title");
@@ -46,7 +46,7 @@ public final class LocalizedJavaException extends OpenMarkovException2 {
      * from the {@link StringDatabase#getUniqueInstance()}.
      *
      * @return the localized message as a string, this might be null if the {@link LocalizedJavaException} was
-     * constructed manually rather than using {@link OpenMarkovException2#of(Exception)}.
+     * constructed manually rather than using {@link OpenMarkovException#of(Exception)}.
      */
     @Override protected @Nullable String getExceptionMessage() {
         return StringDatabase.getUniqueInstance().getNullableString(this.className + ".message");

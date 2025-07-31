@@ -7,8 +7,10 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import net.sourceforge.jeval.EvaluationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -417,9 +419,8 @@ import java.util.*;
 			try {
 				evidenceCase.addFinding(finding);
 				newPotential = tableProject(evidenceCase, null).get(0);
-			} catch (IncompatibleEvidenceException | NonProjectablePotentialException e) {
-				// Unreachable code
-				e.printStackTrace();
+			} catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther | NonProjectablePotentialException e) {
+				throw new UnreacheableException(e);
 			}
 		}
 		return newPotential;

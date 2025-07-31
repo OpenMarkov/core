@@ -12,7 +12,6 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.InvertLinkEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -91,9 +90,12 @@ public class DistinctLinksTest {
         InvertLinkEdit ilegalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vD, true);
         try {
             pNESupport.announceEdit(ilegalInvertLinkEdit);
-            ilegalInvertLinkEdit.doEdit();
+            fail();
         } catch (DoEditException.ConstraintViolated e) {
             // The constraint should have failed
+        }
+        try{
+            ilegalInvertLinkEdit.doEdit();
         } catch (DoEditException.CannotInvertLink e) {
             throw new UnreacheableException(e);
         }

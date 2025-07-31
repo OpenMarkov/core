@@ -104,11 +104,10 @@ import java.util.*;
                 try {
                     utilityAndChance.add(potential.getCPT()); //Utility
                     utilityAndChance.add(absorbedNode.getPotentials().get(0).getCPT()); //Chance
-
                 } catch (NonProjectablePotentialException e) {
                     throw DoEditException.of(e);
                 }
-
+                
                 /* Obtain parameters to invoke multiplyAndMarginalize */
                 // All variables from chance parent and utility child potentials
                 List<Variable> unionVariables = AuxiliaryOperations.getUnionVariables(utilityAndChance);
@@ -150,7 +149,7 @@ import java.util.*;
                 } catch (NonProjectablePotentialException e) {
                     throw DoEditException.of(e);
                 }
-
+                
                 // Discrete operation is valid because all parents are discrete
                 TablePotential maximizedPotential = (TablePotential) DiscretePotentialOperations.
                         maximize(utilityPotential, absorbedVariable)[0];
@@ -242,7 +241,7 @@ import java.util.*;
         } catch (NonProjectablePotentialException e) {
             throw DoEditException.of(e);
         }
-
+        
         // Sum the component potentials
         TablePotential sumPotential = DiscretePotentialOperations.sum(utilityChildrenPotentials);
         mergedUtility.setPotential(sumPotential); // Set the potential to the node

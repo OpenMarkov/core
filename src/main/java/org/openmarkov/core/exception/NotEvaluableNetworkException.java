@@ -7,21 +7,40 @@
 
 package org.openmarkov.core.exception;
 
-public class NotEvaluableNetworkException extends OpenMarkovException {
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.PNConstraint;
+import org.openmarkov.core.model.network.type.NetworkType;
 
-	private static final long serialVersionUID = -6555375975623328551L;
+import java.util.List;
 
-	// Constructor
-
-	/**
-	 * @param e {@code Exception}
-	 */
-	public NotEvaluableNetworkException(Exception e) {
-		super(e.getMessage());
-	}
-
-	public NotEvaluableNetworkException(String message) {
-		super(message);
-	}
-
+public abstract sealed class NotEvaluableNetworkException extends BundledOpenMarkovException {
+	
+	public static final class NotApplicableNetwork extends NotEvaluableNetworkException {
+		public NotApplicableNetwork(ProbNet probNet, List<NetworkType> possibleNetworkTypes) {
+            this.probNet = probNet;
+            this.possibleNetworkTypes = possibleNetworkTypes;
+        }
+        
+        public final ProbNet probNet;
+        public final List<NetworkType> possibleNetworkTypes;
+    }
+	
+	public static final class UnsatisfiedContraints extends NotEvaluableNetworkException {
+		public UnsatisfiedContraints(ProbNet probNet, List<PNConstraint> unsatisfiedConstraints) {
+            this.probNet = probNet;
+            this.unsatisfiedConstraints = unsatisfiedConstraints;
+        }
+        
+        public final ProbNet probNet;
+        public final List<PNConstraint> unsatisfiedConstraints;
+    }
+	
+	public static final class VariableIsNotTemporal extends NotEvaluableNetworkException {
+		public VariableIsNotTemporal(Variable variable) {
+            this.variable = variable;
+        }
+        
+        public final Variable variable;
+    }
 }

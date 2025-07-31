@@ -38,7 +38,7 @@ public abstract class InferencePropagationTaskIDTest extends InferencePropagatio
     @Disabled("Old tests with an AssertionError")
     @Test public void testPosteriorProbsAndUtilsIDDecisionTestProblem()
             throws
-            NotEvaluableNetworkException, IncompatibleEvidenceException {
+            NonProjectablePotentialException, NotEvaluableNetworkException, IncompatibleEvidenceException, CannotNormalizeNullVectorException {
         ProbNet network = buildIDDecideTest();
         
         List<Variable> variablesOfInterest = Arrays
@@ -109,7 +109,7 @@ public abstract class InferencePropagationTaskIDTest extends InferencePropagatio
     
     protected void checkPosteriorProbsAndUtilitiesEvidenceIDDecideTest(Propagation algorithm, ProbNet diagram, double t,
                                                                        double y1, double y2, double d, double x, double uHealthState, double uCostOfTherapy, double uCostOfTest)
-            throws NotEvaluableNetworkException, IncompatibleEvidenceException {
+            throws NonProjectablePotentialException, NotEvaluableNetworkException, IncompatibleEvidenceException, CannotNormalizeNullVectorException {
         
         Variable variableT = diagram.getVariable(decTestName);
         Variable variableD = diagram.getVariable(therapyName);

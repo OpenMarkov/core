@@ -78,7 +78,7 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-			Map<String, String> variableValues) throws NonProjectablePotentialException {
+			Map<String, String> variableValues) throws NonProjectablePotentialException.MissingEvidenceInVariable, NonProjectablePotentialException.CannotEvaluate {
 		double[] weibullCoeficients = new double[coefficients.length + 1];
 		String[] weibullCovariates = new String[covariates.length + 1];
 		// The exponential is a special case of Weibull where k=1 (gamma= ln(k));

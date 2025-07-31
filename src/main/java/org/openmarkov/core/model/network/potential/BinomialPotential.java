@@ -94,15 +94,15 @@ public class BinomialPotential extends Potential {
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			List<TablePotential> alreadyProjectedPotentials)
-			throws NonProjectablePotentialException {
-		throw new NonProjectablePotentialException("Cannot convert numeric variable to a table");
+            throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
+		throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
 	}
 
 	protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-			Map<String, String> variableValues) throws NonProjectablePotentialException {
+			Map<String, String> variableValues) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
 
-		throw new NonProjectablePotentialException("Cannot convert numeric variable to a table");
+		throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
 
 	}
 

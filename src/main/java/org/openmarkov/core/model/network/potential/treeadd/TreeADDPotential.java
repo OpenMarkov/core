@@ -351,9 +351,7 @@ public class TreeADDPotential extends Potential {
 			// if there is no evidence for the numerical topVariable it is not
 			// possible to project the tree
 			if (evidenceCase == null || evidenceCase.getFinding(topVariable) == null) {
-				throw new NonProjectablePotentialException(
-						"It is not possible to project this tree " + this.toShortString() + " because top variable "
-								+ topVariable.getName() + " is numeric and has no evidence");
+				throw new NonProjectablePotentialException.MissingEvidenceInVariable(this, topVariable);
 			}
 			double topVariableValue = evidenceCase.getFinding(topVariable).getNumericalValue();
 			List<TreeADDBranch> numericalBranches = getBranches();
@@ -385,8 +383,7 @@ public class TreeADDPotential extends Potential {
 			// if potential still null that means finding was not within the
 			// numerical variable domain so
 			if (potential == null) {
-				throw new NonProjectablePotentialException("It is not possible to project this tree, "
-						+ "top variable value was not within the topVariable domain");
+				throw new NonProjectablePotentialException.TopVariableNotInDomain(this, numericalBranches);
 			}
 			projected = potential.tableProject(evidenceCase, inferenceOptions).get(0);
 		}

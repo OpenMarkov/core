@@ -68,8 +68,8 @@ import java.util.List;
     
     // Methods
     @Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                       List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
-        throw new NonProjectablePotentialException("SameAsPrevious potentials cannot be projected");
+                                                       List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
+        throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }
     
     public Potential getOriginalPotential(ProbNet probNet) {

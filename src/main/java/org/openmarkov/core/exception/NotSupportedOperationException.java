@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author jrico
  */
-public final class NotSupportedOperationException extends OpenMarkovException2 {
+public final class NotSupportedOperationException extends OpenMarkovException {
     
     private final StackTraceElement operation;
     private final @Nullable String reason;

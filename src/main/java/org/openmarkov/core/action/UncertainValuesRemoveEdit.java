@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.action;
 
+import net.sourceforge.jeval.EvaluationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -58,7 +59,6 @@ import java.util.List;
 		try {
 			auxProjected = potential.tableProject(configuration, null).get(0);
 		} catch (NonProjectablePotentialException e) {
-
 			e.printStackTrace();
 		}
 

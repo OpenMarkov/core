@@ -8,15 +8,168 @@
 package org.openmarkov.core.exception;
 
 
-@SuppressWarnings("serial") public class ParserException extends OpenMarkovException {
+import org.jdom2.JDOMException;
+import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.model.network.potential.TablePotential;
 
-	// Constructor
+import java.util.ArrayList;
+import java.util.HashMap;
 
-	/**
-	 * @param message message
-	 */
-	public ParserException(String message) {
-		super(message);
-	}
-
+@SuppressWarnings("NonFinalFieldOfException")
+public abstract class ParserException extends BundledOpenMarkovException {
+    
+    private @Nullable String filename;
+    private @Nullable int lineNumber;
+    
+    public @Nullable String getFilename() {
+        return filename;
+    }
+    
+    public void setFilename(@Nullable String filename) {
+        this.filename = filename;
+    }
+    
+    public int getLineNumber() {
+        return lineNumber;
+    }
+    
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+    
+    @Override protected @Nullable String getExceptionMessage() {
+        String exceptionMessage = super.getExceptionMessage();
+        if (filename != null) {
+            exceptionMessage += " in file " + filename + " at line nº " + lineNumber;
+        }
+        return exceptionMessage;
+    }
+    
+    public static final class MissingPotential extends ParserException {
+        public MissingPotential(String potential) {
+            this.potential = potential;
+        }
+        
+        public final String potential;
+    }
+    
+    public static final class CannotReadConstraint extends ParserException {
+    }
+    
+    public static final class ProbabilisticNetworkTypeMissing extends ParserException { }
+    
+    public static final class ProbabilisticNetworkTypeNotRecognized extends ParserException {
+        public ProbabilisticNetworkTypeNotRecognized(String networkType) {
+            this.networkType = networkType;
+        }
+        
+        public final String networkType;
+    }
+    
+    public static final class WrongNumberOfStates extends ParserException {
+        public WrongNumberOfStates(String variableName, int expectedLength, int actualLength) {
+            this.variableName = variableName;
+            this.expectedLength = expectedLength;
+            this.actualLength = actualLength;
+        }
+        
+        public final String variableName;
+        public final int expectedLength;
+        public final int actualLength;
+    }
+    
+    public static final class MissingPropertiesOfContiousVariable extends ParserException {
+        public MissingPropertiesOfContiousVariable(String variableName, ArrayList<String> missingProperties) {
+            this.variableName = variableName;
+            this.missingProperties = missingProperties;
+        }
+        
+        public final String variableName;
+        public final ArrayList<String> missingProperties;
+    }
+    
+    public static final class MissingVariable extends ParserException {
+        public MissingVariable(String variableName) {
+            this.variableName = variableName;
+        }
+        
+        public final String variableName;
+    }
+    
+    public static final class SomeSubpotentialsArentLinkedToAnICIPotential extends ParserException {
+        public SomeSubpotentialsArentLinkedToAnICIPotential(HashMap<String, TablePotential> subPotentials) {
+            this.subPotentials = subPotentials;
+        }
+        
+        public final HashMap<String, TablePotential> subPotentials;
+    }
+    
+    public static final class MissingToken extends ParserException {
+        public MissingToken(String token) {
+            this.token = token;
+        }
+        
+        public final String token;
+    }
+    
+    public static final class MismatchedToken extends ParserException {
+        public MismatchedToken(int expected, int found) {
+            this.expected = expected + "";
+            this.found = found + "";
+        }
+        
+        public MismatchedToken(String expected, String found) {
+            this.expected = expected;
+            this.found = found;
+        }
+        
+        public final String expected;
+        public final String found;
+    }
+    
+    public static final class MissingProbabilisticNetworkInformation extends ParserException {
+    }
+    
+    public static final class PGMXInvalid extends ParserException {
+        public PGMXInvalid(String message) {
+            this.message = message;
+        }
+        
+        public final String message;
+    }
+    
+    public static final class XMLInvalid extends ParserException {
+        public XMLInvalid(String netName, JDOMException originException) {
+            this.netName = netName;
+            this.originException = originException;
+        }
+        
+        public final String netName;
+        public final JDOMException originException;
+    }
+    
+    public static final class CannotOpenFile extends ParserException {
+        public CannotOpenFile(String filename) {
+            this.filename = filename;
+        }
+        
+        public final String filename;
+    }
+    
+    public static final class MoreThanOneInputOpened extends ParserException {
+        public MoreThanOneInputOpened(int amountOfInputsRequested) {
+            this.amountOfInputsRequested = amountOfInputsRequested;
+        }
+        
+        public final int amountOfInputsRequested;
+    }
+    
+    public static final class WrongVersion extends ParserException {
+        public WrongVersion(String version) {
+            this.version = version;
+        }
+        
+        public final String version;
+    }
+    
 }

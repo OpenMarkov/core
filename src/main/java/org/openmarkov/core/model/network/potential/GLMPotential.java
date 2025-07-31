@@ -202,8 +202,7 @@ public abstract class GLMPotential extends Potential {
 			Variable variable = variables.get(i);
 			if (evidenceCase == null || !evidenceCase.contains(variable)) {
 				if (variable.getVariableType() == VariableType.NUMERIC) {
-					throw new NonProjectablePotentialException(
-							"Can not project potential with numeric variable " + variable.getName());
+					throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATableDueToVariable(this, variable);
 				}
 				evidencelessVariables.add(variable);
 				variableValues.put("v" + i, "0.0");

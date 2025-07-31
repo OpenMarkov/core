@@ -8,6 +8,7 @@
 package org.openmarkov.core.inference.tasks;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.potential.StrategyTree;
@@ -20,10 +21,8 @@ public interface OptimalIntervention extends Task {
 
 	/**
 	 * @return The optimal intervention
-	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
-	 * @throws UnexpectedInferenceException UnexpectedInferenceException
-	 */
+     */
 	StrategyTree getOptimalIntervention()
-			throws IncompatibleEvidenceException, UnexpectedInferenceException;
+			throws NonProjectablePotentialException;
 
 }

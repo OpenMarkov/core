@@ -7,13 +7,11 @@
 
 package org.openmarkov.core.exception;
 
-import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.core.model.network.Variable;
 
 import java.util.List;
 
-@SuppressWarnings("serial") public class CannotNormalizeNullVectorException extends AutoOpenMarkovException2 {
+public class CannotNormalizeNullVectorException extends BundledOpenMarkovException {
 	
 	private final List<Variable> variables;
 	

@@ -8,6 +8,7 @@
 package org.openmarkov.core.inference.tasks;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.potential.StrategyTree;
@@ -21,27 +22,21 @@ public interface Evaluation extends Task {
 
 	/**
 	 * @return The global expected utility
-	 * @throws UnexpectedInferenceException UnexpectedInferenceException
-	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
 	TablePotential getProbability()
-			throws IncompatibleEvidenceException, UnexpectedInferenceException;
+			throws NonProjectablePotentialException;
 
 	/**
 	 * @return The global expected utility
 	 * defined over the conditioning variables.
-	 * @throws UnexpectedInferenceException UnexpectedInferenceException
-	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
 	TablePotential getUtility()
-			throws UnexpectedInferenceException, IncompatibleEvidenceException;
+			throws NonProjectablePotentialException;
 
 	/**
 	 * @return The optimal strategy tree
-	 * @throws UnexpectedInferenceException UnexpectedInferenceException
-	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
 	StrategyTree getOptimalStrategyTree()
-			throws UnexpectedInferenceException, IncompatibleEvidenceException;
+			throws NonProjectablePotentialException;
 
 }

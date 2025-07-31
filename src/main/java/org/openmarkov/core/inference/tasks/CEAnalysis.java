@@ -8,6 +8,7 @@
 package org.openmarkov.core.inference.tasks;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.CEP;
@@ -21,12 +22,12 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 public interface CEAnalysis extends Task {
 
 	GTablePotential getUtility()
-			throws UnexpectedInferenceException, IncompatibleEvidenceException;
+			throws NonProjectablePotentialException;
 
 	TablePotential getProbability()
-			throws UnexpectedInferenceException, IncompatibleEvidenceException;
+			throws NonProjectablePotentialException;
 
 	void setDecisionVariable(Variable decisionVariable);
 
-	CEP getCEP() throws IncompatibleEvidenceException, UnexpectedInferenceException;
+	CEP getCEP() throws NonProjectablePotentialException;
 }

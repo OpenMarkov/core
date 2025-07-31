@@ -33,7 +33,7 @@ public class AddFindingEdit extends SimplePNEdit {
         try {
             evidenceCase.addFinding(finding);
             listener.onNodeValueChanged();
-        } catch (IncompatibleEvidenceException e) {
+        } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
             throw DoEditException.of(e);
         }
     }
@@ -48,17 +48,13 @@ public class AddFindingEdit extends SimplePNEdit {
     public void undo() {
         super.undo();
         if (previousFinding == null) {
-            try {
-                evidenceCase.removeFinding(finding.getVariable());
-                listener.removeFinding();
-            } catch (NoFindingException e) {
-                throw new UnreacheableException(e);
-            }
+            evidenceCase.removeFinding(finding.getVariable());
+            listener.removeFinding();
         } else {
             try {
                 evidenceCase.removeFinding(finding.getVariable());
                 evidenceCase.addFinding(previousFinding);
-            } catch (IncompatibleEvidenceException | NoFindingException e) {
+            } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
                 throw new UnreacheableException(e);
             }
         }

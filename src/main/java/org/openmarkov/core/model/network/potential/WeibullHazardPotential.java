@@ -102,7 +102,7 @@ import java.util.Map;
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-			Map<String, String> variableValues) throws NonProjectablePotentialException {
+			Map<String, String> variableValues) throws NonProjectablePotentialException.MissingEvidenceInVariable, NonProjectablePotentialException.CannotEvaluate {
 		Variable conditionedVariable = getConditionedVariable();
 		// Fill arrays numericValues and evidencelessVariables
 
@@ -138,8 +138,8 @@ import java.util.Map;
 			double t = (conditionedVariable.getTimeSlice() >= 0) ? conditionedVariable.getTimeSlice() : 1;
 			if (timeVariable != null) {
 				if (!evidenceCase.contains(timeVariable)) {
-					throw new NonProjectablePotentialException(
-							"Can not project potential without evidence on timeVariable " + timeVariable.getName());
+					throw new NonProjectablePotentialException.MissingEvidenceInVariable(this, timeVariable);
+					
 				}
 				double timeDifference = conditionedVariable.getTimeSlice() - timeVariable.getTimeSlice();
 				t = evidenceCase.getFinding(timeVariable).getNumericalValue() + timeDifference;
@@ -170,12 +170,12 @@ import java.util.Map;
 				for (int j = 0; j < coefficients.length; ++j) {
 					double covariateValue = 0.0;
 					if (j != gammaIndex && j != constantIndex) {
-						try {
-							covariateValue = Double.parseDouble(evaluator.evaluate(covariates[j]));
-						} catch (NumberFormatException | EvaluationException e) {
-							throw new NonProjectablePotentialException(e.getMessage());
-						}
-						lambda += covariateValue * coefficients[j];
+                        try {
+                            covariateValue = Double.parseDouble(evaluator.evaluate(covariates[j]));
+							lambda += covariateValue * coefficients[j];
+                        } catch (EvaluationException e) {
+                            throw new NonProjectablePotentialException.CannotEvaluate(covariates[j], e);
+                        }
 					}
 				}
 				if (log) {

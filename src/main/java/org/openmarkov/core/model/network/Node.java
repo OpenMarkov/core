@@ -747,4 +747,19 @@ public class Node {
 		return newNode;
 	}
 
+	public Potential getPotential(){
+		return getPotentials().get(0);
+	}
+
+	public Potential getPreviousPotential(){
+		int x = getPotentials().size() - 1;
+		return getPotentials().get(x);
+	}
+
+	public void finalizePotentialEdition(){
+		List<Potential> potentials = new ArrayList<>();
+		potentials.add(getPotential());
+		setPotentials(potentials);
+	}
+
 }

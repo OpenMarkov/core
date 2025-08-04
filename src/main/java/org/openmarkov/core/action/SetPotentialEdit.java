@@ -70,6 +70,17 @@ import java.util.List;
 		this.newPotentialType = newPotential.getClass().getAnnotation(PotentialType.class).name();
 	}
 
+	public SetPotentialEdit(Node node, Potential lastPotential, Potential newPotential){
+		super(node.getProbNet());
+		this.node = node;
+		this.variable = node.getVariable();
+		this.lastPotential = lastPotential;
+
+
+		this.newPotential = newPotential;
+		this.newPotentialType = newPotential.getClass().getAnnotation(PotentialType.class).name();
+	}
+
 	public SetPotentialEdit(Node node, String newPotentialType, Potential lastPotential,Boolean hasPolicy, VisualDecisionNodePolicyChangeListener listener) {
 		super(node.getProbNet());
 		this.node = node;
@@ -79,6 +90,17 @@ import java.util.List;
 		this.hasPolicy = hasPolicy;
 
 		this.newPotentialType = newPotentialType;
+
+	}
+	public SetPotentialEdit(Node node, Potential lastPotential, Potential newPotential,Boolean hasPolicy, VisualDecisionNodePolicyChangeListener listener) {
+		super(node.getProbNet());
+		this.node = node;
+		this.variable = node.getVariable();
+		this.lastPotential = lastPotential;
+		this.listener = listener;
+		this.hasPolicy = hasPolicy;
+
+		this.newPotential = newPotential;
 
 	}
 
@@ -125,18 +147,46 @@ import java.util.List;
 		}
 
 
-
 		potentials.add(newPotential);
+		potentials.add(lastPotential);
 		//probNet.getNode(variable).setPotentials(potentials);
 		node.setPotentials(potentials);
 		// update potential with link restriction
 		if (newPotential instanceof TablePotential && node.getNodeType() != NodeType.DECISION) {
 			newPotential = LinkRestrictionPotentialOperations.updatePotentialByLinkRestrictions(node);
 			potentials = new ArrayList<>();
+			potentials.add(lastPotential);
 			potentials.add(newPotential);
 			node.setPotentials(potentials);
 			//probNet.getNode(variable).setPotentials(potentials);
 		}
+	}
+	public void setInitialChange(){
+		List<Variable> variables;
+		PotentialRole role;
+		variables = lastPotential.getVariables();
+		role = lastPotential.getPotentialRole();
+
+		List<Potential> potentials = new ArrayList<>();
+		if (newPotential == null) {
+			PotentialManager relationTypeManager = new PotentialManager();
+
+			if (newPotentialType.equals(PotentialManager.getPotentialName(CycleLengthShift.class))) {
+				newPotential = relationTypeManager
+						.getByName(newPotentialType, variables, role, probNet.getCycleLength());
+			} else {
+				newPotential = relationTypeManager.getByName(newPotentialType, variables, role);
+			}
+		}
+
+		if (!(node.getNodeType() == NodeType.DECISION && node.getPolicyType() == PolicyType.OPTIMAL)) {
+			node.setPolicyType(PolicyType.PROBABILISTIC);
+		}
+
+
+		potentials.add(newPotential);
+		node.setPotentials(potentials);
+
 	}
 
 	@Override public void undo() {
@@ -151,6 +201,8 @@ import java.util.List;
 				}else {
 					listener.removePolicy();
 				}
+			}else{
+				potentials.add(lastPotential);
 			}
 
 		} else if (node.getNodeType() == NodeType.DECISION) {
@@ -163,7 +215,10 @@ import java.util.List;
 	@Override
 	public void redo() {
 		super.redo();
-
+		Node node = probNet.getNode(variable);
+		List<Potential> potentials = new ArrayList<>();
+		potentials.add(newPotential);
+		node.setPotentials(potentials);
 	}
 
 	public Potential getNewPotential() {

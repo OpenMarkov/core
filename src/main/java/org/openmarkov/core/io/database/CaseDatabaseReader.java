@@ -7,8 +7,11 @@
 
 package org.openmarkov.core.io.database;
 
+import org.openmarkov.core.exception.EmptyDatabaseException;
+import org.openmarkov.core.exception.ParsingSourceException;
+
 import java.io.IOException;
 
 public interface CaseDatabaseReader {
-	CaseDatabase load(String filename) throws IOException;
+	CaseDatabase load(String filename) throws IOException, ParsingSourceException, EmptyDatabaseException;
 }

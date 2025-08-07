@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network.potential;
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -57,6 +58,11 @@ import java.util.Map;
         return role == PotentialRole.UNSPECIFIED || (
                 !variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC
         );
+    }
+    
+    @Override
+    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+        throw new NotSupportedOperationException();
     }
     
     @Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,

@@ -9,6 +9,8 @@ package org.openmarkov.core.model.network;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.openmarkov.core.exception.IntervalsAreNotEvenException;
+import org.openmarkov.core.exception.IntervalsAreNotMultipleOf3Exception;
 import org.openmarkov.core.inference.MulticriteriaOptions.Type;
 import org.openmarkov.core.model.network.Criterion.CECriterion;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
@@ -151,7 +153,7 @@ public class UtilityOperationsTest {
         
     }
     
-    @Test public void applyRiemannSumAndTrapezoidalRuleTest() throws Exception {
+    @Test public void applyRiemannSumAndTrapezoidalRuleTest() throws IntervalsAreNotEvenException {
         Random r = new Random();
         double[] values = new double[]{r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble(), r.nextDouble(),
                 r.nextDouble(), r.nextDouble()};
@@ -167,7 +169,7 @@ public class UtilityOperationsTest {
      * Test passed with other calculators: f(x) = (1/18)(x+5)(x+1)(x-4); a = 0; b = 54; n = 54.
      * Web for Riemann's Summs, Trapezoidal Rule and Simpson's One Third Rule: https://www.desmos.com/calculator/gdn6ldu1mw
      * Web for Simpson's Rules (both): http://www.atozmath.com/CONM/NumeInte.aspx
-     */ public void applyRiemannsTrapezoidalAndSimpsonsRulesTest() throws Exception {
+     */ public void applyRiemannsTrapezoidalAndSimpsonsRulesTest() throws IntervalsAreNotEvenException, IntervalsAreNotMultipleOf3Exception {
         double delta = Math.pow(10, -6);
         int numberOfCycles = 54;
         int numberOfSubintervalsPerCycle = 1;

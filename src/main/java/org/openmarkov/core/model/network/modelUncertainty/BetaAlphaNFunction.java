@@ -7,6 +7,11 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import org.openmarkov.core.exception.InvalidArgumentException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
+
+import java.util.List;
+
 @ProbDensFunctionType(name = "BetaAlphaNFunction", univariateName = "Beta", isValidForProbabilities = false, isValidForNumeric = false, parameters = {
 		"alpha", "N" }) public class BetaAlphaNFunction extends BetaFunction {
 	private double alpha;
@@ -22,7 +27,8 @@ package org.openmarkov.core.model.network.modelUncertainty;
 		super(alpha, n - alpha);
 		this.alpha = alpha;
 		this.setN(n);
-		verifyParameters(new double[] { 1, 2 });
+		//TODO: Was this line below inteded?
+		//verifyParameters(new double[] { 1, 2 });
 	}
 
 	public BetaAlphaNFunction(BetaAlphaNFunction betaFunction) {
@@ -32,9 +38,9 @@ package org.openmarkov.core.model.network.modelUncertainty;
 	/**
 	 *
 	 */
-	@Override public void verifyParameters(double[] parameters) throws IllegalArgumentException {
+	@Override public void verifyParameters(double[] parameters) throws InvalidArgumentException {
 		if ((parameters[0] > 0) && (parameters[1] > 0) && (parameters[1] > parameters[0])) {
-			throw new IllegalArgumentException("N should be greater than alpha " + this.getClass().getName());
+			throw new InvalidArgumentException(List.of(parameters[0], parameters[1]), "N", "N should be greater than alpha " + this.getClass().getName());
 		}
 	}
 

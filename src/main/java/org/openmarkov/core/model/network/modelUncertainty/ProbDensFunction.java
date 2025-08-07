@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import org.openmarkov.core.exception.InvalidArgumentException;
+
 import java.util.Random;
 
 public abstract class ProbDensFunction {
@@ -15,8 +17,8 @@ public abstract class ProbDensFunction {
 	public abstract void setParameters(double[] args);
 
 	//For Univariate
-	public void verifyParameters(double[] parameters) throws IllegalArgumentException {
-		throw new IllegalArgumentException("verifyParameters not implemented in " + this.getClass().getName());
+	public void verifyParameters(double[] parameters) throws InvalidArgumentException {
+		throw new InvalidArgumentException(parameters, "parameters", "verifyParameters is not implemented in " + this.getClass().getName());
 	}
 
 	public abstract boolean verifyParametersDomain(boolean isChanceVariable);

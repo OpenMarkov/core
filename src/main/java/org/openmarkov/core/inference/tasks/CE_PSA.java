@@ -7,10 +7,7 @@
 
 package org.openmarkov.core.inference.tasks;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 
@@ -22,7 +19,7 @@ import java.util.Collection;
 public interface CE_PSA extends Task {
 
 	Collection<GTablePotential> getCEPPotentials()
-			throws NonProjectablePotentialException, NotEvaluableNetworkException, IncompatibleEvidenceException;
+			throws NonProjectablePotentialException, NotEvaluableNetworkException, IncompatibleEvidenceException, NotSupportedOperationException;
 
 	void setDecisionVariable(Variable decisionSelected);
 }

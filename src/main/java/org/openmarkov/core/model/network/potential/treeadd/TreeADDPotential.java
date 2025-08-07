@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.potential.treeadd;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -401,8 +402,13 @@ public class TreeADDPotential extends Potential {
 
 		return Arrays.asList(projected);
 	}
-
-	/**
+    
+    @Override
+    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+        throw new NotSupportedOperationException();
+    }
+    
+    /**
 	 * Eliminates the nodes whose variable name is equal to the parameter 'variableName'
 	 * and grafts the daughter branches of that node in the parent node.
 	 * The variable must have only one child.
@@ -471,7 +477,7 @@ public class TreeADDPotential extends Potential {
 		return new TreeADDPotential(this);
 	}
 
-	@Override public boolean isUncertain() {
+	@Override public boolean isUncertain() throws NotSupportedOperationException {
 		// If at least one of the leaf potentials has uncertainty then returns
 		// true
 		boolean hasUncertainty = false;
@@ -487,7 +493,7 @@ public class TreeADDPotential extends Potential {
 	/**
 	 * Generates a sampled potential
 	 */
-	@Override public Potential sample() {
+	@Override public Potential sample() throws NotSupportedOperationException {
 		TreeADDPotential sampledTree = (TreeADDPotential) this.copy();
 		for (TreeADDBranch branch : sampledTree.getBranches()) {
 			branch.setPotential(branch.getPotential().sample());
@@ -763,7 +769,7 @@ public class TreeADDPotential extends Potential {
 		}
 	}
 
-	@Override public void scalePotential(double scale) {
+	@Override public void scalePotential(double scale) throws NotSupportedOperationException {
 		// Scale all the potentials of the branches
 		for (TreeADDBranch branch : branches) {
 			branch.getPotential().scalePotential(scale);

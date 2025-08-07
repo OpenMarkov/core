@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -113,8 +114,13 @@ import java.util.List;
 		}
 		return Collections.singletonList(projectedPotential);
 	}
-
-	@Override public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
+    
+    @Override
+    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+        throw new NotSupportedOperationException();
+    }
+    
+    @Override public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
 		Variable conditionedVariable = getConditionedVariable();
 		Variable conditioningVariable = variables.get((conditionedVariable == variables.get(0)) ? 1 : 0);
 		List<Finding> inducedFindings = new ArrayList<>();
@@ -145,9 +151,8 @@ import java.util.List;
 		return super.toString() + " = CycleLengthShift";
 	}
 
-	@Override public void scalePotential(double scale) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
-
+	@Override public void scalePotential(double scale) throws NotSupportedOperationException {
+		throw new NotSupportedOperationException();
 	}
 
 	@Override public Potential deepCopy(ProbNet copyNet) {

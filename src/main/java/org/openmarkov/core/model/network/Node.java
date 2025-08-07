@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network;
 import net.sourceforge.jeval.EvaluationException;
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -515,7 +516,7 @@ public class Node {
 		return nodeType == NodeType.DECISION && potentials.size() != 0;
 	}
 
-	public void samplePotentials() {
+	public void samplePotentials() throws NotSupportedOperationException {
 		for (int i = 0; i < potentials.size(); i++) {
 			Potential originalPotential = potentials.get(i);
 			potentials.set(i, originalPotential.sample());

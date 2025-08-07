@@ -7,11 +7,9 @@
 
 package org.openmarkov.core.model.network.potential.canonical;
 
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -66,8 +64,13 @@ import java.util.List;
 		}
 		return valid;
 	}
-
-	/**
+    
+    @Override
+    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+        throw new NotSupportedOperationException();
+    }
+    
+    /**
 	 * @return A {@code TablePotential} with two variables: {@code conditionedVariable} and {@code pseudoVariable}.
 	 */
 	@Override
@@ -232,9 +235,8 @@ import java.util.List;
 		return tablePotential;
 	}
 
-	@Override public void scalePotential(double scale) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
-
+	@Override public void scalePotential(double scale) throws NotSupportedOperationException {
+		throw new NotSupportedOperationException();
 	}
 
 	@Override public Potential deepCopy(ProbNet copyNet) {

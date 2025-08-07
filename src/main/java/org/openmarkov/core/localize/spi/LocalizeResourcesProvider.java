@@ -3,6 +3,7 @@ package org.openmarkov.core.localize.spi;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.localize.*;
 import org.openmarkov.core.stringformat.LocalizationFormatter;
 import org.xml.sax.Attributes;
@@ -91,8 +92,8 @@ public interface LocalizeResourcesProvider extends ResourceBundleProvider {
         File localizationFile;
         try {
             localizationFile = new File(bundleFile.toURI());
-        } catch (URISyntaxException ioException) {
-            throw new IllegalStateException("Sorcery happened, localization file " + bundleFile + " could not be located due to:" + System.lineSeparator() + ioException);
+        } catch (URISyntaxException e) {
+            throw new UnreacheableException("Localization file " + bundleFile + " could not be located.", e);
         }
         if (localizationFile.isFile()) {
             addBundleSource.accept(new BundleSource.FileSource(localizationFile));
@@ -102,8 +103,7 @@ public interface LocalizeResourcesProvider extends ResourceBundleProvider {
                      .map(file -> (BundleSource) new BundleSource.FileSource(file.toFile()))
                      .forEach(addBundleSource);
             } catch (IOException ioException) {
-                throw new IllegalStateException("Sorcery happened, localization file " + bundleFile
-                                                        + " could not be accesed, while it was previously used, this is due to:" + System.lineSeparator() + ioException);
+                throw new UnreacheableException("Localization file " + bundleFile + " could not be accesed, while it was previously used.", ioException);
             }
         }
     }
@@ -125,8 +125,7 @@ public interface LocalizeResourcesProvider extends ResourceBundleProvider {
                        .map(entry -> new BundleSource.JarSource(jarFile, entry))
                        .forEach(addBundleSource);
         } catch (IOException ioException) {
-            throw new IllegalStateException("Sorcery happened, localization file in jar " + bundleFile
-                                                    + " could not be located due to:" + System.lineSeparator() + ioException);
+            throw new UnreacheableException("Localization file in jar " + bundleFile + " could not be located.", ioException);
         }
     }
     

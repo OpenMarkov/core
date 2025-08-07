@@ -29,7 +29,6 @@ public class AugmentedTable extends TablePotential {
 
 	/*Note should be discrete variables*/
 	public AugmentedTable(List<Variable> stateVariables, PotentialRole role) {
-
 		super(stateVariables, role);
 		int numVariables = (stateVariables != null) ? stateVariables.size() : 0;
 		if (numVariables != 0) {
@@ -52,7 +51,6 @@ public class AugmentedTable extends TablePotential {
 				for (int i = 0; i < tableSize; i += increment) {
 					functionValues[i] = DEFAULT_FUNCTION;
 				}
-
 			} catch (NegativeArraySizeException e) {
 				throw new OutOfMemoryError();
 			}

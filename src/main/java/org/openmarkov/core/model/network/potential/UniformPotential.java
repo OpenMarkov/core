@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -143,8 +144,13 @@ import java.util.Random;
 		} // end of switch/case statement
 		return newProjectedPotentials;
 	}
-	
-	private TablePotential createUniformTablePotential(EvidenceCase evidenceCase, List<Variable> vars) {
+    
+    @Override
+    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+        throw new NotSupportedOperationException();
+    }
+    
+    private TablePotential createUniformTablePotential(EvidenceCase evidenceCase, List<Variable> vars) {
 		List<Variable> potentialVariables = new ArrayList<>(vars);
 		// the conditioned variable does not make part of the evidence
 		if (evidenceCase != null) {

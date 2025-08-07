@@ -8,7 +8,9 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -72,12 +74,17 @@ import java.util.List;
         throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }
     
+    @Override
+    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+        throw new NotSupportedOperationException();
+    }
+    
     public Potential getOriginalPotential(ProbNet probNet) {
         return getOriginalPotential(probNet, getConditionedVariable());
     }
     
-    @Override public Potential sample() {
-        throw new IllegalArgumentException("SameAsPrevious potentials cannot be sampled.");
+    @Override public Potential sample() throws NotSupportedOperationException {
+        throw new NotSupportedOperationException("SameAsPrevious potentials cannot be sampled.");
     }
     
     private @Nullable Potential getOriginalPotential(ProbNet probNet, Variable variable) {
@@ -112,8 +119,8 @@ import java.util.List;
         super.replaceNumericVariable(convertedParentVariable);
     }
     
-    @Override public boolean isUncertain() {
-        throw new IllegalArgumentException("There is no way to know whether SameAsPrevious potentials are uncertain");
+    @Override public boolean isUncertain() throws NotSupportedOperationException {
+        throw new NotSupportedOperationException("There is no way to know whether SameAsPrevious potentials are uncertain");
     }
     
     @Override public void scalePotential(double scale) {

@@ -8,7 +8,9 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.apache.commons.math3.distribution.BetaDistribution;
+import org.openmarkov.core.exception.InvalidArgumentException;
 
+import java.util.List;
 import java.util.Random;
 
 @ProbDensFunctionType(name = "Beta", parameters = { "alpha", "beta" }) public class BetaFunction
@@ -46,9 +48,9 @@ import java.util.Random;
 	 * @param parameters - parameters[1]= alpha and parameters[0] = beta
 	 * @throws IllegalArgumentException - thrown if the alpha or beta &#60;0
 	 */
-	@Override public void verifyParameters(double[] parameters) {
+	@Override public void verifyParameters(double[] parameters) throws InvalidArgumentException {
 		if (!((parameters[0] > 0) && (parameters[1] > 0))) {
-			throw new IllegalArgumentException("Wrong parameters" + this.getClass().getName());
+			throw new InvalidArgumentException(List.of(parameters[0], parameters[1]), "N", "both should be greater than 0");
 		}
 	}
 	//CMF

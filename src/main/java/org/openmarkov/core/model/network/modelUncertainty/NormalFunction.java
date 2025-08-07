@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import org.openmarkov.core.exception.InvalidArgumentException;
+
 import java.util.Random;
 
 @ProbDensFunctionType(name = "Normal", isValidForProbabilities = false, parameters = { "mu",
@@ -38,9 +40,9 @@ import java.util.Random;
 	 * @param parameters - parameters[1]= mu and parameters[0] = sigma^2
 	 * @throws IllegalArgumentException - thrown if sigma&#60;0
 	 */
-	@Override public void verifyParameters(double[] parameters) {
+	@Override public void verifyParameters(double[] parameters) throws InvalidArgumentException {
 		if (!(parameters[0] > 0)) {
-			throw new IllegalArgumentException("Wrong parameters" + this.getClass().getName());
+			throw new InvalidArgumentException(parameters[0], "N", "N should be greater than 0");
 		}
 	}
 

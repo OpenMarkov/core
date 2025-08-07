@@ -8,6 +8,7 @@ package org.openmarkov.core.model.network.potential;
 
 import cern.jet.random.engine.MersenneTwister;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -135,8 +136,13 @@ import java.util.List;
 		}
 		return Arrays.asList(projectedPotential);
 	}
-
-	private double[] getThresholds() {
+    
+    @Override
+    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+        throw new NotSupportedOperationException();
+    }
+    
+    private double[] getThresholds() {
 		Variable conditionedVariable = getConditionedVariable();
 		int numStates = conditionedVariable.getNumStates();
 		double[] thresholds = new double[numStates];
@@ -225,8 +231,8 @@ import java.util.List;
 	//		return this;
 	//	}
 
-	@Override public void scalePotential(double scale) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
+	@Override public void scalePotential(double scale) throws NotSupportedOperationException {
+		throw new NotSupportedOperationException();
 
 	}
 

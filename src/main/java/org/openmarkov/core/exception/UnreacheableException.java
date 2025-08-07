@@ -15,4 +15,7 @@ public class UnreacheableException extends RuntimeException {
         super(message);
     }
     
+    public UnreacheableException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

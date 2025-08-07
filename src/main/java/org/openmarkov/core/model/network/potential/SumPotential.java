@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -92,8 +93,13 @@ import java.util.List;
 		TablePotential sumPotential = DiscretePotentialOperations.sum(parentPotentials);
 		return Arrays.asList(sumPotential);
 	}
-
-	@Override public Potential copy() {
+    
+    @Override
+    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+        throw new NotSupportedOperationException();
+    }
+    
+    @Override public Potential copy() {
 		return new SumPotential(this);
 	}
 

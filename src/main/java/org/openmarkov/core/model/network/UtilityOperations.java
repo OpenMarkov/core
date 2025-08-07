@@ -7,6 +7,10 @@
 
 package org.openmarkov.core.model.network;
 
+import org.openmarkov.core.exception.IntervalsAreNotEvenException;
+import org.openmarkov.core.exception.IntervalsAreNotMultipleOf3Exception;
+import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.ArrayList;
@@ -35,7 +39,11 @@ public class UtilityOperations {
                     List<Potential> scaledPotentials = new ArrayList<>();
 					for (Potential potential : utilityPotentials) {
 							Potential scaledPotential = potential.deepCopy(probNet);
-							scaledPotential.scalePotential(scale);
+                        try {
+                            scaledPotential.scalePotential(scale);
+                        } catch (NotSupportedOperationException e) {
+                            throw new UnreacheableException(e);
+                        }
                         scaledPotentials.add(scaledPotential);
 					}
                     utilityNode.setPotentials(scaledPotentials);
@@ -64,8 +72,12 @@ public class UtilityOperations {
 				if (scale != 0) {
 					// Transform the potential with the scale
 					Potential potential = utilityNode.getPotentials().get(0).deepCopy(probNet);
-					potential.scalePotential(scale);
-					utilityNode.setPotential(potential);
+                    try {
+                        potential.scalePotential(scale);
+                    } catch (NotSupportedOperationException e) {
+                        throw new UnreacheableException(e);
+                    }
+                    utilityNode.setPotential(potential);
 				} else {
 					// Remove the potential and the node
 					probNet.removePotentials(utilityNode.getPotentials());
@@ -142,9 +154,9 @@ public class UtilityOperations {
 	 * @return result of applying the Composite Simpson’s 1/3rd Rule
 	 * @throws Exception Exception
 	 */
-	public static double applyCompositeSimpsonsOneThirdRule(double[] values, int lenghtOfCycle) throws Exception {
+	public static double applyCompositeSimpsonsOneThirdRule(double[] values, int lenghtOfCycle) throws IntervalsAreNotEvenException {
 		if ((values.length * lenghtOfCycle) % 2 == 0 || (values.length * lenghtOfCycle) <= 1) {
-			throw new Exception("The total number of subintervals or time horizon is not even.");
+			throw new IntervalsAreNotEvenException(values, lenghtOfCycle);
 		}
 		double[] newValues = new double[values.length];
 		double summatory = 0;
@@ -165,9 +177,9 @@ public class UtilityOperations {
 	 * @return result of applying the Composite Simpson’s 3/8th Rule
 	 * @throws Exception Exception
 	 */
-	public static double applyCompositeSimpsonsThreeEighthsRule(double[] values, int lenghtOfCycle) throws Exception {
+	public static double applyCompositeSimpsonsThreeEighthsRule(double[] values, int lenghtOfCycle) throws IntervalsAreNotMultipleOf3Exception {
 		if ((values.length * lenghtOfCycle - 1) % 3 != 0) {
-			throw new Exception("The total number of subintervals or time horizon is not multiple of three.");
+			throw new IntervalsAreNotMultipleOf3Exception(values, lenghtOfCycle);
 		}
 		double[] newValues = new double[values.length];
 		double summatory = 0;

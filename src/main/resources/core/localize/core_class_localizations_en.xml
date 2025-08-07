@@ -11,9 +11,13 @@
     <Localization class="org.openmarkov.core.exception.DoEditException$ConstraintViolated" value="Could not met the constraint: {constraint.constraintDescription}"/>
     <Localization class="org.openmarkov.core.exception.DoEditException$InstanceAlreadyExists" value="Instance {instanceName} already exists"/>
     <Localization class="org.openmarkov.core.exception.DoEditException$NodeIsNull" value="No node is selected, try selecting a node from the {probNet}"/>
+    <Localization class="org.openmarkov.core.exception.EmptyDatabaseException" value="Database from {source} is empty."/>
     <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$EvidenceIsIncompatibleWithOther" value="The new evidence {newFinding} is not compatible with an old evidente: {oldFinding}"/>
     <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$FindingVariableIsMissingAState" value="The variable {variable.getName} has no state {state}, so this finding cannot be translated."/>
     <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$SamplesWeigthIsZero" value="Samples weigth is zero"/>
+    <Localization class="org.openmarkov.core.exception.IntervalsAreNotEvenException" value="The total number of subintervals or time horizon is not even."/>
+    <Localization class="org.openmarkov.core.exception.IntervalsAreNotMultipleOf3Exception" value="The total number of subintervals or time horizon is not multiple of three."/>
+    <Localization class="org.openmarkov.core.exception.InvalidArgumentException" value="Argument {argumentName} ({value}) is invalid because {reason}."/>
     <Localization class="org.openmarkov.core.exception.InvalidNetworkTypeException$NotAllowedType" value="{probNet} is not of an allowed type: {allowedTypes}"/>
     <Localization class="org.openmarkov.core.exception.InvalidNetworkTypeException$UnmetConstraints" value="{probNet} cannot be converted to {newNetworkType} as it would not satisfy constraint {unsatisfiedConstraint}"/>
     <Localization class="org.openmarkov.core.exception.NetworkHasNoNodesException" value="{probNet} has no nodes."/>
@@ -43,6 +47,7 @@
     <Localization class="org.openmarkov.core.exception.ParserException$WrongNumberOfStates" value="There was expected to find {expectedLength} states in variable {variableName}, but {actualLength} were found."/>
     <Localization class="org.openmarkov.core.exception.ParserException$WrongVersion" value="Version {version} is not supported."/>
     <Localization class="org.openmarkov.core.exception.ParserException$XMLInvalid" value="Can not parse XML {netName} document due to: {originException.getMessage}."/>
+    <Localization class="org.openmarkov.core.exception.ParsingSourceException$CouldNotParseSourceException" value="{originException}"/>
     <Localization class="org.openmarkov.core.exception.PotentialOperationException$DifferentSizesInPotentialsAndStates" value="Found {variable.getNumStates} states in variable {variable.getName}, but there are {potentials.size} instead of {variable.getNumStates}."/>
     <Localization class="org.openmarkov.core.exception.PotentialOperationException$VariableIsNull" value="No variable found"/>
     <Localization class="org.openmarkov.core.exception.UnexpectedInferenceException$ThereIsMoreThanOneConditioningVariable" value="There is more than one conditioning variables in the potential table ({tablePotential.getNumVariables} variables)."/>

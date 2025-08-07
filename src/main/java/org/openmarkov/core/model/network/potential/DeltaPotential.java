@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -125,8 +126,13 @@ import java.util.List;
 		}
 		return Arrays.asList(projectedPotential);
 	}
-
-	@Override public Potential copy() {
+    
+    @Override
+    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+        throw new NotSupportedOperationException();
+    }
+    
+    @Override public Potential copy() {
 		return new DeltaPotential(this);
 	}
 
@@ -169,9 +175,8 @@ import java.util.List;
 		return Arrays.asList(inducedFinding);
 	}
 
-	@Override public void scalePotential(double scale) throws UnsupportedOperationException {
+	@Override public void scalePotential(double scale) {
 		this.numericValue *= scale;
-//		throw new NotSupportedOperationException();
 	}
 
 	@Override public Potential deepCopy(ProbNet copyNet) {

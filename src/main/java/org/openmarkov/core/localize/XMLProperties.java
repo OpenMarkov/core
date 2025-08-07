@@ -45,17 +45,14 @@ import java.util.Properties;
 	 * @throws IOException	when errors occur reading.
 	 */
 	@Override public void load(Reader reader) throws IOException {
-
 		try {
 			// Load XML into JDOM Document
 			SAXBuilder builder = new SAXBuilder();
 			Document doc = builder.build(reader);
-
 			// Turn into properties objects
 			loadFromElements(doc.getRootElement().getChildren(), new StringBuilder(""));
-
 		} catch (JDOMException e) {
-			throw new IOException(e.getMessage());
+			throw new IOException(e);
 		}
 	}
 
@@ -67,7 +64,6 @@ import java.util.Properties;
 	 * @throws IOException	when errors occur reading.
 	 */
 	@Override public void load(InputStream inputStream) throws IOException {
-
 		load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 	}
 

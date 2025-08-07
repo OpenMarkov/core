@@ -7,6 +7,10 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import org.openmarkov.core.exception.InvalidArgumentException;
+
+import java.util.List;
+
 @ProbDensFunctionType(name = "Gamma", isValidForProbabilities = false, parameters = { "k",
 		"theta" }) public class GammaFunction extends GammaAbstract {
 	private double k;
@@ -38,9 +42,9 @@ package org.openmarkov.core.model.network.modelUncertainty;
 	/**
 	 *
 	 */
-	@Override public void verifyParameters(double[] parameters) throws IllegalArgumentException {
+	@Override public void verifyParameters(double[] parameters) throws InvalidArgumentException {
 		if (!((parameters[0] > 0) && (parameters[1] > 0))) {
-			throw new IllegalArgumentException("Parameters should be positive " + this.getClass().getName());
+			throw new InvalidArgumentException(List.of(parameters[0], parameters[1]), "N", "Parameters should be positive");
 		}
 	}
 

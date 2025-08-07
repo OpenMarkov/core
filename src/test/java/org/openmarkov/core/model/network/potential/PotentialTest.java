@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network.potential;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
@@ -168,7 +169,7 @@ public class PotentialTest {
         assertEquals(0, variables.size());
     }
     
-    @Test public void scalePotentialTest() {
+    @Test public void scalePotentialTest() throws NotSupportedOperationException {
         ProbNet probNet = getProbNet4ScaleTest();
         List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
         for (Node node : utilityNodes) {

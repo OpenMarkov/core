@@ -1,8 +1,11 @@
 package org.openmarkov.plugin;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -27,11 +30,27 @@ public final class PluginSearch<T> {
     private final Stream<Class<T>> classStream;
     
     /**
-     * Initializes a new search.
+     * Initializes a new search over OpenMarkov's classes.
      */
     public static PluginSearch<Object> init() {
-        return new PluginSearch<>(PluginLoader.pluginsStream()
-                                              .map(baseClass -> (Class<Object>) baseClass));
+        return new PluginSearch<>(PluginLoader.pluginsStream(PluginClassCategory.OPENMARKOV));
+    }
+    
+    /**
+     * Initializes a new search over classes of specific categories.
+     */
+    public static PluginSearch<Object> init(List<PluginClassCategory> categories) {
+        categories = new java.util.ArrayList<>(categories);
+        categories.removeIf(Objects::isNull);
+        if (categories.isEmpty()) {
+            return new PluginSearch<>(Stream.empty());
+        }
+        categories = categories.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
+        Stream<Class<Object>> pluginsStream = PluginLoader.pluginsStream(categories.remove(0));
+        while (!categories.isEmpty()) {
+            pluginsStream = Stream.concat(pluginsStream, PluginLoader.pluginsStream(categories.remove(0)));
+        }
+        return new PluginSearch<>(pluginsStream);
     }
     
     /**
@@ -69,7 +88,7 @@ public final class PluginSearch<T> {
     public <ExtendingClass> PluginSearch<ExtendingClass> childrenOf(Class<ExtendingClass> extendingClass) {
         return this.extending(extendingClass).filter(baseClass -> baseClass != extendingClass);
     }
-
+    
     /**
      * Filters the search to classes annotated with {@code AnnotationClass}.
      */

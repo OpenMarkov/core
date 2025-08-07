@@ -5,6 +5,7 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
+
 package org.openmarkov.plugin;
 
 import io.github.classgraph.ClassGraph;
@@ -14,7 +15,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -31,85 +37,118 @@ import java.util.zip.ZipFile;
  */
 
 /**
- * This class is an implementation of {@link PluginLoaderIF} interface.
- *
  * @author jvelez
  * @version 1.0 - jvelez: Initial implementation.
  * <br>1.1 - jrico:
  * <br>- Plugin loading is now done just once per program execution.
  * <br>- Functions are no longer recursive, but iterative.
- * <br>- {@link PluginLoaderIF#loadAllPlugins(FilterIF)} no longer throws {@link PluginException} (It was never thrown)
+ * <br>- PluginLoaderIF#loadAllPlugins(FilterIF) no longer throws PluginException (It was never thrown)
  * <br>- Added nullability annotations.
  */
-public class PluginLoader {
+
+@SuppressWarnings("unchecked") class PluginLoader {
     
     private static final ClassLoader CLASS_LOADER = ClassLoader.getSystemClassLoader();
     private static final String CLASS_EXTENSION = ".class";
     private static final char PACKAGE_SEPARATOR = '.';
+    private static final String OPEN_MARKOV_PATH_PREFIX = "org.openmarkov";
     
-    private static final ArrayList<Class<?>> LOADED_CLASSES = PluginLoader.loadAllClasses();
-    
-    //TODO: In the previous version, this method used to have a clause such as
-    // 'throws PluginException', although it never threw said exception, in this
-    // version this has been removed to match the real behaviour, but every place
-    // where 'loadAllPlugins' were called are still using a 'try catch' to caught
-    // the old PluginException, this could and should be removed in every call to
-    // said method.
+    private static final Map<PluginClassCategory, List<Class<Object>>> LOADED_CLASSES = new HashMap<>();
     
     /**
-     * Returns all plugins from the system environment.
-     *
-     * @param filter the plugins filter to select plugins.
-     * @return all plugins from the system environment.
+     * Gets a stream of {@code Class<Object>} for a certain Plugin category.
      */
-    public final <PluginClass> @NotNull List<Class<PluginClass>> loadAllPlugins(@Nullable Filter<PluginClass> filter) {
-        Stream<Class<?>> classesStream = PluginLoader.LOADED_CLASSES.stream();
-        if (filter != null) {
-            classesStream = classesStream.filter(filter::checkPlugin);
-        }
-        return classesStream.map(pluginClass -> (Class<PluginClass>) pluginClass).toList();
+    static Stream<Class<Object>> pluginsStream(PluginClassCategory category) {
+        PluginLoader.initializeCategory(category);
+        return PluginLoader.LOADED_CLASSES.get(category).stream();
     }
     
     /**
-     * Loads all the classes of the classpath in {@link PluginLoader#LOADED_CLASSES}, only if this hasn't been done
-     * before.
-     * <p>
-     * This method is synchronized to avoid multiple threads trying to load the classes at the same time, which in turn
-     * would create duplicates in {@link PluginLoader#LOADED_CLASSES}.
-     * Although by default, the load is done at the
-     * beginning of the program in a single-threaded enviroment, so this acts as prevention.
+     * Initializes the List of Classes of a certain Plugin category.
      */
-    private static ArrayList<Class<?>> loadAllClasses() {
+    private static void initializeCategory(PluginClassCategory category) {
+        if (PluginLoader.LOADED_CLASSES.containsKey(category)) {
+            return;
+        }
+        switch (category) {
+            case OPENMARKOV, EXTERNAL_DEPENDENCY -> PluginLoader.loadJarDependencies(category);
+            case JAVA -> PluginLoader.loadJavaClasses();
+        }
+    }
+    
+    /**
+     * Initializes the List of Classes corresponding to classes belonging to Java.
+     */
+    private static void loadJavaClasses() {
+        FileSystem fs = FileSystems.getFileSystem(URI.create("jrt:/"));
+        Path modules = fs.getPath("/modules");
+        var javaClasses = new ArrayList<Class<Object>>();
+        try (Stream<Path> pathStream = Files.walk(modules)) {
+            for (var path : pathStream.toList()) {
+                if (!path.toString().endsWith(PluginLoader.CLASS_EXTENSION)) {
+                    continue;
+                }
+                var subpath = path.subpath(2, path.getNameCount());
+                var className = subpath.toString().replace("/", ".");
+                try {
+                    Class<Object> loadedClass = (Class<Object>) PluginLoader.CLASS_LOADER.loadClass(className.substring(0, className.length() - PluginLoader.CLASS_EXTENSION.length()));
+                    if (PluginLoader.verifyClass(loadedClass)){
+                        javaClasses.add(loadedClass);
+                    }
+                } catch (ClassNotFoundException | NoClassDefFoundError ignored) {
+                }
+            }
+        } catch (IOException ignored) {
+        }
+        PluginLoader.LOADED_CLASSES.put(PluginClassCategory.JAVA, javaClasses);
+    }
+    
+    private static boolean verifyClass(Class<Object> loadedClass) {
+        try{
+            loadedClass.getName();
+            loadedClass.getSimpleName();
+            return true;
+        }catch (NoClassDefFoundError | IncompatibleClassChangeError e){
+            return false;
+        }
+    }
+    
+    /**
+     * Initializes either the List of Classes corresponding to classes belonging to OpenMarkov or to the external
+     * dependencies.
+     * <p>
+     * The {@code category} parameter must be either {@link PluginClassCategory#OPENMARKOV} or
+     * {@link PluginClassCategory#EXTERNAL_DEPENDENCY}.
+     */
+    private static void loadJarDependencies(PluginClassCategory category) {
+        if (category != PluginClassCategory.OPENMARKOV && category != PluginClassCategory.EXTERNAL_DEPENDENCY) {
+            return;
+        }
         ScanResult scan = new ClassGraph().scan();
         var classPaths = scan.getClasspathURLs().stream().map(URL::getFile).toList();
         scan.close();
-        var loadedClasses = new ArrayList<Class<?>>();
-        for (var classpath : classPaths) {
-            for (var classQualifiedName : PluginLoader.getClassesQualifiedNames(classpath)) {
-                if (!classQualifiedName.startsWith("org.openmarkov"))
-                    continue;
+        List<Class<Object>> loadedClasses = new ArrayList<>();
+        for (var classPath : classPaths) {
+            for (var classQualifiedName : PluginLoader.getClassesQualifiedNames(classPath)) {
                 try {
-                    Class<?> loadedClass = PluginLoader.CLASS_LOADER.loadClass(classQualifiedName);
-                    loadedClasses.add(loadedClass);
+                    boolean isValidClass = switch (category) {
+                        case OPENMARKOV -> classQualifiedName.startsWith(PluginLoader.OPEN_MARKOV_PATH_PREFIX);
+                        case EXTERNAL_DEPENDENCY -> !classQualifiedName.startsWith(PluginLoader.OPEN_MARKOV_PATH_PREFIX);
+                        default -> false;
+                    };
+                    if (isValidClass) {
+                        Class<Object> loadedClass = (Class<Object>) PluginLoader.CLASS_LOADER.loadClass(classQualifiedName);
+                        if (PluginLoader.verifyClass(loadedClass)){
+                            loadedClasses.add(loadedClass);
+                        }
+                    }
                 } catch (ClassNotFoundException | NoClassDefFoundError ignored) {
                 }
             }
         }
-        return loadedClasses;
+        PluginLoader.LOADED_CLASSES.put(category, loadedClasses);
     }
     
-    /**
-     * Returns all plugins from the system environment.
-     *
-     * @return all plugins from the system environment.
-     */
-    public final @NotNull List<Class<Object>> loadAllPlugins() {
-        return this.loadAllPlugins(null);
-    }
-    
-    static Stream<Class<?>> pluginsStream() {
-        return PluginLoader.LOADED_CLASSES.stream();
-    }
     
     /**
      * Returns all classes names.

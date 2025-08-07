@@ -7,6 +7,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -97,8 +98,13 @@ public class BinomialPotential extends Potential {
             throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
 		throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
 	}
-
-	protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+    
+    @Override
+    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+        throw new NotSupportedOperationException();
+    }
+    
+    protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
 			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
 			Map<String, String> variableValues) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
 
@@ -113,13 +119,11 @@ public class BinomialPotential extends Potential {
 	@Override public String toString() {
 		return super.toString() + " = Binomial";
 	}
-
+    
+    //TODO: UNCLEAR: What is this?
 	@Override
-	//UNCLEAR--&gt; What is this
-	public void scalePotential(double scale) {
-
-		throw new UnsupportedOperationException();
-
+	public void scalePotential(double scale) throws NotSupportedOperationException {
+		throw new NotSupportedOperationException();
 	}
 
 	/* UNCLEAR What is this? 

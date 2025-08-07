@@ -7,6 +7,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -117,8 +118,13 @@ import java.util.Map;
 			List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
 		throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
 	}
-
-	/**
+    
+    @Override
+    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+        throw new NotSupportedOperationException();
+    }
+    
+    /**
 	 * Only throws NonProjectablePotentialException because this potential cannot be projected to a table
 	 *
 	 * @throws NonProjectablePotentialException NonProjectablePotentialException

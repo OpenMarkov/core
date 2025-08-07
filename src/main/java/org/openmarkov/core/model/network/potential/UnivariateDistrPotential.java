@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -319,10 +320,9 @@ import java.util.List;
 		}
 	}
 
-	public void checkDistributionValues(double[] values) throws IllegalArgumentException {
+	public void checkDistributionValues(double[] values) throws InvalidArgumentException {
 		ProbDensFunction p = getProbDensFunctionManager().newInstance(probDensFunctionName, values);
         p.verifyParameters(values);
-        
     }
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions) {

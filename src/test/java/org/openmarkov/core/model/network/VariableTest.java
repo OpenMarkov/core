@@ -81,12 +81,12 @@ public class VariableTest {
         }
     }
     
-    @Test public void testRenameState() throws Exception {
+    @Test public void testRenameState() throws org.openmarkov.core.exception.InvalidArgumentException {
         // Rename not existing state (it does nothing)
         Variable variable = new Variable(x, numStates);
         boolean exceptionLaunched = false;
         try {
-            variable.renameState("NoExists", "Yahoo");
+            variable.renameState(variable.getState("NoExists"), "Yahoo");
             fail();
         } catch (Exception e) {
             //It should throw the exception in order to pass the test
@@ -99,7 +99,7 @@ public class VariableTest {
         // Rename one state
         String newName = "Yahoo";
         String oldName = states[numStates - 1].getName();
-        variable.renameState(oldName, newName);
+        variable.renameState(variable.getState(oldName), newName);
         states = variable.getStates();
         assertEquals(numStates, states.length);
         for (int i = 0; i < numStates - 1; i++) {

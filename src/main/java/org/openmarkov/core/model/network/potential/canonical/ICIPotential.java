@@ -7,8 +7,10 @@
 
 package org.openmarkov.core.model.network.potential.canonical;
 
-import net.sourceforge.jeval.EvaluationException;
+import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -47,7 +49,7 @@ public abstract class ICIPotential extends Potential {
 
 	private Variable leakyVariable = null;
 
-	private TablePotential expandedPotential = null;
+	private @Nullable TablePotential expandedPotential = null;
 
 	// Constructor
 
@@ -204,12 +206,11 @@ public abstract class ICIPotential extends Potential {
 	 */
 	public void setNoisyParameters(Variable parent, double[] parameters) {
 		if (parameters.length != variables.get(0).getNumStates() * parent.getNumStates()) {
-			throw new IllegalArgumentException(
-					"The length of the array must be the multiplication" + " of the parent's and child's state number "
-							+ variables.get(0).getNumStates() * parent.getNumStates() + " and is " + parameters.length);
+			throw new UnrecoverableException(new InvalidArgumentException(Arrays.stream(parameters).boxed().toList(), "parameters", "The length of the array must be the multiplication" + " of the parent's and child's state number "
+					+ variables.get(0).getNumStates() * parent.getNumStates() + " and is " + parameters.length));
 		}
 		if (!getVariables().contains(parent)) {
-			throw new IllegalArgumentException("There is no variable " + parent + " in this ICI family.");
+			throw new UnrecoverableException(new InvalidArgumentException(this, "potential", "There is no variable " + parent + " in this ICI family."));
 		}
 		expandedPotential = null;
 		noisyParameters[variables.indexOf(parent) - 1] = parameters;
@@ -277,9 +278,9 @@ public abstract class ICIPotential extends Potential {
 	 */
 	public void setLeakyParameters(double[] leakyParameters) {
 		if (leakyParameters.length != variables.get(0).getNumStates()) {
-			throw new IllegalArgumentException(
-					"The length of the array must be the conditioned variable's state number " + variables.get(0)
-							.getNumStates() + " and is " + leakyParameters.length);
+			throw new UnrecoverableException(new InvalidArgumentException(Arrays.stream(leakyParameters).boxed().toList(), "parameters",
+                                                                          "The length of the array must be the conditioned variable's state number " + variables.get(0)
+							.getNumStates() + " and is " + leakyParameters.length));
 		}
 		expandedPotential = null;
 		this.leakyParameters = leakyParameters;

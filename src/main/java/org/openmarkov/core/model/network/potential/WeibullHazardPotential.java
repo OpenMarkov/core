@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network.potential;
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -91,8 +92,13 @@ import java.util.Map;
 				&& variables.get(0).getVariableType() == VariableType.FINITE_STATES
 				&& variables.get(0).getNumStates() == 2;
 	}
-
-	public double getGamma() {
+    
+    @Override
+    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+        throw new NotSupportedOperationException();
+    }
+    
+    public double getGamma() {
 		return coefficients[getGammaIndex(processedCovariates)];
 	}
 
@@ -246,9 +252,8 @@ import java.util.Map;
 		this.log = log;
 	}
 
-	@Override public void scalePotential(double scale) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
-
+	@Override public void scalePotential(double scale) throws NotSupportedOperationException {
+		throw new NotSupportedOperationException();
 	}
 
 	@Override public Potential deepCopy(ProbNet copyNet) {

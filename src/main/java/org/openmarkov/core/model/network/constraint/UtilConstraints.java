@@ -30,7 +30,7 @@ public class UtilConstraints {
 	public static List<PNEdit> getSimpleEditsByType(PNEdit edit, Class<?> typeEdit) {
 		List<PNEdit> edits = new ArrayList<>();
 		if (edit.getClass() == typeEdit) {
-			edits.add((PNEdit) edit);
+            edits.add(edit);
 		} else { // Check compound edits
 			if (CompoundPNEdit.class.isInstance(edit)) {
 				Vector<UndoableEdit> simpleEdits = ((CompoundPNEdit) edit).getEdits();

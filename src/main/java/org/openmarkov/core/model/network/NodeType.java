@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network;
 
+import org.openmarkov.java.enumUtils.EnumUtils;
+
 import java.io.Serializable;
 
 /**
@@ -26,47 +28,15 @@ import java.io.Serializable;
  * @author fjdiez
  */
 public enum NodeType implements Serializable {
-	CHANCE(0, "chance"),
-	DECISION(1, "decision"),
-	UTILITY(2, "utility"),
-	SV_SUM(3, "svSum"),
-	SV_PRODUCT(4, "svProduct");
-
-	/**
-	 * Existing types: CHANCE(0), DECISION(1), UTILITY(2), ...
-	 */
-	private int type;
-
-	private String name;
-
-	/**
-	 * @param type {@code type} An integer: CHANCE(0), DECISION(1), ...
-	 * Condition: value &gt;= than 0 and value &lt; NodeType.values().length
-	 */
-	NodeType(int type, String name) {
-		this.type = type;
-		this.name = name;
-	}
-
-	/**
-	 * @param nodeType Node type
-	 * @return nodeType.value. {@code int}
-	 */
-	public static int type(NodeType nodeType) {
-
-		return nodeType.type();
-	}
-
-	/**
-	 * @return {@code type}
-	 */
-	public int type() {
-
-		return type;
-	}
-
-	public String toString() {
-		return name;
+    CHANCE,
+    DECISION,
+    UTILITY,
+    SV_SUM,
+    SV_PRODUCT;
+    
+    
+    public String toString() {
+        return EnumUtils.toCamelCase(this);
 	}
 
 }

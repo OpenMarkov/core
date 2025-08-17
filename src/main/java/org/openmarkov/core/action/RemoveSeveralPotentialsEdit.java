@@ -44,7 +44,7 @@ public class RemoveSeveralPotentialsEdit extends SimplePNEdit {
 	 * @return {@code String}
 	 */
 	public String toString() {
-		String auxString = new String(this.getClass().getSimpleName() + ":\n");
+        String auxString = this.getClass().getSimpleName() + ":\n";
 		for (Potential potential : potentialsToDelete) {
 			auxString = auxString + potential.getVariables().toString() + " ";
 		}

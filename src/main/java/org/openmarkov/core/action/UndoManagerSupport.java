@@ -73,8 +73,9 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	 * @see #getLimit
 	 */
 	public synchronized void setLimit(int l) throws NotSupportedOperationException {
-		if (!isInProgress())
-			throw new NotSupportedOperationException("Attempt to call UndoManager.setLimit() after UndoManager.end() has been called");
+        if (!isInProgress()) {
+            throw new NotSupportedOperationException("Attempt to call UndoManager.setLimit() after UndoManager.end() has been called");
+        }
 		limit = l;
 		trimForLimit();
 	}
@@ -160,7 +161,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 			//          System.out.println("Trimming " + from + " " + to + " with index " +
 			//                           indexOfNextAdd);
 			for (int i = to; from <= i; i--) {
-				UndoableEdit e = (UndoableEdit) edits.elementAt(i);
+                UndoableEdit e = edits.elementAt(i);
 				//              System.out.println("JUM: Discarding " +
 				//                                 e.getUndoPresentationName());
 				e.die();
@@ -191,7 +192,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	protected UndoableEdit editToBeUndone() {
 		int i = indexOfNextAdd;
 		while (i > 0) {
-			UndoableEdit edit = (UndoableEdit) edits.elementAt(--i);
+            UndoableEdit edit = edits.elementAt(--i);
 			if (edit.isSignificant()) {
 				return edit;
 			}
@@ -216,7 +217,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 			return lastEdit();
 		} else {
 			while (i < count) {
-				UndoableEdit edit = (UndoableEdit) edits.elementAt(i++);
+                UndoableEdit edit = edits.elementAt(i++);
 				if (edit.isSignificant()) {
 					return edit;
 				}
@@ -239,7 +240,7 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	protected void undoTo(UndoableEdit edit) throws CannotUndoException {
 		boolean done = false;
 		while (!done) {
-			UndoableEdit next = (UndoableEdit) edits.elementAt(--indexOfNextAdd);
+            UndoableEdit next = edits.elementAt(--indexOfNextAdd);
 			next.undo();
 			done = next == edit;
 		}
@@ -255,10 +256,10 @@ public class UndoManagerSupport extends CompoundEdit implements UndoableEditList
 	protected void redoTo(UndoableEdit edit) throws CannotRedoException {
 		boolean done = false;
 		while (!done) {
-			UndoableEdit current = (UndoableEdit) edits.elementAt(indexOfNextAdd++);
+            UndoableEdit current = edits.elementAt(indexOfNextAdd++);
 			current.redo();
 			if (indexOfNextAdd < edits.size()) {
-				UndoableEdit next = (UndoableEdit) edits.elementAt(indexOfNextAdd);
+                UndoableEdit next = edits.elementAt(indexOfNextAdd);
 				done = next == edit && edit.isSignificant();//asegura detenerse si encuentra un significant
 			} else
 				done = true;

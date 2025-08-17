@@ -882,7 +882,7 @@ public class ProbNetOperations {
 				List<Node> parents = node.getParents();
 				int i = 0;
 				while (i < parents.size() && !hasParentDecisions) {
-					Node parentNode = (Node) parents.get(i++);
+					Node parentNode = parents.get(i++);
 					hasParentDecisions |= parentNode.getNodeType() == NodeType.DECISION;
 					parentNodes.push(parentNode);
 				}

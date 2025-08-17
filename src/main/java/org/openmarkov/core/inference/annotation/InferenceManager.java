@@ -103,7 +103,7 @@ public class InferenceManager {
                     inferenceAlgorithms.add(inferenceAlgorithm);
                 }
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-            
+                throw new UnreacheableException(e);
             }
         }
         return inferenceAlgorithms;
@@ -136,8 +136,8 @@ public class InferenceManager {
                 checkEval.invoke(inferenceAlgorithms.get(algorithmName), probNet);
             } catch (InvocationTargetException e) {
                 Throwable targetExcep = e.getTargetException();
-                if (targetExcep.getClass() == NotEvaluableNetworkException.class) {
-                    throw (NotEvaluableNetworkException) targetExcep;
+                if (targetExcep instanceof NotEvaluableNetworkException notEvaluableNetworkException) {
+                    throw notEvaluableNetworkException;
                 }
             } catch (IllegalAccessException | IllegalArgumentException e) {
                 e.printStackTrace();

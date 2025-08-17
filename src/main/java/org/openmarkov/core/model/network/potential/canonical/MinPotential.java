@@ -175,12 +175,10 @@ import java.util.List;
 	@Override public Potential removeVariable(Variable variable) {
 		List<Variable> newVariables = new ArrayList<>();
 		for (int i = 0; i < variables.size(); i++) {
-			if (variable == variables.get(i)) {
-				continue;
-			} else {
-				newVariables.add(variables.get(i));
-			}
-		}
+            if (variable != variables.get(i)) {
+                newVariables.add(variables.get(i));
+            }
+        }
 
 		MinPotential newICIPotential = new MinPotential(this.modelType, newVariables);
 
@@ -240,7 +238,7 @@ import java.util.List;
 	}
 
 	@Override public Potential deepCopy(ProbNet copyNet) {
-		return (MinPotential) super.deepCopy(copyNet);
+        return super.deepCopy(copyNet);
 	}
 
 	@Override

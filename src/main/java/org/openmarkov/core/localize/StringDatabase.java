@@ -85,7 +85,7 @@ public class StringDatabase {
      *
      * @return the unique instance.
      */
-    public static StringDatabase getUniqueInstance() {
+    public synchronized static StringDatabase getUniqueInstance() {
         if (USER_INSTANCE == null) {
             USER_INSTANCE = new StringDatabase();
         }

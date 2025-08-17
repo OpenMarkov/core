@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.java.cloneUtils.CloneUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +69,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
     // Name without the time slice index. For example, if the name is "X [0]",
     // the baseName is "X"
     private String baseName;
-    private StringWithProperties unit = new StringWithProperties("");
+    private @Nullable StringWithProperties unit = new StringWithProperties("");
     /**
      * Max error.
      */
@@ -76,7 +77,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
     /**
      * Agent for decision nodes
      */
-    private StringWithProperties agent;
+    private @Nullable StringWithProperties agent;
     /**
      * Decision criterion for utility nodes
      */
@@ -153,16 +154,18 @@ public class Variable implements Cloneable, Comparable<Variable> {
      * @param variable Variable
      */
     public Variable(Variable variable) {
-        
-        this.name = new String(variable.getName());
+        this.name = variable.name;
         this.states = variable.states.clone();
-        this.variableType = variable.getVariableType();
-        this.partitionedInterval = (variable.getPartitionedInterval() != null) ?
-                (PartitionedInterval) variable.getPartitionedInterval().clone() :
-                null;
-        this.precision = variable.getPrecision();
-        this.unit = variable.unit.copy();
-        setTimeSlice(getTimeSlice(variable.getName()));
+        this.variableType = variable.variableType;
+        this.partitionedInterval = CloneUtils.safeClone(variable.partitionedInterval);
+        this.additionalProperties = CloneUtils.safeClone(variable.additionalProperties);
+        this.statesAdditionalProperties = CloneUtils.safeClone(variable.statesAdditionalProperties);
+        this.baseName = variable.baseName;
+        this.precision = variable.precision;
+        this.unit = CloneUtils.safeClone(variable.unit);
+        this.agent = CloneUtils.safeClone(variable.agent);
+        this.decisionCriterion = CloneUtils.safeClone(variable.decisionCriterion);
+        setTimeSlice(getTimeSlice(variable.name));
     }
     
     /**
@@ -220,16 +223,11 @@ public class Variable implements Cloneable, Comparable<Variable> {
     }
     
     // Methods
-    @Override public Object clone() {
-        Object object = null;
-        try {
-            object = super.clone();
-        } catch (CloneNotSupportedException e) {
-            // Unreachable code
-            System.err.println("Can not clone object " + object);
-        }
-        return object;
+    
+    @Override protected Variable clone() {
+        return new Variable(this);
     }
+    
     
     // Methods
     
@@ -243,6 +241,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
     
     /**
      * @param propertyName Property name
+     *
      * @return property value if exists, otherwise {@code null}
      * {@code String} and value = {@code String}
      */
@@ -313,6 +312,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
      *
      * @param oldName . {@code String}.
      * @param newName . {@code String}.
+     *
      * @throws Exception Exception
      */
     public void renameState(State state, String newName) throws InvalidArgumentException {
@@ -347,7 +347,9 @@ public class Variable implements Cloneable, Comparable<Variable> {
     
     /**
      * @param state . {@code State}
+     *
      * @return stateIndex of state. {@code int}
+     *
      * @throws Error if state does not exist
      */
     public int getStateIndex(State state) {
@@ -361,6 +363,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
     
     /**
      * @param value . {@code double}
+     *
      * @return The state index corresponding to value. {@code int}
      */
     public int getStateIndex(double value) {
@@ -461,6 +464,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
     
     /**
      * @param index . {@code int}
+     *
      * @return Name of states[index]. {@code String}.
      * Condition: index must be a number between 0 and (number-of-states -
      * 1).
@@ -472,6 +476,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
     
     /**
      * @param name Name
+     *
      * @return The state whose name is 'name'
      */
     public @Nullable State getState(String name) {
@@ -672,6 +677,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
      * This methods checks if a string may be a valid state name
      *
      * @param newState New state
+     *
      * @return True if a string may be a valid state name
      */
     public boolean chekNewStateName(String newState) {

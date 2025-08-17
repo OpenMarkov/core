@@ -444,8 +444,9 @@ public class TemporalNetOperations {
      */
     public static ProbNet expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence, String networkName) throws NotSupportedOperationException {
         //FIXME hardcoded
-        if (!(probNet.getNetworkType() instanceof MIDType))
+        if (!(probNet.getNetworkType() instanceof MIDType)) {
             throw new NotSupportedOperationException("Network has to be an MID");
+        }
 //		LogManager.getLogger().debug("Expanding");
         ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet.deepCopy());
         expandedNetwork.setName(networkName);
@@ -458,7 +459,7 @@ public class TemporalNetOperations {
 //		LogManager.getLogger().debug("Discretizing non-observerd numeric variables");
         // Discretize non-observed numeric variables
         expandedNetwork = TaskUtilities.discretizeNonObservedNumericVariables(expandedNetwork, preResolutionEvidence);
-        transformToID(expandedNetwork);
+        transformToInfluenceDiagram(expandedNetwork);
         return expandedNetwork;
     }
 
@@ -485,11 +486,11 @@ public class TemporalNetOperations {
      *
      * @param expandedNetwork an expanded MID
      */
-    public static void transformToID(ProbNet expandedNetwork) {
+    public static void transformToInfluenceDiagram(ProbNet expandedNetwork) {
         List<Node> temporalNodes = expandedNetwork.getNodes()
                                                   .stream()
                                                   .filter(node -> node.getVariable().isTemporal())
-                                                  .collect(Collectors.toList());
+                                                  .toList();
         //Variables are considered temporal when their timeSlice is Variable.noTemporalTimeSlice=Integer.MIN_VALUE
         temporalNodes.forEach(node -> {
             node.getVariable()

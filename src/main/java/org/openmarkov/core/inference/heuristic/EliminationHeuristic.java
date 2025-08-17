@@ -9,6 +9,8 @@ package org.openmarkov.core.inference.heuristic;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.UsesVariable;
+import org.openmarkov.core.annotation.ImplementationRequirements;
+import org.openmarkov.core.annotation.RequiredConstructor;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -28,6 +30,7 @@ import java.util.List;
  * @version 1.0
  * @since OpenMarkov 1.0
  */
+@ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({ProbNet.class, List.class}))
 public abstract class EliminationHeuristic implements PNUndoableEditListener {
 
 	// Attributes
@@ -149,7 +152,7 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	 * @return The class name + list of list of variables to eliminate.
 	 */
 	public String toString() {
-		String string = new String(this.getClass().getSimpleName() + " : ");
+        String string = this.getClass().getSimpleName() + " : ";
 		int numLists = variablesToEliminate.size();
 		for (int i = numLists - 1; i >= 0; i--) {
 			List<Variable> variables = variablesToEliminate.get(i);

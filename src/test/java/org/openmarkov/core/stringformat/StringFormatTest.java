@@ -1,9 +1,12 @@
 package org.openmarkov.core.stringformat;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.test.TestConfig;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -27,6 +30,7 @@ class StringFormatTest {
     /**
      * Tests the generated String is the same as {@link StringFormatTest#EXPECTED}.
      */
+    @Tag(TestConfig.DisabledInParallel)
     @Test final void apply() {
         Map<String, Object> values = new HashMap<>();
         values.put("probNetWrapper", new ProbNetWrapper("MyNet"));

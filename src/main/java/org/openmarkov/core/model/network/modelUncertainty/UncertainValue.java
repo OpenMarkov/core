@@ -47,7 +47,7 @@ public class UncertainValue {
 	public UncertainValue(UncertainValue uncertainValue) {
 		super();
 		if (uncertainValue.name != null) {
-			this.name = new String(uncertainValue.name);
+            this.name = uncertainValue.name;
 		}
 
 		if (uncertainValue.probDensFunction != null) {

@@ -145,9 +145,9 @@ public class Finding {
 	 * Overrides {@code toString} method. Mainly for test purposes.
 	 */
 	public String toString() {
-		String string = new String(variable.getName() + ":");
+		String string = variable.getName() + ":";
 		if (variable.getVariableType() == VariableType.FINITE_STATES) {
-			string = string + ((Variable) variable).getStateName(stateIndex) + "(" + Integer.toString(stateIndex) + ")";
+			string = string + variable.getStateName(stateIndex) + "(" + Integer.toString(stateIndex) + ")";
 		} else {
 			string = string + "(" + Double.toString(numericalValue) + ")";
 		}

@@ -50,7 +50,7 @@ import java.util.Properties;
 			SAXBuilder builder = new SAXBuilder();
 			Document doc = builder.build(reader);
 			// Turn into properties objects
-			loadFromElements(doc.getRootElement().getChildren(), new StringBuilder(""));
+            loadFromElements(doc.getRootElement().getChildren(), new StringBuilder());
 		} catch (JDOMException e) {
 			throw new IOException(e);
 		}

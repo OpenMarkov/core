@@ -66,7 +66,7 @@ import java.util.zip.ZipFile;
     /**
      * Initializes the List of Classes of a certain Plugin category.
      */
-    private static void initializeCategory(PluginClassCategory category) {
+    private synchronized static void initializeCategory(PluginClassCategory category) {
         if (PluginLoader.LOADED_CLASSES.containsKey(category)) {
             return;
         }

@@ -38,7 +38,7 @@ import java.util.List;
 		for (PNEdit simpleEdit : edits) {
 			if (((AddLinkEdit) simpleEdit).isDirected()) {
 				AddLinkEdit addLink = (AddLinkEdit) simpleEdit;
-				explanation = new String(addLink.getVariable1() + " --> " + addLink.getVariable2());
+                explanation = addLink.getVariable1() + " --> " + addLink.getVariable2();
 				return false;
 			}
 		}

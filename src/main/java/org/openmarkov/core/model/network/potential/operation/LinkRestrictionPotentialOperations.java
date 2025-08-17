@@ -69,7 +69,7 @@ public class LinkRestrictionPotentialOperations {
 		Potential p = node.getPotentials().get(0);
 		TablePotential potential;
 		if (p instanceof ExactDistrPotential) {
-			potential = (TablePotential) ((ExactDistrPotential) p).getTablePotential();
+            potential = ((ExactDistrPotential) p).getTablePotential();
 		} else {
 			potential = (TablePotential) node.getPotentials().get(0);
 		}

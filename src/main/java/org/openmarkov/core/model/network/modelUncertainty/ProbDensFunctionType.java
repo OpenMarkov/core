@@ -7,15 +7,14 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import org.openmarkov.core.annotation.Limits;
-import org.openmarkov.core.annotation.RequiredConstructors;
+import org.openmarkov.core.annotation.ImplementationRequirements;
+import org.openmarkov.core.annotation.RequiredConstructor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Limits(classesThatCanBeAnnotated = ProbDensFunction.class, requiredConstructors = @RequiredConstructors({}))
 @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface ProbDensFunctionType {
 	String name();
 

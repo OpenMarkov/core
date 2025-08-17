@@ -184,12 +184,10 @@ import java.util.List;
 	@Override public Potential removeVariable(Variable variable) {
 		List<Variable> newVariables = new ArrayList<>();
 		for (int i = 0; i < variables.size(); i++) {
-			if (variable == variables.get(i)) {
-				continue;
-			} else {
-				newVariables.add(variables.get(i));
-			}
-		}
+            if (variable != variables.get(i)) {
+                newVariables.add(variables.get(i));
+            }
+        }
 
 		MaxPotential newICIPotential = new MaxPotential(this.modelType, newVariables);
 
@@ -249,7 +247,7 @@ import java.util.List;
 	}
 
 	@Override public Potential deepCopy(ProbNet copyNet) {
-		return (MaxPotential) super.deepCopy(copyNet);
+        return super.deepCopy(copyNet);
 	}
 
 	@Override

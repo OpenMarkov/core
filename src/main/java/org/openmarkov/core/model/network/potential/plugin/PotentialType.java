@@ -6,8 +6,8 @@
  */
 package org.openmarkov.core.model.network.potential.plugin;
 
-import org.openmarkov.core.annotation.Limits;
-import org.openmarkov.core.annotation.RequiredConstructors;
+import org.openmarkov.core.annotation.ImplementationRequirements;
+import org.openmarkov.core.annotation.RequiredConstructor;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -18,11 +18,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
 
-@Limits(classesThatCanBeAnnotated = Potential.class, requiredConstructors = {
-		@RequiredConstructors({List.class, CycleLength.class}),
-		@RequiredConstructors({List.class, PotentialRole.class}),
-		@RequiredConstructors({List.class})
-})
 @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface PotentialType {
 	String name();
 

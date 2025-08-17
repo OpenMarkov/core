@@ -105,12 +105,10 @@ public abstract class DecisionTreeNode<T> implements DecisionTreeElement {
 	}
 
 	@Override public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("DecisionTreeNode [variable=");
-		builder.append(variable.getName());
-		builder.append(", children=").append(children);
-		builder.append("]");
-		return builder.toString();
+        return "DecisionTreeNode [variable=" +
+                variable.getName() +
+                ", children=" + children +
+                "]";
 	}
 
 	@Override public void setParent(DecisionTreeElement parent) {

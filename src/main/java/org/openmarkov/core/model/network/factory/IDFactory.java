@@ -57,8 +57,8 @@ public class IDFactory extends NetsFactory {
 		addVariables(probNet, NodeType.UTILITY, variableU);
 
 		//additional properties
-		String relevance = new String("Relevance");
-		String value = new String("7.0");
+        String relevance = "Relevance";
+        String value = "7.0";
 		setAdditionalProperties(relevance, value, variableX, variableU);
 
 		//Potential X
@@ -104,8 +104,8 @@ public class IDFactory extends NetsFactory {
 		addVariables(probNet, NodeType.UTILITY, variableU);
 
 		//additional properties
-		String relevance = new String("Relevance");
-		String value = new String("7.0");
+        String relevance = "Relevance";
+        String value = "7.0";
 		setAdditionalProperties(relevance, value, variableX, variableY, variableD, variableU);
 
 		//Potential X
@@ -152,8 +152,8 @@ public class IDFactory extends NetsFactory {
 		addVariables(probNet, NodeType.UTILITY, variableU);
 
 		//additional properties
-		String relevance = new String("Relevance");
-		String value = new String("7.0");
+        String relevance = "Relevance";
+        String value = "7.0";
 		setAdditionalProperties(relevance, value, variableX, variableD, variableU);
 
 		//Potential X
@@ -211,8 +211,8 @@ public class IDFactory extends NetsFactory {
 		addVariables(probNet, NodeType.UTILITY, variableU);
 
 		//additional properties
-		String relevance = new String("Relevance");
-		String value = new String("7.0");
+        String relevance = "Relevance";
+        String value = "7.0";
 		setAdditionalProperties(relevance, value, variableD, variableU);
 
 		potentialU = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableUD, variableU, variableD);
@@ -339,8 +339,8 @@ public class IDFactory extends NetsFactory {
 		addVariables(probNet, NodeType.UTILITY, variableU1, variableU2, variableU3);
 
 		//additional properties
-		String relevance = new String("Relevance");
-		String value = new String("7.0");
+        String relevance = "Relevance";
+        String value = "7.0";
 		setAdditionalProperties(relevance, value, variableX, variableY, variableD, variableT, variableU1, variableU2);
 
 		//Potential X
@@ -390,8 +390,8 @@ public class IDFactory extends NetsFactory {
 		addVariables(probNet, NodeType.UTILITY, variableU);
 
 		// additional properties
-		String relevance = new String("Relevance");
-		String value = new String("7.0");
+        String relevance = "Relevance";
+        String value = "7.0";
 		setAdditionalProperties(relevance, value, variableU);
 
 		// Potential U2
@@ -508,8 +508,8 @@ public class IDFactory extends NetsFactory {
 		addVariables(probNet, NodeType.UTILITY, variableU1, variableU2);
 
 		//additional properties
-		String relevance = new String("Relevance");
-		String value = new String("7.0");
+        String relevance = "Relevance";
+        String value = "7.0";
 		setAdditionalProperties(relevance, value, variableX, variableY, variableD, variableU1, variableU2);
 
 		//Potential X

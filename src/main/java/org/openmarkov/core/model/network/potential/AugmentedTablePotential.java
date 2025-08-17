@@ -21,87 +21,88 @@ import java.util.ArrayList;
 import java.util.List;
 
 @PotentialType(name = "AugmentedTable") public class AugmentedTablePotential extends Potential {
-
-	protected AugmentedTable augmentedTable;
-	private List<Variable> finiteStatesVariables;
-	private List<Variable> parameterVariables;
-
-	/*Note should be discrete variables*/
-	public AugmentedTablePotential(List<Variable> variables, PotentialRole role) {
-		super(variables, role);
-		setFiniteStatesVariables(new ArrayList<Variable>());
-		setParameterVariables(new ArrayList<Variable>());
-		getFiniteStatesVariables().add(variables.get(0));
-		for (Variable variable : variables.subList(1, variables.size())) {
-			if ((variable.getVariableType() == VariableType.FINITE_STATES) || (
-					variable.getVariableType() == VariableType.DISCRETIZED
-			)) {
-				finiteStatesVariables.add(variable);
-			} else {
-				parameterVariables.add(variable);
-			}
-		}
-
-		setAugmentedTable(new AugmentedTable(getFiniteStatesVariables(), role));
-	}
-
-	public AugmentedTablePotential(AugmentedTablePotential augmentedTablePotential) {
-		this(augmentedTablePotential.variables, augmentedTablePotential.getPotentialRole());
-		//UNCLEAR Should I copy Functions?
-		this.augmentedTable = new AugmentedTable(augmentedTablePotential.getAugmentedTable());
-	}
-
-	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-		return (node.getVariable().getVariableType() == VariableType.FINITE_STATES);
-
-	}
-
-	public AugmentedTable getAugmentedTable() {
-		return augmentedTable;
-	}
-
-	public void setAugmentedTable(AugmentedTable augmentedTable) {
-		this.augmentedTable = augmentedTable;
-	}
-
-	/**
-	 * @return the finiteStatesVariables
-	 */
-	public List<Variable> getFiniteStatesVariables() {
-		return finiteStatesVariables;
-	}
-
-	/**
-	 * @param finiteStatesVariables the finiteStatesVariables to set
-	 */
-	public void setFiniteStatesVariables(List<Variable> finiteStatesVariables) {
-		this.finiteStatesVariables = finiteStatesVariables;
-	}
-
-	public List<Variable> getParameterVariables() {
-		return parameterVariables;
-	}
-
-	public void setParameterVariables(List<Variable> parameterVariables) {
-		this.parameterVariables = parameterVariables;
-	}
-
-	/**
-	 * Creates a functionPotential whose parents are the Numeric variables
-	 *
-	 * @param numericVariables Numeric variables
-	 * @param functionString Function string
-	 * @return a function potential whose parents are the Numeric variables
-	 */
-	public FunctionPotential createFunctionPotential(List<Variable> numericVariables, String functionString) {
-		return new FunctionPotential(numericVariables, this.role, functionString);
-	}
-
-	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			List<TablePotential> alreadyProjectedPotentials) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    
+    protected AugmentedTable augmentedTable;
+    private List<Variable> finiteStatesVariables;
+    private List<Variable> parameterVariables;
+    
+    /*Note should be discrete variables*/
+    public AugmentedTablePotential(List<Variable> variables, PotentialRole role) {
+        super(variables, role);
+        setFiniteStatesVariables(new ArrayList<Variable>());
+        setParameterVariables(new ArrayList<Variable>());
+        getFiniteStatesVariables().add(variables.get(0));
+        for (Variable variable : variables.subList(1, variables.size())) {
+            if ((variable.getVariableType() == VariableType.FINITE_STATES) || (
+                    variable.getVariableType() == VariableType.DISCRETIZED
+            )) {
+                finiteStatesVariables.add(variable);
+            } else {
+                parameterVariables.add(variable);
+            }
+        }
+        
+        setAugmentedTable(new AugmentedTable(getFiniteStatesVariables(), role));
+    }
+    
+    public AugmentedTablePotential(AugmentedTablePotential augmentedTablePotential) {
+        this(augmentedTablePotential.variables, augmentedTablePotential.getPotentialRole());
+        //UNCLEAR Should I copy Functions?
+        this.augmentedTable = new AugmentedTable(augmentedTablePotential.getAugmentedTable());
+    }
+    
+    public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+        return (node.getVariable().getVariableType() == VariableType.FINITE_STATES);
+        
+    }
+    
+    public AugmentedTable getAugmentedTable() {
+        return augmentedTable;
+    }
+    
+    public void setAugmentedTable(AugmentedTable augmentedTable) {
+        this.augmentedTable = augmentedTable;
+    }
+    
+    /**
+     * @return the finiteStatesVariables
+     */
+    public List<Variable> getFiniteStatesVariables() {
+        return finiteStatesVariables;
+    }
+    
+    /**
+     * @param finiteStatesVariables the finiteStatesVariables to set
+     */
+    public void setFiniteStatesVariables(List<Variable> finiteStatesVariables) {
+        this.finiteStatesVariables = finiteStatesVariables;
+    }
+    
+    public List<Variable> getParameterVariables() {
+        return parameterVariables;
+    }
+    
+    public void setParameterVariables(List<Variable> parameterVariables) {
+        this.parameterVariables = parameterVariables;
+    }
+    
+    /**
+     * Creates a functionPotential whose parents are the Numeric variables
+     *
+     * @param numericVariables Numeric variables
+     * @param functionString   Function string
+     *
+     * @return a function potential whose parents are the Numeric variables
+     */
+    public FunctionPotential createFunctionPotential(List<Variable> numericVariables, String functionString) {
+        return new FunctionPotential(numericVariables, this.role, functionString);
+    }
+    
+    @Override
+    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) {
+        // TODO Auto-generated method stub
+        return null;
+    }
     
     @Override
     public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
@@ -109,38 +110,38 @@ import java.util.List;
     }
     
     @Override public Potential copy() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override public boolean isUncertain() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override public void scalePotential(double scale) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Potential reorder(List<Variable> newOrderOfVariables) {
-		int size = newOrderOfVariables.size();
-		//orderVariables has the order of the parents of the augmentedTable, so parameterVariables should be added
-		for (Variable parameterVariable : getParameterVariables()) {
-			newOrderOfVariables.add(parameterVariable);
-		}
-		AugmentedTablePotential newPotential = new AugmentedTablePotential(newOrderOfVariables,
-				getPotentialRole());
-		AugmentedTable newDistributionTable = (AugmentedTable) getAugmentedTable().reorder(newOrderOfVariables.subList(0, size));
-		newPotential.setAugmentedTable(newDistributionTable);
-		return newPotential;
-	}
-	
-	@Override
-	public Potential reorder(Variable variable, State[] newOrder) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override public boolean isUncertain() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    
+    @Override public void scalePotential(double scale) {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public Potential reorder(List<Variable> newOrderOfVariables) {
+        int size = newOrderOfVariables.size();
+        //orderVariables has the order of the parents of the augmentedTable, so parameterVariables should be added
+        for (Variable parameterVariable : getParameterVariables()) {
+            newOrderOfVariables.add(parameterVariable);
+        }
+        AugmentedTablePotential newPotential = new AugmentedTablePotential(newOrderOfVariables,
+                                                                           getPotentialRole());
+        AugmentedTable newDistributionTable = (AugmentedTable) getAugmentedTable().reorder(newOrderOfVariables.subList(0, size));
+        newPotential.setAugmentedTable(newDistributionTable);
+        return newPotential;
+    }
+    
+    @Override
+    public Potential reorder(Variable variable, State[] newOrder) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
 }

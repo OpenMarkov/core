@@ -361,7 +361,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
                     simpleEdits.add((PNEdit) undoableEdit);
                 }
             } else {
-				simpleEdits.add((PNEdit) edit);
+                simpleEdits.add(edit);
 			}
 
 			ProbNet classNet = edit.getProbNet();

@@ -100,7 +100,7 @@ public class Util {
 	 */
 	public static String windows2unixPath(String windowsString) {
 		int longStr = windowsString.length();
-		String unixString = new String();
+        String unixString = "";
 		String barra = "\\";
 		char barraChar = barra.charAt(0);
 		for (int i = 0; i < longStr; i++) {

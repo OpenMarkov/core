@@ -177,7 +177,7 @@ public class PNESupport extends UndoableEditSupport {
 
 			undoManagerSupport.redo();
 			for (UndoableEditListener listener : listeners) {
-				((PNUndoableEditListener) listener).undoableEditHappened(event);
+                listener.undoableEditHappened(event);
 			}
 		}
 	}

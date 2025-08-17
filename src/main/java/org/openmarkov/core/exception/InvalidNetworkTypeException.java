@@ -5,19 +5,20 @@ import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.Collection;
+import java.util.List;
 
 public abstract sealed class InvalidNetworkTypeException extends BundledOpenMarkovException {
     
     public static final class UnmetConstraints extends InvalidNetworkTypeException {
         public final ProbNet probNet;
         public final NetworkType newNetworkType;
-        public final PNConstraint unsatisfiedConstraint;
+        public final List<PNConstraint> unsatisfiedConstraints;
         
         // Constructor
-        public UnmetConstraints(ProbNet probNet, NetworkType newNetworkType, PNConstraint unsatisfiedConstraint) {
+        public UnmetConstraints(ProbNet probNet, NetworkType newNetworkType, List<PNConstraint> unsatisfiedConstraints) {
             this.probNet = probNet;
             this.newNetworkType = newNetworkType;
-            this.unsatisfiedConstraint = unsatisfiedConstraint;
+            this.unsatisfiedConstraints = unsatisfiedConstraints;
         }
     }
     

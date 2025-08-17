@@ -333,14 +333,10 @@ public class PartitionedInterval implements Cloneable {
 		}
 		return result;
 	}
-
-	@Override public Object clone() {
-		try {
-			return super.clone();
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+	
+	@Override public PartitionedInterval clone() {
+		PartitionedInterval cloned = new PartitionedInterval(this.limits, this.belongsToLeftSide);
+		cloned.numSubintervals = this.numSubintervals;
+		return cloned;
 	}
 }

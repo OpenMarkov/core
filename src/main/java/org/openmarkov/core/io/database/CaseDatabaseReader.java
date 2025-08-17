@@ -7,11 +7,14 @@
 
 package org.openmarkov.core.io.database;
 
+import org.openmarkov.core.annotation.ImplementationRequirements;
+import org.openmarkov.core.annotation.RequiredConstructor;
 import org.openmarkov.core.exception.EmptyDatabaseException;
 import org.openmarkov.core.exception.ParsingSourceException;
 
 import java.io.IOException;
 
+@ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({}))
 public interface CaseDatabaseReader {
 	CaseDatabase load(String filename) throws IOException, ParsingSourceException, EmptyDatabaseException;
 }

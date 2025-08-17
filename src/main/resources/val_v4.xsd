@@ -8,9 +8,9 @@
                 <xs:complexType>
                     <xs:all>
 
-                        <xs:element name="AdditionalConstraints" minOccurs="0"></xs:element>
-                        
-                        <xs:element name="Comment" minOccurs="0"></xs:element>
+                        <xs:element name="AdditionalConstraints" minOccurs="0"/>
+
+                        <xs:element name="Comment" minOccurs="0"/>
                         
                         <xs:element name="DecisionCriteria" minOccurs="0">
                             <xs:complexType>
@@ -22,10 +22,10 @@
                         </xs:element>
 
                         <xs:element name="TimeUnit" minOccurs="0"/>
-                        
-                        <xs:element name="Agents" minOccurs="0"></xs:element>
-                        
-                        <xs:element name="Language" minOccurs="0"></xs:element>
+
+                        <xs:element name="Agents" minOccurs="0"/>
+
+                        <xs:element name="Language" minOccurs="0"/>
                         
                         <xs:element name="AdditionalProperties" minOccurs="0">
                             <xs:complexType>
@@ -57,13 +57,13 @@
                                         <xs:complexType>
                                             <xs:all>
 
-                                            <xs:element name="Comment" minOccurs="0"></xs:element>
+                                                <xs:element name="Comment" minOccurs="0"/>
                                             
                                             <xs:element name="AdditionalProperties" minOccurs="0">
                                                 <xs:complexType>
                                                     <xs:sequence>
-                                                        
-                                                        <xs:element name="Property" maxOccurs="unbounded"></xs:element>
+
+                                                        <xs:element name="Property" maxOccurs="unbounded"/>
 
                                                     </xs:sequence>
                                                 </xs:complexType>
@@ -72,28 +72,28 @@
                                             <xs:element name="Properties" minOccurs="0">
                                                 <xs:complexType>
                                                     <xs:sequence>
-                                                        
-                                                        <xs:element name="Property" maxOccurs="unbounded"></xs:element>
+
+                                                        <xs:element name="Property" maxOccurs="unbounded"/>
 
                                                     </xs:sequence>
                                                 </xs:complexType>
                                             </xs:element>
-                                            
-                                            <xs:element name="Coordinates" minOccurs="0"></xs:element>
-                                            
-                                            <xs:element name="Criterion" minOccurs="0"></xs:element>
-                                            
-                                            <xs:element name="Agent" minOccurs="0"></xs:element>
-                                            
-                                            <xs:element name="AlwaysObserved" minOccurs="0"></xs:element>
-                                            
-                                            <xs:element name="Precision" minOccurs="0"></xs:element>
+
+                                                <xs:element name="Coordinates" minOccurs="0"/>
+
+                                                <xs:element name="Criterion" minOccurs="0"/>
+
+                                                <xs:element name="Agent" minOccurs="0"/>
+
+                                                <xs:element name="AlwaysObserved" minOccurs="0"/>
+
+                                                <xs:element name="Precision" minOccurs="0"/>
                                             
                                             <xs:element name="States" minOccurs="0">
                                                 <xs:complexType>
                                                     <xs:sequence>
 
-                                                        <xs:element name="State" maxOccurs="unbounded"></xs:element>
+                                                        <xs:element name="State" maxOccurs="unbounded"/>
 
                                                     </xs:sequence>
                                                 </xs:complexType>   
@@ -112,7 +112,7 @@
                                             </xs:element>
 
                                             </xs:all>
-                                            <xs:anyAttribute processContents="skip"></xs:anyAttribute>
+                                            <xs:anyAttribute processContents="skip"/>
                                         </xs:complexType>
                                     </xs:element>
                                 
@@ -131,7 +131,7 @@
                                         <xs:complexType>
                                             <xs:sequence>
 
-                                                <xs:element name="Variable" maxOccurs="unbounded"></xs:element>
+                                                <xs:element name="Variable" maxOccurs="unbounded"/>
                                                 <xs:element name="Comment" minOccurs="0"/>
                                                 <xs:element name="AdditionalProperties" minOccurs="0"/>
                                                 
@@ -222,7 +222,7 @@
 
                                             <!-- ICIModel Structure -->
                                                 <xs:element name="Model" minOccurs="0"/>
-                                                <xs:element name="Subpotentials" minOccurs="0"></xs:element>
+                                                <xs:element name="Subpotentials" minOccurs="0"/>
 
 
                                             <!-- Tree/ADD Structure -->
@@ -255,7 +255,7 @@
                                                                             </xs:complexType>
                                                                         </xs:element>
 
-                                                                        <xs:element name="Potential"></xs:element>
+                                                                        <xs:element name="Potential"/>
 
                                                                         <xs:element name="Label" minOccurs="0"/>
                                                                         <xs:element name="Reference" minOccurs="0"/>

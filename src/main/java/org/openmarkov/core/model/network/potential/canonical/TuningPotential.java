@@ -180,9 +180,7 @@ public class TuningPotential extends ICIPotential {
     @Override public Potential removeVariable(Variable variable) {
         ArrayList<Variable> newVariables = new ArrayList<>();
         for (int i = 0; i < variables.size(); i++) {
-            if (variable == variables.get(i)) {
-                continue;
-            } else {
+            if (variable != variables.get(i)) {
                 newVariables.add(variables.get(i));
             }
         }
@@ -225,7 +223,7 @@ public class TuningPotential extends ICIPotential {
     }
     
     @Override public Potential deepCopy(ProbNet copyNet) {
-        return (TuningPotential) super.deepCopy(copyNet);
+        return super.deepCopy(copyNet);
     }
     
     @Override

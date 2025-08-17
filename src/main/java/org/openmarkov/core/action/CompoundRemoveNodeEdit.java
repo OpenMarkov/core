@@ -134,7 +134,7 @@ import java.util.List;
 	 * @return {@code String}
 	 */
 	public String toString() {
-		return new String("CompoundRemoveNodeEdit: " + variable);
+        return "CompoundRemoveNodeEdit: " + variable;
 	}
 
 }

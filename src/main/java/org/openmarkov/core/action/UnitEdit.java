@@ -26,7 +26,7 @@ import org.openmarkov.core.model.network.StringWithProperties;
 	public UnitEdit(Node node, String newUnit) {
 		super(node.getProbNet());
 		this.node = node;
-		this.lastUnit = node.getVariable().getUnit().copy();
+        this.lastUnit = node.getVariable().getUnit().clone();
 		this.newUnit = new StringWithProperties(newUnit);
 	}
 

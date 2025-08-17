@@ -3,6 +3,8 @@ package org.openmarkov.core.localize.spi;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.annotation.ImplementationRequirements;
+import org.openmarkov.core.annotation.RequiredConstructor;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.localize.*;
 import org.openmarkov.core.stringformat.LocalizationFormatter;
@@ -76,6 +78,7 @@ import java.util.spi.ResourceBundleProvider;
  * @author mluque, jrico
  */
 @SuppressWarnings({"DuplicateStringLiteralInspection", "InterfaceMayBeAnnotatedFunctional"})
+@ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({}))
 public interface LocalizeResourcesProvider extends ResourceBundleProvider {
     
     String URL_PROTOCOL_JAR_FILE = "jar:file:/";

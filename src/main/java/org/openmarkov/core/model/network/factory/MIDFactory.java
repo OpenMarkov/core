@@ -67,8 +67,8 @@ public class MIDFactory extends NetsFactory {
 		addVariables(probNet, NodeType.UTILITY, variableQoL, variableCostOfTreatment);
 
 		//additional properties
-		String relevance = new String("Relevance");
-		String value = new String("7.0");
+        String relevance = "Relevance";
+        String value = "7.0";
 		setAdditionalProperties(relevance, value, variableState0, variableState1, variableTreatment, variableQoL,
 				variableCostOfTreatment);
 
@@ -137,8 +137,8 @@ public class MIDFactory extends NetsFactory {
 		//Add variables to the network
 		addVariables(probNet, NodeType.CHANCE, duration0, duration1, state0, state1);
 		//additional properties
-		String relevance = new String("Relevance");
-		String value = new String("7.0");
+        String relevance = "Relevance";
+        String value = "7.0";
 		setAdditionalProperties(relevance, value, duration0, duration1, state0, state1);
 		//Potential State0
 		double[] probabilitiesState0 = { 0.0, 1.0 };
@@ -216,8 +216,8 @@ public class MIDFactory extends NetsFactory {
 		addVariables(probNet, NodeType.CHANCE, duration0, duration1, state0, state1, variableTreatment, variableCost,
 				variableQoL);
 		//additional properties
-		String relevance = new String("Relevance");
-		String value = new String("7.0");
+        String relevance = "Relevance";
+        String value = "7.0";
 		setAdditionalProperties(relevance, value, duration0, duration1, state0, state1, variableTreatment, variableCost,
 				variableQoL);
 		//Potential State0
@@ -393,8 +393,8 @@ public class MIDFactory extends NetsFactory {
 		addVariables(probNet, NodeType.UTILITY, variableQoL, variableCostOfTreatment);
 
 		//additional properties
-		String relevance = new String("Relevance");
-		String value = new String("7.0");
+        String relevance = "Relevance";
+        String value = "7.0";
 		setAdditionalProperties(relevance, value, variableTreatment, variableQoL, variableCostOfTreatment);
 
 		//Potential QoL

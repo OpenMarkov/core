@@ -68,7 +68,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
             out.append("Constraints: ");
             for (int i = 0; i < constraints.size(); i++) {
                 String strConstraint = constraints.get(i).toString();
-                strConstraint = strConstraint.substring(strConstraint.lastIndexOf('.') + 1, strConstraint.length());
+                strConstraint = strConstraint.substring(strConstraint.lastIndexOf('.') + 1);
                 out.append(strConstraint);
                 if (i < constraints.size() - 1) {
                     out.append(", ");
@@ -296,12 +296,12 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     public void setNetworkType(NetworkType newNetworkType) throws InvalidNetworkTypeException.UnmetConstraints {
         // Build and check the new constraints
         List<PNConstraint> newConstraints = ConstraintManager.getUniqueInstance().buildConstraintList(newNetworkType);
-        for (PNConstraint newConstraint : newConstraints) {
-            if (!newConstraint.checkProbNet(this)) {
-                throw new InvalidNetworkTypeException.UnmetConstraints(this, newNetworkType, newConstraint);
-            }
+        var unsatisfiedConstraints = newConstraints.stream()
+                                                   .filter(newConstraint -> !newConstraint.checkProbNet(this))
+                                                   .toList();
+        if (!unsatisfiedConstraints.isEmpty()) {
+            throw new InvalidNetworkTypeException.UnmetConstraints(this, newNetworkType, unsatisfiedConstraints);
         }
-        
         this.networkType = newNetworkType;
         this.constraints.clear();
         this.constraints.addAll(newConstraints);

@@ -142,8 +142,8 @@ import java.util.List;
 	 * @return {@code String}
 	 */
 	public String toString() {
-		return new StringBuilder(getOperationName()).append(": ").append(variable1).append("-->").append(variable2)
-				.append(" ==> ").append(variable2).append("-->").append(variable1).toString();
+        return getOperationName() + ": " + variable1 + "-->" + variable2 +
+                " ==> " + variable2 + "-->" + variable1;
 	}
 
 	@Override public BaseLinkEdit getUndoEdit() {

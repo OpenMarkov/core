@@ -94,7 +94,7 @@ public class DiscreteMultiply implements Runnable {
     }
     
     private String getErrorMsg(Exception e, int iPotential) {
-        String error = new String();
+        String error = "";
         error = error + e.getMessage();
         error = error + "Logical processor: " + logicalProcessor + "\n";
         error = error + "iPotential: " + iPotential + "\n";

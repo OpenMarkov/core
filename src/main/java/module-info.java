@@ -48,4 +48,5 @@ open module org.openmarkov.core {
     exports org.openmarkov.core.localize;
     exports org.openmarkov.core.logging;
     exports org.openmarkov.core.annotation;
+    exports org.openmarkov.java.enumUtils;
 }

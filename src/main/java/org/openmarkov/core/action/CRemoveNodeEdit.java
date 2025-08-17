@@ -92,7 +92,7 @@ import java.util.List;
 	 * @return {@code String}
 	 */
 	public String toString() {
-		return new String("CompoundRemoveNodeEdit: " + node.getName());
+        return "CompoundRemoveNodeEdit: " + node.getName();
 	}
 
 }

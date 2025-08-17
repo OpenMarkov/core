@@ -7,7 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Limits {
-    Class[] classesThatCanBeAnnotated() default {};
-    RequiredConstructors[] requiredConstructors() default {};
+public @interface RequiredConstructor {
+    Class[] value();
 }

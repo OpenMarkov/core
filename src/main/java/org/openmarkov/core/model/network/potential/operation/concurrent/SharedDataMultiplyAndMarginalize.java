@@ -34,8 +34,8 @@ public class SharedDataMultiplyAndMarginalize extends SharedDataMultiply {
 		super(potentials);
 
 		this.variablesToKeep = fSVariablesToKeep;
-
-		this.variablesToEliminate = (ArrayList<Variable>) ((Object) fSVariablesToEliminate);
+        
+        this.variablesToEliminate = fSVariablesToEliminate;
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class SharedDataMultiplyAndMarginalize extends SharedDataMultiply {
 		// ... and initializes them
 		TablePotential unionPotential = new TablePotential(unionVariables, null);
 		for (int i = 0; i < numPotentials; i++) {
-			TablePotential potential = (TablePotential) potentials.get(i);
+            TablePotential potential = potentials.get(i);
 			tables[i] = potential.values;
 			initialPositions[i] = potential.getInitialPosition();
 			currentPositions[i] = initialPositions[i];

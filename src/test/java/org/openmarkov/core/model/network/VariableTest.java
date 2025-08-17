@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.openmarkov.core.exception.InvalidArgumentException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,6 +27,7 @@ public class VariableTest {
      *
      * @param variable1 <code>Variable</code>
      * @param variable2 <code>Variable</code>
+     *
      * @return <code>true</code> if both variables are equal.
      */
     public static boolean equalVariables(Variable variable1, Variable variable2) {
@@ -88,7 +90,7 @@ public class VariableTest {
         try {
             variable.renameState(variable.getState("NoExists"), "Yahoo");
             fail();
-        } catch (Exception e) {
+        } catch (NullPointerException | InvalidArgumentException e) {
             //It should throw the exception in order to pass the test
         }
         State[] states = variable.getStates();

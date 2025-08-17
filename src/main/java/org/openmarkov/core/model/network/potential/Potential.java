@@ -7,17 +7,12 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.openmarkov.core.annotation.ImplementationRequirements;
+import org.openmarkov.core.annotation.RequiredConstructor;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.Criterion;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 import java.lang.reflect.InvocationTargetException;
@@ -35,6 +30,11 @@ import java.util.Random;
  * @version 1.0
  * @since OpenMarkov 1.0
  */
+@ImplementationRequirements(requiresOneOfTheseConstructors = {
+        @RequiredConstructor({List.class, CycleLength.class}),
+        @RequiredConstructor({List.class, PotentialRole.class}),
+        @RequiredConstructor({List.class})
+})
 public abstract class Potential {
     // Constants
     /**
@@ -569,7 +569,7 @@ public abstract class Potential {
         
         potential.setVariables(newReferences);
         potential.setPotentialRole(this.getPotentialRole());
-        potential.setComment(new String(this.comment));
+        potential.setComment(this.comment);
         
         return potential;
     }

@@ -69,8 +69,8 @@ import java.util.List;
     }
     
     // Methods
-    @Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                       List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
+    @Override
+    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
         throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }
     
@@ -128,7 +128,7 @@ import java.util.List;
     }
     
     @Override public Potential deepCopy(ProbNet copyNet) {
-        return (SameAsPrevious) super.deepCopy(copyNet);
+        return super.deepCopy(copyNet);
     }
     
     @Override

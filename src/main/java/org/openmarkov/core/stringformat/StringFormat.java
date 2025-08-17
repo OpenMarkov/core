@@ -55,7 +55,7 @@ public class StringFormat {
             (?<functionOrAttribute>\w+?)
             \s*
      */
-    private static final Pattern FUNCTION_AND_ATTRIBUTES_REGEX = Pattern.compile("(?x)\\s*(?<functionOrAttributeMark>\\.|\\#)\\s*(?<functionOrAttribute>\\w+)\\s*");
+    private static final Pattern FUNCTION_AND_ATTRIBUTES_REGEX = Pattern.compile("(?x)\\s*(?<functionOrAttributeMark>[.\\#])\\s*(?<functionOrAttribute>\\w+)\\s*");
     
     /*
         Pattern is:

@@ -46,8 +46,7 @@ public class BasicOperations {
      * @return potential
      */
     public static Potential buildPotentialByAbsorbingParents(Node node, EvidenceCase evidence) {
-        Potential newPotential = null;
-        
+        TablePotential newPotential;
         List<TablePotential> tablePotentials = new ArrayList<>();
         List<Variable> parentVariable = new ArrayList<>();
         for (Node parent : node.getParents()) {
@@ -74,7 +73,7 @@ public class BasicOperations {
             }
         }
         // }
-        return buildExactDistrPotentialUtility(node.getVariable(), (TablePotential) newPotential);
+        return buildExactDistrPotentialUtility(node.getVariable(), newPotential);
     }
     
     private static ExactDistrPotential buildExactDistrPotentialUtility(Variable variable, TablePotential pot) {

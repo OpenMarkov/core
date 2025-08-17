@@ -32,65 +32,68 @@ import java.util.List;
  * @version 1.0
  */
 @PotentialType(name = "Product", family = "Utility") public class ProductPotential extends Potential {
-
-	// Constructor
-
-	/**
-	 * @param variables variables
-	 * @param role      potential role
-	 */
-	public ProductPotential(List<Variable> variables, PotentialRole role) {
-		super(variables, role);
-	}
-
-	public ProductPotential(ProductPotential potential) {
-		super(potential);
-	}
-
-	/**
-	 * @param variables variables
-	 */
-	public ProductPotential(List<Variable> variables) {
-		this(variables, PotentialRole.CONDITIONAL_PROBABILITY);
-	}
-
-	/**
-	 * Returns if an instance of a certain Potential type makes sense given
-	 * the variables and the potential role.
-	 *
-	 * @param node      {@code Node}
-	 * @param variables {@code ArrayList} of {@code Variable}.
-	 * @param role      {@code PotentialRole}.
-	 * @return True if it is valid
-	 */
-	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-		boolean suitable = (
-				role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.POLICY
-		) && variables.get(0).getVariableType() == VariableType.NUMERIC;
-
-		return suitable || (role == PotentialRole.UNSPECIFIED && node.isSuperValueNode());
-	}
-
-	// Methods
-	/**
-	 * Project the potential and return a list of projected table potentials
-	 * @param evidenceCase               {@code EvidenceCase}
-	 * @param inferenceOptions Inference options
-	 * @param projectedPotentials Projected potentials
-	 * @return a list of projected table potentials
-	 */
-	@Override
-	public List<TablePotential> tableProject(
-			EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
-		List<Variable> parentVariables = new ArrayList<>(variables);
-		parentVariables.remove(getConditionedVariable());
-		List<TablePotential> parentPotentials = new ArrayList<>();
-		for (Variable parentVariable : parentVariables) {
-			parentPotentials.add(findPotentialByVariable(parentVariable, projectedPotentials));
-		}
-		TablePotential productPotential = DiscretePotentialOperations.multiply(parentPotentials);
-		return Arrays.asList(productPotential);
-	}
+    
+    // Constructor
+    
+    /**
+     * @param variables variables
+     * @param role      potential role
+     */
+    public ProductPotential(List<Variable> variables, PotentialRole role) {
+        super(variables, role);
+    }
+    
+    public ProductPotential(ProductPotential potential) {
+        super(potential);
+    }
+    
+    /**
+     * @param variables variables
+     */
+    public ProductPotential(List<Variable> variables) {
+        this(variables, PotentialRole.CONDITIONAL_PROBABILITY);
+    }
+    
+    /**
+     * Returns if an instance of a certain Potential type makes sense given
+     * the variables and the potential role.
+     *
+     * @param node      {@code Node}
+     * @param variables {@code ArrayList} of {@code Variable}.
+     * @param role      {@code PotentialRole}.
+     *
+     * @return True if it is valid
+     */
+    public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+        boolean suitable = (
+                role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.POLICY
+        ) && variables.get(0).getVariableType() == VariableType.NUMERIC;
+        
+        return suitable || (role == PotentialRole.UNSPECIFIED && node.isSuperValueNode());
+    }
+    
+    // Methods
+    
+    /**
+     * Project the potential and return a list of projected table potentials
+     *
+     * @param evidenceCase        {@code EvidenceCase}
+     * @param inferenceOptions    Inference options
+     * @param projectedPotentials Projected potentials
+     *
+     * @return a list of projected table potentials
+     */
+    @Override
+    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
+        List<Variable> parentVariables = new ArrayList<>(variables);
+        parentVariables.remove(getConditionedVariable());
+        List<TablePotential> parentPotentials = new ArrayList<>();
+        for (Variable parentVariable : parentVariables) {
+            parentPotentials.add(findPotentialByVariable(parentVariable, projectedPotentials));
+        }
+        TablePotential productPotential = DiscretePotentialOperations.multiply(parentPotentials);
+        return Arrays.asList(productPotential);
+    }
     
     @Override
     public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
@@ -98,32 +101,32 @@ import java.util.List;
     }
     
     @Override public Potential copy() {
-		return new ProductPotential(this);
-	}
-
-	@Override public boolean isUncertain() {
-		return false;
-	}
-
-	@Override public void scalePotential(double scale) {
-
-	}
-
-	@Override public Potential deepCopy(ProbNet copyNet) {
-		return (ProductPotential) super.deepCopy(copyNet);
-	}
-
-	@Override
-	public Potential reorder(List<Variable> newOrderOfVariables) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Potential reorder(Variable variable, State[] newOrder) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+        return new ProductPotential(this);
+    }
+    
+    @Override public boolean isUncertain() {
+        return false;
+    }
+    
+    @Override public void scalePotential(double scale) {
+    
+    }
+    
+    @Override public Potential deepCopy(ProbNet copyNet) {
+        return super.deepCopy(copyNet);
+    }
+    
+    @Override
+    public Potential reorder(List<Variable> newOrderOfVariables) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public Potential reorder(Variable variable, State[] newOrder) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
 }
 

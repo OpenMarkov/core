@@ -17,9 +17,8 @@
     <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$SamplesWeigthIsZero" value="Samples weigth is zero"/>
     <Localization class="org.openmarkov.core.exception.IntervalsAreNotEvenException" value="The total number of subintervals or time horizon is not even."/>
     <Localization class="org.openmarkov.core.exception.IntervalsAreNotMultipleOf3Exception" value="The total number of subintervals or time horizon is not multiple of three."/>
-    <Localization class="org.openmarkov.core.exception.InvalidArgumentException" value="Argument {argumentName} ({value}) is invalid because {reason}."/>
     <Localization class="org.openmarkov.core.exception.InvalidNetworkTypeException$NotAllowedType" value="{probNet} is not of an allowed type: {allowedTypes}"/>
-    <Localization class="org.openmarkov.core.exception.InvalidNetworkTypeException$UnmetConstraints" value="{probNet} cannot be converted to {newNetworkType} as it would not satisfy constraint {unsatisfiedConstraint}"/>
+    <Localization class="org.openmarkov.core.exception.InvalidNetworkTypeException$UnmetConstraints" value="{probNet} cannot be converted to {newNetworkType} as it would not satisfy constraints: {unsatisfiedConstraints}"/>
     <Localization class="org.openmarkov.core.exception.NetworkHasNoNodesException" value="{probNet} has no nodes."/>
     <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$CannotEvaluate" value="Cannot evaluate '{elementToEvaluate}' due to {evaluationException.getMessage}"/>
     <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$MissingEvidenceInVariable" value="There is required evidence to be present in variable {timeVariable}, but there is no evidence"/>

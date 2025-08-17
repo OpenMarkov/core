@@ -478,24 +478,18 @@ public class PotentialTest {
      * @param potential2
      */
     private void compareBasicCopiedAttributesPotential(Potential potential1, Potential potential2) {
-        
         assertNotSame(potential1, potential2);
-        
         if (potential1.getComment() != null) {
-            assertNotSame(potential1.getComment(), potential2.getComment());
+            assertEquals(potential1.getComment(), potential2.getComment());
         }
-        
         //		if(potential1.getUtilityVariable() != null) {
         //			assertTrue(potential1.getUtilityVariable() != potential2.getUtilityVariable());
         //		}
         if (potential1.getVariables() != null) {
             assertNotSame(potential1.getVariables(), potential2.getVariables());
         }
-        
         assertEquals(potential1.getNumVariables(), potential2.getNumVariables());
-        
         assertSame(potential1.getPotentialRole(), potential2.getPotentialRole());
-        
         assertSame(potential1.getCriterion(), potential2.getCriterion());
     }
 }

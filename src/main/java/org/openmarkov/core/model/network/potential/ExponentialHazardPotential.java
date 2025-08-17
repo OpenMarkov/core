@@ -101,6 +101,6 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
 	}
 
 	@Override public Potential deepCopy(ProbNet copyNet) {
-		return (ExponentialHazardPotential) super.deepCopy(copyNet);
+        return super.deepCopy(copyNet);
 	}
 }

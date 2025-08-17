@@ -102,12 +102,9 @@ public class PluginManager {
 	 * @return the String representing this object.
 	 */
 	@Override public String toString() {
-		StringBuffer strBuffer = new StringBuffer();
-		strBuffer.append("[PluginsManager] - {");
-		strBuffer.append("plugins = ");
-		strBuffer.append(plugins);
-		strBuffer.append("}");
-
-		return strBuffer.toString();
+        return "[PluginsManager] - {" +
+                "plugins = " +
+                plugins +
+                "}";
 	}
 }

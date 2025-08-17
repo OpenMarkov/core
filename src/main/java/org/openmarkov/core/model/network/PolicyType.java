@@ -7,26 +7,15 @@
 
 package org.openmarkov.core.model.network;
 
+import org.openmarkov.java.enumUtils.EnumUtils;
+
 public enum PolicyType {
-	OPTIMAL("Optimal"),
-	DETERMINISTIC("Deterministic"),
-	PROBABILISTIC("Probabilistic");
-
-	private final String name;
-	private final int type;
-
-	PolicyType(String name) {
-		this.type = this.ordinal();
-		this.name = name;
-	}
-
-	public String toString() {
-		return name;
-	}
-
-	public int getType() {
-
-		return type;
+    OPTIMAL,
+    DETERMINISTIC,
+    PROBABILISTIC;
+    
+    public String toString() {
+        return EnumUtils.toPascalCase(this);
 	}
 
 }

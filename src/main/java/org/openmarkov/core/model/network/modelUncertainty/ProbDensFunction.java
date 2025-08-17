@@ -7,10 +7,13 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import org.openmarkov.core.annotation.ImplementationRequirements;
+import org.openmarkov.core.annotation.RequiredConstructor;
 import org.openmarkov.core.exception.InvalidArgumentException;
 
 import java.util.Random;
 
+@ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({}))
 public abstract class ProbDensFunction {
 	public abstract double[] getParameters();
 

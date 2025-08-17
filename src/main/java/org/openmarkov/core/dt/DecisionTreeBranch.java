@@ -123,10 +123,8 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 	}
 
 	@Override public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("DecisionTreeBranch [branchVariable=").append(branchVariable).append(", branchState=")
-				.append(branchState).append("]");
-		return builder.toString();
+        return "DecisionTreeBranch [branchVariable=" + branchVariable + ", branchState=" +
+                branchState + "]";
 	}
 
 	public DecisionTreeNode getParent() {

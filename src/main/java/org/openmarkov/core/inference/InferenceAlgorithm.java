@@ -8,6 +8,8 @@
 package org.openmarkov.core.inference;
 
 import org.openmarkov.core.action.PNESupport;
+import org.openmarkov.core.annotation.ImplementationRequirements;
+import org.openmarkov.core.annotation.RequiredConstructor;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.inference.tasks.Task;
@@ -25,6 +27,7 @@ import java.util.List;
  * @author marias
  * @author fjdiez
  */
+@ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor(ProbNet.class))
 public abstract class InferenceAlgorithm implements Task {
 
 	/**
@@ -100,9 +103,8 @@ public abstract class InferenceAlgorithm implements Task {
 	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
 	private void checkNetworkApplicability() throws NotEvaluableNetworkException.NotApplicableNetwork {
-
 		NetworkType networkType = probNet.getNetworkType();
-		if (getPossibleNetworkTypes().stream().noneMatch(iNetwork -> iNetwork == networkType)) {
+		if (!getPossibleNetworkTypes().contains(networkType)) {
 			throw new NotEvaluableNetworkException.NotApplicableNetwork(probNet, getPossibleNetworkTypes());
 		}
 	}
@@ -138,8 +140,7 @@ public abstract class InferenceAlgorithm implements Task {
 					notEvaluableConstraints.add(pnConstraint);
 				}
 			}
-
-			if (notEvaluableConstraints.size() != 0) {
+			if (!notEvaluableConstraints.isEmpty()) {
 				throw new NotEvaluableNetworkException.UnsatisfiedContraints(probNet, notEvaluableConstraints);
 			}
 		}

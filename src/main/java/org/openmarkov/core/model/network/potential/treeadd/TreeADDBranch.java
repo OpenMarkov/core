@@ -391,12 +391,12 @@ public class TreeADDBranch {
         }
 
 		TreeADDBranch branch = new TreeADDBranch(newStates, newRootVariable, newParentVariables);
-
-		branch.indent = new String(this.indent);
+        
+        branch.indent = this.indent;
 		branch.intervalBranch = this.intervalBranch;
 
 		if (this.label != null) {
-			branch.label = new String(this.label);
+            branch.label = this.label;
 		}
 
 		if (this.lowerBound != null) {
@@ -412,7 +412,7 @@ public class TreeADDBranch {
 		}
 
 		if (this.reference != null) {
-			branch.reference = new String(this.reference);
+            branch.reference = this.reference;
 		}
 
 		if (this.referencedBranch != null) {

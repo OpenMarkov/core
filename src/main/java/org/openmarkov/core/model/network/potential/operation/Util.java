@@ -65,13 +65,13 @@ public class Util {
 	 * @return The string with commas
 	 */
 	public static String printInteger(long number) {
-		String numberString = new String();
+		String numberString = "";
 		Stack<String> stack = new Stack<>();
 		long remainder;
 		do {
 			remainder = number % 1000;
 			number = number / 1000;
-			String stackElement = new String();
+			String stackElement = "";
 			if (number > 0) {
 				if (remainder < 100) {
 					stackElement = "0";
@@ -97,7 +97,7 @@ public class Util {
 	 * @return String with ''[num 1, num 2, ... num n]''
 	 */
 	public static String printArrayOfIntegers(int[] arrayInts) {
-		String arrayStr = new String("[" + arrayInts[0]);
+		String arrayStr = "[" + arrayInts[0];
 		for (int i = 1; i < arrayInts.length; i++) {
 			arrayStr = arrayStr + ", " + arrayInts[i];
 		}

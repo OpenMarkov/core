@@ -85,6 +85,7 @@ public class EvidenceCase {
      * Condition: There is a finding for this variable in the evidence
      *
      * @param variable Variable
+     *
      * @return The state assigned to the variable. {@code int}.
      */
     public int getState(Variable variable) {
@@ -95,6 +96,7 @@ public class EvidenceCase {
      * Condition: There is a finding for this variable in the evidence
      *
      * @param variable {@code Variable}.
+     *
      * @return The value of a evidence for a continuous or hybrid variable if it
      * exists: {@code double}.
      */
@@ -104,21 +106,22 @@ public class EvidenceCase {
     
     /**
      * @param finding . {@code Finding}.
+     *
      * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void addFinding(Finding finding) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
-        if (isCompatible(finding)) {
-            if (!findings.containsKey(finding.getVariable())) {
-                findings.put(finding.getVariable(), finding);
-            }
-        } else {
+        if (!isCompatible(finding)) {
             Finding alreadyExistingFinding = findings.get(finding.getVariable());
             throw new IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther(finding, alreadyExistingFinding);
+        }
+        if (!findings.containsKey(finding.getVariable())) {
+            findings.put(finding.getVariable(), finding);
         }
     }
     
     /**
      * @param finding . {@code Finding}.
+     *
      * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void changeFinding(Finding finding) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
@@ -128,6 +131,7 @@ public class EvidenceCase {
     
     /**
      * @param findings . {@code Collection} of {@code Finding}s.
+     *
      * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void addFindings(Collection<Finding> findings) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
@@ -140,6 +144,7 @@ public class EvidenceCase {
      * @param probNet      Network
      * @param variableName Variable name
      * @param stateName    {@code Finding}.
+     *
      * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void addFinding(ProbNet probNet, String variableName, String stateName) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
@@ -152,6 +157,7 @@ public class EvidenceCase {
      * @param probNet      Network
      * @param variableName Variable name
      * @param value        {@code Finding}.
+     *
      * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void addFinding(ProbNet probNet, String variableName, double value)
@@ -163,7 +169,9 @@ public class EvidenceCase {
     
     /**
      * @param variable {@code Variable}.
+     *
      * @return Finding
+     *
      * @throws NoFindingException NoFindingException
      */
     public @Nullable Finding removeFinding(Variable variable) {
@@ -176,6 +184,7 @@ public class EvidenceCase {
     
     /**
      * @param variableName {@code String}.
+     *
      * @return
      */
     public @Nullable Finding removeFinding(String variableName) {
@@ -203,6 +212,7 @@ public class EvidenceCase {
      * Condition: There is a finding for this variable in the evidence
      *
      * @param variable {@code String}.
+     *
      * @return finding {@code Finding}.
      */
     public Finding getFinding(Variable variable) {
@@ -220,6 +230,7 @@ public class EvidenceCase {
      * Returns true if the evidence case contains a finding for this variable.
      *
      * @param variable . {@code Variable}
+     *
      * @return {@code boolean}.
      */
     public boolean contains(Variable variable) {
@@ -228,6 +239,7 @@ public class EvidenceCase {
     
     /**
      * @param variables . {@code ArrayList} of {@code Variable}s.
+     *
      * @return {@code boolean}.
      */
     public boolean existsEvidence(List<Variable> variables) {
@@ -244,6 +256,7 @@ public class EvidenceCase {
      * received evidence.
      *
      * @param probNet {@code ProbNet}.
+     *
      * @return An {@code ArrayList} of {@code Node}s.
      */
     public List<Node> getRemainingNodes(ProbNet probNet) {
@@ -269,7 +282,7 @@ public class EvidenceCase {
      * writes the name of the variables and the findings.
      */
     public String toString() {
-        String string = new String("[");
+        String string = "[";
         Collection<Finding> findingsCollection = findings.values();
         for (Finding finding : findingsCollection) {
             if (string.compareTo("[") != 0) {
@@ -322,6 +335,7 @@ public class EvidenceCase {
      * actual evidence.
      *
      * @param newFinding . {@code Finding}
+     *
      * @return {@code boolean}
      */
     public boolean isCompatible(Finding newFinding) {
@@ -329,20 +343,15 @@ public class EvidenceCase {
         Finding existingFinding = findings.get(variable);
         if (existingFinding == null) {
             return true;
-        } else {
-            VariableType variableType = variable.getVariableType();
-            switch (variableType) {
-                case FINITE_STATES:
-                    return newFinding.stateIndex == existingFinding.stateIndex;
-                case NUMERIC:
-                    return newFinding.numericalValue == existingFinding.numericalValue;
-                case DISCRETIZED:
-                    return (newFinding.stateIndex == existingFinding.stateIndex) || (
-                            newFinding.numericalValue == existingFinding.numericalValue
-                    );
-            }
         }
-        return true;
+        VariableType variableType = variable.getVariableType();
+        return switch (variableType) {
+            case FINITE_STATES -> newFinding.stateIndex == existingFinding.stateIndex;
+            case NUMERIC -> newFinding.numericalValue == existingFinding.numericalValue;
+            case DISCRETIZED -> (newFinding.stateIndex == existingFinding.stateIndex) || (
+                    newFinding.numericalValue == existingFinding.numericalValue
+            );
+        };
     }
     
     public EvidenceCase shiftEvidenceBackwards(int timeDifference, ProbNet probNet) {
@@ -389,6 +398,7 @@ public class EvidenceCase {
      * @param evidenceCaseToFuse Evidence case to fuse
      * @param overwrite          if true the findings in the parameter will overwrite those in
      *                           this EvidenceCase
+     *
      * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void fuse(EvidenceCase evidenceCaseToFuse, boolean overwrite) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {

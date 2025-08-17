@@ -138,8 +138,8 @@ public class BNFactory extends NetsFactory {
 		variableC = new Variable("C", nameStates);
 
 		//additional properties
-		String relevance = new String("Relevance");
-		String value = new String("7.0");
+        String relevance = "Relevance";
+        String value = "7.0";
 
 		setAdditionalProperties(relevance, value, variableA);
 
@@ -214,14 +214,14 @@ public class BNFactory extends NetsFactory {
 		variableD = new Variable("D", yesNoStates);
 
 		//additional properties
-		String relevance = new String("Relevance");
-		String value = new String("7.0");
+        String relevance = "Relevance";
+        String value = "7.0";
 
 		addVariables(network, NodeType.CHANCE, variableA, variableS, variableT, variableL, variableB, variableTOrC,
 				variableX, variableD);
 
 		List<Variable> variables2 = network.getVariables();
-		setAdditionalProperties(relevance, value, (Variable[]) variables2.toArray(new Variable[variables2.size()]));
+        setAdditionalProperties(relevance, value, variables2.toArray(new Variable[variables2.size()]));
 
 		//Potentials
 		//PotentialType type = PotentialType.TABLE;

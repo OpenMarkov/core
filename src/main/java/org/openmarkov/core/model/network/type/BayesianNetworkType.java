@@ -12,7 +12,7 @@ import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 @ProbNetType(name = "BayesianNetwork") public class BayesianNetworkType extends NetworkType {
-	private static BayesianNetworkType instance = null;
+    private static final BayesianNetworkType INSTANCE = new BayesianNetworkType();
 
 	// Constructor
 	private BayesianNetworkType() {
@@ -21,11 +21,8 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 	}
 
 	// Methods
-	public static BayesianNetworkType getUniqueInstance() {
-		if (instance == null) {
-			instance = new BayesianNetworkType();
-		}
-		return instance;
+    public static synchronized BayesianNetworkType getUniqueInstance() {
+        return INSTANCE;
 	}
 
 }

@@ -13,6 +13,7 @@ import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -34,8 +35,7 @@ public abstract class Sampler {
 	}
 
 	protected static List<Class<? extends ProbDensFunction>> initializeTypeFunctions() {
-		List<Class<? extends ProbDensFunction>> functionTypes;
-		functionTypes = new ArrayList<>();
+        List<Class<? extends ProbDensFunction>> functionTypes = new ArrayList<>();
 		functionTypes.add(ComplementFunction.class);
 		functionTypes.add(DirichletFunction.class);
 		return functionTypes;
@@ -80,12 +80,12 @@ public abstract class Sampler {
 		int numStates;
 
 		List<Variable> variables = originalSubpotential.getVariables();
-		if (variables.size() == 0 || originalSubpotential instanceof ExactDistrPotential || isInsideOfExactDistrPotential) {
+        if (variables.isEmpty() || originalSubpotential instanceof ExactDistrPotential || isInsideOfExactDistrPotential) {
 			numStates = 1;
 		}
 		else {
 			Variable firstVariable = variables.get(0);
-			if (firstVariable.getVariableType().equals(VariableType.NUMERIC)) {
+            if (firstVariable.getVariableType() == VariableType.NUMERIC) {
 				numStates = 1;
 			}
 			else {
@@ -101,11 +101,7 @@ public abstract class Sampler {
 
 	protected static List<UncertainValue> getUncertainValuesChance(UncertainValue[] uTable, int basePos,
 			int numStates) {
-		List<UncertainValue> uv;
-		uv = new ArrayList<>();
-		for (int i = 0; i < numStates; i++) {
-			uv.add(uTable[basePos + i]);
-		}
+        List<UncertainValue> uv = new ArrayList<>(Arrays.asList(uTable).subList(basePos, numStates + basePos));
 		return uv;
 	}
 
@@ -149,18 +145,15 @@ public abstract class Sampler {
 			ComplementFamily complementFamily, int[] indexesOther, int[] indexesDirichlet, int[] indexesComplement,
 			int numStates) {
 		Random randomGenerator = createRandomGenerator();
-		double[] sampleOther;
-		double[] sampleDir;
-		double massForComp;
-		double[] sampledConfigurationValues = new double[numStates];
+        double[] sampledConfigurationValues = new double[numStates];
 		// processes the uncertain values that can be sampled individually
-		sampleOther = getSample(otherFamily, randomGenerator);
+        double[] sampleOther = getSample(otherFamily, randomGenerator);
 		placeInArray(sampledConfigurationValues, indexesOther, sampleOther);
 		// processes Dirichlet
-		sampleDir = getSample(dirFamily, randomGenerator);
+        double[] sampleDir = getSample(dirFamily, randomGenerator);
 		placeInArray(sampledConfigurationValues, indexesDirichlet, sampleDir);
 		// Process complements
-		massForComp = 1.0 - (Tools.sum(sampleOther));
+        double massForComp = 1.0 - (Tools.sum(sampleOther));
 		complementFamily.setProbMass(massForComp);
 		double[] sampleComp = complementFamily.getSample();
 		placeInArray(sampledConfigurationValues, indexesComplement, sampleComp);

@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.model.network.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
@@ -16,7 +14,7 @@ import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 @ProbNetType(name = "DBN") public class DynamicBayesianNetwork extends NetworkType {
-	private static DynamicBayesianNetwork instance = null;
+    private static final DynamicBayesianNetwork INSTANCE = new DynamicBayesianNetwork();
 
 	// Constructor
 	private DynamicBayesianNetwork() {
@@ -28,10 +26,7 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 	// Methods
 	public static DynamicBayesianNetwork getUniqueInstance() {
-		if (instance == null) {
-			instance = new DynamicBayesianNetwork();
-		}
-		return instance;
+        return INSTANCE;
 	}
 	
 }

@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential.canonical;
 
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
@@ -27,12 +26,12 @@ public abstract class MinMaxPotential extends ICIPotential {
     /**
      * Constant defined to manipulate sub-potential variables
      */
-    protected final int CONDITIONED_VAR_POSITION = 0;
+    protected static final int CONDITIONED_VAR_POSITION = 0;
     
     /**
      * Constant defined to manipulate sub-potential variables
      */
-    protected final int CONDITIONING_VAR_POSITION = 1;
+    protected static final int CONDITIONING_VAR_POSITION = 1;
     
     // Attributes
     /**

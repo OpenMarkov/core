@@ -157,7 +157,7 @@ public class NodeTypeDepot {
 	 * @author mluque Contains a {@code LinkedHashMap} from
 	 * {@code Variable} to {@code Node}.
 	 */
-	private class NodesHashMap {
+    private static class NodesHashMap {
 		LinkedHashMap<Variable, Node> nodesHashMap;
 
 		NodesHashMap() {

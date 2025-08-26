@@ -148,7 +148,7 @@ import java.util.Map;
      */
     @Override public void scalePotential(double scale) {
         String scaleString = String.valueOf(scale);
-        String function = scaleString.concat("*").concat(processedCovariates[0]);
+        String function = scaleString + "*" + processedCovariates[0];
         processedCovariates[0] = function;
     }
     
@@ -160,7 +160,7 @@ import java.util.Map;
      * @return a FunctionPotential with the new variabla
      */
     @Override public Potential addVariable(Variable variable) {
-        FunctionPotential newPotential = null;
+        FunctionPotential newPotential;
         if (!variables.contains(variable)) {
             List<Variable> newVariables = new ArrayList<>(variables);
             newVariables.add(variable);

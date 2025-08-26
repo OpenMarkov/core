@@ -13,6 +13,7 @@ import org.openmarkov.core.model.network.potential.StrategyTree;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public class CEP {
     /**
      * Used to save memory and time in case of partitions corresponding to configurations with zero probability.
      */
-    private static CEP zeroPartition;
+    private static final CEP ZERO_PARTITION = new CEP();
     private static final double DEFAULT_MINIMAL_THRESHOLD = 0.0;
     private static final double DEFAULT_MAXIMAL_THRESHOLD = Double.POSITIVE_INFINITY;
     DecimalFormat decimalFormat3afterComa = new DecimalFormat("#.###");
@@ -137,11 +138,8 @@ public class CEP {
      *
      * @return CEPartition
      */
-    public static CEP getZeroPartition() {
-        if (zeroPartition == null) {
-            zeroPartition = new CEP();
-        }
-        return zeroPartition;
+    public static synchronized CEP getZeroPartition() {
+        return ZERO_PARTITION;
     }
     
     /**
@@ -347,19 +345,15 @@ public class CEP {
     
     private List<StrategyTree> getListOfInterventions() {
         List<StrategyTree> listOfStrategyTrees = new ArrayList<StrategyTree>(strategyTrees.length);
-        for (int i = 0; i < strategyTrees.length; i++) {
-            listOfStrategyTrees.add(strategyTrees[i]);
-        }
+        Collections.addAll(listOfStrategyTrees, this.strategyTrees);
         return listOfStrategyTrees;
     }
     
-    private List<State> getListOfStates(Variable variable) {
+    private static List<State> getListOfStates(Variable variable) {
         State[] statesVariable = variable.getStates();
         int numStates = statesVariable.length;
         List<State> listOfStates = new ArrayList<State>(numStates);
-        for (int i = 0; i < numStates; i++) {
-            listOfStates.add(statesVariable[i]);
-        }
+        listOfStates.addAll(Arrays.asList(statesVariable).subList(0, numStates));
         return listOfStates;
     }
     
@@ -417,7 +411,7 @@ public class CEP {
                 }
                 strBuffer.append(" and ");
                 if (i == thresholds.length) {
-                    if (maxThreshold == Double.POSITIVE_INFINITY || maxThreshold > 1E300) {
+                    if (maxThreshold == Double.POSITIVE_INFINITY || maxThreshold > 1.0E300) {
                         strBuffer.append("+");
                         strBuffer.append("Infinity");
                     } else {
@@ -474,12 +468,10 @@ public class CEP {
     
     public boolean equals(CEP cep) {
         if (cep != null) {
-            boolean areEquals = true;
-            areEquals = Arrays.equals(this.thresholds, cep.thresholds) && Arrays.equals(this.costs, cep.costs) && Arrays
+            boolean areEquals = Arrays.equals(this.thresholds, cep.thresholds) && Arrays.equals(this.costs, cep.costs) && Arrays
                     .equals(this.effectivities, cep.effectivities);
             return areEquals;
-        } else {
-            return false;
         }
+        return false;
     }
 }

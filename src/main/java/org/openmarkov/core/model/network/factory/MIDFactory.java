@@ -35,9 +35,7 @@ public class MIDFactory extends NetsFactory {
 
 	public static ProbNet createMIDWithStateVariable(double qoLTreat, double qoLNoTreat, double costTreat,
 			double costNoTreat, double probAliveIfTreat, double probAliveIfNoTreat) {
-		ExactDistrPotential potentialQoL;
-		ExactDistrPotential potentialCostOfTreatment;
-		double[] tableQoL = { 0.0, qoLTreat, 0.0, qoLNoTreat };
+        double[] tableQoL = {0.0, qoLTreat, 0.0, qoLNoTreat};
 		double[] tableCostOfTreatment = { costTreat, costNoTreat };
 		String[] statesStateVariable = { "dead", "alive" };
 
@@ -84,12 +82,12 @@ public class MIDFactory extends NetsFactory {
 				probabilitiesState1, variableState1, variableState0, variableTreatment);
 
 		//Potential Treatment
-		potentialCostOfTreatment = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY,
-				tableCostOfTreatment, variableCostOfTreatment, variableTreatment);
+        ExactDistrPotential potentialCostOfTreatment = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY,
+                                                                                 tableCostOfTreatment, variableCostOfTreatment, variableTreatment);
 
 		//Potential QoL
-		potentialQoL = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableQoL, variableQoL,
-				variableState0, variableTreatment);
+        ExactDistrPotential potentialQoL = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableQoL, variableQoL,
+                                                                     variableState0, variableTreatment);
 
 		//Links throws NodeNotFoundException
         probNet.addLink(variableTreatment, variableCostOfTreatment, true);
@@ -285,11 +283,11 @@ public class MIDFactory extends NetsFactory {
 		variablesCost.add(state0);
 
 		//cost no treatment
-		double costNoTreat[] = { 0.0 };
+        double[] costNoTreat = {0.0};
 		ExactDistrPotential costNoTreatment = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY,
 				costNoTreat, variableCost);
 		//cost treatment
-		double costTreat[] = { 3000.0, 0.0 };
+        double[] costTreat = {3000.0, 0.0};
 		ExactDistrPotential costTreatment = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, costTreat,
 				variableCost, state0);
 
@@ -313,11 +311,11 @@ public class MIDFactory extends NetsFactory {
 		variablesQoL.add(state0);
 
 		//cost no treatment
-		double qolNoTreat[] = { 0.0 };
+        double[] qolNoTreat = {0.0};
 		ExactDistrPotential qolNoTreatment = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY,
 				qolNoTreat, variableQoL);
 		//cost treatment
-		double qolTreat[] = { 1500.0, 0.0 };
+        double[] qolTreat = {1500.0, 0.0};
 		ExactDistrPotential qolTreatment = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, qolTreat,
 				variableQoL, state0);
 
@@ -366,9 +364,7 @@ public class MIDFactory extends NetsFactory {
 	public static ProbNet createMIDWithoutStateVariable(double qoLTreat, double qoLNoTreat, double costTreat,
 			double costNoTreat) {
 		// Define the variables
-		ExactDistrPotential potentialQoL;
-		ExactDistrPotential potentialCostOfTreatment;
-		double[] tableQoL = { qoLTreat, qoLNoTreat };
+        double[] tableQoL = {qoLTreat, qoLNoTreat};
 		double[] tableCostOfTreatment = { costTreat, costNoTreat };
 
 		//Decision criteria
@@ -398,12 +394,12 @@ public class MIDFactory extends NetsFactory {
 		setAdditionalProperties(relevance, value, variableTreatment, variableQoL, variableCostOfTreatment);
 
 		//Potential QoL
-		potentialQoL = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableQoL, variableQoL,
-				variableTreatment);
+        ExactDistrPotential potentialQoL = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableQoL, variableQoL,
+                                                                     variableTreatment);
 
 		//Potential Treatment
-		potentialCostOfTreatment = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY,
-				tableCostOfTreatment, variableCostOfTreatment, variableTreatment);
+        ExactDistrPotential potentialCostOfTreatment = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY,
+                                                                                 tableCostOfTreatment, variableCostOfTreatment, variableTreatment);
 
 		//Links throws NodeNotFoundException
         probNet.addLink(variableTreatment, variableQoL, true);

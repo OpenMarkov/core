@@ -16,6 +16,7 @@ import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -72,13 +73,13 @@ import java.util.List;
 	 *
 	 * @param potential Potential
 	 * @param column Column
-	 * @param var Variable
+     * @param variable Variable
 	 * @param basePosition Base position
 	 */
-	static void placeUncertainColumn(TablePotential potential, List<UncertainValue> column, Variable var,
+    static void placeUncertainColumn(TablePotential potential, List<UncertainValue> column, Variable variable,
 			int basePosition) {
 		UncertainValue[] table = (potential.getUncertainValues());
-		for (int i = 0; i < var.getNumStates(); i++) {
+        for (int i = 0; i < variable.getNumStates(); i++) {
 			table[i + basePosition] = (column != null) ? column.get(i) : null;
 		}
 	}
@@ -105,11 +106,9 @@ import java.util.List;
 	}
 
 	private List<UncertainValue> getColumn(UncertainValue[] uncertainValues, Variable variable, int basePosition) {
-		List<UncertainValue> column = new ArrayList<>();
-		int numElements = (isChanceVariable) ? variable.getNumStates() : 1;
-		for (int i = 0; i < numElements; i++) {
-			column.add(uncertainValues[basePosition + i]);
-		}
+        int numElements = (isChanceVariable) ? variable.getNumStates() : 1;
+        List<UncertainValue> column = new ArrayList<>(Arrays.asList(uncertainValues)
+                                                            .subList(basePosition, numElements + basePosition));
 		return column;
 	}
 
@@ -120,12 +119,12 @@ import java.util.List;
 	private TablePotential getPotential() {
 		if (node.getPotentials().get(0) instanceof TablePotential) {
 			return (TablePotential) (node.getPotentials().get(0));
-		} else if (node.getPotentials().get(0) instanceof ExactDistrPotential) {
-			return ((ExactDistrPotential) (node.getPotentials().get(0))).getTablePotential();
-		} else {
-			return null;
-		}
-	}
+        }
+        if (node.getPotentials().get(0) instanceof ExactDistrPotential) {
+            return ((ExactDistrPotential) (node.getPotentials().get(0))).getTablePotential();
+        }
+        return null;
+    }
 
 	public Variable getVariable() {
 		return node.getVariable();
@@ -164,8 +163,8 @@ import java.util.List;
 
 	private void placeValuesColumn(TablePotential potential, List<Double> column) {
 		double[] table = potential.getValues();
-		Variable var = getVariable();
-		for (int i = 0; i < var.getNumStates(); i++) {
+        Variable variable = getVariable();
+        for (int i = 0; i < variable.getNumStates(); i++) {
 			table[i + basePosition] = column.get(i);
 		}
 	}

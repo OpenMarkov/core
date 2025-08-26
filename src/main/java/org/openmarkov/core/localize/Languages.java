@@ -7,7 +7,7 @@
 
 package org.openmarkov.core.localize;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.MissingResourceException;
 
@@ -18,35 +18,13 @@ import java.util.MissingResourceException;
  * @version 1.0
  */
 public class Languages {
-	/**
-	 * Internal names of the different languages
-	 */
-	private static List<String> list = null;
-	/**
-	 * Internal short locale of the different languages
-	 */
-	private static List<String> shortLocale = null;
-	/**
-	 * String database
-	 */
-	private static StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-
-	/**
-	 * This method adds all the languages supported by OPENMARKOV TODO read from
-	 * an external file configuration
-	 */
-	private static void fillList() {
-		if (list == null) {
-			list = new ArrayList<String>();
-			list.add("Languages.English");
-			list.add("Languages.Spanish");
-			shortLocale = new ArrayList<String>();
-			shortLocale.add("Languages.English");
-			shortLocale.add("Languages.Spanish");
-		}
-	}
-
-	/**
+    
+    /**
+     * Internal names of the different languages
+     */
+    private static final List<String> LIST = Arrays.asList("Languages.English", "Languages.Spanish");
+    
+    /**
 	 * It retrieves the dependent-language string of the desired language. If
 	 * the language hasn't a dependent-language string (because this language
 	 * isn't a registered one), the returned string is the language itself.
@@ -56,16 +34,15 @@ public class Languages {
 	 * bundle
 	 */
 	public static String getString(String element) {
-		if (element.equals("")) {
+        if (element.isEmpty()) {
 			return element;
-		} else {
-			try {
-				return stringDatabase.getString(element + ".LongName.Text.Label");
-			} catch (MissingResourceException e) {
-				return element;
-			}
-		}
-	}
+        }
+        try {
+            return StringDatabase.getUniqueInstance().getString(element + ".LongName.Text.Label");
+        } catch (MissingResourceException e) {
+            return element;
+        }
+    }
 
 	/**
 	 * This method returns an array of strings, each one has the
@@ -75,16 +52,11 @@ public class Languages {
 	 * different purposes.
 	 */
 	public static String[] getStringList() {
-		String[] strings = null;
-		int i = 0;
-		int l = 0;
-		if (list == null) {
-			fillList();
-		}
-		l = list.size();
-		strings = new String[l];
+        int i;
+        int l = LIST.size();
+        String[] strings = new String[l];
 		for (i = 0; i < l; i++) {
-			strings[i] = getString(list.get(i));
+            strings[i] = getString(LIST.get(i));
 		}
 		return strings;
 	}
@@ -98,11 +70,8 @@ public class Languages {
 	 * @return a string that contains the name of the specified language.
 	 */
 	public static String getByIndex(int index) {
-		if (list == null) {
-			fillList();
-		}
 		try {
-			return list.get(index);
+            return LIST.get(index);
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		}
@@ -117,9 +86,9 @@ public class Languages {
 	 * @return the index in the list of the language.
 	 */
 	public static int getIndex(String element) {
-		int index = list.indexOf(element);
+        int index = LIST.indexOf(element);
 		if (index == -1) {
-			index = list.size() - 1;
+            index = LIST.size() - 1;
 		}
 		return index;
 	}
@@ -134,16 +103,15 @@ public class Languages {
 	 * language bundle
 	 */
 	public static String getShortString(String element) {
-		if (element.equals("")) {
+        if (element.isEmpty()) {
 			return element;
-		} else {
-			try {
-				return stringDatabase.getString(element + ".ShortName.Text.Label");
-			} catch (MissingResourceException e) {
-				return element;
-			}
-		}
-	}
+        }
+        try {
+            return StringDatabase.getUniqueInstance().getString(element + ".ShortName.Text.Label");
+        } catch (MissingResourceException e) {
+            return element;
+        }
+    }
 
 	/**
 	 * This method returns the language sited in the specified index in the
@@ -154,11 +122,8 @@ public class Languages {
 	 * @return a string that contains the short name of the specified language.
 	 */
 	public static String getShortNameByIndex(int index) {
-		if (shortLocale == null) {
-			fillList();
-		}
 		try {
-			return stringDatabase.getString(shortLocale.get(index) + ".ShortName.Text.Label");
+            return StringDatabase.getUniqueInstance().getString(LIST.get(index) + ".ShortName.Text.Label");
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		}
@@ -172,16 +137,11 @@ public class Languages {
 	 * different purposes.
 	 */
 	public String toString() {
-		String strings = "";
-		int i = 0;
-		int l = 0;
-		if (list == null) {
-			fillList();
-		}
-		l = list.size();
-		strings = "Languages = ";
+        int i;
+        int l = LIST.size();
+        String strings = "Languages = ";
 		for (i = 0; i < l; i++) {
-			strings = strings + "\n" + getString(list.get(i));
+            strings = strings + "\n" + getString(LIST.get(i));
 		}
 		return strings + "\n";
 	}

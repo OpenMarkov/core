@@ -62,7 +62,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         } else {
             out.append("Number of potentials: ").append(numPotentials).append("\n");
         }
-        if (constraints.size() == 0) {
+        if (constraints.isEmpty()) {
             out.append("No constraints\n");
         } else {
             out.append("Constraints: ");
@@ -243,7 +243,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     public void removeAllConstraints(Class<PNConstraint> constraintClass) {
         List<PNConstraint> constraintsToRemove = new ArrayList<>();
         for (PNConstraint constraint : constraints) {
-            if (constraint.getClass().equals(constraintClass)) {
+            if (constraint.getClass() == constraintClass) {
                 constraintsToRemove.add(constraint);
             }
         }
@@ -824,7 +824,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
             for (Potential potential : potentialsNode) {
                 List<Variable> variables = potential.getVariables();
                 if (variables.contains(variable)
-                        && (potential.getCriterion() != null || (node.nodeType.equals(NodeType.UTILITY)
+                        && (potential.getCriterion() != null || (node.nodeType == NodeType.UTILITY
                         && node.getVariable().getDecisionCriterion() != null))) {
                     potentialsVariable.add(potential);
                 }
@@ -844,7 +844,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         List<Variable> variables = potential.getVariables();
         List<Node> candidateNodes = new ArrayList<>();
         // gets nodes that could contain the potential
-        if (variables.size() == 0) {// Constant potentials can be in any
+        if (variables.isEmpty()) {// Constant potentials can be in any
             // node
             candidateNodes = this.getNodes();
         } else {
@@ -857,6 +857,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         }
         
         // find in such nodes the potential to remove
+        //TODO: wasFound is never updated.
         boolean wasFound = false;
         for (Node node : candidateNodes) {
             if (node != null) {
@@ -864,7 +865,6 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
                 for (Potential potentialNode : potentialsNode) {
                     if (potentialNode == potential) {
                         if (node.removePotential(potentialNode)) {
-                            wasFound = true;
                             return node;
                         }
                     }
@@ -1244,7 +1244,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      */
     public Node addShiftedNode(Node oldNode, int timeDifference, double coordinateXOffset, double coordinateYOffset) {
         Variable oldVariable = oldNode.getVariable();
-        Variable newVariable = (Variable) oldVariable.clone();
+        Variable newVariable = oldVariable.clone();
         newVariable.setTimeSlice(oldVariable.getTimeSlice() + timeDifference);
         Node newNode = addNode(newVariable, oldNode.getNodeType());
         newNode.setCoordinateX(oldNode.getCoordinateX() + coordinateXOffset);
@@ -1364,7 +1364,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
             List<Node> neighbours = this.getNeighbors(node);
             for (Node neighbour : neighbours) {
                 // TODO - Problem?
-                neighbour = copyNet.getNode(neighbour.getName());
+                copyNet.getNode(neighbour.getName());
             }
             
             ArrayList<Potential> newPotentials = new ArrayList<>();

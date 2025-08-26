@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,11 +30,11 @@ public class NetsFactory {
 
 	public static String diseaseName = "Disease";
 	public static String testResultName = "Result of test";
-	public static String diseaseStates[] = { "present", "absent" };
-
-	public static String testResultStates[] = { "positive", "negative" };
-
-	public static String yesNoStates[] = { "yes", "no" };
+    public static String[] diseaseStates = {"present", "absent"};
+    
+    public static String[] testResultStates = {"positive", "negative"};
+    
+    public static String[] yesNoStates = {"yes", "no"};
 
 	/**
 	 * @param variables
@@ -41,17 +42,14 @@ public class NetsFactory {
 	 */
 	private static List<Variable> createVariableList(Variable... variables) {
 		List<Variable> list = new ArrayList<>();
-		for (int i = 0; i < variables.length; i++) {
-			list.add(variables[i]);
-		}
+        Collections.addAll(list, variables);
 		return list;
 
 	}
 
 	protected static double[] valuesAPrioriDisease(double prevalence) {
-		double values[];
-
-		values = new double[2];
+        
+        double[] values = new double[2];
 		values[0] = prevalence;
 		values[1] = 1.0 - prevalence;
 

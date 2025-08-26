@@ -14,15 +14,10 @@ import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
+import org.openmarkov.java.cloneUtils.CloneUtils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author marias
@@ -33,7 +28,7 @@ import java.util.Random;
 @ImplementationRequirements(requiresOneOfTheseConstructors = {
         @RequiredConstructor({List.class, CycleLength.class}),
         @RequiredConstructor({List.class, PotentialRole.class}),
-        @RequiredConstructor({List.class})
+        @RequiredConstructor(List.class)
 })
 public abstract class Potential {
     // Constants
@@ -95,6 +90,7 @@ public abstract class Potential {
     public Potential(Potential potential) {
         this(potential.getVariables(), potential.getPotentialRole());
         this.comment = potential.getComment();
+        this.criterion = CloneUtils.safeClone(potential.getCriterion());
     }
     
     // Methods
@@ -115,9 +111,7 @@ public abstract class Potential {
     
     protected static List<Variable> toList(Variable[] variables) {
         List<Variable> variablesArrayList = new ArrayList<>();
-        for (Variable variable : variables) {
-            variablesArrayList.add(variable);
-        }
+        Collections.addAll(variablesArrayList, variables);
         return variablesArrayList;
     }
     
@@ -147,7 +141,7 @@ public abstract class Potential {
         for (TablePotential tablePotential : potentials) {
             variablesToEliminate.addAll(tablePotential.getVariables());
         }
-        variablesToEliminate.removeAll(variables);
+        variables.forEach(variablesToEliminate::remove);
         return DiscretePotentialOperations
                 .multiplyAndMarginalize(potentials, variables, new ArrayList<>(variablesToEliminate));
     }
@@ -382,16 +376,7 @@ public abstract class Potential {
     public String toShortString() {
         StringBuilder buffer = new StringBuilder();
         int numVariables = (variables != null) ? variables.size() : 0;
-        if (numVariables == 0) { // Constant potential
-            switch (role) {
-                case CONDITIONAL_PROBABILITY:
-                    break;
-                case JOINT_PROBABILITY:
-                    break;
-                default:
-                    break;
-            }
-        } else {
+        if (numVariables != 0) { // Constant potential
             switch (role) {
                 case CONDITIONAL_PROBABILITY:
                     buffer.append("P(" + variables.get(0));
@@ -408,14 +393,12 @@ public abstract class Potential {
                     break;
                 default:
                     buffer.append(numVariables + " Variables: ");
-                    if (numVariables > 0) {
-                        buffer.append(variables.get(0).getName());
-                        for (int i = 1; i < numVariables - 1; i++) {
-                            buffer.append(", " + variables.get(i).getName());
-                        }
-                        if (numVariables > 1) {
-                            buffer.append(", " + variables.get(numVariables - 1).getName());
-                        }
+                    buffer.append(variables.get(0).getName());
+                    for (int i = 1; i < numVariables - 1; i++) {
+                        buffer.append(", " + variables.get(i).getName());
+                    }
+                    if (numVariables > 1) {
+                        buffer.append(", " + variables.get(numVariables - 1).getName());
                     }
             }
         }
@@ -448,12 +431,11 @@ public abstract class Potential {
     }
     
     @Override public boolean equals(Object arg0) {
-        if (arg0.getClass().equals(this.getClass())) {
-            Potential potential = (Potential) arg0;
-            return variables.equals(potential.variables) && role == potential.role;
-        } else {
+        if (arg0.getClass() != this.getClass()) {
             return false;
         }
+        Potential potential = (Potential) arg0;
+        return variables.equals(potential.variables) && role == potential.role;
     }
     
     /**

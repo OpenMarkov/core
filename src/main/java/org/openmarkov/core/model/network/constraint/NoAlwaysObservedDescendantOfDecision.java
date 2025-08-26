@@ -42,15 +42,15 @@ import java.util.List;
 	 * @return true if 'node' has some ancestor in 'nodes' (considering
 	 * direction of the links)
 	 */
-	private boolean itHasSomeAncestorInList(ProbNet network, Node node, List<Node> nodes) {
+    private static boolean itHasSomeAncestorInList(ProbNet network, Node node, List<Node> nodes) {
 		boolean itHasAncestor = false;
 		for (int i = 0; i < nodes.size() && !itHasAncestor; i++) {
 			itHasAncestor = isReachable(network, nodes.get(i), node);
 		}
 		return itHasAncestor;
 	}
-
-	private List<Node> getAlwaysObservedNodes(ProbNet network) {
+    
+    private static List<Node> getAlwaysObservedNodes(ProbNet network) {
 		List<Node> alwaysObservedNodes = new ArrayList<Node>();
 		for (Node node : network.getNodes()) {
 			if (node.isAlwaysObserved()) {
@@ -95,20 +95,20 @@ import java.util.List;
 		}
 		return checkEdit;
 	}
-
-	private boolean itHasSomeDescendantInList(ProbNet network, Node node, List<Node> nodes) {
+    
+    private static boolean itHasSomeDescendantInList(ProbNet network, Node node, List<Node> nodes) {
 		boolean itHasDescendant = false;
 		for (int i = 0; i < nodes.size() && !itHasDescendant; i++) {
 			itHasDescendant = isReachable(network, node, nodes.get(i));
 		}
 		return itHasDescendant;
 	}
-
-	private boolean isReachable(ProbNet network, Node node1, Node node2) {
+    
+    private static boolean isReachable(ProbNet network, Node node1, Node node2) {
 		return network.existsPath(node1, node2, true);
 	}
-
-	private List<Node> getDecisionNodes(ProbNet network) {
+    
+    private static List<Node> getDecisionNodes(ProbNet network) {
 		return network.getNodes(NodeType.DECISION);
 	}
 

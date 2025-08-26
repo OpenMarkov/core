@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential.canonical;
 
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -107,9 +106,9 @@ import java.util.List;
 	 * @return The accrued potential. {@code TablePotential}. I.e., if
 	 * subPotential is P(y) then the accrued potential is P(Y&#62;=y), and if
 	 * the subPotential is P(y|x) then the accrued potential is P(Y&#62;=y|x).
-	 *
+     * <p>
 	 * reference Efficient computation for the Noisy MAX
-	 *
+     * <p>
 	 * Condition: subPotential is a probability table of one variable
 	 * or a probability table of one variable given another variable.
 	 */
@@ -165,7 +164,7 @@ import java.util.List;
 		}
 
 		Variable conditionedVariable = variables.get(0);
-		double[] noisyParameters = newICIPotential.initializeNoisyParameters(conditionedVariable, newVariable);
+        double[] noisyParameters = ICIPotential.initializeNoisyParameters(conditionedVariable, newVariable);
 		newICIPotential.setNoisyParameters(newVariable, noisyParameters);
 
 		newICIPotential.setLeakyParameters(getLeakyParameters());
@@ -189,10 +188,9 @@ import java.util.List;
 		newICIPotential.setLeakyParameters(getLeakyParameters());
 		if (newVariables.size() == 1) {
 			return new UniformPotential(newVariables, newICIPotential.role);
-		} else {
-			return newICIPotential;
-		}
-	}
+        }
+        return newICIPotential;
+    }
 
 	@Override protected int computeFFunction(int[] parentStates) {
 		int resultingState = variables.get(0).getNumStates() - 1;
@@ -222,7 +220,7 @@ import java.util.List;
 			int index = i / numStates;
 			int min = 0;
 			for (int j = 0; j < numParents; ++j) {
-				min = (index % numStates) < min ? (index % numStates) : min;
+                min = Math.min((index % numStates), min);
 				index /= variables.get(j + 1).getNumStates();
 			}
 			// min function

@@ -62,7 +62,7 @@ import java.util.List;
 		super(node.getProbNet());
 		this.node = node;
 		this.variable = node.getVariable();
-		if (node.getPotentials().size() != 0) {// if node is a decision node it could not have a potential assigned yet
+        if (!node.getPotentials().isEmpty()) {// if node is a decision node it could not have a potential assigned yet
 			lastPotential = node.getPotentials().get(0);
 		}
 
@@ -124,10 +124,8 @@ import java.util.List;
 	}
 	
 	public void setPotential(){
-		List<Variable> variables;
-		PotentialRole role;
-		variables = lastPotential.getVariables();
-		role = lastPotential.getPotentialRole();
+        List<Variable> variables = lastPotential.getVariables();
+        PotentialRole role = lastPotential.getPotentialRole();
 
 		List<Potential> potentials = new ArrayList<>();
 		if (newPotential == null) {
@@ -162,10 +160,8 @@ import java.util.List;
 		}
 	}
 	public void setInitialChange(){
-		List<Variable> variables;
-		PotentialRole role;
-		variables = lastPotential.getVariables();
-		role = lastPotential.getPotentialRole();
+        List<Variable> variables = lastPotential.getVariables();
+        PotentialRole role = lastPotential.getPotentialRole();
 
 		List<Potential> potentials = new ArrayList<>();
 		if (newPotential == null) {

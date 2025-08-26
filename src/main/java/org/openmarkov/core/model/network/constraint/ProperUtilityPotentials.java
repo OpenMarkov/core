@@ -23,12 +23,12 @@ import java.util.List;
 
 	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
-		if (utilityNodes.size() == 0) {
+        if (utilityNodes.isEmpty()) {
 			return false;
 		}
 		for (Node utilityNode : utilityNodes) {
 			List<Potential> utilityPotentials = utilityNode.getPotentials();
-			if ((utilityPotentials == null) || (utilityPotentials.size() == 0)) {
+            if ((utilityPotentials == null) || (utilityPotentials.isEmpty())) {
 				return false;
 			}
 		}

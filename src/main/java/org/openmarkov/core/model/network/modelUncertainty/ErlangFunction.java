@@ -61,8 +61,7 @@ public class ErlangFunction extends ProbDensFunction {
 	}
 
 	@Override public double getSample(Random randomGenerator) {
-		double sumSamples;
-		sumSamples = 0.0;
+        double sumSamples = 0.0;
 		for (int i = 0; i < k; i++) {
 			sumSamples = sumSamples + exponentialFunction.getSample(randomGenerator);
 		}

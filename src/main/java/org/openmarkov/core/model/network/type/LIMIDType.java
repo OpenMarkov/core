@@ -7,12 +7,10 @@
 
 package org.openmarkov.core.model.network.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 @ProbNetType(name = "LIMID") public class LIMIDType extends NetworkType {
-	private static LIMIDType instance = null;
+    private static final LIMIDType INSTANCE = new LIMIDType();
 
 	// Constructor
 	private LIMIDType() {
@@ -21,10 +19,7 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 	// Methods
 	public static LIMIDType getUniqueInstance() {
-		if (instance == null) {
-			instance = new LIMIDType();
-		}
-		return instance;
+        return INSTANCE;
 	}
 	
 }

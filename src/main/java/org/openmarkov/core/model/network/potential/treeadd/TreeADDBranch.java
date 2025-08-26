@@ -314,7 +314,7 @@ public class TreeADDBranch {
 		builder.append(" = ");
 
 		if (states != null) {
-			states.forEach(x -> builder.append(x));
+            states.forEach(builder::append);
 		}
 
 		if (potential != null) {
@@ -324,7 +324,7 @@ public class TreeADDBranch {
 		boolean isStrategyTree = !isNullPotential && potential.getClass() == StrategyTree.class;
 		if (!isNullPotential && !isStrategyTree) {
 			List<Variable> potentialVariables = potential.getVariables();
-			if (potentialVariables != null && potentialVariables.size() > 0) {
+            if (potentialVariables != null && !potentialVariables.isEmpty()) {
 				builder.append(" ");
 				builder.append(potentialVariables.size());
 				builder.append(" variables(");
@@ -334,7 +334,7 @@ public class TreeADDBranch {
 				}
 			}
 		}
-		if (parentVariables != null && parentVariables.size() > 0 && !isStrategyTree) {
+        if (parentVariables != null && !parentVariables.isEmpty() && !isStrategyTree) {
 			//			builder.append("\n");
 			builder.append(indent);
 			builder.append("ParentVariables = ");
@@ -382,8 +382,7 @@ public class TreeADDBranch {
 		if (states != null) {
 			newStates = new ArrayList<>(states);
 		}
-		Variable newRootVariable = null;
-        newRootVariable = copyNet.getVariable(this.rootVariable.getName());
+        Variable newRootVariable = copyNet.getVariable(this.rootVariable.getName());
         
         List<Variable> newParentVariables = new ArrayList<>();
 		for (Variable variable : this.parentVariables) {

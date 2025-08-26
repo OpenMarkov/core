@@ -20,7 +20,7 @@ import javax.swing.undo.CannotUndoException;
 
 	private Node node = null;
 	private Instance instance = null;
-	private boolean isInput = false;
+    private boolean isInput;
 	private boolean wasInput = false;
 
 	public MarkAsInputEdit(ProbNet probNet, boolean isInput, Node node) {

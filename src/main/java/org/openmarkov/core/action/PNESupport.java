@@ -118,8 +118,8 @@ public class PNESupport extends UndoableEditSupport {
 		if (withUndo) {
 			undoManagerSupport.addEdit(edit);
 		}
-
-		if (!(edit.getClass().equals(OpenParenthesisEdit.class) || edit.getClass().equals(CloseParenthesisEdit.class))){
+        
+        if (!(edit.getClass() == OpenParenthesisEdit.class || edit.getClass() == CloseParenthesisEdit.class)) {
 			postEdit(edit);// Inform the listeners that an edition has happened
 		}
 

@@ -245,7 +245,7 @@ public class TaskUtilities {
 			policy = null;
 		} else {
 			List<Potential> potentials = decisionNode.getPotentials();
-			if ((potentials == null) || (potentials.size() == 0)) {
+            if ((potentials == null) || (potentials.isEmpty())) {
 				policy = null;
 			} else {
 				policy = potentials.get(0);
@@ -262,13 +262,11 @@ public class TaskUtilities {
 	 */
 	public static ProbNet projectTablesAndBuildMarkovDecisionNetwork(ProbNet network, EvidenceCase evidence)
 			throws NonProjectablePotentialException {
-		ProbNet markovNetworkInference = null;
-		List<TablePotential> returnedProjectedPotentials;
-		returnedProjectedPotentials = network.tableProjectPotentials(evidence);
+        List<TablePotential> returnedProjectedPotentials = network.tableProjectPotentials(evidence);
 		List<TablePotential> projectedPotentials = new ArrayList<>();
 
 		for (TablePotential potential : returnedProjectedPotentials) {
-			if (potential.getVariables().size() != 0) {
+            if (!potential.getVariables().isEmpty()) {
 				projectedPotentials.add(potential);
 			} else {
 				if (potential.isAdditive()) {
@@ -284,8 +282,8 @@ public class TaskUtilities {
 				}
 			}
 		}
-
-		markovNetworkInference = network.buildMarkovDecisionNetwork(projectedPotentials);
+        
+        ProbNet markovNetworkInference = network.buildMarkovDecisionNetwork(projectedPotentials);
 
 		return markovNetworkInference;
 	}

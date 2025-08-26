@@ -16,10 +16,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class implements explicit links.
@@ -201,9 +198,7 @@ public class Link<T> {
 		variables.add(((Node) node1).getVariable());
 		variables.add(((Node) node2).getVariable());
 		restrictionsPotential = new TablePotential(variables, PotentialRole.LINK_RESTRICTION);
-		for (int i = 0; i < restrictionsPotential.getValues().length; i++) {
-			restrictionsPotential.getValues()[i] = 1;
-		}
+        Arrays.fill(restrictionsPotential.getValues(), 1);
 
 	}
 
@@ -217,9 +212,10 @@ public class Link<T> {
 		double[] restrictions = this.restrictionsPotential.getValues();
 
 		for (int i = 0; i < restrictions.length && !hasRestriction; i++) {
-			if (restrictions[i] == 0) {
-				hasRestriction = true;
-			}
+            if (restrictions[i] == 0) {
+                hasRestriction = true;
+                break;
+            }
 		}
 		if (!hasRestriction) {
 			restrictionsPotential = null;
@@ -312,13 +308,12 @@ public class Link<T> {
 	public boolean hasRevealingConditions() {
 
 		VariableType varType = ((Node) node1).getVariable().getVariableType();
-
-		if (varType.equals(VariableType.NUMERIC)) {
+        
+        if (varType == VariableType.NUMERIC) {
 			return !revealingIntervals.isEmpty();
-		} else {
-			return !revealingStates.isEmpty();
-		}
-	}
+        }
+        return !revealingStates.isEmpty();
+    }
 
 	/**
 	 * @return the revealingStates

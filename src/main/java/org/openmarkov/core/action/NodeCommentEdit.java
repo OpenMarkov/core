@@ -25,7 +25,7 @@ import java.util.List;
 	/**
 	 * Current node comment
 	 */
-	private String currentComment = "";
+    private String currentComment;
 	/**
 	 * New node comment
 	 */
@@ -34,7 +34,7 @@ import java.util.List;
 	/**
 	 * Comment type, could be "DefinitionComment" or "ProbsTableComment"
 	 */
-	private String typeComment = "";
+    private String typeComment;
 	/**
 	 * The node
 	 */

@@ -35,15 +35,15 @@ public class TablePotentialSampler extends Sampler {
 	 * @return A sampled potential table
 	 */
 	public TablePotential sample(TablePotential inputTablePotential, boolean isInsideOfExactDistrPotential) {
-		TablePotential sampledTablePotential = null;
+        TablePotential sampledTablePotential;
 		int inputTableSize;
 		List<Class<? extends ProbDensFunction>> functionTypes = initializeTypeFunctions();
-		List<UncertainValue> uncertainValues = null;
+        List<UncertainValue> uncertainValues;
 		double[] sampledConfigurationValues;
 		int numStates;
 		UncertainValue[] uTable = inputTablePotential.getUncertainValues();
 		double[] originalValues = inputTablePotential.getValues();
-		if (!(inputTablePotential.getUncertainValues() == null)) {
+        if (inputTablePotential.getUncertainValues() != null) {
 			List<Variable> inputPotentialVariables = inputTablePotential.getVariables();
 			List<Variable> sampledPotentialVariables = new ArrayList<>(inputPotentialVariables);
 			sampledTablePotential = new TablePotential(sampledPotentialVariables,
@@ -51,8 +51,7 @@ public class TablePotentialSampler extends Sampler {
 			double[] sampledValues = sampledTablePotential.values;
 			sampledTablePotential.setUncertainValues(inputTablePotential.getUncertainValues());
 			numStates = numElementsInColumn(inputTablePotential, isInsideOfExactDistrPotential);
-			sampledConfigurationValues = new double[numStates];
-			// Number of configurations of the conditioning variables
+            // Number of configurations of the conditioning variables
 			inputTableSize = inputTablePotential.getTableSize();
 			int numConfigurations = inputTableSize / numStates;
 			boolean hasUncertainty;

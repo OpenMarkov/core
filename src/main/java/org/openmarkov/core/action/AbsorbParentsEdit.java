@@ -2,9 +2,6 @@ package org.openmarkov.core.action;
 
 import java.util.List;
 
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -12,7 +9,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 
 @SuppressWarnings("serial") public class AbsorbParentsEdit extends CompoundPNEdit {
-    Node node;
+    private Node node;
     
     public AbsorbParentsEdit(ProbNet probNet, Node node) {
         super(probNet);

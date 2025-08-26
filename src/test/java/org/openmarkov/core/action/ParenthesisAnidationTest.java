@@ -17,7 +17,6 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.test.TestSpeed;
-import org.openmarkov.plugin.PluginSearch;
 
 import java.util.Arrays;
 
@@ -43,7 +42,7 @@ public class ParenthesisAnidationTest {
         Node nodeC = probNet.addNode(varC, NodeType.CHANCE);
         
         nodeB.getVariable().setPartitionedInterval(new PartitionedInterval(nodeB.getVariable().getDefaultInterval(4),
-                                                                           nodeB.getVariable().getDefaultBelongs(4)));
+                                                                           Variable.getDefaultBelongs(4)));
         
         // Links
         probNet.makeLinksExplicit(false);

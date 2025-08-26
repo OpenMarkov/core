@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * Creates a directed or undirected link between two nodes associated to two
- * variables in a <code>ProbNet</code>
+ * variables in a {@code ProbNet}
  */
 public class AddLinkEdit extends BaseLinkEdit {
 
@@ -30,7 +30,7 @@ public class AddLinkEdit extends BaseLinkEdit {
 	 */
 	protected Link<Node> link;
 	/**
-	 * The new <code>Potential</code> of the second node
+     * The new {@code Potential} of the second node
 	 */
 	protected List<Potential> newPotentials = new ArrayList<>();
 	/**
@@ -43,17 +43,17 @@ public class AddLinkEdit extends BaseLinkEdit {
 	protected Node node2;
 	private boolean updatePotentials;
 	/**
-	 * The last <code>Potential</code> of the second node before the edition
+     * The last {@code Potential} of the second node before the edition
 	 */
 	private List<Potential> oldPotentials;
 
 	// Constructor
 
 	/**
-	 * @param probNet    <code>ProbNet</code>
-	 * @param variable1  <code>Variable</code>
-	 * @param variable2  <code>Variable</code>
-	 * @param isDirected <code>boolean</code>
+     * @param probNet    {@code ProbNet}
+     * @param variable1  {@code Variable}
+     * @param variable2  {@code Variable}
+     * @param isDirected {@code boolean}
 	 */
 	public AddLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected,
 			boolean updatePotentials) {
@@ -134,27 +134,26 @@ public class AddLinkEdit extends BaseLinkEdit {
 						getName())
 		) != 0)
 			return result;
-		else
-			return 0;
-	}
+        return 0;
+    }
 
 	@Override public String getOperationName() {
 		return "Add link";
 	}
 
 	/**
-	 * Gets the first <code>Node</code> object in the link.
+     * Gets the first {@code Node} object in the link.
 	 *
-	 * @return the first <code>Node</code> object in the link.
+     * @return the first {@code Node} object in the link.
 	 */
 	public Node getNode1() {
 		return node1;
 	}
 
 	/**
-	 * Gets the second <code>Node</code> object in the link.
+     * Gets the second {@code Node} object in the link.
 	 *
-	 * @return the second <code>Node</code> object in the link.
+     * @return the second {@code Node} object in the link.
 	 */
 	public Node getNode2() {
 		return node2;

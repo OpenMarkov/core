@@ -43,9 +43,8 @@ public class FamilyDistribution {
 	}
 
 	public double[] getMean() {
-		double[] mean;
-		int size = family.size();
-		mean = new double[size];
+        int size = family.size();
+        double[] mean = new double[size];
 		for (int i = 0; i < size; i++) {
 			mean[i] = family.get(i).getProbDensFunction().getMean();
 		}
@@ -53,9 +52,8 @@ public class FamilyDistribution {
 	}
 
 	public double[] getMaximum() {
-		double[] max;
-		int size = family.size();
-		max = new double[size];
+        int size = family.size();
+        double[] max = new double[size];
 		for (int i = 0; i < size; i++) {
 			max[i] = family.get(i).getProbDensFunction().getMaximum();
 		}
@@ -67,9 +65,8 @@ public class FamilyDistribution {
 	}
 
 	public double[] getStandardDeviation() {
-		double[] stDeviation;
-
-		stDeviation = new double[family.size()];
+        
+        double[] stDeviation = new double[family.size()];
 		double[] variance = getVariance();
 		for (int i = 0; i < family.size(); i++) {
 			stDeviation[i] = Math.sqrt(variance[i]);
@@ -82,9 +79,8 @@ public class FamilyDistribution {
 	}
 
 	public double[] getSample(Random randomGenerator) {
-		double[] mean;
-		int size = family.size();
-		mean = new double[size];
+        int size = family.size();
+        double[] mean = new double[size];
 		for (int i = 0; i < size; i++) {
 			mean[i] = family.get(i).getProbDensFunction().getSample(randomGenerator);
 		}

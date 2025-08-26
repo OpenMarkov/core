@@ -14,7 +14,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 
 /*******
- *
+ * <p>
  * A simple edit which allows to add or remove a revealing state of a link.
  *
  */

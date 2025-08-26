@@ -30,7 +30,7 @@ import java.util.Map;
 @SuppressWarnings("serial") public class NodeReplaceStatesEdit extends SimplePNEdit {
 
 	// Default increment between discretized intervals
-	private final int increment = 2;
+    private static final int increment = 2;
 
 	/**
 	 * The current default states of the network
@@ -87,8 +87,8 @@ import java.util.Map;
 			// set uniform potential for the edited node and children if the
 			// new number of states is different that the last states
 			if (newStates.length != lastStates.length) {
-
-				if (lastPotential.size() != 0) {//decision nodes without imposed policy has no potential
+                
+                if (!lastPotential.isEmpty()) {//decision nodes without imposed policy has no potential
 					UniformPotential newPotential = new UniformPotential(lastPotential.get(0).getVariables(),
 							lastPotential.get(0).getPotentialRole());
 					newPotentials.add(newPotential);
@@ -99,7 +99,7 @@ import java.util.Map;
 				nodes = probNet.getChildren(node);
 
 				for (Node child : nodes) {
-					if (child.getPotentials().size() != 0) {
+                    if (!child.getPotentials().isEmpty()) {
 						List<Potential> container = new ArrayList<>();
 						childrenLastPotential.add(child.getPotentials().get(0));
 						childLastPotential = new UniformPotential(child.getPotentials().get(0).getVariables(),
@@ -115,8 +115,8 @@ import java.util.Map;
 			if (node.getVariable().getVariableType() == VariableType.DISCRETIZED) {
 
 				node.getVariable().setPartitionedInterval(new PartitionedInterval(
-						node.getVariable().getDefaultInterval(node.getVariable().getNumStates()),
-						node.getVariable().getDefaultBelongs(node.getVariable().getNumStates())));
+                        node.getVariable().getDefaultInterval(node.getVariable().getNumStates()),
+                        Variable.getDefaultBelongs(node.getVariable().getNumStates())));
 
 			}
 		}
@@ -157,10 +157,10 @@ import java.util.Map;
 	}
 
 	private PartitionedInterval getNewPartitionedInterval() {
-		double limits[] = currentPartitionedInterval.getLimits();
-		double newLimits[] = new double[limits.length + 1];
-		boolean belongsToLeftSide[] = currentPartitionedInterval.getBelongsToLeftSide();
-		boolean newBelongsToLeftSide[] = new boolean[limits.length + 1];
+        double[] limits = currentPartitionedInterval.getLimits();
+        double[] newLimits = new double[limits.length + 1];
+        boolean[] belongsToLeftSide = currentPartitionedInterval.getBelongsToLeftSide();
+        boolean[] newBelongsToLeftSide = new boolean[limits.length + 1];
 		for (int i = 0; i < limits.length; i++) {
 			newLimits[i] = limits[i];
 			newBelongsToLeftSide[i] = belongsToLeftSide[i];

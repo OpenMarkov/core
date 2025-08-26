@@ -47,7 +47,7 @@ public class NodeStateEdit extends SimplePNEdit {
 	/**
 	 * The node that the stats belongs to
 	 */
-	private Node node = null;
+    private Node node;
 	/**
 	 * The action to carry out
 	 */
@@ -259,8 +259,8 @@ public class NodeStateEdit extends SimplePNEdit {
 		variable.setStates(newStates);
 		resetLink(node);
 	}
-
-	private void setPotentialAfterReorderingFirstPotential(Node auxNode, Variable variable, State[] newStates) {
+    
+    private static void setPotentialAfterReorderingFirstPotential(Node auxNode, Variable variable, State[] newStates) {
 		if (auxNode.getNodeType() == NodeType.CHANCE || auxNode.getNodeType() == NodeType.UTILITY) {
 			Potential oldPotential = auxNode.getPotentials().get(0);
 			Potential newPotential = oldPotential.reorder(variable, newStates);
@@ -335,8 +335,8 @@ public class NodeStateEdit extends SimplePNEdit {
 
 			// We restore the potentials
 			node.setPotentials(oldPotentials);
-			for (Variable var : listOldPotentials.keySet()) {
-				probNet.getNode(var).setPotentials(listOldPotentials.get(var));
+            for (Variable variable : listOldPotentials.keySet()) {
+                probNet.getNode(variable).setPotentials(listOldPotentials.get(variable));
 			}
 
 			break;
@@ -380,10 +380,10 @@ public class NodeStateEdit extends SimplePNEdit {
 	 */
 
 	private PartitionedInterval getNewPartitionedInterval() {
-		double limits[] = currentPartitionedInterval.getLimits();
-		double newLimits[] = new double[limits.length + 1];
-		boolean belongsToLeftSide[] = currentPartitionedInterval.getBelongsToLeftSide();
-		boolean newBelongsToLeftSide[] = new boolean[limits.length + 1];
+        double[] limits = currentPartitionedInterval.getLimits();
+        double[] newLimits = new double[limits.length + 1];
+        boolean[] belongsToLeftSide = currentPartitionedInterval.getBelongsToLeftSide();
+        boolean[] newBelongsToLeftSide = new boolean[limits.length + 1];
 		for (int i = 0; i < limits.length; i++) {
 			newLimits[i] = limits[i];
 			newBelongsToLeftSide[i] = belongsToLeftSide[i];

@@ -22,9 +22,9 @@ import java.util.List;
 public abstract class DecisionTreeNode<T> implements DecisionTreeElement {
 
 	protected double scenarioProbability = Double.NEGATIVE_INFINITY;
-	private Variable variable = null;
-	protected NodeType nodeType = null;
-	protected List<DecisionTreeElement> children = null;
+    private Variable variable;
+    protected NodeType nodeType;
+    protected List<DecisionTreeElement> children;
 	private DecisionTreeElement parent = null;
 	private ProbNet network;
 	/**

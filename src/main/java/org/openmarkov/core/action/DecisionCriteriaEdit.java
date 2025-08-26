@@ -24,10 +24,10 @@ import java.util.List;
 	public DecisionCriteriaEdit(ProbNet probnet, StateAction stateAction, Criterion modifiedCriterion, String newName) {
 		super(probnet);
 		this.modifiedCriterion = modifiedCriterion;
-
-		if (stateAction.equals(StateAction.ADD)) {
+        
+        if (stateAction == StateAction.ADD) {
 			this.newName = modifiedCriterion.getCriterionName();
-		} else if (stateAction.equals(StateAction.RENAME)) {
+        } else if (stateAction == StateAction.RENAME) {
 			this.newName = newName;
 		}
 		this.stateAction = stateAction;
@@ -43,10 +43,9 @@ import java.util.List;
 		case REMOVE:
 
 			criteria.remove(modifiedCriterion);
-
-			if (criteria.size() == 0) {
-				criteria = null;
-			}
+            
+            if (criteria.isEmpty()) {
+            }
 			break;
 		case DOWN:
 

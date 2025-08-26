@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential.canonical;
 
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -120,7 +119,7 @@ import java.util.List;
 	 * @return The accrued potential. {@code TablePotential}. I.e., if
 	 * subPotential is P(y) then the accrued potential is P(Y&#62;=y), and if
 	 * the subPotential is P(y|x) then the accrued potential is P(Y&#62;=y|x).
-	 *
+     * <p>
 	 * Efficient computation for the Noisy MAX
 	 * ConditionC subPotential is a probability table of one variable
 	 * or a probability table of one variable given another variable.
@@ -174,7 +173,7 @@ import java.util.List;
 			newICIPotential.setNoisyParameters(variables.get(i), noisyParameters);
 		}
 		Variable conditionedVariable = variables.get(0);
-		double[] noisyParameters = newICIPotential.initializeNoisyParameters(conditionedVariable, newVariable);
+        double[] noisyParameters = ICIPotential.initializeNoisyParameters(conditionedVariable, newVariable);
 		newICIPotential.setNoisyParameters(newVariable, noisyParameters);
 
 		newICIPotential.setLeakyParameters(getLeakyParameters());
@@ -198,10 +197,9 @@ import java.util.List;
 		newICIPotential.setLeakyParameters(getLeakyParameters());
 		if (newVariables.size() == 1) {
 			return new UniformPotential(newVariables, newICIPotential.role);
-		} else {
-			return newICIPotential;
-		}
-	}
+        }
+        return newICIPotential;
+    }
 
 	@Override protected int computeFFunction(int[] parentStates) {
 		int resultingState = 0;
@@ -231,7 +229,7 @@ import java.util.List;
 			int index = i / numStates;
 			int max = 0;
 			for (int j = 0; j < numParents; ++j) {
-				max = (index % numStates) > max ? (index % numStates) : max;
+                max = Math.max((index % numStates), max);
 				index /= functionVariables.get(j + 1).getNumStates();
 			}
 			// max function

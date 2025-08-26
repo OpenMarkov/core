@@ -40,7 +40,7 @@ public class TemporalOptionsEditTest {
         Node nodeC = probNet.addNode(varC, NodeType.CHANCE);
         
         nodeB.getVariable().setPartitionedInterval(new PartitionedInterval(nodeB.getVariable().getDefaultInterval(4),
-                                                                           nodeB.getVariable().getDefaultBelongs(4)));
+                                                                           Variable.getDefaultBelongs(4)));
         
         // Links
         probNet.makeLinksExplicit(false);

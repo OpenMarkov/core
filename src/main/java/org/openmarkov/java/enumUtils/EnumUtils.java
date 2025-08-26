@@ -1,7 +1,5 @@
 package org.openmarkov.java.enumUtils;
 
-import org.openmarkov.core.model.network.PolicyType;
-
 public class EnumUtils {
     public static String toCamelCase(Enum<?> enumConstant) {
         var name = enumConstant.name();

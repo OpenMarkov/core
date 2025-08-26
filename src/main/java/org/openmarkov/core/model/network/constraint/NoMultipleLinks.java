@@ -79,7 +79,7 @@ public class NoMultipleLinks extends PNConstraint {
 	 * @return True if the link between node1 and
 	 *         node1 has no multipleLinks
 	 */
-	private boolean checkLink(ProbNet probNet, Node node1, Node node2, boolean directed) {
+    private static boolean checkLink(ProbNet probNet, Node node1, Node node2, boolean directed) {
 		if (directed) {
 			return checkDirectedLink(probNet, node1, node2);
 		} else {
@@ -96,12 +96,9 @@ public class NoMultipleLinks extends PNConstraint {
 	 * @return {@code true} if the link between {@code node1} and
 	 *         {@code node2}has no multipleLinks
 	 */
-	private boolean checkDirectedLink(ProbNet probNet, Node node1, Node node2) {
-		if (probNet.getLink(node1, node2, false) != null) {
-			return false;
-		}
-		return true;
-	}
+    private static boolean checkDirectedLink(ProbNet probNet, Node node1, Node node2) {
+        return probNet.getLink(node1, node2, false) == null;
+    }
 
 	/*****
 	 * Checks if a undirected link between {@code node1} and
@@ -112,14 +109,11 @@ public class NoMultipleLinks extends PNConstraint {
 	 * @return {@code true} if the link between {@code node1} and
 	 *         {@code node2}has no multipleLinks
 	 */
-	private boolean checkUndirectedLink(ProbNet probNet, Node node1, Node node2) {
+    private static boolean checkUndirectedLink(ProbNet probNet, Node node1, Node node2) {
 		// neither a directed link from node1 -> node2 nor node2 ->
 		// node1 may exist
-		if ((probNet.getLink(node1, node2, true) != null) || (probNet.getLink(node2, node1, true) != null)) {
-			return false;
-		}
-		return true;
-	}
+        return (probNet.getLink(node1, node2, true) == null) && (probNet.getLink(node2, node1, true) == null);
+    }
 
 	@Override protected String constraintDescription() {
 		return " no multiple links allowed.";

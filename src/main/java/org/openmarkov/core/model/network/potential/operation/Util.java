@@ -112,9 +112,8 @@ public class Util {
 	public static String readStringFromKeyboard(String msg) {
 		String cadena = null;
 		InputStreamReader isr = new InputStreamReader(System.in);
-		BufferedReader br = new BufferedReader(isr);
-		System.out.print(msg);
-		try {
+        try (BufferedReader br = new BufferedReader(isr)) {
+            System.out.print(msg);
 			cadena = br.readLine();
 		} catch (IOException e) {
 			logger.fatal(e);
@@ -152,7 +151,7 @@ public class Util {
 	 * @return the rounded value
 	 */
 	public static double round(double value, String precisionString) {
-		double precision = Double.valueOf(precisionString);
+        double precision = Double.parseDouble(precisionString);
 		value = Math.round(value / precision) * precision;
 		return value;
 	}
@@ -169,7 +168,7 @@ public class Util {
 	public static String roundedString(double value, String precisionString) {
 		// place of decimal point in precisionString
 		int precisionStringDecimalPlace = precisionString.indexOf('.');
-		double precision = Double.valueOf(precisionString);
+        double precision = Double.parseDouble(precisionString);
 		double roundedValue = Math.round(value / precision) * precision;
 		// number of decimals in precisionString
 		int numDecimals;

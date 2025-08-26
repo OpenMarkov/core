@@ -27,23 +27,23 @@ import java.util.Set;
 /**
  * @author artasom
  * @author iagoparis - summer 2018
- *
+ * <p>
  * Inverts the arc between two nodes.
- *
+ * <p>
  * Being X -&#62; Y the link that is going to be inverted and being:
  * A: the group of nodes that are parents of X and are not parents of Y,
  * C: the group of nodes that are parents of Y (except X) and are not parents of X, and
  * B the group of parents that X and Y share,
- *
+ * <p>
  * The process takes five steps:
- *
+ * <p>
  * 1. Invert the arc.
- *
+ * <p>
  * 2. Share parents between the nodes.
- *
+ * <p>
  * 3. 	Calculate P(x, y|a, b, c) through P(x, y|a, b, c) = P(x|a, b) · P(y|x, b, c)
  * Meaning: P(x, y|a, b, c) = pot(x) · pot(y)
- *
+ * <p>
  * 4. Calculate P(y|a, b, c) through P(y|a, b, c) = Σ(x) P(x, y|a, b, c) and assign to node Y this probability.
  *
  * 5. Calculate P(x|a, b, c, y) through P(x|a, b, c, y) = P(x, y|a, b, c) / P(y|a, b, c) and assign to node X this probability.
@@ -99,9 +99,8 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 		// The parents of y are retrieved
 		List<Node> yParents = y.getParents();
 		// The nodes will share their parents
-		List<Node> newParents;
-
-		// 1. Invert the arc.
+        
+        // 1. Invert the arc.
 		// The link between i and j can be removed
 		probNet.removeLink(x, y, true);
 		// and the link between j and i can be created
@@ -112,7 +111,7 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 		linksToUndo.clear();
 		// {C(x) \ C(y)} must be parents of y
 		// The new parents of y will be those nodes that are parents of x,
-		newParents = xParents;
+        List<Node> newParents = xParents;
 		// and weren't already parents of y
 		newParents.removeAll(yParents);
 
@@ -266,9 +265,8 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 						getName())
 		) != 0)
 			return result;
-		else
-			return 0;
-	}
+        return 0;
+    }
 
 	@Override public String getOperationName() {
 		return "Invert link and update potentials";

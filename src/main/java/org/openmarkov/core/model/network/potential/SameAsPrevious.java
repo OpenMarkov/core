@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -87,7 +86,7 @@ import java.util.List;
         throw new NotSupportedOperationException("SameAsPrevious potentials cannot be sampled.");
     }
     
-    private @Nullable Potential getOriginalPotential(ProbNet probNet, Variable variable) {
+    private static @Nullable Potential getOriginalPotential(ProbNet probNet, Variable variable) {
         Potential previousPotential = null;
         if (!variable.isTemporal()) {
             return null;

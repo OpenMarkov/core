@@ -75,7 +75,7 @@ public final class PluginSearch<T> {
     public <ExtendingClass> PluginSearch<ExtendingClass> extending(Class<ExtendingClass> extendingClass) {
         return new PluginSearch<>(
                 this.classStream
-                        .filter(baseClass -> extendingClass.isAssignableFrom(baseClass))
+                        .filter(extendingClass::isAssignableFrom)
                         .map(baseClass -> (Class<ExtendingClass>) baseClass)
         );
     }

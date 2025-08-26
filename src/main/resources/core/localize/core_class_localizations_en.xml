@@ -74,6 +74,8 @@
     <Localization class="org.openmarkov.core.model.network.type.POMDPType" value="POMDP"/>
     <Localization class="org.openmarkov.core.model.network.type.TuningNetworkType" value="Tuning"/>
     <Localization class="org.openmarkov.core.oopn.OOPNet" value="{networkType} network named {name} with {this.getNumPotentials} potentials, {this.getNodes.size} nodes, {this.constraints.size} constraints "/>
+    <Localization class="org.openmarkov.java.cloneUtils.CloneUtils$CloneBadlyImplementedException"
+                  value="The clone method of {cloneableClass.getName} is badly implemented, as it returns the original object"/>
     <Localization class="org.openmarkov.learning.core.exception.EmptyModelNetException" value="There is no network selected to use as model, and one is required."/>
     <Localization class="org.openmarkov.learning.core.exception.UnobservedVariablesException" value="Algorithm {algorithmType.name} does not support unobserved variables, which are: {unobservedVariables}"/>
 </ClassLocalizations>

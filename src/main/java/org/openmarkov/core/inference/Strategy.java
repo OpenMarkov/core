@@ -49,8 +49,8 @@ public class Strategy {
 		strategy.put(dec, policy);
 
 	}
-
-	public class Policy {
+    
+    public static class Policy {
 
 		GTablePotential potential;
 

@@ -7,15 +7,13 @@
 
 package org.openmarkov.core.model.network.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 @ProbNetType(name = "DynamicLIMID") public class DynamicLimidType extends NetworkType {
-	private static DynamicLimidType instance = null;
+    private static final DynamicLimidType INSTANCE = new DynamicLimidType();
 
 	// Constructor
 	private DynamicLimidType() {
@@ -27,10 +25,7 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 	// Methods
 	public static DynamicLimidType getUniqueInstance() {
-		if (instance == null) {
-			instance = new DynamicLimidType();
-		}
-		return instance;
+        return INSTANCE;
 	}
 	
 }

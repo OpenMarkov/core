@@ -2,12 +2,12 @@ package org.openmarkov.java.cloneUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.exception.BundledOpenMarkovException;
 import org.openmarkov.core.exception.UnreacheableException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -30,13 +30,14 @@ public class CloneUtils {
             var cloneMethod = cloneableClass.getMethod("clone");
             ToClone cloned = cloneableClass.cast(cloneMethod.invoke(toClone));
             if (cloned == toClone) {
-                throw new UnreacheableException("The clone method of " + cloneableClass.getName() + " is badly implemented, as it returns the original object");
+                throw new UnreacheableException(new CloneBadlyImplementedException(cloneableClass));
             }
             return cloned;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassCastException e) {
             throw new UnreacheableException(e);
         }
     }
+    
     
     private static final Collection<SpecificCase<?>> SPECIAL_HANDLE_CASES = new ArrayList<>();
     
@@ -104,19 +105,10 @@ public class CloneUtils {
         CloneUtils.SPECIAL_HANDLE_CASES.add(new SpecificCase<>(theClass, filter, handleCase));
     }
     
-    static class SpecificCase<T> {
-        final Class<T> theClass;
-        final BiPredicate<Class<T>, T> filter;
-        final Function<T, T> handleCase;
-        
-        public SpecificCase(Class<T> theClass, BiPredicate<Class<T>, T> filter, Function<T, T> handleCase) {
-            this.theClass = theClass;
-            this.filter = filter;
-            this.handleCase = handleCase;
-        }
+    record SpecificCase<T>(Class<T> theClass, BiPredicate<Class<T>, T> filter, Function<T, T> handleCase) {
         
         public boolean isApplicableFor(Object object) {
-            if (object == null || !this.theClass.isInstance(object)) {
+            if (!this.theClass.isInstance(object)) {
                 return false;
             }
             T specificObject = this.theClass.cast(object);
@@ -129,4 +121,11 @@ public class CloneUtils {
         }
     }
     
+    private static class CloneBadlyImplementedException extends BundledOpenMarkovException {
+        public <ToClone extends Cloneable> CloneBadlyImplementedException(Class<? extends ToClone> cloneableClass) {
+            this.cloneableClass = cloneableClass;
+        }
+        
+        public final Class<? extends Cloneable> cloneableClass;
+    }
 }

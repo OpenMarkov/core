@@ -58,7 +58,7 @@ public class NetworkTypeManager {
      * @param networkType Network type
      * @return The name of the given network type
      */
-    public String getName(NetworkType networkType) {
+    public static String getName(NetworkType networkType) {
         return networkType.getClass().getAnnotation(ProbNetType.class).name();
     }
     
@@ -67,7 +67,7 @@ public class NetworkTypeManager {
      *
      * @return The network type map
      */
-    @SuppressWarnings("unchecked") private Map<String, Class<? extends NetworkType>> getNetworkTypesMap() {
+    @SuppressWarnings("unchecked") private static Map<String, Class<? extends NetworkType>> getNetworkTypesMap() {
         Map<String, Class<? extends NetworkType>> networkTypeClasses = new HashMap<>();
         NetworkTypeManager.findAllNetworkTypes().forEach(networkTypeClass -> {
             ProbNetType lAnnotation = networkTypeClass.getAnnotation(ProbNetType.class);

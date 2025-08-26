@@ -32,12 +32,10 @@ public class DirichletFamily extends FamilyDistribution {
 	}
 
 	@Override public double[] getVariance() {
-		double[] variance;
-		double sumAlpha;
-
-		double[] alpha = super.getMean();
-		sumAlpha = Tools.sum(alpha);
-		variance = new double[alpha.length];
+        
+        double[] alpha = super.getMean();
+        double sumAlpha = Tools.sum(alpha);
+        double[] variance = new double[alpha.length];
 		for (int i = 0; i < alpha.length; i++) {
 			double alphaI = alpha[i];
 			variance[i] = alphaI * (sumAlpha - alphaI) / (Math.pow(sumAlpha, 2.0) * (sumAlpha + 1.0));

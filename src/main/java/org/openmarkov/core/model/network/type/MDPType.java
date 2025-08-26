@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.model.network.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import org.openmarkov.core.model.network.constraint.AllChanceVariablesHaveChancePotentials;
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.NoCycle;
@@ -18,7 +16,7 @@ import org.openmarkov.core.model.network.constraint.UtilityNodes;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 @ProbNetType(name = "MDP") public class MDPType extends NetworkType {
-	private static MDPType instance = null;
+    private static final MDPType INSTANCE = new MDPType();
 
 	// Constructor
 	private MDPType() {
@@ -32,10 +30,7 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 	// Methods
 	public static MDPType getUniqueInstance() {
-		if (instance == null) {
-			instance = new MDPType();
-		}
-		return instance;
+        return INSTANCE;
 	}
 	
 }

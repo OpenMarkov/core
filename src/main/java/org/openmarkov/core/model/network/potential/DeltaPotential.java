@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -82,12 +81,10 @@ import java.util.List;
      * @return True if it is valid
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        return (
-                (variables.size() <= 1 || role == PotentialRole.POLICY) || (
-                        variables.size() > 1 && role == PotentialRole.CONDITIONAL_PROBABILITY
-                                && node.getVariable().getVariableType() == VariableType.NUMERIC
-                )
-        );
+        return variables.size() <= 1
+                || role == PotentialRole.POLICY
+                || role == PotentialRole.CONDITIONAL_PROBABILITY
+                && node.getVariable().getVariableType() == VariableType.NUMERIC;
     }
     
     private void initFiniteStates(Variable conditionedVariable, State state) {
@@ -167,7 +164,7 @@ import java.util.List;
     }
     
     @Override public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
-        Finding inducedFinding = null;
+        Finding inducedFinding;
         if (getConditionedVariable().getVariableType() == VariableType.FINITE_STATES) {
             inducedFinding = new Finding(getConditionedVariable(), state);
         } else {

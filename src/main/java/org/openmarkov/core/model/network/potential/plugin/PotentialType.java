@@ -6,17 +6,10 @@
  */
 package org.openmarkov.core.model.network.potential.plugin;
 
-import org.openmarkov.core.annotation.ImplementationRequirements;
-import org.openmarkov.core.annotation.RequiredConstructor;
-import org.openmarkov.core.model.network.CycleLength;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.List;
 
 @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface PotentialType {
 	String name();

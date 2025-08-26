@@ -66,12 +66,10 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 	@Override public double getInverseCumulativeDistributionFunction(double y) {
 		double sample;
-		double diffBA;
-		double ratioCABA;
-		diffBA = maximum - minimum;
+        double diffBA = maximum - minimum;
 		double diffBC = maximum - mode;
 		double diffCA = mode - minimum;
-		ratioCABA = diffCA / diffBA;
+        double ratioCABA = diffCA / diffBA;
 		// if (x<ratioCABA){
 		if (y < ratioCABA) {
 			// if (x<c){

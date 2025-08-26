@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -165,7 +164,7 @@ import java.util.Random;
      *
      * @return {@code true} if all the variables are FINITE_STATES.
      */
-    private boolean allVariablesAreDiscrete(List<Variable> variables) {
+    private static boolean allVariablesAreDiscrete(List<Variable> variables) {
         for (Variable variable : variables) {
             if (variable.getVariableType() != VariableType.FINITE_STATES) {
                 return false;
@@ -180,7 +179,7 @@ import java.util.Random;
      * @return 1 / multiplication of the number of states of conditioning
      * variables.
      */
-    private double calculateDiscreteValue(List<Variable> variables) {
+    private static double calculateDiscreteValue(List<Variable> variables) {
         int statesSpace = 1;
         for (int i = 1; i < variables.size(); i++) {
             statesSpace *= variables.get(i).getNumStates();

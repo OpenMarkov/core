@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class ConstraintManager {
-    private static ConstraintManager instance;
+    private static final ConstraintManager INSTANCE = new ConstraintManager();
     private final HashMap<Class<? extends PNConstraint>, ConstraintBehavior> defaultConstraintBehaviors;
     
     /**
@@ -27,7 +27,7 @@ public class ConstraintManager {
      */
     @SuppressWarnings("unchecked") private ConstraintManager() {
         this.defaultConstraintBehaviors = new HashMap<>();
-        this.findAllConstraints().forEach(plugin -> {
+        ConstraintManager.findAllConstraints().forEach(plugin -> {
             Constraint lAnnotation = plugin.getAnnotation(Constraint.class);
             this.defaultConstraintBehaviors.put(plugin, lAnnotation.defaultBehavior());
         });
@@ -41,10 +41,7 @@ public class ConstraintManager {
      * @return The unique instance.
      */
     public static ConstraintManager getUniqueInstance() {
-        if (instance == null) {
-            instance = new ConstraintManager();
-        }
-        return instance;
+        return INSTANCE;
     }
     
     /**
@@ -54,14 +51,15 @@ public class ConstraintManager {
      *
      * @param includeOptionals If include optional constraints
      * @param type             of the network the list is being generated for.
+     *
      * @return a minimal list of constraint.
      */
     public ArrayList<PNConstraint> buildConstraintList(NetworkType type, boolean includeOptionals) {
         // Init the list with those constraints that have the default value set to YES
         ArrayList<PNConstraint> constraints = new ArrayList<>();
         for (Class<? extends PNConstraint> constraintClass : defaultConstraintBehaviors.keySet()) {
-            if (getDefaultBehavior(constraintClass).equals(ConstraintBehavior.YES) || (
-                    includeOptionals && getDefaultBehavior(constraintClass).equals(ConstraintBehavior.OPTIONAL)
+            if (getDefaultBehavior(constraintClass) == ConstraintBehavior.YES || (
+                    includeOptionals && getDefaultBehavior(constraintClass) == ConstraintBehavior.OPTIONAL
             )) {
                 try {
                     constraints.add(constraintClass.getDeclaredConstructor().newInstance());
@@ -85,7 +83,7 @@ public class ConstraintManager {
                 }
             } else if (overwrittenConstraints.get(constraintClass) == ConstraintBehavior.NO) {
                 for (int i = 0; i < constraints.size(); ++i) {
-                    if (constraints.get(i).getClass().equals(constraintClass)) {
+                    if (constraints.get(i).getClass() == constraintClass) {
                         constraints.remove(i);
                     }
                 }
@@ -103,7 +101,7 @@ public class ConstraintManager {
         return defaultConstraintBehaviors.get(constraintClass);
     }
     
-    public final @NotNull Stream<Class<PNConstraint>> findAllConstraints() {
+    public static @NotNull Stream<Class<PNConstraint>> findAllConstraints() {
         return PluginSearch.init().annotatedWith(Constraint.class).childrenOf(PNConstraint.class).stream();
     }
 }

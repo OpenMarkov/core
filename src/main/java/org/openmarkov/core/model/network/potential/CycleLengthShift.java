@@ -136,7 +136,7 @@ import java.util.List;
     
     @Override public Potential copy() {
         List<Variable> copiedVariables = null;
-        if (this.getVariables() != null && this.getVariables().size() != 0) {
+        if (this.getVariables() != null && !this.getVariables().isEmpty()) {
             copiedVariables = new ArrayList<>(this.getVariables());
         }
         CycleLengthShift cycleLengthShift = new CycleLengthShift(copiedVariables, this.cycleLength);

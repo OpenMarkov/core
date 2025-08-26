@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.model.network.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
@@ -16,7 +14,7 @@ import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 @ProbNetType(name = "MarkovNetwork") public class MarkovNetworkType extends NetworkType {
-	private static MarkovNetworkType instance = null;
+    private static final MarkovNetworkType INSTANCE = new MarkovNetworkType();
 
 	// Constructor
 	private MarkovNetworkType() {
@@ -28,10 +26,7 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 	// Methods
 	public static MarkovNetworkType getUniqueInstance() {
-		if (instance == null) {
-			instance = new MarkovNetworkType();
-		}
-		return instance;
+        return INSTANCE;
 	}
 	
 }

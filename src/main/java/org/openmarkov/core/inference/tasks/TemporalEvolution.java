@@ -41,7 +41,7 @@ public interface TemporalEvolution extends Task {
     }
 
     /**
-     * Returns the temporal evolution of a node or a set of utility nodes where discounting given by <code>criterion</code> is applied.
+     * Returns the temporal evolution of a node or a set of utility nodes where discounting given by {@code criterion} is applied.
      * To be used with one variable or for CE
      *
      * @param criterion @link{Criterion} used to compute discount

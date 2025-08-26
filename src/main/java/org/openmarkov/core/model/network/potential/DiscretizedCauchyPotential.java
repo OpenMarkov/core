@@ -191,9 +191,7 @@ import java.util.List;
         TablePotential scalePotential = new TablePotential(scalePotentialVariables,
                                                            PotentialRole.CONDITIONAL_PROBABILITY);
         // Set variance to 1 for all configurations
-        for (int i = 0; i < scalePotential.values.length; ++i) {
-            scalePotential.values[i] = 1;
-        }
+        Arrays.fill(scalePotential.values, 1);
         return scalePotential;
     }
     
@@ -249,8 +247,8 @@ import java.util.List;
         replaceNumericVariablePotentialVariableSet(convertedParentVariable, scale.variables);
     }
     
-    private void replaceNumericVariablePotentialVariableSet(Variable convertedParentVariable,
-                                                            List<Variable> potentialVariables) {
+    private static void replaceNumericVariablePotentialVariableSet(Variable convertedParentVariable,
+                                                                   List<Variable> potentialVariables) {
         int varIndex = -1;
         for (int i = 0; i < potentialVariables.size(); ++i) {
             if (potentialVariables.get(i).getName().equals(convertedParentVariable.getName())) {

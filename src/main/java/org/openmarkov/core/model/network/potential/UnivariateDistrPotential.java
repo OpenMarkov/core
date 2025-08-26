@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.InvalidArgumentException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -23,6 +22,7 @@ import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @PotentialType(name = "UnivariateDistr") public class UnivariateDistrPotential extends Potential {
@@ -319,9 +319,7 @@ import java.util.List;
     
     protected void initializeAugmentedTable() {
         String[] functionValues = distributionTable.getFunctionValues();
-        for (int i = 0; i < functionValues.length; i++) {
-            functionValues[i] = INITIALIZATION_VALUE;
-        }
+        Arrays.fill(functionValues, INITIALIZATION_VALUE);
     }
     
     public void checkDistributionValues(double[] values) throws InvalidArgumentException {
@@ -420,9 +418,7 @@ import java.util.List;
         int size = newOrderOfVariables.size();
         // orderVariables has the order of the parents of the augmentedTable, so
         // parameterVariables should be added
-        for (Variable parameterVariable : getParameterVariables()) {
-            newOrderOfVariables.add(parameterVariable);
-        }
+        newOrderOfVariables.addAll(getParameterVariables());
         UnivariateDistrPotential newPotential = new UnivariateDistrPotential(newOrderOfVariables,
                                                                              getProbDensFunctionClass(), getPotentialRole());
         newOrderOfVariables.remove(0);

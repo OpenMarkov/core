@@ -14,6 +14,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.java.cloneUtils.CloneUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -40,7 +41,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
     public final static int noTemporalTimeSlice = Integer.MIN_VALUE;
     
     // Attributes
-    private final String STATE_BASE_NAME = "state";
+    private static final String STATE_BASE_NAME = "state";
     /**
      * A string (usually in English) that identifies this variable.
      */
@@ -523,9 +524,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
         List<Variable> potentialVariables = new ArrayList<>();
         potentialVariables.add(this);
         TablePotential potential = new TablePotential(potentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-        for (int i = 0; i < potential.values.length; i++) {
-            potential.values[i] = 0.0;
-        }
+        Arrays.fill(potential.values, 0.0);
         potential.values[this.getStateIndex(stateName)] = 1.0;
         return potential;
     }
@@ -534,10 +533,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
         List<Variable> potentialVariables = new ArrayList<>();
         potentialVariables.add(this);
         TablePotential potential = new TablePotential(potentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-        
-        for (int i = 0; i < potential.values.length; i++) {
-            potential.values[i] = 0.0;
-        }
+        Arrays.fill(potential.values, 0.0);
         potential.values[getStateIndex(state)] = 1.0;
         return potential;
     }
@@ -557,7 +553,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
         double count = 0;
         for (int i = 1; i <= numStates - 1; i++) {
             interval[i] = count;
-            double precision = Double.valueOf(getPrecision());
+            double precision = getPrecision();
             count += precision;
         }
         return interval;
@@ -568,7 +564,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
      * new double[numStates+1]; interval[0] = 0; int count = 2; for (int i=1;i
      * <= numStates; i++){ interval[i] = count; count += 2; } return interval; }
      */
-    public boolean[] getDefaultBelongs(int numStates) {
+    public static boolean[] getDefaultBelongs(int numStates) {
         boolean[] limits = new boolean[numStates + 1];
         limits[0] = true;
         for (int i = 1; i < numStates; i++) {
@@ -591,11 +587,11 @@ public class Variable implements Cloneable, Comparable<Variable> {
             // Set base name
             int lastOpenBracket = variableName.lastIndexOf(" [");
             baseName = variableName.substring(0, lastOpenBracket);
-            int lastClosedBracket = variableName.lastIndexOf("]");
+            int lastClosedBracket = variableName.lastIndexOf(']');
             if (lastClosedBracket > lastOpenBracket) {
                 int firstNumber = lastOpenBracket + 2;
                 try {
-                    timeSlice = Integer.valueOf((String) variableName.subSequence(firstNumber, lastClosedBracket));
+                    timeSlice = Integer.parseInt((String) variableName.subSequence(firstNumber, lastClosedBracket));
                 } catch (NumberFormatException e) {
                     // There is not a number between brackets
                 }
@@ -669,7 +665,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
         if (othersHashCode > thisHashCode)
             result = -1;
         else if (othersHashCode < thisHashCode)
-            result = 0;
+            result = 1;
         return result;
     }
     
@@ -696,7 +692,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
      * @return a new valid name for a state
      */
     public String getNewValidName() {
-        String newValidName = null;
+        String newValidName;
         int actualState = 0;
         boolean validName;
         do {

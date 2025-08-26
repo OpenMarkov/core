@@ -115,6 +115,8 @@ public class UtilityOperations {
 	 * @return result of applying the Right Riemann sum
 	 */
 	public static double applyRightRiemannSum(double[] values, int lenghtOfCycle) {
+        //TODO: newValues is just initialized from the values array, but newValues is never used in the function, nor it
+        // is returned. Why is it created then?
 		double[] newValues = new double[values.length];
 		double summatory = 0;
 		int numberOfCycles = values.length / lenghtOfCycle;

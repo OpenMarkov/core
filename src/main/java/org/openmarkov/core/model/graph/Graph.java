@@ -163,7 +163,7 @@ public class Graph<T> {
 	}
 
 	/**
-	 * Inserts a link between {@code node1} and {@code node2}. {@code node1} and <code>node2</code> belongs to this
+     * Inserts a link between {@code node1} and {@code node2}. {@code node1} and {@code node2} belongs to this
 	 *
 	 * @param node1    {@code Node}
 	 * @param node2    {@code Node}
@@ -252,7 +252,7 @@ public class Graph<T> {
 				List<T> children = nodeChildren.get(node);
 				if (children != null) {
 					for (T child : children) {
-						Link<T> newLink = null;
+                        Link<T> newLink;
 						if (createLabelledLinks) {
 							newLink = new LabelledLink<>(node, child, true, null);
 						} else {
@@ -266,7 +266,7 @@ public class Graph<T> {
 					int auxNode1Index = nodes.indexOf(node);
 					for (T sibling : siblings) {
 						if (auxNode1Index > nodes.indexOf(sibling)) {
-							Link<T> newLink = null;
+                            Link<T> newLink;
 							if (createLabelledLinks) {
 								newLink = new LabelledLink<>(node, sibling, false, null);
 							} else {
@@ -290,8 +290,7 @@ public class Graph<T> {
 	public void removeLinks(T node) {
 
 		if (explicitLinks) {
-			List<Link<T>> linksNode = new ArrayList<>();
-			linksNode.addAll(nodeLinks.get(node));
+            List<Link<T>> linksNode = new ArrayList<>(nodeLinks.get(node));
 
 			for (Link<T> link : linksNode) {
 				removeLink(link);
@@ -335,7 +334,7 @@ public class Graph<T> {
 	}
 
 	public int getNumLinks(T node) {
-		int numLinks = 0;
+        int numLinks;
 		if (explicitLinks)
 			numLinks = nodeLinks.containsKey(node) ? nodeLinks.get(node).size() : 0;
 		else
@@ -379,20 +378,16 @@ public class Graph<T> {
 		int numNodes = nodes.size();
 		boolean[] markedNodes = new boolean[numNodes];
 		Stack<T> nodesToExpand = new Stack<>();
-
-		for (int i = 0; i < numNodes; i++) {
-			markedNodes[i] = false;
-		}
-
-		// Mark node1 and put it in the list of nodes to be expanded
+        
+        // Mark node1 and put it in the list of nodes to be expanded
 		nodesToExpand.push(node1);
 		markedNodes[nodes.indexOf(node1)] = true;
-
-		List<T> neighbors = new ArrayList<>();
+        
+        List<T> neighbors;
 		while (!nodesToExpand.empty()) {
 			T expandableNode = nodesToExpand.pop(); // the top of the stack
 			neighbors = (directed) ? getChildren(expandableNode) : getNeighbors(expandableNode);
-			if (neighbors.indexOf(node2) != -1) {
+            if (neighbors.contains(node2)) {
 				return true; // node2 is in a path from node1
 			}
 			for (T neighborNode : neighbors) {

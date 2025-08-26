@@ -31,15 +31,15 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * <b><code>XMLProperties</code></b> extends Java's
- * <code>java.util.Properties</code> class, and provides
+ * <b>{@code XMLProperties}</b> extends Java's
+ * {@code java.util.Properties} class, and provides
  * behavior similar to properties but that use XML as the
  * input and output format.
  */
 @SuppressWarnings("serial") class XMLProperties extends Properties {
 
 	/**
-	 * <p> This overrides the default <code>load()</code>
+     * <p> This overrides the default {@code load()}
 	 * behavior to read from an XML document. </p>
 	 * @param reader the reader to read XML from
 	 * @throws IOException	when errors occur reading.
@@ -57,7 +57,7 @@ import java.util.Properties;
 	}
 
 	/**
-	 * <p> This overrides the default <code>load()</code>
+     * <p> This overrides the default {@code load()}
 	 * behavior to read from an XML document. </p>
 	 *
 	 * @param inputStream the input stream
@@ -68,7 +68,7 @@ import java.util.Properties;
 	}
 
 	/**
-	 * <p> This overrides the default <code>load()</code>
+     * <p> This overrides the default {@code load()}
 	 * behavior to read from an XML document. </p>
 	 *
 	 * @param xmlDocument the XML document to read
@@ -83,7 +83,7 @@ import java.util.Properties;
 	 * <p>This helper method loads the XML properties from a specific
 	 * XML element, or set of elements.</p>
 	 *
-	 * @param elements <code>List</code> of elements to load from.
+     * @param elements {@code List} of elements to load from.
 	 * @param baseName the base name of this property.
 	 */
 	private void loadFromElements(List<Element> elements, StringBuilder baseName) {
@@ -94,13 +94,13 @@ import java.util.Properties;
 			String text = current.getAttributeValue("value");
 
 			// Don't add "." if no baseName
-			if (baseName.length() > 0) {
+            if (!baseName.isEmpty()) {
 				baseName.append(".");
 			}
 			baseName.append(name);
 
 			// See if we have an element value
-			if ((text != null) && (!text.equals(""))) {
+            if ((text != null) && (!text.isEmpty())) {
 				// If text, this is a property
 				setProperty(baseName.toString(), text);
 			}
@@ -126,7 +126,7 @@ import java.util.Properties;
 	 * a properties list is via the
 	 * method.
 	 */
-	@Override public void save(OutputStream out, String header) {
+    @Deprecated @Override public void save(OutputStream out, String header) {
 		try {
 			store(out, header);
 		} catch (IOException ignored) {
@@ -197,18 +197,18 @@ import java.util.Properties;
 	 * <p> This will convert a single property and its value to
 	 * an XML element and textual value. </p>
 	 *
-	 * @param root          JDOM root <code>Element</code> to add children to.
+     * @param root          JDOM root {@code Element} to add children to.
 	 * @param propertyName  name to base element creation on.
 	 * @param propertyValue value to use for property.
 	 */
-	private void createXMLRepresentation(Element root, String propertyName, String propertyValue) {
+    private static void createXMLRepresentation(Element root, String propertyName, String propertyValue) {
 
 		int split;
 		String name = propertyName;
 		Element current = root;
-		Element test = null;
-
-		while ((split = name.indexOf(".")) != -1) {
+        Element test;
+        
+        while ((split = name.indexOf('.')) != -1) {
 			String subName = name.substring(0, split);
 			name = name.substring(split + 1);
 

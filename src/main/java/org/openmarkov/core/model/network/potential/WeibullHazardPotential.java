@@ -231,7 +231,7 @@ import java.util.Map;
         }
     }
     
-    protected int getGammaIndex(String[] covariates) {
+    protected static int getGammaIndex(String[] covariates) {
         int gammaIndex = -1;
         int i = 0;
         while (i < covariates.length && gammaIndex == -1) {

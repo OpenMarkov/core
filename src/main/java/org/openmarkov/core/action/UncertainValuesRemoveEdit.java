@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.action;
 
-import net.sourceforge.jeval.EvaluationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -20,6 +19,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -69,9 +69,7 @@ import java.util.List;
 		UncertainValue[] oldUncertainColumnArray = (wasNullOldUncertainColumn ? null : auxUncertainTable);
 
 		oldUncertainColumn = new ArrayList<>();
-		for (UncertainValue aux : oldUncertainColumnArray) {
-			oldUncertainColumn.add(aux);
-		}
+        Collections.addAll(oldUncertainColumn, oldUncertainColumnArray);
 		TablePotential auxPotential = getTablePotential(potential);
 		this.basePosition = getBasePosition(auxPotential,configuration,potential instanceof ExactDistrPotential);
 
@@ -85,16 +83,12 @@ import java.util.List;
 	 * @param configuration Evidence case
 	 * @return first position in the table of the consecutive cells where all the values corresponding to a certain configuration are stored
 	 */
-	public int getBasePosition(TablePotential potential, EvidenceCase configuration, boolean isInAnExactDistrPotential) {
-		int[] coordinates;
-		int sizeCoordinates;
-		int pos;
-		int sizeEvi = configuration.getFindings().size();
-		sizeCoordinates = sizeEvi+(isInAnExactDistrPotential?0:1);
-		coordinates = new int[sizeCoordinates];
+    public static int getBasePosition(TablePotential potential, EvidenceCase configuration, boolean isInAnExactDistrPotential) {
+        int sizeEvi = configuration.getFindings().size();
+        int sizeCoordinates = sizeEvi + (isInAnExactDistrPotential ? 0 : 1);
+        int[] coordinates = new int[sizeCoordinates];
 		List<Variable> varsTable = potential.getVariables();
-		int startLoop;
-		startLoop = isInAnExactDistrPotential?0:1;
+        int startLoop = isInAnExactDistrPotential ? 0 : 1;
 		if (!isInAnExactDistrPotential) {
 			// It is a typical probability potential of a chance variable
 			coordinates[0] = 0;
@@ -102,14 +96,12 @@ import java.util.List;
 		for (int i = startLoop; i < sizeCoordinates; i++) {
 			coordinates[i] = configuration.getFinding(varsTable.get(i)).getStateIndex();
 		}
-		pos = potential.getPosition(coordinates);
+        int pos = potential.getPosition(coordinates);
 		return pos;
 	}
-	
-	
-	
-	
-	TablePotential getTablePotential(Potential potential) {
+    
+    
+    static TablePotential getTablePotential(Potential potential) {
 		return (potential instanceof TablePotential)?(TablePotential)potential:((ExactDistrPotential)potential).getTablePotential();
 	}
 
@@ -155,13 +147,12 @@ import java.util.List;
 		UncertainValue[] table = potential.getUncertainValues();
 		//Create uncertain values table if it is null
 		if (table == null) {
-			table = new UncertainValue[potential.getTableSize()];
-		}
+        }
 		//Restore the elements of the uncertain column
 		UncertainValuesEdit.placeUncertainColumn(potential, oldUncertainColumn, getVariable(), basePosition);
 	}
-
-	private boolean hasUncertainValues(UncertainValue[] auxUncertainTable) {
+    
+    private static boolean hasUncertainValues(UncertainValue[] auxUncertainTable) {
 		boolean hasUncertainValues;
 		if ((auxUncertainTable == null) || (auxUncertainTable.length == 0)) {
 			hasUncertainValues = false;

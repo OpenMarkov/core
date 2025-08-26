@@ -17,10 +17,10 @@ import org.openmarkov.core.oopn.Instance.ParameterArity;
 import javax.swing.undo.CannotUndoException;
 
 @SuppressWarnings("serial") public class ChangeParameterArityEdit extends SimplePNEdit {
-
-	private Instance instance = null;
-	private ParameterArity arity = null;
-	private ParameterArity previousArity = null;
+    
+    private Instance instance;
+    private ParameterArity arity;
+    private ParameterArity previousArity;
 
 	public ChangeParameterArityEdit(ProbNet probNet, Instance instance, ParameterArity arity) {
 		super(probNet);

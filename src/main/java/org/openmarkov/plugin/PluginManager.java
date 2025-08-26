@@ -89,9 +89,8 @@ public class PluginManager {
 			return true;
 		if (other == null)
 			return false;
-		if (other instanceof PluginManager) {
-			PluginManager aPluginsManager = (PluginManager) other;
-			return plugins.equals(aPluginsManager.plugins);
+        if (other instanceof PluginManager aPluginsManager) {
+            return plugins.equals(aPluginsManager.plugins);
 		}
 		return false;
 	}

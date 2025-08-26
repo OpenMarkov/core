@@ -121,16 +121,17 @@ import java.util.List;
 		if ((
 				result = variable1.getName().compareTo(obj.getVariable1().
 						getName())
-		) != 0)
-			return result;
+        ) != 0) {
+            return result;
+        }
 		if ((
 				result = variable2.getName().compareTo(obj.getVariable2().
 						getName())
-		) != 0)
-			return result;
-		else
-			return 0;
-	}
+        ) != 0) {
+            return result;
+        }
+        return 0;
+    }
 
 	@Override public String getOperationName() {
 		return "Invert link";

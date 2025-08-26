@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 public class ProbDensFunctionManager {
     
-    private static ProbDensFunctionManager instance;
+    private static final ProbDensFunctionManager INSTANCE = new ProbDensFunctionManager();
     private Map<String, Class<ProbDensFunction>> probDensFunctions;
     
     //For Univariate
@@ -63,26 +63,17 @@ public class ProbDensFunctionManager {
      * @return The unique instance.
      */
     public static ProbDensFunctionManager getUniqueInstance() {
-        if (instance == null) {
-            instance = new ProbDensFunctionManager();
-        }
-        return instance;
+        return INSTANCE;
     }
     
     //For Univariate
     public List<String> getValidProbDensFunctions() {
-        List<String> validFunctions = new ArrayList<>();
-        for (String functionName : probDensFunctions.keySet()) {
-            validFunctions.add(functionName);
-        }
+        List<String> validFunctions = new ArrayList<>(probDensFunctions.keySet());
         return validFunctions;
     }
     
     public List<String> getDistributions() {
-        List<String> distributions = new ArrayList<>();
-        for (String distributionUnivariateName : probDensParametrizations.keySet()) {
-            distributions.add(distributionUnivariateName);
-        }
+        List<String> distributions = new ArrayList<>(probDensParametrizations.keySet());
         return distributions;
         
     }
@@ -149,7 +140,7 @@ public class ProbDensFunctionManager {
         return newInstance;
     }
     
-    private @NotNull Stream<Class<ProbDensFunction>> findAllProbDensFunctions() {
+    private static @NotNull Stream<Class<ProbDensFunction>> findAllProbDensFunctions() {
         return PluginSearch.init()
                            .annotatedWith(ProbDensFunctionType.class)
                            .childrenOf(ProbDensFunction.class)

@@ -23,7 +23,6 @@ import org.openmarkov.core.model.network.potential.operation.Util;
 import org.openmarkov.java.cloneUtils.CloneUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -328,8 +327,7 @@ public class Node implements Cloneable {
         boolean equals = obj instanceof Node;
         if (equals) {
             Node otherNode = (Node) obj;
-            equals = variable.equals(otherNode.variable) && probNet.equals(otherNode.probNet) && nodeType
-                    .equals(otherNode.nodeType);
+            equals = variable.equals(otherNode.variable) && probNet.equals(otherNode.probNet) && nodeType == otherNode.nodeType;
         }
         return equals;
     }
@@ -356,10 +354,6 @@ public class Node implements Cloneable {
              * EFFECTIVENESS: out.append("Utility, Effectiveness node"); break; case
              * CE: out.append("Utility, Cost-Effectiveness"); break;
              */
-            case SV_PRODUCT:
-                break;
-            case SV_SUM:
-                break;
             default:
                 break;
         }
@@ -520,7 +514,7 @@ public class Node implements Cloneable {
      * {@code boolean}
      */
     public boolean hasPolicy() {
-        return nodeType == NodeType.DECISION && potentials.size() != 0;
+        return nodeType == NodeType.DECISION && !potentials.isEmpty();
     }
     
     public void samplePotentials() throws NotSupportedOperationException {
@@ -647,7 +641,7 @@ public class Node implements Cloneable {
      * @return true if a node has only utility parents
      */
     public boolean checkOnlyUtilityparents() {
-        return getUtilityParents().size() == getParents().size() ? true : false;
+        return getUtilityParents().size() == getParents().size();
     }
     
     /**
@@ -718,7 +712,7 @@ public class Node implements Cloneable {
     
     public Node clone(ProbNet probNet) {
         Variable newVariable = CloneUtils.safeClone(this.variable);
-        if (this.getNodeType().equals(NodeType.UTILITY)) {
+        if (this.getNodeType() == NodeType.UTILITY) {
             for (Criterion criterion : probNet.getDecisionCriteria()) {
                 if (criterion.getCriterionName().equals(this.variable.getDecisionCriterion().getCriterionName())) {
                     newVariable.setDecisionCriterion(criterion);

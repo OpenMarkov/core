@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import net.sourceforge.jeval.EvaluationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.UnreacheableException;
@@ -187,9 +186,9 @@ import java.util.*;
      * The accumulated offset represents the increment (positive or negative) in
      * the corresponding position of the table when a variable is incremented
      * given an ordering of the variables of other potential.
-     *
+     * <p>
      * <big><b> Accumulated Offsets example
-     *
+     * <p>
      * </b></big> We have two potentials: Potential <b>Y</b> (b, d, a, c) and
      * Potential <b>X</b> (a, b, c). All variables are binary for simplicity.
      *
@@ -551,9 +550,9 @@ import java.util.*;
      * The accumulated offset represents the increment (positive or negative) in
      * the corresponding position of the table when a variable is incremented
      * given an ordering of the variables of other potential.
-     *
+     * <p>
      * <big><b> Accumulated Offsets example
-     *
+     * <p>
      * </b></big> We have two potentials: Potential <b>Y</b> (b, d, a, c) and
      * Potential <b>X</b> (a, b, c). All variables are binary for simplicity.
      *
@@ -567,7 +566,7 @@ import java.util.*;
      * <td><b>varToIncr(Y)</b></td>
      * <td><b>accOffset</b></td>
      * </tr>
-     *
+     * <p>
      * <tr>
      * <td>[b<sub>0</sub>,d<sub>0</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
      * <td>0</td>
@@ -576,7 +575,7 @@ import java.util.*;
      * <td>0(B)</td>
      * <td>+2</td>
      * </tr>
-     *
+     * <p>
      * <tr>
      * <td>[b<sub>1</sub>,d<sub>0</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
      * <td>1</td>
@@ -585,7 +584,7 @@ import java.util.*;
      * <td>1(D)</td>
      * <td>-2</td>
      * </tr>
-     *
+     * <p>
      * <tr>
      * <td>[b<sub>0</sub>,d<sub>1</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
      * <td>2</td>
@@ -779,7 +778,6 @@ import java.util.*;
     public int getPosition(EvidenceCase configuration) {
         int[] coordinates;
         int sizeCoordinates;
-        int pos;
         int sizeEvi = configuration.getFindings().size();
         List<Variable> varsTable = this.getVariables();
         int startLoop = 0;
@@ -799,7 +797,7 @@ import java.util.*;
         for (int i = startLoop; i < sizeCoordinates; i++) {
             coordinates[i] = configuration.getFinding(varsTable.get(i)).getStateIndex();
         }
-        pos = getPosition(coordinates);
+        int pos = getPosition(coordinates);
         return pos;
     }
     
@@ -852,12 +850,9 @@ import java.util.*;
      * variables field of the evidence case (configuration).
      */
     public double getValue(EvidenceCase configuration) {
-        int[] states;
-        List<Variable> variables;
-        int size;
-        variables = configuration.getVariables();
-        size = variables.size();
-        states = new int[size];
+        List<Variable> variables = configuration.getVariables();
+        int size = variables.size();
+        int[] states = new int[size];
         List<Finding> findings = configuration.getFindings();
         for (int i = 0; i < size; i++) {
             states[i] = findings.get(i).getStateIndex();
@@ -973,8 +968,7 @@ import java.util.*;
         if (uncertainValues == null) {
             hasUncertainty = false;
         } else {
-            int positionConfiguration;
-            positionConfiguration = getPosition(configuration);
+            int positionConfiguration = getPosition(configuration);
             hasUncertainty = uncertainValues[positionConfiguration] != null;
         }
         return hasUncertainty;
@@ -1209,7 +1203,7 @@ import java.util.*;
     }
     
     @Override public boolean isUncertain() {
-        return (this.uncertainValues != null) ? true : false;
+        return this.uncertainValues != null;
     }
     
     @Override public void scalePotential(double scale) {
@@ -1295,7 +1289,6 @@ import java.util.*;
     
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        boolean hasInterventions;
         TablePotential newPotential = new TablePotential(newOrderOfVariables, getPotentialRole());
         int[] accOffsets = getAccumulatedOffsets(newOrderOfVariables);
         int[] potentialPositions = new int[getNumVariables()];
@@ -1311,7 +1304,7 @@ import java.util.*;
             newPotential.uncertainValues = new UncertainValue[this.uncertainValues.length];
             copyUncertainValues = newPotential.uncertainValues;
         }
-        hasInterventions = intervOrigPotential != null && intervOrigPotential.length > 0;
+        boolean hasInterventions = intervOrigPotential != null && intervOrigPotential.length > 0;
         if (hasInterventions) {
             int newInterventionsLength = strategyTrees.length;
             newPotential.strategyTrees = new StrategyTree[newInterventionsLength];

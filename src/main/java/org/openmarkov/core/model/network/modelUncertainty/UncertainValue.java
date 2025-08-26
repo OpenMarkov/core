@@ -86,7 +86,7 @@ public class UncertainValue {
 	}
 
 	public boolean hasName() {
-		return name != null && name.length() > 0;
+        return name != null && !name.isEmpty();
 	}
 
 	public UncertainValue copy() {

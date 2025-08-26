@@ -123,7 +123,7 @@ public abstract class ICIPotential extends Potential {
      *
      * @return Array of noisy parameters values
      */
-    public double[] initializeNoisyParameters(Variable conditionedVariable, Variable parent) {
+    public static double[] initializeNoisyParameters(Variable conditionedVariable, Variable parent) {
         double[] probabilities = new double[conditionedVariable.getNumStates() * parent.getNumStates()];
         for (int j = 0; j < parent.getNumStates(); ++j) {
             for (int k = 0; k < conditionedVariable.getNumStates(); ++k) {
@@ -170,7 +170,7 @@ public abstract class ICIPotential extends Potential {
         for (TablePotential tablePotential : potentials) {
             variablesToEliminate.addAll(tablePotential.getVariables());
         }
-        variablesToEliminate.removeAll(variables);
+        variables.forEach(variablesToEliminate::remove);
         List<TablePotential> singleElementPotentialList = new ArrayList<>();
         
         List<Variable> allVariables = new ArrayList<>(variables);
@@ -351,29 +351,17 @@ public abstract class ICIPotential extends Potential {
         boolean isEqual = super.equals(arg0) && arg0 instanceof ICIPotential;
         if (isEqual) {
             ICIPotential otherPotential = (ICIPotential) arg0;
-            if (isEqual) {
-                for (int j = 1; j < variables.size(); ++j) {
-                    double[] values = getNoisyParameters(variables.get(j));
-                    Variable otherVariable = null;
-                    int k = 0;
-                    while (otherVariable == null && k < otherPotential.variables.size()) {
-                        otherVariable = (
-                                otherPotential.variables.get(k).getName().equals((variables.get(j).getName()))
-                        ) ? otherPotential.variables.get(k) : null;
-                        ++k;
-                    }
-                    double[] otherValues = otherPotential.getNoisyParameters(otherVariable);
-                    if (values.length == otherValues.length) {
-                        for (int i = 0; i < values.length; i++) {
-                            isEqual &= values[i] == otherValues[i];
-                        }
-                    } else {
-                        isEqual = false;
-                    }
+            for (int j = 1; j < variables.size(); ++j) {
+                double[] values = getNoisyParameters(variables.get(j));
+                Variable otherVariable = null;
+                int k = 0;
+                while (otherVariable == null && k < otherPotential.variables.size()) {
+                    otherVariable = (
+                            otherPotential.variables.get(k).getName().equals((variables.get(j).getName()))
+                    ) ? otherPotential.variables.get(k) : null;
+                    ++k;
                 }
-                
-                double[] values = getLeakyParameters();
-                double[] otherValues = otherPotential.getLeakyParameters();
+                double[] otherValues = otherPotential.getNoisyParameters(otherVariable);
                 if (values.length == otherValues.length) {
                     for (int i = 0; i < values.length; i++) {
                         isEqual &= values[i] == otherValues[i];
@@ -381,6 +369,16 @@ public abstract class ICIPotential extends Potential {
                 } else {
                     isEqual = false;
                 }
+            }
+            
+            double[] values = getLeakyParameters();
+            double[] otherValues = otherPotential.getLeakyParameters();
+            if (values.length == otherValues.length) {
+                for (int i = 0; i < values.length; i++) {
+                    isEqual &= values[i] == otherValues[i];
+                }
+            } else {
+                isEqual = false;
             }
         }
         return isEqual;
@@ -407,7 +405,7 @@ public abstract class ICIPotential extends Potential {
      *
      * @return Analogous Z variable for the parent variable
      */
-    private Variable createZVariable(Variable parent, Variable child) {
+    private static Variable createZVariable(Variable parent, Variable child) {
         return new Variable("z_" + parent.getName() + "_" + child.getName(), child.getStates());
     }
     

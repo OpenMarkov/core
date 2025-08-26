@@ -9,8 +9,8 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
-@ProbDensFunctionType(name = "Dirichlet", isValidForNumeric = false, parameters = {
-		"alpha" }) public class DirichletFunction extends ProbDensFunction {
+@ProbDensFunctionType(name = "Dirichlet", isValidForNumeric = false, parameters = "alpha")
+public class DirichletFunction extends ProbDensFunction {
 	private double alpha;
 
 	private GammaFunction gammaForSampling;

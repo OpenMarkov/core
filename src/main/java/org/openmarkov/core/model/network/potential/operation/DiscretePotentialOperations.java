@@ -27,8 +27,6 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-import net.sourceforge.jeval.EvaluationException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,6 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class defines a set of common operations over discrete potentials (
@@ -59,7 +58,7 @@ public final class DiscretePotentialOperations {
      * Round error used to compare two numbers. If they differ in less than
      * {@code maxRoundErrorAllowed} they will be considered equals.
      */
-    public static double maxRoundErrorAllowed = 1E-8;
+    public static double maxRoundErrorAllowed = 1.0E-8;
     
     /**
      * @param tablePotentials {@code ArrayList} of extends {@code Potential}.
@@ -76,11 +75,8 @@ public final class DiscretePotentialOperations {
      * @return A {@code TablePotential} as result.
      */
     public static TablePotential multiply(TablePotential... potentials) {
-        List<TablePotential> potentialsToMultiply;
-        potentialsToMultiply = new ArrayList<>();
-        for (TablePotential potential : potentials) {
-            potentialsToMultiply.add(potential);
-        }
+        List<TablePotential> potentialsToMultiply = new ArrayList<>();
+        Collections.addAll(potentialsToMultiply, potentials);
         return multiply(potentialsToMultiply);
     }
     
@@ -98,9 +94,8 @@ public final class DiscretePotentialOperations {
         if (numPotentials < 2) {
             if (numPotentials == 1) {
                 return tablePotentials.get(0);
-            } else {
-                return null;
             }
+            return null;
         }
         // Find out if some potential has criterion. In that case, set that criterion in
         // the resulting potential
@@ -120,7 +115,7 @@ public final class DiscretePotentialOperations {
         PotentialRole role = getRole(potentials);
         
         potentials = AuxiliaryOperations.getNonConstantPotentials(potentials);
-        if (potentials.size() == 0) {
+        if (potentials.isEmpty()) {
             return buildConstantPotential(constantFactor, role);
         }
         
@@ -161,7 +156,7 @@ public final class DiscretePotentialOperations {
         if (thereAreInterventions) {
             inputStrategyTrees = potentialWithInterventions.strategyTrees;
             resultStrategyTrees = new StrategyTree[tableSize];
-            if (potentialWithInterventions.getVariables().size() == 0) {
+            if (potentialWithInterventions.getVariables().isEmpty()) {
                 // The interventions are in a constant potential
                 strategyTree = inputStrategyTrees[0];
             }
@@ -223,11 +218,7 @@ public final class DiscretePotentialOperations {
     }
     
     private static int[] initializeToZero(int numPotentials) {
-        int[] potentialsPositions = new int[numPotentials];
-        for (int i = 0; i < numPotentials; i++) {
-            potentialsPositions[i] = 0;
-        }
-        return potentialsPositions;
+        return new int[numPotentials];
     }
     
     /**
@@ -282,7 +273,7 @@ public final class DiscretePotentialOperations {
      * @return {@code TablePotential}
      */
     public static TablePotential sum(List<TablePotential> tablePotentials) {
-        if (tablePotentials == null || tablePotentials.size() == 0) {
+        if (tablePotentials == null || tablePotentials.isEmpty()) {
             return new TablePotential(null, PotentialRole.CONDITIONAL_PROBABILITY, new double[]{0.0});
         }
         if (tablePotentials.size() == 1) {
@@ -356,7 +347,7 @@ public final class DiscretePotentialOperations {
                 ? new StrategyTree[tableSize]
                 : null;
         
-        if (potentials.size() > 0) {
+        if (!potentials.isEmpty()) {
             double sum;
             for (int resultPosition = 0; resultPosition < tableSize; resultPosition++) {
                 /*
@@ -667,9 +658,7 @@ public final class DiscretePotentialOperations {
     
     public static TablePotential sum(TablePotential... tablePotentials) {
         List<TablePotential> potentialList = new ArrayList<>(tablePotentials.length);
-        for (TablePotential potential : tablePotentials) {
-            potentialList.add(potential);
-        }
+        Collections.addAll(potentialList, tablePotentials);
         return sum(potentialList);
     }
     
@@ -848,13 +837,12 @@ public final class DiscretePotentialOperations {
             double prob = probPotential.values[0];
             if (prob == 1) {
                 return utilityPotential;
-            } else {
-                TablePotential result = (TablePotential) utilityPotential.copy();
-                for (int i = 0; i < result.values.length; i++) {
-                    result.values[i] *= prob;
-                }
-                return result;
             }
+            TablePotential result = (TablePotential) utilityPotential.copy();
+            for (int i = 0; i < result.values.length; i++) {
+                result.values[i] *= prob;
+            }
+            return result;
         }
         
         List<Variable> allVariables = probPotential.getVariables();
@@ -1128,12 +1116,12 @@ public final class DiscretePotentialOperations {
      *
      * @return The {@code potential} normalized
      *
-     * @throws NormalizeNullVectorException NormalizeNullVectorException
+     * @throws CannotNormalizeNullVectorException NormalizeNullVectorException
      */
     public static TablePotential normalize(TablePotential potential) throws CannotNormalizeNullVectorException {
         TablePotential tablePotential = potential;
         // Check for null vectors
-        int p = 0;
+        int p;
         for (p = 0; p < tablePotential.values.length; p++) {
             if (tablePotential.values[p] != 0.0) {
                 break;
@@ -1144,10 +1132,10 @@ public final class DiscretePotentialOperations {
             throw new CannotNormalizeNullVectorException(tablePotential.getVariables());
         }
         List<Variable> variables = tablePotential.getVariables();
-        if ((variables != null) && (variables.size() > 0)) {
+        if ((variables != null) && (!variables.isEmpty())) {
             if (potential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
                 int numStates = variables.get(0).getNumStates();
-                double normalizationFactor = 0.0;
+                double normalizationFactor;
                 for (int i = 0; i < tablePotential.values.length; i += numStates) {
                     normalizationFactor = 0.0;
                     for (int j = 0; j < numStates; j++) {
@@ -1205,6 +1193,7 @@ public final class DiscretePotentialOperations {
         int numVariables = quotient.getNumVariables();
         
         // Gets the tables of each TablePotential
+        //TODO: The array positionTies is never read.
         double[][] tables = new double[2][];
         tables[0] = tNumerator.values;
         tables[1] = tDenominator.values;
@@ -1616,6 +1605,7 @@ public final class DiscretePotentialOperations {
             statesTies = new ArrayList<>();
             statesTies.add(0);
             accumulator = multiplicationResult;
+            //TODO: The array positionTies is never read.
             int[] positionTies = new int[eliminationSize];
             int numTies = 0;
             positionTies[numTies] = currentPositions[0];
@@ -1641,7 +1631,7 @@ public final class DiscretePotentialOperations {
                 }
                 
                 // update the accumulator (for this inner iteration)
-                Double diffWithAccumulator = multiplicationResult - accumulator;
+                double diffWithAccumulator = multiplicationResult - accumulator;
                 if (diffWithAccumulator > maxRoundErrorAllowed) {
                     statesTies = new ArrayList<>();
                     statesTies.add(innerIteration);
@@ -1686,10 +1676,9 @@ public final class DiscretePotentialOperations {
     
     private static void assignProbUniformlyInTies(TablePotential tp, int numStatesVariable, List<Integer> statesTies,
                                                   int[] policyDomainConfiguration) {
-        Double probTies;
         
         int numStatesTies = statesTies.size();
-        probTies = 1.0 / numStatesTies;
+        double probTies = 1.0 / numStatesTies;
         
         int lenghtPolicyDomainConfiguration = policyDomainConfiguration.length;
         int[] tPConfiguration = new int[lenghtPolicyDomainConfiguration + 1];
@@ -1803,7 +1792,7 @@ public final class DiscretePotentialOperations {
                     setPot.add((TablePotential) iterPotentials.next().reorder(variablesFirst));
                 }
                 int lengthValues = potFirst.values.length;
-                double newValues[] = new double[lengthValues];
+                double[] newValues = new double[lengthValues];
                 for (int i = 0; i < lengthValues; i++) {
                     double max = Double.NEGATIVE_INFINITY;
                     for (TablePotential pot : setPot) {
@@ -1982,9 +1971,8 @@ public final class DiscretePotentialOperations {
     }
     
     public static TablePotential createOneValuePotential(PotentialRole role, double value) {
-        TablePotential newUtilityPotential;
-        newUtilityPotential = new TablePotential(role);
-        double values[] = new double[1];
+        TablePotential newUtilityPotential = new TablePotential(role);
+        double[] values = new double[1];
         values[0] = value;
         newUtilityPotential.setValues(values);
         return newUtilityPotential;
@@ -2015,7 +2003,7 @@ public final class DiscretePotentialOperations {
             }
         }
         return multiply(
-                probs.size() > 0 ? multiply(probs) : DiscretePotentialOperations.createUnityProbabilityPotential(),
+                !probs.isEmpty() ? multiply(probs) : DiscretePotentialOperations.createUnityProbabilityPotential(),
                 sum(utils));
     }
     
@@ -2030,13 +2018,8 @@ public final class DiscretePotentialOperations {
     public static List<TablePotential> orderPotentialsByTotalOrder(List<TablePotential> inputPotentialsList,
                                                                    List<Variable> decisionsTotallyOrdered) {
         List<TablePotential> orderedListOfPotentials = new ArrayList<>();
-        Set<TablePotential> inputPotentialsSet = new HashSet<>();
-        
         if (decisionsTotallyOrdered != null) {
-            for (TablePotential auxPot : inputPotentialsList) {
-                inputPotentialsSet.add(auxPot);
-            }
-            
+            Set<TablePotential> inputPotentialsSet = new HashSet<>(inputPotentialsList);
             Set<TablePotential> potentialsWithoutIntervention = new HashSet<>();
             // Remove from inputPotentials the potentials without Interventions
             // and
@@ -2048,8 +2031,7 @@ public final class DiscretePotentialOperations {
             }
             
             for (Variable dec : decisionsTotallyOrdered) {
-                Set<TablePotential> potentialsWithDecisionInIntervention;
-                potentialsWithDecisionInIntervention = getPotentialsWithDecisionInIntervention(dec, inputPotentialsSet);
+                Set<TablePotential> potentialsWithDecisionInIntervention = getPotentialsWithDecisionInIntervention(dec, inputPotentialsSet);
                 inputPotentialsSet.removeAll(potentialsWithDecisionInIntervention);
                 orderedListOfPotentials.addAll(potentialsWithDecisionInIntervention);
             }
@@ -2099,9 +2081,7 @@ public final class DiscretePotentialOperations {
         int[][] offsetAccumulate = DiscretePotentialOperations.getAccumulatedOffsets(potentials, mergedVariables);
         
         int[] offsets = TablePotential.calculateOffsets(mergedDimension);
-        int tableSize = numMergedVariables > 0
-                ? mergedDimension[numMergedVariables - 1] * offsets[numMergedVariables - 1]
-                : 1;
+        int tableSize = mergedDimension[numMergedVariables - 1] * offsets[numMergedVariables - 1];
         double[] mergedValues = new double[tableSize];
         
         int numPotentials = potentials.size();
@@ -2170,9 +2150,6 @@ public final class DiscretePotentialOperations {
         
         // Position in each table potential
         int[] potentialsPositions = new int[numPotentials];
-        for (int i = 0; i < numPotentials; i++) {
-            potentialsPositions[i] = 0;
-        }
         
         // -----------
         // Method body
@@ -2232,7 +2209,7 @@ public final class DiscretePotentialOperations {
         
         // Create merged potential with previous values
         PotentialRole role = potentials.get(0).getPotentialRole();
-        TablePotential mergedPotential = null;
+        TablePotential mergedPotential;
         if (thereAreGTablePotentials) {
             mergedPotential = new GTablePotential<CEP>(mergedVariables, role, mergedElementsTable);
         } else {
@@ -2388,7 +2365,7 @@ public final class DiscretePotentialOperations {
     
     public static TablePotential imposeOtherDistributionWhenDistributionIsZero(TablePotential xNewPotential) {
         List<Variable> variables = xNewPotential.getVariables();
-        if (variables == null || variables.size() == 0 || xNewPotential.values == null
+        if (variables == null || variables.isEmpty() || xNewPotential.values == null
                 || xNewPotential.values.length <= 1) {
             return xNewPotential;
         }
@@ -2448,7 +2425,7 @@ public final class DiscretePotentialOperations {
         if (thereAreInterventions) {
             inputStrategyTrees = potentialWithInterventions.strategyTrees;
             resultStrategyTrees = new StrategyTree[tableSize];
-            if (potentialWithInterventions.getVariables().size() == 0) {
+            if (potentialWithInterventions.getVariables().isEmpty()) {
                 // The interventions are in a constant potential
                 strategyTree = inputStrategyTrees[0];
             }
@@ -2456,8 +2433,9 @@ public final class DiscretePotentialOperations {
         
         int indexPotentialWithInterventions = potentials.indexOf(potentialWithInterventions);
         
-        List<String> utilityVariablesNames = new ArrayList<>();
-        utilityVariables.forEach(x -> utilityVariablesNames.add(x.getName()));
+        List<String> utilityVariablesNames = utilityVariables.stream()
+                                                             .map(Variable::getName)
+                                                             .toList();
         
         // utilityPotential.
         

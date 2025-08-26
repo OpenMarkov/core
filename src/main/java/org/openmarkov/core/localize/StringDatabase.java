@@ -42,15 +42,13 @@ public class StringDatabase {
     /**
      * Unique instance of this class.
      */
-    private static StringDatabase USER_INSTANCE = null;
-    /**
-     * English instance of this class.
-     */
-    private static StringDatabase DEVELOPER_INSTANCE = null;
+    private static final StringDatabase INSTANCE = new StringDatabase();
+    
     /**
      * Language to use.
      */
     private String language = DEFAULT_LANGUAGE;
+    
     /**
      * Locale to use
      */
@@ -85,18 +83,15 @@ public class StringDatabase {
      *
      * @return the unique instance.
      */
-    public synchronized static StringDatabase getUniqueInstance() {
-        if (USER_INSTANCE == null) {
-            USER_INSTANCE = new StringDatabase();
-        }
-        return USER_INSTANCE;
+    public static StringDatabase getUniqueInstance() {
+        return StringDatabase.INSTANCE;
     }
     
     public static String surrondAsUnknown(String string) {
         return ">>> " + string + " <<<";
     }
     
-    private Locale getLocaleByLanguage(String language) {
+    private static Locale getLocaleByLanguage(String language) {
         if (language.equals("es")) {
             return new Locale("es");
         }
@@ -120,7 +115,6 @@ public class StringDatabase {
      */
     public void setLanguage(String newLanguage) {
         if (!newLanguage.equals(language)) {
-            language = (newLanguage.equals("es")) ? "es" : "en";
             language = "en";
             setLocale(getLocaleByLanguage(language));
             /* Set format locale to english (to format decimal point)*/
@@ -342,9 +336,8 @@ public class StringDatabase {
 		return bundle;
 	}
 	*/
-    public ResourceBundle createXMLResourceBundle(String file, Locale locale) {
-        ResourceBundle bundle;
-        bundle = ResourceBundle.getBundle(file, locale);
+    public static ResourceBundle createXMLResourceBundle(String file, Locale locale) {
+        ResourceBundle bundle = ResourceBundle.getBundle(file, locale);
         return bundle;
         
     }
@@ -422,11 +415,11 @@ public class StringDatabase {
      * exist, then a special string is returned.
      */
     public String getFormattedString(String key, String... strings) {
-        String result = "";
-        String parameter = "";
+        String result;
+        String parameter;
         boolean flag = true;
         int i = 0;
-        int l = 0;
+        int l;
         int index = 0;
         final String diacritic = "~";
         try {

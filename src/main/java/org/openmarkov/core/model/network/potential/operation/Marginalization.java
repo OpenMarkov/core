@@ -26,8 +26,8 @@ public abstract class Marginalization {
 	 * @param probPotentials    {@code List} of {@code TablePotential}
 	 * @param utilityPotentials {@code List} of {@code TablePotential}
 	 */
-	protected void classifyProbAndUtilityPotentials(Collection<? extends Potential> potentials,
-			Collection<TablePotential> probPotentials, Collection<TablePotential> utilityPotentials) {
+    protected static void classifyProbAndUtilityPotentials(Collection<? extends Potential> potentials,
+                                                           Collection<TablePotential> probPotentials, Collection<TablePotential> utilityPotentials) {
 		for (Potential potential : potentials) {
 			if (potential.isAdditive()) {
 				utilityPotentials.add((TablePotential) potential);

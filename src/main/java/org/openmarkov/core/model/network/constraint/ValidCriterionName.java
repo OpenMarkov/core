@@ -19,8 +19,8 @@ import java.util.List;
 		extends PNConstraint {
 
 	// Constants for possible errors
-	private final int IS_EMPTY_NAME = 0;
-	private final int IS_NAME_ALREADY_EXIST = 1;
+    private static final int IS_EMPTY_NAME = 0;
+    private static final int IS_NAME_ALREADY_EXIST = 1;
 	// Flag of the error
 	private int type_error;
 
@@ -85,15 +85,11 @@ import java.util.List;
 	}
 
 	@Override protected String constraintDescription() {
-		switch (type_error) {
-		case IS_EMPTY_NAME:
-			return "there should be no empty names";
-		case IS_NAME_ALREADY_EXIST:
-			return "There is already a criterion with that name in the net.";
-		default:
-			return "Unknown problem";
-
-		}
+        return switch (type_error) {
+            case IS_EMPTY_NAME -> "there should be no empty names";
+            case IS_NAME_ALREADY_EXIST -> "There is already a criterion with that name in the net.";
+            default -> "Unknown problem";
+        };
 	}
 
 }

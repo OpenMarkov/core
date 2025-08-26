@@ -9,8 +9,8 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
-@ProbDensFunctionType(name = "Exact", isValidForNumeric = true, parameters = { "nu" }) public class ExactFunction
-		extends ProbDensFunction {
+@ProbDensFunctionType(name = "Exact", isValidForNumeric = true, parameters = "nu")
+public class ExactFunction extends ProbDensFunction {
 	private double nu;
 
 	public ExactFunction() {

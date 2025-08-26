@@ -71,9 +71,8 @@ import java.util.Map;
         int constantIndex = getConstantIndex(covariates);
         
         List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
-        TablePotential projectedPotential = null;
         projectedPotentialVariables.add(0, variables.get(0));
-        projectedPotential = new TablePotential(projectedPotentialVariables, role);
+        TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, role);
         Variable conditionedVariable = getConditionedVariable();
         int numStates = conditionedVariable.getNumStates();
         int parentFirstIndex = (conditionedVariable == projectedPotentialVariables.get(0)) ? 1 : 0;
@@ -96,7 +95,7 @@ import java.util.Map;
             evaluator.setVariables(variableValues);
             double regression = coefficients[constantIndex];
             for (int j = 0; j < coefficients.length; ++j) {
-                double covariateValue = 0.0;
+                double covariateValue;
                 if (j != constantIndex) {
                     try {
                         String evaluation = evaluator.evaluate(covariates[j]);

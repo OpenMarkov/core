@@ -16,7 +16,6 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -93,9 +92,8 @@ public class SDAGStrategyTree extends StrategyTree {
 	public StrategyTree concatenate(TreeADDBranch branchParent, SDAGStrategyTree intervention) {
 
 		SDAGStrategyTree result;
-		Set<TreeADDBranch> auxParents = new HashSet<>();
-
-		auxParents.addAll(parents);
+        
+        Set<TreeADDBranch> auxParents = new HashSet<>(parents);
 		auxParents.remove(branchParent);
 
 		//TODO Analize what happens if next line is uncommented, replacing its next line
@@ -144,8 +142,7 @@ public class SDAGStrategyTree extends StrategyTree {
 		if (this.getBranches() != null) {
 			// Create branches
 			for (TreeADDBranch branch : getBranches()) {
-				List<State> newStates = new ArrayList<>();
-				newStates.addAll(branch.getStates());
+                List<State> newStates = new ArrayList<>(branch.getStates());
 				SDAGStrategyTree interv = getCoalescedInterventionBranch(branch);
 				SDAGStrategyTree intervCopy;
 				if (interv != null) {
@@ -163,8 +160,8 @@ public class SDAGStrategyTree extends StrategyTree {
 		return newInt;
 
 	}
-
-	public SDAGStrategyTree getCoalescedInterventionBranch(TreeADDBranch branch) {
+    
+    public static SDAGStrategyTree getCoalescedInterventionBranch(TreeADDBranch branch) {
 		return (SDAGStrategyTree) getInterventionBranch(branch);
 	}
 
@@ -176,14 +173,10 @@ public class SDAGStrategyTree extends StrategyTree {
 	@Override public Potential deepCopy(ProbNet copyNet) {
 		SDAGStrategyTree potential = (SDAGStrategyTree) super.deepCopy(copyNet);
 		Set<TreeADDBranch> newParents = new HashSet<>();
-		Iterator<TreeADDBranch> iterator = this.parents.iterator();
-
-		while (iterator.hasNext()) {
-			newParents.add(iterator.next().deepCopy(copyNet));
-		}
-
+        for (TreeADDBranch parent : this.parents) {
+            newParents.add(parent.deepCopy(copyNet));
+        }
 		potential.parents = newParents;
-
 		return potential;
 	}
 }

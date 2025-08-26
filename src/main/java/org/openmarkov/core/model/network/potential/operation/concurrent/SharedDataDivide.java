@@ -58,6 +58,7 @@ public class SharedDataDivide {
 		int numVariables = quotient.getVariables().size();
 
 		// Gets the tables of each TablePotential
+        //TODO: The tables variable is never read nor returned.
 		double[][] tables = new double[2][];
 		tables[0] = numerator.values;
 		tables[1] = denominator.values;
@@ -80,7 +81,8 @@ public class SharedDataDivide {
 		}
 
 		// Position in each table potential
-		int[] potentialsPositions = new int[2];
+        //TODO: The potentialsPositions variable is never read nor returned.
+        int[] potentialsPositions = new int[2];
 		for (int i = 0; i < 2; i++) {
 			potentialsPositions[i] = 0;
 		}

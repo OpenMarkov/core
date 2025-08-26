@@ -1443,9 +1443,9 @@ public class DANFactory extends NetsFactory {
 		Variable varDiabetes = new Variable("Diabetes", "absent", "present");
 		Variable varTherapy = new Variable("Therapy", "no", "yes");
 		Variable varQuality_of_life = new Variable("Quality of life");
-		Variable varDec_Test[] = new Variable[numTests];
-		Variable varTest_Result[] = new Variable[numTests];
-		Variable varCost_of_Test[] = new Variable[numTests];
+        Variable[] varDec_Test = new Variable[numTests];
+        Variable[] varTest_Result = new Variable[numTests];
+        Variable[] varCost_of_Test = new Variable[numTests];
 		for (int i = 0; i < numTests; i++) {
 			varDec_Test[i] = new Variable("Dec: Test " + i, "no", "yes");
 			varTest_Result[i] = new Variable("Test Result " + i, "negative", "positive");
@@ -1457,9 +1457,9 @@ public class DANFactory extends NetsFactory {
 		Node nodeDiabetes = probNet.addNode(varDiabetes, NodeType.CHANCE);
 		Node nodeTherapy = probNet.addNode(varTherapy, NodeType.DECISION);
 		Node nodeQuality_of_life = probNet.addNode(varQuality_of_life, NodeType.UTILITY);
-		Node nodeDecTest[] = new Node[numTests];
-		Node nodeTestResult[] = new Node[numTests];
-		Node nodeCostOfTest[] = new Node[numTests];
+        Node[] nodeDecTest = new Node[numTests];
+        Node[] nodeTestResult = new Node[numTests];
+        Node[] nodeCostOfTest = new Node[numTests];
 		for (int i = 0; i < numTests; i++) {
 			nodeTestResult[i] = probNet.addNode(varTest_Result[i], NodeType.CHANCE);
 			nodeDecTest[i] = probNet.addNode(varDec_Test[i], NodeType.DECISION);
@@ -1488,7 +1488,7 @@ public class DANFactory extends NetsFactory {
 
 		//TODO Assign different numbers to potentials.
 		// Potentials for test results
-		TablePotential potentialTestResult[] = new TablePotential[numTests];
+        TablePotential[] potentialTestResult = new TablePotential[numTests];
 		for (int i = 0; i < numTests; i++) {
 			potentialTestResult[i] = new TablePotential(Arrays.asList(varTest_Result[i], varDec_Test[i], varDiabetes),
 					PotentialRole.CONDITIONAL_PROBABILITY);
@@ -1498,7 +1498,7 @@ public class DANFactory extends NetsFactory {
 
 		//TODO Assign different numbers to potentials.
 		//Potentials for costs of tests
-		ExactDistrPotential potentialCostOfTest[] = new ExactDistrPotential[numTests];
+        ExactDistrPotential[] potentialCostOfTest = new ExactDistrPotential[numTests];
 		for (int i = 0; i < numTests; i++) {
 			List<Variable> variableList = new ArrayList<>();
 			variableList.add(varCost_of_Test[i]);
@@ -1542,9 +1542,9 @@ public class DANFactory extends NetsFactory {
 		Variable varDiabetes = new Variable("Diabetes", "absent", "present");
 		Variable varTherapy = new Variable("Therapy", "no", "yes");
 		Variable varQuality_of_life = new Variable("Quality of life");
-		Variable varDec_Test[] = new Variable[numTests];
-		Variable varTest_Result[] = new Variable[numTests];
-		Variable varCost_of_Test[] = new Variable[numTests];
+        Variable[] varDec_Test = new Variable[numTests];
+        Variable[] varTest_Result = new Variable[numTests];
+        Variable[] varCost_of_Test = new Variable[numTests];
 		for (int i = 0; i < numTests; i++) {
 			varDec_Test[i] = new Variable("Dec: Test " + i, "no", "yes");
 			varTest_Result[i] = new Variable("Test Result " + i, "negative", "positive");
@@ -1556,9 +1556,9 @@ public class DANFactory extends NetsFactory {
 		Node nodeDiabetes = probNet.addNode(varDiabetes, NodeType.CHANCE);
 		Node nodeTherapy = probNet.addNode(varTherapy, NodeType.DECISION);
 		Node nodeQuality_of_life = probNet.addNode(varQuality_of_life, NodeType.UTILITY);
-		Node nodeDecTest[] = new Node[numTests];
-		Node nodeTestResult[] = new Node[numTests];
-		Node nodeCostOfTest[] = new Node[numTests];
+        Node[] nodeDecTest = new Node[numTests];
+        Node[] nodeTestResult = new Node[numTests];
+        Node[] nodeCostOfTest = new Node[numTests];
 		for (int i = 0; i < numTests; i++) {
 			nodeTestResult[i] = probNet.addNode(varTest_Result[i], NodeType.CHANCE);
 			nodeDecTest[i] = probNet.addNode(varDec_Test[i], NodeType.DECISION);
@@ -1584,7 +1584,7 @@ public class DANFactory extends NetsFactory {
 
 		//TODO Assign different numbers to potentials.
 		// Potentials for test results
-		TablePotential potentialTestResult[] = new TablePotential[numTests];
+        TablePotential[] potentialTestResult = new TablePotential[numTests];
 		for (int i = 0; i < numTests; i++) {
 			potentialTestResult[i] = new TablePotential(Arrays.asList(varTest_Result[i], varDec_Test[i], varDiabetes),
 					PotentialRole.CONDITIONAL_PROBABILITY);
@@ -1594,7 +1594,7 @@ public class DANFactory extends NetsFactory {
 
 		//TODO Assign different numbers to potentials.
 		//Potentials for costs of tests
-		ExactDistrPotential potentialCostOfTest[] = new ExactDistrPotential[numTests];
+        ExactDistrPotential[] potentialCostOfTest = new ExactDistrPotential[numTests];
 		for (int i = 0; i < numTests; i++) {
 			potentialCostOfTest[i] = new ExactDistrPotential(Arrays.asList(varCost_of_Test[i], varDec_Test[i]));
 			potentialCostOfTest[i].getTablePotential().values = new double[] { 0, -0.5 };
@@ -1644,9 +1644,9 @@ public class DANFactory extends NetsFactory {
 		Variable varDiabetes = new Variable("Disease", "absent", "present");
 		Variable varTherapy = new Variable("Therapy", "no", "yes");
 		Variable varQuality_of_life = new Variable("Quality of life");
-		Variable varDec_Test[] = new Variable[numTests];
-		Variable varTest_Result[] = new Variable[numTests];
-		Variable varCost_of_Test[] = new Variable[numTests];
+        Variable[] varDec_Test = new Variable[numTests];
+        Variable[] varTest_Result = new Variable[numTests];
+        Variable[] varCost_of_Test = new Variable[numTests];
 		for (int i = 0; i < numTests; i++) {
 			varDec_Test[i] = new Variable("Dec: Test " + i, "no", "yes");
 			varTest_Result[i] = new Variable("Test Result " + i, "negative", "positive");
@@ -1658,9 +1658,9 @@ public class DANFactory extends NetsFactory {
 		Node nodeDiabetes = probNet.addNode(varDiabetes, NodeType.CHANCE);
 		Node nodeTherapy = probNet.addNode(varTherapy, NodeType.DECISION);
 		Node nodeQuality_of_life = probNet.addNode(varQuality_of_life, NodeType.UTILITY);
-		Node nodeDecTest[] = new Node[numTests];
-		Node nodeTestResult[] = new Node[numTests];
-		Node nodeCostOfTest[] = new Node[numTests];
+        Node[] nodeDecTest = new Node[numTests];
+        Node[] nodeTestResult = new Node[numTests];
+        Node[] nodeCostOfTest = new Node[numTests];
 		for (int i = 0; i < numTests; i++) {
 			nodeTestResult[i] = probNet.addNode(varTest_Result[i], NodeType.CHANCE);
 			nodeDecTest[i] = probNet.addNode(varDec_Test[i], NodeType.DECISION);
@@ -1680,7 +1680,7 @@ public class DANFactory extends NetsFactory {
 
 		//TODO Assign different numbers to potentials.
 		// Potentials for test results
-		TablePotential potentialTestResult[] = new TablePotential[numTests];
+        TablePotential[] potentialTestResult = new TablePotential[numTests];
 		for (int i = 0; i < numTests; i++) {
 			potentialTestResult[i] = new TablePotential(Arrays.asList(varTest_Result[i], varDec_Test[i], varDiabetes),
 					PotentialRole.CONDITIONAL_PROBABILITY);
@@ -1690,7 +1690,7 @@ public class DANFactory extends NetsFactory {
 
 		//TODO Assign different numbers to potentials.
 		//Potentials for costs of tests
-		ExactDistrPotential potentialCostOfTest[] = new ExactDistrPotential[numTests];
+        ExactDistrPotential[] potentialCostOfTest = new ExactDistrPotential[numTests];
 		for (int i = 0; i < numTests; i++) {
 			potentialCostOfTest[i] = new ExactDistrPotential(Arrays.asList(varCost_of_Test[i], varDec_Test[i]));
 			potentialCostOfTest[i].getTablePotential().values = new double[] { 0, -0.5 };

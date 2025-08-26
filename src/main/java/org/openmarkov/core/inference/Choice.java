@@ -24,7 +24,7 @@ public class Choice {
 
 	/**
 	 * Value(s) assignment; if there is no draws only the first one.
-	 *
+     * <p>
 	 * invariant value[i] != value[j] when i != j and i &lt; numValues
 	 * and j &lt; numValues
 	 * ({@code int[]}).
@@ -156,13 +156,13 @@ public class Choice {
 	public String toString() {
 		StringBuilder buffer = new StringBuilder(variable.getName());
 		if (numValues == 1) {
-			buffer.append("=" + variable.getStateName(values[0]));
+            buffer.append("=").append(variable.getStateName(values[0]));
 		} else {
 			buffer.append("={");
 			for (int i = 0; i < numValues - 1; i++) {
-				buffer.append(variable.getStateName(values[i]) + ",");
+                buffer.append(variable.getStateName(values[i])).append(",");
 			}
-			buffer.append(variable.getStateName(values[numValues - 1]) + "}");
+            buffer.append(variable.getStateName(values[numValues - 1])).append("}");
 		}
 		return buffer.toString();
 	}

@@ -78,26 +78,18 @@ public class PartialOrderDAN {
 	}
 
 	public String toStringForGraphviz() {
-
-		String content = null;
-
-		ProbNet probNet = this.getOrder();
+        
+        ProbNet probNet = this.getOrder();
 		List<Link<Node>> links = probNet.getLinks();
-		content = "digraph G {\n";
+        String content = "digraph G {\n";
 
 		for (Node node : probNet.getNodes()) {
-			String strType = null;
-			switch (node.getNodeType()) {
-			case CHANCE:
-				strType = "ellipse";
-				break;
-			case DECISION:
-				strType = "decision";
-				break;
-			default:
-				strType = "";
-			}
-			content = content + getNameWithQuotes(node) + "[shape=" + strType + "]\n";
+            String strType = switch (node.getNodeType()) {
+                case CHANCE -> "ellipse";
+                case DECISION -> "decision";
+                default -> "";
+            };
+            content = content + getNameWithQuotes(node) + "[shape=" + strType + "]\n";
 		}
 
 		for (Link<Node> link : links) {
@@ -112,8 +104,8 @@ public class PartialOrderDAN {
 		return content;
 
 	}
-
-	private String getNameWithQuotes(Node node) {
+    
+    private static String getNameWithQuotes(Node node) {
 		return "\"" + node.getVariable().getName() + "\"";
 
 	}

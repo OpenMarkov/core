@@ -67,9 +67,8 @@ import org.openmarkov.core.model.network.Variable;
 						getName())
 		) != 0)
 			return result;
-		else
-			return 0;
-	}
+        return 0;
+    }
 
 	@Override public String getOperationName() {
 		return "Orient link";

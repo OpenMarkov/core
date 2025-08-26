@@ -85,8 +85,8 @@ public class InferenceManager {
     public List<InferenceAlgorithm> getInferenceAlgorithms(ProbNet probNet) {
         List<InferenceAlgorithm> inferenceAlgorithms = new ArrayList<>();
         for (String algorithmName : this.inferenceAlgorithms.keySet()) {
-            Constructor<? extends InferenceAlgorithm> constructor = null;
-            Method checkEval = null;
+            Constructor<? extends InferenceAlgorithm> constructor;
+            Method checkEval;
             boolean isEvaluable = true;
             try {
                 Class<? extends InferenceAlgorithm> inferenceAlgorithmClass = this.inferenceAlgorithms

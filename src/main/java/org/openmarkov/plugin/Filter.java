@@ -95,6 +95,7 @@ public class Filter<PluginClass> {
      * Sets a class extension constraint.
      *
      * @param aClass the class to extend.
+     *
      * @return the configured plugin filter.
      */
     public <NewPluginClass> Filter<NewPluginClass> toExtend(Class<NewPluginClass> aClass) {
@@ -107,6 +108,7 @@ public class Filter<PluginClass> {
      * Sets an interface implementation constraint.
      *
      * @param aClass the interface to implement.
+     *
      * @return the configured plugin filter.
      */
     public <NewPluginClass> Filter<NewPluginClass> toImplement(Class<NewPluginClass> aClass) {
@@ -119,6 +121,7 @@ public class Filter<PluginClass> {
      * Sets an annotation constraint.
      *
      * @param aClass the annotation to be present.
+     *
      * @return the configured plugin filter.
      */
     public Filter<PluginClass> toBeAnnotatedBy(Class<?> aClass) {
@@ -163,20 +166,22 @@ public class Filter<PluginClass> {
      * Checks whether a class is a valid plugin.
      *
      * @param aClass the class to validate.
+     *
      * @return true if the class is a valid plugin.
      */
     public boolean checkPlugin(Class<?> aClass) {
         if (isSimpleFilter()) {
-            if (CONSTRAINT_CLASS.equals(type))
-                return cls.isAssignableFrom(aClass);
-            if (CONSTRAINT_INTERFACE.equals(type))
-                return cls.isAssignableFrom(aClass);
-            if (CONSTRAINT_ANNOTATION.equals(type)) {
-                Annotation[] annotations = aClass.getAnnotations();
-                for (Annotation anAnnotation : annotations)
-                    if (anAnnotation.annotationType().equals(cls))
-                        return true;
-                return false;
+            switch (type) {
+                case CONSTRAINT_CLASS, CONSTRAINT_INTERFACE -> {
+                    return cls.isAssignableFrom(aClass);
+                }
+                case CONSTRAINT_ANNOTATION -> {
+                    Annotation[] annotations = aClass.getAnnotations();
+                    for (Annotation anAnnotation : annotations)
+                        if (anAnnotation.annotationType() == cls)
+                            return true;
+                    return false;
+                }
             }
         } else {
             if (COMBINATION_AND.equals(combination)) {
@@ -220,17 +225,11 @@ public class Filter<PluginClass> {
             return false;
         if (other instanceof Filter) {
             Filter<Object> aPlugin = (Filter<Object>) other;
-            return (cls == null) ?
-                    true :
-                    cls.equals(aPlugin.cls) && (type == null) ?
-                            true :
-                            type.equals(aPlugin.type) && (parent == null) ?
-                                    true :
-                                    parent.equals(aPlugin.parent) && (children == null) ?
-                                            true :
-                                            children.equals(aPlugin.children) && (combination == null) ?
-                                                    true :
-                                                    combination.equals(aPlugin.combination);
+            return cls == null
+                    || (cls == aPlugin.cls && (type == null)
+                    || (type.equals(aPlugin.type) && (parent == null)
+                    || parent.equals(aPlugin.parent) && (children == null)
+                    || (children.equals(aPlugin.children) && (combination == null) || combination.equals(aPlugin.combination))));
         }
         return false;
     }
@@ -241,7 +240,7 @@ public class Filter<PluginClass> {
      * @return the String representing this object.
      */
     @Override public String toString() {
-        StringBuffer strBuffer = new StringBuffer();
+        StringBuilder strBuffer = new StringBuilder();
         if (cls != null) {
             strBuffer.append("[Filter] - (Simple) {");
             strBuffer.append("class = ");

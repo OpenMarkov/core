@@ -94,8 +94,7 @@ import java.util.List;
                 } else if (!node2.onlyNumericalParents()) {//mixture of finite states and numerical Uniform
                     for (Potential oldPotential : oldPotentials) {
                         // Update potential
-                        List<Variable> variables = new ArrayList<>();
-                        variables.addAll(oldPotential.getVariables());
+                        List<Variable> variables = new ArrayList<>(oldPotential.getVariables());
                         variables.remove(node1.getVariable());
                         Potential newPotential = new UniformPotential(variables, oldPotential.getPotentialRole());
                         newPotentials.add(newPotential);
@@ -177,8 +176,7 @@ import java.util.List;
                                                           getName())
         ) != 0)
             return result;
-        else
-            return 0;
+        return 0;
     }
     
     @Override public String getOperationName() {

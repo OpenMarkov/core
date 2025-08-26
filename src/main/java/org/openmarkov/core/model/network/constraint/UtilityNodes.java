@@ -28,17 +28,16 @@ import java.util.List;
 		int numUtilityNodes = utilityNodes.size();
 		if (numUtilityNodes == 0) {
 			return false;
-		} else { // check same number of utility nodes and utility potentials
-			List<Potential> potentials = probNet.getPotentials();
-			int numUtilityPontentials = 0;
-			for (Potential potential : potentials) {
-				if (potential.getVariable(0).getDecisionCriterion() != null) {
-					numUtilityPontentials++;
-				}
-			}
-			return (numUtilityPontentials == numUtilityNodes);
-		}
-	}
+        } // check same number of utility nodes and utility potentials
+        List<Potential> potentials = probNet.getPotentials();
+        int numUtilityPontentials = 0;
+        for (Potential potential : potentials) {
+            if (potential.getVariable(0).getDecisionCriterion() != null) {
+                numUtilityPontentials++;
+            }
+        }
+        return (numUtilityPontentials == numUtilityNodes);
+    }
 
 	@Override protected String constraintDescription() {
 		// TODO Auto-generated method stub

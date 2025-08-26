@@ -32,7 +32,7 @@ public class UtilConstraints {
 		if (edit.getClass() == typeEdit) {
             edits.add(edit);
 		} else { // Check compound edits
-			if (CompoundPNEdit.class.isInstance(edit)) {
+            if (edit instanceof CompoundPNEdit) {
 				Vector<UndoableEdit> simpleEdits = ((CompoundPNEdit) edit).getEdits();
 				for (UndoableEdit simpleEdit : simpleEdits) {
 					if (typeEdit.isInstance(simpleEdit)) {

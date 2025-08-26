@@ -30,7 +30,7 @@ import java.util.List;
     private OOPNet oopNet;
     private ProbNet classNet;
     private java.awt.geom.Point2D.Double cursorPositon;
-    private List<PNEdit> edits = null;
+    private List<PNEdit> edits;
     private int doneEditCounter;
     
     public AddInstanceEdit(OOPNet probNet, ProbNet classNet, String instanceName,
@@ -86,13 +86,10 @@ import java.util.List;
         }
         
         //Apply link creation edits
-        List<Link<Node>> pastedLinks = new ArrayList<>();
         for (PNEdit edit : edits) {
-            if (edit instanceof AddLinkEdit) {
-                AddLinkEdit linkEdit = ((AddLinkEdit) edit);
+            if (edit instanceof AddLinkEdit linkEdit) {
                 linkEdit.doEdit(this.oopNet);
                 ++doneEditCounter;
-                pastedLinks.add(linkEdit.getLink());
             }
         }
         

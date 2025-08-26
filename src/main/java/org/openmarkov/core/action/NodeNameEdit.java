@@ -34,7 +34,7 @@ import java.util.List;
 	/**
 	 * The node edited
 	 */
-	private List<Variable> variables = null;
+    private List<Variable> variables;
 
 	/**
 	 * Creates a new {@code NodeNameEdit} with the node and new name

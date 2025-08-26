@@ -88,15 +88,8 @@ public class StringsWithProperties {
 	 */
 	public void put(String key) {
 		Properties properties = stringsWithProperties.get(key);
-		if (properties == null) {
-			properties = new Properties();
-			stringsWithProperties.put(key, null);// ¿? (key, properties)
-			//added ¿?
-		} else {
-			stringsWithProperties.put(key, properties);
-		}
-
-	}
+        stringsWithProperties.put(key, properties);
+    }
 
 	/**
 	 * @param key           {@code String}
@@ -162,12 +155,7 @@ public class StringsWithProperties {
 	public void rename(String key, String newKey) {
 		Properties properties = stringsWithProperties.get(key);
 		stringsWithProperties.remove(key);
-		if (properties == null) {
-			stringsWithProperties.put(newKey, null);
-		} else {
-			stringsWithProperties.put(newKey, properties);
-
-		}
+        stringsWithProperties.put(newKey, properties);
 	}
 
 	/**

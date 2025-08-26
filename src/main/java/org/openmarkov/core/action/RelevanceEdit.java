@@ -30,7 +30,7 @@ import org.openmarkov.core.model.network.ProbNet;
 	/**
 	 * The edited node
 	 */
-	private Node node = null;
+    private Node node;
 
 	/**
 	 * Creates a new {@code RelevanceEdit} with the node and new relevance

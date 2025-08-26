@@ -117,8 +117,8 @@ public class Criterion implements Cloneable {
 	public void setCriterionUnit(String criterionUnit) {
 		this.criterionUnit = criterionUnit;
 	}
-
-	public String getDefaultCriterion() {
+    
+    public static String getDefaultCriterion() {
 		return defaultCriterion;
     }
 

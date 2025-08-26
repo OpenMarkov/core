@@ -235,7 +235,7 @@ public class TreeADDPotential extends Potential {
         if (role == PotentialRole.UNSPECIFIED) {
             if (!node.isSuperValueNode()) {
                 // in variables there is not utility variable
-                if (variables.size() >= 1) {
+                if (!variables.isEmpty()) {
                     validate = true;
                 }
             }
@@ -279,7 +279,7 @@ public class TreeADDPotential extends Potential {
      * @return {@code False} when this intervention is a leaf.
      */
     public boolean hasAnySubIntervention() {
-        return branches.size() != 0;
+        return !branches.isEmpty();
     }
     
     /**
@@ -340,7 +340,7 @@ public class TreeADDPotential extends Potential {
     
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
-        TablePotential projected = null;
+        TablePotential projected;
         if (topVariable.getVariableType() != VariableType.NUMERIC) {
             Map<TreeADDBranch, TablePotential> potentialsToBlend = new HashMap<>();
             List<TreeADDBranch> branches = this.getBranches();
@@ -449,7 +449,7 @@ public class TreeADDPotential extends Potential {
                 String childVariableName = childTreeADDPotential.getRootVariable().getName().toUpperCase();
                 if (childVariableName.matches(variableName.toUpperCase())) {
                     List<TreeADDBranch> potentialBranches = childTreeADDPotential.getBranches();
-                    if (potentialBranches.size() > 0) {
+                    if (!potentialBranches.isEmpty()) {
                         branch.setPotential(potentialBranches.get(0).getPotential());
                     }
                 }
@@ -487,7 +487,7 @@ public class TreeADDPotential extends Potential {
         for (TreeADDBranch branch : getBranches()) {
             Potential branchPotential = branch.getPotential();
             hasUncertainty = branchPotential.isUncertain();
-            if (hasUncertainty == true)
+            if (hasUncertainty)
                 break;
         }
         return hasUncertainty;
@@ -668,9 +668,6 @@ public class TreeADDPotential extends Potential {
         
         // Position in each table potential
         int[] potentialPositions = new int[numPotentials];
-        for (int i = 0; i < numPotentials; i++) {
-            potentialPositions[i] = 0;
-        }
         
         int incrementedVariable = 0;
         int tableSize = resultPotential.getTableSize();
@@ -682,7 +679,7 @@ public class TreeADDPotential extends Potential {
                 resultCoordinates[topVariableIndex];
         int potentialIndex = branchStateIndex[topVariableStateIndex];
         
-        if (potentials.size() > 0) {
+        if (!potentials.isEmpty()) {
             for (int resultPosition = 0; resultPosition < tableSize; resultPosition++) {
                 /*
                  * increment the result coordinate and find out which variable
@@ -840,7 +837,7 @@ public class TreeADDPotential extends Potential {
                 }
             }
         }
-        if (branches != null && branches.size() > 0) {
+        if (branches != null && !branches.isEmpty()) {
             strBuffer.append("\n");
             for (TreeADDBranch branch : branches) {
                 strBuffer.append(branch);

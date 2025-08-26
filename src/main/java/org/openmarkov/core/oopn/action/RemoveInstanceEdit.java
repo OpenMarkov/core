@@ -50,10 +50,9 @@ import java.util.HashSet;
 			linksToRemove.addAll(node.getLinks());
 		}
 		for (ReferenceLink link : ((OOPNet) probNet).getReferenceLinks()) {
-			if (link instanceof InstanceReferenceLink) {
-				InstanceReferenceLink instanceLink = (InstanceReferenceLink) link;
-
-				if (instanceLink.getSourceInstance().equals(this.instance) || instanceLink.getDestInstance()
+            if (link instanceof InstanceReferenceLink instanceLink) {
+                
+                if (instanceLink.getSourceInstance().equals(this.instance) || instanceLink.getDestInstance()
 						.equals(this.instance)) {
 					instanceLinksToRemove.add(link);
 				}

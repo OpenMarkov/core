@@ -9,9 +9,9 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF {
 	// Odeh and Evans' coefficients
-	private static final double p[] = new double[] { -0.322232431088, -1.0, -0.342242088547, -0.0204231210245,
+    private static final double[] p = new double[]{-0.322232431088, -1.0, -0.342242088547, -0.0204231210245,
 			-0.453642210148E-4 };
-	private static final double q[] = new double[] { 0.0993484626060, 0.588581570495, 0.531103462366, 0.103537752850,
+    private static final double[] q = new double[]{0.0993484626060, 0.588581570495, 0.531103462366, 0.103537752850,
 			0.38560700634E-2 };
 	// Polynomials for the approximation
 	private Polynomial numerator = new Polynomial(p, 4);
@@ -25,12 +25,12 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF 
 
 		if (standardNormalFunction.numerator != null) {
 			this.numerator = new Polynomial(standardNormalFunction.numerator.coeff.clone(),
-					standardNormalFunction.numerator.deg);
+                                            standardNormalFunction.numerator.deg);
 		}
 
 		if (standardNormalFunction.denominator != null) {
 			this.denominator = new Polynomial(standardNormalFunction.denominator.coeff.clone(),
-					standardNormalFunction.denominator.deg);
+                                              standardNormalFunction.denominator.deg);
 		}
 
 	}
@@ -95,8 +95,8 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF 
 	@Override public ProbDensFunction copy() {
 		return new StandardNormalFunction(this);
 	}
-
-	public class Polynomial {
+    
+    public static class Polynomial {
 		// Coefficients
 		double[] coeff;
 		// Degree

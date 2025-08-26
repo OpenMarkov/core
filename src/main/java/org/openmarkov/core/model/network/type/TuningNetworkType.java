@@ -7,14 +7,12 @@
 
 package org.openmarkov.core.model.network.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.NoLinkRestriction;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 @ProbNetType(name = "TuningNetwork") public class TuningNetworkType extends NetworkType {
-	private static TuningNetworkType instance = null;
+    private static final TuningNetworkType INSTANCE = new TuningNetworkType();
 
 	// Constructor
 	protected TuningNetworkType() {
@@ -24,10 +22,7 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 	// Methods
 	public static TuningNetworkType getUniqueInstance() {
-		if (instance == null) {
-			instance = new TuningNetworkType();
-		}
-		return instance;
+        return INSTANCE;
 	}
 	
 }

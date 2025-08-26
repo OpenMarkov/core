@@ -86,14 +86,14 @@ public class LinkRestrictionPotentialOperations {
 			Map<Integer, Integer> independentVariables = new HashMap<>();
 			int var1Index = 0, var2Index = 0;
 			for (int i = 0; i < nodeVariables.size(); i++) {
-				Variable var = nodeVariables.get(i);
-				if (var.equals(var1)) {
+                Variable variable = nodeVariables.get(i);
+                if (variable.equals(var1)) {
 					var1Index = i;
 				} else {
-					if (var.equals(var2)) {
+                    if (variable.equals(var2)) {
 						var2Index = i;
 					} else {
-						independentVariables.put(i, var.getNumStates());
+                        independentVariables.put(i, variable.getNumStates());
 					}
 				}
 			}
@@ -160,10 +160,10 @@ public class LinkRestrictionPotentialOperations {
 	public static Potential redistributeProbabilities(Node node, TablePotential potential, int[] stateCombination) {
 		List<Variable> nodeVariables = potential.getVariables();
 		int varIndex = nodeVariables.indexOf(node.getVariable());
-		Variable var = nodeVariables.get(varIndex);
+        Variable variable = nodeVariables.get(varIndex);
 		List<Link<Node>> parentLinks = getParentLinksWithRestriction(node);
 		List<Integer> modifiableStateList = new ArrayList<>();
-		int states = var.getNumStates();
+        int states = variable.getNumStates();
 		if (states > 1) {
 			double sum = 0;
 			int[] singleState = stateCombination.clone();
@@ -229,14 +229,14 @@ public class LinkRestrictionPotentialOperations {
 		Map<Integer, Integer> independentVarMap = new HashMap<>();
 		int var1Index = 0, var2Index = 0;
 		for (int i = 0; i < nodeVariables.size(); i++) {
-			Variable var = nodeVariables.get(i);
-			if (var.equals(var1)) {
+            Variable variable = nodeVariables.get(i);
+            if (variable.equals(var1)) {
 				var1Index = i;
 			} else {
-				if (var.equals(var2)) {
+                if (variable.equals(var2)) {
 					var2Index = i;
 				} else {
-					independentVarMap.put(i, var.getNumStates());
+                    independentVarMap.put(i, variable.getNumStates());
 				}
 			}
 		}
@@ -299,14 +299,14 @@ public class LinkRestrictionPotentialOperations {
 		Map<Integer, Integer> independentVarMap = new HashMap<>();
 		int var1Index = 0, var2Index = 0;
 		for (int i = 0; i < nodeVariables.size(); i++) {
-			Variable var = nodeVariables.get(i);
-			if (var.equals(var1)) {
+            Variable variable = nodeVariables.get(i);
+            if (variable.equals(var1)) {
 				var1Index = i;
 			} else {
-				if (var.equals(var2)) {
+                if (variable.equals(var2)) {
 					var2Index = i;
 				} else {
-					independentVarMap.put(i, var.getNumStates());
+                    independentVarMap.put(i, variable.getNumStates());
 				}
 			}
 		}

@@ -190,7 +190,7 @@ public class EvidenceCase {
     public @Nullable Finding removeFinding(String variableName) {
         ArrayList<Variable> findingsVariables = new ArrayList<>(findings.keySet());
         int i = 0, numVariables = findingsVariables.size();
-        Variable variable = null;
+        Variable variable;
         do {
             variable = findingsVariables.get(i++);
         } while (i < numVariables && !variable.getName().contentEquals(variableName));
@@ -374,7 +374,7 @@ public class EvidenceCase {
             }
         } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
             // Unreachable code
-            throw new UnreacheableException("shifted finding");
+            throw new UnreacheableException("shifted finding: ", e);
         }
         return shiftedEvidence;
     }

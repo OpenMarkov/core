@@ -32,7 +32,7 @@ public class IDFactory extends NetsFactory {
 	 * @return An influence diagram without decisions, with only two nodes: X (chance) and U (utility).
 	 */
 	public static ProbNet createSimpleIDWithoutDecisions() {
-		double util[] = { 20, 90 };
+        double[] util = {20, 90};
 		return createSimpleIDWithoutDecisions(0.09, util);
 	}
 
@@ -40,13 +40,10 @@ public class IDFactory extends NetsFactory {
 	 * @return An influence diagram without decisions, with only two nodes: X (chance) and U (utility).
 	 */
 	public static ProbNet createSimpleIDWithoutDecisions(double prevalence, double[] tableUX) {
-
-		ProbNet probNet;
-		PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
-		TablePotential potentialX;
-		ExactDistrPotential potentialU;
-
-		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+        
+        PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
+        
+        ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 
 		// Define the variables
 		Variable variableX = new Variable(diseaseName, diseaseStates);
@@ -62,9 +59,9 @@ public class IDFactory extends NetsFactory {
 		setAdditionalProperties(relevance, value, variableX, variableU);
 
 		//Potential X
-		potentialX = createPotentialDisease(prevalence, roleProbability, variableX);
-
-		potentialU = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableUX, variableU, variableX);
+        TablePotential potentialX = createPotentialDisease(prevalence, roleProbability, variableX);
+        
+        ExactDistrPotential potentialU = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableUX, variableU, variableX);
 
 		//Links throws NodeNotFoundException
         probNet.addLink(variableX, variableU, true);
@@ -82,15 +79,10 @@ public class IDFactory extends NetsFactory {
 	 */
 	public static ProbNet createInfluenceDiagramDiagnosisProblem(double prevalence, double sensitivity,
 			double specificity, double[] tableUXD) {
-
-		ProbNet probNet;
-		PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
-		double[] tableYX;
-		TablePotential potentialX;
-		TablePotential potentialY;
-		ExactDistrPotential potentialU;
-
-		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+        
+        PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
+        
+        ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 
 		// Define the variables
 		Variable variableX = new Variable(diseaseName, diseaseStates);
@@ -109,14 +101,14 @@ public class IDFactory extends NetsFactory {
 		setAdditionalProperties(relevance, value, variableX, variableY, variableD, variableU);
 
 		//Potential X
-		potentialX = createPotentialDisease(prevalence, roleProbability, variableX);
+        TablePotential potentialX = createPotentialDisease(prevalence, roleProbability, variableX);
 
 		//Potential YX
-		tableYX = valuesCPTResultTest(sensitivity, specificity);
-		potentialY = createTablePotential(roleProbability, tableYX, variableY, variableX);
-
-		potentialU = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableUXD, variableU, variableX,
-				variableD);
+        double[] tableYX = valuesCPTResultTest(sensitivity, specificity);
+        TablePotential potentialY = createTablePotential(roleProbability, tableYX, variableY, variableX);
+        
+        ExactDistrPotential potentialU = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableUXD, variableU, variableX,
+                                                                   variableD);
 
 		//Links throws NodeNotFoundException
         probNet.addLink(variableX, variableY, true);
@@ -133,13 +125,10 @@ public class IDFactory extends NetsFactory {
 	 * @return An influence diagram with three nodes: X, D and U. It represents a diagnosis problem without tests.
 	 */
 	public static ProbNet createIDNoKnowledge(double prevalence, double[] tableUXD) {
-
-		ProbNet probNet;
-		PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
-		TablePotential potentialX;
-		ExactDistrPotential potentialU;
-
-		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+        
+        PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
+        
+        ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 
 		// Define the variables
 		Variable variableX = new Variable(diseaseName, diseaseStates);
@@ -157,10 +146,10 @@ public class IDFactory extends NetsFactory {
 		setAdditionalProperties(relevance, value, variableX, variableD, variableU);
 
 		//Potential X
-		potentialX = createPotentialDisease(prevalence, roleProbability, variableX);
-
-		potentialU = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableUXD, variableU, variableX,
-				variableD);
+        TablePotential potentialX = createPotentialDisease(prevalence, roleProbability, variableX);
+        
+        ExactDistrPotential potentialU = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableUXD, variableU, variableX,
+                                                                   variableD);
 
 		//Links throws NodeNotFoundException
         probNet.addLink(variableX, variableU, true);
@@ -196,11 +185,8 @@ public class IDFactory extends NetsFactory {
 	 * @return An influence diagram with two nodes: D and U
 	 */
 	public static ProbNet createIDOneDecision(double[] tableUD) {
-
-		ProbNet probNet;
-		ExactDistrPotential potentialU;
-
-		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+        
+        ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 
 		// Define the variables
 		Variable variableD = new Variable(therapyName, yesNoStates);
@@ -214,8 +200,8 @@ public class IDFactory extends NetsFactory {
         String relevance = "Relevance";
         String value = "7.0";
 		setAdditionalProperties(relevance, value, variableD, variableU);
-
-		potentialU = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableUD, variableU, variableD);
+        
+        ExactDistrPotential potentialU = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableUD, variableU, variableD);
 
 		//Links throws NodeNotFoundException
         probNet.addLink(variableD, variableU, true);
@@ -308,20 +294,13 @@ public class IDFactory extends NetsFactory {
 	}
 
 	public static ProbNet buildIDDecideTest(double prevalence, double sensitivity, double specificity) {
-
-		ProbNet probNet;
-		PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
-		double[] tableYXT;
-		TablePotential potentialX;
-		TablePotential potentialY;
-		ExactDistrPotential potentialU1;
-		ExactDistrPotential potentialU2;
-		ExactDistrPotential potentialU3;
-		double[] tableU1XD = { 8.0, 9.0, 3.0, 10.0 };
+        
+        PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
+        double[] tableU1XD = {8.0, 9.0, 3.0, 10.0};
 		double[] tableU2D = { -0.25, 0.0 };
 		double[] tableU3T = { -0.2, 0.2 };
-
-		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+        
+        ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 
 		// Define the variables
 		// Define the variables
@@ -344,21 +323,21 @@ public class IDFactory extends NetsFactory {
 		setAdditionalProperties(relevance, value, variableX, variableY, variableD, variableT, variableU1, variableU2);
 
 		//Potential X
-		potentialX = createPotentialDisease(prevalence, roleProbability, variableX);
+        TablePotential potentialX = createPotentialDisease(prevalence, roleProbability, variableX);
 
 		//Potential Y
-		tableYXT = valuesCPTResultTestDecisionTestYXT(sensitivity, specificity);
-		potentialY = createTablePotential(roleProbability, tableYXT, variableY, variableX, variableT);
+        double[] tableYXT = valuesCPTResultTestDecisionTestYXT(sensitivity, specificity);
+        TablePotential potentialY = createTablePotential(roleProbability, tableYXT, variableY, variableX, variableT);
 
 		//Potential U1
-		potentialU1 = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableU1XD, variableU1, variableX,
-				variableD);
+        ExactDistrPotential potentialU1 = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableU1XD, variableU1, variableX,
+                                                                    variableD);
 
 		//Potential U2
-		potentialU2 = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableU2D, variableU2, variableD);
+        ExactDistrPotential potentialU2 = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableU2D, variableU2, variableD);
 
 		//Potential U3
-		potentialU3 = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableU3T, variableU3, variableT);
+        ExactDistrPotential potentialU3 = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableU3T, variableU3, variableT);
 
 		//Links throws NodeNotFoundException
         probNet.addLink(variableX, variableY, true);
@@ -378,7 +357,7 @@ public class IDFactory extends NetsFactory {
 		ProbNet probNet = buildIDDecideTestSymptom();
 
 		List<Node> utilNodes = probNet.getNodes(NodeType.UTILITY);
-		Variable utilVariables[] = new Variable[utilNodes.size()];
+        Variable[] utilVariables = new Variable[utilNodes.size()];
 
 		for (int i = 0; i < utilNodes.size(); i++) {
 			utilVariables[i] = utilNodes.get(i).getVariable();
@@ -481,18 +460,12 @@ public class IDFactory extends NetsFactory {
 	}
 
 	protected static ProbNet buildIDTestAlways(double prevalence, double sensitivity, double specificity) {
-
-		ProbNet probNet;
-		PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
-		double[] tableYXT;
-		TablePotential potentialX;
-		TablePotential potentialY;
-		ExactDistrPotential potentialU1;
-		ExactDistrPotential potentialU2;
-		double[] tableU1XD = { 7.8, 8.8, 2.8, 9.8 };
+        
+        PotentialRole roleProbability = PotentialRole.CONDITIONAL_PROBABILITY;
+        double[] tableU1XD = {7.8, 8.8, 2.8, 9.8};
 		double[] tableU2D = { -0.25, 0.0 };
-
-		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
+        
+        ProbNet probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 
 		// Define the variables
 		// Define the variables
@@ -513,18 +486,18 @@ public class IDFactory extends NetsFactory {
 		setAdditionalProperties(relevance, value, variableX, variableY, variableD, variableU1, variableU2);
 
 		//Potential X
-		potentialX = createPotentialDisease(prevalence, roleProbability, variableX);
+        TablePotential potentialX = createPotentialDisease(prevalence, roleProbability, variableX);
 
 		//Potential Y
-		tableYXT = valuesCPTResultTestDecisionTestYXT(sensitivity, specificity);
-		potentialY = createTablePotential(roleProbability, tableYXT, variableY, variableX);
+        double[] tableYXT = valuesCPTResultTestDecisionTestYXT(sensitivity, specificity);
+        TablePotential potentialY = createTablePotential(roleProbability, tableYXT, variableY, variableX);
 
 		//Potential U1
-		potentialU1 = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableU1XD, variableU1, variableX,
-				variableD);
+        ExactDistrPotential potentialU1 = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableU1XD, variableU1, variableX,
+                                                                    variableD);
 
 		//Potential U2
-		potentialU2 = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableU2D, variableU2, variableD);
+        ExactDistrPotential potentialU2 = createExactDistrPotential(PotentialRole.CONDITIONAL_PROBABILITY, tableU2D, variableU2, variableD);
 
 		//Links throws NodeNotFoundException
         probNet.addLink(variableX, variableY, true);

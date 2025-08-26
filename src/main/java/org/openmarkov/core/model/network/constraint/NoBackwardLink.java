@@ -49,19 +49,16 @@ import java.util.List;
 		}
 		return true;
 	}
-
-	private boolean allowedLink(Variable variable1, Variable variable2) {
-		boolean allowed = true;
+    
+    private static boolean allowedLink(Variable variable1, Variable variable2) {
+        boolean allowed = (!variable1.isTemporal()
+                || !variable2.isTemporal()
+                || variable2.getTimeSlice() >= variable1.getTimeSlice()) && (!variable1.isTemporal()
+                || variable2.isTemporal()
+                || variable1.getTimeSlice() == 0);
 		// If both variables are temporal, the second must not belong to a previous time slices
 		// And the first is temporal and the second is not, the former must belong to the zeroth slice
-		if ((
-				variable1.isTemporal() && variable2.isTemporal() && variable2.getTimeSlice() < variable1.getTimeSlice()
-		) || (
-				variable1.isTemporal() && !variable2.isTemporal() && variable1.getTimeSlice() != 0
-		)) {
-			allowed = false;
-		}
-		return allowed;
+        return allowed;
 	}
 
 	@Override protected String constraintDescription() {

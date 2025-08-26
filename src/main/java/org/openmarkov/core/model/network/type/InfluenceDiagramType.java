@@ -7,12 +7,10 @@
 
 package org.openmarkov.core.model.network.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 @ProbNetType(name = "InfluenceDiagram") public class InfluenceDiagramType extends NetworkType {
-	private static InfluenceDiagramType instance = null;
+    private static final InfluenceDiagramType INSTANCE = new InfluenceDiagramType();
 
 	// Constructor
 	private InfluenceDiagramType() {
@@ -21,10 +19,7 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 	// Methods
 	public static InfluenceDiagramType getUniqueInstance() {
-		if (instance == null) {
-			instance = new InfluenceDiagramType();
-		}
-		return instance;
+        return INSTANCE;
 	}
 	
 }

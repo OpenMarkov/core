@@ -15,8 +15,8 @@ import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import javax.swing.undo.CannotUndoException;
 
 @SuppressWarnings("serial") public class ICIPotentialEdit extends SimplePNEdit {
-
-	private ICIPotential potential = null;
+    
+    private ICIPotential potential;
 	private Variable variable = null;
 	private double[] noisyParameters = null;
 	private double[] oldNoisyParameters = null;

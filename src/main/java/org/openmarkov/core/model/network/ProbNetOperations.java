@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network;
 
-import net.sourceforge.jeval.EvaluationException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -152,7 +151,7 @@ public class ProbNetOperations {
 			}
 		}
 		HashSet<Node> newBarrenNodes = new HashSet<>(barrenNodes);
-		boolean foundBarrenNodes = newBarrenNodes.size() > 0;
+        boolean foundBarrenNodes = !newBarrenNodes.isEmpty();
 		while (foundBarrenNodes) {
 			foundBarrenNodes = false;
 			List<Node> listNewBarrenNodes = new ArrayList<>(newBarrenNodes);
@@ -274,8 +273,7 @@ public class ProbNetOperations {
 						boolean parentInNodesToKeep = nodesToKeep.contains(parent);
 						if (childInNodesToKeep && !parentInNodesToKeep) {
 							pushInExploreAndAddToKeep(parent, nodesToExplore, nodesToKeep);
-							parentInNodesToKeep = true;
-						} else if (parentInNodesToKeep && !childInNodesToKeep) {
+                        } else if (parentInNodesToKeep && !childInNodesToKeep) {
 							pushInExploreAndAddToKeep(child, nodesToExplore, nodesToKeep);
 							childInNodesToKeep = true;
 						}
@@ -388,7 +386,7 @@ public class ProbNetOperations {
 		List<Node> noEdgesListOfNodes = new ArrayList<>();
 		// Look for variables/nodes with no parents
 		for (Node node : graph.getNodes()) {
-			if (node.getParents().size() == 0) {
+            if (node.getParents().isEmpty()) {
 				stackOrderedNodes.push(node);
 			}
 		}
@@ -468,7 +466,7 @@ public class ProbNetOperations {
 						try {
 							if (originalVariables.containsKey(parentVariable)) {
 								Variable originalVariable = originalVariables.get(parentVariable);
-								double numericalValue = Double.valueOf(parentVariable.getStates()[0].getName());
+                                double numericalValue = Double.parseDouble(parentVariable.getStates()[0].getName());
 								configuration.addFinding(new Finding(originalVariable, numericalValue));
 							} else if (parentVariable.getVariableType() == VariableType.FINITE_STATES) {
 								configuration.addFinding(new Finding(parentVariable, 0));
@@ -482,7 +480,7 @@ public class ProbNetOperations {
 					boolean nextConfiguration = true;
 					double[] projectedValues = new double[numConfigurations];
 					int index = 0;
-					int parentIndex = 0;
+                    int parentIndex;
 					InferenceOptions inferenceOptions = new InferenceOptions(convertedNet, null);
 					while (nextConfiguration) {
 
@@ -515,7 +513,7 @@ public class ProbNetOperations {
 									if (originalVariables.containsKey(parentVariable)) {
 										Variable originalVariable = originalVariables.get(parentVariable);
 										double numericalValue = Double
-												.valueOf(parentVariable.getStates()[nextStateIndex].getName());
+                                                .parseDouble(parentVariable.getStates()[nextStateIndex].getName());
 										configuration.changeFinding(new Finding(originalVariable, numericalValue));
 									} else if (parentVariable.getVariableType() == VariableType.FINITE_STATES) {
 										configuration.changeFinding(new Finding(findingVariable, nextStateIndex));
@@ -632,7 +630,7 @@ public class ProbNetOperations {
 		// Index of the current configuration in the projected potential
 		int projectedConfigIndex = 0;
 		// Index of the current configuration in the original potential
-		int configIndex = 0;
+        int configIndex;
 		boolean nextConfiguration = true;
 		while (nextConfiguration) {
 			configIndex = potential.getPosition(potentialVariableIndices);
@@ -703,7 +701,7 @@ public class ProbNetOperations {
 	}
 
 	private static boolean doesPotentialContainAnyConvertedNode(Potential potential, Set<Variable> convertedVariables) {
-		return potential.getVariables().stream().anyMatch(x -> convertedVariables.contains(x));
+        return potential.getVariables().stream().anyMatch(convertedVariables::contains);
 	}
 
 	public static List<State> getUnrestrictedStates(Link<Node> link, State[] restrictedVariableStates, State state) {
@@ -796,9 +794,8 @@ public class ProbNetOperations {
 
 	public static List<Node> getNeverObservedVariables(ProbNet probNet) {
 		List<Node> neverObservedVariables = new ArrayList<>();
-		Set<Node> observableVariables = null;
-		
-		observableVariables = getObservableVariables(probNet);
+        
+        Set<Node> observableVariables = getObservableVariables(probNet);
 		
 		for (Node node : probNet.getNodes(NodeType.CHANCE)) {
 			if (!observableVariables.contains(node)) {
@@ -815,12 +812,9 @@ public class ProbNetOperations {
 	 * a path formed exclusively by revelation links.
 	 */
 	public static Set<Node> getObservableVariables(ProbNet probNet) {
-		Set<Node> observable;
-		Set<Variable> visitedDecisions;
-		ConcurrentLinkedQueue<Variable> variablesToProcess = new ConcurrentLinkedQueue<>();
-
-		observable = new HashSet<>();
-		observable.addAll(getAlwaysObservedVariables(probNet));
+        ConcurrentLinkedQueue<Variable> variablesToProcess = new ConcurrentLinkedQueue<>();
+        
+        Set<Node> observable = new HashSet<>(getAlwaysObservedVariables(probNet));
 		for (Node auxNode : observable) {
 			variablesToProcess.add(auxNode.getVariable());
 		}
@@ -828,7 +822,7 @@ public class ProbNetOperations {
 		for (Node auxNode : getParentlessDecisions(probNet)) {
 			variablesToProcess.add(auxNode.getVariable());
 		}
-		visitedDecisions = new HashSet<>();
+        Set<Variable> visitedDecisions = new HashSet<>();
 		while (!variablesToProcess.isEmpty()) {
 			Variable variableToProcess = variablesToProcess.poll();
 			Node nodeToProcess = probNet.getNode(variableToProcess);
@@ -1029,8 +1023,7 @@ public class ProbNetOperations {
 	}
 
 	public static List<Variable> getInformationalPredecessors(ProbNet network, Variable variable) {
-		List<Variable> informationalPredecessors = new ArrayList<>();
-		Node decisionNode = network.getNode(variable);
+        Node decisionNode = network.getNode(variable);
 
 		List<Node> predecessorDecisions = new ArrayList<>();
 		for (Node candidateDecisionNode : network.getNodes(NodeType.DECISION)) {
@@ -1038,7 +1031,7 @@ public class ProbNetOperations {
 				predecessorDecisions.add(candidateDecisionNode);
 			}
 		}
-		informationalPredecessors.addAll(ProbNet.getVariables(predecessorDecisions));
+        List<Variable> informationalPredecessors = new ArrayList<>(ProbNet.getVariables(predecessorDecisions));
 
 		for (Node candidateNode : network.getNodes(NodeType.CHANCE)) {
 			boolean isInformationalPredecessor = decisionNode.isParent(candidateNode);

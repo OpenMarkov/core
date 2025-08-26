@@ -35,7 +35,7 @@ import java.util.*;
 @SuppressWarnings("serial") public class AbsorbNodeEdit extends SimplePNEdit{
 
     // Logger
-    protected Logger logger;
+    private Logger logger;
 
 
     // Both node and variable attributes are created for convenience but one could be extracted from the other
@@ -257,7 +257,7 @@ import java.util.*;
         super.undo();
         probNet.addNode(absorbedNode);
         // Restore deleted links
-        if (linksDeleted.size() != 0) {
+        if (!linksDeleted.isEmpty()) {
             for (Link<Node> link : linksDeleted) {
                 probNet.addLink(link.getNode1(), link.getNode2(), true);
             }
@@ -265,7 +265,7 @@ import java.util.*;
 
         absorbedNode.getChildren().get(0).setPotentials(oldUtilityPotentials);
         // Destroy created utility links
-        if (newParentLinks.size() != 0) {
+        if (!newParentLinks.isEmpty()) {
             for (Link<Node> link : newParentLinks) {
                 probNet.removeLink(link.getNode1(), link.getNode2(), true);
             }
@@ -306,7 +306,7 @@ import java.util.*;
         }
 
         // Re-create utility links
-        if (newParentLinks.size() != 0) {
+        if (!newParentLinks.isEmpty()) {
             for (Link<Node> link : newParentLinks) {
                 probNet.addLink(link.getNode1(), link.getNode2(), true);
             }

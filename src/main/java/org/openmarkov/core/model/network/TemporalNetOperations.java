@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class TemporalNetOperations {
     
@@ -44,6 +43,7 @@ public class TemporalNetOperations {
      * adds the node to that slice
      *
      * @param probNet Network
+     *
      * @return Compact network
      */
     public static List<List<Node>> compactNetwork(ProbNet probNet) {
@@ -93,6 +93,7 @@ public class TemporalNetOperations {
     
     /**
      * @param probNet Original network
+     *
      * @return expanded network
      */
     public static ProbNet expandNetwork(ProbNet probNet) {
@@ -112,7 +113,6 @@ public class TemporalNetOperations {
      * @return {@code List} of {@code List} of {@code Node}
      */
     private static List<List<Node>> classifyNodesbySlices(ProbNet probNet, List<Variable> variables) {
-        List<List<Node>> classifiedNodes;
         int firstSliceIndex = Integer.MAX_VALUE;
         int lastSliceIndex = Integer.MIN_VALUE;
         // find the indexes of the first and last slice
@@ -130,7 +130,7 @@ public class TemporalNetOperations {
         }
         int numSlices = lastSliceIndex - firstSliceIndex + 1;
         // initializes the variable classifiedNodes
-        classifiedNodes = new ArrayList<>(numSlices);
+        List<List<Node>> classifiedNodes = new ArrayList<>(numSlices);
         for (int slice = 0; slice < numSlices; slice++) {
             classifiedNodes.add(new ArrayList<Node>());
         }
@@ -177,7 +177,7 @@ public class TemporalNetOperations {
      */
     private static void expandPotentialAndLinks(ProbNet probNet, Node oldNode, Node newNode, int timeDifference) {
         
-        Potential oldPotential = null;
+        Potential oldPotential;
         // If there is a node that not have any potential, skip
         // TODO This code is skipping decision nodes as they have no potentials
         if (oldNode.getPotentials() != null && !oldNode.getPotentials().isEmpty()) {
@@ -227,6 +227,7 @@ public class TemporalNetOperations {
      * Method that receives a node and retrieves all the nodes related to it that belong to other time slices
      *
      * @param node Node of reference
+     *
      * @return a list with the nodes that belong to other time slices. Null if there no nodes related to other
      * time slices or if the received node is not 'temporal'
      */
@@ -255,16 +256,15 @@ public class TemporalNetOperations {
             // From the potential list we remove all the variables that are not related to the variable of the node
             listOfRelatedVariables.removeAll(listOfNotRelatedVariables);
             // if the list is empty, the node has no related variables and we reset the list as null
-            if (listOfRelatedVariables.size() == 0) {
+            if (listOfRelatedVariables.isEmpty()) {
                 listOfRelatedVariables = null;
             }
         }
         // The nodes of the variables remaining in the list are returned, if any
-        if (listOfRelatedVariables != null) {
-            return node.getProbNet().getNodes(listOfRelatedVariables);
-        } else {
+        if (listOfRelatedVariables == null) {
             return null;
         }
+        return node.getProbNet().getNodes(listOfRelatedVariables);
     }
     
     /**
@@ -439,7 +439,9 @@ public class TemporalNetOperations {
      * @param probNet               MID to be expanded
      * @param preResolutionEvidence evidence associated to probNet
      * @param networkName           MID to be expanded
+     *
      * @return expanded network as an influence diagram with the associated evidence extended, the evidence generated from constant potentials,and the non-observed variables discretized
+     *
      * @throws UnsupportedOperationException - when probNet is not an MID, the network cannot be expanded.
      */
     public static ProbNet expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence, String networkName) throws NotSupportedOperationException {

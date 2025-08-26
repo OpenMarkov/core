@@ -42,11 +42,8 @@ import java.util.List;
 
 			switch (stateAction) {
 			case ADD:
-				String trimmedLowerName;
-				trimmedLowerName = name.trim();
-				trimmedLowerName = name.toLowerCase();
-
-				if ((trimmedLowerName == null) || (trimmedLowerName.contentEquals(""))) {
+                String trimmedLowerName = name.toLowerCase();
+                if (trimmedLowerName.isBlank()) {
                     this.typeError = TypeError.IS_EMPTY_NAME;
 					return false;
 				}
@@ -56,10 +53,8 @@ import java.util.List;
 				}
 				break;
 			case RENAME:
-				String trimmedName;
-				trimmedName = name.trim();
-
-				if ((trimmedName == null) || (trimmedName.contentEquals(""))) {
+                String trimmedName = name.trim();
+                if (trimmedName.isBlank()) {
                     this.typeError = TypeError.IS_EMPTY_NAME;
 					return false;
 				}

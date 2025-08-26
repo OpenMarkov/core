@@ -81,7 +81,7 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 			// Solving issue #227
 			// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/227/inconsistency-between-the-lists
 			// Making consistent the way both lists are created
-			if (listOfVariables.size() > 0) {
+            if (!listOfVariables.isEmpty()) {
 				this.variablesToEliminate.add(listOfVariables);
 			}
 		}
@@ -92,7 +92,7 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 			for (Variable variable : variables) {
 				nodes.add(probNet.getNode(variable));
 			}
-			if (nodes.size() > 0) {
+            if (!nodes.isEmpty()) {
 				this.nodesToEliminate.add(nodes);
 			}
 		}
@@ -138,7 +138,7 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	 * @return node ({@code Node}) in the heuristic
 	 * {@code ProbNet} that will be removed
 	 */
-	protected Variable getEventVariable(UndoableEditEvent event) {
+    protected static Variable getEventVariable(UndoableEditEvent event) {
 		Variable variable = null;
 		UndoableEdit pNEdit = event.getEdit();
 

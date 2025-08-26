@@ -53,7 +53,7 @@ import java.util.zip.ZipFile;
     private static final char PACKAGE_SEPARATOR = '.';
     private static final String OPEN_MARKOV_PATH_PREFIX = "org.openmarkov";
     
-    private static final Map<PluginClassCategory, List<Class<Object>>> LOADED_CLASSES = new HashMap<>();
+    private static final HashMap<PluginClassCategory, List<Class<Object>>> LOADED_CLASSES = new HashMap<>();
     
     /**
      * Gets a stream of {@code Class<Object>} for a certain Plugin category.
@@ -103,6 +103,7 @@ import java.util.zip.ZipFile;
         PluginLoader.LOADED_CLASSES.put(PluginClassCategory.JAVA, javaClasses);
     }
     
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static boolean verifyClass(Class<Object> loadedClass) {
         try{
             loadedClass.getName();
@@ -142,7 +143,7 @@ import java.util.zip.ZipFile;
                             loadedClasses.add(loadedClass);
                         }
                     }
-                } catch (ClassNotFoundException | NoClassDefFoundError ignored) {
+                } catch (ClassNotFoundException | NoClassDefFoundError | ClassFormatError ignored) {
                 }
             }
         }

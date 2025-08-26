@@ -99,7 +99,7 @@ public class InferenceOptions {
 	/**
 	 * Inserts in buffer the name and states of the received variable
 	 */
-	private void printVariable(StringBuilder buffer, Variable variable) {
+    private static void printVariable(StringBuilder buffer, Variable variable) {
 		buffer.append(variable.getName());
 		if (variable.getVariableType() != VariableType.NUMERIC) {
 			buffer.append("(");

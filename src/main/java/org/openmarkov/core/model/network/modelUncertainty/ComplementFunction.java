@@ -9,8 +9,8 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
-@ProbDensFunctionType(name = "Complement", isValidForNumeric = false, parameters = {
-		"nu" }) public class ComplementFunction extends ProbDensFunction {
+@ProbDensFunctionType(name = "Complement", isValidForNumeric = false, parameters = "nu")
+public class ComplementFunction extends ProbDensFunction {
 	private double nu;
 
 	public ComplementFunction() {

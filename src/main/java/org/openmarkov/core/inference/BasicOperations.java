@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.inference;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.graph.Link;
@@ -26,15 +27,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 
-import net.sourceforge.jeval.EvaluationException;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BasicOperations {
@@ -50,7 +43,7 @@ public class BasicOperations {
         List<TablePotential> tablePotentials = new ArrayList<>();
         List<Variable> parentVariable = new ArrayList<>();
         for (Node parent : node.getParents()) {
-            TablePotential auxTablePot = null;
+            TablePotential auxTablePot;
             try {
                 auxTablePot = parent.getPotentials().get(0).tableProject(evidence, null).get(0);
             } catch (NonProjectablePotentialException e) {
@@ -202,7 +195,7 @@ public class BasicOperations {
         List<Potential> newPotentials = new ArrayList<>();
         newPotentials.add(potential);
         network.getNode(nodeVariable).setPotentials(newPotentials);
-        parents.forEach(x -> network.removeNode(x));
+        parents.forEach(network::removeNode);
     }
     
     
@@ -261,10 +254,9 @@ public class BasicOperations {
      * numeric 3) Its grandparents are all discrete
      */
     public static boolean areAllItsParentsAbsorbable(Node node) {
-        boolean areAbsorbable = true;
         
         // Verify condition 1)
-        areAbsorbable = getVariableType(node) == VariableType.NUMERIC;
+        boolean areAbsorbable = getVariableType(node) == VariableType.NUMERIC;
         
         if (areAbsorbable) {
             // Verify condition 2)
@@ -275,8 +267,7 @@ public class BasicOperations {
                 // Verify condition 3)
                 Set<Node> grandParents = new HashSet<>();
                 parents.forEach(x -> grandParents.addAll(x.getParents()));
-                List<Node> grandParentsList = new ArrayList<>();
-                grandParentsList.addAll(grandParents);
+                List<Node> grandParentsList = new ArrayList<>(grandParents);
                 areAbsorbable = areAllVariablesOfType(grandParentsList, VariableType.FINITE_STATES);
             }
         }
@@ -328,17 +319,16 @@ public class BasicOperations {
      * @return {@code ArrayList} of {@code ArrayList} of
      * {@code Variables} with the partial order of the received probNet
      */
-    public static List<List<Variable>> calculatePartialOrder(ProbNet probNet) {
+    public static @NotNull List<List<Variable>> calculatePartialOrder(ProbNet probNet) {
         ProbNet idCopy = probNet.copy(); // Copy influence diagram
         
         /* A partial order is a list of lists of variables. */
-        List<List<Variable>> partialOrder;
         
         // Get decisions (only) in elimination order
         Stack<Variable> decisions = getSequenceOfDecisions(idCopy);
         
         // Create elimination order adding chance nodes
-        partialOrder = new ArrayList<>();
+        List<List<Variable>> partialOrder = new ArrayList<>();
         List<Node> chanceNodes = probNet.getNodes(NodeType.CHANCE);
         HashSet<Variable> chanceVariables = new HashSet<>();
         for (Node chanceNode : chanceNodes) {
@@ -380,10 +370,8 @@ public class BasicOperations {
             partialOrder.add(Collections.singletonList(decision));
         }
         List<Variable> remainingVariables = new ArrayList<>(chanceVariables.size());
-        for (Variable remainingVariable : chanceVariables) {
-            remainingVariables.add(remainingVariable);
-        }
-        if (remainingVariables.size() > 0) {
+        remainingVariables.addAll(chanceVariables);
+        if (!remainingVariables.isEmpty()) {
             partialOrder.add(remainingVariables);
         }
         return partialOrder;
@@ -466,13 +454,10 @@ public class BasicOperations {
     public static List<List<Variable>> projectPartialOrder(ProbNet probNet, List<Variable> queryVariables,
                                                            List<Variable> evidenceVariables, List<Variable> conditioningVariables,
                                                            List<Variable> variablesToEliminate) {
-        List<List<Variable>> newOrder;
-        List<List<Variable>> newOrder2;
         // Remove variables
-        newOrder = new ArrayList<>();
+        List<List<Variable>> newOrder = new ArrayList<>();
         for (List<Variable> auxArray : calculatePartialOrder(probNet)) {
-            List<Variable> cloneAuxArray;
-            cloneAuxArray = new ArrayList<>(auxArray);
+            List<Variable> cloneAuxArray = new ArrayList<>(auxArray);
             for (Variable auxVar : auxArray) {
                 if (queryVariables.contains(auxVar) || evidenceVariables.contains(auxVar)
                         || conditioningVariables.contains(auxVar) || !variablesToEliminate.contains(auxVar)) {
@@ -483,10 +468,10 @@ public class BasicOperations {
             
         }
         // Copy the non empty array lists
-        newOrder2 = new ArrayList<>();
+        List<List<Variable>> newOrder2 = new ArrayList<>();
         
         for (List<Variable> auxArray : newOrder) {
-            if (auxArray.size() > 0) {
+            if (!auxArray.isEmpty()) {
                 newOrder2.add(auxArray);
             }
         }
@@ -527,28 +512,15 @@ public class BasicOperations {
     }
     
     public static int getNumVariables(ProbNet probNet) {
-        int num = 0;
-        
         List<List<Variable>> partialOrder = calculatePartialOrder(probNet);
-        
-        if (partialOrder != null) {
-            for (List<Variable> auxArray : partialOrder) {
-                if (auxArray != null) {
-                    num = num + auxArray.size();
-                }
-            }
-        } else {
-            num = 0;
-        }
-        return num;
+        return partialOrder.stream().filter(Objects::nonNull).mapToInt(List::size).sum();
     }
     
     public static List<List<Variable>> resetPartialOrderToTrivial(ProbNet probNet) {
-        List<List<Variable>> partialOrder;
         List<Variable> variables = probNet.getChanceAndDecisionVariables();
         List<List<Variable>> variablesOrder = new ArrayList<>();
         variablesOrder.add(variables);
-        partialOrder = new ArrayList<>(variablesOrder);
+        List<List<Variable>> partialOrder = new ArrayList<>(variablesOrder);
         // partialOrder.setOrder(variablesOrder);
         return partialOrder;
     }
@@ -566,13 +538,10 @@ public class BasicOperations {
     public static List<List<Variable>> projectPartialOrder2(ProbNet probNet, List<Variable> queryVariables,
                                                             List<Variable> evidenceVariables, List<Variable> conditioningVariables,
                                                             List<Variable> variablesToEliminate) {
-        List<List<Variable>> newOrder;
-        List<List<Variable>> newOrder2;
         // Remove variables
-        newOrder = new ArrayList<>();
+        List<List<Variable>> newOrder = new ArrayList<>();
         for (List<Variable> auxArray : calculatePartialOrder2(probNet)) {
-            List<Variable> cloneAuxArray;
-            cloneAuxArray = new ArrayList<>(auxArray);
+            List<Variable> cloneAuxArray = new ArrayList<>(auxArray);
             for (Variable auxVar : auxArray) {
                 if (evidenceVariables.contains(auxVar) || conditioningVariables.contains(auxVar)
                         || !variablesToEliminate.contains(auxVar)) {
@@ -583,10 +552,10 @@ public class BasicOperations {
             
         }
         // Copy the non empty array lists
-        newOrder2 = new ArrayList<>();
+        List<List<Variable>> newOrder2 = new ArrayList<>();
         
         for (List<Variable> auxArray : newOrder) {
-            if (auxArray.size() > 0) {
+            if (!auxArray.isEmpty()) {
                 newOrder2.add(auxArray);
             }
         }
@@ -603,7 +572,6 @@ public class BasicOperations {
         ProbNet idCopy = probNet.copy(); // Copy influence diagram
         
         /* A partial order is a list of lists of variables. */
-        List<List<Variable>> partialOrder;
         
         // Get decisions (only) in elimination order
         int numDecisions = idCopy.getNumNodes(NodeType.DECISION);
@@ -638,7 +606,7 @@ public class BasicOperations {
             // Check if there are more than one decision in the nextGenNodes
             int numberOfDecisions = 0;
             for (Node node : newGenNodes) {
-                if (node.getNodeType().equals(NodeType.DECISION)) {
+                if (node.getNodeType() == NodeType.DECISION) {
                     numberOfDecisions++;
                 }
             }
@@ -653,7 +621,7 @@ public class BasicOperations {
         } while (numDecisions > 0);
         
         // Create elimination order adding chance nodes
-        partialOrder = new ArrayList<>(numDecisions * 2 + 1);
+        List<List<Variable>> partialOrder = new ArrayList<>(numDecisions * 2 + 1);
         List<Node> chanceNodes = probNet.getNodes(NodeType.CHANCE);
         HashSet<Variable> chanceVariables = new HashSet<>();
         for (Node chanceNode : chanceNodes) {
@@ -685,10 +653,8 @@ public class BasicOperations {
             partialOrder.add(Collections.singletonList(decision));
         }
         List<Variable> remainingVariables = new ArrayList<>(chanceVariables.size());
-        for (Variable remainingVariable : chanceVariables) {
-            remainingVariables.add(remainingVariable);
-        }
-        if (remainingVariables.size() > 0) {
+        remainingVariables.addAll(chanceVariables);
+        if (!remainingVariables.isEmpty()) {
             partialOrder.add(remainingVariables);
         }
         return partialOrder;

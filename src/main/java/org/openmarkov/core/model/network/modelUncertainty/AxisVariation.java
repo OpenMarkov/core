@@ -89,7 +89,7 @@ public class AxisVariation {
 	 */
 	public double getMinValue(UncertainParameter uncertainParameter) {
 		double minValue = 0.0;
-		double variationRatio = 0.0;
+        double variationRatio;
 
 		switch (variationType) {
 		case PORV:

@@ -24,8 +24,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@PotentialType(name = "Linear combination", family = "GLM", altNames = {
-        "Linear regression"}) public class LinearCombinationPotential extends GLMPotential {
+@PotentialType(name = "Linear combination", family = "GLM", altNames = "Linear regression")
+public class LinearCombinationPotential extends GLMPotential {
     
     public LinearCombinationPotential(List<Variable> variables, PotentialRole role) {
         super(variables, role, getDefaultCovariates(variables, role), new double[variables.size()]);
@@ -76,9 +76,8 @@ import java.util.Map;
         int constantIndex = getConstantIndex(covariates);
         
         List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
-        TablePotential projectedPotential = null;
         projectedPotentialVariables.add(0, variables.get(0));
-        projectedPotential = new TablePotential(projectedPotentialVariables, role);
+        TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, role);
         
         int[] offsets = projectedPotential.getOffsets();
         int[] dimensions = projectedPotential.getDimensions();
@@ -134,7 +133,7 @@ import java.util.Map;
     }
     
     @Override public Potential addVariable(Variable variable) {
-        LinearCombinationPotential newPotential = null;
+        LinearCombinationPotential newPotential;
         if (!variables.contains(variable)) {
             List<Variable> newVariables = new ArrayList<>(variables);
             newVariables.add(variable);
@@ -158,7 +157,7 @@ import java.util.Map;
     }
     
     @Override public Potential removeVariable(Variable variable) {
-        LinearCombinationPotential newPotential = null;
+        LinearCombinationPotential newPotential;
         if (variables.contains(variable)) {
             List<Variable> newVariables = new ArrayList<>(variables);
             newVariables.remove(variable);
@@ -187,7 +186,7 @@ import java.util.Map;
     }
     
     @Override public String toString() {
-        StringBuffer sb = new StringBuffer(super.toString() + " = ");
+        StringBuilder sb = new StringBuilder(super.toString() + " = ");
         String[] covariates = unprocessCovariates(variables, processedCovariates);
         boolean first = true;
         for (int i = 0; i < covariates.length; ++i) {

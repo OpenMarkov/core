@@ -42,11 +42,10 @@ import java.util.Vector;
 
 	@Override public boolean equals(Object arg0) {
 		boolean sameInformation = true;
-
-		if (arg0 instanceof COrientLinksEdit) {
-			COrientLinksEdit editToCompare = (COrientLinksEdit) arg0;
-
-			for (UndoableEdit edit : editToCompare.edits) {
+        
+        if (arg0 instanceof COrientLinksEdit editToCompare) {
+            
+            for (UndoableEdit edit : editToCompare.edits) {
 				sameInformation &= edits.contains(edit);
 			}
 

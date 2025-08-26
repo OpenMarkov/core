@@ -43,7 +43,7 @@ import java.util.stream.Stream;
  * @see FormatType
  */
 public class FormatManager {
-    private static FormatManager instance = null;
+    private static final FormatManager INSTANCE = new FormatManager();
     
     /**
      * The Reader role
@@ -138,10 +138,7 @@ public class FormatManager {
      * @return FormatManager instance
      */
     public static FormatManager getInstance() {
-        if (instance == null) {
-            instance = new FormatManager();
-        }
-        return instance;
+        return INSTANCE;
     }
     
     /**
@@ -149,7 +146,7 @@ public class FormatManager {
      *
      * @return a list with the plugins detected with FormatTypeProbModelXML annotations.
      */
-    private Stream<Class<Object>> findAllFormatPlugins() {
+    private static Stream<Class<Object>> findAllFormatPlugins() {
         return PluginSearch.init().annotatedWith(FormatType.class).stream();
     }
     //	/**
@@ -398,8 +395,7 @@ public class FormatManager {
     
     public void checkVersion(String name) throws SAXException, IOException, ParserConfigurationException {
         
-        InputStream xsd;
-        xsd = getClass().getClassLoader().getResourceAsStream("version.xsd");
+        InputStream xsd = getClass().getClassLoader().getResourceAsStream("version.xsd");
         
         DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         org.w3c.dom.Document document = parser.parse(new File(name));
@@ -415,8 +411,7 @@ public class FormatManager {
     
     public void checkVersion(URL url) throws SAXException, IOException {
         
-        InputStream xsd;
-        xsd = getClass().getClassLoader().getResourceAsStream("version.xsd");
+        InputStream xsd = getClass().getClassLoader().getResourceAsStream("version.xsd");
         
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         
@@ -438,8 +433,7 @@ public class FormatManager {
     
     public void checkStructure(String name) throws SAXException, IOException, ParserConfigurationException {
         
-        InputStream xsd;
-        xsd = getClass().getClassLoader().getResourceAsStream("val_v4.xsd");
+        InputStream xsd = getClass().getClassLoader().getResourceAsStream("val_v4.xsd");
         
         DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         org.w3c.dom.Document document = parser.parse(new File(name));
@@ -455,8 +449,7 @@ public class FormatManager {
     
     public void checkStructure(URL url) throws SAXException, IOException {
         
-        InputStream xsd;
-        xsd = getClass().getClassLoader().getResourceAsStream("val_v4.xsd");
+        InputStream xsd = getClass().getClassLoader().getResourceAsStream("val_v4.xsd");
         
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         

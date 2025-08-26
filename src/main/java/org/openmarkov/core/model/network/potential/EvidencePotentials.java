@@ -47,8 +47,7 @@ public class EvidencePotentials {
 					// Creates a potential with the evidence variable
 					List<Variable> potentialVariables = new ArrayList<>(1);
 					potentialVariables.add(variable);
-					TablePotential potential = null;
-					potential = new TablePotential(potentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
+                    TablePotential potential = new TablePotential(potentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
 					int indexStateEvidence = evidence.getState(variable);
 					for (int indexState = 0; indexState < variable.getStates().length; indexState++) {
 						// Sets potential table configurations

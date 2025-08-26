@@ -208,7 +208,7 @@ public abstract class GLMPotential extends Potential {
                 evidencelessVariables.add(variable);
                 variableValues.put("v" + i, "0.0");
             } else {
-                double numericValue = 0;
+                double numericValue;
                 Finding finding = evidenceCase.getFinding(variable);
                 if (variable.getVariableType() == VariableType.NUMERIC
                         || variable.getVariableType() == VariableType.DISCRETIZED) {
@@ -260,7 +260,7 @@ public abstract class GLMPotential extends Potential {
         return this;
     }
     
-    protected String[] processCovariates(List<Variable> variables, String[] covariates) {
+    protected static String[] processCovariates(List<Variable> variables, String[] covariates) {
         String[] processedCovariates = new String[covariates.length];
         
         for (int i = 0; i < covariates.length; ++i) {
@@ -269,7 +269,7 @@ public abstract class GLMPotential extends Potential {
         return processedCovariates;
     }
     
-    protected String processCovariate(String covariate, List<Variable> variables) {
+    protected static String processCovariate(String covariate, List<Variable> variables) {
         String processedCovariate = covariate;
         for (int i = 0; i < variables.size(); ++i) {
             Variable variable = variables.get(i);
@@ -283,7 +283,7 @@ public abstract class GLMPotential extends Potential {
         return processedCovariate;
     }
     
-    protected String[] unprocessCovariates(List<Variable> variables, String[] processedCovariates) {
+    protected static String[] unprocessCovariates(List<Variable> variables, String[] processedCovariates) {
         String[] covariates = processedCovariates.clone();
         for (int j = 0; j < covariates.length; ++j) {
             for (int i = 0; i < variables.size(); ++i) {
@@ -299,8 +299,8 @@ public abstract class GLMPotential extends Potential {
         return covariates;
     }
     
-    protected void removeVariableFromCovariates(List<Variable> variables, Variable variable, String[] covariates,
-                                                double[] coefficients, List<String> newCovariates, List<Double> newCoefficients) {
+    protected static void removeVariableFromCovariates(List<Variable> variables, Variable variable, String[] covariates,
+                                                       double[] coefficients, List<String> newCovariates, List<Double> newCoefficients) {
         int index = variables.indexOf(variable);
         String variableToRemove = "#{v" + index + "}";
         for (int i = 0; i < covariates.length; ++i) {
@@ -316,7 +316,7 @@ public abstract class GLMPotential extends Potential {
         }
     }
     
-    protected int getConstantIndex(String[] covariates) {
+    protected static int getConstantIndex(String[] covariates) {
         int constantIndex = -1;
         int i = 0;
         while (i < covariates.length && constantIndex == -1) {

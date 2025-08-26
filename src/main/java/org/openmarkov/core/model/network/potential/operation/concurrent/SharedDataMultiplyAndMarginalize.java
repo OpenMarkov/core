@@ -54,6 +54,8 @@ public class SharedDataMultiplyAndMarginalize extends SharedDataMultiply {
 		unionDimensions = TablePotential.calculateDimensions(unionVariables);
 
 		// Defines some arrays for the proper potentials...
+        // TODO: the variables tables, currentPositions and accumulatedOffsets are initialized, but never used or
+        //  returned. Why do they exist?
 		double[][] tables = new double[numPotentials][];
 		int[] initialPositions = new int[numPotentials];
 		int[] currentPositions = new int[numPotentials];

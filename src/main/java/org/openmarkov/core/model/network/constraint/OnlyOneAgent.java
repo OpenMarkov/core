@@ -34,10 +34,8 @@ import java.util.List;
 			}
 		}
 		if (probNet.getAgents() != null) {
-
 			return false;
 		}
-
 		return true;
 	}
 

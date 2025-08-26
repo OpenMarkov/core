@@ -30,7 +30,7 @@ public class PrecisionEdit extends SimplePNEdit {
 	/**
 	 * The edited node
 	 */
-	private Node node = null;
+    private Node node;
 
 	/**
 	 * Creates a new {@code PurposeEdit} with the node and its new purpose.

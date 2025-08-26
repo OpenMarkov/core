@@ -7,15 +7,13 @@
 
 package org.openmarkov.core.model.network.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.NoLinkRestriction;
 import org.openmarkov.core.model.network.constraint.NoRevelationArc;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 @ProbNetType(name = "DAN") public class DecisionAnalysisNetworkType extends NetworkType {
-	private static DecisionAnalysisNetworkType instance = null;
+    private static final DecisionAnalysisNetworkType INSTANCE = new DecisionAnalysisNetworkType();
 
 	// Constructor
 	private DecisionAnalysisNetworkType() {
@@ -26,10 +24,7 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 	// Methods
 	public static DecisionAnalysisNetworkType getUniqueInstance() {
-		if (instance == null) {
-			instance = new DecisionAnalysisNetworkType();
-		}
-		return instance;
+        return INSTANCE;
 	}
 	
 }

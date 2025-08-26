@@ -51,34 +51,34 @@ import java.util.List;
 
 			switch (currentType) {
 			case FINITE_STATES:
-				if (newType.equals(VariableType.DISCRETIZED)) {
+                if (newType == VariableType.DISCRETIZED) {
 					// DO NOTHING
 					break;
-				} else if (newType.equals(VariableType.NUMERIC)) {
+                } else if (newType == VariableType.NUMERIC) {
 					setPotentialsNodeAndChildren();
 				}
 				break;
 			case DISCRETIZED:
-				if (newType.equals(VariableType.FINITE_STATES)) {
+                if (newType == VariableType.FINITE_STATES) {
 					// DO NOTHING
 					break;
-				} else if (newType.equals(VariableType.NUMERIC)) {
+                } else if (newType == VariableType.NUMERIC) {
 					setPotentialsNodeAndChildren();
 				}
 				break;
 
 			case NUMERIC:
-
-				if (newType.equals(VariableType.FINITE_STATES)) {
+                
+                if (newType == VariableType.FINITE_STATES) {
 					setPotentialsNodeAndChildren();
-				} else if (newType.equals(VariableType.DISCRETIZED)) {
+                } else if (newType == VariableType.DISCRETIZED) {
 					setPotentialsNodeAndChildren();
 					// If we only have one interval we need to set up at least
 					// the default intervals for the states
 					if (node.getVariable().getPartitionedInterval().getNumSubintervals() == 1) {
 						PartitionedInterval interval = new PartitionedInterval(
-								node.getVariable().getDefaultInterval(node.getVariable().getNumStates()),
-								node.getVariable().getDefaultBelongs(node.getVariable().getNumStates()));
+                                node.getVariable().getDefaultInterval(node.getVariable().getNumStates()),
+                                Variable.getDefaultBelongs(node.getVariable().getNumStates()));
 						node.getVariable().setPartitionedInterval(interval);
 					}
 
@@ -151,16 +151,15 @@ import java.util.List;
 
 		}
 	}
-
-	public void setUniformPotential2Node(Node node) {
+    
+    public static void setUniformPotential2Node(Node node) {
 
 		List<Potential> newListPotentials = new ArrayList<>();
 		List<Variable> variables = new ArrayList<>();
-		Variable thisVariable;
-		List<Potential> potentials = node.getPotentials();
+        List<Potential> potentials = node.getPotentials();
 		PotentialRole role = potentials.get(0).getPotentialRole();
 		// first, this variable. The potentials is not null
-		thisVariable = potentials.get(0).getVariable(0);
+        Variable thisVariable = potentials.get(0).getVariable(0);
 		variables.add(thisVariable);
 
 		int numOfCellsInTable = thisVariable.getNumStates();
@@ -174,12 +173,15 @@ import java.util.List;
 			variables.add(parent.getVariable());
 			numOfCellsInTable *= parent.getVariable().getNumStates();
 		}
+        
+        //TODO: This array is never used. Why is it created then?
 		// sets a new table with new columns and with all the same values
 		double[] table = new double[numOfCellsInTable];
 		for (int i = 0; i < numOfCellsInTable; i++) {
 			table[i] = initialValue;
 		}
-		// and finally, create the potential and the list of potentials
+        
+        // and finally, create the potential and the list of potentials
 
 		// TODO Comprobar que efectivamente es un CONDITIONAL_PROBABILITY
 		UniformPotential uniformPotential = new UniformPotential(variables, role);
@@ -229,7 +231,7 @@ import java.util.List;
 				// Example. In the "ID-decide-test" network, if you change the Domain of Result of test variable,
 				// no potential should be set to Therapy
 				if (child.getPotentials() != null) {
-					if (child.getPotentials().size() > 0) {
+                    if (!child.getPotentials().isEmpty()) {
 						setUniformPotential2Node(child);
 					}
 				}

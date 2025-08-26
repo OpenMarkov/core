@@ -45,9 +45,8 @@ public class Tools {
 	}
 
 	public static double max(double[] numbers) {
-		double maximum;
-		double aux;
-		maximum = Double.NEGATIVE_INFINITY;
+        double aux;
+        double maximum = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < numbers.length; i++) {
 			aux = numbers[i];
 			if (aux > maximum) {
@@ -58,9 +57,8 @@ public class Tools {
 	}
 
 	public static double min(double[] numbers) {
-		double minimum;
-		double aux;
-		minimum = Double.POSITIVE_INFINITY;
+        double aux;
+        double minimum = Double.POSITIVE_INFINITY;
 		for (int i = 0; i < numbers.length; i++) {
 			aux = numbers[i];
 			if (aux < minimum) {
@@ -71,13 +69,10 @@ public class Tools {
 	}
 
 	public static double[] normalize(double[] x, double mass) {
-		double[] y;
-		double divisor;
-		int length = x.length;
-		y = new double[length];
-		double sum;
-		sum = sum(x);
-		divisor = sum / mass;
+        int length = x.length;
+        double[] y = new double[length];
+        double sum = sum(x);
+        double divisor = sum / mass;
 		for (int i = 0; i < length; i++) {
 			y[i] = x[i] / divisor;
 		}
@@ -97,9 +92,8 @@ public class Tools {
 	 * @return An estimation of the mean of an array of real numbers sampled
 	 */
 	public static double meanSample(double[] x) {
-		double mu;
-		int length = x.length;
-		mu = (length > 0) ? (sum(x) / length) : 0.0;
+        int length = x.length;
+        double mu = (length > 0) ? (sum(x) / length) : 0.0;
 		return mu;
 	}
 
@@ -109,11 +103,9 @@ public class Tools {
 	 * sampled. It uses the equation of the quasi-variance
 	 */
 	public static double varianceSample(double[] x) {
-		double mu;
-		double sumSquares;
-		double variance;
-		mu = meanSample(x);
-		sumSquares = 0.0;
+        double variance;
+        double mu = meanSample(x);
+        double sumSquares = 0.0;
 		int length = x.length;
 		if (length > 1) {
 			for (int i = 0; i < length; i++) {

@@ -88,7 +88,7 @@ import java.util.List;
 		}
 
 		List<Variable> variablesNewPotential = newPotential.getVariables();
-		if (variablesNewPotential != null && variablesNewPotential.size() > 0) {
+        if (variablesNewPotential != null && !variablesNewPotential.isEmpty()) {
 			edits.add(new AddPotentialEdit(probNet, newPotential));
 		}
 		for (Potential potential : potentialsVariable) {

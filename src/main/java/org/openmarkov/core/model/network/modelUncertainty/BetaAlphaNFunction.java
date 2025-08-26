@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.openmarkov.core.exception.InvalidArgumentException;
-import org.openmarkov.core.exception.NotSupportedOperationException;
 
 import java.util.List;
 

@@ -7,14 +7,12 @@
 
 package org.openmarkov.core.model.network.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.OnlyOneAgent;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 @ProbNetType(name = "DEC_POMDP") public class DECPOMDPType extends POMDPType {
-	private static DECPOMDPType instance = null;
+    private static final DECPOMDPType INSTANCE = new DECPOMDPType();
 
 	// Constructor
 	private DECPOMDPType() {
@@ -25,10 +23,7 @@ import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 	// Methods
 	public static DECPOMDPType getUniqueInstance() {
-		if (instance == null) {
-			instance = new DECPOMDPType();
-		}
-		return instance;
+        return INSTANCE;
 	}
 	
 }

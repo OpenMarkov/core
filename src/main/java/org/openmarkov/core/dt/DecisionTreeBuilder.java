@@ -7,26 +7,6 @@
 
 package org.openmarkov.core.dt;
 
-import org.openmarkov.core.inference.BasicOperations;
-import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNetOperations;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.SumPotential;
-import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
-import org.openmarkov.core.model.network.type.InfluenceDiagramType;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-
 public class DecisionTreeBuilder {
 //	public static DecisionTreeElement buildDecisionTree(ProbNet probNet) {
 //		DecisionTreeElement root = null;

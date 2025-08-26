@@ -22,19 +22,17 @@ public class BNFactory extends NetsFactory {
 	 * @return a Bayesian network with one node node (Disease)
 	 */
 	public static ProbNet createBN_X(double prevalence) {
-		ProbNet probNet;
-		double[] valuesX;
-
-		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-
-		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
+        
+        PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
+        
+        ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
 
 		// Define the variables
 		Variable variableX = new Variable(diseaseName, diseaseStates);
 
 		addVariables(probNet, NodeType.CHANCE, variableX);
-
-		valuesX = valuesAPrioriDisease(prevalence);
+        
+        double[] valuesX = valuesAPrioriDisease(prevalence);
 		TablePotential potentialX = createTablePotential(role, valuesX, variableX);
 
 		addPotentials(probNet, potentialX);
@@ -54,13 +52,10 @@ public class BNFactory extends NetsFactory {
 	 */
 	public static ProbNet createBN_XY(String nameX, String nameY, double prevalence, double sensitivity,
 			double specificity) {
-		ProbNet probNet;
-		double[] valuesX;
-		double[] valuesYX;
-
-		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-
-		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
+        
+        PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
+        
+        ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
 
 		// Define the variables
 		Variable variableX = new Variable(nameX, diseaseStates);
@@ -69,11 +64,11 @@ public class BNFactory extends NetsFactory {
 		addVariables(probNet, NodeType.CHANCE, variableX, variableY);
 
 		probNet.addLink(variableX, variableY, true);
-
-		valuesX = valuesAPrioriDisease(prevalence);
+        
+        double[] valuesX = valuesAPrioriDisease(prevalence);
 		TablePotential potentialX = createTablePotential(role, valuesX, variableX);
-
-		valuesYX = valuesCPTResultTest(sensitivity, specificity);
+        
+        double[] valuesYX = valuesCPTResultTest(sensitivity, specificity);
 		TablePotential potentialYX = createTablePotential(role, valuesYX, variableY, variableX);
 
 		addPotentials(probNet, potentialX, potentialYX);
@@ -86,14 +81,10 @@ public class BNFactory extends NetsFactory {
 	 */
 	public static ProbNet createBN_XYZ(double prevalence, double sensitivityY, double specificityY, double sensitivityZ,
 			double specificityZ) {
-		ProbNet probNet;
-		double[] valuesX;
-		double[] valuesYX;
-		double[] valuesZY;
-
-		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-
-		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
+        
+        PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
+        
+        ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
 
 		// Define the variables
 		Variable variableX = new Variable("X", diseaseStates);
@@ -103,14 +94,14 @@ public class BNFactory extends NetsFactory {
 		addVariables(probNet, NodeType.CHANCE, variableX, variableY, variableZ);
 
 		probNet.addLink(variableX, variableY, true);
-
-		valuesX = valuesAPrioriDisease(prevalence);
+        
+        double[] valuesX = valuesAPrioriDisease(prevalence);
 		TablePotential potentialX = createTablePotential(role, valuesX, variableX);
-
-		valuesYX = valuesCPTResultTest(sensitivityY, specificityY);
+        
+        double[] valuesYX = valuesCPTResultTest(sensitivityY, specificityY);
 		TablePotential potentialYX = createTablePotential(role, valuesYX, variableY, variableX);
-
-		valuesZY = valuesCPTResultTest(sensitivityZ, specificityZ);
+        
+        double[] valuesZY = valuesCPTResultTest(sensitivityZ, specificityZ);
 		TablePotential potentialZY = createTablePotential(role, valuesZY, variableZ, variableY);
 
 		addPotentials(probNet, potentialX, potentialYX, potentialZY);
@@ -123,19 +114,14 @@ public class BNFactory extends NetsFactory {
 	 * This network was stored in file "peque.elv"
 	 */
 	public static ProbNet createBN_ABC() {
-		Variable variableA;
-		Variable variableB;
-		Variable variableC;
-		double[] tableA;
-		double[] tableBA;
-
-		ProbNet peque = new ProbNet();
-
-		String nameStates[] = diseaseStates;
+        
+        ProbNet peque = new ProbNet();
+        
+        String[] nameStates = diseaseStates;
 		//Finite States variables}
-		variableA = new Variable("A", nameStates);
-		variableB = new Variable("B", nameStates);
-		variableC = new Variable("C", nameStates);
+        Variable variableA = new Variable("A", nameStates);
+        Variable variableB = new Variable("B", nameStates);
+        Variable variableC = new Variable("C", nameStates);
 
 		//additional properties
         String relevance = "Relevance";
@@ -154,11 +140,11 @@ public class BNFactory extends NetsFactory {
 		PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
 
 		//Potential A
-		tableA = valuesAPrioriDisease(0.8);
+        double[] tableA = valuesAPrioriDisease(0.8);
 		TablePotential potentialA = createTablePotential(role, tableA, variableA);
 
 		//Potential BA
-		tableBA = valuesCPTResultTest(0.1, 0.7);
+        double[] tableBA = valuesCPTResultTest(0.1, 0.7);
 		TablePotential potentialBA = createTablePotential(role, tableBA, variableB, variableA);
 
 		//potencial CAB
@@ -184,34 +170,26 @@ public class BNFactory extends NetsFactory {
 	 * This network was stored in file "peque.elv"
 	 */
 	public static ProbNet createBN_Asia() {
-		Variable variableA;
-		Variable variableB;
-		Variable variableT;
-		Variable variableL;
-		Variable variableTOrC;
-		Variable variableX;
-		Variable variableD;
-		Variable variableS;
-
-		ProbNet network = new ProbNet();
+        
+        ProbNet network = new ProbNet();
 
 		//Finite States variables
 		//"Visit to Asia"
-		variableA = new Variable("A", yesNoStates);
+        Variable variableA = new Variable("A", yesNoStates);
 		//"Smoker"
-		variableS = new Variable("S", yesNoStates);
+        Variable variableS = new Variable("S", yesNoStates);
 		//"Tuberculosis"
-		variableT = new Variable("T", diseaseStates);
+        Variable variableT = new Variable("T", diseaseStates);
 		//"Lung Cancer"
-		variableL = new Variable("L", diseaseStates);
+        Variable variableL = new Variable("L", diseaseStates);
 		//"Bronchitis"
-		variableB = new Variable("B", diseaseStates);
+        Variable variableB = new Variable("B", diseaseStates);
 		//"Tuberculosis or Cancer"
-		variableTOrC = new Variable("TOrC", yesNoStates);
+        Variable variableTOrC = new Variable("TOrC", yesNoStates);
 		//"Positive X-ray"
-		variableX = new Variable("X", yesNoStates);
+        Variable variableX = new Variable("X", yesNoStates);
 		//"Dyspnea"
-		variableD = new Variable("D", yesNoStates);
+        Variable variableD = new Variable("D", yesNoStates);
 
 		//additional properties
         String relevance = "Relevance";

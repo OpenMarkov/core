@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.network.potential.canonical;
 
 import org.openmarkov.core.exception.InvalidArgumentException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.model.network.*;
@@ -66,8 +65,7 @@ public class TuningPotential extends ICIPotential {
      * @return True if it is valid
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        boolean valid = ICIPotential.validate(node, variables, role) && role
-                .equals(PotentialRole.CONDITIONAL_PROBABILITY);
+        boolean valid = ICIPotential.validate(node, variables, role) && role == PotentialRole.CONDITIONAL_PROBABILITY;
         for (Variable variable : variables) {
             valid &= variable.getNumStates() == 3;
         }
@@ -147,12 +145,7 @@ public class TuningPotential extends ICIPotential {
     
     @Override public double[] getDefaultLeakyParameters(int numStates) {
         double[] leakyParameters = new double[numStates];
-        
-        for (int i = 0; i < numStates; ++i) {
-            leakyParameters[i] = 0.0;
-        }
         leakyParameters[numStates / 2] = 1.0;
-        
         return leakyParameters;
     }
     
@@ -170,7 +163,7 @@ public class TuningPotential extends ICIPotential {
             newICIPotential.setNoisyParameters(variables.get(i), noisyParameters);
         }
         Variable conditionedVariable = variables.get(0);
-        double[] noisyParameters = newICIPotential.initializeNoisyParameters(conditionedVariable, newVariable);
+        double[] noisyParameters = ICIPotential.initializeNoisyParameters(conditionedVariable, newVariable);
         newICIPotential.setNoisyParameters(newVariable, noisyParameters);
         
         newICIPotential.setLeakyParameters(getLeakyParameters());
@@ -194,9 +187,8 @@ public class TuningPotential extends ICIPotential {
         newICIPotential.setLeakyParameters(getLeakyParameters());
         if (newVariables.size() == 1) {
             return new UniformPotential(newVariables, newICIPotential.role);
-        } else {
-            return newICIPotential;
         }
+        return newICIPotential;
     }
     
     @Override protected int computeFFunction(int[] parentStates) {

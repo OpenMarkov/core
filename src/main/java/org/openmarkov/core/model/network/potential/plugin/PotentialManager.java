@@ -18,7 +18,6 @@ import org.openmarkov.plugin.PluginSearch;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -70,10 +69,9 @@ public class PotentialManager {
                 if (cycleLength != null && cycleLength.length != 0) {
                     constructor = potentials.get(name).getConstructor(List.class, CycleLength.class);
                     return constructor.newInstance(variables, cycleLength[0]);
-                } else {
-                    constructor = potentials.get(name).getConstructor(List.class, PotentialRole.class);
-                    return constructor.newInstance(variables, role);
                 }
+                constructor = potentials.get(name).getConstructor(List.class, PotentialRole.class);
+                return constructor.newInstance(variables, role);
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                      InvocationTargetException e) {
                 constructor = potentials.get(name).getConstructor(List.class);

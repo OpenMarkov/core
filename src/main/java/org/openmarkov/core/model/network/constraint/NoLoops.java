@@ -54,11 +54,11 @@ import java.util.List;
 				}
 				probNet.addLink(node1, node2, directed);
 				if (!probNetOK) {
-					return probNetOK;
+                    return false;
 				}
 			}
 		}
-		return probNetOK;
+        return true;
 	}
 
 	@Override protected String constraintDescription() {

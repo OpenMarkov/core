@@ -36,8 +36,8 @@ public class State implements Cloneable {
         this.name = newName;
     }
     
-    public boolean equals(Object state) {
-        return (this.name.equals(((State) state).getName()));
+    public boolean equals(State state) {
+        return (this.name.equals(state.name));
     }
     
     public String toString() {

@@ -45,9 +45,9 @@ public class DistinctLinks extends PNConstraint {
 			AddLinkEdit addLinkEdit = (AddLinkEdit) simpleEdit;
 			Variable variable1 = addLinkEdit.getVariable1();
 			Node node1 = probNet.getNode(variable1);
-			Variable variable2 = ((AddLinkEdit) simpleEdit).getVariable2();
+            Variable variable2 = addLinkEdit.getVariable2();
 			Node node2 = probNet.getNode(variable2);
-			boolean directed = ((AddLinkEdit) simpleEdit).isDirected();
+            boolean directed = addLinkEdit.isDirected();
 			if (!checkLink(probNet, node1, node2, directed)) {
 				return false;
 			}
@@ -88,7 +88,7 @@ public class DistinctLinks extends PNConstraint {
 	 * @return True if the link between {@code node1} and
 	 *         {@code node2}has distinctLinks
 	 */
-	private boolean checkLink(ProbNet graph, Node node1, Node node2, boolean directed) {
+    private static boolean checkLink(ProbNet graph, Node node1, Node node2, boolean directed) {
 		return !(
 				(graph.getLink(node1, node2, directed) != null) || (
 						!directed && graph.getLink(node2, node1, directed) != null

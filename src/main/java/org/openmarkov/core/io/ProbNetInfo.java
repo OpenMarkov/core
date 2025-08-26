@@ -39,9 +39,8 @@ public class ProbNetInfo {
 
 	public boolean equals(Object other) {
 		boolean result = false;
-		if (other instanceof ProbNetInfo) {
-			ProbNetInfo otherProbNetInfo = (ProbNetInfo) other;
-			result =(this.probNet == otherProbNetInfo.probNet
+        if (other instanceof ProbNetInfo otherProbNetInfo) {
+            result = (this.probNet == otherProbNetInfo.probNet
 							||
 							(this.probNet != null
 									&&

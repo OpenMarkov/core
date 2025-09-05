@@ -4,7 +4,7 @@ open module org.openmarkov.core {
     requires colt;
     requires org.apache.logging.log4j;
     requires org.jetbrains.annotations;
-    requires java.desktop;
+    requires transitive java.desktop;
     
     requires java.instrument;
     requires io.github.classgraph;

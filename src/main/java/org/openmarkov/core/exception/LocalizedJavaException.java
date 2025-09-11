@@ -4,12 +4,12 @@ import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.localize.StringDatabase;
 
 /**
- * Adapts a Java's {@link Exception} to {@link OpenMarkovException}.
+ * Adapts a Java's {@link Exception} to {@link IOpenMarkovException}.
  * <p>
- * You might get a {@link LocalizedJavaException} using {@link OpenMarkovException#of(Exception)} if said exception is
+ * You might get a {@link LocalizedJavaException} using {@link IOpenMarkovException#of(Exception)} if said exception is
  * written in an Exception Bundle.
  */
-public final class LocalizedJavaException extends OpenMarkovException {
+public final class LocalizedJavaException extends Exception implements IOpenMarkovException {
     
     /**
      * The name of the class associated with this exception.
@@ -34,9 +34,9 @@ public final class LocalizedJavaException extends OpenMarkovException {
      * from the {@link StringDatabase#getUniqueInstance()}.
      *
      * @return the localized title as a string, this might be null if the {@link LocalizedJavaException} was constructed
-     * manually rather than using {@link OpenMarkovException#of(Exception)}.
+     * manually rather than using {@link IOpenMarkovException#of(Exception)}.
      */
-    @Override protected @Nullable String getExceptionTitle() {
+    @Override @Nullable public String getExceptionTitle() {
         return StringDatabase.getUniqueInstance().getNullableString(this.className + ".title");
     }
     
@@ -46,9 +46,13 @@ public final class LocalizedJavaException extends OpenMarkovException {
      * from the {@link StringDatabase#getUniqueInstance()}.
      *
      * @return the localized message as a string, this might be null if the {@link LocalizedJavaException} was
-     * constructed manually rather than using {@link OpenMarkovException#of(Exception)}.
+     * constructed manually rather than using {@link IOpenMarkovException#of(Exception)}.
      */
-    @Override protected @Nullable String getExceptionMessage() {
+    @Override @Nullable public String getExceptionMessage() {
         return StringDatabase.getUniqueInstance().getNullableString(this.className + ".message");
+    }
+    
+    @Override public String toString() {
+        return IOpenMarkovException.toString(this);
     }
 }

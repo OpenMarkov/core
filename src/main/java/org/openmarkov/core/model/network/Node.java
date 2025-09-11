@@ -538,6 +538,14 @@ public class Node implements Cloneable {
             return 0.0;
         }
         Potential firstPotential = potentials.getFirst();
+        switch (firstPotential) {
+            case SumPotential ignored -> {
+            }
+            case ProductPotential ignored -> {
+            }
+            default -> throw new NonProjectablePotentialException.SuperValueMustBeSumOrProduct(firstPotential);
+        }
+        ;
         if (!this.isSuperValueNode()) {
             List<TablePotential> tableProject = firstPotential.tableProject(null, null);
             double[] values = !tableProject.isEmpty() ? tableProject.getFirst().values : new double[1];
@@ -551,6 +559,7 @@ public class Node implements Cloneable {
         return switch (firstPotential) {
             case SumPotential ignored -> Tools.sum(parentValues);
             case ProductPotential ignored -> Tools.multiply(parentValues);
+            //This was checked before already, so this line cannot happen.
             default -> throw new NonProjectablePotentialException.SuperValueMustBeSumOrProduct(firstPotential);
         };
     }
@@ -590,6 +599,14 @@ public class Node implements Cloneable {
             return null;
         }
         Potential firstPotential = potentials.getFirst();
+        switch (firstPotential) {
+            case SumPotential ignored -> {
+            }
+            case ProductPotential ignored -> {
+            }
+            default -> throw new NonProjectablePotentialException.SuperValueMustBeSumOrProduct(firstPotential);
+        }
+        ;
         if (!this.isSuperValueNode()) {
             return firstPotential.tableProject(null, null).get(0);
         }
@@ -600,6 +617,7 @@ public class Node implements Cloneable {
         return switch (firstPotential) {
             case SumPotential ignored -> DiscretePotentialOperations.sum(utilityFunctionsParents);
             case ProductPotential ignored -> DiscretePotentialOperations.multiply(utilityFunctionsParents);
+            //This was checked before already, so this line cannot happen.
             default -> throw new NonProjectablePotentialException.SuperValueMustBeSumOrProduct(firstPotential);
         };
     }

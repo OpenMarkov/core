@@ -20,14 +20,20 @@ import java.util.List;
  * Thrown when the {@code Potential} cannot be projected into a set of
  * {@code TablePotential}s given the evidence supplied.
  */
-public abstract sealed class NonProjectablePotentialException extends BundledOpenMarkovException {
+//TODO: Almost every exception of this class is wrapped into an UnrecheableException,
+// or shown with JOptionPanel, leading to further bugs. This might be a RuntimeException.
+public abstract sealed class NonProjectablePotentialException extends Exception implements IBundledOpenMarkovException {
+    
+    @Override public String toString() {
+        return IBundledOpenMarkovException.toString(this);
+    }
     
     public static final class SuperValueMustBeSumOrProduct extends NonProjectablePotentialException {
         public SuperValueMustBeSumOrProduct(Potential potential) {
             this.potential = potential;
         }
         
-        private final Potential potential;
+        public final Potential potential;
     }
     
     public static final class PotentialCannotBeConvertedToATable extends NonProjectablePotentialException {
@@ -35,7 +41,7 @@ public abstract sealed class NonProjectablePotentialException extends BundledOpe
             this.potential = potential;
         }
         
-        private final Potential potential;
+        public final Potential potential;
     }
     
     public static final class PotentialCannotBeConvertedToATableDueToVariable extends NonProjectablePotentialException {
@@ -44,8 +50,8 @@ public abstract sealed class NonProjectablePotentialException extends BundledOpe
             this.variable = variable;
         }
         
-        private final Potential potential;
-        private final Variable variable;
+        public final Potential potential;
+        public final Variable variable;
     }
     
     public static final class MissingVariableInEvidence extends NonProjectablePotentialException {
@@ -54,8 +60,8 @@ public abstract sealed class NonProjectablePotentialException extends BundledOpe
             this.evidenceCase = evidenceCase;
         }
         
-        private final Variable variable;
-        private final EvidenceCase evidenceCase;
+        public final Variable variable;
+        public final EvidenceCase evidenceCase;
     }
     
     public static final class MissingEvidenceInVariable extends NonProjectablePotentialException {
@@ -64,8 +70,8 @@ public abstract sealed class NonProjectablePotentialException extends BundledOpe
             this.timeVariable = timeVariable;
         }
         
-        private final Potential potential;
-        private final Variable timeVariable;
+        public final Potential potential;
+        public final Variable timeVariable;
     }
     
     public static final class TopVariableNotInDomain extends NonProjectablePotentialException {
@@ -74,17 +80,18 @@ public abstract sealed class NonProjectablePotentialException extends BundledOpe
             this.branches = branches;
         }
         
-        private final TreeADDPotential treeADDPotential;
-        private final List<TreeADDBranch> branches;
+        public final TreeADDPotential treeADDPotential;
+        public final List<TreeADDBranch> branches;
     }
     
+    //TODO: Only used once and wrapped into an UnrecheableException, this might be a RuntimeException.
     public static final class CannotEvaluate extends NonProjectablePotentialException {
         public CannotEvaluate(String elementToEvaluate, EvaluationException evaluationException) {
             this.elementToEvaluate = elementToEvaluate;
             this.evaluationException = evaluationException;
         }
         
-        private final String elementToEvaluate;
-        private final EvaluationException evaluationException;
+        public final String elementToEvaluate;
+        public final EvaluationException evaluationException;
     }
 }

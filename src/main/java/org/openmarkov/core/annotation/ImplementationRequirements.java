@@ -37,4 +37,18 @@ public @interface ImplementationRequirements {
      * instantiable.
      */
     RequiredConstructor[] requiresOneOfTheseConstructors() default {};
+    
+    //TODO: Add a 'must implement methods' annotation to indicate methods that it should implement.
+    
+    /**
+     * The class should have the following methods.
+     * <p>
+     * This is only checks against concrete class. Interfaces and abstract classes are ignored as they are not
+     * instantiable.
+     * <p>
+     * This is especially useful when used over annotations rather than interfaces or abstract classes, as they can do
+     * that by themselves.
+     */
+    RequiredMethod[] requiresMethods() default {};
+    
 }

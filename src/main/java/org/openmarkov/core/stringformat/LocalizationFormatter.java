@@ -13,17 +13,39 @@ import java.util.Map;
 public final class LocalizationFormatter {
     
     public static final LocalizationFormatter DEFAULT = new LocalizationFormatter(
-            LocalizationFormatterLength.UNSPECIFIED
-    );
+            LocalizationFormatterLength.UNSPECIFIED,
+            ListFormat.DETAIL);
+    
     public final @NotNull LocalizationFormatterLength desiredLength;
+    public final @NotNull ListFormat listSeparator;
+    
+    enum ListFormat {
+        INLINE, DETAIL;
+        
+        public @NotNull String prefix() {
+            return switch (this) {
+                case INLINE -> "";
+                case DETAIL -> "- ";
+            };
+        }
+        
+        public @NotNull String separator() {
+            return switch (this) {
+                case INLINE -> "; ";
+                case DETAIL -> System.lineSeparator();
+            };
+        }
+    }
     
     /**
      * Constructs a new instance of {@code LocalizationFormatter} with the specified formatting length.
      *
      * @param desiredLength The desired length
+     * @param listSeparator
      */
-    private LocalizationFormatter(@NotNull LocalizationFormatterLength desiredLength) {
+    private LocalizationFormatter(@NotNull LocalizationFormatterLength desiredLength, @NotNull ListFormat listSeparator) {
         this.desiredLength = desiredLength;
+        this.listSeparator = listSeparator;
     }
     
     /**
@@ -44,7 +66,13 @@ public final class LocalizationFormatter {
                                   .filter(length -> finalFormat.contains(length.toString().toLowerCase()))
                                   .findFirst()
                                   .orElse(LocalizationFormatter.DEFAULT.desiredLength);
-        return new LocalizationFormatter(desiredLength);
+        var listFormat = Arrays.stream(ListFormat.values())
+                               .filter(listF -> {
+                                   return finalFormat.contains(listF.toString().toLowerCase());
+                               })
+                               .findFirst()
+                               .orElse(LocalizationFormatter.DEFAULT.listSeparator);
+        return new LocalizationFormatter(desiredLength, listFormat);
     }
     
     /**

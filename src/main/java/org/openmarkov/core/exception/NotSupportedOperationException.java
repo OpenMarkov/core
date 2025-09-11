@@ -9,7 +9,9 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author jrico
  */
-public final class NotSupportedOperationException extends OpenMarkovException {
+//TODO: Exceptions of this type are always caught and then ignored. Perhaps they should be turned
+// into RuntimeExceptions.
+public final class NotSupportedOperationException extends Exception implements IOpenMarkovException {
     
     private final StackTraceElement operation;
     private final @Nullable String reason;
@@ -41,7 +43,7 @@ public final class NotSupportedOperationException extends OpenMarkovException {
     }
     
     
-    @Override protected @NotNull String getExceptionMessage() {
+    @Override @NotNull public String getExceptionMessage() {
         String message = "Operation " + this.operation.getMethodName() + " is not supported";
         if (this.reason != null && !this.reason.isBlank()) {
             message += ": " + this.reason;
@@ -49,7 +51,7 @@ public final class NotSupportedOperationException extends OpenMarkovException {
         return message;
     }
     
-    @Override protected @NotNull String getExceptionTitle() {
+    @Override @NotNull public String getExceptionTitle() {
         return "Operation not supported";
     }
     
@@ -59,6 +61,10 @@ public final class NotSupportedOperationException extends OpenMarkovException {
     
     public @Nullable String getReason() {
         return this.reason;
+    }
+    
+    @Override public String toString() {
+        return IOpenMarkovException.toString(this);
     }
     
 }

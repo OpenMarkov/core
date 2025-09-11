@@ -12,6 +12,7 @@ import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.annotation.ImplementationRequirements;
 import org.openmarkov.core.annotation.RequiredConstructor;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.ProbNet;
 
 import javax.swing.event.UndoableEditEvent;

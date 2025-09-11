@@ -14,20 +14,25 @@ import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.List;
 
-public abstract sealed class DoEditException extends BundledOpenMarkovException {
-	
-	public static CannotDoEditException of(OpenMarkovException exception) {
-		return new CannotDoEditException(exception);
-	}
-	
-	public static final class CannotDoEditException extends DoEditException {
-		public CannotDoEditException(OpenMarkovException originException) {
+public abstract sealed class DoEditException extends Exception implements IBundledOpenMarkovException {
+    
+    @Override public String toString() {
+        return IBundledOpenMarkovException.toString(this);
+    }
+    
+    //TODO: This is a wrapper, meaning either design is poor, or the exceptions it encloses
+    // could be turned into RuntimeExceptions.
+    public static final class CannotDoEditException extends DoEditException {
+        public CannotDoEditException(IOpenMarkovException originException) {
             this.originException = originException;
         }
         
-        public final OpenMarkovException originException;
+        public final IOpenMarkovException originException;
     }
     
+    //TODO: It is caught and ignored in almost every catch block, probably leading to unexpected
+    // bugs.
+    // Perhaps it could be turned into a RuntimeException.
     public static final class ConstraintViolated extends DoEditException {
         public final PNConstraint constraint;
         
@@ -35,7 +40,8 @@ public abstract sealed class DoEditException extends BundledOpenMarkovException 
             this.constraint = constraint;
         }
     }
-	
+    
+    //TODO: Used just in OOP Nets, which are deprecated
 	public static final class InstanceAlreadyExists extends DoEditException {
 		public InstanceAlreadyExists(String instanceName) {
             this.instanceName = instanceName;
@@ -43,7 +49,9 @@ public abstract sealed class DoEditException extends BundledOpenMarkovException 
         
         public final String instanceName;
     }
-	
+    
+    //TODO: Used by RemoveNodeEdit in case a node isn't selected, but... Can that really happen? It is likely this
+    // can be removed
 	public static final class NodeIsNull extends DoEditException {
 		public NodeIsNull(ProbNet probNet) {
             this.probNet = probNet;
@@ -51,7 +59,10 @@ public abstract sealed class DoEditException extends BundledOpenMarkovException 
         
         public final ProbNet probNet;
     }
-	
+    
+    //TODO: It is caught and ignored in almost every catch block, probably leading to unexpected
+    // bugs.
+    // Perhaps it could be turned into a RuntimeException.
 	public static final class CannotRemovePotential extends DoEditException {
 		public CannotRemovePotential(ProbNet probNet, Potential oldPotential) {
             this.probNet = probNet;

@@ -7,8 +7,14 @@ import org.openmarkov.core.model.network.type.NetworkType;
 import java.util.Collection;
 import java.util.List;
 
-public abstract sealed class InvalidNetworkTypeException extends BundledOpenMarkovException {
+public abstract sealed class InvalidNetworkTypeException extends Exception implements IBundledOpenMarkovException {
     
+    @Override public String toString() {
+        return IBundledOpenMarkovException.toString(this);
+    }
+    
+    //TODO: It is always wrapped in UnreacheableException or another exception, this might be turned into a
+    // RuntimeException.
     public static final class UnmetConstraints extends InvalidNetworkTypeException {
         public final ProbNet probNet;
         public final NetworkType newNetworkType;

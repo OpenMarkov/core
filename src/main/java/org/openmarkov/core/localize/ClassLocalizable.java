@@ -34,4 +34,6 @@ public interface ClassLocalizable extends Localizable {
     @Override @Nullable default String bundle() {
         return null;
     }
+    
+    
 }

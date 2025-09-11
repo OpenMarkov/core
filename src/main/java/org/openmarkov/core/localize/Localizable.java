@@ -48,10 +48,22 @@ public interface Localizable {
      * Localizes the current object based on the given {@link LocalizationFormatter} in order to give a String
      * representing it.
      * <p>
-     * The default implementation retrieves a Localized String using the {@link Localizable#bundle()} and
-     * {@link Localizable#path()} over the {@link StringDatabase#getUniqueInstance()}. If the String is found, it will
-     * format said String using {@link StringFormat#apply(CharSequence, Map)}, where the arguments are the fields of the
-     * implementor.
+     * The default implementation is just a call to {@link Localizable#localize(Localizable, LocalizationFormatter)}.
+     *
+     * @param formatter the {@link LocalizationFormatter} used to format the object.
+     * @return the localized string if available.
+     */
+    @NotNull default String localize(LocalizationFormatter formatter) {
+        return Localizable.localize(this, formatter);
+    }
+    
+    /**
+     * Localizes the current object based on the given {@link LocalizationFormatter} in order to give a String
+     * representing it.
+     * <p>
+     * It retrieves a Localized String using the {@link Localizable#bundle()} and {@link Localizable#path()} over the
+     * {@link StringDatabase#getUniqueInstance()}. If the String is found, it will format said String using
+     * {@link StringFormat#apply(CharSequence, Map)}, where the arguments are the fields of the {@link Localizable}.
      * <p>
      * If no localization String is found, it returns the name of the class surrounded by >>><<< as
      * {@link StringDatabase#surrondAsUnknown(String)} does.
@@ -59,18 +71,16 @@ public interface Localizable {
      * @param formatter the {@link LocalizationFormatter} used to format the object.
      * @return the localized string if available.
      */
-    @NotNull default String localize(LocalizationFormatter formatter) {
-        Optional<String> optionalLocalizedString = this.findLocalizedString(formatter);
+    @NotNull static String localize(Localizable localizable, LocalizationFormatter formatter) {
+        Optional<String> optionalLocalizedString = localizable.findLocalizedString(formatter);
         if (optionalLocalizedString.isEmpty()) {
-            return StringDatabase.surrondAsUnknown(this.path());
+            return StringDatabase.surrondAsUnknown(localizable.path());
         }
         String localizedString = optionalLocalizedString.get();
         if (!StringFormat.isStringFormatUsed(localizedString)) {
             return localizedString;
         }
-        HashMap<String, Object> fields = StringFormat.extractFieldsToMap(this);
-        fields.put("this", this);
-        return StringFormat.apply(localizedString, fields);
+        return StringFormat.applyOnObject(localizedString, localizable);
     }
     
     /**
@@ -83,7 +93,8 @@ public interface Localizable {
     private @NotNull Optional<String> findLocalizedString(LocalizationFormatter formatter) {
         StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
         ArrayList<Supplier<String>> localizationAccessors = new ArrayList<>();
-        String bundle = this.bundle();
+        //String bundle = this.bundle();
+        String bundle = null;
         String path = this.path();
         if (bundle != null) {
             Localizable.lengthOrder(formatter.desiredLength)

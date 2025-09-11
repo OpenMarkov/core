@@ -14,9 +14,16 @@ import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.List;
 
-public abstract sealed class NotEvaluableNetworkException extends BundledOpenMarkovException {
-	
-	public static final class NotApplicableNetwork extends NotEvaluableNetworkException {
+//TODO: Exceptions of this class are caught for just shown a message from the StringDatabase like
+// 'Network is not evaluable', hindering the real reason behind the exception.
+// This might be turned into a RuntimeException.
+public abstract sealed class NotEvaluableNetworkException extends Exception implements IBundledOpenMarkovException {
+    
+    @Override public String toString() {
+        return IBundledOpenMarkovException.toString(this);
+    }
+    
+    public static final class NotApplicableNetwork extends NotEvaluableNetworkException {
 		public NotApplicableNetwork(ProbNet probNet, List<NetworkType> possibleNetworkTypes) {
             this.probNet = probNet;
             this.possibleNetworkTypes = possibleNetworkTypes;

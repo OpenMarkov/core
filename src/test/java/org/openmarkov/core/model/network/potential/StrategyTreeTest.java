@@ -14,7 +14,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
-import org.openmarkov.core.test.TestSpeed;
+import org.openmarkov.core.testTags.TestSpeed;
 
 import java.util.ArrayList;
 import java.util.Arrays;

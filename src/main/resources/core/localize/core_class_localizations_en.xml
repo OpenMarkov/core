@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ClassLocalizations>
-    <Localization class="org.openmarkov.core.exception.CannotNormalizeNullVectorException" value="All variables are equal to 0.0\nVariables are: {variables}"/>
+    <Localization class="org.openmarkov.core.exception.CannotNormalizePotentialException"
+                  value="All the values are 0.0 in potential {potential}"/>
     <Localization class="org.openmarkov.core.exception.CostEffectivenessException$PartitionsAndProbabilitiesHaveDifferentSizes" value="There are {partitions.size} partitions and {probabilities.size}, while they should both be the same"/>
     <Localization class="org.openmarkov.core.exception.CostEffectivenessException$PotentialsMustBeOfSameType" value="Potentials should be of the same type, while first potential is {firstPotential.getClass.getName} and the second if {secondPotential.getClass.getName}"/>
     <Localization class="org.openmarkov.core.exception.CostEffectivenessException$WrongNumberOfCostsEffectivitiesAndInterventions" value="There are {costs.size} costs, {effectivities.size} effectivities and {strategyTrees.size} interventions, while they should both be the same"/>

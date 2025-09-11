@@ -7,11 +7,11 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
- * Adapts a Java's {@link Exception} to {@link OpenMarkovException}.
+ * Adapts a Java's {@link Exception} to {@link IOpenMarkovException}.
  * <p>
- * You might get a {@link LocalizedJavaException} using {@link OpenMarkovException#of(Exception)}.
+ * You might get a {@link LocalizedJavaException} using {@link IOpenMarkovException#of(Exception)}.
  */
-public final class UnlocalizedJavaException extends OpenMarkovException {
+public final class UnlocalizedJavaException extends Exception implements IOpenMarkovException {
     
     /**
      * Represents the original {@link Exception}.
@@ -32,7 +32,7 @@ public final class UnlocalizedJavaException extends OpenMarkovException {
      *
      * @return a string representing the title of the {@link UnlocalizedJavaException}.
      */
-    @Override protected @Nullable String getExceptionTitle() {
+    @Override @Nullable public String getExceptionTitle() {
         return StringDatabase.getUniqueInstance().getString("UnlocalizedJavaException.title");
     }
     
@@ -42,7 +42,7 @@ public final class UnlocalizedJavaException extends OpenMarkovException {
      *
      * @return a string detailing the original Exception.
      */
-    @Override protected @Nullable String getExceptionMessage() {
+    @Override @Nullable public String getExceptionMessage() {
         String indentedStackTrace = Arrays.stream(this.exception.getStackTrace()).map(StackTraceElement::toString)
                                           .filter(s -> !s.isBlank())
                                           .map(s -> "\tat " + s)
@@ -50,4 +50,9 @@ public final class UnlocalizedJavaException extends OpenMarkovException {
         
         return StringDatabase.getUniqueInstance().getString("UnlocalizedJavaException.message") + "\n" + this.exception + "\n" + indentedStackTrace;
     }
+    
+    @Override public String toString() {
+        return IOpenMarkovException.toString(this);
+    }
+    
 }

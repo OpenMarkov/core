@@ -18,6 +18,7 @@ import java.util.stream.Stream;
  * </pre>
  *
  * @param <T>
+ *
  * @author jrico
  */
 public final class PluginSearch<T> {
@@ -34,6 +35,14 @@ public final class PluginSearch<T> {
      */
     public static PluginSearch<Object> init() {
         return new PluginSearch<>(PluginLoader.pluginsStream(PluginClassCategory.OPENMARKOV));
+    }
+    
+    /**
+     * Initializes a new search over every class.
+     */
+    public static PluginSearch<Object> full() {
+        return new PluginSearch<>(
+                Arrays.stream(PluginClassCategory.values()).flatMap(PluginLoader::pluginsStream));
     }
     
     /**

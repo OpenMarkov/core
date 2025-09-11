@@ -13,18 +13,23 @@ import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.List;
 
-public abstract sealed class WriterException extends BundledOpenMarkovException {
-	
-	public static final class CannotCreateFile extends WriterException {
-		public CannotCreateFile(String filename) {
+//TODO
+public abstract sealed class WriterException extends Exception implements IBundledOpenMarkovException {
+    
+    @Override public String toString() {
+        return IBundledOpenMarkovException.toString(this);
+    }
+    
+    public static final class CannotCreateFile extends WriterException {
+        public CannotCreateFile(String filename) {
             this.filename = filename;
         }
         
         public final String filename;
     }
-	
-	public static final class UnknownNetworkType extends WriterException {
-		public UnknownNetworkType(NetworkType networkType, List<Class<? extends NetworkType>> allowedTypes) {
+    
+    public static final class UnknownNetworkType extends WriterException {
+        public UnknownNetworkType(NetworkType networkType, List<Class<? extends NetworkType>> allowedTypes) {
             this.networkType = networkType;
             this.allowedTypes = allowedTypes;
         }
@@ -32,27 +37,28 @@ public abstract sealed class WriterException extends BundledOpenMarkovException 
         public final NetworkType networkType;
         public final List<Class<? extends NetworkType>> allowedTypes;
     }
-	
-	public static final class NonProjectablePotentialException extends WriterException {
-		public NonProjectablePotentialException(org.openmarkov.core.exception.NonProjectablePotentialException originException) {
+    
+    public static final class NonProjectablePotentialException extends WriterException {
+        public NonProjectablePotentialException(org.openmarkov.core.exception.NonProjectablePotentialException originException) {
             this.originException = originException;
         }
         
         public final org.openmarkov.core.exception.NonProjectablePotentialException originException;
     }
-	
-	public static final class ICIModelNotSupportedByElvira extends WriterException {
-		public ICIModelNotSupportedByElvira(ICIModelType modelType) {
+    
+    public static final class ICIModelNotSupportedByElvira extends WriterException {
+        public ICIModelNotSupportedByElvira(ICIModelType modelType) {
             this.modelType = modelType;
         }
         
         public final ICIModelType modelType;
     }
-	
-	public static final class TryingToWriteANullProbNet extends WriterException { }
-	
-	public static final class TryingToWriteAProbNetWithoutName extends WriterException {
-		public TryingToWriteAProbNetWithoutName(ProbNet probNet) {
+    
+    public static final class TryingToWriteANullProbNet extends WriterException {
+    }
+    
+    public static final class TryingToWriteAProbNetWithoutName extends WriterException {
+        public TryingToWriteAProbNetWithoutName(ProbNet probNet) {
             this.probNet = probNet;
         }
         

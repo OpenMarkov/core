@@ -20,7 +20,7 @@ import org.openmarkov.core.model.network.Variable;
 	/**
 	 * Node associated to variable
 	 */
-	private Node node;
+    private final Node node;
 
 	// Constructor
 

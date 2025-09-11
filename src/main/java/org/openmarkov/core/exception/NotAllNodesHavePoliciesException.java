@@ -13,7 +13,8 @@ import org.openmarkov.core.model.network.Node;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NotAllNodesHavePoliciesException extends OpenMarkovException {
+//TODO: It is caught and then thrown as UnreacheableException. This might be a RuntimeException.
+public class NotAllNodesHavePoliciesException extends Exception implements IOpenMarkovException {
     
     private final Node conditioningDecision;
     private final List<Node> nodesWithoutPolicy;
@@ -23,7 +24,7 @@ public class NotAllNodesHavePoliciesException extends OpenMarkovException {
         this.nodesWithoutPolicy = nodesWithoutPolicy;
     }
     
-    @Override protected @Nullable String getExceptionMessage() {
+    @Override @Nullable public String getExceptionMessage() {
         var nodesNames = this.nodesWithoutPolicy.stream().map(Node::getName)
                                                 .map(name -> "\t- " + name)
                                                 .collect(Collectors.joining("\n"));
@@ -31,8 +32,12 @@ public class NotAllNodesHavePoliciesException extends OpenMarkovException {
                 + ":\n" + nodesNames;
     }
     
-    @Override protected @Nullable String getExceptionTitle() {
+    @Override @Nullable public String getExceptionTitle() {
         return "Not all nodes have policies";
+    }
+    
+    @Override public String toString() {
+        return IOpenMarkovException.toString(this);
     }
 }
 

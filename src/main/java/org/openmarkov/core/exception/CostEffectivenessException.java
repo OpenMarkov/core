@@ -15,9 +15,14 @@ import org.openmarkov.core.model.network.potential.StrategyTree;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract sealed class CostEffectivenessException extends BundledOpenMarkovException {
-	
-	//Cost should be one more than thresholds
+public abstract sealed class CostEffectivenessException extends Exception implements IBundledOpenMarkovException {
+    
+    @Override public String toString() {
+        return IBundledOpenMarkovException.toString(this);
+    }
+    
+    //TODO: Does this really happen in the GUI? It might be a RuntimeException.
+    //Cost should be one more than thresholds
 	public static final class WrongNumberOfThresholds extends CostEffectivenessException{
 		
 		public WrongNumberOfThresholds(double[] costs, double[] thresholds) {
@@ -28,7 +33,8 @@ public abstract sealed class CostEffectivenessException extends BundledOpenMarko
         public final List<Double> costs;
         public final List<Double> thresholds;
     }
-	
+    
+    //TODO: Does this really happen in the GUI? It might be a RuntimeException.
 	//Their lengths should be the same
 	public static final class WrongNumberOfCostsEffectivitiesAndInterventions extends CostEffectivenessException {
 		public WrongNumberOfCostsEffectivitiesAndInterventions(double[] costs, double[] effectivities, StrategyTree[] strategyTrees) {
@@ -41,8 +47,8 @@ public abstract sealed class CostEffectivenessException extends BundledOpenMarko
         public final List<Double> effectivities;
         public final List<StrategyTree> strategyTrees;
     }
-	
-	//Should have the same class
+    
+    //TODO: This exception is only used in a method that is never used.
 	public static final class PotentialsMustBeOfSameType extends CostEffectivenessException {
 		public PotentialsMustBeOfSameType(Potential firstPotential, Potential secondPotential) {
             this.firstPotential = firstPotential;
@@ -52,7 +58,8 @@ public abstract sealed class CostEffectivenessException extends BundledOpenMarko
         public final Potential firstPotential;
         public final Potential secondPotential;
     }
-	
+    
+    //TODO: Does this really happen in the GUI? It might be a RuntimeException.
 	//Should have the same
 	public static final class PartitionsAndProbabilitiesHaveDifferentSizes extends CostEffectivenessException {
 		public PartitionsAndProbabilitiesHaveDifferentSizes(List<CEP> partitions, double[] probabilities) {

@@ -6,16 +6,14 @@ import org.openmarkov.core.localize.Localizable;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.core.logging.OpenMarkovLogger;
 
-import java.lang.reflect.InaccessibleObjectException;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.*;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiFunction;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -90,6 +88,7 @@ public class StringFormat {
      * Checks whether the provided pattern uses the syntax defined in StringFormat.
      *
      * @param pattern Pattern to be checked for StringFormat syntax.
+     *
      * @return whether the provided pattern uses the syntax defined in StringFormat.
      */
     public static boolean isStringFormatUsed(@NotNull CharSequence pattern) {
@@ -100,6 +99,7 @@ public class StringFormat {
      * Gets all the formatting found in the pattern.
      *
      * @param pattern Pattern to be checked for StringFormat syntax.
+     *
      * @return all the formatting found in the pattern.
      */
     public static Stream<Formatting> getAllFormattings(CharSequence pattern) {
@@ -113,6 +113,7 @@ public class StringFormat {
      * Extracts a formatting from a {@link MatchResult} taken from {@link StringFormat#NAMED_PARAMETER_REGEX}.
      *
      * @param matchResult the match result containing the captured groups from the pattern.
+     *
      * @return a formatting from a {@link MatchResult} taken from {@link StringFormat#NAMED_PARAMETER_REGEX}.
      */
     private static Formatting extractFormatting(MatchResult matchResult) {
@@ -169,12 +170,21 @@ public class StringFormat {
                             return StringDatabase.surrondAsUnknown("Cannot resolve " + resolvingStep);
                         }
                     }
-                    
                     boolean isOpenMarkovFormat = "om".equalsIgnoreCase(formatting.format) || "openmarkov".equalsIgnoreCase(formatting.format);
+                    /*
                     if (argument instanceof Localizable localizable) {
                         String localizationFormat = formatting.style == null || !isOpenMarkovFormat ? null : formatting.style;
-                        LocalizationFormatter formatter = LocalizationFormatter.of(localizationFormat);
-                        String localized = localizable.localize(formatter);
+                        LocalizationFormatter localizationFormatter = LocalizationFormatter.of(localizationFormat);
+                        String localized = localizable.localize(localizationFormatter);
+                        return Matcher.quoteReplacement(localized);
+                    }
+                    */
+                    var originalArgumentClass = argument.getClass();
+                    if (StringFormat.LOCALIZERS.stream()
+                                               .anyMatch(localizer -> localizer.cls.isAssignableFrom(originalArgumentClass))) {
+                        String localizationFormat = formatting.style == null || !isOpenMarkovFormat ? null : formatting.style;
+                        LocalizationFormatter localizationFormatter = LocalizationFormatter.of(localizationFormat);
+                        String localized = StringFormat.intLocalize(argument, localizationFormatter);
                         return Matcher.quoteReplacement(localized);
                     }
                     if (formatting.style != null && !isOpenMarkovFormat) {
@@ -201,12 +211,57 @@ public class StringFormat {
                 });
     }
     
+    private static final List<Localizer> LOCALIZERS = List.of(
+            new Localizer<>(Localizable.class, (localizable, form)
+                    -> localizable.localize(form)),
+            new Localizer<>(Collection.class, (obj, form) -> {
+                Stream<Object> stream = (Stream<Object>) obj.stream();
+                return stream.map(indObj ->
+                                          form.listSeparator.prefix() +
+                                                  StringFormat.intLocalize(indObj, form))
+                             .collect(Collectors.joining(form.listSeparator.separator()));
+            }),
+            new Localizer<>(Map.class, (obj, form) -> {
+                var stream = (Stream<Map.Entry<Object, Object>>) obj.entrySet().stream();
+                return stream.map(entry ->
+                                          form.listSeparator.prefix()
+                                                  + StringFormat.intLocalize(entry.getKey(), form)
+                                                  + ": "
+                                                  + StringFormat.intLocalize(entry.getValue(), form))
+                             .collect(Collectors.joining(form.listSeparator.separator()));
+            })
+    
+    
+    );
+    
+    private static String intLocalize(Object obj, LocalizationFormatter formatter) {
+        return StringFormat.LOCALIZERS.stream()
+                                      .filter(localizer -> localizer.cls.isAssignableFrom(obj.getClass()))
+                                      .map(localizer -> (String) localizer.localize.apply(obj, formatter))
+                                      .findFirst()
+                                      .orElse(obj.toString());
+    }
+    
+    record Localizer<T>(Class<T> cls, BiFunction<T, LocalizationFormatter, String> localize) {
+    
+    }
+    
+    /**
+     * TODO: Document.
+     */
+    public static String applyOnObject(CharSequence pattern, Object argument) {
+        HashMap<String, Object> fields = StringFormat.extractFieldsToMap(argument);
+        fields.put("this", argument);
+        return StringFormat.apply(pattern, fields);
+    }
+    
     /**
      * Reflectively gets all the fields of an object over a HashMap.
      * <p>
      * In said HashMap the keys are the values that were reflectively discovered, and the value is the value of the field.
      *
      * @param object The object to extract its fields from
+     *
      * @return all the fields of an object over a HashMap.
      */
     public static @NotNull HashMap<String, Object> extractFieldsToMap(@Nullable Object object) {
@@ -222,7 +277,7 @@ public class StringFormat {
                 try {
                     field.setAccessible(true);
                 } catch (InaccessibleObjectException e) {
-                    if (field.getType().getName().startsWith("org.openmarkov")){
+                    if (field.getType().getName().startsWith("org.openmarkov")) {
                         OpenMarkovLogger.LOGGER.warn("Inaccessible field: " + field.getName() + " in class: " + sourceClass.getName(), e);
                     }
                 }
@@ -245,6 +300,14 @@ public class StringFormat {
      * @param <T>   The type of the value.
      */
     public record FoundOrNot<T>(@Nullable T value, boolean found) {
+        static <T> FoundOrNot<T> notFound() {
+            return new FoundOrNot<>(null, false);
+        }
+        
+        static <T> FoundOrNot<T> aFound(T value) {
+            return new FoundOrNot<>(value, true);
+        }
+        
     }
     
     /**
@@ -267,6 +330,17 @@ public class StringFormat {
      *                   In the example this is {@code .getNetwork} and {@code #name}.<br>
      */
     public record Formatting(String field, String format, String style, List<PseudoCode> pseudocode) {
+        
+        public @Nullable AccessibleObject lastMethodOrFieldUsed(Field field) {
+            AccessibleObject resolvingStep = field;
+            for (var pseudocode : this.pseudocode) {
+                resolvingStep = pseudocode.resolveAccessible(field.getType()).value();
+                if (resolvingStep == null) {
+                    return null;
+                }
+            }
+            return resolvingStep;
+        }
     }
     
     /**
@@ -284,6 +358,7 @@ public class StringFormat {
          * Reflectively resolves the method or field (Depending on the {@link PseudoCode#marker}) on an object.
          *
          * @param argument The object instance from which the method or field should be resolved.
+         *
          * @return A {@code FoundOrNot<Object>} instance indicating whether it could find and get the result of said
          * field or method.
          * <p>
@@ -300,11 +375,23 @@ public class StringFormat {
                                  .orElse(new FoundOrNot<>(null, false));
         }
         
+        public FoundOrNot<AccessibleObject> resolveAccessible(Class<?> argumentClass) {
+            var discoveryOrder = switch (marker) {
+                case METHOD -> Stream.of(Marker.METHOD, Marker.FIELD);
+                case FIELD -> Stream.of(Marker.FIELD, Marker.METHOD);
+            };
+            return discoveryOrder.map(marker -> marker.resolveAccesibleObject(argumentClass, methodOrAttributeName))
+                                 .filter(FoundOrNot::found)
+                                 .findFirst()
+                                 .orElse(FoundOrNot.notFound());
+        }
+        
         /**
          * Gets a list of classes that should be open for being able to resolve the method or field reflectively over a
          * class.
          *
          * @param argument The class for which the resolution is discovered.
+         *
          * @return A {@code FoundOrNot<List<Class<?>>} list of classes that should be open.
          * <p>
          * If {@link FoundOrNot#found} is false, then no field or method exists by indicated the name for the argument
@@ -330,36 +417,50 @@ public class StringFormat {
             /**
              * Reflectively resolves a method or field for the given object.
              *
-             * @param argument The object from which the field or method is to be resolved.
+             * @param argument              The object from which the field or method is to be resolved.
              * @param methodOrAttributeName The name of the method or field to resolve.
+             *
              * @return A {@code FoundOrNot<Object>} containing the result of the resolution.
              * <p>
              * If {@link FoundOrNot#found} is false, then the value could not be resolved reflectively.
              */
             public @NotNull FoundOrNot<Object> resolve(Object argument, String methodOrAttributeName) {
-                var argumentClass = argument.getClass();
-                while (argumentClass != null) {
+                var accessibleObject = this.resolveAccesibleObject(argument.getClass(), methodOrAttributeName);
+                if (!accessibleObject.found()) {
+                    return FoundOrNot.notFound();
+                }
+                try {
+                    return switch (accessibleObject.value) {
+                        case Method method -> FoundOrNot.aFound(method.invoke(argument));
+                        case Field field -> FoundOrNot.aFound(field.get(argument));
+                        case null, default -> FoundOrNot.notFound();
+                    };
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    return FoundOrNot.notFound();
+                }
+            }
+            
+            public @NotNull FoundOrNot<AccessibleObject> resolveAccesibleObject(Class<?> fromClass, String methodOrAttributeName) {
+                while (fromClass != null) {
                     switch (this) {
                         case METHOD -> {
                             try {
-                                var method = argumentClass.getDeclaredMethod(methodOrAttributeName);
+                                var method = fromClass.getDeclaredMethod(methodOrAttributeName);
                                 method.setAccessible(true);
-                                return new FoundOrNot<>(method.invoke(argument), true);
-                            } catch (InaccessibleObjectException | NoSuchMethodException | IllegalAccessException |
-                                     InvocationTargetException ignored) {
+                                return new FoundOrNot<>(method, true);
+                            } catch (InaccessibleObjectException | NoSuchMethodException ignored) {
                             }
                         }
                         case FIELD -> {
                             try {
-                                var field = argumentClass.getDeclaredField(methodOrAttributeName);
+                                var field = fromClass.getDeclaredField(methodOrAttributeName);
                                 field.setAccessible(true);
-                                return new FoundOrNot<>(field.get(argument), true);
-                            } catch (InaccessibleObjectException | NoSuchFieldException |
-                                     IllegalAccessException ignored) {
+                                return new FoundOrNot<>(field, true);
+                            } catch (InaccessibleObjectException | NoSuchFieldException ignored) {
                             }
                         }
                     }
-                    argumentClass = argumentClass.getSuperclass();
+                    fromClass = fromClass.getSuperclass();
                 }
                 return new FoundOrNot<>(null, false);
             }
@@ -368,8 +469,9 @@ public class StringFormat {
              * Gets a list of classes that should be open for being able to resolve the named field or method
              * reflectively over a class.
              *
-             * @param argument The class for which the resolution is discovered.
+             * @param argument              The class for which the resolution is discovered.
              * @param methodOrAttributeName The name of the field or method.
+             *
              * @return A {@code FoundOrNot<List<Class<?>>} list of classes that should be open.
              * <p>
              * If {@link FoundOrNot#found} is false, then no field or method exists by indicated the name for the argument

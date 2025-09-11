@@ -2,7 +2,7 @@ package org.openmarkov.java.cloneUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.exception.BundledOpenMarkovException;
+import org.openmarkov.core.exception.IBundledOpenMarkovException;
 import org.openmarkov.core.exception.UnreacheableException;
 
 import java.lang.reflect.InvocationTargetException;
@@ -121,11 +121,15 @@ public class CloneUtils {
         }
     }
     
-    private static class CloneBadlyImplementedException extends BundledOpenMarkovException {
+    private static class CloneBadlyImplementedException extends Exception implements IBundledOpenMarkovException {
         public <ToClone extends Cloneable> CloneBadlyImplementedException(Class<? extends ToClone> cloneableClass) {
             this.cloneableClass = cloneableClass;
         }
         
         public final Class<? extends Cloneable> cloneableClass;
+        
+        @Override public String toString() {
+            return IBundledOpenMarkovException.toString(this);
+        }
     }
 }

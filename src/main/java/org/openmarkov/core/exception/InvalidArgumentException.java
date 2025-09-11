@@ -2,7 +2,8 @@ package org.openmarkov.core.exception;
 
 import org.jetbrains.annotations.Nullable;
 
-public class InvalidArgumentException extends OpenMarkovException {
+//TODO: This might be a RuntimeException.
+public class InvalidArgumentException extends Exception implements IOpenMarkovException {
     
     public final boolean valueIsSet;
     public final @Nullable Object value;
@@ -37,7 +38,7 @@ public class InvalidArgumentException extends OpenMarkovException {
         this.reason = reason;
     }
     
-    @Override protected @Nullable String getExceptionMessage() {
+    @Override @Nullable public String getExceptionMessage() {
         String argumentValueString = "";
         if (this.valueIsSet) {
             argumentValueString = "(" + this.value + ")";
@@ -50,7 +51,11 @@ public class InvalidArgumentException extends OpenMarkovException {
         return "Argument " + argumentName + argumentValueString + " is invalid because " + this.reason + ".";
     }
     
-    @Override protected @Nullable String getExceptionTitle() {
+    @Override @Nullable public String getExceptionTitle() {
         return "Arguments aren't valid";
+    }
+    
+    @Override public String toString() {
+        return IOpenMarkovException.toString(this);
     }
 }

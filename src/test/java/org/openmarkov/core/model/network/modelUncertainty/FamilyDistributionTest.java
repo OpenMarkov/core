@@ -9,7 +9,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.openmarkov.core.test.TestSpeed;
+import org.openmarkov.core.testTags.TestSpeed;
 
 import java.util.ArrayList;
 import java.util.List;

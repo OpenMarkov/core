@@ -34,7 +34,7 @@ public class AddFindingEdit extends SimplePNEdit {
             evidenceCase.addFinding(finding);
             listener.onNodeValueChanged();
         } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
-            throw DoEditException.of(e);
+            throw new DoEditException.CannotDoEditException(e);
         }
     }
     

@@ -7,7 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import org.openmarkov.core.exception.CannotNormalizeNullVectorException;
+import org.openmarkov.core.exception.CannotNormalizePotentialException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.PotentialOperationException;
@@ -38,7 +38,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * This class defines a set of common operations over discrete potentials (
@@ -1110,26 +1109,21 @@ public final class DiscretePotentialOperations {
     }
     
     // TODO Eliminar este método si no es usado por otros
+    // Respuesta: Sí es usado por otros
     
     /**
      * @param potential a {@code TablePotential}
      *
      * @return The {@code potential} normalized
      *
-     * @throws CannotNormalizeNullVectorException NormalizeNullVectorException
+     * @throws CannotNormalizePotentialException NormalizeNullVectorException
      */
-    public static TablePotential normalize(TablePotential potential) throws CannotNormalizeNullVectorException {
+    public static TablePotential normalize(TablePotential potential) throws CannotNormalizePotentialException {
         TablePotential tablePotential = potential;
         // Check for null vectors
-        int p;
-        for (p = 0; p < tablePotential.values.length; p++) {
-            if (tablePotential.values[p] != 0.0) {
-                break;
-            }
-        }
-        if (p == tablePotential.values.length) {
+        if (Arrays.stream(tablePotential.values).allMatch(value -> value == 0.0)) {
             // All elements in tablePotential.table == 0
-            throw new CannotNormalizeNullVectorException(tablePotential.getVariables());
+            throw new CannotNormalizePotentialException(tablePotential);
         }
         List<Variable> variables = tablePotential.getVariables();
         if ((variables != null) && (!variables.isEmpty())) {
@@ -2237,9 +2231,9 @@ public final class DiscretePotentialOperations {
      *
      * @throws PotentialOperationException PotentialOperationException
      */
-    private static void throwExceptionIfNecessaryInMergeOperation(Variable decision,
-                                                                  Collection<TablePotential> potentials) throws PotentialOperationException.VariableIsNull, PotentialOperationException.DifferentSizesInPotentialsAndStates {
-        String message = null;
+    private static void throwExceptionIfNecessaryInMergeOperation(Variable decision, Collection<TablePotential> potentials)
+            throws PotentialOperationException.VariableIsNull,
+            PotentialOperationException.DifferentSizesInPotentialsAndStates {
         if (decision == null) {
             throw new PotentialOperationException.VariableIsNull();
         }

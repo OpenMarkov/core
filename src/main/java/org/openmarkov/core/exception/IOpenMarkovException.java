@@ -2,7 +2,10 @@ package org.openmarkov.core.exception;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.annotation.ImplementationRequirements;
+import org.openmarkov.core.localize.Localizable;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.core.stringformat.LocalizationFormatter;
 import org.openmarkov.core.stringformat.StringFormat;
 
 import java.io.PrintStream;
@@ -12,26 +15,29 @@ import java.util.stream.IntStream;
 
 import static org.openmarkov.core.logging.OpenMarkovLogger.LOGGER;
 
+@ImplementationRequirements(
+        hasToExtendOneOfTheseClasses = Exception.class
+)
 /**
- * A custom {@link Exception} that has a Title and a Message associated with it.
+ * Common interface for exceptions declared in OpenMarkov.
  *
  * @author jrico
  */
-public abstract class OpenMarkovException extends Exception {
+public interface IOpenMarkovException extends Localizable {
     
     /**
      * Gets a message for this exception, which might be null.
      *
      * @return The message for this exception, which might be null.
      */
-    protected abstract @Nullable String getExceptionMessage();
+    @Nullable String getExceptionMessage();
     
     /**
      * Gets a title for this exception, which might be null.
      *
      * @return The title for this exception, which might be null.
      */
-    protected abstract @Nullable String getExceptionTitle();
+    @Nullable String getExceptionTitle();
     
     
     /**
@@ -44,10 +50,10 @@ public abstract class OpenMarkovException extends Exception {
      * This method is intended when you don't write the title in the code but in a Bundle File.
      *
      * @return A String title from Bundle file which was formatted with every field inherited by the class extending
-     * {@link OpenMarkovException}.
+     * {@link IOpenMarkovException}.
      */
-    protected final @Nullable String autoGetExceptionTitle() {
-        return OpenMarkovException.localizeWithOpenMarkov(this, BundleSearch.BUNDLE_SUFFIX_TITLE);
+    static @Nullable String autoGetExceptionTitle(IOpenMarkovException openMarkovException) {
+        return IOpenMarkovException.localizeWithOpenMarkov(openMarkovException, BundleSearch.BUNDLE_SUFFIX_TITLE);
     }
     
     /**
@@ -60,28 +66,29 @@ public abstract class OpenMarkovException extends Exception {
      * This method is intended when you don't write the message in the code but in a Bundle File.
      *
      * @return A String message from Bundle file which was formatted with every field inherited by the class extending
-     * {@link OpenMarkovException}.
+     * {@link IOpenMarkovException}.
      */
-    protected final @Nullable String autoGetExceptionMessage() {
-        return OpenMarkovException.localizeWithOpenMarkov(this, BundleSearch.BUNDLE_SUFFIX_MESSAGE);
+    static @Nullable String autoGetExceptionMessage(IOpenMarkovException openMarkovException) {
+        return IOpenMarkovException.localizeWithOpenMarkov(openMarkovException, BundleSearch.BUNDLE_SUFFIX_MESSAGE);
     }
     
     /**
-     * Turns any kind of exception to an {@link OpenMarkovException}, the conversion varies depending on the Exception
+     * Turns any kind of exception to an {@link IOpenMarkovException}, the conversion varies depending on the Exception
      * sent:
      * <ul>
-     *   <li>If it is already a {@link OpenMarkovException}: it returns said exception</li>
+     *   <li>If it is already a {@link IOpenMarkovException}: it returns said exception</li>
      *   <li>If there is a localization key in {@link StringDatabase#getUniqueInstance()} with a title or message
      *   matching "class name + .title or .message": A {@link LocalizedJavaException} containing the exception.</li>
      *   <li>In any other case: A {@link UnlocalizedJavaException}</li>
      * </ul>
      *
-     * @param exception The exception to turn into {@link OpenMarkovException}.
-     * @return an exception turned into {@link OpenMarkovException}.
+     * @param exception The exception to turn into {@link IOpenMarkovException}.
+     *
+     * @return an exception turned into {@link IOpenMarkovException}.
      */
     @SuppressWarnings("unchecked")
-    public static @NotNull OpenMarkovException of(@Nullable Exception exception) {
-        if (exception instanceof OpenMarkovException alreadyPrepared) {
+    static @NotNull IOpenMarkovException of(@Nullable Exception exception) {
+        if (exception instanceof IOpenMarkovException alreadyPrepared) {
             return alreadyPrepared;
         }
         @Nullable Class<Exception> exceptionClass = (Class<Exception>) exception.getClass();
@@ -118,16 +125,17 @@ public abstract class OpenMarkovException extends Exception {
     
     
     /**
-     * It attempts to find a localized string by the name of the {@link OpenMarkovException}'s class.
+     * It attempts to find a localized string by the name of the {@link IOpenMarkovException}'s class.
      * <p>
      * If found, it will also format said String using the fields of the class as parameters.
      *
      * @param openMarkovException the exception to localize
-     * @param suffixKey            the suffix to append to the exception's class name when generating the localization key
+     * @param suffixKey           the suffix to append to the exception's class name when generating the localization key
+     *
      * @return the formatted and localized string if successful, or null if no localization was found
      */
-    private static @Nullable String localizeWithOpenMarkov(OpenMarkovException openMarkovException, String suffixKey) {
-        Class<? extends OpenMarkovException> exceptionClass = openMarkovException.getClass();
+    private static @Nullable String localizeWithOpenMarkov(IOpenMarkovException openMarkovException, String suffixKey) {
+        Class<? extends IOpenMarkovException> exceptionClass = openMarkovException.getClass();
         String preStringKey = exceptionClass.getSimpleName();
         preStringKey += suffixKey;
         String stringKey = preStringKey;
@@ -150,7 +158,7 @@ public abstract class OpenMarkovException extends Exception {
         }
         Map<String, Object> fieldsAndValues = new HashMap<>();
         var classForFields = openMarkovException.getClass();
-        while (classForFields != OpenMarkovException.class) {
+        while (classForFields != IOpenMarkovException.class) {
             Arrays.stream(classForFields.getDeclaredFields()).forEach(field -> {
                 try {
                     field.setAccessible(true);
@@ -161,7 +169,7 @@ public abstract class OpenMarkovException extends Exception {
                     LOGGER.warn(ex);
                 }
             });
-            classForFields = (Class<? extends OpenMarkovException>) classForFields.getSuperclass();
+            classForFields = (Class<? extends IOpenMarkovException>) classForFields.getSuperclass();
         }
         return StringFormat.apply(preformatedString, fieldsAndValues);
     }
@@ -179,15 +187,15 @@ public abstract class OpenMarkovException extends Exception {
      * message, depending on nullability.
      */
     @SuppressWarnings({"ConstantValue", "GrazieInspection"})
-    @Override public final @NotNull String toString() {
-        String className = this.getClass().getName();
-        String title = this.getExceptionTitle();
-        String message = this.getExceptionMessage();
-        if(title!=null){
-            title=title.replace("\\n", System.lineSeparator());
+    static @NotNull String toString(IOpenMarkovException exception) {
+        String className = exception.getClass().getName();
+        String title = exception.getExceptionTitle();
+        String message = exception.getExceptionMessage();
+        if (title != null) {
+            title = title.replace("\\n", System.lineSeparator());
         }
-        if(message!=null){
-            message=message.replace("\\n", System.lineSeparator());
+        if (message != null) {
+            message = message.replace("\\n", System.lineSeparator());
         }
         //Title: Present, Message: Present
         if (title != null && message != null) {
@@ -206,69 +214,13 @@ public abstract class OpenMarkovException extends Exception {
     }
     
     
-    //region Methods that shouldn't be used
-    @Deprecated(forRemoval = true)
-    @Override public final String getMessage() {
-        //return Optional.ofNullable(this.getExceptionTitle(StringDatabase.getUniqueInstance())).orElse("");
-        return Optional.ofNullable(this.getExceptionTitle()).orElse("");
-    }
-    
-    @Deprecated(forRemoval = true)
-    @Override public final String getLocalizedMessage() {
-        //return Optional.ofNullable(this.getExceptionTitle(StringDatabase.getUniqueInstance())).orElse("");
-        return Optional.ofNullable(this.getExceptionTitle()).orElse("");
-    }
-    
-    @Deprecated(forRemoval = true)
-    @Override public final synchronized Throwable initCause(Throwable cause) {
-        return super.initCause(cause);
-    }
-    
-    @Deprecated(forRemoval = true)
-    @Override public final synchronized Throwable getCause() {
-        return super.getCause();
-    }
-    
-    @SuppressWarnings("CallToPrintStackTrace")
-    @Deprecated(forRemoval = true)
-    @Override public final void printStackTrace() {
-        super.printStackTrace();
-    }
-    
-    @SuppressWarnings("StandardVariableNames")
-    @Deprecated(forRemoval = true)
-    @Override public final void printStackTrace(PrintStream s) {
-        super.printStackTrace(s);
-    }
-    
-    @SuppressWarnings("StandardVariableNames")
-    @Deprecated(forRemoval = true)
-    @Override public final void printStackTrace(PrintWriter s) {
-        super.printStackTrace(s);
-    }
-    
-    @Deprecated(forRemoval = true)
-    @Override public final StackTraceElement[] getStackTrace() {
-        return super.getStackTrace();
-    }
-    
-    @Deprecated(forRemoval = true)
-    @Override public final void setStackTrace(StackTraceElement[] stackTrace) {
-        super.setStackTrace(stackTrace);
-    }
-    
-    @Deprecated(forRemoval = true)
-    @Override public final synchronized Throwable fillInStackTrace() {
-        return super.fillInStackTrace();
-    }
-    
     /**
      * Utility class that simplifies searching for exception bundles.
      */
     //endregion
-    static private class BundleSearch {
-        private static final String BUNDLE_SUFFIX_TITLE = ".title";
-        private static final String BUNDLE_SUFFIX_MESSAGE = ".message";
+    class BundleSearch {
+        public static final String BUNDLE_SUFFIX_TITLE = ".title";
+        public static final String BUNDLE_SUFFIX_MESSAGE = ".message";
         
         /**
          * A list containing modules and their corresponding exception bundles.
@@ -289,9 +241,10 @@ public abstract class OpenMarkovException extends Exception {
          * Find the ExceptionBundle that further matches this exception class.
          *
          * @param exceptionClass the class of the exception
+         *
          * @return the ExceptionBundle that further matches this exception class.
          */
-        static Optional<ExceptionBundleInfo> findExceptionBundle(Class<? extends OpenMarkovException> exceptionClass) {
+        static Optional<ExceptionBundleInfo> findExceptionBundle(Class<? extends IOpenMarkovException> exceptionClass) {
             String exceptionClassName = exceptionClass.getName();
             return BundleSearch.MODULES_TO_EXCEPTIONS_BUNDLES
                     .stream()
@@ -304,6 +257,7 @@ public abstract class OpenMarkovException extends Exception {
          *
          * @param charSequence the character sequence in which to count occurrences
          * @param c            the character whose occurrences are to be counted
+         *
          * @return the number of times the specified character appears in the character sequence
          */
         @SuppressWarnings("SameParameterValue")
@@ -322,6 +276,18 @@ public abstract class OpenMarkovException extends Exception {
          */
         record ExceptionBundleInfo(String module, String bundleName, String prefixKey) {
         }
+    }
+    
+    @Override @NotNull default String path() {
+        return this.getClass().getName();
+    }
+    
+    @Override @Nullable default String bundle() {
+        return null;
+    }
+    
+    @Override @NotNull default String localize(LocalizationFormatter formatter) {
+        return this.getExceptionTitle() + ": " + this.getExceptionMessage();
     }
     
     

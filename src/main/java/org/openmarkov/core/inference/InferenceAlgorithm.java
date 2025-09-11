@@ -29,160 +29,152 @@ import java.util.List;
  */
 @ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor(ProbNet.class))
 public abstract class InferenceAlgorithm implements Task {
-
-	/**
-	 * This is a copy of the {@code ProbNet} received.
-	 */
-	protected ProbNet probNet;
-	/**
-	 * For undo/redo operations.
-	 * TODO - Check if this is necessary
-	 */
-	protected PNESupport pNESupport;
-	/**
-	 * Variables that will not be eliminated during the inference, and therefore all the results
-	 * contain these variables in the domain.
-	 */
-	protected List<Variable> conditioningVariables;
-	/**
-	 * Evidence introduced before the network is resolved.
-	 * In influence diagrams this is Ezawa's evidence.
-	 */
-	private EvidenceCase preResolutionEvidence;
-
-	/**
-	 * @param network The network used in the inference
-	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
-	 */
-	public InferenceAlgorithm(ProbNet network) throws NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints {
-		this.probNet = network.copy();
-		this.preResolutionEvidence = new EvidenceCase();
-		this.conditioningVariables = new ArrayList<>();
-		checkEvaluability();
-		checkConsistency();
-	}
-
-	/**
-	 * Checks the network and constraints applicability
-	 *
-	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
-	 */
-	public void checkEvaluability() throws NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints {
-		checkNetworkApplicability();
-		checkConstraintsApplicability();
-	}
-
-	/**
-	 * Checks the network and evidence consistency
-	 *
-	 */
-	private void checkConsistency() {
-		checkNetworkConsistency();
-		checkEvidenceConsistency();
-	}
-
-	/**
-	 * Checks network consistency
-	 *
-	 */
-	private void checkNetworkConsistency() {
-
-	}
-
-	/**
-	 * Checks evidence consistency
-	 *
-	 */
-	private void checkEvidenceConsistency() {
-
-	}
-
-	/**
-	 * Check if the network type can be evaluated by the algorithm
-	 *
-	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
-	 */
-	private void checkNetworkApplicability() throws NotEvaluableNetworkException.NotApplicableNetwork {
-		NetworkType networkType = probNet.getNetworkType();
-		if (!getPossibleNetworkTypes().contains(networkType)) {
-			throw new NotEvaluableNetworkException.NotApplicableNetwork(probNet, getPossibleNetworkTypes());
-		}
-	}
-
-	/**
-	 * List of networks that the algorithm can evaluate
-	 *
-	 * @return List of evaluable networks
-	 */
-	protected abstract List<NetworkType> getPossibleNetworkTypes();
-
-	/**
-	 * Check if the network satisfies all the constraints that requires the algorithm
-	 *
-	 * @throws NotEvaluableNetworkException TODO - Remove additional constraints
-	 */
-	private void checkConstraintsApplicability() throws NotEvaluableNetworkException.UnsatisfiedContraints {
-		// Check that the probNet satisfies the specific constraints of the algorithm
-		List<PNConstraint> additionalConstraints = getAdditionalConstraints();
-
-		List<PNConstraint> notEvaluableConstraints = new ArrayList<>();
-
-		/// [Iago] If there is no constraints, don't execute the next chunk of code.
+    
+    /**
+     * This is a copy of the {@code ProbNet} received.
+     */
+    protected ProbNet probNet;
+    /**
+     * For undo/redo operations.
+     * TODO - Check if this is necessary
+     */
+    protected PNESupport pNESupport;
+    /**
+     * Variables that will not be eliminated during the inference, and therefore all the results
+     * contain these variables in the domain.
+     */
+    protected List<Variable> conditioningVariables;
+    /**
+     * Evidence introduced before the network is resolved.
+     * In influence diagrams this is Ezawa's evidence.
+     */
+    private EvidenceCase preResolutionEvidence;
+    
+    /**
+     * @param network The network used in the inference
+     *
+     * @throws NotEvaluableNetworkException NotEvaluableNetworkException
+     */
+    public InferenceAlgorithm(ProbNet network) throws NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints {
+        this.probNet = network.copy();
+        this.preResolutionEvidence = new EvidenceCase();
+        this.conditioningVariables = new ArrayList<>();
+        checkEvaluability();
+        checkConsistency();
+    }
+    
+    /**
+     * Checks the network and constraints applicability
+     *
+     * @throws NotEvaluableNetworkException NotEvaluableNetworkException
+     */
+    public void checkEvaluability() throws NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints {
+        checkApplicability();
+        checkConstraintsApplicability();
+    }
+    
+    /**
+     * Checks the network and evidence consistency
+     *
+     */
+    private void checkConsistency() {
+        checkNetworkConsistency();
+        checkEvidenceConsistency();
+    }
+    
+    /**
+     * Checks network consistency
+     *
+     */
+    private void checkNetworkConsistency() {
+        //TODO: Implement
+    }
+    
+    /**
+     * Checks evidence consistency
+     *
+     */
+    private void checkEvidenceConsistency() {
+        //TODO: Implement
+    }
+    
+    /**
+     * Check if the network type can be evaluated by the algorithm
+     *
+     * @throws NotEvaluableNetworkException NotEvaluableNetworkException
+     */
+    private void checkApplicability() throws NotEvaluableNetworkException.NotApplicableNetwork {
+        NetworkType networkType = probNet.getNetworkType();
+        if (!getPossibleNetworkTypes().contains(networkType)) {
+            throw new NotEvaluableNetworkException.NotApplicableNetwork(probNet, getPossibleNetworkTypes());
+        }
+    }
+    
+    /**
+     * List of networks that the algorithm can evaluate
+     *
+     * @return List of evaluable networks
+     */
+    protected abstract List<NetworkType> getPossibleNetworkTypes();
+    
+    /**
+     * Check if the network satisfies all the constraints that requires the algorithm
+     *
+     * @throws NotEvaluableNetworkException TODO - Remove additional constraints
+     */
+    private void checkConstraintsApplicability() throws NotEvaluableNetworkException.UnsatisfiedContraints {
+        // Check that the probNet satisfies the specific constraints of the algorithm
+        List<PNConstraint> additionalConstraints = getAdditionalConstraints();
+        
+        /// [Iago] If there is no constraints, don't execute the next chunk of code.
         /// Without the if, HuginPropagation breaks with a NullPointerException
-		if (additionalConstraints != null) {
-			for (PNConstraint pnConstraint : additionalConstraints) {
-				if (!pnConstraint.checkProbNet(probNet)) {
-					/*
-					 * if (pnConstraint.getClass().equals(NoSuperValueNode.class)) { throw new
-					 * NotEvaluableNetworkException("Evaluation of supervalue nodes is temporarily disabled."
-					 * ); }
-					 */
-					notEvaluableConstraints.add(pnConstraint);
-				}
-			}
-			if (!notEvaluableConstraints.isEmpty()) {
-				throw new NotEvaluableNetworkException.UnsatisfiedContraints(probNet, notEvaluableConstraints);
-			}
-		}
-
-	}
-
-	/**
-	 * List of additional constraints that network must satisfy in order to be evaluated by the algorithm
-	 *
-	 * @return List of additional constraints
-	 */
-	protected abstract List<PNConstraint> getAdditionalConstraints();
-
-	/**
-	 * @return The pre-resolution evidence
-	 */
-	public EvidenceCase getPreResolutionEvidence() {
-		return this.preResolutionEvidence;
-	}
-
-	/**
-	 * @param preResolutionEvidence The pre-resolution evidence to set
-	 */
-	@Override public void setPreResolutionEvidence(EvidenceCase preResolutionEvidence) throws IncompatibleEvidenceException {
-		if (preResolutionEvidence != null) {
-			this.preResolutionEvidence = new EvidenceCase(preResolutionEvidence);
-		}
-	}
-
-	/**
-	 * @return The conditioning variables
-	 */
-	public List<Variable> getConditioningVariables() {
-		return conditioningVariables;
-	}
-
-	/**
-	 * @param conditioningVariables The conditioning variables to set
-	 */
-	@Override public void setConditioningVariables(List<Variable> conditioningVariables) {
-		if (conditioningVariables != null) {
-			this.conditioningVariables = conditioningVariables;
-		}
-	}
+        if (additionalConstraints == null || additionalConstraints.isEmpty()) {
+            return;
+        }
+        additionalConstraints.removeIf(x -> x.checkProbNet(probNet));
+        List<PNConstraint> notEvaluableConstraints = additionalConstraints;
+        if (!notEvaluableConstraints.isEmpty()) {
+            throw new NotEvaluableNetworkException.UnsatisfiedContraints(probNet, notEvaluableConstraints);
+        }
+    }
+    
+    /**
+     * List of additional constraints that network must satisfy in order to be evaluated by the algorithm
+     *
+     * @return List of additional constraints
+     */
+    protected abstract List<PNConstraint> getAdditionalConstraints();
+    
+    /**
+     * @return The pre-resolution evidence
+     */
+    public EvidenceCase getPreResolutionEvidence() {
+        return this.preResolutionEvidence;
+    }
+    
+    /**
+     * @param preResolutionEvidence The pre-resolution evidence to set
+     */
+    @Override
+    public void setPreResolutionEvidence(EvidenceCase preResolutionEvidence) throws IncompatibleEvidenceException {
+        if (preResolutionEvidence != null) {
+            this.preResolutionEvidence = new EvidenceCase(preResolutionEvidence);
+        }
+    }
+    
+    /**
+     * @return The conditioning variables
+     */
+    public List<Variable> getConditioningVariables() {
+        return conditioningVariables;
+    }
+    
+    /**
+     * @param conditioningVariables The conditioning variables to set
+     */
+    @Override public void setConditioningVariables(List<Variable> conditioningVariables) {
+        if (conditioningVariables != null) {
+            this.conditioningVariables = conditioningVariables;
+        }
+    }
 }

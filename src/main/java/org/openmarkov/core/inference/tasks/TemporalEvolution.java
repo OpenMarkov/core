@@ -23,7 +23,7 @@ import java.util.HashMap;
 public interface TemporalEvolution extends Task {
 
     HashMap<Variable, TablePotential> getTemporalEvolution()
-            throws CannotNormalizeNullVectorException, NonProjectablePotentialException, IncompatibleEvidenceException, NotEvaluableNetworkException;
+            throws CannotNormalizePotentialException, NonProjectablePotentialException, IncompatibleEvidenceException, NotEvaluableNetworkException;
 
 
     /**
@@ -36,7 +36,7 @@ public interface TemporalEvolution extends Task {
      * @throws NotEvaluableNetworkException
      */
     default HashMap<Variable, TablePotential> getTemporalEvolutionWithDiscount()
-            throws CannotNormalizeNullVectorException, NonProjectablePotentialException, IncompatibleEvidenceException, NotEvaluableNetworkException {
+            throws CannotNormalizePotentialException, NonProjectablePotentialException, IncompatibleEvidenceException, NotEvaluableNetworkException {
         return getTemporalEvolution();
     }
 

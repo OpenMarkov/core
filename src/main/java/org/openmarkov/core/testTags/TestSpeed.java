@@ -1,4 +1,4 @@
-package org.openmarkov.core.test;
+package org.openmarkov.core.testTags;
 
 public class TestSpeed {
     

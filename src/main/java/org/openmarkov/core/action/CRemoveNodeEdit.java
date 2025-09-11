@@ -27,8 +27,8 @@ import java.util.List;
 @SuppressWarnings("serial") public class CRemoveNodeEdit extends CompoundPNEdit { //implements UsesVariable{
 
 	// Attributes
-
-	protected Node node;
+    
+    protected final Node node;
 
 	protected NodeType nodeType;
 

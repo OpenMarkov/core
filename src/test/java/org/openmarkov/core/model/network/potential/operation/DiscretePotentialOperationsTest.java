@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import net.sourceforge.jeval.EvaluationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -397,7 +396,7 @@ public class DiscretePotentialOperationsTest {
     @Test public void testGetAccumulatedOffsets() {
     }
     
-    @Test public void testNormalize() throws CannotNormalizeNullVectorException {
+    @Test public void testNormalize() throws CannotNormalizePotentialException {
         TablePotential multiplication = DiscretePotentialOperations.multiply(commonVariables.potentials);
         //			TablePotential normalized;
         //				normalized = (TablePotential)

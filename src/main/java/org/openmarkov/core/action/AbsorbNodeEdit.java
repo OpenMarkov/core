@@ -105,7 +105,7 @@ import java.util.*;
                     utilityAndChance.add(potential.getCPT()); //Utility
                     utilityAndChance.add(absorbedNode.getPotentials().get(0).getCPT()); //Chance
                 } catch (NonProjectablePotentialException e) {
-                    throw DoEditException.of(e);
+                    throw new DoEditException.CannotDoEditException(e);
                 }
                 
                 /* Obtain parameters to invoke multiplyAndMarginalize */
@@ -147,7 +147,7 @@ import java.util.*;
                 try {
                     utilityPotential = potential.getCPT();
                 } catch (NonProjectablePotentialException e) {
-                    throw DoEditException.of(e);
+                    throw new DoEditException.CannotDoEditException(e);
                 }
                 
                 // Discrete operation is valid because all parents are discrete
@@ -239,7 +239,7 @@ import java.util.*;
                 utilityChildrenPotentials.add(componentPotential);
             }
         } catch (NonProjectablePotentialException e) {
-            throw DoEditException.of(e);
+            throw new DoEditException.CannotDoEditException(e);
         }
         
         // Sum the component potentials

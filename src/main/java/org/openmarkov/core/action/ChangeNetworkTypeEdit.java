@@ -56,7 +56,7 @@ import java.util.ArrayList;
             //TODO: DoEditException is hiding UnmetConstraints
             probNet.setNetworkType(newNetworkType);
         } catch (InvalidNetworkTypeException.UnmetConstraints e) {
-            throw DoEditException.of(e);
+            throw new DoEditException.CannotDoEditException(e);
         }
         if (probNet.isMultiagent()) {
             ArrayList<StringWithProperties> agents = new ArrayList<>();

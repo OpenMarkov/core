@@ -1,6 +1,7 @@
 package org.openmarkov.core.exception;
 
-public abstract sealed class ParsingSourceException extends BundledOpenMarkovException {
+//TODO: Catches of this class just show the exception and ignore it, leading to further bugs.
+public abstract sealed class ParsingSourceException extends Exception implements IBundledOpenMarkovException {
     
     public static final class CouldNotParseSourceException extends ParsingSourceException {
         public final Exception originException;
@@ -9,5 +10,10 @@ public abstract sealed class ParsingSourceException extends BundledOpenMarkovExc
             this.originException = originException;
         }
     }
+    
+    @Override public String toString() {
+        return IBundledOpenMarkovException.toString(this);
+    }
+    
     
 }

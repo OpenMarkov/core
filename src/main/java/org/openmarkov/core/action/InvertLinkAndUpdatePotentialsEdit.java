@@ -152,7 +152,7 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 			try {
 				xyPotentials.add(parentsOldPotential.getCPT());
 			} catch (NonProjectablePotentialException e) {
-				throw DoEditException.of(e);
+                throw new DoEditException.CannotDoEditException(e);
 			}
 		}
 
@@ -161,7 +161,7 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 			try {
 				xyPotentials.add(childOldPotential.getCPT());
 			} catch (NonProjectablePotentialException e) {
-				throw DoEditException.of(e);
+                throw new DoEditException.CannotDoEditException(e);
 			}
 		}
 

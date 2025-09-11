@@ -12,7 +12,12 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.Collection;
 
-public abstract sealed class PotentialOperationException extends BundledOpenMarkovException {
+//TODO: Catchs of this exception just show it and ignore it, leading to further bugs.
+public abstract sealed class PotentialOperationException extends Exception implements IBundledOpenMarkovException {
+    
+    @Override public String toString() {
+        return IBundledOpenMarkovException.toString(this);
+    }
     
     public static final class VariableIsNull extends PotentialOperationException {
     }

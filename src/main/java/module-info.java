@@ -42,7 +42,7 @@ open module org.openmarkov.core {
     exports org.openmarkov.core.oopn;
     exports org.openmarkov.core.oopn.action;
     exports org.openmarkov.core.stringformat;
-    exports org.openmarkov.core.test;
+    exports org.openmarkov.core.testTags;
     exports org.openmarkov.plugin;
     exports org.openmarkov.core.localize.spi;
     exports org.openmarkov.core.localize;

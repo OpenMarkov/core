@@ -16,7 +16,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @SuppressWarnings("NonFinalFieldOfException")
-public abstract class ParserException extends BundledOpenMarkovException {
+//TODO: Not all, but many of the uses of this exceptions just show a dialog and then ignore the exception.
+public abstract class ParserException extends Exception implements IBundledOpenMarkovException {
+    
+    @Override public String toString() {
+        return IBundledOpenMarkovException.toString(this);
+    }
     
     private @Nullable String filename;
     private @Nullable int lineNumber;
@@ -37,8 +42,8 @@ public abstract class ParserException extends BundledOpenMarkovException {
         this.lineNumber = lineNumber;
     }
     
-    @Override protected @Nullable String getExceptionMessage() {
-        String exceptionMessage = super.getExceptionMessage();
+    @Override @Nullable public String getExceptionMessage() {
+        String exceptionMessage = IBundledOpenMarkovException.super.getExceptionMessage();
         if (filename != null) {
             exceptionMessage += " in file " + filename + " at line nº " + lineNumber;
         }
@@ -154,14 +159,6 @@ public abstract class ParserException extends BundledOpenMarkovException {
         }
         
         public final String filename;
-    }
-    
-    public static final class MoreThanOneInputOpened extends ParserException {
-        public MoreThanOneInputOpened(int amountOfInputsRequested) {
-            this.amountOfInputsRequested = amountOfInputsRequested;
-        }
-        
-        public final int amountOfInputsRequested;
     }
     
     public static final class WrongVersion extends ParserException {

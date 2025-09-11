@@ -14,8 +14,15 @@ import org.openmarkov.core.model.network.Variable;
  * @author marias
  * @version 1.0
  */
-public abstract sealed class IncompatibleEvidenceException extends BundledOpenMarkovException {
+public abstract sealed class IncompatibleEvidenceException extends Exception implements IBundledOpenMarkovException {
     
+    @Override public String toString() {
+        return IBundledOpenMarkovException.toString(this);
+    }
+    
+    //TODO: It is caught and ignored in almost every catch block, probably leading to unexpected
+    // bugs.
+    // Perhaps it could be turned into a RuntimeException.
     public static final class EvidenceIsIncompatibleWithOther extends IncompatibleEvidenceException {
         public EvidenceIsIncompatibleWithOther(Finding newFinding, Finding oldFinding) {
             this.newFinding = newFinding;

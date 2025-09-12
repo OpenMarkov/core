@@ -268,17 +268,17 @@ public class StringDatabase {
     
     public static @NotNull Stream<LocalizeResourcesProvider> getBundleProviders() {
         return PluginSearch.init()
-                    .childrenOf(LocalizeResourcesProvider.class)
-                    .stream()
-                    .map(c -> {
-                        try {
-                            return c.getDeclaredConstructor().newInstance();
-                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                                 NoSuchMethodException e) {
-                            return null;
-                        }
-                    })
-                    .filter(Objects::nonNull);
+                           .childrenOf(LocalizeResourcesProvider.class)
+                           .stream()
+                           .map(c -> {
+                               try {
+                                   return c.getDeclaredConstructor().newInstance();
+                               } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                                        NoSuchMethodException e) {
+                                   return null;
+                               }
+                           })
+                           .filter(Objects::nonNull);
     }
     
     public Map<String, StringBundle> getAllBundles() {
@@ -288,6 +288,7 @@ public class StringDatabase {
     /**
      * @param file
      * @param locale
+     *
      * @return An instance of ResourceBundle considering that properties files
      * are in XML format.
      */
@@ -411,6 +412,7 @@ public class StringDatabase {
      *
      * @param key     the key of the desired string.
      * @param strings strings that will replace the '~'.
+     *
      * @return the string associated with the key. if the resource doesn't
      * exist, then a special string is returned.
      */

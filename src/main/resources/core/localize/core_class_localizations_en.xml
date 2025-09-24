@@ -50,6 +50,8 @@
     <Localization class="org.openmarkov.core.exception.ParsingSourceException$CouldNotParseSourceException" value="{originException}"/>
     <Localization class="org.openmarkov.core.exception.PotentialOperationException$DifferentSizesInPotentialsAndStates" value="Found {variable.getNumStates} states in variable {variable.getName}, but there are {potentials.size} instead of {variable.getNumStates}."/>
     <Localization class="org.openmarkov.core.exception.PotentialOperationException$VariableIsNull" value="No variable found"/>
+    <Localization class="org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException"
+                  value="Node {node} has no potentials, while at least one is expected."/>
     <Localization class="org.openmarkov.core.exception.UnexpectedInferenceException$ThereIsMoreThanOneConditioningVariable" value="There is more than one conditioning variables in the potential table ({tablePotential.getNumVariables} variables)."/>
     <Localization class="org.openmarkov.core.exception.WriterException$CannotCreateFile" value="Can not create file {filename}."/>
     <Localization class="org.openmarkov.core.exception.WriterException$ICIModelNotSupportedByElvira" value="ICI Model {modelType} is not supported by Elvira."/>
@@ -57,11 +59,89 @@
     <Localization class="org.openmarkov.core.exception.WriterException$TryingToWriteANullProbNet" value="Tried to write a null Probabilistic Network"/>
     <Localization class="org.openmarkov.core.exception.WriterException$TryingToWriteAProbNetWithoutName" value="There is no name for {probNet}."/>
     <Localization class="org.openmarkov.core.exception.WriterException$UnknownNetworkType" value="Network type {networkType} is unknown, only it is allowed to use network types: {allowedTypes}."/>
+    <Localization class="org.openmarkov.core.io.exception.NoReaderForExtension"
+                  value="There is no reader for file format {extension}"/>
+    <Localization class="org.openmarkov.core.io.exception.NoWriterForExtensionException"
+                  value="There is no writer for file format {extension}"/>
+    <Localization class="org.openmarkov.core.model.network.EvidenceCase"
+                  value="Evidence case with findings {findings}"
+                  short="Evidence case with {findings.size} findings"/>
+    <Localization class="org.openmarkov.core.model.network.Finding"
+                  value="Finding of variable {variable} with numerical value {numericalValue} and state index {stateIndex}"/>
+    <Localization class="org.openmarkov.core.model.network.Node" value="Node for {variable}"/>
     <Localization class="org.openmarkov.core.model.network.ProbNet"
                   value="{networkType} network named {name}"
                   short="{networkType} network named {name}"
                   long="{networkType} network named {name} with {this.getNumPotentials} potentials, {this.getNodes.size} nodes, {this.constraints.size} constraints"
                   verbose="{networkType} network named {name} with {this.getNumPotentials} potentials, nodes {this.getNodes}, constraints {this.constraints}, and agents {this.agents}"/>
+    <Localization class="org.openmarkov.core.model.network.State" value="state {name}"/>
+    <Localization class="org.openmarkov.core.model.network.Variable"
+                  value="{variableType} variable {name} with states {states}"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.AllChanceVariablesHaveChancePotentials"
+                  value="Chance variable without potential"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.DistinctLinks" value="No equal links allowed."/>
+    <Localization class="org.openmarkov.core.model.network.constraint.DistinctVariableNames"
+                  value="Variables have distinct names"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.MaxNumParents"
+                  value="All nodes contain no more than {maxNumParents} parents."/>
+    <Localization class="org.openmarkov.core.model.network.constraint.NoAlwaysObservedDescendantOfDecision"
+                  value="Always-observed variable are not descendant of a decision nodes"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.NoBackwardLink"
+                  value="Links can only be drawn to future slices or from nodes in slice 0 towards atemporal nodes"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.NoClosedPath"
+                  value="No closed paths are allowed."/>
+    <Localization class="org.openmarkov.core.model.network.constraint.NoCycle" value="No cycles paths are allowed."/>
+    <Localization class="org.openmarkov.core.model.network.constraint.NoEmptyName" value="Names aren't empty"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.NoLinkRestriction"
+                  value="Links must have no restrictions"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.NoLoops" value="There must be no loops"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.NoMixedParents"
+                  value="Utility nodes can not have mixed parents."/>
+    <Localization class="org.openmarkov.core.model.network.constraint.NoMultipleLinks"
+                  value="No multiple links are allowed."/>
+    <Localization class="org.openmarkov.core.model.network.constraint.NoRevelationArc"
+                  value="There are no revelation arcs"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.NoSelfLoop" value="No self loops are allowed"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.NoSuperValueNode"
+                  value="Super values must not be present in nodes"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.NoUtilityParent"
+                  value="Utility nodes only can have utility children"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables"
+                  value="All variables must be atemporal."/>
+    <Localization class="org.openmarkov.core.model.network.constraint.OnlyChanceNodes"
+                  value="Only chance nodes are allowed"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.OnlyContinuousVariables"
+                  value="All variables must be continuous"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.OnlyDirectedLinks"
+                  value="Only directed links allowed"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables"
+                  value="All variables must be discrete"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.OnlyFiniteStatesVariables"
+                  value="All chance and decision variables must be finite state or discrete"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.OnlyNumericVariables"
+                  value="All variables must be purely numeric."/>
+    <Localization class="org.openmarkov.core.model.network.constraint.OnlyOneAgent"
+                  value="There can be no more than one agent"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.OnlyOneUtilityNode"
+                  value="There must be only one utility node"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.OnlyTemporalVariables"
+                  value="All variables must be temporal."/>
+    <Localization class="org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks"
+                  value="No directed links allowed"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.OnlyUnlabeledLinks"
+                  value="Links must be unlabeled"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.ProperUtilityPotentials"
+                  value="Utility variables must have utility potentials and there must be at least one utility potential"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.UtilityNodes"
+                  value="All nodes must be utility potentials"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.ValidCriterionName"
+                  value="All criterions must have a different name, and no criterion can have no name"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.ValidStateName"
+                  value="All states must have a different name, and no state can have no name"/>
+    <Localization class="org.openmarkov.core.model.network.potential.treeadd.Threshold"
+                  value="threshold of limit {limit}"/>
+    <Localization class="org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch"
+                  value="TreeADDBranch for {rootVariable} with potential {potential} and states {states}"/>
     <Localization class="org.openmarkov.core.model.network.type.BayesianNetworkType" value="Bayesian"/>
     <Localization class="org.openmarkov.core.model.network.type.DECPOMDPType" value="Dec-POMDP"/>
     <Localization class="org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType" value="Decision analysis"/>
@@ -79,4 +159,6 @@
                   value="The clone method of {cloneableClass.getName} is badly implemented, as it returns the original object"/>
     <Localization class="org.openmarkov.learning.core.exception.EmptyModelNetException" value="There is no network selected to use as model, and one is required."/>
     <Localization class="org.openmarkov.learning.core.exception.UnobservedVariablesException" value="Algorithm {algorithmType.name} does not support unobserved variables, which are: {unobservedVariables}"/>
+    <Localization class="org.openmarkov.learning.core.constraint.ModelNetworkConstraint"
+                  value="Tried to add, remove or invert the wrong link"/>
 </ClassLocalizations>

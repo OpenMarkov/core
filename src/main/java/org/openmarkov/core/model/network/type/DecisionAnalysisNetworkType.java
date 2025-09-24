@@ -12,7 +12,7 @@ import org.openmarkov.core.model.network.constraint.NoLinkRestriction;
 import org.openmarkov.core.model.network.constraint.NoRevelationArc;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
-@ProbNetType(name = "DAN") public class DecisionAnalysisNetworkType extends NetworkType {
+@ProbNetType(name = "DAN") public final class DecisionAnalysisNetworkType extends NetworkType {
     private static final DecisionAnalysisNetworkType INSTANCE = new DecisionAnalysisNetworkType();
 
 	// Constructor

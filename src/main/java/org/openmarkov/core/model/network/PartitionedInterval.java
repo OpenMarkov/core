@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network;
 
+import java.io.Serializable;
+
 /**
  * Defines a set of intervals
  *
@@ -16,7 +18,7 @@ package org.openmarkov.core.model.network;
  * invariant belongsToLeftSide.length = limits.length
  * @since OpenMarkov 1.0
  */
-public class PartitionedInterval implements Cloneable {
+public class PartitionedInterval implements Cloneable, Serializable {
     
     // Attributes
     /**

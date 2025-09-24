@@ -88,6 +88,9 @@ public class StringDatabase {
     }
     
     public static String surrondAsUnknown(String string) {
+        if (string == null) {
+            return ">>> null <<<";
+        }
         return ">>> " + string + " <<<";
     }
     
@@ -383,6 +386,7 @@ public class StringDatabase {
     }
     
     public @Nullable String getNullableString(String key) {
+        if (key == null) return null;
         for (StringBundle bundle : this.bundles.values()) {
             String value = bundle.getString(key);
             if (value != null)
@@ -398,6 +402,7 @@ public class StringDatabase {
     }
     
     public @Nullable String getNullableString(@Nullable String bundle, String key) {
+        if (key == null) return null;
         StringBundle stringBundle = this.bundles.get(bundle);
         if (stringBundle == null) {
             return null;

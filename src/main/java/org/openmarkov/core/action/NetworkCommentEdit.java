@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.action;
 
+import org.openmarkov.core.annotation.ToCheck;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 
@@ -51,7 +52,9 @@ import org.openmarkov.core.model.network.ProbNet;
 		probNet.setComment(newComment);
 		probNet.setShowCommentWhenOpening(showCommentWhenOpening);
 	}
-	
+    
+    @ToCheck(reasonDescription = "Can modifying a network's comment trigger a constraint violation?",
+            reasonKind = ToCheck.ReasonKind.CODE_QUALITY)
 	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
 		PNEdit.startEdit(this, probNet);
 		this.doEdit();

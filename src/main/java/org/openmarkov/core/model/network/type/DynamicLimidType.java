@@ -12,7 +12,7 @@ import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
-@ProbNetType(name = "DynamicLIMID") public class DynamicLimidType extends NetworkType {
+@ProbNetType(name = "DynamicLIMID") public final class DynamicLimidType extends NetworkType {
     private static final DynamicLimidType INSTANCE = new DynamicLimidType();
 
 	// Constructor

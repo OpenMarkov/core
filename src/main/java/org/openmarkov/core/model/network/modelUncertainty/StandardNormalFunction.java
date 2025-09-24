@@ -42,9 +42,8 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF 
 	@Override public void setParameters(double[] args) {
 		// ignore
 	}
-
-	@Override public boolean verifyParametersDomain(boolean isChanceVariable) {
-		return true;
+    
+    @Override public void verifyParametersDomain(boolean isChanceVariable) {
 	}
 
 	@Override public double getMean() {

@@ -11,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
+import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -38,7 +40,7 @@ import java.util.List;
  * @see ProbNet
  * @since OpenMarkov 1.0
  */
-public class Node implements Cloneable {
+public class Node implements Cloneable, ClassLocalizable {
     
     // Constants
     public final static double DEFAULT_RELEVANCE = 5.0;
@@ -224,6 +226,13 @@ public class Node implements Cloneable {
      */
     public List<Potential> getPotentials() {
         return new ArrayList<>(potentials);
+    }
+    
+    public Potential getFirstPotential() throws ThereIsNoPotentialsInNodeException {
+        if (this.potentials.isEmpty()) {
+            throw new ThereIsNoPotentialsInNodeException(this);
+        }
+        return potentials.getFirst();
     }
     
     /**

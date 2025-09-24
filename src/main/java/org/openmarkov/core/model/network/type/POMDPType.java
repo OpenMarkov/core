@@ -12,7 +12,7 @@ import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
-@ProbNetType(name = "POMDP") public class POMDPType extends NetworkType {
+@ProbNetType(name = "POMDP") public non-sealed class POMDPType extends NetworkType {
     private static final POMDPType INSTANCE = new POMDPType();
 
 	// Constructor

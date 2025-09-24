@@ -6,6 +6,8 @@ open module org.openmarkov.core {
     requires org.jetbrains.annotations;
     requires transitive java.desktop;
     
+    requires java.xml;
+    
     requires java.instrument;
     requires io.github.classgraph;
     requires org.openmarkov.annotation_processing;
@@ -51,4 +53,5 @@ open module org.openmarkov.core {
     exports org.openmarkov.java.enumUtils;
     exports org.openmarkov.java.exceptionUtils;
     exports org.openmarkov.java.cloneUtils;
+    exports org.openmarkov.core.io.exception;
 }

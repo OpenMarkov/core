@@ -7,9 +7,15 @@
 
 package org.openmarkov.core.model.network.potential.canonical;
 
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.localize.ClassLocalizable;
+import org.openmarkov.core.localize.Localizable;
+import org.openmarkov.core.stringformat.LocalizationFormatter;
+import org.openmarkov.java.enumUtils.EnumUtils;
+
 import java.io.Serializable;
 
-public enum ICIModelType implements Serializable {
+public enum ICIModelType implements Serializable, Localizable {
     OR,
     CAUSAL_MAX,
     GENERAL_MAX,
@@ -24,6 +30,17 @@ public enum ICIModelType implements Serializable {
             case AND, CAUSAL_MIN, GENERAL_MIN -> ICIFamily.AND;
             case TUNING -> ICIFamily.TUNING;
         };
-	}
-
+    }
+    
+    @Override public @NotNull String path() {
+        return "";
+    }
+    
+    @Override public @NotNull String localize(LocalizationFormatter formatter) {
+        return this.toString();
+    }
+    
+    @Override public String toString() {
+        return EnumUtils.toCamelCase(this);
+    }
 }

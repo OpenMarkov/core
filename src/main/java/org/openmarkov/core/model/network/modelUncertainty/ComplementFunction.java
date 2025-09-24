@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import org.openmarkov.core.exception.InvalidArgumentException;
+
 import java.util.Random;
 
 @ProbDensFunctionType(name = "Complement", isValidForNumeric = false, parameters = "nu")
@@ -29,9 +31,12 @@ public class ComplementFunction extends ProbDensFunction {
 	public double getNu() {
 		return nu;
 	}
-
-	@Override public boolean verifyParametersDomain(boolean isChanceVariable) {
-		return (nu > 0);
+    
+    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+        if (nu <= 0) {
+            throw new InvalidArgumentException(nu, "nu", "should be a number bigger than 0");
+        }
+        ;
 	}
 
 	@Override public double[] getParameters() {

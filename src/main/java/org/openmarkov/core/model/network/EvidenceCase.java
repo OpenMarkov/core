@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.type.MIDType;
 
@@ -30,7 +31,7 @@ import java.util.Queue;
  * @see org.openmarkov.core.model.network.Finding
  * @since OpenMarkov 1.0
  */
-public class EvidenceCase {
+public class EvidenceCase implements ClassLocalizable {
     
     // Attribute
     /**

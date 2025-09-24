@@ -23,8 +23,8 @@ public abstract class ProbDensFunction {
 	public void verifyParameters(double[] parameters) throws InvalidArgumentException {
 		throw new InvalidArgumentException(parameters, "parameters", "verifyParameters is not implemented in " + this.getClass().getName());
 	}
-
-	public abstract boolean verifyParametersDomain(boolean isChanceVariable);
+    
+    public abstract void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException;
 
 	public abstract double getMean();
 

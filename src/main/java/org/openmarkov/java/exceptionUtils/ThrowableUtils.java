@@ -1,5 +1,9 @@
 package org.openmarkov.java.exceptionUtils;
 
+import org.openmarkov.java.arrayUtils.Slice;
+
+import java.util.List;
+
 public class ThrowableUtils {
     
     /**
@@ -28,12 +32,21 @@ public class ThrowableUtils {
             sourceStackTraceIndex--;
             targetStackTraceIndex--;
         }
+        /*
+        //This was the old way before using the Slice<T> class
         int newArraySize = (targetStackTraceIndex + 1) + sourceStackTrace.length;
         var joinedStackTrace = new StackTraceElement[newArraySize];
         System.arraycopy(targetStackTrace, 0, joinedStackTrace, 0, targetStackTraceIndex + 1);
         System.arraycopy(sourceStackTrace, 0, joinedStackTrace, (targetStackTraceIndex + 1), sourceStackTrace.length);
         source.setStackTrace(new StackTraceElement[0]);
         target.setStackTrace(joinedStackTrace);
+         */
+        var targetUniqueTrace = new Slice<>(StackTraceElement.class, targetStackTrace, 0, targetStackTraceIndex + 1);
+        var sourceUniqueTrace = new Slice<>(StackTraceElement.class, sourceStackTrace, 0, sourceStackTraceIndex + 1);
+        var commonTrace = new Slice<>(StackTraceElement.class, sourceStackTrace, sourceStackTraceIndex + 1, sourceStackTrace.length);
+        var joinedTraces = Slice.slicesToArray(List.of(targetUniqueTrace, sourceUniqueTrace, commonTrace));
+        source.setStackTrace(new StackTraceElement[0]);
+        target.setStackTrace(joinedTraces);
     }
     
     /**

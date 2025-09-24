@@ -28,6 +28,7 @@ public class CloneUtils {
                 return (ToClone) specialHandleCase.get().uncheckedApply(toClone);
             }
             var cloneMethod = cloneableClass.getMethod("clone");
+            cloneMethod.setAccessible(true);
             ToClone cloned = cloneableClass.cast(cloneMethod.invoke(toClone));
             if (cloned == toClone) {
                 throw new UnreacheableException(new CloneBadlyImplementedException(cloneableClass));

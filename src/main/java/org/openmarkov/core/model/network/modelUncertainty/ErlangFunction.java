@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import org.openmarkov.core.exception.InvalidArgumentException;
+
 import java.util.Random;
 
 public class ErlangFunction extends ProbDensFunction {
@@ -47,9 +49,14 @@ public class ErlangFunction extends ProbDensFunction {
 		lambda = args[1];
 		exponentialFunction = new ExponentialFunction(lambda);
 	}
-
-	@Override public boolean verifyParametersDomain(boolean isChanceVariable) {
-		return (k >= 0) && (lambda > 0);
+    
+    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+        if (lambda <= 0) {
+            throw new InvalidArgumentException(lambda, "lambda", "should be a number bigger than 0");
+        }
+        if (k < 0) {
+            throw new InvalidArgumentException(lambda, "lambda", "should be a number bigger or equals to 0");
+        }
 	}
 
 	@Override public double getMean() {

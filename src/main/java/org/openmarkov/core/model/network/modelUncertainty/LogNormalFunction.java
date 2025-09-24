@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.apache.commons.math3.distribution.LogNormalDistribution;
+import org.openmarkov.core.exception.InvalidArgumentException;
 
 import java.util.Random;
 
@@ -38,9 +39,11 @@ import java.util.Random;
 			this.normal = (NormalFunction) logNormalFunction.normal.copy();
 		}
 	}
-
-	@Override public boolean verifyParametersDomain(boolean isChanceVariable) {
-		return (sigma > 0);
+    
+    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+        if (sigma <= 0) {
+            throw new InvalidArgumentException(sigma, "sigma", "should be a number bigger than 0");
+        }
 	}
 
 	@Override public double[] getParameters() {

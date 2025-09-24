@@ -46,7 +46,7 @@ import java.util.List;
 	}
 
 	@Override protected String constraintDescription() {
-		return explanation + ". no directed links allowed";
+        return explanation + "no directed links allowed.";
 	}
 
 }

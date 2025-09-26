@@ -17,7 +17,7 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import java.util.*;
 
 // TODO Documentar la clase
-public class StrategyTree extends TreeADDPotential {
+public class StrategyTree extends TreeADDPotential implements Cloneable {
     
     // Constructors
     public StrategyTree(List<Variable> variables, Variable topVariable) {
@@ -536,7 +536,8 @@ public class StrategyTree extends TreeADDPotential {
                 // Compare potentials
                 if (stillEqual) {
                     StrategyTree strategyTreeBranchPotential = (StrategyTree) interventionBranch.getPotential();
-                    StrategyTree branchPotential = (StrategyTree) branch.getPotential();
+                    Potential uncastedBranchPotential = branch.getPotential();
+                    StrategyTree branchPotential = (StrategyTree) uncastedBranchPotential;
                     stillEqual &= !(
                             (strategyTreeBranchPotential == null && branchPotential != null) || (
                                     strategyTreeBranchPotential != null && branchPotential == null
@@ -850,6 +851,15 @@ public class StrategyTree extends TreeADDPotential {
                 }
             }
         }
+    }
+    
+    @Override public StrategyTree clone() {
+        StrategyTree res = new StrategyTree(this);
+        return res;
+    }
+    
+    private StrategyTree(StrategyTree strategyTree) {
+        super(strategyTree);
     }
     
 }

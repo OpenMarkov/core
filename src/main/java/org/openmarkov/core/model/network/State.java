@@ -7,9 +7,11 @@
 
 package org.openmarkov.core.model.network;
 
+import org.openmarkov.core.localize.ClassLocalizable;
+
 import java.util.LinkedHashMap;
 
-public class State implements Cloneable {
+public class State implements Cloneable, ClassLocalizable {
     
     // Attributes
     public LinkedHashMap<String, String> additionalProperties;
@@ -40,8 +42,8 @@ public class State implements Cloneable {
         return (this.name.equals(state.name));
     }
     
-    public String toString() {
-        return name;
+    @Override public String toString() {
+        return this.localize();
     }
     
     @Override public State clone() {

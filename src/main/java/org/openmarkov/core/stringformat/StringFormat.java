@@ -184,7 +184,7 @@ public class StringFormat {
                                                .anyMatch(localizer -> localizer.cls.isAssignableFrom(originalArgumentClass))) {
                         String localizationFormat = formatting.style == null || !isOpenMarkovFormat ? null : formatting.style;
                         LocalizationFormatter localizationFormatter = LocalizationFormatter.of(localizationFormat);
-                        String localized = StringFormat.intLocalize(argument, localizationFormatter);
+                        String localized = StringFormat.internalLocalize(argument, localizationFormatter);
                         return Matcher.quoteReplacement(localized);
                     }
                     if (formatting.style != null && !isOpenMarkovFormat) {
@@ -218,23 +218,23 @@ public class StringFormat {
                 Stream<Object> stream = (Stream<Object>) obj.stream();
                 return stream.map(indObj ->
                                           form.listSeparator.prefix() +
-                                                  StringFormat.intLocalize(indObj, form))
+                                                  StringFormat.internalLocalize(indObj, form))
                              .collect(Collectors.joining(form.listSeparator.separator()));
             }),
             new Localizer<>(Map.class, (obj, form) -> {
                 var stream = (Stream<Map.Entry<Object, Object>>) obj.entrySet().stream();
                 return stream.map(entry ->
                                           form.listSeparator.prefix()
-                                                  + StringFormat.intLocalize(entry.getKey(), form)
+                                                  + StringFormat.internalLocalize(entry.getKey(), form)
                                                   + ": "
-                                                  + StringFormat.intLocalize(entry.getValue(), form))
+                                                  + StringFormat.internalLocalize(entry.getValue(), form))
                              .collect(Collectors.joining(form.listSeparator.separator()));
             })
     
     
     );
     
-    private static String intLocalize(Object obj, LocalizationFormatter formatter) {
+    private static String internalLocalize(Object obj, LocalizationFormatter formatter) {
         return StringFormat.LOCALIZERS.stream()
                                       .filter(localizer -> localizer.cls.isAssignableFrom(obj.getClass()))
                                       .map(localizer -> (String) localizer.localize.apply(obj, formatter))

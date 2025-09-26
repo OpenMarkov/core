@@ -7,6 +7,9 @@
 
 package org.openmarkov.core.model.network;
 
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.localize.Localizable;
+import org.openmarkov.core.stringformat.LocalizationFormatter;
 import org.openmarkov.java.enumUtils.EnumUtils;
 
 import java.io.Serializable;
@@ -14,7 +17,7 @@ import java.io.Serializable;
 /**
  * @author manuel
  */
-public enum VariableType implements Serializable {
+public enum VariableType implements Serializable, Localizable {
     FINITE_STATES,
     NUMERIC,
     DISCRETIZED;
@@ -22,4 +25,12 @@ public enum VariableType implements Serializable {
 	public String toString() {
         return EnumUtils.toCamelCase(this);
 	}
+    
+    @Override public @NotNull String path() {
+        return "";
+    }
+    
+    @Override public @NotNull String localize(LocalizationFormatter formatter) {
+        return this.toString();
+    }
 }

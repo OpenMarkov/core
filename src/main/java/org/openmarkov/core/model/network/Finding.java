@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network;
 
+import org.openmarkov.core.localize.ClassLocalizable;
+
 /**
  * A finding is a variable and the value associated to it. The variable can be
  * discrete, continuous or hybrid
@@ -19,7 +21,7 @@ package org.openmarkov.core.model.network;
  * @see EvidenceCase
  * @since OpenMarkov 1.0
  */
-public class Finding {
+public class Finding implements ClassLocalizable {
 
 	// Attributes
 	/**

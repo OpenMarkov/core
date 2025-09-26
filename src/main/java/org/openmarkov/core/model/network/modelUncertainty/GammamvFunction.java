@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import org.openmarkov.core.exception.InvalidArgumentException;
+
 @ProbDensFunctionType(name = "Gamma-mv", isValidForProbabilities = false, parameters = { "mean",
 		"standard deviation" }) public class GammamvFunction extends GammaAbstract {
 	private double mu;
@@ -38,9 +40,14 @@ package org.openmarkov.core.model.network.modelUncertainty;
 		this.kAbstract = Math.pow(mu / sigma, 2);
 		this.thetaAbstract = Math.pow(sigma, 2) / mu;
 	}
-
-	@Override public boolean verifyParametersDomain(boolean isChanceVariable) {
-		return (mu > 0) && (sigma > 0);
+    
+    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+        if (sigma <= 0) {
+            throw new InvalidArgumentException(sigma, "sigma", "should be a number bigger than 0");
+        }
+        if (mu <= 0) {
+            throw new InvalidArgumentException(mu, "mu", "should be a number bigger than 0");
+        }
 	}
 
 	@Override public ProbDensFunction copy() {

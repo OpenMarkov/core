@@ -47,9 +47,14 @@ import java.util.List;
 			throw new InvalidArgumentException(List.of(parameters[0], parameters[1]), "N", "Parameters should be positive");
 		}
 	}
-
-	@Override public boolean verifyParametersDomain(boolean isChanceVariable) {
-		return (k > 0) && (theta > 0);
+    
+    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+        if (theta <= 0) {
+            throw new InvalidArgumentException(theta, "theta", "should be a number bigger than 0");
+        }
+        if (k <= 0) {
+            throw new InvalidArgumentException(k, "k", "should be a number bigger than 0");
+        }
 	}
 
 	@Override public double[] getParameters() {

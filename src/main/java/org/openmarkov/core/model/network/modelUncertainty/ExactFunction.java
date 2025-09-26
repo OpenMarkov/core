@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import org.openmarkov.core.exception.InvalidArgumentException;
+
 import java.util.Random;
 
 @ProbDensFunctionType(name = "Exact", isValidForNumeric = true, parameters = "nu")
@@ -36,8 +38,10 @@ public class ExactFunction extends ProbDensFunction {
 	}
 
 	//CMF
-	@Override public boolean verifyParametersDomain(boolean isChanceVariable) {
-		return ((!isChanceVariable) || ((0 <= nu) && (nu <= 1)));
+    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+        if (!((!isChanceVariable) || ((0 <= nu) && (nu <= 1)))) {
+            throw new InvalidArgumentException("ExactFunction can only work with chance variables when nu is in range (0..1) (It currently is " + nu + ")");
+        }
 	}
 
 	/**

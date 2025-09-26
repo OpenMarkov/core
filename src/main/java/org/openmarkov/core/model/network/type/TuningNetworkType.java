@@ -11,11 +11,11 @@ import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.NoLinkRestriction;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
-@ProbNetType(name = "TuningNetwork") public class TuningNetworkType extends NetworkType {
+@ProbNetType(name = "TuningNetwork") public final class TuningNetworkType extends NetworkType {
     private static final TuningNetworkType INSTANCE = new TuningNetworkType();
 
 	// Constructor
-	protected TuningNetworkType() {
+    private TuningNetworkType() {
 		super();
 		overrideConstraintBehavior(NoLinkRestriction.class, ConstraintBehavior.NO);
 	}

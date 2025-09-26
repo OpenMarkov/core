@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.potential.treeadd;
 
+import org.openmarkov.core.localize.ClassLocalizable;
+
 /**
  * A threshold is defined by a float value and a boolean that indicates if the
  * value delimits a closed or an open interval on the left and on the right
@@ -16,7 +18,7 @@ package org.openmarkov.core.model.network.potential.treeadd;
  *
  * @author myebra
  */
-public class Threshold {
+public class Threshold implements Cloneable, ClassLocalizable {
 
 	private double limit;
 	private boolean belongsToLeft; // if true --&gt; ](; if false --&gt; )[;
@@ -62,5 +64,12 @@ public class Threshold {
 	public boolean equals(Threshold threshold) {
 		return limit == threshold.getLimit() && belongsToLeft == threshold.belongsToLeft();
 	}
-
+    
+    @Override protected Threshold clone() throws CloneNotSupportedException {
+        return new Threshold(this);
+    }
+    
+    @Override public String toString() {
+        return this.localize();
+    }
 }

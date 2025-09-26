@@ -6,13 +6,16 @@
  */
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.localize.Localizable;
+import org.openmarkov.core.stringformat.LocalizationFormatter;
 import org.openmarkov.java.enumUtils.EnumUtils;
 
 /**
  * @author marias
  * @version 1.0
  */
-public enum PotentialRole {
+public enum PotentialRole implements Localizable {
     
     CONDITIONAL_PROBABILITY,
     JOINT_PROBABILITY,
@@ -29,6 +32,13 @@ public enum PotentialRole {
     public String toString() {
         return EnumUtils.toCamelCase(this);
 	}
-
-
+    
+    
+    @Override public @NotNull String path() {
+        return "";
+    }
+    
+    @Override public @NotNull String localize(LocalizationFormatter formatter) {
+        return this.toString();
+    }
 }

@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import org.openmarkov.core.exception.InvalidArgumentException;
+
 import java.util.Random;
 
 /**
@@ -66,9 +68,9 @@ public class UncertainValue {
 	public ProbDensFunction getProbDensFunction() {
 		return probDensFunction;
 	}
-
-	public boolean verifyParametersDomain(boolean isChanceVariable) {
-		return probDensFunction.verifyParametersDomain(isChanceVariable);
+    
+    public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+        probDensFunction.verifyParametersDomain(isChanceVariable);
 	}
 
 	public double getSample(Random randomGenerator) {

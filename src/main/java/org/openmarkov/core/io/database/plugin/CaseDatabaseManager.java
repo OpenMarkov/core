@@ -7,8 +7,11 @@
 package org.openmarkov.core.io.database.plugin;
 
 import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
 import org.openmarkov.core.io.database.CaseDatabaseWriter;
+import org.openmarkov.core.io.exception.NoReaderForExtension;
+import org.openmarkov.core.io.exception.NoWriterForExtensionException;
 import org.openmarkov.plugin.PluginSearch;
 
 import java.lang.reflect.InvocationTargetException;
@@ -27,11 +30,11 @@ public class CaseDatabaseManager {
     /**
      * The list of case database reader plugins detected in the project
      */
-    private HashMap<String, Class<?>> readerPlugins;
+    private HashMap<String, Class<CaseDatabaseReader>> readerPlugins;
     /**
      * The list of case database writer plugins detected in the project
      */
-    private HashMap<String, Class<?>> writerPlugins;
+    private HashMap<String, Class<CaseDatabaseWriter>> writerPlugins;
     
     /**
      * Gets a FormatManager instance
@@ -57,34 +60,45 @@ public class CaseDatabaseManager {
     
     private static @NotNull Stream<Class<CaseDatabaseWriter>> findAllWriterPlugins() {
         return PluginSearch.init().annotatedWith(CaseDatabaseFormat.class)
-                .childrenOf(CaseDatabaseWriter.class)
-                .stream();
+                           .childrenOf(CaseDatabaseWriter.class)
+                           .stream();
     }
     
     /**
      * Gets the writer with the extension
      *
      * @param extension the extension required
+     *
      * @return a CaseDatabaseWriter object
      */
-    public CaseDatabaseWriter getWriter(String extension) {
+    public CaseDatabaseWriter getWriter(String extension) throws NoReaderForExtension {
         try {
-            return (CaseDatabaseWriter) writerPlugins.get(extension).getDeclaredConstructor().newInstance();
+            Class<CaseDatabaseWriter> writerClass = this.writerPlugins.get(extension);
+            if (writerClass == null) {
+                throw new NoReaderForExtension(extension);
+            }
+            return writerClass.getDeclaredConstructor().newInstance();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
-                 InvocationTargetException ignored) {
-            return null;
+                 InvocationTargetException e) {
+            throw new UnreacheableException(e);
         }
     }
     
     /**
      * @param extension the extension required
+     *
      * @return a CaseDatabaseReader object
      */
-    public CaseDatabaseReader getReader(String extension) {
+    public CaseDatabaseReader getReader(String extension) throws NoWriterForExtensionException {
         try {
-            return (CaseDatabaseReader) readerPlugins.get(extension).getDeclaredConstructor().newInstance();
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ignored) {
-            return null;
+            Class<CaseDatabaseReader> readerClass = readerPlugins.get(extension);
+            if (readerClass == null) {
+                throw new NoWriterForExtensionException(extension);
+            }
+            return readerClass.getDeclaredConstructor().newInstance();
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
+            throw new UnreacheableException(e);
         }
     }
     

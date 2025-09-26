@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network;
 
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.InvalidArgumentException;
+import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.java.cloneUtils.CloneUtils;
@@ -32,7 +33,7 @@ import java.util.stream.IntStream;
  * @see org.openmarkov.core.model.network.Node
  * @see org.openmarkov.core.model.network.ProbNet
  */
-public class Variable implements Cloneable, Comparable<Variable> {
+public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizable {
     
     // Constant
     /**
@@ -225,7 +226,7 @@ public class Variable implements Cloneable, Comparable<Variable> {
     
     // Methods
     
-    @Override protected Variable clone() {
+    @Override public Variable clone() {
         return new Variable(this);
     }
     

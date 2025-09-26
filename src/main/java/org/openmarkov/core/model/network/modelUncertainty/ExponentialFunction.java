@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+import org.openmarkov.core.exception.InvalidArgumentException;
+
 public class ExponentialFunction extends ProbDensFunctionWithKnownInverseCDF {
 	private double lambda;
 
@@ -46,9 +48,11 @@ public class ExponentialFunction extends ProbDensFunctionWithKnownInverseCDF {
 	@Override public void setParameters(double[] params) {
 		lambda = params[0];
 	}
-
-	@Override public boolean verifyParametersDomain(boolean isChanceVariable) {
-		return (lambda > 0);
+    
+    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+        if (lambda <= 0) {
+            throw new InvalidArgumentException(lambda, "lambda", "should be a number bigger than 0");
+        }
 	}
 
 	@Override public double getMean() {

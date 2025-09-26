@@ -57,8 +57,7 @@ import java.util.List;
 	}
 
 	@Override protected String constraintDescription() {
-		return "there is at least one utility variable without "
-				+ "utility potential or there are no utility potentials";
+        return "there is at least one utility variable without utility potential or there are no utility potentials";
 	}
 
 }

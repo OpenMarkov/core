@@ -48,9 +48,11 @@ import java.util.Random;
 
 	//CMI
 	//For Univariate
-
-	@Override public boolean verifyParametersDomain(boolean isChanceVariable) {
-		return (sigma > 0);
+    
+    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+        if (sigma <= 0) {
+            throw new InvalidArgumentException(sigma, "sigma", "should be a number bigger than 0");
+        }
 	}
 	//CMF
 

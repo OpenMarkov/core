@@ -8,13 +8,11 @@
 package org.openmarkov.core.model.network;
 
 import org.openmarkov.core.exception.CostEffectivenessException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * A CEP is a set of <b>n</b> intervals, each one with a cost, an effectiveness and possibly, an intervention.
@@ -23,7 +21,51 @@ import java.util.List;
  *
  * @author Manuel Arias
  */
-public class CEP {
+public class CEP implements Cloneable {
+    
+    public static final class CEPBuilder {
+        
+        private double minThreshold = CEP.DEFAULT_MINIMAL_THRESHOLD;
+        private double maxThreshold = CEP.DEFAULT_MAXIMAL_THRESHOLD;
+        
+        private ArrayList<StrategyTree> strategyTrees = new ArrayList<>();
+        private ArrayList<Double> costs = new ArrayList<>();
+        private ArrayList<Double> effectivities = new ArrayList<>();
+        private ArrayList<Double> thresholds = new ArrayList<>();
+        
+        public CEPBuilder thresholdBounds(double minThreshold, double maxThreshold) {
+            this.minThreshold = minThreshold;
+            this.maxThreshold = maxThreshold;
+            return this;
+        }
+        
+        public CEPBuilder addRow(StrategyTree strategyTree, double cost, double effectivity, double thresholds) {
+            this.strategyTrees.add(strategyTree);
+            this.costs.add(cost);
+            this.effectivities.add(effectivity);
+            this.thresholds.add(thresholds);
+            return this;
+        }
+        
+        public CEP build(StrategyTree strategyTree, double cost, double effectivity) {
+            this.strategyTrees.add(strategyTree);
+            this.costs.add(cost);
+            this.effectivities.add(effectivity);
+            try {
+                return new CEP(
+                        this.strategyTrees.stream().toArray(StrategyTree[]::new),
+                        this.costs.stream().mapToDouble(Double::doubleValue).toArray(),
+                        this.effectivities.stream().mapToDouble(Double::doubleValue).toArray(),
+                        this.thresholds.stream().mapToDouble(Double::doubleValue).toArray(),
+                        this.minThreshold,
+                        this.maxThreshold
+                );
+            } catch (CostEffectivenessException.WrongNumberOfThresholds |
+                     CostEffectivenessException.WrongNumberOfCostsEffectivitiesAndInterventions e) {
+                throw new UnreacheableException(e);
+            }
+        }
+    }
     
     /**
      * Used to save memory and time in case of partitions corresponding to configurations with zero probability.
@@ -35,6 +77,7 @@ public class CEP {
     DecimalFormat decimalFormat2afterComa = new DecimalFormat("#.##");
     DecimalFormat decimalFormat1afterComa = new DecimalFormat("#.#");
     DecimalFormat decimalFormatNoDecimalsAfterComa = new DecimalFormat("#");
+    
     // Attributes
     private double[] costs;
     private double[] effectivities;
@@ -49,6 +92,15 @@ public class CEP {
      * Divisions between intervals.
      */
     private double[] thresholds;
+    
+    public void setMinThreshold(double minThreshold) {
+        this.minThreshold = minThreshold;
+    }
+    
+    public void setMaxThreshold(double maxThreshold) {
+        this.maxThreshold = maxThreshold;
+    }
+    
     private double minThreshold;
     private double maxThreshold;
     /**
@@ -62,17 +114,21 @@ public class CEP {
     private int indentLevel; // TODO Remove?
     
     /**
-     * @param strategyTrees {@code Intervention[]}
+     * @param strategyTrees {@code Potential[]}
      * @param costs         {@code double[]}
      * @param effectivities {@code double[]}
      * @param thresholds    {@code double[]}
+     * @param minThreshold  {@code double}
+     * @param maxThreshold  {@code double}
      *
      * @throws CostEffectivenessException CostEffectivenessException
      */
-    public CEP(StrategyTree[] strategyTrees, double[] costs, double[] effectivities, double[] thresholds)
+    public CEP(
+            StrategyTree[] strategyTrees, double[] costs, double[] effectivities, double[] thresholds,
+            double minThreshold, double maxThreshold)
             throws CostEffectivenessException.WrongNumberOfThresholds, CostEffectivenessException.WrongNumberOfCostsEffectivitiesAndInterventions {
-        this.minThreshold = CEP.DEFAULT_MINIMAL_THRESHOLD;
-        this.maxThreshold = CEP.DEFAULT_MAXIMAL_THRESHOLD;
+        this.minThreshold = minThreshold;
+        this.maxThreshold = maxThreshold;
         if (!(costs.length == effectivities.length && costs.length == strategyTrees.length)) {
             throw new CostEffectivenessException.WrongNumberOfCostsEffectivitiesAndInterventions(costs, effectivities, strategyTrees);
         }
@@ -86,44 +142,6 @@ public class CEP {
         this.costs = costs;
         this.effectivities = effectivities;
         this.strategyTrees = strategyTrees;
-    }
-    
-    /**
-     * Creates a partition with only one interval
-     *
-     * @param strategyTree  {@code Potential}
-     * @param cost          {@code double}
-     * @param effectiveness {@code double}
-     * @param minThreshold  {@code double}
-     * @param maxThreshold  {@code double}
-     */
-    public CEP(StrategyTree strategyTree, double cost, double effectiveness, double minThreshold, double maxThreshold) {
-        
-        costs = new double[]{cost};
-        effectivities = new double[]{effectiveness};
-        thresholds = new double[0];
-        if (strategyTree != null) {
-            this.strategyTrees = new StrategyTree[]{strategyTree};
-        }
-        this.minThreshold = minThreshold;
-        this.maxThreshold = maxThreshold;
-    }
-    
-    /**
-     * @param strategyTrees {@code Potential[]}
-     * @param costs         {@code double[]}
-     * @param effectivities {@code double[]}
-     * @param thresholds    {@code double[]}
-     * @param minThreshold  {@code double}
-     * @param maxThreshold  {@code double}
-     *
-     * @throws CostEffectivenessException CostEffectivenessException
-     */
-    public CEP(StrategyTree[] strategyTrees, double[] costs, double[] effectivities, double[] thresholds,
-               double minThreshold, double maxThreshold) throws CostEffectivenessException.WrongNumberOfThresholds, CostEffectivenessException.WrongNumberOfCostsEffectivitiesAndInterventions {
-        this(strategyTrees, costs, effectivities, thresholds);
-        this.minThreshold = minThreshold;
-        this.maxThreshold = maxThreshold;
     }
     
     /**
@@ -473,5 +491,19 @@ public class CEP {
             return areEquals;
         }
         return false;
+    }
+    
+    @Override public CEP clone() {
+        var newCEP = new CEP();
+        newCEP.costs = Arrays.stream(this.costs).toArray();
+        newCEP.effectivities = Arrays.stream(this.effectivities).toArray();
+        newCEP.strategyTrees = Arrays.stream(this.strategyTrees).toArray(StrategyTree[]::new);
+        newCEP.thresholds = Arrays.stream(this.thresholds).toArray();
+        newCEP.minThreshold = this.minThreshold;
+        newCEP.maxThreshold = this.maxThreshold;
+        newCEP.zeroProbability = this.zeroProbability;
+        newCEP.indent = this.indent;
+        newCEP.indentLevel = this.indentLevel;
+        return newCEP;
     }
 }

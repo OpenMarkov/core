@@ -13,7 +13,7 @@ import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 import org.openmarkov.core.model.network.type.plugin.ProbNetType;
 
 @ProbNetType(name = "MID", alternativeNames = "MPAD")
-public class MIDType extends NetworkType {
+public final class MIDType extends NetworkType {
 	// Attributes
     private static final MIDType INSTANCE = new MIDType();
 

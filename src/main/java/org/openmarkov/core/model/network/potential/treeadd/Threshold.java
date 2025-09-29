@@ -65,7 +65,7 @@ public class Threshold implements Cloneable, ClassLocalizable {
 		return limit == threshold.getLimit() && belongsToLeft == threshold.belongsToLeft();
 	}
     
-    @Override protected Threshold clone() throws CloneNotSupportedException {
+    @Override protected Threshold clone() {
         return new Threshold(this);
     }
     

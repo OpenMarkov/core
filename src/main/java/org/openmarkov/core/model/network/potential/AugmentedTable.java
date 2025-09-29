@@ -27,6 +27,7 @@ public class AugmentedTable extends TablePotential {
     private String[] functionValues;
     
     /*Note should be discrete variables*/
+    @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     public AugmentedTable(List<Variable> stateVariables, PotentialRole role) {
         super(stateVariables, role);
         int numVariables = (stateVariables != null) ? stateVariables.size() : 0;

@@ -101,8 +101,8 @@ public class TaskUtilities {
 	// UtilityOperations.ceUtilityUnscaling(probNet);
 	// return probNet;
 	// }
-
-	public static ProbNet discretizeNonObservedNumericVariables(ProbNet probNet, EvidenceCase preResolutionEvidence) {
+    
+    public static ProbNet discretizeNonObservedNumericVariables(ProbNet probNet, EvidenceCase preResolutionEvidence) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
 		return ProbNetOperations.convertNumericalVariablesToFS(probNet, preResolutionEvidence);
 	}
 

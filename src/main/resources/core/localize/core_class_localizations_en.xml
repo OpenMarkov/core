@@ -161,4 +161,6 @@
     <Localization class="org.openmarkov.learning.core.exception.UnobservedVariablesException" value="Algorithm {algorithmType.name} does not support unobserved variables, which are: {unobservedVariables}"/>
     <Localization class="org.openmarkov.learning.core.constraint.ModelNetworkConstraint"
                   value="Tried to add, remove or invert the wrong link"/>
+    <Localization class="org.openmarkov.core.io.format.annotation.NoReaderForFileException"
+                  value="There is no reader for files of extension {fileExtension} in version {fileVersion}.\nThis happened trying to read the file located at {url}."/>
 </ClassLocalizations>

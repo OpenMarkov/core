@@ -594,7 +594,7 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
                 try {
                     timeSlice = Integer.parseInt((String) variableName.subSequence(firstNumber, lastClosedBracket));
                 } catch (NumberFormatException e) {
-                    // There is not a number between brackets
+                    //TODO: There is not a number between brackets
                 }
             }
         } else {

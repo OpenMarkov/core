@@ -1,6 +1,8 @@
 package org.openmarkov.core.inference.tasks;
 
 import org.openmarkov.core.dt.DecisionTreeNode;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 
 public interface GenerateDecisionTree extends Task {
@@ -9,6 +11,6 @@ public interface GenerateDecisionTree extends Task {
 	 * @return the decision tree
 	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
-    DecisionTreeNode getDecisionTree() throws NotEvaluableNetworkException;
+    DecisionTreeNode getDecisionTree() throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException;
 
 }

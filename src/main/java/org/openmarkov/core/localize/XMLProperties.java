@@ -14,6 +14,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.openmarkov.core.exception.UnreacheableException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -129,8 +130,8 @@ import java.util.Properties;
     @Deprecated @Override public void save(OutputStream out, String header) {
 		try {
 			store(out, header);
-		} catch (IOException ignored) {
-			// Deprecated version doesn't pass errors
+        } catch (IOException e) {
+            throw new UnreacheableException(e);
 		}
 	}
 

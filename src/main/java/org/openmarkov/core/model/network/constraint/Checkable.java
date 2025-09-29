@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 
 public interface Checkable {
@@ -28,6 +29,6 @@ public interface Checkable {
 	 * condition after applying the {@code edit} in a
 	 * {@code ProbNet} that previously fulfilled the constraint.
 	 */
-	boolean checkEdit(ProbNet probNet, PNEdit edit);
+    boolean checkEdit(ProbNet probNet, PNEdit edit);
 
 }

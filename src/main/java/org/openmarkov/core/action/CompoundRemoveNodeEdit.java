@@ -63,8 +63,8 @@ import java.util.List;
 		this.nodeType = probNet.getNode(variable).getNodeType();
 		this.logger = LogManager.getLogger(CompoundPNEdit.class);
 	}
-
-	@Override public void generateEdits() {
+    
+    @Override public void generateEdits() throws NotSupportedOperationException {
 		Node node = probNet.getNode(variable);
 
 		// gets neighbors of this node
@@ -78,14 +78,9 @@ import java.util.List;
 		for (Potential pot : probNet.getPotentials(variable)) {
 			potentialsVariable.add((TablePotential) pot);
 		}
-
-		Potential newPotential = null;
-		try {
-			// ... multiply and eliminate the variable
-			newPotential = PotentialOperations.multiplyAndEliminate(potentialsVariable, variable);
-		} catch (NotSupportedOperationException e) {
-			logger.fatal(e);
-		}
+        
+        // ... multiply and eliminate the variable
+        Potential newPotential = PotentialOperations.multiplyAndEliminate(potentialsVariable, variable);
 
 		List<Variable> variablesNewPotential = newPotential.getVariables();
         if (variablesNewPotential != null && !variablesNewPotential.isEmpty()) {

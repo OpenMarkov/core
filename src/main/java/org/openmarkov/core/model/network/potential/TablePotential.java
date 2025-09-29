@@ -81,6 +81,7 @@ import java.util.*;
      *                  {@code TablePotential}.
      * @param role      . {@code PotentialRole}
      */
+    @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     public TablePotential(List<Variable> variables, PotentialRole role) {
         super(variables, role);
         int numVariables = (variables != null) ? variables.size() : 0;
@@ -983,38 +984,40 @@ import java.util.*;
     
     // TODO revisar para que no use tableProject(...)
     @Override public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
-        Collection<Finding> inducedFindings = new ArrayList<>();
-        if (role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.POLICY) {
-            // Iterates over the list of parents. If some parent is not in the
-            // evidence case, it is not possible to induce a new Finding
-            for (int i = 1; i < variables.size(); i++) {
-                if (!evidenceCase.contains(variables.get(i))) {
-                    // returnS the empty list
-                    return inducedFindings;
+        ArrayList<Finding> inducedFindings = new ArrayList<>();
+        if (role != PotentialRole.CONDITIONAL_PROBABILITY && role != PotentialRole.POLICY) {
+            return inducedFindings;
+        }
+        // Iterates over the list of parents. If some parent is not in the
+        // evidence case, it is not possible to induce a new Finding
+        for (int i = 1; i < variables.size(); i++) {
+            if (!evidenceCase.contains(variables.get(i))) {
+                // returnS the empty list
+                return inducedFindings;
+            }
+        }
+        // Checks if the projected potentials are deterministic
+        TablePotential projectedPotential = null;
+        try {
+            projectedPotential = tableProject(evidenceCase, null).get(0);
+        } catch (NonProjectablePotentialException e) {
+            throw new UnreacheableException(e);
+        }
+        if (projectedPotential.getNumVariables() == 1) {
+            double[] table = projectedPotential.values;
+            int zeros = 0;
+            int position = 0;
+            for (int i = 0; i < table.length; i++) {
+                if (table[i] == 0.0) {
+                    zeros++;
+                } else {
+                    position = i;
                 }
             }
-            // Checks if the projected potentials are deterministic
-            try {
-                TablePotential projectedPotential = tableProject(evidenceCase, null).get(0);
-                if (projectedPotential.getNumVariables() == 1) {
-                    double[] table = projectedPotential.values;
-                    int zeros = 0;
-                    int position = 0;
-                    for (int i = 0; i < table.length; i++) {
-                        if (table[i] == 0.0) {
-                            zeros++;
-                        } else {
-                            position = i;
-                        }
-                    }
-                    if (zeros == (table.length - 1)) {// new finding
-                        inducedFindings.add(new Finding(projectedPotential.getVariable(0), position));
-                    }
-                    
-                }
-            } catch (NonProjectablePotentialException e) {
-                e.printStackTrace();
+            if (zeros == (table.length - 1)) {// new finding
+                inducedFindings.add(new Finding(projectedPotential.getVariable(0), position));
             }
+            
         }
         return inducedFindings;
     }

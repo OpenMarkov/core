@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
@@ -103,7 +104,7 @@ public class ProbNetOperationsTest {
     }
     
     @Test
-    public void testPrune1() {
+    public void testPrune1() throws NonProjectablePotentialException {
         //probNet peque
         //Variables
         String aName = new String("A");
@@ -198,7 +199,7 @@ public class ProbNetOperationsTest {
     @Test
     /** Test: prune barren nodes and prune parts of the network isolated due to
      *  evidence. */
-    public void testPrune2() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+    public void testPrune2() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         /** ProbNet for test: Two chance nodes A --> B, one decision D, B --> D;
          * one utility U, A --> U, D --> U. */
         Variable variableA = new Variable("A", 2);
@@ -500,7 +501,7 @@ public class ProbNetOperationsTest {
     
     @Disabled("Last check expects for the Potential to be a TablePotential, but it is WeibullHazardPotential")
     @Test
-    public final void testConvertNumericalVariablesToFS() {
+    public final void testConvertNumericalVariablesToFS() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         //Initialize network
         ProbNet probNet = new ProbNet(MIDType.getUniqueInstance());
         //Declare variables

@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.model.network;
 
-import org.openmarkov.core.exception.InvalidNetworkTypeException;
-import org.openmarkov.core.exception.NotSupportedOperationException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.inference.tasks.TaskUtilities;
 import org.openmarkov.core.model.network.potential.*;
@@ -444,7 +442,7 @@ public class TemporalNetOperations {
      *
      * @throws UnsupportedOperationException - when probNet is not an MID, the network cannot be expanded.
      */
-    public static ProbNet expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence, String networkName) throws NotSupportedOperationException {
+    public static ProbNet expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence, String networkName) throws NotSupportedOperationException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         //FIXME hardcoded
         if (!(probNet.getNetworkType() instanceof MIDType)) {
             throw new NotSupportedOperationException("Network has to be an MID");

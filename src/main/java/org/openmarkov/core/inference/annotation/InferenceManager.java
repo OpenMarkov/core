@@ -8,6 +8,8 @@
 package org.openmarkov.core.inference.annotation;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.annotation.ToCheck;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
@@ -87,6 +89,7 @@ public class InferenceManager {
         for (String algorithmName : this.inferenceAlgorithms.keySet()) {
             Constructor<? extends InferenceAlgorithm> constructor;
             Method checkEval;
+            @ToCheck(reasonKind = ToCheck.ReasonKind.CODE_QUALITY, reasonDescription = "isEvaluable is always true")
             boolean isEvaluable = true;
             try {
                 Class<? extends InferenceAlgorithm> inferenceAlgorithmClass = this.inferenceAlgorithms
@@ -119,35 +122,37 @@ public class InferenceManager {
      * @throws NotEvaluableNetworkException NotEvaluableNetworkException
      * @throws NoSuchMethodException        NoSuchMethodException
      */
-    public InferenceAlgorithm getInferenceAlgorithmByName(String algorithmName, ProbNet probNet)
+    public @Nullable InferenceAlgorithm getInferenceAlgorithmByName(String algorithmName, ProbNet probNet)
             throws NotEvaluableNetworkException, NoSuchMethodException {
         InferenceAlgorithm instance = null;
         Constructor<? extends InferenceAlgorithm> constructor = null;
         Class<? extends InferenceAlgorithm> inferenceAlgorithmClass = inferenceAlgorithms.get(algorithmName);
-        Method checkEval = null;
+        Method checkEval;
         try {
             constructor = inferenceAlgorithmClass.getConstructor(ProbNet.class);
             checkEval = inferenceAlgorithmClass.getMethod("checkEvaluability", ProbNet.class);
         } catch (SecurityException e1) {
-            e1.printStackTrace();
+            return null;
         }
-        if (constructor != null) {
-            try {
-                checkEval.invoke(inferenceAlgorithms.get(algorithmName), probNet);
-            } catch (InvocationTargetException e) {
-                Throwable targetExcep = e.getTargetException();
-                if (targetExcep instanceof NotEvaluableNetworkException notEvaluableNetworkException) {
-                    throw notEvaluableNetworkException;
-                }
-            } catch (IllegalAccessException | IllegalArgumentException e) {
-                e.printStackTrace();
+        if (constructor == null) {
+            return null;
+        }
+        try {
+            checkEval.invoke(inferenceAlgorithms.get(algorithmName), probNet);
+        } catch (InvocationTargetException e) {
+            Throwable targetExcep = e.getTargetException();
+            if (targetExcep instanceof NotEvaluableNetworkException notEvaluableNetworkException) {
+                //noinspection ThrowInsideCatchBlockWhichIgnoresCaughtException
+                throw notEvaluableNetworkException;
             }
-            try {
-                instance = constructor.newInstance(probNet);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
-                     InvocationTargetException e) {
-                e.printStackTrace();
-            }
+        } catch (IllegalAccessException | IllegalArgumentException e) {
+            throw new UnreacheableException(e);
+        }
+        try {
+            instance = constructor.newInstance(probNet);
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
+                 InvocationTargetException e) {
+            throw new UnreacheableException(e);
         }
         return instance;
     }
@@ -177,9 +182,7 @@ public class InferenceManager {
                 }
             }
         } catch (SecurityException | NoSuchMethodException e) {
-            // This should not be the case as we are hard coding to an algorithm
-            // that should have a public constructor
-            e.printStackTrace();
+            throw new UnreacheableException(e);
         }
         return defaultAlgorithm;
     }
@@ -199,7 +202,7 @@ public class InferenceManager {
         } catch (SecurityException | NoSuchMethodException e) {
             // This should not be the case as we are hard coding to an algorithm
             // that should have a public constructor
-            e.printStackTrace();
+            throw new UnreacheableException(e);
         }
         return defaultAlgorithm;
     }

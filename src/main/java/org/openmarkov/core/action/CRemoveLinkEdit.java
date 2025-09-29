@@ -47,7 +47,7 @@ import java.util.List;
 	}
 
 	// Methods
-	@Override public void generateEdits() {
+    @Override public void generateEdits() throws NotSupportedOperationException {
 		if (isDirected) {
 			generateEditsDirectedLink();
 		} else {
@@ -58,8 +58,8 @@ import java.util.List;
 	private void generateEditsUndirectedLink() {
 		addEdit(new RemoveLinkEdit(probNet, variable1, variable2, isDirected));
 	}
-
-	private void generateEditsDirectedLink() {
+    
+    private void generateEditsDirectedLink() throws NotSupportedOperationException {
 		Node node2 = probNet.getNode(variable2);
 		List<Potential> potentials = node2.getPotentials();
 		for (Potential potential : potentials) {
@@ -67,12 +67,8 @@ import java.util.List;
 			if (potentialVariables.contains(variable1)) {
 				potentialVariables = new ArrayList<>(potentialVariables);
 				potentialVariables.remove(variable1);
-				try {
 					Potential marginalizedPotential = PotentialOperations.marginalize(potential, potentialVariables);
 					addEdit(new PotentialChangeEdit(probNet, marginalizedPotential, potential));
-				} catch (NotSupportedOperationException e) {
-					logger.fatal(e);
-				}
 			}
 		}
 		addEdit(new RemoveLinkEdit(probNet, variable1, variable2, isDirected));

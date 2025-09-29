@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.inference.tasks;
 
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -20,9 +21,9 @@ import java.util.HashMap;
 public interface OptimalPolicies extends Task {
 
 	HashMap<Variable, Potential> getOptimalPolicies()
-			throws NonProjectablePotentialException;
+            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther;
 
 	Potential getOptimalPolicy(Variable decision)
-			throws NonProjectablePotentialException;
+            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther;
 
 }

@@ -8,6 +8,7 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 
 import javax.swing.event.UndoableEditEvent;
@@ -201,13 +202,11 @@ public class PNESupport extends UndoableEditSupport {
 	public void openParenthesis() {
 		if (withUndo) {
 			OpenParenthesisEdit openParenthesisEdit = new OpenParenthesisEdit();
-
 			try {
 				this.doEdit(openParenthesisEdit);
 				openParenthesisStack.push(openParenthesisEdit);
 			} catch (DoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+                throw new UnreacheableException(e);
 			}
             /*
         	openParenthesis = true;
@@ -226,12 +225,10 @@ public class PNESupport extends UndoableEditSupport {
 			OpenParenthesisEdit openParenthesisEdit = openParenthesisStack.pop();
 			// Associate the openParenthesis to the close parenthesis
 			CloseParenthesisEdit closeParenthesisEdit = new CloseParenthesisEdit(openParenthesisEdit);
-
 			try {
 				this.doEdit(closeParenthesisEdit);
 			} catch (DoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+                throw new UnreacheableException(e);
 			}
 			if (undoManagerSupport.getEditsSize()<=2){
 				undoManagerSupport.deleteEdits(undoManagerSupport.getEditsSize());

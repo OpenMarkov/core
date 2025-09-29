@@ -13,13 +13,12 @@ import org.openmarkov.core.annotation.RequiredConstructor;
 import org.openmarkov.core.annotation.SelfClass;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.localize.Localizable;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.stringformat.LocalizationFormatter;
-import org.openmarkov.core.stringformat.StringFormat;
 import org.openmarkov.java.cloneUtils.CloneUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -573,7 +572,14 @@ public abstract class Potential implements Localizable {
      * @return A deep copy of the potential
      */
     public Potential deepCopy(ProbNet copyNet) {
-        Potential potential = newInstance();
+        Potential potential = null;
+        try {
+            //this creates an instance of the subclass
+            potential = this.getClass().getConstructor(this.getClass()).newInstance(this);
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
+                 InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            throw new UnreacheableException(e);
+        }
         
         List<Variable> newReferences = new ArrayList<>();
         for (Variable variable : this.variables) {
@@ -585,17 +591,6 @@ public abstract class Potential implements Localizable {
         potential.setComment(this.comment);
         
         return potential;
-    }
-    
-    private Potential newInstance() {
-        try {
-            //this creates an instance of the subclass
-            return this.getClass().getConstructor(this.getClass()).newInstance(this);
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
-                 InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
     
     public Criterion getCriterion() {

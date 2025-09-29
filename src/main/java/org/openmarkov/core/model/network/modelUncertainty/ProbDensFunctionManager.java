@@ -7,6 +7,7 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.plugin.PluginSearch;
 
 import java.lang.reflect.InvocationTargetException;
@@ -129,15 +130,14 @@ public class ProbDensFunctionManager {
     
     public ProbDensFunction newInstance(String functionName, double[] parameters) {
         Class<ProbDensFunction> probDensFunctionClass = probDensFunctions.get(functionName);
-        ProbDensFunction newInstance = null;
         try {
-            newInstance = probDensFunctionClass.getDeclaredConstructor().newInstance();
+            ProbDensFunction newInstance = probDensFunctionClass.getDeclaredConstructor().newInstance();
             newInstance.setParameters(parameters);
+            return newInstance;
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
                  InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
+            throw new UnrecoverableException(e);
         }
-        return newInstance;
     }
     
     private static @NotNull Stream<Class<ProbDensFunction>> findAllProbDensFunctions() {

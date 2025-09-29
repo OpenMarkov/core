@@ -823,12 +823,8 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
         } else {
             for (TreeADDBranch branch : branches) {
                 for (State state : branch.getStates()) {
-                    try {
-                        evidenceCase.changeFinding(new Finding(topVariable, state));
-                        fillPotential(tablePotential, evidenceCase, branch.getPotential());
-                    } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
-                        e.printStackTrace();
-                    }
+                    evidenceCase.changeFinding(new Finding(topVariable, state));
+                    fillPotential(tablePotential, evidenceCase, branch.getPotential());
                 }
             }
         }
@@ -843,19 +839,14 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
             Variable variable = variables.get(0);
             int numStates = variable.getNumStates();
             for (int i = 0; i < numStates; i++) {
-                try {
-                    evidenceCase.changeFinding(new Finding(variable, i));
-                    fillCompatibleConfigurations(tablePotential, evidenceCase);
-                } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
-                    e.printStackTrace();
-                }
+                evidenceCase.changeFinding(new Finding(variable, i));
+                fillCompatibleConfigurations(tablePotential, evidenceCase);
             }
         }
     }
     
     @Override public StrategyTree clone() {
-        StrategyTree res = new StrategyTree(this);
-        return res;
+        return new StrategyTree(this);
     }
     
     private StrategyTree(StrategyTree strategyTree) {

@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.type.MIDType;
@@ -123,11 +124,14 @@ public class EvidenceCase implements ClassLocalizable {
     /**
      * @param finding . {@code Finding}.
      *
-     * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
-    public void changeFinding(Finding finding) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
-        findings.remove(finding.getVariable());
-        addFinding(finding);
+    public void changeFinding(Finding finding) {
+        try {
+            findings.remove(finding.getVariable());
+            addFinding(finding);
+        } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
+            throw new UnrecoverableException(e);
+        }
     }
     
     /**
@@ -302,28 +306,26 @@ public class EvidenceCase implements ClassLocalizable {
      * @param probNet Network
      */
     public void extendEvidence(ProbNet probNet) {
-        
-        if (probNet.getNetworkType() == MIDType.getUniqueInstance()) {
-            
-            for (Potential potential : probNet.getPotentials()) {
+        if (probNet.getNetworkType() != MIDType.getUniqueInstance()) {
+            return;
+        }
+        for (Potential potential : probNet.getPotentials()) {
+            List<Finding> newFindings = (List<Finding>) potential.getInducedFindings(this);
+            for (Finding newFinding : newFindings) {
+                findings.put(newFinding.getVariable(), newFinding);
+            }
+        }
+        Queue<Finding> pendingFindings = new LinkedList<>(findings.values());
+        while (!pendingFindings.isEmpty()) {
+            Finding oldFinding = pendingFindings.poll();
+            Variable oldVariable = oldFinding.getVariable();
+            List<Potential> potentials = probNet.getPotentials(oldVariable);
+            for (Potential potential : potentials) {
                 List<Finding> newFindings = (List<Finding>) potential.getInducedFindings(this);
                 for (Finding newFinding : newFindings) {
-                    findings.put(newFinding.getVariable(), newFinding);
-                }
-            }
-            
-            Queue<Finding> pendingFindings = new LinkedList<>(findings.values());
-            while (!pendingFindings.isEmpty()) {
-                Finding oldFinding = pendingFindings.poll();
-                Variable oldVariable = oldFinding.getVariable();
-                List<Potential> potentials = probNet.getPotentials(oldVariable);
-                for (Potential potential : potentials) {
-                    List<Finding> newFindings = (List<Finding>) potential.getInducedFindings(this);
-                    for (Finding newFinding : newFindings) {
-                        if (!findings.containsKey(newFinding.getVariable())) {
-                            findings.put(newFinding.getVariable(), newFinding);
-                            pendingFindings.add(newFinding);
-                        }
+                    if (!findings.containsKey(newFinding.getVariable())) {
+                        findings.put(newFinding.getVariable(), newFinding);
+                        pendingFindings.add(newFinding);
                     }
                 }
             }

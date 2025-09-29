@@ -7,7 +7,10 @@
 
 package org.openmarkov.core.action;
 
+import org.openmarkov.core.annotation.ToCheck;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.ProbNet;
 
 import javax.swing.undo.CompoundEdit;
@@ -44,8 +47,12 @@ import java.util.Vector;
 	 */
 	@Override public void doEdit() throws DoEditException {
 		if (!generatedEdits) {
-			generateEdits();
-			generatedEdits = true;
+            try {
+                generateEdits();
+            } catch (NotSupportedOperationException e) {
+                throw new DoEditException.CannotDoEditException(e);
+            }
+            generatedEdits = true;
 		}
 		for (UndoableEdit edit : edits) {
 			((PNEdit) edit).doEdit();
@@ -58,16 +65,25 @@ import java.util.Vector;
 		this.doEdit();
 		PNEdit.endEdit(this);
 	}
-
-	public abstract void generateEdits();
+    
+    public abstract void generateEdits() throws NotSupportedOperationException;
 
 	/**
 	 * @return {@code Vector} of {@code UndoableEdit}s
 	 */
 	public Vector<UndoableEdit> getEdits() {
 		if (!generatedEdits) {
-			generateEdits();
-			generatedEdits = true;
+            try {
+                @ToCheck(reasonKind = ToCheck.ReasonKind.CODE_QUALITY,
+                        reasonDescription = "This method is called by UtilConstraints.getSimpleEditsByType, so if we" +
+                                "propagate the NotSupportedOperationException, then many callers of the method " +
+                                "checkEdit have to also throw this exception. Is this desired?")
+                var check = false;
+                generateEdits();
+            } catch (NotSupportedOperationException e) {
+                throw new UnrecoverableException(e);
+            }
+            generatedEdits = true;
 		}
 		return edits;
 	}

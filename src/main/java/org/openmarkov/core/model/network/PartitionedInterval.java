@@ -83,7 +83,7 @@ public class PartitionedInterval implements Cloneable, Serializable {
                 limits[i] = (Double) values[i - 1][5];
                 belongsToLeftSide[i] = (values[i - 1][6] == "]");
             } catch (NumberFormatException ex) {
-                // TODO set the actions to capture this exception if happens
+                //TODO: set the actions to capture this exception if happens
             }
             this.limits = limits.clone();
             this.belongsToLeftSide = belongsToLeftSide.clone();

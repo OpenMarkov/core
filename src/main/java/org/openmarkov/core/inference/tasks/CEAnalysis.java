@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.inference.tasks;
 
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.Variable;
@@ -19,12 +20,12 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 public interface CEAnalysis extends Task {
 
 	GTablePotential getUtility()
-			throws NonProjectablePotentialException;
+            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther;
 
 	TablePotential getProbability()
-			throws NonProjectablePotentialException;
+            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther;
 
 	void setDecisionVariable(Variable decisionVariable);
-
-	CEP getCEP() throws NonProjectablePotentialException;
+    
+    CEP getCEP() throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther;
 }

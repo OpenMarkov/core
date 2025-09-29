@@ -74,7 +74,7 @@ import java.util.List;
         this(probNet, variable1, variable2, isDirected, true);
     }
     
-    @Override public void doEdit() {
+    @Override public void doEdit() throws DoEditException.CannotDoEditException {
         if (probNet.hasExplicitLinks()) {
             this.link = probNet.getLink(node1, node2, isDirected);
         }
@@ -120,7 +120,7 @@ import java.util.List;
                             newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
                         }
                     } catch (NonProjectablePotentialException e) {
-                        e.printStackTrace();
+                        throw new DoEditException.CannotDoEditException(e);
                     }
                     
                     newPotentials.add(newPotential);
@@ -130,7 +130,8 @@ import java.util.List;
         }
     }
     
-    @Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+    @Override
+    public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
         PNEdit.startEdit(this, probNet);
         this.doEdit();
         PNEdit.endEdit(this);

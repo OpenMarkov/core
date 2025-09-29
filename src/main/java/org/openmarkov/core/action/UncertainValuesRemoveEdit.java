@@ -48,19 +48,14 @@ import java.util.List;
 	 * @param node          the new node
 	 * @param configuration Configuration
 	 */
-	public UncertainValuesRemoveEdit(Node node, EvidenceCase configuration) {
+    public UncertainValuesRemoveEdit(Node node, EvidenceCase configuration) throws NonProjectablePotentialException {
 		super(node.getProbNet());
 
 		this.node = node;
 
 		Potential potential = getPotential();
-
-		TablePotential auxProjected = null;
-		try {
-			auxProjected = potential.tableProject(configuration, null).get(0);
-		} catch (NonProjectablePotentialException e) {
-			e.printStackTrace();
-		}
+        
+        TablePotential auxProjected = potential.tableProject(configuration, null).get(0);
 
 		UncertainValue[] auxUncertainTable = auxProjected.getUncertainValues();
 

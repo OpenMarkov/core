@@ -422,34 +422,32 @@ public class StringDatabase {
      * exist, then a special string is returned.
      */
     public String getFormattedString(String key, String... strings) {
-        String result;
-        String parameter;
-        boolean flag = true;
-        int i = 0;
-        int l;
-        int index = 0;
-        final String diacritic = "~";
         try {
-            result = getString(key);
-            if (strings != null) {
-                l = strings.length;
-                while (flag && (i < l)) {
-                    if ((index = result.indexOf(diacritic, index)) >= 0) {
-                        parameter = strings[i++];
-                        if (parameter == null) {
-                            parameter = "";
-                        }
-                        result = result.substring(0, index) + result.substring(index)
-                                                                    .replaceFirst(diacritic, parameter);
-                        index += parameter.length();
-                    } else {
-                        flag = false;
+            String result = getString(key);
+            if (strings == null) {
+                return result;
+            }
+            int l = strings.length;
+            final String diacritic = "~";
+            int index = 0;
+            int i = 0;
+            boolean flag = true;
+            while (flag && (i < l)) {
+                if ((index = result.indexOf(diacritic, index)) >= 0) {
+                    String parameter = strings[i++];
+                    if (parameter == null) {
+                        parameter = "";
                     }
+                    result = result.substring(0, index) + result.substring(index)
+                                                                .replaceFirst(diacritic, parameter);
+                    index += parameter.length();
+                } else {
+                    flag = false;
                 }
             }
+            return result;
         } catch (MissingResourceException e1) {
-            result = StringDatabase.surrondAsUnknown(key);
+            return StringDatabase.surrondAsUnknown(key);
         }
-        return result;
     }
 }

@@ -7,12 +7,14 @@
 
 package org.openmarkov.core.io.format.annotation;
 
+import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.plugin.PluginSearch;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -248,7 +250,7 @@ public class FormatManager {
      *
      * @throws Exception when an exception is raised is thrown to be caught by the gui
      */
-    public ProbNetReader getProbNetReader(String fileName) throws SAXException, IOException, ParserConfigurationException, IllegalArgumentException, SecurityException, NoReaderForFileException {
+    public ProbNetReader getProbNetReader(String fileName) throws SAXException, IOException, ParserConfigurationException, IllegalArgumentException, SecurityException, NoReaderForFileException, ParserException.BadlyStructuredFile {
         return getProbNetReader(new File(fileName).toURI().toURL());
         /*
         String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
@@ -278,7 +280,7 @@ public class FormatManager {
      *
      * @throws Exception when an exception is raised is thrown to be caught by the gui
      */
-    public ProbNetReader getProbNetReader(URL url) throws SAXException, IOException, ParserConfigurationException, NoReaderForFileException {
+    public ProbNetReader getProbNetReader(URL url) throws SAXException, IOException, ParserConfigurationException, NoReaderForFileException, ParserException.BadlyStructuredFile {
         //checkVersion(url);
         checkStructure(url);
         String fileName = url.getFile();
@@ -440,36 +442,52 @@ public class FormatManager {
     }
     
     
-    public void checkStructure(String name) throws SAXException, IOException, ParserConfigurationException {
-        
+    public void checkStructure(String name) throws SAXException, IOException, ParserConfigurationException, ParserException.BadlyStructuredFile {
         InputStream xsd = getClass().getClassLoader().getResourceAsStream("val_v4.xsd");
-        
-        DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        org.w3c.dom.Document document = parser.parse(new File(name));
-        
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        
         Source schemaFile = new StreamSource(xsd);
         Schema schema = factory.newSchema(schemaFile);
-        
         Validator validator = schema.newValidator();
-        validator.validate(new DOMSource(document));
+        URL url = new File(name).toURI().toURL();
+        try {
+            validator.validate(new StreamSource(url.openStream()));
+        } catch (SAXParseException e) {
+            throw new ParserException.BadlyStructuredFile(url, e);
+        }
     }
     
-    public void checkStructure(URL url) throws SAXException, IOException {
+    public void checkStructure(URL url) throws SAXException, IOException, ParserException.BadlyStructuredFile {
         InputStream xsd = getClass().getClassLoader().getResourceAsStream("val_v4.xsd");
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Source schemaFile = new StreamSource(xsd);
-        Schema schema = factory.newSchema(schemaFile);
-        Validator validator = schema.newValidator();
-        DocumentBuilder db;
+        Schema schema = factory.newSchema(new StreamSource(xsd));
         try {
-            db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new UnreacheableException(e);
+            schema.newValidator().validate(new StreamSource(url.openStream()));
+        } catch (SAXParseException e) {
+            throw new ParserException.BadlyStructuredFile(url, e);
         }
-        Document document = db.parse(url.openStream());
-        validator.validate(new DOMSource(document));
     }
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

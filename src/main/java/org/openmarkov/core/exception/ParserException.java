@@ -11,7 +11,9 @@ package org.openmarkov.core.exception;
 import org.jdom2.JDOMException;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.xml.sax.SAXParseException;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -169,4 +171,14 @@ public abstract class ParserException extends Exception implements IBundledOpenM
         public final String version;
     }
     
+    public static final class BadlyStructuredFile extends ParserException {
+        
+        public BadlyStructuredFile(URL url, SAXParseException saxParseException) {
+            this.url = url;
+            this.saxParseException = saxParseException;
+        }
+        
+        public final URL url;
+        public final SAXParseException saxParseException;
+    }
 }

@@ -33,8 +33,10 @@ public interface ProbNetReader {
 	 * @return A {@code ProbNet} or {@code null}
 	 */
 	ProbNet loadProbNet(String netName, InputStream file) throws IOException, ParserException;
-
-	ProbNet loadProbNet(String netName) throws IOException, ParserException;
+    
+    ProbNet loadProbNet(String netName) throws IOException, ParserException;
+    
+    
 
 
 }

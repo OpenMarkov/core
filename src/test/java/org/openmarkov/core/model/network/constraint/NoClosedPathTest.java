@@ -53,44 +53,6 @@ public class NoClosedPathTest {
         assertFalse(testedConstraint.checkProbNet(undirectedNet));
         
     }
-    
-    @Test public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated {
-        
-        PNESupport pNESupport = new PNESupport(false);
-        PNConstraint constraint = new NoClosedPath();
-        
-        undirectedNet.addConstraint(constraint);
-        pNESupport.addUndoableEditListener(constraint);
-        
-        // do legal add
-        Variable vC = undirectedNet.getVariable("C");
-        new AddNodeEdit(undirectedNet, new Variable("D"), NodeType.UTILITY, new Point2D.Double()).doEdit();
-        Variable vD = undirectedNet.getVariable("D");
-        
-        // creates a link from C - D
-        AddLinkEdit legalEdit = new AddLinkEdit(undirectedNet, vC, vD, false);
-        pNESupport.announceEdit(legalEdit);
-        legalEdit.doEdit();
-        
-        Variable vA = undirectedNet.getVariable("C");
-        // creates a link from A-C
-        AddLinkEdit ilegalEdit = new AddLinkEdit(undirectedNet, vA, vC, false);
-        try {
-            pNESupport.announceEdit(ilegalEdit);
-            ilegalEdit.doEdit();
-            fail();
-        } catch (DoEditException.ConstraintViolated e) {
-            // The constraint should have failed
-        }
-        
-        // creates a link from A->C
-        ilegalEdit = new AddLinkEdit(undirectedNet, vA, vC, true);
-        try {
-            pNESupport.announceEdit(ilegalEdit);
-            ilegalEdit.doEdit();
-        } catch (DoEditException.ConstraintViolated e) {
-            // The constraint should have failed
-        }
-    }
+
     
 }

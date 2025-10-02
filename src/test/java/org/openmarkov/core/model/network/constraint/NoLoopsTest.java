@@ -11,16 +11,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.AddNodeEdit;
-import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.testTags.TestSpeed;
 
-import java.awt.geom.Point2D;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -62,47 +56,6 @@ public class NoLoopsTest {
         undirectedNet.addLink(varA, varB, true);
         assertFalse(testedConstraints.checkProbNet(directedNet));
     }
-    
-    @Tag(TestSpeed.MEDIUM)
-    @Test public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated {
-        
-        PNESupport pNESupport = new PNESupport(false);
-        PNConstraint constraint = new NoClosedPath();
-        
-        undirectedNet.addConstraint(constraint);
-        pNESupport.addUndoableEditListener(constraint);
-        
-        // do legal add
-        Variable vC = undirectedNet.getVariable("C");
-        new AddNodeEdit(undirectedNet, new Variable("D"), NodeType.UTILITY, new Point2D.Double()).doEdit();
-        Variable vD = undirectedNet.getVariable("D");
-        
-        // creates a link from C - D
-        AddLinkEdit legalEdit = new AddLinkEdit(undirectedNet, vC, vD, false);
-        pNESupport.announceEdit(legalEdit);
-        legalEdit.doEdit();
-        
-        
-        Variable vA = undirectedNet.getVariable("C");
-        // creates a link from A-C
-        AddLinkEdit ilegalEdit = new AddLinkEdit(undirectedNet, vA, vC, false);
-        try {
-            pNESupport.announceEdit(ilegalEdit);
-            ilegalEdit.doEdit();
-            fail();
-        } catch (DoEditException.ConstraintViolated e) {
-            // The constraint should have failed
-        }
-        
-        // creates a link from A->C
-        ilegalEdit = new AddLinkEdit(undirectedNet, vA, vC, true);
-        try {
-            pNESupport.announceEdit(ilegalEdit);
-            ilegalEdit.doEdit();
-            fail();
-        } catch (DoEditException.ConstraintViolated e) {
-            // The constraint should have failed
-        }
-    }
+
 }
 

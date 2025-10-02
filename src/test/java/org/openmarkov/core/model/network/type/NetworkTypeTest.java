@@ -10,7 +10,6 @@ package org.openmarkov.core.model.network.type;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -59,10 +58,9 @@ public class NetworkTypeTest {
     @Test public void testImpossibleNetworkTypeConversion()
             throws InvalidNetworkTypeException.UnmetConstraints, DoEditException.ConstraintViolated {
         ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-        AddNodeEdit addVariableEdit = new AddNodeEdit(probNet, new Variable("a"), NodeType.DECISION);
         probNet.setNetworkType(InfluenceDiagramType.getUniqueInstance());
         
-        addVariableEdit.doEdit(probNet);
+        probNet.addNode(new Variable("a"), NodeType.DECISION);
         probNet.setNetworkType(BayesianNetworkType.getUniqueInstance());
     }
     

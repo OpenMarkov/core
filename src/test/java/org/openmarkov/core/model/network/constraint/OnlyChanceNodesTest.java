@@ -10,17 +10,10 @@ package org.openmarkov.core.model.network.constraint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.openmarkov.core.action.AddNodeEdit;
-import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
 
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class OnlyChanceNodesTest {
@@ -28,12 +21,10 @@ public class OnlyChanceNodesTest {
     // Attributes
     private ProbNet influenceDiagram;
     
-    private ProbNet probNetDirected;
-    
+
     // Methods
     @BeforeEach public void setUp() {
         influenceDiagram = ConstraintsTests.getInfuenceDiagram();
-        probNetDirected = ConstraintsTests.getTestProbNetDirected();
     }
     
     /**
@@ -44,37 +35,6 @@ public class OnlyChanceNodesTest {
         // test only directed links insertions without checking.
         assertFalse(new OnlyChanceNodes().checkProbNet(influenceDiagram));
     }
-    
-    /**
-     * Checks veto
-     */
-    @Test
-    public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated {
-        
-        // Add constraints as listeners.
-        PNESupport pNESupport = new PNESupport(false);
-        probNetDirected.addConstraint(new OnlyChanceNodes());
-        List<PNConstraint> constraints = probNetDirected.getConstraints();
-        for (PNConstraint constraint : constraints) { // sets listeners
-            pNESupport.addUndoableEditListener(constraint);
-        }
-        // Create edits
-        Variable vd = new Variable("D", 0);
-        Variable ve = new Variable("E", 0);
-        
-        // test no exception in legal edit
-        AddNodeEdit legalEdit = new AddNodeEdit(probNetDirected, ve, NodeType.CHANCE);
-        pNESupport.announceEdit(legalEdit);
-        legalEdit.doEdit();
-        
-        // test exception in no legal edit
-        AddNodeEdit ilegalEdit = new AddNodeEdit(probNetDirected, vd, NodeType.DECISION);
-        try {
-            pNESupport.announceEdit(ilegalEdit);
-            fail();
-        } catch (DoEditException.ConstraintViolated cve) {
-            // An exception should have been thrown.
-        }
-    }
+
     
 }

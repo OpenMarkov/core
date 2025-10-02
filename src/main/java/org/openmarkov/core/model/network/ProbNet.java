@@ -19,10 +19,12 @@ import org.openmarkov.core.model.network.constraint.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.MarkovNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
 
+import java.awt.geom.Point2D;
 import java.util.*;
 
 /**
@@ -942,6 +944,24 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     @Override public void addNode(Node node) {
         super.addNode(node);
         nodeDepot.addNode(node);
+    }
+
+    public void addNodeConsistently(Variable variable, NodeType nodeType, Point2D.Double cursorPosition){
+        cursorPosition = (Point2D.Double) cursorPosition.clone();
+        // Adds the new variable to network ( creates a node instance )
+        Node newNode = addNode(variable, nodeType);
+        // TODO revisar si es conveniente utilizar una constraint
+        // Sets a uniformPotential for the new node
+        // Decision node has no potential when is created
+        if (nodeType != NodeType.DECISION) {
+            addPotential(PotentialOperations.getUniformPotential(this, variable, nodeType));
+            newNode = getNode(variable);
+        } else {
+            newNode.setPolicyType(PolicyType.OPTIMAL);
+        }
+        // Sets the visual node position
+        newNode.setCoordinateX((int) cursorPosition.getX());
+        newNode.setCoordinateY((int) cursorPosition.getY());
     }
     
     /**

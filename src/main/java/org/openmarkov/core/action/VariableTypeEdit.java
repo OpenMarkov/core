@@ -35,76 +35,75 @@ import java.util.List;
 	}
 
 	@Override public void doEdit() {
-		// We save the current states
-		currentStates = node.getVariable().getStates();
+        // Save the current states
+        currentStates = node.getVariable().getStates();
 
-		node.getVariable().setVariableType(newType);
+        // Set the new variable type
+        node.getVariable().setVariableType(newType);
 
-		// We restore the current states
-		if (currentStates.length == 1) {
-			node.getVariable().setStates(node.getProbNet().getDefaultStates());
-		} else {
-			node.getVariable().setStates(currentStates);
-		}
+        // Restore the states
+        node.getVariable().setStates(currentStates.length == 1
+                ? node.getProbNet().getDefaultStates()
+                : currentStates);
 
-		if (currentType != newType) {
+        if (currentType != newType) {
+            boolean needsUniformPotential = false;
 
-			switch (currentType) {
-			case FINITE_STATES:
-                if (newType == VariableType.DISCRETIZED) {
-					// DO NOTHING
-					break;
-                } else if (newType == VariableType.NUMERIC) {
-					setPotentialsNodeAndChildren();
-				}
-				break;
-			case DISCRETIZED:
-                if (newType == VariableType.FINITE_STATES) {
-					// DO NOTHING
-					break;
-                } else if (newType == VariableType.NUMERIC) {
-					setPotentialsNodeAndChildren();
-				}
-				break;
+            switch (currentType) {
+                case FINITE_STATES:
+                case DISCRETIZED:
+                    if (newType == VariableType.NUMERIC) {
+                        setPotentialsNodeAndChildren();
+                    }
+                    break;
 
-			case NUMERIC:
-                
-                if (newType == VariableType.FINITE_STATES) {
-					setPotentialsNodeAndChildren();
-                } else if (newType == VariableType.DISCRETIZED) {
-					setPotentialsNodeAndChildren();
-					// If we only have one interval we need to set up at least
-					// the default intervals for the states
-					if (node.getVariable().getPartitionedInterval().getNumSubintervals() == 1) {
-						PartitionedInterval interval = new PartitionedInterval(
+                case NUMERIC:
+                    setPotentialsNodeAndChildren();
+
+                    if (newType == VariableType.DISCRETIZED
+                            && node.getVariable().getPartitionedInterval().getNumSubintervals() == 1) {
+
+                        // If there is only one interval, set default partitioned interval
+                        PartitionedInterval interval = new PartitionedInterval(
                                 node.getVariable().getDefaultInterval(node.getVariable().getNumStates()),
-                                Variable.getDefaultBelongs(node.getVariable().getNumStates()));
-						node.getVariable().setPartitionedInterval(interval);
-					}
+                                Variable.getDefaultBelongs(node.getVariable().getNumStates())
+                        );
+                        node.getVariable().setPartitionedInterval(interval);
+                    }
 
-				}
+                    // Mark to set uniform potential later
+                    needsUniformPotential = true;
+                    break;
 
-				List<Variable> variables = new ArrayList<>();
-				if (node.getNodeType() != NodeType.UTILITY) {
-					variables.add(node.getVariable());
-				}
-				for (Node parent : probNet.getParents(node)) {
-					variables.add(parent.getVariable());
-				}
-				UniformPotential uniformPotential = new UniformPotential(variables,
-						node.getPotentials().get(0).getPotentialRole());
-				List<Potential> potentials = new ArrayList<>(1);
-				potentials.add(uniformPotential);
-				node.setPotentials(potentials);
-				node.setUniformPotential();
+                default:
+                    break;
+            }
 
-				break;
-			default:
-				break;
-			}
-		}
+            if (needsUniformPotential) {
+                // Build the list of variables (node and its parents)
+                List<Variable> variables = new ArrayList<>();
+                if (node.getNodeType() != NodeType.UTILITY) {
+                    variables.add(node.getVariable());
+                }
+                for (Node parent : probNet.getParents(node)) {
+                    variables.add(parent.getVariable());
+                }
 
-		resetLink(node);
+                // Create and assign uniform potential
+                UniformPotential uniformPotential = new UniformPotential(
+                        variables,
+                        node.getPotentials().get(0).getPotentialRole()
+                );
+
+                List<Potential> potentials = new ArrayList<>(1);
+                potentials.add(uniformPotential);
+                node.setPotentials(potentials);
+                node.setUniformPotential();
+            }
+        }
+
+
+        resetLink(node);
 
 	}
 	

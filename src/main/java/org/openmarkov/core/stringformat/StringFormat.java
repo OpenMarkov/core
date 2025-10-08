@@ -193,8 +193,8 @@ public class StringFormat {
                             return Matcher.quoteReplacement(MessageFormat.format(formatter, argument));
                         } catch (IllegalArgumentException | NullPointerException e) {
                             OpenMarkovLogger.LOGGER.warn("Cannot use formatting and styling options " + formatter + " to format the "
-                                                                 + argument.getClass()
-                                                                           .getName() + " argument " + argument, e);
+                                                                 + argument.getClass().getName()
+                                                                 + " argument " + argument, e);
                         }
                     }
                     if (formatting.format != null && !isOpenMarkovFormat) {
@@ -203,8 +203,8 @@ public class StringFormat {
                             return Matcher.quoteReplacement(MessageFormat.format(formatter, argument));
                         } catch (IllegalArgumentException | NullPointerException e) {
                             OpenMarkovLogger.LOGGER.warn("Cannot use formatting options " + formatter + " to format the "
-                                                                 + argument.getClass()
-                                                                           .getName() + " argument " + argument, e);
+                                                                 + argument.getClass().getName()
+                                                                 + " argument " + argument, e);
                         }
                     }
                     return Matcher.quoteReplacement(argument.toString());

@@ -39,7 +39,7 @@ public class LinkRestrictionPotentialOperations {
 	 * @return {@code true} if the node has a link restriction
 	 */
 	public static boolean hasLinkRestriction(Node node) {
-		if (!node.getProbNet().hasConstraint(NoLinkRestriction.class)) {
+        if (!node.getProbNet().hasConstraintOfClass(NoLinkRestriction.class)) {
 			return (!getParentLinksWithRestriction(node).isEmpty());
 		}
 		return false;

@@ -23,8 +23,8 @@ public interface Propagation extends Task {
 
 	HashMap<Variable, TablePotential> getPosteriorValues()
             throws CannotNormalizePotentialException, NonProjectablePotentialException, IncompatibleEvidenceException, NotEvaluableNetworkException;
-
-	void setPostResolutionEvidence(EvidenceCase postResolutionEvidence);
+    
+    void setPostResolutionEvidence(EvidenceCase postResolutionEvidence) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException;
 
 	void setVariablesOfInterest(List<Variable> variablesOfInterest);
 

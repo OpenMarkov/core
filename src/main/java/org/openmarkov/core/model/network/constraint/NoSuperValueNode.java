@@ -40,9 +40,5 @@ import java.util.List;
 		}
 		return true;
 	}
-
-	@Override protected String constraintDescription() {
-		return "adding a super value node is not allowed";
-	}
-
+ 
 }

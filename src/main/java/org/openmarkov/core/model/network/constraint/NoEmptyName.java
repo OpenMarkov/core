@@ -49,9 +49,5 @@ import java.util.List;
 		}
 		return true;
 	}
-
-	@Override protected String constraintDescription() {
-		return "there should be no empty names";
-	}
-
+ 
 }

@@ -114,8 +114,5 @@ public class NoMultipleLinks extends PNConstraint {
 		// node1 may exist
         return (probNet.getLink(node1, node2, true) == null) && (probNet.getLink(node2, node1, true) == null);
     }
-
-	@Override protected String constraintDescription() {
-		return " no multiple links allowed.";
-	}
+    
 }

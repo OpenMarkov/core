@@ -88,12 +88,5 @@ import java.util.List;
 		}
 		return true;
 	}
-
-	@Override protected String constraintDescription() {
-        return switch (this.typeError) {
-            case IS_EMPTY_NAME -> "InvalidStateNameEmptyException";
-            case IS_NAME_ALREADY_EXIST -> "InvalidStateNameDuplicatedException";
-        };
-	}
-
+ 
 }

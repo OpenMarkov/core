@@ -17,6 +17,7 @@ public @interface ToCheck {
         BUG,
         CRITICAL_BUG,
         CODE_QUALITY,
+        EXCEPTIONS_REWORK,
         USER_EXPERIENCE;
     }
     

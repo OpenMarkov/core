@@ -33,11 +33,8 @@ import java.util.*;
  */
 
 @SuppressWarnings("serial") public class AbsorbNodeEdit extends SimplePNEdit{
-
-    // Logger
-    private Logger logger;
-
-
+    
+    
     // Both node and variable attributes are created for convenience but one could be extracted from the other
     private Variable absorbedVariable;
 
@@ -77,8 +74,8 @@ import java.util.*;
         this.absorbedNode = probNet.getNode(absorbedVariable);
         this.linksDeleted = new ArrayList<>();
         this.newParentLinks = new ArrayList<>();
-
-        this.logger = LogManager.getLogger(AbsorbNodeEdit.class.getName());
+        
+        LogManager.getLogger(AbsorbNodeEdit.class.getName());
     }
 
     @Override

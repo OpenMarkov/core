@@ -123,10 +123,4 @@ import java.util.List;
         return true;
     }
     
-    @Override protected String constraintDescription() {
-        return switch (this.typeError) {
-            case IS_SAME_NAME -> "InvalidVariableNameExistingException";
-            case IS_SAME_TIME_SLICE -> "InvalidVariableNameExistingTimeSliceException";
-        };
-    }
 }

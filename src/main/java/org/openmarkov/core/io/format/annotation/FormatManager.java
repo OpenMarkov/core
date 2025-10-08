@@ -250,7 +250,7 @@ public class FormatManager {
      *
      * @throws Exception when an exception is raised is thrown to be caught by the gui
      */
-    public ProbNetReader getProbNetReader(String fileName) throws SAXException, IOException, ParserConfigurationException, IllegalArgumentException, SecurityException, NoReaderForFileException, ParserException.BadlyStructuredFile {
+    public ProbNetReader getProbNetReader(String fileName) throws SAXException, IOException, IllegalArgumentException, SecurityException, NoReaderForFileException, ParserException.BadlyStructuredFile {
         return getProbNetReader(new File(fileName).toURI().toURL());
         /*
         String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
@@ -280,15 +280,19 @@ public class FormatManager {
      *
      * @throws Exception when an exception is raised is thrown to be caught by the gui
      */
-    public ProbNetReader getProbNetReader(URL url) throws SAXException, IOException, ParserConfigurationException, NoReaderForFileException, ParserException.BadlyStructuredFile {
+    public ProbNetReader getProbNetReader(URL url) throws SAXException, IOException, NoReaderForFileException, ParserException.BadlyStructuredFile {
         //checkVersion(url);
         checkStructure(url);
         String fileName = url.getFile();
         String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
         String fileVersion = "";
         if (!fileExtension.equals("elv")) {
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            DocumentBuilder docBuilder;
+            try {
+                docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            } catch (ParserConfigurationException e) {
+                throw new UnreacheableException(e);
+            }
             Document doc = docBuilder.parse(url.openStream());
             fileVersion = doc.getDocumentElement().getAttribute("formatVersion");
             //Removing the last index of the version
@@ -442,7 +446,7 @@ public class FormatManager {
     }
     
     
-    public void checkStructure(String name) throws SAXException, IOException, ParserConfigurationException, ParserException.BadlyStructuredFile {
+    public void checkStructure(String name) throws SAXException, IOException, ParserException.BadlyStructuredFile {
         InputStream xsd = getClass().getClassLoader().getResourceAsStream("val_v4.xsd");
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Source schemaFile = new StreamSource(xsd);

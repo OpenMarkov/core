@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.inference;
 
-import net.sourceforge.jeval.EvaluationException;
 import org.junit.jupiter.api.Disabled;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.ProbNet;
@@ -155,16 +154,6 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
             indexBaseProbs = indexBaseProbs + numProbsAux;
         }
         
-    }
-    
-    /**
-     * @param e
-     */
-    @SuppressWarnings("restriction") protected void printExceptionAndFailIfImplemented(Exception e) {
-        if (e.getClass() != UnsupportedOperationException.class) {
-            e.printStackTrace();
-            fail();
-        }
     }
     
     /**

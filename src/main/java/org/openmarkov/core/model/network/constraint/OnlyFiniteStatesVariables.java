@@ -69,10 +69,5 @@ import java.util.List;
 		}
 		return true;
 	}
-
-	@Override protected String constraintDescription() {
-		// TODO Auto-generated method stub
-		return "all chance and decision variables must be finite state or discrete";
-	}
-
+ 
 }

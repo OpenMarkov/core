@@ -427,12 +427,11 @@ public class StringDatabase {
             if (strings == null) {
                 return result;
             }
-            int l = strings.length;
             final String diacritic = "~";
             int index = 0;
             int i = 0;
             boolean flag = true;
-            while (flag && (i < l)) {
+            while (flag && (i < strings.length)) {
                 if ((index = result.indexOf(diacritic, index)) >= 0) {
                     String parameter = strings[i++];
                     if (parameter == null) {

@@ -7,7 +7,9 @@
 
 package org.openmarkov.core.inference.tasks;
 
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
 
@@ -19,8 +21,8 @@ import java.util.List;
  * This interface represents a user action related to inference.
  */
 public interface Task {
-
-	void setPreResolutionEvidence(EvidenceCase preresolutionEvidence) throws IncompatibleEvidenceException;
+    
+    void setPreResolutionEvidence(EvidenceCase preresolutionEvidence) throws IncompatibleEvidenceException, NonProjectablePotentialException;
 
 	void setConditioningVariables(List<Variable> conditioningVariables);
 

@@ -38,9 +38,5 @@ import java.util.List;
 		}
 		return true;
 	}
-
-	@Override protected String constraintDescription() {
-		return "only chance nodes allowed";
-	}
-
+ 
 }

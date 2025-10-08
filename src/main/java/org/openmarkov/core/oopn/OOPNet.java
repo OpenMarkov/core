@@ -11,6 +11,7 @@ import org.openmarkov.core.action.*;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.InvalidNetworkTypeException;
 import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -426,21 +427,11 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
                     try {
                         newEdit.doEdit(this);
                     } catch (DoEditException e1) {
-                        e1.printStackTrace();
+                        throw new UnrecoverableException(e1);
                     }
                 }
             }
         }
-        
-    }
-    
-    @Override public void undoableEditWillHappen(UndoableEditEvent event) {
-        // Do nothing
-    }
-    
-    @Override public void undoEditHappened(UndoableEditEvent event) {
-        // TODO Auto-generated method stub
-        
     }
     
     private Potential findEquivalentPotentialInInstance(String instanceName, Potential potential) {

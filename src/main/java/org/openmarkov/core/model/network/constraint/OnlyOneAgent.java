@@ -50,10 +50,5 @@ import java.util.List;
 		}
 		return true;
 	}
-
-	@Override protected String constraintDescription() {
-		// TODO Auto-generated method stub
-		return "There can be no more than one agent.";
-	}
-
+ 
 }

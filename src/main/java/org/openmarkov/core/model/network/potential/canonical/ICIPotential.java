@@ -147,7 +147,9 @@ public abstract class ICIPotential extends Potential {
     /**
      * @param inferenceOptions Inference options
      * @param evidenceCase     {@code EvidenceCase}
+     *
      * @return {@code ArrayList} of {@code Potential}
+     *
      * @throws NonProjectablePotentialException NonProjectablePotentialException
      */
     // TODO This is the actual valid tableProject that should be used once the
@@ -442,13 +444,10 @@ public abstract class ICIPotential extends Potential {
     
     protected abstract int computeFFunction(int[] iciSampledStates);
     
-    @Override public double getProbability(HashMap<Variable, Integer> sampledStateIndexes) {
+    @Override
+    public double getProbability(HashMap<Variable, Integer> sampledStateIndexes) throws NonProjectablePotentialException {
         if (expandedPotential == null) {
-            try {
-                expandedPotential = getCPT();
-            } catch (NonProjectablePotentialException e) {
-                e.printStackTrace();
-            }
+            expandedPotential = getCPT();
         }
         return expandedPotential.getProbability(sampledStateIndexes);
     }

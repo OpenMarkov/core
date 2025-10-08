@@ -23,10 +23,5 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 		// TODO Auto-generated method stub
 		return true;
 	}
-
-	@Override protected String constraintDescription() {
-		// TODO Auto-generated method stub
-		return "";
-	}
-
+ 
 }

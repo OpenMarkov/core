@@ -17,31 +17,27 @@ import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.List;
 
-@Constraint(name = "AllChanceVariablesHaveChancePotentials", defaultBehavior = ConstraintBehavior.OPTIONAL) public class AllChanceVariablesHaveChancePotentials
-		extends PNConstraint {
-
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		return true;
-	}
-
-	@Override public boolean checkProbNet(ProbNet probNet) {
-		List<Node> chanceNodes = probNet.getNodes(NodeType.CHANCE);
-		for (Node chanceNode : chanceNodes) {
-			Variable variable = chanceNode.getVariable();
-			List<Potential> potentialsNode = chanceNode.getPotentials();
-			boolean hasPotential = false;
-			for (Potential potential : potentialsNode) {
-				hasPotential = hasPotential || (potential.getVariables().get(0) == variable);
-			}
-			if (!hasPotential) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@Override protected String constraintDescription() {
-		return "chance variable without potential";
-	}
-
+@Constraint(name = "AllChanceVariablesHaveChancePotentials", defaultBehavior = ConstraintBehavior.OPTIONAL)
+public class AllChanceVariablesHaveChancePotentials extends PNConstraint {
+    
+    @Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
+        return true;
+    }
+    
+    @Override public boolean checkProbNet(ProbNet probNet) {
+        List<Node> chanceNodes = probNet.getNodes(NodeType.CHANCE);
+        for (Node chanceNode : chanceNodes) {
+            Variable variable = chanceNode.getVariable();
+            List<Potential> potentialsNode = chanceNode.getPotentials();
+            boolean hasPotential = false;
+            for (Potential potential : potentialsNode) {
+                hasPotential = hasPotential || (potential.getVariables().get(0) == variable);
+            }
+            if (!hasPotential) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
 }

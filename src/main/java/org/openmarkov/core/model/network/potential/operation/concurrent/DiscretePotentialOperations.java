@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.operation.concurrent;
 
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -56,7 +57,7 @@ public class DiscretePotentialOperations {
 			try {
 				multipliers[i].join();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+                throw new UnrecoverableException(e);
 			}
 		}
 
@@ -87,7 +88,7 @@ public class DiscretePotentialOperations {
 			try {
 				multipliers[i].join();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+                throw new UnrecoverableException(e);
 			}
 		}
 
@@ -120,7 +121,7 @@ public class DiscretePotentialOperations {
 			try {
 				multipliers[i].join();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+                throw new UnrecoverableException(e);
 			}
 		}
 

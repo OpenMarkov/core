@@ -70,9 +70,5 @@ import java.util.List;
 		}
 		return true;
 	}
-
-	@Override protected String constraintDescription() {
-		return "no cycles allowed";
-	}
-
+ 
 }

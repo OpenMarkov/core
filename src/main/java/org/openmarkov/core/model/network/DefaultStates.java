@@ -76,12 +76,8 @@ public class DefaultStates {
      * list of default states.
      */
     public static String[] getByIndex(int index) {
-        try {
-            var defaultStates = LIST.get(index);
-            return defaultStates.toArray(new String[defaultStates.size()]);
-        } catch (IndexOutOfBoundsException e) {
-            return null;
-        }
+        var defaultStates = LIST.get(index);
+        return defaultStates.toArray(new String[defaultStates.size()]);
     }
     
     /**

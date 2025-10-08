@@ -21,12 +21,8 @@ import java.util.List;
 
 @Constraint(name = "NoAlwaysObservedDescendantOfDecision", defaultBehavior = ConstraintBehavior.YES) public class NoAlwaysObservedDescendantOfDecision
 		extends PNConstraint {
-
-	@Override protected String constraintDescription() {
-		return "an always-observed variable cannot be a descendant of a decision node";
-	}
-
-	@Override public boolean checkProbNet(ProbNet probNet) {
+    
+    @Override public boolean checkProbNet(ProbNet probNet) {
 		boolean checkNetwork = true;
 		List<Node> decisionNodes = getDecisionNodes(probNet);
 		List<Node> alwaysObservedNodes = getAlwaysObservedNodes(probNet);

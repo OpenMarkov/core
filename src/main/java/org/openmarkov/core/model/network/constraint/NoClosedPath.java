@@ -32,9 +32,5 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 		return (noLoopsConstraint.checkEdit(probNet, edit) && noCycleConstraint.checkEdit(probNet, edit));
 
 	}
-
-	@Override protected String constraintDescription() {
-
-		return "no closed path allowed.";
-	}
+ 
 }

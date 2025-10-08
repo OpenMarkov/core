@@ -63,9 +63,5 @@ import java.util.List;
 		return true;
 
 	}
-
-	@Override protected String constraintDescription() {
-		return "a node may not have more than " + maxNumParents + "parents.";
-	}
-
+ 
 }

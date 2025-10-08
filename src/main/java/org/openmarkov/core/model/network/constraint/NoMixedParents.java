@@ -99,8 +99,5 @@ public class NoMixedParents extends PNConstraint {
 		}
 		return false;
 	}
-
-	@Override protected String constraintDescription() {
-		return "utility nodes can not have mixed parents.";
-	}
+ 
 }

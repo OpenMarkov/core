@@ -690,7 +690,7 @@ public class ProbNetOperations {
         return potential.getVariables().stream().anyMatch(convertedVariables::contains);
     }
     
-    public static List<State> getUnrestrictedStates(Link<Node> link, State[] restrictedVariableStates, State state) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+    public static List<State> getUnrestrictedStates(Link<Node> link, State[] restrictedVariableStates, State state) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         List<State> nonRestrictedStates = new ArrayList<>();
         Potential linkRestrictions = link.getRestrictionsPotential();
         List<Variable> variables = linkRestrictions.getVariables();

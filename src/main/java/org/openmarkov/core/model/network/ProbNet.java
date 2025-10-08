@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network;
 
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.PNESupport;
+import org.openmarkov.core.annotation.ToCheck;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.localize.ClassLocalizable;
@@ -26,6 +27,7 @@ import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.awt.geom.Point2D;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * A {@code ProbNet} stores {@code Node}s in a efficient manner.
@@ -138,7 +140,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     
     private InferenceOptions inferenceOptions;
     
-    private Set<TablePotential> constantPotentials;
+    private final Set<TablePotential> constantPotentials;
     
     // Constructors
     public ProbNet(NetworkType networkType) {
@@ -149,7 +151,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         this.nodeDepot = new NodeTypeDepot();
         this.inferenceOptions = new InferenceOptions();
         this.constantPotentials = new HashSet<>();
-        if (!hasConstraint(OnlyAtemporalVariables.class)) {
+        if (!this.hasConstraintOfClass(OnlyAtemporalVariables.class)) {
             this.cycleLength = new CycleLength();
         }
         try {
@@ -171,6 +173,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     
     /**
      * @param nodes list of {@code Node}s
+     *
      * @return variables corresponding to the received nodes.
      * {@code List} of {@code Variable}
      */
@@ -192,6 +195,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * variable (the first one).
      *
      * @param projectedTablePotentials {@code ArrayList} of {@code Potential}s
+     *
      * @return A Markov Network in witch potentials are used to create cliques.
      * ({@code ProbNet}).
      * Condition: At least one potential depends on at least one variable
@@ -222,8 +226,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * @param constraint {@code PNConstraint}
      */
     public void removeConstraint(PNConstraint constraint) {
-        if (constraints.contains(constraint)) {
-            constraints.remove(constraint);
+        if (constraints.remove(constraint)) {
             pNESupport.removeUndoableEditListener(constraint);
         }
     }
@@ -231,7 +234,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     /**
      * @param constraints ArrayList of PNConstraint
      */
-    public void removeConstraints(List<PNConstraint> constraints) {
+    public void removeConstraints(Collection<PNConstraint> constraints) {
         for (PNConstraint constraint : constraints) {
             removeConstraint(constraint);
         }
@@ -259,6 +262,24 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         return new ArrayList<>(constraints);
     }
     
+    /** Returns all constraints that matches a certain class */
+    public <TargetConstraint extends PNConstraint> Stream<TargetConstraint>
+    getConstraintsOfClass(Class<TargetConstraint> constraintClass) {
+        return this.constraints.stream().filter(constraintClass::isInstance).map(constraintClass::cast);
+    }
+    
+    /** Returns a constraint whose class matches a certain class */
+    public <TargetConstraint extends PNConstraint> @Nullable TargetConstraint
+    getConstraintOfClass(Class<TargetConstraint> constraintClass) {
+        return this.getConstraintsOfClass(constraintClass).findFirst().orElse(null);
+    }
+    
+    /** Returns wether this ProbNet contains or not a constraint of a certain constraint */
+    public boolean hasConstraintOfClass(Class<? extends PNConstraint> constraintClass) {
+        return this.getConstraintsOfClass(constraintClass).findAny().isPresent();
+    }
+    
+    
     /**
      * @return {@code ArrayList} of {@code PNConstraint}s
      */
@@ -268,15 +289,6 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
                                                                      .buildConstraintList(networkType);
         additionalConstraints.removeAll(networkTypeConstraints);
         return additionalConstraints;
-    }
-    
-    @SuppressWarnings("rawtypes") public boolean containsConstraint(Class receivedConstraintClass) {
-        boolean containsConstraint = false;
-        int numConstraints = constraints.size();
-        for (int i = 0; i < numConstraints && !containsConstraint; i++) {
-            containsConstraint = constraints.get(i).getClass() == receivedConstraintClass;
-        }
-        return containsConstraint;
     }
     
     /**
@@ -293,6 +305,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * Sets Network type
      *
      * @param newNetworkType {@code NetworkType}
+     *
      * @throws InvalidNetworkTypeException.UnmetConstraints UnmetConstraints
      */
     public void setNetworkType(NetworkType newNetworkType) throws InvalidNetworkTypeException.UnmetConstraints {
@@ -407,12 +420,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * OnlyAtemporalVariables constraint, otherwise {@code false}.
      */
     public boolean onlyTemporal() {
-        for (PNConstraint constraint : constraints) {
-            if (constraint instanceof OnlyTemporalVariables) {
-                return true;
-            }
-        }
-        return false;
+        return this.hasConstraintOfClass(OnlyTemporalVariables.class);
     }
     
     /**
@@ -422,12 +430,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * OnlyChanceNodes constraint, otherwise {@code false}.
      */
     public boolean onlyChanceNodes() {
-        for (PNConstraint constraint : constraints) {
-            if (constraint instanceof OnlyChanceNodes) {
-                return true;
-            }
-        }
-        return false;
+        return this.hasConstraintOfClass(OnlyChanceNodes.class);
     }
     
     /**
@@ -438,8 +441,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * @return {@code this probNet} copied.
      */
     public ProbNet copy() {
-        ProbNet copyNet = new ProbNet(this.networkType);
-        return auxCopy(copyNet);
+        return auxCopy(new ProbNet(this.networkType));
     }
     
     /**
@@ -448,6 +450,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * variables nor potentials.
      *
      * @param copyNet Network
+     *
      * @return {@code this probNet} copied.
      */
     protected ProbNet auxCopy(ProbNet copyNet) {
@@ -581,6 +584,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     
     /**
      * @param nodeType - {@code NodeType}
+     *
      * @return Number of nodes with {@code NodeType = nodeType}.
      * {@code int}
      */
@@ -590,7 +594,9 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     
     /**
      * @param evidenceCase Evidence in that the potentials will be projected
+     *
      * @return The potentials of the network projected on the evidence
+     *
      * @throws NonProjectablePotentialException NonProjectablePotentialException
      */
     public List<TablePotential> tableProjectPotentials(EvidenceCase evidenceCase) throws NonProjectablePotentialException {
@@ -623,11 +629,9 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
                 }
             }
         }
-        if (constantPotentials != null) {
-            for (Potential potential : constantPotentials) {
-                if (null != potential) {
-                    potentials.add(potential);
-                }
+        for (Potential potential : constantPotentials) {
+            if (null != potential) {
+                potentials.add(potential);
             }
         }
         return potentials;
@@ -648,6 +652,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     
     /**
      * @param variables {@code ArrayList} of {@code Variable}
+     *
      * @return All the nodes corresponding to variables in same order.
      * {@code ArrayList} of {@code Node}
      */
@@ -661,6 +666,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     
     /**
      * @param nodeType nodetype filter
+     *
      * @return All the nodes of certain kind
      */
     public List<Node> getNodes(NodeType nodeType) {
@@ -671,6 +677,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * Gets all utility nodes with the cECriterion
      *
      * @param cECriterion cost-effectiveness criterion filter
+     *
      * @return All utility nodes with the cost effectiveness criterion
      */
     public List<Node> getNodes(CECriterion cECriterion) {
@@ -693,27 +700,31 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * {@code variable}.
      *
      * @param variable {@code Variable}.
+     *
      * @return {@code ArrayList} of all the {@code Potential}s in this
      * network that contains {@code variable}
      */
     public List<Potential> getPotentials(Variable variable) {
-        List<Potential> potentials = new ArrayList<>();
         Node node = getNode(variable);
+        if (node == null) {
+            return new ArrayList<>();
+        }
+        
         // potentials associated to this node
-        if (node != null) { // Variable exists in this ProbNet
-            // potentials in neighbors that contains variable
-            Set<Node> semiNeighbors = new LinkedHashSet<Node>(getNeighbors(node));
-            semiNeighbors.add(node);
-            List<Node> children = getChildren(node);
-            for (Node child : children) {
-                semiNeighbors.addAll(child.getParents());
-            }
-            for (Node neighbor : semiNeighbors) {
-                List<Potential> nodePotentials = neighbor.getPotentials();
-                for (Potential potential : nodePotentials) {
-                    if (potential.contains(variable)) {
-                        potentials.add(potential);
-                    }
+        List<Potential> potentials = new ArrayList<>();
+        
+        // potentials in neighbors that contains variable
+        Set<Node> semiNeighbors = new LinkedHashSet<Node>(getNeighbors(node));
+        semiNeighbors.add(node);
+        List<Node> children = getChildren(node);
+        for (Node child : children) {
+            semiNeighbors.addAll(child.getParents());
+        }
+        for (Node neighbor : semiNeighbors) {
+            List<Potential> nodePotentials = neighbor.getPotentials();
+            for (Potential potential : nodePotentials) {
+                if (potential.contains(variable)) {
+                    potentials.add(potential);
                 }
             }
         }
@@ -724,6 +735,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * Get all the potentials of a specific node type
      *
      * @param nodeType node type filter
+     *
      * @return All the utility potentials of a type.
      */
     public List<Potential> getPotentialsByType(NodeType nodeType) {
@@ -734,20 +746,16 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * Get all the potentials of a specific role
      *
      * @param role potential role filter
+     *
      * @return All the potentials of a role.
      */
     public List<Potential> getPotentialsByRole(PotentialRole role) {
-        
         List<Potential> potentials = nodeDepot.getPotentialsByRole(role);
-        
-        if (constantPotentials != null) {
-            for (Potential potential : constantPotentials) {
-                if (potential.getPotentialRole() == role) {
-                    potentials.add(potential);
-                }
+        for (Potential potential : constantPotentials) {
+            if (potential.getPotentialRole() == role) {
+                potentials.add(potential);
             }
         }
-        
         return potentials;
     }
     
@@ -767,11 +775,9 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
                 }
             }
         }
-        if (constantPotentials != null) {
-            for (Potential potential : constantPotentials) {
-                if (null != potential && potential.isAdditive()) {
-                    potentials.add(potential);
-                }
+        for (Potential potential : constantPotentials) {
+            if (null != potential && potential.isAdditive()) {
+                potentials.add(potential);
             }
         }
         return potentials;
@@ -783,6 +789,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * variable are in the node associated to the variable and its neighbors.
      *
      * @param variable variable that belongs to this {@code ProbNet}
+     *
      * @return {@code ArrayList} of potentials containing
      * {@code variable}.
      */
@@ -813,6 +820,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      *
      * @param variable that belongs to this {@code ProbNet}
      *                 {@code Variable}.
+     *
      * @return {@code ArrayList} of potentials containing
      * {@code variable}.
      */
@@ -839,6 +847,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * Removes {@code potential} from this {@code ProbNet}
      *
      * @param potential Potential
+     *
      * @return The node where the potential was located or {@code null} if
      * it did not exists
      */
@@ -859,8 +868,6 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         }
         
         // find in such nodes the potential to remove
-        //TODO: wasFound is never updated.
-        boolean wasFound = false;
         for (Node node : candidateNodes) {
             if (node != null) {
                 List<Potential> potentialsNode = node.getPotentials();
@@ -873,10 +880,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
                 }
             }
         }
-        
-        if (!wasFound) {
-            constantPotentials.remove(potential);
-        }
+        //Couldn't find the potential in any node.
+        constantPotentials.remove(potential);
         return null;
     }
     
@@ -895,8 +900,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         nodes.addAll(getSiblings(node));
         // for each node extract its potentials ...
         for (Node otherNode : nodes) {
-            List<Potential> potentialsNode = new ArrayList<>(otherNode.getPotentials());
-            for (Potential potential : potentialsNode) {
+            for (Potential potential : new ArrayList<>(otherNode.getPotentials())) {
                 // ... and removes the potentials that contains the variable
                 if (potential.getVariables().contains(variable)) {
                     otherNode.removePotential(potential);
@@ -911,10 +915,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * @param toRemovePotentials {@code ArrayList} of {@code Potential}
      */
     public void removePotentials(List<Potential> toRemovePotentials) {
-        if (toRemovePotentials != null) {
-            for (Potential potential : toRemovePotentials) {
-                removePotential(potential);
-            }
+        for (Potential potential : toRemovePotentials) {
+            this.removePotential(potential);
         }
     }
     
@@ -922,6 +924,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * @param variable that not belongs
      *                 . {@code Variable}
      * @param nodeType . {@code NodeType}
+     *
      * @return The {@code node} that points to {@code variable} in
      * {@code this} network.
      * Condition: the variable must not be in the ProbNet.
@@ -945,8 +948,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         super.addNode(node);
         nodeDepot.addNode(node);
     }
-
-    public void addNodeConsistently(Variable variable, NodeType nodeType, Point2D.Double cursorPosition){
+    
+    public void addNodeConsistently(Variable variable, NodeType nodeType, Point2D.Double cursorPosition) {
         cursorPosition = (Point2D.Double) cursorPosition.clone();
         // Adds the new variable to network ( creates a node instance )
         Node newNode = addNode(variable, nodeType);
@@ -966,6 +969,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     
     /**
      * @param nameOfVariable {@code String}
+     *
      * @return The {@code Node} that matches the
      * {@code nameOfVariable}
      */
@@ -976,6 +980,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     /**
      * @param nameOfVariable {@code String}
      * @param nodeType       {@code NodeType}
+     *
      * @return The node with {@code nameOfVariable} and
      * {@code kindOfNode} if exists otherwise null
      */
@@ -985,6 +990,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     
     /**
      * @param variable {@code Variable}
+     *
      * @return The {@code Node} that matches the {@code Variable}
      */
     public Node getNode(Variable variable) {
@@ -994,6 +1000,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     /**
      * @param variableName name of the variable
      *                     . {@code String}
+     *
      * @return variable that matches {@code variableName} if exists,
      * otherwise {@code null}. {@code Variable}
      */
@@ -1007,6 +1014,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      *
      * @param baseName  base name of the variable
      * @param timeSlice time slice of the variable
+     *
      * @return return variable with that basename and time slice
      */
     public Variable getVariable(String baseName, int timeSlice) {
@@ -1016,6 +1024,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     /**
      * @param variable       . a {@code Variable}
      * @param timeDifference time slice diference
+     *
      * @return a new variable having the same base name as the first argument
      * but in the time slice indicated by the second argument
      */
@@ -1039,6 +1048,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      *
      * @param variable       variable
      * @param timeDifference time difference
+     *
      * @return if the probNet contains that shifted variable returns true, else in other case
      */
     public boolean containsShiftedVariable(Variable variable, int timeDifference) {
@@ -1052,6 +1062,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * variable (the first one).
      *
      * @param potential . {@code Potential}
+     *
      * @return The {@code Node} in which the {@code potential}
      * received has been added.
      * Condition: network contains at least one chance variable
@@ -1070,24 +1081,22 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * @param potential       {@code Potential}
      * @param originalProbNet To get information from nodes when using this method to build a {@code ProbNet}
      *                        from another one.
+     *
      * @return The {@code Node} in which the {@code potential}
      * received has been added.
+     *
      * @see org.openmarkov.core.model.network.ProbNet#addPotential(Potential)
      */
     public @Nullable Node addPotential(Potential potential, ProbNet originalProbNet) {
-        
         List<Variable> variables = potential.getVariables();
         List<Node> nodes = new ArrayList<>();
-        
         for (Variable variable : variables) {
             // add the variables that are not yet in the network
             Node node = getNode(variable);
             if (node == null) {
-                if (originalProbNet == null || originalProbNet.getNode(variable) == null) {
-                    node = addNode(variable, NodeType.CHANCE);
-                } else {
-                    node = addNode(variable, originalProbNet.getNode(variable).getNodeType());
-                }
+                NodeType nodeType = (originalProbNet == null || originalProbNet.getNode(variable) == null) ?
+                        NodeType.CHANCE : originalProbNet.getNode(variable).getNodeType();
+                node = addNode(variable, nodeType);
             }
             nodes.add(node);
         }
@@ -1097,17 +1106,17 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
             // TODO - Change constant potentials (Potential vs TablePotential)
             this.constantPotentials.add((TablePotential) potential);
         } else {
-            nodes.get(0).addPotential(potential);
+            nodes.getFirst().addPotential(potential);
         }
         
         // draw links between the variables
-        boolean isDirected = !containsConstraint(OnlyUndirectedLinks.class);
+        boolean isDirected = !this.hasConstraintOfClass(OnlyUndirectedLinks.class);
         if (isDirected) {
             // TODO - CHECK
             if (variables.isEmpty()) {
                 return null;
             }
-            Node conditionedNode = nodes.get(0);
+            Node conditionedNode = nodes.getFirst();
             for (int i = 1; i < nodes.size(); i++) {
                 Node conditioningNode = nodes.get(i);
                 if (!isParent(conditioningNode, conditionedNode)) {
@@ -1126,51 +1135,34 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
                 }
             }
         }
-        
-        return nodes.isEmpty() ? null : nodes.get(0);
-    }
-    
-    /**
-     * @param constraint {@code Class}
-     * @return {@code true} if this probabilistic network contains the
-     * received constraint type.
-     */
-    public boolean hasConstraint(Class<?> constraint) {
-        for (PNConstraint constraintProbNet : constraints) {
-            if (constraintProbNet.getClass() == constraint) {
-                return true;
-            }
-        }
-        return false;
+        return nodes.isEmpty() ? null : nodes.getFirst();
     }
     
     /**
      * @return All {@code Variable}s except utility nodes variables.
      * {@code ArrayList} of {@code Variable}.
      */
+    @ToCheck(reasonKind = ToCheck.ReasonKind.PROBABLE_BUG, reasonDescription = "This method is supposed to return " +
+            "variables that are of type Chance or Decision. But it also returns SV_Product and SV_Sum")
     public List<Variable> getChanceAndDecisionVariables() {
-        List<Variable> variables = new ArrayList<>();
-        List<Node> nodes = getNodes();
-        for (Node node : nodes) {
-            if (node.getNodeType() != NodeType.UTILITY) {
-                variables.add(node.getVariable());
-            }
-        }
-        return variables;
+        return new ArrayList<>(getNodes()
+                                       .stream()
+                                       .filter(node -> switch (node.nodeType) {
+                                           case CHANCE, SV_PRODUCT, SV_SUM, DECISION -> true;
+                                           case UTILITY -> false;
+                                       })
+                                       .map(Node::getVariable)
+                                       .toList());
     }
     
     /**
      * @param nodeType {@code NodeType}
+     *
      * @return Variables corresponding to the node type received.
      * {@code ArrayList} of {@code Variable}
      */
     public List<Variable> getVariables(NodeType nodeType) {
-        List<Variable> variablesType = new ArrayList<>();
-        List<Node> nodes = getNodes(nodeType);
-        for (Node node : nodes) {
-            variablesType.add(node.getVariable());
-        }
-        return variablesType;
+        return new ArrayList<>(getNodes(nodeType).stream().map(Node::getVariable).toList());
     }
     
     /**
@@ -1178,11 +1170,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * {@code Variable}
      */
     public List<Variable> getVariables() {
-        List<Variable> variables = new ArrayList<>();
-        for (Node node : getNodes()) {
-            variables.add(node.getVariable());
-        }
-        return variables;
+        return new ArrayList<>(getNodes().stream().map(Node::getVariable).toList());
     }
     
     /**
@@ -1203,9 +1191,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * @param directed  {@code boolean}
      */
     public void removeLink(Variable variable1, Variable variable2, boolean directed) {
-        Node node1 = getNode(variable1);
-        Node node2 = getNode(variable2);
-        removeLink(node1, node2, directed);
+        removeLink(getNode(variable1), getNode(variable2), directed);
     }
     
     /**
@@ -1260,6 +1246,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * @param coordinateYOffset Coordinate Y offset
      * @param oldNode           Old node
      * @param timeDifference    Time difference
+     *
      * @return Node
      */
     public Node addShiftedNode(Node oldNode, int timeDifference, double coordinateXOffset, double coordinateYOffset) {
@@ -1453,10 +1440,6 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     
     public Set<TablePotential> getConstantPotentials() {
         return constantPotentials;
-    }
-    
-    public void setConstantPotentials(Set<TablePotential> constantPotentials) {
-        this.constantPotentials = constantPotentials;
     }
     
     

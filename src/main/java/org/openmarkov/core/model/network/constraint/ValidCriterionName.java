@@ -83,13 +83,5 @@ import java.util.List;
 
 		return true;
 	}
-
-	@Override protected String constraintDescription() {
-        return switch (type_error) {
-            case IS_EMPTY_NAME -> "there should be no empty names";
-            case IS_NAME_ALREADY_EXIST -> "There is already a criterion with that name in the net.";
-            default -> "Unknown problem";
-        };
-	}
-
+ 
 }

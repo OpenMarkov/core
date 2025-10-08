@@ -20,38 +20,39 @@ import java.util.List;
 /**
  * This class implements the DistinctLinks constraint, which establishes that the network
  * can not have two equal links.
+ *
  * @author ckonig
  * @author manuel arias
  *
  */
 @Constraint(name = "DistinctLinks", defaultBehavior = ConstraintBehavior.YES)
 public class DistinctLinks extends PNConstraint {
-
-	@Override public boolean checkProbNet(ProbNet probNet) {
-		List<Node> nodes = probNet.getNodes();
-		for (Node node : nodes) {
-			if (probNet.getNumLinks(node) > (
-					probNet.getNumChildren(node) + probNet.getNumParents(node) + probNet.getNumSiblings(node)
-			)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			AddLinkEdit addLinkEdit = (AddLinkEdit) simpleEdit;
-			Variable variable1 = addLinkEdit.getVariable1();
-			Node node1 = probNet.getNode(variable1);
+    
+    @Override public boolean checkProbNet(ProbNet probNet) {
+        List<Node> nodes = probNet.getNodes();
+        for (Node node : nodes) {
+            if (probNet.getNumLinks(node) > (
+                    probNet.getNumChildren(node) + probNet.getNumParents(node) + probNet.getNumSiblings(node)
+            )) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    @Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
+        var edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
+        for (PNEdit simpleEdit : edits) {
+            AddLinkEdit addLinkEdit = (AddLinkEdit) simpleEdit;
+            Variable variable1 = addLinkEdit.getVariable1();
+            Node node1 = probNet.getNode(variable1);
             Variable variable2 = addLinkEdit.getVariable2();
-			Node node2 = probNet.getNode(variable2);
+            Node node2 = probNet.getNode(variable2);
             boolean directed = addLinkEdit.isDirected();
-			if (!checkLink(probNet, node1, node2, directed)) {
-				return false;
-			}
-		}
+            if (!checkLink(probNet, node1, node2, directed)) {
+                return false;
+            }
+        }
 		/*List<PNEdit> edits2 = UtilConstraints.getEditsType (edit, LinkEdit.class);
 		 for (PNEdit simpleEdit : edits2)
 		 {
@@ -64,39 +65,36 @@ public class DistinctLinks extends PNConstraint {
 		 return false;
 		 }
 		 }*/
-		List<PNEdit> edits3 = UtilConstraints.getSimpleEditsByType(edit, InvertLinkEdit.class);
-		for (PNEdit simpleEdit : edits3) {
-			Variable variable1 = ((InvertLinkEdit) simpleEdit).getVariable1();
-			Node node1 = probNet.getNode(variable1);
-			Variable variable2 = ((InvertLinkEdit) simpleEdit).getVariable2();
-			Node node2 = probNet.getNode(variable2);
-			boolean directed = ((InvertLinkEdit) simpleEdit).isDirected();
-			if (!checkLink(probNet, node2, node1, directed)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/*******
-	 * Checks if a link between {@code node1} and {@code node2}
-	 * satisfies the restriction of distinctLinks
-	 * @param graph Network
-	 * @param node1 First node
-	 * @param node2 Second node
-	 * @param directed True if the link is directed
-	 * @return True if the link between {@code node1} and
-	 *         {@code node2}has distinctLinks
-	 */
+        List<PNEdit> edits3 = UtilConstraints.getSimpleEditsByType(edit, InvertLinkEdit.class);
+        for (PNEdit simpleEdit : edits3) {
+            Variable variable1 = ((InvertLinkEdit) simpleEdit).getVariable1();
+            Node node1 = probNet.getNode(variable1);
+            Variable variable2 = ((InvertLinkEdit) simpleEdit).getVariable2();
+            Node node2 = probNet.getNode(variable2);
+            boolean directed = ((InvertLinkEdit) simpleEdit).isDirected();
+            if (!checkLink(probNet, node2, node1, directed)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /*******
+     * Checks if a link between {@code node1} and {@code node2}
+     * satisfies the restriction of distinctLinks
+     * @param graph Network
+     * @param node1 First node
+     * @param node2 Second node
+     * @param directed True if the link is directed
+     * @return True if the link between {@code node1} and
+     *         {@code node2}has distinctLinks
+     */
     private static boolean checkLink(ProbNet graph, Node node1, Node node2, boolean directed) {
-		return !(
-				(graph.getLink(node1, node2, directed) != null) || (
-						!directed && graph.getLink(node2, node1, directed) != null
-				)
-		);
-	}
-
-	@Override protected String constraintDescription() {
-		return "No equal links allowed.";
-	}
+        return !(
+                (graph.getLink(node1, node2, directed) != null) || (
+                        !directed && graph.getLink(node2, node1, directed) != null
+                )
+        );
+    }
+    
 }

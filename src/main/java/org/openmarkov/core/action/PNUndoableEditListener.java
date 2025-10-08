@@ -18,10 +18,13 @@ public interface PNUndoableEditListener extends UndoableEditListener {
      * An undoable edit will happen
      *
      * @param event Event
+     *
      * @throws ConstraintViolationException ConstraintViolated
      */
-    void undoableEditWillHappen(UndoableEditEvent event) throws DoEditException.ConstraintViolated;
+    default void undoableEditWillHappen(UndoableEditEvent event) {
+    }
     
-    void undoEditHappened(UndoableEditEvent event);
+    default void undoEditHappened(UndoableEditEvent event) {
+    }
     
 }

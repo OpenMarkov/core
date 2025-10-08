@@ -136,7 +136,7 @@ public abstract class InferencePropagationTaskIDTest extends InferencePropagatio
     //TODO Review the minor error in test
     //TODO: has this test sense here
     @Test public void testPreAndPostResolutionEvidenceIDDecisionTestProblem()
-            throws IncompatibleEvidenceException {
+            throws IncompatibleEvidenceException, NonProjectablePotentialException {
         ProbNet diagram = iD_DecisionTestProblemWithSV;
         
         Propagation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram, null, null, null);

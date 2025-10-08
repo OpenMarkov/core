@@ -55,9 +55,5 @@ import java.util.List;
 	public String toString() {
 		return this.getClass().getName();
 	}
-
-	@Override protected String constraintDescription() {
-        return "there is at least one utility variable without utility potential or there are no utility potentials";
-	}
-
+ 
 }

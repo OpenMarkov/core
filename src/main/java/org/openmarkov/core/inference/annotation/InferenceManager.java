@@ -132,10 +132,7 @@ public class InferenceManager {
             constructor = inferenceAlgorithmClass.getConstructor(ProbNet.class);
             checkEval = inferenceAlgorithmClass.getMethod("checkEvaluability", ProbNet.class);
         } catch (SecurityException e1) {
-            return null;
-        }
-        if (constructor == null) {
-            return null;
+            throw new UnreacheableException(e1);
         }
         try {
             checkEval.invoke(inferenceAlgorithms.get(algorithmName), probNet);

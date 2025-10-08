@@ -19,29 +19,35 @@ import java.util.Vector;
  * Utility methods for constraint package.
  */
 public class UtilConstraints {
-
-	/**
-	 * @param edit     {@code UndoableEditEvent}
-	 * @param typeEdit {@code Class}
-	 * @return An {@code ArrayList} of {@code PNEdit}s of type
-	 * {@code typeEdit} that are contained in the
-	 * {@code event} received (if there is any)
-	 */
-	public static List<PNEdit> getSimpleEditsByType(PNEdit edit, Class<?> typeEdit) {
-		List<PNEdit> edits = new ArrayList<>();
-		if (edit.getClass() == typeEdit) {
-            edits.add(edit);
-		} else { // Check compound edits
-            if (edit instanceof CompoundPNEdit) {
-				Vector<UndoableEdit> simpleEdits = ((CompoundPNEdit) edit).getEdits();
-				for (UndoableEdit simpleEdit : simpleEdits) {
-					if (typeEdit.isInstance(simpleEdit)) {
-						edits.add((PNEdit) simpleEdit);
-					}
-				}
-			}
-		}
-		return edits;
-	}
-
+    
+    public static <TargetEdit extends PNEdit> List<PNEdit> getSimpleEditsByType(UndoableEdit edit, Class<TargetEdit> typeEditClass) {
+        List<PNEdit> edits = new ArrayList<>();
+        if (typeEditClass.isInstance(edit)) {
+            edits.add(typeEditClass.cast(edit));
+        }
+        // Check compound edits
+        if (edit instanceof CompoundPNEdit compoundPNEdit) {
+            for (UndoableEdit simpleEdit : compoundPNEdit.getEdits()) {
+                edits.addAll(UtilConstraints.getSimpleEditsByType(simpleEdit, typeEditClass));
+            }
+        }
+        return edits;
+    }
+    
+    /*
+        public static <TargetEdit extends PNEdit> List<TargetEdit> getSimpleEditsByType(UndoableEdit edit, Class<TargetEdit> typeEditClass) {
+        List<TargetEdit> edits = new ArrayList<>();
+        if (typeEditClass.isInstance(edit)) {
+            edits.add(typeEditClass.cast(edit));
+        }
+        // Check compound edits
+        if (edit instanceof CompoundPNEdit compoundPNEdit) {
+            for (UndoableEdit simpleEdit : compoundPNEdit.getEdits()) {
+                edits.addAll(UtilConstraints.getSimpleEditsByType(simpleEdit, typeEditClass));
+            }
+        }
+        return edits;
+    }
+    */
+    
 }

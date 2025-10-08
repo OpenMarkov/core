@@ -574,12 +574,8 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
         return limits;
     }
     
-    /**
-     * Overrides {@code toString} method. Mainly for test purposes
-     */
-    public String toString() {
-        
-        return name;
+    @Override public String toString() {
+        return this.localize();
     }
     
     private int getTimeSlice(String variableName) {

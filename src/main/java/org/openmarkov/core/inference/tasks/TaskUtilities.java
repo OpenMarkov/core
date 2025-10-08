@@ -161,8 +161,8 @@ public class TaskUtilities {
 	 * @return True if the network has only chance nodes.
 	 */
 	public static boolean hasOnlyChanceNodes(ProbNet network) {
-
-		return network.hasConstraint(OnlyChanceNodes.class);
+        
+        return network.hasConstraintOfClass(OnlyChanceNodes.class);
 	}
 
 	/**

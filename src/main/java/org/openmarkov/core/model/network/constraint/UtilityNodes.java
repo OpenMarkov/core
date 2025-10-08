@@ -38,10 +38,5 @@ import java.util.List;
         }
         return (numUtilityPontentials == numUtilityNodes);
     }
-
-	@Override protected String constraintDescription() {
-		// TODO Auto-generated method stub
-		return "";
-	}
-
+    
 }

@@ -1924,20 +1924,10 @@ public final class DiscretePotentialOperations {
      *
      * @return A {@code TablePotential}
      */
-    public static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential) {
-        TablePotential output = null;
+    public static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential) throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         EvidenceCase evi = new EvidenceCase();
-        try {
-            evi.addFinding(new Finding(variable, variable.getStates()[0]));
-        } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
-            e.printStackTrace();
-        }
-        try {
-            output = inputPotential.tableProject(evi, null).get(0);
-        } catch (NonProjectablePotentialException e) {
-            e.printStackTrace();
-        }
-        return output;
+        evi.addFinding(new Finding(variable, variable.getStates()[0]));
+        return inputPotential.tableProject(evi, null).get(0);
     }
     
     /**
@@ -2054,7 +2044,7 @@ public final class DiscretePotentialOperations {
      */
     @SuppressWarnings("unchecked")
     public static TablePotential merge(Variable decision, List<TablePotential> potentials)
-            throws PotentialOperationException.VariableIsNull, PotentialOperationException.DifferentSizesInPotentialsAndStates {
+            throws PotentialOperationException.DifferentSizesInPotentialsAndStates {
         throwExceptionIfNecessaryInMergeOperation(decision, potentials);
         // --------------
         // Initialization
@@ -2231,12 +2221,7 @@ public final class DiscretePotentialOperations {
      *
      * @throws PotentialOperationException PotentialOperationException
      */
-    private static void throwExceptionIfNecessaryInMergeOperation(Variable decision, Collection<TablePotential> potentials)
-            throws PotentialOperationException.VariableIsNull,
-            PotentialOperationException.DifferentSizesInPotentialsAndStates {
-        if (decision == null) {
-            throw new PotentialOperationException.VariableIsNull();
-        }
+    private static void throwExceptionIfNecessaryInMergeOperation(Variable decision, Collection<TablePotential> potentials) throws PotentialOperationException.DifferentSizesInPotentialsAndStates {
         if (potentials == null) {
             potentials = new ArrayList<>();
         }

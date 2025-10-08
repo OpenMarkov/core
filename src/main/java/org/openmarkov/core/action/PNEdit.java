@@ -44,7 +44,7 @@ public interface PNEdit extends UndoableEdit {
 	static void startEdit(PNEdit edit) throws DoEditException.ConstraintViolated {
 		ProbNet probNet = edit.getProbNet();
 		PNESupport pneSupport = probNet.getPNESupport();
-		pneSupport.announceEditWithConstraints(edit, probNet.getConstraints());
+        pneSupport.announceEdit(edit);
 	}
 	
 	static void endEdit(PNEdit edit) {

@@ -60,10 +60,5 @@ import java.util.List;
 		// And the first is temporal and the second is not, the former must belong to the zeroth slice
         return allowed;
 	}
-
-	@Override protected String constraintDescription() {
-		// TODO Auto-generated method stub
-		return "Links can only be drawn to future slices or from nodes in slice 0 towards atemporal nodes";
-	}
-
+ 
 }

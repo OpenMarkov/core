@@ -7,12 +7,9 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.annotation.ImplementationRequirements;
 import org.openmarkov.core.annotation.RequiredConstructor;
-import org.openmarkov.core.annotation.ToCheck;
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.ProbNet;
 
@@ -28,32 +25,7 @@ import javax.swing.event.UndoableEditEvent;
 @ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({}))
 public abstract class PNConstraint implements PNUndoableEditListener, Checkable, ClassLocalizable {
     
-    @ToCheck(reasonKind = ToCheck.ReasonKind.CODE_QUALITY,
-            reasonDescription = "Turn this into an use of ClassLocalizable::localize")
-    protected abstract String constraintDescription();
-    
     @Override public void undoableEditHappened(UndoableEditEvent e) {
-        // Do nothing
-    }
-    
-    /**
-     * Given a {@code probNet} that complies with this constraint, this
-     * method checks that after the application of the {@code edit}
-     * contained in the {@code event} received, the
-     * {@code probNet} continues complying with this constraint.
-     *
-     * @param event {@code UndoableEditEvent}
-     * @throws ConstraintViolationException ConstraintViolated
-     */
-    @Override public void undoableEditWillHappen(UndoableEditEvent event)
-            throws DoEditException.ConstraintViolated {
-        PNEdit edit = (PNEdit) event.getEdit();
-        if (!checkEdit(edit.getProbNet(), edit)) {
-            throw new DoEditException.ConstraintViolated(this);
-        }
-    }
-    
-    @Override public void undoEditHappened(UndoableEditEvent event) {
         // Do nothing
     }
     
@@ -70,7 +42,7 @@ public abstract class PNConstraint implements PNUndoableEditListener, Checkable,
 	*/
     
     @Override public String toString() {
-        return this.getClass().getName();
+        return this.localize();
     }
     
     @Override public boolean equals(Object paramObject) {

@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.type.plugin;
 
 import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.plugin.PluginSearch;
 
@@ -34,7 +35,7 @@ public class NetworkTypeManager {
                 instance = (NetworkType) networkTypeClass.getMethod("getUniqueInstance").invoke(this);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException |
                      NoSuchMethodException | SecurityException e) {
-                e.printStackTrace();
+                throw new UnreacheableException(e);
             }
         }
         return instance;

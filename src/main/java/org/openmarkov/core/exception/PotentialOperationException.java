@@ -19,9 +19,6 @@ public abstract sealed class PotentialOperationException extends Exception imple
         return IBundledOpenMarkovException.toString(this);
     }
     
-    public static final class VariableIsNull extends PotentialOperationException {
-    }
-    
     public static final class DifferentSizesInPotentialsAndStates extends PotentialOperationException {
         public DifferentSizesInPotentialsAndStates(Variable variable, Collection<TablePotential> potentials) {
             this.variable = variable;

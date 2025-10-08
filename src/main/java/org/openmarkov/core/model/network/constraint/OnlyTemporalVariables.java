@@ -38,8 +38,5 @@ import java.util.List;
 		}
 		return true;
 	}
-
-	@Override protected String constraintDescription() {
-		return "all variables must be temporal.";
-	}
+ 
 }

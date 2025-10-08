@@ -52,9 +52,5 @@ import java.util.List;
 		}
 		return true;
 	}
-
-	@Override protected String constraintDescription() {
-		return "Utility nodes only can have utility children";
-	}
-
+ 
 }

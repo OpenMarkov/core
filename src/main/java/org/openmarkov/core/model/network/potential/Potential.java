@@ -533,11 +533,11 @@ public abstract class Potential implements Localizable {
         return newPotential;
     }
     
-    public double getProbability(HashMap<Variable, Integer> sampledStateIndexes) {
+    public double getProbability(HashMap<Variable, Integer> sampledStateIndexes) throws NonProjectablePotentialException {
         return 0;
     }
     
-    public double getProbability(EvidenceCase evidenceCase) {
+    public double getProbability(EvidenceCase evidenceCase) throws NonProjectablePotentialException {
         HashMap<Variable, Integer> configuration = new HashMap<>();
         for (Finding finding : evidenceCase.getFindings()) {
             configuration.put(finding.getVariable(), finding.getStateIndex());

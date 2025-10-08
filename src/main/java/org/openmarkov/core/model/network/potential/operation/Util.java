@@ -11,10 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.security.auth.login.Configuration;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Stack;
 
 /**
@@ -30,23 +27,8 @@ public class Util {
 	// Attributes
 	public static Configuration openMarkovConfiguration = null;
 	private static Logger logger = LogManager.getLogger(Util.class);
-
-	/**
-	 * @param className {@code String}
-	 * @param object    {@code Object}.
-	 * @return {@code true} if the {@code object} is a instance
-	 * of a class with the name {@code className}
-	 */
-	public static boolean instanceOf(String className, Object object) {
-		try {
-			return Class.forName(className).isInstance(object);
-		} catch (ClassNotFoundException e) {
-			logger.fatal(e);
-		}
-		return false;
-	}
-
-	/**
+    
+    /**
 	 * @param condition {@code boolean} it it's true there is no mistake
 	 * @param message   The string that is show to the user if condition
 	 *                  is false
@@ -104,24 +86,8 @@ public class Util {
 		arrayStr = arrayStr + "]";
 		return arrayStr;
 	}
-
-	/**
-	 * @param msg {@code String} to the user
-	 * @return readed {@code int}
-	 */
-	public static String readStringFromKeyboard(String msg) {
-		String cadena = null;
-		InputStreamReader isr = new InputStreamReader(System.in);
-        try (BufferedReader br = new BufferedReader(isr)) {
-            System.out.print(msg);
-			cadena = br.readLine();
-		} catch (IOException e) {
-			logger.fatal(e);
-		}
-		return cadena;
-	}
-
-	/**
+    
+    /**
 	 * Translates a {@code String} from windows style to UNIX (change \\
 	 * for /)
 	 *

@@ -56,7 +56,7 @@ public class NetworkTypeTest {
     //(expected = ConstraintViolated.class)
     @Disabled
     @Test public void testImpossibleNetworkTypeConversion()
-            throws InvalidNetworkTypeException.UnmetConstraints, DoEditException.ConstraintViolated {
+            throws InvalidNetworkTypeException.UnmetConstraints {
         ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
         probNet.setNetworkType(InfluenceDiagramType.getUniqueInstance());
         

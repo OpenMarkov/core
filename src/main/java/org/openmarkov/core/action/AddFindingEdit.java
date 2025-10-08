@@ -65,8 +65,6 @@ public class AddFindingEdit extends SimplePNEdit {
     @Override
     public void redo() {
         super.redo();
-        
-        
     }
     
     

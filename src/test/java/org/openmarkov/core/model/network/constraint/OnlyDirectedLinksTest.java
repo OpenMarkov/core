@@ -74,7 +74,7 @@ public class OnlyDirectedLinksTest {
         AddLinkEdit iEdit;
         try {
             iEdit = new AddLinkEdit(probNetDirected, va, vc, false);
-            pNESupport.announceEdit(iEdit);
+            iEdit.doEdit(probNetDirected);
             fail();
         } catch (DoEditException.ConstraintViolated cve) {
             // It should have thrown an exception.

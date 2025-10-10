@@ -21,46 +21,9 @@ import java.util.List;
 	// Constants for possible errors
     private static final int IS_EMPTY_NAME = 0;
     private static final int IS_NAME_ALREADY_EXIST = 1;
-	// Flag of the error
-	private int type_error;
-
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		// DecisionCriteriaEdit
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, DecisionCriteriaEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			String name = ((DecisionCriteriaEdit) simpleEdit).getNewName();
-
-			if (name != null) {
-				// Get the trim and lowerCase state
-				name = name.trim();
-				name = name.toLowerCase();
-			}
-
-			switch (((DecisionCriteriaEdit) simpleEdit).getStateAction()) {
-			case ADD:
-			case RENAME:
-				if ((name == null) || (name.contentEquals(""))) {
-					type_error = IS_EMPTY_NAME;
-					return false;
-				}
-
-				for (Criterion criterion : ((DecisionCriteriaEdit) simpleEdit).getLastCriteria()) {
-					if (criterion.getCriterionName().trim().toLowerCase().equals(name)) {
-						type_error = IS_NAME_ALREADY_EXIST;
-						return false;
-					}
-				}
-
-				break;
-
-			default:
-				break;
-			}
-		}
-		return true;
-	}
-
-	@Override public boolean checkProbNet(ProbNet probNet) {
+    
+    
+    @Override public boolean checkProbNet(ProbNet probNet) {
 		
 		/*
 		List<Criterion> criteria = probNet.getDecisionCriteria();

@@ -10,6 +10,8 @@ package org.openmarkov.core.action;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -20,6 +22,7 @@ import org.openmarkov.core.model.network.potential.operation.PotentialOperations
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Removes a node performing this steps:<ol>
@@ -64,7 +67,8 @@ import java.util.List;
 		this.logger = LogManager.getLogger(CompoundPNEdit.class);
 	}
     
-    @Override public void generateEdits() throws NotSupportedOperationException {
+    @Override public Vector<PNEdit> generateEdits() {
+        Vector<PNEdit> edits = new Vector<>();
 		Node node = probNet.getNode(variable);
 
 		// gets neighbors of this node
@@ -80,9 +84,14 @@ import java.util.List;
 		}
         
         // ... multiply and eliminate the variable
-        Potential newPotential = PotentialOperations.multiplyAndEliminate(potentialsVariable, variable);
-
-		List<Variable> variablesNewPotential = newPotential.getVariables();
+        Potential newPotential = null;
+        try {
+            newPotential = PotentialOperations.multiplyAndEliminate(potentialsVariable, variable);
+        } catch (NotSupportedOperationException e) {
+            throw new UnreacheableException(e);
+        }
+        
+        List<Variable> variablesNewPotential = newPotential.getVariables();
         if (variablesNewPotential != null && !variablesNewPotential.isEmpty()) {
 			edits.add(new AddPotentialEdit(probNet, newPotential));
 		}
@@ -94,24 +103,25 @@ import java.util.List;
 		for (Node node1 : siblings) {
 			for (Node node2 : siblings) {
 				if ((node1 != node2) && (!probNet.isSibling(node1, node2))) {
-					addEdit(new AddLinkEdit(probNet, node1.getVariable(), node2.getVariable(), false));
+                    edits.add(new AddLinkEdit(probNet, node1.getVariable(), node2.getVariable(), false));
 				}
 			}
 		}
 
 		// remove links between node and its parents, children and siblings
 		for (Node parent : parents) {
-			addEdit(new RemoveLinkEdit(probNet, parent.getVariable(), node.getVariable(), true));
+            edits.add(new RemoveLinkEdit(probNet, parent.getVariable(), node.getVariable(), true));
 		}
 		for (Node child : children) {
-			addEdit(new RemoveLinkEdit(probNet, node.getVariable(), child.getVariable(), true));
+            edits.add(new RemoveLinkEdit(probNet, node.getVariable(), child.getVariable(), true));
 		}
 		for (Node sibling : siblings) {
-			addEdit(new RemoveLinkEdit(probNet, sibling.getVariable(), node.getVariable(), false));
+            edits.add(new RemoveLinkEdit(probNet, sibling.getVariable(), node.getVariable(), false));
 		}
 
 		// generate edit related to remove the variable
-		addEdit(new RemoveNodeEdit(probNet, variable));
+        edits.add(new RemoveNodeEdit(probNet, variable));
+        return edits;
 	}
 
 	@Override public void undo() {

@@ -7,13 +7,16 @@
 
 package org.openmarkov.core.action;
 
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.ProperUtilityPotentials;
 import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.List;
+import java.util.Vector;
 
 /**
  * {@code CRemoveNodeEdit} is an compound edit that removes a node
@@ -54,28 +57,30 @@ import java.util.List;
 		this.node = node;
 		this.nodeType = node.getNodeType();
 	}
-
-	@Override public void generateEdits() {
+    
+    @Override public Vector<PNEdit> generateEdits() {
 		// gets neighbors of this node
+        Vector<PNEdit> edits = new Vector<>();
 		parents = probNet.getParents(node);
 		children = probNet.getChildren(node);
 
 		for (Node parent : parents) {
 			String name = parent.getName();
-            addEdit(new RemoveLinkEdit(node.getProbNet(), probNet.getVariable(name),
+            edits.add(new RemoveLinkEdit(node.getProbNet(), probNet.getVariable(name),
                     probNet.getVariable(node.getName()), true));
         }
 		for (Node child : children) {
-            addEdit(new RemoveLinkEdit(node.getProbNet(), probNet.getVariable(node.getName()),
+            edits.add(new RemoveLinkEdit(node.getProbNet(), probNet.getVariable(node.getName()),
                     probNet.getVariable(child.getName()), true));
         }
 
 		// add edit to remove the variable
-		addEdit(new RemoveNodeEdit(probNet, node));
+        edits.add(new RemoveNodeEdit(probNet, node));
 
 		// add edit to add the new potential
 		//edits.add(new AddPotentialEdit(probNet, newPotential));
-	}
+        return edits;
+    }
 
 	@Override public void undo() {
 		super.undo();

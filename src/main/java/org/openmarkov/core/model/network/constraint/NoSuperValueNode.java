@@ -28,17 +28,4 @@ import java.util.List;
 		}
 		return true;
 	}
-
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		// AddLinkEdit
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			Node node = ((AddLinkEdit) simpleEdit).getNode1();
-			if (node.getNodeType() == NodeType.UTILITY) {
-				return false;
-			}
-		}
-		return true;
-	}
- 
 }

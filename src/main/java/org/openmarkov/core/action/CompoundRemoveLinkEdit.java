@@ -10,6 +10,8 @@ package org.openmarkov.core.action;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -18,6 +20,7 @@ import org.openmarkov.core.model.network.potential.operation.PotentialOperations
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 @SuppressWarnings("serial") public class CompoundRemoveLinkEdit extends CompoundPNEdit {
     
@@ -47,19 +50,18 @@ import java.util.List;
     }
     
     // Methods
-    @Override public void generateEdits() throws NotSupportedOperationException {
-        if (isDirected) {
-            generateEditsDirectedLink();
-        } else {
-            generateEditsUndirectedLink();
-        }
+    @Override public Vector<PNEdit> generateEdits() {
+        return isDirected ? generateEditsDirectedLink() : generateEditsUndirectedLink();
     }
     
-    private void generateEditsUndirectedLink() {
-        addEdit(new RemoveLinkEdit(probNet, variable1, variable2, isDirected));
+    private Vector<PNEdit> generateEditsUndirectedLink() {
+        Vector<PNEdit> edits = new Vector<>();
+        edits.add(new RemoveLinkEdit(probNet, variable1, variable2, isDirected));
+        return edits;
     }
     
-    private void generateEditsDirectedLink() throws NotSupportedOperationException {
+    private Vector<PNEdit> generateEditsDirectedLink() {
+        Vector<PNEdit> edits = new Vector<>();
         Node node2 = probNet.getNode(variable2);
         List<Potential> potentials = node2.getPotentials();
         for (Potential potential : potentials) {
@@ -67,11 +69,16 @@ import java.util.List;
             if (potentialVariables.contains(variable1)) {
                 potentialVariables = new ArrayList<>(potentialVariables);
                 potentialVariables.remove(variable1);
-                Potential marginalizedPotential = PotentialOperations.marginalize(potential, potentialVariables);
-                addEdit(new PotentialChangeEdit(probNet, marginalizedPotential, potential));
+                try {
+                    Potential marginalizedPotential = PotentialOperations.marginalize(potential, potentialVariables);
+                    edits.add(new PotentialChangeEdit(probNet, marginalizedPotential, potential));
+                } catch (NotSupportedOperationException e) {
+                    throw new UnreacheableException(e);
+                }
             }
         }
-        addEdit(new RemoveLinkEdit(probNet, variable1, variable2, isDirected));
+        edits.add(new RemoveLinkEdit(probNet, variable1, variable2, isDirected));
+        return edits;
     }
     
     public String toString() {

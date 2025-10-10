@@ -18,24 +18,10 @@ import java.util.List;
 @Constraint(name = "OnlyDirectedLinks", defaultBehavior = ConstraintBehavior.YES) public class OnlyDirectedLinks
 		extends PNConstraint {
 
-	private String explanation;
-
 	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Node> nodes = probNet.getNodes();
 		for (Node node : nodes) {
 			if (probNet.getNumSiblings(node) != 0) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			if (!((AddLinkEdit) simpleEdit).isDirected()) {
-				AddLinkEdit addLink = (AddLinkEdit) simpleEdit;
-                explanation = addLink.getVariable1() + " --- " + addLink.getVariable2();
 				return false;
 			}
 		}

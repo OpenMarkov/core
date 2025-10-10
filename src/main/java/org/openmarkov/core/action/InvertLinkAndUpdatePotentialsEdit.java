@@ -199,6 +199,7 @@ public class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	}
 	
 	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
+        this.checkConstraintsWillBeMet();
 		PNEdit.startEdit(this, probNet);
 		this.doEdit();
 		PNEdit.endEdit(this);

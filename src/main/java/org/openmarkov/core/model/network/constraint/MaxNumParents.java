@@ -20,8 +20,12 @@ import java.util.List;
 		extends PNConstraint {
 
 	private int maxNumParents;
-
-	public void setMaxNumParents(int maxNumParents) {
+    
+    public int getMaxNumParents() {
+        return this.maxNumParents;
+    }
+    
+    public void setMaxNumParents(int maxNumParents) {
 		this.maxNumParents = maxNumParents;
 	}
 
@@ -33,35 +37,6 @@ import java.util.List;
 			}
 		}
 		return true;
-	}
-
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
-
-		for (PNEdit simpleEdit : edits) {
-			if (((AddLinkEdit) simpleEdit).isDirected()) {
-				Variable variable2 = ((AddLinkEdit) simpleEdit).getVariable2();
-				Node node2 = probNet.getNode(variable2);
-				int numParents = probNet.getNumParents(node2);
-				if (numParents >= maxNumParents) {
-					return false;
-				}
-			}
-		}
-
-		/*edits = UtilConstraints.getEditsType(edit, RemoveLinkEdit.class);
-		 for (PNEdit simpleEdit : edits) {
-		 if (((RemoveLinkEdit)simpleEdit).isDirected()) {
-		 Node node2 = ((RemoveLinkEdit)simpleEdit).getNode2().getNode();
-		 int numParents=node2.getParents().size();
-		 if (numParents >=maxNumParents) {
-		 return false;
-		 }
-		 }
-		 }*/
-		return true;
-
 	}
  
 }

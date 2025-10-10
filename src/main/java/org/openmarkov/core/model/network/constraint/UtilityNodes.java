@@ -18,12 +18,8 @@ import java.util.List;
 
 @Constraint(name = "UtilityNodes", defaultBehavior = ConstraintBehavior.OPTIONAL) public class UtilityNodes
 		extends PNConstraint {
-
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		return true;
-	}
-
-	@Override public boolean checkProbNet(ProbNet probNet) {
+    
+    @Override public boolean checkProbNet(ProbNet probNet) {
 		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
 		int numUtilityNodes = utilityNodes.size();
 		if (numUtilityNodes == 0) {

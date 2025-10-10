@@ -8,11 +8,8 @@
 package org.openmarkov.core.action;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.constraint.*;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 
 import java.awt.geom.Point2D;
@@ -25,119 +22,188 @@ import java.awt.geom.Point2D;
  * @version 1 21/12/10
  */
 @SuppressWarnings("serial") public class AddNodeEdit extends SimplePNEdit {
-
-	// Atribbutes
-	/**
-	 * The new Variable object that match the new node.
-	 */
-	protected Variable variable;
-
-	/**
-	 * The node type of the new node.
-	 */
-	protected NodeType nodeType;
-
-	/**
-	 * Graphic position of the new node
-	 */
-	protected Point2D.Double cursorPosition;
-
-	/**
-	 * The new node
-	 */
-	protected Node newNode;
-
-	/**
-	 * Creates a new {@code AddNodeEdit} with the network where the new
-	 * new node will be added and basic information about it.
-	 *
-	 * @param probNet        the {@code ProbNet} where the new node will be added.
-	 * @param variable       the variable contained in the new node
-	 * @param nodeType       The new node type.
-	 * @param cursorPosition the position (coordinates X,Y) of the node.
-	 */
-	public AddNodeEdit(ProbNet probNet, Variable variable, NodeType nodeType, Point2D.Double cursorPosition) {
-		super(probNet);
-		this.cursorPosition = (Point2D.Double) cursorPosition.clone();
-		this.probNet = probNet;
-		this.nodeType = nodeType;
-		this.variable = variable;
-	}
-
-	/**
-	 * Creates a new {@code AddNodeEdit} with the network where the new
-	 * new node will be added and basic information about it.
-	 *
-	 * @param probNet  the {@code ProbNet} where the new node will be added.
-	 * @param variable the variable contained in the new node
-	 * @param nodeType The new node type.
-	 */
-	public AddNodeEdit(ProbNet probNet, Variable variable, NodeType nodeType) {
-		this(probNet, variable, nodeType, new Point2D.Double());
-	}
-
-	@Override public void doEdit() {
-		// Adds the new variable to network ( creates a node instance )
-		newNode = probNet.addNode(variable, nodeType);
-		// TODO revisar si es conveniente utilizar una constraint
-		// Sets a uniformPotential for the new node
-		// Decision node has no potential when is created
-		if (nodeType != NodeType.DECISION) {
-			probNet.addPotential(PotentialOperations.getUniformPotential(probNet, variable, nodeType));
-			newNode = probNet.getNode(variable);
-		} else {
-			newNode.setPolicyType(PolicyType.OPTIMAL);
-		}
-		// Sets the visual node position
-		newNode.setCoordinateX((int) cursorPosition.getX());
-		newNode.setCoordinateY((int) cursorPosition.getY());
-	}
-	
-	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() {
-		super.undo();
-		probNet.removeNode(newNode);
-	}
-
-	/**
-	 * @return newNode the new {@code Node} added
-	 */
-	public Node getNode() {
-		return newNode;
-	}
-
-	public Variable getVariable() {
-		return variable;
-	}
-
-	public NodeType getNodeType() {
-		return nodeType;
-	}
-
-	public Point2D.Double getCursorPosition() {
-		return cursorPosition;
-	}
-
-	@Override public String getPresentationName() {
-		return "Edit.AddNodeEdit";
-	}
-
-	@Override public String getUndoPresentationName() {
-		return "Edit.AddNodeEdit.Undo";
-	}
-
-	@Override public String getRedoPresentationName() {
-		return "Edit.AddNodeEdit.Redo";
-	}
-
-	@Override public void redo() {
-		setTypicalRedo(false);
-		super.redo();
-		probNet.addNode(newNode);
-	}
+    
+    // Atribbutes
+    /**
+     * The new Variable object that match the new node.
+     */
+    protected Variable variable;
+    
+    /**
+     * The node type of the new node.
+     */
+    protected NodeType nodeType;
+    
+    /**
+     * Graphic position of the new node
+     */
+    protected Point2D.Double cursorPosition;
+    
+    /**
+     * The new node
+     */
+    protected Node newNode;
+    
+    /**
+     * Creates a new {@code AddNodeEdit} with the network where the new
+     * new node will be added and basic information about it.
+     *
+     * @param probNet        the {@code ProbNet} where the new node will be added.
+     * @param variable       the variable contained in the new node
+     * @param nodeType       The new node type.
+     * @param cursorPosition the position (coordinates X,Y) of the node.
+     */
+    public AddNodeEdit(ProbNet probNet, Variable variable, NodeType nodeType, Point2D.Double cursorPosition) {
+        super(probNet);
+        this.cursorPosition = (Point2D.Double) cursorPosition.clone();
+        this.probNet = probNet;
+        this.nodeType = nodeType;
+        this.variable = variable;
+    }
+    
+    /**
+     * Creates a new {@code AddNodeEdit} with the network where the new
+     * new node will be added and basic information about it.
+     *
+     * @param probNet  the {@code ProbNet} where the new node will be added.
+     * @param variable the variable contained in the new node
+     * @param nodeType The new node type.
+     */
+    public AddNodeEdit(ProbNet probNet, Variable variable, NodeType nodeType) {
+        this(probNet, variable, nodeType, new Point2D.Double());
+    }
+    
+    @Override public void checkConstraintsWillBeMet() throws DoEditException.ConstraintViolated {
+        if (probNet.getConstraintOfClass(DistinctVariableNames.class) instanceof DistinctVariableNames constraint) {
+            if (probNet.getVariablesNames().contains(this.variable.getName())) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(NoEmptyName.class) instanceof NoEmptyName constraint) {
+            String name = this.variable.getName();
+            if ((name == null) || (name.contentEquals(""))) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(OnlyAtemporalVariables.class) instanceof OnlyAtemporalVariables constraint) {
+            if (this.variable.isTemporal()) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(OnlyChanceNodes.class) instanceof OnlyChanceNodes constraint) {
+            if (this.nodeType != NodeType.CHANCE) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(OnlyContinuousVariables.class) instanceof OnlyContinuousVariables constraint) {
+            if (this.variable.getVariableType() != VariableType.NUMERIC) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(OnlyDiscreteVariables.class) instanceof OnlyDiscreteVariables constraint) {
+            if (this.variable.getVariableType() != VariableType.DISCRETIZED) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(OnlyFiniteStatesVariables.class) instanceof OnlyFiniteStatesVariables constraint) {
+            if (!OnlyFiniteStatesVariables.nodeIsFinite(
+                    this.nodeType, this.variable.getVariableType())) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(OnlyNumericVariables.class) instanceof OnlyNumericVariables constraint) {
+            if (this.variable.getVariableType() != VariableType.NUMERIC) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(OnlyOneAgent.class) instanceof OnlyOneAgent constraint) {
+            if (this.variable.getAgent() != null) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(OnlyTemporalVariables.class) instanceof OnlyTemporalVariables constraint) {
+            if (!this.variable.isTemporal()) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(ProperUtilityPotentials.class) instanceof ProperUtilityPotentials constraint) {
+            if (!this.variable.isTemporal()) {
+                int numUtilities = probNet.getNumNodes(NodeType.UTILITY);
+                if (this.nodeType == NodeType.UTILITY) {
+                    numUtilities = numUtilities + 1;
+                }
+                if (numUtilities <= 0) {
+                    throw new DoEditException.ConstraintViolated(constraint);
+                }
+            }
+        }
+        
+        
+    }
+    
+    @Override public void doEdit() {
+        // Adds the new variable to network ( creates a node instance )
+        newNode = probNet.addNode(variable, nodeType);
+        // TODO revisar si es conveniente utilizar una constraint
+        // Sets a uniformPotential for the new node
+        // Decision node has no potential when is created
+        if (nodeType != NodeType.DECISION) {
+            probNet.addPotential(PotentialOperations.getUniformPotential(probNet, variable, nodeType));
+            newNode = probNet.getNode(variable);
+        } else {
+            newNode.setPolicyType(PolicyType.OPTIMAL);
+        }
+        // Sets the visual node position
+        newNode.setCoordinateX((int) cursorPosition.getX());
+        newNode.setCoordinateY((int) cursorPosition.getY());
+    }
+    
+    @Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+        this.checkConstraintsWillBeMet();
+        PNEdit.startEdit(this, probNet);
+        this.doEdit();
+        PNEdit.endEdit(this);
+    }
+    
+    @Override public void undo() {
+        super.undo();
+        probNet.removeNode(newNode);
+    }
+    
+    /**
+     * @return newNode the new {@code Node} added
+     */
+    public Node getNode() {
+        return newNode;
+    }
+    
+    public Variable getVariable() {
+        return variable;
+    }
+    
+    public NodeType getNodeType() {
+        return nodeType;
+    }
+    
+    public Point2D.Double getCursorPosition() {
+        return cursorPosition;
+    }
+    
+    @Override public String getPresentationName() {
+        return "Edit.AddNodeEdit";
+    }
+    
+    @Override public String getUndoPresentationName() {
+        return "Edit.AddNodeEdit.Undo";
+    }
+    
+    @Override public String getRedoPresentationName() {
+        return "Edit.AddNodeEdit.Redo";
+    }
+    
+    @Override public void redo() {
+        setTypicalRedo(false);
+        super.redo();
+        probNet.addNode(newNode);
+    }
 }

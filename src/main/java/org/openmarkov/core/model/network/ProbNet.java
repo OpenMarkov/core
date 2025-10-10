@@ -1169,9 +1169,14 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * @return All the variables. {@code ArrayList} of
      * {@code Variable}
      */
-    public List<Variable> getVariables() {
+    public ArrayList<Variable> getVariables() {
         return new ArrayList<>(getNodes().stream().map(Node::getVariable).toList());
     }
+    
+    public ArrayList<String> getVariablesNames() {
+        return new ArrayList<>(getNodes().stream().map(Node::getVariable).map(Variable::getName).toList());
+    }
+    
     
     /**
      * Removes {@code node} from {@code this ProbNet} and removes

@@ -11,6 +11,9 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.DistinctVariableNames;
+import org.openmarkov.core.model.network.constraint.NoEmptyName;
+import org.openmarkov.core.model.network.constraint.ValidName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,14 +57,33 @@ import java.util.List;
 		this.previousName = node.getVariable().getBaseName();
 		this.newName = newName;
 	}
-
-	@Override public void doEdit() {
+    
+    @Override public void checkConstraintsWillBeMet() throws DoEditException.ConstraintViolated {
+        if (probNet.getConstraintOfClass(DistinctVariableNames.class) instanceof DistinctVariableNames constraint) {
+            if (probNet.getVariablesNames().contains(newName)) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(NoEmptyName.class) instanceof NoEmptyName constraint) {
+            if ((this.newName == null) || (this.newName.contentEquals(""))) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(ValidName.class) instanceof ValidName constraint) {
+            if (!ValidName.checkName(this.getNewName(), this.getPreviousName(), probNet)) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+    }
+    
+    @Override public void doEdit() {
 		for (Variable variable : variables) {
 			variable.setBaseName(newName);
 		}
 	}
 	
 	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+        this.checkConstraintsWillBeMet();
 		PNEdit.startEdit(this, probNet);
 		this.doEdit();
 		PNEdit.endEdit(this);

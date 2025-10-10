@@ -20,10 +20,6 @@ import java.util.List;
 @Constraint(name = "AllChanceVariablesHaveChancePotentials", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class AllChanceVariablesHaveChancePotentials extends PNConstraint {
     
-    @Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-        return true;
-    }
-    
     @Override public boolean checkProbNet(ProbNet probNet) {
         List<Node> chanceNodes = probNet.getNodes(NodeType.CHANCE);
         for (Node chanceNode : chanceNodes) {

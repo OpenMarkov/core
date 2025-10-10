@@ -19,18 +19,6 @@ import java.util.List;
 @Constraint(name = "NoSelfLoops", defaultBehavior = ConstraintBehavior.YES) public class NoSelfLoop
 		extends PNConstraint {
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			Variable variable1 = ((AddLinkEdit) simpleEdit).getVariable1();
-			Variable variable2 = ((AddLinkEdit) simpleEdit).getVariable2();
-			if (variable1.equals(variable2)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	@Override public boolean checkProbNet(ProbNet probNet) {
 		for (Node node : probNet.getNodes()) {
 			if (probNet.isChild(node, node) || probNet.isSibling(node, node)) {

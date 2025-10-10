@@ -12,6 +12,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.*;
 import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.ArrayList;
@@ -53,9 +54,49 @@ import java.util.List;
         node1 = probNet.getNode(variable1.getName());
         node2 = probNet.getNode(variable2.getName());
     }
-
-	// Methods
-
+    
+    
+    @Override public void checkConstraintsWillBeMet() throws DoEditException.ConstraintViolated {
+        if (probNet.getConstraintOfClass(DistinctLinks.class) instanceof DistinctLinks constraint) {
+            Node node1 = probNet.getNode(this.getVariable1());
+            Node node2 = probNet.getNode(this.getVariable2());
+            boolean directed = this.isDirected();
+            if (!DistinctLinks.checkLink(probNet, node2, node1, directed)) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(NoCycle.class) instanceof NoCycle constraint) {
+            Node node1 = probNet.getNode(this.getVariable1());
+            Node node2 = probNet.getNode(this.getVariable2());
+            probNet.removeLink(node1, node2, true);
+            boolean existsPath = probNet.existsPath(node1, node2, true);
+            probNet.addLink(node1, node2, true);
+            if (existsPath) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(NoMixedParents.class) instanceof NoMixedParents constraint) {
+            Node node2 = probNet.getNode(this.getVariable2());
+            if (node2.getNodeType() == NodeType.UTILITY) {
+                Node node1 = probNet.getNode(this.getVariable1());
+                if (NoMixedParents.hasMixedParents(probNet, node2, node1)) {
+                    throw new DoEditException.ConstraintViolated(constraint);
+                }
+            }
+        }
+        if (probNet.getConstraintOfClass(NoMultipleLinks.class) instanceof NoMultipleLinks constraint) {
+            Node node1 = probNet.getNode(this.getVariable1());
+            Node node2 = probNet.getNode(this.getVariable2());
+            boolean directed = this.isDirected();
+            if (!NoMultipleLinks.checkLink(probNet, node2, node1, directed)) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(ModelNetworkConstraint.class) instanceof ModelNetworkConstraint constraint
+                && !constraint.isLinkInversionAllowed() && !constraint.canEditBeDone(this)) {
+            throw new DoEditException.ConstraintViolated(constraint);
+        }
+    }
 	/**
 	 *
 	 * @throws DoEditException DoEditException
@@ -93,8 +134,10 @@ import java.util.List;
 			throw new DoEditException.CannotInvertLink(node1, node2, probNet, probNet.getUnsatisfiedConstraints());
 		}
 	}
-	
-	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotInvertLink {
+    
+    @Override
+    public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotInvertLink {
+        this.checkConstraintsWillBeMet();
 		PNEdit.startEdit(this, probNet);
 		this.doEdit();
 		PNEdit.endEdit(this);

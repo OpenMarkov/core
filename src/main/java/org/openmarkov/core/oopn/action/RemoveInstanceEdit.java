@@ -7,9 +7,7 @@
 
 package org.openmarkov.core.oopn.action;
 
-import org.openmarkov.core.action.CRemoveNodeEdit;
-import org.openmarkov.core.action.CompoundPNEdit;
-import org.openmarkov.core.action.RemoveLinkEdit;
+import org.openmarkov.core.action.*;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.graph.Link;
@@ -22,6 +20,7 @@ import org.openmarkov.core.oopn.ReferenceLink;
 
 import javax.swing.undo.CannotUndoException;
 import java.util.HashSet;
+import java.util.Vector;
 
 /**
  * @author ibermejo
@@ -59,9 +58,9 @@ import java.util.HashSet;
 			}
 		}
 	}
-
-	@Override public void generateEdits() {
-
+    
+    @Override public Vector<PNEdit> generateEdits() {
+        Vector<PNEdit> edits = new Vector<>();
 		for (Link<Node> link : linksToRemove) {
 			edits.add(new RemoveLinkEdit(probNet, link.getNode1().getVariable(), link.getNode2().getVariable(),
 					link.isDirected()));
@@ -70,7 +69,8 @@ import java.util.HashSet;
 		for (Node node : nodesToRemove) {
 			edits.add(new CRemoveNodeEdit(probNet, node));
 		}
-	}
+        return edits;
+    }
 
 	@Override public void doEdit() throws DoEditException {
 		super.doEdit();

@@ -1,6 +1,7 @@
 package org.openmarkov.core.action;
 
 import java.util.List;
+import java.util.Vector;
 
 import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.model.network.Node;
@@ -17,7 +18,8 @@ import org.openmarkov.core.model.network.potential.Potential;
     }
     
     @Override
-    public void generateEdits() {
+    public Vector<PNEdit> generateEdits() {
+        Vector<PNEdit> edits = new Vector<>();
         // gets neighbors of this node
         Variable nodeVariable = node.getVariable();
         List<Node> parents = probNet.getParents(node);
@@ -38,6 +40,6 @@ import org.openmarkov.core.model.network.potential.Potential;
             }
         }
         edits.add(new SetPotentialEdit(node, potential));
-        
+        return edits;
     }
 }

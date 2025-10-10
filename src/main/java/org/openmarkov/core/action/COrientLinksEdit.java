@@ -13,50 +13,49 @@ import javax.swing.undo.UndoableEdit;
 import java.util.Vector;
 
 @SuppressWarnings("serial") public class COrientLinksEdit extends CompoundPNEdit {
-
-	public COrientLinksEdit(ProbNet probNet, Vector<UndoableEdit> edits) {
-		super(probNet);
-		this.edits = edits;
-	}
-
-	// Methods
-	@Override public void generateEdits() {
-	}
-
-	public String toString() {
-		StringBuilder buffer = new StringBuilder("Orient links: ");
-		for (UndoableEdit edit : edits) {
-			OrientLinkEdit orientLinkEdit = (OrientLinkEdit) edit;
-			buffer.append(orientLinkEdit.getVariable1().getName());
-			if (orientLinkEdit.isDirected()) {
-				buffer.append(" --> ");
-			} else {
-				buffer.append(" --- ");
-			}
-			buffer.append(orientLinkEdit.getVariable2().getName());
-			buffer.append(", ");
-		}
-		buffer.delete(buffer.lastIndexOf(","), buffer.length());
-		return buffer.toString();
-	}
-
-	@Override public boolean equals(Object arg0) {
-		boolean sameInformation = true;
-        
+    
+    public COrientLinksEdit(ProbNet probNet, Vector<OrientLinkEdit> edits) {
+        super(probNet);
+        this.orientLinkEdits = edits;
+    }
+    
+    private final Vector<OrientLinkEdit> orientLinkEdits;
+    
+    // Methods
+    @Override public Vector<PNEdit> generateEdits() {
+        return (Vector<PNEdit>) (Vector) orientLinkEdits;
+    }
+    
+    public String toString() {
+        StringBuilder buffer = new StringBuilder("Orient links: ");
+        for (UndoableEdit edit : edits) {
+            OrientLinkEdit orientLinkEdit = (OrientLinkEdit) edit;
+            buffer.append(orientLinkEdit.getVariable1().getName());
+            if (orientLinkEdit.isDirected()) {
+                buffer.append(" --> ");
+            } else {
+                buffer.append(" --- ");
+            }
+            buffer.append(orientLinkEdit.getVariable2().getName());
+            buffer.append(", ");
+        }
+        buffer.delete(buffer.lastIndexOf(","), buffer.length());
+        return buffer.toString();
+    }
+    
+    @Override public boolean equals(Object arg0) {
+        boolean sameInformation = true;
         if (arg0 instanceof COrientLinksEdit editToCompare) {
-            
             for (UndoableEdit edit : editToCompare.edits) {
-				sameInformation &= edits.contains(edit);
-			}
-
-			for (UndoableEdit edit : edits) {
-				sameInformation &= editToCompare.edits.contains(edit);
-			}
-		} else {
-			sameInformation = false;
-		}
-
-		return sameInformation;
-	}
-
+                sameInformation &= edits.contains(edit);
+            }
+            for (UndoableEdit edit : edits) {
+                sameInformation &= editToCompare.edits.contains(edit);
+            }
+        } else {
+            sameInformation = false;
+        }
+        return sameInformation;
+    }
+    
 }

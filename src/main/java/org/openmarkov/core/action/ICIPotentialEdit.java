@@ -50,6 +50,7 @@ import javax.swing.undo.CannotUndoException;
 	}
 	
 	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+        this.checkConstraintsWillBeMet();
 		PNEdit.startEdit(this, probNet);
 		this.doEdit();
 		PNEdit.endEdit(this);

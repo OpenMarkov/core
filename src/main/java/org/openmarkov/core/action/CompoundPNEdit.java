@@ -22,85 +22,80 @@ import java.util.Vector;
  * abstract class.
  */
 @SuppressWarnings("serial") public abstract class CompoundPNEdit extends CompoundEdit implements PNEdit {
-	// Attribute
-	protected ProbNet probNet;
-	private boolean generatedEdits;
-	// All simple edits are significant
-	private boolean significant = true;
-
-	// Constructor
-
-	/**
-	 * @param probNet <tt>ProbNet</tt>
-	 */
-	public CompoundPNEdit(ProbNet probNet) {
-		this.probNet = probNet;
-		generatedEdits = false;
-	}
-
-	// Methods
-
-	/**
-	 * Generate edits and does them
-	 *
-	 * @throws DoEditException DoEditException
-	 */
-	@Override public void doEdit() throws DoEditException {
-		if (!generatedEdits) {
-            try {
-                generateEdits();
-            } catch (NotSupportedOperationException e) {
-                throw new DoEditException.CannotDoEditException(e);
-            }
-            generatedEdits = true;
-		}
-		for (UndoableEdit edit : edits) {
-			((PNEdit) edit).doEdit();
-		}
-		super.end();
-	}
-	
-	@Override public void doEdit(ProbNet probNet) throws DoEditException {
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
+    // Attribute
+    protected ProbNet probNet;
+    private boolean generatedEdits;
+    // All simple edits are significant
+    private boolean significant = true;
     
-    public abstract void generateEdits() throws NotSupportedOperationException;
-
-	/**
-	 * @return {@code Vector} of {@code UndoableEdit}s
-	 */
-	public Vector<UndoableEdit> getEdits() {
-		if (!generatedEdits) {
-            try {
-                @ToCheck(reasonKind = ToCheck.ReasonKind.CODE_QUALITY,
-                        reasonDescription = "This method is called by UtilConstraints.getSimpleEditsByType, so if we" +
-                                "propagate the NotSupportedOperationException, then many callers of the method " +
-                                "checkEdit have to also throw this exception. Is this desired?")
-                var check = false;
-                generateEdits();
-            } catch (NotSupportedOperationException e) {
-                throw new UnrecoverableException(e);
-            }
-            generatedEdits = true;
-		}
-		return edits;
-	}
-
-	@Override public boolean isSignificant() {
-		return significant;
-	}
-
-	@Override public void setSignificant(boolean significant) {
-		this.significant = significant;
-	}
-
-	@Override public ProbNet getProbNet() {
-		return probNet;
-	}
-	
-	@Override public void setProbNet(ProbNet probNet) {
-		this.probNet = probNet;
-	}
+    // Constructor
+    
+    /**
+     * @param probNet <tt>ProbNet</tt>
+     */
+    public CompoundPNEdit(ProbNet probNet) {
+        this.probNet = probNet;
+        generatedEdits = false;
+    }
+    
+    // Methods
+    
+    /**
+     * Generate edits and does them
+     *
+     * @throws DoEditException DoEditException
+     */
+    @Override public void doEdit() throws DoEditException {
+        for (PNEdit edit : getEdits()) {
+            edit.doEdit();
+        }
+        super.end();
+    }
+    
+    @Override public void checkConstraintsWillBeMet() throws DoEditException.ConstraintViolated {
+        for (PNEdit pnEdit : getEdits()) {
+            pnEdit.checkConstraintsWillBeMet();
+        }
+    }
+    
+    @Override public final void doEdit(ProbNet probNet) throws DoEditException {
+        this.initializeEdits();
+        this.checkConstraintsWillBeMet();
+        PNEdit.startEdit(this, probNet);
+        this.doEdit();
+        PNEdit.endEdit(this);
+    }
+    
+    public abstract Vector<PNEdit> generateEdits();
+    
+    /**
+     * @return {@code Vector} of {@code UndoableEdit}s
+     */
+    public Vector<PNEdit> getEdits() {
+        initializeEdits();
+        return (Vector<PNEdit>) (Vector) edits;
+    }
+    
+    private void initializeEdits() {
+        if (!this.generatedEdits) {
+            this.edits = (Vector<UndoableEdit>) (Vector) generateEdits();
+            this.generatedEdits = true;
+        }
+    }
+    
+    @Override public boolean isSignificant() {
+        return significant;
+    }
+    
+    @Override public void setSignificant(boolean significant) {
+        this.significant = significant;
+    }
+    
+    @Override public ProbNet getProbNet() {
+        return probNet;
+    }
+    
+    @Override public void setProbNet(ProbNet probNet) {
+        this.probNet = probNet;
+    }
 }

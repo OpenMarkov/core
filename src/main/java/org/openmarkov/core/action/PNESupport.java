@@ -79,19 +79,11 @@ public class PNESupport extends UndoableEditSupport {
      * First part: Announce to the listeners than an edition can happen
      *
      * @param edit {@code PNEdit}.
-     *
-     * @throws ConstraintViolationException in case of illegal
-     *                                      {@code probNet} modification.
      */
-    public void announceEdit(PNEdit edit) throws DoEditException.ConstraintViolated {
+    public void announceEdit(PNEdit edit) {
         UndoableEditEvent event = new UndoableEditEvent(this, edit);
         for (UndoableEditListener listener : listeners) {
             ((PNUndoableEditListener) listener).undoableEditWillHappen(event);
-        }
-        for (PNConstraint pnConstraint : edit.getProbNet().getConstraints()) {
-            if (!pnConstraint.checkEdit(edit.getProbNet(), edit)) {
-                throw new DoEditException.ConstraintViolated(pnConstraint);
-            }
         }
     }
     

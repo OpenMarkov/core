@@ -63,6 +63,7 @@ public class PotentialChangeEdit extends SimplePNEdit {
 	}
 
     @Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotRemovePotential {
+        this.checkConstraintsWillBeMet();
         PNEdit.startEdit(this, probNet);
         this.doEdit();
         PNEdit.endEdit(this);

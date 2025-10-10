@@ -68,8 +68,7 @@ public class NoMultipleLinksTest {
         // do ilegal LinkAdd. Add an undirected link between U and A
         AddLinkEdit ilegalAdd = new AddLinkEdit(influenceDiagram, vU, vA, false);
         try {
-            pNESupport.announceEdit(ilegalAdd);
-            ilegalAdd.doEdit();
+            ilegalAdd.doEdit(influenceDiagram);
             fail();
         } catch (DoEditException.ConstraintViolated e) {
             // the ilegal edit should have thrown the exception
@@ -89,8 +88,7 @@ public class NoMultipleLinksTest {
         // do ilegal InvertLink. Add an directed link between U and A
         InvertLinkEdit ilegalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vA, false);
         try {
-            pNESupport.announceEdit(ilegalInvertLinkEdit);
-            ilegalInvertLinkEdit.doEdit();
+            ilegalInvertLinkEdit.doEdit(influenceDiagram);
             fail();
         } catch (DoEditException.ConstraintViolated | DoEditException.CannotInvertLink e) {
             // the ilegal edit should have thrown the exception

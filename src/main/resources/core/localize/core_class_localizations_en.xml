@@ -90,8 +90,6 @@
                   value="Always-observed variable are not descendant of a decision nodes"/>
     <Localization class="org.openmarkov.core.model.network.constraint.NoBackwardLink"
                   value="Links can only be drawn to future slices or from nodes in slice 0 towards atemporal nodes"/>
-    <Localization class="org.openmarkov.core.model.network.constraint.NoClosedPath"
-                  value="No closed paths are allowed."/>
     <Localization class="org.openmarkov.core.model.network.constraint.NoCycle" value="No cycles paths are allowed."/>
     <Localization class="org.openmarkov.core.model.network.constraint.NoEmptyName" value="Names aren't empty"/>
     <Localization class="org.openmarkov.core.model.network.constraint.NoLinkRestriction"
@@ -161,7 +159,7 @@
                   value="The clone method of {cloneableClass.getName} is badly implemented, as it returns the original object"/>
     <Localization class="org.openmarkov.learning.core.exception.EmptyModelNetException" value="There is no network selected to use as model, and one is required."/>
     <Localization class="org.openmarkov.learning.core.exception.UnobservedVariablesException" value="Algorithm {algorithmType.name} does not support unobserved variables, which are: {unobservedVariables}"/>
-    <Localization class="org.openmarkov.learning.core.constraint.ModelNetworkConstraint"
+    <Localization class="org.openmarkov.core.model.network.constraint.ModelNetworkConstraint"
                   value="Tried to add, remove or invert the wrong link"/>
     <Localization class="org.openmarkov.core.io.format.annotation.NoReaderForFileException"
                   value="There is no reader for files of extension {fileExtension} in version {fileVersion}.\nThis happened trying to read the file located at {url}."/>

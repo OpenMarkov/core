@@ -30,24 +30,6 @@ import java.util.List;
 		}
 		return true;
 	}
-
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddNodeEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			Variable variable = ((AddNodeEdit) simpleEdit).getVariable();
-			VariableType varType = variable.getVariableType();
-			if (varType != VariableType.NUMERIC) {
-				return false;
-			}
-		}
-		edits = UtilConstraints.getSimpleEditsByType(edit, VariableTypeEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			VariableType newType = ((VariableTypeEdit) simpleEdit).getNewVariableType();
-			if (newType != VariableType.NUMERIC) {
-				return false;
-			}
-		}
-		return true;
-	}
+ 
  
 }

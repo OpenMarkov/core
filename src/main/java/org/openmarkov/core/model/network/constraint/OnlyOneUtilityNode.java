@@ -18,10 +18,5 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 		// TODO Auto-generated method stub
 		return true;
 	}
-
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		// TODO Auto-generated method stub
-		return true;
-	}
  
 }

@@ -10,6 +10,9 @@ package org.openmarkov.core.action;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables;
+import org.openmarkov.core.model.network.constraint.OnlyFiniteStatesVariables;
+import org.openmarkov.core.model.network.constraint.OnlyNumericVariables;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.SumPotential;
@@ -33,8 +36,26 @@ import java.util.List;
 		this.currentType = node.getVariable().getVariableType();
 
 	}
-
-	@Override public void doEdit() {
+    
+    @Override public void checkConstraintsWillBeMet() throws DoEditException.ConstraintViolated {
+        if (probNet.getConstraintOfClass(OnlyDiscreteVariables.class) instanceof OnlyDiscreteVariables constraint) {
+            if (this.newType != VariableType.DISCRETIZED) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(OnlyFiniteStatesVariables.class) instanceof OnlyFiniteStatesVariables constraint) {
+            if (!OnlyFiniteStatesVariables.nodeIsFinite(this.node.getNodeType(), this.newType)) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+        if (probNet.getConstraintOfClass(OnlyNumericVariables.class) instanceof OnlyNumericVariables constraint) {
+            if (this.newType != VariableType.NUMERIC) {
+                throw new DoEditException.ConstraintViolated(constraint);
+            }
+        }
+    }
+    
+    @Override public void doEdit() {
         // Save the current states
         currentStates = node.getVariable().getStates();
 
@@ -108,6 +129,7 @@ import java.util.List;
 	}
 	
 	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+        this.checkConstraintsWillBeMet();
 		PNEdit.startEdit(this, probNet);
 		this.doEdit();
 		PNEdit.endEdit(this);

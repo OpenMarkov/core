@@ -19,26 +19,6 @@ import java.util.List;
 @Constraint(name = "NoEmptyName", defaultBehavior = ConstraintBehavior.YES) public class NoEmptyName
 		extends PNConstraint {
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		// AddVariableEdit
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddNodeEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			String name = ((AddNodeEdit) simpleEdit).getVariable().getName();
-			if ((name == null) || (name.contentEquals(""))) {
-				return false;
-			}
-		}
-		// NodeNameEdit
-		edits = UtilConstraints.getSimpleEditsByType(edit, NodeNameEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			String name = ((NodeNameEdit) simpleEdit).getNewName();
-			if ((name == null) || (name.contentEquals(""))) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Variable> variables = probNet.getVariables();
 		for (Variable variable : variables) {

@@ -10,6 +10,7 @@ package org.openmarkov.core.action;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.ModelNetworkConstraint;
 
 @SuppressWarnings("serial") public class OrientLinkEdit extends BaseLinkEdit {
 
@@ -22,8 +23,15 @@ import org.openmarkov.core.model.network.Variable;
 	public OrientLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {
 		super(probNet, variable1, variable2, isDirected);
 	}
-
-	// Methods
+    
+    @Override public void checkConstraintsWillBeMet() throws DoEditException.ConstraintViolated {
+        if (probNet.getConstraintOfClass(ModelNetworkConstraint.class) instanceof ModelNetworkConstraint constraint
+                && !constraint.isLinkInversionAllowed() && !constraint.canEditBeDone(this)) {
+            throw new DoEditException.ConstraintViolated(constraint);
+        }
+    }
+    
+    // Methods
 	/**
 	 * Do the edition by removing the existing link and adding a new directed link between the same two variables.
 	 */
@@ -33,6 +41,7 @@ import org.openmarkov.core.model.network.Variable;
     }
 	
 	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+        this.checkConstraintsWillBeMet();
 		PNEdit.startEdit(this, probNet);
 		this.doEdit();
 		PNEdit.endEdit(this);

@@ -20,25 +20,6 @@ import java.util.List;
 @Constraint(name = "OnlyDiscreteVariables", defaultBehavior = ConstraintBehavior.OPTIONAL) public class OnlyDiscreteVariables
 		extends PNConstraint {
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddNodeEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			Variable variable = ((AddNodeEdit) simpleEdit).getVariable();
-			if (variable.getVariableType() != VariableType.FINITE_STATES) {
-				return false;
-			}
-		}
-		edits = UtilConstraints.getSimpleEditsByType(edit, VariableTypeEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			VariableType newType = ((VariableTypeEdit) simpleEdit).getNewVariableType();
-			if (newType != VariableType.FINITE_STATES && newType != VariableType.DISCRETIZED) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
 	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Variable> variables = probNet.getVariables();
 		for (Variable variable : variables) {

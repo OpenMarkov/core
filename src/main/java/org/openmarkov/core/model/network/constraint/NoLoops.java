@@ -18,21 +18,6 @@ import java.util.List;
 
 @Constraint(name = "NoLoops", defaultBehavior = ConstraintBehavior.OPTIONAL) public class NoLoops extends PNConstraint {
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
-
-		for (PNEdit simpleEdit : edits) {
-			Variable variable1 = ((AddLinkEdit) simpleEdit).getVariable1();
-			Node node1 = probNet.getNode(variable1);
-			Variable variable2 = ((AddLinkEdit) simpleEdit).getVariable2();
-			Node node2 = probNet.getNode(variable2);
-			if (probNet.existsPath(node2, node1, false)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Node> nodesGraph = probNet.getNodes();
 		boolean probNetOK = true;

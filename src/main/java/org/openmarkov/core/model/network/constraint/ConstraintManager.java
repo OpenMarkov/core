@@ -58,9 +58,9 @@ public class ConstraintManager {
         // Init the list with those constraints that have the default value set to YES
         ArrayList<PNConstraint> constraints = new ArrayList<>();
         for (Class<? extends PNConstraint> constraintClass : defaultConstraintBehaviors.keySet()) {
-            if (getDefaultBehavior(constraintClass) == ConstraintBehavior.YES || (
-                    includeOptionals && getDefaultBehavior(constraintClass) == ConstraintBehavior.OPTIONAL
-            )) {
+            boolean isMandatoryConstraint = getDefaultBehavior(constraintClass) == ConstraintBehavior.YES;
+            boolean isOptionalConstraintToUse = includeOptionals && getDefaultBehavior(constraintClass) == ConstraintBehavior.OPTIONAL;
+            if (isMandatoryConstraint || isOptionalConstraintToUse) {
                 try {
                     constraints.add(constraintClass.getDeclaredConstructor().newInstance());
                 } catch (InstantiationException | NoSuchMethodException | IllegalAccessException |

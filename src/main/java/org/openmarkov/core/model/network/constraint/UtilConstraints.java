@@ -20,22 +20,7 @@ import java.util.Vector;
  */
 public class UtilConstraints {
     
-    public static <TargetEdit extends PNEdit> List<PNEdit> getSimpleEditsByType(UndoableEdit edit, Class<TargetEdit> typeEditClass) {
-        List<PNEdit> edits = new ArrayList<>();
-        if (typeEditClass.isInstance(edit)) {
-            edits.add(typeEditClass.cast(edit));
-        }
-        // Check compound edits
-        if (edit instanceof CompoundPNEdit compoundPNEdit) {
-            for (UndoableEdit simpleEdit : compoundPNEdit.getEdits()) {
-                edits.addAll(UtilConstraints.getSimpleEditsByType(simpleEdit, typeEditClass));
-            }
-        }
-        return edits;
-    }
-    
-    /*
-        public static <TargetEdit extends PNEdit> List<TargetEdit> getSimpleEditsByType(UndoableEdit edit, Class<TargetEdit> typeEditClass) {
+    public static <TargetEdit extends PNEdit> List<TargetEdit> getSimpleEditsByType(UndoableEdit edit, Class<TargetEdit> typeEditClass) {
         List<TargetEdit> edits = new ArrayList<>();
         if (typeEditClass.isInstance(edit)) {
             edits.add(typeEditClass.cast(edit));
@@ -48,6 +33,5 @@ public class UtilConstraints {
         }
         return edits;
     }
-    */
     
 }

@@ -16,7 +16,16 @@ import javax.swing.undo.UndoableEdit;
  * An edition is one action defined over a Probabilistic Network.
  */
 public interface PNEdit extends UndoableEdit {
-
+    
+    /**
+     * This method acts as a contract saying no constraint will be violated after the edit is done.
+     * <p>
+     * If this method returns a {@link org.openmarkov.core.exception.DoEditException.ConstraintViolated}, then it means
+     * this edit should not be applied, as it will violate that constraint.
+     */
+    default void checkConstraintsWillBeMet() throws DoEditException.ConstraintViolated {
+    }
+    
 	/**
 	 * Puts into effect the edition.
 	 *
@@ -31,17 +40,18 @@ public interface PNEdit extends UndoableEdit {
 	void setProbNet(ProbNet probNet);
 	
 	default void doEdit(ProbNet probNet) throws DoEditException{
+        this.checkConstraintsWillBeMet();
 		PNEdit.startEdit(this, probNet);
 		this.doEdit();
 		PNEdit.endEdit(this);
 	}
-	
-	static void startEdit(PNEdit edit, ProbNet probNet) throws DoEditException.ConstraintViolated {
+    
+    static void startEdit(PNEdit edit, ProbNet probNet) {
 		edit.setProbNet(probNet);
-		startEdit(edit);
+        PNEdit.startEdit(edit);
 	}
-	
-	static void startEdit(PNEdit edit) throws DoEditException.ConstraintViolated {
+    
+    static void startEdit(PNEdit edit) {
 		ProbNet probNet = edit.getProbNet();
 		PNESupport pneSupport = probNet.getPNESupport();
         pneSupport.announceEdit(edit);

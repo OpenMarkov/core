@@ -35,23 +35,6 @@ import java.util.List;
 		return true;
 	}
 
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddNodeEdit.class);
-		int numUtilities = probNet.getNumNodes(NodeType.UTILITY);
-		for (PNEdit simpleEdit : edits) {
-			if (((AddNodeEdit) simpleEdit).getNodeType() == NodeType.UTILITY) {
-				numUtilities = numUtilities + 1;
-			}
-		}
-		edits = UtilConstraints.getSimpleEditsByType(edit, RemoveNodeEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			if (((RemoveNodeEdit) simpleEdit).getNodeType() == NodeType.UTILITY) {
-				numUtilities = numUtilities - 1;
-			}
-		}
-		return (numUtilities > 0);
-	}
-
 	public String toString() {
 		return this.getClass().getName();
 	}

@@ -8,9 +8,11 @@
 
 package org.openmarkov.core.action;
 
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.List;
 	private StateAction stateAction;
 	private List<Criterion> lastCriteria;
 	private Criterion modifiedCriterion;
-	private String newName;
+    private final @Nullable String newName;
 
 	public DecisionCriteriaEdit(ProbNet probnet, StateAction stateAction, Criterion modifiedCriterion, String newName) {
 		super(probnet);
@@ -29,12 +31,34 @@ import java.util.List;
 			this.newName = modifiedCriterion.getCriterionName();
         } else if (stateAction == StateAction.RENAME) {
 			this.newName = newName;
-		}
+        } else {
+            this.newName = null;
+        }
 		this.stateAction = stateAction;
 		this.lastCriteria = new ArrayList<>(probnet.getDecisionCriteria());
 	}
-
-	@Override public void doEdit() {
+    
+    @Override public void checkConstraintsWillBeMet() throws DoEditException.ConstraintViolated {
+        if (probNet.getConstraintOfClass(OnlyTemporalVariables.class) instanceof OnlyTemporalVariables constraint) {
+            switch (this.stateAction) {
+                case REMOVE, MODIFY_VALUE_INTERVAL, MODIFY_DELIMITER_INTERVAL, DOWN, UP -> {
+                }
+                case ADD, RENAME -> {
+                    String name = this.newName.trim().toLowerCase();
+                    if (name.isEmpty()) {
+                        throw new DoEditException.ConstraintViolated(constraint);
+                    }
+                    for (Criterion criterion : this.lastCriteria) {
+                        if (criterion.getCriterionName().trim().toLowerCase().equals(name)) {
+                            throw new DoEditException.ConstraintViolated(constraint);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    @Override public void doEdit() {
 		List<Criterion> criteria = probNet.getDecisionCriteria();
 		switch (stateAction) {
 		case ADD:
@@ -73,6 +97,7 @@ import java.util.List;
 	}
 	
 	@Override public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated {
+        this.checkConstraintsWillBeMet();
 		PNEdit.startEdit(this, probNet);
 		this.doEdit();
 		PNEdit.endEdit(this);

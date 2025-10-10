@@ -17,10 +17,10 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import java.util.List;
 
 @Constraint(name = "NoBackwardLinks", defaultBehavior = ConstraintBehavior.YES) public class NoBackwardLink
-		extends PNConstraint {
-
-	@Override public boolean checkProbNet(ProbNet probNet) {
-		List<Node> probNetNodes = probNet.getNodes();
+        extends PNConstraint {
+    
+    @Override public boolean checkProbNet(ProbNet probNet) {
+        List<Node> probNetNodes = probNet.getNodes();
         for (Node node : probNetNodes) {
             // If the node is temporal
             if (probNet.getVariable(node.getName()).isTemporal()) {
@@ -34,31 +34,18 @@ import java.util.List;
                     }
                 }
             }
-
+            
         }
         // If we have reached this point, there is no forbidden backward link
-		return true;
-	}
-
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			if (!allowedLink(((AddLinkEdit) simpleEdit).getVariable1(), ((AddLinkEdit) simpleEdit).getVariable2())) {
-				return false;
-			}
-		}
-		return true;
-	}
+        return true;
+    }
     
-    private static boolean allowedLink(Variable variable1, Variable variable2) {
-        boolean allowed = (!variable1.isTemporal()
-                || !variable2.isTemporal()
-                || variable2.getTimeSlice() >= variable1.getTimeSlice()) && (!variable1.isTemporal()
-                || variable2.isTemporal()
-                || variable1.getTimeSlice() == 0);
-		// If both variables are temporal, the second must not belong to a previous time slices
-		// And the first is temporal and the second is not, the former must belong to the zeroth slice
-        return allowed;
-	}
- 
+    public static boolean allowedLink(Variable variable1, Variable variable2) {
+        // If both variables are temporal, the second must not belong to a previous time slices
+        // And the first is temporal and the second is not, the former must belong to the zeroth slice
+        boolean v1IsAtemporal = !variable1.isTemporal();
+        boolean v2IsAtemporal = !variable2.isTemporal();
+        return v1IsAtemporal || v2IsAtemporal || variable2.getTimeSlice() >= variable1.getTimeSlice();
+    }
+    
 }

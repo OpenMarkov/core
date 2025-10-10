@@ -78,8 +78,7 @@ public class DistinctLinksTest {
         // do ilegal LinkAdd. Add an directed link between A and U
         AddLinkEdit ilegalAdd = new AddLinkEdit(influenceDiagram, vA, vU, true);
         try {
-            pNESupport.announceEdit(ilegalAdd);
-            ilegalAdd.doEdit();
+            ilegalAdd.doEdit(influenceDiagram);
             fail();
         } catch (DoEditException.ConstraintViolated e) {
             // The constraint should have faild
@@ -89,15 +88,10 @@ public class DistinctLinksTest {
         // do ilegal InvertLink. Add an directed link between D and U
         InvertLinkEdit ilegalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vD, true);
         try {
-            pNESupport.announceEdit(ilegalInvertLinkEdit);
+            ilegalAdd.doEdit(influenceDiagram);
             fail();
         } catch (DoEditException.ConstraintViolated e) {
             // The constraint should have failed
-        }
-        try{
-            ilegalInvertLinkEdit.doEdit();
-        } catch (DoEditException.CannotInvertLink e) {
-            throw new UnreacheableException(e);
         }
         
         // do legal invert link: create undirected link between U and D
@@ -111,8 +105,8 @@ public class DistinctLinksTest {
         AddLinkEdit ilegalLinkEdit = new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("U"),
                                                      influenceDiagram.getVariable("D"), false);
         try {
-            pNESupport.announceEdit(ilegalLinkEdit);
-            ilegalLinkEdit.doEdit();
+            ilegalLinkEdit.doEdit(influenceDiagram);
+            fail();
         } catch (DoEditException.ConstraintViolated e) {
             // The constraint should have failed
         }

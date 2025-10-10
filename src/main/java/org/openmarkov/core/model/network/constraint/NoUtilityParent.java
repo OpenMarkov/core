@@ -7,50 +7,27 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 import java.util.List;
 
 @Constraint(name = "NoUtilityParent", defaultBehavior = ConstraintBehavior.YES) public class NoUtilityParent
-		extends PNConstraint {
-
-	@Override public boolean checkProbNet(ProbNet probNet) {
-		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
-		for (Node utilNode : utilityNodes) {
-			List<Node> children = probNet.getChildren(utilNode);
-			for (Node child : children) {
-				if (child.getNodeType() != NodeType.UTILITY) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
-
-		for (PNEdit simpleEdit : edits) {
-			if (((AddLinkEdit) simpleEdit).isDirected()) {
-				Variable variable1 = ((AddLinkEdit) simpleEdit).getVariable1();
-				Node node1 = probNet.getNode(variable1);
-				if (node1.getNodeType() == NodeType.UTILITY) {
-					Variable variable2 = ((AddLinkEdit) simpleEdit).getVariable2();
-					Node node2 = probNet.getNode(variable2);
-					if (node2.getNodeType() != NodeType.UTILITY) {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
- 
+        extends PNConstraint {
+    
+    @Override public boolean checkProbNet(ProbNet probNet) {
+        List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
+        for (Node utilNode : utilityNodes) {
+            List<Node> children = probNet.getChildren(utilNode);
+            for (Node child : children) {
+                if (child.getNodeType() != NodeType.UTILITY) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
 }

@@ -9,11 +9,13 @@ package org.openmarkov.core.oopn.action;
 
 import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.NodeNameEdit;
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oopn.Instance;
 
 import javax.swing.undo.CannotUndoException;
+import java.util.Vector;
 
 @SuppressWarnings("serial") public class InstanceNameEdit extends CompoundPNEdit {
 
@@ -27,14 +29,16 @@ import javax.swing.undo.CannotUndoException;
 		this.instance = instance;
 		this.oldName = instance.getName();
 	}
-
-	@Override public void generateEdits() {
+    
+    @Override public Vector<PNEdit> generateEdits() {
+        Vector<PNEdit> edits = new Vector<>();
 		this.instance.setName(newName);
 		for (Node instanceNode : instance.getNodes()) {
 			String newNodeName = instanceNode.getName().replace(oldName, newName);
-			addEdit(new NodeNameEdit(instanceNode, newNodeName));
+            edits.add(new NodeNameEdit(instanceNode, newNodeName));
 		}
-	}
+        return edits;
+    }
 
 	@Override public void undo() throws CannotUndoException {
 		super.undo();

@@ -34,36 +34,9 @@ public class NoMultipleLinks extends PNConstraint {
 				Node node1 = link.getNode1();
 				Node node2 = link.getNode2();
 				boolean directed = link.isDirected();
-				if (!checkLink(probNet, node1, node2, directed)) {
+                if (!NoMultipleLinks.checkLink(probNet, node1, node2, directed)) {
 					return false;
 				}
-			}
-		}
-		return true;
-	}
-
-	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
-		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, AddLinkEdit.class);
-		for (PNEdit simpleEdit : edits) {
-			Variable variable1 = ((AddLinkEdit) simpleEdit).getVariable1();
-			Node node1 = probNet.getNode(variable1);
-			Variable variable2 = ((AddLinkEdit) simpleEdit).getVariable2();
-			Node node2 = probNet.getNode(variable2);
-			boolean directed = ((AddLinkEdit) simpleEdit).isDirected();
-			if (!checkLink(probNet, node1, node2, directed)) {
-				return false;
-			}
-		}
-
-		List<PNEdit> edits3 = UtilConstraints.getSimpleEditsByType(edit, InvertLinkEdit.class);
-		for (PNEdit simpleEdit : edits3) {
-			Variable variable1 = ((InvertLinkEdit) simpleEdit).getVariable1();
-			Node node1 = probNet.getNode(variable1);
-			Variable variable2 = ((InvertLinkEdit) simpleEdit).getVariable2();
-			Node node2 = probNet.getNode(variable2);
-			boolean directed = ((InvertLinkEdit) simpleEdit).isDirected();
-			if (!checkLink(probNet, node2, node1, directed)) {
-				return false;
 			}
 		}
 		return true;
@@ -79,11 +52,11 @@ public class NoMultipleLinks extends PNConstraint {
 	 * @return True if the link between node1 and
 	 *         node1 has no multipleLinks
 	 */
-    private static boolean checkLink(ProbNet probNet, Node node1, Node node2, boolean directed) {
+    public static boolean checkLink(ProbNet probNet, Node node1, Node node2, boolean directed) {
 		if (directed) {
-			return checkDirectedLink(probNet, node1, node2);
+            return NoMultipleLinks.checkDirectedLink(probNet, node1, node2);
 		} else {
-			return checkUndirectedLink(probNet, node1, node2);
+            return NoMultipleLinks.checkUndirectedLink(probNet, node1, node2);
 		}
 	}
 

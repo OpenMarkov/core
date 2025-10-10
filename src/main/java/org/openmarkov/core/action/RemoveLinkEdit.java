@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.ModelNetworkConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -72,6 +73,13 @@ import java.util.List;
     
     public RemoveLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {
         this(probNet, variable1, variable2, isDirected, true);
+    }
+    
+    @Override public void checkConstraintsWillBeMet() throws DoEditException.ConstraintViolated {
+        if (probNet.getConstraintOfClass(ModelNetworkConstraint.class) instanceof ModelNetworkConstraint constraint
+                && !constraint.isLinkRemovalAllowed() && !constraint.canEditBeDone(this)) {
+            throw new DoEditException.ConstraintViolated(constraint);
+        }
     }
     
     @Override public void doEdit() throws DoEditException.CannotDoEditException {
@@ -132,6 +140,7 @@ import java.util.List;
     
     @Override
     public void doEdit(ProbNet probNet) throws DoEditException.ConstraintViolated, DoEditException.CannotDoEditException {
+        this.checkConstraintsWillBeMet();
         PNEdit.startEdit(this, probNet);
         this.doEdit();
         PNEdit.endEdit(this);

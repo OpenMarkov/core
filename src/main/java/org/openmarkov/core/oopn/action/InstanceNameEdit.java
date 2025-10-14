@@ -7,9 +7,9 @@
 
 package org.openmarkov.core.oopn.action;
 
-import org.openmarkov.core.action.CompoundPNEdit;
-import org.openmarkov.core.action.NodeNameEdit;
-import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.base.CompoundPNEdit;
+import org.openmarkov.core.action.core.NodeNameEdit;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oopn.Instance;

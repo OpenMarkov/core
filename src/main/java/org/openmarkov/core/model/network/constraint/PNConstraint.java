@@ -7,7 +7,7 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.openmarkov.core.action.PNUndoableEditListener;
+import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.annotation.ImplementationRequirements;
 import org.openmarkov.core.annotation.RequiredConstructor;
 import org.openmarkov.core.localize.ClassLocalizable;

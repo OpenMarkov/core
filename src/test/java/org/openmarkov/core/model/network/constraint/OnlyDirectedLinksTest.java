@@ -11,16 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class OnlyDirectedLinksTest {
@@ -47,38 +40,6 @@ public class OnlyDirectedLinksTest {
         PNConstraint constraint = new OnlyDirectedLinks();
         assertFalse(constraint.checkProbNet(probNetMixed));
         assertFalse(constraint.checkProbNet(probNetUndirected));
-    }
-    
-    /**
-     * Checks veto
-     */
-    @Test public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated {
-        
-        // Add constraints as listeners.
-        PNESupport pNESupport = new PNESupport(false);
-        probNetDirected.addConstraint(new OnlyDirectedLinks());
-        List<PNConstraint> constraints = probNetDirected.getConstraints();
-        for (PNConstraint constraint : constraints) { // sets listeners
-            pNESupport.addUndoableEditListener(constraint);
-        }
-        // Create edits
-        Variable va = probNetDirected.getVariable("A");
-        Variable vc = probNetDirected.getVariable("C");
-        
-        // test no exception in legal edit
-        AddLinkEdit cEdit = new AddLinkEdit(probNetDirected, va, vc, true);
-        pNESupport.announceEdit(cEdit);
-        cEdit.doEdit();
-        
-        // test exception in no legal edit
-        AddLinkEdit iEdit;
-        try {
-            iEdit = new AddLinkEdit(probNetDirected, va, vc, false);
-            iEdit.doEdit(probNetDirected);
-            fail();
-        } catch (DoEditException.ConstraintViolated cve) {
-            // It should have thrown an exception.
-        }
     }
     
 }

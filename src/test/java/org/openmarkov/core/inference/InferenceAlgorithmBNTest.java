@@ -384,7 +384,7 @@ public abstract class InferenceAlgorithmBNTest extends InferenceAlgorithmTest {
     public void testConditioningVariablesEvaluationIDDiagnosisProblem()
             throws
             IOException, ParserException, NodeNotFoundException,
-            ConstraintViolated, NotEvaluableNetworkException {
+            ConstraintViolatedException, NotEvaluableNetworkException {
         ProbNet network = iD_DiagnosisProblem;
         //Decision criteria variable
         String dCStates[] = {"Health", "Money"};

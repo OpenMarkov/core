@@ -7,13 +7,9 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.InvertLinkEdit;
-import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 import java.util.List;

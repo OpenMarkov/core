@@ -8,7 +8,7 @@
 package org.openmarkov.core.model.network;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.action.PNESupport;
+import org.openmarkov.core.action.base.PNESupport;
 import org.openmarkov.core.annotation.ToCheck;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;

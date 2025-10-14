@@ -53,7 +53,7 @@ public class NetworkTypeTest {
         Assertions.assertFalse(constraints.contains(new OnlyChanceNodes()));
     }
     
-    //(expected = ConstraintViolated.class)
+    //(expected = ConstraintViolatedException.class)
     @Disabled
     @Test public void testImpossibleNetworkTypeConversion()
             throws InvalidNetworkTypeException.UnmetConstraints {
@@ -64,7 +64,7 @@ public class NetworkTypeTest {
         probNet.setNetworkType(BayesianNetworkType.getUniqueInstance());
     }
     
-    //(expected = ConstraintViolated.class)
+    //(expected = ConstraintViolatedException.class)
     @Test public void testAddingNotApplicableConstraints() {
         ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
         probNet.addConstraint(new OnlyUndirectedLinks());

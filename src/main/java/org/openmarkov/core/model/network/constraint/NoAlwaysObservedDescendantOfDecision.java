@@ -7,17 +7,12 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.NodeAlwaysObservedEdit;
-import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
 @Constraint(name = "NoAlwaysObservedDescendantOfDecision", defaultBehavior = ConstraintBehavior.YES)
 public class NoAlwaysObservedDescendantOfDecision

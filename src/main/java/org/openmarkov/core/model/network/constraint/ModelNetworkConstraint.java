@@ -7,12 +7,10 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.openmarkov.core.action.*;
+import org.openmarkov.core.action.base.linkEdits.BaseLinkEdit;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
-
-import java.util.List;
 
 /**
  * This constraint ensures that the editions done during the learning of a
@@ -20,8 +18,7 @@ import java.util.List;
  * selected by the user.
  */
 @Constraint(name = "ModelNetworkConstraint", defaultBehavior = ConstraintBehavior.OPTIONAL)
-public class ModelNetworkConstraint
-        extends PNConstraint {
+public class ModelNetworkConstraint extends PNConstraint {
     
     private ProbNet modelNet;
     private boolean linkAdditionAllowed;

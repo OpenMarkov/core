@@ -4,14 +4,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.localize.Localizable;
-import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.core.stringformat.LocalizationFormatter;
-import org.openmarkov.core.stringformat.StringFormat;
 
 import java.util.*;
-import java.util.stream.IntStream;
-
-import static org.openmarkov.core.logging.OpenMarkovLogger.LOGGER;
 
 /**
  * Common interface for exceptions declared in OpenMarkov.
@@ -60,6 +55,8 @@ public interface IBundledOpenMarkovException extends IOpenMarkovException, Class
     }
     
     @Override @NotNull default String localize(LocalizationFormatter formatter) {
-        return Localizable.localize(this, formatter);
+        return Localizable.localize(this, formatter, this.path());
     }
+    
+    
 }

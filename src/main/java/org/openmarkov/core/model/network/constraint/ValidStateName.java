@@ -7,9 +7,6 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.openmarkov.core.action.NodeStateEdit;
-import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;

@@ -54,14 +54,14 @@ public interface Localizable {
      * @return the localized string if available.
      */
     @NotNull default String localize(LocalizationFormatter formatter) {
-        return Localizable.localize(this, formatter);
+        return Localizable.localize(this, formatter, this.path());
     }
     
     /**
      * Localizes the current object based on the given {@link LocalizationFormatter} in order to give a String
      * representing it.
      * <p>
-     * It retrieves a Localized String using the {@link Localizable#bundle()} and {@link Localizable#path()} over the
+     * It retrieves a Localized String using the stringDatabaseKey to get the bundled string over the
      * {@link StringDatabase#getUniqueInstance()}. If the String is found, it will format said String using
      * {@link StringFormat#apply(CharSequence, Map)}, where the arguments are the fields of the {@link Localizable}.
      * <p>
@@ -69,12 +69,14 @@ public interface Localizable {
      * {@link StringDatabase#surrondAsUnknown(String)} does.
      *
      * @param formatter the {@link LocalizationFormatter} used to format the object.
+     * @param stringDatabaseKey
      * @return the localized string if available.
      */
-    @NotNull static String localize(Localizable localizable, LocalizationFormatter formatter) {
-        Optional<String> optionalLocalizedString = localizable.findLocalizedString(formatter);
+    @NotNull
+    static String localize(Object localizable, LocalizationFormatter formatter, @NotNull String stringDatabaseKey) {
+        Optional<String> optionalLocalizedString = Localizable.findLocalizedString(formatter, stringDatabaseKey);
         if (optionalLocalizedString.isEmpty()) {
-            return StringDatabase.surrondAsUnknown(localizable.path());
+            return StringDatabase.surrondAsUnknown(stringDatabaseKey);
         }
         String localizedString = optionalLocalizedString.get();
         if (!StringFormat.isStringFormatUsed(localizedString)) {
@@ -87,27 +89,18 @@ public interface Localizable {
      * Searches for the first localization String in the bundles matching the {@link LocalizationFormatter}.
      *
      * @param formatter The {@link LocalizationFormatter} that specifies the desired format for the localization string.
+     * @param stringDatabaseKey
      * @return An {@link Optional} containing the first matching localized string found.
      */
     @SuppressWarnings("SimplifyForEach")
-    private @NotNull Optional<String> findLocalizedString(LocalizationFormatter formatter) {
+    private static @NotNull Optional<String> findLocalizedString(LocalizationFormatter formatter, @NotNull String stringDatabaseKey) {
         StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
         ArrayList<Supplier<String>> localizationAccessors = new ArrayList<>();
-        //String bundle = this.bundle();
-        String bundle = null;
-        String path = this.path();
-        if (bundle != null) {
-            Localizable.lengthOrder(formatter.desiredLength)
-                       .forEach(length -> localizationAccessors.add(
-                               () -> stringDatabase.getNullableString(bundle, path + "." + length.toString()
-                                                                                                 .toLowerCase())));
-            localizationAccessors.add(() -> stringDatabase.getNullableString(bundle, path));
-        }
         Localizable.lengthOrder(formatter.desiredLength)
                    .forEach(length -> localizationAccessors.add(
-                           () -> stringDatabase.getNullableString(path + "." + length.toString()
-                                                                                     .toLowerCase())));
-        localizationAccessors.add(() -> stringDatabase.getNullableString(path));
+                           () -> stringDatabase.getNullableString(stringDatabaseKey + "." + length.toString()
+                                                                                                  .toLowerCase())));
+        localizationAccessors.add(() -> stringDatabase.getNullableString(stringDatabaseKey));
         return localizationAccessors.stream().map(Supplier::get).filter(Objects::nonNull).findFirst();
     }
     

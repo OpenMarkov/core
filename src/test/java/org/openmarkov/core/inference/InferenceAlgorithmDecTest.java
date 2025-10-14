@@ -86,7 +86,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
     public void testEvaluationIDDecisionTestProblem()
             throws FileNotFoundException,
             IOException, ParserException, NodeNotFoundException,
-            ConstraintViolated, NotEvaluableNetworkException {
+            ConstraintViolatedException, NotEvaluableNetworkException {
         
         InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(iD_DecisionTestProblemWithoutSV);
         // test max expected utility
@@ -125,7 +125,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
     public void testEvaluationIDDecisionTestProblem(ProbNet diagram)
             throws
             IOException, ParserException, NodeNotFoundException,
-            ConstraintViolated, NotEvaluableNetworkException {
+            ConstraintViolatedException, NotEvaluableNetworkException {
         Variable variableX = null;
         Variable variableY = null;
         Variable variableT = null;

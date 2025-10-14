@@ -7,7 +7,7 @@
 
 package org.openmarkov.core.oopn;
 
-import org.openmarkov.core.action.*;
+import org.openmarkov.core.action.core.*;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.InvalidNetworkTypeException;
 import org.openmarkov.core.exception.UnreacheableException;
@@ -18,6 +18,13 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.type.NetworkType;
+import org.openmarkov.core.action.base.CompoundPNEdit;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
+import org.openmarkov.core.action.base.linkEdits.BaseLinkEdit;
+import org.openmarkov.core.action.base.linkEdits.InvertLinkEdit;
+import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
 
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoableEdit;
@@ -119,11 +126,6 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
         
     }
     
-    /**
-     * @param instance Instance
-     *
-     * @throws InstanceAlreadyExistsException InstanceAlreadyExistsException
-     */
     public void addInstance(Instance instance) throws DoEditException.InstanceAlreadyExists {
         if (instances.containsKey(instance.getName())) {
             throw new DoEditException.InstanceAlreadyExists(instance.getName());

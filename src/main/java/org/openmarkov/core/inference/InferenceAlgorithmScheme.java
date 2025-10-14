@@ -7,7 +7,7 @@
 
 package org.openmarkov.core.inference;
 
-import org.openmarkov.core.action.PNESupport;
+import org.openmarkov.core.action.base.PNESupport;
 import org.openmarkov.core.inference.heuristic.EliminationHeuristic;
 import org.openmarkov.core.inference.heuristic.HeuristicFactory;
 import org.openmarkov.core.model.network.EvidenceCase;

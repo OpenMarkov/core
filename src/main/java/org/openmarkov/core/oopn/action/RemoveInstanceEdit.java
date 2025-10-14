@@ -7,7 +7,10 @@
 
 package org.openmarkov.core.oopn.action;
 
-import org.openmarkov.core.action.*;
+import org.openmarkov.core.action.core.CRemoveNodeEdit;
+import org.openmarkov.core.action.base.CompoundPNEdit;
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.graph.Link;
@@ -63,7 +66,7 @@ import java.util.Vector;
         Vector<PNEdit> edits = new Vector<>();
 		for (Link<Node> link : linksToRemove) {
 			edits.add(new RemoveLinkEdit(probNet, link.getNode1().getVariable(), link.getNode2().getVariable(),
-					link.isDirected()));
+                                         link.isDirected()));
 		}
 
 		for (Node node : nodesToRemove) {

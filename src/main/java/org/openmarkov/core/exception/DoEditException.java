@@ -14,7 +14,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.List;
 
-public abstract sealed class DoEditException extends Exception implements IBundledOpenMarkovException {
+public abstract sealed class DoEditException extends Exception implements IBundledOpenMarkovException permits ConstraintViolatedException, DoEditException.CannotDoEditException, DoEditException.CannotInvertLink, DoEditException.CannotRemovePotential, DoEditException.InstanceAlreadyExists, DoEditException.NodeIsNull {
     
     @Override public String toString() {
         return IBundledOpenMarkovException.toString(this);
@@ -28,17 +28,6 @@ public abstract sealed class DoEditException extends Exception implements IBundl
         }
         
         public final IOpenMarkovException originException;
-    }
-    
-    //TODO: It is caught and ignored in almost every catch block, probably leading to unexpected
-    // bugs.
-    // Perhaps it could be turned into a RuntimeException.
-    public static final class ConstraintViolated extends DoEditException {
-        public final PNConstraint constraint;
-        
-        public ConstraintViolated(PNConstraint constraint) {
-            this.constraint = constraint;
-        }
     }
     
     //TODO: Used just in OOP Nets, which are deprecated

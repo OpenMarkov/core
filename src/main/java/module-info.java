@@ -17,7 +17,7 @@ open module org.openmarkov.core {
     requires org.apache.commons.io;
     requires antlr;
     
-    exports org.openmarkov.core.action;
+    exports org.openmarkov.core.action.core;
     exports org.openmarkov.core.dt;
     exports org.openmarkov.core.exception;
     exports org.openmarkov.core.inference;
@@ -54,4 +54,6 @@ open module org.openmarkov.core {
     exports org.openmarkov.java.exceptionUtils;
     exports org.openmarkov.java.cloneUtils;
     exports org.openmarkov.core.io.exception;
+    exports org.openmarkov.core.action.base;
+    exports org.openmarkov.core.action.base.linkEdits;
 }

@@ -7,13 +7,12 @@
 
 package org.openmarkov.core.model.network.constraint;
 
-import org.openmarkov.core.action.CompoundPNEdit;
-import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.base.CompoundPNEdit;
+import org.openmarkov.core.action.base.PNEdit;
 
 import javax.swing.undo.UndoableEdit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Utility methods for constraint package.

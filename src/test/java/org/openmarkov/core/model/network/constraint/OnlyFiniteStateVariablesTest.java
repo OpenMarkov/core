@@ -10,14 +10,9 @@ package org.openmarkov.core.model.network.constraint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.openmarkov.core.action.AddNodeEdit;
-import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.action.VariableTypeEdit;
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
 
 import static org.junit.jupiter.api.Assertions.*;
 

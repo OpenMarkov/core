@@ -8,13 +8,8 @@
 package org.openmarkov.core.model.network.constraint;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.InvertLinkEdit;
-import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
@@ -47,52 +42,6 @@ public class NoMultipleLinksTest {
         influenceDiagram.addLink(vd, va, false);
         influenceDiagram.addConstraint(testedConstraint);
         assertFalse(testedConstraint.checkProbNet(influenceDiagram));
-    }
-    
-    @Disabled
-    @Test public void testUndoableEditWillHappen() throws DoEditException.ConstraintViolated, org.openmarkov.core.exception.DoEditException.CannotInvertLink {
-        PNESupport pNESupport = new PNESupport(false);
-        PNConstraint constraint = new NoMultipleLinks();
-        
-        influenceDiagram.addConstraint(constraint);
-        pNESupport.addUndoableEditListener(constraint);
-        
-        // do legal AddLink: add an directed link between U and A
-        Variable vU = influenceDiagram.getVariable("U");
-        Variable vA = influenceDiagram.getVariable("A");
-        // creates an undirected link from node A to D
-        AddLinkEdit legalEdit = new AddLinkEdit(influenceDiagram, vU, vA, true);
-        pNESupport.announceEdit(legalEdit);
-        legalEdit.doEdit();
-        
-        // do ilegal LinkAdd. Add an undirected link between U and A
-        AddLinkEdit ilegalAdd = new AddLinkEdit(influenceDiagram, vU, vA, false);
-        try {
-            ilegalAdd.doEdit(influenceDiagram);
-            fail();
-        } catch (DoEditException.ConstraintViolated e) {
-            // the ilegal edit should have thrown the exception
-        }
-        
-        // do ilegal LinkEdit. Add an undirected link between U and A
-        AddLinkEdit ilegalLinkEdit = new AddLinkEdit(influenceDiagram, influenceDiagram.getVariable("U"),
-                                                     influenceDiagram.getVariable("A"), false);
-        pNESupport.announceEdit(ilegalLinkEdit);
-        ilegalLinkEdit.doEdit();
-        
-        // do legal invert link
-        InvertLinkEdit legalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vA, true);
-        pNESupport.announceEdit(legalInvertLinkEdit);
-        legalInvertLinkEdit.doEdit();
-        
-        // do ilegal InvertLink. Add an directed link between U and A
-        InvertLinkEdit ilegalInvertLinkEdit = new InvertLinkEdit(influenceDiagram, vU, vA, false);
-        try {
-            ilegalInvertLinkEdit.doEdit(influenceDiagram);
-            fail();
-        } catch (DoEditException.ConstraintViolated | DoEditException.CannotInvertLink e) {
-            // the ilegal edit should have thrown the exception
-        }
     }
     
 }

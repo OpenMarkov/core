@@ -34,13 +34,13 @@ public class NoLoopsTest {
     @Test public void testCheckProbNet() {
         NoLoops testedConstraints = new NoLoops();
         directedNet.addConstraint(testedConstraints);
-        assertTrue(testedConstraints.checkProbNet(directedNet));
+        assertTrue(testedConstraints.isMetBy(directedNet));
         
         Variable varA = directedNet.getVariable("A");
         Variable varC = directedNet.getVariable("C");
         directedNet.addLink(varA, varC, true);
         
-        assertFalse(testedConstraints.checkProbNet(directedNet));
+        assertFalse(testedConstraints.isMetBy(directedNet));
         
         varA = undirectedNet.getVariable("A");
         Variable varB = undirectedNet.getVariable("B");
@@ -50,11 +50,11 @@ public class NoLoopsTest {
         undirectedNet.removeLink(varB, varC, false);
         undirectedNet.addLink(varB, varC, true);
         undirectedNet.addLink(varA, varC, true);
-        assertFalse(testedConstraints.checkProbNet(directedNet));
+        assertFalse(testedConstraints.isMetBy(directedNet));
         
         undirectedNet.removeLink(varA, varB, false);
         undirectedNet.addLink(varA, varB, true);
-        assertFalse(testedConstraints.checkProbNet(directedNet));
+        assertFalse(testedConstraints.isMetBy(directedNet));
     }
 
 }

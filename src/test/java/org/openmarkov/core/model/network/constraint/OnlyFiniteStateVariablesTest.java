@@ -43,8 +43,8 @@ public class OnlyFiniteStateVariablesTest {
         influenceDiagram.addConstraint(testedConstraint);
         mixedVariableInfluenceDiagram.addConstraint(testedConstraint);
         
-        assertTrue(testedConstraint.checkProbNet(influenceDiagram));
-        assertFalse(testedConstraint.checkProbNet(mixedVariableInfluenceDiagram));
+        assertTrue(testedConstraint.isMetBy(influenceDiagram));
+        assertFalse(testedConstraint.isMetBy(mixedVariableInfluenceDiagram));
     }
 
     

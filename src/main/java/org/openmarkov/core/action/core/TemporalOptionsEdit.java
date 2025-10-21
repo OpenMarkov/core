@@ -7,15 +7,11 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.inference.TemporalOptions;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
-import javax.swing.undo.CannotUndoException;
-
-public class TemporalOptionsEdit extends SimplePNEdit {
+public class TemporalOptionsEdit extends PNEdit {
 
 	/**
 	 * Serial Version UID
@@ -36,14 +32,7 @@ public class TemporalOptionsEdit extends SimplePNEdit {
 
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() throws CannotUndoException {
+    @Override public void undo() {
 		super.undo();
 		probNet.getInferenceOptions().setTemporalOptions(this.oldTemporalOptions);
 	}

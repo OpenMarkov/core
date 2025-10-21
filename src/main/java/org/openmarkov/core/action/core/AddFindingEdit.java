@@ -1,16 +1,14 @@
 package org.openmarkov.core.action.core;
 
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 import org.openmarkov.core.action.base.VisualChanceNodeFindingChangeListener;
 
 
-public class AddFindingEdit extends SimplePNEdit {
+public class AddFindingEdit extends PNEdit {
     
     Node node;
     EvidenceCase evidenceCase;
@@ -39,14 +37,6 @@ public class AddFindingEdit extends SimplePNEdit {
         } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
             throw new DoEditException.CannotDoEditException(e);
         }
-    }
-    
-    @Override
-    public void doEdit(ProbNet probNet) throws ConstraintViolatedException, DoEditException.CannotDoEditException {
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
     }
     
     @Override

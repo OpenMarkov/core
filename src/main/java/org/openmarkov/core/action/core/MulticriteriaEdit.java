@@ -7,18 +7,14 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
-
-import javax.swing.undo.CannotUndoException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MulticriteriaEdit extends SimplePNEdit {
+public class MulticriteriaEdit extends PNEdit {
 
 	/**
 	 * Serial Version UID
@@ -57,14 +53,7 @@ public class MulticriteriaEdit extends SimplePNEdit {
 
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-
-	@Override public void undo() throws CannotUndoException {
+    @Override public void undo() {
 		super.undo();
 		//probNet.setDecisionCriteria(oldDecisionCriteria);
 		for (Criterion oldCriterion : probNet.getDecisionCriteria()) {
@@ -80,7 +69,6 @@ public class MulticriteriaEdit extends SimplePNEdit {
 	@Override public void redo() {
 		super.redo();
 		doEdit();
-		
 	}
 
 }

@@ -14,7 +14,7 @@ public final class LocalizationFormatter {
     
     public static final LocalizationFormatter DEFAULT = new LocalizationFormatter(
             LocalizationFormatterLength.UNSPECIFIED,
-            ListFormat.DETAIL);
+            ListFormat.INLINE);
     
     public final @NotNull LocalizationFormatterLength desiredLength;
     public final @NotNull ListFormat listSeparator;
@@ -22,16 +22,38 @@ public final class LocalizationFormatter {
     enum ListFormat {
         INLINE, DETAIL;
         
-        public @NotNull String prefix() {
+        public @NotNull String globalPrefix() {
+            return switch (this) {
+                case INLINE -> "[";
+                case DETAIL -> "";
+            };
+        }
+        
+        public @NotNull String globalSuffix() {
+            return switch (this) {
+                case INLINE -> "]";
+                case DETAIL -> "";
+            };
+        }
+        
+        public @NotNull String itemPrefix() {
             return switch (this) {
                 case INLINE -> "";
                 case DETAIL -> "- ";
             };
         }
         
+        public @NotNull String itemSuffix() {
+            return switch (this) {
+                case INLINE -> "";
+                case DETAIL -> "";
+            };
+        }
+        
+        
         public @NotNull String separator() {
             return switch (this) {
-                case INLINE -> "; ";
+                case INLINE -> ", ";
                 case DETAIL -> System.lineSeparator();
             };
         }

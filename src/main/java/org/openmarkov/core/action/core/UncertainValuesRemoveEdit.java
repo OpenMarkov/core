@@ -7,18 +7,15 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +30,7 @@ import java.util.List;
  * @version 1 23/06/11
  */
 
-@SuppressWarnings("serial") public class UncertainValuesRemoveEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class UncertainValuesRemoveEdit extends PNEdit {
 
 	private List<UncertainValue> oldUncertainColumn;
 
@@ -126,14 +123,7 @@ import java.util.List;
 
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	public TablePotential getTablePotential() {
+    public TablePotential getTablePotential() {
 		return getTablePotential(getPotential());
 	}
 	

@@ -6,24 +6,23 @@
  */
 package org.openmarkov.core.action.core;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.NoAlwaysObservedDescendantOfDecision;
-import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 import java.util.List;
 
-import static org.openmarkov.core.model.network.constraint.NoAlwaysObservedDescendantOfDecision.itHasSomeAncestorInList;
+import static org.openmarkov.core.model.network.constraint.NoAlwaysObservedDescendantOfDecision.ancestorInList;
 
 /**
  * {@code NodeAlwaysObservedEdit} is a simple edit that allow modify the always observed property of a variable
  * name.
  */
 
-@SuppressWarnings("serial") public class NodeAlwaysObservedEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class NodeAlwaysObservedEdit extends PNEdit {
     
     /**
      * The last 'alwaysObserved' before the edition
@@ -52,27 +51,20 @@ import static org.openmarkov.core.model.network.constraint.NoAlwaysObservedDesce
         this.node = node;
     }
     
-    @Override public void checkConstraintsWillBeMet() throws ConstraintViolatedException {
+    @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(NoAlwaysObservedDescendantOfDecision.class) instanceof NoAlwaysObservedDescendantOfDecision constraint) {
             List<Node> decisionNodes = probNet.getNodes(NodeType.DECISION);
             NodeAlwaysObservedEdit nodeAlwaysObservedEdit = this;
-            boolean isValid = nodeAlwaysObservedEdit.getNewAlwaysObserved()
-                    && itHasSomeAncestorInList(probNet, nodeAlwaysObservedEdit.getNode(), decisionNodes);
-            if (!isValid) {
-                throw new ConstraintViolatedException(constraint);
+            if (this.newAlwaysObserved) {
+                for (Node ancestorDecisionNode : ancestorInList(probNet, nodeAlwaysObservedEdit.getNode(), decisionNodes)) {
+                    constraintChecker.addException(new ConstraintViolatedException.AlwaysObservedVariableIsDescendantOfDecisionNode(constraint, this.node, ancestorDecisionNode));
+                }
             }
         }
     }
     
     @Override public void doEdit() {
         node.setAlwaysObserved(newAlwaysObserved);
-    }
-    
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
     }
     
     @Override public void undo() {

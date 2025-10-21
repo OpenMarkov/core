@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -19,20 +21,18 @@ import java.util.List;
 @Constraint(name = "AllChanceVariablesHaveChancePotentials", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class AllChanceVariablesHaveChancePotentials extends PNConstraint {
     
-    @Override public boolean checkProbNet(ProbNet probNet) {
+    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
         List<Node> chanceNodes = probNet.getNodes(NodeType.CHANCE);
         for (Node chanceNode : chanceNodes) {
             Variable variable = chanceNode.getVariable();
             List<Potential> potentialsNode = chanceNode.getPotentials();
-            boolean hasPotential = false;
-            for (Potential potential : potentialsNode) {
-                hasPotential = hasPotential || (potential.getVariables().get(0) == variable);
-            }
+            boolean hasPotential = potentialsNode.stream()
+                                                 .anyMatch(potential -> potential.getVariables()
+                                                                                 .getFirst() == variable);
             if (!hasPotential) {
-                return false;
+                constraintChecker.addException(new ConstraintViolatedException.VariableHasNoPotentials(this, variable));
             }
         }
-        return true;
     }
     
 }

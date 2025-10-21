@@ -7,15 +7,14 @@
 
 package org.openmarkov.core.action.core;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.DistinctVariableNames;
 import org.openmarkov.core.model.network.constraint.NoEmptyName;
 import org.openmarkov.core.model.network.constraint.ValidName;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,92 +26,92 @@ import java.util.List;
  * @author Miguel Palacios
  * @version 1.0 21/12/10
  */
-@SuppressWarnings("serial") public class NodeNameEdit extends SimplePNEdit {
-	/**
-	 * Current node name
-	 */
-	private String previousName;
-	/**
-	 * New node name
-	 */
-	private String newName;
-	/**
-	 * The node edited
-	 */
+@SuppressWarnings("serial") public class NodeNameEdit extends PNEdit {
+    /**
+     * Current node name
+     */
+    private String previousName;
+    /**
+     * New node name
+     */
+    private String newName;
+    /**
+     * The node edited
+     */
     private List<Variable> variables;
-
-	/**
-	 * Creates a new {@code NodeNameEdit} with the node and new name
-	 * specified.
-	 *
-	 * @param node    the node that will be modified
-	 * @param newName the new name of the node
-	 */
-	public NodeNameEdit(Node node, String newName) {
-		super(node.getProbNet());
-		variables = new ArrayList<>();
-		for (Variable variable : node.getProbNet().getVariables()) {
-			if (variable.getBaseName().equals(node.getVariable().getBaseName())) {
-				variables.add(variable);
-			}
-		}
-		this.previousName = node.getVariable().getBaseName();
-		this.newName = newName;
-	}
     
-    @Override public void checkConstraintsWillBeMet() throws ConstraintViolatedException {
+    /**
+     * Creates a new {@code NodeNameEdit} with the node and new name
+     * specified.
+     *
+     * @param node    the node that will be modified
+     * @param newName the new name of the node
+     */
+    public NodeNameEdit(Node node, String newName) {
+        super(node.getProbNet());
+        variables = new ArrayList<>();
+        for (Variable variable : node.getProbNet().getVariables()) {
+            if (variable.getBaseName().equals(node.getVariable().getBaseName())) {
+                variables.add(variable);
+            }
+        }
+        this.node = node;
+        this.previousName = this.node.getVariable().getBaseName();
+        this.newName = newName;
+    }
+    
+    @Override
+    public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(DistinctVariableNames.class) instanceof DistinctVariableNames constraint) {
             if (probNet.getVariablesNames().contains(newName)) {
-                throw new ConstraintViolatedException.VariableNameIsAlreadyPresent(constraint, this.newName);
+                constraintChecker.addException(new ConstraintViolatedException.VariableNameIsAlreadyPresent(constraint, this.newName));
             }
         }
         if (probNet.getConstraintOfClass(NoEmptyName.class) instanceof NoEmptyName constraint) {
             if ((this.newName == null) || (this.newName.contentEquals(""))) {
-                throw new ConstraintViolatedException(constraint);
+                constraintChecker.addException(new ConstraintViolatedException.NameOfVariableCannotBeEmpty(constraint, this.node.getVariable()));
             }
         }
         if (probNet.getConstraintOfClass(ValidName.class) instanceof ValidName constraint) {
-            if (!ValidName.checkName(this.getNewName(), this.getPreviousName(), probNet)) {
-                throw new ConstraintViolatedException(constraint);
+            if ((this.newName == null) || (this.newName.contentEquals(""))) {
+                constraintChecker.addException(new ConstraintViolatedException.NameOfVariableCannotBeEmpty(constraint, this.node.getVariable()));
+            }
+            if (!ValidName.nameIsAlreadyPresent(this.getNewName(), this.getPreviousName(), probNet)) {
+                constraintChecker.addException(new ConstraintViolatedException.NameOfVariableIsAlreadyPresent(constraint, this.getNewName()));
             }
         }
     }
     
     @Override public void doEdit() {
-		for (Variable variable : variables) {
-			variable.setBaseName(newName);
-		}
-	}
+        for (Variable variable : variables) {
+            variable.setBaseName(newName);
+        }
+    }
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-
-	@Override public void undo() {
-		super.undo();
-		for (Variable variable : variables) {
-			variable.setBaseName(previousName);
-		}
-	}
-
-	/**
-	 * Gets the new name of the node
-	 *
-	 * @return the new name of the node
-	 */
-	public String getNewName() {
-		return newName;
-	}
-
-	/**
-	 * Gets the previous name of the node
-	 *
-	 * @return the previous name of the node
-	 */
-	public String getPreviousName() {
-		return previousName;
-	}
+    @Override public void undo() {
+        super.undo();
+        for (Variable variable : variables) {
+            variable.setBaseName(previousName);
+        }
+    }
+    
+    /**
+     * Gets the new name of the node
+     *
+     * @return the new name of the node
+     */
+    public String getNewName() {
+        return newName;
+    }
+    
+    /**
+     * Gets the previous name of the node
+     *
+     * @return the previous name of the node
+     */
+    public String getPreviousName() {
+        return previousName;
+    }
+    
+    private final Node node;
 }

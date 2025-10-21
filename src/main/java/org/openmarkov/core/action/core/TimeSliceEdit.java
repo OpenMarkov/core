@@ -7,20 +7,19 @@
 
 package org.openmarkov.core.action.core;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.DistinctVariableNames;
-import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 import java.util.List;
 
 /**
  * @author myebra
  */
-@SuppressWarnings("serial") public class TimeSliceEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class TimeSliceEdit extends PNEdit {
     
     /**
      * The last time slice before the edition
@@ -64,12 +63,12 @@ import java.util.List;
         //this.node = node;
     }
     
-    @Override public void checkConstraintsWillBeMet() throws ConstraintViolatedException {
+    @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(DistinctVariableNames.class) instanceof DistinctVariableNames constraint) {
             List<String> variablesProbNetNames = probNet.getVariablesNames();
             variablesProbNetNames.remove(this.getPreviousName());
             if (variablesProbNetNames.contains(this.getNewName())) {
-                throw new ConstraintViolatedException.VariableNameIsAlreadyPresent(constraint, this.getNewName());
+                constraintChecker.addException(new ConstraintViolatedException.VariableNameIsAlreadyPresent(constraint, this.getNewName()));
             }
         }
     }
@@ -91,13 +90,6 @@ import java.util.List;
             variable.setBaseName(lastBaseName);
             variable.setName(lastName + " " + "[" + String.valueOf(newTimeSlice) + "]");
         }
-    }
-    
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
     }
     
     @Override public void undo() {

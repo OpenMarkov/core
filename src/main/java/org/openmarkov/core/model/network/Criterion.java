@@ -7,12 +7,17 @@
 
 package org.openmarkov.core.model.network;
 
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.localize.ClassLocalizable;
+import org.openmarkov.core.localize.Localizable;
+import org.openmarkov.core.stringformat.LocalizationFormatter;
+
 /**
  * A criterion has a name and the units of measure
  *
  * @author jperez
  */
-public class Criterion implements Cloneable {
+public class Criterion implements Cloneable, ClassLocalizable {
 
 	/**
 	 * Constant with the default criterion of a ProbNet
@@ -42,7 +47,8 @@ public class Criterion implements Cloneable {
 	 * In the cost-effectiveness, specifies if the criterion acts as a cost or as effectiveness
 	 */
 	private CECriterion ceCriterion;
-	/**
+    
+    /**
 	 * In temporal evolution analysis, the rate of discount of the criterion
 	 */
 	private double discount;
@@ -163,7 +169,7 @@ public class Criterion implements Cloneable {
 	}
 
 	@Override public String toString() {
-		return criterionName + " (" + criterionUnit + ")";
+        return this.localize();
 	}
 
 	/**
@@ -199,8 +205,20 @@ public class Criterion implements Cloneable {
 	/**
 	 * Emum with the values of Cost and Effectiveness for the CE Analysis
 	 */
-	public enum CECriterion {
-		Cost, Effectiveness
-	}
+    public enum CECriterion implements Localizable {
+        Cost, Effectiveness;
+        
+        @Override public String toString() {
+            return this.name();
+        }
+        
+        @Override public @NotNull String path() {
+            return "";
+        }
+        
+        @Override public @NotNull String localize(LocalizationFormatter formatter) {
+            return this.toString();
+        }
+    }
 
 }

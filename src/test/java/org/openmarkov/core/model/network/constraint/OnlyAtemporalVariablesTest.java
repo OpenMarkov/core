@@ -28,11 +28,11 @@ public class OnlyAtemporalVariablesTest {
     @Test public void testCheckProbNet() {
         OnlyAtemporalVariables testedConstraint = new OnlyAtemporalVariables();
         influenceDiagram.addConstraint(testedConstraint);
-        assertTrue(testedConstraint.checkProbNet(influenceDiagram));
+        assertTrue(testedConstraint.isMetBy(influenceDiagram));
         
         Variable variable = new Variable(" [10]", "YES", "NO");
         influenceDiagram.addNode(variable, NodeType.CHANCE);
-        assertFalse(testedConstraint.checkProbNet(influenceDiagram));
+        assertFalse(testedConstraint.isMetBy(influenceDiagram));
     }
     
 }

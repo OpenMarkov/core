@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.action.core;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
@@ -14,11 +16,9 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.ProperUtilityPotentials;
-import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 import org.openmarkov.core.action.base.UsesVariable;
 
-@SuppressWarnings("serial") public class RemoveNodeEdit extends SimplePNEdit implements UsesVariable {
+@SuppressWarnings("serial") public class RemoveNodeEdit extends PNEdit implements UsesVariable {
     
     // Attributes
     protected Variable variable;
@@ -45,14 +45,14 @@ import org.openmarkov.core.action.base.UsesVariable;
         this.node = probNet.getNode(variable);
     }
     
-    @Override public void checkConstraintsWillBeMet() throws ConstraintViolatedException {
+    @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(ProperUtilityPotentials.class) instanceof ProperUtilityPotentials constraint) {
             int numUtilities = probNet.getNumNodes(NodeType.UTILITY);
             if (this.getNodeType() == NodeType.UTILITY) {
                 numUtilities = numUtilities - 1;
             }
             if (numUtilities <= 0) {
-                throw new ConstraintViolatedException(constraint);
+                constraintChecker.addException(new ConstraintViolatedException.NetworkHasNoUtilityNodes(constraint, this.probNet));
             }
         }
     }
@@ -64,14 +64,6 @@ import org.openmarkov.core.action.base.UsesVariable;
         }
         probNet.removeNode(node);
         
-    }
-    
-    @Override
-    public void doEdit(ProbNet probNet) throws ConstraintViolatedException, DoEditException.NodeIsNull {
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
     }
     
     @Override public void undo() {

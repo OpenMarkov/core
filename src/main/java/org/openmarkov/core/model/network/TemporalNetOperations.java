@@ -499,7 +499,7 @@ public class TemporalNetOperations {
         });
         try {
             expandedNetwork.setNetworkType(InfluenceDiagramType.getUniqueInstance());
-        } catch (InvalidNetworkTypeException.UnmetConstraints e) {
+        } catch (ConstraintViolatedException e) {
             throw new UnreacheableException(e);
         }
     }

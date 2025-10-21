@@ -7,11 +7,9 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 /**
  * {@code NetworkDefaultStatesEdit} is a simple edit that allows modify
@@ -20,7 +18,7 @@ import org.openmarkov.core.action.base.SimplePNEdit;
  * @author Miguel Palacios
  * @version 1.0 21/12/2010
  */
-@SuppressWarnings("serial") public class NetworkDefaultStatesEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class NetworkDefaultStatesEdit extends PNEdit {
 
 	/**
 	 * The current default states of the network
@@ -52,14 +50,7 @@ import org.openmarkov.core.action.base.SimplePNEdit;
 		}
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() {
+    @Override public void undo() {
 		super.undo();
 		if (currentDefaultStates != null) {
 			probNet.setDefaultStates(currentDefaultStates);

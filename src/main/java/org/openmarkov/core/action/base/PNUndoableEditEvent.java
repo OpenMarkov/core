@@ -9,9 +9,6 @@ package org.openmarkov.core.action.base;
 
 import org.openmarkov.core.model.network.ProbNet;
 
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.undo.UndoableEdit;
-
 @SuppressWarnings("serial")
 
 /*
@@ -19,9 +16,11 @@ import javax.swing.undo.UndoableEdit;
   {@code UndoableEditEvent} is that a <code>PNUndoableEditEvent</code>
   use a {@code ProbNet}.
  */
-public class PNUndoableEditEvent extends UndoableEditEvent {
-
-	// Attributes
+public class PNUndoableEditEvent {
+    
+    private final Object source;
+    private final PNEdit edit;
+    // Attributes
 	private ProbNet probNet;
 
 	// Constructor
@@ -31,13 +30,30 @@ public class PNUndoableEditEvent extends UndoableEditEvent {
 	 * @param edit    An {@code UndoableEdit} object.
 	 * @param probNet The {@code ProbNet} on witch the event will operate
 	 */
-	public PNUndoableEditEvent(Object source, UndoableEdit edit, ProbNet probNet) {
-		super(source, edit);
-		this.probNet = probNet;
+    public PNUndoableEditEvent(Object source, PNEdit edit, ProbNet probNet) {
+        this.source = source;
+        this.edit = edit;
+        this.probNet = probNet;
 	}
-
-	// Methods
-
+    
+    /**
+     * The object on which the Event initially occurred.
+     *
+     * @return the object on which the Event initially occurred
+     */
+    public Object getSource() {
+        return source;
+    }
+    
+    /**
+     * Returns the edit value.
+     *
+     * @return the UndoableEdit object encapsulating the edit
+     */
+    public PNEdit getEdit() {
+        return this.edit;
+    }
+    
 	/**
 	 * @return probNet. {@code ProbNet}
 	 */

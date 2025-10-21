@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network;
 
 import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.action.base.PNESupport;
 import org.openmarkov.core.annotation.ToCheck;
 import org.openmarkov.core.exception.*;
@@ -25,7 +26,6 @@ import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.MarkovNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
 
-import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -44,7 +44,6 @@ import java.util.stream.Stream;
  * @since OpenMarkov 1.0
  */
 public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable {
-    
     
     public String toString() {
         StringBuilder out = new StringBuilder();
@@ -144,7 +143,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     
     // Constructors
     public ProbNet(NetworkType networkType) {
-        this.pNESupport = new PNESupport(false);
+        this.pNESupport = new PNESupport(this);
         this.decisionCriteria = new ArrayList<>();
         decisionCriteria.add(new Criterion());
         this.constraints = new ArrayList<>();
@@ -156,7 +155,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         }
         try {
             this.setNetworkType(networkType);
-        } catch (InvalidNetworkTypeException.UnmetConstraints e) {
+        } catch (ConstraintViolatedException e) {
             // This cannot happen
             throw new UnreacheableException(e);
         }
@@ -219,7 +218,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      */
     public void addConstraint(PNConstraint constraint) {
         constraints.add(constraint);
-        pNESupport.addUndoableEditListener(constraint);
+        pNESupport.addListener(constraint);
     }
     
     /**
@@ -227,8 +226,20 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      */
     public void removeConstraint(PNConstraint constraint) {
         if (constraints.remove(constraint)) {
-            pNESupport.removeUndoableEditListener(constraint);
+            pNESupport.removeListener(constraint);
         }
+    }
+    
+    public void checkConstraints() throws ConstraintViolatedException {
+        this.checkConstraints(this.constraints);
+    }
+    
+    public void checkConstraints(Iterable<PNConstraint> constraints) throws ConstraintViolatedException {
+        ConstraintChecker checker = new ConstraintChecker(this);
+        for (PNConstraint constraint : constraints) {
+            constraint.checkProbNet(this, checker);
+        }
+        checker.buildAndThrow();
     }
     
     /**
@@ -308,15 +319,10 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      *
      * @throws InvalidNetworkTypeException.UnmetConstraints UnmetConstraints
      */
-    public void setNetworkType(NetworkType newNetworkType) throws InvalidNetworkTypeException.UnmetConstraints {
+    public void setNetworkType(NetworkType newNetworkType) throws ConstraintViolatedException {
         // Build and check the new constraints
         List<PNConstraint> newConstraints = ConstraintManager.getUniqueInstance().buildConstraintList(newNetworkType);
-        var unsatisfiedConstraints = newConstraints.stream()
-                                                   .filter(newConstraint -> !newConstraint.checkProbNet(this))
-                                                   .toList();
-        if (!unsatisfiedConstraints.isEmpty()) {
-            throw new InvalidNetworkTypeException.UnmetConstraints(this, newNetworkType, unsatisfiedConstraints);
-        }
+        this.checkConstraints(newConstraints);
         this.networkType = newNetworkType;
         this.constraints.clear();
         this.constraints.addAll(newConstraints);
@@ -330,7 +336,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      */
     public boolean checkProbNet() {
         for (PNConstraint constraint : constraints) {
-            if ((constraint != null) && (!constraint.checkProbNet(this))) {
+            if ((constraint != null) && (!constraint.isMetBy(this))) {
                 return false;
             }
         }
@@ -340,7 +346,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     public List<PNConstraint> getUnsatisfiedConstraints() {
         List<PNConstraint> constraints = new ArrayList<PNConstraint>();
         for (PNConstraint constraint : this.constraints) {
-            if ((constraint != null) && (!constraint.checkProbNet(this))) {
+            if ((constraint != null) && (!constraint.isMetBy(this))) {
                 constraints.add(constraint);
             }
         }

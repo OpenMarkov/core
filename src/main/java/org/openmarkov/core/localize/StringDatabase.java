@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.localize.spi.LocalizeResourcesProvider;
 import org.openmarkov.plugin.PluginSearch;
 
-import javax.swing.event.EventListenerList;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Stream;
@@ -58,7 +57,7 @@ public class StringDatabase {
      */
     private Map<String, StringBundle> bundles = null;
     // Create the listener list
-    private EventListenerList listenerList = null;
+    private List<LocaleChangeListener> listenerList = null;
     
     /**
      * This constructor initializes the object with the language of the class.
@@ -71,7 +70,7 @@ public class StringDatabase {
         /* Set format locale to english (to format decimal point)*/
         Locale.setDefault(Locale.Category.FORMAT, Locale.ENGLISH);
         bundles = calculateAllBundles();
-        listenerList = new EventListenerList();
+        listenerList = new ArrayList<>();
         if (bundles.isEmpty()) {
             setLanguage("en");
         }
@@ -348,12 +347,12 @@ public class StringDatabase {
     
     // This methods allows classes to register for LocaleChangeEvent
     public void addLocaleChangeListener(LocaleChangeListener listener) {
-        listenerList.add(LocaleChangeListener.class, listener);
+        listenerList.add(listener);
     }
     
     // This methods allows classes to unregister for LocaleChangeEvent
     public void removeLocaleChangeListener(LocaleChangeListener listener) {
-        listenerList.remove(LocaleChangeListener.class, listener);
+        listenerList.remove(listener);
     }
     
     /**
@@ -362,13 +361,8 @@ public class StringDatabase {
      * @param evt - event to manage for locale change
      */
     protected void fireLocaleChangeEvent(LocaleChangeEvent evt) {
-        Object[] listeners = listenerList.getListenerList();
-        // Each listener occupies two elements - the first is the listener class
-        // and the second is the listener instance
-        for (int i = 0; i < listeners.length; i += 2) {
-            if (listeners[i] == LocaleChangeListener.class) {
-                ((LocaleChangeListener) listeners[i + 1]).processLocaleChange(evt);
-            }
+        for (LocaleChangeListener listener : listenerList) {
+            listener.processLocaleChange(evt);
         }
     }
     

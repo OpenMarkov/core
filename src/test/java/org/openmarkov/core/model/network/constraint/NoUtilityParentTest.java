@@ -30,7 +30,7 @@ public class NoUtilityParentTest {
         
         //test only utility children
         PNConstraint constraint = new NoUtilityParent();
-        assertTrue(constraint.checkProbNet(probNetProperUtilityChildren));
+        assertTrue(constraint.isMetBy(probNetProperUtilityChildren));
     }
 
     

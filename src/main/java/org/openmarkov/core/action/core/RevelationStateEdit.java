@@ -7,20 +7,17 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 /*******
  * <p>
  * A simple edit which allows to add or remove a revealing state of a link.
  *
  */
-@SuppressWarnings("serial") public class RevelationStateEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class RevelationStateEdit extends PNEdit {
 
 	private Link<Node> link;
 
@@ -46,14 +43,7 @@ import org.openmarkov.core.action.base.SimplePNEdit;
 
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() {
+    @Override public void undo() {
 		super.undo();
 		if (selected) {
 			link.removeRevealingState(newState);

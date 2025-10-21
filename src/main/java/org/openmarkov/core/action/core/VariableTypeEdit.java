@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.action.core;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
@@ -19,12 +20,11 @@ import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.Util;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("serial") public class VariableTypeEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class VariableTypeEdit extends PNEdit {
 	// private ProbNet probNet;
 	private Node node;
 	private VariableType newType;
@@ -39,20 +39,23 @@ import java.util.List;
 
 	}
     
-    @Override public void checkConstraintsWillBeMet() throws ConstraintViolatedException {
+    @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(OnlyDiscreteVariables.class) instanceof OnlyDiscreteVariables constraint) {
             if (this.newType != VariableType.DISCRETIZED) {
-                throw new ConstraintViolatedException(constraint);
+                constraintChecker.addException(new ConstraintViolatedException.OnlyDiscreteVariablesAllowed(constraint, this.getNode()
+                                                                                                                            .getVariable()));
             }
         }
         if (probNet.getConstraintOfClass(OnlyFiniteStatesVariables.class) instanceof OnlyFiniteStatesVariables constraint) {
             if (!OnlyFiniteStatesVariables.nodeIsFinite(this.node.getNodeType(), this.newType)) {
-                throw new ConstraintViolatedException(constraint);
+                constraintChecker.addException(new ConstraintViolatedException.OnlyFiniteStatesAllowed(constraint, this.getNode()
+                                                                                                                       .getVariable()));
             }
         }
         if (probNet.getConstraintOfClass(OnlyNumericVariables.class) instanceof OnlyNumericVariables constraint) {
             if (this.newType != VariableType.NUMERIC) {
-                throw new ConstraintViolatedException(constraint);
+                constraintChecker.addException(new ConstraintViolatedException.OnlyNumericVariablesAllowed(constraint, this.getNode()
+                                                                                                                           .getVariable()));
             }
         }
     }
@@ -130,14 +133,7 @@ import java.util.List;
 
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-
-	@Override public void undo() {
+    @Override public void undo() {
 		node.getVariable().setVariableType(currentType);
 		node.getVariable().setStates(currentStates);
 	}

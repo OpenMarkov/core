@@ -7,11 +7,9 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 /**
  * {@code DecisionCriterionUnitEdit} is a simple edit that allow modify the unit
@@ -19,7 +17,7 @@ import org.openmarkov.core.action.base.SimplePNEdit;
  *
  * @author Jorge
  */
-public class DecisionCriterionUnitEdit extends SimplePNEdit {
+public class DecisionCriterionUnitEdit extends PNEdit {
 
 	/**
 	 * Default serial version uid
@@ -62,14 +60,7 @@ public class DecisionCriterionUnitEdit extends SimplePNEdit {
 		this.criterion.setCriterionUnit(newUnit);
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() {
+    @Override public void undo() {
 		super.undo();
 		this.criterion.setCriterionUnit(oldUnit);
 	}

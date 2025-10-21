@@ -7,14 +7,12 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +20,7 @@ import java.util.List;
 /**
  * Changes an old potential for a new potential
  */
-public class PotentialChangeEdit extends SimplePNEdit {
+public class PotentialChangeEdit extends PNEdit {
 
 	// Attribute
 	private Potential newPotential;
@@ -66,14 +64,6 @@ public class PotentialChangeEdit extends SimplePNEdit {
 	}
     
     @Override
-    public void doEdit(ProbNet probNet) throws ConstraintViolatedException, DoEditException.CannotRemovePotential {
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
-    }
-
-	@Override
 	public void undo() {
 		super.undo();
 		probNet.removePotential(newPotential);

@@ -7,12 +7,16 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.action.base.StateAction;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -28,10 +32,18 @@ public class ValidState extends PNConstraint {
      * @return true, if the state field isn't empty and there isn't any node with
      * this name; otherwise, false.
      */
-    public static boolean checkState(String newState, Node node, StateAction stateAction) {
-        return switch (stateAction) {
-            case ADD, RENAME -> !((newState == null) || newState.isEmpty() || ValidState.existState(newState, node));
-            case REMOVE, MODIFY_VALUE_INTERVAL, MODIFY_DELIMITER_INTERVAL, DOWN, UP -> true;
+    public void checkState(ConstraintChecker constraintChecker, String newState, Node node, StateAction stateAction) {
+        switch (stateAction) {
+            case ADD, RENAME -> {
+                boolean isEmpty = (newState == null) || newState.isEmpty();
+                if (isEmpty) {
+                    constraintChecker.addException(new ConstraintViolatedException.NameOfStateCannotBeEmpty(this, node));
+                } else if (ValidState.existState(newState, node)) {
+                    constraintChecker.addException(new ConstraintViolatedException.StateAlreadyExists(this, node, newState));
+                }
+            }
+            case REMOVE, MODIFY_VALUE_INTERVAL, MODIFY_DELIMITER_INTERVAL, DOWN, UP -> {
+            }
         };
     }
     
@@ -43,7 +55,7 @@ public class ValidState extends PNConstraint {
      *
      * @return true if the state exists; otherwise, false.
      */
-    public static boolean existState(String state, Node node) {
+    private static boolean existState(String state, Node node) {
         for (State states : node.getVariable().getStates()) {
             if (states.getName().equalsIgnoreCase(state)) {
                 return true;
@@ -52,15 +64,23 @@ public class ValidState extends PNConstraint {
         return false;
     }
     
-    @Override public boolean checkProbNet(ProbNet probNet) {
-        List<Variable> variables = probNet.getVariables();
-        for (Variable variable : variables) {
-            String name = variable.getName();
-            if ((name == null) || (name.contentEquals(""))) {
-                return false;
+    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
+        for (Node node : probNet.getNodes()) {
+            for (State state : node.getVariable().getStates()) {
+                if ((state.getName() == null) || (state.getName().contentEquals(""))) {
+                    constraintChecker.addException(new ConstraintViolatedException.NameOfStateCannotBeEmpty(this, node));
+                }
+            }
+            HashMap<String, Integer> statesAndNumber = new HashMap<>();
+            for (State state : node.getVariable().getStates()) {
+                statesAndNumber.put(state.getName(), statesAndNumber.getOrDefault(state.getName(), 0) + 1);
+            }
+            for (var entry : statesAndNumber.entrySet()) {
+                if (entry.getValue() > 1) {
+                    constraintChecker.addException(new ConstraintViolatedException.StateDuplicated(this, node, entry.getKey()));
+                }
             }
         }
-        return true;
     }
     
 }

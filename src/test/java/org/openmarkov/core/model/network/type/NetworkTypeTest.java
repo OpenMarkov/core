@@ -38,7 +38,7 @@ public class NetworkTypeTest {
         Assertions.assertTrue(constraints.contains(new NoCycle()));
     }
     
-    @Test public void testConvertingBayesianIntoMarkov() throws InvalidNetworkTypeException.UnmetConstraints {
+    @Test public void testConvertingBayesianIntoMarkov() throws ConstraintViolatedException {
         ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
         probNet.setNetworkType(MarkovNetworkType.getUniqueInstance());
         List<PNConstraint> constraints = probNet.getConstraints();
@@ -46,7 +46,7 @@ public class NetworkTypeTest {
         Assertions.assertTrue(constraints.contains(new OnlyUndirectedLinks()));
     }
     
-    @Test public void testRemovingConstraintsNoLongerApplicable() throws InvalidNetworkTypeException.UnmetConstraints {
+    @Test public void testRemovingConstraintsNoLongerApplicable() throws ConstraintViolatedException {
         ProbNet probNet = new ProbNet();
         probNet.setNetworkType(InfluenceDiagramType.getUniqueInstance());
         List<PNConstraint> constraints = probNet.getConstraints();
@@ -55,8 +55,7 @@ public class NetworkTypeTest {
     
     //(expected = ConstraintViolatedException.class)
     @Disabled
-    @Test public void testImpossibleNetworkTypeConversion()
-            throws InvalidNetworkTypeException.UnmetConstraints {
+    @Test public void testImpossibleNetworkTypeConversion() throws ConstraintViolatedException {
         ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
         probNet.setNetworkType(InfluenceDiagramType.getUniqueInstance());
         

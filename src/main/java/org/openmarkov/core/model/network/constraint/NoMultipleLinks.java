@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -16,72 +18,74 @@ import java.util.List;
 
 /**
  * This class implements the NoMultipleLinks constraint, which establishes the following rules:
- *  - The undirected link between A and B is both incompatible with any directed link between A and B.
- *  - The directed link between A and B is compatible with the directed link between B and A
- *  @author ckonig
+ * - The undirected link between A and B is both incompatible with any directed link between A and B.
+ * - The directed link between A and B is compatible with the directed link between B and A
+ *
+ * @author ckonig
  */
 @Constraint(name = "NoMultipleLinks", defaultBehavior = ConstraintBehavior.YES)
 public class NoMultipleLinks extends PNConstraint {
-
-	@Override public boolean checkProbNet(ProbNet probNet) {
-		List<Node> nodesGraph = probNet.getNodes();
-		for (Node node : nodesGraph) {
-			for (Link<Node> link : probNet.getLinks(node)) {
-				Node node1 = link.getNode1();
-				Node node2 = link.getNode2();
-				boolean directed = link.isDirected();
-                if (!NoMultipleLinks.checkLink(probNet, node1, node2, directed)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	/*****
-	 * Checks if a link between node1 and node2
-	 * satisfies the restriction of noMultipleLinks
-	 * @param probNet Network
-	 * @param node1 First node
-	 * @param node2 Second node
-	 * @param directed - true if the link is directed
-	 * @return True if the link between node1 and
-	 *         node1 has no multipleLinks
-	 */
-    public static boolean checkLink(ProbNet probNet, Node node1, Node node2, boolean directed) {
-		if (directed) {
-            return NoMultipleLinks.checkDirectedLink(probNet, node1, node2);
-		} else {
-            return NoMultipleLinks.checkUndirectedLink(probNet, node1, node2);
-		}
-	}
-
-	/*********
-	 * Checks if a directed link between {@code node1} and
-	 * {@code node2} satisfies the restriction of noMultipleLinks
-	 * @param probNet Network
-	 * @param node1 First node
-	 * @param node2 Second node
-	 * @return {@code true} if the link between {@code node1} and
-	 *         {@code node2}has no multipleLinks
-	 */
-    private static boolean checkDirectedLink(ProbNet probNet, Node node1, Node node2) {
-        return probNet.getLink(node1, node2, false) == null;
+    
+    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
+        List<Node> nodesGraph = probNet.getNodes();
+        for (Node node : nodesGraph) {
+            for (Link<Node> link : probNet.getLinks(node)) {
+                this.checkLink(probNet, constraintChecker, link.getNode1(), link.getNode2(), link.isDirected());
+            }
+        }
     }
-
-	/*****
-	 * Checks if a undirected link between {@code node1} and
-	 * {@code node2} satisfies the restriction of noMultipleLinks
-	 * @param probNet Network
-	 * @param node1 First node
-	 * @param node2 Second node
-	 * @return {@code true} if the link between {@code node1} and
-	 *         {@code node2}has no multipleLinks
-	 */
-    private static boolean checkUndirectedLink(ProbNet probNet, Node node1, Node node2) {
-		// neither a directed link from node1 -> node2 nor node2 ->
-		// node1 may exist
-        return (probNet.getLink(node1, node2, true) == null) && (probNet.getLink(node2, node1, true) == null);
+    
+    /*****
+     * Checks if a link between node1 and node2
+     * satisfies the restriction of noMultipleLinks
+     * @param probNet Network
+     * @param constraintChecker
+     * @param node1 First node
+     * @param node2 Second node
+     * @param directed - true if the link is directed
+     * @return True if the link between node1 and
+     *         node1 has no multipleLinks
+     */
+    public void checkLink(ProbNet probNet, ConstraintChecker constraintChecker, Node node1, Node node2, boolean directed) {
+        if (directed) {
+            this.checkDirectedLink(probNet, constraintChecker, node1, node2);
+        } else {
+            this.checkUndirectedLink(probNet, constraintChecker, node1, node2);
+        }
+    }
+    
+    /*********
+     * Checks if a directed link between {@code node1} and {@code node2} satisfies the restriction of noMultipleLinks
+     * @param probNet Network
+     * @param constraintChecker
+     * @param node1 First node
+     * @param node2 Second node
+     * @return {@code true} if the link between {@code node1} and {@code node2}has no multipleLinks
+     */
+    private void checkDirectedLink(ProbNet probNet, ConstraintChecker constraintChecker, Node node1, Node node2) {
+        if (probNet.getLink(node1, node2, false) != null) {
+            constraintChecker.addException(new ConstraintViolatedException.DirectedLinkCannotMatchAnUndirectedLink(this, node1, node2));
+        }
+    }
+    
+    /*****
+     * Checks if a undirected link between {@code node1} and
+     * {@code node2} satisfies the restriction of noMultipleLinks
+     * @param probNet Network
+     * @param constraintChecker
+     * @param node1 First node
+     * @param node2 Second node
+     * @return {@code true} if the link between {@code node1} and
+     *         {@code node2}has no multipleLinks
+     */
+    private void checkUndirectedLink(ProbNet probNet, ConstraintChecker constraintChecker, Node node1, Node node2) {
+        // neither a directed link from node1 -> node2 nor node2 -> node1 may exist
+        if (probNet.getLink(node1, node2, true) != null) {
+            constraintChecker.addException(new ConstraintViolatedException.DirectedLinkCannotMatchAnUndirectedLink(this, node1, node2));
+        }
+        if (probNet.getLink(node2, node1, true) != null) {
+            constraintChecker.addException(new ConstraintViolatedException.DirectedLinkCannotMatchAnUndirectedLink(this, node2, node1));
+        }
     }
     
 }

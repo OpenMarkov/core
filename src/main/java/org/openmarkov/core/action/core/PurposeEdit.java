@@ -7,11 +7,8 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 @SuppressWarnings("serial")
 
@@ -22,7 +19,7 @@ import org.openmarkov.core.action.base.SimplePNEdit;
   @version 1.0 21/12/10
  * @author Miguel Palacios
  */
-public class PurposeEdit extends SimplePNEdit {
+public class PurposeEdit extends PNEdit {
 	/**
 	 * The last purpose before the edition
 	 */
@@ -53,14 +50,7 @@ public class PurposeEdit extends SimplePNEdit {
 		node.setPurpose(newPurpose);
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() {
+    @Override public void undo() {
 		super.undo();
 		node.setPurpose(lastPurpose);
 	}

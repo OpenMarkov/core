@@ -7,13 +7,11 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.OnlyContinuousVariables;
 import org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 import java.util.List;
 
@@ -25,7 +23,7 @@ import java.util.List;
  * @version 1.0
  */
 
-@SuppressWarnings("serial") public class VariableTypeConstraintEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class VariableTypeConstraintEdit extends PNEdit {
 	// Attributes
 	/**
 	 * The new constraint for variable type
@@ -73,14 +71,7 @@ import java.util.List;
 
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-
-	@Override public void undo() {
+    @Override public void undo() {
 		super.undo();
 
 		if (newVariableTypeConstraint != null) {

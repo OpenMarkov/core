@@ -7,17 +7,14 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("serial") public class SetPotentialVariablesEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class SetPotentialVariablesEdit extends PNEdit {
 
 	private List<Variable> oldVariables;
 	private List<Variable> newVariables;
@@ -30,14 +27,7 @@ import java.util.List;
 		this.newVariables = newVariables;
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void doEdit() {
+    @Override public void doEdit() {
 		node.getPotentials().get(0).setVariables(newVariables);
 	}
 

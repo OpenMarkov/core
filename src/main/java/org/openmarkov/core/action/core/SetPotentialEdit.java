@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -17,13 +16,12 @@ import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPote
 import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 import org.openmarkov.core.action.base.VisualDecisionNodePolicyChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("serial") public class SetPotentialEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class SetPotentialEdit extends PNEdit {
 	// unused - private PotentialType lastPotentialType;
 	private Potential lastPotential;
 	private String newPotentialType;
@@ -120,14 +118,7 @@ import java.util.List;
 
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	public void setPotential(){
+    public void setPotential(){
         List<Variable> variables = lastPotential.getVariables();
         PotentialRole role = lastPotential.getPotentialRole();
 

@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.action.base.linkEdits.BaseLinkEdit;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -33,8 +34,7 @@ public class ModelNetworkConstraint extends PNConstraint {
         this.modelNet = modelNet.copy();
     }
     
-    @Override public boolean checkProbNet(ProbNet probNet) {
-        return true;
+    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
     }
     
     public boolean canEditBeDone(BaseLinkEdit simpleEdit) {

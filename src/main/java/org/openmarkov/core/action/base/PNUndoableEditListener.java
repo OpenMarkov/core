@@ -7,22 +7,25 @@
 
 package org.openmarkov.core.action.base;
 
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.event.UndoableEditListener;
-
-public interface PNUndoableEditListener extends UndoableEditListener {
+public interface PNUndoableEditListener {
+    
     
     /**
-     * An undoable edit will happen
-     *
-     * @param event Event
-     *
-     * @throws ConstraintViolationException ConstraintViolatedException
+     * Triggered before an undoable edit is about to happen happened.
      */
-    default void undoableEditWillHappen(UndoableEditEvent event) {
+    default void undoableEditWillHappen(PNUndoableEditEvent event) {
     }
     
-    default void undoEditHappened(UndoableEditEvent event) {
+    /**
+     * Triggered after an undoable edit has happened.
+     */
+    default void undoableEditHappened(PNUndoableEditEvent e) {
+    }
+    
+    /**
+     * Triggered after undoing an edit.
+     */
+    default void undoEditHappened(PNUndoableEditEvent event) {
     }
     
 }

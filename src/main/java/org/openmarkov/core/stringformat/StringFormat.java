@@ -170,6 +170,7 @@ public class StringFormat {
                             return StringDatabase.surrondAsUnknown("Cannot resolve " + resolvingStep);
                         }
                     }
+                    argument = StringFormat.resolveArrayAsList(argument);
                     boolean isOpenMarkovFormat = "om".equalsIgnoreCase(formatting.format) || "openmarkov".equalsIgnoreCase(formatting.format);
                     /*
                     if (argument instanceof Localizable localizable) {
@@ -211,24 +212,49 @@ public class StringFormat {
                 });
     }
     
+    private static Object resolveArrayAsList(Object object) {
+        if (!object.getClass().isArray()) {
+            return object;
+        }
+        List<Object> list = new ArrayList<>();
+        for (int i = 0; i < Array.getLength(object); i++) {
+            Object item = Array.get(object, i);
+            if (item.getClass().isArray()) {
+                Collection resolvedItem = (List) resolveArrayAsList(item);
+                list.addAll(resolvedItem);
+            } else {
+                list.add(item);
+            }
+        }
+        return list;
+    }
+    
     private static final List<Localizer> LOCALIZERS = List.of(
             new Localizer<>(Localizable.class, (localizable, form)
                     -> localizable.localize(form)),
             new Localizer<>(Collection.class, (obj, form) -> {
                 Stream<Object> stream = (Stream<Object>) obj.stream();
-                return stream.map(indObj ->
-                                          form.listSeparator.prefix() +
-                                                  StringFormat.internalLocalize(indObj, form))
-                             .collect(Collectors.joining(form.listSeparator.separator()));
+                return form.listSeparator.globalPrefix() +
+                        stream.map(indObj ->
+                                           form.listSeparator.itemPrefix() +
+                                                   StringFormat.internalLocalize(indObj, form)
+                                                   + form.listSeparator.itemSuffix()
+                              
+                              )
+                              .collect(Collectors.joining(form.listSeparator.separator()))
+                        + form.listSeparator.globalSuffix();
             }),
             new Localizer<>(Map.class, (obj, form) -> {
                 var stream = (Stream<Map.Entry<Object, Object>>) obj.entrySet().stream();
-                return stream.map(entry ->
-                                          form.listSeparator.prefix()
-                                                  + StringFormat.internalLocalize(entry.getKey(), form)
-                                                  + ": "
-                                                  + StringFormat.internalLocalize(entry.getValue(), form))
-                             .collect(Collectors.joining(form.listSeparator.separator()));
+                return form.listSeparator.globalPrefix() +
+                        stream.map(entry ->
+                                           form.listSeparator.itemPrefix()
+                                                   + StringFormat.internalLocalize(entry.getKey(), form)
+                                                   + form.listSeparator.itemSuffix()
+                                                   + ": "
+                                                   + StringFormat.internalLocalize(entry.getValue(), form))
+                              .collect(Collectors.joining(form.listSeparator.separator()))
+                        + form.listSeparator.globalSuffix();
             })
     
     

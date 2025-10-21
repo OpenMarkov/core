@@ -7,31 +7,30 @@
 
 package org.openmarkov.core.action.core;
 
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.action.base.CompoundPNEdit;
-import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.linkEdits.OrientLinkEdit;
 
-import javax.swing.undo.UndoableEdit;
-import java.util.Vector;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial") public class COrientLinksEdit extends CompoundPNEdit {
     
-    public COrientLinksEdit(ProbNet probNet, Vector<OrientLinkEdit> edits) {
+    public COrientLinksEdit(ProbNet probNet, ArrayList<OrientLinkEdit> edits) {
         super(probNet);
         this.orientLinkEdits = edits;
     }
     
-    private final Vector<OrientLinkEdit> orientLinkEdits;
+    private final ArrayList<OrientLinkEdit> orientLinkEdits;
     
     // Methods
-    @Override public Vector<PNEdit> generateEdits() {
-        return (Vector<PNEdit>) (Vector) orientLinkEdits;
+    @Override public ArrayList<PNEdit> generateEdits() {
+        return (ArrayList<PNEdit>) (ArrayList) orientLinkEdits;
     }
     
     public String toString() {
         StringBuilder buffer = new StringBuilder("Orient links: ");
-        for (UndoableEdit edit : edits) {
+        for (PNEdit edit : getEdits()) {
             OrientLinkEdit orientLinkEdit = (OrientLinkEdit) edit;
             buffer.append(orientLinkEdit.getVariable1().getName());
             if (orientLinkEdit.isDirected()) {
@@ -49,11 +48,11 @@ import java.util.Vector;
     @Override public boolean equals(Object arg0) {
         boolean sameInformation = true;
         if (arg0 instanceof COrientLinksEdit editToCompare) {
-            for (UndoableEdit edit : editToCompare.edits) {
-                sameInformation &= edits.contains(edit);
+            for (PNEdit edit : editToCompare.getEdits()) {
+                sameInformation &= getEdits().contains(edit);
             }
-            for (UndoableEdit edit : edits) {
-                sameInformation &= editToCompare.edits.contains(edit);
+            for (PNEdit edit : getEdits()) {
+                sameInformation &= editToCompare.getEdits().contains(edit);
             }
         } else {
             sameInformation = false;

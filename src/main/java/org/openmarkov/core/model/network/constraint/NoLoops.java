@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
@@ -14,8 +16,8 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import java.util.List;
 
 @Constraint(name = "NoLoops", defaultBehavior = ConstraintBehavior.OPTIONAL) public class NoLoops extends PNConstraint {
-
-	@Override public boolean checkProbNet(ProbNet probNet) {
+    
+    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
 		List<Node> nodesGraph = probNet.getNodes();
 		boolean probNetOK = true;
 		boolean directed;
@@ -36,11 +38,10 @@ import java.util.List;
 				}
 				probNet.addLink(node1, node2, directed);
 				if (!probNetOK) {
-                    return false;
+                    constraintChecker.addException(new ConstraintViolatedException.ThereIsALoop(this, node1, node2));
 				}
 			}
 		}
-        return true;
 	}
  
 }

@@ -31,17 +31,17 @@ public class NoMultipleLinksTest {
         Variable vu = influenceDiagram.getVariable("U");
         Variable va = influenceDiagram.getVariable("A");
         Variable vd = influenceDiagram.getVariable("D");
-        assertTrue(testedConstraint.checkProbNet(influenceDiagram));
+        assertTrue(testedConstraint.isMetBy(influenceDiagram));
         
         influenceDiagram.removeConstraint(testedConstraint);
         influenceDiagram.addLink(vu, va, true);
         influenceDiagram.addConstraint(testedConstraint);
-        assertTrue(testedConstraint.checkProbNet(influenceDiagram));
+        assertTrue(testedConstraint.isMetBy(influenceDiagram));
         
         influenceDiagram.removeConstraint(testedConstraint);
         influenceDiagram.addLink(vd, va, false);
         influenceDiagram.addConstraint(testedConstraint);
-        assertFalse(testedConstraint.checkProbNet(influenceDiagram));
+        assertFalse(testedConstraint.isMetBy(influenceDiagram));
     }
     
 }

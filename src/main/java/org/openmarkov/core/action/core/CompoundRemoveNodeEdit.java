@@ -9,6 +9,7 @@ package org.openmarkov.core.action.core;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.Node;
@@ -19,13 +20,11 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.core.action.base.CompoundPNEdit;
-import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Removes a node performing this steps:<ol>
@@ -70,8 +69,8 @@ import java.util.Vector;
 		this.logger = LogManager.getLogger(CompoundPNEdit.class);
 	}
     
-    @Override public Vector<PNEdit> generateEdits() {
-        Vector<PNEdit> edits = new Vector<>();
+    @Override public ArrayList<PNEdit> generateEdits() {
+        ArrayList<PNEdit> edits = new ArrayList<>();
 		Node node = probNet.getNode(variable);
 
 		// gets neighbors of this node

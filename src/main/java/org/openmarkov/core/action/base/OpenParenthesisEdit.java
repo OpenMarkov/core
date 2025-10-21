@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.action.base;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.ProbNet;
 
 @SuppressWarnings("serial")
@@ -16,7 +15,7 @@ import org.openmarkov.core.model.network.ProbNet;
   @author Manuel Arias
  * @see openmarkov.networks.edit.CloseParenthesisEdit
  */
-public class OpenParenthesisEdit extends SimplePNEdit {
+public class OpenParenthesisEdit extends PNEdit {
 
 	// Constant
 	public static final String description = "(";
@@ -26,32 +25,17 @@ public class OpenParenthesisEdit extends SimplePNEdit {
 	/**
 	 * Singleton pattern
 	 */
-	public OpenParenthesisEdit() {
-		super(null);
+    public OpenParenthesisEdit(ProbNet probNet) {
+        super(probNet);
 	}
 
 	// Methods
 	@Override public void doEdit() {
 		//super.addEdit(this);
 	}
-    
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
 	
 	@Override public void undo() {
 		super.undo();
-	}
-
-	@Override public String getUndoPresentationName() {
-		return description + " " + getPresentationName();
-	}
-
-	@Override public String getRedoPresentationName() {
-		return description + " " + getPresentationName();
 	}
 
 	public String toString() {

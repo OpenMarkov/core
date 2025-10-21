@@ -7,11 +7,11 @@
 
 package org.openmarkov.core.action.base.linkEdits;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.ModelNetworkConstraint;
-import org.openmarkov.core.action.base.PNEdit;
 
 @SuppressWarnings("serial") public final class OrientLinkEdit extends BaseLinkEdit {
 
@@ -25,10 +25,10 @@ import org.openmarkov.core.action.base.PNEdit;
 		super(probNet, variable1, variable2, isDirected);
 	}
     
-    @Override public void checkConstraintsWillBeMet() throws ConstraintViolatedException {
+    @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(ModelNetworkConstraint.class) instanceof ModelNetworkConstraint constraint
                 && !constraint.isLinkInversionAllowed() && !constraint.canEditBeDone(this)) {
-            throw new ConstraintViolatedException.ModelDoesntAllowInvertingLink(constraint, this.variable2, this.variable1);
+            constraintChecker.addException(new ConstraintViolatedException.ModelDoesNotAllowInvertingLink(constraint, this.variable2, this.variable1));
         }
     }
     
@@ -41,13 +41,6 @@ import org.openmarkov.core.action.base.PNEdit;
         probNet.addLink(variable1, variable2, true);
     }
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
 	/**
 	 * Undo the edition by removing the existing link and adding
 	 * a new undirected link between the same two variables.

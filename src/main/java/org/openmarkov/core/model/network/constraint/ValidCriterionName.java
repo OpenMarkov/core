@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
@@ -18,7 +19,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
     private static final int IS_NAME_ALREADY_EXIST = 1;
     
     
-    @Override public boolean checkProbNet(ProbNet probNet) {
+    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
 		
 		/*
 		List<Criterion> criteria = probNet.getDecisionCriteria();
@@ -39,7 +40,6 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 			}
 		}*/
 
-		return true;
 	}
  
 }

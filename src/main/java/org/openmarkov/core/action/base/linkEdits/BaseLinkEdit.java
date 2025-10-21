@@ -14,12 +14,12 @@ package org.openmarkov.core.action.base.linkEdits;
 
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.action.base.SimplePNEdit;
+import org.openmarkov.core.action.base.PNEdit;
 
 /**
  * @author Inigo
  */
-@SuppressWarnings("serial") public abstract sealed class BaseLinkEdit extends SimplePNEdit
+@SuppressWarnings("serial") public abstract sealed class BaseLinkEdit extends PNEdit
         permits AddLinkEdit, InvertLinkAndUpdatePotentialsEdit, InvertLinkEdit, OrientLinkEdit, RemoveLinkEdit {
 
 	// Attributes

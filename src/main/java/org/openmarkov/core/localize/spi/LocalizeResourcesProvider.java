@@ -7,6 +7,7 @@ import org.openmarkov.core.annotation.ImplementationRequirements;
 import org.openmarkov.core.annotation.RequiredConstructor;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.localize.*;
+import org.openmarkov.core.logging.OpenMarkovLogger;
 import org.openmarkov.core.stringformat.LocalizationFormatter;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -128,7 +129,7 @@ public interface LocalizeResourcesProvider extends ResourceBundleProvider {
                        .map(entry -> new BundleSource.JarSource(jarFile, entry))
                        .forEach(addBundleSource);
         } catch (IOException ioException) {
-            throw new UnreacheableException("Localization file in jar " + bundleFile + " could not be located.", ioException);
+            OpenMarkovLogger.LOGGER.debug("Localization file in jar " + bundleFile + " could not be located.", ioException);
         }
     }
     

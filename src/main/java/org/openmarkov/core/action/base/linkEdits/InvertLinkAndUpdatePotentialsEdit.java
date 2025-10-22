@@ -9,7 +9,6 @@ package org.openmarkov.core.action.base.linkEdits;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.graph.Link;
@@ -19,7 +18,6 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import org.openmarkov.core.action.base.PNEdit;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -198,14 +196,6 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 		for (Link link : linksToUndo) {
 			probNet.addLink((Node) link.getNode1(), (Node) link.getNode2(), true);
 		}
-	}
-    
-    @Override
-    public void doEdit(ProbNet probNet) throws ConstraintViolatedException, DoEditException.CannotDoEditException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
 	}
 	
 	@Override public void undo() {

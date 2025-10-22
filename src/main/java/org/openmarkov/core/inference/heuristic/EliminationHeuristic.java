@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.inference.heuristic;
 
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.action.base.UsesVariable;
 import org.openmarkov.core.annotation.ImplementationRequirements;
@@ -16,8 +18,6 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.undo.UndoableEdit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,10 +106,9 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	 * eliminate.
 	 */
 	public abstract Variable getVariableToDelete();
-
-	@Override public void undoableEditHappened(UndoableEditEvent event) {
+    
+    @Override public void undoableEditHappened(PNUndoableEditEvent event) {
 		Variable removedVariable = getEventVariable(event);
-
 		if (removedVariable != null) {
 			int listOfListsIndex = variablesToEliminate.size() - 1;
 			if (listOfListsIndex >= 0) {
@@ -138,9 +137,9 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	 * @return node ({@code Node}) in the heuristic
 	 * {@code ProbNet} that will be removed
 	 */
-    protected static Variable getEventVariable(UndoableEditEvent event) {
+    protected static Variable getEventVariable(PNUndoableEditEvent event) {
 		Variable variable = null;
-		UndoableEdit pNEdit = event.getEdit();
+        PNEdit pNEdit = event.getEdit();
 
 		if (pNEdit instanceof UsesVariable) {
 			variable = ((UsesVariable) pNEdit).getVariable();

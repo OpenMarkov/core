@@ -7,10 +7,9 @@
 
 package org.openmarkov.core.action.base;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.ProbNet;
 
-@SuppressWarnings("serial") public class CloseParenthesisEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class CloseParenthesisEdit extends PNEdit {
 
 	// Constant
 	public static final String description = ")";
@@ -19,33 +18,14 @@ import org.openmarkov.core.model.network.ProbNet;
 	private OpenParenthesisEdit openParenthesisEdit;
 
 	// Constructor
-	public CloseParenthesisEdit(OpenParenthesisEdit openParenthesisEdit) {
-		super(null);
+    public CloseParenthesisEdit(ProbNet probNet, OpenParenthesisEdit openParenthesisEdit) {
+        super(probNet);
 		this.openParenthesisEdit = openParenthesisEdit;
 	}
 
 	// Methods
 	@Override public void doEdit() {
 		//super.addEdit(this);
-	}
-    
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() {
-		super.undo();
-	}
-
-	@Override public String getUndoPresentationName() {
-		return description + " " + getPresentationName();
-	}
-
-	@Override public String getRedoPresentationName() {
-		return description + " " + getPresentationName();
 	}
 
 	public String toString() {

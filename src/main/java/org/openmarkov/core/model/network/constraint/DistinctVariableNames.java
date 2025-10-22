@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
@@ -17,7 +19,7 @@ import java.util.List;
 @Constraint(name = "DistinctVariableNames", defaultBehavior = ConstraintBehavior.YES)
 public class DistinctVariableNames extends PNConstraint {
     
-    @Override public boolean checkProbNet(ProbNet probNet) {
+    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
         List<Variable> variablesProbNet = probNet.getVariables();
         List<String> variablesProbNetNames = new ArrayList<>();
         for (Variable variable : variablesProbNet) {
@@ -28,11 +30,10 @@ public class DistinctVariableNames extends PNConstraint {
         for (int i = 0; i < numVariables - 1; i++) {
             for (int j = i + 1; j < numVariables; j++) {
                 if (variablesProbNetNames.get(i).compareTo(variablesProbNetNames.get(j)) == 0) {
-                    return false;
+                    constraintChecker.addException(new ConstraintViolatedException.VariableNameIsAlreadyPresent(this, variablesProbNetNames.get(i)));
                 }
             }
         }
-        return true;
     }
     
 }

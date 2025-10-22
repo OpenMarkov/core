@@ -7,14 +7,12 @@
 
 package org.openmarkov.core.action.core;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.*;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
-import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
-
-import java.awt.geom.Point2D;
 
 /**
  * {@code AddNodeEdit} is a edit that allow add a node to
@@ -23,7 +21,7 @@ import java.awt.geom.Point2D;
  * @author mpalacios
  * @version 1 21/12/10
  */
-@SuppressWarnings("serial") public class AddNodeEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class AddNodeEdit extends PNEdit {
     
     // Atribbutes
     /**
@@ -75,57 +73,57 @@ import java.awt.geom.Point2D;
         this(probNet, variable, nodeType, new Point2D.Double());
     }
     
-    @Override public void checkConstraintsWillBeMet() throws ConstraintViolatedException {
+    @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(DistinctVariableNames.class) instanceof DistinctVariableNames constraint) {
             if (probNet.getVariablesNames().contains(this.variable.getName())) {
-                throw new ConstraintViolatedException.VariableNameIsAlreadyPresent(constraint, this.variable.getName());
+                constraintChecker.addException(new ConstraintViolatedException.VariableNameIsAlreadyPresent(constraint, this.variable.getName()));
             }
         }
         if (probNet.getConstraintOfClass(NoEmptyName.class) instanceof NoEmptyName constraint) {
             String name = this.variable.getName();
             if ((name == null) || (name.contentEquals(""))) {
-                throw new ConstraintViolatedException(constraint);
+                constraintChecker.addException(new ConstraintViolatedException.NameOfVariableCannotBeEmpty(constraint, variable));
             }
         }
         if (probNet.getConstraintOfClass(OnlyAtemporalVariables.class) instanceof OnlyAtemporalVariables constraint) {
             if (this.variable.isTemporal()) {
-                throw new ConstraintViolatedException(constraint);
+                constraintChecker.addException(new ConstraintViolatedException.OnlyAtemporalVariablesAllowed(constraint, this.variable));
             }
         }
         if (probNet.getConstraintOfClass(OnlyChanceNodes.class) instanceof OnlyChanceNodes constraint) {
             if (this.nodeType != NodeType.CHANCE) {
-                throw new ConstraintViolatedException(constraint);
+                constraintChecker.addException(new ConstraintViolatedException.OnlyChanceNodesAllowed(constraint, this.newNode));
             }
         }
         if (probNet.getConstraintOfClass(OnlyContinuousVariables.class) instanceof OnlyContinuousVariables constraint) {
             if (this.variable.getVariableType() != VariableType.NUMERIC) {
-                throw new ConstraintViolatedException(constraint);
+                constraintChecker.addException(new ConstraintViolatedException.OnlyContinuousVariablesAllowed(constraint, this.variable));
             }
         }
         if (probNet.getConstraintOfClass(OnlyDiscreteVariables.class) instanceof OnlyDiscreteVariables constraint) {
             if (this.variable.getVariableType() != VariableType.DISCRETIZED) {
-                throw new ConstraintViolatedException(constraint);
+                constraintChecker.addException(new ConstraintViolatedException.OnlyDiscreteVariablesAllowed(constraint, this.variable));
             }
         }
         if (probNet.getConstraintOfClass(OnlyFiniteStatesVariables.class) instanceof OnlyFiniteStatesVariables constraint) {
             if (!OnlyFiniteStatesVariables.nodeIsFinite(
                     this.nodeType, this.variable.getVariableType())) {
-                throw new ConstraintViolatedException(constraint);
+                constraintChecker.addException(new ConstraintViolatedException.OnlyFiniteStatesAllowed(constraint, this.variable));
             }
         }
         if (probNet.getConstraintOfClass(OnlyNumericVariables.class) instanceof OnlyNumericVariables constraint) {
             if (this.variable.getVariableType() != VariableType.NUMERIC) {
-                throw new ConstraintViolatedException(constraint);
+                constraintChecker.addException(new ConstraintViolatedException.OnlyNumericVariablesAllowed(constraint, this.variable));
             }
         }
         if (probNet.getConstraintOfClass(OnlyOneAgent.class) instanceof OnlyOneAgent constraint) {
             if (this.variable.getAgent() != null) {
-                throw new ConstraintViolatedException(constraint);
+                constraintChecker.addException(new ConstraintViolatedException.OnlyOneAgentAllowed(constraint, this.variable));
             }
         }
         if (probNet.getConstraintOfClass(OnlyTemporalVariables.class) instanceof OnlyTemporalVariables constraint) {
             if (!this.variable.isTemporal()) {
-                throw new ConstraintViolatedException(constraint);
+                constraintChecker.addException(new ConstraintViolatedException.OnlyTemporalVariablesAllowed(constraint, this.variable));
             }
         }
         if (probNet.getConstraintOfClass(ProperUtilityPotentials.class) instanceof ProperUtilityPotentials constraint) {
@@ -135,7 +133,7 @@ import java.awt.geom.Point2D;
                     numUtilities = numUtilities + 1;
                 }
                 if (numUtilities <= 0) {
-                    throw new ConstraintViolatedException(constraint);
+                    constraintChecker.addException(new ConstraintViolatedException.NetworkHasNoUtilityNodes(constraint, this.probNet));
                 }
             }
         }
@@ -160,13 +158,6 @@ import java.awt.geom.Point2D;
         newNode.setCoordinateY((int) cursorPosition.getY());
     }
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
-    }
-    
     @Override public void undo() {
         super.undo();
         probNet.removeNode(newNode);
@@ -189,18 +180,6 @@ import java.awt.geom.Point2D;
     
     public Point2D.Double getCursorPosition() {
         return cursorPosition;
-    }
-    
-    @Override public String getPresentationName() {
-        return "Edit.AddNodeEdit";
-    }
-    
-    @Override public String getUndoPresentationName() {
-        return "Edit.AddNodeEdit.Undo";
-    }
-    
-    @Override public String getRedoPresentationName() {
-        return "Edit.AddNodeEdit.Redo";
     }
     
     @Override public void redo() {

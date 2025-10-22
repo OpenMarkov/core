@@ -7,11 +7,8 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 /**
  * {@code RelevanceEdit} is a simple edit that allows modify
@@ -20,7 +17,7 @@ import org.openmarkov.core.action.base.SimplePNEdit;
  * @author Miguel Palacios
  * @version 1.0 21/12/10
  */
-@SuppressWarnings("serial") public class RelevanceEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class RelevanceEdit extends PNEdit {
 	/**
 	 * The last relevance before the edition
 	 */
@@ -52,14 +49,7 @@ import org.openmarkov.core.action.base.SimplePNEdit;
 		node.setRelevance(newRelevance);
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() {
+    @Override public void undo() {
 		super.undo();
 		node.setRelevance(lastRelevance);
 	}

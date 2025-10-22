@@ -7,32 +7,27 @@
 
 package org.openmarkov.core.action.base;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 
-import javax.swing.undo.CompoundEdit;
-import javax.swing.undo.UndoableEdit;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 /**
  * A compound edit is a complex edition composed of several editions. This is an
  * abstract class.
  */
-@SuppressWarnings("serial") public abstract class CompoundPNEdit extends CompoundEdit implements PNEdit {
+@SuppressWarnings("serial") public abstract class CompoundPNEdit extends PNEdit {
+
     // Attribute
-    protected ProbNet probNet;
     private boolean generatedEdits;
-    // All simple edits are significant
-    private boolean significant = true;
     
     // Constructor
+    private ArrayList<PNEdit> edits;
     
-    /**
-     * @param probNet <tt>ProbNet</tt>
-     */
+
     public CompoundPNEdit(ProbNet probNet) {
-        this.probNet = probNet;
+        super(probNet);
         generatedEdits = false;
     }
     
@@ -45,48 +40,30 @@ import java.util.Vector;
      */
     @Override public void doEdit() throws DoEditException {
         for (PNEdit edit : getEdits()) {
-            edit.doEdit();
+            edit.executeEdit();
         }
-        super.end();
     }
     
-    @Override public void checkConstraintsWillBeMet() throws ConstraintViolatedException {
+    
+    @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         for (PNEdit pnEdit : getEdits()) {
-            pnEdit.checkConstraintsWillBeMet();
+            pnEdit.checkConstraintsWillBeMet(constraintChecker);
         }
     }
     
-    @Override public final void doEdit(ProbNet probNet) throws DoEditException {
-        this.initializeEdits();
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
-    }
+    protected abstract ArrayList<PNEdit> generateEdits();
     
-    public abstract Vector<PNEdit> generateEdits();
-    
-    /**
-     * @return {@code Vector} of {@code UndoableEdit}s
-     */
-    public Vector<PNEdit> getEdits() {
+    public ArrayList<PNEdit> getEdits() {
         initializeEdits();
-        return (Vector<PNEdit>) (Vector) edits;
+        return edits;
     }
     
     private void initializeEdits() {
         if (!this.generatedEdits) {
-            this.edits = (Vector<UndoableEdit>) (Vector) generateEdits();
+            this.edits = generateEdits();
+            edits.forEach(edit -> edit.markItBelongsToACompoundEdit());
             this.generatedEdits = true;
         }
-    }
-    
-    @Override public boolean isSignificant() {
-        return significant;
-    }
-    
-    @Override public void setSignificant(boolean significant) {
-        this.significant = significant;
     }
     
     @Override public ProbNet getProbNet() {
@@ -96,4 +73,21 @@ import java.util.Vector;
     @Override public void setProbNet(ProbNet probNet) {
         this.probNet = probNet;
     }
+    
+    @Override public void redo() {
+        edits.forEach(PNEdit::redo);
+        setTypicalRedo(false);
+        super.redo();
+    }
+    
+    @Override public void undo() {
+        IntStream.range(0, edits.size())
+                 .mapToObj(i -> {
+                     int realIndex = edits.size() - 1 - i;
+                     return edits.get(realIndex);
+                 })
+                 .forEach(PNEdit::undo);
+        super.undo();
+    }
+    
 }

@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
@@ -14,17 +16,16 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import java.util.List;
 
 @Constraint(name = "NoCycle", defaultBehavior = ConstraintBehavior.YES) public class NoCycle extends PNConstraint {
-
-	@Override public boolean checkProbNet(ProbNet probNet) {
+    
+    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
 		for (Node parent : probNet.getNodes()) {
 			List<Node> children = probNet.getChildren(parent);
 			for (Node child : children) {
 				if (probNet.existsPath(child, parent, true)) {
-					return false;
+                    constraintChecker.addException(new ConstraintViolatedException.ThereIsACycle(this, parent, child));
 				}
 			}
 		}
-		return true;
 	}
  
 }

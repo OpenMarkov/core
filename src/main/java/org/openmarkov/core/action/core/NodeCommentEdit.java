@@ -7,12 +7,9 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
+import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.List;
 
@@ -23,7 +20,7 @@ import java.util.List;
  * @author Miguel Palacios
  * @version 1.0 21/12/10
  */
-@SuppressWarnings("serial") public class NodeCommentEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class NodeCommentEdit extends PNEdit {
 	/**
 	 * Current node comment
 	 */
@@ -74,14 +71,7 @@ import java.util.List;
 		}
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-
-	@Override public void undo() {
+    @Override public void undo() {
 		super.undo();
 		if (typeComment.equals("DefinitionComment")) {
 			node.setComment(currentComment);

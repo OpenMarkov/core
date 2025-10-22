@@ -29,10 +29,10 @@ public class OnlyTemporalVariablesTest {
     @Test public void testCheckProbNet() {
         OnlyTemporalVariables testedConstraint = new OnlyTemporalVariables();
         network.addConstraint(testedConstraint);
-        assertTrue(testedConstraint.checkProbNet(network));
+        assertTrue(testedConstraint.isMetBy(network));
         
         network.addNode(new Variable("A"), NodeType.CHANCE);
-        assertFalse(testedConstraint.checkProbNet(network));
+        assertFalse(testedConstraint.isMetBy(network));
     }
 
     

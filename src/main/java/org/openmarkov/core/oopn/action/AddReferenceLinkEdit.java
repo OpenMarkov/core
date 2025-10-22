@@ -7,8 +7,6 @@
 package org.openmarkov.core.oopn.action;
 
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oopn.Instance;
@@ -17,9 +15,7 @@ import org.openmarkov.core.oopn.NodeReferenceLink;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.core.oopn.ReferenceLink;
 
-import javax.swing.undo.CannotUndoException;
-
-@SuppressWarnings("serial") public class AddReferenceLinkEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class AddReferenceLinkEdit extends PNEdit {
 
 	private ReferenceLink referenceLink;
 
@@ -40,14 +36,7 @@ import javax.swing.undo.CannotUndoException;
 		((OOPNet) probNet).addReferenceLink(referenceLink);
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() throws CannotUndoException {
+    @Override public void undo() {
 		// TODO Auto-generated method stub
 		((OOPNet) probNet).removeReferenceLink(referenceLink);
 	}

@@ -7,11 +7,9 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 import java.util.ArrayList;
 
@@ -20,7 +18,7 @@ import java.util.ArrayList;
 /*
   Removes several potentials
  */
-public class RemoveSeveralPotentialsEdit extends SimplePNEdit {
+public class RemoveSeveralPotentialsEdit extends PNEdit {
 
 	private ArrayList<Potential> potentialsToDelete;
 
@@ -58,12 +56,5 @@ public class RemoveSeveralPotentialsEdit extends SimplePNEdit {
 			probNet.removePotential(potential);
 		}
 	}
-    
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-
+ 
 }

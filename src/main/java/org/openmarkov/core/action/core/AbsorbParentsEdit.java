@@ -1,15 +1,15 @@
 package org.openmarkov.core.action.core;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.action.base.CompoundPNEdit;
-import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
 
@@ -22,8 +22,8 @@ import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
     }
     
     @Override
-    public Vector<PNEdit> generateEdits() {
-        Vector<PNEdit> edits = new Vector<>();
+    public ArrayList<PNEdit> generateEdits() {
+        ArrayList<PNEdit> edits = new ArrayList<>();
         // gets neighbors of this node
         Variable nodeVariable = node.getVariable();
         List<Node> parents = probNet.getParents(node);
@@ -40,7 +40,9 @@ import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
         
         for (Variable variable : potential.getVariables()) {
             if (variable != nodeVariable) {
-                edits.add(new AddLinkEdit(probNet, variable, nodeVariable, true, false));
+                AddLinkEdit addLinkEdit = new AddLinkEdit(probNet, variable, nodeVariable, true);
+                addLinkEdit.setUpdatePotentials(false);
+                edits.add(addLinkEdit);
             }
         }
         edits.add(new SetPotentialEdit(node, potential));

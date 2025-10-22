@@ -42,7 +42,7 @@ public class MaxNumParentsTest {
         net.addNode(vD, NodeType.CHANCE);
         net.addLink(vD, vB, true);
         net.addConstraint(constraint);
-        assertFalse(constraint.checkProbNet(net)); //La prueba solo se cumple si no se cumplen las constraints.
+        assertFalse(constraint.isMetBy(net)); //La prueba solo se cumple si no se cumplen las constraints.
     }
 
     

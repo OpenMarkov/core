@@ -10,6 +10,7 @@ package org.openmarkov.core.inference;
 import org.openmarkov.core.action.base.PNESupport;
 import org.openmarkov.core.annotation.ImplementationRequirements;
 import org.openmarkov.core.annotation.RequiredConstructor;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
@@ -56,7 +57,7 @@ public abstract class InferenceAlgorithm implements Task {
      *
      * @throws NotEvaluableNetworkException NotEvaluableNetworkException
      */
-    public InferenceAlgorithm(ProbNet network) throws NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints {
+    public InferenceAlgorithm(ProbNet network) throws NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints, ConstraintViolatedException {
         this.probNet = network.copy();
         this.preResolutionEvidence = new EvidenceCase();
         this.conditioningVariables = new ArrayList<>();
@@ -69,7 +70,7 @@ public abstract class InferenceAlgorithm implements Task {
      *
      * @throws NotEvaluableNetworkException NotEvaluableNetworkException
      */
-    public void checkEvaluability() throws NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedContraints {
+    public void checkEvaluability() throws NotEvaluableNetworkException.NotApplicableNetwork, ConstraintViolatedException {
         checkApplicability();
         checkConstraintsApplicability();
     }
@@ -123,7 +124,7 @@ public abstract class InferenceAlgorithm implements Task {
      *
      * @throws NotEvaluableNetworkException TODO - Remove additional constraints
      */
-    private void checkConstraintsApplicability() throws NotEvaluableNetworkException.UnsatisfiedContraints {
+    private void checkConstraintsApplicability() throws ConstraintViolatedException {
         // Check that the probNet satisfies the specific constraints of the algorithm
         List<PNConstraint> additionalConstraints = getAdditionalConstraints();
         
@@ -132,11 +133,7 @@ public abstract class InferenceAlgorithm implements Task {
         if (additionalConstraints == null || additionalConstraints.isEmpty()) {
             return;
         }
-        additionalConstraints.removeIf(x -> x.checkProbNet(probNet));
-        List<PNConstraint> notEvaluableConstraints = additionalConstraints;
-        if (!notEvaluableConstraints.isEmpty()) {
-            throw new NotEvaluableNetworkException.UnsatisfiedContraints(probNet, notEvaluableConstraints);
-        }
+        probNet.checkConstraints(additionalConstraints);
     }
     
     /**

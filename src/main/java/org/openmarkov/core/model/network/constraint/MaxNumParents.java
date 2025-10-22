@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
@@ -23,15 +25,14 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
     public void setMaxNumParents(int maxNumParents) {
 		this.maxNumParents = maxNumParents;
 	}
-
-	@Override public boolean checkProbNet(ProbNet probNet) {
+    
+    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
 		for (Node child : probNet.getNodes()) {
 			int numParents = probNet.getNumParents(child);
 			if (numParents > maxNumParents) {
-				return false;
+                constraintChecker.addException(new ConstraintViolatedException.NodeHasMoreParentsThanAllowed(this, child, numParents, maxNumParents));
 			}
 		}
-		return true;
-	}
+    }
  
 }

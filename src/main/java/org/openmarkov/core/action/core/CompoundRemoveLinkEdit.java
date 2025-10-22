@@ -9,6 +9,7 @@ package org.openmarkov.core.action.core;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.Node;
@@ -17,12 +18,10 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.core.action.base.CompoundPNEdit;
-import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 @SuppressWarnings("serial") public class CompoundRemoveLinkEdit extends CompoundPNEdit {
     
@@ -52,18 +51,18 @@ import java.util.Vector;
     }
     
     // Methods
-    @Override public Vector<PNEdit> generateEdits() {
+    @Override public ArrayList<PNEdit> generateEdits() {
         return isDirected ? generateEditsDirectedLink() : generateEditsUndirectedLink();
     }
     
-    private Vector<PNEdit> generateEditsUndirectedLink() {
-        Vector<PNEdit> edits = new Vector<>();
+    private ArrayList<PNEdit> generateEditsUndirectedLink() {
+        ArrayList<PNEdit> edits = new ArrayList<>();
         edits.add(new RemoveLinkEdit(probNet, variable1, variable2, isDirected));
         return edits;
     }
     
-    private Vector<PNEdit> generateEditsDirectedLink() {
-        Vector<PNEdit> edits = new Vector<>();
+    private ArrayList<PNEdit> generateEditsDirectedLink() {
+        ArrayList<PNEdit> edits = new ArrayList<>();
         Node node2 = probNet.getNode(variable2);
         List<Potential> potentials = node2.getPotentials();
         for (Potential potential : potentials) {

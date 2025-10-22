@@ -7,17 +7,17 @@
 
 package org.openmarkov.core.action.core;
 
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.action.base.CompoundPNEdit;
-import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
 
 import java.util.List;
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * {@code CRemoveNodeEdit} is an compound edit that removes a node
@@ -59,9 +59,9 @@ import java.util.Vector;
 		this.nodeType = node.getNodeType();
 	}
     
-    @Override public Vector<PNEdit> generateEdits() {
+    @Override public ArrayList<PNEdit> generateEdits() {
 		// gets neighbors of this node
-        Vector<PNEdit> edits = new Vector<>();
+        ArrayList<PNEdit> edits = new ArrayList<>();
 		parents = probNet.getParents(node);
 		children = probNet.getChildren(node);
 

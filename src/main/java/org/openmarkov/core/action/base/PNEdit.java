@@ -7,16 +7,21 @@
 
 package org.openmarkov.core.action.base;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.logging.OpenMarkovLogger;
 import org.openmarkov.core.model.network.ProbNet;
 
-import javax.swing.undo.UndoableEdit;
-
 /**
- * An edition is one action defined over a Probabilistic Network.
+ * Abstract class that defines the basic attribute (a {@code ProbNet})
+ * and operations of editions.
  */
-public interface PNEdit extends UndoableEdit {
+@SuppressWarnings("serial") public abstract class PNEdit {
+    
+    //Start interface
     
     /**
      * This method acts as a contract saying no constraint will be violated after the edit is done.
@@ -24,50 +29,110 @@ public interface PNEdit extends UndoableEdit {
      * If this method returns a {@link ConstraintViolatedException}, then it means
      * this edit should not be applied, as it will violate that constraint.
      */
-    default void checkConstraintsWillBeMet() throws ConstraintViolatedException {
+    public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
     }
     
-	/**
-	 * Puts into effect the edition.
-	 *
-	 * @throws DoEditException DoEditException
-	 */
-	void doEdit() throws DoEditException;
-	
-	void setSignificant(boolean significant);
-
-	ProbNet getProbNet();
-
-	void setProbNet(ProbNet probNet);
-	
-	default void doEdit(ProbNet probNet) throws DoEditException{
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
+    /**
+     * Abstract method to be defined in derived classes
+     *
+     * @throws DoEditException DoEditException
+     */
+    public abstract void doEdit() throws DoEditException;
     
-    static void startEdit(PNEdit edit, ProbNet probNet) {
-		edit.setProbNet(probNet);
-        PNEdit.startEdit(edit);
-	}
+    public void executeEdit() throws DoEditException {
+        PNESupport pneSupport = getProbNet().getPNESupport();
+        ConstraintChecker constraintChecker = new ConstraintChecker(probNet);
+        this.checkConstraintsWillBeMet(constraintChecker);
+        constraintChecker.buildAndThrow();
+        PNUndoableEditEvent event = new PNUndoableEditEvent(pneSupport, this, probNet);
+        for (PNUndoableEditListener listener : pneSupport.getListeners()) {
+            listener.undoableEditWillHappen(event);
+        }
+        this.doEdit();
+        if (pneSupport.isWithUndo() && !belongsToACompoundEdit) {
+            pneSupport.getUndoManager().addEdit(this);
+        }
+        Class<? extends PNEdit> editClass = getClass();
+        boolean isParenthesis = editClass == OpenParenthesisEdit.class || editClass == CloseParenthesisEdit.class;
+        if (!isParenthesis) {
+            OpenMarkovLogger.LOGGER.info("Checking listeners");
+            for (PNUndoableEditListener listener : pneSupport.getListeners()) {
+                listener.undoableEditHappened(event);
+            }
+        }
+    }
     
-    static void startEdit(PNEdit edit) {
-		ProbNet probNet = edit.getProbNet();
-		PNESupport pneSupport = probNet.getPNESupport();
-        pneSupport.announceEdit(edit);
-	}
-	
-	static void endEdit(PNEdit edit) {
-		PNESupport pneSupport = edit.getProbNet().getPNESupport();
-		if (pneSupport.isWithUndo()) {
-			pneSupport.getUndoManager().addEdit(edit);
-		}
-		Class<? extends PNEdit> editClass = edit.getClass();
-		boolean isParenthesis = editClass == OpenParenthesisEdit.class || editClass == CloseParenthesisEdit.class;
-		if (!isParenthesis) {
-			pneSupport.postEdit(edit);
-		}
-	}
-	
+    //End interface
+    
+    
+    // Attributes
+    /**
+     * {@code ProbNet} over witch the operations are defined.
+     */
+    protected ProbNet probNet;
+    
+    private boolean typicalRedo = true;
+    
+    //All simple edits are significant
+    private boolean significant = true;
+    
+    private Logger logger;
+    
+    // Constructor
+    
+    /**
+     * @param probNet {@code ProbNet}
+     */
+    public PNEdit(ProbNet probNet) {
+        this.probNet = probNet;
+        this.logger = LogManager.getLogger(PNEdit.class);
+    }
+    
+    // Methods
+    
+    /**
+     * @return probNet. {@code ProbNet}
+     */
+    public ProbNet getProbNet() {
+        return probNet;
+    }
+    
+    public void setProbNet(ProbNet probNet) {
+        this.probNet = probNet;
+    }
+    
+    protected void setTypicalRedo(boolean redo) {
+        typicalRedo = redo;
+    }
+    
+    public void redo() {
+        if (typicalRedo) {
+            try {
+                doEdit();
+            } catch (DoEditException e) {
+                throw new UnreacheableException(e);
+            }
+        } else {
+            typicalRedo = true;
+        }
+    }
+    
+    public void undo() {
+    
+    }
+    
+    public boolean canUndo() {
+        return true;
+    }
+    
+    public boolean isSignificant() {
+        return significant;
+    }
+    
+    private boolean belongsToACompoundEdit = false;
+    
+    public void markItBelongsToACompoundEdit() {
+        this.belongsToACompoundEdit = true;
+    }
+    
 }

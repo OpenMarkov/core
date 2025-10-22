@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -23,46 +25,23 @@ import java.util.List;
  */
 @Constraint(name = "NoMixedParents", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class NoMixedParents extends PNConstraint {
-
-	@Override public boolean checkProbNet(ProbNet probNet) {
-		List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
-		boolean metCondition = true;
-		int i = 0;
-		int numUtilityNodes = utilityNodes.size();
-		while (i < numUtilityNodes && metCondition) {
-			List<Node> parents = probNet.getParents(utilityNodes.get(i++));
-			int numParents = parents.size();
-			boolean utilityParent = false;
-			boolean chanceOrDecisionParent = false;
-			for (int j = 0; j < numParents && metCondition; j++) {
-				NodeType parentNodeType = parents.get(j).getNodeType();
-				utilityParent |= parentNodeType == NodeType.UTILITY;
-				chanceOrDecisionParent |= parentNodeType == NodeType.CHANCE || parentNodeType == NodeType.DECISION;
-				metCondition = !(utilityParent && chanceOrDecisionParent);
-			}
-		}
-		return metCondition;
-	}
-
-	/******
-	 * Checks if a node has mixed parents.
-	 * @param parentNode the parent node
-	 * @param childNode the child node
-	 * @return {@code true} if the {@code childNode} has mixedParents
-	 */
-    public static boolean hasMixedParents(ProbNet probNet, Node parentNode, Node childNode) {
-		boolean utilityParent = parentNode.getNodeType() == NodeType.UTILITY;
-		boolean chanceOrDecisionParent = parentNode.getNodeType() == NodeType.DECISION
-				|| parentNode.getNodeType() == NodeType.CHANCE;
-		for (Node parent : probNet.getParents(childNode)) {
-			NodeType parentNodeType = parent.getNodeType();
-            utilityParent = utilityParent || parentNodeType == NodeType.UTILITY;
-            chanceOrDecisionParent = chanceOrDecisionParent || (parentNodeType == NodeType.CHANCE || parentNodeType == NodeType.DECISION);
-			if (utilityParent && chanceOrDecisionParent) {
-				return true;
-			}
-		}
-		return false;
-	}
+    
+    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
+        for (Node utilityNode : probNet.getNodes(NodeType.UTILITY)) {
+            List<Node> parents = probNet.getParents(utilityNode);
+            for (Node parent : parents) {
+                boolean metCondition = parentNodeIsNotMixed(parent);
+                if (!metCondition) {
+                    constraintChecker.addException(new ConstraintViolatedException.ParentCannotBeMixed(this, utilityNode, parent));
+                }
+            }
+        }
+    }
+    
+    public static boolean parentNodeIsNotMixed(Node parent) {
+        NodeType parentNodeType = parent.getNodeType();
+        boolean metCondition = parentNodeType == NodeType.UTILITY || parentNodeType == NodeType.CHANCE || parentNodeType == NodeType.DECISION;
+        return metCondition;
+    }
  
 }

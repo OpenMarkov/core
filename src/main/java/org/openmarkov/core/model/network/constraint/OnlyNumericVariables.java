@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -16,16 +18,15 @@ import java.util.List;
 
 @Constraint(name = "OnlyNumericVariables", defaultBehavior = ConstraintBehavior.OPTIONAL) public class OnlyNumericVariables
 		extends PNConstraint {
-
-	@Override public boolean checkProbNet(ProbNet probNet) {
+    
+    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
 		List<Variable> variables = probNet.getVariables();
 		for (Variable variable : variables) {
 			VariableType varType = variable.getVariableType();
 			if (varType != VariableType.NUMERIC) {
-				return false;
+                constraintChecker.addException(new ConstraintViolatedException.OnlyNumericVariablesAllowed(this, variable));
 			}
 		}
-		return true;
 	}
  
  

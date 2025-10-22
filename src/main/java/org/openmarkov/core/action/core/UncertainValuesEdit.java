@@ -7,15 +7,12 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +25,7 @@ import java.util.List;
  * @author mluque
  * @version 1 23/06/11
  */
-@SuppressWarnings("serial") public class UncertainValuesEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class UncertainValuesEdit extends PNEdit {
 	private List<Double> newValuesColumn;
 	private List<UncertainValue> newUncertainColumn;
 	private List<Double> oldValuesColumn;
@@ -141,14 +138,7 @@ import java.util.List;
 		placeNewValuesColumn(potential);
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	private void placeNewValuesColumn(TablePotential potential) {
+    private void placeNewValuesColumn(TablePotential potential) {
 		placeValuesColumn(potential, newValuesColumn);
 	}
 

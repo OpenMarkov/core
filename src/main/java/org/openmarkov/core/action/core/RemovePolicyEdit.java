@@ -7,17 +7,15 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 import org.openmarkov.core.action.base.VisualDecisionNodePolicyChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RemovePolicyEdit extends SimplePNEdit {
+public class RemovePolicyEdit extends PNEdit {
 
 	/**
 	 *
@@ -62,14 +60,7 @@ public class RemovePolicyEdit extends SimplePNEdit {
 		listener.removePolicy();
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override public void undo() {
+    @Override public void undo() {
 		super.undo();
 		/*ArrayList<Potential> potentials = new ArrayList<>();
 		if (probNet.getNode(variable).getNodeType() == NodeType.DECISION && lastPolicyType != PolicyType.OPTIMAL) {

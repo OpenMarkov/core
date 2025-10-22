@@ -10,7 +10,6 @@ package org.openmarkov.core.model.network.constraint;
 import org.openmarkov.core.action.base.CompoundPNEdit;
 import org.openmarkov.core.action.base.PNEdit;
 
-import javax.swing.undo.UndoableEdit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,14 +18,14 @@ import java.util.List;
  */
 public class UtilConstraints {
     
-    public static <TargetEdit extends PNEdit> List<TargetEdit> getSimpleEditsByType(UndoableEdit edit, Class<TargetEdit> typeEditClass) {
+    public static <TargetEdit extends PNEdit> List<TargetEdit> getSimpleEditsByType(PNEdit edit, Class<TargetEdit> typeEditClass) {
         List<TargetEdit> edits = new ArrayList<>();
         if (typeEditClass.isInstance(edit)) {
             edits.add(typeEditClass.cast(edit));
         }
         // Check compound edits
         if (edit instanceof CompoundPNEdit compoundPNEdit) {
-            for (UndoableEdit simpleEdit : compoundPNEdit.getEdits()) {
+            for (PNEdit simpleEdit : compoundPNEdit.getEdits()) {
                 edits.addAll(UtilConstraints.getSimpleEditsByType(simpleEdit, typeEditClass));
             }
         }

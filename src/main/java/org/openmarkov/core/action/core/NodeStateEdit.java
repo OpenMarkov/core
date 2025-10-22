@@ -7,16 +7,14 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.ValidState;
-import org.openmarkov.core.model.network.constraint.ValidStateName;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 import org.openmarkov.core.action.base.StateAction;
 
 import java.util.ArrayList;
@@ -31,7 +29,7 @@ import java.util.Map;
  * @author Miguel Palacios
  * @version 1.0 21/12/10
  */
-public class NodeStateEdit extends SimplePNEdit {
+public class NodeStateEdit extends PNEdit {
     /**
      *
      */
@@ -137,32 +135,11 @@ public class NodeStateEdit extends SimplePNEdit {
         }
     }
     
-    @Override public void checkConstraintsWillBeMet() throws ConstraintViolatedException {
-        if (probNet.getConstraintOfClass(ValidStateName.class) instanceof ValidStateName constraint) {
-            NodeStateEdit nodeStateEdit = this;
-            switch (nodeStateEdit.stateAction) {
-                case REMOVE, MODIFY_VALUE_INTERVAL, MODIFY_DELIMITER_INTERVAL, DOWN, UP -> {
-                }
-                case ADD, RENAME -> {
-                    String name;
-                    if (nodeStateEdit.stateAction == StateAction.ADD) {
-                        name = nodeStateEdit.getNewName().toLowerCase();
-                    } else {
-                        name = nodeStateEdit.getNewState().getName().trim();
-                    }
-                    if (name.isBlank() || !nodeStateEdit.getNode().getVariable().chekNewStateName(name)) {
-                        throw new ConstraintViolatedException(constraint);
-                    }
-                }
-            }
-        }
+    @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(ValidState.class) instanceof ValidState constraint) {
-            if (!ValidState.checkState(this.getNewState().getName(), this.getNode(), this.getStateAction())) {
-                throw new ConstraintViolatedException(constraint);
-            }
+            constraint.checkState(constraintChecker, this.getNewState()
+                                                         .getName(), this.getNode(), this.getStateAction());
         }
-        
-        
     }
     
     @Override public void doEdit() {
@@ -276,13 +253,6 @@ public class NodeStateEdit extends SimplePNEdit {
                 break;
         }
         
-    }
-    
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
     }
     
     private void setPotentialAfterReorderingFirstPotentialInNodeAndItsChildrenSetStatesAndResetLink(Variable variable, State[] newStates) {

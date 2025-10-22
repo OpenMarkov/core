@@ -7,9 +7,9 @@
 
 package org.openmarkov.core.oopn.action;
 
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.core.CRemoveNodeEdit;
 import org.openmarkov.core.action.base.CompoundPNEdit;
-import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnreacheableException;
@@ -21,9 +21,8 @@ import org.openmarkov.core.oopn.InstanceReferenceLink;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.core.oopn.ReferenceLink;
 
-import javax.swing.undo.CannotUndoException;
 import java.util.HashSet;
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * @author ibermejo
@@ -62,8 +61,8 @@ import java.util.Vector;
 		}
 	}
     
-    @Override public Vector<PNEdit> generateEdits() {
-        Vector<PNEdit> edits = new Vector<>();
+    @Override public ArrayList<PNEdit> generateEdits() {
+        ArrayList<PNEdit> edits = new ArrayList<>();
 		for (Link<Node> link : linksToRemove) {
 			edits.add(new RemoveLinkEdit(probNet, link.getNode1().getVariable(), link.getNode2().getVariable(),
                                          link.isDirected()));
@@ -82,8 +81,8 @@ import java.util.Vector;
 			((OOPNet) probNet).getReferenceLinks().remove(instanceLink);
 		}
 	}
-
-	@Override public void undo() throws CannotUndoException {
+    
+    @Override public void undo() {
 		// TODO Auto-generated method stub
 		super.undo();
 		try {

@@ -7,28 +7,24 @@
 
 package org.openmarkov.core.oopn;
 
+import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.action.base.PNUndoableEditEvent;
 import org.openmarkov.core.action.core.*;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.InvalidNetworkTypeException;
-import org.openmarkov.core.exception.UnreacheableException;
-import org.openmarkov.core.exception.UnrecoverableException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.Point2D;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.action.base.CompoundPNEdit;
-import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
 import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.base.linkEdits.BaseLinkEdit;
 import org.openmarkov.core.action.base.linkEdits.InvertLinkEdit;
 import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
 
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.undo.UndoableEdit;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -69,7 +65,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
         super();
         try {
             setNetworkType(probNet.getNetworkType());
-        } catch (InvalidNetworkTypeException.UnmetConstraints e) {
+        } catch (ConstraintViolatedException e) {
             throw new UnreacheableException(e);
         }
         // copy constraints
@@ -130,7 +126,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
         if (instances.containsKey(instance.getName())) {
             throw new DoEditException.InstanceAlreadyExists(instance.getName());
         }
-        instance.getClassNet().getPNESupport().addUndoableEditListener(this);
+        instance.getClassNet().getPNESupport().getListeners().add(this);
         instances.put(instance.getName(), instance);
     }
     
@@ -341,14 +337,14 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
         }
     }
     
-    @Override public void undoableEditHappened(UndoableEditEvent e) {
+    @Override public void undoableEditHappened(PNUndoableEditEvent e) {
         if (!(e.getEdit() instanceof PNEdit edit)) {
             return;
         }
         List<PNEdit> simpleEdits = new ArrayList<>();
         if (edit instanceof CompoundPNEdit) {
-            for (UndoableEdit undoableEdit : ((CompoundPNEdit) edit).getEdits()) {
-                simpleEdits.add((PNEdit) undoableEdit);
+            for (PNEdit undoableEdit : ((CompoundPNEdit) edit).getEdits()) {
+                simpleEdits.add(undoableEdit);
             }
         } else {
             simpleEdits.add(edit);
@@ -427,7 +423,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
                 };
                 if (newEdit != null) {
                     try {
-                        newEdit.doEdit(this);
+                        newEdit.executeEdit();
                     } catch (DoEditException e1) {
                         throw new UnrecoverableException(e1);
                     }

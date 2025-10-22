@@ -14,8 +14,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oopn.Instance;
 
-import javax.swing.undo.CannotUndoException;
-import java.util.Vector;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial") public class InstanceNameEdit extends CompoundPNEdit {
 
@@ -30,8 +29,8 @@ import java.util.Vector;
 		this.oldName = instance.getName();
 	}
     
-    @Override public Vector<PNEdit> generateEdits() {
-        Vector<PNEdit> edits = new Vector<>();
+    @Override public ArrayList<PNEdit> generateEdits() {
+        ArrayList<PNEdit> edits = new ArrayList<>();
 		this.instance.setName(newName);
 		for (Node instanceNode : instance.getNodes()) {
 			String newNodeName = instanceNode.getName().replace(oldName, newName);
@@ -39,8 +38,8 @@ import java.util.Vector;
 		}
         return edits;
     }
-
-	@Override public void undo() throws CannotUndoException {
+    
+    @Override public void undo() {
 		super.undo();
 		this.instance.setName(oldName);
 	}

@@ -9,6 +9,7 @@ package org.openmarkov.core.action.base.linkEdits;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -23,7 +24,6 @@ import org.openmarkov.core.model.network.constraint.ModelNetworkConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
-import org.openmarkov.core.action.base.PNEdit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,10 +77,10 @@ import java.util.List;
         this(probNet, variable1, variable2, isDirected, true);
     }
     
-    @Override public void checkConstraintsWillBeMet() throws ConstraintViolatedException {
+    @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(ModelNetworkConstraint.class) instanceof ModelNetworkConstraint constraint
                 && !constraint.isLinkRemovalAllowed() && !constraint.canEditBeDone(this)) {
-            throw new ConstraintViolatedException.ModelDoesntAllowRemovingLink(constraint, this.getVariable1(), this.getVariable2());
+            constraintChecker.addException(new ConstraintViolatedException.ModelDoesNotAllowRemovingLink(constraint, this.getVariable1(), this.getVariable2()));
         }
     }
     
@@ -138,14 +138,6 @@ import java.util.List;
                 node2.setPotentials(newPotentials);
             }
         }
-    }
-    
-    @Override
-    public void doEdit(ProbNet probNet) throws ConstraintViolatedException, DoEditException.CannotDoEditException {
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
     }
     
     @Override public void undo() {

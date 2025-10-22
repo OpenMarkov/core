@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
@@ -15,15 +17,13 @@ import java.util.List;
 
 @Constraint(name = "OnlyAtemporalVariables", defaultBehavior = ConstraintBehavior.YES) public class OnlyAtemporalVariables
 		extends PNConstraint {
-
-	@Override public boolean checkProbNet(ProbNet probNet) {
-		List<Variable> variables = probNet.getVariables();
-		for (Variable variable : variables) {
+    
+    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
+        for (Variable variable : probNet.getVariables()) {
 			if (variable.isTemporal()) {
-				return false;
+                constraintChecker.addException(new ConstraintViolatedException.OnlyAtemporalVariablesAllowed(this, variable));
 			}
 		}
-		return true;
 	}
  
 }

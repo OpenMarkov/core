@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -18,14 +20,14 @@ import java.util.List;
 public class NoAlwaysObservedDescendantOfDecision
         extends PNConstraint {
     
-    @Override public boolean checkProbNet(ProbNet probNet) {
-        boolean checkNetwork = true;
+    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
         List<Node> decisionNodes = probNet.getNodes(NodeType.DECISION);
         List<Node> alwaysObservedNodes = probNet.getNodes().stream().filter(Node::isAlwaysObserved).toList();
-        for (int i = 0; i < alwaysObservedNodes.size() && checkNetwork; i++) {
-            checkNetwork = !NoAlwaysObservedDescendantOfDecision.itHasSomeAncestorInList(probNet, alwaysObservedNodes.get(i), decisionNodes);
+        for (Node alwaysObservedNode : alwaysObservedNodes) {
+            for (Node ancestorDecisionNode : NoAlwaysObservedDescendantOfDecision.ancestorInList(probNet, alwaysObservedNode, decisionNodes)) {
+                constraintChecker.addException(new ConstraintViolatedException.AlwaysObservedVariableIsDescendantOfDecisionNode(this, alwaysObservedNode, ancestorDecisionNode));
+            }
         }
-        return checkNetwork;
     }
     
     /**
@@ -35,12 +37,12 @@ public class NoAlwaysObservedDescendantOfDecision
      * @return true if 'node' has some ancestor in 'nodes' (considering
      * direction of the links)
      */
-    public static boolean itHasSomeAncestorInList(ProbNet network, Node node, List<Node> nodes) {
-        return nodes.stream().anyMatch(networkNode -> isReachable(network, networkNode, node));
+    public static List<Node> ancestorInList(ProbNet network, Node node, List<Node> nodes) {
+        return nodes.stream().filter(networkNode -> isReachable(network, networkNode, node)).toList();
     }
     
-    public static boolean itHasSomeDescendantInList(ProbNet network, Node node, List<Node> nodes) {
-        return nodes.stream().anyMatch(networkNode -> isReachable(network, node, networkNode));
+    public static List<Node> descendantInList(ProbNet network, Node node, List<Node> nodes) {
+        return nodes.stream().filter(networkNode -> isReachable(network, node, networkNode)).toList();
     }
     
     private static boolean isReachable(ProbNet network, Node node1, Node node2) {

@@ -38,8 +38,8 @@ public class OnlyDirectedLinksTest {
     @Test public void testCheckProbNet() {
         // test only directed links insertions without checking.
         PNConstraint constraint = new OnlyDirectedLinks();
-        assertFalse(constraint.checkProbNet(probNetMixed));
-        assertFalse(constraint.checkProbNet(probNetUndirected));
+        assertFalse(constraint.isMetBy(probNetMixed));
+        assertFalse(constraint.isMetBy(probNetUndirected));
     }
     
 }

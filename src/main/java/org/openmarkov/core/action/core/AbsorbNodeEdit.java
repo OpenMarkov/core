@@ -8,7 +8,7 @@
 package org.openmarkov.core.action.core;
 
 import org.apache.logging.log4j.LogManager;
-import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.graph.Link;
@@ -21,8 +21,6 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 
 import java.util.*;
@@ -34,7 +32,7 @@ import java.util.*;
  * @since OpenMarkov 0.3
  */
 
-@SuppressWarnings("serial") public class AbsorbNodeEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class AbsorbNodeEdit extends PNEdit {
     
     
     // Both node and variable attributes are created for convenience but one could be extracted from the other
@@ -168,14 +166,6 @@ import java.util.*;
         // Links saved for the undo()
         linksDeleted = getLinksWithNode(absorbedNode);
         probNet.removeNode(absorbedNode);
-    }
-    
-    @Override
-    public void doEdit(ProbNet probNet) throws ConstraintViolatedException, DoEditException.CannotDoEditException {
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
     }
     
     private void mergeUtilityChildren() throws DoEditException.CannotDoEditException {

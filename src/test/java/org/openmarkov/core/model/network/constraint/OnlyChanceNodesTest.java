@@ -33,7 +33,7 @@ public class OnlyChanceNodesTest {
      */
     @Test public void testCheckProbNet() {
         // test only directed links insertions without checking.
-        assertFalse(new OnlyChanceNodes().checkProbNet(influenceDiagram));
+        assertFalse(new OnlyChanceNodes().isMetBy(influenceDiagram));
     }
 
     

@@ -7,14 +7,12 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +27,7 @@ import java.util.Map;
  * @version 1.0 10/05/2011
  */
 
-@SuppressWarnings("serial") public class NodeReplaceStatesEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class NodeReplaceStatesEdit extends PNEdit {
 
 	// Default increment between discretized intervals
     private static final int increment = 2;
@@ -124,14 +122,7 @@ import java.util.Map;
 		}
 	}
     
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-		PNEdit.startEdit(this, probNet);
-		this.doEdit();
-		PNEdit.endEdit(this);
-	}
-	
-	@Override @SuppressWarnings("unchecked") public void undo() {
+    @Override @SuppressWarnings("unchecked") public void undo() {
 		super.undo();
 		if (lastStates != null) {
 			node.getVariable().setStates(lastStates);

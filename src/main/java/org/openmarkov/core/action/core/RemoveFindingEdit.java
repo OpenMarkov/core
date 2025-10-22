@@ -1,14 +1,11 @@
 package org.openmarkov.core.action.core;
 
+import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.SimplePNEdit;
 import org.openmarkov.core.action.base.VisualChanceNodeFindingChangeListener;
 
-import javax.swing.undo.CannotUndoException;
-
-public class RemoveFindingEdit extends SimplePNEdit {
+public class RemoveFindingEdit extends PNEdit {
     
     private EvidenceCase evidenceCase;
     private VisualChanceNodeFindingChangeListener listener;
@@ -32,7 +29,7 @@ public class RemoveFindingEdit extends SimplePNEdit {
         listener.removeFinding();
     }
     
-    @Override public void undo() throws CannotUndoException {
+    @Override public void undo() {
         super.undo();
         try {
             evidenceCase.addFinding(finding);
@@ -40,13 +37,6 @@ public class RemoveFindingEdit extends SimplePNEdit {
         } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
             throw new UnreacheableException(e);
         }
-    }
-    
-    @Override public void doEdit(ProbNet probNet) throws ConstraintViolatedException {
-        this.checkConstraintsWillBeMet();
-        PNEdit.startEdit(this, probNet);
-        this.doEdit();
-        PNEdit.endEdit(this);
     }
     
     @Override

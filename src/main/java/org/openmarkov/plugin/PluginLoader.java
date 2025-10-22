@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -130,6 +132,7 @@ import java.util.zip.ZipFile;
         scan.close();
         List<Class<Object>> loadedClasses = new ArrayList<>();
         for (var classPath : classPaths) {
+            classPath = URLDecoder.decode(classPath, StandardCharsets.UTF_8);
             for (var classQualifiedName : PluginLoader.getClassesQualifiedNames(classPath)) {
                 try {
                     boolean isValidClass = switch (category) {

@@ -168,6 +168,10 @@ public class Node implements Cloneable, ClassLocalizable {
     public String getName() {
         return getVariable().getName();
     }
+
+    public String getBaseName() {
+        return getVariable().getBaseName();
+    }
     
     /**
      * @param potential {@code Potential}

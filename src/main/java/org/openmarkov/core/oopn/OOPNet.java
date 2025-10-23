@@ -337,7 +337,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
         }
     }
     
-    @Override public void undoableEditHappened(PNUndoableEditEvent e) {
+    @Override public void afterEditHappens(PNUndoableEditEvent e) {
         if (!(e.getEdit() instanceof PNEdit edit)) {
             return;
         }

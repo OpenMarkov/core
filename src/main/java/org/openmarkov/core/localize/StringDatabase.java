@@ -137,125 +137,12 @@ public class StringDatabase {
         return locale;
     }
     
-    /*
-     * Returns a string resource linked to the file given as parameter. The
-     * value of the 'language' variable is used. If it is null or empty, the
-     * language of the system is taken into account. If the system's language
-     * isn't available, the default language is English.
-     *
-     * @param resourceFile file that contains the resource strings.
-     * @return a resource bundle linked to the file.
-     */
-	/*
-	public StringBundle getBundle(String resourceFile) {
-		StringBundle stringBundle = null;
-		XMLResourceBundle bundle = null;
-		// TODO: Manolo
-		//String file = "localize/" + resourceFile;
-		String file = "/localize/" + resourceFile;
-		try {
-			bundle = (XMLResourceBundle) createXMLResourceBundle(file, locale);
-		} catch (MissingResourceException e) {
-			System.out.println("WARNING: Resource bundle " + resourceFile + " could not be found for locale '" + locale
-					+ "'. English will be used instead");
-			setLanguage("en");
-			try {
-				bundle = (XMLResourceBundle) createXMLResourceBundle(file, locale);
-			} catch (MissingResourceException e1) {
-				throw new MissingResourceException(
-						"Any of the " + resourceFile.toLowerCase() + " resource string files is missing",
-						StringDatabase.class.getName(), getLocale().getLanguage());
-			}
-		}
-		stringBundle = new StringBundle(bundle);
-		return stringBundle;
-	}
-	*/
-/*	
-	public StringBundle getStringBundle(ResourceBundle resourceBundle) {
-		StringBundle stringBundle = null;
-		XMLResourceBundle bundle = null;
-		// TODO: Manolo
-		//String file = "localize/" + resourceFile;
-		String file = "/localize/" + resourceFile;
-		try {
-			bundle = (XMLResourceBundle) createXMLResourceBundle(file, locale);
-		} catch (MissingResourceException e) {
-			System.out.println("WARNING: Resource bundle " + resourceFile + " could not be found for locale '" + locale
-					+ "'. English will be used instead");
-			setLanguage("en");
-			try {
-				bundle = (XMLResourceBundle) createXMLResourceBundle(file, locale);
-			} catch (MissingResourceException e1) {
-				throw new MissingResourceException(
-						"Any of the " + resourceFile.toLowerCase() + " resource string files is missing",
-						StringDatabase.class.getName(), getLocale().getLanguage());
-			}
-		}
-		stringBundle = new StringBundle(bundle);
-		return stringBundle;
-	}
-	*/
-    
     /**
      * @param newLocale the locale to set
      */
     public void setLocale(Locale newLocale) {
         locale = newLocale;
     }
-
-	/*
-	public Map<String, StringBundle> oldGetAllBundles() {
-		
-		Iterable<LocalizeResourcesProvider> providers = ServiceLoader.load(LocalizeResourcesProvider.class);
-		
-		Map<String, StringBundle> bundleMap = new LinkedHashMap<>();
-		String localeSuffix = "_" + locale.getLanguage();
-		String classPath = System.getProperty("java.class.path", ".");
-		String[] classPathElements = classPath.split(File.pathSeparator);
-		for (String element : classPathElements) {
-			File classpathElement = new File(element);
-
-			if (classpathElement.isDirectory()) {
-				File localizeFolder = new File(classpathElement.getAbsolutePath() + File.separator + "localize");
-				if (localizeFolder.listFiles() != null) {
-					for (final File fileEntry : localizeFolder.listFiles()) {
-						if (fileEntry.isFile()) {
-							if (fileEntry.getName().endsWith(".xml")) {
-								String baseName = FilenameUtils.getBaseName(fileEntry.getName());
-								if (baseName.endsWith(localeSuffix)) {
-									baseName = baseName.substring(0, baseName.length() - localeSuffix.length());
-									bundleMap.put(baseName, getBundle(baseName));
-								}
-							}
-						}
-					}
-				}
-			} else { // it is a jar file
-				ZipFile zipFile;
-				try {
-					zipFile = new ZipFile(classpathElement.getAbsolutePath());
-					Enumeration<? extends ZipEntry> zipEntryEn = (Enumeration<? extends ZipEntry>) zipFile.entries();
-					while (zipEntryEn.hasMoreElements()) {
-						ZipEntry aZipEntry = (ZipEntry) zipEntryEn.nextElement();
-						if (aZipEntry.getName().startsWith("localize/") && aZipEntry.getName().endsWith(".xml")) {
-							String baseName = FilenameUtils.getBaseName(aZipEntry.getName());
-							if (baseName.endsWith(localeSuffix)) {
-								int endPosition = baseName.length() - localeSuffix.length();
-								baseName = baseName.substring(0, endPosition);
-								bundleMap.put(baseName, getBundle(baseName));
-							}
-						}
-					}
-					zipFile.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return bundleMap;
-	}
-	*/
     
     private Map<String, StringBundle> calculateAllBundles() {
         //Iterable<LocalizeResourcesProvider> providers = ServiceLoader.load(LocalizeResourcesProvider.class);
@@ -287,63 +174,6 @@ public class StringDatabase {
         return this.bundles;
     }
     
-    /**
-     * @param file
-     * @param locale
-     *
-     * @return An instance of ResourceBundle considering that properties files
-     * are in XML format.
-     */
-	/*
-	public ResourceBundle oldCreateXMLResourceBundle(String file, Locale locale) {
-		ResourceBundle bundle;
-		bundle = ResourceBundle.getBundle(file, locale, new ResourceBundle.Control() {
-			public java.util.List<String> getFormats(String baseName) {
-			if (baseName == null)
-					throw new NullPointerException();
-				return Arrays.asList("xml");
-			}
-
-			public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader,
-					boolean reload) throws IllegalAccessException, InstantiationException, IOException {
-				if (baseName == null || locale == null || format == null || loader == null)
-					throw new NullPointerException();
-				ResourceBundle bundle = null;
-				if (format.equals("xml")) {
-					String bundleName = toBundleName(baseName, locale);
-					String resourceName = toResourceName(bundleName, format);
-					InputStream stream = null;
-					if (reload) {
-						URL url = loader.getResource(resourceName);
-						if (url != null) {
-							URLConnection connection = url.openConnection();
-							if (connection != null) {
-								// Disable caches to get fresh data for
-								// reloading.
-								connection.setUseCaches(false);
-								stream = connection.getInputStream();
-							}
-						}
-					} else {
-						stream = loader.getResourceAsStream(resourceName);
-					}
-					if (stream != null) {
-						BufferedInputStream bis = new BufferedInputStream(stream);
-						bundle = new XMLResourceBundle(bis);
-						bis.close();
-					}
-				}
-				return bundle;
-			}
-		});
-		return bundle;
-	}
-	*/
-    public static ResourceBundle createXMLResourceBundle(String file, Locale locale) {
-        ResourceBundle bundle = ResourceBundle.getBundle(file, locale);
-        return bundle;
-        
-    }
     
     // This methods allows classes to register for LocaleChangeEvent
     public void addLocaleChangeListener(LocaleChangeListener listener) {
@@ -383,8 +213,9 @@ public class StringDatabase {
         if (key == null) return null;
         for (StringBundle bundle : this.bundles.values()) {
             String value = bundle.getString(key);
-            if (value != null)
+            if (value != null) {
                 return value;
+            }
         }
         return null;
     }

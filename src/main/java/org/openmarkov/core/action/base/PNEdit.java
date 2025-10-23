@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnreacheableException;
-import org.openmarkov.core.logging.OpenMarkovLogger;
 import org.openmarkov.core.model.network.ProbNet;
 
 /**
@@ -43,21 +42,34 @@ import org.openmarkov.core.model.network.ProbNet;
         PNESupport pneSupport = getProbNet().getPNESupport();
         ConstraintChecker constraintChecker = new ConstraintChecker(probNet);
         this.checkConstraintsWillBeMet(constraintChecker);
-        constraintChecker.buildAndThrow();
+        try {
+            constraintChecker.buildAndThrow();
+        } catch (ConstraintViolatedException ex) {
+            for (PNUndoableEditListener listener : pneSupport.getListeners()) {
+                listener.onEditViolatesConstraints(new PNUndoableEditEvent(pneSupport, this, probNet), ex);
+            }
+            throw ex;
+        }
         PNUndoableEditEvent event = new PNUndoableEditEvent(pneSupport, this, probNet);
         for (PNUndoableEditListener listener : pneSupport.getListeners()) {
-            listener.undoableEditWillHappen(event);
+            listener.beforeEditHappens(event);
         }
-        this.doEdit();
+        try {
+            this.doEdit();
+        } catch (DoEditException e) {
+            for (PNUndoableEditListener listener : pneSupport.getListeners()) {
+                listener.onEditFailed(event, e);
+            }
+            throw e;
+        }
         if (pneSupport.isWithUndo() && !belongsToACompoundEdit) {
             pneSupport.getUndoManager().addEdit(this);
         }
         Class<? extends PNEdit> editClass = getClass();
         boolean isParenthesis = editClass == OpenParenthesisEdit.class || editClass == CloseParenthesisEdit.class;
         if (!isParenthesis) {
-            OpenMarkovLogger.LOGGER.info("Checking listeners");
             for (PNUndoableEditListener listener : pneSupport.getListeners()) {
-                listener.undoableEditHappened(event);
+                listener.afterEditHappens(event);
             }
         }
     }

@@ -87,7 +87,7 @@ public class PNESupport /*extends UndoableEditSupport*/ {
                     PNUndoableEditEvent event2 = new PNUndoableEditEvent(this, undoManager.nextEditToUndo(), probNet);
                     if (event2.getEdit() instanceof OpenParenthesisEdit openParenthesisEdit
                             && openParenthesisEdit == closeParenthesisEdit.getOpenParenthesisEdit()) {
-                        //Open parenthesis found.
+                        //Matching open parenthesis found.
                         break;
                     }
                 }
@@ -95,7 +95,7 @@ public class PNESupport /*extends UndoableEditSupport*/ {
             //
             undoManager.undo();
             for (PNUndoableEditListener listener : listeners) {
-                listener.undoEditHappened(event);
+                listener.afterUndoingEdit(event);
             }
         }
     }
@@ -119,7 +119,7 @@ public class PNESupport /*extends UndoableEditSupport*/ {
             }
             undoManager.redo();
             for (PNUndoableEditListener listener : listeners) {
-                listener.undoableEditHappened(event);
+                listener.afterEditHappens(event);
             }
         }
     }
@@ -229,7 +229,7 @@ public class PNESupport /*extends UndoableEditSupport*/ {
             undoManager.removeUndoneEdits();
             PNUndoableEditEvent eventDeleted = new PNUndoableEditEvent(this, null, probNet);
             for (PNUndoableEditListener listener : listeners) {
-                listener.undoEditHappened(eventDeleted);
+                listener.afterUndoingEdit(eventDeleted);
             }
             
         }

@@ -12,7 +12,6 @@ import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.*;
-import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 
 /**
  * {@code AddNodeEdit} is a edit that allow add a node to
@@ -142,20 +141,8 @@ import org.openmarkov.core.model.network.potential.operation.PotentialOperations
     }
     
     @Override public void doEdit() {
-        // Adds the new variable to network ( creates a node instance )
-        newNode = probNet.addNode(variable, nodeType);
-        // TODO revisar si es conveniente utilizar una constraint
-        // Sets a uniformPotential for the new node
-        // Decision node has no potential when is created
-        if (nodeType != NodeType.DECISION) {
-            probNet.addPotential(PotentialOperations.getUniformPotential(probNet, variable, nodeType));
-            newNode = probNet.getNode(variable);
-        } else {
-            newNode.setPolicyType(PolicyType.OPTIMAL);
-        }
-        // Sets the visual node position
-        newNode.setCoordinateX((int) cursorPosition.getX());
-        newNode.setCoordinateY((int) cursorPosition.getY());
+        probNet.addNodeConsistently(variable,nodeType,cursorPosition);
+        newNode = probNet.getNode(variable);
     }
     
     @Override public void undo() {

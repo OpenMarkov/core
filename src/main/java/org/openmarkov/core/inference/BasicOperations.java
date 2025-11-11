@@ -68,7 +68,36 @@ public class BasicOperations {
         // }
         return buildExactDistrPotentialUtility(node.getVariable(), newPotential);
     }
-    
+
+    public static Potential absorbParentPotentials(Variable variable,
+                                                             Potential nodePotential,
+                                                        ArrayList<TablePotential> parentsPotentials,
+                                                        EvidenceCase evidence) {
+        // create a TablePotential that will be the table of the new ExactDistrPotential
+        TablePotential newTable;
+        if (nodePotential instanceof SumPotential) {
+            newTable = DiscretePotentialOperations.sum(parentsPotentials);
+        } else if (nodePotential instanceof ProductPotential) {
+            newTable = DiscretePotentialOperations.multiply(parentsPotentials);
+        } else {   // FunctionPotential
+            try {
+                newTable = DiscretePotentialOperations.evaluateFunctionPotential(
+                        (FunctionPotential) nodePotential, parentsPotentials, parentsPotentials.get(0).getVariables());
+            } catch (NonProjectablePotentialException.CannotEvaluate e) {
+                throw new UnreacheableException(e);
+            }
+        }
+        // }
+        // create the list of variables for the new ExactDistrPotential
+        List<Variable> variables = new ArrayList<>();
+        variables.add(variable);
+        variables.addAll(newTable.getVariables());
+        // create the new potential
+        ExactDistrPotential exactDistrPotential = new ExactDistrPotential(variables);
+        exactDistrPotential.setTablePotential(newTable);
+        return exactDistrPotential;
+    }
+
     private static ExactDistrPotential buildExactDistrPotentialUtility(Variable variable, TablePotential pot) {
         List<Variable> variables = new ArrayList<>();
         variables.add(variable);

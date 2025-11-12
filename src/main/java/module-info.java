@@ -18,7 +18,7 @@ open module org.openmarkov.core {
     requires antlr;
     
     exports org.openmarkov.core.action.core;
-    exports org.openmarkov.core.dt;
+    exports org.openmarkov.core.decisiontree;
     exports org.openmarkov.core.exception;
     exports org.openmarkov.core.inference;
     exports org.openmarkov.core.inference.heuristic;

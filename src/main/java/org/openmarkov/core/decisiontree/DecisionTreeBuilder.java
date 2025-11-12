@@ -5,7 +5,7 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.core.dt;
+package org.openmarkov.core.decisiontree;
 
 public class DecisionTreeBuilder {
 //	public static DecisionTreeElement buildDecisionTree(ProbNet probNet) {

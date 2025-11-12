@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -12,6 +14,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.action.base.CompoundPNEdit;
 import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
+import org.openmarkov.core.model.network.potential.TablePotential;
 
 @SuppressWarnings("serial") public class AbsorbParentsEdit extends CompoundPNEdit {
     private Node node;
@@ -27,13 +30,22 @@ import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
         // gets neighbors of this node
         Variable nodeVariable = node.getVariable();
         List<Node> parents = probNet.getParents(node);
-        Potential potential = BasicOperations.buildPotentialByAbsorbingParents(node, null);
-        for (Node x : parents) {
+        ArrayList<TablePotential> parentsPotential = new ArrayList<>();
+        for (Node node : parents) {
+            try {
+                parentsPotential.add(node.getPotential().tableProject(null, null).get(0));
+            } catch (NonProjectablePotentialException e) {
+                throw new UnreacheableException(e);
+            }
+        }
+
+        Potential potential = BasicOperations.absorbParentPotentials(nodeVariable,node.getPotential(),parentsPotential,null);
+        for (Node parent : parents) {
             PNEdit newEdit;
-            if (x.getChildren().size() > 1) {
-                newEdit = new RemoveLinkEdit(probNet, x.getVariable(), nodeVariable, true, false);
-            } else {// x.getChildren().size() == 1
-                newEdit = new CRemoveNodeEdit(probNet, x);
+            if (parent.getChildren().size() > 1) {
+                newEdit = new RemoveLinkEdit(probNet, parent.getVariable(), nodeVariable, true, false);
+            } else {  // parent.getChildren().size() == 1
+                newEdit = new CRemoveNodeEdit(probNet, parent);
             }
             edits.add(newEdit);
         }

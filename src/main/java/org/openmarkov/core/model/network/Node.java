@@ -9,17 +9,15 @@ package org.openmarkov.core.model.network;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.ProductPotential;
-import org.openmarkov.core.model.network.potential.SumPotential;
-import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.*;
+import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.Util;
 import org.openmarkov.java.cloneUtils.CloneUtils;
@@ -777,5 +775,85 @@ public class Node implements Cloneable, ClassLocalizable {
         potentials.add(getPotential());
         setPotentials(potentials);
     }
-    
+
+    public void AbsorbNodeConsistently(Variable absorbedVariable) throws DoEditException.CannotDoEditException {
+        Node absorbedNode = probNet.getNode(absorbedVariable);
+        Node child = absorbedNode.getChildren().get(0);
+        List<Link<Node>> newParentLinks = new ArrayList<>();;
+        List<Potential> oldUtilityPotentials = child.getPotentials();
+        List<Potential> newPotentials = new ArrayList<>();
+
+        /* Chance parent */
+        if (absorbedNode.getNodeType() == NodeType.CHANCE) {
+            for (Potential potential : oldUtilityPotentials) {
+
+                // Potentials to multiply
+                List<TablePotential> utilityAndChance = new ArrayList<>();
+                try {
+                    utilityAndChance.add(potential.getCPT()); //Utility
+                    utilityAndChance.add(absorbedNode.getPotentials().get(0).getCPT()); //Chance
+                } catch (NonProjectablePotentialException e) {
+                    throw new DoEditException.CannotDoEditException(e);
+                }
+
+                /* Obtain parameters to invoke multiplyAndMarginalize */
+                // All variables from chance parent and utility child potentials
+                List<Variable> unionVariables = AuxiliaryOperations.getUnionVariables(utilityAndChance);
+
+                List<Variable> variablesToKeep = new ArrayList<>(unionVariables);
+                variablesToKeep.remove(absorbedVariable);
+
+                List<Variable> variablesToEliminate = new ArrayList<>();
+                variablesToEliminate.add(absorbedVariable);
+
+                // Discrete operation is valid because all parents are discrete
+                TablePotential marginalizedPotential = DiscretePotentialOperations.
+                        multiplyAndMarginalize(utilityAndChance, variablesToKeep, variablesToEliminate);
+
+                // Convert to utility potential
+                ExactDistrPotential exactDistrPotential = new ExactDistrPotential(variablesToKeep);
+                exactDistrPotential.setValues(marginalizedPotential.values);
+
+                newPotentials.add(exactDistrPotential);
+            }
+
+            // Parents of chance node are now parents of utility node
+            for (Node parent : absorbedNode.getParents() ) {
+                Link<Node> link = probNet.getLink(parent, child, true);
+                if (link == null) {
+                    // creating the Link saves it in the graph
+                    newParentLinks.add(probNet.addLink(parent, child, true));
+
+                }
+            }
+
+            /* Decision parent */
+        } else if (absorbedNode.getNodeType() == NodeType.DECISION) {
+            for (Potential potential : oldUtilityPotentials) {
+                TablePotential utilityPotential;
+
+                try {
+                    utilityPotential = potential.getCPT();
+                } catch (NonProjectablePotentialException e) {
+                    throw new DoEditException.CannotDoEditException(e);
+                }
+
+                // Discrete operation is valid because all parents are discrete
+                TablePotential maximizedPotential = (TablePotential) DiscretePotentialOperations.
+                        maximize(utilityPotential, absorbedVariable)[0];
+                List<Variable> newVariables = new ArrayList<>(potential.getVariables());
+                newVariables.remove(absorbedVariable);
+
+
+                // Convert to utility potential
+                ExactDistrPotential exactDistrPotential = new ExactDistrPotential(newVariables);
+                exactDistrPotential.setValues(maximizedPotential.values);
+
+                newPotentials.add(exactDistrPotential);
+            }
+            // Parents of decision node don't turn into parents of utility node
+        }
+        child.setPotentials(newPotentials);
+    }
+
 }

@@ -38,36 +38,6 @@ public class BasicOperations {
      * @param node     Node
      * @return potential
      */
-    public static Potential buildPotentialByAbsorbingParents(Node node, EvidenceCase evidence) {
-        TablePotential newPotential;
-        List<TablePotential> tablePotentials = new ArrayList<>();
-        List<Variable> parentVariable = new ArrayList<>();
-        for (Node parent : node.getParents()) {
-            TablePotential auxTablePot;
-            try {
-                auxTablePot = parent.getPotentials().get(0).tableProject(evidence, null).get(0);
-            } catch (NonProjectablePotentialException e) {
-                throw new UnreacheableException(e);
-            }
-            tablePotentials.add(auxTablePot);
-            parentVariable.add(parent.getVariable());
-        }
-        Potential nodePotential = node.getPotentials().get(0);
-        if (nodePotential instanceof SumPotential) {
-            newPotential = DiscretePotentialOperations.sum(tablePotentials);
-        } else if (nodePotential instanceof ProductPotential) {
-            newPotential = DiscretePotentialOperations.multiply(tablePotentials);
-        } else { // FunctionPotential
-            try {
-                newPotential = DiscretePotentialOperations.evaluateFunctionPotential(
-                        (FunctionPotential) nodePotential, tablePotentials, parentVariable);
-            } catch (NonProjectablePotentialException.CannotEvaluate e) {
-                throw new UnreacheableException(e);
-            }
-        }
-        // }
-        return buildExactDistrPotentialUtility(node.getVariable(), newPotential);
-    }
 
     public static Potential absorbParentPotentials(Variable variable,
                                                              Potential nodePotential,
@@ -210,7 +180,16 @@ public class BasicOperations {
         List<Node> parents = network.getParents(node);
         
         Variable nodeVariable = node.getVariable();
-        Potential potential = buildPotentialByAbsorbingParents(node, evidence);
+        ArrayList<TablePotential> parentsPotential = new ArrayList<>();
+        for (Node n : parents) {
+            try {
+                parentsPotential.add(n.getPotential().tableProject(null, null).get(0));
+            } catch (NonProjectablePotentialException e) {
+                throw new UnreacheableException(e);
+            }
+        }
+
+        Potential potential = absorbParentPotentials(nodeVariable, node.getPotential(),parentsPotential,null);
         
         for (Node parent : parents) {
             network.removeLink(parent.getVariable(), nodeVariable, true);

@@ -35,11 +35,7 @@ import java.util.List;
      * New node name
      */
     private String newName;
-    /**
-     * The node edited
-     */
-    private List<Variable> variables;
-    
+
     /**
      * Creates a new {@code NodeNameEdit} with the node and new name
      * specified.
@@ -49,12 +45,6 @@ import java.util.List;
      */
     public NodeNameEdit(Node node, String newName) {
         super(node.getProbNet());
-        variables = new ArrayList<>();
-        for (Variable variable : node.getProbNet().getVariables()) {
-            if (variable.getBaseName().equals(node.getVariable().getBaseName())) {
-                variables.add(variable);
-            }
-        }
         this.node = node;
         this.previousName = this.node.getVariable().getBaseName();
         this.newName = newName;
@@ -83,16 +73,12 @@ import java.util.List;
     }
     
     @Override public void doEdit() {
-        for (Variable variable : variables) {
-            variable.setBaseName(newName);
-        }
+        node.getVariable().setBaseName(newName);
     }
     
     @Override public void undo() {
         super.undo();
-        for (Variable variable : variables) {
-            variable.setBaseName(previousName);
-        }
+        node.getVariable().setBaseName(previousName);
     }
     
     /**

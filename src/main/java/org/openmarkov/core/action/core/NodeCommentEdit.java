@@ -30,10 +30,7 @@ import java.util.List;
 	 */
 	private String newComment;
 
-	/**
-	 * Comment type, could be "DefinitionComment" or "ProbsTableComment"
-	 */
-    private String typeComment;
+
 	/**
 	 * The node
 	 */
@@ -44,41 +41,20 @@ import java.util.List;
 	 * type of comment specified.
 	 * @param node Node
 	 * @param newComment New comment
-	 * @param typeComment Type of comment
 	 */
-	public NodeCommentEdit(Node node, String newComment, String typeComment) {
+	public NodeCommentEdit(Node node, String newComment) {
 		super(node.getProbNet());
 		this.newComment = newComment;
-		this.typeComment = typeComment;
 		this.node = node;
-		if (typeComment.equals("DefinitionComment")) {
-			this.currentComment = node.getComment();
-		} else {
-			this.currentComment = node.getPotentials().get(0).getComment();
-
-		}
 	}
 
 	// Methods
 	@Override public void doEdit() {
-		if (typeComment.equals("DefinitionComment")) {
 			node.setComment(newComment);
-		} else {
-			List<Potential> potential = node.getPotentials();
-			potential.get(0).setComment(newComment);
-			node.setPotentials(potential);
-
-		}
 	}
     
     @Override public void undo() {
 		super.undo();
-		if (typeComment.equals("DefinitionComment")) {
 			node.setComment(currentComment);
-		} else {
-			List<Potential> potential = node.getPotentials();
-			potential.get(0).setComment(currentComment);
-			node.setPotentials(potential);
-		}
 	}
 }

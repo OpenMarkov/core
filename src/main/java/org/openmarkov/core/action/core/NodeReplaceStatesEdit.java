@@ -29,8 +29,6 @@ import java.util.Map;
 
 @SuppressWarnings("serial") public class NodeReplaceStatesEdit extends PNEdit {
 
-	// Default increment between discretized intervals
-    private static final int increment = 2;
 
 	/**
 	 * The current default states of the network
@@ -44,18 +42,9 @@ import java.util.Map;
 
 	private Node node;
 
-	private List<Potential> lastPotential;
 
-	private List<Potential> childrenLastPotential = new ArrayList<>();
 
-	private PartitionedInterval currentPartitionedInterval;
 
-	private Map<Link<Node>, double[]> linkRestrictionMap;
-
-	/***
-	 * Map with the revelation condition list for each link.
-	 */
-	private Map<Link<Node>, List> revelationConditionMap;
 
 	/**
 	 * Creates a {@code NodeReplaceStatesEdit} with the node and new states
@@ -69,62 +58,18 @@ import java.util.Map;
 		this.node = node;
 
 		this.lastStates = node.getVariable().getStates();
-		this.lastPotential = node.getPotentials();
-
-		this.currentPartitionedInterval = node.getVariable().getPartitionedInterval();
-
 		this.newStates = newStates;
-		this.linkRestrictionMap = new HashMap<>();
-		this.revelationConditionMap = new HashMap<>();
 	}
 
 	// Methods
 	@Override public void doEdit() {
-		if (newStates != null) {
-			List<Node> nodes;
-			node.getVariable().setStates(newStates);
-			List<Potential> newPotentials = new ArrayList<>();
-			// set uniform potential for the edited node and children if the
-			// new number of states is different that the last states
-			if (newStates.length != lastStates.length) {
-                
-                if (!lastPotential.isEmpty()) {//decision nodes without imposed policy has no potential
-					UniformPotential newPotential = new UniformPotential(lastPotential.get(0).getVariables(),
-							lastPotential.get(0).getPotentialRole());
-					newPotentials.add(newPotential);
-					node.setPotentials(newPotentials);
-				}
-
-				UniformPotential childLastPotential;
-				nodes = probNet.getChildren(node);
-
-				for (Node child : nodes) {
-                    if (!child.getPotentials().isEmpty()) {
-						List<Potential> container = new ArrayList<>();
-						childrenLastPotential.add(child.getPotentials().get(0));
-						childLastPotential = new UniformPotential(child.getPotentials().get(0).getVariables(),
-								child.getPotentials().get(0).getPotentialRole());
-						// child.setUniformPotential();
-						container.add(childLastPotential);
-						child.setPotentials(container);
-					}
-				}
-				resetLink(node);
-			}
-
-			if (node.getVariable().getVariableType() == VariableType.DISCRETIZED) {
-
-				node.getVariable().setPartitionedInterval(new PartitionedInterval(
-                        node.getVariable().getDefaultInterval(node.getVariable().getNumStates()),
-                        Variable.getDefaultBelongs(node.getVariable().getNumStates())));
-
-			}
-		}
+		node.getVariable().replaceStates(node,newStates);
 	}
     
     @Override @SuppressWarnings("unchecked") public void undo() {
 		super.undo();
-		if (lastStates != null) {
+        node.getVariable().replaceStates(node,lastStates);
+		/*if (lastStates != null) {
 			node.getVariable().setStates(lastStates);
 			if (lastStates.length != newStates.length) {
 				node.setPotentials(lastPotential);
@@ -147,54 +92,8 @@ import java.util.Map;
 				link.setRevealingStates(revelationConditionMap.get(link));
 			}
 
-		}
+		}*/
 	}
 
-	private PartitionedInterval getNewPartitionedInterval() {
-        double[] limits = currentPartitionedInterval.getLimits();
-        double[] newLimits = new double[limits.length + 1];
-        boolean[] belongsToLeftSide = currentPartitionedInterval.getBelongsToLeftSide();
-        boolean[] newBelongsToLeftSide = new boolean[limits.length + 1];
-		for (int i = 0; i < limits.length; i++) {
-			newLimits[i] = limits[i];
-			newBelongsToLeftSide[i] = belongsToLeftSide[i];
-		}
-		newLimits[limits.length] = currentPartitionedInterval.getMax() + increment;
-		newBelongsToLeftSide[limits.length] = false;
-		return new PartitionedInterval(newLimits, newBelongsToLeftSide);
-	}
-
-	/****
-	 * This method resets the link restrictions and revelation conditions of the
-	 * links of the node
-	 *
-	 * @param node Node
-	 */
-	private void resetLink(Node node) {
-
-		for (Link<Node> link : probNet.getLinks(node)) {
-			if (link.hasRestrictions()) {
-				double[] lastPotential = (
-						(TablePotential) link.getRestrictionsPotential()
-				).values.clone();
-				linkRestrictionMap.put(link, lastPotential);
-				link.setRestrictionsPotential(null);
-			}
-		}
-		List<Node> children = probNet.getChildren(node);
-		for (Node child : children) {
-			Link<Node> link = probNet.getLink(node, child, true);
-			if (link.hasRevealingConditions()) {
-				VariableType varType = link.getNode1().getVariable().getVariableType();
-				if (varType == VariableType.NUMERIC) {
-					this.revelationConditionMap.put(link, link.getRevealingIntervals());
-					link.setRevealingIntervals(new ArrayList<PartitionedInterval>());
-				} else {
-					this.revelationConditionMap.put(link, link.getRevealingStates());
-					link.setRevealingStates(new ArrayList<State>());
-				}
-			}
-		}
-	}
 
 }

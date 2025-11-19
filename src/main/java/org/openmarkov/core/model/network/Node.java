@@ -776,7 +776,7 @@ public class Node implements Cloneable, ClassLocalizable {
         setPotentials(potentials);
     }
 
-    public void AbsorbNodeConsistently(Variable absorbedVariable) throws DoEditException.CannotDoEditException {
+    public void absorbNodeConsistently(Variable absorbedVariable) throws DoEditException.CannotDoEditException {
         Node absorbedNode = probNet.getNode(absorbedVariable);
         Node child = absorbedNode.getChildren().get(0);
         List<Link<Node>> newParentLinks = new ArrayList<>();;

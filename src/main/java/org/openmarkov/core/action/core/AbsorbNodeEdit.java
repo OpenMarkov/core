@@ -88,7 +88,7 @@ import java.util.*;
             utilityNodesMerged = false;
         }
 
-        absorbedNode.AbsorbNodeConsistently(absorbedVariable);
+        absorbedNode.absorbNodeConsistently(absorbedVariable);
         // Links saved for the undo()
         linksDeleted = getLinksWithNode(absorbedNode);
         probNet.removeNode(absorbedNode);

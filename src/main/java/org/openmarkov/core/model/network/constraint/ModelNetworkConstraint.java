@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.action.base.linkEdits.BaseLinkEdit;
+import org.openmarkov.core.developmentStaticAnalysis.mutability.ConsiderFieldAsInteriorImmutable;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
@@ -21,10 +22,10 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 @Constraint(name = "ModelNetworkConstraint", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class ModelNetworkConstraint extends PNConstraint {
     
-    private ProbNet modelNet;
-    private boolean linkAdditionAllowed;
-    private boolean linkRemovalAllowed;
-    private boolean linkInversionAllowed;
+    private final ProbNet modelNet;
+    private final boolean linkAdditionAllowed;
+    private final boolean linkRemovalAllowed;
+    private final boolean linkInversionAllowed;
     
     // Constructors
     public ModelNetworkConstraint(ProbNet modelNet, boolean linkAdditionAllowed, boolean linkRemovalAllowed, boolean linkInversionAllowed) {
@@ -38,8 +39,8 @@ public class ModelNetworkConstraint extends PNConstraint {
     }
     
     public boolean canEditBeDone(BaseLinkEdit simpleEdit) {
-        Node source = modelNet.getNode(simpleEdit.getVariable1().getName());
-        Node destination = modelNet.getNode(simpleEdit.getVariable2().getName());
+        Node source = modelNet.getNode(simpleEdit.getVariableFrom().getName());
+        Node destination = modelNet.getNode(simpleEdit.getVariableTo().getName());
         return modelNet.getLink(destination, source, true) == null;
     }
     

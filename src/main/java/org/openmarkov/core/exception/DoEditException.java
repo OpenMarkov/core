@@ -14,7 +14,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.List;
 
-public abstract sealed class DoEditException extends Exception implements IBundledOpenMarkovException permits ConstraintViolatedException, DoEditException.CannotDoEditException, DoEditException.CannotInvertLink, DoEditException.CannotRemovePotential, DoEditException.InstanceAlreadyExists, DoEditException.NodeIsNull {
+public abstract class DoEditException extends Exception implements IBundledOpenMarkovException {
     
     @Override public String toString() {
         return IBundledOpenMarkovException.toString(this);

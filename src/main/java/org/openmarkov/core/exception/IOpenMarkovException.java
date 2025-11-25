@@ -2,14 +2,12 @@ package org.openmarkov.core.exception;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.annotation.ImplementationRequirements;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
 import org.openmarkov.core.localize.Localizable;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.core.stringformat.LocalizationFormatter;
 import org.openmarkov.core.stringformat.StringFormat;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.*;
 import java.util.stream.IntStream;
 

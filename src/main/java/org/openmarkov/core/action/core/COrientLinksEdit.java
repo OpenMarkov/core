@@ -32,13 +32,13 @@ import java.util.ArrayList;
         StringBuilder buffer = new StringBuilder("Orient links: ");
         for (PNEdit edit : getEdits()) {
             OrientLinkEdit orientLinkEdit = (OrientLinkEdit) edit;
-            buffer.append(orientLinkEdit.getVariable1().getName());
+            buffer.append(orientLinkEdit.getVariableFrom().getName());
             if (orientLinkEdit.isDirected()) {
                 buffer.append(" --> ");
             } else {
                 buffer.append(" --- ");
             }
-            buffer.append(orientLinkEdit.getVariable2().getName());
+            buffer.append(orientLinkEdit.getVariableTo().getName());
             buffer.append(", ");
         }
         buffer.delete(buffer.lastIndexOf(","), buffer.length());

@@ -7,8 +7,8 @@
 
 package org.openmarkov.core.io.format.annotation;
 
-import org.openmarkov.core.annotation.ImplementationRequirements;
-import org.openmarkov.core.annotation.RequiredConstructor;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

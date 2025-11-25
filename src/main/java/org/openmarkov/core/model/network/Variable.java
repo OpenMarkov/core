@@ -20,6 +20,7 @@ import org.openmarkov.core.model.network.potential.operation.PotentialOperations
 import org.openmarkov.java.cloneUtils.CloneUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 // TODO  mantener la consistencia entre name y baseName cuando se cambian
@@ -530,12 +531,13 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
         PartitionedInterval currentPartitionedInterval = getPartitionedInterval();
 
         switch (stateAction) {
-
             case ADD:
-                newStates = new State[getNumStates() + 1];
-                newStates[getNumStates()] = newState;
-                System.arraycopy(oldStates, 0, newStates, 0, oldStates.length);
-
+                // assume that the new state is added in last position
+                oldStates = this.getStates();
+                ArrayList<State> newStatesWithNewVar = Arrays.stream(oldStates)
+                                                             .collect(Collectors.toCollection(ArrayList::new));
+                newStatesWithNewVar.add(stateIndex, newState);
+                newStates = newStatesWithNewVar.toArray(new State[newStatesWithNewVar.size()]);
                 setStates(newStates);
                 setUniformPotential(node);
 

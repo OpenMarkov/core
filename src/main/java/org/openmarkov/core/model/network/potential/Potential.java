@@ -8,9 +8,9 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.jetbrains.annotations.NotNull;
-import org.openmarkov.core.annotation.ImplementationRequirements;
-import org.openmarkov.core.annotation.RequiredConstructor;
-import org.openmarkov.core.annotation.SelfClass;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.SelfClass;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.exception.UnreacheableException;

@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.action.base;
 
-import org.openmarkov.core.model.network.ProbNet;
-
 @SuppressWarnings("serial")
 
 /*
@@ -18,31 +16,16 @@ import org.openmarkov.core.model.network.ProbNet;
  */
 public class PNUndoableEditEvent {
     
-    private final Object source;
-    private final PNEdit edit;
     // Attributes
-	private ProbNet probNet;
-
-	// Constructor
-
-	/**
-	 * @param source  The {@code Object} that originated the event.
-	 * @param edit    An {@code UndoableEdit} object.
-	 * @param probNet The {@code ProbNet} on witch the event will operate
-	 */
-    public PNUndoableEditEvent(Object source, PNEdit edit, ProbNet probNet) {
-        this.source = source;
-        this.edit = edit;
-        this.probNet = probNet;
-	}
+    private final PNEdit edit;
+    
+    // Constructor
     
     /**
-     * The object on which the Event initially occurred.
-     *
-     * @return the object on which the Event initially occurred
+     * @param edit An {@code UndoableEdit} object.
      */
-    public Object getSource() {
-        return source;
+    public PNUndoableEditEvent(PNEdit edit) {
+        this.edit = edit;
     }
     
     /**
@@ -54,11 +37,4 @@ public class PNUndoableEditEvent {
         return this.edit;
     }
     
-	/**
-	 * @return probNet. {@code ProbNet}
-	 */
-	public ProbNet getProbNet() {
-		return probNet;
-	}
-
 }

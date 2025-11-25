@@ -7,13 +7,17 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.action.base.PNUndoableEditListener;
-import org.openmarkov.core.annotation.ImplementationRequirements;
-import org.openmarkov.core.annotation.RequiredConstructor;
+import org.openmarkov.core.developmentStaticAnalysis.mutability.ExteriorImmutable;
+import org.openmarkov.core.developmentStaticAnalysis.mutability.InteriorImmutable;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.developmentStaticAnalysis.mutability.Immutable;
 
 
 /**
@@ -24,7 +28,7 @@ import org.openmarkov.core.model.network.ProbNet;
  * able to be referenced with same identifier.
  */
 @ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({}))
-public abstract class PNConstraint implements PNUndoableEditListener, ClassLocalizable {
+public abstract class PNConstraint implements PNUndoableEditListener, ClassLocalizable, Comparable<PNConstraint>, Immutable {
     
     /**
      * @param probNet {@code ProbNet}
@@ -44,22 +48,23 @@ public abstract class PNConstraint implements PNUndoableEditListener, ClassLocal
         }
     }
     
-	/*
-	//TODO: Extract and implement
-	public abstract String getName();
-	*/
-    
     @Override public String toString() {
         return this.localize();
     }
     
     @Override public boolean equals(Object paramObject) {
-        return (paramObject.getClass() == this.getClass());
+        if (this.getClass() != paramObject.getClass()) {
+            return false;
+        }
+        return this.compareTo(this.getClass().cast(paramObject)) == 0;
+    }
+    
+    @Override public int compareTo(@NotNull PNConstraint o) {
+        return this.getClass().getName().compareTo(o.getClass().getName());
     }
     
     @Override public int hashCode() {
-        int hashCode = 17 + this.getClass().hashCode();
-        return hashCode;
+        return 17 + this.getClass().hashCode();
     }
     
 }

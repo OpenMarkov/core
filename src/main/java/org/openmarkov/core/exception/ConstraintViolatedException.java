@@ -3,17 +3,14 @@ package org.openmarkov.core.exception;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.localize.Localizable;
-import org.openmarkov.core.model.network.Criterion;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.*;
 import org.openmarkov.core.stringformat.LocalizationFormatter;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract non-sealed class ConstraintViolatedException extends DoEditException {
+public abstract class ConstraintViolatedException extends DoEditException {
     public final PNConstraint constraint;
     
     public ConstraintViolatedException(PNConstraint constraint) {
@@ -282,17 +279,32 @@ public abstract non-sealed class ConstraintViolatedException extends DoEditExcep
         private final Node node2;
     }
     
-    public static class ParentCannotBeMixed extends ConstraintViolatedException {
+    public static class MixedParentDoesntAllowThisNodeType extends ConstraintViolatedException {
         
-        public ParentCannotBeMixed(NoMixedParents constraint, Node utilityNode, Node parent) {
+        public MixedParentDoesntAllowThisNodeType(NoMixedParents constraint, Node child, Node parent) {
             super(constraint);
-            this.utilityNode = utilityNode;
+            this.child = child;
             this.parent = parent;
         }
         
-        private final Node utilityNode;
-        private final Node parent;
+        public final Node child;
+        public final Node parent;
     }
+    
+    public static class MixedParentContainsMoreThanOneSet extends ConstraintViolatedException {
+        
+        public MixedParentContainsMoreThanOneSet(NoMixedParents constraint, Node child, List<Node> chanceOrDecisionNodes, List<Node> utilityNodes) {
+            super(constraint);
+            this.child = child;
+            this.chanceOrDecisionNodes = chanceOrDecisionNodes;
+            this.utilityNodes = utilityNodes;
+        }
+        
+        public final Node child;
+        public final List<Node> chanceOrDecisionNodes;
+        public final List<Node> utilityNodes;
+    }
+    
     
     public static class DirectedLinkCannotMatchAnUndirectedLink extends ConstraintViolatedException {
         

@@ -1,4 +1,4 @@
-package org.openmarkov.core.annotation;
+package org.openmarkov.core.developmentStaticAnalysis;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

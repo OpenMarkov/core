@@ -359,8 +359,8 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
                 PNEdit newEdit = null;
                 if (simpleEdit instanceof AddLinkEdit || simpleEdit instanceof RemoveLinkEdit || simpleEdit instanceof InvertLinkEdit) {
                     BaseLinkEdit baseLinkEdit = (BaseLinkEdit) simpleEdit;
-                    Variable variable1 = getVariable(instanceName + "." + baseLinkEdit.getVariable1().getName());
-                    Variable variable2 = getVariable(instanceName + "." + baseLinkEdit.getVariable2().getName());
+                    Variable variable1 = getVariable(instanceName + "." + baseLinkEdit.getVariableFrom().getName());
+                    Variable variable2 = getVariable(instanceName + "." + baseLinkEdit.getVariableTo().getName());
                     newEdit = new AddLinkEdit(this, variable1, variable2, baseLinkEdit.isDirected());
                 }
                 newEdit = switch (simpleEdit) {

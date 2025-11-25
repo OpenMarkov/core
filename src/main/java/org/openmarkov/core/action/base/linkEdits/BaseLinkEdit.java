@@ -23,9 +23,9 @@ import org.openmarkov.core.action.base.PNEdit;
         permits AddLinkEdit, InvertLinkAndUpdatePotentialsEdit, InvertLinkEdit, OrientLinkEdit, RemoveLinkEdit {
 
 	// Attributes
-	protected Variable variable1;
-
-	protected Variable variable2;
+    protected Variable variableFrom;
+    
+    protected Variable variableTo;
 
 	protected boolean isDirected;
 
@@ -33,30 +33,29 @@ import org.openmarkov.core.action.base.PNEdit;
 
 	/**
 	 * @param probNet    {@code ProbNet}
-	 * @param variable1  {@code Variable}
-	 * @param variable2  {@code Variable}
+     * @param variableFrom  {@code Variable}
+     * @param variableTo  {@code Variable}
 	 * @param isDirected {@code boolean}
 	 */
-	public BaseLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {
-
+    public BaseLinkEdit(ProbNet probNet, Variable variableFrom, Variable variableTo, boolean isDirected) {
 		super(probNet);
-		this.variable1 = variable1;
-		this.variable2 = variable2;
+        this.variableFrom = variableFrom;
+        this.variableTo = variableTo;
 		this.isDirected = isDirected;
 	}
 
 	/**
 	 * @return variable1 {@code Variable}
 	 */
-	public Variable getVariable1() {
-		return variable1;
+    public Variable getVariableFrom() {
+        return variableFrom;
 	}
 
 	/**
 	 * @return variable2 {@code Variable}
 	 */
-	public Variable getVariable2() {
-		return variable2;
+    public Variable getVariableTo() {
+        return variableTo;
 	}
 
 	public boolean isDirected() {
@@ -64,7 +63,7 @@ import org.openmarkov.core.action.base.PNEdit;
 	}
 
 	@Override public int hashCode() {
-		return variable1.hashCode() + 7 * variable2.hashCode() + 17 * ((isDirected) ? 1 : 0);
+        return variableFrom.hashCode() + 7 * variableTo.hashCode() + 17 * ((isDirected) ? 1 : 0);
 	}
 
 	@Override public boolean equals(Object obj) {
@@ -73,8 +72,8 @@ import org.openmarkov.core.action.base.PNEdit;
 		if ((obj == null) || (obj.getClass() != this.getClass()))
 			return false;
 		return (
-				(this.variable1.equals(((BaseLinkEdit) obj).variable1)) && (
-						this.variable2.equals(((BaseLinkEdit) obj).variable2)
+                (this.variableFrom.equals(((BaseLinkEdit) obj).variableFrom)) && (
+                        this.variableTo.equals(((BaseLinkEdit) obj).variableTo)
 				) && (this.isDirected == (((BaseLinkEdit) obj).isDirected))
 		);
 	}
@@ -85,20 +84,20 @@ import org.openmarkov.core.action.base.PNEdit;
 	 */
 	@Override public String toString() {
 		StringBuilder buffer = new StringBuilder(getOperationName() + ": ");
-		if (variable1 == null) {
+        if (variableFrom == null) {
 			buffer.append("null");
 		} else {
-			buffer.append(variable1.getName());
+            buffer.append(variableFrom.getName());
 		}
 		if (isDirected) {
 			buffer.append(" --> ");
 		} else {
 			buffer.append(" --- ");
 		}
-		if (variable2 == null) {
+        if (variableTo == null) {
 			buffer.append("null");
 		} else {
-			buffer.append(variable2.getName());
+            buffer.append(variableTo.getName());
 		}
 		return buffer.toString();
 	}

@@ -80,7 +80,7 @@ import java.util.List;
     @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(ModelNetworkConstraint.class) instanceof ModelNetworkConstraint constraint
                 && !constraint.isLinkRemovalAllowed() && !constraint.canEditBeDone(this)) {
-            constraintChecker.addException(new ConstraintViolatedException.ModelDoesNotAllowRemovingLink(constraint, this.getVariable1(), this.getVariable2()));
+            constraintChecker.addException(new ConstraintViolatedException.ModelDoesNotAllowRemovingLink(constraint, this.getVariableFrom(), this.getVariableTo()));
         }
     }
     
@@ -146,7 +146,7 @@ import java.util.List;
         if (updatePotentials) {
             node2.setPotentials(oldPotentials);
         }
-        probNet.addLink(variable1, variable2, isDirected);
+        probNet.addLink(variableFrom, variableTo, isDirected);
         if (probNet.hasExplicitLinks()) {
             Link<Node> newLink = probNet.getLink(node1, node2, isDirected);
             if (link != null && newLink != null) {
@@ -171,13 +171,13 @@ import java.util.List;
         int result;
         
         if ((
-                result = variable1.getName().compareTo(obj.getVariable1().
-                                                          getName())
+                result = variableFrom.getName().compareTo(obj.getVariableFrom().
+                                                             getName())
         ) != 0)
             return result;
         if ((
-                result = variable2.getName().compareTo(obj.getVariable2().
-                                                          getName())
+                result = variableTo.getName().compareTo(obj.getVariableTo().
+                                                           getName())
         ) != 0)
             return result;
         return 0;
@@ -188,18 +188,18 @@ import java.util.List;
     }
     
     @Override public BaseLinkEdit getUndoEdit() {
-        return new AddLinkEdit(getProbNet(), getVariable1(), getVariable2(), isDirected());
+        return new AddLinkEdit(getProbNet(), getVariableFrom(), getVariableTo(), isDirected());
     }
     
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Remove link between " + variable1.getName());
+        sb.append("Remove link between " + variableFrom.getName());
         if (isDirected) {
             sb.append(" -> ");
         } else {
             sb.append(" -- ");
         }
-        sb.append(variable2.getName());
+        sb.append(variableTo.getName());
         return sb.toString();
     }
     

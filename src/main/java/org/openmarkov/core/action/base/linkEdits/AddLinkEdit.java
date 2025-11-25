@@ -20,6 +20,7 @@ import org.openmarkov.core.model.network.potential.SumPotential;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Creates a directed or undirected link between two nodes associated to two
@@ -38,11 +39,11 @@ public final class AddLinkEdit extends BaseLinkEdit {
     /**
      * parent node
      */
-    private Node node1;
+    private Node nodeFrom;
     /**
      * child node
      */
-    private Node node2;
+    private Node nodeTo;
     private boolean updatePotentials;
     
     public void setUpdatePotentials(boolean updatePotentials) {
@@ -57,8 +58,8 @@ public final class AddLinkEdit extends BaseLinkEdit {
     // Constructor
     public AddLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {
         super(probNet, variable1, variable2, isDirected);
-        node1 = probNet.getNode(variable1);
-        node2 = probNet.getNode(variable2);
+        nodeFrom = probNet.getNode(variable1);
+        nodeTo = probNet.getNode(variable2);
         this.updatePotentials = true;
         this.isDirected = isDirected;
         this.link = null;
@@ -67,96 +68,96 @@ public final class AddLinkEdit extends BaseLinkEdit {
     @Override
     public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(DistinctLinks.class) instanceof DistinctLinks constraint) {
-            Node node1 = probNet.getNode(this.getVariable1());
-            Node node2 = probNet.getNode(this.getVariable2());
+            Node node1 = probNet.getNode(this.getVariableFrom());
+            Node node2 = probNet.getNode(this.getVariableTo());
             boolean directed = this.isDirected();
             if (!DistinctLinks.checkLink(probNet, node1, node2, directed)) {
                 constraintChecker.addException(new ConstraintViolatedException.LinkAlreadyExists(constraint, node1, node2));
             }
         }
-        if (probNet.getConstraintOfClass(MaxNumParents.class) instanceof MaxNumParents constraint) {
+        constraintChecker.checkConstraint(MaxNumParents.class, constraint -> {
             if (this.isDirected()) {
-                Node node2 = probNet.getNode(this.getVariable2());
+                Node node2 = probNet.getNode(this.getVariableTo());
                 int numParents = probNet.getNumParents(node2);
                 if (numParents >= constraint.getMaxNumParents()) {
                     constraintChecker.addException(new ConstraintViolatedException.NodeCannotHaveMoreParents(constraint, node2, numParents));
                 }
             }
-        }
+        });
         if (probNet.getConstraintOfClass(NoBackwardLink.class) instanceof NoBackwardLink constraint) {
-            if (!NoBackwardLink.allowedLink(this.getVariable1(), this.getVariable2())) {
-                constraintChecker.addException(new ConstraintViolatedException.CannotAddLinkToAPreviousTimeSlice(constraint, this.getVariable1(), this.getVariable2()));
+            if (!NoBackwardLink.allowedLink(this.getVariableFrom(), this.getVariableTo())) {
+                constraintChecker.addException(new ConstraintViolatedException.CannotAddLinkToAPreviousTimeSlice(constraint, this.getVariableFrom(), this.getVariableTo()));
             }
         }
         if (probNet.getConstraintOfClass(NoCycle.class) instanceof NoCycle constraint) {
-            Node node1 = probNet.getNode(this.getVariable1());
-            Node node2 = probNet.getNode(this.getVariable2());
+            Node node1 = probNet.getNode(this.getVariableFrom());
+            Node node2 = probNet.getNode(this.getVariableTo());
             if (probNet.existsPath(node2, node1, true)) {
                 constraintChecker.addException(new ConstraintViolatedException.ThereIsACycle(constraint, node1, node2));
             }
         }
         if (probNet.getConstraintOfClass(NoLoops.class) instanceof NoLoops constraint) {
-            Node node1 = probNet.getNode(this.getVariable1());
-            Node node2 = probNet.getNode(this.getVariable2());
+            Node node1 = probNet.getNode(this.getVariableFrom());
+            Node node2 = probNet.getNode(this.getVariableTo());
             if (probNet.existsPath(node2, node1, false)) {
                 constraintChecker.addException(new ConstraintViolatedException.ThereIsALoop(constraint, node1, node2));
             }
         }
         if (probNet.getConstraintOfClass(NoMixedParents.class) instanceof NoMixedParents constraint) {
             if (this.isDirected()) {
-                Node node2 = probNet.getNode(this.getVariable2());
-                if (node2.getNodeType() == NodeType.UTILITY) {
-                    Node node1 = probNet.getNode(this.getVariable1());
-                    if (NoMixedParents.parentNodeIsNotMixed(node1)) {
-                        constraintChecker.addException(new ConstraintViolatedException.ParentCannotBeMixed(constraint, node2, node1));
-                    }
+                Node nodeTo = probNet.getNode(this.getVariableTo());
+                if (nodeTo.getNodeType() == NodeType.UTILITY) {
+                    Node nodeFrom = probNet.getNode(this.getVariableFrom());
+                    var newParentsList = nodeTo.getParents().stream().collect(Collectors.toCollection(ArrayList::new));
+                    newParentsList.add(nodeFrom);
+                    constraint.checkParents(nodeTo, newParentsList, constraintChecker);
                 }
             }
         }
         if (probNet.getConstraintOfClass(NoMultipleLinks.class) instanceof NoMultipleLinks constraint) {
-            Node node1 = probNet.getNode(this.getVariable1());
-            Node node2 = probNet.getNode(this.getVariable2());
+            Node node1 = probNet.getNode(this.getVariableFrom());
+            Node node2 = probNet.getNode(this.getVariableTo());
             boolean directed = this.isDirected();
             constraint.checkLink(this.getProbNet(), constraintChecker, node1, node2, directed);
         }
         if (probNet.getConstraintOfClass(NoSelfLoop.class) instanceof NoSelfLoop constraint) {
-            if (this.getVariable1().equals(this.getVariable2())) {
-                constraintChecker.addException(new ConstraintViolatedException.CannotSelfLink(constraint, this.getNode1()));
+            if (this.getVariableFrom().equals(this.getVariableTo())) {
+                constraintChecker.addException(new ConstraintViolatedException.CannotSelfLink(constraint, this.getNodeFrom()));
             }
         }
         if (probNet.getConstraintOfClass(NoSuperValueNode.class) instanceof NoSuperValueNode constraint) {
-            if (this.getNode1().getNodeType() == NodeType.UTILITY) {
-                constraintChecker.addException(new ConstraintViolatedException.NoSuperValueNodeAllowed(constraint, this.getNode1()));
+            if (this.getNodeFrom().getNodeType() == NodeType.UTILITY) {
+                constraintChecker.addException(new ConstraintViolatedException.NoSuperValueNodeAllowed(constraint, this.getNodeFrom()));
             }
         }
         if (probNet.getConstraintOfClass(NoUtilityParent.class) instanceof NoUtilityParent constraint) {
-            Node node1 = probNet.getNode(this.getVariable1());
-            Node node2 = probNet.getNode(this.getVariable2());
+            Node node1 = probNet.getNode(this.getVariableFrom());
+            Node node2 = probNet.getNode(this.getVariableTo());
             if (node1.getNodeType() == NodeType.UTILITY && node2.getNodeType() != NodeType.UTILITY) {
                 constraintChecker.addException(new ConstraintViolatedException.CannotHaveUtilityParent(constraint, node1, node2));
             }
         }
         if (probNet.getConstraintOfClass(OnlyDirectedLinks.class) instanceof OnlyDirectedLinks constraint) {
             if (!this.isDirected()) {
-                constraintChecker.addException(new ConstraintViolatedException.OnlyDirectedLinksAllowed(constraint, this.node1, List.of(this.node2)));
+                constraintChecker.addException(new ConstraintViolatedException.OnlyDirectedLinksAllowed(constraint, this.nodeFrom, List.of(this.nodeTo)));
             }
         }
         if (probNet.getConstraintOfClass(OnlyUndirectedLinks.class) instanceof OnlyUndirectedLinks constraint) {
             if (this.isDirected()) {
-                constraintChecker.addException(new ConstraintViolatedException.OnlyUndirectedLinksCannotHaveChildren(constraint, node1, List.of(node2)));
+                constraintChecker.addException(new ConstraintViolatedException.OnlyUndirectedLinksCannotHaveChildren(constraint, nodeFrom, List.of(nodeTo)));
             }
         }
         if (probNet.getConstraintOfClass(ModelNetworkConstraint.class) instanceof ModelNetworkConstraint constraint
                 && !constraint.isLinkAdditionAllowed() && !constraint.canEditBeDone(this)) {
-            constraintChecker.addException(new ConstraintViolatedException.ModelDoesNotAllowAddingLink(constraint, this.getVariable1(), this.getVariable2()));
+            constraintChecker.addException(new ConstraintViolatedException.ModelDoesNotAllowAddingLink(constraint, this.getVariableFrom(), this.getVariableTo()));
         }
         if (probNet.getConstraintOfClass(NoAlwaysObservedDescendantOfDecision.class) instanceof NoAlwaysObservedDescendantOfDecision constraint) {
             List<Node> decisionNodes = probNet.getNodes(NodeType.DECISION);
             List<Node> alwaysObservedNodes = probNet.getNodes().stream().filter(Node::isAlwaysObserved).toList();
             AddLinkEdit addLinkEdit = this;
             if (addLinkEdit.isDirected()) { // checks constraint
-                Node node1 = probNet.getNode(addLinkEdit.getVariable1());
-                Node node2 = probNet.getNode(addLinkEdit.getVariable2());
+                Node node1 = probNet.getNode(addLinkEdit.getVariableFrom());
+                Node node2 = probNet.getNode(addLinkEdit.getVariableTo());
                 boolean isAlwaysObserved = node1.isAlwaysObserved();
                 if (isAlwaysObserved) {
                     for (Node ancestor : NoAlwaysObservedDescendantOfDecision.ancestorInList(probNet, node1, decisionNodes)) {
@@ -171,18 +172,18 @@ public final class AddLinkEdit extends BaseLinkEdit {
     }
     
     @Override public void doEdit() {
-        probNet.addLink(node1, node2, isDirected);
-        this.link = probNet.getLink(node1, node2, isDirected);
+        probNet.addLink(nodeFrom, nodeTo, isDirected);
+        this.link = probNet.getLink(nodeFrom, nodeTo, isDirected);
         if (updatePotentials) {
-            this.oldPotentials = node2.getPotentials();
+            this.oldPotentials = nodeTo.getPotentials();
             // TODO Check if this UTILITY label is outdated
-            if (node2.getNodeType() == NodeType.UTILITY && node2.onlyNumericalParents()) {
+            if (nodeTo.getNodeType() == NodeType.UTILITY && nodeTo.onlyNumericalParents()) {
                 // Add a default Sum potential to utility supervalue nodes
                 for (Potential oldPotential : oldPotentials) {
                     // Update potential
                     List<Variable> variables = oldPotential.getVariables();
-                    if (!variables.contains(node1.getVariable())) {
-                        variables.add(node1.getVariable());
+                    if (!variables.contains(nodeFrom.getVariable())) {
+                        variables.add(nodeFrom.getVariable());
                     }
                     Potential newPotential = new SumPotential(variables, oldPotential.getPotentialRole());
                     newPotentials.add(newPotential);
@@ -190,23 +191,23 @@ public final class AddLinkEdit extends BaseLinkEdit {
             } else {
                 for (Potential oldPotential : oldPotentials) {
                     // Update potential
-                    Potential newPotential = oldPotential.addVariable(node1.getVariable());
+                    Potential newPotential = oldPotential.addVariable(nodeFrom.getVariable());
                     newPotentials.add(newPotential);
                 }
             }
-            node2.setPotentials(newPotentials);
+            nodeTo.setPotentials(newPotentials);
         }
     }
     
     @Override public void undo() {
         super.undo();
         
-        node2 = probNet.getNode(variable2.getName());
+        nodeTo = probNet.getNode(variableTo.getName());
         
         if (updatePotentials) {
-            node2.setPotentials(oldPotentials);
+            nodeTo.setPotentials(oldPotentials);
         }
-        probNet.removeLink(variable1, variable2, isDirected);
+        probNet.removeLink(variableFrom, variableTo, isDirected);
     }
     
     /**
@@ -221,13 +222,13 @@ public final class AddLinkEdit extends BaseLinkEdit {
         int result;
         
         if ((
-                result = variable1.getName().compareTo(obj.getVariable1().
-                                                          getName())
+                result = variableFrom.getName().compareTo(obj.getVariableFrom().
+                                                             getName())
         ) != 0)
             return result;
         if ((
-                result = variable2.getName().compareTo(obj.getVariable2().
-                                                          getName())
+                result = variableTo.getName().compareTo(obj.getVariableTo().
+                                                           getName())
         ) != 0)
             return result;
         return 0;
@@ -242,8 +243,8 @@ public final class AddLinkEdit extends BaseLinkEdit {
      *
      * @return the first {@code Node} object in the link.
      */
-    public Node getNode1() {
-        return node1;
+    public Node getNodeFrom() {
+        return nodeFrom;
     }
     
     /**
@@ -251,8 +252,8 @@ public final class AddLinkEdit extends BaseLinkEdit {
      *
      * @return the second {@code Node} object in the link.
      */
-    public Node getNode2() {
-        return node2;
+    public Node getNodeTo() {
+        return nodeTo;
     }
     
     /**
@@ -265,6 +266,6 @@ public final class AddLinkEdit extends BaseLinkEdit {
     }
     
     @Override public BaseLinkEdit getUndoEdit() {
-        return new RemoveLinkEdit(getProbNet(), getVariable1(), getVariable2(), isDirected());
+        return new RemoveLinkEdit(getProbNet(), getVariableFrom(), getVariableTo(), isDirected());
     }
 }

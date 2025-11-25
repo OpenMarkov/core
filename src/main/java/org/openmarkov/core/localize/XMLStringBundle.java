@@ -9,7 +9,6 @@ package org.openmarkov.core.localize;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.annotation.ToCheck;
 
 import java.util.MissingResourceException;
 import java.util.Set;

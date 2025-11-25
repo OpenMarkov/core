@@ -40,17 +40,17 @@ import org.openmarkov.core.model.network.ProbNet;
     
     public void executeEdit() throws DoEditException {
         PNESupport pneSupport = getProbNet().getPNESupport();
-        ConstraintChecker constraintChecker = new ConstraintChecker(probNet);
-        this.checkConstraintsWillBeMet(constraintChecker);
         try {
+            ConstraintChecker constraintChecker = new ConstraintChecker(probNet);
+            this.checkConstraintsWillBeMet(constraintChecker);
             constraintChecker.buildAndThrow();
         } catch (ConstraintViolatedException ex) {
             for (PNUndoableEditListener listener : pneSupport.getListeners()) {
-                listener.onEditViolatesConstraints(new PNUndoableEditEvent(pneSupport, this, probNet), ex);
+                listener.onEditViolatesConstraints(new PNUndoableEditEvent(this), ex);
             }
             throw ex;
         }
-        PNUndoableEditEvent event = new PNUndoableEditEvent(pneSupport, this, probNet);
+        PNUndoableEditEvent event = new PNUndoableEditEvent(this);
         for (PNUndoableEditListener listener : pneSupport.getListeners()) {
             listener.beforeEditHappens(event);
         }

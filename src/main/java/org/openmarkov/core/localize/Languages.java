@@ -7,7 +7,7 @@
 
 package org.openmarkov.core.localize;
 
-import org.openmarkov.core.annotation.ToCheck;
+import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 
 import java.util.Arrays;
 import java.util.List;

@@ -30,8 +30,7 @@ public class MaxNumParentsTest {
     
     @Tag(TestSpeed.SLOW)
     @Test public void testCheckProbNet() {
-        MaxNumParents constraint = new MaxNumParents();
-        constraint.setMaxNumParents(1);
+        MaxNumParents constraint = new MaxNumParents(1);
         net.removeConstraint(constraint);
         net.addConstraint(constraint);
         

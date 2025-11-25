@@ -49,11 +49,13 @@ open module org.openmarkov.core {
     exports org.openmarkov.core.localize.spi;
     exports org.openmarkov.core.localize;
     exports org.openmarkov.core.logging;
-    exports org.openmarkov.core.annotation;
+    exports org.openmarkov.core.developmentStaticAnalysis;
     exports org.openmarkov.java.enumUtils;
     exports org.openmarkov.java.exceptionUtils;
     exports org.openmarkov.java.cloneUtils;
     exports org.openmarkov.core.io.exception;
     exports org.openmarkov.core.action.base;
     exports org.openmarkov.core.action.base.linkEdits;
+    exports org.openmarkov.core.developmentStaticAnalysis.requirements;
+    exports org.openmarkov.java.classUtils;
 }

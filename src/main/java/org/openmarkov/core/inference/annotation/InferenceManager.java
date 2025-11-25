@@ -9,7 +9,7 @@ package org.openmarkov.core.inference.annotation;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.annotation.ToCheck;
+import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.inference.InferenceAlgorithm;

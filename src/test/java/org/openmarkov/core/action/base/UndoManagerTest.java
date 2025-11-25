@@ -1,7 +1,6 @@
 package org.openmarkov.core.action.base;
 
 import org.junit.jupiter.api.Test;
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,7 +17,6 @@ class UndoManagerTest {
         var editC = new NamedEdit(probNet, "C");
         var editD = new NamedEdit(probNet, "D");
         var editE = new NamedEdit(probNet, "E");
-        var editF = new NamedEdit(probNet, "F");
         
         
         var manager = new UndoManager();
@@ -113,7 +111,7 @@ class UndoManagerTest {
     
     
     static class NamedEdit extends PNEdit {
-        @Override public void doEdit() throws DoEditException {
+        @Override public void doEdit() {
         }
         
         final String name;
@@ -127,5 +125,4 @@ class UndoManagerTest {
             return "Edit named " + name;
         }
     }
-    
 }

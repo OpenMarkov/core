@@ -497,13 +497,13 @@ public class ProbNetTest {
         int numBNConstraints = ConstraintManager.getUniqueInstance().
                                                 buildConstraintList(BayesianNetworkType.getUniqueInstance()).
                                                 size();
-        emptyProbNet.addConstraint(new MaxNumParents());
+        emptyProbNet.addConstraint(new MaxNumParents(1));
         List<PNConstraint> constraints = emptyProbNet.getConstraints();
         assertEquals(numBNConstraints + 1, constraints.size());
     }
     
     @Test public void testRemoveConstraint() {
-        PNConstraint constraint = new MaxNumParents();
+        PNConstraint constraint = new MaxNumParents(1);
         // By default a ProbNet is a Bayesian Network
         int numBNConstraints = ConstraintManager.getUniqueInstance().
                                                 buildConstraintList(BayesianNetworkType.getUniqueInstance()).
@@ -815,7 +815,7 @@ public class ProbNetTest {
     
     @Test public void testGetAdditionalConstraints() {
         ProbNet bnProbNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-        PNConstraint maxNumParents = new MaxNumParents();
+        PNConstraint maxNumParents = new MaxNumParents(1);
         bnProbNet.addConstraint(maxNumParents);
         List<PNConstraint> additionalConstraints = bnProbNet.getAdditionalConstraints();
         assertEquals(1, additionalConstraints.size());

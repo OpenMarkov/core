@@ -28,7 +28,7 @@ import org.openmarkov.core.model.network.constraint.ModelNetworkConstraint;
     @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(ModelNetworkConstraint.class) instanceof ModelNetworkConstraint constraint
                 && !constraint.isLinkInversionAllowed() && !constraint.canEditBeDone(this)) {
-            constraintChecker.addException(new ConstraintViolatedException.ModelDoesNotAllowInvertingLink(constraint, this.variable2, this.variable1));
+            constraintChecker.addException(new ConstraintViolatedException.ModelDoesNotAllowInvertingLink(constraint, this.variableTo, this.variableFrom));
         }
     }
     
@@ -37,8 +37,8 @@ import org.openmarkov.core.model.network.constraint.ModelNetworkConstraint;
 	 * Do the edition by removing the existing link and adding a new directed link between the same two variables.
 	 */
 	@Override public void doEdit() {
-        probNet.removeLink(variable1, variable2, false);
-        probNet.addLink(variable1, variable2, true);
+        probNet.removeLink(variableFrom, variableTo, false);
+        probNet.addLink(variableFrom, variableTo, true);
     }
     
 	/**
@@ -47,8 +47,8 @@ import org.openmarkov.core.model.network.constraint.ModelNetworkConstraint;
 	 */
 	@Override public void undo() {
 		super.undo();
-        probNet.removeLink(variable1, variable2, true);
-        probNet.addLink(variable1, variable2, false);
+        probNet.removeLink(variableFrom, variableTo, true);
+        probNet.addLink(variableFrom, variableTo, false);
     }
 
 	/**
@@ -61,13 +61,13 @@ import org.openmarkov.core.model.network.constraint.ModelNetworkConstraint;
 		int result;
 
 		if ((
-				result = variable1.getName().compareTo(obj.getVariable1().
-						getName())
+                result = variableFrom.getName().compareTo(obj.getVariableFrom().
+                                                             getName())
 		) != 0)
 			return result;
 		if ((
-				result = variable2.getName().compareTo(obj.getVariable2().
-						getName())
+                result = variableTo.getName().compareTo(obj.getVariableTo().
+                                                           getName())
 		) != 0)
 			return result;
         return 0;

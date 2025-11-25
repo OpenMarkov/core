@@ -8,8 +8,8 @@
 package org.openmarkov.core.inference;
 
 import org.openmarkov.core.action.base.PNESupport;
-import org.openmarkov.core.annotation.ImplementationRequirements;
-import org.openmarkov.core.annotation.RequiredConstructor;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;

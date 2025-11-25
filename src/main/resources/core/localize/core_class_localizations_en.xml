@@ -66,10 +66,12 @@
     <Localization
             class="org.openmarkov.core.exception.ConstraintViolatedException$OnlyUndirectedLinksCannotHaveChildren"
             value="Node {node} must have only undirected links to other nodes, but it has directed links to children nodes: {children}."/>
+    <Localization class="org.openmarkov.core.exception.ConstraintViolatedException$MixedParentContainsMoreThanOneSet"
+                  value="Node {child} must have parents that are only be utility nodes, or chance or decision nodes, but it has parents that belong to both:\nChance/Decision nodes: {chanceOrDecisionNodes}\nUtility nodes: {utilityNodes}."/>
+    <Localization class="org.openmarkov.core.exception.ConstraintViolatedException$MixedParentDoesntAllowThisNodeType"
+                  value="Node {child} cannot be child of {parent}, as parents can only be utility nodes, or chance or decision nodes."/>
     <Localization class="org.openmarkov.core.exception.ConstraintViolatedException$OnlyUndirectedLinksCannotHaveParents"
                   value="Node {node} must have only undirected links to other nodes, but it has directed links to parent nodes: {parents}."/>
-    <Localization class="org.openmarkov.core.exception.ConstraintViolatedException$ParentCannotBeMixed"
-                  value="Utility node {utilityNode} cannot be linked to {parent} as it is a mixed parent."/>
     <Localization class="org.openmarkov.core.exception.ConstraintViolatedException$StateAlreadyExists"
                   value="State {newState} already exists in node {node}."/>
     <Localization class="org.openmarkov.core.exception.ConstraintViolatedException$StateDuplicated"

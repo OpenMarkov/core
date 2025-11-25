@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Inverts an existing link.
@@ -61,16 +62,16 @@ import java.util.List;
     @Override
     public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(DistinctLinks.class) instanceof DistinctLinks constraint) {
-            Node node1 = probNet.getNode(this.getVariable1());
-            Node node2 = probNet.getNode(this.getVariable2());
+            Node node1 = probNet.getNode(this.getVariableFrom());
+            Node node2 = probNet.getNode(this.getVariableTo());
             boolean directed = this.isDirected();
             if (!DistinctLinks.checkLink(probNet, node2, node1, directed)) {
                 constraintChecker.addException(new ConstraintViolatedException.LinkAlreadyExists(constraint, node2, node1));
             }
         }
         if (probNet.getConstraintOfClass(NoCycle.class) instanceof NoCycle constraint) {
-            Node node1 = probNet.getNode(this.getVariable1());
-            Node node2 = probNet.getNode(this.getVariable2());
+            Node node1 = probNet.getNode(this.getVariableFrom());
+            Node node2 = probNet.getNode(this.getVariableTo());
             probNet.removeLink(node1, node2, true);
             boolean existsPath = probNet.existsPath(node1, node2, true);
             probNet.addLink(node1, node2, true);
@@ -79,23 +80,23 @@ import java.util.List;
             }
         }
         if (probNet.getConstraintOfClass(NoMixedParents.class) instanceof NoMixedParents constraint) {
-            Node node2 = probNet.getNode(this.getVariable2());
-            if (node2.getNodeType() == NodeType.UTILITY) {
-                Node node1 = probNet.getNode(this.getVariable1());
-                if (NoMixedParents.parentNodeIsNotMixed(node2)) {
-                    constraintChecker.addException(new ConstraintViolatedException.ParentCannotBeMixed(constraint, node1, node2));
-                }
+            Node nodeTo = probNet.getNode(this.getVariableTo());
+            if (nodeTo.getNodeType() == NodeType.UTILITY) {
+                Node nodeFrom = probNet.getNode(this.getVariableFrom());
+                var newParents = nodeFrom.getParents().stream().collect(Collectors.toCollection(ArrayList::new));
+                newParents.add(nodeTo);
+                constraint.checkParents(nodeFrom, newParents, constraintChecker);
             }
         }
         if (probNet.getConstraintOfClass(NoMultipleLinks.class) instanceof NoMultipleLinks constraint) {
-            Node node1 = probNet.getNode(this.getVariable1());
-            Node node2 = probNet.getNode(this.getVariable2());
+            Node node1 = probNet.getNode(this.getVariableFrom());
+            Node node2 = probNet.getNode(this.getVariableTo());
             boolean directed = this.isDirected();
             constraint.checkLink(probNet, constraintChecker, node2, node1, directed);
         }
         if (probNet.getConstraintOfClass(ModelNetworkConstraint.class) instanceof ModelNetworkConstraint constraint
                 && !constraint.isLinkInversionAllowed() && !constraint.canEditBeDone(this)) {
-            constraintChecker.addException(new ConstraintViolatedException.ModelDoesNotAllowInvertingLink(constraint, this.getVariable1(), this.getVariable2()));
+            constraintChecker.addException(new ConstraintViolatedException.ModelDoesNotAllowInvertingLink(constraint, this.getVariableFrom(), this.getVariableTo()));
         }
     }
     
@@ -139,8 +140,8 @@ import java.util.List;
     
     @Override public void undo() {
         super.undo();
-        probNet.removeLink(variable2, variable1, isDirected);
-        probNet.addLink(variable1, variable2, isDirected);
+        probNet.removeLink(variableTo, variableFrom, isDirected);
+        probNet.addLink(variableFrom, variableTo, isDirected);
         node1.setPotentials(parentOldPotentials);
         node2.setPotentials(childOldPotentials);
     }
@@ -157,14 +158,14 @@ import java.util.List;
         int result;
         
         if ((
-                result = variable1.getName().compareTo(obj.getVariable1().
-                                                          getName())
+                result = variableFrom.getName().compareTo(obj.getVariableFrom().
+                                                             getName())
         ) != 0) {
             return result;
         }
         if ((
-                result = variable2.getName().compareTo(obj.getVariable2().
-                                                          getName())
+                result = variableTo.getName().compareTo(obj.getVariableTo().
+                                                           getName())
         ) != 0) {
             return result;
         }
@@ -181,12 +182,12 @@ import java.util.List;
      * @return {@code String}
      */
     public String toString() {
-        return getOperationName() + ": " + variable1 + "-->" + variable2 +
-                " ==> " + variable2 + "-->" + variable1;
+        return getOperationName() + ": " + variableFrom + "-->" + variableTo +
+                " ==> " + variableTo + "-->" + variableFrom;
     }
     
     @Override public BaseLinkEdit getUndoEdit() {
-        return new InvertLinkEdit(getProbNet(), getVariable2(), getVariable1(), isDirected());
+        return new InvertLinkEdit(getProbNet(), getVariableTo(), getVariableFrom(), isDirected());
     }
     
 }

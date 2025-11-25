@@ -47,8 +47,10 @@ public class NodeStateEdit extends PNEdit {
      * index of the state selected in the view
      */
     private int selectedStateIndex;
-
-    private int stateIndex;
+    
+    
+    //This field is probably a wrong field someone did because they couldn't find indexState, so they created stateIndex
+    //private int stateIndex;
     /**
      * The node that the stats belongs to
      */
@@ -150,9 +152,7 @@ public class NodeStateEdit extends PNEdit {
     }
     
     @Override public void doEdit() {
-
-        node.getVariable().modifyState(node,stateAction,stateIndex,newName);
-
+        node.getVariable().modifyState(node, stateAction, 0, newName);
         
     }
 

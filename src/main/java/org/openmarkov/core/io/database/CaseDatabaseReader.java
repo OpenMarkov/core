@@ -7,8 +7,8 @@
 
 package org.openmarkov.core.io.database;
 
-import org.openmarkov.core.annotation.ImplementationRequirements;
-import org.openmarkov.core.annotation.RequiredConstructor;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
 import org.openmarkov.core.exception.EmptyDatabaseException;
 import org.openmarkov.core.exception.ParsingSourceException;
 

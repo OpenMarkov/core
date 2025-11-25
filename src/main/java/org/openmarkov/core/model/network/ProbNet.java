@@ -10,7 +10,7 @@ package org.openmarkov.core.model.network;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.action.base.PNESupport;
-import org.openmarkov.core.annotation.ToCheck;
+import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.localize.ClassLocalizable;
@@ -27,6 +27,7 @@ import org.openmarkov.core.model.network.type.MarkovNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -69,14 +70,11 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
             out.append("No constraints\n");
         } else {
             out.append("Constraints: ");
-            for (int i = 0; i < constraints.size(); i++) {
-                String strConstraint = constraints.get(i).toString();
-                strConstraint = strConstraint.substring(strConstraint.lastIndexOf('.') + 1);
-                out.append(strConstraint);
-                if (i < constraints.size() - 1) {
-                    out.append(", ");
-                }
-            }
+            String constraintsAsStr = constraints.stream().map(constraint -> {
+                String strConstraint = constraint.toString();
+                return strConstraint.substring(strConstraint.lastIndexOf('.') + 1);
+            }).collect(Collectors.joining(", "));
+            out.append(constraintsAsStr);
             out.append("\n");
         }
         if (agents != null) {
@@ -105,7 +103,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * {@code ArrayList} of {@code Constraints} that defines this
      * {@code ProbNet}. This attribute is not frozen to allow conversions
      */
-    private List<PNConstraint> constraints;
+    private TreeSet<PNConstraint> constraints;
     /**
      * Set of agents, defined by a name. Each one may have several properties.
      */
@@ -146,7 +144,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         this.pNESupport = new PNESupport(this);
         this.decisionCriteria = new ArrayList<>();
         decisionCriteria.add(new Criterion());
-        this.constraints = new ArrayList<>();
+        this.constraints = new TreeSet<>();
         this.nodeDepot = new NodeTypeDepot();
         this.inferenceOptions = new InferenceOptions();
         this.constantPotentials = new HashSet<>();
@@ -319,13 +317,31 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      *
      * @throws InvalidNetworkTypeException.UnmetConstraints UnmetConstraints
      */
+    /**
+     * Sets Network type
+     *
+     * @param newNetworkType {@code NetworkType}
+     *
+     */
     public void setNetworkType(NetworkType newNetworkType) throws ConstraintViolatedException {
-        // Build and check the new constraints
-        List<PNConstraint> newConstraints = ConstraintManager.getUniqueInstance().buildConstraintList(newNetworkType);
-        this.checkConstraints(newConstraints);
+        NetworkType oldNetworkType = this.networkType;
         this.networkType = newNetworkType;
-        this.constraints.clear();
-        this.constraints.addAll(newConstraints);
+        List<PNConstraint> newConstraints = ConstraintManager.getUniqueInstance().buildConstraintList(newNetworkType);
+        // Add new constraints implied by the network type
+        newConstraints.removeIf(newConstraint -> this.constraints.contains(newConstraint));
+        for (PNConstraint newConstraint : newConstraints) {
+            var checker = new ConstraintChecker(this);
+            newConstraint.checkProbNet(this, checker);
+            try {
+                checker.buildAndThrow();
+            } catch (ConstraintViolatedException e) {
+                throw e;
+            }
+        }
+        for (PNConstraint newConstraint : newConstraints) {
+            addConstraint(newConstraint);
+        }
+        this.constraints.removeIf(constraint -> !newNetworkType.isApplicableConstraint(constraint));
     }
     
     /**
@@ -464,8 +480,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         copyNet.setName(name);
         // copy constraints
         int numConstraints = constraints.size();
-        for (int i = 0; i < numConstraints; i++) {
-            copyNet.addConstraint(constraints.get(i));
+        for (PNConstraint constraint : constraints) {
+            copyNet.addConstraint(constraint);
         }
         List<Node> nodes = getNodes();
         // Adds variables and create corresponding nodes. Also add potentials
@@ -1341,7 +1357,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     
     public ProbNet deepCopy() {
         ProbNet copyNet = new ProbNet(this.networkType);
-        copyNet.constraints = new ArrayList<>();
+        copyNet.constraints = new TreeSet<>();
         
         // copy decision criteria
         if (this.getDecisionCriteria() != null) {
@@ -1366,9 +1382,9 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         
         // copy constraints
         int numConstraints = constraints.size();
-        for (int i = 1; i < numConstraints; i++) {
-            copyNet.addConstraint(constraints.get(i));
-        }
+        
+        constraints.stream().skip(1).limit(numConstraints - 1)
+                   .forEach(constraint -> copyNet.addConstraint(constraint));
         
         List<Node> nodes = getNodes();
         // Adds variables and create corresponding nodes. Also add potentials

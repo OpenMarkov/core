@@ -7,24 +7,28 @@
 
 package org.openmarkov.core.model.network.constraint;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Constraint(name = "MaxNumParents", defaultBehavior = ConstraintBehavior.OPTIONAL) public class MaxNumParents
 		extends PNConstraint {
-
-	private int maxNumParents;
+    
+    private final int maxNumParents;
+    
+    public MaxNumParents(int maxNumParents) {
+        this.maxNumParents = maxNumParents;
+    }
     
     public int getMaxNumParents() {
         return this.maxNumParents;
     }
-    
-    public void setMaxNumParents(int maxNumParents) {
-		this.maxNumParents = maxNumParents;
-	}
     
     @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
 		for (Node child : probNet.getNodes()) {
@@ -34,5 +38,13 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 			}
 		}
     }
- 
+    
+    @Override public int compareTo(@NotNull PNConstraint o) {
+        var difference = super.compareTo(o);
+        if (difference != 0) {
+            return difference;
+        }
+        MaxNumParents other = (MaxNumParents) o;
+        return Integer.valueOf(this.maxNumParents).compareTo(other.maxNumParents);
+    }
 }

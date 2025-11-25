@@ -201,9 +201,9 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	@Override public void undo() {
 		super.undo();
         // Delete link Y -> X
-        probNet.removeLink(variable2, variable1, isDirected);
+        probNet.removeLink(variableTo, variableFrom, isDirected);
         // Re-create link X -> Y
-        probNet.addLink(variable1, variable2, isDirected);
+        probNet.addLink(variableFrom, variableTo, isDirected);
         // Delete the links created when the nodes shared their fathers
         for (Link<Node> undoLink : linksToUndo) {
             probNet.removeLink(undoLink.getNode1(), undoLink.getNode2(), true);
@@ -219,9 +219,9 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	    setTypicalRedo(false);
         super.redo();
         // Re-remove link X -> Y
-        probNet.removeLink(variable1, variable2, isDirected);
+        probNet.removeLink(variableFrom, variableTo, isDirected);
         // Recreate link Y -> X
-        probNet.addLink(variable2, variable1, isDirected);
+        probNet.addLink(variableTo, variableFrom, isDirected);
         // Re-created the links of shared fathers
         for (Link<Node> linkToRedo : linksToUndo) {
             probNet.addLink(linkToRedo.getNode1(), linkToRedo.getNode2(), true);
@@ -250,13 +250,13 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 		int result;
 
 		if ((
-				result = variable1.getName().compareTo(obj.getVariable1().
-						getName())
+                result = variableFrom.getName().compareTo(obj.getVariableFrom().
+                                                             getName())
 		) != 0)
 			return result;
 		if ((
-				result = variable2.getName().compareTo(obj.getVariable2().
-						getName())
+                result = variableTo.getName().compareTo(obj.getVariableTo().
+                                                           getName())
 		) != 0)
 			return result;
         return 0;
@@ -267,12 +267,12 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	}
 
 	public String toString() {
-		return "Invert link and update potentials: " + variable1 + "-->" + variable2 + " ==> " + variable1 + "<--" + variable2;
+        return "Invert link and update potentials: " + variableFrom + "-->" + variableTo + " ==> " + variableFrom + "<--" + variableTo;
 	}
 
 	@Override public BaseLinkEdit getUndoEdit() {
-		return new InvertLinkAndUpdatePotentialsEdit(getProbNet(), getVariable2(),
-				getVariable1());
+        return new InvertLinkAndUpdatePotentialsEdit(getProbNet(), getVariableTo(),
+                                                     getVariableFrom());
 	}
 
 }

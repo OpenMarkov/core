@@ -14,10 +14,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -283,6 +280,37 @@ public class PotentialOperations {
         }
         UniformPotential uniformPotential = new UniformPotential(variables, role);
         return uniformPotential;
+    }
+    public static Potential getTablePotential(ProbNet probNet, Variable variable, NodeType auxNodeType) {
+
+        List<Variable> variables = new ArrayList<>();
+        variables.add(variable);
+        for (Node node : probNet.getParents(probNet.getNode(variable))) {
+            variables.add(node.getVariable());
+        }
+        PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
+        if (auxNodeType == NodeType.DECISION) {
+            //			role = PotentialRole.DECISION;
+            role = PotentialRole.POLICY;
+        }
+        TablePotential tablePotential = new TablePotential(variables, role);
+        return tablePotential;
+    }
+
+    public static Potential getExactPotential(ProbNet probNet, Variable variable, NodeType auxNodeType) {
+
+        List<Variable> variables = new ArrayList<>();
+        variables.add(variable);
+        for (Node node : probNet.getParents(probNet.getNode(variable))) {
+            variables.add(node.getVariable());
+        }
+        PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
+        if (auxNodeType == NodeType.DECISION) {
+            //			role = PotentialRole.DECISION;
+            role = PotentialRole.POLICY;
+        }
+        ExactDistrPotential exactDistrPotential = new ExactDistrPotential(variables, role);
+        return exactDistrPotential;
     }
     
     private static boolean hasFiniteStates(List<Variable> variables) {

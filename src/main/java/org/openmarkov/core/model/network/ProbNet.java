@@ -978,11 +978,21 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         // TODO revisar si es conveniente utilizar una constraint
         // Sets a uniformPotential for the new node
         // Decision node has no potential when is created
-        if (nodeType != NodeType.DECISION) {
+        /*if (nodeType != NodeType.DECISION) {
             addPotential(PotentialOperations.getUniformPotential(this, variable, nodeType));
             newNode = getNode(variable);
         } else {
             newNode.setPolicyType(PolicyType.OPTIMAL);
+        }*/
+        if (nodeType == NodeType.DECISION){
+            //PotentialOperations.getTablePotential(this, variable, nodeType);
+            newNode.setPolicyType(PolicyType.OPTIMAL);
+        }
+        if (nodeType == NodeType.CHANCE){
+            addPotential(PotentialOperations.getTablePotential(this, variable, nodeType));
+        }
+        if (nodeType == NodeType.UTILITY){
+            addPotential(PotentialOperations.getExactPotential(this, variable, nodeType));
         }
         // Sets the visual node position
         newNode.setCoordinateX((int) cursorPosition.getX());

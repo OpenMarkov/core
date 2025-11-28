@@ -409,7 +409,7 @@ public class OOPNet extends ProbNet implements PNUndoableEditListener {
                             newPotential.replaceVariable(variable,
                                                          getVariable(instanceName + "." + variable.getName()));
                         }
-                        yield new PotentialChangeEdit(this, oldPotential, newPotential);
+                        yield new PotentialChangeEdit(getNode(oldPotential.getVariable(0)), oldPotential, newPotential);
                     }
                     case ICIPotentialEdit iciPotentialEdit -> {
                         ICIPotential potential = (ICIPotential) findEquivalentPotentialInInstance(instanceName, iciPotentialEdit.getPotential());

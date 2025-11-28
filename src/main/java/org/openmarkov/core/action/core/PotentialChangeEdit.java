@@ -32,54 +32,27 @@ public class PotentialChangeEdit extends PNEdit {
 	// Constructor
 
 	/**
-	 * @param probNet      {@code ProbNet}
+	 * @param node      {@code Node}
 	 * @param oldPotential {@code Potential}
 	 * @param newPotential {@code Potential}
 	 */
-	public PotentialChangeEdit(ProbNet probNet, Potential oldPotential, Potential newPotential) {
-		super(probNet);
-		this.newPotential = newPotential;
-		this.oldPotential = oldPotential;
-	}
-
-	public PotentialChangeEdit(Node node, Potential oldPotential, Potential newPotential){
+	public PotentialChangeEdit(Node node, Potential oldPotential, Potential newPotential) {
 		super(node.getProbNet());
 		this.newPotential = newPotential;
 		this.oldPotential = oldPotential;
-		this.node = node;
+        this.node = node;
 	}
 
 	@Override public void doEdit() throws DoEditException.CannotRemovePotential {
-		if(node == null){
-			if (probNet.removePotential(oldPotential) == null) {
-				throw new DoEditException.CannotRemovePotential(probNet, oldPotential);
-			}
-			probNet.addPotential(newPotential);
-		}else{
-			List<Potential> potentials = new ArrayList<>();
-			potentials.add(newPotential);
-			potentials.add(oldPotential);
-			node.setPotentials(potentials);
-		}
-	}
-    
-    @Override
-	public void undo() {
-		super.undo();
-		probNet.removePotential(newPotential);
-		if (probNet.getNode(oldPotential.getVariable(0)).getNodeType() == NodeType.CHANCE) {
-			probNet.addPotential(oldPotential);
-		}else if (probNet.getNode(oldPotential.getVariable(0)).hasPolicy()) {
-			probNet.addPotential(oldPotential);
-		}
+        if(!newPotential.equals(node.getPotential())) {
+            if (!node.removePotential(oldPotential)) {
+                throw new DoEditException.CannotRemovePotential(probNet, oldPotential);
+            }
+            node.addPotential(newPotential);
+        }
 	}
 
-	@Override
-	public void redo() {
-		super.redo();
-		probNet.removePotential(oldPotential);
-		probNet.addPotential(newPotential);
-	}
+
 
 	/**
 	 * @return A {@code String} with the variables of both potentials.

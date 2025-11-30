@@ -41,8 +41,6 @@ open module org.openmarkov.core {
     exports org.openmarkov.core.io.database;
     exports org.openmarkov.core.io.database.plugin;
     exports org.openmarkov.core.io.format.annotation;
-    exports org.openmarkov.core.oopn;
-    exports org.openmarkov.core.oopn.action;
     exports org.openmarkov.core.stringformat;
     exports org.openmarkov.core.testTags;
     exports org.openmarkov.plugin;

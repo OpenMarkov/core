@@ -128,8 +128,8 @@ import java.util.List;
 	public Variable getVariable() {
 		return node.getVariable();
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		TablePotential potential = getPotential();
 		if (wasNullOldUncertainValues) {
 			potential.setUncertainValues(new UncertainValue[potential.getTableSize()]);

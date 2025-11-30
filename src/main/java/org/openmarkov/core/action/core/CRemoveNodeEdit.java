@@ -74,12 +74,10 @@ import java.util.ArrayList;
             edits.add(new RemoveLinkEdit(node.getProbNet(), probNet.getVariable(node.getName()),
                     probNet.getVariable(child.getName()), true));
         }
-
-		// add edit to remove the variable
+        
+        // add an edit to remove the variable
         edits.add(new RemoveNodeEdit(probNet, node));
-
-		// add edit to add the new potential
-		//edits.add(new AddPotentialEdit(probNet, newPotential));
+        
         return edits;
     }
 

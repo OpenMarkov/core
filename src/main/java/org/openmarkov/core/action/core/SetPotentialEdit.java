@@ -67,8 +67,8 @@ public class SetPotentialEdit extends PNEdit {
 	// TODO al asignar un potencial tener en cuenta a los padres y a los
 	// predecesores informativos que me los va a dar Manolo invocando a una
 	// funcion
-
-	@Override public void doEdit() {
+    
+    @Override protected void doEdit() {
 		node.setPotentialConsistently(newPotential);
 	}
 

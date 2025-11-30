@@ -44,8 +44,8 @@ import org.openmarkov.core.action.base.PNEdit;
 		this.newRelevance = newRelevance;
 		this.node = node;
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		node.setRelevance(newRelevance);
 	}
     

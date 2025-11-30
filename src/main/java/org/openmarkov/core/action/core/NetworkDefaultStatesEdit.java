@@ -44,7 +44,7 @@ import org.openmarkov.core.action.base.PNEdit;
 	}
 
 	// Methods
-	@Override public void doEdit() {
+	@Override protected void doEdit() {
 		if (newDefaultStates != null) {
 			probNet.setDefaultStates(newDefaultStates);
 		}

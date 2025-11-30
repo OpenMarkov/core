@@ -79,7 +79,7 @@ import java.util.*;
     }
 
     @Override
-    public void doEdit() throws DoEditException.CannotDoEditException {
+    protected void doEdit() throws DoEditException.CannotDoEditException {
         // If there are more than one utility children, merge them into one node
         if (absorbedNode.getChildren().size() > 1) {
             mergeUtilityChildren();

@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.action.core;
 
+import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
@@ -37,8 +38,8 @@ public class MulticriteriaEdit extends PNEdit {
 		this.newDecisionCriteria = decisionCriteria;
 		this.newMulticriteriaOptions = options;
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		//probNet.setDecisionCriteria(this.newDecisionCriteria);
 		// Set the new data at the probNet criteria 
 		for (Criterion oldCriterion : probNet.getDecisionCriteria()) {
@@ -65,7 +66,10 @@ public class MulticriteriaEdit extends PNEdit {
 		}
 		probNet.getInferenceOptions().setMultiCriteriaOptions(this.oldMulticriteriaOptions);
 	}
-
+	
+	@ToCheck(reasonKind = ToCheck.ReasonKind.PROBABLE_BUG,
+			reasonDescription = "This calls super.redo, which will call doEdit if this edit is 'typicalRedo', and then " +
+					"it calls doEdit. This looks like it is redoing the edit 2 times, which might lead to inconsistencies")
 	@Override public void redo() {
 		super.redo();
 		doEdit();

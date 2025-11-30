@@ -72,7 +72,7 @@ import java.util.List;
         }
     }
     
-    @Override public void doEdit() {
+    @Override protected void doEdit() {
         node.getVariable().setBaseName(newName);
     }
     

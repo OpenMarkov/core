@@ -8,6 +8,7 @@
 package org.openmarkov.core.action.core;
 
 import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.ProbNet;
 
@@ -26,8 +27,8 @@ public class CycleLengthEdit extends PNEdit {
 		this.oldTemporalUnit = probNet.getCycleLength().clone();
 		this.newTemporalUnit = newTemporalUnit;
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		probNet.setCycleLength(this.newTemporalUnit);
 	}
     
@@ -35,7 +36,10 @@ public class CycleLengthEdit extends PNEdit {
 		super.undo();
 		probNet.setCycleLength(this.oldTemporalUnit);
 	}
-
+	
+	@ToCheck(reasonKind = ToCheck.ReasonKind.PROBABLE_BUG,
+			reasonDescription = "This calls super.redo, which will call doEdit if this edit is 'typicalRedo', and then " +
+					"it calls doEdit. This looks like it is redoing the edit 2 times, which might lead to inconsistencies")
 	@Override public void redo() {
 		super.redo();
 		doEdit();

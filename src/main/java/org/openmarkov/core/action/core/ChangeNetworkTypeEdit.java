@@ -52,7 +52,7 @@ import java.util.ArrayList;
     }
     
     // Methods
-    @Override public void doEdit() throws DoEditException.CannotDoEditException, ConstraintViolatedException {
+    @Override protected void doEdit() throws DoEditException.CannotDoEditException, ConstraintViolatedException {
         probNet.setNetworkType(newNetworkType);
         if (probNet.isMultiagent()) {
             ArrayList<StringWithProperties> agents = new ArrayList<>();

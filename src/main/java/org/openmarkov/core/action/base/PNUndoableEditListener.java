@@ -13,13 +13,19 @@ import org.openmarkov.core.exception.DoEditException;
 public interface PNUndoableEditListener {
     
     /**
-     * Triggered before an undoable edit is about to happen happened.
+     * Triggered before an edit is about to happen happened.
      */
     default void beforeEditHappens(PNUndoableEditEvent event) {
     }
     
     /**
-     * Triggered after an undoable edit has failed.
+     * Triggered after an edit has happened.
+     */
+    default void afterEditHappens(PNUndoableEditEvent e) {
+    }
+    
+    /**
+     * Triggered after an edit has failed.
      * <p>
      * The method {@link PNUndoableEditListener#beforeEditHappens(PNUndoableEditEvent)} must have happened.
      */
@@ -27,9 +33,15 @@ public interface PNUndoableEditListener {
     }
     
     /**
-     * Triggered after an undoable edit has happened.
+     * Triggered before doing the edit and only if at least one of the constraints is violated.
      */
-    default void afterEditHappens(PNUndoableEditEvent e) {
+    default void onEditViolatesConstraints(PNUndoableEditEvent pnUndoableEditEvent, ConstraintViolatedException ex) {
+    }
+    
+    /**
+     * Triggered before undoing an edit.
+     */
+    default void beforeUndoingEditHappens(PNUndoableEditEvent event) {
     }
     
     /**
@@ -39,8 +51,16 @@ public interface PNUndoableEditListener {
     }
     
     /**
-     * Triggered before doing the edit and only if at least one of the constraints is violated.
+     * Triggered before redoing an edit.
      */
-    default void onEditViolatesConstraints(PNUndoableEditEvent pnUndoableEditEvent, ConstraintViolatedException ex) {
+    default void beforeRedoingEditHappens(PNUndoableEditEvent event) {
     }
+    
+    /**
+     * Triggered after redoing an edit.
+     */
+    default void afterRedoingEdit(PNUndoableEditEvent event) {
+    }
+    
+    
 }

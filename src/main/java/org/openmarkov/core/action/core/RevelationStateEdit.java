@@ -32,8 +32,8 @@ import org.openmarkov.core.model.network.State;
 		this.newState = state;
 
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		if (selected) {
 			link.addRevealingState(newState);
 		} else {

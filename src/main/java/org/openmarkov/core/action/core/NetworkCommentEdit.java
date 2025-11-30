@@ -46,8 +46,8 @@ import org.openmarkov.core.action.base.PNEdit;
 		this.currentComment = probNet.getComment();
 		this.showCommentWhenOpening = showCommentWhenOpening;
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		probNet.setComment(newComment);
 		probNet.setShowCommentWhenOpening(showCommentWhenOpening);
 	}

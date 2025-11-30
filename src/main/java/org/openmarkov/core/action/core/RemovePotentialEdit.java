@@ -28,7 +28,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 	}
 
 	// Methods
-	@Override public void doEdit() {
+	@Override protected void doEdit() {
 		probNet.removePotential(oldPotential);
 	}
     

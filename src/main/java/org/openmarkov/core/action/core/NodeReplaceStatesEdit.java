@@ -62,7 +62,7 @@ import java.util.Map;
 	}
 
 	// Methods
-	@Override public void doEdit() {
+	@Override protected void doEdit() {
 		node.getVariable().replaceStates(node,newStates);
 	}
     

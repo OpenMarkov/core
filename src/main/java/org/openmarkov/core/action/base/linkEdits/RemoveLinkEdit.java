@@ -84,7 +84,7 @@ import java.util.List;
         }
     }
     
-    @Override public void doEdit() throws DoEditException.CannotDoEditException {
+    @Override protected void doEdit() throws DoEditException.CannotDoEditException {
         if (probNet.hasExplicitLinks()) {
             this.link = probNet.getLink(node1, node2, isDirected);
         }

@@ -104,7 +104,7 @@ import java.util.stream.Collectors;
      *
      * @throws DoEditException DoEditException
      */
-    @Override public void doEdit() throws DoEditException.CannotInvertLink {
+    @Override protected void doEdit() throws DoEditException.CannotInvertLink {
         // Remove links first
         probNet.removeLink(node1, node2, isDirected);
         if (node2.getNodeType() != NodeType.DECISION) {

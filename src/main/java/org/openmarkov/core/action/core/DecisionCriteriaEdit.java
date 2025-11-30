@@ -60,8 +60,8 @@ import java.util.List;
             }
         }
     }
-    
-    @Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		List<Criterion> criteria = probNet.getDecisionCriteria();
 		switch (stateAction) {
 		case ADD:

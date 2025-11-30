@@ -28,8 +28,8 @@ import org.openmarkov.core.action.base.PNEdit;
         this.lastUnit = node.getVariable().getUnit().clone();
 		this.newUnit = new StringWithProperties(newUnit);
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		node.getVariable().setUnit(newUnit);
 	}
     

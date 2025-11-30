@@ -119,7 +119,9 @@ public class NodeStateEdit extends PNEdit {
         }
 
         // For RENAME, MOVE and DELETE
-        this.oldStates = variable.getStates();
+        this.oldStates = new State[variable.getStates().length];
+        System.arraycopy(variable.getStates(), 0, this.oldStates, 0, variable.getStates().length);
+        
         State selectedState = oldStates[selectedStateIndex];
         this.newState = (stateAction != StateAction.RENAME) ? new State(newName) : selectedState;
 
@@ -151,9 +153,8 @@ public class NodeStateEdit extends PNEdit {
         }
     }
     
-    @Override public void doEdit() {
-        node.getVariable().modifyState(node, stateAction, 0, newName);
-        
+    @Override protected void doEdit() {
+        node.getVariable().modifyState(node, stateAction, this.indexState, newName);
     }
 
     @SuppressWarnings("unchecked")

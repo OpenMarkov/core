@@ -36,7 +36,7 @@ import org.openmarkov.core.model.network.constraint.ModelNetworkConstraint;
 	/**
 	 * Do the edition by removing the existing link and adding a new directed link between the same two variables.
 	 */
-	@Override public void doEdit() {
+	@Override protected void doEdit() {
         probNet.removeLink(variableFrom, variableTo, false);
         probNet.addLink(variableFrom, variableTo, true);
     }

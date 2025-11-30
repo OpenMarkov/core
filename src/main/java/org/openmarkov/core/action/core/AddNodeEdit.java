@@ -140,7 +140,7 @@ import org.openmarkov.core.model.network.constraint.*;
         
     }
     
-    @Override public void doEdit() {
+    @Override protected void doEdit() {
         probNet.addNodeConsistently(variable,nodeType,cursorPosition);
         newNode = probNet.getNode(variable);
     }

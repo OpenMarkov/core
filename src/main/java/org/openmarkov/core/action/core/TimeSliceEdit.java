@@ -73,7 +73,7 @@ import java.util.List;
         }
     }
     
-    @Override public void doEdit() {
+    @Override protected void doEdit() {
         //onlyTemporal && not only atemporal
         variable.setTimeSlice(newTimeSlice);
         if (newTimeSlice == Integer.MIN_VALUE && lastTimeSlice != Integer.MIN_VALUE && lastBaseName != null) {

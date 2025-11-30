@@ -111,7 +111,7 @@ class UndoManagerTest {
     
     
     static class NamedEdit extends PNEdit {
-        @Override public void doEdit() {
+        @Override protected void doEdit() {
         }
         
         final String name;

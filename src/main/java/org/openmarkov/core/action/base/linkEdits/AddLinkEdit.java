@@ -171,7 +171,7 @@ public final class AddLinkEdit extends BaseLinkEdit {
         }
     }
     
-    @Override public void doEdit() {
+    @Override protected void doEdit() {
         probNet.addLink(nodeFrom, nodeTo, isDirected);
         this.link = probNet.getLink(nodeFrom, nodeTo, isDirected);
         if (updatePotentials) {

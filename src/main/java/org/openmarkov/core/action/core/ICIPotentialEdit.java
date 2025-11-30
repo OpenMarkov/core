@@ -38,8 +38,8 @@ import org.openmarkov.core.action.base.PNEdit;
 		this.leakyParameters = leakyParameters;
 		this.isNoisyParameter = false;
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		if (isNoisyParameter) {
 			potential.setNoisyParameters(variable, noisyParameters);
 		} else {

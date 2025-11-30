@@ -50,8 +50,8 @@ public class RemoveSeveralPotentialsEdit extends PNEdit {
 		}
 		return auxString;
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		for (Potential potential : potentialsToDelete) {
 			probNet.removePotential(potential);
 		}

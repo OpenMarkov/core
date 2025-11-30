@@ -30,7 +30,7 @@ public class OpenParenthesisEdit extends PNEdit {
 	}
 
 	// Methods
-	@Override public void doEdit() {
+	@Override protected void doEdit() {
 		//super.addEdit(this);
 	}
 	

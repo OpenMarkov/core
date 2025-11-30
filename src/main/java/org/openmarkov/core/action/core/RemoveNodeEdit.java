@@ -58,7 +58,7 @@ import org.openmarkov.core.action.base.UsesVariable;
     }
     
     // Methods
-    @Override public void doEdit() throws DoEditException.NodeIsNull {
+    @Override protected void doEdit() throws DoEditException.NodeIsNull {
         if (node == null) {
             throw new DoEditException.NodeIsNull(probNet);
         }

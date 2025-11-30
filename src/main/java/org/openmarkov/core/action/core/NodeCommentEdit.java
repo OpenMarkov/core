@@ -49,7 +49,7 @@ import java.util.List;
 	}
 
 	// Methods
-	@Override public void doEdit() {
+	@Override protected void doEdit() {
 			node.setComment(newComment);
 	}
     

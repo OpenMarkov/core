@@ -59,7 +59,7 @@ import java.util.List;
 	}
 
 	// Methods
-	@Override public void doEdit() {
+	@Override protected void doEdit() {
 
 		if (lastConstraint != null) {
 			probNet.removeConstraint(lastConstraint);

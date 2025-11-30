@@ -11,7 +11,6 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
 
 import java.util.ArrayList;
-import java.util.stream.IntStream;
 
 /**
  * A compound edit is a complex edition composed of several editions. This is an
@@ -28,7 +27,7 @@ import java.util.stream.IntStream;
 
     public CompoundPNEdit(ProbNet probNet) {
         super(probNet);
-        generatedEdits = false;
+        this.generatedEdits = false;
     }
     
     // Methods
@@ -38,15 +37,23 @@ import java.util.stream.IntStream;
      *
      * @throws DoEditException DoEditException
      */
-    @Override public void doEdit() throws DoEditException {
-        for (PNEdit edit : getEdits()) {
-            edit.executeEdit();
+    @Override protected void doEdit() throws DoEditException {
+        ArrayList<PNEdit> doneEdits = new ArrayList<>(this.getEdits().size());
+        try {
+            for (PNEdit edit : this.getEdits()) {
+                edit.executeEdit();
+                doneEdits.add(edit);
+            }
+        } catch (DoEditException e) {
+            for (PNEdit editToUndo : doneEdits.reversed()) {
+                editToUndo.undo();
+            }
+            throw e;
         }
     }
     
-    
     @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
-        for (PNEdit pnEdit : getEdits()) {
+        for (PNEdit pnEdit : this.getEdits()) {
             pnEdit.checkConstraintsWillBeMet(constraintChecker);
         }
     }
@@ -54,20 +61,16 @@ import java.util.stream.IntStream;
     protected abstract ArrayList<PNEdit> generateEdits();
     
     public ArrayList<PNEdit> getEdits() {
-        initializeEdits();
-        return edits;
-    }
-    
-    private void initializeEdits() {
         if (!this.generatedEdits) {
-            this.edits = generateEdits();
-            edits.forEach(edit -> edit.markItBelongsToACompoundEdit());
+            this.edits = this.generateEdits();
+            this.edits.forEach(PNEdit::markItBelongsToACompoundEdit);
             this.generatedEdits = true;
         }
+        return this.edits;
     }
     
     @Override public ProbNet getProbNet() {
-        return probNet;
+        return this.probNet;
     }
     
     @Override public void setProbNet(ProbNet probNet) {
@@ -75,18 +78,13 @@ import java.util.stream.IntStream;
     }
     
     @Override public void redo() {
-        edits.forEach(PNEdit::redo);
-        setTypicalRedo(false);
+        this.edits.forEach(PNEdit::redo);
+        this.setTypicalRedo(false);
         super.redo();
     }
     
     @Override public void undo() {
-        IntStream.range(0, edits.size())
-                 .mapToObj(i -> {
-                     int realIndex = edits.size() - 1 - i;
-                     return edits.get(realIndex);
-                 })
-                 .forEach(PNEdit::undo);
+        this.edits.reversed().forEach(PNEdit::undo);
         super.undo();
     }
     

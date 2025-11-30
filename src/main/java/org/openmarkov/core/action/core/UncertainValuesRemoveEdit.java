@@ -106,8 +106,8 @@ import java.util.List;
 	public Variable getVariable() {
 		return node.getVariable();
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 
 		TablePotential tablePotential = getTablePotential();
 		

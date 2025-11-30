@@ -59,8 +59,8 @@ import java.util.List;
             }
         }
     }
-    
-    @Override public void doEdit() {
+	
+	@Override protected void doEdit() {
         // Save the current states
         currentStates = node.getVariable().getStates();
 

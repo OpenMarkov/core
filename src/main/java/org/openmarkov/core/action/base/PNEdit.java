@@ -36,7 +36,7 @@ import org.openmarkov.core.model.network.ProbNet;
      *
      * @throws DoEditException DoEditException
      */
-    public abstract void doEdit() throws DoEditException;
+    protected abstract void doEdit() throws DoEditException;
     
     public void executeEdit() throws DoEditException {
         PNESupport pneSupport = getProbNet().getPNESupport();
@@ -130,7 +130,6 @@ import org.openmarkov.core.model.network.ProbNet;
     }
     
     public void undo() {
-    
     }
     
     public boolean canUndo() {

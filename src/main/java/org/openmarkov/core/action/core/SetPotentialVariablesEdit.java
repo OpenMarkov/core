@@ -26,8 +26,8 @@ import java.util.List;
 		this.oldVariables = new ArrayList<>(node.getPotentials().get(0).getVariables());
 		this.newVariables = newVariables;
 	}
-    
-    @Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		node.getPotentials().get(0).setVariables(newVariables);
 	}
 

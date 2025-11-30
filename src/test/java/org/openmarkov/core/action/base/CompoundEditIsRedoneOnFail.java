@@ -30,7 +30,7 @@ class CompoundEditIsRedoneOnFail {
             assertTrue(!probNet.containsVariable(edit.name));
         }
         try {
-            compoundEdit.doEdit();
+            compoundEdit.executeEdit();
             fail("An exception should have happened");
         } catch (DoEditException e) {
             for (FailableEdit edit : failableEdits) {
@@ -55,11 +55,15 @@ class CompoundEditIsRedoneOnFail {
     }
     
     static class FailableEdit extends PNEdit {
-        @Override public void doEdit() throws DoEditException {
+        @Override protected void doEdit() throws DoEditException {
             if (fails) {
                 throw new DoEditException.NodeIsNull(null);
             }
             this.probNet.addNode(new Variable(this.name), NodeType.CHANCE);
+        }
+        
+        @Override public void undo() {
+            this.probNet.removeNode(this.probNet.getNode(this.name));
         }
         
         final String name;

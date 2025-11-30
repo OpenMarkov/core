@@ -63,7 +63,7 @@ import static org.openmarkov.core.model.network.constraint.NoAlwaysObservedDesce
         }
     }
     
-    @Override public void doEdit() {
+    @Override protected void doEdit() {
         node.setAlwaysObserved(newAlwaysObserved);
     }
     

@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.action.core;
 
+import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.inference.TemporalOptions;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.action.base.PNEdit;
@@ -26,8 +27,8 @@ public class TemporalOptionsEdit extends PNEdit {
 		this.oldTemporalOptions = probNet.getInferenceOptions().getTemporalOptions().clone();
 		this.newTemporalOptions = options;
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		probNet.getInferenceOptions().setTemporalOptions(this.newTemporalOptions);
 
 	}
@@ -36,7 +37,10 @@ public class TemporalOptionsEdit extends PNEdit {
 		super.undo();
 		probNet.getInferenceOptions().setTemporalOptions(this.oldTemporalOptions);
 	}
-
+	
+	@ToCheck(reasonKind = ToCheck.ReasonKind.PROBABLE_BUG,
+			reasonDescription = "This calls super.redo, which will call doEdit if this edit is 'typicalRedo', and then " +
+					"it calls doEdit. This looks like it is redoing the edit 2 times, which might lead to inconsistencies")
 	@Override public void redo() {
 		super.redo();
 		doEdit();

@@ -42,8 +42,8 @@ public class PotentialChangeEdit extends PNEdit {
 		this.oldPotential = oldPotential;
         this.node = node;
 	}
-
-	@Override public void doEdit() throws DoEditException.CannotRemovePotential {
+    
+    @Override protected void doEdit() throws DoEditException.CannotRemovePotential {
         if(!newPotential.equals(node.getPotential())) {
             if (!node.removePotential(oldPotential)) {
                 throw new DoEditException.CannotRemovePotential(probNet, oldPotential);

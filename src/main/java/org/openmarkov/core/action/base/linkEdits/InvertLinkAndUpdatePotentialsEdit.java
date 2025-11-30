@@ -92,7 +92,7 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	 *
 	 * @throws DoEditException DoEditException
 	 */
-	@Override public void doEdit() throws DoEditException.CannotDoEditException {
+	@Override protected void doEdit() throws DoEditException.CannotDoEditException {
 
 		// The parents of x are retrieved
 		List<Node> xParents = x.getParents();

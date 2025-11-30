@@ -45,8 +45,8 @@ public class PurposeEdit extends PNEdit {
 		this.newPurpose = newPurpose;
 		this.node = node;
 	}
-
-	@Override public void doEdit() {
+	
+	@Override protected void doEdit() {
 		node.setPurpose(newPurpose);
 	}
     

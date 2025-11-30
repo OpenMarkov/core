@@ -24,7 +24,7 @@ import org.openmarkov.core.model.network.ProbNet;
 	}
 
 	// Methods
-	@Override public void doEdit() {
+    @Override protected void doEdit() {
 		//super.addEdit(this);
 	}
 

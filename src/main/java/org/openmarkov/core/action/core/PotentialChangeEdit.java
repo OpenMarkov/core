@@ -23,9 +23,9 @@ import java.util.List;
 public class PotentialChangeEdit extends PNEdit {
 
 	// Attribute
-	private Potential newPotential;
+    protected Potential newPotential;
 
-	private Potential oldPotential;
+	protected Potential oldPotential;
 
 	private Node node;
 

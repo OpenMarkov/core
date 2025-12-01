@@ -14,7 +14,7 @@ import org.openmarkov.core.model.network.Variable;
  * @author marias
  * @version 1.0
  */
-public abstract sealed class IncompatibleEvidenceException extends Exception implements IBundledOpenMarkovException {
+public abstract class IncompatibleEvidenceException extends Exception implements IBundledOpenMarkovException {
     
     @Override public String toString() {
         return IBundledOpenMarkovException.toString(this);

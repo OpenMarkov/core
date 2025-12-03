@@ -44,12 +44,10 @@ public class PotentialChangeEdit extends PNEdit {
 	}
     
     @Override protected void doEdit() throws DoEditException.CannotRemovePotential {
-        if(!newPotential.equals(node.getPotential())) {
             if (!node.removePotential(oldPotential)) {
                 throw new DoEditException.CannotRemovePotential(probNet, oldPotential);
             }
             node.addPotential(newPotential);
-        }
 	}
 
 

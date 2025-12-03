@@ -181,6 +181,10 @@ public class Node implements Cloneable, ClassLocalizable {
         this.potentials.clear();
         addPotential(potential);
     }
+
+    public void clearPotentials(){
+        this.potentials.clear();
+    }
     
     /**
      * @param potential {@code Potential}
@@ -765,7 +769,11 @@ public class Node implements Cloneable, ClassLocalizable {
     }
     
     public Potential getPotential() {
-        return getPotentials().get(0);
+        if(potentials.isEmpty()){
+            return null;
+        }else{
+            return getPotentials().get(0);
+        }
     }
     
     public Potential getPreviousPotential() {

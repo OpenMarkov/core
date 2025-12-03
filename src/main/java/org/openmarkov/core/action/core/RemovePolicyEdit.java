@@ -10,7 +10,6 @@ package org.openmarkov.core.action.core;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.action.base.VisualDecisionNodePolicyChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,6 @@ public class RemovePolicyEdit extends PNEdit {
 	private Variable variable;
 	private PolicyType lastPolicyType;
 	private Node node;
-	private VisualDecisionNodePolicyChangeListener listener;
 
 	/**
 	 * @param node Node
@@ -40,13 +38,6 @@ public class RemovePolicyEdit extends PNEdit {
 
 	}
 
-	public RemovePolicyEdit(Node node, VisualDecisionNodePolicyChangeListener listener){
-        super(node.getProbNet());
-		this.node = node;
-		this.listener = listener;
-		lastPotential = node.getPotentials().get(0);
-
-    }
 	
 	@Override protected void doEdit() {
 		/*ArrayList<Potential> potentials = new ArrayList<>();
@@ -57,7 +48,6 @@ public class RemovePolicyEdit extends PNEdit {
 
 		List<Potential> noPolicy = new ArrayList<>();
 		node.setPotentials(noPolicy);
-		listener.removePolicy();
 	}
     
     @Override public void undo() {
@@ -69,7 +59,6 @@ public class RemovePolicyEdit extends PNEdit {
 			probNet.getNode(variable).setPolicyType(lastPolicyType);
 		}*/
 		List<Potential> potentials = new ArrayList<>();
-		listener.onNodeValueChanged();
 		potentials.add(lastPotential);
 		node.setPotentials(potentials);
 	}

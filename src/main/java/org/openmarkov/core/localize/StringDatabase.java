@@ -69,12 +69,11 @@ public class StringDatabase {
         setLocale(new Locale(language));
         /* Set format locale to english (to format decimal point)*/
         Locale.setDefault(Locale.Category.FORMAT, Locale.ENGLISH);
-        bundles = calculateAllBundles();
         listenerList = new ArrayList<>();
-        if (bundles.isEmpty()) {
-            setLanguage("en");
-        }
+        
+        
     }
+    
     
     /**
      * Returns the unique instance of this class. If the instance doesn't exist,
@@ -171,7 +170,14 @@ public class StringDatabase {
     }
     
     public Map<String, StringBundle> getAllBundles() {
-        return this.bundles;
+        if (bundles == null) {
+            bundles = calculateAllBundles();
+            if (bundles.isEmpty() && !language.equals("en")) {
+                setLanguage("en");
+                bundles = calculateAllBundles();
+            }
+        }
+        return bundles;
     }
     
     
@@ -200,8 +206,7 @@ public class StringDatabase {
      * reset the StringResource to null
      */
     private void resetBundles() {
-        bundles.clear();
-        bundles = calculateAllBundles();
+        this.bundles = null;
     }
     
     public String getString(String key) {
@@ -211,7 +216,7 @@ public class StringDatabase {
     
     public @Nullable String getNullableString(String key) {
         if (key == null) return null;
-        for (StringBundle bundle : this.bundles.values()) {
+        for (StringBundle bundle : this.getAllBundles().values()) {
             String value = bundle.getString(key);
             if (value != null) {
                 return value;
@@ -228,7 +233,7 @@ public class StringDatabase {
     
     public @Nullable String getNullableString(@Nullable String bundle, String key) {
         if (key == null) return null;
-        StringBundle stringBundle = this.bundles.get(bundle);
+        StringBundle stringBundle = this.getAllBundles().get(bundle);
         if (stringBundle == null) {
             return null;
         }

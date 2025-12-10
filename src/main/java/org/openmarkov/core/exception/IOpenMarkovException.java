@@ -145,8 +145,7 @@ public interface IOpenMarkovException extends Localizable {
             if (exceptionBundle.get().prefixKey != null && !exceptionBundle.get().prefixKey.isBlank()) {
                 prefixedKey = exceptionBundle.get().prefixKey + prefixedKey;
             }
-            preformatedString = StringDatabase.getUniqueInstance()
-                                              .getNullableString(exceptionBundle.get().bundleName, prefixedKey);
+            preformatedString = StringDatabase.getUniqueInstance().getString(prefixedKey);
         }
         if (preformatedString == null) {
             preformatedString = StringDatabase.getUniqueInstance().getNullableString(stringKey);
